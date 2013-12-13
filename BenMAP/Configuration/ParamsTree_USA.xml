@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<params>
+  <param name="AirQualityGridGroup" text="Air Quality Grid" icon="group">
+    <param name="GridType" text="Grid Type" icon="ready">
+      <param name="Boundary" text="\Data\USAData\ShapeFile\County.shp" icon="doc"/>
+      <param name="Region" text="\Data\USAData\ShapeFile\US_Region.shp" icon="doc"/>
+      <param name="Grid" text="\Data\USAData\ShapeFile\36km.shp" icon="doc"/>
+      <!--<param name="36kmGrid" text="D:\软件项目\BenMap\code\BenMap\BenMap\Data\USAData\ShapeFile\36km.shp" icon="doc"/>-->
+    </param>
+    <param name="Pollutant" text="Pollutant" icon="unready"/>
+    <param name="Data Source" text="Data Source" icon="unready">
+      <param name="Baseline" text="Baseline" icon="unready">
+        <!--<param name="Baseline File" text="D:\Data\USAData\Model Data\Model_Baseline.xls" icon="doc"/>-->
+      </param>
+      <param name="Control" text="Control" icon="unready">
+        <!--<param name="Control File" text="D:\Data\USAData\Model Data\Model_Control.xls" icon="doc"/>-->
+      </param>
+    </param>
+    <!--<param name="Data Source" text="Data Source" icon="ready">
+      <param name="Baseline" text="Baseline" icon="ready">
+        <param name="Baseline File" text="D:\Data\USAData\Model Data\Model_Baseline.xls" icon="doc"/>
+      </param>
+      <param name="Control" text="Control" icon="ready">
+        <param name="Control File" text="D:\Data\USAData\Model Data\Model_Control.xls" icon="doc"/>
+      </param>
+    </param>-->
+  </param>
+  <param name="Configuration" text="Configuration" icon="group">
+    <param name="Latin Hypercube Points" text="Latin Hypercube Points" icon="unready"/>
+    <param name="Population Dataset" text="Population Dataset" icon="unready"/>
+    <param name="Incidence Dataset" text="Incidence Dataset" icon="unready"/>
+    <param name="Health Impact Functions" text="Health Impact Functions" icon="unready"/>
+    <!--<param name="CR function" text="CR function" icon="unready"/>-->
+  </param>
+  <param name="Aggregation,Pooling &amp;Valuation" text="Aggregation,Pooling &amp; Valuation" icon="group">
+    <param name="Pooling Method" text="Pooling Method" icon="unready"/>
+    <param name="Valuation Method" text="Valuation Method" icon="unready"/>
+    <!--<param name="Valuation Dataset" text="Valuation Dataset" icon="ready"/>
+    <param name="Advanced setting" text="Advanced setting" icon="ready"/>-->
+  </param>
+</params>

@@ -1,0 +1,1672 @@
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Data;
+using System.Diagnostics;
+using System.Drawing;
+using System.Linq;
+using System.Windows.Forms;
+using BrightIdeasSoftware;
+using System.IO;
+using ESIL.DBUtility;
+
+namespace BenMAP
+{
+    public partial class HealthImpactDataSetDefinition : FormBase
+    {
+        private int _datasetID;
+        List<int> lstdeleteCRFunctionid = new List<int>();
+
+        public HealthImpactDataSetDefinition()
+        {
+            InitializeComponent();
+            _datasetID = -1;
+        }
+
+        public HealthImpactDataSetDefinition(int dataSetID)
+        {
+            InitializeComponent();
+            _datasetID = dataSetID;
+        }
+
+        string _filePath = string.Empty;
+        List<double> listCustomValue = new List<double>();
+        Dictionary<int, List<double>> dicCustomValue = new Dictionary<int, List<double>>();
+        int AddCount = 0;
+
+        private void btnAdd_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                listCustomValue.Clear();
+                HealthImpactFunctionOfUser_defined frm = new HealthImpactFunctionOfUser_defined();
+                DialogResult rth = frm.ShowDialog();
+                if (rth != DialogResult.OK) { return; }
+                AddCount--;
+                DataRow dr = _dt.NewRow();
+                // txtHealthImpactFunction.Text = _dataName;
+                dr[0] = frm.HealthImpacts.EndpointGroup;
+                dr[1] = frm.HealthImpacts.Endpoint;
+                dr[2] = frm.HealthImpacts.Pollutant;
+                dr[3] = frm.HealthImpacts.Metric;
+                dr[4] = frm.HealthImpacts.SeasonalMetric;
+                dr[5] = frm.HealthImpacts.MetricStatistis;
+                dr[6] = frm.HealthImpacts.Author;
+                dr[7] = frm.HealthImpacts.Year;
+                dr[8] = frm.HealthImpacts.LocationName;
+                dr[9] = frm.HealthImpacts.Location;
+                dr[10] = frm.HealthImpacts.OtherPollutant;
+                dr[11] = frm.HealthImpacts.Qualifier;
+                dr[12] = frm.HealthImpacts.Reference;
+                dr[13] = frm.HealthImpacts.Race;
+                dr[14] = frm.HealthImpacts.Ethnicity;
+                dr[15] = frm.HealthImpacts.Gender;
+                dr[16] = frm.HealthImpacts.StartAge;
+                dr[17] = frm.HealthImpacts.EndAge;
+                dr[18] = frm.HealthImpacts.Function;
+                dr[19] = frm.HealthImpacts.BaselineIncidenceFunction;
+                dr[20] = frm.HealthImpacts.Beta;
+                dr[21] = frm.HealthImpacts.BetaDistribution;
+                dr[22] = frm.HealthImpacts.BetaParameter1;
+                dr[23] = frm.HealthImpacts.BetaParameter2;
+                dr[24] = frm.HealthImpacts.AConstantValue;
+                dr[25] = frm.HealthImpacts.AConstantDescription;
+                dr[26] = frm.HealthImpacts.BConstantValue;
+                dr[27] = frm.HealthImpacts.BConstantDescription;
+                dr[28] = frm.HealthImpacts.CConstantValue;
+                dr[29] = frm.HealthImpacts.CConstantDescription;
+                dr[30] = frm.HealthImpacts.Incidence;
+                dr[31] = frm.HealthImpacts.Prevalence;
+                dr[32] = frm.HealthImpacts.Variable;
+                dr[33] = AddCount;
+                if (frm.HealthImpacts.BetaDistribution == "Custom" && frm.listCustom.Count > 0)
+                    dicCustomValue.Add(AddCount, frm.listCustom);
+                _dt.Rows.Add(dr);
+                olvFunction.DataSource = _dt;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+            }
+        }
+        DataTable dtLoad = new DataTable();
+        private void btnBrowse_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                DataTable dt = new DataTable();
+                //Todo:陈志润
+                //DataWorker.DataReader dp = new DataWorker.DataReader();
+                OpenFileDialog openFileDialog = new OpenFileDialog();
+                openFileDialog.InitialDirectory = Application.StartupPath + @"E:\";
+                openFileDialog.Filter = "All Files|*.*|CSV files|*.csv|XLS files|*.xls|XLSX files|*.xlsx";
+                openFileDialog.FilterIndex = 2;
+                openFileDialog.RestoreDirectory = true;
+                if (openFileDialog.ShowDialog() != DialogResult.OK) { return; }
+                _filePath = openFileDialog.FileName;
+                //string strfilepath = System.IO.Path.GetExtension(_filePath);
+                //if (_filePath.Substring(_filePath.Length - 3, 3).ToLower() != "csv")
+                //{
+                //    //判断有没有安装Excel
+                //    if (Type.GetTypeFromProgID("Excel.Application") == null)
+                //    {
+                //        MessageBox.Show("Please install Excel.", "Warning", MessageBoxButtons.OK);
+                //        return;
+                //    }
+                //}
+                //int sheetIndex = CommonClass.SelectedSheetIndex(_filePath);
+                WaitShow("Loading health impact functions...");
+                dt = CommonClass.ExcelToDataTable(_filePath);
+                //ds = dp.GetDataFromFile(_filePath);
+                //switch (strfilepath.ToLower())
+                //{
+                //    case ".xls":
+                //        ds = dp.ReadExcel2DataSet(_filePath);
+                //        break;
+                //    case ".xlsx":
+                //        ds = dp.ReadExcel2DataSet(_filePath);
+                //        break;
+                //    case ".csv":
+                //        ds = dp.ReadCSV2DataSet(_filePath, "table");
+                //        break;
+                //    default: break;
+                //}
+                if (dt == null) { return; }
+                int rowCount = dt.Rows.Count;
+                int colCount = dt.Columns.Count;
+
+                int iEndpointGroup = -1;
+                int iEndpoint = -1;
+                int iPollutant = -1;
+                int iMetric = -1;
+                int iSeasonalMetric = -1;
+                int iMetricStatistic = -1;
+                int iAuthor = -1;
+                int iYear = -1;
+                int iLocationType = -1;
+                int iLocation = -1;
+                int iOtherPollutant = -1;
+                int iQualifier = -1;
+                int iReference = -1;
+                int iRace = -1;
+                int iEthnicity = -1;
+                int iGender = -1;
+                int iStartAge = -1;
+                int iEndAge = -1;
+                int iFunction = -1;
+                int iBaselineFunction = -1;
+                int iBeta = -1;
+                int iDistributionBeta = -1;
+                int iP1Beta = -1;
+                int iP2Beta = -1;
+                int iA = -1;
+                int iNameA = -1;
+                int iB = -1;
+                int iNameB = -1;
+                int iC = -1;
+                int iNameC = -1;
+                int iIncidenceDataset = -1;
+                int iPrevalenceDataset = -1;
+                int iVariableDataset = -1;
+
+                for (int i = 0; i < colCount; i++)
+                {
+                    if (dt.Columns[i].ColumnName.ToLower().Contains("statistic"))
+                    { iMetricStatistic = i; }
+                    if (dt.Columns[i].ColumnName.ToLower().Contains("dist") && dt.Columns[i].ColumnName.ToLower().Contains("beta"))
+                    { iDistributionBeta = i; }
+                    if (dt.Columns[i].ColumnName.ToLower().Contains("baseline") && dt.Columns[i].ColumnName.ToLower().Contains("function"))
+                    { iBaselineFunction = i; }
+                    if (dt.Columns[i].ColumnName.ToLower().Contains("author"))
+                    { iAuthor = i; }
+                    if (dt.Columns[i].ColumnName.ToLower().Contains("year"))
+                    { iYear = i; }
+                    if (dt.Columns[i].ColumnName.ToLower().Replace(" ", "").Contains("locationtype"))
+                    { iLocationType = i; }
+                    if (dt.Columns[i].ColumnName.ToLower().Replace(" ", "").Contains("location") && (!dt.Columns[i].ColumnName.ToLower().Replace(" ", "").Contains("type")))
+                    { iLocation = i; }
+                    switch (dt.Columns[i].ColumnName.ToLower().Replace(" ", ""))
+                    {
+                        case "endpointgroup": iEndpointGroup = i;
+                            break;
+                        case "endpoint": iEndpoint = i;
+                            break;
+                        case "pollutant": iPollutant = i;
+                            break;
+                        case "metric": iMetric = i;
+                            break;
+                        case "seasonalmetric": iSeasonalMetric = i;
+                            break;
+                        //case "metricstatistic": iMetricStatistic = i;
+                        //    break;
+                        //case "statistic": iMetricStatistic = i;
+                        //    break;
+                        //case "studyauthor": iAuthor = i;
+                        //    break;
+                        //case "studyyear": iYear = i;
+                        //    break;
+                        //case "studylocationtype": iLocationType = i;
+                        //    break;
+                        //case "studylocation": iLocation = i;
+                        //    break;
+                        case "otherpollutants": iOtherPollutant = i;
+                            break;
+                        case "qualifier": iQualifier = i;
+                            break;
+                        case "reference": iReference = i;
+                            break;
+                        case "race": iRace = i;
+                            break;
+                        case "ethnicity": iEthnicity = i;
+                            break;
+                        case "gender": iGender = i;
+                            break;
+                        case "startage": iStartAge = i;
+                            break;
+                        case "endage": iEndAge = i;
+                            break;
+                        case "function": iFunction = i;
+                            break;
+                        //case "baselinefunction": iBaselineFunction = i;
+                        //    break;
+                        case "beta": iBeta = i;
+                            break;
+                        //case "distributionbeta": iDistributionBeta = i;
+                        //    break;
+                        //case "distbeta": iDistributionBeta = i;
+                        //    break;
+                        case "parameter1beta": iP1Beta = i;
+                            break;
+                        case "p1beta": iP1Beta = i;
+                            break;
+                        case "p1b": iP1Beta = i;
+                            break;
+                        case "parameter2beta": iP2Beta = i;
+                            break;
+                        case "p2beta": iP2Beta = i;
+                            break;
+                        case "p2b": iP2Beta = i;
+                            break;
+                        case "a": iA = i;
+                            break;
+                        case "namea": iNameA = i;
+                            break;
+                        case "b": iB = i;
+                            break;
+                        case "nameb": iNameB = i;
+                            break;
+                        case "c": iC = i;
+                            break;
+                        case "namec": iNameC = i;
+                            break;
+                        case "incidencedataset": iIncidenceDataset = i;
+                            break;
+                        case "prevalencedataset": iPrevalenceDataset = i;
+                            break;
+                        case "variabledataset": iVariableDataset = i;
+                            break;
+                    }
+                }
+
+                //if (iEndpointGroup < 0 || iEndpoint < 0 || iPollutant < 0 || iMetric < 0 || iSeasonalMetric < 0 || iMetricStatistic < 0 || iAuthor < 0 || iYear < 0 || iLocation < 0 || iOtherPollutant < 0 || iQualifier < 0 || iReference < 0 || iRace < 0 || iEthnicity < 0 || iGender < 0 || iStartAge < 0 || iEndAge < 0 || iFunction < 0 || iBaselineFunction < 0 || iBeta < 0 || iDistributionBeta < 0 || iP1Beta < 0 || iP2Beta < 0 || iA < 0 || iNameA < 0 || iB < 0 || iNameB < 0 || iC < 0 || iNameC < 0 || iIncidenceDataset < 0 || iPrevalenceDataset < 0 || iVariableDataset < 0)
+                //{
+                //    MessageBox.Show("Please check the format.", "Tip", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                //    return;
+                //}
+                string warningtip = "";
+                if (iEndpointGroup < 0) warningtip = "'Endpoint Group', ";
+                if (iEndpoint < 0) warningtip += "'Endpoint', ";
+                if (iPollutant < 0) warningtip += "'Pollutant', ";
+                if (iMetric < 0) warningtip += "'Metric', ";
+                if (iSeasonalMetric < 0) warningtip += "'Seasonal Metric', ";
+                if (iMetricStatistic < 0) warningtip += "'Metric Statistic', ";
+                if (iAuthor < 0) warningtip += "'Study Author', ";
+                if (iYear < 0) warningtip += "'Study Year', ";
+                if (iLocation < 0) warningtip += "'Study Location', ";
+                if (iOtherPollutant < 0) warningtip += "'Other Pollutants', ";
+                if (iQualifier < 0) warningtip += "'Qualifier', ";
+                if (iReference < 0) warningtip += "'Reference', ";
+                if (iRace < 0) warningtip += "'Race', ";
+                //if (iEthnicity < 0) warningtip += "'Ethnicity', ";
+                if (iGender < 0) warningtip += "'Gender', ";
+                if (iStartAge < 0) warningtip += "'StartAge', ";
+                if (iEndAge < 0) warningtip += "'EndAge', ";
+                if (iFunction < 0) warningtip += "'Function', ";
+                //if (iBaselineFunction < 0) warningtip += "'Baseline Function', ";
+                if (iBeta < 0) warningtip += "'Beta', ";
+                if (iDistributionBeta < 0) warningtip += "'Distribution Beta', ";
+                if (iP1Beta < 0) warningtip += "'Parameter 1 Beta', ";
+                if (iP2Beta < 0) warningtip += "'Parameter 2 Beta', ";
+                if (iA < 0) warningtip += "'A', ";
+                if (iNameA < 0) warningtip += "'Name A', ";
+                if (iB < 0) warningtip += "'B', ";
+                if (iNameB < 0) warningtip += "'Name B', ";
+                if (iC < 0) warningtip += "'C', ";
+                if (iNameC < 0) warningtip += "'Name C', ";
+                if (iIncidenceDataset < 0) warningtip += "'Incidence Dataset', ";
+                if (iPrevalenceDataset < 0) warningtip += "'Prevalence Dataset', ";
+                //if (iVariableDataset < 0) warningtip += "'Variable DataSet', ";
+                if (warningtip != "")
+                {
+                    WaitClose();
+                    warningtip = warningtip.Substring(0, warningtip.Length - 2);
+                    warningtip = "Please check the column header of " + warningtip + ". It is incorrect or does not exist.";
+                    MessageBox.Show(warningtip, "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+
+                for (int i = 0; i < rowCount; i++)
+                {
+                    DataRow dr = _dt.NewRow();
+                    dr[0] = dt.Rows[i][iEndpointGroup];
+                    dr[1] = dt.Rows[i][iEndpoint];
+                    dr[2] = dt.Rows[i][iPollutant];
+                    dr[3] = dt.Rows[i][iMetric];
+                    dr[4] = dt.Rows[i][iSeasonalMetric];
+                    dr[5] = dt.Rows[i][iMetricStatistic];
+                    dr[6] = dt.Rows[i][iAuthor];
+                    dr[7] = dt.Rows[i][iYear];
+                    if (iLocationType < 0)
+                    {
+                        dr[8] = "NULL";
+                    }
+                    else
+                    {
+                        dr[8] = dt.Rows[i][iLocationType];
+                    }
+                    dr[9] = dt.Rows[i][iLocation];
+                    dr[10] = dt.Rows[i][iOtherPollutant];
+                    dr[11] = dt.Rows[i][iQualifier];
+                    dr[12] = dt.Rows[i][iReference];
+                    dr[13] = dt.Rows[i][iRace];
+                    if (iEthnicity < 0)
+                    {
+                        dr[14] = "NULL";
+                    }
+                    else
+                    {
+                        dr[14] = dt.Rows[i][iEthnicity];
+                    }
+                    dr[15] = dt.Rows[i][iGender];
+                    dr[16] = dt.Rows[i][iStartAge];
+                    dr[17] = dt.Rows[i][iEndAge];
+                    dr[18] = dt.Rows[i][iFunction];
+                    if (iBaselineFunction < 0)
+                    {
+                        dr[19] = "";
+                    }
+                    else
+                    {
+                        dr[19] = dt.Rows[i][iBaselineFunction];
+                    }
+                    dr[20] = dt.Rows[i][iBeta];
+                    dr[21] = dt.Rows[i][iDistributionBeta];
+                    dr[22] = dt.Rows[i][iP1Beta];
+                    dr[23] = dt.Rows[i][iP2Beta];
+                    if (string.IsNullOrEmpty(dt.Rows[i][iA].ToString()))
+                    {
+                        dr[24] = 0;
+                    }
+                    else
+                    {
+                        dr[24] = dt.Rows[i][iA];
+                    }
+                    dr[25] = dt.Rows[i][iNameA];
+                    if (string.IsNullOrEmpty(dt.Rows[i][iB].ToString()))
+                    {
+                        dr[26] = 0;
+                    }
+                    else
+                    {
+                        dr[26] = dt.Rows[i][iB];
+                    }
+                    dr[27] = dt.Rows[i][iNameB];
+                    if (string.IsNullOrEmpty(dt.Rows[i][iC].ToString()))
+                    {
+                        dr[28] = 0;
+                    }
+                    else
+                    {
+                        dr[28] = dt.Rows[i][iC];
+                    }
+                    dr[29] = dt.Rows[i][iNameC];
+                    dr[30] = dt.Rows[i][iIncidenceDataset];
+                    dr[31] = dt.Rows[i][iPrevalenceDataset];
+                    if (iVariableDataset < 0)
+                    {
+                        dr[32] = "NULL";
+                    }
+                    else
+                    {
+                        dr[32] = dt.Rows[i][iVariableDataset];
+                    }
+                    //for (int j = 0; j < colCount; j++)
+                    //{
+                    //    dr[j] = ds.Tables[0].Rows[i][j];
+                    //    //dr[j + 1] = AddCount--;
+                    //}
+                    dr[33] = --AddCount;
+                    //List<double> listLoadValue = new List<double>();
+                    //dicCustomValue.Add(Convert.ToInt32(dr[33]), listLoadValue);
+                    _dt.Rows.Add(dr);
+
+                }
+                dtLoad = dt;
+                int dtRow = _dt.Rows.Count;
+                string strTableName = string.Empty;
+                string strPolluantName = string.Empty;
+                if (!cboFilterEndpointGroup.Items.Contains("All"))
+                { cboFilterEndpointGroup.Items.Add("All"); }
+                if (!cboFilterPollutants.Items.Contains("All"))
+                { cboFilterPollutants.Items.Add("All"); }
+                for (int i = 0; i < dtRow; i++)
+                {
+                    strTableName = _dt.Rows[i][0].ToString();
+                    if (!cboFilterEndpointGroup.Items.Contains(strTableName))
+                        cboFilterEndpointGroup.Items.Add(strTableName);
+                    strPolluantName = _dt.Rows[i][2].ToString();
+                    if (!cboFilterPollutants.Items.Contains(strPolluantName))
+                        cboFilterPollutants.Items.Add(strPolluantName);
+                }
+                olvFunction.DataSource = _dt;
+                WaitClose();
+            }
+            catch (Exception ex)
+            {
+                WaitClose();
+                Logger.LogError(ex);
+            }
+        }
+
+        #region 等待窗口
+        TipFormGIF waitMess = new TipFormGIF();//等待窗体
+        bool sFlog = true;
+        //--显示等待窗体 
+        private void ShowWaitMess()
+        {
+            try
+            {
+                if (!waitMess.IsDisposed)
+                {
+                    waitMess.ShowDialog();
+                }
+
+            }
+            catch (System.Threading.ThreadAbortException Err)
+            {
+                MessageBox.Show(Err.Message);
+            }
+        }
+
+        //--新开辟一个线程调用 
+        public void WaitShow(string msg)
+        {
+            try
+            {
+                if (sFlog == true)
+                {
+                    sFlog = false;
+                    waitMess.Msg = msg;
+                    System.Threading.Thread upgradeThread = null;
+                    upgradeThread = new System.Threading.Thread(new System.Threading.ThreadStart(ShowWaitMess));
+                    upgradeThread.Start();
+                }
+            }
+            catch (System.Threading.ThreadAbortException Err)
+            {
+                MessageBox.Show(Err.Message);
+            }
+        }
+        private delegate void CloseFormDelegate();
+
+        //--关闭等待窗体 
+        public void WaitClose()
+        {
+            //同步到主线程上
+            if (waitMess.InvokeRequired)
+                waitMess.Invoke(new CloseFormDelegate(DoCloseJob));
+            else
+                DoCloseJob();
+        }
+
+        private void DoCloseJob()
+        {
+            try
+            {
+                if (!waitMess.IsDisposed)
+                {
+                    if (waitMess.Created)
+                    {
+                        sFlog = true;
+                        waitMess.Close();
+                    }
+                }
+            }
+            catch (System.Threading.ThreadAbortException Err)
+            {
+                MessageBox.Show(Err.Message);
+            }
+        }
+        #endregion 等待窗口
+
+        private void btnDelete_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                //-----modify by majie----------
+                if (olvFunction.SelectedObjects == null || olvFunction.Items.Count == 0)
+                { return; }
+                DialogResult rtn = MessageBox.Show("Delete this function?", "Confirm Deletion", MessageBoxButtons.YesNo);
+                if (rtn == DialogResult.Yes)
+                {
+                    for (int i = 0; i < _dt.Rows.Count; i++)
+                    {
+                        foreach (Object olv in olvFunction.SelectedObjects)
+                        {
+                            if (olvColumn33.GetValue(olv).ToString() == _dt.Rows[i][33].ToString())
+                            {
+                                if (dicCustomValue.ContainsKey(Convert.ToInt32(olvColumn33.GetValue(olv).ToString())))
+                                    dicCustomValue.Remove(Convert.ToInt32(olvColumn33.GetValue(olv).ToString()));
+                                lstdeleteCRFunctionid.Add(Convert.ToInt32(olvColumn33.GetValue(olv).ToString()));
+                                _dt.Rows.Remove(_dt.Rows[i]);
+                            }
+                        }
+                    }
+                    olvFunction.DataSource = _dt;
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+            }
+        }
+
+        private void btnEdit_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (olvFunction.SelectedObject == null) return;
+                HealthImpact healthImpact = new HealthImpact();
+                //int currentIndex = olvFunction.SelectedIndex;
+                healthImpact.EndpointGroup = olvcEndpointGroup.GetValue(olvFunction.SelectedObject).ToString();
+                healthImpact.Endpoint = olvcEndpoint.GetValue(olvFunction.SelectedObject).ToString();
+                healthImpact.Pollutant = olvcPollutant.GetValue(olvFunction.SelectedObject).ToString();
+                healthImpact.Metric = olvColumn3.GetValue(olvFunction.SelectedObject).ToString();
+                healthImpact.SeasonalMetric = olvColumn4.GetValue(olvFunction.SelectedObject).ToString();
+                healthImpact.MetricStatistis = olvColumn5.GetValue(olvFunction.SelectedObject).ToString().TrimEnd();
+                healthImpact.Author = olvColumn6.GetValue(olvFunction.SelectedObject).ToString();
+                healthImpact.Year = olvColumn7.GetValue(olvFunction.SelectedObject).ToString();
+                healthImpact.LocationName = olvColumn8.GetValue(olvFunction.SelectedObject).ToString();
+                healthImpact.Location = olvColumn9.GetValue(olvFunction.SelectedObject).ToString();
+                healthImpact.OtherPollutant = olvColumn10.GetValue(olvFunction.SelectedObject).ToString();
+                healthImpact.Qualifier = olvColumn11.GetValue(olvFunction.SelectedObject).ToString();
+                healthImpact.Reference = olvColumn12.GetValue(olvFunction.SelectedObject).ToString();
+                healthImpact.Race = olvColumn13.GetValue(olvFunction.SelectedObject).ToString();
+                healthImpact.Ethnicity = olvColumn14.GetValue(olvFunction.SelectedObject).ToString();
+                healthImpact.Gender = olvColumn15.GetValue(olvFunction.SelectedObject).ToString();
+                healthImpact.StartAge = olvColumn16.GetValue(olvFunction.SelectedObject).ToString();
+                healthImpact.EndAge = olvColumn17.GetValue(olvFunction.SelectedObject).ToString();
+                healthImpact.Function = olvColumn18.GetValue(olvFunction.SelectedObject).ToString();
+                healthImpact.BaselineIncidenceFunction = olvColumn19.GetValue(olvFunction.SelectedObject).ToString();
+                healthImpact.Beta = olvColumn20.GetValue(olvFunction.SelectedObject).ToString();
+                healthImpact.BetaDistribution = olvColumn21.GetValue(olvFunction.SelectedObject).ToString();
+                healthImpact.BetaParameter1 = olvColumn22.GetValue(olvFunction.SelectedObject).ToString();
+                healthImpact.BetaParameter2 = olvColumn23.GetValue(olvFunction.SelectedObject).ToString();
+                healthImpact.AConstantValue = olvColumn24.GetValue(olvFunction.SelectedObject).ToString();
+                healthImpact.AConstantDescription = olvColumn25.GetValue(olvFunction.SelectedObject).ToString();
+                healthImpact.BConstantValue = olvColumn26.GetValue(olvFunction.SelectedObject).ToString();
+                healthImpact.BConstantDescription = olvColumn27.GetValue(olvFunction.SelectedObject).ToString();
+                healthImpact.CConstantValue = olvColumn28.GetValue(olvFunction.SelectedObject).ToString();
+                healthImpact.CConstantDescription = olvColumn29.GetValue(olvFunction.SelectedObject).ToString();
+                healthImpact.Incidence = olvColumn30.GetValue(olvFunction.SelectedObject).ToString();
+                healthImpact.Prevalence = olvColumn31.GetValue(olvFunction.SelectedObject).ToString();
+                healthImpact.Variable = olvColumn32.GetValue(olvFunction.SelectedObject).ToString();
+                // 对象赋值
+                if (olvColumn21.GetValue(olvFunction.SelectedObject).ToString() == "Custom" && Convert.ToInt32(olvColumn33.GetValue(olvFunction.SelectedObject).ToString()) > 0)
+                {
+                    if (dicCustomValue.ContainsKey(Convert.ToInt32(olvColumn33.GetValue(olvFunction.SelectedObject).ToString())))
+                        listCustomValue = dicCustomValue[Convert.ToInt32(olvColumn33.GetValue(olvFunction.SelectedObject).ToString())];
+                    else
+                    {
+                        ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                        DataSet ds = new DataSet();
+                        string commandText = string.Format("select Vvalue from CRFUNCTIONCUSTOMENTRIES where CRFUNCTIONID={0}", Convert.ToInt32(olvColumn33.GetValue(olvFunction.SelectedObject).ToString()));
+                        ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+                        List<double> listCustom = new List<double>();
+                        for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                        {
+                            listCustom.Add(Convert.ToDouble(ds.Tables[0].Rows[i][0]));
+                        }
+                        listCustomValue = listCustom;
+                    }
+                }
+                else if (olvColumn21.GetValue(olvFunction.SelectedObject).ToString() == "Custom" && Convert.ToInt32(olvColumn33.GetValue(olvFunction.SelectedObject).ToString()) < 0)
+                {
+                    if (dicCustomValue.ContainsKey(Convert.ToInt32(olvColumn33.GetValue(olvFunction.SelectedObject).ToString())))
+                        listCustomValue = dicCustomValue[Convert.ToInt32(olvColumn33.GetValue(olvFunction.SelectedObject).ToString())];
+                }
+                else
+                    listCustomValue = new List<double>();
+                if (_dt.Rows.Count == 0) { return; }
+                HealthImpactFunctionOfUser_defined frm = new HealthImpactFunctionOfUser_defined(txtHealthImpactFunction.Text, healthImpact, listCustomValue);
+                DialogResult rth = frm.ShowDialog();
+                if (rth != DialogResult.OK) { return; }
+                for (int i = 0; i < _dt.Rows.Count; i++)
+                {
+                    if (_dt.Rows[i][33].ToString() == olvColumn33.GetValue(olvFunction.SelectedObject).ToString())
+                    {
+                        _dt.Rows[i][0] = frm.HealthImpacts.EndpointGroup;
+                        _dt.Rows[i][1] = frm.HealthImpacts.Endpoint;
+                        _dt.Rows[i][2] = frm.HealthImpacts.Pollutant;
+                        _dt.Rows[i][3] = frm.HealthImpacts.Metric;
+                        _dt.Rows[i][4] = frm.HealthImpacts.SeasonalMetric;
+                        _dt.Rows[i][5] = frm.HealthImpacts.MetricStatistis;
+                        _dt.Rows[i][6] = frm.HealthImpacts.Author;
+                        _dt.Rows[i][7] = frm.HealthImpacts.Year;
+                        _dt.Rows[i][8] = frm.HealthImpacts.LocationName;
+                        _dt.Rows[i][9] = frm.HealthImpacts.Location;
+                        _dt.Rows[i][10] = frm.HealthImpacts.OtherPollutant;
+                        _dt.Rows[i][11] = frm.HealthImpacts.Qualifier;
+                        _dt.Rows[i][12] = frm.HealthImpacts.Reference;
+                        _dt.Rows[i][13] = frm.HealthImpacts.Race;
+                        _dt.Rows[i][14] = frm.HealthImpacts.Ethnicity;
+                        _dt.Rows[i][15] = frm.HealthImpacts.Gender;
+                        _dt.Rows[i][16] = frm.HealthImpacts.StartAge;
+                        _dt.Rows[i][17] = frm.HealthImpacts.EndAge;
+                        _dt.Rows[i][18] = frm.HealthImpacts.Function;
+                        _dt.Rows[i][19] = frm.HealthImpacts.BaselineIncidenceFunction;
+                        _dt.Rows[i][20] = frm.HealthImpacts.Beta;
+                        _dt.Rows[i][21] = frm.HealthImpacts.BetaDistribution;
+                        _dt.Rows[i][22] = frm.HealthImpacts.BetaParameter1;
+                        _dt.Rows[i][23] = frm.HealthImpacts.BetaParameter2;
+                        _dt.Rows[i][24] = frm.HealthImpacts.AConstantValue;
+                        _dt.Rows[i][25] = frm.HealthImpacts.AConstantDescription;
+                        _dt.Rows[i][26] = frm.HealthImpacts.BConstantValue;
+                        _dt.Rows[i][27] = frm.HealthImpacts.BConstantDescription;
+                        _dt.Rows[i][28] = frm.HealthImpacts.CConstantValue;
+                        _dt.Rows[i][29] = frm.HealthImpacts.CConstantDescription;
+                        _dt.Rows[i][30] = frm.HealthImpacts.Incidence;
+                        _dt.Rows[i][31] = frm.HealthImpacts.Prevalence;
+                        _dt.Rows[i][32] = frm.HealthImpacts.Variable;
+                        _dt.Rows[i][33] = Convert.ToInt32(olvColumn33.GetValue(olvFunction.SelectedObject).ToString());
+                        if (frm.HealthImpacts.BetaDistribution == "Custom" && frm.listCustom.Count > 0)
+                        {
+                            if (dicCustomValue.ContainsKey(Convert.ToInt32(olvColumn33.GetValue(olvFunction.SelectedObject).ToString())))
+                                dicCustomValue.Remove(Convert.ToInt32(olvColumn33.GetValue(olvFunction.SelectedObject).ToString()));
+                            dicCustomValue.Add(Convert.ToInt32(olvColumn33.GetValue(olvFunction.SelectedObject).ToString()), frm.listCustom);
+                        }
+                    }
+                }
+                olvFunction.DataSource = _dt;
+                olvFunction.SelectedItem.ForeColor = Color.Red;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+            }
+        }
+
+        private void btnCancel_Click(object sender, EventArgs e)
+        {
+            this.DialogResult = DialogResult.Cancel;
+        }
+
+        private void btnOK_Click(object sender, EventArgs e)
+        {
+            //
+        }
+
+        DataTable _dt = new DataTable();
+        DataTable _dtEndpointGroup = new DataTable();
+        DataTable _dtPollutant = new DataTable();
+
+        private void HealthImpactDataSetDefinition_Load(object sender, EventArgs e)
+        {
+            try
+            {
+                ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                DataSet ds = new DataSet();
+                string commandText = string.Empty;
+                if (_datasetID != -1)
+                {//编辑
+                    commandText = string.Format("select crfunctiondatasetname from crfunctiondatasets where crfunctiondatasetid={0}", _datasetID);
+                    txtHealthImpactFunction.Text = Convert.ToString(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
+                    //commandText = string.Format("select crfunctiondatasetid from crfunctiondatasets where crfunctiondatasetname='{0}' and setupid={1}", _datasetID, CommonClass.ManageSetup.SetupID);
+                    //object obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+                    //int crfunctionDataSetID = int.Parse(obj.ToString());
+                    commandText = string.Format("select b.endpointgroupname,c.endpointname,d.pollutantname,e.metricname,f.seasonalmetricname,case when Metricstatistic=0 then 'None'  when Metricstatistic=1 then 'Mean' when Metricstatistic=2 then 'Median' when Metricstatistic=3 then 'Max' when Metricstatistic=4 then 'Min' when Metricstatistic=5 then 'Sum'  END as MetricstatisticName,author,yyear,g.locationtypename,location,otherpollutants,qualifier,reference,race,ethnicity,gender,startage,endage,h.functionalformtext,i.functionalformtext,beta,distbeta,p1beta,p2beta,a,namea,b,nameb,c,namec,j.incidencedatasetname,k.incidencedatasetname,l.setupvariabledatasetname as variabeldatasetname,CRFUNCTIONID from crfunctions a join endpointgroups b on (a.ENDPOINTGROUPID=b.ENDPOINTGROUPID) join endpoints c on (a.endpointid=c.endpointid) join pollutants d on (a.pollutantid=d.pollutantid)join metrics e on (a.metricid=e.metricid) left join seasonalmetrics f on (a.seasonalmetricid=f.seasonalmetricid) left join locationtype g on (a.locationtypeid=g.locationtypeid) join functionalforms h on (a.functionalformid=h.functionalformid) join baselinefunctionalforms i on (a.baselinefunctionalformid=i.functionalformid) left join incidencedatasets j on (a.incidencedatasetid=j.incidencedatasetid) left join incidencedatasets k on (a.prevalencedatasetid=k.incidencedatasetid) left join setupvariabledatasets l on (a.variabledatasetid=l.setupvariabledatasetid) where CRFUNCTIONDATASETID={0}", _datasetID);
+                    ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+                    olvFunction.DataSource = ds.Tables[0];
+                    _dt = ds.Tables[0];
+                    //int i = _dt.Rows.Count;
+                    cboFilterEndpointGroup.Items.Add("All");
+                    cboFilterPollutants.Items.Add("All");
+                    int dtRow = _dt.Rows.Count;
+                    string strTableName = string.Empty;
+                    string strPolluantName = string.Empty;
+                    for (int i = 0; i < dtRow; i++)
+                    {
+                        strTableName = _dt.Rows[i][0].ToString();
+                        if (!cboFilterEndpointGroup.Items.Contains(strTableName))
+                        {
+                            cboFilterEndpointGroup.Items.Add(strTableName);
+
+                        }
+
+                        strPolluantName = _dt.Rows[i][2].ToString();
+                        if (!cboFilterPollutants.Items.Contains(strPolluantName))
+                        {
+                            cboFilterPollutants.Items.Add(strPolluantName);
+
+                        }
+                    }
+                }
+                else
+                {//增加
+                    commandText = string.Format("select b.endpointgroupname,c.endpointname,d.pollutantname,e.metricname,f.seasonalmetricname,case when Metricstatistic=0 then 'None'  when Metricstatistic=1 then 'Mean' when Metricstatistic=2 then 'Median' when Metricstatistic=3 then 'Max' when Metricstatistic=4 then 'Min' when Metricstatistic=5 then 'Sum'  END as MetricstatisticName,author,yyear,g.locationtypename,location,otherpollutants,qualifier,reference,race,ethnicity,gender,startage,endage,h.functionalformtext,i.functionalformtext,beta,distbeta,p1beta,p2beta,a,namea,b,nameb,c,namec,j.incidencedatasetname,k.incidencedatasetname,l.setupvariabledatasetname as variabeldatasetname,CRFUNCTIONID from crfunctions a join endpointgroups b on (a.ENDPOINTGROUPID=b.ENDPOINTGROUPID) join endpoints c on (a.endpointid=c.endpointid) join pollutants d on (a.pollutantid=d.pollutantid)join metrics e on (a.metricid=e.metricid) left join seasonalmetrics f on (a.seasonalmetricid=f.seasonalmetricid) left join locationtype g on (a.locationtypeid=g.locationtypeid) join functionalforms h on (a.functionalformid=h.functionalformid) join baselinefunctionalforms i on (a.baselinefunctionalformid=i.functionalformid) left join incidencedatasets j on (a.incidencedatasetid=j.incidencedatasetid) left join incidencedatasets k on (a.prevalencedatasetid=k.incidencedatasetid) left join setupvariabledatasets l on (a.variabledatasetid=l.setupvariabledatasetid) where CRFUNCTIONDATASETID=null");
+                    ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+                    olvFunction.DataSource = ds.Tables[0];
+                    _dt = ds.Tables[0];
+
+                    //automatically generated name-increase the number at the end of the name
+                    int number = 0;
+                    int HealthImpactFunctionDatasetID = 0;
+                    do
+                    {
+                        string comText = "select crfunctionDatasetID from crfunctionDataSets where crfunctionDatasetName=" + "'HealthImpactFunctionDataSet" + Convert.ToString(number) + "'";
+                        HealthImpactFunctionDatasetID = Convert.ToInt16(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, comText));
+                        number++;
+                    } while (HealthImpactFunctionDatasetID > 0);
+                    txtHealthImpactFunction.Text = "HealthImpactFunctionDataSet" + Convert.ToString(number - 1);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+            }
+        }
+
+        private void btnOK_Click_1(object sender, EventArgs e)
+        {
+            ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+            DataSet ds = new DataSet();
+            string commandText = string.Empty;
+            try
+            {
+                if (_datasetID == -1)
+                {
+                    commandText = string.Format("select * from  CRFunctionDataSets where SetupID={0}", CommonClass.ManageSetup.SetupID);
+                    ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+                    int dataSetNameCount = ds.Tables[0].Rows.Count;
+                    for (int dataSetNameRow = 0; dataSetNameRow < dataSetNameCount; dataSetNameRow++)
+                    {
+                        if (txtHealthImpactFunction.Text == ds.Tables[0].Rows[dataSetNameRow]["CRFunctionDataSetName"].ToString())
+                        {
+                            MessageBox.Show("This health impact function dataset name is already in use. Please enter a different name.");
+                            return;
+                        }
+                    }
+                    if (txtHealthImpactFunction.Text == string.Empty)
+                    {
+                        MessageBox.Show("Please input a name for the health impact function dataset.");
+                        return;
+                    }
+                    commandText = string.Format("select max(CRFUNCTIONDATASETID) from CRFunctionDatasets");
+                    object obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+                    int crFunctionDataSetID = int.Parse(obj.ToString()) + 1;
+                    commandText = string.Format("insert into CRFunctionDataSets values ({0},{1},'{2}','F')", crFunctionDataSetID, CommonClass.ManageSetup.SetupID, txtHealthImpactFunction.Text.Replace("'", "''"));
+                    int rth = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+
+                    //commandText = string.Format("select CRFunctionDatasetID from CRFunctionDataSets where CRFunctionDataSetName='{0}'", txtHealthImpactFunction.Text);
+                    //obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+                    //int CRFunctionDataSetID = int.Parse(obj.ToString());
+
+                    Dictionary<string, int> dicEndpointGroup = new Dictionary<string, int>();
+                    commandText = "select EndpointGroupID,LOWER(EndpointGroupName) from EndpointGroups ";
+                    DataSet dsEndpointGroup = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+                    foreach (DataRow drEndpointGroup in dsEndpointGroup.Tables[0].Rows)
+                    {
+                        if (!dicEndpointGroup.ContainsKey(drEndpointGroup["LOWER"].ToString()))
+                        dicEndpointGroup.Add(drEndpointGroup["LOWER"].ToString(), Convert.ToInt32(drEndpointGroup["EndpointGroupID"]));
+                    }
+
+                    Dictionary<string, int> dicPollutant = new Dictionary<string, int>();
+                    commandText = string.Format("select PollutantID,LOWER(PollutantName) from Pollutants where SetupID={0}", CommonClass.ManageSetup.SetupID);
+                    DataSet dsPollutant = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+                    foreach (DataRow drPollutant in dsPollutant.Tables[0].Rows)
+                    {
+                        if (!dicPollutant.ContainsKey(drPollutant["LOWER"].ToString()))
+                        dicPollutant.Add(drPollutant["LOWER"].ToString(), Convert.ToInt32(drPollutant["PollutantID"]));
+                    }
+
+                    Dictionary<string, string> dicIncidence = new Dictionary<string, string>();
+                    commandText = string.Format("select IncidenceDataSetID,LOWER(IncidenceDataSetName) from IncidenceDataSets where SetupID={0}", CommonClass.ManageSetup.SetupID);
+                    DataSet dsIncidence = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+                    foreach (DataRow drIncidence in dsIncidence.Tables[0].Rows)
+                    {
+                        if (!dicIncidence.ContainsKey(drIncidence["LOWER"].ToString()))
+                        dicIncidence.Add(drIncidence["LOWER"].ToString(), drIncidence["IncidenceDataSetID"].ToString());
+                    }
+
+                    Dictionary<string, int> dicPrevalence = new Dictionary<string, int>();
+                    commandText = string.Format("select IncidenceDataSetID,LOWER(IncidenceDataSetName) from IncidenceDataSets where SetupID={0}", CommonClass.ManageSetup.SetupID);
+                    DataSet dsPrevalence = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+                    foreach (DataRow drPrevalence in dsPrevalence.Tables[0].Rows)
+                    {
+                        if (!dicPrevalence.ContainsKey(drPrevalence["LOWER"].ToString()))
+                        dicPrevalence.Add(drPrevalence["LOWER"].ToString(), Convert.ToInt32(drPrevalence["IncidenceDataSetID"].ToString()));
+                    }
+
+                    Dictionary<string, string> dicVariable = new Dictionary<string, string>();
+                    commandText = string.Format("select SetupVariableDataSetID,LOWER(SetupVariableDataSetName) from SetupVariableDataSets where SetupID={0}", CommonClass.ManageSetup.SetupID);
+                    DataSet dsVariable = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+                    foreach (DataRow drVarible in dsVariable.Tables[0].Rows)
+                    {
+                        if (!dicVariable.ContainsKey(drVarible["LOWER"].ToString()))
+                        dicVariable.Add(drVarible["LOWER"].ToString(), drVarible["SetupVariableDataSetID"].ToString());
+                    }
+
+                    Dictionary<string, int> dicBaselineFuntion = new Dictionary<string, int>();
+                    commandText = "select FunctionalFormID,LOWER(FunctionalFormText) from BaselineFunctionalForms";
+                    DataSet dsBaselineFunction = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+                    foreach (DataRow drBaselineFunction in dsBaselineFunction.Tables[0].Rows)
+                    {
+                        if(!dicBaselineFuntion.ContainsKey( drBaselineFunction["LOWER"].ToString()))
+                        dicBaselineFuntion.Add(drBaselineFunction["LOWER"].ToString(), Convert.ToInt32(drBaselineFunction["FunctionalFormID"]));
+                    }
+
+                    Dictionary<string, int> dicFunction = new Dictionary<string, int>();
+                    commandText = "select FunctionalFormID,FunctionalFormText from FunctionalForms";
+                    DataSet dsFunction = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+                    foreach (DataRow drFunction in dsFunction.Tables[0].Rows)
+                    {
+                        if (!dicFunction.ContainsKey(drFunction["FunctionalFormText"].ToString()))
+                            dicFunction.Add(drFunction["FunctionalFormText"].ToString(), Convert.ToInt32(drFunction["FunctionalFormID"].ToString()));
+                    }
+
+                    Dictionary<string, string> dicLocationTypeID = new Dictionary<string, string>();
+                    commandText = string.Format("select LocationTypeID,LOWER(LocationTypeName) from LocationType where SetupID={0}", CommonClass.ManageSetup.SetupID);
+                    DataSet dsLocationType = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+                    foreach (DataRow drLocationType in dsLocationType.Tables[0].Rows)
+                    {
+                        dicLocationTypeID.Add(drLocationType["LOWER"].ToString(), drLocationType["LocationTypeID"].ToString());
+                    }
+                    //---------------------majie若数据库中没有endpointgroup，添加到数据库中，并且加到字典里
+                    for (int i = 0; i < _dt.Rows.Count; i++)
+                    {
+                        DataRow dr = _dt.Rows[i];
+                        commandText = "select endpointGroupID from EndpointGroups where LOWER(EndpointGroupName)='" + dr[0].ToString().ToLower() + "' ";
+                        obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+                        if (obj == null)
+                        {
+                            commandText = "select max(ENDPOINTGROUPID) from ENDPOINTGROUPS";
+                            object endPointGroupID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
+                            commandText = string.Format("insert into EndpointGroups values ({0},'{1}')", endPointGroupID, dr[0].ToString());
+                            fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                            dicEndpointGroup.Add(dr[0].ToString().ToLower(), Convert.ToInt32(endPointGroupID));
+                        }
+                        //pollutant,incidence, Prevalence               
+
+                    }
+                    //--------------------end---------------------------
+                    int dgvRowCount = _dt.Rows.Count;
+                    string undefinePollutant = "";
+                    for (int row = 0; row < dgvRowCount; row++)
+                    {
+                        CommonClass.Connection.Close();
+                        //得到crFunctionID的值
+                        commandText = string.Format("select max(CRFUNCTIONID) from CRFunctions");
+                        obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+                        int CRFunctionID = int.Parse(obj.ToString()) + 1;
+                        int EndpointGroupID = dicEndpointGroup[_dt.Rows[row][0].ToString().ToLower()];
+
+                        commandText = string.Format("select EndpointID from Endpoints where Replace(LOWER(EndpointName),' ','')='{0}' and EndpointGroupID={1}", _dt.Rows[row][1].ToString().ToLower().Replace(" ", ""), dicEndpointGroup[_dt.Rows[row][0].ToString().ToLower()]);
+                        obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+                        if (obj == null)
+                        {
+                            //commandText = "select next value for SEQ_ENDPOINTS FROM RDB$DATABASE";
+                            commandText = "select max(EndPointID) from EndPoints";
+                            obj = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
+                            commandText = string.Format("insert into Endpoints values ({0},{1},'{2}')", obj, dicEndpointGroup[_dt.Rows[row][0].ToString().ToLower()], _dt.Rows[row][1].ToString());
+                            fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                        }
+                        int EndpointID = int.Parse(obj.ToString());
+                        if (!dicPollutant.ContainsKey(_dt.Rows[row][2].ToString().ToLower()))//if the pollutant is not exist
+                        {
+                            if (!undefinePollutant.Contains(_dt.Rows[row][2].ToString()))
+                                undefinePollutant += "'" + _dt.Rows[row][2].ToString() + "', ";
+                            continue;
+                            //MessageBox.Show("Please define the pollutant first.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            //commandText = string.Format("select count(*) from crfunctions where crfunctiondatasetid={0}", CRFunctionDataSetID);
+                            //int count = Convert.ToInt16(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
+                            //if (count <= 0)
+                            //{
+                            //    commandText = string.Format("delete from crfunctiondatasets where crfunctiondatasetid={0}", CRFunctionDataSetID);
+                            //    fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                            //    this.DialogResult = DialogResult.Cancel;
+                            //}
+                            //else
+                            //{
+                            //    this.DialogResult = DialogResult.OK;
+                            //}
+                            //return;
+                        }
+                        int PollutantID = dicPollutant[_dt.Rows[row][2].ToString().ToLower()];
+                        int FunctionID = 0;
+                        if (dicFunction.ContainsKey(_dt.Rows[row][18].ToString()))
+                        { FunctionID = dicFunction[_dt.Rows[row][18].ToString()]; }
+                        else
+                        {
+                            commandText = string.Format("select max(FUNCTIONALFORMID) from FUNCTIONALFORMS");
+                            obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+                            FunctionID = int.Parse(obj.ToString()) + 1;
+                            commandText = string.Format("insert into FUNCTIONALFORMS values ({0},'{1}')", FunctionID, _dt.Rows[row][18].ToString());
+                            rth = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                        }
+                        int BaselineFunctionID = 0;
+                        if (dicBaselineFuntion.ContainsKey(_dt.Rows[row][19].ToString().ToLower()))
+                        {
+                            BaselineFunctionID = dicBaselineFuntion[_dt.Rows[row][19].ToString().ToLower()];
+                        }
+                        else
+                        {
+                            commandText = string.Format("select max(FUNCTIONALFORMID) from BASELINEFUNCTIONALFORMS");
+                            obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+                            BaselineFunctionID = int.Parse(obj.ToString()) + 1;
+                            commandText = string.Format("insert into BASELINEFUNCTIONALFORMS values ({0},'{1}')", BaselineFunctionID, _dt.Rows[row][19].ToString());
+                            rth = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                        }
+                        commandText = string.Format("select MetricID from Metrics where PollutantID={0} and LOWER(MetricName)='{1}'", dicPollutant[_dt.Rows[row][2].ToString().ToLower()], _dt.Rows[row][3].ToString().ToLower());
+                        obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+                        int MetricID = int.Parse(obj.ToString());
+
+                        Dictionary<string, string> dicSeasonalMetric = new Dictionary<string, string>();
+                        commandText = string.Format("select SeasonalMetricID,LOWER(SeasonalMetricName) from SeasonalMetrics where MetricID={0} and LOWER(SeasonalMetricName)='{1}'", MetricID, _dt.Rows[row][4].ToString().ToLower());
+                        DataSet dsSeasonMetric = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+                        foreach (DataRow drSeasonMetric in dsSeasonMetric.Tables[0].Rows)
+                        {
+                            dicSeasonalMetric.Add(drSeasonMetric["LOWER"].ToString(), drSeasonMetric["SeasonalMetricID"].ToString());
+                        }
+                        string SeasonalMetricID = string.Empty;
+                        if (dicSeasonalMetric.Keys.Contains(_dt.Rows[row][4].ToString().ToLower()))
+                            SeasonalMetricID = dicSeasonalMetric[_dt.Rows[row][4].ToString().ToLower()].ToString();
+                        else
+                            SeasonalMetricID = "NULL";
+
+                        string PrevalenceID = string.Empty;
+                        if (dicPrevalence.Keys.Contains(_dt.Rows[row][31].ToString().ToLower()))
+                            PrevalenceID = dicPrevalence[_dt.Rows[row][31].ToString().ToLower()].ToString();
+                        else
+                            PrevalenceID = "NULL";
+
+                        string IncidenceID = string.Empty;
+                        if (dicIncidence.Keys.Contains(_dt.Rows[row][30].ToString().ToLower()))
+                            IncidenceID = dicIncidence[_dt.Rows[row][30].ToString().ToLower()].ToString();
+                        else IncidenceID = "NULL";
+
+                        string VariableID = string.Empty;
+                        if (dicVariable.Keys.Contains(_dt.Rows[row][32].ToString().ToLower()))
+                            VariableID = dicVariable[_dt.Rows[row][32].ToString().ToLower()].ToString();
+                        else VariableID = "NULL";
+
+                        string LocationtypeID = string.Empty;
+                        if (dicLocationTypeID.Keys.Contains(_dt.Rows[row][8].ToString().ToLower()))
+                            LocationtypeID = dicLocationTypeID[_dt.Rows[row][8].ToString().ToLower()].ToString();
+                        else LocationtypeID = "NULL";
+
+                        int MetricStatisticID = 0;
+                        if (_dt.Rows[row][5].ToString().Trim() == "None")
+                            MetricStatisticID = 0;
+                        else if (_dt.Rows[row][5].ToString().Trim() == "Mean")
+                            MetricStatisticID = 1;
+                        else if (_dt.Rows[row][5].ToString().Trim() == "Median")
+                            MetricStatisticID = 2;
+                        else if (_dt.Rows[row][5].ToString().Trim() == "Max")
+                            MetricStatisticID = 3;
+                        else if (_dt.Rows[row][5].ToString().Trim() == "Min")
+                            MetricStatisticID = 4;
+                        else if (_dt.Rows[row][5].ToString().Trim() == "")
+                            MetricStatisticID = 0;
+                        else
+                            MetricStatisticID = 5;
+                        //if (_dt.Rows[row][5].ToString() == "None")
+                        //    MetricStatisticID = 0;
+                        //if (_dt.Rows[row][5].ToString() == "Mean")
+                        //    MetricStatisticID = 1;
+                        //if (_dt.Rows[row][5].ToString() == "Median")
+                        //    MetricStatisticID = 2;
+                        //if (_dt.Rows[row][5].ToString() == "Max")
+                        //    MetricStatisticID = 3;
+                        //if (_dt.Rows[row][5].ToString() == "Min")
+                        //    MetricStatisticID = 4;
+                        //if (_dt.Rows[row][5].ToString() == "Sum")
+                        //    MetricStatisticID = 5;
+                        commandText = string.Format("insert into CRFunctions values({0},{1},{2},{3},{4},{5},{6},{7},'{8}',{9},'{10}','{11}','{12}','{13}','{14}','{15}',{16},{17},{18},{19},{20},{21},{22},'{23}',{24},{25},{26},'{27}',{28},'{29}',{30},'{31}',{32},'{33}',{34},{35})", CRFunctionID, crFunctionDataSetID, EndpointGroupID, EndpointID, PollutantID, MetricID, SeasonalMetricID, MetricStatisticID, _dt.Rows[row][6].ToString().Replace("'", "''"), Convert.ToInt16(_dt.Rows[row][7].ToString()), _dt.Rows[row][9].ToString().Replace("'", "''"), _dt.Rows[row][10].ToString().Replace("'", "''"), _dt.Rows[row][11].ToString().Replace("'", "''"), _dt.Rows[row][12].ToString().Replace("'", "''"), _dt.Rows[row][13].ToString().Replace("'", "''"), _dt.Rows[row][15].ToString().Replace("'", "''"), _dt.Rows[row][16], _dt.Rows[row][17], FunctionID, IncidenceID, PrevalenceID, VariableID, _dt.Rows[row][20], _dt.Rows[row][21].ToString().Replace("'", "''"), _dt.Rows[row][22], _dt.Rows[row][23], _dt.Rows[row][24], _dt.Rows[row][25].ToString().Replace("'", "''"), _dt.Rows[row][26], _dt.Rows[row][27].ToString().Replace("'", "''"), _dt.Rows[row][28], _dt.Rows[row][29].ToString().Replace("'", "''"), BaselineFunctionID, _dt.Rows[row][14].ToString().Replace("'", "''"), 0, LocationtypeID);
+                        rth = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                        if (_dt.Rows[row][21].ToString() == "Custom" && dicCustomValue.ContainsKey(Convert.ToInt32(_dt.Rows[row][33].ToString())) && dicCustomValue[Convert.ToInt32(_dt.Rows[row][33].ToString())].Count > 0)
+                        {
+                            FirebirdSql.Data.FirebirdClient.FbCommand fbCommand = new FirebirdSql.Data.FirebirdClient.FbCommand();
+                            fbCommand.Connection = CommonClass.Connection;
+                            fbCommand.CommandType = CommandType.Text;
+                            fbCommand.Connection.Open();
+                            DataTable dtCustomValue = new DataTable();
+                            DataColumn dc = new DataColumn();
+                            dc.ColumnName = "Value";
+                            dtCustomValue.Columns.Add(dc);
+                            foreach (double value in dicCustomValue[Convert.ToInt32(_dt.Rows[row][33])])
+                            {
+                                DataRow dr = dtCustomValue.NewRow();
+                                dr["Value"] = value;
+                                dtCustomValue.Rows.Add(dr);
+                            }
+                            int rowCount = dtCustomValue.Rows.Count;
+                            for (int j = 0; j < (rowCount / 125) + 1; j++)
+                            {
+                                commandText = "execute block as declare CRFUNCTIONID int;" + " BEGIN ";
+                                for (int k = 0; k < 125; k++)
+                                {
+                                    if (j * 125 + k < rowCount)
+                                    {
+                                        commandText = commandText + string.Format(" insert into CRFUNCTIONCUSTOMENTRIES values ({0},{1});", CRFunctionID, dtCustomValue.Rows[j * 125 + k][0]);
+                                    }
+                                    else
+                                        continue;
+                                }
+                                commandText = commandText + "END";
+                                fbCommand.CommandText = commandText;
+                                fbCommand.ExecuteNonQuery();
+                            }
+                        }
+                        //if (_dt.Rows[row][21].ToString() == "Custom" && listCustomValue.Count == 0)
+                        //{ continue; }
+                    }
+                    if (undefinePollutant.Length > 2)
+                    {
+                        undefinePollutant = undefinePollutant.Substring(0, undefinePollutant.Length - 2);
+                        MessageBox.Show("Please define " + undefinePollutant + ".", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                }
+                else
+                {
+                    //commandText = string.Format("select CRFunctionDataSetID from CRFunctionDataSets where CRFunctionDataSetName='{0}' and setupid={1}", _datasetID.Replace("'", "''"), CommonClass.ManageSetup.SetupID);
+                    //object obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+                    //int CRFunctionDataSetID = int.Parse(obj.ToString());
+                    commandText = string.Format("update CRFunctionDataSets set CRFunctionDataSetName='{0}' where CRFunctionDataSetID={1}", txtHealthImpactFunction.Text.Replace("'", "''"), _datasetID);
+                    fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                    //commandText = string.Format("delete from CRFunctions where CRFunctionDataSetID={0}", currentCRFunctionDataSetID);
+                    //int j = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                    //commandText = string.Format("select next value for SEQ_CRFunctionDatasets from RDB$Database");
+                    // obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+                    //int crFunctionDataSetID = int.Parse(obj.ToString());
+                    //commandText = string.Format("insert into CRFunctionDataSets values ({0},{1},'{2}','F')", crFunctionDataSetID, CommonClass.ManageSetup.SetupID, txtHealthImpactFunction.Text);
+                    //int rth = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+
+                    //commandText = string.Format("select CRFunctionDatasetID from CRFunctionDataSets where CRFunctionDataSetName='{0}'", txtHealthImpactFunction.Text);
+                    //obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+                    //int CRFunctionDataSetID = int.Parse(obj.ToString());
+                    string deleteCRFunctions = "";
+                    foreach (int i in lstdeleteCRFunctionid)
+                    {
+                        deleteCRFunctions += i.ToString() + ",";
+                    }
+                    if (deleteCRFunctions.Length > 1)
+                    {
+                        deleteCRFunctions = "(" + deleteCRFunctions.Substring(0, deleteCRFunctions.Length - 1) + ")";
+                        commandText = string.Format("delete from CRFunctions where crfunctionid in {0}", deleteCRFunctions);
+                        fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                    }
+
+                    Dictionary<string, int> dicEndpointGroup = new Dictionary<string, int>();
+                    commandText = "select EndpointGroupID,LOWER(EndpointGroupName) from EndpointGroups ";
+                    DataSet dsEndpointGroup = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+                    foreach (DataRow drEndpointGroup in dsEndpointGroup.Tables[0].Rows)
+                    {
+                        if (!dicEndpointGroup.ContainsKey(drEndpointGroup["LOWER"].ToString()))
+                        dicEndpointGroup.Add(drEndpointGroup["LOWER"].ToString(), Convert.ToInt32(drEndpointGroup["EndpointGroupID"]));
+                    }
+
+                    Dictionary<string, int> dicPollutant = new Dictionary<string, int>();
+                    commandText = string.Format("select PollutantID,LOWER(PollutantName) from Pollutants where SetupID={0}", CommonClass.ManageSetup.SetupID);
+                    DataSet dsPollutant = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+                    foreach (DataRow drPollutant in dsPollutant.Tables[0].Rows)
+                    {
+                        if (!dicPollutant.ContainsKey(drPollutant["LOWER"].ToString()))
+                        dicPollutant.Add(drPollutant["LOWER"].ToString(), Convert.ToInt32(drPollutant["PollutantID"]));
+                    }
+
+                    Dictionary<string, string> dicIncidence = new Dictionary<string, string>();
+                    commandText = string.Format("select IncidenceDataSetID,LOWER(IncidenceDataSetName) from IncidenceDataSets where SetupID={0}", CommonClass.ManageSetup.SetupID);
+                    DataSet dsIncidence = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+                    foreach (DataRow drIncidence in dsIncidence.Tables[0].Rows)
+                    {
+                        if (!dicIncidence.ContainsKey(drIncidence["LOWER"].ToString()))
+                        dicIncidence.Add(drIncidence["LOWER"].ToString(), drIncidence["IncidenceDataSetID"].ToString());
+                    }
+
+                    Dictionary<string, int> dicPrevalence = new Dictionary<string, int>();
+                    commandText = string.Format("select IncidenceDataSetID,LOWER(IncidenceDataSetName) from IncidenceDataSets where SetupID={0}", CommonClass.ManageSetup.SetupID);
+                    DataSet dsPrevalence = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+                    foreach (DataRow drPrevalence in dsPrevalence.Tables[0].Rows)
+                    {
+                        if(!dicPrevalence.ContainsKey(drPrevalence["LOWER"].ToString()))
+                        dicPrevalence.Add(drPrevalence["LOWER"].ToString(), Convert.ToInt32(drPrevalence["IncidenceDataSetID"].ToString()));
+                    }
+
+                    Dictionary<string, string> dicVariable = new Dictionary<string, string>();
+                    commandText = string.Format("select SetupVariableDataSetID,LOWER(SetupVariableDataSetName) from SetupVariableDataSets where SetupID={0}", CommonClass.ManageSetup.SetupID);
+                    DataSet dsVariable = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+                    foreach (DataRow drVarible in dsVariable.Tables[0].Rows)
+                    {
+                        if(!dicVariable.ContainsKey(drVarible["LOWER"].ToString()))
+                        dicVariable.Add(drVarible["LOWER"].ToString(), drVarible["SetupVariableDataSetID"].ToString());
+                    }
+
+                    Dictionary<string, int> dicBaselineFuntion = new Dictionary<string, int>();
+                    commandText = "select FunctionalFormID,LOWER(FunctionalFormText) from BaselineFunctionalForms";
+                    DataSet dsBaselineFunction = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+                    foreach (DataRow drBaselineFunction in dsBaselineFunction.Tables[0].Rows)
+                    {
+                        if (!dicBaselineFuntion.ContainsKey(drBaselineFunction["LOWER"].ToString()))
+                        dicBaselineFuntion.Add(drBaselineFunction["LOWER"].ToString(), Convert.ToInt32(drBaselineFunction["FunctionalFormID"]));
+                    }
+
+                    Dictionary<string, int> dicFunction = new Dictionary<string, int>();
+                    commandText = "select FunctionalFormID,FunctionalFormText from FunctionalForms";
+                    DataSet dsFunction = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+                    foreach (DataRow drFunction in dsFunction.Tables[0].Rows)
+                    {
+                        if (!dicFunction.ContainsKey(drFunction["FunctionalFormText"].ToString()))
+                            dicFunction.Add(drFunction["FunctionalFormText"].ToString(), Convert.ToInt32(drFunction["FunctionalFormID"].ToString()));
+                    }
+
+                    Dictionary<string, string> dicLocationTypeID = new Dictionary<string, string>();
+                    commandText = string.Format("select LocationTypeID,LOWER(LocationTypeName) from LocationType where SetupID={0}", CommonClass.ManageSetup.SetupID);
+                    DataSet dsLocationType = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+                    foreach (DataRow drLocationType in dsLocationType.Tables[0].Rows)
+                    {
+                        dicLocationTypeID.Add(drLocationType["LOWER"].ToString(), drLocationType["LocationTypeID"].ToString());
+                    }
+                    //---------------------majie若数据库中没有endpointgroup，添加到数据库中，并且加到字典里
+                    object obj = null;
+                    for (int m = 0; m < _dt.Rows.Count; m++)
+                    {
+                        DataRow dr = _dt.Rows[m];
+                        commandText = "select endpointGroupID from EndpointGroups where LOWER(EndpointGroupName)='" + dr[0].ToString().ToLower() + "' ";
+                        obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+                        if (obj == null)
+                        {
+                            commandText = "select max(ENDPOINTGROUPID) from ENDPOINTGROUPS";
+                            object endPointGroupID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
+                            commandText = string.Format("insert into EndpointGroups values ({0},'{1}')", endPointGroupID, dr[0].ToString());
+                            fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                            dicEndpointGroup.Add(dr[0].ToString().ToLower(), Convert.ToInt32(endPointGroupID));
+                        }
+                        //pollutant,incidence, Prevalence               
+
+                    }
+                    //--------------------end---------------------------
+                    int dgvRowCount = _dt.Rows.Count;
+                    for (int row = 0; row < dgvRowCount; row++)
+                    {
+                        CommonClass.Connection.Close();
+                        //得到crFunctionID的值
+                        commandText = string.Format("select max(CRFUNCTIONID) from CRFunctions");
+                        obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+                        int CRFunctionID = int.Parse(obj.ToString()) + 1;
+                        int EndpointGroupID = dicEndpointGroup[_dt.Rows[row][0].ToString().ToLower()];
+
+                        commandText = string.Format("select EndpointID from Endpoints where Replace(LOWER(EndpointName),' ','')='{0}' and EndpointGroupID={1}", _dt.Rows[row][1].ToString().ToLower().Replace(" ", ""), dicEndpointGroup[_dt.Rows[row][0].ToString().ToLower()]);
+                        obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+                        if (obj == null)
+                        {
+                            commandText = "select max(ENDPOINTID) from ENDPOINTS";
+                            obj = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
+                            commandText = string.Format("insert into Endpoints values ({0},{1},'{2}')", obj, dicEndpointGroup[_dt.Rows[row][0].ToString().ToLower()], _dt.Rows[row][1].ToString());
+                            fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                        }
+                        int EndpointID = int.Parse(obj.ToString());
+                        int PollutantID = dicPollutant[_dt.Rows[row][2].ToString().ToLower()];
+                        int FunctionID = 0;
+                        if (dicFunction.ContainsKey(_dt.Rows[row][18].ToString()))
+                        { FunctionID = dicFunction[_dt.Rows[row][18].ToString()]; }
+                        else
+                        {
+                            commandText = string.Format("select max(FUNCTIONALFORMID) from FUNCTIONALFORMS");
+                            obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+                            FunctionID = int.Parse(obj.ToString()) + 1;
+                            commandText = string.Format("insert into FUNCTIONALFORMS values ({0},'{1}')", FunctionID, _dt.Rows[row][18].ToString());
+                            fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                        }
+                        int BaselineFunctionID = 0;
+                        if (dicBaselineFuntion.ContainsKey(_dt.Rows[row][19].ToString().ToLower()))
+                        {
+                            BaselineFunctionID = dicBaselineFuntion[_dt.Rows[row][19].ToString().ToLower()];
+                        }
+                        else
+                        {
+                            commandText = string.Format("select max(FUNCTIONALFORMID) from BASELINEFUNCTIONALFORMS");
+                            obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+                            BaselineFunctionID = int.Parse(obj.ToString()) + 1;
+                            commandText = string.Format("insert into BASELINEFUNCTIONALFORMS values ({0},'{1}')", BaselineFunctionID, _dt.Rows[row][19].ToString());
+                            fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                        }
+                        commandText = string.Format("select MetricID from Metrics where PollutantID={0} and LOWER(MetricName)='{1}'", dicPollutant[_dt.Rows[row][2].ToString().ToLower()], _dt.Rows[row][3].ToString().ToLower());
+                        obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+                        int MetricID = int.Parse(obj.ToString());
+
+                        Dictionary<string, string> dicSeasonalMetric = new Dictionary<string, string>();
+                        commandText = string.Format("select SeasonalMetricID,LOWER(SeasonalMetricName) from SeasonalMetrics where MetricID={0} and LOWER(SeasonalMetricName)='{1}'", MetricID, _dt.Rows[row][4].ToString().ToLower());
+                        DataSet dsSeasonMetric = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+                        foreach (DataRow drSeasonMetric in dsSeasonMetric.Tables[0].Rows)
+                        {
+                            dicSeasonalMetric.Add(drSeasonMetric["LOWER"].ToString(), drSeasonMetric["SeasonalMetricID"].ToString());
+                        }
+                        string SeasonalMetricID = string.Empty;
+                        if (dicSeasonalMetric.Keys.Contains(_dt.Rows[row][4].ToString().ToLower()))
+                            SeasonalMetricID = dicSeasonalMetric[_dt.Rows[row][4].ToString().ToLower()].ToString();
+                        else
+                            SeasonalMetricID = "NULL";
+
+                        string PrevalenceID = string.Empty;
+                        if (dicPrevalence.Keys.Contains(_dt.Rows[row][31].ToString().ToLower()))
+                            PrevalenceID = dicPrevalence[_dt.Rows[row][31].ToString().ToLower()].ToString();
+                        else
+                            PrevalenceID = "NULL";
+
+                        string IncidenceID = string.Empty;
+                        if (dicIncidence.Keys.Contains(_dt.Rows[row][30].ToString().ToLower()))
+                            IncidenceID = dicIncidence[_dt.Rows[row][30].ToString().ToLower()].ToString();
+                        else IncidenceID = "NULL";
+
+                        string VariableID = string.Empty;
+                        if (dicVariable.Keys.Contains(_dt.Rows[row][32].ToString().ToLower()))
+                            VariableID = dicVariable[_dt.Rows[row][32].ToString().ToLower()].ToString();
+                        else VariableID = "NULL";
+
+                        string LocationtypeID = string.Empty;
+                        if (dicLocationTypeID.Keys.Contains(_dt.Rows[row][8].ToString().ToLower()))
+                            LocationtypeID = dicLocationTypeID[_dt.Rows[row][8].ToString().ToLower()].ToString();
+                        else LocationtypeID = "NULL";
+
+                        int MetricStatisticID = 0;
+                        if (_dt.Rows[row][5].ToString().Trim() == "None")
+                            MetricStatisticID = 0;
+                        else if (_dt.Rows[row][5].ToString().Trim() == "Mean")
+                            MetricStatisticID = 1;
+                        else if (_dt.Rows[row][5].ToString().Trim() == "Median")
+                            MetricStatisticID = 2;
+                        else if (_dt.Rows[row][5].ToString().Trim() == "Max")
+                            MetricStatisticID = 3;
+                        else if (_dt.Rows[row][5].ToString().Trim() == "Min")
+                            MetricStatisticID = 4;
+                        else if (_dt.Rows[row][5].ToString().Trim() == "")
+                            MetricStatisticID = 0;
+                        else
+                            MetricStatisticID = 5;
+                        if (Convert.ToInt16(_dt.Rows[row][33].ToString()) > 0)
+                        {
+                            commandText = string.Format("update CRFunctions set CRFunctionDataSetID={0},EndpointGroupID={1},EndpointID={2},PollutantID={3},MetricID={4},SeasonalMetricID={5},METRICSTATISTIC={6},AUTHOR='{7}',YYEAR={8},LOCATION='{9}',OTHERPOLLUTANTS='{10}',QUALIFIER='{11}',REFERENCE='{12}',RACE='{13}',GENDER='{14}',STARTAGE={15},ENDAGE={16},FUNCTIONALFORMID={17},INCIDENCEDATASETID={18},PREVALENCEDATASETID={19},VARIABLEDATASETID={20},BETA={21},DISTBETA='{22}',P1BETA={23},P2BETA={24},A={25},NAMEA='{26}',B={27},NAMEB='{28}',C={29},NAMEC='{30}',BASELINEFUNCTIONALFORMID={31},ETHNICITY='{32}',PERCENTILE={33},LOCATIONTYPEID={34} where CRFunctionID={35}", _datasetID, EndpointGroupID, EndpointID, PollutantID, MetricID, SeasonalMetricID, MetricStatisticID, _dt.Rows[row][6].ToString().Replace("'", "''"), Convert.ToInt16(_dt.Rows[row][7].ToString()), _dt.Rows[row][9].ToString().Replace("'", "''"), _dt.Rows[row][10].ToString().Replace("'", "''"), _dt.Rows[row][11].ToString().Replace("'", "''"), _dt.Rows[row][12].ToString().Replace("'", "''"), _dt.Rows[row][13].ToString().Replace("'", "''"), _dt.Rows[row][15].ToString().Replace("'", "''"), _dt.Rows[row][16], _dt.Rows[row][17], FunctionID, IncidenceID, PrevalenceID, VariableID, _dt.Rows[row][20], _dt.Rows[row][21].ToString().Replace("'", "''"), _dt.Rows[row][22], _dt.Rows[row][23], _dt.Rows[row][24], _dt.Rows[row][25].ToString().Replace("'", "''"), _dt.Rows[row][26], _dt.Rows[row][27].ToString().Replace("'", "''"), _dt.Rows[row][28], _dt.Rows[row][29].ToString().Replace("'", "''"), BaselineFunctionID, _dt.Rows[row][14].ToString().Replace("'", "''"), 0, LocationtypeID, Convert.ToInt32(_dt.Rows[row][33].ToString()));
+                            fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                            if (_dt.Rows[row][21].ToString() == "Custom" && dicCustomValue.ContainsKey(Convert.ToInt32(_dt.Rows[row][33].ToString())) && dicCustomValue[Convert.ToInt32(_dt.Rows[row][33].ToString())].Count > 0)
+                            {
+                                FirebirdSql.Data.FirebirdClient.FbCommand fbCommand = new FirebirdSql.Data.FirebirdClient.FbCommand();
+                                fbCommand.Connection = CommonClass.Connection;
+                                fbCommand.CommandType = CommandType.Text;
+                                fbCommand.Connection.Open();
+                                commandText = "delete from crfunctioncustomentries where crfunctionid =" + _dt.Rows[row][33].ToString();
+                                fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                                DataTable dtCustomValue = new DataTable();
+                                DataColumn dc = new DataColumn();
+                                dc.ColumnName = "Value";
+                                dtCustomValue.Columns.Add(dc);
+                                foreach (double value in dicCustomValue[Convert.ToInt32(_dt.Rows[row][33])])
+                                {
+                                    DataRow dr = dtCustomValue.NewRow();
+                                    dr["Value"] = value;
+                                    dtCustomValue.Rows.Add(dr);
+                                }
+                                int rowCount = dtCustomValue.Rows.Count;
+                                for (int k = 0; k < (rowCount / 125) + 1; k++)
+                                {
+                                    commandText = "execute block as declare CRFUNCTIONID int;" + " BEGIN ";
+                                    for (int t = 0; t < 125; t++)
+                                    {
+                                        if (k * 125 + t < rowCount)
+                                        {
+                                            commandText = commandText + string.Format(" insert into CRFUNCTIONCUSTOMENTRIES values ({0},{1});", Convert.ToInt32(_dt.Rows[row][33].ToString()), dtCustomValue.Rows[k * 125 + t][0]);
+                                        }
+                                        else
+                                            continue;
+                                    }
+                                    commandText = commandText + "END";
+                                    fbCommand.CommandText = commandText;
+                                    fbCommand.ExecuteNonQuery();
+                                }
+                            }
+                        }
+                        else if (Convert.ToInt16(_dt.Rows[row][33].ToString()) < 0)
+                        {
+                            commandText = string.Format("insert into CRFunctions values({0},{1},{2},{3},{4},{5},{6},{7},'{8}',{9},'{10}','{11}','{12}','{13}','{14}','{15}',{16},{17},{18},{19},{20},{21},{22},'{23}',{24},{25},{26},'{27}',{28},'{29}',{30},'{31}',{32},'{33}',{34},{35})", CRFunctionID, _datasetID, EndpointGroupID, EndpointID, PollutantID, MetricID, SeasonalMetricID, MetricStatisticID, _dt.Rows[row][6].ToString().Replace("'", "''"), Convert.ToInt16(_dt.Rows[row][7].ToString()), _dt.Rows[row][9].ToString().Replace("'", "''"), _dt.Rows[row][10].ToString().Replace("'", "''"), _dt.Rows[row][11].ToString().Replace("'", "''"), _dt.Rows[row][12].ToString().Replace("'", "''"), _dt.Rows[row][13].ToString().Replace("'", "''"), _dt.Rows[row][15].ToString().Replace("'", "''"), _dt.Rows[row][16], _dt.Rows[row][17], FunctionID, IncidenceID, PrevalenceID, VariableID, _dt.Rows[row][20], _dt.Rows[row][21].ToString().Replace("'", "''"), _dt.Rows[row][22], _dt.Rows[row][23], _dt.Rows[row][24], _dt.Rows[row][25].ToString().Replace("'", "''"), _dt.Rows[row][26], _dt.Rows[row][27].ToString().Replace("'", "''"), _dt.Rows[row][28], _dt.Rows[row][29].ToString().Replace("'", "''"), BaselineFunctionID, _dt.Rows[row][14].ToString().Replace("'", "''"), 0, LocationtypeID);
+                            fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                            if (_dt.Rows[row][21].ToString() == "Custom" && dicCustomValue.ContainsKey(Convert.ToInt32(_dt.Rows[row][33].ToString())) && dicCustomValue[Convert.ToInt32(_dt.Rows[row][33].ToString())].Count > 0)
+                            {
+                                FirebirdSql.Data.FirebirdClient.FbCommand fbCommand = new FirebirdSql.Data.FirebirdClient.FbCommand();
+                                fbCommand.Connection = CommonClass.Connection;
+                                fbCommand.CommandType = CommandType.Text;
+                                fbCommand.Connection.Open();
+                                commandText = "delete from crfunctioncustomentries where crfunctionid =" + CRFunctionID.ToString();
+                                fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                                DataTable dtCustomValue = new DataTable();
+                                DataColumn dc = new DataColumn();
+                                dc.ColumnName = "Value";
+                                dtCustomValue.Columns.Add(dc);
+                                foreach (double value in dicCustomValue[Convert.ToInt32(_dt.Rows[row][33])])
+                                {
+                                    DataRow dr = dtCustomValue.NewRow();
+                                    dr["Value"] = value;
+                                    dtCustomValue.Rows.Add(dr);
+                                }
+                                int rowCount = dtCustomValue.Rows.Count;
+                                for (int k = 0; k < (rowCount / 125) + 1; k++)
+                                {
+                                    commandText = "execute block as declare CRFUNCTIONID int;" + " BEGIN ";
+                                    for (int t = 0; t < 125; t++)
+                                    {
+                                        if (k * 125 + t < rowCount)
+                                        {
+                                            commandText = commandText + string.Format(" insert into CRFUNCTIONCUSTOMENTRIES values ({0},{1});", CRFunctionID, dtCustomValue.Rows[k * 125 + t][0]);
+                                        }
+                                        else
+                                            continue;
+                                    }
+                                    commandText = commandText + "END";
+                                    fbCommand.CommandText = commandText;
+                                    fbCommand.ExecuteNonQuery();
+                                }
+                            }
+                            //if (_dt.Rows[row][21].ToString() == "Custom" && dicCustomValue[Convert.ToInt32(_dt.Rows[row][33].ToString())].Count == 0)
+                            //{ continue; }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+            }
+            this.DialogResult = DialogResult.OK;
+        }
+
+        private void cboFilterEndpointGroup_SelectedValueChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                ObjectListView olv = olvFunction;
+                if (olv == null || olv.IsDisposed)
+                    return;
+                OLVColumn column = olv.GetColumn("olvcEndpointGroup");
+
+                // Collect all the checked values
+                ArrayList chosenValues = new ArrayList();
+                string selectEndpoint = cboFilterEndpointGroup.GetItemText(cboFilterEndpointGroup.SelectedItem);
+                if (selectEndpoint == "All")
+                {
+                    olvcEndpointGroup.ValuesChosenForFiltering.Clear();
+                    olv.UpdateColumnFiltering();
+                }
+                else
+                {
+                    chosenValues.Add(selectEndpoint);
+                    olvcEndpointGroup.ValuesChosenForFiltering = chosenValues;
+                    olv.UpdateColumnFiltering();
+                }
+                //_dtEndpointGroup = _dt.Clone();
+                //foreach (DataRow dr in _dt.Rows)
+                //{
+                //    if (cboFilterEndpointGroup.SelectedItem == "All")
+                //    {
+                //        _dtEndpointGroup.ImportRow(dr);
+                //    }
+                //    if (cboFilterEndpointGroup.SelectedItem.ToString() == dr[0].ToString())
+                //    {
+                //        _dtEndpointGroup.ImportRow(dr);
+                //    }
+                //}
+                //olvFunction.DataSource = _dtEndpointGroup;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+            }
+        }
+
+        private void cboFilterPollutants_SelectedValueChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                ObjectListView olv = olvFunction;
+                if (olv == null || olv.IsDisposed)
+                    return;
+                OLVColumn column = olv.GetColumn("olvcPollutant");
+
+                // Collect all the checked values
+                ArrayList chosenValues = new ArrayList();
+                string selectEndpoint = cboFilterPollutants.GetItemText(cboFilterPollutants.SelectedItem);
+                if (selectEndpoint == "All")
+                {
+                    olvcPollutant.ValuesChosenForFiltering.Clear();
+                    olv.UpdateColumnFiltering();
+                }
+                else
+                {
+                    chosenValues.Add(selectEndpoint);
+                    olvcPollutant.ValuesChosenForFiltering = chosenValues;
+                    olv.UpdateColumnFiltering();
+                }
+                //_dtPollutant = _dt.Clone();
+                //foreach (DataRow dr in _dt.Rows)
+                //{
+                //    if (cboFilterPollutants.SelectedItem == "All")
+                //    {
+                //        _dtPollutant.ImportRow(dr);
+                //    }
+                //    if (cboFilterPollutants.SelectedItem.ToString() == dr[2].ToString())
+                //    {
+                //        _dtPollutant.ImportRow(dr);
+                //    }
+                //}
+                //olvFunction.DataSource = _dtPollutant;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+            }
+        }
+
+        private void TimedFilter(ObjectListView olv, string txt)
+        {
+            this.TimedFilter(olv, txt, 0);
+        }
+
+        private void TimedFilter(ObjectListView olv, string txt, int matchKind)
+        {
+            TextMatchFilter filter = null;
+            if (!String.IsNullOrEmpty(txt))
+            {
+                switch (matchKind)
+                {
+                    case 0:
+                    default:
+                        filter = TextMatchFilter.Contains(olv, txt);
+                        break;
+                    case 1:
+                        filter = TextMatchFilter.Prefix(olv, txt);
+                        break;
+                    case 2:
+                        filter = TextMatchFilter.Regex(olv, txt);
+                        break;
+                }
+            }
+            // Setup a default renderer to draw the filter matches
+            if (filter == null)
+                olv.DefaultRenderer = null;
+            else
+            {
+                olv.DefaultRenderer = new HighlightTextRenderer(filter);
+
+                // Uncomment this line to see how the GDI+ rendering looks
+                olv.DefaultRenderer = new HighlightTextRenderer { Filter = filter, UseGdiTextRendering = true };
+            }
+
+            Stopwatch stopWatch = new Stopwatch();
+            stopWatch.Start();
+            olv.ModelFilter = filter;
+            stopWatch.Stop();
+
+            IList objects = olv.Objects as IList;
+            if (objects == null)
+                this.toolStripStatusLabel1.Text =
+                    String.Format("Filtered in {0}ms", stopWatch.ElapsedMilliseconds);
+            else
+                this.toolStripStatusLabel1.Text =
+                    String.Format("Filtered {0} items down to {1} items in {2}ms",
+                                  objects.Count,
+                                  olv.Items.Count,
+                                  stopWatch.ElapsedMilliseconds);
+        }
+
+        private void txtFilter_TextChanged_1(object sender, EventArgs e)
+        {
+            this.TimedFilter(this.olvFunction, txtFilter.Text);
+        }
+
+        private void chbGroup_CheckedChanged(object sender, EventArgs e)
+        {
+            ShowGroupsChecked(this.olvFunction, (CheckBox)sender);
+        }
+
+        private void ShowGroupsChecked(ObjectListView olv, CheckBox cb)
+        {
+            if (cb.Checked && olv.View == View.List)
+            {
+                cb.Checked = false;
+                MessageBox.Show("ListView's cannot show groups when in List view.", "Object List View Demo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            else
+            {
+                olv.ShowGroups = cb.Checked;
+                olv.BuildList();
+            }
+        }
+
+        private void btnOutPut_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+                saveFileDialog1.Filter = "CSV File|*.CSV";
+                saveFileDialog1.InitialDirectory = "C:\\";
+                if (saveFileDialog1.ShowDialog() == DialogResult.Cancel)
+                { return; }
+                string fileName = saveFileDialog1.FileName;
+                DataTable dtOut = new DataTable();
+                dtOut.Columns.Add("Endpoint Group", typeof(string));
+                dtOut.Columns.Add("Endpoint", typeof(string));
+                dtOut.Columns.Add("Pollutant", typeof(string));
+                dtOut.Columns.Add("Metric", typeof(string));
+                dtOut.Columns.Add("Seasonal Metric", typeof(string));
+                dtOut.Columns.Add("Metric Statistic", typeof(string));
+                dtOut.Columns.Add("Study Author", typeof(string));
+                dtOut.Columns.Add("Study Year", typeof(int));
+                dtOut.Columns.Add("Study Location Type", typeof(string));
+                dtOut.Columns.Add("Study Location", typeof(string));
+                dtOut.Columns.Add("Other Pollutants", typeof(string));
+                dtOut.Columns.Add("Qualifier", typeof(string));
+                dtOut.Columns.Add("Reference", typeof(string));
+                dtOut.Columns.Add("Race", typeof(string));
+                dtOut.Columns.Add("Ethnicity", typeof(string));
+                dtOut.Columns.Add("Gender", typeof(string));
+                dtOut.Columns.Add("Start Age", typeof(int));
+                dtOut.Columns.Add("End Age", typeof(int));
+                dtOut.Columns.Add("Function", typeof(string));
+                dtOut.Columns.Add("Baseline Function", typeof(string));
+                dtOut.Columns.Add("Beta", typeof(double));
+                dtOut.Columns.Add("Distribution Beta", typeof(string));
+                dtOut.Columns.Add("Parameter 1 Beta", typeof(double));
+                dtOut.Columns.Add("Parameter 2 Beta", typeof(double));
+                dtOut.Columns.Add("A", typeof(double));
+                dtOut.Columns.Add("Name A", typeof(string));
+                dtOut.Columns.Add("B", typeof(double));
+                dtOut.Columns.Add("Name B", typeof(string));
+                dtOut.Columns.Add("C", typeof(double));
+                dtOut.Columns.Add("Name C", typeof(string));
+                dtOut.Columns.Add("Incidence DataSet", typeof(string));
+                dtOut.Columns.Add("Prevalence DataSet", typeof(string));
+                dtOut.Columns.Add("Variable DataSet", typeof(string));
+                FireBirdHelperBase fb = new ESILFireBirdHelper();
+                string commandText = string.Empty;
+                int outputRowsNumber = 50;
+                Dictionary<int, string> dicEndPointGroup = OutputCommonClass.getAllEndPointGroup();
+                Dictionary<int, string> dicEndPoint = OutputCommonClass.getAllEndPoint();
+                Dictionary<int, string> dicFunction = OutputCommonClass.getAllFunctions();
+                Dictionary<int, string> dicPollutant = OutputCommonClass.getAllPollutants();
+                Dictionary<int, string> dicMetric = OutputCommonClass.getMetric();
+                Dictionary<int, string> dicSeasonalMetric = OutputCommonClass.getSeasonalMetric();
+                Dictionary<int, string> dicIncidence = OutputCommonClass.getAllIncidenceDataset();
+                Dictionary<int, string> dicPrevalence = OutputCommonClass.getAllPrevalence();
+                Dictionary<int, string> dicVariable = OutputCommonClass.getAllVariableDatasets();
+                Dictionary<int, string> dicBaselineFunction = OutputCommonClass.getAllBaselineFunctions();
+                Dictionary<int, string> dicLocation = OutputCommonClass.getAllLocation();
+                commandText = "select count(*) from CRFunctions";
+                int count = (int)fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
+                if (count < outputRowsNumber) { outputRowsNumber = count; }
+                commandText = string.Format("select first {0} Endpointgroupid,Endpointid,Pollutantid,Metricid, Seasonalmetricid,Metricstatistic, Author, Yyear, Location, Otherpollutants, Qualifier, Reference,Race, Gender, Startage, Endage, Functionalformid,Incidencedatasetid,Prevalencedatasetid,Variabledatasetid,Beta,Distbeta,P1Beta,P2Beta,A,Namea,B,Nameb, C,Namec,Baselinefunctionalformid, Ethnicity,Locationtypeid from CRFunctions where crfunctiondatasetid in (select crfunctiondatasetid from crFunctionDatasets where setupid=1)", outputRowsNumber);
+                DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
+                foreach (DataRow dr in ds.Tables[0].Rows)
+                {
+                    DataRow newdr = dtOut.NewRow();
+                    newdr["Endpoint Group"] = OutputCommonClass.getStringFromID(Convert.ToInt32(dr["Endpointgroupid"]), dicEndPointGroup);
+                    newdr["Endpoint"] = OutputCommonClass.getStringFromID(Convert.ToInt32(dr["Endpointid"]), dicEndPoint);
+                    newdr["Pollutant"] = OutputCommonClass.getStringFromID(Convert.ToInt32(dr["Pollutantid"]), dicPollutant);
+                    newdr["Metric"] = OutputCommonClass.getStringFromID(Convert.ToInt32(dr["Metricid"]), dicMetric);
+                    if (DBNull.Value.Equals(dr["Seasonalmetricid"]))
+                    {
+                        newdr["Seasonal Metric"] = string.Empty;
+
+                    }
+                    else { newdr["Seasonal Metric"] = OutputCommonClass.getStringFromID(Convert.ToInt32(dr["Seasonalmetricid"]), dicSeasonalMetric); }
+                    newdr["Metric Statistic"] = OutputCommonClass.getMetricStastic(Convert.ToInt32(dr["Metricstatistic"]));
+                    newdr["Study Author"] = dr["Author"].ToString();
+                    newdr["Study Year"] = Convert.ToInt32(dr["Yyear"]);
+                    if (DBNull.Value.Equals(dr["Locationtypeid"]))
+                    {
+                        newdr["Study Location Type"] = string.Empty;
+
+                    }
+                    else
+                    {
+                        newdr["Study Location Type"] = OutputCommonClass.getStringFromID(Convert.ToInt32(dr["Locationtypeid"]), dicLocation);
+                    }
+                    newdr["Study Location"] = dr["Location"].ToString();
+                    newdr["Other Pollutants"] = dr["Otherpollutants"].ToString();
+                    newdr["Qualifier"] = dr["Qualifier"].ToString();
+                    newdr["Reference"] = dr["Reference"].ToString();
+                    newdr["Race"] = dr["Race"].ToString();
+                    newdr["Ethnicity"] = dr["Ethnicity"].ToString();
+                    newdr["Gender"] = dr["Gender"].ToString();
+                    newdr["Start Age"] = Convert.ToInt32(dr["StartAge"]);
+                    newdr["End Age"] = Convert.ToInt32(dr["EndAge"]);
+                    newdr["Function"] = OutputCommonClass.getStringFromID(Convert.ToInt32(dr["Functionalformid"]), dicFunction);
+                    newdr["Baseline Function"] = OutputCommonClass.getStringFromID(Convert.ToInt32(dr["Baselinefunctionalformid"]), dicBaselineFunction);
+                    newdr["Beta"] = Convert.ToDouble(dr["Beta"]);
+                    newdr["Distribution Beta"] = dr["Distbeta"].ToString();
+                    newdr["Parameter 1 Beta"] = Convert.ToDouble(dr["P1Beta"]);
+                    newdr["Parameter 2 Beta"] = Convert.ToDouble(dr["P2Beta"]);
+                    newdr["A"] = Convert.ToDouble(dr["A"]);
+                    newdr["Name A"] = dr["Namea"].ToString();
+                    newdr["B"] = Convert.ToDouble(dr["B"]);
+                    newdr["Name B"] = dr["Nameb"].ToString();
+                    newdr["C"] = Convert.ToDouble(dr["C"]);
+                    newdr["Name C"] = dr["Namec"].ToString();
+                    if (DBNull.Value.Equals(dr["Incidencedatasetid"]))
+                    {
+                        newdr["Incidence DataSet"] = string.Empty;
+
+                    }
+                    else
+                    {
+                        newdr["Incidence DataSet"] = OutputCommonClass.getStringFromID(Convert.ToInt32(dr["Incidencedatasetid"]), dicIncidence);
+                    }
+                    if (DBNull.Value.Equals(dr["Prevalencedatasetid"]))
+                    {
+                        newdr["Prevalence DataSet"] = string.Empty;
+
+                    }
+                    else
+                    {
+                        newdr["Prevalence DataSet"] = OutputCommonClass.getStringFromID(Convert.ToInt32(dr["Prevalencedatasetid"]), dicPrevalence);
+                    }
+                    if (DBNull.Value.Equals(dr["Variabledatasetid"]))
+                    {
+                        newdr["Variable DataSet"] = string.Empty;
+
+                    }
+                    else
+                    {
+                        newdr["Variable DataSet"] = OutputCommonClass.getStringFromID(Convert.ToInt32(dr["Variabledatasetid"]), dicVariable);
+                    }
+                    dtOut.Rows.Add(newdr);
+                }
+                CommonClass.SaveCSV(dtOut, fileName);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.Message);
+            }
+        }
+
+
+    }
+}

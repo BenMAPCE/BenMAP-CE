@@ -1,0 +1,1426 @@
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Data;
+using System.Diagnostics;
+using System.Linq;
+using System.Windows.Forms;
+using BrightIdeasSoftware;
+using ESIL.DBUtility;
+using System.IO;
+using System.Drawing;
+
+namespace BenMAP
+{
+    public partial class IncidenceDatasetDefinition : FormBase
+    {
+        /// <summary>
+        /// 点击add的时候进入
+        /// </summary>
+        public IncidenceDatasetDefinition()
+        {
+            InitializeComponent();
+            _dataSetName = string.Empty;
+        }
+
+        DataTable dtIncidence = new DataTable();
+
+        /// <summary>
+        /// 点击Edit的时候进入
+        /// </summary>
+        /// <param name="dataSetName"></param>
+        public IncidenceDatasetDefinition(string dataSetName, int dataSetID)
+        {
+            InitializeComponent();
+            _dataSetName = dataSetName;
+            incidenceDatasetID = dataSetID;
+        }
+
+        private void btnCancel_Click(object sender, EventArgs e)
+        {
+            this.DialogResult = DialogResult.Cancel;
+        }
+
+        private string _dataSetName = string.Empty;
+        private int incidenceDatasetID;
+        private int _grdiDefinitionID;
+
+        private void IncidenceDatasetDefinition_Load(object sender, EventArgs e)
+        {
+            lblProgress.Visible = false;
+            progressBar1.Visible = false;
+            FireBirdHelperBase fb = new ESILFireBirdHelper();
+            try
+            {
+                if (_dataSetName != string.Empty)
+                {
+                    //edit
+                    txtDataName.Text = _dataSetName;
+                    //txtDataName.Enabled = false;
+                    BindDataGridView(null,null);
+                    cboGridDefinition.Enabled = false;
+                    //string commandText = "select GridDefinitionID from GridDefinitions where GridDefinitionName='" + cboGridDefinition.Text + "'";
+                    //object gridDefinitionID = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
+                    //_grdiDefinitionID = Convert.ToInt32(gridDefinitionID);
+                }
+                else
+                {
+                    //// add ，初始化表_dtIncidenceRates的结构
+                    //string commandText = string.Format("select IncidenceRates.IncidenceRateID, EndPointGroups.EndPointGroupName,EndPoints.EndPointName,IncidenceRates.Prevalence,Races.RaceName,Ethnicity.EthnicityName,Genders.GenderName,IncidenceRates.StartAge,IncidenceRates.EndAge from IncidenceRates,EndPointGroups,EndPoints,Races,Ethnicity,Genders ,IncidenceDataSets where (IncidenceDataSets.IncidenceDataSetID= IncidenceRates.IncidenceDataSetID) and (IncidenceRates.EndPointGroupID=EndPointGroups.EndPointGroupID) and (IncidenceRates.EndPointID=EndPoints.EndPointID) and (IncidenceRates.RaceID=Races.RaceID) and (IncidenceRates.GenderID=Genders.GenderID) and (IncidenceRates.EthnicityID=Ethnicity.EthnicityID) and IncidenceDataSets.IncidenceDataSetName='{0}'", "");
+                    //DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+                    //// _dtIncidenceRates = ds.Tables[0];
+                    //dgvDataSetIncidenceRates.DataSource = ds.Tables[0];
+                    //dgvDataSetIncidenceRates.Columns["INCIDENCERATEID"].Visible = false;
+                    //dgvDataSetIncidenceRates.Columns[1].HeaderText = "Endpoint Group";
+                    //dgvDataSetIncidenceRates.Columns[2].HeaderText = "Endpoint";
+                    //dgvDataSetIncidenceRates.Columns[3].HeaderText = "Type";
+                    //dgvDataSetIncidenceRates.Columns[4].HeaderText = "Race";
+                    //dgvDataSetIncidenceRates.Columns[5].HeaderText = "Ethnicity";
+                    //dgvDataSetIncidenceRates.Columns[6].HeaderText = "Gender";
+                    //dgvDataSetIncidenceRates.Columns[7].HeaderText = "Start Age";
+                    //dgvDataSetIncidenceRates.Columns[8].HeaderText = "End Age";
+                    //dgvDataSetIncidenceRates.RowHeadersVisible = false;
+
+                    //automatically generated name-increase the number at the end of the name
+                    int number = 0;
+                    int incidenceDatasetID=0;
+                    do
+                    {
+                        string comText = "select incidenceDatasetID from incidenceDataSets where incidenceDatasetName=" + "'IncidenceDataSet" + Convert.ToString(number)+"'";
+                        incidenceDatasetID = Convert.ToInt16(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, comText));
+                        number++;
+                    } while (incidenceDatasetID > 0);
+                    txtDataName.Text = "IncidenceDataSet" + Convert.ToString(number-1);
+                    //txtDataName.Enabled = true;
+                    //_dataSetName = txtDataName.Text;
+                    cboGridDefinition.Enabled = true;
+                }
+
+                string cmdText = "select GridDefinitionName,GridDefinitionID from GridDefinitions where SetupID=" + CommonClass.ManageSetup.SetupID + "";
+                DataSet dts = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, cmdText);
+                cboGridDefinition.DataSource = dts.Tables[0];
+                cboGridDefinition.DisplayMember = "GRIDDEFINITIONNAME";
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.Message);
+            }
+        }
+
+        public void BindDataGridView(string EndpointGroupName, string EndpointName)
+        {
+            ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+            try
+            {
+                //从数据库中选取dataset，绑定到datagridview，修改显示的列名
+                string commandText = string.Format("select IncidenceRates.IncidenceRateID, EndPointGroups.EndPointGroupName,EndPoints.EndPointName,IncidenceRates.Prevalence,Races.RaceName,Ethnicity.EthnicityName,Genders.GenderName,IncidenceRates.StartAge,IncidenceRates.EndAge from IncidenceRates,EndPointGroups,EndPoints,Races,Ethnicity,Genders ,IncidenceDataSets where (IncidenceDataSets.IncidenceDataSetID= IncidenceRates.IncidenceDataSetID) and (IncidenceRates.EndPointGroupID=EndPointGroups.EndPointGroupID) and (IncidenceRates.EndPointID=EndPoints.EndPointID) and (IncidenceRates.RaceID=Races.RaceID) and (IncidenceRates.GenderID=Genders.GenderID) and (IncidenceRates.EthnicityID=Ethnicity.EthnicityID) and IncidenceDataSets.IncidenceDataSetID='{0}'", incidenceDatasetID);
+                DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+                dtIncidence = ds.Tables[0];
+                for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                {
+                    if (ds.Tables[0].Rows[i][3].ToString() == "F")
+                    {
+                        ds.Tables[0].Rows[i][3] = "Incidence";
+                    }
+                    else if (ds.Tables[0].Rows[i][3].ToString() == "T")
+                    {
+                        ds.Tables[0].Rows[i][3] = "Prevalence";
+                    }
+                    else
+                    {
+                        ds.Tables[0].Rows[i][3] = string.Empty;
+                    }
+                }
+                olvIncidenceRates.DataSource = ds.Tables[0];
+                cboEndpoint.Items.Clear();
+                cboEndpointGroup.Items.Clear();
+                string endpointGroupName = string.Empty;
+                string endpointName = string.Empty;
+                cboEndpointGroup.Items.Add("");
+                cboEndpoint.Items.Add("");
+                if (string.IsNullOrEmpty(EndpointGroupName) && string.IsNullOrEmpty(EndpointGroupName))
+                {
+                    for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                    {
+                        endpointGroupName = ds.Tables[0].Rows[i]["EndPointGroupName"].ToString();
+                        if (!cboEndpointGroup.Items.Contains(endpointGroupName))
+                            cboEndpointGroup.Items.Add(endpointGroupName);
+                        endpointName = ds.Tables[0].Rows[i]["EndPointName"].ToString();
+                        if (!cboEndpoint.Items.Contains(endpointName))
+                            cboEndpoint.Items.Add(endpointName);
+                    }
+                    cboEndpointGroup.SelectedIndex = 0;
+                    cboEndpoint.SelectedIndex = 0;
+                    olvIncidenceRates.SelectedIndex = 0;
+                }
+                else
+                {
+                    int maxEndpointGroupWidth = 192;
+                    int EndpointGroupWidth = 192;
+                    commandText = string.Format("select distinct EndPointGroups.EndPointGroupName from IncidenceRates,EndPointGroups where (IncidenceRates.EndPointGroupID=EndPointGroups.EndPointGroupID) and IncidenceRates.IncidenceDataSetID='{0}'", incidenceDatasetID);
+                    DataSet dsEndpointGroup = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+                    for (int i = 0; i < dsEndpointGroup.Tables[0].Rows.Count; i++)
+                    {
+                        if (!cboEndpointGroup.Items.Contains(dsEndpointGroup.Tables[0].Rows[i]["EndPointGroupName"].ToString()))
+                        {
+                            cboEndpointGroup.Items.Add(dsEndpointGroup.Tables[0].Rows[i]["EndPointGroupName"].ToString());
+                            using (Graphics g = this.CreateGraphics())
+                            {
+                                SizeF string_size = g.MeasureString(dsEndpointGroup.Tables[0].Rows[i]["EndPointGroupName"].ToString(), this.Font);
+                                EndpointGroupWidth = Convert.ToInt16(string_size.Width) + 50;
+                            }
+                            maxEndpointGroupWidth = Math.Max(maxEndpointGroupWidth, EndpointGroupWidth);
+                        }
+                        cboEndpointGroup.DropDownWidth = maxEndpointGroupWidth;
+                    }
+                    if (cboEndpointGroup.Items.Contains(EndpointGroupName))
+                    {
+                        cboEndpointGroup.Text = EndpointGroupName;
+                        commandText = string.Format("select distinct EndPoints.EndPointName from IncidenceRates,EndPointGroups,EndPoints where (IncidenceRates.EndPointGroupID=EndPointGroups.EndPointGroupID) and (IncidenceRates.EndPointID=EndPoints.EndPointID) and IncidenceRates.IncidenceDataSetID='{0}' and EndPointGroups.EndPointGroupName='{1}'", incidenceDatasetID, EndpointGroupName);
+                        DataSet dsEndpoint = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+                        for (int i = 0; i < dsEndpoint.Tables[0].Rows.Count; i++)
+                        {
+                            if (!cboEndpoint.Items.Contains(dsEndpoint.Tables[0].Rows[i]["EndPointName"].ToString()))
+                            {
+                                cboEndpoint.Items.Add(dsEndpoint.Tables[0].Rows[i]["EndPointName"].ToString());
+                            }
+                        }
+                    }
+                    else
+                    {
+                        for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                        {
+                            endpointName = ds.Tables[0].Rows[i]["EndPointName"].ToString();
+                            if (!cboEndpoint.Items.Contains(endpointName))
+                                cboEndpoint.Items.Add(endpointName);
+                        }
+                    }
+
+                    if (string.IsNullOrEmpty(EndpointName))
+                    {
+                        cboEndpoint.SelectedIndex = 0;
+                    }
+                    else
+                    {
+                        if (cboEndpoint.Items.Contains(EndpointName))
+                        {
+                            cboEndpoint.Text = EndpointName;
+                        }
+                        else
+                            cboEndpoint.SelectedIndex = 0;
+                    }
+                    olvIncidenceRates.SelectedIndex = 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.Message);
+            }
+        }
+
+        string incidenceRateID;
+
+        private DataTable _dtLoadTable;
+
+        /// <summary>
+        /// 得到所有Race种族
+        /// </summary>
+        /// <returns></returns>LOWER
+        public static Dictionary<string, int> getAllRace()
+        {
+            try
+            {
+                Dictionary<string, int> dicRace = new Dictionary<string, int>();
+                string commandText = "select RaceID,LOWER(RaceName) from Races";
+                ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
+                foreach (DataRow dr in ds.Tables[0].Rows)
+                {
+                    dicRace.Add(dr["LOWER"].ToString(), Convert.ToInt32(dr["RaceID"]));
+                }
+
+                return dicRace;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+        /// <summary>
+        /// 得到所有Ethnicity-宗教信仰
+        /// </summary>
+        /// <returns></returns>
+        public static Dictionary<string, int> getAllEthnicity()
+        {
+            try
+            {
+                Dictionary<string, int> dicEthnicity = new Dictionary<string, int>();
+                string commandText = "select  EthnicityID,LOWER(EthnicityName) from Ethnicity ";
+                ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
+                foreach (DataRow dr in ds.Tables[0].Rows)
+                {
+                    dicEthnicity.Add(dr["LOWER"].ToString(), Convert.ToInt32(dr["EthnicityID"]));
+                }
+
+                return dicEthnicity;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+        /// <summary>
+        /// 得到所有Gender;性别
+        /// </summary>
+        /// <returns></returns>
+        public static Dictionary<string, int> getAllGender()
+        {
+            try
+            {
+                Dictionary<string, int> dicGender = new Dictionary<string, int>();
+                string commandText = "select  GenderID,LOWER(GenderName) from Genders ";
+                ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
+                foreach (DataRow dr in ds.Tables[0].Rows)
+                {
+                    dicGender.Add(dr["LOWER"].ToString(), Convert.ToInt32(dr["GenderID"]));
+                }
+
+
+                return dicGender;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// 得到所有EndPointGroup
+        /// </summary>
+        /// <returns></returns>
+        public static Dictionary<string, int> getAllEndPointGroup()
+        {
+            try
+            {
+                Dictionary<string, int> dicEndPointGroup = new Dictionary<string, int>();
+                string commandText = "select EndPointGroupID,LOWER(EndPointGroupName) from EndPointGroups";
+                ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
+                foreach (DataRow dr in ds.Tables[0].Rows)
+                {
+                    dicEndPointGroup.Add(dr["LOWER"].ToString(), Convert.ToInt32(dr["EndPointGroupID"]));
+                }
+
+                return dicEndPointGroup;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// 得到所有EndPoint
+        /// </summary>
+        /// <returns></returns>
+        public static Dictionary<int, List<string>> getEndPointID()
+        {
+            try
+            {
+                Dictionary<int, List<string>> dicEndPoint = new Dictionary<int, List<string>>();
+                string commandText = "select EndPointID,EndPointGroupID,LOWER(EndPointName) from EndPoints ";//where EndPointName!='' union select EndPointID,EndPointName from EndPoints where EndPointID=99";
+                ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
+                foreach (DataRow dr in ds.Tables[0].Rows)
+                {
+                    List<string> value = new List<string>();
+                    value.Add(dr["EndPointGroupID"].ToString());
+                    value.Add(dr["LOWER"].ToString());
+                    dicEndPoint.Add(Convert.ToInt32(dr["EndPointID"]), value);
+                }
+                return dicEndPoint;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// 得到所有小写EndPoint
+        /// </summary>
+        /// <returns></returns>
+        public static Dictionary<string, int> getAllEndPoint()
+        {
+            try
+            {
+                Dictionary<string, int> dicEndPoint = new Dictionary<string, int>();
+                string commandText = "select EndPointID,LOWER(EndPointName) from EndPoints ";//where EndPointName!='' union select EndPointID,EndPointName from EndPoints where EndPointID=99";
+                ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
+                foreach (DataRow dr in ds.Tables[0].Rows)
+                {
+                    if (!dicEndPoint.Keys.Contains(dr["LOWER"].ToString()))
+                        dicEndPoint.Add(dr["LOWER"].ToString(), Convert.ToInt32(dr["EndPointID"]));
+                }
+                return dicEndPoint;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+        /// <summary>
+        /// 得到所有原始EndPoint
+        /// </summary>
+        /// <returns></returns>
+        public static Dictionary<string, int> getAllOrigEndPoint()
+        {
+            try
+            {
+                Dictionary<string, int> dicEndPoint = new Dictionary<string, int>();
+                string commandText = "select EndPointID,EndPointName from EndPoints ";//where EndPointName!='' union select EndPointID,EndPointName from EndPoints where EndPointID=99";
+                ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
+                foreach (DataRow dr in ds.Tables[0].Rows)
+                {
+                    if (!dicEndPoint.Keys.Contains(dr["EndPointName"].ToString()))
+                        dicEndPoint.Add(dr["EndPointName"].ToString(), Convert.ToInt32(dr["EndPointID"]));
+                }
+                return dicEndPoint;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+        private int GetValueFromRaceID(string RaceName, Dictionary<string, int> dic)
+        {
+            try
+            {
+                return dic[RaceName];
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.Message);
+                return 6;
+            }
+        }
+
+        private int GetValueFromGenderID(string GenderName, Dictionary<string, int> dic)
+        {
+            try
+            {
+                return dic[GenderName];
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.Message);
+                return 4;
+            }
+        }
+
+        private int GetValueFromEthnicityID(string EthnicityName, Dictionary<string, int> dic)
+        {
+            try
+            {
+                return dic[EthnicityName];
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.Message);
+                return 4;
+            }
+        }
+
+        private string GetValueFromIncidenceID(string IncidenceName, Dictionary<string, string> dic)
+        {
+            try
+            {
+                return dic[IncidenceName];
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.Message);
+                return "F";
+            }
+        }
+
+        private static int GetEndpointIDFromDic(int endpointGroupID, string endpoint, Dictionary<int, List<string>> dicEndPoint)
+        {
+            int endpointID = 0;
+            foreach (int key in dicEndPoint.Keys)
+            {
+                if (dicEndPoint[key][0] == endpointGroupID.ToString() && dicEndPoint[key][1] == endpoint)
+                {
+                    endpointID = key;
+                }
+            }
+            return endpointID;
+        }
+
+        DataTable _dt = new DataTable();
+
+        private void btnBrowse_Click(object sender, EventArgs e)
+        {
+            if (txtDataName.Text == string.Empty || cboGridDefinition.SelectedItem == null)
+            { MessageBox.Show("Please input a dataset name and select a grid definition."); return; }
+            else
+            {
+                FireBirdHelperBase fb = new ESILFireBirdHelper();
+                LoadIncidenceDatabase frm = new LoadIncidenceDatabase();
+                frm.GridDefinitionID = _grdiDefinitionID;
+                string commandText = string.Empty;
+                string str = string.Empty;
+                try
+                {
+                    DialogResult rtn = frm.ShowDialog();
+                    if (rtn != DialogResult.OK) { return; }
+                    //显示进度条
+                    //label1.Visible = true;
+                    //progressBar1.Visible = true;
+                    str = frm.StrPath;
+                    //填充GridDefinition
+                    commandText = "select GridDefinitionName from GridDefinitions where GridDefinitionID=" + _grdiDefinitionID + "";
+                    cboGridDefinition.Text = (fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)).ToString();
+                    // Todo:陈志润
+                    //int sheetIndex = 1;
+                    //if (str.Substring(str.Length - 3, 3).ToLower() != "csv")
+                    //{                    
+                    //    //判断有没有安装Excel
+                    //    if (Type.GetTypeFromProgID("Excel.Application") == null)
+                    //    {
+                    //        MessageBox.Show("Please install Excel.", "Warning", MessageBoxButtons.OK);
+                    //        return;
+                    //    }
+                    //    sheetIndex = CommonClass.SelectedSheetIndex(str);
+                    //}
+                    _dtLoadTable = CommonClass.ExcelToDataTable(str); //dp.ReadCSV2DataTable(str);//解析.csv文件
+                    if (_dtLoadTable == null)
+                    { MessageBox.Show("Failed to import data from CSV file."); return; }
+
+                    int iEndpointGroup = -1;
+                    int iEndpoint = -1;
+                    int iRace = -1;
+                    int iGender = -1;
+                    int iEthnicity = -1;
+                    int iStartAge = -1;
+                    int iEndAge = -1;
+                    int iColumn = -1;
+                    int iRow = -1;
+                    int iType = -1;
+                    int iValue = -1;
+                    for (int i = 0; i < _dtLoadTable.Columns.Count; i++)
+                    {
+                        switch (_dtLoadTable.Columns[i].ColumnName.ToLower().Replace(" ", ""))
+                        {
+                            case "endpointgroup": iEndpointGroup = i;
+                                break;
+                            case "endpoint": iEndpoint = i;
+                                break;
+                            case "race": iRace = i;
+                                break;
+                            case "gender": iGender = i;
+                                break;
+                            case "ethnicity": iEthnicity = i;
+                                break;
+                            case "startage": iStartAge = i;
+                                break;
+                            case "endage": iEndAge = i;
+                                break;
+                            case "column": iColumn = i;
+                                break;
+                            case "row": iRow = i;
+                                break;
+                            case "type": iType = i;
+                                break;
+                            case "value": iValue = i;
+                                break;
+                        }
+                    }
+                    string warningtip = "";
+                    if (iEndpointGroup < 0) warningtip = "'Endpoint Group', ";
+                    if (iEndpoint < 0) warningtip += "'Endpoint', ";
+                    if (iRace < 0) warningtip += "'Race', ";
+                    if (iGender < 0) warningtip += "'Gender', ";
+                    if (iEthnicity < 0) warningtip += "'Ethnicity', ";
+                    if (iStartAge < 0) warningtip += "'Start Age', ";
+                    if (iEndAge < 0) warningtip += "'End Age', ";
+                    if (iColumn < 0) warningtip += "'Column', ";
+                    if (iRow < 0) warningtip += "'Row', ";
+                    if (iType < 0) warningtip += "'Type', ";
+                    if (iValue < 0) warningtip += "'Value', ";
+                    if (warningtip != "")
+                    {
+                        warningtip = warningtip.Substring(0, warningtip.Length - 2);
+                        warningtip = "Please check the column header of " + warningtip + ". It is incorrect or does not exist.";
+                        MessageBox.Show(warningtip, "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+                    lblProgress.Visible = true;
+                    progressBar1.Visible = true;
+
+                    //初始化进度条
+                    progressBar1.Step = 1;
+                    progressBar1.Minimum = 0;
+                    progressBar1.Maximum = _dtLoadTable.Rows.Count;
+                    progressBar1.Value = progressBar1.Minimum;
+                    if (_dataSetName != string.Empty)
+                    {// 编辑
+                        commandText = string.Format("select IncidenceDataSetID from IncidenceDataSets where IncidenceDataSetName='{0}' and setupID={1}", _dataSetName,CommonClass.ManageSetup.SetupID);
+                        object obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
+                        incidenceDatasetID = Convert.ToInt32(obj);
+                        if (_dataSetName != txtDataName.Text)
+                        {
+                            //检查要更新的DataSetName是否存在于数据库中
+                            commandText = string.Format("select INCIDENCEDATASETID from INCIDENCEDATASETS where INCIDENCEDATASETNAME='{0}' and setupID={1}", txtDataName.Text, CommonClass.ManageSetup.SetupID);
+                            obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
+                            if (obj != null) { MessageBox.Show("The dataset name already exists. Please enter a different name."); return; }
+                            //更新DataSet名称
+                            commandText = string.Format("update INCIDENCEDATASETS set INCIDENCEDATASETNAME='{0}' where INCIDENCEDATASETID='{1}'", txtDataName.Text, incidenceDatasetID);
+                            fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                        }
+                    }
+                    else
+                    {//新增
+                        commandText = string.Format("select INCIDENCEDATASETID from INCIDENCEDATASETS where INCIDENCEDATASETNAME='{0}' and setupID={1}", txtDataName.Text, CommonClass.ManageSetup.SetupID);
+                        object obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
+                        if (obj != null) 
+                        {
+                            MessageBox.Show("The dataset name already exists. Please enter a different name.");
+                            lblProgress.Visible = false;
+                            progressBar1.Visible = false;
+                            return; 
+                        }
+                        else
+                        {
+                            commandText = "select max(IncidenceDatasetID) from INCIDENCEDATASETS";
+                            obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
+                            incidenceDatasetID = Convert.ToInt32(obj) + 1;
+                            commandText = string.Format("insert into INCIDENCEDATASETS (IncidenceDatasetID,SetupID,IncidenceDatasetName,GridDefinitionID) values( {0},{1},'{2}',{3})", incidenceDatasetID, CommonClass.ManageSetup.SetupID, txtDataName.Text, _grdiDefinitionID);
+                            fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                        }
+                        _dataSetName = txtDataName.Text;
+                    }
+
+                    //----------查找完全相同的并且把他们删除------------------------
+                    List<DataRow> lstMustRemove = new List<DataRow>();
+                    Dictionary<string, int> dicDtLoadTable = new Dictionary<string, int>();
+                    for (int i = 0; i < _dtLoadTable.Rows.Count; i++)
+                    {
+                        if (dicDtLoadTable.ContainsKey(_dtLoadTable.Rows[i][iEndpointGroup] + "," + _dtLoadTable.Rows[i][iEndpoint] + ","
+                            + _dtLoadTable.Rows[i][iRace] + "," + _dtLoadTable.Rows[i][iGender] + ","
+                            + _dtLoadTable.Rows[i][iStartAge] + "," + _dtLoadTable.Rows[i][iEndAge] + ","
+                            + _dtLoadTable.Rows[i][iType] + "," + _dtLoadTable.Rows[i][iEthnicity] + ","
+                            + _dtLoadTable.Rows[i][iColumn] + "," + _dtLoadTable.Rows[i][iRow] + "," + _dtLoadTable.Rows[i][iValue]))
+                        {
+                            lstMustRemove.Add(_dtLoadTable.Rows[dicDtLoadTable[_dtLoadTable.Rows[i][iEndpointGroup] + "," + _dtLoadTable.Rows[i][iEndpoint] + ","
+                            + _dtLoadTable.Rows[i][iRace] + "," + _dtLoadTable.Rows[i][iGender] + ","
+                            + _dtLoadTable.Rows[i][iStartAge] + "," + _dtLoadTable.Rows[i][iEndAge] + ","
+                            + _dtLoadTable.Rows[i][iType] + "," + _dtLoadTable.Rows[i][iEthnicity] + ","
+                            + _dtLoadTable.Rows[i][iColumn] + "," + _dtLoadTable.Rows[i][iRow] + "," + _dtLoadTable.Rows[i][iValue]]]);
+                            dicDtLoadTable[_dtLoadTable.Rows[i][iEndpointGroup] + "," + _dtLoadTable.Rows[i][iEndpoint] + ","
+                            + _dtLoadTable.Rows[i][iRace] + "," + _dtLoadTable.Rows[i][iGender] + ","
+                            + _dtLoadTable.Rows[i][iStartAge] + "," + _dtLoadTable.Rows[i][iEndAge] + ","
+                            + _dtLoadTable.Rows[i][iType] + "," + _dtLoadTable.Rows[i][iEthnicity] + ","
+                            + _dtLoadTable.Rows[i][iColumn] + "," + _dtLoadTable.Rows[i][iRow] + "," + _dtLoadTable.Rows[i][iValue]] = i;
+                        }
+                        else
+                        {
+                            dicDtLoadTable.Add(_dtLoadTable.Rows[i][iEndpointGroup] + "," + _dtLoadTable.Rows[i][iEndpoint] + ","
+                            + _dtLoadTable.Rows[i][iRace] + "," + _dtLoadTable.Rows[i][iGender] + ","
+                            + _dtLoadTable.Rows[i][iStartAge] + "," + _dtLoadTable.Rows[i][iEndAge] + ","
+                            + _dtLoadTable.Rows[i][iType] + "," + _dtLoadTable.Rows[i][iEthnicity] + ","
+                            + _dtLoadTable.Rows[i][iColumn] + "," + _dtLoadTable.Rows[i][iRow] + "," + _dtLoadTable.Rows[i][iValue], i);
+
+                        }
+                    }
+                    foreach (DataRow dr in lstMustRemove)
+                    {
+                        _dtLoadTable.Rows.Remove(dr);
+                    }
+                    //查找不完全相同的提示用户
+                    lstMustRemove = new List<DataRow>();
+                    dicDtLoadTable = new Dictionary<string, int>();
+                    for (int i = 0; i < _dtLoadTable.Rows.Count; i++)
+                    {
+                        if (dicDtLoadTable.ContainsKey(_dtLoadTable.Rows[i][iEndpointGroup] + "," + _dtLoadTable.Rows[i][iEndpoint] + ","
+                            + _dtLoadTable.Rows[i][iRace] + "," + _dtLoadTable.Rows[i][iGender] + ","
+                            + _dtLoadTable.Rows[i][iStartAge] + "," + _dtLoadTable.Rows[i][iEndAge] + ","
+                            + _dtLoadTable.Rows[i][iType] + "," + _dtLoadTable.Rows[i][iEthnicity] + ","
+                            + _dtLoadTable.Rows[i][iColumn] + "," + _dtLoadTable.Rows[i][iRow]))
+                        {
+                            MessageBox.Show("File import failed. Please check the file for duplicates.");
+                            progressBar1.Visible = false;
+                            return;
+                        }
+                        else
+                        {
+                            dicDtLoadTable.Add(_dtLoadTable.Rows[i][iEndpointGroup] + "," + _dtLoadTable.Rows[i][iEndpoint] + ","
+                            + _dtLoadTable.Rows[i][iRace] + "," + _dtLoadTable.Rows[i][iGender] + ","
+                            + _dtLoadTable.Rows[i][iStartAge] + "," + _dtLoadTable.Rows[i][iEndAge] + ","
+                            + _dtLoadTable.Rows[i][iType] + "," + _dtLoadTable.Rows[i][iEthnicity] + ","
+                            + _dtLoadTable.Rows[i][iColumn] + "," + _dtLoadTable.Rows[i][iRow], i);
+
+                        }
+
+                    }
+                    dicDtLoadTable.Clear();
+                    GC.Collect();
+
+                    //List<string> lstDistinct = new List<string>();
+                    //foreach (DataRow dr in _dtLoadTable.Rows)
+                    //{
+                    //    if (!lstDistinct.Contains(dr["Endpoint Group"].ToString() + "," + dr["Endpoint"].ToString() + "," + dr["Race"].ToString() + "," + dr["Gender"].ToString() + ","
+                    //        + dr["Ethnicity"].ToString() + "," + dr["Start Age"].ToString() + "," + dr["End Age"].ToString() + "," + dr["Type"].ToString()))
+                    //    {
+                    //        lstDistinct.Add(dr["Endpoint Group"].ToString() + "," + dr["Endpoint"].ToString() + "," + dr["Race"].ToString() + "," + dr["Gender"].ToString() + ","
+                    //        + dr["Ethnicity"].ToString() + "," + dr["Start Age"].ToString() + "," + dr["End Age"].ToString() + "," + dr["Type"].ToString());
+                    //    }
+                    //}
+                    DataView dv = _dtLoadTable.DefaultView;
+                    DataTable dtDistinct = dv.ToTable(true, dv.Table.Columns[iEndpointGroup].ColumnName, dv.Table.Columns[iEndpoint].ColumnName, dv.Table.Columns[iRace].ColumnName, dv.Table.Columns[iGender].ColumnName, dv.Table.Columns[iEthnicity].ColumnName, dv.Table.Columns[iStartAge].ColumnName, dv.Table.Columns[iEndAge].ColumnName, dv.Table.Columns[iType].ColumnName);
+                    Dictionary<string, string> dicIncidence = new Dictionary<string, string>();
+                    dicIncidence.Add("incidence", "F");
+                    dicIncidence.Add("prevalence", "T");
+                    dicIncidence.Add("", "0");
+                    for (int j = 0; j < dtDistinct.Rows.Count; j++)
+                    {
+                        commandText = "select EndPointGroupID from EndPointGroups where lower(EndPointGroupName)='" + dtDistinct.Rows[j][0].ToString().ToLower() + "'";
+                        object endPointGroupID = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
+                        if (endPointGroupID == null)
+                        {
+                            commandText = "select max(EndPointGroupID) from EndPointGroups";
+                            endPointGroupID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText))+1;
+                            commandText = string.Format("insert into EndpointGroups values ({0},'{1}')", endPointGroupID, dtDistinct.Rows[j][0].ToString());
+                            fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                        }
+                        commandText = "select EndPointID from EndPoints where lower(EndPointName)='" + dtDistinct.Rows[j][1].ToString().ToLower().Trim() + "' and EndpointGroupID=" + endPointGroupID + "";
+                        object endPointID = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
+                        if (endPointID == null)
+                        {
+                            commandText = "select max(EndPointID) from EndPoints";
+                            endPointID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
+                            commandText = string.Format("insert into Endpoints values ({0},{1},'{2}')", endPointID, endPointGroupID, dtDistinct.Rows[j][1].ToString());
+                            fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                        }
+                        commandText = "select RaceID from Races where lower(RaceName)='" + dtDistinct.Rows[j][2].ToString().ToLower().Trim() + "'";
+                        object raceID = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
+                        if (raceID == null)
+                        {
+                            commandText = "select max(RaceID) from Races";
+                            raceID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
+                            commandText = string.Format("insert into Races values ({0},'{1}')", raceID, dtDistinct.Rows[j][2].ToString());
+                            fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                        }
+                        commandText = "select GenderID from Genders where lower(GenderName)='" + dtDistinct.Rows[j][3].ToString().ToLower().Trim() + "'";
+                        object genderID = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
+                        if (genderID == null)
+                        {
+                            commandText = "select max(GenderID) from Genders";
+                            genderID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
+                            commandText = string.Format("insert into Genders values ({0},'{1}')", genderID, dtDistinct.Rows[j][3].ToString());
+                            fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                        }
+                        commandText = "select EthnicityID from Ethnicity where lower(ethnicityName)='" + dtDistinct.Rows[j][4].ToString().ToLower().Trim() + "'";
+                        object ethnicityID = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
+                        if (ethnicityID == null)
+                        {
+                            commandText = "select max(EthnicityID) from Ethnicity";
+                            ethnicityID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
+                            commandText = string.Format("insert into Ethnicity values ({0},'{1}')", ethnicityID, dtDistinct.Rows[j][4].ToString());
+                            fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                        }
+                        //匹配IncidendeRateID
+                        commandText = string.Format("select incidenceRateID from IncidenceRates where incidenceDataSetID={0} and GridDefinitionID={1} and EndPointGroupId={2} and EndPointID={3} and RaceID={4} and GenderID={5} and StartAge={6} and EndAge={7} and Prevalence='{8}' and EthnicityID={9} ", incidenceDatasetID, _grdiDefinitionID, endPointGroupID, endPointID, raceID, genderID, dtDistinct.Rows[j][5], dtDistinct.Rows[j][6], GetValueFromIncidenceID(dtDistinct.Rows[j][7].ToString().ToLower(), dicIncidence), ethnicityID);
+                        object incidenceRateID = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
+                        if (incidenceRateID != null)
+                        {// 更新
+                            commandText = string.Format("delete from incidenceEntries where IncidenceRateID={0}", incidenceRateID);
+                            fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                        }
+                        else
+                        {// 插入
+                            commandText = "select max(incidenceRateID) from IncidenceRates";
+                            incidenceRateID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText))+1;
+                            commandText = string.Format("insert into IncidenceRates values ({0},{1},{2},{3},{4},{5},{6},{7},{8},'{9}',{10})", incidenceRateID, incidenceDatasetID, _grdiDefinitionID, endPointGroupID, endPointID, raceID, genderID, dtDistinct.Rows[j][5], dtDistinct.Rows[j][6], GetValueFromIncidenceID(dtDistinct.Rows[j][7].ToString().ToLower(), dicIncidence), ethnicityID);
+                            //commandText=commandText.Replace("(","",
+                            fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                        }
+                    }
+
+                    Dictionary<string, int> dicEndPointGroup = getAllEndPointGroup();
+                    //Dictionary<string, int> dicEndPoint = getAllEndPoint();
+                    //Dictionary<string, int> dicUpdateEndPoint = getAllOrigEndPoint();
+                    Dictionary<int, List<string>> dicEndpointID = getEndPointID();
+                    Dictionary<string, int> dicGender = getAllGender();
+                    Dictionary<string, int> dicRace = getAllRace();
+                    Dictionary<string, int> dicEthnicity = getAllEthnicity();
+                    FirebirdSql.Data.FirebirdClient.FbCommand fbCommand = new FirebirdSql.Data.FirebirdClient.FbCommand();
+                    fbCommand.Connection = CommonClass.Connection;
+                    fbCommand.CommandType = CommandType.Text;
+                    if (fbCommand.Connection.State != ConnectionState.Open)
+                    { fbCommand.Connection.Open(); }
+                    
+                    //测试用
+                    //try
+                    //{
+                    //    for (int i = 0; i < _dtLoadTable.Rows.Count; i++)
+                    //    {
+                    //        commandText = "execute block as declare incidenceRateID int;" + " BEGIN ";
+                    //        commandText = commandText + string.Format("select incidenceRateID from IncidenceRates  where incidenceDataSetID={0} and GridDefinitionID={1} and EndPointGroupId={2} and EndPointID={3} and RaceID={4} and GenderID={5} and StartAge={6} and EndAge={7} and Prevalence='{8}' and EthnicityID={9}  into :incidenceRateID;", incidenceDatasetID, _grdiDefinitionID, dicEndPointGroup[_dtLoadTable.Rows[i][iEndpointGroup].ToString().ToLower()], GetEndpointIDFromDic(dicEndPointGroup[_dtLoadTable.Rows[i][iEndpointGroup].ToString().ToLower()], _dtLoadTable.Rows[i][iEndpoint].ToString().ToLower().Trim(), dicEndpointID), dicRace[_dtLoadTable.Rows[i][iRace].ToString().ToLower().Trim()], dicGender[_dtLoadTable.Rows[i][iGender].ToString().ToLower().Trim()], _dtLoadTable.Rows[i][iStartAge], _dtLoadTable.Rows[i][iEndAge], dicIncidence[_dtLoadTable.Rows[i][iType].ToString().ToLower()], dicEthnicity[_dtLoadTable.Rows[i][iEthnicity].ToString().ToLower().Trim()]);
+                    //        commandText = commandText + string.Format(" insert into incidenceEntries values (:incidenceRateID,{0},{1},{2});", _dtLoadTable.Rows[i][iColumn], _dtLoadTable.Rows[i][iRow], _dtLoadTable.Rows[i][iValue].ToString().Trim() == "." ? 0 : _dtLoadTable.Rows[i][iValue]);
+                    //        commandText = commandText + "END";
+                    //        fbCommand.CommandText = commandText;
+                    //        fbCommand.ExecuteNonQuery();
+                    //    }
+                    //}
+                    //catch
+                    //{ }
+                    progressBar1.Maximum = _dtLoadTable.Rows.Count;
+                    for (int i = 0; i < (_dtLoadTable.Rows.Count / 125) + 1; i++)
+                    {
+                        commandText = "execute block as declare incidenceRateID int;" + " BEGIN ";
+
+                        for (int k = 0; k < 125; k++)
+                        {
+                            if (i * 125 + k < _dtLoadTable.Rows.Count)
+                            {
+                                commandText = commandText + string.Format("select incidenceRateID from IncidenceRates  where incidenceDataSetID={0} and GridDefinitionID={1} and EndPointGroupId={2} and EndPointID={3} and RaceID={4} and GenderID={5} and StartAge={6} and EndAge={7} and Prevalence='{8}' and EthnicityID={9}  into :incidenceRateID;", incidenceDatasetID, _grdiDefinitionID, dicEndPointGroup[_dtLoadTable.Rows[i * 125 + k][iEndpointGroup].ToString().ToLower()], GetEndpointIDFromDic(dicEndPointGroup[_dtLoadTable.Rows[i * 125 + k][iEndpointGroup].ToString().ToLower()], _dtLoadTable.Rows[i * 125 + k][iEndpoint].ToString().ToLower().Trim(), dicEndpointID), dicRace[_dtLoadTable.Rows[i * 125 + k][iRace].ToString().ToLower().Trim()], dicGender[_dtLoadTable.Rows[i * 125 + k][iGender].ToString().ToLower().Trim()], _dtLoadTable.Rows[i * 125 + k][iStartAge], _dtLoadTable.Rows[i * 125 + k][iEndAge], dicIncidence[_dtLoadTable.Rows[i * 125 + k][iType].ToString().ToLower()], dicEthnicity[_dtLoadTable.Rows[i * 125 + k][iEthnicity].ToString().ToLower().Trim()]);
+                            }
+                            else
+                            {
+                                continue;
+                            }
+                            commandText = commandText + string.Format(" insert into incidenceEntries values (:incidenceRateID,{0},{1},{2});", _dtLoadTable.Rows[i * 125 + k][iColumn], _dtLoadTable.Rows[i * 125 + k][iRow], _dtLoadTable.Rows[i * 125 + k][iValue].ToString().Trim() == "." ? 0 : _dtLoadTable.Rows[i * 125 + k][iValue]);
+                            progressBar1.PerformStep();
+                            lblProgress.Text = Convert.ToString((int)((double)progressBar1.Value / progressBar1.Maximum * 100)) + "%";
+                            lblProgress.Refresh();
+
+                        }
+                        commandText = commandText + "END";
+                        //fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                        fbCommand.CommandText = commandText;
+                        fbCommand.ExecuteNonQuery();
+                    }//for
+                    //foreach (string endPointName in dicUpdateEndPoint.Keys)
+                    //{
+                    //    commandText = string.Format("update IncidenceRates a set a.EndPointID=(select b.EndPointID from EndPoints b where a.EndPointGroupID=b.EndPointGroupID and b.EndPointName='{0}') where a.EndPointID={1}", endPointName, dicUpdateEndPoint[endPointName]);
+                    //    fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                    //}
+                    progressBar1.Visible = false;
+                    lblProgress.Text = "";
+                    lblProgress.Visible = false;
+                    //重新绑定
+                    BindDataGridView(null,null);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("File import failed. Please check the file for errors.", "Error", MessageBoxButtons.OK);
+                    progressBar1.Visible = false;
+                    lblProgress.Text = "";
+                    lblProgress.Visible = false;
+                    Logger.LogError(ex.Message);
+                }
+            }//else
+        }
+
+        private void btnOK_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(txtDataName.Text))
+                {
+                    MessageBox.Show("Please input dataset name.");
+                    return;
+                }
+                if (_dataSetName != txtDataName.Text)
+                {
+                    string commandText = string.Format("select INCIDENCEDATASETID from INCIDENCEDATASETS where INCIDENCEDATASETNAME='{0}' and setupID={1} and incidencedatasetid <> {2}", txtDataName.Text, CommonClass.ManageSetup.SetupID,incidenceDatasetID);
+                    FireBirdHelperBase fb = new ESILFireBirdHelper();
+                    object obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
+                    if (obj != null) { MessageBox.Show("The dataset name already exists. Please enter a different name."); return; }
+                    else
+                    {
+                        commandText = string.Format("update INCIDENCEDATASETS set INCIDENCEDATASETNAME='{0}' where INCIDENCEDATASETID='{1}'", txtDataName.Text, incidenceDatasetID);
+                        fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                    }
+                }
+                this.DialogResult = DialogResult.OK;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.Message);
+            }
+        }
+
+        private void btnDelete_Click(object sender, EventArgs e)
+        {
+            ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+            string commandText = string.Empty;
+            string msg = string.Empty;
+            try
+            {
+                //if (dgvDataSetIncidenceRates == null || dgvDataSetIncidenceRates.Rows.Count == 0) { msg = "There are no datas selected to be deleted!\t"; return; }
+                //DataGridViewCell cell = dgvDataSetIncidenceRates.CurrentCell;
+                //string incidenceRateID = dgvDataSetIncidenceRates.Rows[cell.RowIndex].Cells["INCIDENCERATEID"].Value.ToString();
+                if (olvIncidenceRates.Items.Count == 0) { msg = "There are no data to be deleted."; return; }
+                if (olvIncidenceRates.SelectedObject == null) return;
+                if (olvIncidenceRates.SelectedObject is DataRow)
+                {
+                    DataRow drv = olvIncidenceRates.SelectedObject as DataRow;
+                    incidenceRateID = drv["INCIDENCERATEID"].ToString();
+                }
+                else if (olvIncidenceRates.SelectedObject is DataRowView)
+                {
+                    DataRowView drv = olvIncidenceRates.SelectedObject as DataRowView;
+                    incidenceRateID = drv["INCIDENCERATEID"].ToString();
+                }
+                msg = string.Format("Delete this incidence or prevalence rate?");
+                DialogResult result = MessageBox.Show(msg, "Confirm Deletion", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                if (result == DialogResult.Yes)
+                {
+                    commandText = string.Format("delete from INCIDENCEENTRIES where IncidenceRateID={0}", incidenceRateID);
+                    int deleteRates = fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                    commandText = string.Format("delete from INCIDENCERATES where IncidenceRateID={0}", incidenceRateID);
+                    deleteRates = fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                    BindDataGridView(cboEndpointGroup.Text,cboEndpoint.Text);
+                    if (olvIncidenceRates.Items.Count == 0)
+                    {
+                        cboEndpointGroup.SelectedIndex = 0;
+                        if (olvIncidenceRates.Items.Count == 0)
+                        {
+                            DataTable dt=new DataTable();
+                            olvValues.DataSource = dt;
+                        }
+                        else
+                        {
+                            olvIncidenceRates.SelectedIndex = 0;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.Message);
+            }
+        }
+
+        private void cboGridDefinition_SelectedValueChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                _grdiDefinitionID = Convert.ToInt32(((cboGridDefinition.SelectedItem) as DataRowView)["GridDefinitionID"]);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.Message);
+            }
+        }
+
+        private void bdnInfo_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+            try
+            {
+                if (e.ClickedItem == null) { return; }
+                string tag = e.ClickedItem.Tag.ToString();
+                Console.WriteLine(tag);
+                switch (tag)
+                {
+                    case "first":
+                        _pageCurrent = 1;
+                        _currentRow = 0;
+                        LoadData();
+                        break;
+                    case "previous":
+                        _pageCurrent--;
+                        if (_pageCurrent <= 0)
+                        {
+                            //MessageBox.Show("It's the first page, click 'Move to Next Page' to view!\t", "Tip", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            return;
+                        }
+                        else
+                        {
+                            _currentRow = _pageSize * (_pageCurrent - 1);
+                        }
+                        LoadData();
+                        break;
+                    case "next":
+                        _pageCurrent++;
+                        if (_pageCurrent > _pageCount)
+                        {
+                            //MessageBox.Show("It's the last page, click 'Move to Previous Page' to view!\t", "Tip", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            return;
+                        }
+                        else
+                        {
+                            _currentRow = _pageSize * (_pageCurrent - 1);
+                        }
+                        LoadData();
+                        break;
+                    case "last":
+                        _pageCurrent = _pageCount;
+                        _currentRow = _pageSize * (_pageCurrent - 1);
+                        LoadData();
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+            }
+        }
+
+        private void txtCurrentPage_KeyDown(object sender, KeyEventArgs e)
+        {
+            try
+            {
+                if (e.KeyCode == Keys.Enter)
+                {
+                    var vars = sender as ToolStripTextBox;
+                    if (vars == null) { return; }
+                    int currentPage = 0;
+                    bool ok = int.TryParse(vars.Text, out currentPage);
+                    if (!ok) { return; }
+                    if (_pageCurrent == currentPage) { return; }
+                    _pageCurrent = currentPage;
+                    _currentRow = _pageSize * (_pageCurrent - 1);
+                    LoadData();
+                    //txtCurrentPage.Focus();
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+            }
+        }
+
+        private void olvIncidenceRates_SelectionChanged(object sender, EventArgs e)
+        {
+            FireBirdHelperBase fb = new ESILFireBirdHelper();
+            try
+            {
+                //得到选中行所对应的GridDefinition的name
+
+                DataRowView drv = olvIncidenceRates.SelectedObject as DataRowView;
+
+                incidenceRateID = drv["INCIDENCERATEID"].ToString();
+                //incidenceRateID = olvIncidenceRates.Rows[rowIndex].Cells["INCIDENCERATEID"].Value.ToString();
+                string commandText = "select GridDefinitionName,GridDefinitions.GridDefinitionID as GridDefinitionID from GridDefinitions,IncidenceRates where (GridDefinitions.GridDefinitionID=IncidenceRates.GridDefinitionID )and IncidenceRates.IncidenceRateID=" + incidenceRateID + "";
+                DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+
+                cboGridDefinition.Text = ds.Tables[0].Rows[0]["GridDefinitionName"].ToString();
+                _grdiDefinitionID = Convert.ToInt32(ds.Tables[0].Rows[0]["GridDefinitionID"]);
+                commandText = "select  CColumn,Row,VValue from IncidenceEntries where IncidenceRateID=" + incidenceRateID + "  ";
+                ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+                //dgvColumnRowsValue.DataSource = ds.Tables[0];
+                _dtColRowValue = ds.Tables[0];
+                InitDataSet();
+
+                //dgvColumnRowsValue.Columns[0].HeaderText = "Column";
+                //dgvColumnRowsValue.Columns[1].HeaderText = "Row";
+                //dgvColumnRowsValue.Columns[2].HeaderText = "Value";
+                //dgvColumnRowsValue.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+                //dgvColumnRowsValue.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+                ////dgvColumnRowsValue.RowHeadersVisible = false;
+                //dgvColumnRowsValue.Columns[2].DefaultCellStyle.Format = "0.000000000";
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.Message);
+            }
+        }
+
+        private void cboEndpointGroup_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                ObjectListView olv = olvIncidenceRates;
+                if (olv == null || olv.IsDisposed)
+                    return;
+                OLVColumn column = olv.GetColumn("olvcEndpointGroup");
+
+                // Collect all the checked values
+                ArrayList chosenValues = new ArrayList();
+                olvcEndpoint.ValuesChosenForFiltering.Clear();
+                if (!string.IsNullOrEmpty(cboEndpointGroup.Text))
+                {
+                    chosenValues.Add(cboEndpointGroup.Text);
+                    olvcEndpointGroup.ValuesChosenForFiltering = chosenValues;
+                    olv.UpdateColumnFiltering();
+                }
+                else
+                {
+                    olvcEndpointGroup.ValuesChosenForFiltering.Clear();
+                    olv.UpdateColumnFiltering();
+                }
+                if (!string.IsNullOrEmpty(cboEndpointGroup.Text))
+                {
+                    DataRow[] _dt = dtIncidence.Select("EndPointGroupName='" + cboEndpointGroup.Text + "'");
+                    olvIncidenceRates.DataSource = _dt;
+                }
+                else
+                    olvIncidenceRates.DataSource = dtIncidence;
+                string commandText = string.Format("select distinct EndPoints.EndPointName from IncidenceRates,EndPointGroups,EndPoints where (IncidenceRates.EndPointGroupID=EndPointGroups.EndPointGroupID) and (IncidenceRates.EndPointID=EndPoints.EndPointID) and IncidenceRates.IncidenceDataSetID='{0}'", incidenceDatasetID);
+                if (!string.IsNullOrEmpty(cboEndpointGroup.Text))
+                {
+                    commandText += " and EndPointGroups.EndPointGroupName='" + cboEndpointGroup.Text + "'";
+                }
+                ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                DataSet dsEndpoint = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+                cboEndpoint.Items.Clear();
+                cboEndpoint.Items.Add("");
+                int maxEndpointWidth = 136;
+                int EndpointWidth = 136;
+                for (int i = 0; i < dsEndpoint.Tables[0].Rows.Count; i++)
+                {
+                    if (!cboEndpoint.Items.Contains(dsEndpoint.Tables[0].Rows[i]["EndPointName"].ToString()))
+                    {
+                        cboEndpoint.Items.Add(dsEndpoint.Tables[0].Rows[i]["EndPointName"].ToString());
+                    }
+                    using (Graphics g = this.CreateGraphics())
+                    {
+                        SizeF string_size = g.MeasureString(dsEndpoint.Tables[0].Rows[i]["EndPointName"].ToString(), this.Font);
+                        EndpointWidth = Convert.ToInt16(string_size.Width) + 50;
+                    }
+                    maxEndpointWidth = Math.Max(maxEndpointWidth, EndpointWidth);
+                }
+                cboEndpoint.DropDownWidth = maxEndpointWidth;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.Message);
+            }
+        }
+
+        private void cboEndpoint_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(cboEndpointGroup.Text) && !string.IsNullOrEmpty(cboEndpoint.Text))
+                {
+                    DataRow[] _dt = dtIncidence.Select("EndPointGroupName='" + cboEndpointGroup.Text + "' and EndPointName='" + cboEndpoint.Text + "'");
+                    olvIncidenceRates.DataSource = _dt;
+                }
+                else if (string.IsNullOrEmpty(cboEndpointGroup.Text) && !string.IsNullOrEmpty(cboEndpoint.Text))
+                {
+                    DataRow[] _dt = dtIncidence.Select("EndPointName='" + cboEndpoint.Text + "'");
+                    olvIncidenceRates.DataSource = _dt;
+                }
+                else if (!string.IsNullOrEmpty(cboEndpointGroup.Text) && string.IsNullOrEmpty(cboEndpoint.Text))
+                {
+                    DataRow[] _dt = dtIncidence.Select("EndPointGroupName='" + cboEndpointGroup.Text + "'");
+                    olvIncidenceRates.DataSource = _dt;
+                }
+                else
+                    olvIncidenceRates.DataSource = dtIncidence;
+                ObjectListView olv = olvIncidenceRates;
+                if (olv == null || olv.IsDisposed)
+                    return;
+                OLVColumn column = olv.GetColumn("olvcEndpoint");
+
+                // Collect all the checked values
+                ArrayList chosenValues = new ArrayList();
+                string selectEndpoint = cboEndpoint.GetItemText(cboEndpoint.SelectedItem);
+                if (!string.IsNullOrEmpty(selectEndpoint))
+                {
+                    chosenValues.Add(selectEndpoint); 
+                    olvcEndpoint.ValuesChosenForFiltering = chosenValues;
+                    olv.UpdateColumnFiltering();
+                }
+                else
+                {
+                    olvcEndpoint.ValuesChosenForFiltering.Clear();
+                    olv.UpdateColumnFiltering();
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.Message);
+            }
+        }
+
+        private void txtFilter_TextChanged(object sender, EventArgs e)
+        {
+            this.TimedFilter(this.olvIncidenceRates, txtFilter.Text);
+        }
+
+        private void TimedFilter(ObjectListView olv, string txt)
+        {
+            this.TimedFilter(olv, txt, 0);
+        }
+
+        private void TimedFilter(ObjectListView olv, string txt, int matchKind)
+        {
+            TextMatchFilter filter = null;
+            if (!String.IsNullOrEmpty(txt))
+            {
+                switch (matchKind)
+                {
+                    case 0:
+                    default:
+                        filter = TextMatchFilter.Contains(olv, txt);
+                        break;
+                    case 1:
+                        filter = TextMatchFilter.Prefix(olv, txt);
+                        break;
+                    case 2:
+                        filter = TextMatchFilter.Regex(olv, txt);
+                        break;
+                }
+            }
+            // Setup a default renderer to draw the filter matches
+            if (filter == null)
+                olv.DefaultRenderer = null;
+            else
+            {
+                olv.DefaultRenderer = new HighlightTextRenderer(filter);
+
+                // Uncomment this line to see how the GDI+ rendering looks
+                olv.DefaultRenderer = new HighlightTextRenderer { Filter = filter, UseGdiTextRendering = true };
+            }
+
+            System.Diagnostics.Stopwatch stopWatch = new Stopwatch();
+            stopWatch.Start();
+            olv.ModelFilter = filter;
+            stopWatch.Stop();
+        }
+
+        private void chbGroup_CheckedChanged(object sender, EventArgs e)
+        {
+            ShowGroupsChecked(this.olvIncidenceRates, (CheckBox)sender);
+        }
+
+        private void ShowGroupsChecked(ObjectListView olv, CheckBox cb)
+        {
+            if (cb.Checked && olv.View == View.List)
+            {
+                cb.Checked = false;
+                MessageBox.Show("ListView's cannot show groups when in List view.", "Incidence ListView", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            else
+            {
+                olv.ShowGroups = cb.Checked;
+                olv.BuildList();
+            }
+        }
+
+        private string getTypeFromPrevalence(string prevalence)
+        {
+            if (prevalence == "F") { return "Incidence"; }
+            else if (prevalence == "T") { return "Prevalence"; }
+            else return null;
+        }
+
+        private string getStringFromID(int id, Dictionary<string, int> dic)
+        {
+            try
+            {
+                string result = string.Empty;
+                foreach (string s in dic.Keys)
+                {
+                    if (dic[s] == id)
+                        result = s;
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.Message);
+                return null;
+            }
+        }
+
+        private void btnOutPut_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+                saveFileDialog1.Filter = "CSV File|*.CSV";
+                saveFileDialog1.InitialDirectory = "C:\\";
+                if (saveFileDialog1.ShowDialog() == DialogResult.Cancel)
+                {return;}
+                string fileName = saveFileDialog1.FileName;
+                DataTable dtOut = new DataTable();
+                dtOut.Columns.Add("Endpoint Group", typeof(string));
+                dtOut.Columns.Add("Endpoint", typeof(string));
+                dtOut.Columns.Add("Race", typeof(string));
+                dtOut.Columns.Add("Gender", typeof(string));
+                dtOut.Columns.Add("Ethnicity", typeof(string));
+                dtOut.Columns.Add("Start Age", typeof(int));
+                dtOut.Columns.Add("End Age", typeof(int));
+                dtOut.Columns.Add("Type", typeof(string));
+                dtOut.Columns.Add("Column", typeof(int));
+                dtOut.Columns.Add("Row", typeof(int));
+                dtOut.Columns.Add("Value", typeof(double));
+                FireBirdHelperBase fb = new ESILFireBirdHelper();
+                string commandText = string.Empty;
+                int outputRowsNumber = 50;
+                Dictionary<string, int> dicGender = getAllGender();
+                Dictionary<string, int> dicRace = getAllRace();
+                Dictionary<string, int> dicEthnicity = getAllEthnicity();
+                Dictionary<string, int> dicEndPointGroup = getAllEndPointGroup();
+                Dictionary<string, int> dicEndPoint = getAllEndPoint();
+                commandText = "select count(*) from IncidenceRates";
+                int count = (int)fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
+                if (count < outputRowsNumber) { outputRowsNumber = count; }
+                commandText = string.Format("select first {0} endpointGroupID, endpointID,RaceID,GenderID,EthnicityID,StartAge,EndAge,Prevalence,Ccolumn,Row,Vvalue from IncidenceRates a,IncidenceEntries b where a.IncidenceRateId=b.IncidenceRateId", outputRowsNumber);
+                DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
+                foreach (DataRow dr in ds.Tables[0].Rows)
+                {
+                    DataRow newdr = dtOut.NewRow();
+                    newdr["Endpoint Group"] = getStringFromID(Convert.ToInt32(dr["endpointGroupID"]), dicEndPointGroup);
+                    newdr["Endpoint"] = getStringFromID(Convert.ToInt32(dr["endpointID"]), dicEndPoint);
+                    newdr["Race"] = getStringFromID(Convert.ToInt32(dr["RaceID"]), dicRace);
+                    newdr["Gender"] = getStringFromID(Convert.ToInt32(dr["GenderID"]), dicGender);
+                    newdr["Ethnicity"] = getStringFromID(Convert.ToInt32(dr["EthnicityID"]), dicEthnicity);
+                    newdr["Start Age"] = Convert.ToInt32(dr["StartAge"]);
+                    newdr["End Age"] = Convert.ToInt32(dr["EndAge"]);
+                    newdr["Type"] = getTypeFromPrevalence(dr["Prevalence"].ToString());
+                    newdr["Column"] = Convert.ToInt32(dr["Ccolumn"]);
+                    newdr["Row"] = Convert.ToInt32(dr["Row"]);
+                    newdr["Value"] =Convert.ToDouble( dr["Vvalue"]);
+                    dtOut.Rows.Add(newdr);
+                }
+                CommonClass.SaveCSV(dtOut, fileName);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// 将DataTable中数据写入到CSV文件中
+        /// </summary>
+        /// <param name="dt">提供保存数据的DataTable</param>
+        /// <param name="fileName">CSV的文件路径</param>
+        public void SaveCSV(DataTable dt, string fileName)
+        {
+            FileStream fs = new FileStream(fileName, System.IO.FileMode.Create, System.IO.FileAccess.Write);
+            StreamWriter sw = new StreamWriter(fs, System.Text.Encoding.UTF8);
+            string data = "";
+
+            //写出列名称
+            for (int i = 0; i < dt.Columns.Count; i++)
+            {
+                data += dt.Columns[i].ColumnName.ToString();
+                if (i < dt.Columns.Count - 1)
+                {
+                    data += ",";
+                }
+            }
+            sw.WriteLine(data);
+
+            //写出各行数据
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                data = "";
+
+                for (int j = 0; j < dt.Columns.Count; j++)
+                {
+                    if(dt.Rows[i][j].ToString().Contains(","))
+                    {
+                        data += "\"" + dt.Rows[i][j].ToString() + "\"";
+                    }
+                    else
+                    data += dt.Rows[i][j].ToString();
+                    if (j < dt.Columns.Count - 1)
+                    {
+                        data += ",";
+                    }
+                }
+                sw.WriteLine(data);
+            }
+
+            sw.Close();
+            fs.Close();
+            MessageBox.Show("CSV file saved.", "File saved");
+        }
+
+
+        struct ColRowValue
+        {
+             public int col, row;
+             public double value;
+        }
+        private void olvValues_ColumnClick(object sender, ColumnClickEventArgs e)
+        {
+            //try
+            //{
+            //    if (_dtColRowValue == null || sender == null) return;
+            //    DataTable updataTable = new DataTable();
+            //    updataTable = _dtColRowValue.Clone();
+            //    List<ColRowValue> lstTable = new List<ColRowValue>();
+            //    for (int i = 0; i < _dtColRowValue.Rows.Count;i++ )
+            //    {
+            //        ColRowValue item=new ColRowValue();
+            //        item.col= Convert.ToInt32(_dtColRowValue.Rows[i][0]);
+            //        item.row= Convert.ToInt32(_dtColRowValue.Rows[i][1]);
+            //        item.value=Convert.ToDouble(_dtColRowValue.Rows[i][2]);
+            //        lstTable.Add(item);
+            //    }
+            //        if (olvValues.LastSortOrder == SortOrder.Ascending)
+            //        {
+            //            switch ((sender as ObjectListView).Columns[e.Column].Text.Replace(" ", "").ToLower())
+            //            { 
+            //                case "column":
+            //                    lstTable = lstTable.OrderBy(p => p.col).ToList();
+            //                    break;
+            //                case "row":
+            //                    lstTable = lstTable.OrderBy(p => p.col).ToList();
+            //                    break;
+            //                case "value":
+            //                    lstTable = lstTable.OrderBy(p => p.col).ToList();
+            //                    break;
+            //                default:
+            //                    break;
+            //            }
+            //        }
+            //        foreach (ColRowValue crv in lstTable)
+            //        {
+            //            DataRow dr = updataTable.NewRow();
+            //            dr[0] = crv.col;
+            //            dr[1] = crv.row;
+            //            dr[2] = crv.value;
+            //            updataTable.Rows.Add(dr);
+            //        }
+            //        olvValues.DataSource = null;
+            //        olvValues.DataSource = updataTable;
+            //}
+            //catch (Exception ex)
+            //{
+            //    Logger.LogError(ex.Message);
+            //}
+        }
+        //public static DataTable TableDistinct(DataTable source, DataColumn[] Columns)
+        //{
+        //    DataTable table = source.Clone();
+        //    table=source.Copy();
+
+        //    object[] currentrow = null;
+
+        //    System.Collections.Hashtable ht = new System.Collections.Hashtable();
+        //    table.BeginLoadData();
+
+        //    foreach (DataRow row in table.Rows)
+        //    {
+        //        int hash = string.Concat(row.ItemArray).GetHashCode();
+        //        if (ht.Contains(hash))
+        //            continue;
+        //        ht.Add(hash, hash);
+        //        //Insert a copy of current row
+        //        currentrow = new object[Columns.Length];
+        //        Array.Copy(row.ItemArray, currentrow, Columns.Length);
+        //        table.LoadDataRow(currentrow, true);
+
+        //    }
+
+        //    table.EndLoadData();
+        //    return table;
+
+        //}
+    }
+}

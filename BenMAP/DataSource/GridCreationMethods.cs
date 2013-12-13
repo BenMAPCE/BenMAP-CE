@@ -1,0 +1,460 @@
+﻿using System;
+using System.IO;
+using System.Windows.Forms;
+using DotSpatial.Data;
+using System.Data;
+using ESIL.DBUtility;
+
+namespace BenMAP
+{
+    public partial class GridCreationMethods : FormBase
+    {
+        public GridCreationMethods()
+        {
+            InitializeComponent();
+        }
+
+        private BaseControlGroup _bgc = null;
+
+        public BaseControlGroup BGC
+        {
+            get { return _bgc; }
+            set { _bgc = value; }
+        }
+
+        private MonitorDataLine _mDataLine = new MonitorDataLine();
+
+        public MonitorDataLine MDataLine
+        {
+            get { return _mDataLine; }
+            set { _mDataLine = value; }
+        }
+
+        private string _currentStat = string.Empty;
+
+        public GridCreationMethods(BaseControlGroup bgc, string currentStat)
+        {
+            InitializeComponent();
+            _bgc = bgc;
+            _currentStat = currentStat;
+            switch (currentStat)
+            {
+                case "baseline":
+                    if (bgc.Base != null && bgc.Base.ModelResultAttributes != null && bgc.Base.ModelResultAttributes.Count > 0)
+                    {
+                        this.btnSave.Enabled = true;
+                        this.btnSaveNewFormat.Enabled = true;
+                    }
+                    break;
+                //changeNodeImage(currentNode);
+                case "control":
+                    if (bgc.Control != null && bgc.Control.ModelResultAttributes != null && bgc.Control.ModelResultAttributes.Count > 0)
+                    {
+                        this.btnSave.Enabled = true;
+                        this.btnSaveNewFormat.Enabled = true;
+                    }
+                    break;
+            }
+        }
+
+        private string _pageStat = "model";
+
+        /// <summary>
+        /// 界面选择的状态 ：Model Data;Monitor Data；Monitor RollBack Data
+        /// </summary>
+        public string PageStat
+        {
+            get { return _pageStat; }
+            set { _pageStat = value; }
+        }
+
+        private string _strPath;
+
+        /// <summary>
+        /// 选择的数据路径；
+        /// </summary>
+        public string StrPath
+        {
+            get { return _strPath; }
+            set { _strPath = value; }
+        }
+
+        private void GridCreationMethods_Load(object sender, EventArgs e)
+        {
+            try
+            {
+                ESIL.DBUtility.FireBirdHelperBase fb = new ESILFireBirdHelper();
+                string commandText = string.Format("select * from GridDefinitions where setupid={0} order by GridDefinitionName asc", CommonClass.MainSetup.SetupID);
+                System.Data.DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
+                // 必须这样写，否则会出错
+                DataTable dtGrid = ds.Tables[0].Clone();
+                dtGrid = ds.Tables[0].Copy();
+                cboGrid.DataSource = dtGrid;
+                cboGrid.DisplayMember = "GridDefinitionName";
+                for (int i = 0; i < dtGrid.Rows.Count; i++)
+                {
+                    if (dtGrid.Rows[i]["defaulttype"].ToString() == "1" && CommonClass.GBenMAPGrid == null)
+                    {
+                        cboGrid.SelectedIndex = i;
+                        break;
+                    }
+                    else if (CommonClass.GBenMAPGrid != null && Convert.ToInt32(dtGrid.Rows[i]["GridDefinitionID"]) == CommonClass.GBenMAPGrid.GridDefinitionID)
+                    {
+                        cboGrid.SelectedIndex = i;
+                        break;
+
+                    }
+
+                }
+                //---------------------判断是否在异步，在异步不能修改GridType-------------------
+                if (CommonClass.LstAsynchronizationStates != null && CommonClass.LstAsynchronizationStates.Count > 0)
+                {
+                    cboGrid.Enabled = false;
+ 
+                }
+            }
+            catch (Exception ex)
+            { }
+        }
+        public bool isGridTypeChanged = false;
+        private void btnNext_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                //-----------------set Grid--------------
+                DataRowView drv = cboGrid.SelectedItem as DataRowView;
+                BenMAPGrid benMAPGrid = Grid.GridCommon.getBenMAPGridFromID(Convert.ToInt32(drv["GridDefinitionID"]));
+
+                if (CommonClass.GBenMAPGrid == null) CommonClass.GBenMAPGrid = benMAPGrid;
+                else if (CommonClass.GBenMAPGrid.GridDefinitionID != benMAPGrid.GridDefinitionID)
+                {
+                    CommonClass.GBenMAPGrid = benMAPGrid;
+                    isGridTypeChanged = true;
+                }
+                _bgc.GridType = CommonClass.GBenMAPGrid;
+                string tip = "Reading and checking the data file.";
+                if (rbtnModelData.Checked)
+                {
+                    ModelData frm = new ModelData(_bgc, _currentStat);
+                    DialogResult rtn = frm.ShowDialog();
+                    if (rtn == DialogResult.Cancel) { return; }
+                    _strPath = frm.StrPath;
+                    this.DialogResult = rtn;
+                }
+                else if (rbtnMonitorData.Checked)
+                {
+                    MonitorData frm = new MonitorData(_bgc, _currentStat);
+                    DialogResult rtn = frm.ShowDialog();
+                    if (rtn == DialogResult.Cancel) { return; }
+                    _mDataLine = frm.MDataLine;
+                    _strPath = frm.StrPath;
+                    this.DialogResult = rtn;
+
+                    //_bgc = frm.BGCMonitor;
+                    //if (rtn != DialogResult.OK) { return; }
+                }
+                else if (rbtnMonitorRollback.Checked)
+                {
+                    MonitorRollback frm = new MonitorRollback(_bgc, _currentStat);
+                    DialogResult rtn = frm.ShowDialog();
+                    if (rtn == DialogResult.Cancel) { return; }
+                    _mDataLine = frm._monitorRollbackLine;
+                    _strPath = frm.StrPath;
+                    this.DialogResult = rtn;
+                    //if (rtn != DialogResult.OK) { return; }
+                }
+                else if (this.rbtnOpenFile.Checked)
+                {
+                    if (txtExistingAQG.Text != "")
+                    {
+                        ParaserAQG(txtExistingAQG.Text);
+
+                    }// if
+                    //this.DialogResult = DialogResult.OK;
+                    return;
+                }// this.rbtnOpenFile.Checked
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+            }
+        }
+
+        public void ParaserAQG(string strPath)
+        {
+            try
+            {
+                string tip = "Reading and checking the data file.";
+                _strPath = strPath;
+                //progressBar1.PerformStep();
+                //CommonClass.be
+                WaitShow(tip);
+                string err = "";
+                BenMAPLine benMapLine = DataSourceCommonClass.LoadAQGFile(txtExistingAQG.Text,ref err);
+                System.Threading.Thread.Sleep(100);
+                if (benMapLine == null)
+                {
+                    //--------------丁点加提示
+                    WaitClose();
+                    MessageBox.Show(err);
+                    return;
+                }
+                WaitClose();
+                if (benMapLine.Pollutant.PollutantID != _bgc.Pollutant.PollutantID)
+                {
+                    MessageBox.Show("The AQG's pollutant does not match the selected pollutant. Please select another file.");
+                    return;
+                }
+                else if (benMapLine.GridType.GridDefinitionID != _bgc.GridType.GridDefinitionID)
+                {
+                    MessageBox.Show("The AQG's grid definition does not match the selected grid definition. Please select another file.");
+                    return;
+                }
+                if (benMapLine.ShapeFile != null && !benMapLine.ShapeFile.Contains(@"\"))
+                {
+                    string AppPath = Application.StartupPath;
+                    string _filePath = txtExistingAQG.Text.Substring(0, txtExistingAQG.Text.LastIndexOf(@"\") + 1);
+                    string strShapePath = string.Format("{0}\\Result\\Tmp\\{1}", CommonClass.DataFilePath, benMapLine.ShapeFile);
+                    //if (File.Exists(_filePath + benMapLine.ShapeFile))
+                    //{
+                    // File.Copy(_filePath + @"\" + benMapLine.ShapeFile, strShapePath);
+                    benMapLine.ShapeFile = _filePath + benMapLine.ShapeFile;
+                    //}
+                    //else
+                    //{
+                    //---------------------
+                    DataSourceCommonClass.SaveBenMAPLineShapeFile(_bgc.GridType, _bgc.Pollutant, benMapLine, strShapePath);
+                    //}
+                }
+                else if(benMapLine.ShapeFile != null)
+                {
+                    DataSourceCommonClass.SaveBenMAPLineShapeFile(_bgc.GridType, _bgc.Pollutant, benMapLine, benMapLine.ShapeFile);
+                }
+                switch (_currentStat)
+                {
+                    case "baseline":
+                        _bgc.Base = benMapLine;//DataSourceCommonClass.LoadAQGFile(txtExistingAQG.Text);
+
+                        break;
+                    case "control":
+                        _bgc.Control = benMapLine;// DataSourceCommonClass.LoadAQGFile(txtExistingAQG.Text);
+                        break;
+                }//swith
+                this.DialogResult = System.Windows.Forms.DialogResult.OK;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+            }
+        }
+
+        private void btnCancel_Click(object sender, EventArgs e)
+        {
+            this.DialogResult = DialogResult.Cancel;
+        }
+
+        private void RadioButton_CheckedChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                if (sender == null) { return; }
+                RadioButton rbn = sender as RadioButton;
+                if (rbn.Checked) { _pageStat = rbn.Tag.ToString(); }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+            }
+        }
+
+        private void btnBrowse_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                OpenFileDialog openFileDialog = new OpenFileDialog();
+                openFileDialog.InitialDirectory = CommonClass.ResultFilePath + @"\Result\AQG";
+                //openFileDialog.InitialDirectory = System.Windows.Forms.Application.StartupPath + @"\Data\";
+                openFileDialog.Filter = "Air Quality Surface(*.aqgx)|*.aqgx";
+                openFileDialog.FilterIndex = 3;
+                openFileDialog.RestoreDirectory = true;
+                if (openFileDialog.ShowDialog() != DialogResult.OK) { return; }
+                this.txtExistingAQG.Text = openFileDialog.FileName;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+            }
+        }
+
+        private void rbtnOpenFile_CheckedChanged(object sender, EventArgs e)
+        {
+            if (rbtnOpenFile.Checked)
+            {
+                btnBrowse.Enabled = true;
+            }
+            else
+            {
+                btnBrowse.Enabled = false;
+            }
+        }
+
+        TipFormGIF waitMess = new TipFormGIF();//等待窗体
+        bool sFlog = true;
+
+        //--显示等待窗体
+        private void ShowWaitMess()
+        {
+            try
+            {
+                if (!waitMess.IsDisposed)
+                {
+                    waitMess.ShowDialog();
+                }
+            }
+            catch (System.Threading.ThreadAbortException Err)
+            {
+                MessageBox.Show(Err.Message);
+            }
+        }
+
+        //--新开辟一个线程调用
+        public void WaitShow(string msg)
+        {
+            try
+            {
+                if (sFlog == true)
+                {
+                    sFlog = false;
+                    waitMess.Msg = msg;
+                    System.Threading.Thread upgradeThread = null;
+                    upgradeThread = new System.Threading.Thread(new System.Threading.ThreadStart(ShowWaitMess));
+                    upgradeThread.Start();
+                }
+            }
+            catch (System.Threading.ThreadAbortException Err)
+            {
+                MessageBox.Show(Err.Message);
+            }
+        }
+
+        private delegate void CloseFormDelegate();
+
+        //--关闭等待窗体
+        public void WaitClose()
+        {
+            //同步到主线程上
+            if (waitMess.InvokeRequired)
+                waitMess.Invoke(new CloseFormDelegate(DoCloseJob));
+            else
+                DoCloseJob();
+        }
+
+        private void DoCloseJob()
+        {
+            try
+            {
+                if (!waitMess.IsDisposed)
+                {
+                    if (waitMess.Created)
+                    {
+                        sFlog = true;
+                        waitMess.Close();
+                    }
+                }
+            }
+            catch (System.Threading.ThreadAbortException Err)
+            {
+                MessageBox.Show(Err.Message);
+            }
+        }
+
+        private void btnSave_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.Filter = "aqg files (*.aqgx)|*.aqgx";
+            sfd.FilterIndex = 2;
+            sfd.RestoreDirectory = true;
+            sfd.InitialDirectory = CommonClass.ResultFilePath + @"\Result\AQG";
+            string _fileName = "";
+            string _filePath = "";
+            string shpFile = "";
+            _filePath = sfd.FileName.Substring(0, sfd.FileName.LastIndexOf(@"\") + 1);
+            FeatureSet fs = new FeatureSet();
+            if (sfd.ShowDialog() == DialogResult.OK)
+            {
+                switch (_currentStat)
+                {
+                    case "baseline":
+                        //---modify by xiejp 2011927 为了保存shp，直接把shp文件拷贝到sfd的文件路径下面
+                        _filePath = sfd.FileName.Substring(0, sfd.FileName.LastIndexOf(@"\") + 1);
+                        _fileName = sfd.FileName.Substring(sfd.FileName.LastIndexOf(@"\") + 1).Replace("aqgx", "shp");
+                        //File.Copy(_bgc.Base.ShapeFile,_filePath+@"\"+_bgc.Base.ShapeFile.Substring(_bgc.Base.ShapeFile.LastIndexOf(@"\") + 1),true);
+                        //  _fileName = _bgc.Base.ShapeFile.Substring(_bgc.Base.ShapeFile.LastIndexOf(@"\") + 1);
+                        ////.dbf
+                        //  File.Copy(_bgc.Base.ShapeFile, _filePath + @"\" + _fileName.Replace("shp", "dbf"), true);
+                        //  File.Copy(_bgc.Base.ShapeFile, _filePath + @"\" + _fileName.Replace("shp", "shx"), true);
+                        //  File.Copy(_bgc.Base.ShapeFile, _filePath + @"\" + _fileName.Replace(".shp", ""), true);
+
+                        // fs.Open(_bgc.Base.ShapeFile);
+                        //// fs.SaveAs(_filePath + @"\" + _bgc.Base.ShapeFile.Substring(_bgc.Base.ShapeFile.LastIndexOf(@"\") + 1), true);
+                        // fs.SaveAs(_filePath + _fileName,true);
+
+                        // shpFile = _bgc.Base.ShapeFile;
+                        // _bgc.Base.ShapeFile = _fileName;//_bgc.Base.ShapeFile.Substring(_bgc.Base.ShapeFile.LastIndexOf(@"\") + 1);
+
+                        DataSourceCommonClass.CreateAQGFromBenMAPLine(_bgc.Base, sfd.FileName);//DataSourceCommonClass.LoadAQGFile(txtExistingAQG.Text);
+                        _bgc.Base.ShapeFile = shpFile;
+                        break;
+                    case "control":
+
+                        string _filePathControl = sfd.FileName.Substring(0, sfd.FileName.LastIndexOf(@"\") + 1);
+                        _fileName = sfd.FileName.Substring(sfd.FileName.LastIndexOf(@"\") + 1).Replace("aqgx", "shp");
+                        //fs.Open(_bgc.Control.ShapeFile);
+                        ////fs.SaveAs(_filePath + @"\" + _bgc.Control.ShapeFile.Substring(_bgc.Control.ShapeFile.LastIndexOf(@"\") + 1), true);
+                        //fs.SaveAs(_filePathControl + _fileName, true);
+                        //shpFile = _bgc.Control.ShapeFile;
+                        //_bgc.Control.ShapeFile =_fileName;// _bgc.Control.ShapeFile.Substring(_bgc.Control.ShapeFile.LastIndexOf(@"\") + 1);
+
+                        DataSourceCommonClass.CreateAQGFromBenMAPLine(_bgc.Control, sfd.FileName);//DataSourceCommonClass.LoadAQGFile(txtExistingAQG.Text);
+                        _bgc.Control.ShapeFile = shpFile;
+                        break;
+                }
+                MessageBox.Show("AQG saved.", "File saved");
+            }
+        }
+
+        private void SaveNewFormat_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.Filter = "csv files (*.csv)|*.csv";
+            sfd.FilterIndex = 2;
+            sfd.RestoreDirectory = true;
+            string _fileName = "";
+            string _filePath = "";
+            string shpFile = "";
+            _filePath = sfd.FileName.Substring(0, sfd.FileName.LastIndexOf(@"\") + 1);
+            //FeatureSet fs = new FeatureSet();
+            if (sfd.ShowDialog() == DialogResult.OK)
+            {
+                switch (_currentStat)
+                {
+                    case "baseline":
+                        //---modify by xiejp 2011927 为了保存shp，直接把shp文件拷贝到sfd的文件路径下面
+                        _filePath = sfd.FileName.Substring(0, sfd.FileName.LastIndexOf(@"\") + 1);
+                        _fileName = sfd.FileName.Substring(sfd.FileName.LastIndexOf(@"\") + 1).Replace("aqg", "shp");
+
+                        DataSourceCommonClass.SaveModelDataLineToNewFormatCSV(_bgc.Base, sfd.FileName);//DataSourceCommonClass.LoadAQGFile(txtExistingAQG.Text);
+                        //_bgc.Base.ShapeFile = shpFile;
+                        break;
+                    case "control":
+
+                        string _filePathControl = sfd.FileName.Substring(0, sfd.FileName.LastIndexOf(@"\") + 1);
+                        DataSourceCommonClass.SaveModelDataLineToNewFormatCSV(_bgc.Control, sfd.FileName);
+                        //DataSourceCommonClass.CreateAQGFromBenMAPLine(_bgc.Control, sfd.FileName);//DataSourceCommonClass.LoadAQGFile(txtExistingAQG.Text);
+                        //_bgc.Control.ShapeFile = shpFile;
+                        break;
+                }
+            }
+        }
+    }
+}

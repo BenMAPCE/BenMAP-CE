@@ -1,0 +1,1526 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{F7F40596-B853-4FA7-A075-1D74565D26A1}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>BenMAP</RootNamespace>
+    <AssemblyName>BenMAP</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
+    <CodeAnalysisFailOnMissingRules>true</CodeAnalysisFailOnMissingRules>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>48x48.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup>
+    <TargetZone>LocalIntranet</TargetZone>
+  </PropertyGroup>
+  <PropertyGroup>
+    <GenerateManifests>false</GenerateManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RunPostBuildEvent>Always</RunPostBuildEvent>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="DotSpatial.Analysis, Version=0.11.9.6, Culture=neutral, PublicKeyToken=df3f45fb0fe4cb0c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Dll\DotSpatial\DotSpatial.Analysis.dll</HintPath>
+    </Reference>
+    <Reference Include="DotSpatial.Compatibility, Version=0.11.9.6, Culture=neutral, PublicKeyToken=094c8fdea7f4a002, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Dll\DotSpatial\DotSpatial.Compatibility.dll</HintPath>
+    </Reference>
+    <Reference Include="DotSpatial.Controls, Version=0.11.9.6, Culture=neutral, PublicKeyToken=4d9e49339a7d240c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Dll\DotSpatial\DotSpatial.Controls.dll</HintPath>
+    </Reference>
+    <Reference Include="DotSpatial.Data, Version=0.11.9.6, Culture=neutral, PublicKeyToken=c29dbf30e059ca9d, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Dll\DotSpatial\DotSpatial.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="DotSpatial.Data.Forms, Version=0.11.9.6, Culture=neutral, PublicKeyToken=53ab5a198378d4c1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Dll\DotSpatial\DotSpatial.Data.Forms.dll</HintPath>
+    </Reference>
+    <Reference Include="DotSpatial.Extensions, Version=1.0.0.0, Culture=neutral, PublicKeyToken=4d9e49339a7d240c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Dll\DotSpatial\DotSpatial.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="DotSpatial.Modeling.Forms, Version=0.11.9.6, Culture=neutral, PublicKeyToken=712bef29a31a9354, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Dll\DotSpatial\DotSpatial.Modeling.Forms.dll</HintPath>
+    </Reference>
+    <Reference Include="DotSpatial.Projections, Version=0.11.9.6, Culture=neutral, PublicKeyToken=272632bddd08a38b, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Dll\DotSpatial\DotSpatial.Projections.dll</HintPath>
+    </Reference>
+    <Reference Include="DotSpatial.Projections.Forms, Version=0.11.9.6, Culture=neutral, PublicKeyToken=52099474f11b7ff0, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Dll\DotSpatial\DotSpatial.Projections.Forms.dll</HintPath>
+    </Reference>
+    <Reference Include="DotSpatial.Serialization, Version=0.11.9.6, Culture=neutral, PublicKeyToken=441f200f827611e7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Dll\DotSpatial\DotSpatial.Serialization.dll</HintPath>
+    </Reference>
+    <Reference Include="DotSpatial.Symbology, Version=0.11.9.6, Culture=neutral, PublicKeyToken=6178c08da7998387, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Dll\DotSpatial\DotSpatial.Symbology.dll</HintPath>
+    </Reference>
+    <Reference Include="DotSpatial.Symbology.Forms, Version=0.11.9.6, Culture=neutral, PublicKeyToken=0544cdeefb662382, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Dll\DotSpatial\DotSpatial.Symbology.Forms.dll</HintPath>
+    </Reference>
+    <Reference Include="DotSpatial.Topology, Version=0.11.9.6, Culture=neutral, PublicKeyToken=a66b5e9434ca3671, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Dll\DotSpatial\DotSpatial.Topology.dll</HintPath>
+    </Reference>
+    <Reference Include="Excel">
+      <HintPath>Dll\Excel.dll</HintPath>
+    </Reference>
+    <Reference Include="FireBirdHelper">
+      <HintPath>Dll\FirebirdDB\FireBirdHelper.dll</HintPath>
+    </Reference>
+    <Reference Include="FirebirdSql.Data.FirebirdClient, Version=3.0.2.0, Culture=neutral, PublicKeyToken=3750abcc3150b00c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Dll\FirebirdDB\FirebirdSql.Data.FirebirdClient.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="ISymWrapper" />
+    <Reference Include="LumenWorks.Framework.IO">
+      <HintPath>Dll\LumenWorks.Framework.IO.dll</HintPath>
+    </Reference>
+    <Reference Include="Meta.Numerics">
+      <HintPath>Dll\Meta.Numerics.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ReportViewer.Common, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+    <Reference Include="Microsoft.ReportViewer.WinForms, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="ObjectListView, Version=2.5.0.28548, Culture=neutral, PublicKeyToken=b1c5bf581481bcd4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Dll\ObjectListView\ObjectListView.dll</HintPath>
+    </Reference>
+    <Reference Include="protobuf-net">
+      <HintPath>Dll\protobuf-net.dll</HintPath>
+    </Reference>
+    <Reference Include="RichTextBoxPrintCtrl">
+      <HintPath>Dll\RichTextBoxPrintCtrl.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.Linq" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceProcess" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="ZedGraph">
+      <HintPath>Dll\ZedGraph\ZedGraph.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="APV\Aggregation.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="APV\Aggregation.Designer.cs">
+      <DependentUpon>Aggregation.cs</DependentUpon>
+    </Compile>
+    <Compile Include="APV\APVCommonClass.cs" />
+    <Compile Include="APV\APVConfigurationAdvancedSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="APV\APVConfigurationAdvancedSettings.Designer.cs">
+      <DependentUpon>APVConfigurationAdvancedSettings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="APV\ChangedCRFunctions.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="APV\ChangedCRFunctions.Designer.cs">
+      <DependentUpon>ChangedCRFunctions.cs</DependentUpon>
+    </Compile>
+    <Compile Include="APV\IncidencePoolingandAggregation.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="APV\IncidencePoolingandAggregation.Designer.cs">
+      <DependentUpon>IncidencePoolingandAggregation.cs</DependentUpon>
+    </Compile>
+    <Compile Include="APV\MessageForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="APV\MessageForm.Designer.cs">
+      <DependentUpon>MessageForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="APV\MonteCarlo.cs" />
+    <Compile Include="APV\OpenExistingAPVConfiguration.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="APV\OpenExistingAPVConfiguration.Designer.cs">
+      <DependentUpon>OpenExistingAPVConfiguration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="APV\SelectSubjectiveWeight.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="APV\SelectSubjectiveWeight.Designer.cs">
+      <DependentUpon>SelectSubjectiveWeight.cs</DependentUpon>
+    </Compile>
+    <Compile Include="APV\SelectValuationMethods.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="APV\SelectValuationMethods.Designer.cs">
+      <DependentUpon>SelectValuationMethods.cs</DependentUpon>
+    </Compile>
+    <Compile Include="APV\SelectValuationWeight.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="APV\SelectValuationWeight.Designer.cs">
+      <DependentUpon>SelectValuationWeight.cs</DependentUpon>
+    </Compile>
+    <Compile Include="APV\TileSet.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="APV\TileSet.Designer.cs">
+      <DependentUpon>TileSet.cs</DependentUpon>
+    </Compile>
+    <Compile Include="AuditTrailReportCommonClass.cs" />
+    <Compile Include="BatchCommonClass.cs" />
+    <Compile Include="BenMap.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BenMap.Designer.cs">
+      <DependentUpon>BenMap.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BenMap.Setting.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ConfigurationResulesReport.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ConfigurationResulesReport.Designer.cs">
+      <DependentUpon>ConfigurationResulesReport.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Configuration\HealthImpactFunctions.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Configuration\HealthImpactFunctions.Designer.cs">
+      <DependentUpon>HealthImpactFunctions.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Configuration\LatinHypercubePoints.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Configuration\LatinHypercubePoints.Designer.cs">
+      <DependentUpon>LatinHypercubePoints.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Configuration\OpenExistingConfiguration.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Configuration\OpenExistingConfiguration.Designer.cs">
+      <DependentUpon>OpenExistingConfiguration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Configuration\PopulationDataset.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Configuration\PopulationDataset.Designer.cs">
+      <DependentUpon>PopulationDataset.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Configuration\SelectAirQualityGrid.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Configuration\SelectAirQualityGrid.Designer.cs">
+      <DependentUpon>SelectAirQualityGrid.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DataSource\AdvancedOptions.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DataSource\AdvancedOptions.Designer.cs">
+      <DependentUpon>AdvancedOptions.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DataSource\DataSourceCommonClass.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DataSource\MonitorMap.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DataSource\MonitorMap.Designer.cs">
+      <DependentUpon>MonitorMap.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DataSource\MonitorRollbackSettings2.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DataSource\MonitorRollbackSettings2.Designer.cs">
+      <DependentUpon>MonitorRollbackSettings2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DataSource\MonitorRollbackSettings3.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DataSource\MonitorRollbackSettings3.Designer.cs">
+      <DependentUpon>MonitorRollbackSettings3.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DataSource\FilterMonitors.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DataSource\FilterMonitors.Designer.cs">
+      <DependentUpon>FilterMonitors.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DataSource\GridCreationMethods.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DataSource\GridCreationMethods.Designer.cs">
+      <DependentUpon>GridCreationMethods.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DataSource\ModelData.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DataSource\ModelData.Designer.cs">
+      <DependentUpon>ModelData.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DataSource\MonitorData.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DataSource\MonitorData.Designer.cs">
+      <DependentUpon>MonitorData.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DataSource\MonitorRollback.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DataSource\MonitorRollback.Designer.cs">
+      <DependentUpon>MonitorRollback.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DataSource\OpenExistingAQG.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DataSource\OpenExistingAQG.Designer.cs">
+      <DependentUpon>OpenExistingAQG.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DataSource\RollBackDalgorithm.cs" />
+    <Compile Include="DataSource\SelectRegionRollbackType.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DataSource\SelectRegionRollbackType.Designer.cs">
+      <DependentUpon>SelectRegionRollbackType.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ExitConfirm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ExitConfirm.Designer.cs">
+      <DependentUpon>ExitConfirm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DataSource\FilterMonitorsPM.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="DataSource\FilterMonitorsPM.Designer.cs">
+      <DependentUpon>FilterMonitorsPM.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DataSource\FilterMonitorsOzone.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="DataSource\FilterMonitorsOzone.Designer.cs">
+      <DependentUpon>FilterMonitorsOzone.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormBase.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormBase.Designer.cs">
+      <DependentUpon>FormBase.cs</DependentUpon>
+    </Compile>
+    <Compile Include="HomePage.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="HomePage.Designer.cs">
+      <DependentUpon>HomePage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Kriging\CellStrMatch.cs" />
+    <Compile Include="Kriging\Common.cs" />
+    <Compile Include="CommonClass.cs" />
+    <Compile Include="Configs\Report.cs" />
+    <Compile Include="Configuration\CalcResult.cs" />
+    <Compile Include="Configuration\ConfigurationAtt.cs" />
+    <Compile Include="Configuration\ConfigurationCommonClass.cs" />
+    <Compile Include="Configuration\HealthFunctionAtt.cs" />
+    <Compile Include="Configuration\IncidenceAtt.cs" />
+    <Compile Include="Grid\GridCommon.cs" />
+    <Compile Include="Grid\GridType.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Grid\GridType.Designer.cs">
+      <DependentUpon>GridType.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Grid\Pollutant.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Grid\Pollutant.Designer.cs">
+      <DependentUpon>Pollutant.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Help\About.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Help\About.Designer.cs">
+      <DependentUpon>About.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Kriging\LHSDesign.cs" />
+    <Compile Include="Kriging\MatrixCompute.cs" />
+    <Compile Include="Kriging\Statgetargs.cs" />
+    <Compile Include="Kriging\Strmatch.cs" />
+    <Compile Include="Logger.cs" />
+    <Compile Include="Main.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Main.Designer.cs">
+      <DependentUpon>Main.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ManageSetup\AgeRangeDefinition.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ManageSetup\AgeRangeDefinition.Designer.cs">
+      <DependentUpon>AgeRangeDefinition.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ManageSetup\CustomDistributionEntries.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ManageSetup\CustomDistributionEntries.Designer.cs">
+      <DependentUpon>CustomDistributionEntries.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ManageSetup\DataGridView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ManageSetup\DefineSeasons.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ManageSetup\DefineSeasons.Designer.cs">
+      <DependentUpon>DefineSeasons.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ManageSetup\EditDistributionValues.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ManageSetup\EditDistributionValues.Designer.cs">
+      <DependentUpon>EditDistributionValues.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ManageSetup\GridDefinition.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ManageSetup\GridDefinition.Designer.cs">
+      <DependentUpon>GridDefinition.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ManageSetup\HealthImpact.cs" />
+    <Compile Include="ManageSetup\HealthImpactDataSetDefinition.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ManageSetup\HealthImpactDataSetDefinition.Designer.cs">
+      <DependentUpon>HealthImpactDataSetDefinition.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ManageSetup\HealthImpactFunctionDefinition.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ManageSetup\HealthImpactFunctionDefinition.Designer.cs">
+      <DependentUpon>HealthImpactFunctionDefinition.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ManageSetup\IncidenceDataSetDefinition.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ManageSetup\IncidenceDataSetDefinition.Designer.cs">
+      <DependentUpon>IncidenceDataSetDefinition.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ManageSetup\IncomeGrowthAdjustmentDataSet.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ManageSetup\IncomeGrowthAdjustmentDataSet.Designer.cs">
+      <DependentUpon>IncomeGrowthAdjustmentDataSet.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ManageSetup\ListItem.cs" />
+    <Compile Include="ManageSetup\LoadIncidenceDatabase.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ManageSetup\LoadIncidenceDatabase.Designer.cs">
+      <DependentUpon>LoadIncidenceDatabase.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ManageSetup\LoadIncomeGrowthDataSet.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ManageSetup\LoadIncomeGrowthDataSet.Designer.cs">
+      <DependentUpon>LoadIncomeGrowthDataSet.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ManageSetup\LoadInflationDataSet.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ManageSetup\LoadInflationDataSet.Designer.cs">
+      <DependentUpon>LoadInflationDataSet.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ManageSetup\LoadPopulationDataSet.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ManageSetup\LoadPopulationDataSet.Designer.cs">
+      <DependentUpon>LoadPopulationDataSet.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ManageSetup\LoadVariableDatabase.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ManageSetup\LoadVariableDatabase.Designer.cs">
+      <DependentUpon>LoadVariableDatabase.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ManageSetup\ManageGridDefinitions.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ManageSetup\ManageGridDefinitions.designer.cs">
+      <DependentUpon>ManageGridDefinitions.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ManageSetup\ManageHealthImpactFunctionDataSets.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ManageSetup\ManageHealthImpactFunctionDataSets.Designer.cs">
+      <DependentUpon>ManageHealthImpactFunctionDataSets.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ManageSetup\ManageIncidenceDataSets.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ManageSetup\ManageIncidenceDataSets.Designer.cs">
+      <DependentUpon>ManageIncidenceDataSets.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ManageSetup\ManageInflationDataSet.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ManageSetup\ManageInflationDataSet.Designer.cs">
+      <DependentUpon>ManageInflationDataSet.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ManageSetup\ManageMonitorDataSets.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ManageSetup\ManageMonitorDataSets.Designer.cs">
+      <DependentUpon>ManageMonitorDataSets.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ManageSetup\ManagePollutants.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ManageSetup\ManagePollutants.Designer.cs">
+      <DependentUpon>ManagePollutants.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ManageSetup\ManagePopulationDataSets.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ManageSetup\ManagePopulationDataSets.Designer.cs">
+      <DependentUpon>ManagePopulationDataSets.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ManageSetup\ManageSeasonalMetrics.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ManageSetup\ManageSeasonalMetrics.Designer.cs">
+      <DependentUpon>ManageSeasonalMetrics.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ManageSetup\ManageSetup.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ManageSetup\ManageSetup.designer.cs">
+      <DependentUpon>ManageSetup.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ManageSetup\ManageValuationFunctionDataSets.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ManageSetup\ManageValuationFunctionDataSets.Designer.cs">
+      <DependentUpon>ManageValuationFunctionDataSets.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ManageSetup\ManageVariableDataSets.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ManageSetup\ManageVariableDataSets.Designer.cs">
+      <DependentUpon>ManageVariableDataSets.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ManageSetup\MonitorDataSetDefinition.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ManageSetup\MonitorDataSetDefinition.Designer.cs">
+      <DependentUpon>MonitorDataSetDefinition.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ManageSetup\NewEthnicity.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ManageSetup\NewEthnicity.Designer.cs">
+      <DependentUpon>NewEthnicity.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ManageSetup\NewGender.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ManageSetup\NewGender.Designer.cs">
+      <DependentUpon>NewGender.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ManageSetup\NewRace.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ManageSetup\NewRace.Designer.cs">
+      <DependentUpon>NewRace.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ManageSetup\NewSetUp.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ManageSetup\NewSetUp.Designer.cs">
+      <DependentUpon>NewSetUp.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ManageSetup\OutputCommonClass.cs" />
+    <Compile Include="ManageSetup\PollutantDefinition.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ManageSetup\PollutantDefinition.Designer.cs">
+      <DependentUpon>PollutantDefinition.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ManageSetup\PopulationConfigurationDefinition.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ManageSetup\PopulationConfigurationDefinition.Designer.cs">
+      <DependentUpon>PopulationConfigurationDefinition.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ManageSetup\PopulationTipForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ManageSetup\PopulationTipForm.Designer.cs">
+      <DependentUpon>PopulationTipForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ManageSetup\SetVariableDataSetDefinition.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ManageSetup\SetVariableDataSetDefinition.Designer.cs">
+      <DependentUpon>SetVariableDataSetDefinition.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ManageSetup\Sheets.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ManageSetup\Sheets.Designer.cs">
+      <DependentUpon>Sheets.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ManageSetup\ValuationFunctionDataSetDefinition.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ManageSetup\ValuationFunctionDataSetDefinition.Designer.cs">
+      <DependentUpon>ValuationFunctionDataSetDefinition.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ManageSetup\ValuationFunctionDefinition.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ManageSetup\ValuationFunctionDefinition.Designer.cs">
+      <DependentUpon>ValuationFunctionDefinition.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Kriging\Pdist.cs" />
+    <Compile Include="ManageSetup\Renamefile.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ManageSetup\Renamefile.Designer.cs">
+      <DependentUpon>Renamefile.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Configuration\PopulationMap.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Configuration\PopulationMap.Designer.cs">
+      <DependentUpon>PopulationMap.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Configuration\PopulationInformation.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Configuration\PopulationInformation.Designer.cs">
+      <DependentUpon>PopulationInformation.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TipFormGIF.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TipFormGIF.Designer.cs">
+      <DependentUpon>TipFormGIF.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Tools\Options.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Tools\Options.Designer.cs">
+      <DependentUpon>Options.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Help\ReleaseNotes.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Help\ReleaseNotes.Designer.cs">
+      <DependentUpon>ReleaseNotes.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ManageSetup\RenameorOverride.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ManageSetup\RenameorOverride.Designer.cs">
+      <DependentUpon>RenameorOverride.cs</DependentUpon>
+    </Compile>
+    <Compile Include="StartPage.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="StartPage.Designer.cs">
+      <DependentUpon>StartPage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="StartTip.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="StartTip.Designer.cs">
+      <DependentUpon>StartTip.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TipForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TipForm.Designer.cs">
+      <DependentUpon>TipForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Tools\AirQualitySurfaceAggregator.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Tools\AirQualitySurfaceAggregator.Designer.cs">
+      <DependentUpon>AirQualitySurfaceAggregator.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Tools\BusinessCardRenderer.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Tools\CalculateFunctionString.cs" />
+    <Compile Include="Tools\CreateNeighborsFile.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Tools\CreateNeighborsFile.Designer.cs">
+      <DependentUpon>CreateNeighborsFile.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Tools\DatabaseExport.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Tools\DatabaseExport.Designer.cs">
+      <DependentUpon>DatabaseExport.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Tools\DatabaseImport.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Tools\DatabaseImport.Designer.cs">
+      <DependentUpon>DatabaseImport.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Tools\ExportAirQualitySurface.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Tools\ExportAirQualitySurface.Designer.cs">
+      <DependentUpon>ExportAirQualitySurface.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Tools\ModelFileConcatenator.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Tools\ModelFileConcatenator.Designer.cs">
+      <DependentUpon>ModelFileConcatenator.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControl\BenMAPCalendar.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControl\BenMAPCalendar.Designer.cs">
+      <DependentUpon>BenMAPCalendar.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControl\ColorBlendControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControl\ColorBlendControl.Designer.cs">
+      <DependentUpon>ColorBlendControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControl\IncrementalControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControl\IncrementalControl.Designer.cs">
+      <DependentUpon>IncrementalControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControl\PercentageControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControl\PercentageControl.Designer.cs">
+      <DependentUpon>PercentageControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControl\SavePicture.cs" />
+    <Compile Include="UserControl\SetValueRange.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UserControl\SetValueRange.Designer.cs">
+      <DependentUpon>SetValueRange.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControl\ToStandardControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControl\ToStandardControl.Designer.cs">
+      <DependentUpon>ToStandardControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="APVResulesReport.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="APVResulesReport.Designer.cs">
+      <DependentUpon>APVResulesReport.cs</DependentUpon>
+    </Compile>
+    <Compile Include="QALYResulesReport.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="QALYResulesReport.Designer.cs">
+      <DependentUpon>QALYResulesReport.cs</DependentUpon>
+    </Compile>
+    <None Include="Resources\Welcome1.png" />
+    <EmbeddedResource Include="APV\Aggregation.resx">
+      <DependentUpon>Aggregation.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="APV\APVConfigurationAdvancedSettings.resx">
+      <DependentUpon>APVConfigurationAdvancedSettings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="APV\ChangedCRFunctions.resx">
+      <DependentUpon>ChangedCRFunctions.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="APV\IncidencePoolingandAggregation.resx">
+      <DependentUpon>IncidencePoolingandAggregation.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="APV\MessageForm.resx">
+      <DependentUpon>MessageForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="APV\OpenExistingAPVConfiguration.resx">
+      <DependentUpon>OpenExistingAPVConfiguration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="APV\SelectSubjectiveWeight.resx">
+      <DependentUpon>SelectSubjectiveWeight.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="APV\SelectValuationMethods.resx">
+      <DependentUpon>SelectValuationMethods.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="APV\SelectValuationWeight.resx">
+      <DependentUpon>SelectValuationWeight.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="APV\TileSet.resx">
+      <DependentUpon>TileSet.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="BenMAP.resx">
+      <DependentUpon>BenMap.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConfigurationResulesReport.resx">
+      <DependentUpon>ConfigurationResulesReport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Configuration\HealthImpactFunctions.resx">
+      <DependentUpon>HealthImpactFunctions.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Configuration\LatinHypercubePoints.resx">
+      <DependentUpon>LatinHypercubePoints.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Configuration\OpenExistingConfiguration.resx">
+      <DependentUpon>OpenExistingConfiguration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Configuration\PopulationDataset.resx">
+      <DependentUpon>PopulationDataset.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Configuration\PopulationInformation.resx">
+      <DependentUpon>PopulationInformation.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Configuration\PopulationMap.resx">
+      <DependentUpon>PopulationMap.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Configuration\SelectAirQualityGrid.resx">
+      <DependentUpon>SelectAirQualityGrid.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DataSource\AdvancedOptions.resx">
+      <DependentUpon>AdvancedOptions.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DataSource\FilterMonitorsPM.resx">
+      <DependentUpon>FilterMonitorsPM.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DataSource\MonitorMap.resx">
+      <DependentUpon>MonitorMap.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DataSource\MonitorRollbackSettings2.resx">
+      <DependentUpon>MonitorRollbackSettings2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DataSource\MonitorRollbackSettings3.resx">
+      <DependentUpon>MonitorRollbackSettings3.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DataSource\FilterMonitors.resx">
+      <DependentUpon>FilterMonitors.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DataSource\GridCreationMethods.resx">
+      <DependentUpon>GridCreationMethods.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DataSource\ModelData.resx">
+      <DependentUpon>ModelData.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DataSource\MonitorData.resx">
+      <DependentUpon>MonitorData.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DataSource\MonitorRollback.resx">
+      <DependentUpon>MonitorRollback.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DataSource\OpenExistingAQG.resx">
+      <DependentUpon>OpenExistingAQG.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DataSource\SelectRegionRollbackType.resx">
+      <DependentUpon>SelectRegionRollbackType.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ExitConfirm.resx">
+      <DependentUpon>ExitConfirm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DataSource\FilterMonitorsOzone.resx">
+      <DependentUpon>FilterMonitorsOzone.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormBase.resx">
+      <DependentUpon>FormBase.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Grid\GridType.resx">
+      <DependentUpon>GridType.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Grid\Pollutant.resx">
+      <DependentUpon>Pollutant.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Help\About.resx">
+      <DependentUpon>About.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Help\ReleaseNotes.resx">
+      <DependentUpon>ReleaseNotes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HomePage.resx">
+      <DependentUpon>HomePage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Main.resx">
+      <DependentUpon>Main.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ManageSetup\AgeRangeDefinition.resx">
+      <DependentUpon>AgeRangeDefinition.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ManageSetup\CustomDistributionEntries.resx">
+      <DependentUpon>CustomDistributionEntries.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ManageSetup\DefineSeasons.resx">
+      <DependentUpon>DefineSeasons.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ManageSetup\EditDistributionValues.resx">
+      <DependentUpon>EditDistributionValues.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ManageSetup\GridDefinition.resx">
+      <DependentUpon>GridDefinition.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ManageSetup\HealthImpactDataSetDefinition.resx">
+      <DependentUpon>HealthImpactDataSetDefinition.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ManageSetup\HealthImpactFunctionDefinition.resx">
+      <DependentUpon>HealthImpactFunctionDefinition.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ManageSetup\IncidenceDataSetDefinition.resx">
+      <DependentUpon>IncidenceDataSetDefinition.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ManageSetup\IncomeGrowthAdjustmentDataSet.resx">
+      <DependentUpon>IncomeGrowthAdjustmentDataSet.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ManageSetup\LoadIncidenceDatabase.resx">
+      <DependentUpon>LoadIncidenceDatabase.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ManageSetup\LoadIncomeGrowthDataSet.resx">
+      <DependentUpon>LoadIncomeGrowthDataSet.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ManageSetup\LoadInflationDataSet.resx">
+      <DependentUpon>LoadInflationDataSet.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ManageSetup\LoadPopulationDataSet.resx">
+      <DependentUpon>LoadPopulationDataSet.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ManageSetup\LoadVariableDatabase.resx">
+      <DependentUpon>LoadVariableDatabase.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ManageSetup\ManageGridDefinitions.resx">
+      <DependentUpon>ManageGridDefinitions.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ManageSetup\ManageHealthImpactFunctionDataSets.resx">
+      <DependentUpon>ManageHealthImpactFunctionDataSets.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ManageSetup\ManageIncidenceDataSets.resx">
+      <DependentUpon>ManageIncidenceDataSets.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ManageSetup\ManageInflationDataSet.resx">
+      <DependentUpon>ManageInflationDataSet.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ManageSetup\ManageMonitorDataSets.resx">
+      <DependentUpon>ManageMonitorDataSets.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ManageSetup\ManagePollutants.resx">
+      <DependentUpon>ManagePollutants.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ManageSetup\ManagePopulationDataSets.resx">
+      <DependentUpon>ManagePopulationDataSets.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ManageSetup\ManageSeasonalMetrics.resx">
+      <DependentUpon>ManageSeasonalMetrics.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ManageSetup\ManageSetup.resx">
+      <DependentUpon>ManageSetup.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ManageSetup\ManageValuationFunctionDataSets.resx">
+      <DependentUpon>ManageValuationFunctionDataSets.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ManageSetup\ManageVariableDataSets.resx">
+      <DependentUpon>ManageVariableDataSets.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ManageSetup\MonitorDataSetDefinition.resx">
+      <DependentUpon>MonitorDataSetDefinition.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ManageSetup\NewEthnicity.resx">
+      <DependentUpon>NewEthnicity.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ManageSetup\NewGender.resx">
+      <DependentUpon>NewGender.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ManageSetup\NewRace.resx">
+      <DependentUpon>NewRace.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ManageSetup\NewSetUp.resx">
+      <DependentUpon>NewSetUp.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ManageSetup\PollutantDefinition.resx">
+      <DependentUpon>PollutantDefinition.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ManageSetup\PopulationConfigurationDefinition.resx">
+      <DependentUpon>PopulationConfigurationDefinition.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ManageSetup\PopulationTipForm.resx">
+      <DependentUpon>PopulationTipForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ManageSetup\Renamefile.resx">
+      <DependentUpon>Renamefile.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ManageSetup\SetVariableDataSetDefinition.resx">
+      <DependentUpon>SetVariableDataSetDefinition.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ManageSetup\Sheets.resx">
+      <DependentUpon>Sheets.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ManageSetup\ValuationFunctionDataSetDefinition.resx">
+      <DependentUpon>ValuationFunctionDataSetDefinition.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ManageSetup\ValuationFunctionDefinition.resx">
+      <DependentUpon>ValuationFunctionDefinition.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <EmbeddedResource Include="ManageSetup\RenameorOverride.resx">
+      <DependentUpon>RenameorOverride.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="StartPage.resx">
+      <DependentUpon>StartPage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="StartTip.resx">
+      <DependentUpon>StartTip.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TipForm.resx">
+      <DependentUpon>TipForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TipFormGIF.resx">
+      <DependentUpon>TipFormGIF.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tools\AirQualitySurfaceAggregator.resx">
+      <DependentUpon>AirQualitySurfaceAggregator.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tools\CreateNeighborsFile.resx">
+      <DependentUpon>CreateNeighborsFile.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tools\DatabaseExport.resx">
+      <DependentUpon>DatabaseExport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tools\DatabaseImport.resx">
+      <DependentUpon>DatabaseImport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tools\ExportAirQualitySurface.resx">
+      <DependentUpon>ExportAirQualitySurface.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tools\ModelFileConcatenator.resx">
+      <DependentUpon>ModelFileConcatenator.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tools\Options.resx">
+      <DependentUpon>Options.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControl\BenMAPCalendar.resx">
+      <DependentUpon>BenMAPCalendar.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControl\ColorBlendControl.resx">
+      <DependentUpon>ColorBlendControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControl\IncrementalControl.resx">
+      <DependentUpon>IncrementalControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControl\PercentageControl.resx">
+      <DependentUpon>PercentageControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControl\SetValueRange.resx">
+      <DependentUpon>SetValueRange.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControl\ToStandardControl.resx">
+      <DependentUpon>ToStandardControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="APVResulesReport.resx">
+      <DependentUpon>APVResulesReport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="QALYResulesReport.resx">
+      <DependentUpon>QALYResulesReport.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
+    <Content Include="48x48.ico" />
+    <Content Include="BenMAP 48x48.ico" />
+    <None Include="Data\GridRelationship\GridRelationship.gr">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\SampleData\CMAQ36km_China_Baseline_PM2.5_2005.xls">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\SampleData\CMAQ36km_China_Control_PM2.5.xls">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\SampleData\PM25_36km_base.xls">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\SampleData\PM25_36km_control.xls">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Shapefiles\China\36km.dbf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Shapefiles\China\36km.sbn">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Shapefiles\China\36km.sbx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Shapefiles\China\36km.shp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Shapefiles\China\36km.shx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Shapefiles\China\China_Boundary.dbf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Shapefiles\China\China_Boundary.shp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Shapefiles\China\China_Boundary.shx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Shapefiles\China\China_Region.dbf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Shapefiles\China\China_Region.shp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Shapefiles\China\China_Region.shx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Shapefiles\China\YRD_04km_city_WGS84_LCC_Proj1.dbf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Shapefiles\China\YRD_04km_city_WGS84_LCC_Proj1.prj">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Shapefiles\China\YRD_04km_city_WGS84_LCC_Proj1.sbn">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Shapefiles\China\YRD_04km_city_WGS84_LCC_Proj1.sbx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Shapefiles\China\YRD_04km_city_WGS84_LCC_Proj1.shp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Shapefiles\China\YRD_04km_city_WGS84_LCC_Proj1.shx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Shapefiles\China\YRD__04km_grid_WGS84_LCC_Pro1.dbf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Shapefiles\China\YRD__04km_grid_WGS84_LCC_Pro1.prj">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Shapefiles\China\YRD__04km_grid_WGS84_LCC_Pro1.sbn">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Shapefiles\China\YRD__04km_grid_WGS84_LCC_Pro1.sbx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Shapefiles\China\YRD__04km_grid_WGS84_LCC_Pro1.shp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Shapefiles\China\YRD__04km_grid_WGS84_LCC_Pro1.shx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Shapefiles\United States\CMAQLC.dbf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Shapefiles\United States\CMAQLC.shp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Shapefiles\United States\CMAQLC.shx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Shapefiles\United States\CMAQ_12km_Nation.dbf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Shapefiles\United States\CMAQ_12km_Nation.shp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Shapefiles\United States\CMAQ_12km_Nation.shx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Shapefiles\United States\CMAQ_12km_Nation_Clipped.dbf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Shapefiles\United States\CMAQ_12km_Nation_Clipped.shp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Shapefiles\United States\CMAQ_12km_Nation_Clipped.shx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Shapefiles\United States\County_epa2.dbf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Shapefiles\United States\County_epa2.sbn">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Shapefiles\United States\County_epa2.sbx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Shapefiles\United States\County_epa2.shp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Shapefiles\United States\County_epa2.shx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Shapefiles\United States\East36km.dbf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Shapefiles\United States\East36km.sbn">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Shapefiles\United States\East36km.sbx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Shapefiles\United States\East36km.shp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Shapefiles\United States\East36km.shx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Shapefiles\United States\Nation_epa2.dbf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Shapefiles\United States\Nation_epa2.shp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Shapefiles\United States\Nation_epa2.shx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Shapefiles\United States\Report_Regions.dbf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Shapefiles\United States\Report_Regions.shp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Shapefiles\United States\Report_Regions.shx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Shapefiles\United States\State.shx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Shapefiles\United States\State_epa2.dbf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Shapefiles\United States\State_epa2.prj">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Shapefiles\United States\State_epa2.sbn">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Shapefiles\United States\State_epa2.sbx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Shapefiles\United States\State_epa2.shp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Shapefiles\United States\State_epa2.shx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Properties\app.manifest">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Properties\Settings.settings">
+      <Generator>PublicSettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="GISMapping\" />
+    <Folder Include="Pollutant\" />
+    <Folder Include="Report\" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.0">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Configs\ParamsTreeForNew.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Configs\ParamsTree_China.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Configs\ParamsTree_USA.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Configs\ReportParams.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\Shapefiles\China\36km.shp.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\Shapefiles\China\YRD_04km_city_WGS84_LCC_Proj1.shp.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\Shapefiles\China\YRD__04km_grid_WGS84_LCC_Pro1.shp.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\Shapefiles\United States\County_epa2.shp.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\Shapefiles\United States\State.shp.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\Shapefiles\United States\State_epa2.shp.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\add.png" />
+    <None Include="Resources\BenMAP CE Start.png" />
+    <None Include="Resources\BenMAPStartPage.png" />
+    <None Include="Resources\BenMap-about.png" />
+    <None Include="Resources\btn1_1.png" />
+    <None Include="Resources\btn1_2.png" />
+    <None Include="Resources\btn1_3.png" />
+    <None Include="Resources\btn2_1.png" />
+    <None Include="Resources\btn2_2.png" />
+    <None Include="Resources\btn2_3.png" />
+    <None Include="Resources\btn3_1.png" />
+    <None Include="Resources\btn3_2.png" />
+    <None Include="Resources\btn3_3.png" />
+    <None Include="Resources\btn4_1.png" />
+    <None Include="Resources\btn4_2.png" />
+    <None Include="Resources\btn4_3.png" />
+    <Content Include="Resources\chart4.gif" />
+    <Content Include="Resources\cuahsi_logo1.GIF" />
+    <Content Include="Resources\DistributionFormula\2000px-Exponential_pdf_svg.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\DistributionFormula\360px-Cauchy_pdf_svg.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\DistributionFormula\360px-Poisson_pmf_svg.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\DistributionFormula\480px-Logisticpdfunction_svg.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\DistributionFormula\540px-Weibull_PDF_svg.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\DistributionFormula\593px-Some_log-normal_distributions_svg.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\DistributionFormula\639px-Beta_distribution_pdf_svg.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\DistributionFormula\640px-Binomial_distribution_cdf_svg.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\DistributionFormula\675px-Geometric_pmf_svg.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\DistributionFormula\720px-Normal_Distribution_PDF_svg.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\DistributionFormula\800px-Gamma_distribution_pdf_svg.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\DistributionFormula\800px-Pareto_distributionPDF.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\DistributionFormula\800px-Triangular_distribution_PMF.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\DistributionFormula\800px-Uniform_distribution_PDF.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\DistributionFormula\Beta PDF.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\DistributionFormula\Binomial PDF.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\DistributionFormula\Cauchy PDF.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\DistributionFormula\Exponential PDF.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\DistributionFormula\Gamma PDF.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\DistributionFormula\Geometric PDF.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\DistributionFormula\Logistic PDF.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\DistributionFormula\LogNormal PDF.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\DistributionFormula\Normal PDF.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\DistributionFormula\Pareto PDF.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\DistributionFormula\Poisson PDF.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\DistributionFormula\Triangular PDF.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\DistributionFormula\Uniform PDF.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\DistributionFormula\Weibull PDF.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\folder_add.png" />
+    <None Include="Resources\GISMapBG.png" />
+    <Content Include="Resources\globe_7.bmp" />
+    <Content Include="Resources\help_16x16.png" />
+    <Content Include="Resources\identifier_16.png" />
+    <None Include="Resources\legend.png" />
+    <None Include="Resources\loading3.gif" />
+    <Content Include="Resources\magnifier_zoom_in.png" />
+    <Content Include="Resources\magnifier_zoom_out.png" />
+    <None Include="Resources\page2.png" />
+    <None Include="Resources\page3.png" />
+    <None Include="Resources\page4.png" />
+    <Content Include="Resources\pan_2.bmp" />
+    <None Include="Resources\point.png" />
+    <None Include="Resources\progressbar.gif" />
+    <None Include="Resources\pictureBox1.Image.png" />
+    <None Include="Resources\pictureBox2.Image.png" />
+    <None Include="Resources\pictureBox3.Image.png" />
+    <Content Include="Resources\refreshTheme.png" />
+    <Content Include="Resources\save_as.png" />
+    <None Include="Resources\spUserGuide.png" />
+    <None Include="Resources\spCreateProject.png" />
+    <None Include="Resources\spLoadAPV.png" />
+    <None Include="Resources\spLoadCFG.png" />
+    <None Include="Resources\spLoadProject.png" />
+    <None Include="Resources\SPEXit.png" />
+    <None Include="Resources\SPLoadAPVR.png" />
+    <None Include="Resources\SPLoadCFGR.png" />
+    <Content Include="Resources\tableView_Bar.png" />
+    <None Include="Resources\tableView1.png" />
+    <None Include="Resources\Welcome.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>call "$(DevEnvDir)..\tools\vsvars32.bat"
+editbin /LARGEADDRESSAWARE "$(TargetPath)"</PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
