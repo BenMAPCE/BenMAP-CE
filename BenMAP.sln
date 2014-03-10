@@ -10,6 +10,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FireBirdHelper", "BenMAP\FireBirdHelper\FireBirdHelper.csproj", "{8F093A2A-30D8-4144-8177-0772B0CD1C03}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = BenMAP.vsmdi
@@ -29,6 +31,12 @@ Global
 		{F7F40596-B853-4FA7-A075-1D74565D26A1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F7F40596-B853-4FA7-A075-1D74565D26A1}.Release|x86.ActiveCfg = Release|x86
 		{F7F40596-B853-4FA7-A075-1D74565D26A1}.Release|x86.Build.0 = Release|x86
+		{8F093A2A-30D8-4144-8177-0772B0CD1C03}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8F093A2A-30D8-4144-8177-0772B0CD1C03}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8F093A2A-30D8-4144-8177-0772B0CD1C03}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{8F093A2A-30D8-4144-8177-0772B0CD1C03}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8F093A2A-30D8-4144-8177-0772B0CD1C03}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8F093A2A-30D8-4144-8177-0772B0CD1C03}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
