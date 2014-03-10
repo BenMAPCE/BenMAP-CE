@@ -1,0 +1,74 @@
+﻿using System;
+namespace ESIL.DBUtility
+{
+    interface IFireBirdHelper
+    {
+        FirebirdSql.Data.FirebirdClient.FbCommand CreateCommand(FirebirdSql.Data.FirebirdClient.FbConnection connection, string spName, params string[] sourceColumns);
+        System.Data.DataSet ExecuteDataset(FirebirdSql.Data.FirebirdClient.FbConnection connection, System.Data.CommandType commandType, string commandText);
+        System.Data.DataSet ExecuteDataset(FirebirdSql.Data.FirebirdClient.FbConnection connection, System.Data.CommandType commandType, string commandText, params FirebirdSql.Data.FirebirdClient.FbParameter[] commandParameters);
+        System.Data.DataSet ExecuteDataset(FirebirdSql.Data.FirebirdClient.FbConnection connection, string spName, params object[] parameterValues);
+        System.Data.DataSet ExecuteDataset(FirebirdSql.Data.FirebirdClient.FbTransaction transaction, System.Data.CommandType commandType, string commandText);
+        System.Data.DataSet ExecuteDataset(FirebirdSql.Data.FirebirdClient.FbTransaction transaction, System.Data.CommandType commandType, string commandText, params FirebirdSql.Data.FirebirdClient.FbParameter[] commandParameters);
+        System.Data.DataSet ExecuteDataset(FirebirdSql.Data.FirebirdClient.FbTransaction transaction, string spName, params object[] parameterValues);
+        System.Data.DataSet ExecuteDataset(string connectionString, System.Data.CommandType commandType, string commandText);
+        System.Data.DataSet ExecuteDataset(string connectionString, System.Data.CommandType commandType, string commandText, params FirebirdSql.Data.FirebirdClient.FbParameter[] commandParameters);
+        System.Data.DataSet ExecuteDataset(string connectionString, string spName, params object[] parameterValues);
+        System.Data.DataSet ExecuteDatasetTypedParams(FirebirdSql.Data.FirebirdClient.FbConnection connection, string spName, System.Data.DataRow dataRow);
+        System.Data.DataSet ExecuteDatasetTypedParams(FirebirdSql.Data.FirebirdClient.FbTransaction transaction, string spName, System.Data.DataRow dataRow);
+        System.Data.DataSet ExecuteDatasetTypedParams(string connectionString, string spName, System.Data.DataRow dataRow);
+        int ExecuteNonQuery(FirebirdSql.Data.FirebirdClient.FbConnection connection, System.Data.CommandType commandType, string commandText);
+        int ExecuteNonQuery(FirebirdSql.Data.FirebirdClient.FbConnection connection, System.Data.CommandType commandType, string commandText, params FirebirdSql.Data.FirebirdClient.FbParameter[] commandParameters);
+        int ExecuteNonQuery(FirebirdSql.Data.FirebirdClient.FbConnection connection, string spName, params object[] parameterValues);
+        int ExecuteNonQuery(FirebirdSql.Data.FirebirdClient.FbTransaction transaction, System.Data.CommandType commandType, string commandText);
+        int ExecuteNonQuery(FirebirdSql.Data.FirebirdClient.FbTransaction transaction, System.Data.CommandType commandType, string commandText, params FirebirdSql.Data.FirebirdClient.FbParameter[] commandParameters);
+        int ExecuteNonQuery(FirebirdSql.Data.FirebirdClient.FbTransaction transaction, string spName, params object[] parameterValues);
+        int ExecuteNonQuery(string connectionString, System.Data.CommandType commandType, string commandText);
+        int ExecuteNonQuery(string connectionString, System.Data.CommandType commandType, string commandText, params FirebirdSql.Data.FirebirdClient.FbParameter[] commandParameters);
+        int ExecuteNonQuery(string connectionString, string spName, params object[] parameterValues);
+        int ExecuteNonQueryTypedParams(FirebirdSql.Data.FirebirdClient.FbConnection connection, string spName, System.Data.DataRow dataRow);
+        int ExecuteNonQueryTypedParams(FirebirdSql.Data.FirebirdClient.FbTransaction transaction, string spName, System.Data.DataRow dataRow);
+        int ExecuteNonQueryTypedParams(string connectionString, string spName, System.Data.DataRow dataRow);
+        FirebirdSql.Data.FirebirdClient.FbDataReader ExecuteReader(FirebirdSql.Data.FirebirdClient.FbConnection connection, System.Data.CommandType commandType, string commandText);
+        FirebirdSql.Data.FirebirdClient.FbDataReader ExecuteReader(FirebirdSql.Data.FirebirdClient.FbConnection connection, System.Data.CommandType commandType, string commandText, params FirebirdSql.Data.FirebirdClient.FbParameter[] commandParameters);
+        FirebirdSql.Data.FirebirdClient.FbDataReader ExecuteReader(FirebirdSql.Data.FirebirdClient.FbConnection connection, string spName, params object[] parameterValues);
+        FirebirdSql.Data.FirebirdClient.FbDataReader ExecuteReader(FirebirdSql.Data.FirebirdClient.FbTransaction transaction, System.Data.CommandType commandType, string commandText);
+        FirebirdSql.Data.FirebirdClient.FbDataReader ExecuteReader(FirebirdSql.Data.FirebirdClient.FbTransaction transaction, System.Data.CommandType commandType, string commandText, params FirebirdSql.Data.FirebirdClient.FbParameter[] commandParameters);
+        FirebirdSql.Data.FirebirdClient.FbDataReader ExecuteReader(FirebirdSql.Data.FirebirdClient.FbTransaction transaction, string spName, params object[] parameterValues);
+        FirebirdSql.Data.FirebirdClient.FbDataReader ExecuteReader(string connectionString, System.Data.CommandType commandType, string commandText);
+        FirebirdSql.Data.FirebirdClient.FbDataReader ExecuteReader(string connectionString, System.Data.CommandType commandType, string commandText, params FirebirdSql.Data.FirebirdClient.FbParameter[] commandParameters);
+        FirebirdSql.Data.FirebirdClient.FbDataReader ExecuteReader(string connectionString, string spName, params object[] parameterValues);
+        FirebirdSql.Data.FirebirdClient.FbDataReader ExecuteReaderTypedParams(FirebirdSql.Data.FirebirdClient.FbConnection connection, string spName, System.Data.DataRow dataRow);
+        FirebirdSql.Data.FirebirdClient.FbDataReader ExecuteReaderTypedParams(FirebirdSql.Data.FirebirdClient.FbTransaction transaction, string spName, System.Data.DataRow dataRow);
+        FirebirdSql.Data.FirebirdClient.FbDataReader ExecuteReaderTypedParams(string connectionString, string spName, System.Data.DataRow dataRow);
+        object ExecuteScalar(FirebirdSql.Data.FirebirdClient.FbConnection connection, System.Data.CommandType commandType, string commandText);
+        object ExecuteScalar(FirebirdSql.Data.FirebirdClient.FbConnection connection, System.Data.CommandType commandType, string commandText, params FirebirdSql.Data.FirebirdClient.FbParameter[] commandParameters);
+        object ExecuteScalar(FirebirdSql.Data.FirebirdClient.FbConnection connection, string spName, params object[] parameterValues);
+        object ExecuteScalar(FirebirdSql.Data.FirebirdClient.FbTransaction transaction, System.Data.CommandType commandType, string commandText);
+        object ExecuteScalar(FirebirdSql.Data.FirebirdClient.FbTransaction transaction, System.Data.CommandType commandType, string commandText, params FirebirdSql.Data.FirebirdClient.FbParameter[] commandParameters);
+        object ExecuteScalar(FirebirdSql.Data.FirebirdClient.FbTransaction transaction, string spName, params object[] parameterValues);
+        object ExecuteScalar(string connectionString, System.Data.CommandType commandType, string commandText);
+        object ExecuteScalar(string connectionString, System.Data.CommandType commandType, string commandText, params FirebirdSql.Data.FirebirdClient.FbParameter[] commandParameters);
+        object ExecuteScalar(string connectionString, string spName, params object[] parameterValues);
+        object ExecuteScalarTypedParams(FirebirdSql.Data.FirebirdClient.FbConnection connection, string spName, System.Data.DataRow dataRow);
+        object ExecuteScalarTypedParams(FirebirdSql.Data.FirebirdClient.FbTransaction transaction, string spName, System.Data.DataRow dataRow);
+        object ExecuteScalarTypedParams(string connectionString, string spName, System.Data.DataRow dataRow);
+        System.Xml.XmlReader ExecuteXmlReader(FirebirdSql.Data.FirebirdClient.FbConnection connection, System.Data.CommandType commandType, string commandText);
+        System.Xml.XmlReader ExecuteXmlReader(FirebirdSql.Data.FirebirdClient.FbConnection connection, System.Data.CommandType commandType, string commandText, params FirebirdSql.Data.FirebirdClient.FbParameter[] commandParameters);
+        System.Xml.XmlReader ExecuteXmlReader(FirebirdSql.Data.FirebirdClient.FbConnection connection, string spName, params object[] parameterValues);
+        System.Xml.XmlReader ExecuteXmlReader(FirebirdSql.Data.FirebirdClient.FbTransaction transaction, System.Data.CommandType commandType, string commandText);
+        System.Xml.XmlReader ExecuteXmlReader(FirebirdSql.Data.FirebirdClient.FbTransaction transaction, System.Data.CommandType commandType, string commandText, params FirebirdSql.Data.FirebirdClient.FbParameter[] commandParameters);
+        System.Xml.XmlReader ExecuteXmlReader(FirebirdSql.Data.FirebirdClient.FbTransaction transaction, string spName, params object[] parameterValues);
+        System.Xml.XmlReader ExecuteXmlReaderTypedParams(FirebirdSql.Data.FirebirdClient.FbConnection connection, string spName, System.Data.DataRow dataRow);
+        System.Xml.XmlReader ExecuteXmlReaderTypedParams(FirebirdSql.Data.FirebirdClient.FbTransaction transaction, string spName, System.Data.DataRow dataRow);
+        void FillDataset(FirebirdSql.Data.FirebirdClient.FbConnection connection, System.Data.CommandType commandType, string commandText, System.Data.DataSet dataSet, string[] tableNames);
+        void FillDataset(FirebirdSql.Data.FirebirdClient.FbConnection connection, System.Data.CommandType commandType, string commandText, System.Data.DataSet dataSet, string[] tableNames, params FirebirdSql.Data.FirebirdClient.FbParameter[] commandParameters);
+        void FillDataset(FirebirdSql.Data.FirebirdClient.FbConnection connection, string spName, System.Data.DataSet dataSet, string[] tableNames, params object[] parameterValues);
+        void FillDataset(FirebirdSql.Data.FirebirdClient.FbTransaction transaction, System.Data.CommandType commandType, string commandText, System.Data.DataSet dataSet, string[] tableNames);
+        void FillDataset(FirebirdSql.Data.FirebirdClient.FbTransaction transaction, System.Data.CommandType commandType, string commandText, System.Data.DataSet dataSet, string[] tableNames, params FirebirdSql.Data.FirebirdClient.FbParameter[] commandParameters);
+        void FillDataset(FirebirdSql.Data.FirebirdClient.FbTransaction transaction, string spName, System.Data.DataSet dataSet, string[] tableNames, params object[] parameterValues);
+        void FillDataset(string connectionString, System.Data.CommandType commandType, string commandText, System.Data.DataSet dataSet, string[] tableNames);
+        void FillDataset(string connectionString, System.Data.CommandType commandType, string commandText, System.Data.DataSet dataSet, string[] tableNames, params FirebirdSql.Data.FirebirdClient.FbParameter[] commandParameters);
+        void FillDataset(string connectionString, string spName, System.Data.DataSet dataSet, string[] tableNames, params object[] parameterValues);
+        void UpdateDataset(FirebirdSql.Data.FirebirdClient.FbCommand insertCommand, FirebirdSql.Data.FirebirdClient.FbCommand deleteCommand, FirebirdSql.Data.FirebirdClient.FbCommand updateCommand, System.Data.DataSet dataSet, string tableName);
+    }
+}
