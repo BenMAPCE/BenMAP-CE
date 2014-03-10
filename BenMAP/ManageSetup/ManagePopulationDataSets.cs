@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Data;
 using System.Windows.Forms;
 
@@ -70,7 +70,6 @@ namespace BenMAP
                 if (lst.SelectedItem == null) return;
                 DataRowView drv = lst.SelectedItem as DataRowView;
                 dataSetID = Convert.ToInt32(drv[1]);
-                // string str = drv[0].ToString();
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 string commandText = string.Format("select GridDefinitionName from GridDefinitions as GD join PopulationDataSets as PD on (GD.GridDefinitionID=PD.GridDefinitionID) where PopulationDataSetID={0}", dataSetID);
                 txtGridDefinition.Text = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText).ToString();
@@ -79,20 +78,7 @@ namespace BenMAP
                 commandText = string.Format("select first 100 Races.RaceName,Ethnicity.EthnicityName,Genders.GenderName,AgeRanges.AgeRangeName,PopulationEntries.CColumn,PopulationEntries.Row,PopulationEntries.VValue from Races,Ethnicity,Genders,AgeRanges,PopulationEntries,PopulationDataSets where (PopulationEntries.RaceID=Races.RaceID) and (PopulationEntries.EthnicityID=Ethnicity.EthnicityID) and (PopulationEntries.GenderID=Genders.GenderID) and (PopulationEntries.AgeRangeID=AgeRanges.AgeRangeID) and (PopulationEntries.PopulationDataSetID=PopulationDataSets.PopulationDataSetID) and PopulationDataSets.PopulationDataSetID={0} ", dataSetID);
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                 olvPopulationValues.DataSource = ds.Tables[0];
-                //dagValues.DataSource = ds.Tables[0];
-                //dagValues.Columns[0].HeaderText = "Race";
-                //dagValues.Columns[1].HeaderText = "Ethnicity";
-                //dagValues.Columns[2].HeaderText = "Gender";
-                //dagValues.Columns[3].HeaderText = "AgeRange";
-                //dagValues.Columns[4].HeaderText = "Column";
-                //dagValues.Columns[5].HeaderText = "Row";
-                //dagValues.Columns[6].HeaderText = "Value";
 
-                //dagValues.RowHeadersVisible = false;
-                //dagValues.AllowUserToResizeRows = false;
-                //dagValues.ClearSelection();
-                //dagValues.TabStop = false;
-                //dagValues.ReadOnly = true;
             }
             catch (Exception ex)
             {
@@ -110,15 +96,12 @@ namespace BenMAP
                 DialogResult result = MessageBox.Show(msg, "Confirm Deletion", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                 if (result == DialogResult.Yes)
                 {
-                    //string commandText = string.Format("delete from PopulationDataSets where PopulationDataSetName='{0}'", lstAvailableDataSetsName.GetItemText(lstAvailableDataSetsName.SelectedItem));
                     string commandText = "delete from PopulationEntries where PopulationDataSetID=" + dataSetID + "";
                     fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                     commandText = "delete from PopulationGrowthWeights where PopulationDataSetID=" + dataSetID + "";
                     fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                     commandText = "delete from PopulationDataSets where PopulationDataSetID=" + dataSetID + "";
                     fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
-                    //commandText = string.Format("delete from PopulationEntries where PopulationDataSetID=( select PopulationDataSetID from PopulationDataSets where PopulationDataSetName='{0}')", lstAvailableDataSetsName.GetItemText(lstAvailableDataSetsName.SelectedItem));
-                    //commandText = string.Format("delete from POPULATIONGROWTHWEIGHTS where PopulationDataSetID=( select PopulationDataSetID from PopulationDataSets where PopulationDataSetName='{0}')", lstAvailableDataSetsName.GetItemText(lstAvailableDataSetsName.SelectedItem));
                     commandText = "delete from t_populationDatasetIDYear where PopulationDataSetID=" + dataSetID + "";
                     fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
 

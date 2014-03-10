@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Configuration;
@@ -22,37 +22,17 @@ using System.Reflection;
 
 namespace BenMAP
 {
-    /// <summary>
-    /// 对ConfigurationSettings节点下的每个子节点进行相应的权限控制
-    /// </summary>
     public enum ConfigurationSettingType
     {
-        /// <summary>
-        /// Configuration 界面所有控件都是可操作
-        /// </summary>
         Configuration = 0,
-        /// <summary>
-        /// Latin Hypercube Points 可操作点拉丁取样
-        /// </summary>
         LatinHypercubePoints = 1,
-        /// <summary>
-        /// Population Dataset 选择人口数据集
-        /// </summary>
         PopulationDataset = 2,
-        /// <summary>
-        /// IncidenceDataset 选择发病率数据集
-        /// </summary>
         IncidenceDataset = 3,
-        /// <summary>
-        /// Health function 选择函数
-        /// </summary>
         HealthFunction = 4
     }
 
     public class CommonClass
     {
-        #region delete shp
-        //判断shape是否存在,如果存在删除
         public static void DeleteShapeFileName(string FileName)
         {
             if (!File.Exists(FileName)) return;
@@ -61,74 +41,46 @@ namespace BenMAP
             DeleteFile(temppath, ExtFileName);
         }
 
-        /// <summary>
-        /// 按名称删除
-        /// </summary>
-        /// <param name="dirRoot"></param>
-        /// <param name="deleteFileName"></param>
         public static void DeleteFile(string dirRoot, string deleteFileName)
         {
             try
             {
-                //string[] rootDirs = Directory.GetDirectories(dirRoot); //当前目录的子目录：
-                string[] rootFiles = Directory.GetFiles(dirRoot);        //当前目录下的文件：
-                foreach (string s in rootFiles)
+                string[] rootFiles = Directory.GetFiles(dirRoot); foreach (string s in rootFiles)
                 {
                     string fname = System.IO.Path.GetFileNameWithoutExtension(s);
                     if (fname == deleteFileName)
                     {
-                        File.Delete(s);                      //删除文件
+                        File.Delete(s);
                     }
                 }
-                //foreach (string s1 in rootDirs)
-                //{
-                //    DeleteFile(s1, deleteFileName);
-                //}
             }
             catch (Exception ex)
             {
                 Logger.LogError(ex);
             }
         }
-        #endregion
 
-        #region ini
         [DllImport("kernel32.dll")]
         private static extern long WritePrivateProfileString(string section, string key, string val, string filePath);
         [DllImport("kernel32.dll")]
         private static extern int GetPrivateProfileString(string section, string key, string def, StringBuilder retVal, int size, string filePath);
-        /// <summary>
-        /// 写入INI文件
-        /// </summary>
-        /// <param name=^Section^>节点名称</param>
-        /// <param name=^Key^>关键字</param>
-        /// <param name=^Value^>值</param>
-        /// <param name=^filepath^>INI文件路径</param>
         static public void IniWriteValue(string Section, string Key, string Value, string filepath)
         {
             WritePrivateProfileString(Section, Key, Value, filepath);
         }
-        /// <summary>
-        /// 读取INI文件
-        /// </summary>
-        /// <param name=^Section^>节点名称</param>
-        /// <param name=^Key^>关键字</param>
-        /// <param name=^filepath^>INI文件路径</param>
-        /// <returns>值</returns>
         static public string IniReadValue(string Section, string Key, string filepath)
         {
             StringBuilder temp = new StringBuilder(255);
             int i = GetPrivateProfileString(Section, Key, "", temp, 255, filepath);
             return temp.ToString();
         }
-        #endregion
 
-        #region 私有变量或属性
         private static string _dataFilePath = "";
 
         public static string DataFilePath
         {
-            get {
+            get
+            {
                 if (_dataFilePath == "")
                 {
                     if (IsWindows7 || IsElse || IsWindowsVista)
@@ -136,21 +88,24 @@ namespace BenMAP
                     else
                         _dataFilePath = Environment.GetEnvironmentVariable("ALLUSERSPROFILE") + @"\Application Data\BenMAP-CE";
                 }
-                
-                return CommonClass._dataFilePath; }
+
+                return CommonClass._dataFilePath;
+            }
             set { CommonClass._dataFilePath = value; }
         }
 
-        private static string _resultFilePath="";
+        private static string _resultFilePath = "";
 
         public static string ResultFilePath
         {
-            get {
+            get
+            {
                 if (_resultFilePath == "")
                 {
                     _resultFilePath = Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments) + @"\My BenMAP-CE Files";
                 }
-                return CommonClass._resultFilePath; }
+                return CommonClass._resultFilePath;
+            }
             set { CommonClass._resultFilePath = value; }
         }
 
@@ -169,16 +124,9 @@ namespace BenMAP
             set { CommonClass.inputParams = value; }
         }
 
-        /// <summary>
-        /// 当前的设定：美国区/中国区
-        /// </summary>
-        //public static string ActiveSetup = "";
 
         private static string _activeSetup = "USA";
 
-        /// <summary>
-        /// 当前操作区域：默认是美国区
-        /// </summary>
         public static string ActiveSetup
         {
             get { return _activeSetup; }
@@ -187,9 +135,6 @@ namespace BenMAP
 
         private static ConfigurationAtt _conAtt;
 
-        /// <summary>
-        /// 保存ConfigurationSettings中配置信息
-        /// </summary>
         public static ConfigurationAtt ConAtt
         {
             get { return _conAtt; }
@@ -210,8 +155,8 @@ namespace BenMAP
 
         public static BenMAPSetup ManageSetup;
 
-        private static BenMAPSetup _mainSetup;// 当前活动区域
-        public static BenMAPSetup MainSetup// 当前活动区域
+        private static BenMAPSetup _mainSetup;
+        public static BenMAPSetup MainSetup
         {
             get { return _mainSetup; }
             set
@@ -229,9 +174,6 @@ namespace BenMAP
 
         private static FbConnection _connection;
 
-        /// <summary>
-        /// Firebird的链接字符串
-        /// </summary>
         public static FbConnection Connection
         {
             get
@@ -258,69 +200,22 @@ namespace BenMAP
             string str = settings.ConnectionString;
             if (!str.Contains(":"))
                 str = str.Substring(0, str.IndexOf("initial catalog=")) + "initial catalog=" + Application.StartupPath + @"\" + str.Substring(str.IndexOf("initial catalog=") + 16);
-            FbConnection connection = new FirebirdSql.Data.FirebirdClient.FbConnection(str);     
+            FbConnection connection = new FirebirdSql.Data.FirebirdClient.FbConnection(str);
 
             return connection;
         }
 
-        //private static List<RowCol> lstGBenMAPGridRowCol;
 
-        //public static List<RowCol> LstGBenMAPGridRowCol
-        //{
-        //    get {
-        //        int iCol = -1;
-        //        int iRow = -1;
-        //        if (CommonClass.lstGBenMAPGridRowCol == null &&CommonClass.GBenMAPGrid!=null)
-        //        {
-        //            CommonClass.lstGBenMAPGridRowCol = new List<RowCol>();
-        //            DotSpatial.Data.FeatureSet fs = new DotSpatial.Data.FeatureSet();
-        //            string strSHP="";
-        //            if(CommonClass.GBenMAPGrid is ShapefileGrid)
-        //            {
-        //                strSHP=Application.StartupPath + @"\Data\Shapefiles\" + (CommonClass.GBenMAPGrid as ShapefileGrid).ShapefileName + ".shp";
-        //            }
-        //            else if(CommonClass.GBenMAPGrid is RegularGrid)
-        //            {
-        //                    strSHP=Application.StartupPath + @"\Data\Shapefiles\" + (CommonClass.GBenMAPGrid as RegularGrid).ShapefileName + ".shp";
 
-        //            }
-        //            fs.Open(strSHP);
-        //            int i = 0;
-        //            foreach (DataColumn dc in fs.DataTable.Columns)
-        //            {
-        //                if (dc.ColumnName.ToLower() == "col")
-        //                    iCol = i;
-        //                if (dc.ColumnName.ToLower() == "row")
-        //                    iRow = i;
 
-        //                i++;
-        //            }
-        //            foreach (DataRow dr in fs.DataTable.Rows)
-        //            {
-        //                lstRowCol.Add(new RowCol() { Col = Convert.ToInt32(dr[iCol]), Row = Convert.ToInt32(dr[iRow]) });
-        //            }
 
-        //            fs.Close();
-        //            fs.Dispose();
-        //        }
-        //        return CommonClass.lstGBenMAPGridRowCol;
-        //    }
-        //    //set { CommonClass.lstGBenMAPGridRowCol = value; }
-        //}
-        public static List<BenMAPPollutant> LstPollutant;//污染物列表
-        public static BenMAPGrid rBenMAPGrid;
-        /// <summary>
-        /// 将DataTable中数据写入到CSV文件中
-        /// </summary>
-        /// <param name="dt">提供保存数据的DataTable</param>
-        /// <param name="fileName">CSV的文件路径</param>
+        public static List<BenMAPPollutant> LstPollutant; public static BenMAPGrid rBenMAPGrid;
         public static void SaveCSV(DataTable dt, string fileName)
         {
             FileStream fs = new FileStream(fileName, System.IO.FileMode.Create, System.IO.FileAccess.Write);
             StreamWriter sw = new StreamWriter(fs, System.Text.Encoding.UTF8);
             string data = "";
 
-            //写出列名称
             for (int i = 0; i < dt.Columns.Count; i++)
             {
                 data += dt.Columns[i].ColumnName.ToString();
@@ -331,7 +226,6 @@ namespace BenMAP
             }
             sw.WriteLine(data);
 
-            //写出各行数据
             for (int i = 0; i < dt.Rows.Count; i++)
             {
                 data = "";
@@ -446,7 +340,7 @@ namespace BenMAP
             }
             return null;
         }
-        public static BenMAPGrid RBenMAPGrid//系统选择的Grid
+        public static BenMAPGrid RBenMAPGrid
         {
             get
             {
@@ -468,7 +362,6 @@ namespace BenMAP
             int iName = -1;
             int icName = -1;
             int iValue = 0;
-            //调出Region-------求得DataSet----包括name/col/row
             string _regionPath = "";
             if (rBenMAPGrid is ShapefileGrid)
             {
@@ -499,7 +392,6 @@ namespace BenMAP
                 }
                 if (dc.ColumnName.ToLower().Contains("name"))
                 {
-                    //dc.ColumnName = "Name";
                     icName = i;
                 }
                 if (dc.ColumnName.ToLower().Trim() == "col")
@@ -547,27 +439,9 @@ namespace BenMAP
             fs.Dispose();
         }
 
-        public static BenMAPGrid GBenMAPGrid;//系统选择的Region
-        public static List<BaseControlGroup> LstBaseControlGroup;//系统设置的DataSource Base and Control
-        //public static List<CRSelectFunction> LstCRSelectFunction;//系统选择的所有Health Impact Function
-        public static double CRThreshold = 0;//阈值
-        public static int CRLatinHypercubePoints = 10;//拉丁立体方采样点数
-        public static bool CRRunInPointMode = false;//是否使用拉丁立体方方采样
-        public static int CRSeeds=1 ;//种子数
-        public static BenMAPPopulation BenMAPPopulation;//系统设置的Population
-
-        //public static List<GridRelationship> LstAllGridRelationship;//所有的网格之间的关系
-        public static List<GridRelationship> LstCurrentGridRelationship;//当前网格和所有其他网格的关系
-        /// <summary>
-        /// 界面当前的操作状态
-        /// </summary>
-        public static string CurrentStat;
-        /// <summary>
-        /// 根据List判断节点是否异步，string 并成规则：pollutant+baseline/control例如：pm10baseline
-        /// list中包含string说明异步还在进行中，否则是可以操作该节点
-        /// </summary>
-        public static List<string> LstAsynchronizationStates;//BaseControl异步状态
-
+        public static BenMAPGrid GBenMAPGrid; public static List<BaseControlGroup> LstBaseControlGroup; public static double CRThreshold = 0; public static int CRLatinHypercubePoints = 10; public static bool CRRunInPointMode = false; public static int CRSeeds = 1; public static BenMAPPopulation BenMAPPopulation;
+        public static List<GridRelationship> LstCurrentGridRelationship; public static string CurrentStat;
+        public static List<string> LstAsynchronizationStates;
         private static List<GridRelationship> lstGridRelationshipAll;
         private static bool isAddPercentage = false;
 
@@ -583,17 +457,7 @@ namespace BenMAP
                 if (lstGridRelationshipAll == null || isAddPercentage == true)
                 {
                     isAddPercentage = false;
-                    //   lstGridRelationshipAll = Grid.GridCommon.getAllGridRelationship();
-                    List<GridRelationship> lstGridRelationship = new List<GridRelationship>(); // TODO: 初始化为适当的值
-                    //string filePath = @"D:\软件项目\BenMap\BenMap\trunk\Code\BenMAP\bin\Debug\Data\GridRelationship\GridRelationship.gr"; // TODO: 初始化为适当的值
-                   // string filePath = string.Format(@"{0}\Data\GridRelationship\GridRelationship.gr", Application.StartupPath);
-                    //Grid.GridCommon.getGridRelationshipFromFile(filePath, ref lstGridRelationship);
-                    //GRGridRelationShip gr = new GRGridRelationShip() { lstRelationship = lstGridRelationship };
-                    //SaveGridRelationship(@"d:\GridRelationship.gr", gr);
-                    lstGridRelationshipAll = new List<GridRelationship>();// LoadGridRelationship(filePath).lstRelationship;
-                    //lstGridRelationshipAll = lstGridRelationship;
-                    //----------------if percentage have but lstGridRelationshipAll not,then add new --------
-                    string commandText = "select   PercentageID,SourceGridDefinitionID,TargetGridDefinitionID  from GridDefinitionPercentages";
+                    List<GridRelationship> lstGridRelationship = new List<GridRelationship>(); lstGridRelationshipAll = new List<GridRelationship>(); string commandText = "select   PercentageID,SourceGridDefinitionID,TargetGridDefinitionID  from GridDefinitionPercentages";
                     ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                     System.Data.DataSet dsGrid = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                     foreach (DataRow dr in dsGrid.Tables[0].Rows)
@@ -608,156 +472,20 @@ namespace BenMAP
 
                             });
                         }
- 
+
                     }
-                    //----------------------------------------------
-                    //-----------修正中国区36和Region----------------------------------------------------
-                    //-----------修正中国区36和Region----------------------------------------------------
-                    //  getRelationshipFromBenMAPGridPercentage(21, 18);
-                    #region 测试percentage 根据charlies 算法
-                    //GridDefinition gd = new GridDefinition();
-                    //List<GridRelationshipAttributePercentage> lst = gd.getRelationshipFromBenMAPGridPercentage(3, 1).ToArray()[0].Value;
-                    //DataTable dt = new DataTable();
-                    //dt.Columns.Add("sourcecol");
-                    //dt.Columns.Add("sourcerow");
-                    //dt.Columns.Add("targetcol");
-                    //dt.Columns.Add("targetrow");
-                    //dt.Columns.Add("percentage");
-                    //foreach (GridRelationshipAttributePercentage gr in lst)
-                    //{
 
-                    //    DataRow dr = dt.NewRow();
-                    //    dr[0] = gr.sourceCol;
-                    //    dr[1] = gr.sourceRow;
-                    //    dr[2] = gr.targetCol;
-                    //    dr[3] = gr.targetRow;
-                    //    dr[4] = gr.percentage;
-                    //    dt.Rows.Add(dr);
-                    //}
-                    //BenMAP benmap = new BenMAP();
-                    //benmap.SaveCSV(dt, @"d:\percentage.csv");
-                    # endregion
-                    //  getRelationshipFromBenMAPGridPercentage(21, 18);
-                    //GridRelationship grRemove=lstGridRelationshipAll.Where(p => p.bigGridID == 21 && p.smallGridID == 18).First();
-                    //lstGridRelationshipAll.Remove(grRemove);
-                    //lstGridRelationshipAll.Add(gr);
-                    //Grid.GridCommon.createGridRelationshipFile(@"D:\GridRelationship.gr", lstGridRelationshipAll);
-                    //-----------修正12km和county----------------------从PopulationGrowth得出-------------
-                    //string commandText = "select distinct   Populationdatasetid,yyear,sourcecolumn,sourcerow,targetcolumn,targetrow from PopulationGrowthWeights";
-                    //ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
-                    //System.Data.DataSet dsGrid = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
-                    //GridRelationship grs = new GridRelationship();
-                    //GridRelationship grsclip = new GridRelationship();
-                    //grs.bigGridID = 1;
-                    //grs.smallGridID = 13;
-                    //grsclip.bigGridID = 1;
-                    //grsclip.smallGridID = 7;
-                    //grs.lstGridRelationshipAttribute = new List<GridRelationshipAttribute>();
-                    //grsclip.lstGridRelationshipAttribute = new List<GridRelationshipAttribute>();
-                    //Dictionary<string, List<RowCol>> dicRelation = new Dictionary<string, List<RowCol>>();
-                    //foreach (DataRow dr in dsGrid.Tables[0].Rows)
-                    //{
-                    //    if (!dicRelation.ContainsKey(dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString()))
-                    //    {
-                    //        dicRelation.Add(dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString(), new List<RowCol>());
-                    //        dicRelation[dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString()].Add(new RowCol() { Col = Convert.ToInt32(dr["targetcolumn"]), Row = Convert.ToInt32(dr["targetrow"]) });
-                    //    }
-                    //    else
-                    //    {
-                    //        dicRelation[dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString()].Add(new RowCol() { Col = Convert.ToInt32(dr["targetcolumn"]), Row = Convert.ToInt32(dr["targetrow"]) });
-                    //    }
 
-                    //}
-                    //foreach (KeyValuePair<string, List<RowCol>> k in dicRelation)
-                    //{
-                    //    grs.lstGridRelationshipAttribute.Add(new GridRelationshipAttribute()
-                    //    {
-                    //         bigGridRowCol=new RowCol(){ Col=Convert.ToInt32( k.Key.Substring(0,k.Key.IndexOf(","))), Row= Convert.ToInt32( k.Key.Substring(k.Key.IndexOf(",")+1))},
-                    //          smallGridRowCol=k.Value
-                    //    });
-                    //    grsclip.lstGridRelationshipAttribute.Add(new GridRelationshipAttribute()
-                    //    {
-                    //        bigGridRowCol = new RowCol() { Col = Convert.ToInt32(k.Key.Substring(0, k.Key.IndexOf(","))), Row = Convert.ToInt32(k.Key.Substring(k.Key.IndexOf(",") + 1)) },
-                    //        smallGridRowCol = k.Value
-                    //    });
-                    //}
-                    //GridRelationship remove = lstGridRelationship.Where(p => p.bigGridID == 1 && p.smallGridID == 13).First();
-                    //lstGridRelationship.Remove(remove);
-                    //remove = lstGridRelationship.Where(p => p.bigGridID == 1 && p.smallGridID == 7).First();
-                    //lstGridRelationship.Remove(remove);
-                    //lstGridRelationship.Add(grs);
-                    //lstGridRelationship.Add(grsclip);
-                    //Grid.GridCommon.createGridRelationshipFile(@"D:\GridRelationship.gr", lstGridRelationship);
-                    //---------修正12km 36km--------
-                    //GridRelationship grs = getRelationshipFromBenMAPGrid(1, 4);
-                    //GridRelationship remove = lstGridRelationship.Where(p => p.bigGridID == 1 && p.smallGridID == 4).First();
-                    //lstGridRelationship.Remove(remove);
-                    //lstGridRelationship.Add(grs);
 
-                    //  grs = getRelationshipFromBenMAPGrid(1, 13);
-                    //  remove = lstGridRelationship.Where(p => p.bigGridID == 1 && p.smallGridID == 13).First();
-                    //lstGridRelationship.Remove(remove);
-                    //lstGridRelationship.Add(grs);
 
-                    //remove = lstGridRelationship.Where(p => p.bigGridID == 1 && p.smallGridID == 7).First();
-                    //grs.smallGridID = 7;
-                    //lstGridRelationship.Remove(remove);
-                    //lstGridRelationship.Add(grs);
-                    //GridRelationship grs2 = new GridRelationship();
-                    //grs2.bigGridID = 4;
-                    //grs2.smallGridID = 7;
-                    //grs2.lstGridRelationshipAttribute = grs.lstGridRelationshipAttribute;
-                    //remove = lstGridRelationship.Where(p => p.bigGridID == 4 && p.smallGridID == 7).First();
-                    //lstGridRelationship.Remove(remove);
-                    //lstGridRelationship.Add(grs2);
-                    // //----------修正12kmclip To 12km
-                    // //var query = lstGridRelationship.Where(p => p.bigGridID == 7 || p.smallGridID == 7).ToList();
-                    // //foreach (GridRelationship gr in query)
-                    // //{
-                    // //    lstGridRelationship.Remove(gr);
-                    // //}
-                    // //var query13 = lstGridRelationship.Where(p => p.bigGridID == 13 || p.smallGridID == 13).ToList();
-                    // //foreach (GridRelationship gr in query13)
-                    // //{
-                    // //    GridRelationship grnew = new GridRelationship();
-                    // //    grnew.smallGridID = gr.smallGridID;
-                    // //    grnew.bigGridID = gr.bigGridID;
-                    // //    if (grnew.smallGridID == 13) grnew.smallGridID = 7;
-                    // //    if (grnew.bigGridID == 13) grnew.bigGridID = 7;
 
-                    // //    grnew.lstGridRelationshipAttribute = gr.lstGridRelationshipAttribute;
-                    // //    lstGridRelationship.Add(grnew);
-                    // //}
-                    // //GridRelationship grnew713 = new GridRelationship();
-                    // //grnew713.bigGridID = 13;
-                    // //grnew713.smallGridID = 7;
-                    // //grnew713.lstGridRelationshipAttribute = new List<GridRelationshipAttribute>();
 
-                    // ////---------add 13---------
-                    // //FeatureSet fs = new FeatureSet();
-                    // //BenMAPGrid bg = Grid.GridCommon.getBenMAPGridFromID(13);
-                    // //if (File.Exists(Application.StartupPath + @"\Data\Shapefiles\" + (bg as ShapefileGrid).ShapefileName + ".shp"))
-                    // //{
-                    // //    string shapeFileName = Application.StartupPath + @"\Data\Shapefiles\" + (bg as ShapefileGrid).ShapefileName + ".shp";
-                    // //    fs.Open(shapeFileName);
-                    // //    foreach (DataRow dr in fs.DataTable.Rows)
-                    // //    {
-                    // //        grnew713.lstGridRelationshipAttribute.Add(new GridRelationshipAttribute()
-                    // //        {
-                    // //            bigGridRowCol = new RowCol() { Col = Convert.ToInt32(dr["Col"]), Row = Convert.ToInt32(dr["Row"]) },
-                    // //            smallGridRowCol = new List<RowCol>() { new RowCol() { Col = Convert.ToInt32(dr["Col"]), Row = Convert.ToInt32(dr["Row"]) } }
-                    // //        });
 
-                    // //    }
-                    // //    //mainMap.Layers.Add(Application.StartupPath + @"\Data\Shapefiles\" + (CommonClass.GBenMAPGrid as ShapefileGrid).ShapefileName + ".shp");
-                    // //}
-                    // //lstGridRelationship.Add(grnew713);
-                    //Grid.GridCommon.createGridRelationshipFile(@"D:\GridRelationship.gr", lstGridRelationship);
                 }
                 return CommonClass.lstGridRelationshipAll;
             }
         }
-        public static void SaveGridRelationship(string strFile,GRGridRelationShip gr)
+        public static void SaveGridRelationship(string strFile, GRGridRelationShip gr)
         {
             try
             {
@@ -766,11 +494,11 @@ namespace BenMAP
                 using (FileStream fs = new FileStream(strFile, FileMode.OpenOrCreate))
                 {
                     Serializer.Serialize<GRGridRelationShip>(fs, gr);
-                   
+
                     fs.Close();
                     fs.Dispose();
                 }
-                
+
             }
             catch
             { }
@@ -783,7 +511,7 @@ namespace BenMAP
                 try
                 {
                     gr = Serializer.Deserialize<GRGridRelationShip>(fs);
-                    
+
                     fs.Close();
                     fs.Dispose();
                     return gr;
@@ -819,22 +547,15 @@ namespace BenMAP
                     fsSmall = DotSpatial.Data.FeatureSet.Open(shapeFileNameSmall);
                     List<RowCol> lstRowColSmall = new List<RowCol>();
                     List<DotSpatial.Topology.Point> lstMid = new List<DotSpatial.Topology.Point>();
-                    //FeatureSet fsMid = new FeatureSet();
                     for (int i = 0; i < fsSmall.DataTable.Rows.Count; i++)
                     {
                         IFeature f = fsSmall.GetFeature(i);
                         lstRowColSmall.Add(new RowCol() { Col = Convert.ToInt32(f.DataRow["Col"]), Row = Convert.ToInt32(f.DataRow["Row"]) });
                         lstMid.Add(new DotSpatial.Topology.Point(f.Centroid().Coordinates[0]));
-                        //fsSmall.AddFeature(new DotSpatial.Topology.Point(f.Centroid().Coordinates[0]));
                     }
                     for (int j = 0; j < fsBig.DataTable.Rows.Count; j++)
                     {
                         IFeature f = fsBig.GetFeature(j);
-                        //grnew713.lstGridRelationshipAttribute.Add(new GridRelationshipAttribute()
-                        //{
-                        //    bigGridRowCol = new RowCol() { Col = Convert.ToInt32(dr["Col"]), Row = Convert.ToInt32(dr["Row"]) },
-                        //    smallGridRowCol = new List<RowCol>() { new RowCol() { Col = Convert.ToInt32(dr["Col"]), Row = Convert.ToInt32(dr["Row"]) } }
-                        //});
                         GridRelationshipAttribute gra = new GridRelationshipAttribute();
                         gra.bigGridRowCol = new RowCol() { Col = Convert.ToInt32(f.DataRow["Col"]), Row = Convert.ToInt32(f.DataRow["Row"]) };
                         gra.smallGridRowCol = new List<RowCol>();
@@ -853,7 +574,6 @@ namespace BenMAP
                     }
                     fsBig.Close();
                     fsSmall.Close();
-                    //mainMap.Layers.Add(Application.StartupPath + @"\Data\Shapefiles\" + (CommonClass.GBenMAPGrid as ShapefileGrid).ShapefileName + ".shp");
                 }
                 return grReturn;
             }
@@ -862,22 +582,12 @@ namespace BenMAP
                 return null;
             }
         }
-          /// <summary>
-        /// This tests each feature of the input
-        /// </summary>
-        /// <param name="self">This featureSet</param>
-        /// <param name="other">The featureSet to perform intersection with</param>
-        /// <param name="joinType">The attribute join type</param>
-        /// <param name="progHandler">A progress handler for status messages</param>
-        /// <returns>An IFeatureSet with the intersecting features, broken down based on the join Type</returns>
-        public static IFeatureSet Intersection( IFeatureSet self, IFeatureSet other, FieldJoinType joinType)
+        public static IFeatureSet Intersection(IFeatureSet self, IFeatureSet other, FieldJoinType joinType)
         {
             IFeatureSet result = null;
-            //ProgressMeter pm = new ProgressMeter(progHandler, "Calculating Intersection", self.Features.Count);
             if (joinType == FieldJoinType.All)
             {
-                result = self.CombinedFields( other);
-                // Intersection is symmetric, so only consider I X J where J <= I
+                result = self.CombinedFields(other);
                 if (!self.AttributesPopulated) self.FillAttributes();
                 if (!other.AttributesPopulated) other.FillAttributes();
                 int i = 0;
@@ -889,10 +599,8 @@ namespace BenMAP
                         IFeature otherFeature = other.Features[iotherFeature];
                         selfFeature.Intersection(otherFeature, result, joinType);
                     }
-                    //pm.CurrentValue = i;
                     i++;
                 }
-                //pm.Reset();
             }
             if (joinType == FieldJoinType.LocalOnly)
             {
@@ -909,7 +617,6 @@ namespace BenMAP
                     for (int i = 1; i < other.Features.Count; i++)
                     {
                         g = g.Union(Geometry.FromBasicGeometry(other.Features[i].BasicGeometry));
-                        //union = union.Union(other.Features[i]);
 
                     }
                     union.BasicGeometry = g;
@@ -925,37 +632,25 @@ namespace BenMAP
                 }
             }
             return result;
-                
+
         }
-        /// <summary>
-        /// Nation Intersaction Slow ,County replace Nation
-        /// </summary>
-        /// <param name="self"></param>
-        /// <param name="other"></param>
-        /// <param name="joinType"></param>
-        /// <returns></returns>
-        public static List<GridRelationshipAttributePercentage> IntersectionPercentageNation(IFeatureSet self, IFeatureSet other, FieldJoinType joinType,int big,int small)
+        public static List<GridRelationshipAttributePercentage> IntersectionPercentageNation(IFeatureSet self, IFeatureSet other, FieldJoinType joinType, int big, int small)
         {
             List<GridRelationshipAttributePercentage> result = new List<GridRelationshipAttributePercentage>();
             try
             {
-                //ProgressMeter pm = new ProgressMeter(progHandler, "Calculating Intersection", self.Features.Count);
                 if (joinType == FieldJoinType.All)
                 {
-                    //result = self.CombinedFields(other);
-                    // Intersection is symmetric, so only consider I X J where J <= I
                     if (!self.AttributesPopulated) self.FillAttributes();
                     if (!other.AttributesPopulated) other.FillAttributes();
                     int i = 0;
-                    //DotSpatial.Topology.IGeometry geo = null;
                     Dictionary<string, Dictionary<string, double>> dicRelation = new Dictionary<string, Dictionary<string, double>>();
                     Polygon pSelfExtent = null;
                     Polygon pOtherExtent = null;
                     double dSumArea = 0.0;
                     foreach (IFeature selfFeature in self.Features)
                     {
-                        IFeature intersactFeature = null;// selfFeature.Intersection(other.Features[iotherFeature]);
-                        if (big == 20)
+                        IFeature intersactFeature = null; if (big == 20)
                         {
                             dSumArea += selfFeature.Area();
                         }
@@ -999,16 +694,14 @@ namespace BenMAP
                             List<int> potentialOthers = other.SelectIndices(selfFeature.Envelope.ToExtent());
                             foreach (int iotherFeature in potentialOthers)
                             {
-                                intersactFeature = null;// selfFeature.Intersection(other.Features[iotherFeature]);
-
+                                intersactFeature = null;
                                 if ((other.Features.Count < 5 || self.Features.Count < 5) && other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum)) == 0 &&
                                     other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Maximum.X, selfFeature.Envelope.Minimum.Y)) == 0 &&
                                     other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Maximum)) == 0 &&
                                     other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X, selfFeature.Envelope.Maximum.Y)) == 0
-                                    )//.Contains(selfFeature))
+                                    )
                                 {
-                                    intersactFeature = selfFeature;// selfFeature.Intersection(other.Features[iotherFeature]);
-                                    //geo = selfFeature.Intersection(other.Features[iotherFeature]).BasicGeometry;// DotSpatial.Topology.Geometry.FromBasicGeometry(selfFeature.BasicGeometry).Intersection(DotSpatial.Topology.Geometry.FromBasicGeometry(other.Features[iotherFeature]));
+                                    intersactFeature = selfFeature;
                                 }
                                 else
                                     if ((other.Features.Count < 5 || self.Features.Count < 5) && selfFeature.Distance(new Point(other.Features[iotherFeature].Envelope.Minimum)) == 0 &&
@@ -1022,16 +715,14 @@ namespace BenMAP
                                     {
                                         try
                                         {
-                                            intersactFeature = selfFeature.Intersection(other.Features[iotherFeature]);// other.Features[iotherFeature].Intersection(selfFeature);
+                                            intersactFeature = selfFeature.Intersection(other.Features[iotherFeature]);
                                         }
                                         catch (Exception ex)
                                         {
                                         }
-                                        //geo =DotSpatial.Topology.Geometry.FromBasicGeometry(other.Features[iotherFeature]).Intersection( DotSpatial.Topology.Geometry.FromBasicGeometry(selfFeature.BasicGeometry));
 
                                     }
 
-                                //if (geo != null && geo.IsEmpty==false)
                                 try
                                 {
                                     if (intersactFeature != null && intersactFeature.BasicGeometry != null)
@@ -1073,15 +764,11 @@ namespace BenMAP
                                 {
                                 }
 
-                                //selfFeature.Intersection(otherFeature, result, joinType);
                             }
 
                         }
-                        //pm.CurrentValue = i;
                         i++;
                     }
-                    //--------to
-                    //---------------求sum(Area)--------
 
                     if (small == 20)
                     {
@@ -1090,15 +777,14 @@ namespace BenMAP
 
                     if (big == 20)
                     {
-                        //------------则Percentage都为1只要是和它交叉-------------
                         Dictionary<string, double> dicTemp = new Dictionary<string, double>();
                         foreach (KeyValuePair<string, Dictionary<string, double>> k in dicRelation)
                         {
                             if (k.Value.Count > 0)
                             {
-                                 
-                                        dicTemp.Add(k.Key, 1.0);
-                                 
+
+                                dicTemp.Add(k.Key, 1.0);
+
 
                             }
                         }
@@ -1124,7 +810,7 @@ namespace BenMAP
                         {
                             if (k.Value.Count > 0)
                             {
-                                foreach(KeyValuePair<string, double> kin in k.Value)
+                                foreach (KeyValuePair<string, double> kin in k.Value)
                                 {
                                     if (!dicTemp.ContainsKey(kin.Key))
                                         dicTemp.Add(kin.Key, kin.Value);
@@ -1144,41 +830,29 @@ namespace BenMAP
                                 sourceRow = 1,
                                 targetCol = Convert.ToInt32(str[0]),
                                 targetRow = Convert.ToInt32(str[1]),
-                                percentage = kin.Value/dSumArea,
+                                percentage = kin.Value / dSumArea,
                             };
                             result.Add(gr);
                         }
                     }
                 }
-            
+
             }
             catch (Exception ex)
             {
             }
             return result;
         }
-        /// <summary>
-        /// This tests each feature of the input
-        /// </summary>
-        /// <param name="self">This featureSet</param>
-        /// <param name="other">The featureSet to perform intersection with</param>
-        /// <param name="joinType">The attribute join type</param>
-        /// <param name="progHandler">A progress handler for status messages</param>
-        /// <returns>An IFeatureSet with the intersecting features, broken down based on the join Type</returns>
         public static List<GridRelationshipAttributePercentage> IntersectionPercentage(IFeatureSet self, IFeatureSet other, FieldJoinType joinType)
         {
             List<GridRelationshipAttributePercentage> result = new List<GridRelationshipAttributePercentage>();
             try
             {
-                //ProgressMeter pm = new ProgressMeter(progHandler, "Calculating Intersection", self.Features.Count);
                 if (joinType == FieldJoinType.All)
                 {
-                    //result = self.CombinedFields(other);
-                    // Intersection is symmetric, so only consider I X J where J <= I
                     if (!self.AttributesPopulated) self.FillAttributes();
                     if (!other.AttributesPopulated) other.FillAttributes();
                     int i = 0;
-                    //DotSpatial.Topology.IGeometry geo = null;
                     Dictionary<string, Dictionary<string, double>> dicRelation = new Dictionary<string, Dictionary<string, double>>();
                     Polygon pSelfExtent = null;
                     Polygon pOtherExtent = null;
@@ -1188,56 +862,25 @@ namespace BenMAP
                         List<int> potentialOthers = other.SelectIndices(selfFeature.Envelope.ToExtent());
                         foreach (int iotherFeature in potentialOthers)
                         {
-                            if (iotherFeature == 33)//28
-                            { 
+                            if (iotherFeature == 33)
+                            {
                             }
-                            IFeature intersactFeature = null;// selfFeature.Intersection(other.Features[iotherFeature]);
-                            //List<Coordinate> lstCoor = new List<Coordinate>();
-                            //lstCoor.Add(new Coordinate(selfFeature.Envelope.X, selfFeature.Envelope.Y));
-                            //lstCoor.Add(new Coordinate(selfFeature.Envelope.X + selfFeature.Envelope.Width, selfFeature.Envelope.Y));
-                            //lstCoor.Add(new Coordinate(selfFeature.Envelope.X + selfFeature.Envelope.Width, selfFeature.Envelope.Y + selfFeature.Envelope.Height));
-                            //lstCoor.Add(new Coordinate(selfFeature.Envelope.X, selfFeature.Envelope.Y + selfFeature.Envelope.Height));
+                            IFeature intersactFeature = null;
 
-                            //pSelfExtent = new Polygon(lstCoor);
 
-                            //List<Coordinate> lstCoorOther = new List<Coordinate>();
-                            //lstCoorOther.Add(new Coordinate(other.Features[iotherFeature].Envelope.X, other.Features[iotherFeature].Envelope.Y));
-                            //lstCoorOther.Add(new Coordinate(other.Features[iotherFeature].Envelope.X + other.Features[iotherFeature].Envelope.Width, other.Features[iotherFeature].Envelope.Y));
-                            //lstCoorOther.Add(new Coordinate(other.Features[iotherFeature].Envelope.X + other.Features[iotherFeature].Envelope.Width, other.Features[iotherFeature].Envelope.Y + other.Features[iotherFeature].Envelope.Height));
-                            //lstCoorOther.Add(new Coordinate(other.Features[iotherFeature].Envelope.X, other.Features[iotherFeature].Envelope.Y + other.Features[iotherFeature].Envelope.Height));
-
-                            //pOtherExtent = new Polygon(lstCoorOther);
-                            //if (other.Features[iotherFeature].Contains(new Point(selfFeature.Envelope.X, selfFeature.Envelope.Y)) &&
-                            //    other.Features[iotherFeature].Contains(new Point(selfFeature.Envelope.X + selfFeature.Envelope.Width, selfFeature.Envelope.Y)) &&
-                            //    other.Features[iotherFeature].Contains(new Point(selfFeature.Envelope.X + selfFeature.Envelope.Width, selfFeature.Envelope.Y + selfFeature.Envelope.Height)) &&
-                            //    other.Features[iotherFeature].Contains(new Point(selfFeature.Envelope.X, selfFeature.Envelope.Y + selfFeature.Envelope.Height)))
-                            //{
-                            //    intersactFeature = selfFeature;// selfFeature.Intersection(other.Features[iotherFeature]);
-                            //    //geo = selfFeature.Intersection(other.Features[iotherFeature]).BasicGeometry;// DotSpatial.Topology.Geometry.FromBasicGeometry(selfFeature.BasicGeometry).Intersection(DotSpatial.Topology.Geometry.FromBasicGeometry(other.Features[iotherFeature]));
-                            //}
-                            //else if (selfFeature.Contains(new Point(other.Features[iotherFeature].Envelope.X, other.Features[iotherFeature].Envelope.Y)) &&
-                            //    selfFeature.Contains(new Point(other.Features[iotherFeature].Envelope.X + other.Features[iotherFeature].Envelope.Width, other.Features[iotherFeature].Envelope.Y)) &&
-                            //    selfFeature.Contains(new Point(other.Features[iotherFeature].Envelope.X + other.Features[iotherFeature].Envelope.Width, other.Features[iotherFeature].Envelope.Y + other.Features[iotherFeature].Envelope.Height)) &&
-                            //    selfFeature.Contains(new Point(other.Features[iotherFeature].Envelope.X, other.Features[iotherFeature].Envelope.Y + other.Features[iotherFeature].Envelope.Height)))
-                            //{
-                            //    intersactFeature = other.Features[iotherFeature];
-                            //}
                             if ((other.Features.Count < 5 || self.Features.Count < 5) && other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum)) == 0 &&
-                                other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Maximum.X, selfFeature.Envelope.Minimum.Y)) == 0 &&
-                                other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Maximum)) == 0 &&
-                                other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X, selfFeature.Envelope.Maximum.Y)) == 0
-                                )//.Contains(selfFeature))
-                                //if (other.Features[iotherFeature].Contains(selfFeature))
-                                {
-                                    intersactFeature = selfFeature;// selfFeature.Intersection(other.Features[iotherFeature]);
-                                    //geo = selfFeature.Intersection(other.Features[iotherFeature]).BasicGeometry;// DotSpatial.Topology.Geometry.FromBasicGeometry(selfFeature.BasicGeometry).Intersection(DotSpatial.Topology.Geometry.FromBasicGeometry(other.Features[iotherFeature]));
-                                }
+other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Maximum.X, selfFeature.Envelope.Minimum.Y)) == 0 &&
+other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Maximum)) == 0 &&
+other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X, selfFeature.Envelope.Maximum.Y)) == 0
+)
+                            {
+                                intersactFeature = selfFeature;
+                            }
 
                             else if ((other.Features.Count < 5 || self.Features.Count < 5) && selfFeature.Distance(new Point(other.Features[iotherFeature].Envelope.Minimum)) == 0 &&
                            selfFeature.Distance(new Point(other.Features[iotherFeature].Envelope.Maximum.X, other.Features[iotherFeature].Envelope.Minimum.Y)) == 0 &&
                             selfFeature.Distance(new Point(other.Features[iotherFeature].Envelope.Maximum)) == 0 &&
                             selfFeature.Distance(new Point(other.Features[iotherFeature].Envelope.Minimum.X, other.Features[iotherFeature].Envelope.Maximum.Y)) == 0)
-                            //else if (selfFeature.Contains(other.Features[iotherFeature]))
                             {
                                 intersactFeature = other.Features[iotherFeature];
                             }
@@ -1245,11 +888,10 @@ namespace BenMAP
                             {
                                 try
                                 {
-                                    intersactFeature = selfFeature.Intersection(other.Features[iotherFeature]);// other.Features[iotherFeature].Intersection(selfFeature);
+                                    intersactFeature = selfFeature.Intersection(other.Features[iotherFeature]);
                                 }
                                 catch (Exception ex)
-                                { 
-                                    //------------一旦出错，看看是否是在里面
+                                {
                                     try
                                     {
                                         if (selfFeature.IsWithinDistance(other.Features[iotherFeature], 0.00001))
@@ -1259,29 +901,16 @@ namespace BenMAP
                                             else
                                                 intersactFeature = selfFeature;
                                         }
-                                       // List<Coordinate> lstTemp = new List<Coordinate>() { new Coordinate(151.301, -33.69), new Coordinate(151.301, -33.70), new Coordinate(151.303, -33.70), new Coordinate(151.303, -33.69) };
-                                       //IFeature ftemp= other.Features[iotherFeature].Intersection(new Feature(new Polygon(lstTemp)));
                                     }
                                     catch
-                                    { 
+                                    {
                                     }
                                 }
-                                //geo =DotSpatial.Topology.Geometry.FromBasicGeometry(other.Features[iotherFeature]).Intersection( DotSpatial.Topology.Geometry.FromBasicGeometry(selfFeature.BasicGeometry));
 
                             }
-                            //if (geo != null && geo.IsEmpty==false)
                             if (intersactFeature != null && intersactFeature.BasicGeometry != null)
                             {
-                                //GridRelationshipAttributePercentage gr = new GridRelationshipAttributePercentage()
-                                //{
 
-                                //    sourceCol = Convert.ToInt32(other.Features[iotherFeature].DataRow["Col"]),
-                                //    sourceRow = Convert.ToInt32(other.Features[iotherFeature].DataRow["Row"]),
-                                //    targetCol = Convert.ToInt32(selfFeature.DataRow["Col"]),
-                                //    targetRow = Convert.ToInt32(selfFeature.DataRow["Row"]),
-                                //    percentage = geo.Area / other.Features[iotherFeature].Area(),
-                                //};
-                                //result.Add(gr);
                                 try
                                 {
                                     double dArea = 0;
@@ -1339,17 +968,14 @@ namespace BenMAP
                                         }
                                     }
                                     catch
-                                    { 
+                                    {
                                     }
                                 }
                             }
-                            //selfFeature.Intersection(otherFeature, result, joinType);
                         }
 
-                        //pm.CurrentValue = i;
                         i++;
                     }
-                    //--------to
                     foreach (KeyValuePair<string, Dictionary<string, double>> k in dicRelation)
                     {
                         if (k.Value.Count > 0)
@@ -1385,18 +1011,17 @@ namespace BenMAP
                                         sourceRow = Convert.ToInt32(str[1]),
                                         targetCol = Convert.ToInt32(strin[0]),
                                         targetRow = Convert.ToInt32(strin[1]),
-                                        percentage = kin.Value/d,
+                                        percentage = kin.Value / d,
                                     };
                                     result.Add(gr);
                                 }
                             }
                         }
                     }
-                    //pm.Reset();
                 }
             }
             catch (Exception ex)
-            { 
+            {
             }
             return result;
         }
@@ -1404,7 +1029,7 @@ namespace BenMAP
         {
             try
             {
-                
+
                 IFeatureSet fsBig = new FeatureSet();
                 IFeatureSet fsSmall = new FeatureSet();
                 BenMAPGrid bigBenMAPGrid = Grid.GridCommon.getBenMAPGridFromID(big);
@@ -1418,37 +1043,14 @@ namespace BenMAP
                     fsBig = DotSpatial.Data.FeatureSet.Open(shapeFileName);
                     string shapeFileNameSmall = CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + (smallBenMAPGrid as ShapefileGrid).ShapefileName + ".shp";
                     fsSmall = DotSpatial.Data.FeatureSet.Open(shapeFileNameSmall);
-                    //----------Clip first! ----------
-                    //List<IFeature> lstClip= fsSmall.Select(fsBig.Extent);
-                    //IFeatureSet fsSmallClip = new FeatureSet(lstClip);
-                    //List<int> lstRemove = new List<int>();
-                    //for (int i = 0; i < fsSmall.Features.Count; i++)
-                    //{
-                    //    if (!lstClip.Contains(i))
-                    //        lstRemove.Add(i);
- 
-                    //}
-                    //List<IFeature> lstRemoveFeature = new List<IFeature>();
-                    //foreach (int i in lstRemove)
-                    //{
-                    //    lstRemoveFeature.Add(fsSmall.Features[i]);
-                         
-                    //}
-                    //foreach (IFeature f in lstRemoveFeature)
-                    //{
-                    //    fsSmall.Features.Remove(f);
-                    //}
-                    List<GridRelationshipAttributePercentage> lstGR = IntersectionPercentage(fsBig, fsSmall, FieldJoinType.All);
-                    //---------------------------填入数据库！--------------------------------
-                    string commandText = "select max(PercentageID) from GridDefinitionPercentages";
-                    //-----first get the max of id in griddefinitonpercentages
-                    //ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
-                    int iMax = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText))+1;
 
-                    //-----insert into griddefinitonpercentages
+
+                    List<GridRelationshipAttributePercentage> lstGR = IntersectionPercentage(fsBig, fsSmall, FieldJoinType.All);
+                    string commandText = "select max(PercentageID) from GridDefinitionPercentages";
+                    int iMax = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
+
                     commandText = string.Format("insert into GridDefinitionPercentages values({0},{1},{2})", iMax, small, big);
                     fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
-                    //-----insert into GridDefinitionPercentageEntries
                     foreach (GridRelationshipAttributePercentage grp in lstGR)
                     {
                         commandText = string.Format("insert into GridDefinitionPercentageEntries values({0},{1},{2},{3},{4},{5},{6})",
@@ -1459,16 +1061,12 @@ namespace BenMAP
             }
             catch (Exception ex)
             {
-                
+
             }
         }
-        public static List<BenMAPPollutant> lstPollutantAll;//所有污染物
-
-        public static BaseControlCRSelectFunction BaseControlCRSelectFunction;//所有BaseControlAndCRSelectFunciton
-        public static BaseControlCRSelectFunctionCalculateValue BaseControlCRSelectFunctionCalculateValue;//所有BaseControlAndCRSelectFunciton以及Value
-
-        private static Dictionary<string, int> dicAllRace;//所有race
-
+        public static List<BenMAPPollutant> lstPollutantAll;
+        public static BaseControlCRSelectFunction BaseControlCRSelectFunction; public static BaseControlCRSelectFunctionCalculateValue BaseControlCRSelectFunctionCalculateValue;
+        private static Dictionary<string, int> dicAllRace;
         public static Dictionary<string, int> DicAllRace
         {
             get
@@ -1479,8 +1077,7 @@ namespace BenMAP
             }
         }
 
-        private static Dictionary<string, int> dicAllGender;//所有Gender
-
+        private static Dictionary<string, int> dicAllGender;
         public static Dictionary<string, int> DicAllGender
         {
             get
@@ -1491,8 +1088,7 @@ namespace BenMAP
             }
         }
 
-        private static Dictionary<string, int> dicAllEthnicity;//所有Ethnicity
-
+        private static Dictionary<string, int> dicAllEthnicity;
         public static Dictionary<string, int> DicAllEthnicity
         {
             get
@@ -1503,28 +1099,15 @@ namespace BenMAP
             }
         }
 
-        //-------------------APVX-------------------------------
         public static List<CRSelectFunctionCalculateValue> lstCRResultAggregation;
         public static List<CRSelectFunctionCalculateValue> lstCRResultAggregationQALY;
         public static IncidencePoolingAndAggregationAdvance IncidencePoolingAndAggregationAdvance;
-        //= new IncidencePoolingAndAggregationAdvance() { 
-        // IncidenceAggregation=CommonClass.MainSetup!=null && CommonClass.MainSetup.SetupID==1?Grid.GridCommon.getBenMAPGridFromID(2):null,
-        // ValuationAggregation=CommonClass.MainSetup!=null && CommonClass.MainSetup.SetupID==1?Grid.GridCommon.getBenMAPGridFromID(2):null,
-        // QALYAggregation = CommonClass.MainSetup != null && CommonClass.MainSetup.SetupID == 1 ? Grid.GridCommon.getBenMAPGridFromID(2) : null
-        //}
-        //;//Advance
         public static List<IncidencePoolingAndAggregation> lstIncidencePoolingAndAggregation;
-        //public static List<ValuationMethodPoolingAndAggregation> lstValuationMethodPoolingAndAggregation;
-        //public static IncidencePoolingAndAggregation IncidencePoolingAndAggregation;//IncidencePooling;
         public static CRSelectFunctionCalculateValue IncidencePoolingResult;
         public static ValuationMethodPoolingAndAggregation ValuationMethodPoolingAndAggregation;
-        //--------------------Result---------------------------
         public static List<ChartResult> lstChartResult;
 
         private static List<CRSelectFunction> _lstAddCRFunction = new List<CRSelectFunction>();
-        /// <summary>
-        /// 记录HealthImpactFunctions中新增CRFunction的ID
-        /// </summary>
         public static List<CRSelectFunction> LstUpdateCRFunction
         {
             get { return _lstAddCRFunction; }
@@ -1533,17 +1116,12 @@ namespace BenMAP
         }
 
         private static List<CRSelectFunction> _lstDelCRFunction = new List<CRSelectFunction>();
-        /// <summary>
-        /// 记录HealthImpactFunctions中删除CRFunction的ID
-        /// </summary>
         public static List<CRSelectFunction> LstDelCRFunction
         {
             get { return _lstDelCRFunction; }
             set
             { _lstDelCRFunction = value; }
         }
-        #endregion 私有变量或属性
-        #region GetSystemType
         public static bool IsWindows98
         {
             get
@@ -1552,7 +1130,6 @@ namespace BenMAP
             }
         }
 
-        //C#判断操作系统是否为Windows98第二版
         public static bool IsWindows98Second
         {
             get
@@ -1561,7 +1138,6 @@ namespace BenMAP
             }
         }
 
-        //C#判断操作系统是否为Windows2000
         public static bool IsWindows2000
         {
             get
@@ -1570,7 +1146,6 @@ namespace BenMAP
             }
         }
 
-        //C#判断操作系统是否为WindowsXP
         public static bool IsWindowsXP
         {
             get
@@ -1579,7 +1154,6 @@ namespace BenMAP
             }
         }
 
-        //C#判断操作系统是否为Windows2003
         public static bool IsWindows2003
         {
             get
@@ -1588,7 +1162,6 @@ namespace BenMAP
             }
         }
 
-        //C#判断操作系统是否为WindowsVista
         public static bool IsWindowsVista
         {
             get
@@ -1597,7 +1170,6 @@ namespace BenMAP
             }
         }
 
-        //C#判断操作系统是否为Windows7
         public static bool IsWindows7
         {
             get
@@ -1606,7 +1178,6 @@ namespace BenMAP
             }
         }
 
-        //C#判断操作系统是否为Unix
         public static bool IsUnix
         {
             get
@@ -1615,7 +1186,6 @@ namespace BenMAP
             }
         }
 
-        //C#判断操作系统是否为Unix
         public static bool IsElse
         {
             get
@@ -1632,115 +1202,15 @@ namespace BenMAP
                     return false;
             }
         }
-        #endregion
-        /// <summary>
-        /// 取得user选得工作簿
-        /// </summary>
-        /// <param name="filePath"></param>
-        /// <returns></returns>
-        //public static int SelectedSheetIndex(string filePath)
-        //{
-        //    try
-        //    {
-        //        int Index = 0;
-        //        List<string> lstSheetsName = new List<string>();
-        //        lstSheetsName = GetSheetNames(filePath);
-        //        if (lstSheetsName.Count == 1) return 1;
-        //        Dictionary<string, int> dicSheetNum = new Dictionary<string, int>();
-        //        for (int i = 0; i < lstSheetsName.Count; i++)
-        //        {
-        //            //strTableNames[k] = dtSheetName.Rows[k]["TABLE_NAME"].ToString();
-        //            dicSheetNum.Add(lstSheetsName[i], i + 1);
-        //        }
 
-        //        Sheets frm = new Sheets(dicSheetNum);
-        //        DialogResult rtn = frm.ShowDialog();
-        //        if (rtn == DialogResult.OK)
-        //        {
-        //            Index = frm.sheetIndex;
-        //        }
-        //        return Index;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Logger.LogError(ex.Message);
-        //        return 1;
-        //    }
-        //}
 
-        //public static List<string> GetSheetNames(string path)
-        //{
-        //    List<string> sheets = new List<string>();
-        //    //string constring = string.Format("Provider=Microsoft.ACE.OLEDB.12.0;Data Source={0};Extended Properties=\"Excel 12.0;HDR=YES\"", path); ;
-        //    //OleDbConnection oleCon = new OleDbConnection(constring);
-        //    //if (oleCon.State != ConnectionState.Closed) { oleCon.Close(); }
-        //    //oleCon.Open();
-        //    ////返回Excel的架构，包括各个sheet表的名称,类型，创建时间和修改时间等
-        //    //DataTable dtSheetName = oleCon.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, new object[] { null, null, null, "Table" });
-        //    //string[] tableNames = new string[dtSheetName.Rows.Count];
-        //    //for (int k = 0; k < dtSheetName.Rows.Count; k++)
-        //    //{
-        //    //    tableNames[k] = dtSheetName.Rows[k]["TABLE_NAME"].ToString();
-        //    //    sheets.Add(tableNames[k]);
-        //    //}
-        //    //string connectionString = String.Format(@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source={0};Extended Properties=""Excel 8.0;HDR=YES;IMEX=1;""", path);
-        //    //DbProviderFactory factory = DbProviderFactories.GetFactory("System.Data.OleDb");
-        //    //DbConnection connection = factory.CreateConnection();
-        //    //connection.ConnectionString = connectionString;
-        //    //connection.Open();
-        //    //DataTable tbl = connection.GetSchema("Tables");
-        //    //connection.Close();
-        //    //foreach (DataRow row in tbl.Rows)
-        //    //{
-        //    //    string sheetName = (string)row["TABLE_NAME"];
-        //    //    if (sheetName.EndsWith("$"))
-        //    //    {
-        //    //        sheetName = sheetName.Substring(0, sheetName.Length - 1);
-        //    //    }
-        //    //    sheets.Add(sheetName);
-        //    //}
 
-        //    Microsoft.Office.Interop.Excel.Workbook wb = null;
-        //    object missing = System.Reflection.Missing.Value;
-        //    Microsoft.Office.Interop.Excel.Application excel = new Microsoft.Office.Interop.Excel.Application();//lauch excel application
-        //    if (excel != null)
-        //    {
-        //        excel.Visible = false;
-        //        excel.UserControl = true;
-        //        // 以只读的形式打开EXCEL文件 
-        //        wb = excel.Workbooks.Open(path, missing, true, missing, missing, missing,
-        //         missing, missing, missing, true, missing, missing, missing, missing, missing);
-        //        for (int i = 1; i <= wb.Worksheets.Count; i++)
-        //        {
-        //            sheets.Add((wb.Worksheets[i]).Name);
-        //        }
-        //    }
-        //    wb.Close(false, Type.Missing, Type.Missing);
-        //    Kill(excel);
-        //    //excel.Quit();
-        //    return sheets;
-        //}
 
         [DllImport("User32.dll", CharSet = CharSet.Auto)]
         public static extern int GetWindowThreadProcessId(IntPtr hwnd, out int ID);
 
-        //public static void Kill(Microsoft.Office.Interop.Excel.Application excel)
-        //{
-        //    IntPtr t = new IntPtr(excel.Hwnd);   //得到这个句柄，具体作用是得到这块内存入口   
 
-        //    int k = 0;
-        //    GetWindowThreadProcessId(t, out k);   //得到本进程唯一标志k  
-        //    System.Diagnostics.Process p = System.Diagnostics.Process.GetProcessById(k);   //得到对进程k的引用  
-        //    p.Kill();     //关闭进程k  
-        //}
 
-        /// <summary> 
-        /// 把Excel里的数据转换为DataTable,应用引用的com组件：Microsoft.Office.Interop.Excel.dll 读取EXCEL文件
-        /// </summary> 
-        /// <param name="filenameurl">物理路径</param> 
-        /// <param name="sheetIndex">sheet名称的索引</param> 
-        /// <param name="splitstr">如果是已存在列，则自定义添加的字符串</param> 
-        /// <returns></returns> 
         public static System.Data.DataTable ExcelToDataTable(string filenameurl)
         {
             try
@@ -1749,89 +1219,7 @@ namespace BenMAP
                 {
                     return DataSourceCommonClass.getDataTableFromCSV(filenameurl);
                 }
-                #region Microsoft.Office.Interop.Excel
-                //Microsoft.Office.Interop.Excel.Workbook wb = null;
-                //Microsoft.Office.Interop.Excel.Worksheet ws = null;
-                //bool isEqual = false;//不相等 
-                //ArrayList columnArr = new ArrayList();//列字段表 
-                //System.Data.DataSet myDs = new System.Data.DataSet();
-                ////DataTable xlsTable = myDs.Tables.Add("show");
-                //DataTable xlsTable = new DataTable() { TableName = "show" };
-                //object missing = System.Reflection.Missing.Value;
-                //Microsoft.Office.Interop.Excel.Application excel = new Microsoft.Office.Interop.Excel.Application();//lauch excel application
-                //if (excel != null)
-                //{
-                //    excel.Visible = false;
-                //    excel.UserControl = true;
-                //    // 以只读的形式打开EXCEL文件 
-                //    wb = excel.Workbooks.Open(filenameurl, missing, true, missing, missing, missing,
-                //     missing, missing, missing, true, missing, missing, missing, missing, missing);
-                //    //取得第一个工作薄 
-                //    ws = (Microsoft.Office.Interop.Excel.Worksheet)wb.Worksheets.get_Item(sheetIndex);
-                //    //取得总记录行数(包括标题列) 
-                //    int rowsint = ws.UsedRange.Cells.Rows.Count; //得到行数 
-                //    int columnsint = ws.UsedRange.Cells.Columns.Count;//得到列数 
-                //    DataRow dr;
-                //    for (int i = 1; i <= columnsint; i++)
-                //    {
-                //        //判断是否有列相同 
-                //        if (i >= 2)
-                //        {
-                //            int r = 0;
-                //            for (int k = 1; k <= i - 1; k++)//列从第一列到第i-1列遍历进行比较 
-                //            {
-                //                if (((Microsoft.Office.Interop.Excel.Range)ws.Cells[1, i]).Text.ToString() == ((Microsoft.Office.Interop.Excel.Range)ws.Cells[1, k]).Text.ToString())
-                //                {
-                //                    //如果该列的值等于前面列中某一列的值 
-                //                    xlsTable.Columns.Add(((Microsoft.Office.Interop.Excel.Range)ws.Cells[1, i]).Text.ToString() + splitstr + (r + 1).ToString(), typeof(string));
-                //                    columnArr.Add(((Microsoft.Office.Interop.Excel.Range)ws.Cells[1, i]).Text.ToString() + splitstr + (r + 1).ToString());
-                //                    isEqual = true;
-                //                    r++;
-                //                    break;
-                //                }
-                //                else
-                //                {
-                //                    isEqual = false;
-                //                    continue;
-                //                }
-                //            }
-                //            if (!isEqual)
-                //            {
-                //                xlsTable.Columns.Add(((Microsoft.Office.Interop.Excel.Range)ws.Cells[1, i]).Text.ToString(), typeof(string));
-                //                columnArr.Add(((Microsoft.Office.Interop.Excel.Range)ws.Cells[1, i]).Text.ToString());
-                //            }
-                //        }
-                //        else
-                //        {
-                //            xlsTable.Columns.Add(((Microsoft.Office.Interop.Excel.Range)ws.Cells[1, i]).Text.ToString(), typeof(string));
-                //            columnArr.Add(((Microsoft.Office.Interop.Excel.Range)ws.Cells[1, i]).Text.ToString());
-                //        }
-                //    }
-                //    for (int i = 2; i <= rowsint; i++)
-                //    {
-                //        dr = xlsTable.NewRow();
 
-                //        xlsTable.Rows.Add(dr);
-                //    }
-                //    for (int j = 1; j <= columnsint; j++)
-                //    {
-                //        //dr[columnArr[j - 1].ToString()] = ((Microsoft.Office.Interop.Excel.Range)ws.Cells[i, j]).Value2.ToString();
-                //        System.Array values = (System.Array)((Microsoft.Office.Interop.Excel.Range)ws.Columns[j]).Value;
-                //        for (int i = 2; i <= rowsint; i++)
-                //        {
-                //            xlsTable.Rows[i - 2][j - 1] = values.GetValue(i, 1);
-                //        }
-                //        //var v = (Microsoft.Office.Interop.Excel.Range)ws.Rows[2];
-                //        //string s= ((Microsoft.Office.Interop.Excel.Range)ws.Rows[i]).get;
-                //    }
-                //}
-                //if (xlsTable != null) { myDs.Tables.Add(xlsTable); }
-                //wb.Close(false, Type.Missing, Type.Missing);
-                //Kill(excel);
-                ////excel.Quit();
-                ////excel = null;
-                ////Dispose(ws, wb);
-                #endregion
 
                 FileStream stream = File.Open(filenameurl, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
                 IExcelDataReader excelReader = filenameurl.ToLower().EndsWith("xls")
@@ -1866,82 +1254,53 @@ namespace BenMAP
         }
         public static void SaveBenMAPProject(string strFile)
         {
-            //从末到开始
             try
             {
                 if (strFile == "") return;
                 BenMAPProject benMAPProject = new BenMAPProject();
                 if (ValuationMethodPoolingAndAggregation != null)
                 {
-                    benMAPProject.ValuationMethodPoolingAndAggregation = APVX.APVCommonClass.getNoResultValuationMethodPoolingAndAggregation(ValuationMethodPoolingAndAggregation);// .BaseControlCRSelectFunctionCalculateValue = new BaseControlCRSelectFunctionCalculateValue();
-                    benMAPProject.ValuationMethodPoolingAndAggregation.Version = "BenMAP-CE " + Assembly.GetExecutingAssembly().GetName().Version.ToString().Substring(0, Assembly.GetExecutingAssembly().GetName().Version.ToString().Count() - 2);
-                    //Save----------
+                    benMAPProject.ValuationMethodPoolingAndAggregation = APVX.APVCommonClass.getNoResultValuationMethodPoolingAndAggregation(ValuationMethodPoolingAndAggregation); benMAPProject.ValuationMethodPoolingAndAggregation.Version = "BenMAP-CE " + Assembly.GetExecutingAssembly().GetName().Version.ToString().Substring(0, Assembly.GetExecutingAssembly().GetName().Version.ToString().Count() - 2);
                 }
                 else if (BaseControlCRSelectFunctionCalculateValue != null)
                 {
-                    // benMAPProject.BaseControlCRSelectFunctionCalculateValue =   APVX.APVCommonClass.getNoResultBaseControlCRSelectFunctionCalculateValue(BaseControlCRSelectFunctionCalculateValue); // BaseControlCRSelectFunctionCalculateValue;
                     benMAPProject.IncidencePoolingAndAggregationAdvance = IncidencePoolingAndAggregationAdvance;
                     benMAPProject.lstIncidencePoolingAndAggregation = lstIncidencePoolingAndAggregation;
                     benMAPProject.IncidencePoolingResult = IncidencePoolingResult;
                     benMAPProject.BaseControlCRSelectFunction = BaseControlCRSelectFunction;
                     benMAPProject.BaseControlCRSelectFunction.Version = "BenMAP-CE " + Assembly.GetExecutingAssembly().GetName().Version.ToString().Substring(0, Assembly.GetExecutingAssembly().GetName().Version.ToString().Count() - 4);
 
-                    //Save------------
                 }
                 else if (BaseControlCRSelectFunction != null)
                 {
                     benMAPProject.BaseControlCRSelectFunction = BaseControlCRSelectFunction;
-                    //Save--------------
                 }
                 else
                 {
                     benMAPProject.ManageSetup = ManageSetup;
-                    benMAPProject.MainSetup = MainSetup;// 当前活动区域
-                    benMAPProject.LstPollutant = LstPollutant;//污染物列表
-                    benMAPProject.RBenMAPGrid = RBenMAPGrid;//系统选择的Grid
-
-                    benMAPProject.GBenMAPGrid = GBenMAPGrid;//系统选择的Region
-                    benMAPProject.LstBaseControlGroup = LstBaseControlGroup;//系统设置的DataSource Base and Control
-                    //public  List<CRSelectFunction> LstCRSelectFunction;//系统选择的所有Health Impact Function
-                    benMAPProject.CRThreshold = CRThreshold;//阈值
-                    benMAPProject.CRLatinHypercubePoints = CRLatinHypercubePoints;//拉丁立体方采样点数
-                    benMAPProject.CRRunInPointMode = CRRunInPointMode;//是否使用拉丁立体方方采样
-                    benMAPProject.CRSeeds = CRSeeds;
-                    benMAPProject.BenMAPPopulation = BenMAPPopulation;//系统设置的Population
-
-                    benMAPProject.lstPollutantAll = lstPollutantAll;//所有污染物
+                    benMAPProject.MainSetup = MainSetup; benMAPProject.LstPollutant = LstPollutant; benMAPProject.RBenMAPGrid = RBenMAPGrid;
+                    benMAPProject.GBenMAPGrid = GBenMAPGrid; benMAPProject.LstBaseControlGroup = LstBaseControlGroup; benMAPProject.CRThreshold = CRThreshold; benMAPProject.CRLatinHypercubePoints = CRLatinHypercubePoints; benMAPProject.CRRunInPointMode = CRRunInPointMode; benMAPProject.CRSeeds = CRSeeds;
+                    benMAPProject.BenMAPPopulation = BenMAPPopulation;
+                    benMAPProject.lstPollutantAll = lstPollutantAll;
                 }
                 benMAPProject.IncidencePoolingAndAggregationAdvance = IncidencePoolingAndAggregationAdvance;
-                benMAPProject.BenMAPPopulation = BenMAPPopulation;//系统设置的Population
-                if (File.Exists(strFile))
+                benMAPProject.BenMAPPopulation = BenMAPPopulation; if (File.Exists(strFile))
                 {
                     File.Delete(strFile);
                 }
                 using (FileStream fs = new FileStream(strFile, FileMode.OpenOrCreate))
                 {
-                    //BinaryFormatter formatter = new BinaryFormatter();
                     try
                     {
-                        //formatter.Serialize(fs, benMAPProject);
 
-                        //fs.Close();
-                        //fs.Dispose();
-                        //formatter = null;
-                        Serializer.Serialize<BenMAPProject>(fs, benMAPProject);//, PrefixStyle.Fixed32);
-                        //fs.Flush();
-                        //fs.Position = 0;
-
-                        //TestObject obj2 = Serializer.Deserialize<TestObject>(fs);
-                        //Console.WriteLine(obj2);  
+                        Serializer.Serialize<BenMAPProject>(fs, benMAPProject);
                         fs.Close();
                         fs.Dispose();
-                        //return true;
                     }
                     catch
                     {
                         fs.Close();
                         fs.Dispose();
-                        //formatter = null;
                     }
                 }
             }
@@ -1968,7 +1327,7 @@ namespace BenMAP
         {
             try
             {
-                string commandText = "select SetupID,SetupName from Setups where  SetupName='" + SetupName+"'";
+                string commandText = "select SetupID,SetupName from Setups where  SetupName='" + SetupName + "'";
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 System.Data.DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
                 DataRow dr = ds.Tables[0].Rows[0];
@@ -1988,18 +1347,9 @@ namespace BenMAP
         {
             try
             {
-                CommonClass.LstPollutant = null;//污染物列表
-                CommonClass.RBenMAPGrid = null;//系统选择的Grid
-
-                CommonClass.GBenMAPGrid = null;//系统选择的Region
-                CommonClass.LstBaseControlGroup = null;//系统设置的DataSource Base and Control
-                //public  List<CRSelectFunction> LstCRSelectFunction;//系统选择的所有Health Impact Function
-                CommonClass.CRThreshold = 0;//阈值
-                CommonClass.CRLatinHypercubePoints = 10;//拉丁立体方采样点数
-                CommonClass.CRRunInPointMode = false;//是否使用拉丁立体方方采样
-
-                CommonClass.BenMAPPopulation = null;//系统设置的Population
-
+                CommonClass.LstPollutant = null; CommonClass.RBenMAPGrid = null;
+                CommonClass.GBenMAPGrid = null; CommonClass.LstBaseControlGroup = null; CommonClass.CRThreshold = 0; CommonClass.CRLatinHypercubePoints = 10; CommonClass.CRRunInPointMode = false;
+                CommonClass.BenMAPPopulation = null;
                 if (CommonClass.BaseControlCRSelectFunction != null)
                 {
                     if (CommonClass.BaseControlCRSelectFunction.BaseControlGroup != null)
@@ -2014,10 +1364,7 @@ namespace BenMAP
                                 bc.DeltaQ.ModelResultAttributes = null;
                         }
                     }
-                }//所有BaseControlAndCRSelectFunciton
-                CommonClass.BaseControlCRSelectFunction = null;
-                //-------------------APVX-------------------------------
-                //CommonClass.IncidencePoolingAndAggregationAdvance = null;//Advance
+                } CommonClass.BaseControlCRSelectFunction = null;
                 if (CommonClass.lstIncidencePoolingAndAggregation != null)
                 {
                     foreach (IncidencePoolingAndAggregation ip in CommonClass.lstIncidencePoolingAndAggregation)
@@ -2034,8 +1381,6 @@ namespace BenMAP
 
                 }
                 CommonClass.lstIncidencePoolingAndAggregation = null;
-                //public  List<ValuationMethodPoolingAndAggregation> lstValuationMethodPoolingAndAggregation;
-                //public  IncidencePoolingAndAggregation IncidencePoolingAndAggregation;//IncidencePooling;
 
                 CommonClass.IncidencePoolingResult = null;
                 if (CommonClass.ValuationMethodPoolingAndAggregation != null && CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase != null)
@@ -2077,7 +1422,6 @@ namespace BenMAP
                     }
 
                 }
-                //GC.Collect();
                 CommonClass.BaseControlCRSelectFunction = null;
                 if (CommonClass.BaseControlCRSelectFunctionCalculateValue != null && CommonClass.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue != null)
                 {
@@ -2110,22 +1454,12 @@ namespace BenMAP
                 BenMAPProject benMAPProject = null;
                 using (FileStream fs = new FileStream(strFile, FileMode.Open))
                 {
-                    //BinaryFormatter formatter = new BinaryFormatter();
-                    //benMAPProject = (BenMAPProject)formatter.Deserialize(fs);//在这里大家要注意咯,他的返回值是object
-                    benMAPProject = Serializer.Deserialize<BenMAPProject>(fs);//, PrefixStyle.Fixed32);
-                    fs.Close();
+                    benMAPProject = Serializer.Deserialize<BenMAPProject>(fs); fs.Close();
                     fs.Dispose();
-                    //GC.Collect();
                 }
                 if (benMAPProject.ValuationMethodPoolingAndAggregation != null)
                 {
                     ValuationMethodPoolingAndAggregation = benMAPProject.ValuationMethodPoolingAndAggregation;
-                    //------------update数据-------------------------
-                    //foreach (BaseControlGroup bcg in ValuationMethodPoolingAndAggregation.BaseControlCRSelectFunctionCalculateValue.BaseControlGroup)
-                    //{
-                    //    DataSourceCommonClass.getModelValuesFromResultCopy(ref bcg.Base);
-                    //    DataSourceCommonClass.getModelValuesFromResultCopy(ref bcg.Control);
-                    //}
                     BaseControlCRSelectFunctionCalculateValue = ValuationMethodPoolingAndAggregation.BaseControlCRSelectFunctionCalculateValue;
                     IncidencePoolingAndAggregationAdvance = benMAPProject.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance;
                     lstIncidencePoolingAndAggregation = new List<IncidencePoolingAndAggregation>();
@@ -2145,34 +1479,13 @@ namespace BenMAP
                         BaseControlCRSelectFunction.lstCRSelectFunction = BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue.Select(p => p.CRSelectFunction).ToList();
                     }
 
-                    ManageSetup = getBenMAPSetupFromID(BaseControlCRSelectFunction.BaseControlGroup.First().GridType.SetupID);//..ManageSetup;
-                    MainSetup = getBenMAPSetupFromID(BaseControlCRSelectFunction.BaseControlGroup.First().GridType.SetupID);//..ManageSetup;;// benMAPProject.MainSetup;// 当前活动区域
-                    LstPollutant = BaseControlCRSelectFunction.BaseControlGroup.Select(p => p.Pollutant).ToList();// benMAPProject.LstPollutant;//污染物列表
-                    RBenMAPGrid = BaseControlCRSelectFunction.RBenMapGrid;// benMAPProject.RBenMAPGrid;//系统选择的Grid
-
-                    GBenMAPGrid = BaseControlCRSelectFunction.BaseControlGroup.First().GridType;//系统选择的Region
-                    LstBaseControlGroup = BaseControlCRSelectFunction.BaseControlGroup;// benMAPProject.LstBaseControlGroup;//系统设置的DataSource Base and Control
-                    //public  List<CRSelectFunction> LstCRSelectFunction;//系统选择的所有Health Impact Function
-                    CRThreshold = BaseControlCRSelectFunction.CRThreshold;// benMAPProject.CRThreshold;//阈值
-                    CRLatinHypercubePoints = BaseControlCRSelectFunction.CRLatinHypercubePoints;//拉丁立体方采样点数
-                    CRRunInPointMode = BaseControlCRSelectFunction.CRRunInPointMode;//是否使用拉丁立体方方采样
-                    CRSeeds = BaseControlCRSelectFunction.CRSeeds;
-                    BenMAPPopulation = BaseControlCRSelectFunction.BenMAPPopulation;//系统设置的Population
-
-                    //lstPollutantAll = benMAPProject.lstPollutantAll;//所有污染物
-                    //lstIncidencePoolingAndAggregation = benMAPProject.ValuationMethodPoolingAndAggregation.lstIncidencePoolingAndAggregation;
-                    //IncidencePoolingResult = benMAPProject.ValuationMethodPoolingAndAggregation.IncidencePoolingResult;
-                    //Save----------
+                    ManageSetup = getBenMAPSetupFromID(BaseControlCRSelectFunction.BaseControlGroup.First().GridType.SetupID); MainSetup = getBenMAPSetupFromID(BaseControlCRSelectFunction.BaseControlGroup.First().GridType.SetupID); LstPollutant = BaseControlCRSelectFunction.BaseControlGroup.Select(p => p.Pollutant).ToList(); RBenMAPGrid = BaseControlCRSelectFunction.RBenMapGrid;
+                    GBenMAPGrid = BaseControlCRSelectFunction.BaseControlGroup.First().GridType; LstBaseControlGroup = BaseControlCRSelectFunction.BaseControlGroup; CRThreshold = BaseControlCRSelectFunction.CRThreshold; CRLatinHypercubePoints = BaseControlCRSelectFunction.CRLatinHypercubePoints; CRRunInPointMode = BaseControlCRSelectFunction.CRRunInPointMode; CRSeeds = BaseControlCRSelectFunction.CRSeeds;
+                    BenMAPPopulation = BaseControlCRSelectFunction.BenMAPPopulation;
                 }
                 else if (benMAPProject.BaseControlCRSelectFunctionCalculateValue != null)
                 {
                     BaseControlCRSelectFunctionCalculateValue = benMAPProject.BaseControlCRSelectFunctionCalculateValue;
-                    //------------update数据-------------------------
-                    //foreach (BaseControlGroup bcg in BaseControlCRSelectFunctionCalculateValue.BaseControlGroup)
-                    //{
-                    //    DataSourceCommonClass.getModelValuesFromResultCopy(ref bcg.Base);
-                    //    DataSourceCommonClass.getModelValuesFromResultCopy(ref bcg.Control);
-                    //}
                     IncidencePoolingAndAggregationAdvance = benMAPProject.IncidencePoolingAndAggregationAdvance;
                     lstIncidencePoolingAndAggregation = benMAPProject.lstIncidencePoolingAndAggregation;
                     IncidencePoolingResult = benMAPProject.IncidencePoolingResult;
@@ -2188,81 +1501,34 @@ namespace BenMAP
                         BaseControlCRSelectFunction.lstCRSelectFunction = BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue.Select(p => p.CRSelectFunction).ToList();
                     }
 
-                    ManageSetup = getBenMAPSetupFromID(BaseControlCRSelectFunction.BaseControlGroup.First().GridType.SetupID);//..ManageSetup;
-                    MainSetup = getBenMAPSetupFromID(BaseControlCRSelectFunction.BaseControlGroup.First().GridType.SetupID);//..ManageSetup;;// benMAPProject.MainSetup;// 当前活动区域
-                    LstPollutant = BaseControlCRSelectFunction.BaseControlGroup.Select(p => p.Pollutant).ToList();// benMAPProject.LstPollutant;//污染物列表
-
-                    RBenMAPGrid = BaseControlCRSelectFunctionCalculateValue.RBenMapGrid;// benMAPProject.RBenMAPGrid;//系统选择的Grid
-
-                    GBenMAPGrid = BaseControlCRSelectFunction.BaseControlGroup.First().GridType;//系统选择的Region
-                    LstBaseControlGroup = BaseControlCRSelectFunction.BaseControlGroup;// benMAPProject.LstBaseControlGroup;//系统设置的DataSource Base and Control
-                    //public  List<CRSelectFunction> LstCRSelectFunction;//系统选择的所有Health Impact Function
-                    CRThreshold = BaseControlCRSelectFunction.CRThreshold;// benMAPProject.CRThreshold;//阈值
-                    CRLatinHypercubePoints = BaseControlCRSelectFunction.CRLatinHypercubePoints;//拉丁立体方采样点数
-                    CRRunInPointMode = BaseControlCRSelectFunction.CRRunInPointMode;//是否使用拉丁立体方方采样
-                    CRSeeds = BaseControlCRSelectFunction.CRSeeds;
-                    BenMAPPopulation = BaseControlCRSelectFunction.BenMAPPopulation;//系统设置的Population
-
-                    //Save------------
+                    ManageSetup = getBenMAPSetupFromID(BaseControlCRSelectFunction.BaseControlGroup.First().GridType.SetupID); MainSetup = getBenMAPSetupFromID(BaseControlCRSelectFunction.BaseControlGroup.First().GridType.SetupID); LstPollutant = BaseControlCRSelectFunction.BaseControlGroup.Select(p => p.Pollutant).ToList();
+                    RBenMAPGrid = BaseControlCRSelectFunctionCalculateValue.RBenMapGrid;
+                    GBenMAPGrid = BaseControlCRSelectFunction.BaseControlGroup.First().GridType; LstBaseControlGroup = BaseControlCRSelectFunction.BaseControlGroup; CRThreshold = BaseControlCRSelectFunction.CRThreshold; CRLatinHypercubePoints = BaseControlCRSelectFunction.CRLatinHypercubePoints; CRRunInPointMode = BaseControlCRSelectFunction.CRRunInPointMode; CRSeeds = BaseControlCRSelectFunction.CRSeeds;
+                    BenMAPPopulation = BaseControlCRSelectFunction.BenMAPPopulation;
                 }
                 else if (benMAPProject.BaseControlCRSelectFunction != null)
                 {
                     BaseControlCRSelectFunction = benMAPProject.BaseControlCRSelectFunction;
-                    //------------update数据-------------------------
-                    //foreach (BaseControlGroup bcg in BaseControlCRSelectFunction.BaseControlGroup)
-                    //{
-                    //    DataSourceCommonClass.getModelValuesFromResultCopy(ref bcg.Base);
-                    //    DataSourceCommonClass.getModelValuesFromResultCopy(ref bcg.Control);
-                    //}
-                    ManageSetup = getBenMAPSetupFromID(BaseControlCRSelectFunction.BaseControlGroup.First().GridType.SetupID);//..ManageSetup;
-                    MainSetup = getBenMAPSetupFromID(BaseControlCRSelectFunction.BaseControlGroup.First().GridType.SetupID);//..ManageSetup;;// benMAPProject.MainSetup;// 当前活动区域
-                    LstPollutant = BaseControlCRSelectFunction.BaseControlGroup.Select(p => p.Pollutant).ToList();// benMAPProject.LstPollutant;//污染物列表
-                    RBenMAPGrid = BaseControlCRSelectFunction.RBenMapGrid;// benMAPProject.RBenMAPGrid;//系统选择的Grid
-
-                    GBenMAPGrid = BaseControlCRSelectFunction.BaseControlGroup.First().GridType;//系统选择的Region
-                    LstBaseControlGroup = BaseControlCRSelectFunction.BaseControlGroup;// benMAPProject.LstBaseControlGroup;//系统设置的DataSource Base and Control
-                    //public  List<CRSelectFunction> LstCRSelectFunction;//系统选择的所有Health Impact Function
-                    CRThreshold = BaseControlCRSelectFunction.CRThreshold;// benMAPProject.CRThreshold;//阈值
-                    CRLatinHypercubePoints = BaseControlCRSelectFunction.CRLatinHypercubePoints;//拉丁立体方采样点数
-                    CRRunInPointMode = BaseControlCRSelectFunction.CRRunInPointMode;//是否使用拉丁立体方方采样
-                    CRSeeds = BaseControlCRSelectFunction.CRSeeds;
-                    BenMAPPopulation = BaseControlCRSelectFunction.BenMAPPopulation;//系统设置的Population
-
-                    //Save--------------
+                    ManageSetup = getBenMAPSetupFromID(BaseControlCRSelectFunction.BaseControlGroup.First().GridType.SetupID); MainSetup = getBenMAPSetupFromID(BaseControlCRSelectFunction.BaseControlGroup.First().GridType.SetupID); LstPollutant = BaseControlCRSelectFunction.BaseControlGroup.Select(p => p.Pollutant).ToList(); RBenMAPGrid = BaseControlCRSelectFunction.RBenMapGrid;
+                    GBenMAPGrid = BaseControlCRSelectFunction.BaseControlGroup.First().GridType; LstBaseControlGroup = BaseControlCRSelectFunction.BaseControlGroup; CRThreshold = BaseControlCRSelectFunction.CRThreshold; CRLatinHypercubePoints = BaseControlCRSelectFunction.CRLatinHypercubePoints; CRRunInPointMode = BaseControlCRSelectFunction.CRRunInPointMode; CRSeeds = BaseControlCRSelectFunction.CRSeeds;
+                    BenMAPPopulation = BaseControlCRSelectFunction.BenMAPPopulation;
                 }
                 else
                 {
                     ManageSetup = benMAPProject.ManageSetup;
-                    MainSetup = benMAPProject.MainSetup;// 当前活动区域
-                    LstPollutant = benMAPProject.LstPollutant != null ? benMAPProject.LstPollutant : null;//污染物列表
-                    RBenMAPGrid = benMAPProject.RBenMAPGrid != null ? benMAPProject.RBenMAPGrid : null;//系统选择的Grid
-
-                    GBenMAPGrid = benMAPProject.GBenMAPGrid != null ? benMAPProject.GBenMAPGrid : null;//系统选择的Region
-                    if (benMAPProject.LstBaseControlGroup != null)
+                    MainSetup = benMAPProject.MainSetup; LstPollutant = benMAPProject.LstPollutant != null ? benMAPProject.LstPollutant : null; RBenMAPGrid = benMAPProject.RBenMAPGrid != null ? benMAPProject.RBenMAPGrid : null;
+                    GBenMAPGrid = benMAPProject.GBenMAPGrid != null ? benMAPProject.GBenMAPGrid : null; if (benMAPProject.LstBaseControlGroup != null)
                     {
-                        LstBaseControlGroup = benMAPProject.LstBaseControlGroup;//系统设置的DataSource Base and Control
-                        //------------update数据-------------------------
-                        //foreach (BaseControlGroup bcg in LstBaseControlGroup)
-                        //{
-                        //    DataSourceCommonClass.getModelValuesFromResultCopy(ref bcg.Base);
-                        //    DataSourceCommonClass.getModelValuesFromResultCopy(ref bcg.Control);
-                        //}
+                        LstBaseControlGroup = benMAPProject.LstBaseControlGroup;
                     }
-                    //public  List<CRSelectFunction> LstCRSelectFunction;//系统选择的所有Health Impact Function
-                    CRThreshold = benMAPProject.CRThreshold;//阈值
-                    CRLatinHypercubePoints = benMAPProject.CRLatinHypercubePoints;//拉丁立体方采样点数
-                    CRRunInPointMode = benMAPProject.CRRunInPointMode;//是否使用拉丁立体方方采样
-                    CRSeeds = benMAPProject.CRSeeds;
+                    CRThreshold = benMAPProject.CRThreshold; CRLatinHypercubePoints = benMAPProject.CRLatinHypercubePoints; CRRunInPointMode = benMAPProject.CRRunInPointMode; CRSeeds = benMAPProject.CRSeeds;
 
-                    BenMAPPopulation = benMAPProject.BenMAPPopulation != null ? benMAPProject.BenMAPPopulation : null;//系统设置的Population
-
-                    lstPollutantAll = benMAPProject.lstPollutantAll;//所有污染物
+                    BenMAPPopulation = benMAPProject.BenMAPPopulation != null ? benMAPProject.BenMAPPopulation : null;
+                    lstPollutantAll = benMAPProject.lstPollutantAll;
                 }
                 IncidencePoolingAndAggregationAdvance = benMAPProject.IncidencePoolingAndAggregationAdvance;
-                BenMAPPopulation = benMAPProject.BenMAPPopulation;//系统设置的Population
-                CommonClass.lstPollutantAll = Grid.GridCommon.getAllPollutant(CommonClass.MainSetup.SetupID);
+                BenMAPPopulation = benMAPProject.BenMAPPopulation; CommonClass.lstPollutantAll = Grid.GridCommon.getAllPollutant(CommonClass.MainSetup.SetupID);
 
-                //---------
                 if (LstBaseControlGroup != null)
                 {
                     foreach (BaseControlGroup bcg in LstBaseControlGroup)
@@ -2278,13 +1544,9 @@ namespace BenMAP
             {
                 return false;
             }
-            //return benMAPProject;
         }
 
-        /// <summary>
-        ///
-        /// </summary>
-        [Description("当从主窗体进入另外一个窗体后出发改变当前状态提示")]
+        [Description("�����������������һ�����������ı䵱ǰ״̬��ʾ")]
         public static event FormChangedStatHandler FormChangedStat;
 
         protected static void OnFormChangedStat()
@@ -2293,13 +1555,9 @@ namespace BenMAP
             {
                 FormChangedStat();
             }
-        }//eventMethod
-
+        }
 
         private static string _nodeAnscyStatus = "";
-        /// <summary>
-        /// 记录节点异步状态:污染物名称；节点名称;是否开始：pm25;baseline;on   o3;baseline;off
-        /// </summary>
         public static string NodeAnscyStatus
         {
             get { return _nodeAnscyStatus; }
@@ -2308,9 +1566,8 @@ namespace BenMAP
                 _nodeAnscyStatus = value;
                 OnNodeAnscy();
             }
-        }// NodeAnscy
-
-        [Description("当从主窗体进入另外一个窗体后出发改变当前状态提示")]
+        }
+        [Description("�����������������һ�����������ı䵱ǰ״̬��ʾ")]
         public static event FormChangedStatHandler NodeAnscy;
         protected static void OnNodeAnscy()
         {
@@ -2318,12 +1575,8 @@ namespace BenMAP
             {
                 NodeAnscy();
             }
-        }//eventMethod
-
-        /// <summary>
-        ///
-        /// </summary>
-        [Description("改变Setup时发生")]
+        }
+        [Description("�ı�Setupʱ����")]
         public static event FormChangedStatHandler FormChangedSetup;
 
         protected static void OnFormChangedSetup()
@@ -2332,8 +1585,8 @@ namespace BenMAP
             {
                 FormChangedSetup();
             }
-        }//eventMethod
-    }//commonclass
+        }
+    }
     class Percentile<T> where T : IComparable
     {
         uint position, size, count;
@@ -2343,7 +1596,6 @@ namespace BenMAP
         public List<T> List
         {
             get { return list; }
-            //set { list = value; }
         }
         public Percentile(double percentile, uint buffersize)
         {
@@ -2400,34 +1652,15 @@ namespace BenMAP
             }
         }
     }
-    /// <summary>
-    ///  界面改变 ，做相应处理
-    /// </summary>
     public delegate void FormChangedStatHandler();
 
-    /// <summary>
-    /// 异步生成shapefile
-    /// </summary>
-    /// <param name="bcg">生成ShapeFile所需数据</param>
-    /// <param name="currentStat">当前操作节点：baseline/control</param>
-    /// <param name="threadId"></param>
-    /// <returns></returns>
     public delegate string AsyncDelegate(BaseControlGroup bcg, ModelDataLine m, string currentStat, out int threadId);
 
-    /// <summary>
-    /// 异步生成shapefile
-    /// </summary>
-    /// <param name="currentStat"></param>
-    /// <param name="?"></param>
-    /// <param name="threadId"></param>
-    /// <returns></returns>
     public delegate string AsynDelegateRollBack(string currentStat, MonitorModelRollbackLine rollbackData, out int threadId);
-    #region xml
     [Serializable]
     [ProtoContract]
     public class XMLSerializableDictionary<T, TValue> : Dictionary<T, TValue>, System.Xml.Serialization.IXmlSerializable
     {
-        #region IXmlSerializable 成员
         public System.Xml.Schema.XmlSchema GetSchema()
         {
             return null;
@@ -2512,16 +1745,11 @@ namespace BenMAP
             return mXmlSerializerTable[key];
         }
     }
-        #endregion
-    #endregion
-    #region other objects
     public class FieldCheck
     {
         public string FieldName;
         public bool isChecked;
     }
-    #endregion
-    #region project
 
     [Serializable]
     [ProtoContract]
@@ -2530,61 +1758,49 @@ namespace BenMAP
         [ProtoMember(1)]
         public BenMAPSetup ManageSetup;
         [ProtoMember(2)]
-        public BenMAPSetup MainSetup;// 当前活动区域
+        public BenMAPSetup MainSetup;
         [ProtoMember(3)]
-        public List<BenMAPPollutant> LstPollutant;//污染物列表
+        public List<BenMAPPollutant> LstPollutant;
         [ProtoMember(4)]
-        public BenMAPGrid RBenMAPGrid;//系统选择的Grid
-
+        public BenMAPGrid RBenMAPGrid;
         [ProtoMember(5)]
-        public BenMAPGrid GBenMAPGrid;//系统选择的Region
+        public BenMAPGrid GBenMAPGrid;
         [ProtoMember(6)]
-        public List<BaseControlGroup> LstBaseControlGroup;//系统设置的DataSource Base and Control
-        //[ProtoMember(1)]public  List<CRSelectFunction> LstCRSelectFunction;//系统选择的所有Health Impact Function
+        public List<BaseControlGroup> LstBaseControlGroup;
         [ProtoMember(7)]
-        public double CRThreshold = 0;//阈值
+        public double CRThreshold = 0;
         [ProtoMember(8)]
-        public int CRLatinHypercubePoints = 10;//拉丁立体方采样点数
+        public int CRLatinHypercubePoints = 10;
         [ProtoMember(9)]
-        public bool CRRunInPointMode = false;//是否使用拉丁立体方方采样
+        public bool CRRunInPointMode = false;
         [ProtoMember(10)]
-        public int CRSeeds = 1;//种子数
+        public int CRSeeds = 1;
         [ProtoMember(11)]
-        public BenMAPPopulation BenMAPPopulation;//系统设置的Population
-
+        public BenMAPPopulation BenMAPPopulation;
         [ProtoMember(12)]
-        public List<BenMAPPollutant> lstPollutantAll;//所有污染物
-
+        public List<BenMAPPollutant> lstPollutantAll;
         [ProtoMember(13)]
-        public BaseControlCRSelectFunction BaseControlCRSelectFunction;//所有BaseControlAndCRSelectFunciton
+        public BaseControlCRSelectFunction BaseControlCRSelectFunction;
         [ProtoMember(14)]
-        public BaseControlCRSelectFunctionCalculateValue BaseControlCRSelectFunctionCalculateValue;//所有BaseControlAndCRSelectFunciton以及Value
-
-        //-------------------APVX-------------------------------
+        public BaseControlCRSelectFunctionCalculateValue BaseControlCRSelectFunctionCalculateValue;
         [ProtoMember(15)]
-        public IncidencePoolingAndAggregationAdvance IncidencePoolingAndAggregationAdvance;//Advance
+        public IncidencePoolingAndAggregationAdvance IncidencePoolingAndAggregationAdvance;
         [ProtoMember(16)]
         public List<IncidencePoolingAndAggregation> lstIncidencePoolingAndAggregation;
-        //[ProtoMember(1)]public  List<ValuationMethodPoolingAndAggregation> lstValuationMethodPoolingAndAggregation;
-        //[ProtoMember(1)]public  IncidencePoolingAndAggregation IncidencePoolingAndAggregation;//IncidencePooling;
         [ProtoMember(17)]
         public CRSelectFunctionCalculateValue IncidencePoolingResult;
         [ProtoMember(18)]
         public ValuationMethodPoolingAndAggregation ValuationMethodPoolingAndAggregation;
     }
 
-    #endregion project
-    #region GridRelationShip
     [Serializable]
     [ProtoContract]
     public class GRGridRelationShip
     {
         [ProtoMember(1)]
-       public List<GridRelationship> lstRelationship;
+        public List<GridRelationship> lstRelationship;
     }
-    #endregion
 
-    #region setup
 
     [Serializable]
     [ProtoContract]
@@ -2596,9 +1812,7 @@ namespace BenMAP
         public string SetupName;
     }
 
-    #endregion setup
 
-    #region Pollutant
 
 
     public enum ObservationtypeEnum
@@ -2606,17 +1820,14 @@ namespace BenMAP
         Hourly = 0, Daily = 1
     }
 
-    /// <summary>
-    /// 污染物
-    /// </summary>
     [Serializable]
     [ProtoContract]
     public class BenMAPPollutant
     {
         [ProtoMember(1)]
-        public int PollutantID;//POLLUTANTID;
+        public int PollutantID;
         [ProtoMember(2)]
-        public string PollutantName;//POLLUTANTNAME;
+        public string PollutantName;
         [ProtoMember(3)]
         public ObservationtypeEnum Observationtype;
         [ProtoMember(4)]
@@ -2624,7 +1835,7 @@ namespace BenMAP
         [ProtoMember(5)]
         public List<Season> Seasons;
         [ProtoMember(6)]
-        public List<SeasonalMetric> SesonalMetrics=new List<SeasonalMetric>();
+        public List<SeasonalMetric> SesonalMetrics = new List<SeasonalMetric>();
     }
 
     [Serializable]
@@ -2675,7 +1886,7 @@ namespace BenMAP
         [ProtoMember(3)]
         public string MetricName;
         [ProtoMember(4)]
-        public int HourlyMetricGeneration;//0-Hourly 1-Daily
+        public int HourlyMetricGeneration;
     }
 
     [Serializable]
@@ -2710,9 +1921,7 @@ namespace BenMAP
         public string MetricFunction;
     }
 
-    #endregion Pollutant
 
-    #region Grid
 
 
     public enum GridTypeEnum
@@ -2766,9 +1975,7 @@ namespace BenMAP
         public string ShapefileName;
     }
 
-    #endregion Grid
 
-    #region Model
 
     [Serializable]
     [ProtoContract]
@@ -2798,38 +2005,13 @@ namespace BenMAP
         public int Col;
         [XmlIgnore]
         [ProtoMember(3)]
-        public Dictionary<string, float> Values;//key为Metric名称（包括Metric和SeasonalMetric)
-        //private List<MetricValueAttributes> _attributes = new List<MetricValueAttributes>();
-        //[ProtoMember(1)]
-        //public List<MetricValueAttributes> Attributes
-        //{
-        //    get
-        //    {
-        //        if (Values.Count > 0)
-        //        {
-
-        //            foreach (string key in Values.Keys)
-        //            {
-        //                _attributes.Add(new MetricValueAttributes() { MetricName = key, MetricValue = Values[key] });
-        //            }
-        //            return _attributes;
-        //        }
-        //        return _attributes;
-        //    }
-        //}
-        // [ProtoMember(1)]
-        //public List<MetricValueAttributes> Values;
+        public Dictionary<string, float> Values;
     }
 
-    /// <summary>
-    /// Base Control 的基类
-    /// </summary>
     [Serializable]
     [ProtoContract]
     [ProtoInclude(7, typeof(ModelDataLine))]
     [ProtoInclude(8, typeof(MonitorDataLine))]
-    //[ProtoInclude(9, typeof(MonitorModelRelativeLine))]
-    //[ProtoInclude(10, typeof(MonitorModelRollbackLine))]
     public class BenMAPLine
     {
         [ProtoMember(1)]
@@ -2840,8 +2022,6 @@ namespace BenMAP
         public List<ModelAttribute> ModelAttributes;
         [ProtoMember(4)]
         public List<ModelResultAttribute> ModelResultAttributes;
-        //[ProtoMember(5)]
-        //public List<float[]> ResultCopy;
         [ProtoMember(6)]
         public string ShapeFile;
         [ProtoMember(9)]
@@ -2890,7 +2070,7 @@ namespace BenMAP
     public class MonitorDataLine : BenMAPLine
     {
         [ProtoMember(1)]
-        public int MonitorDirectType; //0 Library 1 Text File
+        public int MonitorDirectType;
         [ProtoMember(2)]
         public int MonitorDataSetID;
         [ProtoMember(3)]
@@ -2955,15 +2135,15 @@ namespace BenMAP
         [ProtoMember(7)]
         public bool GetClosedIfNoneWithinRadius;
         [ProtoMember(8)]
-        public double FilterMinLongitude=-130;
+        public double FilterMinLongitude = -130;
         [ProtoMember(9)]
-        public double FilterMaxLongitude=-65;
+        public double FilterMaxLongitude = -65;
         [ProtoMember(10)]
-        public double FilterMinLatitude=20;
+        public double FilterMinLatitude = 20;
         [ProtoMember(11)]
-        public double FilterMaxLatitude=55;
+        public double FilterMaxLatitude = 55;
         [ProtoMember(12)]
-        public int FilterMaximumPOC=-1;
+        public int FilterMaximumPOC = -1;
         [ProtoMember(13)]
         public string POCPreferenceOrder;
         [ProtoMember(14)]
@@ -2974,15 +2154,13 @@ namespace BenMAP
         public MonitorAdvanceDataTypeEnum PreferredType;
         [ProtoMember(17)]
         public MonitorAdvanceDataTypeEnum OutputType;
-        //-For Ozone--
-        public int StartHour=8;
-        public int EndHour=19;
-        public int StartDate=120;
-        public int EndDate=272;
-        public int NumberOfValidHour=9;
-        public int PercentOfValidDays=50;
-        //------For PM2.5 PM10
-        public int NumberOfPerQuarter=11;
+        public int StartHour = 8;
+        public int EndHour = 19;
+        public int StartDate = 120;
+        public int EndDate = 272;
+        public int NumberOfValidHour = 9;
+        public int PercentOfValidDays = 50;
+        public int NumberOfPerQuarter = 11;
     }
 
 
@@ -3023,7 +2201,7 @@ namespace BenMAP
 
         public bool Equals(RowCol x, RowCol y)
         {
-            return x.Col.Equals(y.Col) && x.Row.Equals(y.Row);// x.UserId.Equals(y.UserId);
+            return x.Col.Equals(y.Col) && x.Row.Equals(y.Row);
         }
 
 
@@ -3041,9 +2219,6 @@ namespace BenMAP
     public enum RollbackMethod
     { percentage = 0, incremental = 1, quadratic = 2, peakshaving = 3 }
 
-    /// <summary>
-    ///  每个rollback类型对应一个对象
-    /// </summary>
     [Serializable]
     [ProtoContract]
     [ProtoInclude(6, typeof(IncrementalRollback))]
@@ -3054,42 +2229,35 @@ namespace BenMAP
         [ProtoMember(1)]
         public int RegionID;
         [ProtoMember(2)]
-        public RollbackType RollbackType;  //削减的类别
+        public RollbackType RollbackType;
         [ProtoMember(3)]
         public double Background;
         [ProtoMember(4)]
         public List<RowCol> SelectRegions;
         [ProtoMember(5)]
-        public string DrawingColor;// = System.Drawing.Color.Red;  //颜色
+        public string DrawingColor;
     }
 
     [Serializable]
     [ProtoContract]
     public class PercentageRollback : BenMAPRollback
     {
-        // [ProtoMember(1)]public int RegionID;
         [ProtoMember(1)]
         public double Percent;
-        //[ProtoMember(1)]public double Background;
-        //[ProtoMember(1)]public List<RowCol> SelectRegions;
     }
 
     [Serializable]
     [ProtoContract]
     public class IncrementalRollback : BenMAPRollback
     {
-        //[ProtoMember(1)]public int RegionID;
         [ProtoMember(1)]
         public double Increment;
-        //[ProtoMember(1)]public double Background;
-        //[ProtoMember(1)]public List<RowCol> SelectRegions;
     }
 
     [Serializable]
     [ProtoContract]
     public class StandardRollback : BenMAPRollback
     {
-        //[ProtoMember(1)]public int RegionID;
         [ProtoMember(1)]
         public Metric DailyMetric;
         [ProtoMember(2)]
@@ -3109,12 +2277,8 @@ namespace BenMAP
         [ProtoMember(9)]
         public double IntradayBackground;
 
-        //[ProtoMember(1)]public double Background;
     }
 
-    /// <summary>
-    /// 需以后根据需求更改
-    /// </summary>
     [Serializable]
     [ProtoContract]
     public class MonitorModelRollbackLine : MonitorDataLine
@@ -3124,7 +2288,7 @@ namespace BenMAP
         [ProtoMember(2)]
         public List<BenMAPRollback> BenMAPRollbacks;
         [ProtoMember(3)]
-        public int ScalingMethod;//0- None 1-SpatialOnly;
+        public int ScalingMethod;
         [ProtoMember(4)]
         public BenMAPGrid AdditionalGrid;
         [ProtoMember(5)]
@@ -3133,9 +2297,7 @@ namespace BenMAP
         public bool isMakeBaseLineGrid;
     }
 
-    #endregion Model
 
-    #region Monitor
 
     [Serializable]
     [ProtoContract]
@@ -3164,20 +2326,19 @@ namespace BenMAP
     [ProtoContract]
     public class MonitorValue
     {
-        //[ProtoMember(1)]public int Year;
 
         [ProtoMember(1)]
         public string MonitorName;
         [ProtoMember(2)]
         public string MonitorMethod;
         [ProtoMember(3)]
-        public double Latitude;//纬度
+        public double Latitude;
         [ProtoMember(4)]
-        public double Longitude;//经度
+        public double Longitude;
         [ProtoMember(5)]
-        public int Row;//行索引
+        public int Row;
         [ProtoMember(6)]
-        public int Col;// 列索引
+        public int Col;
         [ProtoMember(7)]
         public Metric Metric;
 
@@ -3186,31 +2347,10 @@ namespace BenMAP
 
         [ProtoMember(9)]
         public string Statistic;
-        //[ProtoMember(1)]public List<MetricValueAttributes> dicMetricValues;
-        //[XmlIgnore]
         [ProtoMember(10)]
-        public Dictionary<string, float> dicMetricValues;//用来保存所有的Metric值
+        public Dictionary<string, float> dicMetricValues;
         [ProtoMember(11)]
-        public Dictionary<string, List<float>> dicMetricValues365;//用来保存365天的连续值
-        //private List<MetricValueAttributes> _attributes = new List<MetricValueAttributes>();
-        //[ProtoMember(1)]
-        //public List<MetricValueAttributes> Attributes
-        //{
-        //    get
-        //    {
-        //        if (Values.Count > 0)
-        //        {
-
-        //            foreach (string key in dicMetricValues.Keys)
-        //            {
-        //                _attributes.Add(new MetricValueAttributes() { MetricName = key, MetricValue = dicMetricValues[key] });
-        //            }
-        //            return _attributes;
-        //        }
-        //        return _attributes;
-        //    }
-        //}
-        //        [ProtoMember(1)]
+        public Dictionary<string, List<float>> dicMetricValues365;
         public List<float> Values;
         public int MonitorID;
     }
@@ -3223,9 +2363,7 @@ namespace BenMAP
         [ProtoMember(2)]
         public float MetricValue;
     }
-    #endregion Monitor
 
-    #region Population
 
     [Serializable]
     [ProtoContract]
@@ -3237,16 +2375,9 @@ namespace BenMAP
         [ProtoMember(2)]
         public int Col;
 
-        //[ProtoMember(1)]public int Year;
 
-        //[ProtoMember(1)]public int RaceID;
 
-        //[ProtoMember(1)]public int GenderID;
 
-        //[ProtoMember(1)]public int EthnicityID;
-        //[ProtoMember(1)]public int AgeRangeID;
-        //[ProtoMember(1)]public int StartAge;
-        //[ProtoMember(1)]public int EndAge;
         [ProtoMember(3)]
         public float Value;
     }
@@ -3260,16 +2391,9 @@ namespace BenMAP
         [ProtoMember(2)]
         public string EthnicityID;
 
-        //[ProtoMember(1)]public int Year;
 
-        //[ProtoMember(1)]public int RaceID;
 
-        //[ProtoMember(1)]public int GenderID;
 
-        //[ProtoMember(1)]public int EthnicityID;
-        //[ProtoMember(1)]public int AgeRangeID;
-        //[ProtoMember(1)]public int StartAge;
-        //[ProtoMember(1)]public int EndAge;
         [ProtoMember(3)]
         public double Value;
     }
@@ -3288,12 +2412,9 @@ namespace BenMAP
         public BenMAPGrid GridType;
         [ProtoMember(5)]
         public int PopulationConfiguration;
-        // [ProtoMember(1)]public List<PopulationAttribute> PopulationAttributes;
     }
 
-    #endregion Population
 
-    #region Configuration
 
 
     public enum MetricStatic
@@ -3301,30 +2422,20 @@ namespace BenMAP
         None = 0, Mean = 1, Median = 2, Max = 3, Min = 4, Sum = 5
     }
 
-    //[ProtoMember(1)]
-    //public enum WindowsStatic
-    //{
-    //     Mean = 1, Median = 2, Max = 3, Min = 4, Sum = 5
-    //}
-    //[ProtoMember(1)]
-    //public enum DailyStatic
-    //{
-    //     Mean = 1, Median = 2, Max = 3, Min = 4, Sum = 5
-    //}
     [Serializable]
     [ProtoContract]
     public class Location
     {
         [ProtoMember(1)]
-        public int LocationType;//GridID
+        public int LocationType;
         [ProtoMember(2)]
-        public int GridDifinitionID;//冗余
+        public int GridDifinitionID;
         [ProtoMember(3)]
         public int LocationID;
         [ProtoMember(4)]
-        public int Col;//冗余字段
+        public int Col;
         [ProtoMember(5)]
-        public int Row;//冗余字段
+        public int Row;
         [ProtoMember(6)]
         public string LocationName;
     }
@@ -3345,8 +2456,6 @@ namespace BenMAP
     [ProtoContract]
     public class GridRelationshipAttribute
     {
-        //[ProtoMember(1)]public int bigGridID;
-        //[ProtoMember(1)]public int smallGridID;
         [ProtoMember(1)]
         public RowCol bigGridRowCol;
         [ProtoMember(2)]
@@ -3356,8 +2465,6 @@ namespace BenMAP
     [ProtoContract]
     public class GridRelationshipAttributePercentage
     {
-        //[ProtoMember(1)]public int bigGridID;
-        //[ProtoMember(1)]public int smallGridID;
         [ProtoMember(1)]
         public int sourceCol;
         [ProtoMember(2)]
@@ -3368,7 +2475,7 @@ namespace BenMAP
         public int targetRow;
         [ProtoMember(5)]
         public double percentage;
-       
+
     }
     [Serializable]
     [ProtoContract]
@@ -3386,18 +2493,12 @@ namespace BenMAP
     [ProtoContract]
     public class IncidenceRateAttribute
     {
-        //[ProtoMember(1)]public int IncidenceRateID;
         [ProtoMember(1)]
         public int Col;
         [ProtoMember(2)]
         public int Row;
         [ProtoMember(3)]
         public float Value;
-        //[ProtoMember(1)]public int StartAge;
-        //[ProtoMember(1)]public int EndAge;
-        //[ProtoMember(1)]public int RaceID;
-        //[ProtoMember(1)]public int EthnicityID;
-        //[ProtoMember(1)]public int GenderID;
     }
 
     [Serializable]
@@ -3435,15 +2536,15 @@ namespace BenMAP
         [ProtoMember(2)]
         public int DataSetID;
         [ProtoMember(3)]
-        public string DataSetName;//有选择，可能要换
+        public string DataSetName;
         [ProtoMember(4)]
         public int EndPointGroupID;
         [ProtoMember(5)]
-        public string EndPointGroup;//有选择，可能要换
+        public string EndPointGroup;
         [ProtoMember(6)]
         public int EndPointID;
         [ProtoMember(7)]
-        public string EndPoint;//有选择，可能要换
+        public string EndPoint;
         [ProtoMember(8)]
         public BenMAPPollutant Pollutant;
         [ProtoMember(9)]
@@ -3453,11 +2554,11 @@ namespace BenMAP
         [ProtoMember(11)]
         public SeasonalMetric SeasonalMetric;
         [ProtoMember(12)]
-        public string Race;//有选择，可能要换
+        public string Race;
         [ProtoMember(13)]
-        public string Ethnicity;//有选择，可能要换
+        public string Ethnicity;
         [ProtoMember(14)]
-        public string Gender;//有选择，可能要换
+        public string Gender;
         [ProtoMember(15)]
         public int Percentile;
         [ProtoMember(16)]
@@ -3483,7 +2584,7 @@ namespace BenMAP
         [ProtoMember(26)]
         public string BaseLineIncidenceFunction;
         [ProtoMember(27)]
-        public string BetaDistribution;//有选择，可能要换
+        public string BetaDistribution;
         [ProtoMember(28)]
         public double Beta;
         [ProtoMember(29)]
@@ -3518,7 +2619,7 @@ namespace BenMAP
 
     [Serializable]
     [ProtoContract]
-    public class CRSelectFunction //: BenMAPHealthImpactFunction
+    public class CRSelectFunction
     {
         [ProtoMember(1)]
         public int CRID;
@@ -3527,11 +2628,11 @@ namespace BenMAP
         [ProtoMember(3)]
         public List<Location> Locations;
         [ProtoMember(4)]
-        public string Race;//有选择，可能要换
+        public string Race;
         [ProtoMember(5)]
-        public string Ethnicity;//有选择，可能要换
+        public string Ethnicity;
         [ProtoMember(6)]
-        public string Gender;//有选择，可能要换
+        public string Gender;
         [ProtoMember(7)]
         public int StartAge = 0;
         [ProtoMember(8)]
@@ -3549,9 +2650,9 @@ namespace BenMAP
         [ProtoMember(14)]
         public string VariableDataSetName;
         [ProtoMember(15)]
-        public List<LatinPoints> lstLatinPoints;//种子
+        public List<LatinPoints> lstLatinPoints;
     }
-    
+
     [ProtoContract]
     public class LatinPoints
     {
@@ -3564,19 +2665,15 @@ namespace BenMAP
     {
         [ProtoMember(1)]
         public CRSelectFunction CRSelectFunction;
-        //[ProtoMember(1)]public List<double> lstLatin;
         [ProtoMember(2)]
         public List<CRCalculateValue> CRCalculateValues;
 
-        //[ProtoMember(3)]
-        //public List<float[]> ResultCopy;
     }
 
     [Serializable]
     [ProtoContract]
     public class CRCalculateValue
     {
-        //[ProtoMember(1)]public CRSelectFunction CRSelectFunction;
         [ProtoMember(1)]
         public int Col;
         [ProtoMember(2)]
@@ -3612,18 +2709,17 @@ namespace BenMAP
         [ProtoMember(2)]
         public List<CRSelectFunction> lstCRSelectFunction;
         [ProtoMember(3)]
-        public double CRThreshold = 0;//阈值
+        public double CRThreshold = 0;
         [ProtoMember(4)]
-        public int CRLatinHypercubePoints = 10;//拉丁立体方采样点数
+        public int CRLatinHypercubePoints = 10;
         [ProtoMember(5)]
-        public bool CRRunInPointMode = false;//是否使用拉丁立体方方采样
-        
+        public bool CRRunInPointMode = false;
         [ProtoMember(6)]
-        public BenMAPPopulation BenMAPPopulation;//系统设置的Population
+        public BenMAPPopulation BenMAPPopulation;
         [ProtoMember(7)]
         public BenMAPGrid RBenMapGrid;
         [ProtoMember(8)]
-        public int CRSeeds=1;
+        public int CRSeeds = 1;
         [ProtoMember(9)]
         public DateTime CreateTime;
         [ProtoMember(10)]
@@ -3639,14 +2735,13 @@ namespace BenMAP
         [ProtoMember(2)]
         public List<CRSelectFunctionCalculateValue> lstCRSelectFunctionCalculateValue;
         [ProtoMember(3)]
-        public double CRThreshold = 0;//阈值
+        public double CRThreshold = 0;
         [ProtoMember(4)]
-        public int CRLatinHypercubePoints = 10;//拉丁立体方采样点数
+        public int CRLatinHypercubePoints = 10;
         [ProtoMember(5)]
-        public bool CRRunInPointMode = false;//是否使用拉丁立体方方采样
-
+        public bool CRRunInPointMode = false;
         [ProtoMember(6)]
-        public BenMAPPopulation BenMAPPopulation;//系统设置的Population
+        public BenMAPPopulation BenMAPPopulation;
         [ProtoMember(7)]
         public BenMAPGrid RBenMapGrid;
         [ProtoMember(8)]
@@ -3659,11 +2754,8 @@ namespace BenMAP
         public string Version;
     }
 
-    #endregion Configuration
 
-    #region APVX
 
-    //------------QALY--------------------
     [Serializable]
     [ProtoContract]
     public class BenMAPQALY
@@ -3699,7 +2791,6 @@ namespace BenMAP
         [ProtoMember(2)]
         public string PoolingMethod;
 
-        //------add for display
         [ProtoMember(3)]
         public string EndPointGroup;
         [ProtoMember(4)]
@@ -3738,16 +2829,14 @@ namespace BenMAP
         public string DataSet;
         [ProtoMember(21)]
         public string Version;
-        //----- add for display
 
 
-        // [ProtoMember(1)]public string Function;
         [ProtoMember(22)]
-        public int NodeType;//0-endPointGroup;1-endPointID;2-Author;3-ValuationFunction;4-All
+        public int NodeType;
         [ProtoMember(23)]
-        public int ID;//按顺序的ID
+        public int ID;
         [ProtoMember(24)]
-        public int PID;//父节点ID
+        public int PID;
         [ProtoMember(25)]
         public int EndPointID;
         [ProtoMember(26)]
@@ -3792,10 +2881,6 @@ namespace BenMAP
         public AllSelectQALYMethod AllSelectQALYMethod;
         [ProtoMember(2)]
         public List<QALYValueAttribute> lstQALYValueAttributes;
-        //[ProtoMember(2)]
-        //public List<float[]> arrayQALYValueAttributes;
-        //[ProtoMember(1)]public List<double> lstQALYMonteCarlo;
-        //[ProtoMember(1)]public List<double[]> ResultCopy;
     }
 
     [Serializable]
@@ -3806,7 +2891,6 @@ namespace BenMAP
         public int CRIndex = -1;
         [ProtoMember(2)]
         public string Name;
-        //------add for display
         [ProtoMember(3)]
         public string EndPointGroup;
         [ProtoMember(4)]
@@ -3845,16 +2929,14 @@ namespace BenMAP
         public string DataSet;
         [ProtoMember(21)]
         public string Version;
-        //----- add for display
-        //----- add for display
         [ProtoMember(22)]
         public string PoolingMethod;
         [ProtoMember(23)]
-        public int NodeType;//0-endPointGroup;1-endPointID;2-Author;3-ValuationFunction;4-All //------modify by xiejp --3-Qulify;4-CRFunction 5-ValuationFunction
+        public int NodeType;
         [ProtoMember(24)]
-        public int ID;//按顺序的ID
+        public int ID;
         [ProtoMember(25)]
-        public int PID;//父节点ID
+        public int PID;
         [ProtoMember(26)]
         public int EndPointID;
         [ProtoMember(27)]
@@ -3884,7 +2966,6 @@ namespace BenMAP
         [ProtoMember(5)]
         public string PoolingMethod;
 
-        //------add for display
         [ProtoMember(6)]
         public string EndPointGroup;
         [ProtoMember(7)]
@@ -3921,14 +3002,13 @@ namespace BenMAP
         public string MetricStatistic;
         [ProtoMember(23)]
         public string DataSet;
-        //----- add for display
 
         [ProtoMember(24)]
-        public int NodeType;//0-endPointGroup;1-endPointID;2-Author;3-Qulify;4-CRFunction;
+        public int NodeType;
         [ProtoMember(25)]
-        public int ID;//按顺序的ID
+        public int ID;
         [ProtoMember(26)]
-        public int PID;//父节点ID
+        public int PID;
         [ProtoMember(27)]
         public int EndPointID = -1;
         [ProtoMember(28)]
@@ -3947,8 +3027,6 @@ namespace BenMAP
         public AllSelectValuationMethod AllSelectValuationMethod;
         [ProtoMember(2)]
         public List<APVValueAttribute> lstAPVValueAttributes;
-        //[ProtoMember(3)]
-        //public List<float[]> ResultCopy;
     }
 
 
@@ -3978,7 +3056,7 @@ namespace BenMAP
         [ProtoMember(5)]
         public int DefaultMonteCarloIterations = 5000;
         [ProtoMember(6)]
-        public string RandomSeed="1" ;
+        public string RandomSeed = "1";
         [ProtoMember(7)]
         public bool SortIncidenceResults;
         [ProtoMember(8)]
@@ -4003,8 +3081,6 @@ namespace BenMAP
     {
         [ProtoMember(1)]
         public string PoolingName;
-        //[ProtoMember(1)]public PoolingMethodTypeEnum PoolingMethodType;
-        //[ProtoMember(1)]public List<CRSelectFunctionCalculateValue> PoolingMethods;
         [ProtoMember(2)]
         public List<string> lstColumns;
         [ProtoMember(3)]
@@ -4013,7 +3089,6 @@ namespace BenMAP
         public List<double> Weights;
         [ProtoMember(5)]
         public string ConfigurationResultsFilePath;
-        //[ProtoMember(1)]public IncidencePoolingAndAggregationAdvance IncidencePoolingAndAggregationAdvance;
         [ProtoMember(6)]
         public string VariableDataset;
     }
@@ -4045,16 +3120,15 @@ namespace BenMAP
         [ProtoMember(1)]
         public int ID;
         [ProtoMember(2)]
-        public string DataSet;//有选择，可能要换
+        public string DataSet;
         [ProtoMember(3)]
         public int EndPointGroupID;
         [ProtoMember(4)]
-        public string EndPointGroup;//有选择，可能要换
+        public string EndPointGroup;
         [ProtoMember(5)]
         public int EndPointID;
         [ProtoMember(6)]
-        public string EndPoint;//有选择，可能要换
-
+        public string EndPoint;
         [ProtoMember(7)]
         public int StartAge = -1;
         [ProtoMember(8)]
@@ -4068,8 +3142,7 @@ namespace BenMAP
         public string Function;
 
         [ProtoMember(12)]
-        public string NameA;//有选择，可能要换
-
+        public string NameA;
         [ProtoMember(13)]
         public string DistA;
         [ProtoMember(14)]
@@ -4092,14 +3165,10 @@ namespace BenMAP
         public double D;
     }
 
-    /// <summary>
-    /// 待需求确定再修改
-    /// </summary>
     [Serializable]
     [ProtoContract]
     public class ValuationMethodPoolingAndAggregation
     {
-        //[ProtoMember(1)]public string PoolingName;
         [ProtoMember(1)]
         public string CFGRPath = "";
         [ProtoMember(2)]
@@ -4113,27 +3182,11 @@ namespace BenMAP
         [ProtoMember(6)]
         public DateTime CreateTime;
         [ProtoMember(7)]
-        public int VariableDatasetID=-1;
+        public int VariableDatasetID = -1;
         [ProtoMember(8)]
         public string Version;
         [ProtoMember(9)]
         public string VariableDatasetName = "";
-        //        //[ProtoMember(1)]
-        //public IncidencePoolingAndAggregation IncidencePoolingAndAggregation;
-        //        //[ProtoMember(1)]
-        //public List<AllSelectValuationMethod> LstAllSelectValuationMethod;
-        //        //[ProtoMember(1)]
-        //public List<AllSelectValuationMethodAndValue> LstAllSelectValuationMethodAndValue;
-        //        //[ProtoMember(1)]
-        //public List<AllSelectQALYMethod> lstAllSelectQALYMethod;
-        //        //[ProtoMember(1)]
-        //public List<AllSelectQALYMethodAndValue> lstAllSelectQALYMethodAndValue;
-        //        //[ProtoMember(1)]
-        //public CRSelectFunctionCalculateValue IncidencePoolingResult;
-        //        //[ProtoMember(1)]
-        //public List<CRSelectFunctionValuationFunction> lstCRSelectFunctionValuationFunction;
-        //        //[ProtoMember(1)]
-        //public List<APVValueAttribute> lstAPVValueAttributes;
     }
 
     [Serializable]
@@ -4165,9 +3218,7 @@ namespace BenMAP
         public CRSelectFunctionCalculateValue IncidencePoolingResultAggregation;
     }
 
-    #endregion APVX
 
-    # region Result
 
     [Serializable]
     [ProtoContract]
@@ -4183,9 +3234,7 @@ namespace BenMAP
         public double RegionValue;
     }
 
-    #endregion
 
-    #region databaseExport
     public enum enumDatabaseExport
     {
         Setups = 0,
@@ -4217,37 +3266,34 @@ namespace BenMAP
         [ProtoMember(5)]
         public int PID;
     }
-    #endregion
 
-    #region Batch
     public class BatchBase
     {
-       public string ActiveSetup;
-       public ArrayList BatchText;
+        public string ActiveSetup;
+        public ArrayList BatchText;
     }
-    public class BatchAQGBase:BatchBase
+    public class BatchAQGBase : BatchBase
     {
         public string Filename;
         public string GridType;
-        public string Pollutant; 
+        public string Pollutant;
     }
     public class BatchModelDirect : BatchAQGBase
     {
         public string ModelFilename;
-        public string DSNName; 
+        public string DSNName;
     }
     public class BatchMonitorDirect : BatchAQGBase
     {
-        public string MonitorDataType;//MonitorDataType must be one of Library or TextFile.
-        public string InterpolationMethod;
+        public string MonitorDataType; public string InterpolationMethod;
         public string MonitorDataSet;
         public int MonitorYear;
         public string MonitorFile;
-        public double MaxDistance=-1;
-        public double MaxRelativeDistance=-1;
+        public double MaxDistance = -1;
+        public double MaxRelativeDistance = -1;
         public double FixRadius = -1;
         public string WeightingMethod;
- 
+
     }
     public class BatchMonitorRollbackDirect : BatchAQGBase
     {
@@ -4259,10 +3305,10 @@ namespace BenMAP
         public string ResultsFilename;
         public string BaselineAQG;
         public string ControlAQG;
-        public int Year=-1;
-        public int LatinHypercubePoints=-1;
+        public int Year = -1;
+        public int LatinHypercubePoints = -1;
         public int Seeds = 1;
-        public double Threshold=-1;
+        public double Threshold = -1;
     }
     public class BatchAPV : BatchBase
     {
@@ -4277,7 +3323,7 @@ namespace BenMAP
     }
     public class BatchReport : BatchBase
     {
-        
+
         public string InputFile;
         public string ReportFile;
 
@@ -4296,13 +3342,12 @@ namespace BenMAP
     public class BatchReportAPVR : BatchReport
     {
         public string ResultType;
-        public  string Totals;
+        public string Totals;
         public string GridFields;
         public string CustomFields;
         public string ResultFields;
-      
+
     }
 
-    #endregion
 
 }

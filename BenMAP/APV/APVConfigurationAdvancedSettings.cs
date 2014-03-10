@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -40,7 +40,6 @@ namespace BenMAP
                 cboQALYAggregation.SelectedIndex = -1;
                 BindingGrid();
                 if (_incidencePoolingAndAggregationAdvance == null) _incidencePoolingAndAggregationAdvance = new IncidencePoolingAndAggregationAdvance();
-                //-----------------------------如果已经 有值
                 if (_incidencePoolingAndAggregationAdvance.IncidenceAggregation != null)
                 {
                     foreach (DataRowView drv in cboIncidenceAggregation.Items)
@@ -73,9 +72,7 @@ namespace BenMAP
                 }
                 if (_incidencePoolingAndAggregationAdvance.IPAdvancePoolingMethod != null)
                 {
-                    cboDefaultAdvancedPoolingMethod.SelectedIndex = (int)_incidencePoolingAndAggregationAdvance.IPAdvancePoolingMethod;// Enum.GetValues(IPAdvancePoolingMethodEnum.Roundweightstothreedigits);
-                    //cboDefaultAdvancedPoolingMethod.SelectedItem = Enum.Parse(typeof(IPAdvancePoolingMethodEnum), _incidencePoolingAndAggregationAdvance.IPAdvancePoolingMethod.ToString());
-
+                    cboDefaultAdvancedPoolingMethod.SelectedIndex = (int)_incidencePoolingAndAggregationAdvance.IPAdvancePoolingMethod;
                 }
                 if (_incidencePoolingAndAggregationAdvance.DefaultMonteCarloIterations != null)
                 {
@@ -89,7 +86,6 @@ namespace BenMAP
                     txtRandomSeed.Text = "1";
                 chbSortIncidenceResults.Checked = _incidencePoolingAndAggregationAdvance.SortIncidenceResults;
 
-                //-------------majie---------------
                 if (CommonClass.IncidencePoolingAndAggregationAdvance == null)
                 {
                     cboInflationDataset.SelectedIndex = 0;
@@ -106,10 +102,7 @@ namespace BenMAP
                         }
                     }
                 }
-                //if (cboInflationDataset.Text != null)
-                //{
-                if (_incidencePoolingAndAggregationAdvance.CurrencyYear == -1 && CommonClass.BenMAPPopulation != null) _incidencePoolingAndAggregationAdvance.CurrencyYear = CommonClass.BenMAPPopulation.Year;//基准年----
-                else if (_incidencePoolingAndAggregationAdvance.CurrencyYear == -1) _incidencePoolingAndAggregationAdvance.CurrencyYear = 2010;
+                if (_incidencePoolingAndAggregationAdvance.CurrencyYear == -1 && CommonClass.BenMAPPopulation != null) _incidencePoolingAndAggregationAdvance.CurrencyYear = CommonClass.BenMAPPopulation.Year; else if (_incidencePoolingAndAggregationAdvance.CurrencyYear == -1) _incidencePoolingAndAggregationAdvance.CurrencyYear = 2010;
                 if (_incidencePoolingAndAggregationAdvance.CurrencyYear != null)
                 {
                     foreach (DataRowView drvCurrencyYear in cboCurrencyYear.Items)
@@ -120,8 +113,6 @@ namespace BenMAP
                         }
                     }
                 }
-                //    }
-                //}
 
                 if (_incidencePoolingAndAggregationAdvance.AdjustIncomeGrowthDatasetID != null)
                 {
@@ -133,8 +124,6 @@ namespace BenMAP
                         }
                     }
                 }
-                //if (cboIncomeGrowthDataset.Text != null)
-                //{
                 if (_incidencePoolingAndAggregationAdvance.IncomeGrowthYear != null)
                 {
                     foreach (DataRowView drvIncomeGrowthYear in cboIncomeGrowthYear.Items)
@@ -145,8 +134,6 @@ namespace BenMAP
                         }
                     }
                 }
-                //    }
-                //}
                 if (_incidencePoolingAndAggregationAdvance.IncomeGrowthYear != null)
                 {
                     foreach (DataRowView drvIncomeGrowthYear in cboIncomeGrowthYear.Items)
@@ -159,7 +146,6 @@ namespace BenMAP
                 }
                 if (_incidencePoolingAndAggregationAdvance.EndpointGroups != null)
                 {
-                    //DataRowView drvEndpointGroup = lstEndpointGroups.Items. as DataRowView;
                     if (lstEndpointGroups.SelectedItems != null && lstEndpointGroups.SelectedItems.Count > 0)
                     {
                         lstEndpointGroups.SelectedItems.Clear();
@@ -179,15 +165,15 @@ namespace BenMAP
                     for (int i = lstEndpointGroups.Items.Count - 1; i >= 0; i--)
                     {
                         var item = lstEndpointGroups.Items[i] as DataRowView;
-                        
-                            lstEndpointGroups.SelectedItems.Add(item);
+
+                        lstEndpointGroups.SelectedItems.Add(item);
 
 
-                            DataRowView drv = lstEndpointGroups.Items[i] as DataRowView;
+                        DataRowView drv = lstEndpointGroups.Items[i] as DataRowView;
                         listEndpointGroups.Add(drv["EndpointGroups"].ToString());
                     }
                     _incidencePoolingAndAggregationAdvance.EndpointGroups = listEndpointGroups;
- 
+
                 }
 
 
@@ -201,7 +187,6 @@ namespace BenMAP
 
         public void BindingGrid()
         {
-            //cboDefaultAdvancedPoolingMethod.DataSource = Enum.GetNames(typeof(IPAdvancePoolingMethodEnum));
             cboDefaultAdvancedPoolingMethod.Items.Add("Round weights to two digits");
             cboDefaultAdvancedPoolingMethod.Items.Add("Round weights to three digits");
             cboDefaultAdvancedPoolingMethod.Items.Add("Use exact weights for Monte Carlo");
@@ -214,10 +199,6 @@ namespace BenMAP
             cboInflationDataset.DisplayMember = "InflationDataSetName";
             cboInflationDataset.SelectedIndex = 0;
             isloadInflation = true;
-            //commandText = string.Format("select Yyear from InflationEntries where InflationDataSetID={0}", dicInflationDataset[cboInflationDataset.SelectedText]);
-            //dsGrid = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
-            //cboCurrencyYear.DataSource = dsGrid.Tables[0];
-            //cboCurrencyYear.DisplayMember = "Yyear";
             commandText = string.Format("select * from IncomeGrowthAdjDataSets where SetupID={0}", CommonClass.MainSetup.SetupID);
             dsGrid = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
             cboIncomeGrowthDataset.DataSource = dsGrid.Tables[0];
@@ -240,8 +221,6 @@ namespace BenMAP
         {
             try
             {
-                //if (isloadInflation)
-                //{
 
                 commandText = string.Format("select InflationDataSetID,InflationDataSetName from InflationDataSets where SetupID={0}", CommonClass.MainSetup.SetupID);
                 dsGrid = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
@@ -257,7 +236,6 @@ namespace BenMAP
                 cboCurrencyYear.DataSource = dsGrid.Tables[0];
                 cboCurrencyYear.DisplayMember = "Yyear";
                 cboCurrencyYear.SelectedIndex = 0;
-                //}
             }
             catch (Exception ex)
             {
@@ -270,8 +248,6 @@ namespace BenMAP
         {
             try
             {
-                //if (isload)
-                //{
 
                 DataRowView drvYear = cboIncomeGrowthYear.SelectedItem as DataRowView;
                 int Year = Convert.ToInt32(drvYear["Yyear"].ToString());
@@ -285,7 +261,6 @@ namespace BenMAP
                 lstEndpointGroups.DataSource = dsGrid.Tables[0];
                 lstEndpointGroups.DisplayMember = "EndpointGroups";
                 lstEndpointGroups.SelectedIndex = 0;
-                //}
             }
             catch (Exception ex)
             {
@@ -297,8 +272,6 @@ namespace BenMAP
         {
             try
             {
-                //if (isloadIncomeGrowth)
-                //{
                 commandText = string.Format("select IncomeGrowthAdjDataSetName,IncomeGrowthAdjDataSetID from IncomeGrowthAdjDataSets where SetupID={0}", CommonClass.MainSetup.SetupID);
                 dsGrid = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                 Dictionary<string, int> dicIncomeGrowthYear = new Dictionary<string, int>();
@@ -312,8 +285,6 @@ namespace BenMAP
                 dsGrid = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                 cboIncomeGrowthYear.DataSource = dsGrid.Tables[0];
                 cboIncomeGrowthYear.DisplayMember = "Yyear";
-                //cboIncomeGrowthYear.SelectedIndex =-1;
-                //-------------------------majie--------
                 int index = 0;
                 foreach (DataRowView element in cboIncomeGrowthYear.Items)
                 {
@@ -323,9 +294,7 @@ namespace BenMAP
                     }
                     index++;
                 }
-                //cboIncomeGrowthYear.SelectedIndex = cboIncomeGrowthYear.Items.IndexOf(CommonClass.BenMAPPopulation.Year);
                 isload = true;
-                //}
             }
             catch (Exception ex)
             {
@@ -344,24 +313,17 @@ namespace BenMAP
                     MessageBox.Show("The default Monte Carlo iterations must be a number.");
                     return;
                 }
-                
-                    int iSeeds = -1;// Convert.ToInt32(txtRandomSeed.Text);
-                    if (txtRandomSeed.Text!="Random Integer" && Int32.TryParse(txtRandomSeed.Text, out iSeeds) == false)
-                    {
-                        MessageBox.Show("The random seed must be a number.");
-                        return;
-                    }
-                    //if (iSeeds < 1 || iSeeds > 10)
-                    //{
-                    //    MessageBox.Show("Random Seed must >=1 and <=10");
-                    //    return;
-                    //} 
-               
+
+                int iSeeds = -1; if (txtRandomSeed.Text != "Random Integer" && Int32.TryParse(txtRandomSeed.Text, out iSeeds) == false)
+                {
+                    MessageBox.Show("The random seed must be a number.");
+                    return;
+                }
+
                 if (cboIncidenceAggregation.SelectedIndex != -1)
                 {
                     DataRowView drvIncidence = cboIncidenceAggregation.SelectedItem as DataRowView;
-                    _incidencePoolingAndAggregationAdvance.IncidenceAggregation = Grid.GridCommon.getBenMAPGridFromID(Convert.ToInt32(drvIncidence["GridDefinitionID"].ToString()));//.GridDefinitionName = drvIncidence["GridDefinitionName"].ToString();
-
+                    _incidencePoolingAndAggregationAdvance.IncidenceAggregation = Grid.GridCommon.getBenMAPGridFromID(Convert.ToInt32(drvIncidence["GridDefinitionID"].ToString()));
                 }
                 if (cboValuationAggregation.SelectedIndex != -1)
                 {
@@ -412,7 +374,6 @@ namespace BenMAP
                 if (cboDefaultAdvancedPoolingMethod.SelectedIndex != -1)
                 {
                     _incidencePoolingAndAggregationAdvance.IPAdvancePoolingMethod = (IPAdvancePoolingMethodEnum)cboDefaultAdvancedPoolingMethod.SelectedIndex;
-                    //_incidencePoolingAndAggregationAdvance.IPAdvancePoolingMethod= dicAdvancePoolingMethod[cboDefaultAdvancedPoolingMethod.SelectedItem.ToString()];
                 }
                 this.DialogResult = DialogResult.OK;
             }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -23,35 +23,7 @@ namespace BenMAP
         {
         }
 
-        //private void btBrowseCR_Click(object sender, EventArgs e)
-        //{
-        //    try
-        //    {
-        //        OpenFileDialog openFileDialog = new OpenFileDialog();
-        //        openFileDialog.InitialDirectory = Application.StartupPath + @"E:\";
-        //        openFileDialog.Filter = "cfgrx   files   (*.cfgrx)|*.cfgrx";
-        //        openFileDialog.FilterIndex = 3;
-        //        openFileDialog.RestoreDirectory = true;
-        //        if (openFileDialog.ShowDialog() != DialogResult.OK) { return; }
-        //        txtOpenExistingCFGR.Text = openFileDialog.FileName;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Logger.LogError(ex);
-        //    }
-        //}
 
-        //private void btCROK_Click(object sender, EventArgs e)
-        //{
-        //      strAPVPath="";
-        //       strCRPath="";
-        //       strCRPath = txtOpenExistingCFGR.Text;
-        //    CommonClass.BaseControlCRSelectFunctionCalculateValue = null;
-        //    GC.Collect();
-        //    if (txtOpenExistingCFGR.Text == "") return;
-        //    //CommonClass.BaseControlCRSelectFunctionCalculateValue = Configuration.ConfigurationCommonClass.LoadCRFRFile(txtOpenExistingCFGR.Text);
-        //    this.DialogResult = System.Windows.Forms.DialogResult.OK;
-        //}
 
         private void btAPVCancel_Click(object sender, EventArgs e)
         {
@@ -96,12 +68,12 @@ namespace BenMAP
             CommonClass.BaseControlCRSelectFunctionCalculateValue = null;
 
             if (CommonClass.LstUpdateCRFunction != null)
-            { //清空添加的公式
+            {
                 CommonClass.LstUpdateCRFunction.Clear();
             }
             CommonClass.LstUpdateCRFunction = new List<CRSelectFunction>();
             if (CommonClass.LstDelCRFunction != null)
-            {//清空 删除的公式
+            {
                 CommonClass.LstDelCRFunction.Clear();
             }
             CommonClass.LstDelCRFunction = new List<CRSelectFunction>();
@@ -148,12 +120,12 @@ namespace BenMAP
                 CommonClass.BaseControlCRSelectFunctionCalculateValue = null;
 
                 if (CommonClass.LstUpdateCRFunction != null)
-                { //添加公式
+                {
                     CommonClass.LstUpdateCRFunction.Clear();
                 }
                 CommonClass.LstUpdateCRFunction = new List<CRSelectFunction>();
                 if (CommonClass.LstDelCRFunction != null)
-                {// 删除公式
+                {
                     CommonClass.LstDelCRFunction.Clear();
                 }
                 CommonClass.LstDelCRFunction = new List<CRSelectFunction>();

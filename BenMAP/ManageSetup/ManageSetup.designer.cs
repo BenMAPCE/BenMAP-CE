@@ -1,16 +1,9 @@
-﻿namespace BenMAP
+namespace BenMAP
 {
     partial class ManageSetup
     {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -20,12 +13,7 @@
             base.Dispose(disposing);
         }
 
-        #region Windows Form Designer generated code
-
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
+        
         private void InitializeComponent()
         {
             this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -84,10 +72,7 @@
             this.grpVariableDataSets.SuspendLayout();
             this.grpNewName.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // groupBox2
-            // 
-            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+                                                this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox2.Controls.Add(this.btnCancel);
             this.groupBox2.Controls.Add(this.btnOk);
@@ -96,10 +81,7 @@
             this.groupBox2.Size = new System.Drawing.Size(663, 41);
             this.groupBox2.TabIndex = 3;
             this.groupBox2.TabStop = false;
-            // 
-            // btnCancel
-            // 
-            this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+                                                this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.Location = new System.Drawing.Point(525, 11);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(62, 25);
@@ -108,10 +90,7 @@
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Visible = false;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
-            // 
-            // btnOk
-            // 
-            this.btnOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+                                                this.btnOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOk.Location = new System.Drawing.Point(593, 11);
             this.btnOk.Name = "btnOk";
             this.btnOk.Size = new System.Drawing.Size(64, 25);
@@ -119,10 +98,7 @@
             this.btnOk.Text = "OK";
             this.btnOk.UseVisualStyleBackColor = true;
             this.btnOk.Click += new System.EventHandler(this.btnOk_Click);
-            // 
-            // grpManageSet
-            // 
-            this.grpManageSet.Controls.Add(this.tableLayoutPanel1);
+                                                this.grpManageSet.Controls.Add(this.tableLayoutPanel1);
             this.grpManageSet.Controls.Add(this.grpNewName);
             this.grpManageSet.Controls.Add(this.groupBox1);
             this.grpManageSet.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -131,10 +107,7 @@
             this.grpManageSet.Size = new System.Drawing.Size(691, 661);
             this.grpManageSet.TabIndex = 0;
             this.grpManageSet.TabStop = false;
-            // 
-            // tableLayoutPanel1
-            // 
-            this.tableLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                                                this.tableLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel1.ColumnCount = 3;
@@ -160,10 +133,7 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(667, 556);
             this.tableLayoutPanel1.TabIndex = 15;
-            // 
-            // grpIncidenceOrPrevalence
-            // 
-            this.grpIncidenceOrPrevalence.Controls.Add(this.btnIncidence);
+                                                this.grpIncidenceOrPrevalence.Controls.Add(this.btnIncidence);
             this.grpIncidenceOrPrevalence.Controls.Add(this.lstIncidenceOrPrevalence);
             this.grpIncidenceOrPrevalence.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpIncidenceOrPrevalence.Location = new System.Drawing.Point(3, 142);
@@ -172,10 +142,7 @@
             this.grpIncidenceOrPrevalence.TabIndex = 4;
             this.grpIncidenceOrPrevalence.TabStop = false;
             this.grpIncidenceOrPrevalence.Text = "Incidence/Prevalence Rates";
-            // 
-            // btnIncidence
-            // 
-            this.btnIncidence.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+                                                this.btnIncidence.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnIncidence.Location = new System.Drawing.Point(158, 107);
             this.btnIncidence.Name = "btnIncidence";
             this.btnIncidence.Size = new System.Drawing.Size(55, 25);
@@ -183,10 +150,7 @@
             this.btnIncidence.Text = "Edit";
             this.btnIncidence.UseVisualStyleBackColor = true;
             this.btnIncidence.Click += new System.EventHandler(this.btnIncidence_Click);
-            // 
-            // lstIncidenceOrPrevalence
-            // 
-            this.lstIncidenceOrPrevalence.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                                                this.lstIncidenceOrPrevalence.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.lstIncidenceOrPrevalence.FormattingEnabled = true;
@@ -196,10 +160,7 @@
             this.lstIncidenceOrPrevalence.SelectionMode = System.Windows.Forms.SelectionMode.None;
             this.lstIncidenceOrPrevalence.Size = new System.Drawing.Size(210, 88);
             this.lstIncidenceOrPrevalence.TabIndex = 0;
-            // 
-            // grpMonitorDataSets
-            // 
-            this.grpMonitorDataSets.Controls.Add(this.btnMonitor);
+                                                this.grpMonitorDataSets.Controls.Add(this.btnMonitor);
             this.grpMonitorDataSets.Controls.Add(this.lstMonitor);
             this.grpMonitorDataSets.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpMonitorDataSets.Location = new System.Drawing.Point(447, 3);
@@ -208,10 +169,7 @@
             this.grpMonitorDataSets.TabIndex = 3;
             this.grpMonitorDataSets.TabStop = false;
             this.grpMonitorDataSets.Text = "Monitor Datasets";
-            // 
-            // btnMonitor
-            // 
-            this.btnMonitor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+                                                this.btnMonitor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnMonitor.Location = new System.Drawing.Point(158, 107);
             this.btnMonitor.Name = "btnMonitor";
             this.btnMonitor.Size = new System.Drawing.Size(55, 25);
@@ -219,10 +177,7 @@
             this.btnMonitor.Text = "Edit";
             this.btnMonitor.UseVisualStyleBackColor = true;
             this.btnMonitor.Click += new System.EventHandler(this.btnMonitor_Click);
-            // 
-            // lstMonitor
-            // 
-            this.lstMonitor.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                                                this.lstMonitor.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.lstMonitor.FormattingEnabled = true;
@@ -232,10 +187,7 @@
             this.lstMonitor.SelectionMode = System.Windows.Forms.SelectionMode.None;
             this.lstMonitor.Size = new System.Drawing.Size(208, 88);
             this.lstMonitor.TabIndex = 0;
-            // 
-            // grpPollutants
-            // 
-            this.grpPollutants.Controls.Add(this.btnPollutants);
+                                                this.grpPollutants.Controls.Add(this.btnPollutants);
             this.grpPollutants.Controls.Add(this.lstPollutans);
             this.grpPollutants.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpPollutants.Location = new System.Drawing.Point(225, 3);
@@ -244,10 +196,7 @@
             this.grpPollutants.TabIndex = 2;
             this.grpPollutants.TabStop = false;
             this.grpPollutants.Text = "Pollutants";
-            // 
-            // btnPollutants
-            // 
-            this.btnPollutants.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+                                                this.btnPollutants.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnPollutants.Location = new System.Drawing.Point(158, 107);
             this.btnPollutants.Name = "btnPollutants";
             this.btnPollutants.Size = new System.Drawing.Size(55, 25);
@@ -255,10 +204,7 @@
             this.btnPollutants.Text = "Edit";
             this.btnPollutants.UseVisualStyleBackColor = true;
             this.btnPollutants.Click += new System.EventHandler(this.btnPollutants_Click);
-            // 
-            // lstPollutans
-            // 
-            this.lstPollutans.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                                                this.lstPollutans.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.lstPollutans.FormattingEnabled = true;
@@ -268,10 +214,7 @@
             this.lstPollutans.SelectionMode = System.Windows.Forms.SelectionMode.None;
             this.lstPollutans.Size = new System.Drawing.Size(210, 88);
             this.lstPollutans.TabIndex = 0;
-            // 
-            // groupBox3
-            // 
-            this.groupBox3.Controls.Add(this.btnGridDef);
+                                                this.groupBox3.Controls.Add(this.btnGridDef);
             this.groupBox3.Controls.Add(this.lstGridDefinitions);
             this.groupBox3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox3.Location = new System.Drawing.Point(3, 3);
@@ -280,10 +223,7 @@
             this.groupBox3.TabIndex = 1;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Grid Definitions";
-            // 
-            // btnGridDef
-            // 
-            this.btnGridDef.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+                                                this.btnGridDef.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnGridDef.Location = new System.Drawing.Point(158, 107);
             this.btnGridDef.Name = "btnGridDef";
             this.btnGridDef.Size = new System.Drawing.Size(55, 25);
@@ -291,10 +231,7 @@
             this.btnGridDef.Text = "Edit";
             this.btnGridDef.UseVisualStyleBackColor = true;
             this.btnGridDef.Click += new System.EventHandler(this.btnGridDef_Click);
-            // 
-            // lstGridDefinitions
-            // 
-            this.lstGridDefinitions.AllowDrop = true;
+                                                this.lstGridDefinitions.AllowDrop = true;
             this.lstGridDefinitions.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
@@ -305,10 +242,7 @@
             this.lstGridDefinitions.SelectionMode = System.Windows.Forms.SelectionMode.None;
             this.lstGridDefinitions.Size = new System.Drawing.Size(210, 88);
             this.lstGridDefinitions.TabIndex = 0;
-            // 
-            // grpIncomeGrowthAdjustments
-            // 
-            this.grpIncomeGrowthAdjustments.Controls.Add(this.btnIncome);
+                                                this.grpIncomeGrowthAdjustments.Controls.Add(this.btnIncome);
             this.grpIncomeGrowthAdjustments.Controls.Add(this.lstIncome);
             this.grpIncomeGrowthAdjustments.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpIncomeGrowthAdjustments.Location = new System.Drawing.Point(3, 420);
@@ -317,10 +251,7 @@
             this.grpIncomeGrowthAdjustments.TabIndex = 10;
             this.grpIncomeGrowthAdjustments.TabStop = false;
             this.grpIncomeGrowthAdjustments.Text = "Income Growth Adjustments";
-            // 
-            // btnIncome
-            // 
-            this.btnIncome.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+                                                this.btnIncome.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnIncome.Location = new System.Drawing.Point(158, 107);
             this.btnIncome.Name = "btnIncome";
             this.btnIncome.Size = new System.Drawing.Size(55, 25);
@@ -328,10 +259,7 @@
             this.btnIncome.Text = "Edit";
             this.btnIncome.UseVisualStyleBackColor = true;
             this.btnIncome.Click += new System.EventHandler(this.btnIncome_Click);
-            // 
-            // lstIncome
-            // 
-            this.lstIncome.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                                                this.lstIncome.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.lstIncome.FormattingEnabled = true;
@@ -341,10 +269,7 @@
             this.lstIncome.SelectionMode = System.Windows.Forms.SelectionMode.None;
             this.lstIncome.Size = new System.Drawing.Size(210, 88);
             this.lstIncome.TabIndex = 0;
-            // 
-            // grpPopulationDataSets
-            // 
-            this.grpPopulationDataSets.Controls.Add(this.btnPopulation);
+                                                this.grpPopulationDataSets.Controls.Add(this.btnPopulation);
             this.grpPopulationDataSets.Controls.Add(this.lstPopulation);
             this.grpPopulationDataSets.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpPopulationDataSets.Location = new System.Drawing.Point(225, 142);
@@ -353,10 +278,7 @@
             this.grpPopulationDataSets.TabIndex = 5;
             this.grpPopulationDataSets.TabStop = false;
             this.grpPopulationDataSets.Text = "Population Datasets";
-            // 
-            // btnPopulation
-            // 
-            this.btnPopulation.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+                                                this.btnPopulation.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnPopulation.Location = new System.Drawing.Point(158, 107);
             this.btnPopulation.Name = "btnPopulation";
             this.btnPopulation.Size = new System.Drawing.Size(55, 25);
@@ -364,10 +286,7 @@
             this.btnPopulation.Text = "Edit";
             this.btnPopulation.UseVisualStyleBackColor = true;
             this.btnPopulation.Click += new System.EventHandler(this.btnPopulation_Click);
-            // 
-            // lstPopulation
-            // 
-            this.lstPopulation.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                                                this.lstPopulation.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.lstPopulation.FormattingEnabled = true;
@@ -377,10 +296,7 @@
             this.lstPopulation.SelectionMode = System.Windows.Forms.SelectionMode.None;
             this.lstPopulation.Size = new System.Drawing.Size(210, 88);
             this.lstPopulation.TabIndex = 0;
-            // 
-            // grpValuationDataSets
-            // 
-            this.grpValuationDataSets.Controls.Add(this.btnValuation);
+                                                this.grpValuationDataSets.Controls.Add(this.btnValuation);
             this.grpValuationDataSets.Controls.Add(this.lstValuation);
             this.grpValuationDataSets.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpValuationDataSets.Location = new System.Drawing.Point(447, 281);
@@ -389,10 +305,7 @@
             this.grpValuationDataSets.TabIndex = 9;
             this.grpValuationDataSets.TabStop = false;
             this.grpValuationDataSets.Text = "Valuation Functions";
-            // 
-            // btnValuation
-            // 
-            this.btnValuation.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+                                                this.btnValuation.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnValuation.Location = new System.Drawing.Point(158, 107);
             this.btnValuation.Name = "btnValuation";
             this.btnValuation.Size = new System.Drawing.Size(55, 25);
@@ -400,10 +313,7 @@
             this.btnValuation.Text = "Edit";
             this.btnValuation.UseVisualStyleBackColor = true;
             this.btnValuation.Click += new System.EventHandler(this.btnValuation_Click);
-            // 
-            // lstValuation
-            // 
-            this.lstValuation.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                                                this.lstValuation.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.lstValuation.FormattingEnabled = true;
@@ -413,10 +323,7 @@
             this.lstValuation.SelectionMode = System.Windows.Forms.SelectionMode.None;
             this.lstValuation.Size = new System.Drawing.Size(208, 88);
             this.lstValuation.TabIndex = 0;
-            // 
-            // grpHealthImpactDataSets
-            // 
-            this.grpHealthImpactDataSets.Controls.Add(this.btnHealthImpact);
+                                                this.grpHealthImpactDataSets.Controls.Add(this.btnHealthImpact);
             this.grpHealthImpactDataSets.Controls.Add(this.lstHealthImpact);
             this.grpHealthImpactDataSets.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpHealthImpactDataSets.Location = new System.Drawing.Point(447, 142);
@@ -425,10 +332,7 @@
             this.grpHealthImpactDataSets.TabIndex = 5;
             this.grpHealthImpactDataSets.TabStop = false;
             this.grpHealthImpactDataSets.Text = "Health Impact Functions";
-            // 
-            // btnHealthImpact
-            // 
-            this.btnHealthImpact.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+                                                this.btnHealthImpact.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnHealthImpact.Location = new System.Drawing.Point(158, 107);
             this.btnHealthImpact.Name = "btnHealthImpact";
             this.btnHealthImpact.Size = new System.Drawing.Size(55, 25);
@@ -436,10 +340,7 @@
             this.btnHealthImpact.Text = "Edit";
             this.btnHealthImpact.UseVisualStyleBackColor = true;
             this.btnHealthImpact.Click += new System.EventHandler(this.btnHealthImpact_Click);
-            // 
-            // lstHealthImpact
-            // 
-            this.lstHealthImpact.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                                                this.lstHealthImpact.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.lstHealthImpact.FormattingEnabled = true;
@@ -449,10 +350,7 @@
             this.lstHealthImpact.SelectionMode = System.Windows.Forms.SelectionMode.None;
             this.lstHealthImpact.Size = new System.Drawing.Size(208, 88);
             this.lstHealthImpact.TabIndex = 0;
-            // 
-            // grpInflationDataSets
-            // 
-            this.grpInflationDataSets.Controls.Add(this.btnInflation);
+                                                this.grpInflationDataSets.Controls.Add(this.btnInflation);
             this.grpInflationDataSets.Controls.Add(this.lstInflation);
             this.grpInflationDataSets.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpInflationDataSets.Location = new System.Drawing.Point(225, 281);
@@ -461,10 +359,7 @@
             this.grpInflationDataSets.TabIndex = 8;
             this.grpInflationDataSets.TabStop = false;
             this.grpInflationDataSets.Text = "Inflation Datasets";
-            // 
-            // btnInflation
-            // 
-            this.btnInflation.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+                                                this.btnInflation.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnInflation.Location = new System.Drawing.Point(158, 107);
             this.btnInflation.Name = "btnInflation";
             this.btnInflation.Size = new System.Drawing.Size(55, 25);
@@ -472,10 +367,7 @@
             this.btnInflation.Text = "Edit";
             this.btnInflation.UseVisualStyleBackColor = true;
             this.btnInflation.Click += new System.EventHandler(this.btnInflation_Click);
-            // 
-            // lstInflation
-            // 
-            this.lstInflation.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                                                this.lstInflation.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.lstInflation.FormattingEnabled = true;
@@ -485,10 +377,7 @@
             this.lstInflation.SelectionMode = System.Windows.Forms.SelectionMode.None;
             this.lstInflation.Size = new System.Drawing.Size(210, 88);
             this.lstInflation.TabIndex = 0;
-            // 
-            // grpVariableDataSets
-            // 
-            this.grpVariableDataSets.Controls.Add(this.btnVariable);
+                                                this.grpVariableDataSets.Controls.Add(this.btnVariable);
             this.grpVariableDataSets.Controls.Add(this.lstVariable);
             this.grpVariableDataSets.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpVariableDataSets.Location = new System.Drawing.Point(3, 281);
@@ -497,10 +386,7 @@
             this.grpVariableDataSets.TabIndex = 7;
             this.grpVariableDataSets.TabStop = false;
             this.grpVariableDataSets.Text = "Variable Datasets";
-            // 
-            // btnVariable
-            // 
-            this.btnVariable.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+                                                this.btnVariable.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnVariable.Location = new System.Drawing.Point(158, 107);
             this.btnVariable.Name = "btnVariable";
             this.btnVariable.Size = new System.Drawing.Size(55, 25);
@@ -508,10 +394,7 @@
             this.btnVariable.Text = "Edit";
             this.btnVariable.UseVisualStyleBackColor = true;
             this.btnVariable.Click += new System.EventHandler(this.btnVariable_Click);
-            // 
-            // lstVariable
-            // 
-            this.lstVariable.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                                                this.lstVariable.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.lstVariable.FormattingEnabled = true;
@@ -521,10 +404,7 @@
             this.lstVariable.SelectionMode = System.Windows.Forms.SelectionMode.None;
             this.lstVariable.Size = new System.Drawing.Size(210, 88);
             this.lstVariable.TabIndex = 6;
-            // 
-            // grpNewName
-            // 
-            this.grpNewName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                                                this.grpNewName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.grpNewName.Controls.Add(this.btnDelete);
             this.grpNewName.Controls.Add(this.btnAdd);
@@ -535,10 +415,7 @@
             this.grpNewName.Size = new System.Drawing.Size(663, 41);
             this.grpNewName.TabIndex = 2;
             this.grpNewName.TabStop = false;
-            // 
-            // btnDelete
-            // 
-            this.btnDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+                                                this.btnDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnDelete.Location = new System.Drawing.Point(595, 11);
             this.btnDelete.Name = "btnDelete";
             this.btnDelete.Size = new System.Drawing.Size(62, 25);
@@ -546,10 +423,7 @@
             this.btnDelete.Text = "Delete";
             this.btnDelete.UseVisualStyleBackColor = true;
             this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
-            // 
-            // btnAdd
-            // 
-            this.btnAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+                                                this.btnAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnAdd.Location = new System.Drawing.Point(525, 11);
             this.btnAdd.Name = "btnAdd";
             this.btnAdd.Size = new System.Drawing.Size(62, 25);
@@ -557,19 +431,13 @@
             this.btnAdd.Text = "Add";
             this.btnAdd.UseVisualStyleBackColor = true;
             this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
-            // 
-            // lblSetupName
-            // 
-            this.lblSetupName.AutoSize = true;
+                                                this.lblSetupName.AutoSize = true;
             this.lblSetupName.Location = new System.Drawing.Point(6, 17);
             this.lblSetupName.Name = "lblSetupName";
             this.lblSetupName.Size = new System.Drawing.Size(99, 14);
             this.lblSetupName.TabIndex = 13;
             this.lblSetupName.Text = "Available Setups";
-            // 
-            // cboSetupName
-            // 
-            this.cboSetupName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                                                this.cboSetupName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.cboSetupName.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboSetupName.FormattingEnabled = true;
@@ -578,19 +446,13 @@
             this.cboSetupName.Size = new System.Drawing.Size(158, 22);
             this.cboSetupName.TabIndex = 12;
             this.cboSetupName.SelectedValueChanged += new System.EventHandler(this.cboSetupName_SelectedValueChanged);
-            // 
-            // groupBox1
-            // 
-            this.groupBox1.Location = new System.Drawing.Point(191, -86);
+                                                this.groupBox1.Location = new System.Drawing.Point(191, -86);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(50, 79);
             this.groupBox1.TabIndex = 14;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "groupBox1";
-            // 
-            // ManageSetup
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
+                                                this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(691, 661);
             this.Controls.Add(this.groupBox2);
@@ -620,8 +482,7 @@
 
         }
 
-        #endregion
-
+        
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Button btnOk;
         private System.Windows.Forms.GroupBox grpHealthImpactDataSets;

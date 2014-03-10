@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows.Forms;
 using BenMAP.DataSource;
 using System.Collections.Generic;
@@ -38,9 +38,6 @@ namespace BenMAP
             set { MonitorRollbackSettings3.makeBaselineGrid = value; }
         }
 
-        /// <summary>
-        /// 网格的差值方法
-        /// </summary>
         public InterpolationMethodEnum Interplotion
         {
             get { return _var; }
@@ -48,13 +45,9 @@ namespace BenMAP
             {
                 _var = value;
             }
-        }// Interplotion
-
+        }
         private double _fixRadio = 0;
 
-        /// <summary>
-        ///
-        /// </summary>
         public double FixRadio
         {
             get { return _fixRadio; }
@@ -62,8 +55,7 @@ namespace BenMAP
             {
                 _fixRadio = value;
             }
-        }// FixRadio
-
+        }
         public MonitorRollbackSettings3()
         {
             InitializeComponent();
@@ -77,8 +69,6 @@ namespace BenMAP
                 cboGridType.Text = CommonClass.GBenMAPGrid.GridDefinitionName;
                 cboGridType.Enabled = false;
                 rbtnVoronoiNeighborhood.Checked = true;
-                //txtAdjustment.Enabled = false;
-                //btnBrowse.Enabled = false;
             }
             catch (Exception ex)
             {
@@ -113,60 +103,8 @@ namespace BenMAP
                 DialogResult rtn = frm.ShowDialog();
                 if (rtn == DialogResult.OK) { _monitorRollbackLine.MonitorAdvance = frm.MyMonitorAdvance; }
 
-                //MonitorAdvance MyMonitorAdvance = new MonitorAdvance()
-                //{
-                //};
-                //if (_monitorRollbackLine.MonitorAdvance != null)
-                //{
-                //    MyMonitorAdvance = new MonitorAdvance()
-                //    {
-                //        DataTypesToUse = _monitorRollbackLine.MonitorAdvance.DataTypesToUse,
-                //        EndDate = _monitorRollbackLine.MonitorAdvance.EndDate,
-                //        EndHour = _monitorRollbackLine.MonitorAdvance.EndHour,
-                //        FilterExcludeIDs = _monitorRollbackLine.MonitorAdvance.FilterExcludeIDs,
-                //        FilterIncludeIDs = _monitorRollbackLine.MonitorAdvance.FilterIncludeIDs,
-                //        FilterMaximumPOC = _monitorRollbackLine.MonitorAdvance.FilterMaximumPOC,
-                //        FilterMaxLatitude = _monitorRollbackLine.MonitorAdvance.FilterMaxLatitude,
-                //        FilterMaxLongitude = _monitorRollbackLine.MonitorAdvance.FilterMaxLongitude,
-                //        FilterMinLatitude = _monitorRollbackLine.MonitorAdvance.FilterMinLatitude,
-                //        FilterMinLongitude = _monitorRollbackLine.MonitorAdvance.FilterMinLongitude,
-                //        FilterStates = _monitorRollbackLine.MonitorAdvance.FilterStates,
-                //        GetClosedIfNoneWithinRadius = _monitorRollbackLine.MonitorAdvance.GetClosedIfNoneWithinRadius,
-                //        IncludeMethods = _monitorRollbackLine.MonitorAdvance.IncludeMethods,
-                //        MaxinumNeighborDistance = _monitorRollbackLine.MonitorAdvance.MaxinumNeighborDistance,
-                //        NumberOfPerQuarter = _monitorRollbackLine.MonitorAdvance.NumberOfPerQuarter,
-                //        NumberOfValidHour = _monitorRollbackLine.MonitorAdvance.NumberOfValidHour,
-                //        OutputType = _monitorRollbackLine.MonitorAdvance.OutputType,
-                //        PercentOfValidDays = _monitorRollbackLine.MonitorAdvance.PercentOfValidDays,
-                //        POCPreferenceOrder = _monitorRollbackLine.MonitorAdvance.POCPreferenceOrder,
-                //        PreferredType = _monitorRollbackLine.MonitorAdvance.PreferredType,
-                //        RelativeNeighborDistance = _monitorRollbackLine.MonitorAdvance.RelativeNeighborDistance,
-                //        StartDate = _monitorRollbackLine.MonitorAdvance.StartDate,
-                //        StartHour = _monitorRollbackLine.MonitorAdvance.StartHour,
-                //        WeightingApproach = _monitorRollbackLine.MonitorAdvance.WeightingApproach
 
-                //    };
-                //}
-                //FilterMonitors frm = new FilterMonitors();
-                //frm.MonitorAdvanceFilter = MyMonitorAdvance;
-                //frm.bcg = this._bgc;
-                //frm.mDataLine = _monitorRollbackLine;
-                //DialogResult rtn = frm.ShowDialog();
-                //if (rtn == DialogResult.OK)
-                //{
-                //    MyMonitorAdvance = frm.MonitorAdvanceFilter;
-                //    _monitorRollbackLine.MonitorAdvance = MyMonitorAdvance;
-                //}
 
-                //string str = string.Empty;
-                //foreach (var c in grpInterpolation.Controls)
-                //{
-                //    RadioButton r = c as RadioButton;
-                //    if (r == null) { continue; }
-                //    if (r.Checked) { str = r.Text; break; }
-                //}
-                //AdvancedOptions frm = new AdvancedOptions(str,);
-                //frm.ShowDialog();
             }
             catch (Exception ex)
             {
@@ -218,8 +156,6 @@ namespace BenMAP
                     _monitorRollbackLine.FixedRadius = value;
                 }
 
-                //_monitorRollbackLine.InterpolationMethod = Interplotion;
-                //_monitorRollbackLine.FixedRadius = FixRadio;
                 MonitorDataLine baselinegrid = new MonitorDataLine();
                 SaveFileDialog sfd = new SaveFileDialog();
                 if (chbMakeBaselineGrid.Checked)
@@ -254,7 +190,6 @@ namespace BenMAP
                 sfd2.InitialDirectory = CommonClass.ResultFilePath + @"\Result\AQG";
                 if (sfd2.ShowDialog() != DialogResult.OK)
                 { return; }
-                //save the baseline grid
                 if (chbMakeBaselineGrid.Checked)
                 {
                     WaitShow("Saving the baseline grid...");
@@ -265,11 +200,10 @@ namespace BenMAP
                 }
                 else
                     makeBaselineGrid = "F";
-                //save the rolled back grid
                 saveAQGPath = sfd2.FileName;
                 int threadId = -1;
                 AsynDelegateRollBack asyncD = new AsynDelegateRollBack(AsyncUpdateMonitorRollbackData);
-                IAsyncResult ar = asyncD.BeginInvoke(_currentStat, _monitorRollbackLine, out threadId, null, null); 
+                IAsyncResult ar = asyncD.BeginInvoke(_currentStat, _monitorRollbackLine, out threadId, null, null);
                 this.DialogResult = DialogResult.OK;
             }
             catch (Exception ex)
@@ -279,10 +213,7 @@ namespace BenMAP
             }
         }
 
-        #region 等待窗口
-        TipFormGIF waitMess = new TipFormGIF();//等待窗体
-        bool sFlog = true;
-        //--显示等待窗体 
+        TipFormGIF waitMess = new TipFormGIF(); bool sFlog = true;
         private void ShowWaitMess()
         {
             try
@@ -299,7 +230,6 @@ namespace BenMAP
             }
         }
 
-        //--新开辟一个线程调用 
         public void WaitShow(string msg)
         {
             try
@@ -320,10 +250,8 @@ namespace BenMAP
         }
         private delegate void CloseFormDelegate();
 
-        //--关闭等待窗体 
         public void WaitClose()
         {
-            //同步到主线程上
             if (waitMess.InvokeRequired)
                 waitMess.Invoke(new CloseFormDelegate(DoCloseJob));
             else
@@ -348,7 +276,6 @@ namespace BenMAP
                 MessageBox.Show(Err.Message);
             }
         }
-        #endregion 等待窗口
 
         private string AsyncUpdateMonitorRollbackData(string currentStat, MonitorModelRollbackLine monitorRollbackLine, out int threadId)
         {
@@ -370,10 +297,8 @@ namespace BenMAP
                     if (_currentStat != "")
                     {
                         CommonClass.CurrentMainFormStat = _currentStat.Substring(0, 1).ToUpper() + _currentStat.Substring(1) + " is being created.";
-                        //CommonClass.NodeAnscyStatus = string.Format("{0};on", _currentStat);
                     }
-                }// lock
-
+                }
                 lock (CommonClass.NodeAnscyStatus)
                 { CommonClass.NodeAnscyStatus = string.Format("{0};{1};on", monitorRollbackLine.Pollutant.PollutantName.ToLower(), _currentStat); }
                 switch (_currentStat)
@@ -390,9 +315,7 @@ namespace BenMAP
                                     string shipFile = string.Format("{0}\\Tmp\\{1}", CommonClass.DataFilePath, _monitorRollbackLine.ShapeFile);
                                     bc.Base = _monitorRollbackLine;
                                     DataSourceCommonClass.SaveBenMAPLineShapeFile(_monitorRollbackLine.GridType, _monitorRollbackLine.Pollutant, _monitorRollbackLine, shipFile);
-                                    //---------------majie save aqg file-----------------
-                                    DataSourceCommonClass.CreateAQGFromBenMAPLine(bc.Base, saveAQGPath);//DataSourceCommonClass.LoadAQGFile(txtExistingAQG.Text);
-                                    bc.Base.ShapeFile = "";
+                                    DataSourceCommonClass.CreateAQGFromBenMAPLine(bc.Base, saveAQGPath); bc.Base.ShapeFile = "";
                                 }
                             }
                         }
@@ -409,9 +332,7 @@ namespace BenMAP
                                     string shipFile = string.Format("{0}\\Tmp\\{1}", CommonClass.DataFilePath, _monitorRollbackLine.ShapeFile);
                                     bc.Control = _monitorRollbackLine;
                                     DataSourceCommonClass.SaveBenMAPLineShapeFile(_monitorRollbackLine.GridType, _monitorRollbackLine.Pollutant, _monitorRollbackLine, shipFile);
-                                    //--------------------majie save aqg file------------------
-                                    DataSourceCommonClass.CreateAQGFromBenMAPLine(bc.Control, saveAQGPath);//DataSourceCommonClass.LoadAQGFile(txtExistingAQG.Text);
-                                    bc.Control.ShapeFile = "";
+                                    DataSourceCommonClass.CreateAQGFromBenMAPLine(bc.Control, saveAQGPath); bc.Control.ShapeFile = "";
                                 }
                             }
                         }
@@ -423,7 +344,6 @@ namespace BenMAP
                     if (CommonClass.LstAsynchronizationStates.Count == 0)
                     {
                         CommonClass.CurrentMainFormStat = "Current Setup: " + CommonClass.MainSetup.SetupName;
-                        //CommonClass.NodeAnscyStatus = string.Format("{0};off", _currentStat);
                     }
                 }
                 lock (CommonClass.NodeAnscyStatus)
@@ -439,37 +359,10 @@ namespace BenMAP
 
         private void chbMakeBaselineGrid_CheckedChanged(object sender, EventArgs e)
         {
-            //try
-            //{
-            //    if (sender == null) { return; }
-            //    var chk = sender as CheckBox;
-            //    if (chk.Checked) { txtAdjustment.Enabled = false; btnBrowse.Enabled = false; }
-            //    else
-            //    { txtAdjustment.Enabled = false; btnBrowse.Enabled = false; }
-            //}
-            //catch (Exception ex)
-            //{
-            //    Logger.LogError(ex);
-            //}
         }
 
         private void txtFixRadio_TextChanged(object sender, EventArgs e)
         {
-            //try
-            //{
-            //    if (sender == null) { return; }
-            //    float radio = 0;
-            //    bool ok = false;
-            //    if (string.IsNullOrEmpty(txtFixRadio.Text.Trim()))
-            //    {
-            //        ok = float.TryParse(txtFixRadio.Text, out radio);
-            //    }
-            //    if (!ok) { MessageBox.Show("Please enter numbers!\t", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning); }
-            //}
-            //catch (Exception ex)
-            //{
-            //    Logger.LogError(ex);
-            //}
         }
 
         private void rbtnClosestMonitor_CheckedChanged(object sender, EventArgs e)

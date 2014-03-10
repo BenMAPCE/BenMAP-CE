@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,27 +8,24 @@ namespace BenMAP
 {
     class MontoCarlo
     {
-        /// <summary>
-        /// 正态分布随机数
-        /// </summary>
         const int N = 100;
         const int MAX = 50;
         const double MIN = 0.1;
         const int MIU = 40;
         const int SIGMA = 1;
         static Random aa = new Random((int)(DateTime.Now.Ticks / 10000));
-        public double AverageRandom(double min, double max)//产生(min,max)之间均匀分布的随机数
+        public double AverageRandom(double min, double max)
         {
             int MINnteger = (int)(min * 10000);
             int MAXnteger = (int)(max * 10000);
             int resultInteger = aa.Next(MINnteger, MAXnteger);
             return resultInteger / 10000.0;
         }
-        public double Normal(double x, double miu, double sigma) //正态分布概率密度函数
+        public double Normal(double x, double miu, double sigma)
         {
             return 1.0 / (x * Math.Sqrt(2 * Math.PI) * sigma) * Math.Exp(-1 * (Math.Log(x) - miu) * (Math.Log(x) - miu) / (2 * sigma * sigma));
         }
-        public double Random_Normal(double miu, double sigma, double min, double max)//产生正态分布随机数
+        public double Random_Normal(double miu, double sigma, double min, double max)
         {
             double x;
             double dScope;
@@ -59,12 +56,7 @@ namespace BenMAP
                 return null;
             }
         }
-        /// <summary>
-        /// 指数分布随机数
-        /// </summary>
-        /// <param name="const_a"></param>
-        /// <returns></returns>
-        public double RandExp(double const_a)//const_a是指数分布的参数λ
+        public double RandExp(double const_a)
         {
             Random rand = new Random(Guid.NewGuid().GetHashCode());
             double p;
@@ -72,9 +64,9 @@ namespace BenMAP
             if (const_a != 0)
                 temp = 1 / const_a;
             else
-                throw new System.InvalidOperationException("除数不能为零！不能产生参数为零的指数分布！");
+                throw new System.InvalidOperationException("��������Ϊ�㣡���ܲ�������Ϊ���ָ���ֲ���");
             double randres;
-            while (true) //用于产生随机的密度，保证比参数λ小
+            while (true)
             {
                 p = rand.NextDouble();
                 if (p < const_a)
@@ -85,11 +77,6 @@ namespace BenMAP
         }
 
 
-        /// <summary>
-        /// 负指数分布随机数产生
-        /// </summary>
-        /// <param name="lam">参数</param>
-        /// <returns></returns>
         Random ran;
 
         public MontoCarlo()
@@ -105,12 +92,6 @@ namespace BenMAP
         }
 
 
-        /// <summary>
-        /// 泊松分布产生
-        /// </summary>
-        /// <param name="lam">参数</param>
-        /// <param name="time">时间</param>
-        /// <returns></returns>
         public double poisson(double lam, double time)
         {
             int count = 0;
@@ -125,19 +106,12 @@ namespace BenMAP
             }
             return count;
         }
-        /// <summary>
-        /// 产生一个泊松分布的数组
-        /// </summary>
-        /// <param name="lam"></param>
-        /// <param name="time"></param>
-        /// <param name="count"></param>
-        /// <returns></returns>
         public List<int> poissonList(double lam, double time, int count)
         {
             List<int> lstReturn = new List<int>();
             for (int i = 0; i < count; i++)
             {
-                lstReturn.Add(Convert.ToInt32(poisson(lam,time)));
+                lstReturn.Add(Convert.ToInt32(poisson(lam, time)));
 
             }
             return lstReturn;

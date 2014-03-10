@@ -1,16 +1,9 @@
-﻿namespace BenMAP
+namespace BenMAP
 {
     partial class ManagePopulationDataSets
     {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -20,12 +13,7 @@
             base.Dispose(disposing);
         }
 
-        #region Windows Form Designer generated code
-
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
+        
         private void InitializeComponent()
         {
             this.grpAvailableDataSets = new System.Windows.Forms.GroupBox();
@@ -55,10 +43,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.olvPopulationValues)).BeginInit();
             this.grpCancelOK.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // grpAvailableDataSets
-            // 
-            this.grpAvailableDataSets.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                                                this.grpAvailableDataSets.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)));
             this.grpAvailableDataSets.Controls.Add(this.btnAdd);
             this.grpAvailableDataSets.Controls.Add(this.btnDelete);
@@ -69,10 +54,7 @@
             this.grpAvailableDataSets.TabIndex = 0;
             this.grpAvailableDataSets.TabStop = false;
             this.grpAvailableDataSets.Text = "Available Datasets";
-            // 
-            // btnAdd
-            // 
-            this.btnAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+                                                this.btnAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnAdd.Location = new System.Drawing.Point(81, 292);
             this.btnAdd.Name = "btnAdd";
             this.btnAdd.Size = new System.Drawing.Size(69, 27);
@@ -80,10 +62,7 @@
             this.btnAdd.Text = "Add";
             this.btnAdd.UseVisualStyleBackColor = true;
             this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
-            // 
-            // btnDelete
-            // 
-            this.btnDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+                                                this.btnDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnDelete.Location = new System.Drawing.Point(6, 292);
             this.btnDelete.Name = "btnDelete";
             this.btnDelete.Size = new System.Drawing.Size(69, 27);
@@ -91,10 +70,7 @@
             this.btnDelete.Text = "Delete";
             this.btnDelete.UseVisualStyleBackColor = true;
             this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
-            // 
-            // lstAvailableDataSetsName
-            // 
-            this.lstAvailableDataSetsName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                                                this.lstAvailableDataSetsName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)));
             this.lstAvailableDataSetsName.FormattingEnabled = true;
             this.lstAvailableDataSetsName.HorizontalScrollbar = true;
@@ -104,10 +80,7 @@
             this.lstAvailableDataSetsName.Size = new System.Drawing.Size(150, 256);
             this.lstAvailableDataSetsName.TabIndex = 3;
             this.lstAvailableDataSetsName.SelectedValueChanged += new System.EventHandler(this.lstAvailableDataSetsName_SelectedValueChanged);
-            // 
-            // grpDataSetsDetail
-            // 
-            this.grpDataSetsDetail.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                                                this.grpDataSetsDetail.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.grpDataSetsDetail.Controls.Add(this.grpValues);
@@ -121,10 +94,7 @@
             this.grpDataSetsDetail.TabIndex = 1;
             this.grpDataSetsDetail.TabStop = false;
             this.grpDataSetsDetail.Text = "Dataset Detail";
-            // 
-            // grpValues
-            // 
-            this.grpValues.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                                                this.grpValues.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.grpValues.Controls.Add(this.olvPopulationValues);
@@ -134,10 +104,7 @@
             this.grpValues.TabIndex = 4;
             this.grpValues.TabStop = false;
             this.grpValues.Text = "Values";
-            // 
-            // olvPopulationValues
-            // 
-            this.olvPopulationValues.AllColumns.Add(this.olvColumn3);
+                                                this.olvPopulationValues.AllColumns.Add(this.olvColumn3);
             this.olvPopulationValues.AllColumns.Add(this.olvColumn4);
             this.olvPopulationValues.AllColumns.Add(this.olvColumn5);
             this.olvPopulationValues.AllColumns.Add(this.olvColumn6);
@@ -185,86 +152,50 @@
             this.olvPopulationValues.UseHyperlinks = true;
             this.olvPopulationValues.UseOverlays = false;
             this.olvPopulationValues.View = System.Windows.Forms.View.Details;
-            // 
-            // olvColumn3
-            // 
-            this.olvColumn3.AspectName = "RaceName";
+                                                this.olvColumn3.AspectName = "RaceName";
             this.olvColumn3.Text = "Race";
-            // 
-            // olvColumn4
-            // 
-            this.olvColumn4.AspectName = "EthnicityName";
+                                                this.olvColumn4.AspectName = "EthnicityName";
             this.olvColumn4.Text = "Ethnicity";
-            // 
-            // olvColumn5
-            // 
-            this.olvColumn5.AspectName = "GenderName";
+                                                this.olvColumn5.AspectName = "GenderName";
             this.olvColumn5.Text = "Gender";
-            // 
-            // olvColumn6
-            // 
-            this.olvColumn6.AspectName = "AgeRangeName";
+                                                this.olvColumn6.AspectName = "AgeRangeName";
             this.olvColumn6.Text = "Age Range";
-            // 
-            // olvColumn7
-            // 
-            this.olvColumn7.AspectName = "CColumn";
+                                                this.olvColumn7.AspectName = "CColumn";
             this.olvColumn7.Text = "Column";
-            // 
-            // olvColumn8
-            // 
-            this.olvColumn8.AspectName = "Row";
+                                                this.olvColumn8.AspectName = "Row";
             this.olvColumn8.Text = "Row";
             this.olvColumn8.Width = 50;
-            // 
-            // olvColumn10
-            // 
-            this.olvColumn10.AspectName = "VValue";
+                                                this.olvColumn10.AspectName = "VValue";
             this.olvColumn10.AspectToStringFormat = "{0:N4}";
             this.olvColumn10.FillsFreeSpace = true;
             this.olvColumn10.Text = "Value";
-            // 
-            // txtPopulationConfig
-            // 
-            this.txtPopulationConfig.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                                                this.txtPopulationConfig.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.txtPopulationConfig.Enabled = false;
             this.txtPopulationConfig.Location = new System.Drawing.Point(179, 54);
             this.txtPopulationConfig.Name = "txtPopulationConfig";
             this.txtPopulationConfig.Size = new System.Drawing.Size(262, 22);
             this.txtPopulationConfig.TabIndex = 3;
-            // 
-            // txtGridDefinition
-            // 
-            this.txtGridDefinition.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                                                this.txtGridDefinition.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.txtGridDefinition.Enabled = false;
             this.txtGridDefinition.Location = new System.Drawing.Point(179, 21);
             this.txtGridDefinition.Name = "txtGridDefinition";
             this.txtGridDefinition.Size = new System.Drawing.Size(262, 22);
             this.txtGridDefinition.TabIndex = 2;
-            // 
-            // lblPopulationConfiguration
-            // 
-            this.lblPopulationConfiguration.AutoSize = true;
+                                                this.lblPopulationConfiguration.AutoSize = true;
             this.lblPopulationConfiguration.Location = new System.Drawing.Point(16, 57);
             this.lblPopulationConfiguration.Name = "lblPopulationConfiguration";
             this.lblPopulationConfiguration.Size = new System.Drawing.Size(143, 14);
             this.lblPopulationConfiguration.TabIndex = 1;
             this.lblPopulationConfiguration.Text = "Population Configuration:";
-            // 
-            // lblGridDefinition
-            // 
-            this.lblGridDefinition.AutoSize = true;
+                                                this.lblGridDefinition.AutoSize = true;
             this.lblGridDefinition.Location = new System.Drawing.Point(16, 24);
             this.lblGridDefinition.Name = "lblGridDefinition";
             this.lblGridDefinition.Size = new System.Drawing.Size(89, 14);
             this.lblGridDefinition.TabIndex = 0;
             this.lblGridDefinition.Text = "Grid Definition:";
-            // 
-            // grpCancelOK
-            // 
-            this.grpCancelOK.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+                                                this.grpCancelOK.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.grpCancelOK.Controls.Add(this.btnOK);
             this.grpCancelOK.Controls.Add(this.btnCancel);
@@ -273,10 +204,7 @@
             this.grpCancelOK.Size = new System.Drawing.Size(615, 51);
             this.grpCancelOK.TabIndex = 2;
             this.grpCancelOK.TabStop = false;
-            // 
-            // btnOK
-            // 
-            this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+                                                this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOK.Location = new System.Drawing.Point(528, 17);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 27);
@@ -284,10 +212,7 @@
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
-            // 
-            // btnCancel
-            // 
-            this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+                                                this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.Location = new System.Drawing.Point(447, 17);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 27);
@@ -296,10 +221,7 @@
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Visible = false;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
-            // 
-            // ManagePopulationDataSets
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
+                                                this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(639, 403);
             this.Controls.Add(this.grpCancelOK);
@@ -321,8 +243,7 @@
 
         }
 
-        #endregion
-
+        
         private System.Windows.Forms.GroupBox grpAvailableDataSets;
         private System.Windows.Forms.ListBox lstAvailableDataSetsName;
         private System.Windows.Forms.GroupBox grpDataSetsDetail;

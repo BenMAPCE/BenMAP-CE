@@ -1,16 +1,9 @@
-﻿namespace BenMAP
+namespace BenMAP
 {
     partial class MonitorDataSetDefinition
     {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -20,12 +13,7 @@
             base.Dispose(disposing);
         }
 
-        #region Windows Form Designer generated code
-
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
+        
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
@@ -61,10 +49,7 @@
             this.tabControl1.SuspendLayout();
             this.tbpTextFile.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // btnOutput
-            // 
-            this.btnOutput.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+                                                this.btnOutput.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOutput.Location = new System.Drawing.Point(64, 397);
             this.btnOutput.Name = "btnOutput";
             this.btnOutput.Size = new System.Drawing.Size(128, 27);
@@ -74,29 +59,20 @@
                     " and can be used as an example to prepare the input file.");
             this.btnOutput.UseVisualStyleBackColor = true;
             this.btnOutput.Click += new System.EventHandler(this.btnOutput_Click);
-            // 
-            // lblProgress
-            // 
-            this.lblProgress.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+                                                this.lblProgress.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.lblProgress.AutoSize = true;
             this.lblProgress.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblProgress.Location = new System.Drawing.Point(602, 478);
             this.lblProgress.Name = "lblProgress";
             this.lblProgress.Size = new System.Drawing.Size(0, 14);
             this.lblProgress.TabIndex = 4;
-            // 
-            // progressBar1
-            // 
-            this.progressBar1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+                                                this.progressBar1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.progressBar1.Location = new System.Drawing.Point(13, 480);
             this.progressBar1.Name = "progressBar1";
             this.progressBar1.Size = new System.Drawing.Size(583, 12);
             this.progressBar1.TabIndex = 3;
-            // 
-            // btnOK
-            // 
-            this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+                                                this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOK.Location = new System.Drawing.Point(648, 472);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 27);
@@ -104,10 +80,7 @@
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
-            // 
-            // btnCancel
-            // 
-            this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+                                                this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.Location = new System.Drawing.Point(563, 472);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 27);
@@ -116,10 +89,7 @@
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Visible = false;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
-            // 
-            // grpMonitorDataSetDefinition
-            // 
-            this.grpMonitorDataSetDefinition.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                                                this.grpMonitorDataSetDefinition.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.grpMonitorDataSetDefinition.Controls.Add(this.olvMonitorDataSets);
@@ -132,10 +102,7 @@
             this.grpMonitorDataSetDefinition.Size = new System.Drawing.Size(722, 464);
             this.grpMonitorDataSetDefinition.TabIndex = 0;
             this.grpMonitorDataSetDefinition.TabStop = false;
-            // 
-            // olvMonitorDataSets
-            // 
-            this.olvMonitorDataSets.AllColumns.Add(this.olvColumn1);
+                                                this.olvMonitorDataSets.AllColumns.Add(this.olvColumn1);
             this.olvMonitorDataSets.AllColumns.Add(this.olvColumn2);
             this.olvMonitorDataSets.AllColumns.Add(this.olvColumn9);
             this.olvMonitorDataSets.AllowColumnReorder = true;
@@ -175,29 +142,17 @@
             this.olvMonitorDataSets.UseHyperlinks = true;
             this.olvMonitorDataSets.UseOverlays = false;
             this.olvMonitorDataSets.View = System.Windows.Forms.View.Details;
-            // 
-            // olvColumn1
-            // 
-            this.olvColumn1.AspectName = "pollutantname";
+                                                this.olvColumn1.AspectName = "pollutantname";
             this.olvColumn1.Text = "Pollutant";
             this.olvColumn1.Width = 137;
-            // 
-            // olvColumn2
-            // 
-            this.olvColumn2.AspectName = "yyear";
+                                                this.olvColumn2.AspectName = "yyear";
             this.olvColumn2.Text = "Year";
             this.olvColumn2.Width = 97;
-            // 
-            // olvColumn9
-            // 
-            this.olvColumn9.AspectName = "Count";
+                                                this.olvColumn9.AspectName = "Count";
             this.olvColumn9.FillsFreeSpace = true;
             this.olvColumn9.Text = "Monitor Count";
             this.olvColumn9.Width = 109;
-            // 
-            // grpFileSource
-            // 
-            this.grpFileSource.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                                                this.grpFileSource.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.grpFileSource.Controls.Add(this.btnOutput);
             this.grpFileSource.Controls.Add(this.btnLoad);
@@ -211,10 +166,7 @@
             this.grpFileSource.Size = new System.Drawing.Size(336, 436);
             this.grpFileSource.TabIndex = 6;
             this.grpFileSource.TabStop = false;
-            // 
-            // btnLoad
-            // 
-            this.btnLoad.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+                                                this.btnLoad.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnLoad.Location = new System.Drawing.Point(198, 397);
             this.btnLoad.Name = "btnLoad";
             this.btnLoad.Size = new System.Drawing.Size(128, 27);
@@ -222,10 +174,7 @@
             this.btnLoad.Text = "Import To Database";
             this.btnLoad.UseVisualStyleBackColor = true;
             this.btnLoad.Click += new System.EventHandler(this.btnLoad_Click);
-            // 
-            // tabControl1
-            // 
-            this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                                                this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.tabControl1.Controls.Add(this.tbpTextFile);
             this.tabControl1.Location = new System.Drawing.Point(9, 56);
@@ -233,10 +182,7 @@
             this.tabControl1.SelectedIndex = 0;
             this.tabControl1.Size = new System.Drawing.Size(321, 335);
             this.tabControl1.TabIndex = 4;
-            // 
-            // tbpTextFile
-            // 
-            this.tbpTextFile.Controls.Add(this.label1);
+                                                this.tbpTextFile.Controls.Add(this.label1);
             this.tbpTextFile.Controls.Add(this.btnBrowse);
             this.tbpTextFile.Controls.Add(this.txtMonitorDataFile);
             this.tbpTextFile.Controls.Add(this.lblMonitorDataFile3);
@@ -247,108 +193,72 @@
             this.tbpTextFile.TabIndex = 2;
             this.tbpTextFile.Text = "Monitor File";
             this.tbpTextFile.UseVisualStyleBackColor = true;
-            // 
-            // label1
-            // 
-            this.label1.Location = new System.Drawing.Point(9, 79);
+                                                this.label1.Location = new System.Drawing.Point(9, 79);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(297, 63);
             this.label1.TabIndex = 3;
             this.label1.Text = "The file layout is: Column, Row, Metric, Seasonal Metric, Statistic, Values; Valu" +
                 "es is a string of comma delimited model values.";
-            // 
-            // btnBrowse
-            // 
-            this.btnBrowse.Image = global::BenMAP.Properties.Resources.folder_add;
+                                                this.btnBrowse.Image = global::BenMAP.Properties.Resources.folder_add;
             this.btnBrowse.Location = new System.Drawing.Point(257, 45);
             this.btnBrowse.Name = "btnBrowse";
             this.btnBrowse.Size = new System.Drawing.Size(49, 27);
             this.btnBrowse.TabIndex = 2;
             this.btnBrowse.UseVisualStyleBackColor = true;
             this.btnBrowse.Click += new System.EventHandler(this.btnBrowse_Click_1);
-            // 
-            // txtMonitorDataFile
-            // 
-            this.txtMonitorDataFile.Location = new System.Drawing.Point(8, 45);
+                                                this.txtMonitorDataFile.Location = new System.Drawing.Point(8, 45);
             this.txtMonitorDataFile.Name = "txtMonitorDataFile";
             this.txtMonitorDataFile.ReadOnly = true;
             this.txtMonitorDataFile.Size = new System.Drawing.Size(243, 22);
             this.txtMonitorDataFile.TabIndex = 1;
-            // 
-            // lblMonitorDataFile3
-            // 
-            this.lblMonitorDataFile3.AutoSize = true;
+                                                this.lblMonitorDataFile3.AutoSize = true;
             this.lblMonitorDataFile3.Location = new System.Drawing.Point(6, 28);
             this.lblMonitorDataFile3.Name = "lblMonitorDataFile3";
             this.lblMonitorDataFile3.Size = new System.Drawing.Size(106, 14);
             this.lblMonitorDataFile3.TabIndex = 0;
             this.lblMonitorDataFile3.Text = "Monitor Data File:";
-            // 
-            // txtYear
-            // 
-            this.txtYear.Location = new System.Drawing.Point(237, 20);
+                                                this.txtYear.Location = new System.Drawing.Point(237, 20);
             this.txtYear.MaxLength = 4;
             this.txtYear.Name = "txtYear";
             this.txtYear.Size = new System.Drawing.Size(82, 22);
             this.txtYear.TabIndex = 3;
             this.txtYear.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtYear_KeyPress);
-            // 
-            // lblYear
-            // 
-            this.lblYear.AutoSize = true;
+                                                this.lblYear.AutoSize = true;
             this.lblYear.Location = new System.Drawing.Point(196, 24);
             this.lblYear.Name = "lblYear";
             this.lblYear.Size = new System.Drawing.Size(33, 14);
             this.lblYear.TabIndex = 2;
             this.lblYear.Text = "Year:";
-            // 
-            // cboPollutant
-            // 
-            this.cboPollutant.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+                                                this.cboPollutant.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboPollutant.FormattingEnabled = true;
             this.cboPollutant.Location = new System.Drawing.Point(78, 21);
             this.cboPollutant.Name = "cboPollutant";
             this.cboPollutant.Size = new System.Drawing.Size(100, 22);
             this.cboPollutant.TabIndex = 1;
             this.cboPollutant.SelectedIndexChanged += new System.EventHandler(this.cboPollutant_SelectedIndexChanged);
-            // 
-            // lblPollutant
-            // 
-            this.lblPollutant.AutoSize = true;
+                                                this.lblPollutant.AutoSize = true;
             this.lblPollutant.Location = new System.Drawing.Point(7, 24);
             this.lblPollutant.Name = "lblPollutant";
             this.lblPollutant.Size = new System.Drawing.Size(60, 14);
             this.lblPollutant.TabIndex = 0;
             this.lblPollutant.Text = "Pollutant:";
-            // 
-            // txtDataSetName
-            // 
-            this.txtDataSetName.Location = new System.Drawing.Point(109, 15);
+                                                this.txtDataSetName.Location = new System.Drawing.Point(109, 15);
             this.txtDataSetName.Name = "txtDataSetName";
             this.txtDataSetName.Size = new System.Drawing.Size(258, 22);
             this.txtDataSetName.TabIndex = 5;
-            // 
-            // lblDataSetName
-            // 
-            this.lblDataSetName.AutoSize = true;
+                                                this.lblDataSetName.AutoSize = true;
             this.lblDataSetName.Location = new System.Drawing.Point(15, 19);
             this.lblDataSetName.Name = "lblDataSetName";
             this.lblDataSetName.Size = new System.Drawing.Size(88, 14);
             this.lblDataSetName.TabIndex = 4;
             this.lblDataSetName.Text = "Dataset Name:";
-            // 
-            // lblDataSetContents
-            // 
-            this.lblDataSetContents.AutoSize = true;
+                                                this.lblDataSetContents.AutoSize = true;
             this.lblDataSetContents.Location = new System.Drawing.Point(15, 47);
             this.lblDataSetContents.Name = "lblDataSetContents";
             this.lblDataSetContents.Size = new System.Drawing.Size(327, 14);
             this.lblDataSetContents.TabIndex = 3;
             this.lblDataSetContents.Text = "Dataset Contents (Number of Monitor by Pollutant by Year):";
-            // 
-            // MonitorDataSetDefinition
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
+                                                this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(747, 506);
             this.Controls.Add(this.lblProgress);
@@ -375,8 +285,7 @@
 
         }
 
-        #endregion
-
+        
         private System.Windows.Forms.GroupBox grpMonitorDataSetDefinition;
         private System.Windows.Forms.Label lblDataSetContents;
         private System.Windows.Forms.Button btnCancel;

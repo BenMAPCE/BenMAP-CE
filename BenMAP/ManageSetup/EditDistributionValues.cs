@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -28,7 +28,7 @@ namespace BenMAP
         private void EditDistributionValues_Load(object sender, EventArgs e)
         {
             try
-            {               
+            {
                 txtMeanValue.Text = _healthImpactDistribution.Beta;
                 txtParameter1.Text = _healthImpactDistribution.BetaParameter1;
                 if (_distributionName == "Normal")
@@ -39,7 +39,7 @@ namespace BenMAP
                     txtParameter2.Visible = false;
                     lblParameter1.Text = "sigma:";
                     txtParameter1.Text = _healthImpactDistribution.BetaParameter1;
-                    Image normal = Image.FromFile(Application.StartupPath +@"\Resources\DistributionFormula\Normal PDF.png");
+                    Image normal = Image.FromFile(Application.StartupPath + @"\Resources\DistributionFormula\Normal PDF.png");
                     pictureBox1.Image = normal;
                     normal = Image.FromFile(Application.StartupPath + @"\Resources\DistributionFormula\720px-Normal_Distribution_PDF_svg.png");
                     pictureBox2.Image = normal;
@@ -124,7 +124,7 @@ namespace BenMAP
                 }
                 if (_distributionName == "Geometric")
                 {
-                    lblPDF.Text = "   "+_distributionName + " PDF:";
+                    lblPDF.Text = "   " + _distributionName + " PDF:";
                     lblNotesContext.Text = "The Geometric distribution has one parameter, p.";
                     lblParameter1.Text = "p:";
                     lblParameter2.Visible = false;
@@ -218,7 +218,7 @@ namespace BenMAP
             {
                 Logger.LogError(ex);
             }
-           
+
         }
 
         private string _meanValue;

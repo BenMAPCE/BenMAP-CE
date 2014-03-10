@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -23,7 +23,6 @@ namespace BenMAP.APVX
         {
             try
             {
-                // this.olvAvailable.
                 ObjectListView olv = olvAvailable;
                 if (olv == null || olv.IsDisposed)
                     return;
@@ -204,22 +203,19 @@ namespace BenMAP.APVX
             {
                 Logger.LogError(ex);
             }
-            // listview.Refresh();
         }
 
         private void ChangedCRFunctions_Load(object sender, EventArgs e)
         {
             try
             {
-                //this.olvAvailable.BackColor = Color.LightBlue;
-                //this.blvDelCRFunctions.BackColor = Color.LightPink;
                 if (CommonClass.LstUpdateCRFunction != null && CommonClass.LstUpdateCRFunction.Count > 0)
                 {
-                    LoadAddandDelete(CommonClass.LstUpdateCRFunction, this.olvAvailable, this.cbDataSet, this.cbEndPointGroup, this.cbView,false);
+                    LoadAddandDelete(CommonClass.LstUpdateCRFunction, this.olvAvailable, this.cbDataSet, this.cbEndPointGroup, this.cbView, false);
                 }
                 if (CommonClass.LstDelCRFunction != null && CommonClass.LstDelCRFunction.Count > 0)
                 {
-                    LoadAddandDelete(CommonClass.LstDelCRFunction, this.blvDelCRFunctions, this.cboDelDataSet, this.cboDelEndPointGroup, this.cboDelView,true);
+                    LoadAddandDelete(CommonClass.LstDelCRFunction, this.blvDelCRFunctions, this.cboDelDataSet, this.cboDelEndPointGroup, this.cboDelView, true);
                 }
             }
             catch (Exception ex)
@@ -228,7 +224,7 @@ namespace BenMAP.APVX
             }
         }
 
-        private bool LoadAddandDelete(List<CRSelectFunction> lstCRFunction, ObjectListView blv, ComboBox cboDataSet, ComboBox cboEndPointGroup, ComboBox cboView,bool isDel)
+        private bool LoadAddandDelete(List<CRSelectFunction> lstCRFunction, ObjectListView blv, ComboBox cboDataSet, ComboBox cboEndPointGroup, ComboBox cboView, bool isDel)
         {
             try
             {
@@ -237,17 +233,9 @@ namespace BenMAP.APVX
                 tlist.GenerateAspectGetters();
                 blv.TileSize = new Size(120, 90);
                 Tools.IncidenceBusinessCardRenderer blvRender = new Tools.IncidenceBusinessCardRenderer();
-                //if (isDel)
-                //{
-                //    blvRender.BackBrush = new SolidBrush(System.Drawing.Color.FromArgb(193, 195, 243));
-                //}
-                //else
-                //    blvRender.BackBrush = new SolidBrush(System.Drawing.Color.FromArgb(193, 195, 243));
-                blv.ItemRenderer = blvRender;// new Tools.BusinessCardRenderer();
-                blv.OwnerDraw = true;
+                blv.ItemRenderer = blvRender; blv.OwnerDraw = true;
                 cboView.SelectedIndex = 0;
                 List<CRSelectFunction> lstAvailable = (List<CRSelectFunction>)blv.Objects;
-                //-----------------------------绑定DataSet---------------------------
                 Dictionary<string, int> DicFilterDataSet = new Dictionary<string, int>();
                 DicFilterDataSet.Add("", -1);
                 var query = from a in lstAvailable select new { a.BenMAPHealthImpactFunction.DataSetName, a.BenMAPHealthImpactFunction.DataSetID };
@@ -256,10 +244,8 @@ namespace BenMAP.APVX
                     List<KeyValuePair<string, int>> lstFilterDataSet = DicFilterDataSet.ToList();
                     lstFilterDataSet.AddRange(query.Distinct().ToDictionary(p => p.DataSetName, p => p.DataSetID));
                     DicFilterDataSet = lstFilterDataSet.ToDictionary(p => p.Key, p => p.Value);
-                    // DicFilterDataSet = query.Distinct().ToDictionary(p => p.DataSetName, p => p.DataSetID);
                 }
                 BindingSource bs = new BindingSource();
-                // DicFilterDataSet = (Dictionary<string, int>)DicFilterDataSet.OrderBy(p => p.Value);
                 bs.DataSource = DicFilterDataSet;
                 cboDataSet.DataSource = bs;
                 cboDataSet.DisplayMember = "Key";
@@ -275,7 +261,6 @@ namespace BenMAP.APVX
                 }
                 BindingSource bsqueryGroup = new BindingSource();
 
-                // DicFilterGroup = (Dictionary<string, int>)DicFilterGroup.OrderBy(p => p.Value);
                 bsqueryGroup.DataSource = DicFilterGroup;
                 cboEndPointGroup.DataSource = bsqueryGroup;
                 cboEndPointGroup.DisplayMember = "Key";
@@ -385,8 +370,6 @@ namespace BenMAP.APVX
         {
             try
             {
-                //this.colDataSet.ValuesChosenForFiltering.Clear();
-                //this.colEndPointGroup.ValuesChosenForFiltering.Clear();
                 this.TimedFilter(this.blvDelCRFunctions, this.textBoxDelFilterSimple.Text);
             }
             catch (Exception ex)
@@ -448,6 +431,6 @@ namespace BenMAP.APVX
             {
                 Logger.LogError(ex);
             }
-        }// method
-    }// class
+        }
+    }
 }

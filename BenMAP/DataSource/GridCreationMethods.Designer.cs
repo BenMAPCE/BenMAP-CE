@@ -1,16 +1,9 @@
-﻿namespace BenMAP
+namespace BenMAP
 {
     partial class GridCreationMethods
     {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -20,12 +13,7 @@
             base.Dispose(disposing);
         }
 
-        #region Windows Form Designer generated code
-
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
+        
         private void InitializeComponent()
         {
             this.rbtnModelData = new System.Windows.Forms.RadioButton();
@@ -45,10 +33,7 @@
             this.grp.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // rbtnModelData
-            // 
-            this.rbtnModelData.AutoSize = true;
+                                                this.rbtnModelData.AutoSize = true;
             this.rbtnModelData.Location = new System.Drawing.Point(28, 55);
             this.rbtnModelData.Name = "rbtnModelData";
             this.rbtnModelData.Size = new System.Drawing.Size(83, 16);
@@ -58,10 +43,7 @@
             this.rbtnModelData.Text = "Model Data";
             this.rbtnModelData.UseVisualStyleBackColor = true;
             this.rbtnModelData.CheckedChanged += new System.EventHandler(this.RadioButton_CheckedChanged);
-            // 
-            // rbtnMonitorData
-            // 
-            this.rbtnMonitorData.AutoSize = true;
+                                                this.rbtnMonitorData.AutoSize = true;
             this.rbtnMonitorData.Location = new System.Drawing.Point(28, 97);
             this.rbtnMonitorData.Name = "rbtnMonitorData";
             this.rbtnMonitorData.Size = new System.Drawing.Size(95, 16);
@@ -71,10 +53,7 @@
             this.rbtnMonitorData.Text = "Monitor Data";
             this.rbtnMonitorData.UseVisualStyleBackColor = true;
             this.rbtnMonitorData.CheckedChanged += new System.EventHandler(this.RadioButton_CheckedChanged);
-            // 
-            // rbtnMonitorRollback
-            // 
-            this.rbtnMonitorRollback.AutoSize = true;
+                                                this.rbtnMonitorRollback.AutoSize = true;
             this.rbtnMonitorRollback.Location = new System.Drawing.Point(28, 136);
             this.rbtnMonitorRollback.Name = "rbtnMonitorRollback";
             this.rbtnMonitorRollback.Size = new System.Drawing.Size(119, 16);
@@ -84,10 +63,7 @@
             this.rbtnMonitorRollback.Text = "Monitor Rollback";
             this.rbtnMonitorRollback.UseVisualStyleBackColor = true;
             this.rbtnMonitorRollback.CheckedChanged += new System.EventHandler(this.RadioButton_CheckedChanged);
-            // 
-            // grp
-            // 
-            this.grp.Controls.Add(this.cboGrid);
+                                                this.grp.Controls.Add(this.cboGrid);
             this.grp.Controls.Add(this.label1);
             this.grp.Controls.Add(this.btnBrowse);
             this.grp.Controls.Add(this.txtExistingAQG);
@@ -100,29 +76,20 @@
             this.grp.Size = new System.Drawing.Size(385, 243);
             this.grp.TabIndex = 6;
             this.grp.TabStop = false;
-            // 
-            // cboGrid
-            // 
-            this.cboGrid.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+                                                this.cboGrid.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboGrid.FormattingEnabled = true;
             this.cboGrid.Location = new System.Drawing.Point(137, 21);
             this.cboGrid.Name = "cboGrid";
             this.cboGrid.Size = new System.Drawing.Size(231, 22);
             this.cboGrid.TabIndex = 17;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
+                                                this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Bold);
             this.label1.Location = new System.Drawing.Point(25, 24);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(58, 14);
             this.label1.TabIndex = 16;
             this.label1.Text = "Grid Type:";
-            // 
-            // btnBrowse
-            // 
-            this.btnBrowse.Enabled = false;
+                                                this.btnBrowse.Enabled = false;
             this.btnBrowse.Image = global::BenMAP.Properties.Resources.folder_add;
             this.btnBrowse.Location = new System.Drawing.Point(307, 210);
             this.btnBrowse.Name = "btnBrowse";
@@ -130,19 +97,13 @@
             this.btnBrowse.TabIndex = 9;
             this.btnBrowse.UseVisualStyleBackColor = true;
             this.btnBrowse.Click += new System.EventHandler(this.btnBrowse_Click);
-            // 
-            // txtExistingAQG
-            // 
-            this.txtExistingAQG.Enabled = false;
+                                                this.txtExistingAQG.Enabled = false;
             this.txtExistingAQG.Location = new System.Drawing.Point(28, 213);
             this.txtExistingAQG.Name = "txtExistingAQG";
             this.txtExistingAQG.ReadOnly = true;
             this.txtExistingAQG.Size = new System.Drawing.Size(273, 22);
             this.txtExistingAQG.TabIndex = 8;
-            // 
-            // rbtnOpenFile
-            // 
-            this.rbtnOpenFile.AutoSize = true;
+                                                this.rbtnOpenFile.AutoSize = true;
             this.rbtnOpenFile.Location = new System.Drawing.Point(28, 175);
             this.rbtnOpenFile.Name = "rbtnOpenFile";
             this.rbtnOpenFile.Size = new System.Drawing.Size(119, 16);
@@ -152,10 +113,7 @@
             this.rbtnOpenFile.Text = "open *.aqgx file";
             this.rbtnOpenFile.UseVisualStyleBackColor = true;
             this.rbtnOpenFile.CheckedChanged += new System.EventHandler(this.rbtnOpenFile_CheckedChanged);
-            // 
-            // groupBox2
-            // 
-            this.groupBox2.Controls.Add(this.btnSaveNewFormat);
+                                                this.groupBox2.Controls.Add(this.btnSaveNewFormat);
             this.groupBox2.Controls.Add(this.btnSave);
             this.groupBox2.Controls.Add(this.btnNext);
             this.groupBox2.Controls.Add(this.btnCancel);
@@ -164,10 +122,7 @@
             this.groupBox2.Size = new System.Drawing.Size(385, 65);
             this.groupBox2.TabIndex = 7;
             this.groupBox2.TabStop = false;
-            // 
-            // btnSaveNewFormat
-            // 
-            this.btnSaveNewFormat.Enabled = false;
+                                                this.btnSaveNewFormat.Enabled = false;
             this.btnSaveNewFormat.Location = new System.Drawing.Point(119, 23);
             this.btnSaveNewFormat.Name = "btnSaveNewFormat";
             this.btnSaveNewFormat.Size = new System.Drawing.Size(115, 27);
@@ -175,10 +130,7 @@
             this.btnSaveNewFormat.Text = "Save NewFormat";
             this.btnSaveNewFormat.UseVisualStyleBackColor = true;
             this.btnSaveNewFormat.Click += new System.EventHandler(this.SaveNewFormat_Click);
-            // 
-            // btnSave
-            // 
-            this.btnSave.Enabled = false;
+                                                this.btnSave.Enabled = false;
             this.btnSave.Location = new System.Drawing.Point(6, 23);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(107, 27);
@@ -186,30 +138,21 @@
             this.btnSave.Text = "Save As(*.aqgx)";
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
-            // 
-            // btnNext
-            // 
-            this.btnNext.Location = new System.Drawing.Point(307, 23);
+                                                this.btnNext.Location = new System.Drawing.Point(307, 23);
             this.btnNext.Name = "btnNext";
             this.btnNext.Size = new System.Drawing.Size(62, 27);
             this.btnNext.TabIndex = 1;
             this.btnNext.Text = "Next";
             this.btnNext.UseVisualStyleBackColor = true;
             this.btnNext.Click += new System.EventHandler(this.btnNext_Click);
-            // 
-            // btnCancel
-            // 
-            this.btnCancel.Location = new System.Drawing.Point(240, 23);
+                                                this.btnCancel.Location = new System.Drawing.Point(240, 23);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(61, 27);
             this.btnCancel.TabIndex = 0;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
-            // 
-            // GridCreationMethods
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
+                                                this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(393, 329);
             this.Controls.Add(this.groupBox2);
@@ -228,8 +171,7 @@
 
         }
 
-        #endregion
-
+        
         private System.Windows.Forms.RadioButton rbtnModelData;
         private System.Windows.Forms.RadioButton rbtnMonitorData;
         private System.Windows.Forms.RadioButton rbtnMonitorRollback;

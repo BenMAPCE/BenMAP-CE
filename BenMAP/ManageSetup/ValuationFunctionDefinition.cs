@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -17,7 +17,7 @@ namespace BenMAP
             InitializeComponent();
             _dataName = string.Empty;
         }
-        public ValuationFunctionDefinition(string EndpointGroup,string Endpoint,string Qualifier,string Reference,int StartAge,int EndAge,string Function,float A,string NameA,string ADistribution,float P1A,float P2A,float B,string NameB,float C,string NameC,float D,string NameD,List<double> listValue)
+        public ValuationFunctionDefinition(string EndpointGroup, string Endpoint, string Qualifier, string Reference, int StartAge, int EndAge, string Function, float A, string NameA, string ADistribution, float P1A, float P2A, float B, string NameB, float C, string NameC, float D, string NameD, List<double> listValue)
         {
             InitializeComponent();
             _dataName = EndpointGroup;
@@ -41,19 +41,13 @@ namespace BenMAP
             _listCustom = listValue;
         }
         private string _endpointGroup;
-        /// <summary>
-        /// return EndpointGroup
-        /// </summary>
-        public string EndpointGroup 
+        public string EndpointGroup
         {
             get { return _endpointGroup; }
             set { _endpointGroup = value; }
         }
 
         private string _enpoint;
-        /// <summary>
-        /// return Endpoint
-        /// </summary>
         public string Endpoint
         {
             get { return _enpoint; }
@@ -61,9 +55,6 @@ namespace BenMAP
         }
 
         private string _qualifier;
-        /// <summary>
-        /// return Qualifier
-        /// </summary>
         public string Qualifier
         {
             get { return _qualifier; }
@@ -71,9 +62,6 @@ namespace BenMAP
         }
 
         private string _reference;
-        /// <summary>
-        /// return Reference
-        /// </summary>
         public string Reference
         {
             get { return _reference; }
@@ -81,9 +69,6 @@ namespace BenMAP
         }
 
         private int _startAge;
-        /// <summary>
-        /// return StartAge
-        /// </summary>
         public int StartAge
         {
             get { return _startAge; }
@@ -91,9 +76,6 @@ namespace BenMAP
         }
 
         private int _endAge;
-        /// <summary>
-        /// return EndAge
-        /// </summary>
         public int EndAge
         {
             get { return _endAge; }
@@ -101,9 +83,6 @@ namespace BenMAP
         }
 
         private string _function;
-        /// <summary>
-        /// return Function
-        /// </summary>
         public string Function
         {
             get { return _function; }
@@ -111,19 +90,13 @@ namespace BenMAP
         }
 
         private string _aDescription;
-        /// <summary>
-        /// return ADescription
-        /// </summary>
         public string ADescription
         {
             get { return _aDescription; }
             set { _aDescription = value; }
         }
 
-        private float  _a;
-        /// <summary>
-        /// return A
-        /// </summary>
+        private float _a;
         public float A
         {
             get { return _a; }
@@ -131,9 +104,6 @@ namespace BenMAP
         }
 
         private string _aDistribution;
-        /// <summary>
-        /// return ADistribution
-        /// </summary>
         public string ADistribution
         {
             get { return _aDistribution; }
@@ -141,9 +111,6 @@ namespace BenMAP
         }
 
         private float _aParameter1;
-        /// <summary>
-        /// return AParameter1
-        /// </summary>
         public float AParameter1
         {
             get { return _aParameter1; }
@@ -151,19 +118,13 @@ namespace BenMAP
         }
 
         private float _aParameter2;
-        /// <summary>
-        /// return AParameter2
-        /// </summary>
         public float AParameter2
         {
             get { return _aParameter2; }
             set { _aParameter2 = value; }
         }
 
-        private float  _b;
-        /// <summary>
-        /// return B
-        /// </summary>
+        private float _b;
         public float B
         {
             get { return _b; }
@@ -171,9 +132,6 @@ namespace BenMAP
         }
 
         private string _bName;
-        /// <summary>
-        /// return BName
-        /// </summary>
         public string BName
         {
             get { return _bName; }
@@ -181,9 +139,6 @@ namespace BenMAP
         }
 
         private float _c;
-        /// <summary>
-        /// return C
-        /// </summary>
         public float C
         {
             get { return _c; }
@@ -191,9 +146,6 @@ namespace BenMAP
         }
 
         private string _cName;
-        /// <summary>
-        /// return CName
-        /// </summary>
         public string CName
         {
             get { return _cName; }
@@ -201,9 +153,6 @@ namespace BenMAP
         }
 
         private float _d;
-        /// <summary>
-        /// return D
-        /// </summary>
         public float D
         {
             get { return _d; }
@@ -211,9 +160,6 @@ namespace BenMAP
         }
 
         private string _dName;
-        /// <summary>
-        /// return DName
-        /// </summary>
         public string DName
         {
             get { return _dName; }
@@ -274,12 +220,12 @@ namespace BenMAP
                     MessageBox.Show("'A Parameter 1' can not be null. Please input a valid value.");
                     return;
                 }
-                if (txtAParameter2.Text== string.Empty)
+                if (txtAParameter2.Text == string.Empty)
                 {
                     MessageBox.Show("'A Parameter 2' can not be null. Please input a valid value.");
                     return;
                 }
-                if (txtBValue.Text  == string.Empty)
+                if (txtBValue.Text == string.Empty)
                 {
                     MessageBox.Show("'B' can not be null. Please input a valid value.");
                     return;
@@ -308,7 +254,7 @@ namespace BenMAP
                 _function = txtFunction.Text;
                 _aDescription = txtADescription.Text;
                 _a = float.Parse(txtA.Text);
-                _aDistribution = cboADistribution.SelectedItem.ToString(); 
+                _aDistribution = cboADistribution.SelectedItem.ToString();
                 _aParameter1 = float.Parse(txtAParameter1.Text);
                 _aParameter2 = float.Parse(txtAParameter2.Text);
                 _bName = txtBDescription.Text;
@@ -324,7 +270,7 @@ namespace BenMAP
             {
                 Logger.LogError(ex);
             }
-           
+
         }
         private void ValuationFunctionDefinition_Load(object sender, EventArgs e)
         {
@@ -372,7 +318,6 @@ namespace BenMAP
                 }
                 else
                 {
-                    //cboEndpointGroup.SelectedIndex = 0;
                     BindItems();
                     cboADistribution.Items.Add("None");
                     cboADistribution.Items.Add("Normal");
@@ -392,8 +337,8 @@ namespace BenMAP
                     cboADistribution.Items.Add("Custom");
                     cboADistribution.SelectedIndex = 0;
                 }
-                cboADistribution.SelectedValueChanged-= cboADistribution_SelectedValueChanged;
-                cboADistribution.SelectedValueChanged+= cboADistribution_SelectedValueChanged;
+                cboADistribution.SelectedValueChanged -= cboADistribution_SelectedValueChanged;
+                cboADistribution.SelectedValueChanged += cboADistribution_SelectedValueChanged;
             }
             catch (Exception ex)
             {
@@ -422,23 +367,6 @@ namespace BenMAP
             }
             cboEndpointGroup.DropDownWidth = maxEndpointGroupWidth;
 
-            //cboADistribution.Items.Add("None");
-            //cboADistribution.Items.Add("Normal");
-            //cboADistribution.Items.Add("Triangular");
-            //cboADistribution.Items.Add("Poisson");
-            //cboADistribution.Items.Add("Binomial");
-            //cboADistribution.Items.Add("LogNormal");
-            //cboADistribution.Items.Add("Uniform");
-            //cboADistribution.Items.Add("Exponential");
-            //cboADistribution.Items.Add("Geometric");
-            //cboADistribution.Items.Add("Weibull");
-            //cboADistribution.Items.Add("Gamma");
-            //cboADistribution.Items.Add("Logistic");
-            //cboADistribution.Items.Add("Beta");
-            //cboADistribution.Items.Add("Pareto");
-            //cboADistribution.Items.Add("Cauchy");
-            //cboADistribution.Items.Add("Custom");
-            //cboADistribution.SelectedIndex = 1;
             string[] composeFunction = new string[] { "ABS(x)", "EXP(x)", "LOG(x)", "POW(x,y)", "SQR(x)", "ACOS(x)", "ASIN(x)", "ATAN(x)", "ATAN2(x,y)", "BIGMUL(x,y)", "CEILING(x)", "COS(x)", "COSH(x)", "DIVREM(x,y,z)", "FLOOR(x)", "IEEEREMAINDER(x,y)", "LOG10(x)", "MAX(x,y)", "MIN(x,y)", "ROUND(x,y)", "SIGN(x)", "SIN(x)", "SINH(x)", "TAN(x)", "TANH(x)", "TRUNCATE(x)" };
             lstComposeF.Items.AddRange(composeFunction);
             lstComposeF.SelectedIndex = -1;
@@ -467,7 +395,7 @@ namespace BenMAP
                 string commandText = string.Format("select * from ENDPOINTS where ENDPOINTGROUPID=(select ENDPOINTGROUPID from ENDPOINTGROUPS where ENDPOINTGROUPNAME='{0}' )", str);
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
-                cboEndpoint.DataSource= ds.Tables[0];
+                cboEndpoint.DataSource = ds.Tables[0];
                 if (cboEndpoint.Items.Count != 0)
                 {
                     cboEndpoint.DisplayMember = "ENDPOINTNAME";
@@ -495,9 +423,9 @@ namespace BenMAP
         private void txtAParameter1_KeyPress(object sender, KeyPressEventArgs e)
         {
             int keyValue = (int)e.KeyChar;
-            if ((keyValue >= 48 && keyValue <= 57) || keyValue == 8 || keyValue == 46||keyValue==45)
+            if ((keyValue >= 48 && keyValue <= 57) || keyValue == 8 || keyValue == 46 || keyValue == 45)
             {
-                if (e.KeyChar == 45 && (((TextBox)sender).SelectionStart ==0&& ((TextBox)sender).Text.IndexOf("-") >=0))
+                if (e.KeyChar == 45 && (((TextBox)sender).SelectionStart == 0 && ((TextBox)sender).Text.IndexOf("-") >= 0))
                     e.Handled = true;
                 if (e.KeyChar == 46 && ((TextBox)sender).Text.IndexOf(".") == 0)
                     e.Handled = true;

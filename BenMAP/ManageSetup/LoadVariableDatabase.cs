@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -18,9 +18,6 @@ namespace BenMAP
         }
 
         private string _definitionID = string.Empty;
-        /// <summary>
-        /// 
-        /// </summary>
         public string DefinitionID
         {
             get { return _definitionID; }
@@ -28,12 +25,9 @@ namespace BenMAP
         }
 
         private string _dataPath = string.Empty;
-        /// <summary>
-        /// 返回路径
-        /// </summary>
         public string DataPath
-        { 
-            get { return _dataPath; } 
+        {
+            get { return _dataPath; }
             set { _dataPath = value; }
         }
 
@@ -54,7 +48,7 @@ namespace BenMAP
                     msg = "Please select a grid definition from the drop-down menu."; return;
                 }
                 _definitionID = cboGridDefinition.Text;
-                
+
             }
             catch (Exception ex)
             {
@@ -68,7 +62,7 @@ namespace BenMAP
         {
             try
             {
-                string commandText = string.Format("select * from GRIDDEFINITIONS where SetupID={0} ORDER BY GRIDDEFINITIONNAME ASC",CommonClass.ManageSetup.SetupID);
+                string commandText = string.Format("select * from GRIDDEFINITIONS where SetupID={0} ORDER BY GRIDDEFINITIONNAME ASC", CommonClass.ManageSetup.SetupID);
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                 cboGridDefinition.DataSource = ds.Tables[0];

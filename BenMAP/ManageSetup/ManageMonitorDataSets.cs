@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Data;
 using System.Windows.Forms;
 
@@ -29,19 +29,7 @@ namespace BenMAP
                 DataRowView drv = lst.SelectedItem as DataRowView;
                 _lstDataSetID = drv["MonitorDataSetID"];
                 _lstDataSetName = drv["MonitorDataSetName"].ToString();
-                //// string commandText = string.Format("select  PollutantName ,YYear from Pollutants a,Monitors b,MonitorDataSets c,MonitorEntries d where (c.MonitorDataSetID=b.MonitorDataSetID) and (b.PollutantID=a.PollutantID) and (b.MonitorID=d.MonitorID) and c.MonitorDataSetName='{0}'");
-                //string commandText = string.Format("select c.pollutantname,a.yyear,count(*) from monitorentries a,monitors b,pollutants c where a.monitorid=b.monitorid and b.pollutantid=c.pollutantid and b.monitordatasetID={0} group by c.pollutantname,a.yyear", _lstDataSetID);
-                //DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
-                //dgvDataSetContents.DataSource = ds.Tables[0];
-                //dgvDataSetContents.Columns[0].HeaderText = "Pollutant";
-                //dgvDataSetContents.Columns[1].HeaderText = "Year";
-                //dgvDataSetContents.Columns[2].HeaderText = "Count";
-                //dgvDataSetContents.RowHeadersVisible = false;
                 addGridView();
-                //dgvDataSetContents.AllowUserToResizeRows = false;
-                //dgvDataSetContents.ClearSelection();
-                //dgvDataSetContents.TabStop = false;
-                //dgvDataSetContents.ReadOnly = true;
             }
             catch (Exception ex)
             {
@@ -81,11 +69,6 @@ namespace BenMAP
                 string commandText = string.Format("select c.pollutantname,a.yyear,count(*) from monitorentries a,monitors b,pollutants c where a.monitorid=b.monitorid and b.pollutantid=c.pollutantid and b.monitordatasetID={0} group by c.pollutantname,a.yyear", _lstDataSetID);
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                 olvMonitorDataSets.DataSource = ds.Tables[0];
-                //dgvDataSetContents.DataSource = ds.Tables[0];
-                //dgvDataSetContents.Columns[0].HeaderText = "Pollutant";
-                //dgvDataSetContents.Columns[1].HeaderText = "Year";
-                //dgvDataSetContents.Columns[2].HeaderText = "Count";
-                //dgvDataSetContents.RowHeadersVisible = false;
             }
             catch (Exception ex)
             {
@@ -99,7 +82,6 @@ namespace BenMAP
             { return; }
             MonitorDataSetDefinition frm = new MonitorDataSetDefinition(_lstDataSetName, _lstDataSetID);
             DialogResult rtn = frm.ShowDialog();
-            //if (rtn == DialogResult.OK)
             {
                 addLstBox();
                 addGridView();
@@ -110,7 +92,6 @@ namespace BenMAP
         {
             MonitorDataSetDefinition frm = new MonitorDataSetDefinition();
             DialogResult rtn = frm.ShowDialog();
-            //if (rtn == DialogResult.OK)
             {
                 addLstBox();
                 addGridView();
@@ -126,10 +107,7 @@ namespace BenMAP
                 if (rtn == DialogResult.Yes)
                 {
                     ESIL.DBUtility.ESILFireBirdHelper fb = new ESIL.DBUtility.ESILFireBirdHelper();
-                    string commandText = string.Format("delete from MonitorDataSets where MonitorDataSetID={0}", _lstDataSetID);//lstAvailableDataSets.GetItemText(lstAvailableDataSets.SelectedItem));
-                    fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
-                    //commandText = string.Format("delete from Monitors where MonitorDataSetID={0}", _lstDataSetID);//lstAvailableDataSets.GetItemText(lstAvailableDataSets.SelectedItem));
-                    //fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                    string commandText = string.Format("delete from MonitorDataSets where MonitorDataSetID={0}", _lstDataSetID); fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                     addLstBox();
                     addGridView();
                 }

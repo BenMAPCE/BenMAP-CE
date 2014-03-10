@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -54,7 +54,7 @@ namespace BenMAP
                         i++;
                     }
                 }
-                else if (CommonClass.GBenMAPGrid != null && CommonClass.MainSetup.SetupID == 1)//---只针对美国
+                else if (CommonClass.GBenMAPGrid != null && CommonClass.MainSetup.SetupID == 1)
                 {
                     if (CommonClass.GBenMAPGrid.GridDefinitionID == 4 || CommonClass.GBenMAPGrid.GridDefinitionID == 27 || CommonClass.GBenMAPGrid.GridDefinitionID == 28)
                     {
@@ -66,7 +66,7 @@ namespace BenMAP
             catch (Exception ex)
             {
                 Logger.LogError(ex);
-            }           
+            }
         }
 
         private void cboPopulationDataSet_SelectedValueChanged(object sender, EventArgs e)
@@ -76,20 +76,10 @@ namespace BenMAP
                 List<string> lstYear = new List<string>();
                 DataRowView drv = cboPopulationDataSet.SelectedItem as DataRowView;
                 int PopulationDataSetID = Convert.ToInt32(drv["PopulationDataSetID"]);
-                if (CommonClass.MainSetup.SetupID == 1 && Convert.ToInt16(drv["APPLYGROWTH"]) == 1)//----------美国数据里面包含了人口增长数据，基数数据为2000
-                commandText = string.Format("select distinct Yyear from t_PopulationDataSetIDYear where PopulationDataSetID in(select PopulationDataSetID from PopulationDataSets where    SetupID={0})", CommonClass.MainSetup.SetupID);// where PopulationDataSetID={0}", PopulationDataSetID);
+                if (CommonClass.MainSetup.SetupID == 1 && Convert.ToInt16(drv["APPLYGROWTH"]) == 1) commandText = string.Format("select distinct Yyear from t_PopulationDataSetIDYear where PopulationDataSetID in(select PopulationDataSetID from PopulationDataSets where    SetupID={0})", CommonClass.MainSetup.SetupID);
                 else
                     commandText = string.Format("select distinct Yyear from t_PopulationDataSetIDYear  where PopulationDataSetID={0}", PopulationDataSetID);
                 DataSet dsYear = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
-                //int rowcount = dsYear.Tables[0].Rows.Count;
-                //foreach (DataRow dr in dsYear.Tables[0].Rows)
-                //{
-                //    string year = dr["Yyear"].ToString();
-                //    if (!lstYear.Contains(year))
-                //    {
-                //        lstYear.Add(year);
-                //    }
-                //}
                 cboPopulationYear.DataSource = dsYear.Tables[0];
                 cboPopulationYear.DisplayMember = "Yyear";
                 if (benMAPPopulation != null)

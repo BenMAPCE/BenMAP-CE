@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -11,50 +11,31 @@ namespace BenMAP.DataSource
 {
     public partial class ToStandardControl : UserControl
     {
-        #region Parameters
         private BenMAPPollutant _BenMAPPollutant;
         public StandardRollback _StandardRollback;
         private int _regionID;
-        /// <summary>
-        /// 控件的RegionID
-        /// </summary>
         public int RegionID
         {
             get { return _regionID; }
             set { _regionID = value; }
         }
-        #endregion
 
-        public ToStandardControl(BenMAPPollutant BenMAPPollutant )
+        public ToStandardControl(BenMAPPollutant BenMAPPollutant)
         {
             InitializeComponent();
             _BenMAPPollutant = BenMAPPollutant;
-            //_StandardRollback = StandardRollback;
         }
 
         private void ToStandardControl_Load(object sender, EventArgs e)
         {
-            //--给Metric赋值
 
             foreach (Metric m in _BenMAPPollutant.Metrics)
             {
                 cboDailyMetric.Items.Add(m.MetricName);
             }
             cboDailyMetric.SelectedIndex = 0;
-            //BindingSource bsMetric = new BindingSource();
 
-            //// DicFilterGroup = (Dictionary<string, int>)DicFilterGroup.OrderBy(p => p.Value);
-            //bsMetric.DataSource = _BenMAPPollutant.Metrics;
-            //cboDailyMetric.DataSource = bsMetric;
-            //cboDailyMetric.DisplayMember = "MetricName";
-            //cboDailyMetric.ValueMember = "Metric.MetricID";
-            //BindingSource bsSesonalMetrics = new BindingSource();
 
-            //// DicFilterGroup = (Dictionary<string, int>)DicFilterGroup.OrderBy(p => p.Value);
-            //bsSesonalMetrics.DataSource = _BenMAPPollutant.SesonalMetrics;
-            //cboSeasonalMetric.DataSource = bsSesonalMetrics;
-            //cboSeasonalMetric.DisplayMember = "SeasonalMetricName";
-            //cboSeasonalMetric.ValueMember = "SeasonalMetricName";
             cboAnnualStatistic.Items.Add("");
             cboAnnualStatistic.Items.Add("Mean");
             cboAnnualStatistic.Items.Add("Median");
@@ -64,13 +45,10 @@ namespace BenMAP.DataSource
             lblOrdinalityDestribution.Text = "Highest" + " value of " + cboDailyMetric.Text + "<=" + txtStandard.Text;
             cboInterday.Items.Add("Percentage");
             cboInterday.Items.Add("Incremental");
-            //cboInterday.Items.Add("Quadratic");
             cboInterday.Items.Add("Peak Shaving");
             cboInterday.SelectedIndex = 0;
             cboIntraday.Items.Add("Percentage");
             cboIntraday.Items.Add("Incremental");
-            //cboIntraday.Items.Add("Quadratic");
-            //cboIntraday.Items.Add("Peak Shaving");
             cboIntraday.SelectedIndex = 0;
             if (_BenMAPPollutant.Observationtype == ObservationtypeEnum.Hourly)
             {
@@ -311,7 +289,7 @@ namespace BenMAP.DataSource
                 _StandardRollback.IntradayBackground = Double.Parse(txtIntradayBackground.Text);
             }
             catch
-            { 
+            {
                 txtInterdayBackground.Text = "0.00";
                 _StandardRollback.IntradayBackground = 0;
             }

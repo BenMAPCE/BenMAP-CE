@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Windows.Forms;
@@ -17,7 +17,6 @@ namespace BenMAP
             set { _mDataLine = value; }
         }
 
-        //monitorDataLine
         private string _currentStat = string.Empty;
 
         public MonitorData(BaseControlGroup currentPollutant, string currentStat)
@@ -73,7 +72,6 @@ namespace BenMAP
                 rbtnVoronoi.Checked = true;
                 commandText = string.Format("select MonitorDataSetID,MonitorDataSetName from MonitorDataSets where SetupID={0} and MonitorDataSetID in (select distinct MonitorDataSetID from monitors where pollutantID={1}) order by MonitorDataSetName asc", CommonClass.MainSetup.SetupID, _bgcMonitor.Pollutant.PollutantID);
 
-                //commandText = string.Format("select MonitorDataSetID,MonitorDataSetName from MonitorDataSets where SetupID={0} order by MonitorDataSetName asc", CommonClass.ManageSetup.SetupID);
                 ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                 cboMonitorDataSet.DataSource = ds.Tables[0];
                 cboMonitorDataSet.DisplayMember = "MonitorDataSetName";
@@ -81,8 +79,6 @@ namespace BenMAP
                 {
                     cboMonitorDataSet.SelectedIndex = 0;
                 }
-                //cboMonitorDataSet.Enabled = false;
-                //btnMap.Enabled = false;
             }
             catch (Exception ex)
             {
@@ -113,38 +109,6 @@ namespace BenMAP
                 if (_monitorAdvance == null)
                 {
                     _monitorAdvance = new MonitorAdvance();
-                    //-------------Init All Advance PM25,PM10,Ozone
-                    //if (CommonClass.MainSetup.SetupID == 1)//只响应美国的
-                    //{
-                    //    switch (_bgcMonitor.Pollutant.PollutantName)
-                    //    {
-                    //        case "PM2.5":
-                    //            _monitorAdvance.FilterMaximumPOC = 4;
-                    //            _monitorAdvance.POCPreferenceOrder = "1,2,3,4";
-                    //            _monitorAdvance.IncludeMethods = new List<string>() { "116","117","118","119","120"};
-                    //            break;
-                    //        case "PM10":
-                    //            _monitorAdvance.FilterMaximumPOC = 4;
-                    //            _monitorAdvance.POCPreferenceOrder = "1,2,3,4";
-                    //            _monitorAdvance.IncludeMethods = new List<string>() { "062","065","076","063","071","079","064","073","081"};
-                    //            break;
-                    //        case "Ozone":
-                    //            _monitorAdvance.FilterMaximumPOC = 4;
-                    //            _monitorAdvance.POCPreferenceOrder = "1,2,3,4";
-                    //            _monitorAdvance.IncludeMethods = new List<string>() { "003","011","014","019","020","047","053","056","078","087","091","103","112"};
-                    //           break;
-                    //        case "NO2":
-                    //            _monitorAdvance.FilterMaximumPOC = 9;
-                    //            _monitorAdvance.POCPreferenceOrder = "1,2,3,4,5,6,7,8,9";
-                    //            _monitorAdvance.IncludeMethods = new List<string>() { "014", "042", "090", "022", "074", "099", "025", "075", "102", "035", "082", "111", "037", "089" };
-                    //           break;
-                    //        case "SO2":
-                    //           _monitorAdvance.FilterMaximumPOC = 9;
-                    //           _monitorAdvance.POCPreferenceOrder = "1,2,3,4,5,6,7,8,9";
-                    //           _monitorAdvance.IncludeMethods = new List<string>() { "009", "061", "020", "075", "023", "077", "039", "092", "060", "100" };
-                    //           break;
-                    //    }
-                    //}
                 }
                 switch (cboMonitorType.SelectedIndex)
                 {
@@ -160,14 +124,14 @@ namespace BenMAP
                         }
                         else
                         { msg = string.Format("Settings are not complete."); return; }
-                       _strPath = "Monitor data: library";
+                        _strPath = "Monitor data: library";
                         break;
                     case 1:
                         _mDataLine.MonitorDirectType = 1;
                         if (txtMonitorDataFile.Text != string.Empty) { _mDataLine.MonitorDataFilePath = txtMonitorDataFile.Text; }
                         else
-                          { msg = string.Format("Settings are not complete."); return; }
-                       _strPath = "Monitor data: " + txtMonitorDataFile.Text;
+                        { msg = string.Format("Settings are not complete."); return; }
+                        _strPath = "Monitor data: " + txtMonitorDataFile.Text;
                         break;
                 }
                 AdvancedOptions frm = new AdvancedOptions(method, _monitorAdvance);
@@ -175,8 +139,6 @@ namespace BenMAP
                 frm.mDataLine = _mDataLine;
                 DialogResult rtn = frm.ShowDialog();
                 if (rtn == DialogResult.OK) { _monitorAdvance = frm.MyMonitorAdvance; }
-                //else
-                //{ _monitorAdvance = null; }
             }
             catch (Exception ex)
             {
@@ -229,9 +191,6 @@ namespace BenMAP
                     }
                     _mDataLine.FixedRadius = value;
                 }
-                //string tip = "Please waiting...";
-                //WaitShow(tip);
-                //------------------------majie------------------
                 int selectedIndex = cboMonitorType.SelectedIndex;
                 switch (selectedIndex)
                 {
@@ -247,14 +206,14 @@ namespace BenMAP
                         }
                         else
                         { msg = string.Format("Settings are not completed."); return; }
-                         _strPath = "Monitor data: library";
+                        _strPath = "Monitor data: library";
                         break;
                     case 1:
                         _mDataLine.MonitorDirectType = selectedIndex;
                         if (txtMonitorDataFile.Text != string.Empty) { _mDataLine.MonitorDataFilePath = txtMonitorDataFile.Text; }
                         else
-                       { msg = string.Format("Settings are not completed."); return; }
-                         _strPath = "Monitor data: " + txtMonitorDataFile.Text;
+                        { msg = string.Format("Settings are not completed."); return; }
+                        _strPath = "Monitor data: " + txtMonitorDataFile.Text;
                         break;
                 }
                 SaveFileDialog sfd = new SaveFileDialog();
@@ -262,7 +221,6 @@ namespace BenMAP
                 sfd.FilterIndex = 2;
                 sfd.RestoreDirectory = true;
                 sfd.InitialDirectory = CommonClass.ResultFilePath + @"\Result\AQG";
-                //FeatureSet fs = new FeatureSet();
                 if (sfd.ShowDialog() != DialogResult.OK)
                 { return; }
                 saveAQGPath = sfd.FileName;
@@ -271,7 +229,6 @@ namespace BenMAP
                     _mDataLine.MonitorAdvance = _monitorAdvance;
                 }
                 ModelDataLine m = new ModelDataLine();
-                //------------updateModelValues--------异步
                 int threadId = -1;
                 AsyncDelegate asyncD = new AsyncDelegate(AsyncUpdateMonitorData);
                 IAsyncResult ar = asyncD.BeginInvoke(_bgcMonitor, m, _currentStat, out threadId, null, null);
@@ -293,9 +250,6 @@ namespace BenMAP
 
         private string _strPath;
 
-        /// <summary>
-        /// 选择的数据路径；
-        /// </summary>
         public string StrPath
         {
             get { return _strPath; }
@@ -317,7 +271,6 @@ namespace BenMAP
                     {
                         CommonClass.CurrentMainFormStat = currentStat.Substring(0, 1).ToUpper() + currentStat.Substring(1) + " is being created.";
                     }
-                    //CommonClass.CurrentMainFormStat = currentStat + " is creating now!";
                 }
                 lock (CommonClass.NodeAnscyStatus)
                 { CommonClass.NodeAnscyStatus = string.Format("{0};{1};on", bcg.Pollutant.PollutantName.ToLower(), _currentStat); }
@@ -325,7 +278,6 @@ namespace BenMAP
                 {
                     case "baseline":
                         DataSourceCommonClass.UpdateModelValuesMonitorData(_bgcMonitor.GridType, _bgcMonitor.Pollutant, ref _mDataLine);
-                        //RollBackDalgorithm.UpdateModelValuesMonitorData(_bgcMonitor.GridType, _bgcMonitor.Pollutant, ref _mDataLine);
                         lock (CommonClass.LstBaseControlGroup)
                         {
                             foreach (BaseControlGroup bc in CommonClass.LstBaseControlGroup)
@@ -338,9 +290,7 @@ namespace BenMAP
                                     string shipFile = string.Format("{0}\\Tmp\\{1}", CommonClass.DataFilePath, _mDataLine.ShapeFile);
                                     bc.Base = _mDataLine;
                                     DataSourceCommonClass.SaveBenMAPLineShapeFile(_mDataLine.GridType, _mDataLine.Pollutant, _mDataLine, shipFile);
-                                    //---------------majie save aqg file-----------------
-                                    DataSourceCommonClass.CreateAQGFromBenMAPLine(bc.Base, saveAQGPath);//DataSourceCommonClass.LoadAQGFile(txtExistingAQG.Text);
-                                    bc.Base.ShapeFile = "";
+                                    DataSourceCommonClass.CreateAQGFromBenMAPLine(bc.Base, saveAQGPath); bc.Base.ShapeFile = "";
                                 }
                             }
                         }
@@ -360,16 +310,13 @@ namespace BenMAP
                                     string shipFile = string.Format("{0}\\Tmp\\{1}", CommonClass.DataFilePath, _mDataLine.ShapeFile);
                                     bc.Control = _mDataLine;
                                     DataSourceCommonClass.SaveBenMAPLineShapeFile(_mDataLine.GridType, _mDataLine.Pollutant, _mDataLine, shipFile);
-                                    //--------------------majie save aqg file------------------
-                                    DataSourceCommonClass.CreateAQGFromBenMAPLine(bc.Control, saveAQGPath);//DataSourceCommonClass.LoadAQGFile(txtExistingAQG.Text);
-                                    bc.Control.ShapeFile = "";
+                                    DataSourceCommonClass.CreateAQGFromBenMAPLine(bc.Control, saveAQGPath); bc.Control.ShapeFile = "";
                                 }
                             }
                         }
                         _bgcMonitor.Control = _mDataLine;
                         break;
                 }
-                //---------------------清理有错的monitor----------------
                 List<ModelResultAttribute> lstRemove = new List<ModelResultAttribute>();
                 foreach (ModelResultAttribute model in _mDataLine.ModelResultAttributes)
                 {
@@ -382,7 +329,6 @@ namespace BenMAP
                 {
                     _mDataLine.ModelResultAttributes.Remove(model);
                 }
-                //---------------------------------------
                 lock (CommonClass.LstAsynchronizationStates)
                 {
                     CommonClass.LstAsynchronizationStates.Remove(str);
@@ -429,8 +375,6 @@ namespace BenMAP
                         tcMonitorData.TabPages.Add(tpText);
                         break;
                     case 2:
-                        //tabHourlyMetricGeneration.Controls.Clear();
-                        //tabHourlyMetricGeneration.TabPages.Add(tpCustom);
                         break;
                 }
             }
@@ -438,12 +382,9 @@ namespace BenMAP
             {
                 Logger.LogError(ex);
             }
-        }// method
+        }
+        TipFormGIF waitMess = new TipFormGIF(); bool sFlog = true;
 
-        TipFormGIF waitMess = new TipFormGIF();//等待窗体
-        bool sFlog = true;
-
-        //--显示等待窗体
         private void ShowWaitMess()
         {
             try
@@ -459,7 +400,6 @@ namespace BenMAP
             }
         }
 
-        //--新开辟一个线程调用
         public void WaitShow(string msg)
         {
             try
@@ -481,10 +421,8 @@ namespace BenMAP
 
         private delegate void CloseFormDelegate();
 
-        //--关闭等待窗体
         public void WaitClose()
         {
-            //同步到主线程上
             if (waitMess.InvokeRequired)
                 waitMess.Invoke(new CloseFormDelegate(DoCloseJob));
             else
@@ -545,15 +483,15 @@ namespace BenMAP
                             _mDataLine.MonitorLibraryYear = int.Parse(drv["Yyear"].ToString());
                         }
                         else
-                         { msg = string.Format("Settings are not complete."); return; }
-                       _strPath = "Monitor data: library";
+                        { msg = string.Format("Settings are not complete."); return; }
+                        _strPath = "Monitor data: library";
                         break;
                     case 1:
                         _mDataLine.MonitorDirectType = selectedIndex;
                         if (txtMonitorDataFile.Text != string.Empty) { _mDataLine.MonitorDataFilePath = txtMonitorDataFile.Text; }
                         else
-                       { msg = string.Format("Settings are not complete."); return; }
-                         _strPath = "Monitor data: " + txtMonitorDataFile.Text;
+                        { msg = string.Format("Settings are not complete."); return; }
+                        _strPath = "Monitor data: " + txtMonitorDataFile.Text;
                         break;
                 }
                 if (_monitorAdvance != null)
@@ -584,8 +522,7 @@ namespace BenMAP
             {
                 Logger.LogError(ex);
             }
-        }// 
-
+        }
         private bool DrawMointorMap()
         {
             bool ok = false;
@@ -621,15 +558,15 @@ namespace BenMAP
                             _mDataLine.MonitorLibraryYear = int.Parse(drv["Yyear"].ToString());
                         }
                         else
-                      { msg = string.Format("Settings are not complete."); return false; }
-                         _strPath = "Monitor data: library";
+                        { msg = string.Format("Settings are not complete."); return false; }
+                        _strPath = "Monitor data: library";
                         break;
                     case 1:
                         _mDataLine.MonitorDirectType = selectedIndex;
                         if (txtMonitorDataFile.Text != string.Empty) { _mDataLine.MonitorDataFilePath = txtMonitorDataFile.Text; }
                         else
-                         { msg = string.Format("Settings are not complete."); return false; }
-                       _strPath = "Monitor data: " + txtMonitorDataFile.Text;
+                        { msg = string.Format("Settings are not complete."); return false; }
+                        _strPath = "Monitor data: " + txtMonitorDataFile.Text;
                         break;
                 }
                 if (_monitorAdvance != null)
@@ -642,7 +579,6 @@ namespace BenMAP
                 {
                     case "baseline":
                         DataSourceCommonClass.UpdateModelValuesMonitorData(_bgcMonitor.GridType, _bgcMonitor.Pollutant, ref _mDataLine);
-                        //RollBackDalgorithm.UpdateModelValuesMonitorData(_bgcMonitor.GridType, _bgcMonitor.Pollutant, ref _mDataLine);
                         lock (CommonClass.LstBaseControlGroup)
                         {
                             foreach (BaseControlGroup bc in CommonClass.LstBaseControlGroup)
@@ -655,8 +591,6 @@ namespace BenMAP
                                     string shipFile = string.Format("{0}\\Tmp\\{1}", CommonClass.DataFilePath, _mDataLine.ShapeFile);
                                     bc.Base = _mDataLine;
                                     DataSourceCommonClass.SaveBenMAPLineShapeFile(_mDataLine.GridType, _mDataLine.Pollutant, _mDataLine, shipFile);
-                                    //---------------majie save aqg file-----------------
-                                    //DataSourceCommonClass.CreateAQGFromBenMAPLine(bc.Base, saveAQGPath);//DataSourceCommonClass.LoadAQGFile(txtExistingAQG.Text);
                                     bc.Base.ShapeFile = "";
                                 }
                             }
@@ -677,8 +611,6 @@ namespace BenMAP
                                     string shipFile = string.Format("{0}\\Tmp\\{1}", CommonClass.DataFilePath, _mDataLine.ShapeFile);
                                     bc.Control = _mDataLine;
                                     DataSourceCommonClass.SaveBenMAPLineShapeFile(_mDataLine.GridType, _mDataLine.Pollutant, _mDataLine, shipFile);
-                                    //--------------------majie save aqg file------------------
-                                    //DataSourceCommonClass.CreateAQGFromBenMAPLine(bc.Control, saveAQGPath);//DataSourceCommonClass.LoadAQGFile(txtExistingAQG.Text);
                                     bc.Control.ShapeFile = "";
                                 }
                             }

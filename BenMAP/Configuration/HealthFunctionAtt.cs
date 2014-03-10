@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,10 +8,7 @@ namespace BenMAP
     public class HealthFunctionAtt
     {
 
-        private string  _endpointGroup;
-        /// <summary>
-        /// 
-        /// </summary>
+        private string _endpointGroup;
         public string EndpointGroup
         {
             get { return _endpointGroup; }
@@ -19,10 +16,7 @@ namespace BenMAP
         }
 
 
-        private string  _endpoint;
-        /// <summary>
-        /// 
-        /// </summary>
+        private string _endpoint;
         public string Endpoint
         {
             get { return _endpoint; }
@@ -31,10 +25,7 @@ namespace BenMAP
 
 
 
-        private string  _pollutant;
-        /// <summary>
-        /// 
-        /// </summary>
+        private string _pollutant;
         public string Pollutant
         {
             get { return _pollutant; }
@@ -42,10 +33,7 @@ namespace BenMAP
         }
 
 
-        private string  _metric;
-        /// <summary>
-        /// 
-        /// </summary>
+        private string _metric;
         public string Metric
         {
             get { return _metric; }
@@ -53,10 +41,7 @@ namespace BenMAP
         }
 
 
-        private string  _seasonalMetric;
-        /// <summary>
-        /// 
-        /// </summary>
+        private string _seasonalMetric;
         public string SeasonalMetric
         {
             get { return _seasonalMetric; }
@@ -64,10 +49,7 @@ namespace BenMAP
         }
 
 
-        private string  _statistic;
-        /// <summary>
-        /// 
-        /// </summary>
+        private string _statistic;
         public string Statistic
         {
             get { return _statistic; }
@@ -75,10 +57,7 @@ namespace BenMAP
         }
 
 
-        private string  _studyAuthor;
-        /// <summary>
-        /// 
-        /// </summary>
+        private string _studyAuthor;
         public string StudyAuthor
         {
             get { return _studyAuthor; }
@@ -86,10 +65,7 @@ namespace BenMAP
         }
 
 
-        private string  _studyYear;
-        /// <summary>
-        /// 
-        /// </summary>
+        private string _studyYear;
         public string StudyYear
         {
             get { return _studyYear; }
@@ -97,10 +73,7 @@ namespace BenMAP
         }
 
 
-        private string  _studyLocation;
-        /// <summary>
-        /// 
-        /// </summary>
+        private string _studyLocation;
         public string StudyLocation
         {
             get { return _studyLocation; }
@@ -108,10 +81,7 @@ namespace BenMAP
         }
 
 
-        private string  _otherPollutants;
-        /// <summary>
-        /// 
-        /// </summary>
+        private string _otherPollutants;
         public string OtherPollutants
         {
             get { return _otherPollutants; }
@@ -119,10 +89,7 @@ namespace BenMAP
         }
 
 
-        private string  _qualifier;
-        /// <summary>
-        /// 
-        /// </summary>
+        private string _qualifier;
         public string Qualifier
         {
             get { return _qualifier; }
@@ -130,10 +97,7 @@ namespace BenMAP
         }
 
 
-        private string  _reference;
-        /// <summary>
-        /// 
-        /// </summary>
+        private string _reference;
         public string Reference
         {
             get { return _reference; }
@@ -141,10 +105,7 @@ namespace BenMAP
         }
 
 
-        private string  _race;
-        /// <summary>
-        /// 
-        /// </summary>
+        private string _race;
         public string Race
         {
             get { return _race; }
@@ -152,10 +113,7 @@ namespace BenMAP
         }
 
 
-        private string  _ethnicity;
-        /// <summary>
-        /// 
-        /// </summary>
+        private string _ethnicity;
         public string Ethnicity
         {
             get { return _ethnicity; }
@@ -163,10 +121,7 @@ namespace BenMAP
         }
 
 
-        private string  _gender;
-        /// <summary>
-        /// 
-        /// </summary>
+        private string _gender;
         public string Gender
         {
             get { return _gender; }
@@ -174,10 +129,7 @@ namespace BenMAP
         }
 
 
-        private string  _startAge;
-        /// <summary>
-        /// 
-        /// </summary>
+        private string _startAge;
         public string StartAge
         {
             get { return _startAge; }
@@ -185,10 +137,7 @@ namespace BenMAP
         }
 
 
-        private string  _endAge;
-        /// <summary>
-        /// 
-        /// </summary>
+        private string _endAge;
         public string EndAge
         {
             get { return _endAge; }
@@ -196,10 +145,7 @@ namespace BenMAP
         }
 
 
-        private string  _beta;
-        /// <summary>
-        /// 
-        /// </summary>
+        private string _beta;
         public string Beta
         {
             get { return _beta; }
@@ -207,10 +153,7 @@ namespace BenMAP
         }
 
 
-        private string  _distributionBeta;
-        /// <summary>
-        /// 
-        /// </summary>
+        private string _distributionBeta;
         public string DistributionBeta
         {
             get { return _distributionBeta; }
@@ -218,10 +161,7 @@ namespace BenMAP
         }
 
 
-        private string  _parameter1Beta;
-        /// <summary>
-        /// 
-        /// </summary>
+        private string _parameter1Beta;
         public string Parameter1Beta
         {
             get { return _parameter1Beta; }
@@ -229,10 +169,7 @@ namespace BenMAP
         }
 
 
-        private string  _parameter2Beta;
-        /// <summary>
-        /// 
-        /// </summary>
+        private string _parameter2Beta;
         public string Parameter2Beta
         {
             get { return _parameter2Beta; }
@@ -240,10 +177,7 @@ namespace BenMAP
         }
 
 
-        private string  _nameA;
-        /// <summary>
-        /// 
-        /// </summary>
+        private string _nameA;
         public string NameA
         {
             get { return _nameA; }
@@ -251,10 +185,7 @@ namespace BenMAP
         }
 
 
-        private string  _a;
-        /// <summary>
-        /// 
-        /// </summary>
+        private string _a;
         public string A
         {
             get { return _a; }
@@ -262,10 +193,7 @@ namespace BenMAP
         }
 
 
-        private string  _nameB;
-        /// <summary>
-        /// 
-        /// </summary>
+        private string _nameB;
         public string NameB
         {
             get { return _nameB; }
@@ -273,10 +201,7 @@ namespace BenMAP
         }
 
 
-        private string  _b;
-        /// <summary>
-        /// 
-        /// </summary>
+        private string _b;
         public string B
         {
             get { return _b; }
@@ -284,10 +209,7 @@ namespace BenMAP
         }
 
 
-        private string  _nameC;
-        /// <summary>
-        /// 
-        /// </summary>
+        private string _nameC;
         public string NameC
         {
             get { return _nameC; }
@@ -295,10 +217,7 @@ namespace BenMAP
         }
 
 
-        private string  _c;
-        /// <summary>
-        /// 
-        /// </summary>
+        private string _c;
         public string C
         {
             get { return _c; }
@@ -306,10 +225,7 @@ namespace BenMAP
         }
 
 
-        private string  _incidenceDataSet;
-        /// <summary>
-        /// 
-        /// </summary>
+        private string _incidenceDataSet;
         public string IncidenceDataSet
         {
             get { return _incidenceDataSet; }
@@ -318,10 +234,7 @@ namespace BenMAP
 
 
 
-        private string _baselineFunction; 
-        /// <summary>
-        /// 
-        /// </summary>
+        private string _baselineFunction;
         public string BaselineFunction
         {
             get { return _baselineFunction; }
@@ -329,10 +242,7 @@ namespace BenMAP
         }
 
 
-        private string  _function;
-        /// <summary>
-        /// 
-        /// </summary>
+        private string _function;
         public string Function
         {
             get { return _function; }

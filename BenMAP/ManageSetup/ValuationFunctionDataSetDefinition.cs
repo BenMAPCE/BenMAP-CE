@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -34,8 +34,6 @@ namespace BenMAP
         DataTable _dt = new DataTable();
         List<double> listCustomValue = new List<double>();
         Dictionary<int, List<double>> dicCustomValue = new Dictionary<int, List<double>>();
-        // DataTable _dtEdit = new DataTable();
-        //DataTable _dtAdd=new DataTable ();
         int AddCount = 0;
         private void btnAdd_Click(object sender, EventArgs e)
         {
@@ -85,7 +83,6 @@ namespace BenMAP
             try
             {
 
-                //DataWorker.DataParser dp = new DataWorker.DataParser();
                 OpenFileDialog openFileDialog = new OpenFileDialog();
                 openFileDialog.InitialDirectory = Application.StartupPath + @"E:\";
                 openFileDialog.Filter = "All Files|*.*|CSV files|*.csv|XLS files|*.xls|XLSX files|*.xlsx";
@@ -94,47 +91,10 @@ namespace BenMAP
                 if (openFileDialog.ShowDialog() != DialogResult.OK) { return; }
                 _filePath = openFileDialog.FileName;
                 string strfilepath = System.IO.Path.GetExtension(_filePath);
-                //switch (strfilepath.ToLower())
-                //{
-                //    case ".xls":
-                //        ds = dp.ReadExcel2DataSet(_filePath);
-                //        break;
-                //    case ".xlsx":
-                //        ds = dp.ReadExcel2DataSet(_filePath);
-                //        break;
-                //    case ".csv":
-                //        ds = dp.ReadCSV2DataSet(_filePath, "table");
-                //        break;
-                //    default: break;
-                //}
-                //int sheetIndex = 1;
-                //if (_filePath.Substring(_filePath.Length - 3, 3).ToLower() != "csv")
-                //{
-                //    //判断有没有安装Excel
-                //    if (Type.GetTypeFromProgID("Excel.Application") == null)
-                //    {
-                //        MessageBox.Show("Please install Excel.", "Warning", MessageBoxButtons.OK);
-                //        return;
-                //    }
-                //    sheetIndex = CommonClass.SelectedSheetIndex(_filePath);
-                //}
                 dt = CommonClass.ExcelToDataTable(_filePath);
                 if (dt == null) { return; }
                 int rowCount = dt.Rows.Count;
                 int colCount = dt.Columns.Count;
-                // dr = _dt.NewRow();
-                //for (int i = 0; i < rowCount; i++)
-                //{
-                //    DataRow dr = _dt.NewRow();
-                //    for (int j = 0; j < colCount; j++)
-                //    {
-                //        dr[j] = ds.Tables[0].Rows[i][j];
-                //    }
-                //    dr[18] = --AddCount;
-                //    List<double> listLoadValue = new List<double>();
-                //    dicCustomValue.Add(Convert.ToInt32(dr[18]), listLoadValue);
-                //    _dt.Rows.Add(dr);
-                //}
                 int iEndpointGroup = -1;
                 int iEndpoint = -1;
                 int iQualifier = -1;
@@ -202,11 +162,6 @@ namespace BenMAP
                     }
                 }
 
-                //if (iEndpointGroup < 0 || iEndpoint < 0 || iQualifier < 0 || iReference < 0 || iStartAge < 0 || iEndAge < 0 || iFunction < 0 || iA < 0 || iNameA < 0 || iDistrubutionA < 0 || iP1A < 0 || iP2A < 0 || iB < 0 || iNameB < 0 || iC < 0 || iNameC < 0 || iD < 0 || iNameD < 0)
-                //{
-                //    MessageBox.Show("Please check the format.", "Tip", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                //    return;
-                //}
                 string warningtip = "";
                 if (iEndpointGroup < 0) warningtip = "'Endpoint Group', ";
                 if (iEndpoint < 0) warningtip += "'Endpoint', ";
@@ -257,34 +212,10 @@ namespace BenMAP
                     dr[17] = dt.Rows[i][iNameD];
                     dr[18] = --AddCount;
 
-                    //for (int j = 0; j < colCount; j++)
-                    //{
-                    //    dr[j] = ds.Tables[0].Rows[i][j];
-                    //    //dr[j + 1] = AddCount--;
-                    //}
-                    //dr[33] = --AddCount;
-                    //List<double> listLoadValue = new List<double>();
-                    //dicCustomValue.Add(Convert.ToInt32(dr[18]), listLoadValue);
                     _dt.Rows.Add(dr);
 
                 }
 
-                //int dtRow = _dt.Rows.Count;
-                //string strTableName = string.Empty;
-                //string strEndpointName = string.Empty;
-                //if (!cboEndpointGroup.Items.Contains(""))
-                //{ cboEndpointGroup.Items.Add(""); }
-                //if (!cboEndpoint.Items.Contains(""))
-                //{ cboEndpoint.Items.Add(""); }
-                //for (int i = 0; i < dtRow; i++)
-                //{
-                //    strTableName = _dt.Rows[i][0].ToString();
-                //    if (!cboEndpointGroup.Items.Contains(strTableName))
-                //        cboEndpointGroup.Items.Add(strTableName);
-                //    strEndpointName = _dt.Rows[i][1].ToString();
-                //    if (!cboEndpoint.Items.Contains(strEndpointName))
-                //        cboEndpoint.Items.Add(strEndpointName);
-                //}
                 olvData.DataSource = _dt;
                 LoadEndPointGroupEndPointName();
             }
@@ -309,7 +240,7 @@ namespace BenMAP
                         {
                             if (olvColumn19.GetValue(olv).ToString() == _dt.Rows[i][18].ToString())
                             {
-                                if(dicCustomValue.ContainsKey(Convert.ToInt16(olvColumn19.GetValue(olv).ToString())))
+                                if (dicCustomValue.ContainsKey(Convert.ToInt16(olvColumn19.GetValue(olv).ToString())))
                                     dicCustomValue.Remove(Convert.ToInt16(olvColumn19.GetValue(olv).ToString()));
                                 lstdeleteValuationid.Add(Convert.ToInt16(olvColumn19.GetValue(olv).ToString()));
                                 _dt.Rows.Remove(_dt.Rows[i]);
@@ -381,15 +312,12 @@ namespace BenMAP
                     for (int row = 0; row < dgvRowCount; row++)
                     {
                         CommonClass.Connection.Close();
-                        //得到valuationFunctionID的值
                         commandText = string.Format("select max(VALUATIONFUNCTIONID) from ValuationFunctions");
                         obj = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText)) + 1;
                         int valuationFunctionID = int.Parse(obj.ToString());
-                        //得到VValuationFunctionDataSetID的值
                         commandText = string.Format("select ValuationFunctionDataSetID from ValuationFunctionDataSets where ValuationFunctionDataSetName='{0}' and SetupID={1}", txtValuationFunctionDataSetName.Text, CommonClass.ManageSetup.SetupID);
                         obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
                         int VValuationFunctionDataSetID = int.Parse(obj.ToString());
-                        //得到EndpointGroupID的值
                         int EndpointGroupID = 0;
                         if (dicEndpointGroup.ContainsKey(_dt.Rows[row][0].ToString().ToLower()))
                         {
@@ -404,10 +332,6 @@ namespace BenMAP
                             fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                             dicEndpointGroup.Add(_dt.Rows[row][0].ToString().ToLower(), EndpointGroupID);
                         }
-                        //commandText = string.Format("select EndpointGroupID from EndpointGroups where LOWER(EndpointGroupName)='" + _dt.Rows[row][0].ToString().ToLower() + "' ");
-                        //obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
-                        //EndpointGroupID = int.Parse(obj.ToString());
-                        //得到EndpointID的值
                         int EndpointID = 0;
                         commandText = string.Format("select EndpointID from Endpoints where EndpointGroupID={0} and LOWER(EndpointName)='" + _dt.Rows[row][1].ToString().ToLower() + "' ", EndpointGroupID);
                         obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
@@ -423,7 +347,6 @@ namespace BenMAP
                         {
                             EndpointID = int.Parse(obj.ToString());
                         }
-                        //得到FunctionalFormID的值
                         int FunctionalFormID = 0;
                         if (dicValuationFunction.ContainsKey(_dt.Rows[row][6].ToString()))
                         {
@@ -438,10 +361,8 @@ namespace BenMAP
                             rth = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                             dicValuationFunction.Add(_dt.Rows[row][6].ToString(), FunctionalFormID);
                         }
-                        //将datagridview的数据导入到数据库
                         commandText = string.Format("insert into ValuationFunctions values({0},{1},{2},{3},'{4}','{5}',{6},{7},{8},{9},'{10}','{11}',{12},{13},{14},'{15}',{16},'{17}',{18},'{19}')", valuationFunctionID, VValuationFunctionDataSetID, EndpointGroupID, EndpointID, _dt.Rows[row][2].ToString().Replace("'", "''"), _dt.Rows[row][3].ToString().Replace("'", "''"), _dt.Rows[row][4], _dt.Rows[row][5], FunctionalFormID, _dt.Rows[row][7], _dt.Rows[row][8].ToString().Replace("'", "''"), _dt.Rows[row][9].ToString().Replace("'", "''"), _dt.Rows[row][10], _dt.Rows[row][11], _dt.Rows[row][12], _dt.Rows[row][13].ToString().Replace("'", "''"), _dt.Rows[row][14], _dt.Rows[row][15].ToString().Replace("'", "''"), _dt.Rows[row][16], _dt.Rows[row][17].ToString().Replace("'", "''"));
                         rth = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
-                        //当Distribution为Custom时，向数据库导入数据
                         if (_dt.Rows[row][9].ToString() == "Custom" && dicCustomValue.ContainsKey(Convert.ToInt32(_dt.Rows[row][18])) && dicCustomValue[Convert.ToInt32(_dt.Rows[row][18])].Count > 0)
                         {
                             FirebirdSql.Data.FirebirdClient.FbCommand fbCommand = new FirebirdSql.Data.FirebirdClient.FbCommand();
@@ -496,35 +417,27 @@ namespace BenMAP
                         fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                     }
 
-                    //commandText = string.Format("delete from ValuationFunctions where ValuationFunctionDataSetID={0}", currentValuationFunctionDataSetID);
-                    //int j = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                     for (int row = 0; row < _dt.Rows.Count; row++)
                     {
                         commandText = string.Format("select max(VALUATIONFUNCTIONID) from ValuationFunctions");
                         obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
                         int valuationFunctionID = int.Parse(obj.ToString()) + 1;
-                        //得到VValuationFunctionDataSetID的值
                         commandText = string.Format("select ValuationFunctionDataSetID from ValuationFunctionDataSets where ValuationFunctionDataSetName='{0}'", txtValuationFunctionDataSetName.Text);
                         obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
                         int VValuationFunctionDataSetID = int.Parse(obj.ToString());
-                        //得到EndpointGroupID的值
                         commandText = string.Format("select EndpointGroupID from EndpointGroups where EndpointGroupName='{0}'", _dt.Rows[row][0].ToString());
                         obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
                         int EndpointGroupID = int.Parse(obj.ToString());
-                        //得到EndpointID的值
                         commandText = string.Format("select EndpointID from Endpoints where EndpointGroupID={0} and EndpointName='{1}'", EndpointGroupID, _dt.Rows[row][1].ToString());
                         obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
                         int EndpointID = int.Parse(obj.ToString());
-                        //得到FunctionalFormID的值
                         commandText = string.Format("select FunctionalFormID from ValuationFunctionalForms where FunctionalFormText='{0}'", _dt.Rows[row][6].ToString());
                         obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
                         int FunctionalFormID = int.Parse(obj.ToString());
-                        //将datagridview的数据导入到数据库
                         if (Convert.ToInt16(_dt.Rows[row][18].ToString()) > 0)
                         {
                             commandText = string.Format("update ValuationFunctions set VALUATIONFUNCTIONDATASETID={0},ENDPOINTGROUPID={1},ENDPOINTID={2},QUALIFIER='{3}',REFERENCE='{4}',STARTAGE={5},ENDAGE={6},FUNCTIONALFORMID={7},A={8},NAMEA='{9}',DISTA='{10}',P1A={11},P2A={12},B={13},NAMEB='{14}',C={15},NAMEC='{16}',D={17},NAMED='{18}' where valuationfunctionid={19}", VValuationFunctionDataSetID, EndpointGroupID, EndpointID, _dt.Rows[row][2].ToString().Replace("'", "''"), _dt.Rows[row][3].ToString().Replace("'", "''"), _dt.Rows[row][4], _dt.Rows[row][5], FunctionalFormID, _dt.Rows[row][7], _dt.Rows[row][8].ToString().Replace("'", "''"), _dt.Rows[row][9].ToString().Replace("'", "''"), _dt.Rows[row][10], _dt.Rows[row][11], _dt.Rows[row][12], _dt.Rows[row][13].ToString().Replace("'", "''"), _dt.Rows[row][14], _dt.Rows[row][15].ToString().Replace("'", "''"), _dt.Rows[row][16], _dt.Rows[row][17].ToString().Replace("'", "''"), Convert.ToInt16(_dt.Rows[row][18].ToString()));
                             fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
-                            //当Distribution为Custom时，向数据库导入数据
                             if (_dt.Rows[row][9].ToString() == "Custom" && dicCustomValue.ContainsKey(Convert.ToInt32(_dt.Rows[row][18])) && dicCustomValue[Convert.ToInt32(_dt.Rows[row][18])].Count > 0)
                             {
                                 FirebirdSql.Data.FirebirdClient.FbCommand fbCommand = new FirebirdSql.Data.FirebirdClient.FbCommand();
@@ -566,7 +479,6 @@ namespace BenMAP
                         {
                             commandText = string.Format("insert into ValuationFunctions values({0},{1},{2},{3},'{4}','{5}',{6},{7},{8},{9},'{10}','{11}',{12},{13},{14},'{15}',{16},'{17}',{18},'{19}')", valuationFunctionID, VValuationFunctionDataSetID, EndpointGroupID, EndpointID, _dt.Rows[row][2].ToString().Replace("'", "''"), _dt.Rows[row][3].ToString().Replace("'", "''"), _dt.Rows[row][4], _dt.Rows[row][5], FunctionalFormID, _dt.Rows[row][7], _dt.Rows[row][8].ToString().Replace("'", "''"), _dt.Rows[row][9].ToString().Replace("'", "''"), _dt.Rows[row][10], _dt.Rows[row][11], _dt.Rows[row][12], _dt.Rows[row][13].ToString().Replace("'", "''"), _dt.Rows[row][14], _dt.Rows[row][15].ToString().Replace("'", "''"), _dt.Rows[row][16], _dt.Rows[row][17].ToString().Replace("'", "''"));
                             int rth = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
-                            //当Distribution为Custom时，向数据库导入数据
                             if (_dt.Rows[row][9].ToString() == "Custom" && dicCustomValue.ContainsKey(Convert.ToInt32(_dt.Rows[row][18])) && dicCustomValue[Convert.ToInt32(_dt.Rows[row][18])].Count > 0)
                             {
                                 FirebirdSql.Data.FirebirdClient.FbCommand fbCommand = new FirebirdSql.Data.FirebirdClient.FbCommand();
@@ -615,14 +527,12 @@ namespace BenMAP
         private string _dataName = string.Empty;
         private void ValuationFunctionDataSetDefinition_Load(object sender, EventArgs e)
         {
-            //dgvValuationFunctionDataSet.RowHeadersVisible = false;
             ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
             string commandText = string.Empty;
-            //DataSet ds = new DataSet();
             try
             {
                 if (_dataName != string.Empty)
-                {//编辑
+                {
                     txtValuationFunctionDataSetName.Text = _dataName;
                     commandText = string.Format("select ValuationFunctionDataSetID from ValuationFunctionDataSets where ValuationFunctionDataSetName='{0}'", _dataName.Replace("'", "''"));
                     object obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
@@ -634,8 +544,7 @@ namespace BenMAP
                     cboEndpoint.Items.Add("");
                 }
                 else
-                {                   
-                    //automatically generated name-increase the number at the end of the name
+                {
                     int number = 0;
                     int ValuationFunctionatasetID = 0;
                     do
@@ -651,18 +560,6 @@ namespace BenMAP
                     olvData.DataSource = dt;
                     _dt = dt;
                 }
-                //int dtRow = _dt.Rows.Count;
-                //string strTableName = string.Empty;
-                //string strEndpointName = string.Empty;
-                //for (int i = 0; i < dtRow; i++)
-                //{
-                //    strTableName = _dt.Rows[i][0].ToString();
-                //    if (!cboEndpointGroup.Items.Contains(strTableName))
-                //    { cboEndpointGroup.Items.Add(strTableName); }
-                //    strEndpointName = _dt.Rows[i][1].ToString();
-                //    if (!cboEndpoint.Items.Contains(strEndpointName))
-                //    { cboEndpoint.Items.Add(strEndpointName); }
-                //}
                 LoadEndPointGroupEndPointName();
             }
             catch (Exception ex)
@@ -754,29 +651,8 @@ namespace BenMAP
                         }
                     }
                 }
-                //DataRow dr = _dt.NewRow();
-                //dr[0] = frm.EndpointGroup;
-                //dr[1] = frm.Endpoint;
-                //dr[2] = frm.Qualifier;
-                //dr[3] = frm.Reference;
-                //dr[4] = frm.StartAge;
-                //dr[5] = frm.EndAge;
-                //dr[6] = frm.Function;
-                //dr[7] = frm.A;
-                //dr[8] = frm.ADescription;
-                //dr[9] = frm.ADistribution;
-                //dr[10] = frm.AParameter1;
-                //dr[11] = frm.AParameter2;
-                //dr[12] = frm.B;
-                //dr[13] = frm.BName;
-                //dr[14] = frm.C;
-                //dr[15] = frm.CName;
-                //dr[16] = frm.D;
-                //dr[17] = frm.DName;
-                //dr[18] = Convert.ToInt32(olvColumn19.GetValue(olvData.SelectedObject).ToString());
                 LoadEndPointGroupEndPointName();
                 olvData.DataSource = _dt;
-                //olvData.SelectedItem.ForeColor = Color.Red;
             }
             catch (Exception ex)
             {
@@ -790,38 +666,7 @@ namespace BenMAP
         {
             try
             {
-                //ObjectListView olv = olvData;
-                //if (olv == null || olv.IsDisposed)
-                //    return;
-                //OLVColumn column = olv.GetColumn("olvcEndpointGroup");
 
-                // Collect all the checked values
-                //ArrayList chosenValues = new ArrayList();
-                //string selectEndpointGroup = cboEndpointGroup.GetItemText(cboEndpointGroup.SelectedItem);
-                //if (selectEndpointGroup=="")
-                //{
-                //    olvcEndpointGroup.ValuesChosenForFiltering.Clear();
-                //    olv.UpdateColumnFiltering();                    
-                //}
-                //else
-                //{
-                //    chosenValues.Add(selectEndpointGroup);
-                //    olvcEndpointGroup.ValuesChosenForFiltering = chosenValues;
-                //    olv.UpdateColumnFiltering();
-                //}
-                //_dtEndpointGroup = _dt.Clone();
-                //foreach (DataRow dr in _dt.Rows)
-                //{
-                //    if (cboEndpointGroup.SelectedItem == "All")
-                //    {
-                //        _dtEndpointGroup.ImportRow(dr);
-                //    }
-                //    if (cboEndpointGroup.SelectedItem.ToString() == dr[0].ToString())
-                //    {
-                //        _dtEndpointGroup.ImportRow(dr);
-                //    }
-                //}
-                //olvData.DataSource = _dtEndpointGroup;
                 int maxEndpointWidth = 223;
                 int EndpointWidth = 223;
                 if (cboEndpointGroup.SelectedIndex == 0)
@@ -902,38 +747,7 @@ namespace BenMAP
                     DataRow[] drnewfilter = _dt.Select("ENDPOINTGROUPNAME='" + cboEndpointGroup.Text + "' and " + "ENDPOINTNAME='" + cboEndpoint.Text + "'");
                     olvData.DataSource = drnewfilter;
                 }
-                //ObjectListView olv = olvData;
-                //if (olv == null || olv.IsDisposed)
-                //    return;
-                //OLVColumn column = olv.GetColumn("olvcEndpoint");
 
-                //// Collect all the checked values
-                //ArrayList chosenValues = new ArrayList();
-                //string selectEndpoint = cboEndpoint.GetItemText(cboEndpoint.SelectedItem);
-                //if (selectEndpoint=="")
-                //{
-                //    olvcEndpoint.ValuesChosenForFiltering.Clear();
-                //    olv.UpdateColumnFiltering();
-                //}
-                //else
-                //{
-                //    chosenValues.Add(selectEndpoint);
-                //    olvcEndpoint.ValuesChosenForFiltering = chosenValues;
-                //    olv.UpdateColumnFiltering();
-                //}
-                //_dtEndpoint = _dt.Clone();
-                //foreach (DataRow dr in _dt.Rows)
-                //{
-                //    if (cboEndpoint.SelectedItem == "All")
-                //    {
-                //        _dtEndpoint.ImportRow(dr);
-                //    }
-                //    if (cboEndpoint.SelectedItem.ToString() == dr[1].ToString())
-                //    {
-                //        _dtEndpoint.ImportRow(dr);
-                //    }
-                //}
-                //olvData.DataSource = _dtEndpoint;
             }
             catch (Exception ex)
             {
@@ -964,14 +778,12 @@ namespace BenMAP
                         break;
                 }
             }
-            // Setup a default renderer to draw the filter matches
             if (filter == null)
                 olv.DefaultRenderer = null;
             else
             {
                 olv.DefaultRenderer = new HighlightTextRenderer(filter);
 
-                // Uncomment this line to see how the GDI+ rendering looks
                 olv.DefaultRenderer = new HighlightTextRenderer { Filter = filter, UseGdiTextRendering = true };
             }
 

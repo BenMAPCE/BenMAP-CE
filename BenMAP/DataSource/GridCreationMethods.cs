@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Windows.Forms;
 using DotSpatial.Data;
@@ -46,7 +46,6 @@ namespace BenMAP
                         this.btnSaveNewFormat.Enabled = true;
                     }
                     break;
-                //changeNodeImage(currentNode);
                 case "control":
                     if (bgc.Control != null && bgc.Control.ModelResultAttributes != null && bgc.Control.ModelResultAttributes.Count > 0)
                     {
@@ -59,9 +58,6 @@ namespace BenMAP
 
         private string _pageStat = "model";
 
-        /// <summary>
-        /// 界面选择的状态 ：Model Data;Monitor Data；Monitor RollBack Data
-        /// </summary>
         public string PageStat
         {
             get { return _pageStat; }
@@ -70,9 +66,6 @@ namespace BenMAP
 
         private string _strPath;
 
-        /// <summary>
-        /// 选择的数据路径；
-        /// </summary>
         public string StrPath
         {
             get { return _strPath; }
@@ -86,7 +79,6 @@ namespace BenMAP
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESILFireBirdHelper();
                 string commandText = string.Format("select * from GridDefinitions where setupid={0} order by GridDefinitionName asc", CommonClass.MainSetup.SetupID);
                 System.Data.DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
-                // 必须这样写，否则会出错
                 DataTable dtGrid = ds.Tables[0].Clone();
                 dtGrid = ds.Tables[0].Copy();
                 cboGrid.DataSource = dtGrid;
@@ -106,11 +98,10 @@ namespace BenMAP
                     }
 
                 }
-                //---------------------判断是否在异步，在异步不能修改GridType-------------------
                 if (CommonClass.LstAsynchronizationStates != null && CommonClass.LstAsynchronizationStates.Count > 0)
                 {
                     cboGrid.Enabled = false;
- 
+
                 }
             }
             catch (Exception ex)
@@ -121,7 +112,6 @@ namespace BenMAP
         {
             try
             {
-                //-----------------set Grid--------------
                 DataRowView drv = cboGrid.SelectedItem as DataRowView;
                 BenMAPGrid benMAPGrid = Grid.GridCommon.getBenMAPGridFromID(Convert.ToInt32(drv["GridDefinitionID"]));
 
@@ -150,8 +140,6 @@ namespace BenMAP
                     _strPath = frm.StrPath;
                     this.DialogResult = rtn;
 
-                    //_bgc = frm.BGCMonitor;
-                    //if (rtn != DialogResult.OK) { return; }
                 }
                 else if (rbtnMonitorRollback.Checked)
                 {
@@ -161,7 +149,6 @@ namespace BenMAP
                     _mDataLine = frm._monitorRollbackLine;
                     _strPath = frm.StrPath;
                     this.DialogResult = rtn;
-                    //if (rtn != DialogResult.OK) { return; }
                 }
                 else if (this.rbtnOpenFile.Checked)
                 {
@@ -169,10 +156,8 @@ namespace BenMAP
                     {
                         ParaserAQG(txtExistingAQG.Text);
 
-                    }// if
-                    //this.DialogResult = DialogResult.OK;
-                    return;
-                }// this.rbtnOpenFile.Checked
+                    } return;
+                }
             }
             catch (Exception ex)
             {
@@ -186,15 +171,12 @@ namespace BenMAP
             {
                 string tip = "Reading and checking the data file.";
                 _strPath = strPath;
-                //progressBar1.PerformStep();
-                //CommonClass.be
                 WaitShow(tip);
                 string err = "";
-                BenMAPLine benMapLine = DataSourceCommonClass.LoadAQGFile(txtExistingAQG.Text,ref err);
+                BenMAPLine benMapLine = DataSourceCommonClass.LoadAQGFile(txtExistingAQG.Text, ref err);
                 System.Threading.Thread.Sleep(100);
                 if (benMapLine == null)
                 {
-                    //--------------丁点加提示
                     WaitClose();
                     MessageBox.Show(err);
                     return;
@@ -215,32 +197,21 @@ namespace BenMAP
                     string AppPath = Application.StartupPath;
                     string _filePath = txtExistingAQG.Text.Substring(0, txtExistingAQG.Text.LastIndexOf(@"\") + 1);
                     string strShapePath = string.Format("{0}\\Result\\Tmp\\{1}", CommonClass.DataFilePath, benMapLine.ShapeFile);
-                    //if (File.Exists(_filePath + benMapLine.ShapeFile))
-                    //{
-                    // File.Copy(_filePath + @"\" + benMapLine.ShapeFile, strShapePath);
                     benMapLine.ShapeFile = _filePath + benMapLine.ShapeFile;
-                    //}
-                    //else
-                    //{
-                    //---------------------
                     DataSourceCommonClass.SaveBenMAPLineShapeFile(_bgc.GridType, _bgc.Pollutant, benMapLine, strShapePath);
-                    //}
                 }
-                else if(benMapLine.ShapeFile != null)
+                else if (benMapLine.ShapeFile != null)
                 {
                     DataSourceCommonClass.SaveBenMAPLineShapeFile(_bgc.GridType, _bgc.Pollutant, benMapLine, benMapLine.ShapeFile);
                 }
                 switch (_currentStat)
                 {
                     case "baseline":
-                        _bgc.Base = benMapLine;//DataSourceCommonClass.LoadAQGFile(txtExistingAQG.Text);
-
+                        _bgc.Base = benMapLine;
                         break;
                     case "control":
-                        _bgc.Control = benMapLine;// DataSourceCommonClass.LoadAQGFile(txtExistingAQG.Text);
-                        break;
-                }//swith
-                this.DialogResult = System.Windows.Forms.DialogResult.OK;
+                        _bgc.Control = benMapLine; break;
+                } this.DialogResult = System.Windows.Forms.DialogResult.OK;
             }
             catch (Exception ex)
             {
@@ -273,7 +244,6 @@ namespace BenMAP
             {
                 OpenFileDialog openFileDialog = new OpenFileDialog();
                 openFileDialog.InitialDirectory = CommonClass.ResultFilePath + @"\Result\AQG";
-                //openFileDialog.InitialDirectory = System.Windows.Forms.Application.StartupPath + @"\Data\";
                 openFileDialog.Filter = "Air Quality Surface(*.aqgx)|*.aqgx";
                 openFileDialog.FilterIndex = 3;
                 openFileDialog.RestoreDirectory = true;
@@ -298,10 +268,8 @@ namespace BenMAP
             }
         }
 
-        TipFormGIF waitMess = new TipFormGIF();//等待窗体
-        bool sFlog = true;
+        TipFormGIF waitMess = new TipFormGIF(); bool sFlog = true;
 
-        //--显示等待窗体
         private void ShowWaitMess()
         {
             try
@@ -317,7 +285,6 @@ namespace BenMAP
             }
         }
 
-        //--新开辟一个线程调用
         public void WaitShow(string msg)
         {
             try
@@ -339,10 +306,8 @@ namespace BenMAP
 
         private delegate void CloseFormDelegate();
 
-        //--关闭等待窗体
         public void WaitClose()
         {
-            //同步到主线程上
             if (waitMess.InvokeRequired)
                 waitMess.Invoke(new CloseFormDelegate(DoCloseJob));
             else
@@ -385,38 +350,19 @@ namespace BenMAP
                 switch (_currentStat)
                 {
                     case "baseline":
-                        //---modify by xiejp 2011927 为了保存shp，直接把shp文件拷贝到sfd的文件路径下面
                         _filePath = sfd.FileName.Substring(0, sfd.FileName.LastIndexOf(@"\") + 1);
                         _fileName = sfd.FileName.Substring(sfd.FileName.LastIndexOf(@"\") + 1).Replace("aqgx", "shp");
-                        //File.Copy(_bgc.Base.ShapeFile,_filePath+@"\"+_bgc.Base.ShapeFile.Substring(_bgc.Base.ShapeFile.LastIndexOf(@"\") + 1),true);
-                        //  _fileName = _bgc.Base.ShapeFile.Substring(_bgc.Base.ShapeFile.LastIndexOf(@"\") + 1);
-                        ////.dbf
-                        //  File.Copy(_bgc.Base.ShapeFile, _filePath + @"\" + _fileName.Replace("shp", "dbf"), true);
-                        //  File.Copy(_bgc.Base.ShapeFile, _filePath + @"\" + _fileName.Replace("shp", "shx"), true);
-                        //  File.Copy(_bgc.Base.ShapeFile, _filePath + @"\" + _fileName.Replace(".shp", ""), true);
 
-                        // fs.Open(_bgc.Base.ShapeFile);
-                        //// fs.SaveAs(_filePath + @"\" + _bgc.Base.ShapeFile.Substring(_bgc.Base.ShapeFile.LastIndexOf(@"\") + 1), true);
-                        // fs.SaveAs(_filePath + _fileName,true);
 
-                        // shpFile = _bgc.Base.ShapeFile;
-                        // _bgc.Base.ShapeFile = _fileName;//_bgc.Base.ShapeFile.Substring(_bgc.Base.ShapeFile.LastIndexOf(@"\") + 1);
 
-                        DataSourceCommonClass.CreateAQGFromBenMAPLine(_bgc.Base, sfd.FileName);//DataSourceCommonClass.LoadAQGFile(txtExistingAQG.Text);
-                        _bgc.Base.ShapeFile = shpFile;
+                        DataSourceCommonClass.CreateAQGFromBenMAPLine(_bgc.Base, sfd.FileName); _bgc.Base.ShapeFile = shpFile;
                         break;
                     case "control":
 
                         string _filePathControl = sfd.FileName.Substring(0, sfd.FileName.LastIndexOf(@"\") + 1);
                         _fileName = sfd.FileName.Substring(sfd.FileName.LastIndexOf(@"\") + 1).Replace("aqgx", "shp");
-                        //fs.Open(_bgc.Control.ShapeFile);
-                        ////fs.SaveAs(_filePath + @"\" + _bgc.Control.ShapeFile.Substring(_bgc.Control.ShapeFile.LastIndexOf(@"\") + 1), true);
-                        //fs.SaveAs(_filePathControl + _fileName, true);
-                        //shpFile = _bgc.Control.ShapeFile;
-                        //_bgc.Control.ShapeFile =_fileName;// _bgc.Control.ShapeFile.Substring(_bgc.Control.ShapeFile.LastIndexOf(@"\") + 1);
 
-                        DataSourceCommonClass.CreateAQGFromBenMAPLine(_bgc.Control, sfd.FileName);//DataSourceCommonClass.LoadAQGFile(txtExistingAQG.Text);
-                        _bgc.Control.ShapeFile = shpFile;
+                        DataSourceCommonClass.CreateAQGFromBenMAPLine(_bgc.Control, sfd.FileName); _bgc.Control.ShapeFile = shpFile;
                         break;
                 }
                 MessageBox.Show("AQG saved.", "File saved");
@@ -433,25 +379,19 @@ namespace BenMAP
             string _filePath = "";
             string shpFile = "";
             _filePath = sfd.FileName.Substring(0, sfd.FileName.LastIndexOf(@"\") + 1);
-            //FeatureSet fs = new FeatureSet();
             if (sfd.ShowDialog() == DialogResult.OK)
             {
                 switch (_currentStat)
                 {
                     case "baseline":
-                        //---modify by xiejp 2011927 为了保存shp，直接把shp文件拷贝到sfd的文件路径下面
                         _filePath = sfd.FileName.Substring(0, sfd.FileName.LastIndexOf(@"\") + 1);
                         _fileName = sfd.FileName.Substring(sfd.FileName.LastIndexOf(@"\") + 1).Replace("aqg", "shp");
 
-                        DataSourceCommonClass.SaveModelDataLineToNewFormatCSV(_bgc.Base, sfd.FileName);//DataSourceCommonClass.LoadAQGFile(txtExistingAQG.Text);
-                        //_bgc.Base.ShapeFile = shpFile;
-                        break;
+                        DataSourceCommonClass.SaveModelDataLineToNewFormatCSV(_bgc.Base, sfd.FileName); break;
                     case "control":
 
                         string _filePathControl = sfd.FileName.Substring(0, sfd.FileName.LastIndexOf(@"\") + 1);
                         DataSourceCommonClass.SaveModelDataLineToNewFormatCSV(_bgc.Control, sfd.FileName);
-                        //DataSourceCommonClass.CreateAQGFromBenMAPLine(_bgc.Control, sfd.FileName);//DataSourceCommonClass.LoadAQGFile(txtExistingAQG.Text);
-                        //_bgc.Control.ShapeFile = shpFile;
                         break;
                 }
             }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -15,16 +15,14 @@ namespace BenMAP
         {
             InitializeComponent();
         }
-        //Add seasonal metric
-        private void btnSAdd_Click(object sender, EventArgs e)
+                private void btnSAdd_Click(object sender, EventArgs e)
         {
 
             if (txtSeasonalMetric.Text != "")
                 lstMetric.Items.Add(txtSeasonalMetric.Text);
             lstMetric.Refresh();
         }
-        //Delete seasonal metric
-        private void btnSDelete_Click(object sender, EventArgs e)
+                private void btnSDelete_Click(object sender, EventArgs e)
         {
             if (lstMetric.Items.Count != 0)
             {
@@ -38,145 +36,55 @@ namespace BenMAP
             }
 
         }
-        //Add seasonal metric seasons and set the month and date
-        Dictionary<string, Time> vartime = new Dictionary<string, Time>();
+                Dictionary<string, Time> vartime = new Dictionary<string, Time>();
         private void btnSSAdd_Click(object sender, EventArgs e)
         {
 
-            if (lstSMetric.Items.Count == 0)// 加入一个season1
-            {
+            if (lstSMetric.Items.Count == 0)            {
                 dmudownStartMonth.Enabled = true;
                 nudownStartDate.Enabled = true;
                 dmudownEndMonth.Enabled = true;
                 nudownEndDate.Enabled = true;
                 string index = "season" + i.ToString();
                 lstSMetric.Items.Add(index);
-                saveSeasonDic(i);// 保存season1里面的月份
-                i++;
+                saveSeasonDic(i);                i++;
                 dmudownStartMonth.SelectedIndex = 0;
                 dmudownEndMonth.SelectedIndex = 11;
                 return;
             }
             else
             {
-                //把开始和结束时间转换成时间类型，便于比较
-                string time = string.Format("{0}-{1}", dmudownStartMonth.SelectedIndex + 1, nudownStartDate.Value);
+                                string time = string.Format("{0}-{1}", dmudownStartMonth.SelectedIndex + 1, nudownStartDate.Value);
                 DateTime startTime = DateTime.Parse(time);
                 time = string.Format("{0}-{1}", dmudownEndMonth.SelectedIndex + 1, nudownEndDate.Value);
                 DateTime endTime = DateTime.Parse(time);
-                if (endTime.Month == 12 && endTime.Day == 31)//为12月31号
-                {
+                if (endTime.Month == 12 && endTime.Day == 31)                {
                     MessageBox.Show("The end date should be less than December 31.");
                     return;
                 }
                 else
                 {
-                    //先比较endTime是否小于startTime
-                    if (endTime < startTime)// 如果小于
-                    {
+                                        if (endTime < startTime)                    {
                         MessageBox.Show("The end date should be later than the start date. Please revise.");
                         return;
                     }
-                    //再加一个season进去
-                    string index = "season" + i.ToString();
+                                        string index = "season" + i.ToString();
                     lstSMetric.Items.Add(index);
-                    //然后保存前一个season
-                    saveSeasonDic(i - 1);
-                    //再变化开始日期，变为原来结束时间加一天
-                    startTime = endTime.AddDays(1);
+                                        saveSeasonDic(i - 1);
+                                        startTime = endTime.AddDays(1);
                     dmudownStartMonth.SelectedIndex = startTime.Month - 1;
                     nudownStartDate.Value = startTime.Day;
-                    //结束时间变为十二月三十一号
-                    dmudownEndMonth.SelectedIndex = 11;
+                                        dmudownEndMonth.SelectedIndex = 11;
                     nudownEndDate.Value = 31;
-                    //再保存新加进去的season
-                    saveSeasonDic(i);
+                                        saveSeasonDic(i);
                     i++;
                 }
             }
 
-            //if (dmudownEndMonth.SelectedIndex == dmudownStartMonth.SelectedIndex)
-            //{
-            //    if (nudownEndDate.Value >= nudownStartDate.Value)
-            //    {
-            //        if (nudownEndDate.Value < nudownEndDate.Maximum)
-            //        {
-            //            nudownStartDate.Value = nudownEndDate.Value + 1;
-            //            dmudownStartMonth.Text = dmudownStartMonth.SelectedItem.ToString();
-            //            dmudownEndMonth.Text = "十二月";
-            //            nudownEndDate.Value = 31;
-            //        }
-            //        else
-            //        {
-            //            if (nudownEndDate.Value == nudownEndDate.Maximum)
-            //            {
-            //                nudownStartDate.Value = 1;
-            //                dmudownStartMonth.SelectedIndex += 1;
-            //                dmudownStartMonth.Text = dmudownStartMonth.SelectedItem.ToString();
-            //                dmudownEndMonth.Text = "十二月";
-            //                nudownEndDate.Value = 31;
-            //            }
-            //            else
-            //            {
-            //                MessageBox.Show("输入的数字不能大于最大值，如需继续操作，请重新选择");
-            //                return;
-            //            }
-            //        }
-            //    }
-            //    else
-            //    {
-            //        MessageBox.Show("日期起始值不能大于日期结束值，如需继续操作，请重新选择");
-            //        return;
-            //    }
+                                                                                                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
 
-            //}
-            //else
-            //{
-            //    if (dmudownEndMonth.SelectedIndex > dmudownStartMonth.SelectedIndex)
-            //    {
-            //        if (nudownEndDate.Value < nudownEndDate.Maximum)
-            //        {
-            //            nudownStartDate.Value = nudownEndDate.Value + 1;
-            //            dmudownStartMonth.Text = dmudownEndMonth.SelectedItem.ToString();
-            //            dmudownEndMonth.Text = "十二月";
-            //            nudownEndDate.Value = 31;
-            //        }
-            //        else
-            //        {
-            //            if (nudownEndDate.Value == nudownEndDate.Maximum)
-            //            {
-            //                nudownStartDate.Value = 1;
-            //                dmudownEndMonth.SelectedIndex += 1;
-            //                dmudownStartMonth.Text = dmudownEndMonth.SelectedItem.ToString();
-            //                dmudownEndMonth.Text = "十二月";
-            //                nudownEndDate.Value = 31;
-            //            }
-            //            else
-            //            {
-            //                MessageBox.Show("输入的数字不能大于最大值，如需继续操作，请重新选择");
-            //                return;
-            //            }
-            //        }
-            //    }
-            //    else
-            //    {
-            //        MessageBox.Show("起始月份不能大于结束月份或没有可选择的时间段，如需继续操作，请重新选择");
-            //        return;
-            //    }
-            //}
-            //dmudownStartMonth.Enabled = true;
-            //dmudownEndMonth.Enabled = true;
-            //nudownStartDate.Enabled = true;
-            //nudownEndDate.Enabled = true;
-
-
-            //Time timemonthday = new Time();
-            //timemonthday.Month1 = dmudownStartMonth.Text;
-            //timemonthday.Month2 = dmudownEndMonth.Text;
-            //timemonthday.Day1 = nudownStartDate.Value;
-            //timemonthday.Day2 = nudownEndDate.Value;
-            //vartime.Add(index, timemonthday);
-        }
+                                                                                }
 
         private void saveSeasonDic(int index)
         {
@@ -196,8 +104,7 @@ namespace BenMAP
             }
         }
         private int i = 1;
-        //Delete seasonal metric seasons
-        private void btnSSDelete_Click(object sender, EventArgs e)
+                private void btnSSDelete_Click(object sender, EventArgs e)
         {
             if (lstSMetric.Items.Count != 0)
             {
@@ -223,8 +130,7 @@ namespace BenMAP
                 nudownEndDate.Value = vartime[str].Day2;
             }
         }
-        //doubleclick and  select pre-existing functions,then insert at the cursor
-        private void lstSAvailableFunctions_DoubleClick(object sender, EventArgs e)
+                private void lstSAvailableFunctions_DoubleClick(object sender, EventArgs e)
         {
             string msg = "";
             try
@@ -278,8 +184,7 @@ namespace BenMAP
                 }
             }
         }
-        //doubleclick and select pre-existing varibles,then insert at the cursor
-        private void lstSAvailableVaribles_DoubleClick(object sender, EventArgs e)
+                private void lstSAvailableVaribles_DoubleClick(object sender, EventArgs e)
         {
             string msg = "";
             try
@@ -340,8 +245,7 @@ namespace BenMAP
                 }
             }
         }
-        //explain Available function and display on lable
-        private void lstSAvailableFunctions_Click(object sender, EventArgs e)
+                private void lstSAvailableFunctions_Click(object sender, EventArgs e)
         {
             int k = lstSAvailableFunctions.SelectedIndex;
             switch (k)
@@ -371,8 +275,7 @@ namespace BenMAP
                     break;
             }
         }
-        //explain available variables and diaplay on lable
-        private void lstSAvailableVaribles_Click(object sender, EventArgs e)
+                private void lstSAvailableVaribles_Click(object sender, EventArgs e)
         {
             int l = lstSAvailableVaribles.SelectedIndex;
             switch (l)
@@ -414,30 +317,27 @@ namespace BenMAP
                     break;
             }
         }
-        //PollutanManage Definition Ok
-        private void btnPMok_Click(object sender, EventArgs e)
+                private void btnPMok_Click(object sender, EventArgs e)
         {
             string output = txtFunctionManage.Text;
             System.IO.File.WriteAllText("d:\\functionmanage.txt", output, System.Text.Encoding.Default);
             this.DialogResult = DialogResult.OK;
             this.Close();
         }
-        //PollutanManage Definition Cancel
-        private void btnPMcancel_Click(object sender, EventArgs e)
+                private void btnPMcancel_Click(object sender, EventArgs e)
         {
             this.Close();
         }
-        //the startdate coordinate the startmonth
-        private void dmudownStartM_TextChanged(object sender, EventArgs e)
+                private void dmudownStartM_TextChanged(object sender, EventArgs e)
         {
-            if (dmudownStartMonth.Text == "一月" || dmudownStartMonth.Text == "三月" || dmudownStartMonth.Text == "五月" || dmudownStartMonth.Text == "七月" || dmudownStartMonth.Text == "八月" || dmudownStartMonth.Text == "十月" || dmudownStartMonth.Text == "十二月")
+            if (dmudownStartMonth.Text == "һ��" || dmudownStartMonth.Text == "����" || dmudownStartMonth.Text == "����" || dmudownStartMonth.Text == "����" || dmudownStartMonth.Text == "����" || dmudownStartMonth.Text == "ʮ��" || dmudownStartMonth.Text == "ʮ����")
             {
                 nudownStartDate.Minimum = 1;
                 nudownStartDate.Maximum = 31;
             }
             else
             {
-                if (dmudownStartMonth.Text == "四月" || dmudownStartMonth.Text == "六月" || dmudownStartMonth.Text == "九月" || dmudownStartMonth.Text == "十一月")
+                if (dmudownStartMonth.Text == "����" || dmudownStartMonth.Text == "����" || dmudownStartMonth.Text == "����" || dmudownStartMonth.Text == "ʮһ��")
                 {
                     nudownStartDate.Minimum = 1;
                     nudownStartDate.Maximum = 30;
@@ -449,17 +349,16 @@ namespace BenMAP
                 }
             }
         }
-        //the enddate coordinate the endmonth
-        private void dmudownEndMonth_TextChanged(object sender, EventArgs e)
+                private void dmudownEndMonth_TextChanged(object sender, EventArgs e)
         {
-            if (dmudownEndMonth.Text == "一月" || dmudownEndMonth.Text == "三月" || dmudownEndMonth.Text == "五月" || dmudownEndMonth.Text == "七月" || dmudownEndMonth.Text == "八月" || dmudownEndMonth.Text == "十月" || dmudownEndMonth.Text == "十二月")
+            if (dmudownEndMonth.Text == "һ��" || dmudownEndMonth.Text == "����" || dmudownEndMonth.Text == "����" || dmudownEndMonth.Text == "����" || dmudownEndMonth.Text == "����" || dmudownEndMonth.Text == "ʮ��" || dmudownEndMonth.Text == "ʮ����")
             {
                 nudownEndDate.Minimum = 1;
                 nudownEndDate.Maximum = 31;
             }
             else
             {
-                if (dmudownEndMonth.Text == "四月" || dmudownEndMonth.Text == "六月" || dmudownEndMonth.Text == "九月" || dmudownEndMonth.Text == "十一月")
+                if (dmudownEndMonth.Text == "����" || dmudownEndMonth.Text == "����" || dmudownEndMonth.Text == "����" || dmudownEndMonth.Text == "ʮһ��")
                 {
                     nudownEndDate.Minimum = 1;
                     nudownEndDate.Maximum = 30;
@@ -477,9 +376,6 @@ public class Time
 {
     private int _month1;
 
-    /// <summary>
-    /// 起始月份
-    /// </summary>
     public int Month1
     {
         get { return _month1; }
@@ -487,9 +383,6 @@ public class Time
     }
     private int _month2;
 
-    /// <summary>
-    /// 结束月份
-    /// </summary>
     public int Month2
     {
         get { return _month2; }
@@ -498,9 +391,6 @@ public class Time
 
     private decimal _day1;
 
-    /// <summary>
-    /// 起始日期
-    /// </summary>
     public decimal Day1
     {
         get { return _day1; }
@@ -508,9 +398,6 @@ public class Time
     }
     private decimal _day2;
 
-    /// <summary>
-    /// 结束日期
-    /// </summary>
     public decimal Day2
     {
         get { return _day2; }

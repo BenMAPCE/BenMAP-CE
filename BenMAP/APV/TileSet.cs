@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -28,13 +28,13 @@ namespace BenMAP.APVX
                 {
                     lstIsTile.Add(olvc.IsTileViewColumn);
                 }
-              
+
             }
         }
 
         private void btOK_Click(object sender, EventArgs e)
         {
-            
+
             for (int i = 0; i < olv.AllColumns.Count; i++)
             {
                 BrightIdeasSoftware.OLVColumn olvc = olv.AllColumns[i] as BrightIdeasSoftware.OLVColumn;
@@ -47,7 +47,7 @@ namespace BenMAP.APVX
         {
             try
             {
-                
+
                 for (int i = 0; i < olv.AllColumns.Count; i++)
                 {
                     BrightIdeasSoftware.OLVColumn olvc = olv.AllColumns[i] as BrightIdeasSoftware.OLVColumn;
@@ -74,7 +74,7 @@ namespace BenMAP.APVX
                 else
                     olvc.IsTileViewColumn = false;
             }
-           this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
         }
     }
 }

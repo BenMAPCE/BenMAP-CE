@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -18,7 +18,6 @@ namespace BenMAP
 
         private void btnBrowse_Click(object sender, EventArgs e)
         {
-            // Open，获取文件所在的路径
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.InitialDirectory = CommonClass.ResultFilePath;
             openFileDialog.Filter = "All Files|*.*|CSV files|*.csv|XLS files|*.xls|XLSX files|*.xlsx";
@@ -26,7 +25,7 @@ namespace BenMAP
             openFileDialog.RestoreDirectory = true;
             if (openFileDialog.ShowDialog() != DialogResult.OK)
             { return; }
-            txtDatabase.Text = openFileDialog.FileName;//将路径填充到txt文本框中
+            txtDatabase.Text = openFileDialog.FileName;
         }
 
         private void LoadIncidenceDatabase_Load(object sender, EventArgs e)
@@ -40,7 +39,7 @@ namespace BenMAP
                     System.Data.DataSet dsCRAggregationGridType = BindGridtype();
                     cboGridDefinition.DataSource = dsCRAggregationGridType.Tables[0];
                     cboGridDefinition.DisplayMember = "GridDefinitionName";
-                    
+
                     commandText = "select GridDefinitionName from GridDefinitions where GridDefinitionID=" + GridDefinitionID + "";
                     cboGridDefinition.Text = (fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)).ToString();
                     cboGridDefinition.Enabled = false;
@@ -48,10 +47,6 @@ namespace BenMAP
                 else
                 {
                     cboGridDefinition.Enabled = false;
-                    //commandText = "select GridDefinitionName,GridDefinitionID from GridDefinitions ";
-                    //DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
-                    //cboGridDefinition.DataSource = ds.Tables[0];
-                    //cboGridDefinition.DisplayMember = "GRIDDEFINITIONNAME";
                 }
             }
             catch (Exception ex)
@@ -83,9 +78,6 @@ namespace BenMAP
         }
 
         private string _strPath;
-        /// <summary>
-        /// DataPath
-        /// </summary>
         public string StrPath { get { return _strPath; } set { _strPath = value; } }
 
         private void btnOK_Click(object sender, EventArgs e)
@@ -103,8 +95,6 @@ namespace BenMAP
                     msg = "Please select the grid definition type.";
                     return;
                 }
-                //_gridDefintion = cboGridDefinition.Text;
-                //gridDefinitionID = Convert.ToInt32((cboGridDefinition.SelectedItem as DataRowView)["GridDefinitionID"]);
                 _strPath = txtDatabase.Text;
                 DialogResult rtn = MessageBox.Show("Do you want to load this database?", "Confirm", MessageBoxButtons.YesNo);
                 if (rtn == DialogResult.Yes)
@@ -122,16 +112,5 @@ namespace BenMAP
             this.DialogResult = DialogResult.Cancel;
         }
 
-        //private void cboGridDefinition_SelectedValueChanged(object sender, EventArgs e)
-        //{ 
-        //    try
-        //    {
-        //      GridDefinitionID=Convert.ToInt32(((cboGridDefinition.SelectedItem) as DataRowView)["GridDefinitionID"] ); 
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Logger.LogError(ex.Message);
-        //    }
-        //}
     }
 }

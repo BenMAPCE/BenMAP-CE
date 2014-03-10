@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -14,12 +14,8 @@ namespace BenMAP
         public TipFormGIF()
         {
             InitializeComponent();
-            
         }
         private string _msg = "Loading Data. Please wait.";
-        /// <summary>
-        /// 显示的文字提示
-        /// </summary>
         public string Msg
         {
             get { return _msg; }
@@ -27,8 +23,7 @@ namespace BenMAP
             {
                 _msg = value;
                 this.lbTip.Text = _msg;
-                //---------调整格式
-                this.lbTip.Location =new Point( (this.Width - this.pictureBox1.Width - lbTip.Width) / 3 +this.pictureBox1.Width,this.lbTip.Location.Y);
+                this.lbTip.Location = new Point((this.Width - this.pictureBox1.Width - lbTip.Width) / 3 + this.pictureBox1.Width, this.lbTip.Location.Y);
                 if (lbTip.Location.X + this.lbTip.Width > this.Width) this.Width = lbTip.Location.X + this.lbTip.Width + 10;
             }
         }
@@ -39,7 +34,7 @@ namespace BenMAP
             {
                 this.StartPosition = FormStartPosition.Manual;
                 this.Location = new Point(CommonClass.BenMAPForm.ParentForm.Location.X + CommonClass.BenMAPForm.ParentForm.Size.Width / 2 - this.Size.Width / 2, CommonClass.BenMAPForm.ParentForm.Location.Y + CommonClass.BenMAPForm.ParentForm.Size.Height / 2 - this.Size.Height / 2);
-                
+
             }
             this.ControlBox = false;
         }

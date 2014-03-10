@@ -1,16 +1,9 @@
-﻿namespace BenMAP
+namespace BenMAP
 {
     partial class QALYResultsReport
     {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -20,12 +13,7 @@
             base.Dispose(disposing);
         }
 
-        #region Windows Form Designer generated code
-
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
+        
         private void InitializeComponent()
         {
             this.groupBox3 = new System.Windows.Forms.GroupBox();
@@ -64,29 +52,20 @@
             ((System.ComponentModel.ISupportInitialize)(this.olvHealth)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.olvColumnRow)).BeginInit();
             this.SuspendLayout();
-            // 
-            // groupBox3
-            // 
-            this.groupBox3.Controls.Add(this.btnOK);
+                                                this.groupBox3.Controls.Add(this.btnOK);
             this.groupBox3.Location = new System.Drawing.Point(2, 239);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(695, 89);
             this.groupBox3.TabIndex = 2;
             this.groupBox3.TabStop = false;
-            // 
-            // btnOK
-            // 
-            this.btnOK.Location = new System.Drawing.Point(581, 40);
+                                                this.btnOK.Location = new System.Drawing.Point(581, 40);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 23);
             this.btnOK.TabIndex = 1;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
-            // 
-            // groupBox2
-            // 
-            this.groupBox2.Controls.Add(this.groupBox6);
+                                                this.groupBox2.Controls.Add(this.groupBox6);
             this.groupBox2.Controls.Add(this.groupBox5);
             this.groupBox2.Controls.Add(this.groupBox4);
             this.groupBox2.Location = new System.Drawing.Point(2, 218);
@@ -95,10 +74,7 @@
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             this.groupBox2.Visible = false;
-            // 
-            // groupBox6
-            // 
-            this.groupBox6.Controls.Add(this.label6);
+                                                this.groupBox6.Controls.Add(this.label6);
             this.groupBox6.Controls.Add(this.chkPopDeltas);
             this.groupBox6.Location = new System.Drawing.Point(521, 14);
             this.groupBox6.Name = "groupBox6";
@@ -106,28 +82,19 @@
             this.groupBox6.TabIndex = 2;
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "Advanced Options";
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
+                                                this.label6.AutoSize = true;
             this.label6.Location = new System.Drawing.Point(10, 23);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(164, 14);
             this.label6.TabIndex = 1;
             this.label6.Text = "Population Weighted Deltas:";
-            // 
-            // chkPopDeltas
-            // 
-            this.chkPopDeltas.AutoSize = true;
+                                                this.chkPopDeltas.AutoSize = true;
             this.chkPopDeltas.Location = new System.Drawing.Point(179, 23);
             this.chkPopDeltas.Name = "chkPopDeltas";
             this.chkPopDeltas.Size = new System.Drawing.Size(15, 14);
             this.chkPopDeltas.TabIndex = 1;
             this.chkPopDeltas.UseVisualStyleBackColor = true;
-            // 
-            // groupBox5
-            // 
-            this.groupBox5.Controls.Add(this.label5);
+                                                this.groupBox5.Controls.Add(this.label5);
             this.groupBox5.Controls.Add(this.label4);
             this.groupBox5.Controls.Add(this.nudElements);
             this.groupBox5.Controls.Add(this.nudDigits);
@@ -137,42 +104,27 @@
             this.groupBox5.TabIndex = 1;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Display Options";
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
+                                                this.label5.AutoSize = true;
             this.label5.Location = new System.Drawing.Point(31, 47);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(120, 14);
             this.label5.TabIndex = 5;
             this.label5.Text = "Elements in Preview:";
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
+                                                this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(2, 23);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(149, 14);
             this.label4.TabIndex = 4;
             this.label4.Text = "Digits After Decimal Point:";
-            // 
-            // nudElements
-            // 
-            this.nudElements.Location = new System.Drawing.Point(152, 45);
+                                                this.nudElements.Location = new System.Drawing.Point(152, 45);
             this.nudElements.Name = "nudElements";
             this.nudElements.Size = new System.Drawing.Size(50, 22);
             this.nudElements.TabIndex = 3;
-            // 
-            // nudDigits
-            // 
-            this.nudDigits.Location = new System.Drawing.Point(152, 20);
+                                                this.nudDigits.Location = new System.Drawing.Point(152, 20);
             this.nudDigits.Name = "nudDigits";
             this.nudDigits.Size = new System.Drawing.Size(50, 22);
             this.nudDigits.TabIndex = 2;
-            // 
-            // groupBox4
-            // 
-            this.groupBox4.Controls.Add(this.rbtnHealthGrid);
+                                                this.groupBox4.Controls.Add(this.rbtnHealthGrid);
             this.groupBox4.Controls.Add(this.rbtnGRidHealth);
             this.groupBox4.Location = new System.Drawing.Point(6, 14);
             this.groupBox4.Name = "groupBox4";
@@ -180,10 +132,7 @@
             this.groupBox4.TabIndex = 0;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Grouping Options";
-            // 
-            // rbtnHealthGrid
-            // 
-            this.rbtnHealthGrid.AutoSize = true;
+                                                this.rbtnHealthGrid.AutoSize = true;
             this.rbtnHealthGrid.Location = new System.Drawing.Point(6, 45);
             this.rbtnHealthGrid.Name = "rbtnHealthGrid";
             this.rbtnHealthGrid.Size = new System.Drawing.Size(317, 16);
@@ -191,10 +140,7 @@
             this.rbtnHealthGrid.TabStop = true;
             this.rbtnHealthGrid.Text = "Group by Health impact function,then by Gridcell.";
             this.rbtnHealthGrid.UseVisualStyleBackColor = true;
-            // 
-            // rbtnGRidHealth
-            // 
-            this.rbtnGRidHealth.AutoSize = true;
+                                                this.rbtnGRidHealth.AutoSize = true;
             this.rbtnGRidHealth.Checked = true;
             this.rbtnGRidHealth.Location = new System.Drawing.Point(6, 21);
             this.rbtnGRidHealth.Name = "rbtnGRidHealth";
@@ -203,10 +149,7 @@
             this.rbtnGRidHealth.TabStop = true;
             this.rbtnGRidHealth.Text = "Group by Gridcell,then by Health impact function.";
             this.rbtnGRidHealth.UseVisualStyleBackColor = true;
-            // 
-            // groupBox1
-            // 
-            this.groupBox1.Controls.Add(this.olvResult);
+                                                this.groupBox1.Controls.Add(this.olvResult);
             this.groupBox1.Controls.Add(this.olvHealth);
             this.groupBox1.Controls.Add(this.olvColumnRow);
             this.groupBox1.Controls.Add(this.label3);
@@ -218,10 +161,7 @@
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Column Selection";
-            // 
-            // olvResult
-            // 
-            this.olvResult.AllColumns.Add(this.olvColumn3);
+                                                this.olvResult.AllColumns.Add(this.olvColumn3);
             this.olvResult.AllowColumnReorder = true;
             this.olvResult.AllowDrop = true;
             this.olvResult.AlternateRowBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(240)))), ((int)(((byte)(220)))));
@@ -259,20 +199,14 @@
             this.olvResult.UseHotItem = true;
             this.olvResult.UseHyperlinks = true;
             this.olvResult.View = System.Windows.Forms.View.Details;
-            // 
-            // olvColumn3
-            // 
-            this.olvColumn3.AspectName = "FieldName";
+                                                this.olvColumn3.AspectName = "FieldName";
             this.olvColumn3.IsEditable = false;
             this.olvColumn3.IsTileViewColumn = true;
             this.olvColumn3.MaximumWidth = 180;
             this.olvColumn3.MinimumWidth = 50;
             this.olvColumn3.Text = "FieldName";
             this.olvColumn3.Width = 180;
-            // 
-            // olvHealth
-            // 
-            this.olvHealth.AllColumns.Add(this.olvColumn1);
+                                                this.olvHealth.AllColumns.Add(this.olvColumn1);
             this.olvHealth.AllowColumnReorder = true;
             this.olvHealth.AllowDrop = true;
             this.olvHealth.AlternateRowBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(240)))), ((int)(((byte)(220)))));
@@ -309,20 +243,14 @@
             this.olvHealth.UseHotItem = true;
             this.olvHealth.UseHyperlinks = true;
             this.olvHealth.View = System.Windows.Forms.View.Details;
-            // 
-            // olvColumn1
-            // 
-            this.olvColumn1.AspectName = "FieldName";
+                                                this.olvColumn1.AspectName = "FieldName";
             this.olvColumn1.IsEditable = false;
             this.olvColumn1.IsTileViewColumn = true;
             this.olvColumn1.MaximumWidth = 180;
             this.olvColumn1.MinimumWidth = 50;
             this.olvColumn1.Text = "FieldName";
             this.olvColumn1.Width = 180;
-            // 
-            // olvColumnRow
-            // 
-            this.olvColumnRow.AllColumns.Add(this.olvColumn2);
+                                                this.olvColumnRow.AllColumns.Add(this.olvColumn2);
             this.olvColumnRow.AllowColumnReorder = true;
             this.olvColumnRow.AllowDrop = true;
             this.olvColumnRow.AlternateRowBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(240)))), ((int)(((byte)(220)))));
@@ -359,47 +287,32 @@
             this.olvColumnRow.UseHotItem = true;
             this.olvColumnRow.UseHyperlinks = true;
             this.olvColumnRow.View = System.Windows.Forms.View.Details;
-            // 
-            // olvColumn2
-            // 
-            this.olvColumn2.AspectName = "FieldName";
+                                                this.olvColumn2.AspectName = "FieldName";
             this.olvColumn2.IsEditable = false;
             this.olvColumn2.IsTileViewColumn = true;
             this.olvColumn2.MaximumWidth = 180;
             this.olvColumn2.MinimumWidth = 50;
             this.olvColumn2.Text = "FieldName";
             this.olvColumn2.Width = 180;
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
+                                                this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(428, 18);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(82, 14);
             this.label3.TabIndex = 4;
             this.label3.Text = "Result Fields:";
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
+                                                this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(159, 21);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(117, 14);
             this.label2.TabIndex = 3;
             this.label2.Text = "QALY Method Fields:";
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
+                                                this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(7, 21);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(70, 14);
             this.label1.TabIndex = 0;
             this.label1.Text = "Grid Fields:";
-            // 
-            // QALYResultsReport
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
+                                                this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(699, 357);
             this.Controls.Add(this.groupBox3);
@@ -428,8 +341,7 @@
 
         }
 
-        #endregion
-
+        
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.GroupBox groupBox6;

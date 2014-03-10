@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,11 +7,8 @@ namespace BenMAP
 {
     public class HealthImpact
     {
-        
+
         private string _endpointGroup;
-        /// <summary>
-        /// 返回EndpointGroup
-        /// </summary>
         public string EndpointGroup
         {
             get { return _endpointGroup; }
@@ -19,9 +16,6 @@ namespace BenMAP
         }
 
         private string _endpoint;
-        /// <summary>
-        /// 返回Endpoint
-        /// </summary>
         public string Endpoint
         {
             get { return _endpoint; }
@@ -29,9 +23,6 @@ namespace BenMAP
         }
 
         private string _pollutant;
-        /// <summary>
-        /// 返回Pollutant
-        /// </summary>
         public string Pollutant
         {
             get { return _pollutant; }
@@ -39,9 +30,6 @@ namespace BenMAP
         }
 
         private string _metric;
-        /// <summary>
-        /// 返回Metric
-        /// </summary>
         public string Metric
         {
             get { return _metric; }
@@ -49,9 +37,6 @@ namespace BenMAP
         }
 
         private string _metricStatistic;
-        /// <summary>
-        /// 返回MetricStatistis
-        /// </summary>
         public string MetricStatistis
         {
             get { return _metricStatistic; }
@@ -59,9 +44,6 @@ namespace BenMAP
         }
 
         private string _seasonalMetric;
-        /// <summary>
-        /// 返回SeasonalMetric
-        /// </summary>
         public string SeasonalMetric
         {
             get { return _seasonalMetric; }
@@ -69,9 +51,6 @@ namespace BenMAP
         }
 
         private string _race;
-        /// <summary>
-        /// 返回Race
-        /// </summary>
         public string Race
         {
             get { return _race; }
@@ -79,9 +58,6 @@ namespace BenMAP
         }
 
         private string _ethnicity;
-        /// <summary>
-        /// 返回Ethnicity
-        /// </summary>
         public string Ethnicity
         {
             get { return _ethnicity; }
@@ -89,9 +65,6 @@ namespace BenMAP
         }
 
         private string _gender;
-        /// <summary>
-        /// 返回Gender
-        /// </summary>
         public string Gender
         {
             get { return _gender; }
@@ -99,9 +72,6 @@ namespace BenMAP
         }
 
         private string _startAge;
-        /// <summary>
-        /// 返回StartAge
-        /// </summary>
         public string StartAge
         {
             get { return _startAge; }
@@ -109,9 +79,6 @@ namespace BenMAP
         }
 
         private string _endAge;
-        /// <summary>
-        /// 返回EndAge
-        /// </summary>
         public string EndAge
         {
             get { return _endAge; }
@@ -119,9 +86,6 @@ namespace BenMAP
         }
 
         private string _author;
-        /// <summary>
-        /// 返回Author
-        /// </summary>
         public string Author
         {
             get { return _author; }
@@ -129,9 +93,6 @@ namespace BenMAP
         }
 
         private string _year;
-        /// <summary>
-        /// 返回Year
-        /// </summary>
         public string Year
         {
             get { return _year; }
@@ -139,9 +100,6 @@ namespace BenMAP
         }
 
         private string _location;
-        /// <summary>
-        /// 返回Location
-        /// </summary>
         public string Location
         {
             get { return _location; }
@@ -149,9 +107,6 @@ namespace BenMAP
         }
 
         private string _qualifier;
-        /// <summary>
-        /// 返回Qualifier
-        /// </summary>
         public string Qualifier
         {
             get { return _qualifier; }
@@ -159,9 +114,6 @@ namespace BenMAP
         }
 
         private string _otherPollutant;
-        /// <summary>
-        /// 返回OtherPollutant
-        /// </summary>
         public string OtherPollutant
         {
             get { return _otherPollutant; }
@@ -169,9 +121,6 @@ namespace BenMAP
         }
 
         private string _reference;
-        /// <summary>
-        /// 返回Reference
-        /// </summary>
         public string Reference
         {
             get { return _reference; }
@@ -179,9 +128,6 @@ namespace BenMAP
         }
 
         private string _function;
-        /// <summary>
-        /// 返回Function
-        /// </summary>
         public string Function
         {
             get { return _function; }
@@ -189,9 +135,6 @@ namespace BenMAP
         }
 
         private string _baselineIncidenceFunction;
-        /// <summary>
-        /// 返回BaselineIncidenceFunction
-        /// </summary>
         public string BaselineIncidenceFunction
         {
             get { return _baselineIncidenceFunction; }
@@ -199,9 +142,6 @@ namespace BenMAP
         }
 
         private string _betaDistribution;
-        /// <summary>
-        /// 返回BetaDistribution
-        /// </summary>
         public string BetaDistribution
         {
             get { return _betaDistribution; }
@@ -209,9 +149,6 @@ namespace BenMAP
         }
 
         private string _beta;
-        /// <summary>
-        /// 返回Beta
-        /// </summary>
         public string Beta
         {
             get { return _beta; }
@@ -219,9 +156,6 @@ namespace BenMAP
         }
 
         private string _betaParameter1;
-        /// <summary>
-        /// 返回BetaParameter1
-        /// </summary>
         public string BetaParameter1
         {
             get { return _betaParameter1; }
@@ -229,9 +163,6 @@ namespace BenMAP
         }
 
         private string _betaParameter2;
-        /// <summary>
-        /// 返回BetaParameter1
-        /// </summary>
         public string BetaParameter2
         {
             get { return _betaParameter2; }
@@ -239,9 +170,6 @@ namespace BenMAP
         }
 
         private string _aConstantDescription;
-        /// <summary>
-        /// 返回AConstantDescription
-        /// </summary>
         public string AConstantDescription
         {
             get { return _aConstantDescription; }
@@ -249,9 +177,6 @@ namespace BenMAP
         }
 
         private string _bConstantDescription;
-        /// <summary>
-        /// 返回BConstantDescription
-        /// </summary>
         public string BConstantDescription
         {
             get { return _bConstantDescription; }
@@ -259,9 +184,6 @@ namespace BenMAP
         }
 
         private string _cconstantDescription;
-        /// <summary>
-        /// 返回CConstantDescription
-        /// </summary>
         public string CConstantDescription
         {
             get { return _cconstantDescription; }
@@ -269,9 +191,6 @@ namespace BenMAP
         }
 
         private string _aConstantValue;
-        /// <summary>
-        /// 返回AConstantValue
-        /// </summary>
         public string AConstantValue
         {
             get { return _aConstantValue; }
@@ -279,9 +198,6 @@ namespace BenMAP
         }
 
         private string _bConstantValue;
-        /// <summary>
-        /// 返回BConstantValue
-        /// </summary>
         public string BConstantValue
         {
             get { return _bConstantValue; }
@@ -289,36 +205,24 @@ namespace BenMAP
         }
 
         private string _cConstantValue;
-        /// <summary>
-        /// 返回CConstantValue
-        /// </summary>
         public string CConstantValue
         {
             get { return _cConstantValue; }
             set { _cConstantValue = value; }
         }
         private string _incidence;
-        /// <summary>
-        /// 返回Incidence
-        /// </summary>
         public string Incidence
         {
             get { return _incidence; }
             set { _incidence = value; }
         }
         private string _prevalence;
-        /// <summary>
-        /// 返回Prevalence
-        /// </summary>
         public string Prevalence
         {
             get { return _prevalence; }
             set { _prevalence = value; }
         }
         private string _variable;
-        /// <summary>
-        /// 返回Variable
-        /// </summary>
         public string Variable
         {
             get { return _variable; }
@@ -326,9 +230,6 @@ namespace BenMAP
         }
 
         private string _locationName;
-        /// <summary>
-        /// 返回Variable
-        /// </summary>
         public string LocationName
         {
             get { return _locationName; }

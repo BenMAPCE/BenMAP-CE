@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -16,15 +16,12 @@ namespace BenMAP
             this.Text = String.Format("About {0}", AssemblyTitle);
             this.labelProductName.Text = AssemblyProduct;
             this.labelVersion.Text = String.Format("Version: {0}", AssemblyVersion);
-            //this.labelCompanyName.Text = AssemblyCompany;
             this.lblCopyright.Text = AssemblyCopyright;
             this.rtBoxDescription.Text = AssemblyDescription;
             this.rtBoxDescription.Select(AssemblyDescription.Length - " benmap@epa.gov.".Length, "benmap@epa.gov".Length);
             this.rtBoxDescription.SelectionColor = Color.FromArgb(0, 102, 204);
             this.rtBoxDescription.Select(0, 0);
         }
-
-        #region Assembly Attribute Accessors
 
         public string AssemblyTitle
         {
@@ -47,10 +44,10 @@ namespace BenMAP
         {
             get
             {
-                return Assembly.GetExecutingAssembly().GetName().Version.ToString().Substring(0, Assembly.GetExecutingAssembly().GetName().Version.ToString().Count() - 2) + " (December 2, 2013)";
+                return Assembly.GetExecutingAssembly().GetName().Version.ToString().Substring(0, Assembly.GetExecutingAssembly().GetName().Version.ToString().Count() - 2) + " (February 28, 2014)";
             }
         }
-       
+
         public string AssemblyDescription
         {
             get
@@ -102,7 +99,6 @@ namespace BenMAP
                 return ((AssemblyCompanyAttribute)attributes[0]).Company;
             }
         }
-        #endregion
 
         private void okButton_Click(object sender, EventArgs e)
         {
@@ -112,7 +108,6 @@ namespace BenMAP
 
         private void About_Load(object sender, EventArgs e)
         {
-            //this.tableLayoutPanel.Controls.Add(this.btnReleaseNotes, 1, 5);
         }
 
         private void btnReleaseNotes_Click(object sender, EventArgs e)

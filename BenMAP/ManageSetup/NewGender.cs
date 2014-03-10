@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -24,7 +24,6 @@ namespace BenMAP
             FireBirdHelperBase fb = new ESILFireBirdHelper();
             try
             {
-                //string msg = string.Empty;
                 if (txtNewGenderName.Text == string.Empty)
                 { MessageBox.Show("Please input a gender name."); return; }
                 else

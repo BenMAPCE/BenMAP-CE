@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -40,43 +40,35 @@ namespace BenMAP
                 if (CommonClass.LstPollutant != null && CommonClass.LstPollutant.Count > 0)
                 {
                     txtPollutant.Text = bcgOpenAQG.Pollutant.PollutantName;
-                    
+
                 }
                 txtPollutant.Enabled = false;
                 string commandText = string.Format("select * from GridDefinitions where setupid={0} order by GridDefinitionName asc", CommonClass.MainSetup.SetupID);
                 System.Data.DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
-                // 必须这样写，否则会出错
                 DataTable dtGrid = ds.Tables[0].Clone();
                 dtGrid = ds.Tables[0].Copy();
                 cboGrid.DataSource = dtGrid;
                 cboGrid.DisplayMember = "GridDefinitionName";
                 for (int i = 0; i < dtGrid.Rows.Count; i++)
                 {
-                    if (dtGrid.Rows[i]["defaulttype"].ToString() == "1" &&CommonClass.GBenMAPGrid == null)
+                    if (dtGrid.Rows[i]["defaulttype"].ToString() == "1" && CommonClass.GBenMAPGrid == null)
                     {
                         cboGrid.SelectedIndex = i;
                         break;
                     }
-                    else if(CommonClass.GBenMAPGrid!=null && Convert.ToInt32(dtGrid.Rows[i]["GridDefinitionID"])==CommonClass.GBenMAPGrid.GridDefinitionID)
+                    else if (CommonClass.GBenMAPGrid != null && Convert.ToInt32(dtGrid.Rows[i]["GridDefinitionID"]) == CommonClass.GBenMAPGrid.GridDefinitionID)
                     {
-                            cboGrid.SelectedIndex = i;
+                        cboGrid.SelectedIndex = i;
                         break;
-                    
+
                     }
 
                 }
-                //---------------------判断是否在异步，在异步不能修改GridType-------------------
                 if (CommonClass.LstAsynchronizationStates != null && CommonClass.LstAsynchronizationStates.Count > 0)
                 {
                     cboGrid.Enabled = false;
 
                 }
-                //if (CommonClass.GBenMAPGrid != null) { cboGrid.Text = CommonClass.GBenMAPGrid.GridDefinitionName; }
-                //else
-                //{
-                //    DataRowView drv = cboGrid.SelectedItem as DataRowView;
-                //    CommonClass.GBenMAPGrid = Grid.GridCommon.getBenMAPGridFromID(Convert.ToInt32(drv["GridDefinitionID"]));
-                //}
 
             }
             catch (Exception ex)
@@ -95,7 +87,6 @@ namespace BenMAP
                 {
                     openFileDialog.InitialDirectory = System.Windows.Forms.Application.StartupPath + @"\Data\SampleData\";
                 }
-                //openFileDialog.InitialDirectory = Application.StartupPath + @"\Result\AQG";
                 if (txtPollutant.Text.Trim() == "")
                 {
                     openFileDialog.InitialDirectory = CommonClass.ResultFilePath + @"\Result\AQG\";
@@ -132,7 +123,6 @@ namespace BenMAP
                 {
                     openFileDialog.InitialDirectory = System.Windows.Forms.Application.StartupPath + @"\Data\SampleData\";
                 }
-                //openFileDialog.InitialDirectory = Application.StartupPath + @"\Result\AQG";
                 if (txtPollutant.Text.Trim() == "")
                 {
                     openFileDialog.InitialDirectory = CommonClass.ResultFilePath + @"\Result\AQG\";
@@ -159,7 +149,7 @@ namespace BenMAP
             GridCreationMethods frm = new GridCreationMethods(bcgOpenAQG, "control");
             frm.ShowDialog();
         }
-        public  bool isGridTypeChanged = false;
+        public bool isGridTypeChanged = false;
         public BenMAPGrid benMAPGridOld = null;
         private void btnOK_Click(object sender, EventArgs e)
         {
@@ -170,23 +160,20 @@ namespace BenMAP
                     MessageBox.Show("Please select both the baseline and control file.", "Error");
                     return;
                 }
-                //-----------------set Grid--------------
                 DataRowView drv = cboGrid.SelectedItem as DataRowView;
-                 BenMAPGrid benMAPGrid = Grid.GridCommon.getBenMAPGridFromID(Convert.ToInt32(drv["GridDefinitionID"]));
-                 
-                 if (CommonClass.GBenMAPGrid == null) CommonClass.GBenMAPGrid = benMAPGrid;
-                 else if (CommonClass.GBenMAPGrid.GridDefinitionID != benMAPGrid.GridDefinitionID)
-                 {
-                     benMAPGridOld = Grid.GridCommon.getBenMAPGridFromID(CommonClass.GBenMAPGrid.GridDefinitionID);
-                     CommonClass.GBenMAPGrid = benMAPGrid;
-                     isGridTypeChanged = true;
-                 }
-                 bcgOpenAQG.GridType = CommonClass.GBenMAPGrid;
-                
-                string inputFileFormat = string.Empty;
-                //-------open base.aqg ------majie-----
+                BenMAPGrid benMAPGrid = Grid.GridCommon.getBenMAPGridFromID(Convert.ToInt32(drv["GridDefinitionID"]));
 
-                //如果是csv或者excel文件，就存aqg
+                if (CommonClass.GBenMAPGrid == null) CommonClass.GBenMAPGrid = benMAPGrid;
+                else if (CommonClass.GBenMAPGrid.GridDefinitionID != benMAPGrid.GridDefinitionID)
+                {
+                    benMAPGridOld = Grid.GridCommon.getBenMAPGridFromID(CommonClass.GBenMAPGrid.GridDefinitionID);
+                    CommonClass.GBenMAPGrid = benMAPGrid;
+                    isGridTypeChanged = true;
+                }
+                bcgOpenAQG.GridType = CommonClass.GBenMAPGrid;
+
+                string inputFileFormat = string.Empty;
+
                 saveBasePath = string.Empty;
                 saveControlPath = string.Empty;
                 SaveFileDialog sfd = new SaveFileDialog();
@@ -252,7 +239,6 @@ namespace BenMAP
                     }
 
                 }
-                //-------open control.aqg------majie-----            
                 if (txtControl.Text != "")
                 {
                     controlPath = "Model Data:" + txtControl.Text;
@@ -307,26 +293,23 @@ namespace BenMAP
                 isGridTypeChanged = false;
             }
             this.DialogResult = DialogResult.Cancel;
-            
+
         }
 
         private void openAQG(string sourceFilePath, string currentState, BaseControlGroup bcg)
         {
             try
             {
-                //WaitShow(tip);
                 string err = "";
-                BenMAPLine benMapLine = DataSourceCommonClass.LoadAQGFile(sourceFilePath,ref err);
+                BenMAPLine benMapLine = DataSourceCommonClass.LoadAQGFile(sourceFilePath, ref err);
                 if (benMapLine == null)
                 {
-                    //--------------丁点加提示
                     WaitClose();
                     MessageBox.Show(err);
                     return;
                 }
-                //WaitClose();
 
-                if (bcg.Pollutant != null&&benMapLine.Pollutant.PollutantID != bcg.Pollutant.PollutantID)
+                if (bcg.Pollutant != null && benMapLine.Pollutant.PollutantID != bcg.Pollutant.PollutantID)
                 {
                     WaitClose();
                     MessageBox.Show("The AQG's pollutant does not match the selected pollutant. Please select another file.");
@@ -335,7 +318,7 @@ namespace BenMAP
                         CommonClass.GBenMAPGrid = benMAPGridOld;
                         isGridTypeChanged = false;
                     }
-                     
+
                     return;
                 }
                 else if (benMapLine.GridType.GridDefinitionID != bcg.GridType.GridDefinitionID)
@@ -347,7 +330,7 @@ namespace BenMAP
                         CommonClass.GBenMAPGrid = benMAPGridOld;
                         isGridTypeChanged = false;
                     }
-                     
+
                     return;
                 }
                 if (bcg.Pollutant == null) bcg.Pollutant = benMapLine.Pollutant;
@@ -356,16 +339,8 @@ namespace BenMAP
                     string AppPath = Application.StartupPath;
                     string _filePath = sourceFilePath.Substring(0, sourceFilePath.LastIndexOf(@"\") + 1);
                     string strShapePath = string.Format("{0}\\Tmp\\{1}", CommonClass.DataFilePath, benMapLine.ShapeFile);
-                    //if (File.Exists(_filePath + benMapLine.ShapeFile))
-                    //{
-                    //    // File.Copy(_filePath + @"\" + benMapLine.ShapeFile, strShapePath);
                     benMapLine.ShapeFile = _filePath + benMapLine.ShapeFile;
-                    //}
-                    //else
-                    //{
-                    //---------------------
                     DataSourceCommonClass.SaveBenMAPLineShapeFile(bcg.GridType, bcg.Pollutant, benMapLine, strShapePath);
-                    //}
                 }
                 else if (benMapLine.ShapeFile != null && benMapLine.ShapeFile.Contains(@"\"))
                 {
@@ -375,43 +350,37 @@ namespace BenMAP
                 switch (currentState)
                 {
                     case "baseline":
-                        //-----如果有pollutant，判断是否一致!
                         if (bcg.Pollutant == null || bcg.Pollutant.PollutantID == benMapLine.Pollutant.PollutantID)
                         {
-                            bcg.Base = benMapLine;//DataSourceCommonClass.LoadAQGFile(txtExistingAQG.Text);
-                            if (CommonClass.LstPollutant == null || CommonClass.LstPollutant.Count == 0)
+                            bcg.Base = benMapLine; if (CommonClass.LstPollutant == null || CommonClass.LstPollutant.Count == 0)
                             {
                                 CommonClass.LstPollutant = new List<BenMAPPollutant>();
                                 CommonClass.LstPollutant.Add(benMapLine.Pollutant);
                                 bcg.Pollutant = benMapLine.Pollutant;
-                                
+
                             }
                         }
 
                         break;
                     case "control":
-                        //-----如果有pollutant，判断是否一致!
                         if (bcg.Pollutant == null || bcg.Pollutant.PollutantID == benMapLine.Pollutant.PollutantID)
-                        bcg.Control = benMapLine;// DataSourceCommonClass.LoadAQGFile(txtExistingAQG.Text);
-                        if (CommonClass.LstPollutant == null || CommonClass.LstPollutant.Count == 0)
+                            bcg.Control = benMapLine; if (CommonClass.LstPollutant == null || CommonClass.LstPollutant.Count == 0)
                         {
                             CommonClass.LstPollutant = new List<BenMAPPollutant>();
                             CommonClass.LstPollutant.Add(benMapLine.Pollutant);
                             bcg.Pollutant = benMapLine.Pollutant;
-                                
+
                         }
                         break;
-                }//swith
+                }
             }
             catch (Exception ex)
             {
                 Logger.LogError(ex);
             }
         }
-        TipFormGIF waitMess = new TipFormGIF();//等待窗体
-        bool sFlog = true;
+        TipFormGIF waitMess = new TipFormGIF(); bool sFlog = true;
 
-        //--显示等待窗体
         private void ShowWaitMess()
         {
             try
@@ -427,7 +396,6 @@ namespace BenMAP
             }
         }
 
-        //--新开辟一个线程调用
         public void WaitShow(string msg)
         {
             try
@@ -449,10 +417,8 @@ namespace BenMAP
 
         private delegate void CloseFormDelegate();
 
-        //--关闭等待窗体
         public void WaitClose()
         {
-            //同步到主线程上
             if (waitMess.InvokeRequired)
                 waitMess.Invoke(new CloseFormDelegate(DoCloseJob));
             else
@@ -477,38 +443,24 @@ namespace BenMAP
                 MessageBox.Show(Err.Message);
             }
         }
-        //Dictionary<int, string> dicSeasonStatics = new Dictionary<int, string>();
         private void CreateShapeFile(BaseControlGroup b, string state, string filePath)
         {
             string msg = string.Empty;
-            
+
             ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
-            //if (dicSeasonStatics.Count == 0)
-            //{
-            //    string commandText = string.Format("select * from SEASONALMETRICSEASONS where POLLUTANTSEASONID in (select POLLUTANTSEASONID from POLLUTANTSEASONS where pollutantid= " + b.Pollutant.PollutantID + ")");
-            //    System.Data.DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
-            //    foreach (DataRow dr in ds.Tables[0].Rows)
-            //    {
-            //        dicSeasonStatics.Add(Convert.ToInt32(dr["PollutantSeasonID"]), dr["METRICFUNCTION"].ToString());
-            //    }
-            //}
-            ModelDataLine modelDataLine = new ModelDataLine(); // TODO: 初始化为适当的值
-            try
+            ModelDataLine modelDataLine = new ModelDataLine(); try
             {
-                //WaitShow("Loading model data file!");
 
                 modelDataLine.DatabaseFilePath = filePath;
                 System.Data.DataTable dtModel = CommonClass.ExcelToDataTable(filePath);
                 DataSourceCommonClass.UpdateModelDataLineFromDataSet(b.Pollutant, modelDataLine, dtModel);
 
-                //WaitClose();
                 switch (state)
                 {
                     case "baseline":
                         b.Base = null;
                         b.Base = modelDataLine;
                         break;
-                    //changeNodeImage(currentNode);
                     case "control":
                         b.Control = null;
                         b.Control = modelDataLine;
@@ -519,7 +471,6 @@ namespace BenMAP
                     msg = "Error reading files.";
                     return;
                 }
-                //------------updateModelValues--------异步
                 int threadId = -1;
                 AsyncDelegate asyncD = new AsyncDelegate(AsyncCreateFile);
                 IAsyncResult ar = asyncD.BeginInvoke(b, modelDataLine, state, out threadId, null, null);
@@ -537,18 +488,9 @@ namespace BenMAP
             }
         }
 
-        /// <summary>
-        /// 异步调用生成ShapeFile
-        /// </summary>
-        /// <param name="bcg">DataSource对应的BaseLine和Control的对应内容</param>
-        /// <param name="m">上一步的模型属性</param>
-        /// <param name="currentStat">当前状态：baseline/control</param>
-        /// <param name="threadId">线程ID</param>
-        /// <returns></returns>
         private string AsyncCreateFile(BaseControlGroup bcg, ModelDataLine m, string currentStat, out int threadId)
         {
             threadId = -1;
-            // ShapeFile的命名规范：污染物+baseline/control+当前做操时间+.shp,例如：pm10baseline20110921090622.shp
             string shapeFile = string.Empty;
             string strShapePath = string.Empty;
             string AppPath = Application.StartupPath;
@@ -563,7 +505,6 @@ namespace BenMAP
                     if (currentStat != "")
                     {
                         CommonClass.CurrentMainFormStat = currentStat.Substring(0, 1).ToUpper() + currentStat.Substring(1) + " is being created.";
-                        //CommonClass.NodeAnscyStatus = string.Format("{0};on", _currentStat);
                     }
                 }
                 lock (CommonClass.NodeAnscyStatus)
@@ -571,25 +512,20 @@ namespace BenMAP
 
                 DateTime dt = DateTime.Now;
                 shapeFile = string.Format("{0}{1}{2}{3}{4}{5}.shp", new string[] { bcg.Pollutant.PollutantName.ToLower(), currentStat, dt.ToString("yyyyMMdd"), dt.Hour.ToString("00"), dt.Minute.ToString("00"), dt.Second.ToString("00") });
-                //----------------------modify by xiejp 20110927---为了不产生太多的shp，把临时文件的名称变为污染物名称+base(control)+.shp
                 Random random = new Random();
                 shapeFile = string.Format("{0}{1}{2}.shp", new string[] { bcg.Pollutant.PollutantName.ToLower(), currentStat, random.Next(100).ToString() });
-                //Todo:陈志润 20111128
-                //shapeFile = bcg.Pollutant.PollutantID + "G" + CommonClass.GBenMAPGrid.GridDefinitionID + "B" + currentStat.Substring(0,1)+".shp";
                 shapeFile = bcg.Pollutant.PollutantID + "G" + CommonClass.GBenMAPGrid.GridDefinitionID + "B" + currentStat + ".shp";
                 strShapePath = string.Format("{0}\\Tmp\\{1}", CommonClass.DataFilePath, shapeFile);
 
-                DataSourceCommonClass.UpdateModelValuesModelData(DataSourceCommonClass.DicSeasonStaticsAll,bcg.GridType, bcg.Pollutant, m, strShapePath);
+                DataSourceCommonClass.UpdateModelValuesModelData(DataSourceCommonClass.DicSeasonStaticsAll, bcg.GridType, bcg.Pollutant, m, strShapePath);
                 lock (CommonClass.LstAsynchronizationStates)
                 {
                     CommonClass.LstAsynchronizationStates.Remove(str);
                     if (CommonClass.LstAsynchronizationStates.Count == 0)
                     {
                         CommonClass.CurrentMainFormStat = "Current Setup: " + CommonClass.MainSetup.SetupName;
-                        //CommonClass.NodeAnscyStatus = string.Format("{0};off", _currentStat);
                     }
-                }//lock
-
+                }
                 lock (CommonClass.NodeAnscyStatus)
                 { CommonClass.NodeAnscyStatus = string.Format("{0};{1};off", bcg.Pollutant.PollutantName.ToLower(), currentStat); }
                 switch (currentStat)
@@ -603,7 +539,7 @@ namespace BenMAP
                             DataSourceCommonClass.CreateAQGFromBenMAPLine(bcgOpenAQG.Control, saveControlPath);
                         break;
                 }
-                
+
                 return str;
             }
             catch (Exception ex)

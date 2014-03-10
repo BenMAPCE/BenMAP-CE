@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -13,9 +13,6 @@ namespace BenMAP
     public partial class ManageSeasonalMetrics : FormBase
     {
         int seasonalmetricidadd = 0;
-        //为了实现seasons的同步更改,此界面也可以定义seasons,
-        //此界面结束后返回seasons和list<SeasonalMetric>
-        //public Dictionary<string, Season> _dicPolSeason = new Dictionary<string, Season>();
         private static List<ManageSetupSeasonalMetric> _lstSMetrics = new List<ManageSetupSeasonalMetric>();
         public static List<ManageSetupSeasonalMetric> LstSMetrics
         {
@@ -24,21 +21,8 @@ namespace BenMAP
         }
         public List<SeasonalMetricSeason> _lstSMSeasons = new List<SeasonalMetricSeason>();
         public Metric _metric = new Metric();
-        /// <summary>
-        /// 当前选中的Season，如果不为空的话
-        /// </summary>
-        //public Season _currentSeason = new Season();
-        /// <summary>
-        /// 用来指示当前的SeasonalMetrics，方便更新
-        /// </summary>
         public ManageSetupSeasonalMetric _seasonalMetric;
-        /// <summary>
-        /// 用来指示当前的SeasonalMetricsSeason，方便更新
-        /// </summary>
         public SeasonalMetricSeason _seasonalMetricSeason;
-        /// <summary>
-        /// 用来判定是不是在此界面保存SeasonalMetrics
-        /// </summary>
         private bool _isAddPollutant;
 
         int newSeasonalMetricSeasonID = 0;
@@ -50,7 +34,7 @@ namespace BenMAP
         {
             InitializeComponent();
         }
-               
+
 
         public ManageSeasonalMetrics(List<ManageSetupSeasonalMetric> LstSMetric, Metric metric, bool isAdd)
         {
@@ -71,22 +55,10 @@ namespace BenMAP
         }
 
         private void ManageSeasonalMetrics_Load(object sender, EventArgs e)
-        {            
+        {
             try
             {
                 cboStatisticFunction.SelectedIndex = 0;
-                //绑定Pollutant Seasons
-                //if (_dicPolSeason.Keys.Count != 0)
-                //{
-                //    foreach (string polSeason in _dicPolSeason.Keys)
-                //    { lstSeasons.Items.Add(new ListItem(_dicPolSeason[polSeason].PollutantSeasonID.ToString(), polSeason)); }
-                //    lstSeasons.SelectedIndex = 0;
-                //}
-                //else
-                //{
-                //    dtpStartTime.Value = new DateTime(2011, 1, 1);
-                //    dtpEndTime.Value = new DateTime(2011, 12, 31);
-                //}
 
                 txtMetricIDName.Text = _metric.MetricName;
                 if (_lstSMetrics.Count != 0)
@@ -114,12 +86,11 @@ namespace BenMAP
             }
         }
 
-        //笨方法刷新lstmetric中metric的name
         bool isRefrest = true;
         private void RefrestFileList()
         {
             for (int i = 0; i < lstSeasonalMetrics.Items.Count; i++)
-                lstSeasonalMetrics.Items[i] = lstSeasonalMetrics.Items[i];//Very silly, but it works.
+                lstSeasonalMetrics.Items[i] = lstSeasonalMetrics.Items[i];
         }
 
         private void lstSeasonalMetrics_SelectedIndexChanged(object sender, EventArgs e)
@@ -127,7 +98,6 @@ namespace BenMAP
             try
             {
                 if (lstSeasonalMetrics.Items.Count == 0) return;
-                #region 更新上一个SeasonalMetric
                 if (!isRefrest) return;
                 if (_seasonalMetric != null)
                 {
@@ -136,45 +106,21 @@ namespace BenMAP
                         if (_lstSMetrics[i].SeasonalMetricID == _seasonalMetric.SeasonalMetricID)
                         {
                             _lstSMetrics[i] = updateSeasonalMetric(_seasonalMetric);
-                            //刷新lstSeasonalMetrics中SeasonalMetrics的name
-                            //foreach (ListItem l in lstSeasonalMetrics.Items)
-                            //{
-                            //    if (l.ID == _lstSMetrics[i].SeasonalMetricID.ToString())
-                            //    {
-                            //        l.Name = txtSeasonMetricName.Text;
-                            //        isRefrest = false;
-                            //        RefrestFileList();
-                            //        isRefrest = true;
-                            //        break;
-                            //    }
-                            //}
                             break;
                         }
                     }
                 }
-                #endregion
                 ListItem lt = (lstSeasonalMetrics.SelectedIndex < 0 ? lstSeasonalMetrics.Items[lstSeasonalMetrics.Items.Count - 1] : lstSeasonalMetrics.Items[lstSeasonalMetrics.SelectedIndex]) as ListItem;
                 _seasonalMetric = (from p in _lstSMetrics where p.SeasonalMetricID.ToString() == lt.ID select p).ToList()[0];
                 txtSeasonMetricName.Text = _seasonalMetric.SeasonalMetricName;
                 _lstSMSeasons = _seasonalMetric.Seasons;
                 lstSeasonalMetricSeasons.Items.Clear();
                 if (_seasonalMetric.Seasons != null)
-                {                    
-                    //for (int i = 0; i < _seasonalMetric.Seasons.Count; i++)
-                    //{
-                    //    for (int j = 0; j < lstSeasons.Items.Count; j++)
-                    //    {
-                    //        ListItem ltSeason = lstSeasons.Items[j] as ListItem;
-                    //        if (_lstSMSeasons[i].PollutantSeasonID.ToString() == ltSeason.ID)
-                    //        {
-                    //            lstSeasonalMetricSeasons.Items.Add(new ListItem(_seasonalMetric.Seasons[i].SeasonalMetricSeasonID.ToString(), ltSeason.Name));
-                    //        }
-                    //    }
-                    //}
+                {
                     _seasonalMetric.Seasons.Sort((x, y) => x.StartDay < y.StartDay ? -1 : 0);
                     for (int i = 1; i <= _seasonalMetric.Seasons.Count; i++)
                     {
-                        lstSeasonalMetricSeasons.Items.Add(new ListItem(_seasonalMetric.Seasons[i-1].SeasonalMetricSeasonID.ToString(), "Season " + i));
+                        lstSeasonalMetricSeasons.Items.Add(new ListItem(_seasonalMetric.Seasons[i - 1].SeasonalMetricSeasonID.ToString(), "Season " + i));
                     }
 
                     if (lstSeasonalMetricSeasons.Items.Count > 0)
@@ -196,26 +142,8 @@ namespace BenMAP
                 Logger.LogError(ex.Message);
             }
         }
-        //private void lstSeasons_SelectedIndexChanged(object sender, EventArgs e)
-        //{
-        //    try
-        //    {
-        //        if (sender == null) return;
-        //        string selectSeason = lstSeasons.GetItemText(lstSeasons.SelectedItem);
-        //        _currentSeason = _dicPolSeason[selectSeason];
-        //        setMonthAndDay(_currentSeason);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Logger.LogError(ex.Message);
-        //    }
 
-        //}
 
-        /// <summary>
-        /// 选择SeasonalMetricsSeason时显示出时间信息
-        /// </summary>
-        /// <param name="season"></param>
         private void setMonthAndDay(SeasonalMetricSeason season)
         {
             DateTime dt = new DateTime(2011, 1, 1);
@@ -226,32 +154,13 @@ namespace BenMAP
             dtpEndTime.Value = dt2;
         }
 
-        ///// <summary>
-        ///// 选择污染物的season时显示出时间信息
-        ///// </summary>
-        ///// <param name="season"></param>
-        //private void setMonthAndDay(Season season)
-        //{
-        //    DateTime dt = new DateTime(2011, 1, 1);
-        //    dt = dt.AddDays(Convert.ToInt32(season.StartDay));
-        //    dtpStartTime.Value = dt;
-        //    DateTime dt2 = new DateTime(2011, 1, 1);
-        //    dt2 = dt2.AddDays(Convert.ToInt32(season.EndDay));
-        //    dtpEndTime.Value = dt2;
-        //}
 
-        /// <summary>
-        /// 更新SeasonalMetrics
-        /// </summary>
-        /// <param name="sMetric"></param>
-        /// <returns></returns>
         private ManageSetupSeasonalMetric updateSeasonalMetric(ManageSetupSeasonalMetric sMetric)
         {
             try
             {
                 ManageSetupSeasonalMetric sMetric1 = sMetric;
                 sMetric1.SeasonalMetricName = sMetric.SeasonalMetricName;
-                //更新SeasonalMetricsSeasons
                 sMetric1.Seasons = _lstSMSeasons;
                 return sMetric1;
             }
@@ -276,7 +185,6 @@ namespace BenMAP
                     case 1:
                         sMSeason1.SeasonalMetricType = 1;
                         sMSeason1.MetricFunction = txtFunctionManage.Text;
-                        //txtFunctionManage.Text = "";
                         break;
                 }
                 return sMSeason1;
@@ -299,9 +207,7 @@ namespace BenMAP
             string commandText = string.Empty;
             try
             {
-                //先保存当前状态下的内容
-                #region 更新SeasonalMetric
-                if (_seasonalMetricSeason != null && _lstSMSeasons!=null)
+                if (_seasonalMetricSeason != null && _lstSMSeasons != null)
                 {
                     for (int i = 0; i < _lstSMSeasons.Count; i++)
                     {
@@ -317,52 +223,27 @@ namespace BenMAP
                     for (int i = 0; i < _lstSMetrics.Count; i++)
                     {
                         if (_lstSMetrics[i].SeasonalMetricID == _seasonalMetric.SeasonalMetricID)
-                        {                            
-                            //刷新lstmetric中metric的name
-                            //foreach (ListItem l in lstSeasonalMetrics.Items)
-                            //{
-                            //    if (l.ID == _metric.MetricID.ToString())
-                            //    {
-                            //        l.Name = txtSeasonMetricName.Text;
-                            //        isRefrest = false;
-                            //        RefrestFileList();
-                            //        isRefrest = true;
-                            //    }
-                            //}
+                        {
                             _lstSMetrics[i] = updateSeasonalMetric(_seasonalMetric);
                         }
                     }
                 }
-                #endregion                
 
-                //更新metric的SeasonalMetrics和pollutant的seasons
-                //for (int i = 0; i < _lstSMetrics.Count; i++)
-                //{
-                //    List<SeasonalMetricSeason> lstSeason = new List<SeasonalMetricSeason>();
-                //    for (int j = 0; j < _lstSMSeasons.Count; j++)
-                //    {
-                //        if (_lstSMetrics[i].SeasonalMetricID == _lstSMSeasons[j].SeasonalMetricID)
-                //        { lstSeason.Add(_lstSMSeasons[j]); }
-                //    }
-                //    _lstSMetrics[i].Seasons = lstSeason;
-                //}
                 if (!_isAddPollutant)
                 {
-                    //直接保存
-                    //seasonalmetrics
                     for (int i = 0; i < _lstSMetrics.Count; i++)
                     {
-                        //检查一下这个metric有没有两个名字相同的metric
                         commandText = "select SeasonalMetricName from SeasonalMetrics where metricID=" + _metric.MetricID + "";
                         DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
-                        if (ds.Tables[0].Rows.Count != 0) {
+                        if (ds.Tables[0].Rows.Count != 0)
+                        {
                             for (int k = 0; k < ds.Tables[0].Rows.Count; k++)
                             {
                                 if (ds.Tables[0].Rows[k].ToString() == _lstSMetrics[i].SeasonalMetricName)
                                 { MessageBox.Show("This seasonal metric name is already in use. Please enter a different name."); return; }
                             }
                         }
-                        
+
                         commandText = "select SeasonalMetricName from SeasonalMetrics where SeasonalMetricID=" + _lstSMetrics[i].SeasonalMetricID + " and MetricID=" + _lstSMetrics[i].Metric.MetricID + "";
                         object obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
                         if (obj == null)
@@ -372,11 +253,9 @@ namespace BenMAP
                         }
                         else
                         {
-                            //更新名字
                             commandText = "update SeasonalMetrics set SeasonalMetricName='" + _lstSMetrics[i].SeasonalMetricName + "' where SeasonalMetricID=" + _lstSMetrics[i].SeasonalMetricID + " ";
                             fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                         }
-                        //更新seasons
                         if (_lstSMetrics[i].Seasons != null)
                         {
                             for (int j = 0; j < _lstSMetrics[i].Seasons.Count; j++)
@@ -399,7 +278,6 @@ namespace BenMAP
                 }
                 else
                 {
-                    //返回上一界面保存
                 }
                 this.DialogResult = DialogResult.OK;
             }
@@ -495,93 +373,11 @@ namespace BenMAP
             }
         }
 
-        //private void btnSMSAdd_Click(object sender, EventArgs e)
-        //{
-        //    try
-        //    {
-        //        if (lstSeasonalMetrics.Items.Count <= 0)
-        //        {
-        //            MessageBox.Show("Please define the seasonal metric first.", "", MessageBoxButtons.OK);
-        //            return;
-        //        }
-        //        FireBirdHelperBase fb = new ESILFireBirdHelper();
-        //        if (lstSeasonalMetrics.SelectedItem == null) { return; }
-        //        ListItem ltSMetric = lstSeasonalMetrics.SelectedItem as ListItem;
-        //        if (lstSeasons.Items.Count == 0 || lstSeasons.SelectedItem == null) return;
-        //        ListItem ltSeason = lstSeasons.SelectedItem as ListItem;
-        //        if (lstSeasonalMetricSeasons.Items.Count != 0)
-        //        {
-        //            for (int i = 0; i < _lstSMSeasons.Count; i++)
-        //            {
-        //                if (_lstSMSeasons[i].PollutantSeasonID.ToString() == ltSeason.ID)
-        //                { MessageBox.Show("This season has included in seasonal metric seasons."); return; }
-        //            }
-        //        }
-        //        SeasonalMetricSeason sms = new SeasonalMetricSeason();
-        //        sms.PollutantSeasonID = Convert.ToInt32(ltSeason.ID);
-        //        sms.SeasonalMetricID = Convert.ToInt32(ltSMetric.ID);
-        //        string commandText = "select max(SEASONALMETRICSEASONID) from SEASONALMETRICSEASONS";
-        //        newSeasonalMetricSeasonID++;
-        //        sms.SeasonalMetricSeasonID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + newSeasonalMetricSeasonID;
-        //        lstSeasonalMetricSeasons.Items.Add(new ListItem(sms.SeasonalMetricSeasonID.ToString(), lstSeasons.SelectedItem.ToString()));
-        //        sms.StartDay = _currentSeason.StartDay;
-        //        sms.EndDay = _currentSeason.EndDay;
-        //        sms.SeasonalMetricType = tabMetricFunction.SelectedIndex;
-        //        if (tabMetricFunction.SelectedIndex == 0)
-        //        { sms.MetricFunction = cboStatisticFunction.GetItemText(cboStatisticFunction.SelectedItem); }
-        //        else { sms.MetricFunction = txtFunctionManage.Text; }
-                
-        //        if (_lstSMSeasons == null) { _lstSMSeasons = new List<SeasonalMetricSeason>(); }
-        //        _lstSMSeasons.Add(sms);
-        //        _seasonalMetric.Seasons = _lstSMSeasons;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Logger.LogError(ex.Message);
-        //    }
-        //}
 
-        //private void btnSMSDelete_Click(object sender, EventArgs e)
-        //{
-        //    if (lstSeasonalMetrics.Items.Count <= 0)
-        //    {
-        //        return;
-        //    }
-        //    FireBirdHelperBase fb = new ESILFireBirdHelper();
-        //    string commandText = string.Empty;
-        //    try
-        //    {
-        //        if (lstSeasonalMetricSeasons.Items.Count == 0)
-        //        { MessageBox.Show("There is no season to delete."); return; }
-        //        DialogResult result = MessageBox.Show("Are you sure you want to delete this season?", "", MessageBoxButtons.OKCancel);
-        //        if (result == DialogResult.OK)
-        //        {
-        //            ListItem smsItem = lstSeasonalMetricSeasons.SelectedItem as ListItem;
 
-        //            lstSeasonalMetricSeasons.Items.RemoveAt(lstSeasonalMetricSeasons.SelectedIndex);
-        //            commandText = "delete from SeasonalMetricSeasons where SeasonalMetricSeasonID=" + smsItem.ID + "";
-        //            fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
-        //            for (int i = 0; i < _lstSMSeasons.Count; i++)
-        //            {
-        //                if (_lstSMSeasons[i].SeasonalMetricSeasonID.ToString() == smsItem.ID)
-        //                {
-        //                    _lstSMSeasons.RemoveAt(i);
-        //                }
-        //            }
-        //            //只是为了不触发indexchange事件
-        //            _seasonalMetricSeason = null;
-        //            if (lstSeasonalMetricSeasons.Items.Count != 0)
-        //            { lstSeasonalMetricSeasons.SelectedIndex = lstSeasonalMetricSeasons.Items.Count - 1; }
-        //        }
-        //        else { return; }
 
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Logger.LogError(ex.Message);
-        //    }
 
-        //}
+
 
         private void btnDelete_Click(object sender, EventArgs e)
         {
@@ -635,57 +431,6 @@ namespace BenMAP
             }
         }
 
-        //private void btnEdit_Click(object sender, EventArgs e)
-        //{
-        //    try
-        //    {
-        //        DefineSeasons frm = new DefineSeasons(_isAddPollutant);
-        //        frm._pollutantID = _metric.PollutantID;
-        //        frm.dicSave = _dicPolSeason;
-        //        DialogResult rtn = frm.ShowDialog();
-        //        //if (rtn == DialogResult.OK)
-        //        {
-        //            _dicPolSeason = frm.dicSave;
-        //            //重新绑定pollutantseasons
-        //            if (_dicPolSeason.Keys.Count != 0)
-        //            {
-        //                lstSeasons.Items.Clear();
-        //                foreach (string polSeason in _dicPolSeason.Keys)
-        //                { lstSeasons.Items.Add(new ListItem(_dicPolSeason[polSeason].PollutantSeasonID.ToString(), polSeason)); }
-        //                lstSeasons.SelectedIndex = 0;
-        //            }
-        //            else
-        //            {
-        //                lstSeasons.Items.Clear();
-        //                dtpStartTime.Value = new DateTime(2011, 1, 1);
-        //                dtpEndTime.Value = new DateTime(2011, 12, 31);
-        //            }
-        //        }
-        //        if (lstSeasonalMetrics.SelectedItem != null)
-        //        {
-        //            ListItem lt = lstSeasonalMetrics.SelectedItem as ListItem;
-        //            _seasonalMetric = (from p in _lstSMetrics where p.SeasonalMetricID.ToString() == lt.ID select p).ToList()[0];
-        //            _lstSMSeasons = _seasonalMetric.Seasons;
-        //            lstSeasonalMetricSeasons.Items.Clear();
-        //            if (_seasonalMetric.Seasons != null)
-        //            {
-        //                for (int i = 0; i < _seasonalMetric.Seasons.Count; i++)
-        //                {
-        //                    for (int j = 0; j < lstSeasons.Items.Count; j++)
-        //                    {
-        //                        ListItem ltSeason = lstSeasons.Items[j] as ListItem;
-        //                        if (_lstSMSeasons[i].PollutantSeasonID.ToString() == ltSeason.ID)
-        //                        {
-        //                            lstSeasonalMetricSeasons.Items.Add(new ListItem(_seasonalMetric.Seasons[i].SeasonalMetricSeasonID.ToString(), ltSeason.Name));
-        //                        }
-        //                    }
-        //                }
-        //            }
-        //        }
-        //    }
-        //    catch
-        //    { }
-        //}
 
 
         private void lstFunctions_DoubleClick(object sender, EventArgs e)
@@ -847,15 +592,6 @@ namespace BenMAP
                 }
             }
 
-            //lstSeasonalMetrics_SelectedIndexChanged(sender, e);
-            //for (int i = 0; i < _lstSMetrics.Count; i++)
-            //{
-            //    if (_lstSMetrics[i].SeasonalMetricName == lstSeasonalMetrics.SelectedItem.ToString())
-            //    {
-            //        _lstSMetrics[i] = updateSeasonalMetric(_seasonalMetric);
-            //    }
-            //}
-            //lstSeasonalMetrics.Items[lstSeasonalMetrics.SelectedIndex] = txtSeasonMetricName.Text;
         }
 
         private void txtSeasonMetricName_KeyDown(object sender, KeyEventArgs e)
@@ -945,16 +681,9 @@ namespace BenMAP
                 sms.EndDay = 364;
                 tabMetricFunction.SelectedIndex = 0;
                 sms.SeasonalMetricType = tabMetricFunction.SelectedIndex;
-                //if (tabMetricFunction.SelectedIndex == 0)
-                //{
                 cboStatisticFunction.SelectedIndex = 0;
                 sms.MetricFunction = cboStatisticFunction.Text;
-                //}
-                //else 
-                //{
                 txtFunctionManage.Text = "";
-                //sms.MetricFunction = txtFunctionManage.Text;
-                //}
 
                 if (_lstSMSeasons == null) { _lstSMSeasons = new List<SeasonalMetricSeason>(); }
                 _lstSMSeasons.Add(sms);
@@ -969,7 +698,7 @@ namespace BenMAP
 
         private void btnDeleteSeasonalMetricSeason_Click(object sender, EventArgs e)
         {
-            if (lstSeasonalMetrics.Items.Count <= 0 || lstSeasonalMetricSeasons.SelectedItem==null) return;
+            if (lstSeasonalMetrics.Items.Count <= 0 || lstSeasonalMetricSeasons.SelectedItem == null) return;
             FireBirdHelperBase fb = new ESILFireBirdHelper();
             string commandText = string.Empty;
             try
@@ -1017,8 +746,7 @@ namespace BenMAP
             try
             {
                 if (_seasonalMetricSeason == null || lstSeasonalMetricSeasons.Items.Count <= 0) return;
-                tabMetricFunction.Focus();//for get the new changed value of time, leave the focus from dtpStartTime
-                if (dtpEndTime.Value.DayOfYear <= dtpStartTime.Value.DayOfYear)
+                tabMetricFunction.Focus(); if (dtpEndTime.Value.DayOfYear <= dtpStartTime.Value.DayOfYear)
                 {
                     MessageBox.Show("Start date must be earlier than end date. Please check the start and end dates.");
                     dtpStartTime.Value = new DateTime(2011, 1, 1).AddDays(_seasonalMetricSeason.StartDay);
@@ -1051,8 +779,7 @@ namespace BenMAP
             try
             {
                 if (_seasonalMetricSeason == null || lstSeasonalMetricSeasons.Items.Count <= 0) return;
-                tabMetricFunction.Focus();//for get the new changed value of time, leave the focus from dtpEndTime
-                if (dtpEndTime.Value.DayOfYear <= dtpStartTime.Value.DayOfYear)
+                tabMetricFunction.Focus(); if (dtpEndTime.Value.DayOfYear <= dtpStartTime.Value.DayOfYear)
                 {
                     MessageBox.Show("Start date must be earlier than end date. Please check the start and end dates.");
                     dtpEndTime.Value = new DateTime(2011, 1, 1).AddDays(_seasonalMetricSeason.EndDay);
@@ -1062,7 +789,7 @@ namespace BenMAP
                 _seasonalMetricSeason.EndDay = dtpEndTime.Value.DayOfYear - 1;
                 flagEndTime = 1;
             }
-            catch 
+            catch
             { }
         }
     }

@@ -1,16 +1,9 @@
-﻿namespace BenMAP
+namespace BenMAP
 {
     partial class LatinHypercubePoints
     {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -20,12 +13,7 @@
             base.Dispose(disposing);
         }
 
-        #region Windows Form Designer generated code
-
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
+        
         private void InitializeComponent()
         {
             this.txtThreshold = new System.Windows.Forms.TextBox();
@@ -42,28 +30,19 @@
             this.groupBox3.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // txtThreshold
-            // 
-            this.txtThreshold.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+                                                this.txtThreshold.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.txtThreshold.Location = new System.Drawing.Point(165, 115);
             this.txtThreshold.Name = "txtThreshold";
             this.txtThreshold.Size = new System.Drawing.Size(98, 22);
             this.txtThreshold.TabIndex = 10;
             this.txtThreshold.TextChanged += new System.EventHandler(this.txtThreshold_TextChanged);
-            // 
-            // lblThreshold
-            // 
-            this.lblThreshold.AutoSize = true;
+                                                this.lblThreshold.AutoSize = true;
             this.lblThreshold.Location = new System.Drawing.Point(12, 119);
             this.lblThreshold.Name = "lblThreshold";
             this.lblThreshold.Size = new System.Drawing.Size(122, 14);
             this.lblThreshold.TabIndex = 9;
             this.lblThreshold.Text = "Air quality threshold:";
-            // 
-            // groupBox3
-            // 
-            this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                                                this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox3.Controls.Add(this.txtRandomSeed);
@@ -78,28 +57,19 @@
             this.groupBox3.Size = new System.Drawing.Size(281, 158);
             this.groupBox3.TabIndex = 7;
             this.groupBox3.TabStop = false;
-            // 
-            // txtRandomSeed
-            // 
-            this.txtRandomSeed.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+                                                this.txtRandomSeed.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.txtRandomSeed.Location = new System.Drawing.Point(165, 87);
             this.txtRandomSeed.Name = "txtRandomSeed";
             this.txtRandomSeed.Size = new System.Drawing.Size(98, 22);
             this.txtRandomSeed.TabIndex = 14;
             this.txtRandomSeed.Text = "1";
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
+                                                this.label6.AutoSize = true;
             this.label6.Location = new System.Drawing.Point(12, 91);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(85, 14);
             this.label6.TabIndex = 13;
             this.label6.Text = "Random Seed:";
-            // 
-            // chbRunInPointMode
-            // 
-            this.chbRunInPointMode.AutoSize = true;
+                                                this.chbRunInPointMode.AutoSize = true;
             this.chbRunInPointMode.Location = new System.Drawing.Point(14, 23);
             this.chbRunInPointMode.Name = "chbRunInPointMode";
             this.chbRunInPointMode.Size = new System.Drawing.Size(126, 16);
@@ -107,19 +77,13 @@
             this.chbRunInPointMode.Text = "Run In Point Mode";
             this.chbRunInPointMode.UseVisualStyleBackColor = true;
             this.chbRunInPointMode.CheckedChanged += new System.EventHandler(this.chbRunInPointMode_CheckedChanged);
-            // 
-            // lblLatinHypercubePoints
-            // 
-            this.lblLatinHypercubePoints.AutoSize = true;
+                                                this.lblLatinHypercubePoints.AutoSize = true;
             this.lblLatinHypercubePoints.Location = new System.Drawing.Point(12, 63);
             this.lblLatinHypercubePoints.Name = "lblLatinHypercubePoints";
             this.lblLatinHypercubePoints.Size = new System.Drawing.Size(70, 14);
             this.lblLatinHypercubePoints.TabIndex = 1;
             this.lblLatinHypercubePoints.Text = "Percentiles:";
-            // 
-            // cboLatinHypercubePoints
-            // 
-            this.cboLatinHypercubePoints.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+                                                this.cboLatinHypercubePoints.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cboLatinHypercubePoints.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboLatinHypercubePoints.FormattingEnabled = true;
             this.cboLatinHypercubePoints.Items.AddRange(new object[] {
@@ -131,10 +95,7 @@
             this.cboLatinHypercubePoints.Name = "cboLatinHypercubePoints";
             this.cboLatinHypercubePoints.Size = new System.Drawing.Size(98, 22);
             this.cboLatinHypercubePoints.TabIndex = 2;
-            // 
-            // groupBox2
-            // 
-            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+                                                this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox2.Controls.Add(this.btnOK);
             this.groupBox2.Controls.Add(this.btnCancel);
@@ -143,10 +104,7 @@
             this.groupBox2.Size = new System.Drawing.Size(281, 54);
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
-            // 
-            // btnOK
-            // 
-            this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+                                                this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOK.Location = new System.Drawing.Point(198, 18);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(65, 25);
@@ -154,10 +112,7 @@
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
-            // 
-            // btnCancel
-            // 
-            this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+                                                this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.Location = new System.Drawing.Point(127, 18);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(65, 25);
@@ -165,10 +120,7 @@
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
-            // 
-            // LatinHypercubePoints
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
+                                                this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(304, 233);
             this.Controls.Add(this.groupBox3);
@@ -187,8 +139,7 @@
 
         }
 
-        #endregion
-
+        
         private System.Windows.Forms.ComboBox cboLatinHypercubePoints;
         private System.Windows.Forms.Label lblLatinHypercubePoints;
         private System.Windows.Forms.CheckBox chbRunInPointMode;

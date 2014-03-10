@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Windows.Forms;
@@ -20,7 +20,6 @@ namespace BenMAP
             string commandText = string.Empty;
             try
             {
-                //绑定lstPollutant,必须考虑是否当前活动的区域，即SetupID是查询条件
                 commandText = string.Format("select PollutantID,PollutantName,SetupID,ObservationType from Pollutants where setupid={0} order by PollutantName asc", CommonClass.MainSetup.SetupID);
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
                 lstPollutant.DataSource = ds.Tables[0];
@@ -73,10 +72,9 @@ namespace BenMAP
                         else
                         {
                             this.Height = 288;
-                        }                        
+                        }
                         break;
                 }
-                //绑定Metrics
                 commandText = string.Format("select MetricName,MetricID,HourlyMetricGeneration from metrics where pollutantid={0}", drv["PollutantID"]);
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                 DataTable dtMetric = ds.Tables[0].Clone();
@@ -85,16 +83,12 @@ namespace BenMAP
                 cmbMetric.DisplayMember = "MetricName";
                 if (dtMetric.Rows.Count != 0)
                 { cmbMetric.SelectedIndex = 0; }
-                //绑定SeasonalMetrics
                 DataRowView drvMetric = cmbMetric.SelectedItem as DataRowView;
                 if (drvMetric == null) { return; }
                 commandText = string.Format("select SeasonalMetricName,SeasonalMetricID from SeasonalMetrics where MetricID={0}", drvMetric["metricID"]);
                 ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
-                //DataTable dtSeasonal = ds.Tables[0].Clone();
-                //dtSeasonal = ds.Tables[0].Copy();
                 cmbSeasonalMetric.DataSource = ds.Tables[0];
                 cmbSeasonalMetric.DisplayMember = "SeasonalMetricName";
-                //loadMetric(drvMetric);
             }
             catch (Exception ex)
             {
@@ -111,7 +105,6 @@ namespace BenMAP
                 switch (Convert.ToInt32(drvMetric["HourlyMetricGeneration"]))
                 {
                     case 1:
-                        //Fixed Windows
                         commandText = string.Format("select starthour,endhour,statistic from FixedWindowMetrics where metricid={0}", drvMetric["metricid"]);
                         DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
                         if (ds.Tables[0] == null) { return; }
@@ -125,7 +118,6 @@ namespace BenMAP
                         tclFixed.Visible = true;
                         break;
                     case 2:
-                        //Moving Windows
                         commandText = string.Format("select WindowSize,WindowStatistic,DailyStatistic from MovingWindowMetrics where metricid={0}", drvMetric["metricid"]);
                         ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
                         if (ds.Tables[0].Rows.Count == 0) { return; }
@@ -140,7 +132,6 @@ namespace BenMAP
                         tclFixed.Visible = true;
                         break;
                     case 0:
-                        //Custom
                         commandText = string.Format("select MetricFunction from CustomMetrics where MetricID={0}", drvMetric["metricid"]);
                         object obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
                         if (obj != null)
@@ -187,8 +178,6 @@ namespace BenMAP
                     lstSPollutant.Items.Add(lstPollutant.GetItemText(lstPollutant.SelectedItem));
                     pollutant = GridCommon.getPollutantFromID(int.Parse(drv["PollutantID"].ToString()));
                     CommonClass.LstPollutant.Add(pollutant);
-                    //pollutant = new BenMAPPollutant() { PollutantID = int.Parse(drv["PollutantID"].ToString()), PollutantName = drv["PollutantName"].ToString() };
-                    //type = drv["Observationtype"].ToString();
                 }
                 else if (lstSPollutant.Items.Count != 0)
                 {
@@ -197,8 +186,6 @@ namespace BenMAP
                         lstSPollutant.Items.Add(lstPollutant.GetItemText(lstPollutant.SelectedItem));
                         pollutant = GridCommon.getPollutantFromID(int.Parse(drv["PollutantID"].ToString()));
                         CommonClass.LstPollutant.Add(pollutant);
-                        //pollutant = new BenMAPPollutant() { PollutantID = int.Parse(drv["PollutantID"].ToString()), PollutantName = drv["PollutantName"].ToString() };
-                        //type = drv["Observationtype"].ToString();
                     }
                     else
                     { MessageBox.Show(string.Format("{0} has already been selected.", lstPollutant.GetItemText(lstPollutant.SelectedItem))); }
@@ -212,7 +199,6 @@ namespace BenMAP
 
         private void lstSPollutant_SelectedIndexChanged(object sender, EventArgs e)
         {
-            //FireBirdHelperBase fb = new ESILFireBirdHelper();
             try
             {
                 if (sender == null) { return; }
@@ -331,7 +317,6 @@ namespace BenMAP
                 DataRowView drv = lstPollutant.Items[lstPollutant.IndexFromPoint(e.X, e.Y)] as DataRowView;
                 if (drv == null) { return; }
                 showDetails(drv);
-                //cbShowDetails_CheckedChanged(null, null);
                 if (lstPollutant.Items.Count == 0)
                     return;
                 string s = (lstPollutant.Items[lstPollutant.IndexFromPoint(e.X, e.Y)] as DataRowView)["PollutantName"].ToString();
@@ -365,19 +350,6 @@ namespace BenMAP
             DataRowView drv = lstPollutant.SelectedItem as DataRowView;
             if (drv == null) { return; }
             showDetails(drv);
-            //if (cbShowDetails.Checked)
-            //{
-            //    if (txtObservationType.Text == "Daily")
-            //    {
-            //        groupBox2.Height = 82;
-            //        this.Height = 370;
-            //    }
-            //    else
-            //        groupBox2.Height = 240;
-            //        this.Height = 542;
-            //}
-            //else
-            //    this.Height = 288;
         }
-    }// class
+    }
 }
