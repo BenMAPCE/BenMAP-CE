@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -44,7 +44,7 @@ namespace BenMAP
         public static extern bool SendMessage(IntPtr hwnd, int wMsg, int wParam, int lParam);
         public const int WM_SYSCOMMAND = 0x0112;
         public const int SC_MOVE = 0xF010;
-        public const int HTCAPTION = 0x0002;   
+        public const int HTCAPTION = 0x0002;
         private void HomePage_MouseMove(object sender, MouseEventArgs e)
         {
             ReleaseCapture();

@@ -1,7 +1,6 @@
-﻿using System;
+using System;
 using System.Windows.Forms;
 
-//using
 
 namespace BenMAP
 {
@@ -38,7 +37,6 @@ namespace BenMAP
             }
             if (rbtnToStandard.Checked)
             {
-                //DataSource.ToStandardControl scfrm = new DataSource.ToStandardControl();
                 _controlName = "ToStandard";
             }
             this.DialogResult = DialogResult.OK;

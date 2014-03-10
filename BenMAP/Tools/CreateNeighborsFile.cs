@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -40,11 +40,10 @@ namespace BenMAP
         {
             try
             {
-                //----------Output NeighborFile
                 if (txtAirQualitySurface.Text != "")
                 {
                     string err = "";
-                    BenMAPLine benMAPLine = DataSourceCommonClass.LoadAQGFile(txtAirQualitySurface.Text,ref err);
+                    BenMAPLine benMAPLine = DataSourceCommonClass.LoadAQGFile(txtAirQualitySurface.Text, ref err);
                     if (benMAPLine == null)
                     {
                         MessageBox.Show(err);
@@ -65,7 +64,6 @@ namespace BenMAP
 
                             if (sfd.ShowDialog() == DialogResult.OK)
                             {
-                                //------Save To CSV
                                 DataTable dt = new DataTable();
                                 dt.Columns.Add("Col");
                                 dt.Columns.Add("Row");

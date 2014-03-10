@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -64,7 +64,6 @@ namespace BenMAP
                 string filePath = saveCSV.FileName.Substring(0, saveCSV.FileName.LastIndexOf(@"\") + 1);
                 string fileName = saveCSV.FileName.Substring(saveCSV.FileName.LastIndexOf(@"\") + 1);
                 DataSourceCommonClass.SaveModelDataLineToNewFormatCSV(inputBenMAPLine, saveCSV.FileName);
-                //MessageBox.Show("Save has been completed!");
                 this.DialogResult = DialogResult.OK;
             }
             catch (Exception ex)

@@ -1,16 +1,9 @@
-﻿namespace BenMAP
+namespace BenMAP
 {
     partial class ManageMonitorDataSets
     {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -20,12 +13,7 @@
             base.Dispose(disposing);
         }
 
-        #region Windows Form Designer generated code
-
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
+        
         private void InitializeComponent()
         {
             this.grpAvailableDataSets = new System.Windows.Forms.GroupBox();
@@ -46,10 +34,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.olvMonitorDataSets)).BeginInit();
             this.grpCancelOK.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // grpAvailableDataSets
-            // 
-            this.grpAvailableDataSets.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                                                this.grpAvailableDataSets.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)));
             this.grpAvailableDataSets.Controls.Add(this.btnEdit);
             this.grpAvailableDataSets.Controls.Add(this.btnAdd);
@@ -61,10 +46,7 @@
             this.grpAvailableDataSets.TabIndex = 0;
             this.grpAvailableDataSets.TabStop = false;
             this.grpAvailableDataSets.Text = "Available Datasets";
-            // 
-            // btnEdit
-            // 
-            this.btnEdit.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+                                                this.btnEdit.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.btnEdit.Location = new System.Drawing.Point(160, 413);
             this.btnEdit.Name = "btnEdit";
             this.btnEdit.Size = new System.Drawing.Size(59, 27);
@@ -72,10 +54,7 @@
             this.btnEdit.Text = "Edit";
             this.btnEdit.UseVisualStyleBackColor = true;
             this.btnEdit.Click += new System.EventHandler(this.btnEdit_Click);
-            // 
-            // btnAdd
-            // 
-            this.btnAdd.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+                                                this.btnAdd.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.btnAdd.Location = new System.Drawing.Point(95, 413);
             this.btnAdd.Name = "btnAdd";
             this.btnAdd.Size = new System.Drawing.Size(59, 27);
@@ -83,10 +62,7 @@
             this.btnAdd.Text = "Add";
             this.btnAdd.UseVisualStyleBackColor = true;
             this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
-            // 
-            // btnDelete
-            // 
-            this.btnDelete.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+                                                this.btnDelete.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.btnDelete.Location = new System.Drawing.Point(30, 413);
             this.btnDelete.Name = "btnDelete";
             this.btnDelete.Size = new System.Drawing.Size(59, 27);
@@ -94,10 +70,7 @@
             this.btnDelete.Text = "Delete";
             this.btnDelete.UseVisualStyleBackColor = true;
             this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
-            // 
-            // lstAvailableDataSets
-            // 
-            this.lstAvailableDataSets.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                                                this.lstAvailableDataSets.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)));
             this.lstAvailableDataSets.FormattingEnabled = true;
             this.lstAvailableDataSets.HorizontalScrollbar = true;
@@ -107,10 +80,7 @@
             this.lstAvailableDataSets.Size = new System.Drawing.Size(213, 382);
             this.lstAvailableDataSets.TabIndex = 0;
             this.lstAvailableDataSets.SelectedIndexChanged += new System.EventHandler(this.lstAvailableDataSets_SelectedIndexChanged);
-            // 
-            // grpDataSetContents
-            // 
-            this.grpDataSetContents.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                                                this.grpDataSetContents.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.grpDataSetContents.Controls.Add(this.olvMonitorDataSets);
@@ -120,10 +90,7 @@
             this.grpDataSetContents.TabIndex = 1;
             this.grpDataSetContents.TabStop = false;
             this.grpDataSetContents.Text = "Dataset Contents (Number of Monitors by Pollutant by Year)";
-            // 
-            // olvMonitorDataSets
-            // 
-            this.olvMonitorDataSets.AllColumns.Add(this.olvColumn1);
+                                                this.olvMonitorDataSets.AllColumns.Add(this.olvColumn1);
             this.olvMonitorDataSets.AllColumns.Add(this.olvColumn2);
             this.olvMonitorDataSets.AllColumns.Add(this.olvColumn9);
             this.olvMonitorDataSets.AllowColumnReorder = true;
@@ -162,29 +129,17 @@
             this.olvMonitorDataSets.UseHotItem = true;
             this.olvMonitorDataSets.UseHyperlinks = true;
             this.olvMonitorDataSets.View = System.Windows.Forms.View.Details;
-            // 
-            // olvColumn1
-            // 
-            this.olvColumn1.AspectName = "pollutantname";
+                                                this.olvColumn1.AspectName = "pollutantname";
             this.olvColumn1.Text = "Pollutant";
             this.olvColumn1.Width = 146;
-            // 
-            // olvColumn2
-            // 
-            this.olvColumn2.AspectName = "yyear";
+                                                this.olvColumn2.AspectName = "yyear";
             this.olvColumn2.Text = "Year";
             this.olvColumn2.Width = 128;
-            // 
-            // olvColumn9
-            // 
-            this.olvColumn9.AspectName = "Count";
+                                                this.olvColumn9.AspectName = "Count";
             this.olvColumn9.FillsFreeSpace = true;
             this.olvColumn9.Text = "Monitor Count";
             this.olvColumn9.Width = 109;
-            // 
-            // btnCancel
-            // 
-            this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+                                                this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.Location = new System.Drawing.Point(463, 16);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 27);
@@ -193,10 +148,7 @@
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Visible = false;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
-            // 
-            // btnOK
-            // 
-            this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+                                                this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOK.Location = new System.Drawing.Point(544, 16);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 27);
@@ -204,10 +156,7 @@
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
-            // 
-            // grpCancelOK
-            // 
-            this.grpCancelOK.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+                                                this.grpCancelOK.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.grpCancelOK.Controls.Add(this.btnCancel);
             this.grpCancelOK.Controls.Add(this.btnOK);
@@ -216,10 +165,7 @@
             this.grpCancelOK.Size = new System.Drawing.Size(636, 52);
             this.grpCancelOK.TabIndex = 4;
             this.grpCancelOK.TabStop = false;
-            // 
-            // ManageMonitorDataSets
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
+                                                this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(661, 522);
             this.Controls.Add(this.grpCancelOK);
@@ -239,8 +185,7 @@
 
         }
 
-        #endregion
-
+        
         private System.Windows.Forms.GroupBox grpAvailableDataSets;
         private System.Windows.Forms.Button btnEdit;
         private System.Windows.Forms.Button btnAdd;

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -28,33 +28,33 @@ namespace BenMAP
         {
             try
             {
-              txtAgeRangeID.Text = "AgeRange 0";
-              txtLowAgeofAgeRange.Text = (_lowAge+1).ToString();
-              txtHighAge.Text = (_lowAge+1).ToString();
+                txtAgeRangeID.Text = "AgeRange 0";
+                txtLowAgeofAgeRange.Text = (_lowAge + 1).ToString();
+                txtHighAge.Text = (_lowAge + 1).ToString();
             }
             catch (Exception ex)
             {
                 Logger.LogError(ex.Message);
             }
-        } 
-        
+        }
+
         private void btnOK_Click(object sender, EventArgs e)
         {
             ESIL.DBUtility.ESILFireBirdHelper fb = new ESIL.DBUtility.ESILFireBirdHelper();
             try
             {
-                int highAge=int.Parse(txtHighAge.Text);
-                string commandText = "select AgeRangeID from AgeRanges where AgeRangeName='" + txtAgeRangeID.Text + "' and POPULATIONCONFIGURATIONID = "+configurationID+"";
+                int highAge = int.Parse(txtHighAge.Text);
+                string commandText = "select AgeRangeID from AgeRanges where AgeRangeName='" + txtAgeRangeID.Text + "' and POPULATIONCONFIGURATIONID = " + configurationID + "";
                 object obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
                 if (obj != null)
                 {
                     MessageBox.Show("The age range name is already in use. Please enter a different name.");
                     return;
                 }
-                if (highAge < _lowAge+1)
+                if (highAge < _lowAge + 1)
                 {
                     MessageBox.Show("The end age must be equal to or larger than the start age.");
-                }                
+                }
                 else
                 {
                     _newAgeRangID = txtAgeRangeID.Text;
@@ -68,6 +68,6 @@ namespace BenMAP
             }
         }
 
-       
+
     }
 }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,16 +10,12 @@ namespace BenMAP
 {
     class OutputCommonClass
     {
-        /// <summary>
-        /// 得到所有INcidenceDataSet
-        /// </summary>
-        /// <returns></returns>LOWER
         public static Dictionary<int, string> getAllIncidenceDataset()
         {
             try
             {
                 Dictionary<int, string> dicIncidenceDataset = new Dictionary<int, string>();
-                string commandText = "select IncidenceDatasetID,IncidenceDatasetName from IncidenceDatasets where setupId="+CommonClass.ManageSetup.SetupID;
+                string commandText = "select IncidenceDatasetID,IncidenceDatasetName from IncidenceDatasets where setupId=" + CommonClass.ManageSetup.SetupID;
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
                 foreach (DataRow dr in ds.Tables[0].Rows)
@@ -35,10 +31,6 @@ namespace BenMAP
             }
         }
 
-        /// <summary>
-        /// 得到所有PrevalenceDataset,与Incidencedataset一样，只是变量名不同
-        /// </summary>
-        /// <returns></returns>LOWER
         public static Dictionary<int, string> getAllPrevalence()
         {
             try
@@ -60,10 +52,6 @@ namespace BenMAP
             }
         }
 
-        /// <summary>
-        /// 得到所有VariableDataset
-        /// </summary>
-        /// <returns></returns>LOWER
         public static Dictionary<int, string> getAllVariableDatasets()
         {
             try
@@ -101,7 +89,7 @@ namespace BenMAP
                 {
                     if (id == MetricStasticID)
                     {
-                        returnValue=dicMetricStastic[id];
+                        returnValue = dicMetricStastic[id];
                     }
                 }
                 return returnValue;
@@ -113,10 +101,6 @@ namespace BenMAP
             }
         }
 
-        /// <summary>
-        /// 得到所有baseline function
-        /// </summary>
-        /// <returns></returns>LOWER
         public static Dictionary<int, string> getAllBaselineFunctions()
         {
             try
@@ -138,10 +122,6 @@ namespace BenMAP
             }
         }
 
-        /// <summary>
-        /// 得到所有loaction
-        /// </summary>
-        /// <returns></returns>LOWER
         public static Dictionary<int, string> getAllLocation()
         {
             try
@@ -163,10 +143,6 @@ namespace BenMAP
             }
         }
 
-        /// <summary>
-        /// 得到所有ValuationFunctions
-        /// </summary>
-        /// <returns></returns>LOWER
         public static Dictionary<int, string> getAllValuationFunctions()
         {
             try
@@ -188,10 +164,6 @@ namespace BenMAP
             }
         }
 
-        /// <summary>
-        /// 得到所有Functions
-        /// </summary>
-        /// <returns></returns>LOWER
         public static Dictionary<int, string> getAllFunctions()
         {
             try
@@ -213,10 +185,6 @@ namespace BenMAP
             }
         }
 
-        /// <summary>
-        /// 得到所有污染物
-        /// </summary>
-        /// <returns></returns>LOWER
         public static Dictionary<int, string> getAllPollutants()
         {
             try
@@ -238,10 +206,6 @@ namespace BenMAP
             }
         }
 
-        /// <summary>
-        /// 得到所有Race种族
-        /// </summary>
-        /// <returns></returns>LOWER
         public static Dictionary<int, string> getAllRace()
         {
             try
@@ -262,10 +226,6 @@ namespace BenMAP
                 return null;
             }
         }
-        /// <summary>
-        /// 得到所有Ethnicity-宗教信仰
-        /// </summary>
-        /// <returns></returns>
         public static Dictionary<int, string> getAllEthnicity()
         {
             try
@@ -286,10 +246,6 @@ namespace BenMAP
                 return null;
             }
         }
-        /// <summary>
-        /// 得到所有Gender;性别
-        /// </summary>
-        /// <returns></returns>
         public static Dictionary<int, string> getAllGender()
         {
             try
@@ -312,10 +268,6 @@ namespace BenMAP
             }
         }
 
-        /// <summary>
-        /// 得到所有EndPointGroup
-        /// </summary>
-        /// <returns></returns>
         public static Dictionary<int, string> getAllEndPointGroup()
         {
             try
@@ -337,17 +289,12 @@ namespace BenMAP
             }
         }
 
-        /// <summary>
-        /// 得到所有小写EndPoint
-        /// </summary>
-        /// <returns></returns>
         public static Dictionary<int, string> getAllEndPoint()
         {
             try
             {
                 Dictionary<int, string> dicEndPoint = new Dictionary<int, string>();
-                string commandText = "select EndPointID,EndPointName from EndPoints ";//where EndPointName!='' union select EndPointID,EndPointName from EndPoints where EndPointID=99";
-                ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                string commandText = "select EndPointID,EndPointName from EndPoints "; ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
                 foreach (DataRow dr in ds.Tables[0].Rows)
                 {
@@ -361,17 +308,12 @@ namespace BenMAP
             }
         }
 
-        /// <summary>
-        /// 得到所有的Metrics
-        /// </summary>
-        /// <returns></returns>
         public static Dictionary<int, string> getMetric()
         {
             try
             {
                 Dictionary<int, string> dicMetric = new Dictionary<int, string>();
-                string commandText = "select MetricID,MetricName from Metrics ";//where EndPointName!='' union select EndPointID,EndPointName from EndPoints where EndPointID=99";
-                ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                string commandText = "select MetricID,MetricName from Metrics "; ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
                 foreach (DataRow dr in ds.Tables[0].Rows)
                 {
@@ -387,17 +329,12 @@ namespace BenMAP
             }
         }
 
-        /// <summary>
-        /// 得到所有的SeasonalMetrics
-        /// </summary>
-        /// <returns></returns>
         public static Dictionary<int, string> getSeasonalMetric()
         {
             try
             {
                 Dictionary<int, string> dicSMetric = new Dictionary<int, string>();
-                string commandText = "select SeasonalMetricID,SeasonalMetricName from SeasonalMetrics ";//where EndPointName!='' union select EndPointID,EndPointName from EndPoints where EndPointID=99";
-                ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                string commandText = "select SeasonalMetricID,SeasonalMetricName from SeasonalMetrics "; ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
                 foreach (DataRow dr in ds.Tables[0].Rows)
                 {
@@ -413,12 +350,6 @@ namespace BenMAP
             }
         }
 
-        /// <summary>
-        /// 通过ID得到输出文件中的字符串
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="dic"></param>
-        /// <returns></returns>
         public static string getStringFromID(int id, Dictionary<int, string> dic)
         {
             try
@@ -438,18 +369,12 @@ namespace BenMAP
             }
         }
 
-        /// <summary>
-        /// 将DataTable中数据写入到CSV文件中,如果保存的字段中含有逗号（，），用引号("")处理
-        /// </summary>
-        /// <param name="dt">提供保存数据的DataTable</param>
-        /// <param name="fileName">CSV的文件路径</param>
         public static void SaveCSV(DataTable dt, string fileName)
         {
             FileStream fs = new FileStream(fileName, System.IO.FileMode.Create, System.IO.FileAccess.Write);
             StreamWriter sw = new StreamWriter(fs, System.Text.Encoding.UTF8);
             string data = "";
 
-            //写出列名称
             for (int i = 0; i < dt.Columns.Count; i++)
             {
                 data += dt.Columns[i].ColumnName.ToString();
@@ -460,7 +385,6 @@ namespace BenMAP
             }
             sw.WriteLine(data);
 
-            //写出各行数据
             for (int i = 0; i < dt.Rows.Count; i++)
             {
                 data = "";

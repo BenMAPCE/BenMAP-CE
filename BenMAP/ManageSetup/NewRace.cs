@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -39,7 +39,7 @@ namespace BenMAP
                     {
                         commandText = "select max(RACEID) from RACES";
                         raceID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
-                        commandText = string.Format("insert into Races values ({0},'{1}')",raceID,txtNewRaceName.Text);
+                        commandText = string.Format("insert into Races values ({0},'{1}')", raceID, txtNewRaceName.Text);
                         fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                     }
                     else { MessageBox.Show("This race name is already in use. Please enter a different name."); return; }
@@ -51,7 +51,7 @@ namespace BenMAP
                 Logger.LogError(ex.Message);
             }
 
-            
+
         }
 
         private void NewRace_Activated(object sender, EventArgs e)

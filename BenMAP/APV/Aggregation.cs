@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -20,7 +20,6 @@ namespace BenMAP.APVX
         {
             try
             {
-
                 BindGridtype();
                 cboIncidenceAggregation.DataSource = dsGrid.Tables[0];
                 cboIncidenceAggregation.DisplayMember = "GridDefinitionName";
@@ -75,14 +74,14 @@ namespace BenMAP.APVX
             {
                 Logger.LogError(ex);
             }
-            
+
         }
         private void BindGridtype()
         {
             try
             {
-               ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
-               string commandText = string.Format("select -1 as  GridDefinitionID, '' as GridDefinitionName from GridDefinitions union select distinct GridDefinitionID,GridDefinitionName from griddefinitions where SetupID={0} ", CommonClass.MainSetup.SetupID);
+                ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                string commandText = string.Format("select -1 as  GridDefinitionID, '' as GridDefinitionName from GridDefinitions union select distinct GridDefinitionID,GridDefinitionName from griddefinitions where SetupID={0} ", CommonClass.MainSetup.SetupID);
                 dsGrid = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
             }
             catch (Exception ex)
@@ -97,7 +96,7 @@ namespace BenMAP.APVX
 
         private void btnOK_Click(object sender, EventArgs e)
         {
-          
+
             this.DialogResult = DialogResult.OK;
         }
     }

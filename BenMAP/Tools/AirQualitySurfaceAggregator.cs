@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -68,14 +68,14 @@ namespace BenMAP
                 List<Dictionary<string, float>> lstBig = new List<Dictionary<string, float>>();
                 List<ModelResultAttribute> lstSmall = new List<ModelResultAttribute>();
                 string err = "";
-                inputBenMAPLine = DataSourceCommonClass.LoadAQGFile(txtAirQualitySurface.Text,ref err);
+                inputBenMAPLine = DataSourceCommonClass.LoadAQGFile(txtAirQualitySurface.Text, ref err);
                 if (inputBenMAPLine == null)
                 {
                     MessageBox.Show(err);
                     return;
                 }
                 DataRowView drOutput = (cboAggregationSurface.SelectedItem) as DataRowView;
-                 
+
                 int outputGridDefinitionID = Convert.ToInt32(drOutput["GridDefinitionID"]);
                 if (inputBenMAPLine.GridType.GridDefinitionID == outputGridDefinitionID)
                 {
@@ -83,10 +83,8 @@ namespace BenMAP
                     return;
                 }
 
-                //Save
                 SaveFileDialog saveOutAQG = new SaveFileDialog();
                 saveOutAQG.Filter = "aqgx file|*.aqgx";
-                //saveOutAQG.FilterIndex = 2;
                 saveOutAQG.InitialDirectory = CommonClass.ResultFilePath + @"\Result\AQG";
                 saveOutAQG.RestoreDirectory = true;
                 if (saveOutAQG.ShowDialog() == DialogResult.Cancel)
@@ -103,15 +101,13 @@ namespace BenMAP
                 if (GridTo == 28) GridTo = 27;
                 if (GridFrom == GridTo)
                 {
-                    // out to --修正GridDefiniton即可
                     outModelResultAttributes = inputBenMAPLine.ModelResultAttributes;
                 }
                 else
                 {
                     string str = string.Format("select sourcecolumn, sourcerow, targetcolumn, targetrow,Percentage from GridDefinitionPercentages a,GridDefinitionPercentageEntries b where a.PercentageID=b.PercentageID and a.SourceGridDefinitionID={0} and a.TargetGridDefinitionID={1} and normalizationstate in (0,1)", GridFrom, GridTo);
                     ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
-                    DataSet ds;//
-                    int iCount = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, "select count(*) from (" + str + " ) a"));
+                    DataSet ds; int iCount = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, "select count(*) from (" + str + " ) a"));
                     if (iCount == 0)
                     {
 
@@ -141,7 +137,6 @@ namespace BenMAP
                         }
 
                         ds.Dispose();
-                        //--------Aggregation!--
                         Dictionary<string, ModelResultAttribute> dicModelFrom = new Dictionary<string, ModelResultAttribute>();
                         foreach (ModelResultAttribute mo in inputBenMAPLine.ModelResultAttributes)
                         {
@@ -156,14 +151,7 @@ namespace BenMAP
                             anew.Values = new Dictionary<string, float>();
                             Dictionary<string, float> dicValue = new Dictionary<string, float>();
 
-                            //if (dicModelFrom.ContainsKey(gra.Value.First().Key))
-                            //{
-                            //    foreach (KeyValuePair<string, float> k in dicModelFrom[gra.Value.First().Key].Values)
-                            //    {
-                            //        anew.Values.Add(k.Key, Convert.ToSingle(k.Value * gra.Value.First().Value));
 
-                            //    }
-                            //}
                             for (int i = 0; i < gra.Value.Count; i++)
                             {
                                 if (dicModelFrom.ContainsKey(gra.Value.ToList()[i].Key))
@@ -179,7 +167,7 @@ namespace BenMAP
                                 }
 
                             }
-                            
+
                             if (anew.Values != null && anew.Values.Count > 0)
                             {
                                 List<string> lstKey = anew.Values.Keys.ToList();
@@ -195,70 +183,19 @@ namespace BenMAP
                     }
 
                 }
-                 
-                
-                //  inputBenMAPLine.GridType = Grid.GridCommon.getBenMAPGridFromID(inputGridDefinitionID);
 
-                //if (inputBenMAPLine.GridType.GridDefinitionID == gRegionGridRelationship.bigGridID)//*.aqg 文件比较大
-                //{
-                //    foreach (GridRelationshipAttribute gra in gRegionGridRelationship.lstGridRelationshipAttribute)
-                //    {
 
-                //        foreach (RowCol rc in gra.smallGridRowCol)
-                //        {
-                //            outModelResultAttributes.Add(new ModelResultAttribute()
-                //            {
-                //                Col = rc.Col,
-                //                Row = rc.Row
-                //                //Values= inputBenMAPLine.ModelResultAttributes.Where(p=>p.Col==gra.bigGridRowCol.Col && p.Row==gra.bigGridRowCol.Row).First().Values;
-                //            });
-                //            lstBig = inputBenMAPLine.ModelResultAttributes.Where(p => p.Col == gra.bigGridRowCol.Col && p.Row == gra.bigGridRowCol.Row).Select(a => a.Values).ToList();
-                //            if (lstBig.Count > 0)
-                //            {
-                //                outModelResultAttributes[outModelResultAttributes.Count - 1].Values = lstBig.First();
 
-                //            }
-                //            //先处理dictionary    
-                //            //foreach (ModelResultAttribute mra in inputAQG.ModelResultAttributes)
-                //            //{
 
-                //            //}
-                //            //lstResult.Add(new ModelResultAttribute()
-                //            //{
-                //            //    Col=rc.Col,Row=rc.Row,
-                //            //    Values=
-                //            //});                           
-                //        }
-                //    }
-                //}
-                //else if (inputBenMAPLine.GridType.GridDefinitionID == gRegionGridRelationship.smallGridID)
-                //{
-                //    foreach (GridRelationshipAttribute gra in gRegionGridRelationship.lstGridRelationshipAttribute)
-                //    {
-                //        lstSmall = inputBenMAPLine.ModelResultAttributes.Where(p => gra.smallGridRowCol.Contains(new RowCol() { Row = p.Row, Col = p.Col }, new RowColComparer())).ToList();
-                //        if (lstSmall != null && lstSmall.Count > 0)
-                //        {
-                //            ModelResultAttribute m = new ModelResultAttribute();
-                //            m.Row = gra.bigGridRowCol.Row;
-                //            m.Col = gra.bigGridRowCol.Col;
-                //            m.Values = new Dictionary<string, float>();
-                //            for (int i = 0; i < lstSmall.First().Values.Count; i++)
-                //            {
-                //                m.Values.Add(lstSmall.First().Values.Keys.ToArray()[i], lstSmall.Average(p => p.Values.Where(c => c.Key == lstSmall.First().Values.Keys.ToArray()[i]).Select(a => a.Value).Average()));
-                //                //m.Values.Add(lstSmall.First().Values.Keys.ToArray()[i], lstSmall.Where(t => t.Key.ToString() == lstSmall.First().Values.Keys.ToArray()[i]).Average(p=>p.k);
 
-                //            }
-                //            outModelResultAttributes.Add(m);
-                //        }
 
-                //    }
 
-                //}
+
+
                 inputBenMAPLine.ModelResultAttributes = outModelResultAttributes;
                 inputBenMAPLine.ModelAttributes = null;
-                //inputBenMAPLine.ShapeFile = "";
                 inputBenMAPLine.GridType = Grid.GridCommon.getBenMAPGridFromID(outputGridDefinitionID);
-                
+
                 DataSourceCommonClass.CreateAQGFromBenMAPLine(inputBenMAPLine, saveOutAQG.FileName);
                 WaitClose();
                 MessageBox.Show("File saved.", "File saved");
@@ -272,10 +209,7 @@ namespace BenMAP
 
         }
 
-        #region 等待窗口
-        TipFormGIF waitMess = new TipFormGIF();//等待窗体
-        bool sFlog = true;
-        //--显示等待窗体 
+        TipFormGIF waitMess = new TipFormGIF(); bool sFlog = true;
         private void ShowWaitMess()
         {
             try
@@ -292,7 +226,6 @@ namespace BenMAP
             }
         }
 
-        //--新开辟一个线程调用 
         public void WaitShow(string msg)
         {
             try
@@ -313,10 +246,8 @@ namespace BenMAP
         }
         private delegate void CloseFormDelegate();
 
-        //--关闭等待窗体 
         public void WaitClose()
         {
-            //同步到主线程上
             if (waitMess.InvokeRequired)
                 waitMess.Invoke(new CloseFormDelegate(DoCloseJob));
             else
@@ -341,7 +272,6 @@ namespace BenMAP
                 MessageBox.Show(Err.Message);
             }
         }
-        #endregion 等待窗口
 
     }
 }

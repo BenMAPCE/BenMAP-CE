@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Data;
 using System.Windows.Forms;
 using ESIL.DBUtility;
@@ -17,7 +17,7 @@ namespace BenMAP
         }
 
         public VariableDataSetDefinition(string datasetName)
-        { //窗体登陆时根据调用构造函数不同而坐不同操作；同理根据_datasetName是否有值来判断来源界面是编辑还是更新
+        {
             InitializeComponent();
             _datasetName = datasetName;
         }
@@ -51,8 +51,6 @@ namespace BenMAP
                         txtGridDefinition.Text = GridDefinitionName;
                         txtGridDefinition.ReadOnly = true;
                     }
-                    //lstDataSetVariable.DataSource = dsOrigin.Tables[0];
-                    //lstDataSetVariable.DisplayMember = "SetUpVariableName";
                     int itemCount = dsOrigin.Tables[0].Rows.Count;
                     string str = string.Empty;
                     _dsSelectedData = new DataSet();
@@ -70,7 +68,6 @@ namespace BenMAP
                         dt = ds.Tables[0].Copy();
                         dt.TableName = variableName;
                         _dsSelectedData.Tables.Add(dt);
-                        //dgvLoadedValue.DataSource = _dsSelectedData.Tables[0];
                     }
                     lstDataSetVariable.SelectedIndex = 0;
                 }
@@ -80,13 +77,7 @@ namespace BenMAP
                     ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                     olvData.DataSource = ds.Tables[0];
                     _dt = ds.Tables[0];
-                    //dt = ds.Tables[0].Clone();
-                    //dt = ds.Tables[0].Copy();
-                    //dt.Columns[0].ColumnName = "Column";
-                    //dt.Columns[1].ColumnName = "Row";
-                    //dt.Columns[2].ColumnName = "Value";
 
-                    //automatically generated name-increase the number at the end of the name
                     int number = 0;
                     int VariableDatasetID = 0;
                     do
@@ -97,7 +88,6 @@ namespace BenMAP
                     } while (VariableDatasetID > 0);
                     txtDataSetName.Text = "VariableDataSet" + Convert.ToString(number - 1);
                     txtGridDefinition.Text = string.Empty;
-                    //_dsSelectedData.Tables.Add(dt);
 
                 }
             }
@@ -127,8 +117,7 @@ namespace BenMAP
 
             FirebirdSql.Data.FirebirdClient.FbConnection fbconnection = CommonClass.getNewConnection();
             fbconnection.Open();
-            FirebirdSql.Data.FirebirdClient.FbTransaction fbtra = fbconnection.BeginTransaction();//开始事务
-            FirebirdSql.Data.FirebirdClient.FbCommand fbCommand = new FirebirdSql.Data.FirebirdClient.FbCommand();
+            FirebirdSql.Data.FirebirdClient.FbTransaction fbtra = fbconnection.BeginTransaction(); FirebirdSql.Data.FirebirdClient.FbCommand fbCommand = new FirebirdSql.Data.FirebirdClient.FbCommand();
             fbCommand.Connection = fbconnection;
             fbCommand.CommandType = CommandType.Text;
             fbCommand.Transaction = fbtra;
@@ -149,7 +138,7 @@ namespace BenMAP
                 commandText = string.Format("select SETUPVARIABLEDATASETID from  SetUpVariableDataSets where SETUPVARIABLEDATASETNAME='{0}' and SetupID={1}", txtDataSetName.Text, CommonClass.ManageSetup.SetupID);
                 obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
                 if (_datasetName == string.Empty)
-                { //新增
+                {
                     if (obj != null) { MessageBox.Show("The dataset name has already been defined. Please enter a different name."); return; }
                     commandText = "select max(SETUPVARIABLEDATASETID) from SETUPVARIABLEDATASETS";
                     obj = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText)) + 1;
@@ -171,22 +160,15 @@ namespace BenMAP
                         variableID = Convert.ToInt32(obj);
                     for (int i = 0; i < count; i++)
                     {
-                        //FirebirdSql.Data.FirebirdClient.FbCommand fbCommand = new FirebirdSql.Data.FirebirdClient.FbCommand();
-                        //fbCommand.Connection = CommonClass.Connection;
-                        //fbCommand.CommandType = CommandType.Text;
-                        //if (fbCommand.Connection.State != ConnectionState.Open)
-                        //{ fbCommand.Connection.Open(); }
                         dt = _dsSelectedData.Tables[i].Clone();
                         dt = _dsSelectedData.Tables[i].Copy();
 
                         string variableName = dt.TableName;
                         commandText = string.Format("select SETUPVARIABLEID from SETUPVARIABLES where SETUPVARIABLENAME='{0}' and SETUPVARIABLEDATASETID='{1}'", variableName, variableDatasetID);
                         obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
-                        //string tip = "Saving the datafile!";
 
                         if (obj == null)
                         {
-                            //WaitShow(tip);
                             variableID++;
                             commandText = string.Format("insert into SetUpVariables values({0},{1},'{2}','{3}')", variableID, variableDatasetID, variableName, gridDefinationID);
                             fbCommand.CommandText = commandText;
@@ -215,12 +197,11 @@ namespace BenMAP
                                 fbCommand.CommandText = commandText;
                                 fbCommand.ExecuteNonQuery();
                             }
-                            //WaitClose();
                         }
                     }
                 }
                 else
-                {//编辑
+                {
                     commandText = string.Format("select SETUPVARIABLEDATASETID from  SetUpVariableDataSets where SETUPVARIABLEDATASETNAME='{0}' and SetupID={1}", _datasetName, CommonClass.ManageSetup.SetupID);
                     obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
                     variableDatasetID = obj.ToString();
@@ -242,20 +223,14 @@ namespace BenMAP
                         variableID = Convert.ToInt32(obj);
                     for (int i = 0; i < count; i++)
                     {
-                        //FirebirdSql.Data.FirebirdClient.FbCommand fbCommand = new FirebirdSql.Data.FirebirdClient.FbCommand();
-                        //fbCommand.Connection = CommonClass.Connection;
-                        //fbCommand.CommandType = CommandType.Text;
-                        //if (fbCommand.Connection.State != ConnectionState.Open)
-                        //{ fbCommand.Connection.Open(); }
                         dt = _dsSelectedDataTemp.Tables[i].Clone();
                         dt = _dsSelectedDataTemp.Tables[i].Copy();
 
                         string variableName = dt.TableName;
                         commandText = string.Format("select SETUPVARIABLEID from SETUPVARIABLES where SETUPVARIABLENAME='{0}' and SETUPVARIABLEDATASETID='{1}'", variableName, variableDatasetID);
                         obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
-                        //string tip = "Saving the datafile!";
 
-                        variableID ++;
+                        variableID++;
                         commandText = string.Format("insert into SetUpVariables values({0},{1},'{2}','{3}')", variableID, variableDatasetID, variableName, gridDefinationID);
                         fbCommand.CommandText = commandText;
                         fbCommand.ExecuteNonQuery();
@@ -323,39 +298,12 @@ namespace BenMAP
                 if (rtn != DialogResult.OK) { return; }
                 txtGridDefinition.Text = frm.DefinitionID;
                 txtGridDefinition.ReadOnly = false;
-                //Todo:陈志润
                 string strPath = frm.DataPath;
-                //string ext = System.IO.Path.GetExtension(strPath);
-                //int sheetIndex = 1;
-                //if (strPath.Substring(strPath.Length - 3, 3).ToLower() != "csv")
-                //{
-                //    //判断有没有安装Excel
-                //    if (Type.GetTypeFromProgID("Excel.Application") == null)
-                //    {
-                //        MessageBox.Show("Please install Excel.", "Warning", MessageBoxButtons.OK);
-                //        return;
-                //    }
-                //    sheetIndex = CommonClass.SelectedSheetIndex(strPath);
-                //}
                 WaitShow(tip);
                 _dtOrigin = CommonClass.ExcelToDataTable(strPath);
-                //_dsOrigin = dp.GetDataFromFile(strPath);
-                //switch (ext.ToLower())
-                //{
-                //    case ".xls":
-                //        _dsOrigin = dp.ReadExcel2DataSet(strPath);
-                //        break;
-                //    case ".xlsx":
-                //        _dsOrigin = dp.ReadExcel2DataSet(strPath);
-                //        break;
-                //    case ".csv":
-                //        _dsOrigin = dp.ReadCSV2DataSet(strPath, "table");
-                //        break;
-                //    default: break;
-                //}
                 int colCount = _dtOrigin.Columns.Count;
-                if (_dtOrigin == null || colCount <= 2) 
-                { 
+                if (_dtOrigin == null || colCount <= 2)
+                {
                     WaitClose();
                     MessageBox.Show("Failed to load variable dataset.");
                     return;
@@ -432,7 +380,6 @@ namespace BenMAP
                     DataTable _dt = dt.Copy();
                     _dsSelectedDataTemp.Tables.Add(_dt);
                 }
-                //lstDataSetVariable.Items.AddRange(headers);
                 lstDataSetVariable.SelectedIndex = 0;
                 txtGridDefinition.Enabled = false;
                 WaitClose();
@@ -532,10 +479,8 @@ namespace BenMAP
             this.Close();
         }
 
-        TipFormGIF waitMess = new TipFormGIF();//等待窗体
-        bool sFlog = true;
+        TipFormGIF waitMess = new TipFormGIF(); bool sFlog = true;
 
-        //--显示等待窗体
         private void ShowWaitMess()
         {
             try
@@ -551,7 +496,6 @@ namespace BenMAP
             }
         }
 
-        //--新开辟一个线程调用
         public void WaitShow(string msg)
         {
             try
@@ -574,10 +518,8 @@ namespace BenMAP
 
         private delegate void CloseFormDelegate();
 
-        //--关闭等待窗体
         public void WaitClose()
         {
-            //同步到主线程上
             if (waitMess.InvokeRequired)
                 waitMess.Invoke(new CloseFormDelegate(DoCloseJob));
             else
@@ -614,7 +556,7 @@ namespace BenMAP
                 { return; }
                 string fileName = saveFileDialog1.FileName;
                 DataTable dtOut = new DataTable();
-               
+
                 dtOut.Columns.Add("Column", typeof(int));
                 dtOut.Columns.Add("Row", typeof(int));
                 dtOut.Columns.Add("Variable", typeof(double));
@@ -634,7 +576,7 @@ namespace BenMAP
                     newdr["Variable"] = Convert.ToDouble(dr["VValue"]);
                     dtOut.Rows.Add(newdr);
                 }
-               CommonClass.SaveCSV(dtOut, fileName);
+                CommonClass.SaveCSV(dtOut, fileName);
             }
             catch (Exception ex)
             {

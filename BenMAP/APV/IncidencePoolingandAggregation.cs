@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -19,9 +19,6 @@ namespace BenMAP
     {
 
         private int _operationStatus;
-        /// <summary>
-        /// 当前操作状态：0->登入界面后没做任何操作；1->登入后做了新增操作；2->登入后做了修改界面参数；3->登入后做了删除操作
-        /// </summary>
         public int OperationStatus
         {
             get { return _operationStatus; }
@@ -29,8 +26,7 @@ namespace BenMAP
             {
                 _operationStatus = value;
             }
-        }// Var
-        public Dictionary<string, int> _dicPoolingWindowOperation=new Dictionary<string,int>();//-----如果有删除或者增加的操作，则记录
+        }        public Dictionary<string, int> _dicPoolingWindowOperation = new Dictionary<string, int>();
         public IncidencePoolingandAggregation()
         {
             InitializeComponent();
@@ -40,7 +36,6 @@ namespace BenMAP
             this.tabControlSelected.AllowDrop = true;
         }
         private List<CRSelectFunctionCalculateValue> lstSelectCRSelectFunctionCalculateValue = new List<CRSelectFunctionCalculateValue>();
-        //private IncidencePoolingAndAggregationAdvance incidencePoolingAndAggregationAdvance = new IncidencePoolingAndAggregationAdvance();
         private Dictionary<string, List<CRSelectFunctionCalculateValue>> dicTabCR = new Dictionary<string, List<CRSelectFunctionCalculateValue>>();
         private bool isSelectTile = false;
         public List<IncidencePoolingAndAggregation> lstIncidencePoolingAndAggregationOld;
@@ -50,31 +45,21 @@ namespace BenMAP
         {
             try
             {
-                _operationStatus = 0; //没做任何修改
-                if ((CommonClass.LstDelCRFunction == null || CommonClass.LstDelCRFunction.Count == 0) && (CommonClass.LstUpdateCRFunction == null || CommonClass.LstUpdateCRFunction.Count == 0))
+                _operationStatus = 0; if ((CommonClass.LstDelCRFunction == null || CommonClass.LstDelCRFunction.Count == 0) && (CommonClass.LstUpdateCRFunction == null || CommonClass.LstUpdateCRFunction.Count == 0))
                 {
-                    //btnShowChanges.BackColor = Color.LightBlue;
                     btnShowChanges.Enabled = false;
                 }
                 else
                 {
-                    //-----------majie-------
                     btnShowChanges.Enabled = true;
                     this.toolTip1.SetToolTip(btnShowChanges, "Please resolve conflicts between the pooling and configuration files.");
-                    //btnShowChanges.BackColor = Color.LightBlue;
                 }
                 if (CommonClass.BaseControlCRSelectFunctionCalculateValue != null && CommonClass.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue != null)
                 {
                     if (CommonClass.ValuationMethodPoolingAndAggregation != null)
                     {
                         txtOpenExistingCFGR.Text = CommonClass.ValuationMethodPoolingAndAggregation.CFGRPath;
-                        ////--------------异步loadCFGR--------------
-                        //AsyncCFGRDelegate asyncD = new AsyncCFGRDelegate(AsyncLoadCFGR);
-                        //IAsyncResult ar = asyncD.BeginInvoke(txtOpenExistingCFGR.Text, null, null);
                     }
-                    //this.Close();
-                    //return;
-                    //--------------考虑选择后的Tile问题-----------------20120104--点击某节点，如果是叶子结点出来所有平级的Tile，如果是父节点出来所有的叶子结点-----
                     splitContainerTile.Panel2.Hide();
                     splitContainerTile.SplitterDistance = splitContainerTile.Width;
                     int iColumns = 0;
@@ -93,7 +78,6 @@ namespace BenMAP
 
                         iColumns++;
                     }
-                    //---------------------------------------------------------------------
                     tabControlSelected.TabPages.Clear();
                     tabControlSelected.TabPages.Add("PoolingWindow0", "PoolingWindow0");
                     tabControlSelected.TabPages[0].Controls.Add(this.treeListView);
@@ -102,23 +86,15 @@ namespace BenMAP
                     tlist.GenerateAspectGetters();
                     this.olvAvailable.TileSize = new Size(120, 90);
                     this.olvTile.TileSize = new Size(120, 110);
-                    //this.olvAvailable.ItemRenderer = new Tools.BusinessCardRenderer();
-                    //TypedObjectListView<CRSelectFunctionCalculateValue> tlist = new TypedObjectListView<CRSelectFunctionCalculateValue>(this.olvAvailable);
-                    //tlist.GenerateAspectGetters();
-                    // this.olvAvailable.TileSize = new Size(250, 120);
-                    this.olvAvailable.ItemRenderer = incidenceBusinessCardRenderer;// new Tools.BusinessCardRenderer();
-                    this.olvTile.ItemRenderer = new Tools.IncidenceBusinessCardRenderer();
+                    this.olvAvailable.ItemRenderer = incidenceBusinessCardRenderer; this.olvTile.ItemRenderer = new Tools.IncidenceBusinessCardRenderer();
                     this.olvTile.OwnerDraw = true;
                     olvAvailable.OwnerDraw = true;
                     cbView.SelectedIndex = 0;
-                    //cbSView.SelectedIndex = 0;
                     this.olvAvailable.DropSink = new IncidenceDropSink(true, this);
                     this.treeListView.DropSink = new IncidenceDropSink(true, this);
-                    //-------------------------加载已经保存过的-----------------
                     if (CommonClass.lstIncidencePoolingAndAggregation != null &&
-                        CommonClass.lstIncidencePoolingAndAggregation.Count > 0)
+    CommonClass.lstIncidencePoolingAndAggregation.Count > 0)
                     {
-                        //--------------赋值原来的lstIncidencePoolingAndAggregationOld
                         lstIncidencePoolingAndAggregationOld = new List<IncidencePoolingAndAggregation>();
                         foreach (IncidencePoolingAndAggregation ip in CommonClass.lstIncidencePoolingAndAggregation)
                         {
@@ -199,7 +175,7 @@ namespace BenMAP
 
                             }
                             if (ip.lstAllSelectCRFuntion != null && ip.lstAllSelectCRFuntion.Count > 0)
-                                dicTabCR.Add(ip.PoolingName, ip.lstAllSelectCRFuntion.Where(p => p.CRSelectFunctionCalculateValue != null && p.CRID<9999).Select(a => a.CRSelectFunctionCalculateValue).ToList());
+                                dicTabCR.Add(ip.PoolingName, ip.lstAllSelectCRFuntion.Where(p => p.CRSelectFunctionCalculateValue != null && p.CRID < 9999).Select(a => a.CRSelectFunctionCalculateValue).ToList());
                             else
                                 dicTabCR.Add(ip.PoolingName, null);
 
@@ -215,7 +191,7 @@ namespace BenMAP
                                     vb.IncidencePoolingAndAggregation = ip;
                                 }
                                 catch
-                                { 
+                                {
                                 }
                             }
                         }
@@ -234,19 +210,11 @@ namespace BenMAP
                     tabControlSelected.SelectedIndex = 0;
                     tabControlSelected_SelectedIndexChanged(sender, e);
                     tbPoolingName.Text = tabControlSelected.TabPages[0].Text;
-                    //cbPoolingWindow_SelectedIndexOld = 0;
-                    //CommonClass.lstIncidencePoolingAndAggregation.First().PoolingName = tbPoolingWindowName.Text;
-                    //CommonClass.lstIncidencePoolingAndAggregation.First()Advance = incidencePoolingAndAggregationAdvance;
-                    //CommonClass.lstIncidencePoolingAndAggregation.First().IncidencePoolingAndAggregationAdvance = incidencePoolingAndAggregationAdvance;
-                    ////CommonClass.lstIncidencePoolingAndAggregation.First().PoolingMethods = lstSelected;
-                    //tbPoolingWindowName.Text = CommonClass.lstIncidencePoolingAndAggregation.First().PoolingName;
-                    //treeListView.SetObjects(CommonClass.lstIncidencePoolingAndAggregation.First().PoolingMethods);
 
                 }
 
                 this.treeListView.CheckBoxes = false;
                 List<CRSelectFunctionCalculateValue> lstAvailable = (List<CRSelectFunctionCalculateValue>)this.olvAvailable.Objects;
-                //-----------------------------绑定DataSet---------------------------
                 Dictionary<string, int> DicFilterDataSet = new Dictionary<string, int>();
                 DicFilterDataSet.Add("", -1);
                 var query = from a in lstAvailable select new { a.CRSelectFunction.BenMAPHealthImpactFunction.DataSetName, a.CRSelectFunction.BenMAPHealthImpactFunction.DataSetID };
@@ -255,11 +223,9 @@ namespace BenMAP
                     List<KeyValuePair<string, int>> lstFilterDataSet = DicFilterDataSet.ToList();
                     lstFilterDataSet.AddRange(query.Distinct().ToDictionary(p => p.DataSetName, p => p.DataSetID));
                     DicFilterDataSet = lstFilterDataSet.ToDictionary(p => p.Key, p => p.Value);
-                    // DicFilterDataSet = query.Distinct().ToDictionary(p => p.DataSetName, p => p.DataSetID);
                 }
                 BindingSource bs = new BindingSource();
 
-                // DicFilterDataSet = (Dictionary<string, int>)DicFilterDataSet.OrderBy(p => p.Value);
                 bs.DataSource = DicFilterDataSet;
                 this.cbDataSet.DataSource = bs;
                 cbDataSet.DisplayMember = "Key";
@@ -288,7 +254,6 @@ namespace BenMAP
                 }
                 BindingSource bsqueryGroup = new BindingSource();
 
-                // DicFilterGroup = (Dictionary<string, int>)DicFilterGroup.OrderBy(p => p.Value);
                 bsqueryGroup.DataSource = DicFilterGroup;
                 cbEndPointGroup.DataSource = bsqueryGroup;
                 cbEndPointGroup.DisplayMember = "Key";
@@ -307,33 +272,29 @@ namespace BenMAP
                 cbEndPointGroup.DropDownWidth = maxEndpointGroupWidth;
 
 
-                //------------bingdingcboPoolingMethod----------------------------------------
-                //this.cboPoolingMethod.Items.Add(Enum.GetValues(PoolingMethodTypeEnum));
 
 
-                //-------------bingding GridType---------------------------
                 if (CommonClass.GBenMAPGrid != null)
                 {
                     this.txtTargetGridType.Text = CommonClass.GBenMAPGrid.GridDefinitionName;
                 }
 
-                //----------------------init treelistview events------------------
                 this.treeListView.CanExpandGetter = delegate(object x)
-                {
-                    try
-                    {
-                        AllSelectCRFunction dir = (AllSelectCRFunction)x;
-                        IncidencePoolingAndAggregation ip = CommonClass.lstIncidencePoolingAndAggregation.Where(p => p.PoolingName == tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text).First();
-                        if (ip.lstAllSelectCRFuntion.Where(p => p.PID == dir.ID).Count() > 0)
-                            return true;//(dir.NodeType != 4);
-                        else
-                            return false;
-                    }
-                    catch
-                    {
-                        return false;
-                    }
-                };
+{
+    try
+    {
+        AllSelectCRFunction dir = (AllSelectCRFunction)x;
+        IncidencePoolingAndAggregation ip = CommonClass.lstIncidencePoolingAndAggregation.Where(p => p.PoolingName == tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text).First();
+        if (ip.lstAllSelectCRFuntion.Where(p => p.PID == dir.ID).Count() > 0)
+            return true;
+        else
+            return false;
+    }
+    catch
+    {
+        return false;
+    }
+};
                 this.treeListView.ChildrenGetter = delegate(object x)
                 {
                     AllSelectCRFunction dir = (AllSelectCRFunction)x;
@@ -347,13 +308,11 @@ namespace BenMAP
                     {
                         MessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                         return new List<AllSelectCRFunction>();
-                        //return new ArrayList();
                     }
                 };
 
                 if (CommonClass.lstIncidencePoolingAndAggregation.First() != null && CommonClass.lstIncidencePoolingAndAggregation.First().lstAllSelectCRFuntion != null)
                 {
-                    //    treeListView.SetObjects(CommonClass.lstIncidencePoolingAndAggregation.First().lstAllSelectCRFuntion);
                     if (CommonClass.lstIncidencePoolingAndAggregation.First().lstColumns != null && CommonClass.lstIncidencePoolingAndAggregation.First().lstColumns.Count > 0)
                     {
                         updateTreeColumns(ref CommonClass.lstIncidencePoolingAndAggregation.First().lstColumns);
@@ -366,8 +325,7 @@ namespace BenMAP
                     initTreeView(CommonClass.lstIncidencePoolingAndAggregation.First());
                 }
 
-               
-                //cboPoolingMethod.SelectedIndex = Convert.ToInt32(CommonClass.lstIncidencePoolingAndAggregation.First().PoolingMethodType); 
+
             }
             catch (Exception ex)
             {
@@ -392,7 +350,7 @@ namespace BenMAP
                     {
                         PoolingMethod = "",
                         Author = allSelectValuationMethod.Author,
-                        ID = incidencePoolingAndAggregation.lstAllSelectCRFuntion.Max(p=>p.ID)+1,
+                        ID = incidencePoolingAndAggregation.lstAllSelectCRFuntion.Max(p => p.ID) + 1,
                         CRID = allSelectValuationMethod.CRID,
                         CRIndex = allSelectValuationMethod.CRIndex,
                         DataSet = allSelectValuationMethod.DataSet,
@@ -418,7 +376,7 @@ namespace BenMAP
                         StartAge = allSelectValuationMethod.StartAge,
                         Version = allSelectValuationMethod.Version,
                         Year = allSelectValuationMethod.Year,
-                        CRSelectFunctionCalculateValue=allSelectValuationMethod.CRSelectFunctionCalculateValue
+                        CRSelectFunctionCalculateValue = allSelectValuationMethod.CRSelectFunctionCalculateValue
                     });
                 }
                 return lstAll;
@@ -428,7 +386,7 @@ namespace BenMAP
                 return null;
             }
         }
-        public static void getAllChildFromAllSelectCRFunction(AllSelectCRFunction allSelectValuationMethod,List<AllSelectCRFunction> lstAll, ref List<AllSelectCRFunction> lstAllChild)
+        public static void getAllChildFromAllSelectCRFunction(AllSelectCRFunction allSelectValuationMethod, List<AllSelectCRFunction> lstAll, ref List<AllSelectCRFunction> lstAllChild)
         {
             try
             {
@@ -441,22 +399,18 @@ namespace BenMAP
                     if (ac.PoolingMethod != "")
                     {
                         getAllChildFromAllSelectCRFunction(ac, lstAll, ref lstAllChild);
- 
+
                     }
                 }
 
-                 
+
             }
             catch (Exception ex)
             {
-                
+
             }
         }
 
-        /// <summary>
-        /// 初始化TreeViewList
-        /// </summary>
-        /// <param name="incidencePoolingAndAggregation"></param>
         private void initTreeView(IncidencePoolingAndAggregation incidencePoolingAndAggregation)
         {
 
@@ -472,17 +426,16 @@ namespace BenMAP
                 lstRoot.Add(incidencePoolingAndAggregation.lstAllSelectCRFuntion.First());
                 for (int i = 1; i < incidencePoolingAndAggregation.lstAllSelectCRFuntion.Count(); i++)
                 {
-                    if(incidencePoolingAndAggregation.lstAllSelectCRFuntion[i].EndPointGroup!= incidencePoolingAndAggregation.lstAllSelectCRFuntion[i-1].EndPointGroup)
+                    if (incidencePoolingAndAggregation.lstAllSelectCRFuntion[i].EndPointGroup != incidencePoolingAndAggregation.lstAllSelectCRFuntion[i - 1].EndPointGroup)
                         lstRoot.Add(incidencePoolingAndAggregation.lstAllSelectCRFuntion[i]);
                 }
-                treeListView.Roots =lstRoot;// incidencePoolingAndAggregation.lstAllSelectCRFuntion.GetRange(0, 1);
-                this.treeColumnName.ImageGetter = delegate(object x)
-                {
-                    if (((AllSelectCRFunction)x).NodeType==100)
-                        return 1;
-                    else
-                        return 0;
-                };
+                treeListView.Roots = lstRoot; this.treeColumnName.ImageGetter = delegate(object x)
+  {
+      if (((AllSelectCRFunction)x).NodeType == 100)
+          return 1;
+      else
+          return 0;
+  };
                 treeListView.ExpandAll();
                 treeListView.RebuildAll(true);
             }
@@ -497,8 +450,7 @@ namespace BenMAP
             {
                 if (CommonClass.IncidencePoolingAndAggregationAdvance == null) CommonClass.IncidencePoolingAndAggregationAdvance = new IncidencePoolingAndAggregationAdvance();
                 APVConfigurationAdvancedSettings frm = new APVConfigurationAdvancedSettings();
-                frm.IncidencePoolingAndAggregationAdvance = CommonClass.IncidencePoolingAndAggregationAdvance;// incidencePoolingAndAggregationAdvance;
-                DialogResult rtn = frm.ShowDialog();
+                frm.IncidencePoolingAndAggregationAdvance = CommonClass.IncidencePoolingAndAggregationAdvance; DialogResult rtn = frm.ShowDialog();
                 if (rtn != DialogResult.OK) { return; }
 
                 CommonClass.IncidencePoolingAndAggregationAdvance = frm.IncidencePoolingAndAggregationAdvance;
@@ -515,23 +467,6 @@ namespace BenMAP
             this.DialogResult = DialogResult.Cancel;
         }
 
-        //private void btnBrowse_Click(object sender, EventArgs e)
-        //{
-        //    try
-        //    {
-        //        OpenFileDialog openFileDialog = new OpenFileDialog();
-        //        openFileDialog.InitialDirectory = Application.StartupPath + @"E:\";
-        //        openFileDialog.Filter = "Configuration Results|*.cfgrx";
-        //        openFileDialog.FilterIndex = 3;
-        //        openFileDialog.RestoreDirectory = true;
-        //        if (openFileDialog.ShowDialog() != DialogResult.OK) { return; }
-        //        cboConfigurationResultFileName.Text = openFileDialog.FileName;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Logger.LogError(ex);
-        //    }
-        //}
         private string AsyncLoadCFGR(string strFile)
         {
 
@@ -541,19 +476,15 @@ namespace BenMAP
                  CommonClass.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue.First().CRCalculateValues == null ||
                   CommonClass.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue.First().CRCalculateValues.Count == 0)
                 {
-                    //---------------如果是APVX存入必须先loadcfgr---------但是要判断是否已经load过，如果已经load则不需要load了--
                     string tip = "Creating Incidence Pooling And Aggregation. Please wait.";
                     WaitShow(tip);
-                    //AsyncLoadCFGR(txtOpenExistingCFGR.Text);
                     string err = "";
-                    CommonClass.BaseControlCRSelectFunctionCalculateValue = Configuration.ConfigurationCommonClass.LoadCFGRFile(strFile,ref err);//CommonClass.ValuationMethodPoolingAndAggregation.CFGRPath);
-                    if (CommonClass.BaseControlCRSelectFunctionCalculateValue == null)
+                    CommonClass.BaseControlCRSelectFunctionCalculateValue = Configuration.ConfigurationCommonClass.LoadCFGRFile(strFile, ref err); if (CommonClass.BaseControlCRSelectFunctionCalculateValue == null)
                     {
                         MessageBox.Show(err);
                         return "";
                     }
                     CommonClass.ValuationMethodPoolingAndAggregation.BaseControlCRSelectFunctionCalculateValue = CommonClass.BaseControlCRSelectFunctionCalculateValue;
-                    //----------------do pooling-------
                     foreach (ValuationMethodPoolingAndAggregationBase vb in CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase)
                     {
                         foreach (AllSelectCRFunction alsc in vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion.Where(p => p.PoolingMethod == "").ToList())
@@ -564,43 +495,8 @@ namespace BenMAP
                             }
                         }
                     }
-                    //----------------do pooling-------
-                    //foreach (ValuationMethodPoolingAndAggregationBase vb in CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase)
-                    //{
-                    //    //foreach (AllSelectCRFunction alsc in vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion.Where(p => p.PoolingMethod != "" && p.PoolingMethod != "None").ToList())
-                    //    //{
-                    //    //    if (alsc.PoolingMethod != "" && alsc.PoolingMethod != "None")
-                    //    //    {
-                    //    //        List<AllSelectCRFunction> lstSec = new List<AllSelectCRFunction>();
-                    //    //        APVX.APVCommonClass.getAllChildCRNotNoneCalulate(alsc, vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion, ref lstSec);
-                    //    //        //List<AllSelectCRFunction> lstSecResult = new List<AllSelectCRFunction>();
-                    //    //        //foreach (AllSelectCRFunction alcr in lstSec)
-                    //    //        //{
-                    //    //        //    if (lstAllSelectCRFunctionNone.Where(p => p.ID == alcr.ID).Count() > 0)
-                    //    //        //    {
-                    //    //        //        lstSecResult.Add(lstAllSelectCRFunctionNone.Where(p => p.ID == alcr.ID).First());
-                    //    //        //    }
-                    //    //        //}
-                    //    //        alsc.CRSelectFunctionCalculateValue = APVX.APVCommonClass.getPoolingMethodCRSelectFunctionCalculateValue(lstSec.Where(p => p.CRSelectFunctionCalculateValue != null).Select(a => a.CRSelectFunctionCalculateValue).ToList(), APVX.APVCommonClass.getPoolingMethodTypeEnumFromString(alsc.PoolingMethod), lstSec.Where(p => p.CRSelectFunctionCalculateValue != null).Select(a => a.Weight).ToList());
-                    //    //    }
-                    //    //}
-                    //    //-----------------------首先得到Pooling--------------------------------------
 
-                    //    List<AllSelectCRFunction> lstCR = new List<AllSelectCRFunction>();
-                    //    if (vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion.First().PoolingMethod == "None")
-                    //    {
-                    //        APVX.APVCommonClass.getAllChildCRNotNone(vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion.First(), vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion, ref lstCR);
 
-                    //    }
-                    //    lstCR.Insert(0, vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion.First());
-                    //    if (lstCR.Count == 1 && vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion.First().CRID < 9999 && vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion.First().CRID > 0)//.PoolingMethod == "")
-                    //    { }
-                    //    else
-                    //    {
-                    //        APVX.APVCommonClass.getPoolingMethodCRFromAllSelectCRFunction(ref vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion, ref vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion, vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion.Where(p => p.NodeType != 100).Max(p => p.NodeType), vb.IncidencePoolingAndAggregation.lstColumns);
-                    //    }
-                    //    //---------------------------------------------------
-                    //}
                 }
                 WaitClose();
                 return "";
@@ -619,12 +515,6 @@ namespace BenMAP
         {
             try
             {
-                //if (string.IsNullOrEmpty(tbPoolingWindowName.Text))
-                //{
-                //    MessageBox.Show("Please enter a PoolingWindowName!");
-                //    return;
-                //}
-                //---------------如果是APVX存入必须先loadcfgr---------但是要判断是否已经load过，如果已经load则不需要load了--
                 string msg = string.Empty;
                 string tip = string.Empty;
                 DialogResult rtn;
@@ -632,22 +522,15 @@ namespace BenMAP
                 if ((CommonClass.LstDelCRFunction != null && CommonClass.LstDelCRFunction.Count > 0) || (CommonClass.LstUpdateCRFunction != null && CommonClass.LstUpdateCRFunction.Count > 0))
                 {
                     messageBox = new MessageForm(1);
-                    messageBox.Message = "This APV pools studies not found in the CFGRX. BenMAP may not produce correctly pooled results.";// "The HIF has been changed. The system may not work if the APVX is not consistent with the changed HIF!";
-                    messageBox.Text = "Continue or back?";
+                    messageBox.Message = "This APV pools studies not found in the CFGRX. BenMAP may not produce correctly pooled results."; messageBox.Text = "Continue or back?";
                     messageBox.BTNOneText = "Continue";
                     messageBox.BTNThirdText = "Back to check";
                     messageBox.SetFirstButton();
                     messageBox.SetLabel(697, 40);
-                    //messageBox.AcceptButton
                     messageBox.Size = new System.Drawing.Size(710, 139);
                     messageBox.FirstButtonLocation = new Point(490, messageBox.FirstButtonLocation.Y);
                     messageBox.LabelLocation = new Point(7, 20);
-                    //messageBox.SetFirstButtonLocation(330, 60);
-                    rtn = messageBox.ShowDialog();//Yes No Cancel
-                    //msg = "The HIF has been changed. The system may not work if the APVX is not consistent with the changed HIF!";
-                    //tip = "Are you sure to continue? ";
-                    //rtn = MessageBox.Show(msg, tip, MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
-                    if (rtn == DialogResult.Cancel)
+                    rtn = messageBox.ShowDialog(); if (rtn == DialogResult.Cancel)
                     { return; }
 
                 }
@@ -663,34 +546,6 @@ namespace BenMAP
                     {
                         updateTreeColumns(ref incidencePoolingAndAggregation.lstColumns);
                     }
-                    //incidencePoolingAndAggregation.PoolingMethods = treeListView.Objects as List<CRSelectFunctionCalculateValue>;
-                    //switch (cboPoolingMethod.SelectedItem.ToString())
-                    //{
-                    //    case "None":
-                    //        incidencePoolingAndAggregation.PoolingMethodType = PoolingMethodTypeEnum.None;
-                    //        break;
-                    //    case "SumDependent":
-                    //        incidencePoolingAndAggregation.PoolingMethodType = PoolingMethodTypeEnum.SumDependent;
-                    //        break;
-                    //    case "SumIndependent":
-                    //        incidencePoolingAndAggregation.PoolingMethodType = PoolingMethodTypeEnum.SumIndependent;
-                    //        break;
-                    //    case "SubtractionDependent":
-                    //        incidencePoolingAndAggregation.PoolingMethodType = PoolingMethodTypeEnum.SubtractionDependent;
-                    //        break;
-                    //    case "SubtractionIndependent":
-                    //        incidencePoolingAndAggregation.PoolingMethodType = PoolingMethodTypeEnum.SubtractionIndependent;
-                    //        break;
-                    //    case "SubjectiveWeights":
-                    //        incidencePoolingAndAggregation.PoolingMethodType = PoolingMethodTypeEnum.SubjectiveWeights;
-                    //        break;
-                    //    case "RandomOrFixedEffects":
-                    //        incidencePoolingAndAggregation.PoolingMethodType = PoolingMethodTypeEnum.RandomOrFixedEffects;
-                    //        break;
-                    //    case "FixedEffects":
-                    //        incidencePoolingAndAggregation.PoolingMethodType = PoolingMethodTypeEnum.FixedEffects;
-                    //        break;
-                    //}
 
                 }
                 foreach (IncidencePoolingAndAggregation ip in CommonClass.lstIncidencePoolingAndAggregation)
@@ -704,8 +559,6 @@ namespace BenMAP
                     }
 
                 }
-                //lstIncidencePoolingAndAggregationOld = CommonClass.lstIncidencePoolingAndAggregation;
-                //--------------赋值原来的lstIncidencePoolingAndAggregationOld
                 lstIncidencePoolingAndAggregationOld = new List<IncidencePoolingAndAggregation>();
                 foreach (IncidencePoolingAndAggregation ip in CommonClass.lstIncidencePoolingAndAggregation)
                 {
@@ -780,83 +633,23 @@ namespace BenMAP
                     }
                     if (ipTmp.lstAllSelectCRFuntion.Select(p => p.PoolingMethod).Contains("User Defined Weights"))
                     {
-                        //--------------------加载weight-------------------------------------
                         SelectSubjectiveWeight frmAPV = new SelectSubjectiveWeight(ipTmp);
                         DialogResult rtnAPV = frmAPV.ShowDialog();
                         if (rtnAPV != DialogResult.OK) { return; }
                         ipTmp.Weights = frmAPV.dicAllWeight.Values.ToList();
-                        //CommonClass.lstIncidencePoolingAndAggregation.First().Weights = frmAPV.dicAllWeight.Values.ToList();
-                        //-------------------得到结果----------------------------------------
                     }
                 }
-                //CommonClass.IncidencePoolingAndAggregationAdvance = incidencePoolingAndAggregationAdvance;
                 if (txtOpenExistingCFGR.Text != "")
                 {
-                    //string tip = "Creating Incidence Pooling And Aggregation.\r\nPlease wait!";
-                    //WaitShow(tip);
                     AsyncLoadCFGR(txtOpenExistingCFGR.Text);
-                    //WaitClose();
                 }
                 else
                 {
-                    //----------------do pooling-------
-                    //foreach (ValuationMethodPoolingAndAggregationBase vb in CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase)
-                    //{
-                    //    foreach (AllSelectCRFunction alsc in vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion.Where(p => p.PoolingMethod == "").ToList())
-                    //    {
-                    //        if (alsc.PoolingMethod == "")
-                    //        {
-                    //            try
-                    //            {
-                    //                alsc.CRSelectFunctionCalculateValue = CommonClass.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue.Where(p => p.CRSelectFunction.CRID == alsc.CRID).First();
-                    //            }
-                    //            catch
-                    //            {
 
-                    //            }
-                    //        }
-                    //    }
-                    //}
-                    ////----------------do pooling-------
-                    //foreach (ValuationMethodPoolingAndAggregationBase vb in CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase)
-                    //{
-                    //    //foreach (AllSelectCRFunction alsc in vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion.Where(p => p.PoolingMethod != "" && p.PoolingMethod != "None").ToList())
-                    //    //{
-                    //    //    if (alsc.PoolingMethod != "" && alsc.PoolingMethod != "None")
-                    //    //    {
-                    //    //        List<AllSelectCRFunction> lstSec = new List<AllSelectCRFunction>();
-                    //    //        APVX.APVCommonClass.getAllChildCRNotNoneCalulate(alsc, vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion, ref lstSec);
-                    //    //        //List<AllSelectCRFunction> lstSecResult = new List<AllSelectCRFunction>();
-                    //    //        //foreach (AllSelectCRFunction alcr in lstSec)
-                    //    //        //{
-                    //    //        //    if (lstAllSelectCRFunctionNone.Where(p => p.ID == alcr.ID).Count() > 0)
-                    //    //        //    {
-                    //    //        //        lstSecResult.Add(lstAllSelectCRFunctionNone.Where(p => p.ID == alcr.ID).First());
-                    //    //        //    }
-                    //    //        //}
-                    //    //        alsc.CRSelectFunctionCalculateValue = APVX.APVCommonClass.getPoolingMethodCRSelectFunctionCalculateValue(lstSec.Where(p => p.CRSelectFunctionCalculateValue != null).Select(a => a.CRSelectFunctionCalculateValue).ToList(), APVX.APVCommonClass.getPoolingMethodTypeEnumFromString(alsc.PoolingMethod), lstSec.Where(p => p.CRSelectFunctionCalculateValue != null).Select(a => a.Weight).ToList());
-                    //    //    }
-                    //    //}
-                    //    //-----------------------首先得到Pooling--------------------------------------
 
-                    //    List<AllSelectCRFunction> lstCR = new List<AllSelectCRFunction>();
-                    //    if (vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion.First().PoolingMethod == "None")
-                    //    {
-                    //        APVX.APVCommonClass.getAllChildCRNotNone(vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion.First(), vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion, ref lstCR);
 
-                    //    }
-                    //    lstCR.Insert(0, vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion.First());
-                    //    if (lstCR.Count == 1 && vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion.First().CRID < 9999 && vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion.First().CRID > 0)//.PoolingMethod == "")
-                    //    { }
-                    //    else
-                    //    {
-                    //        APVX.APVCommonClass.getPoolingMethodCRFromAllSelectCRFunction(ref vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion, ref vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion, vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion.Where(p => p.NodeType != 100).Max(p => p.NodeType), vb.IncidencePoolingAndAggregation.lstColumns);
-                    //    }
-                    //    //---------------------------------------------------
-                    //}
                 }
 
-                // Todo:------------陈志润--------
                 msg = "The HIF studies or pooling methods may have been changed. If the HIF studies are not consistent with the pooling setup, incorrect results may be generated.";
                 tip = "Load the previous valuation settings? ";
                 if (CommonClass.ValuationMethodPoolingAndAggregation == null) { CommonClass.ValuationMethodPoolingAndAggregation = new ValuationMethodPoolingAndAggregation(); }
@@ -873,9 +666,7 @@ namespace BenMAP
                     messageBox.BTNThirdText = "Cancel";
                     messageBox.SetFirstButton();
 
-                    rtn = messageBox.ShowDialog();//Yes No Cancel
-                    //rtn = MessageBox.Show(msg, tip, MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1);
-                    if (rtn == DialogResult.No)
+                    rtn = messageBox.ShowDialog(); if (rtn == DialogResult.No)
                     {
                         if (CommonClass.ValuationMethodPoolingAndAggregation != null && _dicPoolingWindowOperation != null)
                         {
@@ -893,42 +684,12 @@ namespace BenMAP
                                 }
                             }
                         }
-                        //switch (_operationStatus)
-                        //{
-                        //    case 0:// 没做任何操作
-                        //        if (CommonClass.ValuationMethodPoolingAndAggregation == null)
-                        //        {
-                        //            // CommonClass.ValuationMethodPoolingAndAggregation = new ValuationMethodPoolingAndAggregation();
-                        //        }
-                        //        break;
-                        //    case 1:// 新增
-                        //    case 2:// 修改
-                        //    case 3:// 删除
-                        //        //------------modify by xiejp--只有有修改的才重新reset!
-                        //       // CommonClass.ValuationMethodPoolingAndAggregation = null;// new ValuationMethodPoolingAndAggregation();
-                        //        if (CommonClass.ValuationMethodPoolingAndAggregation != null&&_dicPoolingWindowOperation!=null)
-                        //        {
-                        //            foreach (KeyValuePair<string, int> k in _dicPoolingWindowOperation)
-                        //            {
-                        //                if (CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase.Where(p => p.IncidencePoolingAndAggregation.PoolingName == k.Key).Count() >= 0)
-                        //                {
-                        //                    CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase.Where(p => p.IncidencePoolingAndAggregation.PoolingName == k.Key).First().IncidencePoolingAndAggregation = CommonClass.lstIncidencePoolingAndAggregation.Where(p => p.PoolingName == k.Key).First();
-                        //                    CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase.Where(p => p.IncidencePoolingAndAggregation.PoolingName == k.Key).First().LstAllSelectValuationMethod = null;
-                        //                    CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase.Where(p => p.IncidencePoolingAndAggregation.PoolingName == k.Key).First().lstAllSelectQALYMethod = null;
-                        //                    CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase.Where(p => p.IncidencePoolingAndAggregation.PoolingName == k.Key).First().lstAllSelectQALYMethodAndValue = null;
-                        //                    CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase.Where(p => p.IncidencePoolingAndAggregation.PoolingName == k.Key).First().LstAllSelectValuationMethodAndValue = null;
 
- 
-                        //                }
-                        //            }
-                        //        }
-                        //        break;
-                        //}
-                    }//if_rtn
+
+                    }
                     else if (rtn == DialogResult.Cancel)
                     { return; }
-                }//else not null
-
+                }
 
                 SelectValuationMethods frm = new SelectValuationMethods();
                 rtn = frm.ShowDialog();
@@ -939,59 +700,19 @@ namespace BenMAP
                 }
                 return;
 
-                //----------------------------------------------
                 List<CRSelectFunctionCalculateValue> lstSelected = treeListView.Objects as List<CRSelectFunctionCalculateValue>;
-                //if (CommonClass.lstIncidencePoolingAndAggregation.First() == null)
-                //{
-                //    CommonClass.lstIncidencePoolingAndAggregation.First() = new IncidencePoolingAndAggregation();
 
-                //}
-                //CommonClass.lstIncidencePoolingAndAggregation.First().PoolingName = tbPoolingWindowName.Text;
-                //CommonClass.IncidencePoolingAndAggregationAdvance = incidencePoolingAndAggregationAdvance;
-                //CommonClass.lstIncidencePoolingAndAggregation.First().IncidencePoolingAndAggregationAdvance = incidencePoolingAndAggregationAdvance;
-                //CommonClass.lstIncidencePoolingAndAggregation.First().PoolingMethods = lstSelected;
-                //switch (cboPoolingMethod.SelectedItem.ToString())
-                //{
-                //    case "None":
-                //        CommonClass.lstIncidencePoolingAndAggregation.First().PoolingMethodType = PoolingMethodTypeEnum.None;
-                //        break;
-                //    case "SumDependent":
-                //        CommonClass.lstIncidencePoolingAndAggregation.First().PoolingMethodType = PoolingMethodTypeEnum.SumDependent;
-                //        break;
-                //    case "SumIndependent":
-                //        CommonClass.lstIncidencePoolingAndAggregation.First().PoolingMethodType = PoolingMethodTypeEnum.SumIndependent;
-                //        break;
-                //    case "SubtractionDependent":
-                //        CommonClass.lstIncidencePoolingAndAggregation.First().PoolingMethodType = PoolingMethodTypeEnum.SubtractionDependent;
-                //        break;
-                //    case "SubtractionIndependent":
-                //        CommonClass.lstIncidencePoolingAndAggregation.First().PoolingMethodType = PoolingMethodTypeEnum.SubtractionIndependent;
-                //        break;
-                //    case "SubjectiveWeights":
-                //        CommonClass.lstIncidencePoolingAndAggregation.First().PoolingMethodType = PoolingMethodTypeEnum.SubjectiveWeights;
-                //        break;
-                //    case "RandomOrFixedEffects":
-                //        CommonClass.lstIncidencePoolingAndAggregation.First().PoolingMethodType = PoolingMethodTypeEnum.RandomOrFixedEffects;
-                //        break;
-                //    case "FixedEffects":
-                //        CommonClass.lstIncidencePoolingAndAggregation.First().PoolingMethodType = PoolingMethodTypeEnum.FixedEffects;
-                //        break;
-                //}
-                // CommonClass.lstIncidencePoolingAndAggregation.First().PoolingMethodType =  cboPoolingMethod.SelectedItem.ToString()  ;
                 foreach (IncidencePoolingAndAggregation ip in CommonClass.lstIncidencePoolingAndAggregation)
                 {
                     if (ip.lstAllSelectCRFuntion.Select(p => p.PoolingMethod).Contains("User Defined Weights"))
                     {
-                        //--------------------加载weight-------------------------------------
                         SelectSubjectiveWeight frmAPV = new SelectSubjectiveWeight(ip);
                         DialogResult rtnAPV = frmAPV.ShowDialog();
                         if (rtnAPV != DialogResult.OK) { return; }
                         CommonClass.lstIncidencePoolingAndAggregation.First().Weights = frmAPV.dicAllWeight.Values.ToList();
-                        //-------------------得到结果----------------------------------------
                     }
                 }
-                CommonClass.lstIncidencePoolingAndAggregation.First().ConfigurationResultsFilePath = "";//--------------------------现在没有用到。
-                CommonClass.ValuationMethodPoolingAndAggregation = null;
+                CommonClass.lstIncidencePoolingAndAggregation.First().ConfigurationResultsFilePath = ""; CommonClass.ValuationMethodPoolingAndAggregation = null;
                 SelectValuationMethods frm2 = new SelectValuationMethods();
                 DialogResult rtn2 = frm2.ShowDialog();
                 if (rtn2 != DialogResult.OK) { return; }
@@ -1005,10 +726,7 @@ namespace BenMAP
 
             }
         }
-        #region 等待窗口
-        TipFormGIF waitMess = new TipFormGIF();//等待窗体
-        bool sFlog = true;
-        //--显示等待窗体 
+        TipFormGIF waitMess = new TipFormGIF(); bool sFlog = true;
         private void ShowWaitMess()
         {
             try
@@ -1025,7 +743,6 @@ namespace BenMAP
             }
         }
 
-        //--新开辟一个线程调用 
         public void WaitShow(string msg)
         {
             try
@@ -1046,10 +763,8 @@ namespace BenMAP
         }
         private delegate void CloseFormDelegate();
 
-        //--关闭等待窗体 
         public void WaitClose()
         {
-            //同步到主线程上
             if (waitMess.InvokeRequired)
                 waitMess.Invoke(new CloseFormDelegate(DoCloseJob));
             else
@@ -1074,17 +789,13 @@ namespace BenMAP
                 MessageBox.Show(Err.Message);
             }
         }
-        #endregion 等待窗口
         private void cbView_SelectedIndexChanged(object sender, EventArgs e)
         {
-            //if (cbView.SelectedIndex == 0 && this.olvAvailable.OwnerDraw)
-            //    this.olvAvailable.TileSize = new Size(300, 130);
 
             this.ChangeView(this.olvAvailable, (ComboBox)sender);
         }
         private void ChangeView(ObjectListView listview, ComboBox comboBox)
         {
-            // Handle restrictions on Tile view
             if (comboBox.SelectedIndex == 0)
             {
                 if (listview.VirtualMode)
@@ -1101,15 +812,6 @@ namespace BenMAP
 
             switch (comboBox.SelectedIndex)
             {
-                //case 0:
-                //    listview.View = View.SmallIcon;
-                //    break;
-                //case 1:
-                //    listview.View = View.LargeIcon;
-                //    break;
-                //case 2:
-                //    listview.View = View.List;
-                //    break;
                 case 0:
                     listview.View = View.Tile;
 
@@ -1118,7 +820,6 @@ namespace BenMAP
                     listview.View = View.Details;
                     break;
             }
-            // listview.Refresh();
         }
 
         private void textBoxFilterSimple_TextChanged(object sender, EventArgs e)
@@ -1151,21 +852,14 @@ namespace BenMAP
                         break;
                 }
             }
-            // Setup a default renderer to draw the filter matches
             if (filter == null)
                 olv.DefaultRenderer = null;
             else
             {
                 olv.DefaultRenderer = new HighlightTextRenderer(filter);
 
-                // Uncomment this line to see how the GDI+ rendering looks
-                //olv.DefaultRenderer = new HighlightTextRenderer { Filter = filter, UseGdiTextRendering = false };
             }
 
-            // Some lists have renderers already installed
-            //HighlightTextRenderer highlightingRenderer = olv.GetColumn(0).Renderer as HighlightTextRenderer;
-            //if (highlightingRenderer != null)
-            //    highlightingRenderer.Filter = filter;
 
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
@@ -1173,15 +867,6 @@ namespace BenMAP
             stopWatch.Stop();
 
             IList objects = olv.Objects as IList;
-            //if (objects == null)
-            //    this.toolStripStatusLabel1.Text =
-            //        String.Format("Filtered in {0}ms", stopWatch.ElapsedMilliseconds);
-            //else
-            //    this.toolStripStatusLabel1.Text =
-            //        String.Format("Filtered {0} items down to {1} items in {2}ms",
-            //                      objects.Count,
-            //                      olv.Items.Count,
-            //                      stopWatch.ElapsedMilliseconds);
         }
 
         private void cbGroups_CheckedChanged(object sender, EventArgs e)
@@ -1205,26 +890,16 @@ namespace BenMAP
 
         private void cbDataSet_SelectedIndexChanged(object sender, EventArgs e)
         {
-            // this.olvAvailable.
             ObjectListView olv = olvAvailable;
             if (olv == null || olv.IsDisposed)
                 return;
             OLVColumn column = olv.GetColumn("olvcDataSet");
 
-            // Collect all the checked values
             ArrayList chosenValues = new ArrayList();
             KeyValuePair<string, int> kvp = (KeyValuePair<string, int>)cbDataSet.SelectedItem;
             if (!string.IsNullOrEmpty(kvp.Key))
             {
                 chosenValues.Add(kvp.Key);
-                //foreach (object x in checkedList.CheckedItems)
-                //{
-                //    ICluster cluster = x as ICluster;
-                //    if (cluster != null)
-                //    {
-                //        chosenValues.Add(cluster.ClusterKey);
-                //    }
-                //}
                 olvcDataSet.ValuesChosenForFiltering = chosenValues;
                 if (olvcDataSet.IsVisible == false)
                 {
@@ -1235,7 +910,7 @@ namespace BenMAP
                     olv.RebuildColumns();
                 }
                 else
-                olv.UpdateColumnFiltering();
+                    olv.UpdateColumnFiltering();
             }
             else
             {
@@ -1249,34 +924,23 @@ namespace BenMAP
                     olv.RebuildColumns();
                 }
                 else
-                olv.UpdateColumnFiltering();
+                    olv.UpdateColumnFiltering();
             }
-            //olv.Refresh();
 
         }
 
         private void cbEndPointGroup_SelectedIndexChanged(object sender, EventArgs e)
         {
-            // this.olvAvailable.
             ObjectListView olv = olvAvailable;
             if (olv == null || olv.IsDisposed)
                 return;
             OLVColumn column = olv.GetColumn("olvcEndPointGroup");
 
-            // Collect all the checked values
             ArrayList chosenValues = new ArrayList();
             KeyValuePair<string, int> kvp = (KeyValuePair<string, int>)cbEndPointGroup.SelectedItem;
             if (!string.IsNullOrEmpty(kvp.Key))
             {
                 chosenValues.Add(kvp.Key);
-                //foreach (object x in checkedList.CheckedItems)
-                //{
-                //    ICluster cluster = x as ICluster;
-                //    if (cluster != null)
-                //    {
-                //        chosenValues.Add(cluster.ClusterKey);
-                //    }
-                //}
                 olvcEndPointGroup.ValuesChosenForFiltering = chosenValues;
                 olv.UpdateColumnFiltering();
 
@@ -1294,17 +958,11 @@ namespace BenMAP
             if (e.Column.Text == "Pooling Method")
             {
 
-                // Stop listening for change events
                 ((ComboBox)e.Control).SelectedIndexChanged -= new EventHandler(cbPoolingMethod_SelectedIndexChanged);
 
-                // Any updating will have been down in the SelectedIndexChanged event handler
-                // Here we simply make the list redraw the involved ListViewItem
                 ((TreeListView)sender).RefreshItem(e.ListViewItem);
                 ((ComboBox)e.Control).Dispose();
-                // We have updated the model object, so we cancel the auto update
                 e.Cancel = true;
-                // Todo:陈志润 20120116
-               // _operationStatus = 2;//修改
             }
         }
         private void treeListView_CellEditStarting(object sender, BrightIdeasSoftware.CellEditEventArgs e)
@@ -1322,7 +980,6 @@ namespace BenMAP
                 cb.DropDownStyle = ComboBoxStyle.DropDownList;
                 if (!CommonClass.CRRunInPointMode)
                 {
-                    //   cb.Items.AddRange(Enum.GetNames(typeof(PoolingMethodTypeEnum)));
                     cb.Items.Add("None");
                     cb.Items.Add("Sum Dependent");
                     cb.Items.Add("Sum Independent");
@@ -1334,7 +991,6 @@ namespace BenMAP
                 }
                 else
                 {
-                    //  None = 0, SumDependent = 1, SumIndependent = 2, SubtractionDependent = 3, SubtractionIndependent = 4, SubjectiveWeights = 5, RandomOrFixedEffects = 6, FixedEffects = 7
                     cb.Items.Add("None");
                     cb.Items.Add("Sum Dependent");
                     cb.Items.Add("Subtraction Dependent");
@@ -1342,16 +998,11 @@ namespace BenMAP
 
 
                 }
-                //------------暂时去掉Weight因为没有做--------------------------------------------------------
 
-                //cb.Items.Remove("SubjectiveWeights");
-                //----------------------------------------xjp---------------------------------
                 if (e.Value != null)
-                    cb.SelectedText = e.Value.ToString();// Math.Max(0, Math.Min(cb.Items.Count - 1, ((int)e.Value) / 10));
-               
+                    cb.SelectedText = e.Value.ToString();
                 cb.SelectedIndexChanged += new EventHandler(cbPoolingMethod_SelectedIndexChanged);
-                cb.Tag = e.RowObject; // remember which person we are editing
-                e.Control = cb;
+                cb.Tag = e.RowObject; e.Control = cb;
             }
             else
             {
@@ -1371,9 +1022,7 @@ namespace BenMAP
 
             ComboBox cb = (ComboBox)sender;
             if (((AllSelectCRFunction)cb.Tag).PoolingMethod == cb.Text) return;
-            //Todo:陈志润20120115 提示
-            _operationStatus = 2;// ?
-            ((AllSelectCRFunction)cb.Tag).PoolingMethod = cb.Text;
+            _operationStatus = 2; ((AllSelectCRFunction)cb.Tag).PoolingMethod = cb.Text;
             IncidencePoolingAndAggregation ip = CommonClass.lstIncidencePoolingAndAggregation.Where(p => p.PoolingName == tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text).First();
             ip.lstAllSelectCRFuntion.Where(p => p.ID == ((AllSelectCRFunction)cb.Tag).ID).First().PoolingMethod = cb.Text;
             if (_dicPoolingWindowOperation.ContainsKey(ip.PoolingName))
@@ -1391,14 +1040,7 @@ namespace BenMAP
                 treeListView.ExpandAll();
             }
             treeListView.TopItemIndex = iTop;
-            //lstAllSelectQALYMethod.Where(p => p.ID == ((AllSelectQALYMethod)cb.Tag).ID).First().PoolingMethod = cb.Text;
-            //if (cb.Text == "SubjectiveWeights")
-            //{
-            //    btnOK.Enabled = false;
-            //    btnSave.Enabled = false;
-            //    btnNext.Enabled = true;
 
-            //}
         }
         public void btAddCRFunctions_Click(object sender, EventArgs e)
         {
@@ -1406,11 +1048,9 @@ namespace BenMAP
             {
                 if (btShowDetail.Text == "Detailed View")
                 {
-                    //MessageBox.Show("Detail status first!");
-                    //btShowDetail.Text = "Show Brief";
                     btShowDetail_Click(sender, e);
                     return;
- 
+
                 }
                 IncidencePoolingAndAggregation ip = CommonClass.lstIncidencePoolingAndAggregation.Where(p => p.PoolingName == tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text).First();
                 if (!dicTabCR.ContainsKey(tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text))
@@ -1422,18 +1062,11 @@ namespace BenMAP
                 foreach (CRSelectFunctionCalculateValue cr in olvAvailable.SelectedObjects)
                 {
                     lstAvailable.Add(cr);
-                    if(!lstAvalilableEndPointGroup.Contains(cr.CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroup))
+                    if (!lstAvalilableEndPointGroup.Contains(cr.CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroup))
                     {
                         lstAvalilableEndPointGroup.Add(cr.CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroup);
                     }
                 }
-                //--modify by xiejp 修正允许多个EndPointGroup在一个PoolingWindow里面20130109
-                //if (lstAvailable.Select(p => p.CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID).Distinct().Count() > 1)
-                //{
-                //    MessageBox.Show("The Pooling needs the same EndPointGroup!");
-                //    return;
-                //}
-                //-----------------------To-----------------
                 if (dicTabCR[tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text] == null) dicTabCR[tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text] = new List<CRSelectFunctionCalculateValue>();
                 if (ip.lstAllSelectCRFuntion != null && ip.lstAllSelectCRFuntion.Count > 0)
                 {
@@ -1447,12 +1080,6 @@ namespace BenMAP
 
                 if (dicTabCR[tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text] != null && dicTabCR[tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text].Count > 0)
                 {
-                    //--modify by xiejp 修正允许多个EndPointGroup在一个PoolingWindow里面20130109
-                    //if (dicTabCR[tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text].First().CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID != lstAvailable.First().CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID)
-                    //{
-                    //    MessageBox.Show("The Pooling needs the same EndPointGroup!");
-                    //    return;
-                    //}
                 }
 
                 dicTabCR[tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text].AddRange(lstAvailable);
@@ -1464,9 +1091,7 @@ namespace BenMAP
                 lstOLVColumns = lstOLVColumns.OrderBy(p => p.DisplayIndex).ToList();
                 lstOLVColumns = lstOLVColumns.Where(p => p.DisplayIndex != 0 && p.DisplayIndex != 1).OrderBy(p => p.DisplayIndex).ToList();
 
-                List<AllSelectCRFunction> lstAllSelectCRFunction = new List<AllSelectCRFunction>();// getLstAllSelectCRFunction(dicTabCR[tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text], lstOLVColumns.Select(p => p.Text).ToList(), dicTabCR[tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text].First().CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroup, -1);
-                //------首先对所有的CR分组--然后各自计算不同的EndPointGroup的list--然后把他们拼在一块
-                Dictionary<string, List<CRSelectFunctionCalculateValue>> dicEndPointGroupCR = new Dictionary<string, List<CRSelectFunctionCalculateValue>>();
+                List<AllSelectCRFunction> lstAllSelectCRFunction = new List<AllSelectCRFunction>(); Dictionary<string, List<CRSelectFunctionCalculateValue>> dicEndPointGroupCR = new Dictionary<string, List<CRSelectFunctionCalculateValue>>();
                 foreach (CRSelectFunctionCalculateValue cr in dicTabCR[tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text])
                 {
                     if (dicEndPointGroupCR.ContainsKey(cr.CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroup))
@@ -1487,21 +1112,19 @@ namespace BenMAP
                 foreach (KeyValuePair<string, List<CRSelectFunctionCalculateValue>> k in dicEndPointGroupCR)
                 {
                     if (!lstAvalilableEndPointGroup.Contains(k.Key)) continue;
-                    List<AllSelectCRFunction> lstTemp = getLstAllSelectCRFunction(k.Value,lstOLVColumns.Select(p => p.Text).ToList(),k.Key, -1);
-                    //------把所有id增加lstAllSelectCRFunction.count;
+                    List<AllSelectCRFunction> lstTemp = getLstAllSelectCRFunction(k.Value, lstOLVColumns.Select(p => p.Text).ToList(), k.Key, -1);
                     if (lstAllSelectCRFunction.Count() > 0)
                     {
                         for (int iTemp = 0; iTemp < lstTemp.Count; iTemp++)
                         {
                             lstTemp[iTemp].ID = lstTemp[iTemp].ID + lstAllSelectCRFunction.Max(p => p.ID) + 1;
-                            if(lstTemp[iTemp].PID!=-1)
-                            lstTemp[iTemp].PID = lstTemp[iTemp].PID + lstAllSelectCRFunction.Max(p => p.ID) + 1;
+                            if (lstTemp[iTemp].PID != -1)
+                                lstTemp[iTemp].PID = lstTemp[iTemp].PID + lstAllSelectCRFunction.Max(p => p.ID) + 1;
                         }
                     }
                     if (lstTemp != null && lstTemp.Count > 0) lstAllSelectCRFunction.AddRange(lstTemp);
                 }
-                _operationStatus = 1;//新增
-                if (_dicPoolingWindowOperation.ContainsKey(ip.PoolingName))
+                _operationStatus = 1; if (_dicPoolingWindowOperation.ContainsKey(ip.PoolingName))
                 {
                     _dicPoolingWindowOperation[ip.PoolingName] = 1;
                 }
@@ -1522,36 +1145,17 @@ namespace BenMAP
             return;
             try
             {
-                List<CRSelectFunctionCalculateValue> lstAvailable = new List<CRSelectFunctionCalculateValue>();// (List<CRSelectFunctionCalculateValue>)this.olvAvailable.SelectedObjects;
-
-                //if (treeListView.Items.Count > 0 &&lstSelectCRSelectFunctionCalculateValue.Count==0)
-                //{
-                //    foreach (CRSelectFunctionCalculateValue crc in treeListView.Objects)
-                //    {
-                //        lstSelectCRSelectFunctionCalculateValue.Add(crc);
-                //    }
-                //}
+                List<CRSelectFunctionCalculateValue> lstAvailable = new List<CRSelectFunctionCalculateValue>();
                 foreach (CRSelectFunctionCalculateValue cr in olvAvailable.SelectedObjects)
                 {
                     lstAvailable.Add(cr);
-                    //if (lstSelectCRSelectFunctionCalculateValue != null && lstSelectCRSelectFunctionCalculateValue.Count != 0 && cr.CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroup != lstSelectCRSelectFunctionCalculateValue.First().CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroup)
-                    //{
-                    //    MessageBox.Show("The Pooling needs the same EndPointGroup!");
-                    //    return;
-                    //}
-                    //else if (lstAvailable.Count > 1 && lstAvailable[lstAvailable.Count - 2].CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroup != cr.CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroup)
-                    //{
-                    //    MessageBox.Show("The Pooling needs the same EndPointGroup!");
-                    //    return;
 
-                    //}
                 }
                 if (lstAvailable.Select(p => p.CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID).Distinct().Count() > 1)
                 {
                     MessageBox.Show("Pooling requires that functions have the same endpoint group.");
                     return;
                 }
-                //------------------首先更新对应的Incidence------------------
                 IncidencePoolingAndAggregation ip = CommonClass.lstIncidencePoolingAndAggregation.Where(p => p.PoolingName == tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text).First();
                 if (ip.lstAllSelectCRFuntion != null && ip.lstAllSelectCRFuntion.Count > 0)
                 {
@@ -1561,12 +1165,10 @@ namespace BenMAP
                         return;
 
                     }
-                    //------------重造
                     lstAvailable = new List<CRSelectFunctionCalculateValue>();
                     var queryCRID = ip.lstAllSelectCRFuntion.Where(a => a.NodeType == 4).Select(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.ID);
                     foreach (CRSelectFunctionCalculateValue cr in olvAvailable.SelectedObjects)
                     {
-                        //if(!queryCRID.Contains(cr.CRSelectFunction.BenMAPHealthImpactFunction.ID))
                         lstAvailable.Add(cr);
 
                     }
@@ -1584,7 +1186,6 @@ namespace BenMAP
                             ip.lstAllSelectCRFuntion.Add(new AllSelectCRFunction()
                             {
                                 NodeType = 1,
-                                // EndPointGroupID = lstAvailable.First().CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID,
                                 ID = i,
                                 Name = query[iquery],
                                 PID = 0,
@@ -1599,7 +1200,6 @@ namespace BenMAP
                         {
                             iEndPoint = queryEndPoint.First().ID;
                         }
-                        //---------Add Author------------
                         var author = lstAvailable.Where(p => p.CRSelectFunction.BenMAPHealthImpactFunction.EndPoint == query[iquery]).Select(a => a.CRSelectFunction.BenMAPHealthImpactFunction.Author).Distinct().ToList();
                         for (int iauthor = 0; iauthor < author.Count; iauthor++)
                         {
@@ -1610,7 +1210,6 @@ namespace BenMAP
                                 ip.lstAllSelectCRFuntion.Add(new AllSelectCRFunction()
                                 {
                                     NodeType = 2,
-                                    // EndPointGroupID = lstAvailable.First().CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID,
                                     ID = i,
                                     Name = author[iauthor],
                                     PID = iEndPoint,
@@ -1635,12 +1234,10 @@ namespace BenMAP
                                     ip.lstAllSelectCRFuntion.Add(new AllSelectCRFunction()
                                     {
                                         NodeType = 3,
-                                        // EndPointGroupID = lstAvailable.First().CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID,
                                         ID = i,
                                         Name = Qualifier[iQ],
                                         PID = iAuthor,
                                         PoolingMethod = "None",
-                                        //CRSelectFunctionCalculateValue= lstAvailable[ifunction]
 
 
                                     });
@@ -1652,18 +1249,15 @@ namespace BenMAP
                                 {
                                     iQualifier = queryQualifier.First().ID;
                                 }
-                                //------------function一级
                                 var funtion = lstAvailable.Where(p => p.CRSelectFunction.BenMAPHealthImpactFunction.Author == author[iauthor] && p.CRSelectFunction.BenMAPHealthImpactFunction.EndPoint == query[iquery] && p.CRSelectFunction.BenMAPHealthImpactFunction.Qualifier == Qualifier[iQ]).ToList();
                                 for (int ifunction = 0; ifunction < funtion.Count; ifunction++)
                                 {
                                     ip.lstAllSelectCRFuntion.Add(new AllSelectCRFunction()
                                     {
                                         NodeType = 4,
-                                        // EndPointGroupID = lstAvailable.First().CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID,
                                         ID = i,
                                         Name = funtion[ifunction].CRSelectFunction.BenMAPHealthImpactFunction.strLocations,
                                         PID = iQualifier,
-                                        //PoolingMethod =null,
                                         CRSelectFunctionCalculateValue = funtion[ifunction]
 
 
@@ -1679,7 +1273,6 @@ namespace BenMAP
 
 
 
-                    //initTreeView(ip);
 
                 }
                 else if (ip.lstAllSelectCRFuntion == null || ip.lstAllSelectCRFuntion.Count == 0)
@@ -1704,7 +1297,6 @@ namespace BenMAP
                         ip.lstAllSelectCRFuntion.Add(new AllSelectCRFunction()
                         {
                             NodeType = 1,
-                            // EndPointGroupID = lstAvailable.First().CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID,
                             ID = i,
                             Name = query[iquery],
                             PID = 0,
@@ -1714,14 +1306,12 @@ namespace BenMAP
                         });
                         iEndPoint = i;
                         i++;
-                        //---------Add Author------------
                         var author = lstAvailable.Where(p => p.CRSelectFunction.BenMAPHealthImpactFunction.EndPoint == query[iquery]).Select(a => a.CRSelectFunction.BenMAPHealthImpactFunction.Author).Distinct().ToList();
                         for (int iauthor = 0; iauthor < author.Count; iauthor++)
                         {
                             ip.lstAllSelectCRFuntion.Add(new AllSelectCRFunction()
                             {
                                 NodeType = 2,
-                                // EndPointGroupID = lstAvailable.First().CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID,
                                 ID = i,
                                 Name = author[iauthor],
                                 PID = iEndPoint,
@@ -1737,12 +1327,10 @@ namespace BenMAP
                                 ip.lstAllSelectCRFuntion.Add(new AllSelectCRFunction()
                                 {
                                     NodeType = 3,
-                                    // EndPointGroupID = lstAvailable.First().CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID,
                                     ID = i,
                                     Name = Qualifier[iqualifier],
                                     PID = iAuthor,
                                     PoolingMethod = "None",
-                                    //CRSelectFunctionCalculateValue= lstAvailable[ifunction]
 
 
                                 });
@@ -1754,11 +1342,9 @@ namespace BenMAP
                                     ip.lstAllSelectCRFuntion.Add(new AllSelectCRFunction()
                                     {
                                         NodeType = 4,
-                                        // EndPointGroupID = lstAvailable.First().CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID,
                                         ID = i,
                                         Name = function[ifunction].CRSelectFunction.BenMAPHealthImpactFunction.strLocations,
                                         PID = iQualifier,
-                                        //PoolingMethod =null,
                                         CRSelectFunctionCalculateValue = function[ifunction]
 
 
@@ -1777,8 +1363,6 @@ namespace BenMAP
 
                 }
                 initTreeView(ip);
-                //lstSelectCRSelectFunctionCalculateValue = lstSelectCRSelectFunctionCalculateValue.Union(lstAvailable).ToList();
-                //this.treeListView.SetObjects(lstSelectCRSelectFunctionCalculateValue);
             }
             catch (Exception ex)
             {
@@ -1793,7 +1377,6 @@ namespace BenMAP
 
             if (source.NodeType == 4 && targe.NodeType == 3)
             {
-                //------把4加到3上面
                 var cr3 = ip.lstAllSelectCRFuntion.Where(p => p.ID == source.PID).First();
 
                 source.PID = targe.ID;
@@ -1869,8 +1452,7 @@ namespace BenMAP
 
             }
             IncidencePoolingAndAggregation ip = CommonClass.lstIncidencePoolingAndAggregation.Where(p => p.PoolingName == tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text).First();
-            _operationStatus = 3;//删除
-            if (_dicPoolingWindowOperation.ContainsKey(ip.PoolingName))
+            _operationStatus = 3; if (_dicPoolingWindowOperation.ContainsKey(ip.PoolingName))
             {
                 _dicPoolingWindowOperation[ip.PoolingName] = 3;
             }
@@ -1878,13 +1460,7 @@ namespace BenMAP
             {
                 _dicPoolingWindowOperation.Add(ip.PoolingName, 3);
             }
-            //foreach (CRSelectFunctionCalculateValue cr in treeListView.SelectedObjects)
-            //{
-            //    lstSelectCRSelectFunctionCalculateValue.Remove(cr);
 
-            //}
-            //this.treeListView.SetObjects(lstSelectCRSelectFunctionCalculateValue);
-            //------------首先可删掉nodetype=4的所有的------------------
             foreach (AllSelectCRFunction cr in treeListView.SelectedObjects)
             {
                 if (cr.NodeType == 100)
@@ -1893,10 +1469,8 @@ namespace BenMAP
                     dicTabCR[tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text].Remove(cr.CRSelectFunctionCalculateValue);
 
                 }
-                //  lstSelectCRSelectFunctionCalculateValue.Remove(cr);
 
             }
-            //----删除掉所有没有叶子结点的------
             List<AllSelectCRFunction> lstRemove = new List<AllSelectCRFunction>();
             foreach (AllSelectCRFunction allSelectCRFunction in ip.lstAllSelectCRFuntion)
             {
@@ -1929,96 +1503,17 @@ namespace BenMAP
                 ip.lstAllSelectCRFuntion.Remove(allSelectCRFunction);
             }
 
-            ////------------删掉nodetype=3的，如果该节点下面有则不能删掉---------------------
-            //foreach (AllSelectCRFunction cr in treeListView.SelectedObjects)
-            //{
-            //    if (cr.NodeType == 100)
-            //    {
-            //        if (ip.lstAllSelectCRFuntion.Where(p => p.PID == cr.ID).Count() == 0)
-            //            ip.lstAllSelectCRFuntion.Remove(cr);
 
-            //    }
-            //    //  lstSelectCRSelectFunctionCalculateValue.Remove(cr);
 
-            //}
-            ////------------删掉nodetype=2的，如果该节点下面有则不能删掉---------------------
-            //foreach (AllSelectCRFunction cr in treeListView.SelectedObjects)
-            //{
-            //    if (cr.NodeType == 2)
-            //    {
-            //        if (ip.lstAllSelectCRFuntion.Where(p => p.PID == cr.ID).Count() == 0)
-            //            ip.lstAllSelectCRFuntion.Remove(cr);
 
-            //    }
-            //    //  lstSelectCRSelectFunctionCalculateValue.Remove(cr);
 
-            //}
 
-            ////------------删掉nodetype=1的，如果该节点下面有则不能删掉--------------------
-            //foreach (AllSelectCRFunction cr in treeListView.SelectedObjects)
-            //{
-            //    if (cr.NodeType == 1)
-            //    {
-            //        if (ip.lstAllSelectCRFuntion.Where(p => p.PID == cr.ID).Count() == 0)
-            //            ip.lstAllSelectCRFuntion.Remove(cr);
 
-            //    }
-            //    //  lstSelectCRSelectFunctionCalculateValue.Remove(cr);
 
-            //}
 
-            ////------------删掉nodetype=0的，如果该节点下面有则不能删掉--------------------
-            //foreach (AllSelectCRFunction cr in treeListView.SelectedObjects)
-            //{
-            //    if (cr.NodeType == 0)
-            //    {
-            //        if (ip.lstAllSelectCRFuntion.Where(p => p.PID == cr.ID).Count() == 0)
-            //            ip.lstAllSelectCRFuntion.Remove(cr);
 
-            //    }
-            //    //  lstSelectCRSelectFunctionCalculateValue.Remove(cr);
 
-            //}
-            //-----------清理---
-            //var lstTemp = ip.lstAllSelectCRFuntion.Where(p => p.NodeType != 4);
-            //List<AllSelectCRFunction> lstRemove = new List<AllSelectCRFunction>();
-            //foreach (AllSelectCRFunction ac in lstTemp)
-            //{
-            //    if (ip.lstAllSelectCRFuntion.Where(p => p.PID == ac.ID).Count() == 0)
-            //    {
-            //        //ip.lstAllSelectCRFuntion.Remove(ac);
-            //        lstRemove.Add(ac);
-            //        var query2 = ip.lstAllSelectCRFuntion.Where(p => p.ID == ac.PID).ToList();
-            //        foreach (AllSelectCRFunction ac2 in query2)
-            //        {
-            //            if (ip.lstAllSelectCRFuntion.Where(p => p.PID == ac2.ID && p.ID != ac.ID).Count() == 0)
-            //            {
-            //                lstRemove.Add(ac2);
-            //                var query1 = ip.lstAllSelectCRFuntion.Where(p => p.ID == ac2.PID);
 
-            //                foreach (AllSelectCRFunction ac1 in query1)
-            //                {
-            //                    if (ip.lstAllSelectCRFuntion.Where(p => p.PID == ac1.ID && p.ID != ac2.ID).Count() == 0)
-            //                    {
-            //                        lstRemove.Add(ac1);
-            //                        var query0 = ip.lstAllSelectCRFuntion.Where(p => p.ID == ac1.PID);
-            //                        if (query0.Count() > 0)
-            //                        {
-            //                            lstRemove.AddRange(query0.ToList());
-            //                        }
-            //                    }
-            //                }
-            //            }
-            //        }
-            //    }
-            //    else
-            //    {
-            //    }
-            //}
-            //foreach (AllSelectCRFunction acRemove in lstRemove)
-            //{
-            //    ip.lstAllSelectCRFuntion.Remove(acRemove);
-            //}
             initTreeView(ip);
             if (dicTabCR[tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text] == null) dicTabCR[tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text] = new List<CRSelectFunctionCalculateValue>();
             if (dicTabCR[tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text] != null && dicTabCR[tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text].Count > 0)
@@ -2026,11 +1521,6 @@ namespace BenMAP
             else
                 incidenceBusinessCardRenderer.lstExists = new List<int>();
             olvAvailable.Refresh();
-            //dicTabCR[tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text].AddRange(lstAvailable);
-            //foreach (AllSelectCRFunction allSelectCRFunction in lstRemove)
-            //{
-            //    ip.lstAllSelectCRFuntion.Remove(allSelectCRFunction);
-            //}
 
         }
         private void updateTreeColumns(ref List<string> lstString)
@@ -2041,15 +1531,14 @@ namespace BenMAP
                 for (int i = 2; i < treeListView.Columns.Count; i++)
                 {
                     OLVColumn olvc = treeListView.Columns[i] as OLVColumn;
-                    //if (olvc.Text.Replace(" ", "").ToLower() == lstString[i])
                     lstString.Add(olvc.Text);
                 }
             }
             int j = 0;
             foreach (OLVColumn olvc in treeListView.Columns)
             {
-                
-                    olvc.DisplayIndex = j;
+
+                olvc.DisplayIndex = j;
                 j++;
             }
             for (int i = 0; i < lstString.Count(); i++)
@@ -2088,14 +1577,13 @@ namespace BenMAP
                 this.olvAvailable.Refresh();
             }
             catch
-            { 
+            {
             }
         }
 
         private void btAddPoolingWindow_Click(object sender, EventArgs e)
         {
-            int i = tabControlSelected.TabCount;// cbPoolingWindow.Items.Count;
-            while (istabControlSelectedContainText("PoolingWindow" + i))
+            int i = tabControlSelected.TabCount; while (istabControlSelectedContainText("PoolingWindow" + i))
             {
                 i++;
             }
@@ -2122,12 +1610,11 @@ namespace BenMAP
             {
                 _dicPoolingWindowOperation.Add(ip.PoolingName, 1);
             }
-            //tabControlSelected.SelectedIndex = 0;
             tabControlSelected.SelectedIndex = tabControlSelected.TabCount - 1;
 
         }
 
-        private bool _hasDelPoolingWindows = false;// 是否做了删除Pooling Windows的操作，如果删除了pooling windows-》true，否则-》false
+        private bool _hasDelPoolingWindows = false;
         private void btDelPoolingWindow_Click(object sender, EventArgs e)
         {
             if (tabControlSelected.TabCount == 1)
@@ -2135,7 +1622,6 @@ namespace BenMAP
                 MessageBox.Show("You can not delete the last pooling window.");
                 return;
             }
-            //----------去掉错误Valuation------------
 
             if (CommonClass.ValuationMethodPoolingAndAggregation != null && CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase != null)
             {
@@ -2157,8 +1643,6 @@ namespace BenMAP
 
             _operationStatus = 3;
 
-            //tabControlSelected.TabPages[0].Controls.Add(treeListView);
-            //this.cbPoolingWindow_SelectedIndexOld = -1;
             tabControlSelected.TabPages.RemoveAt(tabControlSelected.SelectedIndex);
             _hasDelPoolingWindows = true;
             if (tabControlSelected.TabPages.Count > 0)
@@ -2170,32 +1654,7 @@ namespace BenMAP
                 tabControlSelected.SelectedIndex = -1;
         }
 
-        //private void cbPoolingWindow_KeyDown(object sender, KeyEventArgs e)
-        //{
-        //    if (e.KeyCode == Keys.Enter)
-        //    {
-        //        try
-        //        {
-        //            //_pageCurrent = Convert.ToInt32(bindingNavigatorPositionItem.Text);
-        //            //_currentRow = _pageSize * (_pageCurrent - 1);
-        //            //UpdateTableResult(_tableObject);
-        //            if (cbPoolingWindow.SelectedIndex != -1 && !cbPoolingWindow.Items.Contains(cbPoolingWindow.Text))
-        //            {
-        //                CommonClass.lstIncidencePoolingAndAggregation.Where(p => p.PoolingName == cbPoolingWindow.Items[cbPoolingWindow.SelectedIndex].ToString()).First().PoolingName = cbPoolingWindow.Text;
-        //                cbPoolingWindow.Items[cbPoolingWindow.SelectedIndex] = cbPoolingWindow.Text;
-        //            }
-        //            else
-        //            {
-        //                MessageBox.Show("The pooling window name is existed");
-        //            }
-        //        }
-        //        catch
-        //        {
 
-        //        }
-        //    }
-        //}
-        //private int cbPoolingWindow_SelectedIndexOld = -1;
         private void cbPoolingWindow_SelectedIndexChanged(object sender, EventArgs e)
         {
 
@@ -2222,30 +1681,23 @@ namespace BenMAP
 
         private void tabControlSelected_SelectedIndexChanged(object sender, EventArgs e)
         {
-            //--------------判断Pooling-->
             try
             {
                 if (tabControlSelected.SelectedIndex == -1) return;
                 IncidencePoolingAndAggregation ip = CommonClass.lstIncidencePoolingAndAggregation.Where(p => p.PoolingName == tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text).First();
-                //if (ip.lstAllSelectCRFuntion == null || ip.lstAllSelectCRFuntion.Count == 0) btShowDetail.Text = "Show Brief";
-                //else
-                    //btShowDetail.Text = "Show Detail";
                 if (tabControlSelected.SelectedIndex > -1)
                 {
                     tbPoolingName.Text = tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text;
                     updateTreeColumns(ref ip.lstColumns);
-                    //cbPoolingWindow_SelectedIndexOld = tabControlSelected.SelectedIndex;
                     initTreeView(ip);
                     treeListView.Dock = DockStyle.Fill;
                     treeListView.TabIndex = tabControlSelected.SelectedIndex;
                     treeListView.Refresh();
                     tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Controls.Add(treeListView);
-                    //cboPoolingMethod.SelectedItem = Enum.GetName(typeof(PoolingMethodTypeEnum), ip.PoolingMethodType);
 
 
                 }
                 treeListView.Visible = true;
-                //-----------majie-------
                 if (tabControlSelected.TabCount == 0)
                 { lblPoolingWinNum.Text = "1"; }
                 else
@@ -2253,13 +1705,11 @@ namespace BenMAP
                     lblPoolingWinNum.Text = tabControlSelected.TabCount.ToString();
                 }
 
-                //----
                 if (!dicTabCR.ContainsKey(tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text))
                 {
                     dicTabCR.Add(tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text, new List<CRSelectFunctionCalculateValue>());
 
 
-                    //-----------------------To-----------------
                     if (dicTabCR[tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text] == null) dicTabCR[tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text] = new List<CRSelectFunctionCalculateValue>();
                     if (ip.lstAllSelectCRFuntion != null && ip.lstAllSelectCRFuntion.Count > 0)
                     {
@@ -2276,7 +1726,6 @@ namespace BenMAP
                 else
                     incidenceBusinessCardRenderer.lstExists = new List<int>();
                 olvAvailable.Refresh();
-                //------------end---------
 
             }
             catch
@@ -2329,10 +1778,10 @@ namespace BenMAP
                         _dicPoolingWindowOperation.Add(tbPoolingName.Text, _dicPoolingWindowOperation[ip.PoolingName]);
                         _dicPoolingWindowOperation.Remove(ip.PoolingName);
                     }
-                    
+
                     ip.PoolingName = tbPoolingName.Text;
                     _operationStatus = 2;
-                    
+
                     tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text = tbPoolingName.Text;
 
 
@@ -2351,18 +1800,14 @@ namespace BenMAP
         {
             try
             {
-                if (e.NewDisplayIndex == 0 || e.NewDisplayIndex == 1 || e.OldDisplayIndex == 0 || e.OldDisplayIndex == 1)//|| e.OldDisplayIndex == treeListView.Columns.Count - 1 || e.NewDisplayIndex == treeListView.Columns.Count - 1)
+                if (e.NewDisplayIndex == 0 || e.NewDisplayIndex == 1 || e.OldDisplayIndex == 0 || e.OldDisplayIndex == 1)
                 {
                     e.Cancel = true;
                     return;
                 }
-                //Todo:陈志润20120115 提示
                 _operationStatus = 1;
 
-                //------------------根据顺序生成一棵树------------------------
                 OLVColumn olvc = treeListView.Columns[e.OldDisplayIndex] as OLVColumn;
-                //treeListView.Columns.Remove(olvc);
-                //treeListView.Columns.Insert(e.NewDisplayIndex, olvc);
                 List<BrightIdeasSoftware.OLVColumn> lstOLVColumns = new List<OLVColumn>();
                 foreach (BrightIdeasSoftware.OLVColumn olvc2 in this.treeListView.Columns)
                 {
@@ -2384,12 +1829,7 @@ namespace BenMAP
                 {
                     _dicPoolingWindowOperation.Add(ip.PoolingName, 1);
                 }
-                //(treeListView.Columns[e.NewDisplayIndex] as OLVColumn).DisplayIndex = e.OldDisplayIndex;
-                //(treeListView.Columns[e.OldDisplayIndex] as OLVColumn).DisplayIndex = e.NewDisplayIndex;
-               // List<AllSelectCRFunction> lstAllSelectCRFunction = getLstAllSelectCRFunction(dicTabCR[tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text], lstOLVColumns.Select(p => p.Text).ToList(), dicTabCR[tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text].First().CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroup,-1);
-                List<AllSelectCRFunction> lstAllSelectCRFunction = new List<AllSelectCRFunction>();// getLstAllSelectCRFunction(dicTabCR[tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text], lstOLVColumns.Select(p => p.Text).ToList(), dicTabCR[tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text].First().CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroup, -1);
-                //------首先对所有的CR分组--然后各自计算不同的EndPointGroup的list--然后把他们拼在一块
-                Dictionary<string, List<CRSelectFunctionCalculateValue>> dicEndPointGroupCR = new Dictionary<string, List<CRSelectFunctionCalculateValue>>();
+                List<AllSelectCRFunction> lstAllSelectCRFunction = new List<AllSelectCRFunction>(); Dictionary<string, List<CRSelectFunctionCalculateValue>> dicEndPointGroupCR = new Dictionary<string, List<CRSelectFunctionCalculateValue>>();
                 foreach (CRSelectFunctionCalculateValue cr in dicTabCR[tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text])
                 {
                     try
@@ -2408,7 +1848,6 @@ namespace BenMAP
                 foreach (KeyValuePair<string, List<CRSelectFunctionCalculateValue>> k in dicEndPointGroupCR)
                 {
                     List<AllSelectCRFunction> lstTemp = getLstAllSelectCRFunction(k.Value, lstOLVColumns.Select(p => p.Text).ToList(), k.Key, -1);
-                    //------把所有id增加lstAllSelectCRFunction.count;
                     if (lstAllSelectCRFunction.Count() > 0)
                     {
                         for (int iTemp = 0; iTemp < lstTemp.Count; iTemp++)
@@ -2421,14 +1860,12 @@ namespace BenMAP
                     if (lstTemp != null && lstTemp.Count > 0) lstAllSelectCRFunction.AddRange(lstTemp);
                 }
                 ip.lstAllSelectCRFuntion = lstAllSelectCRFunction;
-                //cbPoolingWindow_SelectedIndexOld = tabControlSelected.SelectedIndex;
                 initTreeView(ip);
             }
             catch (Exception ex)
             {
             }
 
-            //-----------------pooling-------清掉!-------------------------
         }
         private string getNameFromOLVColumn(string column, CRSelectFunctionCalculateValue cr)
         {
@@ -2492,7 +1929,6 @@ namespace BenMAP
         }
         public static void getSecond(ref List<CRSelectFunctionCalculateValue> lstSecond, List<string> lstOLVColumns, int i, List<string> lstParent)
         {
-            //------------查出有两个则往下加!-------此处需用到递归-------------
             for (int k = 0; k < i; k++)
             {
                 switch (lstOLVColumns[k].Replace(" ", "").ToLower())
@@ -2550,13 +1986,6 @@ namespace BenMAP
                         lstSecond = lstSecond.Where(p => p.CRSelectFunction.BenMAPHealthImpactFunction.DataSetName == lstParent[i - k - 1]).ToList();
                         break;
                     case "version":
-                        //int iversion = lstCR.GroupBy(p => p.CRSelectFunction.CRID).Max(p => p.Count());
-                        //lstString = new List<string>();
-                        //for (int i = 1; i <= iversion; i++)
-                        //{
-                        //    lstString.Add(i.ToString());
-                        //}
-                        //--------直接--------------
                         var query = lstSecond.GroupBy(p => p.CRSelectFunction.CRID);
                         List<CRSelectFunctionCalculateValue> lstVersion = new List<CRSelectFunctionCalculateValue>();
                         foreach (IGrouping<int, CRSelectFunctionCalculateValue> ig in query)
@@ -2641,13 +2070,12 @@ namespace BenMAP
 
             return lstString;
         }
-        public static List<AllSelectCRFunction> getLstAllSelectCRFunction(List<CRSelectFunctionCalculateValue> lstCR, List<string> lstOLVColumns, string EndPointGroup,int iMaxNodeType)
+        public static List<AllSelectCRFunction> getLstAllSelectCRFunction(List<CRSelectFunctionCalculateValue> lstCR, List<string> lstOLVColumns, string EndPointGroup, int iMaxNodeType)
         {
             try
             {
                 List<AllSelectCRFunction> lstReturn = new List<AllSelectCRFunction>();
                 if (lstCR == null) return null;
-                //---------从第一种情况往下循环，如果只有一个则break!
                 if (lstCR.Count == 1)
                 {
                     lstReturn.Add(new AllSelectCRFunction()
@@ -2663,7 +2091,6 @@ namespace BenMAP
                         PoolingMethod = "",
                         Version = "1",
 
-                        //------add for display
                         EndPointGroup = lstCR.First().CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroup,
                         EndPoint = lstCR.First().CRSelectFunction.BenMAPHealthImpactFunction.EndPoint,
                         Author = lstCR.First().CRSelectFunction.BenMAPHealthImpactFunction.Author,
@@ -2682,7 +2109,6 @@ namespace BenMAP
                         SeasonalMetric = lstCR.First().CRSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric == null ? "" : lstCR.First().CRSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName,
                         MetricStatistic = lstCR.First().CRSelectFunction.BenMAPHealthImpactFunction.MetricStatistic == null ? "" : Enum.GetName(typeof(MetricStatic), lstCR.First().CRSelectFunction.BenMAPHealthImpactFunction.MetricStatistic),
                         DataSet = lstCR.First().CRSelectFunction.BenMAPHealthImpactFunction.DataSetName,
-                        //----- add for display
 
 
                     });
@@ -2690,48 +2116,35 @@ namespace BenMAP
                 }
                 else
                 {
-                    //-----------首先建立一个EndPointGroup的节点
                     lstReturn.Add(new AllSelectCRFunction()
-                    {
+{
 
-                        EndPointGroupID = lstCR.First().CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID,
+    EndPointGroupID = lstCR.First().CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID,
 
-                        ID = 0,
-                        Name = EndPointGroup,
-                        EndPointGroup = EndPointGroup,
-                        //Name = lstCR.First().CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroup,
-                        //EndPointGroup = lstCR.First().CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroup,
-                        NodeType = 0,
-                        PID = -1,
-                        PoolingMethod = "None",
-                         Version="",
+    ID = 0,
+    Name = EndPointGroup,
+    EndPointGroup = EndPointGroup,
+    NodeType = 0,
+    PID = -1,
+    PoolingMethod = "None",
+    Version = "",
 
-                    });
+});
 
-                    //-------------根据排序组合树！---------------------
                     List<string> lstColumns = new List<string>();
-                    //List<BrightIdeasSoftware.OLVColumn> lstOLVColumns = new List<OLVColumn>();
-                    //foreach (BrightIdeasSoftware.OLVColumn olvc in this.treeListView.Columns)
-                    //{
-                    //    lstOLVColumns.Add(olvc);
-                    //}
-                    //lstOLVColumns = lstOLVColumns.Where(p => p.DisplayIndex != 0 && p.DisplayIndex != 1 && p.DisplayIndex != lstOLVColumns.Count - 1).OrderBy(p => p.DisplayIndex).ToList();
 
                     for (int i = 0; i < lstOLVColumns.Count; i++)
                     {
 
-                        //BrightIdeasSoftware.OLVColumn olvc = lstOLVColumns[i];
                         List<string> lstString = new List<string>();
                         int iParent = 0;
 
-                        //------直接加在EndPointGroup下面------如果不为0--加在0下面------首先判断是否有两个不同的
 
 
 
-                        lstString = getLstStringFromColumnName(lstOLVColumns[i].Replace(" ", "").ToLower(), lstCR);//lstCR.Select(p => p.CRSelectFunction.BenMAPHealthImpactFunction.EndPoint).Distinct().ToList();
-                        if (lstString.Count() > 0)
+                        lstString = getLstStringFromColumnName(lstOLVColumns[i].Replace(" ", "").ToLower(), lstCR); if (lstString.Count() > 0)
                         {
-                            if (i == 0) //------直接加在EndPointGroup下面------如果不为0--加在0下面------首先判断是否有两个不同的
+                            if (i == 0)
                             {
                                 iParent = 0;
 
@@ -2743,14 +2156,13 @@ namespace BenMAP
                                         EndPointGroupID = lstCR.First().CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID,
                                         EndPointGroup = lstCR.First().CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroup,
                                         ID = j + 1,
-                                        Name = lstString[j],//----------endpoint---
+                                        Name = lstString[j],
                                         NodeType = i + 1,
                                         PID = 0,
                                         PoolingMethod = "None",
                                         Version = "",
 
                                     });
-                                    //------------modify version----------
                                     if (lstOLVColumns[i].Replace(" ", "").ToLower() == "version")
                                     {
                                         lstReturn.Last().Version = lstReturn.Last().Name;
@@ -2759,14 +2171,12 @@ namespace BenMAP
                             }
                             else
                             {
-                                //-------得根据上一层---如果有则轮循下一层
                                 List<AllSelectCRFunction> query = lstReturn.Where(p => p.NodeType == i).ToList();
                                 if (query.Count() == 0) { i = lstOLVColumns.Count - 1; }
                                 else
                                 {
                                     for (int j = 0; j < query.Count(); j++)
                                     {
-                                        //------首先求出它所有的Parent的string---
                                         List<string> lstParent = new List<string>();
                                         lstParent.Add(query[j].Name);
                                         var parent = lstReturn.Where(p => p.ID == query[j].PID).First();
@@ -2781,9 +2191,7 @@ namespace BenMAP
                                         getSecond(ref lstSecond, lstOLVColumns, i, lstParent);
                                         if (lstSecond.Count() > 1)
                                         {
-                                            //----------add-------------
-                                            lstString = getLstStringFromColumnName(lstOLVColumns[i].Replace(" ", "").ToLower(), lstSecond);// lstSecond.Select(p => p.CRSelectFunction.BenMAPHealthImpactFunction.EndPoint).Distinct().ToList();
-                                            if (lstString.Count > 0)//modify by xiejp 20121115 解决一直往下的问题
+                                            lstString = getLstStringFromColumnName(lstOLVColumns[i].Replace(" ", "").ToLower(), lstSecond); if (lstString.Count > 0)
                                             {
                                                 for (int k = 0; k < lstString.Count(); k++)
                                                 {
@@ -2792,14 +2200,13 @@ namespace BenMAP
                                                         EndPointGroupID = lstCR.First().CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID,
                                                         EndPointGroup = lstCR.First().CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroup,
                                                         ID = lstReturn.Count(),
-                                                        Name = lstString[k],//----------endpoint---
+                                                        Name = lstString[k],
                                                         NodeType = i + 1,
                                                         PID = query[j].ID,
                                                         PoolingMethod = "None",
                                                         Version = "",
 
                                                     });
-                                                    //------------modify version----------
                                                     if (lstOLVColumns[i].Replace(" ", "").ToLower() == "version")
                                                     {
                                                         lstReturn.Last().Version = lstReturn.Last().Name;
@@ -2808,7 +2215,7 @@ namespace BenMAP
                                             }
                                             else
                                             {
- 
+
                                             }
                                         }
                                     }
@@ -2819,15 +2226,12 @@ namespace BenMAP
                         }
                         else
                         {
-                            //退出循环！-------------加子节点------------
-                            //--------------如果==1-------------
                             i = lstOLVColumns.Count - 1;
                         }
 
 
 
                     }
-                    //---------------------根据生成的一棵树来生成整个的树---首先求出没有叶子结点的所有节点列表，然后轮循!----------
                     var queryTree = lstReturn.Where(p => lstReturn.Where(a => a.PID == p.ID).Count() == 0).ToList();
                     foreach (AllSelectCRFunction acf in queryTree)
                     {
@@ -2859,32 +2263,11 @@ namespace BenMAP
                         foreach (CRSelectFunctionCalculateValue crc in lstSecond)
                         {
                             iVersion = lstReturn.Where(p => p.CRID == crc.CRSelectFunction.CRID).Count() + 1;
-                            //if (lstOLVColumns[lstOLVColumns.Count - 1].ToLower() == "version")
-                            //    //if (lstOLVColumns[0].ToLower() != "version")
-                            //    iVersion = lstReturn.Where(p => p.CRID == crc.CRSelectFunction.CRID).Count() + 1;
-                            //else
-                            //{
-                            //    //--------直接得到
-                            //    if (acf.NodeType == iVersionNodeType)
-                            //        iVersion = Convert.ToInt32(acf.Name);
-                            //    else
-                            //    {
-                            //        List<AllSelectCRFunction> versionParent = lstReturn.Where(p => p.ID == acf.PID).ToList();
-                            //        while (versionParent!=null && versionParent.Count() > 0)
-                            //        {
-                            //            if (versionParent.First().NodeType == iVersionNodeType)
-                            //            {
-                            //                iVersion = Convert.ToInt32(versionParent.First().Name);
-                            //            }
-                            //            versionParent = lstReturn.Where(p => p.ID == versionParent.First().PID).ToList();
-                            //        }
-                            //    }
 
-                            //}
-                            string strAuthor=crc.CRSelectFunction.BenMAPHealthImpactFunction.Author;
-                            if(strAuthor!=null && strAuthor!="" && strAuthor.Contains(" "))
+                            string strAuthor = crc.CRSelectFunction.BenMAPHealthImpactFunction.Author;
+                            if (strAuthor != null && strAuthor != "" && strAuthor.Contains(" "))
                             {
-                                strAuthor= strAuthor.Substring(0,strAuthor.IndexOf(" "));
+                                strAuthor = strAuthor.Substring(0, strAuthor.IndexOf(" "));
                             }
                             lstReturn.Add(new AllSelectCRFunction()
                             {
@@ -2893,13 +2276,11 @@ namespace BenMAP
                                 EndPointGroupID = crc.CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID,
                                 EndPointID = crc.CRSelectFunction.BenMAPHealthImpactFunction.EndPointID,
                                 ID = lstReturn.Count(),
-                                Name = strAuthor,// crc.CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroup,
+                                Name = strAuthor,
                                 NodeType = 100,
                                 PID = acf.ID,
                                 PoolingMethod = "",
-                                Version = iVersion.ToString(),//------------------需要修改!------------------------
-
-                                //------add for display
+                                Version = iVersion.ToString(),
                                 EndPointGroup = crc.CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroup,
                                 EndPoint = crc.CRSelectFunction.BenMAPHealthImpactFunction.EndPoint,
                                 Author = crc.CRSelectFunction.BenMAPHealthImpactFunction.Author,
@@ -2918,29 +2299,24 @@ namespace BenMAP
                                 SeasonalMetric = crc.CRSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric == null ? "" : crc.CRSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName,
                                 MetricStatistic = Enum.GetName(typeof(MetricStatic), crc.CRSelectFunction.BenMAPHealthImpactFunction.MetricStatistic),
                                 DataSet = crc.CRSelectFunction.BenMAPHealthImpactFunction.DataSetName,
-                                //----- add for display
                             });
                         }
 
                     }
-                    //----------------------modify by xiejp--修正树，如果叶子结点只有一个的根节点，去掉---
                     if (lstReturn.Count > 0)
                     {
-                        int iMaxLstReturnNodeType =iMaxNodeType!=-1?iMaxNodeType: lstReturn.Where(p => p.NodeType != 100).Max(p => p.NodeType);
-                        //---------------------modify by xiejp--如果version已作为树的根节点---则要重新整理树----------
+                        int iMaxLstReturnNodeType = iMaxNodeType != -1 ? iMaxNodeType : lstReturn.Where(p => p.NodeType != 100).Max(p => p.NodeType);
                         if (lstOLVColumns.GetRange(0, iMaxNodeType != -1 ? iMaxNodeType : lstReturn.Where(p => p.NodeType != 100).Max(p => p.NodeType)).Contains("Version"))
                         {
                             var lstTemp = lstReturn.Where(p => p.NodeType == lstOLVColumns.IndexOf("Version") + 1).ToList();
-                            //---得到它的所有叶子结点，把叶子结点的version 修改成它!
                             for (int ilstTemp = 0; ilstTemp < lstTemp.Count; ilstTemp++)
                             {
                                 List<AllSelectCRFunction> lstTempReturn = new List<AllSelectCRFunction>();
                                 APVX.APVCommonClass.getAllChildCR(lstTemp[ilstTemp], lstReturn, ref lstTempReturn);
-                                //lstTempReturn = lstTempReturn.Where(p => p.CRSelectFunctionCalculateValue != null).ToList();
                                 foreach (AllSelectCRFunction alsc in lstTempReturn)
                                 {
-                                    if(alsc.Version=="")
-                                    alsc.Version = lstTemp[ilstTemp].Name;
+                                    if (alsc.Version == "")
+                                        alsc.Version = lstTemp[ilstTemp].Name;
                                 }
                             }
 
@@ -2952,7 +2328,7 @@ namespace BenMAP
                             {
                                 var lstTempSec = lstReturn.Where(p => p.PID == alcr.ID).ToList();
                                 var lstTempSec2 = lstReturn.Where(p => p.PID == alcr.PID).ToList();
-                                if (lstTempSec2.Count == 1 || (lstTempSec.Count==1 && lstTempSec[0].NodeType==100))
+                                if (lstTempSec2.Count == 1 || (lstTempSec.Count == 1 && lstTempSec[0].NodeType == 100))
                                 {
 
                                     foreach (AllSelectCRFunction alcrSec in lstTempSec)
@@ -2964,62 +2340,32 @@ namespace BenMAP
                                 }
                             }
                         }
-                        lstReturn.Where(p => p.NodeType != 100).Last().NodeType = iMaxLstReturnNodeType ;
-                        //for (int iTemp = 0; iTemp < iMaxLstReturnNodeType; iTemp++)
-                        //{
-                        //    for (int iMax = iMaxLstReturnNodeType; iMax > 0; iMax--)
-                        //    {
-                        //        var lstTemp = lstReturn.Where(p => p.NodeType == iMax).ToList();
-                        //        foreach (AllSelectCRFunction alcr in lstTemp)
-                        //        {
-                        //            var lstTempSec = lstReturn.Where(p => p.PID == alcr.ID).ToList();
+                        lstReturn.Where(p => p.NodeType != 100).Last().NodeType = iMaxLstReturnNodeType;
 
-                        //            if (lstTempSec.Count == 1)// &&lstTempSec[0].NodeType==100)//modify by xiejp 20121115解决一直往下的问题
-                        //            {
 
-                        //                foreach (AllSelectCRFunction alcrSec in lstTempSec)
-                        //                {
-                        //                    alcrSec.PID = alcr.PID;
-                        //                    if (alcrSec.PID == -1) alcrSec.PID = 0;
 
-                        //                }
-                        //                try
-                        //                {
-                        //                    lstReturn.Where(p => p.ID == alcr.PID).First().NodeType = alcr.NodeType;
-                        //                    //lstReturn.Where(p => p.ID == alcr.PID).First().Name += " " + alcr.Name;
-                        //                    lstReturn.Remove(alcr);
-                        //                }
-                        //                catch
-                        //                { 
-                        //                }
-                        //            }
-                        //        }
-                        //    }
-                        //}
                     }
 
 
 
                 }
-                //-----------------让StartAge,EndAge真实的表达所选择的年龄段。StartAge,Min,EndAge,Max
                 foreach (AllSelectCRFunction acr in lstReturn)
                 {
                     if (acr.PoolingMethod != "")
                     {
-                        //--------------得到所有NoOne---------
                         List<AllSelectCRFunction> lst = new List<AllSelectCRFunction>();
                         getAllChildFromAllSelectCRFunction(acr, lstReturn, ref lst);
                         if (lst.Count > 0)
                         {
-                            if (acr.CRSelectFunctionCalculateValue == null ) acr.CRSelectFunctionCalculateValue = new CRSelectFunctionCalculateValue()
-                            {
-                                CRSelectFunction = new CRSelectFunction()
-                                {
+                            if (acr.CRSelectFunctionCalculateValue == null) acr.CRSelectFunctionCalculateValue = new CRSelectFunctionCalculateValue()
+                           {
+                               CRSelectFunction = new CRSelectFunction()
+                               {
 
-                                    StartAge = Convert.ToInt32(lst.Min(p => p.StartAge)),
-                                    EndAge = Convert.ToInt32(lst.Max(p => p.EndAge)),
-                                }
-                            };
+                                   StartAge = Convert.ToInt32(lst.Min(p => p.StartAge)),
+                                   EndAge = Convert.ToInt32(lst.Max(p => p.EndAge)),
+                               }
+                           };
                             if (acr.CRSelectFunctionCalculateValue.CRSelectFunction == null)
                             {
                                 acr.CRSelectFunctionCalculateValue.CRSelectFunction = new CRSelectFunction();
@@ -3036,25 +2382,15 @@ namespace BenMAP
                             acr.Pollutant = "";
                             foreach (string s in lstTemp)
                             {
-                                acr.Pollutant += s+" ";
+                                acr.Pollutant += s + " ";
                             }
-                            
-                            //lstTemp = lst.Select(p => p.Author).Distinct().ToList();
-                            //foreach (string s in lstTemp)
-                            //{
-                            //    acr.Author += s + " ";
-                            //}
-                            
-                            //lstTemp = lst.Select(p => p.EndPoint).Distinct().ToList();
-                            //foreach (string s in lstTemp)
-                            //{
-                            //    acr.EndPoint += s + " ";
-                            //}
+
+
                             acr.Author = "";
                             acr.EndPoint = "";
                             List<string> lstAuthor = new List<string>();
                             List<string> lstEndPoint = new List<string>();
-                            
+
                             foreach (AllSelectCRFunction alcr in lst)
                             {
                                 if (alcr.CRSelectFunctionCalculateValue == null || alcr.CRSelectFunctionCalculateValue.CRSelectFunction == null || alcr.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction == null) continue;
@@ -3070,19 +2406,19 @@ namespace BenMAP
                             if (acr.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction == null)
                             {
                                 acr.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction = new BenMAPHealthImpactFunction();
-                                
+
                             }
                             foreach (string s in lstAuthor)
                             {
-                               
-                                acr.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Author += acr.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Author==""?s:" "+s;
-                                acr.Author +=acr.Author==""?s:" "+ s;
+
+                                acr.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Author += acr.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Author == "" ? s : " " + s;
+                                acr.Author += acr.Author == "" ? s : " " + s;
                             }
                             foreach (string s in lstEndPoint)
                             {
-                               
-                                acr.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.EndPoint +=acr.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.EndPoint==""?s: " "+s;
-                                acr.EndPoint +=acr.EndPoint==""?s: " " + s;
+
+                                acr.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.EndPoint += acr.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.EndPoint == "" ? s : " " + s;
+                                acr.EndPoint += acr.EndPoint == "" ? s : " " + s;
                             }
                         }
 
@@ -3100,18 +2436,14 @@ namespace BenMAP
         {
             if (!isSelectTile)
             {
-                //-----------majie-------
                 btShowTile.Text = "Hide Tile";
-                //-----------end----------
                 splitContainerTile.Panel2.Show();
                 splitContainerTile.SplitterDistance = splitContainerTile.Width / 3;
                 isSelectTile = true;
             }
             else
             {
-                //---------majie-------
                 btShowTile.Text = "Show Tile";
-                //----------end---------
                 splitContainerTile.Panel2.Hide();
                 splitContainerTile.SplitterDistance = splitContainerTile.Width;
                 isSelectTile = false;
@@ -3147,7 +2479,7 @@ namespace BenMAP
                 this.olvTile.Refresh();
             }
             catch
-            { 
+            {
             }
         }
 
@@ -3157,7 +2489,7 @@ namespace BenMAP
             {
                 IncidencePoolingAndAggregation ip = CommonClass.lstIncidencePoolingAndAggregation.Where(p => p.PoolingName == tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text).First();
                 List<AllSelectCRFunction> lstAllSelectCRFunction = new List<AllSelectCRFunction>();
-                if (ip.lstAllSelectCRFuntion.Count == 1) //只有自己
+                if (ip.lstAllSelectCRFuntion.Count == 1)
                 {
 
                     lstAllSelectCRFunction.Add(allSelectCRFunction);
@@ -3183,25 +2515,22 @@ namespace BenMAP
                 }
                 else
                 {
-                    //---------求所有的子节点----------------
                     APVX.APVCommonClass.getAllChildCR(allSelectCRFunction, ip.lstAllSelectCRFuntion, ref lstAllSelectCRFunction);
                     olvTile.SetObjects(lstAllSelectCRFunction.Where(p => p.NodeType == 100).ToList());
                 }
                 olvTile.RebuildColumns();
             }
             catch
-            { 
+            {
             }
         }
         private void treeListView_DoubleClick(object sender, EventArgs e)
         {
-            //--------------//--------------考虑选择后的Tile问题-----------------20120104--点击某节点，如果是叶子结点出来所有平级的Tile，如果是父节点出来所有的叶子结点-----
             if (treeListView.SelectedObjects.Count == 0)
                 return;
             AllSelectCRFunction allSelectCRFunction = treeListView.SelectedObjects[0] as AllSelectCRFunction;
 
             SetTileAllSelectCRFunction(allSelectCRFunction);
-            //-----------------------------------
         }
 
         private void btBrowseCR_Click(object sender, EventArgs e)
@@ -3214,7 +2543,6 @@ namespace BenMAP
                 openFileDialog.FilterIndex = 3;
                 openFileDialog.RestoreDirectory = true;
                 if (openFileDialog.ShowDialog() != DialogResult.OK) { return; }
-                //txtOpenExistingCFGR.Text = openFileDialog.FileName;
                 if (openFileDialog.FileName != CommonClass.ValuationMethodPoolingAndAggregation.CFGRPath)
                 {
                     MessageBox.Show("This is a different .cfgrx file. Choose again.");
@@ -3223,7 +2551,6 @@ namespace BenMAP
                 else
                 {
                     txtOpenExistingCFGR.Text = openFileDialog.FileName;
-                    //-----异步loadCFGR--------------
                 }
             }
             catch (Exception ex)
@@ -3234,25 +2561,21 @@ namespace BenMAP
 
         private void tabControlSelected_DrawItem(object sender, DrawItemEventArgs e)
         {
-            Font fntTab;            
+            Font fntTab;
             Brush bshBack;
             Brush bshFore;
-            if (e.Index == this.tabControlSelected.SelectedIndex)    //当前Tab页的样式
+            if (e.Index == this.tabControlSelected.SelectedIndex)
             {
-                //tabControlSelected.TabPages[e.Index].ForeColor = Color.Orange;
                 fntTab = new Font(e.Font, FontStyle.Bold);
                 bshBack = new SolidBrush(Color.White);
-                //bshBack = Brushes.LemonChiffon;
-                bshFore = Brushes.Black; 
-                //bshFore = new SolidBrush(Color.FromArgb(255,128,0));
+                bshFore = Brushes.Black;
             }
-            else    //其余Tab页的样式
+            else
             {
                 fntTab = e.Font;
                 bshBack = new System.Drawing.Drawing2D.LinearGradientBrush(e.Bounds, SystemColors.Control, SystemColors.Control, System.Drawing.Drawing2D.LinearGradientMode.BackwardDiagonal);
                 bshFore = new SolidBrush(Color.Black);
             }
-            //画样式
             string tabName = this.tabControlSelected.TabPages[e.Index].Text;
             StringFormat sftTab = new StringFormat();
             e.Graphics.FillRectangle(bshBack, e.Bounds);
@@ -3293,7 +2616,6 @@ namespace BenMAP
         {
             btChangeName_Click(sender, e);
         }
-    //--------------majie------------
         private void tabControlSelected_MouseDown(object sender, MouseEventArgs e)
         {
             base.OnMouseDown(e);
@@ -3304,23 +2626,19 @@ namespace BenMAP
             if (tp != null)
             {
                 DoDragDrop(tp, DragDropEffects.All);
-            } 
+            }
         }
 
         private void tabControlSelected_DragOver(object sender, DragEventArgs e)
         {
-            
+
             Point pt = new Point(e.X, e.Y);
-            //We need client coordinates.
             pt = tabControlSelected.PointToClient(pt);
 
-            //Get the tab we are hovering over.
             TabPage hover_tab = GetTabPageByTab(pt);
 
-            //Make sure we are on a tab.
             if (hover_tab != null)
             {
-                //Make sure there is a TabPage being dragged.
                 if (e.Data.GetDataPresent(typeof(TabPage)))
                 {
                     e.Effect = DragDropEffects.Move;
@@ -3329,15 +2647,12 @@ namespace BenMAP
                     int item_drag_index = FindIndex(drag_tab);
                     int drop_location_index = FindIndex(hover_tab);
 
-                    //Don't do anything if we are hovering over ourself.
                     if (item_drag_index != drop_location_index)
                     {
                         ArrayList pages = new ArrayList();
-                        List<IncidencePoolingAndAggregation> lstTemp=new List<IncidencePoolingAndAggregation>();
-                        //Put all tab pages into an array.
+                        List<IncidencePoolingAndAggregation> lstTemp = new List<IncidencePoolingAndAggregation>();
                         for (int i = 0; i < tabControlSelected.TabPages.Count; i++)
                         {
-                            //Except the one we are dragging.
                             if (i != item_drag_index)
                             {
                                 pages.Add(tabControlSelected.TabPages[i]);
@@ -3345,44 +2660,31 @@ namespace BenMAP
                             }
                         }
 
-                        //Now put the one we are dragging it at the proper location.
                         pages.Insert(drop_location_index, drag_tab);
-                        lstTemp.Insert(drop_location_index,  CommonClass.lstIncidencePoolingAndAggregation[item_drag_index]);
+                        lstTemp.Insert(drop_location_index, CommonClass.lstIncidencePoolingAndAggregation[item_drag_index]);
                         CommonClass.lstIncidencePoolingAndAggregation = lstTemp;
-                        //--------------调整Valuation&QALY
                         if (CommonClass.ValuationMethodPoolingAndAggregation != null && CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase != null)
                         {
                             List<ValuationMethodPoolingAndAggregationBase> lstTempVB = new List<ValuationMethodPoolingAndAggregationBase>();
-                            //Put all tab pages into an array.
                             for (int i = 0; i < tabControlSelected.TabPages.Count; i++)
                             {
-                                //Except the one we are dragging.
                                 if (i != item_drag_index)
                                 {
                                     lstTempVB.Add(CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase[i]);
                                 }
                             }
 
-                            //Now put the one we are dragging it at the proper location.
 
                             lstTempVB.Insert(drop_location_index, CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase[item_drag_index]);
                             CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase = lstTempVB;
                         }
-                        //----------------------------------------------------------------------
-                        //Make them all go away for a nanosec.
                         tabControlSelected.TabPages.Clear();
 
-                        //Add them all back in.
                         tabControlSelected.TabPages.AddRange((TabPage[])pages.ToArray(typeof(TabPage)));
 
-                        //Make sure the drag tab is selected.
                         tabControlSelected.SelectedTab = drag_tab;
                         tabControlSelected_SelectedIndexChanged(sender, e);
 
-                        ////---------------------------modify by xiejp-----changedindex from 
-                        //IncidencePoolingAndAggregation ip = CommonClass.lstIncidencePoolingAndAggregation[item_drag_index];
-                        //CommonClass.lstIncidencePoolingAndAggregation.RemoveAt(item_drag_index);
-                        //CommonClass.lstIncidencePoolingAndAggregation.Insert(
                     }
                 }
             }
@@ -3392,11 +2694,6 @@ namespace BenMAP
             }
         }
 
-        /// <summary>
-        /// Finds the TabPage whose tab is contains the given point.
-        /// </summary>
-        /// <param name="pt">The point (given in client coordinates) to look for a TabPage.</param>
-        /// <returns>The TabPage whose tab is at the given point (null if there isn't one).</returns>
         private TabPage GetTabPageByTab(Point pt)
         {
             TabPage tp = null;
@@ -3413,11 +2710,6 @@ namespace BenMAP
             return tp;
         }
 
-        /// <summary>
-        /// Loops over all the TabPages to find the index of the given TabPage.
-        /// </summary>
-        /// <param name="page">The TabPage we want the index for.</param>
-        /// <returns>The index of the given TabPage(-1 if it isn't found.)</returns>
         private int FindIndex(TabPage page)
         {
             for (int i = 0; i < tabControlSelected.TabPages.Count; i++)
@@ -3431,7 +2723,6 @@ namespace BenMAP
 
         private void btShowDetail_Click(object sender, EventArgs e)
         {
-            //---------------------修改状态-----------------修改列表里面的树
             switch (btShowDetail.Text)
             {
                 case "Detailed View":
@@ -3440,7 +2731,7 @@ namespace BenMAP
                 case "Condensed View":
                     btShowDetail.Text = "Detailed View";
                     break;
-                     
+
             }
             treeListView.RebuildAll(true);
             treeListView.ExpandAll();
@@ -3448,15 +2739,13 @@ namespace BenMAP
 
         private void treeListView_FormatRow(object sender, FormatRowEventArgs e)
         {
-            //e.RowIndex
-            //e.Model
 
             if (btShowDetail.Text == "Detailed View")
             {
                 IncidencePoolingAndAggregation ip = CommonClass.lstIncidencePoolingAndAggregation.Where(p => p.PoolingName == tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text).First();
-                
+
                 AllSelectCRFunction allSelectCRFuntion = e.Model as AllSelectCRFunction;
-                if(ip.lstAllSelectCRFuntion.Count>0 &&allSelectCRFuntion.ID==ip.lstAllSelectCRFuntion.Max(p=>p.ID)+1)
+                if (ip.lstAllSelectCRFuntion.Count > 0 && allSelectCRFuntion.ID == ip.lstAllSelectCRFuntion.Max(p => p.ID) + 1)
                 {
                     e.Item.ForeColor = Color.Black;
                     e.Item.Font = new Font(e.Item.Font, FontStyle.Bold);
@@ -3469,17 +2758,13 @@ namespace BenMAP
 
         }
 
-      
-        
-        //---------------end-------------
+
+
     }
 
     public class IncidenceDropSink : SimpleDropSink
     {
         public IncidencePoolingandAggregation myIncidencePoolingandAggregation;
-        /// <summary>
-        /// Create a RearrangingDropSink
-        /// </summary>
         public IncidenceDropSink()
         {
             this.CanDropBetween = true;
@@ -3487,10 +2772,6 @@ namespace BenMAP
             this.CanDropOnItem = false;
         }
 
-        /// <summary>
-        /// Create a RearrangingDropSink
-        /// </summary>
-        /// <param name="acceptDropsFromOtherLists"></param>
         public IncidenceDropSink(bool acceptDropsFromOtherLists, IncidencePoolingandAggregation incidencePoolingandAggregation)
             : this()
         {
@@ -3498,10 +2779,6 @@ namespace BenMAP
             myIncidencePoolingandAggregation = incidencePoolingandAggregation;
         }
 
-        /// <summary>
-        /// Trigger OnModelCanDrop
-        /// </summary>
-        /// <param name="args"></param>
         protected override void OnModelCanDrop(ModelDropEventArgs args)
         {
             base.OnModelCanDrop(args);
@@ -3511,7 +2788,6 @@ namespace BenMAP
 
             args.Effect = DragDropEffects.Move;
 
-            // Don't allow drops from other list, if that's what's configured
             if (!this.AcceptExternal && args.SourceListView != this.ListView)
             {
                 args.Effect = DragDropEffects.None;
@@ -3519,7 +2795,6 @@ namespace BenMAP
                 args.InfoMessage = "This list doesn't accept drops from other lists";
             }
 
-            // If we are rearranging a list, don't allow drops on the background
             if (args.DropTargetLocation == DropTargetLocation.Background && args.SourceListView == this.ListView)
             {
                 args.Effect = DragDropEffects.None;
@@ -3527,22 +2802,13 @@ namespace BenMAP
             }
         }
 
-        /// <summary>
-        /// Trigger OnModelDropped
-        /// </summary>
-        /// <param name="args"></param>
         protected override void OnModelDropped(ModelDropEventArgs args)
         {
-            //base.OnModelDropped(args);
 
             if (!args.Handled)
                 this.RearrangeModels(args);
         }
 
-        /// <summary>
-        /// Do the work of processing the dropped items
-        /// </summary>
-        /// <param name="args"></param>
         public virtual void RearrangeModels(ModelDropEventArgs args)
         {
             switch (args.DropTargetLocation)
@@ -3555,35 +2821,27 @@ namespace BenMAP
                     }
                     else if (this.ListView.Name == "treeListView" && args.SourceListView.Name == "treeListView")
                     {
-                        //myIncidencePoolingandAggregation.btDelSelectMethod_Click(null, null);
-                        //
-                        //  myIncidencePoolingandAggregation.updateDrop(args.SourceModels[0] as AllSelectCRFunction, args.TargetModel as AllSelectCRFunction);
 
                     }
                     break;
                 case DropTargetLocation.BelowItem:
                     if (this.ListView.Name == "treeListView" && args.SourceListView.Name != "treeListView")
                     {
-                        //this.ListView.AddObjects(args.SourceModels);
                         myIncidencePoolingandAggregation.btAddCRFunctions_Click(null, null);
                     }
                     else if (this.ListView.Name == "treeListView" && args.SourceListView.Name == "treeListView")
                     {
-                        //myIncidencePoolingandAggregation.btDelSelectMethod_Click(null, null);
-                        //  myIncidencePoolingandAggregation.updateDrop(args.SourceModels[0] as AllSelectCRFunction, args.TargetModel as AllSelectCRFunction);
 
                     }
                     break;
                 case DropTargetLocation.Background:
                     if (this.ListView.Name == "treeListView" && args.SourceListView.Name != "treeListView")
                     {
-                        //this.ListView.AddObjects(args.SourceModels);
                         myIncidencePoolingandAggregation.btAddCRFunctions_Click(null, null);
 
                     }
                     else
                     {
-                        //myIncidencePoolingandAggregation.btDelSelectMethod_Click(null, null);
 
                     }
                     break;

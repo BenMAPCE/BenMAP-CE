@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
@@ -44,7 +44,6 @@ namespace BenMAP
                 if (rth != DialogResult.OK) { return; }
                 AddCount--;
                 DataRow dr = _dt.NewRow();
-                // txtHealthImpactFunction.Text = _dataName;
                 dr[0] = frm.HealthImpacts.EndpointGroup;
                 dr[1] = frm.HealthImpacts.Endpoint;
                 dr[2] = frm.HealthImpacts.Pollutant;
@@ -95,8 +94,6 @@ namespace BenMAP
             try
             {
                 DataTable dt = new DataTable();
-                //Todo:陈志润
-                //DataWorker.DataReader dp = new DataWorker.DataReader();
                 OpenFileDialog openFileDialog = new OpenFileDialog();
                 openFileDialog.InitialDirectory = Application.StartupPath + @"E:\";
                 openFileDialog.Filter = "All Files|*.*|CSV files|*.csv|XLS files|*.xls|XLSX files|*.xlsx";
@@ -104,33 +101,8 @@ namespace BenMAP
                 openFileDialog.RestoreDirectory = true;
                 if (openFileDialog.ShowDialog() != DialogResult.OK) { return; }
                 _filePath = openFileDialog.FileName;
-                //string strfilepath = System.IO.Path.GetExtension(_filePath);
-                //if (_filePath.Substring(_filePath.Length - 3, 3).ToLower() != "csv")
-                //{
-                //    //判断有没有安装Excel
-                //    if (Type.GetTypeFromProgID("Excel.Application") == null)
-                //    {
-                //        MessageBox.Show("Please install Excel.", "Warning", MessageBoxButtons.OK);
-                //        return;
-                //    }
-                //}
-                //int sheetIndex = CommonClass.SelectedSheetIndex(_filePath);
                 WaitShow("Loading health impact functions...");
                 dt = CommonClass.ExcelToDataTable(_filePath);
-                //ds = dp.GetDataFromFile(_filePath);
-                //switch (strfilepath.ToLower())
-                //{
-                //    case ".xls":
-                //        ds = dp.ReadExcel2DataSet(_filePath);
-                //        break;
-                //    case ".xlsx":
-                //        ds = dp.ReadExcel2DataSet(_filePath);
-                //        break;
-                //    case ".csv":
-                //        ds = dp.ReadCSV2DataSet(_filePath, "table");
-                //        break;
-                //    default: break;
-                //}
                 if (dt == null) { return; }
                 int rowCount = dt.Rows.Count;
                 int colCount = dt.Columns.Count;
@@ -197,18 +169,6 @@ namespace BenMAP
                             break;
                         case "seasonalmetric": iSeasonalMetric = i;
                             break;
-                        //case "metricstatistic": iMetricStatistic = i;
-                        //    break;
-                        //case "statistic": iMetricStatistic = i;
-                        //    break;
-                        //case "studyauthor": iAuthor = i;
-                        //    break;
-                        //case "studyyear": iYear = i;
-                        //    break;
-                        //case "studylocationtype": iLocationType = i;
-                        //    break;
-                        //case "studylocation": iLocation = i;
-                        //    break;
                         case "otherpollutants": iOtherPollutant = i;
                             break;
                         case "qualifier": iQualifier = i;
@@ -227,14 +187,8 @@ namespace BenMAP
                             break;
                         case "function": iFunction = i;
                             break;
-                        //case "baselinefunction": iBaselineFunction = i;
-                        //    break;
                         case "beta": iBeta = i;
                             break;
-                        //case "distributionbeta": iDistributionBeta = i;
-                        //    break;
-                        //case "distbeta": iDistributionBeta = i;
-                        //    break;
                         case "parameter1beta": iP1Beta = i;
                             break;
                         case "p1beta": iP1Beta = i;
@@ -268,11 +222,6 @@ namespace BenMAP
                     }
                 }
 
-                //if (iEndpointGroup < 0 || iEndpoint < 0 || iPollutant < 0 || iMetric < 0 || iSeasonalMetric < 0 || iMetricStatistic < 0 || iAuthor < 0 || iYear < 0 || iLocation < 0 || iOtherPollutant < 0 || iQualifier < 0 || iReference < 0 || iRace < 0 || iEthnicity < 0 || iGender < 0 || iStartAge < 0 || iEndAge < 0 || iFunction < 0 || iBaselineFunction < 0 || iBeta < 0 || iDistributionBeta < 0 || iP1Beta < 0 || iP2Beta < 0 || iA < 0 || iNameA < 0 || iB < 0 || iNameB < 0 || iC < 0 || iNameC < 0 || iIncidenceDataset < 0 || iPrevalenceDataset < 0 || iVariableDataset < 0)
-                //{
-                //    MessageBox.Show("Please check the format.", "Tip", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                //    return;
-                //}
                 string warningtip = "";
                 if (iEndpointGroup < 0) warningtip = "'Endpoint Group', ";
                 if (iEndpoint < 0) warningtip += "'Endpoint', ";
@@ -287,12 +236,10 @@ namespace BenMAP
                 if (iQualifier < 0) warningtip += "'Qualifier', ";
                 if (iReference < 0) warningtip += "'Reference', ";
                 if (iRace < 0) warningtip += "'Race', ";
-                //if (iEthnicity < 0) warningtip += "'Ethnicity', ";
                 if (iGender < 0) warningtip += "'Gender', ";
                 if (iStartAge < 0) warningtip += "'StartAge', ";
                 if (iEndAge < 0) warningtip += "'EndAge', ";
                 if (iFunction < 0) warningtip += "'Function', ";
-                //if (iBaselineFunction < 0) warningtip += "'Baseline Function', ";
                 if (iBeta < 0) warningtip += "'Beta', ";
                 if (iDistributionBeta < 0) warningtip += "'Distribution Beta', ";
                 if (iP1Beta < 0) warningtip += "'Parameter 1 Beta', ";
@@ -305,7 +252,6 @@ namespace BenMAP
                 if (iNameC < 0) warningtip += "'Name C', ";
                 if (iIncidenceDataset < 0) warningtip += "'Incidence Dataset', ";
                 if (iPrevalenceDataset < 0) warningtip += "'Prevalence Dataset', ";
-                //if (iVariableDataset < 0) warningtip += "'Variable DataSet', ";
                 if (warningtip != "")
                 {
                     WaitClose();
@@ -401,14 +347,7 @@ namespace BenMAP
                     {
                         dr[32] = dt.Rows[i][iVariableDataset];
                     }
-                    //for (int j = 0; j < colCount; j++)
-                    //{
-                    //    dr[j] = ds.Tables[0].Rows[i][j];
-                    //    //dr[j + 1] = AddCount--;
-                    //}
                     dr[33] = --AddCount;
-                    //List<double> listLoadValue = new List<double>();
-                    //dicCustomValue.Add(Convert.ToInt32(dr[33]), listLoadValue);
                     _dt.Rows.Add(dr);
 
                 }
@@ -439,10 +378,7 @@ namespace BenMAP
             }
         }
 
-        #region 等待窗口
-        TipFormGIF waitMess = new TipFormGIF();//等待窗体
-        bool sFlog = true;
-        //--显示等待窗体 
+        TipFormGIF waitMess = new TipFormGIF(); bool sFlog = true;
         private void ShowWaitMess()
         {
             try
@@ -459,7 +395,6 @@ namespace BenMAP
             }
         }
 
-        //--新开辟一个线程调用 
         public void WaitShow(string msg)
         {
             try
@@ -480,10 +415,8 @@ namespace BenMAP
         }
         private delegate void CloseFormDelegate();
 
-        //--关闭等待窗体 
         public void WaitClose()
         {
-            //同步到主线程上
             if (waitMess.InvokeRequired)
                 waitMess.Invoke(new CloseFormDelegate(DoCloseJob));
             else
@@ -508,13 +441,11 @@ namespace BenMAP
                 MessageBox.Show(Err.Message);
             }
         }
-        #endregion 等待窗口
 
         private void btnDelete_Click(object sender, EventArgs e)
         {
             try
             {
-                //-----modify by majie----------
                 if (olvFunction.SelectedObjects == null || olvFunction.Items.Count == 0)
                 { return; }
                 DialogResult rtn = MessageBox.Show("Delete this function?", "Confirm Deletion", MessageBoxButtons.YesNo);
@@ -548,7 +479,6 @@ namespace BenMAP
             {
                 if (olvFunction.SelectedObject == null) return;
                 HealthImpact healthImpact = new HealthImpact();
-                //int currentIndex = olvFunction.SelectedIndex;
                 healthImpact.EndpointGroup = olvcEndpointGroup.GetValue(olvFunction.SelectedObject).ToString();
                 healthImpact.Endpoint = olvcEndpoint.GetValue(olvFunction.SelectedObject).ToString();
                 healthImpact.Pollutant = olvcPollutant.GetValue(olvFunction.SelectedObject).ToString();
@@ -582,7 +512,6 @@ namespace BenMAP
                 healthImpact.Incidence = olvColumn30.GetValue(olvFunction.SelectedObject).ToString();
                 healthImpact.Prevalence = olvColumn31.GetValue(olvFunction.SelectedObject).ToString();
                 healthImpact.Variable = olvColumn32.GetValue(olvFunction.SelectedObject).ToString();
-                // 对象赋值
                 if (olvColumn21.GetValue(olvFunction.SelectedObject).ToString() == "Custom" && Convert.ToInt32(olvColumn33.GetValue(olvFunction.SelectedObject).ToString()) > 0)
                 {
                     if (dicCustomValue.ContainsKey(Convert.ToInt32(olvColumn33.GetValue(olvFunction.SelectedObject).ToString())))
@@ -674,7 +603,6 @@ namespace BenMAP
 
         private void btnOK_Click(object sender, EventArgs e)
         {
-            //
         }
 
         DataTable _dt = new DataTable();
@@ -689,17 +617,13 @@ namespace BenMAP
                 DataSet ds = new DataSet();
                 string commandText = string.Empty;
                 if (_datasetID != -1)
-                {//编辑
+                {
                     commandText = string.Format("select crfunctiondatasetname from crfunctiondatasets where crfunctiondatasetid={0}", _datasetID);
                     txtHealthImpactFunction.Text = Convert.ToString(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
-                    //commandText = string.Format("select crfunctiondatasetid from crfunctiondatasets where crfunctiondatasetname='{0}' and setupid={1}", _datasetID, CommonClass.ManageSetup.SetupID);
-                    //object obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
-                    //int crfunctionDataSetID = int.Parse(obj.ToString());
                     commandText = string.Format("select b.endpointgroupname,c.endpointname,d.pollutantname,e.metricname,f.seasonalmetricname,case when Metricstatistic=0 then 'None'  when Metricstatistic=1 then 'Mean' when Metricstatistic=2 then 'Median' when Metricstatistic=3 then 'Max' when Metricstatistic=4 then 'Min' when Metricstatistic=5 then 'Sum'  END as MetricstatisticName,author,yyear,g.locationtypename,location,otherpollutants,qualifier,reference,race,ethnicity,gender,startage,endage,h.functionalformtext,i.functionalformtext,beta,distbeta,p1beta,p2beta,a,namea,b,nameb,c,namec,j.incidencedatasetname,k.incidencedatasetname,l.setupvariabledatasetname as variabeldatasetname,CRFUNCTIONID from crfunctions a join endpointgroups b on (a.ENDPOINTGROUPID=b.ENDPOINTGROUPID) join endpoints c on (a.endpointid=c.endpointid) join pollutants d on (a.pollutantid=d.pollutantid)join metrics e on (a.metricid=e.metricid) left join seasonalmetrics f on (a.seasonalmetricid=f.seasonalmetricid) left join locationtype g on (a.locationtypeid=g.locationtypeid) join functionalforms h on (a.functionalformid=h.functionalformid) join baselinefunctionalforms i on (a.baselinefunctionalformid=i.functionalformid) left join incidencedatasets j on (a.incidencedatasetid=j.incidencedatasetid) left join incidencedatasets k on (a.prevalencedatasetid=k.incidencedatasetid) left join setupvariabledatasets l on (a.variabledatasetid=l.setupvariabledatasetid) where CRFUNCTIONDATASETID={0}", _datasetID);
                     ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                     olvFunction.DataSource = ds.Tables[0];
                     _dt = ds.Tables[0];
-                    //int i = _dt.Rows.Count;
                     cboFilterEndpointGroup.Items.Add("All");
                     cboFilterPollutants.Items.Add("All");
                     int dtRow = _dt.Rows.Count;
@@ -723,13 +647,12 @@ namespace BenMAP
                     }
                 }
                 else
-                {//增加
+                {
                     commandText = string.Format("select b.endpointgroupname,c.endpointname,d.pollutantname,e.metricname,f.seasonalmetricname,case when Metricstatistic=0 then 'None'  when Metricstatistic=1 then 'Mean' when Metricstatistic=2 then 'Median' when Metricstatistic=3 then 'Max' when Metricstatistic=4 then 'Min' when Metricstatistic=5 then 'Sum'  END as MetricstatisticName,author,yyear,g.locationtypename,location,otherpollutants,qualifier,reference,race,ethnicity,gender,startage,endage,h.functionalformtext,i.functionalformtext,beta,distbeta,p1beta,p2beta,a,namea,b,nameb,c,namec,j.incidencedatasetname,k.incidencedatasetname,l.setupvariabledatasetname as variabeldatasetname,CRFUNCTIONID from crfunctions a join endpointgroups b on (a.ENDPOINTGROUPID=b.ENDPOINTGROUPID) join endpoints c on (a.endpointid=c.endpointid) join pollutants d on (a.pollutantid=d.pollutantid)join metrics e on (a.metricid=e.metricid) left join seasonalmetrics f on (a.seasonalmetricid=f.seasonalmetricid) left join locationtype g on (a.locationtypeid=g.locationtypeid) join functionalforms h on (a.functionalformid=h.functionalformid) join baselinefunctionalforms i on (a.baselinefunctionalformid=i.functionalformid) left join incidencedatasets j on (a.incidencedatasetid=j.incidencedatasetid) left join incidencedatasets k on (a.prevalencedatasetid=k.incidencedatasetid) left join setupvariabledatasets l on (a.variabledatasetid=l.setupvariabledatasetid) where CRFUNCTIONDATASETID=null");
                     ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                     olvFunction.DataSource = ds.Tables[0];
                     _dt = ds.Tables[0];
 
-                    //automatically generated name-increase the number at the end of the name
                     int number = 0;
                     int HealthImpactFunctionDatasetID = 0;
                     do
@@ -779,9 +702,6 @@ namespace BenMAP
                     commandText = string.Format("insert into CRFunctionDataSets values ({0},{1},'{2}','F')", crFunctionDataSetID, CommonClass.ManageSetup.SetupID, txtHealthImpactFunction.Text.Replace("'", "''"));
                     int rth = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
 
-                    //commandText = string.Format("select CRFunctionDatasetID from CRFunctionDataSets where CRFunctionDataSetName='{0}'", txtHealthImpactFunction.Text);
-                    //obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
-                    //int CRFunctionDataSetID = int.Parse(obj.ToString());
 
                     Dictionary<string, int> dicEndpointGroup = new Dictionary<string, int>();
                     commandText = "select EndpointGroupID,LOWER(EndpointGroupName) from EndpointGroups ";
@@ -789,7 +709,7 @@ namespace BenMAP
                     foreach (DataRow drEndpointGroup in dsEndpointGroup.Tables[0].Rows)
                     {
                         if (!dicEndpointGroup.ContainsKey(drEndpointGroup["LOWER"].ToString()))
-                        dicEndpointGroup.Add(drEndpointGroup["LOWER"].ToString(), Convert.ToInt32(drEndpointGroup["EndpointGroupID"]));
+                            dicEndpointGroup.Add(drEndpointGroup["LOWER"].ToString(), Convert.ToInt32(drEndpointGroup["EndpointGroupID"]));
                     }
 
                     Dictionary<string, int> dicPollutant = new Dictionary<string, int>();
@@ -798,7 +718,7 @@ namespace BenMAP
                     foreach (DataRow drPollutant in dsPollutant.Tables[0].Rows)
                     {
                         if (!dicPollutant.ContainsKey(drPollutant["LOWER"].ToString()))
-                        dicPollutant.Add(drPollutant["LOWER"].ToString(), Convert.ToInt32(drPollutant["PollutantID"]));
+                            dicPollutant.Add(drPollutant["LOWER"].ToString(), Convert.ToInt32(drPollutant["PollutantID"]));
                     }
 
                     Dictionary<string, string> dicIncidence = new Dictionary<string, string>();
@@ -807,7 +727,7 @@ namespace BenMAP
                     foreach (DataRow drIncidence in dsIncidence.Tables[0].Rows)
                     {
                         if (!dicIncidence.ContainsKey(drIncidence["LOWER"].ToString()))
-                        dicIncidence.Add(drIncidence["LOWER"].ToString(), drIncidence["IncidenceDataSetID"].ToString());
+                            dicIncidence.Add(drIncidence["LOWER"].ToString(), drIncidence["IncidenceDataSetID"].ToString());
                     }
 
                     Dictionary<string, int> dicPrevalence = new Dictionary<string, int>();
@@ -816,7 +736,7 @@ namespace BenMAP
                     foreach (DataRow drPrevalence in dsPrevalence.Tables[0].Rows)
                     {
                         if (!dicPrevalence.ContainsKey(drPrevalence["LOWER"].ToString()))
-                        dicPrevalence.Add(drPrevalence["LOWER"].ToString(), Convert.ToInt32(drPrevalence["IncidenceDataSetID"].ToString()));
+                            dicPrevalence.Add(drPrevalence["LOWER"].ToString(), Convert.ToInt32(drPrevalence["IncidenceDataSetID"].ToString()));
                     }
 
                     Dictionary<string, string> dicVariable = new Dictionary<string, string>();
@@ -825,7 +745,7 @@ namespace BenMAP
                     foreach (DataRow drVarible in dsVariable.Tables[0].Rows)
                     {
                         if (!dicVariable.ContainsKey(drVarible["LOWER"].ToString()))
-                        dicVariable.Add(drVarible["LOWER"].ToString(), drVarible["SetupVariableDataSetID"].ToString());
+                            dicVariable.Add(drVarible["LOWER"].ToString(), drVarible["SetupVariableDataSetID"].ToString());
                     }
 
                     Dictionary<string, int> dicBaselineFuntion = new Dictionary<string, int>();
@@ -833,8 +753,8 @@ namespace BenMAP
                     DataSet dsBaselineFunction = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                     foreach (DataRow drBaselineFunction in dsBaselineFunction.Tables[0].Rows)
                     {
-                        if(!dicBaselineFuntion.ContainsKey( drBaselineFunction["LOWER"].ToString()))
-                        dicBaselineFuntion.Add(drBaselineFunction["LOWER"].ToString(), Convert.ToInt32(drBaselineFunction["FunctionalFormID"]));
+                        if (!dicBaselineFuntion.ContainsKey(drBaselineFunction["LOWER"].ToString()))
+                            dicBaselineFuntion.Add(drBaselineFunction["LOWER"].ToString(), Convert.ToInt32(drBaselineFunction["FunctionalFormID"]));
                     }
 
                     Dictionary<string, int> dicFunction = new Dictionary<string, int>();
@@ -853,7 +773,6 @@ namespace BenMAP
                     {
                         dicLocationTypeID.Add(drLocationType["LOWER"].ToString(), drLocationType["LocationTypeID"].ToString());
                     }
-                    //---------------------majie若数据库中没有endpointgroup，添加到数据库中，并且加到字典里
                     for (int i = 0; i < _dt.Rows.Count; i++)
                     {
                         DataRow dr = _dt.Rows[i];
@@ -867,16 +786,13 @@ namespace BenMAP
                             fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                             dicEndpointGroup.Add(dr[0].ToString().ToLower(), Convert.ToInt32(endPointGroupID));
                         }
-                        //pollutant,incidence, Prevalence               
 
                     }
-                    //--------------------end---------------------------
                     int dgvRowCount = _dt.Rows.Count;
                     string undefinePollutant = "";
                     for (int row = 0; row < dgvRowCount; row++)
                     {
                         CommonClass.Connection.Close();
-                        //得到crFunctionID的值
                         commandText = string.Format("select max(CRFUNCTIONID) from CRFunctions");
                         obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
                         int CRFunctionID = int.Parse(obj.ToString()) + 1;
@@ -886,32 +802,17 @@ namespace BenMAP
                         obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
                         if (obj == null)
                         {
-                            //commandText = "select next value for SEQ_ENDPOINTS FROM RDB$DATABASE";
                             commandText = "select max(EndPointID) from EndPoints";
                             obj = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
                             commandText = string.Format("insert into Endpoints values ({0},{1},'{2}')", obj, dicEndpointGroup[_dt.Rows[row][0].ToString().ToLower()], _dt.Rows[row][1].ToString());
                             fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                         }
                         int EndpointID = int.Parse(obj.ToString());
-                        if (!dicPollutant.ContainsKey(_dt.Rows[row][2].ToString().ToLower()))//if the pollutant is not exist
+                        if (!dicPollutant.ContainsKey(_dt.Rows[row][2].ToString().ToLower()))
                         {
                             if (!undefinePollutant.Contains(_dt.Rows[row][2].ToString()))
                                 undefinePollutant += "'" + _dt.Rows[row][2].ToString() + "', ";
                             continue;
-                            //MessageBox.Show("Please define the pollutant first.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                            //commandText = string.Format("select count(*) from crfunctions where crfunctiondatasetid={0}", CRFunctionDataSetID);
-                            //int count = Convert.ToInt16(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
-                            //if (count <= 0)
-                            //{
-                            //    commandText = string.Format("delete from crfunctiondatasets where crfunctiondatasetid={0}", CRFunctionDataSetID);
-                            //    fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
-                            //    this.DialogResult = DialogResult.Cancel;
-                            //}
-                            //else
-                            //{
-                            //    this.DialogResult = DialogResult.OK;
-                            //}
-                            //return;
                         }
                         int PollutantID = dicPollutant[_dt.Rows[row][2].ToString().ToLower()];
                         int FunctionID = 0;
@@ -991,18 +892,6 @@ namespace BenMAP
                             MetricStatisticID = 0;
                         else
                             MetricStatisticID = 5;
-                        //if (_dt.Rows[row][5].ToString() == "None")
-                        //    MetricStatisticID = 0;
-                        //if (_dt.Rows[row][5].ToString() == "Mean")
-                        //    MetricStatisticID = 1;
-                        //if (_dt.Rows[row][5].ToString() == "Median")
-                        //    MetricStatisticID = 2;
-                        //if (_dt.Rows[row][5].ToString() == "Max")
-                        //    MetricStatisticID = 3;
-                        //if (_dt.Rows[row][5].ToString() == "Min")
-                        //    MetricStatisticID = 4;
-                        //if (_dt.Rows[row][5].ToString() == "Sum")
-                        //    MetricStatisticID = 5;
                         commandText = string.Format("insert into CRFunctions values({0},{1},{2},{3},{4},{5},{6},{7},'{8}',{9},'{10}','{11}','{12}','{13}','{14}','{15}',{16},{17},{18},{19},{20},{21},{22},'{23}',{24},{25},{26},'{27}',{28},'{29}',{30},'{31}',{32},'{33}',{34},{35})", CRFunctionID, crFunctionDataSetID, EndpointGroupID, EndpointID, PollutantID, MetricID, SeasonalMetricID, MetricStatisticID, _dt.Rows[row][6].ToString().Replace("'", "''"), Convert.ToInt16(_dt.Rows[row][7].ToString()), _dt.Rows[row][9].ToString().Replace("'", "''"), _dt.Rows[row][10].ToString().Replace("'", "''"), _dt.Rows[row][11].ToString().Replace("'", "''"), _dt.Rows[row][12].ToString().Replace("'", "''"), _dt.Rows[row][13].ToString().Replace("'", "''"), _dt.Rows[row][15].ToString().Replace("'", "''"), _dt.Rows[row][16], _dt.Rows[row][17], FunctionID, IncidenceID, PrevalenceID, VariableID, _dt.Rows[row][20], _dt.Rows[row][21].ToString().Replace("'", "''"), _dt.Rows[row][22], _dt.Rows[row][23], _dt.Rows[row][24], _dt.Rows[row][25].ToString().Replace("'", "''"), _dt.Rows[row][26], _dt.Rows[row][27].ToString().Replace("'", "''"), _dt.Rows[row][28], _dt.Rows[row][29].ToString().Replace("'", "''"), BaselineFunctionID, _dt.Rows[row][14].ToString().Replace("'", "''"), 0, LocationtypeID);
                         rth = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                         if (_dt.Rows[row][21].ToString() == "Custom" && dicCustomValue.ContainsKey(Convert.ToInt32(_dt.Rows[row][33].ToString())) && dicCustomValue[Convert.ToInt32(_dt.Rows[row][33].ToString())].Count > 0)
@@ -1039,8 +928,6 @@ namespace BenMAP
                                 fbCommand.ExecuteNonQuery();
                             }
                         }
-                        //if (_dt.Rows[row][21].ToString() == "Custom" && listCustomValue.Count == 0)
-                        //{ continue; }
                     }
                     if (undefinePollutant.Length > 2)
                     {
@@ -1050,22 +937,9 @@ namespace BenMAP
                 }
                 else
                 {
-                    //commandText = string.Format("select CRFunctionDataSetID from CRFunctionDataSets where CRFunctionDataSetName='{0}' and setupid={1}", _datasetID.Replace("'", "''"), CommonClass.ManageSetup.SetupID);
-                    //object obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
-                    //int CRFunctionDataSetID = int.Parse(obj.ToString());
                     commandText = string.Format("update CRFunctionDataSets set CRFunctionDataSetName='{0}' where CRFunctionDataSetID={1}", txtHealthImpactFunction.Text.Replace("'", "''"), _datasetID);
                     fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
-                    //commandText = string.Format("delete from CRFunctions where CRFunctionDataSetID={0}", currentCRFunctionDataSetID);
-                    //int j = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
-                    //commandText = string.Format("select next value for SEQ_CRFunctionDatasets from RDB$Database");
-                    // obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
-                    //int crFunctionDataSetID = int.Parse(obj.ToString());
-                    //commandText = string.Format("insert into CRFunctionDataSets values ({0},{1},'{2}','F')", crFunctionDataSetID, CommonClass.ManageSetup.SetupID, txtHealthImpactFunction.Text);
-                    //int rth = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
 
-                    //commandText = string.Format("select CRFunctionDatasetID from CRFunctionDataSets where CRFunctionDataSetName='{0}'", txtHealthImpactFunction.Text);
-                    //obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
-                    //int CRFunctionDataSetID = int.Parse(obj.ToString());
                     string deleteCRFunctions = "";
                     foreach (int i in lstdeleteCRFunctionid)
                     {
@@ -1084,7 +958,7 @@ namespace BenMAP
                     foreach (DataRow drEndpointGroup in dsEndpointGroup.Tables[0].Rows)
                     {
                         if (!dicEndpointGroup.ContainsKey(drEndpointGroup["LOWER"].ToString()))
-                        dicEndpointGroup.Add(drEndpointGroup["LOWER"].ToString(), Convert.ToInt32(drEndpointGroup["EndpointGroupID"]));
+                            dicEndpointGroup.Add(drEndpointGroup["LOWER"].ToString(), Convert.ToInt32(drEndpointGroup["EndpointGroupID"]));
                     }
 
                     Dictionary<string, int> dicPollutant = new Dictionary<string, int>();
@@ -1093,7 +967,7 @@ namespace BenMAP
                     foreach (DataRow drPollutant in dsPollutant.Tables[0].Rows)
                     {
                         if (!dicPollutant.ContainsKey(drPollutant["LOWER"].ToString()))
-                        dicPollutant.Add(drPollutant["LOWER"].ToString(), Convert.ToInt32(drPollutant["PollutantID"]));
+                            dicPollutant.Add(drPollutant["LOWER"].ToString(), Convert.ToInt32(drPollutant["PollutantID"]));
                     }
 
                     Dictionary<string, string> dicIncidence = new Dictionary<string, string>();
@@ -1102,7 +976,7 @@ namespace BenMAP
                     foreach (DataRow drIncidence in dsIncidence.Tables[0].Rows)
                     {
                         if (!dicIncidence.ContainsKey(drIncidence["LOWER"].ToString()))
-                        dicIncidence.Add(drIncidence["LOWER"].ToString(), drIncidence["IncidenceDataSetID"].ToString());
+                            dicIncidence.Add(drIncidence["LOWER"].ToString(), drIncidence["IncidenceDataSetID"].ToString());
                     }
 
                     Dictionary<string, int> dicPrevalence = new Dictionary<string, int>();
@@ -1110,8 +984,8 @@ namespace BenMAP
                     DataSet dsPrevalence = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                     foreach (DataRow drPrevalence in dsPrevalence.Tables[0].Rows)
                     {
-                        if(!dicPrevalence.ContainsKey(drPrevalence["LOWER"].ToString()))
-                        dicPrevalence.Add(drPrevalence["LOWER"].ToString(), Convert.ToInt32(drPrevalence["IncidenceDataSetID"].ToString()));
+                        if (!dicPrevalence.ContainsKey(drPrevalence["LOWER"].ToString()))
+                            dicPrevalence.Add(drPrevalence["LOWER"].ToString(), Convert.ToInt32(drPrevalence["IncidenceDataSetID"].ToString()));
                     }
 
                     Dictionary<string, string> dicVariable = new Dictionary<string, string>();
@@ -1119,8 +993,8 @@ namespace BenMAP
                     DataSet dsVariable = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                     foreach (DataRow drVarible in dsVariable.Tables[0].Rows)
                     {
-                        if(!dicVariable.ContainsKey(drVarible["LOWER"].ToString()))
-                        dicVariable.Add(drVarible["LOWER"].ToString(), drVarible["SetupVariableDataSetID"].ToString());
+                        if (!dicVariable.ContainsKey(drVarible["LOWER"].ToString()))
+                            dicVariable.Add(drVarible["LOWER"].ToString(), drVarible["SetupVariableDataSetID"].ToString());
                     }
 
                     Dictionary<string, int> dicBaselineFuntion = new Dictionary<string, int>();
@@ -1129,7 +1003,7 @@ namespace BenMAP
                     foreach (DataRow drBaselineFunction in dsBaselineFunction.Tables[0].Rows)
                     {
                         if (!dicBaselineFuntion.ContainsKey(drBaselineFunction["LOWER"].ToString()))
-                        dicBaselineFuntion.Add(drBaselineFunction["LOWER"].ToString(), Convert.ToInt32(drBaselineFunction["FunctionalFormID"]));
+                            dicBaselineFuntion.Add(drBaselineFunction["LOWER"].ToString(), Convert.ToInt32(drBaselineFunction["FunctionalFormID"]));
                     }
 
                     Dictionary<string, int> dicFunction = new Dictionary<string, int>();
@@ -1148,7 +1022,6 @@ namespace BenMAP
                     {
                         dicLocationTypeID.Add(drLocationType["LOWER"].ToString(), drLocationType["LocationTypeID"].ToString());
                     }
-                    //---------------------majie若数据库中没有endpointgroup，添加到数据库中，并且加到字典里
                     object obj = null;
                     for (int m = 0; m < _dt.Rows.Count; m++)
                     {
@@ -1163,15 +1036,12 @@ namespace BenMAP
                             fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                             dicEndpointGroup.Add(dr[0].ToString().ToLower(), Convert.ToInt32(endPointGroupID));
                         }
-                        //pollutant,incidence, Prevalence               
 
                     }
-                    //--------------------end---------------------------
                     int dgvRowCount = _dt.Rows.Count;
                     for (int row = 0; row < dgvRowCount; row++)
                     {
                         CommonClass.Connection.Close();
-                        //得到crFunctionID的值
                         commandText = string.Format("select max(CRFUNCTIONID) from CRFunctions");
                         obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
                         int CRFunctionID = int.Parse(obj.ToString()) + 1;
@@ -1346,8 +1216,6 @@ namespace BenMAP
                                     fbCommand.ExecuteNonQuery();
                                 }
                             }
-                            //if (_dt.Rows[row][21].ToString() == "Custom" && dicCustomValue[Convert.ToInt32(_dt.Rows[row][33].ToString())].Count == 0)
-                            //{ continue; }
                         }
                     }
                 }
@@ -1368,7 +1236,6 @@ namespace BenMAP
                     return;
                 OLVColumn column = olv.GetColumn("olvcEndpointGroup");
 
-                // Collect all the checked values
                 ArrayList chosenValues = new ArrayList();
                 string selectEndpoint = cboFilterEndpointGroup.GetItemText(cboFilterEndpointGroup.SelectedItem);
                 if (selectEndpoint == "All")
@@ -1382,19 +1249,6 @@ namespace BenMAP
                     olvcEndpointGroup.ValuesChosenForFiltering = chosenValues;
                     olv.UpdateColumnFiltering();
                 }
-                //_dtEndpointGroup = _dt.Clone();
-                //foreach (DataRow dr in _dt.Rows)
-                //{
-                //    if (cboFilterEndpointGroup.SelectedItem == "All")
-                //    {
-                //        _dtEndpointGroup.ImportRow(dr);
-                //    }
-                //    if (cboFilterEndpointGroup.SelectedItem.ToString() == dr[0].ToString())
-                //    {
-                //        _dtEndpointGroup.ImportRow(dr);
-                //    }
-                //}
-                //olvFunction.DataSource = _dtEndpointGroup;
             }
             catch (Exception ex)
             {
@@ -1411,7 +1265,6 @@ namespace BenMAP
                     return;
                 OLVColumn column = olv.GetColumn("olvcPollutant");
 
-                // Collect all the checked values
                 ArrayList chosenValues = new ArrayList();
                 string selectEndpoint = cboFilterPollutants.GetItemText(cboFilterPollutants.SelectedItem);
                 if (selectEndpoint == "All")
@@ -1425,19 +1278,6 @@ namespace BenMAP
                     olvcPollutant.ValuesChosenForFiltering = chosenValues;
                     olv.UpdateColumnFiltering();
                 }
-                //_dtPollutant = _dt.Clone();
-                //foreach (DataRow dr in _dt.Rows)
-                //{
-                //    if (cboFilterPollutants.SelectedItem == "All")
-                //    {
-                //        _dtPollutant.ImportRow(dr);
-                //    }
-                //    if (cboFilterPollutants.SelectedItem.ToString() == dr[2].ToString())
-                //    {
-                //        _dtPollutant.ImportRow(dr);
-                //    }
-                //}
-                //olvFunction.DataSource = _dtPollutant;
             }
             catch (Exception ex)
             {
@@ -1469,14 +1309,12 @@ namespace BenMAP
                         break;
                 }
             }
-            // Setup a default renderer to draw the filter matches
             if (filter == null)
                 olv.DefaultRenderer = null;
             else
             {
                 olv.DefaultRenderer = new HighlightTextRenderer(filter);
 
-                // Uncomment this line to see how the GDI+ rendering looks
                 olv.DefaultRenderer = new HighlightTextRenderer { Filter = filter, UseGdiTextRendering = true };
             }
 

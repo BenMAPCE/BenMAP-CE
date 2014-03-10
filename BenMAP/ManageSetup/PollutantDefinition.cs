@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -23,42 +23,18 @@ namespace BenMAP
         public object _pollutantID;
         private int _addMetricNumber = 0;
         BenMAPPollutant _benMAPPollutant = new BenMAPPollutant();
-        /// <summary>
-        /// 更新Metric的details的时候用,保存当前的metric
-        /// </summary>
         public Metric _metric;
-        /// <summary>
-        /// 用来判定是不是新增的Pollutant
-        /// </summary>
         private bool _isAddPollutant;
 
-        /// <summary>
-        /// 更新pollutant的时候用
-        /// </summary>
         public List<Season> _lstSeason = new List<Season>();
 
-        /// <summary>
-        /// 保存整个metrics
-        /// </summary>
         public List<Metric> _lstMetrics = new List<Metric>();
 
-        /// <summary>
-        /// 保存整个SeasonalMetrics
-        /// </summary>
         public List<ManageSetupSeasonalMetric> _lstAllSeasonalMetric = new List<ManageSetupSeasonalMetric>();
 
-        /// <summary>
-        /// 某个Metric的SeasonalMetrics
-        /// </summary>
         public List<ManageSetupSeasonalMetric> _lstSeasonalMetric = new List<ManageSetupSeasonalMetric>();
 
-        /// <summary>
-        ///  原先保存seasons时的参数，为了和设定seasons界面的内容保持一致，先不做更改
-        /// </summary>
         Dictionary<string, Season> _dicSeasons = new Dictionary<string, Season>();
-        /// <summary>
-        /// 只是为了修改metric的名称
-        /// </summary>
         public List<ManageSetupSeasonalMetric> getAllSeasonalMetrics()
         {
             try
@@ -156,7 +132,6 @@ namespace BenMAP
                     string commandText = "select max(POLLUTANTID) from POLLUTANTS";
                     _pollutantID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
 
-                    //automatically generated name-increase the number at the end of the name
                     int number = 0;
                     int PollutantID = 0;
                     do
@@ -173,7 +148,7 @@ namespace BenMAP
                     _isAddPollutant = true;
 
                 }
-                
+
 
                 if (lstMetrics.Items.Count == 0)
                 {
@@ -195,12 +170,8 @@ namespace BenMAP
             customFunctionInvalid = false;
             try
             {
-                //直接检查数据库，然后更新
-                #region 保存pollutant
-                //pollutant
                 commandText = "select PollutantName from Pollutants where PollutantID=" + _benMAPPollutant.PollutantID + "";
                 object checkName = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
-                //保存pollutant的相关信息
                 if (checkName != null)
                 {
                     commandText = string.Format("update Pollutants set PollutantName='{0}',ObservationType={1} where PollutantID={2}", txtPollutantID.Text, cboObservationType.SelectedIndex, _benMAPPollutant.PollutantID);
@@ -215,9 +186,6 @@ namespace BenMAP
                     commandText = string.Format("insert into Pollutants Values ({0},{1},'{2}',{3})", _benMAPPollutant.PollutantID, CommonClass.ManageSetup.SetupID, txtPollutantID.Text, cboObservationType.SelectedIndex);
                     fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                 }
-                #endregion 
-                #region 保存seasons
-                //seasons
                 if (_isAddPollutant)
                 {
                     foreach (string season in _dicSeasons.Keys)
@@ -236,10 +204,7 @@ namespace BenMAP
                         }
                     }
                 }
-                #endregion
 
-                #region 保存metrics
-                //metrics
                 for (int i = 0; i < _lstMetrics.Count; i++)
                 {
                     commandText = "select MetricName from Metrics where MetricID=" + _lstMetrics[i].MetricID + "";
@@ -260,15 +225,13 @@ namespace BenMAP
                     {
                         cus = _lstMetrics[i] as CustomerMetric;
                     }
-                    if (metricName == null)//新增的metric
+                    if (metricName == null)
                     {
-                        //daily
                         if (cboObservationType.SelectedIndex == 1)
                         {
                             commandText = string.Format("Insert into Metrics Values ({0},{1},'{2}',0)", _lstMetrics[i].MetricID, _pollutantID, _lstMetrics[i].MetricName);
                             fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                         }
-                        //hourly
                         if (cboObservationType.SelectedIndex == 0)
                         {
                             switch (_lstMetrics[i].HourlyMetricGeneration)
@@ -290,7 +253,6 @@ namespace BenMAP
                                     fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                                     break;
                                 case 3:
-                                    //校验公式
                                     List<string> lstSystemVariableName = Configuration.ConfigurationCommonClass.getAllSystemVariableNameList();
                                     Dictionary<string, double> dicVariable = new Dictionary<string, double>();
                                     foreach (string s in lstSystemVariableName)
@@ -306,7 +268,6 @@ namespace BenMAP
                                         return;
                                     }
                                     else customFunctionInvalid = false;
-                                    //操作
                                     commandText = string.Format("Insert into Metrics Values ({0},{1},'{2}',3)", cus.MetricID, _pollutantID, cus.MetricName);
                                     fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                                     commandText = string.Format("insert into CustomMetrics values ({0},'{1}') ", cus.MetricID, cus.MetricFunction);
@@ -315,7 +276,7 @@ namespace BenMAP
                             }
                         }
                     }
-                    else//原有的metric
+                    else
                     {
                         commandText = string.Format("update Metrics set MetricName='{0}' where MetricID={1}", _lstMetrics[i].MetricName, _lstMetrics[i].MetricID);
                         fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
@@ -358,7 +319,6 @@ namespace BenMAP
                                     fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                                     break;
                                 case 3:
-                                    //校验公式
                                     List<string> lstSystemVariableName = Configuration.ConfigurationCommonClass.getAllSystemVariableNameList();
                                     Dictionary<string, double> dicVariable = new Dictionary<string, double>();
                                     foreach (string s in lstSystemVariableName)
@@ -374,7 +334,6 @@ namespace BenMAP
                                         return;
                                     }
                                     else customFunctionInvalid = false;
-                                    //操作
                                     commandText = "select count(*) from CustomMetrics where metricid=" + cus.MetricID + "";
                                     obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
                                     if (Convert.ToInt32(obj) == 0)
@@ -404,15 +363,12 @@ namespace BenMAP
                         }
                     }
                 }
-                #endregion
-                #region 保存SeasonalMetrics
-                //seasonalmetrics
                 if (_isAddPollutant)
                 {
                     for (int i = 0; i < _lstAllSeasonalMetric.Count; i++)
                     {
                         commandText = "select SeasonalMetricName from SeasonalMetrics where SeasonalMetricID=" + _lstAllSeasonalMetric[i].SeasonalMetricID + " and MetricID=" + _lstAllSeasonalMetric[i].Metric.MetricID + "";
-                       object obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
+                        object obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
                         if (obj == null)
                         {
                             commandText = string.Format("insert into SeasonalMetrics values ({0},{1},'{2}')", _lstAllSeasonalMetric[i].SeasonalMetricID, _lstAllSeasonalMetric[i].Metric.MetricID, _lstAllSeasonalMetric[i].SeasonalMetricName);
@@ -420,11 +376,9 @@ namespace BenMAP
                         }
                         else
                         {
-                            //更新名字
                             commandText = "update SeasonalMetrics set SeasonalMetricName='" + _lstAllSeasonalMetric[i].SeasonalMetricName + "' where SeasonalMetricID=" + _lstAllSeasonalMetric[i].SeasonalMetricID + " ";
                             fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                         }
-                        //更新seasons
                         if (_lstAllSeasonalMetric[i].Seasons != null)
                         {
                             for (int j = 0; j < _lstSeasonalMetric[i].Seasons.Count; j++)
@@ -445,8 +399,7 @@ namespace BenMAP
                         }
                     }
                 }
-                #endregion
-                
+
             }
             catch (Exception ex)
             {
@@ -460,10 +413,6 @@ namespace BenMAP
             try
             {
                 wrongStartEndHour = false;
-                //Metric metric1 = new Metric();
-                //metric.MetricName = txtMetricName.Text;
-                ////此处要考证一下
-                //metric.HourlyMetricGeneration = cbohourlymetricgeneration.SelectedIndex + 1;            
                 if (cboObservationType.SelectedIndex == 0)
                 {
                     switch (cbohourlymetricgeneration.SelectedIndex)
@@ -489,7 +438,6 @@ namespace BenMAP
                             }
                             fix.Statistic = (MetricStatic)(cboFixStatistic.SelectedIndex + 1);
                             return fix;
-                            //break;
                         case 1:
                             MovingWindowMetric mov = new MovingWindowMetric();
                             mov.MetricID = metric.MetricID;
@@ -501,7 +449,6 @@ namespace BenMAP
                             mov.DailyStatistic = (MetricStatic)(cboMovingStatistic.SelectedIndex + 1);
                             mov.WindowStatistic = (MetricStatic)(cboWindowStatistic.SelectedIndex + 1);
                             return mov;
-                            //break;
                         case 2:
                             CustomerMetric cus = new CustomerMetric();
                             cus.MetricID = metric.MetricID;
@@ -512,7 +459,6 @@ namespace BenMAP
                             cus.MetricFunction = txtFunctionManage.Text;
                             metric = (Metric)cus;
                             return cus;
-                            //break;
                     }
                 }
                 else
@@ -536,12 +482,11 @@ namespace BenMAP
             }
         }
 
-        //笨方法刷新lstmetric中metric的name
         bool isRefrest = true;
         private void RefrestFileList()
         {
             for (int i = 0; i < lstMetrics.Items.Count; i++)
-                lstMetrics.Items[i] = lstMetrics.Items[i];//Very silly, but it works.
+                lstMetrics.Items[i] = lstMetrics.Items[i];
         }
 
         private void cboObservationType_SelectedIndexChanged(object sender, EventArgs e)
@@ -569,7 +514,6 @@ namespace BenMAP
             try
             {
                 if (lstMetrics.Items.Count == 0) { txtMetricName.Text = ""; return; }
-                #region 更新上一个metric
                 if (!isRefrest) return;
                 if (_metric != null)
                 {
@@ -583,30 +527,15 @@ namespace BenMAP
                                 lstMetrics.SelectedIndex = i;
                                 return;
                             }
-                            //刷新lstmetric中metric的name
-                            //foreach (ListItem l in lstMetrics.Items)
-                            //{
-                            //    if (l.ID == _metric.MetricID.ToString())
-                            //    {
-                            //        l.Name = txtMetricName.Text;                                    
-                            //        isRefrest = false;
-                            //        RefrestFileList();
-                            //        isRefrest = true;
-                            //        break;
-                            //    }
-                            //}
                             break;
                         }
                     }
                 }
-                #endregion
                 ListItem lt = (lstMetrics.SelectedIndex < 0 ? lstMetrics.Items[lstMetrics.Items.Count - 1] : lstMetrics.Items[lstMetrics.SelectedIndex]) as ListItem;
-                //var lst = (from p in _benMAPPollutant.Metrics where p.MetricID.ToString() == lt.ID select p).ToList();
                 var lst = (from p in _lstMetrics where p.MetricID.ToString() == lt.ID select p).ToList();
                 if (lst.Count == 0) { return; }
                 Metric metric = (Metric)lst[0];
                 _metric = metric;
-                #region 展示meitric的details
                 txtMetricName.Text = metric.MetricName;
 
                 FixedWindowMetric fix = new FixedWindowMetric();
@@ -627,7 +556,6 @@ namespace BenMAP
                 switch (metric.HourlyMetricGeneration)
                 {
                     case 0:
-                        //给出完整界面而已
                         tabHourlyMetricGeneration.Controls.Clear();
                         tabHourlyMetricGeneration.TabPages.Add(tpFix);
                         break;
@@ -654,16 +582,14 @@ namespace BenMAP
                         txtFunctionManage.Text = cus.MetricFunction;
                         break;
                 }
-                #endregion
 
-                #region 展示SeasonalMetrics
                 var sMetric = (from p in _lstAllSeasonalMetric where p.Metric.MetricID == metric.MetricID select p.SeasonalMetricName).ToList();
                 lstSeasonalMetrics.DataSource = null; lstSeasonalMetrics.Items.Clear();
-                for (int i = 0; i < sMetric.Count; i++) {
+                for (int i = 0; i < sMetric.Count; i++)
+                {
                     lstSeasonalMetrics.Items.Add(sMetric[i].ToString());
-                }               
+                }
                 _lstSeasonalMetric = (from p in _lstAllSeasonalMetric where p.Metric.MetricID == metric.MetricID select p).ToList();
-                #endregion
             }
             catch (Exception ex)
             {
@@ -722,7 +648,6 @@ namespace BenMAP
                 }
                 else
                 {
-                    #region 更新上一个metric
                     if (!isRefrest) return;
                     if (_metric != null)
                     {
@@ -732,29 +657,15 @@ namespace BenMAP
                             {
                                 _lstMetrics[i] = updateMetric(_metric);
                                 if (wrongStartEndHour) return;
-                                //刷新lstmetric中metric的name
-                                //foreach (ListItem l in lstMetrics.Items)
-                                //{
-                                //    if (l.ID == _metric.MetricID.ToString())
-                                //    {
-                                //        l.Name = txtMetricName.Text;
-                                //        isRefrest = false;
-                                //        RefrestFileList();
-                                //        isRefrest = true;
-                                //        break;
-                                //    }
-                                //}
                                 break;
                             }
                         }
                     }
-                    #endregion
                 }
                 if (lstMetrics.SelectedItem != null) { _metric = updateMetric(_metric); }
                 Metric addMetric = new Metric();
                 FireBirdHelperBase fb = new ESILFireBirdHelper();
                 string commandText = "select max(METRICID) from METRICS";
-                //string commandText = "select max(metricID) from Metrics";
                 metricidadd++;
                 addMetric.MetricID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + metricidadd;
                 bool checkExist = true;
@@ -791,21 +702,8 @@ namespace BenMAP
                 newMetric.EndHour = 23;
                 newMetric.Statistic = (MetricStatic)1;
 
-                //if (cboObservationType.SelectedIndex == 0)
-                //{
-                //    //初始化是时候是mean，和BenMAP4保持一致
-                //    cboFixStatistic.SelectedIndex = 0;
-                //    addMetric = updateMetric(addMetric);
-                //}
-                //else
-                //{
-                //    //保存的是Daily的metric
-                //}
                 _lstMetrics.Add(newMetric);
-                //_metric = addMetric;
-                //ListItem lst = new ListItem(addMetric.MetricID.ToString(), addMetric.MetricName);
                 lstMetrics.Items.Add(new ListItem(newMetric.MetricID.ToString(), newMetric.MetricName));
-                //为了不触发metric的保存，特作此处理
                 _metric = null;
                 lstMetrics.SelectedIndex = lstMetrics.Items.Count - 1;
                 _addMetricNumber++;
@@ -872,8 +770,6 @@ namespace BenMAP
 
                     commandText = string.Format("delete from Metrics where MetricID='{0}' and PollutantID={1}", metricID, _pollutantID);
                     fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
-                    //commandText = string.Format("select metricID from Metrics where MetricName='{0}' and PollutantID={1}", ((lstMetrics.SelectedItem) as DataRowView)["metricname"], _pollutantID);
-                    //_metricID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
                     commandText = "delete from SeasonalMetrics where MetricID=" + metricID + "";
                     fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                     commandText = "delete from CustomMetrics where MetricID=" + metricID + "";
@@ -922,7 +818,6 @@ namespace BenMAP
 
             try
             {
-                #region 更新上一个metric
                 if (!isRefrest) return;
                 if (_metric != null)
                 {
@@ -932,30 +827,16 @@ namespace BenMAP
                         {
                             _lstMetrics[i] = updateMetric(_metric);
                             if (wrongStartEndHour) return;
-                            //刷新lstmetric中metric的name
-                            //foreach (ListItem l in lstMetrics.Items)
-                            //{
-                            //    if (l.ID == _metric.MetricID.ToString())
-                            //    {
-                            //        l.Name = txtMetricName.Text;
-                            //        isRefrest = false;
-                            //        RefrestFileList();
-                            //        isRefrest = true;
-                            //    }
-                            //}
                             break;
                         }
                     }
                 }
-                #endregion
                 DefineSeasons frm = new DefineSeasons(_isAddPollutant);
                 frm._pollutantID = _pollutantID;
                 frm.dicSave = _dicSeasons;
                 DialogResult rtn = frm.ShowDialog();
-                //if (rtn == DialogResult.OK)
                 {
                     _dicSeasons = frm.dicSave;
-                    //更新_lstSeason
                     if (_dicSeasons.Count != 0)
                     {
 
@@ -977,7 +858,6 @@ namespace BenMAP
                     MessageBox.Show("Please add a metric first.", "Error", MessageBoxButtons.OK);
                     return;
                 }
-                #region 更新上一个metric
                 if (!isRefrest) return;
                 if (_metric != null)
                 {
@@ -986,36 +866,21 @@ namespace BenMAP
                         if (_lstMetrics[i].MetricID == _metric.MetricID)
                         {
                             _lstMetrics[i] = updateMetric(_metric);
-                            //刷新lstmetric中metric的name
                             if (wrongStartEndHour) return;
-                            //foreach (ListItem l in lstMetrics.Items)
-                            //{
-                            //    if (l.ID == _metric.MetricID.ToString())
-                            //    {
-                            //        l.Name = txtMetricName.Text;
-                            //        isRefrest = false;
-                            //        RefrestFileList();
-                            //        isRefrest = true;
-                            //    }
-                            //}
                             break;
                         }
                     }
                 }
-                #endregion
                 updateBenMAPPollutant(_benMAPPollutant);
                 if (PollutantExist || customFunctionInvalid) return;
-                ManageSeasonalMetrics frm = new ManageSeasonalMetrics(_lstSeasonalMetric, _metric,_isAddPollutant);
-                //frm._dicPolSeason = _dicSeasons;
+                ManageSeasonalMetrics frm = new ManageSeasonalMetrics(_lstSeasonalMetric, _metric, _isAddPollutant);
                 frm.ShowDialog();
-                //if (frm.ShowDialog() == DialogResult.OK)
                 {
                     if (ManageSeasonalMetrics.LstSMetrics.Count != 0)
                     {
                         _lstSeasonalMetric = ManageSeasonalMetrics.LstSMetrics;
-                        //从最大的index开始删，避免影响count和index
                         int allSeasonalMetricCount = _lstAllSeasonalMetric.Count;
-                        for (int i = allSeasonalMetricCount-1; i >=0; i--)
+                        for (int i = allSeasonalMetricCount - 1; i >= 0; i--)
                         {
                             if (_lstAllSeasonalMetric[i].Metric.MetricID == _metric.MetricID)
                             {
@@ -1026,9 +891,7 @@ namespace BenMAP
                         {
                             _lstAllSeasonalMetric.Add(_lstSeasonalMetric[i]);
                         }
-                        //_dicSeasons = frm._dicPolSeason;
                         var sMetric = (from p in _lstAllSeasonalMetric where p.Metric.MetricID == _metric.MetricID select p.SeasonalMetricName).ToList();
-                        //先清空
                         lstSeasonalMetrics.DataSource = null;
                         lstSeasonalMetrics.Items.Clear();
                         for (int i = 0; i < sMetric.Count; i++)
@@ -1062,7 +925,6 @@ namespace BenMAP
         {
             try
             {
-                #region 更新上一个metric
                 if (!isRefrest) return;
                 if (_metric != null)
                 {
@@ -1072,22 +934,10 @@ namespace BenMAP
                         {
                             _lstMetrics[i] = updateMetric(_metric);
                             if (wrongStartEndHour) return;
-                            //刷新lstmetric中metric的name
-                            //foreach (ListItem l in lstMetrics.Items)
-                            //{
-                            //    if (l.ID == _metric.MetricID.ToString())
-                            //    {
-                            //        l.Name = txtMetricName.Text;
-                            //        isRefrest = false;
-                            //        RefrestFileList();
-                            //        isRefrest = true;
-                            //    }
-                            //}
                             break;
                         }
                     }
                 }
-                #endregion
                 updateBenMAPPollutant(_benMAPPollutant);
                 if (PollutantExist || customFunctionInvalid) return;
                 ManageSeasonalMetrics.LstSMetrics.Clear();
@@ -1265,31 +1115,6 @@ namespace BenMAP
                     }
                 }
 
-                //#region 更新上一个metric
-                //if (_metric != null)
-                //{
-                //    for (int i = 0; i < _lstMetrics.Count; i++)
-                //    {
-                //        if (_lstMetrics[i].MetricID == _metric.MetricID)
-                //        {
-                //            //_lstMetrics[i] = updateMetric(_metric);
-                //            //刷新lstmetric中metric的name
-                //            foreach (ListItem l in lstMetrics.Items)
-                //            {
-                //                if (l.ID == _metric.MetricID.ToString())
-                //                {
-                //                    l.Name = txtMetricName.Text;
-                //                    isRefrest = false;
-                //                    RefrestFileList();
-                //                    isRefrest = true;
-                //                    break;
-                //                }
-                //            }
-                //            break;
-                //        }
-                //    }
-                //}
-                //#endregion
             }
             catch
             { }
@@ -1304,9 +1129,6 @@ namespace BenMAP
         }
     }
 
-    /// <summary>
-    /// CommonClass中的SeasonalMetric不准确，在此重新定义
-    /// </summary>
     public class ManageSetupSeasonalMetric
     {
         public int SeasonalMetricID;
@@ -1315,9 +1137,6 @@ namespace BenMAP
         public List<SeasonalMetricSeason> Seasons;
     }
 
-    /// <summary>
-    /// CommonClass中的season不完整，在此重新定义
-    /// </summary>
     public class SeasonalMetricSeason
     {
         public int SeasonalMetricSeasonID;

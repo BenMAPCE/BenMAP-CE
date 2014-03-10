@@ -10,12 +10,12 @@
       <param name="control" text="Control" tooltip=" Double-click to load AQ data" icon="unready" />
     </param>
   </param>
-  
+
   <param name="configuration" text="Estimate Health Impacts" tooltip="Double-click to upload “.cfgx” or “.cfgrx” file" icon="step2">
     <param name="populationdataset" text="Population Dataset" tooltip="Double-click to set up HIF configuration" icon="unready"/>
     <param name="healthimpactfunctions" text="Health Impact Functions"  tooltip="Double-click to set up HIF configuration" icon="unready"/>
   </param>
-  
+
   <param name="aggregationpoolingvaluation" text="Aggregate, Pool &amp; Value"  tooltip="Double-click to upload “.apvx” or “.apvrx” file" icon="step3">
     <param name="aggregation" text="Aggregation"  tooltip="Double-click to set up APV configuration" icon="unready"/>
     <param name="poolingmethod" text="Pooling Method"  tooltip="Double-click to set up APV configuration" icon="unready"/>

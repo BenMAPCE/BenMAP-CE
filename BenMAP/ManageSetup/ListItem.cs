@@ -1,13 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
 namespace BenMAP
 {
-    /// <summary>
-    /// 选择项类，用于ComboBox或者ListBox添加项
-    /// </summary>
     public class ListItem
     {
         public ListItem(string sid, string sname)

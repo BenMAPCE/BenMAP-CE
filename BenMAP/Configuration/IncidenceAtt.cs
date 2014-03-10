@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,10 +8,7 @@ namespace BenMAP
     public class IncidenceAtt
     {
 
-        private string _ndpointGroup; 
-        /// <summary>
-        /// 
-        /// </summary>
+        private string _ndpointGroup;
         public string EndpointGroup
         {
             get { return _ndpointGroup; }
@@ -19,10 +16,7 @@ namespace BenMAP
         }
 
 
-        private string _endpoint; 
-        /// <summary>
-        /// 
-        /// </summary>
+        private string _endpoint;
         public string Endpoint
         {
             get { return _endpoint; }
@@ -30,10 +24,7 @@ namespace BenMAP
         }
 
 
-        private int _year; 
-        /// <summary>
-        /// 
-        /// </summary>
+        private int _year;
         public int Year
         {
             get { return _year; }
@@ -41,10 +32,7 @@ namespace BenMAP
         }
 
 
-        private string _race; 
-        /// <summary>
-        /// 
-        /// </summary>
+        private string _race;
         public string Race
         {
             get { return _race; }
@@ -52,10 +40,7 @@ namespace BenMAP
         }
 
 
-        private string _gender; 
-        /// <summary>
-        /// 
-        /// </summary>
+        private string _gender;
         public string Gender
         {
             get { return _gender; }
@@ -64,9 +49,6 @@ namespace BenMAP
 
 
         private int _startAge;
-        /// <summary>
-        /// 
-        /// </summary>
         public int StartAge
         {
             get { return _startAge; }
@@ -74,10 +56,7 @@ namespace BenMAP
         }
 
 
-        private int _endAge; 
-        /// <summary>
-        /// 
-        /// </summary>
+        private int _endAge;
         public int EndAge
         {
             get { return _endAge; }
@@ -85,10 +64,7 @@ namespace BenMAP
         }
 
 
-        private int _row; 
-        /// <summary>
-        /// 
-        /// </summary>
+        private int _row;
         public int Row
         {
             get { return _row; }
@@ -96,10 +72,7 @@ namespace BenMAP
         }
 
 
-        private int _column; 
-        /// <summary>
-        /// 
-        /// </summary>
+        private int _column;
         public int Column
         {
             get { return _column; }
@@ -108,9 +81,6 @@ namespace BenMAP
 
 
         private double _value;
-        /// <summary>
-        /// 
-        /// </summary>
         public double Value
         {
             get { return _value; }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Data;
 using System.Windows.Forms;
 
@@ -6,35 +6,24 @@ namespace BenMAP
 {
     public partial class MonitorRollback : FormBase
     {
-        #region Variables
 
         private BaseControlGroup _bgc = null;
         private string _currentStat = string.Empty;
 
         ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
 
-        /// <summary>
-        /// MonitorRollback的整套流程
-        /// </summary>
         public MonitorModelRollbackLine _monitorRollbackLine;
 
-        /// <summary>
-        /// MonitorRollback的Grid
-        /// </summary>
         BenMAPGrid _monitorRollbackGrid = new BenMAPGrid();
 
         private string _strPath;
 
-        /// <summary>
-        /// 选择的数据路径；
-        /// </summary>
         public string StrPath
         {
             get { return _strPath; }
             set { _strPath = value; }
         }
 
-        #endregion Variables
 
         public MonitorRollback(BaseControlGroup currentPollutant, string currentStat)
         {
@@ -61,7 +50,6 @@ namespace BenMAP
                 cboMonitorDataSet.DataSource = ds.Tables[0];
                 cboMonitorDataSet.DisplayMember = "MonitorDataSetName";
                 cboMonitorDataSet.SelectedIndex = 0;
-                //cboMonitorDataSet.Enabled = false;
 
                 fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 commandText = string.Format("select * from GridDefinitions where SetupID={0} order by GridDefinitionName asc ", CommonClass.MainSetup.SetupID);
@@ -81,15 +69,6 @@ namespace BenMAP
             this.DialogResult = DialogResult.Cancel;
         }
 
-        ///// <summary>
-        ///// 绑定GridType
-        ///// </summary>
-        //public void BindingGridType()
-        //{
-        //    fb = new ESIL.DBUtility.ESILFireBirdHelper();
-        //    commandText = string.Format("select * from GridDefinitions where SetupID={0} order by GridDefinitionID asc ", CommonClass.ManageSetup.SetupID);
-        //    dsGrid = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
-        //}
 
         private void btnBrowse_Click(object sender, EventArgs e)
         {
@@ -111,9 +90,6 @@ namespace BenMAP
 
         private void btnAdvanced_Click(object sender, EventArgs e)
         {
-            //FilterMonitors frm = new FilterMonitors();
-            //DialogResult rtn = frm.ShowDialog();
-            //if (rtn != DialogResult.OK) { return; }
             if (cboRollbackGridType.SelectedIndex == -1)
             {
                 MessageBox.Show("Please select rollback grid type first.");
@@ -176,7 +152,7 @@ namespace BenMAP
             frm.bcg = this._bgc;
             frm.mDataLine = _monitorRollbackLine;
             DialogResult rtn = frm.ShowDialog();
-            if (rtn == DialogResult.OK) 
+            if (rtn == DialogResult.OK)
             {
                 MyMonitorAdvance = frm.MonitorAdvanceFilter;
                 _monitorRollbackLine.MonitorAdvance = MyMonitorAdvance;
@@ -210,31 +186,25 @@ namespace BenMAP
                 _monitorRollbackLine.RollbackGrid = _monitorRollbackGrid;
                 _monitorRollbackLine.GridType = CommonClass.GBenMAPGrid;
                 _monitorRollbackLine.Pollutant = _bgc.Pollutant;
-                //_monitorRollbackLine.GridType = _monitorRollbackGrid;
 
                 MonitorRollbackSettings2 frm = new MonitorRollbackSettings2(_currentStat, _monitorRollbackLine);
                 frm.Bgc = _bgc;
                 DialogResult rtn = frm.ShowDialog();
                 if (rtn != DialogResult.OK) { return; }
                 _monitorRollbackLine = frm._monitorRollbackLine;
-                //-------------------需要update数据！！！！
                 if (MonitorRollbackSettings3.MakeBaselineGrid == "F")
                 {
                     switch (_currentStat)
                     {
                         case "baseline":
-                            _bgc.Base = _monitorRollbackLine;//DataSourceCommonClass.LoadAQGFile(txtExistingAQG.Text);
-
+                            _bgc.Base = _monitorRollbackLine;
                             break;
                         case "control":
-                            _bgc.Control = _monitorRollbackLine;// DataSourceCommonClass.LoadAQGFile(txtExistingAQG.Text);
-                            break;
+                            _bgc.Control = _monitorRollbackLine; break;
                     }
                 }
                 else
                 {
-                    //string err = "";
-                    //_bgc.Base = DataSourceCommonClass.LoadAQGFile(MonitorRollbackSettings3.MakeBaselineGrid.Substring(1, MonitorRollbackSettings3.MakeBaselineGrid.Length - 1), ref err);
                     _bgc.Control = _monitorRollbackLine;
                 }
                 this.DialogResult = DialogResult.OK;
@@ -266,11 +236,6 @@ namespace BenMAP
             }
         }
 
-        /// <summary>
-        /// 选择不同的RollbackGridType
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void cboRollbackGridType_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (cboRollbackGridType.SelectedIndex == -1) return;

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,20 +17,14 @@ namespace BenMAP
             {
                 string strSQL = "select MonitorDatasetName from MonitorDataSets where MonitorDatasetID=" + MonitorDataSetID;
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
-                return fb.ExecuteScalar(CommonClass.Connection, CommandType.Text,strSQL).ToString();
+                return fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, strSQL).ToString();
             }
             catch
-            { 
+            {
             }
             return "";
         }
-        /// <summary>
-        /// Output ctlx of AQGX
-        /// </summary>
-        /// <param name="benMAPLine"></param>
-        /// <param name="strFile"></param>
-        /// <returns></returns>
-        public static bool OutputAQG(BenMAPLine benMAPLine, string strFile,string strFileAQG)
+        public static bool OutputAQG(BenMAPLine benMAPLine, string strFile, string strFileAQG)
         {
             try
             {
@@ -46,7 +40,7 @@ namespace BenMAP
                 sw.WriteLine();
                 sw.WriteLine("COMMANDS");
                 sw.WriteLine();
-                sw.WriteLine("SETACTIVESETUP  -ActiveSetup    "+CommonClass.getBenMAPSetupFromID( benMAPLine.GridType.SetupID).SetupName);
+                sw.WriteLine("SETACTIVESETUP  -ActiveSetup    " + CommonClass.getBenMAPSetupFromID(benMAPLine.GridType.SetupID).SetupName);
                 sw.WriteLine();
                 if (benMAPLine is ModelDataLine)
                 {
@@ -62,7 +56,7 @@ namespace BenMAP
                     sw.WriteLine();
                     sw.WriteLine("ModelDirect");
                     sw.WriteLine();
-                    sw.WriteLine("-ModelFilename  "+(benMAPLine as ModelDataLine).DatabaseFilePath);
+                    sw.WriteLine("-ModelFilename  " + (benMAPLine as ModelDataLine).DatabaseFilePath);
                     sw.WriteLine("-DSNName        ");
                     sw.WriteLine();
                     sw.WriteLine("##");
@@ -83,11 +77,11 @@ namespace BenMAP
                     sw.WriteLine("MonitorDirect");
                     sw.WriteLine();
                     MonitorDataLine monitordataline = benMAPLine as MonitorDataLine;
-                    if(monitordataline.MonitorDirectType==0)
+                    if (monitordataline.MonitorDirectType == 0)
                         sw.WriteLine("-MonitorDataType      Library");
                     else
                         sw.WriteLine("-MonitorDataType      TextFile");
-                    if(monitordataline.InterpolationMethod!=null)
+                    if (monitordataline.InterpolationMethod != null)
                         sw.WriteLine("-InterpolationMethod  " + Enum.GetName(typeof(InterpolationMethodEnum), monitordataline.InterpolationMethod));
                     sw.WriteLine("-MonitorDataSet       " + getMonitorDataSetNameFromID(monitordataline.MonitorDataSetID));
                     sw.WriteLine("-MonitorYear          " + monitordataline.MonitorLibraryYear);
@@ -95,8 +89,8 @@ namespace BenMAP
                     if (monitordataline.MonitorAdvance == null)
                     {
                         sw.WriteLine("-MaxDistance          -1");
-                        sw.WriteLine("-MaxRelativeDistance  -1" );
-                        sw.WriteLine("-WeightingMethod      " );
+                        sw.WriteLine("-MaxRelativeDistance  -1");
+                        sw.WriteLine("-WeightingMethod      ");
                     }
                     else
                     {
@@ -122,19 +116,13 @@ namespace BenMAP
             }
             return true;
         }
-        /// <summary>
-        /// Output ctlx of CFGX
-        /// </summary>
-        /// <param name="benMAPLine"></param>
-        /// <param name="strFile"></param>
-        /// <returns></returns>
-        public static bool OutputCFG(BaseControlCRSelectFunction baseControlCRSelectFunction, string strFile,string strFileCFG)
+        public static bool OutputCFG(BaseControlCRSelectFunction baseControlCRSelectFunction, string strFile, string strFileCFG)
         {
             try
             {
-                if(strFileCFG=="") strFileCFG=strFile.Substring(0,strFile.Count()-4)+"cfgx";
+                if (strFileCFG == "") strFileCFG = strFile.Substring(0, strFile.Count() - 4) + "cfgx";
                 FileStream fs = new FileStream(strFile, FileMode.Create);
-                StreamWriter sw = new StreamWriter(fs,Encoding.UTF8);
+                StreamWriter sw = new StreamWriter(fs, Encoding.UTF8);
                 sw.WriteLine("## " + Path.GetFileName(strFile));
                 sw.WriteLine("## " + DateTime.Now.ToString("d"));
                 sw.WriteLine();
@@ -149,7 +137,6 @@ namespace BenMAP
                 sw.WriteLine("SETACTIVESETUP  -ActiveSetup    " + CommonClass.getBenMAPSetupFromID(baseControlCRSelectFunction.BaseControlGroup.First().GridType.SetupID).SetupName);
                 sw.WriteLine();
                 sw.WriteLine("##");
-                //sw.WriteLine("##Source Apportionment modeling");
                 sw.WriteLine("##");
                 sw.WriteLine();
                 sw.WriteLine("RUN CFG");
@@ -160,7 +147,7 @@ namespace BenMAP
                     .Replace(CommonClass.ResultFilePath + @"\Result\CFGR\", @"%CFGRDIR%\") + "cfgrx");
                 sw.WriteLine("-BaselineAQG           ");
                 sw.WriteLine("-ControlAQG            ");
-                sw.WriteLine("-Year                  "+baseControlCRSelectFunction.BenMAPPopulation.Year.ToString());
+                sw.WriteLine("-Year                  " + baseControlCRSelectFunction.BenMAPPopulation.Year.ToString());
                 sw.WriteLine("-LatinHypercubePoints  " + baseControlCRSelectFunction.CRLatinHypercubePoints);
                 sw.WriteLine("-Seeds                 " + baseControlCRSelectFunction.CRSeeds);
                 sw.WriteLine("-Threshold             " + baseControlCRSelectFunction.CRThreshold);
@@ -174,19 +161,13 @@ namespace BenMAP
             }
             return true;
         }
-        /// <summary>
-        /// Output ctlx of APVX
-        /// </summary>
-        /// <param name="benMAPLine"></param>
-        /// <param name="strFile"></param>
-        /// <returns></returns>
-        public static bool OutputAPV(ValuationMethodPoolingAndAggregation valuationMethodPoolingAndAggregation, string strFile,string strAPVFile)
+        public static bool OutputAPV(ValuationMethodPoolingAndAggregation valuationMethodPoolingAndAggregation, string strFile, string strAPVFile)
         {
             try
             {
-                if(strAPVFile=="") strAPVFile=strFile.Substring(0, strFile.Count() - 4) + "apvx";
+                if (strAPVFile == "") strAPVFile = strFile.Substring(0, strFile.Count() - 4) + "apvx";
                 FileStream fs = new FileStream(strFile, FileMode.Create);
-                StreamWriter sw = new StreamWriter(fs,Encoding.UTF8);
+                StreamWriter sw = new StreamWriter(fs, Encoding.UTF8);
                 sw.WriteLine("## " + Path.GetFileName(strFile));
                 sw.WriteLine("## " + DateTime.Now.ToString("d"));
                 sw.WriteLine();
@@ -201,7 +182,6 @@ namespace BenMAP
                 sw.WriteLine("SETACTIVESETUP  -ActiveSetup    " + CommonClass.getBenMAPSetupFromID(valuationMethodPoolingAndAggregation.BaseControlCRSelectFunctionCalculateValue.BaseControlGroup.First().GridType.SetupID).SetupName);
                 sw.WriteLine();
                 sw.WriteLine("##");
-                //sw.WriteLine("##Source Apportionment modeling");
                 sw.WriteLine("##");
                 sw.WriteLine();
                 sw.WriteLine("RUN APV");
@@ -235,7 +215,7 @@ namespace BenMAP
                     sw.WriteLine("-RandomSeed            " + valuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance.RandomSeed);
                     sw.WriteLine("-DollarYear            " + valuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance.CurrencyYear);
                 }
-                
+
                 sw.Flush();
                 sw.Close();
                 fs.Close();
@@ -246,11 +226,6 @@ namespace BenMAP
             }
             return true;
         }
-        /// <summary>
-        /// Write Log
-        /// </summary>
-        /// <param name="msg"></param>
-        /// <param name="strFile"></param>
         public static void WriteBatchLogFile(string msg, string strFile)
         {
             try
@@ -271,12 +246,6 @@ namespace BenMAP
             {
             }
         }
-        /// <summary>
-        /// RunBatch
-        /// </summary>
-        /// <param name="benMAPLine"></param>
-        /// <param name="strFile"></param>
-        /// <returns></returns>
         public static bool RunBatch(string strFile)
         {
             try
@@ -284,10 +253,8 @@ namespace BenMAP
                 List<BatchBase> lstBatchBase = ReadBatchFile(strFile);
                 if (lstBatchBase == null) return false;
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
-                //--------------Run-------------------------
                 foreach (BatchBase batchBase in lstBatchBase)
                 {
-                    //-----------Run BatchBase----------------
                     if (batchBase is BatchAQGBase)
                     {
                         try
@@ -296,11 +263,9 @@ namespace BenMAP
                             if (batchBase is BatchModelDirect)
                             {
                                 BatchModelDirect batchModelDirect = batchBase as BatchModelDirect;
-                                ModelDataLine modelDataLine = new ModelDataLine(); // TODO: 初始化为适当的值
-
+                                ModelDataLine modelDataLine = new ModelDataLine();
                                 modelDataLine.DatabaseFilePath = batchModelDirect.ModelFilename;
                                 System.Data.DataTable dtModel = CommonClass.ExcelToDataTable(batchModelDirect.ModelFilename);
-                                //----
                                 CommonClass.MainSetup = getSetupFromName(batchBase.ActiveSetup);
                                 BenMAPPollutant benMAPPollutant = getPollutantFromName(batchModelDirect.Pollutant);
                                 BenMAPGrid benMAPGrid = getGridFromName(batchModelDirect.GridType);
@@ -308,17 +273,10 @@ namespace BenMAP
                                 modelDataLine.GridType = benMAPGrid;
                                 DataSourceCommonClass.UpdateModelDataLineFromDataSet(benMAPPollutant, modelDataLine, dtModel);
                                 Dictionary<int, string> dicSeasonStatics = new Dictionary<int, string>();
-                                
 
-                                //string commandText = string.Format("select * from SEASONALMETRICSEASONS where POLLUTANTSEASONID in (select POLLUTANTSEASONID from POLLUTANTSEASONS where pollutantid= " + benMAPPollutant.PollutantID + ")");
-                                //System.Data.DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
-                                //foreach (DataRow dr in ds.Tables[0].Rows)
-                                //{
-                                //    dicSeasonStatics.Add(Convert.ToInt32(dr["PollutantSeasonID"]), dr["METRICFUNCTION"].ToString());
-                                //}
-                                DataSourceCommonClass.UpdateModelValuesModelData(DataSourceCommonClass.DicSeasonStaticsAll, benMAPGrid, benMAPPollutant, modelDataLine, "");//---------需要修改函数
-                                modelDataLine.GridType = benMAPGrid;
-                                DataSourceCommonClass.CreateAQGFromBenMAPLine(modelDataLine, batchModelDirect.Filename);//DataSourceCommonClass.LoadAQGFile(txtExistingAQG.Text);
+
+                                DataSourceCommonClass.UpdateModelValuesModelData(DataSourceCommonClass.DicSeasonStaticsAll, benMAPGrid, benMAPPollutant, modelDataLine, ""); modelDataLine.GridType = benMAPGrid;
+                                DataSourceCommonClass.CreateAQGFromBenMAPLine(modelDataLine, batchModelDirect.Filename);
                             }
                             else if (batchBase is BatchMonitorDirect)
                             {
@@ -329,7 +287,6 @@ namespace BenMAP
                                 BenMAPGrid benMAPGrid = getGridFromName(batchMonitorDirect.GridType);
                                 monitorDataLine.Pollutant = benMAPPollutant;
                                 monitorDataLine.GridType = benMAPGrid;
-                                //----MonitorDataType must be one of Library, DatabaseColumns, DatabaseRows, or TextFile.
                                 if (batchMonitorDirect.MonitorDataType == "Library")
                                 {
                                     monitorDataLine.MonitorDirectType = 0;
@@ -337,7 +294,6 @@ namespace BenMAP
                                     string commandText = string.Format("select MonitorDataSetID from MonitorDataSets where SetupID={0} and MonitorDataSetName='{1}'", CommonClass.MainSetup.SetupID, batchMonitorDirect.MonitorDataSet);
                                     if (fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText) == null)
                                     {
-                                        //---------写错误日志
                                         WriteBatchLogFile("Wrong AQG (Monitor Dataset) :", strFile + ".log");
                                         for (int j = 0; j < batchBase.BatchText.Count; j++)
                                         {
@@ -346,13 +302,11 @@ namespace BenMAP
                                         continue;
                                     }
                                     monitorDataLine.MonitorDataSetID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
-                                    monitorDataLine.InterpolationMethod = batchMonitorDirect.InterpolationMethod == "ClosestMonitor" ? InterpolationMethodEnum.ClosestMonitor : InterpolationMethodEnum.VoronoiNeighborhoodAveragin; //Interpolation method must be either ClosestMonitor or VNA.
-                                    if (batchMonitorDirect.InterpolationMethod == "FixedRadius")
+                                    monitorDataLine.InterpolationMethod = batchMonitorDirect.InterpolationMethod == "ClosestMonitor" ? InterpolationMethodEnum.ClosestMonitor : InterpolationMethodEnum.VoronoiNeighborhoodAveragin; if (batchMonitorDirect.InterpolationMethod == "FixedRadius")
                                     {
                                         monitorDataLine.InterpolationMethod = InterpolationMethodEnum.FixedRadius;
                                         monitorDataLine.FixedRadius = batchMonitorDirect.FixRadius;
                                     }
-                                    //Specifies the weighting procedure used for monitors in VNA interpolation.  Supported values are InverseDistance and InverseDistanceSquared.  If this parameter is not specified, InverseDistance weighting is used
                                 }
                                 else if (batchMonitorDirect.MonitorDataType == "TextFile")
                                 {
@@ -364,36 +318,30 @@ namespace BenMAP
                                     MaxinumNeighborDistance = batchMonitorDirect.MaxDistance,
                                     RelativeNeighborDistance = batchMonitorDirect.MaxRelativeDistance,
                                 };
-                                 
-                                //-------------Init All Advance PM25,PM10,Ozone
-                                if (CommonClass.MainSetup.SetupID == 1)//只响应美国的
+
+                                if (CommonClass.MainSetup.SetupID == 1)
                                 {
                                     switch (monitorDataLine.Pollutant.PollutantName)
                                     {
                                         case "PM2.5":
                                             monitorDataLine.MonitorAdvance.FilterMaximumPOC = 4;
                                             monitorDataLine.MonitorAdvance.POCPreferenceOrder = "1,2,3,4";
-                                            //monitorDataLine.MonitorAdvance.IncludeMethods = new List<string>() { "116", "117", "118", "119", "120" };
                                             break;
                                         case "PM10":
                                             monitorDataLine.MonitorAdvance.FilterMaximumPOC = 4;
                                             monitorDataLine.MonitorAdvance.POCPreferenceOrder = "1,2,3,4";
-                                            //monitorDataLine.MonitorAdvance.IncludeMethods = new List<string>() { "062", "065", "076", "063", "071", "079", "064", "073", "081" };
                                             break;
                                         case "Ozone":
                                             monitorDataLine.MonitorAdvance.FilterMaximumPOC = 4;
                                             monitorDataLine.MonitorAdvance.POCPreferenceOrder = "1,2,3,4";
-                                            //monitorDataLine.MonitorAdvance.IncludeMethods = new List<string>() { "003", "011", "014", "019", "020", "047", "053", "056", "078", "087", "091", "103", "112" };
                                             break;
                                         case "NO2":
                                             monitorDataLine.MonitorAdvance.FilterMaximumPOC = 9;
                                             monitorDataLine.MonitorAdvance.POCPreferenceOrder = "1,2,3,4,5,6,7,8,9";
-                                            //monitorDataLine.MonitorAdvance.IncludeMethods = new List<string>() { "014", "042", "090", "022", "074", "099", "025", "075", "102", "035", "082", "111", "037", "089" };
                                             break;
                                         case "SO2":
                                             monitorDataLine.MonitorAdvance.FilterMaximumPOC = 9;
                                             monitorDataLine.MonitorAdvance.POCPreferenceOrder = "1,2,3,4,5,6,7,8,9";
-                                            //monitorDataLine.MonitorAdvance.IncludeMethods = new List<string>() { "009", "061", "020", "075", "023", "077", "039", "092", "060", "100" };
                                             break;
                                     }
                                 }
@@ -407,13 +355,11 @@ namespace BenMAP
                                 }
                                 DataSourceCommonClass.UpdateModelValuesMonitorData(benMAPGrid, benMAPPollutant, ref monitorDataLine);
                                 monitorDataLine.GridType = benMAPGrid;
-                                DataSourceCommonClass.CreateAQGFromBenMAPLine(monitorDataLine, batchMonitorDirect.Filename);//DataSourceCommonClass.LoadAQGFile(txtExistingAQG.Text);
-                            
+                                DataSourceCommonClass.CreateAQGFromBenMAPLine(monitorDataLine, batchMonitorDirect.Filename);
                             }
                         }
-                        catch(Exception ex)
+                        catch (Exception ex)
                         {
-                            //---------写错误日志
                             WriteBatchLogFile("Wrong AQG :" + ex.Message, strFile + ".log");
                             for (int j = 1; j < batchBase.BatchText.Count; j++)
                             {
@@ -423,18 +369,14 @@ namespace BenMAP
                     }
                     else if (batchBase is BatchCFG)
                     {
-                        //--------RunCFG--首先判断AQG是否符合，如果不符合则返回错误日志--符合继续----
                         try
                         {
                             BatchCFG batchCFG = batchBase as BatchCFG;
                             CommonClass.MainSetup = getSetupFromName(batchBase.ActiveSetup);
-                            //BenMAPPollutant benMAPPollutant = getPollutantFromName(batchCFG.Pollutant);
-                            //BenMAPGrid benMAPGrid = getGridFromName(batchCFG.GridType);
                             string err = "";
-                            BaseControlCRSelectFunction baseControlCRSelectFunction = Configuration.ConfigurationCommonClass.loadCFGFile(batchCFG.CFGFilename,ref err);
+                            BaseControlCRSelectFunction baseControlCRSelectFunction = Configuration.ConfigurationCommonClass.loadCFGFile(batchCFG.CFGFilename, ref err);
                             if (baseControlCRSelectFunction == null)
                             {
-                                //------写错误日志
                                 WriteBatchLogFile("Wrong CFG (Wrong cfgx file) :" + err, strFile + ".log");
                                 for (int j = 1; j < batchBase.BatchText.Count; j++)
                                 {
@@ -442,21 +384,20 @@ namespace BenMAP
                                 }
                                 continue;
                             }
-                            BenMAPLine benMAPLineBase = null,benMAPLineControl=null;
+                            BenMAPLine benMAPLineBase = null, benMAPLineControl = null;
                             string errB = "";
                             string errC = "";
                             if (batchCFG.BaselineAQG.Trim() != "")
                             {
-                                benMAPLineBase=DataSourceCommonClass.LoadAQGFile(batchCFG.BaselineAQG,ref errB);
+                                benMAPLineBase = DataSourceCommonClass.LoadAQGFile(batchCFG.BaselineAQG, ref errB);
                             }
                             if (batchCFG.ControlAQG.Trim() != "")
                             {
-                                benMAPLineControl = DataSourceCommonClass.LoadAQGFile(batchCFG.ControlAQG,ref errC); 
+                                benMAPLineControl = DataSourceCommonClass.LoadAQGFile(batchCFG.ControlAQG, ref errC);
                             }
                             if (benMAPLineBase != null && benMAPLineBase.Pollutant.PollutantID != baseControlCRSelectFunction.BaseControlGroup.First().Pollutant.PollutantID)
-                            { 
-                                //------写错误日志
-                                WriteBatchLogFile("Wrong CFG (Wrong base file) :"+errB, strFile + ".log");
+                            {
+                                WriteBatchLogFile("Wrong CFG (Wrong base file) :" + errB, strFile + ".log");
                                 for (int j = 1; j < batchBase.BatchText.Count; j++)
                                 {
                                     WriteBatchLogFile("            " + batchBase.BatchText[j].ToString(), strFile + ".log");
@@ -465,17 +406,15 @@ namespace BenMAP
                             }
                             if (benMAPLineControl != null && benMAPLineControl.Pollutant.PollutantID != baseControlCRSelectFunction.BaseControlGroup.First().Pollutant.PollutantID)
                             {
-                                //------写错误日志
-                                WriteBatchLogFile("Wrong CFG (Wrong control file):"+errC, strFile + ".log");
+                                WriteBatchLogFile("Wrong CFG (Wrong control file):" + errC, strFile + ".log");
                                 for (int j = 1; j < batchBase.BatchText.Count; j++)
                                 {
                                     WriteBatchLogFile("            " + batchBase.BatchText[j].ToString(), strFile + ".log");
                                 }
                                 continue;
                             }
-                            if(benMAPLineBase!=null && benMAPLineControl!=null && benMAPLineBase.GridType.GridDefinitionID!= benMAPLineControl.GridType.GridDefinitionID)
+                            if (benMAPLineBase != null && benMAPLineControl != null && benMAPLineBase.GridType.GridDefinitionID != benMAPLineControl.GridType.GridDefinitionID)
                             {
-                                //------写错误日志
                                 WriteBatchLogFile("Wrong CFG (Wrong base or control file) :", strFile + ".log");
                                 for (int j = 1; j < batchBase.BatchText.Count; j++)
                                 {
@@ -483,17 +422,18 @@ namespace BenMAP
                                 }
                                 continue;
                             }
-                            if (benMAPLineBase != null && benMAPLineControl!=null)
+                            if (benMAPLineBase != null && benMAPLineControl != null)
                             {
                                 baseControlCRSelectFunction.BaseControlGroup.First().Base = benMAPLineBase;
                                 baseControlCRSelectFunction.BaseControlGroup.First().Control = benMAPLineControl;
+                                baseControlCRSelectFunction.BaseControlGroup.First().DeltaQ = null;
                                 baseControlCRSelectFunction.BaseControlGroup.First().GridType = benMAPLineBase.GridType;
                             }
                             if (batchCFG.Year != -1) baseControlCRSelectFunction.BenMAPPopulation.Year = batchCFG.Year;
-                            if (batchCFG.LatinHypercubePoints != -1 && (batchCFG.LatinHypercubePoints==10 || batchCFG.LatinHypercubePoints==20 ||batchCFG.LatinHypercubePoints==100))
+                            if (batchCFG.LatinHypercubePoints != -1 && (batchCFG.LatinHypercubePoints == 10 || batchCFG.LatinHypercubePoints == 20 || batchCFG.LatinHypercubePoints == 100))
                             {
                                 baseControlCRSelectFunction.CRLatinHypercubePoints = batchCFG.LatinHypercubePoints;
-                                
+
                             }
                             else if (batchCFG.LatinHypercubePoints == 0)
                             {
@@ -513,19 +453,15 @@ namespace BenMAP
                                 baseControlCRSelectFunction.CRThreshold = batchCFG.Threshold;
                             if (batchCFG.Seeds != -1)
                                 baseControlCRSelectFunction.CRSeeds = batchCFG.Seeds;
-                            //------------可能要加入对Seed的考虑
                             CommonClass.GBenMAPGrid = baseControlCRSelectFunction.BaseControlGroup.First().Base.GridType;
                             CommonClass.LstBaseControlGroup = baseControlCRSelectFunction.BaseControlGroup;
                             CommonClass.BaseControlCRSelectFunction = baseControlCRSelectFunction;
-                            //-------------RunCFG--------------
                             HealthImpactFunctions healthImapctFuntion = new HealthImpactFunctions();
                             healthImapctFuntion._filePath = batchCFG.ResultsFilename;
                             healthImapctFuntion.btnRun_Click(null, null);
-                            //-----
                         }
                         catch (Exception ex)
                         {
-                            //---------写错误日志
                             WriteBatchLogFile("Wrong CFG :" + ex.Message, strFile + ".log");
                             for (int j = 1; j < batchBase.BatchText.Count; j++)
                             {
@@ -547,12 +483,10 @@ namespace BenMAP
                                 }
                                 continue;
                             }
-                            //-----------首先可以LoadAPV--
                             string errAPV = "";
                             ValuationMethodPoolingAndAggregation valuationMethodPoolingAndAggregation = APVX.APVCommonClass.loadAPVRFile(batchAPV.APVFilename, ref errAPV);
                             if (valuationMethodPoolingAndAggregation == null)
                             {
-                                //---------写错误日志
                                 WriteBatchLogFile("Wrong APV (Wrong apvx file) :" + errAPV, strFile + ".log");
                                 for (int j = 1; j < batchBase.BatchText.Count; j++)
                                 {
@@ -560,23 +494,22 @@ namespace BenMAP
                                 }
                                 continue;
                             }
-                            //----------然后LoadCFGR-----如果CFGR有参数则使用CFGR
                             string err = "";
-                            if (batchAPV.CFGRFilename!=null && batchAPV.CFGRFilename.Trim() != "")
+                            if (batchAPV.CFGRFilename != null && batchAPV.CFGRFilename.Trim() != "")
                             {
                                 valuationMethodPoolingAndAggregation.BaseControlCRSelectFunctionCalculateValue =
-                                    Configuration.ConfigurationCommonClass.LoadCFGRFile(batchAPV.CFGRFilename,ref err);
-                                
+                                    Configuration.ConfigurationCommonClass.LoadCFGRFile(batchAPV.CFGRFilename, ref err);
+
                                 valuationMethodPoolingAndAggregation.CFGRPath = batchAPV.CFGRFilename;
                             }
                             else
                             {
                                 valuationMethodPoolingAndAggregation.BaseControlCRSelectFunctionCalculateValue =
-                                    Configuration.ConfigurationCommonClass.LoadCFGRFile(valuationMethodPoolingAndAggregation.CFGRPath,ref err);
+                                    Configuration.ConfigurationCommonClass.LoadCFGRFile(valuationMethodPoolingAndAggregation.CFGRPath, ref err);
                             }
                             CommonClass.BaseControlCRSelectFunctionCalculateValue = valuationMethodPoolingAndAggregation.BaseControlCRSelectFunctionCalculateValue;
                             if (valuationMethodPoolingAndAggregation.BaseControlCRSelectFunctionCalculateValue == null)
-                            {                            //---------写错误日志
+                            {
                                 WriteBatchLogFile("Wrong APV (Wrong cfgrx file) :" + err, strFile + ".log");
                                 for (int j = 1; j < batchBase.BatchText.Count; j++)
                                 {
@@ -585,23 +518,21 @@ namespace BenMAP
                                 continue;
                             }
                             CommonClass.CRSeeds = valuationMethodPoolingAndAggregation.BaseControlCRSelectFunctionCalculateValue.CRSeeds;
-                            //---------替换参数
                             if (valuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance == null)
                                 valuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance = new IncidencePoolingAndAggregationAdvance();
-                            if (batchAPV.IncidenceAggregation!=null && batchAPV.IncidenceAggregation.Trim() != "")
+                            if (batchAPV.IncidenceAggregation != null && batchAPV.IncidenceAggregation.Trim() != "")
                             {
                                 valuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance.IncidenceAggregation = getGridFromName(batchAPV.IncidenceAggregation);
                             }
-                            if (batchAPV.ValuationAggregation!=null && batchAPV.ValuationAggregation.Trim() != "")
+                            if (batchAPV.ValuationAggregation != null && batchAPV.ValuationAggregation.Trim() != "")
                             {
                                 valuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance.ValuationAggregation = getGridFromName(batchAPV.ValuationAggregation);
                             }
-                            if (batchAPV.DollarYear!=null && batchAPV.DollarYear != "")
+                            if (batchAPV.DollarYear != null && batchAPV.DollarYear != "")
                                 valuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance.IncomeGrowthYear = Convert.ToInt32(batchAPV.DollarYear);
                             if (batchAPV.RandomSeed != -1)
                                 valuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance.RandomSeed = batchAPV.RandomSeed.ToString();
-                            //---------Run--------------
-                             
+
                             CommonClass.ValuationMethodPoolingAndAggregation = valuationMethodPoolingAndAggregation;
                             CommonClass.IncidencePoolingAndAggregationAdvance = valuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance;
                             SelectValuationMethods selectValuationMethods = new SelectValuationMethods();
@@ -611,7 +542,6 @@ namespace BenMAP
                         }
                         catch (Exception ex)
                         {
-                            //---------写错误日志
                             WriteBatchLogFile("Wrong APV :" + ex.Message, strFile + ".log");
                             for (int j = 1; j < batchBase.BatchText.Count; j++)
                             {
@@ -643,10 +573,9 @@ namespace BenMAP
                                     case ".aqgx":
                                         BenMAPLine aqgBenMAPLine = new BenMAPLine();
                                         string err = "";
-                                        aqgBenMAPLine = DataSourceCommonClass.LoadAQGFile(filePath,ref err);
+                                        aqgBenMAPLine = DataSourceCommonClass.LoadAQGFile(filePath, ref err);
                                         if (aqgBenMAPLine == null)
                                         {
-                                            //------写错误日志
                                             WriteBatchLogFile("Wrong Report (Wrong aqgx file) :" + err, strFile + ".log");
                                             for (int j = 1; j < batchBase.BatchText.Count; j++)
                                             {
@@ -656,15 +585,14 @@ namespace BenMAP
                                         }
                                         TreeNode aqgTreeNode = new TreeNode();
                                         aqgTreeNode = AuditTrailReportCommonClass.getTreeNodeFromBenMAPLine(aqgBenMAPLine);
-                                        exportToTxt(aqgTreeNode,batchReportAuditTrail.ReportFile);
+                                        exportToTxt(aqgTreeNode, batchReportAuditTrail.ReportFile);
                                         break;
                                     case ".cfgx":
                                         BaseControlCRSelectFunction cfgFunction = new BaseControlCRSelectFunction();
                                         err = "";
-                                        cfgFunction = Configuration.ConfigurationCommonClass.loadCFGFile(filePath,ref err);
+                                        cfgFunction = Configuration.ConfigurationCommonClass.loadCFGFile(filePath, ref err);
                                         if (cfgFunction == null)
                                         {
-                                            //------写错误日志
                                             WriteBatchLogFile("Wrong Report (Wrong cfgx file) :" + err, strFile + ".log");
                                             for (int j = 1; j < batchBase.BatchText.Count; j++)
                                             {
@@ -679,9 +607,9 @@ namespace BenMAP
                                     case ".cfgrx":
                                         BaseControlCRSelectFunctionCalculateValue cfgrFunctionCV = new BaseControlCRSelectFunctionCalculateValue();
                                         err = "";
-                                        cfgrFunctionCV = Configuration.ConfigurationCommonClass.LoadCFGRFile(filePath,ref err);
+                                        cfgrFunctionCV = Configuration.ConfigurationCommonClass.LoadCFGRFile(filePath, ref err);
                                         if (cfgrFunctionCV == null)
-                                        {   //------写错误日志
+                                        {
                                             WriteBatchLogFile("Wrong Report (Wrong cfgrx file) :" + err, strFile + ".log");
                                             for (int j = 1; j < batchBase.BatchText.Count; j++)
                                             {
@@ -693,13 +621,13 @@ namespace BenMAP
                                         cfgrTreeNode = AuditTrailReportCommonClass.getTreeNodeFromBaseControlCRSelectFunctionCalculateValue(cfgrFunctionCV);
                                         exportToTxt(cfgrTreeNode, batchReportAuditTrail.ReportFile);
                                         break;
-                                    case ".apvx":                                        
+                                    case ".apvx":
                                     case ".apvrx":
                                         err = "";
                                         ValuationMethodPoolingAndAggregation apvrVMPA = new ValuationMethodPoolingAndAggregation();
-                                        apvrVMPA = APVX.APVCommonClass.loadAPVRFile(filePath,ref err);
+                                        apvrVMPA = APVX.APVCommonClass.loadAPVRFile(filePath, ref err);
                                         if (apvrVMPA == null)
-                                        {   //------写错误日志
+                                        {
                                             WriteBatchLogFile("Wrong Report (Wrong apvx file) :" + err, strFile + ".log");
                                             for (int j = 1; j < batchBase.BatchText.Count; j++)
                                             {
@@ -715,7 +643,6 @@ namespace BenMAP
                             }
                             catch (Exception ex)
                             {
-                                //---------写错误日志
                                 WriteBatchLogFile("Wrong Report :" + ex.Message, strFile + ".log");
                                 for (int j = 1; j < batchBase.BatchText.Count; j++)
                                 {
@@ -730,16 +657,10 @@ namespace BenMAP
                                 BenMAP benMAP = new BenMAP("");
                                 BatchReportCFGR batchReportCFGR = batchBase as BatchReportCFGR;
                                 benMAP._outputFileName = batchReportCFGR.ReportFile;
-                                //--GridFields <comma separated field names>Column and Row
-                                //CustomFields <comma separated field names>C-R Function identifiers, in this case
-                                //ResultFields <comma separated field names>
-                                //-Grouping <grouping method>
-                                //--DecimalDigits <integer>
                                 string err = "";
-                                BaseControlCRSelectFunctionCalculateValue bControlCR = Configuration.ConfigurationCommonClass.LoadCFGRFile(batchReportCFGR.InputFile,ref err);
+                                BaseControlCRSelectFunctionCalculateValue bControlCR = Configuration.ConfigurationCommonClass.LoadCFGRFile(batchReportCFGR.InputFile, ref err);
                                 if (bControlCR == null)
                                 {
-                                    //---------写错误日志
                                     WriteBatchLogFile("Wrong Report (Wrong cfgrx file) :" + err, strFile + ".log");
                                     for (int j = 1; j < batchBase.BatchText.Count; j++)
                                     {
@@ -747,7 +668,7 @@ namespace BenMAP
                                     }
                                     continue;
                                 }
-                                if (batchReportCFGR.GridFields!=null && batchReportCFGR.GridFields.Trim() != "")
+                                if (batchReportCFGR.GridFields != null && batchReportCFGR.GridFields.Trim() != "")
                                 {
                                     string[] strTemp = batchReportCFGR.GridFields.ToLower().Split(new char[] { ',' });
                                     if (benMAP.cflstColumnRow == null)
@@ -755,7 +676,7 @@ namespace BenMAP
                                         benMAP.cflstColumnRow = new List<FieldCheck>();
                                         benMAP.cflstColumnRow.Add(new FieldCheck() { FieldName = "Column", isChecked = false });
                                         benMAP.cflstColumnRow.Add(new FieldCheck() { FieldName = "Row", isChecked = false });
-                                    }    
+                                    }
                                     if (strTemp.Contains("column"))
                                     {
                                         benMAP.cflstColumnRow.Where(p => p.FieldName == "Column").First().isChecked = true;
@@ -763,7 +684,7 @@ namespace BenMAP
                                     if (strTemp.Contains("row"))
                                     {
                                         benMAP.cflstColumnRow.Where(p => p.FieldName == "Row").First().isChecked = true;
-                                    } 
+                                    }
                                 }
                                 if (batchReportCFGR.CustomFields != null && batchReportCFGR.CustomFields.Trim() != "")
                                 {
@@ -806,7 +727,7 @@ namespace BenMAP
                                     }
                                     if (strTemp.Contains("dataset"))
                                     {
-                                        benMAP.cflstHealth.Where(p => p.FieldName == "DataSet").First().isChecked = true;   
+                                        benMAP.cflstHealth.Where(p => p.FieldName == "DataSet").First().isChecked = true;
                                     }
                                     if (strTemp.Contains("endpoint group") || strTemp.Contains("endpointgroup"))
                                     {
@@ -940,7 +861,6 @@ namespace BenMAP
                                     {
                                         benMAP.cflstResult = new List<FieldCheck>();
                                         benMAP.cflstResult.Add(new FieldCheck() { FieldName = "Point Estimate", isChecked = false });
-                                        //lstResult.Add(new FieldCheck() { FieldName = "Incidence", isChecked = true });
                                         benMAP.cflstResult.Add(new FieldCheck() { FieldName = "Population", isChecked = false });
                                         benMAP.cflstResult.Add(new FieldCheck() { FieldName = "Delta", isChecked = false });
                                         benMAP.cflstResult.Add(new FieldCheck() { FieldName = "Mean", isChecked = false });
@@ -997,7 +917,6 @@ namespace BenMAP
                             }
                             catch (Exception ex)
                             {
-                                //---------写错误日志
                                 WriteBatchLogFile("Wrong ReportCFGR :" + ex.Message, strFile + ".log");
                                 for (int j = 1; j < batchBase.BatchText.Count; j++)
                                 {
@@ -1012,21 +931,13 @@ namespace BenMAP
                             {
                                 BenMAP benMAP = new BenMAP("");
                                 BatchReportAPVR batchReportAPVR = batchBase as BatchReportAPVR;
-                                /*
-                                 * Specifies the result type for which a report should be created. 
-                                 * Supported result types are:  IncidenceResults, AggregatedIncidence, 
-                                 * PooledIncidence,Valuation, AggregatedValuation, PooledValuation,
-                                 * QALYValuation, AggregatedQALYValuation and PooledQALYValuation.
-                                 */
 
-                                //--IncidenceResults PooledIncidence PooledValuation
-                                //----首先Load---
+
                                 ValuationMethodPoolingAndAggregation apvrVMPA = new ValuationMethodPoolingAndAggregation();
                                 string err = "";
-                                apvrVMPA = APVX.APVCommonClass.loadAPVRFile(batchReportAPVR.InputFile,ref err);
+                                apvrVMPA = APVX.APVCommonClass.loadAPVRFile(batchReportAPVR.InputFile, ref err);
                                 if (apvrVMPA == null)
                                 {
-                                    //---------写错误日志
                                     WriteBatchLogFile("Wrong Report (Wrong apvrx file) :" + err, strFile + ".log");
                                     for (int j = 1; j < batchBase.BatchText.Count; j++)
                                     {
@@ -1054,7 +965,6 @@ namespace BenMAP
                                 }
 
                                 CommonClass.MainSetup = CommonClass.getBenMAPSetupFromID(CommonClass.BaseControlCRSelectFunction.BaseControlGroup.First().GridType.SetupID);
-                                //--------------首先Aggregation--------------
                                 if (CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance != null && CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance.ValuationAggregation != null)
                                 {
                                     CommonClass.lstCRResultAggregation = new List<CRSelectFunctionCalculateValue>();
@@ -1095,7 +1005,6 @@ namespace BenMAP
                                         }
                                     }
 
-                                    //-----------------------首先得到Pooling--------------------------------------
                                     if (bHavePooling == false)
                                     {
                                         List<AllSelectCRFunction> lstCR = new List<AllSelectCRFunction>();
@@ -1105,21 +1014,18 @@ namespace BenMAP
 
                                         }
                                         lstCR.Insert(0, vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion.First());
-                                        if (lstCR.Count == 1 && vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion.First().CRID < 9999 && vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion.First().CRID > 0)//.PoolingMethod == "")
-                                        { }
+                                        if (lstCR.Count == 1 && vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion.First().CRID < 9999 && vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion.First().CRID > 0) { }
                                         else
                                         {
                                             APVX.APVCommonClass.getPoolingMethodCRFromAllSelectCRFunction(true, ref vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion, ref vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion, vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion.Where(pa => pa.NodeType != 100).Max(pa => pa.NodeType), vb.IncidencePoolingAndAggregation.lstColumns);
                                         }
                                     }
                                 }
-                                //---------------modify by xiejp 20130812 add custom field and result field
                                 switch (batchReportAPVR.ResultType)
                                 {
                                     case "IncidenceResults":
                                     case "PooledIncidence":
-                                        #region Incidence custom result
-                                        if (batchReportAPVR.GridFields!=null && batchReportAPVR.GridFields.Trim() != "")
+                                        if (batchReportAPVR.GridFields != null && batchReportAPVR.GridFields.Trim() != "")
                                         {
                                             string[] strTemp = batchReportAPVR.GridFields.ToLower().Split(new char[] { ',' });
                                             if (benMAP.IncidencelstColumnRow == null)
@@ -1137,7 +1043,7 @@ namespace BenMAP
                                                 benMAP.IncidencelstColumnRow.Where(p => p.FieldName == "Row").First().isChecked = true;
                                             }
                                         }
-                                        if (batchReportAPVR.CustomFields!=null && batchReportAPVR.CustomFields.Trim() != "")
+                                        if (batchReportAPVR.CustomFields != null && batchReportAPVR.CustomFields.Trim() != "")
                                         {
                                             string[] strTemp = batchReportAPVR.CustomFields.ToLower().Split(new char[] { ',' });
                                             if (benMAP.IncidencelstHealth == null)
@@ -1305,14 +1211,13 @@ namespace BenMAP
                                                 benMAP.IncidencelstHealth.Where(p => p.FieldName == "NameC").First().isChecked = true;
                                             }
                                         }
-                                        if (batchReportAPVR.ResultFields!=null && batchReportAPVR.ResultFields.Trim() != "")
+                                        if (batchReportAPVR.ResultFields != null && batchReportAPVR.ResultFields.Trim() != "")
                                         {
                                             string[] strTemp = batchReportAPVR.ResultFields.ToLower().Split(new char[] { ',' });
                                             if (benMAP.IncidencelstResult == null)
                                             {
                                                 benMAP.IncidencelstResult = new List<FieldCheck>();
                                                 benMAP.IncidencelstResult.Add(new FieldCheck() { FieldName = "Point Estimate", isChecked = false });
-                                                //lstResult.Add(new FieldCheck() { FieldName = "Incidence", isChecked = true });
                                                 benMAP.IncidencelstResult.Add(new FieldCheck() { FieldName = "Population", isChecked = false });
                                                 benMAP.IncidencelstResult.Add(new FieldCheck() { FieldName = "Delta", isChecked = false });
                                                 benMAP.IncidencelstResult.Add(new FieldCheck() { FieldName = "Mean", isChecked = false });
@@ -1364,10 +1269,8 @@ namespace BenMAP
                                                 benMAP.IncidencelstResult.Where(p => p.FieldName == "Percentiles").First().isChecked = true;
                                             }
                                         }
-                                        #endregion
                                         break;
                                     case "PooledValuation":
-                                        #region apv custom result
                                         if (batchReportAPVR.GridFields != null && batchReportAPVR.GridFields.Trim() != "")
                                         {
                                             string[] strTemp = batchReportAPVR.GridFields.ToLower().Split(new char[] { ',' });
@@ -1392,7 +1295,7 @@ namespace BenMAP
                                             if (benMAP.apvlstHealth == null)
                                             {
                                                 benMAP.apvlstHealth = new List<FieldCheck>();
-                                                
+
                                                 benMAP.apvlstHealth.Add(new FieldCheck() { FieldName = "Name", isChecked = false });
                                                 benMAP.apvlstHealth.Add(new FieldCheck() { FieldName = "Dataset", isChecked = false });
                                                 benMAP.apvlstHealth.Add(new FieldCheck() { FieldName = "Endpoint Group", isChecked = false });
@@ -1406,7 +1309,6 @@ namespace BenMAP
                                                 benMAP.apvlstHealth.Add(new FieldCheck() { FieldName = "Location", isChecked = false });
                                                 benMAP.apvlstHealth.Add(new FieldCheck() { FieldName = "Other Pollutants", isChecked = false });
                                                 benMAP.apvlstHealth.Add(new FieldCheck() { FieldName = "Qualifier", isChecked = false });
-                                                //apvlstHealth.Add(new FieldCheck(){FieldName="Reference", isChecked=false});
                                                 benMAP.apvlstHealth.Add(new FieldCheck() { FieldName = "Race", isChecked = false });
                                                 benMAP.apvlstHealth.Add(new FieldCheck() { FieldName = "Ethnicity", isChecked = false });
                                                 benMAP.apvlstHealth.Add(new FieldCheck() { FieldName = "Gender", isChecked = false });
@@ -1452,7 +1354,7 @@ namespace BenMAP
                                             {
                                                 benMAP.apvlstHealth.Where(p => p.FieldName == "Author").First().isChecked = true;
                                             }
-                                             
+
                                             if (strTemp.Contains("year"))
                                             {
                                                 benMAP.apvlstHealth.Where(p => p.FieldName == "Year").First().isChecked = true;
@@ -1469,10 +1371,6 @@ namespace BenMAP
                                             {
                                                 benMAP.apvlstHealth.Where(p => p.FieldName == "Qualifier").First().isChecked = true;
                                             }
-                                            //if (strTemp.Contains("Reference"))
-                                            //{
-                                            //    benMAP.apvlstHealth.Where(p => p.FieldName == "Reference").First().isChecked = true;
-                                            //}
                                             if (strTemp.Contains("race"))
                                             {
                                                 benMAP.apvlstHealth.Where(p => p.FieldName == "Race").First().isChecked = true;
@@ -1501,8 +1399,8 @@ namespace BenMAP
                                             {
                                                 benMAP.apvlstHealth.Where(p => p.FieldName == "Version").First().isChecked = true;
                                             }
-                                            
-                                             
+
+
                                         }
                                         if (batchReportAPVR.ResultFields != null && batchReportAPVR.ResultFields.Trim() != "")
                                         {
@@ -1511,12 +1409,7 @@ namespace BenMAP
                                             {
                                                 benMAP.apvlstResult = new List<FieldCheck>();
                                                 benMAP.apvlstResult.Add(new FieldCheck() { FieldName = "Point Estimate", isChecked = false });
-                                                //lstResult.Add(new FieldCheck() { FieldName = "Incidence", isChecked = true });
-                                                //benMAP.apvlstResult.Add(new FieldCheck() { FieldName = "Population", isChecked = true });
-                                                //benMAP.apvlstResult.Add(new FieldCheck() { FieldName = "Delta", isChecked = true });
                                                 benMAP.apvlstResult.Add(new FieldCheck() { FieldName = "Mean", isChecked = false });
-                                                //benMAP.apvlstResult.Add(new FieldCheck() { FieldName = "Baseline", isChecked = true });
-                                                //benMAP.apvlstResult.Add(new FieldCheck() { FieldName = "Percent of Baseline", isChecked = true });
                                                 benMAP.apvlstResult.Add(new FieldCheck() { FieldName = "Standard Deviation", isChecked = false });
                                                 benMAP.apvlstResult.Add(new FieldCheck() { FieldName = "Variance", isChecked = false });
                                                 benMAP.apvlstResult.Add(new FieldCheck() { FieldName = "Percentiles", isChecked = false });
@@ -1526,30 +1419,10 @@ namespace BenMAP
                                             {
                                                 benMAP.apvlstResult.Where(p => p.FieldName == "Point Estimate").First().isChecked = true;
                                             }
-                                            //if (strTemp.Contains("Incidence"))
-                                            //{
-                                            //    benMAP.apvlstResult.Where(p => p.FieldName == "Incidence").First().isChecked = true;
-                                            //}
-                                            //if (strTemp.Contains("Population"))
-                                            //{
-                                            //    benMAP.apvlstResult.Where(p => p.FieldName == "Population").First().isChecked = true;
-                                            //}
-                                            //if (strTemp.Contains("Delta"))
-                                            //{
-                                            //    benMAP.apvlstResult.Where(p => p.FieldName == "Delta").First().isChecked = true;
-                                            //}
                                             if (strTemp.Contains("mean"))
                                             {
                                                 benMAP.apvlstResult.Where(p => p.FieldName == "Mean").First().isChecked = true;
                                             }
-                                            //if (strTemp.Contains("Baseline"))
-                                            //{
-                                            //    benMAP.apvlstResult.Where(p => p.FieldName == "Baseline").First().isChecked = true;
-                                            //}
-                                            //if (strTemp.Contains("Percent of Baseline"))
-                                            //{
-                                            //    benMAP.apvlstResult.Where(p => p.FieldName == "Percent of Baseline").First().isChecked = true;
-                                            //}
                                             if (strTemp.Contains("standarddeviation") || strTemp.Contains("standard deviation"))
                                             {
                                                 benMAP.apvlstResult.Where(p => p.FieldName == "Standard Deviation").First().isChecked = true;
@@ -1563,19 +1436,18 @@ namespace BenMAP
                                                 benMAP.apvlstResult.Where(p => p.FieldName == "Percentiles").First().isChecked = true;
                                             }
                                         }
-                                        #endregion
                                         break;
                                 }
 
-                               
-                               
-                                //然后按照类型导出csv
+
+
                                 benMAP._outputFileName = batchReportAPVR.ReportFile;
                                 switch (batchReportAPVR.ResultType)
                                 {
                                     case "IncidenceResults":
 
                                         benMAP._tableObject = apvrVMPA.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue;
+                                        benMAP.tabCtlReport.SelectedIndex = 1;
                                         benMAP.btnTableOutput_Click(null, null);
                                         break;
                                     case "PooledIncidence":
@@ -1587,7 +1459,6 @@ namespace BenMAP
 
                                             if (cr.CRSelectFunctionCalculateValue == null || cr.CRSelectFunctionCalculateValue.CRCalculateValues == null || cr.CRSelectFunctionCalculateValue.CRCalculateValues.Count == 0)
                                             {
-                                                //WaitClose();
                                                 continue;
                                             }
                                             else
@@ -1597,7 +1468,7 @@ namespace BenMAP
 
                                         }
                                         benMAP._tableObject = lstCR;
-
+                                        benMAP.tabCtlReport.SelectedIndex = 1;
                                         benMAP.btnTableOutput_Click(null, null);
                                         break;
                                     case "PooledValuation":
@@ -1607,11 +1478,8 @@ namespace BenMAP
                                         {
                                             AllSelectValuationMethod allSelectValuationMethod = keyValue.Key;
 
-                                            //----------find Pooling Window first! ----
                                             AllSelectValuationMethodAndValue allSelectValuationMethodAndValue = null;
                                             if (allSelectValuationMethod.ID < 0) continue;
-                                            //int iMaxID = CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase.Max(p => p.LstAllSelectValuationMethod.Max(a => a.ID)) + 1;
-                                            //int iPoolingWindow = allSelectValuationMethod.ID / iMaxID;
 
                                             ValuationMethodPoolingAndAggregationBase vb = CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase.Where(p => p.IncidencePoolingAndAggregation.PoolingName == keyValue.Value).First();
 
@@ -1628,13 +1496,13 @@ namespace BenMAP
                                             {
                                             }
                                         }
-                                      
+
                                         benMAP._tableObject = lstallSelectValuationMethodAndValue;
 
                                         benMAP.btnTableOutput_Click(null, null);
                                         break;
                                     default:
-                                        WriteBatchLogFile("Wrong ReportAPVR (ResultType):" , strFile + ".log");
+                                        WriteBatchLogFile("Wrong ReportAPVR (ResultType):", strFile + ".log");
                                         for (int j = 1; j < batchBase.BatchText.Count; j++)
                                         {
                                             WriteBatchLogFile("            " + batchBase.BatchText[j].ToString(), strFile + ".log");
@@ -1645,7 +1513,6 @@ namespace BenMAP
                             }
                             catch (Exception ex)
                             {
-                                //---------写错误日志
                                 WriteBatchLogFile("Wrong ReportAPVR :" + ex.Message, strFile + ".log");
                                 for (int j = 1; j < batchBase.BatchText.Count; j++)
                                 {
@@ -1664,19 +1531,13 @@ namespace BenMAP
             return true;
         }
         public static StreamWriter sw;
-        /// <summary>
-        /// 输出AuditTrailReport Text
-        /// </summary>
-        /// <param name="tv"></param>
-        /// <param name="filename"></param>
-        /// <returns></returns>
         public static bool exportToTxt(TreeNode tv, string filename)
         {
             try
             {
                 FileStream fs = new FileStream(filename, FileMode.Create);
-                
-                sw = new StreamWriter(fs,Encoding.UTF8);
+
+                sw = new StreamWriter(fs, Encoding.UTF8);
                 sw.WriteLine(tv.Text);
                 foreach (TreeNode node in tv.Nodes)
                 {
@@ -1693,18 +1554,11 @@ namespace BenMAP
                 return false;
             }
         }
-        /// <summary>
-        /// 保存node到文本
-        /// </summary>
-        /// <param name="tnc"></param>
         private static void saveNode(TreeNodeCollection tnc)
         {
-             
+
             foreach (TreeNode node in tnc)
             {
-                //If we have child nodes, we'll write 
-                //a parent node, then iterrate through
-                //the children
                 if (node.Nodes.Count > 0)
                 {
                     string txtWithoutSpace = node.Text;
@@ -1717,15 +1571,14 @@ namespace BenMAP
                     saveNode(node.Nodes);
                     sw.WriteLine("</" + txtWithoutSpace + ">");
                 }
-                else //No child nodes, so we just write the text
-                    sw.WriteLine(node.Text);
+                else sw.WriteLine(node.Text);
             }
         }
         public static BenMAPSetup getSetupFromName(string strName)
         {
             try
             {
-                string commandText =string.Format( "select SetupID,SetupName from Setups order by SetupID");
+                string commandText = string.Format("select SetupID,SetupName from Setups order by SetupID");
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 System.Data.DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
                 foreach (DataRow dr in ds.Tables[0].Rows)
@@ -1750,7 +1603,7 @@ namespace BenMAP
         {
             try
             {
-                string commandText = string.Format("select PollutantName,ObservationType,PollutantID from Pollutants where SetupID={0} and PollutantName='{1}'", CommonClass.MainSetup.SetupID,strName);
+                string commandText = string.Format("select PollutantName,ObservationType,PollutantID from Pollutants where SetupID={0} and PollutantName='{1}'", CommonClass.MainSetup.SetupID, strName);
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 System.Data.DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
                 DataRow dr = ds.Tables[0].Rows[0];
@@ -1783,7 +1636,7 @@ namespace BenMAP
                 int iGrid = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
                 BenMAPGrid benMAPGrid = Grid.GridCommon.getBenMAPGridFromID(iGrid);
                 return benMAPGrid;
-              
+
             }
             catch
             { }
@@ -1793,14 +1646,11 @@ namespace BenMAP
         {
             try
             {
-                //-------------------------------
-                //--判断文件是否存在-------------
                 if (!File.Exists(strFile)) return null;
                 StreamReader objReader = new StreamReader(strFile);
                 string sLine = "";
                 ArrayList LineList = new ArrayList();
-                int iVARIABLES = -1, iCOMMANDS = -1,iSetup=-1,iSetupEnd=-1; ;//VARIABLES的起始位置
-                Dictionary<string, string> dicVariables = new Dictionary<string, string>();
+                int iVARIABLES = -1, iCOMMANDS = -1, iSetup = -1, iSetupEnd = -1; ; Dictionary<string, string> dicVariables = new Dictionary<string, string>();
                 string[] strTemp = null;
                 while (sLine != null)
                 {
@@ -1810,7 +1660,6 @@ namespace BenMAP
                 }
                 objReader.Close();
                 BatchBase batchBase = new BatchBase();
-                //---------VARIABLES-------首先是------
 
                 for (int i = 0; i < LineList.Count; i++)
                 {
@@ -1833,7 +1682,7 @@ namespace BenMAP
                             strTemp = LineList[i].ToString().Trim().Split(new char[] { '%' });
                             if (strTemp.Count() == 3 && !dicVariables.ContainsKey(strTemp[1]))
                             {
-                                dicVariables.Add("%"+strTemp[1]+"%", strTemp[2]);
+                                dicVariables.Add("%" + strTemp[1] + "%", strTemp[2]);
                             }
 
                         }
@@ -1849,7 +1698,6 @@ namespace BenMAP
                     }
                 }
                 if (iCOMMANDS == -1) return null;
-                //---------VARIABLES-------首先是------
 
                 for (int i = iCOMMANDS; i < LineList.Count; i++)
                 {
@@ -1865,7 +1713,7 @@ namespace BenMAP
                     {
                         if (LineList[i].ToString().Trim()[0] != '-')
                         {
-                            iSetupEnd = i-1;
+                            iSetupEnd = i - 1;
                             break;
                         }
                         else
@@ -1876,13 +1724,12 @@ namespace BenMAP
                 for (int i = iSetup; i < iSetupEnd + 1; i++)
                 {
                     if (LineList[i].ToString().Contains("-ActiveSetup"))
-                    { 
-                        batchBase.ActiveSetup=LineList[i].ToString().Replace("-ActiveSetup","").Replace("SETACTIVESETUP","").Trim().Replace("\"","");
+                    {
+                        batchBase.ActiveSetup = LineList[i].ToString().Replace("-ActiveSetup", "").Replace("SETACTIVESETUP", "").Trim().Replace("\"", "");
                     }
                 }
 
-                List<ArrayList> LineListPart = new List<ArrayList>();//分每个List出来
-                int iStart = -1, iEnd = -1;
+                List<ArrayList> LineListPart = new List<ArrayList>(); int iStart = -1, iEnd = -1;
                 for (int i = iCOMMANDS; i < LineList.Count; i++)
                 {
                     switch (LineList[i].ToString().Trim())
@@ -1918,7 +1765,6 @@ namespace BenMAP
                 }
                 if (iStart > -1 && iEnd == -1)
                 {
-                   // LineListPart.Add(LineList.GetRange(iStart, LineList.Count - iStart));
                     ArrayList arrayList = LineList.GetRange(iStart, LineList.Count - iStart);
                     LineListPart.Add(new ArrayList());
                     foreach (string s in arrayList)
@@ -1928,8 +1774,7 @@ namespace BenMAP
                     }
 
                 }
-                //----Clear ##---------
-                
+
                 List<BatchBase> lstBatchBase = new List<BatchBase>();
                 foreach (ArrayList array in LineListPart)
                 {
@@ -1949,7 +1794,6 @@ namespace BenMAP
                             }
                             break;
                         case "CREATE AQG":
-                            //---------得分辨他们是Monitor 还是Model
                             int iMonitorOrModel = 0;
                             BatchAQGBase batchAQGBase = new BatchAQGBase();
                             for (int i = 1; i < array.Count; i++)
@@ -2008,10 +1852,8 @@ namespace BenMAP
                                             batchModelDirect.DSNName = array[i].ToString().Replace("-DSNName", "").Replace("\"", "").Trim();
                                         }
                                     }
-                                    //lstBatchBase.Add(batchModelDirect);
                                     if (!CheckBatch(batchModelDirect))
                                     {
-                                        //---------填写错误日志！------------
                                         WriteBatchLogFile("Wrong AQG :", strFile + ".log");
                                         for (int i = 0; i < array.Count; i++)
                                         {
@@ -2112,15 +1954,13 @@ namespace BenMAP
                                         }
                                         else if (array[i].ToString().Contains("-FixRadius"))
                                         {
-                                            batchMonitorDirect.FixRadius =Convert.ToDouble( array[i].ToString().Replace("-FixRadius", "").Replace("\"", "").Trim());
+                                            batchMonitorDirect.FixRadius = Convert.ToDouble(array[i].ToString().Replace("-FixRadius", "").Replace("\"", "").Trim());
                                         }
                                     }
 
 
-                                    //------first Check it
                                     if (!CheckBatch(batchMonitorDirect))
                                     {
-                                        //---------填写错误日志！------------
                                         WriteBatchLogFile("Wrong AQG :", strFile + ".log");
                                         for (int i = 0; i < array.Count; i++)
                                         {
@@ -2187,7 +2027,6 @@ namespace BenMAP
                                     }
                                     catch
                                     {
-                                        //---------填写错误日志！------------
                                         WriteBatchLogFile("Wrong CFG (Year):", strFile + ".log");
                                         for (int j = 0; j < array.Count; i++)
                                         {
@@ -2204,7 +2043,6 @@ namespace BenMAP
                                     }
                                     catch
                                     {
-                                        //---------填写错误日志！------------
                                         WriteBatchLogFile("Wrong CFG (LatinHypercubePoints):", strFile + ".log");
                                         for (int j = 0; j < array.Count; i++)
                                         {
@@ -2221,7 +2059,6 @@ namespace BenMAP
                                     }
                                     catch
                                     {
-                                        //---------填写错误日志！------------
                                         WriteBatchLogFile("Wrong CFG (Threshold):", strFile + ".log");
                                         for (int j = 0; j < array.Count; i++)
                                         {
@@ -2238,7 +2075,6 @@ namespace BenMAP
                                     }
                                     catch
                                     {
-                                        //---------填写错误日志！------------
                                         WriteBatchLogFile("Wrong CFG (Seed):", strFile + ".log");
                                         for (int j = 0; j < array.Count; i++)
                                         {
@@ -2248,10 +2084,8 @@ namespace BenMAP
                                     }
                                 }
                             }
-                            //------first Check it
                             if (!CheckBatch(batchCFG))
                             {
-                                //---------填写错误日志！------------
                                 WriteBatchLogFile("Wrong CFG :", strFile + ".log");
                                 for (int i = 0; i < array.Count; i++)
                                 {
@@ -2316,7 +2150,6 @@ namespace BenMAP
                                     }
                                     catch
                                     {
-                                        //---------填写错误日志！------------
                                         WriteBatchLogFile("Wrong APV (RandomSeed):", strFile + ".log");
                                         for (int j = 0; j < array.Count; i++)
                                         {
@@ -2333,7 +2166,6 @@ namespace BenMAP
                                     }
                                     catch
                                     {
-                                        //---------填写错误日志！------------
                                         WriteBatchLogFile("Wrong APV (DollarYear):", strFile + ".log");
                                         for (int j = 0; j < array.Count; i++)
                                         {
@@ -2343,10 +2175,8 @@ namespace BenMAP
                                     }
                                 }
                             }
-                            //------first Check it
                             if (!CheckBatch(batchAPV))
                             {
-                                //---------填写错误日志！------------
                                 WriteBatchLogFile("Wrong apv :", strFile + ".log");
                                 for (int i = 0; i < array.Count; i++)
                                 {
@@ -2386,10 +2216,8 @@ namespace BenMAP
                                 }
                             }
                             batchReportAuditTrail.ActiveSetup = batchBase.ActiveSetup;
-                            //------first Check it
                             if (!CheckBatch(batchReportAuditTrail))
                             {
-                                //---------填写错误日志！------------
                                 WriteBatchLogFile("Wrong AuditTrail :", strFile + ".log");
                                 for (int j = 1; j < array.Count; j++)
                                 {
@@ -2448,12 +2276,9 @@ namespace BenMAP
                                     batchReportCFGR.DecimalDigits = array[i].ToString().Replace("-DecimalDigits", "").Replace("\"", "").Trim();
                                 }
                             }
-                            //lstBatchBase.Add(batchReportCFGR);
-                            //------first Check it
                             batchReportCFGR.ActiveSetup = batchBase.ActiveSetup;
                             if (!CheckBatch(batchReportCFGR))
                             {
-                                //---------填写错误日志！------------
                                 WriteBatchLogFile("Wrong Report :", strFile + ".log");
                                 for (int j = 1; j < array.Count; j++)
                                 {
@@ -2514,11 +2339,9 @@ namespace BenMAP
                                     batchReportAPVR.ResultType = array[i].ToString().Replace("-ResultType", "").Replace("\"", "").Trim();
                                 }
                             }
-                            //lstBatchBase.Add(batchReportAPVR);
                             batchReportAPVR.ActiveSetup = batchBase.ActiveSetup;
                             if (!CheckBatch(batchReportAPVR))
                             {
-                                //---------填写错误日志！------------
                                 WriteBatchLogFile("Wrong Report :", strFile + ".log");
                                 for (int j = 1; j < array.Count; j++)
                                 {
@@ -2536,32 +2359,23 @@ namespace BenMAP
 
 
                     }
-                
+
 
 
                 }
                 return lstBatchBase;
-                //----一行行读取ctlx分类到一个数组-----首先设计出每种AQG,CFG,APV三种不同的ctlx对象,然后根据读出来的文档到所有对象
 
-                //----一个一个的Run,Run后填入日志
 
-                //----最后output日志到同一目录的和ctlx同一文件名 *.log中
             }
             catch
             {
                 return null;
             }
         }
-        /// <summary>
-        /// Check batch file
-        /// </summary>
-        /// <param name="batchBase"></param>
-        /// <returns></returns>
         public static bool CheckBatch(BatchBase batchBase)
         {
             try
             {
-                //----主要Check文件是否存在
                 if (getSetupFromName(batchBase.ActiveSetup) == null) return false;
                 if (batchBase is BatchAQGBase)
                 {
@@ -2570,9 +2384,9 @@ namespace BenMAP
                         BatchModelDirect batchModelDirect = (batchBase as BatchModelDirect);
                         if (!File.Exists(batchModelDirect.ModelFilename)) return false;
                         if (getPollutantFromName(batchModelDirect.Pollutant) == null) return false;
-                        if (getGridFromName(batchModelDirect.GridType) == null) return false;                         
+                        if (getGridFromName(batchModelDirect.GridType) == null) return false;
                     }
-                    else if(batchBase is BatchMonitorDirect)
+                    else if (batchBase is BatchMonitorDirect)
                     {
                         BatchMonitorDirect batchMonitorDirect = batchBase as BatchMonitorDirect;
                         if (getPollutantFromName(batchMonitorDirect.Pollutant) == null) return false;
@@ -2587,7 +2401,6 @@ namespace BenMAP
                         }
                         else
                             return false;
-                        //MonitorDataType;//MonitorDataType must be one of Library or TextFile.
                     }
                     else
                         return false;
@@ -2597,7 +2410,7 @@ namespace BenMAP
                     BatchCFG batchCFG = batchBase as BatchCFG;
                     if (!File.Exists(batchCFG.CFGFilename)) return false;
                     if (batchCFG.LatinHypercubePoints != -1 && batchCFG.LatinHypercubePoints != 0 && batchCFG.LatinHypercubePoints != 10 && batchCFG.LatinHypercubePoints != 20 && batchCFG.LatinHypercubePoints != 100) return false;
-                    if ((batchCFG.Year!=-1) && (batchCFG.Year < 1980 || batchCFG.Year > 2300))  return false;
+                    if ((batchCFG.Year != -1) && (batchCFG.Year < 1980 || batchCFG.Year > 2300)) return false;
                 }
                 else if (batchBase is BatchAPV)
                 {
@@ -2608,7 +2421,7 @@ namespace BenMAP
                 else if (batchBase is BatchReport)
                 {
                     BatchReport batchReport = batchBase as BatchReport;
-                    if (batchReport.InputFile == null || batchReport.InputFile.Trim()=="") return false;
+                    if (batchReport.InputFile == null || batchReport.InputFile.Trim() == "") return false;
                 }
             }
             catch

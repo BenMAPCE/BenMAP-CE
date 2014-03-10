@@ -1,16 +1,9 @@
-﻿namespace BenMAP
+namespace BenMAP
 {
     partial class ManageValuationFunctionDataSets
     {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -20,12 +13,7 @@
             base.Dispose(disposing);
         }
 
-        #region Windows Form Designer generated code
-
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
+        
         private void InitializeComponent()
         {
             this.grpCancelOK = new System.Windows.Forms.GroupBox();
@@ -74,10 +62,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.olvData)).BeginInit();
             this.grpAvailableDataSets.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // grpCancelOK
-            // 
-            this.grpCancelOK.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+                                                this.grpCancelOK.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.grpCancelOK.Controls.Add(this.btnCancel);
             this.grpCancelOK.Controls.Add(this.btnOK);
@@ -86,10 +71,7 @@
             this.grpCancelOK.Size = new System.Drawing.Size(843, 45);
             this.grpCancelOK.TabIndex = 2;
             this.grpCancelOK.TabStop = false;
-            // 
-            // btnCancel
-            // 
-            this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+                                                this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.Location = new System.Drawing.Point(684, 12);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 27);
@@ -98,10 +80,7 @@
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Visible = false;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
-            // 
-            // btnOK
-            // 
-            this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+                                                this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOK.Location = new System.Drawing.Point(765, 12);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 27);
@@ -109,25 +88,16 @@
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
-            // 
-            // statusStrip1
-            // 
-            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+                                                this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabel1});
             this.statusStrip1.Location = new System.Drawing.Point(0, 499);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(865, 22);
             this.statusStrip1.TabIndex = 2;
             this.statusStrip1.Text = "statusStrip1";
-            // 
-            // toolStripStatusLabel1
-            // 
-            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
+                                                this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
             this.toolStripStatusLabel1.Size = new System.Drawing.Size(0, 17);
-            // 
-            // grpValuationFunction
-            // 
-            this.grpValuationFunction.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                                                this.grpValuationFunction.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.grpValuationFunction.Controls.Add(this.checkBox1);
@@ -141,10 +111,7 @@
             this.grpValuationFunction.TabIndex = 1;
             this.grpValuationFunction.TabStop = false;
             this.grpValuationFunction.Text = "Valuation Function In Dataset";
-            // 
-            // checkBox1
-            // 
-            this.checkBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+                                                this.checkBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.checkBox1.AutoSize = true;
             this.checkBox1.Location = new System.Drawing.Point(547, 405);
             this.checkBox1.Name = "checkBox1";
@@ -153,10 +120,7 @@
             this.checkBox1.Text = "Group";
             this.checkBox1.UseVisualStyleBackColor = true;
             this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
-            // 
-            // groupBox3
-            // 
-            this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+                                                this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.groupBox3.Controls.Add(this.txtFilter);
             this.groupBox3.Location = new System.Drawing.Point(398, 386);
             this.groupBox3.Name = "groupBox3";
@@ -164,19 +128,13 @@
             this.groupBox3.TabIndex = 27;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Filter";
-            // 
-            // txtFilter
-            // 
-            this.txtFilter.Dock = System.Windows.Forms.DockStyle.Fill;
+                                                this.txtFilter.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtFilter.Location = new System.Drawing.Point(3, 17);
             this.txtFilter.Name = "txtFilter";
             this.txtFilter.Size = new System.Drawing.Size(134, 22);
             this.txtFilter.TabIndex = 0;
             this.txtFilter.TextChanged += new System.EventHandler(this.txtFilter_TextChanged_1);
-            // 
-            // groupBox2
-            // 
-            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+                                                this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.groupBox2.Controls.Add(this.cboEndpoint);
             this.groupBox2.Location = new System.Drawing.Point(209, 386);
             this.groupBox2.Name = "groupBox2";
@@ -184,10 +142,7 @@
             this.groupBox2.TabIndex = 26;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Filter Endpoint";
-            // 
-            // cboEndpoint
-            // 
-            this.cboEndpoint.Dock = System.Windows.Forms.DockStyle.Fill;
+                                                this.cboEndpoint.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cboEndpoint.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboEndpoint.FormattingEnabled = true;
             this.cboEndpoint.Location = new System.Drawing.Point(3, 18);
@@ -195,10 +150,7 @@
             this.cboEndpoint.Size = new System.Drawing.Size(180, 22);
             this.cboEndpoint.TabIndex = 0;
             this.cboEndpoint.SelectedValueChanged += new System.EventHandler(this.cboEndpoint_SelectedValueChanged);
-            // 
-            // groupBox1
-            // 
-            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+                                                this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.groupBox1.Controls.Add(this.cboEndpointGroup);
             this.groupBox1.Location = new System.Drawing.Point(6, 386);
             this.groupBox1.Name = "groupBox1";
@@ -206,10 +158,7 @@
             this.groupBox1.TabIndex = 25;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Filter Endpoint Group";
-            // 
-            // cboEndpointGroup
-            // 
-            this.cboEndpointGroup.Dock = System.Windows.Forms.DockStyle.Fill;
+                                                this.cboEndpointGroup.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cboEndpointGroup.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboEndpointGroup.FormattingEnabled = true;
             this.cboEndpointGroup.Location = new System.Drawing.Point(3, 18);
@@ -217,10 +166,7 @@
             this.cboEndpointGroup.Size = new System.Drawing.Size(194, 22);
             this.cboEndpointGroup.TabIndex = 0;
             this.cboEndpointGroup.SelectedValueChanged += new System.EventHandler(this.cboEndpointGroup_SelectedValueChanged);
-            // 
-            // olvData
-            // 
-            this.olvData.AllColumns.Add(this.olvcEndpointGroup);
+                                                this.olvData.AllColumns.Add(this.olvcEndpointGroup);
             this.olvData.AllColumns.Add(this.olvcEndpoint);
             this.olvData.AllColumns.Add(this.olvColumn9);
             this.olvData.AllColumns.Add(this.olvColumn11);
@@ -291,118 +237,61 @@
             this.olvData.UseHotItem = true;
             this.olvData.UseTranslucentHotItem = true;
             this.olvData.View = System.Windows.Forms.View.Details;
-            // 
-            // olvcEndpointGroup
-            // 
-            this.olvcEndpointGroup.AspectName = "endpointgroupname";
+                                                this.olvcEndpointGroup.AspectName = "endpointgroupname";
             this.olvcEndpointGroup.Text = "Endpoint Group";
             this.olvcEndpointGroup.Width = 120;
-            // 
-            // olvcEndpoint
-            // 
-            this.olvcEndpoint.AspectName = "endpointname";
+                                                this.olvcEndpoint.AspectName = "endpointname";
             this.olvcEndpoint.Text = "Endpoint";
             this.olvcEndpoint.Width = 100;
-            // 
-            // olvColumn9
-            // 
-            this.olvColumn9.AspectName = "qualifier";
+                                                this.olvColumn9.AspectName = "qualifier";
             this.olvColumn9.Text = "Qualifier";
             this.olvColumn9.Width = 100;
-            // 
-            // olvColumn11
-            // 
-            this.olvColumn11.AspectName = "reference";
+                                                this.olvColumn11.AspectName = "reference";
             this.olvColumn11.Text = "Reference";
             this.olvColumn11.Width = 100;
-            // 
-            // olvColumn12
-            // 
-            this.olvColumn12.AspectName = "startage";
+                                                this.olvColumn12.AspectName = "startage";
             this.olvColumn12.Text = "Start Age";
             this.olvColumn12.Width = 100;
-            // 
-            // olvColumn1
-            // 
-            this.olvColumn1.AspectName = "endage";
+                                                this.olvColumn1.AspectName = "endage";
             this.olvColumn1.Text = "End Age";
             this.olvColumn1.Width = 100;
-            // 
-            // olvColumn2
-            // 
-            this.olvColumn2.AspectName = "functionalformtext";
+                                                this.olvColumn2.AspectName = "functionalformtext";
             this.olvColumn2.Text = "Function";
             this.olvColumn2.Width = 100;
-            // 
-            // olvColumn3
-            // 
-            this.olvColumn3.AspectName = "a";
+                                                this.olvColumn3.AspectName = "a";
             this.olvColumn3.Text = "A";
             this.olvColumn3.Width = 100;
-            // 
-            // olvColumn4
-            // 
-            this.olvColumn4.AspectName = "namea";
+                                                this.olvColumn4.AspectName = "namea";
             this.olvColumn4.Text = "Name A";
             this.olvColumn4.Width = 100;
-            // 
-            // olvColumn5
-            // 
-            this.olvColumn5.AspectName = "dista";
+                                                this.olvColumn5.AspectName = "dista";
             this.olvColumn5.Text = "A Distribution";
             this.olvColumn5.Width = 100;
-            // 
-            // olvColumn6
-            // 
-            this.olvColumn6.AspectName = "p1a";
+                                                this.olvColumn6.AspectName = "p1a";
             this.olvColumn6.Text = "P1A";
             this.olvColumn6.Width = 100;
-            // 
-            // olvColumn10
-            // 
-            this.olvColumn10.AspectName = "p2a";
+                                                this.olvColumn10.AspectName = "p2a";
             this.olvColumn10.Text = "P2A";
             this.olvColumn10.Width = 100;
-            // 
-            // olvColumn13
-            // 
-            this.olvColumn13.AspectName = "b";
+                                                this.olvColumn13.AspectName = "b";
             this.olvColumn13.Text = "B";
             this.olvColumn13.Width = 100;
-            // 
-            // olvColumn14
-            // 
-            this.olvColumn14.AspectName = "nameb";
+                                                this.olvColumn14.AspectName = "nameb";
             this.olvColumn14.Text = "Name B";
             this.olvColumn14.Width = 100;
-            // 
-            // olvColumn15
-            // 
-            this.olvColumn15.AspectName = "c";
+                                                this.olvColumn15.AspectName = "c";
             this.olvColumn15.Text = "C";
             this.olvColumn15.Width = 100;
-            // 
-            // olvColumn16
-            // 
-            this.olvColumn16.AspectName = "namec";
+                                                this.olvColumn16.AspectName = "namec";
             this.olvColumn16.Text = "Name C";
             this.olvColumn16.Width = 100;
-            // 
-            // olvColumn17
-            // 
-            this.olvColumn17.AspectName = "d";
+                                                this.olvColumn17.AspectName = "d";
             this.olvColumn17.Text = "D";
             this.olvColumn17.Width = 100;
-            // 
-            // olvColumn18
-            // 
-            this.olvColumn18.AspectName = "named";
+                                                this.olvColumn18.AspectName = "named";
             this.olvColumn18.Text = "Name D";
             this.olvColumn18.Width = 100;
-            // 
-            // grpAvailableDataSets
-            // 
-            this.grpAvailableDataSets.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                                                this.grpAvailableDataSets.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)));
             this.grpAvailableDataSets.Controls.Add(this.btnEdit);
             this.grpAvailableDataSets.Controls.Add(this.btnAdd);
@@ -414,10 +303,7 @@
             this.grpAvailableDataSets.TabIndex = 0;
             this.grpAvailableDataSets.TabStop = false;
             this.grpAvailableDataSets.Text = "Available Datasets";
-            // 
-            // btnEdit
-            // 
-            this.btnEdit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+                                                this.btnEdit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnEdit.Location = new System.Drawing.Point(157, 407);
             this.btnEdit.Name = "btnEdit";
             this.btnEdit.Size = new System.Drawing.Size(52, 27);
@@ -425,10 +311,7 @@
             this.btnEdit.Text = "Edit";
             this.btnEdit.UseVisualStyleBackColor = true;
             this.btnEdit.Click += new System.EventHandler(this.btnEdit_Click);
-            // 
-            // btnAdd
-            // 
-            this.btnAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+                                                this.btnAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnAdd.Location = new System.Drawing.Point(99, 407);
             this.btnAdd.Name = "btnAdd";
             this.btnAdd.Size = new System.Drawing.Size(52, 27);
@@ -436,10 +319,7 @@
             this.btnAdd.Text = "Add";
             this.btnAdd.UseVisualStyleBackColor = true;
             this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
-            // 
-            // btnDelete
-            // 
-            this.btnDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+                                                this.btnDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnDelete.Location = new System.Drawing.Point(41, 407);
             this.btnDelete.Name = "btnDelete";
             this.btnDelete.Size = new System.Drawing.Size(52, 27);
@@ -447,10 +327,7 @@
             this.btnDelete.Text = "Delete";
             this.btnDelete.UseVisualStyleBackColor = true;
             this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
-            // 
-            // lstAvailableDataSets
-            // 
-            this.lstAvailableDataSets.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                                                this.lstAvailableDataSets.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)));
             this.lstAvailableDataSets.FormattingEnabled = true;
             this.lstAvailableDataSets.HorizontalScrollbar = true;
@@ -460,10 +337,7 @@
             this.lstAvailableDataSets.Size = new System.Drawing.Size(202, 382);
             this.lstAvailableDataSets.TabIndex = 0;
             this.lstAvailableDataSets.SelectedValueChanged += new System.EventHandler(this.lstAvailableDataSets_SelectedValueChanged);
-            // 
-            // ManageValuationFunctionDataSets
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
+                                                this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(865, 521);
             this.Controls.Add(this.statusStrip1);
@@ -492,8 +366,7 @@
 
         }
 
-        #endregion
-
+        
         private System.Windows.Forms.GroupBox grpAvailableDataSets;
         private System.Windows.Forms.ListBox lstAvailableDataSets;
         private System.Windows.Forms.Button btnAdd;

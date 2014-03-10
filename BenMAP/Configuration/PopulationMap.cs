@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -36,9 +36,7 @@ namespace BenMAP
         Dictionary<string, Dictionary<string, Dictionary<string, float>>> dicAllPopData = new Dictionary<string, Dictionary<string, Dictionary<string, float>>>();
         Dictionary<int, Dictionary<string, double>> dicAllGrowth = new Dictionary<int, Dictionary<string, double>>();
         Dictionary<string, Dictionary<string, Dictionary<string, WeightAttribute>>> dicAllWeight = new Dictionary<string, Dictionary<string, Dictionary<string, WeightAttribute>>>();
-        private double _dMinValue = 0.0;//最小值
-        private double _dMaxValue = 0.0;// 最大值
-        private int _currentLayerIndex = 1;
+        private double _dMinValue = 0.0; private double _dMaxValue = 0.0; private int _currentLayerIndex = 1;
         private string _columnName = string.Empty;
         private Color[] _blendColors;
         Dictionary<string, string> dicAgeRange = new Dictionary<string, string>();
@@ -66,7 +64,6 @@ namespace BenMAP
         {
             try
             {
-                //WaitShow("Waiting...");
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 string commandText = string.Empty;
                 commandText = string.Format("select * from PopulationDataSets where PopulationDataSetID<>37 and  SetupID={0} order by PopulationDataSetID", CommonClass.MainSetup.SetupID);
@@ -108,8 +105,6 @@ namespace BenMAP
                 keys = dicRace.Where(q => q.Value == "").Select(q => q.Key).ToList();
                 if (keys.Count > 0)
                     dicRace[keys[0]] = "A";
-                //DrawPop();
-                //WaitClose();
                 colorBlend.CustomizeValueRange -= ResetGisMap;
                 colorBlend.CustomizeValueRange += ResetGisMap;
             }
@@ -127,49 +122,6 @@ namespace BenMAP
                 DataRowView drv = cboPopulationDataSet.SelectedItem as DataRowView;
                 int PopulationDataSetID = Convert.ToInt32(drv["PopulationDataSetID"]);
                 commandText = string.Format("select distinct Yyear from t_PopulationDataSetIDYear  where PopulationDataSetID={0}", PopulationDataSetID);
-                //cboPopulationYear.Items.Clear();
-                //if (CommonClass.MainSetup.SetupID == 1 && Convert.ToInt16(drv["PopulationConfigurationID"]) == 1)//----------美国数据里面包含了人口增长数据，基数数据为2010
-                //{
-                //    DataTable dtYear = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText).Tables[0];
-                //    commandText = string.Format("select min(Yyear) from t_PopulationDataSetIDYear where PopulationDataSetID=30");
-                //    int commonYear = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, System.Data.CommandType.Text, commandText));
-                //    bool growth = false;
-                //    for (int i = 0; i < dtYear.Rows.Count; i++)
-                //    {
-                //        if (Convert.ToInt16(dtYear.Rows[i][0]) == commonYear)
-                //        {
-                //            string strWeightCount = "select count(*) from PopulationGrowthWeights where PopulationDataSetID=" + PopulationDataSetID + " and YYear=" + commonYear;
-                //            int weightCount = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, strWeightCount));
-                //            if (weightCount > 0 || Grid.GridCommon.getBenMAPGridFromID(Convert.ToInt32(drv["GridDefinitionID"])).GridDefinitionID == 18)
-                //                growth = true;
-                //            else
-                //                cboPopulationYear.Items.Add(dtYear.Rows[i][0]);
-                //        }
-                //        else
-                //        {
-                //            cboPopulationYear.Items.Add(dtYear.Rows[i][0]);
-                //        }
-                //    }
-                //    if (growth)
-                //    {
-                //        commandText = string.Format("select distinct Yyear from t_PopulationDataSetIDYear where PopulationDataSetID in(select PopulationDataSetID from PopulationDataSets where    SetupID={0})", CommonClass.MainSetup.SetupID);// where PopulationDataSetID={0}", PopulationDataSetID);
-                //        dtYear = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText).Tables[0];
-                //        for (int i = 0; i < dtYear.Rows.Count; i++)
-                //        {
-                //            if (!cboPopulationYear.Items.Contains(dtYear.Rows[i][0]))
-                //                cboPopulationYear.Items.Add(dtYear.Rows[i][0]);
-                //        }
-                //    }
-                //}
-                //else
-                //{
-                //    DataSet dsYear = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
-                //    for (int i = 0; i < dsYear.Tables[0].Rows.Count; i++)
-                //    {
-                //        if (!cboPopulationYear.Items.Contains(dsYear.Tables[0].Rows[i][0]))
-                //            cboPopulationYear.Items.Add(dsYear.Tables[0].Rows[i][0]);
-                //    }
-                //}
                 if (CommonClass.MainSetup.SetupID == 1 && Convert.ToInt16(drv["APPLYGROWTH"]) == 1)
                 {
                     commandText = string.Format("select distinct Yyear from t_PopulationDataSetIDYear where PopulationDataSetID in (select PopulationDataSetID from PopulationDataSets where SetupID={0})", CommonClass.MainSetup.SetupID);
@@ -194,11 +146,6 @@ namespace BenMAP
             try
             {
                 WaitShow("Loading population...");
-                //prgLoadPOP.Value = 0;
-                //prgLoadPOP.Visible = true;
-                //lblProgress.Text = "Loading population...";
-                //lblProgress.Visible = true;
-                //this.Refresh();
 
                 string commandText = string.Empty;
                 DataRowView drv = cboPopulationDataSet.SelectedItem as DataRowView;
@@ -223,17 +170,6 @@ namespace BenMAP
                         dicAllPopData.Add(cboPopulationDataSet.Text + "," + cboPopulationYear.Text, dicPopulationAgeIn);
                 }
                 cboAgeRange.Items.Clear();
-                //List<string> lstAddField = new List<string>();
-                //foreach (string s in dicPopulationAgeIn.Keys)
-                //{
-                //    string[] rgea = s.Split(',');
-                //    lstAddField.Add(dicRace[rgea[0]] + "_" + dicGender[rgea[1]] + "_" + dicEthnicity[rgea[2]] + "_" + dicAgeRange[rgea[3]]);
-                //}
-                //lstAddField.Sort();
-                //for (int j = 0; j < lstAddField.Count; j++)
-                //{
-                //    cboAgeRange.Items.Add(dicAgeRange[lstAddField[j]]);
-                //}
                 List<float[]> lstResultCopy = new List<float[]>();
                 List<float> lstd = new List<float>();
                 fs = new DotSpatial.Data.FeatureSet();
@@ -272,11 +208,6 @@ namespace BenMAP
                 }
                 i = 0;
                 WaitChangeMsg("Adding data to shapefile...");
-                //lblProgress.Text = "Adding data to shapefile...";
-                //prgLoadPOP.Value = 0;
-                //tspPOPMap.Refresh();
-                //prgLoadPOP.Maximum = lstAddField.Count * fs.DataTable.Rows.Count;
-                //for (int j = 0; j < lstAddField.Count; j++)
                 foreach (string k in dicPopulationAgeIn.Keys)
                 {
                     string[] rgea = k.Split(',');
@@ -295,7 +226,7 @@ namespace BenMAP
                     dr.ItemArray = o;
                 }
                 i = 0;
-                List<string> lstAgeInKeys=dicPopulationAgeIn.Keys.ToList();
+                List<string> lstAgeInKeys = dicPopulationAgeIn.Keys.ToList();
                 foreach (DataRow dr in fs.DataTable.Rows)
                 {
                     object[] o = new object[fs.DataTable.Columns.Count];
@@ -303,61 +234,23 @@ namespace BenMAP
                     string s = dr[iCol] + "," + dr[iRow];
                     for (int idr = 2; idr < fs.DataTable.Columns.Count; idr++)
                     {
-                        if(dicPopulationAgeIn[lstAgeInKeys[idr-2]].ContainsKey(s) &&!double.IsNaN(dicPopulationAgeIn[lstAgeInKeys[idr-2]][s]))
-                        o[idr] = Math.Round(dicPopulationAgeIn[lstAgeInKeys[idr-2]][s], 4);
+                        if (dicPopulationAgeIn[lstAgeInKeys[idr - 2]].ContainsKey(s) && !double.IsNaN(dicPopulationAgeIn[lstAgeInKeys[idr - 2]][s]))
+                            o[idr] = Math.Round(dicPopulationAgeIn[lstAgeInKeys[idr - 2]][s], 4);
                     }
                     dr.ItemArray = o;
-                    //string s = fs.DataTable.Rows[i][iCol] + "," + fs.DataTable.Rows[i][iRow];
-                    //if (dicPopulationAgeIn[k].Keys.Contains(s))
-                    //{
-                    //    fs.DataTable.Rows[i][addField] = Math.Round(dicPopulationAgeIn[k][s], 4);
-                    //    if (double.IsNaN(dicPopulationAgeIn[k][s]))
-                    //        fs.DataTable.Rows[i][addField] = Convert.ToDouble(0.0000);
-                    //}
-                    //else
-                    //    fs.DataTable.Rows[i][addField] = Convert.ToDouble(0.0000);
 
                     i++;
-                    //prgLoadPOP.PerformStep();
                 }
-                //foreach(string k in dicPopulationAgeIn.Keys)
-                //{
-                //    try
-                //    {
-                //        string[] rgea = k.Split(',');
-                //        string addField = dicRace[rgea[0]].Substring(0, 1) + "_" + dicEthnicity[rgea[2]].Substring(0, 1) + "_" + dicGender[rgea[1]].Substring(0, 1) + "_" + dicAgeRange[rgea[3]];
 
-                //        i = 0;
-                //        while (i < fs.DataTable.Rows.Count)
-                //        {
-                //            string s = fs.DataTable.Rows[i][iCol] + "," + fs.DataTable.Rows[i][iRow];
-                //            if (dicPopulationAgeIn[k].Keys.Contains(s))
-                //            {
-                //                fs.DataTable.Rows[i][addField] = Math.Round(dicPopulationAgeIn[k][s], 4);
-                //                if (double.IsNaN(dicPopulationAgeIn[k][s]))
-                //                    fs.DataTable.Rows[i][addField] = Convert.ToDouble(0.0000);
-                //            }
-                //            else
-                //                fs.DataTable.Rows[i][addField] = Convert.ToDouble(0.0000);
 
-                //            i++;
-                //            //prgLoadPOP.PerformStep();
-                //        }
-                //    }
-                //    catch
-                //    { }
-                //}
                 dicPopulationAgeIn.Clear();
                 mainMap.Layers.Clear();
                 GC.Collect();
                 mainMap.ProjectionModeReproject = ActionMode.Never;
                 mainMap.ProjectionModeDefine = ActionMode.Never;
 
-                //string newshapefilename = string.Format("{0}\\Tmp\\{1}", CommonClass.DataFilePath, "POP" + cboPopulationDataSet.Text + cboPopulationYear.Text + ".shp");
-                //fs.SaveAs(newshapefilename, true);
                 mainMap.Layers.Add(fs);
                 cboAgeRange.SelectedIndex = cboAgeRange.Items.Count - 1;
-                //DrawOneAge();
                 WaitClose();
                 addRegionLayerToMainMap();
             }
@@ -477,14 +370,10 @@ namespace BenMAP
                 _dMaxValue = colorBlend.MaxValue;
                 _dMinValue = colorBlend.MinValue;
                 colorBlend.SetValueRange(_dMinValue, _dMaxValue, false);
-                //colorBlend._minPlotValue = _dMinValue;
-                //colorBlend._maxPlotValue = _dMaxValue;
                 Color[] colors = new Color[_blendColors.Length];
                 _blendColors.CopyTo(colors, 0);
-                //Quantities+半透明
                 PolygonCategoryCollection pcc = new PolygonCategoryCollection();
                 int iColor = 0;
-                //PolygonScheme pgs = (mainMap.Layers[_currentLayerIndex] as IFeatureLayer).Symbology as PolygonScheme;
                 string ColumnName = _columnName;
                 PolygonScheme myScheme1 = new PolygonScheme();
                 float fl = (float)0.1;
@@ -495,53 +384,40 @@ namespace BenMAP
                 float fColor = (float)0.2;
                 Color ctemp = new Color();
                 myScheme1.EditorSettings.ClassificationType = ClassificationType.Quantities;
-                //myScheme1.EditorSettings.ClassificationType = ClassificationType.UniqueValues ;
                 myScheme1.EditorSettings.NumBreaks = 6;
-                myScheme1.EditorSettings.FieldName = _columnName;// "Value";
-                myScheme1.EditorSettings.UseGradient = false;
+                myScheme1.EditorSettings.FieldName = _columnName; myScheme1.EditorSettings.UseGradient = false;
                 myScheme1.CreateCategories((mainMap.Layers[_currentLayerIndex] as IFeatureLayer).DataSet.DataTable);
                 if (myScheme1.Categories.Count == 1)
                 {
 
-                    //pc.Symbolizer.SetOutlineWidth(0);
                     PolygonSymbolizer ps = new PolygonSymbolizer();
                     ps.SetFillColor(colors[iColor]);
                     ps.SetOutline(Color.Transparent, 0);
-                    //player.Symbology = myScheme1;
 
                     (mainMap.Layers[_currentLayerIndex] as IFeatureLayer).Symbolizer = ps;
                     return;
 
                 }
                 iColor = 0;
-                //foreach (PolygonCategory pc in myScheme1.Categories)
                 prgLoadPOP.Maximum = 6;
                 for (int iBlend = 0; iBlend < 6; iBlend++)
                 {
-                    //pc.Symbolizer.SetOutlineWidth(0);
                     PolygonCategory pcin = new PolygonCategory();
-                    double dnow = 0;// Math.Round(_dMinValue + ((_dMaxValue - _dMinValue) / 6.00) * Convert.ToDouble(iColor), 3);
-                    double dnowUp = 0;// Math.Round(_dMinValue + ((_dMaxValue - _dMinValue) / 6.00) * Convert.ToDouble(iColor + 1), 3);
-                    //------------实现value--
-                    dnow = colorBlend.ValueArray[iBlend];
+                    double dnow = 0; double dnowUp = 0; dnow = colorBlend.ValueArray[iBlend];
                     if (iBlend < 5)
                         dnowUp = colorBlend.ValueArray[iBlend + 1];
                     pcin.FilterExpression = string.Format("[{0}]>=" + dnow + " and [{0}] <" + dnowUp, ColumnName);
-                    pcin.LegendText = ">=" + dnow.ToString() + " and <" + dnowUp.ToString();// string.Format("[{0}]>=" + dnow.ToString("E2") + " and [{0}] <" + dnowUp.ToString("E2"), ColumnName);
-                    if (iBlend == 0)
+                    pcin.LegendText = ">=" + dnow.ToString() + " and <" + dnowUp.ToString(); if (iBlend == 0)
                     {
                         pcin.FilterExpression = string.Format(" [{0}] <" + dnowUp, ColumnName);
-                        //pcin.LegendText = string.Format(" [{0}] <" + dnowUp.ToString("E2"), ColumnName);
                         pcin.LegendText = "<" + dnowUp.ToString();
                     }
                     if (iBlend == 5)
                     {
                         pcin.FilterExpression = string.Format(" [{0}] >=" + dnow, ColumnName);
-                        //pcin.LegendText = string.Format(" [{0}] >=" + dnow.ToString("E2"), ColumnName);
                         pcin.LegendText = ">=" + dnow.ToString();
                     }
 
-                    //pcin.LegendText = pcin.FilterExpression;// string.Format("{0} >= " + dnow + " and {0} < " + dnowUp, strValueField);
 
                     pcin.Symbolizer.SetOutline(Color.Transparent, 0);
                     ctemp = pcin.Symbolizer.GetFillColor();
@@ -557,9 +433,6 @@ namespace BenMAP
                 {
                     myScheme1.Categories.Add(pct);
                 }
-                //player.Symbology = myScheme1;
-                //if (myScheme1.LegendText == "Pooled Inci") myScheme1.LegendText = "Pooled Incidence";
-                //if (myScheme1.LegendText == "Pooled Valu") myScheme1.LegendText = "Pooled Valuation";
                 myScheme1.EditorSettings.ClassificationType = ClassificationType.Custom;
                 (mainMap.Layers[_currentLayerIndex] as IFeatureLayer).Symbology = myScheme1;
             }
@@ -586,19 +459,14 @@ namespace BenMAP
                 FbDataReader fbDataReader = null;
                 if (CommonClass.MainSetup.SetupID == 1)
                 {
-                    #region Growth
                     if (benMAPPopulation.Year != commonYear)
                     {
                         string strGrowth = "select CColumn||','||Row||','||EthnicityID||','||RaceID||','||GenderID||','||AgeRangeID,VValue from PopulationEntries where PopulationDataSetID=37 and YYear=" + benMAPPopulation.Year + "  ";
                         if (!dicAllGrowth.ContainsKey(benMAPPopulation.Year))
                         {
                             WaitChangeMsg("Loading population growth data...");
-                            //lblProgress.Text = "Loading population growth data...";
-                            //prgLoadPOP.Value = 0;
-                            //this.Refresh();
                             string strGrowthCount = "select count(*) from PopulationEntries where PopulationDataSetID=37 and YYear=" + benMAPPopulation.Year + "  ";
                             int growthCount = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, strGrowthCount));
-                            //prgLoadPOP.Maximum = growthCount;
 
                             fbDataReader = fb.ExecuteReader(CommonClass.Connection, CommandType.Text, strGrowth);
                             DicGrowth = new Dictionary<string, double>();
@@ -608,7 +476,6 @@ namespace BenMAP
                                     DicGrowth.Add(fbDataReader[0].ToString(), Convert.ToDouble(fbDataReader["VValue"]));
                                 else
                                     DicGrowth[fbDataReader[0].ToString()] = DicGrowth[fbDataReader[0].ToString()] + Convert.ToDouble(fbDataReader["VValue"]);
-                                //prgLoadPOP.PerformStep();
                             }
                             fbDataReader.Dispose();
                         }
@@ -621,9 +488,7 @@ namespace BenMAP
                     {
                         DicGrowth = null;
                     }
-                    #endregion
 
-                    #region Weight
                     string strWeight = "select * from PopulationGrowthWeights where PopulationDataSetID=" + benMAPPopulation.DataSetID + " and YYear=" + commonYear;
                     if (!dicAllWeight.ContainsKey(benMAPPopulation.DataSetName + "," + benMAPPopulation.Year) && benMAPPopulation.Year != commonYear && benMAPPopulation.GridType.GridDefinitionID != 18)
                     {
@@ -632,10 +497,6 @@ namespace BenMAP
                         if (weightCount > 0)
                         {
                             WaitChangeMsg("Loading population growth weight...");
-                            //lblProgress.Text = "Loading population growth weight...";
-                            //prgLoadPOP.Value = 0;
-                            //this.Refresh();
-                            //prgLoadPOP.Maximum = weightCount;
 
                             fbDataReader = fb.ExecuteReader(CommonClass.Connection, CommandType.Text, strWeight);
                             DicWeight = new Dictionary<string, Dictionary<string, WeightAttribute>>();
@@ -644,7 +505,7 @@ namespace BenMAP
                                 if (DicWeight.ContainsKey(fbDataReader["TargetColumn"].ToString() + "," + fbDataReader["TargetRow"].ToString()))
                                 {
                                     DicWeight[fbDataReader["TargetColumn"].ToString() + "," + fbDataReader["TargetRow"].ToString()].Add(fbDataReader["SourceColumn"].ToString() + "," + fbDataReader["SourceRow"].ToString() + "," + fbDataReader["EthnicityID"].ToString() + "," +
-                                              fbDataReader["RaceID"].ToString(),new WeightAttribute(){RaceID=fbDataReader["RaceID"].ToString(), EthnicityID=fbDataReader["EthnicityID"].ToString(),Value= Convert.ToDouble(fbDataReader["VValue"])});
+                                              fbDataReader["RaceID"].ToString(), new WeightAttribute() { RaceID = fbDataReader["RaceID"].ToString(), EthnicityID = fbDataReader["EthnicityID"].ToString(), Value = Convert.ToDouble(fbDataReader["VValue"]) });
                                 }
                                 else
                                 {
@@ -652,7 +513,6 @@ namespace BenMAP
                                     DicWeight[fbDataReader["TargetColumn"].ToString() + "," + fbDataReader["TargetRow"].ToString()].Add(fbDataReader["SourceColumn"].ToString() + "," + fbDataReader["SourceRow"].ToString() + "," + fbDataReader["EthnicityID"].ToString() + "," +
                                               fbDataReader["RaceID"].ToString(), new WeightAttribute() { RaceID = fbDataReader["RaceID"].ToString(), EthnicityID = fbDataReader["EthnicityID"].ToString(), Value = Convert.ToDouble(fbDataReader["VValue"]) });
                                 }
-                                //prgLoadPOP.PerformStep();
                             }
                             fbDataReader.Dispose();
                         }
@@ -668,12 +528,9 @@ namespace BenMAP
                                 if (dsPercentage.Tables[0].Rows.Count == 0)
                                 {
                                     WaitChangeMsg("Creating percentage...");
-                                    //lblProgress.Text = "Creating percentage...";
                                     Configuration.ConfigurationCommonClass.creatPercentageToDatabase(18, benMAPPopulation.GridType.GridDefinitionID);
                                     dsPercentage = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, str);
                                 }
-                                //lblProgress.Text = "Loading population growth weight...";
-                                //prgLoadPOP.Maximum = dsPercentage.Tables[0].Rows.Count;
                                 WaitChangeMsg("Loading weight...");
                                 foreach (DataRow dr in dsPercentage.Tables[0].Rows)
                                 {
@@ -687,7 +544,6 @@ namespace BenMAP
                                         dicPopweightfromPercentage.Add(dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString(), new Dictionary<string, double>());
                                         dicPopweightfromPercentage[dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString()].Add(dr["targetcolumn"].ToString() + "," + dr["targetrow"].ToString(), Convert.ToDouble(dr["Percentage"]));
                                     }
-                                    //prgLoadPOP.PerformStep();
                                 }
                                 dsPercentage.Dispose();
                             }
@@ -699,28 +555,18 @@ namespace BenMAP
                     {
                         DicWeight = dicAllWeight[benMAPPopulation.DataSetName + "," + commonYear];
                     }
-                    #endregion
                 }
 
-                //string strPop = "select count(*) from PopulationEntries where PopulationDataSetID=" + benMAPPopulation.DataSetID + " and YYear=" + commonYear;
-                //int popCount = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, strPop));
                 WaitChangeMsg("Creating population grid...");
-                //string strPop = "select distinct RaceID,GenderID,EthnicityID,AgeRangeID from PopulationEntries where PopulationDataSetID=" + benMAPPopulation.DataSetID + " and YYear=" + commonYear;
-                //DataTable dtGroup = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, strPop).Tables[0];
-                //lblProgress.Text = "Creating population grid...";
-                //prgLoadPOP.Value = 0;
-                //this.Refresh();
-                //prgLoadPOP.Maximum = popCount;
                 string strPop = "select CColumn,Row,EthnicityID,RaceID,GenderID,AgeRangeID,VValue from PopulationEntries where PopulationDataSetID=" + benMAPPopulation.DataSetID + " and YYear=" + commonYear;
                 fbDataReader = fb.ExecuteReader(CommonClass.Connection, CommandType.Text, strPop);
                 char[] c = new char[] { ',' };
-                //string[] sArray = null;
                 double d = 0;
                 while (fbDataReader.Read())
                 {
                     d = 0;
-                    
-                    
+
+
                     if (CommonClass.MainSetup.SetupID == 1 && DicWeight != null && DicWeight.ContainsKey(fbDataReader["CColumn"] + "," + fbDataReader["Row"]) && DicGrowth != null && DicGrowth.Count > 0)
                     {
                         string se = fbDataReader["EthnicityID"].ToString(), sr = fbDataReader["RaceID"].ToString(),
@@ -728,7 +574,6 @@ namespace BenMAP
 
                         foreach (KeyValuePair<string, WeightAttribute> k in DicWeight[fbDataReader["CColumn"] + "," + fbDataReader["Row"]])
                         {
-                            //sArray = k.Key.Split(c);
                             if (k.Value.EthnicityID == se && k.Value.RaceID == sr && DicGrowth.ContainsKey(k.Key + "," + sg))
                                 d += Convert.ToDouble(fbDataReader["VValue"]) * DicGrowth[k.Key + "," + sg] * k.Value.Value;
                         }
@@ -757,17 +602,16 @@ namespace BenMAP
 
                     if (!diclstPopulationAttributeAge.ContainsKey(fbDataReader["RaceID"] + "," + fbDataReader["GenderID"] + "," + fbDataReader["EthnicityID"] + "," + fbDataReader["AgeRangeID"]))
                     {
-                        diclstPopulationAttributeAge.Add(fbDataReader["RaceID"] + "," + fbDataReader["GenderID"] + "," + fbDataReader["EthnicityID"] + "," + fbDataReader["AgeRangeID"], new Dictionary<string,float>());
+                        diclstPopulationAttributeAge.Add(fbDataReader["RaceID"] + "," + fbDataReader["GenderID"] + "," + fbDataReader["EthnicityID"] + "," + fbDataReader["AgeRangeID"], new Dictionary<string, float>());
                         diclstPopulationAttributeAge[fbDataReader["RaceID"] + "," + fbDataReader["GenderID"] + "," + fbDataReader["EthnicityID"] + "," + fbDataReader["AgeRangeID"]].Add(fbDataReader["CColumn"] + "," + fbDataReader["Row"], Convert.ToSingle(d));
                     }
                     else
                     {
-                        if(diclstPopulationAttributeAge[fbDataReader["RaceID"] + "," + fbDataReader["GenderID"] + "," + fbDataReader["EthnicityID"] + "," + fbDataReader["AgeRangeID"]].ContainsKey(fbDataReader["CColumn"] + "," + fbDataReader["Row"]))
+                        if (diclstPopulationAttributeAge[fbDataReader["RaceID"] + "," + fbDataReader["GenderID"] + "," + fbDataReader["EthnicityID"] + "," + fbDataReader["AgeRangeID"]].ContainsKey(fbDataReader["CColumn"] + "," + fbDataReader["Row"]))
                             diclstPopulationAttributeAge[fbDataReader["RaceID"] + "," + fbDataReader["GenderID"] + "," + fbDataReader["EthnicityID"] + "," + fbDataReader["AgeRangeID"]][fbDataReader["CColumn"] + "," + fbDataReader["Row"]] += Convert.ToSingle(d);
                         else
                             diclstPopulationAttributeAge[fbDataReader["RaceID"] + "," + fbDataReader["GenderID"] + "," + fbDataReader["EthnicityID"] + "," + fbDataReader["AgeRangeID"]].Add(fbDataReader["CColumn"] + "," + fbDataReader["Row"], Convert.ToSingle(d));
                     }
-                    //prgLoadPOP.PerformStep();
                 }
                 fbDataReader.Dispose();
                 if (!dicAllGrowth.ContainsKey(benMAPPopulation.Year) && DicGrowth != null && DicGrowth.Count > 0)
@@ -780,7 +624,6 @@ namespace BenMAP
             }
         }
 
-        #region ToolStrip
         private void btnDraw_Click(object sender, EventArgs e)
         {
             if (cboPopulationDataSet.Text != _popDataset || cboPopulationYear.Text != _popYear)
@@ -826,11 +669,6 @@ namespace BenMAP
             showInfo = true;
         }
 
-        /// <summary>
-        /// 点击弹出资料框
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void mainMap_MouseUp(object sender, MouseEventArgs e)
         {
             try
@@ -841,10 +679,7 @@ namespace BenMAP
                 GeoMouseArgs args = new GeoMouseArgs(e, mainMap);
 
                 if (args.Button != MouseButtons.Left) return;
-                //Rectangle rtol = new Rectangle(args.X - 8, args.Y - 8, 16, 16); //范围大，用于点、线图层
-                Rectangle rstr = new Rectangle(args.X - 1, args.Y - 1, 2, 2);   //范围小，用于面图层
-                //DotSpatial.Data.Extent tolerant = args.Map.PixelToProj(rtol);
-                DotSpatial.Data.Extent strict = args.Map.PixelToProj(rstr);
+                Rectangle rstr = new Rectangle(args.X - 1, args.Y - 1, 2, 2); DotSpatial.Data.Extent strict = args.Map.PixelToProj(rstr);
 
                 Dictionary<int, string> diclayers = new Dictionary<int, string>();
                 List<DotSpatial.Data.IFeature> result = new List<DotSpatial.Data.IFeature>();
@@ -883,12 +718,6 @@ namespace BenMAP
             }
         }
 
-        /// <summary>
-        /// 获取图层信息（来自dotspetial源代码）
-        /// </summary>
-        /// <param name="layer"></param>
-        /// <param name="result"></param>
-        /// <returns></returns>
         private DataRow GetFeatureDataRow(IFeatureLayer layer, List<DotSpatial.Data.IFeature> result)
         {
             try
@@ -955,7 +784,6 @@ namespace BenMAP
         {
             try
             {
-                //Thread.Sleep(new TimeSpan(0, 0, 2));
                 string s = tsbSavePic.ToolTipText;
                 tsbSavePic.ToolTipText = "";
                 Image i = new Bitmap(mainMap.Width, mainMap.Height - toolStrip1.Height);
@@ -970,11 +798,9 @@ namespace BenMAP
                     return;
                 }
                 string fileName = saveFileDialog1.FileName;
-                //Thread.Sleep(300);
 
                 i.Save(fileName);
                 MessageBox.Show("Map exported.");
-                //----Save SHP File
                 g.Dispose();
             }
             catch (Exception ex)
@@ -992,11 +818,8 @@ namespace BenMAP
                     if (mainMap.Projection != DotSpatial.Projections.KnownCoordinateSystems.Projected.Asia.AsiaLambertConformalConic)
                     {
                         mainMap.Projection = DotSpatial.Projections.KnownCoordinateSystems.Projected.Asia.AsiaLambertConformalConic;
-                        //mainMap.Projection.LatitudeOfOrigin = 34;
-                        //mainMap.Projection.LongitudeOfCenter = 110;
                         foreach (FeatureLayer layer in mainMap.Layers)
                         {
-                            //if (layer.Projection == null || (layer.Projection as DotSpatial.Projections.ProjDescriptor).ToString() == "Nothing.")
                             layer.Projection = DotSpatial.Projections.KnownCoordinateSystems.Geographic.World.WGS1984;
                             layer.Reproject(mainMap.Projection);
                         }
@@ -1007,12 +830,10 @@ namespace BenMAP
                         mainMap.Projection = DotSpatial.Projections.KnownCoordinateSystems.Geographic.World.WGS1984;
                         foreach (FeatureLayer layer in mainMap.Layers)
                         {
-                            //if (layer.Projection == null || (layer.Projection as DotSpatial.Projections.ProjDescriptor).ToString() == "Nothing.")
                             layer.Projection = DotSpatial.Projections.KnownCoordinateSystems.Projected.Asia.AsiaLambertConformalConic;
                             layer.Reproject(mainMap.Projection);
                         }
                         tsbChangeProjection.Text = "change projection to Albers";
-                        //mainMap.Projection = DotSpatial.Projections.KnownCoordinateSystems.Geographic.World.WGS1984;
                     }
 
 
@@ -1021,12 +842,8 @@ namespace BenMAP
                         grp.Projection.CopyProperties(mainMap.Projection);
                     }
 
-                    //re-assign the map projection
                     mainMap.Projection.CopyProperties(mainMap.Projection);
 
-                    //zoom to reprojected extent
-                    //mainMap.Invalidate();
-                    //mainMap.ResetExtents();
                     mainMap.ViewExtents = mainMap.Layers[0].Extent;
                     return;
                 }
@@ -1037,7 +854,6 @@ namespace BenMAP
                     mainMap.Projection = DotSpatial.Projections.KnownCoordinateSystems.Projected.NorthAmerica.USAContiguousLambertConformalConic;
                     foreach (FeatureLayer layer in mainMap.Layers)
                     {
-                        //if (layer.Projection == null || (layer.Projection as DotSpatial.Projections.ProjDescriptor).ToString() == "Nothing.")
                         layer.Projection = DotSpatial.Projections.KnownCoordinateSystems.Geographic.World.WGS1984;
                         layer.Reproject(mainMap.Projection);
                     }
@@ -1048,12 +864,10 @@ namespace BenMAP
                     mainMap.Projection = DotSpatial.Projections.KnownCoordinateSystems.Geographic.World.WGS1984;
                     foreach (FeatureLayer layer in mainMap.Layers)
                     {
-                        //if (layer.Projection == null || (layer.Projection as DotSpatial.Projections.ProjDescriptor).ToString() == "Nothing.")
                         layer.Projection = DotSpatial.Projections.KnownCoordinateSystems.Projected.NorthAmerica.USAContiguousLambertConformalConic;
                         layer.Reproject(mainMap.Projection);
                     }
                     tsbChangeProjection.Text = "change projection to Albers";
-                    //mainMap.Projection = DotSpatial.Projections.KnownCoordinateSystems.Geographic.World.WGS1984;
                 }
 
 
@@ -1062,24 +876,16 @@ namespace BenMAP
                     grp.Projection.CopyProperties(mainMap.Projection);
                 }
 
-                //re-assign the map projection
                 mainMap.Projection.CopyProperties(mainMap.Projection);
 
-                //zoom to reprojected extent
-                //mainMap.Invalidate();
-                //mainMap.ResetExtents();
                 mainMap.ViewExtents = mainMap.Layers[0].Extent;
             }
             catch (Exception ex)
             {
             }
         }
-        #endregion
 
-        #region 等待窗口
-        TipFormGIF waitMess = new TipFormGIF();//等待窗体
-        bool sFlog = true;
-        //--显示等待窗体 
+        TipFormGIF waitMess = new TipFormGIF(); bool sFlog = true;
         private void ShowWaitMess()
         {
             try
@@ -1095,7 +901,6 @@ namespace BenMAP
             }
         }
 
-        //--新开辟一个线程调用 
         public void WaitShow(string msg)
         {
             try
@@ -1104,11 +909,9 @@ namespace BenMAP
                 {
                     sFlog = false;
                     waitMess.Msg = msg;
-                    //ShowWaitMess();
                     System.Threading.Thread upgradeThread = null;
                     upgradeThread = new System.Threading.Thread(new System.Threading.ThreadStart(ShowWaitMess));
                     upgradeThread.Start();
-                    //upgradeThread.IsBackground = true;
                 }
             }
             catch (System.Threading.ThreadAbortException Err)
@@ -1118,10 +921,8 @@ namespace BenMAP
         }
         private delegate void CloseFormDelegate();
         private delegate void ChangeDelegate(string msg);
-        //--关闭等待窗体 
         public void WaitClose()
         {
-            //同步到主线程上
             if (waitMess.InvokeRequired)
                 waitMess.Invoke(new CloseFormDelegate(DoCloseJob));
             else
@@ -1148,7 +949,6 @@ namespace BenMAP
                 {
                     if (waitMess.Created)
                     {
-                        //sFlog = true;
                         waitMess.Msg = msg;
                     }
                 }
@@ -1176,7 +976,6 @@ namespace BenMAP
                 MessageBox.Show(Err.Message);
             }
         }
-        #endregion 等待窗口
 
         private void cboAgeRange_SelectedIndexChanged(object sender, EventArgs e)
         {

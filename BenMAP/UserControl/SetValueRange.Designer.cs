@@ -1,16 +1,9 @@
-﻿namespace WinControls
+namespace WinControls
 {
     partial class SetValueRange
     {
-        /// <summary>
-        /// 必需的设计器变量。
-        /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
-        /// 清理所有正在使用的资源。
-        /// </summary>
-        /// <param name="disposing">如果应释放托管资源，为 true；否则为 false。</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -20,12 +13,7 @@
             base.Dispose(disposing);
         }
 
-        #region Windows 窗体设计器生成的代码
-
-        /// <summary>
-        /// 设计器支持所需的方法 - 不要
-        /// 使用代码编辑器修改此方法的内容。
-        /// </summary>
+        
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
@@ -49,92 +37,62 @@
             this.grbSetValueRange.SuspendLayout();
             this.gbSetColor.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // btnOK
-            // 
-            this.btnOK.Location = new System.Drawing.Point(411, 246);
+                                                this.btnOK.Location = new System.Drawing.Point(411, 246);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(60, 23);
             this.btnOK.TabIndex = 3;
             this.btnOK.Text = "&OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
-            // 
-            // btnCancel
-            // 
-            this.btnCancel.Location = new System.Drawing.Point(480, 246);
+                                                this.btnCancel.Location = new System.Drawing.Point(480, 246);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(60, 23);
             this.btnCancel.TabIndex = 4;
             this.btnCancel.Text = "&Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
+                                                this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(3, 26);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(65, 12);
             this.label1.TabIndex = 0;
             this.label1.Text = "Min Value:";
-            // 
-            // txtMin
-            // 
-            this.txtMin.Location = new System.Drawing.Point(68, 22);
+                                                this.txtMin.Location = new System.Drawing.Point(68, 22);
             this.txtMin.Name = "txtMin";
             this.txtMin.Size = new System.Drawing.Size(83, 21);
             this.txtMin.TabIndex = 1;
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
+                                                this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(238, 26);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(65, 12);
             this.label2.TabIndex = 4;
             this.label2.Text = "Max Value:";
-            // 
-            // txtMax
-            // 
-            this.txtMax.Location = new System.Drawing.Point(303, 22);
+                                                this.txtMax.Location = new System.Drawing.Point(303, 22);
             this.txtMax.Name = "txtMax";
             this.txtMax.Size = new System.Drawing.Size(83, 21);
             this.txtMax.TabIndex = 5;
-            // 
-            // lblUnit1
-            // 
-            this.lblUnit1.AutoSize = true;
+                                                this.lblUnit1.AutoSize = true;
             this.lblUnit1.Location = new System.Drawing.Point(156, 26);
             this.lblUnit1.Name = "lblUnit1";
             this.lblUnit1.Size = new System.Drawing.Size(17, 12);
             this.lblUnit1.TabIndex = 2;
             this.lblUnit1.Text = "  ";
             this.lblUnit1.Visible = false;
-            // 
-            // lblUnit2
-            // 
-            this.lblUnit2.AutoSize = true;
+                                                this.lblUnit2.AutoSize = true;
             this.lblUnit2.Location = new System.Drawing.Point(390, 26);
             this.lblUnit2.Name = "lblUnit2";
             this.lblUnit2.Size = new System.Drawing.Size(17, 12);
             this.lblUnit2.TabIndex = 6;
             this.lblUnit2.Text = "  ";
             this.lblUnit2.Visible = false;
-            // 
-            // btnReset
-            // 
-            this.btnReset.Location = new System.Drawing.Point(278, 246);
+                                                this.btnReset.Location = new System.Drawing.Point(278, 246);
             this.btnReset.Name = "btnReset";
             this.btnReset.Size = new System.Drawing.Size(117, 23);
             this.btnReset.TabIndex = 2;
             this.btnReset.Text = "&Reset to Defaults";
             this.btnReset.UseVisualStyleBackColor = true;
             this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
-            // 
-            // dgvSetColor
-            // 
-            this.dgvSetColor.AllowUserToAddRows = false;
+                                                this.dgvSetColor.AllowUserToAddRows = false;
             this.dgvSetColor.AllowUserToDeleteRows = false;
             this.dgvSetColor.AllowUserToResizeColumns = false;
             this.dgvSetColor.AllowUserToResizeRows = false;
@@ -167,10 +125,7 @@
             this.dgvSetColor.Size = new System.Drawing.Size(538, 69);
             this.dgvSetColor.TabIndex = 5;
             this.dgvSetColor.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvSetColor_CellDoubleClick);
-            // 
-            // grbSetValueRange
-            // 
-            this.grbSetValueRange.Controls.Add(this.btnRebuild);
+                                                this.grbSetValueRange.Controls.Add(this.btnRebuild);
             this.grbSetValueRange.Controls.Add(this.txtMin);
             this.grbSetValueRange.Controls.Add(this.label1);
             this.grbSetValueRange.Controls.Add(this.txtMax);
@@ -183,10 +138,7 @@
             this.grbSetValueRange.TabIndex = 0;
             this.grbSetValueRange.TabStop = false;
             this.grbSetValueRange.Text = "Set Value Range";
-            // 
-            // btnRebuild
-            // 
-            this.btnRebuild.Location = new System.Drawing.Point(457, 21);
+                                                this.btnRebuild.Location = new System.Drawing.Point(457, 21);
             this.btnRebuild.Name = "btnRebuild";
             this.btnRebuild.Size = new System.Drawing.Size(75, 23);
             this.btnRebuild.TabIndex = 6;
@@ -194,10 +146,7 @@
             this.toolTip1.SetToolTip(this.btnRebuild, "Click button to rebuild legend using values between \"Min Value\" and \"Max Value\".");
             this.btnRebuild.UseVisualStyleBackColor = true;
             this.btnRebuild.Click += new System.EventHandler(this.btnRebuild_Click);
-            // 
-            // gbSetColor
-            // 
-            this.gbSetColor.Controls.Add(this.label3);
+                                                this.gbSetColor.Controls.Add(this.label3);
             this.gbSetColor.Controls.Add(this.dgvSetColor);
             this.gbSetColor.Location = new System.Drawing.Point(8, 94);
             this.gbSetColor.Name = "gbSetColor";
@@ -205,10 +154,7 @@
             this.gbSetColor.TabIndex = 7;
             this.gbSetColor.TabStop = false;
             this.gbSetColor.Text = "Set Colors and Boundary Values";
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
+                                                this.label3.AutoSize = true;
             this.label3.ForeColor = System.Drawing.Color.Green;
             this.label3.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
             this.label3.Location = new System.Drawing.Point(6, 98);
@@ -217,14 +163,8 @@
             this.label3.TabIndex = 6;
             this.label3.Text = "Double click  a color cell to customize that cell\'s color.\r\n    Single click a bounda" +
                 "ry value cell to change the boundary value.";
-            // 
-            // toolTip1
-            // 
-            this.toolTip1.Tag = "btnRebuild";
-            // 
-            // SetValueRange
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
+                                                this.toolTip1.Tag = "btnRebuild";
+                                                this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(561, 282);
             this.Controls.Add(this.btnReset);
@@ -248,8 +188,7 @@
 
         }
 
-        #endregion Windows 窗体设计器生成的代码
-
+        
         private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Label label1;

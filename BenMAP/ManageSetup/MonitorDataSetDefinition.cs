@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Data;
 using System.Collections;
 using System.Windows.Forms;
@@ -18,7 +18,6 @@ namespace BenMAP
         }
 
         private string _dataSetName;
-        //private object _pollutantID;
         private object _dataSetID;
         private DataTable _dtDataFile;
 
@@ -43,7 +42,6 @@ namespace BenMAP
                 }
                 else
                 {
-                    //automatically generated name-increase the number at the end of the name
                     int number = 0;
                     int monitorDatasetID = 0;
                     do
@@ -76,15 +74,6 @@ namespace BenMAP
                 string commandText = string.Format("select c.pollutantname,a.yyear,count(*) from monitorentries a,monitors b,pollutants c where a.monitorid=b.monitorid and b.pollutantid=c.pollutantid and b.monitordatasetID={0} group by c.pollutantname,a.yyear", id);
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                 olvMonitorDataSets.DataSource = ds.Tables[0];
-                //dgvDataSetContents.DataSource = ds.Tables[0];
-                //dgvDataSetContents.Columns[0].HeaderText = "Pollutant";
-                //dgvDataSetContents.Columns[1].HeaderText = "Year";
-                //dgvDataSetContents.Columns[2].HeaderText = "Count";
-                //dgvDataSetContents.RowHeadersVisible = false;
-                //dgvDataSetContents.AllowUserToResizeRows = false;
-                //dgvDataSetContents.ClearSelection();
-                //dgvDataSetContents.TabStop = false;
-                //dgvDataSetContents.ReadOnly = true;
             }
             catch (Exception ex)
             {
@@ -94,16 +83,6 @@ namespace BenMAP
 
         private void cboPollutant_SelectedIndexChanged(object sender, EventArgs e)
         {
-            //FireBirdHelperBase fb = new ESILFireBirdHelper();
-            //try
-            //{
-            //    string commandText = string.Format("select PollutantID from Pollutants where PollutantName='{0}'", cboPollutant.GetItemText(cboPollutant.SelectedItem));
-            //    _pollutantID = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
-            //}
-            //catch (Exception ex)
-            //{
-            //    Logger.LogError(ex.Message);
-            //}
         }
 
         private void btnOK_Click(object sender, EventArgs e)
@@ -128,10 +107,6 @@ namespace BenMAP
         {
             try
             {
-                //if (System.Text.RegularExpressions.Regex.IsMatch(this.txtYear.Text.Trim(), "^[1-9]{4}$") && e.KeyChar != '\b')
-                //{
-                //    e.Handled = true;
-                //}
                 if ((e.KeyChar >= '0' && e.KeyChar <= '9') || e.KeyChar == (char)8)
                 {
                     e.Handled = false;
@@ -156,7 +131,6 @@ namespace BenMAP
         {
             try
             {
-                // Open，获取文件所在的路径
                 OpenFileDialog openFileDialog = new OpenFileDialog() { RestoreDirectory = true };
                 openFileDialog.InitialDirectory = CommonClass.ResultFilePath;
                 openFileDialog.Filter = "All Files|*.*|CSV files|*.csv|XLS files|*.xls|XLSX files|*.xlsx";
@@ -164,9 +138,7 @@ namespace BenMAP
                 openFileDialog.RestoreDirectory = true;
                 if (openFileDialog.ShowDialog() != DialogResult.OK)
                 { return; }
-                txtMonitorDataFile.Text = openFileDialog.FileName;//将路径填充到txt文本框中
-                //_dtDataFile = dp.ReadCSV2DataTable(txtMonitorDataFile.Text);
-                
+                txtMonitorDataFile.Text = openFileDialog.FileName;
             }
             catch (Exception ex)
             {
@@ -174,15 +146,13 @@ namespace BenMAP
             }
         }
 
-        //private object _dataSetID;
         private void btnLoad_Click(object sender, EventArgs e)
         {
             FireBirdHelperBase fb = new ESILFireBirdHelper();
             try
             {
                 string commandText = string.Empty;
-                //int num = Convert.ToInt32(txtYear.Text);
-                if (cboPollutant.Text==string.Empty)
+                if (cboPollutant.Text == string.Empty)
                 {
                     MessageBox.Show("Please select a pollutant."); return;
                 }
@@ -194,18 +164,6 @@ namespace BenMAP
                 string msg = string.Format("Save this file associated with {0} and {1} ?", cboPollutant.GetItemText(cboPollutant.SelectedItem), txtYear.Text);
                 DialogResult result = MessageBox.Show(msg, "Confirm Edit", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                 if (result == DialogResult.No) return;
-                //if (Path.GetExtension(txtMonitorDataFile.Text).ToLower() == ".csv") { _dtDataFile = CommonClass.ExcelToDataTable(txtMonitorDataFile.Text, 0, "").Tables[0]; }
-                //else
-                //{
-                //    //判断有没有安装Excel
-                //    if (Type.GetTypeFromProgID("Excel.Application") == null)
-                //    {
-                //        MessageBox.Show("Please install Excel.", "Warning", MessageBoxButtons.OK);
-                //        return;
-                //    }
-                //    int sheetIndex = CommonClass.SelectedSheetIndex(txtMonitorDataFile.Text);
-                //    _dtDataFile = CommonClass.ExcelToDataTable(txtMonitorDataFile.Text, sheetIndex, "").Tables[0];
-                //}
                 _dtDataFile = CommonClass.ExcelToDataTable(txtMonitorDataFile.Text);
                 int iMonitorName = -1;
                 int iMonitorDescription = -1;
@@ -313,7 +271,7 @@ namespace BenMAP
             {
                 progressBar1.Visible = false;
                 lblProgress.Text = "";
-                addGridView(_dataSetID); 
+                addGridView(_dataSetID);
                 Logger.LogError(ex.Message);
             }
         }
@@ -322,8 +280,7 @@ namespace BenMAP
             try
             {
                 Dictionary<int, string> dicMetric = new Dictionary<int, string>();
-                string commandText = "select MetricID,MetricName from Metrics ";//where EndPointName!='' union select EndPointID,EndPointName from EndPoints where EndPointID=99";
-                ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                string commandText = "select MetricID,MetricName from Metrics "; ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
                 foreach (DataRow dr in ds.Tables[0].Rows)
                 {
@@ -344,8 +301,7 @@ namespace BenMAP
             try
             {
                 Dictionary<int, string> dicSMetric = new Dictionary<int, string>();
-                string commandText = "select SeasonalMetricID,SeasonalMetricName from SeasonalMetrics ";//where EndPointName!='' union select EndPointID,EndPointName from EndPoints where EndPointID=99";
-                ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                string commandText = "select SeasonalMetricID,SeasonalMetricName from SeasonalMetrics "; ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
                 foreach (DataRow dr in ds.Tables[0].Rows)
                 {
@@ -388,7 +344,7 @@ namespace BenMAP
                 saveFileDialog1.Filter = "CSV File|*.CSV";
                 saveFileDialog1.InitialDirectory = "C:\\";
                 if (saveFileDialog1.ShowDialog() == DialogResult.Cancel)
-                {return;}
+                { return; }
                 string fileName = saveFileDialog1.FileName;
                 DataTable dtOut = new DataTable();
                 dtOut.Columns.Add("Monitor Name", typeof(string));
@@ -411,26 +367,26 @@ namespace BenMAP
                 commandText = string.Format("select first {0} MonitorName,MonitorDescription,Latitude,Longitude,MetricID,SeasonalMetricID,Statistic,Vvalues from Monitors a,MonitorEntries b where a.MonitorID=b.MonitorID", outputRowsNumber);
                 FbDataReader fbDataReader = fb.ExecuteReader(CommonClass.Connection, CommandType.Text, commandText);
                 Byte[] blob = null;
-                string str =string.Empty;
+                string str = string.Empty;
                 while (fbDataReader.Read())
                 {
                     DataRow dr = dtOut.NewRow();
                     blob = fbDataReader["Vvalues"] as byte[];
                     str = System.Text.Encoding.Default.GetString(blob);
-                    dr["Monitor Name"]=fbDataReader["MonitorName"].ToString();
-                    dr["Monitor Description"]=fbDataReader["MonitorDescription"].ToString();
-                    dr["Latitude"]=Convert.ToDouble(fbDataReader["Latitude"]);
-                    dr["Longitude"]=Convert.ToDouble(fbDataReader["Longitude"]);
+                    dr["Monitor Name"] = fbDataReader["MonitorName"].ToString();
+                    dr["Monitor Description"] = fbDataReader["MonitorDescription"].ToString();
+                    dr["Latitude"] = Convert.ToDouble(fbDataReader["Latitude"]);
+                    dr["Longitude"] = Convert.ToDouble(fbDataReader["Longitude"]);
                     if (!(fbDataReader["MetricID"] is DBNull))
-                        {
-                            dr["Metric"] = getStringFromID(Convert.ToInt32(fbDataReader["MetricID"]),dicMetric);
-                        }
-                        if (!(fbDataReader["SeasonalMetricID"] is DBNull))
-                        {
-                            dr["Seasonal Metric"] = getStringFromID(Convert.ToInt32(fbDataReader["SeasonalMetricID"]),dicSeasonalMetric);
-                        }                    
-                    dr["Statistic"]=fbDataReader["Statistic"].ToString();
-                    dr["Values"]=str;
+                    {
+                        dr["Metric"] = getStringFromID(Convert.ToInt32(fbDataReader["MetricID"]), dicMetric);
+                    }
+                    if (!(fbDataReader["SeasonalMetricID"] is DBNull))
+                    {
+                        dr["Seasonal Metric"] = getStringFromID(Convert.ToInt32(fbDataReader["SeasonalMetricID"]), dicSeasonalMetric);
+                    }
+                    dr["Statistic"] = fbDataReader["Statistic"].ToString();
+                    dr["Values"] = str;
                     dtOut.Rows.Add(dr);
                 }
                 CommonClass.SaveCSV(dtOut, fileName);
@@ -441,18 +397,12 @@ namespace BenMAP
             }
         }
 
-        /// <summary>
-        /// 将DataTable中数据写入到CSV文件中
-        /// </summary>
-        /// <param name="dt">提供保存数据的DataTable</param>
-        /// <param name="fileName">CSV的文件路径</param>
         public void SaveCSV(DataTable dt, string fileName)
         {
             FileStream fs = new FileStream(fileName, System.IO.FileMode.Create, System.IO.FileAccess.Write);
             StreamWriter sw = new StreamWriter(fs, System.Text.Encoding.UTF8);
             string data = "";
 
-            //写出列名称
             for (int i = 0; i < dt.Columns.Count; i++)
             {
                 data += dt.Columns[i].ColumnName.ToString();
@@ -463,7 +413,6 @@ namespace BenMAP
             }
             sw.WriteLine(data);
 
-            //写出各行数据
             for (int i = 0; i < dt.Rows.Count; i++)
             {
                 data = "";

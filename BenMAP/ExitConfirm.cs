@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -20,13 +20,6 @@ namespace BenMAP
 
         private void UpdateConfig(string Xvalue)
         {
-            //XmlDocument doc = new XmlDocument();
-            //doc.Load(Application.ExecutablePath + ".config");
-            //XmlNode node = doc.SelectSingleNode(@"//add[@key='IsShowExit']");
-            //XmlElement ele = (XmlElement)node;
-            //ele.SetAttribute("value", Xvalue);
-            //doc.Save(Application.ExecutablePath + ".config");
-            //ConfigurationManager.RefreshSection("appSettings");
             string iniPath = CommonClass.ResultFilePath + @"\BenMAP.ini";
             if (System.IO.File.Exists(iniPath))
             {

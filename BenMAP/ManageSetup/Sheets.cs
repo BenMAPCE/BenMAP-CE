@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -38,8 +38,8 @@ namespace BenMAP
         {
             try
             {
-                string sheetName=lstSheets.GetItemText(lstSheets.SelectedItem);
-                sheetIndex=sheets[sheetName];
+                string sheetName = lstSheets.GetItemText(lstSheets.SelectedItem);
+                sheetIndex = sheets[sheetName];
                 this.DialogResult = DialogResult.OK;
             }
             catch (Exception ex)

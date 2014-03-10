@@ -1,16 +1,9 @@
-﻿namespace BenMAP
+namespace BenMAP
 {
     partial class GridType
     {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -20,12 +13,7 @@
             base.Dispose(disposing);
         }
 
-        #region Windows Form Designer generated code
-
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
+        
         private void InitializeComponent()
         {
             this.cboGrid = new System.Windows.Forms.ComboBox();
@@ -36,76 +24,52 @@
             this.lblRegion = new System.Windows.Forms.Label();
             this.lblTip = new System.Windows.Forms.Label();
             this.SuspendLayout();
-            // 
-            // cboGrid
-            // 
-            this.cboGrid.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+                                                this.cboGrid.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboGrid.FormattingEnabled = true;
             this.cboGrid.Location = new System.Drawing.Point(65, 37);
             this.cboGrid.Name = "cboGrid";
             this.cboGrid.Size = new System.Drawing.Size(217, 22);
             this.cboGrid.TabIndex = 13;
             this.cboGrid.SelectedValueChanged += new System.EventHandler(this.cboGrid_SelectedValueChanged);
-            // 
-            // cboRegion
-            // 
-            this.cboRegion.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+                                                this.cboRegion.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboRegion.FormattingEnabled = true;
             this.cboRegion.Location = new System.Drawing.Point(65, 79);
             this.cboRegion.Name = "cboRegion";
             this.cboRegion.Size = new System.Drawing.Size(217, 22);
             this.cboRegion.TabIndex = 12;
-            // 
-            // btnCancel
-            // 
-            this.btnCancel.Location = new System.Drawing.Point(123, 116);
+                                                this.btnCancel.Location = new System.Drawing.Point(123, 116);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 27);
             this.btnCancel.TabIndex = 11;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
-            // 
-            // btnOK
-            // 
-            this.btnOK.Location = new System.Drawing.Point(210, 116);
+                                                this.btnOK.Location = new System.Drawing.Point(210, 116);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 27);
             this.btnOK.TabIndex = 8;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
-            // 
-            // lblGrid
-            // 
-            this.lblGrid.AutoSize = true;
+                                                this.lblGrid.AutoSize = true;
             this.lblGrid.Location = new System.Drawing.Point(12, 40);
             this.lblGrid.Name = "lblGrid";
             this.lblGrid.Size = new System.Drawing.Size(33, 14);
             this.lblGrid.TabIndex = 3;
             this.lblGrid.Text = "Grid:";
-            // 
-            // lblRegion
-            // 
-            this.lblRegion.AutoSize = true;
+                                                this.lblRegion.AutoSize = true;
             this.lblRegion.Location = new System.Drawing.Point(12, 82);
             this.lblRegion.Name = "lblRegion";
             this.lblRegion.Size = new System.Drawing.Size(53, 14);
             this.lblRegion.TabIndex = 2;
             this.lblRegion.Text = "Domain:";
-            // 
-            // lblTip
-            // 
-            this.lblTip.AutoSize = true;
+                                                this.lblTip.AutoSize = true;
             this.lblTip.Location = new System.Drawing.Point(12, 9);
             this.lblTip.Name = "lblTip";
             this.lblTip.Size = new System.Drawing.Size(145, 14);
             this.lblTip.TabIndex = 0;
             this.lblTip.Text = "Please choose Grid Type :";
-            // 
-            // GridType
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
+                                                this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(302, 155);
             this.Controls.Add(this.cboGrid);
@@ -127,8 +91,7 @@
 
         }
 
-        #endregion
-
+        
         private System.Windows.Forms.Label lblTip;
         private System.Windows.Forms.Label lblRegion;
         private System.Windows.Forms.Label lblGrid;

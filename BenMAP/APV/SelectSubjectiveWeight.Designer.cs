@@ -1,16 +1,9 @@
-﻿namespace BenMAP
+namespace BenMAP
 {
     partial class SelectSubjectiveWeight
     {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -20,12 +13,7 @@
             base.Dispose(disposing);
         }
 
-        #region Windows Form Designer generated code
-
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
+        
         private void InitializeComponent()
         {
             this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -64,10 +52,7 @@
             this.groupBox3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.treeListView)).BeginInit();
             this.SuspendLayout();
-            // 
-            // groupBox2
-            // 
-            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+                                                this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox2.Controls.Add(this.btnOK);
             this.groupBox2.Controls.Add(this.btnCancel);
@@ -76,10 +61,7 @@
             this.groupBox2.Size = new System.Drawing.Size(788, 59);
             this.groupBox2.TabIndex = 2;
             this.groupBox2.TabStop = false;
-            // 
-            // btnOK
-            // 
-            this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+                                                this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOK.Location = new System.Drawing.Point(635, 17);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 27);
@@ -87,10 +69,7 @@
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
-            // 
-            // btnCancel
-            // 
-            this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+                                                this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.Location = new System.Drawing.Point(525, 17);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 27);
@@ -98,10 +77,7 @@
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
-            // 
-            // groupBox1
-            // 
-            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                                                this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox1.Controls.Add(this.groupBox3);
@@ -112,10 +88,7 @@
             this.groupBox1.Size = new System.Drawing.Size(788, 484);
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
-            // 
-            // groupBox3
-            // 
-            this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                                                this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox3.Controls.Add(this.treeListView);
@@ -124,10 +97,7 @@
             this.groupBox3.Size = new System.Drawing.Size(772, 443);
             this.groupBox3.TabIndex = 2;
             this.groupBox3.TabStop = false;
-            // 
-            // treeListView
-            // 
-            this.treeListView.AllColumns.Add(this.treeColumnName);
+                                                this.treeListView.AllColumns.Add(this.treeColumnName);
             this.treeListView.AllColumns.Add(this.olvColumn2);
             this.treeListView.AllColumns.Add(this.olvColumn1);
             this.treeListView.AllColumns.Add(this.olvColumn8);
@@ -204,188 +174,110 @@
             this.treeListView.VirtualMode = true;
             this.treeListView.CellEditFinishing += new BrightIdeasSoftware.CellEditEventHandler(this.treeListView_CellEditFinishing);
             this.treeListView.CellEditStarting += new BrightIdeasSoftware.CellEditEventHandler(this.treeListView_CellEditStarting);
-            // 
-            // treeColumnName
-            // 
-            this.treeColumnName.AspectName = "Name";
+                                                this.treeColumnName.AspectName = "Name";
             this.treeColumnName.IsEditable = false;
             this.treeColumnName.IsTileViewColumn = true;
             this.treeColumnName.Text = "Endoint Group/Endpoint/Author";
             this.treeColumnName.UseInitialLetterForGroup = true;
             this.treeColumnName.Width = 180;
             this.treeColumnName.WordWrap = true;
-            // 
-            // olvColumn2
-            // 
-            this.olvColumn2.AspectName = "Weight";
+                                                this.olvColumn2.AspectName = "Weight";
             this.olvColumn2.AspectToStringFormat = "";
             this.olvColumn2.Text = "Weight";
-            // 
-            // olvColumn1
-            // 
-            this.olvColumn1.AspectName = "PoolingMethod";
+                                                this.olvColumn1.AspectName = "PoolingMethod";
             this.olvColumn1.HeaderForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
             this.olvColumn1.IsEditable = false;
             this.olvColumn1.Text = "Pooling Method";
             this.olvColumn1.Width = 100;
-            // 
-            // olvColumn8
-            // 
-            this.olvColumn8.AspectName = "CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Author" +
+                                                this.olvColumn8.AspectName = "CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Author" +
                 "";
             this.olvColumn8.IsEditable = false;
             this.olvColumn8.Text = "Author";
-            // 
-            // olvColumn3
-            // 
-            this.olvColumn3.AspectName = "CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Metric" +
+                                                this.olvColumn3.AspectName = "CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Metric" +
                 ".MetricName";
             this.olvColumn3.IsEditable = false;
             this.olvColumn3.Text = "Metric";
-            // 
-            // olvColumn4
-            // 
-            this.olvColumn4.AspectName = "CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Percen" +
+                                                this.olvColumn4.AspectName = "CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Percen" +
                 "tile";
             this.olvColumn4.IsEditable = false;
             this.olvColumn4.Text = "Percentile";
-            // 
-            // olvColumn5
-            // 
-            this.olvColumn5.AspectName = "CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Year";
+                                                this.olvColumn5.AspectName = "CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Year";
             this.olvColumn5.IsEditable = false;
             this.olvColumn5.Text = "Year";
-            // 
-            // olvColumn9
-            // 
-            this.olvColumn9.AspectName = "CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.strLoc" +
+                                                this.olvColumn9.AspectName = "CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.strLoc" +
                 "ations";
             this.olvColumn9.IsEditable = false;
             this.olvColumn9.Text = "Location";
-            // 
-            // olvColumn6
-            // 
-            this.olvColumn6.AspectName = "CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Qualif" +
+                                                this.olvColumn6.AspectName = "CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Qualif" +
                 "ier";
             this.olvColumn6.IsEditable = false;
             this.olvColumn6.Text = "Qualifier";
-            // 
-            // olvColumn7
-            // 
-            this.olvColumn7.AspectName = "CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.OtherP" +
+                                                this.olvColumn7.AspectName = "CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.OtherP" +
                 "ollutants";
             this.olvColumn7.IsEditable = false;
             this.olvColumn7.Text = "Other Pollutants";
-            // 
-            // olvColumn10
-            // 
-            this.olvColumn10.AspectName = "CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Refera" +
+                                                this.olvColumn10.AspectName = "CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Refera" +
                 "nce";
             this.olvColumn10.IsEditable = false;
             this.olvColumn10.Text = "Reference";
-            // 
-            // olvColumn11
-            // 
-            this.olvColumn11.AspectName = "CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Functi" +
+                                                this.olvColumn11.AspectName = "CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Functi" +
                 "on";
             this.olvColumn11.IsEditable = false;
             this.olvColumn11.Text = "Function";
-            // 
-            // olvColumn18
-            // 
-            this.olvColumn18.AspectName = "CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.BaseLi" +
+                                                this.olvColumn18.AspectName = "CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.BaseLi" +
                 "neIncidenceFunction";
             this.olvColumn18.IsEditable = false;
             this.olvColumn18.Text = "Baseline Incidence Function";
-            // 
-            // olvColumn19
-            // 
-            this.olvColumn19.AspectName = "CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.BetaDi" +
+                                                this.olvColumn19.AspectName = "CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.BetaDi" +
                 "stribution";
             this.olvColumn19.IsEditable = false;
             this.olvColumn19.Text = "Beta Distribution";
-            // 
-            // olvColumn20
-            // 
-            this.olvColumn20.AspectName = "CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Beta";
+                                                this.olvColumn20.AspectName = "CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Beta";
             this.olvColumn20.IsEditable = false;
             this.olvColumn20.Text = "Beta";
-            // 
-            // olvColumn21
-            // 
-            this.olvColumn21.AspectName = "CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.BetaPa" +
+                                                this.olvColumn21.AspectName = "CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.BetaPa" +
                 "rameter1";
             this.olvColumn21.IsEditable = false;
             this.olvColumn21.Text = "Beta Parameter 1";
-            // 
-            // olvColumn22
-            // 
-            this.olvColumn22.AspectName = "CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.BetaPa" +
+                                                this.olvColumn22.AspectName = "CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.BetaPa" +
                 "rameter2";
             this.olvColumn22.IsEditable = false;
             this.olvColumn22.Text = "Beta Parameter 2";
-            // 
-            // olvColumn23
-            // 
-            this.olvColumn23.AspectName = "CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.AConta" +
+                                                this.olvColumn23.AspectName = "CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.AConta" +
                 "ntDescription";
             this.olvColumn23.IsEditable = false;
             this.olvColumn23.Text = "A Description";
-            // 
-            // olvColumn24
-            // 
-            this.olvColumn24.AspectName = "CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.AConta" +
+                                                this.olvColumn24.AspectName = "CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.AConta" +
                 "ntValue";
             this.olvColumn24.IsEditable = false;
             this.olvColumn24.Text = "A";
-            // 
-            // olvColumn25
-            // 
-            this.olvColumn25.AspectName = "CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.BConta" +
+                                                this.olvColumn25.AspectName = "CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.BConta" +
                 "ntDescription";
             this.olvColumn25.IsEditable = false;
             this.olvColumn25.Text = "B Description";
-            // 
-            // olvColumn26
-            // 
-            this.olvColumn26.AspectName = "CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.BConta" +
+                                                this.olvColumn26.AspectName = "CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.BConta" +
                 "ntValue";
             this.olvColumn26.IsEditable = false;
             this.olvColumn26.Text = "B";
-            // 
-            // olvColumn27
-            // 
-            this.olvColumn27.AspectName = "CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.CConta" +
+                                                this.olvColumn27.AspectName = "CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.CConta" +
                 "ntDescription";
             this.olvColumn27.IsEditable = false;
             this.olvColumn27.Text = "C Description";
-            // 
-            // olvColumn28
-            // 
-            this.olvColumn28.AspectName = "CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.CConta" +
+                                                this.olvColumn28.AspectName = "CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.CConta" +
                 "ntValue";
             this.olvColumn28.IsEditable = false;
             this.olvColumn28.Text = "C";
-            // 
-            // txtPoolingWindowName
-            // 
-            this.txtPoolingWindowName.Location = new System.Drawing.Point(150, 12);
+                                                this.txtPoolingWindowName.Location = new System.Drawing.Point(150, 12);
             this.txtPoolingWindowName.Name = "txtPoolingWindowName";
             this.txtPoolingWindowName.Size = new System.Drawing.Size(200, 22);
             this.txtPoolingWindowName.TabIndex = 1;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
+                                                this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(10, 18);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(134, 14);
             this.label1.TabIndex = 0;
             this.label1.Text = "Pooling Window Name:";
-            // 
-            // SelectSubjectiveWeight
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
+                                                this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(809, 550);
             this.Controls.Add(this.groupBox2);
@@ -404,8 +296,7 @@
 
         }
 
-        #endregion
-
+        
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.TextBox txtPoolingWindowName;

@@ -1,16 +1,9 @@
-﻿namespace BenMAP
+namespace BenMAP
 {
     partial class LoadVariableDatabase
     {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -20,12 +13,7 @@
             base.Dispose(disposing);
         }
 
-        #region Windows Form Designer generated code
-
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
+        
         private void InitializeComponent()
         {
             this.lblGridDefinition = new System.Windows.Forms.Label();
@@ -40,36 +28,24 @@
             this.grpLoadDatabase.SuspendLayout();
             this.grpCanceOK.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // lblGridDefinition
-            // 
-            this.lblGridDefinition.AutoSize = true;
+                                                this.lblGridDefinition.AutoSize = true;
             this.lblGridDefinition.Location = new System.Drawing.Point(6, 15);
             this.lblGridDefinition.Name = "lblGridDefinition";
             this.lblGridDefinition.Size = new System.Drawing.Size(89, 14);
             this.lblGridDefinition.TabIndex = 0;
             this.lblGridDefinition.Text = "Grid Definition:";
-            // 
-            // lblDatabase
-            // 
-            this.lblDatabase.AutoSize = true;
+                                                this.lblDatabase.AutoSize = true;
             this.lblDatabase.Location = new System.Drawing.Point(6, 65);
             this.lblDatabase.Name = "lblDatabase";
             this.lblDatabase.Size = new System.Drawing.Size(63, 14);
             this.lblDatabase.TabIndex = 1;
             this.lblDatabase.Text = "Database:";
-            // 
-            // txtDatabase
-            // 
-            this.txtDatabase.Location = new System.Drawing.Point(8, 82);
+                                                this.txtDatabase.Location = new System.Drawing.Point(8, 82);
             this.txtDatabase.Name = "txtDatabase";
             this.txtDatabase.ReadOnly = true;
             this.txtDatabase.Size = new System.Drawing.Size(197, 22);
             this.txtDatabase.TabIndex = 3;
-            // 
-            // grpLoadDatabase
-            // 
-            this.grpLoadDatabase.Controls.Add(this.cboGridDefinition);
+                                                this.grpLoadDatabase.Controls.Add(this.cboGridDefinition);
             this.grpLoadDatabase.Controls.Add(this.btnBrowse);
             this.grpLoadDatabase.Controls.Add(this.lblGridDefinition);
             this.grpLoadDatabase.Controls.Add(this.txtDatabase);
@@ -79,59 +55,41 @@
             this.grpLoadDatabase.Size = new System.Drawing.Size(295, 114);
             this.grpLoadDatabase.TabIndex = 4;
             this.grpLoadDatabase.TabStop = false;
-            // 
-            // cboGridDefinition
-            // 
-            this.cboGridDefinition.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+                                                this.cboGridDefinition.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboGridDefinition.FormattingEnabled = true;
             this.cboGridDefinition.Location = new System.Drawing.Point(8, 32);
             this.cboGridDefinition.Name = "cboGridDefinition";
             this.cboGridDefinition.Size = new System.Drawing.Size(197, 22);
             this.cboGridDefinition.TabIndex = 5;
-            // 
-            // btnBrowse
-            // 
-            this.btnBrowse.Location = new System.Drawing.Point(211, 79);
+                                                this.btnBrowse.Location = new System.Drawing.Point(211, 79);
             this.btnBrowse.Name = "btnBrowse";
             this.btnBrowse.Size = new System.Drawing.Size(75, 27);
             this.btnBrowse.TabIndex = 4;
             this.btnBrowse.Text = "Browse";
             this.btnBrowse.UseVisualStyleBackColor = true;
             this.btnBrowse.Click += new System.EventHandler(this.btnBrowse_Click);
-            // 
-            // grpCanceOK
-            // 
-            this.grpCanceOK.Controls.Add(this.btnOK);
+                                                this.grpCanceOK.Controls.Add(this.btnOK);
             this.grpCanceOK.Controls.Add(this.btnCancel);
             this.grpCanceOK.Location = new System.Drawing.Point(12, 120);
             this.grpCanceOK.Name = "grpCanceOK";
             this.grpCanceOK.Size = new System.Drawing.Size(297, 57);
             this.grpCanceOK.TabIndex = 5;
             this.grpCanceOK.TabStop = false;
-            // 
-            // btnOK
-            // 
-            this.btnOK.Location = new System.Drawing.Point(211, 23);
+                                                this.btnOK.Location = new System.Drawing.Point(211, 23);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 27);
             this.btnOK.TabIndex = 1;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
-            // 
-            // btnCancel
-            // 
-            this.btnCancel.Location = new System.Drawing.Point(130, 23);
+                                                this.btnCancel.Location = new System.Drawing.Point(130, 23);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 27);
             this.btnCancel.TabIndex = 0;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
-            // 
-            // LoadVariableDatabase
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
+                                                this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(321, 183);
             this.Controls.Add(this.grpCanceOK);
@@ -151,8 +109,7 @@
 
         }
 
-        #endregion
-
+        
         private System.Windows.Forms.Label lblGridDefinition;
         private System.Windows.Forms.Label lblDatabase;
         private System.Windows.Forms.TextBox txtDatabase;

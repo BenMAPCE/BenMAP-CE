@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -33,10 +33,7 @@ namespace BenMAP
                     tlist.GenerateAspectGetters();
                     this.olvAvailable.TileSize = new Size(300, 130);
                     this.olvAvailable.ItemRenderer = new Tools.BusinessCardRenderer();
-                    //TypedObjectListView<CRSelectFunctionCalculateValue> tlist = new TypedObjectListView<CRSelectFunctionCalculateValue>(this.olvAvailable);
-                    //tlist.GenerateAspectGetters();
-                    // this.olvAvailable.TileSize = new Size(250, 120);
-                    this.olvAvailable.ItemRenderer = new Tools.BusinessCardRenderer();
+                                                                                this.olvAvailable.ItemRenderer = new Tools.BusinessCardRenderer();
                     olvAvailable.OwnerDraw = true;
                 }
                 else
@@ -116,8 +113,7 @@ namespace BenMAP
                 }
                 this.olvSelected.CheckBoxes = false;
                 List<CRSelectFunctionCalculateValue> lstAvailable = (List<CRSelectFunctionCalculateValue>)this.olvAvailable.Objects;
-                //-----------------------------绑定DataSet---------------------------
-
+                
                 Dictionary<string, int> DicFilterDataSet = new Dictionary<string, int>();
                 DicFilterDataSet.Add("", -1);
                 var query = from a in lstAvailable select new { a.CRSelectFunction.BenMAPHealthImpactFunction.DataSetName, a.CRSelectFunction.BenMAPHealthImpactFunction.DataSetID };
@@ -126,12 +122,10 @@ namespace BenMAP
                     List<KeyValuePair<string, int>> lstFilterDataSet = DicFilterDataSet.ToList();
                     lstFilterDataSet.AddRange(query.Distinct().ToDictionary(p => p.DataSetName, p => p.DataSetID));
                     DicFilterDataSet = lstFilterDataSet.ToDictionary(p => p.Key, p => p.Value);
-                   // DicFilterDataSet = query.Distinct().ToDictionary(p => p.DataSetName, p => p.DataSetID);
-                }
+                                   }
                 BindingSource bs = new BindingSource();
                
-               // DicFilterDataSet = (Dictionary<string, int>)DicFilterDataSet.OrderBy(p => p.Value);
-                bs.DataSource = DicFilterDataSet;
+                               bs.DataSource = DicFilterDataSet;
                 this.cbDataSet.DataSource = bs;
                 cbDataSet.DisplayMember = "Key";
                 cbDataSet.ValueMember = "Value";
@@ -148,18 +142,14 @@ namespace BenMAP
                 }
                 BindingSource bsqueryGroup = new BindingSource();
                 
-               // DicFilterGroup = (Dictionary<string, int>)DicFilterGroup.OrderBy(p => p.Value);
-                bsqueryGroup.DataSource = DicFilterGroup;
+                               bsqueryGroup.DataSource = DicFilterGroup;
                 cbEndPointGroup.DataSource = bsqueryGroup;
                 cbEndPointGroup.DisplayMember = "Key";
                 cbEndPointGroup.ValueMember = "Value";
 
-                //------------bingdingcboPoolingMethod----------------------------------------
-                //this.cboPoolingMethod.Items.Add(Enum.GetValues(PoolingMethodTypeEnum));
-                this.cboPoolingMethod.DataSource = Enum.GetNames(typeof(PoolingMethodTypeEnum));
+                                                this.cboPoolingMethod.DataSource = Enum.GetNames(typeof(PoolingMethodTypeEnum));
 
-                //-------------bingding GridType---------------------------
-                if (CommonClass.GBenMAPGrid != null)
+                                if (CommonClass.GBenMAPGrid != null)
                 {
                     this.txtTargetGridType.Text = CommonClass.GBenMAPGrid.GridDefinitionName;
                 }
@@ -194,35 +184,16 @@ namespace BenMAP
             this.DialogResult = DialogResult.Cancel;
         }
 
-        //private void btnBrowse_Click(object sender, EventArgs e)
-        //{
-        //    try
-        //    {
-        //        OpenFileDialog openFileDialog = new OpenFileDialog();
-        //        openFileDialog.InitialDirectory = Application.StartupPath + @"E:\";
-        //        openFileDialog.Filter = "Configuration Results|*.cfgr";
-        //        openFileDialog.FilterIndex = 3;
-        //        openFileDialog.RestoreDirectory = true;
-        //        if (openFileDialog.ShowDialog() != DialogResult.OK) { return; }
-        //        cboConfigurationResultFileName.Text = openFileDialog.FileName;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Logger.LogError(ex);
-        //    }
-        //}
-
+                                                                                                                                        
         private void btnNext_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(tbPoolingWindowName.Text))
             {
-                MessageBox.Show("");//-------------重写
-                return;
+                MessageBox.Show("");                return;
             }
             if(olvSelected.Objects ==null)
             {
-                MessageBox.Show("");//--------------重写
-                return;
+                MessageBox.Show("");                return;
             }
             List<CRSelectFunctionCalculateValue> lstSelected= olvSelected.Objects as List<CRSelectFunctionCalculateValue>;
             if (CommonClass.IncidencePoolingAndAggregation == null)
@@ -236,14 +207,11 @@ namespace BenMAP
             CommonClass.IncidencePoolingAndAggregation.PoolingMethodType =(PoolingMethodTypeEnum) cboPoolingMethod.SelectedIndex  ;
             if (CommonClass.IncidencePoolingAndAggregation.PoolingMethodType == PoolingMethodTypeEnum.SubjectiveWeights)
             {
-                //--------------------加载weight-------------------------------------
-                SelectSubjectiveWeight frmAPV = new SelectSubjectiveWeight();
+                                SelectSubjectiveWeight frmAPV = new SelectSubjectiveWeight();
                 DialogResult rtnAPV = frmAPV.ShowDialog();
                 if (rtnAPV != DialogResult.OK) { return; }
-                //-------------------得到结果----------------------------------------
-            }
-            CommonClass.IncidencePoolingAndAggregation.ConfigurationResultsFilePath = "";//--------------------------现在没有用到。
-
+                            }
+            CommonClass.IncidencePoolingAndAggregation.ConfigurationResultsFilePath = "";
             SelectValuationMethods frm = new SelectValuationMethods();
             DialogResult rtn = frm.ShowDialog();
             if (rtn != DialogResult.OK) { return; }
@@ -258,8 +226,7 @@ namespace BenMAP
         }
         private void ChangeView(ObjectListView listview, ComboBox comboBox)
         {
-            // Handle restrictions on Tile view
-            if (comboBox.SelectedIndex == 0)
+                        if (comboBox.SelectedIndex == 0)
             {
                 if (listview.VirtualMode)
                 {
@@ -275,16 +242,7 @@ namespace BenMAP
 
             switch (comboBox.SelectedIndex)
             {
-                //case 0:
-                //    listview.View = View.SmallIcon;
-                //    break;
-                //case 1:
-                //    listview.View = View.LargeIcon;
-                //    break;
-                //case 2:
-                //    listview.View = View.List;
-                //    break;
-                case 0:
+                                                                                                                                                                case 0:
                     listview.View = View.Tile;
                     
                     break;
@@ -292,8 +250,7 @@ namespace BenMAP
                     listview.View = View.Details;
                     break;
             }
-           // listview.Refresh();
-        }
+                   }
 
         private void textBoxFilterSimple_TextChanged(object sender, EventArgs e)
         {
@@ -325,19 +282,15 @@ namespace BenMAP
                         break;
                 }
             }
-            // Setup a default renderer to draw the filter matches
-            if (filter == null)
+                        if (filter == null)
                 olv.DefaultRenderer = null;
             else
             {
                 olv.DefaultRenderer = new HighlightTextRenderer(filter);
 
-                // Uncomment this line to see how the GDI+ rendering looks
-                //olv.DefaultRenderer = new HighlightTextRenderer { Filter = filter, UseGdiTextRendering = false };
-            }
+                                            }
 
-            // Some lists have renderers already installed
-            HighlightTextRenderer highlightingRenderer = olv.GetColumn(0).Renderer as HighlightTextRenderer;
+                        HighlightTextRenderer highlightingRenderer = olv.GetColumn(0).Renderer as HighlightTextRenderer;
             if (highlightingRenderer != null)
                 highlightingRenderer.Filter = filter;
 
@@ -379,27 +332,17 @@ namespace BenMAP
 
         private void cbDataSet_SelectedIndexChanged(object sender, EventArgs e)
         {
-           // this.olvAvailable.
-            ObjectListView olv = olvAvailable;
+                       ObjectListView olv = olvAvailable;
             if (olv == null || olv.IsDisposed)
                 return;
             OLVColumn column = olv.GetColumn("olvcDataSet");
 
-            // Collect all the checked values
-            ArrayList chosenValues = new ArrayList();
+                        ArrayList chosenValues = new ArrayList();
             KeyValuePair<string, int> kvp = (KeyValuePair<string, int>)cbDataSet.SelectedItem;
             if (!string.IsNullOrEmpty(kvp.Key))
             {
                 chosenValues.Add(kvp.Key);
-                //foreach (object x in checkedList.CheckedItems)
-                //{
-                //    ICluster cluster = x as ICluster;
-                //    if (cluster != null)
-                //    {
-                //        chosenValues.Add(cluster.ClusterKey);
-                //    }
-                //}
-                olvcDataSet.ValuesChosenForFiltering = chosenValues;
+                                                                                                                                                olvcDataSet.ValuesChosenForFiltering = chosenValues;
 
                 olv.UpdateColumnFiltering();
             }
@@ -413,27 +356,17 @@ namespace BenMAP
 
         private void cbEndPointGroup_SelectedIndexChanged(object sender, EventArgs e)
         {
-            // this.olvAvailable.
-            ObjectListView olv = olvAvailable;
+                        ObjectListView olv = olvAvailable;
             if (olv == null || olv.IsDisposed)
                 return;
             OLVColumn column = olv.GetColumn("olvcEndPointGroup");
 
-            // Collect all the checked values
-            ArrayList chosenValues = new ArrayList();
+                        ArrayList chosenValues = new ArrayList();
             KeyValuePair<string, int> kvp = (KeyValuePair<string, int>)cbEndPointGroup.SelectedItem;
             if (!string.IsNullOrEmpty(kvp.Key))
             {
                 chosenValues.Add(kvp.Key);
-                //foreach (object x in checkedList.CheckedItems)
-                //{
-                //    ICluster cluster = x as ICluster;
-                //    if (cluster != null)
-                //    {
-                //        chosenValues.Add(cluster.ClusterKey);
-                //    }
-                //}
-                olvcEndPointGroup.ValuesChosenForFiltering = chosenValues;
+                                                                                                                                                olvcEndPointGroup.ValuesChosenForFiltering = chosenValues;
                 olv.UpdateColumnFiltering();
                 
             }
@@ -450,8 +383,7 @@ namespace BenMAP
         {
             try
             {
-                List<CRSelectFunctionCalculateValue> lstAvailable = new List<CRSelectFunctionCalculateValue>();// (List<CRSelectFunctionCalculateValue>)this.olvAvailable.SelectedObjects;
-
+                List<CRSelectFunctionCalculateValue> lstAvailable = new List<CRSelectFunctionCalculateValue>();
                 foreach (CRSelectFunctionCalculateValue cr in olvAvailable.SelectedObjects)
                 {
                     lstAvailable.Add(cr);

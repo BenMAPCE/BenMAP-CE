@@ -1,16 +1,9 @@
-﻿namespace BenMAP
+namespace BenMAP
 {
     partial class ModelFileConcatenator
     {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -20,12 +13,7 @@
             base.Dispose(disposing);
         }
 
-        #region Windows Form Designer generated code
-
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
+        
         private void InitializeComponent()
         {
             this.txtWLowCol = new System.Windows.Forms.TextBox();
@@ -60,45 +48,30 @@
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // txtWLowCol
-            // 
-            this.txtWLowCol.Location = new System.Drawing.Point(280, 141);
+                                                this.txtWLowCol.Location = new System.Drawing.Point(280, 141);
             this.txtWLowCol.Name = "txtWLowCol";
             this.txtWLowCol.Size = new System.Drawing.Size(68, 22);
             this.txtWLowCol.TabIndex = 0;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
+                                                this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(278, 115);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(77, 14);
             this.label1.TabIndex = 1;
             this.label1.Text = "Lower Bound";
-            // 
-            // btnSelectWesFiles
-            // 
-            this.btnSelectWesFiles.Location = new System.Drawing.Point(12, 178);
+                                                this.btnSelectWesFiles.Location = new System.Drawing.Point(12, 178);
             this.btnSelectWesFiles.Name = "btnSelectWesFiles";
             this.btnSelectWesFiles.Size = new System.Drawing.Size(195, 27);
             this.btnSelectWesFiles.TabIndex = 2;
             this.btnSelectWesFiles.Text = "Select Western Domain files";
             this.btnSelectWesFiles.UseVisualStyleBackColor = true;
-            // 
-            // chkConvert
-            // 
-            this.chkConvert.AutoSize = true;
+                                                this.chkConvert.AutoSize = true;
             this.chkConvert.Location = new System.Drawing.Point(15, 85);
             this.chkConvert.Name = "chkConvert";
             this.chkConvert.Size = new System.Drawing.Size(372, 18);
             this.chkConvert.TabIndex = 3;
             this.chkConvert.Text = "Convert model values from parts per million to parts per billion";
             this.chkConvert.UseVisualStyleBackColor = true;
-            // 
-            // groupBox1
-            // 
-            this.groupBox1.Controls.Add(this.rbColRow);
+                                                this.groupBox1.Controls.Add(this.rbColRow);
             this.groupBox1.Controls.Add(this.rbRowCol);
             this.groupBox1.Location = new System.Drawing.Point(15, 14);
             this.groupBox1.Name = "groupBox1";
@@ -106,10 +79,7 @@
             this.groupBox1.TabIndex = 4;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Input Files";
-            // 
-            // rbColRow
-            // 
-            this.rbColRow.AutoSize = true;
+                                                this.rbColRow.AutoSize = true;
             this.rbColRow.Location = new System.Drawing.Point(109, 23);
             this.rbColRow.Name = "rbColRow";
             this.rbColRow.Size = new System.Drawing.Size(83, 16);
@@ -117,10 +87,7 @@
             this.rbColRow.TabStop = true;
             this.rbColRow.Text = "Column/Row";
             this.rbColRow.UseVisualStyleBackColor = true;
-            // 
-            // rbRowCol
-            // 
-            this.rbRowCol.AutoSize = true;
+                                                this.rbRowCol.AutoSize = true;
             this.rbRowCol.Location = new System.Drawing.Point(9, 23);
             this.rbRowCol.Name = "rbRowCol";
             this.rbRowCol.Size = new System.Drawing.Size(83, 16);
@@ -128,10 +95,7 @@
             this.rbRowCol.TabStop = true;
             this.rbRowCol.Text = "Row/Column";
             this.rbRowCol.UseVisualStyleBackColor = true;
-            // 
-            // groupBox2
-            // 
-            this.groupBox2.Controls.Add(this.rbWhitespace);
+                                                this.groupBox2.Controls.Add(this.rbWhitespace);
             this.groupBox2.Controls.Add(this.rbComma);
             this.groupBox2.Location = new System.Drawing.Point(232, 14);
             this.groupBox2.Name = "groupBox2";
@@ -139,10 +103,7 @@
             this.groupBox2.TabIndex = 6;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Column Delimiter";
-            // 
-            // rbWhitespace
-            // 
-            this.rbWhitespace.AutoSize = true;
+                                                this.rbWhitespace.AutoSize = true;
             this.rbWhitespace.Location = new System.Drawing.Point(9, 23);
             this.rbWhitespace.Name = "rbWhitespace";
             this.rbWhitespace.Size = new System.Drawing.Size(83, 16);
@@ -150,10 +111,7 @@
             this.rbWhitespace.TabStop = true;
             this.rbWhitespace.Text = "Whitespace";
             this.rbWhitespace.UseVisualStyleBackColor = true;
-            // 
-            // rbComma
-            // 
-            this.rbComma.AutoSize = true;
+                                                this.rbComma.AutoSize = true;
             this.rbComma.Location = new System.Drawing.Point(119, 23);
             this.rbComma.Name = "rbComma";
             this.rbComma.Size = new System.Drawing.Size(53, 16);
@@ -161,165 +119,105 @@
             this.rbComma.TabStop = true;
             this.rbComma.Text = "Comma";
             this.rbComma.UseVisualStyleBackColor = true;
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
+                                                this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(355, 115);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(78, 14);
             this.label2.TabIndex = 7;
             this.label2.Text = "Upper Bound";
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
+                                                this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(233, 184);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(39, 14);
             this.label3.TabIndex = 8;
             this.label3.Text = "Rows:";
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
+                                                this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(215, 145);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(57, 14);
             this.label4.TabIndex = 9;
             this.label4.Text = "Columns:";
-            // 
-            // txtWUppCol
-            // 
-            this.txtWUppCol.Location = new System.Drawing.Point(357, 141);
+                                                this.txtWUppCol.Location = new System.Drawing.Point(357, 141);
             this.txtWUppCol.Name = "txtWUppCol";
             this.txtWUppCol.Size = new System.Drawing.Size(69, 22);
             this.txtWUppCol.TabIndex = 10;
-            // 
-            // txtWLowRow
-            // 
-            this.txtWLowRow.Location = new System.Drawing.Point(280, 181);
+                                                this.txtWLowRow.Location = new System.Drawing.Point(280, 181);
             this.txtWLowRow.Name = "txtWLowRow";
             this.txtWLowRow.Size = new System.Drawing.Size(69, 22);
             this.txtWLowRow.TabIndex = 11;
-            // 
-            // txtWUppRow
-            // 
-            this.txtWUppRow.Location = new System.Drawing.Point(358, 181);
+                                                this.txtWUppRow.Location = new System.Drawing.Point(358, 181);
             this.txtWUppRow.Name = "txtWUppRow";
             this.txtWUppRow.Size = new System.Drawing.Size(68, 22);
             this.txtWUppRow.TabIndex = 12;
-            // 
-            // txtUppRow
-            // 
-            this.txtUppRow.Location = new System.Drawing.Point(357, 386);
+                                                this.txtUppRow.Location = new System.Drawing.Point(357, 386);
             this.txtUppRow.Name = "txtUppRow";
             this.txtUppRow.Size = new System.Drawing.Size(69, 22);
             this.txtUppRow.TabIndex = 21;
-            // 
-            // txtELowRow
-            // 
-            this.txtELowRow.Location = new System.Drawing.Point(280, 386);
+                                                this.txtELowRow.Location = new System.Drawing.Point(280, 386);
             this.txtELowRow.Name = "txtELowRow";
             this.txtELowRow.Size = new System.Drawing.Size(69, 22);
             this.txtELowRow.TabIndex = 20;
-            // 
-            // txtUppCol
-            // 
-            this.txtUppCol.Location = new System.Drawing.Point(357, 346);
+                                                this.txtUppCol.Location = new System.Drawing.Point(357, 346);
             this.txtUppCol.Name = "txtUppCol";
             this.txtUppCol.Size = new System.Drawing.Size(69, 22);
             this.txtUppCol.TabIndex = 19;
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
+                                                this.label5.AutoSize = true;
             this.label5.Location = new System.Drawing.Point(215, 349);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(57, 14);
             this.label5.TabIndex = 18;
             this.label5.Text = "Columns:";
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
+                                                this.label6.AutoSize = true;
             this.label6.Location = new System.Drawing.Point(233, 389);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(39, 14);
             this.label6.TabIndex = 17;
             this.label6.Text = "Rows:";
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
+                                                this.label7.AutoSize = true;
             this.label7.Location = new System.Drawing.Point(355, 321);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(78, 14);
             this.label7.TabIndex = 16;
             this.label7.Text = "Upper Bound";
-            // 
-            // btnselectEasFiles
-            // 
-            this.btnselectEasFiles.Location = new System.Drawing.Point(19, 384);
+                                                this.btnselectEasFiles.Location = new System.Drawing.Point(19, 384);
             this.btnselectEasFiles.Name = "btnselectEasFiles";
             this.btnselectEasFiles.Size = new System.Drawing.Size(195, 27);
             this.btnselectEasFiles.TabIndex = 15;
             this.btnselectEasFiles.Text = "Select Eastern Domain files";
             this.btnselectEasFiles.UseVisualStyleBackColor = true;
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
+                                                this.label8.AutoSize = true;
             this.label8.Location = new System.Drawing.Point(278, 321);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(77, 14);
             this.label8.TabIndex = 14;
             this.label8.Text = "Lower Bound";
-            // 
-            // txtELowCol
-            // 
-            this.txtELowCol.Location = new System.Drawing.Point(280, 346);
+                                                this.txtELowCol.Location = new System.Drawing.Point(280, 346);
             this.txtELowCol.Name = "txtELowCol";
             this.txtELowCol.Size = new System.Drawing.Size(68, 22);
             this.txtELowCol.TabIndex = 13;
-            // 
-            // txtWFiles
-            // 
-            this.txtWFiles.Location = new System.Drawing.Point(12, 212);
+                                                this.txtWFiles.Location = new System.Drawing.Point(12, 212);
             this.txtWFiles.Multiline = true;
             this.txtWFiles.Name = "txtWFiles";
             this.txtWFiles.Size = new System.Drawing.Size(414, 95);
             this.txtWFiles.TabIndex = 22;
-            // 
-            // txtEFiles
-            // 
-            this.txtEFiles.Location = new System.Drawing.Point(12, 418);
+                                                this.txtEFiles.Location = new System.Drawing.Point(12, 418);
             this.txtEFiles.Multiline = true;
             this.txtEFiles.Name = "txtEFiles";
             this.txtEFiles.Size = new System.Drawing.Size(414, 95);
             this.txtEFiles.TabIndex = 23;
-            // 
-            // btnDone
-            // 
-            this.btnDone.Location = new System.Drawing.Point(273, 520);
+                                                this.btnDone.Location = new System.Drawing.Point(273, 520);
             this.btnDone.Name = "btnDone";
             this.btnDone.Size = new System.Drawing.Size(75, 27);
             this.btnDone.TabIndex = 24;
             this.btnDone.Text = "Done";
             this.btnDone.UseVisualStyleBackColor = true;
-            // 
-            // btnGo
-            // 
-            this.btnGo.Location = new System.Drawing.Point(351, 520);
+                                                this.btnGo.Location = new System.Drawing.Point(351, 520);
             this.btnGo.Name = "btnGo";
             this.btnGo.Size = new System.Drawing.Size(75, 27);
             this.btnGo.TabIndex = 25;
             this.btnGo.Text = "Go";
             this.btnGo.UseVisualStyleBackColor = true;
-            // 
-            // ModelFileConcatenator
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
+                                                this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(444, 559);
             this.Controls.Add(this.btnGo);
@@ -361,8 +259,7 @@
 
         }
 
-        #endregion
-
+        
         private System.Windows.Forms.TextBox txtWLowCol;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button btnSelectWesFiles;

@@ -1,16 +1,9 @@
-﻿namespace BenMAP.APVX
+namespace BenMAP.APVX
 {
     partial class SelectValuationWeight
     {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -20,12 +13,7 @@
             base.Dispose(disposing);
         }
 
-        #region Windows Form Designer generated code
-
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
+        
         private void InitializeComponent()
         {
             this.txtPoolingWindowName = new System.Windows.Forms.TextBox();
@@ -42,29 +30,20 @@
             this.btCancel = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.treeListView)).BeginInit();
             this.SuspendLayout();
-            // 
-            // txtPoolingWindowName
-            // 
-            this.txtPoolingWindowName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+                                                this.txtPoolingWindowName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.txtPoolingWindowName.Enabled = false;
             this.txtPoolingWindowName.Location = new System.Drawing.Point(177, 488);
             this.txtPoolingWindowName.Name = "txtPoolingWindowName";
             this.txtPoolingWindowName.Size = new System.Drawing.Size(200, 22);
             this.txtPoolingWindowName.TabIndex = 23;
-            // 
-            // label1
-            // 
-            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+                                                this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(37, 491);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(134, 14);
             this.label1.TabIndex = 22;
             this.label1.Text = "Pooling Window Name:";
-            // 
-            // treeListView
-            // 
-            this.treeListView.AllColumns.Add(this.treeColumnName);
+                                                this.treeListView.AllColumns.Add(this.treeColumnName);
             this.treeListView.AllColumns.Add(this.olvColumn1);
             this.treeListView.AllColumns.Add(this.olvColumn35);
             this.treeListView.AllColumns.Add(this.olvColumn14);
@@ -111,59 +90,35 @@
             this.treeListView.VirtualMode = true;
             this.treeListView.CellEditFinishing += new BrightIdeasSoftware.CellEditEventHandler(this.treeListView_CellEditFinishing);
             this.treeListView.CellEditStarting += new BrightIdeasSoftware.CellEditEventHandler(this.treeListView_CellEditStarting);
-            // 
-            // treeColumnName
-            // 
-            this.treeColumnName.AspectName = "Name";
+                                                this.treeColumnName.AspectName = "Name";
             this.treeColumnName.IsEditable = false;
             this.treeColumnName.IsTileViewColumn = true;
             this.treeColumnName.Text = "EndPointGroup/EndPoint/Author";
             this.treeColumnName.UseInitialLetterForGroup = true;
             this.treeColumnName.Width = 180;
             this.treeColumnName.WordWrap = true;
-            // 
-            // olvColumn1
-            // 
-            this.olvColumn1.AspectName = "Weight";
+                                                this.olvColumn1.AspectName = "Weight";
             this.olvColumn1.Text = "Weight";
-            // 
-            // olvColumn35
-            // 
-            this.olvColumn35.AspectName = "PoolingMethod";
+                                                this.olvColumn35.AspectName = "PoolingMethod";
             this.olvColumn35.HeaderForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
             this.olvColumn35.IsEditable = false;
             this.olvColumn35.Text = "Pooling Method";
             this.olvColumn35.Width = 100;
-            // 
-            // olvColumn14
-            // 
-            this.olvColumn14.AspectName = "Qualifier";
+                                                this.olvColumn14.AspectName = "Qualifier";
             this.olvColumn14.IsEditable = false;
             this.olvColumn14.Text = "Qualifier";
             this.olvColumn14.Width = 180;
-            // 
-            // olvColumn15
-            // 
-            this.olvColumn15.AspectName = "StartAge";
+                                                this.olvColumn15.AspectName = "StartAge";
             this.olvColumn15.IsEditable = false;
             this.olvColumn15.Text = "Start Age";
-            // 
-            // olvColumn16
-            // 
-            this.olvColumn16.AspectName = "EndAge";
+                                                this.olvColumn16.AspectName = "EndAge";
             this.olvColumn16.IsEditable = false;
             this.olvColumn16.Text = "End Age";
-            // 
-            // olvColumn17
-            // 
-            this.olvColumn17.AspectName = "Function";
+                                                this.olvColumn17.AspectName = "Function";
             this.olvColumn17.IsEditable = false;
             this.olvColumn17.Text = "Function";
             this.olvColumn17.Width = 180;
-            // 
-            // btOK
-            // 
-            this.btOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+                                                this.btOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btOK.Location = new System.Drawing.Point(510, 486);
             this.btOK.Name = "btOK";
             this.btOK.Size = new System.Drawing.Size(75, 27);
@@ -171,10 +126,7 @@
             this.btOK.Text = "OK";
             this.btOK.UseVisualStyleBackColor = true;
             this.btOK.Click += new System.EventHandler(this.btOK_Click);
-            // 
-            // btCancel
-            // 
-            this.btCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+                                                this.btCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btCancel.Location = new System.Drawing.Point(415, 486);
             this.btCancel.Name = "btCancel";
             this.btCancel.Size = new System.Drawing.Size(75, 27);
@@ -182,10 +134,7 @@
             this.btCancel.Text = "Cancel";
             this.btCancel.UseVisualStyleBackColor = true;
             this.btCancel.Click += new System.EventHandler(this.btCancel_Click);
-            // 
-            // SelectValuationWeight
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
+                                                this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(638, 518);
             this.Controls.Add(this.txtPoolingWindowName);
@@ -204,8 +153,7 @@
 
         }
 
-        #endregion
-
+        
         private System.Windows.Forms.Button btOK;
         private System.Windows.Forms.Button btCancel;
         private BrightIdeasSoftware.TreeListView treeListView;

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows.Forms;
 
 namespace BenMAP
@@ -8,12 +8,6 @@ namespace BenMAP
         public BaseControlGroup bcg = new BaseControlGroup();
         public MonitorDataLine mDataLine = new MonitorDataLine();
         string _method = string.Empty;
-        //private int _var;
-        //public int MyProperty
-        //{
-        //    get { return _var; }
-        //    set { _var = value; }
-        //}
         public AdvancedOptions(string Method, MonitorAdvance mAdvance)
         {
             InitializeComponent();
@@ -23,8 +17,6 @@ namespace BenMAP
                 _myMonitorAdvance = mAdvance;
             }
         }
-
-        //private MonitorAdvance monitorAdvance;
 
         private MonitorAdvance _myMonitorAdvance;
 
@@ -41,8 +33,7 @@ namespace BenMAP
                 if (_myMonitorAdvance != null)
                 {
                     if (_myMonitorAdvance.MaxinumNeighborDistance != -1) txtMaximumNeighborDistance.Text = _myMonitorAdvance.MaxinumNeighborDistance.ToString();
-                    if (_myMonitorAdvance.RelativeNeighborDistance != -1)// txtMaximumNeighborDistance.Text = _myMonitorAdvance.MaxinumNeighborDistance.ToString();
-                        txtMaximumRelativeNeighborDistance.Text = _myMonitorAdvance.RelativeNeighborDistance.ToString();
+                    if (_myMonitorAdvance.RelativeNeighborDistance != -1) txtMaximumRelativeNeighborDistance.Text = _myMonitorAdvance.RelativeNeighborDistance.ToString();
                 }
                 switch (_method)
                 {
@@ -54,17 +45,10 @@ namespace BenMAP
                         rbtnInverseDistanceSquared.Enabled = false;
                         chbGetClosest.Enabled = false;
                         btnCustomMonitor.Enabled = false;
-                        //if (_myMonitorAdvance.MaxinumNeighborDistance != -1) txtMaximumNeighborDistance.Text = _myMonitorAdvance.MaxinumNeighborDistance.ToString();
                         break;
                     case "voronoineighborhoodaveraging":
                         txtMaximumNeighborDistance.Enabled = true;
                         txtMaximumRelativeNeighborDistance.Enabled = true;
-                        //if (_myMonitorAdvance != null)
-                        //{
-                        //    if (_myMonitorAdvance.MaxinumNeighborDistance != -1) txtMaximumNeighborDistance.Text = _myMonitorAdvance.MaxinumNeighborDistance.ToString();
-                        //    if (_myMonitorAdvance.RelativeNeighborDistance != -1)// txtMaximumNeighborDistance.Text = _myMonitorAdvance.MaxinumNeighborDistance.ToString();
-                        //    txtMaximumRelativeNeighborDistance.Text = _myMonitorAdvance.RelativeNeighborDistance.ToString();
-                        //}
                         if (_myMonitorAdvance.WeightingApproach == WeightingApproachEnum.InverseDistanceSquared)
                             rbtnInverseDistanceSquared.Checked = true;
                         chbGetClosest.Enabled = false;
@@ -115,7 +99,6 @@ namespace BenMAP
                             _myMonitorAdvance.MaxinumNeighborDistance = value;
                             _myMonitorAdvance.RelativeNeighborDistance = -1;
                         }
-                        //_myMonitorAdvance.WeightingApproach = WeightingApproachEnum.InverseDistance;
                         break;
                     case "voronoineighborhoodaveraging":
                         ok = double.TryParse(txtMaximumNeighborDistance.Text, out value);
@@ -143,34 +126,29 @@ namespace BenMAP
                 if (rbtnInverseDistanceSquared.Checked) { wae = WeightingApproachEnum.InverseDistanceSquared; }
                 if (_myMonitorAdvance.IncludeMethods == null)
                 {
-                    if (CommonClass.MainSetup.SetupID == 1)//只响应美国的
+                    if (CommonClass.MainSetup.SetupID == 1)
                     {
                         switch (bcg.Pollutant.PollutantName)
                         {
                             case "PM2.5":
                                 _myMonitorAdvance.FilterMaximumPOC = 4;
                                 _myMonitorAdvance.POCPreferenceOrder = "1,2,3,4";
-                                //_myMonitorAdvance.IncludeMethods = new List<string>() { "116", "117", "118", "119", "120" };
                                 break;
                             case "PM10":
                                 _myMonitorAdvance.FilterMaximumPOC = 4;
                                 _myMonitorAdvance.POCPreferenceOrder = "1,2,3,4";
-                                //_myMonitorAdvance.IncludeMethods = new List<string>() { "062", "065", "076", "063", "071", "079", "064", "073", "081" };
                                 break;
                             case "Ozone":
                                 _myMonitorAdvance.FilterMaximumPOC = 4;
                                 _myMonitorAdvance.POCPreferenceOrder = "1,2,3,4";
-                                //_myMonitorAdvance.IncludeMethods = new List<string>() { "003", "011", "014", "019", "020", "047", "053", "056", "078", "087", "091", "103", "112" };
                                 break;
                             case "NO2":
                                 _myMonitorAdvance.FilterMaximumPOC = 9;
                                 _myMonitorAdvance.POCPreferenceOrder = "1,2,3,4,5,6,7,8,9";
-                                //_myMonitorAdvance.IncludeMethods = new List<string>() { "014", "042", "090", "022", "074", "099", "025", "075", "102", "035", "082", "111", "037", "089" };
                                 break;
                             case "SO2":
                                 _myMonitorAdvance.FilterMaximumPOC = 9;
                                 _myMonitorAdvance.POCPreferenceOrder = "1,2,3,4,5,6,7,8,9";
-                                //monitorDataLine.MonitorAdvance.IncludeMethods = new List<string>() { "009", "061", "020", "075", "023", "077", "039", "092", "060", "100" };
                                 break;
                         }
                     }
@@ -197,19 +175,16 @@ namespace BenMAP
 
         private void txtMaximumNeighborDistance_MouseUp(object sender, MouseEventArgs e)
         {
-            //如果鼠标左键操作并且标记存在，则执行全选
             if (e.Button == MouseButtons.Left && (bool)txtMaximumNeighborDistance.Tag == true)
             {
                 txtMaximumNeighborDistance.SelectAll();
             }
-            //取消全选标记
             txtMaximumNeighborDistance.Tag = false;
         }
 
         private void txtMaximumNeighborDistance_Enter(object sender, EventArgs e)
         {
-            txtMaximumNeighborDistance.Tag = true;//设置标记
-            txtMaximumNeighborDistance.SelectAll();
+            txtMaximumNeighborDistance.Tag = true; txtMaximumNeighborDistance.SelectAll();
         }
 
         private void txtMaximumRelativeNeighborDistance_MouseUp(object sender, MouseEventArgs e)
@@ -260,5 +235,5 @@ namespace BenMAP
                 e.Handled = true;
             }
         }
-    }//class
+    }
 }

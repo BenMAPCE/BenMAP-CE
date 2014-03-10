@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -24,7 +24,6 @@ namespace BenMAP
                 DialogResult rtn = frm.ShowDialog();
                 if (rtn != DialogResult.OK) { return; }
                 ExportDataForlistbox();
-                //lstAvailable.Items.Add(frm.VariableDataSetName);
             }
             catch (Exception ex)
             {
@@ -36,8 +35,8 @@ namespace BenMAP
         {
             try
             {
-               
-                ExportDataForlistbox(); 
+
+                ExportDataForlistbox();
 
             }
             catch (Exception ex)
@@ -50,7 +49,7 @@ namespace BenMAP
         {
             try
             {
-                string commandText = string.Format("select * from SETUPVARIABLEDATASETS where setupid={0}",CommonClass.ManageSetup.SetupID);
+                string commandText = string.Format("select * from SETUPVARIABLEDATASETS where setupid={0}", CommonClass.ManageSetup.SetupID);
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                 lstAvailable.DataSource = ds.Tables[0];
@@ -64,8 +63,7 @@ namespace BenMAP
             {
                 Logger.LogError(ex);
             }
-        }//
-
+        }
         private void lstAvailable_SelectedValueChanged(object sender, EventArgs e)
         {
             try
@@ -85,7 +83,7 @@ namespace BenMAP
             catch (Exception ex)
             {
                 Logger.LogError(ex);
-            }   
+            }
         }
 
         private void btnEdit_Click(object sender, EventArgs e)
@@ -117,9 +115,8 @@ namespace BenMAP
                     commandText = string.Format("delete from  SETUPVARIABLEDATASETS where SETUPVARIABLEDATASETNAME='{0}' and setupid={1}", lstAvailable.Text, CommonClass.ManageSetup.SetupID);
                     int i = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                 }
-                commandText = string.Format("select * from SETUPVARIABLEDATASETS where SetupID={0} ",CommonClass.ManageSetup.SetupID);
+                commandText = string.Format("select * from SETUPVARIABLEDATASETS where SetupID={0} ", CommonClass.ManageSetup.SetupID);
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
-                //bind table to lstDatasetName and display QALYDATASETNAME field
                 lstAvailable.DataSource = ds.Tables[0];
                 lstAvailable.DisplayMember = "SETUPVARIABLEDATASETNAME";
                 WaitClose();
@@ -141,12 +138,8 @@ namespace BenMAP
         {
             this.DialogResult = DialogResult.OK;
             this.Close();
-        }//
-
-        #region 等待窗口
-        TipFormGIF waitMess = new TipFormGIF();//等待窗体
-        bool sFlog = true;
-        //--显示等待窗体 
+        }
+        TipFormGIF waitMess = new TipFormGIF(); bool sFlog = true;
         private void ShowWaitMess()
         {
             try
@@ -162,7 +155,6 @@ namespace BenMAP
             }
         }
 
-        //--新开辟一个线程调用 
         public void WaitShow(string msg)
         {
             try
@@ -171,11 +163,9 @@ namespace BenMAP
                 {
                     sFlog = false;
                     waitMess.Msg = msg;
-                    //ShowWaitMess();
                     System.Threading.Thread upgradeThread = null;
                     upgradeThread = new System.Threading.Thread(new System.Threading.ThreadStart(ShowWaitMess));
                     upgradeThread.Start();
-                    //upgradeThread.IsBackground = true;
                 }
             }
             catch (System.Threading.ThreadAbortException Err)
@@ -185,10 +175,8 @@ namespace BenMAP
         }
         private delegate void CloseFormDelegate();
         private delegate void ChangeDelegate(string msg);
-        //--关闭等待窗体 
         public void WaitClose()
         {
-            //同步到主线程上
             if (waitMess.InvokeRequired)
                 waitMess.Invoke(new CloseFormDelegate(DoCloseJob));
             else
@@ -215,7 +203,6 @@ namespace BenMAP
                 {
                     if (waitMess.Created)
                     {
-                        //sFlog = true;
                         waitMess.Msg = msg;
                     }
                 }
@@ -243,7 +230,6 @@ namespace BenMAP
                 MessageBox.Show(Err.Message);
             }
         }
-        #endregion 等待窗口
 
     }
 }

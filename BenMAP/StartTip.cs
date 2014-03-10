@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -71,7 +71,6 @@ namespace BenMAP
             }
         }
 
-        #region Mouse hover & leave
 
         private void btn_MouseEnter(object sender, EventArgs e)
         {
@@ -119,7 +118,6 @@ namespace BenMAP
             }
         }
 
-        #endregion
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
@@ -141,13 +139,6 @@ namespace BenMAP
         }
         private void UpdateConfig(string Xvalue)
         {
-            //XmlDocument doc = new XmlDocument();
-            //doc.Load(Application.ExecutablePath + ".config");
-            //XmlNode node = doc.SelectSingleNode(@"//add[@key='IsShow']");
-            //XmlElement ele = (XmlElement)node;
-            //ele.SetAttribute("value", Xvalue);
-            //doc.Save(Application.ExecutablePath + ".config");
-            //ConfigurationManager.RefreshSection("appSettings");
             string iniPath = CommonClass.ResultFilePath + @"\BenMAP.ini";
             if (System.IO.File.Exists(iniPath))
             {
@@ -166,24 +157,5 @@ namespace BenMAP
             linkLabel1.Location = new Point(label5.Location.X + label5.Width, label5.Location.Y);
         }
 
-        //private void StartTip_FormClosed(object sender, FormClosedEventArgs e)
-        //{
-        //    try
-        //    {
-        //        if (chkCloseTip.Checked)
-        //        {
-        //            UpdateConfig("F");
-        //        }
-        //        else
-        //        {
-        //            UpdateConfig("T");
-        //        }
-        //        this.DialogResult = DialogResult.OK;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Logger.LogError(ex.Message);
-        //    }
-        //}
     }
 }

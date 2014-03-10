@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -74,7 +74,6 @@ namespace BenMAP
                             case "InflationDatasets": database.name = "Inflation Datasets"; database.PID = id; iTable = database.ID = ++j; lstdatabase.Add(database); break;
                             case "ValuationfunctionDatasets": database.name = "Valuation Functions"; database.PID = id; iTable = database.ID = ++j; lstdatabase.Add(database); break;
                             case "IncomegrowthadjDatasets": database.name = "Income Growth Adjustments"; database.PID = id; iTable = database.ID = ++j; lstdatabase.Add(database); break;
-                            //case "QalyDatasets": database.name = "QALY Distribution Datasets"; database.PID = id; iTable = database.ID = ++j; lstdatabase.Add(database); break;
                         }
                         for (int i = 0; i < dsTable.Tables[0].Rows.Count; i++)
                         {
@@ -141,48 +140,45 @@ namespace BenMAP
                 pBarExport.Value = 0;
                 if (sfd.ShowDialog() == DialogResult.OK)
                 {
-                    using (Stream stream = new FileStream(sfd.FileName, FileMode.Create))//初始化FileStream对象
+                    using (Stream stream = new FileStream(sfd.FileName, FileMode.Create))
                     {
-                        using (BinaryWriter writer = new BinaryWriter(stream))//创建BinaryWriter对象
+                        using (BinaryWriter writer = new BinaryWriter(stream))
                         {
                             switch (nodeName)
                             {
-                                case "Available Setups": 
-                                    ExportAvailableSetups(writer); 
+                                case "Available Setups":
+                                    ExportAvailableSetups(writer);
                                     break;
                                 case "Grid Definitions":
-                                    WriteGriddefinition(writer, setupid); 
+                                    WriteGriddefinition(writer, setupid);
                                     break;
                                 case "Pollutant":
-                                    WritePollutant(writer, setupid); 
+                                    WritePollutant(writer, setupid);
                                     break;
-                                case "Monitor Datasets": 
-                                    WriteMonitor(writer, setupid); 
+                                case "Monitor Datasets":
+                                    WriteMonitor(writer, setupid);
                                     break;
-                                case "Incidence/Prevalence Datasets": 
-                                    WriteIncidence(writer, setupid); 
+                                case "Incidence/Prevalence Datasets":
+                                    WriteIncidence(writer, setupid);
                                     break;
-                                case "Population Datasets": 
-                                    WritePopulation(writer, setupid); 
+                                case "Population Datasets":
+                                    WritePopulation(writer, setupid);
                                     break;
-                                case "Health Impact Functions": 
-                                    WriteCRFunction(writer, setupid); 
+                                case "Health Impact Functions":
+                                    WriteCRFunction(writer, setupid);
                                     break;
-                                case "Variable Datasets": 
-                                    WriteVariable(writer, setupid); 
+                                case "Variable Datasets":
+                                    WriteVariable(writer, setupid);
                                     break;
-                                case "Inflation Datasets": 
+                                case "Inflation Datasets":
                                     WriteInflation(writer, setupid);
                                     break;
-                                case "Valuation Functions": 
-                                    WriteValuation(writer, setupid); 
+                                case "Valuation Functions":
+                                    WriteValuation(writer, setupid);
                                     break;
-                                case "Income Growth Adjustments": 
-                                    WriteIncomeGrowth(writer, setupid); 
+                                case "Income Growth Adjustments":
+                                    WriteIncomeGrowth(writer, setupid);
                                     break;
-                                //case "QALY Distribution Datasets": 
-                                //    WriteQALY(writer, setupid); 
-                                //    break;
                                 default:
                                     {
                                         string _Name = treDatabase.SelectedNode.Text;
@@ -198,10 +194,6 @@ namespace BenMAP
                                                 enumDatabaseExport tablename = (enumDatabaseExport)table;
                                                 switch (tablename)
                                                 {
-                                                    //case enumDatabaseExport.Setups:
-                                                    //    string _setupid_name = "setupid=" + Convert.ToString(_setupid);
-                                                    //    WriteSetup(writer, _setupid_name);
-                                                    //    break;
                                                     case enumDatabaseExport.GridDefinitions:
                                                         string _setupid_name = "setupid=" + Convert.ToString(_setupid);
                                                         WriteGriddefinition(writer, _setupid_name);
@@ -293,10 +285,6 @@ namespace BenMAP
                                                     _setupid_name = "setupid=" + Convert.ToString(_setupid) + " and " + "IncomeGrowthAdjDatasetName=" + "'" + _Name + "'";
                                                     WriteIncomeGrowth(writer, _setupid_name);
                                                     break;
-                                                //case "QALY Distribution Datasets": 
-                                                //    _setupid_name = "setupid=" + Convert.ToString(_setupid) + " and " + "QalyDatasetName=" + "'" + _Name + "'"; 
-                                                //    WriteQALY(writer, _setupid_name);
-                                                //    break;
                                             }
                                         }
                                     }
@@ -322,39 +310,13 @@ namespace BenMAP
             }
         }
 
-        ///// <summary> 
-        ///// 序列化 
-        ///// </summary> 
-        ///// <param name="data">要序列化的对象</param> 
-        ///// <returns>返回存放序列化后的数据缓冲区</returns> 
-        //public static byte[] Serialize(object data)
-        //{
-        //    BinaryFormatter formatter = new BinaryFormatter();
-        //    MemoryStream rems = new MemoryStream();
-        //    formatter.Serialize(rems, data);
-        //    return rems.GetBuffer();
-        //}
 
-        ///// <summary> 
-        ///// 反序列化 
-        ///// </summary> 
-        ///// <param name="data">数据缓冲区</param> 
-        ///// <returns>对象</returns> 
-        //public static object Deserialize(byte[] data)
-        //{
-        //    BinaryFormatter formatter = new BinaryFormatter();
-        //    MemoryStream rems = new MemoryStream(data);
-        //    data = null;
-        //    return formatter.Deserialize(rems);
-        //}
 
-        //int nodeIndex;
-        string nodeName="";
+        string nodeName = "";
         private void treDatabase_AfterSelect(object sender, TreeViewEventArgs e)
         {
             if (treDatabase.SelectedNode != null)
             {
-                //nodeIndex = treDatabase.SelectedNode.Index;
                 nodeName = treDatabase.SelectedNode.Text;
             }
             else nodeName = "";
@@ -395,7 +357,6 @@ namespace BenMAP
 
                             case "byte[]":
                                 byte[] buffer = (byte[])fbDataReader[i];
-                                //byte[] buffer = Serialize(fbDataReader[i]);
                                 writer.Write(buffer.Length);
                                 writer.Write(buffer);
                                 break;
@@ -430,7 +391,7 @@ namespace BenMAP
                 string allSetupid = "1=1";
                 pBarExport.Value = 0;
                 WriteSetup(writer);
-                WriteGriddefinition(writer,allSetupid);
+                WriteGriddefinition(writer, allSetupid);
                 WritePollutant(writer, allSetupid);
                 WriteMonitor(writer, allSetupid);
                 WriteIncidence(writer, allSetupid);
@@ -440,7 +401,6 @@ namespace BenMAP
                 WriteInflation(writer, allSetupid);
                 WriteValuation(writer, allSetupid);
                 WriteIncomeGrowth(writer, allSetupid);
-                //WriteQALY(writer, allSetupid);
             }
             catch (Exception ex)
             {
@@ -524,13 +484,9 @@ namespace BenMAP
 
                     commandText = string.Format("select setupname from setups where setupid in (select setupid from griddefinitions where griddefinitionid={0})", Convert.ToInt16(ds.Tables[0].Rows[i]["GRIDDEFINITIONID"]));
                     string setupname = Convert.ToString(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
-                    //先读取.shx文件,得到文件的总字节长度
                     if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + shapefilename + ".shx"))
                     {
-                        FileStream fs = new FileStream(CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + shapefilename + ".shx", FileMode.Open, FileAccess.Read);   //文件流形式  
-                        BinaryReader BinaryFile = new BinaryReader(fs);  //二进制读取文件的对象
-                        Int64 BytesSum = fs.Length;  //得到文件的字节总长  
-                        writer.Write(BytesSum);
+                        FileStream fs = new FileStream(CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + shapefilename + ".shx", FileMode.Open, FileAccess.Read); BinaryReader BinaryFile = new BinaryReader(fs); Int64 BytesSum = fs.Length; writer.Write(BytesSum);
                         byte[] array = new byte[BytesSum];
                         fs.Read(array, 0, array.Length);
                         writer.Write(array);
@@ -538,13 +494,9 @@ namespace BenMAP
                         fs.Close();
                     }
 
-                    //shp
                     if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + shapefilename + ".shp"))
                     {
-                        FileStream fs = new FileStream(CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + shapefilename + ".shp", FileMode.Open, FileAccess.Read);   //文件流形式  
-                        BinaryReader BinaryFile = new BinaryReader(fs);  //二进制读取文件的对象
-                        long BytesSum = fs.Length;  //得到文件的字节总长  
-                        writer.Write(BytesSum);
+                        FileStream fs = new FileStream(CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + shapefilename + ".shp", FileMode.Open, FileAccess.Read); BinaryReader BinaryFile = new BinaryReader(fs); long BytesSum = fs.Length; writer.Write(BytesSum);
                         byte[] array = new byte[BytesSum];
                         fs.Read(array, 0, array.Length);
                         writer.Write(array);
@@ -552,13 +504,9 @@ namespace BenMAP
                         fs.Close();
                     }
 
-                    //dbf
                     if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + shapefilename + ".dbf"))
                     {
-                        FileStream fs = new FileStream(CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + shapefilename + ".dbf", FileMode.Open, FileAccess.Read);   //文件流形式  
-                        BinaryReader BinaryFile = new BinaryReader(fs);  //二进制读取文件的对象
-                        long BytesSum = fs.Length;  //得到文件的字节总长  
-                        writer.Write(BytesSum);
+                        FileStream fs = new FileStream(CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + shapefilename + ".dbf", FileMode.Open, FileAccess.Read); BinaryReader BinaryFile = new BinaryReader(fs); long BytesSum = fs.Length; writer.Write(BytesSum);
                         byte[] array = new byte[BytesSum];
                         fs.Read(array, 0, array.Length);
                         writer.Write(array);
@@ -766,7 +714,6 @@ namespace BenMAP
                 List<string> lstType = new List<string>() { "int", "int", "string" };
                 writeOneTable(writer, commandText, lstType);
 
-                //导出相关的pollutant
                 string pollutant = string.Format("pollutantid in (select distinct pollutantid from monitors where monitordatasetid in (select monitordatasetid from monitordatasets where {0}))", setupid);
                 WritePollutant(writer, pollutant);
 
@@ -800,8 +747,6 @@ namespace BenMAP
                 lstType = new List<string>() { "int", "int", "byte[]", "int", "int", "int", "string" };
                 writeOneTable(writer, commandText, lstType);
 
-                //pBarExport.Value++;
-                //lbProcess.Refresh();
                 this.Refresh();
             }
             catch (Exception ex)
@@ -815,7 +760,6 @@ namespace BenMAP
         {
             try
             {
-                #region export related grid definition
                 pBarExport.Value = 0;
                 lbProcess.Text = "Exporting related grid definition...";
                 lbProcess.Refresh();
@@ -866,13 +810,9 @@ namespace BenMAP
 
                     commandText = string.Format("select setupname from setups where setupid in (select setupid from griddefinitions where griddefinitionid={0})", Convert.ToInt16(ds.Tables[0].Rows[i]["GRIDDEFINITIONID"]));
                     string setupname = Convert.ToString(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
-                    //先读取.shx文件,得到文件的总字节长度
                     if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + shapefilename + ".shx"))
                     {
-                        FileStream fs = new FileStream(CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + shapefilename + ".shx", FileMode.Open, FileAccess.Read);   //文件流形式  
-                        BinaryReader BinaryFile = new BinaryReader(fs);  //二进制读取文件的对象
-                        Int64 BytesSum = fs.Length;  //得到文件的字节总长  
-                        writer.Write(BytesSum);
+                        FileStream fs = new FileStream(CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + shapefilename + ".shx", FileMode.Open, FileAccess.Read); BinaryReader BinaryFile = new BinaryReader(fs); Int64 BytesSum = fs.Length; writer.Write(BytesSum);
                         byte[] array = new byte[BytesSum];
                         fs.Read(array, 0, array.Length);
                         writer.Write(array);
@@ -880,13 +820,9 @@ namespace BenMAP
                         fs.Close();
                     }
 
-                    //shp
                     if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + shapefilename + ".shp"))
                     {
-                        FileStream fs = new FileStream(CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + shapefilename + ".shp", FileMode.Open, FileAccess.Read);   //文件流形式  
-                        BinaryReader BinaryFile = new BinaryReader(fs);  //二进制读取文件的对象
-                        long BytesSum = fs.Length;  //得到文件的字节总长  
-                        writer.Write(BytesSum);
+                        FileStream fs = new FileStream(CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + shapefilename + ".shp", FileMode.Open, FileAccess.Read); BinaryReader BinaryFile = new BinaryReader(fs); long BytesSum = fs.Length; writer.Write(BytesSum);
                         byte[] array = new byte[BytesSum];
                         fs.Read(array, 0, array.Length);
                         writer.Write(array);
@@ -894,13 +830,9 @@ namespace BenMAP
                         fs.Close();
                     }
 
-                    //dbf
                     if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + shapefilename + ".dbf"))
                     {
-                        FileStream fs = new FileStream(CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + shapefilename + ".dbf", FileMode.Open, FileAccess.Read);   //文件流形式  
-                        BinaryReader BinaryFile = new BinaryReader(fs);  //二进制读取文件的对象
-                        long BytesSum = fs.Length;  //得到文件的字节总长  
-                        writer.Write(BytesSum);
+                        FileStream fs = new FileStream(CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + shapefilename + ".dbf", FileMode.Open, FileAccess.Read); BinaryReader BinaryFile = new BinaryReader(fs); long BytesSum = fs.Length; writer.Write(BytesSum);
                         byte[] array = new byte[BytesSum];
                         fs.Read(array, 0, array.Length);
                         writer.Write(array);
@@ -909,7 +841,6 @@ namespace BenMAP
                     }
                     pBarExport.PerformStep();
                 }
-                #endregion
 
                 pBarExport.Value = 0;
                 lbProcess.Text = "Exporting incidence datasets...";
@@ -1084,13 +1015,9 @@ namespace BenMAP
 
                     commandText = string.Format("select setupname from setups where setupid in (select setupid from griddefinitions where griddefinitionid={0})", Convert.ToInt16(ds.Tables[0].Rows[i]["GRIDDEFINITIONID"]));
                     string setupname = Convert.ToString(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
-                    //先读取.shx文件,得到文件的总字节长度
                     if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + shapefilename + ".shx"))
                     {
-                        FileStream fs = new FileStream(CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + shapefilename + ".shx", FileMode.Open, FileAccess.Read);   //文件流形式  
-                        BinaryReader BinaryFile = new BinaryReader(fs);  //二进制读取文件的对象
-                        Int64 BytesSum = fs.Length;  //得到文件的字节总长  
-                        writer.Write(BytesSum);
+                        FileStream fs = new FileStream(CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + shapefilename + ".shx", FileMode.Open, FileAccess.Read); BinaryReader BinaryFile = new BinaryReader(fs); Int64 BytesSum = fs.Length; writer.Write(BytesSum);
                         byte[] array = new byte[BytesSum];
                         fs.Read(array, 0, array.Length);
                         writer.Write(array);
@@ -1098,13 +1025,9 @@ namespace BenMAP
                         fs.Close();
                     }
 
-                    //shp
                     if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + shapefilename + ".shp"))
                     {
-                        FileStream fs = new FileStream(CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + shapefilename + ".shp", FileMode.Open, FileAccess.Read);   //文件流形式  
-                        BinaryReader BinaryFile = new BinaryReader(fs);  //二进制读取文件的对象
-                        long BytesSum = fs.Length;  //得到文件的字节总长  
-                        writer.Write(BytesSum);
+                        FileStream fs = new FileStream(CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + shapefilename + ".shp", FileMode.Open, FileAccess.Read); BinaryReader BinaryFile = new BinaryReader(fs); long BytesSum = fs.Length; writer.Write(BytesSum);
                         byte[] array = new byte[BytesSum];
                         fs.Read(array, 0, array.Length);
                         writer.Write(array);
@@ -1112,13 +1035,9 @@ namespace BenMAP
                         fs.Close();
                     }
 
-                    //dbf
                     if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + shapefilename + ".dbf"))
                     {
-                        FileStream fs = new FileStream(CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + shapefilename + ".dbf", FileMode.Open, FileAccess.Read);   //文件流形式  
-                        BinaryReader BinaryFile = new BinaryReader(fs);  //二进制读取文件的对象
-                        long BytesSum = fs.Length;  //得到文件的字节总长  
-                        writer.Write(BytesSum);
+                        FileStream fs = new FileStream(CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + shapefilename + ".dbf", FileMode.Open, FileAccess.Read); BinaryReader BinaryFile = new BinaryReader(fs); long BytesSum = fs.Length; writer.Write(BytesSum);
                         byte[] array = new byte[BytesSum];
                         fs.Read(array, 0, array.Length);
                         writer.Write(array);
@@ -1292,7 +1211,6 @@ namespace BenMAP
                 List<string> lstType = new List<string>() { "int", "int", "string", "char" };
                 writeOneTable(writer, commandText, lstType);
 
-                //导出相关的pollutant
                 string pollutant = string.Format("pollutantid in (select distinct pollutantid from crfunctions where CrfunctionDatasetID in (select CrfunctionDatasetID from CrFunctionDatasets where {0}))", setupid);
                 WritePollutant(writer, pollutant);
 
@@ -1425,7 +1343,6 @@ namespace BenMAP
                 List<string> lstType = new List<string>() { "int", "int", "string" };
                 writeOneTable(writer, commandText, lstType);
 
-                //export related griddefinition
                 string griddefinition = string.Format("griddefinitionid in (select griddefinitionid from setupvariables where setupvariabledatasetid in (select setupvariabledatasetid from SetupVariableDatasets where {0}))", setupid);
                 WriteGriddefinition(writer, griddefinition);
 
@@ -1669,51 +1586,8 @@ namespace BenMAP
             }
         }
 
-        #region QALY
-        //private void WriteQALY(BinaryWriter writer, string setupid)
-        //{
-        //    try
-        //    {
-        //        pBarExport.Value = 0;
-        //        lbProcess.Text = "Exporting Qaly Datasets...";
-        //        lbProcess.Refresh();
-        //        this.Refresh();
 
-        //        string commandText = string.Format("select count(*) from QalyDatasets where {0}", setupid);
-        //        ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
-        //        Int32 dsQalyDatasetscount = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
-        //        if (dsQalyDatasetscount == 0) { pBarExport.Value = pBarExport.Maximum; lbProcess.Refresh(); this.Refresh(); return; }
-        //        pBarExport.Maximum = dsQalyDatasetscount;
-        //        writer.Write("QalyDatasets");
-        //        writer.Write(dsQalyDatasetscount);
-        //        commandText = string.Format("select QalyDatasetID,SetupID,QalyDatasetName,EndPointGroup,EndPoint,Qualifier,Description from QalyDatasets where {0}", setupid);
-        //        List<string> lstType = new List<string>() { "int", "int", "string", "string", "string", "string", "string" };
-        //        writeOneTable(writer, commandText, lstType);
 
-        //        pBarExport.Value = 0;
-        //        lbProcess.Text = "Exporting Qaly Entries...";
-        //        lbProcess.Refresh();
-        //        this.Refresh();
 
-        //        commandText = string.Format("select count(*) from QalyEntries where QalyDatasetID in (select QalyDatasetID from QalyDatasets where {0})", setupid);
-        //        Int32 dsQalyEntriescount = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
-        //        if (dsQalyEntriescount == 0) { pBarExport.Value = pBarExport.Maximum; lbProcess.Refresh(); this.Refresh(); return; }
-        //        pBarExport.Maximum = dsQalyEntriescount;
-        //        writer.Write("QalyEntries");
-        //        writer.Write(dsQalyEntriescount);
-        //        commandText = string.Format("select QalyDatasetID,StartAge,EndAge,Qaly from QalyEntries where QalyDatasetID in (select QalyDatasetID from QalyDatasets where {0})", setupid);
-        //        lstType = new List<string>() { "int", "int", "int", "single" };
-        //        writeOneTable(writer, commandText, lstType);
-        //        pBarExport.Value++;
-        //        lbProcess.Refresh();
-        //        this.Refresh();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        errorOccur = true;
-        //        throw new Exception(ex.ToString());
-        //    }
-        //}
-        #endregion
     }
 }

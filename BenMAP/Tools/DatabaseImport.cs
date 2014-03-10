@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -68,11 +68,6 @@ namespace BenMAP
         {
             errorOccur = false;
             if (cboSetup.Text == "") return;
-            //System.ServiceProcess.ServiceController service = new System.ServiceProcess.ServiceController("FirebirdServerDefaultInstance");
-            //service.Stop();
-            //service.WaitForStatus(System.ServiceProcess.ServiceControllerStatus.Stopped);
-            //service.Start();
-            //service.WaitForStatus(System.ServiceProcess.ServiceControllerStatus.Running);
             CommonClass.Connection = CommonClass.getNewConnection();
             pBarImport.Value = 0;
             using (Stream stream = new FileStream(txtFile.Text, FileMode.Open))
@@ -94,7 +89,6 @@ namespace BenMAP
                         case "InflationDatasets": ReadInflation(reader); break;
                         case "ValuationFunctionDatasets": ReadValuation(reader); break;
                         case "IncomeGrowthAdjDatasets": ReadIncomeGrowth(reader); break;
-                        //case "QalyDatasets": ReadQALY(reader); break;
                     }
 
                     reader.Close();
@@ -158,10 +152,7 @@ namespace BenMAP
                         fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                         commandText = string.Format("delete from regulargriddefinitiondetails where GriddefinitionID in ({0})", existgriddefinitionID);
                         fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
-                        //commandText = string.Format("delete from griddefinitions where GriddefinitionID={0}", existgriddefinitionID);
-                        //fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                         dicGriddefinitionID.Add(griddefinitionID, existgriddefinitionID);
-                        //griddefinitionID = existgriddefinitionID;
                         reader.BaseStream.Position = reader.BaseStream.Position + 4 * sizeof(Int32);
                     }
                     else
@@ -219,10 +210,9 @@ namespace BenMAP
                         Directory.CreateDirectory(CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname);
                     }
                     if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + shapefilename + ".shp")) CommonClass.DeleteShapeFileName(CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + shapefilename + ".shp");
-                    //MessageBox.Show("");
                     FileStream file = new FileStream(CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + shapefilename + ".shx", FileMode.Create, FileAccess.Write);
                     Int64 length64 = reader.ReadInt64();
-                    Int64 diff=0;
+                    Int64 diff = 0;
                     byte[] array;
                     while (diff <= length64 - Int32.MaxValue)
                     {
@@ -689,8 +679,6 @@ namespace BenMAP
                     pBarImport.PerformStep();
                 }
 
-                //-------------------------导入相关的pollutant---------------------
-                #region load related pollutant
                 string nextTable = reader.ReadString();
                 if (nextTable != "pollutants")
                 {
@@ -1014,7 +1002,6 @@ namespace BenMAP
                         pBarImport.PerformStep();
                     }
                 }
-                #endregion
 
                 pBarImport.Value = 0;
                 lbProcess.Text = "Importing monitors...";
@@ -1119,7 +1106,6 @@ namespace BenMAP
                 Dictionary<int, int> dicGenderID = new Dictionary<int, int>();
                 Dictionary<int, int> dicEthnicityID = new Dictionary<int, int>();
 
-                #region load related griddefinition
                 pBarImport.Value = 0;
                 lbProcess.Text = "Importing related grid definitions...";
                 lbProcess.Refresh();
@@ -1176,7 +1162,7 @@ namespace BenMAP
                 for (int j = 0; j < tableCount; j++)
                 {
                     int GriddefinitionID = reader.ReadInt16();
-                    if (dicExistGriddefinition[GriddefinitionID])//如果存在就不再导入这个grid definition了
+                    if (dicExistGriddefinition[GriddefinitionID])
                     {
                         string filetype = reader.ReadString();
                         reader.ReadString();
@@ -1266,7 +1252,6 @@ namespace BenMAP
                     }
                     pBarImport.PerformStep();
                 }
-                #endregion
 
                 pBarImport.Value = 0;
                 lbProcess.Text = "Importing incidence datasets...";
@@ -1631,7 +1616,6 @@ namespace BenMAP
         {
             try
             {
-                #region import related griddefition
                 pBarImport.Value = 0;
                 lbProcess.Text = "Importing related grid definitions...";
                 lbProcess.Refresh();
@@ -1691,7 +1675,7 @@ namespace BenMAP
                 for (int j = 0; j < tableCount; j++)
                 {
                     int GriddefinitionID = reader.ReadInt16();
-                    if (dicExistGriddefition[GriddefinitionID])//如果已存在就跳过
+                    if (dicExistGriddefition[GriddefinitionID])
                     {
                         string filetype = reader.ReadString();
                         reader.ReadString();
@@ -1781,7 +1765,6 @@ namespace BenMAP
                     }
                     pBarImport.PerformStep();
                 }
-                #endregion
 
                 pBarImport.Value = 0;
                 lbProcess.Text = "Importing population configuration...";
@@ -2098,22 +2081,6 @@ namespace BenMAP
                         }
                         int PopulationConfigurationID = reader.ReadInt32();
                         int GriddefinitionID = reader.ReadInt32();
-                        //commandText = string.Format("select * from PopulationDatasets where PopulationDatasetName='{0}' and GriddefinitionID={1})", PopulationDatasetName, GriddefinitionID);
-                        //obj = fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
-                        //if (obj != null)
-                        //{
-                        //    commandText = string.Format("select GriddefinitionID from Griddefinitions where GriddefinitionName='(select GriddefinitionName from Griddefinitions where GriddefinitionID={0})' and setupid={1}", GriddefinitionID, setupID);
-                        //    obj = fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
-                        //    if (obj != null)
-                        //    {
-                        //        GriddefinitionID = Convert.ToInt16(obj);
-                        //    }
-                        //    else
-                        //    {
-                        //        commandText = string.Format("select GriddefinitionID,SetupID,GriddefinitionName,Columns,Rrows,Ttype,Defaulttype from Griddefinitions where GriddefinitionName='(select GriddefinitionName from Griddefinitions where GriddefinitionID={0})' and setupid={1}", GriddefinitionID, setupID);
-                        //        DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
-                        //    }
-                        //}
                         commandText = string.Format("insert into PopulationDatasets(PopulationDatasetID,SetupID,PopulationDatasetName,PopulationConfigurationID,GriddefinitionID,ApplyGrowth) values({0},{1},'{2}',{3},{4},{5})", PopulationDatasetID, importsetupID == -1 ? lstSetupID[oldSetupid] : importsetupID, PopulationDatasetName, dicPopulationConfigurationID.ContainsKey(PopulationConfigurationID) ? dicPopulationConfigurationID[PopulationConfigurationID] : PopulationConfigurationID, dicGriddefinitionID.ContainsKey(GriddefinitionID) ? dicGriddefinitionID[GriddefinitionID] : GriddefinitionID, reader.ReadInt32());
                         fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                         pBarImport.PerformStep();
@@ -2175,8 +2142,6 @@ namespace BenMAP
                     }
                     foreach (int popdatasetid in dicyyear.Keys)
                     {
-                        //string commandText = string.Format("delete from T_POPULATIONDATASETIDYEAR where POPULATIONDATASETID in ({0})", dicPopulationDatasetID.ContainsKey(popdatasetid) ? dicPopulationDatasetID[popdatasetid] : popdatasetid);
-                        //fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                         for (int i = 0; i < dicyyear[popdatasetid].Count; i++)
                         {
                             string commandText = string.Format("insert into T_POPULATIONDATASETIDYEAR(POPULATIONDATASETID,YYEAR) values({0},{1})", dicPopulationDatasetID.ContainsKey(popdatasetid) ? dicPopulationDatasetID[popdatasetid] : popdatasetid, dicyyear[popdatasetid][i]);
@@ -2209,8 +2174,8 @@ namespace BenMAP
                             {
                                 int PopulationDatasetID = reader.ReadInt32();
                                 int Yyear = reader.ReadInt32();
-                                int SourceColumn= reader.ReadInt32();
-                                int SourceRow= reader.ReadInt32();
+                                int SourceColumn = reader.ReadInt32();
+                                int SourceRow = reader.ReadInt32();
                                 int TargetColumn = reader.ReadInt32();
                                 int TargetRow = reader.ReadInt32();
                                 int RaceID = reader.ReadInt32();
@@ -2298,8 +2263,6 @@ namespace BenMAP
                     pBarImport.PerformStep();
                 }
 
-                //-------------------------导入相关的pollutant---------------------
-                #region load related pollutant
                 string nextTable = reader.ReadString();
                 if (nextTable != "pollutants")
                 {
@@ -2635,7 +2598,6 @@ namespace BenMAP
                         pBarImport.PerformStep();
                     }
                 }
-                #endregion
 
                 pBarImport.Value = 0;
                 lbProcess.Text = "Importing functional forms...";
@@ -2668,7 +2630,7 @@ namespace BenMAP
                         }
                         else
                         {
-                            dicFunctionalFormID[FunctionalFormID]=Convert.ToInt16(obj);
+                            dicFunctionalFormID[FunctionalFormID] = Convert.ToInt16(obj);
                         }
                         pBarImport.PerformStep();
                     }
@@ -2709,7 +2671,7 @@ namespace BenMAP
                         }
                         else
                         {
-                            dicBaselineFunctionalFormID[FunctionalFormID]=Convert.ToInt16(obj);
+                            dicBaselineFunctionalFormID[FunctionalFormID] = Convert.ToInt16(obj);
                         }
                         pBarImport.PerformStep();
                     }
@@ -2989,7 +2951,6 @@ namespace BenMAP
                     pBarImport.PerformStep();
                 }
 
-                #region load related griddefinition
                 if (reader.BaseStream.Position >= reader.BaseStream.Length) { pBarImport.Value = pBarImport.Maximum; lbProcess.Refresh(); this.Refresh(); return; }
                 string nextTable = reader.ReadString();
                 if (nextTable != "griddefinitions")
@@ -3055,7 +3016,7 @@ namespace BenMAP
                 for (int j = 0; j < tableCount; j++)
                 {
                     int GriddefinitionID = reader.ReadInt16();
-                    if (dicExistGriddefinition[GriddefinitionID])//如果存在就不再导入这个grid definition了
+                    if (dicExistGriddefinition[GriddefinitionID])
                     {
                         string filetype = reader.ReadString();
                         reader.ReadString();
@@ -3145,7 +3106,6 @@ namespace BenMAP
                     }
                     pBarImport.PerformStep();
                 }
-                #endregion
 
                 pBarImport.Value = 0;
                 lbProcess.Text = "Importing variables...";
@@ -3712,104 +3672,9 @@ namespace BenMAP
 
         }
 
-        #region QALY
-        //private void ReadQALY(BinaryReader reader)
-        //{
-        //    try
-        //    {
-        //        pBarImport.Value = 0;
-        //        lbProcess.Text = "Importing Qaly Datasets...";
-        //        lbProcess.Refresh();
-        //        this.Refresh();
 
-        //        int tableCount = reader.ReadInt32();
-        //        pBarImport.Maximum = tableCount;
-        //        int QalyDatasetID = 0;
-        //        ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
-        //        Dictionary<int, int> list = new Dictionary<int, int>();
-        //        for (int i = 0; i < tableCount; i++)
-        //        {
-        //            QalyDatasetID = reader.ReadInt32();
-        //            int oldSetupid = reader.ReadInt32();
-        //            string QalyDatasetName = reader.ReadString();
-        //            string commandText = string.Format("select QalyDatasetID from QalyDatasets where setupid={0} and QalyDatasetName='{1}'",  importsetupID==-1?lstSetupID[oldSetupid]:importsetupID,QalyDatasetName);
-        //            object obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
-        //            if (obj != null)
-        //            {
-        //                int existQalyDatasetID = Convert.ToInt16(obj);
-        //                commandText = string.Format("delete from QalyEntries where QalyDatasetID in ({0})", existQalyDatasetID);
-        //                fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
-        //                commandText = string.Format("delete from QalyDatasets where QalyDatasetID in ({0})", existQalyDatasetID);
-        //                fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
-        //                list.Add(QalyDatasetID, existQalyDatasetID);
-        //                QalyDatasetID = existQalyDatasetID;
-        //            }
-        //            else
-        //            {
-        //                commandText = string.Format("select QalyDatasetID from QalyDatasets where QalyDatasetID={0}", QalyDatasetID);
-        //                obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
-        //                if (obj != null)
-        //                {
-        //                    commandText = "select max(QalyDatasetID) from QalyDatasets";
-        //                    obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
-        //                    if (Convert.IsDBNull(obj))
-        //                    {
-        //                        list.Add(QalyDatasetID, 1);
-        //                        QalyDatasetID = 1;
-        //                    }
-        //                    else
-        //                    {
-        //                        int maxQalyDatasetID = Convert.ToInt16(obj);
-        //                        list.Add(QalyDatasetID, maxQalyDatasetID + 1);
-        //                        QalyDatasetID = maxQalyDatasetID + 1;
-        //                    }
-        //                }
-        //            }
-        //            commandText = string.Format("insert into QalyDatasets(QalyDatasetID,SetupID,QalyDatasetName,EndPointGroup,EndPoint,Qualifier,Description) values({0},{1},'{2}','{3}','{4}','{5}','{6}')", QalyDatasetID,  importsetupID==-1?lstSetupID[oldSetupid]:importsetupID, QalyDatasetName, reader.ReadString(), reader.ReadString(), reader.ReadString(), reader.ReadString());
-        //            fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
-        //            pBarImport.PerformStep();
-        //        }
 
-        //        pBarImport.Value = 0;
-        //        lbProcess.Text = "Importing Qaly Entries...";
-        //        lbProcess.Refresh();
-        //        this.Refresh();
 
-        //        if (reader.BaseStream.Position >= reader.BaseStream.Length) { pBarImport.Value = pBarImport.Maximum; lbProcess.Refresh(); this.Refresh(); return; }
-        //        string nextTable = reader.ReadString();
-        //        if (nextTable != "QalyEntries")
-        //        {
-        //            reader.BaseStream.Position = reader.BaseStream.Position - nextTable.Length - 1;
-        //            return;
-        //        }
-        //        int QalyEntriescount = reader.ReadInt32();
-        //        pBarImport.Maximum = QalyEntriescount;
-        //        for (int i = 0; i < (QalyEntriescount / 200) + 1; i++)
-        //        {
-        //            string commandText = "execute block as" + " BEGIN ";
-        //            for (int k = 0; k < 200; k++)
-        //            {
-        //                if (i * 200 + k < QalyEntriescount)
-        //                {
-        //                    QalyDatasetID = reader.ReadInt32();
-        //                    commandText = commandText + string.Format("insert into QalyEntries(QalyDatasetID,StartAge,EndAge,Qaly) values({0},{1},{2},{3});", list.ContainsKey(QalyDatasetID) ? list[QalyDatasetID] : QalyDatasetID, reader.ReadInt32(), reader.ReadInt32(), reader.ReadSingle());
-        //                    pBarImport.PerformStep();
-        //                }
-        //                else
-        //                {
-        //                    continue;
-        //                }
-        //            }
-        //            commandText = commandText + "END";
-        //            fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
-        //        }
-        //    }
-        //    catch (Exception)
-        //    {
-        //        errorOccur = true;
-        //    }
-        //}
-        #endregion
 
         Dictionary<int, int> lstSetupID = new Dictionary<int, int>();
         private void ReadSetups(BinaryReader reader)
@@ -3948,13 +3813,6 @@ namespace BenMAP
                             this.Refresh();
                             ReadIncomeGrowth(reader);
                             break;
-                        //case "QalyDatasets":
-                        //    Application.DoEvents();
-                        //    lbProcess.Text = "Importing Qaly Datasets...";
-                        //    lbProcess.Refresh();
-                        //    this.Refresh();
-                        //    ReadQALY(reader);
-                        //    break;
                     }
                 }
             }
@@ -3970,11 +3828,6 @@ namespace BenMAP
             {
                 while (reader.BaseStream.Position < reader.BaseStream.Length)
                 {
-                    //System.ServiceProcess.ServiceController service = new System.ServiceProcess.ServiceController("FirebirdServerDefaultInstance");
-                    //service.Stop();
-                    //service.WaitForStatus(System.ServiceProcess.ServiceControllerStatus.Stopped);
-                    //service.Start();
-                    //service.WaitForStatus(System.ServiceProcess.ServiceControllerStatus.Running);
 
                     string tableName = reader.ReadString();
                     switch (tableName)
