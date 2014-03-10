@@ -1,16 +1,9 @@
-﻿namespace BenMAP
+namespace BenMAP
 {
     partial class PopulationMap
     {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -20,12 +13,7 @@
             base.Dispose(disposing);
         }
 
-        #region Windows Form Designer generated code
-
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
+        
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PopulationMap));
@@ -67,10 +55,7 @@
             this.splitContainer2.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // cboAgeRange
-            // 
-            this.cboAgeRange.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                                                this.cboAgeRange.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.cboAgeRange.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboAgeRange.FormattingEnabled = true;
@@ -79,19 +64,13 @@
             this.cboAgeRange.Size = new System.Drawing.Size(374, 22);
             this.cboAgeRange.TabIndex = 15;
             this.cboAgeRange.SelectedIndexChanged += new System.EventHandler(this.cboAgeRange_SelectedIndexChanged);
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
+                                                this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(15, 67);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(285, 14);
             this.label1.TabIndex = 12;
             this.label1.Text = "Select Race, Gender, Ethnicity, AgeRange to display:";
-            // 
-            // groupBox1
-            // 
-            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                                                this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox1.Controls.Add(this.btnDraw);
             this.groupBox1.Controls.Add(this.lblPopulationYear);
@@ -104,10 +83,7 @@
             this.groupBox1.TabIndex = 18;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Select Population Dataset";
-            // 
-            // btnDraw
-            // 
-            this.btnDraw.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+                                                this.btnDraw.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnDraw.Location = new System.Drawing.Point(620, 19);
             this.btnDraw.Name = "btnDraw";
             this.btnDraw.Size = new System.Drawing.Size(52, 24);
@@ -115,38 +91,26 @@
             this.btnDraw.Text = "Draw";
             this.btnDraw.UseVisualStyleBackColor = true;
             this.btnDraw.Click += new System.EventHandler(this.btnDraw_Click);
-            // 
-            // lblPopulationYear
-            // 
-            this.lblPopulationYear.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+                                                this.lblPopulationYear.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblPopulationYear.AutoSize = true;
             this.lblPopulationYear.Location = new System.Drawing.Point(371, 23);
             this.lblPopulationYear.Name = "lblPopulationYear";
             this.lblPopulationYear.Size = new System.Drawing.Size(95, 14);
             this.lblPopulationYear.TabIndex = 12;
             this.lblPopulationYear.Text = "Population Year:";
-            // 
-            // cboPopulationYear
-            // 
-            this.cboPopulationYear.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+                                                this.cboPopulationYear.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cboPopulationYear.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboPopulationYear.Location = new System.Drawing.Point(472, 20);
             this.cboPopulationYear.Name = "cboPopulationYear";
             this.cboPopulationYear.Size = new System.Drawing.Size(142, 22);
             this.cboPopulationYear.TabIndex = 13;
-            // 
-            // lblPopulationDataSet
-            // 
-            this.lblPopulationDataSet.AutoSize = true;
+                                                this.lblPopulationDataSet.AutoSize = true;
             this.lblPopulationDataSet.Location = new System.Drawing.Point(7, 23);
             this.lblPopulationDataSet.Name = "lblPopulationDataSet";
             this.lblPopulationDataSet.Size = new System.Drawing.Size(115, 14);
             this.lblPopulationDataSet.TabIndex = 10;
             this.lblPopulationDataSet.Text = "Population Dataset:";
-            // 
-            // cboPopulationDataSet
-            // 
-            this.cboPopulationDataSet.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                                                this.cboPopulationDataSet.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.cboPopulationDataSet.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboPopulationDataSet.Location = new System.Drawing.Point(128, 20);
@@ -154,10 +118,7 @@
             this.cboPopulationDataSet.Size = new System.Drawing.Size(237, 22);
             this.cboPopulationDataSet.TabIndex = 11;
             this.cboPopulationDataSet.SelectedIndexChanged += new System.EventHandler(this.cboPopulationDataSet_SelectedIndexChanged);
-            // 
-            // tspPOPMap
-            // 
-            this.tspPOPMap.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+                                                this.tspPOPMap.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.prgLoadPOP,
             this.lblProgress});
             this.tspPOPMap.Location = new System.Drawing.Point(0, 580);
@@ -165,24 +126,15 @@
             this.tspPOPMap.Size = new System.Drawing.Size(694, 22);
             this.tspPOPMap.TabIndex = 17;
             this.tspPOPMap.Text = "statusStrip1";
-            // 
-            // prgLoadPOP
-            // 
-            this.prgLoadPOP.Name = "prgLoadPOP";
+                                                this.prgLoadPOP.Name = "prgLoadPOP";
             this.prgLoadPOP.Size = new System.Drawing.Size(450, 16);
             this.prgLoadPOP.Step = 1;
             this.prgLoadPOP.Visible = false;
-            // 
-            // lblProgress
-            // 
-            this.lblProgress.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+                                                this.lblProgress.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblProgress.Name = "lblProgress";
             this.lblProgress.Size = new System.Drawing.Size(0, 17);
             this.lblProgress.Visible = false;
-            // 
-            // splitContainer2
-            // 
-            this.splitContainer2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                                                this.splitContainer2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.splitContainer2.BackColor = System.Drawing.Color.White;
@@ -191,24 +143,15 @@
             this.splitContainer2.Location = new System.Drawing.Point(0, 95);
             this.splitContainer2.Margin = new System.Windows.Forms.Padding(0);
             this.splitContainer2.Name = "splitContainer2";
-            // 
-            // splitContainer2.Panel1
-            // 
-            this.splitContainer2.Panel1.Controls.Add(this.colorBlend);
+                                                this.splitContainer2.Panel1.Controls.Add(this.colorBlend);
             this.splitContainer2.Panel1.Controls.Add(this.mapLegend);
-            // 
-            // splitContainer2.Panel2
-            // 
-            this.splitContainer2.Panel2.Controls.Add(this.toolStrip1);
+                                                this.splitContainer2.Panel2.Controls.Add(this.toolStrip1);
             this.splitContainer2.Panel2.Controls.Add(this.mainMap);
             this.splitContainer2.Size = new System.Drawing.Size(694, 485);
             this.splitContainer2.SplitterDistance = 140;
             this.splitContainer2.SplitterWidth = 5;
             this.splitContainer2.TabIndex = 9;
-            // 
-            // colorBlend
-            // 
-            this.colorBlend.ColorArray = new System.Drawing.Color[] {
+                                                this.colorBlend.ColorArray = new System.Drawing.Color[] {
         System.Drawing.Color.Blue,
         System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(255)))), ((int)(((byte)(255))))),
         System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(255)))), ((int)(((byte)(0))))),
@@ -228,10 +171,7 @@
         0D,
         0D,
         0D};
-            // 
-            // mapLegend
-            // 
-            this.mapLegend.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                                                this.mapLegend.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.mapLegend.BackColor = System.Drawing.Color.White;
@@ -252,10 +192,7 @@
             this.mapLegend.TabIndex = 0;
             this.mapLegend.Text = "legend1";
             this.mapLegend.VerticalScrollEnabled = true;
-            // 
-            // toolStrip1
-            // 
-            this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+                                                this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.btnZoomIn,
             this.btnZoomOut,
             this.btnPan,
@@ -276,10 +213,7 @@
             this.toolStrip1.Stretch = true;
             this.toolStrip1.TabIndex = 6;
             this.toolStrip1.Text = "toolStrip1";
-            // 
-            // btnZoomIn
-            // 
-            this.btnZoomIn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+                                                this.btnZoomIn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.btnZoomIn.Image = global::BenMAP.Properties.Resources.magnifier_zoom_in;
             this.btnZoomIn.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnZoomIn.Name = "btnZoomIn";
@@ -287,10 +221,7 @@
             this.btnZoomIn.Text = "toolStripButton1";
             this.btnZoomIn.ToolTipText = "Zoom in";
             this.btnZoomIn.Click += new System.EventHandler(this.btnZoomIn_Click);
-            // 
-            // btnZoomOut
-            // 
-            this.btnZoomOut.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+                                                this.btnZoomOut.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.btnZoomOut.Image = global::BenMAP.Properties.Resources.magnifier_zoom_out;
             this.btnZoomOut.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnZoomOut.Name = "btnZoomOut";
@@ -298,10 +229,7 @@
             this.btnZoomOut.Text = "toolStripButton2";
             this.btnZoomOut.ToolTipText = "Zoom out";
             this.btnZoomOut.Click += new System.EventHandler(this.btnZoomOut_Click);
-            // 
-            // btnPan
-            // 
-            this.btnPan.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+                                                this.btnPan.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.btnPan.Image = global::BenMAP.Properties.Resources.pan_2;
             this.btnPan.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnPan.Name = "btnPan";
@@ -309,10 +237,7 @@
             this.btnPan.Text = "toolStripButton3";
             this.btnPan.ToolTipText = "Pan";
             this.btnPan.Click += new System.EventHandler(this.btnPan_Click);
-            // 
-            // btnFullExtent
-            // 
-            this.btnFullExtent.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+                                                this.btnFullExtent.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.btnFullExtent.Image = global::BenMAP.Properties.Resources.globe_7;
             this.btnFullExtent.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnFullExtent.Name = "btnFullExtent";
@@ -320,10 +245,7 @@
             this.btnFullExtent.Text = "toolStripButton4";
             this.btnFullExtent.ToolTipText = "Full extent";
             this.btnFullExtent.Click += new System.EventHandler(this.btnFullExtent_Click);
-            // 
-            // btnSpatial
-            // 
-            this.btnSpatial.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+                                                this.btnSpatial.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.btnSpatial.Image = global::BenMAP.Properties.Resources.chart4;
             this.btnSpatial.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnSpatial.Name = "btnSpatial";
@@ -331,20 +253,14 @@
             this.btnSpatial.Text = "toolStripButton5";
             this.btnSpatial.ToolTipText = "Spatial analysis";
             this.btnSpatial.Visible = false;
-            // 
-            // btnIdentify
-            // 
-            this.btnIdentify.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+                                                this.btnIdentify.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.btnIdentify.Image = global::BenMAP.Properties.Resources.identifier_16;
             this.btnIdentify.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnIdentify.Name = "btnIdentify";
             this.btnIdentify.Size = new System.Drawing.Size(23, 22);
             this.btnIdentify.Text = "Identify";
             this.btnIdentify.Click += new System.EventHandler(this.btnIdentify_Click);
-            // 
-            // btnLayerSet
-            // 
-            this.btnLayerSet.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+                                                this.btnLayerSet.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.btnLayerSet.Image = global::BenMAP.Properties.Resources.legend;
             this.btnLayerSet.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnLayerSet.Name = "btnLayerSet";
@@ -352,30 +268,21 @@
             this.btnLayerSet.Text = "Show Legend";
             this.btnLayerSet.ToolTipText = "Show Legend";
             this.btnLayerSet.Visible = false;
-            // 
-            // btnPieTheme
-            // 
-            this.btnPieTheme.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+                                                this.btnPieTheme.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.btnPieTheme.Image = global::BenMAP.Properties.Resources.tableView1;
             this.btnPieTheme.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnPieTheme.Name = "btnPieTheme";
             this.btnPieTheme.Size = new System.Drawing.Size(23, 22);
             this.btnPieTheme.Text = "Pie Theme";
             this.btnPieTheme.Visible = false;
-            // 
-            // btnColumnTheme
-            // 
-            this.btnColumnTheme.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+                                                this.btnColumnTheme.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.btnColumnTheme.Image = global::BenMAP.Properties.Resources.tableView_Bar;
             this.btnColumnTheme.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnColumnTheme.Name = "btnColumnTheme";
             this.btnColumnTheme.Size = new System.Drawing.Size(23, 22);
             this.btnColumnTheme.Text = "Column Theme";
             this.btnColumnTheme.Visible = false;
-            // 
-            // tsbSaveMap
-            // 
-            this.tsbSaveMap.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+                                                this.tsbSaveMap.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.tsbSaveMap.Image = global::BenMAP.Properties.Resources.save_as;
             this.tsbSaveMap.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbSaveMap.Name = "tsbSaveMap";
@@ -383,10 +290,7 @@
             this.tsbSaveMap.Tag = "";
             this.tsbSaveMap.Text = "Save shapefile";
             this.tsbSaveMap.Click += new System.EventHandler(this.tsbSaveMap_Click);
-            // 
-            // tsbSavePic
-            // 
-            this.tsbSavePic.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+                                                this.tsbSavePic.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.tsbSavePic.Image = ((System.Drawing.Image)(resources.GetObject("tsbSavePic.Image")));
             this.tsbSavePic.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbSavePic.Name = "tsbSavePic";
@@ -396,40 +300,28 @@
             this.tsbSavePic.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.tsbSavePic.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage;
             this.tsbSavePic.Click += new System.EventHandler(this.tsbSavePic_Click);
-            // 
-            // tsbChangeProjection
-            // 
-            this.tsbChangeProjection.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+                                                this.tsbChangeProjection.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.tsbChangeProjection.Image = global::BenMAP.Properties.Resources.cuahsi_logo1;
             this.tsbChangeProjection.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbChangeProjection.Name = "tsbChangeProjection";
             this.tsbChangeProjection.Size = new System.Drawing.Size(23, 22);
             this.tsbChangeProjection.Text = "ChangeProjection";
             this.tsbChangeProjection.Click += new System.EventHandler(this.tsbChangeProjection_Click);
-            // 
-            // tsbChangeCone
-            // 
-            this.tsbChangeCone.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+                                                this.tsbChangeCone.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.tsbChangeCone.Image = ((System.Drawing.Image)(resources.GetObject("tsbChangeCone.Image")));
             this.tsbChangeCone.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbChangeCone.Name = "tsbChangeCone";
             this.tsbChangeCone.Size = new System.Drawing.Size(23, 22);
             this.tsbChangeCone.Text = "Change to square view";
             this.tsbChangeCone.Visible = false;
-            // 
-            // tsbAddLayer
-            // 
-            this.tsbAddLayer.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+                                                this.tsbAddLayer.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.tsbAddLayer.Image = global::BenMAP.Properties.Resources.add;
             this.tsbAddLayer.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbAddLayer.Name = "tsbAddLayer";
             this.tsbAddLayer.Size = new System.Drawing.Size(23, 22);
             this.tsbAddLayer.Text = "Add Layer";
             this.tsbAddLayer.Visible = false;
-            // 
-            // mainMap
-            // 
-            this.mainMap.AllowDrop = true;
+                                                this.mainMap.AllowDrop = true;
             this.mainMap.BackColor = System.Drawing.Color.White;
             this.mainMap.CollectAfterDraw = false;
             this.mainMap.CollisionDetection = false;
@@ -450,10 +342,7 @@
             this.mainMap.TabIndex = 0;
             this.mainMap.Tag = "GIS map will be created here.";
             this.mainMap.MouseUp += new System.Windows.Forms.MouseEventHandler(this.mainMap_MouseUp);
-            // 
-            // PopulationMap
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
+                                                this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(694, 602);
             this.Controls.Add(this.cboAgeRange);
@@ -484,8 +373,7 @@
 
         }
 
-        #endregion
-
+        
         private System.Windows.Forms.SplitContainer splitContainer2;
         private DotSpatial.Controls.Legend mapLegend;
         private System.Windows.Forms.ToolStrip toolStrip1;

@@ -1,16 +1,9 @@
-﻿namespace BenMAP
+namespace BenMAP
 {
     partial class HealthImpactDataSetDefinition
     {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -20,12 +13,7 @@
             base.Dispose(disposing);
         }
 
-        #region Windows Form Designer generated code
-
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
+        
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
@@ -93,33 +81,21 @@
             ((System.ComponentModel.ISupportInitialize)(this.olvFunction)).BeginInit();
             this.grpCancelOK.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // olvColumn32
-            // 
-            this.olvColumn32.AspectName = "variabeldatasetname";
+                                                this.olvColumn32.AspectName = "variabeldatasetname";
             this.olvColumn32.Text = "Variable";
             this.olvColumn32.Width = 100;
-            // 
-            // statusStrip1
-            // 
-            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+                                                this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabel1});
             this.statusStrip1.Location = new System.Drawing.Point(0, 532);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(780, 22);
             this.statusStrip1.TabIndex = 9;
             this.statusStrip1.Text = "statusStrip1";
-            // 
-            // toolStripStatusLabel1
-            // 
-            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
+                                                this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
             this.toolStripStatusLabel1.Size = new System.Drawing.Size(131, 17);
             this.toolStripStatusLabel1.Text = "toolStripStatusLabel1";
             this.toolStripStatusLabel1.Visible = false;
-            // 
-            // grpHealthImpactFunction
-            // 
-            this.grpHealthImpactFunction.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                                                this.grpHealthImpactFunction.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.grpHealthImpactFunction.Controls.Add(this.btnOutPut);
@@ -139,10 +115,7 @@
             this.grpHealthImpactFunction.Size = new System.Drawing.Size(758, 465);
             this.grpHealthImpactFunction.TabIndex = 8;
             this.grpHealthImpactFunction.TabStop = false;
-            // 
-            // btnOutPut
-            // 
-            this.btnOutPut.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+                                                this.btnOutPut.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOutPut.Location = new System.Drawing.Point(224, 425);
             this.btnOutPut.Name = "btnOutPut";
             this.btnOutPut.Size = new System.Drawing.Size(140, 27);
@@ -152,10 +125,7 @@
                     " and can be used as an example to prepare the input file.");
             this.btnOutPut.UseVisualStyleBackColor = true;
             this.btnOutPut.Click += new System.EventHandler(this.btnOutPut_Click);
-            // 
-            // chbGroup
-            // 
-            this.chbGroup.AutoSize = true;
+                                                this.chbGroup.AutoSize = true;
             this.chbGroup.Location = new System.Drawing.Point(648, 63);
             this.chbGroup.Name = "chbGroup";
             this.chbGroup.Size = new System.Drawing.Size(54, 16);
@@ -163,39 +133,27 @@
             this.chbGroup.Text = "Group";
             this.chbGroup.UseVisualStyleBackColor = true;
             this.chbGroup.CheckedChanged += new System.EventHandler(this.chbGroup_CheckedChanged);
-            // 
-            // groupBox3
-            // 
-            this.groupBox3.Controls.Add(this.txtFilter);
+                                                this.groupBox3.Controls.Add(this.txtFilter);
             this.groupBox3.Location = new System.Drawing.Point(457, 45);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(180, 49);
             this.groupBox3.TabIndex = 27;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Filter";
-            // 
-            // txtFilter
-            // 
-            this.txtFilter.Dock = System.Windows.Forms.DockStyle.Fill;
+                                                this.txtFilter.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtFilter.Location = new System.Drawing.Point(3, 17);
             this.txtFilter.Name = "txtFilter";
             this.txtFilter.Size = new System.Drawing.Size(174, 22);
             this.txtFilter.TabIndex = 0;
             this.txtFilter.TextChanged += new System.EventHandler(this.txtFilter_TextChanged_1);
-            // 
-            // groupBox2
-            // 
-            this.groupBox2.Controls.Add(this.cboFilterPollutants);
+                                                this.groupBox2.Controls.Add(this.cboFilterPollutants);
             this.groupBox2.Location = new System.Drawing.Point(271, 45);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(180, 49);
             this.groupBox2.TabIndex = 26;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Filter Pollutants";
-            // 
-            // cboFilterPollutants
-            // 
-            this.cboFilterPollutants.Dock = System.Windows.Forms.DockStyle.Fill;
+                                                this.cboFilterPollutants.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cboFilterPollutants.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboFilterPollutants.FormattingEnabled = true;
             this.cboFilterPollutants.Location = new System.Drawing.Point(3, 18);
@@ -203,20 +161,14 @@
             this.cboFilterPollutants.Size = new System.Drawing.Size(174, 22);
             this.cboFilterPollutants.TabIndex = 0;
             this.cboFilterPollutants.SelectedValueChanged += new System.EventHandler(this.cboFilterPollutants_SelectedValueChanged);
-            // 
-            // groupBox1
-            // 
-            this.groupBox1.Controls.Add(this.cboFilterEndpointGroup);
+                                                this.groupBox1.Controls.Add(this.cboFilterEndpointGroup);
             this.groupBox1.Location = new System.Drawing.Point(11, 45);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(254, 49);
             this.groupBox1.TabIndex = 25;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Filter Endpoint Group";
-            // 
-            // cboFilterEndpointGroup
-            // 
-            this.cboFilterEndpointGroup.Dock = System.Windows.Forms.DockStyle.Fill;
+                                                this.cboFilterEndpointGroup.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cboFilterEndpointGroup.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboFilterEndpointGroup.FormattingEnabled = true;
             this.cboFilterEndpointGroup.Location = new System.Drawing.Point(3, 18);
@@ -224,10 +176,7 @@
             this.cboFilterEndpointGroup.Size = new System.Drawing.Size(248, 22);
             this.cboFilterEndpointGroup.TabIndex = 0;
             this.cboFilterEndpointGroup.SelectedValueChanged += new System.EventHandler(this.cboFilterEndpointGroup_SelectedValueChanged);
-            // 
-            // olvFunction
-            // 
-            this.olvFunction.AllColumns.Add(this.olvcEndpointGroup);
+                                                this.olvFunction.AllColumns.Add(this.olvcEndpointGroup);
             this.olvFunction.AllColumns.Add(this.olvcEndpoint);
             this.olvFunction.AllColumns.Add(this.olvcPollutant);
             this.olvFunction.AllColumns.Add(this.olvColumn3);
@@ -329,218 +278,110 @@
             this.olvFunction.UseHotItem = true;
             this.olvFunction.UseTranslucentHotItem = true;
             this.olvFunction.View = System.Windows.Forms.View.Details;
-            // 
-            // olvcEndpointGroup
-            // 
-            this.olvcEndpointGroup.AspectName = "endpointgroupname";
+                                                this.olvcEndpointGroup.AspectName = "endpointgroupname";
             this.olvcEndpointGroup.Text = "Endpoint Group";
             this.olvcEndpointGroup.Width = 120;
-            // 
-            // olvcEndpoint
-            // 
-            this.olvcEndpoint.AspectName = "endpointname";
+                                                this.olvcEndpoint.AspectName = "endpointname";
             this.olvcEndpoint.Text = "Endpoint";
             this.olvcEndpoint.Width = 100;
-            // 
-            // olvcPollutant
-            // 
-            this.olvcPollutant.AspectName = "pollutantname";
+                                                this.olvcPollutant.AspectName = "pollutantname";
             this.olvcPollutant.Text = "Pollutant";
             this.olvcPollutant.Width = 100;
-            // 
-            // olvColumn3
-            // 
-            this.olvColumn3.AspectName = "metricname";
+                                                this.olvColumn3.AspectName = "metricname";
             this.olvColumn3.Text = "Metric";
             this.olvColumn3.Width = 70;
-            // 
-            // olvColumn4
-            // 
-            this.olvColumn4.AspectName = "seasonalmetricname";
+                                                this.olvColumn4.AspectName = "seasonalmetricname";
             this.olvColumn4.Text = "Season Metric";
             this.olvColumn4.Width = 100;
-            // 
-            // olvColumn5
-            // 
-            this.olvColumn5.AspectName = "MetricstatisticName";
+                                                this.olvColumn5.AspectName = "MetricstatisticName";
             this.olvColumn5.Text = "Metric Statistic";
             this.olvColumn5.Width = 120;
-            // 
-            // olvColumn6
-            // 
-            this.olvColumn6.AspectName = "author";
+                                                this.olvColumn6.AspectName = "author";
             this.olvColumn6.Text = "Author";
             this.olvColumn6.Width = 70;
-            // 
-            // olvColumn7
-            // 
-            this.olvColumn7.AspectName = "yyear";
+                                                this.olvColumn7.AspectName = "yyear";
             this.olvColumn7.Text = "Year";
-            // 
-            // olvColumn8
-            // 
-            this.olvColumn8.AspectName = "LOCATIONTYPENAME";
+                                                this.olvColumn8.AspectName = "LOCATIONTYPENAME";
             this.olvColumn8.Text = "Locationtype Name";
             this.olvColumn8.Width = 120;
-            // 
-            // olvColumn9
-            // 
-            this.olvColumn9.AspectName = "location";
+                                                this.olvColumn9.AspectName = "location";
             this.olvColumn9.Text = "Location";
             this.olvColumn9.Width = 80;
-            // 
-            // olvColumn10
-            // 
-            this.olvColumn10.AspectName = "otherpollutants";
+                                                this.olvColumn10.AspectName = "otherpollutants";
             this.olvColumn10.Text = "Other Pollutant";
             this.olvColumn10.Width = 120;
-            // 
-            // olvColumn11
-            // 
-            this.olvColumn11.AspectName = "qualifier";
+                                                this.olvColumn11.AspectName = "qualifier";
             this.olvColumn11.Text = "Qualifier";
             this.olvColumn11.Width = 100;
-            // 
-            // olvColumn12
-            // 
-            this.olvColumn12.AspectName = "reference";
+                                                this.olvColumn12.AspectName = "reference";
             this.olvColumn12.Text = "Reference";
             this.olvColumn12.Width = 100;
-            // 
-            // olvColumn13
-            // 
-            this.olvColumn13.AspectName = "race";
+                                                this.olvColumn13.AspectName = "race";
             this.olvColumn13.Text = "Race";
-            // 
-            // olvColumn14
-            // 
-            this.olvColumn14.AspectName = "ethnicity";
+                                                this.olvColumn14.AspectName = "ethnicity";
             this.olvColumn14.Text = "Ethnicity";
             this.olvColumn14.Width = 80;
-            // 
-            // olvColumn15
-            // 
-            this.olvColumn15.AspectName = "gender";
+                                                this.olvColumn15.AspectName = "gender";
             this.olvColumn15.Text = "Gender";
             this.olvColumn15.Width = 80;
-            // 
-            // olvColumn16
-            // 
-            this.olvColumn16.AspectName = "startage";
+                                                this.olvColumn16.AspectName = "startage";
             this.olvColumn16.Text = "Start Age";
             this.olvColumn16.Width = 100;
-            // 
-            // olvColumn17
-            // 
-            this.olvColumn17.AspectName = "endage";
+                                                this.olvColumn17.AspectName = "endage";
             this.olvColumn17.Text = "End Age";
             this.olvColumn17.Width = 80;
-            // 
-            // olvColumn18
-            // 
-            this.olvColumn18.AspectName = "functionalformtext";
+                                                this.olvColumn18.AspectName = "functionalformtext";
             this.olvColumn18.Text = "Function";
             this.olvColumn18.Width = 120;
-            // 
-            // olvColumn19
-            // 
-            this.olvColumn19.AspectName = "functionalformtext1";
+                                                this.olvColumn19.AspectName = "functionalformtext1";
             this.olvColumn19.Text = "Baseline Function";
             this.olvColumn19.Width = 120;
-            // 
-            // olvColumn20
-            // 
-            this.olvColumn20.AspectName = "beta";
+                                                this.olvColumn20.AspectName = "beta";
             this.olvColumn20.Text = "Beta";
-            // 
-            // olvColumn21
-            // 
-            this.olvColumn21.AspectName = "distbeta";
+                                                this.olvColumn21.AspectName = "distbeta";
             this.olvColumn21.Text = "Beta Distribution";
             this.olvColumn21.Width = 140;
-            // 
-            // olvColumn22
-            // 
-            this.olvColumn22.AspectName = "p1beta";
+                                                this.olvColumn22.AspectName = "p1beta";
             this.olvColumn22.Text = "P1Beta";
             this.olvColumn22.Width = 100;
-            // 
-            // olvColumn23
-            // 
-            this.olvColumn23.AspectName = "p2beta";
+                                                this.olvColumn23.AspectName = "p2beta";
             this.olvColumn23.Text = "P2Beta";
             this.olvColumn23.Width = 100;
-            // 
-            // olvColumn24
-            // 
-            this.olvColumn24.AspectName = "a";
+                                                this.olvColumn24.AspectName = "a";
             this.olvColumn24.Text = "A";
-            // 
-            // olvColumn25
-            // 
-            this.olvColumn25.AspectName = "namea";
+                                                this.olvColumn25.AspectName = "namea";
             this.olvColumn25.Text = "NameA";
-            // 
-            // olvColumn26
-            // 
-            this.olvColumn26.AspectName = "b";
+                                                this.olvColumn26.AspectName = "b";
             this.olvColumn26.Text = "B";
-            // 
-            // olvColumn27
-            // 
-            this.olvColumn27.AspectName = "nameb";
+                                                this.olvColumn27.AspectName = "nameb";
             this.olvColumn27.Text = "NameB";
-            // 
-            // olvColumn28
-            // 
-            this.olvColumn28.AspectName = "c";
+                                                this.olvColumn28.AspectName = "c";
             this.olvColumn28.Text = "C";
-            // 
-            // olvColumn29
-            // 
-            this.olvColumn29.AspectName = "namec";
+                                                this.olvColumn29.AspectName = "namec";
             this.olvColumn29.Text = "NameC";
-            // 
-            // olvColumn30
-            // 
-            this.olvColumn30.AspectName = "incidencedatasetname";
+                                                this.olvColumn30.AspectName = "incidencedatasetname";
             this.olvColumn30.Text = "Incidence";
             this.olvColumn30.Width = 100;
-            // 
-            // olvColumn31
-            // 
-            this.olvColumn31.AspectName = "incidencedatasetname";
+                                                this.olvColumn31.AspectName = "incidencedatasetname";
             this.olvColumn31.Text = "Prevalence";
             this.olvColumn31.Width = 100;
-            // 
-            // olvColumn33
-            // 
-            this.olvColumn33.AspectName = "crfunctionid";
+                                                this.olvColumn33.AspectName = "crfunctionid";
             this.olvColumn33.DisplayIndex = 33;
             this.olvColumn33.IsVisible = false;
             this.olvColumn33.Text = "CRFuntionID";
             this.olvColumn33.Width = 100;
-            // 
-            // lblHealthImpactFunctionName
-            // 
-            this.lblHealthImpactFunctionName.AutoSize = true;
+                                                this.lblHealthImpactFunctionName.AutoSize = true;
             this.lblHealthImpactFunctionName.Location = new System.Drawing.Point(13, 22);
             this.lblHealthImpactFunctionName.Name = "lblHealthImpactFunctionName";
             this.lblHealthImpactFunctionName.Size = new System.Drawing.Size(217, 14);
             this.lblHealthImpactFunctionName.TabIndex = 0;
             this.lblHealthImpactFunctionName.Text = "Health Impact Function DataSet Name:";
-            // 
-            // txtHealthImpactFunction
-            // 
-            this.txtHealthImpactFunction.Location = new System.Drawing.Point(240, 17);
+                                                this.txtHealthImpactFunction.Location = new System.Drawing.Point(240, 17);
             this.txtHealthImpactFunction.Name = "txtHealthImpactFunction";
             this.txtHealthImpactFunction.Size = new System.Drawing.Size(255, 22);
             this.txtHealthImpactFunction.TabIndex = 1;
             this.txtHealthImpactFunction.Text = "HealthImpactFunctionDataSet0";
-            // 
-            // btnEdit
-            // 
-            this.btnEdit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+                                                this.btnEdit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnEdit.Location = new System.Drawing.Point(675, 425);
             this.btnEdit.Name = "btnEdit";
             this.btnEdit.Size = new System.Drawing.Size(75, 27);
@@ -548,10 +389,7 @@
             this.btnEdit.Text = "Edit";
             this.btnEdit.UseVisualStyleBackColor = true;
             this.btnEdit.Click += new System.EventHandler(this.btnEdit_Click);
-            // 
-            // btnAdd
-            // 
-            this.btnAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+                                                this.btnAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnAdd.Location = new System.Drawing.Point(513, 425);
             this.btnAdd.Name = "btnAdd";
             this.btnAdd.Size = new System.Drawing.Size(75, 27);
@@ -559,10 +397,7 @@
             this.btnAdd.Text = "Add";
             this.btnAdd.UseVisualStyleBackColor = true;
             this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
-            // 
-            // btnDelete
-            // 
-            this.btnDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+                                                this.btnDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnDelete.Location = new System.Drawing.Point(594, 425);
             this.btnDelete.Name = "btnDelete";
             this.btnDelete.Size = new System.Drawing.Size(75, 27);
@@ -570,10 +405,7 @@
             this.btnDelete.Text = "Delete";
             this.btnDelete.UseVisualStyleBackColor = true;
             this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
-            // 
-            // btnBrowse
-            // 
-            this.btnBrowse.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+                                                this.btnBrowse.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnBrowse.Location = new System.Drawing.Point(370, 425);
             this.btnBrowse.Name = "btnBrowse";
             this.btnBrowse.Size = new System.Drawing.Size(137, 27);
@@ -581,10 +413,7 @@
             this.btnBrowse.Text = "Load From Database";
             this.btnBrowse.UseVisualStyleBackColor = true;
             this.btnBrowse.Click += new System.EventHandler(this.btnBrowse_Click);
-            // 
-            // grpCancelOK
-            // 
-            this.grpCancelOK.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+                                                this.grpCancelOK.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.grpCancelOK.Controls.Add(this.btnOK);
             this.grpCancelOK.Controls.Add(this.btnCancel);
@@ -593,10 +422,7 @@
             this.grpCancelOK.Size = new System.Drawing.Size(758, 54);
             this.grpCancelOK.TabIndex = 7;
             this.grpCancelOK.TabStop = false;
-            // 
-            // btnOK
-            // 
-            this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+                                                this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOK.Location = new System.Drawing.Point(675, 20);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 27);
@@ -604,10 +430,7 @@
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click_1);
-            // 
-            // btnCancel
-            // 
-            this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+                                                this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.Location = new System.Drawing.Point(594, 20);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 27);
@@ -615,10 +438,7 @@
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
-            // 
-            // HealthImpactDataSetDefinition
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
+                                                this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(780, 554);
             this.Controls.Add(this.statusStrip1);
@@ -645,8 +465,7 @@
 
         }
 
-        #endregion
-
+        
         private System.Windows.Forms.Label lblHealthImpactFunctionName;
         private System.Windows.Forms.TextBox txtHealthImpactFunction;
         private System.Windows.Forms.Button btnBrowse;

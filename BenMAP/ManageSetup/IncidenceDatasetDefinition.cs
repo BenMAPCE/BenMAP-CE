@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
@@ -14,9 +14,6 @@ namespace BenMAP
 {
     public partial class IncidenceDatasetDefinition : FormBase
     {
-        /// <summary>
-        /// 点击add的时候进入
-        /// </summary>
         public IncidenceDatasetDefinition()
         {
             InitializeComponent();
@@ -25,10 +22,6 @@ namespace BenMAP
 
         DataTable dtIncidence = new DataTable();
 
-        /// <summary>
-        /// 点击Edit的时候进入
-        /// </summary>
-        /// <param name="dataSetName"></param>
         public IncidenceDatasetDefinition(string dataSetName, int dataSetID)
         {
             InitializeComponent();
@@ -54,45 +47,22 @@ namespace BenMAP
             {
                 if (_dataSetName != string.Empty)
                 {
-                    //edit
                     txtDataName.Text = _dataSetName;
-                    //txtDataName.Enabled = false;
-                    BindDataGridView(null,null);
+                    BindDataGridView(null, null);
                     cboGridDefinition.Enabled = false;
-                    //string commandText = "select GridDefinitionID from GridDefinitions where GridDefinitionName='" + cboGridDefinition.Text + "'";
-                    //object gridDefinitionID = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
-                    //_grdiDefinitionID = Convert.ToInt32(gridDefinitionID);
                 }
                 else
                 {
-                    //// add ，初始化表_dtIncidenceRates的结构
-                    //string commandText = string.Format("select IncidenceRates.IncidenceRateID, EndPointGroups.EndPointGroupName,EndPoints.EndPointName,IncidenceRates.Prevalence,Races.RaceName,Ethnicity.EthnicityName,Genders.GenderName,IncidenceRates.StartAge,IncidenceRates.EndAge from IncidenceRates,EndPointGroups,EndPoints,Races,Ethnicity,Genders ,IncidenceDataSets where (IncidenceDataSets.IncidenceDataSetID= IncidenceRates.IncidenceDataSetID) and (IncidenceRates.EndPointGroupID=EndPointGroups.EndPointGroupID) and (IncidenceRates.EndPointID=EndPoints.EndPointID) and (IncidenceRates.RaceID=Races.RaceID) and (IncidenceRates.GenderID=Genders.GenderID) and (IncidenceRates.EthnicityID=Ethnicity.EthnicityID) and IncidenceDataSets.IncidenceDataSetName='{0}'", "");
-                    //DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
-                    //// _dtIncidenceRates = ds.Tables[0];
-                    //dgvDataSetIncidenceRates.DataSource = ds.Tables[0];
-                    //dgvDataSetIncidenceRates.Columns["INCIDENCERATEID"].Visible = false;
-                    //dgvDataSetIncidenceRates.Columns[1].HeaderText = "Endpoint Group";
-                    //dgvDataSetIncidenceRates.Columns[2].HeaderText = "Endpoint";
-                    //dgvDataSetIncidenceRates.Columns[3].HeaderText = "Type";
-                    //dgvDataSetIncidenceRates.Columns[4].HeaderText = "Race";
-                    //dgvDataSetIncidenceRates.Columns[5].HeaderText = "Ethnicity";
-                    //dgvDataSetIncidenceRates.Columns[6].HeaderText = "Gender";
-                    //dgvDataSetIncidenceRates.Columns[7].HeaderText = "Start Age";
-                    //dgvDataSetIncidenceRates.Columns[8].HeaderText = "End Age";
-                    //dgvDataSetIncidenceRates.RowHeadersVisible = false;
 
-                    //automatically generated name-increase the number at the end of the name
                     int number = 0;
-                    int incidenceDatasetID=0;
+                    int incidenceDatasetID = 0;
                     do
                     {
-                        string comText = "select incidenceDatasetID from incidenceDataSets where incidenceDatasetName=" + "'IncidenceDataSet" + Convert.ToString(number)+"'";
+                        string comText = "select incidenceDatasetID from incidenceDataSets where incidenceDatasetName=" + "'IncidenceDataSet" + Convert.ToString(number) + "'";
                         incidenceDatasetID = Convert.ToInt16(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, comText));
                         number++;
                     } while (incidenceDatasetID > 0);
-                    txtDataName.Text = "IncidenceDataSet" + Convert.ToString(number-1);
-                    //txtDataName.Enabled = true;
-                    //_dataSetName = txtDataName.Text;
+                    txtDataName.Text = "IncidenceDataSet" + Convert.ToString(number - 1);
                     cboGridDefinition.Enabled = true;
                 }
 
@@ -112,7 +82,6 @@ namespace BenMAP
             ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
             try
             {
-                //从数据库中选取dataset，绑定到datagridview，修改显示的列名
                 string commandText = string.Format("select IncidenceRates.IncidenceRateID, EndPointGroups.EndPointGroupName,EndPoints.EndPointName,IncidenceRates.Prevalence,Races.RaceName,Ethnicity.EthnicityName,Genders.GenderName,IncidenceRates.StartAge,IncidenceRates.EndAge from IncidenceRates,EndPointGroups,EndPoints,Races,Ethnicity,Genders ,IncidenceDataSets where (IncidenceDataSets.IncidenceDataSetID= IncidenceRates.IncidenceDataSetID) and (IncidenceRates.EndPointGroupID=EndPointGroups.EndPointGroupID) and (IncidenceRates.EndPointID=EndPoints.EndPointID) and (IncidenceRates.RaceID=Races.RaceID) and (IncidenceRates.GenderID=Genders.GenderID) and (IncidenceRates.EthnicityID=Ethnicity.EthnicityID) and IncidenceDataSets.IncidenceDataSetID='{0}'", incidenceDatasetID);
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                 dtIncidence = ds.Tables[0];
@@ -222,10 +191,6 @@ namespace BenMAP
 
         private DataTable _dtLoadTable;
 
-        /// <summary>
-        /// 得到所有Race种族
-        /// </summary>
-        /// <returns></returns>LOWER
         public static Dictionary<string, int> getAllRace()
         {
             try
@@ -246,10 +211,6 @@ namespace BenMAP
                 return null;
             }
         }
-        /// <summary>
-        /// 得到所有Ethnicity-宗教信仰
-        /// </summary>
-        /// <returns></returns>
         public static Dictionary<string, int> getAllEthnicity()
         {
             try
@@ -270,10 +231,6 @@ namespace BenMAP
                 return null;
             }
         }
-        /// <summary>
-        /// 得到所有Gender;性别
-        /// </summary>
-        /// <returns></returns>
         public static Dictionary<string, int> getAllGender()
         {
             try
@@ -296,10 +253,6 @@ namespace BenMAP
             }
         }
 
-        /// <summary>
-        /// 得到所有EndPointGroup
-        /// </summary>
-        /// <returns></returns>
         public static Dictionary<string, int> getAllEndPointGroup()
         {
             try
@@ -321,17 +274,12 @@ namespace BenMAP
             }
         }
 
-        /// <summary>
-        /// 得到所有EndPoint
-        /// </summary>
-        /// <returns></returns>
         public static Dictionary<int, List<string>> getEndPointID()
         {
             try
             {
                 Dictionary<int, List<string>> dicEndPoint = new Dictionary<int, List<string>>();
-                string commandText = "select EndPointID,EndPointGroupID,LOWER(EndPointName) from EndPoints ";//where EndPointName!='' union select EndPointID,EndPointName from EndPoints where EndPointID=99";
-                ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                string commandText = "select EndPointID,EndPointGroupID,LOWER(EndPointName) from EndPoints "; ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
                 foreach (DataRow dr in ds.Tables[0].Rows)
                 {
@@ -348,17 +296,12 @@ namespace BenMAP
             }
         }
 
-        /// <summary>
-        /// 得到所有小写EndPoint
-        /// </summary>
-        /// <returns></returns>
         public static Dictionary<string, int> getAllEndPoint()
         {
             try
             {
                 Dictionary<string, int> dicEndPoint = new Dictionary<string, int>();
-                string commandText = "select EndPointID,LOWER(EndPointName) from EndPoints ";//where EndPointName!='' union select EndPointID,EndPointName from EndPoints where EndPointID=99";
-                ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                string commandText = "select EndPointID,LOWER(EndPointName) from EndPoints "; ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
                 foreach (DataRow dr in ds.Tables[0].Rows)
                 {
@@ -372,17 +315,12 @@ namespace BenMAP
                 return null;
             }
         }
-        /// <summary>
-        /// 得到所有原始EndPoint
-        /// </summary>
-        /// <returns></returns>
         public static Dictionary<string, int> getAllOrigEndPoint()
         {
             try
             {
                 Dictionary<string, int> dicEndPoint = new Dictionary<string, int>();
-                string commandText = "select EndPointID,EndPointName from EndPoints ";//where EndPointName!='' union select EndPointID,EndPointName from EndPoints where EndPointID=99";
-                ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                string commandText = "select EndPointID,EndPointName from EndPoints "; ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
                 foreach (DataRow dr in ds.Tables[0].Rows)
                 {
@@ -478,27 +416,10 @@ namespace BenMAP
                 {
                     DialogResult rtn = frm.ShowDialog();
                     if (rtn != DialogResult.OK) { return; }
-                    //显示进度条
-                    //label1.Visible = true;
-                    //progressBar1.Visible = true;
                     str = frm.StrPath;
-                    //填充GridDefinition
                     commandText = "select GridDefinitionName from GridDefinitions where GridDefinitionID=" + _grdiDefinitionID + "";
                     cboGridDefinition.Text = (fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)).ToString();
-                    // Todo:陈志润
-                    //int sheetIndex = 1;
-                    //if (str.Substring(str.Length - 3, 3).ToLower() != "csv")
-                    //{                    
-                    //    //判断有没有安装Excel
-                    //    if (Type.GetTypeFromProgID("Excel.Application") == null)
-                    //    {
-                    //        MessageBox.Show("Please install Excel.", "Warning", MessageBoxButtons.OK);
-                    //        return;
-                    //    }
-                    //    sheetIndex = CommonClass.SelectedSheetIndex(str);
-                    //}
-                    _dtLoadTable = CommonClass.ExcelToDataTable(str); //dp.ReadCSV2DataTable(str);//解析.csv文件
-                    if (_dtLoadTable == null)
+                    _dtLoadTable = CommonClass.ExcelToDataTable(str); if (_dtLoadTable == null)
                     { MessageBox.Show("Failed to import data from CSV file."); return; }
 
                     int iEndpointGroup = -1;
@@ -562,37 +483,34 @@ namespace BenMAP
                     lblProgress.Visible = true;
                     progressBar1.Visible = true;
 
-                    //初始化进度条
                     progressBar1.Step = 1;
                     progressBar1.Minimum = 0;
                     progressBar1.Maximum = _dtLoadTable.Rows.Count;
                     progressBar1.Value = progressBar1.Minimum;
                     if (_dataSetName != string.Empty)
-                    {// 编辑
-                        commandText = string.Format("select IncidenceDataSetID from IncidenceDataSets where IncidenceDataSetName='{0}' and setupID={1}", _dataSetName,CommonClass.ManageSetup.SetupID);
+                    {
+                        commandText = string.Format("select IncidenceDataSetID from IncidenceDataSets where IncidenceDataSetName='{0}' and setupID={1}", _dataSetName, CommonClass.ManageSetup.SetupID);
                         object obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
                         incidenceDatasetID = Convert.ToInt32(obj);
                         if (_dataSetName != txtDataName.Text)
                         {
-                            //检查要更新的DataSetName是否存在于数据库中
                             commandText = string.Format("select INCIDENCEDATASETID from INCIDENCEDATASETS where INCIDENCEDATASETNAME='{0}' and setupID={1}", txtDataName.Text, CommonClass.ManageSetup.SetupID);
                             obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
                             if (obj != null) { MessageBox.Show("The dataset name already exists. Please enter a different name."); return; }
-                            //更新DataSet名称
                             commandText = string.Format("update INCIDENCEDATASETS set INCIDENCEDATASETNAME='{0}' where INCIDENCEDATASETID='{1}'", txtDataName.Text, incidenceDatasetID);
                             fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                         }
                     }
                     else
-                    {//新增
+                    {
                         commandText = string.Format("select INCIDENCEDATASETID from INCIDENCEDATASETS where INCIDENCEDATASETNAME='{0}' and setupID={1}", txtDataName.Text, CommonClass.ManageSetup.SetupID);
                         object obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
-                        if (obj != null) 
+                        if (obj != null)
                         {
                             MessageBox.Show("The dataset name already exists. Please enter a different name.");
                             lblProgress.Visible = false;
                             progressBar1.Visible = false;
-                            return; 
+                            return;
                         }
                         else
                         {
@@ -605,7 +523,6 @@ namespace BenMAP
                         _dataSetName = txtDataName.Text;
                     }
 
-                    //----------查找完全相同的并且把他们删除------------------------
                     List<DataRow> lstMustRemove = new List<DataRow>();
                     Dictionary<string, int> dicDtLoadTable = new Dictionary<string, int>();
                     for (int i = 0; i < _dtLoadTable.Rows.Count; i++)
@@ -641,7 +558,6 @@ namespace BenMAP
                     {
                         _dtLoadTable.Rows.Remove(dr);
                     }
-                    //查找不完全相同的提示用户
                     lstMustRemove = new List<DataRow>();
                     dicDtLoadTable = new Dictionary<string, int>();
                     for (int i = 0; i < _dtLoadTable.Rows.Count; i++)
@@ -670,16 +586,6 @@ namespace BenMAP
                     dicDtLoadTable.Clear();
                     GC.Collect();
 
-                    //List<string> lstDistinct = new List<string>();
-                    //foreach (DataRow dr in _dtLoadTable.Rows)
-                    //{
-                    //    if (!lstDistinct.Contains(dr["Endpoint Group"].ToString() + "," + dr["Endpoint"].ToString() + "," + dr["Race"].ToString() + "," + dr["Gender"].ToString() + ","
-                    //        + dr["Ethnicity"].ToString() + "," + dr["Start Age"].ToString() + "," + dr["End Age"].ToString() + "," + dr["Type"].ToString()))
-                    //    {
-                    //        lstDistinct.Add(dr["Endpoint Group"].ToString() + "," + dr["Endpoint"].ToString() + "," + dr["Race"].ToString() + "," + dr["Gender"].ToString() + ","
-                    //        + dr["Ethnicity"].ToString() + "," + dr["Start Age"].ToString() + "," + dr["End Age"].ToString() + "," + dr["Type"].ToString());
-                    //    }
-                    //}
                     DataView dv = _dtLoadTable.DefaultView;
                     DataTable dtDistinct = dv.ToTable(true, dv.Table.Columns[iEndpointGroup].ColumnName, dv.Table.Columns[iEndpoint].ColumnName, dv.Table.Columns[iRace].ColumnName, dv.Table.Columns[iGender].ColumnName, dv.Table.Columns[iEthnicity].ColumnName, dv.Table.Columns[iStartAge].ColumnName, dv.Table.Columns[iEndAge].ColumnName, dv.Table.Columns[iType].ColumnName);
                     Dictionary<string, string> dicIncidence = new Dictionary<string, string>();
@@ -693,7 +599,7 @@ namespace BenMAP
                         if (endPointGroupID == null)
                         {
                             commandText = "select max(EndPointGroupID) from EndPointGroups";
-                            endPointGroupID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText))+1;
+                            endPointGroupID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
                             commandText = string.Format("insert into EndpointGroups values ({0},'{1}')", endPointGroupID, dtDistinct.Rows[j][0].ToString());
                             fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                         }
@@ -733,27 +639,23 @@ namespace BenMAP
                             commandText = string.Format("insert into Ethnicity values ({0},'{1}')", ethnicityID, dtDistinct.Rows[j][4].ToString());
                             fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                         }
-                        //匹配IncidendeRateID
                         commandText = string.Format("select incidenceRateID from IncidenceRates where incidenceDataSetID={0} and GridDefinitionID={1} and EndPointGroupId={2} and EndPointID={3} and RaceID={4} and GenderID={5} and StartAge={6} and EndAge={7} and Prevalence='{8}' and EthnicityID={9} ", incidenceDatasetID, _grdiDefinitionID, endPointGroupID, endPointID, raceID, genderID, dtDistinct.Rows[j][5], dtDistinct.Rows[j][6], GetValueFromIncidenceID(dtDistinct.Rows[j][7].ToString().ToLower(), dicIncidence), ethnicityID);
                         object incidenceRateID = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
                         if (incidenceRateID != null)
-                        {// 更新
+                        {
                             commandText = string.Format("delete from incidenceEntries where IncidenceRateID={0}", incidenceRateID);
                             fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                         }
                         else
-                        {// 插入
+                        {
                             commandText = "select max(incidenceRateID) from IncidenceRates";
-                            incidenceRateID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText))+1;
+                            incidenceRateID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
                             commandText = string.Format("insert into IncidenceRates values ({0},{1},{2},{3},{4},{5},{6},{7},{8},'{9}',{10})", incidenceRateID, incidenceDatasetID, _grdiDefinitionID, endPointGroupID, endPointID, raceID, genderID, dtDistinct.Rows[j][5], dtDistinct.Rows[j][6], GetValueFromIncidenceID(dtDistinct.Rows[j][7].ToString().ToLower(), dicIncidence), ethnicityID);
-                            //commandText=commandText.Replace("(","",
                             fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                         }
                     }
 
                     Dictionary<string, int> dicEndPointGroup = getAllEndPointGroup();
-                    //Dictionary<string, int> dicEndPoint = getAllEndPoint();
-                    //Dictionary<string, int> dicUpdateEndPoint = getAllOrigEndPoint();
                     Dictionary<int, List<string>> dicEndpointID = getEndPointID();
                     Dictionary<string, int> dicGender = getAllGender();
                     Dictionary<string, int> dicRace = getAllRace();
@@ -763,22 +665,7 @@ namespace BenMAP
                     fbCommand.CommandType = CommandType.Text;
                     if (fbCommand.Connection.State != ConnectionState.Open)
                     { fbCommand.Connection.Open(); }
-                    
-                    //测试用
-                    //try
-                    //{
-                    //    for (int i = 0; i < _dtLoadTable.Rows.Count; i++)
-                    //    {
-                    //        commandText = "execute block as declare incidenceRateID int;" + " BEGIN ";
-                    //        commandText = commandText + string.Format("select incidenceRateID from IncidenceRates  where incidenceDataSetID={0} and GridDefinitionID={1} and EndPointGroupId={2} and EndPointID={3} and RaceID={4} and GenderID={5} and StartAge={6} and EndAge={7} and Prevalence='{8}' and EthnicityID={9}  into :incidenceRateID;", incidenceDatasetID, _grdiDefinitionID, dicEndPointGroup[_dtLoadTable.Rows[i][iEndpointGroup].ToString().ToLower()], GetEndpointIDFromDic(dicEndPointGroup[_dtLoadTable.Rows[i][iEndpointGroup].ToString().ToLower()], _dtLoadTable.Rows[i][iEndpoint].ToString().ToLower().Trim(), dicEndpointID), dicRace[_dtLoadTable.Rows[i][iRace].ToString().ToLower().Trim()], dicGender[_dtLoadTable.Rows[i][iGender].ToString().ToLower().Trim()], _dtLoadTable.Rows[i][iStartAge], _dtLoadTable.Rows[i][iEndAge], dicIncidence[_dtLoadTable.Rows[i][iType].ToString().ToLower()], dicEthnicity[_dtLoadTable.Rows[i][iEthnicity].ToString().ToLower().Trim()]);
-                    //        commandText = commandText + string.Format(" insert into incidenceEntries values (:incidenceRateID,{0},{1},{2});", _dtLoadTable.Rows[i][iColumn], _dtLoadTable.Rows[i][iRow], _dtLoadTable.Rows[i][iValue].ToString().Trim() == "." ? 0 : _dtLoadTable.Rows[i][iValue]);
-                    //        commandText = commandText + "END";
-                    //        fbCommand.CommandText = commandText;
-                    //        fbCommand.ExecuteNonQuery();
-                    //    }
-                    //}
-                    //catch
-                    //{ }
+
                     progressBar1.Maximum = _dtLoadTable.Rows.Count;
                     for (int i = 0; i < (_dtLoadTable.Rows.Count / 125) + 1; i++)
                     {
@@ -801,20 +688,12 @@ namespace BenMAP
 
                         }
                         commandText = commandText + "END";
-                        //fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                         fbCommand.CommandText = commandText;
                         fbCommand.ExecuteNonQuery();
-                    }//for
-                    //foreach (string endPointName in dicUpdateEndPoint.Keys)
-                    //{
-                    //    commandText = string.Format("update IncidenceRates a set a.EndPointID=(select b.EndPointID from EndPoints b where a.EndPointGroupID=b.EndPointGroupID and b.EndPointName='{0}') where a.EndPointID={1}", endPointName, dicUpdateEndPoint[endPointName]);
-                    //    fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
-                    //}
-                    progressBar1.Visible = false;
+                    } progressBar1.Visible = false;
                     lblProgress.Text = "";
                     lblProgress.Visible = false;
-                    //重新绑定
-                    BindDataGridView(null,null);
+                    BindDataGridView(null, null);
                 }
                 catch (Exception ex)
                 {
@@ -824,7 +703,7 @@ namespace BenMAP
                     lblProgress.Visible = false;
                     Logger.LogError(ex.Message);
                 }
-            }//else
+            }
         }
 
         private void btnOK_Click(object sender, EventArgs e)
@@ -838,7 +717,7 @@ namespace BenMAP
                 }
                 if (_dataSetName != txtDataName.Text)
                 {
-                    string commandText = string.Format("select INCIDENCEDATASETID from INCIDENCEDATASETS where INCIDENCEDATASETNAME='{0}' and setupID={1} and incidencedatasetid <> {2}", txtDataName.Text, CommonClass.ManageSetup.SetupID,incidenceDatasetID);
+                    string commandText = string.Format("select INCIDENCEDATASETID from INCIDENCEDATASETS where INCIDENCEDATASETNAME='{0}' and setupID={1} and incidencedatasetid <> {2}", txtDataName.Text, CommonClass.ManageSetup.SetupID, incidenceDatasetID);
                     FireBirdHelperBase fb = new ESILFireBirdHelper();
                     object obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
                     if (obj != null) { MessageBox.Show("The dataset name already exists. Please enter a different name."); return; }
@@ -863,9 +742,6 @@ namespace BenMAP
             string msg = string.Empty;
             try
             {
-                //if (dgvDataSetIncidenceRates == null || dgvDataSetIncidenceRates.Rows.Count == 0) { msg = "There are no datas selected to be deleted!\t"; return; }
-                //DataGridViewCell cell = dgvDataSetIncidenceRates.CurrentCell;
-                //string incidenceRateID = dgvDataSetIncidenceRates.Rows[cell.RowIndex].Cells["INCIDENCERATEID"].Value.ToString();
                 if (olvIncidenceRates.Items.Count == 0) { msg = "There are no data to be deleted."; return; }
                 if (olvIncidenceRates.SelectedObject == null) return;
                 if (olvIncidenceRates.SelectedObject is DataRow)
@@ -886,13 +762,13 @@ namespace BenMAP
                     int deleteRates = fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                     commandText = string.Format("delete from INCIDENCERATES where IncidenceRateID={0}", incidenceRateID);
                     deleteRates = fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
-                    BindDataGridView(cboEndpointGroup.Text,cboEndpoint.Text);
+                    BindDataGridView(cboEndpointGroup.Text, cboEndpoint.Text);
                     if (olvIncidenceRates.Items.Count == 0)
                     {
                         cboEndpointGroup.SelectedIndex = 0;
                         if (olvIncidenceRates.Items.Count == 0)
                         {
-                            DataTable dt=new DataTable();
+                            DataTable dt = new DataTable();
                             olvValues.DataSource = dt;
                         }
                         else
@@ -938,7 +814,6 @@ namespace BenMAP
                         _pageCurrent--;
                         if (_pageCurrent <= 0)
                         {
-                            //MessageBox.Show("It's the first page, click 'Move to Next Page' to view!\t", "Tip", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                             return;
                         }
                         else
@@ -951,7 +826,6 @@ namespace BenMAP
                         _pageCurrent++;
                         if (_pageCurrent > _pageCount)
                         {
-                            //MessageBox.Show("It's the last page, click 'Move to Previous Page' to view!\t", "Tip", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                             return;
                         }
                         else
@@ -988,7 +862,6 @@ namespace BenMAP
                     _pageCurrent = currentPage;
                     _currentRow = _pageSize * (_pageCurrent - 1);
                     LoadData();
-                    //txtCurrentPage.Focus();
                 }
             }
             catch (Exception ex)
@@ -1002,12 +875,10 @@ namespace BenMAP
             FireBirdHelperBase fb = new ESILFireBirdHelper();
             try
             {
-                //得到选中行所对应的GridDefinition的name
 
                 DataRowView drv = olvIncidenceRates.SelectedObject as DataRowView;
 
                 incidenceRateID = drv["INCIDENCERATEID"].ToString();
-                //incidenceRateID = olvIncidenceRates.Rows[rowIndex].Cells["INCIDENCERATEID"].Value.ToString();
                 string commandText = "select GridDefinitionName,GridDefinitions.GridDefinitionID as GridDefinitionID from GridDefinitions,IncidenceRates where (GridDefinitions.GridDefinitionID=IncidenceRates.GridDefinitionID )and IncidenceRates.IncidenceRateID=" + incidenceRateID + "";
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
 
@@ -1015,17 +886,9 @@ namespace BenMAP
                 _grdiDefinitionID = Convert.ToInt32(ds.Tables[0].Rows[0]["GridDefinitionID"]);
                 commandText = "select  CColumn,Row,VValue from IncidenceEntries where IncidenceRateID=" + incidenceRateID + "  ";
                 ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
-                //dgvColumnRowsValue.DataSource = ds.Tables[0];
                 _dtColRowValue = ds.Tables[0];
                 InitDataSet();
 
-                //dgvColumnRowsValue.Columns[0].HeaderText = "Column";
-                //dgvColumnRowsValue.Columns[1].HeaderText = "Row";
-                //dgvColumnRowsValue.Columns[2].HeaderText = "Value";
-                //dgvColumnRowsValue.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
-                //dgvColumnRowsValue.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
-                ////dgvColumnRowsValue.RowHeadersVisible = false;
-                //dgvColumnRowsValue.Columns[2].DefaultCellStyle.Format = "0.000000000";
             }
             catch (Exception ex)
             {
@@ -1042,7 +905,6 @@ namespace BenMAP
                     return;
                 OLVColumn column = olv.GetColumn("olvcEndpointGroup");
 
-                // Collect all the checked values
                 ArrayList chosenValues = new ArrayList();
                 olvcEndpoint.ValuesChosenForFiltering.Clear();
                 if (!string.IsNullOrEmpty(cboEndpointGroup.Text))
@@ -1121,12 +983,11 @@ namespace BenMAP
                     return;
                 OLVColumn column = olv.GetColumn("olvcEndpoint");
 
-                // Collect all the checked values
                 ArrayList chosenValues = new ArrayList();
                 string selectEndpoint = cboEndpoint.GetItemText(cboEndpoint.SelectedItem);
                 if (!string.IsNullOrEmpty(selectEndpoint))
                 {
-                    chosenValues.Add(selectEndpoint); 
+                    chosenValues.Add(selectEndpoint);
                     olvcEndpoint.ValuesChosenForFiltering = chosenValues;
                     olv.UpdateColumnFiltering();
                 }
@@ -1171,14 +1032,12 @@ namespace BenMAP
                         break;
                 }
             }
-            // Setup a default renderer to draw the filter matches
             if (filter == null)
                 olv.DefaultRenderer = null;
             else
             {
                 olv.DefaultRenderer = new HighlightTextRenderer(filter);
 
-                // Uncomment this line to see how the GDI+ rendering looks
                 olv.DefaultRenderer = new HighlightTextRenderer { Filter = filter, UseGdiTextRendering = true };
             }
 
@@ -1241,7 +1100,7 @@ namespace BenMAP
                 saveFileDialog1.Filter = "CSV File|*.CSV";
                 saveFileDialog1.InitialDirectory = "C:\\";
                 if (saveFileDialog1.ShowDialog() == DialogResult.Cancel)
-                {return;}
+                { return; }
                 string fileName = saveFileDialog1.FileName;
                 DataTable dtOut = new DataTable();
                 dtOut.Columns.Add("Endpoint Group", typeof(string));
@@ -1281,7 +1140,7 @@ namespace BenMAP
                     newdr["Type"] = getTypeFromPrevalence(dr["Prevalence"].ToString());
                     newdr["Column"] = Convert.ToInt32(dr["Ccolumn"]);
                     newdr["Row"] = Convert.ToInt32(dr["Row"]);
-                    newdr["Value"] =Convert.ToDouble( dr["Vvalue"]);
+                    newdr["Value"] = Convert.ToDouble(dr["Vvalue"]);
                     dtOut.Rows.Add(newdr);
                 }
                 CommonClass.SaveCSV(dtOut, fileName);
@@ -1292,18 +1151,12 @@ namespace BenMAP
             }
         }
 
-        /// <summary>
-        /// 将DataTable中数据写入到CSV文件中
-        /// </summary>
-        /// <param name="dt">提供保存数据的DataTable</param>
-        /// <param name="fileName">CSV的文件路径</param>
         public void SaveCSV(DataTable dt, string fileName)
         {
             FileStream fs = new FileStream(fileName, System.IO.FileMode.Create, System.IO.FileAccess.Write);
             StreamWriter sw = new StreamWriter(fs, System.Text.Encoding.UTF8);
             string data = "";
 
-            //写出列名称
             for (int i = 0; i < dt.Columns.Count; i++)
             {
                 data += dt.Columns[i].ColumnName.ToString();
@@ -1314,19 +1167,18 @@ namespace BenMAP
             }
             sw.WriteLine(data);
 
-            //写出各行数据
             for (int i = 0; i < dt.Rows.Count; i++)
             {
                 data = "";
 
                 for (int j = 0; j < dt.Columns.Count; j++)
                 {
-                    if(dt.Rows[i][j].ToString().Contains(","))
+                    if (dt.Rows[i][j].ToString().Contains(","))
                     {
                         data += "\"" + dt.Rows[i][j].ToString() + "\"";
                     }
                     else
-                    data += dt.Rows[i][j].ToString();
+                        data += dt.Rows[i][j].ToString();
                     if (j < dt.Columns.Count - 1)
                     {
                         data += ",";
@@ -1343,84 +1195,17 @@ namespace BenMAP
 
         struct ColRowValue
         {
-             public int col, row;
-             public double value;
+            public int col, row;
+            public double value;
         }
         private void olvValues_ColumnClick(object sender, ColumnClickEventArgs e)
         {
-            //try
-            //{
-            //    if (_dtColRowValue == null || sender == null) return;
-            //    DataTable updataTable = new DataTable();
-            //    updataTable = _dtColRowValue.Clone();
-            //    List<ColRowValue> lstTable = new List<ColRowValue>();
-            //    for (int i = 0; i < _dtColRowValue.Rows.Count;i++ )
-            //    {
-            //        ColRowValue item=new ColRowValue();
-            //        item.col= Convert.ToInt32(_dtColRowValue.Rows[i][0]);
-            //        item.row= Convert.ToInt32(_dtColRowValue.Rows[i][1]);
-            //        item.value=Convert.ToDouble(_dtColRowValue.Rows[i][2]);
-            //        lstTable.Add(item);
-            //    }
-            //        if (olvValues.LastSortOrder == SortOrder.Ascending)
-            //        {
-            //            switch ((sender as ObjectListView).Columns[e.Column].Text.Replace(" ", "").ToLower())
-            //            { 
-            //                case "column":
-            //                    lstTable = lstTable.OrderBy(p => p.col).ToList();
-            //                    break;
-            //                case "row":
-            //                    lstTable = lstTable.OrderBy(p => p.col).ToList();
-            //                    break;
-            //                case "value":
-            //                    lstTable = lstTable.OrderBy(p => p.col).ToList();
-            //                    break;
-            //                default:
-            //                    break;
-            //            }
-            //        }
-            //        foreach (ColRowValue crv in lstTable)
-            //        {
-            //            DataRow dr = updataTable.NewRow();
-            //            dr[0] = crv.col;
-            //            dr[1] = crv.row;
-            //            dr[2] = crv.value;
-            //            updataTable.Rows.Add(dr);
-            //        }
-            //        olvValues.DataSource = null;
-            //        olvValues.DataSource = updataTable;
-            //}
-            //catch (Exception ex)
-            //{
-            //    Logger.LogError(ex.Message);
-            //}
         }
-        //public static DataTable TableDistinct(DataTable source, DataColumn[] Columns)
-        //{
-        //    DataTable table = source.Clone();
-        //    table=source.Copy();
 
-        //    object[] currentrow = null;
 
-        //    System.Collections.Hashtable ht = new System.Collections.Hashtable();
-        //    table.BeginLoadData();
 
-        //    foreach (DataRow row in table.Rows)
-        //    {
-        //        int hash = string.Concat(row.ItemArray).GetHashCode();
-        //        if (ht.Contains(hash))
-        //            continue;
-        //        ht.Add(hash, hash);
-        //        //Insert a copy of current row
-        //        currentrow = new object[Columns.Length];
-        //        Array.Copy(row.ItemArray, currentrow, Columns.Length);
-        //        table.LoadDataRow(currentrow, true);
 
-        //    }
 
-        //    table.EndLoadData();
-        //    return table;
 
-        //}
     }
 }

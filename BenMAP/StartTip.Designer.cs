@@ -1,16 +1,9 @@
-﻿namespace BenMAP
+namespace BenMAP
 {
     partial class StartTip
     {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -20,12 +13,7 @@
             base.Dispose(disposing);
         }
 
-        #region Windows Form Designer generated code
-
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
+        
         private void InitializeComponent()
         {
             this.chkCloseTip = new System.Windows.Forms.CheckBox();
@@ -65,10 +53,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.button3)).BeginInit();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // chkCloseTip
-            // 
-            this.chkCloseTip.AutoSize = true;
+                                                this.chkCloseTip.AutoSize = true;
             this.chkCloseTip.BackColor = System.Drawing.Color.Transparent;
             this.chkCloseTip.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.chkCloseTip.Location = new System.Drawing.Point(12, 348);
@@ -77,10 +62,7 @@
             this.chkCloseTip.TabIndex = 4;
             this.chkCloseTip.Text = "Don\'t show this welcome screen again.";
             this.chkCloseTip.UseVisualStyleBackColor = false;
-            // 
-            // btnOK
-            // 
-            this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+                                                this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOK.Location = new System.Drawing.Point(711, 346);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 21);
@@ -88,10 +70,7 @@
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
-            // 
-            // label1
-            // 
-            this.label1.BackColor = System.Drawing.Color.Transparent;
+                                                this.label1.BackColor = System.Drawing.Color.Transparent;
             this.label1.Font = new System.Drawing.Font("Calibri", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.Location = new System.Drawing.Point(25, 9);
             this.label1.Name = "label1";
@@ -99,37 +78,25 @@
             this.label1.TabIndex = 6;
             this.label1.Text = "BenMAP-CE uses a series of \"stoplights\" that change colors as you complete each s" +
                 "tage of the program:";
-            // 
-            // pictureBox1
-            // 
-            this.pictureBox1.Image = global::BenMAP.Properties.Resources.pictureBox1_Image;
+                                                this.pictureBox1.Image = global::BenMAP.Properties.Resources.pictureBox1_Image;
             this.pictureBox1.Location = new System.Drawing.Point(47, 67);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(31, 30);
             this.pictureBox1.TabIndex = 7;
             this.pictureBox1.TabStop = false;
-            // 
-            // pictureBox2
-            // 
-            this.pictureBox2.Image = global::BenMAP.Properties.Resources.pictureBox2_Image;
+                                                this.pictureBox2.Image = global::BenMAP.Properties.Resources.pictureBox2_Image;
             this.pictureBox2.Location = new System.Drawing.Point(47, 101);
             this.pictureBox2.Name = "pictureBox2";
             this.pictureBox2.Size = new System.Drawing.Size(31, 30);
             this.pictureBox2.TabIndex = 8;
             this.pictureBox2.TabStop = false;
-            // 
-            // pictureBox3
-            // 
-            this.pictureBox3.Image = global::BenMAP.Properties.Resources.pictureBox3_Image;
+                                                this.pictureBox3.Image = global::BenMAP.Properties.Resources.pictureBox3_Image;
             this.pictureBox3.Location = new System.Drawing.Point(47, 134);
             this.pictureBox3.Name = "pictureBox3";
             this.pictureBox3.Size = new System.Drawing.Size(31, 30);
             this.pictureBox3.TabIndex = 9;
             this.pictureBox3.TabStop = false;
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
+                                                this.label2.AutoSize = true;
             this.label2.BackColor = System.Drawing.Color.Transparent;
             this.label2.Font = new System.Drawing.Font("Calibri", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.Location = new System.Drawing.Point(84, 71);
@@ -137,10 +104,7 @@
             this.label2.Size = new System.Drawing.Size(211, 23);
             this.label2.TabIndex = 10;
             this.label2.Text = "Operation not yet started.";
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
+                                                this.label3.AutoSize = true;
             this.label3.BackColor = System.Drawing.Color.Transparent;
             this.label3.Font = new System.Drawing.Font("Calibri", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label3.Location = new System.Drawing.Point(84, 104);
@@ -148,10 +112,7 @@
             this.label3.Size = new System.Drawing.Size(438, 23);
             this.label3.TabIndex = 11;
             this.label3.Text = "Operation completed and requires no further attention.";
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
+                                                this.label4.AutoSize = true;
             this.label4.BackColor = System.Drawing.Color.Transparent;
             this.label4.Font = new System.Drawing.Font("Calibri", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label4.Location = new System.Drawing.Point(84, 138);
@@ -159,10 +120,7 @@
             this.label4.Size = new System.Drawing.Size(468, 23);
             this.label4.TabIndex = 12;
             this.label4.Text = "Operation completed, but you may need to re-run this step.";
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
+                                                this.label5.AutoSize = true;
             this.label5.BackColor = System.Drawing.Color.Transparent;
             this.label5.Font = new System.Drawing.Font("Calibri", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label5.Location = new System.Drawing.Point(26, 175);
@@ -170,10 +128,7 @@
             this.label5.Size = new System.Drawing.Size(450, 23);
             this.label5.TabIndex = 13;
             this.label5.Text = "You can find a quick-start guide to get you up and running";
-            // 
-            // linkLabel1
-            // 
-            this.linkLabel1.AutoSize = true;
+                                                this.linkLabel1.AutoSize = true;
             this.linkLabel1.BackColor = System.Drawing.Color.Transparent;
             this.linkLabel1.Font = new System.Drawing.Font("Calibri", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.linkLabel1.Location = new System.Drawing.Point(471, 175);
@@ -183,68 +138,47 @@
             this.linkLabel1.TabStop = true;
             this.linkLabel1.Text = "here.";
             this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
-            // 
-            // panel2
-            // 
-            this.panel2.BackColor = System.Drawing.Color.Transparent;
+                                                this.panel2.BackColor = System.Drawing.Color.Transparent;
             this.panel2.Controls.Add(this.pictureBox4);
             this.panel2.Location = new System.Drawing.Point(216, 90);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(577, 250);
             this.panel2.TabIndex = 15;
             this.panel2.Visible = false;
-            // 
-            // pictureBox4
-            // 
-            this.pictureBox4.Image = global::BenMAP.Properties.Resources.StartPage2;
+                                                this.pictureBox4.Image = global::BenMAP.Properties.Resources.StartPage2;
             this.pictureBox4.Location = new System.Drawing.Point(3, 5);
             this.pictureBox4.Name = "pictureBox4";
             this.pictureBox4.Size = new System.Drawing.Size(570, 240);
             this.pictureBox4.TabIndex = 0;
             this.pictureBox4.TabStop = false;
-            // 
-            // panel3
-            // 
-            this.panel3.BackColor = System.Drawing.Color.Transparent;
+                                                this.panel3.BackColor = System.Drawing.Color.Transparent;
             this.panel3.Controls.Add(this.pictureBox5);
             this.panel3.Location = new System.Drawing.Point(216, 90);
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(577, 250);
             this.panel3.TabIndex = 16;
             this.panel3.Visible = false;
-            // 
-            // pictureBox5
-            // 
-            this.pictureBox5.BackColor = System.Drawing.Color.Transparent;
+                                                this.pictureBox5.BackColor = System.Drawing.Color.Transparent;
             this.pictureBox5.Image = global::BenMAP.Properties.Resources.StartPage3;
             this.pictureBox5.Location = new System.Drawing.Point(3, 5);
             this.pictureBox5.Name = "pictureBox5";
             this.pictureBox5.Size = new System.Drawing.Size(570, 240);
             this.pictureBox5.TabIndex = 0;
             this.pictureBox5.TabStop = false;
-            // 
-            // panel4
-            // 
-            this.panel4.BackColor = System.Drawing.Color.Transparent;
+                                                this.panel4.BackColor = System.Drawing.Color.Transparent;
             this.panel4.Controls.Add(this.pictureBox6);
             this.panel4.Location = new System.Drawing.Point(216, 90);
             this.panel4.Name = "panel4";
             this.panel4.Size = new System.Drawing.Size(577, 250);
             this.panel4.TabIndex = 17;
             this.panel4.Visible = false;
-            // 
-            // pictureBox6
-            // 
-            this.pictureBox6.Image = global::BenMAP.Properties.Resources.StartPage4;
+                                                this.pictureBox6.Image = global::BenMAP.Properties.Resources.StartPage4;
             this.pictureBox6.Location = new System.Drawing.Point(3, 5);
             this.pictureBox6.Name = "pictureBox6";
             this.pictureBox6.Size = new System.Drawing.Size(570, 240);
             this.pictureBox6.TabIndex = 0;
             this.pictureBox6.TabStop = false;
-            // 
-            // button4
-            // 
-            this.button4.BackColor = System.Drawing.Color.Transparent;
+                                                this.button4.BackColor = System.Drawing.Color.Transparent;
             this.button4.Image = global::BenMAP.Properties.Resources.StartTip4_1;
             this.button4.Location = new System.Drawing.Point(0, 274);
             this.button4.Name = "button4";
@@ -254,10 +188,7 @@
             this.button4.Click += new System.EventHandler(this.btn_Click);
             this.button4.MouseEnter += new System.EventHandler(this.btn_MouseEnter);
             this.button4.MouseLeave += new System.EventHandler(this.btn_MouseLeave);
-            // 
-            // button1
-            // 
-            this.button1.BackColor = System.Drawing.Color.Transparent;
+                                                this.button1.BackColor = System.Drawing.Color.Transparent;
             this.button1.BackgroundImage = global::BenMAP.Properties.Resources.StartTip1_1;
             this.button1.Image = global::BenMAP.Properties.Resources.StartTip1_1;
             this.button1.Location = new System.Drawing.Point(0, 90);
@@ -268,10 +199,7 @@
             this.button1.Click += new System.EventHandler(this.btn_Click);
             this.button1.MouseEnter += new System.EventHandler(this.btn_MouseEnter);
             this.button1.MouseLeave += new System.EventHandler(this.btn_MouseLeave);
-            // 
-            // button2
-            // 
-            this.button2.BackColor = System.Drawing.Color.Transparent;
+                                                this.button2.BackColor = System.Drawing.Color.Transparent;
             this.button2.Image = global::BenMAP.Properties.Resources.StartTip2_1;
             this.button2.Location = new System.Drawing.Point(0, 151);
             this.button2.Name = "button2";
@@ -281,10 +209,7 @@
             this.button2.Click += new System.EventHandler(this.btn_Click);
             this.button2.MouseEnter += new System.EventHandler(this.btn_MouseEnter);
             this.button2.MouseLeave += new System.EventHandler(this.btn_MouseLeave);
-            // 
-            // button3
-            // 
-            this.button3.BackColor = System.Drawing.Color.Transparent;
+                                                this.button3.BackColor = System.Drawing.Color.Transparent;
             this.button3.Image = global::BenMAP.Properties.Resources.StartTip3_1;
             this.button3.Location = new System.Drawing.Point(0, 213);
             this.button3.Name = "button3";
@@ -294,10 +219,7 @@
             this.button3.Click += new System.EventHandler(this.btn_Click);
             this.button3.MouseEnter += new System.EventHandler(this.btn_MouseEnter);
             this.button3.MouseLeave += new System.EventHandler(this.btn_MouseLeave);
-            // 
-            // panel1
-            // 
-            this.panel1.BackColor = System.Drawing.Color.Transparent;
+                                                this.panel1.BackColor = System.Drawing.Color.Transparent;
             this.panel1.Controls.Add(this.label1);
             this.panel1.Controls.Add(this.pictureBox3);
             this.panel1.Controls.Add(this.pictureBox2);
@@ -311,10 +233,7 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(577, 250);
             this.panel1.TabIndex = 21;
-            // 
-            // StartTip
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
+                                                this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImage = global::BenMAP.Properties.Resources.Welcome;
             this.ClientSize = new System.Drawing.Size(798, 370);
@@ -356,8 +275,7 @@
 
         }
 
-        #endregion
-
+        
         private System.Windows.Forms.CheckBox chkCloseTip;
         private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.Label label1;

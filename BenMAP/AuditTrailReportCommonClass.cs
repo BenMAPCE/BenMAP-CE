@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,11 +10,6 @@ namespace BenMAP
 {
     class AuditTrailReportCommonClass
     {
-        /// <summary>
-        /// 得到一个Pollutant的AuditTrailReport
-        /// </summary>
-        /// <param name="benMAPPollutant"></param>
-        /// <returns></returns>
         public static TreeNode getTreeNodeFromBenMAPPollutant(BenMAPPollutant benMAPPollutant)
         {
             TreeNode treeNode = new TreeNode();
@@ -22,20 +17,18 @@ namespace BenMAP
             DateTime dt = new DateTime(2011, 1, 1);
             try
             {
-                //-------------加属性
-                treeNode.Nodes.Add("Name:"+benMAPPollutant.PollutantName);
+                treeNode.Nodes.Add("Name:" + benMAPPollutant.PollutantName);
                 treeNode.Nodes.Add("Observation Type:" + ((benMAPPollutant.Observationtype == ObservationtypeEnum.Daily) ? "Daily" : "Hourly"));
-                if (benMAPPollutant.Seasons != null && benMAPPollutant.Seasons.Count>0)
+                if (benMAPPollutant.Seasons != null && benMAPPollutant.Seasons.Count > 0)
                 {
                     for (int i = 0; i < benMAPPollutant.Seasons.Count; i++)
                     {
                         dt = new DateTime(2011, 1, 1);
-                        //dt.AddDays(benMAPPollutant.Seasons[i].StartDay);
                         treeNode.Nodes.Add("Season" + i + ":" + dt.AddDays(benMAPPollutant.Seasons[i].StartDay).GetDateTimeFormats('M')[0].ToString() + "-" + dt.AddDays(benMAPPollutant.Seasons[i].EndDay).GetDateTimeFormats('M')[0].ToString());
                     }
- 
+
                 }
-                if(benMAPPollutant.Metrics !=null && benMAPPollutant.Metrics.Count>0)
+                if (benMAPPollutant.Metrics != null && benMAPPollutant.Metrics.Count > 0)
                 {
                     for (int i = 0; i < benMAPPollutant.Metrics.Count; i++)
                     {
@@ -50,7 +43,7 @@ namespace BenMAP
                         treeNode.Nodes.Add("Seasonal Metric" + i + ":" + benMAPPollutant.SesonalMetrics[i].SeasonalMetricName);
                     }
                 }
-                
+
                 return treeNode;
             }
             catch
@@ -58,29 +51,22 @@ namespace BenMAP
                 return null;
             }
         }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="benMAPLine"></param>
-        /// <returns></returns>
         public static TreeNode getTreeNodeFromBenMAPLine(BenMAPLine benMAPLine)
         {
             TreeNode treeNode = new TreeNode();
             treeNode.Text = "Air Quality Surfaces";
-            
+
             try
             {
-                //
                 if (benMAPLine is ModelDataLine)
                 {
                     treeNode = getTreeNodeFromModelDataLine(benMAPLine as ModelDataLine);
                 }
-                //----------------------后未写等Monitor MonitorRollback写好再写----------------------
                 else if (benMAPLine is MonitorDataLine)
                 {
                     treeNode = getTreeNodeFromMonitorDataLine(benMAPLine as MonitorDataLine);
                 }
-                treeNode.Nodes.Insert(0,"Create Datetime:" + benMAPLine.CreateTime.ToString("yyyy-MM-dd HH:mm:ss"));
+                treeNode.Nodes.Insert(0, "Create Datetime:" + benMAPLine.CreateTime.ToString("yyyy-MM-dd HH:mm:ss"));
                 return treeNode;
             }
             catch
@@ -94,7 +80,6 @@ namespace BenMAP
             treeNode.Text = "Air Quality Surfaces";
             try
             {
-                //
                 treeNode.Nodes.Add("Pollutant:" + modelDataLine.Pollutant.PollutantName);
                 treeNode.Nodes.Add("Model Database File:" + modelDataLine.DatabaseFilePath);
                 treeNode.Nodes.Add(getTreeNodeFromBenMAPGrid(modelDataLine.GridType));
@@ -105,10 +90,10 @@ namespace BenMAP
             {
                 return null;
             }
- 
+
         }
 
-        public static TreeNode getTreeNodeFromMonitorDataLine(MonitorDataLine monitorDataLine)//之后在commonclass加上所有monitor缺少的-advance,filtering
+        public static TreeNode getTreeNodeFromMonitorDataLine(MonitorDataLine monitorDataLine)
         {
             TreeNode treeNode = new TreeNode();
             treeNode.Text = "Air Quality Surfaces";
@@ -151,11 +136,6 @@ namespace BenMAP
                 return null;
             }
         }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="benMAPGrid"></param>
-        /// <returns></returns>
         public static TreeNode getTreeNodeFromBenMAPGrid(BenMAPGrid benMAPGrid)
         {
             TreeNode treeNode = new TreeNode();
@@ -166,15 +146,15 @@ namespace BenMAP
                 treeNode.Nodes.Add("ID:" + benMAPGrid.GridDefinitionID);
                 treeNode.Nodes.Add("Columns:" + benMAPGrid.Columns);
                 treeNode.Nodes.Add("Rows:" + benMAPGrid.RRows);
-                treeNode.Nodes.Add("Grid Type:" + (benMAPGrid.TType== GridTypeEnum.Regular?"Regular":"Shapefile"));
-                if(benMAPGrid is ShapefileGrid)
+                treeNode.Nodes.Add("Grid Type:" + (benMAPGrid.TType == GridTypeEnum.Regular ? "Regular" : "Shapefile"));
+                if (benMAPGrid is ShapefileGrid)
                 {
-                treeNode.Nodes.Add("Shapefile Name:" + ( benMAPGrid as ShapefileGrid).ShapefileName);
+                    treeNode.Nodes.Add("Shapefile Name:" + (benMAPGrid as ShapefileGrid).ShapefileName);
                 }
                 else if (benMAPGrid is RegularGrid)
                 {
                     treeNode.Nodes.Add("Shapefile Name:" + (benMAPGrid as RegularGrid).ShapefileName);
-                
+
                 }
 
                 return treeNode;
@@ -184,11 +164,6 @@ namespace BenMAP
                 return null;
             }
         }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="baseControlGroup"></param>
-        /// <returns></returns>
         public static TreeNode getTreeNodeFromBaseControlGroup(BaseControlGroup baseControlGroup)
         {
             TreeNode treeNode = new TreeNode();
@@ -196,7 +171,6 @@ namespace BenMAP
             try
             {
                 TreeNode tn = getTreeNodeFromBenMAPPollutant(baseControlGroup.Pollutant);
-                //tn.Text = "Pollutant:" + tn.Text;
                 treeNode.Nodes.Add(tn);
                 tn = getTreeNodeFromBenMAPLine(baseControlGroup.Base);
                 tn.Text = "Baseline : " + tn.Text;
@@ -212,16 +186,11 @@ namespace BenMAP
                 return null;
             }
         }
-         
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="baseControlCRSelectFunction"></param>
-        /// <returns></returns>
+
         public static TreeNode getTreeNodeFromBaseControlCRSelectFunction(BaseControlCRSelectFunction baseControlCRSelectFunction)
         {
             TreeNode treeNode = new TreeNode();
-            int i=0;
+            int i = 0;
             try
             {
                 treeNode.Text = "Estimate Health Impacts";
@@ -234,12 +203,12 @@ namespace BenMAP
                 treeNode.Nodes.Add("Population Dataset:" + baseControlCRSelectFunction.BenMAPPopulation.DataSetName + "-" + baseControlCRSelectFunction.BenMAPPopulation.GridType.GridDefinitionName);
                 treeNode.Nodes.Add("Year:" + baseControlCRSelectFunction.BenMAPPopulation.Year);
                 treeNode.Nodes.Add("Threshold:" + baseControlCRSelectFunction.CRThreshold);
-                foreach(BaseControlGroup bcg in baseControlCRSelectFunction.BaseControlGroup)
+                foreach (BaseControlGroup bcg in baseControlCRSelectFunction.BaseControlGroup)
                 {
                     TreeNode tn = getTreeNodeFromBaseControlGroup(bcg);
                     tn.Text = tn.Text + i;
                     treeNode.Nodes.Add(tn);
-                        i++;
+                    i++;
                 }
                 TreeNode tnCR = new TreeNode();
                 tnCR.Text = "Selected health impact functions";
@@ -383,14 +352,12 @@ namespace BenMAP
                     tnCR.Nodes.Add(tnCROne);
                 }
                 treeNode.Nodes.Add(tnCR);
-                //--Add log-----------------
                 if (baseControlCRSelectFunctionCalculateValue.lstLog != null && baseControlCRSelectFunctionCalculateValue.lstLog.Count > 0)
                 {
                     TreeNode tnLog = new TreeNode();
                     tnLog.Text = "Log & Message";
                     for (int iCR = 0; iCR < baseControlCRSelectFunctionCalculateValue.lstLog.Count; iCR++)
                     {
-                        //TreeNode tnCROne = new TreeNode();
                         tnLog.Nodes.Add(baseControlCRSelectFunctionCalculateValue.lstLog[iCR]);
                     }
                     treeNode.Nodes.Add(tnLog);
@@ -409,23 +376,16 @@ namespace BenMAP
             try
             {
                 treeNode.Text = "Incidence Pooling And Aggregation ";
-              
-                 
+
+
                 TreeNode tn = new TreeNode();
                 tn.Text = "Incidence Pooling Windows Name " + incidencePoolingAndAggregation.PoolingName;
-                //tn.Nodes.Add("Pooling Method Type:" + Enum.GetName(typeof(PoolingMethodTypeEnum), incidencePoolingAndAggregation.PoolingMethodType));
-                //----------加Group
                 for (int iCR = 0; iCR < incidencePoolingAndAggregation.lstAllSelectCRFuntion.Count; iCR++)
                 {
                     TreeNode tnCROne = new TreeNode();
                     getTreeNodeFromLstAllSelectCRFunction(incidencePoolingAndAggregation.lstAllSelectCRFuntion[iCR], incidencePoolingAndAggregation.lstAllSelectCRFuntion, ref tnCROne);
-                    //if (incidencePoolingAndAggregation.Weights != null && incidencePoolingAndAggregation.Weights.Count > 0)
-                    //{
-                    //    tnCROne.Nodes.Add("Weight:" + incidencePoolingAndAggregation.Weights[iCR]);
-                    //}
                     treeNode.Nodes.Add(tnCROne);
                 }
-                //----------加Group里面的Function
                 return treeNode;
             }
             catch
@@ -435,104 +395,101 @@ namespace BenMAP
         }
 
         public static TreeNode getTreeNodeFromIncidencePoolingAndAggregationAdvance(IncidencePoolingAndAggregationAdvance incidencePoolingAndAggregationAdvance)
-         {
-             TreeNode treeNode = new TreeNode();
-             try
-             {
-                 treeNode.Text = "Advanced";
-                 treeNode.Nodes.Add("Sort Incidence LHPs:"+incidencePoolingAndAggregationAdvance.SortIncidenceResults);
-                 treeNode.Nodes.Add("Default Advanced Pooling Method:" + Enum.GetName(typeof(IPAdvancePoolingMethodEnum), incidencePoolingAndAggregationAdvance.IPAdvancePoolingMethod));
-                 treeNode.Nodes.Add("Default Monte Carlo Iterations:" + incidencePoolingAndAggregationAdvance.DefaultMonteCarloIterations);
-                 treeNode.Nodes.Add("Random Seed:" + incidencePoolingAndAggregationAdvance.RandomSeed);
-                 TreeNode trInflation = new TreeNode();
-                 trInflation.Text = "Inflation Adjustment";
+        {
+            TreeNode treeNode = new TreeNode();
+            try
+            {
+                treeNode.Text = "Advanced";
+                treeNode.Nodes.Add("Sort Incidence LHPs:" + incidencePoolingAndAggregationAdvance.SortIncidenceResults);
+                treeNode.Nodes.Add("Default Advanced Pooling Method:" + Enum.GetName(typeof(IPAdvancePoolingMethodEnum), incidencePoolingAndAggregationAdvance.IPAdvancePoolingMethod));
+                treeNode.Nodes.Add("Default Monte Carlo Iterations:" + incidencePoolingAndAggregationAdvance.DefaultMonteCarloIterations);
+                treeNode.Nodes.Add("Random Seed:" + incidencePoolingAndAggregationAdvance.RandomSeed);
+                TreeNode trInflation = new TreeNode();
+                trInflation.Text = "Inflation Adjustment";
 
-                 trInflation.Nodes.Add("Dataset:" + incidencePoolingAndAggregationAdvance.InflationDatasetName);
-                 trInflation.Nodes.Add("Year:" + incidencePoolingAndAggregationAdvance.CurrencyYear);
-                 treeNode.Nodes.Add(trInflation);
-                 TreeNode trIncome = new TreeNode();
-                 trIncome.Text = "Income Growth Adjustment";
+                trInflation.Nodes.Add("Dataset:" + incidencePoolingAndAggregationAdvance.InflationDatasetName);
+                trInflation.Nodes.Add("Year:" + incidencePoolingAndAggregationAdvance.CurrencyYear);
+                treeNode.Nodes.Add(trInflation);
+                TreeNode trIncome = new TreeNode();
+                trIncome.Text = "Income Growth Adjustment";
 
-                 trIncome.Nodes.Add("Dataset:" + incidencePoolingAndAggregationAdvance.AdjustIncomeGrowthDatasetName);
-                 trIncome.Nodes.Add("Year : " + incidencePoolingAndAggregationAdvance.IncomeGrowthYear);
-                 
-                 if (incidencePoolingAndAggregationAdvance.EndpointGroups != null)
-                 {
-                     try
-                     {
-                         Dictionary<string, double> dicIncome = APVX.APVCommonClass.getIncomeGrowthFactorsFromDataSetIDAndYear(incidencePoolingAndAggregationAdvance.AdjustIncomeGrowthDatasetID,
-                            incidencePoolingAndAggregationAdvance.IncomeGrowthYear);
-                         TreeNode tnEndpointGroups = new TreeNode();
-                         tnEndpointGroups.Text = "Adjust Income Growth EndpointGroups";
-                         foreach (string s in incidencePoolingAndAggregationAdvance.EndpointGroups)
-                         {
-                             if(dicIncome.ContainsKey(s))
-                             tnEndpointGroups.Nodes.Add(s +":"+ dicIncome[s]);
-                             else
-                                 tnEndpointGroups.Nodes.Add(s + ":1");
-                         }
-                         trIncome.Nodes.Add(tnEndpointGroups);
-                     }
-                     catch
-                     { 
-                     }
-                 }
-                 treeNode.Nodes.Add(trIncome);
+                trIncome.Nodes.Add("Dataset:" + incidencePoolingAndAggregationAdvance.AdjustIncomeGrowthDatasetName);
+                trIncome.Nodes.Add("Year : " + incidencePoolingAndAggregationAdvance.IncomeGrowthYear);
 
-                 //treeNode.Nodes.Add("Skip QALY Weights:" + "");//------------要加上支持
-                 if (incidencePoolingAndAggregationAdvance.IncidenceAggregation != null)
-                 {
-                     TreeNode tn = new TreeNode();
-                     tn.Text = "Incidence Aggregation";
-                     tn.Nodes.Add("Name:" + incidencePoolingAndAggregationAdvance.IncidenceAggregation.GridDefinitionName);
-                     tn.Nodes.Add("ID:" + incidencePoolingAndAggregationAdvance.IncidenceAggregation.GridDefinitionID);
-                     tn.Nodes.Add("Columns:" + incidencePoolingAndAggregationAdvance.IncidenceAggregation.Columns);
-                     tn.Nodes.Add("Rows:" + incidencePoolingAndAggregationAdvance.IncidenceAggregation.RRows);
-                     tn.Nodes.Add("Grid Type:" +Enum.GetName(typeof(GridTypeEnum), incidencePoolingAndAggregationAdvance.IncidenceAggregation.TType));
-                     tn.Nodes.Add("Shapefile Name:" + ((incidencePoolingAndAggregationAdvance.IncidenceAggregation is ShapefileGrid)?(incidencePoolingAndAggregationAdvance.IncidenceAggregation as ShapefileGrid).ShapefileName:(incidencePoolingAndAggregationAdvance.IncidenceAggregation as RegularGrid).ShapefileName ));
-                     treeNode.Nodes.Add(tn);
+                if (incidencePoolingAndAggregationAdvance.EndpointGroups != null)
+                {
+                    try
+                    {
+                        Dictionary<string, double> dicIncome = APVX.APVCommonClass.getIncomeGrowthFactorsFromDataSetIDAndYear(incidencePoolingAndAggregationAdvance.AdjustIncomeGrowthDatasetID,
+                           incidencePoolingAndAggregationAdvance.IncomeGrowthYear);
+                        TreeNode tnEndpointGroups = new TreeNode();
+                        tnEndpointGroups.Text = "Adjust Income Growth EndpointGroups";
+                        foreach (string s in incidencePoolingAndAggregationAdvance.EndpointGroups)
+                        {
+                            if (dicIncome.ContainsKey(s))
+                                tnEndpointGroups.Nodes.Add(s + ":" + dicIncome[s]);
+                            else
+                                tnEndpointGroups.Nodes.Add(s + ":1");
+                        }
+                        trIncome.Nodes.Add(tnEndpointGroups);
+                    }
+                    catch
+                    {
+                    }
+                }
+                treeNode.Nodes.Add(trIncome);
+
+                if (incidencePoolingAndAggregationAdvance.IncidenceAggregation != null)
+                {
+                    TreeNode tn = new TreeNode();
+                    tn.Text = "Incidence Aggregation";
+                    tn.Nodes.Add("Name:" + incidencePoolingAndAggregationAdvance.IncidenceAggregation.GridDefinitionName);
+                    tn.Nodes.Add("ID:" + incidencePoolingAndAggregationAdvance.IncidenceAggregation.GridDefinitionID);
+                    tn.Nodes.Add("Columns:" + incidencePoolingAndAggregationAdvance.IncidenceAggregation.Columns);
+                    tn.Nodes.Add("Rows:" + incidencePoolingAndAggregationAdvance.IncidenceAggregation.RRows);
+                    tn.Nodes.Add("Grid Type:" + Enum.GetName(typeof(GridTypeEnum), incidencePoolingAndAggregationAdvance.IncidenceAggregation.TType));
+                    tn.Nodes.Add("Shapefile Name:" + ((incidencePoolingAndAggregationAdvance.IncidenceAggregation is ShapefileGrid) ? (incidencePoolingAndAggregationAdvance.IncidenceAggregation as ShapefileGrid).ShapefileName : (incidencePoolingAndAggregationAdvance.IncidenceAggregation as RegularGrid).ShapefileName));
+                    treeNode.Nodes.Add(tn);
 
 
-                 }
-                 if (incidencePoolingAndAggregationAdvance.ValuationAggregation != null)
-                 {
-                     TreeNode tn = new TreeNode();
-                     tn.Text = "Valuation Aggregation";
-                     tn.Nodes.Add("Name:" + incidencePoolingAndAggregationAdvance.ValuationAggregation.GridDefinitionName);
-                     tn.Nodes.Add("ID:" + incidencePoolingAndAggregationAdvance.ValuationAggregation.GridDefinitionID);
-                     tn.Nodes.Add("Columns:" + incidencePoolingAndAggregationAdvance.ValuationAggregation.Columns);
-                     tn.Nodes.Add("Rows:" + incidencePoolingAndAggregationAdvance.ValuationAggregation.RRows);
-                     tn.Nodes.Add("Grid Type:" + Enum.GetName(typeof(GridTypeEnum), incidencePoolingAndAggregationAdvance.ValuationAggregation.TType));
-                     tn.Nodes.Add("Shapefile Name:" + ((incidencePoolingAndAggregationAdvance.ValuationAggregation is ShapefileGrid) ? (incidencePoolingAndAggregationAdvance.ValuationAggregation as ShapefileGrid).ShapefileName : (incidencePoolingAndAggregationAdvance.ValuationAggregation as RegularGrid).ShapefileName));
-                     treeNode.Nodes.Add(tn);
-                 }
-                 if (incidencePoolingAndAggregationAdvance.QALYAggregation != null)
-                 {
-                     TreeNode tn = new TreeNode();
-                     tn.Text = "QALYAggregation Aggregation";
-                     tn.Nodes.Add("Name:" + incidencePoolingAndAggregationAdvance.QALYAggregation.GridDefinitionName);
-                     tn.Nodes.Add("ID:" + incidencePoolingAndAggregationAdvance.QALYAggregation.GridDefinitionID);
-                     tn.Nodes.Add("Columns:" + incidencePoolingAndAggregationAdvance.QALYAggregation.Columns);
-                     tn.Nodes.Add("Rows:" + incidencePoolingAndAggregationAdvance.QALYAggregation.RRows);
-                     tn.Nodes.Add("Grid Type:" + Enum.GetName(typeof(GridTypeEnum), incidencePoolingAndAggregationAdvance.QALYAggregation.TType));
-                     tn.Nodes.Add("Shapefile Name:" + ((incidencePoolingAndAggregationAdvance.QALYAggregation is ShapefileGrid) ? (incidencePoolingAndAggregationAdvance.QALYAggregation as ShapefileGrid).ShapefileName : (incidencePoolingAndAggregationAdvance.QALYAggregation as RegularGrid).ShapefileName));
-                     treeNode.Nodes.Add(tn);
-                 }
-                 //----------还少了Income Growth adjustment的详细信息
+                }
+                if (incidencePoolingAndAggregationAdvance.ValuationAggregation != null)
+                {
+                    TreeNode tn = new TreeNode();
+                    tn.Text = "Valuation Aggregation";
+                    tn.Nodes.Add("Name:" + incidencePoolingAndAggregationAdvance.ValuationAggregation.GridDefinitionName);
+                    tn.Nodes.Add("ID:" + incidencePoolingAndAggregationAdvance.ValuationAggregation.GridDefinitionID);
+                    tn.Nodes.Add("Columns:" + incidencePoolingAndAggregationAdvance.ValuationAggregation.Columns);
+                    tn.Nodes.Add("Rows:" + incidencePoolingAndAggregationAdvance.ValuationAggregation.RRows);
+                    tn.Nodes.Add("Grid Type:" + Enum.GetName(typeof(GridTypeEnum), incidencePoolingAndAggregationAdvance.ValuationAggregation.TType));
+                    tn.Nodes.Add("Shapefile Name:" + ((incidencePoolingAndAggregationAdvance.ValuationAggregation is ShapefileGrid) ? (incidencePoolingAndAggregationAdvance.ValuationAggregation as ShapefileGrid).ShapefileName : (incidencePoolingAndAggregationAdvance.ValuationAggregation as RegularGrid).ShapefileName));
+                    treeNode.Nodes.Add(tn);
+                }
+                if (incidencePoolingAndAggregationAdvance.QALYAggregation != null)
+                {
+                    TreeNode tn = new TreeNode();
+                    tn.Text = "QALYAggregation Aggregation";
+                    tn.Nodes.Add("Name:" + incidencePoolingAndAggregationAdvance.QALYAggregation.GridDefinitionName);
+                    tn.Nodes.Add("ID:" + incidencePoolingAndAggregationAdvance.QALYAggregation.GridDefinitionID);
+                    tn.Nodes.Add("Columns:" + incidencePoolingAndAggregationAdvance.QALYAggregation.Columns);
+                    tn.Nodes.Add("Rows:" + incidencePoolingAndAggregationAdvance.QALYAggregation.RRows);
+                    tn.Nodes.Add("Grid Type:" + Enum.GetName(typeof(GridTypeEnum), incidencePoolingAndAggregationAdvance.QALYAggregation.TType));
+                    tn.Nodes.Add("Shapefile Name:" + ((incidencePoolingAndAggregationAdvance.QALYAggregation is ShapefileGrid) ? (incidencePoolingAndAggregationAdvance.QALYAggregation as ShapefileGrid).ShapefileName : (incidencePoolingAndAggregationAdvance.QALYAggregation as RegularGrid).ShapefileName));
+                    treeNode.Nodes.Add(tn);
+                }
 
-                 //------------
-                 return treeNode;
-             }
-             catch
-             {
-                 return null;
-             }
-         }
+                return treeNode;
+            }
+            catch
+            {
+                return null;
+            }
+        }
 
-        public static void getTreeNodeFromLstAllSelectValuationMethod(AllSelectValuationMethod allSelectValuationMethodList,List<AllSelectValuationMethod> LstAllSelectValuationMethod, ref TreeNode treeNode)
+        public static void getTreeNodeFromLstAllSelectValuationMethod(AllSelectValuationMethod allSelectValuationMethodList, List<AllSelectValuationMethod> LstAllSelectValuationMethod, ref TreeNode treeNode)
         {
             List<AllSelectValuationMethod> lstOne = LstAllSelectValuationMethod.Where(p => p.PID == allSelectValuationMethodList.ID).ToList();
-            
+
             if (lstOne != null && lstOne.Count > 0)
             {
                 foreach (AllSelectValuationMethod asvm in lstOne)
@@ -543,25 +500,20 @@ namespace BenMAP
                         TreeNode tnvaluation = new TreeNode();
                         tnvaluation.Text = "Valuation Function";
                         tnvaluation.Nodes.Add("ID:" + asvm.BenMAPValuationFunction.ID);
-                        tnvaluation.Nodes.Add("Dataset:" + asvm.BenMAPValuationFunction.DataSet);//有选择，可能要换
-                        tnvaluation.Nodes.Add("EndPointGroupID:" + asvm.BenMAPValuationFunction.EndPointGroupID);
-                        tnvaluation.Nodes.Add("Endpoint group:" + asvm.BenMAPValuationFunction.EndPointGroup);//有选择，可能要换
-                        tnvaluation.Nodes.Add("EndPointID:" + asvm.BenMAPValuationFunction.EndPointID);
-                        tnvaluation.Nodes.Add("Endpoint:" + asvm.BenMAPValuationFunction.EndPoint);//有选择，可能要换
-                        if(asvm.BenMAPValuationFunction.StartAge==-1)
-                            tnvaluation.Nodes.Add("Start age:" );
+                        tnvaluation.Nodes.Add("Dataset:" + asvm.BenMAPValuationFunction.DataSet); tnvaluation.Nodes.Add("EndPointGroupID:" + asvm.BenMAPValuationFunction.EndPointGroupID);
+                        tnvaluation.Nodes.Add("Endpoint group:" + asvm.BenMAPValuationFunction.EndPointGroup); tnvaluation.Nodes.Add("EndPointID:" + asvm.BenMAPValuationFunction.EndPointID);
+                        tnvaluation.Nodes.Add("Endpoint:" + asvm.BenMAPValuationFunction.EndPoint); if (asvm.BenMAPValuationFunction.StartAge == -1)
+                            tnvaluation.Nodes.Add("Start age:");
                         else
                             tnvaluation.Nodes.Add("Start age:" + asvm.BenMAPValuationFunction.StartAge);
                         if (asvm.BenMAPValuationFunction.EndAge == -1)
                             tnvaluation.Nodes.Add("End age:");
                         else
                             tnvaluation.Nodes.Add("End age:" + asvm.BenMAPValuationFunction.EndAge);
-                        //tnvaluation.Nodes.Add("End age:" + asvm.BenMAPValuationFunction.EndAge);
                         tnvaluation.Nodes.Add("Qualifier:" + asvm.BenMAPValuationFunction.Qualifier);
                         tnvaluation.Nodes.Add("Reference:" + asvm.BenMAPValuationFunction.Reference);
                         tnvaluation.Nodes.Add("Function:" + asvm.BenMAPValuationFunction.Function);
-                        tnvaluation.Nodes.Add("NameA:" + asvm.BenMAPValuationFunction.NameA);//有选择，可能要换
-                        tnvaluation.Nodes.Add("DistA:" + asvm.BenMAPValuationFunction.DistA);
+                        tnvaluation.Nodes.Add("NameA:" + asvm.BenMAPValuationFunction.NameA); tnvaluation.Nodes.Add("DistA:" + asvm.BenMAPValuationFunction.DistA);
                         tnvaluation.Nodes.Add("A:" + asvm.BenMAPValuationFunction.A);
                         tnvaluation.Nodes.Add("P1A:" + asvm.BenMAPValuationFunction.P1A);
                         tnvaluation.Nodes.Add("P2A:" + asvm.BenMAPValuationFunction.P2A);
@@ -583,7 +535,7 @@ namespace BenMAP
                     }
                 }
             }
- 
+
         }
 
         public static void getTreeNodeFromLstAllSelectCRFunction(AllSelectCRFunction AllSelectCRFunctionList, List<AllSelectCRFunction> LstAllSelectCRFunction, ref TreeNode treeNode)
@@ -599,17 +551,7 @@ namespace BenMAP
                     {
                         TreeNode tnvaluation = new TreeNode();
                         tnvaluation.Text = "Health impact function";
-                        tnvaluation.Nodes.Add("Health impact function dataset:" + asvm.DataSet);//.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.DataSetName);
-                        tnvaluation.Nodes.Add("Endpoint group:" + asvm.EndPointGroup);//.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroup);
-                        tnvaluation.Nodes.Add("Endpoint:" + asvm.EndPoint);//.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.EndPoint);
-                        tnvaluation.Nodes.Add("Pollutant:" + asvm.Pollutant);//.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Pollutant.PollutantName);
-                        tnvaluation.Nodes.Add("Metric:" + asvm.Metric);//.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName);
-                        tnvaluation.Nodes.Add("Metric statistic:" +asvm.MetricStatistic);// Enum.GetName(typeof(MetricStatic), asvm.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.MetricStatistic));
-                        tnvaluation.Nodes.Add("Author:" + asvm.Author);//.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Author);
-                        tnvaluation.Nodes.Add("Year:" + asvm.Year);//.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Year);
-                        tnvaluation.Nodes.Add("Location:" + asvm.Location);//.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Locations);
-                        tnvaluation.Nodes.Add("Other pollutants:" + asvm.OtherPollutants);//.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.OtherPollutants);
-                        try
+                        tnvaluation.Nodes.Add("Health impact function dataset:" + asvm.DataSet); tnvaluation.Nodes.Add("Endpoint group:" + asvm.EndPointGroup); tnvaluation.Nodes.Add("Endpoint:" + asvm.EndPoint); tnvaluation.Nodes.Add("Pollutant:" + asvm.Pollutant); tnvaluation.Nodes.Add("Metric:" + asvm.Metric); tnvaluation.Nodes.Add("Metric statistic:" + asvm.MetricStatistic); tnvaluation.Nodes.Add("Author:" + asvm.Author); tnvaluation.Nodes.Add("Year:" + asvm.Year); tnvaluation.Nodes.Add("Location:" + asvm.Location); tnvaluation.Nodes.Add("Other pollutants:" + asvm.OtherPollutants); try
                         {
                             tnvaluation.Nodes.Add("Reference:" + asvm.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Reference);
                             if (asvm.StartAge == "-1")
@@ -619,9 +561,8 @@ namespace BenMAP
                             if (asvm.EndAge == "-1")
                                 tnvaluation.Nodes.Add("End age:");
                             else
-                                tnvaluation.Nodes.Add("End age:" + asvm.EndAge); 
-                            tnvaluation.Nodes.Add("Baseline functional form:" + asvm.OtherPollutants);//.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.BaseLineIncidenceFunction);
-                            tnvaluation.Nodes.Add("Incidence dataset:" + asvm.CRSelectFunctionCalculateValue.CRSelectFunction.IncidenceDataSetName);
+                                tnvaluation.Nodes.Add("End age:" + asvm.EndAge);
+                            tnvaluation.Nodes.Add("Baseline functional form:" + asvm.OtherPollutants); tnvaluation.Nodes.Add("Incidence dataset:" + asvm.CRSelectFunctionCalculateValue.CRSelectFunction.IncidenceDataSetName);
                             tnvaluation.Nodes.Add("Beta:" + asvm.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Beta);
                             tnvaluation.Nodes.Add("Beta distribution:" + asvm.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.BetaDistribution);
                             tnvaluation.Nodes.Add("P1Beta:" + asvm.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.BetaParameter1);
@@ -643,20 +584,18 @@ namespace BenMAP
                     else
                     {
                         TreeNode tn = new TreeNode();
-                        tn.Text = asvm.Name + ":Pooling Method Type:" + asvm.PoolingMethod;// +" Weight:" + asvm.Weight;
-
+                        tn.Text = asvm.Name + ":Pooling Method Type:" + asvm.PoolingMethod;
                         getTreeNodeFromLstAllSelectCRFunction(asvm, LstAllSelectCRFunction, ref tn);
                         treeNode.Nodes.Add(tn);
                     }
-                   
+
                 }
-                treeNode.Text = AllSelectCRFunctionList.Name + ":Pooling Method Type:" + AllSelectCRFunctionList.PoolingMethod;// +" Weight:" + AllSelectCRFunctionList.Weight;
+                treeNode.Text = AllSelectCRFunctionList.Name + ":Pooling Method Type:" + AllSelectCRFunctionList.PoolingMethod;
             }
             else
             {
                 if (AllSelectCRFunctionList.NodeType == 100)
                 {
-                    //TreeNode tnvaluation = new TreeNode();
                     treeNode.Text = "Health impact function";
                     try
                     {
@@ -677,8 +616,6 @@ namespace BenMAP
                         treeNode.Nodes.Add("Other pollutants:" + AllSelectCRFunctionList.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.OtherPollutants);
 
                         treeNode.Nodes.Add("Reference:" + AllSelectCRFunctionList.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Reference);
-                        //treeNode.Nodes.Add("Start age:" + AllSelectCRFunctionList.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.StartAge);
-                        //treeNode.Nodes.Add("End age:" + AllSelectCRFunctionList.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.EndAge);
                         if (AllSelectCRFunctionList.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.StartAge == -1)
                             treeNode.Nodes.Add("Start age:");
                         else
@@ -705,87 +642,41 @@ namespace BenMAP
                     }
                     catch
                     { }
-                     
+
                 }
                 else
                 {
                     treeNode.Text = AllSelectCRFunctionList.Name + ":Pooling Method Type:" + AllSelectCRFunctionList.PoolingMethod + " Weight:" + AllSelectCRFunctionList.Weight;
                 }
-               
- 
+
+
             }
 
         }
 
 
-        //public static void getTreeNodeFromLstAllSelectQALYMethod(AllSelectQALYMethod allSelectQALYMethodList, List<AllSelectQALYMethod> LstAllSelectQALYMethod, ref TreeNode treeNode)
-        //{
-        //    List<AllSelectQALYMethod> lstOne = LstAllSelectQALYMethod.Where(p => p.PID == allSelectQALYMethodList.ID).ToList();
 
-        //    if (lstOne != null && lstOne.Count > 0)
-        //    {
-        //        foreach (AllSelectQALYMethod asvm in lstOne)
-        //        {
 
-        //            if (asvm.NodeType == 3000)
-        //            {
-        //                TreeNode tnQALY = new TreeNode();
-        //                tnQALY.Text = "QALYFunction";
-        //                tnQALY.Nodes.Add("QalyDatasetID:" + asvm.BenMAPQALY.QalyDatasetID);
-        //                tnQALY.Nodes.Add("QalyDatasetName:" + asvm.BenMAPQALY.QalyDatasetName);//有选择，可能要换
-        //                tnQALY.Nodes.Add("EndPointGroup:" + asvm.BenMAPQALY.EndPointGroup);//有选择，可能要换
-        //                tnQALY.Nodes.Add("EndPoint:" + asvm.BenMAPQALY.EndPoint);//有选择，可能要换
-        //                tnQALY.Nodes.Add("Qualifier:" + asvm.BenMAPQALY.Qualifier);
-        //                tnQALY.Nodes.Add("EndAge:" + asvm.BenMAPQALY.EndAge);
-        //                tnQALY.Nodes.Add("Qualifier:" + asvm.BenMAPQALY.Qualifier);
-        //                tnQALY.Nodes.Add("Description:" + asvm.BenMAPQALY.Description);
-        //                tnQALY.Nodes.Add("StartAge:" + asvm.BenMAPQALY.StartAge);
-        //                tnQALY.Nodes.Add("EndAge:" + asvm.BenMAPQALY.EndAge);//有选择，可能要换
 
-        //                treeNode.Nodes.Add(tnQALY);
-        //            }
-        //            else
-        //            {
-        //                TreeNode tn = new TreeNode();
-        //                tn.Text = asvm.Name + " Pooling Method Type Name " + asvm.PoolingMethod;
-        //                getTreeNodeFromLstAllSelectQALYMethod(asvm, LstAllSelectQALYMethod, ref tn);
-        //                treeNode.Nodes.Add(tn);
-        //            }
-        //        }
-        //    }
 
-        //}
         public static TreeNode getTreeNodeFromValuationMethodPoolingAndAggregationBase(ValuationMethodPoolingAndAggregationBase valuationMethodPoolingAndAggregationBase)
         {
             TreeNode treeNode = new TreeNode();
             try
             {
                 treeNode.Text = valuationMethodPoolingAndAggregationBase.IncidencePoolingAndAggregation.PoolingName;
-                //treeNode.Nodes.Add(getTreeNodeFromBaseControlCRSelectFunctionCalculateValue(valuationMethodPoolingAndAggregation.BaseControlCRSelectFunctionCalculateValue));
-                //if (valuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance != null)
-                //{
-                //    treeNode.Nodes.Add(getTreeNodeFromIncidencePoolingAndAggregationAdvance(valuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance));
-                //}
-                 
-                    treeNode.Nodes.Add(getTreeNodeFromIncidencePoolingAndAggregation(valuationMethodPoolingAndAggregationBase.IncidencePoolingAndAggregation));
-                    if (valuationMethodPoolingAndAggregationBase.LstAllSelectValuationMethod != null && valuationMethodPoolingAndAggregationBase.LstAllSelectValuationMethod.Count > 0)
-                    {
-                        TreeNode tn = new TreeNode();
-                        tn.Text = "Valuation Pooling Window Name " + valuationMethodPoolingAndAggregationBase.IncidencePoolingAndAggregation.PoolingName;
-                        tn.Nodes.Add(valuationMethodPoolingAndAggregationBase.LstAllSelectValuationMethod[0].Name);
-                        getTreeNodeFromLstAllSelectValuationMethod(valuationMethodPoolingAndAggregationBase.LstAllSelectValuationMethod[0], valuationMethodPoolingAndAggregationBase.LstAllSelectValuationMethod, ref tn);
-                        treeNode.Nodes.Add(tn);
-                    }
-                    //if (valuationMethodPoolingAndAggregationBase.lstAllSelectQALYMethod != null && valuationMethodPoolingAndAggregationBase.lstAllSelectQALYMethod.Count > 0)
-                    //{
-                    //    TreeNode tn = new TreeNode();
-                    //    tn.Text = "QALY Pooling Window Name " + valuationMethodPoolingAndAggregationBase.IncidencePoolingAndAggregation.PoolingName;
-                    //    tn.Nodes.Add(valuationMethodPoolingAndAggregationBase.lstAllSelectQALYMethod[0].Name);
-                    //    getTreeNodeFromLstAllSelectQALYMethod(valuationMethodPoolingAndAggregationBase.lstAllSelectQALYMethod[0], valuationMethodPoolingAndAggregationBase.lstAllSelectQALYMethod, ref tn);
-                    //    treeNode.Nodes.Add(tn);
 
-                    //}
-                 
+                treeNode.Nodes.Add(getTreeNodeFromIncidencePoolingAndAggregation(valuationMethodPoolingAndAggregationBase.IncidencePoolingAndAggregation));
+                if (valuationMethodPoolingAndAggregationBase.LstAllSelectValuationMethod != null && valuationMethodPoolingAndAggregationBase.LstAllSelectValuationMethod.Count > 0)
+                {
+                    TreeNode tn = new TreeNode();
+                    tn.Text = "Valuation Pooling Window Name " + valuationMethodPoolingAndAggregationBase.IncidencePoolingAndAggregation.PoolingName;
+                    tn.Nodes.Add(valuationMethodPoolingAndAggregationBase.LstAllSelectValuationMethod[0].Name);
+                    getTreeNodeFromLstAllSelectValuationMethod(valuationMethodPoolingAndAggregationBase.LstAllSelectValuationMethod[0], valuationMethodPoolingAndAggregationBase.LstAllSelectValuationMethod, ref tn);
+                    treeNode.Nodes.Add(tn);
+                }
+
+
                 return treeNode;
             }
             catch
@@ -794,44 +685,42 @@ namespace BenMAP
             }
         }
         public static TreeNode getTreeNodeFromValuationMethodPoolingAndAggregation(ValuationMethodPoolingAndAggregation valuationMethodPoolingAndAggregation)
-         {
-             TreeNode treeNode = new TreeNode();
-             try
-             {
-                 treeNode.Text = "Aggregate, Pool & Value";
-                 treeNode.Nodes.Add("Create Datetime:"+valuationMethodPoolingAndAggregation.CreateTime.ToString("yyyy-MM-dd HH:mm:ss"));
-                 treeNode.Nodes.Add(getTreeNodeFromBaseControlCRSelectFunctionCalculateValue(valuationMethodPoolingAndAggregation.BaseControlCRSelectFunctionCalculateValue));
-                 if (valuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance != null)
-                 {
-                     treeNode.Nodes.Add(getTreeNodeFromIncidencePoolingAndAggregationAdvance(valuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance));
-                 }
-                 foreach (ValuationMethodPoolingAndAggregationBase vb in valuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase)
-                 {
-                     treeNode.Nodes.Add(getTreeNodeFromValuationMethodPoolingAndAggregationBase(vb));
-                      
-                 }
-                 //--Add log-----------------
-                 if (valuationMethodPoolingAndAggregation.lstLog != null && valuationMethodPoolingAndAggregation.lstLog.Count > 0)
-                 {
-                     TreeNode tnLog = new TreeNode();
-                     tnLog.Text = "Log & Message";
-                     for (int iCR = 0; iCR < valuationMethodPoolingAndAggregation.lstLog.Count; iCR++)
-                     {
-                         //TreeNode tnCROne = new TreeNode();
-                         tnLog.Nodes.Add(valuationMethodPoolingAndAggregation.lstLog[iCR]);
-                     }
-                     treeNode.Nodes.Add(tnLog);
-                 }
-                 return treeNode;
-             }
-             catch
-             {
-                 return null;
-             }
-         }
+        {
+            TreeNode treeNode = new TreeNode();
+            try
+            {
+                treeNode.Text = "Aggregate, Pool & Value";
+                treeNode.Nodes.Add("Create Datetime:" + valuationMethodPoolingAndAggregation.CreateTime.ToString("yyyy-MM-dd HH:mm:ss"));
+                treeNode.Nodes.Add(getTreeNodeFromBaseControlCRSelectFunctionCalculateValue(valuationMethodPoolingAndAggregation.BaseControlCRSelectFunctionCalculateValue));
+                if (valuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance != null)
+                {
+                    treeNode.Nodes.Add(getTreeNodeFromIncidencePoolingAndAggregationAdvance(valuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance));
+                }
+                foreach (ValuationMethodPoolingAndAggregationBase vb in valuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase)
+                {
+                    treeNode.Nodes.Add(getTreeNodeFromValuationMethodPoolingAndAggregationBase(vb));
 
-        
-        
+                }
+                if (valuationMethodPoolingAndAggregation.lstLog != null && valuationMethodPoolingAndAggregation.lstLog.Count > 0)
+                {
+                    TreeNode tnLog = new TreeNode();
+                    tnLog.Text = "Log & Message";
+                    for (int iCR = 0; iCR < valuationMethodPoolingAndAggregation.lstLog.Count; iCR++)
+                    {
+                        tnLog.Nodes.Add(valuationMethodPoolingAndAggregation.lstLog[iCR]);
+                    }
+                    treeNode.Nodes.Add(tnLog);
+                }
+                return treeNode;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+
+
 
     }
 }

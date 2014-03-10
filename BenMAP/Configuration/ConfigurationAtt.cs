@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,9 +8,6 @@ namespace BenMAP
     public class ConfigurationAtt
     {
         private bool _isPointMode;
-        /// <summary>
-        /// 运行点模式
-        /// </summary>
         public bool IsPointMode
         {
             get { return _isPointMode; }
@@ -19,9 +16,6 @@ namespace BenMAP
 
 
         private int _latinHypercubeValue;
-        /// <summary>
-        /// 采用拉丁方采样的值
-        /// </summary>
         public int LatinHypercubeValue
         {
             get { return _latinHypercubeValue; }
@@ -30,9 +24,6 @@ namespace BenMAP
 
 
         private string _popDataSetPath;
-        /// <summary>
-        /// 人口数据集路径
-        /// </summary>
         public string PopDataSetPath
         {
             get { return _popDataSetPath; }
@@ -41,9 +32,6 @@ namespace BenMAP
 
 
         private int _popYear;
-        /// <summary>
-        /// 选用人口数据集的年份
-        /// </summary>
         public int PopYear
         {
             get { return _popYear; }
@@ -52,9 +40,6 @@ namespace BenMAP
 
 
         private string _incidenceDatasetPath;
-        /// <summary>
-        /// 发病率数据集的路径
-        /// </summary>
         public string IncidentDatasetPath
         {
             get { return _incidenceDatasetPath; }
@@ -63,9 +48,6 @@ namespace BenMAP
 
 
         private string _healthFunctionPath;
-        /// <summary>
-        /// 健康影响公式
-        /// </summary>
         public string HealthFunctionPath
         {
             get { return _healthFunctionPath; }
@@ -74,9 +56,6 @@ namespace BenMAP
 
 
         private string _thresholdValue;
-        /// <summary>
-        /// 阈值,在使用的时候要将字符串转换成double
-        /// </summary>
         public string ThresholdValue
         {
             get { return _thresholdValue; }

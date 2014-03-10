@@ -1,16 +1,9 @@
-﻿namespace BenMAP
+namespace BenMAP
 {
     partial class EditDistributionValues
     {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -20,12 +13,7 @@
             base.Dispose(disposing);
         }
 
-        #region Windows Form Designer generated code
-
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
+        
         private void InitializeComponent()
         {
             this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -48,10 +36,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
-            // 
-            // groupBox2
-            // 
-            this.groupBox2.Controls.Add(this.btnOK);
+                                                this.groupBox2.Controls.Add(this.btnOK);
             this.groupBox2.Controls.Add(this.btnCancel);
             this.groupBox2.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.groupBox2.Location = new System.Drawing.Point(0, 406);
@@ -59,30 +44,21 @@
             this.groupBox2.Size = new System.Drawing.Size(511, 61);
             this.groupBox2.TabIndex = 6;
             this.groupBox2.TabStop = false;
-            // 
-            // btnOK
-            // 
-            this.btnOK.Location = new System.Drawing.Point(392, 23);
+                                                this.btnOK.Location = new System.Drawing.Point(392, 23);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 27);
             this.btnOK.TabIndex = 1;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
-            // 
-            // btnCancel
-            // 
-            this.btnCancel.Location = new System.Drawing.Point(311, 23);
+                                                this.btnCancel.Location = new System.Drawing.Point(311, 23);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 27);
             this.btnCancel.TabIndex = 0;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
-            // 
-            // groupBox1
-            // 
-            this.groupBox1.Controls.Add(this.pictureBox2);
+                                                this.groupBox1.Controls.Add(this.pictureBox2);
             this.groupBox1.Controls.Add(this.lblNotesContext);
             this.groupBox1.Controls.Add(this.pictureBox1);
             this.groupBox1.Controls.Add(this.txtParameter2);
@@ -99,18 +75,12 @@
             this.groupBox1.Size = new System.Drawing.Size(511, 407);
             this.groupBox1.TabIndex = 5;
             this.groupBox1.TabStop = false;
-            // 
-            // pictureBox2
-            // 
-            this.pictureBox2.Location = new System.Drawing.Point(109, 74);
+                                                this.pictureBox2.Location = new System.Drawing.Point(109, 74);
             this.pictureBox2.Name = "pictureBox2";
             this.pictureBox2.Size = new System.Drawing.Size(358, 185);
             this.pictureBox2.TabIndex = 11;
             this.pictureBox2.TabStop = false;
-            // 
-            // lblNotesContext
-            // 
-            this.lblNotesContext.AutoSize = true;
+                                                this.lblNotesContext.AutoSize = true;
             this.lblNotesContext.BackColor = System.Drawing.SystemColors.HighlightText;
             this.lblNotesContext.ForeColor = System.Drawing.SystemColors.ControlText;
             this.lblNotesContext.Location = new System.Drawing.Point(109, 262);
@@ -118,39 +88,24 @@
             this.lblNotesContext.Size = new System.Drawing.Size(42, 14);
             this.lblNotesContext.TabIndex = 10;
             this.lblNotesContext.Text = "label1";
-            // 
-            // pictureBox1
-            // 
-            this.pictureBox1.Location = new System.Drawing.Point(109, 20);
+                                                this.pictureBox1.Location = new System.Drawing.Point(109, 20);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(358, 58);
             this.pictureBox1.TabIndex = 9;
             this.pictureBox1.TabStop = false;
-            // 
-            // txtParameter2
-            // 
-            this.txtParameter2.Location = new System.Drawing.Point(109, 378);
+                                                this.txtParameter2.Location = new System.Drawing.Point(109, 378);
             this.txtParameter2.Name = "txtParameter2";
             this.txtParameter2.Size = new System.Drawing.Size(119, 22);
             this.txtParameter2.TabIndex = 8;
-            // 
-            // txtParameter1
-            // 
-            this.txtParameter1.Location = new System.Drawing.Point(109, 350);
+                                                this.txtParameter1.Location = new System.Drawing.Point(109, 350);
             this.txtParameter1.Name = "txtParameter1";
             this.txtParameter1.Size = new System.Drawing.Size(119, 22);
             this.txtParameter1.TabIndex = 7;
-            // 
-            // txtMeanValue
-            // 
-            this.txtMeanValue.Location = new System.Drawing.Point(109, 322);
+                                                this.txtMeanValue.Location = new System.Drawing.Point(109, 322);
             this.txtMeanValue.Name = "txtMeanValue";
             this.txtMeanValue.Size = new System.Drawing.Size(119, 22);
             this.txtMeanValue.TabIndex = 6;
-            // 
-            // lblPDF
-            // 
-            this.lblPDF.AutoSize = true;
+                                                this.lblPDF.AutoSize = true;
             this.lblPDF.Location = new System.Drawing.Point(3, 20);
             this.lblPDF.Name = "lblPDF";
             this.lblPDF.RightToLeft = System.Windows.Forms.RightToLeft.No;
@@ -158,10 +113,7 @@
             this.lblPDF.TabIndex = 0;
             this.lblPDF.Text = "Exponential PDF:";
             this.lblPDF.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // lblParameter2
-            // 
-            this.lblParameter2.AutoSize = true;
+                                                this.lblParameter2.AutoSize = true;
             this.lblParameter2.Location = new System.Drawing.Point(55, 382);
             this.lblParameter2.Name = "lblParameter2";
             this.lblParameter2.Size = new System.Drawing.Size(45, 14);
@@ -169,30 +121,21 @@
             this.lblParameter2.Text = "label5:";
             this.lblParameter2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.lblParameter2.Click += new System.EventHandler(this.lblParameter2_Click);
-            // 
-            // lblNotes
-            // 
-            this.lblNotes.AutoSize = true;
+                                                this.lblNotes.AutoSize = true;
             this.lblNotes.Location = new System.Drawing.Point(58, 262);
             this.lblNotes.Name = "lblNotes";
             this.lblNotes.Size = new System.Drawing.Size(42, 14);
             this.lblNotes.TabIndex = 1;
             this.lblNotes.Text = "Notes:";
             this.lblNotes.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // lblParameter1
-            // 
-            this.lblParameter1.AutoSize = true;
+                                                this.lblParameter1.AutoSize = true;
             this.lblParameter1.Location = new System.Drawing.Point(55, 354);
             this.lblParameter1.Name = "lblParameter1";
             this.lblParameter1.Size = new System.Drawing.Size(45, 14);
             this.lblParameter1.TabIndex = 3;
             this.lblParameter1.Text = "label4:";
             this.lblParameter1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // lblMeanValue
-            // 
-            this.lblMeanValue.AutoSize = true;
+                                                this.lblMeanValue.AutoSize = true;
             this.lblMeanValue.Location = new System.Drawing.Point(25, 326);
             this.lblMeanValue.Name = "lblMeanValue";
             this.lblMeanValue.Size = new System.Drawing.Size(75, 14);
@@ -200,10 +143,7 @@
             this.lblMeanValue.Text = "Mean Value:";
             this.lblMeanValue.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.lblMeanValue.Click += new System.EventHandler(this.lblMeanValue_Click);
-            // 
-            // EditDistributionValues
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
+                                                this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(511, 467);
             this.Controls.Add(this.groupBox2);
@@ -225,8 +165,7 @@
 
         }
 
-        #endregion
-
+        
         private System.Windows.Forms.Label lblPDF;
         private System.Windows.Forms.Label lblNotes;
         private System.Windows.Forms.Label lblMeanValue;

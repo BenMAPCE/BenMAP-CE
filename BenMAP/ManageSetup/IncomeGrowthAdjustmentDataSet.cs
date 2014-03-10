@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -19,14 +19,13 @@ namespace BenMAP
         string _dataName = string.Empty;
         private void btnAdd_Click(object sender, EventArgs e)
         {
-            
             try
             {
                 LoadIncomeGrowthDataSet frm = new LoadIncomeGrowthDataSet();
                 frm.ShowDialog();
                 ExportDataForlistbox();
                 int count = -1;
-                for (int i = 0; i <lstDataSetName.Items.Count; i++)
+                for (int i = 0; i < lstDataSetName.Items.Count; i++)
                 {
                     DataRowView dr = lstDataSetName.Items[i] as DataRowView;
                     string datasetName = dr["INCOMEGROWTHADJDATASETNAME"].ToString();
@@ -35,8 +34,6 @@ namespace BenMAP
                         count = i;
                         break;
                     }
-                    //lstDatasetName.SelectedItem = dr;
-                    //if(item.)
                 }
                 lstDataSetName.SelectedIndex = count;
 
@@ -51,25 +48,23 @@ namespace BenMAP
         {
             try
             {
-                ExportDataForlistbox(); 
+                ExportDataForlistbox();
             }
             catch (Exception ex)
             {
                 Logger.LogError(ex);
             }
-            
+
         }
         private void ExportDataForlistbox()
         {
             try
             {
-                string commandText =string.Format( "select  * from INCOMEGROWTHADJDATASETS where setupid={0} ",CommonClass.ManageSetup.SetupID);
+                string commandText = string.Format("select  * from INCOMEGROWTHADJDATASETS where setupid={0} ", CommonClass.ManageSetup.SetupID);
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
-                //bind table to lstDatasetName and display QALYDATASETNAME field
                 lstDataSetName.DataSource = ds.Tables[0];
                 lstDataSetName.DisplayMember = "INCOMEGROWTHADJDATASETNAME";
-                //lstDataSetName.SelectedIndex = -1;
             }
             catch (Exception ex)
             {
@@ -81,19 +76,16 @@ namespace BenMAP
         {
             try
             {
-                
+
                 if (sender == null) { return; }
                 var lst = sender as ListBox;
                 if (lst.SelectedItem == null) return;
                 DataRowView dr = lst.SelectedItem as DataRowView;
                 string str = dr.Row["INCOMEGROWTHADJDATASETNAME"].ToString();
-                string commandText = string.Format("select YYEAR,MEAN,ENDPOINTGROUPS from INCOMEGROWTHADJFACTORS WHERE INCOMEGROWTHADJDATASETID in (select INCOMEGROWTHADJDATASETID from INCOMEGROWTHADJDATASETS where INCOMEGROWTHADJDATASETNAME='{0}' and setupid={1})  ORDER BY YYEAR ASC", str,CommonClass.ManageSetup.SetupID);
+                string commandText = string.Format("select YYEAR,MEAN,ENDPOINTGROUPS from INCOMEGROWTHADJFACTORS WHERE INCOMEGROWTHADJDATASETID in (select INCOMEGROWTHADJDATASETID from INCOMEGROWTHADJDATASETS where INCOMEGROWTHADJDATASETNAME='{0}' and setupid={1})  ORDER BY YYEAR ASC", str, CommonClass.ManageSetup.SetupID);
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
-                
-                //ds.Tables[0].Columns["YYEAR"].ColumnName = "Year";
-                //ds.Tables[0].Columns["MEAN"].ColumnName = "Factor";
-                //ds.Tables[0].Columns["ENDPOINTGROUPS"].ColumnName = "Endpoint Groups";
+
                 olvData.DataSource = ds.Tables[0];
             }
             catch (Exception ex)
@@ -122,7 +114,6 @@ namespace BenMAP
                 }
                 commandText = string.Format("select * from INCOMEGROWTHADJDATASETS where SetupID={0}", CommonClass.ManageSetup.SetupID);
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
-                //bind table to lstDatasetName and display QALYDATASETNAME field
                 lstDataSetName.DataSource = ds.Tables[0];
                 lstDataSetName.DisplayMember = "INCOMEGROWTHADJDATASETNAME";
                 if (ds.Tables[0].Rows.Count == 0)
@@ -151,7 +142,7 @@ namespace BenMAP
                 { return; }
                 string fileName = saveFileDialog1.FileName;
                 DataTable dtOut = new DataTable();
-               
+
                 dtOut.Columns.Add("Year", typeof(int));
                 dtOut.Columns.Add("Mean", typeof(double));
                 dtOut.Columns.Add("EndpointGroup", typeof(string));
@@ -168,10 +159,10 @@ namespace BenMAP
                     DataRow newdr = dtOut.NewRow();
                     newdr["Year"] = Convert.ToInt32(dr["YYear"]);
                     newdr["Mean"] = Convert.ToDouble(dr["Mean"]);
-                    newdr["EndpointGroup"] =dr["endpointGroups"].ToString();                    
+                    newdr["EndpointGroup"] = dr["endpointGroups"].ToString();
                     dtOut.Rows.Add(newdr);
                 }
-               CommonClass.SaveCSV(dtOut, fileName);
+                CommonClass.SaveCSV(dtOut, fileName);
             }
             catch (Exception ex)
             {

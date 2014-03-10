@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Data;
 using System.Diagnostics;
@@ -81,18 +81,7 @@ namespace BenMAP
                     { ds.Tables[0].Rows[i][2] = ""; }
                 }
                 olvIncidenceRates.DataSource = ds.Tables[0];
-                //dgvIncidenceRate.DataSource = ds.Tables[0];
-                //dgvIncidenceRate.RowHeadersVisible = false;
-                //dgvIncidenceRate.Columns[0].HeaderText = "Endpoint Group";
-                //dgvIncidenceRate.Columns[1].HeaderText = "Endpoint";
-                //dgvIncidenceRate.Columns[2].HeaderText = "Type";
-                //dgvIncidenceRate.Columns[3].HeaderText = "Race";
-                //dgvIncidenceRate.Columns[4].HeaderText = "Ethnicity";
-                //dgvIncidenceRate.Columns[5].HeaderText = "Gender";
-                //dgvIncidenceRate.Columns[6].HeaderText = "Start Age";
-                //dgvIncidenceRate.Columns[7].HeaderText = "End Age";
 
-                //commandText = "select GridDefinitionID from IncidenceRates where (IncidenceRates.IncidenceDataSetID=IncidenceDataSets.IncidenceDataSetID) and ";
                 cboEndpoint.Items.Clear();
                 cboEndpointGroup.Items.Clear();
                 string endpointGroupName = string.Empty;
@@ -128,8 +117,7 @@ namespace BenMAP
                         maxEndpointWidth = Math.Max(maxEndpointWidth, EndpointWidth);
                     }
                 }
-                cboEndpointGroup.DropDownWidth = maxEndpointGroupWidth;//display the maxwidth
-                cboEndpoint.DropDownWidth = maxEndpointWidth;
+                cboEndpointGroup.DropDownWidth = maxEndpointGroupWidth; cboEndpoint.DropDownWidth = maxEndpointWidth;
                 cboEndpointGroup.SelectedIndex = 0;
                 cboEndpoint.SelectedIndex = 0;
             }
@@ -142,7 +130,6 @@ namespace BenMAP
         private void btnEdit_Click(object sender, EventArgs e)
         {
             string msg = string.Empty;
-            //int dataSetID = Convert.ToInt32(((lstAvailableDataSets.SelectedItem) as DataRowView)["incidenceDataSetID"]);
             string dataSetName = lstAvailableDataSets.GetItemText(lstAvailableDataSets.SelectedItem);
             try
             {
@@ -150,7 +137,6 @@ namespace BenMAP
                     return;
                 IncidenceDatasetDefinition frm = new IncidenceDatasetDefinition(dataSetName, Convert.ToInt32(_dataSetID));
                 DialogResult rtn = frm.ShowDialog();
-                //if (rtn == DialogResult.OK)
                 {
                     BindControls();
                 }
@@ -167,10 +153,6 @@ namespace BenMAP
             {
                 IncidenceDatasetDefinition frm = new IncidenceDatasetDefinition();
                 DialogResult rtn = frm.ShowDialog();
-                //if (rtn != DialogResult.OK)
-                //{
-                //    return;
-                //}
                 BindControls();
             }
             catch (Exception ex)
@@ -191,8 +173,6 @@ namespace BenMAP
                 {
                     string commandText = string.Format("delete from IncidenceDataSets where IncidenceDataSetID='{0}'", _dataSetID);
                     fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
-                    //commandText = string.Format("delete from IncidenceRates where IncidenceDataSetID=( select IncidenceDataSetID from IncidenceDataSets where IncidenceDataSetID='{0}')", _dataSetID);
-                    //fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                     BindControls();
                     if (lstAvailableDataSets.Items.Count == 0)
                     {
@@ -200,7 +180,6 @@ namespace BenMAP
                         cboEndpointGroup.Items.Clear();
                         cboEndpoint.Items.Clear();
                     }
-                    //dgvIncidenceRate.DataSource = null;
                 }
             }
             catch (Exception ex)
@@ -248,14 +227,12 @@ namespace BenMAP
                         break;
                 }
             }
-            // Setup a default renderer to draw the filter matches
             if (filter == null)
                 olv.DefaultRenderer = null;
             else
             {
                 olv.DefaultRenderer = new HighlightTextRenderer(filter);
 
-                // Uncomment this line to see how the GDI+ rendering looks
                 olv.DefaultRenderer = new HighlightTextRenderer { Filter = filter, UseGdiTextRendering = true };
             }
 
@@ -264,16 +241,6 @@ namespace BenMAP
             olv.ModelFilter = filter;
             stopWatch.Stop();
 
-            //IList objects = olv.Objects as IList;
-            //if (objects == null)
-            //    this.toolStripStatusLabel1.Text =
-            //        String.Format("Filtered in {0}ms", stopWatch.ElapsedMilliseconds);
-            //else
-            //    this.toolStripStatusLabel1.Text =
-            //        String.Format("Filtered {0} items down to {1} items in {2}ms",
-            //                      objects.Count,
-            //                      olv.Items.Count,
-            //                      stopWatch.ElapsedMilliseconds);
         }
 
         private void chbGroup_CheckedChanged(object sender, EventArgs e)
@@ -304,7 +271,6 @@ namespace BenMAP
                     return;
                 OLVColumn column = olv.GetColumn("olvcEndpointGroup");
 
-                // Collect all the checked values
                 ArrayList chosenValues = new ArrayList();
                 string selectEGroup = cboEndpointGroup.GetItemText(cboEndpointGroup.SelectedItem);
                 if (!string.IsNullOrEmpty(selectEGroup))
@@ -320,7 +286,7 @@ namespace BenMAP
                 }
 
                 cboEndpoint.Text = "";
-                string commandText="";
+                string commandText = "";
                 if (cboEndpointGroup.Text == "")
                 {
                     commandText = string.Format("select EndPointGroups.EndPointGroupName,EndPoints.EndPointName,IncidenceRates.Prevalence,Races.RaceName,Ethnicity.EthnicityName,Genders.GenderName,IncidenceRates.StartAge,IncidenceRates.EndAge from IncidenceRates,EndPointGroups,EndPoints,Races,Ethnicity,Genders ,IncidenceDataSets where (IncidenceDataSets.IncidenceDataSetID= IncidenceRates.IncidenceDataSetID) and (IncidenceRates.EndPointGroupID=EndPointGroups.EndPointGroupID) and (IncidenceRates.EndPointID=EndPoints.EndPointID) and (IncidenceRates.RaceID=Races.RaceID) and (IncidenceRates.GenderID=Genders.GenderID) and (IncidenceRates.EthnicityID=Ethnicity.EthnicityID) and IncidenceDataSets.IncidenceDataSetID='{0}'", _dataSetID);
@@ -367,7 +333,6 @@ namespace BenMAP
                     return;
                 OLVColumn column = olv.GetColumn("olvcEndpoint");
 
-                // Collect all the checked values
                 ArrayList chosenValues = new ArrayList();
                 string selectEndpoint = cboEndpoint.GetItemText(cboEndpoint.SelectedItem);
                 if (!string.IsNullOrEmpty(selectEndpoint))

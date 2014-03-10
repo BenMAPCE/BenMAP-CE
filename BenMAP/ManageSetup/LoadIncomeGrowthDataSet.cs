@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Data;
 using System.Windows.Forms;
 using ESIL.DBUtility;
@@ -33,20 +33,7 @@ namespace BenMAP
                 string strfilename = string.Empty;
                 string strtablename = string.Empty;
                 commandText = string.Empty;
-                // Todo:陈志润
-                //int sheetIndex = 1;
-                //if (txtDatabase.Text.Substring(txtDatabase.Text.Length - 3, 3).ToLower() != "csv")
-                //{
-                //    //判断有没有安装Excel
-                //    if (Type.GetTypeFromProgID("Excel.Application") == null)
-                //    {
-                //        MessageBox.Show("Please install Excel.", "Warning", MessageBoxButtons.OK);
-                //        return;
-                //    }
-                //    sheetIndex = CommonClass.SelectedSheetIndex(txtDatabase.Text);
-                //}
 
-                //string strfilepath = System.IO.Path.GetExtension(txtDatabase.Text);
                 dt = CommonClass.ExcelToDataTable(txtDatabase.Text);
                 int iYear = -1;
                 int iMean = -1;
@@ -79,24 +66,8 @@ namespace BenMAP
                 int incomegrowthadjdatasetID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText)) + 1;
                 commandText = string.Format("insert into INCOMEGROWTHADJDATASETS VALUES({0},{1},'{2}' )", incomegrowthadjdatasetID, CommonClass.ManageSetup.SetupID, txtDataSetName.Text);
                 fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
-                //commandText = string.Format("select next value for SEQ_INCOMEGROWTHADJDATASETS FROM RDB$DATABASE");
-                //obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
-                //if (obj == null) { return; }
                 int currentDataSetID = incomegrowthadjdatasetID;
 
-                //switch (strfilepath.ToLower())
-                //{
-                //    case ".xls":
-                //        ds = dp.ReadExcel2DataSet(txtDatabase.Text);
-                //        break;
-                //    case ".xlsx":
-                //        ds = dp.ReadExcel2DataSet(txtDatabase.Text);
-                //        break;
-                //    case ".csv":
-                //        ds = dp.ReadCSV2DataSet(txtDatabase.Text, "table");
-                //        break;
-                //    default: break;
-                //}
                 if (dt == null) { return; }
                 int rtn = 0;
                 foreach (DataRow row in dt.Rows)
@@ -104,7 +75,6 @@ namespace BenMAP
                     if (row == null)
                     { continue; }
                     commandText = string.Format("insert into INCOMEGROWTHADJFACTORS(INCOMEGROWTHADJDATASETID,YYEAR,MEAN,ENDPOINTGROUPS) values({0},{1},{2},'{3}')", currentDataSetID, int.Parse(row[iYear].ToString()), row[iMean], row[iEndpointGroup]);
-                    //string commandText = "insert into INCOMEGROWTHADJFACTORS values(15,2036,0.1111111111,'opip',0.11111,0.211111,'Acute Brochitis')";
                     rtn = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                 }
                 if (rtn != 0)
@@ -159,7 +129,6 @@ namespace BenMAP
                 FireBirdHelperBase fb = new ESILFireBirdHelper();
                 if (_incomeGrowthDataSetName == null)
                 {
-                    //automatically generated name-increase the number at the end of the name
                     int number = 0;
                     int incomeGrowthDatasetID = 0;
                     do
@@ -169,7 +138,7 @@ namespace BenMAP
                         number++;
                     } while (incomeGrowthDatasetID > 0);
                     txtDataSetName.Text = "IncomeGrowthDataSet" + Convert.ToString(number - 1);
-                } 
+                }
             }
             catch (Exception)
             { }

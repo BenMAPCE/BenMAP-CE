@@ -1,16 +1,9 @@
-﻿namespace BenMAP
+namespace BenMAP
 {
     partial class ManageInflationDataSet
     {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -20,12 +13,7 @@
             base.Dispose(disposing);
         }
 
-        #region Windows Form Designer generated code
-
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
+        
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
@@ -49,10 +37,7 @@
             this.grpInflationDetail.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.olvData)).BeginInit();
             this.SuspendLayout();
-            // 
-            // grpAvailableDataSets
-            // 
-            this.grpAvailableDataSets.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                                                this.grpAvailableDataSets.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)));
             this.grpAvailableDataSets.Controls.Add(this.btnOutput);
             this.grpAvailableDataSets.Controls.Add(this.btnDelete);
@@ -64,10 +49,7 @@
             this.grpAvailableDataSets.TabIndex = 0;
             this.grpAvailableDataSets.TabStop = false;
             this.grpAvailableDataSets.Text = "Available Datasets";
-            // 
-            // btnOutput
-            // 
-            this.btnOutput.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+                                                this.btnOutput.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnOutput.Location = new System.Drawing.Point(11, 369);
             this.btnOutput.Name = "btnOutput";
             this.btnOutput.Size = new System.Drawing.Size(156, 27);
@@ -77,10 +59,7 @@
                     " and can be used as an example to prepare the input file.");
             this.btnOutput.UseVisualStyleBackColor = true;
             this.btnOutput.Click += new System.EventHandler(this.btnOutput_Click);
-            // 
-            // btnDelete
-            // 
-            this.btnDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+                                                this.btnDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnDelete.Location = new System.Drawing.Point(11, 398);
             this.btnDelete.Name = "btnDelete";
             this.btnDelete.Size = new System.Drawing.Size(75, 27);
@@ -88,10 +67,7 @@
             this.btnDelete.Text = "Delete";
             this.btnDelete.UseVisualStyleBackColor = true;
             this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
-            // 
-            // btnAdd
-            // 
-            this.btnAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+                                                this.btnAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnAdd.Location = new System.Drawing.Point(92, 398);
             this.btnAdd.Name = "btnAdd";
             this.btnAdd.Size = new System.Drawing.Size(75, 27);
@@ -99,10 +75,7 @@
             this.btnAdd.Text = "Add";
             this.btnAdd.UseVisualStyleBackColor = true;
             this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
-            // 
-            // lstAvailableDataSets
-            // 
-            this.lstAvailableDataSets.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                                                this.lstAvailableDataSets.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)));
             this.lstAvailableDataSets.FormattingEnabled = true;
             this.lstAvailableDataSets.HorizontalScrollbar = true;
@@ -112,10 +85,7 @@
             this.lstAvailableDataSets.Size = new System.Drawing.Size(156, 340);
             this.lstAvailableDataSets.TabIndex = 1;
             this.lstAvailableDataSets.SelectedValueChanged += new System.EventHandler(this.lstAvailableDataSets_SelectedValueChanged);
-            // 
-            // grpCancelOK
-            // 
-            this.grpCancelOK.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+                                                this.grpCancelOK.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.grpCancelOK.Controls.Add(this.btnOK);
             this.grpCancelOK.Controls.Add(this.btnCancel);
@@ -124,10 +94,7 @@
             this.grpCancelOK.Size = new System.Drawing.Size(661, 59);
             this.grpCancelOK.TabIndex = 2;
             this.grpCancelOK.TabStop = false;
-            // 
-            // btnOK
-            // 
-            this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+                                                this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOK.Location = new System.Drawing.Point(568, 21);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 27);
@@ -135,10 +102,7 @@
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
-            // 
-            // btnCancel
-            // 
-            this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+                                                this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.Location = new System.Drawing.Point(487, 21);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 27);
@@ -147,10 +111,7 @@
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Visible = false;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
-            // 
-            // grpInflationDetail
-            // 
-            this.grpInflationDetail.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                                                this.grpInflationDetail.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.grpInflationDetail.Controls.Add(this.olvData);
@@ -160,10 +121,7 @@
             this.grpInflationDetail.TabIndex = 3;
             this.grpInflationDetail.TabStop = false;
             this.grpInflationDetail.Text = "Inflation Detail";
-            // 
-            // olvData
-            // 
-            this.olvData.AllColumns.Add(this.olvColumn7);
+                                                this.olvData.AllColumns.Add(this.olvColumn7);
             this.olvData.AllColumns.Add(this.olvColumn8);
             this.olvData.AllColumns.Add(this.olvColumn9);
             this.olvData.AllColumns.Add(this.olvColumn1);
@@ -205,37 +163,22 @@
             this.olvData.UseHotItem = true;
             this.olvData.UseTranslucentHotItem = true;
             this.olvData.View = System.Windows.Forms.View.Details;
-            // 
-            // olvColumn7
-            // 
-            this.olvColumn7.AspectName = "yyear";
+                                                this.olvColumn7.AspectName = "yyear";
             this.olvColumn7.Text = "Year";
             this.olvColumn7.Width = 90;
-            // 
-            // olvColumn8
-            // 
-            this.olvColumn8.AspectName = "AllGoodsIndex";
+                                                this.olvColumn8.AspectName = "AllGoodsIndex";
             this.olvColumn8.AspectToStringFormat = "{0}";
             this.olvColumn8.Text = "All Goods Index";
             this.olvColumn8.Width = 131;
-            // 
-            // olvColumn9
-            // 
-            this.olvColumn9.AspectName = "MedicalCostIndex";
+                                                this.olvColumn9.AspectName = "MedicalCostIndex";
             this.olvColumn9.AspectToStringFormat = "{0}";
             this.olvColumn9.Text = "Medical Cost Index";
             this.olvColumn9.Width = 124;
-            // 
-            // olvColumn1
-            // 
-            this.olvColumn1.AspectName = "WageIndex";
+                                                this.olvColumn1.AspectName = "WageIndex";
             this.olvColumn1.AspectToStringFormat = "{0}";
             this.olvColumn1.Text = "Wage Index";
             this.olvColumn1.Width = 129;
-            // 
-            // ManageInflationDataSet
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
+                                                this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(681, 497);
             this.Controls.Add(this.grpInflationDetail);
@@ -255,8 +198,7 @@
 
         }
 
-        #endregion
-
+        
         private System.Windows.Forms.GroupBox grpAvailableDataSets;
         private System.Windows.Forms.ListBox lstAvailableDataSets;
         private System.Windows.Forms.Button btnAdd;

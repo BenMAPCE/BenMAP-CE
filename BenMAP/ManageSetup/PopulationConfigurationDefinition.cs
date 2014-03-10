@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -33,7 +33,6 @@ namespace BenMAP
             FireBirdHelperBase fb = new ESILFireBirdHelper();
             try
             {
-                //加入Race，Gender，Ethnicity的items
                 string commandText = "select RaceName from Races";
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
                 lstAvailableRaces.Items.Clear();
@@ -55,7 +54,6 @@ namespace BenMAP
                 {
                     lstAvailableEthnicity.Items.Add(dr["ETHNICITYNAME"].ToString());
                 }
-                //查看和编辑
                 if (_configurationID != null)
                 {
                     isAdd = false;
@@ -94,12 +92,10 @@ namespace BenMAP
                     dgvAgeRangs.Columns[1].HeaderText = "Start Age";
                     dgvAgeRangs.Columns[2].HeaderText = "End Age";
                     dgvAgeRangs.RowHeadersVisible = false;
-                    //绑定_dtAgeRange
                     _dtAgeRange = ds.Tables[0];
                 }
                 else
                 {
-                    //automatically generated name-increase the number at the end of the name
                     int number = 0;
                     int PopulationConfigurationID = 0;
                     do
@@ -109,7 +105,6 @@ namespace BenMAP
                         number++;
                     } while (PopulationConfigurationID > 0);
                     txtConfigName.Text = "PopulationConfiguration" + Convert.ToString(number - 1);
-                    //txtConfigName.Text = "PopulationConfiguration 0";
                     commandText = "select max(POPULATIONCONFIGURATIONID) from POPULATIONCONFIGURATIONS";
                     _configurationID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
                     commandText = string.Format("select AgeRangeName,StartAge,EndAge from AgeRanges,PopulationConfigurations where (PopulationConfigurations.PopulationConfigurationID=AgeRanges.PopulationConfigurationID) and PopulationConfigurations.PopulationConfigurationName='null'");
@@ -119,7 +114,6 @@ namespace BenMAP
                     dgvAgeRangs.Columns[1].HeaderText = "Start Age";
                     dgvAgeRangs.Columns[2].HeaderText = "End Age";
                     dgvAgeRangs.RowHeadersVisible = false;
-                    //绑定_dtAgeRange
                     _dtAgeRange = ds.Tables[0];
                 }
             }
@@ -143,12 +137,6 @@ namespace BenMAP
                     object obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
                     dicRaces.Add(obj, lstAvailableRaces.SelectedItem.ToString());
                 }
-                //DataRowView drv = lstAvailableRaces.SelectedItem as DataRowView;
-                //System.Data.DataRowView drview = (System.Data.DataRowView)lstAvailableRaces.SelectedItem;
-                // if (!lstRaces.Items.Contains(drview["RaceName"]))
-                // {
-                //     lstRaces.Items.Add(drview["RaceName"]);
-                // }
 
             }
             catch (Exception ex)
@@ -341,8 +329,6 @@ namespace BenMAP
         private int originalHighAge;
         private void btnAdd_Click(object sender, EventArgs e)
         {
-            //ESILFireBirdHelper fb = new ESILFireBirdHelper();
-            //string commandText = string.Empty;
             try
             {
                 AgeRangeDefinition frm = new AgeRangeDefinition(_configurationID);
@@ -372,24 +358,6 @@ namespace BenMAP
                     dr[2] = frm._highAge;
                     _dtAgeRange.Rows.Add(dr);
                     dgvAgeRangs.DataSource = _dtAgeRange;
-                    //commandText = string.Format("select PopulationConfigurationID from PopulationConfigurations where PopulationConfigurationName='{0}'", _configurationName);
-                    //object obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
-                    //if (obj != null)
-                    //{
-                    //    _configurationID = obj;
-                    //}
-                    //if (obj == null)
-                    //{
-                    //    commandText = "select next value for SEQ_POPULATIONCONFIGURATIONS FROM RDB$DATABASE";
-                    //    obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
-                    //    _configurationID = obj;
-                    //    commandText = string.Format("insert into PopulationConfigurations ( PopulationConfigurationID,PopulationConfigurationName) values ({0},'{1}')",_configurationID,txtConfigName.Text);
-                    //    fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
-                    //}
-                    //commandText = "select next value for SEQ_AGERANGES FROM RDB$DATABASE";
-                    //obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
-                    //commandText = string.Format("insert into AgeRanges values ({0},{1},'{2}',{3},{4})", obj, _configurationID, dr[0], dr[1], dr[2]);
-                    //fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                 }
             }
             catch (Exception ex)
@@ -414,8 +382,6 @@ namespace BenMAP
                     DialogResult result = MessageBox.Show(msg, "Confirm Deletion", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                     if (result == DialogResult.Yes)
                     {
-                        //int rowCount = _dtAgeRange.Rows.Count-1;
-                        //originalHighAge = Convert.ToInt32(_dtAgeRange.Rows[rowCount][2].ToString());
                         WaitShow("Deleting the last age range.");
                         dgvAgeRangs.DataSource = _dtAgeRange;
                         if (_configurationID != null)
@@ -435,10 +401,7 @@ namespace BenMAP
             }
         }
 
-        #region 等待窗口
-        TipFormGIF waitMess = new TipFormGIF();//等待窗体
-        bool sFlog = true;
-        //--显示等待窗体 
+        TipFormGIF waitMess = new TipFormGIF(); bool sFlog = true;
         private void ShowWaitMess()
         {
             try
@@ -455,7 +418,6 @@ namespace BenMAP
             }
         }
 
-        //--新开辟一个线程调用 
         public void WaitShow(string msg)
         {
             try
@@ -476,10 +438,8 @@ namespace BenMAP
         }
         private delegate void CloseFormDelegate();
 
-        //--关闭等待窗体 
         public void WaitClose()
         {
-            //同步到主线程上
             if (waitMess.InvokeRequired)
                 waitMess.Invoke(new CloseFormDelegate(DoCloseJob));
             else
@@ -504,22 +464,13 @@ namespace BenMAP
                 MessageBox.Show(Err.Message);
             }
         }
-        #endregion 等待窗口
 
         private void btnOK_Click(object sender, EventArgs e)
         {
             ESILFireBirdHelper fb = new ESILFireBirdHelper();
             string commandText = string.Empty;
-            //object[] saveID;
-            //List<object> saveIDlst = new List<object>();
             try
             {
-                //commandText = string.Format("select PopulationConfigurationID from PopulationConfigurations where PopulationConfigurationName='{0}'", _configurationName);
-                //object obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
-                //if (obj != null)
-                //{
-                //    _configurationID = obj;
-                //}
                 if (txtConfigName.Text == string.Empty) { MessageBox.Show("Please input the population configuration name."); return; }
                 if (isAdd)
                 {
@@ -530,10 +481,6 @@ namespace BenMAP
                         MessageBox.Show("This population configuration name is already in use. Please enter a different name.");
                         return;
                     }
-                    //commandText = "select next value for SEQ_POPULATIONCONFIGURATIONS FROM RDB$DATABASE";
-                    //_configurationID = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
-                    //obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
-                    //_configurationID = obj;
                     commandText = "insert into PopulationConfigurations values (" + _configurationID + ",'" + txtConfigName.Text + "')";
                     fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                 }
@@ -548,31 +495,24 @@ namespace BenMAP
                             MessageBox.Show("Please rename the Configuration name.");
                             return;
                         }
-                        commandText = "update PopulationConfigurations set PopulationConfigurationName='" + txtConfigName.Text + "' where PopulationConfigurationID="+_configurationID+"";
+                        commandText = "update PopulationConfigurations set PopulationConfigurationName='" + txtConfigName.Text + "' where PopulationConfigurationID=" + _configurationID + "";
                         fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                     }
                 }
-                //save Race
                 if (_dtRaces != null)
                 {
                     for (int i = 0; i < _dtRaces.Rows.Count; i++)
                     {
-                        //if (dicRaces.ContainsKey(_dtRaces.Rows[i][0]))
-                        //{
-                        //    dicRaces.Remove(_dtRaces.Rows[i][0]);
-                        //}
                         dicRaces.Remove(_dtRaces.Rows[i][0]);
 
                     }
                 }
                 foreach (object raceId in dicRaces.Keys)
                 {
-                    //saveIDlst=dicRaces.Keys.ToList<>;
                     commandText = string.Format("insert into PopConfigRaceMap values ({0},{1})", _configurationID, raceId);
                     fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                 }
 
-                //save Gender
                 if (_dtGenders != null)
                 {
                     for (int i = 0; i < _dtGenders.Rows.Count; i++)
@@ -586,7 +526,6 @@ namespace BenMAP
                     fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                 }
 
-                //save Ethnicity
                 if (_dtEthnicity != null)
                 {
                     for (int i = 0; i < _dtEthnicity.Rows.Count; i++)
@@ -600,12 +539,10 @@ namespace BenMAP
                     fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                 }
 
-                //save AgeRanges
                 for (int i = 0; i < _dtAgeRange.Rows.Count; i++)
                 {
                     commandText = string.Format("select AgeRangeID from AgeRanges where PopulationConfigurationID={0} and StartAge={1}", _configurationID, _dtAgeRange.Rows[i][1]);
                     object ageRangeID = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
-                    //commandText = string.Format("select AgeRangeID from AgeRanges where AgeRangeName='{0}'",);
                     if (ageRangeID == null)
                     {
                         commandText = "select max(AGERANGEID) from AGERANGES";

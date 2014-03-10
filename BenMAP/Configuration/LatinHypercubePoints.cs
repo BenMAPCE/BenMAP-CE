@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -46,11 +46,7 @@ namespace BenMAP
         {
             try
             {
-                //CommonClass.CurrentMainFormStat = "Latin Hypercube Points";
-                //cboLatinHypercubePoints.Items.Add("" + latinHypercubePointsCount);
-                //if(latinHypercubePointsCount!=null)
                 cboLatinHypercubePoints.Text = latinHypercubePointsCount.ToString();
-                //cboLatinHypercubePoints.Enabled = false;
                 txtThreshold.Text = threshold.ToString();
                 if (CommonClass.CRSeeds != null && CommonClass.CRSeeds != -1)
                     txtRandomSeed.Text = CommonClass.CRSeeds.ToString();
@@ -71,13 +67,13 @@ namespace BenMAP
             {
                 Logger.LogError(ex);
             }
-            
+
         }
-                
+
         private void btnOK_Click(object sender, EventArgs e)
         {
             latinHypercubePointsCount = Convert.ToInt16(cboLatinHypercubePoints.Text);
-            if (CommonClass.BaseControlCRSelectFunction!=null && CommonClass.CRLatinHypercubePoints != latinHypercubePointsCount)
+            if (CommonClass.BaseControlCRSelectFunction != null && CommonClass.CRLatinHypercubePoints != latinHypercubePointsCount)
             {
                 for (int i = 0; i < CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction.Count; i++)
                 {
@@ -86,18 +82,16 @@ namespace BenMAP
             }
             try
             {
-                int Seeds = -1;// Convert.ToInt32(txtRandomSeed.Text);
-                if(txtRandomSeed.Text!="Random Integer" && Int32.TryParse(txtRandomSeed.Text, out Seeds) == false)
+                int Seeds = -1; if (txtRandomSeed.Text != "Random Integer" && Int32.TryParse(txtRandomSeed.Text, out Seeds) == false)
                 {
                     MessageBox.Show("The random seed must be a number.");
                     return;
                 }
                 CommonClass.CRSeeds = Seeds;
-                 
+
             }
             catch
             {
-                //----------可能要加提示
                 return;
             }
             this.DialogResult = DialogResult.OK;

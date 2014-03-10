@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -13,18 +13,6 @@ namespace BenMAP
 {
     public partial class ManageSetup : FormBase
     {
-        ////设定程序中存储自适应窗口变化初始相关私有变量
-        //private ArrayList InitialCrl = new ArrayList();//用以存储窗体中所有的控件名称     
-        //private ArrayList CrlLocationX = new ArrayList();//用以存储窗体中所有的控件原始位置
-        //private ArrayList CrlLocationY = new ArrayList();//用以存储窗体中所有的控件原始位置
-        //private ArrayList CrlSizeWidth = new ArrayList();//用以存储窗体中所有的控件原始的水平尺寸
-        //private ArrayList CrlSizeHeight = new ArrayList();//用以存储窗体中所有的控件原始的垂直尺寸        
-        //private int FormSizeWidth;//用以存储窗体原始的水平尺寸        
-        //private int FormSizeHeight;//用以存储窗体原始的垂直尺寸       
-        //private double FormSizeChangedX;//用以存储相关父窗体/容器的水平变化量 
-        //private double FormSizeChangedY;//用以存储相关父窗体/容器的垂直变化量  
-        //private int Wcounter = 0;//为防止递归遍历控件时产生混乱，故专门设定一个全局计数器
-        ////end
         string _dataName = string.Empty;
         public ManageSetup()
         {
@@ -34,7 +22,6 @@ namespace BenMAP
         {
             ManageGridDefinetions frm = new ManageGridDefinetions();
             DialogResult rtn = frm.ShowDialog();
-            //if (rtn == DialogResult.OK)
             {
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 string commandText = string.Format("select GridDefinitionName from GridDefinitions where setupID={0}", CommonClass.ManageSetup.SetupID);
@@ -48,7 +35,6 @@ namespace BenMAP
         {
             ManagePollutants frm = new ManagePollutants();
             DialogResult rtn = frm.ShowDialog();
-            //if (rtn == DialogResult.OK)
             {
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 string commandText = string.Format("select PollutantName from Pollutants where setupID={0}", CommonClass.ManageSetup.SetupID);
@@ -63,7 +49,6 @@ namespace BenMAP
         {
             ManageMonitorDataSets frm = new ManageMonitorDataSets();
             DialogResult rtn = frm.ShowDialog();
-            //if (rtn == DialogResult.OK)
             {
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 string commandText = string.Format("select MonitorDataSetName from MonitorDataSets where setupID={0}", CommonClass.ManageSetup.SetupID);
@@ -77,7 +62,6 @@ namespace BenMAP
         {
             ManageIncidenceDataSets frm = new ManageIncidenceDataSets();
             DialogResult rtn = frm.ShowDialog();
-            //if (rtn == DialogResult.OK)
             {
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 string commandText = string.Format("select IncidenceDataSetName from IncidenceDataSets where setupID={0}", CommonClass.ManageSetup.SetupID);
@@ -91,7 +75,6 @@ namespace BenMAP
         {
             ManageHealthImpactFunctionDataSets frm = new ManageHealthImpactFunctionDataSets();
             DialogResult rtn = frm.ShowDialog();
-            //if (rtn == DialogResult.OK)
             {
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 string commandText = string.Format("select CRfunctionDataSetName from CRfunctionDataSets where setupID={0}", CommonClass.ManageSetup.SetupID);
@@ -105,7 +88,6 @@ namespace BenMAP
         {
             ManageVariableDataSets frm = new ManageVariableDataSets();
             DialogResult rtn = frm.ShowDialog();
-            //if (rtn == DialogResult.OK)
             {
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 string commandText = string.Format("select  SETUPVARIABLEDATASETNAME from SETUPVARIABLEDATASETS where setupID={0}", CommonClass.ManageSetup.SetupID);
@@ -119,7 +101,6 @@ namespace BenMAP
         {
             ManageInflationDataSet frm = new ManageInflationDataSet();
             DialogResult rtn = frm.ShowDialog();
-            //if (rtn == DialogResult.OK)
             {
                 string commandText = string.Format("select  INFLATIONDATASETNAME from INFLATIONDATASETS where setupID={0}", CommonClass.ManageSetup.SetupID);
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
@@ -135,12 +116,10 @@ namespace BenMAP
             {
                 ManageValuationFunctionDataSets frm = new ManageValuationFunctionDataSets();
                 DialogResult rtn = frm.ShowDialog();
-                //if (rtn == DialogResult.OK)
                 {
                     string commandText = string.Format("select  VALUATIONFUNCTIONDATASETNAME from VALUATIONFUNCTIONDATASETS where setupID={0} ", CommonClass.ManageSetup.SetupID);
                     ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                     DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
-                    //bind table to lstDatasetName and display QALYDATASETNAME field
                     lstValuation.DataSource = ds.Tables[0];
                     lstValuation.DisplayMember = "VALUATIONFUNCTIONDATASETNAME";
                 }
@@ -157,12 +136,10 @@ namespace BenMAP
             {
                 frmIncomeGrowthAdjustmentDataSet frm = new frmIncomeGrowthAdjustmentDataSet();
                 DialogResult rtn = frm.ShowDialog();
-                //if (rtn == DialogResult.OK)
                 {
                     string commandText = string.Format("select  INCOMEGROWTHADJDATASETNAME from INCOMEGROWTHADJDATASETS where setupID={0}", CommonClass.ManageSetup.SetupID);
                     ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                     DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
-                    //bind table to lstDatasetName and display QALYDATASETNAME field
                     lstIncome.DataSource = ds.Tables[0];
                     lstIncome.DisplayMember = "INCOMEGROWTHADJDATASETNAME";
                 }
@@ -173,34 +150,11 @@ namespace BenMAP
             }
         }
 
-        //private void btnQALY_Click(object sender, EventArgs e)
-        //{
-        //    try
-        //    {
-        //        frmQALYDataSetManager frm = new frmQALYDataSetManager();
-        //        DialogResult rtn = frm.ShowDialog();
-        //        if (rtn == DialogResult.OK)
-        //        {
-        //            string commandText = string.Format("select  QALYDATASETNAME from QALYDATASETS where setupID={0}", CommonClass.ManageSetup.SetupID);
-        //            ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
-        //            DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
-        //            //bind table to lstDatasetName and display QALYDATASETNAME field
-        //            //DatasetName1 = lstDatasetName.Text;
-        //            lstQALY.DataSource = ds.Tables[0];
-        //            lstQALY.DisplayMember = "QALYDATASETNAME";
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Logger.LogError(ex);
-        //    }
-        //}
 
         private void btnPopulation_Click(object sender, EventArgs e)
         {
             ManagePopulationDataSets frm = new ManagePopulationDataSets();
             DialogResult rtn = frm.ShowDialog();
-            //if (rtn == DialogResult.OK)
             {
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 string commandText = string.Format("select PopulationDataSetname from PopulationDataSets where setupID={0} and populationdatasetid<>37", CommonClass.ManageSetup.SetupID);
@@ -213,11 +167,6 @@ namespace BenMAP
 
         private void frmManageSetup_Load(object sender, EventArgs e)
         {
-            ////自适应
-            //GetInitialFormSize();
-            //GetAllCrlLocation(this);
-            //GetAllCrlSize(this);
-            ////end 
             ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
             string commandText = string.Empty;
             DataSet ds = new DataSet();
@@ -227,14 +176,6 @@ namespace BenMAP
                 ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                 cboSetupName.DataSource = ds.Tables[0];
                 cboSetupName.DisplayMember = "SetupName";
-                //cboSetupName.SelectedIndex = 0;
-                //DataRow dr = ds.Tables[0].Rows[0];
-                //CommonClass.ManageSetup = new BenMAPSetup()
-                //{
-                //    SetupID = Convert.ToInt32(dr["SetupID"]),
-                //    SetupName = dr["SetupName"].ToString()
-                //};
-                //-------modified by majie------
                 cboSetupName.Text = CommonClass.MainSetup.SetupName;
                 CommonClass.ManageSetup = new BenMAPSetup()
                 {
@@ -248,7 +189,6 @@ namespace BenMAP
             }
         }
 
-        //绑定选择区域的各类值
         private void LoadItems()
         {
             int setupID = CommonClass.ManageSetup.SetupID;
@@ -274,9 +214,6 @@ namespace BenMAP
             bindFieldName = "POPULATIONDATASETNAME";
             BindingListBox(commandText, lstPopulation, bindFieldName);
 
-            //commandText = string.Format("select  QALYDATASETNAME from QALYDATASETS where SetupID={0} order  by QALYDATASETNAME asc", setupID);
-            //bindFieldName = "QALYDATASETNAME";
-            //BindingListBox(commandText, lstQALY, bindFieldName);
 
             commandText = string.Format("select  CRFUNCTIONDATASETNAME from CRFUNCTIONDATASETS where SetupID={0} order  by CRFUNCTIONDATASETNAME asc", setupID);
             bindFieldName = "CRFUNCTIONDATASETNAME";
@@ -298,7 +235,6 @@ namespace BenMAP
             bindFieldName = "INCOMEGROWTHADJDATASETNAME";
             BindingListBox(commandText, lstIncome, bindFieldName);
         }
-        //Bind the fields of tables from Firebirddatabase to listbox
         private bool BindingListBox(string commandText, ListBox lstBox, string bindFieldName)
         {
             try
@@ -316,7 +252,6 @@ namespace BenMAP
             }
         }
 
-        //Bind the fields of tables from Firebirddatabase to combobox
         private bool BindingComboBox(string commondText, ComboBox cboBox, string bindFieldName)
         {
             try
@@ -339,13 +274,10 @@ namespace BenMAP
             NewSetUp frm = new NewSetUp();
             DialogResult rth = frm.ShowDialog();
             if (rth != DialogResult.OK) { return; }
-            //cboSetupName.Items.Add(frm.NewSetupName);
-            //查询下一个SetupID
             ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
             string commandText = "select max(SETUPID) from Setups";
             object objSetup = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
             int setupID = int.Parse(objSetup.ToString()) + 1;
-            //插入新的区域和SetupID
             commandText = string.Format("insert into Setups values({0},'{1}')", setupID, frm.NewSetupName);
             int rht = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
             commandText = string.Format("select SetupID,SetupName from Setups order by SetupID");
@@ -398,13 +330,9 @@ namespace BenMAP
                 }
                 if (MessageBox.Show("Delete the selected setup?", "Confirm Deletion", MessageBoxButtons.YesNo) == DialogResult.Yes)
                 {
-                    //if (lstGridDefinitions.Items.Count == 0 && lstHealthImpact.Items.Count == 0 && lstIncidenceOrPrevalence.Items.Count == 0 && lstIncome.Items.Count == 0 && lstInflation.Items.Count == 0 && lstMonitor.Items.Count == 0 && lstPollutans.Items.Count == 0 && lstPopulation.Items.Count == 0 && lstQALY.Items.Count == 0 && lstValuation.Items.Count == 0 && lstVariable.Items.Count == 0)
-                    //{
                     WaitShow("Waiting for deleting the setup...");
-                    commandText = string.Format("delete from T_populationDatasetIDYear where PopulationDatasetID in (select PopulationDatasetID from PopulationDatasets where setupid ={0})", CommonClass.ManageSetup.SetupID);//T_populationDatasetIDYear没有和表PopulationDatasets关联，需要加这句删除，或改动数据库
-                    fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
-                    commandText = string.Format("delete from ShapefileGridDefinitiondetails where griddefinitionid in (select griddefinitionid from Griddefinitions where setupid={0})", CommonClass.ManageSetup.SetupID);//ShapefileGridDefinitiondetails没有和表Griddefinitions关联
-                    fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                    commandText = string.Format("delete from T_populationDatasetIDYear where PopulationDatasetID in (select PopulationDatasetID from PopulationDatasets where setupid ={0})", CommonClass.ManageSetup.SetupID); fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                    commandText = string.Format("delete from ShapefileGridDefinitiondetails where griddefinitionid in (select griddefinitionid from Griddefinitions where setupid={0})", CommonClass.ManageSetup.SetupID); fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                     if (System.IO.Directory.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.ManageSetup.SetupName))
                     {
                         System.IO.Directory.Delete(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.ManageSetup.SetupName, true);
@@ -426,12 +354,9 @@ namespace BenMAP
             }
         }
 
-        #region 多线程显示tip窗口
 
-        TipFormGIF waitMess = new TipFormGIF();//等待窗体
-        bool sFlog = true;
+        TipFormGIF waitMess = new TipFormGIF(); bool sFlog = true;
 
-        //--显示等待窗体
         private void ShowWaitMess()
         {
             try
@@ -447,7 +372,6 @@ namespace BenMAP
             }
         }
 
-        //--新开辟一个线程调用
         public void WaitShow(string msg)
         {
             try
@@ -469,10 +393,8 @@ namespace BenMAP
 
         private delegate void CloseFormDelegate();
 
-        //--关闭等待窗体
         public void WaitClose()
         {
-            //同步到主线程上
             try
             {
                 if (waitMess.InvokeRequired)
@@ -503,86 +425,7 @@ namespace BenMAP
             }
         }
 
-        #endregion 多线程显示tip窗口
 
-        //private void ManageSetup_SizeChanged(object sender, EventArgs e)
-        //{
-        //    try
-        //    {
-        //        // MessageBox.Show("窗体尺寸改变");           
-        //        Wcounter = 0;
-        //        int counter = 0;
-        //        if (this.Size.Width < FormSizeWidth || this.Size.Height < FormSizeHeight)                //如果窗体的大小在改变过程中小于窗体尺寸的初始值，则窗体中的各个控件自动重置为初始尺寸，且窗体自动添加滚动条             
-        //        {
-        //            foreach (Control iniCrl in InitialCrl)
-        //            {
-        //                iniCrl.Width = (int)CrlSizeWidth[counter];
-        //                iniCrl.Height = (int)CrlSizeHeight[counter];
-        //                Point point = new Point();
-        //                point.X = (int)CrlLocationX[counter];
-        //                point.Y = (int)CrlLocationY[counter];
-        //                iniCrl.Bounds = new Rectangle(point, iniCrl.Size);
-        //                counter++;
-        //            }
-        //            this.AutoScroll = true;
-        //        }
-        //        else                //否则，重新设定窗体中所有控件的大小（窗体内所有控件的大小随窗体大小的变化而变化） 
-        //        {
-        //            this.AutoScroll = false;
-        //            ResetAllCrlState(this);
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Logger.LogError(ex.Message);
-        //    }
-        //}
 
-        //public void GetAllCrlLocation(Control CrlContainer)//获得并存储窗体中各控件的初始位置      
-        //{
-        //    foreach (Control iCrl in CrlContainer.Controls)
-        //    {
-        //        if (iCrl.Controls.Count > 0)
-        //            GetAllCrlLocation(iCrl);
-        //        InitialCrl.Add(iCrl);
-        //        CrlLocationX.Add(iCrl.Location.X);
-        //        CrlLocationY.Add(iCrl.Location.Y);
-        //    }
-        //}
-        //public void GetAllCrlSize(Control CrlContainer)//获得并存储窗体中各控件的初始尺寸
-        //{
-        //    foreach (Control iCrl in CrlContainer.Controls)
-        //    {
-        //        if (iCrl.Controls.Count > 0)
-        //            GetAllCrlSize(iCrl);
-        //        CrlSizeWidth.Add(iCrl.Width);
-        //        CrlSizeHeight.Add(iCrl.Height);
-        //    }
-        //}
-        //public void GetInitialFormSize()//获得并存储窗体的初始尺寸    
-        //{
-        //    FormSizeWidth = this.Size.Width;
-        //    FormSizeHeight = this.Size.Height;
-        //}
-        //public void ResetAllCrlState(Control CrlContainer)//重新设定窗体中各控件的状态（在与原状态的对比中计算而来）      
-        //{
-        //    FormSizeChangedX = (double)this.Size.Width / (double)FormSizeWidth;
-        //    FormSizeChangedY = (double)this.Size.Height / (double)FormSizeHeight;
-        //    foreach (Control kCrl in CrlContainer.Controls)
-        //    {                 /*string name = kCrl.Name.ToString();          
-        //                       * MessageBox.Show(name);              
-        //                       * MessageBox.Show(Wcounter.ToString());*/
-        //        if (kCrl.Controls.Count > 0)
-        //        {
-        //            ResetAllCrlState(kCrl);
-        //        } Point point = new Point();
-        //        point.X = (int)((int)CrlLocationX[Wcounter] * FormSizeChangedX);
-        //        point.Y = (int)((int)CrlLocationY[Wcounter] * FormSizeChangedY);
-        //        kCrl.Width = (int)((int)CrlSizeWidth[Wcounter] * FormSizeChangedX);
-        //        kCrl.Height = (int)((int)CrlSizeHeight[Wcounter] * FormSizeChangedY);
-        //        kCrl.Bounds = new Rectangle(point, kCrl.Size);
-        //        Wcounter++;
-        //    }
-        //}
     }
 }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -14,30 +14,19 @@ namespace BenMAP.DataSource
     {
         public RollBackDalgorithm()
         {
-            //Todo: 构造函数
         }
 
-        /// <summary>
-        /// MonitorRollBack 设置完成对应的参数后计算对应的削减，并将计算结果保存在monitorDataLine对应中返回
-        /// </summary>
-        /// <param name="benMAPGrid">网格属性对象</param>
-        /// <param name="benMAPPollutant">污染物属性对象</param>
-        /// <param name="monitorDataLine">BaseControlGroup</param>
-        /// <returns></returns>
         public static bool UpdateMonitorDataRollBack(ref MonitorModelRollbackLine monitorModelRollbackLine)
         {
             bool ok = false;
             try
             {
-                //BaseControlGroup
-                // 选中的需要削减的监测点所在网格的行列号
                 List<BenMAPRollback> lstBenMapRollback = monitorModelRollbackLine.BenMAPRollbacks;
                 if (lstBenMapRollback == null || lstBenMapRollback.Count < 1) { return false; }
                 MonitorDataLine mdl = new MonitorDataLine()
                 {
                     GridType = monitorModelRollbackLine.GridType,
                     Pollutant = monitorModelRollbackLine.Pollutant,
-                    //ResultCopy=monitorModelRollbackLine.ModelResultAttributes.
                     MonitorAdvance = monitorModelRollbackLine.MonitorAdvance,
                     MonitorLibraryYear = monitorModelRollbackLine.MonitorLibraryYear,
                     MonitorDataSetID = monitorModelRollbackLine.MonitorDataSetID,
@@ -49,15 +38,11 @@ namespace BenMAP.DataSource
                     ModelResultAttributes = monitorModelRollbackLine.ModelResultAttributes,
                     FixedRadius = monitorModelRollbackLine.FixedRadius
                 };
-                List<MonitorValue> lstMonitorValues = DataSourceCommonClass.GetMonitorData(mdl.GridType,mdl.Pollutant,  mdl);
+                List<MonitorValue> lstMonitorValues = DataSourceCommonClass.GetMonitorData(mdl.GridType, mdl.Pollutant, mdl);
                 if (lstMonitorValues == null || lstMonitorValues.Count < 1)
                 { return false; }
-                //将监测点对应的经纬度坐标转换为网格的行列索引
                 ok = GetMonitorPointsColRow(monitorModelRollbackLine.RollbackGrid, ref lstMonitorValues);
                 if (!ok) { return false; }
-                //更新DicMetricValue
-                //DataSourceCommonClass.UpdateMonitorDicMetricValue(monitorModelRollbackLine.Pollutant, lstMonitorValues);
-                //UpdateMonitorDicMetricValue(monitorModelRollbackLine.Pollutant, ref lstMonitorValues);
 
                 RollbackType rbt;
                 foreach (BenMAPRollback b in lstBenMapRollback)
@@ -69,41 +54,34 @@ namespace BenMAP.DataSource
                             PercentageRollback pr = b as PercentageRollback;
                             ok = GetPercentageRollbackValues(pr, ref lstMonitorValues);
                             if (!ok)
-                            { //错误处理
-                            }
+                            { }
                             DataSourceCommonClass.UpdateMonitorDicMetricValue(monitorModelRollbackLine.Pollutant, lstMonitorValues);
                             break;
                         case RollbackType.incremental:
                             IncrementalRollback ir = b as IncrementalRollback;
                             ok = GetIncrementalRollBackValues(ir, ref lstMonitorValues);
                             if (!ok)
-                            { //错误处理
-                            }
+                            { }
                             DataSourceCommonClass.UpdateMonitorDicMetricValue(monitorModelRollbackLine.Pollutant, lstMonitorValues);
                             break;
                         case RollbackType.standard:
                             StandardRollback sr = b as StandardRollback;
                             if (mdl.Pollutant.Observationtype == ObservationtypeEnum.Hourly)
                             {
-                                ok = GetRollBack2StandardHourly(sr, ref lstMonitorValues);//rollback the observation value
-                                if (!ok)
+                                ok = GetRollBack2StandardHourly(sr, ref lstMonitorValues); if (!ok)
                                 { }
                             }
                             if (mdl.Pollutant.Observationtype == ObservationtypeEnum.Daily)
                             {
-                                ok = GetRollBack2StandardDaily(sr, ref lstMonitorValues);//rollback the 365 value
-                                if (!ok)
+                                ok = GetRollBack2StandardDaily(sr, ref lstMonitorValues); if (!ok)
                                 { }
                             }
 
-                            DataSourceCommonClass.UpdateMonitorDicMetricValue(monitorModelRollbackLine.Pollutant, lstMonitorValues);//calculate the metric value
-
+                            DataSourceCommonClass.UpdateMonitorDicMetricValue(monitorModelRollbackLine.Pollutant, lstMonitorValues);
                             break;
-                    }// Swith
-                }//Foreach
-                
+                    }
+                }
                 UpdateModelValuesMonitorData(lstMonitorValues, ref mdl);
-                //add by xiejp 20131113
                 monitorModelRollbackLine.MonitorValues = lstMonitorValues;
                 monitorModelRollbackLine.ModelResultAttributes = mdl.ModelResultAttributes;
                 monitorModelRollbackLine.ModelAttributes = mdl.ModelAttributes;
@@ -118,57 +96,19 @@ namespace BenMAP.DataSource
             }
         }
 
-        /// <summary>
-        /// 获取选中网格在Percentage Roll back的计算值
-        /// Percentage Rollback involves setting only two parameters - a percentage and a background level.
-        ///The rollback procedure is similarly straightforward - each observation at each monitor in the region has the portion of its value which is above background level reduced by percentage.
-        ///Example: Background Level: 35; Percentage: 25
-        ///Initial Observations at a monitor in rollback region:
-        ///20 20 25 59 35 51 83 35 30 67 87 79 63 35 35
-        ///If we select the background level of 35, we first calculate the portion of each observation that is above background level, that is, we subtract the background level from the initial observation level.  Observations below background level are given a value of 0.
-        ///Observation portions above background level:
-        ///0 0 0 24 0 16 48 0 0 32 52 44 28 0 0
-        ///When we apply the rollback percentage, each observation portion gets reduced by 25%.
-        ///Reduced portions above background level:
-        ///0 0 0 18 0 12 36 0 0 24 39 33 21 0 0
-        ///Then, each reduced portion is added to the background level of 35.  Zero values are replaced by the initial observations.
-        ///Reduced Observations:
-        ///20 20 25 53 35 47 71 35 30 59 74 68 56 35 35
-        /// </summary>
-        /// <param name="monitorDataLine"></param>
-        /// <returns></returns>
         public static bool GetPercentageRollbackValues(PercentageRollback pRollback, ref List<MonitorValue> lstMonitorValues)
         {
             try
             {
-                //monitorModelRollbackLine.BenMAPRollbacks[0].
                 double background = pRollback.Background;
                 double percentage = pRollback.Percent / 100;
                 List<RowCol> lstSelectGrids = pRollback.SelectRegions;
                 List<string> lstSelectGridsString = lstSelectGrids.Select(p => p.Col + "," + p.Row).ToList();
-                //RowCol rc;
-                //int count = 0;
                 string[] keyIndex;
                 foreach (MonitorValue b in lstMonitorValues)
                 {
-                    //rc = new RowCol() { Col = b.Col, Row = b.Row };
-                    //foreach (RowCol rc in lstSelectGrids)
                     if (lstSelectGridsString.Contains(b.Col + "," + b.Row))
                     {
-                        //if (rc.Row == b.row && rc.Col == b.col)
-                        //{
-                        //keyIndex = new string[b.dicMetricValues.Count];
-                        //b.dicMetricValues.Keys.CopyTo(keyIndex, 0);
-                        //for (int i = 0; i < b.dicMetricValues.Count; i++)
-                        //{
-                        //    double var = b.dicMetricValues[keyIndex[i]];
-                        //    if (var > background)
-                        //    {
-                        //        var = (var - background) * (1 - percentage) + background;
-                        //        if (var < background) { var = background; }
-                        //        b.dicMetricValues[keyIndex[i]] = Convert.ToSingle(var);
-                        //    }
-                        //}
                         for (int i = 0; i < b.Values.Count; i++)
                         {
                             double var = b.Values[i];
@@ -179,8 +119,6 @@ namespace BenMAP.DataSource
                                 b.Values[i] = Convert.ToSingle(var);
                             }
                         }
-                        //    break;
-                        //}//if_lstSelectGrids
                     }
                 }
                 return true;
@@ -190,61 +128,22 @@ namespace BenMAP.DataSource
                 Logger.LogError(ex);
                 return false;
             }
-        }// F_GetPercentageRollbackValues
-
-        /// <summary>
-        ///Incremental Rollback similarly involves setting only two parameters - an increment and a background level.
-        ///The rollback procedure is quite similar to the percentage rollback procedure - each observation at each monitor in the region has the portion of its value which is above background level reduced by increment.
-        ///The reduced values are not allowed to become negative, however - that is, they are truncated at zero.
-        ///Example: Background Level: 35; Increment: 25
-        ///Initial Observations:
-        ///20 20 25 59 35 51 83 35 30 67 87 79 63 35 35
-        ///Observation portions above background level:
-        ///0 0 0 24 0 16 48 0 0 32 52 44 28 0 0
-        ///Reduced portions above background level:
-        ///0 0 0 0 0 0 23 0 0 7 27 19 3 0 0
-        ///Reduced Observations:
-        ///20 20 25 35 35 35 58 35 30 42 62 54 38 35 35
-        /// </summary>
-        /// <param name="iRollback"></param>
-        /// <param name="monitorModelRollbackLine"></param>
-        /// <returns></returns>
+        }
         public static bool GetIncrementalRollBackValues(IncrementalRollback iRollback, ref List<MonitorValue> lstMonitorValues)
         {
             try
             {
-                //monitorModelRollbackLine.BenMAPRollbacks[0].
                 double background = iRollback.Background;
                 double increment = iRollback.Increment;
                 double tmp = 0.0;
                 List<RowCol> lstSelectGrids = iRollback.SelectRegions;
                 List<string> lstSelectGridsString = lstSelectGrids.Select(p => p.Col + "," + p.Row).ToList();
                 string[] keyIndex;
-                //RowCol rc;
                 foreach (MonitorValue b in lstMonitorValues)
                 {
-                    //rc = new RowCol() { Col = b.Col, Row = b.Row };
-                    //foreach (RowCol rc in lstSelectGrids)
-                    //{
-                    //if (rc.Row == b.row && rc.Col == b.col)
-                    //{
                     if (lstSelectGridsString.Contains(b.Col + "," + b.Row))
                     {
 
-                        //keyIndex = new string[b.dicMetricValues.Count];
-                        //b.dicMetricValues.Keys.CopyTo(keyIndex, 0);
-                        //for (int i = 0; i < b.dicMetricValues.Count; i++)
-                        //{
-                        //    double var = b.dicMetricValues[keyIndex[i]];
-                        //    if (var > background)
-                        //    {
-                        //        tmp = var - (background + increment);
-                        //        if (tmp > 0)
-                        //        { var = tmp + background; }
-                        //        else { var = background; }
-                        //        b.dicMetricValues[keyIndex[i]] = Convert.ToSingle(var);
-                        //    }
-                        //}
                         for (int i = 0; i < b.Values.Count; i++)
                         {
                             double var = b.Values[i];
@@ -267,8 +166,7 @@ namespace BenMAP.DataSource
                 Logger.LogError(ex);
                 return false;
             }
-        }//F_GetIncrementalRollBackValues
-
+        }
         public static bool GetRollBack2StandardHourly(StandardRollback sRollback, ref List<MonitorValue> lstMonitorValues)
         {
             try
@@ -457,7 +355,6 @@ namespace BenMAP.DataSource
                             }
 
                         }
-                        //-----------------end 采用WindowSize------------------
                         lstTemp = lstTemp.Where(p => p != float.MinValue).ToList();
                         if (lstWindowSize != null && lstWindowSize.Count > 0)
                         {
@@ -503,219 +400,14 @@ namespace BenMAP.DataSource
             }
         }
 
-        #region rollback metric value -- not use
-        //public static bool GetRollBack2StandardMetricValue(StandardRollback sRollback, ref List<MonitorValue> lstMonitorValues, BenMAPPollutant pollutant)
-        //{
-        //    try
-        //    {
-        //        int ordinality = sRollback.Ordinality;
-        //        float standard = Convert.ToSingle(sRollback.Standard);
-        //        string intermethod = sRollback.InterdayRollbackMethod;
-        //        float interBackground = Convert.ToSingle(sRollback.InterdayBackground);
-        //        Dictionary<string, string> dicSeasonStaticsAll = DataSourceCommonClass.DicSeasonStaticsAll;
-        //        List<RowCol> lstSelectGrids = sRollback.SelectRegions;
-        //        List<string> lstSelectGridsString = lstSelectGrids.Select(p => p.Col + "," + p.Row).ToList();
-        //        foreach (MonitorValue b in lstMonitorValues)
-        //        {
-        //            if (lstSelectGridsString.Contains(b.Col + "," + b.Row))
-        //            {
-        //                for (int j = 0; j < b.dicMetricValues365.Count; j++)
-        //                {
-        //                    KeyValuePair<string, List<float>> kv = b.dicMetricValues365.ElementAt(j);
-        //                    string key = kv.Key;
-        //                    List<float> InitialMetricValues = kv.Value;
-        //                    float OutofAttainmentValue = calculateOutofAttainmentValue(InitialMetricValues, sRollback, ordinality);
 
 
-        //                    while (OutofAttainmentValue > standard)
-        //                    {
-        //                        switch (intermethod)
-        //                        {
-        //                            case "Percentage":
-        //                                float AnthropogenicOutofAttainmentValue = OutofAttainmentValue - interBackground;
-        //                                float AnthropogenicStandard = standard - interBackground;
-        //                                float PercentageReduction = (AnthropogenicOutofAttainmentValue - AnthropogenicStandard) / AnthropogenicOutofAttainmentValue;
-        //                                for (int i = 0; i < InitialMetricValues.Count; i++)
-        //                                {
-        //                                    float m = InitialMetricValues[i];
-        //                                    if (m > 0)
-        //                                        InitialMetricValues[i] = m < interBackground ? m : interBackground + (m < interBackground ? 0 : (m - interBackground)) * PercentageReduction;
-        //                                }
-        //                                break;
-        //                            case "Incremental":
-        //                                float IncrementalReduction = OutofAttainmentValue - standard;
-        //                                for (int i = 0; i < InitialMetricValues.Count; i++)
-        //                                {
-        //                                    float m = InitialMetricValues[i];
-        //                                    if (m > 0)
-        //                                    {
-        //                                        float reduceportion = m < interBackground ? 0 : m - interBackground;
-        //                                        InitialMetricValues[i] = m < interBackground ? m : interBackground + (reduceportion < IncrementalReduction ? 0 : reduceportion - IncrementalReduction);
-        //                                    }
-        //                                }
-        //                                break;
-        //                            case "Quadratic":
-        //                                break;
-        //                            case "Peak Shaving":
-        //                                AnthropogenicStandard = standard - interBackground;
-        //                                for (int i = 0; i < InitialMetricValues.Count; i++)
-        //                                {
-        //                                    float m = InitialMetricValues[i];
-        //                                    if (m > 0)
-        //                                    {
-        //                                        float reduceportion = m < interBackground ? 0 : m - interBackground;
-        //                                        InitialMetricValues[i] = m < interBackground ? m : interBackground + (reduceportion < AnthropogenicStandard ? reduceportion : AnthropogenicStandard);
-        //                                    }
-        //                                }
-        //                                break;
-        //                        }
-        //                        OutofAttainmentValue = calculateOutofAttainmentValue(InitialMetricValues, sRollback, ordinality);
-        //                    }
-        //                    b.dicMetricValues365[key] = InitialMetricValues;
-        //                    #region
-        //                    List<float> lstMonitorValue = InitialMetricValues.Where(p => p != float.MinValue).ToList();
-        //                    foreach (Metric m in pollutant.Metrics)
-        //                    {
-        //                        if (m.MetricName == key)
-        //                        {
-        //                            if (m is FixedWindowMetric)
-        //                            {
-        //                                FixedWindowMetric fixedWindowMetric = m as FixedWindowMetric;
-        //                                switch (fixedWindowMetric.Statistic)
-        //                                {
-        //                                    case MetricStatic.Max:
-        //                                        b.dicMetricValues[m.MetricName] = lstMonitorValue.Max();
-        //                                        break;
-        //                                    case MetricStatic.Mean:
-        //                                        b.dicMetricValues[m.MetricName] = lstMonitorValue.Average();
-        //                                        break;
-        //                                    case MetricStatic.Median:
-        //                                        lstMonitorValue.Sort();
-        //                                        b.dicMetricValues[m.MetricName] = lstMonitorValue[lstMonitorValue.Count / 2];
-        //                                        break;
-        //                                    case MetricStatic.Min:
-        //                                        b.dicMetricValues[m.MetricName] = lstMonitorValue.Min();
-        //                                        break;
-        //                                    case MetricStatic.None:
-        //                                        b.dicMetricValues[m.MetricName] = lstMonitorValue.Average();
-        //                                        break;
-        //                                    case MetricStatic.Sum:
-        //                                        b.dicMetricValues[m.MetricName] = lstMonitorValue.Sum();
-        //                                        break;
-        //                                }
-        //                            }
-        //                            else if (m is MovingWindowMetric)
-        //                            {
-        //                                MovingWindowMetric movingWindowMetric = m as MovingWindowMetric;
-        //                                switch (movingWindowMetric.WindowStatistic)
-        //                                {
-        //                                    case MetricStatic.Max:
-        //                                        b.dicMetricValues[m.MetricName] = lstMonitorValue.Max();
-        //                                        break;
-        //                                    case MetricStatic.Mean:
-        //                                        b.dicMetricValues[m.MetricName] = lstMonitorValue.Average();
-        //                                        break;
-        //                                    case MetricStatic.Median:
-        //                                        lstMonitorValue.Sort();
-        //                                        b.dicMetricValues[m.MetricName] = lstMonitorValue[lstMonitorValue.Count / 2];
-        //                                        break;
-        //                                    case MetricStatic.Min:
-        //                                        b.dicMetricValues[m.MetricName] = lstMonitorValue.Min();
-        //                                        break;
-        //                                    case MetricStatic.None:
-        //                                        b.dicMetricValues[m.MetricName] = lstMonitorValue.Average();
-        //                                        break;
-        //                                    case MetricStatic.Sum:
-        //                                        b.dicMetricValues[m.MetricName] = lstMonitorValue.Sum();
-        //                                        break;
-        //                                }
-        //                            }
-        //                            else if (m is CustomerMetric)
-        //                            { }
-        //                        }
-        //                    }
-        //                    #endregion
-        //                    #region calculate seasonalmetric
-        //                    if (pollutant.SesonalMetrics != null && b.dicMetricValues365.Count > 0)
-        //                    {
-        //                        foreach (SeasonalMetric seasonalmetric in pollutant.SesonalMetrics)
-        //                        {
-        //                            List<float> lstQuality = new List<float>();
-        //                            if ((seasonalmetric.Seasons == null || seasonalmetric.Seasons.Count == 0) && b.dicMetricValues365.ContainsKey(seasonalmetric.Metric.MetricName))//如果没有Seasons则是Mean
-        //                            {
-        //                                lstQuality.Add(b.dicMetricValues365[seasonalmetric.Metric.MetricName].GetRange(0, 89 - 0 + 1).Where(p => p != float.MinValue).Count() == 0 ?
-        //                                    float.MinValue : b.dicMetricValues365[seasonalmetric.Metric.MetricName].GetRange(0, 89 - 0 + 1).Where(p => p != float.MinValue).Average());
-        //                                lstQuality.Add(b.dicMetricValues365[seasonalmetric.Metric.MetricName].GetRange(90, 180 - 90 + 1).Where(p => p != float.MinValue).Count() == 0 ?
-        //                                    float.MinValue : b.dicMetricValues365[seasonalmetric.Metric.MetricName].GetRange(90, 180 - 90 + 1).Where(p => p != float.MinValue).Average());
-        //                                lstQuality.Add(b.dicMetricValues365[seasonalmetric.Metric.MetricName].GetRange(181, 272 - 181 + 1).Where(p => p != float.MinValue).Count() == 0 ?
-        //                                    float.MinValue : b.dicMetricValues365[seasonalmetric.Metric.MetricName].GetRange(181, 272 - 181 + 1).Where(p => p != float.MinValue).Average());
-        //                                lstQuality.Add(b.dicMetricValues365[seasonalmetric.Metric.MetricName].GetRange(273, 364 - 273 + 1).Where(p => p != float.MinValue).Count() == 0 ?
-        //                                    float.MinValue : b.dicMetricValues365[seasonalmetric.Metric.MetricName].GetRange(273, 364 - 273 + 1).Where(p => p != float.MinValue).Average());
 
-        //                                //if (seasonalMetric.Seasons == null || seasonalMetric.Seasons.Count == 0)
-        //                                //{
-        //                                //----------------基本都包含了四个季度，而且都是Mean，所以应该一致-----------也许要修改
-        //                                if (b.dicMetricValues.Keys.Contains(seasonalmetric.Metric.MetricName))
-        //                                {
-        //                                    b.dicMetricValues.Add(seasonalmetric.SeasonalMetricName, b.dicMetricValues[seasonalmetric.Metric.MetricName]);
-        //                                }
-        //                            }
-        //                            else
-        //                            {
-        //                                foreach (Season s in seasonalmetric.Seasons)
-        //                                {
-        //                                    switch (dicSeasonStaticsAll[s.StartDay.ToString() + "," + seasonalmetric.SeasonalMetricID.ToString()])
-        //                                    {
-        //                                        case "":
-        //                                        case "Mean":
-        //                                            lstQuality.Add(b.dicMetricValues365[seasonalmetric.Metric.MetricName].Count < 365 ? b.dicMetricValues365[seasonalmetric.Metric.MetricName].Average() : b.dicMetricValues365[seasonalmetric.Metric.MetricName].GetRange(s.StartDay, s.EndDay - s.StartDay + 1).Where(p => p != float.MinValue).Count() == 0 ?
-        //                                                float.MinValue : b.dicMetricValues365[seasonalmetric.Metric.MetricName].GetRange(s.StartDay, s.EndDay - s.StartDay + 1).Where(p => p != float.MinValue).Average());
-        //                                            break;
-        //                                        case "Median":
-        //                                            lstQuality.Add(b.dicMetricValues365[seasonalmetric.Metric.MetricName].Count < 365 ? b.dicMetricValues365[seasonalmetric.Metric.MetricName].OrderBy(p => p).Median() : b.dicMetricValues365[seasonalmetric.Metric.MetricName].GetRange(s.StartDay, s.EndDay - s.StartDay + 1).Where(p => p != float.MinValue).Count() == 0 ?
-        //                                                float.MinValue : b.dicMetricValues365[seasonalmetric.Metric.MetricName].GetRange(s.StartDay, s.EndDay - s.StartDay + 1).Where(p => p != float.MinValue).OrderBy(p => p).Median());
-        //                                            break;
-        //                                        case "Max":
-        //                                            lstQuality.Add(b.dicMetricValues365[seasonalmetric.Metric.MetricName].Count < 365 ? b.dicMetricValues365[seasonalmetric.Metric.MetricName].Max() : b.dicMetricValues365[seasonalmetric.Metric.MetricName].GetRange(s.StartDay, s.EndDay - s.StartDay + 1).Where(p => p != float.MinValue).Count() == 0 ?
-        //                                                float.MinValue : b.dicMetricValues365[seasonalmetric.Metric.MetricName].GetRange(s.StartDay, s.EndDay - s.StartDay + 1).Where(p => p != float.MinValue).Max());
-        //                                            break;
-        //                                        case "Min":
-        //                                            lstQuality.Add(b.dicMetricValues365[seasonalmetric.Metric.MetricName].Count < 365 ? b.dicMetricValues365[seasonalmetric.Metric.MetricName].Min() : b.dicMetricValues365[seasonalmetric.Metric.MetricName].GetRange(s.StartDay, s.EndDay - s.StartDay + 1).Where(p => p != float.MinValue).Count() == 0 ?
-        //                                                float.MinValue : b.dicMetricValues365[seasonalmetric.Metric.MetricName].GetRange(s.StartDay, s.EndDay - s.StartDay + 1).Where(p => p != float.MinValue).Min());
-        //                                            break;
-        //                                        case "Sum":
-        //                                            lstQuality.Add(b.dicMetricValues365[seasonalmetric.Metric.MetricName].Count < 365 ? b.dicMetricValues365[seasonalmetric.Metric.MetricName].Sum() : b.dicMetricValues365[seasonalmetric.Metric.MetricName].GetRange(s.StartDay, s.EndDay - s.StartDay + 1).Where(p => p != float.MinValue).Count() == 0 ?
-        //                                                float.MinValue : b.dicMetricValues365[seasonalmetric.Metric.MetricName].GetRange(s.StartDay, s.EndDay - s.StartDay + 1).Where(p => p != float.MinValue).Sum());
-        //                                            break;
 
-        //                                    }
 
-        //                                }
-        //                                if (b.dicMetricValues.Keys.Contains(seasonalmetric.Metric.MetricName))
-        //                                {
-        //                                    if (lstQuality.Where(p => p != float.MinValue).Count() > 0)
-        //                                        b.dicMetricValues[seasonalmetric.SeasonalMetricName] = lstQuality.Where(p => p != float.MinValue).Average();
-        //                                }
 
-        //                            }
-        //                            b.dicMetricValues365[seasonalmetric.SeasonalMetricName] = lstQuality;
-        //                        }
 
-        //                    }
-        //                    #endregion
 
-        //                }
-        //            }
-        //        }
-        //        return true;
-        //    }
-        //    catch (System.Exception ex)
-        //    {
-        //        Logger.LogError(ex);
-        //        return false;
-        //    }
-        //}
-        #endregion
         static Dictionary<string, string> dicSeasonStaticsAll;
         public static bool GetRollBack2StandardDaily(StandardRollback sRollback, ref List<MonitorValue> lstMonitorValues)
         {
@@ -817,8 +509,7 @@ namespace BenMAP.DataSource
                                 break;
                             case MetricStatic.Median:
                                 lstMonitorValue.Sort();
-                                monitorValue.dicMetricValues.Add(m.MetricName, lstMonitorValue[lstMonitorValue.Count / 2]);//----------错的，要重做为中间值
-                                break;
+                                monitorValue.dicMetricValues.Add(m.MetricName, lstMonitorValue[lstMonitorValue.Count / 2]); break;
                             case MetricStatic.Min:
                                 monitorValue.dicMetricValues.Add(m.MetricName, lstMonitorValue.Min());
                                 break;
@@ -849,8 +540,7 @@ namespace BenMAP.DataSource
                                 break;
                             case MetricStatic.Median:
                                 lstMonitorValue.Sort();
-                                monitorValue.dicMetricValues.Add(m.MetricName, lstMonitorValue[lstMonitorValue.Count / 2]);//----------错的，要重做为中间值
-                                break;
+                                monitorValue.dicMetricValues.Add(m.MetricName, lstMonitorValue[lstMonitorValue.Count / 2]); break;
                             case MetricStatic.Min:
                                 monitorValue.dicMetricValues.Add(m.MetricName, lstMonitorValue.Min());
                                 break;
@@ -866,14 +556,10 @@ namespace BenMAP.DataSource
                 }
                 else if (m is CustomerMetric)
                 {
-                    //----------------按函数来统计------------------暂不实现--------------------------需要讨论后再做---
                 }
                 else
                 {
-                    //fixedWindowMetric = (FixedWindowMetric)m;
-                    //------------如果是hourly，计算小时值根据staticstic,然后计算年值
 
-                    //monitorValue.Values.Remove(float.MinValue);
                     List<float> lstMonitorValue = monitorValue.Values.Where(p => p != float.MinValue).ToList();
                     if (lstMonitorValue != null && lstMonitorValue.Count > 0)
                         monitorValue.dicMetricValues.Add(m.MetricName, lstMonitorValue.Average());
@@ -885,7 +571,7 @@ namespace BenMAP.DataSource
                 {
                     SeasonalMetric seasonalmetric = sRollback.SeasonalMetric;
                     List<float> lstQuality = new List<float>();
-                    if ((seasonalmetric.Seasons == null || seasonalmetric.Seasons.Count == 0) && monitorValue.dicMetricValues365.ContainsKey(seasonalmetric.Metric.MetricName))//如果没有Seasons则是Mean
+                    if ((seasonalmetric.Seasons == null || seasonalmetric.Seasons.Count == 0) && monitorValue.dicMetricValues365.ContainsKey(seasonalmetric.Metric.MetricName))
                     {
                         lstQuality.Add(monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].GetRange(0, 89 - 0 + 1).Where(p => p != float.MinValue).Count() == 0 ?
                             float.MinValue : monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].GetRange(0, 89 - 0 + 1).Where(p => p != float.MinValue).Average());
@@ -896,9 +582,6 @@ namespace BenMAP.DataSource
                         lstQuality.Add(monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].GetRange(273, 364 - 273 + 1).Where(p => p != float.MinValue).Count() == 0 ?
                             float.MinValue : monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].GetRange(273, 364 - 273 + 1).Where(p => p != float.MinValue).Average());
 
-                        //if (seasonalMetric.Seasons == null || seasonalMetric.Seasons.Count == 0)
-                        //{
-                        //----------------基本都包含了四个季度，而且都是Mean，所以应该一致-----------也许要修改
                         if (monitorValue.dicMetricValues.Keys.Contains(seasonalmetric.Metric.MetricName))
                         {
                             monitorValue.dicMetricValues.Add(seasonalmetric.SeasonalMetricName, monitorValue.dicMetricValues[seasonalmetric.Metric.MetricName]);
@@ -1028,8 +711,7 @@ namespace BenMAP.DataSource
                 Logger.LogError(ex);
                 return false;
             }
-        }//F_GetStandardPercentage
-
+        }
         private bool GetStandardIncremental(ref double[] values, double standard, double background)
         {
             try
@@ -1054,19 +736,13 @@ namespace BenMAP.DataSource
             }
         }
 
-        /// <summary>
-        /// 找到监测点对应的行列号
-        /// </summary>
-        /// <param name="rollbackGridType"></param>
-        /// <param name="lstMonitorValues"></param>
-        /// <returns></returns>
         public static bool GetMonitorPointsColRow(BenMAPGrid rollbackGridType, ref List<MonitorValue> lstMonitorValues)
         {
             try
             {
                 IFeatureSet fs = new FeatureSet();
                 string str = string.Format("{0}\\Data\\Shapefiles\\" + CommonClass.MainSetup.SetupName + "\\{1}.shp", CommonClass.DataFilePath, (rollbackGridType as ShapefileGrid).ShapefileName);
-                fs=FeatureSet.Open(str);
+                fs = FeatureSet.Open(str);
                 Coordinate c;
                 Point p;
                 int row = -1, col = -1, i = 0, iCol = -1, iRow = -1;
@@ -1084,12 +760,10 @@ namespace BenMAP.DataSource
                 }
                 foreach (MonitorValue mv in lstMonitorValues)
                 {
-                    //c = new Coordinate(mv.Longitude, mv.Latitude);
                     p = new Point(mv.Longitude, mv.Latitude);
                     foreach (Feature fl in fs.Features)
                     {
                         if (fl.Envelope.Contains(mv.Longitude, mv.Latitude))
-                        //if(isEnvelopContainXY(fl.Envelope,mv.Longitude, mv.Latitude))
                         {
                             if (fl.Contains(p))
                             {
@@ -1129,54 +803,11 @@ namespace BenMAP.DataSource
                 return false;
             }
         }
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="benMAPGrid"></param>
-        /// <param name="benMAPPollutant"></param>
-        /// <param name="monitorDataLine"></param>
         public static void UpdateModelValuesMonitorData(List<MonitorValue> lstMonitorValues, ref MonitorDataLine monitorDataLine)
         {
-            #region 注释说明
 
-            /* //如果没有metric ，判断value 大小 +1/365 -> 24 每个小时一个数据  +1/365 1 每天一个数据
-            按照污染物的metric 得到处理好的数据。
-            当选择为使用最近监测点的浓度值的插值方式，在Advanced Option窗口中，只能输入最大临近距离（以km为单位）。默认“- No Maximum Distance -”时，即没有最大距离（某格点与监测点之间）的限制，即格点被赋予了离它最近的那个监测点的浓度值——所有格点都有值。
-            当输入Maximum Neighbor Distance，设为x，即某监测点A以x为半径的区域内的格点被赋予了相同的监测值。若某格点不在任何监测点所覆盖的区域内，其值则为0。
-             注意：Maximum Relative Neighbor Distance和 Weighting Approach是不能更改的，因为在Closet Monitor模式下，BenMAP仅仅选择一个监测点，把浓度值分配给各个格点。
-            只有选择Manage Setup中的EPA Standard Monitor Library才可以自定义过滤条件。该选项允许用户对监测数据进行过滤，制图和导出功能。详细功能包括：
-              (1)	包括指定监测点
-              可以指定特定几个监测站点的ID号，只使用这几个监测站点的数据来进行你的分析。默认为空，则自动选择所有站点。
-              (2)	排除指定监测点
-              可以排除指定ID号的监测站点数据。默认不排除。
-              (3)	规定特定的省和/或经纬度范围
-              只选择在指定省份内的监测点数据。输入的省份用两个字母缩写代表，例如，CA代表加利福尼亚州。
-              同时，可以选择指定经纬度范围。默认纬度20-50，经度-130- -65，覆盖全美。
-              (4)	POC码
-              最大POC：指定数据里允许的最高POC值，默认为4。
-              POC参考顺序：当同一地点有多于一个监测点，系统会按照该顺序来指定顺序。
-              问题：POC具体如何影响计算过程？
-              (5)	方法
-              可选方法取决于污染物。
-              对于O3或PM10，所有方法默认都为选中；对于PM2.5，只有编号116-120的联邦参照方法（FRM）是默认选中的。
-              (6)	监测对象
-              对于PM10：一般/背景；最高浓度；最大臭氧浓度。
-              对于PM2.5和Ozone：一般/背景；最高浓度；极端情况下风区。
-              问题：哪里有这些浓度对象？在数据上如何体现不同类型？
-              (7)	污染物参数
-              根据污染物不同，参数也不同。
-              对于PM10和PM2.5：
-              Number of Valid Observations Required Per Quarter：指定每个季度至少需要多少天的监测数据。默认11个。
-              Data Types to Use：只选用本地数据（参数代号85101）/只选用标准数据（参数代号81102）/两种都使用。PM10：两种都使用。PM2.5：只选用Local。
-              Preferred Type：选择使用那种数据类型，默认Local。
-              Output Type：保证当两种数据都被选用时，输出数据也合理地保持一致性。默认选择Local，即Standard类型的会被转化为Local类型的格式输出。
-              对于Ozone：
-              由于Ozone是一种以小时为特征的污染物，因此它的参数与颗粒物有很大差异。
-              Number of Valid Hours：指定一天需要有多少小时的数据才能被认为“有效”。BenMAP要计算出从Start Hour到End Hour一共有多少个小时的值，然后对比这个值和Number of Valid Hours是否相符。
-              Percent of Valid Days：指定Start Date到End Date之间，至少需要多少百分比的日子是有监测数据的，才能被认为是“有效”的监测数据。默认是从5月1日到9月30日，至少有50%的日子有监测值。
-            */
 
-            #endregion 注释说明
+
 
             try
             {
@@ -1231,21 +862,17 @@ namespace BenMAP.DataSource
                     double dtempfz = 0.0;
                     double dtempfm = 0.0;
                     if (monitorDataLine.MonitorAdvance != null && monitorDataLine.MonitorAdvance.MaxinumNeighborDistance != -1)
-                        dClose = monitorDataLine.MonitorAdvance.MaxinumNeighborDistance;// / 111.000;
+                        dClose = monitorDataLine.MonitorAdvance.MaxinumNeighborDistance;
                     else if (monitorDataLine.MonitorAdvance != null && monitorDataLine.MonitorAdvance.RelativeNeighborDistance != -1)
                         dClose = monitorDataLine.MonitorAdvance.RelativeNeighborDistance;
                     IFeatureSet fsPoints = new FeatureSet();
                     List<Coordinate> lstCoordinate = new List<Coordinate>();
 
                     List<double> fsInter = new List<double>();
-                    //fsInter.DataTable.Columns.Add("LongLat");
-                    //fsInter.DataTable.Columns.Add("Long");
-                    //fsInter.DataTable.Columns.Add("Lat");
                     Dictionary<string, MonitorValue> dicMonitorValues = new Dictionary<string, MonitorValue>(); ;
                     foreach (MonitorValue monitorValue in lstMonitorValues)
                     {
-                        if (monitorValue.dicMetricValues == null || monitorValue.dicMetricValues.Count == 0) continue;//|| monitorValue.dicMetricValues365 == null || monitorValue.dicMetricValues365.Count == 0) continue;
-                        if (!dicMonitorValues.ContainsKey(monitorValue.Longitude + "," + monitorValue.Latitude))
+                        if (monitorValue.dicMetricValues == null || monitorValue.dicMetricValues.Count == 0) continue; if (!dicMonitorValues.ContainsKey(monitorValue.Longitude + "," + monitorValue.Latitude))
                         {
                             dicMonitorValues.Add(monitorValue.Longitude + "," + monitorValue.Latitude, monitorValue);
                             fsPoints.AddFeature(new DotSpatial.Topology.Point(monitorValue.Longitude, monitorValue.Latitude));
@@ -1263,25 +890,17 @@ namespace BenMAP.DataSource
                             }
                         }
 
-                        // fsInter.DataTable.Rows[fsInter.DataTable.Rows.Count - 1]["LongLat"] = monitorValue.Longitude + "," + monitorValue.Latitude;
-                        //fsInter.DataTable.Rows[fsInter.DataTable.Rows.Count - 1]["Long"] = monitorValue.Longitude;// + "," + monitorValue.Latitude;
-                        //fsInter.DataTable.Rows[fsInter.DataTable.Rows.Count - 1]["Lat"] = monitorValue.Latitude;// + "," + monitorValue.Latitude;
                     }
                     Coordinate cCenter = fsPoints.Extent.Center;
-                    //-----------求到中心点的距离排倒序，取100个
                     Dictionary<MonitorValue, double> dicCoordinateDistanceCenter = new Dictionary<MonitorValue, double>();
                     foreach (MonitorValue monitorValue in lstMonitorValues)
                     {
                         dicCoordinateDistanceCenter.Add(monitorValue, DataSourceCommonClass.getDistanceFrom2Point(monitorValue.Longitude, monitorValue.Latitude, cCenter.X, cCenter.Y));
                     }
                     List<MonitorValue> lstCenter = dicCoordinateDistanceCenter.OrderByDescending(p => p.Value).Select(p => p.Key).ToList().GetRange(0, lstMonitorValues.Count > 300 ? 300 : lstMonitorValues.Count);
-                    //IFeatureSet fsVoronoiAnalysis= DotSpatial.Analysis.Voronoi.VoronoiPolygons(fsPoints, false);
                     int idicMonitorValues = dicMonitorValues.Count;
                     if (idicMonitorValues > 100) idicMonitorValues = 100;
-                    Polygon fOnlyPoint = null;// new Polygon();
-                    IFeatureSet fsVoronoi = new FeatureSet();
-                    //IFeatureSet fsLast = new FeatureSet();// fsInter.Intersection(fsVoronoi.Intersection(fsOnlyPoint, FieldJoinType.LocalOnly, null)).Intersection(fsVoronoi, FieldJoinType.All, null);
-                    //IFeatureSet fsVoronoiInter = new FeatureSet();// fsVoronoi.Intersection(fsOnlyPoint, FieldJoinType.LocalOnly, null);
+                    Polygon fOnlyPoint = null; IFeatureSet fsVoronoi = new FeatureSet();
                     DotSpatial.Topology.Coordinate coordinate = new DotSpatial.Topology.Coordinate();
                     List<Polygon> lstPolygon = new List<Polygon>();
                     List<float> lstDouble = new List<float>();
@@ -1299,26 +918,22 @@ namespace BenMAP.DataSource
                         if (fs.GetFeature(i).BasicGeometry.GeometryType == "Polygon")
                         {
                             coordinate = new Coordinate((fs.GetFeature(i).BasicGeometry as Polygon).Centroid.X, (fs.GetFeature(i).BasicGeometry as Polygon).Centroid.Y);
-                            //coordinate = (fs.GetFeature(i).BasicGeometry as Polygon).Envelope.Center();//new Coordinate((.X, (fs.GetFeature(i).BasicGeometry as Polygon).Centroid.Y);
                         }
                         else
                         {
                             coordinate = new Coordinate((fs.GetFeature(i).BasicGeometry as MultiPolygon).Centroid.X, (fs.GetFeature(i).BasicGeometry as MultiPolygon).Centroid.Y);
-                            //coordinate = (fs.GetFeature(i).BasicGeometry as MultiPolygon).Envelope.Center();// new Coordinate((fs.GetFeature(i).BasicGeometry as MultiPolygon).Centroid.X, (fs.GetFeature(i).BasicGeometry as MultiPolygon).Centroid.Y);
                         }
                         switch (monitorDataLine.InterpolationMethod)
                         {
-                            case InterpolationMethodEnum.ClosestMonitor://以最近的那个作为值--
+                            case InterpolationMethodEnum.ClosestMonitor:
                                 DicMonitorDistance = new Dictionary<MonitorValue, float>();
-                                // DotSpatial.Topology.Coordinate coordinate= fs.GetFeature(i).Envelope.ToExtent().Center;
                                 foreach (MonitorValue monitorValue in lstMonitorValues)
                                 {
-                                    DicMonitorDistance.Add(monitorValue, Convert.ToSingle((coordinate.X - monitorValue.Longitude) * (coordinate.X - monitorValue.Longitude) + (coordinate.Y - monitorValue.Latitude) * (coordinate.Y - monitorValue.Latitude)));// getDistanceFrom2Point(coordinate.X,coordinate.Y,monitorValue.Longitude,monitorValue.Latitude));//(coordinate.X-monitorValue.Longitude)*(coordinate.X-monitorValue.Longitude)+(coordinate.Y-monitorValue.Latitude)*(coordinate.Y-monitorValue.Latitude));// getDistanceFromExtent(fs.GetFeature(i).Envelope.ToExtent().Center,fs.GetFeature(i).Envelope, new DotSpatial.Topology.Point(monitorValue.Longitude, monitorValue.Latitude)));//(coordinate.X-monitorValue.Longitude)*(coordinate.X-monitorValue.Longitude)+(coordinate.Y-monitorValue.Latitude)*(coordinate.Y-monitorValue.Latitude));// fs.GetFeature(i).Envelope.ToExtent().Center.Distance(new DotSpatial.Topology.Point(monitorValue.Longitude, monitorValue.Latitude)));
+                                    DicMonitorDistance.Add(monitorValue, Convert.ToSingle((coordinate.X - monitorValue.Longitude) * (coordinate.X - monitorValue.Longitude) + (coordinate.Y - monitorValue.Latitude) * (coordinate.Y - monitorValue.Latitude)));
                                 }
                                 dmin = DicMonitorDistance.Min(p => p.Value);
                                 DicMonitorDistanceKeyValue = DicMonitorDistance.Where(a => a.Value == dmin).First();
-                                if (dClose != -1 && DataSourceCommonClass.getDistanceFrom2Point(coordinate.X, coordinate.Y, DicMonitorDistanceKeyValue.Key.Longitude, DicMonitorDistanceKeyValue.Key.Latitude) > dClose)// DicMonitorDistanceKeyValue.Value<dClose)//Math.Sqrt(DicMonitorDistanceKeyValue.Value)-Math.Min(fs.GetFeature(i).Envelope.Height,fs.GetFeature(i).Envelope.Width) > dClose)
-                                { }
+                                if (dClose != -1 && DataSourceCommonClass.getDistanceFrom2Point(coordinate.X, coordinate.Y, DicMonitorDistanceKeyValue.Key.Longitude, DicMonitorDistanceKeyValue.Key.Latitude) > dClose) { }
                                 else
                                 {
                                     monitorDataLine.ModelResultAttributes.Add(new ModelResultAttribute()
@@ -1327,111 +942,41 @@ namespace BenMAP.DataSource
                                         Row = Convert.ToInt32(fs.DataTable.Rows[i][iRow]),
                                         Values = DicMonitorDistanceKeyValue.Key.dicMetricValues
                                     });
-                                    //---------Add Neighbors
                                     monitorDataLine.MonitorNeighbors.Add(new MonitorNeighborAttribute()
-                                    {
-                                        Col = Convert.ToInt32(fs.DataTable.Rows[i][iCol]),
-                                        Row = Convert.ToInt32(fs.DataTable.Rows[i][iRow]),
-                                        Distance = DataSourceCommonClass.getDistanceFrom2Point(new Point(coordinate), new Point(DicMonitorDistanceKeyValue.Key.Longitude, DicMonitorDistanceKeyValue.Key.Latitude)),
-                                        MonitorName = DicMonitorDistanceKeyValue.Key.MonitorName,
-                                        Weight = 1
-                                    });
-                                    //if (DicMonitorDistanceKeyValue.Key.dicMetricValues365 != null)
-                                    //{
-                                    //    foreach (KeyValuePair<string, List<float>> k in DicMonitorDistanceKeyValue.Key.dicMetricValues365)
-                                    //    {
-                                    //        monitorDataLine.ModelAttributes.Add(new ModelAttribute()
-                                    //        {
-                                    //            Col = Convert.ToInt32(fs.DataTable.Rows[i][iCol]),
-                                    //            Row = Convert.ToInt32(fs.DataTable.Rows[i][iRow]),
-                                    //            Metric = dicMetric.ContainsKey(k.Key) ? dicMetric[k.Key] : null,
-                                    //            Values = k.Value
-                                    //        });
-                                    //    }
-                                    //}
+{
+    Col = Convert.ToInt32(fs.DataTable.Rows[i][iCol]),
+    Row = Convert.ToInt32(fs.DataTable.Rows[i][iRow]),
+    Distance = DataSourceCommonClass.getDistanceFrom2Point(new Point(coordinate), new Point(DicMonitorDistanceKeyValue.Key.Longitude, DicMonitorDistanceKeyValue.Key.Latitude)),
+    MonitorName = DicMonitorDistanceKeyValue.Key.MonitorName,
+    Weight = 1
+});
                                 }
                                 break;
-                            case InterpolationMethodEnum.FixedRadius://以半径范围内
-                                //Fixed Radius 选取多少km半径内的Monitor数据。如果Advance的Get Closest if None within Radius, 如果半径范围内没有Monitor则取最近的
-                                //经纬度距离计算
+                            case InterpolationMethodEnum.FixedRadius:
                                 DotSpatial.Topology.Point tPoint = new DotSpatial.Topology.Point(coordinate);
-                                //Feature fBuffer=new Feature( tPoint.Buffer(monitorDataLine.FixedRadius/111.00));
-                                //IFeatureSet fsetBuffer = new FeatureSet();
-                                //fsetBuffer.AddFeature(fBuffer);
                                 DicMonitorDistance = new Dictionary<MonitorValue, float>();
-                                //foreach (Coordinate c in lstCoordinate)
-                                //{
-                                //    if (fBuffer.Contains(new Point(c)))
-                                //    {
-                                //        DicMonitorDistance.Add(dicMonitorValues[c.X + "," + c.Y], getDistanceFrom2Point(c.X, c.Y, coordinate.X, coordinate.Y));
 
-                                //    }
-                                //}
                                 foreach (MonitorValue monitorValue in lstMonitorValues)
                                 {
-                                    DicMonitorDistance.Add(monitorValue, DataSourceCommonClass.getDistanceFrom2Point(monitorValue.Longitude, monitorValue.Latitude, coordinate.X, coordinate.Y));//(coordinate.X - monitorValue.Longitude) * (coordinate.X - monitorValue.Longitude) + (coordinate.Y - monitorValue.Latitude) * (coordinate.Y - monitorValue.Latitude));// getDistanceFrom2Point(coordinate.X,coordinate.Y,monitorValue.Longitude,monitorValue.Latitude));//(coordinate.X-monitorValue.Longitude)*(coordinate.X-monitorValue.Longitude)+(coordinate.Y-monitorValue.Latitude)*(coordinate.Y-monitorValue.Latitude));// getDistanceFromExtent(fs.GetFeature(i).Envelope.ToExtent().Center,fs.GetFeature(i).Envelope, new DotSpatial.Topology.Point(monitorValue.Longitude, monitorValue.Latitude)));//(coordinate.X-monitorValue.Longitude)*(coordinate.X-monitorValue.Longitude)+(coordinate.Y-monitorValue.Latitude)*(coordinate.Y-monitorValue.Latitude));// fs.GetFeature(i).Envelope.ToExtent().Center.Distance(new DotSpatial.Topology.Point(monitorValue.Longitude, monitorValue.Latitude)));
+                                    DicMonitorDistance.Add(monitorValue, DataSourceCommonClass.getDistanceFrom2Point(monitorValue.Longitude, monitorValue.Latitude, coordinate.X, coordinate.Y));
                                 }
-                                //IFeatureSet fsIntersection= fsPoints.Intersection(fsetBuffer, FieldJoinType.All, null);
-                                //foreach (Feature fInter in fsIntersection.Features)
-                                //{
-                                //    DotSpatial.Topology.Point pf = fInter.BasicGeometry as DotSpatial.Topology.Point;
-                                //    DicMonitorDistance.Add(dicMonitorValues[pf.X + "," + pf.Y], getDistanceFrom2Point(pf.X, pf.Y, coordinate.X, coordinate.Y));
-                                //}
                                 fixdic = monitorDataLine.FixedRadius;
-                                DicMonitorDistanceTemp = DicMonitorDistance.Where(p => (p.Value) <= fixdic).ToList();// * 1.60931).ToList();//如果出来还是经纬度则需要*111也可以用中心点做距离
-                                if (DicMonitorDistanceTemp.Count == 0)
+                                DicMonitorDistanceTemp = DicMonitorDistance.Where(p => (p.Value) <= fixdic).ToList(); if (DicMonitorDistanceTemp.Count == 0)
                                 {
-                                    //continue;
-                                    //dmin = DicMonitorDistance.Min(p => p.Value);
-                                    //DicMonitorDistanceKeyValue = DicMonitorDistance.Where(a => a.Value == dmin).First();
 
-                                    //if (monitorDataLine.MonitorAdvance == null || monitorDataLine.MonitorAdvance.GetClosedIfNoneWithinRadius)
-                                    //{
-                                    //    //--得到最近的
-                                    //    monitorDataLine.ModelResultAttributes.Add(new ModelResultAttribute()
-                                    //    {
-                                    //        Col = Convert.ToInt32(fs.DataTable.Rows[i][iCol]),
-                                    //        Row = Convert.ToInt32(fs.DataTable.Rows[i][iRow]),
-                                    //        Values = DicMonitorDistanceKeyValue.Key.dicMetricValues
-                                    //    });
-                                    //}
-                                    //if (DicMonitorDistanceKeyValue.Key.dicMetricValues365 != null)
-                                    //{
-                                    //    foreach (KeyValuePair<string, List<float>> k in DicMonitorDistanceKeyValue.Key.dicMetricValues365)
-                                    //    {
-                                    //        monitorDataLine.ModelAttributes.Add(new ModelAttribute()
-                                    //        {
-                                    //            Col = Convert.ToInt32(fs.DataTable.Rows[i][iCol]),
-                                    //            Row = Convert.ToInt32(fs.DataTable.Rows[i][iRow]),
-                                    //            Metric = dicMetric.ContainsKey(k.Key) ? dicMetric[k.Key] : null,
-                                    //            Values = k.Value
-                                    //        });
-                                    //    }
-                                    //}
-                                    ////---------Add Neighbors
-                                    //monitorDataLine.MonitorNeighbors.Add(new MonitorNeighborAttribute()
-                                    //{
-                                    //    Col = Convert.ToInt32(fs.DataTable.Rows[i][iCol]),
-                                    //    Row = Convert.ToInt32(fs.DataTable.Rows[i][iRow]),
-                                    //    Distance = getDistanceFrom2Point(new Point(coordinate), new Point(DicMonitorDistanceKeyValue.Key.Longitude, DicMonitorDistanceKeyValue.Key.Latitude)),
-                                    //    MonitorName = DicMonitorDistanceKeyValue.Key.MonitorName,
-                                    //    Weight = 1
-                                    //});
                                 }
                                 else
                                 {
-                                    //--------------------------------------------------------------------------
                                     DicMonitorDistanceKeyValue = DicMonitorDistanceTemp.First();
                                     Dictionary<string, ModelAttribute> dicModelAttribute = new Dictionary<string, ModelAttribute>();
                                     if (monitorDataLine.MonitorAdvance == null || monitorDataLine.MonitorAdvance.WeightingApproach == WeightingApproachEnum.InverseDistance)
                                     {
-                                        //反距离
                                         monitorDataLine.ModelResultAttributes.Add(new ModelResultAttribute()
-                                        {
-                                            Col = Convert.ToInt32(fs.DataTable.Rows[i][iCol]),
-                                            Row = Convert.ToInt32(fs.DataTable.Rows[i][iRow]),
-                                            Values = new Dictionary<string, float>()
-                                        });
+{
+    Col = Convert.ToInt32(fs.DataTable.Rows[i][iCol]),
+    Row = Convert.ToInt32(fs.DataTable.Rows[i][iRow]),
+    Values = new Dictionary<string, float>()
+});
                                         foreach (KeyValuePair<string, float> dicsd in DicMonitorDistanceKeyValue.Key.dicMetricValues)
                                         {
                                             dicModelAttribute.Add(dicsd.Key, new ModelAttribute()
@@ -1479,7 +1024,6 @@ namespace BenMAP.DataSource
                                             }
                                             dicModelAttribute[dicsd.Key].Values = lstdfm;
                                             monitorDataLine.ModelResultAttributes.Last().Values.Add(dicsd.Key, Convert.ToSingle(Math.Round(dfm / dfz, 2)));
-                                            //---------Add Neighbors
 
                                         }
                                         foreach (KeyValuePair<MonitorValue, float> k in DicMonitorDistanceTemp)
@@ -1493,20 +1037,15 @@ namespace BenMAP.DataSource
                                                 Weight = (1.0000 / k.Value) / DicMonitorDistanceTemp.Sum(p => (1.000 / p.Value))
                                             });
                                         }
-                                        //foreach (KeyValuePair<string, ModelAttribute> k in dicModelAttribute)
-                                        //{
-                                        //    monitorDataLine.ModelAttributes.Add(k.Value);
-                                        //}
                                     }
                                     else if (monitorDataLine.MonitorAdvance.WeightingApproach == WeightingApproachEnum.InverseDistanceSquared)
                                     {
-                                        //反距离平方
                                         monitorDataLine.ModelResultAttributes.Add(new ModelResultAttribute()
-                                        {
-                                            Col = Convert.ToInt32(fs.DataTable.Rows[i][iCol]),
-                                            Row = Convert.ToInt32(fs.DataTable.Rows[i][iRow]),
-                                            Values = new Dictionary<string, float>()
-                                        });
+{
+    Col = Convert.ToInt32(fs.DataTable.Rows[i][iCol]),
+    Row = Convert.ToInt32(fs.DataTable.Rows[i][iRow]),
+    Values = new Dictionary<string, float>()
+});
                                         foreach (KeyValuePair<string, float> dicsd in DicMonitorDistanceKeyValue.Key.dicMetricValues)
                                         {
                                             dicModelAttribute.Add(dicsd.Key, new ModelAttribute()
@@ -1555,7 +1094,6 @@ namespace BenMAP.DataSource
                                             }
                                             dicModelAttribute[dicsd.Key].Values = lstdfm;
                                             monitorDataLine.ModelResultAttributes.Last().Values.Add(dicsd.Key, Convert.ToSingle(Math.Round(dfm / dfz, 2)));
-                                            //---------Add Neighbors
 
                                         }
                                         foreach (KeyValuePair<MonitorValue, float> k in DicMonitorDistanceTemp)
@@ -1569,29 +1107,18 @@ namespace BenMAP.DataSource
                                                 Weight = (1.0000 / Math.Pow(k.Value, 2)) / DicMonitorDistanceTemp.Sum(p => (1.000 / Math.Pow(p.Value, 2)))
                                             });
                                         }
-                                        //foreach (KeyValuePair<string, ModelAttribute> k in dicModelAttribute)
-                                        //{
-                                        //    monitorDataLine.ModelAttributes.Add(k.Value);
-                                        //}
                                     }
                                 }
                                 break;
-                            case InterpolationMethodEnum.VoronoiNeighborhoodAveragin://以5个作为需要的值-----兼顾Advance---还需要小于最大的距离-------------------------未写---
-                                //DicMonitorDistance = new Dictionary<MonitorValue, double>();
+                            case InterpolationMethodEnum.VoronoiNeighborhoodAveragin:
                                 DicMonitorDistance = new Dictionary<MonitorValue, float>();
                                 idicMonitorValues = 500;
-                                //DotSpatial.Topology.Coordinate coordinate= fs.GetFeature(i).Envelope.ToExtent().Center;
                                 foreach (MonitorValue monitorValue in lstMonitorValues)
                                 {
-                                    DicMonitorDistance.Add(monitorValue, Convert.ToSingle((coordinate.X - monitorValue.Longitude) * (coordinate.X - monitorValue.Longitude) + (coordinate.Y - monitorValue.Latitude) * (coordinate.Y - monitorValue.Latitude)));// getDistanceFrom2Point(coordinate.X,coordinate.Y,monitorValue.Longitude,monitorValue.Latitude));//(coordinate.X-monitorValue.Longitude)*(coordinate.X-monitorValue.Longitude)+(coordinate.Y-monitorValue.Latitude)*(coordinate.Y-monitorValue.Latitude));// getDistanceFromExtent(fs.GetFeature(i).Envelope.ToExtent().Center,fs.GetFeature(i).Envelope, new DotSpatial.Topology.Point(monitorValue.Longitude, monitorValue.Latitude)));//(coordinate.X-monitorValue.Longitude)*(coordinate.X-monitorValue.Longitude)+(coordinate.Y-monitorValue.Latitude)*(coordinate.Y-monitorValue.Latitude));// fs.GetFeature(i).Envelope.ToExtent().Center.Distance(new DotSpatial.Topology.Point(monitorValue.Longitude, monitorValue.Latitude)));
+                                    DicMonitorDistance.Add(monitorValue, Convert.ToSingle((coordinate.X - monitorValue.Longitude) * (coordinate.X - monitorValue.Longitude) + (coordinate.Y - monitorValue.Latitude) * (coordinate.Y - monitorValue.Latitude)));
                                 }
-                                //lstDouble = DicMonitorDistance.Select(p => p.Value).ToList();
-                                //lstDouble.Sort();
-                                //var query = DicMonitorDistance.OrderBy(p=>p.Value).ToList().GetRange(0,idicMonitorValues).ToDictionary(p=>p.Key,p=>p.Value);// .Where(p => lstDouble.GetRange(0, idicMonitorValues).Contains(p.Value));
-                                //modify by xiejp use radius
 
-                                var query = DicMonitorDistance.Where(p => p.Value < 25).ToList();//.OrderBy(p=>p.Value).ToList().GetRange(0,idicMonitorValues).ToDictionary(p=>p.Key,p=>p.Value);// .Where(p => lstDouble.GetRange(0, idicMonitorValues).Contains(p.Value));
-                                int iDistanceForQuery = 1;
+                                var query = DicMonitorDistance.Where(p => p.Value < 25).ToList(); int iDistanceForQuery = 1;
                                 while (query.Count < 10 && query.Count < DicMonitorDistance.Count)
                                 {
                                     query = DicMonitorDistance.Where(p => p.Value < 25 + iDistanceForQuery).ToList();
@@ -1644,66 +1171,7 @@ namespace BenMAP.DataSource
                                 fsout = new List<double>();
 
                                 VoronoiPoints(fsInter.ToArray(), ref fsout);
-                                /*double XMin, XMax, YMin, YMax;
-                                fsVoronoi=new FeatureSet();
-                                fsVoronoi.AddFeature(new Point(coordinate));
-                                foreach (KeyValuePair<MonitorValue, float> k in query)
-                                {
-                                    fsVoronoi.AddFeature(new Point(k.Key.Longitude, k.Key.Latitude));
-                                    
 
-                                }
-                                VoronoiPolygons(fsVoronoi, ref lstVoronoiPolygon, fs.Extent.ToEnvelope());
-                               // VoronoiPoints(fsInter.ToArray(), ref fsout);// , dicCoordinateDistance.Where(p => lstDouble.GetRange(0, lstDouble.Count > 20 ? 20 : lstDouble.Count).Contains(p.Value)).ToList());
-                                //VoronoiPolygons(
-                                if (lstVoronoiPolygon.Count > 0)
-                                {
-                                   
-
-                                    foreach (KeyValuePair<MonitorValue, float> k in query)
-                                    {
-                                        //if (k.Key.Longitude >= XMin && k.Key.Latitude >= YMin &&
-                                        //    k.Key.Longitude <= XMax && k.Key.Latitude <= YMax)
-                                        //{
-                                        lstCIn.Add(new Coordinate(k.Key.Longitude, k.Key.Latitude));
-                                        //}
-
-                                    }
-                                    Polygon pCoordinate=null;
-                                    foreach (Polygon p in lstVoronoiPolygon)
-                                    {
-
-                                        if (p.Contains(new Point(coordinate)))
-                                            {
-                                                pCoordinate = p;
-                                                
-                                                
-                                            }
-                                     }
-                                    lstVoronoiPolygon.Remove(pCoordinate);
-                                    //--------------如果有相交则OK。
-                                    List<Polygon> lstPolygonResult = new List<Polygon>();
-                                    foreach (Polygon p in lstVoronoiPolygon)
-                                    {
-                                        if (pCoordinate.Intersects(p))
-                                        {
-                                            foreach (Coordinate c in lstCIn)
-                                            {
-                                                if (p.Contains(new Point(c)))
-                                                {
-                                                    fsout.Add(c.X);
-                                                    fsout.Add(c.Y);
- 
-                                                }
-                                            }
-                                        }
-                                    }
-
-                                }
-                                 * */
-                                //break;
-                                //fsout = lstCoordinate.Where(p=>fsout.Contains(p)).ToList();
-                                //DicMonitorDistance = new Dictionary<MonitorValue, double>();
                                 DicMonitorDistance = new Dictionary<MonitorValue, float>();
                                 dicNeighbors.Add(fs.DataTable.Rows[i]["COL"].ToString() + "," + fs.DataTable.Rows[i]["ROW"].ToString(), new Dictionary<string, string>());
                                 for (int ifsout = 0; ifsout < fsout.Count; ifsout++)
@@ -1739,13 +1207,12 @@ namespace BenMAP.DataSource
                                             Values = new List<float>()
                                         });
                                     }
-                                    //反距离
                                     monitorDataLine.ModelResultAttributes.Add(new ModelResultAttribute()
-                                    {
-                                        Col = Convert.ToInt32(fs.DataTable.Rows[i][iCol]),
-                                        Row = Convert.ToInt32(fs.DataTable.Rows[i][iRow]),
-                                        Values = new Dictionary<string, float>()
-                                    });
+{
+    Col = Convert.ToInt32(fs.DataTable.Rows[i][iCol]),
+    Row = Convert.ToInt32(fs.DataTable.Rows[i][iRow]),
+    Values = new Dictionary<string, float>()
+});
                                     foreach (KeyValuePair<string, float> dicsd in DicMonitorDistance.First().Key.dicMetricValues)
                                     {
                                         dtempfz = 0.0;
@@ -1788,7 +1255,6 @@ namespace BenMAP.DataSource
                                         }
                                         dicModelAttribute[dicsd.Key].Values = lstdfm;
                                     }
-                                    //---------Add Neighbors
                                     foreach (KeyValuePair<MonitorValue, float> k in DicMonitorDistance)
                                     {
                                         monitorDataLine.MonitorNeighbors.Add(new MonitorNeighborAttribute()
@@ -1800,14 +1266,9 @@ namespace BenMAP.DataSource
                                             Weight = (1.0000 / k.Value) / DicMonitorDistance.Sum(p => (1.000 / p.Value))
                                         });
                                     }
-                                    //foreach (KeyValuePair<string, ModelAttribute> k in dicModelAttribute)
-                                    //{
-                                    //    monitorDataLine.ModelAttributes.Add(k.Value);
-                                    //}
                                 }
                                 else if (monitorDataLine.MonitorAdvance.WeightingApproach == WeightingApproachEnum.InverseDistanceSquared)
                                 {
-                                    //反距离平方
                                     Dictionary<string, ModelAttribute> dicModelAttribute = new Dictionary<string, ModelAttribute>();
                                     foreach (KeyValuePair<string, float> dicsd in DicMonitorDistance.First().Key.dicMetricValues)
                                     {
@@ -1867,19 +1328,7 @@ namespace BenMAP.DataSource
                                             lstdfm[idfm] = lstdfz[idfm] == 0 ? float.MinValue : lstdfm[idfm] / lstdfz[idfm];
                                         }
                                         dicModelAttribute[dicsd.Key].Values = lstdfm;
-                                        //monitorDataLine.ModelResultAttributes.Last().Values.Add(dicsd.Key, (
-                                        //    (DicMonitorDistanceTemp[0].Key.dicMetricValues[dicsd.Key] /Math.Pow( DicMonitorDistanceTemp[0].Value,2)) +
-                                        // (DicMonitorDistanceTemp[0].Key.dicMetricValues[dicsd.Key] / Math.Pow(DicMonitorDistanceTemp[1].Value,2)) +
-                                        // (DicMonitorDistanceTemp[0].Key.dicMetricValues[dicsd.Key] / Math.Pow(DicMonitorDistanceTemp[2].Value,2)) +
-                                        // (DicMonitorDistanceTemp[0].Key.dicMetricValues[dicsd.Key] / Math.Pow(DicMonitorDistanceTemp[3].Value,2)) +
-                                        // (DicMonitorDistanceTemp[0].Key.dicMetricValues[dicsd.Key] / Math.Pow(DicMonitorDistanceTemp[4].Value,2))) /
-                                        // (1.0000 / Math.Pow(DicMonitorDistanceTemp[0].Value,2)) +
-                                        // (1.0000 / Math.Pow(DicMonitorDistanceTemp[1].Value,2)) +
-                                        // (1.0000 / Math.Pow(DicMonitorDistanceTemp[2].Value,2)) +
-                                        // (1.0000 / Math.Pow(DicMonitorDistanceTemp[3].Value,2)) +
-                                        // (1.0000 / Math.Pow(DicMonitorDistanceTemp[4].Value, 2)));
                                     }
-                                    //---------Add Neighbors
                                     foreach (KeyValuePair<MonitorValue, float> k in DicMonitorDistance)
                                     {
                                         monitorDataLine.MonitorNeighbors.Add(new MonitorNeighborAttribute()
@@ -1891,94 +1340,25 @@ namespace BenMAP.DataSource
                                             Weight = (1.0000 / Math.Pow(k.Value, 2)) / DicMonitorDistance.Sum(p => (1.000 / Math.Pow(p.Value, 2)))
                                         });
                                     }
-                                    //foreach (KeyValuePair<string, ModelAttribute> k in dicModelAttribute)
-                                    //{
-                                    //    monitorDataLine.ModelAttributes.Add(k.Value);
-                                    //}
                                 }
 
-                                //fsVoronoi.Dispose();
-                                //fsVoronoiInter.Dispose();
-                                //fsInter.Dispose();
-                                //fsVoronoiInter.Dispose();
-                                //GC.Collect();
                                 break;
                         }
                         i++;
                     }
-                    //DataTable dt = new DataTable();
-                    //dt.Columns.Add("ModelCell");
-                    //dt.Columns.Add("MonitorName");
-                    //dt.Columns.Add("MonitorLatLong");
-                    //foreach(KeyValuePair<string,Dictionary<string,string>> k in dicNeighbors)
-                    //{
-                    //    foreach (KeyValuePair<string, string> kin in k.Value)
-                    //    {
-                    //        DataRow dr = dt.NewRow();
-                    //        dr[0] = k.Key;
-                    //        dr[1] = kin.Key;
-                    //        dr[2] = kin.Value;
-                    //        dt.Rows.Add(dr);
-                    //    }
-                    //}
-                    //BenMAP b = new BenMAP("");
-                    //b.SaveCSV(dt,@"D:\Neighbors.csv");
                     fs.Close();
                     fs.Dispose();
                 }
 
-                //foreach (MonitorValue monitorValue in lstMonitorValues)
-                //{
-                /* //如果没有metric ，判断value 大小 +1/365 -> 24 每个小时一个数据  +1/365 1 每天一个数据
 
-                 按照污染物的metric 得到处理好的数据。
-                当选择为使用最近监测点的浓度值的插值方式，在Advanced Option窗口中，只能输入最大临近距离（以km为单位）。默认“- No Maximum Distance -”时，即没有最大距离（某格点与监测点之间）的限制，即格点被赋予了离它最近的那个监测点的浓度值——所有格点都有值。
-   当输入Maximum Neighbor Distance，设为x，即某监测点A以x为半径的区域内的格点被赋予了相同的监测值。若某格点不在任何监测点所覆盖的区域内，其值则为0。
-   注意：Maximum Relative Neighbor Distance和 Weighting Approach是不能更改的，因为在Closet Monitor模式下，BenMAP仅仅选择一个监测点，把浓度值分配给各个格点。
-               只有选择Manage Setup中的EPA Standard Monitor Library才可以自定义过滤条件。该选项允许用户对监测数据进行过滤，制图和导出功能。详细功能包括：
-  (1)	包括指定监测点
-  可以指定特定几个监测站点的ID号，只使用这几个监测站点的数据来进行你的分析。默认为空，则自动选择所有站点。
-  (2)	排除指定监测点
-  可以排除指定ID号的监测站点数据。默认不排除。
-  (3)	规定特定的省和/或经纬度范围
-  只选择在指定省份内的监测点数据。输入的省份用两个字母缩写代表，例如，CA代表加利福尼亚州。
-  同时，可以选择指定经纬度范围。默认纬度20-50，经度-130- -65，覆盖全美。
-  (4)	POC码
-  最大POC：指定数据里允许的最高POC值，默认为4。
-  POC参考顺序：当同一地点有多于一个监测点，系统会按照该顺序来指定顺序。
-  问题：POC具体如何影响计算过程？
-  (5)	方法
-  可选方法取决于污染物。
-  对于O3或PM10，所有方法默认都为选中；对于PM2.5，只有编号116-120的联邦参照方法（FRM）是默认选中的。
-  (6)	监测对象
-  对于PM10：一般/背景；最高浓度；最大臭氧浓度。
-  对于PM2.5和Ozone：一般/背景；最高浓度；极端情况下风区。
-  问题：哪里有这些浓度对象？在数据上如何体现不同类型？
-  (7)	污染物参数
-  根据污染物不同，参数也不同。
-  对于PM10和PM2.5：
-  Number of Valid Observations Required Per Quarter：指定每个季度至少需要多少天的监测数据。默认11个。
-  Data Types to Use：只选用本地数据（参数代号85101）/只选用标准数据（参数代号81102）/两种都使用。PM10：两种都使用。PM2.5：只选用Local。
-  Preferred Type：选择使用那种数据类型，默认Local。
-  Output Type：保证当两种数据都被选用时，输出数据也合理地保持一致性。默认选择Local，即Standard类型的会被转化为Local类型的格式输出。
-  对于Ozone：
-  由于Ozone是一种以小时为特征的污染物，因此它的参数与颗粒物有很大差异。
-  Number of Valid Hours：指定一天需要有多少小时的数据才能被认为“有效”。BenMAP要计算出从Start Hour到End Hour一共有多少个小时的值，然后对比这个值和Number of Valid Hours是否相符。
-  Percent of Valid Days：指定Start Date到End Date之间，至少需要多少百分比的日子是有监测数据的，才能被认为是“有效”的监测数据。默认是从5月1日到9月30日，至少有50%的日子有监测值。
-                */
 
-                //}
-                //结合Grid转换成模型值
-                //SaveBenMAPLineShapeFile(benMAPGrid, benMAPPollutant, monitorDataLine, );
             }
             catch (Exception ex)
             {
                 Logger.LogError(ex);
-                // return null;
             }
 
 
-            //生成SHP
         }
 
         public static List<MonitorValue> GetMonitorPointsValues(ref MonitorDataLine monitorDataLine)
@@ -1990,17 +1370,12 @@ namespace BenMAP.DataSource
                 BenMAPPollutant benMAPPollutant = monitorDataLine.Pollutant;
                 List<MonitorValue> lstMonitorValues = new List<MonitorValue>();
                 List<MonitorValue> lstMonitorValuesProcessed = new List<MonitorValue>();
-                //首先获取Monitor的Attributes
-                //Monitor的存储方法，用byte[] byteArray = System.Text.Encoding.Default.GetBytes ( str ); To MONITORENTRIES 表
-                //string str = System.Text.Encoding.Default.GetString ( byteArray );
 
                 string commandText = "";
                 MonitorValue mv = new MonitorValue();
-                if (monitorDataLine.MonitorDirectType == 0)//Library
+                if (monitorDataLine.MonitorDirectType == 0)
                 {
-                    commandText = string.Format("select a.MonitorEntryID,a.MonitorID,a.YYear,a.MetricID,a.SeasonalMetricID,a.Statistic,a.VValues,b.PollutantID,b.Latitude,b.Longitude,b.MonitorName,b.MonitorDescription from MonitorEntries a,Monitors b,MonitorDataSets c where a.MonitorID=b.MonitorID and b.MonitorDataSetID=c.MonitorDataSetID and b.PollutantID={0} and c.MonitorDataSetID={1} and a.YYear={2} ", benMAPPollutant.PollutantID, monitorDataLine.MonitorDataSetID, monitorDataLine.MonitorLibraryYear);//----------------------------------------------
-                    ///---得到所有Monitor的值
-                    ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                    commandText = string.Format("select a.MonitorEntryID,a.MonitorID,a.YYear,a.MetricID,a.SeasonalMetricID,a.Statistic,a.VValues,b.PollutantID,b.Latitude,b.Longitude,b.MonitorName,b.MonitorDescription from MonitorEntries a,Monitors b,MonitorDataSets c where a.MonitorID=b.MonitorID and b.MonitorDataSetID=c.MonitorDataSetID and b.PollutantID={0} and c.MonitorDataSetID={1} and a.YYear={2} ", benMAPPollutant.PollutantID, monitorDataLine.MonitorDataSetID, monitorDataLine.MonitorLibraryYear); ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                     FbDataReader fbDataReader = fb.ExecuteReader(CommonClass.Connection, CommandType.Text, commandText);
                     Byte[] blob = null;
                     lstMonitorValues = new List<MonitorValue>();
@@ -2011,10 +1386,7 @@ namespace BenMAP.DataSource
                     {
                         mv = new MonitorValue();
 
-                        //blob = new Byte[(fbDataReader.GetBytes(6, 0, null, 0, int.MaxValue))];
-                        //fbDataReader.GetBytes(0, 0, blob, 0, blob.Length);
                         blob = fbDataReader[6] as byte[];
-                        // object test = DeserializeObject(blob);
                         str = System.Text.Encoding.Default.GetString(blob);
                         strArray = str.Split(new char[] { ',' });
                         mv.Latitude = Convert.ToDouble(fbDataReader["Latitude"]);
@@ -2044,9 +1416,8 @@ namespace BenMAP.DataSource
                     }
                     fbDataReader.Close();
                 }
-                if (monitorDataLine.MonitorDirectType == 1)//TextFile
+                if (monitorDataLine.MonitorDirectType == 1)
                 {
-                    //load textFile  Monitor Name	Monitor Description	Latitude	Longitude	Metric	Seasonal Metric	Statistic	Values
                     int iMonitorName = -1;
                     int iMonitorDescription = -1;
                     int iLatitude = -1;
@@ -2056,9 +1427,7 @@ namespace BenMAP.DataSource
                     int iStatistic = -1;
                     int iValues = -1;
                     i = 0;
-                    //DataWorker.DataReader dp = new DataWorker.DataReader();
-                    //System.Data.DataSet ds = dp.GetDataFromFile(monitorDataLine.MonitorDataFilePath);
-                   System.Data.DataTable dt = CommonClass.ExcelToDataTable(monitorDataLine.MonitorDataFilePath);
+                    System.Data.DataTable dt = CommonClass.ExcelToDataTable(monitorDataLine.MonitorDataFilePath);
                     foreach (DataColumn dc in dt.Columns)
                     {
                         switch (dc.ColumnName.ToLower().Replace(" ", ""))
@@ -2147,9 +1516,7 @@ namespace BenMAP.DataSource
         {
             try
             {
-                ///-------------首先生成Metric值-----------先忽略是否有效的问题------------------
-                int hourly = 0;//1代表hourly
-                int i = 0;
+                int hourly = 0; int i = 0;
                 FixedWindowMetric fixedWindowMetric = null;
                 MovingWindowMetric movingWindowMetric = null;
                 Dictionary<int, List<float>> dicHourlyValue = new Dictionary<int, List<float>>();
@@ -2167,7 +1534,6 @@ namespace BenMAP.DataSource
                     }
                     else
                     {
-                        //如果没有metric ，判断value 大小 +1/365 -> 24 每个小时一个数据  +1/365 1 每天一个数据 少于365 默认为从第一天算起的按天的数据
                         if (monitorValue.Values.Count == 8759) hourly = 1;
                         if (benMAPPollutant.Metrics != null && benMAPPollutant.Metrics.Count > 0)
                         {
@@ -2176,7 +1542,6 @@ namespace BenMAP.DataSource
                                 if (m is FixedWindowMetric)
                                 {
                                     fixedWindowMetric = (FixedWindowMetric)m;
-                                    ///-----------如果是hourly，计算小时值根据staticstic,然后计算年值
                                     if (hourly == 0 || fixedWindowMetric.HourlyMetricGeneration == 1 || (fixedWindowMetric.StartHour == 0 && fixedWindowMetric.EndHour == 23))
                                     {
                                         monitorValue.Values = monitorValue.Values.Where(p => p != float.MinValue).ToList();
@@ -2192,8 +1557,7 @@ namespace BenMAP.DataSource
                                                     break;
                                                 case MetricStatic.Median:
                                                     monitorValue.Values.Sort();
-                                                    monitorValue.dicMetricValues.Add(m.MetricName, monitorValue.Values[monitorValue.Values.Count / 2]);//----------错的，要重做为中间值
-                                                    break;
+                                                    monitorValue.dicMetricValues.Add(m.MetricName, monitorValue.Values[monitorValue.Values.Count / 2]); break;
                                                 case MetricStatic.Min:
                                                     monitorValue.dicMetricValues.Add(m.MetricName, monitorValue.Values.Min());
                                                     break;
@@ -2203,23 +1567,19 @@ namespace BenMAP.DataSource
                                                 case MetricStatic.Sum:
                                                     monitorValue.dicMetricValues.Add(m.MetricName, monitorValue.Values.Sum());
                                                     break;
-                                            }// swith
-                                        }//if_monitorValue
+                                            }
+                                        }
                                     }
                                     else
                                     {
-                                        ///---根据开始hour和结束hour再通过Statistic计算---------首先生成一个List<double>---
                                         dicHourlyValue = new Dictionary<int, List<float>>();
                                         i = 0;
                                         while (i < 365)
                                         {
-                                            //lstTemp = monitorValue.Values.GetRange(i * 24 + fixedWindowMetric.StartHour, fixedWindowMetric.EndHour - fixedWindowMetric.StartHour);
-                                            //lstTemp.Sort();
                                             lstTemp = monitorValue.Values.GetRange(i * 24 + fixedWindowMetric.StartHour, fixedWindowMetric.EndHour - fixedWindowMetric.StartHour);
                                             lstTemp.Remove(Convert.ToSingle(float.MinValue));
                                             if (lstTemp != null && lstTemp.Count > 0)
-                                                dicHourlyValue.Add(i, lstTemp);// monitorValue.Values.GetRange(i * 24 + fixedWindowMetric.StartHour, fixedWindowMetric.EndHour - fixedWindowMetric.StartHour));
-                                            i++;
+                                                dicHourlyValue.Add(i, lstTemp); i++;
                                         }
                                         switch (fixedWindowMetric.Statistic)
                                         {
@@ -2235,8 +1595,7 @@ namespace BenMAP.DataSource
                                                 {
                                                     lstTemp.Add(ld.OrderBy(p => p).Median());
                                                 }
-                                                monitorValue.dicMetricValues.Add(m.MetricName, lstTemp.OrderBy(p=>p).Median());//----------错的，要重做为中间值
-                                                break;
+                                                monitorValue.dicMetricValues.Add(m.MetricName, lstTemp.OrderBy(p => p).Median()); break;
                                             case MetricStatic.Min:
                                                 monitorValue.dicMetricValues.Add(m.MetricName, dicHourlyValue.Values.Min(p => p.Min()));
                                                 break;
@@ -2246,16 +1605,13 @@ namespace BenMAP.DataSource
                                             case MetricStatic.Sum:
                                                 monitorValue.dicMetricValues.Add(m.MetricName, dicHourlyValue.Values.Sum(p => p.Sum()));
                                                 break;
-                                        }//swith_fixedWindowMetric.Statistic
-                                        ///---------计算值
+                                        }
                                     }
 
-                                    ///------------如果不是，直接计算-----------------------
                                 }
                                 else if (m is MovingWindowMetric)
                                 {
                                     movingWindowMetric = (MovingWindowMetric)m;
-                                    ///------------如果是hourly，计算小时值根据staticstic,然后计算年值
                                     if (hourly == 0 || movingWindowMetric.HourlyMetricGeneration == 1)
                                     {
                                         monitorValue.Values = monitorValue.Values.Where(p => p != float.MinValue).ToList();
@@ -2271,8 +1627,7 @@ namespace BenMAP.DataSource
                                                     break;
                                                 case MetricStatic.Median:
                                                     monitorValue.Values.Sort();
-                                                    monitorValue.dicMetricValues.Add(m.MetricName, monitorValue.Values[monitorValue.Values.Count / 2]);//----------错的，要重做为中间值
-                                                    break;
+                                                    monitorValue.dicMetricValues.Add(m.MetricName, monitorValue.Values[monitorValue.Values.Count / 2]); break;
                                                 case MetricStatic.Min:
                                                     monitorValue.dicMetricValues.Add(m.MetricName, monitorValue.Values.Min());
                                                     break;
@@ -2287,15 +1642,12 @@ namespace BenMAP.DataSource
                                     }
                                     else
                                     {
-                                        ///----根据开始hour和结束hour再通过Statistic计算---------首先生成一个List<double>---
                                         dicHourlyValue = new Dictionary<int, List<float>>();
                                         i = 0;
-                                        //monitorValue.Values.Remove(float.MinValue);
 
                                         while (i < 365)
                                         {
                                             lstTemp = monitorValue.Values.GetRange(i * 24, 24);
-                                            //lstTemp.Remove(float.MinValue);
                                             lstTemp = lstTemp.Where(p => p != float.MinValue).ToList();
                                             if (lstTemp != null && lstTemp.Count > 0)
                                                 dicHourlyValue.Add(i, lstTemp);
@@ -2315,8 +1667,7 @@ namespace BenMAP.DataSource
                                                 {
                                                     lstTemp.Add(ld.OrderBy(p => p).Median());
                                                 }
-                                                monitorValue.dicMetricValues.Add(m.MetricName, lstTemp.OrderBy(p=>p).Median());//----------错的，要重做为中间值
-                                                break;
+                                                monitorValue.dicMetricValues.Add(m.MetricName, lstTemp.OrderBy(p => p).Median()); break;
                                             case MetricStatic.Min:
                                                 monitorValue.dicMetricValues.Add(m.MetricName, dicHourlyValue.Values.Min(p => p.Min()));
                                                 break;
@@ -2327,19 +1678,14 @@ namespace BenMAP.DataSource
                                                 monitorValue.dicMetricValues.Add(m.MetricName, dicHourlyValue.Values.Sum(p => p.Sum()));
                                                 break;
                                         }
-                                        ///---------计算值
                                     }
                                 }
                                 else if (m is CustomerMetric)
                                 {
-                                    ///---------------按函数来统计------------------暂不实现--------------------------需要讨论后再做---
                                 }
                                 else
                                 {
-                                    //fixedWindowMetric = (FixedWindowMetric)m;
-                                    ///-----------如果是hourly，计算小时值根据staticstic,然后计算年值
 
-                                    //monitorValue.Values.Remove(float.MinValue);
                                     monitorValue.Values = monitorValue.Values.Where(p => p != float.MinValue).ToList();
                                     if (monitorValue.Values != null && monitorValue.Values.Count > 0)
                                         monitorValue.dicMetricValues.Add(m.MetricName, monitorValue.Values.Average());
@@ -2351,16 +1697,12 @@ namespace BenMAP.DataSource
                             {
                                 foreach (SeasonalMetric seasonalMetric in benMAPPollutant.SesonalMetrics)
                                 {
-                                    //if (seasonalMetric.Seasons == null || seasonalMetric.Seasons.Count == 0)
-                                    //{
-                                    ///---------------基本都包含了四个季度，而且都是Mean，所以应该一致-----------也许要修改
                                     if (monitorValue.dicMetricValues.Keys.Contains(seasonalMetric.Metric.MetricName))
                                     {
                                         monitorValue.dicMetricValues.Add(seasonalMetric.SeasonalMetricName, monitorValue.dicMetricValues[seasonalMetric.Metric.MetricName]);
                                     }
-                                    //}
-                                }// foreach
-                            }//if_benMAPPollutant
+                                }
+                            }
                         }
                     }
                 }
@@ -2385,8 +1727,7 @@ namespace BenMAP.DataSource
 
         public static double GetDistanceFromExtent(DotSpatial.Topology.Coordinate coordinate, DotSpatial.Topology.IEnvelope env, DotSpatial.Topology.Point end)
         {
-            double d = Math.Sqrt((coordinate.X - end.X) * (coordinate.X - end.X) + (coordinate.Y - end.Y) * (coordinate.Y - end.Y)) * 111.0000;// getDistanceFrom2Point(new DotSpatial.Topology.Point(env.ToExtent().Center.X, env.ToExtent().Center.Y), end);
-            if (d < env.Height / 2.00 && d < env.Width / 2.00)
+            double d = Math.Sqrt((coordinate.X - end.X) * (coordinate.X - end.X) + (coordinate.Y - end.Y) * (coordinate.Y - end.Y)) * 111.0000; if (d < env.Height / 2.00 && d < env.Width / 2.00)
             {
                 return 0.0;
             }
@@ -2396,19 +1737,14 @@ namespace BenMAP.DataSource
             }
         }
 
-        /// <summary>
-        /// 泰森多边形
-        /// </summary>
-        /// <param name="vertices"></param>
-        /// <param name="result"></param>
-        public static void VoronoiPoints(double[] vertices, ref List<double> result)//,List<KeyValuePair<Coordinate,double>> ikey)
+        public static void VoronoiPoints(double[] vertices, ref List<double> result)
         {
             try
             {
                 VoronoiGraph gp = Fortune.ComputeVoronoiGraph(vertices);
                 foreach (VoronoiEdge edge in gp.Edges)
                 {
-                    if (vertices[0] == edge.RightData.X && vertices[1] == edge.RightData.Y) //|| (vertices[0] == edge.LeftData.X && vertices[1] == edge.LeftData.Y))
+                    if (vertices[0] == edge.RightData.X && vertices[1] == edge.RightData.Y)
                     {
                         result.Add(edge.LeftData.X);
                         result.Add(edge.LeftData.Y);
@@ -2424,9 +1760,8 @@ namespace BenMAP.DataSource
             {
                 Logger.LogError(ex);
             }
-        }// F_VoronoiPoints
-
-        public static List<MonitorValue> GetMonitorData(BenMAPGrid benMAPGrid, BenMAPPollutant benMAPPollutant,  MonitorDataLine monitorDataLine)
+        }
+        public static List<MonitorValue> GetMonitorData(BenMAPGrid benMAPGrid, BenMAPPollutant benMAPPollutant, MonitorDataLine monitorDataLine)
         {
             try
             {
@@ -2435,11 +1770,9 @@ namespace BenMAP.DataSource
                 List<MonitorValue> lstMonitorValuesProcessed = new List<MonitorValue>();
                 string commandText = "";
                 MonitorValue mv = new MonitorValue();
-                if (monitorDataLine.MonitorDirectType == 0)//Library
+                if (monitorDataLine.MonitorDirectType == 0)
                 {
-                    commandText = string.Format("select a.MonitorEntryID,a.MonitorID,a.YYear,a.MetricID,a.SeasonalMetricID,a.Statistic,a.VValues,b.PollutantID,b.Latitude,b.Longitude,b.MonitorName,b.MonitorDescription from MonitorEntries a,Monitors b,MonitorDataSets c where a.MonitorID=b.MonitorID and b.MonitorDataSetID=c.MonitorDataSetID and b.PollutantID={0} and c.MonitorDataSetID={1} and a.YYear={2} ", benMAPPollutant.PollutantID, monitorDataLine.MonitorDataSetID, monitorDataLine.MonitorLibraryYear);//----------------------------------------------
-                    //----得到所有Monitor的值
-                    ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                    commandText = string.Format("select a.MonitorEntryID,a.MonitorID,a.YYear,a.MetricID,a.SeasonalMetricID,a.Statistic,a.VValues,b.PollutantID,b.Latitude,b.Longitude,b.MonitorName,b.MonitorDescription from MonitorEntries a,Monitors b,MonitorDataSets c where a.MonitorID=b.MonitorID and b.MonitorDataSetID=c.MonitorDataSetID and b.PollutantID={0} and c.MonitorDataSetID={1} and a.YYear={2} ", benMAPPollutant.PollutantID, monitorDataLine.MonitorDataSetID, monitorDataLine.MonitorLibraryYear); ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                     FbDataReader fbDataReader = fb.ExecuteReader(CommonClass.Connection, CommandType.Text, commandText);
                     Byte[] blob = null;
                     lstMonitorValues = new List<MonitorValue>();
@@ -2449,7 +1782,6 @@ namespace BenMAP.DataSource
                     {
                         mv = new MonitorValue();
                         blob = fbDataReader[6] as byte[];
-                        // object test = DeserializeObject(blob);
                         str = System.Text.Encoding.Default.GetString(blob);
                         strArray = str.Split(new char[] { ',' });
                         mv.Latitude = Convert.ToDouble(fbDataReader["Latitude"]);
@@ -2479,9 +1811,8 @@ namespace BenMAP.DataSource
                     }
                     fbDataReader.Close();
                 }
-                if (monitorDataLine.MonitorDirectType == 1)//TextFile
+                if (monitorDataLine.MonitorDirectType == 1)
                 {
-                    //load textFile  Monitor Name	Monitor Description	Latitude	Longitude	Metric	Seasonal Metric	Statistic	Values
                     int iMonitorName = -1;
                     int iMonitorDescription = -1;
                     int iLatitude = -1;
@@ -2491,8 +1822,6 @@ namespace BenMAP.DataSource
                     int iStatistic = -1;
                     int iValues = -1;
                     i = 0;
-                    //DataWorker.DataReader dp = new DataWorker.DataReader();
-                    //System.Data.DataSet ds = dp.GetDataFromFile(monitorDataLine.MonitorDataFilePath);
                     System.Data.DataTable dt = CommonClass.ExcelToDataTable(monitorDataLine.MonitorDataFilePath);
                     foreach (DataColumn dc in dt.Columns)
                     {
@@ -2567,10 +1896,9 @@ namespace BenMAP.DataSource
                             }
                         }
                         lstMonitorValues.Add(mv);
-                    }// foreach datarow
-                }//if
-                return lstMonitorValues;
-            }// try
+                    }
+                } return lstMonitorValues;
+            }
             catch (Exception ex)
             {
                 Logger.LogError(ex);
@@ -2579,5 +1907,5 @@ namespace BenMAP.DataSource
         }
 
 
-    }//C_RollBackDalgorithm
+    }
 }

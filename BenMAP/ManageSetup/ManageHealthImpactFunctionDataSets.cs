@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -38,7 +38,6 @@ namespace BenMAP
                 ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                 lstAvailableDataSets.DataSource = ds.Tables[0];
                 lstAvailableDataSets.DisplayMember = "CRFunctionDataSetName";
-                //dgvHealthImpactFunctions.RowHeadersVisible = false;
             }
             catch (Exception ex)
             {
@@ -56,28 +55,8 @@ namespace BenMAP
                 lstAvailableDataSets.DisplayMember = "CRfunctionDataSetName";
                 isload = true;
                 lstAvailableDataSets_SelectedValueChanged(sender, e);
-                //int dtRow = _dt.Rows.Count;
-                //string strTableName = string.Empty;
-                //string strPolluantName = string.Empty;
-                //for (int i = 0; i < dtRow; i++)
-                //{
-                //    strTableName = _dt.Rows[i][0].ToString();
-                //    if (!cboEndpointGroup.Items.Contains(strTableName))
-                //    {
-                //        cboEndpointGroup.Items.Add(strTableName);
-                        
-                //    }
-                //    strPolluantName = _dt.Rows[i][2].ToString();
-                //    if (!cboPollutant.Items.Contains(strPolluantName))
-                //    {
-                //        cboPollutant.Items.Add(strPolluantName);
-                        
-                //    }
-                //}
-                //if (lstAvailableDataSets.Items.Count > 0)
-                //{
-                //    lstAvailableDataSets.SelectedIndex = 0;
-                //}
+
+
             }
             catch (Exception ex)
             {
@@ -202,7 +181,6 @@ namespace BenMAP
                         return;
                     OLVColumn column = olv.GetColumn("olvcEndpointGroup");
 
-                    // Collect all the checked values
                     ArrayList chosenValues = new ArrayList();
                     string selectEndpoint = cboEndpointGroup.GetItemText(cboEndpointGroup.SelectedItem);
                     if (selectEndpoint == "")
@@ -216,19 +194,6 @@ namespace BenMAP
                         olvcEndpointGroup.ValuesChosenForFiltering = chosenValues;
                         olv.UpdateColumnFiltering();
                     }
-                    //_dtEndpointGroup = _dt.Clone();
-                    //foreach (DataRow dr in _dt.Rows)
-                    //{
-                    //    if (cboEndpointGroup.SelectedItem == "All")
-                    //    {
-                    //        _dtEndpointGroup.ImportRow(dr);
-                    //    }
-                    //    if (cboEndpointGroup.SelectedItem.ToString() == dr[0].ToString())
-                    //    {
-                    //        _dtEndpointGroup.ImportRow(dr);
-                    //    }
-                    //}
-                    //olvData.DataSource = _dtEndpointGroup;
                     DataRowView drv = lstAvailableDataSets.SelectedItem as DataRowView;
                     if (cboEndpointGroup.Text == "")
                     {
@@ -279,7 +244,6 @@ namespace BenMAP
                         return;
                     OLVColumn column = olv.GetColumn("olvcPollutant");
 
-                    // Collect all the checked values
                     ArrayList chosenValues = new ArrayList();
                     string selectPollutant = cboPollutant.GetItemText(cboPollutant.SelectedItem);
                     if (selectPollutant == "")
@@ -293,19 +257,6 @@ namespace BenMAP
                         olvcPollutant.ValuesChosenForFiltering = chosenValues;
                         olv.UpdateColumnFiltering();
                     }
-                    //_dtPollutant = _dt.Clone();
-                    //foreach (DataRow dr in _dt.Rows)
-                    //{
-                    //    if (cboPollutant.SelectedItem == "All")
-                    //    {
-                    //        _dtPollutant.ImportRow(dr);
-                    //    }
-                    //    if (cboPollutant.SelectedItem.ToString() == dr[2].ToString())
-                    //    {
-                    //        _dtPollutant.ImportRow(dr);
-                    //    }
-                    //}
-                    //olvData.DataSource = _dtPollutant;
                 }
                 catch (Exception ex)
                 {
@@ -352,14 +303,12 @@ namespace BenMAP
                         break;
                 }
             }
-            // Setup a default renderer to draw the filter matches
             if (filter == null)
                 olv.DefaultRenderer = null;
             else
             {
                 olv.DefaultRenderer = new HighlightTextRenderer(filter);
 
-                // Uncomment this line to see how the GDI+ rendering looks
                 olv.DefaultRenderer = new HighlightTextRenderer { Filter = filter, UseGdiTextRendering = true };
             }
 
@@ -399,6 +348,6 @@ namespace BenMAP
             }
         }
 
-        
+
     }
 }

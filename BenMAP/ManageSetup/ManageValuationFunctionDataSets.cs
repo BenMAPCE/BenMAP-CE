@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -34,7 +34,6 @@ namespace BenMAP
                 ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                 lstAvailableDataSets.DataSource = ds.Tables[0];
                 lstAvailableDataSets.DisplayMember = "VALUATIONFUNCTIONDATASETNAME";
-                //dgvValuationFunction.RowHeadersVisible = false;
             }
             catch (Exception ex)
             {
@@ -123,8 +122,7 @@ namespace BenMAP
                             maxEndpointWidth = Math.Max(maxEndpointWidth, EndpointWidth);
                         }
                     }
-                    cboEndpointGroup.DropDownWidth = maxEndpointGroupWidth;//display the maxwidth
-                    cboEndpoint.DropDownWidth = maxEndpointWidth;
+                    cboEndpointGroup.DropDownWidth = maxEndpointGroupWidth; cboEndpoint.DropDownWidth = maxEndpointWidth;
                     cboEndpointGroup.SelectedIndex = 0;
                     cboEndpoint.SelectedIndex = 0;
                 }
@@ -186,7 +184,6 @@ namespace BenMAP
                 ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                 lstAvailableDataSets.DataSource = ds.Tables[0];
                 lstAvailableDataSets.DisplayMember = "VALUATIONFUNCTIONDATASETNAME";
-                //dgvValuationFunction.RowHeadersVisible = false;
             }
             catch (Exception ex)
             {
@@ -208,7 +205,6 @@ namespace BenMAP
                 }
                 commandText = string.Format("select * from ValuationFunctionDataSets where SetupID={0}", CommonClass.ManageSetup.SetupID);
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
-                //bind table to lstDatasetName and display QALYDATASETNAME field
                 lstAvailableDataSets.DataSource = ds.Tables[0];
                 lstAvailableDataSets.DisplayMember = "ValuationFunctionDataSetName";
                 if (ds.Tables[0].Rows.Count == 0)
@@ -235,7 +231,6 @@ namespace BenMAP
                         return;
                     OLVColumn column = olv.GetColumn("olvcEndpointGroup");
 
-                    // Collect all the checked values
                     ArrayList chosenValues = new ArrayList();
                     string selectEndpointGroup = cboEndpointGroup.GetItemText(cboEndpointGroup.SelectedItem);
                     if (selectEndpointGroup == "")
@@ -249,19 +244,6 @@ namespace BenMAP
                         olvcEndpointGroup.ValuesChosenForFiltering = chosenValues;
                         olv.UpdateColumnFiltering();
                     }
-                //    _dtEndpointGroup = _dt.Clone();
-                //    foreach (DataRow dr in _dt.Rows)
-                //    {
-                //        if (cboEndpointGroup.SelectedItem == "All")
-                //        {
-                //            _dtEndpointGroup.ImportRow(dr);
-                //        }
-                //        if (cboEndpointGroup.SelectedItem.ToString() == dr[0].ToString())
-                //        {
-                //            _dtEndpointGroup.ImportRow(dr);
-                //        }
-                //    }
-                //    olvData.DataSource = _dtEndpointGroup;
                     cboEndpoint.Text = "";
                     string commandText = "";
                     if (cboEndpointGroup.Text == "")
@@ -274,7 +256,7 @@ namespace BenMAP
                     }
                     ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                     DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
-                    olvData.DataSource = ds.Tables[0]; 
+                    olvData.DataSource = ds.Tables[0];
                     cboEndpoint.Items.Clear();
                     cboEndpoint.Items.Add("");
                     int maxEndpointWidth = 180;
@@ -313,7 +295,6 @@ namespace BenMAP
                         return;
                     OLVColumn column = olv.GetColumn("olvcEndpoint");
 
-                    // Collect all the checked values
                     ArrayList chosenValues = new ArrayList();
                     string selectEndpoint = cboEndpoint.GetItemText(cboEndpoint.SelectedItem);
                     if (selectEndpoint == "")
@@ -327,19 +308,6 @@ namespace BenMAP
                         olvcEndpoint.ValuesChosenForFiltering = chosenValues;
                         olv.UpdateColumnFiltering();
                     }
-                    //_dtEndpoint = _dt.Clone();
-                    //foreach (DataRow dr in _dt.Rows)
-                    //{
-                    //    if (cboEndpoint.SelectedItem == "All")
-                    //    {
-                    //        _dtEndpoint.ImportRow(dr);
-                    //    }
-                    //    if (cboEndpoint.SelectedItem.ToString() == dr[1].ToString())
-                    //    {
-                    //        _dtEndpoint.ImportRow(dr);
-                    //    }
-                    //}
-                    //olvData.DataSource = _dtEndpoint;
                 }
                 catch (Exception ex)
                 {
@@ -386,14 +354,12 @@ namespace BenMAP
                         break;
                 }
             }
-            // Setup a default renderer to draw the filter matches
             if (filter == null)
                 olv.DefaultRenderer = null;
             else
             {
                 olv.DefaultRenderer = new HighlightTextRenderer(filter);
 
-                // Uncomment this line to see how the GDI+ rendering looks
                 olv.DefaultRenderer = new HighlightTextRenderer { Filter = filter, UseGdiTextRendering = true };
             }
 
@@ -430,6 +396,6 @@ namespace BenMAP
                 olv.BuildList();
             }
         }
-        
+
     }
 }

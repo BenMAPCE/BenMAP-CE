@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -54,8 +54,6 @@ namespace BenMAP
             {
                 DataTable dt = new DataTable();
                 DataTable _dt = new DataTable();
-                //Todo:陈志润
-                //DataWorker.DataReader dp = new DataWorker.DataReader();
                 OpenFileDialog openFileDialog = new OpenFileDialog();
                 openFileDialog.InitialDirectory = Application.StartupPath + @"E:\";
                 openFileDialog.Filter = "All Files|*.*|CSV files|*.csv";
@@ -66,20 +64,6 @@ namespace BenMAP
                 string strfilepath = System.IO.Path.GetExtension(_filePath);
                 dt = CommonClass.ExcelToDataTable(_filePath);
                 if (dt == null) return;
-                //ds = dp.GetDataFromFile(_filePath);
-                //switch (strfilepath.ToLower())
-                //{
-                //    case ".xls":
-                //        ds = dp.ReadExcel2DataSet(_filePath);
-                //        break;
-                //    case ".xlsx":
-                //        ds = dp.ReadExcel2DataSet(_filePath);
-                //        break;
-                //    case ".csv":
-                //        ds = dp.ReadCSV2DataSet(_filePath, "table");
-                //        break;
-                //    default: break;
-                //}
                 lstCurrentEntries.Items.Clear();
                 lstlst.Clear();
                 for (int i = 0; i < dt.Rows.Count; i++)

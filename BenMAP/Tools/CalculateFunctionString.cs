@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text;
 using System.CodeDom.Compiler;
 using System.Reflection;
@@ -11,91 +11,31 @@ namespace BenMAP.Tools
 {
     class CalculateFunctionString
     {
-        //private object tmp;
         private string _CharpCode = "";
-        public object BaseLineEval(string crid,string cCharpCode, double a, double b, double c, double beta, double deltaq, double q0, double q1, double incidence, double pop, double prevalence,Dictionary<string,double> dicSetupVariables)
+        public object BaseLineEval(string crid, string cCharpCode, double a, double b, double c, double beta, double deltaq, double q0, double q1, double incidence, double pop, double prevalence, Dictionary<string, double> dicSetupVariables)
         {
             try
             {
                 MethodInfo mi = null;
-                object tmp=null;
-                 List<object> lstParam = new List<object>() { a, b, c, beta, deltaq, q0, q1, incidence, pop, prevalence };
+                object tmp = null;
+                List<object> lstParam = new List<object>() { a, b, c, beta, deltaq, q0, q1, incidence, pop, prevalence };
                 if (dicSetupVariables != null && dicSetupVariables.Count > 0)
                 {
                     int j = 0;
                     while (j < dicSetupVariables.Count)
                     {
-                       // strVariables = strVariables + ",double " + dicSetupVariables.ToList()[i].Key.ToLower();
                         lstParam.Add(dicSetupVariables.ToList()[j].Value);
                         j++;
                     }
-
-
                 }
-                //if (!dicBaselineMethodInfo.Keys.Contains(cCharpCode))
-                //{
-                //    int icount = dicBaselineMethodInfo.Count;
 
-                //    string strVariables = "";
-                //    int i = 0;
-
-                //    if (dicSetupVariables != null && dicSetupVariables.Count > 0)
-                //    {
-                //        while (i < dicSetupVariables.Count)
-                //        {
-                //            strVariables = strVariables + ",double " + dicSetupVariables.ToList()[i].Key.ToLower();
-                //            //lstParam.Add(dicSetupVariables.ToList()[i].Value);
-                //            i++;
-                //        }
-
-
-                //    }
-                //    if (a != 0)
-                //    { }
-                //    _CharpCode = cCharpCode;
-                //    CSharpCodeProvider csharpCodeProvider = new CSharpCodeProvider();
-                //    CodeDomProvider provider = CodeDomProvider.CreateProvider("CSharp");
-
-                //    //ICodeCompiler compiler = csharpCodeProvider.CreateCompiler();
-                //    CompilerParameters cp = new CompilerParameters();
-                //    cp.ReferencedAssemblies.Add("system.dll");
-                //    cp.CompilerOptions = "/t:library";
-                //    cp.GenerateInMemory = true;
-                //    Random rm = new Random();
-                //    cp.OutputAssembly = CommonClass.DataFilePath + "\\Tmp\\" + System.DateTime.Now.Year + System.DateTime.Now.Month + System.DateTime.Now.Day + DateTime.Now.Hour + DateTime.Now.Minute +
-                //        DateTime.Now.Second + DateTime.Now.Millisecond + rm.Next(2000) + ".dll";
-                //    StringBuilder myCode = new StringBuilder();
-                //    myCode.Append("using System;");
-                //    myCode.Append("namespace CoustomEval{");
-                //    // myCode.Append("class myLib {private " + cCharpCode + " public double myMethod(){return i;}}");
-                //    myCode.Append("class myLibBaseLine" + icount + " { public double myPow(double a) { return Math.Pow(a,2);} public double myMethod(double a, double b, double c, double beta, double deltaq, double q0, double q1, double incidence, double pop, double prevalence" + strVariables +
-                //        "){ try{" + cCharpCode + "} catch (Exception ex) { return -999999999; }}}");
-                //    myCode.Append("}");
-                //    CompilerResults cr = provider.CompileAssemblyFromSource(cp, myCode.ToString());
-                //    Assembly assembly = cr.CompiledAssembly;
-                //    Type[] types = new Type[] { typeof(double), typeof(double), typeof(double), typeof(double), typeof(double), typeof(double), typeof(double), typeof(double), typeof(double), typeof(double) };
-
-                //    tmp = assembly.CreateInstance("CoustomEval.myLibBaseLine" + icount);
-                //    if (!dicBaselineMethodInfo.Keys.Contains(cCharpCode))
-                //    {
-                //        dicBaselineMethodInfo.Add(cCharpCode, tmp);
-                //    }
-                //    else
-                //    {
-                //        tmp = dicBaselineMethodInfo[cCharpCode];
-                //    }
-                //}
-                //else
-                //{
-                    tmp = dicBaselineMethodInfo[crid];
-                //}
+                tmp = dicBaselineMethodInfo[crid];
                 Type type = tmp.GetType();
                 mi = type.GetMethod("myMethod");
-               
+
                 object result = mi.Invoke(tmp, lstParam.ToArray());
                 return result;
-                 //ouble a;
-               
+
             }
             catch (Exception ex)
             {
@@ -120,9 +60,7 @@ namespace BenMAP.Tools
                     {
                         while (i < dicSetupVariables.Count)
                         {
-                            strVariables = dicSetupVariables.ToList()[i].Value;// strVariables + ",double " + dicSetupVariables.ToList()[i].Key.ToLower();
-                            //lstParam.Add(dicSetupVariables.ToList()[i].Value);
-                            i++;
+                            strVariables = dicSetupVariables.ToList()[i].Value; i++;
                         }
 
 
@@ -130,7 +68,6 @@ namespace BenMAP.Tools
                     CSharpCodeProvider csharpCodeProvider = new CSharpCodeProvider();
                     CodeDomProvider provider = CodeDomProvider.CreateProvider("CSharp");
 
-                    //ICodeCompiler compiler = csharpCodeProvider.CreateCompiler();
                     CompilerParameters cp = new CompilerParameters();
                     cp.ReferencedAssemblies.Add("System.dll");
                     cp.CompilerOptions = "/t:library";
@@ -141,9 +78,8 @@ namespace BenMAP.Tools
                     StringBuilder myCode = new StringBuilder();
                     myCode.Append("using System;");
                     myCode.Append("namespace CoustomEval{");
-                    // myCode.Append("class myLib {private " + cCharpCode + " public double myMethod(){return i;}}");
                     myCode.Append("class myLibBaseLine" + k.Key + " { public double myPow(double a) { return Math.Pow(a,2);} public double myMethod(double a, double b, double c, double beta, double deltaq, double q0, double q1, double incidence, double pop, double prevalence" + strVariables +
-                        "){ try{" + k.Value + "} catch (Exception ex) { return -999999999; }}}");
+    "){ try{" + k.Value + "} catch (Exception ex) { return -999999999; }}}");
                     myCode.Append("}");
                     CompilerResults cr = provider.CompileAssemblyFromSource(cp, myCode.ToString());
                     Assembly assembly = cr.CompiledAssembly;
@@ -155,7 +91,7 @@ namespace BenMAP.Tools
                 }
             }
             catch (Exception ex)
-            { 
+            {
             }
         }
         public void CreateAllPointEstimateEvalObjects(Dictionary<string, string> dicFunction, Dictionary<string, string> dicSetupVariables)
@@ -175,9 +111,7 @@ namespace BenMAP.Tools
                     {
                         while (i < dicSetupVariables.Count)
                         {
-                            strVariables = dicSetupVariables.ToList()[i].Value;// strVariables + ",double " + dicSetupVariables.ToList()[i].Key.ToLower();
-                            //lstParam.Add(dicSetupVariables.ToList()[i].Value);
-                            i++;
+                            strVariables = dicSetupVariables.ToList()[i].Value; i++;
                         }
 
 
@@ -189,7 +123,6 @@ namespace BenMAP.Tools
                     CSharpCodeProvider csharpCodeProvider = new CSharpCodeProvider();
                     CodeDomProvider provider = CodeDomProvider.CreateProvider("CSharp");
 
-                    //ICodeCompiler compiler = csharpCodeProvider.CreateCompiler();
                     CompilerParameters cp = new CompilerParameters();
                     cp.ReferencedAssemblies.Add("System.dll");
                     cp.CompilerOptions = "/t:library";
@@ -200,9 +133,8 @@ namespace BenMAP.Tools
                     StringBuilder myCode = new StringBuilder();
                     myCode.Append("using System;");
                     myCode.Append("namespace CoustomEval{");
-                    // myCode.Append("class myLib {private " + cCharpCode + " public double myMethod(){return i;}}");
                     myCode.Append("class myLibPointEstimate" + k.Key + " { public double myPow(double a) { return Math.Pow(a,2);}  public double myMethod(double a, double b, double c, double beta, double deltaq, double q0, double q1, double incidence, double pop, double prevalence" + strVariables +
-                        "){ try{" + k.Value + "} catch (Exception ex) { return -999999999; }}}");
+    "){ try{" + k.Value + "} catch (Exception ex) { return -999999999; }}}");
                     myCode.Append("}");
                     CompilerResults cr = csharpCodeProvider.CompileAssemblyFromSource(cp, myCode.ToString());
 
@@ -215,10 +147,10 @@ namespace BenMAP.Tools
                 }
             }
             catch (Exception ex)
-            { 
+            {
             }
         }
-        public object PointEstimateEval(string crID,string cCharpCode, double a, double b, double c, double beta, double deltaq, double q0, double q1, double incidence, double pop, double prevalence, Dictionary<string, double> dicSetupVariables)
+        public object PointEstimateEval(string crID, string cCharpCode, double a, double b, double c, double beta, double deltaq, double q0, double q1, double incidence, double pop, double prevalence, Dictionary<string, double> dicSetupVariables)
         {
             try
             {
@@ -230,81 +162,29 @@ namespace BenMAP.Tools
                     int j = 0;
                     while (j < dicSetupVariables.Count)
                     {
-                        // strVariables = strVariables + ",double " + dicSetupVariables.ToList()[i].Key.ToLower();
                         lstParam.Add(dicSetupVariables.ToList()[j].Value);
                         j++;
                     }
 
 
                 }
-                //if (!dicPointEstimateMethodInfo.Keys.Contains(crID.ToString()))
-                //{
 
 
-                //    string strVariables = "";
-                //    int i = 0;
-                //    int icount = dicPointEstimateMethodInfo.Count;
-
-                //    if (dicSetupVariables != null && dicSetupVariables.Count > 0)
-                //    {
-                //        while (i < dicSetupVariables.Count)
-                //        {
-                //            strVariables = strVariables + ",double " + dicSetupVariables.ToList()[i].Key.ToLower();
-                //            //lstParam.Add(dicSetupVariables.ToList()[i].Value);
-                //            i++;
-                //        }
 
 
-                //    }
-                //    if (a != 0)
-                //    { }
-                //    _CharpCode = cCharpCode;
-                //    CSharpCodeProvider csharpCodeProvider = new CSharpCodeProvider();
-                //    CodeDomProvider provider = CodeDomProvider.CreateProvider("CSharp");
- 
-                //    //ICodeCompiler compiler = csharpCodeProvider.CreateCompiler();
-                //    CompilerParameters cp = new CompilerParameters();
-                //    cp.ReferencedAssemblies.Add("System.dll");
-                //    cp.CompilerOptions = "/t:library";
-                //    cp.GenerateInMemory = true;
-                //    Random rm = new Random();
-                //    cp.OutputAssembly = CommonClass.DataFilePath + "\\Tmp\\" + System.DateTime.Now.Year + System.DateTime.Now.Month + System.DateTime.Now.Day + DateTime.Now.Hour + DateTime.Now.Minute +
-                //        DateTime.Now.Second + DateTime.Now.Millisecond+rm.Next(2000) + ".dll";
-                //    StringBuilder myCode = new StringBuilder();
-                //    myCode.Append("using System;");
-                //    myCode.Append("namespace CoustomEval{");
-                //    // myCode.Append("class myLib {private " + cCharpCode + " public double myMethod(){return i;}}");
-                //    myCode.Append("class myLibPointEstimate" + icount + " { public double myPow(double a) { return Math.Pow(a,2);}  public double myMethod(double a, double b, double c, double beta, double deltaq, double q0, double q1, double incidence, double pop, double prevalence" + strVariables +
-                //        "){ try{" + cCharpCode + "} catch (Exception ex) { return -999999999; }}}");
-                //    myCode.Append("}");
-                //    CompilerResults cr = csharpCodeProvider.CompileAssemblyFromSource(cp, myCode.ToString());
-                   
-                //    Assembly assembly = cr.CompiledAssembly;
-                //    Type[] types = new Type[] { typeof(double), typeof(double), typeof(double), typeof(double), typeof(double), typeof(double), typeof(double), typeof(double), typeof(double), typeof(double) };
 
-                //    tmp = assembly.CreateInstance("CoustomEval.myLibPointEstimate" + icount);
-                //    if(!dicPointEstimateMethodInfo.ContainsKey(crID.ToString()))
-                //        dicPointEstimateMethodInfo.Add(crID.ToString(), tmp);
-                //    else
-                //    {
-                //        tmp = dicPointEstimateMethodInfo[crID.ToString()];
-                //        // mi = dicPointEstimateMethodInfo[cCharpCode];
-                //    }
 
-                   
-                //}
-                //else
-                //{
-                    tmp = dicPointEstimateMethodInfo[crID.ToString()];
-                   // mi = dicPointEstimateMethodInfo[cCharpCode];
-                //}
+
+
+
+
+                tmp = dicPointEstimateMethodInfo[crID.ToString()];
                 Type type = tmp.GetType();
                 mi = type.GetMethod("myMethod");
-                
+
                 object result = mi.Invoke(tmp, lstParam.ToArray());
-                
+
                 return result;
-                //ouble a;
 
             }
             catch (Exception ex)
@@ -322,13 +202,12 @@ namespace BenMAP.Tools
             {
                 MethodInfo mi = null;
                 object tmp = null;
-                List<object> lstParam = new List<object>() { a, b, c, d, allgoodsindex, medicalcostindex, wageindex, lagadjustment};
+                List<object> lstParam = new List<object>() { a, b, c, d, allgoodsindex, medicalcostindex, wageindex, lagadjustment };
                 if (dicSetupVariables != null && dicSetupVariables.Count > 0)
                 {
                     int j = 0;
                     while (j < dicSetupVariables.Count)
                     {
-                        // strVariables = strVariables + ",double " + dicSetupVariables.ToList()[i].Key.ToLower();
                         lstParam.Add(dicSetupVariables.ToList()[j].Value);
                         j++;
                     }
@@ -347,7 +226,6 @@ namespace BenMAP.Tools
                         while (i < dicSetupVariables.Count)
                         {
                             strVariables = strVariables + ",double " + dicSetupVariables.ToList()[i].Key.ToLower();
-                            //lstParam.Add(dicSetupVariables.ToList()[i].Value);
                             i++;
                         }
 
@@ -360,7 +238,6 @@ namespace BenMAP.Tools
                     CSharpCodeProvider csharpCodeProvider = new CSharpCodeProvider();
                     CodeDomProvider provider = CodeDomProvider.CreateProvider("CSharp");
 
-                    //ICodeCompiler compiler = csharpCodeProvider.CreateCompiler();
                     CompilerParameters cp = new CompilerParameters();
                     cp.ReferencedAssemblies.Add("system.dll");
                     cp.CompilerOptions = "/t:library";
@@ -371,9 +248,8 @@ namespace BenMAP.Tools
                     StringBuilder myCode = new StringBuilder();
                     myCode.Append("using System;");
                     myCode.Append("namespace CoustomEval{");
-                    // myCode.Append("class myLib {private " + cCharpCode + " public double myMethod(){return i;}}");
                     myCode.Append("class myLibValuation" + icount + " {public double myPow(double a) { return Math.Pow(a,2);}   public double myMethod(double a, double b, double c, double d, double allgoodsindex, double medicalcostindex, double wageindex, double lagadjustment" + strVariables +
-                        "){ try{" + cCharpCode + "} catch (Exception ex) { return -999999999; }}}");
+    "){ try{" + cCharpCode + "} catch (Exception ex) { return -999999999; }}}");
                     myCode.Append("}");
                     CompilerResults cr = provider.CompileAssemblyFromSource(cp, myCode.ToString());
                     Assembly assembly = cr.CompiledAssembly;
@@ -382,7 +258,7 @@ namespace BenMAP.Tools
                     tmp = assembly.CreateInstance("CoustomEval.myLibValuation" + icount);
                     dicValuationMethodInfo.Add(cCharpCode, tmp);
 
-                   
+
                 }
                 else
                 {
@@ -392,14 +268,13 @@ namespace BenMAP.Tools
                 mi = type.GetMethod("myMethod");
                 object result = mi.Invoke(tmp, lstParam.ToArray());
                 return result;
-                //ouble a;
 
             }
             catch (Exception ex)
             {
                 return -999999999;
             }
- 
+
         }
     }
 }

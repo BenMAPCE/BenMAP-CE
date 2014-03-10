@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -8,7 +8,6 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO;
 using System.Drawing.Printing;
-//using System.Runtime.InteropServices;
 
 namespace BenMAP
 {
@@ -34,11 +33,9 @@ namespace BenMAP
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenFileDialog openRTFImplement = new OpenFileDialog();
-            openRTFImplement.Filter = "RTF files(*.RTF)|*.RTF";//设置打开文件的过滤参数
-            if (openRTFImplement.ShowDialog() == DialogResult.OK && openRTFImplement.FileName.Length > 0)//当打开的文件内容不为空且点击“打开”按钮时
+            openRTFImplement.Filter = "RTF files(*.RTF)|*.RTF"; if (openRTFImplement.ShowDialog() == DialogResult.OK && openRTFImplement.FileName.Length > 0)
             {
-                fileName = openRTFImplement.FileName;//保存打开文件的文件名
-                this.richTextBoxPrintCtrl1.LoadFile(fileName, RichTextBoxStreamType.RichText);//从指定位置加载RTF文件
+                fileName = openRTFImplement.FileName; this.richTextBoxPrintCtrl1.LoadFile(fileName, RichTextBoxStreamType.RichText);
             }
         }
 
@@ -92,17 +89,13 @@ namespace BenMAP
 
         private void printDocument1_PrintPage(object sender, System.Drawing.Printing.PrintPageEventArgs e)
         {
-            // Print the content of RichTextBox. Store the last character printed.
             checkPrint = richTextBoxPrintCtrl1.Print(checkPrint, richTextBoxPrintCtrl1.TextLength, e);
 
-            // Check for more pages
             if (checkPrint < richTextBoxPrintCtrl1.TextLength)
                 e.HasMorePages = true;
             else
                 e.HasMorePages = false;
         }
-        //[DllImport("user32.dll", EntryPoint = "HideCaret")]
-        //public static extern bool HideCaret(IntPtr hWnd);
 
     }
 }

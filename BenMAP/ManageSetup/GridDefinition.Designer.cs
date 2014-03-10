@@ -1,16 +1,9 @@
-﻿namespace BenMAP
+namespace BenMAP
 {
     partial class GridDefinition
     {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -20,12 +13,7 @@
             base.Dispose(disposing);
         }
 
-        #region Windows Form Designer generated code
-
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
+        
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
@@ -82,10 +70,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.nudColumns)).BeginInit();
             this.grpCancelOK.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // grpPictureView
-            // 
-            this.grpPictureView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                                                this.grpPictureView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.grpPictureView.Controls.Add(this.mainMap);
@@ -94,10 +79,7 @@
             this.grpPictureView.Size = new System.Drawing.Size(426, 481);
             this.grpPictureView.TabIndex = 0;
             this.grpPictureView.TabStop = false;
-            // 
-            // mainMap
-            // 
-            this.mainMap.AllowDrop = true;
+                                                this.mainMap.AllowDrop = true;
             this.mainMap.BackColor = System.Drawing.Color.White;
             this.mainMap.CollectAfterDraw = false;
             this.mainMap.CollisionDetection = false;
@@ -115,10 +97,7 @@
             this.mainMap.SelectionEnabled = true;
             this.mainMap.Size = new System.Drawing.Size(420, 460);
             this.mainMap.TabIndex = 8;
-            // 
-            // grpGridDefinition
-            // 
-            this.grpGridDefinition.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                                                this.grpGridDefinition.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)));
             this.grpGridDefinition.Controls.Add(this.picCRHelp);
             this.grpGridDefinition.Controls.Add(this.label3);
@@ -135,10 +114,7 @@
             this.grpGridDefinition.TabIndex = 0;
             this.grpGridDefinition.TabStop = false;
             this.grpGridDefinition.Text = "Grid Definition";
-            // 
-            // picCRHelp
-            // 
-            this.picCRHelp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+                                                this.picCRHelp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.picCRHelp.BackgroundImage = global::BenMAP.Properties.Resources.help_16x16;
             this.picCRHelp.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.picCRHelp.Location = new System.Drawing.Point(314, 389);
@@ -149,10 +125,7 @@
             this.picCRHelp.Tag = "";
             this.picCRHelp.Click += new System.EventHandler(this.picCRHelp_Click);
             this.picCRHelp.MouseHover += new System.EventHandler(this.picCRHelp_MouseHover);
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
+                                                this.label3.AutoSize = true;
             this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(21)))), ((int)(((byte)(21)))));
             this.label3.Location = new System.Drawing.Point(26, 417);
             this.label3.Name = "label3";
@@ -160,10 +133,7 @@
             this.label3.TabIndex = 6;
             this.label3.Text = "Selecting this option will substantially increase the\r\ntime required to import th" +
                 "e shapefile.";
-            // 
-            // chkBoxCreatePercentage
-            // 
-            this.chkBoxCreatePercentage.AutoSize = true;
+                                                this.chkBoxCreatePercentage.AutoSize = true;
             this.chkBoxCreatePercentage.Location = new System.Drawing.Point(12, 382);
             this.chkBoxCreatePercentage.Name = "chkBoxCreatePercentage";
             this.chkBoxCreatePercentage.Size = new System.Drawing.Size(318, 28);
@@ -171,49 +141,34 @@
             this.chkBoxCreatePercentage.Text = "Create crosswalk between this grid definition and\r\nall other grid definitions in " +
                 "this setup.";
             this.chkBoxCreatePercentage.UseVisualStyleBackColor = true;
-            // 
-            // cboGridType
-            // 
-            this.cboGridType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+                                                this.cboGridType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboGridType.FormattingEnabled = true;
             this.cboGridType.Location = new System.Drawing.Point(78, 72);
             this.cboGridType.Name = "cboGridType";
             this.cboGridType.Size = new System.Drawing.Size(247, 22);
             this.cboGridType.TabIndex = 4;
             this.cboGridType.SelectedValueChanged += new System.EventHandler(this.cboGridType_SelectedValueChanged);
-            // 
-            // lblGridType
-            // 
-            this.lblGridType.AutoSize = true;
+                                                this.lblGridType.AutoSize = true;
             this.lblGridType.Location = new System.Drawing.Point(6, 72);
             this.lblGridType.Name = "lblGridType";
             this.lblGridType.Size = new System.Drawing.Size(60, 14);
             this.lblGridType.TabIndex = 3;
             this.lblGridType.Text = "Grid Type:";
-            // 
-            // btnPreview
-            // 
-            this.btnPreview.Location = new System.Drawing.Point(252, 331);
+                                                this.btnPreview.Location = new System.Drawing.Point(252, 331);
             this.btnPreview.Name = "btnPreview";
             this.btnPreview.Size = new System.Drawing.Size(73, 27);
             this.btnPreview.TabIndex = 1;
             this.btnPreview.Text = "Preview";
             this.btnPreview.UseVisualStyleBackColor = true;
             this.btnPreview.Click += new System.EventHandler(this.btnPreview_Click);
-            // 
-            // tabGrid
-            // 
-            this.tabGrid.Controls.Add(this.tpShapefileGrid);
+                                                this.tabGrid.Controls.Add(this.tpShapefileGrid);
             this.tabGrid.Controls.Add(this.tpgRegularGrid);
             this.tabGrid.Location = new System.Drawing.Point(8, 99);
             this.tabGrid.Name = "tabGrid";
             this.tabGrid.SelectedIndex = 0;
             this.tabGrid.Size = new System.Drawing.Size(321, 226);
             this.tabGrid.TabIndex = 2;
-            // 
-            // tpShapefileGrid
-            // 
-            this.tpShapefileGrid.Controls.Add(this.lblRow);
+                                                this.tpShapefileGrid.Controls.Add(this.lblRow);
             this.tpShapefileGrid.Controls.Add(this.lblCol);
             this.tpShapefileGrid.Controls.Add(this.label2);
             this.tpShapefileGrid.Controls.Add(this.label1);
@@ -229,88 +184,58 @@
             this.tpShapefileGrid.TabIndex = 0;
             this.tpShapefileGrid.Text = "Shapefile Grid";
             this.tpShapefileGrid.UseVisualStyleBackColor = true;
-            // 
-            // lblRow
-            // 
-            this.lblRow.AutoSize = true;
+                                                this.lblRow.AutoSize = true;
             this.lblRow.Location = new System.Drawing.Point(162, 139);
             this.lblRow.Name = "lblRow";
             this.lblRow.Size = new System.Drawing.Size(0, 14);
             this.lblRow.TabIndex = 9;
-            // 
-            // lblCol
-            // 
-            this.lblCol.AutoSize = true;
+                                                this.lblCol.AutoSize = true;
             this.lblCol.Location = new System.Drawing.Point(162, 107);
             this.lblCol.Name = "lblCol";
             this.lblCol.Size = new System.Drawing.Size(0, 14);
             this.lblCol.TabIndex = 8;
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
+                                                this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(13, 139);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(39, 14);
             this.label2.TabIndex = 7;
             this.label2.Text = "Rows:";
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
+                                                this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(13, 107);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(57, 14);
             this.label1.TabIndex = 6;
             this.label1.Text = "Columns:";
-            // 
-            // lblShapeFileName
-            // 
-            this.lblShapeFileName.AutoSize = true;
+                                                this.lblShapeFileName.AutoSize = true;
             this.lblShapeFileName.Location = new System.Drawing.Point(162, 78);
             this.lblShapeFileName.Name = "lblShapeFileName";
             this.lblShapeFileName.Size = new System.Drawing.Size(0, 14);
             this.lblShapeFileName.TabIndex = 5;
-            // 
-            // lblShapeFile
-            // 
-            this.lblShapeFile.AutoSize = true;
+                                                this.lblShapeFile.AutoSize = true;
             this.lblShapeFile.Location = new System.Drawing.Point(13, 78);
             this.lblShapeFile.Name = "lblShapeFile";
             this.lblShapeFile.Size = new System.Drawing.Size(138, 14);
             this.lblShapeFile.TabIndex = 4;
             this.lblShapeFile.Text = "Current Shapefile Name:";
-            // 
-            // btnShapefile
-            // 
-            this.btnShapefile.Image = global::BenMAP.Properties.Resources.folder_add;
+                                                this.btnShapefile.Image = global::BenMAP.Properties.Resources.folder_add;
             this.btnShapefile.Location = new System.Drawing.Point(228, 36);
             this.btnShapefile.Name = "btnShapefile";
             this.btnShapefile.Size = new System.Drawing.Size(73, 27);
             this.btnShapefile.TabIndex = 3;
             this.btnShapefile.UseVisualStyleBackColor = true;
             this.btnShapefile.Click += new System.EventHandler(this.btnShapefile_Click);
-            // 
-            // txtShapefile
-            // 
-            this.txtShapefile.Location = new System.Drawing.Point(11, 38);
+                                                this.txtShapefile.Location = new System.Drawing.Point(11, 38);
             this.txtShapefile.Name = "txtShapefile";
             this.txtShapefile.ReadOnly = true;
             this.txtShapefile.Size = new System.Drawing.Size(211, 22);
             this.txtShapefile.TabIndex = 2;
-            // 
-            // lblLoadShapefile
-            // 
-            this.lblLoadShapefile.AutoSize = true;
+                                                this.lblLoadShapefile.AutoSize = true;
             this.lblLoadShapefile.Location = new System.Drawing.Point(13, 15);
             this.lblLoadShapefile.Name = "lblLoadShapefile";
             this.lblLoadShapefile.Size = new System.Drawing.Size(90, 14);
             this.lblLoadShapefile.TabIndex = 0;
             this.lblLoadShapefile.Text = "Load Shapefile:";
-            // 
-            // tpgRegularGrid
-            // 
-            this.tpgRegularGrid.Controls.Add(this.nudRowsPerLatitude);
+                                                this.tpgRegularGrid.Controls.Add(this.nudRowsPerLatitude);
             this.tpgRegularGrid.Controls.Add(this.nudColumnsPerLongitude);
             this.tpgRegularGrid.Controls.Add(this.txtMinimumLatitude);
             this.tpgRegularGrid.Controls.Add(this.txtMinimumLongitude);
@@ -329,10 +254,7 @@
             this.tpgRegularGrid.TabIndex = 1;
             this.tpgRegularGrid.Text = "Regular Grid";
             this.tpgRegularGrid.UseVisualStyleBackColor = true;
-            // 
-            // nudRowsPerLatitude
-            // 
-            this.nudRowsPerLatitude.Location = new System.Drawing.Point(162, 154);
+                                                this.nudRowsPerLatitude.Location = new System.Drawing.Point(162, 154);
             this.nudRowsPerLatitude.Name = "nudRowsPerLatitude";
             this.nudRowsPerLatitude.Size = new System.Drawing.Size(99, 22);
             this.nudRowsPerLatitude.TabIndex = 11;
@@ -343,10 +265,7 @@
             0,
             0});
             this.nudRowsPerLatitude.ValueChanged += new System.EventHandler(this.nudRowsPerLatitude_ValueChanged);
-            // 
-            // nudColumnsPerLongitude
-            // 
-            this.nudColumnsPerLongitude.Location = new System.Drawing.Point(9, 155);
+                                                this.nudColumnsPerLongitude.Location = new System.Drawing.Point(9, 155);
             this.nudColumnsPerLongitude.Name = "nudColumnsPerLongitude";
             this.nudColumnsPerLongitude.Size = new System.Drawing.Size(99, 22);
             this.nudColumnsPerLongitude.TabIndex = 10;
@@ -357,28 +276,19 @@
             0,
             0});
             this.nudColumnsPerLongitude.ValueChanged += new System.EventHandler(this.nudColumnsPerLongitude_ValueChanged);
-            // 
-            // txtMinimumLatitude
-            // 
-            this.txtMinimumLatitude.Location = new System.Drawing.Point(162, 98);
+                                                this.txtMinimumLatitude.Location = new System.Drawing.Point(162, 98);
             this.txtMinimumLatitude.Name = "txtMinimumLatitude";
             this.txtMinimumLatitude.Size = new System.Drawing.Size(100, 22);
             this.txtMinimumLatitude.TabIndex = 9;
             this.txtMinimumLatitude.Text = "0";
             this.txtMinimumLatitude.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            // 
-            // txtMinimumLongitude
-            // 
-            this.txtMinimumLongitude.Location = new System.Drawing.Point(9, 98);
+                                                this.txtMinimumLongitude.Location = new System.Drawing.Point(9, 98);
             this.txtMinimumLongitude.Name = "txtMinimumLongitude";
             this.txtMinimumLongitude.Size = new System.Drawing.Size(99, 22);
             this.txtMinimumLongitude.TabIndex = 8;
             this.txtMinimumLongitude.Text = "0";
             this.txtMinimumLongitude.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            // 
-            // nudRows
-            // 
-            this.nudRows.Location = new System.Drawing.Point(162, 36);
+                                                this.nudRows.Location = new System.Drawing.Point(162, 36);
             this.nudRows.Name = "nudRows";
             this.nudRows.Size = new System.Drawing.Size(99, 22);
             this.nudRows.TabIndex = 7;
@@ -389,10 +299,7 @@
             0,
             0});
             this.nudRows.ValueChanged += new System.EventHandler(this.nudRows_ValueChanged);
-            // 
-            // nudColumns
-            // 
-            this.nudColumns.Location = new System.Drawing.Point(9, 36);
+                                                this.nudColumns.Location = new System.Drawing.Point(9, 36);
             this.nudColumns.Name = "nudColumns";
             this.nudColumns.Size = new System.Drawing.Size(99, 22);
             this.nudColumns.TabIndex = 6;
@@ -403,80 +310,53 @@
             0,
             0});
             this.nudColumns.ValueChanged += new System.EventHandler(this.nudColumns_ValueChanged);
-            // 
-            // lblRowsPerLatitude
-            // 
-            this.lblRowsPerLatitude.AutoSize = true;
+                                                this.lblRowsPerLatitude.AutoSize = true;
             this.lblRowsPerLatitude.Location = new System.Drawing.Point(160, 136);
             this.lblRowsPerLatitude.Name = "lblRowsPerLatitude";
             this.lblRowsPerLatitude.Size = new System.Drawing.Size(103, 14);
             this.lblRowsPerLatitude.TabIndex = 5;
             this.lblRowsPerLatitude.Text = "Rows Per Latitude";
-            // 
-            // lblColumsPerLongitude
-            // 
-            this.lblColumsPerLongitude.AutoSize = true;
+                                                this.lblColumsPerLongitude.AutoSize = true;
             this.lblColumsPerLongitude.Location = new System.Drawing.Point(7, 136);
             this.lblColumsPerLongitude.Name = "lblColumsPerLongitude";
             this.lblColumsPerLongitude.Size = new System.Drawing.Size(131, 14);
             this.lblColumsPerLongitude.TabIndex = 4;
             this.lblColumsPerLongitude.Text = "Columns Per Longitude";
-            // 
-            // lblMinimumLatitude
-            // 
-            this.lblMinimumLatitude.AutoSize = true;
+                                                this.lblMinimumLatitude.AutoSize = true;
             this.lblMinimumLatitude.Location = new System.Drawing.Point(160, 79);
             this.lblMinimumLatitude.Name = "lblMinimumLatitude";
             this.lblMinimumLatitude.Size = new System.Drawing.Size(106, 14);
             this.lblMinimumLatitude.TabIndex = 3;
             this.lblMinimumLatitude.Text = "Minimum Latitude";
-            // 
-            // lblMinimumLongitude
-            // 
-            this.lblMinimumLongitude.AutoSize = true;
+                                                this.lblMinimumLongitude.AutoSize = true;
             this.lblMinimumLongitude.Location = new System.Drawing.Point(6, 79);
             this.lblMinimumLongitude.Name = "lblMinimumLongitude";
             this.lblMinimumLongitude.Size = new System.Drawing.Size(116, 14);
             this.lblMinimumLongitude.TabIndex = 2;
             this.lblMinimumLongitude.Text = "Minimum Longitude";
-            // 
-            // lblRows
-            // 
-            this.lblRows.AutoSize = true;
+                                                this.lblRows.AutoSize = true;
             this.lblRows.Location = new System.Drawing.Point(160, 19);
             this.lblRows.Name = "lblRows";
             this.lblRows.Size = new System.Drawing.Size(36, 14);
             this.lblRows.TabIndex = 1;
             this.lblRows.Text = "Rows";
-            // 
-            // lblColumns
-            // 
-            this.lblColumns.AutoSize = true;
+                                                this.lblColumns.AutoSize = true;
             this.lblColumns.Location = new System.Drawing.Point(7, 19);
             this.lblColumns.Name = "lblColumns";
             this.lblColumns.Size = new System.Drawing.Size(54, 14);
             this.lblColumns.TabIndex = 0;
             this.lblColumns.Text = "Columns";
-            // 
-            // txtGridID
-            // 
-            this.txtGridID.Location = new System.Drawing.Point(77, 27);
+                                                this.txtGridID.Location = new System.Drawing.Point(77, 27);
             this.txtGridID.Name = "txtGridID";
             this.txtGridID.Size = new System.Drawing.Size(248, 22);
             this.txtGridID.TabIndex = 1;
-            // 
-            // lblGridID
-            // 
-            this.lblGridID.AutoSize = true;
+                                                this.lblGridID.AutoSize = true;
             this.lblGridID.Location = new System.Drawing.Point(6, 30);
             this.lblGridID.Name = "lblGridID";
             this.lblGridID.Size = new System.Drawing.Size(48, 14);
             this.lblGridID.TabIndex = 0;
             this.lblGridID.Text = "Grid ID:";
-            // 
-            // grpCancelOK
-            // 
-            this.grpCancelOK.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+                                                this.grpCancelOK.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.grpCancelOK.Controls.Add(this.lblprogress);
             this.grpCancelOK.Controls.Add(this.progressBar1);
@@ -487,10 +367,7 @@
             this.grpCancelOK.Size = new System.Drawing.Size(777, 56);
             this.grpCancelOK.TabIndex = 4;
             this.grpCancelOK.TabStop = false;
-            // 
-            // lblprogress
-            // 
-            this.lblprogress.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+                                                this.lblprogress.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblprogress.AutoSize = true;
             this.lblprogress.Location = new System.Drawing.Point(9, 24);
             this.lblprogress.Name = "lblprogress";
@@ -498,20 +375,14 @@
             this.lblprogress.TabIndex = 5;
             this.lblprogress.Text = "Calculating Percentage:";
             this.lblprogress.Visible = false;
-            // 
-            // progressBar1
-            // 
-            this.progressBar1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+                                                this.progressBar1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.progressBar1.Location = new System.Drawing.Point(146, 26);
             this.progressBar1.Name = "progressBar1";
             this.progressBar1.Size = new System.Drawing.Size(460, 10);
             this.progressBar1.TabIndex = 4;
             this.progressBar1.Visible = false;
-            // 
-            // btnCancel
-            // 
-            this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+                                                this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.Location = new System.Drawing.Point(615, 19);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 27);
@@ -519,10 +390,7 @@
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
-            // 
-            // btnOK
-            // 
-            this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+                                                this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOK.Location = new System.Drawing.Point(696, 19);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 27);
@@ -530,10 +398,7 @@
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
-            // 
-            // GridDefinition
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
+                                                this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(801, 561);
             this.Controls.Add(this.grpPictureView);
@@ -564,8 +429,7 @@
 
         }
 
-        #endregion
-
+        
         private System.Windows.Forms.Button btnPreview;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Button btnOK;

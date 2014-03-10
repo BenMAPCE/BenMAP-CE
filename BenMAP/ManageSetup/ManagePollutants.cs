@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -53,9 +53,7 @@ namespace BenMAP
             try
             {
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
-                string commandText = "select metricname from metrics where pollutantid=(select pollutantid from pollutants where pollutantname='" + lstAvailablePollutants.GetItemText(lstAvailablePollutants.SelectedItem) + "' and SetUpID="+CommonClass.ManageSetup.SetupID+")";
-                //FbParameter[] commandParameters = new FbParameter[] { new FbParameter("@name", lstAvailablePollutants.GetItemText(lstAvailablePollutants.SelectedItem)) };
-                //DataSet dts = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), cmdtext, commandParameters);
+                string commandText = "select metricname from metrics where pollutantid=(select pollutantid from pollutants where pollutantname='" + lstAvailablePollutants.GetItemText(lstAvailablePollutants.SelectedItem) + "' and SetUpID=" + CommonClass.ManageSetup.SetupID + ")";
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                 lstPollutantMetrics.DataSource = ds.Tables[0];
                 lstPollutantMetrics.DisplayMember = "metricname";
@@ -69,11 +67,11 @@ namespace BenMAP
         private void btnAdd_Click(object sender, EventArgs e)
         {
             PollutantDefinition frm = new PollutantDefinition();
-           DialogResult rtn= frm.ShowDialog();
-           if (rtn == DialogResult.OK)
-           {
-               BindPollutants();
-           }
+            DialogResult rtn = frm.ShowDialog();
+            if (rtn == DialogResult.OK)
+            {
+                BindPollutants();
+            }
         }
 
         private void btnEdit_Click(object sender, EventArgs e)
@@ -105,7 +103,7 @@ namespace BenMAP
             try
             {
                 object pollutantID = (lstAvailablePollutants.SelectedItem as DataRowView).Row["pollutantID"];
-                string pollutantName=(lstAvailablePollutants.SelectedItem as DataRowView).Row["pollutantName"].ToString();
+                string pollutantName = (lstAvailablePollutants.SelectedItem as DataRowView).Row["pollutantName"].ToString();
                 commandText = "select MonitorID from Monitors where PollutantID=" + pollutantID + "";
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                 if (ds.Tables[0].Rows.Count != 0)
@@ -113,7 +111,7 @@ namespace BenMAP
                     MessageBox.Show("The " + pollutantName + " pollutant is used in 'Monitor Datasets'. Please delete monitor datasets that use this pollutant first.");
                     return;
                 }
-                commandText = "select CRFunctionID from CRFunctions where PollutantID="+pollutantID+"";
+                commandText = "select CRFunctionID from CRFunctions where PollutantID=" + pollutantID + "";
                 ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                 if (ds.Tables[0].Rows.Count != 0)
                 {
@@ -141,7 +139,6 @@ namespace BenMAP
                     commandText = "delete from Pollutants where PollutantID=" + pollutantID + "";
                     fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                 }
-                //重新绑定
                 BindPollutants();
             }
             catch (Exception ex)

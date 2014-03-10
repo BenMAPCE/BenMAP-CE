@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -54,24 +54,23 @@ namespace BenMAP
             try
             {
 
-                ExportDataForlistbox(); 
+                ExportDataForlistbox();
             }
             catch (Exception ex)
             {
                 Logger.LogError(ex);
             }
-           
+
         }
         private void ExportDataForlistbox()
         {
             try
             {
-                string commandText =string.Format( "select * from INFLATIONDATASETS where setupid={0} ",CommonClass.ManageSetup.SetupID);
+                string commandText = string.Format("select * from INFLATIONDATASETS where setupid={0} ", CommonClass.ManageSetup.SetupID);
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                 lstAvailableDataSets.DataSource = ds.Tables[0];
                 lstAvailableDataSets.DisplayMember = "INFLATIONDATASETNAME";
-               // lstAvailableDataSets.SelectedIndex = -1;
             }
             catch (Exception ex)
             {
@@ -83,12 +82,12 @@ namespace BenMAP
         {
             try
             {
-                 if (sender == null) { return; }
+                if (sender == null) { return; }
                 var lst = sender as ListBox;
                 if (lst.SelectedItem == null) return;
                 DataRowView dr = lst.SelectedItem as DataRowView;
                 string str = dr.Row["INFLATIONDATASETNAME"].ToString();
-                string commandText = string.Format("select YYEAR,ALLGOODSINDEX,MEDICALCOSTINDEX,WAGEINDEX from INFLATIONENTRIES WHERE INFLATIONDATASETID in (select INFLATIONDATASETID from INFLATIONDATASETS where INFLATIONDATASETNAME='{0}' and setupid={1})  ORDER BY YYEAR ASC", str,CommonClass.ManageSetup.SetupID);
+                string commandText = string.Format("select YYEAR,ALLGOODSINDEX,MEDICALCOSTINDEX,WAGEINDEX from INFLATIONENTRIES WHERE INFLATIONDATASETID in (select INFLATIONDATASETID from INFLATIONDATASETS where INFLATIONDATASETNAME='{0}' and setupid={1})  ORDER BY YYEAR ASC", str, CommonClass.ManageSetup.SetupID);
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                 olvData.DataSource = ds.Tables[0];
@@ -113,7 +112,6 @@ namespace BenMAP
                 }
                 commandText = string.Format("select * from INFLATIONDATASETS where SetupID={0}", CommonClass.ManageSetup.SetupID);
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
-                //bind table to lstDatasetName and display QALYDATASETNAME field
                 lstAvailableDataSets.DataSource = ds.Tables[0];
                 lstAvailableDataSets.DisplayMember = "INCOMEGROWTHADJDATASETNAME";
                 if (ds.Tables[0].Rows.Count == 0)

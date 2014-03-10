@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -24,7 +24,6 @@ namespace BenMAP
             {
                 string commandText = string.Format("select * from GridDefinitions where setupid={0} order by GridDefinitionName asc", CommonClass.MainSetup.SetupID);
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
-                // 必须这样写，否则会出错
 
 
                 DataTable dtGrid = ds.Tables[0].Clone();
@@ -60,9 +59,8 @@ namespace BenMAP
             {
                 DataRowView drGrid = cboGrid.SelectedItem as DataRowView;
                 string str = "";
-                if (CommonClass.GBenMAPGrid != null && CommonClass.GBenMAPGrid.GridDefinitionID != Convert.ToInt32(drGrid["GridDefinitionID"]))// != Grid.GridCommon.getBenMAPGridFromID(Convert.ToInt32(drGrid["GridDefinitionID"])))// GetBenMapGridDefinitions(drGrid);
+                if (CommonClass.GBenMAPGrid != null && CommonClass.GBenMAPGrid.GridDefinitionID != Convert.ToInt32(drGrid["GridDefinitionID"]))
                 {
-                    //------------keneng you wenti
                     if (CommonClass.LstAsynchronizationStates != null && CommonClass.LstAsynchronizationStates.Count > 0)
                     {
 
@@ -72,22 +70,13 @@ namespace BenMAP
                     }
                     DialogResult result = MessageBox.Show(string.Format("Change the grid type from \'{0}\' to '{1}' ? ", CommonClass.GBenMAPGrid.GridDefinitionName, drGrid["GridDefinitionName"]), "Confirm Delete", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                     if (result != DialogResult.Yes) { return; }
-                    CommonClass.GBenMAPGrid = Grid.GridCommon.getBenMAPGridFromID(Convert.ToInt32(drGrid["GridDefinitionID"]));// GetBenMapGridDefinitions(drGrid);
-                    //----------
-                    if (CommonClass.LstBaseControlGroup != null)
+                    CommonClass.GBenMAPGrid = Grid.GridCommon.getBenMAPGridFromID(Convert.ToInt32(drGrid["GridDefinitionID"])); if (CommonClass.LstBaseControlGroup != null)
                     {
                         foreach (BaseControlGroup bcg in CommonClass.LstBaseControlGroup)
                         {
                             bcg.GridType = CommonClass.GBenMAPGrid;
                             bcg.Base = null;
                             bcg.Control = null;
-                            //CommonClass.LstBaseControlGroup.Clear();
-                            //CommonClass.BaseControlCRSelectFunction = null;
-                            //CommonClass.BaseControlCRSelectFunctionCalculateValue = null;
-                            //CommonClass.lstIncidencePoolingAndAggregation = null;
-                            ////CommonClass.IncidencePoolingAndAggregationAdvance = null;
-                            //CommonClass.IncidencePoolingResult = null;
-                            //CommonClass.ValuationMethodPoolingAndAggregation = null;
 
                         }
                     }
@@ -96,51 +85,18 @@ namespace BenMAP
                 }
                 CommonClass.GBenMAPGrid = Grid.GridCommon.getBenMAPGridFromID(Convert.ToInt32(drGrid["GridDefinitionID"]));
                 DataRowView drRegion = cboRegion.SelectedItem as DataRowView;
-                CommonClass.RBenMAPGrid = Grid.GridCommon.getBenMAPGridFromID(Convert.ToInt32(drRegion["GridDefinitionID"]));// GetBenMapGridDefinitions(drRegion);
-                this.DialogResult = DialogResult.OK;
+                CommonClass.RBenMAPGrid = Grid.GridCommon.getBenMAPGridFromID(Convert.ToInt32(drRegion["GridDefinitionID"])); this.DialogResult = DialogResult.OK;
             }
             catch (Exception ex)
             {
                 Logger.LogError(ex);
             }
-            //this.Close();
         }
 
-        //private BenMAPGrid GetBenMapGridDefinitions(DataRowView dr)
-        //{
-        //    BenMAPGrid gridDef;
-        //    try
-        //    {
-        //        gridDef = new BenMAPGrid()
-        //        {
-        //            GridDefinitionID = int.Parse(dr["GridDefinitionID"].ToString()),
-        //            GridDefinitionName = dr["GridDefinitionName"].ToString(),
-        //            SetupID = int.Parse(dr["SetupID"].ToString()),
-        //            Columns = int.Parse(dr["Columns"].ToString()),
-        //            RRows = int.Parse(dr["RRows"].ToString()),
-        //        };
-        //        switch (int.Parse(dr["TType"].ToString()))
-        //        {
-        //            case 0:
-        //                gridDef.TType = GridTypeEnum.Regular;
-        //                break;
-        //            case 1:
-        //                gridDef.TType = GridTypeEnum.Shapefile;
-        //                break;
-        //        }
-        //        return gridDef;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Logger.LogError(ex);
-        //        return null;
-        //    }
-        //}
 
         private void btnCancel_Click(object sender, EventArgs e)
         {
             this.DialogResult = DialogResult.Cancel;
-            //this.Close();
         }
 
         private void cboGrid_SelectedValueChanged(object sender, EventArgs e)

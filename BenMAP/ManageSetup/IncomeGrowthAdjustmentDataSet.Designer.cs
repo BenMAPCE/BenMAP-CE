@@ -1,16 +1,9 @@
-﻿namespace BenMAP
+namespace BenMAP
 {
     partial class frmIncomeGrowthAdjustmentDataSet
     {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -20,12 +13,7 @@
             base.Dispose(disposing);
         }
 
-        #region Windows Form Designer generated code
-
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
+        
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
@@ -48,10 +36,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.olvData)).BeginInit();
             this.grpAvailableDataSets.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // grpCancelOK
-            // 
-            this.grpCancelOK.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+                                                this.grpCancelOK.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.grpCancelOK.Controls.Add(this.btnOK);
             this.grpCancelOK.Controls.Add(this.btnCancel);
@@ -60,10 +45,7 @@
             this.grpCancelOK.Size = new System.Drawing.Size(563, 53);
             this.grpCancelOK.TabIndex = 2;
             this.grpCancelOK.TabStop = false;
-            // 
-            // btnOK
-            // 
-            this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+                                                this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOK.Location = new System.Drawing.Point(480, 16);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 27);
@@ -71,10 +53,7 @@
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
-            // 
-            // btnCancel
-            // 
-            this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+                                                this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.Location = new System.Drawing.Point(399, 16);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 27);
@@ -83,10 +62,7 @@
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Visible = false;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
-            // 
-            // grpGrowthDetail
-            // 
-            this.grpGrowthDetail.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                                                this.grpGrowthDetail.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.grpGrowthDetail.Controls.Add(this.olvData);
@@ -96,10 +72,7 @@
             this.grpGrowthDetail.TabIndex = 1;
             this.grpGrowthDetail.TabStop = false;
             this.grpGrowthDetail.Text = "Income Growth Detail";
-            // 
-            // olvData
-            // 
-            this.olvData.AllColumns.Add(this.olvColumn7);
+                                                this.olvData.AllColumns.Add(this.olvColumn7);
             this.olvData.AllColumns.Add(this.olvColumn8);
             this.olvData.AllColumns.Add(this.olvColumn9);
             this.olvData.AllowColumnReorder = true;
@@ -140,29 +113,17 @@
             this.olvData.UseHotItem = true;
             this.olvData.UseTranslucentHotItem = true;
             this.olvData.View = System.Windows.Forms.View.Details;
-            // 
-            // olvColumn7
-            // 
-            this.olvColumn7.AspectName = "yyear";
+                                                this.olvColumn7.AspectName = "yyear";
             this.olvColumn7.AspectToStringFormat = "{0}";
             this.olvColumn7.Text = "Year";
             this.olvColumn7.Width = 120;
-            // 
-            // olvColumn8
-            // 
-            this.olvColumn8.AspectName = "Mean";
+                                                this.olvColumn8.AspectName = "Mean";
             this.olvColumn8.Text = "Factor";
             this.olvColumn8.Width = 100;
-            // 
-            // olvColumn9
-            // 
-            this.olvColumn9.AspectName = "EndpointGroups";
+                                                this.olvColumn9.AspectName = "EndpointGroups";
             this.olvColumn9.Text = "Endpoint Groups";
             this.olvColumn9.Width = 120;
-            // 
-            // grpAvailableDataSets
-            // 
-            this.grpAvailableDataSets.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                                                this.grpAvailableDataSets.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)));
             this.grpAvailableDataSets.Controls.Add(this.btnOutput);
             this.grpAvailableDataSets.Controls.Add(this.btnDelete);
@@ -174,10 +135,7 @@
             this.grpAvailableDataSets.TabIndex = 0;
             this.grpAvailableDataSets.TabStop = false;
             this.grpAvailableDataSets.Text = "Available Datasets";
-            // 
-            // btnOutput
-            // 
-            this.btnOutput.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+                                                this.btnOutput.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnOutput.Location = new System.Drawing.Point(7, 350);
             this.btnOutput.Name = "btnOutput";
             this.btnOutput.Size = new System.Drawing.Size(159, 27);
@@ -187,10 +145,7 @@
                     " and can be used as an example to prepare the input file.");
             this.btnOutput.UseVisualStyleBackColor = true;
             this.btnOutput.Click += new System.EventHandler(this.btnOutput_Click);
-            // 
-            // btnDelete
-            // 
-            this.btnDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+                                                this.btnDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnDelete.Location = new System.Drawing.Point(7, 382);
             this.btnDelete.Name = "btnDelete";
             this.btnDelete.Size = new System.Drawing.Size(73, 27);
@@ -198,10 +153,7 @@
             this.btnDelete.Text = "Delete";
             this.btnDelete.UseVisualStyleBackColor = true;
             this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
-            // 
-            // btnAdd
-            // 
-            this.btnAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+                                                this.btnAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnAdd.Location = new System.Drawing.Point(95, 382);
             this.btnAdd.Name = "btnAdd";
             this.btnAdd.Size = new System.Drawing.Size(71, 27);
@@ -209,10 +161,7 @@
             this.btnAdd.Text = "Add";
             this.btnAdd.UseVisualStyleBackColor = true;
             this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
-            // 
-            // lstDataSetName
-            // 
-            this.lstDataSetName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                                                this.lstDataSetName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)));
             this.lstDataSetName.FormattingEnabled = true;
             this.lstDataSetName.ItemHeight = 14;
@@ -221,10 +170,7 @@
             this.lstDataSetName.Size = new System.Drawing.Size(170, 326);
             this.lstDataSetName.TabIndex = 0;
             this.lstDataSetName.SelectedValueChanged += new System.EventHandler(this.lstDataSetName_SelectedValueChanged);
-            // 
-            // frmIncomeGrowthAdjustmentDataSet
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
+                                                this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(580, 493);
             this.Controls.Add(this.grpCancelOK);
@@ -244,8 +190,7 @@
 
         }
 
-        #endregion
-
+        
         private System.Windows.Forms.GroupBox grpAvailableDataSets;
         private System.Windows.Forms.Button btnAdd;
         private System.Windows.Forms.Button btnDelete;

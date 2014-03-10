@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -11,19 +11,13 @@ namespace BenMAP.DataSource
 {
     public partial class PercentageControl : UserControl
     {
-        #region Parameters
-
         private int _regionID;
-        /// <summary>
-        /// 控件的RegionID
-        /// </summary>
         public int RegionID
         {
             get { return _regionID; }
             set { _regionID = value; }
         }
         public PercentageRollback _PercentageRollback;
-        #endregion
         public PercentageControl()
         {
             InitializeComponent();

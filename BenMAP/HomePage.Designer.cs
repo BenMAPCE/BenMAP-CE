@@ -1,16 +1,9 @@
-﻿namespace BenMAP
+namespace BenMAP
 {
     partial class HomePage
     {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -20,12 +13,7 @@
             base.Dispose(disposing);
         }
 
-        #region Windows Form Designer generated code
-
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
+        
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(HomePage));
@@ -47,10 +35,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.picLoadAPVR)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picExit)).BeginInit();
             this.SuspendLayout();
-            // 
-            // picCreateProject
-            // 
-            this.picCreateProject.Cursor = System.Windows.Forms.Cursors.Hand;
+                                                this.picCreateProject.Cursor = System.Windows.Forms.Cursors.Hand;
             this.picCreateProject.Image = global::BenMAP.Properties.Resources.spCreateProject;
             this.picCreateProject.Location = new System.Drawing.Point(80, 286);
             this.picCreateProject.Name = "picCreateProject";
@@ -58,10 +43,7 @@
             this.picCreateProject.TabIndex = 0;
             this.picCreateProject.TabStop = false;
             this.picCreateProject.Click += new System.EventHandler(this.picCreateProject_Click);
-            // 
-            // picLoadCFG
-            // 
-            this.picLoadCFG.Cursor = System.Windows.Forms.Cursors.Hand;
+                                                this.picLoadCFG.Cursor = System.Windows.Forms.Cursors.Hand;
             this.picLoadCFG.Image = global::BenMAP.Properties.Resources.spLoadCFG;
             this.picLoadCFG.Location = new System.Drawing.Point(80, 339);
             this.picLoadCFG.Name = "picLoadCFG";
@@ -69,10 +51,7 @@
             this.picLoadCFG.TabIndex = 0;
             this.picLoadCFG.TabStop = false;
             this.picLoadCFG.Click += new System.EventHandler(this.picCreateProject_Click);
-            // 
-            // picLoadAPV
-            // 
-            this.picLoadAPV.Cursor = System.Windows.Forms.Cursors.Hand;
+                                                this.picLoadAPV.Cursor = System.Windows.Forms.Cursors.Hand;
             this.picLoadAPV.Image = global::BenMAP.Properties.Resources.spLoadAPV;
             this.picLoadAPV.Location = new System.Drawing.Point(80, 392);
             this.picLoadAPV.Name = "picLoadAPV";
@@ -80,10 +59,7 @@
             this.picLoadAPV.TabIndex = 0;
             this.picLoadAPV.TabStop = false;
             this.picLoadAPV.Click += new System.EventHandler(this.picCreateProject_Click);
-            // 
-            // picUserGuide
-            // 
-            this.picUserGuide.Cursor = System.Windows.Forms.Cursors.Hand;
+                                                this.picUserGuide.Cursor = System.Windows.Forms.Cursors.Hand;
             this.picUserGuide.Image = global::BenMAP.Properties.Resources.spUserGuide;
             this.picUserGuide.Location = new System.Drawing.Point(80, 504);
             this.picUserGuide.Name = "picUserGuide";
@@ -91,10 +67,7 @@
             this.picUserGuide.TabIndex = 0;
             this.picUserGuide.TabStop = false;
             this.picUserGuide.Click += new System.EventHandler(this.picUserGuide_Click);
-            // 
-            // picLoadProject
-            // 
-            this.picLoadProject.Cursor = System.Windows.Forms.Cursors.Hand;
+                                                this.picLoadProject.Cursor = System.Windows.Forms.Cursors.Hand;
             this.picLoadProject.Image = global::BenMAP.Properties.Resources.spLoadProject;
             this.picLoadProject.Location = new System.Drawing.Point(460, 286);
             this.picLoadProject.Name = "picLoadProject";
@@ -102,10 +75,7 @@
             this.picLoadProject.TabIndex = 0;
             this.picLoadProject.TabStop = false;
             this.picLoadProject.Click += new System.EventHandler(this.picCreateProject_Click);
-            // 
-            // picLoadCFGR
-            // 
-            this.picLoadCFGR.Cursor = System.Windows.Forms.Cursors.Hand;
+                                                this.picLoadCFGR.Cursor = System.Windows.Forms.Cursors.Hand;
             this.picLoadCFGR.Image = global::BenMAP.Properties.Resources.SPLoadCFGR;
             this.picLoadCFGR.Location = new System.Drawing.Point(460, 339);
             this.picLoadCFGR.Name = "picLoadCFGR";
@@ -113,10 +83,7 @@
             this.picLoadCFGR.TabIndex = 0;
             this.picLoadCFGR.TabStop = false;
             this.picLoadCFGR.Click += new System.EventHandler(this.picCreateProject_Click);
-            // 
-            // picLoadAPVR
-            // 
-            this.picLoadAPVR.Cursor = System.Windows.Forms.Cursors.Hand;
+                                                this.picLoadAPVR.Cursor = System.Windows.Forms.Cursors.Hand;
             this.picLoadAPVR.Image = global::BenMAP.Properties.Resources.SPLoadAPVR;
             this.picLoadAPVR.Location = new System.Drawing.Point(460, 392);
             this.picLoadAPVR.Name = "picLoadAPVR";
@@ -124,10 +91,7 @@
             this.picLoadAPVR.TabIndex = 0;
             this.picLoadAPVR.TabStop = false;
             this.picLoadAPVR.Click += new System.EventHandler(this.picCreateProject_Click);
-            // 
-            // picExit
-            // 
-            this.picExit.Cursor = System.Windows.Forms.Cursors.Hand;
+                                                this.picExit.Cursor = System.Windows.Forms.Cursors.Hand;
             this.picExit.Image = global::BenMAP.Properties.Resources.SPEXit;
             this.picExit.Location = new System.Drawing.Point(460, 504);
             this.picExit.Name = "picExit";
@@ -135,10 +99,7 @@
             this.picExit.TabIndex = 0;
             this.picExit.TabStop = false;
             this.picExit.Click += new System.EventHandler(this.picExit_Click);
-            // 
-            // lblversion
-            // 
-            this.lblversion.AutoSize = true;
+                                                this.lblversion.AutoSize = true;
             this.lblversion.BackColor = System.Drawing.Color.Transparent;
             this.lblversion.Font = new System.Drawing.Font("Arial", 10F);
             this.lblversion.Location = new System.Drawing.Point(350, 87);
@@ -146,10 +107,7 @@
             this.lblversion.Size = new System.Drawing.Size(16, 16);
             this.lblversion.TabIndex = 1;
             this.lblversion.Text = "0";
-            // 
-            // HomePage
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
+                                                this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImage = global::BenMAP.Properties.Resources.BenMAPStartPage;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
@@ -183,8 +141,7 @@
 
         }
 
-        #endregion
-
+        
         private System.Windows.Forms.PictureBox picCreateProject;
         private System.Windows.Forms.PictureBox picLoadCFG;
         private System.Windows.Forms.PictureBox picLoadAPV;

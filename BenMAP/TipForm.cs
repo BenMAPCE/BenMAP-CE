@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -11,37 +11,20 @@ namespace BenMAP
 {
     public partial class TipForm : FormBase
     {
-        /// <summary>
-        /// 显示提示窗口
-        /// </summary>
         public TipForm()
         {
             InitializeComponent();
-            //lblTip.Text = Msg;  //在label显示提示
-            this.TopMost = false;   //窗口置前
-            //去掉右上角最大、最小化和关闭按钮
-            this.MaximizeBox = false;
+            this.TopMost = false; this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.ControlBox = false;
-           
-            
         }
 
-        /// <summary>
-        /// 根据传进来的参数不同，显示不同的提示窗口
-        /// </summary>
-        /// <param name="tipStr"></param>
         public TipForm(string tipStr)
         {
             InitializeComponent();
-
-            //lblTip.Text = Msg;
         }
 
         private string _msg = "Loading Data. Please wait.";
-        /// <summary>
-        /// 显示的文字提示
-        /// </summary>
         public string Msg
         {
             get { return _msg; }
@@ -57,10 +40,7 @@ namespace BenMAP
 
         private void TipForm_Load(object sender, EventArgs e)
         {
-            progressBarTip.Maximum = 100;//设置最大长度值
-            progressBarTip.Value = 0;//设置当前值
-            progressBarTip.Step = 1;//设置没次增长多少
-            timer1.Enabled = true;
+            progressBarTip.Maximum = 100; progressBarTip.Value = 0; progressBarTip.Step = 1; timer1.Enabled = true;
             if (this.ParentForm == null)
             {
                 this.StartPosition = FormStartPosition.Manual;
@@ -75,15 +55,7 @@ namespace BenMAP
                 progressBarTip.Value = 0;
             }
             else
-                progressBarTip.Value += progressBarTip.Step;//让进度条增加一次
-            //if (progressBarTip.Value == 100)
-            //{
-            //    progressBarTip.Maximum = 100;//设置最大长度值
-            //    progressBarTip.Value = 0;//设置当前值
-            //    progressBarTip.Step = 5;//设置没次增长多少
-            //    timer1.Enabled = true;
-            //    progressBarTip.Value = 0;
-            //}
+                progressBarTip.Value += progressBarTip.Step;
         }
     }
 }

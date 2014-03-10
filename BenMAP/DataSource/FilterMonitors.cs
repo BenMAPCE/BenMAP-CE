@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -44,7 +44,6 @@ namespace BenMAP
         {
             try
             {
-                #region step1-include ID
                 if (_MonitorAdvanceFilter.FilterIncludeIDs != null)
                 {
                     string excludeID = "";
@@ -58,9 +57,7 @@ namespace BenMAP
                     }
                     txtExcludeID.Text = excludeID;
                 }
-                #endregion
 
-                #region step2-exclude ID
                 if (_MonitorAdvanceFilter.FilterExcludeIDs != null)
                 {
                     string includeID = "";
@@ -74,9 +71,7 @@ namespace BenMAP
                     }
                     txtIncludeID.Text = includeID;
                 }
-                #endregion
 
-                #region step3-states,lat,lon
                 if (_MonitorAdvanceFilter.FilterStates != null)
                 {
                     string filterState = "";
@@ -95,9 +90,7 @@ namespace BenMAP
                 txtMaximumLongitude.Text = _MonitorAdvanceFilter.FilterMaxLongitude.ToString();
                 txtMinimumLatitude.Text = _MonitorAdvanceFilter.FilterMinLatitude.ToString();
                 txtMaximumLatitude.Text = _MonitorAdvanceFilter.FilterMaxLatitude.ToString();
-                #endregion
 
-                #region step4-POC
                 if (_MonitorAdvanceFilter.FilterMaximumPOC > 0)
                 {
                     nudownMaximumPOC.Value = _MonitorAdvanceFilter.FilterMaximumPOC;
@@ -149,125 +142,7 @@ namespace BenMAP
                             break;
                     }
                 }
-                #endregion
 
-                #region step5-methods
-                #region 
-                //switch (bcg.Pollutant.PollutantName)
-                //{
-                //    case "PM2.5":
-                //        chkSelectMethods.Items.Add("116");
-                //        chkSelectMethods.Items.Add("117");
-                //        chkSelectMethods.Items.Add("118");
-                //        chkSelectMethods.Items.Add("119");
-                //        chkSelectMethods.Items.Add("120");
-                //        chkSelectMethods.Items.Add("785");
-                //        break;
-                //    case "PM10":
-                //        chkSelectMethods.Items.Add("062");
-                //        chkSelectMethods.Items.Add("065");
-                //        chkSelectMethods.Items.Add("076");
-                //        chkSelectMethods.Items.Add("063");
-                //        chkSelectMethods.Items.Add("071");
-                //        chkSelectMethods.Items.Add("079");
-                //        chkSelectMethods.Items.Add("064");
-                //        chkSelectMethods.Items.Add("073");
-                //        chkSelectMethods.Items.Add("081");
-                //        break;
-                //    case "Ozone":
-                //        chkSelectMethods.Items.Add("003");
-                //        chkSelectMethods.Items.Add("011");
-                //        chkSelectMethods.Items.Add("014");
-                //        chkSelectMethods.Items.Add("019");
-                //        chkSelectMethods.Items.Add("020");
-                //        chkSelectMethods.Items.Add("047");
-                //        chkSelectMethods.Items.Add("053");
-                //        chkSelectMethods.Items.Add("056");
-                //        chkSelectMethods.Items.Add("078");
-                //        chkSelectMethods.Items.Add("087");
-                //        chkSelectMethods.Items.Add("091");
-                //        chkSelectMethods.Items.Add("103");
-                //        chkSelectMethods.Items.Add("112");
-                //        break;
-                //    case "NO2":
-                //        chkSelectMethods.Items.Add("014");
-                //        chkSelectMethods.Items.Add("042");
-                //        chkSelectMethods.Items.Add("090");
-                //        chkSelectMethods.Items.Add("022");
-                //        chkSelectMethods.Items.Add("074");
-                //        chkSelectMethods.Items.Add("099");
-                //        chkSelectMethods.Items.Add("025");
-                //        chkSelectMethods.Items.Add("075");
-                //        chkSelectMethods.Items.Add("102");
-                //        chkSelectMethods.Items.Add("035");
-                //        chkSelectMethods.Items.Add("082");
-                //        chkSelectMethods.Items.Add("111");
-                //        chkSelectMethods.Items.Add("037");
-                //        chkSelectMethods.Items.Add("089");
-                //        break;
-                //    case "SO2":
-                //        chkSelectMethods.Items.Add("009");
-                //        chkSelectMethods.Items.Add("061");
-                //        chkSelectMethods.Items.Add("020");
-                //        chkSelectMethods.Items.Add("075");
-                //        chkSelectMethods.Items.Add("023");
-                //        chkSelectMethods.Items.Add("077");
-                //        chkSelectMethods.Items.Add("039");
-                //        chkSelectMethods.Items.Add("092");
-                //        chkSelectMethods.Items.Add("060");
-                //        chkSelectMethods.Items.Add("100");
-                //        break;
-                //}
-                //if (_MonitorAdvanceFilter.IncludeMethods != null)
-                //{
-                //    foreach (string s in _MonitorAdvanceFilter.IncludeMethods)
-                //    {
-                //        for (int i = 0; i < chkSelectMethods.Items.Count; i++)
-                //        {
-                //            if (s == chkSelectMethods.Items[i].ToString())
-                //            {
-                //                chkSelectMethods.SetItemChecked(i, true);
-                //            }
-                //        }
-                //    }
-                //}
-                //else
-                //{
-                //    switch (bcg.Pollutant.PollutantName)
-                //    {
-                //        case "PM2.5":
-                //            for (int i = 0; i < chkSelectMethods.Items.Count - 1; i++)
-                //            {
-                //                chkSelectMethods.SetItemChecked(i, true);
-                //            }
-                //            break;
-                //        case "PM10":
-                //            for (int i = 0; i < chkSelectMethods.Items.Count - 1; i++)
-                //            {
-                //                chkSelectMethods.SetItemChecked(i, true);
-                //            }
-                //            break;
-                //        case "Ozone":
-                //            for (int i = 0; i < chkSelectMethods.Items.Count; i++)
-                //            {
-                //                chkSelectMethods.SetItemChecked(i, true);
-                //            }
-                //            break;
-                //        case "NO2":
-                //            for (int i = 0; i < chkSelectMethods.Items.Count; i++)
-                //            {
-                //                chkSelectMethods.SetItemChecked(i, true);
-                //            }
-                //            break;
-                //        case "SO2":
-                //            for (int i = 0; i < chkSelectMethods.Items.Count; i++)
-                //            {
-                //                chkSelectMethods.SetItemChecked(i, true);
-                //            }
-                //            break;
-                //    }
-                //}
-                #endregion
                 if (_MonitorAdvanceFilter.IncludeMethods != null)
                 {
                     List<string> allmethod = FindAllMethod();
@@ -295,7 +170,7 @@ namespace BenMAP
                     Dictionary<string, bool> dicmethods = LoadMethod();
                     if (dicmethods != null && dicmethods.Count() > 0)
                     {
-                        foreach(string code in dicmethods.Keys)
+                        foreach (string code in dicmethods.Keys)
                         {
                             chkSelectMethods.Items.Add(code, dicmethods[code]);
                         }
@@ -303,9 +178,7 @@ namespace BenMAP
                     }
                 }
 
-                #endregion
 
-                #region step6-valid
                 switch (bcg.Pollutant.PollutantName)
                 {
                     case "PM2.5":
@@ -367,7 +240,6 @@ namespace BenMAP
                         lblNoOption.Visible = true;
                         break;
                 }
-                #endregion
             }
             catch
             { }
@@ -396,10 +268,7 @@ namespace BenMAP
             }
         }
 
-        #region 等待窗口
-        TipFormGIF waitMess = new TipFormGIF();//等待窗体
-        bool sFlog = true;
-        //--显示等待窗体 
+        TipFormGIF waitMess = new TipFormGIF(); bool sFlog = true;
         private void ShowWaitMess()
         {
             try
@@ -416,7 +285,6 @@ namespace BenMAP
             }
         }
 
-        //--新开辟一个线程调用 
         public void WaitShow(string msg)
         {
             try
@@ -437,10 +305,8 @@ namespace BenMAP
         }
         private delegate void CloseFormDelegate();
 
-        //--关闭等待窗体 
         public void WaitClose()
         {
-            //同步到主线程上
             if (waitMess.InvokeRequired)
                 waitMess.Invoke(new CloseFormDelegate(DoCloseJob));
             else
@@ -465,7 +331,6 @@ namespace BenMAP
                 MessageBox.Show(Err.Message);
             }
         }
-        #endregion 等待窗口
 
         private void btnOK_Click(object sender, EventArgs e)
         {
@@ -481,7 +346,6 @@ namespace BenMAP
             {
                 settingcorrect = true;
                 MonitorAdvanceFilterTemp = new MonitorAdvance();
-                #region step1-include ID
                 if (!string.IsNullOrEmpty(txtIncludeID.Text))
                 {
                     string[] sArray = txtIncludeID.Text.Split(',');
@@ -503,9 +367,7 @@ namespace BenMAP
                         }
                     }
                 }
-                #endregion
 
-                #region step2-exclude ID
                 if (!string.IsNullOrEmpty(txtExcludeID.Text))
                 {
                     string[] sArray = txtExcludeID.Text.Split(',');
@@ -526,9 +388,7 @@ namespace BenMAP
                         }
                     }
                 }
-                #endregion
 
-                #region step3-states,lat,lon
                 if (!string.IsNullOrEmpty(txtStates.Text))
                 {
                     string[] sArray = txtStates.Text.Split(',');
@@ -624,9 +484,7 @@ namespace BenMAP
                 MonitorAdvanceFilterTemp.FilterMaxLongitude = Convert.ToDouble(txtMaximumLongitude.Text);
                 MonitorAdvanceFilterTemp.FilterMinLatitude = Convert.ToDouble(txtMinimumLatitude.Text);
                 MonitorAdvanceFilterTemp.FilterMaxLatitude = Convert.ToDouble(txtMaximumLatitude.Text);
-                #endregion
 
-                #region step4-POC
                 MonitorAdvanceFilterTemp.FilterMaximumPOC = Convert.ToInt16(nudownMaximumPOC.Value);
                 string[] sPOC = txtPOCPreferenceOrder.Text.Split(',');
                 foreach (string poc in sPOC)
@@ -646,17 +504,13 @@ namespace BenMAP
                     }
                 }
                 MonitorAdvanceFilterTemp.POCPreferenceOrder = txtPOCPreferenceOrder.Text;
-                #endregion
 
-                #region step5-methods
                 MonitorAdvanceFilterTemp.IncludeMethods = new List<string>();
                 foreach (string m in chkSelectMethods.CheckedItems)
                 {
                     MonitorAdvanceFilterTemp.IncludeMethods.Add(m);
                 }
-                #endregion
 
-                #region step6-valid
                 switch (bcg.Pollutant.PollutantName)
                 {
                     case "PM2.5":
@@ -714,7 +568,6 @@ namespace BenMAP
                         MonitorAdvanceFilterTemp.PercentOfValidDays = Convert.ToInt16(ucOzone.nudownNumberOfValidDays.Value);
                         break;
                 }
-                #endregion
             }
             catch
             {
@@ -809,7 +662,6 @@ namespace BenMAP
                     lblExport.Text = "";
                     return;
                 }
-                //WaitShow("Writing monitors to csv file.");
                 lblExport.Text = "";
                 lblExport.Refresh();
                 prgBarExport.Visible = true;
@@ -843,21 +695,6 @@ namespace BenMAP
                     sw.Write(mv.Statistic);
                     sw.Write(",");
                     string value = string.Empty;
-                    //for (int i = 0; i < mv.Values.Count; i++) 
-                    //{
-                    //    if (mv.Values[i] == float.MinValue)
-                    //    {
-                    //        value += ".,";
-                    //    }
-                    //    else
-                    //    {
-                    //        value += mv.Values[i].ToString() + ",";
-                    //    }
-                    //}
-                    //if (!string.IsNullOrEmpty(value))
-                    //{
-                    //    value = value.Substring(0, value.Length - 1);
-                    //}
                     string commandText = string.Format("select VValues from MonitorEntries where MonitorID={0}", mv.MonitorID);
                     ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                     byte[] blob = null;
@@ -872,14 +709,12 @@ namespace BenMAP
                 sw.Flush();
                 sw.Close();
                 fs.Close();
-                //WaitClose();
                 prgBarExport.Visible = false;
                 MessageBox.Show("Export is complete.", "File saved", MessageBoxButtons.OK);
             }
             catch
             {
                 prgBarExport.Visible = false;
-                //WaitClose();
             }
         }
 
@@ -901,7 +736,7 @@ namespace BenMAP
                         maxPOC = 9;
                         break;
                 }
-                if (mDataLine.MonitorDirectType == 0)//Library
+                if (mDataLine.MonitorDirectType == 0)
                 {
                     string commandText = string.Format("select b.Latitude,b.Longitude,b.MonitorDescription from MonitorEntries a,Monitors b,MonitorDataSets c where a.MonitorID=b.MonitorID and b.MonitorDataSetID=c.MonitorDataSetID and b.PollutantID={0} and c.MonitorDataSetID={1} and a.YYear={2} ", bcg.Pollutant.PollutantID, mDataLine.MonitorDataSetID, mDataLine.MonitorLibraryYear);
                     ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
@@ -953,7 +788,7 @@ namespace BenMAP
             try
             {
                 List<string> method = new List<string>();
-                if (mDataLine.MonitorDirectType == 0)//Library
+                if (mDataLine.MonitorDirectType == 0)
                 {
                     string commandText = string.Format("select b.MonitorDescription from MonitorEntries a,Monitors b,MonitorDataSets c where a.MonitorID=b.MonitorID and b.MonitorDataSetID=c.MonitorDataSetID and b.PollutantID={0} and c.MonitorDataSetID={1} and a.YYear={2} ", bcg.Pollutant.PollutantID, mDataLine.MonitorDataSetID, mDataLine.MonitorLibraryYear);
                     ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
