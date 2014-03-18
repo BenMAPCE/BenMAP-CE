@@ -1328,15 +1328,164 @@ namespace BenMAP
                     monitorValue.dicMetricValues365 = new Dictionary<string, List<float>>();
                     if (monitorValue.SeasonalMetric != null)
                     {
-                        monitorValue.dicMetricValues.Add(monitorValue.SeasonalMetric.SeasonalMetricName, monitorValue.Values.First());
-                        if (monitorValue.Metric != null)
+                        if (monitorValue.Statistic.ToLower() == "none" || monitorValue.Statistic.Trim() == "")
                         {
+                            monitorValue.dicMetricValues365.Add(monitorValue.SeasonalMetric.SeasonalMetricName, monitorValue.Values);
+                            List<float> lstQuality = monitorValue.Values.Where(p => p != float.MinValue).ToList();
+                            if (lstQuality.Where(p => p != float.MinValue).Count() > 0)
+                            {
+                                monitorValue.dicMetricValues[monitorValue.Metric.MetricName] = lstQuality.Where(p => p != float.MinValue).Average();
+                                monitorValue.dicMetricValues[monitorValue.SeasonalMetric.SeasonalMetricName] = lstQuality.Where(p => p != float.MinValue).Average();
+                            }
+                        }
+                        else
+                        {
+                            monitorValue.dicMetricValues.Add(monitorValue.SeasonalMetric.SeasonalMetricName, monitorValue.Values.First());
                             monitorValue.dicMetricValues.Add(monitorValue.Metric.MetricName, monitorValue.Values.First());
                         }
                     }
                     else if (monitorValue.Metric != null)
                     {
-                        monitorValue.dicMetricValues.Add(monitorValue.Metric.MetricName, monitorValue.Values.First());
+                        if (monitorValue.Statistic.ToLower() == "none" || monitorValue.Statistic.Trim() == "")
+                        {
+                            Metric m = monitorValue.Metric;
+                            if (m is FixedWindowMetric)
+                            {
+                                fixedWindowMetric = (FixedWindowMetric)m;
+                                List<float> lstMonitorValue = monitorValue.Values.Where(p => p != float.MinValue).ToList();
+                                if (lstMonitorValue != null && lstMonitorValue.Count > 0)
+                                {
+                                    switch (fixedWindowMetric.Statistic)
+                                    {
+                                        case MetricStatic.Max:
+                                            monitorValue.dicMetricValues.Add(m.MetricName, lstMonitorValue.Max());
+                                            break;
+                                        case MetricStatic.Mean:
+                                            monitorValue.dicMetricValues.Add(m.MetricName, lstMonitorValue.Average());
+                                            break;
+                                        case MetricStatic.Median:
+                                            lstMonitorValue.Sort();
+                                            monitorValue.dicMetricValues.Add(m.MetricName, lstMonitorValue[lstMonitorValue.Count / 2]);//----------错的，要重做为中间值
+                                            break;
+                                        case MetricStatic.Min:
+                                            monitorValue.dicMetricValues.Add(m.MetricName, lstMonitorValue.Min());
+                                            break;
+                                        case MetricStatic.None:
+                                            monitorValue.dicMetricValues.Add(m.MetricName, lstMonitorValue.Average());
+                                            break;
+                                        case MetricStatic.Sum:
+                                            monitorValue.dicMetricValues.Add(m.MetricName, lstMonitorValue.Sum());
+                                            break;
+                                    }
+                                    monitorValue.dicMetricValues365.Add(m.MetricName, monitorValue.Values);
+                                }
+                            }
+                            else if (m is MovingWindowMetric)
+                            {
+                                movingWindowMetric = (MovingWindowMetric)m;
+                                List<float> lstMonitorValue = monitorValue.Values.Where(p => p != float.MinValue).ToList();
+                                if (lstMonitorValue != null && lstMonitorValue.Count > 0)
+                                {
+                                    switch (movingWindowMetric.WindowStatistic)
+                                    {
+                                        case MetricStatic.Max:
+                                            monitorValue.dicMetricValues.Add(m.MetricName, lstMonitorValue.Max());
+                                            break;
+                                        case MetricStatic.Mean:
+                                            monitorValue.dicMetricValues.Add(m.MetricName, lstMonitorValue.Average());
+                                            break;
+                                        case MetricStatic.Median:
+                                            lstMonitorValue.Sort();
+                                            monitorValue.dicMetricValues.Add(m.MetricName, lstMonitorValue[lstMonitorValue.Count / 2]);//----------错的，要重做为中间值
+                                            break;
+                                        case MetricStatic.Min:
+                                            monitorValue.dicMetricValues.Add(m.MetricName, lstMonitorValue.Min());
+                                            break;
+                                        case MetricStatic.None:
+                                            monitorValue.dicMetricValues.Add(m.MetricName, lstMonitorValue.Average());
+                                            break;
+                                        case MetricStatic.Sum:
+                                            monitorValue.dicMetricValues.Add(m.MetricName, lstMonitorValue.Sum());
+                                            break;
+                                    }
+                                    monitorValue.dicMetricValues365.Add(m.MetricName, monitorValue.Values);
+                                }
+                            }
+                            else if (m is CustomerMetric)
+                            { }
+                            
+                            if (benMAPPollutant.SesonalMetrics != null && monitorValue.dicMetricValues365.Count > 0)
+                            {
+                                foreach (SeasonalMetric seasonalmetric in benMAPPollutant.SesonalMetrics)
+                                {
+                                    if (seasonalmetric.Metric.MetricID == monitorValue.Metric.MetricID)
+                                    {
+                                        List<float> lstQuality = new List<float>();
+                                        if ((seasonalmetric.Seasons == null || seasonalmetric.Seasons.Count == 0) && monitorValue.dicMetricValues365.ContainsKey(seasonalmetric.Metric.MetricName))
+                                        {
+                                            lstQuality.Add(monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].GetRange(0, 89 - 0 + 1).Where(p => p != float.MinValue).Count() == 0 ?
+                                                float.MinValue : monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].GetRange(0, 89 - 0 + 1).Where(p => p != float.MinValue).Average());
+                                            lstQuality.Add(monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].GetRange(90, 180 - 90 + 1).Where(p => p != float.MinValue).Count() == 0 ?
+                                                float.MinValue : monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].GetRange(90, 180 - 90 + 1).Where(p => p != float.MinValue).Average());
+                                            lstQuality.Add(monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].GetRange(181, 272 - 181 + 1).Where(p => p != float.MinValue).Count() == 0 ?
+                                                float.MinValue : monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].GetRange(181, 272 - 181 + 1).Where(p => p != float.MinValue).Average());
+                                            lstQuality.Add(monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].GetRange(273, 364 - 273 + 1).Where(p => p != float.MinValue).Count() == 0 ?
+                                                float.MinValue : monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].GetRange(273, 364 - 273 + 1).Where(p => p != float.MinValue).Average());
+
+                                            if (monitorValue.dicMetricValues.Keys.Contains(seasonalmetric.Metric.MetricName))
+                                            {
+                                                monitorValue.dicMetricValues.Add(seasonalmetric.SeasonalMetricName, monitorValue.dicMetricValues[seasonalmetric.Metric.MetricName]);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            foreach (Season s in seasonalmetric.Seasons)
+                                            {
+                                                if (!DicSeasonStaticsAll.ContainsKey(s.StartDay.ToString() + "," + seasonalmetric.SeasonalMetricID.ToString()))
+                                                    _dicSeasonStaticsAll = null;
+                                                switch (DicSeasonStaticsAll[s.StartDay.ToString() + "," + seasonalmetric.SeasonalMetricID.ToString()])
+                                                {
+                                                    case "":
+                                                    case "Mean":
+                                                        lstQuality.Add(monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].Count < 365 ? monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].Average() : monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].GetRange(s.StartDay, s.EndDay - s.StartDay + 1).Where(p => p != float.MinValue).Count() == 0 ?
+                                                            float.MinValue : monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].GetRange(s.StartDay, s.EndDay - s.StartDay + 1).Where(p => p != float.MinValue).Average());
+                                                        break;
+                                                    case "Median":
+                                                        lstQuality.Add(monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].Count < 365 ? monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].OrderBy(p => p).Median() : monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].GetRange(s.StartDay, s.EndDay - s.StartDay + 1).Where(p => p != float.MinValue).Count() == 0 ?
+                                                            float.MinValue : monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].GetRange(s.StartDay, s.EndDay - s.StartDay + 1).Where(p => p != float.MinValue).OrderBy(p => p).Median());
+                                                        break;
+                                                    case "Max":
+                                                        lstQuality.Add(monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].Count < 365 ? monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].Max() : monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].GetRange(s.StartDay, s.EndDay - s.StartDay + 1).Where(p => p != float.MinValue).Count() == 0 ?
+                                                            float.MinValue : monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].GetRange(s.StartDay, s.EndDay - s.StartDay + 1).Where(p => p != float.MinValue).Max());
+                                                        break;
+                                                    case "Min":
+                                                        lstQuality.Add(monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].Count < 365 ? monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].Min() : monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].GetRange(s.StartDay, s.EndDay - s.StartDay + 1).Where(p => p != float.MinValue).Count() == 0 ?
+                                                            float.MinValue : monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].GetRange(s.StartDay, s.EndDay - s.StartDay + 1).Where(p => p != float.MinValue).Min());
+                                                        break;
+                                                    case "Sum":
+                                                        lstQuality.Add(monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].Count < 365 ? monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].Sum() : monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].GetRange(s.StartDay, s.EndDay - s.StartDay + 1).Where(p => p != float.MinValue).Count() == 0 ?
+                                                            float.MinValue : monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].GetRange(s.StartDay, s.EndDay - s.StartDay + 1).Where(p => p != float.MinValue).Sum());
+                                                        break;
+
+                                                }
+
+                                            }
+                                            if (monitorValue.dicMetricValues.Keys.Contains(seasonalmetric.Metric.MetricName))
+                                            {
+                                                if (lstQuality.Where(p => p != float.MinValue).Count() > 0)
+                                                    monitorValue.dicMetricValues.Add(seasonalmetric.SeasonalMetricName, lstQuality.Where(p => p != float.MinValue).Average());
+                                            }
+
+                                        }
+                                        monitorValue.dicMetricValues365.Add(seasonalmetric.SeasonalMetricName, lstQuality);
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            monitorValue.dicMetricValues.Add(monitorValue.Metric.MetricName, monitorValue.Values.First());
+                        }
                     }
                     else
                     {
