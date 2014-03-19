@@ -237,6 +237,7 @@
             this.btnSaveMetaData.TabIndex = 2;
             this.btnSaveMetaData.Text = "Save";
             this.btnSaveMetaData.UseVisualStyleBackColor = true;
+            this.btnSaveMetaData.Click += new System.EventHandler(this.btnSaveMetaData_Click);
             // 
             // ViewEditMetadata
             // 
@@ -247,7 +248,9 @@
             this.Controls.Add(this.button1);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Name = "ViewEditMetadata";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "ViewEditMetadata";
+            this.Shown += new System.EventHandler(this.ViewEditMetadata_Shown);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
             this.flpLabels.ResumeLayout(false);

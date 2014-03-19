@@ -24,9 +24,9 @@ namespace BenMAP
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnOK = new System.Windows.Forms.Button();
             this.grpCancelOK = new System.Windows.Forms.GroupBox();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.btnViewMetadata = new System.Windows.Forms.Button();
             this.btnValidate = new System.Windows.Forms.Button();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.grpCancelOK.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -109,6 +109,28 @@ namespace BenMAP
             this.grpCancelOK.TabIndex = 7;
             this.grpCancelOK.TabStop = false;
             // 
+            // btnViewMetadata
+            // 
+            this.btnViewMetadata.Enabled = false;
+            this.btnViewMetadata.Location = new System.Drawing.Point(103, 18);
+            this.btnViewMetadata.Name = "btnViewMetadata";
+            this.btnViewMetadata.Size = new System.Drawing.Size(108, 27);
+            this.btnViewMetadata.TabIndex = 8;
+            this.btnViewMetadata.Text = "View Metadata";
+            this.btnViewMetadata.UseVisualStyleBackColor = true;
+            this.btnViewMetadata.Click += new System.EventHandler(this.btnViewMetadata_Click);
+            // 
+            // btnValidate
+            // 
+            this.btnValidate.Enabled = false;
+            this.btnValidate.Location = new System.Drawing.Point(12, 18);
+            this.btnValidate.Name = "btnValidate";
+            this.btnValidate.Size = new System.Drawing.Size(75, 27);
+            this.btnValidate.TabIndex = 7;
+            this.btnValidate.Text = "Validate";
+            this.btnValidate.UseVisualStyleBackColor = true;
+            this.btnValidate.Click += new System.EventHandler(this.btnValidate_Click);
+            // 
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.lblInflationDataSetName);
@@ -121,27 +143,6 @@ namespace BenMAP
             this.groupBox1.Size = new System.Drawing.Size(413, 117);
             this.groupBox1.TabIndex = 8;
             this.groupBox1.TabStop = false;
-            // 
-            // btnViewMetadata
-            // 
-            this.btnViewMetadata.Enabled = false;
-            this.btnViewMetadata.Location = new System.Drawing.Point(103, 18);
-            this.btnViewMetadata.Name = "btnViewMetadata";
-            this.btnViewMetadata.Size = new System.Drawing.Size(108, 27);
-            this.btnViewMetadata.TabIndex = 8;
-            this.btnViewMetadata.Text = "View Metadata";
-            this.btnViewMetadata.UseVisualStyleBackColor = true;
-            // 
-            // btnValidate
-            // 
-            this.btnValidate.Enabled = false;
-            this.btnValidate.Location = new System.Drawing.Point(12, 18);
-            this.btnValidate.Name = "btnValidate";
-            this.btnValidate.Size = new System.Drawing.Size(75, 27);
-            this.btnValidate.TabIndex = 7;
-            this.btnValidate.Text = "Validate";
-            this.btnValidate.UseVisualStyleBackColor = true;
-            this.btnValidate.Click += new System.EventHandler(this.btnValidate_Click);
             // 
             // LoadInflationDataSet
             // 

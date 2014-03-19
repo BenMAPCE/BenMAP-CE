@@ -453,7 +453,7 @@ namespace BenMAP
 
         private void btnBrowse1_Click(object sender, EventArgs e)
         {
-            LoadSelectedDataSet lmdataset = new LoadSelectedDataSet("Load Monitor Dataset", "Monitor Dataset Name", txtDataSetName.Text);
+            LoadSelectedDataSet lmdataset = new LoadSelectedDataSet("Load Monitor Dataset", "Monitor Dataset Name:", txtDataSetName.Text);
 
             DialogResult dlgr = lmdataset.ShowDialog();
             if(dlgr.Equals(DialogResult.OK))

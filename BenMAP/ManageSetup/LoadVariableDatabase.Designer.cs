@@ -111,6 +111,7 @@ namespace BenMAP
             this.btnViewMetadata.TabIndex = 3;
             this.btnViewMetadata.Text = "View Metadata";
             this.btnViewMetadata.UseVisualStyleBackColor = true;
+            this.btnViewMetadata.Click += new System.EventHandler(this.btnViewMetadata_Click);
             // 
             // btnValidate
             // 

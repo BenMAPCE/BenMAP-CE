@@ -52,6 +52,7 @@
             this.btnViewMetadata.TabIndex = 5;
             this.btnViewMetadata.Text = "View Metadata";
             this.btnViewMetadata.UseVisualStyleBackColor = true;
+            this.btnViewMetadata.Click += new System.EventHandler(this.btnViewMetadata_Click);
             // 
             // grpCancelOK
             // 
@@ -153,9 +154,9 @@
             this.lblDataSetName.AutoSize = true;
             this.lblDataSetName.Location = new System.Drawing.Point(6, 20);
             this.lblDataSetName.Name = "lblDataSetName";
-            this.lblDataSetName.Size = new System.Drawing.Size(116, 13);
+            this.lblDataSetName.Size = new System.Drawing.Size(78, 13);
             this.lblDataSetName.TabIndex = 0;
-            this.lblDataSetName.Text = "Monitor Dataset Name:";
+            this.lblDataSetName.Text = "Dataset Name:";
             // 
             // LoadSelectedDataSet
             // 
@@ -166,7 +167,7 @@
             this.Controls.Add(this.grpDataSetName);
             this.Name = "LoadSelectedDataSet";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Load Monitor Dataset";
+            this.Text = "Load Dataset";
             this.grpCancelOK.ResumeLayout(false);
             this.grpDataSetName.ResumeLayout(false);
             this.grpDataSetName.PerformLayout();

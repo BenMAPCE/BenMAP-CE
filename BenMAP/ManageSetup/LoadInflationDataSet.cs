@@ -184,5 +184,11 @@ namespace BenMAP
                 LoadDatabase();
             }
         }
+
+        private void btnViewMetadata_Click(object sender, EventArgs e)
+        {
+            ViewEditMetadata viewEMdata = new ViewEditMetadata(_strPath);
+            viewEMdata.ShowDialog();
+        }
     }
 }

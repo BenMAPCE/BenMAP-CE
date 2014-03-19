@@ -136,5 +136,11 @@ namespace BenMAP
             btnViewMetadata.Enabled = !string.IsNullOrEmpty(txtDatabase.Text);
             _strPath = txtDatabase.Text;
         }
+
+        private void btnViewMetadata_Click(object sender, EventArgs e)
+        {
+            ViewEditMetadata viewEMdata = new ViewEditMetadata(_strPath);
+            viewEMdata.ShowDialog();
+        }
     }
 }
