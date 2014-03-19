@@ -189,6 +189,7 @@ namespace BenMAP
             this.label15 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.colorBlend = new WinControls.ColorBlendControl();
+            this.colorBlend2 = new WinControls.ColorBlendControl();
             this.legend1 = new DotSpatial.Controls.Legend();
             this.mainMap = new DotSpatial.Controls.Map();
             this.tabData = new System.Windows.Forms.TabPage();
@@ -1628,26 +1629,37 @@ namespace BenMAP
             this.label3.Size = new System.Drawing.Size(188, 46);
             this.label3.TabIndex = 5;
             this.label3.Text = "Double click the legend to change the value range and custom colors.";
+            
+            //colorBlend
                                                 this.colorBlend.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.colorBlend.ColorArray = new System.Drawing.Color[] {
-        System.Drawing.Color.Blue,
-        System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(255)))), ((int)(((byte)(255))))),
-        System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(255)))), ((int)(((byte)(0))))),
-        System.Drawing.Color.Yellow,
-        System.Drawing.Color.Red,
-        System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(0)))), ((int)(((byte)(255)))))};
+        //    this.colorBlend.ColorArray = new System.Drawing.Color[] {
+        //System.Drawing.Color.Blue,
+        //System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(255)))), ((int)(((byte)(255))))),
+        //System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(255)))), ((int)(((byte)(0))))),
+        //System.Drawing.Color.Yellow,
+        //System.Drawing.Color.Red,
+        //System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(0)))), ((int)(((byte)(255)))))};
+            System.Drawing.Color[] sys_oranges_Array = { System.Drawing.Color.FromArgb(254, 237, 222), System.Drawing.Color.FromArgb(254, 217, 118), System.Drawing.Color.FromArgb(253, 174, 107), System.Drawing.Color.FromArgb(253, 141, 60), System.Drawing.Color.FromArgb(230, 85, 13), System.Drawing.Color.FromArgb(166, 54, 3) };
+            this.colorBlend.ColorArray = sys_oranges_Array;
             this.colorBlend.Location = new System.Drawing.Point(24, 408);
             this.colorBlend.Margin = new System.Windows.Forms.Padding(1);
             this.colorBlend.Name = "colorBlend";
             this.colorBlend.Size = new System.Drawing.Size(173, 44);
             this.colorBlend.TabIndex = 1;
-            this.colorBlend.ValueArray = new double[] {
-        0D,
-        0D,
-        0D,
-        0D,
-        0D,
-        0D};
+            this.colorBlend.ValueArray = new double[] {0D, 0D, 0D, 0D, 0D, 0D};
+
+            // colorBlend2 -MCB
+            this.colorBlend2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            //replaces the rainbow color ramp
+            System.Drawing.Color[] sys_yellow_blue_Array = { System.Drawing.Color.FromArgb(255, 255, 204), System.Drawing.Color.FromArgb(199, 233, 180), System.Drawing.Color.FromArgb(127, 205, 187), System.Drawing.Color.FromArgb(65, 182, 196), System.Drawing.Color.FromArgb(44, 127, 184), System.Drawing.Color.FromArgb(37, 52, 148) };
+            this.colorBlend2.ColorArray = sys_oranges_Array;
+            //this.colorBlend2.Location = new System.Drawing.Point(24, 408);
+            //this.colorBlend2.Margin = new System.Windows.Forms.Padding(1);
+            this.colorBlend2.Name = "colorBlend2";
+            //this.colorBlend2.Size = new System.Drawing.Size(173, 44);
+            //this.colorBlend2.TabIndex = 0;
+            this.colorBlend2.ValueArray = new double[] { 0D, 0D, 0D, 0D, 0D, 0D };
+
                                                 this.legend1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
@@ -2297,6 +2309,7 @@ namespace BenMAP
         private System.Windows.Forms.ComboBox cbIncidenceAggregation;
         private System.Windows.Forms.Label label16;
         private WinControls.ColorBlendControl colorBlend;
+        private WinControls.ColorBlendControl colorBlend2;
         private System.Windows.Forms.RadioButton rbIncidenceAll;
         private System.Windows.Forms.RadioButton rbIncidenceOnlyOne;
         private System.Windows.Forms.RadioButton rbAPVAll;

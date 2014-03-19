@@ -12,6 +12,7 @@ using DotSpatial.Symbology;
 using System.Threading;
 using FirebirdSql.Data.FirebirdClient;
 using System.Text.RegularExpressions;
+using System.Drawing.Drawing2D;  //-added by MCB for color ramps
 
 namespace BenMAP
 {
@@ -365,7 +366,9 @@ namespace BenMAP
         private void ResetGisMap(object sender, EventArgs e)
         {
             try
-            {
+            {   //Replace the color ramp
+                colorBlend.ColorArray = GetColorRamp("red_black", 6);
+
                 _blendColors = colorBlend.ColorArray;
                 _dMaxValue = colorBlend.MaxValue;
                 _dMinValue = colorBlend.MinValue;
@@ -377,10 +380,18 @@ namespace BenMAP
                 string ColumnName = _columnName;
                 PolygonScheme myScheme1 = new PolygonScheme();
                 float fl = (float)0.1;
-                myScheme1.EditorSettings.StartColor = Color.Blue;
+                //Original scheme editor settings
+                //myScheme1.EditorSettings.StartColor = Color.Blue;
+                //myScheme1.EditorSettings.StartColor.ToTransparent(fl);
+                //myScheme1.EditorSettings.EndColor = Color.Red;
+                //myScheme1.EditorSettings.EndColor.ToTransparent(fl);
+
+                //new scheme editor settings
+                myScheme1.EditorSettings.StartColor = colorBlend.ColorArray[0];
                 myScheme1.EditorSettings.StartColor.ToTransparent(fl);
-                myScheme1.EditorSettings.EndColor = Color.Red;
+                myScheme1.EditorSettings.EndColor = colorBlend.ColorArray[5];
                 myScheme1.EditorSettings.EndColor.ToTransparent(fl);
+
                 float fColor = (float)0.2;
                 Color ctemp = new Color();
                 myScheme1.EditorSettings.ClassificationType = ClassificationType.Quantities;
@@ -1000,6 +1011,75 @@ namespace BenMAP
             dicAllWeight.Clear();
             GC.Collect();
         }
+        private Color[] GetColorRamp(string rampID, int numClasses)
+        {
+            // FYI: numClasses is just a stub for now- only 6 class color ramps have been created so far.-MCB
 
+            //New empty color array to fill and return
+            Color[] _colorArray = new Color[6];
+
+            //Create a selection of color ramps to choose from
+            //Note: Color ramps created using ColorBrewer 2.0: chose from color blind safe six class ramps. -MCB
+            //Sequential- color ramps
+            //single hue (light to dark)
+            Color[] _oranges_Array = { Color.FromArgb(254, 237, 222), Color.FromArgb(254, 217, 118), Color.FromArgb(253, 174, 107), Color.FromArgb(253, 141, 60), Color.FromArgb(230, 85, 13), Color.FromArgb(166, 54, 3) };
+            Color[] _purples_Array = { Color.FromArgb(242, 240, 247), Color.FromArgb(218, 218, 235), Color.FromArgb(188, 189, 220), Color.FromArgb(158, 154, 200), Color.FromArgb(117, 107, 177), Color.FromArgb(84, 39, 143) };
+            Color[] _blues_Array = { Color.FromArgb(239, 243, 255), Color.FromArgb(198, 219, 239), Color.FromArgb(158, 202, 225), Color.FromArgb(107, 174, 214), Color.FromArgb(49, 130, 189), Color.FromArgb(8, 81, 156) };
+
+            //multi-hue
+            Color[] _yellow_red_Array = { Color.FromArgb(255, 255, 178), Color.FromArgb(254, 237, 222), Color.FromArgb(254, 178, 76), Color.FromArgb(253, 141, 60), Color.FromArgb(240, 59, 32), Color.FromArgb(189, 0, 38) };
+            Color[] _yellow_blue_Array = { Color.FromArgb(255, 255, 204), Color.FromArgb(199, 233, 180), Color.FromArgb(127, 205, 187), Color.FromArgb(65, 182, 196), Color.FromArgb(44, 127, 184), Color.FromArgb(37, 52, 148) };
+            Color[] _yellow_green_Array = { Color.FromArgb(255, 255, 204), Color.FromArgb(217, 240, 163), Color.FromArgb(173, 221, 142), Color.FromArgb(120, 198, 121), Color.FromArgb(49, 163, 84), Color.FromArgb(0, 104, 55) };
+
+            //Diverging color ramps
+            Color[] _brown_green_Array = { Color.FromArgb(140, 81, 10), Color.FromArgb(216, 179, 101), Color.FromArgb(246, 232, 195), Color.FromArgb(199, 234, 229), Color.FromArgb(90, 180, 172), Color.FromArgb(1, 102, 94) };
+            Color[] _magenta_green_Array = { Color.FromArgb(197, 27, 125), Color.FromArgb(233, 163, 201), Color.FromArgb(253, 224, 239), Color.FromArgb(230, 245, 208), Color.FromArgb(161, 215, 106), Color.FromArgb(77, 146, 33) };
+            Color[] _red_blue_Array = { Color.FromArgb(215, 48, 39), Color.FromArgb(252, 141, 89), Color.FromArgb(254, 224, 144), Color.FromArgb(224, 243, 248), Color.FromArgb(145, 191, 219), Color.FromArgb(69, 117, 180) };
+            Color[] _red_black_Array = { Color.FromArgb(178, 24, 43), Color.FromArgb(239, 138, 98), Color.FromArgb(253, 219, 199), Color.FromArgb(224, 224, 224), Color.FromArgb(153, 153, 153), Color.FromArgb(77, 77, 77) };
+            Color[] _purple_green_Array = { Color.FromArgb(118, 42, 131), Color.FromArgb(175, 141, 195), Color.FromArgb(231, 212, 232), Color.FromArgb(217, 240, 211), Color.FromArgb(127, 191, 123), Color.FromArgb(27, 120, 55) };
+
+            //Note: Could double the ramps by allowing the case hue names in reverse order and just reversing the array contents. 
+            switch (rampID)
+            {
+                case "oranges":
+                    _colorArray = _oranges_Array;
+                    break;
+                case "purples":
+                    _colorArray = _purples_Array;
+                    break;
+                case "blues":
+                    _colorArray = _blues_Array;
+                    break;
+
+                case "yellow_red":
+                    _colorArray = _yellow_red_Array;
+                    break;
+                case "yellow_blue":
+                    _colorArray = _yellow_blue_Array;
+                    break;
+                case "yellow_green":
+                    _colorArray = _yellow_green_Array;
+                    break;
+
+
+                case "brown_green":
+                    _colorArray = _brown_green_Array;
+                    break;
+                case "magenta_green":
+                    _colorArray = _magenta_green_Array;
+                    break;
+                case "red_blue":
+                    _colorArray = _red_blue_Array;
+                    break;
+                case "red_black":
+                    _colorArray = _red_black_Array;
+                    break;
+                case "purple_green":
+                    _colorArray = _purple_green_Array;
+                    break;
+            }
+
+            return _colorArray;
+        }
     }
 }
