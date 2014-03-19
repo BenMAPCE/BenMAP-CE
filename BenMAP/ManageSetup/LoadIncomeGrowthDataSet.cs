@@ -2,17 +2,36 @@ using System;
 using System.Data;
 using System.Windows.Forms;
 using ESIL.DBUtility;
-
+//TODO:
+//1 on the LoadIncomeGrowthDataSet dialog add a validate button
+//2 make it disabled
+//3 make the OK button disabled
+//4 After selecting a database to load (a csv file or excel file)
+//  enabled the validate button.
+//5 on a positive validation enable the OK button
+//
 namespace BenMAP
 {
     public partial class LoadIncomeGrowthDataSet : FormBase
     {
+        private DataTable _incomeGrowthData;
+        public DataTable IncomeGrowthData
+        {
+            get{return _incomeGrowthData;}
+        }
+        private string _strPath;
+
         public LoadIncomeGrowthDataSet()
         {
             InitializeComponent();
         }
 
         private void btnOK_Click(object sender, EventArgs e)
+        {
+            LoadDatabase();
+        }
+
+        private void LoadDatabase()
         {
             try
             {
@@ -142,6 +161,25 @@ namespace BenMAP
             }
             catch (Exception)
             { }
+        }
+
+        private void btnValidate_Click(object sender, EventArgs e)
+        {
+            _incomeGrowthData = CommonClass.ExcelToDataTable(_strPath);
+            ValidateDatabaseImport vdi = new ValidateDatabaseImport(_incomeGrowthData, "Incomegrowth", _strPath);
+
+            DialogResult dlgR = vdi.ShowDialog();
+            if (dlgR.Equals(DialogResult.OK))
+            {
+                LoadDatabase();
+            }
+        }
+
+        private void txtDatabase_TextChanged(object sender, EventArgs e)
+        {
+            btnValidate.Enabled = !string.IsNullOrEmpty(txtDatabase.Text);
+            btnViewMetadata.Enabled = !string.IsNullOrEmpty(txtDatabase.Text);
+            _strPath = txtDatabase.Text;
         }
     }
 }

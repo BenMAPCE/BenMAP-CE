@@ -7,7 +7,15 @@ using ESIL.DBUtility;
 using FirebirdSql.Data.FirebirdClient;
 using System.IO;
 using System.Collections.Generic;
-
+//TODO:
+//1 on the MonitorDataSetDefinition form add a validate button and a cancel button
+//2 make it disabled
+//3 make the OK button disabled
+//4 After selecting a Monitor Data File (a csv file or excel file)
+//  enabled the validate button.
+//5 Clicking on the validate button will bring up the Validate form (auto runs when button is clicked)
+//6 on a positive validation enable the Import To Database button
+//
 namespace BenMAP
 {
     public partial class MonitorDataSetDefinition : FormBase
@@ -148,6 +156,11 @@ namespace BenMAP
 
         private void btnLoad_Click(object sender, EventArgs e)
         {
+            LoadDatabase();
+        }
+
+        private void LoadDatabase()
+        {
             FireBirdHelperBase fb = new ESILFireBirdHelper();
             try
             {
@@ -160,11 +173,11 @@ namespace BenMAP
                 {
                     MessageBox.Show("Please input a valid year."); return;
                 }
-                if (txtMonitorDataFile.Text == string.Empty) { MessageBox.Show("Please select a monitor data file."); return; }
+                //if (txtMonitorDataFile.Text == string.Empty) { MessageBox.Show("Please select a monitor data file."); return; }
                 string msg = string.Format("Save this file associated with {0} and {1} ?", cboPollutant.GetItemText(cboPollutant.SelectedItem), txtYear.Text);
                 DialogResult result = MessageBox.Show(msg, "Confirm Edit", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                 if (result == DialogResult.No) return;
-                _dtDataFile = CommonClass.ExcelToDataTable(txtMonitorDataFile.Text);
+                //_dtDataFile = CommonClass.ExcelToDataTable(txtMonitorDataFile.Text);
                 int iMonitorName = -1;
                 int iMonitorDescription = -1;
                 int iLatitude = -1;
@@ -275,6 +288,7 @@ namespace BenMAP
                 Logger.LogError(ex.Message);
             }
         }
+        
         private static Dictionary<int, string> getMetric()
         {
             try
@@ -435,6 +449,18 @@ namespace BenMAP
             sw.Close();
             fs.Close();
             MessageBox.Show("CSV file saved.", "File saved");
+        }
+
+        private void btnBrowse1_Click(object sender, EventArgs e)
+        {
+            LoadSelectedDataSet lmdataset = new LoadSelectedDataSet("Load Monitor Dataset", "Monitor Dataset Name", txtDataSetName.Text);
+
+            DialogResult dlgr = lmdataset.ShowDialog();
+            if(dlgr.Equals(DialogResult.OK))
+            {
+                _dtDataFile = lmdataset.MonitorDataSet;
+                LoadDatabase();
+            }
         }
     }
 }

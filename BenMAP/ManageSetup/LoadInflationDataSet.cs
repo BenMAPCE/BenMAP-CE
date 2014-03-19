@@ -2,11 +2,25 @@ using System;
 using System.Data;
 using System.Windows.Forms;
 using ESIL.DBUtility;
-
+//TODO:
+//make sure there is a name in the txtInflationDataSetName text box
 namespace BenMAP
 {
     public partial class LoadInflationDataSet : FormBase
     {
+        private DataTable _inflationData;
+        public DataTable InflationData
+        {
+            get { return _inflationData; }
+        }
+        private string _strPath;
+        private string _inflationDataSetName;
+        public string InflationDataSetName
+        {
+            get { return _inflationDataSetName; }
+            set { _inflationDataSetName = value; }
+        }
+        
         public LoadInflationDataSet()
         {
             InitializeComponent();
@@ -14,11 +28,22 @@ namespace BenMAP
 
         private void btnOK_Click(object sender, EventArgs e)
         {
+            LoadDatabase();
+        }
+
+        private void LoadDatabase()
+        {
             try
             {
                 if (txtDatabase.Text == string.Empty)
                 {
                     MessageBox.Show("Please select a datafile.");
+                    return;
+                }
+                if(string.IsNullOrEmpty(txtInflationDataSetName.Text))
+                {
+                    MessageBox.Show("Please enter a dataset name.");
+                    txtInflationDataSetName.Focus();
                     return;
                 }
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
@@ -112,14 +137,6 @@ namespace BenMAP
             }
         }
 
-        private string _inflationDataSetName;
-
-        public string InflationDataSetName
-        {
-            get { return _inflationDataSetName; }
-            set { _inflationDataSetName = value; }
-        }
-
         private void btnCancel_Click(object sender, EventArgs e)
         {
             this.DialogResult = DialogResult.Cancel;
@@ -147,6 +164,25 @@ namespace BenMAP
             }
             catch (Exception)
             { }
+        }
+
+        private void txtDatabase_TextChanged(object sender, EventArgs e)
+        {
+            btnValidate.Enabled = !string.IsNullOrEmpty(txtDatabase.Text);
+            btnViewMetadata.Enabled = !string.IsNullOrEmpty(txtDatabase.Text);
+            _strPath = txtDatabase.Text;
+        }
+
+        private void btnValidate_Click(object sender, EventArgs e)
+        {
+            _inflationData = CommonClass.ExcelToDataTable(_strPath);
+            ValidateDatabaseImport vdi = new ValidateDatabaseImport(_inflationData, "Inflation", _strPath);
+
+            DialogResult dlgR = vdi.ShowDialog();
+            if (dlgR.Equals(DialogResult.OK))
+            {
+                LoadDatabase();
+            }
         }
     }
 }

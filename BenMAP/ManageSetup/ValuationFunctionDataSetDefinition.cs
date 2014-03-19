@@ -11,7 +11,18 @@ using BrightIdeasSoftware;
 using System.Diagnostics;
 using System.Collections;
 using ESIL.DBUtility;
-
+//TODO:
+// On the ValuationFunctionDataSetDefinition form, change the function of the "Load From Database" from a browse button to where
+// it launches a dialog very simaler to the five Load dataset dialogs.  This will help in trying to maintain a consistancy throughout
+// the application.
+//
+//1 on the LoadValuationFunctionDataSet dialog add a validate button
+//2 make it disabled
+//3 make the OK button disabled
+//4 After selecting a database to load (a csv file or excel file)
+//  enabled the validate button.
+//5 on a positive validation enable the OK button
+//
 namespace BenMAP
 {
     public partial class ValuationFunctionDataSetDefinition : FormBase

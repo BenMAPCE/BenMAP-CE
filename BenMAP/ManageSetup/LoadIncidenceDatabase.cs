@@ -1,16 +1,33 @@
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
+
+
+//TODO: - done, needs a go over to ensure that all areas are covered.
+//1 on the LoadIncidenceDatabase dialog add a validate button
+//2 make it disabled
+//3 make the OK button disabled
+//4 After selecting a database to load (a csv file or excel file)
+//  enabled the validate button.
+//5 create a temp datatable to be passed to the validation window
+//  private Datatable _incidneceData
+//  public Datatable IncidenceData { get {return _incidenceData}}
+//6 on a positive validation enable the OK button
+
+//_incidneceData = CommonClass.ExcelToDataTable(_strPath);
+
 
 namespace BenMAP
 {
     public partial class LoadIncidenceDatabase : FormBase
     {
+
+        private DataTable _incidneceData;
+        public DataTable IncidneceData
+        {
+            get { return _incidneceData; }
+        }
+
         public LoadIncidenceDatabase()
         {
             InitializeComponent();
@@ -82,6 +99,11 @@ namespace BenMAP
 
         private void btnOK_Click(object sender, EventArgs e)
         {
+            LoadDatabase();
+        }
+
+        private void LoadDatabase()
+        {
             string msg = string.Empty;
             try
             {
@@ -112,5 +134,30 @@ namespace BenMAP
             this.DialogResult = DialogResult.Cancel;
         }
 
+        private void btnValidate_Click(object sender, EventArgs e)
+        {
+            _incidneceData = CommonClass.ExcelToDataTable(_strPath);
+            ValidateDatabaseImport vdi = new ValidateDatabaseImport(_incidneceData, "Incidence", _strPath);
+
+            DialogResult dlgR = vdi.ShowDialog();
+            if(dlgR.Equals(DialogResult.OK))
+            {
+                LoadDatabase();
+            }
+        }
+
+        private void txtDatabase_TextChanged(object sender, EventArgs e)
+        {
+                btnValidate.Enabled = !string.IsNullOrEmpty(txtDatabase.Text);
+                btnViewMetadata.Enabled = !string.IsNullOrEmpty(txtDatabase.Text);
+                _strPath = txtDatabase.Text;
+        }
+
+        private void btnViewMetadata_Click(object sender, EventArgs e)
+        {
+            ViewEditMetadata vem = new ViewEditMetadata(_strPath);
+
+            vem.ShowDialog();
+        }
     }
 }

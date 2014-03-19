@@ -7,11 +7,25 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.IO;
-
+//TODO:
+//1 on the LoadVariableDatabase dialog add a validate button
+//2 make it disabled
+//3 make the OK button disabled
+//4 After selecting a database to load (a csv file or excel file)
+//  enabled the validate button.
+//5 on a positive validation enable the OK button
+//
 namespace BenMAP
 {
     public partial class LoadVariableDatabase : FormBase
     {
+        
+        private DataTable _variableDatabase;
+        public DataTable VariableDatabase
+        {
+            get {return _variableDatabase; }
+        }
+        private string _strPath;
         public LoadVariableDatabase()
         {
             InitializeComponent();
@@ -32,6 +46,11 @@ namespace BenMAP
         }
 
         private void btnOK_Click(object sender, EventArgs e)
+        {
+            LoadDatabase();
+        }
+
+        private void LoadDatabase()
         {
             if (cboGridDefinition.Text == string.Empty || txtDatabase.Text == string.Empty)
             {
@@ -97,6 +116,25 @@ namespace BenMAP
         {
             this.DialogResult = DialogResult.Cancel;
             this.Close();
+        }
+
+        private void btnValidate_Click(object sender, EventArgs e)
+        {
+            _variableDatabase = CommonClass.ExcelToDataTable(_strPath);
+            ValidateDatabaseImport vdi = new ValidateDatabaseImport(_variableDatabase, "VariableDataset", _strPath);
+
+            DialogResult dlgR = vdi.ShowDialog();
+            if (dlgR.Equals(DialogResult.OK))
+            {
+                LoadDatabase();
+            }
+        }
+
+        private void txtDatabase_TextChanged(object sender, EventArgs e)
+        {
+            btnValidate.Enabled = !string.IsNullOrEmpty(txtDatabase.Text);
+            btnViewMetadata.Enabled = !string.IsNullOrEmpty(txtDatabase.Text);
+            _strPath = txtDatabase.Text;
         }
     }
 }
