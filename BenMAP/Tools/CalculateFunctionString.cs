@@ -54,6 +54,8 @@ namespace BenMAP.Tools
 
                 foreach (KeyValuePair<string, string> k in dicFunction)
                 {
+                try
+                {
                     string strVariables = "";
                     int i = 0;
                     if (dicSetupVariables != null && dicSetupVariables.Count > 0 && dicSetupVariables.ContainsKey(k.Key))
@@ -87,7 +89,9 @@ namespace BenMAP.Tools
 
                     object tmp = assembly.CreateInstance("CoustomEval.myLibBaseLine" + k.Key);
                     dicBaselineMethodInfo.Add(k.Key, tmp);
-
+                }
+                catch
+                {}
                 }
             }
             catch (Exception ex)
@@ -105,6 +109,8 @@ namespace BenMAP.Tools
 
                 foreach (KeyValuePair<string, string> k in dicFunction)
                 {
+                 try
+                    {
                     string strVariables = "";
                     int i = 0;
                     if (dicSetupVariables != null && dicSetupVariables.Count > 0 && dicSetupVariables.ContainsKey(k.Key))
@@ -143,7 +149,10 @@ namespace BenMAP.Tools
 
                     object tmp = assembly.CreateInstance("CoustomEval.myLibPointEstimate" + k.Key);
                     dicPointEstimateMethodInfo.Add(k.Key, tmp);
-
+                    }
+                    catch
+                    { 
+                    }
                 }
             }
             catch (Exception ex)
