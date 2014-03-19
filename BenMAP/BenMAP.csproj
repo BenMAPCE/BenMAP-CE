@@ -159,6 +159,10 @@
     <Reference Include="protobuf-net">
       <HintPath>Dll\protobuf-net.dll</HintPath>
     </Reference>
+    <Reference Include="RestSharp, Version=104.4.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Dll\RestSharp.104.4.0\net4\RestSharp.dll</HintPath>
+    </Reference>
     <Reference Include="RichTextBoxPrintCtrl">
       <HintPath>Dll\RichTextBoxPrintCtrl.dll</HintPath>
     </Reference>
@@ -392,6 +396,8 @@
     <Compile Include="HomePage.Designer.cs">
       <DependentUpon>HomePage.cs</DependentUpon>
     </Compile>
+    <Compile Include="Jira\ProjectComponent.cs" />
+    <Compile Include="Jira\JiraClient.cs" />
     <Compile Include="Kriging\CellStrMatch.cs" />
     <Compile Include="Kriging\Common.cs" />
     <Compile Include="CommonClass.cs" />
@@ -811,6 +817,7 @@
     <Compile Include="QALYResulesReport.Designer.cs">
       <DependentUpon>QALYResulesReport.cs</DependentUpon>
     </Compile>
+    <Compile Include="Jira\NewIssue.cs" />
     <None Include="Resources\Welcome1.png" />
     <EmbeddedResource Include="APV\Aggregation.resx">
       <DependentUpon>Aggregation.cs</DependentUpon>
