@@ -1602,7 +1602,8 @@ namespace BenMAP
                                                 this.splitContainer2.Panel1.Controls.Add(this.cboRegion);
             this.splitContainer2.Panel1.Controls.Add(this.label15);
             this.splitContainer2.Panel1.Controls.Add(this.label3);
-            this.splitContainer2.Panel1.Controls.Add(this.colorBlend);
+            //-MCB Don't add color ramp a bottom of legend
+            //this.splitContainer2.Panel1.Controls.Add(this.colorBlend);
             this.splitContainer2.Panel1.Controls.Add(this.legend1);
                                                 this.splitContainer2.Panel2.Controls.Add(this.mainMap);
             this.splitContainer2.Size = new System.Drawing.Size(693, 458);
@@ -1631,28 +1632,22 @@ namespace BenMAP
             this.label3.Text = "Double click the legend to change the value range and custom colors.";
             
             //colorBlend
-                                                this.colorBlend.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-        //    this.colorBlend.ColorArray = new System.Drawing.Color[] {
-        //System.Drawing.Color.Blue,
-        //System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(255)))), ((int)(((byte)(255))))),
-        //System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(255)))), ((int)(((byte)(0))))),
-        //System.Drawing.Color.Yellow,
-        //System.Drawing.Color.Red,
-        //System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(0)))), ((int)(((byte)(255)))))};
-            System.Drawing.Color[] sys_oranges_Array = { System.Drawing.Color.FromArgb(254, 237, 222), System.Drawing.Color.FromArgb(254, 217, 118), System.Drawing.Color.FromArgb(253, 174, 107), System.Drawing.Color.FromArgb(253, 141, 60), System.Drawing.Color.FromArgb(230, 85, 13), System.Drawing.Color.FromArgb(166, 54, 3) };
-            this.colorBlend.ColorArray = sys_oranges_Array;
-            this.colorBlend.Location = new System.Drawing.Point(24, 408);
-            this.colorBlend.Margin = new System.Windows.Forms.Padding(1);
-            this.colorBlend.Name = "colorBlend";
-            this.colorBlend.Size = new System.Drawing.Size(173, 44);
-            this.colorBlend.TabIndex = 1;
-            this.colorBlend.ValueArray = new double[] {0D, 0D, 0D, 0D, 0D, 0D};
+            //Don't need ColorBlend color ramp at bottom of legend-MCB
+            //this.colorBlend.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            //System.Drawing.Color[] sys_oranges_Array = { System.Drawing.Color.FromArgb(254, 237, 222), System.Drawing.Color.FromArgb(254, 217, 118), System.Drawing.Color.FromArgb(253, 174, 107), System.Drawing.Color.FromArgb(253, 141, 60), System.Drawing.Color.FromArgb(230, 85, 13), System.Drawing.Color.FromArgb(166, 54, 3) };
+            //this.colorBlend.ColorArray = sys_oranges_Array;
+            //this.colorBlend.Location = new System.Drawing.Point(24, 408);
+            //this.colorBlend.Margin = new System.Windows.Forms.Padding(1);
+            //this.colorBlend.Name = "colorBlend";
+            //this.colorBlend.Size = new System.Drawing.Size(173, 44);
+            //this.colorBlend.TabIndex = 1;
+            //this.colorBlend.ValueArray = new double[] {0D, 0D, 0D, 0D, 0D, 0D};
 
             // colorBlend2 -MCB
             this.colorBlend2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             //replaces the rainbow color ramp
             System.Drawing.Color[] sys_yellow_blue_Array = { System.Drawing.Color.FromArgb(255, 255, 204), System.Drawing.Color.FromArgb(199, 233, 180), System.Drawing.Color.FromArgb(127, 205, 187), System.Drawing.Color.FromArgb(65, 182, 196), System.Drawing.Color.FromArgb(44, 127, 184), System.Drawing.Color.FromArgb(37, 52, 148) };
-            this.colorBlend2.ColorArray = sys_oranges_Array;
+            this.colorBlend2.ColorArray = sys_yellow_blue_Array;
             //this.colorBlend2.Location = new System.Drawing.Point(24, 408);
             //this.colorBlend2.Margin = new System.Windows.Forms.Padding(1);
             this.colorBlend2.Name = "colorBlend2";
@@ -1667,7 +1662,8 @@ namespace BenMAP
             this.legend1.ControlRectangle = new System.Drawing.Rectangle(0, 0, 171, 314);
             this.legend1.DocumentRectangle = new System.Drawing.Rectangle(0, 0, 168, 284);
             this.legend1.HorizontalScrollEnabled = true;
-            this.legend1.Indentation = 30;
+            //this.legend1.Indentation = 30;
+            this.legend1.Indentation = 7; //-MCB
             this.legend1.IsInitialized = false;
             this.legend1.Location = new System.Drawing.Point(26, 45);
             this.legend1.MinimumSize = new System.Drawing.Size(5, 6);

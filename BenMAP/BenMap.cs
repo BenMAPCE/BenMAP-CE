@@ -840,6 +840,8 @@ namespace BenMAP
                 string nodeName = currentNode.Name.ToLower();
                 string nodeTag = string.Empty;
                 TreeNode parentNode = currentNode.Parent as TreeNode;
+                TreeNode childNode = new TreeNode();
+                TreeNode deltaNode = new TreeNode();
                 DialogResult rtn = DialogResult.Cancel;
                 var frm = new Form();
                 BenMAPPollutant p;
@@ -1192,163 +1194,63 @@ namespace BenMAP
                         currStat = "baseline";
 
                         BaseControlOP(currStat, ref currentNode);
+
+                        //Advance to first child node and draw base data layer-MCB
+                        childNode = currentNode.FirstNode;  //refresh child node
+                        if (childNode != null)
+                        {
+                            currentNode = childNode;
+                            trvSetting.SelectedNode = currentNode;
+                            nodeName = currentNode.Name.ToLower();
+                            DrawBaseline(currentNode, str);
+                            
+                            //Attempt to display the delta layer as well-MCB
+                            //NOTE-uncomment when multiple layers can be displayed at once-MCb
+                            //deltaNode = parentNode.LastNode; // as TreeNode;
+                            //if ( deltaNode != null)
+                            //{
+                            //    currentNode = deltaNode;
+                            //    trvSetting.SelectedNode = currentNode;
+                            //    nodeName = currentNode.Name.ToLower();
+                            //    DrawDelta(currentNode, str);
+                            //}
+                        }
                         break;
                     case "basedata":
-                        _currentNode = "basedata";
-                        str = string.Format("{0}baseline", (currentNode.Tag as BenMAPLine).Pollutant.PollutantName);
-                        if (CommonClass.LstAsynchronizationStates != null &&
-                            CommonClass.LstAsynchronizationStates.Contains(str.ToLower()))
-                        {
-                            MessageBox.Show(string.Format("BenMAP is still creating the air quality surface map.", (currentNode.Tag as BenMAPLine).Pollutant.PollutantName), "Please wait", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                            return;
-                        }
-                        WaitShow("Drawing layer...");
-                        try
-                        {
-                            tabCtlMain.SelectedIndex = 0;
-                            mainMap.Layers.Clear();
-                            tsbChangeProjection.Text = "change projection to Albers";
-                            BenMAPLine b = currentNode.Tag as BenMAPLine;
-                            foreach (BaseControlGroup bc in CommonClass.LstBaseControlGroup)
-                            {
-                                if (bc.Pollutant.PollutantID == b.Pollutant.PollutantID)
-                                { b = bc.Base; }
-                            }
-                            currentNode.Tag = b;
-                            addBenMAPLineToMainMap(b, "B");
-                            addRegionLayerToMainMap();
-                            LayerObject = currentNode.Tag as BenMAPLine;
-                            InitTableResult(currentNode.Tag as BenMAPLine);
-                        }
-                        catch
-                        {
-                        }
-                        WaitClose();
+                        DrawBaseline(currentNode, str); //-MCB
                         break;
                     case "delta":
-                        _currentNode = "delta";
-                        BaseControlGroup bcgDelta = currentNode.Tag as BaseControlGroup;
-                        if (bcgDelta == null)
-                        {
-                            MessageBox.Show("There is no result for delta.");
-                            return;
-                        }
-                        if (bcgDelta.Base == null || bcgDelta.Control == null)
-                        {
-                            MessageBox.Show("There is no result for delta.");
-                            return;
-                        }
-                        if (bcgDelta.Base.ModelResultAttributes == null || bcgDelta.Control.ModelResultAttributes == null)
-                        {
-                            MessageBox.Show("There is no result for delta.");
-                            return;
-                        }
-                        str = string.Format("{0}baseline", bcgDelta.Pollutant.PollutantName);
-                        if (CommonClass.LstAsynchronizationStates != null &&
-                            CommonClass.LstAsynchronizationStates.Contains(str.ToLower()))
-                        {
-                            MessageBox.Show(string.Format("BenMAP is still creating the air quality surface map. ", bcgDelta.Pollutant.PollutantName), "Please wait", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                            return;
-                        }
-                        str = string.Format("{0}control", bcgDelta.Pollutant.PollutantName);
-                        if (CommonClass.LstAsynchronizationStates != null && CommonClass.LstAsynchronizationStates.Contains(str.ToLower()))
-                        {
-                            MessageBox.Show(string.Format("BenMAP is still creating the air quality surface map. ", bcgDelta.Pollutant.PollutantName), "Please wait", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                            return;
-                        }
-                        WaitShow("Drawing layer...");
-                        tsbChangeProjection.Text = "change projection to Albers";
-                        if (bcgDelta.DeltaQ == null)
-                        {
-                            bcgDelta.DeltaQ = new BenMAPLine();
-                            bcgDelta.DeltaQ.Pollutant = bcgDelta.Base.Pollutant;
-                            bcgDelta.DeltaQ.GridType = bcgDelta.Base.GridType;
-                            bcgDelta.DeltaQ.ModelResultAttributes = new List<ModelResultAttribute>();
-
-
-
-                            Dictionary<string, Dictionary<string, float>> dicControl = new Dictionary<string, Dictionary<string, float>>();
-                            foreach (ModelResultAttribute mra in bcgDelta.Control.ModelResultAttributes)
-                            {
-                                if (!dicControl.ContainsKey(mra.Col + "," + mra.Row))
-                                {
-                                    dicControl.Add(mra.Col + "," + mra.Row, mra.Values);
-                                }
-                            }
-                            foreach (ModelResultAttribute mra in bcgDelta.Base.ModelResultAttributes)
-                            {
-                                try
-                                {
-                                    if (dicControl.ContainsKey(mra.Col + "," + mra.Row))
-                                    {
-                                        bcgDelta.DeltaQ.ModelResultAttributes.Add(new ModelResultAttribute()
-                                       {
-                                           Col = mra.Col,
-                                           Row = mra.Row
-                                       });
-                                        bcgDelta.DeltaQ.ModelResultAttributes[bcgDelta.DeltaQ.ModelResultAttributes.Count - 1].Values = new Dictionary<string, float>();
-                                        foreach (KeyValuePair<string, float> k in mra.Values)
-                                        {
-                                            if (dicControl[mra.Col + "," + mra.Row].ContainsKey(k.Key))
-                                                bcgDelta.DeltaQ.ModelResultAttributes[bcgDelta.DeltaQ.ModelResultAttributes.Count - 1].Values.Add(k.Key, k.Value - (dicControl[mra.Col + "," + mra.Row][k.Key]));
-                                            else
-                                                bcgDelta.DeltaQ.ModelResultAttributes[bcgDelta.DeltaQ.ModelResultAttributes.Count - 1].Values.Add(k.Key, Convert.ToSingle(0.0));
-                                        }
-                                    }
-                                }
-                                catch
-                                { }
-                            }
-                        }
-
-                        try
-                        {
-                            tabCtlMain.SelectedIndex = 0;
-                            mainMap.Layers.Clear();
-                            addBenMAPLineToMainMap(bcgDelta.DeltaQ, "D");
-                            addRegionLayerToMainMap();
-                            LayerObject = bcgDelta.DeltaQ;
-                            InitTableResult(bcgDelta.DeltaQ);
-                        }
-                        catch
-                        {
-                        }
-                        WaitClose();
+                        DrawDelta(currentNode, str);//-MCB
+                        
                         break;
                     case "control":
                         _currentNode = "control";
                         currStat = "control";
                         BaseControlOP(currStat, ref currentNode);
+                        //Advance to first child node and draw control data layer-MCB
+                        childNode = currentNode.FirstNode;
+                        if (childNode != null)
+                        {
+                            currentNode = childNode;
+                            trvSetting.SelectedNode = currentNode;
+                            nodeName = currentNode.Name.ToLower();
+                            DrawControlData(currentNode, str);
+
+                            //Attempt to display the delta layer as well-MCB
+                            //NOTE-uncomment when multiple layers can be displayed at once-MCB
+                            //deltaNode = parentNode.LastNode as TreeNode;
+                            //if (deltaNode != null)
+                            //{
+                            //    currentNode = deltaNode;
+                            //    trvSetting.SelectedNode = currentNode;
+                            //    nodeName = currentNode.Name.ToLower();
+                            //    DrawDelta(currentNode, str);
+                            //}
+                        }
                         break;
                     case "controldata":
-                        _currentNode = "controldata";
-                        str = string.Format("{0}control", (currentNode.Tag as BenMAPLine).Pollutant.PollutantName);
-                        if (CommonClass.LstAsynchronizationStates != null && CommonClass.LstAsynchronizationStates.Contains(str.ToLower()))
-                        {
-                            MessageBox.Show(string.Format("BenMAP is still creating the air quality surface map. ", (currentNode.Tag as BenMAPLine).Pollutant.PollutantName), "Please wait", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                            return;
-                        }
-                        WaitShow("Drawing layer...");
-                        try
-                        {
-                            tabCtlMain.SelectedIndex = 0;
-                            mainMap.Layers.Clear();
-                            BenMAPLine cc = currentNode.Tag as BenMAPLine;
-                            foreach (BaseControlGroup bc in CommonClass.LstBaseControlGroup)
-                            {
-                                if (bc.Pollutant.PollutantID == cc.Pollutant.PollutantID)
-                                { cc = bc.Control; }
-                            }
-                            currentNode.Tag = cc;
-                            addBenMAPLineToMainMap(cc, "C");
-                            addRegionLayerToMainMap();
-                            LayerObject = currentNode.Tag as BenMAPLine;
-                            InitTableResult(currentNode.Tag as BenMAPLine);
-                        }
-                        catch
-                        {
-                        }
-                        WaitClose();
+                        DrawControlData(currentNode, str); //-MCB
+                        
                         break;
                     case "configuration":
                         _currentNode = "gridtype";
@@ -1999,7 +1901,162 @@ namespace BenMAP
                 Logger.LogError(ex);
             }
         }
+        private void DrawBaseline (TreeNode currentNode, string str)
+        {   //MCB- draws base data on main map
+            _currentNode = "basedata";
+            str = string.Format("{0}baseline", (currentNode.Tag as BenMAPLine).Pollutant.PollutantName);
+            if (CommonClass.LstAsynchronizationStates != null &&
+                CommonClass.LstAsynchronizationStates.Contains(str.ToLower()))
+            {
+                MessageBox.Show(string.Format("BenMAP is still creating the air quality surface map.", (currentNode.Tag as BenMAPLine).Pollutant.PollutantName), "Please wait", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            WaitShow("Drawing layer...");
+            try
+            {
+                tabCtlMain.SelectedIndex = 0;
+                mainMap.Layers.Clear();
+                tsbChangeProjection.Text = "change projection to Albers";
+                BenMAPLine b = currentNode.Tag as BenMAPLine;
+                foreach (BaseControlGroup bc in CommonClass.LstBaseControlGroup)
+                {
+                    if (bc.Pollutant.PollutantID == b.Pollutant.PollutantID)
+                    { b = bc.Base; }
+                }
+                currentNode.Tag = b;
+                addBenMAPLineToMainMap(b, "B");
+                addRegionLayerToMainMap();
+                LayerObject = currentNode.Tag as BenMAPLine;
+                InitTableResult(currentNode.Tag as BenMAPLine);
+            }
+            catch
+            {
+            }
+            WaitClose();
+            return;
+        }
+        private void DrawControlData(TreeNode currentNode, string str)
+        {
+            _currentNode = "controldata";
+            str = string.Format("{0}control", (currentNode.Tag as BenMAPLine).Pollutant.PollutantName);
+            if (CommonClass.LstAsynchronizationStates != null && CommonClass.LstAsynchronizationStates.Contains(str.ToLower()))
+            {
+                MessageBox.Show(string.Format("BenMAP is still creating the air quality surface map. ", (currentNode.Tag as BenMAPLine).Pollutant.PollutantName), "Please wait", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            WaitShow("Drawing layer...");
+            try
+            {
+                tabCtlMain.SelectedIndex = 0;
+                mainMap.Layers.Clear();
+                BenMAPLine cc = currentNode.Tag as BenMAPLine;
+                foreach (BaseControlGroup bc in CommonClass.LstBaseControlGroup)
+                {
+                    if (bc.Pollutant.PollutantID == cc.Pollutant.PollutantID)
+                    { cc = bc.Control; }
+                }
+                currentNode.Tag = cc;
+                addBenMAPLineToMainMap(cc, "C");
+                addRegionLayerToMainMap();
+                LayerObject = currentNode.Tag as BenMAPLine;
+                InitTableResult(currentNode.Tag as BenMAPLine);
+            }
+            catch
+            {
+            }
+            WaitClose();
+            return;
+        }
+        private void DrawDelta(TreeNode currentNode, string str)
+        {
+            _currentNode = "delta";
+            BaseControlGroup bcgDelta = currentNode.Tag as BaseControlGroup;
+            if (bcgDelta == null)
+            {
+                MessageBox.Show("There is no result for delta.");
+                return;
+            }
+            if (bcgDelta.Base == null || bcgDelta.Control == null)
+            {
+                MessageBox.Show("There is no result for delta.");
+                return;
+            }
+            if (bcgDelta.Base.ModelResultAttributes == null || bcgDelta.Control.ModelResultAttributes == null)
+            {
+                MessageBox.Show("There is no result for delta.");
+                return;
+            }
+            str = string.Format("{0}baseline", bcgDelta.Pollutant.PollutantName);
+            if (CommonClass.LstAsynchronizationStates != null &&
+                CommonClass.LstAsynchronizationStates.Contains(str.ToLower()))
+            {
+                MessageBox.Show(string.Format("BenMAP is still creating the air quality surface map. ", bcgDelta.Pollutant.PollutantName), "Please wait", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            str = string.Format("{0}control", bcgDelta.Pollutant.PollutantName);
+            if (CommonClass.LstAsynchronizationStates != null && CommonClass.LstAsynchronizationStates.Contains(str.ToLower()))
+            {
+                MessageBox.Show(string.Format("BenMAP is still creating the air quality surface map. ", bcgDelta.Pollutant.PollutantName), "Please wait", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            WaitShow("Drawing layer...");
+            tsbChangeProjection.Text = "change projection to Albers";
+            if (bcgDelta.DeltaQ == null)
+            {
+                bcgDelta.DeltaQ = new BenMAPLine();
+                bcgDelta.DeltaQ.Pollutant = bcgDelta.Base.Pollutant;
+                bcgDelta.DeltaQ.GridType = bcgDelta.Base.GridType;
+                bcgDelta.DeltaQ.ModelResultAttributes = new List<ModelResultAttribute>();
 
+                Dictionary<string, Dictionary<string, float>> dicControl = new Dictionary<string, Dictionary<string, float>>();
+                foreach (ModelResultAttribute mra in bcgDelta.Control.ModelResultAttributes)
+                {
+                    if (!dicControl.ContainsKey(mra.Col + "," + mra.Row))
+                    {
+                        dicControl.Add(mra.Col + "," + mra.Row, mra.Values);
+                    }
+                }
+                foreach (ModelResultAttribute mra in bcgDelta.Base.ModelResultAttributes)
+                {
+                    try
+                    {
+                        if (dicControl.ContainsKey(mra.Col + "," + mra.Row))
+                        {
+                            bcgDelta.DeltaQ.ModelResultAttributes.Add(new ModelResultAttribute()
+                            {
+                                Col = mra.Col,
+                                Row = mra.Row
+                            });
+                            bcgDelta.DeltaQ.ModelResultAttributes[bcgDelta.DeltaQ.ModelResultAttributes.Count - 1].Values = new Dictionary<string, float>();
+                            foreach (KeyValuePair<string, float> k in mra.Values)
+                            {
+                                if (dicControl[mra.Col + "," + mra.Row].ContainsKey(k.Key))
+                                    bcgDelta.DeltaQ.ModelResultAttributes[bcgDelta.DeltaQ.ModelResultAttributes.Count - 1].Values.Add(k.Key, k.Value - (dicControl[mra.Col + "," + mra.Row][k.Key]));
+                                else
+                                    bcgDelta.DeltaQ.ModelResultAttributes[bcgDelta.DeltaQ.ModelResultAttributes.Count - 1].Values.Add(k.Key, Convert.ToSingle(0.0));
+                            }
+                        }
+                    }
+                    catch
+                    { }
+                }
+            }
+
+            try
+            {
+                tabCtlMain.SelectedIndex = 0;
+                mainMap.Layers.Clear();
+                addBenMAPLineToMainMap(bcgDelta.DeltaQ, "D");
+                addRegionLayerToMainMap();
+                LayerObject = bcgDelta.DeltaQ;
+                InitTableResult(bcgDelta.DeltaQ);
+            }
+            catch
+            {
+            }
+            WaitClose();
+            return;
+        }
         private void CRResultChangeVPV()
         {
             try
@@ -2328,6 +2385,11 @@ namespace BenMAP
                 if (isBase == "B") polLayer.LegendText = "Baseline";
                 if (isBase == "D") polLayer.LegendText = "Delta";
                 if (isBase == "C") polLayer.LegendText = "Control";
+                
+                //set the layer to have its symbology expanded by default //-MCB
+                //NoteL not seeing end effect yet? -MCB
+                polLayer.Symbology.IsExpanded = true;
+
                 string strValueField = polLayer.DataSet.DataTable.Columns[2].ColumnName;
                 PolygonScheme myScheme1 = new PolygonScheme();
                 float fl = (float)0.1;
@@ -2403,7 +2465,7 @@ namespace BenMAP
             try
             {
                 //Replace the color ramp
-                colorBlend.ColorArray = GetColorRamp("red_black", 6);
+                colorBlend.ColorArray = GetColorRamp("yellow_red", 6);
 
                 _blendColors = colorBlend.ColorArray;
                 _dMaxValue = colorBlend.MaxValue;
@@ -2418,8 +2480,6 @@ namespace BenMAP
                 float fl = (float)0.1;
                 float fColor = (float)0.2;
                 Color ctemp = new Color();
-
-
 
                 iColor = 0;
                 for (int iBlend = 0; iBlend < 6; iBlend++)
@@ -2476,7 +2536,7 @@ namespace BenMAP
             //Color[] colors = new Color[] { Color.Blue, Color.FromArgb(0, 255, 255), Color.FromArgb(0, 255, 0), Color.Yellow, Color.Red, Color.FromArgb(255, 0, 255) };
            
             //Replace the color ramp
-            Color[] colors = GetColorRamp("red_black", 6);
+            Color[] colors = GetColorRamp("yellow_red", 6);
             
             colorBlend.SetValueRange(min, max, true);
             _blendColors = colorBlend.ColorArray;
@@ -12015,7 +12075,7 @@ namespace BenMAP
             Color[] _blues_Array = { Color.FromArgb(239, 243, 255), Color.FromArgb(198, 219, 239), Color.FromArgb(158, 202, 225), Color.FromArgb(107, 174, 214), Color.FromArgb(49, 130, 189), Color.FromArgb(8, 81, 156) };
 
             //multi-hue
-            Color[] _yellow_red_Array = { Color.FromArgb(255, 255, 178), Color.FromArgb(254, 237, 222), Color.FromArgb(254, 178, 76), Color.FromArgb(253, 141, 60), Color.FromArgb(240, 59, 32), Color.FromArgb(189, 0, 38) };
+            Color[] _yellow_red_Array = { Color.FromArgb(255, 255, 178), Color.FromArgb(254, 217, 118), Color.FromArgb(254, 178, 76), Color.FromArgb(253, 141, 60), Color.FromArgb(240, 59, 32), Color.FromArgb(189, 0, 38) };
             Color[] _yellow_blue_Array = { Color.FromArgb(255, 255, 204), Color.FromArgb(199, 233, 180), Color.FromArgb(127, 205, 187), Color.FromArgb(65, 182, 196), Color.FromArgb(44, 127, 184), Color.FromArgb(37, 52, 148) };
             Color[] _yellow_green_Array = { Color.FromArgb(255, 255, 204), Color.FromArgb(217, 240, 163), Color.FromArgb(173, 221, 142), Color.FromArgb(120, 198, 121), Color.FromArgb(49, 163, 84), Color.FromArgb(0, 104, 55) };
 

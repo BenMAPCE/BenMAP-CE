@@ -367,7 +367,7 @@ namespace BenMAP
         {
             try
             {   //Replace the color ramp
-                colorBlend.ColorArray = GetColorRamp("red_black", 6);
+                colorBlend.ColorArray = GetColorRamp("brown_green", 6);
 
                 _blendColors = colorBlend.ColorArray;
                 _dMaxValue = colorBlend.MaxValue;
@@ -1027,7 +1027,7 @@ namespace BenMAP
             Color[] _blues_Array = { Color.FromArgb(239, 243, 255), Color.FromArgb(198, 219, 239), Color.FromArgb(158, 202, 225), Color.FromArgb(107, 174, 214), Color.FromArgb(49, 130, 189), Color.FromArgb(8, 81, 156) };
 
             //multi-hue
-            Color[] _yellow_red_Array = { Color.FromArgb(255, 255, 178), Color.FromArgb(254, 237, 222), Color.FromArgb(254, 178, 76), Color.FromArgb(253, 141, 60), Color.FromArgb(240, 59, 32), Color.FromArgb(189, 0, 38) };
+            Color[] _yellow_red_Array = { Color.FromArgb(255, 255, 178), Color.FromArgb(254, 217, 118), Color.FromArgb(254, 178, 76), Color.FromArgb(253, 141, 60), Color.FromArgb(240, 59, 32), Color.FromArgb(189, 0, 38) };
             Color[] _yellow_blue_Array = { Color.FromArgb(255, 255, 204), Color.FromArgb(199, 233, 180), Color.FromArgb(127, 205, 187), Color.FromArgb(65, 182, 196), Color.FromArgb(44, 127, 184), Color.FromArgb(37, 52, 148) };
             Color[] _yellow_green_Array = { Color.FromArgb(255, 255, 204), Color.FromArgb(217, 240, 163), Color.FromArgb(173, 221, 142), Color.FromArgb(120, 198, 121), Color.FromArgb(49, 163, 84), Color.FromArgb(0, 104, 55) };
 
