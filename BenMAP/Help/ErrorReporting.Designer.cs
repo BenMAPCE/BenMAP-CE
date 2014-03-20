@@ -48,6 +48,12 @@
             this.radioButton3 = new System.Windows.Forms.RadioButton();
             this.radioButton4 = new System.Windows.Forms.RadioButton();
             this.radioButton5 = new System.Windows.Forms.RadioButton();
+            this.label9 = new System.Windows.Forms.Label();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.label10 = new System.Windows.Forms.Label();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.label11 = new System.Windows.Forms.Label();
+            this.textBox5 = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // label1
@@ -120,7 +126,7 @@
             // 
             // btnSubmit
             // 
-            this.btnSubmit.Location = new System.Drawing.Point(250, 467);
+            this.btnSubmit.Location = new System.Drawing.Point(360, 685);
             this.btnSubmit.Name = "btnSubmit";
             this.btnSubmit.Size = new System.Drawing.Size(75, 23);
             this.btnSubmit.TabIndex = 9;
@@ -129,7 +135,7 @@
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(374, 467);
+            this.btnCancel.Location = new System.Drawing.Point(484, 685);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 10;
@@ -138,7 +144,7 @@
             // 
             // label6
             // 
-            this.label6.Location = new System.Drawing.Point(144, 438);
+            this.label6.Location = new System.Drawing.Point(254, 656);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(432, 13);
             this.label6.TabIndex = 11;
@@ -217,11 +223,72 @@
             this.radioButton5.Text = "Blocking - this issue prevents me from using BenMAP CE";
             this.radioButton5.UseVisualStyleBackColor = true;
             // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(27, 302);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(295, 14);
+            this.label9.TabIndex = 19;
+            this.label9.Text = "What component of BenMAP CE does the error affect?";
+            // 
+            // comboBox1
+            // 
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Location = new System.Drawing.Point(54, 333);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(252, 22);
+            this.comboBox1.TabIndex = 20;
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(388, 302);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(421, 14);
+            this.label10.TabIndex = 21;
+            this.label10.Text = "The audit trail report may help us to debug or understand your report better.";
+            // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Location = new System.Drawing.Point(411, 333);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(285, 18);
+            this.checkBox1.TabIndex = 22;
+            this.checkBox1.Text = "Include BenMAP CE generated audit trail report.";
+            this.checkBox1.UseVisualStyleBackColor = true;
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(98, 387);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(746, 14);
+            this.label11.TabIndex = 23;
+            this.label11.Text = "Please describe what you were doing when you encountered the error.  Can you tell" +
+                " us how to reproduce the error? (5000 character limit)";
+            // 
+            // textBox5
+            // 
+            this.textBox5.Location = new System.Drawing.Point(128, 420);
+            this.textBox5.Multiline = true;
+            this.textBox5.Name = "textBox5";
+            this.textBox5.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.textBox5.Size = new System.Drawing.Size(693, 209);
+            this.textBox5.TabIndex = 24;
+            // 
             // ErrorReporting
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(957, 523);
+            this.ClientSize = new System.Drawing.Size(957, 734);
+            this.Controls.Add(this.textBox5);
+            this.Controls.Add(this.label11);
+            this.Controls.Add(this.checkBox1);
+            this.Controls.Add(this.label10);
+            this.Controls.Add(this.comboBox1);
+            this.Controls.Add(this.label9);
             this.Controls.Add(this.radioButton5);
             this.Controls.Add(this.radioButton4);
             this.Controls.Add(this.radioButton3);
@@ -269,5 +336,11 @@
         private System.Windows.Forms.RadioButton radioButton3;
         private System.Windows.Forms.RadioButton radioButton4;
         private System.Windows.Forms.RadioButton radioButton5;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.TextBox textBox5;
     }
 }
