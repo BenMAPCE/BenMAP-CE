@@ -7,7 +7,7 @@ namespace BenMAP.Jira
     /// <summary>
     /// Represents a new JIRA issue, mapping fields to their values.
     /// 
-    /// Intended to be saved using the JIRA REST APIresource at "rest/api/2/issue".
+    /// Intended to be saved using the JIRA REST API resource at "rest/api/2/issue".
     /// </summary>
     class NewJiraIssue
     {
