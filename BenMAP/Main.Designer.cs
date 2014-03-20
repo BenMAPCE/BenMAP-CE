@@ -61,11 +61,18 @@ namespace BenMAP
             this.mnuAbout = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.lblStatus = new System.Windows.Forms.ToolStripStatusLabel();
+            this.errorReportingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ToolStripFile.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
-                                                this.tipBallon.IsBalloon = true;
-                                                this.toolItemFile.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            // 
+            // tipBallon
+            // 
+            this.tipBallon.IsBalloon = true;
+            // 
+            // toolItemFile
+            // 
+            this.toolItemFile.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.toolItemFile.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.newToolStripMenuItem,
             this.openToolStripMenuItem,
@@ -76,24 +83,42 @@ namespace BenMAP
             this.toolItemFile.Name = "toolItemFile";
             this.toolItemFile.Size = new System.Drawing.Size(38, 22);
             this.toolItemFile.Text = "&File";
-                                                this.newToolStripMenuItem.Name = "newToolStripMenuItem";
-            this.newToolStripMenuItem.Size = new System.Drawing.Size(108, 22);
+            // 
+            // newToolStripMenuItem
+            // 
+            this.newToolStripMenuItem.Name = "newToolStripMenuItem";
+            this.newToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
             this.newToolStripMenuItem.Text = "&New";
-                                                this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(108, 22);
+            // 
+            // openToolStripMenuItem
+            // 
+            this.openToolStripMenuItem.Name = "openToolStripMenuItem";
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
             this.openToolStripMenuItem.Text = "&Open";
-                                                this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(105, 6);
-                                                this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(108, 22);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(100, 6);
+            // 
+            // exitToolStripMenuItem
+            // 
+            this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
             this.exitToolStripMenuItem.Text = "&Exit";
-                                                this.pnlMain.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            // 
+            // pnlMain
+            // 
+            this.pnlMain.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.pnlMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlMain.Location = new System.Drawing.Point(0, 25);
             this.pnlMain.Name = "pnlMain";
             this.pnlMain.Size = new System.Drawing.Size(939, 645);
             this.pnlMain.TabIndex = 9;
-                                                this.ToolStripFile.Font = new System.Drawing.Font("Calibri", 11F);
+            // 
+            // ToolStripFile
+            // 
+            this.ToolStripFile.Font = new System.Drawing.Font("Calibri", 11F);
             this.ToolStripFile.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnuFile,
             this.mnuActiveSetup,
@@ -108,7 +133,10 @@ namespace BenMAP
             this.ToolStripFile.Size = new System.Drawing.Size(939, 25);
             this.ToolStripFile.TabIndex = 4;
             this.ToolStripFile.Text = "toolStrip1";
-                                                this.mnuFile.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            // 
+            // mnuFile
+            // 
+            this.mnuFile.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.mnuFile.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnuOpenFile,
             this.mnuNewFile,
@@ -122,31 +150,55 @@ namespace BenMAP
             this.mnuFile.Name = "mnuFile";
             this.mnuFile.Size = new System.Drawing.Size(44, 22);
             this.mnuFile.Text = "&File";
-                                                this.mnuOpenFile.Name = "mnuOpenFile";
+            // 
+            // mnuOpenFile
+            // 
+            this.mnuOpenFile.Name = "mnuOpenFile";
             this.mnuOpenFile.Size = new System.Drawing.Size(174, 22);
             this.mnuOpenFile.Text = "&Open project";
             this.mnuOpenFile.Click += new System.EventHandler(this.btnOpenFile_Click);
-                                                this.mnuNewFile.Name = "mnuNewFile";
+            // 
+            // mnuNewFile
+            // 
+            this.mnuNewFile.Name = "mnuNewFile";
             this.mnuNewFile.Size = new System.Drawing.Size(174, 22);
             this.mnuNewFile.Text = "&New project";
             this.mnuNewFile.Click += new System.EventHandler(this.btnNewFile_Click);
-                                                this.mnuRecentFileSep.Name = "mnuRecentFileSep";
+            // 
+            // mnuRecentFileSep
+            // 
+            this.mnuRecentFileSep.Name = "mnuRecentFileSep";
             this.mnuRecentFileSep.Size = new System.Drawing.Size(171, 6);
-                                                this.mnuSave.Name = "mnuSave";
+            // 
+            // mnuSave
+            // 
+            this.mnuSave.Name = "mnuSave";
             this.mnuSave.Size = new System.Drawing.Size(174, 22);
             this.mnuSave.Text = "&Save";
             this.mnuSave.Click += new System.EventHandler(this.mnuSave_Click);
-                                                this.mnuSaveAs.Name = "mnuSaveAs";
+            // 
+            // mnuSaveAs
+            // 
+            this.mnuSaveAs.Name = "mnuSaveAs";
             this.mnuSaveAs.Size = new System.Drawing.Size(174, 22);
             this.mnuSaveAs.Text = "&Save as(*.projx)";
             this.mnuSaveAs.Click += new System.EventHandler(this.mnuSaveAs_Click);
-                                                this.mnuToolStripSeparator2.Name = "mnuToolStripSeparator2";
+            // 
+            // mnuToolStripSeparator2
+            // 
+            this.mnuToolStripSeparator2.Name = "mnuToolStripSeparator2";
             this.mnuToolStripSeparator2.Size = new System.Drawing.Size(171, 6);
-                                                this.mnuExit.Name = "mnuExit";
+            // 
+            // mnuExit
+            // 
+            this.mnuExit.Name = "mnuExit";
             this.mnuExit.Size = new System.Drawing.Size(174, 22);
             this.mnuExit.Text = "&Exit";
             this.mnuExit.Click += new System.EventHandler(this.btnExit_Click);
-                                                this.mnuActiveSetup.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            // 
+            // mnuActiveSetup
+            // 
+            this.mnuActiveSetup.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.mnuActiveSetup.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.btnUSACase,
             this.btnChinaCase});
@@ -155,24 +207,36 @@ namespace BenMAP
             this.mnuActiveSetup.Name = "mnuActiveSetup";
             this.mnuActiveSetup.Size = new System.Drawing.Size(98, 22);
             this.mnuActiveSetup.Text = "Active Setup";
-                                                this.btnUSACase.Name = "btnUSACase";
+            // 
+            // btnUSACase
+            // 
+            this.btnUSACase.Name = "btnUSACase";
             this.btnUSACase.Size = new System.Drawing.Size(143, 22);
             this.btnUSACase.Tag = "USA Case";
             this.btnUSACase.Text = "USA Case";
             this.btnUSACase.Click += new System.EventHandler(this.mnuRecentFile0_Click);
-                                                this.btnChinaCase.Name = "btnChinaCase";
+            // 
+            // btnChinaCase
+            // 
+            this.btnChinaCase.Name = "btnChinaCase";
             this.btnChinaCase.Size = new System.Drawing.Size(143, 22);
             this.btnChinaCase.Tag = "China Case";
             this.btnChinaCase.Text = "China Case";
             this.btnChinaCase.Click += new System.EventHandler(this.mnuRecentFile0_Click);
-                                                this.mnuModifySetup.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            // 
+            // mnuModifySetup
+            // 
+            this.mnuModifySetup.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.mnuModifySetup.Image = ((System.Drawing.Image)(resources.GetObject("mnuModifySetup.Image")));
             this.mnuModifySetup.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.mnuModifySetup.Name = "mnuModifySetup";
             this.mnuModifySetup.Size = new System.Drawing.Size(112, 22);
             this.mnuModifySetup.Text = "Modify Datasets";
             this.mnuModifySetup.Click += new System.EventHandler(this.mnuModifySetup_Click);
-                                                this.mnuAnalysis.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            // 
+            // mnuAnalysis
+            // 
+            this.mnuAnalysis.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.mnuAnalysis.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnuCustom,
             this.mnuOneStepAnalysis});
@@ -182,15 +246,24 @@ namespace BenMAP
             this.mnuAnalysis.Size = new System.Drawing.Size(124, 22);
             this.mnuAnalysis.Text = "Analysis Method";
             this.mnuAnalysis.Visible = false;
-                                                this.mnuCustom.Name = "mnuCustom";
+            // 
+            // mnuCustom
+            // 
+            this.mnuCustom.Name = "mnuCustom";
             this.mnuCustom.Size = new System.Drawing.Size(187, 22);
             this.mnuCustom.Text = "Custom Analysis";
             this.mnuCustom.Click += new System.EventHandler(this.mnuCustom_Click);
-                                                this.mnuOneStepAnalysis.Name = "mnuOneStepAnalysis";
+            // 
+            // mnuOneStepAnalysis
+            // 
+            this.mnuOneStepAnalysis.Name = "mnuOneStepAnalysis";
             this.mnuOneStepAnalysis.Size = new System.Drawing.Size(187, 22);
             this.mnuOneStepAnalysis.Text = "One Step Analysis";
             this.mnuOneStepAnalysis.Click += new System.EventHandler(this.mnuOneStepAnalysis_Click);
-                                                this.btnGIS.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            // 
+            // btnGIS
+            // 
+            this.btnGIS.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.btnGIS.Enabled = false;
             this.btnGIS.Image = ((System.Drawing.Image)(resources.GetObject("btnGIS.Image")));
             this.btnGIS.ImageTransparentColor = System.Drawing.Color.Magenta;
@@ -199,7 +272,10 @@ namespace BenMAP
             this.btnGIS.Text = "GIS Mapping";
             this.btnGIS.Visible = false;
             this.btnGIS.Click += new System.EventHandler(this.btnGIS_Click);
-                                                this.mnuTools.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            // 
+            // mnuTools
+            // 
+            this.mnuTools.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.mnuTools.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.airQualityGridAggregationToolStripMenuItem,
             this.modelFileConcatenatorToolStripMenuItem,
@@ -214,41 +290,68 @@ namespace BenMAP
             this.mnuTools.Name = "mnuTools";
             this.mnuTools.Size = new System.Drawing.Size(53, 22);
             this.mnuTools.Text = "Tools";
-                                                this.airQualityGridAggregationToolStripMenuItem.Name = "airQualityGridAggregationToolStripMenuItem";
+            // 
+            // airQualityGridAggregationToolStripMenuItem
+            // 
+            this.airQualityGridAggregationToolStripMenuItem.Name = "airQualityGridAggregationToolStripMenuItem";
             this.airQualityGridAggregationToolStripMenuItem.Size = new System.Drawing.Size(268, 22);
             this.airQualityGridAggregationToolStripMenuItem.Text = "Air Quality Surface Aggregation";
             this.airQualityGridAggregationToolStripMenuItem.Click += new System.EventHandler(this.airQualityGridAggregationToolStripMenuItem_Click);
-                                                this.modelFileConcatenatorToolStripMenuItem.Name = "modelFileConcatenatorToolStripMenuItem";
+            // 
+            // modelFileConcatenatorToolStripMenuItem
+            // 
+            this.modelFileConcatenatorToolStripMenuItem.Name = "modelFileConcatenatorToolStripMenuItem";
             this.modelFileConcatenatorToolStripMenuItem.Size = new System.Drawing.Size(268, 22);
             this.modelFileConcatenatorToolStripMenuItem.Text = "Model File Concatenator";
             this.modelFileConcatenatorToolStripMenuItem.Visible = false;
             this.modelFileConcatenatorToolStripMenuItem.Click += new System.EventHandler(this.modelFileConcatenatorToolStripMenuItem_Click);
-                                                this.databaseExportToolStripMenuItem.Name = "databaseExportToolStripMenuItem";
+            // 
+            // databaseExportToolStripMenuItem
+            // 
+            this.databaseExportToolStripMenuItem.Name = "databaseExportToolStripMenuItem";
             this.databaseExportToolStripMenuItem.Size = new System.Drawing.Size(268, 22);
             this.databaseExportToolStripMenuItem.Text = "Database Export";
             this.databaseExportToolStripMenuItem.Click += new System.EventHandler(this.databaseExportToolStripMenuItem_Click);
-                                                this.databaseImportToolStripMenuItem.Name = "databaseImportToolStripMenuItem";
+            // 
+            // databaseImportToolStripMenuItem
+            // 
+            this.databaseImportToolStripMenuItem.Name = "databaseImportToolStripMenuItem";
             this.databaseImportToolStripMenuItem.Size = new System.Drawing.Size(268, 22);
             this.databaseImportToolStripMenuItem.Text = "Database Import";
             this.databaseImportToolStripMenuItem.Click += new System.EventHandler(this.databaseImportToolStripMenuItem_Click);
-                                                this.exportAirQualityGridToolStripMenuItem.Name = "exportAirQualityGridToolStripMenuItem";
+            // 
+            // exportAirQualityGridToolStripMenuItem
+            // 
+            this.exportAirQualityGridToolStripMenuItem.Name = "exportAirQualityGridToolStripMenuItem";
             this.exportAirQualityGridToolStripMenuItem.Size = new System.Drawing.Size(268, 22);
             this.exportAirQualityGridToolStripMenuItem.Text = "Export Air Quality Surface";
             this.exportAirQualityGridToolStripMenuItem.Click += new System.EventHandler(this.exportAirQualityGridToolStripMenuItem_Click);
-                                                this.gISMappingToolStripMenuItem.Name = "gISMappingToolStripMenuItem";
+            // 
+            // gISMappingToolStripMenuItem
+            // 
+            this.gISMappingToolStripMenuItem.Name = "gISMappingToolStripMenuItem";
             this.gISMappingToolStripMenuItem.Size = new System.Drawing.Size(268, 22);
             this.gISMappingToolStripMenuItem.Text = "GIS/Mapping";
             this.gISMappingToolStripMenuItem.Visible = false;
             this.gISMappingToolStripMenuItem.Click += new System.EventHandler(this.gISMappingToolStripMenuItem_Click);
-                                                this.neighborFileCreatorToolStripMenuItem.Name = "neighborFileCreatorToolStripMenuItem";
+            // 
+            // neighborFileCreatorToolStripMenuItem
+            // 
+            this.neighborFileCreatorToolStripMenuItem.Name = "neighborFileCreatorToolStripMenuItem";
             this.neighborFileCreatorToolStripMenuItem.Size = new System.Drawing.Size(268, 22);
             this.neighborFileCreatorToolStripMenuItem.Text = "Neighbor File Creator";
             this.neighborFileCreatorToolStripMenuItem.Click += new System.EventHandler(this.neighborFileCreatorToolStripMenuItem_Click);
-                                                this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
+            // 
+            // optionsToolStripMenuItem
+            // 
+            this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
             this.optionsToolStripMenuItem.Size = new System.Drawing.Size(268, 22);
             this.optionsToolStripMenuItem.Text = "Options";
             this.optionsToolStripMenuItem.Click += new System.EventHandler(this.optionsToolStripMenuItem_Click);
-                                                this.btnMATs.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            // 
+            // btnMATs
+            // 
+            this.btnMATs.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.btnMATs.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ozoneAnalysisToolStripMenuItem,
             this.visibilityAnalysisToolStripMenuItem,
@@ -260,49 +363,87 @@ namespace BenMAP
             this.btnMATs.Size = new System.Drawing.Size(55, 22);
             this.btnMATs.Text = "MATS";
             this.btnMATs.Visible = false;
-                                                this.ozoneAnalysisToolStripMenuItem.Enabled = false;
+            // 
+            // ozoneAnalysisToolStripMenuItem
+            // 
+            this.ozoneAnalysisToolStripMenuItem.Enabled = false;
             this.ozoneAnalysisToolStripMenuItem.Name = "ozoneAnalysisToolStripMenuItem";
             this.ozoneAnalysisToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
             this.ozoneAnalysisToolStripMenuItem.Text = "Ozone Analysis";
-                                                this.visibilityAnalysisToolStripMenuItem.Enabled = false;
+            // 
+            // visibilityAnalysisToolStripMenuItem
+            // 
+            this.visibilityAnalysisToolStripMenuItem.Enabled = false;
             this.visibilityAnalysisToolStripMenuItem.Name = "visibilityAnalysisToolStripMenuItem";
             this.visibilityAnalysisToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
             this.visibilityAnalysisToolStripMenuItem.Text = "Visibility Analysis";
-                                                this.annualPMAnalysisToolStripMenuItem.Enabled = false;
+            // 
+            // annualPMAnalysisToolStripMenuItem
+            // 
+            this.annualPMAnalysisToolStripMenuItem.Enabled = false;
             this.annualPMAnalysisToolStripMenuItem.Name = "annualPMAnalysisToolStripMenuItem";
             this.annualPMAnalysisToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
             this.annualPMAnalysisToolStripMenuItem.Text = "Annual PM Analysis";
-                                                this.btnMATsDaily.Name = "btnMATsDaily";
+            // 
+            // btnMATsDaily
+            // 
+            this.btnMATsDaily.Name = "btnMATsDaily";
             this.btnMATsDaily.Size = new System.Drawing.Size(197, 22);
             this.btnMATsDaily.Text = "Daily PM Analysis";
-                                                this.btnHelp.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            // 
+            // btnHelp
+            // 
+            this.btnHelp.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.btnHelp.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnuOverview,
-            this.mnuAbout});
+            this.mnuAbout,
+            this.errorReportingToolStripMenuItem});
             this.btnHelp.Image = ((System.Drawing.Image)(resources.GetObject("btnHelp.Image")));
             this.btnHelp.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnHelp.Name = "btnHelp";
             this.btnHelp.Size = new System.Drawing.Size(50, 22);
             this.btnHelp.Text = "Help";
-                                                this.mnuOverview.Name = "mnuOverview";
+            // 
+            // mnuOverview
+            // 
+            this.mnuOverview.Name = "mnuOverview";
             this.mnuOverview.Size = new System.Drawing.Size(301, 22);
             this.mnuOverview.Text = "Quick Start Guide of BenMAP CS 0.40";
             this.mnuOverview.Click += new System.EventHandler(this.mnuOverview_Click);
-                                                this.mnuAbout.Name = "mnuAbout";
+            // 
+            // mnuAbout
+            // 
+            this.mnuAbout.Name = "mnuAbout";
             this.mnuAbout.Size = new System.Drawing.Size(301, 22);
             this.mnuAbout.Text = "About";
             this.mnuAbout.Click += new System.EventHandler(this.mnuAbout_Click);
-                                                this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            // 
+            // statusStrip1
+            // 
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.lblStatus});
             this.statusStrip1.Location = new System.Drawing.Point(0, 670);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(939, 22);
             this.statusStrip1.TabIndex = 8;
             this.statusStrip1.Text = "statusStrip1";
-                                                this.lblStatus.Name = "lblStatus";
-            this.lblStatus.Size = new System.Drawing.Size(46, 17);
+            // 
+            // lblStatus
+            // 
+            this.lblStatus.Name = "lblStatus";
+            this.lblStatus.Size = new System.Drawing.Size(42, 17);
             this.lblStatus.Text = "Status:";
-                                                this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
+            // 
+            // errorReportingToolStripMenuItem
+            // 
+            this.errorReportingToolStripMenuItem.Name = "errorReportingToolStripMenuItem";
+            this.errorReportingToolStripMenuItem.Size = new System.Drawing.Size(301, 22);
+            this.errorReportingToolStripMenuItem.Text = "Error Reporting";
+            this.errorReportingToolStripMenuItem.Click += new System.EventHandler(this.errorReportingToolStripMenuItem_Click);
+            // 
+            // Main
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(939, 692);
             this.Controls.Add(this.pnlMain);
@@ -368,6 +509,7 @@ namespace BenMAP
         private System.Windows.Forms.ToolStripStatusLabel lblStatus;
         private System.Windows.Forms.ToolStripButton mnuModifySetup;
         private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem errorReportingToolStripMenuItem;
     }
 }
 

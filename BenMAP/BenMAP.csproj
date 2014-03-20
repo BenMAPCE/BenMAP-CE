@@ -936,6 +936,9 @@
     <EmbeddedResource Include="Help\About.resx">
       <DependentUpon>About.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Help\ErrorReporting.resx">
+      <DependentUpon>ErrorReporting.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Help\ReleaseNotes.resx">
       <DependentUpon>ReleaseNotes.cs</DependentUpon>
     </EmbeddedResource>

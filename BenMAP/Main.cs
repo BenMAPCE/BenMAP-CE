@@ -761,5 +761,11 @@ namespace BenMAP
             DialogResult rtn = frm.ShowDialog();
         }
 
+        private void errorReportingToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ErrorReporting frm = new ErrorReporting();
+            frm.ShowDialog();
+        }
+
     }
 }
