@@ -90,4 +90,14 @@ namespace BenMAP.Jira
             return fields.Remove(field);
         }
     }
+
+    /// <summary>
+    /// Represents a response from the JIRA REST API resource for creating a new issue.
+    /// </summary>
+    class NewJiraIssueResponse
+    {
+        public string id { get; set; }
+        public string key { get; set; }
+        public string self { get; set; }
+    }
 }
