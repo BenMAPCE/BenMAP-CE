@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
+using BenMAP.Jira;
+
 namespace BenMAP
 {
     partial class ErrorReporting : FormBase
@@ -16,6 +18,8 @@ namespace BenMAP
             InitializeComponent();
 
             //populate component combo from Jira
+            //JiraClient jc = new JiraClient("", "", "");
+            //List<JiraProjectComponent> components = (List<JiraProjectComponent>)jc.GetProjectComponents("USERBUGS");
 
 
         }
