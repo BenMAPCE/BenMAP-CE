@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using System.Net;
@@ -13,6 +14,7 @@ namespace BenMAP.Jira
     class JiraClient
     {
         private IRestClient client;
+        private int maxAttachSizeKb;
 
         /// <summary>
         /// Constructor for JiraClient.
@@ -23,7 +25,7 @@ namespace BenMAP.Jira
         /// <param name="baseUrl">JIRA server's base/host URL, must use HTTPS (e.g. https://myjira.atlassian.net)</param>
         /// <param name="username">Username to authenticate client</param>
         /// <param name="password">Password for given username</param>
-        public JiraClient(string baseUrl, string username, string password)
+        public JiraClient(string baseUrl, string username, string password, int pMaxAttachSizeKb=4096)
         {
             if (!baseUrl.ToLower().Trim().StartsWith("https"))
             {
@@ -34,6 +36,7 @@ namespace BenMAP.Jira
             {
                 Authenticator = new HttpBasicAuthenticator(username, password)
             };
+            maxAttachSizeKb = pMaxAttachSizeKb;
         }
 
         /// <summary>
@@ -58,15 +61,62 @@ namespace BenMAP.Jira
         /// </code>
         /// </example>
         /// <param name="issue">A ``BenMAP.Jira.Issue`` instance with field values to save</param>
-        /// <returns>``RestSharp.RestResponse`` returned from the server</returns>
-        public bool CreateIssue(NewJiraIssue issue)
+        /// <returns>A NewJiraIssueResponse for new issue, or null if it was not created</returns>
+        public NewJiraIssueResponse CreateIssue(NewJiraIssue issue)
         {
             var request = new RestRequest("rest/api/2/issue", Method.POST);
             request.RequestFormat = DataFormat.Json;
             request.AddBody(issue);
+            var response = client.Execute<NewJiraIssueResponse>(request);
+
+            NewJiraIssueResponse issueResponse = null;
+            if (response.StatusCode.Equals(HttpStatusCode.Created))
+            {
+                issueResponse = response.Data as NewJiraIssueResponse;
+            }
+
+            return issueResponse;
+        }
+
+        /// <summary>
+        /// Attach file(s) to an existing JIRA issue.
+        /// 
+        /// If any file's size is above this client's max attach size, only the maximum
+        /// number of bytes are read and uploaded.
+        /// 
+        /// Calls JIRA REST API resource: POST rest/api/2/issue/{projectIdOrKey}/attachments
+        /// </summary>
+        /// <param name="issueKey">Issue key to attach files to (e.g. "USERBUGS-1234")</param>
+        /// <param name="files">Info of file(s) to attach</param>
+        /// <returns>Whether server returned ``HttpStatusCode.OK`` response (code 200)</returns>
+        public bool AttachFilesToIssue(string issueKey, params FileInfo[] files)
+        {
+            string resource = string.Format("rest/api/2/issue/{0}/attachments", issueKey);
+            var request = new RestRequest(resource, Method.POST);
+
+            // these headers required by this particular API resource
+            request.AddHeader("X-Atlassian-Token", "nocheck"); 
+            request.AddHeader("ContentType", "multipart/form-data");
+
+            foreach (FileInfo fileInfo in files)
+            {
+                byte[] fileBytes;
+                if (fileInfo.Length > maxAttachSizeKb * 1000)
+                {
+                    // if file size gt max, only read in max allowed bytes
+                    fileBytes = new byte[maxAttachSizeKb * 1000];
+                    FileStream stream = File.OpenRead(fileInfo.FullName);
+                    stream.Read(fileBytes, 0, maxAttachSizeKb * 1000);
+                    stream.Close();
+                } else {
+                    fileBytes = File.ReadAllBytes(fileInfo.FullName);
+                }
+
+                request.AddFile("file", fileBytes, fileInfo.Name);
+            }
             var response = client.Execute(request);
 
-            return response.StatusCode.Equals(HttpStatusCode.Created);
+            return response.StatusCode.Equals(HttpStatusCode.OK);
         }
 
         /// <summary>
@@ -82,7 +132,12 @@ namespace BenMAP.Jira
             var request = new RestRequest(resource, Method.GET);
             var response = client.Execute<List<JiraProjectComponent>>(request);
 
-            return response.Data;
+            if (response.StatusCode.Equals(HttpStatusCode.OK))
+            {
+                return response.Data;
+            } else {
+                return new List<JiraProjectComponent>();
+            }
         }
     }
 }
