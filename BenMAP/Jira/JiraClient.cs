@@ -132,7 +132,12 @@ namespace BenMAP.Jira
             var request = new RestRequest(resource, Method.GET);
             var response = client.Execute<List<JiraProjectComponent>>(request);
 
-            return response.Data;
+            if (response.StatusCode.Equals(HttpStatusCode.OK))
+            {
+                return response.Data;
+            } else {
+                return new List<JiraProjectComponent>();
+            }
         }
     }
 }
