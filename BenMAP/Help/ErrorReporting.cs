@@ -14,6 +14,28 @@ namespace BenMAP
         public ErrorReporting()
         {
             InitializeComponent();
+
+            //populate component combo from Jira
+
+
+        }
+
+        private void btnCancel_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
+
+        private void btnSubmit_Click(object sender, EventArgs e)
+        {
+            //validate inputs
+
+            //send inputs to Jira
+
+
+            //get response
+
+
+            //alert user of success or failure of submittal
         }
     }
 }

@@ -30,10 +30,10 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ErrorReporting));
             this.label1 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.textBox3 = new System.Windows.Forms.TextBox();
-            this.textBox4 = new System.Windows.Forms.TextBox();
+            this.txtOS = new System.Windows.Forms.TextBox();
+            this.txtEmail = new System.Windows.Forms.TextBox();
+            this.txtName = new System.Windows.Forms.TextBox();
+            this.txtCountry = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
@@ -42,18 +42,22 @@
             this.btnCancel = new System.Windows.Forms.Button();
             this.label6 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
-            this.radioButton1 = new System.Windows.Forms.RadioButton();
-            this.radioButton2 = new System.Windows.Forms.RadioButton();
             this.label8 = new System.Windows.Forms.Label();
-            this.radioButton3 = new System.Windows.Forms.RadioButton();
-            this.radioButton4 = new System.Windows.Forms.RadioButton();
-            this.radioButton5 = new System.Windows.Forms.RadioButton();
             this.label9 = new System.Windows.Forms.Label();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.cboComponent = new System.Windows.Forms.ComboBox();
             this.label10 = new System.Windows.Forms.Label();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.chkAuditTrail = new System.Windows.Forms.CheckBox();
             this.label11 = new System.Windows.Forms.Label();
-            this.textBox5 = new System.Windows.Forms.TextBox();
+            this.txtDescription = new System.Windows.Forms.TextBox();
+            this.gbReportType = new System.Windows.Forms.GroupBox();
+            this.gbSeverity = new System.Windows.Forms.GroupBox();
+            this.rbFeature = new System.Windows.Forms.RadioButton();
+            this.rbError = new System.Windows.Forms.RadioButton();
+            this.rbBlocking = new System.Windows.Forms.RadioButton();
+            this.rbMajor = new System.Windows.Forms.RadioButton();
+            this.rbMinor = new System.Windows.Forms.RadioButton();
+            this.gbReportType.SuspendLayout();
+            this.gbSeverity.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
@@ -64,33 +68,33 @@
             this.label1.TabIndex = 0;
             this.label1.Text = resources.GetString("label1.Text");
             // 
-            // textBox1
+            // txtOS
             // 
-            this.textBox1.Location = new System.Drawing.Point(236, 59);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(225, 22);
-            this.textBox1.TabIndex = 1;
+            this.txtOS.Location = new System.Drawing.Point(236, 59);
+            this.txtOS.Name = "txtOS";
+            this.txtOS.Size = new System.Drawing.Size(225, 22);
+            this.txtOS.TabIndex = 1;
             // 
-            // textBox2
+            // txtEmail
             // 
-            this.textBox2.Location = new System.Drawing.Point(236, 118);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(225, 22);
-            this.textBox2.TabIndex = 2;
+            this.txtEmail.Location = new System.Drawing.Point(236, 118);
+            this.txtEmail.Name = "txtEmail";
+            this.txtEmail.Size = new System.Drawing.Size(225, 22);
+            this.txtEmail.TabIndex = 2;
             // 
-            // textBox3
+            // txtName
             // 
-            this.textBox3.Location = new System.Drawing.Point(695, 62);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(225, 22);
-            this.textBox3.TabIndex = 3;
+            this.txtName.Location = new System.Drawing.Point(695, 62);
+            this.txtName.Name = "txtName";
+            this.txtName.Size = new System.Drawing.Size(225, 22);
+            this.txtName.TabIndex = 3;
             // 
-            // textBox4
+            // txtCountry
             // 
-            this.textBox4.Location = new System.Drawing.Point(695, 118);
-            this.textBox4.Name = "textBox4";
-            this.textBox4.Size = new System.Drawing.Size(225, 22);
-            this.textBox4.TabIndex = 4;
+            this.txtCountry.Location = new System.Drawing.Point(695, 118);
+            this.txtCountry.Name = "txtCountry";
+            this.txtCountry.Size = new System.Drawing.Size(225, 22);
+            this.txtCountry.TabIndex = 4;
             // 
             // label2
             // 
@@ -132,6 +136,7 @@
             this.btnSubmit.TabIndex = 9;
             this.btnSubmit.Text = "Submit";
             this.btnSubmit.UseVisualStyleBackColor = true;
+            this.btnSubmit.Click += new System.EventHandler(this.btnSubmit_Click);
             // 
             // btnCancel
             // 
@@ -141,6 +146,7 @@
             this.btnCancel.TabIndex = 10;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
+            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
             // label6
             // 
@@ -159,28 +165,6 @@
             this.label7.TabIndex = 12;
             this.label7.Text = "What type of report would you like to submit?";
             // 
-            // radioButton1
-            // 
-            this.radioButton1.AutoSize = true;
-            this.radioButton1.Location = new System.Drawing.Point(100, 196);
-            this.radioButton1.Name = "radioButton1";
-            this.radioButton1.Size = new System.Drawing.Size(100, 18);
-            this.radioButton1.TabIndex = 13;
-            this.radioButton1.TabStop = true;
-            this.radioButton1.Text = "Software Error";
-            this.radioButton1.UseVisualStyleBackColor = true;
-            // 
-            // radioButton2
-            // 
-            this.radioButton2.AutoSize = true;
-            this.radioButton2.Location = new System.Drawing.Point(100, 221);
-            this.radioButton2.Name = "radioButton2";
-            this.radioButton2.Size = new System.Drawing.Size(129, 18);
-            this.radioButton2.TabIndex = 14;
-            this.radioButton2.TabStop = true;
-            this.radioButton2.Text = "Requested Feature";
-            this.radioButton2.UseVisualStyleBackColor = true;
-            // 
             // label8
             // 
             this.label8.AutoSize = true;
@@ -189,39 +173,6 @@
             this.label8.Size = new System.Drawing.Size(231, 14);
             this.label8.TabIndex = 15;
             this.label8.Text = "How severe is the error you experienced?";
-            // 
-            // radioButton3
-            // 
-            this.radioButton3.AutoSize = true;
-            this.radioButton3.Location = new System.Drawing.Point(516, 196);
-            this.radioButton3.Name = "radioButton3";
-            this.radioButton3.Size = new System.Drawing.Size(417, 18);
-            this.radioButton3.TabIndex = 16;
-            this.radioButton3.TabStop = true;
-            this.radioButton3.Text = "Minor - this issue has little or no impact on my ability to use BenMAP CE";
-            this.radioButton3.UseVisualStyleBackColor = true;
-            // 
-            // radioButton4
-            // 
-            this.radioButton4.AutoSize = true;
-            this.radioButton4.Location = new System.Drawing.Point(516, 221);
-            this.radioButton4.Name = "radioButton4";
-            this.radioButton4.Size = new System.Drawing.Size(388, 18);
-            this.radioButton4.TabIndex = 17;
-            this.radioButton4.TabStop = true;
-            this.radioButton4.Text = "Major - this issue significantly hinders my ability to use BenMAP CE";
-            this.radioButton4.UseVisualStyleBackColor = true;
-            // 
-            // radioButton5
-            // 
-            this.radioButton5.AutoSize = true;
-            this.radioButton5.Location = new System.Drawing.Point(516, 245);
-            this.radioButton5.Name = "radioButton5";
-            this.radioButton5.Size = new System.Drawing.Size(328, 18);
-            this.radioButton5.TabIndex = 18;
-            this.radioButton5.TabStop = true;
-            this.radioButton5.Text = "Blocking - this issue prevents me from using BenMAP CE";
-            this.radioButton5.UseVisualStyleBackColor = true;
             // 
             // label9
             // 
@@ -232,13 +183,13 @@
             this.label9.TabIndex = 19;
             this.label9.Text = "What component of BenMAP CE does the error affect?";
             // 
-            // comboBox1
+            // cboComponent
             // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(54, 333);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(252, 22);
-            this.comboBox1.TabIndex = 20;
+            this.cboComponent.FormattingEnabled = true;
+            this.cboComponent.Location = new System.Drawing.Point(54, 333);
+            this.cboComponent.Name = "cboComponent";
+            this.cboComponent.Size = new System.Drawing.Size(252, 22);
+            this.cboComponent.TabIndex = 20;
             // 
             // label10
             // 
@@ -249,15 +200,15 @@
             this.label10.TabIndex = 21;
             this.label10.Text = "The audit trail report may help us to debug or understand your report better.";
             // 
-            // checkBox1
+            // chkAuditTrail
             // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(411, 333);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(285, 18);
-            this.checkBox1.TabIndex = 22;
-            this.checkBox1.Text = "Include BenMAP CE generated audit trail report.";
-            this.checkBox1.UseVisualStyleBackColor = true;
+            this.chkAuditTrail.AutoSize = true;
+            this.chkAuditTrail.Location = new System.Drawing.Point(411, 333);
+            this.chkAuditTrail.Name = "chkAuditTrail";
+            this.chkAuditTrail.Size = new System.Drawing.Size(285, 18);
+            this.chkAuditTrail.TabIndex = 22;
+            this.chkAuditTrail.Text = "Include BenMAP CE generated audit trail report.";
+            this.chkAuditTrail.UseVisualStyleBackColor = true;
             // 
             // label11
             // 
@@ -269,32 +220,105 @@
             this.label11.Text = "Please describe what you were doing when you encountered the error.  Can you tell" +
                 " us how to reproduce the error? (5000 character limit)";
             // 
-            // textBox5
+            // txtDescription
             // 
-            this.textBox5.Location = new System.Drawing.Point(128, 420);
-            this.textBox5.Multiline = true;
-            this.textBox5.Name = "textBox5";
-            this.textBox5.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBox5.Size = new System.Drawing.Size(693, 209);
-            this.textBox5.TabIndex = 24;
+            this.txtDescription.Location = new System.Drawing.Point(128, 420);
+            this.txtDescription.Multiline = true;
+            this.txtDescription.Name = "txtDescription";
+            this.txtDescription.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.txtDescription.Size = new System.Drawing.Size(693, 209);
+            this.txtDescription.TabIndex = 24;
+            // 
+            // gbReportType
+            // 
+            this.gbReportType.Controls.Add(this.rbFeature);
+            this.gbReportType.Controls.Add(this.rbError);
+            this.gbReportType.Location = new System.Drawing.Point(101, 186);
+            this.gbReportType.Name = "gbReportType";
+            this.gbReportType.Size = new System.Drawing.Size(159, 75);
+            this.gbReportType.TabIndex = 25;
+            this.gbReportType.TabStop = false;
+            // 
+            // gbSeverity
+            // 
+            this.gbSeverity.Controls.Add(this.rbBlocking);
+            this.gbSeverity.Controls.Add(this.rbMajor);
+            this.gbSeverity.Controls.Add(this.rbMinor);
+            this.gbSeverity.Location = new System.Drawing.Point(506, 186);
+            this.gbSeverity.Name = "gbSeverity";
+            this.gbSeverity.Size = new System.Drawing.Size(436, 100);
+            this.gbSeverity.TabIndex = 26;
+            this.gbSeverity.TabStop = false;
+            // 
+            // rbFeature
+            // 
+            this.rbFeature.AutoSize = true;
+            this.rbFeature.Location = new System.Drawing.Point(16, 43);
+            this.rbFeature.Name = "rbFeature";
+            this.rbFeature.Size = new System.Drawing.Size(129, 18);
+            this.rbFeature.TabIndex = 16;
+            this.rbFeature.TabStop = true;
+            this.rbFeature.Text = "Requested Feature";
+            this.rbFeature.UseVisualStyleBackColor = true;
+            // 
+            // rbError
+            // 
+            this.rbError.AutoSize = true;
+            this.rbError.Location = new System.Drawing.Point(16, 18);
+            this.rbError.Name = "rbError";
+            this.rbError.Size = new System.Drawing.Size(100, 18);
+            this.rbError.TabIndex = 15;
+            this.rbError.TabStop = true;
+            this.rbError.Text = "Software Error";
+            this.rbError.UseVisualStyleBackColor = true;
+            // 
+            // rbBlocking
+            // 
+            this.rbBlocking.AutoSize = true;
+            this.rbBlocking.Location = new System.Drawing.Point(10, 66);
+            this.rbBlocking.Name = "rbBlocking";
+            this.rbBlocking.Size = new System.Drawing.Size(328, 18);
+            this.rbBlocking.TabIndex = 21;
+            this.rbBlocking.TabStop = true;
+            this.rbBlocking.Text = "Blocking - this issue prevents me from using BenMAP CE";
+            this.rbBlocking.UseVisualStyleBackColor = true;
+            // 
+            // rbMajor
+            // 
+            this.rbMajor.AutoSize = true;
+            this.rbMajor.Location = new System.Drawing.Point(10, 42);
+            this.rbMajor.Name = "rbMajor";
+            this.rbMajor.Size = new System.Drawing.Size(388, 18);
+            this.rbMajor.TabIndex = 20;
+            this.rbMajor.TabStop = true;
+            this.rbMajor.Text = "Major - this issue significantly hinders my ability to use BenMAP CE";
+            this.rbMajor.UseVisualStyleBackColor = true;
+            // 
+            // rbMinor
+            // 
+            this.rbMinor.AutoSize = true;
+            this.rbMinor.Location = new System.Drawing.Point(10, 17);
+            this.rbMinor.Name = "rbMinor";
+            this.rbMinor.Size = new System.Drawing.Size(417, 18);
+            this.rbMinor.TabIndex = 19;
+            this.rbMinor.TabStop = true;
+            this.rbMinor.Text = "Minor - this issue has little or no impact on my ability to use BenMAP CE";
+            this.rbMinor.UseVisualStyleBackColor = true;
             // 
             // ErrorReporting
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(957, 734);
-            this.Controls.Add(this.textBox5);
+            this.Controls.Add(this.gbSeverity);
+            this.Controls.Add(this.gbReportType);
+            this.Controls.Add(this.txtDescription);
             this.Controls.Add(this.label11);
-            this.Controls.Add(this.checkBox1);
+            this.Controls.Add(this.chkAuditTrail);
             this.Controls.Add(this.label10);
-            this.Controls.Add(this.comboBox1);
+            this.Controls.Add(this.cboComponent);
             this.Controls.Add(this.label9);
-            this.Controls.Add(this.radioButton5);
-            this.Controls.Add(this.radioButton4);
-            this.Controls.Add(this.radioButton3);
             this.Controls.Add(this.label8);
-            this.Controls.Add(this.radioButton2);
-            this.Controls.Add(this.radioButton1);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.btnCancel);
@@ -303,15 +327,19 @@
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
-            this.Controls.Add(this.textBox4);
-            this.Controls.Add(this.textBox3);
-            this.Controls.Add(this.textBox2);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.txtCountry);
+            this.Controls.Add(this.txtName);
+            this.Controls.Add(this.txtEmail);
+            this.Controls.Add(this.txtOS);
             this.Controls.Add(this.label1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.Name = "ErrorReporting";
             this.Text = "Error Report";
+            this.gbReportType.ResumeLayout(false);
+            this.gbReportType.PerformLayout();
+            this.gbSeverity.ResumeLayout(false);
+            this.gbSeverity.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -320,10 +348,10 @@
         #endregion
 
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.TextBox textBox3;
-        private System.Windows.Forms.TextBox textBox4;
+        private System.Windows.Forms.TextBox txtOS;
+        private System.Windows.Forms.TextBox txtEmail;
+        private System.Windows.Forms.TextBox txtName;
+        private System.Windows.Forms.TextBox txtCountry;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
@@ -332,17 +360,19 @@
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.RadioButton radioButton1;
-        private System.Windows.Forms.RadioButton radioButton2;
         private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.RadioButton radioButton3;
-        private System.Windows.Forms.RadioButton radioButton4;
-        private System.Windows.Forms.RadioButton radioButton5;
         private System.Windows.Forms.Label label9;
-        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.ComboBox cboComponent;
         private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.CheckBox chkAuditTrail;
         private System.Windows.Forms.Label label11;
-        private System.Windows.Forms.TextBox textBox5;
+        private System.Windows.Forms.TextBox txtDescription;
+        private System.Windows.Forms.GroupBox gbReportType;
+        private System.Windows.Forms.RadioButton rbFeature;
+        private System.Windows.Forms.RadioButton rbError;
+        private System.Windows.Forms.GroupBox gbSeverity;
+        private System.Windows.Forms.RadioButton rbBlocking;
+        private System.Windows.Forms.RadioButton rbMajor;
+        private System.Windows.Forms.RadioButton rbMinor;
     }
 }
