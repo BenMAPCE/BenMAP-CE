@@ -2444,7 +2444,8 @@ namespace BenMAP
                 _dMinValue = dMinValue;
                 _dMaxValue = dMaxValue;
                 _columnName = strValueField;
-                RenderMainMap(true);
+                if (isBase == "D") RenderMainMap(true,true);
+                else  RenderMainMap(true,false);
             }
             catch (Exception ex)
             {
@@ -2460,13 +2461,19 @@ namespace BenMAP
             get { return _blendColors; }
             set { _blendColors = value; }
         }
-        private void ResetGisMap(object sender, EventArgs e)
+        private void ResetGisMap(object sender, EventArgs e, bool isDelta = false)
         {
             try
             {
                 //Replace the color ramp
-                colorBlend.ColorArray = GetColorRamp("yellow_red", 6);
-
+                if (isDelta)
+                {//use the delta color ramp
+                    colorBlend.ColorArray = GetColorRamp("red_blue", 6);
+                }
+                else
+                {//use the default color ramp
+                    colorBlend.ColorArray = GetColorRamp("pale_yellow_blue", 6);
+                }
                 _blendColors = colorBlend.ColorArray;
                 _dMaxValue = colorBlend.MaxValue;
                 _dMinValue = colorBlend.MinValue;
@@ -2524,19 +2531,19 @@ namespace BenMAP
                 Logger.LogError(ex);
             }
         }
-        private void RenderMainMap(bool isCone)
+        private void RenderMainMap(bool isCone, bool isDelta = false)
         {
             double min = _dMinValue;
             double max = _dMaxValue;
             colorBlend.SetValueRange(min, max, true);
             colorBlend._minPlotValue = _dMinValue;
             colorBlend._maxPlotValue = _dMaxValue;
-            ResetGisMap(null, null);
+            ResetGisMap(null, null, isDelta);
             return;
             //Color[] colors = new Color[] { Color.Blue, Color.FromArgb(0, 255, 255), Color.FromArgb(0, 255, 0), Color.Yellow, Color.Red, Color.FromArgb(255, 0, 255) };
            
-            //Replace the color ramp
-            Color[] colors = GetColorRamp("yellow_red", 6);
+            //Replace the color ramp -MCB
+            Color[] colors = GetColorRamp("pale_yellow_blue", 6);
             
             colorBlend.SetValueRange(min, max, true);
             _blendColors = colorBlend.ColorArray;
@@ -4855,8 +4862,8 @@ namespace BenMAP
             bindingNavigatorMoveLastItem.Enabled = true;
             bindingNavigatorMovePreviousItem.Enabled = true;
             bindingNavigatorPositionItem.Enabled = true;
-            colorBlend.CustomizeValueRange -= ResetGisMap;
-            colorBlend.CustomizeValueRange += ResetGisMap;
+            //colorBlend.CustomizeValueRange -= ResetGisMap();-MCB - may still be needed 
+            //colorBlend.CustomizeValueRange += ResetGisMap();
             InitAggregationAndRegionList();
             Dictionary<string, string> dicSeasonStaticsAll = DataSourceCommonClass.DicSeasonStaticsAll;
             InitColumnsShowSet();
@@ -12075,13 +12082,19 @@ namespace BenMAP
             Color[] _blues_Array = { Color.FromArgb(239, 243, 255), Color.FromArgb(198, 219, 239), Color.FromArgb(158, 202, 225), Color.FromArgb(107, 174, 214), Color.FromArgb(49, 130, 189), Color.FromArgb(8, 81, 156) };
 
             //multi-hue
+            //pale_yellow_blue chosen as default ramp for main map (and default)
+            Color[] _pale_yellow_blue_Array = { Color.FromArgb(240, 249, 232), Color.FromArgb(204, 235, 197), Color.FromArgb(168, 221, 181), Color.FromArgb(123, 204, 196), Color.FromArgb(67, 162, 202), Color.FromArgb(8,104,172) };        
+            //Pale blue to green - an alternative mentioned by the client in an e-mail
+            Color[] _pale_blue_green_Array = { Color.FromArgb(246, 239, 247), Color.FromArgb(208, 209, 230), Color.FromArgb(166, 189, 219), Color.FromArgb(103, 169, 207), Color.FromArgb(28, 144, 153), Color.FromArgb(1,108,89) };
             Color[] _yellow_red_Array = { Color.FromArgb(255, 255, 178), Color.FromArgb(254, 217, 118), Color.FromArgb(254, 178, 76), Color.FromArgb(253, 141, 60), Color.FromArgb(240, 59, 32), Color.FromArgb(189, 0, 38) };
             Color[] _yellow_blue_Array = { Color.FromArgb(255, 255, 204), Color.FromArgb(199, 233, 180), Color.FromArgb(127, 205, 187), Color.FromArgb(65, 182, 196), Color.FromArgb(44, 127, 184), Color.FromArgb(37, 52, 148) };
             Color[] _yellow_green_Array = { Color.FromArgb(255, 255, 204), Color.FromArgb(217, 240, 163), Color.FromArgb(173, 221, 142), Color.FromArgb(120, 198, 121), Color.FromArgb(49, 163, 84), Color.FromArgb(0, 104, 55) };
 
             //Diverging color ramps
+            
             Color[] _brown_green_Array = { Color.FromArgb(140, 81, 10), Color.FromArgb(216, 179, 101), Color.FromArgb(246, 232, 195), Color.FromArgb(199, 234, 229), Color.FromArgb(90, 180, 172), Color.FromArgb(1, 102, 94) };
             Color[] _magenta_green_Array = { Color.FromArgb(197, 27, 125), Color.FromArgb(233, 163, 201), Color.FromArgb(253, 224, 239), Color.FromArgb(230, 245, 208), Color.FromArgb(161, 215, 106), Color.FromArgb(77, 146, 33) };
+            //red_blue chosen as default by client for delta layers
             Color[] _red_blue_Array = { Color.FromArgb(215, 48, 39), Color.FromArgb(252, 141, 89), Color.FromArgb(254, 224, 144), Color.FromArgb(224, 243, 248), Color.FromArgb(145, 191, 219), Color.FromArgb(69, 117, 180) };
             Color[] _red_black_Array = { Color.FromArgb(178, 24, 43), Color.FromArgb(239, 138, 98), Color.FromArgb(253, 219, 199), Color.FromArgb(224, 224, 224), Color.FromArgb(153, 153, 153), Color.FromArgb(77, 77, 77) };
             Color[] _purple_green_Array = { Color.FromArgb(118, 42, 131), Color.FromArgb(175, 141, 195), Color.FromArgb(231, 212, 232), Color.FromArgb(217, 240, 211), Color.FromArgb(127, 191, 123), Color.FromArgb(27, 120, 55) };
@@ -12102,14 +12115,19 @@ namespace BenMAP
                 case "yellow_red":
                     _colorArray = _yellow_red_Array;
                     break;
+                case "pale_yellow_blue":
+                    _colorArray = _pale_yellow_blue_Array;
+                    break;
+                case "pale_blue_green":
+                    _colorArray = _pale_blue_green_Array;
+                    break;
                 case "yellow_blue":
                     _colorArray = _yellow_blue_Array;
                     break;
                 case "yellow_green":
                     _colorArray = _yellow_green_Array;
                     break;
-
-
+               
                 case "brown_green":
                     _colorArray = _brown_green_Array;
                     break;

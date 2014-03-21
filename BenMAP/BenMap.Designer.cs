@@ -1646,8 +1646,8 @@ namespace BenMAP
             // colorBlend2 -MCB
             this.colorBlend2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             //replaces the rainbow color ramp
-            System.Drawing.Color[] sys_yellow_blue_Array = { System.Drawing.Color.FromArgb(255, 255, 204), System.Drawing.Color.FromArgb(199, 233, 180), System.Drawing.Color.FromArgb(127, 205, 187), System.Drawing.Color.FromArgb(65, 182, 196), System.Drawing.Color.FromArgb(44, 127, 184), System.Drawing.Color.FromArgb(37, 52, 148) };
-            this.colorBlend2.ColorArray = sys_yellow_blue_Array;
+            System.Drawing.Color[] sys_pale_yellow_blue_Array = { System.Drawing.Color.FromArgb(240, 249, 232), System.Drawing.Color.FromArgb(204, 235, 197), System.Drawing.Color.FromArgb(168, 221, 181), System.Drawing.Color.FromArgb(123, 204, 196), System.Drawing.Color.FromArgb(67, 162, 202), System.Drawing.Color.FromArgb(8, 104, 172) };            
+            this.colorBlend2.ColorArray = sys_pale_yellow_blue_Array;
             //this.colorBlend2.Location = new System.Drawing.Point(24, 408);
             //this.colorBlend2.Margin = new System.Windows.Forms.Padding(1);
             this.colorBlend2.Name = "colorBlend2";

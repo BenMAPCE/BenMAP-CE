@@ -367,7 +367,7 @@ namespace BenMAP
         {
             try
             {   //Replace the color ramp
-                colorBlend.ColorArray = GetColorRamp("brown_green", 6);
+                colorBlend.ColorArray = GetColorRamp("yellow_red", 6);
 
                 _blendColors = colorBlend.ColorArray;
                 _dMaxValue = colorBlend.MaxValue;
@@ -1022,11 +1022,16 @@ namespace BenMAP
             //Note: Color ramps created using ColorBrewer 2.0: chose from color blind safe six class ramps. -MCB
             //Sequential- color ramps
             //single hue (light to dark)
+            
             Color[] _oranges_Array = { Color.FromArgb(254, 237, 222), Color.FromArgb(254, 217, 118), Color.FromArgb(253, 174, 107), Color.FromArgb(253, 141, 60), Color.FromArgb(230, 85, 13), Color.FromArgb(166, 54, 3) };
             Color[] _purples_Array = { Color.FromArgb(242, 240, 247), Color.FromArgb(218, 218, 235), Color.FromArgb(188, 189, 220), Color.FromArgb(158, 154, 200), Color.FromArgb(117, 107, 177), Color.FromArgb(84, 39, 143) };
             Color[] _blues_Array = { Color.FromArgb(239, 243, 255), Color.FromArgb(198, 219, 239), Color.FromArgb(158, 202, 225), Color.FromArgb(107, 174, 214), Color.FromArgb(49, 130, 189), Color.FromArgb(8, 81, 156) };
 
             //multi-hue
+            //pale_yellow_blue chosen as default ramp for main map (and default)
+            Color[] _pale_yellow_blue_Array = { Color.FromArgb(240, 249, 232), Color.FromArgb(204, 235, 197), Color.FromArgb(168, 221, 181), Color.FromArgb(123, 204, 196), Color.FromArgb(67, 162, 202), Color.FromArgb(8, 104, 172) };
+            //Pale blue to green - an alternative mentioned by the client in an e-mail
+            Color[] _pale_blue_green_Array = { Color.FromArgb(246, 239, 247), Color.FromArgb(208, 209, 230), Color.FromArgb(166, 189, 219), Color.FromArgb(103, 169, 207), Color.FromArgb(28, 144, 153), Color.FromArgb(1, 108, 89) }; 
             Color[] _yellow_red_Array = { Color.FromArgb(255, 255, 178), Color.FromArgb(254, 217, 118), Color.FromArgb(254, 178, 76), Color.FromArgb(253, 141, 60), Color.FromArgb(240, 59, 32), Color.FromArgb(189, 0, 38) };
             Color[] _yellow_blue_Array = { Color.FromArgb(255, 255, 204), Color.FromArgb(199, 233, 180), Color.FromArgb(127, 205, 187), Color.FromArgb(65, 182, 196), Color.FromArgb(44, 127, 184), Color.FromArgb(37, 52, 148) };
             Color[] _yellow_green_Array = { Color.FromArgb(255, 255, 204), Color.FromArgb(217, 240, 163), Color.FromArgb(173, 221, 142), Color.FromArgb(120, 198, 121), Color.FromArgb(49, 163, 84), Color.FromArgb(0, 104, 55) };
@@ -1051,8 +1056,15 @@ namespace BenMAP
                     _colorArray = _blues_Array;
                     break;
 
+                
                 case "yellow_red":
                     _colorArray = _yellow_red_Array;
+                    break;
+                case "pale_yellow_blue":
+                    _colorArray = _pale_yellow_blue_Array;
+                    break;
+                case "pale_blue_green":
+                    _colorArray = _pale_blue_green_Array;
                     break;
                 case "yellow_blue":
                     _colorArray = _yellow_blue_Array;
