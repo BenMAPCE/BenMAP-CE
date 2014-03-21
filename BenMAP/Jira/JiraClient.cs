@@ -83,6 +83,8 @@ namespace BenMAP.Jira
         /// 
         /// If any file's size is above this client's max attach size, only the maximum
         /// number of bytes are read and uploaded.
+        /// 
+        /// Calls JIRA REST API resource: POST rest/api/2/issue/{projectIdOrKey}/attachments
         /// </summary>
         /// <param name="issueKey">Issue key to attach files to (e.g. "USERBUGS-1234")</param>
         /// <param name="files">Info of file(s) to attach</param>
