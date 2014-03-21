@@ -21,6 +21,8 @@ namespace BenMAP
             //JiraClient jc = new JiraClient("", "", "");
             //List<JiraProjectComponent> components = (List<JiraProjectComponent>)jc.GetProjectComponents("USERBUGS");
 
+            //if components cannot be retrieved, alert the user and disable the submit button.
+
 
         }
 
