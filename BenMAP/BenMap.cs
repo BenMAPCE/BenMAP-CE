@@ -45,6 +45,8 @@ namespace BenMAP
         private string _baseFormTitle = "";
         public Main mainFrm = null;
 
+        private string CurrentMapTitle = "";
+
         private List<string> _listAddGridTo36km = new List<string>();
         private string _reportTableFileName = "";
 
@@ -1192,7 +1194,7 @@ namespace BenMAP
                     case "baseline":
                         _currentNode = "baseline";
                         currStat = "baseline";
-
+                       
                         BaseControlOP(currStat, ref currentNode);
 
                         //Advance to first child node and draw base data layer-MCB
@@ -1249,6 +1251,7 @@ namespace BenMAP
                         }
                         break;
                     case "controldata":
+                       
                         DrawControlData(currentNode, str); //-MCB
                         
                         break;
@@ -1905,6 +1908,8 @@ namespace BenMAP
         {   //MCB- draws base data on main map
             _currentNode = "basedata";
             str = string.Format("{0}baseline", (currentNode.Tag as BenMAPLine).Pollutant.PollutantName);
+            CurrentMapTitle = str + ": Baseline Map";
+            
             if (CommonClass.LstAsynchronizationStates != null &&
                 CommonClass.LstAsynchronizationStates.Contains(str.ToLower()))
             {
@@ -1939,6 +1944,7 @@ namespace BenMAP
         {
             _currentNode = "controldata";
             str = string.Format("{0}control", (currentNode.Tag as BenMAPLine).Pollutant.PollutantName);
+            CurrentMapTitle = str + ": Control Map";
             if (CommonClass.LstAsynchronizationStates != null && CommonClass.LstAsynchronizationStates.Contains(str.ToLower()))
             {
                 MessageBox.Show(string.Format("BenMAP is still creating the air quality surface map. ", (currentNode.Tag as BenMAPLine).Pollutant.PollutantName), "Please wait", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -2005,6 +2011,7 @@ namespace BenMAP
             {
                 bcgDelta.DeltaQ = new BenMAPLine();
                 bcgDelta.DeltaQ.Pollutant = bcgDelta.Base.Pollutant;
+                CurrentMapTitle = bcgDelta.DeltaQ.Pollutant.PollutantName + ": Delta Map";
                 bcgDelta.DeltaQ.GridType = bcgDelta.Base.GridType;
                 bcgDelta.DeltaQ.ModelResultAttributes = new List<ModelResultAttribute>();
 
@@ -2399,8 +2406,12 @@ namespace BenMAP
                 myScheme1.EditorSettings.EndColor.ToTransparent(fl);
 
                 myScheme1.EditorSettings.ClassificationType = ClassificationType.Quantities;
+                myScheme1.EditorSettings.IntervalMethod = IntervalMethod.NaturalBreaks;
+                myScheme1.EditorSettings.IntervalSnapMethod = IntervalSnapMethod.Rounding;
+                myScheme1.EditorSettings.IntervalRoundingDigits = 1;
                 myScheme1.EditorSettings.NumBreaks = 6;
-                myScheme1.EditorSettings.FieldName = strValueField; myScheme1.EditorSettings.UseGradient = false;
+                myScheme1.EditorSettings.FieldName = strValueField; 
+                myScheme1.EditorSettings.UseGradient = false;
                 myScheme1.CreateCategories(polLayer.DataSet.DataTable);
 
                 double dMinValue = 0.0;
@@ -2538,6 +2549,8 @@ namespace BenMAP
             colorBlend.SetValueRange(min, max, true);
             colorBlend._minPlotValue = _dMinValue;
             colorBlend._maxPlotValue = _dMaxValue;
+            tbMapTitle.Text = CurrentMapTitle;
+            
             ResetGisMap(null, null, isDelta);
             return;
             //Color[] colors = new Color[] { Color.Blue, Color.FromArgb(0, 255, 255), Color.FromArgb(0, 255, 0), Color.Yellow, Color.Red, Color.FromArgb(255, 0, 255) };
@@ -2565,6 +2578,9 @@ namespace BenMAP
             if (isCone)
             {
                 myScheme1.EditorSettings.ClassificationType = ClassificationType.Quantities;
+                myScheme1.EditorSettings.IntervalMethod = IntervalMethod.NaturalBreaks;
+                myScheme1.EditorSettings.IntervalSnapMethod = IntervalSnapMethod.Rounding;
+                myScheme1.EditorSettings.IntervalRoundingDigits = 1;
                 myScheme1.EditorSettings.NumBreaks = 6;
                 myScheme1.EditorSettings.FieldName = _columnName; myScheme1.EditorSettings.UseGradient = false;
                 myScheme1.CreateCategories((mainMap.Layers[_currentLayerIndex] as IFeatureLayer).DataSet.DataTable);
@@ -5223,29 +5239,59 @@ namespace BenMAP
             {
                 string s = tsbSavePic.ToolTipText;
                 tsbSavePic.ToolTipText = "";
-                Image i = new Bitmap(mainMap.Width, mainMap.Height);
-                Graphics g = Graphics.FromImage(i);
-                tsbSavePic.ToolTipText = s;
-                g.CopyFromScreen(this.PointToScreen(new Point(splitContainer1.Width - splitContainer2.Panel2.Width - 6, this.tabCtlMain.Parent.Location.Y + 27)), new Point(0, 0), new Size(this.Width, this.Height));
+                //Print dialog
+                SetUpPortaitMainMapLayout();
+               
+            //    Image i = new Bitmap(mainMap.Width, mainMap.Height);
+            //    Graphics g = Graphics.FromImage(i);
+            //    tsbSavePic.ToolTipText = s;
+            //    g.CopyFromScreen(this.PointToScreen(new Point(splitContainer1.Width - splitContainer2.Panel2.Width - 6, this.tabCtlMain.Parent.Location.Y + 27)), new Point(0, 0), new Size(this.Width, this.Height));
 
-                SaveFileDialog saveFileDialog1 = new SaveFileDialog();
-                saveFileDialog1.Filter = "PNG(*.png)|*.png|JPG(*.jpg)|*.jpg";
-                saveFileDialog1.InitialDirectory = "C:\\";
-                if (saveFileDialog1.ShowDialog() == DialogResult.Cancel)
-                {
-                    return;
-                }
+            //    SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+            //    saveFileDialog1.Filter = "PNG(*.png)|*.png|JPG(*.jpg)|*.jpg";
+            //    saveFileDialog1.InitialDirectory = "C:\\";
+            //    if (saveFileDialog1.ShowDialog() == DialogResult.Cancel)
+            //    {
+            //        return;
+            //    }
 
-                string fileName = saveFileDialog1.FileName;
+            //    string fileName = saveFileDialog1.FileName;
 
-                i.Save(fileName);
-                MessageBox.Show("Map exported.");
-                g.Dispose();
+            //    i.Save(fileName);
+            //    MessageBox.Show("Map exported.");
+            //    g.Dispose();
             }
             catch (Exception ex)
             {
             }
         }
+        private void SetUpPortaitMainMapLayout()
+        {
+            LayoutForm _layout = new LayoutForm{ MapControl = mainMap };
+            _layout.ShowDialog(this);
+            //LayoutControl _myLayout = new LayoutControl();
+            //_myLayout.LoadLayout(true, true, true);
+            
+            // Add MapDisplayElement
+           // LayoutMap _MapDisplay = new LayoutMap(mainMap);
+            //_MapDisplay.Location.X = (int)15;
+            //_MapDisplay.Location.Y = (int)15;
+            
+            //LayoutElement _MapDisplay1 = new LayoutElement();
+
+            // Add Map Title
+
+            // Add MapLegend
+
+            // Add North Arrow
+
+            //Add 
+            //Add Map neatline
+            
+            //_layout.Dispose();
+            return;
+        }
+
 
         private void saveFileDialog1_Disposed(object sender, EventArgs e)
         {
@@ -6167,6 +6213,9 @@ namespace BenMAP
                         myScheme1.EditorSettings.EndColor.ToTransparent(fl);
 
                         myScheme1.EditorSettings.ClassificationType = ClassificationType.Quantities;
+                        myScheme1.EditorSettings.IntervalMethod = IntervalMethod.NaturalBreaks;
+                        myScheme1.EditorSettings.IntervalSnapMethod = IntervalSnapMethod.Rounding;
+                        myScheme1.EditorSettings.IntervalRoundingDigits = 1;
                         myScheme1.EditorSettings.NumBreaks = 6;
                         myScheme1.EditorSettings.FieldName = strValueField; myScheme1.EditorSettings.UseGradient = false;
                         myScheme1.CreateCategories(polLayer.DataSet.DataTable);
@@ -6576,6 +6625,9 @@ namespace BenMAP
                     myScheme1.EditorSettings.EndColor.ToTransparent(fl);
 
                     myScheme1.EditorSettings.ClassificationType = ClassificationType.Quantities;
+                    myScheme1.EditorSettings.IntervalMethod = IntervalMethod.NaturalBreaks;
+                    myScheme1.EditorSettings.IntervalSnapMethod = IntervalSnapMethod.Rounding;
+                    myScheme1.EditorSettings.IntervalRoundingDigits = 1;
                     myScheme1.EditorSettings.NumBreaks = 6;
                     myScheme1.EditorSettings.FieldName = strValueField; myScheme1.EditorSettings.UseGradient = false;
                     myScheme1.CreateCategories(polLayer.DataSet.DataTable);
@@ -8867,6 +8919,9 @@ namespace BenMAP
                         myScheme1.EditorSettings.EndColor.ToTransparent(fl);
 
                         myScheme1.EditorSettings.ClassificationType = ClassificationType.Quantities;
+                        myScheme1.EditorSettings.IntervalMethod = IntervalMethod.NaturalBreaks;
+                        myScheme1.EditorSettings.IntervalSnapMethod = IntervalSnapMethod.Rounding;
+                        myScheme1.EditorSettings.IntervalRoundingDigits = 1;
                         myScheme1.EditorSettings.NumBreaks = 6;
                         myScheme1.EditorSettings.FieldName = strValueField; myScheme1.EditorSettings.UseGradient = false;
                         myScheme1.CreateCategories(polLayer.DataSet.DataTable);
@@ -10147,6 +10202,9 @@ namespace BenMAP
                             myScheme1.EditorSettings.EndColor.ToTransparent(fl);
 
                             myScheme1.EditorSettings.ClassificationType = ClassificationType.Quantities;
+                            myScheme1.EditorSettings.IntervalMethod = IntervalMethod.NaturalBreaks;
+                            myScheme1.EditorSettings.IntervalSnapMethod = IntervalSnapMethod.Rounding;
+                            myScheme1.EditorSettings.IntervalRoundingDigits = 1;
                             myScheme1.EditorSettings.NumBreaks = 6;
                             myScheme1.EditorSettings.FieldName = strValueField; myScheme1.EditorSettings.UseGradient = false;
                             myScheme1.CreateCategories(polLayer.DataSet.DataTable);
@@ -11774,6 +11832,9 @@ namespace BenMAP
                             myScheme1.EditorSettings.EndColor.ToTransparent(fl);
 
                             myScheme1.EditorSettings.ClassificationType = ClassificationType.Quantities;
+                            myScheme1.EditorSettings.IntervalMethod = IntervalMethod.NaturalBreaks;
+                            myScheme1.EditorSettings.IntervalSnapMethod = IntervalSnapMethod.Rounding;
+                            myScheme1.EditorSettings.IntervalRoundingDigits = 1;
                             myScheme1.EditorSettings.NumBreaks = 6;
                             myScheme1.EditorSettings.FieldName = strValueField; myScheme1.EditorSettings.UseGradient = false;
                             myScheme1.CreateCategories(polLayer.DataSet.DataTable);
@@ -12146,6 +12207,11 @@ namespace BenMAP
             }
 
             return _colorArray;
+        }
+
+        private void txtBoxMapTitle_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }
