@@ -17,6 +17,8 @@ namespace BenMAP.Jira
         public const string FIELD_SUMMARY = "summary";
         public const string FIELD_DESCRIPTION = "description";
         public const string FIELD_COMPONENTS = "components";
+        public const string FIELD_ENVIRONMENT = "environment";
+        public const string FIELD_PRIORITY = "priority";
 
         // basic issue type names
         public const string ISSUE_TYPE_BUG = "Bug";
@@ -25,6 +27,11 @@ namespace BenMAP.Jira
         public const string ISSUE_TYPE_TASK = "Task";
         public const string ISSUE_TYPE_STORY = "Story";
         public const string ISSUE_TYPE_EPIC = "Epic";
+
+        // basic priority names
+        public const string PRIORITY_MAJOR = "Major";
+        public const string PRIORITY_MINOR = "Minor";
+        public const string PRIORITY_BLOCKER = "Blocker";
 
         // mapping of field name:value
         public readonly Dictionary<string, object> fields;

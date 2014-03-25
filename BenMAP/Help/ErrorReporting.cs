@@ -13,17 +13,27 @@ namespace BenMAP
 {
     partial class ErrorReporting : FormBase
     {
-        JiraClient client;
+        private JiraClient client;
+        private const string baseURL = "https://f8nnm8p.atlassian.net/";
+        //private const string username = "mscruggs";
+        //private const string password = "tempAcct1";
+        private const string username = "BenMAP-CE";
+        private const string password = "BenMAPOpenSource14";
+        private const string projectKey = "USERBUGS";       
 
         public ErrorReporting()
         {           
 
             InitializeComponent();
 
+            //default options
+            rbError.Checked = true;
+            rbMajor.Checked = true;
+
             //populate component combo from Jira
-            client = new JiraClient("https://f8nnm8p.atlassian.net/", "mscruggs", "tempAcct1");
-            //client = new JiraClient("https://f8nnm8p.atlassian.net/", "BenMAP@epa.gov", "BenMAPOpenSource14");
-            List<JiraProjectComponent> components = (List<JiraProjectComponent>)client.GetProjectComponents("USERBUGS");
+            client = new JiraClient(baseURL, username, password);
+           
+            List<JiraProjectComponent> components = (List<JiraProjectComponent>)client.GetProjectComponents(projectKey);
 
             //if components cannot be retrieved, alert the user and disable the submit button.
             if ((components == null) || (components.Count == 0))
@@ -50,16 +60,59 @@ namespace BenMAP
         private void btnSubmit_Click(object sender, EventArgs e)
         {
             //validate inputs
-
+           
             //send inputs to Jira
-            NewJiraIssue issue = new NewJiraIssue("USERBUGS", "Bug", "test", "test description");
+
+            //issue type
+            string issueType;
+            if (rbError.Checked)
+            {
+                issueType = NewJiraIssue.ISSUE_TYPE_BUG;
+            }
+            else
+            {
+                issueType = NewJiraIssue.ISSUE_TYPE_NEW_FEATURE;
+            }
+
+            //name, email, country, description
+            string description = "Name: " + txtName.Text.Trim() + "\n";
+            description = description + "Email: " + txtEmail.Text.Trim() + "\n";
+            description = description + "Country: " + txtCountry.Text.Trim() + "\n\n";
+            description = description + "Description: " + txtDescription.Text.Trim();
+
+            NewJiraIssue issue = new NewJiraIssue(projectKey, issueType, issueType, description);
+
+            //os
+            issue.SetField(NewJiraIssue.FIELD_ENVIRONMENT, txtOS.Text.Trim());          
+            
+            //priority
+            string priority;
+            if (rbMinor.Checked)
+            {
+                priority = NewJiraIssue.PRIORITY_MINOR;
+            }
+            else if (rbMajor.Checked) 
+            {
+                priority = NewJiraIssue.PRIORITY_MAJOR;
+            }
+            else 
+            {
+                priority = NewJiraIssue.PRIORITY_BLOCKER;
+            }
+            issue.SetField(NewJiraIssue.FIELD_PRIORITY, priority); 
+                
+           //component
+            issue.SetField(NewJiraIssue.FIELD_COMPONENTS, ((JiraProjectComponent)cboComponent.SelectedItem).name);
+
+
+            //, audittrail, 
 
             NewJiraIssueResponse response = client.CreateIssue(issue);
 
-            //get response
-
-
+ 
             //alert user of success or failure of submittal
+            MessageBox.Show("Error Report was submitted successfully!");
+
         }
     }
 }
