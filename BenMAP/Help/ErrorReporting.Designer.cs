@@ -50,12 +50,13 @@
             this.label11 = new System.Windows.Forms.Label();
             this.txtDescription = new System.Windows.Forms.TextBox();
             this.gbReportType = new System.Windows.Forms.GroupBox();
-            this.gbSeverity = new System.Windows.Forms.GroupBox();
             this.rbFeature = new System.Windows.Forms.RadioButton();
             this.rbError = new System.Windows.Forms.RadioButton();
+            this.gbSeverity = new System.Windows.Forms.GroupBox();
             this.rbBlocking = new System.Windows.Forms.RadioButton();
             this.rbMajor = new System.Windows.Forms.RadioButton();
             this.rbMinor = new System.Windows.Forms.RadioButton();
+            this.lblErrorText = new System.Windows.Forms.Label();
             this.gbReportType.SuspendLayout();
             this.gbSeverity.SuspendLayout();
             this.SuspendLayout();
@@ -70,35 +71,35 @@
             // 
             // txtOS
             // 
-            this.txtOS.Location = new System.Drawing.Point(236, 59);
+            this.txtOS.Location = new System.Drawing.Point(236, 61);
             this.txtOS.Name = "txtOS";
             this.txtOS.Size = new System.Drawing.Size(225, 22);
             this.txtOS.TabIndex = 1;
             // 
             // txtEmail
             // 
-            this.txtEmail.Location = new System.Drawing.Point(236, 118);
+            this.txtEmail.Location = new System.Drawing.Point(236, 120);
             this.txtEmail.Name = "txtEmail";
             this.txtEmail.Size = new System.Drawing.Size(225, 22);
             this.txtEmail.TabIndex = 2;
             // 
             // txtName
             // 
-            this.txtName.Location = new System.Drawing.Point(695, 62);
+            this.txtName.Location = new System.Drawing.Point(695, 64);
             this.txtName.Name = "txtName";
             this.txtName.Size = new System.Drawing.Size(225, 22);
             this.txtName.TabIndex = 3;
             // 
             // txtCountry
             // 
-            this.txtCountry.Location = new System.Drawing.Point(695, 118);
+            this.txtCountry.Location = new System.Drawing.Point(695, 120);
             this.txtCountry.Name = "txtCountry";
             this.txtCountry.Size = new System.Drawing.Size(225, 22);
             this.txtCountry.TabIndex = 4;
             // 
             // label2
             // 
-            this.label2.Location = new System.Drawing.Point(27, 62);
+            this.label2.Location = new System.Drawing.Point(27, 64);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(213, 13);
             this.label2.TabIndex = 5;
@@ -106,7 +107,7 @@
             // 
             // label3
             // 
-            this.label3.Location = new System.Drawing.Point(27, 118);
+            this.label3.Location = new System.Drawing.Point(27, 120);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(180, 13);
             this.label3.TabIndex = 6;
@@ -114,7 +115,7 @@
             // 
             // label4
             // 
-            this.label4.Location = new System.Drawing.Point(503, 62);
+            this.label4.Location = new System.Drawing.Point(503, 64);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(180, 13);
             this.label4.TabIndex = 7;
@@ -122,7 +123,7 @@
             // 
             // label5
             // 
-            this.label5.Location = new System.Drawing.Point(503, 118);
+            this.label5.Location = new System.Drawing.Point(503, 120);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(183, 33);
             this.label5.TabIndex = 8;
@@ -130,7 +131,7 @@
             // 
             // btnSubmit
             // 
-            this.btnSubmit.Location = new System.Drawing.Point(360, 685);
+            this.btnSubmit.Location = new System.Drawing.Point(360, 687);
             this.btnSubmit.Name = "btnSubmit";
             this.btnSubmit.Size = new System.Drawing.Size(75, 23);
             this.btnSubmit.TabIndex = 9;
@@ -140,7 +141,7 @@
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(484, 685);
+            this.btnCancel.Location = new System.Drawing.Point(484, 687);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 10;
@@ -150,7 +151,7 @@
             // 
             // label6
             // 
-            this.label6.Location = new System.Drawing.Point(254, 656);
+            this.label6.Location = new System.Drawing.Point(254, 658);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(432, 13);
             this.label6.TabIndex = 11;
@@ -159,7 +160,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(69, 171);
+            this.label7.Location = new System.Drawing.Point(69, 173);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(256, 14);
             this.label7.TabIndex = 12;
@@ -168,7 +169,7 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(489, 171);
+            this.label8.Location = new System.Drawing.Point(489, 173);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(231, 14);
             this.label8.TabIndex = 15;
@@ -177,7 +178,7 @@
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(27, 302);
+            this.label9.Location = new System.Drawing.Point(27, 304);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(295, 14);
             this.label9.TabIndex = 19;
@@ -186,7 +187,7 @@
             // cboComponent
             // 
             this.cboComponent.FormattingEnabled = true;
-            this.cboComponent.Location = new System.Drawing.Point(54, 333);
+            this.cboComponent.Location = new System.Drawing.Point(54, 335);
             this.cboComponent.Name = "cboComponent";
             this.cboComponent.Size = new System.Drawing.Size(252, 22);
             this.cboComponent.TabIndex = 20;
@@ -194,7 +195,7 @@
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(388, 302);
+            this.label10.Location = new System.Drawing.Point(388, 304);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(421, 14);
             this.label10.TabIndex = 21;
@@ -203,7 +204,7 @@
             // chkAuditTrail
             // 
             this.chkAuditTrail.AutoSize = true;
-            this.chkAuditTrail.Location = new System.Drawing.Point(411, 333);
+            this.chkAuditTrail.Location = new System.Drawing.Point(411, 335);
             this.chkAuditTrail.Name = "chkAuditTrail";
             this.chkAuditTrail.Size = new System.Drawing.Size(285, 18);
             this.chkAuditTrail.TabIndex = 22;
@@ -213,7 +214,7 @@
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(98, 387);
+            this.label11.Location = new System.Drawing.Point(98, 389);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(746, 14);
             this.label11.TabIndex = 23;
@@ -222,7 +223,7 @@
             // 
             // txtDescription
             // 
-            this.txtDescription.Location = new System.Drawing.Point(128, 420);
+            this.txtDescription.Location = new System.Drawing.Point(128, 422);
             this.txtDescription.Multiline = true;
             this.txtDescription.Name = "txtDescription";
             this.txtDescription.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
@@ -233,22 +234,11 @@
             // 
             this.gbReportType.Controls.Add(this.rbFeature);
             this.gbReportType.Controls.Add(this.rbError);
-            this.gbReportType.Location = new System.Drawing.Point(101, 186);
+            this.gbReportType.Location = new System.Drawing.Point(101, 188);
             this.gbReportType.Name = "gbReportType";
             this.gbReportType.Size = new System.Drawing.Size(159, 75);
             this.gbReportType.TabIndex = 25;
             this.gbReportType.TabStop = false;
-            // 
-            // gbSeverity
-            // 
-            this.gbSeverity.Controls.Add(this.rbBlocking);
-            this.gbSeverity.Controls.Add(this.rbMajor);
-            this.gbSeverity.Controls.Add(this.rbMinor);
-            this.gbSeverity.Location = new System.Drawing.Point(506, 186);
-            this.gbSeverity.Name = "gbSeverity";
-            this.gbSeverity.Size = new System.Drawing.Size(436, 100);
-            this.gbSeverity.TabIndex = 26;
-            this.gbSeverity.TabStop = false;
             // 
             // rbFeature
             // 
@@ -271,6 +261,17 @@
             this.rbError.TabStop = true;
             this.rbError.Text = "Software Error";
             this.rbError.UseVisualStyleBackColor = true;
+            // 
+            // gbSeverity
+            // 
+            this.gbSeverity.Controls.Add(this.rbBlocking);
+            this.gbSeverity.Controls.Add(this.rbMajor);
+            this.gbSeverity.Controls.Add(this.rbMinor);
+            this.gbSeverity.Location = new System.Drawing.Point(506, 188);
+            this.gbSeverity.Name = "gbSeverity";
+            this.gbSeverity.Size = new System.Drawing.Size(436, 100);
+            this.gbSeverity.TabIndex = 26;
+            this.gbSeverity.TabStop = false;
             // 
             // rbBlocking
             // 
@@ -305,11 +306,21 @@
             this.rbMinor.Text = "Minor - this issue has little or no impact on my ability to use BenMAP CE";
             this.rbMinor.UseVisualStyleBackColor = true;
             // 
+            // lblErrorText
+            // 
+            this.lblErrorText.ForeColor = System.Drawing.Color.Red;
+            this.lblErrorText.Location = new System.Drawing.Point(140, 41);
+            this.lblErrorText.Name = "lblErrorText";
+            this.lblErrorText.Size = new System.Drawing.Size(712, 13);
+            this.lblErrorText.TabIndex = 27;
+            this.lblErrorText.Text = "Error Text";
+            // 
             // ErrorReporting
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(957, 734);
+            this.Controls.Add(this.lblErrorText);
             this.Controls.Add(this.gbSeverity);
             this.Controls.Add(this.gbReportType);
             this.Controls.Add(this.txtDescription);
@@ -374,5 +385,6 @@
         private System.Windows.Forms.RadioButton rbBlocking;
         private System.Windows.Forms.RadioButton rbMajor;
         private System.Windows.Forms.RadioButton rbMinor;
+        private System.Windows.Forms.Label lblErrorText;
     }
 }
