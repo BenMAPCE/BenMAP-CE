@@ -83,26 +83,27 @@ namespace BenMAP
             NewJiraIssue issue = new NewJiraIssue(projectKey, issueType, issueType, description);
 
             //os
-            issue.SetField(NewJiraIssue.FIELD_ENVIRONMENT, txtOS.Text.Trim());          
-            
+            issue.SetField(NewJiraIssue.FIELD_ENVIRONMENT, txtOS.Text.Trim());
+
             //priority
             string priority;
             if (rbMinor.Checked)
             {
                 priority = NewJiraIssue.PRIORITY_MINOR;
             }
-            else if (rbMajor.Checked) 
+            else if (rbMajor.Checked)
             {
                 priority = NewJiraIssue.PRIORITY_MAJOR;
             }
-            else 
+            else
             {
                 priority = NewJiraIssue.PRIORITY_BLOCKER;
             }
-            issue.SetField(NewJiraIssue.FIELD_PRIORITY, priority); 
+            issue.SetField(NewJiraIssue.FIELD_PRIORITY, new { name = priority }); 
                 
            //component
-            issue.SetField(NewJiraIssue.FIELD_COMPONENTS, ((JiraProjectComponent)cboComponent.SelectedItem).name);
+           //string component = ((JiraProjectComponent)cboComponent.SelectedItem).name;
+           issue.SetField(NewJiraIssue.FIELD_COMPONENTS, new JiraProjectComponent[] { (JiraProjectComponent)cboComponent.SelectedItem });
 
 
             //, audittrail, 
