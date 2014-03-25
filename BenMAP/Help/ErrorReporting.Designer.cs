@@ -65,7 +65,7 @@
             // 
             this.label1.Location = new System.Drawing.Point(12, 9);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(828, 36);
+            this.label1.Size = new System.Drawing.Size(828, 32);
             this.label1.TabIndex = 0;
             this.label1.Text = resources.GetString("label1.Text");
             // 
@@ -187,15 +187,15 @@
             // cboComponent
             // 
             this.cboComponent.FormattingEnabled = true;
-            this.cboComponent.Location = new System.Drawing.Point(54, 335);
+            this.cboComponent.Location = new System.Drawing.Point(30, 335);
             this.cboComponent.Name = "cboComponent";
-            this.cboComponent.Size = new System.Drawing.Size(252, 22);
+            this.cboComponent.Size = new System.Drawing.Size(322, 22);
             this.cboComponent.TabIndex = 20;
             // 
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(388, 304);
+            this.label10.Location = new System.Drawing.Point(407, 304);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(421, 14);
             this.label10.TabIndex = 21;
@@ -204,7 +204,7 @@
             // chkAuditTrail
             // 
             this.chkAuditTrail.AutoSize = true;
-            this.chkAuditTrail.Location = new System.Drawing.Point(411, 335);
+            this.chkAuditTrail.Location = new System.Drawing.Point(430, 335);
             this.chkAuditTrail.Name = "chkAuditTrail";
             this.chkAuditTrail.Size = new System.Drawing.Size(285, 18);
             this.chkAuditTrail.TabIndex = 22;
