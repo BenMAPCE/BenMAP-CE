@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.IO;
 
 using BenMAP.Jira;
 
@@ -101,18 +102,38 @@ namespace BenMAP
             }
             issue.SetField(NewJiraIssue.FIELD_PRIORITY, new { name = priority }); 
                 
-           //component
-           //string component = ((JiraProjectComponent)cboComponent.SelectedItem).name;
-           issue.SetField(NewJiraIssue.FIELD_COMPONENTS, new JiraProjectComponent[] { (JiraProjectComponent)cboComponent.SelectedItem });
-
-
-            //, audittrail, 
+            //component
+            //string component = ((JiraProjectComponent)cboComponent.SelectedItem).name;
+            issue.SetField(NewJiraIssue.FIELD_COMPONENTS, new JiraProjectComponent[] { (JiraProjectComponent)cboComponent.SelectedItem });
 
             NewJiraIssueResponse response = client.CreateIssue(issue);
 
+            if (response != null)
+            {
+                //add attachments if required
+                //if (chkAuditTrail.Checked)
+                //{
+                //    FileInfo fi = new FileInfo(@"C:\RTI\Projects\BenMAP\test_attachment.txt");
+                //    FileInfo [] files = new FileInfo[1];
+                //    files[0] = fi;
+                //    client.AttachFilesToIssue(response.key, files);
+                //}
+
+                //alert user of success or failure of submittal    
+                MessageBox.Show("Error Report was submitted successfully!");
+
+
+            }
+            else 
+            {
+                //alert to failure of submittal
+                MessageBox.Show("Error Report submittal failed.");
+            
+            }
+
+
  
-            //alert user of success or failure of submittal
-            MessageBox.Show("Error Report was submitted successfully!");
+           
 
         }
     }
