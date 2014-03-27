@@ -45,6 +45,8 @@ namespace BenMAP
         private string _baseFormTitle = "";
         public Main mainFrm = null;
 
+        private string CurrentMapTitle = "";
+
         private List<string> _listAddGridTo36km = new List<string>();
         private string _reportTableFileName = "";
 
@@ -840,6 +842,8 @@ namespace BenMAP
                 string nodeName = currentNode.Name.ToLower();
                 string nodeTag = string.Empty;
                 TreeNode parentNode = currentNode.Parent as TreeNode;
+                TreeNode childNode = new TreeNode();
+                TreeNode deltaNode = new TreeNode();
                 DialogResult rtn = DialogResult.Cancel;
                 var frm = new Form();
                 BenMAPPollutant p;
@@ -1190,165 +1194,66 @@ namespace BenMAP
                     case "baseline":
                         _currentNode = "baseline";
                         currStat = "baseline";
-
+                       
                         BaseControlOP(currStat, ref currentNode);
+
+                        //Advance to first child node and draw base data layer-MCB
+                        childNode = currentNode.FirstNode;  //refresh child node
+                        if (childNode != null)
+                        {
+                            currentNode = childNode;
+                            trvSetting.SelectedNode = currentNode;
+                            nodeName = currentNode.Name.ToLower();
+                            DrawBaseline(currentNode, str);
+                            
+                            //Attempt to display the delta layer as well-MCB
+                            //NOTE-uncomment when multiple layers can be displayed at once-MCb
+                            //deltaNode = parentNode.LastNode; // as TreeNode;
+                            //if ( deltaNode != null)
+                            //{
+                            //    currentNode = deltaNode;
+                            //    trvSetting.SelectedNode = currentNode;
+                            //    nodeName = currentNode.Name.ToLower();
+                            //    DrawDelta(currentNode, str);
+                            //}
+                        }
                         break;
                     case "basedata":
-                        _currentNode = "basedata";
-                        str = string.Format("{0}baseline", (currentNode.Tag as BenMAPLine).Pollutant.PollutantName);
-                        if (CommonClass.LstAsynchronizationStates != null &&
-                            CommonClass.LstAsynchronizationStates.Contains(str.ToLower()))
-                        {
-                            MessageBox.Show(string.Format("BenMAP is still creating the air quality surface map.", (currentNode.Tag as BenMAPLine).Pollutant.PollutantName), "Please wait", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                            return;
-                        }
-                        WaitShow("Drawing layer...");
-                        try
-                        {
-                            tabCtlMain.SelectedIndex = 0;
-                            mainMap.Layers.Clear();
-                            tsbChangeProjection.Text = "change projection to Albers";
-                            BenMAPLine b = currentNode.Tag as BenMAPLine;
-                            foreach (BaseControlGroup bc in CommonClass.LstBaseControlGroup)
-                            {
-                                if (bc.Pollutant.PollutantID == b.Pollutant.PollutantID)
-                                { b = bc.Base; }
-                            }
-                            currentNode.Tag = b;
-                            addBenMAPLineToMainMap(b, "B");
-                            addRegionLayerToMainMap();
-                            LayerObject = currentNode.Tag as BenMAPLine;
-                            InitTableResult(currentNode.Tag as BenMAPLine);
-                        }
-                        catch
-                        {
-                        }
-                        WaitClose();
+                        DrawBaseline(currentNode, str); //-MCB
                         break;
                     case "delta":
-                        _currentNode = "delta";
-                        BaseControlGroup bcgDelta = currentNode.Tag as BaseControlGroup;
-                        if (bcgDelta == null)
-                        {
-                            MessageBox.Show("There is no result for delta.");
-                            return;
-                        }
-                        if (bcgDelta.Base == null || bcgDelta.Control == null)
-                        {
-                            MessageBox.Show("There is no result for delta.");
-                            return;
-                        }
-                        if (bcgDelta.Base.ModelResultAttributes == null || bcgDelta.Control.ModelResultAttributes == null)
-                        {
-                            MessageBox.Show("There is no result for delta.");
-                            return;
-                        }
-                        str = string.Format("{0}baseline", bcgDelta.Pollutant.PollutantName);
-                        if (CommonClass.LstAsynchronizationStates != null &&
-                            CommonClass.LstAsynchronizationStates.Contains(str.ToLower()))
-                        {
-                            MessageBox.Show(string.Format("BenMAP is still creating the air quality surface map. ", bcgDelta.Pollutant.PollutantName), "Please wait", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                            return;
-                        }
-                        str = string.Format("{0}control", bcgDelta.Pollutant.PollutantName);
-                        if (CommonClass.LstAsynchronizationStates != null && CommonClass.LstAsynchronizationStates.Contains(str.ToLower()))
-                        {
-                            MessageBox.Show(string.Format("BenMAP is still creating the air quality surface map. ", bcgDelta.Pollutant.PollutantName), "Please wait", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                            return;
-                        }
-                        WaitShow("Drawing layer...");
-                        tsbChangeProjection.Text = "change projection to Albers";
-                        if (bcgDelta.DeltaQ == null)
-                        {
-                            bcgDelta.DeltaQ = new BenMAPLine();
-                            bcgDelta.DeltaQ.Pollutant = bcgDelta.Base.Pollutant;
-                            bcgDelta.DeltaQ.GridType = bcgDelta.Base.GridType;
-                            bcgDelta.DeltaQ.ModelResultAttributes = new List<ModelResultAttribute>();
-
-
-
-                            Dictionary<string, Dictionary<string, float>> dicControl = new Dictionary<string, Dictionary<string, float>>();
-                            foreach (ModelResultAttribute mra in bcgDelta.Control.ModelResultAttributes)
-                            {
-                                if (!dicControl.ContainsKey(mra.Col + "," + mra.Row))
-                                {
-                                    dicControl.Add(mra.Col + "," + mra.Row, mra.Values);
-                                }
-                            }
-                            foreach (ModelResultAttribute mra in bcgDelta.Base.ModelResultAttributes)
-                            {
-                                try
-                                {
-                                    if (dicControl.ContainsKey(mra.Col + "," + mra.Row))
-                                    {
-                                        bcgDelta.DeltaQ.ModelResultAttributes.Add(new ModelResultAttribute()
-                                       {
-                                           Col = mra.Col,
-                                           Row = mra.Row
-                                       });
-                                        bcgDelta.DeltaQ.ModelResultAttributes[bcgDelta.DeltaQ.ModelResultAttributes.Count - 1].Values = new Dictionary<string, float>();
-                                        foreach (KeyValuePair<string, float> k in mra.Values)
-                                        {
-                                            if (dicControl[mra.Col + "," + mra.Row].ContainsKey(k.Key))
-                                                bcgDelta.DeltaQ.ModelResultAttributes[bcgDelta.DeltaQ.ModelResultAttributes.Count - 1].Values.Add(k.Key, k.Value - (dicControl[mra.Col + "," + mra.Row][k.Key]));
-                                            else
-                                                bcgDelta.DeltaQ.ModelResultAttributes[bcgDelta.DeltaQ.ModelResultAttributes.Count - 1].Values.Add(k.Key, Convert.ToSingle(0.0));
-                                        }
-                                    }
-                                }
-                                catch
-                                { }
-                            }
-                        }
-
-                        try
-                        {
-                            tabCtlMain.SelectedIndex = 0;
-                            mainMap.Layers.Clear();
-                            addBenMAPLineToMainMap(bcgDelta.DeltaQ, "D");
-                            addRegionLayerToMainMap();
-                            LayerObject = bcgDelta.DeltaQ;
-                            InitTableResult(bcgDelta.DeltaQ);
-                        }
-                        catch
-                        {
-                        }
-                        WaitClose();
+                        DrawDelta(currentNode, str);//-MCB
+                        
                         break;
                     case "control":
                         _currentNode = "control";
                         currStat = "control";
                         BaseControlOP(currStat, ref currentNode);
+                        //Advance to first child node and draw control data layer-MCB
+                        childNode = currentNode.FirstNode;
+                        if (childNode != null)
+                        {
+                            currentNode = childNode;
+                            trvSetting.SelectedNode = currentNode;
+                            nodeName = currentNode.Name.ToLower();
+                            DrawControlData(currentNode, str);
+
+                            //Attempt to display the delta layer as well-MCB
+                            //NOTE-uncomment when multiple layers can be displayed at once-MCB
+                            //deltaNode = parentNode.LastNode as TreeNode;
+                            //if (deltaNode != null)
+                            //{
+                            //    currentNode = deltaNode;
+                            //    trvSetting.SelectedNode = currentNode;
+                            //    nodeName = currentNode.Name.ToLower();
+                            //    DrawDelta(currentNode, str);
+                            //}
+                        }
                         break;
                     case "controldata":
-                        _currentNode = "controldata";
-                        str = string.Format("{0}control", (currentNode.Tag as BenMAPLine).Pollutant.PollutantName);
-                        if (CommonClass.LstAsynchronizationStates != null && CommonClass.LstAsynchronizationStates.Contains(str.ToLower()))
-                        {
-                            MessageBox.Show(string.Format("BenMAP is still creating the air quality surface map. ", (currentNode.Tag as BenMAPLine).Pollutant.PollutantName), "Please wait", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                            return;
-                        }
-                        WaitShow("Drawing layer...");
-                        try
-                        {
-                            tabCtlMain.SelectedIndex = 0;
-                            mainMap.Layers.Clear();
-                            BenMAPLine cc = currentNode.Tag as BenMAPLine;
-                            foreach (BaseControlGroup bc in CommonClass.LstBaseControlGroup)
-                            {
-                                if (bc.Pollutant.PollutantID == cc.Pollutant.PollutantID)
-                                { cc = bc.Control; }
-                            }
-                            currentNode.Tag = cc;
-                            addBenMAPLineToMainMap(cc, "C");
-                            addRegionLayerToMainMap();
-                            LayerObject = currentNode.Tag as BenMAPLine;
-                            InitTableResult(currentNode.Tag as BenMAPLine);
-                        }
-                        catch
-                        {
-                        }
-                        WaitClose();
+                       
+                        DrawControlData(currentNode, str); //-MCB
+                        
                         break;
                     case "configuration":
                         _currentNode = "gridtype";
@@ -1999,7 +1904,166 @@ namespace BenMAP
                 Logger.LogError(ex);
             }
         }
+        private void DrawBaseline (TreeNode currentNode, string str)
+        {   //MCB- draws base data on main map
+            _currentNode = "basedata";
+            str = string.Format("{0}baseline", (currentNode.Tag as BenMAPLine).Pollutant.PollutantName);
+            CurrentMapTitle = str + ": Baseline Map";
+            
+            if (CommonClass.LstAsynchronizationStates != null &&
+                CommonClass.LstAsynchronizationStates.Contains(str.ToLower()))
+            {
+                MessageBox.Show(string.Format("BenMAP is still creating the air quality surface map.", (currentNode.Tag as BenMAPLine).Pollutant.PollutantName), "Please wait", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            WaitShow("Drawing layer...");
+            try
+            {
+                tabCtlMain.SelectedIndex = 0;
+                mainMap.Layers.Clear();
+                tsbChangeProjection.Text = "change projection to Albers";
+                BenMAPLine b = currentNode.Tag as BenMAPLine;
+                foreach (BaseControlGroup bc in CommonClass.LstBaseControlGroup)
+                {
+                    if (bc.Pollutant.PollutantID == b.Pollutant.PollutantID)
+                    { b = bc.Base; }
+                }
+                currentNode.Tag = b;
+                addBenMAPLineToMainMap(b, "B");
+                addRegionLayerToMainMap();
+                LayerObject = currentNode.Tag as BenMAPLine;
+                InitTableResult(currentNode.Tag as BenMAPLine);
+            }
+            catch
+            {
+            }
+            WaitClose();
+            return;
+        }
+        private void DrawControlData(TreeNode currentNode, string str)
+        {
+            _currentNode = "controldata";
+            str = string.Format("{0}control", (currentNode.Tag as BenMAPLine).Pollutant.PollutantName);
+            CurrentMapTitle = str + ": Control Map";
+            if (CommonClass.LstAsynchronizationStates != null && CommonClass.LstAsynchronizationStates.Contains(str.ToLower()))
+            {
+                MessageBox.Show(string.Format("BenMAP is still creating the air quality surface map. ", (currentNode.Tag as BenMAPLine).Pollutant.PollutantName), "Please wait", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            WaitShow("Drawing layer...");
+            try
+            {
+                tabCtlMain.SelectedIndex = 0;
+                mainMap.Layers.Clear();
+                BenMAPLine cc = currentNode.Tag as BenMAPLine;
+                foreach (BaseControlGroup bc in CommonClass.LstBaseControlGroup)
+                {
+                    if (bc.Pollutant.PollutantID == cc.Pollutant.PollutantID)
+                    { cc = bc.Control; }
+                }
+                currentNode.Tag = cc;
+                addBenMAPLineToMainMap(cc, "C");
+                addRegionLayerToMainMap();
+                LayerObject = currentNode.Tag as BenMAPLine;
+                InitTableResult(currentNode.Tag as BenMAPLine);
+            }
+            catch
+            {
+            }
+            WaitClose();
+            return;
+        }
+        private void DrawDelta(TreeNode currentNode, string str)
+        {
+            _currentNode = "delta";
+            BaseControlGroup bcgDelta = currentNode.Tag as BaseControlGroup;
+            if (bcgDelta == null)
+            {
+                MessageBox.Show("There is no result for delta.");
+                return;
+            }
+            if (bcgDelta.Base == null || bcgDelta.Control == null)
+            {
+                MessageBox.Show("There is no result for delta.");
+                return;
+            }
+            if (bcgDelta.Base.ModelResultAttributes == null || bcgDelta.Control.ModelResultAttributes == null)
+            {
+                MessageBox.Show("There is no result for delta.");
+                return;
+            }
+            str = string.Format("{0}baseline", bcgDelta.Pollutant.PollutantName);
+            if (CommonClass.LstAsynchronizationStates != null &&
+                CommonClass.LstAsynchronizationStates.Contains(str.ToLower()))
+            {
+                MessageBox.Show(string.Format("BenMAP is still creating the air quality surface map. ", bcgDelta.Pollutant.PollutantName), "Please wait", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            str = string.Format("{0}control", bcgDelta.Pollutant.PollutantName);
+            if (CommonClass.LstAsynchronizationStates != null && CommonClass.LstAsynchronizationStates.Contains(str.ToLower()))
+            {
+                MessageBox.Show(string.Format("BenMAP is still creating the air quality surface map. ", bcgDelta.Pollutant.PollutantName), "Please wait", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            WaitShow("Drawing layer...");
+            tsbChangeProjection.Text = "change projection to Albers";
+            if (bcgDelta.DeltaQ == null)
+            {
+                bcgDelta.DeltaQ = new BenMAPLine();
+                bcgDelta.DeltaQ.Pollutant = bcgDelta.Base.Pollutant;
+                CurrentMapTitle = bcgDelta.DeltaQ.Pollutant.PollutantName + ": Delta Map";
+                bcgDelta.DeltaQ.GridType = bcgDelta.Base.GridType;
+                bcgDelta.DeltaQ.ModelResultAttributes = new List<ModelResultAttribute>();
 
+                Dictionary<string, Dictionary<string, float>> dicControl = new Dictionary<string, Dictionary<string, float>>();
+                foreach (ModelResultAttribute mra in bcgDelta.Control.ModelResultAttributes)
+                {
+                    if (!dicControl.ContainsKey(mra.Col + "," + mra.Row))
+                    {
+                        dicControl.Add(mra.Col + "," + mra.Row, mra.Values);
+                    }
+                }
+                foreach (ModelResultAttribute mra in bcgDelta.Base.ModelResultAttributes)
+                {
+                    try
+                    {
+                        if (dicControl.ContainsKey(mra.Col + "," + mra.Row))
+                        {
+                            bcgDelta.DeltaQ.ModelResultAttributes.Add(new ModelResultAttribute()
+                            {
+                                Col = mra.Col,
+                                Row = mra.Row
+                            });
+                            bcgDelta.DeltaQ.ModelResultAttributes[bcgDelta.DeltaQ.ModelResultAttributes.Count - 1].Values = new Dictionary<string, float>();
+                            foreach (KeyValuePair<string, float> k in mra.Values)
+                            {
+                                if (dicControl[mra.Col + "," + mra.Row].ContainsKey(k.Key))
+                                    bcgDelta.DeltaQ.ModelResultAttributes[bcgDelta.DeltaQ.ModelResultAttributes.Count - 1].Values.Add(k.Key, k.Value - (dicControl[mra.Col + "," + mra.Row][k.Key]));
+                                else
+                                    bcgDelta.DeltaQ.ModelResultAttributes[bcgDelta.DeltaQ.ModelResultAttributes.Count - 1].Values.Add(k.Key, Convert.ToSingle(0.0));
+                            }
+                        }
+                    }
+                    catch
+                    { }
+                }
+            }
+
+            try
+            {
+                tabCtlMain.SelectedIndex = 0;
+                mainMap.Layers.Clear();
+                addBenMAPLineToMainMap(bcgDelta.DeltaQ, "D");
+                addRegionLayerToMainMap();
+                LayerObject = bcgDelta.DeltaQ;
+                InitTableResult(bcgDelta.DeltaQ);
+            }
+            catch
+            {
+            }
+            WaitClose();
+            return;
+        }
         private void CRResultChangeVPV()
         {
             try
@@ -2328,6 +2392,11 @@ namespace BenMAP
                 if (isBase == "B") polLayer.LegendText = "Baseline";
                 if (isBase == "D") polLayer.LegendText = "Delta";
                 if (isBase == "C") polLayer.LegendText = "Control";
+                
+                //set the layer to have its symbology expanded by default //-MCB
+                //NoteL not seeing end effect yet? -MCB
+                polLayer.Symbology.IsExpanded = true;
+
                 string strValueField = polLayer.DataSet.DataTable.Columns[2].ColumnName;
                 PolygonScheme myScheme1 = new PolygonScheme();
                 float fl = (float)0.1;
@@ -2337,8 +2406,12 @@ namespace BenMAP
                 myScheme1.EditorSettings.EndColor.ToTransparent(fl);
 
                 myScheme1.EditorSettings.ClassificationType = ClassificationType.Quantities;
+                myScheme1.EditorSettings.IntervalMethod = IntervalMethod.NaturalBreaks;
+                myScheme1.EditorSettings.IntervalSnapMethod = IntervalSnapMethod.Rounding;
+                myScheme1.EditorSettings.IntervalRoundingDigits = 1;
                 myScheme1.EditorSettings.NumBreaks = 6;
-                myScheme1.EditorSettings.FieldName = strValueField; myScheme1.EditorSettings.UseGradient = false;
+                myScheme1.EditorSettings.FieldName = strValueField; 
+                myScheme1.EditorSettings.UseGradient = false;
                 myScheme1.CreateCategories(polLayer.DataSet.DataTable);
 
                 double dMinValue = 0.0;
@@ -2382,7 +2455,8 @@ namespace BenMAP
                 _dMinValue = dMinValue;
                 _dMaxValue = dMaxValue;
                 _columnName = strValueField;
-                RenderMainMap(true);
+                if (isBase == "D") RenderMainMap(true,true);
+                else  RenderMainMap(true,false);
             }
             catch (Exception ex)
             {
@@ -2398,11 +2472,19 @@ namespace BenMAP
             get { return _blendColors; }
             set { _blendColors = value; }
         }
-        private void ResetGisMap(object sender, EventArgs e)
+        private void ResetGisMap(object sender, EventArgs e, bool isDelta = false)
         {
             try
             {
-
+                //Replace the color ramp
+                if (isDelta)
+                {//use the delta color ramp
+                    colorBlend.ColorArray = GetColorRamp("red_blue", 6);
+                }
+                else
+                {//use the default color ramp
+                    colorBlend.ColorArray = GetColorRamp("pale_yellow_blue", 6);
+                }
                 _blendColors = colorBlend.ColorArray;
                 _dMaxValue = colorBlend.MaxValue;
                 _dMinValue = colorBlend.MinValue;
@@ -2416,8 +2498,6 @@ namespace BenMAP
                 float fl = (float)0.1;
                 float fColor = (float)0.2;
                 Color ctemp = new Color();
-
-
 
                 iColor = 0;
                 for (int iBlend = 0; iBlend < 6; iBlend++)
@@ -2462,16 +2542,22 @@ namespace BenMAP
                 Logger.LogError(ex);
             }
         }
-        private void RenderMainMap(bool isCone)
+        private void RenderMainMap(bool isCone, bool isDelta = false)
         {
             double min = _dMinValue;
             double max = _dMaxValue;
             colorBlend.SetValueRange(min, max, true);
             colorBlend._minPlotValue = _dMinValue;
             colorBlend._maxPlotValue = _dMaxValue;
-            ResetGisMap(null, null);
+            tbMapTitle.Text = CurrentMapTitle;
+            
+            ResetGisMap(null, null, isDelta);
             return;
-            Color[] colors = new Color[] { Color.Blue, Color.FromArgb(0, 255, 255), Color.FromArgb(0, 255, 0), Color.Yellow, Color.Red, Color.FromArgb(255, 0, 255) };
+            //Color[] colors = new Color[] { Color.Blue, Color.FromArgb(0, 255, 255), Color.FromArgb(0, 255, 0), Color.Yellow, Color.Red, Color.FromArgb(255, 0, 255) };
+           
+            //Replace the color ramp -MCB
+            Color[] colors = GetColorRamp("pale_yellow_blue", 6);
+            
             colorBlend.SetValueRange(min, max, true);
             _blendColors = colorBlend.ColorArray;
             _dMinValue = colorBlend.MinValue;
@@ -2481,13 +2567,20 @@ namespace BenMAP
             int iColor = 0;
             PolygonScheme myScheme1 = new PolygonScheme();
             float fl = (float)0.1;
-            myScheme1.EditorSettings.StartColor = Color.Blue;
-            myScheme1.EditorSettings.EndColor = Color.FromArgb(255, 0, 255);
+            //Replaced originial rainbow schme with current scheme
+            // myScheme1.EditorSettings.StartColor = Color.Blue;
+            // myScheme1.EditorSettings.EndColor = Color.FromArgb(255, 0, 255);
+            myScheme1.EditorSettings.StartColor = colors[0];
+            myScheme1.EditorSettings.EndColor = colors[5];
+ 
             float fColor = (float)0.2;
             Color ctemp = new Color();
             if (isCone)
             {
                 myScheme1.EditorSettings.ClassificationType = ClassificationType.Quantities;
+                myScheme1.EditorSettings.IntervalMethod = IntervalMethod.NaturalBreaks;
+                myScheme1.EditorSettings.IntervalSnapMethod = IntervalSnapMethod.Rounding;
+                myScheme1.EditorSettings.IntervalRoundingDigits = 1;
                 myScheme1.EditorSettings.NumBreaks = 6;
                 myScheme1.EditorSettings.FieldName = _columnName; myScheme1.EditorSettings.UseGradient = false;
                 myScheme1.CreateCategories((mainMap.Layers[_currentLayerIndex] as IFeatureLayer).DataSet.DataTable);
@@ -4785,8 +4878,8 @@ namespace BenMAP
             bindingNavigatorMoveLastItem.Enabled = true;
             bindingNavigatorMovePreviousItem.Enabled = true;
             bindingNavigatorPositionItem.Enabled = true;
-            colorBlend.CustomizeValueRange -= ResetGisMap;
-            colorBlend.CustomizeValueRange += ResetGisMap;
+            //colorBlend.CustomizeValueRange -= ResetGisMap();-MCB - may still be needed 
+            //colorBlend.CustomizeValueRange += ResetGisMap();
             InitAggregationAndRegionList();
             Dictionary<string, string> dicSeasonStaticsAll = DataSourceCommonClass.DicSeasonStaticsAll;
             InitColumnsShowSet();
@@ -5146,29 +5239,59 @@ namespace BenMAP
             {
                 string s = tsbSavePic.ToolTipText;
                 tsbSavePic.ToolTipText = "";
-                Image i = new Bitmap(mainMap.Width, mainMap.Height);
-                Graphics g = Graphics.FromImage(i);
-                tsbSavePic.ToolTipText = s;
-                g.CopyFromScreen(this.PointToScreen(new Point(splitContainer1.Width - splitContainer2.Panel2.Width - 6, this.tabCtlMain.Parent.Location.Y + 27)), new Point(0, 0), new Size(this.Width, this.Height));
+                //Print dialog
+                SetUpPortaitMainMapLayout();
+               
+            //    Image i = new Bitmap(mainMap.Width, mainMap.Height);
+            //    Graphics g = Graphics.FromImage(i);
+            //    tsbSavePic.ToolTipText = s;
+            //    g.CopyFromScreen(this.PointToScreen(new Point(splitContainer1.Width - splitContainer2.Panel2.Width - 6, this.tabCtlMain.Parent.Location.Y + 27)), new Point(0, 0), new Size(this.Width, this.Height));
 
-                SaveFileDialog saveFileDialog1 = new SaveFileDialog();
-                saveFileDialog1.Filter = "PNG(*.png)|*.png|JPG(*.jpg)|*.jpg";
-                saveFileDialog1.InitialDirectory = "C:\\";
-                if (saveFileDialog1.ShowDialog() == DialogResult.Cancel)
-                {
-                    return;
-                }
+            //    SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+            //    saveFileDialog1.Filter = "PNG(*.png)|*.png|JPG(*.jpg)|*.jpg";
+            //    saveFileDialog1.InitialDirectory = "C:\\";
+            //    if (saveFileDialog1.ShowDialog() == DialogResult.Cancel)
+            //    {
+            //        return;
+            //    }
 
-                string fileName = saveFileDialog1.FileName;
+            //    string fileName = saveFileDialog1.FileName;
 
-                i.Save(fileName);
-                MessageBox.Show("Map exported.");
-                g.Dispose();
+            //    i.Save(fileName);
+            //    MessageBox.Show("Map exported.");
+            //    g.Dispose();
             }
             catch (Exception ex)
             {
             }
         }
+        private void SetUpPortaitMainMapLayout()
+        {
+            LayoutForm _layout = new LayoutForm{ MapControl = mainMap };
+            _layout.ShowDialog(this);
+            //LayoutControl _myLayout = new LayoutControl();
+            //_myLayout.LoadLayout(true, true, true);
+            
+            // Add MapDisplayElement
+           // LayoutMap _MapDisplay = new LayoutMap(mainMap);
+            //_MapDisplay.Location.X = (int)15;
+            //_MapDisplay.Location.Y = (int)15;
+            
+            //LayoutElement _MapDisplay1 = new LayoutElement();
+
+            // Add Map Title
+
+            // Add MapLegend
+
+            // Add North Arrow
+
+            //Add 
+            //Add Map neatline
+            
+            //_layout.Dispose();
+            return;
+        }
+
 
         private void saveFileDialog1_Disposed(object sender, EventArgs e)
         {
@@ -6090,6 +6213,9 @@ namespace BenMAP
                         myScheme1.EditorSettings.EndColor.ToTransparent(fl);
 
                         myScheme1.EditorSettings.ClassificationType = ClassificationType.Quantities;
+                        myScheme1.EditorSettings.IntervalMethod = IntervalMethod.NaturalBreaks;
+                        myScheme1.EditorSettings.IntervalSnapMethod = IntervalSnapMethod.Rounding;
+                        myScheme1.EditorSettings.IntervalRoundingDigits = 1;
                         myScheme1.EditorSettings.NumBreaks = 6;
                         myScheme1.EditorSettings.FieldName = strValueField; myScheme1.EditorSettings.UseGradient = false;
                         myScheme1.CreateCategories(polLayer.DataSet.DataTable);
@@ -6499,6 +6625,9 @@ namespace BenMAP
                     myScheme1.EditorSettings.EndColor.ToTransparent(fl);
 
                     myScheme1.EditorSettings.ClassificationType = ClassificationType.Quantities;
+                    myScheme1.EditorSettings.IntervalMethod = IntervalMethod.NaturalBreaks;
+                    myScheme1.EditorSettings.IntervalSnapMethod = IntervalSnapMethod.Rounding;
+                    myScheme1.EditorSettings.IntervalRoundingDigits = 1;
                     myScheme1.EditorSettings.NumBreaks = 6;
                     myScheme1.EditorSettings.FieldName = strValueField; myScheme1.EditorSettings.UseGradient = false;
                     myScheme1.CreateCategories(polLayer.DataSet.DataTable);
@@ -8790,6 +8919,9 @@ namespace BenMAP
                         myScheme1.EditorSettings.EndColor.ToTransparent(fl);
 
                         myScheme1.EditorSettings.ClassificationType = ClassificationType.Quantities;
+                        myScheme1.EditorSettings.IntervalMethod = IntervalMethod.NaturalBreaks;
+                        myScheme1.EditorSettings.IntervalSnapMethod = IntervalSnapMethod.Rounding;
+                        myScheme1.EditorSettings.IntervalRoundingDigits = 1;
                         myScheme1.EditorSettings.NumBreaks = 6;
                         myScheme1.EditorSettings.FieldName = strValueField; myScheme1.EditorSettings.UseGradient = false;
                         myScheme1.CreateCategories(polLayer.DataSet.DataTable);
@@ -10070,6 +10202,9 @@ namespace BenMAP
                             myScheme1.EditorSettings.EndColor.ToTransparent(fl);
 
                             myScheme1.EditorSettings.ClassificationType = ClassificationType.Quantities;
+                            myScheme1.EditorSettings.IntervalMethod = IntervalMethod.NaturalBreaks;
+                            myScheme1.EditorSettings.IntervalSnapMethod = IntervalSnapMethod.Rounding;
+                            myScheme1.EditorSettings.IntervalRoundingDigits = 1;
                             myScheme1.EditorSettings.NumBreaks = 6;
                             myScheme1.EditorSettings.FieldName = strValueField; myScheme1.EditorSettings.UseGradient = false;
                             myScheme1.CreateCategories(polLayer.DataSet.DataTable);
@@ -11697,6 +11832,9 @@ namespace BenMAP
                             myScheme1.EditorSettings.EndColor.ToTransparent(fl);
 
                             myScheme1.EditorSettings.ClassificationType = ClassificationType.Quantities;
+                            myScheme1.EditorSettings.IntervalMethod = IntervalMethod.NaturalBreaks;
+                            myScheme1.EditorSettings.IntervalSnapMethod = IntervalSnapMethod.Rounding;
+                            myScheme1.EditorSettings.IntervalRoundingDigits = 1;
                             myScheme1.EditorSettings.NumBreaks = 6;
                             myScheme1.EditorSettings.FieldName = strValueField; myScheme1.EditorSettings.UseGradient = false;
                             myScheme1.CreateCategories(polLayer.DataSet.DataTable);
@@ -11989,6 +12127,91 @@ namespace BenMAP
             { }
         }
 
+        private Color[] GetColorRamp(string rampID, int numClasses)
+        {
+            // FYI: numClasses is just a stub for now- only 6 class color ramps have been created so far.-MCB
 
+            //New empty color array to fill and return
+            Color[] _colorArray = new Color[6];
+
+            //Create a selection of color ramps to choose from
+            //Note: Color ramps created using ColorBrewer 2.0: chose from color blind safe six class ramps. -MCB
+            //Sequential- color ramps
+            //single hue (light to dark)
+            Color[] _oranges_Array = { Color.FromArgb(254, 237, 222), Color.FromArgb(254, 217, 118), Color.FromArgb(253, 174, 107), Color.FromArgb(253, 141, 60), Color.FromArgb(230, 85, 13), Color.FromArgb(166, 54, 3) };
+            Color[] _purples_Array = { Color.FromArgb(242, 240, 247), Color.FromArgb(218, 218, 235), Color.FromArgb(188, 189, 220), Color.FromArgb(158, 154, 200), Color.FromArgb(117, 107, 177), Color.FromArgb(84, 39, 143) };
+            Color[] _blues_Array = { Color.FromArgb(239, 243, 255), Color.FromArgb(198, 219, 239), Color.FromArgb(158, 202, 225), Color.FromArgb(107, 174, 214), Color.FromArgb(49, 130, 189), Color.FromArgb(8, 81, 156) };
+
+            //multi-hue
+            //pale_yellow_blue chosen as default ramp for main map (and default)
+            Color[] _pale_yellow_blue_Array = { Color.FromArgb(240, 249, 232), Color.FromArgb(204, 235, 197), Color.FromArgb(168, 221, 181), Color.FromArgb(123, 204, 196), Color.FromArgb(67, 162, 202), Color.FromArgb(8,104,172) };        
+            //Pale blue to green - an alternative mentioned by the client in an e-mail
+            Color[] _pale_blue_green_Array = { Color.FromArgb(246, 239, 247), Color.FromArgb(208, 209, 230), Color.FromArgb(166, 189, 219), Color.FromArgb(103, 169, 207), Color.FromArgb(28, 144, 153), Color.FromArgb(1,108,89) };
+            Color[] _yellow_red_Array = { Color.FromArgb(255, 255, 178), Color.FromArgb(254, 217, 118), Color.FromArgb(254, 178, 76), Color.FromArgb(253, 141, 60), Color.FromArgb(240, 59, 32), Color.FromArgb(189, 0, 38) };
+            Color[] _yellow_blue_Array = { Color.FromArgb(255, 255, 204), Color.FromArgb(199, 233, 180), Color.FromArgb(127, 205, 187), Color.FromArgb(65, 182, 196), Color.FromArgb(44, 127, 184), Color.FromArgb(37, 52, 148) };
+            Color[] _yellow_green_Array = { Color.FromArgb(255, 255, 204), Color.FromArgb(217, 240, 163), Color.FromArgb(173, 221, 142), Color.FromArgb(120, 198, 121), Color.FromArgb(49, 163, 84), Color.FromArgb(0, 104, 55) };
+
+            //Diverging color ramps
+            
+            Color[] _brown_green_Array = { Color.FromArgb(140, 81, 10), Color.FromArgb(216, 179, 101), Color.FromArgb(246, 232, 195), Color.FromArgb(199, 234, 229), Color.FromArgb(90, 180, 172), Color.FromArgb(1, 102, 94) };
+            Color[] _magenta_green_Array = { Color.FromArgb(197, 27, 125), Color.FromArgb(233, 163, 201), Color.FromArgb(253, 224, 239), Color.FromArgb(230, 245, 208), Color.FromArgb(161, 215, 106), Color.FromArgb(77, 146, 33) };
+            //red_blue chosen as default by client for delta layers
+            Color[] _red_blue_Array = { Color.FromArgb(215, 48, 39), Color.FromArgb(252, 141, 89), Color.FromArgb(254, 224, 144), Color.FromArgb(224, 243, 248), Color.FromArgb(145, 191, 219), Color.FromArgb(69, 117, 180) };
+            Color[] _red_black_Array = { Color.FromArgb(178, 24, 43), Color.FromArgb(239, 138, 98), Color.FromArgb(253, 219, 199), Color.FromArgb(224, 224, 224), Color.FromArgb(153, 153, 153), Color.FromArgb(77, 77, 77) };
+            Color[] _purple_green_Array = { Color.FromArgb(118, 42, 131), Color.FromArgb(175, 141, 195), Color.FromArgb(231, 212, 232), Color.FromArgb(217, 240, 211), Color.FromArgb(127, 191, 123), Color.FromArgb(27, 120, 55) };
+
+            //Note: Could double the ramps by allowing the case hue names in reverse order and just reversing the array contents. 
+            switch (rampID)
+            {
+                case "oranges":
+                    _colorArray = _oranges_Array;
+                    break;
+                case "purples":
+                    _colorArray = _purples_Array;
+                    break;
+                case "blues":
+                    _colorArray = _blues_Array;
+                    break;
+
+                case "yellow_red":
+                    _colorArray = _yellow_red_Array;
+                    break;
+                case "pale_yellow_blue":
+                    _colorArray = _pale_yellow_blue_Array;
+                    break;
+                case "pale_blue_green":
+                    _colorArray = _pale_blue_green_Array;
+                    break;
+                case "yellow_blue":
+                    _colorArray = _yellow_blue_Array;
+                    break;
+                case "yellow_green":
+                    _colorArray = _yellow_green_Array;
+                    break;
+               
+                case "brown_green":
+                    _colorArray = _brown_green_Array;
+                    break;
+                case "magenta_green":
+                    _colorArray = _magenta_green_Array;
+                    break;
+                case "red_blue":
+                    _colorArray = _red_blue_Array;
+                    break;
+                case "red_black":
+                    _colorArray = _red_black_Array;
+                    break;
+                case "purple_green":
+                    _colorArray = _purple_green_Array;
+                    break;
+            }
+
+            return _colorArray;
+        }
+
+        private void txtBoxMapTitle_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }
