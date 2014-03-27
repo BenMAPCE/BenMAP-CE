@@ -3,19 +3,6 @@ using System.Data;
 using System.Windows.Forms;
 
 
-//TODO: - done, needs a go over to ensure that all areas are covered.
-//1 on the LoadIncidenceDatabase dialog add a validate button
-//2 make it disabled
-//3 make the OK button disabled
-//4 After selecting a database to load (a csv file or excel file)
-//  enabled the validate button.
-//5 create a temp datatable to be passed to the validation window
-//  private Datatable _incidneceData
-//  public Datatable IncidenceData { get {return _incidenceData}}
-//6 on a positive validation enable the OK button
-
-//_incidneceData = CommonClass.ExcelToDataTable(_strPath);
-
 
 namespace BenMAP
 {
@@ -31,6 +18,12 @@ namespace BenMAP
         public LoadIncidenceDatabase()
         {
             InitializeComponent();
+            _iniPath = CommonClass.ResultFilePath + @"\BenMAP.ini";
+            _isForceValidate = CommonClass.IniReadValue("appSettings", "IsForceValidate", _iniPath);
+            if (_isForceValidate == "T")
+                btnOK.Enabled = false;
+            else
+                btnOK.Enabled = true;
         }
 
         private void btnBrowse_Click(object sender, EventArgs e)
@@ -93,7 +86,8 @@ namespace BenMAP
             get { return gridDefinitionID; }
             set { gridDefinitionID = value; }
         }
-
+        private string _isForceValidate = string.Empty;
+        private string _iniPath = string.Empty;
         private string _strPath;
         public string StrPath { get { return _strPath; } set { _strPath = value; } }
 
@@ -142,7 +136,8 @@ namespace BenMAP
             DialogResult dlgR = vdi.ShowDialog();
             if(dlgR.Equals(DialogResult.OK))
             {
-                LoadDatabase();
+                if (vdi.PassedValidation && _isForceValidate == "T")
+                    LoadDatabase(); ;
             }
         }
 

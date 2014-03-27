@@ -26,16 +26,24 @@ namespace BenMAP
             get {return _variableDatabase; }
         }
         private string _strPath;
-        public LoadVariableDatabase()
-        {
-            InitializeComponent();
-        }
-
         private string _definitionID = string.Empty;
+        private string _isForceValidate = string.Empty;
+        private string _iniPath = string.Empty;
         public string DefinitionID
         {
             get { return _definitionID; }
             set { _definitionID = value; }
+        }
+        
+        public LoadVariableDatabase()
+        {
+            InitializeComponent();
+            _iniPath = CommonClass.ResultFilePath + @"\BenMAP.ini";
+            _isForceValidate = CommonClass.IniReadValue("appSettings", "IsForceValidate", _iniPath);
+            if (_isForceValidate == "T")
+                btnOK.Enabled = false;
+            else
+                btnOK.Enabled = true;
         }
 
         private string _dataPath = string.Empty;
@@ -126,7 +134,8 @@ namespace BenMAP
             DialogResult dlgR = vdi.ShowDialog();
             if (dlgR.Equals(DialogResult.OK))
             {
-                LoadDatabase();
+                if (vdi.PassedValidation && _isForceValidate == "T")
+                    LoadDatabase();
             }
         }
 

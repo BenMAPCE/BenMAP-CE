@@ -716,7 +716,8 @@ namespace BenMAP
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("File import failed. Please check the file for errors.", "Error", MessageBoxButtons.OK);
+                    //MessageBox.Show("File import failed. Please check the file for errors.", "Error", MessageBoxButtons.OK);
+                    MessageBox.Show("File import failed. Please validate file for more detailed informaton.", "Error", MessageBoxButtons.OK);
                     progressBar1.Visible = false;
                     lblProgress.Text = "";
                     lblProgress.Visible = false;

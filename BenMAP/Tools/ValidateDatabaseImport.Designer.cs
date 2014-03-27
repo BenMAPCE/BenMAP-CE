@@ -31,7 +31,7 @@
             this.txtReportOutput = new System.Windows.Forms.RichTextBox();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnLoad = new System.Windows.Forms.Button();
-            this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this.pbarValidation = new System.Windows.Forms.ProgressBar();
             this.lblProgress = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
@@ -70,13 +70,13 @@
             this.btnLoad.UseVisualStyleBackColor = true;
             this.btnLoad.Click += new System.EventHandler(this.btnLoad_Click);
             // 
-            // progressBar1
+            // pbarValidation
             // 
-            this.progressBar1.Location = new System.Drawing.Point(5, 505);
-            this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(460, 23);
-            this.progressBar1.TabIndex = 3;
-            this.progressBar1.Visible = false;
+            this.pbarValidation.Location = new System.Drawing.Point(5, 505);
+            this.pbarValidation.Name = "pbarValidation";
+            this.pbarValidation.Size = new System.Drawing.Size(460, 23);
+            this.pbarValidation.TabIndex = 3;
+            this.pbarValidation.Visible = false;
             // 
             // lblProgress
             // 
@@ -93,7 +93,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(691, 540);
             this.Controls.Add(this.lblProgress);
-            this.Controls.Add(this.progressBar1);
+            this.Controls.Add(this.pbarValidation);
             this.Controls.Add(this.txtReportOutput);
             this.Controls.Add(this.btnLoad);
             this.Controls.Add(this.btnCancel);
@@ -113,7 +113,7 @@
         private System.Windows.Forms.RichTextBox txtReportOutput;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Button btnLoad;
-        private System.Windows.Forms.ProgressBar progressBar1;
+        private System.Windows.Forms.ProgressBar pbarValidation;
         private System.Windows.Forms.Label lblProgress;
     }
 }

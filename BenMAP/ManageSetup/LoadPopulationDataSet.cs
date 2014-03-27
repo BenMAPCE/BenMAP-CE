@@ -31,6 +31,12 @@ namespace BenMAP
         public LoadPopulationDataSet()
         {
             InitializeComponent();
+            _iniPath = CommonClass.ResultFilePath + @"\BenMAP.ini";
+            _isForceValidate = CommonClass.IniReadValue("appSettings", "IsForceValidate", _iniPath);
+            if (_isForceValidate == "T")
+                btnOK.Enabled = false;
+            else
+                btnOK.Enabled = true;
         }
 
         Dictionary<string, int> dicGender = null;
@@ -42,7 +48,15 @@ namespace BenMAP
 
         private string _popConfig = "";
         private object _gridDefinID;
+        private DataTable _populationDataset;
+        private DataTable _populationGrowthDataset;
+        private string _strPathDB;
+        private string _strPathGW;
         public object _popConfigID;
+        private string _isForceValidate = string.Empty;
+        private string _iniPath = string.Empty;
+        
+
         private void LoadPopulationDataSet_Load(object sender, EventArgs e)
         {
             FireBirdHelperBase fb = new ESILFireBirdHelper();
@@ -546,6 +560,41 @@ namespace BenMAP
 
 
         private void btnOK_Click(object sender, EventArgs e)
+        {
+            if(IsFileSelected())
+            {
+                LoadDatabase();
+            }
+        }
+        private bool IsFileSelected()
+        {
+            //bool bPassed = true;
+            if (!string.IsNullOrEmpty(_strPathDB))
+            {
+                _populationDataset = CommonClass.ExcelToDataTable(_strPathDB);
+            }
+            else
+            {
+                MessageBox.Show("Please select a file");
+                btnBrowseDB.Focus();
+                return false;
+            }
+            if (chkPopulationGrowth.Checked)
+            {
+                if (!string.IsNullOrEmpty(_strPathGW))
+                {
+                    _populationGrowthDataset = CommonClass.ExcelToDataTable(_strPathGW);
+                }
+                else
+                {
+                    MessageBox.Show("Please select a file");
+                    btnBrowseGW.Focus();
+                    return false;
+                }
+            }
+            return true;
+        }
+        private void LoadDatabase()
         {
             FireBirdHelperBase fb = new ESILFireBirdHelper();
             string commandText = string.Empty;
@@ -1185,6 +1234,55 @@ namespace BenMAP
             this.DialogResult = DialogResult.Cancel;
         }
 
+
+        private void txtDataBase_TextChanged(object sender, EventArgs e)
+        {
+            btnValidateDB.Enabled = !string.IsNullOrEmpty(txtDataBase.Text);
+            btnViewMetadataDB.Enabled = !string.IsNullOrEmpty(txtDataBase.Text);
+            _strPathDB = txtDataBase.Text;
+        }
+
+        private void txtGrowthWeights_TextChanged(object sender, EventArgs e)
+        {
+            _strPathGW = txtGrowthWeights.Text;
+            btnValidateGW.Enabled = !string.IsNullOrEmpty(txtGrowthWeights.Text);
+            btnViewMetadataGW.Enabled = !string.IsNullOrEmpty(txtGrowthWeights.Text);
+            _strPathGW = txtGrowthWeights.Text;
+        }
+
+        private void btnValidateDB_Click(object sender, EventArgs e)
+        {
+            _populationDataset = CommonClass.ExcelToDataTable(_strPathDB);
+
+            ValidateDatabaseImport vdi = new ValidateDatabaseImport(_populationDataset, "Population", _strPathDB);
+
+            DialogResult dlgR = vdi.ShowDialog();
+            if (dlgR.Equals(DialogResult.OK))
+            {
+                if (vdi.PassedValidation && _isForceValidate == "T")
+                    this.DialogResult = DialogResult.OK;
+            }
+        }
+
+        private void btnViewMetadataDB_Click(object sender, EventArgs e)
+        {
+            ViewEditMetadata viewEMdata = new ViewEditMetadata(_strPathDB);
+            viewEMdata.ShowDialog();
+        }
+
+        private void btnValidateGW_Click(object sender, EventArgs e)
+        {
+            //_populationDataset = CommonClass.ExcelToDataTable(_strPathDB);
+
+            //ValidateDatabaseImport vdi = new ValidateDatabaseImport(_populationDataset, "Population", _strPathDB);
+
+            //DialogResult dlgR = vdi.ShowDialog();
+            //if (dlgR.Equals(DialogResult.OK))
+            //{
+            //    if (vdi.PassedValidation && _isForceValidate == "T")
+            //        this.DialogResult = DialogResult.OK;
+            //}
+        }
 
     }
 

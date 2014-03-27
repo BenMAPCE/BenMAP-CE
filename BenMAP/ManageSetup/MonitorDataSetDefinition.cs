@@ -7,15 +7,7 @@ using ESIL.DBUtility;
 using FirebirdSql.Data.FirebirdClient;
 using System.IO;
 using System.Collections.Generic;
-//TODO:
-//1 on the MonitorDataSetDefinition form add a validate button and a cancel button
-//2 make it disabled
-//3 make the OK button disabled
-//4 After selecting a Monitor Data File (a csv file or excel file)
-//  enabled the validate button.
-//5 Clicking on the validate button will bring up the Validate form (auto runs when button is clicked)
-//6 on a positive validation enable the Import To Database button
-//
+
 namespace BenMAP
 {
     public partial class MonitorDataSetDefinition : FormBase
@@ -220,7 +212,8 @@ namespace BenMAP
                 if (warningtip != "")
                 {
                     warningtip = warningtip.Substring(0, warningtip.Length - 2);
-                    warningtip = "Please check the column header of " + warningtip + ". It is incorrect or does not exist.";
+                    warningtip = "Please check the column header of " + warningtip + ". It is incorrect or does not exist.\r\n";
+                    warningtip += "\r\nFile failed to load, please validate the file for a more detail explanation of errors.";
                     MessageBox.Show(warningtip, "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     progressBar1.Visible = false;
                     return;
@@ -453,7 +446,7 @@ namespace BenMAP
 
         private void btnBrowse1_Click(object sender, EventArgs e)
         {
-            LoadSelectedDataSet lmdataset = new LoadSelectedDataSet("Load Monitor Dataset", "Monitor Dataset Name:", txtDataSetName.Text);
+            LoadSelectedDataSet lmdataset = new LoadSelectedDataSet("Load Monitor Dataset", "Monitor Dataset Name:", txtDataSetName.Text, "Monitor");
 
             DialogResult dlgr = lmdataset.ShowDialog();
             if(dlgr.Equals(DialogResult.OK))

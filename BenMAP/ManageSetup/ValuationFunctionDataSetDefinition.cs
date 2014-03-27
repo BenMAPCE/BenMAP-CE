@@ -91,18 +91,29 @@ namespace BenMAP
 
         private void btnLoadFromDatabase_Click(object sender, EventArgs e)
         {
+            LoadSelectedDataSet lmdataset = new LoadSelectedDataSet("Load Valuation Function Dataset", "Valuation Function Dataset Name:", txtValuationFunctionDataSetName.Text, "Valuationfunction");
+            DialogResult dlgr = lmdataset.ShowDialog();
+            if (dlgr.Equals(DialogResult.OK))
+            {
+                dt = lmdataset.MonitorDataSet;
+
+                LoadDatabase();
+            }
+        }
+
+        private void LoadDatabase()
+        {
             try
             {
-
-                OpenFileDialog openFileDialog = new OpenFileDialog();
-                openFileDialog.InitialDirectory = Application.StartupPath + @"E:\";
-                openFileDialog.Filter = "All Files|*.*|CSV files|*.csv|XLS files|*.xls|XLSX files|*.xlsx";
-                openFileDialog.FilterIndex = 2;
-                openFileDialog.RestoreDirectory = true;
-                if (openFileDialog.ShowDialog() != DialogResult.OK) { return; }
-                _filePath = openFileDialog.FileName;
-                string strfilepath = System.IO.Path.GetExtension(_filePath);
-                dt = CommonClass.ExcelToDataTable(_filePath);
+                //OpenFileDialog openFileDialog = new OpenFileDialog();
+                //openFileDialog.InitialDirectory = Application.StartupPath + @"E:\";
+                //openFileDialog.Filter = "All Files|*.*|CSV files|*.csv|XLS files|*.xls|XLSX files|*.xlsx";
+                //openFileDialog.FilterIndex = 2;
+                //openFileDialog.RestoreDirectory = true;
+                //if (openFileDialog.ShowDialog() != DialogResult.OK) { return; }
+                //_filePath = openFileDialog.FileName;
+                //string strfilepath = System.IO.Path.GetExtension(_filePath);
+                //dt = CommonClass.ExcelToDataTable(_filePath);
                 if (dt == null) { return; }
                 int rowCount = dt.Rows.Count;
                 int colCount = dt.Columns.Count;

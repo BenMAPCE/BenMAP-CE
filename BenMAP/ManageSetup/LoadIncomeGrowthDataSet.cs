@@ -20,10 +20,18 @@ namespace BenMAP
             get{return _incomeGrowthData;}
         }
         private string _strPath;
+        private string _isForceValidate = string.Empty;
+        private string _iniPath = string.Empty;
 
         public LoadIncomeGrowthDataSet()
         {
             InitializeComponent();
+            _iniPath = CommonClass.ResultFilePath + @"\BenMAP.ini";
+            _isForceValidate = CommonClass.IniReadValue("appSettings", "IsForceValidate", _iniPath);
+            if (_isForceValidate == "T")
+                btnOK.Enabled = false;
+            else
+                btnOK.Enabled = true;
         }
 
         private void btnOK_Click(object sender, EventArgs e)
@@ -76,7 +84,8 @@ namespace BenMAP
                 if (warningtip != "")
                 {
                     warningtip = warningtip.Substring(0, warningtip.Length - 2);
-                    warningtip = "Please check the column header of " + warningtip + ". It is incorrect or does not exist.";
+                    warningtip = "Please check the column header of " + warningtip + ". It is incorrect or does not exist.\r\n";
+                    warningtip += "\r\nFile failed to load, please validate the file for a more detail explanation of errors.";
                     MessageBox.Show(warningtip, "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
@@ -171,7 +180,8 @@ namespace BenMAP
             DialogResult dlgR = vdi.ShowDialog();
             if (dlgR.Equals(DialogResult.OK))
             {
-                LoadDatabase();
+                if (vdi.PassedValidation && _isForceValidate == "T")
+                    LoadDatabase();
             }
         }
 

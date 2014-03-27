@@ -167,6 +167,8 @@ namespace BenMAP
                     CommonClass.IniWriteValue("appSettings", "IsShowStart", "T", iniPath);
                     CommonClass.IniWriteValue("appSettings", "IsShowExit", "T", iniPath);
                     CommonClass.IniWriteValue("appSettings", "DefaultSetup", "United States", iniPath);
+                    CommonClass.IniWriteValue("appSettings", "IsForceValidate", "T", iniPath);
+                    CommonClass.IniWriteValue("appSettings", "NumDaysToDelete", "30", iniPath);
                 }
                 DataRow[] drs = ds.Tables[0].Select("SetupName='" + defaultSetup + "'");
                 DataRow dr;
@@ -748,6 +750,7 @@ namespace BenMAP
                 if (isShowExit == "T")
                 { rtn = exit.ShowDialog(); }
                 if (rtn == System.Windows.Forms.DialogResult.Cancel) { e.Cancel = true; return; }
+                deleteValidationLogFiles();
             }
             catch (Exception ex)
             {
@@ -755,6 +758,32 @@ namespace BenMAP
             }
         }
 
+        private void deleteValidationLogFiles()
+        {//doing clean up.
+            string validationResultsPath = CommonClass.ResultFilePath + @"\ValidationResults";
+            string[] strFiles = System.IO.Directory.GetFiles(validationResultsPath, "*rtf");
+            string iniPath = CommonClass.ResultFilePath + @"\BenMAP.ini";
+            int NumDaysToDelete = Convert.ToInt32(CommonClass.IniReadValue("appSettings", "NumDaysToDelete", iniPath));
+            DateTime createDate;
+            try
+            {
+                System.IO.FileInfo fInfo = null;
+                foreach (string s in strFiles)
+                {
+                    fInfo = new System.IO.FileInfo(s);
+                    createDate = fInfo.CreationTime;
+
+                    if (createDate.Date < DateTime.Now.Date.Subtract(TimeSpan.FromDays(NumDaysToDelete)))
+                    {
+                        System.IO.File.Delete(s);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+               Logger.LogError(ex);
+            }
+        }
         private void optionsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Options frm = new Options();

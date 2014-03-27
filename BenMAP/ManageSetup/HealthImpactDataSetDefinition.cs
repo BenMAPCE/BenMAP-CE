@@ -25,6 +25,7 @@ namespace BenMAP
 {
     public partial class HealthImpactDataSetDefinition : FormBase
     {
+        private DataTable dt;//_dtDataFile;
         private int _datasetID;
         List<int> lstdeleteCRFunctionid = new List<int>();
 
@@ -102,18 +103,30 @@ namespace BenMAP
         DataTable dtLoad = new DataTable();
         private void btnBrowse_Click(object sender, EventArgs e)
         {
+            LoadSelectedDataSet lmdataset = new LoadSelectedDataSet("Load Health Impact Dataset", "Health Impact Dataset Name:", txtHealthImpactFunction.Text, "Healthfunctions");
+            DialogResult dlgr = lmdataset.ShowDialog();
+            if (dlgr.Equals(DialogResult.OK))
+            {
+                dt = lmdataset.MonitorDataSet;
+                
+                LoadDatabase();
+            }
+        }
+
+        private void LoadDatabase()
+        {
             try
             {
-                DataTable dt = new DataTable();
-                OpenFileDialog openFileDialog = new OpenFileDialog();
-                openFileDialog.InitialDirectory = Application.StartupPath + @"E:\";
-                openFileDialog.Filter = "All Files|*.*|CSV files|*.csv|XLS files|*.xls|XLSX files|*.xlsx";
-                openFileDialog.FilterIndex = 2;
-                openFileDialog.RestoreDirectory = true;
-                if (openFileDialog.ShowDialog() != DialogResult.OK) { return; }
-                _filePath = openFileDialog.FileName;
-                WaitShow("Loading health impact functions...");
-                dt = CommonClass.ExcelToDataTable(_filePath);
+                //DataTable dt = new DataTable();
+                //OpenFileDialog openFileDialog = new OpenFileDialog();
+                //openFileDialog.InitialDirectory = Application.StartupPath + @"E:\";
+                //openFileDialog.Filter = "All Files|*.*|CSV files|*.csv|XLS files|*.xls|XLSX files|*.xlsx";
+                //openFileDialog.FilterIndex = 2;
+                //openFileDialog.RestoreDirectory = true;
+                //if (openFileDialog.ShowDialog() != DialogResult.OK) { return; }
+                //_filePath = openFileDialog.FileName;
+                //WaitShow("Loading health impact functions...");
+                //dt = CommonClass.ExcelToDataTable(_filePath);
                 if (dt == null) { return; }
                 int rowCount = dt.Rows.Count;
                 int colCount = dt.Columns.Count;
@@ -684,6 +697,12 @@ namespace BenMAP
 
         private void btnOK_Click_1(object sender, EventArgs e)
         {
+            if(_dt.Rows.Count < 1)
+            {
+                MessageBox.Show("No dataset was selected for import or created.  Please select a dataset to import or 'Add' information to careate a data set.");
+                btnBrowse.Focus();
+                return;
+            }
             ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
             DataSet ds = new DataSet();
             string commandText = string.Empty;
