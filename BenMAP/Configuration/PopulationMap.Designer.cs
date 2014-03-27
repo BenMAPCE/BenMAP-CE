@@ -143,7 +143,8 @@ namespace BenMAP
             this.splitContainer2.Location = new System.Drawing.Point(0, 95);
             this.splitContainer2.Margin = new System.Windows.Forms.Padding(0);
             this.splitContainer2.Name = "splitContainer2";
-                                                this.splitContainer2.Panel1.Controls.Add(this.colorBlend);
+            //-MCB Don't add color ramp a bottom of legend
+            //this.splitContainer2.Panel1.Controls.Add(this.colorBlend);
             this.splitContainer2.Panel1.Controls.Add(this.mapLegend);
                                                 this.splitContainer2.Panel2.Controls.Add(this.toolStrip1);
             this.splitContainer2.Panel2.Controls.Add(this.mainMap);
@@ -151,26 +152,27 @@ namespace BenMAP
             this.splitContainer2.SplitterDistance = 140;
             this.splitContainer2.SplitterWidth = 5;
             this.splitContainer2.TabIndex = 9;
-                                                this.colorBlend.ColorArray = new System.Drawing.Color[] {
-        System.Drawing.Color.Blue,
-        System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(255)))), ((int)(((byte)(255))))),
-        System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(255)))), ((int)(((byte)(0))))),
-        System.Drawing.Color.Yellow,
-        System.Drawing.Color.Magenta,
-        System.Drawing.Color.Red};
-            this.colorBlend.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.colorBlend.Location = new System.Drawing.Point(0, 443);
-            this.colorBlend.Margin = new System.Windows.Forms.Padding(1);
-            this.colorBlend.Name = "colorBlend";
-            this.colorBlend.Size = new System.Drawing.Size(138, 40);
-            this.colorBlend.TabIndex = 2;
-            this.colorBlend.ValueArray = new double[] {
-        0D,
-        0D,
-        0D,
-        0D,
-        0D,
-        0D};
+            //Don't need ColorBlend color ramp at bottom of legend-MCB
+        //                                        this.colorBlend.ColorArray = new System.Drawing.Color[] {
+        //System.Drawing.Color.Blue,
+        //System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(255)))), ((int)(((byte)(255))))),
+        //System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(255)))), ((int)(((byte)(0))))),
+        //System.Drawing.Color.Yellow,
+        //System.Drawing.Color.Magenta,
+        //System.Drawing.Color.Red};
+        //    this.colorBlend.Dock = System.Windows.Forms.DockStyle.Bottom;
+        //    this.colorBlend.Location = new System.Drawing.Point(0, 443);
+        //    this.colorBlend.Margin = new System.Windows.Forms.Padding(1);
+        //    this.colorBlend.Name = "colorBlend";
+        //    this.colorBlend.Size = new System.Drawing.Size(138, 40);
+        //    this.colorBlend.TabIndex = 2;
+        //    this.colorBlend.ValueArray = new double[] {
+        //0D,
+        //0D,
+        //0D,
+        //0D,
+        //0D,
+        //0D};
                                                 this.mapLegend.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
@@ -179,7 +181,8 @@ namespace BenMAP
             this.mapLegend.DocumentRectangle = new System.Drawing.Rectangle(0, 0, 168, 284);
             this.mapLegend.Font = new System.Drawing.Font("Calibri", 9F);
             this.mapLegend.HorizontalScrollEnabled = true;
-            this.mapLegend.Indentation = 30;
+            //this.mapLegend.Indentation = 30;
+            this.mapLegend.Indentation = 7; //MCB
             this.mapLegend.IsInitialized = false;
             this.mapLegend.Location = new System.Drawing.Point(-1, -1);
             this.mapLegend.MinimumSize = new System.Drawing.Size(5, 7);

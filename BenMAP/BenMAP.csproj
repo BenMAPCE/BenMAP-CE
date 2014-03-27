@@ -111,6 +111,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Dll\DotSpatial\DotSpatial.Modeling.Forms.dll</HintPath>
     </Reference>
+    <Reference Include="DotSpatial.Plugins.TableEditor">
+      <HintPath>Dll\DotSpatial\Windows Extensions\DotSpatial.Plugins.TableEditor.1.0.1223\lib\net40-Client\DotSpatial.Plugins.TableEditor.dll</HintPath>
+    </Reference>
     <Reference Include="DotSpatial.Projections, Version=0.11.9.6, Culture=neutral, PublicKeyToken=272632bddd08a38b, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Dll\DotSpatial\DotSpatial.Projections.dll</HintPath>
@@ -137,6 +140,9 @@
     </Reference>
     <Reference Include="Excel">
       <HintPath>Dll\Excel.dll</HintPath>
+    </Reference>
+    <Reference Include="FireBirdHelper">
+      <HintPath>Dll\FirebirdDB\FireBirdHelper.dll</HintPath>
     </Reference>
     <Reference Include="FirebirdSql.Data.FirebirdClient, Version=3.0.2.0, Culture=neutral, PublicKeyToken=3750abcc3150b00c, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -1507,12 +1513,6 @@
     <Content Include="Resources\tableView_Bar.png" />
     <None Include="Resources\tableView1.png" />
     <None Include="Resources\Welcome.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="FireBirdHelper\FireBirdHelper.csproj">
-      <Project>{8F093A2A-30D8-4144-8177-0772B0CD1C03}</Project>
-      <Name>FireBirdHelper</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

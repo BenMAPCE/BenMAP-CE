@@ -61,7 +61,8 @@ namespace BenMAP
             this.mapLegend.ControlRectangle = new System.Drawing.Rectangle(0, 0, 129, 363);
             this.mapLegend.DocumentRectangle = new System.Drawing.Rectangle(0, 0, 168, 284);
             this.mapLegend.HorizontalScrollEnabled = true;
-            this.mapLegend.Indentation = 30;
+            //this.mapLegend.Indentation = 30;
+            this.mapLegend.Indentation = 7; //MCB
             this.mapLegend.IsInitialized = false;
             this.mapLegend.Location = new System.Drawing.Point(-1, -1);
             this.mapLegend.MinimumSize = new System.Drawing.Size(5, 6);
