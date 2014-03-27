@@ -66,19 +66,28 @@ namespace BenMAP
             this.grpCancelOK.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
-                                                this.lblDataSetName.AutoSize = true;
+            // 
+            // lblDataSetName
+            // 
+            this.lblDataSetName.AutoSize = true;
             this.lblDataSetName.Location = new System.Drawing.Point(6, 24);
             this.lblDataSetName.Name = "lblDataSetName";
             this.lblDataSetName.Size = new System.Drawing.Size(192, 14);
             this.lblDataSetName.TabIndex = 0;
             this.lblDataSetName.Text = "Valuation Function Dataset Name:";
-                                                this.txtValuationFunctionDataSetName.Location = new System.Drawing.Point(204, 20);
+            // 
+            // txtValuationFunctionDataSetName
+            // 
+            this.txtValuationFunctionDataSetName.Location = new System.Drawing.Point(204, 20);
             this.txtValuationFunctionDataSetName.Name = "txtValuationFunctionDataSetName";
             this.txtValuationFunctionDataSetName.Size = new System.Drawing.Size(229, 22);
             this.txtValuationFunctionDataSetName.TabIndex = 1;
-                                                this.grpValuationFunctionDefinition.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            // 
+            // grpValuationFunctionDefinition
+            // 
+            this.grpValuationFunctionDefinition.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.grpValuationFunctionDefinition.Controls.Add(this.btnOutput);
             this.grpValuationFunctionDefinition.Controls.Add(this.checkBox1);
             this.grpValuationFunctionDefinition.Controls.Add(this.groupBox3);
@@ -96,17 +105,23 @@ namespace BenMAP
             this.grpValuationFunctionDefinition.Size = new System.Drawing.Size(735, 512);
             this.grpValuationFunctionDefinition.TabIndex = 2;
             this.grpValuationFunctionDefinition.TabStop = false;
-                                                this.btnOutput.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            // 
+            // btnOutput
+            // 
+            this.btnOutput.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOutput.Location = new System.Drawing.Point(216, 479);
             this.btnOutput.Name = "btnOutput";
             this.btnOutput.Size = new System.Drawing.Size(130, 27);
             this.btnOutput.TabIndex = 30;
             this.btnOutput.Text = "Output Sample File";
             this.toolTip1.SetToolTip(this.btnOutput, "Click to save a template with standard .csv format. It only contains 50 rows data" +
-                    " and can be used as an example to prepare the input file.");
+        " and can be used as an example to prepare the input file.");
             this.btnOutput.UseVisualStyleBackColor = true;
             this.btnOutput.Click += new System.EventHandler(this.btnOutput_Click);
-                                                this.checkBox1.AutoSize = true;
+            // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
             this.checkBox1.Location = new System.Drawing.Point(658, 62);
             this.checkBox1.Name = "checkBox1";
             this.checkBox1.Size = new System.Drawing.Size(59, 18);
@@ -114,26 +129,38 @@ namespace BenMAP
             this.checkBox1.Text = "Group";
             this.checkBox1.UseVisualStyleBackColor = true;
             this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
-                                                this.groupBox3.Controls.Add(this.txtFilter);
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.txtFilter);
             this.groupBox3.Location = new System.Drawing.Point(500, 48);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(151, 43);
             this.groupBox3.TabIndex = 28;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Filter";
-                                                this.txtFilter.Location = new System.Drawing.Point(7, 13);
+            // 
+            // txtFilter
+            // 
+            this.txtFilter.Location = new System.Drawing.Point(7, 13);
             this.txtFilter.Name = "txtFilter";
             this.txtFilter.Size = new System.Drawing.Size(138, 22);
             this.txtFilter.TabIndex = 0;
             this.txtFilter.TextChanged += new System.EventHandler(this.txtFilter_TextChanged);
-                                                this.groupBox2.Controls.Add(this.cboEndpoint);
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.cboEndpoint);
             this.groupBox2.Location = new System.Drawing.Point(252, 48);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(242, 44);
             this.groupBox2.TabIndex = 27;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Filter Endpoint";
-                                                this.cboEndpoint.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            // 
+            // cboEndpoint
+            // 
+            this.cboEndpoint.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.cboEndpoint.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboEndpoint.FormattingEnabled = true;
             this.cboEndpoint.Location = new System.Drawing.Point(7, 16);
@@ -141,14 +168,20 @@ namespace BenMAP
             this.cboEndpoint.Size = new System.Drawing.Size(223, 22);
             this.cboEndpoint.TabIndex = 0;
             this.cboEndpoint.SelectedValueChanged += new System.EventHandler(this.cboEndpoint_SelectedValueChanged);
-                                                this.groupBox1.Controls.Add(this.cboEndpointGroup);
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.cboEndpointGroup);
             this.groupBox1.Location = new System.Drawing.Point(9, 48);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(235, 44);
             this.groupBox1.TabIndex = 26;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Filter Endpoint Group";
-                                                this.cboEndpointGroup.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            // 
+            // cboEndpointGroup
+            // 
+            this.cboEndpointGroup.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.cboEndpointGroup.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboEndpointGroup.FormattingEnabled = true;
             this.cboEndpointGroup.Location = new System.Drawing.Point(6, 17);
@@ -156,7 +189,10 @@ namespace BenMAP
             this.cboEndpointGroup.Size = new System.Drawing.Size(223, 22);
             this.cboEndpointGroup.TabIndex = 0;
             this.cboEndpointGroup.SelectedValueChanged += new System.EventHandler(this.cboEndpointGroup_SelectedValueChanged);
-                                                this.olvData.AllColumns.Add(this.olvcEndpointGroup);
+            // 
+            // olvData
+            // 
+            this.olvData.AllColumns.Add(this.olvcEndpointGroup);
             this.olvData.AllColumns.Add(this.olvcEndpoint);
             this.olvData.AllColumns.Add(this.olvColumn3);
             this.olvData.AllColumns.Add(this.olvColumn4);
@@ -178,9 +214,9 @@ namespace BenMAP
             this.olvData.AllowColumnReorder = true;
             this.olvData.AllowDrop = true;
             this.olvData.AlternateRowBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(240)))), ((int)(((byte)(220)))));
-            this.olvData.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.olvData.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.olvData.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.olvcEndpointGroup,
             this.olvcEndpoint,
@@ -228,66 +264,126 @@ namespace BenMAP
             this.olvData.UseHotItem = true;
             this.olvData.UseTranslucentHotItem = true;
             this.olvData.View = System.Windows.Forms.View.Details;
-                                                this.olvcEndpointGroup.AspectName = "endpointgroupname";
+            // 
+            // olvcEndpointGroup
+            // 
+            this.olvcEndpointGroup.AspectName = "endpointgroupname";
             this.olvcEndpointGroup.Text = "Endpoint Group";
             this.olvcEndpointGroup.Width = 120;
-                                                this.olvcEndpoint.AspectName = "endpointname";
+            // 
+            // olvcEndpoint
+            // 
+            this.olvcEndpoint.AspectName = "endpointname";
             this.olvcEndpoint.Text = "Endpoint";
             this.olvcEndpoint.Width = 100;
-                                                this.olvColumn3.AspectName = "qualifier";
+            // 
+            // olvColumn3
+            // 
+            this.olvColumn3.AspectName = "qualifier";
             this.olvColumn3.Text = "Qualifier";
             this.olvColumn3.Width = 100;
-                                                this.olvColumn4.AspectName = "reference";
+            // 
+            // olvColumn4
+            // 
+            this.olvColumn4.AspectName = "reference";
             this.olvColumn4.Text = "Reference";
             this.olvColumn4.Width = 100;
-                                                this.olvColumn5.AspectName = "startage";
+            // 
+            // olvColumn5
+            // 
+            this.olvColumn5.AspectName = "startage";
             this.olvColumn5.Text = "Start Age";
             this.olvColumn5.Width = 100;
-                                                this.olvColumn6.AspectName = "endage";
+            // 
+            // olvColumn6
+            // 
+            this.olvColumn6.AspectName = "endage";
             this.olvColumn6.Text = "End Age";
             this.olvColumn6.Width = 100;
-                                                this.olvColumn7.AspectName = "functionalformtext";
+            // 
+            // olvColumn7
+            // 
+            this.olvColumn7.AspectName = "functionalformtext";
             this.olvColumn7.Text = "Function";
             this.olvColumn7.Width = 100;
-                                                this.olvColumn8.AspectName = "a";
+            // 
+            // olvColumn8
+            // 
+            this.olvColumn8.AspectName = "a";
             this.olvColumn8.Text = "A";
             this.olvColumn8.Width = 100;
-                                                this.olvColumn9.AspectName = "namea";
+            // 
+            // olvColumn9
+            // 
+            this.olvColumn9.AspectName = "namea";
             this.olvColumn9.Text = "Name A";
             this.olvColumn9.Width = 100;
-                                                this.olvColumn10.AspectName = "dista";
+            // 
+            // olvColumn10
+            // 
+            this.olvColumn10.AspectName = "dista";
             this.olvColumn10.Text = "A Distribution";
             this.olvColumn10.Width = 100;
-                                                this.olvColumn11.AspectName = "p1a";
+            // 
+            // olvColumn11
+            // 
+            this.olvColumn11.AspectName = "p1a";
             this.olvColumn11.Text = "P1A";
             this.olvColumn11.Width = 100;
-                                                this.olvColumn12.AspectName = "p2a";
+            // 
+            // olvColumn12
+            // 
+            this.olvColumn12.AspectName = "p2a";
             this.olvColumn12.Text = "P2A";
             this.olvColumn12.Width = 100;
-                                                this.olvColumn13.AspectName = "b";
+            // 
+            // olvColumn13
+            // 
+            this.olvColumn13.AspectName = "b";
             this.olvColumn13.Text = "B";
             this.olvColumn13.Width = 100;
-                                                this.olvColumn14.AspectName = "nameb";
+            // 
+            // olvColumn14
+            // 
+            this.olvColumn14.AspectName = "nameb";
             this.olvColumn14.Text = "Name B";
             this.olvColumn14.Width = 100;
-                                                this.olvColumn15.AspectName = "c";
+            // 
+            // olvColumn15
+            // 
+            this.olvColumn15.AspectName = "c";
             this.olvColumn15.Text = "C";
             this.olvColumn15.Width = 100;
-                                                this.olvColumn16.AspectName = "namec";
+            // 
+            // olvColumn16
+            // 
+            this.olvColumn16.AspectName = "namec";
             this.olvColumn16.Text = "Name C";
             this.olvColumn16.Width = 100;
-                                                this.olvColumn17.AspectName = "d";
+            // 
+            // olvColumn17
+            // 
+            this.olvColumn17.AspectName = "d";
             this.olvColumn17.Text = "D";
             this.olvColumn17.Width = 100;
-                                                this.olvColumn18.AspectName = "named";
+            // 
+            // olvColumn18
+            // 
+            this.olvColumn18.AspectName = "named";
             this.olvColumn18.Text = "Name D";
             this.olvColumn18.Width = 100;
-                                                this.olvColumn19.AspectName = "ValuationFunctionID";
+            // 
+            // olvColumn19
+            // 
+            this.olvColumn19.AspectName = "ValuationFunctionID";
             this.olvColumn19.DisplayIndex = 18;
             this.olvColumn19.IsVisible = false;
             this.olvColumn19.Text = "ValuationFunctionID";
             this.olvColumn19.Width = 140;
-                                                this.btnEdit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            // 
+            // btnEdit
+            // 
+            this.btnEdit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnEdit.Location = new System.Drawing.Point(650, 479);
             this.btnEdit.Name = "btnEdit";
             this.btnEdit.Size = new System.Drawing.Size(75, 27);
@@ -295,7 +391,10 @@ namespace BenMAP
             this.btnEdit.Text = "Edit";
             this.btnEdit.UseVisualStyleBackColor = true;
             this.btnEdit.Click += new System.EventHandler(this.btnEdit_Click);
-                                                this.btnAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            // 
+            // btnAdd
+            // 
+            this.btnAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnAdd.Location = new System.Drawing.Point(569, 479);
             this.btnAdd.Name = "btnAdd";
             this.btnAdd.Size = new System.Drawing.Size(75, 27);
@@ -303,7 +402,10 @@ namespace BenMAP
             this.btnAdd.Text = "Add";
             this.btnAdd.UseVisualStyleBackColor = true;
             this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
-                                                this.btnDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            // 
+            // btnDelete
+            // 
+            this.btnDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnDelete.Location = new System.Drawing.Point(488, 479);
             this.btnDelete.Name = "btnDelete";
             this.btnDelete.Size = new System.Drawing.Size(75, 27);
@@ -311,7 +413,10 @@ namespace BenMAP
             this.btnDelete.Text = "Delete";
             this.btnDelete.UseVisualStyleBackColor = true;
             this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
-                                                this.btnLoadFromDatabase.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            // 
+            // btnLoadFromDatabase
+            // 
+            this.btnLoadFromDatabase.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnLoadFromDatabase.Location = new System.Drawing.Point(352, 479);
             this.btnLoadFromDatabase.Name = "btnLoadFromDatabase";
             this.btnLoadFromDatabase.Size = new System.Drawing.Size(130, 27);
@@ -319,8 +424,11 @@ namespace BenMAP
             this.btnLoadFromDatabase.Text = "Load From Database";
             this.btnLoadFromDatabase.UseVisualStyleBackColor = true;
             this.btnLoadFromDatabase.Click += new System.EventHandler(this.btnLoadFromDatabase_Click);
-                                                this.grpCancelOK.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            // 
+            // grpCancelOK
+            // 
+            this.grpCancelOK.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.grpCancelOK.Controls.Add(this.btnOK);
             this.grpCancelOK.Controls.Add(this.btnCancel);
             this.grpCancelOK.Location = new System.Drawing.Point(12, 512);
@@ -328,7 +436,10 @@ namespace BenMAP
             this.grpCancelOK.Size = new System.Drawing.Size(734, 58);
             this.grpCancelOK.TabIndex = 3;
             this.grpCancelOK.TabStop = false;
-                                                this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            // 
+            // btnOK
+            // 
+            this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOK.Location = new System.Drawing.Point(650, 13);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 27);
@@ -336,7 +447,10 @@ namespace BenMAP
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
-                                                this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            // 
+            // btnCancel
+            // 
+            this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.Location = new System.Drawing.Point(569, 13);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 27);
@@ -344,18 +458,27 @@ namespace BenMAP
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
-                                                this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            // 
+            // statusStrip1
+            // 
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabel1});
             this.statusStrip1.Location = new System.Drawing.Point(0, 559);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(758, 22);
             this.statusStrip1.TabIndex = 4;
             this.statusStrip1.Text = "statusStrip1";
-                                                this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(131, 17);
+            // 
+            // toolStripStatusLabel1
+            // 
+            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(118, 17);
             this.toolStripStatusLabel1.Text = "toolStripStatusLabel1";
             this.toolStripStatusLabel1.Visible = false;
-                                                this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
+            // 
+            // ValuationFunctionDataSetDefinition
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(758, 581);
             this.Controls.Add(this.statusStrip1);

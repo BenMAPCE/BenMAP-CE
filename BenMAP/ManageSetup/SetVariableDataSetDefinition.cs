@@ -271,7 +271,7 @@ namespace BenMAP
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Failed to load variable dataset.");
+                MessageBox.Show("Failed to load variable dataset.  Please validate file for more detailed informaton.");
                 fbtra.Rollback();
                 progBarVariable.Value = 0;
                 progBarVariable.Visible = false;
@@ -305,7 +305,7 @@ namespace BenMAP
                 if (_dtOrigin == null || colCount <= 2)
                 {
                     WaitClose();
-                    MessageBox.Show("Failed to load variable dataset.");
+                    MessageBox.Show("Failed to load variable dataset.  Please validate file for more detailed informaton.");
                     return;
                 }
                 int icol = -1;
@@ -387,7 +387,7 @@ namespace BenMAP
             catch (Exception ex)
             {
                 WaitClose();
-                MessageBox.Show("Failed to load variable dataset.");
+                MessageBox.Show("Failed to load variable dataset.  Please validate file for more detailed informaton.");
                 Logger.LogError(ex);
             }
         }

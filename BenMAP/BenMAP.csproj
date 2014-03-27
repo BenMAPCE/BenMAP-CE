@@ -179,6 +179,7 @@
     <Reference Include="System.Data.Linq" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceProcess" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Web.Services" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -526,6 +527,12 @@
     <Compile Include="ManageSetup\LoadInflationDataSet.Designer.cs">
       <DependentUpon>LoadInflationDataSet.cs</DependentUpon>
     </Compile>
+    <Compile Include="ManageSetup\LoadMonitorDataSet.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ManageSetup\LoadMonitorDataSet.Designer.cs">
+      <DependentUpon>LoadMonitorDataSet.cs</DependentUpon>
+    </Compile>
     <Compile Include="ManageSetup\LoadPopulationDataSet.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -702,6 +709,8 @@
     <Compile Include="TipFormGIF.Designer.cs">
       <DependentUpon>TipFormGIF.cs</DependentUpon>
     </Compile>
+    <Compile Include="Tools\Metadata.cs" />
+    <Compile Include="Tools\MetadataClassObj.cs" />
     <Compile Include="Tools\Options.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -779,6 +788,18 @@
     </Compile>
     <Compile Include="Tools\ModelFileConcatenator.Designer.cs">
       <DependentUpon>ModelFileConcatenator.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Tools\ValidateDatabaseImport.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Tools\ValidateDatabaseImport.Designer.cs">
+      <DependentUpon>ValidateDatabaseImport.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Tools\ViewEditMetadata.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Tools\ViewEditMetadata.Designer.cs">
+      <DependentUpon>ViewEditMetadata.cs</DependentUpon>
     </Compile>
     <Compile Include="UserControl\BenMAPCalendar.cs">
       <SubType>UserControl</SubType>
@@ -990,6 +1011,9 @@
     <EmbeddedResource Include="ManageSetup\LoadInflationDataSet.resx">
       <DependentUpon>LoadInflationDataSet.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="ManageSetup\LoadMonitorDataSet.resx">
+      <DependentUpon>LoadMonitorDataSet.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ManageSetup\LoadPopulationDataSet.resx">
       <DependentUpon>LoadPopulationDataSet.cs</DependentUpon>
     </EmbeddedResource>
@@ -1113,6 +1137,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Tools\Options.resx">
       <DependentUpon>Options.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tools\ValidateDatabaseImport.resx">
+      <DependentUpon>ValidateDatabaseImport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tools\ViewEditMetadata.resx">
+      <DependentUpon>ViewEditMetadata.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UserControl\BenMAPCalendar.resx">
       <DependentUpon>BenMAPCalendar.cs</DependentUpon>

@@ -36,13 +36,17 @@ namespace BenMAP
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
+            this.btnValidate = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tbp.SuspendLayout();
             this.tbp2.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
-                                                this.groupBox1.Controls.Add(this.txtPollutant);
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.txtPollutant);
             this.groupBox1.Controls.Add(this.txtGridType);
             this.groupBox1.Controls.Add(this.tabControl1);
             this.groupBox1.Controls.Add(this.cboGridType);
@@ -53,22 +57,35 @@ namespace BenMAP
             this.groupBox1.Size = new System.Drawing.Size(340, 295);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
-                                                this.txtPollutant.Location = new System.Drawing.Point(82, 63);
+            // 
+            // txtPollutant
+            // 
+            this.txtPollutant.Location = new System.Drawing.Point(82, 63);
             this.txtPollutant.Name = "txtPollutant";
             this.txtPollutant.Size = new System.Drawing.Size(168, 22);
             this.txtPollutant.TabIndex = 6;
-                                                this.txtGridType.Location = new System.Drawing.Point(82, 16);
+            // 
+            // txtGridType
+            // 
+            this.txtGridType.Location = new System.Drawing.Point(82, 16);
             this.txtGridType.Name = "txtGridType";
             this.txtGridType.Size = new System.Drawing.Size(168, 22);
             this.txtGridType.TabIndex = 5;
-                                                this.tabControl1.Controls.Add(this.tbp);
+            // 
+            // tabControl1
+            // 
+            this.tabControl1.Controls.Add(this.tbp);
             this.tabControl1.Controls.Add(this.tbp2);
             this.tabControl1.Location = new System.Drawing.Point(21, 93);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
             this.tabControl1.Size = new System.Drawing.Size(313, 194);
             this.tabControl1.TabIndex = 4;
-                                                this.tbp.Controls.Add(this.label1);
+            // 
+            // tbp
+            // 
+            this.tbp.Controls.Add(this.btnValidate);
+            this.tbp.Controls.Add(this.label1);
             this.tbp.Controls.Add(this.btnBrowseDatabase);
             this.tbp.Controls.Add(this.txtModelDatabase);
             this.tbp.Controls.Add(this.lblModelDatabase);
@@ -79,31 +96,46 @@ namespace BenMAP
             this.tbp.TabIndex = 0;
             this.tbp.Text = "Generic Model Database";
             this.tbp.UseVisualStyleBackColor = true;
-                                                this.label1.Location = new System.Drawing.Point(7, 65);
+            // 
+            // label1
+            // 
+            this.label1.Location = new System.Drawing.Point(7, 65);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(292, 93);
             this.label1.TabIndex = 3;
-            this.label1.Text = "The file layout is: Column, Row, Metric, Seasonal Metric, Statistic, Values; Valu" +
-                "es is a string of comma delimited model values.";
-                                                this.btnBrowseDatabase.Image = global::BenMAP.Properties.Resources.folder_add;
+            this.label1.Text = "The file layout is: Column, Row, Metric, Seasonal Metric, Annual Metric, Values; " +
+    "Values is a string of comma delimited model values.";
+            // 
+            // btnBrowseDatabase
+            // 
+            this.btnBrowseDatabase.Image = global::BenMAP.Properties.Resources.folder_add;
             this.btnBrowseDatabase.Location = new System.Drawing.Point(251, 35);
             this.btnBrowseDatabase.Name = "btnBrowseDatabase";
             this.btnBrowseDatabase.Size = new System.Drawing.Size(39, 27);
             this.btnBrowseDatabase.TabIndex = 2;
             this.btnBrowseDatabase.UseVisualStyleBackColor = true;
             this.btnBrowseDatabase.Click += new System.EventHandler(this.btnBrowseDatabase_Click);
-                                                this.txtModelDatabase.Location = new System.Drawing.Point(6, 37);
+            // 
+            // txtModelDatabase
+            // 
+            this.txtModelDatabase.Location = new System.Drawing.Point(6, 37);
             this.txtModelDatabase.Name = "txtModelDatabase";
             this.txtModelDatabase.ReadOnly = true;
             this.txtModelDatabase.Size = new System.Drawing.Size(239, 22);
             this.txtModelDatabase.TabIndex = 1;
-                                                this.lblModelDatabase.AutoSize = true;
+            // 
+            // lblModelDatabase
+            // 
+            this.lblModelDatabase.AutoSize = true;
             this.lblModelDatabase.Location = new System.Drawing.Point(6, 15);
             this.lblModelDatabase.Name = "lblModelDatabase";
             this.lblModelDatabase.Size = new System.Drawing.Size(101, 14);
             this.lblModelDatabase.TabIndex = 0;
             this.lblModelDatabase.Text = "Model Database:";
-                                                this.tbp2.Controls.Add(this.label2);
+            // 
+            // tbp2
+            // 
+            this.tbp2.Controls.Add(this.label2);
             this.tbp2.Controls.Add(this.btnBrowseFile);
             this.tbp2.Controls.Add(this.txtModelFile);
             this.tbp2.Controls.Add(this.lblModelFile);
@@ -114,69 +146,112 @@ namespace BenMAP
             this.tbp2.TabIndex = 1;
             this.tbp2.Text = "New Format Database";
             this.tbp2.UseVisualStyleBackColor = true;
-                                                this.label2.Location = new System.Drawing.Point(3, 67);
+            // 
+            // label2
+            // 
+            this.label2.Location = new System.Drawing.Point(3, 67);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(299, 77);
             this.label2.TabIndex = 3;
             this.label2.Text = "This is a new format model file.The first row format: Pollutant name,grid definit" +
-                "ion name,model.The second Row format: col, row, metricname0, metricname1 ...";
-                                                this.btnBrowseFile.Image = global::BenMAP.Properties.Resources.folder_add;
+    "ion name,model.The second Row format: col, row, metricname0, metricname1 ...";
+            // 
+            // btnBrowseFile
+            // 
+            this.btnBrowseFile.Image = global::BenMAP.Properties.Resources.folder_add;
             this.btnBrowseFile.Location = new System.Drawing.Point(260, 37);
             this.btnBrowseFile.Name = "btnBrowseFile";
             this.btnBrowseFile.Size = new System.Drawing.Size(39, 27);
             this.btnBrowseFile.TabIndex = 2;
             this.btnBrowseFile.UseVisualStyleBackColor = true;
             this.btnBrowseFile.Click += new System.EventHandler(this.btnBrowseFile_Click);
-                                                this.txtModelFile.Location = new System.Drawing.Point(6, 40);
+            // 
+            // txtModelFile
+            // 
+            this.txtModelFile.Location = new System.Drawing.Point(6, 40);
             this.txtModelFile.Name = "txtModelFile";
             this.txtModelFile.ReadOnly = true;
             this.txtModelFile.Size = new System.Drawing.Size(248, 22);
             this.txtModelFile.TabIndex = 1;
-                                                this.lblModelFile.AutoSize = true;
+            // 
+            // lblModelFile
+            // 
+            this.lblModelFile.AutoSize = true;
             this.lblModelFile.Location = new System.Drawing.Point(6, 15);
             this.lblModelFile.Name = "lblModelFile";
             this.lblModelFile.Size = new System.Drawing.Size(69, 14);
             this.lblModelFile.TabIndex = 0;
             this.lblModelFile.Text = "Model File:";
-                                                this.cboGridType.FormattingEnabled = true;
+            // 
+            // cboGridType
+            // 
+            this.cboGridType.FormattingEnabled = true;
             this.cboGridType.Location = new System.Drawing.Point(82, 16);
             this.cboGridType.Name = "cboGridType";
             this.cboGridType.Size = new System.Drawing.Size(168, 22);
             this.cboGridType.TabIndex = 2;
-                                                this.lblPollutant.AutoSize = true;
+            // 
+            // lblPollutant
+            // 
+            this.lblPollutant.AutoSize = true;
             this.lblPollutant.Location = new System.Drawing.Point(19, 66);
             this.lblPollutant.Name = "lblPollutant";
             this.lblPollutant.Size = new System.Drawing.Size(60, 14);
             this.lblPollutant.TabIndex = 1;
             this.lblPollutant.Text = "Pollutant:";
-                                                this.lblGridType.AutoSize = true;
+            // 
+            // lblGridType
+            // 
+            this.lblGridType.AutoSize = true;
             this.lblGridType.Location = new System.Drawing.Point(19, 20);
             this.lblGridType.Name = "lblGridType";
             this.lblGridType.Size = new System.Drawing.Size(60, 14);
             this.lblGridType.TabIndex = 0;
             this.lblGridType.Text = "Grid Type:";
-                                                this.groupBox2.Controls.Add(this.btnOK);
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.btnOK);
             this.groupBox2.Controls.Add(this.btnCancel);
             this.groupBox2.Location = new System.Drawing.Point(12, 304);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(340, 51);
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
-                                                this.btnOK.Location = new System.Drawing.Point(257, 17);
+            // 
+            // btnOK
+            // 
+            this.btnOK.Location = new System.Drawing.Point(257, 17);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(66, 27);
             this.btnOK.TabIndex = 1;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
-                                                this.btnCancel.Location = new System.Drawing.Point(174, 17);
+            // 
+            // btnCancel
+            // 
+            this.btnCancel.Location = new System.Drawing.Point(174, 17);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(63, 27);
             this.btnCancel.TabIndex = 0;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
-                                                this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
+            // 
+            // btnValidate
+            // 
+            this.btnValidate.Location = new System.Drawing.Point(10, 131);
+            this.btnValidate.Name = "btnValidate";
+            this.btnValidate.Size = new System.Drawing.Size(75, 27);
+            this.btnValidate.TabIndex = 4;
+            this.btnValidate.Text = "Validate";
+            this.btnValidate.UseVisualStyleBackColor = true;
+            this.btnValidate.Click += new System.EventHandler(this.btnValidate_Click);
+            // 
+            // ModelData
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(365, 370);
             this.Controls.Add(this.groupBox2);
@@ -221,5 +296,6 @@ namespace BenMAP
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox txtPollutant;
         private System.Windows.Forms.TextBox txtGridType;
+        private System.Windows.Forms.Button btnValidate;
     }
 }

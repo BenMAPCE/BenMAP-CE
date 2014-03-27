@@ -419,8 +419,25 @@ namespace BenMAP
                     str = frm.StrPath;
                     commandText = "select GridDefinitionName from GridDefinitions where GridDefinitionID=" + _grdiDefinitionID + "";
                     cboGridDefinition.Text = (fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)).ToString();
-                    _dtLoadTable = CommonClass.ExcelToDataTable(str); if (_dtLoadTable == null)
-                    { MessageBox.Show("Failed to import data from CSV file."); return; }
+                    if(frm.IncidneceData != null)
+                    {
+                        _dtLoadTable = frm.IncidneceData;
+                    }
+                    else
+                    {
+                        _dtLoadTable = CommonClass.ExcelToDataTable(str); 
+                        if (_dtLoadTable == null)
+                            { MessageBox.Show("Failed to import data from CSV file."); return; }
+                    }
+                    //_dtLoadTable = CommonClass.ExcelToDataTable(str); if (_dtLoadTable == null)
+                    //_dtLoadTable = frm.IncidneceData; if (_dtLoadTable == null)
+                    
+                    
+
+                    #region Validation has been moved to LoadIncidenceDatabase
+                    //This section will be handled by the new validation window launched by LoadIncidenceDatabase window.
+                    //A datatable will be available from the LoadIncidenceDatabase window on a true (passed) validation.
+
 
                     int iEndpointGroup = -1;
                     int iEndpoint = -1;
@@ -461,25 +478,27 @@ namespace BenMAP
                                 break;
                         }
                     }
-                    string warningtip = "";
-                    if (iEndpointGroup < 0) warningtip = "'Endpoint Group', ";
-                    if (iEndpoint < 0) warningtip += "'Endpoint', ";
-                    if (iRace < 0) warningtip += "'Race', ";
-                    if (iGender < 0) warningtip += "'Gender', ";
-                    if (iEthnicity < 0) warningtip += "'Ethnicity', ";
-                    if (iStartAge < 0) warningtip += "'Start Age', ";
-                    if (iEndAge < 0) warningtip += "'End Age', ";
-                    if (iColumn < 0) warningtip += "'Column', ";
-                    if (iRow < 0) warningtip += "'Row', ";
-                    if (iType < 0) warningtip += "'Type', ";
-                    if (iValue < 0) warningtip += "'Value', ";
-                    if (warningtip != "")
-                    {
-                        warningtip = warningtip.Substring(0, warningtip.Length - 2);
-                        warningtip = "Please check the column header of " + warningtip + ". It is incorrect or does not exist.";
-                        MessageBox.Show(warningtip, "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        return;
-                    }
+                    //string warningtip = "";
+                    //if (iEndpointGroup < 0) warningtip = "'Endpoint Group', ";
+                    //if (iEndpoint < 0) warningtip += "'Endpoint', ";
+                    //if (iRace < 0) warningtip += "'Race', ";
+                    //if (iGender < 0) warningtip += "'Gender', ";
+                    //if (iEthnicity < 0) warningtip += "'Ethnicity', ";
+                    //if (iStartAge < 0) warningtip += "'Start Age', ";
+                    //if (iEndAge < 0) warningtip += "'End Age', ";
+                    //if (iColumn < 0) warningtip += "'Column', ";
+                    //if (iRow < 0) warningtip += "'Row', ";
+                    //if (iType < 0) warningtip += "'Type', ";
+                    //if (iValue < 0) warningtip += "'Value', ";
+                    //if (warningtip != "")
+                    //{
+                    //    warningtip = warningtip.Substring(0, warningtip.Length - 2);
+                    //    warningtip = "Please check the column header of " + warningtip + ". It is incorrect or does not exist.";
+                    //    MessageBox.Show(warningtip, "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    //    return;
+                    //}
+                    #endregion
+                    
                     lblProgress.Visible = true;
                     progressBar1.Visible = true;
 
@@ -697,7 +716,8 @@ namespace BenMAP
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("File import failed. Please check the file for errors.", "Error", MessageBoxButtons.OK);
+                    //MessageBox.Show("File import failed. Please check the file for errors.", "Error", MessageBoxButtons.OK);
+                    MessageBox.Show("File import failed. Please validate file for more detailed informaton.", "Error", MessageBoxButtons.OK);
                     progressBar1.Visible = false;
                     lblProgress.Text = "";
                     lblProgress.Visible = false;

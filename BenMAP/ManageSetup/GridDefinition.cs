@@ -37,6 +37,11 @@ namespace BenMAP
         public string _gridIDName = "";
         public string _shapeFileName = "";
         public string _shapeFilePath = "";
+
+        private string _isForceValidate = string.Empty;
+        private string _iniPath = string.Empty;
+        private string _strPath;
+        
         private void GridDefinition_Load(object sender, EventArgs e)
         {
             FireBirdHelperBase fb = new ESILFireBirdHelper();
@@ -170,7 +175,30 @@ namespace BenMAP
                 Logger.LogError(ex.Message);
             }
         }
-
+        private bool CheckforSupportingfiles(string strPath)
+        {
+            bool bPassed = true;
+            FileInfo fInfo = new FileInfo(strPath);
+            string strDir = fInfo.DirectoryName;
+            string fName = fInfo.Name.Substring(0,fInfo.Name.Length - fInfo.Extension.Length);
+            if(!File.Exists(Path.Combine(strDir, fName + ".shx")))
+            {
+                MessageBox.Show(string.Format("Could not find file {0}.shx", fName));
+                return false;
+            }
+            if (!File.Exists(Path.Combine(strDir, fName + ".prj")))
+            {
+                MessageBox.Show(string.Format("Could not find file {0}.prj", fName));
+                return false;
+            }
+            if (!File.Exists(Path.Combine(strDir, fName + ".dbf")))
+            {
+                MessageBox.Show(string.Format("Could not find file {0}.dbf", fName));
+                return false;
+            }
+            return bPassed;
+        }
+        
         private void cboGridType_SelectedValueChanged(object sender, EventArgs e)
         {
             if (cboGridType.SelectedIndex == 0)
@@ -202,9 +230,13 @@ namespace BenMAP
                 {
                     txtShapefile.Text = openFileDialog.FileName; lblShapeFileName.Text = System.IO.Path.GetFileNameWithoutExtension(txtShapefile.Text);
                     _shapeFilePath = openFileDialog.FileName;
-                    AddLayerAndGetAtt(_shapeFilePath);
-                    lblCol.Text = _shapeCol.ToString();
-                    lblRow.Text = _shapeRow.ToString();
+                    if(CheckforSupportingfiles(_shapeFilePath))
+                    {
+                        AddLayerAndGetAtt(_shapeFilePath);
+                        lblCol.Text = _shapeCol.ToString();
+                        lblRow.Text = _shapeRow.ToString();
+                    }
+                    
                 }
             }
             catch (Exception ex)
@@ -212,7 +244,6 @@ namespace BenMAP
                 Logger.LogError(ex.Message);
             }
         }
-
 
         private void btnPreview_Click(object sender, EventArgs e)
         {
@@ -898,6 +929,19 @@ namespace BenMAP
                 "\r\ncreate the crosswalks now, BenMAP will create crosswalks as" +
                 "\r\nneeded during the configuration or aggregation, pooling and" +
                 "\r\nvaluation stages.", picCRHelp, 32700);
+        }
+
+        private void btnViewMetadata_Click(object sender, EventArgs e)
+        {
+            ViewEditMetadata vemetadata = new ViewEditMetadata(_shapeFilePath);
+            vemetadata.ShowDialog();
+        }
+
+        private void txtShapefile_TextChanged(object sender, EventArgs e)
+        {
+            btnViewMetadata.Enabled = !string.IsNullOrEmpty(txtShapefile.Text);
+            //btnViewMetadata.Enabled = !string.IsNullOrEmpty(txtShapefile.Text);
+            //_strPath = txtShapefile.Text;
         }
 
     }

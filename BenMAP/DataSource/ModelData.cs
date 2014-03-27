@@ -19,12 +19,20 @@ namespace BenMAP
 
         private BaseControlGroup _bgc = null;
         private string _currentStat = string.Empty;
-
+        private string _isForceValidate = string.Empty;
+        private string _iniPath = string.Empty;
         public ModelData(BaseControlGroup currentPollutant, string currentStat)
         {
             InitializeComponent();
             _bgc = currentPollutant;
             _currentStat = currentStat;
+
+            _iniPath = CommonClass.ResultFilePath + @"\BenMAP.ini";
+            _isForceValidate = CommonClass.IniReadValue("appSettings", "IsForceValidate", _iniPath);
+            if (_isForceValidate == "T")
+                btnOK.Enabled = false;
+            else
+                btnOK.Enabled = true;
         }
 
         private void ModelData_Load(object sender, EventArgs e)
@@ -92,6 +100,11 @@ namespace BenMAP
         string saveAQGPath = string.Empty;
         BaseControlGroup saveBCG = new BaseControlGroup();
         private void btnOK_Click(object sender, EventArgs e)
+        {
+            LoadDatabase();
+        }
+
+        private void LoadDatabase()
         {
             string msg = string.Empty;
             bool bCreateShapeFile = false;
@@ -410,6 +423,20 @@ namespace BenMAP
             {
                 MessageBox.Show(Err.Message);
             }
+        }
+
+        private void btnValidate_Click(object sender, EventArgs e)
+        {
+            DataTable modelDT_Baseline = new DataTable();
+            modelDT_Baseline = CommonClass.ExcelToDataTable(txtModelDatabase.Text);
+            ValidateDatabaseImport vdi = new ValidateDatabaseImport(modelDT_Baseline, "Baseline", txtModelDatabase.Text);
+            DialogResult dlgR = vdi.ShowDialog();
+            if (dlgR.Equals(DialogResult.OK))
+            {
+                if (vdi.PassedValidation && _isForceValidate == "T")
+                    LoadDatabase(); ;
+            }
+
         }
 
     }

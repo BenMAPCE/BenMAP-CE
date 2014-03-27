@@ -1,19 +1,29 @@
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
+
+
 
 namespace BenMAP
 {
     public partial class LoadIncidenceDatabase : FormBase
     {
+
+        private DataTable _incidneceData;
+        public DataTable IncidneceData
+        {
+            get { return _incidneceData; }
+        }
+
         public LoadIncidenceDatabase()
         {
             InitializeComponent();
+            _iniPath = CommonClass.ResultFilePath + @"\BenMAP.ini";
+            _isForceValidate = CommonClass.IniReadValue("appSettings", "IsForceValidate", _iniPath);
+            if (_isForceValidate == "T")
+                btnOK.Enabled = false;
+            else
+                btnOK.Enabled = true;
         }
 
         private void btnBrowse_Click(object sender, EventArgs e)
@@ -76,11 +86,17 @@ namespace BenMAP
             get { return gridDefinitionID; }
             set { gridDefinitionID = value; }
         }
-
+        private string _isForceValidate = string.Empty;
+        private string _iniPath = string.Empty;
         private string _strPath;
         public string StrPath { get { return _strPath; } set { _strPath = value; } }
 
         private void btnOK_Click(object sender, EventArgs e)
+        {
+            LoadDatabase();
+        }
+
+        private void LoadDatabase()
         {
             string msg = string.Empty;
             try
@@ -112,5 +128,31 @@ namespace BenMAP
             this.DialogResult = DialogResult.Cancel;
         }
 
+        private void btnValidate_Click(object sender, EventArgs e)
+        {
+            _incidneceData = CommonClass.ExcelToDataTable(_strPath);
+            ValidateDatabaseImport vdi = new ValidateDatabaseImport(_incidneceData, "Incidence", _strPath);
+
+            DialogResult dlgR = vdi.ShowDialog();
+            if(dlgR.Equals(DialogResult.OK))
+            {
+                if (vdi.PassedValidation && _isForceValidate == "T")
+                    LoadDatabase(); ;
+            }
+        }
+
+        private void txtDatabase_TextChanged(object sender, EventArgs e)
+        {
+                btnValidate.Enabled = !string.IsNullOrEmpty(txtDatabase.Text);
+                btnViewMetadata.Enabled = !string.IsNullOrEmpty(txtDatabase.Text);
+                _strPath = txtDatabase.Text;
+        }
+
+        private void btnViewMetadata_Click(object sender, EventArgs e)
+        {
+            ViewEditMetadata vem = new ViewEditMetadata(_strPath);
+
+            vem.ShowDialog();
+        }
     }
 }

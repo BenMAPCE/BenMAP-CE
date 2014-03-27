@@ -9,11 +9,23 @@ using System.Windows.Forms;
 using BrightIdeasSoftware;
 using System.IO;
 using ESIL.DBUtility;
-
+//TODO:
+// On the HealthImpactDataSetDefinition form, change the function of the "Load From Database" from a browse button to where
+// it launches a dialog very simaler to the five Load dataset dialogs.  This will help in trying to maintain a consistancy throughout
+// the application.
+//
+//1 on the LoadHealthImpactDataSet dialog add a validate button
+//2 make it disabled
+//3 make the OK button disabled
+//4 After selecting a database to load (a csv file or excel file)
+//  enabled the validate button.
+//5 on a positive validation enable the OK button
+//
 namespace BenMAP
 {
     public partial class HealthImpactDataSetDefinition : FormBase
     {
+        private DataTable dt;//_dtDataFile;
         private int _datasetID;
         List<int> lstdeleteCRFunctionid = new List<int>();
 
@@ -91,18 +103,30 @@ namespace BenMAP
         DataTable dtLoad = new DataTable();
         private void btnBrowse_Click(object sender, EventArgs e)
         {
+            LoadSelectedDataSet lmdataset = new LoadSelectedDataSet("Load Health Impact Dataset", "Health Impact Dataset Name:", txtHealthImpactFunction.Text, "Healthfunctions");
+            DialogResult dlgr = lmdataset.ShowDialog();
+            if (dlgr.Equals(DialogResult.OK))
+            {
+                dt = lmdataset.MonitorDataSet;
+                
+                LoadDatabase();
+            }
+        }
+
+        private void LoadDatabase()
+        {
             try
             {
-                DataTable dt = new DataTable();
-                OpenFileDialog openFileDialog = new OpenFileDialog();
-                openFileDialog.InitialDirectory = Application.StartupPath + @"E:\";
-                openFileDialog.Filter = "All Files|*.*|CSV files|*.csv|XLS files|*.xls|XLSX files|*.xlsx";
-                openFileDialog.FilterIndex = 2;
-                openFileDialog.RestoreDirectory = true;
-                if (openFileDialog.ShowDialog() != DialogResult.OK) { return; }
-                _filePath = openFileDialog.FileName;
-                WaitShow("Loading health impact functions...");
-                dt = CommonClass.ExcelToDataTable(_filePath);
+                //DataTable dt = new DataTable();
+                //OpenFileDialog openFileDialog = new OpenFileDialog();
+                //openFileDialog.InitialDirectory = Application.StartupPath + @"E:\";
+                //openFileDialog.Filter = "All Files|*.*|CSV files|*.csv|XLS files|*.xls|XLSX files|*.xlsx";
+                //openFileDialog.FilterIndex = 2;
+                //openFileDialog.RestoreDirectory = true;
+                //if (openFileDialog.ShowDialog() != DialogResult.OK) { return; }
+                //_filePath = openFileDialog.FileName;
+                //WaitShow("Loading health impact functions...");
+                //dt = CommonClass.ExcelToDataTable(_filePath);
                 if (dt == null) { return; }
                 int rowCount = dt.Rows.Count;
                 int colCount = dt.Columns.Count;
@@ -673,6 +697,12 @@ namespace BenMAP
 
         private void btnOK_Click_1(object sender, EventArgs e)
         {
+            if(_dt.Rows.Count < 1)
+            {
+                MessageBox.Show("No dataset was selected for import or created.  Please select a dataset to import or 'Add' information to careate a data set.");
+                btnBrowse.Focus();
+                return;
+            }
             ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
             DataSet ds = new DataSet();
             string commandText = string.Empty;

@@ -2,17 +2,44 @@ using System;
 using System.Data;
 using System.Windows.Forms;
 using ESIL.DBUtility;
-
+//TODO:
+//1 on the LoadIncomeGrowthDataSet dialog add a validate button
+//2 make it disabled
+//3 make the OK button disabled
+//4 After selecting a database to load (a csv file or excel file)
+//  enabled the validate button.
+//5 on a positive validation enable the OK button
+//
 namespace BenMAP
 {
     public partial class LoadIncomeGrowthDataSet : FormBase
     {
+        private DataTable _incomeGrowthData;
+        public DataTable IncomeGrowthData
+        {
+            get{return _incomeGrowthData;}
+        }
+        private string _strPath;
+        private string _isForceValidate = string.Empty;
+        private string _iniPath = string.Empty;
+
         public LoadIncomeGrowthDataSet()
         {
             InitializeComponent();
+            _iniPath = CommonClass.ResultFilePath + @"\BenMAP.ini";
+            _isForceValidate = CommonClass.IniReadValue("appSettings", "IsForceValidate", _iniPath);
+            if (_isForceValidate == "T")
+                btnOK.Enabled = false;
+            else
+                btnOK.Enabled = true;
         }
 
         private void btnOK_Click(object sender, EventArgs e)
+        {
+            LoadDatabase();
+        }
+
+        private void LoadDatabase()
         {
             try
             {
@@ -57,7 +84,8 @@ namespace BenMAP
                 if (warningtip != "")
                 {
                     warningtip = warningtip.Substring(0, warningtip.Length - 2);
-                    warningtip = "Please check the column header of " + warningtip + ". It is incorrect or does not exist.";
+                    warningtip = "Please check the column header of " + warningtip + ". It is incorrect or does not exist.\r\n";
+                    warningtip += "\r\nFile failed to load, please validate the file for a more detail explanation of errors.";
                     MessageBox.Show(warningtip, "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
@@ -142,6 +170,32 @@ namespace BenMAP
             }
             catch (Exception)
             { }
+        }
+
+        private void btnValidate_Click(object sender, EventArgs e)
+        {
+            _incomeGrowthData = CommonClass.ExcelToDataTable(_strPath);
+            ValidateDatabaseImport vdi = new ValidateDatabaseImport(_incomeGrowthData, "Incomegrowth", _strPath);
+
+            DialogResult dlgR = vdi.ShowDialog();
+            if (dlgR.Equals(DialogResult.OK))
+            {
+                if (vdi.PassedValidation && _isForceValidate == "T")
+                    LoadDatabase();
+            }
+        }
+
+        private void txtDatabase_TextChanged(object sender, EventArgs e)
+        {
+            btnValidate.Enabled = !string.IsNullOrEmpty(txtDatabase.Text);
+            btnViewMetadata.Enabled = !string.IsNullOrEmpty(txtDatabase.Text);
+            _strPath = txtDatabase.Text;
+        }
+
+        private void btnViewMetadata_Click(object sender, EventArgs e)
+        {
+            ViewEditMetadata viewEMdata = new ViewEditMetadata(_strPath);
+            viewEMdata.ShowDialog();
         }
     }
 }

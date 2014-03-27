@@ -2,23 +2,70 @@ using System;
 using System.Data;
 using System.Windows.Forms;
 using ESIL.DBUtility;
-
+//TODO:
+//make sure there is a name in the txtInflationDataSetName text box
 namespace BenMAP
 {
     public partial class LoadInflationDataSet : FormBase
     {
+        private DataTable _inflationData;
+        public DataTable InflationData
+        {
+            get { return _inflationData; }
+        }
+        private string _strPath;
+        private string _inflationDataSetName;
+        private string _isForceValidate = string.Empty;
+        private string _iniPath = string.Empty;
+        public string InflationDataSetName
+        {
+            get { return _inflationDataSetName; }
+            set { _inflationDataSetName = value; }
+        }
+        
         public LoadInflationDataSet()
         {
             InitializeComponent();
+            _iniPath = CommonClass.ResultFilePath + @"\BenMAP.ini";
+            _isForceValidate = CommonClass.IniReadValue("appSettings", "IsForceValidate", _iniPath);
+            if (_isForceValidate == "T")
+                btnOK.Enabled = false;
+            else
+                btnOK.Enabled = true;
         }
 
         private void btnOK_Click(object sender, EventArgs e)
+        {
+            LoadDatabase();
+        }
+        private void GetMetadata()
+        {
+            //txtDatabase.Text
+            MetadataClassObj metadataObj = new MetadataClassObj();
+            System.IO.FileInfo _fInfo = new System.IO.FileInfo(_strPath);
+
+            metadataObj.SetupId = Convert.ToInt32(CommonClass.MainSetup.SetupID.ToString());
+            metadataObj.SetupName = CommonClass.MainSetup.SetupName.ToString();
+            metadataObj.FileName = _fInfo.Name.Substring(0, _fInfo.Name.Length - _fInfo.Extension.Length);
+            metadataObj.Extension = _fInfo.Extension;
+            metadataObj.FileDate = _fInfo.CreationTime.ToShortDateString();
+            metadataObj.ImportDate = DateTime.Today.ToShortDateString();
+           
+
+        }
+        private void LoadDatabase()
         {
             try
             {
                 if (txtDatabase.Text == string.Empty)
                 {
                     MessageBox.Show("Please select a datafile.");
+                    return;
+                }
+                if(string.IsNullOrEmpty(txtInflationDataSetName.Text))
+                {
+                    MessageBox.Show("Please enter a dataset name.");
+                    txtInflationDataSetName.Focus();
                     return;
                 }
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
@@ -62,7 +109,8 @@ namespace BenMAP
                 if (warningtip != "")
                 {
                     warningtip = warningtip.Substring(0, warningtip.Length - 2);
-                    warningtip = "Please check the column header of " + warningtip + ". It is incorrect or does not exist.";
+                    warningtip = "Please check the column header of " + warningtip + ". It is incorrect or does not exist.\r\n";
+                    warningtip += "\r\nFile failed to load, please validate the file for a more detail explanation of errors.";
                     MessageBox.Show(warningtip, "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
@@ -112,14 +160,6 @@ namespace BenMAP
             }
         }
 
-        private string _inflationDataSetName;
-
-        public string InflationDataSetName
-        {
-            get { return _inflationDataSetName; }
-            set { _inflationDataSetName = value; }
-        }
-
         private void btnCancel_Click(object sender, EventArgs e)
         {
             this.DialogResult = DialogResult.Cancel;
@@ -147,6 +187,32 @@ namespace BenMAP
             }
             catch (Exception)
             { }
+        }
+
+        private void txtDatabase_TextChanged(object sender, EventArgs e)
+        {
+            btnValidate.Enabled = !string.IsNullOrEmpty(txtDatabase.Text);
+            btnViewMetadata.Enabled = !string.IsNullOrEmpty(txtDatabase.Text);
+            _strPath = txtDatabase.Text;
+        }
+
+        private void btnValidate_Click(object sender, EventArgs e)
+        {
+            _inflationData = CommonClass.ExcelToDataTable(_strPath);
+            ValidateDatabaseImport vdi = new ValidateDatabaseImport(_inflationData, "Inflation", _strPath);
+
+            DialogResult dlgR = vdi.ShowDialog();
+            if (dlgR.Equals(DialogResult.OK))
+            {
+                if (vdi.PassedValidation && _isForceValidate == "T")
+                    LoadDatabase();
+            }
+        }
+
+        private void btnViewMetadata_Click(object sender, EventArgs e)
+        {
+            ViewEditMetadata viewEMdata = new ViewEditMetadata(_strPath);
+            viewEMdata.ShowDialog();
         }
     }
 }

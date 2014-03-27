@@ -148,6 +148,11 @@ namespace BenMAP
 
         private void btnLoad_Click(object sender, EventArgs e)
         {
+            LoadDatabase();
+        }
+
+        private void LoadDatabase()
+        {
             FireBirdHelperBase fb = new ESILFireBirdHelper();
             try
             {
@@ -160,11 +165,11 @@ namespace BenMAP
                 {
                     MessageBox.Show("Please input a valid year."); return;
                 }
-                if (txtMonitorDataFile.Text == string.Empty) { MessageBox.Show("Please select a monitor data file."); return; }
+                //if (txtMonitorDataFile.Text == string.Empty) { MessageBox.Show("Please select a monitor data file."); return; }
                 string msg = string.Format("Save this file associated with {0} and {1} ?", cboPollutant.GetItemText(cboPollutant.SelectedItem), txtYear.Text);
                 DialogResult result = MessageBox.Show(msg, "Confirm Edit", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                 if (result == DialogResult.No) return;
-                _dtDataFile = CommonClass.ExcelToDataTable(txtMonitorDataFile.Text);
+                //_dtDataFile = CommonClass.ExcelToDataTable(txtMonitorDataFile.Text);
                 int iMonitorName = -1;
                 int iMonitorDescription = -1;
                 int iLatitude = -1;
@@ -207,7 +212,8 @@ namespace BenMAP
                 if (warningtip != "")
                 {
                     warningtip = warningtip.Substring(0, warningtip.Length - 2);
-                    warningtip = "Please check the column header of " + warningtip + ". It is incorrect or does not exist.";
+                    warningtip = "Please check the column header of " + warningtip + ". It is incorrect or does not exist.\r\n";
+                    warningtip += "\r\nFile failed to load, please validate the file for a more detail explanation of errors.";
                     MessageBox.Show(warningtip, "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     progressBar1.Visible = false;
                     return;
@@ -275,6 +281,7 @@ namespace BenMAP
                 Logger.LogError(ex.Message);
             }
         }
+        
         private static Dictionary<int, string> getMetric()
         {
             try
@@ -435,6 +442,18 @@ namespace BenMAP
             sw.Close();
             fs.Close();
             MessageBox.Show("CSV file saved.", "File saved");
+        }
+
+        private void btnBrowse1_Click(object sender, EventArgs e)
+        {
+            LoadSelectedDataSet lmdataset = new LoadSelectedDataSet("Load Monitor Dataset", "Monitor Dataset Name:", txtDataSetName.Text, "Monitor");
+
+            DialogResult dlgr = lmdataset.ShowDialog();
+            if(dlgr.Equals(DialogResult.OK))
+            {
+                _dtDataFile = lmdataset.MonitorDataSet;
+                LoadDatabase();
+            }
         }
     }
 }
