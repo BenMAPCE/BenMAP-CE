@@ -59,9 +59,9 @@ namespace BenMAP
             this.btnHelp = new System.Windows.Forms.ToolStripDropDownButton();
             this.mnuOverview = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuAbout = new System.Windows.Forms.ToolStripMenuItem();
+            this.errorReportingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.lblStatus = new System.Windows.Forms.ToolStripStatusLabel();
-            this.errorReportingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ToolStripFile.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -418,6 +418,13 @@ namespace BenMAP
             this.mnuAbout.Text = "About";
             this.mnuAbout.Click += new System.EventHandler(this.mnuAbout_Click);
             // 
+            // errorReportingToolStripMenuItem
+            // 
+            this.errorReportingToolStripMenuItem.Name = "errorReportingToolStripMenuItem";
+            this.errorReportingToolStripMenuItem.Size = new System.Drawing.Size(301, 22);
+            this.errorReportingToolStripMenuItem.Text = "Provide Feedback";
+            this.errorReportingToolStripMenuItem.Click += new System.EventHandler(this.errorReportingToolStripMenuItem_Click);
+            // 
             // statusStrip1
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -433,13 +440,6 @@ namespace BenMAP
             this.lblStatus.Name = "lblStatus";
             this.lblStatus.Size = new System.Drawing.Size(42, 17);
             this.lblStatus.Text = "Status:";
-            // 
-            // errorReportingToolStripMenuItem
-            // 
-            this.errorReportingToolStripMenuItem.Name = "errorReportingToolStripMenuItem";
-            this.errorReportingToolStripMenuItem.Size = new System.Drawing.Size(301, 22);
-            this.errorReportingToolStripMenuItem.Text = "Error Reporting";
-            this.errorReportingToolStripMenuItem.Click += new System.EventHandler(this.errorReportingToolStripMenuItem_Click);
             // 
             // Main
             // 
