@@ -39,8 +39,8 @@ namespace BenMAP
             //if components cannot be retrieved, alert the user and disable the submit button.
             if ((components == null) || (components.Count == 0))
             {
-                lblErrorText.Text = "An error occurred while connecting to the BenMAP error reporting repository." +
-                        "  Error Reporting is temporarily disabled.";
+                lblErrorText.Text = "An error occurred while connecting to the BenMAP feedback repository." +
+                        "  Provide Feedback is temporarily disabled.";
                 btnSubmit.Enabled = false;
             }
             else {
@@ -129,7 +129,7 @@ namespace BenMAP
                 
 
                 //alert user of success or failure of submittal    
-                MessageBox.Show("Error Report was submitted successfully!");
+                MessageBox.Show("Provide Feedback was submitted successfully!");
                 this.Close();
 
 
@@ -137,7 +137,7 @@ namespace BenMAP
             else 
             {
                 //alert to failure of submittal
-                MessageBox.Show("Error Report submittal failed.");
+                MessageBox.Show("Provide Feedback submittal failed.");
             
             }
 
