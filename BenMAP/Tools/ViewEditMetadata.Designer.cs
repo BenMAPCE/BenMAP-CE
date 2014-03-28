@@ -46,10 +46,10 @@
             this.txtImportDate = new System.Windows.Forms.TextBox();
             this.txtReference = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
+            this.rtbDescription = new System.Windows.Forms.RichTextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
-            this.button1 = new System.Windows.Forms.Button();
+            this.btnOK = new System.Windows.Forms.Button();
             this.btnSaveMetaData = new System.Windows.Forms.Button();
             this.tableLayoutPanel1.SuspendLayout();
             this.flpLabels.SuspendLayout();
@@ -65,7 +65,7 @@
             this.tableLayoutPanel1.Controls.Add(this.flpLabels, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.flbTextBoxes, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.label1, 0, 1);
-            this.tableLayoutPanel1.Controls.Add(this.richTextBox1, 0, 2);
+            this.tableLayoutPanel1.Controls.Add(this.rtbDescription, 0, 2);
             this.tableLayoutPanel1.Controls.Add(this.label2, 1, 1);
             this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel1, 0, 3);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -187,43 +187,55 @@
             // 
             // txtSetupID
             // 
+            this.txtSetupID.BackColor = System.Drawing.Color.White;
             this.txtSetupID.Location = new System.Drawing.Point(8, 8);
             this.txtSetupID.Name = "txtSetupID";
+            this.txtSetupID.ReadOnly = true;
             this.txtSetupID.Size = new System.Drawing.Size(215, 20);
             this.txtSetupID.TabIndex = 0;
             // 
             // txtSetupName
             // 
+            this.txtSetupName.BackColor = System.Drawing.Color.White;
             this.txtSetupName.Location = new System.Drawing.Point(8, 34);
             this.txtSetupName.Name = "txtSetupName";
+            this.txtSetupName.ReadOnly = true;
             this.txtSetupName.Size = new System.Drawing.Size(215, 20);
             this.txtSetupName.TabIndex = 0;
             // 
             // txtFileName
             // 
+            this.txtFileName.BackColor = System.Drawing.Color.White;
             this.txtFileName.Location = new System.Drawing.Point(8, 60);
             this.txtFileName.Name = "txtFileName";
+            this.txtFileName.ReadOnly = true;
             this.txtFileName.Size = new System.Drawing.Size(215, 20);
             this.txtFileName.TabIndex = 0;
             // 
             // txtExtension
             // 
+            this.txtExtension.BackColor = System.Drawing.Color.White;
             this.txtExtension.Location = new System.Drawing.Point(8, 86);
             this.txtExtension.Name = "txtExtension";
+            this.txtExtension.ReadOnly = true;
             this.txtExtension.Size = new System.Drawing.Size(215, 20);
             this.txtExtension.TabIndex = 0;
             // 
             // txtFileDate
             // 
+            this.txtFileDate.BackColor = System.Drawing.Color.White;
             this.txtFileDate.Location = new System.Drawing.Point(8, 112);
             this.txtFileDate.Name = "txtFileDate";
+            this.txtFileDate.ReadOnly = true;
             this.txtFileDate.Size = new System.Drawing.Size(215, 20);
             this.txtFileDate.TabIndex = 0;
             // 
             // txtImportDate
             // 
+            this.txtImportDate.BackColor = System.Drawing.Color.White;
             this.txtImportDate.Location = new System.Drawing.Point(8, 138);
             this.txtImportDate.Name = "txtImportDate";
+            this.txtImportDate.ReadOnly = true;
             this.txtImportDate.Size = new System.Drawing.Size(215, 20);
             this.txtImportDate.TabIndex = 0;
             // 
@@ -233,6 +245,7 @@
             this.txtReference.Name = "txtReference";
             this.txtReference.Size = new System.Drawing.Size(215, 20);
             this.txtReference.TabIndex = 0;
+            this.txtReference.TextChanged += new System.EventHandler(this.txtReference_TextChanged);
             // 
             // label1
             // 
@@ -245,15 +258,16 @@
             this.label1.Text = "Description";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // richTextBox1
+            // rtbDescription
             // 
-            this.tableLayoutPanel1.SetColumnSpan(this.richTextBox1, 2);
-            this.richTextBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.richTextBox1.Location = new System.Drawing.Point(3, 242);
-            this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.Size = new System.Drawing.Size(366, 81);
-            this.richTextBox1.TabIndex = 2;
-            this.richTextBox1.Text = "";
+            this.tableLayoutPanel1.SetColumnSpan(this.rtbDescription, 2);
+            this.rtbDescription.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.rtbDescription.Location = new System.Drawing.Point(3, 242);
+            this.rtbDescription.Name = "rtbDescription";
+            this.rtbDescription.Size = new System.Drawing.Size(366, 81);
+            this.rtbDescription.TabIndex = 2;
+            this.rtbDescription.Text = "";
+            this.rtbDescription.TextChanged += new System.EventHandler(this.rtbDescription_TextChanged);
             // 
             // label2
             // 
@@ -268,7 +282,7 @@
             // 
             this.flowLayoutPanel1.AutoSize = true;
             this.tableLayoutPanel1.SetColumnSpan(this.flowLayoutPanel1, 2);
-            this.flowLayoutPanel1.Controls.Add(this.button1);
+            this.flowLayoutPanel1.Controls.Add(this.btnOK);
             this.flowLayoutPanel1.Controls.Add(this.btnSaveMetaData);
             this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
@@ -277,15 +291,16 @@
             this.flowLayoutPanel1.Size = new System.Drawing.Size(366, 35);
             this.flowLayoutPanel1.TabIndex = 4;
             // 
-            // button1
+            // btnOK
             // 
-            this.button1.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.button1.Location = new System.Drawing.Point(288, 3);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 27);
-            this.button1.TabIndex = 1;
-            this.button1.Text = "OK";
-            this.button1.UseVisualStyleBackColor = true;
+            this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.btnOK.Location = new System.Drawing.Point(288, 3);
+            this.btnOK.Name = "btnOK";
+            this.btnOK.Size = new System.Drawing.Size(75, 27);
+            this.btnOK.TabIndex = 1;
+            this.btnOK.Text = "OK";
+            this.btnOK.UseVisualStyleBackColor = true;
+            this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
             // 
             // btnSaveMetaData
             // 
@@ -325,9 +340,9 @@
         private System.Windows.Forms.FlowLayoutPanel flpLabels;
         private System.Windows.Forms.FlowLayoutPanel flbTextBoxes;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.RichTextBox richTextBox1;
+        private System.Windows.Forms.RichTextBox rtbDescription;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.Button btnSaveMetaData;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;

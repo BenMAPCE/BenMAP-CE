@@ -41,7 +41,8 @@ namespace BenMAP
         private string _isForceValidate = string.Empty;
         private string _iniPath = string.Empty;
         private string _strPath;
-        
+        private MetadataClassObj metadataObj = null;
+
         private void GridDefinition_Load(object sender, EventArgs e)
         {
             FireBirdHelperBase fb = new ESILFireBirdHelper();
@@ -235,6 +236,7 @@ namespace BenMAP
                         AddLayerAndGetAtt(_shapeFilePath);
                         lblCol.Text = _shapeCol.ToString();
                         lblRow.Text = _shapeRow.ToString();
+                        GetMetadata();
                     }
                     
                 }
@@ -244,7 +246,12 @@ namespace BenMAP
                 Logger.LogError(ex.Message);
             }
         }
-
+        private void GetMetadata()
+        {
+            metadataObj = new MetadataClassObj();
+            Metadata metadata = new Metadata(_shapeFilePath); //new Metadata(_strPath);
+            metadataObj = metadata.GetMetadata();
+        }
         private void btnPreview_Click(object sender, EventArgs e)
         {
             try
@@ -500,7 +507,7 @@ namespace BenMAP
                     }
                     commandText = string.Format("select max(GRIDDEFINITIONID) from GRIDDEFINITIONS");
                     _gridID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText)) + 1;
-
+                    string _filePath = string.Empty;
                     switch (_gridType)
                     {
                         case 1:
@@ -539,6 +546,7 @@ namespace BenMAP
                                     }
                                 }
                                 fs.SaveAs(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.ManageSetup.SetupName + "\\" + _shapeFileName + ".shp", true);
+                                _filePath = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.ManageSetup.SetupName + "\\" + _shapeFileName + ".shp";
                             }
                             finally
                             {
@@ -563,6 +571,7 @@ namespace BenMAP
                                 try
                                 {
                                     fs.SaveAs(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.ManageSetup.SetupName + "\\" + txtGridID.Text + ".shp", true);
+                                    _filePath = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.ManageSetup.SetupName + "\\" + txtGridID.Text + ".shp";
                                 }
                                 finally
                                 {
@@ -574,6 +583,7 @@ namespace BenMAP
                     if (!chkBoxCreatePercentage.Checked)
                     {
                         this.DialogResult = DialogResult.OK;
+                        saveMetadata(_filePath, _gridID, _gridType);
                         return;
                     }
                 }
@@ -639,7 +649,7 @@ namespace BenMAP
                     Logger.LogError(ex);
                 }
 
-
+                
 
             }
             catch (Exception ex)
@@ -648,6 +658,48 @@ namespace BenMAP
             }
 
         }
+
+        private void saveMetadata(string filePath, int gridID, int gridType)
+        {
+            //_shapeFilePath;
+            //_shapeFileName;
+            //_gridID;
+            FireBirdHelperBase fb = new ESILFireBirdHelper();
+            string commandText = "select max(METADATAID) FROM METADATAINFORMATION";
+            int metadataid = 0;
+            int rtv = 0;
+            object objmetadata = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+            if (string.IsNullOrEmpty(objmetadata.ToString()))
+            {
+                metadataid = 1;
+            }
+            else
+            {
+                metadataid = Convert.ToInt32(objmetadata) + 1;
+            }
+
+            if(metadataObj == null)
+            {
+                Metadata mdata = new Metadata(filePath);
+                metadataObj = mdata.GetMetadata();
+            }
+
+            commandText = string.Format("INSERT INTO METADATAINFORMATION " +
+                                        "(METADATAID, SETUPID, DATASETID, DATASETTYPEID, FILENAME, " +
+                                        "EXTENSION, DATAREFERENCE, FILEDATE, IMPORTDATE, DESCRIPTION, " +
+                                        "PROJECTION, GEONAME, DATUMNAME, DATUMTYPE, SPHEROIDNAME, " +
+                                        "MERIDIANNAME, UNITNAME, PROJ4STRING, NUMBEROFFEATURES) " +
+                                        "VALUES('{0}', '{1}', '{2}', '{3}', '{4}','{5}', '{6}', '{7}', '{8}', '{9}', " +
+                                        "'{10}', '{11}', '{12}', '{13}', '{14}','{15}', '{16}', '{17}', '{18}')",
+                                        metadataid, metadataObj.SetupId, gridID, metadataObj.DatasetTypeId, metadataObj.FileName,
+                                        metadataObj.Extension, metadataObj.DataReference, metadataObj.FileDate, metadataObj.ImportDate,
+                                        metadataObj.Description, metadataObj.Projection, metadataObj.GeoName, metadataObj.DatumName,
+                                        metadataObj.DatumType, metadataObj.SpheroidName, metadataObj.MeridianName, metadataObj.UnitName,
+                                        metadataObj.Proj4String, metadataObj.NumberOfFeatures);
+            rtv = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+
+        }
+
         private int iAsyns = 0;
         public List<string> lstAsyns = new List<string>();
         Dictionary<string, List<GridRelationshipAttributePercentage>> dicAllGridPercentage = new Dictionary<string, List<GridRelationshipAttributePercentage>>();
@@ -933,8 +985,9 @@ namespace BenMAP
 
         private void btnViewMetadata_Click(object sender, EventArgs e)
         {
-            ViewEditMetadata vemetadata = new ViewEditMetadata(_shapeFilePath);
-            vemetadata.ShowDialog();
+            ViewEditMetadata viewEMdata = new ViewEditMetadata(_shapeFilePath);
+            viewEMdata.ShowDialog();
+            metadataObj = viewEMdata.MetadataObj;
         }
 
         private void txtShapefile_TextChanged(object sender, EventArgs e)

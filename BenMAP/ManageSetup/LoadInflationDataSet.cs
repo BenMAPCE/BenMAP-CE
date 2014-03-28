@@ -8,6 +8,7 @@ namespace BenMAP
 {
     public partial class LoadInflationDataSet : FormBase
     {
+        private MetadataClassObj metadataObj = null;
         private DataTable _inflationData;
         public DataTable InflationData
         {
@@ -36,22 +37,13 @@ namespace BenMAP
 
         private void btnOK_Click(object sender, EventArgs e)
         {
-            LoadDatabase();
+           LoadDatabase();
         }
         private void GetMetadata()
         {
-            //txtDatabase.Text
-            MetadataClassObj metadataObj = new MetadataClassObj();
-            System.IO.FileInfo _fInfo = new System.IO.FileInfo(_strPath);
-
-            metadataObj.SetupId = Convert.ToInt32(CommonClass.MainSetup.SetupID.ToString());
-            metadataObj.SetupName = CommonClass.MainSetup.SetupName.ToString();
-            metadataObj.FileName = _fInfo.Name.Substring(0, _fInfo.Name.Length - _fInfo.Extension.Length);
-            metadataObj.Extension = _fInfo.Extension;
-            metadataObj.FileDate = _fInfo.CreationTime.ToShortDateString();
-            metadataObj.ImportDate = DateTime.Today.ToShortDateString();
-           
-
+            metadataObj = new MetadataClassObj();
+            Metadata metadata = new Metadata(_strPath);
+            metadataObj = metadata.GetMetadata();
         }
         private void LoadDatabase()
         {
@@ -132,6 +124,32 @@ namespace BenMAP
                 {
                     InflationDataSetName = txtInflationDataSetName.Text;
                 }
+                commandText = "select max(METADATAID) FROM METADATAINFORMATION";
+                int metadataid = 0;
+                object objmetadata = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+                if(string.IsNullOrEmpty(objmetadata.ToString()))
+                {
+                    metadataid = 1;
+                }
+                else
+                {
+                    metadataid = Convert.ToInt32(objmetadata) + 1;
+                }
+
+                rtn = 0;//reseting the return number
+                commandText = string.Format("INSERT INTO METADATAINFORMATION " +
+                                            "(METADATAID, SETUPID, DATASETID, DATASETTYPEID, FILENAME, " +
+                                            "EXTENSION, DATAREFERENCE, FILEDATE, IMPORTDATE, DESCRIPTION, " + 
+                                            "PROJECTION, GEONAME, DATUMNAME, DATUMTYPE, SPHEROIDNAME, " +
+                                            "MERIDIANNAME, UNITNAME, PROJ4STRING, NUMBEROFFEATURES) " + 
+                                            "VALUES('{0}', '{1}', '{2}', '{3}', '{4}','{5}', '{6}', '{7}', '{8}', '{9}', " +
+                                            "'{10}', '{11}', '{12}', '{13}', '{14}','{15}', '{16}', '{17}', '{18}')", 
+                                            metadataid, metadataObj.SetupId, inflationdatasetid, metadataObj.DatasetTypeId, metadataObj.FileName, 
+                                            metadataObj.Extension, metadataObj.DataReference, metadataObj.FileDate, metadataObj.ImportDate, 
+                                            metadataObj.Description, metadataObj.Projection, metadataObj.GeoName, metadataObj.DatumName,
+                                            metadataObj.DatumType, metadataObj.SpheroidName, metadataObj.MeridianName, metadataObj.UnitName,
+                                            metadataObj.Proj4String, metadataObj.NumberOfFeatures);
+                rtn = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
             }
 
             catch (Exception ex)
@@ -151,8 +169,12 @@ namespace BenMAP
                 openFileDialog.Filter = "All Files|*.*|CSV files|*.csv|XLS files|*.xls|XLSX files|*.xlsx";
                 openFileDialog.FilterIndex = 2;
                 openFileDialog.RestoreDirectory = true;
-                if (openFileDialog.ShowDialog() != DialogResult.OK) { return; }
+                if (openFileDialog.ShowDialog() != DialogResult.OK) 
+                { 
+                    return; 
+                }
                 txtDatabase.Text = openFileDialog.FileName;
+                GetMetadata();
             }
             catch (Exception ex)
             {
@@ -213,6 +235,7 @@ namespace BenMAP
         {
             ViewEditMetadata viewEMdata = new ViewEditMetadata(_strPath);
             viewEMdata.ShowDialog();
+            metadataObj = viewEMdata.MetadataObj;
         }
     }
 }

@@ -16,27 +16,34 @@ namespace BenMAP
     public partial class ViewEditMetadata : Form
     {   
         private FileInfo _fInfo = null;
-        private MetadataClassObj metadataObj = null;
+        private MetadataClassObj _metadataObj = null;
         private Metadata metadata = null;
+
+        internal MetadataClassObj MetadataObj
+        {
+            get { return _metadataObj; }
+        }
+
         public ViewEditMetadata()
         {
             InitializeComponent();
         }
+        
         public ViewEditMetadata(string fileName): this()
         {
             _fInfo = new FileInfo(fileName);
             metadata = new Metadata(fileName);
-            metadataObj = metadata.GetMetadata();
+            _metadataObj = metadata.GetMetadata();
         }
 
         private void ViewEditMetadata_Shown(object sender, EventArgs e)
         {
-            txtSetupID.Text = metadataObj.SetupId.ToString(); //CommonClass.MainSetup.SetupID.ToString();
-            txtSetupName.Text = metadataObj.SetupName; //CommonClass.MainSetup.SetupName.ToString();
-            txtFileName.Text = metadataObj.FileName;// _fInfo.Name.Substring(0,_fInfo.Name.Length - _fInfo.Extension.Length);
-            txtExtension.Text = metadataObj.Extension;// _fInfo.Extension;
-            txtFileDate.Text = metadataObj.FileDate;// _fInfo.CreationTime.ToShortDateString();
-            txtImportDate.Text = metadataObj.ImportDate;// DateTime.Today.ToShortDateString();
+            txtSetupID.Text = _metadataObj.SetupId.ToString();
+            txtSetupName.Text = _metadataObj.SetupName;
+            txtFileName.Text = _metadataObj.FileName;
+            txtExtension.Text = _metadataObj.Extension;
+            txtFileDate.Text = _metadataObj.FileDate;
+            txtImportDate.Text = _metadataObj.ImportDate;
             if(_fInfo.Extension == ".shp")
             {
                 LoadShapeInfo();
@@ -51,14 +58,14 @@ namespace BenMAP
 
         private void LoadShapeInfo()
         {
-            AddLabelandTextbox("Name", metadataObj.GeoName);
-            AddLabelandTextbox("Number of Features", metadataObj.NumberOfFeatures);
-            AddLabelandTextbox("Proj4String", metadataObj.Proj4String);
-            AddLabelandTextbox("Datum",metadataObj.DatumName);
-            AddLabelandTextbox("Datum Type",metadataObj.DatumType);
-            AddLabelandTextbox("Spheroid",metadataObj.SpheroidName);
-            AddLabelandTextbox("Meridian", metadataObj.MeridianName);
-            AddLabelandTextbox("Unit", metadataObj.UnitName);
+            AddLabelandTextbox("Name", _metadataObj.GeoName);
+            AddLabelandTextbox("Number of Features", _metadataObj.NumberOfFeatures);
+            AddLabelandTextbox("Proj4String", _metadataObj.Proj4String);
+            AddLabelandTextbox("Datum", _metadataObj.DatumName);
+            AddLabelandTextbox("Datum Type", _metadataObj.DatumType);
+            AddLabelandTextbox("Spheroid", _metadataObj.SpheroidName);
+            AddLabelandTextbox("Meridian", _metadataObj.MeridianName);
+            AddLabelandTextbox("Unit", _metadataObj.UnitName);
             this.Size = new Size(382, this.Size.Height + (40 * 8));
         }
 
@@ -93,6 +100,21 @@ namespace BenMAP
             {
                MessageBox.Show(ex.Message);
             }
+        }
+
+        private void btnOK_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void txtReference_TextChanged(object sender, EventArgs e)
+        {
+            _metadataObj.DataReference = txtReference.Text;
+        }
+
+        private void rtbDescription_TextChanged(object sender, EventArgs e)
+        {
+            _metadataObj.Description = rtbDescription.Text;
         }
         
     }
