@@ -46,6 +46,7 @@ namespace BenMAP
         Dictionary<string, int> dicRaceAll = null;
         Dictionary<string, int> dicEthnicityAll = null;
 
+        private MetadataClassObj _metadataObj = null;
         private string _popConfig = "";
         private object _gridDefinID;
         private DataTable _populationDataset;
@@ -198,7 +199,37 @@ namespace BenMAP
                 Logger.LogError(ex.Message);
             }
         }
+        private void insertMetadata(int dataSetID)
+        {
+            FireBirdHelperBase fb = new ESILFireBirdHelper();
+            string commandText = "select max(METADATAID) FROM METADATAINFORMATION";
+            int metadataid = 0;
+            object objmetadata = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+            int rtn = 0;
 
+            if (string.IsNullOrEmpty(objmetadata.ToString()))
+            {
+                metadataid = 1;
+            }
+            else
+            {
+                metadataid = Convert.ToInt32(objmetadata) + 1;
+            }
+            rtn = 0;//reseting the return number
+            commandText = string.Format("INSERT INTO METADATAINFORMATION " +
+                                        "(METADATAID, SETUPID, DATASETID, DATASETTYPEID, FILENAME, " +
+                                        "EXTENSION, DATAREFERENCE, FILEDATE, IMPORTDATE, DESCRIPTION, " +
+                                        "PROJECTION, GEONAME, DATUMNAME, DATUMTYPE, SPHEROIDNAME, " +
+                                        "MERIDIANNAME, UNITNAME, PROJ4STRING, NUMBEROFFEATURES) " +
+                                        "VALUES('{0}', '{1}', '{2}', '{3}', '{4}','{5}', '{6}', '{7}', '{8}', '{9}', " +
+                                        "'{10}', '{11}', '{12}', '{13}', '{14}','{15}', '{16}', '{17}', '{18}')",
+                                        metadataid, _metadataObj.SetupId, dataSetID, _metadataObj.DatasetTypeId, _metadataObj.FileName,
+                                        _metadataObj.Extension, _metadataObj.DataReference, _metadataObj.FileDate, _metadataObj.ImportDate,
+                                        _metadataObj.Description, _metadataObj.Projection, _metadataObj.GeoName, _metadataObj.DatumName,
+                                        _metadataObj.DatumType, _metadataObj.SpheroidName, _metadataObj.MeridianName, _metadataObj.UnitName,
+                                        _metadataObj.Proj4String, _metadataObj.NumberOfFeatures);
+            rtn = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+        }
         private void btnBrowseDB_Click(object sender, EventArgs e)
         {
 
@@ -212,7 +243,7 @@ namespace BenMAP
                 if (openFileDialog.ShowDialog() != DialogResult.OK)
                 { return; }
                 txtDataBase.Text = openFileDialog.FileName;
-
+                GetMetadata();
             }
             catch (Exception ex)
             {
@@ -606,6 +637,7 @@ namespace BenMAP
             fbCommand.Connection = fbconnection;
             fbCommand.CommandType = CommandType.Text;
             fbCommand.Transaction = fbtra;
+            int dataSetID = 0;
             try
             {
                 dicGender = getAllGender();
@@ -653,7 +685,7 @@ namespace BenMAP
                 lblprogbar.Text = "Saving Population...";
                 lblprogbar.Refresh();
                 commandText = "select max(POPULATIONDATASETID) from POPULATIONDATASETS";
-                object dataSetID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
+                dataSetID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
                 int fileCount = 0;
 
                 string fileName = txtDataBase.Text;
@@ -1148,11 +1180,15 @@ namespace BenMAP
 
                 }
                 if (wrongAgeRange)
+                {
                     MessageBox.Show("Population data with non-corresponding age range will not be imported into database.");
+                }
                 if (!containYear)
+                {
                     MessageBox.Show("Population growth weights with non-corresponding year will not be imported into database.");
-
+                }
                 fbtra.Commit();
+                insertMetadata(dataSetID);
                 this.DialogResult = DialogResult.OK;
             }
             catch (Exception ex)
@@ -1266,8 +1302,20 @@ namespace BenMAP
 
         private void btnViewMetadataDB_Click(object sender, EventArgs e)
         {
-            ViewEditMetadata viewEMdata = new ViewEditMetadata(_strPathDB);
-            viewEMdata.ShowDialog();
+            ViewEditMetadata viewEMdata = null; ;
+            if (_metadataObj != null)
+            {
+                viewEMdata = new ViewEditMetadata(_strPathDB, _metadataObj);
+            }
+            else
+            {
+                viewEMdata = new ViewEditMetadata(_strPathDB);
+            }
+            DialogResult dr = viewEMdata.ShowDialog();
+            if (dr.Equals(DialogResult.OK))
+            {
+                _metadataObj = viewEMdata.MetadataObj;
+            }
         }
 
         private void btnValidateGW_Click(object sender, EventArgs e)
@@ -1284,6 +1332,17 @@ namespace BenMAP
             //}
         }
 
+        private void GetMetadata()
+        {
+            _metadataObj = new MetadataClassObj();
+            Metadata metadata = new Metadata(_strPathDB);
+            _metadataObj = metadata.GetMetadata();
+        }
+
+        private void btnViewMetadataGW_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 
 }

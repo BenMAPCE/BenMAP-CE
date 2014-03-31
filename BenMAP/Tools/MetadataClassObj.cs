@@ -5,7 +5,7 @@ using System.Text;
 
 namespace BenMAP
 {
-    class MetadataClassObj
+    public class MetadataClassObj
     {
         private int _setupId;
         private int _datasetTypeId;

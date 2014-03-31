@@ -152,7 +152,7 @@ namespace BenMAP
             // btnLoad
             // 
             this.btnLoad.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnLoad.Location = new System.Drawing.Point(-113, 397);
+            this.btnLoad.Location = new System.Drawing.Point(-414, 531);
             this.btnLoad.Name = "btnLoad";
             this.btnLoad.Size = new System.Drawing.Size(128, 27);
             this.btnLoad.TabIndex = 5;

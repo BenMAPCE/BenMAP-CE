@@ -19,7 +19,12 @@ namespace BenMAP
 {
     public partial class LoadVariableDatabase : FormBase
     {
-        
+        private MetadataClassObj _metadataObj = null;
+
+        public MetadataClassObj MetadataObj
+        {
+            get { return _metadataObj; }
+        }
         private DataTable _variableDatabase;
         public DataTable VariableDatabase
         {
@@ -57,7 +62,12 @@ namespace BenMAP
         {
             LoadDatabase();
         }
-
+        private void GetMetadata()
+        {
+            _metadataObj = new MetadataClassObj();
+            Metadata metadata = new Metadata(_strPath);
+            _metadataObj = metadata.GetMetadata();
+        }
         private void LoadDatabase()
         {
             if (cboGridDefinition.Text == string.Empty || txtDatabase.Text == string.Empty)
@@ -113,6 +123,7 @@ namespace BenMAP
                 openFileDialog.RestoreDirectory = true;
                 if (openFileDialog.ShowDialog() != DialogResult.OK) { return; }
                 txtDatabase.Text = openFileDialog.FileName;
+                GetMetadata();
             }
             catch (Exception ex)
             {
@@ -148,8 +159,17 @@ namespace BenMAP
 
         private void btnViewMetadata_Click(object sender, EventArgs e)
         {
-            ViewEditMetadata viewEMdata = new ViewEditMetadata(_strPath);
+            ViewEditMetadata viewEMdata = null;
+            if (_metadataObj != null)
+            {
+                viewEMdata = new ViewEditMetadata(_strPath, _metadataObj);
+            }
+            else
+            {
+                viewEMdata = new ViewEditMetadata(_strPath);
+            }
             viewEMdata.ShowDialog();
+            _metadataObj = viewEMdata.MetadataObj;
         }
     }
 }

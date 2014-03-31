@@ -26,6 +26,7 @@ namespace BenMAP
     public partial class HealthImpactDataSetDefinition : FormBase
     {
         private DataTable dt;//_dtDataFile;
+        private MetadataClassObj metadataObj = null;
         private int _datasetID;
         List<int> lstdeleteCRFunctionid = new List<int>();
 
@@ -108,13 +109,16 @@ namespace BenMAP
             if (dlgr.Equals(DialogResult.OK))
             {
                 dt = lmdataset.MonitorDataSet;
-                
+                metadataObj = lmdataset.MetadataObj;
                 LoadDatabase();
             }
         }
 
+        
         private void LoadDatabase()
         {
+        //This load is to the gridview on the Health Impact Data Set Definition and not to the database.
+            //The database load is done in the btnOK_Click_1 event.
             try
             {
                 //DataTable dt = new DataTable();
@@ -625,9 +629,9 @@ namespace BenMAP
             this.DialogResult = DialogResult.Cancel;
         }
 
-        private void btnOK_Click(object sender, EventArgs e)
-        {
-        }
+        //private void btnOK_Click(object sender, EventArgs e)
+        //{
+        //}
 
         DataTable _dt = new DataTable();
         DataTable _dtEndpointGroup = new DataTable();
@@ -706,6 +710,7 @@ namespace BenMAP
             ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
             DataSet ds = new DataSet();
             string commandText = string.Empty;
+            int crFunctionDataSetID = 0;
             try
             {
                 if (_datasetID == -1)
@@ -728,7 +733,8 @@ namespace BenMAP
                     }
                     commandText = string.Format("select max(CRFUNCTIONDATASETID) from CRFunctionDatasets");
                     object obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
-                    int crFunctionDataSetID = int.Parse(obj.ToString()) + 1;
+                    //int crFunctionDataSetID = int.Parse(obj.ToString()) + 1;
+                    crFunctionDataSetID = int.Parse(obj.ToString()) + 1;
                     commandText = string.Format("insert into CRFunctionDataSets values ({0},{1},'{2}','F')", crFunctionDataSetID, CommonClass.ManageSetup.SetupID, txtHealthImpactFunction.Text.Replace("'", "''"));
                     int rth = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
 
@@ -1249,12 +1255,45 @@ namespace BenMAP
                         }
                     }
                 }
+                insertMetadata(crFunctionDataSetID);
             }
             catch (Exception ex)
             {
                 Logger.LogError(ex);
             }
             this.DialogResult = DialogResult.OK;
+        }
+
+        private void insertMetadata(int crFunctionDataSetID)
+        {
+            FireBirdHelperBase fb = new ESILFireBirdHelper();
+            string commandText = "select max(METADATAID) FROM METADATAINFORMATION";
+            int metadataid = 0;
+            object objmetadata = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+            int rtn = 0;
+
+            if (string.IsNullOrEmpty(objmetadata.ToString()))
+            {
+                metadataid = 1;
+            }
+            else
+            {
+                metadataid = Convert.ToInt32(objmetadata) + 1;
+            }
+            rtn = 0;//reseting the return number
+            commandText = string.Format("INSERT INTO METADATAINFORMATION " +
+                                        "(METADATAID, SETUPID, DATASETID, DATASETTYPEID, FILENAME, " +
+                                        "EXTENSION, DATAREFERENCE, FILEDATE, IMPORTDATE, DESCRIPTION, " +
+                                        "PROJECTION, GEONAME, DATUMNAME, DATUMTYPE, SPHEROIDNAME, " +
+                                        "MERIDIANNAME, UNITNAME, PROJ4STRING, NUMBEROFFEATURES) " +
+                                        "VALUES('{0}', '{1}', '{2}', '{3}', '{4}','{5}', '{6}', '{7}', '{8}', '{9}', " +
+                                        "'{10}', '{11}', '{12}', '{13}', '{14}','{15}', '{16}', '{17}', '{18}')",
+                                        metadataid, metadataObj.SetupId, crFunctionDataSetID, metadataObj.DatasetTypeId, metadataObj.FileName,
+                                        metadataObj.Extension, metadataObj.DataReference, metadataObj.FileDate, metadataObj.ImportDate,
+                                        metadataObj.Description, metadataObj.Projection, metadataObj.GeoName, metadataObj.DatumName,
+                                        metadataObj.DatumType, metadataObj.SpheroidName, metadataObj.MeridianName, metadataObj.UnitName,
+                                        metadataObj.Proj4String, metadataObj.NumberOfFeatures);
+            rtn = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
         }
 
         private void cboFilterEndpointGroup_SelectedValueChanged(object sender, EventArgs e)

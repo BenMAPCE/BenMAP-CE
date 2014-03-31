@@ -173,6 +173,7 @@ namespace BenMAP
             this.btnViewMetadataGW.Text = "View Metadata";
             this.btnViewMetadataGW.UseVisualStyleBackColor = true;
             this.btnViewMetadataGW.Visible = false;
+            this.btnViewMetadataGW.Click += new System.EventHandler(this.btnViewMetadataGW_Click);
             // 
             // btnValidateGW
             // 

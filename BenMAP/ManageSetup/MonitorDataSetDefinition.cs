@@ -20,6 +20,8 @@ namespace BenMAP
         private string _dataSetName;
         private object _dataSetID;
         private DataTable _dtDataFile;
+        private MetadataClassObj metadataObj = null;
+        //private string _strPath;
 
         public MonitorDataSetDefinition(string name, object id)
         {
@@ -240,11 +242,11 @@ namespace BenMAP
                     progressBar1.Value = progressBar1.Minimum;
                     commandText = string.Format("select pollutantid from pollutants where pollutantname='{0}' and setupid={1}", cboPollutant.Text, CommonClass.ManageSetup.SetupID);
                     int pollutantID = Convert.ToInt16(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
-
+                    int monitorID = 0;
                     for (int i = 0; i < _dtDataFile.Rows.Count; i++)
                     {
                         commandText = "select max(MonitorID) from MONITORS";
-                        int monitorID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
+                        monitorID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
                         FbParameter Parameter = new FbParameter("@Description", _dtDataFile.Rows[i][iMonitorDescription]);
                         commandText = string.Format("insert into Monitors(Monitorid,Monitordatasetid,Pollutantid,Latitude,Longitude,Monitorname,Monitordescription) values ({0},{1},{2},{3},{4},'{5}',@Description)", monitorID, _dataSetID, pollutantID, _dtDataFile.Rows[i][iLatitude], _dtDataFile.Rows[i][iLongitude], _dtDataFile.Rows[i][iMonitorName]);
                         fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText, Parameter);
@@ -268,10 +270,38 @@ namespace BenMAP
                         lblProgress.Text = Convert.ToString((int)((double)progressBar1.Value / _dtDataFile.Rows.Count * 100)) + "%";
                         lblProgress.Refresh();
                     }
+
+                    commandText = "select max(METADATAID) FROM METADATAINFORMATION";
+                    int metadataid = 0;
+                    object objmetadata = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+                    int rtn = 0;
+
+                    if (string.IsNullOrEmpty(objmetadata.ToString()))
+                    {
+                        metadataid = 1;
+                    }
+                    else
+                    {
+                        metadataid = Convert.ToInt32(objmetadata) + 1;
+                    }
+                    rtn = 0;//reseting the return number
+                    commandText = string.Format("INSERT INTO METADATAINFORMATION " +
+                                                "(METADATAID, SETUPID, DATASETID, DATASETTYPEID, FILENAME, " +
+                                                "EXTENSION, DATAREFERENCE, FILEDATE, IMPORTDATE, DESCRIPTION, " +
+                                                "PROJECTION, GEONAME, DATUMNAME, DATUMTYPE, SPHEROIDNAME, " +
+                                                "MERIDIANNAME, UNITNAME, PROJ4STRING, NUMBEROFFEATURES) " +
+                                                "VALUES('{0}', '{1}', '{2}', '{3}', '{4}','{5}', '{6}', '{7}', '{8}', '{9}', " +
+                                                "'{10}', '{11}', '{12}', '{13}', '{14}','{15}', '{16}', '{17}', '{18}')",
+                                                metadataid, metadataObj.SetupId, monitorID, metadataObj.DatasetTypeId, metadataObj.FileName,
+                                                metadataObj.Extension, metadataObj.DataReference, metadataObj.FileDate, metadataObj.ImportDate,
+                                                metadataObj.Description, metadataObj.Projection, metadataObj.GeoName, metadataObj.DatumName,
+                                                metadataObj.DatumType, metadataObj.SpheroidName, metadataObj.MeridianName, metadataObj.UnitName,
+                                                metadataObj.Proj4String, metadataObj.NumberOfFeatures);
+                    rtn = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                 }
                 progressBar1.Visible = false;
                 lblProgress.Text = "";
-                addGridView(_dataSetID); return;
+                addGridView(_dataSetID); //return;
             }
             catch (Exception ex)
             {
@@ -452,6 +482,7 @@ namespace BenMAP
             if(dlgr.Equals(DialogResult.OK))
             {
                 _dtDataFile = lmdataset.MonitorDataSet;
+                metadataObj = lmdataset.MetadataObj;
                 LoadDatabase();
             }
         }

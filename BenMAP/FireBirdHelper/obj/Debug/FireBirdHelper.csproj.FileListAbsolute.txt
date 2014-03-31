@@ -1,0 +1,5 @@
+C:\BillO\benmap-ce\BenMAP\FireBirdHelper\bin\Debug\FireBirdHelper.dll
+C:\BillO\benmap-ce\BenMAP\FireBirdHelper\bin\Debug\FireBirdHelper.pdb
+C:\BillO\benmap-ce\BenMAP\FireBirdHelper\bin\Debug\FirebirdSql.Data.FirebirdClient.dll
+C:\BillO\benmap-ce\BenMAP\FireBirdHelper\obj\Debug\FireBirdHelper.dll
+C:\BillO\benmap-ce\BenMAP\FireBirdHelper\obj\Debug\FireBirdHelper.pdb

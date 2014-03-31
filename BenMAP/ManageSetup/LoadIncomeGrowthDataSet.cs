@@ -22,6 +22,7 @@ namespace BenMAP
         private string _strPath;
         private string _isForceValidate = string.Empty;
         private string _iniPath = string.Empty;
+        private MetadataClassObj _metadataObj = null;
 
         public LoadIncomeGrowthDataSet()
         {
@@ -108,7 +109,36 @@ namespace BenMAP
                 if (rtn != 0)
                 {
                     IncomeGrowthDataSetName = txtDataSetName.Text;
+                    
                 }
+
+                commandText = "select max(METADATAID) FROM METADATAINFORMATION";
+                int metadataid = 0;
+                object objmetadata = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+
+                if (string.IsNullOrEmpty(objmetadata.ToString()))
+                {
+                    metadataid = 1;
+                }
+                else
+                {
+                    metadataid = Convert.ToInt32(objmetadata) + 1;
+                }
+
+                rtn = 0;//reseting the return number
+                commandText = string.Format("INSERT INTO METADATAINFORMATION " +
+                                            "(METADATAID, SETUPID, DATASETID, DATASETTYPEID, FILENAME, " +
+                                            "EXTENSION, DATAREFERENCE, FILEDATE, IMPORTDATE, DESCRIPTION, " +
+                                            "PROJECTION, GEONAME, DATUMNAME, DATUMTYPE, SPHEROIDNAME, " +
+                                            "MERIDIANNAME, UNITNAME, PROJ4STRING, NUMBEROFFEATURES) " +
+                                            "VALUES('{0}', '{1}', '{2}', '{3}', '{4}','{5}', '{6}', '{7}', '{8}', '{9}', " +
+                                            "'{10}', '{11}', '{12}', '{13}', '{14}','{15}', '{16}', '{17}', '{18}')",
+                                            metadataid, _metadataObj.SetupId, incomegrowthadjdatasetID, _metadataObj.DatasetTypeId, _metadataObj.FileName,
+                                            _metadataObj.Extension, _metadataObj.DataReference, _metadataObj.FileDate, _metadataObj.ImportDate,
+                                            _metadataObj.Description, _metadataObj.Projection, _metadataObj.GeoName, _metadataObj.DatumName,
+                                            _metadataObj.DatumType, _metadataObj.SpheroidName, _metadataObj.MeridianName, _metadataObj.UnitName,
+                                            _metadataObj.Proj4String, _metadataObj.NumberOfFeatures);
+                rtn = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
             }
 
             catch (Exception ex)
@@ -130,11 +160,19 @@ namespace BenMAP
                 openFileDialog.RestoreDirectory = true;
                 if (openFileDialog.ShowDialog() != DialogResult.OK) { return; }
                 txtDatabase.Text = openFileDialog.FileName;
+                GetMetadata();
             }
             catch (Exception ex)
             {
                 Logger.LogError(ex);
             }
+        }
+
+        private void GetMetadata()
+        {
+            _metadataObj = new MetadataClassObj();
+            Metadata metadata = new Metadata(_strPath);
+            _metadataObj = metadata.GetMetadata();
         }
 
         private string _incomeGrowthDataSetName;
@@ -194,8 +232,17 @@ namespace BenMAP
 
         private void btnViewMetadata_Click(object sender, EventArgs e)
         {
-            ViewEditMetadata viewEMdata = new ViewEditMetadata(_strPath);
+            ViewEditMetadata viewEMdata = null;
+            if (_metadataObj != null)
+            {
+                viewEMdata = new ViewEditMetadata(_strPath, _metadataObj);
+            }
+            else
+            {
+                viewEMdata = new ViewEditMetadata(_strPath);
+            }
             viewEMdata.ShowDialog();
+            _metadataObj = viewEMdata.MetadataObj;
         }
     }
 }
