@@ -60,6 +60,7 @@ namespace BenMAP
             this.rdbShowAllCR = new System.Windows.Forms.RadioButton();
             this.rdbShowActiveCR = new System.Windows.Forms.RadioButton();
             this.btShowIncidencePooling = new System.Windows.Forms.Button();
+            this.tbMapTitle = new System.Windows.Forms.TextBox();
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton3 = new System.Windows.Forms.ToolStripButton();
@@ -168,7 +169,6 @@ namespace BenMAP
             this.rbAuditCurrent = new System.Windows.Forms.RadioButton();
             this.tabCtlMain = new System.Windows.Forms.TabControl();
             this.tabGIS = new System.Windows.Forms.TabPage();
-            this.tbMapTitle = new System.Windows.Forms.TextBox();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.btnZoomIn = new System.Windows.Forms.ToolStripButton();
             this.btnZoomOut = new System.Windows.Forms.ToolStripButton();
@@ -190,6 +190,7 @@ namespace BenMAP
             this.label15 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.legend1 = new DotSpatial.Controls.Legend();
+            this.tabMapLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.mainMap = new DotSpatial.Controls.Map();
             this.tabData = new System.Windows.Forms.TabPage();
             this.spTable = new System.Windows.Forms.SplitContainer();
@@ -267,6 +268,7 @@ namespace BenMAP
             this.splitContainer2.Panel1.SuspendLayout();
             this.splitContainer2.Panel2.SuspendLayout();
             this.splitContainer2.SuspendLayout();
+            this.tabMapLayoutPanel1.SuspendLayout();
             this.tabData.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.spTable)).BeginInit();
             this.spTable.Panel1.SuspendLayout();
@@ -759,6 +761,24 @@ namespace BenMAP
             this.btShowIncidencePooling.UseVisualStyleBackColor = true;
             this.btShowIncidencePooling.Visible = false;
             this.btShowIncidencePooling.Click += new System.EventHandler(this.btShowIncidencePooling_Click);
+            // 
+            // tbMapTitle
+            // 
+            this.tbMapTitle.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.tbMapTitle.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tbMapTitle.Font = new System.Drawing.Font("Calibri", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tbMapTitle.Location = new System.Drawing.Point(0, 0);
+            this.tbMapTitle.Margin = new System.Windows.Forms.Padding(0);
+            this.tbMapTitle.Name = "tbMapTitle";
+            this.tbMapTitle.ReadOnly = true;
+            this.tbMapTitle.ScrollBars = System.Windows.Forms.ScrollBars.Horizontal;
+            this.tbMapTitle.ShortcutsEnabled = false;
+            this.tbMapTitle.Size = new System.Drawing.Size(485, 26);
+            this.tbMapTitle.TabIndex = 9;
+            this.tbMapTitle.Text = "BenMAP-CE";
+            this.tbMapTitle.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.tbMapTitle.WordWrap = false;
+            this.tbMapTitle.TextChanged += new System.EventHandler(this.txtBoxMapTitle_TextChanged);
             // 
             // toolStripButton1
             // 
@@ -1913,7 +1933,6 @@ namespace BenMAP
             // tabGIS
             // 
             this.tabGIS.BackColor = System.Drawing.Color.Silver;
-            this.tabGIS.Controls.Add(this.tbMapTitle);
             this.tabGIS.Controls.Add(this.toolStrip1);
             this.tabGIS.Controls.Add(this.picGIS);
             this.tabGIS.Controls.Add(this.splitContainer2);
@@ -1925,23 +1944,6 @@ namespace BenMAP
             this.tabGIS.TabIndex = 0;
             this.tabGIS.Tag = "GIS map to be created here";
             this.tabGIS.Text = "GIS Map";
-            // 
-            // tbMapTitle
-            // 
-            this.tbMapTitle.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tbMapTitle.Font = new System.Drawing.Font("Calibri", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbMapTitle.Location = new System.Drawing.Point(27, 3);
-            this.tbMapTitle.Margin = new System.Windows.Forms.Padding(0);
-            this.tbMapTitle.Name = "tbMapTitle";
-            this.tbMapTitle.ReadOnly = true;
-            this.tbMapTitle.ScrollBars = System.Windows.Forms.ScrollBars.Horizontal;
-            this.tbMapTitle.ShortcutsEnabled = false;
-            this.tbMapTitle.Size = new System.Drawing.Size(669, 33);
-            this.tbMapTitle.TabIndex = 9;
-            this.tbMapTitle.Text = "BenMAP-CE";
-            this.tbMapTitle.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.tbMapTitle.WordWrap = false;
-            this.tbMapTitle.TextChanged += new System.EventHandler(this.txtBoxMapTitle_TextChanged);
             // 
             // toolStrip1
             // 
@@ -2134,6 +2136,7 @@ namespace BenMAP
             this.picGIS.Size = new System.Drawing.Size(693, 458);
             this.picGIS.TabIndex = 8;
             this.picGIS.TabStop = false;
+            this.picGIS.Click += new System.EventHandler(this.picGIS_Click);
             // 
             // splitContainer2
             // 
@@ -2153,7 +2156,7 @@ namespace BenMAP
             // 
             // splitContainer2.Panel2
             // 
-            this.splitContainer2.Panel2.Controls.Add(this.mainMap);
+            this.splitContainer2.Panel2.Controls.Add(this.tabMapLayoutPanel1);
             this.splitContainer2.Size = new System.Drawing.Size(693, 458);
             this.splitContainer2.SplitterDistance = 201;
             this.splitContainer2.SplitterWidth = 5;
@@ -2211,6 +2214,23 @@ namespace BenMAP
             this.legend1.Text = "legend1";
             this.legend1.VerticalScrollEnabled = true;
             // 
+            // tabMapLayoutPanel1
+            // 
+            this.tabMapLayoutPanel1.BackColor = System.Drawing.Color.Transparent;
+            this.tabMapLayoutPanel1.ColumnCount = 1;
+            this.tabMapLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tabMapLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tabMapLayoutPanel1.Controls.Add(this.tbMapTitle, 0, 0);
+            this.tabMapLayoutPanel1.Controls.Add(this.mainMap, 0, 1);
+            this.tabMapLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabMapLayoutPanel1.Location = new System.Drawing.Point(0, 0);
+            this.tabMapLayoutPanel1.Name = "tabMapLayoutPanel1";
+            this.tabMapLayoutPanel1.RowCount = 2;
+            this.tabMapLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 7.894737F));
+            this.tabMapLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 92.10526F));
+            this.tabMapLayoutPanel1.Size = new System.Drawing.Size(485, 456);
+            this.tabMapLayoutPanel1.TabIndex = 0;
+            // 
             // mainMap
             // 
             this.mainMap.AllowDrop = true;
@@ -2223,16 +2243,17 @@ namespace BenMAP
             this.mainMap.IsBusy = false;
             this.mainMap.IsZoomedToMaxExtent = false;
             this.mainMap.Legend = this.legend1;
-            this.mainMap.Location = new System.Drawing.Point(0, 0);
+            this.mainMap.Location = new System.Drawing.Point(3, 38);
             this.mainMap.Name = "mainMap";
             this.mainMap.ProgressHandler = null;
             this.mainMap.ProjectionModeDefine = DotSpatial.Controls.ActionMode.Prompt;
             this.mainMap.ProjectionModeReproject = DotSpatial.Controls.ActionMode.Prompt;
             this.mainMap.RedrawLayersWhileResizing = false;
             this.mainMap.SelectionEnabled = true;
-            this.mainMap.Size = new System.Drawing.Size(485, 456);
+            this.mainMap.Size = new System.Drawing.Size(479, 415);
             this.mainMap.TabIndex = 0;
             this.mainMap.Tag = "GIS map will be created here.";
+            this.mainMap.Load += new System.EventHandler(this.mainMap_Load);
             // 
             // tabData
             // 
@@ -2810,6 +2831,8 @@ namespace BenMAP
             this.splitContainer2.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
             this.splitContainer2.ResumeLayout(false);
+            this.tabMapLayoutPanel1.ResumeLayout(false);
+            this.tabMapLayoutPanel1.PerformLayout();
             this.tabData.ResumeLayout(false);
             this.spTable.Panel1.ResumeLayout(false);
             this.spTable.Panel2.ResumeLayout(false);
@@ -3045,5 +3068,6 @@ namespace BenMAP
         private System.Windows.Forms.ComboBox cbGraph;
         private System.Windows.Forms.Button btnSelectAll;
         private System.Windows.Forms.TextBox tbMapTitle;
+        private System.Windows.Forms.TableLayoutPanel tabMapLayoutPanel1;
     }
 }
