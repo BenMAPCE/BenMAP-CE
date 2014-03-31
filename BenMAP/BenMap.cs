@@ -1907,8 +1907,10 @@ namespace BenMAP
         private void DrawBaseline (TreeNode currentNode, string str)
         {   //MCB- draws base data on main map
             _currentNode = "basedata";
-            str = string.Format("{0}baseline", (currentNode.Tag as BenMAPLine).Pollutant.PollutantName);
-            CurrentMapTitle = str + ": Baseline Map";
+            //str = string.Format("{0}baseline", (currentNode.Tag as BenMAPLine).Pollutant.PollutantName);
+            string _PollutantName = (currentNode.Tag as BenMAPLine).Pollutant.PollutantName;
+            string _BenMapSetupName = (currentNode.Tag as BenMAPLine).GridType.SetupName;
+            CurrentMapTitle = _BenMapSetupName + " Setup: " + _PollutantName + ", Baseline";
             
             if (CommonClass.LstAsynchronizationStates != null &&
                 CommonClass.LstAsynchronizationStates.Contains(str.ToLower()))
@@ -1943,8 +1945,13 @@ namespace BenMAP
         private void DrawControlData(TreeNode currentNode, string str)
         {
             _currentNode = "controldata";
+  
+            //Map Title
+            string _PollutantName = (currentNode.Tag as BenMAPLine).Pollutant.PollutantName;
+            string _BenMapSetupName = (currentNode.Tag as BenMAPLine).GridType.SetupName;
+            CurrentMapTitle = _BenMapSetupName + " Setup: " + _PollutantName + ", Control";
+            
             str = string.Format("{0}control", (currentNode.Tag as BenMAPLine).Pollutant.PollutantName);
-            CurrentMapTitle = str + ": Control Map";
             if (CommonClass.LstAsynchronizationStates != null && CommonClass.LstAsynchronizationStates.Contains(str.ToLower()))
             {
                 MessageBox.Show(string.Format("BenMAP is still creating the air quality surface map. ", (currentNode.Tag as BenMAPLine).Pollutant.PollutantName), "Please wait", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -2011,7 +2018,7 @@ namespace BenMAP
             {
                 bcgDelta.DeltaQ = new BenMAPLine();
                 bcgDelta.DeltaQ.Pollutant = bcgDelta.Base.Pollutant;
-                CurrentMapTitle = bcgDelta.DeltaQ.Pollutant.PollutantName + ": Delta Map";
+                
                 bcgDelta.DeltaQ.GridType = bcgDelta.Base.GridType;
                 bcgDelta.DeltaQ.ModelResultAttributes = new List<ModelResultAttribute>();
 
@@ -2051,6 +2058,11 @@ namespace BenMAP
 
             try
             {
+                //Map Title
+                string _PollutantName = bcgDelta.DeltaQ.Pollutant.PollutantName;
+                string _BenMapSetupName = bcgDelta.Base.GridType.SetupName;
+                CurrentMapTitle = _BenMapSetupName + " Setup: " + _PollutantName + ", Delta";
+            
                 tabCtlMain.SelectedIndex = 0;
                 mainMap.Layers.Clear();
                 addBenMAPLineToMainMap(bcgDelta.DeltaQ, "D");
@@ -2393,10 +2405,6 @@ namespace BenMAP
                 if (isBase == "D") polLayer.LegendText = "Delta";
                 if (isBase == "C") polLayer.LegendText = "Control";
                 
-                //set the layer to have its symbology expanded by default //-MCB
-                //NoteL not seeing end effect yet? -MCB
-                polLayer.Symbology.IsExpanded = true;
-
                 string strValueField = polLayer.DataSet.DataTable.Columns[2].ColumnName;
                 PolygonScheme myScheme1 = new PolygonScheme();
                 float fl = (float)0.1;
@@ -2406,13 +2414,21 @@ namespace BenMAP
                 myScheme1.EditorSettings.EndColor.ToTransparent(fl);
 
                 myScheme1.EditorSettings.ClassificationType = ClassificationType.Quantities;
+                //myScheme1.EditorSettings.IntervalMethod = IntervalMethod.NaturalBreaks;
                 myScheme1.EditorSettings.IntervalMethod = IntervalMethod.NaturalBreaks;
+
                 myScheme1.EditorSettings.IntervalSnapMethod = IntervalSnapMethod.Rounding;
+                //myScheme1.EditorSettings.IntervalSnapMethod = IntervalSnapMethod.SignificantFigures;
                 myScheme1.EditorSettings.IntervalRoundingDigits = 1;
                 myScheme1.EditorSettings.NumBreaks = 6;
                 myScheme1.EditorSettings.FieldName = strValueField; 
                 myScheme1.EditorSettings.UseGradient = false;
                 myScheme1.CreateCategories(polLayer.DataSet.DataTable);
+                myScheme1.AppearsInLegend = false;
+                polLayer.Symbology = myScheme1;
+                //set the layer to have its symbology expanded by default //-MCB
+                //NoteL not seeing end effect yet? -MCB
+                polLayer.Symbology.IsExpanded = true;
 
                 double dMinValue = 0.0;
                 double dMaxValue = 0.0;
@@ -2444,14 +2460,8 @@ namespace BenMAP
 
                 }
 
-
-
-
-
-
-
-
                 _currentLayerIndex = mainMap.Layers.Count - 1;
+
                 _dMinValue = dMinValue;
                 _dMaxValue = dMaxValue;
                 _columnName = strValueField;
@@ -2495,7 +2505,7 @@ namespace BenMAP
                 int iColor = 0;
                 string ColumnName = _columnName;
                 PolygonScheme myScheme1 = new PolygonScheme();
-                float fl = (float)0.1;
+                float fl = (float)0.3;
                 float fColor = (float)0.2;
                 Color ctemp = new Color();
 
@@ -2528,13 +2538,55 @@ namespace BenMAP
                     iColor++;
                 }
                 myScheme1.ClearCategories();
-                foreach (PolygonCategory pct in pcc)
-                {
-                    myScheme1.Categories.Add(pct);
+                //-MCB-----------------------------Replaces custom categories above with natural breaks
+                //IFeatureLayer _MyLayer = (mainMap.Layers[_currentLayerIndex] as IFeatureLayer);
+
+                MapPolygonLayer polLayer = mainMap.Layers[_currentLayerIndex] as MapPolygonLayer;
+                //Replace the color ramp
+                if (isDelta)
+                {//use the delta color ramp
+                    myScheme1.EditorSettings.StartColor = Color.FromArgb(215, 48, 39); // red
+                    myScheme1.EditorSettings.StartColor.ToTransparent(fl);
+                    myScheme1.EditorSettings.EndColor = Color.FromArgb(0, 0, 255); //blue
+                    myScheme1.EditorSettings.EndColor.ToTransparent(fl);
                 }
-                myScheme1.AppearsInLegend = true;
+                else
+                {//use the default color ramp
+
+                    myScheme1.EditorSettings.StartColor = Color.FromArgb(255, 255, 153); // pale yellow
+                    myScheme1.EditorSettings.StartColor.ToTransparent(fl);
+                    myScheme1.EditorSettings.EndColor = Color.FromArgb(8, 104, 172); //blue
+                    myScheme1.EditorSettings.EndColor.ToTransparent(fl);
+                }
+                myScheme1.EditorSettings.UseColorRange = true;
+                myScheme1.EditorSettings.RampColors = true;
+                
+                myScheme1.EditorSettings.ClassificationType = ClassificationType.Quantities;
+                //myScheme1.EditorSettings.IntervalMethod = IntervalMethod.NaturalBreaks;
+                myScheme1.EditorSettings.IntervalMethod = IntervalMethod.NaturalBreaks;
+
+                //myScheme1.EditorSettings.IntervalSnapMethod = IntervalSnapMethod.Rounding;
+                myScheme1.EditorSettings.IntervalSnapMethod = IntervalSnapMethod.SignificantFigures;
+                myScheme1.EditorSettings.IntervalRoundingDigits = 3; //1;
+                myScheme1.EditorSettings.NumBreaks = 6;
+                myScheme1.EditorSettings.FieldName = ColumnName; //strValueField;
+                myScheme1.EditorSettings.UseGradient = false;
+                myScheme1.CreateCategories(polLayer.DataSet.DataTable);
+                myScheme1.AppearsInLegend = false;
+                polLayer.Symbology = myScheme1;
+                polLayer.Symbolizer.SetOutline(Color.Transparent,0);
+
+                // -MCB---------------------------------
+
+
+                //foreach (PolygonCategory pct in pcc)
+                //{
+                //    myScheme1.Categories.Add(pct);
+                //}
+                myScheme1.AppearsInLegend = false;//-MCB changed from true
+                myScheme1.IsExpanded = true; 
                 myScheme1.LegendText = ColumnName;
-                myScheme1.EditorSettings.ClassificationType = ClassificationType.Custom;
+                //myScheme1.EditorSettings.ClassificationType = ClassificationType.Custom;
                 (mainMap.Layers[_currentLayerIndex] as IFeatureLayer).Symbology = myScheme1;
             }
             catch (Exception ex)
@@ -2627,14 +2679,14 @@ namespace BenMAP
                         iColor++;
                     }
                 }
-                myScheme1.ClearCategories();
-                foreach (PolygonCategory pct in pcc)
-                {
-                    myScheme1.Categories.Add(pct);
-                }
-                (mainMap.Layers[_currentLayerIndex] as IFeatureLayer).Symbology = myScheme1;
+                myScheme1.ClearCategories();  //-MCB
+                //foreach (PolygonCategory pct in pcc)
+                //{
+                //    myScheme1.Categories.Add(pct);
+                //}
+                //(mainMap.Layers[_currentLayerIndex] as IFeatureLayer).Symbology = myScheme1;
             }
-            else
+            else  //Results?
             {
                 pcc = new PolygonCategoryCollection();
                 myScheme1.EditorSettings.ClassificationType = ClassificationType.UniqueValues;
@@ -2656,6 +2708,7 @@ namespace BenMAP
                 if (myScheme1.LegendText == "Pooled Valu") myScheme1.LegendText = "Pooled Valuation";
                 (mainMap.Layers[_currentLayerIndex] as IFeatureLayer).Symbology = myScheme1;
             }
+
         }
         private void addRegionLayerToMainMap()
         {
@@ -5808,6 +5861,7 @@ namespace BenMAP
                     commonSymboliser.IsVisible = true;
                     commonSymboliser.Smoothing = true;
                     ps.AppearsInLegend = true;
+
                     ps.LegendText = "ThemeValue";
                     ps.ClearCategories();
                     ps.Categories.Clear();
@@ -12210,6 +12264,16 @@ namespace BenMAP
         }
 
         private void txtBoxMapTitle_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void picGIS_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void mainMap_Load(object sender, EventArgs e)
         {
 
         }
