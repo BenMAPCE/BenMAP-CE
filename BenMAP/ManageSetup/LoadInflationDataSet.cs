@@ -111,8 +111,13 @@ namespace BenMAP
                 commandText = string.Format("insert into INFLATIONDATASETS VALUES({0},{1},'{2}' )", inflationdatasetid, CommonClass.ManageSetup.SetupID, txtInflationDataSetName.Text);
                 int rth = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                 int currentDataSetID = inflationdatasetid;
-                if (dt == null) { return; }
                 int rtn = 0;
+
+                if (dt == null) 
+                { 
+                    return; 
+                }
+                
                 foreach (DataRow row in dt.Rows)
                 {
                     if (row == null)
@@ -120,13 +125,16 @@ namespace BenMAP
                     commandText = string.Format("insert into INFLATIONENTRIES values({0},{1},{2},{3},{4})", currentDataSetID, int.Parse(row[iYear].ToString()), row[iAllGoodsIndex], row[iMedicalCostIndex], row[iWageIndex]);
                     rtn = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                 }
+
                 if (rtn != 0)
                 {
                     InflationDataSetName = txtInflationDataSetName.Text;
                 }
+
                 commandText = "select max(METADATAID) FROM METADATAINFORMATION";
                 int metadataid = 0;
                 object objmetadata = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+
                 if(string.IsNullOrEmpty(objmetadata.ToString()))
                 {
                     metadataid = 1;
@@ -233,7 +241,15 @@ namespace BenMAP
 
         private void btnViewMetadata_Click(object sender, EventArgs e)
         {
-            ViewEditMetadata viewEMdata = new ViewEditMetadata(_strPath);
+            ViewEditMetadata viewEMdata = null;
+            if(metadataObj != null)
+            {
+                viewEMdata = new ViewEditMetadata(_strPath, metadataObj);
+            }
+            else
+            {
+                viewEMdata = new ViewEditMetadata(_strPath);
+            }
             viewEMdata.ShowDialog();
             metadataObj = viewEMdata.MetadataObj;
         }

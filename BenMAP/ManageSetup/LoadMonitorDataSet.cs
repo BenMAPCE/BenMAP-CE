@@ -19,11 +19,15 @@ namespace BenMAP
         private string _datasetName = string.Empty;
         private string _dataset = string.Empty;
         private string _strPath;
-
-
         private string _isForceValidate = string.Empty;
         private string _iniPath = string.Empty;
         private DataTable _monitorDataset;
+        private MetadataClassObj _metadataObj = null;
+
+        internal MetadataClassObj MetadataObj
+        {
+            get { return _metadataObj; }
+        }
         public DataTable MonitorDataSet
         {
             get { return _monitorDataset; }
@@ -44,6 +48,7 @@ namespace BenMAP
         {
             get { return _strPath; }
         }
+        
         public LoadSelectedDataSet()
         {
             InitializeComponent();
@@ -78,6 +83,12 @@ namespace BenMAP
                 btnBrowse.Focus();
                 return;
             }
+        }
+        private void GetMetadata()
+        {
+            _metadataObj = new MetadataClassObj();
+            Metadata metadata = new Metadata(_strPath);
+            _metadataObj = metadata.GetMetadata();
         }
 
         private void btnValidate_Click(object sender, EventArgs e)
@@ -118,6 +129,7 @@ namespace BenMAP
                 if (openFileDialog.ShowDialog() != DialogResult.OK)
                 { return; }
                 txtDatabase.Text = openFileDialog.FileName;
+                GetMetadata();
             }
             catch (Exception ex)
             {
@@ -127,8 +139,20 @@ namespace BenMAP
 
         private void btnViewMetadata_Click(object sender, EventArgs e)
         {
-            ViewEditMetadata viewEMdata = new ViewEditMetadata(_strPath);
-            viewEMdata.ShowDialog();
+            ViewEditMetadata viewEMdata = null;
+            if(_metadataObj != null)
+            {
+                viewEMdata = new ViewEditMetadata(_strPath, _metadataObj);
+            }
+            else
+            {
+                viewEMdata = new ViewEditMetadata(_strPath);
+            }
+            DialogResult dr = viewEMdata.ShowDialog();
+            if(dr.Equals(DialogResult.OK))
+            {
+                _metadataObj = viewEMdata.MetadataObj;
+            }
         }
     }
 }

@@ -60,8 +60,8 @@
             // tableLayoutPanel1
             // 
             this.tableLayoutPanel1.ColumnCount = 2;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 35.21505F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 64.78495F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 29.56989F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 70.43011F));
             this.tableLayoutPanel1.Controls.Add(this.flpLabels, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.flbTextBoxes, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.label1, 0, 1);
@@ -93,7 +93,7 @@
             this.flpLabels.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flpLabels.Location = new System.Drawing.Point(3, 3);
             this.flpLabels.Name = "flpLabels";
-            this.flpLabels.Size = new System.Drawing.Size(124, 217);
+            this.flpLabels.Size = new System.Drawing.Size(104, 217);
             this.flpLabels.TabIndex = 0;
             // 
             // label7
@@ -178,72 +178,91 @@
             this.flbTextBoxes.Controls.Add(this.txtReference);
             this.flbTextBoxes.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flbTextBoxes.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flbTextBoxes.Location = new System.Drawing.Point(133, 3);
+            this.flbTextBoxes.Location = new System.Drawing.Point(114, 4);
+            this.flbTextBoxes.Margin = new System.Windows.Forms.Padding(4);
             this.flbTextBoxes.Name = "flbTextBoxes";
             this.flbTextBoxes.Padding = new System.Windows.Forms.Padding(5, 5, 0, 0);
-            this.flbTextBoxes.Size = new System.Drawing.Size(236, 217);
+            this.flbTextBoxes.Size = new System.Drawing.Size(254, 215);
             this.flbTextBoxes.TabIndex = 0;
             this.flbTextBoxes.WrapContents = false;
             // 
             // txtSetupID
             // 
-            this.txtSetupID.BackColor = System.Drawing.Color.White;
+            this.txtSetupID.BackColor = System.Drawing.SystemColors.Control;
+            this.txtSetupID.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.txtSetupID.Enabled = false;
             this.txtSetupID.Location = new System.Drawing.Point(8, 8);
+            this.txtSetupID.Multiline = true;
             this.txtSetupID.Name = "txtSetupID";
             this.txtSetupID.ReadOnly = true;
-            this.txtSetupID.Size = new System.Drawing.Size(215, 20);
+            this.txtSetupID.Size = new System.Drawing.Size(239, 20);
             this.txtSetupID.TabIndex = 0;
             // 
             // txtSetupName
             // 
-            this.txtSetupName.BackColor = System.Drawing.Color.White;
+            this.txtSetupName.BackColor = System.Drawing.SystemColors.Control;
+            this.txtSetupName.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.txtSetupName.Enabled = false;
             this.txtSetupName.Location = new System.Drawing.Point(8, 34);
+            this.txtSetupName.Multiline = true;
             this.txtSetupName.Name = "txtSetupName";
             this.txtSetupName.ReadOnly = true;
-            this.txtSetupName.Size = new System.Drawing.Size(215, 20);
+            this.txtSetupName.Size = new System.Drawing.Size(239, 20);
             this.txtSetupName.TabIndex = 0;
             // 
             // txtFileName
             // 
-            this.txtFileName.BackColor = System.Drawing.Color.White;
+            this.txtFileName.BackColor = System.Drawing.SystemColors.Control;
+            this.txtFileName.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.txtFileName.Enabled = false;
             this.txtFileName.Location = new System.Drawing.Point(8, 60);
+            this.txtFileName.Multiline = true;
             this.txtFileName.Name = "txtFileName";
             this.txtFileName.ReadOnly = true;
-            this.txtFileName.Size = new System.Drawing.Size(215, 20);
+            this.txtFileName.Size = new System.Drawing.Size(239, 20);
             this.txtFileName.TabIndex = 0;
             // 
             // txtExtension
             // 
-            this.txtExtension.BackColor = System.Drawing.Color.White;
+            this.txtExtension.BackColor = System.Drawing.SystemColors.Control;
+            this.txtExtension.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.txtExtension.Enabled = false;
             this.txtExtension.Location = new System.Drawing.Point(8, 86);
+            this.txtExtension.Multiline = true;
             this.txtExtension.Name = "txtExtension";
             this.txtExtension.ReadOnly = true;
-            this.txtExtension.Size = new System.Drawing.Size(215, 20);
+            this.txtExtension.Size = new System.Drawing.Size(239, 20);
             this.txtExtension.TabIndex = 0;
             // 
             // txtFileDate
             // 
-            this.txtFileDate.BackColor = System.Drawing.Color.White;
+            this.txtFileDate.BackColor = System.Drawing.SystemColors.Control;
+            this.txtFileDate.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.txtFileDate.Enabled = false;
             this.txtFileDate.Location = new System.Drawing.Point(8, 112);
+            this.txtFileDate.Multiline = true;
             this.txtFileDate.Name = "txtFileDate";
             this.txtFileDate.ReadOnly = true;
-            this.txtFileDate.Size = new System.Drawing.Size(215, 20);
+            this.txtFileDate.Size = new System.Drawing.Size(239, 20);
             this.txtFileDate.TabIndex = 0;
             // 
             // txtImportDate
             // 
-            this.txtImportDate.BackColor = System.Drawing.Color.White;
+            this.txtImportDate.BackColor = System.Drawing.SystemColors.Control;
+            this.txtImportDate.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.txtImportDate.Enabled = false;
             this.txtImportDate.Location = new System.Drawing.Point(8, 138);
+            this.txtImportDate.Multiline = true;
             this.txtImportDate.Name = "txtImportDate";
             this.txtImportDate.ReadOnly = true;
-            this.txtImportDate.Size = new System.Drawing.Size(215, 20);
+            this.txtImportDate.Size = new System.Drawing.Size(239, 20);
             this.txtImportDate.TabIndex = 0;
             // 
             // txtReference
             // 
             this.txtReference.Location = new System.Drawing.Point(8, 164);
             this.txtReference.Name = "txtReference";
-            this.txtReference.Size = new System.Drawing.Size(215, 20);
+            this.txtReference.Size = new System.Drawing.Size(239, 20);
             this.txtReference.TabIndex = 0;
             this.txtReference.TextChanged += new System.EventHandler(this.txtReference_TextChanged);
             // 
@@ -253,7 +272,7 @@
             this.label1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.label1.Location = new System.Drawing.Point(3, 223);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(124, 16);
+            this.label1.Size = new System.Drawing.Size(104, 16);
             this.label1.TabIndex = 1;
             this.label1.Text = "Description";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -273,9 +292,9 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label2.Location = new System.Drawing.Point(133, 223);
+            this.label2.Location = new System.Drawing.Point(113, 223);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(236, 16);
+            this.label2.Size = new System.Drawing.Size(256, 16);
             this.label2.TabIndex = 3;
             // 
             // flowLayoutPanel1

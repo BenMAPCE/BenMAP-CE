@@ -19,7 +19,7 @@ namespace BenMAP
         private MetadataClassObj _metadataObj = null;
         private Metadata metadata = null;
 
-        internal MetadataClassObj MetadataObj
+        public MetadataClassObj MetadataObj
         {
             get { return _metadataObj; }
         }
@@ -28,12 +28,20 @@ namespace BenMAP
         {
             InitializeComponent();
         }
-        
-        public ViewEditMetadata(string fileName): this()
+
+        public ViewEditMetadata(string fileName)
+            : this()
         {
             _fInfo = new FileInfo(fileName);
             metadata = new Metadata(fileName);
             _metadataObj = metadata.GetMetadata();
+        }
+
+        public ViewEditMetadata(string fileName, MetadataClassObj metadataClsObj) : this()
+        {
+            _fInfo = new FileInfo(fileName);
+            metadata = new Metadata(fileName);
+            _metadataObj = metadataClsObj;
         }
 
         private void ViewEditMetadata_Shown(object sender, EventArgs e)
@@ -44,6 +52,8 @@ namespace BenMAP
             txtExtension.Text = _metadataObj.Extension;
             txtFileDate.Text = _metadataObj.FileDate;
             txtImportDate.Text = _metadataObj.ImportDate;
+            txtReference.Text = _metadataObj.DataReference;
+            rtbDescription.Text = _metadataObj.Description;
             if(_fInfo.Extension == ".shp")
             {
                 LoadShapeInfo();

@@ -46,6 +46,8 @@ namespace BenMAP
         List<double> listCustomValue = new List<double>();
         Dictionary<int, List<double>> dicCustomValue = new Dictionary<int, List<double>>();
         int AddCount = 0;
+        private MetadataClassObj metadataObj = null;
+
         private void btnAdd_Click(object sender, EventArgs e)
         {
             try
@@ -96,7 +98,7 @@ namespace BenMAP
             if (dlgr.Equals(DialogResult.OK))
             {
                 dt = lmdataset.MonitorDataSet;
-
+                metadataObj = lmdataset.MetadataObj;
                 LoadDatabase();
             }
         }
@@ -290,6 +292,7 @@ namespace BenMAP
             ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
             DataSet ds = new DataSet();
             string commandText = string.Empty;
+            int valuationFunctionDataSetID = 0;
             try
             {
                 if (_dataName == string.Empty)
@@ -312,7 +315,7 @@ namespace BenMAP
                     }
                     commandText = string.Format("select max(VALUATIONFUNCTIONDATASETID) from ValuationFunctionDataSets");
                     object obj = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText)) + 1;
-                    int valuationFunctionDataSetID = int.Parse(obj.ToString());
+                    valuationFunctionDataSetID = int.Parse(obj.ToString());
                     commandText = string.Format("insert into ValuationFunctionDataSets values ({0},{1},'{2}','F')", valuationFunctionDataSetID, CommonClass.ManageSetup.SetupID, txtValuationFunctionDataSetName.Text.Replace("'", "''"));
                     int rth = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                     Dictionary<string, int> dicEndpointGroup = new Dictionary<string, int>();
@@ -538,12 +541,44 @@ namespace BenMAP
                         }
                     }
                 }
+                insertMetadata(valuationFunctionDataSetID);
             }
             catch (Exception ex)
             {
                 Logger.LogError(ex);
             }
             this.DialogResult = DialogResult.OK;
+        }
+        private void insertMetadata(int valuationFunctionDataSetID)
+        {
+            FireBirdHelperBase fb = new ESILFireBirdHelper();
+            string commandText = "select max(METADATAID) FROM METADATAINFORMATION";
+            int metadataid = 0;
+            object objmetadata = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+            int rtn = 0;
+
+            if (string.IsNullOrEmpty(objmetadata.ToString()))
+            {
+                metadataid = 1;
+            }
+            else
+            {
+                metadataid = Convert.ToInt32(objmetadata) + 1;
+            }
+            rtn = 0;//reseting the return number
+            commandText = string.Format("INSERT INTO METADATAINFORMATION " +
+                                        "(METADATAID, SETUPID, DATASETID, DATASETTYPEID, FILENAME, " +
+                                        "EXTENSION, DATAREFERENCE, FILEDATE, IMPORTDATE, DESCRIPTION, " +
+                                        "PROJECTION, GEONAME, DATUMNAME, DATUMTYPE, SPHEROIDNAME, " +
+                                        "MERIDIANNAME, UNITNAME, PROJ4STRING, NUMBEROFFEATURES) " +
+                                        "VALUES('{0}', '{1}', '{2}', '{3}', '{4}','{5}', '{6}', '{7}', '{8}', '{9}', " +
+                                        "'{10}', '{11}', '{12}', '{13}', '{14}','{15}', '{16}', '{17}', '{18}')",
+                                        metadataid, metadataObj.SetupId, valuationFunctionDataSetID, metadataObj.DatasetTypeId, metadataObj.FileName,
+                                        metadataObj.Extension, metadataObj.DataReference, metadataObj.FileDate, metadataObj.ImportDate,
+                                        metadataObj.Description, metadataObj.Projection, metadataObj.GeoName, metadataObj.DatumName,
+                                        metadataObj.DatumType, metadataObj.SpheroidName, metadataObj.MeridianName, metadataObj.UnitName,
+                                        metadataObj.Proj4String, metadataObj.NumberOfFeatures);
+            rtn = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
         }
 
         private string _dataName = string.Empty;
