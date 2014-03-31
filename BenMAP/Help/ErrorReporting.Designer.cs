@@ -180,9 +180,9 @@
             this.label9.AutoSize = true;
             this.label9.Location = new System.Drawing.Point(27, 304);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(295, 14);
+            this.label9.Size = new System.Drawing.Size(296, 14);
             this.label9.TabIndex = 19;
-            this.label9.Text = "What component of BenMAP CE does the error affect?";
+            this.label9.Text = "What component of BenMAP-CE does the error affect?";
             // 
             // cboComponent
             // 
@@ -206,9 +206,9 @@
             this.chkAuditTrail.AutoSize = true;
             this.chkAuditTrail.Location = new System.Drawing.Point(430, 335);
             this.chkAuditTrail.Name = "chkAuditTrail";
-            this.chkAuditTrail.Size = new System.Drawing.Size(285, 18);
+            this.chkAuditTrail.Size = new System.Drawing.Size(286, 18);
             this.chkAuditTrail.TabIndex = 22;
-            this.chkAuditTrail.Text = "Include BenMAP CE generated audit trail report.";
+            this.chkAuditTrail.Text = "Include BenMAP-CE generated audit trail report.";
             this.chkAuditTrail.UseVisualStyleBackColor = true;
             // 
             // label11
@@ -278,10 +278,10 @@
             this.rbBlocking.AutoSize = true;
             this.rbBlocking.Location = new System.Drawing.Point(10, 66);
             this.rbBlocking.Name = "rbBlocking";
-            this.rbBlocking.Size = new System.Drawing.Size(328, 18);
+            this.rbBlocking.Size = new System.Drawing.Size(329, 18);
             this.rbBlocking.TabIndex = 21;
             this.rbBlocking.TabStop = true;
-            this.rbBlocking.Text = "Blocking - this issue prevents me from using BenMAP CE";
+            this.rbBlocking.Text = "Blocking - this issue prevents me from using BenMAP-CE";
             this.rbBlocking.UseVisualStyleBackColor = true;
             // 
             // rbMajor
@@ -289,10 +289,10 @@
             this.rbMajor.AutoSize = true;
             this.rbMajor.Location = new System.Drawing.Point(10, 42);
             this.rbMajor.Name = "rbMajor";
-            this.rbMajor.Size = new System.Drawing.Size(388, 18);
+            this.rbMajor.Size = new System.Drawing.Size(389, 18);
             this.rbMajor.TabIndex = 20;
             this.rbMajor.TabStop = true;
-            this.rbMajor.Text = "Major - this issue significantly hinders my ability to use BenMAP CE";
+            this.rbMajor.Text = "Major - this issue significantly hinders my ability to use BenMAP-CE";
             this.rbMajor.UseVisualStyleBackColor = true;
             // 
             // rbMinor
@@ -300,10 +300,10 @@
             this.rbMinor.AutoSize = true;
             this.rbMinor.Location = new System.Drawing.Point(10, 17);
             this.rbMinor.Name = "rbMinor";
-            this.rbMinor.Size = new System.Drawing.Size(417, 18);
+            this.rbMinor.Size = new System.Drawing.Size(418, 18);
             this.rbMinor.TabIndex = 19;
             this.rbMinor.TabStop = true;
-            this.rbMinor.Text = "Minor - this issue has little or no impact on my ability to use BenMAP CE";
+            this.rbMinor.Text = "Minor - this issue has little or no impact on my ability to use BenMAP-CE";
             this.rbMinor.UseVisualStyleBackColor = true;
             // 
             // lblErrorText
@@ -346,7 +346,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.Name = "ErrorReporting";
-            this.Text = "Error Report";
+            this.Text = "Provide Feedback";
             this.gbReportType.ResumeLayout(false);
             this.gbReportType.PerformLayout();
             this.gbSeverity.ResumeLayout(false);

@@ -39,9 +39,9 @@ namespace BenMAP
             //if components cannot be retrieved, alert the user and disable the submit button.
             if ((components == null) || (components.Count == 0))
             {
-                lblErrorText.Text = "An error occurred while connecting to the BenMAP error reporting repository." +
-                        "  Error Reporting is temporarily disabled.";
-                //btnSubmit.Enabled = false;
+                lblErrorText.Text = "An error occurred while connecting to the BenMAP feedback repository." +
+                        "  Provide Feedback is temporarily disabled.";
+                btnSubmit.Enabled = false;
             }
             else {
                 lblErrorText.Text = "";
@@ -110,24 +110,34 @@ namespace BenMAP
 
             if (response != null)
             {
+                //attach error log
+                FileInfo fi = new FileInfo(Logger.GetLogPath(null));
+                FileInfo[] files = new FileInfo[1];
+                files[0] = fi;
+                client.AttachFilesToIssue(response.key, files);
+                
+
                 //add attachments if required
                 //if (chkAuditTrail.Checked)
                 //{
-                //    FileInfo fi = new FileInfo(@"C:\RTI\Projects\BenMAP\test_attachment.txt");
-                //    FileInfo [] files = new FileInfo[1];
+                //    fi = new FileInfo(@"C:\RTI\Projects\BenMAP\test_attachment.txt");
+                //    files = new FileInfo[1];
                 //    files[0] = fi;
                 //    client.AttachFilesToIssue(response.key, files);
                 //}
 
+                
+
                 //alert user of success or failure of submittal    
-                MessageBox.Show("Error Report was submitted successfully!");
+                MessageBox.Show("Provide Feedback was submitted successfully!");
+                this.Close();
 
 
             }
             else 
             {
                 //alert to failure of submittal
-                MessageBox.Show("Error Report submittal failed.");
+                MessageBox.Show("Provide Feedback submittal failed.");
             
             }
 
