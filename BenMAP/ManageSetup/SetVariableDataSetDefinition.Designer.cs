@@ -44,19 +44,25 @@ namespace BenMAP
             this.grpCancelOK.SuspendLayout();
             this.grpDataSetDetail.SuspendLayout();
             this.SuspendLayout();
-                                                this.btnOutput.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            // 
+            // btnOutput
+            // 
+            this.btnOutput.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnOutput.Location = new System.Drawing.Point(9, 352);
             this.btnOutput.Name = "btnOutput";
             this.btnOutput.Size = new System.Drawing.Size(122, 27);
             this.btnOutput.TabIndex = 12;
             this.btnOutput.Text = "Output Sample File";
             this.toolTip1.SetToolTip(this.btnOutput, "Click to save a template in .csv format. It contains 50 rows data of sample data " +
-                    "and can be used as an example to prepare the input file.");
+        "and can be used as an example to prepare the input file.");
             this.btnOutput.UseVisualStyleBackColor = true;
             this.btnOutput.Click += new System.EventHandler(this.btnOutput_Click);
-                                                this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox1.Controls.Add(this.olvData);
             this.groupBox1.Controls.Add(this.lblLoadedValue);
             this.groupBox1.Location = new System.Drawing.Point(289, 2);
@@ -64,15 +70,18 @@ namespace BenMAP
             this.groupBox1.Size = new System.Drawing.Size(298, 423);
             this.groupBox1.TabIndex = 8;
             this.groupBox1.TabStop = false;
-                                                this.olvData.AllColumns.Add(this.olvColumn7);
+            // 
+            // olvData
+            // 
+            this.olvData.AllColumns.Add(this.olvColumn7);
             this.olvData.AllColumns.Add(this.olvColumn8);
             this.olvData.AllColumns.Add(this.olvColumn9);
             this.olvData.AllowColumnReorder = true;
             this.olvData.AllowDrop = true;
             this.olvData.AlternateRowBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(240)))), ((int)(((byte)(220)))));
-            this.olvData.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.olvData.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.olvData.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.olvColumn7,
             this.olvColumn8,
@@ -106,24 +115,39 @@ namespace BenMAP
             this.olvData.UseOverlays = false;
             this.olvData.UseTranslucentHotItem = true;
             this.olvData.View = System.Windows.Forms.View.Details;
-                                                this.olvColumn7.AspectName = "ccolumn";
+            // 
+            // olvColumn7
+            // 
+            this.olvColumn7.AspectName = "ccolumn";
             this.olvColumn7.Text = "Column";
             this.olvColumn7.Width = 100;
-                                                this.olvColumn8.AspectName = "row";
+            // 
+            // olvColumn8
+            // 
+            this.olvColumn8.AspectName = "row";
             this.olvColumn8.Text = "Row";
             this.olvColumn8.Width = 100;
-                                                this.olvColumn9.AspectName = "vvalue";
+            // 
+            // olvColumn9
+            // 
+            this.olvColumn9.AspectName = "vvalue";
             this.olvColumn9.AspectToStringFormat = "{0}";
             this.olvColumn9.Text = "Value";
             this.olvColumn9.Width = 120;
-                                                this.lblLoadedValue.AutoSize = true;
+            // 
+            // lblLoadedValue
+            // 
+            this.lblLoadedValue.AutoSize = true;
             this.lblLoadedValue.Location = new System.Drawing.Point(6, 15);
             this.lblLoadedValue.Name = "lblLoadedValue";
             this.lblLoadedValue.Size = new System.Drawing.Size(84, 14);
             this.lblLoadedValue.TabIndex = 5;
             this.lblLoadedValue.Text = "Loaded Value:";
-                                                this.grpCancelOK.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            // 
+            // grpCancelOK
+            // 
+            this.grpCancelOK.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.grpCancelOK.Controls.Add(this.lblProgressBar);
             this.grpCancelOK.Controls.Add(this.progBarVariable);
             this.grpCancelOK.Controls.Add(this.btnOK);
@@ -133,21 +157,30 @@ namespace BenMAP
             this.grpCancelOK.Size = new System.Drawing.Size(575, 55);
             this.grpCancelOK.TabIndex = 7;
             this.grpCancelOK.TabStop = false;
-                                                this.lblProgressBar.AutoSize = true;
+            // 
+            // lblProgressBar
+            // 
+            this.lblProgressBar.AutoSize = true;
             this.lblProgressBar.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblProgressBar.ForeColor = System.Drawing.Color.Black;
             this.lblProgressBar.Location = new System.Drawing.Point(378, 27);
             this.lblProgressBar.Name = "lblProgressBar";
             this.lblProgressBar.Size = new System.Drawing.Size(0, 14);
             this.lblProgressBar.TabIndex = 3;
-                                                this.progBarVariable.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            // 
+            // progBarVariable
+            // 
+            this.progBarVariable.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.progBarVariable.Location = new System.Drawing.Point(9, 28);
             this.progBarVariable.Name = "progBarVariable";
             this.progBarVariable.Size = new System.Drawing.Size(363, 12);
             this.progBarVariable.TabIndex = 2;
             this.progBarVariable.Visible = false;
-                                                this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            // 
+            // btnOK
+            // 
+            this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOK.Location = new System.Drawing.Point(492, 21);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 27);
@@ -155,7 +188,10 @@ namespace BenMAP
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
-                                                this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            // 
+            // btnCancel
+            // 
+            this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.Location = new System.Drawing.Point(411, 21);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 27);
@@ -163,8 +199,11 @@ namespace BenMAP
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
-                                                this.grpDataSetDetail.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)));
+            // 
+            // grpDataSetDetail
+            // 
+            this.grpDataSetDetail.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.grpDataSetDetail.Controls.Add(this.btnOutput);
             this.grpDataSetDetail.Controls.Add(this.txtGridDefinition);
             this.grpDataSetDetail.Controls.Add(this.btnDelete);
@@ -179,11 +218,17 @@ namespace BenMAP
             this.grpDataSetDetail.Size = new System.Drawing.Size(271, 423);
             this.grpDataSetDetail.TabIndex = 2;
             this.grpDataSetDetail.TabStop = false;
-                                                this.txtGridDefinition.Location = new System.Drawing.Point(11, 76);
+            // 
+            // txtGridDefinition
+            // 
+            this.txtGridDefinition.Location = new System.Drawing.Point(11, 76);
             this.txtGridDefinition.Name = "txtGridDefinition";
             this.txtGridDefinition.Size = new System.Drawing.Size(199, 22);
             this.txtGridDefinition.TabIndex = 10;
-                                                this.btnDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            // 
+            // btnDelete
+            // 
+            this.btnDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnDelete.Location = new System.Drawing.Point(9, 385);
             this.btnDelete.Name = "btnDelete";
             this.btnDelete.Size = new System.Drawing.Size(62, 27);
@@ -191,7 +236,10 @@ namespace BenMAP
             this.btnDelete.Text = "Delete";
             this.btnDelete.UseVisualStyleBackColor = true;
             this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
-                                                this.btnLoadData.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            // 
+            // btnLoadData
+            // 
+            this.btnLoadData.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnLoadData.Location = new System.Drawing.Point(134, 352);
             this.btnLoadData.Name = "btnLoadData";
             this.btnLoadData.Size = new System.Drawing.Size(131, 27);
@@ -199,14 +247,20 @@ namespace BenMAP
             this.btnLoadData.Text = "Load From Database";
             this.btnLoadData.UseVisualStyleBackColor = true;
             this.btnLoadData.Click += new System.EventHandler(this.btnLoadData_Click);
-                                                this.lblDataSetVariables.AutoSize = true;
+            // 
+            // lblDataSetVariables
+            // 
+            this.lblDataSetVariables.AutoSize = true;
             this.lblDataSetVariables.Location = new System.Drawing.Point(8, 101);
             this.lblDataSetVariables.Name = "lblDataSetVariables";
             this.lblDataSetVariables.Size = new System.Drawing.Size(108, 14);
             this.lblDataSetVariables.TabIndex = 4;
             this.lblDataSetVariables.Text = "Dataset Variables:";
-                                                this.lstDataSetVariable.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)));
+            // 
+            // lstDataSetVariable
+            // 
+            this.lstDataSetVariable.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.lstDataSetVariable.FormattingEnabled = true;
             this.lstDataSetVariable.ImeMode = System.Windows.Forms.ImeMode.Hiragana;
             this.lstDataSetVariable.ItemHeight = 14;
@@ -215,23 +269,35 @@ namespace BenMAP
             this.lstDataSetVariable.Size = new System.Drawing.Size(255, 228);
             this.lstDataSetVariable.TabIndex = 5;
             this.lstDataSetVariable.SelectedValueChanged += new System.EventHandler(this.lstDataSetVariable_SelectedValueChanged);
-                                                this.txtDataSetName.Location = new System.Drawing.Point(11, 34);
+            // 
+            // txtDataSetName
+            // 
+            this.txtDataSetName.Location = new System.Drawing.Point(11, 34);
             this.txtDataSetName.Name = "txtDataSetName";
             this.txtDataSetName.Size = new System.Drawing.Size(199, 22);
             this.txtDataSetName.TabIndex = 2;
-                                                this.lblGridDefinition.AutoSize = true;
+            // 
+            // lblGridDefinition
+            // 
+            this.lblGridDefinition.AutoSize = true;
             this.lblGridDefinition.Location = new System.Drawing.Point(6, 62);
             this.lblGridDefinition.Name = "lblGridDefinition";
             this.lblGridDefinition.Size = new System.Drawing.Size(89, 14);
             this.lblGridDefinition.TabIndex = 1;
             this.lblGridDefinition.Text = "Grid Definition:";
-                                                this.lblDataSetName.AutoSize = true;
+            // 
+            // lblDataSetName
+            // 
+            this.lblDataSetName.AutoSize = true;
             this.lblDataSetName.Location = new System.Drawing.Point(6, 15);
             this.lblDataSetName.Name = "lblDataSetName";
             this.lblDataSetName.Size = new System.Drawing.Size(88, 14);
             this.lblDataSetName.TabIndex = 0;
             this.lblDataSetName.Text = "Dataset Name:";
-                                                this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
+            // 
+            // VariableDataSetDefinition
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(599, 494);
             this.Controls.Add(this.groupBox1);

@@ -14,6 +14,8 @@ namespace BenMAP
 {
     public partial class IncidenceDatasetDefinition : FormBase
     {
+        private MetadataClassObj _metadataObj = null;
+
         public IncidenceDatasetDefinition()
         {
             InitializeComponent();
@@ -416,6 +418,7 @@ namespace BenMAP
                 {
                     DialogResult rtn = frm.ShowDialog();
                     if (rtn != DialogResult.OK) { return; }
+                    _metadataObj = frm.MetadataObj;
                     str = frm.StrPath;
                     commandText = "select GridDefinitionName from GridDefinitions where GridDefinitionID=" + _grdiDefinitionID + "";
                     cboGridDefinition.Text = (fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)).ToString();
@@ -429,10 +432,6 @@ namespace BenMAP
                         if (_dtLoadTable == null)
                             { MessageBox.Show("Failed to import data from CSV file."); return; }
                     }
-                    //_dtLoadTable = CommonClass.ExcelToDataTable(str); if (_dtLoadTable == null)
-                    //_dtLoadTable = frm.IncidneceData; if (_dtLoadTable == null)
-                    
-                    
 
                     #region Validation has been moved to LoadIncidenceDatabase
                     //This section will be handled by the new validation window launched by LoadIncidenceDatabase window.
@@ -709,7 +708,9 @@ namespace BenMAP
                         commandText = commandText + "END";
                         fbCommand.CommandText = commandText;
                         fbCommand.ExecuteNonQuery();
-                    } progressBar1.Visible = false;
+                    } 
+                    insertMetadata(incidenceDatasetID);
+                    progressBar1.Visible = false;
                     lblProgress.Text = "";
                     lblProgress.Visible = false;
                     BindDataGridView(null, null);
@@ -725,7 +726,28 @@ namespace BenMAP
                 }
             }
         }
+        private void insertMetadata(int dataSetID)
+        {
+            FireBirdHelperBase fb = new ESILFireBirdHelper();
 
+            int rtn = 0;
+
+            string commandText = "SELECT DATASETID FROM DATASETS WHERE DATASETNAME = 'Incidence'";
+            _metadataObj.DatasetTypeId = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
+            commandText = string.Format("INSERT INTO METADATAINFORMATION " +
+                                        "(SETUPID, DATASETID, DATASETTYPEID, FILENAME, " +
+                                        "EXTENSION, DATAREFERENCE, FILEDATE, IMPORTDATE, DESCRIPTION, " +
+                                        "PROJECTION, GEONAME, DATUMNAME, DATUMTYPE, SPHEROIDNAME, " +
+                                        "MERIDIANNAME, UNITNAME, PROJ4STRING, NUMBEROFFEATURES) " +
+                                        "VALUES('{0}', '{1}', '{2}', '{3}', '{4}','{5}', '{6}', '{7}', '{8}', '{9}', " +
+                                        "'{10}', '{11}', '{12}', '{13}', '{14}','{15}', '{16}', '{17}')",
+                                        _metadataObj.SetupId, dataSetID, _metadataObj.DatasetTypeId, _metadataObj.FileName,
+                                        _metadataObj.Extension, _metadataObj.DataReference, _metadataObj.FileDate, _metadataObj.ImportDate,
+                                        _metadataObj.Description, _metadataObj.Projection, _metadataObj.GeoName, _metadataObj.DatumName,
+                                        _metadataObj.DatumType, _metadataObj.SpheroidName, _metadataObj.MeridianName, _metadataObj.UnitName,
+                                        _metadataObj.Proj4String, _metadataObj.NumberOfFeatures);
+            rtn = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+        }
         private void btnOK_Click(object sender, EventArgs e)
         {
             try

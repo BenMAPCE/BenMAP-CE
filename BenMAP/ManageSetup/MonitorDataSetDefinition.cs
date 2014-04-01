@@ -20,7 +20,7 @@ namespace BenMAP
         private string _dataSetName;
         private object _dataSetID;
         private DataTable _dtDataFile;
-        private MetadataClassObj metadataObj = null;
+        private MetadataClassObj _metadataObj = null;
         //private string _strPath;
 
         public MonitorDataSetDefinition(string name, object id)
@@ -271,32 +271,22 @@ namespace BenMAP
                         lblProgress.Refresh();
                     }
 
-                    commandText = "select max(METADATAID) FROM METADATAINFORMATION";
-                    int metadataid = 0;
-                    object objmetadata = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
                     int rtn = 0;
 
-                    if (string.IsNullOrEmpty(objmetadata.ToString()))
-                    {
-                        metadataid = 1;
-                    }
-                    else
-                    {
-                        metadataid = Convert.ToInt32(objmetadata) + 1;
-                    }
-                    rtn = 0;//reseting the return number
+                    commandText = "SELECT DATASETID FROM DATASETS WHERE DATASETNAME = 'Monitor'";
+                    _metadataObj.DatasetTypeId = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
                     commandText = string.Format("INSERT INTO METADATAINFORMATION " +
-                                                "(METADATAID, SETUPID, DATASETID, DATASETTYPEID, FILENAME, " +
+                                                "(SETUPID, DATASETID, DATASETTYPEID, FILENAME, " +
                                                 "EXTENSION, DATAREFERENCE, FILEDATE, IMPORTDATE, DESCRIPTION, " +
                                                 "PROJECTION, GEONAME, DATUMNAME, DATUMTYPE, SPHEROIDNAME, " +
                                                 "MERIDIANNAME, UNITNAME, PROJ4STRING, NUMBEROFFEATURES) " +
                                                 "VALUES('{0}', '{1}', '{2}', '{3}', '{4}','{5}', '{6}', '{7}', '{8}', '{9}', " +
-                                                "'{10}', '{11}', '{12}', '{13}', '{14}','{15}', '{16}', '{17}', '{18}')",
-                                                metadataid, metadataObj.SetupId, monitorID, metadataObj.DatasetTypeId, metadataObj.FileName,
-                                                metadataObj.Extension, metadataObj.DataReference, metadataObj.FileDate, metadataObj.ImportDate,
-                                                metadataObj.Description, metadataObj.Projection, metadataObj.GeoName, metadataObj.DatumName,
-                                                metadataObj.DatumType, metadataObj.SpheroidName, metadataObj.MeridianName, metadataObj.UnitName,
-                                                metadataObj.Proj4String, metadataObj.NumberOfFeatures);
+                                                "'{10}', '{11}', '{12}', '{13}', '{14}','{15}', '{16}', '{17}')",
+                                                _metadataObj.SetupId, _dataSetID, _metadataObj.DatasetTypeId, _metadataObj.FileName,
+                                                _metadataObj.Extension, _metadataObj.DataReference, _metadataObj.FileDate, _metadataObj.ImportDate,
+                                                _metadataObj.Description, _metadataObj.Projection, _metadataObj.GeoName, _metadataObj.DatumName,
+                                                _metadataObj.DatumType, _metadataObj.SpheroidName, _metadataObj.MeridianName, _metadataObj.UnitName,
+                                                _metadataObj.Proj4String, _metadataObj.NumberOfFeatures);
                     rtn = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                 }
                 progressBar1.Visible = false;
@@ -482,7 +472,7 @@ namespace BenMAP
             if(dlgr.Equals(DialogResult.OK))
             {
                 _dtDataFile = lmdataset.MonitorDataSet;
-                metadataObj = lmdataset.MetadataObj;
+                _metadataObj = lmdataset.MetadataObj;
                 LoadDatabase();
             }
         }

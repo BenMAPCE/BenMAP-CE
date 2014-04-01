@@ -8,7 +8,12 @@ namespace BenMAP
 {
     public partial class LoadIncidenceDatabase : FormBase
     {
+        private MetadataClassObj _metadataObj = null;
 
+        public MetadataClassObj MetadataObj
+        {
+            get { return _metadataObj; }
+        }
         private DataTable _incidneceData;
         public DataTable IncidneceData
         {
@@ -36,6 +41,7 @@ namespace BenMAP
             if (openFileDialog.ShowDialog() != DialogResult.OK)
             { return; }
             txtDatabase.Text = openFileDialog.FileName;
+            GetMetadata();
         }
 
         private void LoadIncidenceDatabase_Load(object sender, EventArgs e)
@@ -95,7 +101,12 @@ namespace BenMAP
         {
             LoadDatabase();
         }
-
+        private void GetMetadata()
+        {
+            _metadataObj = new MetadataClassObj();
+            Metadata metadata = new Metadata(_strPath);
+            _metadataObj = metadata.GetMetadata();
+        }
         private void LoadDatabase()
         {
             string msg = string.Empty;
@@ -150,9 +161,17 @@ namespace BenMAP
 
         private void btnViewMetadata_Click(object sender, EventArgs e)
         {
-            ViewEditMetadata vem = new ViewEditMetadata(_strPath);
-
-            vem.ShowDialog();
+            ViewEditMetadata viewEMdata = null;
+            if (_metadataObj != null)
+            {
+                viewEMdata = new ViewEditMetadata(_strPath, _metadataObj);
+            }
+            else
+            {
+                viewEMdata = new ViewEditMetadata(_strPath);
+            }
+            viewEMdata.ShowDialog();
+            _metadataObj = viewEMdata.MetadataObj;
         }
     }
 }

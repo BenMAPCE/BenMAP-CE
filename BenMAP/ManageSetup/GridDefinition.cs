@@ -40,8 +40,8 @@ namespace BenMAP
 
         private string _isForceValidate = string.Empty;
         private string _iniPath = string.Empty;
-        private string _strPath;
-        private MetadataClassObj metadataObj = null;
+        //private string _strPath;
+        private MetadataClassObj _metadataObj = null;
 
         private void GridDefinition_Load(object sender, EventArgs e)
         {
@@ -248,9 +248,9 @@ namespace BenMAP
         }
         private void GetMetadata()
         {
-            metadataObj = new MetadataClassObj();
-            Metadata metadata = new Metadata(_shapeFilePath); //new Metadata(_strPath);
-            metadataObj = metadata.GetMetadata();
+            _metadataObj = new MetadataClassObj();
+            Metadata metadata = new Metadata(_shapeFilePath);
+            _metadataObj = metadata.GetMetadata();
         }
         private void btnPreview_Click(object sender, EventArgs e)
         {
@@ -661,41 +661,25 @@ namespace BenMAP
 
         private void saveMetadata(string filePath, int gridID, int gridType)
         {
-            //_shapeFilePath;
-            //_shapeFileName;
-            //_gridID;
             FireBirdHelperBase fb = new ESILFireBirdHelper();
-            string commandText = "select max(METADATAID) FROM METADATAINFORMATION";
-            int metadataid = 0;
-            int rtv = 0;
-            object objmetadata = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
-            if (string.IsNullOrEmpty(objmetadata.ToString()))
-            {
-                metadataid = 1;
-            }
-            else
-            {
-                metadataid = Convert.ToInt32(objmetadata) + 1;
-            }
 
-            if(metadataObj == null)
-            {
-                Metadata mdata = new Metadata(filePath);
-                metadataObj = mdata.GetMetadata();
-            }
+            int rtv = 0;
+
+            string commandText = "SELECT DATASETID FROM DATASETS WHERE DATASETNAME = 'GridDefinition'";
+            _metadataObj.DatasetTypeId = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
 
             commandText = string.Format("INSERT INTO METADATAINFORMATION " +
-                                        "(METADATAID, SETUPID, DATASETID, DATASETTYPEID, FILENAME, " +
+                                        "(SETUPID, DATASETID, DATASETTYPEID, FILENAME, " +
                                         "EXTENSION, DATAREFERENCE, FILEDATE, IMPORTDATE, DESCRIPTION, " +
                                         "PROJECTION, GEONAME, DATUMNAME, DATUMTYPE, SPHEROIDNAME, " +
                                         "MERIDIANNAME, UNITNAME, PROJ4STRING, NUMBEROFFEATURES) " +
                                         "VALUES('{0}', '{1}', '{2}', '{3}', '{4}','{5}', '{6}', '{7}', '{8}', '{9}', " +
-                                        "'{10}', '{11}', '{12}', '{13}', '{14}','{15}', '{16}', '{17}', '{18}')",
-                                        metadataid, metadataObj.SetupId, gridID, metadataObj.DatasetTypeId, metadataObj.FileName,
-                                        metadataObj.Extension, metadataObj.DataReference, metadataObj.FileDate, metadataObj.ImportDate,
-                                        metadataObj.Description, metadataObj.Projection, metadataObj.GeoName, metadataObj.DatumName,
-                                        metadataObj.DatumType, metadataObj.SpheroidName, metadataObj.MeridianName, metadataObj.UnitName,
-                                        metadataObj.Proj4String, metadataObj.NumberOfFeatures);
+                                        "'{10}', '{11}', '{12}', '{13}', '{14}','{15}', '{16}', '{17}')",
+                                        _metadataObj.SetupId, gridID, _metadataObj.DatasetTypeId, _metadataObj.FileName,
+                                        _metadataObj.Extension, _metadataObj.DataReference, _metadataObj.FileDate, _metadataObj.ImportDate,
+                                        _metadataObj.Description, _metadataObj.Projection, _metadataObj.GeoName, _metadataObj.DatumName,
+                                        _metadataObj.DatumType, _metadataObj.SpheroidName, _metadataObj.MeridianName, _metadataObj.UnitName,
+                                        _metadataObj.Proj4String, _metadataObj.NumberOfFeatures);
             rtv = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
 
         }
@@ -987,7 +971,7 @@ namespace BenMAP
         {
             ViewEditMetadata viewEMdata = new ViewEditMetadata(_shapeFilePath);
             viewEMdata.ShowDialog();
-            metadataObj = viewEMdata.MetadataObj;
+            _metadataObj = viewEMdata.MetadataObj;
         }
 
         private void txtShapefile_TextChanged(object sender, EventArgs e)

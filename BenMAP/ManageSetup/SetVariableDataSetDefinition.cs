@@ -9,7 +9,7 @@ namespace BenMAP
     {
         private string _datasetName = string.Empty;
         int variabledatasetID = -1;
-
+        private MetadataClassObj _metadataObj = null;
         public VariableDataSetDefinition()
         {
             InitializeComponent();
@@ -125,6 +125,7 @@ namespace BenMAP
             DataSet ds = new DataSet();
             DataTable dt;
             int rowCount;
+            int datasetId = 0;
             string variableDatasetID = string.Empty;
             int variableID = 0;
             try
@@ -142,6 +143,7 @@ namespace BenMAP
                     if (obj != null) { MessageBox.Show("The dataset name has already been defined. Please enter a different name."); return; }
                     commandText = "select max(SETUPVARIABLEDATASETID) from SETUPVARIABLEDATASETS";
                     obj = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText)) + 1;
+                    datasetId = Convert.ToInt32(obj);
                     variableDatasetID = obj.ToString();
                     commandText = string.Format("insert into SetUpVariableDataSets values({0},{1},'{2}')", variableDatasetID, CommonClass.ManageSetup.SetupID, txtDataSetName.Text);
                     fbCommand.CommandText = commandText;
@@ -262,7 +264,7 @@ namespace BenMAP
                 }
                 fbtra.Commit();
                 fbCommand.Connection.Close();
-
+                insertMetadata(datasetId);
                 progBarVariable.Visible = false;
                 lblProgressBar.Visible = false;
 
@@ -280,6 +282,29 @@ namespace BenMAP
                 Logger.LogError(ex.Message);
             }
         }
+        private void insertMetadata(int dataSetID)
+        {
+            FireBirdHelperBase fb = new ESILFireBirdHelper();
+
+            int rtn = 0;
+
+            string commandText = "SELECT DATASETID FROM DATASETS WHERE DATASETNAME = 'VariableDataset'";
+            _metadataObj.DatasetTypeId = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
+            
+            commandText = string.Format("INSERT INTO METADATAINFORMATION " +
+                                        "(SETUPID, DATASETID, DATASETTYPEID, FILENAME, " +
+                                        "EXTENSION, DATAREFERENCE, FILEDATE, IMPORTDATE, DESCRIPTION, " +
+                                        "PROJECTION, GEONAME, DATUMNAME, DATUMTYPE, SPHEROIDNAME, " +
+                                        "MERIDIANNAME, UNITNAME, PROJ4STRING, NUMBEROFFEATURES) " +
+                                        "VALUES('{0}', '{1}', '{2}', '{3}', '{4}','{5}', '{6}', '{7}', '{8}', '{9}', " +
+                                        "'{10}', '{11}', '{12}', '{13}', '{14}','{15}', '{16}', '{17}')",
+                                        _metadataObj.SetupId, dataSetID, _metadataObj.DatasetTypeId, _metadataObj.FileName,
+                                        _metadataObj.Extension, _metadataObj.DataReference, _metadataObj.FileDate, _metadataObj.ImportDate,
+                                        _metadataObj.Description, _metadataObj.Projection, _metadataObj.GeoName, _metadataObj.DatumName,
+                                        _metadataObj.DatumType, _metadataObj.SpheroidName, _metadataObj.MeridianName, _metadataObj.UnitName,
+                                        _metadataObj.Proj4String, _metadataObj.NumberOfFeatures);
+            rtn = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+        }
 
         DataSet _dsSelectedData = new DataSet();
         DataSet _dsSelectedDataTemp = new DataSet();
@@ -296,6 +321,7 @@ namespace BenMAP
                 frm.DefinitionID = txtGridDefinition.Text;
                 DialogResult rtn = frm.ShowDialog();
                 if (rtn != DialogResult.OK) { return; }
+                _metadataObj = frm.MetadataObj;
                 txtGridDefinition.Text = frm.DefinitionID;
                 txtGridDefinition.ReadOnly = false;
                 string strPath = frm.DataPath;
@@ -380,6 +406,7 @@ namespace BenMAP
                     DataTable _dt = dt.Copy();
                     _dsSelectedDataTemp.Tables.Add(_dt);
                 }
+
                 lstDataSetVariable.SelectedIndex = 0;
                 txtGridDefinition.Enabled = false;
                 WaitClose();

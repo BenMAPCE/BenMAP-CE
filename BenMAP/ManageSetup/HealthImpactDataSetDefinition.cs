@@ -1267,28 +1267,19 @@ namespace BenMAP
         private void insertMetadata(int crFunctionDataSetID)
         {
             FireBirdHelperBase fb = new ESILFireBirdHelper();
-            string commandText = "select max(METADATAID) FROM METADATAINFORMATION";
-            int metadataid = 0;
-            object objmetadata = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+
             int rtn = 0;
 
-            if (string.IsNullOrEmpty(objmetadata.ToString()))
-            {
-                metadataid = 1;
-            }
-            else
-            {
-                metadataid = Convert.ToInt32(objmetadata) + 1;
-            }
-            rtn = 0;//reseting the return number
+            string commandText = "SELECT DATASETID FROM DATASETS WHERE DATASETNAME = 'Healthfunctions'";
+            metadataObj.DatasetTypeId = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
             commandText = string.Format("INSERT INTO METADATAINFORMATION " +
-                                        "(METADATAID, SETUPID, DATASETID, DATASETTYPEID, FILENAME, " +
+                                        "(SETUPID, DATASETID, DATASETTYPEID, FILENAME, " +
                                         "EXTENSION, DATAREFERENCE, FILEDATE, IMPORTDATE, DESCRIPTION, " +
                                         "PROJECTION, GEONAME, DATUMNAME, DATUMTYPE, SPHEROIDNAME, " +
                                         "MERIDIANNAME, UNITNAME, PROJ4STRING, NUMBEROFFEATURES) " +
                                         "VALUES('{0}', '{1}', '{2}', '{3}', '{4}','{5}', '{6}', '{7}', '{8}', '{9}', " +
-                                        "'{10}', '{11}', '{12}', '{13}', '{14}','{15}', '{16}', '{17}', '{18}')",
-                                        metadataid, metadataObj.SetupId, crFunctionDataSetID, metadataObj.DatasetTypeId, metadataObj.FileName,
+                                        "'{10}', '{11}', '{12}', '{13}', '{14}','{15}', '{16}', '{17}')",
+                                        metadataObj.SetupId, crFunctionDataSetID, metadataObj.DatasetTypeId, metadataObj.FileName,
                                         metadataObj.Extension, metadataObj.DataReference, metadataObj.FileDate, metadataObj.ImportDate,
                                         metadataObj.Description, metadataObj.Projection, metadataObj.GeoName, metadataObj.DatumName,
                                         metadataObj.DatumType, metadataObj.SpheroidName, metadataObj.MeridianName, metadataObj.UnitName,
