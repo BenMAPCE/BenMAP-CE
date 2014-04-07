@@ -837,6 +837,36 @@ namespace BenMAP
             return retVal;
         }
 
+        public static int exportToCtlx(string filePath)
+        {
+            int retVal = 0;
+
+            if (CommonClass.ValuationMethodPoolingAndAggregation != null)
+            {
+                ValuationMethodPoolingAndAggregation apvrVMPA = new ValuationMethodPoolingAndAggregation();
+                apvrVMPA = CommonClass.ValuationMethodPoolingAndAggregation;
+                APVX.APVCommonClass.SaveAPVFile(filePath.Substring(0, filePath.Length - 4) + "apvx", apvrVMPA);
+                BatchCommonClass.OutputAPV(apvrVMPA, filePath, filePath.Substring(0, filePath.Length - 4) + "apvx");
+                //MessageBox.Show("Configuration file saved.", "File saved");
+            }
+            else if (CommonClass.BaseControlCRSelectFunction != null)
+            {
+                BaseControlCRSelectFunction cfgFunction = new BaseControlCRSelectFunction();
+                cfgFunction = CommonClass.BaseControlCRSelectFunction;
+                Configuration.ConfigurationCommonClass.SaveCFGFile(CommonClass.BaseControlCRSelectFunction, filePath.Substring(0, filePath.Length - 4) + "cfgx");
+                BatchCommonClass.OutputCFG(cfgFunction, filePath, filePath.Substring(0, filePath.Length - 4) + "cfgx");
+                //MessageBox.Show("Configuration file saved.", "File saved");
+            }
+            else
+            {
+                //incomplete configuration
+                //MessageBox.Show("Please finish your configuration first.");
+                retVal = -1;
+            }                  
+
+            return retVal;
+        }
+
 
 
 

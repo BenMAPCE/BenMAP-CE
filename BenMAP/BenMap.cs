@@ -9738,26 +9738,15 @@ namespace BenMAP
                             }
                             else if (rbAuditCurrent.Checked)
                             {
-                                if (CommonClass.ValuationMethodPoolingAndAggregation != null)
-                                {
-                                    ValuationMethodPoolingAndAggregation apvrVMPA = new ValuationMethodPoolingAndAggregation();
-                                    apvrVMPA = CommonClass.ValuationMethodPoolingAndAggregation;
-                                    APVX.APVCommonClass.SaveAPVFile(sDlg.FileName.Substring(0, sDlg.FileName.Length - 4) + "apvx", apvrVMPA);
-                                    BatchCommonClass.OutputAPV(apvrVMPA, sDlg.FileName, sDlg.FileName.Substring(0, sDlg.FileName.Length - 4) + "apvx");
-                                    MessageBox.Show("Configuration file saved.", "File saved");
-                                }
-                                else if (CommonClass.BaseControlCRSelectFunction != null)
-                                {
-                                    BaseControlCRSelectFunction cfgFunction = new BaseControlCRSelectFunction();
-                                    cfgFunction = CommonClass.BaseControlCRSelectFunction;
-                                    Configuration.ConfigurationCommonClass.SaveCFGFile(CommonClass.BaseControlCRSelectFunction, sDlg.FileName.Substring(0, sDlg.FileName.Length - 4) + "cfgx");
-                                    BatchCommonClass.OutputCFG(cfgFunction, sDlg.FileName, sDlg.FileName.Substring(0, sDlg.FileName.Length - 4) + "cfgx");
-                                    MessageBox.Show("Configuration file saved.", "File saved");
-                                }
-                                else
+                                int retVal = AuditTrailReportCommonClass.exportToCtlx(sDlg.FileName);
+                                if (retVal == -1)
                                 {
                                     MessageBox.Show("Please finish your configuration first.");
                                 }
+                                else
+                                {
+                                    MessageBox.Show("Configuration file saved.", "File saved");
+                                }                               
                             }
                             break;
                         case ".txt":
