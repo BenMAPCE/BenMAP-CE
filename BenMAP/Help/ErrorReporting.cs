@@ -118,13 +118,23 @@ namespace BenMAP
                 
 
                 //add attachments if required
-                //if (chkAuditTrail.Checked)
-                //{
-                //    fi = new FileInfo(@"C:\RTI\Projects\BenMAP\test_attachment.txt");
-                //    files = new FileInfo[1];
-                //    files[0] = fi;
-                //    client.AttachFilesToIssue(response.key, files);
-                //}
+                if (chkAuditTrail.Checked)
+                {
+                    TreeView tv = new TreeView();
+                    int retVal = AuditTrailReportCommonClass.generateAuditTrailReportTreeView(tv);
+                    if (retVal == -1)
+                    {
+                        MessageBox.Show("Provide Feedback submittal failed - Audit Trail could not be attached because your configuration is not complete.");
+                        return;
+                    }                    
+
+                    string auditTrailReportPath = fi.DirectoryName + @"\audit_trail.xml";
+                    AuditTrailReportCommonClass.exportToXml(tv, auditTrailReportPath);
+                    fi = new FileInfo(auditTrailReportPath);
+                    files = new FileInfo[1];
+                    files[0] = fi;
+                    client.AttachFilesToIssue(response.key, files);
+                }
 
                 
 
