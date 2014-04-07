@@ -121,7 +121,7 @@ namespace BenMAP
                     int i = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                     commandText = "select DATASETID FROM DATASETS WHERE DATASETNAME = 'Healthfunctions'";
                     datasetid = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
-                    commandText = string.Format("DELETE FROM METADATAINFORMATION WHERE SETUPID ={0} AND DATASETID = {1} AND DATASETTYPEID = {2}", CommonClass.MainSetup.SetupID, crFunctionDatasetId, datasetid);
+                    commandText = string.Format("DELETE FROM METADATAINFORMATION WHERE SETUPID ={0} AND DATASETID = {1} AND DATASETTYPEID = {2}", CommonClass.ManageSetup.SetupID, crFunctionDatasetId, datasetid);
                     fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                 }
                 DataRowView drv = lstAvailableDataSets.SelectedItem as DataRowView;

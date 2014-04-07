@@ -107,10 +107,20 @@ namespace BenMAP
                 if (lstDataSetName.SelectedItem == null) return;
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 string commandText = string.Empty;
+                int igaDstID = 0; //Income Growth Adjustment Dataset ID
+                int dstID = 0;//DataSetTypeID
                 if (MessageBox.Show("Delete the selected income growth adjustment dataset?", "Confirm Deletion", MessageBoxButtons.YesNo) == DialogResult.Yes)
                 {
+                    commandText = string.Format("SELECT INCOMEGROWTHADJDATASETID FROM INCOMEGROWTHADJDATASETS WHERE INCOMEGROWTHADJDATASETNAME = '{0}' and SETUPID = {1}", lstDataSetName.Text, CommonClass.ManageSetup.SetupID);
+                    igaDstID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
+                    commandText = "SELECT DATASETID FROM DATASETS WHERE DATASETNAME = 'Incomegrowth'";
+                    dstID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
+
                     commandText = string.Format("delete from INCOMEGROWTHADJDATASETS where INCOMEGROWTHADJDATASETNAME='{0}' and setupid={1}", lstDataSetName.Text, CommonClass.ManageSetup.SetupID);
                     int i = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+
+                    commandText = string.Format("DELETE FROM METADATAINFORMATION WHERE SETUPID = {0} AND DATASETID = {1} AND DATASETTYPEID = {2}", CommonClass.ManageSetup.SetupID, igaDstID, dstID);
+                    fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                 }
                 commandText = string.Format("select * from INCOMEGROWTHADJDATASETS where SetupID={0}", CommonClass.ManageSetup.SetupID);
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);

@@ -106,12 +106,16 @@ namespace BenMAP
                 DialogResult rtn = MessageBox.Show("Delete the '" + _lstDataSetName + "' monitor dataset?", "Confirm Deletion", MessageBoxButtons.YesNo);
                 if (rtn == DialogResult.Yes)
                 {
+                    string commandText = string.Empty;
                     ESIL.DBUtility.ESILFireBirdHelper fb = new ESIL.DBUtility.ESILFireBirdHelper();
-                    string commandText = string.Format("delete from MonitorDataSets where MonitorDataSetID={0}", _lstDataSetID);
-                    fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+
                     commandText = "select DATASETID FROM DATASETS WHERE DATASETNAME = 'Monitor'";
                     int datasetid = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
-                    commandText = string.Format("DELETE FROM METADATAINFORMATION WHERE SETUPID ={0} AND DATASETID = {1} AND DATASETTYPEID = {2}", CommonClass.MainSetup.SetupID, _lstDataSetID, datasetid);
+
+                    commandText = string.Format("delete from MonitorDataSets where MonitorDataSetID={0}", _lstDataSetID);
+                    fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                   
+                    commandText = string.Format("DELETE FROM METADATAINFORMATION WHERE SETUPID ={0} AND DATASETID = {1} AND DATASETTYPEID = {2}", CommonClass.ManageSetup.SetupID, _lstDataSetID, datasetid);
                     fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                     
                     addLstBox();

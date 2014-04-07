@@ -125,7 +125,7 @@ namespace BenMAP
            // _dicTableDef = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             try
             {
-                cmdText = string.Format("SELECT COLUMNNAME, DATATYPE, LOWERLIMIT, UPPERLIMIT FROM DATASETDEFININTION WHERE DATASETNAME='{0}'", _datasetname);
+                cmdText = string.Format("SELECT COLUMNNAME, DATATYPE, REQUIRED, LOWERLIMIT, UPPERLIMIT, CHECKTYPE FROM DATASETDEFININTION WHERE DATASETNAME='{0}'", _datasetname);
                 DataTable _obj =   fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, cmdText).Tables[0] as DataTable;
                 foreach(DataRow dr in _obj.Rows)
                 {
@@ -133,8 +133,10 @@ namespace BenMAP
                     //_dicTableDef.Add(dr[0].ToString(), dr[1].ToString());
                     _hashTableDef.Add(dr[0].ToString() + "##COLUMNNAME", dr[0].ToString());
                     _hashTableDef.Add(dr[0].ToString() + "##DATATYPE", dr[1].ToString());
-                    _hashTableDef.Add(dr[0].ToString() + "##LOWERLIMIT", dr[2].ToString());
-                    _hashTableDef.Add(dr[0].ToString() + "##UPPERLIMIT", dr[3].ToString());
+                    _hashTableDef.Add(dr[0].ToString() + "##REQUIRED", dr[2].ToString());
+                    _hashTableDef.Add(dr[0].ToString() + "##LOWERLIMIT", dr[3].ToString());
+                    _hashTableDef.Add(dr[0].ToString() + "##UPPERLIMIT", dr[4].ToString());
+                    _hashTableDef.Add(dr[0].ToString() + "##CHECKTYPE", dr[5].ToString());
                 }
             }
             catch (Exception ex)
@@ -183,6 +185,8 @@ namespace BenMAP
             }
             if(bPassed)
             {
+                errors = 0;
+                warnings = 0;
                 bPassed = VerifyTableDataTypes();//errors
                 txtReportOutput.Refresh();
             }
@@ -250,16 +254,6 @@ namespace BenMAP
 
             }
 
-            //foreach(KeyValuePair<string,string> kvpEntry in _dicTableDef)
-            //{
-            //    if(!_colNames.Contains(kvpEntry.Key))
-            //    {
-            //        txtReportOutput.Text += string.Format("Error\t\t{0}\t column is missing for dataset {1}\r\n", kvpEntry.Key.ToString(), _datasetname);
-            //        errors++;
-            //        bPassed = false;
-            //    }
-            //}
-
             if(!bPassed)
                 txtReportOutput.Text +="\r\nValidation of columns failed.\r\nPlease check the column header and file.  The columns could be incorrect or the incorrect file was selected.\r\n";
             else
@@ -293,9 +287,11 @@ namespace BenMAP
         {
             string errMsg = string.Empty;
             bool bPassed = true;
+            bool required = true;
             int numChecked = 0;
             string dataType = string.Empty;
             string dataVal = string.Empty;
+            string checkType = string.Empty;
             lblProgress.Visible = true;
             pbarValidation.Visible = true;
 
@@ -312,27 +308,45 @@ namespace BenMAP
                    foreach(DataColumn dc in dr.Table.Columns)
                    {
                         dataType = _hashTableDef[dc.ColumnName + "##DATATYPE"].ToString();
+                        checkType = _hashTableDef[dc.ColumnName + "##CHECKTYPE"].ToString();//Get check type - error, warning, or none (empty string or null)
+                        required = Convert.ToBoolean(Convert.ToInt32(_hashTableDef[dc.ColumnName + "##REQUIRED"].ToString()));
                         dataVal = dr[dc.ColumnName].ToString();
-                        
+                        errMsg = string.Empty;//resetting to be on the safe side
                         try
                         {
-                            if (dataVal != string.Empty)
+                            if (!VerifyDataRowValues(dataType, dc.ColumnName, dataVal, dr, out errMsg))
                             {
-                                if (!VerifyDataRowValues(dataType, dc.ColumnName, dataVal, out errMsg))
+                                if (checkType == "Error")//if check type is "Error" and Verify Data Row Values fail - it's an error.
                                 {
                                     txtReportOutput.Text += string.Format("Error\t {0}\t {1} \t {2}\r\n", _tbl.Rows.IndexOf(dr), dc.ColumnName, errMsg);
-                                    txtReportOutput.Refresh();
                                     errors++;
-                                    numChecked++;
-                                    bPassed = false;
-                                    if(errors == 50)
-                                    {
-                                        return;
-                                    }
                                 }
-                                else
+                                else if (checkType == "Warning" && !required)//if a check type is a warning and it is not a required field it is a warning.
                                 {
-                                    numChecked++;
+                                    txtReportOutput.Text += string.Format("Warning\t {0}\t {1} \t {2}\r\n", _tbl.Rows.IndexOf(dr), dc.ColumnName, errMsg);
+                                    warnings++;
+                                }
+                                else if (checkType == "Warning" && required)//if a check type is a warning and it is a required field it is a error.
+                                {
+                                    txtReportOutput.Text += string.Format("Error\t {0}\t {1} \t {2}\r\n", _tbl.Rows.IndexOf(dr), dc.ColumnName, errMsg);
+                                    errors++;
+                                }
+                                else if (checkType == string.Empty && required)//if check type is an empty string and it is a required field it is a error.
+                                {
+                                    txtReportOutput.Text += string.Format("Error\t {0}\t {1} \t {2}\r\n", _tbl.Rows.IndexOf(dr), dc.ColumnName, errMsg);
+                                    errors++;
+                                }
+                                else if(checkType == string.Empty && !required)//if check type is an empty string and it is not a required field it is a warning.
+                                {
+                                    txtReportOutput.Text += string.Format("Warning\t {0}\t {1} \t {2}\r\n", _tbl.Rows.IndexOf(dr), dc.ColumnName, errMsg);
+                                    warnings++;
+                                }
+                                txtReportOutput.Refresh();
+                                numChecked++;
+                                bPassed = false;
+                                if(errors == 50)
+                                {
+                                    return;
                                 }
                             }
                             else
@@ -366,6 +380,16 @@ namespace BenMAP
             return bPassed;
         }
 
+        private bool VarifyStartEndAge(int startAge, int endAge)
+        {
+            bool bPassed = true;
+                if(startAge > endAge)
+                {
+                    bPassed = false;
+                }
+            return bPassed;
+        }
+
         /// <summary>
         /// Verifies the data row values.
         /// </summary>
@@ -374,11 +398,13 @@ namespace BenMAP
         /// <param name="valToVerify">The value to verify.</param>
         /// <param name="errMsg">The error MSG.</param>
         /// <returns><c>true</c> if XXXX, <c>false</c> otherwise</returns>
-        private bool VerifyDataRowValues(string dataType, string columnName, string valToVerify, out string errMsg)
+        private bool VerifyDataRowValues(string dataType, string columnName, string valToVerify, DataRow dr, out string errMsg)
         {
             
             string min = _hashTableDef[columnName + "##LOWERLIMIT"].ToString();// Get_Min(columnName, dataType);
             string max = _hashTableDef[columnName + "##UPPERLIMIT"].ToString();//Get_Max(columnName, dataType);
+            bool required = Convert.ToBoolean(Convert.ToInt32(_hashTableDef[columnName + "##REQUIRED"].ToString()));//Get required value (true (1) or false (0))
+            string checkType = _hashTableDef[columnName + "##CHECKTYPE"].ToString();//Get check type - error, warning, or none (empty string or null)
             Regex regx = new Regex(@"^[^~!@#%`^]+$");
             double tempVal;
             int outVal = -1;
@@ -388,15 +414,22 @@ namespace BenMAP
 
             try
             {
+                //is the field required and the value to varify is null or empty, it should fail. go no further
+                if(required && string.IsNullOrEmpty(valToVerify))
+                {
+                    errMsg = string.Format("Missing values.  {0} is a required field.", columnName);
+                    return false;
+                }
+
                 switch (dataType)
                 {
                     case "string":
-
+                        //getting value to varify. (some strings are doubles such as the monitors name.
                         if (double.TryParse(valToVerify, out tempVal))
                         {
                             valToVerify = tempVal.ToString();
                         }
-
+                        //checking it's min
                         if (!string.IsNullOrEmpty(min) && bPassed)
                         {
                             if (valToVerify.Length < Convert.ToInt32(min))
@@ -405,6 +438,7 @@ namespace BenMAP
                                 bPassed = false;
                             }
                         }
+                        //checking it's max
                         if (!string.IsNullOrEmpty(max) && bPassed)
                         {
                             if (valToVerify.Length > Convert.ToInt32(max))
@@ -413,13 +447,15 @@ namespace BenMAP
                                 bPassed = false;
                             }
                         }
-
-                        if (!regx.IsMatch(valToVerify) && bPassed)
+                        //checking for invalid characters
+                        if(!String.IsNullOrEmpty(valToVerify))
                         {
-                            errMsg = "Value has invalid characters.";
-                            bPassed = false;
+                            if (!regx.IsMatch(valToVerify) && bPassed)
+                            {
+                                errMsg = "Value has invalid characters.";
+                                bPassed = false;
+                            }
                         }
-
                         break;
                     case "integer":
 
@@ -444,7 +480,7 @@ namespace BenMAP
                         }
                         else
                         {
-                            errMsg = "Value is not a valid integer.";
+                            errMsg = string.Format("Value '{0}' is not a valid integer.", valToVerify);
                             bPassed = false;
                         }
                         break;
@@ -471,7 +507,7 @@ namespace BenMAP
                         }
                         else
                         {
-                            errMsg = "Value is not a valid float.";
+                            errMsg = string.Format("Value '{0}' is not a valid float.", valToVerify);
                             bPassed = false;
                         }
                         break;
@@ -483,12 +519,140 @@ namespace BenMAP
                     default:
                         break;
                 }
+                string errorMsg = string.Empty;
+                if (!verifyAgainstTable(columnName, valToVerify, dr, out errorMsg))
+                {
+                    if(errorMsg != string.Empty)
+                    {
+                        errMsg += " " + errorMsg;
+                    }
+                    bPassed = false;
+                }
+            }
+            catch (Exception ex)
+            {
+                bPassed = false;
+                MessageBox.Show(ex.Message);
+            }
+            //txtReportOutput.Refresh();
+            return bPassed;
+        }
+
+        private bool verifyAgainstTable(string columnName, string valToVerify, DataRow dr, out string errMsg)
+        {
+            FireBirdHelperBase fb = new ESILFireBirdHelper();
+            string cmdText = string.Empty;
+            bool bPassed = true;
+            object rtv = null;
+            string strRtv = string.Empty;
+            errMsg = string.Empty;
+            try
+            {
+                switch (columnName)
+                {
+                    case "EndpointGroup":
+                    case "Endpoint Group":
+                        cmdText = string.Format("SELECT DISTINCT ENDPOINTGROUPID FROM ENDPOINTGROUPS WHERE ENDPOINTGROUPNAME = '{0}'", valToVerify);
+                        rtv = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, cmdText);
+
+                        if(rtv == null) //did not find anyting from the query
+                        {
+                            errMsg = string.Format("Invalid Endpoint Group Name.  ({0})", valToVerify);
+                        }
+                        break;
+
+                    case "Endpoint":
+                        cmdText = string.Format("SELECT DISTINCT ENDPOINTID FROM ENDPOINTS WHERE ENDPOINTNAME = '{0}'", valToVerify);
+                        rtv = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, cmdText);
+                        if (rtv == null)
+                        {
+                                errMsg = string.Format("Invalid Endpoint Name given.  ({0})", valToVerify);
+                        }
+                        break;
+                    case "Year":
+                        if (!Regex.IsMatch(valToVerify, "^(19|20)[0-9][0-9]"))
+                        {
+                            errMsg = string.Format("Invalid year entry. ({0})", valToVerify);
+                        }
+                        break;
+                    case "Race":
+                        cmdText = string.Format("SELECT DISTINCT RACEID FROM RACES WHERE RACENAME = '{0}'", valToVerify);
+                        rtv = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, cmdText);
+                        if(rtv == null)
+                        {
+                            errMsg = string.Format("'{0}' is not a valid race.", valToVerify);
+                        }
+                        break;
+                    case "Gender":
+                        cmdText = string.Format("SELECT DISTINCT GENDERID FROM GENDERS WHERE GENDERNAME = '{0}'", valToVerify);
+                        rtv = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, cmdText);
+                        if (rtv == null)
+                        {
+                            errMsg = string.Format("'{0}' is not valid gender.", valToVerify);
+                        }
+                        break;
+                    case "Ethnicity":
+                        cmdText = string.Format("SELECT DISTINCT ETHNICITYID FROM ETHNICITY WHERE ETHNICITYNAME = '{0}'", valToVerify);
+                        rtv = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, cmdText);
+                        if (rtv == null)
+                        {
+                            errMsg = string.Format("'{0}' is not valid ethnicity.", valToVerify);
+                        }
+                        break;
+                    case "Start Age":
+                    case "End Age":
+                        //this is for validating start Age and End Age
+                        if (columnName.Equals("Start Age"))
+                        {
+                            //get the end age and do a quick compair.
+                            if (!VarifyStartEndAge(Convert.ToInt32(valToVerify), Convert.ToInt32(dr["End Age"].ToString())))
+                            {
+                                errMsg = string.Format("Start Age ({0}) should not be less than End Age.", valToVerify);
+                            }
+                        }
+                        if (columnName.Equals("End Age"))
+                        {
+                            //get the start age and do a quick compair.
+                            if (!VarifyStartEndAge(Convert.ToInt32(dr["Start Age"].ToString()), Convert.ToInt32(valToVerify)))
+                            {
+                                errMsg = string.Format("End Age ({0}) should not be greater than Start Age", valToVerify);
+                            }
+                        }
+                    break;
+                    case "Latitude":
+
+                    break;
+                    case "Longitude":
+
+                    break;
+                    case "Column":
+
+                    break;
+                    case "Row":
+
+                    break;
+                    case "Type":
+
+                    break;
+                    case "Value":
+
+                    break;
+                    case "Variable":
+
+                    break;
+                    default:
+                        break;
+                }
+                if (errMsg != string.Empty)
+                {
+                    bPassed = false;
+                }
+
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
-            //txtReportOutput.Refresh();
             return bPassed;
         }
 

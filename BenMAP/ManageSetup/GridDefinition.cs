@@ -969,7 +969,16 @@ namespace BenMAP
 
         private void btnViewMetadata_Click(object sender, EventArgs e)
         {
-            ViewEditMetadata viewEMdata = new ViewEditMetadata(_shapeFilePath);
+            //ViewEditMetadata viewEMdata = new ViewEditMetadata(_shapeFilePath);
+            ViewEditMetadata viewEMdata = null;
+            if (_metadataObj != null)
+            {
+                viewEMdata = new ViewEditMetadata(_shapeFilePath, _metadataObj);
+            }
+            else
+            {
+                viewEMdata = new ViewEditMetadata(_shapeFilePath);
+            }
             viewEMdata.ShowDialog();
             _metadataObj = viewEMdata.MetadataObj;
         }

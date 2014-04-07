@@ -92,11 +92,20 @@ namespace BenMAP
             try
             {
                 if (lstAvailableDataSetsName.SelectedItem == null) return;
-                string msg = string.Format("Delete the selected population dataset?", lstAvailableDataSetsName.GetItemText(lstAvailableDataSetsName.SelectedItem));
+                string populationDatasetName = lstAvailableDataSetsName.GetItemText(lstAvailableDataSetsName.SelectedItem).ToString();
+                string msg = string.Format("Delete the selected population dataset?", populationDatasetName);//lstAvailableDataSetsName.GetItemText(lstAvailableDataSetsName.SelectedItem));
+                int popDstID = 0; //Population Dataset ID
+                int dstID = 0;//DataSetTypeID
+                string commandText = string.Empty;
                 DialogResult result = MessageBox.Show(msg, "Confirm Deletion", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                 if (result == DialogResult.Yes)
                 {
-                    string commandText = "delete from PopulationEntries where PopulationDataSetID=" + dataSetID + "";
+                    commandText = string.Format("SELECT POPULATIONDATASETID FROM POPULATIONDATASETS WHERE POPULATIONDATASETNAME = '{0}' and SETUPID = {1}", populationDatasetName, CommonClass.ManageSetup.SetupID);
+                    popDstID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
+                    commandText = "SELECT DATASETID FROM DATASETS WHERE DATASETNAME = 'Population'";
+                    dstID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
+
+                    commandText = "delete from PopulationEntries where PopulationDataSetID=" + dataSetID + "";
                     fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                     commandText = "delete from PopulationGrowthWeights where PopulationDataSetID=" + dataSetID + "";
                     fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
@@ -104,6 +113,9 @@ namespace BenMAP
                     fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                     commandText = "delete from t_populationDatasetIDYear where PopulationDataSetID=" + dataSetID + "";
                     fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+
+                    commandText = string.Format("DELETE FROM METADATAINFORMATION WHERE SETUPID = {0} AND DATASETID = {1} AND DATASETTYPEID = {2}", CommonClass.ManageSetup.SetupID, popDstID, dstID);
+                    fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
 
                     BindControls();
                 }

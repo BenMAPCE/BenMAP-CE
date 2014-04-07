@@ -23,7 +23,7 @@ namespace BenMAP
         {
             //txtDatabase.Text
 
-            metadataObj.SetupId = Convert.ToInt32(CommonClass.MainSetup.SetupID.ToString());
+            metadataObj.SetupId = Convert.ToInt32(CommonClass.ManageSetup.SetupID.ToString());
             metadataObj.SetupName = CommonClass.MainSetup.SetupName.ToString();
             metadataObj.FileName = _fInfo.Name.Substring(0, _fInfo.Name.Length - _fInfo.Extension.Length);
             metadataObj.Extension = _fInfo.Extension;
@@ -33,14 +33,12 @@ namespace BenMAP
             if (_fInfo.Extension == ".shp")
             {
                 Readin_shp_Metadata();
-                //this.Size = new Size(382, 657);
             }
 
-            if (_fInfo.Extension == ".csv")
-            {
-                Readin_csv_Metadata();
-                //this.Size = new Size(382, 390);
-            }
+            //if (_fInfo.Extension == ".csv")
+            //{
+            //    Readin_csv_Metadata();
+            //}
 
             return metadataObj;
         }
@@ -81,10 +79,6 @@ namespace BenMAP
             //AddLabelandTextbox("Spheroid", spheroidName);
             //AddLabelandTextbox("Meridian", meridianName);
             //AddLabelandTextbox("Unit", unitName);
-        }
-        private void Readin_csv_Metadata()
-        {
-
         }
     }
 }

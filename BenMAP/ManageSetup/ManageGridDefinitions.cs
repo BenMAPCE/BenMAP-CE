@@ -175,6 +175,12 @@ namespace BenMAP
                 {
                     try
                     {
+                        int gdID = 0; //Grid Definition ID
+                        int dstID = 0;
+                        commandText = string.Format("SELECT GRIDDEFINITIONID FROM GRIDDEFINITIONS WHERE GRIDDEFINITIONNAME = '{0}' and SETUPID = {1}", lstAvailableGrid.SelectedItem.ToString(), CommonClass.ManageSetup.SetupID);
+                        gdID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
+                        commandText = "SELECT DATASETID FROM DATASETS WHERE DATASETNAME = 'GridDefinition'";
+                        dstID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
 
                         commandText = "select ttype from GridDefinitions where GridDefinitionID=" + _gridDefinitionID + "";
                         int ttype = Convert.ToInt16(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
@@ -187,6 +193,10 @@ namespace BenMAP
                         fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                         commandText = "delete from Regulargriddefinitiondetails where griddefinitionid=" + _gridDefinitionID + "";
                         fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+
+                        commandText = string.Format("DELETE FROM METADATAINFORMATION WHERE SETUPID = {0} AND DATASETID = {1} AND DATASETTYPEID = {2}", CommonClass.ManageSetup.SetupID, gdID, dstID);
+                        fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                        
                         lstAvailableGrid.Items.Clear();
                         cboDefaultGridType.Items.Clear();
                         loadGrid();

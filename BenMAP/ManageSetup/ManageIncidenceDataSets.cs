@@ -167,12 +167,26 @@ namespace BenMAP
             try
             {
                 if (lstAvailableDataSets.SelectedItem == null) return;
-                string msg = string.Format("Delete the selected incidence or prevalence dataset?", lstAvailableDataSets.GetItemText(lstAvailableDataSets.SelectedItem));
+                string dstName = lstAvailableDataSets.GetItemText(lstAvailableDataSets.SelectedItem);
+                string msg = string.Format("Delete the selected incidence or prevalence dataset?", dstName);//lstAvailableDataSets.GetItemText(lstAvailableDataSets.SelectedItem));
                 DialogResult result = MessageBox.Show(msg, "Confirm Deletion", MessageBoxButtons.YesNo);
                 if (result == DialogResult.Yes)
                 {
-                    string commandText = string.Format("delete from IncidenceDataSets where IncidenceDataSetID='{0}'", _dataSetID);
+                    string commandText = string.Empty;
+                    int iprDstID = 0; //Incidence Prevalence Rate Dataset ID
+                    int dstID = 0;//DataSetTypeID
+
+                    commandText = string.Format("SELECT INCIDENCEDATASETID FROM INCIDENCEDATASETS WHERE INCIDENCEDATASETNAME = '{0}' and SETUPID = {1}", dstName, CommonClass.ManageSetup.SetupID);
+                    iprDstID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
+                    commandText = "SELECT DATASETID FROM DATASETS WHERE DATASETNAME = 'Incidence'";
+                    dstID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
+
+                    commandText = string.Format("delete from IncidenceDataSets where IncidenceDataSetID='{0}'", _dataSetID);
                     fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+
+                    commandText = string.Format("DELETE FROM METADATAINFORMATION WHERE SETUPID = {0} AND DATASETID = {1} AND DATASETTYPEID = {2}", CommonClass.ManageSetup.SetupID, iprDstID, dstID);
+                    fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+
                     BindControls();
                     if (lstAvailableDataSets.Items.Count == 0)
                     {

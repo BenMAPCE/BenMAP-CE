@@ -198,10 +198,20 @@ namespace BenMAP
                 if (lstAvailableDataSets.SelectedItem == null) return;
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 string commandText = string.Empty;
+                int vfdID = 0;//ValuationFunctionDatasetID
+                int dstID = 0;//DataSetTypeID
                 if (MessageBox.Show("Delete the selected valuation function dataset?", "Confirm Deletion", MessageBoxButtons.YesNo) == DialogResult.Yes)
                 {
-                    commandText = string.Format("delete from ValuationFunctionDataSets where ValuationFunctionDataSetName='{0}' and setupid={1}", lstAvailableDataSets.Text, CommonClass.ManageSetup.SetupID);
+                    commandText = string.Format("SELECT VALUATIONFUNCTIONDATASETID FROM VALUATIONFUNCTIONDATASETS WHERE ValuationFunctionDataSetName = '{0}' and SETUPID = {1}", lstAvailableDataSets.Text, CommonClass.ManageSetup.SetupID);
+                    vfdID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
+                    commandText = "SELECT DATASETID FROM DATASETS WHERE DATASETNAME = 'Valuationfunction'";
+                    dstID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
+                    
+                    commandText = string.Format("delete from ValuationFunctionDataSets where ValuationFunctionDataSetName='{0}' and setupid={1} and VALUATIONFUNCTIONDATASETID = {2}", lstAvailableDataSets.Text, CommonClass.ManageSetup.SetupID, vfdID);
                     int i = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                    
+                    commandText = string.Format("DELETE FROM METADATAINFORMATION WHERE SETUPID = {0} AND DATASETID = {1} AND DATASETTYPEID = {2}",CommonClass.ManageSetup.SetupID,vfdID, dstID);
+                    i = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                 }
                 commandText = string.Format("select * from ValuationFunctionDataSets where SetupID={0}", CommonClass.ManageSetup.SetupID);
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
