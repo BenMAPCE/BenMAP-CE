@@ -9790,10 +9790,10 @@ namespace BenMAP
                             }
                             break;
                         case ".txt":
-                            saveOk = exportToTxt(trvAuditTrialReport, sDlg.FileName);
+                            saveOk = AuditTrailReportCommonClass.exportToTxt(trvAuditTrialReport, sDlg.FileName);
                             break;
                         case ".xml":
-                            saveOk = exportToXml(trvAuditTrialReport, sDlg.FileName);
+                            saveOk = AuditTrailReportCommonClass.exportToXml(trvAuditTrialReport, sDlg.FileName);
                             break;
                     }
                 }
@@ -9808,77 +9808,7 @@ namespace BenMAP
             }
         }
 
-        private StreamWriter sw;
-        public bool exportToTxt(TreeView tv, string filename)
-        {
-            try
-            {
-                FileStream fs = new FileStream(filename, FileMode.Create);
-                sw = new StreamWriter(fs, Encoding.UTF8);
-                sw.WriteLine(tv.Nodes[0].Text);
-                foreach (TreeNode node in tv.Nodes)
-                {
-                    saveNode(node.Nodes);
-                }
-                sw.Close();
-                fs.Close();
-
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex);
-                return false;
-            }
-        }
-        public bool exportToXml(TreeView tv, string filename)
-        {
-            try
-            {
-                sw = new StreamWriter(filename, false, System.Text.Encoding.UTF8);
-                sw.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\" ?>");
-                string txtWithoutSpace = tv.Nodes[0].Text;
-                txtWithoutSpace = txtWithoutSpace.Replace(" ", ".");
-                txtWithoutSpace = txtWithoutSpace.Replace("&", "And");
-                txtWithoutSpace = txtWithoutSpace.Replace(":", "");
-                txtWithoutSpace = txtWithoutSpace.Replace("..", ".");
-                sw.WriteLine("<" + txtWithoutSpace + ">");
-
-                foreach (TreeNode node in tv.Nodes)
-                {
-                    saveNode(node.Nodes);
-                }
-                sw.WriteLine("</" + txtWithoutSpace + ">");
-                sw.Close();
-
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex);
-                return false;
-            }
-        }
-
-        private void saveNode(TreeNodeCollection tnc)
-        {
-            foreach (TreeNode node in tnc)
-            {
-                if (node.Nodes.Count > 0)
-                {
-                    string txtWithoutSpace = node.Text;
-                    txtWithoutSpace = txtWithoutSpace.Replace(" ", ".");
-                    txtWithoutSpace = txtWithoutSpace.Replace("&", "And");
-                    txtWithoutSpace = txtWithoutSpace.Replace(":", "");
-                    txtWithoutSpace = txtWithoutSpace.Replace("..", ".");
-
-                    sw.WriteLine("<" + txtWithoutSpace + ">");
-                    saveNode(node.Nodes);
-                    sw.WriteLine("</" + txtWithoutSpace + ">");
-                }
-                else sw.WriteLine(node.Text);
-            }
-        }
+        
         private void btShowCRResult_Click(object sender, EventArgs e)
         {
             try

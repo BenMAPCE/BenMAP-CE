@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
 using System.Windows.Forms;
 using ESIL.DBUtility;
 using System.Data;
@@ -719,6 +720,78 @@ namespace BenMAP
             }
         }
 
+
+        private static StreamWriter sw;
+        public static bool exportToTxt(TreeView tv, string filename)
+        {
+            try
+            {
+                FileStream fs = new FileStream(filename, FileMode.Create);
+                sw = new StreamWriter(fs, Encoding.UTF8);
+                sw.WriteLine(tv.Nodes[0].Text);
+                foreach (TreeNode node in tv.Nodes)
+                {
+                    saveNode(node.Nodes);
+                }
+                sw.Close();
+                fs.Close();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+                return false;
+            }
+        }
+        public static bool exportToXml(TreeView tv, string filename)
+        {
+            try
+            {
+                sw = new StreamWriter(filename, false, System.Text.Encoding.UTF8);
+                sw.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\" ?>");
+                string txtWithoutSpace = tv.Nodes[0].Text;
+                txtWithoutSpace = txtWithoutSpace.Replace(" ", ".");
+                txtWithoutSpace = txtWithoutSpace.Replace("&", "And");
+                txtWithoutSpace = txtWithoutSpace.Replace(":", "");
+                txtWithoutSpace = txtWithoutSpace.Replace("..", ".");
+                sw.WriteLine("<" + txtWithoutSpace + ">");
+
+                foreach (TreeNode node in tv.Nodes)
+                {
+                    saveNode(node.Nodes);
+                }
+                sw.WriteLine("</" + txtWithoutSpace + ">");
+                sw.Close();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+                return false;
+            }
+        }
+
+        private static void saveNode(TreeNodeCollection tnc)
+        {
+            foreach (TreeNode node in tnc)
+            {
+                if (node.Nodes.Count > 0)
+                {
+                    string txtWithoutSpace = node.Text;
+                    txtWithoutSpace = txtWithoutSpace.Replace(" ", ".");
+                    txtWithoutSpace = txtWithoutSpace.Replace("&", "And");
+                    txtWithoutSpace = txtWithoutSpace.Replace(":", "");
+                    txtWithoutSpace = txtWithoutSpace.Replace("..", ".");
+
+                    sw.WriteLine("<" + txtWithoutSpace + ">");
+                    saveNode(node.Nodes);
+                    sw.WriteLine("</" + txtWithoutSpace + ">");
+                }
+                else sw.WriteLine(node.Text);
+            }
+        }
 
 
 
