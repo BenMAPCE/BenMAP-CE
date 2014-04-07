@@ -9062,37 +9062,8 @@ namespace BenMAP
                 }
                 else if (rbAuditCurrent.Checked)
                 {
-                    if (CommonClass.ValuationMethodPoolingAndAggregation != null)
-                    {
-                        ValuationMethodPoolingAndAggregation apvrVMPA = new ValuationMethodPoolingAndAggregation();
-                        apvrVMPA = CommonClass.ValuationMethodPoolingAndAggregation;
-                        TreeNode apvrTreeNode = new TreeNode();
-                        apvrTreeNode = AuditTrailReportCommonClass.getTreeNodeFromValuationMethodPoolingAndAggregation(apvrVMPA);
-                        trvAuditTrialReport.Nodes.Clear();
-                        trvAuditTrialReport.Nodes.Add(apvrVMPA.Version == null ? "BenMAP-CE" : apvrVMPA.Version);
-                        trvAuditTrialReport.Nodes.Add(apvrTreeNode);
-                    }
-                    else if (CommonClass.BaseControlCRSelectFunctionCalculateValue != null)
-                    {
-                        BaseControlCRSelectFunctionCalculateValue cfgrFunctionCV = new BaseControlCRSelectFunctionCalculateValue();
-                        cfgrFunctionCV = CommonClass.BaseControlCRSelectFunctionCalculateValue;
-                        TreeNode cfgrTreeNode = new TreeNode();
-                        cfgrTreeNode = AuditTrailReportCommonClass.getTreeNodeFromBaseControlCRSelectFunctionCalculateValue(cfgrFunctionCV);
-                        trvAuditTrialReport.Nodes.Clear();
-                        trvAuditTrialReport.Nodes.Add(cfgrFunctionCV.Version == null ? "BenMAP-CE" : cfgrFunctionCV.Version);
-                        trvAuditTrialReport.Nodes.Add(cfgrTreeNode);
-                    }
-                    else if (CommonClass.BaseControlCRSelectFunction != null)
-                    {
-                        BaseControlCRSelectFunction cfgFunction = new BaseControlCRSelectFunction();
-                        cfgFunction = CommonClass.BaseControlCRSelectFunction;
-                        TreeNode cfgTreeNode = new TreeNode();
-                        cfgTreeNode = AuditTrailReportCommonClass.getTreeNodeFromBaseControlCRSelectFunction(cfgFunction);
-                        trvAuditTrialReport.Nodes.Clear();
-                        trvAuditTrialReport.Nodes.Add(cfgFunction.Version == null ? "BenMAP-CE" : cfgFunction.Version);
-                        trvAuditTrialReport.Nodes.Add(cfgTreeNode);
-                    }
-                    else
+                    int retVal = AuditTrailReportCommonClass.generateAuditTrailReportTreeView(trvAuditTrialReport);
+                    if (retVal == -1)
                     {
                         MessageBox.Show("Please finish your configuration first.");
                     }

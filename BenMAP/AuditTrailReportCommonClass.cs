@@ -793,6 +793,51 @@ namespace BenMAP
             }
         }
 
+        public static int generateAuditTrailReportTreeView(TreeView trv)
+        {
+            int retVal = 0;
+
+            if (CommonClass.ValuationMethodPoolingAndAggregation != null)
+            {
+                ValuationMethodPoolingAndAggregation apvrVMPA = new ValuationMethodPoolingAndAggregation();
+                apvrVMPA = CommonClass.ValuationMethodPoolingAndAggregation;
+                TreeNode apvrTreeNode = new TreeNode();
+                apvrTreeNode = AuditTrailReportCommonClass.getTreeNodeFromValuationMethodPoolingAndAggregation(apvrVMPA);
+                trv.Nodes.Clear();
+                trv.Nodes.Add(apvrVMPA.Version == null ? "BenMAP-CE" : apvrVMPA.Version);
+                trv.Nodes.Add(apvrTreeNode);
+            }
+            else if (CommonClass.BaseControlCRSelectFunctionCalculateValue != null)
+            {
+                BaseControlCRSelectFunctionCalculateValue cfgrFunctionCV = new BaseControlCRSelectFunctionCalculateValue();
+                cfgrFunctionCV = CommonClass.BaseControlCRSelectFunctionCalculateValue;
+                TreeNode cfgrTreeNode = new TreeNode();
+                cfgrTreeNode = AuditTrailReportCommonClass.getTreeNodeFromBaseControlCRSelectFunctionCalculateValue(cfgrFunctionCV);
+                trv.Nodes.Clear();
+                trv.Nodes.Add(cfgrFunctionCV.Version == null ? "BenMAP-CE" : cfgrFunctionCV.Version);
+                trv.Nodes.Add(cfgrTreeNode);
+            }
+            else if (CommonClass.BaseControlCRSelectFunction != null)
+            {
+                BaseControlCRSelectFunction cfgFunction = new BaseControlCRSelectFunction();
+                cfgFunction = CommonClass.BaseControlCRSelectFunction;
+                TreeNode cfgTreeNode = new TreeNode();
+                cfgTreeNode = AuditTrailReportCommonClass.getTreeNodeFromBaseControlCRSelectFunction(cfgFunction);
+                trv.Nodes.Clear();
+                trv.Nodes.Add(cfgFunction.Version == null ? "BenMAP-CE" : cfgFunction.Version);
+                trv.Nodes.Add(cfgTreeNode);
+            }
+            else
+            {
+                //incomplete configuration
+                //MessageBox.Show("Please finish your configuration first.");
+                retVal = -1;
+            }
+
+            return retVal;
+        }
+
+
 
 
     }
