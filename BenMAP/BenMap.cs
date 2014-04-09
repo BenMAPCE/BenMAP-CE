@@ -6565,7 +6565,7 @@ namespace BenMAP
                         myScheme1.EditorSettings.ClassificationType = ClassificationType.Quantities;
                         myScheme1.EditorSettings.IntervalMethod = IntervalMethod.NaturalBreaks;
                         myScheme1.EditorSettings.IntervalSnapMethod = IntervalSnapMethod.Rounding;
-                        myScheme1.EditorSettings.IntervalRoundingDigits = 1;
+                        myScheme1.EditorSettings.IntervalRoundingDigits = 3;
                         myScheme1.EditorSettings.NumBreaks = 6;
                         myScheme1.EditorSettings.FieldName = strValueField; myScheme1.EditorSettings.UseGradient = false;
                         myScheme1.CreateCategories(polLayer.DataSet.DataTable);
@@ -6581,6 +6581,7 @@ namespace BenMAP
                         _CurrentIMapLayer = polLayer;
                         string pollutantUnit = string.Empty; 
                         _columnName = strValueField;
+                        CurrentMapTitle = CommonClass.MainSetup.SetupName + " Setup: " + _ResultPolygonLayer.LegendText + ", Health Impact Function Result"; 
                         RenderMainMap(true, "R");
 
                         addRegionLayerGroupToMainMap();
@@ -6992,6 +6993,7 @@ namespace BenMAP
                     //_currentLayerIndex = mainMap.Layers.Count - 1;
                     _CurrentIMapLayer = APVResultPolyLayer1;
                     _columnName = strValueField;
+                    CurrentMapTitle = CommonClass.MainSetup.SetupName + " Setup: " + APVResultPolyLayer1.LegendText + ", Pooled Valuation Result"; 
                     RenderMainMap(true,"A");
 
 
@@ -9286,6 +9288,7 @@ namespace BenMAP
                         //_currentLayerIndex = mainMap.Layers.Count - 1;
                         _CurrentIMapLayer = polLayer;
                         _columnName = strValueField;
+                        CurrentMapTitle = CommonClass.MainSetup.SetupName + " Setup: " + strValueField + ", Pooled Incidence Results"; 
                         RenderMainMap(true, "IP");
 
                         addRegionLayerGroupToMainMap();
@@ -10569,6 +10572,7 @@ namespace BenMAP
                             //_currentLayerIndex = mainMap.Layers.Count - 1;
                             _CurrentIMapLayer = polLayer;
                             string pollutantUnit = string.Empty; _columnName = strValueField;
+                            CurrentMapTitle = CommonClass.MainSetup.SetupName + " Setup: " + CRResultMapPolyLayer.LegendText + ", Configuration Results";  //-MCB draft until better title
                             RenderMainMap(true, "R");
                             polLayer.LegendText = author;
                             polLayer.Name = author;
@@ -12182,7 +12186,7 @@ namespace BenMAP
                             myScheme1.EditorSettings.ClassificationType = ClassificationType.Quantities;
                             myScheme1.EditorSettings.IntervalMethod = IntervalMethod.NaturalBreaks;
                             myScheme1.EditorSettings.IntervalSnapMethod = IntervalSnapMethod.Rounding;
-                            myScheme1.EditorSettings.IntervalRoundingDigits = 1;
+                            myScheme1.EditorSettings.IntervalRoundingDigits = 3;
                             myScheme1.EditorSettings.NumBreaks = 6;
                             myScheme1.EditorSettings.FieldName = strValueField; myScheme1.EditorSettings.UseGradient = false;
                             myScheme1.CreateCategories(polLayer.DataSet.DataTable);
@@ -12198,6 +12202,7 @@ namespace BenMAP
                             //_currentLayerIndex = mainMap.Layers.Count - 1;
                             _CurrentIMapLayer = polLayer;
                             string pollutantUnit = string.Empty; _columnName = strValueField;
+                            CurrentMapTitle = CommonClass.MainSetup.SetupName + " Setup: " + tlvIPoolMapPolyLayer.LegendText + ", Pooled Incidence Results"; 
                             RenderMainMap(true, "I");
 
                             addRegionLayerGroupToMainMap();
