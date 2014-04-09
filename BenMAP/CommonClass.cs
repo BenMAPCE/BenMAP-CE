@@ -897,9 +897,29 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
                                         if (selfFeature.IsWithinDistance(other.Features[iotherFeature], 0.00001))
                                         {
                                             if (selfFeature.Area() > other.Features[iotherFeature].Area())
-                                                intersactFeature = other.Features[iotherFeature];
-                                            else
+                                            {
+                                                bool isContains = false;
+                                                isContains = polygonContainPolygon(selfFeature, other.Features[iotherFeature]);
+                                                if (isContains)
+                                                {
+                                                    intersactFeature = other.Features[iotherFeature];
+                                                }
+                                                else
+                                                    intersactFeature = null;
+                                            }
+                                            else if (selfFeature.Area() < other.Features[iotherFeature].Area())
+                                            {
                                                 intersactFeature = selfFeature;
+
+                                                bool isContains = false;
+                                                isContains = polygonContainPolygon(other.Features[iotherFeature], selfFeature);
+                                                if (isContains)
+                                                {
+                                                    intersactFeature = selfFeature;
+                                                }
+                                                else
+                                                    intersactFeature = null;
+                                            }
                                         }
                                     }
                                     catch
@@ -910,7 +930,6 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
                             }
                             if (intersactFeature != null && intersactFeature.BasicGeometry != null)
                             {
-
                                 try
                                 {
                                     double dArea = 0;
@@ -920,7 +939,42 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
                                     }
                                     catch
                                     {
-                                        dArea = Math.Abs(DotSpatial.Topology.Algorithm.CgAlgorithms.SignedArea(intersactFeature.BasicGeometry.Coordinates));
+                                        if (selfFeature.IsWithinDistance(other.Features[iotherFeature], 0.00001))
+                                        {
+                                            if (selfFeature.Area() > other.Features[iotherFeature].Area())
+                                            {
+                                                bool isContains = false;
+                                                isContains = polygonContainPolygon(selfFeature, other.Features[iotherFeature]);
+                                                if (isContains)
+                                                {
+                                                    intersactFeature = other.Features[iotherFeature];
+                                                    dArea = intersactFeature.Area();
+                                                }
+                                                else
+                                                    dArea = 0;
+
+                                            }
+                                            else if (selfFeature.Area() < other.Features[iotherFeature].Area())
+                                            {
+                                                intersactFeature = selfFeature;
+                                                dArea = intersactFeature.Area();
+
+                                                bool isContains = false;
+                                                isContains = polygonContainPolygon(other.Features[iotherFeature], selfFeature);
+                                                if (isContains)
+                                                {
+                                                    intersactFeature = selfFeature;
+                                                    dArea = intersactFeature.Area();
+                                                }
+                                                else
+                                                    dArea = 0;
+                                            }
+                                            else
+                                                dArea = 0;
+
+                                        }
+                                        else
+                                            dArea = 0;
                                     }
                                     if (dArea > 0)
                                     {
@@ -995,18 +1049,24 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
                                     targetRow = Convert.ToInt32(strin[1]),
                                     percentage = 1,
                                 };
+                                if (k.Value.First().Value > 0.000000000001)
                                 result.Add(gr);
 
                             }
                             else
                             {
+                                double d = 0.0;
                                 foreach (KeyValuePair<string, double> kin in k.Value)
                                 {
+                                    if (kin.Value > 0.000000000001) d = d + kin.Value;
+                                }
+                                foreach (KeyValuePair<string, double> kin in k.Value)
+                                {
+                                    if (kin.Value < 0.000000000001) continue;
                                     string[] strin = kin.Key.Split(new char[] { ',' });
-                                    double d = k.Value.Sum(p => p.Value);
+
                                     GridRelationshipAttributePercentage gr = new GridRelationshipAttributePercentage()
                                     {
-
                                         sourceCol = Convert.ToInt32(str[0]),
                                         sourceRow = Convert.ToInt32(str[1]),
                                         targetCol = Convert.ToInt32(strin[0]),
@@ -1025,6 +1085,26 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
             }
             return result;
         }
+
+        public static bool polygonContainPolygon(IFeature big, IFeature small)
+        {
+            try
+            {
+                for (int i = 0; i < small.Coordinates.Count; i++)
+                {
+                    if (!big.IsWithinDistance((new Feature(small.Coordinates[i])), 0.00001))
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         public static void getRelationshipFromBenMAPGridPercentage(int big, int small)
         {
             try
