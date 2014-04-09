@@ -18,6 +18,7 @@ namespace BenMAP
         private FileInfo _fInfo = null;
         private MetadataClassObj _metadataObj = null;
         private Metadata metadata = null;
+        private bool bDataChanged = false;
 
         public MetadataClassObj MetadataObj
         {
@@ -37,6 +38,13 @@ namespace BenMAP
             _metadataObj = metadata.GetMetadata();
         }
 
+        public ViewEditMetadata(MetadataClassObj metaObj): this()
+        {
+            _metadataObj = metaObj;
+            btnSaveMetaData.Visible = true;
+            btnSaveMetaData.Enabled = false;
+        }
+
         public ViewEditMetadata(string fileName, MetadataClassObj metadataClsObj) : this()
         {
             _fInfo = new FileInfo(fileName);
@@ -54,14 +62,29 @@ namespace BenMAP
             txtImportDate.Text = _metadataObj.ImportDate;
             txtReference.Text = _metadataObj.DataReference;
             rtbDescription.Text = _metadataObj.Description;
-            if(_fInfo.Extension == ".shp")
+            if(_fInfo != null)//if null I am pulling information out of the Database
             {
-                LoadShapeInfo();
-            }
+                if(_fInfo.Extension == ".shp")
+                {
+                    LoadShapeInfo();
+                }
 
-            if(_fInfo.Extension == ".csv")
+                if(_fInfo.Extension == ".csv")
+                {
+                    LoadCSVInof();
+                }
+            }
+            else
             {
-                LoadCSVInof();
+                if (_metadataObj.Extension == ".shp")
+                {
+                    LoadShapeInfo();
+                }
+
+                if(_metadataObj.Extension == ".csv")
+                {
+                    LoadCSVInof();
+                }
             }
         }
 
@@ -139,19 +162,34 @@ namespace BenMAP
 
         private void btnOK_Click(object sender, EventArgs e)
         {
+            if(bDataChanged)
+            {
+                DialogResult dlr = MessageBox.Show("Do you want to save your changes?","Save Changes?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button3);
+                if(dlr.Equals(DialogResult.Yes))
+                {
+                    //do an update
+                }
 
+            }
         }
 
         private void txtReference_TextChanged(object sender, EventArgs e)
         {
             _metadataObj.DataReference = txtReference.Text;
+            SetSaveButton();
         }
 
         private void rtbDescription_TextChanged(object sender, EventArgs e)
         {
             _metadataObj.Description = rtbDescription.Text;
+            SetSaveButton();
         }
 
+        private void SetSaveButton()
+        {
+            bDataChanged = true;
+            btnSaveMetaData.Enabled = true;
+        }
         private void tableLayoutPanel2_Paint(object sender, PaintEventArgs e)
         {
 

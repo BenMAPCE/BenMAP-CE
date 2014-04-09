@@ -271,23 +271,7 @@ namespace BenMAP
                         lblProgress.Refresh();
                     }
 
-                    int rtn = 0;
-
-                    commandText = "SELECT DATASETID FROM DATASETS WHERE DATASETNAME = 'Monitor'";
-                    _metadataObj.DatasetTypeId = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
-                    commandText = string.Format("INSERT INTO METADATAINFORMATION " +
-                                                "(SETUPID, DATASETID, DATASETTYPEID, FILENAME, " +
-                                                "EXTENSION, DATAREFERENCE, FILEDATE, IMPORTDATE, DESCRIPTION, " +
-                                                "PROJECTION, GEONAME, DATUMNAME, DATUMTYPE, SPHEROIDNAME, " +
-                                                "MERIDIANNAME, UNITNAME, PROJ4STRING, NUMBEROFFEATURES) " +
-                                                "VALUES('{0}', '{1}', '{2}', '{3}', '{4}','{5}', '{6}', '{7}', '{8}', '{9}', " +
-                                                "'{10}', '{11}', '{12}', '{13}', '{14}','{15}', '{16}', '{17}')",
-                                                _metadataObj.SetupId, _dataSetID, _metadataObj.DatasetTypeId, _metadataObj.FileName,
-                                                _metadataObj.Extension, _metadataObj.DataReference, _metadataObj.FileDate, _metadataObj.ImportDate,
-                                                _metadataObj.Description, _metadataObj.Projection, _metadataObj.GeoName, _metadataObj.DatumName,
-                                                _metadataObj.DatumType, _metadataObj.SpheroidName, _metadataObj.MeridianName, _metadataObj.UnitName,
-                                                _metadataObj.Proj4String, _metadataObj.NumberOfFeatures);
-                    rtn = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                    insertMetadata(Convert.ToInt16(_dataSetID));
                 }
                 progressBar1.Visible = false;
                 lblProgress.Text = "";
@@ -301,7 +285,16 @@ namespace BenMAP
                 Logger.LogError(ex.Message);
             }
         }
-        
+        private void insertMetadata(int dataSetID)
+        {
+            _metadataObj.DatasetId = dataSetID;
+
+            _metadataObj.DatasetTypeId = SQLStatementsCommonClass.getDatasetID("Monitor");
+            if (!SQLStatementsCommonClass.insertMetadata(_metadataObj))
+            {
+                MessageBox.Show("Failed to save Metadata.");
+            }
+        }
         private static Dictionary<int, string> getMetric()
         {
             try

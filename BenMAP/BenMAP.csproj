@@ -685,6 +685,7 @@
     <Compile Include="Configuration\PopulationInformation.Designer.cs">
       <DependentUpon>PopulationInformation.cs</DependentUpon>
     </Compile>
+    <Compile Include="SQLStatementsCommonClass.cs" />
     <Compile Include="TipFormGIF.cs">
       <SubType>Form</SubType>
     </Compile>

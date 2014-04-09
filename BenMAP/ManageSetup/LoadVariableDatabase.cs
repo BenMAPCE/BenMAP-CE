@@ -46,9 +46,13 @@ namespace BenMAP
             _iniPath = CommonClass.ResultFilePath + @"\BenMAP.ini";
             _isForceValidate = CommonClass.IniReadValue("appSettings", "IsForceValidate", _iniPath);
             if (_isForceValidate == "T")
+            {
                 btnOK.Enabled = false;
+            }
             else
+            {
                 btnOK.Enabled = true;
+            }
         }
 
         private string _dataPath = string.Empty;
@@ -146,7 +150,9 @@ namespace BenMAP
             if (dlgR.Equals(DialogResult.OK))
             {
                 if (vdi.PassedValidation && _isForceValidate == "T")
+                {
                     LoadDatabase();
+                }
             }
         }
 

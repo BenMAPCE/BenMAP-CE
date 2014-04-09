@@ -21,6 +21,7 @@ namespace BenMAP
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.grpHealthImpactFunction = new System.Windows.Forms.GroupBox();
+            this.btnViewMetadata = new System.Windows.Forms.Button();
             this.btnOutPut = new System.Windows.Forms.Button();
             this.chbGroup = new System.Windows.Forms.CheckBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
@@ -110,6 +111,7 @@ namespace BenMAP
             this.grpHealthImpactFunction.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.grpHealthImpactFunction.Controls.Add(this.btnViewMetadata);
             this.grpHealthImpactFunction.Controls.Add(this.btnOutPut);
             this.grpHealthImpactFunction.Controls.Add(this.chbGroup);
             this.grpHealthImpactFunction.Controls.Add(this.groupBox3);
@@ -127,6 +129,17 @@ namespace BenMAP
             this.grpHealthImpactFunction.Size = new System.Drawing.Size(758, 465);
             this.grpHealthImpactFunction.TabIndex = 8;
             this.grpHealthImpactFunction.TabStop = false;
+            // 
+            // btnViewMetadata
+            // 
+            this.btnViewMetadata.Location = new System.Drawing.Point(16, 428);
+            this.btnViewMetadata.Name = "btnViewMetadata";
+            this.btnViewMetadata.Size = new System.Drawing.Size(112, 27);
+            this.btnViewMetadata.TabIndex = 30;
+            this.btnViewMetadata.Text = "View Metadata";
+            this.btnViewMetadata.UseVisualStyleBackColor = true;
+            this.btnViewMetadata.Visible = false;
+            this.btnViewMetadata.Click += new System.EventHandler(this.btnViewMetadata_Click);
             // 
             // btnOutPut
             // 
@@ -690,5 +703,6 @@ namespace BenMAP
         private BrightIdeasSoftware.OLVColumn olvColumn33;
         private System.Windows.Forms.Button btnOutPut;
         private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.Button btnViewMetadata;
     }
 }

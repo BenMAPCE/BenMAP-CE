@@ -505,8 +505,7 @@ namespace BenMAP
                         MessageBox.Show("This grid definition name is already in use. Please enter a different name.");
                         return;
                     }
-                    commandText = string.Format("select max(GRIDDEFINITIONID) from GRIDDEFINITIONS");
-                    _gridID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText)) + 1;
+                    _metadataObj.DatasetId = SQLStatementsCommonClass.selectMaxID("GRIDDEFINITIONID", "GRIDDEFINITIONS"); 
                     string _filePath = string.Empty;
                     switch (_gridType)
                     {
@@ -661,26 +660,13 @@ namespace BenMAP
 
         private void saveMetadata(string filePath, int gridID, int gridType)
         {
-            FireBirdHelperBase fb = new ESILFireBirdHelper();
 
-            int rtv = 0;
+            _metadataObj.DatasetTypeId = SQLStatementsCommonClass.getDatasetID("GridDefinition");
 
-            string commandText = "SELECT DATASETID FROM DATASETS WHERE DATASETNAME = 'GridDefinition'";
-            _metadataObj.DatasetTypeId = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
-
-            commandText = string.Format("INSERT INTO METADATAINFORMATION " +
-                                        "(SETUPID, DATASETID, DATASETTYPEID, FILENAME, " +
-                                        "EXTENSION, DATAREFERENCE, FILEDATE, IMPORTDATE, DESCRIPTION, " +
-                                        "PROJECTION, GEONAME, DATUMNAME, DATUMTYPE, SPHEROIDNAME, " +
-                                        "MERIDIANNAME, UNITNAME, PROJ4STRING, NUMBEROFFEATURES) " +
-                                        "VALUES('{0}', '{1}', '{2}', '{3}', '{4}','{5}', '{6}', '{7}', '{8}', '{9}', " +
-                                        "'{10}', '{11}', '{12}', '{13}', '{14}','{15}', '{16}', '{17}')",
-                                        _metadataObj.SetupId, gridID, _metadataObj.DatasetTypeId, _metadataObj.FileName,
-                                        _metadataObj.Extension, _metadataObj.DataReference, _metadataObj.FileDate, _metadataObj.ImportDate,
-                                        _metadataObj.Description, _metadataObj.Projection, _metadataObj.GeoName, _metadataObj.DatumName,
-                                        _metadataObj.DatumType, _metadataObj.SpheroidName, _metadataObj.MeridianName, _metadataObj.UnitName,
-                                        _metadataObj.Proj4String, _metadataObj.NumberOfFeatures);
-            rtv = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+            if(!SQLStatementsCommonClass.insertMetadata(_metadataObj))
+            {
+                MessageBox.Show("Failed to save Metadata.");
+            }
 
         }
 

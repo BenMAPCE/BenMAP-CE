@@ -728,25 +728,14 @@ namespace BenMAP
         }
         private void insertMetadata(int dataSetID)
         {
-            FireBirdHelperBase fb = new ESILFireBirdHelper();
 
-            int rtn = 0;
+            _metadataObj.DatasetId = dataSetID;
 
-            string commandText = "SELECT DATASETID FROM DATASETS WHERE DATASETNAME = 'Incidence'";
-            _metadataObj.DatasetTypeId = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
-            commandText = string.Format("INSERT INTO METADATAINFORMATION " +
-                                        "(SETUPID, DATASETID, DATASETTYPEID, FILENAME, " +
-                                        "EXTENSION, DATAREFERENCE, FILEDATE, IMPORTDATE, DESCRIPTION, " +
-                                        "PROJECTION, GEONAME, DATUMNAME, DATUMTYPE, SPHEROIDNAME, " +
-                                        "MERIDIANNAME, UNITNAME, PROJ4STRING, NUMBEROFFEATURES) " +
-                                        "VALUES('{0}', '{1}', '{2}', '{3}', '{4}','{5}', '{6}', '{7}', '{8}', '{9}', " +
-                                        "'{10}', '{11}', '{12}', '{13}', '{14}','{15}', '{16}', '{17}')",
-                                        _metadataObj.SetupId, dataSetID, _metadataObj.DatasetTypeId, _metadataObj.FileName,
-                                        _metadataObj.Extension, _metadataObj.DataReference, _metadataObj.FileDate, _metadataObj.ImportDate,
-                                        _metadataObj.Description, _metadataObj.Projection, _metadataObj.GeoName, _metadataObj.DatumName,
-                                        _metadataObj.DatumType, _metadataObj.SpheroidName, _metadataObj.MeridianName, _metadataObj.UnitName,
-                                        _metadataObj.Proj4String, _metadataObj.NumberOfFeatures);
-            rtn = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+            _metadataObj.DatasetTypeId = SQLStatementsCommonClass.getDatasetID("Incidence");
+            if (!SQLStatementsCommonClass.insertMetadata(_metadataObj))
+            {
+                MessageBox.Show("Failed to save Metadata.");
+            }
         }
         private void btnOK_Click(object sender, EventArgs e)
         {

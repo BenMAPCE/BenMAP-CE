@@ -8,7 +8,9 @@ namespace BenMAP
     public class MetadataClassObj
     {
         private int _setupId;
+        private int _datasetId;
         private int _datasetTypeId;
+        private int _metadataId;
         private string _fileName;
         private string _extension;
         private string _dataReference;
@@ -25,6 +27,8 @@ namespace BenMAP
         private string _proj4String;
         private string _numberOfFeatures;
         private string _setupName;
+
+
 
         public string SetupName
         {
@@ -122,12 +126,24 @@ namespace BenMAP
             set { _fileName = value; }
         }
 
+        public int MetadataId
+        {
+            get { return _metadataId; }
+            set { _metadataId = value; }
+        }
+
         public int DatasetTypeId
         {
             get { return _datasetTypeId; }
             set { _datasetTypeId = value; }
         }
-
+        
+        public int DatasetId
+        {
+            get { return _datasetId; }
+            set { _datasetId = value; }
+        }
+        
         public int SetupId
         {
             get { return _setupId; }

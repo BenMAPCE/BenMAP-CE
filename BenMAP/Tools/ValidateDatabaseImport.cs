@@ -172,6 +172,8 @@ namespace BenMAP
             bool bPassed = true;
             string tip = "Validating, this could take several minutes.";
             WaitShow(tip);
+            lblPassedFailed.BackColor = Color.Orange;
+            lblPassedFailed.Text = "Validating";
             Application.DoEvents();
             if(bPassed)
             {
@@ -199,6 +201,17 @@ namespace BenMAP
             txtReportOutput.Refresh();
             SaveValidateResults();
             btnLoad.Enabled = bPassed;
+            if(!bPassed)
+            {
+                lblPassedFailed.BackColor = Color.Red;
+                lblPassedFailed.Text = string.Format("Validation failed with {0} errors.", errors);
+            }
+            else
+            {
+                lblPassedFailed.BackColor = Color.Green;
+                lblPassedFailed.Text = string.Format("Validation passed with {0} warnings.", warnings);
+                
+            }
             WaitClose();
         }
         /// <summary>
@@ -316,17 +329,17 @@ namespace BenMAP
                         {
                             if (!VerifyDataRowValues(dataType, dc.ColumnName, dataVal, dr, out errMsg))
                             {
-                                if (checkType == "Error")//if check type is "Error" and Verify Data Row Values fail - it's an error.
+                                if (checkType.ToLower() == "error")//if check type is "Error" and Verify Data Row Values fail - it's an error.
                                 {
                                     txtReportOutput.Text += string.Format("Error\t {0}\t {1} \t {2}\r\n", _tbl.Rows.IndexOf(dr), dc.ColumnName, errMsg);
                                     errors++;
                                 }
-                                else if (checkType == "Warning" && !required)//if a check type is a warning and it is not a required field it is a warning.
+                                else if (checkType.ToLower() == "warning" && !required)//if a check type is a warning and it is not a required field it is a warning.
                                 {
                                     txtReportOutput.Text += string.Format("Warning\t {0}\t {1} \t {2}\r\n", _tbl.Rows.IndexOf(dr), dc.ColumnName, errMsg);
                                     warnings++;
                                 }
-                                else if (checkType == "Warning" && required)//if a check type is a warning and it is a required field it is a error.
+                                else if (checkType.ToLower() == "warning" && required)//if a check type is a warning and it is a required field it is a error.
                                 {
                                     txtReportOutput.Text += string.Format("Error\t {0}\t {1} \t {2}\r\n", _tbl.Rows.IndexOf(dr), dc.ColumnName, errMsg);
                                     errors++;
@@ -380,13 +393,34 @@ namespace BenMAP
             return bPassed;
         }
 
-        private bool VarifyStartEndAge(int startAge, int endAge)
+        private bool VerifyStartAge(int startAge, int endAge, out string errMsg)
         {
             bool bPassed = true;
-                if(startAge > endAge)
-                {
-                    bPassed = false;
-                }
+            errMsg = string.Empty;
+            if(startAge < 0 )
+            {
+                errMsg = "Age can not be a negitive value";
+                return false;
+            }
+            if(startAge > endAge && endAge > 0)
+            {
+                return false;
+            }
+            return bPassed;
+        }
+        private bool VerifyEndAge(int startAge, int endAge, out string errMsg)
+        {
+            bool bPassed = true;
+            errMsg = string.Empty;
+            if (endAge < 0)
+            {
+                errMsg = "Age can not be a negitive value";
+                return false;
+            }
+            if (endAge < startAge && endAge > 0)
+            {
+                return false;
+            }
             return bPassed;
         }
 
@@ -486,29 +520,30 @@ namespace BenMAP
                         break;
                     case "float":
                         float outValf = -1;
+                        //do a try parse
+                        //do a min and max check
+                        //if there is a Max there must be a min.
                         if (float.TryParse(valToVerify, out outValf))
                         {
-                            if (!string.IsNullOrEmpty(min) && bPassed)
+                            if(!string.IsNullOrEmpty(min) && !string.IsNullOrEmpty(max) && bPassed)
                             {
-                                if (outValf < Convert.ToInt32(min))
+                                if (outValf < Convert.ToInt32(min) || outValf > Convert.ToInt32(max))
                                 {
-                                    errMsg = string.Format("Value is not within min({0}) range.", min);
-                                    bPassed = false;
-                                }
-                            }
-                            if (!string.IsNullOrEmpty(max) && bPassed)
-                            {
-                                if (outValf > Convert.ToInt32(max))
-                                {
-                                    errMsg = string.Format("Value is not within max({0}) range.", max);
+                                    errMsg = string.Format("Value is not within min({0}) or max({1}) range.", min, max);
                                     bPassed = false;
                                 }
                             }
                         }
                         else
-                        {
-                            errMsg = string.Format("Value '{0}' is not a valid float.", valToVerify);
-                            bPassed = false;
+                        {   //If it is required and the val is empty it is an invalid float.  This is actully caught at line 418
+                            //this should handle the case where a value is not required and is empty - then there is no issue
+                            //if it is not required and a value exists, then it is not a float and is an issue
+                            //if it failed to tryparse then chances are it is not a valid float.
+                            if (!required && !string.IsNullOrEmpty(valToVerify))
+                            {
+                                errMsg = string.Format("Value '{0}' is not a valid float.", valToVerify);
+                                bPassed = false;
+                            }
                         }
                         break;
                     case "double":
@@ -569,6 +604,7 @@ namespace BenMAP
                                 errMsg = string.Format("Invalid Endpoint Name given.  ({0})", valToVerify);
                         }
                         break;
+                    case "Study Year":
                     case "Year":
                         if (!Regex.IsMatch(valToVerify, "^(19|20)[0-9][0-9]"))
                         {
@@ -602,28 +638,76 @@ namespace BenMAP
                     case "Start Age":
                     case "End Age":
                         //this is for validating start Age and End Age
+                        string erMsg = string.Empty;
                         if (columnName.Equals("Start Age"))
                         {
                             //get the end age and do a quick compair.
-                            if (!VarifyStartEndAge(Convert.ToInt32(valToVerify), Convert.ToInt32(dr["End Age"].ToString())))
+                            if (!VerifyStartAge(Convert.ToInt32(valToVerify), Convert.ToInt32(dr["End Age"].ToString()), out erMsg))
                             {
-                                errMsg = string.Format("Start Age ({0}) should not be less than End Age.", valToVerify);
+                                if(string.IsNullOrEmpty(erMsg))//passed checking for negitives 
+                                {
+                                    errMsg = string.Format("Start Age ({0}) should not be less than End Age.", valToVerify);
+                                }
                             }
                         }
                         if (columnName.Equals("End Age"))
                         {
                             //get the start age and do a quick compair.
-                            if (!VarifyStartEndAge(Convert.ToInt32(dr["Start Age"].ToString()), Convert.ToInt32(valToVerify)))
+                            if (!VerifyEndAge(Convert.ToInt32(dr["Start Age"].ToString()), Convert.ToInt32(valToVerify), out erMsg))
                             {
-                                errMsg = string.Format("End Age ({0}) should not be greater than Start Age", valToVerify);
+                                if (string.IsNullOrEmpty(erMsg))//passed checking for negitives 
+                                {
+                                    errMsg = string.Format("End Age ({0}) should not be greater than Start Age.", valToVerify);
+                                }
                             }
+                        }
+                        if (!string.IsNullOrEmpty(erMsg))
+                        {
+                            errMsg += " " + erMsg;
                         }
                     break;
                     case "Latitude":
+                        float lat = 0;
+                        if(!string.IsNullOrEmpty(valToVerify))
+                        {
+                            if(float.TryParse(valToVerify, out lat))
+                            {
+                                if(lat < -90 || lat > 90)
+                                {
+                                    errMsg = "Latitude must be between -90 and 90 degrees inclusive";
+                                }
+                            }
+                            else
+                            {
+                                errMsg = string.Format("Latitude '{0}' is an invalid value", valToVerify);
+                            }
+                        }
 
                     break;
                     case "Longitude":
-
+                        float longitude = 0;
+                        if(!string.IsNullOrEmpty(valToVerify))
+                        {
+                            if (float.TryParse(valToVerify, out longitude))
+                            {
+                                if (longitude < -180 || longitude > 80)
+                                {
+                                    errMsg = "Longitude must be between -180 and 180 degrees inclusive";
+                                }
+                            }
+                            else
+                            {
+                                errMsg = string.Format("Longitude '{0}' is an invalid value", valToVerify);
+                            }
+                        }
+                    break;
+                    case "AgeRange":
+                        cmdText = string.Format("SELECT DISTINCT AGERANGEID FROM AGERANGES WHERE AGERANGENAME  = '{0}'", valToVerify);
+                        rtv = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, cmdText);
+                        if (rtv == null)
+                        {
+                                errMsg = string.Format("Invalid Age Range Name given.  ({0})", valToVerify);
+                        }
                     break;
                     case "Column":
 

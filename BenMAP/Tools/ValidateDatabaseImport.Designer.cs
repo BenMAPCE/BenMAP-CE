@@ -33,6 +33,7 @@
             this.btnLoad = new System.Windows.Forms.Button();
             this.pbarValidation = new System.Windows.Forms.ProgressBar();
             this.lblProgress = new System.Windows.Forms.Label();
+            this.lblPassedFailed = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // txtReportOutput
@@ -66,7 +67,7 @@
             this.btnLoad.Name = "btnLoad";
             this.btnLoad.Size = new System.Drawing.Size(75, 27);
             this.btnLoad.TabIndex = 2;
-            this.btnLoad.Text = "Load";
+            this.btnLoad.Text = "OK";
             this.btnLoad.UseVisualStyleBackColor = true;
             this.btnLoad.Click += new System.EventHandler(this.btnLoad_Click);
             // 
@@ -74,7 +75,7 @@
             // 
             this.pbarValidation.Location = new System.Drawing.Point(5, 505);
             this.pbarValidation.Name = "pbarValidation";
-            this.pbarValidation.Size = new System.Drawing.Size(460, 23);
+            this.pbarValidation.Size = new System.Drawing.Size(331, 23);
             this.pbarValidation.TabIndex = 3;
             this.pbarValidation.Visible = false;
             // 
@@ -87,11 +88,21 @@
             this.lblProgress.TabIndex = 4;
             this.lblProgress.Visible = false;
             // 
+            // lblPassedFailed
+            // 
+            this.lblPassedFailed.AutoSize = true;
+            this.lblPassedFailed.Location = new System.Drawing.Point(353, 514);
+            this.lblPassedFailed.Name = "lblPassedFailed";
+            this.lblPassedFailed.Size = new System.Drawing.Size(0, 13);
+            this.lblPassedFailed.TabIndex = 5;
+            this.lblPassedFailed.Visible = false;
+            // 
             // ValidateDatabaseImport
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(691, 540);
+            this.Controls.Add(this.lblPassedFailed);
             this.Controls.Add(this.lblProgress);
             this.Controls.Add(this.pbarValidation);
             this.Controls.Add(this.txtReportOutput);
@@ -100,7 +111,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Name = "ValidateDatabaseImport";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "ValidateDatabaseImport";
+            this.Text = "Validating Data import";
             this.Load += new System.EventHandler(this.ValidateDatabaseImport_Load);
             this.Shown += new System.EventHandler(this.ValidateDatabaseImport_Shown);
             this.ResumeLayout(false);
@@ -115,5 +126,6 @@
         private System.Windows.Forms.Button btnLoad;
         private System.Windows.Forms.ProgressBar pbarValidation;
         private System.Windows.Forms.Label lblProgress;
+        private System.Windows.Forms.Label lblPassedFailed;
     }
 }

@@ -16,6 +16,8 @@ namespace BenMAP
 
         BenMAPGrid _monitorRollbackGrid = new BenMAPGrid();
 
+        private string _iniPath = string.Empty;
+        private string _isForceValidate = string.Empty;
         private string _strPath;
 
         public string StrPath
@@ -31,6 +33,16 @@ namespace BenMAP
             _bgc = currentPollutant;
             _currentStat = currentStat;
             _monitorRollbackLine = new MonitorModelRollbackLine();
+            _iniPath = CommonClass.ResultFilePath + @"\BenMAP.ini";
+            _isForceValidate = CommonClass.IniReadValue("appSettings", "IsForceValidate", _iniPath);
+            if (_isForceValidate == "T")
+            {
+                btnNext.Enabled = false;
+            }
+            else
+            {
+                btnNext.Enabled = true;
+            }
         }
 
         private void MonitorRollback_Load(object sender, EventArgs e)
@@ -241,6 +253,27 @@ namespace BenMAP
             if (cboRollbackGridType.SelectedIndex == -1) return;
             DataRowView drv = (cboRollbackGridType.SelectedItem as DataRowView);
             _monitorRollbackGrid = Grid.GridCommon.getBenMAPGridFromID(Convert.ToInt32(drv["GridDefinitionID"]));
+        }
+
+        private void txtMonitorDataFile_TextChanged(object sender, EventArgs e)
+        {
+            btnValidate.Enabled = !string.IsNullOrEmpty(txtMonitorDataFile.Text);
+        }
+
+        private void btnValidate_Click(object sender, EventArgs e)
+        {
+            DataTable modelDT = new DataTable();
+            modelDT = CommonClass.ExcelToDataTable(txtMonitorDataFile.Text);
+            ValidateDatabaseImport vdi = new ValidateDatabaseImport(modelDT, "Monitor", txtMonitorDataFile.Text);
+            DialogResult dlgR = vdi.ShowDialog();
+            if (dlgR.Equals(DialogResult.OK))
+            {
+                if (vdi.PassedValidation && _isForceValidate == "T")
+                {
+                    btnNext.Enabled = vdi.PassedValidation;//it is true becasue it passed.
+                }
+            }
+
         }
     }
 }

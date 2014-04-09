@@ -26,7 +26,7 @@ namespace BenMAP
     public partial class HealthImpactDataSetDefinition : FormBase
     {
         private DataTable dt;//_dtDataFile;
-        private MetadataClassObj metadataObj = null;
+        private MetadataClassObj _metadataObj = null;
         private int _datasetID;
         List<int> lstdeleteCRFunctionid = new List<int>();
 
@@ -40,6 +40,8 @@ namespace BenMAP
         {
             InitializeComponent();
             _datasetID = dataSetID;
+            btnViewMetadata.Visible = true;
+            btnViewMetadata.Enabled = true;
         }
 
         string _filePath = string.Empty;
@@ -109,7 +111,7 @@ namespace BenMAP
             if (dlgr.Equals(DialogResult.OK))
             {
                 dt = lmdataset.MonitorDataSet;
-                metadataObj = lmdataset.MetadataObj;
+                _metadataObj = lmdataset.MetadataObj;
                 LoadDatabase();
             }
         }
@@ -1266,25 +1268,13 @@ namespace BenMAP
 
         private void insertMetadata(int crFunctionDataSetID)
         {
-            FireBirdHelperBase fb = new ESILFireBirdHelper();
+            _metadataObj.DatasetId = crFunctionDataSetID;
 
-            int rtn = 0;
-
-            string commandText = "SELECT DATASETID FROM DATASETS WHERE DATASETNAME = 'Healthfunctions'";
-            metadataObj.DatasetTypeId = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
-            commandText = string.Format("INSERT INTO METADATAINFORMATION " +
-                                        "(SETUPID, DATASETID, DATASETTYPEID, FILENAME, " +
-                                        "EXTENSION, DATAREFERENCE, FILEDATE, IMPORTDATE, DESCRIPTION, " +
-                                        "PROJECTION, GEONAME, DATUMNAME, DATUMTYPE, SPHEROIDNAME, " +
-                                        "MERIDIANNAME, UNITNAME, PROJ4STRING, NUMBEROFFEATURES) " +
-                                        "VALUES('{0}', '{1}', '{2}', '{3}', '{4}','{5}', '{6}', '{7}', '{8}', '{9}', " +
-                                        "'{10}', '{11}', '{12}', '{13}', '{14}','{15}', '{16}', '{17}')",
-                                        metadataObj.SetupId, crFunctionDataSetID, metadataObj.DatasetTypeId, metadataObj.FileName,
-                                        metadataObj.Extension, metadataObj.DataReference, metadataObj.FileDate, metadataObj.ImportDate,
-                                        metadataObj.Description, metadataObj.Projection, metadataObj.GeoName, metadataObj.DatumName,
-                                        metadataObj.DatumType, metadataObj.SpheroidName, metadataObj.MeridianName, metadataObj.UnitName,
-                                        metadataObj.Proj4String, metadataObj.NumberOfFeatures);
-            rtn = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+            _metadataObj.DatasetTypeId = SQLStatementsCommonClass.getDatasetID("Healthfunctions");
+            if (!SQLStatementsCommonClass.insertMetadata(_metadataObj))
+            {
+                MessageBox.Show("Failed to save Metadata.");
+            }
         }
 
         private void cboFilterEndpointGroup_SelectedValueChanged(object sender, EventArgs e)
@@ -1562,6 +1552,18 @@ namespace BenMAP
             catch (Exception ex)
             {
                 Logger.LogError(ex.Message);
+            }
+        }
+
+        private void btnViewMetadata_Click(object sender, EventArgs e)
+        {
+            _metadataObj = SQLStatementsCommonClass.getMetadata(_datasetID, CommonClass.ManageSetup.SetupID);
+            _metadataObj.SetupName = txtHealthImpactFunction.Text;
+            ViewEditMetadata viewEMdata = new ViewEditMetadata(_metadataObj);
+            DialogResult dr = viewEMdata.ShowDialog();
+            if (dr.Equals(DialogResult.OK))
+            {
+                _metadataObj = viewEMdata.MetadataObj;
             }
         }
 
