@@ -14,6 +14,8 @@ namespace BenMAP
         string _dataName = string.Empty;
         private string _lstDataSetName;
         private object _lstDataSetID;
+        private MetadataClassObj _metadataObj = null;
+
 
         private void ManageMonitorDataSets_Load(object sender, EventArgs e)
         {
@@ -136,6 +138,18 @@ namespace BenMAP
         private void btnOK_Click(object sender, EventArgs e)
         {
             this.DialogResult = DialogResult.OK;
+        }
+
+        private void btnViewMetadata_Click(object sender, EventArgs e)
+        {
+            _metadataObj = SQLStatementsCommonClass.getMetadata(Convert.ToInt32(_lstDataSetID), CommonClass.ManageSetup.SetupID);
+            _metadataObj.SetupName = _lstDataSetName;
+            ViewEditMetadata viewEMdata = new ViewEditMetadata(_metadataObj);
+            DialogResult dr = viewEMdata.ShowDialog();
+            if (dr.Equals(DialogResult.OK))
+            {
+                _metadataObj = viewEMdata.MetadataObj;
+            }
         }
     }
 }

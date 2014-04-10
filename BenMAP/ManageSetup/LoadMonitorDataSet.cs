@@ -140,6 +140,7 @@ namespace BenMAP
         private void btnViewMetadata_Click(object sender, EventArgs e)
         {
             ViewEditMetadata viewEMdata = null;
+            _metadataObj.SetupName =txtDataSetName.Text;
             if(_metadataObj != null)
             {
                 viewEMdata = new ViewEditMetadata(_strPath, _metadataObj);

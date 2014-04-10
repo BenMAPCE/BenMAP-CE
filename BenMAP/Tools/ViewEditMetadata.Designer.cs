@@ -65,7 +65,6 @@
             this.txtDatum = new System.Windows.Forms.TextBox();
             this.lblDatum = new System.Windows.Forms.Label();
             this.txtDatumType = new System.Windows.Forms.TextBox();
-            this.tableLayoutPanel1.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.SuspendLayout();
@@ -75,39 +74,35 @@
             this.tableLayoutPanel1.ColumnCount = 2;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 32.1519F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 67.8481F));
-            this.tableLayoutPanel1.Controls.Add(this.label1, 0, 1);
-            this.tableLayoutPanel1.Controls.Add(this.rtbDescription, 0, 2);
-            this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel1, 0, 3);
-            this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel2, 0, 0);
-            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(749, 507);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 4;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 68.67284F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 5.555555F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 17.59259F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 8.796296F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(395, 648);
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(175, 81);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
             // label1
             // 
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.AutoSize = true;
-            this.label1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label1.Location = new System.Drawing.Point(3, 442);
+            this.label1.Location = new System.Drawing.Point(8, 443);
+            this.label1.Margin = new System.Windows.Forms.Padding(8);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(121, 35);
+            this.label1.Size = new System.Drawing.Size(120, 13);
             this.label1.TabIndex = 1;
             this.label1.Text = "Description";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // rtbDescription
             // 
-            this.tableLayoutPanel1.SetColumnSpan(this.rtbDescription, 2);
+            this.tableLayoutPanel2.SetColumnSpan(this.rtbDescription, 2);
             this.rtbDescription.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.rtbDescription.Location = new System.Drawing.Point(3, 480);
+            this.rtbDescription.Location = new System.Drawing.Point(3, 468);
             this.rtbDescription.Name = "rtbDescription";
-            this.rtbDescription.Size = new System.Drawing.Size(389, 107);
+            this.rtbDescription.Size = new System.Drawing.Size(391, 138);
             this.rtbDescription.TabIndex = 2;
             this.rtbDescription.Text = "";
             this.rtbDescription.TextChanged += new System.EventHandler(this.rtbDescription_TextChanged);
@@ -117,19 +112,18 @@
             this.flowLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.flowLayoutPanel1.AutoSize = true;
-            this.tableLayoutPanel1.SetColumnSpan(this.flowLayoutPanel1, 2);
+            this.tableLayoutPanel2.SetColumnSpan(this.flowLayoutPanel1, 2);
             this.flowLayoutPanel1.Controls.Add(this.btnOK);
             this.flowLayoutPanel1.Controls.Add(this.btnSaveMetaData);
             this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(3, 593);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(3, 612);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(389, 33);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(391, 33);
             this.flowLayoutPanel1.TabIndex = 4;
             // 
             // btnOK
             // 
-            this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOK.Location = new System.Drawing.Point(311, 3);
+            this.btnOK.Location = new System.Drawing.Point(313, 3);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 27);
             this.btnOK.TabIndex = 1;
@@ -139,22 +133,25 @@
             // 
             // btnSaveMetaData
             // 
-            this.btnSaveMetaData.Location = new System.Drawing.Point(230, 3);
+            this.btnSaveMetaData.Location = new System.Drawing.Point(232, 3);
             this.btnSaveMetaData.Name = "btnSaveMetaData";
             this.btnSaveMetaData.Size = new System.Drawing.Size(75, 27);
             this.btnSaveMetaData.TabIndex = 2;
             this.btnSaveMetaData.Text = "Save";
             this.btnSaveMetaData.UseVisualStyleBackColor = true;
             this.btnSaveMetaData.Visible = false;
+            this.btnSaveMetaData.Click += new System.EventHandler(this.btnSaveMetaData_Click);
             // 
             // tableLayoutPanel2
             // 
             this.tableLayoutPanel2.ColumnCount = 2;
-            this.tableLayoutPanel1.SetColumnSpan(this.tableLayoutPanel2, 2);
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 34.19023F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 65.80977F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 34.25693F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 65.74307F));
+            this.tableLayoutPanel2.Controls.Add(this.rtbDescription, 0, 16);
+            this.tableLayoutPanel2.Controls.Add(this.label1, 0, 15);
             this.tableLayoutPanel2.Controls.Add(this.txtSetupID, 1, 0);
             this.tableLayoutPanel2.Controls.Add(this.label7, 0, 0);
+            this.tableLayoutPanel2.Controls.Add(this.flowLayoutPanel1, 0, 17);
             this.tableLayoutPanel2.Controls.Add(this.label9, 0, 14);
             this.tableLayoutPanel2.Controls.Add(this.txtSetupName, 1, 1);
             this.tableLayoutPanel2.Controls.Add(this.label8, 0, 1);
@@ -184,9 +181,9 @@
             this.tableLayoutPanel2.Controls.Add(this.lblDatum, 0, 9);
             this.tableLayoutPanel2.Controls.Add(this.txtDatumType, 1, 10);
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 3);
+            this.tableLayoutPanel2.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
-            this.tableLayoutPanel2.RowCount = 15;
+            this.tableLayoutPanel2.RowCount = 18;
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -202,7 +199,10 @@
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(389, 436);
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 144F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 8F));
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(397, 648);
             this.tableLayoutPanel2.TabIndex = 3;
             this.tableLayoutPanel2.Paint += new System.Windows.Forms.PaintEventHandler(this.tableLayoutPanel2_Paint);
             // 
@@ -210,13 +210,14 @@
             // 
             this.txtSetupID.BackColor = System.Drawing.SystemColors.Control;
             this.txtSetupID.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.txtSetupID.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtSetupID.Enabled = false;
-            this.txtSetupID.Location = new System.Drawing.Point(136, 4);
+            this.txtSetupID.Location = new System.Drawing.Point(140, 4);
             this.txtSetupID.Margin = new System.Windows.Forms.Padding(4);
             this.txtSetupID.Multiline = true;
             this.txtSetupID.Name = "txtSetupID";
             this.txtSetupID.ReadOnly = true;
-            this.txtSetupID.Size = new System.Drawing.Size(239, 20);
+            this.txtSetupID.Size = new System.Drawing.Size(253, 21);
             this.txtSetupID.TabIndex = 0;
             // 
             // label7
@@ -243,13 +244,14 @@
             // 
             this.txtSetupName.BackColor = System.Drawing.SystemColors.Control;
             this.txtSetupName.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.txtSetupName.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtSetupName.Enabled = false;
-            this.txtSetupName.Location = new System.Drawing.Point(136, 33);
+            this.txtSetupName.Location = new System.Drawing.Point(140, 33);
             this.txtSetupName.Margin = new System.Windows.Forms.Padding(4);
             this.txtSetupName.Multiline = true;
             this.txtSetupName.Name = "txtSetupName";
             this.txtSetupName.ReadOnly = true;
-            this.txtSetupName.Size = new System.Drawing.Size(239, 20);
+            this.txtSetupName.Size = new System.Drawing.Size(253, 21);
             this.txtSetupName.TabIndex = 0;
             // 
             // label8
@@ -264,10 +266,11 @@
             // 
             // txtReference
             // 
-            this.txtReference.Location = new System.Drawing.Point(136, 410);
+            this.txtReference.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtReference.Location = new System.Drawing.Point(140, 410);
             this.txtReference.Margin = new System.Windows.Forms.Padding(4);
             this.txtReference.Name = "txtReference";
-            this.txtReference.Size = new System.Drawing.Size(239, 20);
+            this.txtReference.Size = new System.Drawing.Size(253, 20);
             this.txtReference.TabIndex = 0;
             this.txtReference.TextChanged += new System.EventHandler(this.txtReference_TextChanged);
             // 
@@ -275,13 +278,14 @@
             // 
             this.txtFileName.BackColor = System.Drawing.SystemColors.Control;
             this.txtFileName.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.txtFileName.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtFileName.Enabled = false;
-            this.txtFileName.Location = new System.Drawing.Point(136, 62);
+            this.txtFileName.Location = new System.Drawing.Point(140, 62);
             this.txtFileName.Margin = new System.Windows.Forms.Padding(4);
             this.txtFileName.Multiline = true;
             this.txtFileName.Name = "txtFileName";
             this.txtFileName.ReadOnly = true;
-            this.txtFileName.Size = new System.Drawing.Size(239, 20);
+            this.txtFileName.Size = new System.Drawing.Size(253, 21);
             this.txtFileName.TabIndex = 0;
             // 
             // label3
@@ -309,13 +313,14 @@
             // 
             this.txtExtension.BackColor = System.Drawing.SystemColors.Control;
             this.txtExtension.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.txtExtension.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtExtension.Enabled = false;
-            this.txtExtension.Location = new System.Drawing.Point(136, 91);
+            this.txtExtension.Location = new System.Drawing.Point(140, 91);
             this.txtExtension.Margin = new System.Windows.Forms.Padding(4);
             this.txtExtension.Multiline = true;
             this.txtExtension.Name = "txtExtension";
             this.txtExtension.ReadOnly = true;
-            this.txtExtension.Size = new System.Drawing.Size(239, 20);
+            this.txtExtension.Size = new System.Drawing.Size(253, 21);
             this.txtExtension.TabIndex = 0;
             // 
             // label4
@@ -332,13 +337,14 @@
             // 
             this.txtUnit.BackColor = System.Drawing.SystemColors.Control;
             this.txtUnit.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.txtUnit.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtUnit.Enabled = false;
-            this.txtUnit.Location = new System.Drawing.Point(136, 381);
+            this.txtUnit.Location = new System.Drawing.Point(140, 381);
             this.txtUnit.Margin = new System.Windows.Forms.Padding(4);
             this.txtUnit.Multiline = true;
             this.txtUnit.Name = "txtUnit";
             this.txtUnit.ReadOnly = true;
-            this.txtUnit.Size = new System.Drawing.Size(239, 20);
+            this.txtUnit.Size = new System.Drawing.Size(253, 21);
             this.txtUnit.TabIndex = 0;
             this.txtUnit.Visible = false;
             // 
@@ -346,13 +352,14 @@
             // 
             this.txtFileDate.BackColor = System.Drawing.SystemColors.Control;
             this.txtFileDate.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.txtFileDate.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtFileDate.Enabled = false;
-            this.txtFileDate.Location = new System.Drawing.Point(136, 120);
+            this.txtFileDate.Location = new System.Drawing.Point(140, 120);
             this.txtFileDate.Margin = new System.Windows.Forms.Padding(4);
             this.txtFileDate.Multiline = true;
             this.txtFileDate.Name = "txtFileDate";
             this.txtFileDate.ReadOnly = true;
-            this.txtFileDate.Size = new System.Drawing.Size(239, 20);
+            this.txtFileDate.Size = new System.Drawing.Size(253, 21);
             this.txtFileDate.TabIndex = 0;
             // 
             // label5
@@ -380,13 +387,14 @@
             // 
             this.txtImportDate.BackColor = System.Drawing.SystemColors.Control;
             this.txtImportDate.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.txtImportDate.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtImportDate.Enabled = false;
-            this.txtImportDate.Location = new System.Drawing.Point(136, 149);
+            this.txtImportDate.Location = new System.Drawing.Point(140, 149);
             this.txtImportDate.Margin = new System.Windows.Forms.Padding(4);
             this.txtImportDate.Multiline = true;
             this.txtImportDate.Name = "txtImportDate";
             this.txtImportDate.ReadOnly = true;
-            this.txtImportDate.Size = new System.Drawing.Size(239, 20);
+            this.txtImportDate.Size = new System.Drawing.Size(253, 21);
             this.txtImportDate.TabIndex = 0;
             // 
             // label6
@@ -403,13 +411,14 @@
             // 
             this.txtMedian.BackColor = System.Drawing.SystemColors.Control;
             this.txtMedian.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.txtMedian.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtMedian.Enabled = false;
-            this.txtMedian.Location = new System.Drawing.Point(136, 352);
+            this.txtMedian.Location = new System.Drawing.Point(140, 352);
             this.txtMedian.Margin = new System.Windows.Forms.Padding(4);
             this.txtMedian.Multiline = true;
             this.txtMedian.Name = "txtMedian";
             this.txtMedian.ReadOnly = true;
-            this.txtMedian.Size = new System.Drawing.Size(239, 20);
+            this.txtMedian.Size = new System.Drawing.Size(253, 21);
             this.txtMedian.TabIndex = 0;
             this.txtMedian.Visible = false;
             // 
@@ -417,13 +426,14 @@
             // 
             this.txtGeoName.BackColor = System.Drawing.SystemColors.Control;
             this.txtGeoName.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.txtGeoName.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtGeoName.Enabled = false;
-            this.txtGeoName.Location = new System.Drawing.Point(136, 178);
+            this.txtGeoName.Location = new System.Drawing.Point(140, 178);
             this.txtGeoName.Margin = new System.Windows.Forms.Padding(4);
             this.txtGeoName.Multiline = true;
             this.txtGeoName.Name = "txtGeoName";
             this.txtGeoName.ReadOnly = true;
-            this.txtGeoName.Size = new System.Drawing.Size(239, 20);
+            this.txtGeoName.Size = new System.Drawing.Size(253, 21);
             this.txtGeoName.TabIndex = 0;
             this.txtGeoName.Visible = false;
             // 
@@ -453,13 +463,14 @@
             // 
             this.txtNumOfFeatures.BackColor = System.Drawing.SystemColors.Control;
             this.txtNumOfFeatures.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.txtNumOfFeatures.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtNumOfFeatures.Enabled = false;
-            this.txtNumOfFeatures.Location = new System.Drawing.Point(136, 207);
+            this.txtNumOfFeatures.Location = new System.Drawing.Point(140, 207);
             this.txtNumOfFeatures.Margin = new System.Windows.Forms.Padding(4);
             this.txtNumOfFeatures.Multiline = true;
             this.txtNumOfFeatures.Name = "txtNumOfFeatures";
             this.txtNumOfFeatures.ReadOnly = true;
-            this.txtNumOfFeatures.Size = new System.Drawing.Size(239, 20);
+            this.txtNumOfFeatures.Size = new System.Drawing.Size(253, 21);
             this.txtNumOfFeatures.TabIndex = 0;
             this.txtNumOfFeatures.Visible = false;
             // 
@@ -478,13 +489,14 @@
             // 
             this.txtSpheroid.BackColor = System.Drawing.SystemColors.Control;
             this.txtSpheroid.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.txtSpheroid.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtSpheroid.Enabled = false;
-            this.txtSpheroid.Location = new System.Drawing.Point(136, 323);
+            this.txtSpheroid.Location = new System.Drawing.Point(140, 323);
             this.txtSpheroid.Margin = new System.Windows.Forms.Padding(4);
             this.txtSpheroid.Multiline = true;
             this.txtSpheroid.Name = "txtSpheroid";
             this.txtSpheroid.ReadOnly = true;
-            this.txtSpheroid.Size = new System.Drawing.Size(239, 20);
+            this.txtSpheroid.Size = new System.Drawing.Size(253, 21);
             this.txtSpheroid.TabIndex = 0;
             this.txtSpheroid.Visible = false;
             // 
@@ -492,13 +504,14 @@
             // 
             this.txtProj4String.BackColor = System.Drawing.SystemColors.Control;
             this.txtProj4String.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.txtProj4String.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtProj4String.Enabled = false;
-            this.txtProj4String.Location = new System.Drawing.Point(136, 236);
+            this.txtProj4String.Location = new System.Drawing.Point(140, 236);
             this.txtProj4String.Margin = new System.Windows.Forms.Padding(4);
             this.txtProj4String.Multiline = true;
             this.txtProj4String.Name = "txtProj4String";
             this.txtProj4String.ReadOnly = true;
-            this.txtProj4String.Size = new System.Drawing.Size(239, 20);
+            this.txtProj4String.Size = new System.Drawing.Size(253, 21);
             this.txtProj4String.TabIndex = 0;
             this.txtProj4String.Visible = false;
             // 
@@ -528,13 +541,14 @@
             // 
             this.txtDatum.BackColor = System.Drawing.SystemColors.Control;
             this.txtDatum.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.txtDatum.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtDatum.Enabled = false;
-            this.txtDatum.Location = new System.Drawing.Point(136, 265);
+            this.txtDatum.Location = new System.Drawing.Point(140, 265);
             this.txtDatum.Margin = new System.Windows.Forms.Padding(4);
             this.txtDatum.Multiline = true;
             this.txtDatum.Name = "txtDatum";
             this.txtDatum.ReadOnly = true;
-            this.txtDatum.Size = new System.Drawing.Size(239, 20);
+            this.txtDatum.Size = new System.Drawing.Size(253, 21);
             this.txtDatum.TabIndex = 0;
             this.txtDatum.Visible = false;
             // 
@@ -553,13 +567,14 @@
             // 
             this.txtDatumType.BackColor = System.Drawing.SystemColors.Control;
             this.txtDatumType.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.txtDatumType.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtDatumType.Enabled = false;
-            this.txtDatumType.Location = new System.Drawing.Point(136, 294);
+            this.txtDatumType.Location = new System.Drawing.Point(140, 294);
             this.txtDatumType.Margin = new System.Windows.Forms.Padding(4);
             this.txtDatumType.Multiline = true;
             this.txtDatumType.Name = "txtDatumType";
             this.txtDatumType.ReadOnly = true;
-            this.txtDatumType.Size = new System.Drawing.Size(239, 20);
+            this.txtDatumType.Size = new System.Drawing.Size(253, 21);
             this.txtDatumType.TabIndex = 0;
             this.txtDatumType.Visible = false;
             // 
@@ -567,15 +582,14 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(395, 648);
+            this.ClientSize = new System.Drawing.Size(397, 648);
             this.Controls.Add(this.tableLayoutPanel1);
+            this.Controls.Add(this.tableLayoutPanel2);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
             this.Name = "ViewEditMetadata";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "ViewEditMetadata";
             this.Shown += new System.EventHandler(this.ViewEditMetadata_Shown);
-            this.tableLayoutPanel1.ResumeLayout(false);
-            this.tableLayoutPanel1.PerformLayout();
             this.flowLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel2.ResumeLayout(false);
             this.tableLayoutPanel2.PerformLayout();

@@ -68,6 +68,30 @@ namespace BenMAP
             return bPassed;
         }
 
+        public static bool updateMetadata(MetadataClassObj metadataObj)
+        {
+            FireBirdHelperBase fb = new ESILFireBirdHelper();
+            bool bPassed = false;
+            int rtv = 0;
+
+            string commandText = string.Empty;
+            try
+            {
+                commandText = string.Format("UPDATE METADATAINFORMATION set DATAREFERENCE = '{0}', DESCRIPTION = '{1}' " +
+                                            "WHERE DATASETID = {2} AND SETUPID = {3}", 
+                                            metadataObj.DataReference, metadataObj.Description, metadataObj.DatasetId, metadataObj.SetupId);
+                rtv = fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                bPassed = true;
+
+            }
+            catch (Exception ex)
+            {
+                throw (new Exception(ex.Message));
+            }
+
+            return bPassed;
+        }
+
         /// <summary>
         /// Gets the dataset identifier.
         /// Selects Dataset Id from Datasets table where Dataset Name is the name passed in.

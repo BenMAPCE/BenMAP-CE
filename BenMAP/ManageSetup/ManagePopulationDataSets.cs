@@ -7,13 +7,14 @@ namespace BenMAP
     public partial class ManagePopulationDataSets : FormBase
     {
         string _dataName = string.Empty;
+        private MetadataClassObj _metadataObj = null;
 
         public ManagePopulationDataSets()
         {
             InitializeComponent();
         }
 
-        private int dataSetID;
+        private int _dataSetID;
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
@@ -69,13 +70,14 @@ namespace BenMAP
                 var lst = sender as ListBox;
                 if (lst.SelectedItem == null) return;
                 DataRowView drv = lst.SelectedItem as DataRowView;
-                dataSetID = Convert.ToInt32(drv[1]);
+                _dataSetID = Convert.ToInt32(drv[1]);
+                _dataName = drv[0].ToString();
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
-                string commandText = string.Format("select GridDefinitionName from GridDefinitions as GD join PopulationDataSets as PD on (GD.GridDefinitionID=PD.GridDefinitionID) where PopulationDataSetID={0}", dataSetID);
+                string commandText = string.Format("select GridDefinitionName from GridDefinitions as GD join PopulationDataSets as PD on (GD.GridDefinitionID=PD.GridDefinitionID) where PopulationDataSetID={0}", _dataSetID);
                 txtGridDefinition.Text = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText).ToString();
-                commandText = string.Format("select PopulationConfigurationName from PopulationConfigurations as PC join PopulationDataSets as PD on (PC.PopulationConfigurationID=PD.PopulationConfigurationID) where PopulationDataSetID={0}", dataSetID);
+                commandText = string.Format("select PopulationConfigurationName from PopulationConfigurations as PC join PopulationDataSets as PD on (PC.PopulationConfigurationID=PD.PopulationConfigurationID) where PopulationDataSetID={0}", _dataSetID);
                 txtPopulationConfig.Text = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText).ToString();
-                commandText = string.Format("select first 100 Races.RaceName,Ethnicity.EthnicityName,Genders.GenderName,AgeRanges.AgeRangeName,PopulationEntries.CColumn,PopulationEntries.Row,PopulationEntries.VValue from Races,Ethnicity,Genders,AgeRanges,PopulationEntries,PopulationDataSets where (PopulationEntries.RaceID=Races.RaceID) and (PopulationEntries.EthnicityID=Ethnicity.EthnicityID) and (PopulationEntries.GenderID=Genders.GenderID) and (PopulationEntries.AgeRangeID=AgeRanges.AgeRangeID) and (PopulationEntries.PopulationDataSetID=PopulationDataSets.PopulationDataSetID) and PopulationDataSets.PopulationDataSetID={0} ", dataSetID);
+                commandText = string.Format("select first 100 Races.RaceName,Ethnicity.EthnicityName,Genders.GenderName,AgeRanges.AgeRangeName,PopulationEntries.CColumn,PopulationEntries.Row,PopulationEntries.VValue from Races,Ethnicity,Genders,AgeRanges,PopulationEntries,PopulationDataSets where (PopulationEntries.RaceID=Races.RaceID) and (PopulationEntries.EthnicityID=Ethnicity.EthnicityID) and (PopulationEntries.GenderID=Genders.GenderID) and (PopulationEntries.AgeRangeID=AgeRanges.AgeRangeID) and (PopulationEntries.PopulationDataSetID=PopulationDataSets.PopulationDataSetID) and PopulationDataSets.PopulationDataSetID={0} ", _dataSetID);
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                 olvPopulationValues.DataSource = ds.Tables[0];
 
@@ -105,13 +107,13 @@ namespace BenMAP
                     commandText = "SELECT DATASETID FROM DATASETS WHERE DATASETNAME = 'Population'";
                     dstID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
 
-                    commandText = "delete from PopulationEntries where PopulationDataSetID=" + dataSetID + "";
+                    commandText = "delete from PopulationEntries where PopulationDataSetID=" + _dataSetID + "";
                     fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
-                    commandText = "delete from PopulationGrowthWeights where PopulationDataSetID=" + dataSetID + "";
+                    commandText = "delete from PopulationGrowthWeights where PopulationDataSetID=" + _dataSetID + "";
                     fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
-                    commandText = "delete from PopulationDataSets where PopulationDataSetID=" + dataSetID + "";
+                    commandText = "delete from PopulationDataSets where PopulationDataSetID=" + _dataSetID + "";
                     fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
-                    commandText = "delete from t_populationDatasetIDYear where PopulationDataSetID=" + dataSetID + "";
+                    commandText = "delete from t_populationDatasetIDYear where PopulationDataSetID=" + _dataSetID + "";
                     fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
 
                     commandText = string.Format("DELETE FROM METADATAINFORMATION WHERE SETUPID = {0} AND DATASETID = {1} AND DATASETTYPEID = {2}", CommonClass.ManageSetup.SetupID, popDstID, dstID);
@@ -134,6 +136,18 @@ namespace BenMAP
         private void btnOK_Click(object sender, EventArgs e)
         {
             this.DialogResult = DialogResult.OK;
+        }
+
+        private void btnViewMetadata_Click(object sender, EventArgs e)
+        {
+            _metadataObj = SQLStatementsCommonClass.getMetadata(_dataSetID, CommonClass.ManageSetup.SetupID);
+            _metadataObj.SetupName = _dataName;//_lstDataSetName;
+            ViewEditMetadata viewEMdata = new ViewEditMetadata(_metadataObj);
+            DialogResult dr = viewEMdata.ShowDialog();
+            if (dr.Equals(DialogResult.OK))
+            {
+                _metadataObj = viewEMdata.MetadataObj;
+            }
         }
     }
 }

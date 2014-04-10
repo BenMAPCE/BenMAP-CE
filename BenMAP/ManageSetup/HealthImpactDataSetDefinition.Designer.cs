@@ -74,6 +74,7 @@ namespace BenMAP
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.statusStrip1.SuspendLayout();
             this.grpHealthImpactFunction.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -81,6 +82,7 @@ namespace BenMAP
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.olvFunction)).BeginInit();
             this.grpCancelOK.SuspendLayout();
+            this.flowLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // olvColumn32
@@ -111,8 +113,7 @@ namespace BenMAP
             this.grpHealthImpactFunction.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.grpHealthImpactFunction.Controls.Add(this.btnViewMetadata);
-            this.grpHealthImpactFunction.Controls.Add(this.btnOutPut);
+            this.grpHealthImpactFunction.Controls.Add(this.flowLayoutPanel1);
             this.grpHealthImpactFunction.Controls.Add(this.chbGroup);
             this.grpHealthImpactFunction.Controls.Add(this.groupBox3);
             this.grpHealthImpactFunction.Controls.Add(this.groupBox2);
@@ -120,10 +121,6 @@ namespace BenMAP
             this.grpHealthImpactFunction.Controls.Add(this.olvFunction);
             this.grpHealthImpactFunction.Controls.Add(this.lblHealthImpactFunctionName);
             this.grpHealthImpactFunction.Controls.Add(this.txtHealthImpactFunction);
-            this.grpHealthImpactFunction.Controls.Add(this.btnEdit);
-            this.grpHealthImpactFunction.Controls.Add(this.btnAdd);
-            this.grpHealthImpactFunction.Controls.Add(this.btnDelete);
-            this.grpHealthImpactFunction.Controls.Add(this.btnBrowse);
             this.grpHealthImpactFunction.Location = new System.Drawing.Point(12, 0);
             this.grpHealthImpactFunction.Name = "grpHealthImpactFunction";
             this.grpHealthImpactFunction.Size = new System.Drawing.Size(758, 465);
@@ -132,7 +129,7 @@ namespace BenMAP
             // 
             // btnViewMetadata
             // 
-            this.btnViewMetadata.Location = new System.Drawing.Point(16, 428);
+            this.btnViewMetadata.Location = new System.Drawing.Point(105, 3);
             this.btnViewMetadata.Name = "btnViewMetadata";
             this.btnViewMetadata.Size = new System.Drawing.Size(112, 27);
             this.btnViewMetadata.TabIndex = 30;
@@ -144,7 +141,7 @@ namespace BenMAP
             // btnOutPut
             // 
             this.btnOutPut.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnOutPut.Location = new System.Drawing.Point(224, 425);
+            this.btnOutPut.Location = new System.Drawing.Point(223, 3);
             this.btnOutPut.Name = "btnOutPut";
             this.btnOutPut.Size = new System.Drawing.Size(140, 27);
             this.btnOutPut.TabIndex = 29;
@@ -542,7 +539,7 @@ namespace BenMAP
             // btnEdit
             // 
             this.btnEdit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnEdit.Location = new System.Drawing.Point(675, 425);
+            this.btnEdit.Location = new System.Drawing.Point(674, 3);
             this.btnEdit.Name = "btnEdit";
             this.btnEdit.Size = new System.Drawing.Size(75, 27);
             this.btnEdit.TabIndex = 6;
@@ -553,7 +550,7 @@ namespace BenMAP
             // btnAdd
             // 
             this.btnAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnAdd.Location = new System.Drawing.Point(513, 425);
+            this.btnAdd.Location = new System.Drawing.Point(512, 3);
             this.btnAdd.Name = "btnAdd";
             this.btnAdd.Size = new System.Drawing.Size(75, 27);
             this.btnAdd.TabIndex = 4;
@@ -564,7 +561,7 @@ namespace BenMAP
             // btnDelete
             // 
             this.btnDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnDelete.Location = new System.Drawing.Point(594, 425);
+            this.btnDelete.Location = new System.Drawing.Point(593, 3);
             this.btnDelete.Name = "btnDelete";
             this.btnDelete.Size = new System.Drawing.Size(75, 27);
             this.btnDelete.TabIndex = 5;
@@ -575,7 +572,7 @@ namespace BenMAP
             // btnBrowse
             // 
             this.btnBrowse.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnBrowse.Location = new System.Drawing.Point(370, 425);
+            this.btnBrowse.Location = new System.Drawing.Point(369, 3);
             this.btnBrowse.Name = "btnBrowse";
             this.btnBrowse.Size = new System.Drawing.Size(137, 27);
             this.btnBrowse.TabIndex = 3;
@@ -617,6 +614,21 @@ namespace BenMAP
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
+            // flowLayoutPanel1
+            // 
+            this.flowLayoutPanel1.Controls.Add(this.btnEdit);
+            this.flowLayoutPanel1.Controls.Add(this.btnDelete);
+            this.flowLayoutPanel1.Controls.Add(this.btnAdd);
+            this.flowLayoutPanel1.Controls.Add(this.btnBrowse);
+            this.flowLayoutPanel1.Controls.Add(this.btnOutPut);
+            this.flowLayoutPanel1.Controls.Add(this.btnViewMetadata);
+            this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(3, 425);
+            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(752, 37);
+            this.flowLayoutPanel1.TabIndex = 31;
+            // 
             // HealthImpactDataSetDefinition
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
@@ -641,6 +653,7 @@ namespace BenMAP
             this.groupBox1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.olvFunction)).EndInit();
             this.grpCancelOK.ResumeLayout(false);
+            this.flowLayoutPanel1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -704,5 +717,6 @@ namespace BenMAP
         private System.Windows.Forms.Button btnOutPut;
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.Button btnViewMetadata;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
     }
 }

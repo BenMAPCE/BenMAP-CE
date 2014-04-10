@@ -506,6 +506,7 @@ namespace BenMAP
                         return;
                     }
                     _metadataObj.DatasetId = SQLStatementsCommonClass.selectMaxID("GRIDDEFINITIONID", "GRIDDEFINITIONS"); 
+                    _gridID =  _metadataObj.DatasetId;
                     string _filePath = string.Empty;
                     switch (_gridType)
                     {
@@ -525,7 +526,7 @@ namespace BenMAP
                                     return;
                                 }
                             }
-
+                            
                             commandText = string.Format("INSERT INTO GRIDDEFINITIONS (GridDefinitionID,SetUpID,GridDefinitionName,Columns,Rrows,Ttype,DefaultType) VALUES(" + _gridID + ",{0},'{1}',{2},{3},{4},{5})", CommonClass.ManageSetup.SetupID, txtGridID.Text, _shapeCol, _shapeRow, _gridType, 0);
                             fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                             commandText = string.Format("INSERT INTO SHAPEFILEGRIDDEFINITIONDETAILS (GridDefinitionID,ShapeFileName) VALUES(" + _gridID + ",'{0}')", _shapeFileName);

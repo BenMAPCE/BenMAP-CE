@@ -17,12 +17,14 @@ namespace BenMAP
         {
             InitializeComponent();
         }
+        private MetadataClassObj _metadataObj = null;
         string _dataName = string.Empty;
         string commandText = string.Empty;
         ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
         DataSet ds;
         DataTable _dt = new DataTable();
         private bool isload = false;
+        
         private void btnAdd_Click(object sender, EventArgs e)
         {
             try
@@ -404,6 +406,24 @@ namespace BenMAP
             {
                 olv.ShowGroups = cb.Checked;
                 olv.BuildList();
+            }
+        }
+
+        private void btnViewMetadata_Click(object sender, EventArgs e)
+        {
+            if(lstAvailableDataSets.SelectedItem != null)
+            {//_dataSetID = Convert.ToInt16(drv["VALUATIONFUNCTIONDATASETID"]);
+
+                DataRowView drv = lstAvailableDataSets.SelectedItem as DataRowView;
+                _metadataObj = SQLStatementsCommonClass.getMetadata(_dataSetID, CommonClass.ManageSetup.SetupID);
+                _metadataObj.DatasetId = _dataSetID;//Convert.ToInt32(drv["VALUATIONFUNCTIONDATASETID"]);
+                _metadataObj.SetupName = drv["VALUATIONFUNCTIONDATASETNAME"].ToString();//_dataName
+                ViewEditMetadata viewEMdata = new ViewEditMetadata(_metadataObj);
+                DialogResult dr = viewEMdata.ShowDialog();
+                if (dr.Equals(DialogResult.OK))
+                {
+                    _metadataObj = viewEMdata.MetadataObj;
+                }
             }
         }
 

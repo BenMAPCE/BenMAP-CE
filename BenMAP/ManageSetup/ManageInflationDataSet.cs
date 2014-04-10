@@ -17,6 +17,9 @@ namespace BenMAP
             InitializeComponent();
         }
         string _dataName = string.Empty;
+        private int _datasetID;
+        private MetadataClassObj _metadataObj = null;
+
         private void btnOK_Click(object sender, EventArgs e)
         {
             this.DialogResult = DialogResult.OK;
@@ -91,6 +94,9 @@ namespace BenMAP
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                 olvData.DataSource = ds.Tables[0];
+                commandText = string.Format("select INFLATIONDATASETID from INFLATIONDATASETS where INFLATIONDATASETNAME='{0}' and setupid={1}", str, CommonClass.ManageSetup.SetupID);
+                _datasetID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
+                _dataName = str;
             }
             catch (Exception ex)
             {
@@ -177,6 +183,18 @@ namespace BenMAP
             catch (Exception ex)
             {
                 Logger.LogError(ex.Message);
+            }
+        }
+
+        private void btnViewMetadata_Click(object sender, EventArgs e)
+        {
+            _metadataObj = SQLStatementsCommonClass.getMetadata(_datasetID, CommonClass.ManageSetup.SetupID);
+            _metadataObj.SetupName = _dataName;//_lstDataSetName;
+            ViewEditMetadata viewEMdata = new ViewEditMetadata(_metadataObj);
+            DialogResult dr = viewEMdata.ShowDialog();
+            if (dr.Equals(DialogResult.OK))
+            {
+                _metadataObj = viewEMdata.MetadataObj;
             }
         }
 

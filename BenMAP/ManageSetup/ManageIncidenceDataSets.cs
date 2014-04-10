@@ -18,6 +18,7 @@ namespace BenMAP
 
         string _dataName = string.Empty;
         private object _dataSetID;
+        private MetadataClassObj _metadataObj = null;
 
         private void ManageIncidenceDataSets_Load(object sender, EventArgs e)
         {
@@ -64,6 +65,7 @@ namespace BenMAP
                 if (lst.SelectedItem == null) return;
                 DataRowView drv = lst.SelectedItem as DataRowView;
                 _dataSetID = drv[1];
+                _dataName = drv[0].ToString();
                 string commandText = string.Format("select EndPointGroups.EndPointGroupName,EndPoints.EndPointName,IncidenceRates.Prevalence,Races.RaceName,Ethnicity.EthnicityName,Genders.GenderName,IncidenceRates.StartAge,IncidenceRates.EndAge from IncidenceRates,EndPointGroups,EndPoints,Races,Ethnicity,Genders ,IncidenceDataSets where (IncidenceDataSets.IncidenceDataSetID= IncidenceRates.IncidenceDataSetID) and (IncidenceRates.EndPointGroupID=EndPointGroups.EndPointGroupID) and (IncidenceRates.EndPointID=EndPoints.EndPointID) and (IncidenceRates.RaceID=Races.RaceID) and (IncidenceRates.GenderID=Genders.GenderID) and (IncidenceRates.EthnicityID=Ethnicity.EthnicityID) and IncidenceDataSets.IncidenceDataSetID='{0}'", _dataSetID);
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
@@ -364,6 +366,18 @@ namespace BenMAP
             catch (Exception ex)
             {
                 Logger.LogError(ex.Message);
+            }
+        }
+
+        private void btnViewMetadata_Click(object sender, EventArgs e)
+        {
+            _metadataObj = SQLStatementsCommonClass.getMetadata(Convert.ToInt32(_dataSetID), CommonClass.ManageSetup.SetupID);
+            _metadataObj.SetupName = _dataName;//_lstDataSetName;
+            ViewEditMetadata viewEMdata = new ViewEditMetadata(_metadataObj);
+            DialogResult dr = viewEMdata.ShowDialog();
+            if (dr.Equals(DialogResult.OK))
+            {
+                _metadataObj = viewEMdata.MetadataObj;
             }
         }
     }

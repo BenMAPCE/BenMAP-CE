@@ -11,6 +11,10 @@ namespace BenMAP
 {
     public partial class ManageVariableDataSets : FormBase
     {
+        bool bEdit = false;//Edit flag
+        int _datasetID;
+        private MetadataClassObj _metadataObj = null;
+
         public ManageVariableDataSets()
         {
             InitializeComponent();
@@ -79,6 +83,10 @@ namespace BenMAP
                 lstVariables.DataSource = ds.Tables[0];
                 lstVariables.DisplayMember = "SETUPVARIABLENAME";
                 lstVariables.SelectedIndex = -1;
+
+                commandText = string.Format("select SETUPVARIABLEDATASETID from SETUPVARIABLEDATASETS where SETUPVARIABLEDATASETNAME='{0}' and setupid={1}", str, CommonClass.ManageSetup.SetupID);
+                _datasetID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
+                _dataName = str;
             }
             catch (Exception ex)
             {
@@ -90,9 +98,10 @@ namespace BenMAP
         {
             try
             {
+                bEdit = true;
                 if (lstAvailable.SelectedItem == null) return;
                 string str = lstAvailable.GetItemText(lstAvailable.SelectedItem);
-                VariableDataSetDefinition frm = new VariableDataSetDefinition(str);
+                VariableDataSetDefinition frm = new VariableDataSetDefinition(str, bEdit);
                 DialogResult rth = frm.ShowDialog();
                 ExportDataForlistbox();
             }
@@ -239,6 +248,18 @@ namespace BenMAP
             catch (System.Threading.ThreadAbortException Err)
             {
                 MessageBox.Show(Err.Message);
+            }
+        }
+
+        private void btnViewMetadata_Click(object sender, EventArgs e)
+        {
+            _metadataObj = SQLStatementsCommonClass.getMetadata(_datasetID, CommonClass.ManageSetup.SetupID);
+            _metadataObj.SetupName = _dataName;//_lstDataSetName;
+            ViewEditMetadata viewEMdata = new ViewEditMetadata(_metadataObj);
+            DialogResult dr = viewEMdata.ShowDialog();
+            if (dr.Equals(DialogResult.OK))
+            {
+                _metadataObj = viewEMdata.MetadataObj;
             }
         }
 

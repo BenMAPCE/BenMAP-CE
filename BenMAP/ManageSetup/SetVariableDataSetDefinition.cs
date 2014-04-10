@@ -10,6 +10,7 @@ namespace BenMAP
         private string _datasetName = string.Empty;
         int variabledatasetID = -1;
         private MetadataClassObj _metadataObj = null;
+        private bool _bEdit = false;
         public VariableDataSetDefinition()
         {
             InitializeComponent();
@@ -20,6 +21,11 @@ namespace BenMAP
         {
             InitializeComponent();
             _datasetName = datasetName;
+        }
+
+        public VariableDataSetDefinition(string datasetName, bool bEdit):this(datasetName)
+        {
+            _bEdit = bEdit;
         }
 
         private void VariableDataSetDefinition_Load(object sender, EventArgs e)
@@ -264,7 +270,10 @@ namespace BenMAP
                 }
                 fbtra.Commit();
                 fbCommand.Connection.Close();
-                insertMetadata(datasetId);
+                if(!_bEdit)
+                {
+                    insertMetadata(datasetId);
+                }
                 progBarVariable.Visible = false;
                 lblProgressBar.Visible = false;
 

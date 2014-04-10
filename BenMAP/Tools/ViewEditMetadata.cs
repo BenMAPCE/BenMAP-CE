@@ -19,6 +19,7 @@ namespace BenMAP
         private MetadataClassObj _metadataObj = null;
         private Metadata metadata = null;
         private bool bDataChanged = false;
+        private bool bEditMode = false;
 
         public MetadataClassObj MetadataObj
         {
@@ -38,11 +39,15 @@ namespace BenMAP
             _metadataObj = metadata.GetMetadata();
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ViewEditMetadata"/> class.
+        /// Use this for viewing metadata that was saved to the database.
+        /// </summary>
+        /// <param name="metaObj">The meta object.</param>
         public ViewEditMetadata(MetadataClassObj metaObj): this()
         {
             _metadataObj = metaObj;
-            btnSaveMetaData.Visible = true;
-            btnSaveMetaData.Enabled = false;
+            bEditMode = true;
         }
 
         public ViewEditMetadata(string fileName, MetadataClassObj metadataClsObj) : this()
@@ -50,6 +55,8 @@ namespace BenMAP
             _fInfo = new FileInfo(fileName);
             metadata = new Metadata(fileName);
             _metadataObj = metadataClsObj;
+            //btnSaveMetaData.Visible = true;
+            //btnSaveMetaData.Enabled = false;
         }
 
         private void ViewEditMetadata_Shown(object sender, EventArgs e)
@@ -64,27 +71,36 @@ namespace BenMAP
             rtbDescription.Text = _metadataObj.Description;
             if(_fInfo != null)//if null I am pulling information out of the Database
             {
-                if(_fInfo.Extension == ".shp")
+                if(_fInfo.Extension.ToLower() == ".shp")
                 {
                     LoadShapeInfo();
                 }
 
-                if(_fInfo.Extension == ".csv")
+                if (_fInfo.Extension.ToLower() == ".csv")
+                {
+                    LoadCSVInof();
+                }
+            }
+            else if (_metadataObj.Extension != null)
+            {
+                if (_metadataObj.Extension.ToLower() == ".shp")
+                {
+                    LoadShapeInfo();
+                }
+                else if (_metadataObj.Extension.ToLower() == ".csv" || _metadataObj.Extension == null)
                 {
                     LoadCSVInof();
                 }
             }
             else
             {
-                if (_metadataObj.Extension == ".shp")
-                {
-                    LoadShapeInfo();
-                }
-
-                if(_metadataObj.Extension == ".csv")
-                {
-                    LoadCSVInof();
-                }
+                LoadCSVInof();//default
+            }
+            if(bEditMode)
+            {
+                bDataChanged = false;
+                btnSaveMetaData.Visible = true;
+                btnSaveMetaData.Enabled = false;
             }
         }
 
@@ -125,7 +141,7 @@ namespace BenMAP
 
         private void LoadCSVInof()
         {
-            this.Size = new Size(405, 480);
+            this.Size = new Size(405, 460);
         }
 
         //private void AddLabelandTextbox(string name, string value)
@@ -162,38 +178,57 @@ namespace BenMAP
 
         private void btnOK_Click(object sender, EventArgs e)
         {
-            if(bDataChanged)
+            if(bDataChanged && bEditMode)//If the data changed and I am in edit mode then prompted to save
             {
                 DialogResult dlr = MessageBox.Show("Do you want to save your changes?","Save Changes?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button3);
                 if(dlr.Equals(DialogResult.Yes))
                 {
-                    //do an update
+                    saveMetadata();
+                    this.DialogResult = DialogResult.OK;
                 }
-
+                if(dlr.Equals(DialogResult.No))
+                {
+                    this.DialogResult = DialogResult.Cancel;
+                }
+            }
+            else
+            {
+                //else just exit out.  The changes will auto saved when the new dataset is added.
+                this.DialogResult = DialogResult.OK;
             }
         }
 
         private void txtReference_TextChanged(object sender, EventArgs e)
         {
             _metadataObj.DataReference = txtReference.Text;
-            SetSaveButton();
+            SetSaveButton(true);
         }
 
         private void rtbDescription_TextChanged(object sender, EventArgs e)
         {
             _metadataObj.Description = rtbDescription.Text;
-            SetSaveButton();
+            SetSaveButton(true);
         }
 
-        private void SetSaveButton()
+        private void SetSaveButton(bool tf)
         {
-            bDataChanged = true;
-            btnSaveMetaData.Enabled = true;
+            bDataChanged = tf;
+            btnSaveMetaData.Enabled = tf;
         }
         private void tableLayoutPanel2_Paint(object sender, PaintEventArgs e)
         {
 
         }
-        
+
+        private void btnSaveMetaData_Click(object sender, EventArgs e)
+        {
+            saveMetadata();
+            SetSaveButton(false);
+        }
+
+        private void saveMetadata()
+        {
+            SQLStatementsCommonClass.updateMetadata(_metadataObj);
+        }
     }
 }
