@@ -2554,6 +2554,56 @@ namespace BenMAP
 
             return myScheme1;
         }
+        private PolygonScheme CreateResultPolyScheme(ref MapPolygonLayer polLayer, int CategoryNumber = 6, string isBase = "R")
+        {
+            switch (isBase)
+            {
+                case "D":  //use the delta color ramp
+                    colorBlend.ColorArray = GetColorRamp("blue_red", CategoryNumber);
+                    break;
+                case "R": //Configuration Results -MCB choose another color ramp???
+                    colorBlend.ColorArray = GetColorRamp("brown_green", CategoryNumber);
+                    break;
+                case "I": //Pooled Incidence Results??? -MCB choose another color ramp???
+                    colorBlend.ColorArray = GetColorRamp("yellow_red", CategoryNumber);
+                    break;
+                case "H": //Health Impact Function -MCB choose another color ramp???
+                    colorBlend.ColorArray = GetColorRamp("pale_blue_green", CategoryNumber);
+                    break;
+                case "A": //Pooled Valuation Results -MCB choose another color ramp???
+                    colorBlend.ColorArray = GetColorRamp("purples", CategoryNumber);
+                    break;
+                case "IP": //Pooled Incidence Results -MCB choose another color ramp???
+                    colorBlend.ColorArray = GetColorRamp("oranges", CategoryNumber);
+                    break;
+                default: //use the default color ramp
+                     colorBlend.ColorArray = GetColorRamp("pale_yellow_blue", CategoryNumber); //pale_yellow_blue
+                     break;
+            }
+            
+            PolygonScheme myScheme1 = new PolygonScheme();
+            myScheme1.EditorSettings.ClassificationType = ClassificationType.Quantities;
+            myScheme1.EditorSettings.IntervalMethod = IntervalMethod.NaturalBreaks;
+            myScheme1.EditorSettings.IntervalSnapMethod = IntervalSnapMethod.SignificantFigures;
+            myScheme1.EditorSettings.IntervalRoundingDigits = 3; //number of significant figures (or decimal places if using rounding)
+            myScheme1.EditorSettings.NumBreaks = CategoryNumber;
+            myScheme1.EditorSettings.FieldName = _columnName;
+            myScheme1.EditorSettings.UseGradient = false;
+
+            myScheme1.CreateCategories(polLayer.DataSet.DataTable);
+
+            // Set the category colors equal to the selected color ramp
+            for (int catNum = 0; catNum < CategoryNumber; catNum++)
+            {
+                myScheme1.Categories[catNum].Symbolizer.SetOutline(Color.Transparent, 0); //make the outlines invisble
+                myScheme1.Categories[catNum].SetColor(colorBlend.ColorArray[catNum]);
+            }
+            myScheme1.AppearsInLegend = true; //if true then legend text displayed
+            myScheme1.IsExpanded = true;
+            myScheme1.LegendText = _columnName;
+
+            return myScheme1;
+        }
         private void ResetGisMap(object sender, EventArgs e, string isBase)
         {
             try
@@ -6555,21 +6605,22 @@ namespace BenMAP
                         MapPolygonLayer polLayer = (MapPolygonLayer)mainMap.Layers.Add(CommonClass.DataFilePath + @"\Tmp\Incidence.shp");
                         //MapPolygonLayer polLayer = mainMap.Layers[mainMap.Layers.Count - 1] as MapPolygonLayer;
                         string strValueField = polLayer.DataSet.DataTable.Columns[polLayer.DataSet.DataTable.Columns.Count - 1].ColumnName;
-                        PolygonScheme myScheme1 = new PolygonScheme();
-                        float fl = (float)0.1;
-                        myScheme1.EditorSettings.StartColor = Color.Blue;
-                        myScheme1.EditorSettings.StartColor.ToTransparent(fl);
-                        myScheme1.EditorSettings.EndColor = Color.Red;
-                        myScheme1.EditorSettings.EndColor.ToTransparent(fl);
+                        //PolygonScheme myScheme1 = new PolygonScheme();
+                        //float fl = (float)0.1;
+                        //myScheme1.EditorSettings.StartColor = Color.Blue;
+                        //myScheme1.EditorSettings.StartColor.ToTransparent(fl);
+                        //myScheme1.EditorSettings.EndColor = Color.Red;
+                        //myScheme1.EditorSettings.EndColor.ToTransparent(fl);
 
-                        myScheme1.EditorSettings.ClassificationType = ClassificationType.Quantities;
-                        myScheme1.EditorSettings.IntervalMethod = IntervalMethod.NaturalBreaks;
-                        myScheme1.EditorSettings.IntervalSnapMethod = IntervalSnapMethod.Rounding;
-                        myScheme1.EditorSettings.IntervalRoundingDigits = 3;
-                        myScheme1.EditorSettings.NumBreaks = 6;
-                        myScheme1.EditorSettings.FieldName = strValueField; myScheme1.EditorSettings.UseGradient = false;
-                        myScheme1.CreateCategories(polLayer.DataSet.DataTable);
-
+                        //myScheme1.EditorSettings.ClassificationType = ClassificationType.Quantities;
+                        //myScheme1.EditorSettings.IntervalMethod = IntervalMethod.NaturalBreaks;
+                        //myScheme1.EditorSettings.IntervalSnapMethod = IntervalSnapMethod.Rounding;
+                        //myScheme1.EditorSettings.IntervalRoundingDigits = 3;
+                        //myScheme1.EditorSettings.NumBreaks = 6;
+                        //myScheme1.EditorSettings.FieldName = strValueField; myScheme1.EditorSettings.UseGradient = false;
+                        //myScheme1.CreateCategories(polLayer.DataSet.DataTable);
+                        _columnName = strValueField;
+                        polLayer.Symbology = CreateResultPolyScheme(ref polLayer, 6, "H"); //-MCB added
                         double dMinValue = 0.0;
                         double dMaxValue = 0.0;
                         dMinValue = crSelectFunctionCalculateValue.CRCalculateValues.Count == 0 ? 0 : crSelectFunctionCalculateValue.CRCalculateValues.Min(a => a.PointEstimate);
@@ -6582,7 +6633,7 @@ namespace BenMAP
                         string pollutantUnit = string.Empty; 
                         _columnName = strValueField;
                         CurrentMapTitle = CommonClass.MainSetup.SetupName + " Setup: " + _ResultPolygonLayer.LegendText + ", Health Impact Function Result"; 
-                        RenderMainMap(true, "R");
+                        RenderMainMap(true, "H");
 
                         addRegionLayerGroupToMainMap();
                     }
@@ -6968,34 +7019,35 @@ namespace BenMAP
                     APVResultPolyLayer1.LegendText = author;
                     MapPolygonLayer polLayer = APVResultPolyLayer1;
                     string strValueField = polLayer.DataSet.DataTable.Columns[polLayer.DataSet.DataTable.Columns.Count - 1].ColumnName;
-                    PolygonScheme myScheme1 = new PolygonScheme();
-                    float fl = (float)0.1;
-                    myScheme1.EditorSettings.StartColor = Color.Blue;
-                    myScheme1.EditorSettings.StartColor.ToTransparent(fl);
-                    myScheme1.EditorSettings.EndColor = Color.Red;
-                    myScheme1.EditorSettings.EndColor.ToTransparent(fl);
+                    //PolygonScheme myScheme1 = new PolygonScheme();
+                    //float fl = (float)0.1;
+                    //myScheme1.EditorSettings.StartColor = Color.Blue;
+                    //myScheme1.EditorSettings.StartColor.ToTransparent(fl);
+                    //myScheme1.EditorSettings.EndColor = Color.Red;
+                    //myScheme1.EditorSettings.EndColor.ToTransparent(fl);
 
-                    myScheme1.EditorSettings.ClassificationType = ClassificationType.Quantities;
-                    myScheme1.EditorSettings.IntervalMethod = IntervalMethod.NaturalBreaks;
-                    myScheme1.EditorSettings.IntervalSnapMethod = IntervalSnapMethod.SignificantFigures;
-                    myScheme1.EditorSettings.IntervalRoundingDigits = 3;
-                    myScheme1.EditorSettings.NumBreaks = 6;
-                    myScheme1.EditorSettings.FieldName = strValueField; myScheme1.EditorSettings.UseGradient = false;
-                    myScheme1.CreateCategories(polLayer.DataSet.DataTable);
+                    //myScheme1.EditorSettings.ClassificationType = ClassificationType.Quantities;
+                    //myScheme1.EditorSettings.IntervalMethod = IntervalMethod.NaturalBreaks;
+                    //myScheme1.EditorSettings.IntervalSnapMethod = IntervalSnapMethod.SignificantFigures;
+                    //myScheme1.EditorSettings.IntervalRoundingDigits = 3;
+                    //myScheme1.EditorSettings.NumBreaks = 6;
+                    //myScheme1.EditorSettings.FieldName = strValueField; myScheme1.EditorSettings.UseGradient = false;
+                    //myScheme1.CreateCategories(polLayer.DataSet.DataTable);
+                    _columnName = strValueField;
+                    polLayer.Symbology = CreateResultPolyScheme(ref polLayer, 6, "A"); //-MCB added
 
                     double dMinValue = 0.0;
                     double dMaxValue = 0.0;
                     dMinValue = lstallSelectValuationMethodAndValue.First().lstAPVValueAttributes.Min(a => a.PointEstimate);
                     dMaxValue = lstallSelectValuationMethodAndValue.First().lstAPVValueAttributes.Max(a => a.PointEstimate);
-
                     _dMinValue = dMinValue;
                     _dMaxValue = dMaxValue;
+
                     //_currentLayerIndex = mainMap.Layers.Count - 1;
                     _CurrentIMapLayer = APVResultPolyLayer1;
                     _columnName = strValueField;
                     CurrentMapTitle = CommonClass.MainSetup.SetupName + " Setup: " + APVResultPolyLayer1.LegendText + ", Pooled Valuation Result"; 
                     RenderMainMap(true,"A");
-
 
                     addRegionLayerGroupToMainMap();
 
@@ -9264,20 +9316,22 @@ namespace BenMAP
                         MapPolygonLayer polLayer = (MapPolygonLayer)mainMap.Layers.Add(CommonClass.DataFilePath + @"\Tmp\CRTemp.shp");
                         //MapPolygonLayer polLayer = mainMap.Layers[mainMap.Layers.Count - 1] as MapPolygonLayer;
                         string strValueField = polLayer.DataSet.DataTable.Columns[polLayer.DataSet.DataTable.Columns.Count - 1].ColumnName;
-                        PolygonScheme myScheme1 = new PolygonScheme();
-                        float fl = (float)0.1;
-                        myScheme1.EditorSettings.StartColor = Color.Blue;
-                        myScheme1.EditorSettings.StartColor.ToTransparent(fl);
-                        myScheme1.EditorSettings.EndColor = Color.Red;
-                        myScheme1.EditorSettings.EndColor.ToTransparent(fl);
+                        //PolygonScheme myScheme1 = new PolygonScheme();
+                        //float fl = (float)0.1;
+                        //myScheme1.EditorSettings.StartColor = Color.Blue;
+                        //myScheme1.EditorSettings.StartColor.ToTransparent(fl);
+                        //myScheme1.EditorSettings.EndColor = Color.Red;
+                        //myScheme1.EditorSettings.EndColor.ToTransparent(fl);
 
-                        myScheme1.EditorSettings.ClassificationType = ClassificationType.Quantities;
-                        myScheme1.EditorSettings.IntervalMethod = IntervalMethod.NaturalBreaks;
-                        myScheme1.EditorSettings.IntervalSnapMethod = IntervalSnapMethod.SignificantFigures;
-                        myScheme1.EditorSettings.IntervalRoundingDigits = 3;
-                        myScheme1.EditorSettings.NumBreaks = 6;
-                        myScheme1.EditorSettings.FieldName = strValueField; myScheme1.EditorSettings.UseGradient = false;
-                        myScheme1.CreateCategories(polLayer.DataSet.DataTable);
+                        //myScheme1.EditorSettings.ClassificationType = ClassificationType.Quantities;
+                        //myScheme1.EditorSettings.IntervalMethod = IntervalMethod.NaturalBreaks;
+                        //myScheme1.EditorSettings.IntervalSnapMethod = IntervalSnapMethod.SignificantFigures;
+                        //myScheme1.EditorSettings.IntervalRoundingDigits = 3;
+                        //myScheme1.EditorSettings.NumBreaks = 6;
+                        //myScheme1.EditorSettings.FieldName = strValueField; myScheme1.EditorSettings.UseGradient = false;
+                        //myScheme1.CreateCategories(polLayer.DataSet.DataTable);
+                        _columnName = strValueField;
+                        polLayer.Symbology = CreateResultPolyScheme(ref polLayer, 6, "IP"); //-MCB added
 
                         double dMinValue = 0.0;
                         double dMaxValue = 0.0;
@@ -10547,20 +10601,23 @@ namespace BenMAP
                             CRResultMapPolyLayer = (MapPolygonLayer)mainMap.Layers.Add(CommonClass.DataFilePath + @"\Tmp\CRTemp.shp");
                             MapPolygonLayer polLayer = CRResultMapPolyLayer;
                             string strValueField = polLayer.DataSet.DataTable.Columns[polLayer.DataSet.DataTable.Columns.Count - 1].ColumnName;
-                            PolygonScheme myScheme1 = new PolygonScheme();
-                            float fl = (float)0.1;
-                            myScheme1.EditorSettings.StartColor = Color.Blue;
-                            myScheme1.EditorSettings.StartColor.ToTransparent(fl);
-                            myScheme1.EditorSettings.EndColor = Color.Red;
-                            myScheme1.EditorSettings.EndColor.ToTransparent(fl);
+                            //PolygonScheme myScheme1 = new PolygonScheme();
+                            //float fl = (float)0.1;
+                            //myScheme1.EditorSettings.StartColor = Color.Blue;
+                            //myScheme1.EditorSettings.StartColor.ToTransparent(fl);
+                            //myScheme1.EditorSettings.EndColor = Color.Red;
+                            //myScheme1.EditorSettings.EndColor.ToTransparent(fl);
 
-                            myScheme1.EditorSettings.ClassificationType = ClassificationType.Quantities;
-                            myScheme1.EditorSettings.IntervalMethod = IntervalMethod.NaturalBreaks;
-                            myScheme1.EditorSettings.IntervalSnapMethod = IntervalSnapMethod.Rounding;
-                            myScheme1.EditorSettings.IntervalRoundingDigits = 1;
-                            myScheme1.EditorSettings.NumBreaks = 6;
-                            myScheme1.EditorSettings.FieldName = strValueField; myScheme1.EditorSettings.UseGradient = false;
-                            myScheme1.CreateCategories(polLayer.DataSet.DataTable);
+                            //myScheme1.EditorSettings.ClassificationType = ClassificationType.Quantities;
+                            //myScheme1.EditorSettings.IntervalMethod = IntervalMethod.NaturalBreaks;
+                            //myScheme1.EditorSettings.IntervalSnapMethod = IntervalSnapMethod.Rounding;
+                            //myScheme1.EditorSettings.IntervalRoundingDigits = 1;
+                            //myScheme1.EditorSettings.NumBreaks = 6;
+                            //myScheme1.EditorSettings.FieldName = strValueField;
+                            //myScheme1.EditorSettings.UseGradient = false;
+                            //myScheme1.CreateCategories(polLayer.DataSet.DataTable);
+                            _columnName = strValueField;
+                            polLayer.Symbology = CreateResultPolyScheme(ref polLayer, 6, "R"); //-MCB added
 
                             double dMinValue = 0.0;
                             double dMaxValue = 0.0;
@@ -12176,21 +12233,22 @@ namespace BenMAP
                             tlvIPoolMapPolyLayer.LegendText = author;
                             MapPolygonLayer polLayer = tlvIPoolMapPolyLayer;
                             string strValueField = polLayer.DataSet.DataTable.Columns[polLayer.DataSet.DataTable.Columns.Count - 1].ColumnName;
-                            PolygonScheme myScheme1 = new PolygonScheme();
-                            float fl = (float)0.1;
-                            myScheme1.EditorSettings.StartColor = Color.Blue;
-                            myScheme1.EditorSettings.StartColor.ToTransparent(fl);
-                            myScheme1.EditorSettings.EndColor = Color.Red;
-                            myScheme1.EditorSettings.EndColor.ToTransparent(fl);
+                            //PolygonScheme myScheme1 = new PolygonScheme();
+                            //float fl = (float)0.1;
+                            //myScheme1.EditorSettings.StartColor = Color.Blue;
+                            //myScheme1.EditorSettings.StartColor.ToTransparent(fl);
+                            //myScheme1.EditorSettings.EndColor = Color.Red;
+                            //myScheme1.EditorSettings.EndColor.ToTransparent(fl);
 
-                            myScheme1.EditorSettings.ClassificationType = ClassificationType.Quantities;
-                            myScheme1.EditorSettings.IntervalMethod = IntervalMethod.NaturalBreaks;
-                            myScheme1.EditorSettings.IntervalSnapMethod = IntervalSnapMethod.Rounding;
-                            myScheme1.EditorSettings.IntervalRoundingDigits = 3;
-                            myScheme1.EditorSettings.NumBreaks = 6;
-                            myScheme1.EditorSettings.FieldName = strValueField; myScheme1.EditorSettings.UseGradient = false;
-                            myScheme1.CreateCategories(polLayer.DataSet.DataTable);
-
+                            //myScheme1.EditorSettings.ClassificationType = ClassificationType.Quantities;
+                            //myScheme1.EditorSettings.IntervalMethod = IntervalMethod.NaturalBreaks;
+                            //myScheme1.EditorSettings.IntervalSnapMethod = IntervalSnapMethod.Rounding;
+                            //myScheme1.EditorSettings.IntervalRoundingDigits = 3;
+                            //myScheme1.EditorSettings.NumBreaks = 6;
+                            //myScheme1.EditorSettings.FieldName = strValueField; myScheme1.EditorSettings.UseGradient = false;
+                            //myScheme1.CreateCategories(polLayer.DataSet.DataTable);
+                            _columnName = strValueField;
+                            polLayer.Symbology = CreateResultPolyScheme(ref polLayer, 6, "I"); //-MCB added
 
                             double dMinValue = 0.0;
                             double dMaxValue = 0.0;
@@ -12550,6 +12608,9 @@ namespace BenMAP
                     break;
                 case "red_blue":
                     _colorArray = _red_blue_Array;
+                    break;
+                case "blue_red":
+                    _colorArray = (System.Drawing.Color[])_red_blue_Array.Reverse();
                     break;
                 case "red_black":
                     _colorArray = _red_black_Array;
