@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
 using System.Windows.Forms;
 using ESIL.DBUtility;
 using System.Data;
@@ -717,6 +718,153 @@ namespace BenMAP
             {
                 return null;
             }
+        }
+
+
+        private static StreamWriter sw;
+        public static bool exportToTxt(TreeView tv, string filename)
+        {
+            try
+            {
+                FileStream fs = new FileStream(filename, FileMode.Create);
+                sw = new StreamWriter(fs, Encoding.UTF8);
+                sw.WriteLine(tv.Nodes[0].Text);
+                foreach (TreeNode node in tv.Nodes)
+                {
+                    saveNode(node.Nodes);
+                }
+                sw.Close();
+                fs.Close();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+                return false;
+            }
+        }
+        public static bool exportToXml(TreeView tv, string filename)
+        {
+            try
+            {
+                sw = new StreamWriter(filename, false, System.Text.Encoding.UTF8);
+                sw.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\" ?>");
+                string txtWithoutSpace = tv.Nodes[0].Text;
+                txtWithoutSpace = txtWithoutSpace.Replace(" ", ".");
+                txtWithoutSpace = txtWithoutSpace.Replace("&", "And");
+                txtWithoutSpace = txtWithoutSpace.Replace(":", "");
+                txtWithoutSpace = txtWithoutSpace.Replace("..", ".");
+                sw.WriteLine("<" + txtWithoutSpace + ">");
+
+                foreach (TreeNode node in tv.Nodes)
+                {
+                    saveNode(node.Nodes);
+                }
+                sw.WriteLine("</" + txtWithoutSpace + ">");
+                sw.Close();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+                return false;
+            }
+        }
+
+        private static void saveNode(TreeNodeCollection tnc)
+        {
+            foreach (TreeNode node in tnc)
+            {
+                if (node.Nodes.Count > 0)
+                {
+                    string txtWithoutSpace = node.Text;
+                    txtWithoutSpace = txtWithoutSpace.Replace(" ", ".");
+                    txtWithoutSpace = txtWithoutSpace.Replace("&", "And");
+                    txtWithoutSpace = txtWithoutSpace.Replace(":", "");
+                    txtWithoutSpace = txtWithoutSpace.Replace("..", ".");
+
+                    sw.WriteLine("<" + txtWithoutSpace + ">");
+                    saveNode(node.Nodes);
+                    sw.WriteLine("</" + txtWithoutSpace + ">");
+                }
+                else sw.WriteLine(node.Text);
+            }
+        }
+
+        public static int generateAuditTrailReportTreeView(TreeView trv)
+        {
+            int retVal = 0;
+
+            if (CommonClass.ValuationMethodPoolingAndAggregation != null)
+            {
+                ValuationMethodPoolingAndAggregation apvrVMPA = new ValuationMethodPoolingAndAggregation();
+                apvrVMPA = CommonClass.ValuationMethodPoolingAndAggregation;
+                TreeNode apvrTreeNode = new TreeNode();
+                apvrTreeNode = AuditTrailReportCommonClass.getTreeNodeFromValuationMethodPoolingAndAggregation(apvrVMPA);
+                trv.Nodes.Clear();
+                trv.Nodes.Add(apvrVMPA.Version == null ? "BenMAP-CE" : apvrVMPA.Version);
+                trv.Nodes.Add(apvrTreeNode);
+            }
+            else if (CommonClass.BaseControlCRSelectFunctionCalculateValue != null)
+            {
+                BaseControlCRSelectFunctionCalculateValue cfgrFunctionCV = new BaseControlCRSelectFunctionCalculateValue();
+                cfgrFunctionCV = CommonClass.BaseControlCRSelectFunctionCalculateValue;
+                TreeNode cfgrTreeNode = new TreeNode();
+                cfgrTreeNode = AuditTrailReportCommonClass.getTreeNodeFromBaseControlCRSelectFunctionCalculateValue(cfgrFunctionCV);
+                trv.Nodes.Clear();
+                trv.Nodes.Add(cfgrFunctionCV.Version == null ? "BenMAP-CE" : cfgrFunctionCV.Version);
+                trv.Nodes.Add(cfgrTreeNode);
+            }
+            else if (CommonClass.BaseControlCRSelectFunction != null)
+            {
+                BaseControlCRSelectFunction cfgFunction = new BaseControlCRSelectFunction();
+                cfgFunction = CommonClass.BaseControlCRSelectFunction;
+                TreeNode cfgTreeNode = new TreeNode();
+                cfgTreeNode = AuditTrailReportCommonClass.getTreeNodeFromBaseControlCRSelectFunction(cfgFunction);
+                trv.Nodes.Clear();
+                trv.Nodes.Add(cfgFunction.Version == null ? "BenMAP-CE" : cfgFunction.Version);
+                trv.Nodes.Add(cfgTreeNode);
+            }
+            else
+            {
+                //incomplete configuration
+                //MessageBox.Show("Please finish your configuration first.");
+                retVal = -1;
+            }
+
+            return retVal;
+        }
+
+        public static int exportToCtlx(string filePath)
+        {
+            int retVal = 0;
+
+            if (CommonClass.ValuationMethodPoolingAndAggregation != null)
+            {
+                ValuationMethodPoolingAndAggregation apvrVMPA = new ValuationMethodPoolingAndAggregation();
+                apvrVMPA = CommonClass.ValuationMethodPoolingAndAggregation;
+                APVX.APVCommonClass.SaveAPVFile(filePath.Substring(0, filePath.Length - 4) + "apvx", apvrVMPA);
+                BatchCommonClass.OutputAPV(apvrVMPA, filePath, filePath.Substring(0, filePath.Length - 4) + "apvx");
+                //MessageBox.Show("Configuration file saved.", "File saved");
+            }
+            else if (CommonClass.BaseControlCRSelectFunction != null)
+            {
+                BaseControlCRSelectFunction cfgFunction = new BaseControlCRSelectFunction();
+                cfgFunction = CommonClass.BaseControlCRSelectFunction;
+                Configuration.ConfigurationCommonClass.SaveCFGFile(CommonClass.BaseControlCRSelectFunction, filePath.Substring(0, filePath.Length - 4) + "cfgx");
+                BatchCommonClass.OutputCFG(cfgFunction, filePath, filePath.Substring(0, filePath.Length - 4) + "cfgx");
+                //MessageBox.Show("Configuration file saved.", "File saved");
+            }
+            else
+            {
+                //incomplete configuration
+                //MessageBox.Show("Please finish your configuration first.");
+                retVal = -1;
+            }                  
+
+            return retVal;
         }
 
 

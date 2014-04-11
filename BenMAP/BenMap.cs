@@ -9599,37 +9599,8 @@ namespace BenMAP
                 }
                 else if (rbAuditCurrent.Checked)
                 {
-                    if (CommonClass.ValuationMethodPoolingAndAggregation != null)
-                    {
-                        ValuationMethodPoolingAndAggregation apvrVMPA = new ValuationMethodPoolingAndAggregation();
-                        apvrVMPA = CommonClass.ValuationMethodPoolingAndAggregation;
-                        TreeNode apvrTreeNode = new TreeNode();
-                        apvrTreeNode = AuditTrailReportCommonClass.getTreeNodeFromValuationMethodPoolingAndAggregation(apvrVMPA);
-                        trvAuditTrialReport.Nodes.Clear();
-                        trvAuditTrialReport.Nodes.Add(apvrVMPA.Version == null ? "BenMAP-CE" : apvrVMPA.Version);
-                        trvAuditTrialReport.Nodes.Add(apvrTreeNode);
-                    }
-                    else if (CommonClass.BaseControlCRSelectFunctionCalculateValue != null)
-                    {
-                        BaseControlCRSelectFunctionCalculateValue cfgrFunctionCV = new BaseControlCRSelectFunctionCalculateValue();
-                        cfgrFunctionCV = CommonClass.BaseControlCRSelectFunctionCalculateValue;
-                        TreeNode cfgrTreeNode = new TreeNode();
-                        cfgrTreeNode = AuditTrailReportCommonClass.getTreeNodeFromBaseControlCRSelectFunctionCalculateValue(cfgrFunctionCV);
-                        trvAuditTrialReport.Nodes.Clear();
-                        trvAuditTrialReport.Nodes.Add(cfgrFunctionCV.Version == null ? "BenMAP-CE" : cfgrFunctionCV.Version);
-                        trvAuditTrialReport.Nodes.Add(cfgrTreeNode);
-                    }
-                    else if (CommonClass.BaseControlCRSelectFunction != null)
-                    {
-                        BaseControlCRSelectFunction cfgFunction = new BaseControlCRSelectFunction();
-                        cfgFunction = CommonClass.BaseControlCRSelectFunction;
-                        TreeNode cfgTreeNode = new TreeNode();
-                        cfgTreeNode = AuditTrailReportCommonClass.getTreeNodeFromBaseControlCRSelectFunction(cfgFunction);
-                        trvAuditTrialReport.Nodes.Clear();
-                        trvAuditTrialReport.Nodes.Add(cfgFunction.Version == null ? "BenMAP-CE" : cfgFunction.Version);
-                        trvAuditTrialReport.Nodes.Add(cfgTreeNode);
-                    }
-                    else
+                    int retVal = AuditTrailReportCommonClass.generateAuditTrailReportTreeView(trvAuditTrialReport);
+                    if (retVal == -1)
                     {
                         MessageBox.Show("Please finish your configuration first.");
                     }
@@ -10304,33 +10275,22 @@ namespace BenMAP
                             }
                             else if (rbAuditCurrent.Checked)
                             {
-                                if (CommonClass.ValuationMethodPoolingAndAggregation != null)
-                                {
-                                    ValuationMethodPoolingAndAggregation apvrVMPA = new ValuationMethodPoolingAndAggregation();
-                                    apvrVMPA = CommonClass.ValuationMethodPoolingAndAggregation;
-                                    APVX.APVCommonClass.SaveAPVFile(sDlg.FileName.Substring(0, sDlg.FileName.Length - 4) + "apvx", apvrVMPA);
-                                    BatchCommonClass.OutputAPV(apvrVMPA, sDlg.FileName, sDlg.FileName.Substring(0, sDlg.FileName.Length - 4) + "apvx");
-                                    MessageBox.Show("Configuration file saved.", "File saved");
-                                }
-                                else if (CommonClass.BaseControlCRSelectFunction != null)
-                                {
-                                    BaseControlCRSelectFunction cfgFunction = new BaseControlCRSelectFunction();
-                                    cfgFunction = CommonClass.BaseControlCRSelectFunction;
-                                    Configuration.ConfigurationCommonClass.SaveCFGFile(CommonClass.BaseControlCRSelectFunction, sDlg.FileName.Substring(0, sDlg.FileName.Length - 4) + "cfgx");
-                                    BatchCommonClass.OutputCFG(cfgFunction, sDlg.FileName, sDlg.FileName.Substring(0, sDlg.FileName.Length - 4) + "cfgx");
-                                    MessageBox.Show("Configuration file saved.", "File saved");
-                                }
-                                else
+                                int retVal = AuditTrailReportCommonClass.exportToCtlx(sDlg.FileName);
+                                if (retVal == -1)
                                 {
                                     MessageBox.Show("Please finish your configuration first.");
                                 }
+                                else
+                                {
+                                    MessageBox.Show("Configuration file saved.", "File saved");
+                                }                               
                             }
                             break;
                         case ".txt":
-                            saveOk = exportToTxt(trvAuditTrialReport, sDlg.FileName);
+                            saveOk = AuditTrailReportCommonClass.exportToTxt(trvAuditTrialReport, sDlg.FileName);
                             break;
                         case ".xml":
-                            saveOk = exportToXml(trvAuditTrialReport, sDlg.FileName);
+                            saveOk = AuditTrailReportCommonClass.exportToXml(trvAuditTrialReport, sDlg.FileName);
                             break;
                     }
                 }
@@ -10345,77 +10305,7 @@ namespace BenMAP
             }
         }
 
-        private StreamWriter sw;
-        public bool exportToTxt(TreeView tv, string filename)
-        {
-            try
-            {
-                FileStream fs = new FileStream(filename, FileMode.Create);
-                sw = new StreamWriter(fs, Encoding.UTF8);
-                sw.WriteLine(tv.Nodes[0].Text);
-                foreach (TreeNode node in tv.Nodes)
-                {
-                    saveNode(node.Nodes);
-                }
-                sw.Close();
-                fs.Close();
-
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex);
-                return false;
-            }
-        }
-        public bool exportToXml(TreeView tv, string filename)
-        {
-            try
-            {
-                sw = new StreamWriter(filename, false, System.Text.Encoding.UTF8);
-                sw.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\" ?>");
-                string txtWithoutSpace = tv.Nodes[0].Text;
-                txtWithoutSpace = txtWithoutSpace.Replace(" ", ".");
-                txtWithoutSpace = txtWithoutSpace.Replace("&", "And");
-                txtWithoutSpace = txtWithoutSpace.Replace(":", "");
-                txtWithoutSpace = txtWithoutSpace.Replace("..", ".");
-                sw.WriteLine("<" + txtWithoutSpace + ">");
-
-                foreach (TreeNode node in tv.Nodes)
-                {
-                    saveNode(node.Nodes);
-                }
-                sw.WriteLine("</" + txtWithoutSpace + ">");
-                sw.Close();
-
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex);
-                return false;
-            }
-        }
-
-        private void saveNode(TreeNodeCollection tnc)
-        {
-            foreach (TreeNode node in tnc)
-            {
-                if (node.Nodes.Count > 0)
-                {
-                    string txtWithoutSpace = node.Text;
-                    txtWithoutSpace = txtWithoutSpace.Replace(" ", ".");
-                    txtWithoutSpace = txtWithoutSpace.Replace("&", "And");
-                    txtWithoutSpace = txtWithoutSpace.Replace(":", "");
-                    txtWithoutSpace = txtWithoutSpace.Replace("..", ".");
-
-                    sw.WriteLine("<" + txtWithoutSpace + ">");
-                    saveNode(node.Nodes);
-                    sw.WriteLine("</" + txtWithoutSpace + ">");
-                }
-                else sw.WriteLine(node.Text);
-            }
-        }
+        
         private void btShowCRResult_Click(object sender, EventArgs e)
         {
             try
