@@ -107,15 +107,17 @@ namespace BenMAP
             issue.SetField(NewJiraIssue.FIELD_COMPONENTS, new JiraProjectComponent[] { (JiraProjectComponent)cboComponent.SelectedItem });
 
             NewJiraIssueResponse response = client.CreateIssue(issue);
+            FileInfo[] files;
 
             if (response != null)
             {
                 //attach error log
                 FileInfo fi = new FileInfo(Logger.GetLogPath(null));
-                FileInfo[] files = new FileInfo[1];
-                files[0] = fi;
-                client.AttachFilesToIssue(response.key, files);
-                
+                if (fi.Exists) {
+                    files = new FileInfo[1];
+                    files[0] = fi;
+                    client.AttachFilesToIssue(response.key, files);
+                }
 
                 //add attachments if required
                 if (chkAuditTrail.Checked)
@@ -131,9 +133,12 @@ namespace BenMAP
                     string auditTrailReportPath = fi.DirectoryName + @"\audit_trail.xml";
                     AuditTrailReportCommonClass.exportToXml(tv, auditTrailReportPath);
                     fi = new FileInfo(auditTrailReportPath);
-                    files = new FileInfo[1];
-                    files[0] = fi;
-                    client.AttachFilesToIssue(response.key, files);
+                    if (fi.Exists)
+                    {
+                        files = new FileInfo[1];
+                        files[0] = fi;
+                        client.AttachFilesToIssue(response.key, files);
+                    }
                 }
 
                 
