@@ -30,9 +30,13 @@ namespace BenMAP
             _iniPath = CommonClass.ResultFilePath + @"\BenMAP.ini";
             _isForceValidate = CommonClass.IniReadValue("appSettings", "IsForceValidate", _iniPath);
             if (_isForceValidate == "T")
+            {
                 btnOK.Enabled = false;
+            }
             else
+            {
                 btnOK.Enabled = true;
+             }
         }
 
         private void btnOK_Click(object sender, EventArgs e)
@@ -112,33 +116,7 @@ namespace BenMAP
                     
                 }
 
-                commandText = "select max(METADATAID) FROM METADATAINFORMATION";
-                int metadataid = 0;
-                object objmetadata = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
-
-                if (string.IsNullOrEmpty(objmetadata.ToString()))
-                {
-                    metadataid = 1;
-                }
-                else
-                {
-                    metadataid = Convert.ToInt32(objmetadata) + 1;
-                }
-
-                rtn = 0;//reseting the return number
-                commandText = string.Format("INSERT INTO METADATAINFORMATION " +
-                                            "(METADATAID, SETUPID, DATASETID, DATASETTYPEID, FILENAME, " +
-                                            "EXTENSION, DATAREFERENCE, FILEDATE, IMPORTDATE, DESCRIPTION, " +
-                                            "PROJECTION, GEONAME, DATUMNAME, DATUMTYPE, SPHEROIDNAME, " +
-                                            "MERIDIANNAME, UNITNAME, PROJ4STRING, NUMBEROFFEATURES) " +
-                                            "VALUES('{0}', '{1}', '{2}', '{3}', '{4}','{5}', '{6}', '{7}', '{8}', '{9}', " +
-                                            "'{10}', '{11}', '{12}', '{13}', '{14}','{15}', '{16}', '{17}', '{18}')",
-                                            metadataid, _metadataObj.SetupId, incomegrowthadjdatasetID, _metadataObj.DatasetTypeId, _metadataObj.FileName,
-                                            _metadataObj.Extension, _metadataObj.DataReference, _metadataObj.FileDate, _metadataObj.ImportDate,
-                                            _metadataObj.Description, _metadataObj.Projection, _metadataObj.GeoName, _metadataObj.DatumName,
-                                            _metadataObj.DatumType, _metadataObj.SpheroidName, _metadataObj.MeridianName, _metadataObj.UnitName,
-                                            _metadataObj.Proj4String, _metadataObj.NumberOfFeatures);
-                rtn = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                insertMetadata(currentDataSetID);
             }
 
             catch (Exception ex)
@@ -148,7 +126,17 @@ namespace BenMAP
             this.DialogResult = DialogResult.OK;
             this.Close();
         }
+        private void insertMetadata(int dataSetID)
+        {
 
+            _metadataObj.DatasetId = dataSetID;
+
+            _metadataObj.DatasetTypeId = SQLStatementsCommonClass.getDatasetID("Incomegrowth");
+            if (!SQLStatementsCommonClass.insertMetadata(_metadataObj))
+            {
+                MessageBox.Show("Failed to save Metadata.");
+            }
+        }
         private void btnBrowse_Click(object sender, EventArgs e)
         {
             try
@@ -219,7 +207,9 @@ namespace BenMAP
             if (dlgR.Equals(DialogResult.OK))
             {
                 if (vdi.PassedValidation && _isForceValidate == "T")
+                {
                     LoadDatabase();
+                }
             }
         }
 

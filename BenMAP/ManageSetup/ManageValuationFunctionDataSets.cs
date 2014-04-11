@@ -17,12 +17,14 @@ namespace BenMAP
         {
             InitializeComponent();
         }
+        private MetadataClassObj _metadataObj = null;
         string _dataName = string.Empty;
         string commandText = string.Empty;
         ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
         DataSet ds;
         DataTable _dt = new DataTable();
         private bool isload = false;
+        
         private void btnAdd_Click(object sender, EventArgs e)
         {
             try
@@ -198,10 +200,20 @@ namespace BenMAP
                 if (lstAvailableDataSets.SelectedItem == null) return;
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 string commandText = string.Empty;
+                int vfdID = 0;//ValuationFunctionDatasetID
+                int dstID = 0;//DataSetTypeID
                 if (MessageBox.Show("Delete the selected valuation function dataset?", "Confirm Deletion", MessageBoxButtons.YesNo) == DialogResult.Yes)
                 {
-                    commandText = string.Format("delete from ValuationFunctionDataSets where ValuationFunctionDataSetName='{0}' and setupid={1}", lstAvailableDataSets.Text, CommonClass.ManageSetup.SetupID);
+                    commandText = string.Format("SELECT VALUATIONFUNCTIONDATASETID FROM VALUATIONFUNCTIONDATASETS WHERE ValuationFunctionDataSetName = '{0}' and SETUPID = {1}", lstAvailableDataSets.Text, CommonClass.ManageSetup.SetupID);
+                    vfdID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
+                    commandText = "SELECT DATASETID FROM DATASETS WHERE DATASETNAME = 'Valuationfunction'";
+                    dstID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
+                    
+                    commandText = string.Format("delete from ValuationFunctionDataSets where ValuationFunctionDataSetName='{0}' and setupid={1} and VALUATIONFUNCTIONDATASETID = {2}", lstAvailableDataSets.Text, CommonClass.ManageSetup.SetupID, vfdID);
                     int i = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                    
+                    commandText = string.Format("DELETE FROM METADATAINFORMATION WHERE SETUPID = {0} AND DATASETID = {1} AND DATASETTYPEID = {2}",CommonClass.ManageSetup.SetupID,vfdID, dstID);
+                    i = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                 }
                 commandText = string.Format("select * from ValuationFunctionDataSets where SetupID={0}", CommonClass.ManageSetup.SetupID);
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
@@ -394,6 +406,24 @@ namespace BenMAP
             {
                 olv.ShowGroups = cb.Checked;
                 olv.BuildList();
+            }
+        }
+
+        private void btnViewMetadata_Click(object sender, EventArgs e)
+        {
+            if(lstAvailableDataSets.SelectedItem != null)
+            {//_dataSetID = Convert.ToInt16(drv["VALUATIONFUNCTIONDATASETID"]);
+
+                DataRowView drv = lstAvailableDataSets.SelectedItem as DataRowView;
+                _metadataObj = SQLStatementsCommonClass.getMetadata(_dataSetID, CommonClass.ManageSetup.SetupID);
+                _metadataObj.DatasetId = _dataSetID;//Convert.ToInt32(drv["VALUATIONFUNCTIONDATASETID"]);
+                _metadataObj.SetupName = drv["VALUATIONFUNCTIONDATASETNAME"].ToString();//_dataName
+                ViewEditMetadata viewEMdata = new ViewEditMetadata(_metadataObj);
+                DialogResult dr = viewEMdata.ShowDialog();
+                if (dr.Equals(DialogResult.OK))
+                {
+                    _metadataObj = viewEMdata.MetadataObj;
+                }
             }
         }
 

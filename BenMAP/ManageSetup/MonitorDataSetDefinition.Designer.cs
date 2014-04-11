@@ -273,7 +273,7 @@ namespace BenMAP
             this.btnBrowse1.Name = "btnBrowse1";
             this.btnBrowse1.Size = new System.Drawing.Size(141, 27);
             this.btnBrowse1.TabIndex = 7;
-            this.btnBrowse1.Text = "Load From Database";
+            this.btnBrowse1.Text = "Load Data From File";
             this.btnBrowse1.UseVisualStyleBackColor = true;
             this.btnBrowse1.Click += new System.EventHandler(this.btnBrowse1_Click);
             // 

@@ -8,7 +8,7 @@ namespace BenMAP
 {
     public partial class LoadInflationDataSet : FormBase
     {
-        private MetadataClassObj metadataObj = null;
+        private MetadataClassObj _metadataObj = null;
         private DataTable _inflationData;
         public DataTable InflationData
         {
@@ -30,9 +30,13 @@ namespace BenMAP
             _iniPath = CommonClass.ResultFilePath + @"\BenMAP.ini";
             _isForceValidate = CommonClass.IniReadValue("appSettings", "IsForceValidate", _iniPath);
             if (_isForceValidate == "T")
+            {
                 btnOK.Enabled = false;
+            }
             else
+            {
                 btnOK.Enabled = true;
+            }
         }
 
         private void btnOK_Click(object sender, EventArgs e)
@@ -41,9 +45,9 @@ namespace BenMAP
         }
         private void GetMetadata()
         {
-            metadataObj = new MetadataClassObj();
+            _metadataObj = new MetadataClassObj();
             Metadata metadata = new Metadata(_strPath);
-            metadataObj = metadata.GetMetadata();
+            _metadataObj = metadata.GetMetadata();
         }
         private void LoadDatabase()
         {
@@ -131,33 +135,7 @@ namespace BenMAP
                     InflationDataSetName = txtInflationDataSetName.Text;
                 }
 
-                commandText = "select max(METADATAID) FROM METADATAINFORMATION";
-                int metadataid = 0;
-                object objmetadata = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
-
-                if(string.IsNullOrEmpty(objmetadata.ToString()))
-                {
-                    metadataid = 1;
-                }
-                else
-                {
-                    metadataid = Convert.ToInt32(objmetadata) + 1;
-                }
-
-                rtn = 0;//reseting the return number
-                commandText = string.Format("INSERT INTO METADATAINFORMATION " +
-                                            "(METADATAID, SETUPID, DATASETID, DATASETTYPEID, FILENAME, " +
-                                            "EXTENSION, DATAREFERENCE, FILEDATE, IMPORTDATE, DESCRIPTION, " + 
-                                            "PROJECTION, GEONAME, DATUMNAME, DATUMTYPE, SPHEROIDNAME, " +
-                                            "MERIDIANNAME, UNITNAME, PROJ4STRING, NUMBEROFFEATURES) " + 
-                                            "VALUES('{0}', '{1}', '{2}', '{3}', '{4}','{5}', '{6}', '{7}', '{8}', '{9}', " +
-                                            "'{10}', '{11}', '{12}', '{13}', '{14}','{15}', '{16}', '{17}', '{18}')", 
-                                            metadataid, metadataObj.SetupId, inflationdatasetid, metadataObj.DatasetTypeId, metadataObj.FileName, 
-                                            metadataObj.Extension, metadataObj.DataReference, metadataObj.FileDate, metadataObj.ImportDate, 
-                                            metadataObj.Description, metadataObj.Projection, metadataObj.GeoName, metadataObj.DatumName,
-                                            metadataObj.DatumType, metadataObj.SpheroidName, metadataObj.MeridianName, metadataObj.UnitName,
-                                            metadataObj.Proj4String, metadataObj.NumberOfFeatures);
-                rtn = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                insertMetadata(inflationdatasetid);
             }
 
             catch (Exception ex)
@@ -167,7 +145,16 @@ namespace BenMAP
             this.DialogResult = DialogResult.OK;
             this.Close();
         }
+        private void insertMetadata(int dataSetID)
+        {
+            _metadataObj.DatasetId = dataSetID;
 
+            _metadataObj.DatasetTypeId = SQLStatementsCommonClass.getDatasetID("Inflation");
+            if (!SQLStatementsCommonClass.insertMetadata(_metadataObj))
+            {
+                MessageBox.Show("Failed to save Metadata.");
+            }
+        }
         private void btnBrowse_Click(object sender, EventArgs e)
         {
             try
@@ -235,23 +222,25 @@ namespace BenMAP
             if (dlgR.Equals(DialogResult.OK))
             {
                 if (vdi.PassedValidation && _isForceValidate == "T")
+                {
                     LoadDatabase();
+                }
             }
         }
 
         private void btnViewMetadata_Click(object sender, EventArgs e)
         {
             ViewEditMetadata viewEMdata = null;
-            if(metadataObj != null)
+            if (_metadataObj != null)
             {
-                viewEMdata = new ViewEditMetadata(_strPath, metadataObj);
+                viewEMdata = new ViewEditMetadata(_strPath, _metadataObj);
             }
             else
             {
                 viewEMdata = new ViewEditMetadata(_strPath);
             }
             viewEMdata.ShowDialog();
-            metadataObj = viewEMdata.MetadataObj;
+            _metadataObj = viewEMdata.MetadataObj;
         }
     }
 }

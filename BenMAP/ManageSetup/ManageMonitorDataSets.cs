@@ -14,6 +14,8 @@ namespace BenMAP
         string _dataName = string.Empty;
         private string _lstDataSetName;
         private object _lstDataSetID;
+        private MetadataClassObj _metadataObj = null;
+
 
         private void ManageMonitorDataSets_Load(object sender, EventArgs e)
         {
@@ -106,8 +108,18 @@ namespace BenMAP
                 DialogResult rtn = MessageBox.Show("Delete the '" + _lstDataSetName + "' monitor dataset?", "Confirm Deletion", MessageBoxButtons.YesNo);
                 if (rtn == DialogResult.Yes)
                 {
+                    string commandText = string.Empty;
                     ESIL.DBUtility.ESILFireBirdHelper fb = new ESIL.DBUtility.ESILFireBirdHelper();
-                    string commandText = string.Format("delete from MonitorDataSets where MonitorDataSetID={0}", _lstDataSetID); fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+
+                    commandText = "select DATASETID FROM DATASETS WHERE DATASETNAME = 'Monitor'";
+                    int datasetid = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
+
+                    commandText = string.Format("delete from MonitorDataSets where MonitorDataSetID={0}", _lstDataSetID);
+                    fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                   
+                    commandText = string.Format("DELETE FROM METADATAINFORMATION WHERE SETUPID ={0} AND DATASETID = {1} AND DATASETTYPEID = {2}", CommonClass.ManageSetup.SetupID, _lstDataSetID, datasetid);
+                    fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                    
                     addLstBox();
                     addGridView();
                 }
@@ -126,6 +138,18 @@ namespace BenMAP
         private void btnOK_Click(object sender, EventArgs e)
         {
             this.DialogResult = DialogResult.OK;
+        }
+
+        private void btnViewMetadata_Click(object sender, EventArgs e)
+        {
+            _metadataObj = SQLStatementsCommonClass.getMetadata(Convert.ToInt32(_lstDataSetID), CommonClass.ManageSetup.SetupID);
+            _metadataObj.SetupName = _lstDataSetName;
+            ViewEditMetadata viewEMdata = new ViewEditMetadata(_metadataObj);
+            DialogResult dr = viewEMdata.ShowDialog();
+            if (dr.Equals(DialogResult.OK))
+            {
+                _metadataObj = viewEMdata.MetadataObj;
+            }
         }
     }
 }

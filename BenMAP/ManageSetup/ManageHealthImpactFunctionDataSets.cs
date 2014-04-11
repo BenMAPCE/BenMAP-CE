@@ -45,6 +45,29 @@ namespace BenMAP
             }
         }
 
+        private void btnEdit_Click(object sender, EventArgs e)
+        {
+            string str = lstAvailableDataSets.GetItemText(lstAvailableDataSets.SelectedItem);
+            try
+            {
+                DataRowView drv = lstAvailableDataSets.SelectedItem as DataRowView;
+                HealthImpactDataSetDefinition frm = new HealthImpactDataSetDefinition(Convert.ToInt16(drv["CrfunctiondatasetID"]));
+                DialogResult rth = frm.ShowDialog();
+                if (rth != DialogResult.OK) 
+                { 
+                    return;
+                }
+                commandText = string.Format("select * from CRFunctionDataSets where SetupID={0}", CommonClass.ManageSetup.SetupID);
+                ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+                lstAvailableDataSets.DataSource = ds.Tables[0];
+                lstAvailableDataSets.DisplayMember = "CRFunctionDataSetName";
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+            }
+        }
+
         private void ManageHealthImpactFunctionDataSets_Load(object sender, EventArgs e)
         {
             try
@@ -107,14 +130,22 @@ namespace BenMAP
         }
 
         private void btnDelete_Click(object sender, EventArgs e)
-        {
+        {   
+            int crFunctionDatasetId = 0;
+            int datasetid = 0;
             try
             {
                 if (lstAvailableDataSets.SelectedItem == null) return;
                 if (MessageBox.Show("Delete the selected health impact function dataset?", "Confirm Deletion", MessageBoxButtons.YesNo) == DialogResult.Yes)
                 {
+                    commandText = string.Format("SELECT CRFUNCTIONDATASETID FROM CRFUNCTIONDATASETS WHERE SETUPID = {0} AND CRFunctionDataSetName = '{1}'", CommonClass.ManageSetup.SetupID, lstAvailableDataSets.Text);
+                    crFunctionDatasetId = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text,commandText));
                     commandText = string.Format("delete from CRFunctionDataSets where CRFunctionDataSetName='{0}' and setupid={1}", lstAvailableDataSets.Text, CommonClass.ManageSetup.SetupID);
                     int i = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                    commandText = "select DATASETID FROM DATASETS WHERE DATASETNAME = 'Healthfunctions'";
+                    datasetid = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
+                    commandText = string.Format("DELETE FROM METADATAINFORMATION WHERE SETUPID ={0} AND DATASETID = {1} AND DATASETTYPEID = {2}", CommonClass.ManageSetup.SetupID, crFunctionDatasetId, datasetid);
+                    fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                 }
                 DataRowView drv = lstAvailableDataSets.SelectedItem as DataRowView;
                 lstAvailableDataSets.Items.Remove(drv["CRFunctionDataSetID"]);
@@ -131,6 +162,7 @@ namespace BenMAP
                 {
                     olvData.ClearObjects();
                 }
+                
             }
             catch (Exception ex)
             {
@@ -148,25 +180,7 @@ namespace BenMAP
             this.DialogResult = DialogResult.Cancel;
         }
 
-        private void btnEdit_Click(object sender, EventArgs e)
-        {
-            string str = lstAvailableDataSets.GetItemText(lstAvailableDataSets.SelectedItem);
-            try
-            {
-                DataRowView drv = lstAvailableDataSets.SelectedItem as DataRowView;
-                HealthImpactDataSetDefinition frm = new HealthImpactDataSetDefinition(Convert.ToInt16(drv["CrfunctiondatasetID"]));
-                DialogResult rth = frm.ShowDialog();
-                if (rth != DialogResult.OK) { return; }
-                commandText = string.Format("select * from CRFunctionDataSets where SetupID={0}", CommonClass.ManageSetup.SetupID);
-                ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
-                lstAvailableDataSets.DataSource = ds.Tables[0];
-                lstAvailableDataSets.DisplayMember = "CRFunctionDataSetName";
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex);
-            }
-        }
+        
 
         DataTable _dtEndpointGroup = new DataTable();
         DataTable _dtPollutant = new DataTable();

@@ -757,7 +757,7 @@ namespace BenMAP
                 Logger.LogError(ex);
             }
         }
-
+        //this is for deleting the validation log files after the specified time listed in the BenMAP.ini file
         private void deleteValidationLogFiles()
         {//doing clean up.
             string validationResultsPath = CommonClass.ResultFilePath + @"\ValidationResults";

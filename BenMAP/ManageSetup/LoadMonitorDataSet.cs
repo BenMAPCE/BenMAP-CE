@@ -55,9 +55,13 @@ namespace BenMAP
             _iniPath = CommonClass.ResultFilePath + @"\BenMAP.ini";
             _isForceValidate = CommonClass.IniReadValue("appSettings", "IsForceValidate", _iniPath);
             if(_isForceValidate == "T")
+            {
                 btnOK.Enabled = false;
+            }
             else
+            {
                 btnOK.Enabled = true;
+            }
                 
         }
         public LoadSelectedDataSet(string title, string datasetNamelabel, string datasetName, string dataset):this()
@@ -108,10 +112,6 @@ namespace BenMAP
 
         private void txtDatabase_TextChanged(object sender, EventArgs e)
         {
-            //if (_isForceValidate == "T" && !string.IsNullOrEmpty(txtDatabase.Text))
-            //    btnValidate.Enabled = true;
-            //else
-            //    btnValidate.Enabled = false;
             btnValidate.Enabled = !string.IsNullOrEmpty(txtDatabase.Text);
             btnViewMetadata.Enabled = !string.IsNullOrEmpty(txtDatabase.Text);
             _strPath = txtDatabase.Text;
@@ -140,6 +140,7 @@ namespace BenMAP
         private void btnViewMetadata_Click(object sender, EventArgs e)
         {
             ViewEditMetadata viewEMdata = null;
+            _metadataObj.SetupName =txtDataSetName.Text;
             if(_metadataObj != null)
             {
                 viewEMdata = new ViewEditMetadata(_strPath, _metadataObj);

@@ -11,6 +11,10 @@ namespace BenMAP
 {
     public partial class ManageVariableDataSets : FormBase
     {
+        bool bEdit = false;//Edit flag
+        int _datasetID;
+        private MetadataClassObj _metadataObj = null;
+
         public ManageVariableDataSets()
         {
             InitializeComponent();
@@ -79,6 +83,10 @@ namespace BenMAP
                 lstVariables.DataSource = ds.Tables[0];
                 lstVariables.DisplayMember = "SETUPVARIABLENAME";
                 lstVariables.SelectedIndex = -1;
+
+                commandText = string.Format("select SETUPVARIABLEDATASETID from SETUPVARIABLEDATASETS where SETUPVARIABLEDATASETNAME='{0}' and setupid={1}", str, CommonClass.ManageSetup.SetupID);
+                _datasetID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
+                _dataName = str;
             }
             catch (Exception ex)
             {
@@ -90,9 +98,10 @@ namespace BenMAP
         {
             try
             {
+                bEdit = true;
                 if (lstAvailable.SelectedItem == null) return;
                 string str = lstAvailable.GetItemText(lstAvailable.SelectedItem);
-                VariableDataSetDefinition frm = new VariableDataSetDefinition(str);
+                VariableDataSetDefinition frm = new VariableDataSetDefinition(str, bEdit);
                 DialogResult rth = frm.ShowDialog();
                 ExportDataForlistbox();
             }
@@ -109,11 +118,22 @@ namespace BenMAP
                 if (lstAvailable.SelectedItem == null) return;
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 string commandText = string.Empty;
+                int varDts = 0; //Variable Dataset
+                int dstID = 0;//DataSetTypeID
                 if (MessageBox.Show("Delete the selected variable dataset?", "Confirm Deletion", MessageBoxButtons.YesNo) == DialogResult.Yes)
                 {
                     WaitShow("Deleting data...");
+
+                    commandText = string.Format("SELECT VALUATIONFUNCTIONDATASETID FROM VALUATIONFUNCTIONDATASETS WHERE VALUATIONFUNCTIONDATASETNAME = '{0}' and SETUPID = {1}", lstAvailable.Text, CommonClass.ManageSetup.SetupID);
+                    varDts = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
+                    commandText = "SELECT DATASETID FROM DATASETS WHERE DATASETNAME = 'VariableDataset'";
+                    dstID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
+
                     commandText = string.Format("delete from  SETUPVARIABLEDATASETS where SETUPVARIABLEDATASETNAME='{0}' and setupid={1}", lstAvailable.Text, CommonClass.ManageSetup.SetupID);
                     int i = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+
+                    commandText = string.Format("DELETE FROM METADATAINFORMATION WHERE SETUPID = {0} AND DATASETID = {1} AND DATASETTYPEID = {2}", CommonClass.ManageSetup.SetupID, varDts, dstID);
+                    fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                 }
                 commandText = string.Format("select * from SETUPVARIABLEDATASETS where SetupID={0} ", CommonClass.ManageSetup.SetupID);
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
@@ -228,6 +248,18 @@ namespace BenMAP
             catch (System.Threading.ThreadAbortException Err)
             {
                 MessageBox.Show(Err.Message);
+            }
+        }
+
+        private void btnViewMetadata_Click(object sender, EventArgs e)
+        {
+            _metadataObj = SQLStatementsCommonClass.getMetadata(_datasetID, CommonClass.ManageSetup.SetupID);
+            _metadataObj.SetupName = _dataName;//_lstDataSetName;
+            ViewEditMetadata viewEMdata = new ViewEditMetadata(_metadataObj);
+            DialogResult dr = viewEMdata.ShowDialog();
+            if (dr.Equals(DialogResult.OK))
+            {
+                _metadataObj = viewEMdata.MetadataObj;
             }
         }
 

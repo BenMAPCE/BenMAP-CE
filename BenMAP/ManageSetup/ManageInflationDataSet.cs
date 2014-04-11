@@ -17,6 +17,9 @@ namespace BenMAP
             InitializeComponent();
         }
         string _dataName = string.Empty;
+        private int _datasetID;
+        private MetadataClassObj _metadataObj = null;
+
         private void btnOK_Click(object sender, EventArgs e)
         {
             this.DialogResult = DialogResult.OK;
@@ -91,6 +94,9 @@ namespace BenMAP
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                 olvData.DataSource = ds.Tables[0];
+                commandText = string.Format("select INFLATIONDATASETID from INFLATIONDATASETS where INFLATIONDATASETNAME='{0}' and setupid={1}", str, CommonClass.ManageSetup.SetupID);
+                _datasetID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
+                _dataName = str;
             }
             catch (Exception ex)
             {
@@ -105,10 +111,20 @@ namespace BenMAP
                 if (lstAvailableDataSets.SelectedItem == null) return;
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 string commandText = string.Empty;
+                int infDstID = 0; //inflation Dataset ID
+                int dstID = 0;//DataSetTypeID
                 if (MessageBox.Show("Delete the selected inflation dataset?", "Confirm Deletion", MessageBoxButtons.YesNo) == DialogResult.Yes)
                 {
+                    commandText = string.Format("SELECT INFLATIONDATASETID FROM INFLATIONDATASETS WHERE INFLATIONDATASETNAME = '{0}' and SETUPID = {1}", lstAvailableDataSets.Text, CommonClass.ManageSetup.SetupID);
+                    infDstID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
+                    commandText = "SELECT DATASETID FROM DATASETS WHERE DATASETNAME = 'Inflation'";
+                    dstID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
+                    
                     commandText = string.Format("delete from Inflationdatasets where Inflationdatasetname='{0}' and setupid={1}", lstAvailableDataSets.Text, CommonClass.ManageSetup.SetupID);
                     int i = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                    
+                    commandText = string.Format("DELETE FROM METADATAINFORMATION WHERE SETUPID = {0} AND DATASETID = {1} AND DATASETTYPEID = {2}", CommonClass.ManageSetup.SetupID, infDstID, dstID);
+                    i = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                 }
                 commandText = string.Format("select * from INFLATIONDATASETS where SetupID={0}", CommonClass.ManageSetup.SetupID);
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
@@ -167,6 +183,18 @@ namespace BenMAP
             catch (Exception ex)
             {
                 Logger.LogError(ex.Message);
+            }
+        }
+
+        private void btnViewMetadata_Click(object sender, EventArgs e)
+        {
+            _metadataObj = SQLStatementsCommonClass.getMetadata(_datasetID, CommonClass.ManageSetup.SetupID);
+            _metadataObj.SetupName = _dataName;//_lstDataSetName;
+            ViewEditMetadata viewEMdata = new ViewEditMetadata(_metadataObj);
+            DialogResult dr = viewEMdata.ShowDialog();
+            if (dr.Equals(DialogResult.OK))
+            {
+                _metadataObj = viewEMdata.MetadataObj;
             }
         }
 

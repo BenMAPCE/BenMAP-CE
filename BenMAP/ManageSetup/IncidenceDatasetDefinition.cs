@@ -14,6 +14,8 @@ namespace BenMAP
 {
     public partial class IncidenceDatasetDefinition : FormBase
     {
+        private MetadataClassObj _metadataObj = null;
+
         public IncidenceDatasetDefinition()
         {
             InitializeComponent();
@@ -416,6 +418,7 @@ namespace BenMAP
                 {
                     DialogResult rtn = frm.ShowDialog();
                     if (rtn != DialogResult.OK) { return; }
+                    _metadataObj = frm.MetadataObj;
                     str = frm.StrPath;
                     commandText = "select GridDefinitionName from GridDefinitions where GridDefinitionID=" + _grdiDefinitionID + "";
                     cboGridDefinition.Text = (fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)).ToString();
@@ -429,10 +432,6 @@ namespace BenMAP
                         if (_dtLoadTable == null)
                             { MessageBox.Show("Failed to import data from CSV file."); return; }
                     }
-                    //_dtLoadTable = CommonClass.ExcelToDataTable(str); if (_dtLoadTable == null)
-                    //_dtLoadTable = frm.IncidneceData; if (_dtLoadTable == null)
-                    
-                    
 
                     #region Validation has been moved to LoadIncidenceDatabase
                     //This section will be handled by the new validation window launched by LoadIncidenceDatabase window.
@@ -709,7 +708,9 @@ namespace BenMAP
                         commandText = commandText + "END";
                         fbCommand.CommandText = commandText;
                         fbCommand.ExecuteNonQuery();
-                    } progressBar1.Visible = false;
+                    } 
+                    insertMetadata(incidenceDatasetID);
+                    progressBar1.Visible = false;
                     lblProgress.Text = "";
                     lblProgress.Visible = false;
                     BindDataGridView(null, null);
@@ -725,7 +726,17 @@ namespace BenMAP
                 }
             }
         }
+        private void insertMetadata(int dataSetID)
+        {
 
+            _metadataObj.DatasetId = dataSetID;
+
+            _metadataObj.DatasetTypeId = SQLStatementsCommonClass.getDatasetID("Incidence");
+            if (!SQLStatementsCommonClass.insertMetadata(_metadataObj))
+            {
+                MessageBox.Show("Failed to save Metadata.");
+            }
+        }
         private void btnOK_Click(object sender, EventArgs e)
         {
             try

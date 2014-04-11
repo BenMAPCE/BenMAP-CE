@@ -9,7 +9,8 @@ namespace BenMAP
     {
         private string _datasetName = string.Empty;
         int variabledatasetID = -1;
-
+        private MetadataClassObj _metadataObj = null;
+        private bool _bEdit = false;
         public VariableDataSetDefinition()
         {
             InitializeComponent();
@@ -20,6 +21,11 @@ namespace BenMAP
         {
             InitializeComponent();
             _datasetName = datasetName;
+        }
+
+        public VariableDataSetDefinition(string datasetName, bool bEdit):this(datasetName)
+        {
+            _bEdit = bEdit;
         }
 
         private void VariableDataSetDefinition_Load(object sender, EventArgs e)
@@ -125,6 +131,7 @@ namespace BenMAP
             DataSet ds = new DataSet();
             DataTable dt;
             int rowCount;
+            int datasetId = 0;
             string variableDatasetID = string.Empty;
             int variableID = 0;
             try
@@ -142,6 +149,7 @@ namespace BenMAP
                     if (obj != null) { MessageBox.Show("The dataset name has already been defined. Please enter a different name."); return; }
                     commandText = "select max(SETUPVARIABLEDATASETID) from SETUPVARIABLEDATASETS";
                     obj = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText)) + 1;
+                    datasetId = Convert.ToInt32(obj);
                     variableDatasetID = obj.ToString();
                     commandText = string.Format("insert into SetUpVariableDataSets values({0},{1},'{2}')", variableDatasetID, CommonClass.ManageSetup.SetupID, txtDataSetName.Text);
                     fbCommand.CommandText = commandText;
@@ -262,7 +270,10 @@ namespace BenMAP
                 }
                 fbtra.Commit();
                 fbCommand.Connection.Close();
-
+                if(!_bEdit)
+                {
+                    insertMetadata(datasetId);
+                }
                 progBarVariable.Visible = false;
                 lblProgressBar.Visible = false;
 
@@ -278,6 +289,16 @@ namespace BenMAP
                 lblProgressBar.Text = "";
                 lblProgressBar.Visible = false;
                 Logger.LogError(ex.Message);
+            }
+        }
+        private void insertMetadata(int dataSetID)
+        {
+            _metadataObj.DatasetId = dataSetID;
+
+            _metadataObj.DatasetTypeId = SQLStatementsCommonClass.getDatasetID("VariableDataset");
+            if (!SQLStatementsCommonClass.insertMetadata(_metadataObj))
+            {
+                MessageBox.Show("Failed to save Metadata.");
             }
         }
 
@@ -296,6 +317,7 @@ namespace BenMAP
                 frm.DefinitionID = txtGridDefinition.Text;
                 DialogResult rtn = frm.ShowDialog();
                 if (rtn != DialogResult.OK) { return; }
+                _metadataObj = frm.MetadataObj;
                 txtGridDefinition.Text = frm.DefinitionID;
                 txtGridDefinition.ReadOnly = false;
                 string strPath = frm.DataPath;
@@ -380,6 +402,7 @@ namespace BenMAP
                     DataTable _dt = dt.Copy();
                     _dsSelectedDataTemp.Tables.Add(_dt);
                 }
+
                 lstDataSetVariable.SelectedIndex = 0;
                 txtGridDefinition.Enabled = false;
                 WaitClose();
