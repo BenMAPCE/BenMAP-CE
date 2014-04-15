@@ -20,8 +20,10 @@ namespace BenMAP
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.grpCancelOK = new System.Windows.Forms.GroupBox();
+            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
+            this.btnViewMetadata = new System.Windows.Forms.Button();
             this.grpHealthImpactFunctions = new System.Windows.Forms.GroupBox();
             this.chbGroup = new System.Windows.Forms.CheckBox();
             this.olvData = new BrightIdeasSoftware.DataListView();
@@ -71,6 +73,7 @@ namespace BenMAP
             this.lstAvailableDataSets = new System.Windows.Forms.ListBox();
             this.statusStrip1.SuspendLayout();
             this.grpCancelOK.SuspendLayout();
+            this.flowLayoutPanel1.SuspendLayout();
             this.grpHealthImpactFunctions.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.olvData)).BeginInit();
             this.groupBox3.SuspendLayout();
@@ -105,18 +108,29 @@ namespace BenMAP
             // 
             this.grpCancelOK.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.grpCancelOK.Controls.Add(this.btnOK);
-            this.grpCancelOK.Controls.Add(this.btnCancel);
+            this.grpCancelOK.Controls.Add(this.flowLayoutPanel1);
             this.grpCancelOK.Location = new System.Drawing.Point(12, 543);
             this.grpCancelOK.Name = "grpCancelOK";
             this.grpCancelOK.Size = new System.Drawing.Size(828, 56);
             this.grpCancelOK.TabIndex = 2;
             this.grpCancelOK.TabStop = false;
             // 
+            // flowLayoutPanel1
+            // 
+            this.flowLayoutPanel1.Controls.Add(this.btnOK);
+            this.flowLayoutPanel1.Controls.Add(this.btnCancel);
+            this.flowLayoutPanel1.Controls.Add(this.btnViewMetadata);
+            this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(3, 18);
+            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(822, 35);
+            this.flowLayoutPanel1.TabIndex = 2;
+            // 
             // btnOK
             // 
             this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnOK.Location = new System.Drawing.Point(745, 23);
+            this.btnOK.Location = new System.Drawing.Point(744, 3);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 27);
             this.btnOK.TabIndex = 1;
@@ -127,7 +141,7 @@ namespace BenMAP
             // btnCancel
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnCancel.Location = new System.Drawing.Point(664, 23);
+            this.btnCancel.Location = new System.Drawing.Point(663, 3);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 27);
             this.btnCancel.TabIndex = 0;
@@ -135,6 +149,16 @@ namespace BenMAP
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Visible = false;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
+            // 
+            // btnViewMetadata
+            // 
+            this.btnViewMetadata.Location = new System.Drawing.Point(545, 3);
+            this.btnViewMetadata.Name = "btnViewMetadata";
+            this.btnViewMetadata.Size = new System.Drawing.Size(112, 27);
+            this.btnViewMetadata.TabIndex = 31;
+            this.btnViewMetadata.Text = "View Metadata";
+            this.btnViewMetadata.UseVisualStyleBackColor = true;
+            this.btnViewMetadata.Click += new System.EventHandler(this.btnViewMetadata_Click);
             // 
             // grpHealthImpactFunctions
             // 
@@ -603,6 +627,7 @@ namespace BenMAP
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             this.grpCancelOK.ResumeLayout(false);
+            this.flowLayoutPanel1.ResumeLayout(false);
             this.grpHealthImpactFunctions.ResumeLayout(false);
             this.grpHealthImpactFunctions.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.olvData)).EndInit();
@@ -670,5 +695,7 @@ namespace BenMAP
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
         private System.Windows.Forms.CheckBox chbGroup;
         private BrightIdeasSoftware.OLVColumn olvColumn34;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
+        private System.Windows.Forms.Button btnViewMetadata;
     }
 }

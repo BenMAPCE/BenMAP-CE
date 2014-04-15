@@ -410,7 +410,7 @@ namespace BenMAP
             this.btnBrowse.Name = "btnBrowse";
             this.btnBrowse.Size = new System.Drawing.Size(131, 27);
             this.btnBrowse.TabIndex = 6;
-            this.btnBrowse.Text = "Load From Database";
+            this.btnBrowse.Text = "Load From File";
             this.btnBrowse.UseVisualStyleBackColor = true;
             this.btnBrowse.Click += new System.EventHandler(this.btnBrowse_Click);
                                                 this.btnDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));

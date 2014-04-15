@@ -9,18 +9,7 @@ using System.Windows.Forms;
 using BrightIdeasSoftware;
 using System.IO;
 using ESIL.DBUtility;
-//TODO:
-// On the HealthImpactDataSetDefinition form, change the function of the "Load From Database" from a browse button to where
-// it launches a dialog very simaler to the five Load dataset dialogs.  This will help in trying to maintain a consistancy throughout
-// the application.
-//
-//1 on the LoadHealthImpactDataSet dialog add a validate button
-//2 make it disabled
-//3 make the OK button disabled
-//4 After selecting a database to load (a csv file or excel file)
-//  enabled the validate button.
-//5 on a positive validation enable the OK button
-//
+
 namespace BenMAP
 {
     public partial class HealthImpactDataSetDefinition : FormBase
@@ -40,8 +29,8 @@ namespace BenMAP
         {
             InitializeComponent();
             _datasetID = dataSetID;
-            btnViewMetadata.Visible = true;
-            btnViewMetadata.Enabled = true;
+            //btnViewMetadata.Visible = true;
+            //btnViewMetadata.Enabled = true;
         }
 
         string _filePath = string.Empty;
@@ -1557,15 +1546,20 @@ namespace BenMAP
 
         private void btnViewMetadata_Click(object sender, EventArgs e)
         {
-            _metadataObj = SQLStatementsCommonClass.getMetadata(_datasetID, CommonClass.ManageSetup.SetupID);
-            _metadataObj.SetupName = txtHealthImpactFunction.Text;
-            ViewEditMetadata viewEMdata = new ViewEditMetadata(_metadataObj);
-            DialogResult dr = viewEMdata.ShowDialog();
-            if (dr.Equals(DialogResult.OK))
-            {
-                _metadataObj = viewEMdata.MetadataObj;
-            }
+
         }
+
+        //private void btnViewMetadata_Click(object sender, EventArgs e)
+        //{
+        //    //_metadataObj = SQLStatementsCommonClass.getMetadata(_datasetID, CommonClass.ManageSetup.SetupID);
+        //    //_metadataObj.SetupName = txtHealthImpactFunction.Text;
+        //    //ViewEditMetadata viewEMdata = new ViewEditMetadata(_metadataObj);
+        //    //DialogResult dr = viewEMdata.ShowDialog();
+        //    //if (dr.Equals(DialogResult.OK))
+        //    //{
+        //    //    _metadataObj = viewEMdata.MetadataObj;
+        //    //}
+        //}
 
 
     }

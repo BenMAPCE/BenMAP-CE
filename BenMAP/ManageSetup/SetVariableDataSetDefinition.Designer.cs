@@ -244,7 +244,7 @@ namespace BenMAP
             this.btnLoadData.Name = "btnLoadData";
             this.btnLoadData.Size = new System.Drawing.Size(131, 27);
             this.btnLoadData.TabIndex = 7;
-            this.btnLoadData.Text = "Load From Database";
+            this.btnLoadData.Text = "Load From File";
             this.btnLoadData.UseVisualStyleBackColor = true;
             this.btnLoadData.Click += new System.EventHandler(this.btnLoadData_Click);
             // 
