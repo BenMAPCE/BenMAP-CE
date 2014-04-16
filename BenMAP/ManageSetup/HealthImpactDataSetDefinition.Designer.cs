@@ -27,7 +27,6 @@ namespace BenMAP
             this.btnAdd = new System.Windows.Forms.Button();
             this.btnBrowse = new System.Windows.Forms.Button();
             this.btnOutPut = new System.Windows.Forms.Button();
-            this.btnViewMetadata = new System.Windows.Forms.Button();
             this.chbGroup = new System.Windows.Forms.CheckBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.txtFilter = new System.Windows.Forms.TextBox();
@@ -134,7 +133,6 @@ namespace BenMAP
             this.flowLayoutPanel1.Controls.Add(this.btnAdd);
             this.flowLayoutPanel1.Controls.Add(this.btnBrowse);
             this.flowLayoutPanel1.Controls.Add(this.btnOutPut);
-            this.flowLayoutPanel1.Controls.Add(this.btnViewMetadata);
             this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
             this.flowLayoutPanel1.Location = new System.Drawing.Point(3, 425);
@@ -198,17 +196,6 @@ namespace BenMAP
         " and can be used as an example to prepare the input file.");
             this.btnOutPut.UseVisualStyleBackColor = true;
             this.btnOutPut.Click += new System.EventHandler(this.btnOutPut_Click);
-            // 
-            // btnViewMetadata
-            // 
-            this.btnViewMetadata.Location = new System.Drawing.Point(105, 3);
-            this.btnViewMetadata.Name = "btnViewMetadata";
-            this.btnViewMetadata.Size = new System.Drawing.Size(112, 27);
-            this.btnViewMetadata.TabIndex = 30;
-            this.btnViewMetadata.Text = "View Metadata";
-            this.btnViewMetadata.UseVisualStyleBackColor = true;
-            this.btnViewMetadata.Visible = false;
-            this.btnViewMetadata.Click += new System.EventHandler(this.btnViewMetadata_Click);
             // 
             // chbGroup
             // 
@@ -716,7 +703,6 @@ namespace BenMAP
         private BrightIdeasSoftware.OLVColumn olvColumn33;
         private System.Windows.Forms.Button btnOutPut;
         private System.Windows.Forms.ToolTip toolTip1;
-        private System.Windows.Forms.Button btnViewMetadata;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
     }
 }

@@ -172,11 +172,13 @@ namespace BenMAP
                 string commandText = string.Empty;
                 if (cboPollutant.Text == string.Empty)
                 {
-                    MessageBox.Show("Please select a pollutant."); return;
+                    MessageBox.Show("Please select a pollutant."); 
+                    return;
                 }
                 if (txtYear.Text.Length != 4)
                 {
-                    MessageBox.Show("Please input a valid year."); return;
+                    MessageBox.Show("Please input a valid year."); 
+                    return;
                 }
                 //if (txtMonitorDataFile.Text == string.Empty) { MessageBox.Show("Please select a monitor data file."); return; }
                 string msg = string.Format("Save this file associated with {0} and {1} ?", cboPollutant.GetItemText(cboPollutant.SelectedItem), txtYear.Text);

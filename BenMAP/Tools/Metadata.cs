@@ -22,7 +22,7 @@ namespace BenMAP
         public MetadataClassObj GetMetadata()
         {
             //txtDatabase.Text
-
+            
             metadataObj.SetupId = Convert.ToInt32(CommonClass.ManageSetup.SetupID.ToString());
             metadataObj.SetupName = CommonClass.ManageSetup.SetupName.ToString();//CommonClass.MainSetup.SetupName.ToString();
             metadataObj.FileName = _fInfo.Name.Substring(0, _fInfo.Name.Length - _fInfo.Extension.Length);

@@ -60,6 +60,7 @@ namespace BenMAP
             this.olvColumn31 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn32 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn33 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvColumn7 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.txtFilter = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -152,6 +153,7 @@ namespace BenMAP
             // 
             // btnViewMetadata
             // 
+            this.btnViewMetadata.Enabled = false;
             this.btnViewMetadata.Location = new System.Drawing.Point(545, 3);
             this.btnViewMetadata.Name = "btnViewMetadata";
             this.btnViewMetadata.Size = new System.Drawing.Size(112, 27);
@@ -226,6 +228,7 @@ namespace BenMAP
             this.olvData.AllColumns.Add(this.olvColumn32);
             this.olvData.AllColumns.Add(this.olvColumn33);
             this.olvData.AllColumns.Add(this.olvColumn34);
+            this.olvData.AllColumns.Add(this.olvColumn7);
             this.olvData.AllowColumnReorder = true;
             this.olvData.AllowDrop = true;
             this.olvData.AlternateRowBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(240)))), ((int)(((byte)(220)))));
@@ -294,6 +297,7 @@ namespace BenMAP
             this.olvData.UseHotItem = true;
             this.olvData.UseTranslucentHotItem = true;
             this.olvData.View = System.Windows.Forms.View.Details;
+            this.olvData.SelectedIndexChanged += new System.EventHandler(this.olvData_SelectedIndexChanged);
             // 
             // olvcEndpointGroup
             // 
@@ -483,6 +487,13 @@ namespace BenMAP
             this.olvColumn33.AspectName = "variabeldatasetname";
             this.olvColumn33.Text = "Variable";
             this.olvColumn33.Width = 100;
+            // 
+            // olvColumn7
+            // 
+            this.olvColumn7.AspectName = "metadataid";
+            this.olvColumn7.DisplayIndex = 33;
+            this.olvColumn7.IsVisible = false;
+            this.olvColumn7.Text = "Metadata ID";
             // 
             // groupBox3
             // 
@@ -697,5 +708,6 @@ namespace BenMAP
         private BrightIdeasSoftware.OLVColumn olvColumn34;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         private System.Windows.Forms.Button btnViewMetadata;
+        private BrightIdeasSoftware.OLVColumn olvColumn7;
     }
 }
