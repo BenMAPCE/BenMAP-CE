@@ -18,6 +18,7 @@ namespace BenMAP
         private MetadataClassObj _metadataObj = null;
         private int _datasetID;
         private int crFunctionDataSetID = 0;
+        private bool _isEdit = false;
         List<int> lstdeleteCRFunctionid = new List<int>();
 
         public HealthImpactDataSetDefinition()
@@ -27,10 +28,16 @@ namespace BenMAP
             _datasetID = -1;
         }
 
-        public HealthImpactDataSetDefinition(int dataSetID)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HealthImpactDataSetDefinition"/> class.
+        /// </summary>
+        /// <param name="dataSetID">The data set identifier which is the current function dataset id (CrfunctiondatasetID).</param>
+        public HealthImpactDataSetDefinition(int dataSetID, bool isEdit)
         {
             InitializeComponent();
             _datasetID = dataSetID;
+            crFunctionDataSetID = dataSetID;//when doing an edit I need to have the current funciton dataset ID
+            _isEdit = isEdit;
             //btnViewMetadata.Visible = true;
             //btnViewMetadata.Enabled = true;
         }
@@ -108,17 +115,46 @@ namespace BenMAP
         DataTable dtForLoading = new DataTable();
         private void btnBrowse_Click(object sender, EventArgs e)
         {
-            //do a check for dataset name here? before loading a file? to me it makes sence becasue once the file is selected, it starts to get loaded into the database.
+            ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+            DataSet ds = new DataSet();
+            string commandText = string.Empty;
+
+            if (!_isEdit)
+            {
+                commandText = string.Format("select * from  CRFunctionDataSets where SetupID={0}", CommonClass.ManageSetup.SetupID);
+                ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+                int dataSetNameCount = ds.Tables[0].Rows.Count;
+                for (int dataSetNameRow = 0; dataSetNameRow < dataSetNameCount; dataSetNameRow++)
+                {
+                    if (txtHealthImpactFunction.Text == ds.Tables[0].Rows[dataSetNameRow]["CRFunctionDataSetName"].ToString())
+                    {
+                        MessageBox.Show("This health impact function dataset name is already in use. Please enter a different name.");
+                        return;
+                    }
+                }
+                if (txtHealthImpactFunction.Text == string.Empty)
+                {
+                    MessageBox.Show("Please input a name for the health impact function dataset.");
+                    return;
+                } 
+            }
+            LoadFromFile();
+        }
+
+        private void LoadFromFile()
+        {
             LoadSelectedDataSet lmdataset = new LoadSelectedDataSet("Load Health Impact Dataset", "Health Impact Dataset Name:", txtHealthImpactFunction.Text, "Healthfunctions");
             DialogResult dlgr = lmdataset.ShowDialog();
             if (dlgr.Equals(DialogResult.OK))
             {
-                //Checking for duplicate name here. Find #region Checking for duplicate name and move the code here
                 dt = lmdataset.MonitorDataSet;
                 _metadataObj = lmdataset.MetadataObj;
                 olvFunction.ClearObjects();
                 LoadFunctionOLV();
                 LoadDatabase();
+                //after loading the datafile, the dataset is Edit flag should be reset to true.  
+                //This will allow for additional files to be added.
+                _isEdit = true;
             }
         }
 
@@ -129,6 +165,7 @@ namespace BenMAP
             //The database load is done in the btnOK_Click_1 event.
             try
             {
+                #region Dead code
                 //DataTable dt = new DataTable();
                 //OpenFileDialog openFileDialog = new OpenFileDialog();
                 //openFileDialog.InitialDirectory = Application.StartupPath + @"E:\";
@@ -138,7 +175,9 @@ namespace BenMAP
                 //if (openFileDialog.ShowDialog() != DialogResult.OK) { return; }
                 //_filePath = openFileDialog.FileName;
                 //WaitShow("Loading health impact functions...");
-                //dt = CommonClass.ExcelToDataTable(_filePath);
+                //dt = CommonClass.ExcelToDataTable(_filePath); 
+                #endregion
+
                 if (dt == null) { return; }
                 
                 int rowCount = dt.Rows.Count;
@@ -417,8 +456,8 @@ namespace BenMAP
         }
 
         private void LoadDatabase()
-        {//for this block only - replacing dtForLoading with dtForLoading.  this is so that only new files that get loaded will/should get assoceated with the new metadata id.
-            //if (dtForLoading.Rows.Count < 1)
+        {   //for this block only - replacing _dt with dtForLoading.  this is so that only new files that get loaded will/should get assoceated with the new metadata id.
+            //if (_dt.Rows.Count < 1)
             if(dtForLoading.Rows.Count < 1)
             {
                 MessageBox.Show("No dataset was selected for import or created.  Please select a dataset to import or 'Add' information to careate a data set.");
@@ -438,29 +477,34 @@ namespace BenMAP
                     ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                     int dataSetNameCount = ds.Tables[0].Rows.Count;
                     int rth;
-                    #region Checking for duplicate name - this should be done before any loading is performed
-                    for (int dataSetNameRow = 0; dataSetNameRow < dataSetNameCount; dataSetNameRow++)
-                    {
-                        if (txtHealthImpactFunction.Text == ds.Tables[0].Rows[dataSetNameRow]["CRFunctionDataSetName"].ToString())
-                        {
-                            MessageBox.Show("This health impact function dataset name is already in use. Please enter a different name.");
-                            //return;  I am not going to do anything for now until I can have more than one file loaded and have Metadata for each file loaded to a single dataset
-                        }
-                    } 
+
+                    #region Moved to btnBrowse_Click starting on line 116
+                    //for (int dataSetNameRow = 0; dataSetNameRow < dataSetNameCount; dataSetNameRow++)
+                    //{
+                    //    if (txtHealthImpactFunction.Text == ds.Tables[0].Rows[dataSetNameRow]["CRFunctionDataSetName"].ToString())
+                    //    {
+                    //        MessageBox.Show("This health impact function dataset name is already in use. Please enter a different name.");
+                    //        //return;  I am not going to do anything for now until I can have more than one file loaded and have Metadata for each file loaded to a single dataset
+                    //    }
+                    //} 
                     #endregion
-                    #region Checking for health impact function dataset
-                    if (txtHealthImpactFunction.Text == string.Empty)
-                    {
-                        MessageBox.Show("Please input a name for the health impact function dataset.");
-                        //return;  I am not going to do anything for now until I can have more than one file loaded and have Metadata for each file loaded to a single dataset
-                    } 
+                    #region Moved to btnBrowse_Click starting on line 116
+                    //if (txtHealthImpactFunction.Text == string.Empty)
+                    //{
+                    //    MessageBox.Show("Please input a name for the health impact function dataset.");
+                    //    //return;  I am not going to do anything for now until I can have more than one file loaded and have Metadata for each file loaded to a single dataset
+                    //} 
                     #endregion
+                    #region Dead code
                     ////Getting an ID
                     ////Getting a new current Function Dataset Id - But I don't need a new one if I am add to or / editing a dataset
                     //commandText = string.Format("select max(CRFUNCTIONDATASETID) from CRFunctionDatasets");
                     //object obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
                     ////int crFunctionDataSetID = int.Parse(obj.ToString()) + 1;
                     //crFunctionDataSetID = int.Parse(obj.ToString()) + 1;
+                    
+                    #endregion
+                    
                     commandText = string.Format("select CRFUNCTIONDATASETID from CRFUNCTIONDATASETS where CRFUNCTIONDATASETID = {0} AND setupid = {1}", crFunctionDataSetID, CommonClass.ManageSetup.SetupID);
                     obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
                     if(obj == null)
@@ -543,10 +587,10 @@ namespace BenMAP
                     {
                         dicLocationTypeID.Add(drLocationType["LOWER"].ToString(), drLocationType["LocationTypeID"].ToString());
                     }
-                    //for (int i = 0; i < dtForLoading.Rows.Count; i++)
+                    
                     for (int i = 0; i < dtForLoading.Rows.Count; i++)
                     {
-                        //DataRow dr = dtForLoading.Rows[i];
+                        
                         DataRow dr = dtForLoading.Rows[i];
                         commandText = "select endpointGroupID from EndpointGroups where LOWER(EndpointGroupName)='" + dr[0].ToString().ToLower() + "' ";
                         obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
@@ -561,7 +605,7 @@ namespace BenMAP
 
                     }
 
-                    //int dgvRowCount =_dtForLoading.Rows.Count;
+                    
                     int dgvRowCount = dtForLoading.Rows.Count;
                     string undefinePollutant = "";
                     for (int row = 0; row < dgvRowCount; row++)
@@ -570,7 +614,7 @@ namespace BenMAP
                         commandText = string.Format("select max(CRFUNCTIONID) from CRFunctions");
                         obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
                         int CRFunctionID = int.Parse(obj.ToString()) + 1;
-                        //int EndpointGroupID = dicEndpointGroup[_dtForLoading.Rows[row][0].ToString().ToLower()];
+                        
                         int EndpointGroupID = dicEndpointGroup[dtForLoading.Rows[row][0].ToString().ToLower()];
 
                         //commandText = string.Format("select EndpointID from Endpoints where Replace(LOWER(EndpointName),' ','')='{0}' and EndpointGroupID={1}", dtForLoading.Rows[row][1].ToString().ToLower().Replace(" ", ""), dicEndpointGroup[dtForLoading.Rows[row][0].ToString().ToLower()]);
