@@ -20,7 +20,8 @@ namespace BenMAP
         //private const string password = "tempAcct1";
         private const string username = "BenMAP-CE";
         private const string password = "BenMAPOpenSource14";
-        private const string projectKey = "USERBUGS";       
+        private const string projectKey = "USERBUGS";
+        private string errorMessage;
 
         public ErrorReporting()
         {           
@@ -50,8 +51,32 @@ namespace BenMAP
                 cboComponent.DisplayMember = "name";
                 cboComponent.ValueMember = "id";
                 cboComponent.DataSource = components;
+                
             }
         }
+
+        public string ErrorMessage
+        {
+            get
+            {
+                return errorMessage;
+            }
+            set
+            {
+                errorMessage = value;
+            }
+        }
+
+
+        private void ErrorReporting_Shown(Object sender, EventArgs e)
+        {
+            if (!String.IsNullOrEmpty(errorMessage))
+            {
+                txtDescription.Text = "Error: " + errorMessage;
+            }
+
+        }
+
 
         private void btnCancel_Click(object sender, EventArgs e)
         {
@@ -161,5 +186,6 @@ namespace BenMAP
            
 
         }
+
     }
 }

@@ -347,6 +347,7 @@
             this.MaximizeBox = false;
             this.Name = "ErrorReporting";
             this.Text = "Provide Feedback";
+            this.Shown += new System.EventHandler(this.ErrorReporting_Shown);
             this.gbReportType.ResumeLayout(false);
             this.gbReportType.PerformLayout();
             this.gbSeverity.ResumeLayout(false);
