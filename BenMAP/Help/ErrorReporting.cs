@@ -244,6 +244,7 @@ namespace BenMAP
                 lblSeverity.Enabled = true;
                 gbSeverity.Enabled = true;
                 rbMajor.Checked = true;
+                lblDescription.Text = "Please describe what you were doing when you encountered the error.  Can you tell us how to reproduce the error? (5000 character limit)";
             }
             else 
             {
@@ -252,6 +253,7 @@ namespace BenMAP
                 rbMajor.Checked = false;
                 rbMinor.Checked = false;
                 rbBlocking.Checked = false;
+                lblDescription.Text = "Please describe the feature you are requesting. (5000 character limit)";
             }
         }
 

@@ -47,7 +47,7 @@
             this.cboComponent = new System.Windows.Forms.ComboBox();
             this.label10 = new System.Windows.Forms.Label();
             this.chkAuditTrail = new System.Windows.Forms.CheckBox();
-            this.label11 = new System.Windows.Forms.Label();
+            this.lblDescription = new System.Windows.Forms.Label();
             this.txtDescription = new System.Windows.Forms.TextBox();
             this.gbReportType = new System.Windows.Forms.GroupBox();
             this.rbFeature = new System.Windows.Forms.RadioButton();
@@ -211,19 +211,20 @@
             this.chkAuditTrail.Text = "Include BenMAP-CE generated audit trail report.";
             this.chkAuditTrail.UseVisualStyleBackColor = true;
             // 
-            // label11
+            // lblDescription
             // 
-            this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(98, 389);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(746, 14);
-            this.label11.TabIndex = 23;
-            this.label11.Text = "Please describe what you were doing when you encountered the error.  Can you tell" +
+            this.lblDescription.Location = new System.Drawing.Point(98, 389);
+            this.lblDescription.Name = "lblDescription";
+            this.lblDescription.Size = new System.Drawing.Size(746, 14);
+            this.lblDescription.TabIndex = 23;
+            this.lblDescription.Text = "Please describe what you were doing when you encountered the error.  Can you tell" +
                 " us how to reproduce the error? (5000 character limit)";
+            this.lblDescription.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // txtDescription
             // 
             this.txtDescription.Location = new System.Drawing.Point(128, 422);
+            this.txtDescription.MaxLength = 5000;
             this.txtDescription.Multiline = true;
             this.txtDescription.Name = "txtDescription";
             this.txtDescription.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
@@ -326,7 +327,7 @@
             this.Controls.Add(this.gbSeverity);
             this.Controls.Add(this.gbReportType);
             this.Controls.Add(this.txtDescription);
-            this.Controls.Add(this.label11);
+            this.Controls.Add(this.lblDescription);
             this.Controls.Add(this.chkAuditTrail);
             this.Controls.Add(this.label10);
             this.Controls.Add(this.cboComponent);
@@ -379,7 +380,7 @@
         private System.Windows.Forms.ComboBox cboComponent;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.CheckBox chkAuditTrail;
-        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Label lblDescription;
         private System.Windows.Forms.TextBox txtDescription;
         private System.Windows.Forms.GroupBox gbReportType;
         private System.Windows.Forms.RadioButton rbFeature;
