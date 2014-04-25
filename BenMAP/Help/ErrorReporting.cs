@@ -88,7 +88,12 @@ namespace BenMAP
 
         private void btnCancel_Click(object sender, EventArgs e)
         {
-            Close();
+            DialogResult dialogResult = MessageBox.Show("Are you sure you do not want to Provide Feedback?", "Confirm Cancel", MessageBoxButtons.YesNo);
+
+            if (dialogResult == DialogResult.Yes)
+            {
+                Close();
+            }
         }
 
         private bool FormIsValid()
@@ -187,38 +192,44 @@ namespace BenMAP
             {
                 //attach error log
                 FileInfo fi = new FileInfo(Logger.GetLogPath(null));
-                if (fi.Exists) {
+                if (fi.Exists)
+                {
                     files = new FileInfo[1];
                     files[0] = fi;
                     client.AttachFilesToIssue(response.key, files);
                 }
 
-                //add attachments if required
+                //add audit trail if required
+                bool auditTrailGenerated = false;
                 if (chkAuditTrail.Checked)
                 {
                     TreeView tv = new TreeView();
                     int retVal = AuditTrailReportCommonClass.generateAuditTrailReportTreeView(tv);
-                    if (retVal == -1)
+                    if (retVal != -1)
                     {
-                        MessageBox.Show("Provide Feedback submittal failed - Audit Trail could not be attached because your configuration is not complete.");
-                        return;
-                    }                    
-
-                    string auditTrailReportPath = fi.DirectoryName + @"\audit_trail.xml";
-                    AuditTrailReportCommonClass.exportToXml(tv, auditTrailReportPath);
-                    fi = new FileInfo(auditTrailReportPath);
-                    if (fi.Exists)
-                    {
-                        files = new FileInfo[1];
-                        files[0] = fi;
-                        client.AttachFilesToIssue(response.key, files);
+                        auditTrailGenerated = true;
+                        string auditTrailReportPath = fi.DirectoryName + @"\audit_trail.xml";
+                        AuditTrailReportCommonClass.exportToXml(tv, auditTrailReportPath);
+                        fi = new FileInfo(auditTrailReportPath);
+                        if (fi.Exists)
+                        {
+                            files = new FileInfo[1];
+                            files[0] = fi;
+                            client.AttachFilesToIssue(response.key, files);
+                        }
                     }
+                   
                 }
 
-                
-
-                //alert user of success or failure of submittal    
-                MessageBox.Show("Provide Feedback was submitted successfully!");
+                //alert user of success or failure of submittal 
+                if ((chkAuditTrail.Checked) && (!auditTrailGenerated))
+                {
+                    MessageBox.Show("Provide Feedback was submitted successfully but Audit Trail could not be attached because your configuration is not complete.");
+                }
+                else
+                {                       
+                    MessageBox.Show("Provide Feedback was submitted successfully!");
+                }
                 this.Close();
 
 
