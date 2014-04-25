@@ -30,7 +30,7 @@ namespace BenMAP
 
         static void FirstChanceExceptionHandler(object source, FirstChanceExceptionEventArgs args)
         {
-
+           
             Exception ex = args.Exception;
             Logger.LogError(ex);
 
@@ -47,11 +47,20 @@ namespace BenMAP
                         frm.ErrorMessage = ex.StackTrace;
                         frm.ShowDialog();
                     }
+                    
+                    Environment.Exit(0);
+                    
                 }
                 catch (Exception ex2)
                 {
+                    //quit if error occurs opening or after opening error reporting form
                     Logger.LogError(ex2);
+                    Environment.Exit(0);
                 }
+            }
+            else //this error occurred in Error Reporting so just quit
+            {
+                Environment.Exit(0);
             }
 
         }
