@@ -112,20 +112,23 @@ namespace BenMAP
             issue.SetField(NewJiraIssue.FIELD_ENVIRONMENT, txtOS.Text.Trim());
 
             //priority
-            string priority;
-            if (rbMinor.Checked)
+            if (gbSeverity.Enabled)
             {
-                priority = NewJiraIssue.PRIORITY_MINOR;
+                string priority;
+                if (rbMinor.Checked)
+                {
+                    priority = NewJiraIssue.PRIORITY_MINOR;
+                }
+                else if (rbMajor.Checked)
+                {
+                    priority = NewJiraIssue.PRIORITY_MAJOR;
+                }
+                else
+                {
+                    priority = NewJiraIssue.PRIORITY_BLOCKER;
+                }
+                issue.SetField(NewJiraIssue.FIELD_PRIORITY, new { name = priority });
             }
-            else if (rbMajor.Checked)
-            {
-                priority = NewJiraIssue.PRIORITY_MAJOR;
-            }
-            else
-            {
-                priority = NewJiraIssue.PRIORITY_BLOCKER;
-            }
-            issue.SetField(NewJiraIssue.FIELD_PRIORITY, new { name = priority }); 
                 
             //component
             //string component = ((JiraProjectComponent)cboComponent.SelectedItem).name;
@@ -186,6 +189,27 @@ namespace BenMAP
            
 
         }
+
+        private void rbError_CheckedChanged(object sender, EventArgs e)
+        {
+
+            if (rbError.Checked)
+            {
+                lblSeverity.Enabled = true;
+                gbSeverity.Enabled = true;
+                rbMajor.Checked = true;
+            }
+            else 
+            {
+                lblSeverity.Enabled = false;
+                gbSeverity.Enabled = false;
+                rbMajor.Checked = false;
+                rbMinor.Checked = false;
+                rbBlocking.Checked = false;
+            }
+        }
+
+        
 
     }
 }

@@ -42,7 +42,7 @@
             this.btnCancel = new System.Windows.Forms.Button();
             this.label6 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
-            this.label8 = new System.Windows.Forms.Label();
+            this.lblSeverity = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.cboComponent = new System.Windows.Forms.ComboBox();
             this.label10 = new System.Windows.Forms.Label();
@@ -166,14 +166,14 @@
             this.label7.TabIndex = 12;
             this.label7.Text = "What type of report would you like to submit?";
             // 
-            // label8
+            // lblSeverity
             // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(489, 173);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(231, 14);
-            this.label8.TabIndex = 15;
-            this.label8.Text = "How severe is the error you experienced?";
+            this.lblSeverity.AutoSize = true;
+            this.lblSeverity.Location = new System.Drawing.Point(489, 173);
+            this.lblSeverity.Name = "lblSeverity";
+            this.lblSeverity.Size = new System.Drawing.Size(231, 14);
+            this.lblSeverity.TabIndex = 15;
+            this.lblSeverity.Text = "How severe is the error you experienced?";
             // 
             // label9
             // 
@@ -261,6 +261,7 @@
             this.rbError.TabStop = true;
             this.rbError.Text = "Software Error";
             this.rbError.UseVisualStyleBackColor = true;
+            this.rbError.CheckedChanged += new System.EventHandler(this.rbError_CheckedChanged);
             // 
             // gbSeverity
             // 
@@ -329,7 +330,7 @@
             this.Controls.Add(this.label10);
             this.Controls.Add(this.cboComponent);
             this.Controls.Add(this.label9);
-            this.Controls.Add(this.label8);
+            this.Controls.Add(this.lblSeverity);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.btnCancel);
@@ -372,7 +373,7 @@
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Label lblSeverity;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.ComboBox cboComponent;
         private System.Windows.Forms.Label label10;
