@@ -97,12 +97,26 @@ namespace BenMAP
             if (String.IsNullOrEmpty(txtOS.Text.Trim()))
             {
                 lblErrorText.Text = "Operating System is required.";
+                txtOS.Focus();
                 return false;
+            }
+
+            string email = txtEmail.Text.Trim();
+            if (!String.IsNullOrEmpty(email))
+            {
+                RegexUtilities regExUtil = new RegexUtilities();
+                if (!regExUtil.IsValidEmail(email))
+                {
+                    lblErrorText.Text = "You must enter a valid Email address.";
+                    txtEmail.Focus();
+                    return false;
+                }
             }
 
             if (String.IsNullOrEmpty(txtDescription.Text.Trim()))
             {
                 lblErrorText.Text = "Description (Please describe what you were doing...) is required.";
+                txtDescription.Focus();
                 return false;
             }
 
