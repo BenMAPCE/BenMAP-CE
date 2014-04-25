@@ -71,16 +71,16 @@
             // 
             // txtOS
             // 
-            this.txtOS.Location = new System.Drawing.Point(236, 61);
+            this.txtOS.Location = new System.Drawing.Point(223, 61);
             this.txtOS.Name = "txtOS";
-            this.txtOS.Size = new System.Drawing.Size(225, 22);
+            this.txtOS.Size = new System.Drawing.Size(261, 22);
             this.txtOS.TabIndex = 1;
             // 
             // txtEmail
             // 
-            this.txtEmail.Location = new System.Drawing.Point(236, 120);
+            this.txtEmail.Location = new System.Drawing.Point(223, 120);
             this.txtEmail.Name = "txtEmail";
-            this.txtEmail.Size = new System.Drawing.Size(225, 22);
+            this.txtEmail.Size = new System.Drawing.Size(261, 22);
             this.txtEmail.TabIndex = 2;
             // 
             // txtName
@@ -99,7 +99,7 @@
             // 
             // label2
             // 
-            this.label2.Location = new System.Drawing.Point(27, 64);
+            this.label2.Location = new System.Drawing.Point(14, 64);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(213, 13);
             this.label2.TabIndex = 5;
@@ -107,7 +107,7 @@
             // 
             // label3
             // 
-            this.label3.Location = new System.Drawing.Point(27, 120);
+            this.label3.Location = new System.Drawing.Point(14, 120);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(180, 13);
             this.label3.TabIndex = 6;
@@ -310,11 +310,12 @@
             // lblErrorText
             // 
             this.lblErrorText.ForeColor = System.Drawing.Color.Red;
-            this.lblErrorText.Location = new System.Drawing.Point(140, 41);
+            this.lblErrorText.Location = new System.Drawing.Point(14, 41);
             this.lblErrorText.Name = "lblErrorText";
-            this.lblErrorText.Size = new System.Drawing.Size(712, 13);
+            this.lblErrorText.Size = new System.Drawing.Size(920, 13);
             this.lblErrorText.TabIndex = 27;
             this.lblErrorText.Text = "Error Text";
+            this.lblErrorText.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // ErrorReporting
             // 

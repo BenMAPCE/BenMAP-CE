@@ -31,10 +31,12 @@ namespace BenMAP
             //default options
             rbError.Checked = true;
             rbMajor.Checked = true;
+            txtOS.Text = Environment.OSVersion.VersionString;
+            chkAuditTrail.Checked = true;            
 
             //populate component combo from Jira
             client = new JiraClient(baseURL, username, password);
-           
+
             List<JiraProjectComponent> components = (List<JiraProjectComponent>)client.GetProjectComponents(projectKey);
 
             //if components cannot be retrieved, alert the user and disable the submit button.
@@ -44,15 +46,18 @@ namespace BenMAP
                         "  Provide Feedback is temporarily disabled.";
                 btnSubmit.Enabled = false;
             }
-            else {
+            else
+            {
                 lblErrorText.Text = "";
-                btnSubmit.Enabled = true;        
+                btnSubmit.Enabled = true;
                 //fill components drop down
                 cboComponent.DisplayMember = "name";
                 cboComponent.ValueMember = "id";
                 cboComponent.DataSource = components;
-                
+
             }
+
+            
         }
 
         public string ErrorMessage
@@ -70,6 +75,9 @@ namespace BenMAP
 
         private void ErrorReporting_Shown(Object sender, EventArgs e)
         {
+
+            txtEmail.Focus();
+
             if (!String.IsNullOrEmpty(errorMessage))
             {
                 txtDescription.Text = "Error: " + errorMessage;
@@ -83,9 +91,33 @@ namespace BenMAP
             Close();
         }
 
+        private bool FormIsValid()
+        { 
+            
+            if (String.IsNullOrEmpty(txtOS.Text.Trim()))
+            {
+                lblErrorText.Text = "Operating System is required.";
+                return false;
+            }
+
+            if (String.IsNullOrEmpty(txtDescription.Text.Trim()))
+            {
+                lblErrorText.Text = "Description (Please describe what you were doing...) is required.";
+                return false;
+            }
+
+            return true;
+                
+        }
+
         private void btnSubmit_Click(object sender, EventArgs e)
         {
             //validate inputs
+
+            if (!FormIsValid()) 
+            {
+                return;
+            }
            
             //send inputs to Jira
 
