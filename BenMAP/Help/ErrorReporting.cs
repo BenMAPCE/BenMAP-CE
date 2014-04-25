@@ -224,7 +224,7 @@ namespace BenMAP
                 //alert user of success or failure of submittal 
                 if ((chkAuditTrail.Checked) && (!auditTrailGenerated))
                 {
-                    MessageBox.Show("Provide Feedback was submitted successfully but Audit Trail could not be attached because your configuration is not complete.");
+                    MessageBox.Show("Provide Feedback was submitted successfully!  However, Audit Trail could not be attached because your configuration is not complete.");
                 }
                 else
                 {                       
