@@ -24,7 +24,7 @@ namespace BenMAP
         private string errorMessage;
 
         public ErrorReporting()
-        {           
+        {
 
             InitializeComponent();
 
@@ -35,7 +35,6 @@ namespace BenMAP
             rbMajor.Checked = true;
             txtOS.Text = Environment.OSVersion.VersionString;
             txtBenMAPCEVersion.Text = frmAbout.AssemblyVersion.Replace("Version: ", "");
-            chkAuditTrail.Checked = true;            
 
             //populate component combo from Jira
             client = new JiraClient(baseURL, username, password);
@@ -58,9 +57,26 @@ namespace BenMAP
                 cboComponent.ValueMember = "id";
                 cboComponent.DataSource = components;
 
+                //if audit trail cannot be generated, alert the user and disablet the audit trail checkbox
+                TreeView tv = new TreeView();
+                int retVal = AuditTrailReportCommonClass.generateAuditTrailReportTreeView(tv);
+                if (retVal == -1)
+                {
+                    lblErrorText.Text = "Audit Trail feature is disabled. Please open or configure a complete project to attach an audit trail.  Values in all other fields will be submitted.";
+                    chkAuditTrail.Checked = false;
+                    chkAuditTrail.Enabled = false;
+                }
+                else
+                {
+                    chkAuditTrail.Checked = true;
+                    chkAuditTrail.Enabled = true;
+                }
+            
             }
 
             
+
+
         }
 
         public string ErrorMessage

@@ -315,7 +315,7 @@
             this.lblErrorText.ForeColor = System.Drawing.Color.Red;
             this.lblErrorText.Location = new System.Drawing.Point(14, 41);
             this.lblErrorText.Name = "lblErrorText";
-            this.lblErrorText.Size = new System.Drawing.Size(920, 13);
+            this.lblErrorText.Size = new System.Drawing.Size(950, 13);
             this.lblErrorText.TabIndex = 27;
             this.lblErrorText.Text = "Error Text";
             this.lblErrorText.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
