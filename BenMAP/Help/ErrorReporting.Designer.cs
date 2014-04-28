@@ -57,6 +57,8 @@
             this.rbMajor = new System.Windows.Forms.RadioButton();
             this.rbMinor = new System.Windows.Forms.RadioButton();
             this.lblErrorText = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.txtBenMAPCEVersion = new System.Windows.Forms.TextBox();
             this.gbReportType.SuspendLayout();
             this.gbSeverity.SuspendLayout();
             this.SuspendLayout();
@@ -78,7 +80,7 @@
             // 
             // txtEmail
             // 
-            this.txtEmail.Location = new System.Drawing.Point(223, 120);
+            this.txtEmail.Location = new System.Drawing.Point(695, 92);
             this.txtEmail.Name = "txtEmail";
             this.txtEmail.Size = new System.Drawing.Size(261, 22);
             this.txtEmail.TabIndex = 2;
@@ -107,7 +109,7 @@
             // 
             // label3
             // 
-            this.label3.Location = new System.Drawing.Point(14, 120);
+            this.label3.Location = new System.Drawing.Point(503, 95);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(180, 13);
             this.label3.TabIndex = 6;
@@ -318,11 +320,28 @@
             this.lblErrorText.Text = "Error Text";
             this.lblErrorText.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // label8
+            // 
+            this.label8.Location = new System.Drawing.Point(14, 98);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(213, 13);
+            this.label8.TabIndex = 29;
+            this.label8.Text = "BenMAP-CE Version";
+            // 
+            // txtBenMAPCEVersion
+            // 
+            this.txtBenMAPCEVersion.Location = new System.Drawing.Point(223, 95);
+            this.txtBenMAPCEVersion.Name = "txtBenMAPCEVersion";
+            this.txtBenMAPCEVersion.Size = new System.Drawing.Size(261, 22);
+            this.txtBenMAPCEVersion.TabIndex = 28;
+            // 
             // ErrorReporting
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(957, 734);
+            this.ClientSize = new System.Drawing.Size(976, 734);
+            this.Controls.Add(this.label8);
+            this.Controls.Add(this.txtBenMAPCEVersion);
             this.Controls.Add(this.lblErrorText);
             this.Controls.Add(this.gbSeverity);
             this.Controls.Add(this.gbReportType);
@@ -390,5 +409,7 @@
         private System.Windows.Forms.RadioButton rbMajor;
         private System.Windows.Forms.RadioButton rbMinor;
         private System.Windows.Forms.Label lblErrorText;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.TextBox txtBenMAPCEVersion;
     }
 }

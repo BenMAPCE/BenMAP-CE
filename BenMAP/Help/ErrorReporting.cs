@@ -28,10 +28,13 @@ namespace BenMAP
 
             InitializeComponent();
 
+            About frmAbout = new About();
+
             //default options
             rbError.Checked = true;
             rbMajor.Checked = true;
             txtOS.Text = Environment.OSVersion.VersionString;
+            txtBenMAPCEVersion.Text = frmAbout.AssemblyVersion.Replace("Version: ", "");
             chkAuditTrail.Checked = true;            
 
             //populate component combo from Jira
@@ -151,8 +154,9 @@ namespace BenMAP
                 issueType = NewJiraIssue.ISSUE_TYPE_NEW_FEATURE;
             }
 
-            //name, email, country, description
-            string description = "Name: " + txtName.Text.Trim() + "\n";
+            //BenMAP-CE Version, name, email, country, description
+            string description = "BenMAP-CE Version: " + txtBenMAPCEVersion.Text.Trim() + "\n";                 
+            description = description + "Name: " + txtName.Text.Trim() + "\n";
             description = description + "Email: " + txtEmail.Text.Trim() + "\n";
             description = description + "Country: " + txtCountry.Text.Trim() + "\n\n";
             description = description + "Description: " + txtDescription.Text.Trim();
