@@ -21,8 +21,14 @@ namespace BenMAP
         private object _dataSetID;
         private DataTable _dtDataFile;
         private MetadataClassObj _metadataObj = null;
+        private bool _isEdit = false;
         //private string _strPath;
 
+        public MonitorDataSetDefinition (string name, object id, bool isEdit):this(name, id)
+        {
+            _isEdit = isEdit;
+            txtDataSetName.Enabled = false;
+        }
         public MonitorDataSetDefinition(string name, object id)
         {
             InitializeComponent();
@@ -74,6 +80,11 @@ namespace BenMAP
             {
                 FireBirdHelperBase fb = new ESILFireBirdHelper();
                 string commandText = string.Format("select c.pollutantname,a.yyear,count(*) from monitorentries a,monitors b,pollutants c where a.monitorid=b.monitorid and b.pollutantid=c.pollutantid and b.monitordatasetID={0} group by c.pollutantname,a.yyear", id);
+                //string commandText = string.Format("select distinct c.pollutantname,a.yyear, d.metadataid, count(*) " +
+                //                                    "from monitorentries a, monitors b, pollutants c, METADATAINFORMATION d " +
+                //                                    "where a.monitorid=b.monitorid and b.pollutantid=c.pollutantid and " +
+                //                                    "d.DATASETID=b.monitordatasetID and b.monitordatasetID={0} and d.DATASETTYPEID={1} " +
+                //                                    "group by c.pollutantname,a.yyear, b.monitordatasetID, d.metadataid", _metadataObj.DatasetId, _metadataObj.DatasetTypeId);
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                 olvMonitorDataSets.DataSource = ds.Tables[0];
             }
@@ -161,11 +172,13 @@ namespace BenMAP
                 string commandText = string.Empty;
                 if (cboPollutant.Text == string.Empty)
                 {
-                    MessageBox.Show("Please select a pollutant."); return;
+                    MessageBox.Show("Please select a pollutant."); 
+                    return;
                 }
                 if (txtYear.Text.Length != 4)
                 {
-                    MessageBox.Show("Please input a valid year."); return;
+                    MessageBox.Show("Please input a valid year."); 
+                    return;
                 }
                 //if (txtMonitorDataFile.Text == string.Empty) { MessageBox.Show("Please select a monitor data file."); return; }
                 string msg = string.Format("Save this file associated with {0} and {1} ?", cboPollutant.GetItemText(cboPollutant.SelectedItem), txtYear.Text);
@@ -248,7 +261,8 @@ namespace BenMAP
                         commandText = "select max(MonitorID) from MONITORS";
                         monitorID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
                         FbParameter Parameter = new FbParameter("@Description", _dtDataFile.Rows[i][iMonitorDescription]);
-                        commandText = string.Format("insert into Monitors(Monitorid,Monitordatasetid,Pollutantid,Latitude,Longitude,Monitorname,Monitordescription) values ({0},{1},{2},{3},{4},'{5}',@Description)", monitorID, _dataSetID, pollutantID, _dtDataFile.Rows[i][iLatitude], _dtDataFile.Rows[i][iLongitude], _dtDataFile.Rows[i][iMonitorName]);
+                        //commandText = string.Format("insert into Monitors(Monitorid,Monitordatasetid,Pollutantid,Latitude,Longitude,Monitorname,Monitordescription) values ({0},{1},{2},{3},{4},'{5}',@Description)", monitorID, _dataSetID, pollutantID, _dtDataFile.Rows[i][iLatitude], _dtDataFile.Rows[i][iLongitude], _dtDataFile.Rows[i][iMonitorName]);
+                        commandText = string.Format("insert into Monitors(Monitorid,Monitordatasetid,Pollutantid,Latitude,Longitude,Monitorname,Monitordescription, Metadataid) values ({0},{1},{2},{3},{4},'{5}',@Description, {6})", monitorID, _dataSetID, pollutantID, _dtDataFile.Rows[i][iLatitude], _dtDataFile.Rows[i][iLongitude], _dtDataFile.Rows[i][iMonitorName], _metadataObj.MetadataId);
                         fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText, Parameter);
                         commandText = "select max(MonitorEntryID) from MonitorEntries";
                         int monitorEntriesID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
@@ -271,7 +285,7 @@ namespace BenMAP
                         lblProgress.Refresh();
                     }
 
-                    insertMetadata(Convert.ToInt16(_dataSetID));
+                    insertMetadata(Convert.ToInt16(_dataSetID), pollutantID);
                 }
                 progressBar1.Visible = false;
                 lblProgress.Text = "";
@@ -285,7 +299,8 @@ namespace BenMAP
                 Logger.LogError(ex.Message);
             }
         }
-        private void insertMetadata(int dataSetID)
+        
+        private void insertMetadata(int dataSetID, int pollutantId)
         {
             _metadataObj.DatasetId = dataSetID;
 
@@ -294,7 +309,12 @@ namespace BenMAP
             {
                 MessageBox.Show("Failed to save Metadata.");
             }
+            //if(!SQLStatementsCommonClass.updateMonitorsTable(_metadataObj.MetadataId, dataSetID, pollutantId))
+            //{
+            //    MessageBox.Show("Failed to save metadataId to Monitors table.");
+            //}
         }
+       
         private static Dictionary<int, string> getMetric()
         {
             try
@@ -459,15 +479,41 @@ namespace BenMAP
 
         private void btnBrowse1_Click(object sender, EventArgs e)
         {
-            LoadSelectedDataSet lmdataset = new LoadSelectedDataSet("Load Monitor Dataset", "Monitor Dataset Name:", txtDataSetName.Text, "Monitor");
-
-            DialogResult dlgr = lmdataset.ShowDialog();
-            if(dlgr.Equals(DialogResult.OK))
+            if(checkForDuplicate())
             {
-                _dtDataFile = lmdataset.MonitorDataSet;
-                _metadataObj = lmdataset.MetadataObj;
-                LoadDatabase();
+
+                LoadSelectedDataSet lmdataset = new LoadSelectedDataSet("Load Monitor Dataset", "Monitor Dataset Name:", txtDataSetName.Text, "Monitor");
+
+                DialogResult dlgr = lmdataset.ShowDialog();
+                if(dlgr.Equals(DialogResult.OK))
+                {
+                    _dtDataFile = lmdataset.MonitorDataSet;
+                    _metadataObj = lmdataset.MetadataObj;
+                    olvMonitorDataSets.ClearObjects();
+                    LoadDatabase();
+                }
             }
+            else
+            {
+                MessageBox.Show("Dublicate entry.  There is alrady an entry for the selected pollutant and year"); 
+            }
+        }
+        private bool checkForDuplicate()
+        {
+            bool bPassed = true;
+            string pollutant = cboPollutant.Text;
+            string year = txtYear.Text;
+
+            foreach(ListViewItem lvi in olvMonitorDataSets.Items)
+            {
+                if(pollutant.Equals(lvi.SubItems[0].Text) && year.Equals(lvi.SubItems[1].Text))
+                {
+                    bPassed = false;
+                    break;
+                }
+            }
+
+            return bPassed;
         }
     }
 }

@@ -38,8 +38,6 @@
             this.txtSetupID = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
-            this.txtSetupName = new System.Windows.Forms.TextBox();
-            this.label8 = new System.Windows.Forms.Label();
             this.txtReference = new System.Windows.Forms.TextBox();
             this.txtFileName = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
@@ -65,6 +63,10 @@
             this.txtDatum = new System.Windows.Forms.TextBox();
             this.lblDatum = new System.Windows.Forms.Label();
             this.txtDatumType = new System.Windows.Forms.TextBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.txtSetupName = new System.Windows.Forms.TextBox();
+            this.txtDatasetName = new System.Windows.Forms.TextBox();
             this.flowLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.SuspendLayout();
@@ -88,7 +90,7 @@
             // 
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(8, 443);
+            this.label1.Location = new System.Drawing.Point(8, 472);
             this.label1.Margin = new System.Windows.Forms.Padding(8);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(120, 13);
@@ -100,7 +102,7 @@
             // 
             this.tableLayoutPanel2.SetColumnSpan(this.rtbDescription, 2);
             this.rtbDescription.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.rtbDescription.Location = new System.Drawing.Point(3, 468);
+            this.rtbDescription.Location = new System.Drawing.Point(3, 497);
             this.rtbDescription.Name = "rtbDescription";
             this.rtbDescription.Size = new System.Drawing.Size(391, 138);
             this.rtbDescription.TabIndex = 2;
@@ -116,7 +118,7 @@
             this.flowLayoutPanel1.Controls.Add(this.btnOK);
             this.flowLayoutPanel1.Controls.Add(this.btnSaveMetaData);
             this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(3, 612);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(3, 641);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             this.flowLayoutPanel1.Size = new System.Drawing.Size(391, 33);
             this.flowLayoutPanel1.TabIndex = 4;
@@ -147,43 +149,46 @@
             this.tableLayoutPanel2.ColumnCount = 2;
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 34.25693F));
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 65.74307F));
-            this.tableLayoutPanel2.Controls.Add(this.rtbDescription, 0, 16);
-            this.tableLayoutPanel2.Controls.Add(this.label1, 0, 15);
+            this.tableLayoutPanel2.Controls.Add(this.rtbDescription, 0, 17);
+            this.tableLayoutPanel2.Controls.Add(this.label1, 0, 16);
             this.tableLayoutPanel2.Controls.Add(this.txtSetupID, 1, 0);
             this.tableLayoutPanel2.Controls.Add(this.label7, 0, 0);
-            this.tableLayoutPanel2.Controls.Add(this.flowLayoutPanel1, 0, 17);
-            this.tableLayoutPanel2.Controls.Add(this.label9, 0, 14);
-            this.tableLayoutPanel2.Controls.Add(this.txtSetupName, 1, 1);
+            this.tableLayoutPanel2.Controls.Add(this.flowLayoutPanel1, 0, 18);
+            this.tableLayoutPanel2.Controls.Add(this.label9, 0, 15);
+            this.tableLayoutPanel2.Controls.Add(this.txtReference, 1, 15);
+            this.tableLayoutPanel2.Controls.Add(this.txtFileName, 1, 3);
+            this.tableLayoutPanel2.Controls.Add(this.label3, 0, 3);
+            this.tableLayoutPanel2.Controls.Add(this.lblUnit, 0, 14);
+            this.tableLayoutPanel2.Controls.Add(this.txtExtension, 1, 4);
+            this.tableLayoutPanel2.Controls.Add(this.label4, 0, 4);
+            this.tableLayoutPanel2.Controls.Add(this.txtUnit, 1, 14);
+            this.tableLayoutPanel2.Controls.Add(this.txtFileDate, 1, 5);
+            this.tableLayoutPanel2.Controls.Add(this.label5, 0, 5);
+            this.tableLayoutPanel2.Controls.Add(this.lblMedia, 0, 13);
+            this.tableLayoutPanel2.Controls.Add(this.txtImportDate, 1, 6);
+            this.tableLayoutPanel2.Controls.Add(this.label6, 0, 6);
+            this.tableLayoutPanel2.Controls.Add(this.txtMedian, 1, 13);
+            this.tableLayoutPanel2.Controls.Add(this.txtGeoName, 1, 7);
+            this.tableLayoutPanel2.Controls.Add(this.lblName, 0, 7);
+            this.tableLayoutPanel2.Controls.Add(this.lblSpheroid, 0, 12);
+            this.tableLayoutPanel2.Controls.Add(this.txtNumOfFeatures, 1, 8);
+            this.tableLayoutPanel2.Controls.Add(this.lblNumOfFeatures, 0, 8);
+            this.tableLayoutPanel2.Controls.Add(this.txtSpheroid, 1, 12);
+            this.tableLayoutPanel2.Controls.Add(this.txtProj4String, 1, 9);
+            this.tableLayoutPanel2.Controls.Add(this.lblProj4String, 0, 9);
+            this.tableLayoutPanel2.Controls.Add(this.lblDatumType, 0, 11);
+            this.tableLayoutPanel2.Controls.Add(this.txtDatum, 1, 10);
+            this.tableLayoutPanel2.Controls.Add(this.lblDatum, 0, 10);
+            this.tableLayoutPanel2.Controls.Add(this.txtDatumType, 1, 11);
             this.tableLayoutPanel2.Controls.Add(this.label8, 0, 1);
-            this.tableLayoutPanel2.Controls.Add(this.txtReference, 1, 14);
-            this.tableLayoutPanel2.Controls.Add(this.txtFileName, 1, 2);
-            this.tableLayoutPanel2.Controls.Add(this.label3, 0, 2);
-            this.tableLayoutPanel2.Controls.Add(this.lblUnit, 0, 13);
-            this.tableLayoutPanel2.Controls.Add(this.txtExtension, 1, 3);
-            this.tableLayoutPanel2.Controls.Add(this.label4, 0, 3);
-            this.tableLayoutPanel2.Controls.Add(this.txtUnit, 1, 13);
-            this.tableLayoutPanel2.Controls.Add(this.txtFileDate, 1, 4);
-            this.tableLayoutPanel2.Controls.Add(this.label5, 0, 4);
-            this.tableLayoutPanel2.Controls.Add(this.lblMedia, 0, 12);
-            this.tableLayoutPanel2.Controls.Add(this.txtImportDate, 1, 5);
-            this.tableLayoutPanel2.Controls.Add(this.label6, 0, 5);
-            this.tableLayoutPanel2.Controls.Add(this.txtMedian, 1, 12);
-            this.tableLayoutPanel2.Controls.Add(this.txtGeoName, 1, 6);
-            this.tableLayoutPanel2.Controls.Add(this.lblName, 0, 6);
-            this.tableLayoutPanel2.Controls.Add(this.lblSpheroid, 0, 11);
-            this.tableLayoutPanel2.Controls.Add(this.txtNumOfFeatures, 1, 7);
-            this.tableLayoutPanel2.Controls.Add(this.lblNumOfFeatures, 0, 7);
-            this.tableLayoutPanel2.Controls.Add(this.txtSpheroid, 1, 11);
-            this.tableLayoutPanel2.Controls.Add(this.txtProj4String, 1, 8);
-            this.tableLayoutPanel2.Controls.Add(this.lblProj4String, 0, 8);
-            this.tableLayoutPanel2.Controls.Add(this.lblDatumType, 0, 10);
-            this.tableLayoutPanel2.Controls.Add(this.txtDatum, 1, 9);
-            this.tableLayoutPanel2.Controls.Add(this.lblDatum, 0, 9);
-            this.tableLayoutPanel2.Controls.Add(this.txtDatumType, 1, 10);
+            this.tableLayoutPanel2.Controls.Add(this.label2, 0, 2);
+            this.tableLayoutPanel2.Controls.Add(this.txtSetupName, 1, 1);
+            this.tableLayoutPanel2.Controls.Add(this.txtDatasetName, 1, 2);
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel2.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
-            this.tableLayoutPanel2.RowCount = 18;
+            this.tableLayoutPanel2.RowCount = 19;
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -202,7 +207,7 @@
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 144F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 8F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(397, 648);
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(397, 678);
             this.tableLayoutPanel2.TabIndex = 3;
             this.tableLayoutPanel2.Paint += new System.Windows.Forms.PaintEventHandler(this.tableLayoutPanel2_Paint);
             // 
@@ -233,41 +238,17 @@
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(8, 414);
+            this.label9.Location = new System.Drawing.Point(8, 443);
             this.label9.Margin = new System.Windows.Forms.Padding(8);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(60, 13);
             this.label9.TabIndex = 0;
             this.label9.Text = "Reference:";
             // 
-            // txtSetupName
-            // 
-            this.txtSetupName.BackColor = System.Drawing.SystemColors.Control;
-            this.txtSetupName.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.txtSetupName.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtSetupName.Enabled = false;
-            this.txtSetupName.Location = new System.Drawing.Point(140, 33);
-            this.txtSetupName.Margin = new System.Windows.Forms.Padding(4);
-            this.txtSetupName.Multiline = true;
-            this.txtSetupName.Name = "txtSetupName";
-            this.txtSetupName.ReadOnly = true;
-            this.txtSetupName.Size = new System.Drawing.Size(253, 21);
-            this.txtSetupName.TabIndex = 0;
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(8, 37);
-            this.label8.Margin = new System.Windows.Forms.Padding(8);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(67, 13);
-            this.label8.TabIndex = 0;
-            this.label8.Text = "Setup name:";
-            // 
             // txtReference
             // 
             this.txtReference.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtReference.Location = new System.Drawing.Point(140, 410);
+            this.txtReference.Location = new System.Drawing.Point(140, 439);
             this.txtReference.Margin = new System.Windows.Forms.Padding(4);
             this.txtReference.Name = "txtReference";
             this.txtReference.Size = new System.Drawing.Size(253, 20);
@@ -280,7 +261,7 @@
             this.txtFileName.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtFileName.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtFileName.Enabled = false;
-            this.txtFileName.Location = new System.Drawing.Point(140, 62);
+            this.txtFileName.Location = new System.Drawing.Point(140, 91);
             this.txtFileName.Margin = new System.Windows.Forms.Padding(4);
             this.txtFileName.Multiline = true;
             this.txtFileName.Name = "txtFileName";
@@ -291,7 +272,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(8, 66);
+            this.label3.Location = new System.Drawing.Point(8, 95);
             this.label3.Margin = new System.Windows.Forms.Padding(8);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(55, 13);
@@ -301,7 +282,7 @@
             // lblUnit
             // 
             this.lblUnit.AutoSize = true;
-            this.lblUnit.Location = new System.Drawing.Point(8, 385);
+            this.lblUnit.Location = new System.Drawing.Point(8, 414);
             this.lblUnit.Margin = new System.Windows.Forms.Padding(8);
             this.lblUnit.Name = "lblUnit";
             this.lblUnit.Size = new System.Drawing.Size(29, 13);
@@ -315,7 +296,7 @@
             this.txtExtension.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtExtension.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtExtension.Enabled = false;
-            this.txtExtension.Location = new System.Drawing.Point(140, 91);
+            this.txtExtension.Location = new System.Drawing.Point(140, 120);
             this.txtExtension.Margin = new System.Windows.Forms.Padding(4);
             this.txtExtension.Multiline = true;
             this.txtExtension.Name = "txtExtension";
@@ -326,7 +307,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(8, 95);
+            this.label4.Location = new System.Drawing.Point(8, 124);
             this.label4.Margin = new System.Windows.Forms.Padding(8);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(56, 13);
@@ -339,7 +320,7 @@
             this.txtUnit.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtUnit.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtUnit.Enabled = false;
-            this.txtUnit.Location = new System.Drawing.Point(140, 381);
+            this.txtUnit.Location = new System.Drawing.Point(140, 410);
             this.txtUnit.Margin = new System.Windows.Forms.Padding(4);
             this.txtUnit.Multiline = true;
             this.txtUnit.Name = "txtUnit";
@@ -354,7 +335,7 @@
             this.txtFileDate.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtFileDate.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtFileDate.Enabled = false;
-            this.txtFileDate.Location = new System.Drawing.Point(140, 120);
+            this.txtFileDate.Location = new System.Drawing.Point(140, 149);
             this.txtFileDate.Margin = new System.Windows.Forms.Padding(4);
             this.txtFileDate.Multiline = true;
             this.txtFileDate.Name = "txtFileDate";
@@ -365,7 +346,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(8, 124);
+            this.label5.Location = new System.Drawing.Point(8, 153);
             this.label5.Margin = new System.Windows.Forms.Padding(8);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(52, 13);
@@ -375,7 +356,7 @@
             // lblMedia
             // 
             this.lblMedia.AutoSize = true;
-            this.lblMedia.Location = new System.Drawing.Point(8, 356);
+            this.lblMedia.Location = new System.Drawing.Point(8, 385);
             this.lblMedia.Margin = new System.Windows.Forms.Padding(8);
             this.lblMedia.Name = "lblMedia";
             this.lblMedia.Size = new System.Drawing.Size(50, 13);
@@ -389,7 +370,7 @@
             this.txtImportDate.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtImportDate.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtImportDate.Enabled = false;
-            this.txtImportDate.Location = new System.Drawing.Point(140, 149);
+            this.txtImportDate.Location = new System.Drawing.Point(140, 178);
             this.txtImportDate.Margin = new System.Windows.Forms.Padding(4);
             this.txtImportDate.Multiline = true;
             this.txtImportDate.Name = "txtImportDate";
@@ -400,7 +381,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(8, 153);
+            this.label6.Location = new System.Drawing.Point(8, 182);
             this.label6.Margin = new System.Windows.Forms.Padding(8);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(65, 13);
@@ -413,7 +394,7 @@
             this.txtMedian.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtMedian.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtMedian.Enabled = false;
-            this.txtMedian.Location = new System.Drawing.Point(140, 352);
+            this.txtMedian.Location = new System.Drawing.Point(140, 381);
             this.txtMedian.Margin = new System.Windows.Forms.Padding(4);
             this.txtMedian.Multiline = true;
             this.txtMedian.Name = "txtMedian";
@@ -428,7 +409,7 @@
             this.txtGeoName.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtGeoName.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtGeoName.Enabled = false;
-            this.txtGeoName.Location = new System.Drawing.Point(140, 178);
+            this.txtGeoName.Location = new System.Drawing.Point(140, 207);
             this.txtGeoName.Margin = new System.Windows.Forms.Padding(4);
             this.txtGeoName.Multiline = true;
             this.txtGeoName.Name = "txtGeoName";
@@ -440,7 +421,7 @@
             // lblName
             // 
             this.lblName.AutoSize = true;
-            this.lblName.Location = new System.Drawing.Point(8, 182);
+            this.lblName.Location = new System.Drawing.Point(8, 211);
             this.lblName.Margin = new System.Windows.Forms.Padding(8);
             this.lblName.Name = "lblName";
             this.lblName.Size = new System.Drawing.Size(38, 13);
@@ -451,7 +432,7 @@
             // lblSpheroid
             // 
             this.lblSpheroid.AutoSize = true;
-            this.lblSpheroid.Location = new System.Drawing.Point(8, 327);
+            this.lblSpheroid.Location = new System.Drawing.Point(8, 356);
             this.lblSpheroid.Margin = new System.Windows.Forms.Padding(8);
             this.lblSpheroid.Name = "lblSpheroid";
             this.lblSpheroid.Size = new System.Drawing.Size(52, 13);
@@ -465,7 +446,7 @@
             this.txtNumOfFeatures.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtNumOfFeatures.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtNumOfFeatures.Enabled = false;
-            this.txtNumOfFeatures.Location = new System.Drawing.Point(140, 207);
+            this.txtNumOfFeatures.Location = new System.Drawing.Point(140, 236);
             this.txtNumOfFeatures.Margin = new System.Windows.Forms.Padding(4);
             this.txtNumOfFeatures.Multiline = true;
             this.txtNumOfFeatures.Name = "txtNumOfFeatures";
@@ -477,7 +458,7 @@
             // lblNumOfFeatures
             // 
             this.lblNumOfFeatures.AutoSize = true;
-            this.lblNumOfFeatures.Location = new System.Drawing.Point(8, 211);
+            this.lblNumOfFeatures.Location = new System.Drawing.Point(8, 240);
             this.lblNumOfFeatures.Margin = new System.Windows.Forms.Padding(8);
             this.lblNumOfFeatures.Name = "lblNumOfFeatures";
             this.lblNumOfFeatures.Size = new System.Drawing.Size(103, 13);
@@ -491,7 +472,7 @@
             this.txtSpheroid.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtSpheroid.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtSpheroid.Enabled = false;
-            this.txtSpheroid.Location = new System.Drawing.Point(140, 323);
+            this.txtSpheroid.Location = new System.Drawing.Point(140, 352);
             this.txtSpheroid.Margin = new System.Windows.Forms.Padding(4);
             this.txtSpheroid.Multiline = true;
             this.txtSpheroid.Name = "txtSpheroid";
@@ -506,7 +487,7 @@
             this.txtProj4String.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtProj4String.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtProj4String.Enabled = false;
-            this.txtProj4String.Location = new System.Drawing.Point(140, 236);
+            this.txtProj4String.Location = new System.Drawing.Point(140, 265);
             this.txtProj4String.Margin = new System.Windows.Forms.Padding(4);
             this.txtProj4String.Multiline = true;
             this.txtProj4String.Name = "txtProj4String";
@@ -518,7 +499,7 @@
             // lblProj4String
             // 
             this.lblProj4String.AutoSize = true;
-            this.lblProj4String.Location = new System.Drawing.Point(8, 240);
+            this.lblProj4String.Location = new System.Drawing.Point(8, 269);
             this.lblProj4String.Margin = new System.Windows.Forms.Padding(8);
             this.lblProj4String.Name = "lblProj4String";
             this.lblProj4String.Size = new System.Drawing.Size(61, 13);
@@ -529,7 +510,7 @@
             // lblDatumType
             // 
             this.lblDatumType.AutoSize = true;
-            this.lblDatumType.Location = new System.Drawing.Point(8, 298);
+            this.lblDatumType.Location = new System.Drawing.Point(8, 327);
             this.lblDatumType.Margin = new System.Windows.Forms.Padding(8);
             this.lblDatumType.Name = "lblDatumType";
             this.lblDatumType.Size = new System.Drawing.Size(68, 13);
@@ -543,7 +524,7 @@
             this.txtDatum.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtDatum.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtDatum.Enabled = false;
-            this.txtDatum.Location = new System.Drawing.Point(140, 265);
+            this.txtDatum.Location = new System.Drawing.Point(140, 294);
             this.txtDatum.Margin = new System.Windows.Forms.Padding(4);
             this.txtDatum.Multiline = true;
             this.txtDatum.Name = "txtDatum";
@@ -555,7 +536,7 @@
             // lblDatum
             // 
             this.lblDatum.AutoSize = true;
-            this.lblDatum.Location = new System.Drawing.Point(8, 269);
+            this.lblDatum.Location = new System.Drawing.Point(8, 298);
             this.lblDatum.Margin = new System.Windows.Forms.Padding(8);
             this.lblDatum.Name = "lblDatum";
             this.lblDatum.Size = new System.Drawing.Size(41, 13);
@@ -569,7 +550,7 @@
             this.txtDatumType.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtDatumType.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtDatumType.Enabled = false;
-            this.txtDatumType.Location = new System.Drawing.Point(140, 294);
+            this.txtDatumType.Location = new System.Drawing.Point(140, 323);
             this.txtDatumType.Margin = new System.Windows.Forms.Padding(4);
             this.txtDatumType.Multiline = true;
             this.txtDatumType.Name = "txtDatumType";
@@ -578,11 +559,59 @@
             this.txtDatumType.TabIndex = 0;
             this.txtDatumType.Visible = false;
             // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(8, 37);
+            this.label8.Margin = new System.Windows.Forms.Padding(8);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(67, 13);
+            this.label8.TabIndex = 0;
+            this.label8.Text = "Setup name:";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(8, 66);
+            this.label2.Margin = new System.Windows.Forms.Padding(8);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(78, 13);
+            this.label2.TabIndex = 0;
+            this.label2.Text = "Dataset Name:";
+            this.label2.Visible = false;
+            // 
+            // txtSetupName
+            // 
+            this.txtSetupName.BackColor = System.Drawing.SystemColors.Control;
+            this.txtSetupName.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.txtSetupName.Enabled = false;
+            this.txtSetupName.Location = new System.Drawing.Point(140, 33);
+            this.txtSetupName.Margin = new System.Windows.Forms.Padding(4);
+            this.txtSetupName.Multiline = true;
+            this.txtSetupName.Name = "txtSetupName";
+            this.txtSetupName.ReadOnly = true;
+            this.txtSetupName.Size = new System.Drawing.Size(253, 21);
+            this.txtSetupName.TabIndex = 0;
+            // 
+            // txtDatasetName
+            // 
+            this.txtDatasetName.BackColor = System.Drawing.SystemColors.Control;
+            this.txtDatasetName.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.txtDatasetName.Enabled = false;
+            this.txtDatasetName.Location = new System.Drawing.Point(140, 62);
+            this.txtDatasetName.Margin = new System.Windows.Forms.Padding(4);
+            this.txtDatasetName.Multiline = true;
+            this.txtDatasetName.Name = "txtDatasetName";
+            this.txtDatasetName.ReadOnly = true;
+            this.txtDatasetName.Size = new System.Drawing.Size(253, 21);
+            this.txtDatasetName.TabIndex = 0;
+            this.txtDatasetName.Visible = false;
+            // 
             // ViewEditMetadata
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(397, 648);
+            this.ClientSize = new System.Drawing.Size(397, 678);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.tableLayoutPanel2);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
@@ -636,5 +665,7 @@
         private System.Windows.Forms.TextBox txtMedian;
         private System.Windows.Forms.TextBox txtUnit;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.TextBox txtDatasetName;
     }
 }

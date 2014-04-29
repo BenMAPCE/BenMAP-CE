@@ -49,15 +49,21 @@ namespace BenMAP
                                         "(SETUPID, DATASETID, DATASETTYPEID, FILENAME, " +
                                         "EXTENSION, DATAREFERENCE, FILEDATE, IMPORTDATE, DESCRIPTION, " +
                                         "PROJECTION, GEONAME, DATUMNAME, DATUMTYPE, SPHEROIDNAME, " +
-                                        "MERIDIANNAME, UNITNAME, PROJ4STRING, NUMBEROFFEATURES) " +
+                                        "MERIDIANNAME, UNITNAME, PROJ4STRING, NUMBEROFFEATURES, METADATAENTRYID) " +
                                         "VALUES('{0}', '{1}', '{2}', '{3}', '{4}','{5}', '{6}', '{7}', '{8}', '{9}', " +
-                                        "'{10}', '{11}', '{12}', '{13}', '{14}','{15}', '{16}', '{17}')",
+                                        "'{10}', '{11}', '{12}', '{13}', '{14}','{15}', '{16}', '{17}', {18})",
                                         metadataObj.SetupId, metadataObj.DatasetId, metadataObj.DatasetTypeId, metadataObj.FileName,
                                         metadataObj.Extension, metadataObj.DataReference, metadataObj.FileDate, metadataObj.ImportDate,
                                         metadataObj.Description, metadataObj.Projection, metadataObj.GeoName, metadataObj.DatumName,
                                         metadataObj.DatumType, metadataObj.SpheroidName, metadataObj.MeridianName, metadataObj.UnitName,
-                                        metadataObj.Proj4String, metadataObj.NumberOfFeatures);
+                                        metadataObj.Proj4String, metadataObj.NumberOfFeatures, metadataObj.MetadataId);
                         rtv = fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+
+                        //commandText = string.Format("SELECT METADATAID FROM METADATAINFORMATION WHERE setupid={0} and datasetid={1} and datasettypeid={2}",
+                        //                            metadataObj.SetupId, metadataObj.DatasetId,metadataObj.DatasetTypeId);
+
+                        //metadataObj.MetadataId = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
+                        
                         bPassed = true;
             }
             catch (Exception ex)
@@ -68,18 +74,45 @@ namespace BenMAP
             return bPassed;
         }
 
+        public static bool updateMonitorsTable(int metadataId, int monitordatasetId, int pollutantId)
+        {
+            FireBirdHelperBase fb = new ESILFireBirdHelper();
+            bool bPassed = false;
+            int rtv = 0;
+            string commandText = string.Empty;
+            try
+            {
+                commandText = string.Format("UPDATE MONITORS SET METADATAID = {0} WHERE MONITORDATASETID ={1} AND POLLUTANTID={2}", 
+                                             metadataId, monitordatasetId, pollutantId);
+                rtv = fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                bPassed = true;
+            }
+            catch (Exception ex)
+            {
+                
+                throw new Exception(ex.Message);
+            }
+
+            return bPassed;
+        }
+
         public static bool updateMetadata(MetadataClassObj metadataObj)
         {
             FireBirdHelperBase fb = new ESILFireBirdHelper();
             bool bPassed = false;
             int rtv = 0;
-
+            //int metaId = -1;
             string commandText = string.Empty;
             try
             {
+                //commandText = string.Format("SELECT METADATAID FROM METADATAINFORMATION WHERE DATASETID = {0} AND SETUPID = {1} AND FILENAME = '{2}'",
+                //                            metadataObj.DatasetId, metadataObj.SetupId, metadataObj.FileName);
+                //metaId = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection,CommandType.Text, commandText));
+
                 commandText = string.Format("UPDATE METADATAINFORMATION set DATAREFERENCE = '{0}', DESCRIPTION = '{1}' " +
-                                            "WHERE DATASETID = {2} AND SETUPID = {3}", 
-                                            metadataObj.DataReference, metadataObj.Description, metadataObj.DatasetId, metadataObj.SetupId);
+                                            "WHERE DATASETID = {2} AND SETUPID = {3} AND METADATAENTRYID = {4}", 
+                                            metadataObj.DataReference, metadataObj.Description, metadataObj.DatasetId,
+                                            metadataObj.SetupId, metadataObj.MetadataId);
                 rtv = fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                 bPassed = true;
 
@@ -160,6 +193,48 @@ namespace BenMAP
             return _metadataObj;
         }
 
+        public static MetadataClassObj getMetadata(int datasetID, int setupId, int datasetTypeId, int metadataId)
+        {
+            FireBirdHelperBase fb = new ESILFireBirdHelper();
+            MetadataClassObj _metadataObj = new MetadataClassObj();
+            DataSet ds = null;
+
+            string commandText = string.Format("SELECT METADATAID, METADATAENTRYID, SETUPID, DATASETID, DATASETTYPEID, FILENAME, " +
+                      "EXTENSION, DATAREFERENCE, FILEDATE, IMPORTDATE, DESCRIPTION, " +
+                      "PROJECTION, GEONAME, DATUMNAME, DATUMTYPE, SPHEROIDNAME, " +
+                      "MERIDIANNAME, UNITNAME, PROJ4STRING, NUMBEROFFEATURES " +
+                      "FROM METADATAINFORMATION " +
+                      "WHERE DATASETID = '{0}' AND SETUPID = '{1}' AND DATASETTYPEID = '{2}' AND METADATAENTRYID = '{3}'",
+                      datasetID, setupId, datasetTypeId, metadataId);
+
+            ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+                _metadataObj.MetadataId = Convert.ToInt32(dr["METADATAENTRYID"]);//Convert.ToInt32(dr["METADATAID"]);
+                _metadataObj.SetupId = Convert.ToInt32(dr["SETUPID"]);
+                _metadataObj.DatasetId = Convert.ToInt32(dr["DATASETID"]);
+                _metadataObj.DatasetTypeId = Convert.ToInt32(dr["DATASETTYPEID"]);
+                _metadataObj.FileName = dr["FILENAME"].ToString();
+                _metadataObj.Extension = dr["EXTENSION"].ToString();
+                _metadataObj.DataReference = dr["DATAREFERENCE"].ToString();
+                _metadataObj.FileDate = dr["FILEDATE"].ToString();
+                _metadataObj.ImportDate = dr["IMPORTDATE"].ToString();
+                _metadataObj.Description = dr["DESCRIPTION"].ToString();
+                _metadataObj.Projection = dr["PROJECTION"].ToString();
+                _metadataObj.GeoName = dr["GEONAME"].ToString();
+                _metadataObj.DatumName = dr["DATUMNAME"].ToString();
+                _metadataObj.DatumType = dr["DATUMTYPE"].ToString();
+                _metadataObj.SpheroidName = dr["SPHEROIDNAME"].ToString();
+                _metadataObj.MeridianName = dr["MERIDIANNAME"].ToString();
+                _metadataObj.UnitName = dr["UNITNAME"].ToString();
+                _metadataObj.Proj4String = dr["PROJ4STRING"].ToString();
+                _metadataObj.NumberOfFeatures = dr["NUMBEROFFEATURES"].ToString();
+
+            }
+            return _metadataObj;
+
+        }
+
         public static int selectMaxID(string nameId, string fromTableName)
         {
             FireBirdHelperBase fb = new ESILFireBirdHelper();
@@ -168,7 +243,16 @@ namespace BenMAP
             try 
 	        {
                 commandText = string.Format("select max({0}) from {1}", nameId, fromTableName);
-                rtvID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
+                object rtv = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
+                if(string.IsNullOrEmpty(rtv.ToString()))
+                {
+                    rtvID = 1;
+                }
+                else
+                {
+                    rtvID = Convert.ToInt32(rtv.ToString()) + 1;
+                }
+
 	        }
 	        catch (Exception ex)
 	        {

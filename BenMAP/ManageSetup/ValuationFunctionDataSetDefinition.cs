@@ -11,34 +11,46 @@ using BrightIdeasSoftware;
 using System.Diagnostics;
 using System.Collections;
 using ESIL.DBUtility;
-//TODO:
-// On the ValuationFunctionDataSetDefinition form, change the function of the "Load From Database" from a browse button to where
-// it launches a dialog very simaler to the five Load dataset dialogs.  This will help in trying to maintain a consistancy throughout
-// the application.
-//
-//1 on the LoadValuationFunctionDataSet dialog add a validate button
-//2 make it disabled
-//3 make the OK button disabled
-//4 After selecting a database to load (a csv file or excel file)
-//  enabled the validate button.
-//5 on a positive validation enable the OK button
-//
+
 namespace BenMAP
 {
     public partial class ValuationFunctionDataSetDefinition : FormBase
     {
         List<int> lstdeleteValuationid = new List<int>();
-
+        private object _dataSetID = -1;
+        private bool _isEdit = false;
+        DataTable dtForLoading = new DataTable();
+        int valuationFunctionDataSetID = -1;
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ValuationFunctionDataSetDefinition"/> class.
+        /// </summary>
         public ValuationFunctionDataSetDefinition()
         {
             InitializeComponent();
-            _dataName = string.Empty;
         }
 
-        public ValuationFunctionDataSetDefinition(string dataSetName)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ValuationFunctionDataSetDefinition"/> class.
+        /// The this statement calls the constructor with the same param.
+        /// </summary>
+        /// <param name="dataSetName">Name of the data set.</param>
+        public ValuationFunctionDataSetDefinition(string dataSetName): this()//calls the constructor that will initializae components
         {
-            InitializeComponent();
             _dataName = dataSetName;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ValuationFunctionDataSetDefinition"/> class.
+        /// The this statement calls the constructor with the same param.
+        /// </summary>
+        /// <param name="dataSetName">Name of the data set.</param>
+        /// <param name="datasetId">The dataset identifier.</param>
+        public ValuationFunctionDataSetDefinition(string dataSetName, object datasetId, bool isEdit): this(dataSetName)//calls the constructor that sets the data set name
+        {
+            _dataSetID = datasetId;
+            _isEdit  = isEdit;
+            valuationFunctionDataSetID = Convert.ToInt32(datasetId.ToString());//when doing an edit I need to have the current funciton dataset ID
+            txtValuationFunctionDataSetName.Enabled = false;
         }
 
         DataTable dt = new DataTable();
@@ -93,17 +105,48 @@ namespace BenMAP
 
         private void btnLoadFromDatabase_Click(object sender, EventArgs e)
         {
+            ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+            DataSet ds = new DataSet();
+            if(!_isEdit)
+            {
+                string commandText = string.Format("select * from  ValuationFunctionDataSets where SetupID={0}", CommonClass.ManageSetup.SetupID);
+                ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+                int dataSetNameCount = ds.Tables[0].Rows.Count;
+                for (int dataSetNameRow = 0; dataSetNameRow < dataSetNameCount; dataSetNameRow++)
+                {
+                    if (txtValuationFunctionDataSetName.Text == ds.Tables[0].Rows[dataSetNameRow]["ValuationFunctionDataSetName"].ToString())
+                    {
+                        MessageBox.Show("The valuation dataset name is already in use. Please enter a different name.");
+                        return; 
+                    }
+                }
+                if (txtValuationFunctionDataSetName.Text == string.Empty)
+                {
+                    MessageBox.Show("Please input a valid dataset name.");
+                    return; 
+                }
+             }
+             LoadFromFile();
+        }
+
+        private void LoadFromFile()
+        {
             LoadSelectedDataSet lmdataset = new LoadSelectedDataSet("Load Valuation Function Dataset", "Valuation Function Dataset Name:", txtValuationFunctionDataSetName.Text, "Valuationfunction");
             DialogResult dlgr = lmdataset.ShowDialog();
             if (dlgr.Equals(DialogResult.OK))
             {
                 dt = lmdataset.MonitorDataSet;
                 _metadataObj = lmdataset.MetadataObj;
+                olvData.ClearObjects();
+                LoadValuationFunctionOLV();
                 LoadDatabase();
+                //after loading the datafile, the dataset is Edit flag should be reset to true.  
+                //This will allow for additional files to be added.
+                _isEdit = true;
             }
         }
 
-        private void LoadDatabase()
+        private void LoadValuationFunctionOLV()
         {
             try
             {
@@ -213,6 +256,7 @@ namespace BenMAP
                     return;
                 }
 
+                dtForLoading = _dt.Clone();
                 for (int i = 0; i < rowCount; i++)
                 {
                     DataRow dr = _dt.NewRow();
@@ -238,10 +282,375 @@ namespace BenMAP
 
                     _dt.Rows.Add(dr);
 
+                    dtForLoading.ImportRow(dr);
                 }
 
                 olvData.DataSource = _dt;
                 LoadEndPointGroupEndPointName();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+            }
+        }
+        
+        private void LoadDatabase()
+        {
+            if(dtForLoading.Rows.Count < 1)
+            {
+                MessageBox.Show("No dataset was selected for import or created.  Please select a dataset to import or 'Add' information to careate a data set.");
+                btnLoadFromDatabase.Focus();
+                return;
+            }
+            
+            ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+            DataSet ds = new DataSet();
+            string commandText = string.Empty;
+            object obj = null;
+            //int valuationFunctionDataSetID = 0;
+            try
+            {
+                //if (_dataName == string.Empty)
+                if(Convert.ToInt32(_dataSetID) == -1)
+                {
+                    commandText = string.Format("select * from  ValuationFunctionDataSets where SetupID={0}", CommonClass.ManageSetup.SetupID);
+                    ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+                    int dataSetNameCount = ds.Tables[0].Rows.Count;
+                    #region Moved to btnLoadFromDatabase_Click event starting at line 110. doing the check before user has a chance to select file
+                    //for (int dataSetNameRow = 0; dataSetNameRow < dataSetNameCount; dataSetNameRow++)
+                    //{
+                    //    if (txtValuationFunctionDataSetName.Text == ds.Tables[0].Rows[dataSetNameRow]["ValuationFunctionDataSetName"].ToString())
+                    //    {
+                    //        MessageBox.Show("The valuation dataset name is already in use. Please enter a different name.");
+                    //        //return; I am not going to do anything for now until I can have more than one file loaded and have Metadata for each file loaded to a single dataset
+                    //    }
+                    //} 
+                    //if (txtValuationFunctionDataSetName.Text == string.Empty)
+                    //{
+                    //    MessageBox.Show("Please input a valid dataset name.");
+                    //    //return; I am not going to do anything for now until I can have more than one file loaded and have Metadata for each file loaded to a single dataset
+                    //}
+                    #endregion
+                    //if(valuationFunctionDataSetID == -1)
+                    if(Convert.ToInt32(_dataSetID) == -1)
+                    {
+                        commandText = string.Format("select max(VALUATIONFUNCTIONDATASETID) from ValuationFunctionDataSets");
+                        obj = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText)) + 1;
+                        valuationFunctionDataSetID = int.Parse(obj.ToString());
+                        _dataSetID = valuationFunctionDataSetID;
+                    }
+                    int rth;
+                    #region Dead code
+                    //commandText = string.Format("select max(VALUATIONFUNCTIONDATASETID) from ValuationFunctionDataSets");
+                    //object obj = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText)) + 1;
+                    //valuationFunctionDataSetID = int.Parse(obj.ToString());
+                    //commandText = string.Format("SELECT VALUATIONFUNCTIONDATASETID from ValuationFunctionDataSets WHERE VALUATIONFUNCTIONDATASETID = {0} AND SETUPID = {1}", _dataSetID, CommonClass.ManageSetup.SetupID);
+                    
+                    #endregion
+                    
+                    commandText = string.Format("SELECT VALUATIONFUNCTIONDATASETID from ValuationFunctionDataSets WHERE VALUATIONFUNCTIONDATASETID = {0} AND SETUPID = {1}", valuationFunctionDataSetID, CommonClass.ManageSetup.SetupID);
+                    obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+                    if (obj == null)
+                    {
+                        commandText = string.Format("insert into ValuationFunctionDataSets values ({0},{1},'{2}','F')", valuationFunctionDataSetID, CommonClass.ManageSetup.SetupID, txtValuationFunctionDataSetName.Text.Replace("'", "''"));
+                        rth = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                    }
+
+                    //commandText = string.Format("insert into ValuationFunctionDataSets values ({0},{1},'{2}','F')", valuationFunctionDataSetID, CommonClass.ManageSetup.SetupID, txtValuationFunctionDataSetName.Text.Replace("'", "''"));
+                    //int rth = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                    Dictionary<string, int> dicEndpointGroup = new Dictionary<string, int>();
+                    commandText = "select EndpointGroupID,LOWER(EndpointGroupName) from EndpointGroups ";
+                    DataSet dsEndpointGroup = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+                    foreach (DataRow drEndpointGroup in dsEndpointGroup.Tables[0].Rows)
+                    {
+                        dicEndpointGroup.Add(drEndpointGroup["LOWER"].ToString(), Convert.ToInt32(drEndpointGroup["EndpointGroupID"]));
+                    }
+                    Dictionary<string, int> dicValuationFunction = new Dictionary<string, int>();
+                    commandText = "select FunctionalFormID,FunctionalFormText from VALUATIONFUNCTIONALFORMS";
+                    DataSet dsValuationFunction = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+                    foreach (DataRow drFunction in dsValuationFunction.Tables[0].Rows)
+                    {
+                        if (!dicValuationFunction.ContainsKey(drFunction["FunctionalFormText"].ToString()))
+                            dicValuationFunction.Add(drFunction["FunctionalFormText"].ToString(), Convert.ToInt32(drFunction["FunctionalFormID"]));
+                    }
+                    //int dgvRowCount = _dt.Rows.Count;
+                    int dgvRowCount = dtForLoading.Rows.Count;
+                    for (int row = 0; row < dgvRowCount; row++)
+                    {
+                        CommonClass.Connection.Close();
+                        commandText = string.Format("select max(VALUATIONFUNCTIONID) from ValuationFunctions");
+                        obj = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText)) + 1;
+                        int valuationFunctionID = int.Parse(obj.ToString());
+                        commandText = string.Format("select ValuationFunctionDataSetID from ValuationFunctionDataSets where ValuationFunctionDataSetName='{0}' and SetupID={1}", txtValuationFunctionDataSetName.Text, CommonClass.ManageSetup.SetupID);
+                        obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+                        int VValuationFunctionDataSetID = int.Parse(obj.ToString());
+                        int EndpointGroupID = 0;
+                        //if (dicEndpointGroup.ContainsKey(_dt.Rows[row][0].ToString().ToLower()))
+                        if (dicEndpointGroup.ContainsKey(dtForLoading.Rows[row][0].ToString().ToLower()))
+                        {
+                            //EndpointGroupID = dicEndpointGroup[_dt.Rows[row][0].ToString().ToLower()];
+                            EndpointGroupID = dicEndpointGroup[dtForLoading.Rows[row][0].ToString().ToLower()];
+                        }
+                        else
+                        {
+                            commandText = string.Format("select max(EndpointGroupid) from EndpointGroups");
+                            obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+                            EndpointGroupID = int.Parse(obj.ToString()) + 1;
+                            //commandText = string.Format("insert into EndpointGroups values({0},'{1}')", EndpointGroupID, _dt.Rows[row][0].ToString());
+                            commandText = string.Format("insert into EndpointGroups values({0},'{1}')", EndpointGroupID, dtForLoading.Rows[row][0].ToString());
+                            fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                            //dicEndpointGroup.Add(_dt.Rows[row][0].ToString().ToLower(), EndpointGroupID);
+                            dicEndpointGroup.Add(dtForLoading.Rows[row][0].ToString().ToLower(), EndpointGroupID);
+                        }
+                        int EndpointID = 0;
+                        //commandText = string.Format("select EndpointID from Endpoints where EndpointGroupID={0} and LOWER(EndpointName)='" + _dt.Rows[row][1].ToString().ToLower() + "' ", EndpointGroupID);
+                        commandText = string.Format("select EndpointID from Endpoints where EndpointGroupID={0} and LOWER(EndpointName)='" +
+                                                    dtForLoading.Rows[row][1].ToString().ToLower() + "' ", EndpointGroupID);
+                        obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+                        if (obj == null)
+                        {
+                            commandText = string.Format("select max(EndpointID) from Endpoints");
+                            obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+                            EndpointID = int.Parse(obj.ToString()) + 1;
+                            //commandText = string.Format("insert into Endpoints values({0},{1},'{2}')", EndpointID, EndpointGroupID, _dt.Rows[row][1].ToString());
+                            commandText = string.Format("insert into Endpoints values({0},{1},'{2}')",
+                                                        EndpointID, EndpointGroupID, dtForLoading.Rows[row][1].ToString());
+                            fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                        }
+                        else
+                        {
+                            EndpointID = int.Parse(obj.ToString());
+                        }
+                        int FunctionalFormID = 0;
+                        //if (dicValuationFunction.ContainsKey(_dt.Rows[row][6].ToString()))
+                        if (dicValuationFunction.ContainsKey(dtForLoading.Rows[row][6].ToString()))
+                        {
+                            //FunctionalFormID = dicValuationFunction[_dt.Rows[row][6].ToString()];
+                            FunctionalFormID = dicValuationFunction[dtForLoading.Rows[row][6].ToString()];
+                        }
+                        else
+                        {
+                            commandText = string.Format("select max(FUNCTIONALFORMID) from VALUATIONFUNCTIONALFORMS");
+                            obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+                            FunctionalFormID = int.Parse(obj.ToString()) + 1;
+                            //commandText = string.Format("insert into VALUATIONFUNCTIONALFORMS values({0},'{1}')", FunctionalFormID, _dt.Rows[row][6].ToString());
+                            commandText = string.Format("insert into VALUATIONFUNCTIONALFORMS values({0},'{1}')", FunctionalFormID, dtForLoading.Rows[row][6].ToString());
+                            rth = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                            //dicValuationFunction.Add(_dt.Rows[row][6].ToString(), FunctionalFormID);
+                            dicValuationFunction.Add(dtForLoading.Rows[row][6].ToString(), FunctionalFormID);
+                        }
+
+                        //commandText = string.Format("insert into ValuationFunctions values({0},{1},{2},{3},'{4}','{5}',{6},{7},{8},{9},'{10}','{11}',{12},{13},{14},'{15}',{16},'{17}',{18},'{19}', {20})",
+                        //                            valuationFunctionID, VValuationFunctionDataSetID, EndpointGroupID, EndpointID, _dt.Rows[row][2].ToString().Replace("'", "''"), _dt.Rows[row][3].ToString().Replace("'", "''"),
+                        //                                _dt.Rows[row][4], _dt.Rows[row][5], FunctionalFormID, _dt.Rows[row][7], _dt.Rows[row][8].ToString().Replace("'", "''"), _dt.Rows[row][9].ToString().Replace("'", "''"),
+                        //                                _dt.Rows[row][10], _dt.Rows[row][11], _dt.Rows[row][12], _dt.Rows[row][13].ToString().Replace("'", "''"), _dt.Rows[row][14], _dt.Rows[row][15].ToString().Replace("'", "''"),
+                        //                                _dt.Rows[row][16], _dt.Rows[row][17].ToString().Replace("'", "''"), _metadataObj.MetadataId);
+
+                        commandText = string.Format("insert into ValuationFunctions values({0},{1},{2},{3},'{4}','{5}',{6},{7},{8},{9},'{10}','{11}',{12},{13},{14},'{15}',{16},'{17}',{18},'{19}', {20})",
+                                                    valuationFunctionID, VValuationFunctionDataSetID, EndpointGroupID, EndpointID, dtForLoading.Rows[row][2].ToString().Replace("'", "''"),
+                                                    dtForLoading.Rows[row][3].ToString().Replace("'", "''"), dtForLoading.Rows[row][4], dtForLoading.Rows[row][5], FunctionalFormID, dtForLoading.Rows[row][7],
+                                                    dtForLoading.Rows[row][8].ToString().Replace("'", "''"), dtForLoading.Rows[row][9].ToString().Replace("'", "''"),
+                                                    dtForLoading.Rows[row][10], dtForLoading.Rows[row][11], dtForLoading.Rows[row][12], dtForLoading.Rows[row][13].ToString().Replace("'", "''"),
+                                                    dtForLoading.Rows[row][14], dtForLoading.Rows[row][15].ToString().Replace("'", "''"),
+                                                    dtForLoading.Rows[row][16], dtForLoading.Rows[row][17].ToString().Replace("'", "''"), _metadataObj.MetadataId);
+
+                        rth = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                        //if (_dt.Rows[row][9].ToString() == "Custom" && dicCustomValue.ContainsKey(Convert.ToInt32(_dt.Rows[row][18])) && dicCustomValue[Convert.ToInt32(_dt.Rows[row][18])].Count > 0)
+                        if (dtForLoading.Rows[row][9].ToString() == "Custom" && dicCustomValue.ContainsKey(Convert.ToInt32(dtForLoading.Rows[row][18])) && dicCustomValue[Convert.ToInt32(dtForLoading.Rows[row][18])].Count > 0)
+                        {
+                            FirebirdSql.Data.FirebirdClient.FbCommand fbCommand = new FirebirdSql.Data.FirebirdClient.FbCommand();
+                            fbCommand.Connection = CommonClass.Connection;
+                            fbCommand.CommandType = CommandType.Text;
+                            fbCommand.Connection.Open();
+                            DataTable dtCustomValue = new DataTable();
+                            DataColumn dc = new DataColumn();
+                            dc.ColumnName = "Value";
+                            dtCustomValue.Columns.Add(dc);
+                            //foreach (double value in dicCustomValue[Convert.ToInt32(_dt.Rows[row][18])])
+                            foreach (double value in dicCustomValue[Convert.ToInt32(dtForLoading.Rows[row][18])])
+                            {
+                                DataRow dr = dtCustomValue.NewRow();
+                                dr["Value"] = value;
+                                dtCustomValue.Rows.Add(dr);
+                            }
+                            if (dtCustomValue.Rows.Count != 0)
+                            {
+                                int rowCount = dtCustomValue.Rows.Count;
+                                for (int j = 0; j < (rowCount / 125) + 1; j++)
+                                {
+                                    commandText = "execute block as declare ValuationFunctionID int;" + " BEGIN ";
+                                    for (int k = 0; k < 125; k++)
+                                    {
+                                        commandText = commandText + string.Format(" insert into VALUATIONFUNCTIONCUSTOMENTRIES values ({0},{1});", valuationFunctionID, dtCustomValue.Rows[j * 125 + k][0]);
+                                    }
+                                    commandText = commandText + "END";
+                                    fbCommand.CommandText = commandText;
+                                    fbCommand.ExecuteNonQuery();
+                                }
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    valuationFunctionDataSetID = Convert.ToInt32(_dataSetID);
+                    //commandText = string.Format("select ValuationFunctionDataSetID from ValuationFunctionDataSets where ValuationFunctionDataSetName='{0}'", _dataName.Replace("'", "''"));
+                    commandText = string.Format("select ValuationFunctionDataSetID from ValuationFunctionDataSets where ValuationFunctionDataSetName='{0}'", txtValuationFunctionDataSetName.Text.Replace("'", "''"));
+                    obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+                    int currentValuationFunctionDataSetID = int.Parse(obj.ToString());
+                    commandText = string.Format("update ValuationFunctionDataSets set ValuationFunctionDataSetName='{0}' where ValuationFunctionDataSetID={1}", txtValuationFunctionDataSetName.Text.Replace("'", "''"), currentValuationFunctionDataSetID);
+                    fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+
+                    string deleteValuation = "";
+                    foreach (int i in lstdeleteValuationid)
+                    {
+                        deleteValuation += i.ToString() + ",";
+                    }
+                    if (deleteValuation.Length > 1)
+                    {
+                        deleteValuation = "(" + deleteValuation.Substring(0, deleteValuation.Length - 1) + ")";
+                        commandText = string.Format("delete from ValuationFunctions where ValuationFunctionid in {0}", deleteValuation);
+                        fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                    }
+                    
+                    //for (int row = 0; row < _dt.Rows.Count; row++)
+                    for (int row = 0; row < dtForLoading.Rows.Count; row++)
+                    {
+                        commandText = string.Format("select max(VALUATIONFUNCTIONID) from ValuationFunctions");
+                        obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+                        int valuationFunctionID = int.Parse(obj.ToString()) + 1;
+                        commandText = string.Format("select ValuationFunctionDataSetID from ValuationFunctionDataSets where ValuationFunctionDataSetName='{0}'", txtValuationFunctionDataSetName.Text);
+                        obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+                        int VValuationFunctionDataSetID = int.Parse(obj.ToString());
+                        //commandText = string.Format("select EndpointGroupID from EndpointGroups where EndpointGroupName='{0}'", _dt.Rows[row][0].ToString());
+                        commandText = string.Format("select EndpointGroupID from EndpointGroups where EndpointGroupName='{0}'", dtForLoading.Rows[row][0].ToString());
+                        obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+                        int EndpointGroupID = int.Parse(obj.ToString());
+                        //commandText = string.Format("select EndpointID from Endpoints where EndpointGroupID={0} and EndpointName='{1}'", EndpointGroupID, _dt.Rows[row][1].ToString());
+                        commandText = string.Format("select EndpointID from Endpoints where EndpointGroupID={0} and EndpointName='{1}'", EndpointGroupID, dtForLoading.Rows[row][1].ToString());
+                        obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+                        int EndpointID = int.Parse(obj.ToString());
+                        //commandText = string.Format("select FunctionalFormID from ValuationFunctionalForms where FunctionalFormText='{0}'", _dt.Rows[row][6].ToString());
+                        commandText = string.Format("select FunctionalFormID from ValuationFunctionalForms where FunctionalFormText='{0}'", dtForLoading.Rows[row][6].ToString());
+                        obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+                        int FunctionalFormID = int.Parse(obj.ToString());
+                        //if (Convert.ToInt16(_dt.Rows[row][18].ToString()) > 0)
+                        if (Convert.ToInt16(dtForLoading.Rows[row][18].ToString()) > 0)
+                        {
+                            //commandText = string.Format("update ValuationFunctions set VALUATIONFUNCTIONDATASETID={0},ENDPOINTGROUPID={1},ENDPOINTID={2},QUALIFIER='{3}',REFERENCE='{4}',STARTAGE={5},ENDAGE={6},FUNCTIONALFORMID={7},A={8},NAMEA='{9}',DISTA='{10}',P1A={11},P2A={12},B={13},NAMEB='{14}',C={15},NAMEC='{16}',D={17},NAMED='{18}' where valuationfunctionid={19}", VValuationFunctionDataSetID, EndpointGroupID, EndpointID, _dt.Rows[row][2].ToString().Replace("'", "''"), _dt.Rows[row][3].ToString().Replace("'", "''"), _dt.Rows[row][4], _dt.Rows[row][5], FunctionalFormID, _dt.Rows[row][7], _dt.Rows[row][8].ToString().Replace("'", "''"), _dt.Rows[row][9].ToString().Replace("'", "''"), _dt.Rows[row][10], _dt.Rows[row][11], _dt.Rows[row][12], _dt.Rows[row][13].ToString().Replace("'", "''"), _dt.Rows[row][14], _dt.Rows[row][15].ToString().Replace("'", "''"), _dt.Rows[row][16], _dt.Rows[row][17].ToString().Replace("'", "''"), Convert.ToInt16(_dt.Rows[row][18].ToString()));
+                            commandText = string.Format("update ValuationFunctions set VALUATIONFUNCTIONDATASETID={0},ENDPOINTGROUPID={1},ENDPOINTID={2},QUALIFIER='{3}',REFERENCE='{4}', " +
+                                                        "STARTAGE={5},ENDAGE={6},FUNCTIONALFORMID={7},A={8},NAMEA='{9}',DISTA='{10}',P1A={11},P2A={12},B={13},NAMEB='{14}',C={15},NAMEC='{16}', " +
+                                                        "D={17},NAMED='{18}' where valuationfunctionid={19}", VValuationFunctionDataSetID, EndpointGroupID, EndpointID,
+                                                        dtForLoading.Rows[row][2].ToString().Replace("'", "''"), dtForLoading.Rows[row][3].ToString().Replace("'", "''"),
+                                                        dtForLoading.Rows[row][4], dtForLoading.Rows[row][5], FunctionalFormID, dtForLoading.Rows[row][7], dtForLoading.Rows[row][8].ToString().Replace("'", "''"),
+                                                        dtForLoading.Rows[row][9].ToString().Replace("'", "''"), dtForLoading.Rows[row][10], dtForLoading.Rows[row][11], dtForLoading.Rows[row][12],
+                                                        dtForLoading.Rows[row][13].ToString().Replace("'", "''"), dtForLoading.Rows[row][14], dtForLoading.Rows[row][15].ToString().Replace("'", "''"),
+                                                        dtForLoading.Rows[row][16], dtForLoading.Rows[row][17].ToString().Replace("'", "''"), Convert.ToInt16(dtForLoading.Rows[row][18].ToString()));
+
+                            fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                            //if (_dt.Rows[row][9].ToString() == "Custom" && dicCustomValue.ContainsKey(Convert.ToInt32(_dt.Rows[row][18])) && dicCustomValue[Convert.ToInt32(_dt.Rows[row][18])].Count > 0)
+                            if (dtForLoading.Rows[row][9].ToString() == "Custom" &&
+                                dicCustomValue.ContainsKey(Convert.ToInt32(dtForLoading.Rows[row][18])) &&
+                                dicCustomValue[Convert.ToInt32(dtForLoading.Rows[row][18])].Count > 0)
+                            {
+                                FirebirdSql.Data.FirebirdClient.FbCommand fbCommand = new FirebirdSql.Data.FirebirdClient.FbCommand();
+                                fbCommand.Connection = CommonClass.Connection;
+                                fbCommand.CommandType = CommandType.Text;
+                                fbCommand.Connection.Open();
+                                //commandText = "delete from valuationfunctioncustomentries where valuationfunctionid =" + _dt.Rows[row][18].ToString();
+                                commandText = "delete from valuationfunctioncustomentries where valuationfunctionid =" + dtForLoading.Rows[row][18].ToString();
+                                fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                                DataTable dtCustomValue = new DataTable();
+                                DataColumn dc = new DataColumn();
+                                dc.ColumnName = "Value";
+                                dtCustomValue.Columns.Add(dc);
+                                //foreach (double value in dicCustomValue[Convert.ToInt32(_dt.Rows[row][18])])
+                                foreach (double value in dicCustomValue[Convert.ToInt32(dtForLoading.Rows[row][18])])
+                                {
+                                    DataRow dr = dtCustomValue.NewRow();
+                                    dr["Value"] = value;
+                                    dtCustomValue.Rows.Add(dr);
+                                }
+                                int rowCount = dtCustomValue.Rows.Count;
+                                for (int l = 0; l < (rowCount / 125) + 1; l++)
+                                {
+                                    commandText = "execute block as declare ValuationFunctionID int;" + " BEGIN ";
+                                    for (int k = 0; k < 125; k++)
+                                    {
+                                        if (l * 125 + k < rowCount)
+                                        {
+                                            //commandText = commandText + string.Format(" insert into VALUATIONFUNCTIONCUSTOMENTRIES values ({0},{1});", Convert.ToInt16(_dt.Rows[row][18].ToString()), dtCustomValue.Rows[l * 125 + k][0]);
+                                            commandText = commandText + string.Format(" insert into VALUATIONFUNCTIONCUSTOMENTRIES values ({0},{1});",
+                                                          Convert.ToInt16(dtForLoading.Rows[row][18].ToString()), dtCustomValue.Rows[l * 125 + k][0]);
+                                        }
+                                        else
+                                            continue;
+                                    }
+                                    commandText = commandText + "END";
+                                    fbCommand.CommandText = commandText;
+                                    fbCommand.ExecuteNonQuery();
+                                }
+                            }
+                        }
+                        //else if (Convert.ToInt16(_dt.Rows[row][18].ToString()) < 0)
+                        else if (Convert.ToInt16(dtForLoading.Rows[row][18].ToString()) < 0)
+                        {
+                            //commandText = string.Format("insert into ValuationFunctions values({0},{1},{2},{3},'{4}','{5}',{6},{7},{8},{9},'{10}','{11}',{12},{13},{14},'{15}',{16},'{17}',{18},'{19}', {20})",
+                            //                            valuationFunctionID, VValuationFunctionDataSetID, EndpointGroupID, EndpointID, _dt.Rows[row][2].ToString().Replace("'", "''"),
+                            //                            _dt.Rows[row][3].ToString().Replace("'", "''"), _dt.Rows[row][4], _dt.Rows[row][5], FunctionalFormID, _dt.Rows[row][7],
+                            //                            _dt.Rows[row][8].ToString().Replace("'", "''"), _dt.Rows[row][9].ToString().Replace("'", "''"), _dt.Rows[row][10], _dt.Rows[row][11],
+                            //                            _dt.Rows[row][12], _dt.Rows[row][13].ToString().Replace("'", "''"), _dt.Rows[row][14], _dt.Rows[row][15].ToString().Replace("'", "''"),
+                            //                            _dt.Rows[row][16], _dt.Rows[row][17].ToString().Replace("'", "''"), _metadataObj.MetadataId);
+                            commandText = string.Format("insert into ValuationFunctions values({0},{1},{2},{3},'{4}','{5}',{6},{7},{8},{9},'{10}','{11}',{12},{13},{14},'{15}',{16},'{17}',{18},'{19}', {20})",
+                                                        valuationFunctionID, VValuationFunctionDataSetID, EndpointGroupID, EndpointID, dtForLoading.Rows[row][2].ToString().Replace("'", "''"),
+                                                        dtForLoading.Rows[row][3].ToString().Replace("'", "''"), dtForLoading.Rows[row][4], dtForLoading.Rows[row][5], FunctionalFormID, dtForLoading.Rows[row][7],
+                                                        dtForLoading.Rows[row][8].ToString().Replace("'", "''"), dtForLoading.Rows[row][9].ToString().Replace("'", "''"), dtForLoading.Rows[row][10], dtForLoading.Rows[row][11],
+                                                        dtForLoading.Rows[row][12], dtForLoading.Rows[row][13].ToString().Replace("'", "''"), dtForLoading.Rows[row][14], dtForLoading.Rows[row][15].ToString().Replace("'", "''"),
+                                                        dtForLoading.Rows[row][16], dtForLoading.Rows[row][17].ToString().Replace("'", "''"), _metadataObj.MetadataId);
+                            
+                            int rth = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                            //if (_dt.Rows[row][9].ToString() == "Custom" && dicCustomValue.ContainsKey(Convert.ToInt32(_dt.Rows[row][18])) && dicCustomValue[Convert.ToInt32(_dt.Rows[row][18])].Count > 0)
+                            if (dtForLoading.Rows[row][9].ToString() == "Custom" && 
+                                dicCustomValue.ContainsKey(Convert.ToInt32(dtForLoading.Rows[row][18])) && 
+                                dicCustomValue[Convert.ToInt32(dtForLoading.Rows[row][18])].Count > 0)
+                            {
+                                FirebirdSql.Data.FirebirdClient.FbCommand fbCommand = new FirebirdSql.Data.FirebirdClient.FbCommand();
+                                fbCommand.Connection = CommonClass.Connection;
+                                fbCommand.CommandType = CommandType.Text;
+                                fbCommand.Connection.Open();
+                                DataTable dtCustomValue = new DataTable();
+                                DataColumn dc = new DataColumn();
+                                dc.ColumnName = "Value";
+                                dtCustomValue.Columns.Add(dc);
+                                //foreach (double value in dicCustomValue[Convert.ToInt32(_dt.Rows[row][18])])
+                                foreach (double value in dicCustomValue[Convert.ToInt32(dtForLoading.Rows[row][18])])
+                                {
+                                    DataRow dr = dtCustomValue.NewRow();
+                                    dr["Value"] = value;
+                                    dtCustomValue.Rows.Add(dr);
+                                }
+                                int rowCount = dtCustomValue.Rows.Count;
+                                for (int l = 0; l < (rowCount / 125) + 1; l++)
+                                {
+                                    commandText = "execute block as declare ValuationFunctionID int;" + " BEGIN ";
+                                    for (int k = 0; k < 125; k++)
+                                    {
+                                        if (l * 125 + k < rowCount)
+                                        {
+                                            commandText = commandText + string.Format(" insert into VALUATIONFUNCTIONCUSTOMENTRIES values ({0},{1});", valuationFunctionID, dtCustomValue.Rows[l * 125 + k][0]);
+                                        }
+                                        else
+                                            continue;
+                                    }
+                                    commandText = commandText + "END";
+                                    fbCommand.CommandText = commandText;
+                                    fbCommand.ExecuteNonQuery();
+                                }
+                            }
+                        }
+                    }
+                }
+                insertMetadata(valuationFunctionDataSetID);
             }
             catch (Exception ex)
             {
@@ -289,266 +698,10 @@ namespace BenMAP
 
         private void btnOK_Click(object sender, EventArgs e)
         {
-            ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
-            DataSet ds = new DataSet();
-            string commandText = string.Empty;
-            int valuationFunctionDataSetID = 0;
-            try
-            {
-                if (_dataName == string.Empty)
-                {
-                    commandText = string.Format("select * from  ValuationFunctionDataSets where SetupID={0}", CommonClass.ManageSetup.SetupID);
-                    ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
-                    int dataSetNameCount = ds.Tables[0].Rows.Count;
-                    for (int dataSetNameRow = 0; dataSetNameRow < dataSetNameCount; dataSetNameRow++)
-                    {
-                        if (txtValuationFunctionDataSetName.Text == ds.Tables[0].Rows[dataSetNameRow]["ValuationFunctionDataSetName"].ToString())
-                        {
-                            MessageBox.Show("The valuation dataset name is already in use. Please enter a different name.");
-                            return;
-                        }
-                    }
-                    if (txtValuationFunctionDataSetName.Text == string.Empty)
-                    {
-                        MessageBox.Show("Please input a valid dataset name.");
-                        return;
-                    }
-                    commandText = string.Format("select max(VALUATIONFUNCTIONDATASETID) from ValuationFunctionDataSets");
-                    object obj = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText)) + 1;
-                    valuationFunctionDataSetID = int.Parse(obj.ToString());
-                    commandText = string.Format("insert into ValuationFunctionDataSets values ({0},{1},'{2}','F')", valuationFunctionDataSetID, CommonClass.ManageSetup.SetupID, txtValuationFunctionDataSetName.Text.Replace("'", "''"));
-                    int rth = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
-                    Dictionary<string, int> dicEndpointGroup = new Dictionary<string, int>();
-                    commandText = "select EndpointGroupID,LOWER(EndpointGroupName) from EndpointGroups ";
-                    DataSet dsEndpointGroup = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
-                    foreach (DataRow drEndpointGroup in dsEndpointGroup.Tables[0].Rows)
-                    {
-                        dicEndpointGroup.Add(drEndpointGroup["LOWER"].ToString(), Convert.ToInt32(drEndpointGroup["EndpointGroupID"]));
-                    }
-                    Dictionary<string, int> dicValuationFunction = new Dictionary<string, int>();
-                    commandText = "select FunctionalFormID,FunctionalFormText from VALUATIONFUNCTIONALFORMS";
-                    DataSet dsValuationFunction = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
-                    foreach (DataRow drFunction in dsValuationFunction.Tables[0].Rows)
-                    {
-                        if (!dicValuationFunction.ContainsKey(drFunction["FunctionalFormText"].ToString()))
-                            dicValuationFunction.Add(drFunction["FunctionalFormText"].ToString(), Convert.ToInt32(drFunction["FunctionalFormID"]));
-                    }
-                    int dgvRowCount = _dt.Rows.Count;
-                    for (int row = 0; row < dgvRowCount; row++)
-                    {
-                        CommonClass.Connection.Close();
-                        commandText = string.Format("select max(VALUATIONFUNCTIONID) from ValuationFunctions");
-                        obj = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText)) + 1;
-                        int valuationFunctionID = int.Parse(obj.ToString());
-                        commandText = string.Format("select ValuationFunctionDataSetID from ValuationFunctionDataSets where ValuationFunctionDataSetName='{0}' and SetupID={1}", txtValuationFunctionDataSetName.Text, CommonClass.ManageSetup.SetupID);
-                        obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
-                        int VValuationFunctionDataSetID = int.Parse(obj.ToString());
-                        int EndpointGroupID = 0;
-                        if (dicEndpointGroup.ContainsKey(_dt.Rows[row][0].ToString().ToLower()))
-                        {
-                            EndpointGroupID = dicEndpointGroup[_dt.Rows[row][0].ToString().ToLower()];
-                        }
-                        else
-                        {
-                            commandText = string.Format("select max(EndpointGroupid) from EndpointGroups");
-                            obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
-                            EndpointGroupID = int.Parse(obj.ToString()) + 1;
-                            commandText = string.Format("insert into EndpointGroups values({0},'{1}')", EndpointGroupID, _dt.Rows[row][0].ToString());
-                            fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
-                            dicEndpointGroup.Add(_dt.Rows[row][0].ToString().ToLower(), EndpointGroupID);
-                        }
-                        int EndpointID = 0;
-                        commandText = string.Format("select EndpointID from Endpoints where EndpointGroupID={0} and LOWER(EndpointName)='" + _dt.Rows[row][1].ToString().ToLower() + "' ", EndpointGroupID);
-                        obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
-                        if (obj == null)
-                        {
-                            commandText = string.Format("select max(EndpointID) from Endpoints");
-                            obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
-                            EndpointID = int.Parse(obj.ToString()) + 1;
-                            commandText = string.Format("insert into Endpoints values({0},{1},'{2}')", EndpointID, EndpointGroupID, _dt.Rows[row][1].ToString());
-                            fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
-                        }
-                        else
-                        {
-                            EndpointID = int.Parse(obj.ToString());
-                        }
-                        int FunctionalFormID = 0;
-                        if (dicValuationFunction.ContainsKey(_dt.Rows[row][6].ToString()))
-                        {
-                            FunctionalFormID = dicValuationFunction[_dt.Rows[row][6].ToString()];
-                        }
-                        else
-                        {
-                            commandText = string.Format("select max(FUNCTIONALFORMID) from VALUATIONFUNCTIONALFORMS");
-                            obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
-                            FunctionalFormID = int.Parse(obj.ToString()) + 1;
-                            commandText = string.Format("insert into VALUATIONFUNCTIONALFORMS values({0},'{1}')", FunctionalFormID, _dt.Rows[row][6].ToString());
-                            rth = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
-                            dicValuationFunction.Add(_dt.Rows[row][6].ToString(), FunctionalFormID);
-                        }
-                        commandText = string.Format("insert into ValuationFunctions values({0},{1},{2},{3},'{4}','{5}',{6},{7},{8},{9},'{10}','{11}',{12},{13},{14},'{15}',{16},'{17}',{18},'{19}')", valuationFunctionID, VValuationFunctionDataSetID, EndpointGroupID, EndpointID, _dt.Rows[row][2].ToString().Replace("'", "''"), _dt.Rows[row][3].ToString().Replace("'", "''"), _dt.Rows[row][4], _dt.Rows[row][5], FunctionalFormID, _dt.Rows[row][7], _dt.Rows[row][8].ToString().Replace("'", "''"), _dt.Rows[row][9].ToString().Replace("'", "''"), _dt.Rows[row][10], _dt.Rows[row][11], _dt.Rows[row][12], _dt.Rows[row][13].ToString().Replace("'", "''"), _dt.Rows[row][14], _dt.Rows[row][15].ToString().Replace("'", "''"), _dt.Rows[row][16], _dt.Rows[row][17].ToString().Replace("'", "''"));
-                        rth = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
-                        if (_dt.Rows[row][9].ToString() == "Custom" && dicCustomValue.ContainsKey(Convert.ToInt32(_dt.Rows[row][18])) && dicCustomValue[Convert.ToInt32(_dt.Rows[row][18])].Count > 0)
-                        {
-                            FirebirdSql.Data.FirebirdClient.FbCommand fbCommand = new FirebirdSql.Data.FirebirdClient.FbCommand();
-                            fbCommand.Connection = CommonClass.Connection;
-                            fbCommand.CommandType = CommandType.Text;
-                            fbCommand.Connection.Open();
-                            DataTable dtCustomValue = new DataTable();
-                            DataColumn dc = new DataColumn();
-                            dc.ColumnName = "Value";
-                            dtCustomValue.Columns.Add(dc);
-                            foreach (double value in dicCustomValue[Convert.ToInt32(_dt.Rows[row][18])])
-                            {
-                                DataRow dr = dtCustomValue.NewRow();
-                                dr["Value"] = value;
-                                dtCustomValue.Rows.Add(dr);
-                            }
-                            if (dtCustomValue.Rows.Count != 0)
-                            {
-                                int rowCount = dtCustomValue.Rows.Count;
-                                for (int j = 0; j < (rowCount / 125) + 1; j++)
-                                {
-                                    commandText = "execute block as declare ValuationFunctionID int;" + " BEGIN ";
-                                    for (int k = 0; k < 125; k++)
-                                    {
-                                        commandText = commandText + string.Format(" insert into VALUATIONFUNCTIONCUSTOMENTRIES values ({0},{1});", valuationFunctionID, dtCustomValue.Rows[j * 125 + k][0]);
-                                    }
-                                    commandText = commandText + "END";
-                                    fbCommand.CommandText = commandText;
-                                    fbCommand.ExecuteNonQuery();
-                                }
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    commandText = string.Format("select ValuationFunctionDataSetID from ValuationFunctionDataSets where ValuationFunctionDataSetName='{0}'", _dataName.Replace("'", "''"));
-                    object obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
-                    int currentValuationFunctionDataSetID = int.Parse(obj.ToString());
-                    commandText = string.Format("update ValuationFunctionDataSets set ValuationFunctionDataSetName='{0}' where ValuationFunctionDataSetID={1}", txtValuationFunctionDataSetName.Text.Replace("'", "''"), currentValuationFunctionDataSetID);
-                    fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
-
-                    string deleteValuation = "";
-                    foreach (int i in lstdeleteValuationid)
-                    {
-                        deleteValuation += i.ToString() + ",";
-                    }
-                    if (deleteValuation.Length > 1)
-                    {
-                        deleteValuation = "(" + deleteValuation.Substring(0, deleteValuation.Length - 1) + ")";
-                        commandText = string.Format("delete from ValuationFunctions where ValuationFunctionid in {0}", deleteValuation);
-                        fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
-                    }
-
-                    for (int row = 0; row < _dt.Rows.Count; row++)
-                    {
-                        commandText = string.Format("select max(VALUATIONFUNCTIONID) from ValuationFunctions");
-                        obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
-                        int valuationFunctionID = int.Parse(obj.ToString()) + 1;
-                        commandText = string.Format("select ValuationFunctionDataSetID from ValuationFunctionDataSets where ValuationFunctionDataSetName='{0}'", txtValuationFunctionDataSetName.Text);
-                        obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
-                        int VValuationFunctionDataSetID = int.Parse(obj.ToString());
-                        commandText = string.Format("select EndpointGroupID from EndpointGroups where EndpointGroupName='{0}'", _dt.Rows[row][0].ToString());
-                        obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
-                        int EndpointGroupID = int.Parse(obj.ToString());
-                        commandText = string.Format("select EndpointID from Endpoints where EndpointGroupID={0} and EndpointName='{1}'", EndpointGroupID, _dt.Rows[row][1].ToString());
-                        obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
-                        int EndpointID = int.Parse(obj.ToString());
-                        commandText = string.Format("select FunctionalFormID from ValuationFunctionalForms where FunctionalFormText='{0}'", _dt.Rows[row][6].ToString());
-                        obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
-                        int FunctionalFormID = int.Parse(obj.ToString());
-                        if (Convert.ToInt16(_dt.Rows[row][18].ToString()) > 0)
-                        {
-                            commandText = string.Format("update ValuationFunctions set VALUATIONFUNCTIONDATASETID={0},ENDPOINTGROUPID={1},ENDPOINTID={2},QUALIFIER='{3}',REFERENCE='{4}',STARTAGE={5},ENDAGE={6},FUNCTIONALFORMID={7},A={8},NAMEA='{9}',DISTA='{10}',P1A={11},P2A={12},B={13},NAMEB='{14}',C={15},NAMEC='{16}',D={17},NAMED='{18}' where valuationfunctionid={19}", VValuationFunctionDataSetID, EndpointGroupID, EndpointID, _dt.Rows[row][2].ToString().Replace("'", "''"), _dt.Rows[row][3].ToString().Replace("'", "''"), _dt.Rows[row][4], _dt.Rows[row][5], FunctionalFormID, _dt.Rows[row][7], _dt.Rows[row][8].ToString().Replace("'", "''"), _dt.Rows[row][9].ToString().Replace("'", "''"), _dt.Rows[row][10], _dt.Rows[row][11], _dt.Rows[row][12], _dt.Rows[row][13].ToString().Replace("'", "''"), _dt.Rows[row][14], _dt.Rows[row][15].ToString().Replace("'", "''"), _dt.Rows[row][16], _dt.Rows[row][17].ToString().Replace("'", "''"), Convert.ToInt16(_dt.Rows[row][18].ToString()));
-                            fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
-                            if (_dt.Rows[row][9].ToString() == "Custom" && dicCustomValue.ContainsKey(Convert.ToInt32(_dt.Rows[row][18])) && dicCustomValue[Convert.ToInt32(_dt.Rows[row][18])].Count > 0)
-                            {
-                                FirebirdSql.Data.FirebirdClient.FbCommand fbCommand = new FirebirdSql.Data.FirebirdClient.FbCommand();
-                                fbCommand.Connection = CommonClass.Connection;
-                                fbCommand.CommandType = CommandType.Text;
-                                fbCommand.Connection.Open();
-                                commandText = "delete from valuationfunctioncustomentries where valuationfunctionid =" + _dt.Rows[row][18].ToString();
-                                fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
-                                DataTable dtCustomValue = new DataTable();
-                                DataColumn dc = new DataColumn();
-                                dc.ColumnName = "Value";
-                                dtCustomValue.Columns.Add(dc);
-                                foreach (double value in dicCustomValue[Convert.ToInt32(_dt.Rows[row][18])])
-                                {
-                                    DataRow dr = dtCustomValue.NewRow();
-                                    dr["Value"] = value;
-                                    dtCustomValue.Rows.Add(dr);
-                                }
-                                int rowCount = dtCustomValue.Rows.Count;
-                                for (int l = 0; l < (rowCount / 125) + 1; l++)
-                                {
-                                    commandText = "execute block as declare ValuationFunctionID int;" + " BEGIN ";
-                                    for (int k = 0; k < 125; k++)
-                                    {
-                                        if (l * 125 + k < rowCount)
-                                        {
-                                            commandText = commandText + string.Format(" insert into VALUATIONFUNCTIONCUSTOMENTRIES values ({0},{1});", Convert.ToInt16(_dt.Rows[row][18].ToString()), dtCustomValue.Rows[l * 125 + k][0]);
-                                        }
-                                        else
-                                            continue;
-                                    }
-                                    commandText = commandText + "END";
-                                    fbCommand.CommandText = commandText;
-                                    fbCommand.ExecuteNonQuery();
-                                }
-                            }
-                        }
-                        else if (Convert.ToInt16(_dt.Rows[row][18].ToString()) < 0)
-                        {
-                            commandText = string.Format("insert into ValuationFunctions values({0},{1},{2},{3},'{4}','{5}',{6},{7},{8},{9},'{10}','{11}',{12},{13},{14},'{15}',{16},'{17}',{18},'{19}')", valuationFunctionID, VValuationFunctionDataSetID, EndpointGroupID, EndpointID, _dt.Rows[row][2].ToString().Replace("'", "''"), _dt.Rows[row][3].ToString().Replace("'", "''"), _dt.Rows[row][4], _dt.Rows[row][5], FunctionalFormID, _dt.Rows[row][7], _dt.Rows[row][8].ToString().Replace("'", "''"), _dt.Rows[row][9].ToString().Replace("'", "''"), _dt.Rows[row][10], _dt.Rows[row][11], _dt.Rows[row][12], _dt.Rows[row][13].ToString().Replace("'", "''"), _dt.Rows[row][14], _dt.Rows[row][15].ToString().Replace("'", "''"), _dt.Rows[row][16], _dt.Rows[row][17].ToString().Replace("'", "''"));
-                            int rth = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
-                            if (_dt.Rows[row][9].ToString() == "Custom" && dicCustomValue.ContainsKey(Convert.ToInt32(_dt.Rows[row][18])) && dicCustomValue[Convert.ToInt32(_dt.Rows[row][18])].Count > 0)
-                            {
-                                FirebirdSql.Data.FirebirdClient.FbCommand fbCommand = new FirebirdSql.Data.FirebirdClient.FbCommand();
-                                fbCommand.Connection = CommonClass.Connection;
-                                fbCommand.CommandType = CommandType.Text;
-                                fbCommand.Connection.Open();
-                                DataTable dtCustomValue = new DataTable();
-                                DataColumn dc = new DataColumn();
-                                dc.ColumnName = "Value";
-                                dtCustomValue.Columns.Add(dc);
-                                foreach (double value in dicCustomValue[Convert.ToInt32(_dt.Rows[row][18])])
-                                {
-                                    DataRow dr = dtCustomValue.NewRow();
-                                    dr["Value"] = value;
-                                    dtCustomValue.Rows.Add(dr);
-                                }
-                                int rowCount = dtCustomValue.Rows.Count;
-                                for (int l = 0; l < (rowCount / 125) + 1; l++)
-                                {
-                                    commandText = "execute block as declare ValuationFunctionID int;" + " BEGIN ";
-                                    for (int k = 0; k < 125; k++)
-                                    {
-                                        if (l * 125 + k < rowCount)
-                                        {
-                                            commandText = commandText + string.Format(" insert into VALUATIONFUNCTIONCUSTOMENTRIES values ({0},{1});", valuationFunctionID, dtCustomValue.Rows[l * 125 + k][0]);
-                                        }
-                                        else
-                                            continue;
-                                    }
-                                    commandText = commandText + "END";
-                                    fbCommand.CommandText = commandText;
-                                    fbCommand.ExecuteNonQuery();
-                                }
-                            }
-                        }
-                    }
-                }
-                insertMetadata(valuationFunctionDataSetID);
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex);
-            }
+            //LoadDatabase();
             this.DialogResult = DialogResult.OK;
         }
+
         private void insertMetadata(int valuationFunctionDataSetID)
         {
             _metadataObj.DatasetId = valuationFunctionDataSetID;
@@ -562,6 +715,7 @@ namespace BenMAP
         }
 
         private string _dataName = string.Empty;
+        
         private void ValuationFunctionDataSetDefinition_Load(object sender, EventArgs e)
         {
             ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
@@ -791,6 +945,7 @@ namespace BenMAP
                 Logger.LogError(ex);
             }
         }
+        
         void TimedFilter(ObjectListView olv, string txt)
         {
             this.TimedFilter(olv, txt, 0);
@@ -850,6 +1005,7 @@ namespace BenMAP
         {
             ShowGroupsChecked(this.olvData, (CheckBox)sender);
         }
+        
         void ShowGroupsChecked(ObjectListView olv, CheckBox cb)
         {
             if (cb.Checked && olv.View == View.List)
@@ -938,7 +1094,8 @@ namespace BenMAP
 
         void LoadEndPointGroupEndPointName()
         {
-            if (_dt.Rows.Count == 0)
+            //if (_dt.Rows.Count == 0)
+            if (dtForLoading.Rows.Count < 1)
             {
                 cboEndpointGroup.Items.Clear();
                 cboEndpoint.Items.Clear();
@@ -953,21 +1110,26 @@ namespace BenMAP
                 int EndpointGroupWidth = 223;
                 int maxEndpointWidth = 223;
                 int EndpointWidth = 223;
-                for (int i = 0; i < _dt.Rows.Count; i++)
+                //for (int i = 0; i < _dt.Rows.Count; i++)
+                for (int i = 0; i < dtForLoading.Rows.Count; i++)
                 {
-                    if (!cboEndpointGroup.Items.Contains(_dt.Rows[i][0].ToString()))
-                    { cboEndpointGroup.Items.Add(_dt.Rows[i][0].ToString()); }
-                    if (!cboEndpoint.Items.Contains(_dt.Rows[i][1].ToString()))
-                    { cboEndpoint.Items.Add(_dt.Rows[i][1].ToString()); }
+                    if (!cboEndpointGroup.Items.Contains(dtForLoading.Rows[i][0].ToString()))
+                    {
+                        cboEndpointGroup.Items.Add(dtForLoading.Rows[i][0].ToString()); 
+                    }
+                    if (!cboEndpoint.Items.Contains(dtForLoading.Rows[i][1].ToString()))
+                    {
+                        cboEndpoint.Items.Add(dtForLoading.Rows[i][1].ToString()); 
+                    }
                     using (Graphics g = this.CreateGraphics())
                     {
-                        SizeF string_size = g.MeasureString(_dt.Rows[i][0].ToString(), this.Font);
+                        SizeF string_size = g.MeasureString(dtForLoading.Rows[i][0].ToString(), this.Font);
                         EndpointGroupWidth = Convert.ToInt16(string_size.Width) + 50;
                     }
                     maxEndpointGroupWidth = Math.Max(maxEndpointGroupWidth, EndpointGroupWidth);
                     using (Graphics g = this.CreateGraphics())
                     {
-                        SizeF string_size = g.MeasureString(_dt.Rows[i][1].ToString(), this.Font);
+                        SizeF string_size = g.MeasureString(dtForLoading.Rows[i][1].ToString(), this.Font);
                         EndpointWidth = Convert.ToInt16(string_size.Width) + 50;
                     }
                     maxEndpointWidth = Math.Max(maxEndpointWidth, EndpointWidth);

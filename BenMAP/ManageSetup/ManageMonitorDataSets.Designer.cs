@@ -26,6 +26,8 @@ namespace BenMAP
             this.olvColumn1 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn2 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn9 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvColumn3 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvColumn7 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnOK = new System.Windows.Forms.Button();
             this.grpCancelOK = new System.Windows.Forms.GroupBox();
@@ -117,6 +119,8 @@ namespace BenMAP
             this.olvMonitorDataSets.AllColumns.Add(this.olvColumn1);
             this.olvMonitorDataSets.AllColumns.Add(this.olvColumn2);
             this.olvMonitorDataSets.AllColumns.Add(this.olvColumn9);
+            this.olvMonitorDataSets.AllColumns.Add(this.olvColumn3);
+            this.olvMonitorDataSets.AllColumns.Add(this.olvColumn7);
             this.olvMonitorDataSets.AllowColumnReorder = true;
             this.olvMonitorDataSets.AllowDrop = true;
             this.olvMonitorDataSets.AlternateRowBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(240)))), ((int)(((byte)(220)))));
@@ -153,6 +157,7 @@ namespace BenMAP
             this.olvMonitorDataSets.UseHotItem = true;
             this.olvMonitorDataSets.UseHyperlinks = true;
             this.olvMonitorDataSets.View = System.Windows.Forms.View.Details;
+            this.olvMonitorDataSets.SelectedIndexChanged += new System.EventHandler(this.olvMonitorDataSets_SelectedIndexChanged);
             // 
             // olvColumn1
             // 
@@ -172,6 +177,21 @@ namespace BenMAP
             this.olvColumn9.FillsFreeSpace = true;
             this.olvColumn9.Text = "Monitor Count";
             this.olvColumn9.Width = 109;
+            // 
+            // olvColumn3
+            // 
+            this.olvColumn3.AspectName = "monitordatasetid";
+            this.olvColumn3.DisplayIndex = 3;
+            this.olvColumn3.IsEditable = false;
+            this.olvColumn3.IsVisible = false;
+            this.olvColumn3.Text = "Monitor Dataset ID";
+            // 
+            // olvColumn7
+            // 
+            this.olvColumn7.AspectName = "metadataid";
+            this.olvColumn7.DisplayIndex = 4;
+            this.olvColumn7.IsVisible = false;
+            this.olvColumn7.Text = "Metadata ID";
             // 
             // btnCancel
             // 
@@ -222,6 +242,7 @@ namespace BenMAP
             // 
             // btnViewMetadata
             // 
+            this.btnViewMetadata.Enabled = false;
             this.btnViewMetadata.Location = new System.Drawing.Point(353, 3);
             this.btnViewMetadata.Name = "btnViewMetadata";
             this.btnViewMetadata.Size = new System.Drawing.Size(112, 27);
@@ -269,5 +290,7 @@ namespace BenMAP
         private BrightIdeasSoftware.OLVColumn olvColumn9;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         private System.Windows.Forms.Button btnViewMetadata;
+        private BrightIdeasSoftware.OLVColumn olvColumn3;
+        private BrightIdeasSoftware.OLVColumn olvColumn7;
     }
 }

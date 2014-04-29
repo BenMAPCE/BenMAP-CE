@@ -3528,7 +3528,14 @@ namespace BenMAP
                     }
                     ValuationFunctionDatasetID = reader.ReadInt32();
                     int FunctionalFormID = reader.ReadInt32();
-                    commandText = string.Format("insert into ValuationFunctions(ValuationFunctionID,ValuationFunctionDatasetID,FunctionalFormID,EndPointGroupID,EndPointID,Qualifier,Reference,StartAge,EndAge,NameA,DistA,NameB,NameC,NameD,A,P1A,P2A,B,C,D) values({0},{1},{2},{3},{4},'{5}','{6}',{7},{8},'{9}','{10}','{11}','{12}','{13}',{14},{15},{16},{17},{18},{19})", ValuationFunctionID, dicValuationFunctionDatasetID.ContainsKey(ValuationFunctionDatasetID) ? dicValuationFunctionDatasetID[ValuationFunctionDatasetID] : ValuationFunctionDatasetID, dicFunctionalFormID.ContainsKey(FunctionalFormID) ? dicFunctionalFormID[FunctionalFormID] : FunctionalFormID, reader.ReadInt32(), reader.ReadInt32(), reader.ReadString(), reader.ReadString(), reader.ReadInt32(), reader.ReadInt32(), reader.ReadString(), reader.ReadString(), reader.ReadString(), reader.ReadString(), reader.ReadString(), Convert.ToDouble(reader.ReadString()), Convert.ToDouble(reader.ReadString()), Convert.ToDouble(reader.ReadString()), Convert.ToDouble(reader.ReadString()), Convert.ToDouble(reader.ReadString()), Convert.ToDouble(reader.ReadString()));
+                    commandText = string.Format("insert into ValuationFunctions(ValuationFunctionID,ValuationFunctionDatasetID,FunctionalFormID,EndPointGroupID,EndPointID,Qualifier," +
+                                                "Reference,StartAge,EndAge,NameA,DistA,NameB,NameC,NameD,A,P1A,P2A,B,C,D) " +
+                                                "values({0},{1},{2},{3},{4},'{5}','{6}',{7},{8},'{9}','{10}','{11}','{12}','{13}',{14},{15},{16},{17},{18},{19})", 
+                                                ValuationFunctionID, dicValuationFunctionDatasetID.ContainsKey(ValuationFunctionDatasetID) ? dicValuationFunctionDatasetID[ValuationFunctionDatasetID] : ValuationFunctionDatasetID, dicFunctionalFormID.ContainsKey(FunctionalFormID) ? dicFunctionalFormID[FunctionalFormID] : FunctionalFormID, 
+                                                reader.ReadInt32(), reader.ReadInt32(), reader.ReadString(), reader.ReadString(), reader.ReadInt32(), reader.ReadInt32(), reader.ReadString(), 
+                                                reader.ReadString(), reader.ReadString(), reader.ReadString(), reader.ReadString(), Convert.ToDouble(reader.ReadString()), 
+                                                Convert.ToDouble(reader.ReadString()), Convert.ToDouble(reader.ReadString()), Convert.ToDouble(reader.ReadString()),
+                                                Convert.ToDouble(reader.ReadString()), Convert.ToDouble(reader.ReadString()));
                     fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                     pBarImport.PerformStep();
                 }
