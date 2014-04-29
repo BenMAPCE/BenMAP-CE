@@ -34,6 +34,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="FirebirdSql.Data.FirebirdClient">
+      <HintPath>lib\FirebirdSql.Data.FirebirdClient.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -46,16 +49,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="PopSim.cs">
+    <Compile Include="frm_PopSim.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="PopSim.Designer.cs">
-      <DependentUpon>PopSim.cs</DependentUpon>
+    <Compile Include="frm_PopSim.Designer.cs">
+      <DependentUpon>frm_PopSim.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="PopSim.resx">
-      <DependentUpon>PopSim.cs</DependentUpon>
+    <EmbeddedResource Include="frm_PopSim.resx">
+      <DependentUpon>frm_PopSim.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -66,6 +69,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <None Include="app.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
