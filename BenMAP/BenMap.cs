@@ -312,6 +312,7 @@ namespace BenMAP
         {
             splitContainer1.Visible = true;
             CommonClass.ClearAllObject();
+            _MapAlreadyDisplayed = false;
             ClearAll();
             ResetParamsTree(Application.StartupPath + @"\Configs\ParamsTree_USA.xml");
         }
@@ -320,9 +321,12 @@ namespace BenMAP
         {
             try
             {
-                this.picGIS.Visible = true;
-                mainMap.Layers.Clear();
-                pnlChart.BackgroundImage = null; tabCtlMain.SelectTab(tabGIS);
+                if (_MapAlreadyDisplayed) picGIS.Visible = false;
+                else picGIS.Visible = true;
+                //this.picGIS.Visible = false; // true;
+                if (!_MapAlreadyDisplayed) mainMap.Layers.Clear();
+                pnlChart.BackgroundImage = null;
+                tabCtlMain.SelectTab(tabGIS);
             }
             catch (Exception ex)
             {
@@ -586,7 +590,9 @@ namespace BenMAP
                 splitContainer1.Visible = true;
                 CommonClass.ClearAllObject();
                 CommonClass.CRSeeds = 1;
+                _MapAlreadyDisplayed = false;
                 ClearAll();
+                
                 ResetParamsTree("");
 
                 ClearMapTableChart();
@@ -607,6 +613,8 @@ namespace BenMAP
                 cbPoolingWindowIncidence.Items.Clear();
                 cbPoolingWindowAPV.Items.Clear();
                 ClearMapTableChart();
+                picGIS.Visible = true;
+
                 SetTabControl(tabCtlReport);
                 HealthImpactFunctions.MaxCRID = 0;
                 BenMAP_Load(this, null);
@@ -623,6 +631,7 @@ namespace BenMAP
             try
             {
                 splitContainer1.Visible = true;
+                _MapAlreadyDisplayed = false;
                 ClearAll();
                 ResetParamsTree(filePath);
                 string chinaOrUSA = System.IO.Path.GetFileNameWithoutExtension(filePath);
@@ -963,6 +972,7 @@ namespace BenMAP
                     case "region":
                         _currentNode = "region";
                         HideSplitContainer2();
+                        _MapAlreadyDisplayed = false;
                         mainMap.Layers.Clear();
                         tabCtlMain.SelectedIndex = 0;
                         addRegionLayerGroupToMainMap();
@@ -2443,25 +2453,25 @@ namespace BenMAP
                 string strValueField = polLayer.DataSet.DataTable.Columns[2].ColumnName;
                 _columnName = strValueField;
 
-                PolygonScheme myScheme1 = new PolygonScheme();
-                float fl = (float)0.1;
-                myScheme1.EditorSettings.StartColor = Color.Green;
-                myScheme1.EditorSettings.StartColor.ToTransparent(fl);
-                myScheme1.EditorSettings.EndColor = Color.Red;
-                myScheme1.EditorSettings.EndColor.ToTransparent(fl);
+                //PolygonScheme myScheme1 = new PolygonScheme();
+                //float fl = (float)0.1;
+                //myScheme1.EditorSettings.StartColor = Color.Green;
+                //myScheme1.EditorSettings.StartColor.ToTransparent(fl);
+                //myScheme1.EditorSettings.EndColor = Color.Red;
+                //myScheme1.EditorSettings.EndColor.ToTransparent(fl);
 
-                myScheme1.EditorSettings.ClassificationType = ClassificationType.Quantities;
+                //myScheme1.EditorSettings.ClassificationType = ClassificationType.Quantities;
+                ////myScheme1.EditorSettings.IntervalMethod = IntervalMethod.NaturalBreaks;
                 //myScheme1.EditorSettings.IntervalMethod = IntervalMethod.NaturalBreaks;
-                myScheme1.EditorSettings.IntervalMethod = IntervalMethod.NaturalBreaks;
 
-                //myScheme1.EditorSettings.IntervalSnapMethod = IntervalSnapMethod.Rounding;
-                myScheme1.EditorSettings.IntervalSnapMethod = IntervalSnapMethod.SignificantFigures;
-                myScheme1.EditorSettings.IntervalRoundingDigits = 3;
-                myScheme1.EditorSettings.NumBreaks = 6;
-                myScheme1.EditorSettings.FieldName = strValueField; 
-                myScheme1.EditorSettings.UseGradient = false;
-                myScheme1.CreateCategories(polLayer.DataSet.DataTable);
-                myScheme1.AppearsInLegend = false;
+                ////myScheme1.EditorSettings.IntervalSnapMethod = IntervalSnapMethod.Rounding;
+                //myScheme1.EditorSettings.IntervalSnapMethod = IntervalSnapMethod.SignificantFigures;
+                //myScheme1.EditorSettings.IntervalRoundingDigits = 3;
+                //myScheme1.EditorSettings.NumBreaks = 6;
+                //myScheme1.EditorSettings.FieldName = strValueField; 
+                //myScheme1.EditorSettings.UseGradient = false;
+                //myScheme1.CreateCategories(polLayer.DataSet.DataTable);
+                //myScheme1.AppearsInLegend = false;
 
                 //polLayer.Symbology = myScheme1;
 
@@ -2512,15 +2522,25 @@ namespace BenMAP
             }
         }
 
-        private string _drawStatus = string.Empty; private double _dMinValue = 0.0; private double _dMaxValue = 0.0; private IMapLayer _CurrentIMapLayer = null; //private int _currentLayerIndex = 1;
-        private string _columnName = string.Empty; private string _regionGroupLegendText = "Region Admin Layers"; private string _bcgGroupLegendText = "Pollutants";
+        private string _drawStatus = string.Empty; 
+        private double _dMinValue = 0.0;
+        private double _dMaxValue = 0.0;
+        private IMapLayer _CurrentIMapLayer = null;
+        //private int _currentLayerIndex = 1;
+        private string _columnName = string.Empty;
+        private string _regionGroupLegendText = "Region Admin Layers";
+        private string _bcgGroupLegendText = "Pollutants";
+        private bool _HealthResultsDragged = false;
+        private bool _IncidenceDragged = false;
+        private bool _APVdragged = false;
+        
         private Color[] _blendColors;
-
         public Color[] BlendColors
         {
             get { return _blendColors; }
             set { _blendColors = value; }
         }
+        
         private PolygonScheme CreateBCGPolyScheme(ref MapPolygonLayer polLayer, int CategoryNumber = 6, string isBase = "B")
         {
             if (isBase == "D") //use the delta color ramp
@@ -2752,6 +2772,7 @@ namespace BenMAP
             tbMapTitle.Text = CurrentMapTitle;
             
             ResetGisMap(null, null, isBase);
+            _MapAlreadyDisplayed = true;   //-MCB lets other parts of the program know that the map is present.
             return;
             //Color[] colors = new Color[] { Color.Blue, Color.FromArgb(0, 255, 255), Color.FromArgb(0, 255, 0), Color.Yellow, Color.Red, Color.FromArgb(255, 0, 255) };
            
@@ -5377,6 +5398,7 @@ namespace BenMAP
                 {
                     splitContainer1.Visible = true;
                     CommonClass.ClearAllObject();
+                    _MapAlreadyDisplayed = false;
                     ClearAll();
                     ResetParamsTree("");
 
@@ -5633,6 +5655,10 @@ namespace BenMAP
                 string s = tsbSavePic.ToolTipText;
                 tsbSavePic.ToolTipText = "";
                 //Print dialog
+               
+                //LayoutControl MyLC = new LayoutControl();
+               // MyLC.NewLayout(false);
+                //MyLC.LoadLayout(true, true, true);
                 SetUpPortaitMainMapLayout();
                
             //    Image i = new Bitmap(mainMap.Width, mainMap.Height);
@@ -6429,7 +6455,8 @@ namespace BenMAP
 
         private void ClearMapTableChart()
         {
-            mainMap.Layers.Clear();
+            if (!_MapAlreadyDisplayed) mainMap.Layers.Clear();
+
             OLVResultsShow.SetObjects(null);
             _tableObject = null;
             zedGraphCtl.Visible = false;
@@ -6439,7 +6466,8 @@ namespace BenMAP
             groupBox9.Visible = false;
             groupBox1.Visible = false;
             btnSelectAll.Visible = false;
-            picGIS.Visible = true;
+            if (_MapAlreadyDisplayed) picGIS.Visible = false;
+            else picGIS.Visible = true;
         }
 
         private void olvCRFunctionResult_DoubleClick(object sender, EventArgs e)
@@ -7085,6 +7113,7 @@ namespace BenMAP
         private int _currentRow;
         private int _pageSize;
         private int _pageCount;
+        public bool _MapAlreadyDisplayed = false;
         public object _tableObject;
         private string getFieldNameFromlstHealth(string s)
         {
@@ -10519,7 +10548,7 @@ namespace BenMAP
                             //_currentLayerIndex = mainMap.Layers.Count - 1;
                             _CurrentIMapLayer = polLayer;
                             string pollutantUnit = string.Empty; _columnName = strValueField;
-                            CurrentMapTitle = CommonClass.MainSetup.SetupName + " Setup: " + CRResultMapPolyLayer.LegendText + ", Configuration Results";  //-MCB draft until better title
+                            CurrentMapTitle = CommonClass.MainSetup.SetupName + " Setup: " + CRResultMapPolyLayer.LegendText + ",  Health Impact Function Result";  //-MCB draft until better title
                             RenderMainMap(true, "R");
                             polLayer.LegendText = author;
                             polLayer.Name = author;
@@ -12513,19 +12542,98 @@ namespace BenMAP
             return _colorArray;
         }
 
-        private void txtBoxMapTitle_TextChanged(object sender, EventArgs e)
+        private void olvCRFunctionResult_DragLeave(object sender, EventArgs e)
+        {
+            Debug.WriteLine("olvCRFunctionResul_DragLeave");
+            _HealthResultsDragged = true;
+             return;
+        }
+
+        private void olvCRFunctionResult_DragDrop(object sender, DragEventArgs e)
+        {
+            Debug.WriteLine("olvCRFunctionResult_DragDrop");
+            //
+            //{
+             //  btShowCRResult_Click(sender, e);
+                 _HealthResultsDragged = false;
+            //}
+            return;
+        }
+        private void mainMap_DragEnter(object sender, DragEventArgs e)
+        {
+            Debug.WriteLine("mainMap_DragEnter");
+            //_HealthResultsDragged = true;
+            if (_HealthResultsDragged)
+            {
+                btShowCRResult_Click(sender, e);
+                _HealthResultsDragged = false;
+            }
+
+            if (_IncidenceDragged)
+            {
+                tlvIncidence_DoubleClick(sender, e);
+            }
+
+            if (_APVdragged)
+            {
+                tlvAPVResult_DoubleClick(sender, e);
+            }
+            return;
+        }
+        private void mainMap_DragLeave(object sender, EventArgs e)
+        {
+            Debug.WriteLine("mainMap_DragLeave"); 
+            _HealthResultsDragged = false;
+            return;
+        }
+
+        private void mainMap_DragDrop(object sender, DragEventArgs e)
+        {   
+            //Debug.WriteLine("mainMap_DragDrop");
+            //if (_HealthResultsDragged)
+            //{  
+            //    btShowCRResult_Click(sender, e);
+            //    return;
+            //}
+        }
+
+        private void picGIS_DragEnter(object sender, DragEventArgs e)
+        {
+            //Debug.WriteLine("picGIS_DragEnter");
+            //_HealthResultsDragged = true;
+            //if (_HealthResultsDragged)
+            //{
+            //    btShowCRResult_Click(sender, e);
+            //    _HealthResultsDragged = false;
+            //    return;
+            //}
+            //return;
+        }
+
+        private void tlvIncidence_DragLeave(object sender, EventArgs e)
+        {
+            Debug.WriteLine("tlvIncidence_DragLeave");
+            _IncidenceDragged = true;
+            return;
+        }
+
+        private void tlvAPVResult_DragLeave(object sender, EventArgs e)
+        {
+            Debug.WriteLine("APVdragged_DragLeave");
+            _APVdragged = true;
+            return;
+        }
+
+        private void toolStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
 
         }
 
-        private void picGIS_Click(object sender, EventArgs e)
+        private void legend1_Click(object sender, EventArgs e)
         {
 
         }
 
-        private void mainMap_Load(object sender, EventArgs e)
-        {
-
-        }
+        
     }
 }
