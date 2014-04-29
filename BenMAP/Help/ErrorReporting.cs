@@ -20,7 +20,8 @@ namespace BenMAP
         //private const string password = "tempAcct1";
         private const string username = "BenMAP-CE";
         private const string password = "BenMAPOpenSource14";
-        private const string projectKey = "USERBUGS";       
+        private const string projectKey = "USERBUGS";
+        private string errorMessage;
 
         public ErrorReporting()
         {           
@@ -50,8 +51,32 @@ namespace BenMAP
                 cboComponent.DisplayMember = "name";
                 cboComponent.ValueMember = "id";
                 cboComponent.DataSource = components;
+                
             }
         }
+
+        public string ErrorMessage
+        {
+            get
+            {
+                return errorMessage;
+            }
+            set
+            {
+                errorMessage = value;
+            }
+        }
+
+
+        private void ErrorReporting_Shown(Object sender, EventArgs e)
+        {
+            if (!String.IsNullOrEmpty(errorMessage))
+            {
+                txtDescription.Text = "Error: " + errorMessage;
+            }
+
+        }
+
 
         private void btnCancel_Click(object sender, EventArgs e)
         {
@@ -107,15 +132,17 @@ namespace BenMAP
             issue.SetField(NewJiraIssue.FIELD_COMPONENTS, new JiraProjectComponent[] { (JiraProjectComponent)cboComponent.SelectedItem });
 
             NewJiraIssueResponse response = client.CreateIssue(issue);
+            FileInfo[] files;
 
             if (response != null)
             {
                 //attach error log
                 FileInfo fi = new FileInfo(Logger.GetLogPath(null));
-                FileInfo[] files = new FileInfo[1];
-                files[0] = fi;
-                client.AttachFilesToIssue(response.key, files);
-                
+                if (fi.Exists) {
+                    files = new FileInfo[1];
+                    files[0] = fi;
+                    client.AttachFilesToIssue(response.key, files);
+                }
 
                 //add attachments if required
                 if (chkAuditTrail.Checked)
@@ -131,9 +158,12 @@ namespace BenMAP
                     string auditTrailReportPath = fi.DirectoryName + @"\audit_trail.xml";
                     AuditTrailReportCommonClass.exportToXml(tv, auditTrailReportPath);
                     fi = new FileInfo(auditTrailReportPath);
-                    files = new FileInfo[1];
-                    files[0] = fi;
-                    client.AttachFilesToIssue(response.key, files);
+                    if (fi.Exists)
+                    {
+                        files = new FileInfo[1];
+                        files[0] = fi;
+                        client.AttachFilesToIssue(response.key, files);
+                    }
                 }
 
                 
@@ -156,5 +186,6 @@ namespace BenMAP
            
 
         }
+
     }
 }

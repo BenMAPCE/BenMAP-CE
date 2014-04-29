@@ -25,7 +25,7 @@ namespace BenMAP.Jira
         /// <param name="baseUrl">JIRA server's base/host URL, must use HTTPS (e.g. https://myjira.atlassian.net)</param>
         /// <param name="username">Username to authenticate client</param>
         /// <param name="password">Password for given username</param>
-        public JiraClient(string baseUrl, string username, string password, int pMaxAttachSizeKb=4096)
+        public JiraClient(string baseUrl, string username, string password, int pMaxAttachSizeKb=5120)
         {
             if (!baseUrl.ToLower().Trim().StartsWith("https"))
             {
