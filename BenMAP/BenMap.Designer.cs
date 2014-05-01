@@ -1961,7 +1961,6 @@ namespace BenMAP
             this.toolStrip1.Stretch = true;
             this.toolStrip1.TabIndex = 5;
             this.toolStrip1.Text = "toolStrip1";
-            this.toolStrip1.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.toolStrip1_ItemClicked);
             // 
             // btnZoomIn
             // 
@@ -2211,7 +2210,6 @@ namespace BenMAP
             this.legend1.TabIndex = 0;
             this.legend1.Text = "legend1";
             this.legend1.VerticalScrollEnabled = true;
-            this.legend1.Click += new System.EventHandler(this.legend1_Click);
             // 
             // tabMapLayoutPanel1
             // 
