@@ -35,7 +35,11 @@ namespace BenMAP
                     isShow = CommonClass.IniReadValue("appSettings", "IsShowStart", iniPath);
                     isShowExit = CommonClass.IniReadValue("appSettings", "IsShowExit", iniPath);
                     isForceValidate = CommonClass.IniReadValue("appSettings", "IsForceValidate", iniPath);
-                    strNumDaysToDelete = CommonClass.IniReadValue("appSettings", "NumDaysToDelete", iniPath);
+                    string temp = CommonClass.IniReadValue("appSettings", "NumDaysToDelete", iniPath);
+                    if(!string.IsNullOrEmpty(temp))
+                    {
+                        strNumDaysToDelete = temp;
+                    }
                     defaultSetup = CommonClass.IniReadValue("appSettings", "DefaultSetup", iniPath);
                 }
 

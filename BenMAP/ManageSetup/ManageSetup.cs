@@ -14,6 +14,7 @@ namespace BenMAP
     public partial class ManageSetup : FormBase
     {
         string _dataName = string.Empty;
+
         public ManageSetup()
         {
             InitializeComponent();
@@ -55,6 +56,7 @@ namespace BenMAP
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                 lstMonitor.DataSource = ds.Tables[0];
                 lstMonitor.DisplayMember = "MonitorDataSetName";
+                
             }
         }
 

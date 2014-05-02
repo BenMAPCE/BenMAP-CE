@@ -9097,6 +9097,11 @@ namespace BenMAP
                         MessageBox.Show("Please finish your configuration first.");
                     }
                 }
+                if(trvAuditTrialReport.Nodes.Count > 0)
+                {
+                    getMetadataForAuditTrail(trvAuditTrialReport);
+                }
+
                 if (trvAuditTrialReport.Nodes.Count > 0)
                 {
                     trvAuditTrialReport.ExpandAll();
@@ -9107,6 +9112,294 @@ namespace BenMAP
                 MessageBox.Show("BenMAP-CE was unable to open the file. The file may be corrupt, or it may have been created using a previous incompatible version of BenMAP-CE.");
                 Logger.LogError(ex.Message);
             }
+        }
+        //TODO: Get Metadata for the autid trail
+        /// <summary>
+        /// Gets the metadata of the dataset used for audit trail.
+        /// NOT YET COMPLETED
+        /// passing in the tree view that will be added to.
+        /// </summary>
+        /// <param name="trv">The TRV.</param>
+        private void getMetadataForAuditTrail(TreeView trv)
+        {
+            string datasetTypeName = string.Empty;
+            string datasetName = string.Empty;
+            TreeNode tnTemp = null;
+            TreeNode tnDatasetTypeName = null;//i.e. Monitor
+            TreeNode tnDataSetName = null;//i.e. MDS1
+            TreeNode tnDataFileName = null;//i.e. DetroitMonitors PM 25
+            TreeNode tnMetadata = new TreeNode();//Top node - Datasts
+            tnMetadata.Text = "Datasets with Metadata";
+            tnMetadata.Name = "Datasets";
+            ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+            System.Data.DataSet ds = new System.Data.DataSet();
+            string commandText = string.Empty;
+            commandText = string.Format("SELECT a.METADATAID, a.SETUPID, a.DATASETID, a.DATASETTYPEID, a.FILENAME, a.EXTENSION, a.DATAREFERENCE, a.FILEDATE, " +
+                                        "a.IMPORTDATE, a.DESCRIPTION, a.PROJECTION, a.GEONAME, a.DATUMNAME, a.DATUMTYPE, a.SPHEROIDNAME, a.MERIDIANNAME, " +
+                                        "a.UNITNAME, a.PROJ4STRING, a.NUMBEROFFEATURES, a.METADATAENTRYID " +
+                                        "FROM METADATAINFORMATION a " +
+                                        "where setupid = {0} " +
+                                        "order by a.DATASETTYPEID", CommonClass.MainSetup.SetupID);
+            ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
+            foreach(DataRow dr in ds.Tables[0].Rows)
+            {
+                //get the dataset ID, with the dataset ID get the dataset name
+                commandText = string.Format("SELECT DATASETNAME FROM DATASETS WHERE DATASETID = {0}", dr["DATASETTYPEID"].ToString());
+                object temp = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
+                datasetTypeName = temp.ToString();
+
+                if(!tnMetadata.Nodes.ContainsKey(datasetTypeName))//its new
+                {
+                    tnDatasetTypeName = new TreeNode();
+                    tnDatasetTypeName.Name = datasetTypeName;
+                    tnDatasetTypeName.Text = datasetTypeName;
+
+                    tnMetadata.Nodes.Add(tnDatasetTypeName);
+                    //Get the Datasets names
+                    datasetName = getDatasetEntryName(datasetTypeName, Convert.ToInt32(dr["SETUPID"].ToString()), Convert.ToInt32(dr["DATASETID"].ToString()));
+                    if(!string.IsNullOrEmpty(datasetName))
+                    {
+                        tnTemp = tnMetadata.Nodes[datasetTypeName];
+                        if (!tnTemp.Nodes.ContainsKey(datasetName))
+                        {
+                            tnDataSetName = new TreeNode();
+                            tnDataSetName.Name = datasetName;
+                            tnDataSetName.Text = datasetName;
+                            tnDatasetTypeName.Nodes.Add(tnDataSetName);
+                            
+                            DataRow[] drs = ds.Tables[0].Select(string.Format("DATASETID = {0} AND DATASETTYPEID = {1}", Convert.ToInt32(dr["DATASETID"].ToString()), Convert.ToInt32(dr["DATASETTYPEID"].ToString())));
+                            foreach (DataRow drMetadata in drs)
+                            {
+                                tnDataFileName = new TreeNode();//file level
+                                tnDataFileName.Name = drMetadata["FILENAME"].ToString();
+                                tnDataFileName.Text = string.Format("File Name: {0}", drMetadata["FILENAME"].ToString());
+                                tnDataSetName.Nodes.Add(tnDataFileName);
+                                //now getting the metadata and placeing it under the tnDataFileName
+                                tnTemp = new TreeNode();
+                                tnTemp.Name = drMetadata["EXTENSION"].ToString();
+                                tnTemp.Text = string.Format("Extension: {0}", drMetadata["EXTENSION"].ToString());
+                                tnDataFileName.Nodes.Add(tnTemp);
+                                tnTemp = new TreeNode();
+                                tnTemp.Name = drMetadata["DATAREFERENCE"].ToString();
+                                tnTemp.Text = string.Format("Data Reference: {0}", drMetadata["DATAREFERENCE"].ToString());
+                                tnDataFileName.Nodes.Add(tnTemp);
+                                tnTemp = new TreeNode();
+                                tnTemp.Name = "FILEDATE"; 
+                                tnTemp.Text = string.Format("File Date: {0}", drMetadata["FILEDATE"].ToString());
+                                tnDataFileName.Nodes.Add(tnTemp);
+                                tnTemp = new TreeNode();
+                                tnTemp.Name = "IMPORTDATE"; 
+                                tnTemp.Text = string.Format("Import Date: {0}", drMetadata["IMPORTDATE"].ToString());
+                                tnDataFileName.Nodes.Add(tnTemp);
+                                tnTemp = new TreeNode();
+                                tnTemp.Name = "DESCRIPTION"; 
+                                tnTemp.Text = string.Format("Description: {0}", drMetadata["DESCRIPTION"].ToString());
+                                tnDataFileName.Nodes.Add(tnTemp);
+                                if(drMetadata["EXTENSION"].ToString().ToLower().Equals(".shp"))
+                                {
+                                    tnTemp = new TreeNode();
+                                    tnTemp.Name = "PROJECTION"; 
+                                    tnTemp.Text = string.Format("Projection: {0}", drMetadata["PROJECTION"].ToString());
+                                    tnDataFileName.Nodes.Add(tnTemp);
+
+                                    tnTemp = new TreeNode();
+                                    tnTemp.Name = "GEONAME"; 
+                                    tnTemp.Text = string.Format("Geoname: {0}", drMetadata["GEONAME"].ToString());
+                                    tnDataFileName.Nodes.Add(tnTemp);
+
+                                    tnTemp = new TreeNode();
+                                    tnTemp.Name = "DATUMNAME"; 
+                                    tnTemp.Text = string.Format("Datum Name: {0}", drMetadata["DATUMNAME"].ToString());
+                                    tnDataFileName.Nodes.Add(tnTemp);
+
+                                    tnTemp = new TreeNode();
+                                    tnTemp.Name = "DATUMTYPE"; 
+                                    tnTemp.Text = string.Format("Datumtype: {0}", drMetadata["DATUMTYPE"].ToString());
+                                    tnDataFileName.Nodes.Add(tnTemp);
+
+                                    tnTemp = new TreeNode();
+                                    tnTemp.Name = "SPHEROIDNAME"; 
+                                    tnTemp.Text = string.Format("Spheroid Name: {0}", drMetadata["SPHEROIDNAME"].ToString());
+                                    tnDataFileName.Nodes.Add(tnTemp);
+
+                                    tnTemp = new TreeNode();
+                                    tnTemp.Name = "MERIDIANNAME"; 
+                                    tnTemp.Text = string.Format("Meridian Name: {0}", drMetadata["MERIDIANNAME"].ToString());
+                                    tnDataFileName.Nodes.Add(tnTemp);
+
+                                    tnTemp = new TreeNode();
+                                    tnTemp.Name = "UNITNAME"; 
+                                    tnTemp.Text = string.Format("Unit Name: {0}", drMetadata["UNITNAME"].ToString());
+                                    tnDataFileName.Nodes.Add(tnTemp);
+
+                                    tnTemp = new TreeNode();
+                                    tnTemp.Name = "PROJ4STRING"; 
+                                    tnTemp.Text = string.Format("PROJ4STRING: {0}", drMetadata["PROJ4STRING"].ToString());
+                                    tnDataFileName.Nodes.Add(tnTemp);
+
+                                    tnTemp = new TreeNode();
+                                    tnTemp.Name = "NUMBEROFFEATURES";
+                                    tnTemp.Text = string.Format("Number Of Features: {0}", drMetadata["NUMBEROFFEATURES"].ToString());
+                                    tnDataFileName.Nodes.Add(tnTemp);
+                                }
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    tnDatasetTypeName = tnMetadata.Nodes[datasetTypeName];
+                    datasetName = getDatasetEntryName(datasetTypeName, Convert.ToInt32(dr["SETUPID"].ToString()), Convert.ToInt32(dr["DATASETID"].ToString()));
+                    if(!string.IsNullOrEmpty(datasetName))
+                    {
+                        if (!tnDatasetTypeName.Nodes.ContainsKey(datasetName))
+                        {
+                            tnDataSetName = new TreeNode();
+                            tnDataSetName.Name = datasetName;
+                            tnDataSetName.Text = datasetName;
+                            tnDatasetTypeName.Nodes.Add(tnDataSetName);
+
+                            DataRow[] drs = ds.Tables[0].Select(string.Format("DATASETID = {0} AND DATASETTYPEID = {1}", Convert.ToInt32(dr["DATASETID"].ToString()), Convert.ToInt32(dr["DATASETTYPEID"].ToString())));
+                            foreach (DataRow drMetadata in drs)
+                            {
+                                tnDataFileName = new TreeNode();//file level
+                                tnDataFileName.Name = drMetadata["FILENAME"].ToString();
+                                tnDataFileName.Text = string.Format("File Name: {0}", drMetadata["FILENAME"].ToString());
+                                tnDataSetName.Nodes.Add(tnDataFileName);
+                                //now getting the metadata and placeing it under the tnDataFileName
+                                tnTemp = new TreeNode();
+                                tnTemp.Name = drMetadata["EXTENSION"].ToString();
+                                tnTemp.Text = string.Format("Extension: {0}", drMetadata["EXTENSION"].ToString());
+                                tnDataFileName.Nodes.Add(tnTemp);
+                                tnTemp = new TreeNode();
+                                tnTemp.Name = drMetadata["DATAREFERENCE"].ToString();
+                                tnTemp.Text = string.Format("Data Reference: {0}", drMetadata["DATAREFERENCE"].ToString());
+                                tnDataFileName.Nodes.Add(tnTemp);
+                                tnTemp = new TreeNode();
+                                tnTemp.Name = "FILEDATE"; //drMetadata["FILEDATE"].ToString();
+                                tnTemp.Text = string.Format("File Date: {0}", drMetadata["FILEDATE"].ToString());
+                                tnDataFileName.Nodes.Add(tnTemp);
+                                tnTemp = new TreeNode();
+                                tnTemp.Name = "IMPORTDATE"; //drMetadata["IMPORTDATE"].ToString();
+                                tnTemp.Text = string.Format("Import Date: {0}", drMetadata["IMPORTDATE"].ToString());
+                                tnDataFileName.Nodes.Add(tnTemp);
+                                tnTemp = new TreeNode();
+                                tnTemp.Name = "DESCRIPTION"; //drMetadata["IMPORTDATE"].ToString();
+                                tnTemp.Text = string.Format("Description: {0}", drMetadata["DESCRIPTION"].ToString());
+                                tnDataFileName.Nodes.Add(tnTemp);
+
+                                if (drMetadata["EXTENSION"].ToString().ToLower().Equals(".shp"))
+                                {
+                                    tnTemp = new TreeNode();
+                                    tnTemp.Name = "PROJECTION";
+                                    tnTemp.Text = string.Format("Projection: {0}", drMetadata["PROJECTION"].ToString());
+                                    tnDataFileName.Nodes.Add(tnTemp);
+
+                                    tnTemp = new TreeNode();
+                                    tnTemp.Name = "GEONAME";
+                                    tnTemp.Text = string.Format("Geoname: {0}", drMetadata["GEONAME"].ToString());
+                                    tnDataFileName.Nodes.Add(tnTemp);
+
+                                    tnTemp = new TreeNode();
+                                    tnTemp.Name = "DATUMNAME";
+                                    tnTemp.Text = string.Format("Datum Name: {0}", drMetadata["DATUMNAME"].ToString());
+                                    tnDataFileName.Nodes.Add(tnTemp);
+
+                                    tnTemp = new TreeNode();
+                                    tnTemp.Name = "DATUMTYPE";
+                                    tnTemp.Text = string.Format("Datumtype: {0}", drMetadata["DATUMTYPE"].ToString());
+                                    tnDataFileName.Nodes.Add(tnTemp);
+
+                                    tnTemp = new TreeNode();
+                                    tnTemp.Name = "SPHEROIDNAME";
+                                    tnTemp.Text = string.Format("Spheroid Name: {0}", drMetadata["SPHEROIDNAME"].ToString());
+                                    tnDataFileName.Nodes.Add(tnTemp);
+
+                                    tnTemp = new TreeNode();
+                                    tnTemp.Name = "MERIDIANNAME";
+                                    tnTemp.Text = string.Format("Meridian Name: {0}", drMetadata["MERIDIANNAME"].ToString());
+                                    tnDataFileName.Nodes.Add(tnTemp);
+
+                                    tnTemp = new TreeNode();
+                                    tnTemp.Name = "UNITNAME";
+                                    tnTemp.Text = string.Format("Unit Name: {0}", drMetadata["UNITNAME"].ToString());
+                                    tnDataFileName.Nodes.Add(tnTemp);
+
+                                    tnTemp = new TreeNode();
+                                    tnTemp.Name = "PROJ4STRING";
+                                    tnTemp.Text = string.Format("PROJ4STRING: {0}", drMetadata["PROJ4STRING"].ToString());
+                                    tnDataFileName.Nodes.Add(tnTemp);
+
+                                    tnTemp = new TreeNode();
+                                    tnTemp.Name = "NUMBEROFFEATURES";
+                                    tnTemp.Text = string.Format("Number Of Features: {0}", drMetadata["NUMBEROFFEATURES"].ToString());
+                                    tnDataFileName.Nodes.Add(tnTemp);
+                                }
+
+                            }
+                        }
+                    }
+                }
+
+           
+            }
+            trv.Nodes.Add(tnMetadata);
+        }
+        private string getDatasetEntryName(string DatasetTypeName, int setupid, int datasetid)
+        {
+            string commandText = string.Empty;
+            object rtv = null;
+            ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+            switch (DatasetTypeName.ToLower())
+            {
+                case "incidence":
+                    commandText = string.Format("select INCIDENCEDATASETNAME from INCIDENCEDATASETS where SETUPID = {0} and INCIDENCEDATASETID = {1}", setupid, datasetid);
+                    rtv = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
+                break;
+                case "variabledataset":
+                    commandText = string.Format("select SETUPVARIABLEDATASETNAME from SETUPVARIABLEDATASETS where SETUPID = {0} and SETUPVARIABLEDATASETID = {1}", setupid, datasetid);
+                    rtv = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
+                break;
+                case "inflation":
+                    commandText = string.Format("select INFLATIONDATASETNAME from INFLATIONDATASETS where SETUPID = {0} and INFLATIONDATASETID = {1}", setupid, datasetid);
+                    rtv = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
+                break;
+                case "incomegrowth":
+                commandText = string.Format("select INCOMEGROWTHADJDATASETNAME from INCOMEGROWTHADJDATASETS where SETUPID = {0} and INCOMEGROWTHADJDATASETID = {1}", setupid, datasetid);
+                    rtv = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
+                break;
+                case "healthfunctions":
+                    commandText = string.Format("select CRFUNCTIONDATASETNAME from CRFUNCTIONDATASETS where SETUPID = {0} and CRFUNCTIONDATASETID = {1}", setupid, datasetid);
+                    rtv = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
+                break;
+                case "valuationfunction":
+                    commandText = string.Format("select VALUATIONFUNCTIONDATASETNAME from VALUATIONFUNCTIONDATASETS where SETUPID = {0} and VALUATIONFUNCTIONDATASETID = {1}", setupid, datasetid);
+                    rtv = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
+                break;
+                case "population":
+                    commandText = string.Format("select POPULATIONDATASETNAME from POPULATIONDATASETS where SETUPID = {0} and POPULATIONDATASETID = {1}", setupid, datasetid);
+                    rtv = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
+                break;
+                //case "baseline":
+
+                //break;
+                //case "control":
+
+                //break;
+                case "griddefinition":
+                    commandText = string.Format("select GRIDDEFINITIONNAME from GRIDDEFINITIONS where SETUPID = {0} and GRIDDEFINITIONID = {1}", setupid, datasetid);
+                    rtv = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
+                break;
+                case "monitor":
+                    commandText = string.Format("select monitordatasetname from monitordatasets where setupid = {0} and monitordatasetid = {1}", setupid, datasetid);
+                    rtv = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
+                 break;
+
+                default:
+                    break;
+            }
+
+            return rtv.ToString();
         }
         private void rbAuditFile_Click(object sender, EventArgs e)
         {

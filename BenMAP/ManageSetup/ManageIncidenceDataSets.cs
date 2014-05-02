@@ -372,7 +372,7 @@ namespace BenMAP
         private void btnViewMetadata_Click(object sender, EventArgs e)
         {
             _metadataObj = SQLStatementsCommonClass.getMetadata(Convert.ToInt32(_dataSetID), CommonClass.ManageSetup.SetupID);
-            _metadataObj.SetupName = _dataName;//_lstDataSetName;
+            _metadataObj.SetupName = CommonClass.ManageSetup.SetupName;//_dataName;//_lstDataSetName;
             ViewEditMetadata viewEMdata = new ViewEditMetadata(_metadataObj);
             DialogResult dr = viewEMdata.ShowDialog();
             if (dr.Equals(DialogResult.OK))

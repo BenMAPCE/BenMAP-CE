@@ -168,13 +168,15 @@ namespace BenMAP
             try
             {
                 _metadataObj = SQLStatementsCommonClass.getMetadata(_dsDataSetId, _dsSetupID, _dsDatasetTypeId, _dsMetadataID);
-                _metadataObj.SetupName = _lstDataSetName;
+                _metadataObj.SetupName = CommonClass.ManageSetup.SetupName;// _lstDataSetName;
                 btnViewMetadata.Enabled = false;
                 ViewEditMetadata viewEMdata = new ViewEditMetadata(_metadataObj);
                 DialogResult dr = viewEMdata.ShowDialog();
                 if (dr.Equals(DialogResult.OK))
                 {
                     _metadataObj = viewEMdata.MetadataObj;
+                    addLstBox();
+                    addGridView();
                 }
             }
             catch (Exception ex)

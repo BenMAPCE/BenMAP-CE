@@ -18,8 +18,10 @@ namespace BenMAP
         {
             this.components = new System.ComponentModel.Container();
             this.grpCancelOK = new System.Windows.Forms.GroupBox();
+            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
+            this.btnViewMetadata = new System.Windows.Forms.Button();
             this.grpGrowthDetail = new System.Windows.Forms.GroupBox();
             this.olvData = new BrightIdeasSoftware.DataListView();
             this.olvColumn7 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
@@ -31,13 +33,11 @@ namespace BenMAP
             this.btnAdd = new System.Windows.Forms.Button();
             this.lstDataSetName = new System.Windows.Forms.ListBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.btnViewMetadata = new System.Windows.Forms.Button();
-            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.grpCancelOK.SuspendLayout();
+            this.flowLayoutPanel1.SuspendLayout();
             this.grpGrowthDetail.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.olvData)).BeginInit();
             this.grpAvailableDataSets.SuspendLayout();
-            this.flowLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // grpCancelOK
@@ -50,6 +50,18 @@ namespace BenMAP
             this.grpCancelOK.Size = new System.Drawing.Size(563, 53);
             this.grpCancelOK.TabIndex = 2;
             this.grpCancelOK.TabStop = false;
+            // 
+            // flowLayoutPanel1
+            // 
+            this.flowLayoutPanel1.Controls.Add(this.btnOK);
+            this.flowLayoutPanel1.Controls.Add(this.btnCancel);
+            this.flowLayoutPanel1.Controls.Add(this.btnViewMetadata);
+            this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(3, 18);
+            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(557, 32);
+            this.flowLayoutPanel1.TabIndex = 34;
             // 
             // btnOK
             // 
@@ -73,6 +85,17 @@ namespace BenMAP
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Visible = false;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
+            // 
+            // btnViewMetadata
+            // 
+            this.btnViewMetadata.Enabled = false;
+            this.btnViewMetadata.Location = new System.Drawing.Point(280, 3);
+            this.btnViewMetadata.Name = "btnViewMetadata";
+            this.btnViewMetadata.Size = new System.Drawing.Size(112, 27);
+            this.btnViewMetadata.TabIndex = 33;
+            this.btnViewMetadata.Text = "View Metadata";
+            this.btnViewMetadata.UseVisualStyleBackColor = true;
+            this.btnViewMetadata.Click += new System.EventHandler(this.btnViewMetadata_Click);
             // 
             // grpGrowthDetail
             // 
@@ -212,28 +235,6 @@ namespace BenMAP
             this.lstDataSetName.TabIndex = 0;
             this.lstDataSetName.SelectedValueChanged += new System.EventHandler(this.lstDataSetName_SelectedValueChanged);
             // 
-            // btnViewMetadata
-            // 
-            this.btnViewMetadata.Location = new System.Drawing.Point(280, 3);
-            this.btnViewMetadata.Name = "btnViewMetadata";
-            this.btnViewMetadata.Size = new System.Drawing.Size(112, 27);
-            this.btnViewMetadata.TabIndex = 33;
-            this.btnViewMetadata.Text = "View Metadata";
-            this.btnViewMetadata.UseVisualStyleBackColor = true;
-            this.btnViewMetadata.Click += new System.EventHandler(this.btnViewMetadata_Click);
-            // 
-            // flowLayoutPanel1
-            // 
-            this.flowLayoutPanel1.Controls.Add(this.btnOK);
-            this.flowLayoutPanel1.Controls.Add(this.btnCancel);
-            this.flowLayoutPanel1.Controls.Add(this.btnViewMetadata);
-            this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(3, 18);
-            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(557, 32);
-            this.flowLayoutPanel1.TabIndex = 34;
-            // 
             // frmIncomeGrowthAdjustmentDataSet
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
@@ -249,10 +250,10 @@ namespace BenMAP
             this.Text = "Income Growth Adjustment Dataset Manager";
             this.Load += new System.EventHandler(this.IncomeGrowthAdjustmentDataSet_Load);
             this.grpCancelOK.ResumeLayout(false);
+            this.flowLayoutPanel1.ResumeLayout(false);
             this.grpGrowthDetail.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.olvData)).EndInit();
             this.grpAvailableDataSets.ResumeLayout(false);
-            this.flowLayoutPanel1.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }

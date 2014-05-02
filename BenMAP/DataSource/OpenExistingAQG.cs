@@ -15,6 +15,7 @@ namespace BenMAP
     public partial class OpenExistingAQG : FormBase
     {
         string pathBaseControl = "";
+        private MetadataClassObj _metadataObj = null;
 
         public OpenExistingAQG()
         {
@@ -88,6 +89,7 @@ namespace BenMAP
             if(dlgr.Equals(DialogResult.OK))
             {
                 txtBase.Text = lmdataset.StrPath;
+                _metadataObj = lmdataset.MetadataObj;
             }
                 #region Dead Code
                 //OpenFileDialog openFileDialog = new OpenFileDialog();
@@ -127,7 +129,6 @@ namespace BenMAP
         {
             try
             {
-
                 LoadSelectedDataSet lmdataset = new LoadSelectedDataSet("Load Control Data", "Control Data", "Control", "Control");
 
                 DialogResult dlgr = lmdataset.ShowDialog();

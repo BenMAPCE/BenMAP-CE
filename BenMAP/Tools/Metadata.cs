@@ -30,6 +30,7 @@ namespace BenMAP
             metadataObj.FileDate = _fInfo.CreationTime.ToShortDateString();
             metadataObj.ImportDate = DateTime.Today.ToShortDateString();
             metadataObj.MetadataId = SQLStatementsCommonClass.selectMaxID("METADATAENTRYID","METADATAINFORMATION");
+           
             if (_fInfo.Extension == ".shp")
             {
                 Readin_shp_Metadata();

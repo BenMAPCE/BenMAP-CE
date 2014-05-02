@@ -50,6 +50,13 @@ namespace BenMAP
         /// </summary>
         //private Dictionary<string,string> _dicTableDef = null;
         private Hashtable _hashTableDef = null;
+        private Hashtable _hashTableEPG = null;//Endpointgroups lookup table.
+        private Hashtable _hashTableEPS = null; //Endpoints Lookup table.
+        private Hashtable _hashTableRace = null; //Race Lookup table.
+        private Hashtable _hashTableGender = null;//Genders Lookup table.
+        private Hashtable _hashTableEthnicity = null;//Ethnicity lookup table.
+        private Hashtable _hashTableAgeRange = null;//Ageranges lookup tabel.
+
         /// <summary>
         /// The _datasetname
         /// </summary>
@@ -92,6 +99,12 @@ namespace BenMAP
             txtReportOutput.SelectionIndent = 10;
             Get_ColumnNames();
             Get_DatasetDefinition();
+            Get_EndPointGroup();
+            Get_EndPoints();
+            Get_Race();
+            Get_Genders();
+            Get_Ethnicity();
+            Get_AgeRange();
         }
         /// <summary>
         /// Initializes a new instance of the <see cref="ValidateDatabaseImport"/> class.
@@ -126,7 +139,7 @@ namespace BenMAP
             try
             {
                 cmdText = string.Format("SELECT COLUMNNAME, DATATYPE, REQUIRED, LOWERLIMIT, UPPERLIMIT, CHECKTYPE FROM DATASETDEFININTION WHERE DATASETNAME='{0}'", _datasetname);
-                DataTable _obj =   fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, cmdText).Tables[0] as DataTable;
+                DataTable _obj = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, cmdText).Tables[0] as DataTable;
                 foreach(DataRow dr in _obj.Rows)
                 {
                     
@@ -145,6 +158,78 @@ namespace BenMAP
             }
 
         }
+
+        private void Get_EndPointGroup()
+        {
+            FireBirdHelperBase fb = new ESILFireBirdHelper();
+            _hashTableEPG = new Hashtable(StringComparer.OrdinalIgnoreCase);
+            string commandText = "SELECT DISTINCT ENDPOINTGROUPID, ENDPOINTGROUPNAME FROM ENDPOINTGROUPS";
+            DataTable _obj = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText).Tables[0] as DataTable;
+            foreach(DataRow dr in _obj.Rows)
+            {
+                _hashTableEPG.Add(dr[0], dr[1].ToString());
+            }
+        }
+
+        private void Get_EndPoints()
+        {
+            FireBirdHelperBase fb = new ESILFireBirdHelper();
+            _hashTableEPS = new Hashtable(StringComparer.OrdinalIgnoreCase);
+            string commandText = "SELECT DISTINCT ENDPOINTID, ENDPOINTNAME from ENDPOINTS";
+            DataTable _obj = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText).Tables[0] as DataTable;
+            foreach (DataRow dr in _obj.Rows)
+            {
+                _hashTableEPS.Add(dr[0], dr[1].ToString());
+            }
+        }
+
+        private void Get_Race()
+        {
+            FireBirdHelperBase fb = new ESILFireBirdHelper();
+            _hashTableRace = new Hashtable(StringComparer.OrdinalIgnoreCase);
+            string commandText = "select DISTINCT RACEID, RACENAME from RACES";
+            DataTable _obj = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText).Tables[0] as DataTable;
+            foreach (DataRow dr in _obj.Rows)
+            {
+                _hashTableRace.Add(dr[0], dr[1].ToString());
+            }
+        }
+
+        private void Get_Genders()
+        {
+            FireBirdHelperBase fb = new ESILFireBirdHelper();
+            _hashTableGender = new Hashtable(StringComparer.OrdinalIgnoreCase);
+            string commandText = "select DISTINCT GENDERID, GENDERNAME from GENDERS";
+            DataTable _obj = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText).Tables[0] as DataTable;
+            foreach (DataRow dr in _obj.Rows)
+            {
+                _hashTableGender.Add(dr[0], dr[1].ToString());
+            }
+        }
+        
+        private void Get_Ethnicity()
+        {
+            FireBirdHelperBase fb = new ESILFireBirdHelper();
+            _hashTableEthnicity = new Hashtable(StringComparer.OrdinalIgnoreCase);
+            string commandText = "select DISTINCT ETHNICITYID, ETHNICITYNAME from ETHNICITY";
+            DataTable _obj = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText).Tables[0] as DataTable;
+            foreach (DataRow dr in _obj.Rows)
+            {
+                _hashTableEthnicity.Add(dr[0], dr[1].ToString());
+            }
+        }
+       
+       private void Get_AgeRange()
+       {
+           FireBirdHelperBase fb = new ESILFireBirdHelper();
+           _hashTableAgeRange = new Hashtable(StringComparer.OrdinalIgnoreCase);
+           string commandText = "select DISTINCT AGERANGEID, AGERANGENAME from AGERANGES";
+           DataTable _obj = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText).Tables[0] as DataTable;
+           foreach (DataRow dr in _obj.Rows)
+           {
+               _hashTableAgeRange.Add(dr[0], dr[1].ToString());
+           }
+       }
 
         /// <summary>
         /// Handles the Load event of the ValidateDatabaseImport control.
@@ -587,19 +672,20 @@ namespace BenMAP
                 {
                     case "EndpointGroup":
                     case "Endpoint Group":
-                        cmdText = string.Format("SELECT DISTINCT ENDPOINTGROUPID FROM ENDPOINTGROUPS WHERE ENDPOINTGROUPNAME = '{0}'", valToVerify);
-                        rtv = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, cmdText);
-
-                        if(rtv == null) //did not find anyting from the query
+                        //cmdText = string.Format("SELECT DISTINCT ENDPOINTGROUPID FROM ENDPOINTGROUPS WHERE ENDPOINTGROUPNAME = '{0}'", valToVerify);
+                        //rtv = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, cmdText);
+                        //if (rtv == null) //did not find anyting from the query
+                        if(!_hashTableEPG.ContainsValue(valToVerify))
                         {
                             errMsg = string.Format("Invalid Endpoint Group Name.  ({0})", valToVerify);
                         }
                         break;
 
                     case "Endpoint":
-                        cmdText = string.Format("SELECT DISTINCT ENDPOINTID FROM ENDPOINTS WHERE ENDPOINTNAME = '{0}'", valToVerify);
-                        rtv = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, cmdText);
-                        if (rtv == null)
+                        //cmdText = string.Format("SELECT DISTINCT ENDPOINTID FROM ENDPOINTS WHERE ENDPOINTNAME = '{0}'", valToVerify);
+                        //rtv = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, cmdText);
+                        //if (rtv == null)
+                        if(!_hashTableEPS.ContainsValue(valToVerify))
                         {
                                 errMsg = string.Format("Invalid Endpoint Name given.  ({0})", valToVerify);
                         }
@@ -612,25 +698,28 @@ namespace BenMAP
                         }
                         break;
                     case "Race":
-                        cmdText = string.Format("SELECT DISTINCT RACEID FROM RACES WHERE RACENAME = '{0}'", valToVerify);
-                        rtv = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, cmdText);
-                        if(rtv == null)
+                        //cmdText = string.Format("SELECT DISTINCT RACEID FROM RACES WHERE RACENAME = '{0}'", valToVerify);
+                        //rtv = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, cmdText);
+                        //if(rtv == null)
+                        if(!_hashTableRace.ContainsValue(valToVerify))
                         {
                             errMsg = string.Format("'{0}' is not a valid race.", valToVerify);
                         }
                         break;
                     case "Gender":
-                        cmdText = string.Format("SELECT DISTINCT GENDERID FROM GENDERS WHERE GENDERNAME = '{0}'", valToVerify);
-                        rtv = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, cmdText);
-                        if (rtv == null)
+                        //cmdText = string.Format("SELECT DISTINCT GENDERID FROM GENDERS WHERE GENDERNAME = '{0}'", valToVerify);
+                        //rtv = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, cmdText);
+                        //if (rtv == null)
+                        if(!_hashTableGender.ContainsValue(valToVerify))
                         {
                             errMsg = string.Format("'{0}' is not valid gender.", valToVerify);
                         }
                         break;
                     case "Ethnicity":
-                        cmdText = string.Format("SELECT DISTINCT ETHNICITYID FROM ETHNICITY WHERE ETHNICITYNAME = '{0}'", valToVerify);
-                        rtv = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, cmdText);
-                        if (rtv == null)
+                        //cmdText = string.Format("SELECT DISTINCT ETHNICITYID FROM ETHNICITY WHERE ETHNICITYNAME = '{0}'", valToVerify);
+                        //rtv = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, cmdText);
+                        //if (rtv == null)
+                        if(!_hashTableEthnicity.ContainsValue(valToVerify))
                         {
                             errMsg = string.Format("'{0}' is not valid ethnicity.", valToVerify);
                         }
@@ -702,9 +791,10 @@ namespace BenMAP
                         }
                     break;
                     case "AgeRange":
-                        cmdText = string.Format("SELECT DISTINCT AGERANGEID FROM AGERANGES WHERE AGERANGENAME  = '{0}'", valToVerify);
-                        rtv = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, cmdText);
-                        if (rtv == null)
+                        //cmdText = string.Format("SELECT DISTINCT AGERANGEID FROM AGERANGES WHERE AGERANGENAME  = '{0}'", valToVerify);
+                        //rtv = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, cmdText);
+                        //if (rtv == null)
+                        if(!_hashTableAgeRange.ContainsValue(valToVerify))
                         {
                                 errMsg = string.Format("Invalid Age Range Name given.  ({0})", valToVerify);
                         }

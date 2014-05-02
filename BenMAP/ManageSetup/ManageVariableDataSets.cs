@@ -13,13 +13,18 @@ namespace BenMAP
     {
         bool bEdit = false;//Edit flag
         int _datasetID;
+        private int _dsMetadataID;
+        private int _dsSetupID;
+        private int _dsDatasetTypeId;
+        private string _dataName = string.Empty;
+        private string _dataVarName = string.Empty;
         private MetadataClassObj _metadataObj = null;
 
         public ManageVariableDataSets()
         {
             InitializeComponent();
         }
-        string _dataName = string.Empty;
+        
         private void btn_Click(object sender, EventArgs e)
         {
             try
@@ -72,7 +77,10 @@ namespace BenMAP
         {
             try
             {
-                if (sender == null) { return; }
+                if (sender == null) 
+                {
+                    return; 
+                }
                 var lst = sender as ListBox;
                 if (lst.SelectedItem == null) return;
                 DataRowView dr = lst.SelectedItem as DataRowView;
@@ -80,13 +88,20 @@ namespace BenMAP
                 string commandText = string.Format("select SETUPVARIABLEID,SETUPVARIABLEDATASETID,SETUPVARIABLENAME,GRIDDEFINITIONID from SETUPVARIABLES WHERE SETUPVARIABLEDATASETID in (select SETUPVARIABLEDATASETID from SETUPVARIABLEDATASETS where SETUPVARIABLEDATASETNAME='{0}' and setupid={1})  ORDER BY SETUPVARIABLENAME ASC", str, CommonClass.ManageSetup.SetupID);
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+                
                 lstVariables.DataSource = ds.Tables[0];
                 lstVariables.DisplayMember = "SETUPVARIABLENAME";
+                lstVariables.ClearSelected();
                 lstVariables.SelectedIndex = -1;
 
                 commandText = string.Format("select SETUPVARIABLEDATASETID from SETUPVARIABLEDATASETS where SETUPVARIABLEDATASETNAME='{0}' and setupid={1}", str, CommonClass.ManageSetup.SetupID);
                 _datasetID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
                 _dataName = str;
+                _dsSetupID = CommonClass.ManageSetup.SetupID;
+                _dsDatasetTypeId = SQLStatementsCommonClass.getDatasetID("VariableDataset");
+                commandText = string.Format("Select METADATAENTRYID from METADATAINFORMATION where DATASETID = {0} and SETUPID = {1}", _datasetID, _dsSetupID);
+                _dsMetadataID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)); //Convert.ToInt32(drv["metadataid"]);
+                
             }
             catch (Exception ex)
             {
@@ -132,7 +147,7 @@ namespace BenMAP
                     commandText = string.Format("delete from  SETUPVARIABLEDATASETS where SETUPVARIABLEDATASETNAME='{0}' and setupid={1}", lstAvailable.Text, CommonClass.ManageSetup.SetupID);
                     int i = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
 
-                    commandText = string.Format("DELETE FROM METADATAINFORMATION WHERE SETUPID = {0} AND DATASETID = {1} AND DATASETTYPEID = {2}", CommonClass.ManageSetup.SetupID, varDts, dstID);
+                    commandText = string.Format("DELETE FROM METADATAINFORMATION WHERE SETUPID = {0} AND DATASETID = {1} AND DATASETTYPEID = {2}", CommonClass.ManageSetup.SetupID,_datasetID, dstID);// varDts, dstID);
                     fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                 }
                 commandText = string.Format("select * from SETUPVARIABLEDATASETS where SetupID={0} ", CommonClass.ManageSetup.SetupID);
@@ -253,15 +268,47 @@ namespace BenMAP
 
         private void btnViewMetadata_Click(object sender, EventArgs e)
         {
-            _metadataObj = SQLStatementsCommonClass.getMetadata(_datasetID, CommonClass.ManageSetup.SetupID);
-            _metadataObj.SetupName = _dataName;//_lstDataSetName;
-            ViewEditMetadata viewEMdata = new ViewEditMetadata(_metadataObj);
-            DialogResult dr = viewEMdata.ShowDialog();
-            if (dr.Equals(DialogResult.OK))
+            ViewMetadata();
+        }
+
+        private void ViewMetadata()
+        {
+            if (lstVariables.SelectedIndex != -1)
             {
-                _metadataObj = viewEMdata.MetadataObj;
+                DataRowView curItem = (DataRowView)lstVariables.SelectedItem;
+                ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                string commandText = string.Empty;
+                btnViewMetadata.Enabled = true;
+                commandText = string.Format("SELECT METADATAID from SETUPVARIABLES where SETUPVARIABLEID = {0} and SETUPVARIABLEDATASETID = {1} and SETUPVARIABLENAME = '{2}'",
+                                                 curItem.Row[0].ToString(), curItem.Row[1].ToString(), curItem.Row[2].ToString());
+                object obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
+                if(!string.IsNullOrEmpty(obj.ToString()))
+                {
+                    _dsMetadataID = Convert.ToInt32(obj.ToString());//Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
+                    _metadataObj = SQLStatementsCommonClass.getMetadata(_datasetID, _dsSetupID, _dsDatasetTypeId, _dsMetadataID);
+                    _metadataObj.SetupName = CommonClass.ManageSetup.SetupName;//_dataName;//_lstDataSetName;
+                    ViewEditMetadata viewEMdata = new ViewEditMetadata(_metadataObj);
+                    DialogResult dr = viewEMdata.ShowDialog();
+                    if (dr.Equals(DialogResult.OK))
+                    {
+                        _metadataObj = viewEMdata.MetadataObj;
+                    }
+                }
             }
         }
+
+        private void lstVariables_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if(lstVariables.SelectedIndex != -1)
+            {
+                btnViewMetadata.Enabled = true;
+            }
+            else
+            {
+                btnViewMetadata.Enabled = false;
+            }
+        }
+
 
     }
 }

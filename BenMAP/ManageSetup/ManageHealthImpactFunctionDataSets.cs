@@ -428,7 +428,7 @@ namespace BenMAP
         {
             //_metadataObj = SQLStatementsCommonClass.getMetadata(_datasetID, CommonClass.ManageSetup.SetupID);
             _metadataObj = SQLStatementsCommonClass.getMetadata(_dsDataSetId, _dsSetupID, _dsDatasetTypeId, _dsMetadataID);//(_datasetID, CommonClass.ManageSetup.SetupID);
-            _metadataObj.SetupName = _dataName;
+            _metadataObj.SetupName = CommonClass.ManageSetup.SetupName;//_dataName;
             btnViewMetadata.Enabled = false;
             ViewEditMetadata viewEMdata = new ViewEditMetadata(_metadataObj);
             DialogResult dr = viewEMdata.ShowDialog();

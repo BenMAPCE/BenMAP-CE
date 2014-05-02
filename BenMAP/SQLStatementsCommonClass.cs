@@ -235,6 +235,23 @@ namespace BenMAP
 
         }
 
+        public static int getMetadataID(int setupId, int datasetId, int datasettypeid)
+        {
+            FireBirdHelperBase fb = new ESILFireBirdHelper();
+            int rtv;
+            string commandText = string.Empty;
+            try
+            {
+                commandText = string.Format("SELECT METADATAENTRYID FROM METADATAINFORMATION WHERE SETUPID = {0} AND DATASETID = {1} AND DATASETTYPEID = {2}", setupId, datasetId, datasettypeid);
+                rtv = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
+            }
+            catch (Exception ex)
+            {
+                throw (new Exception(ex.Message));
+            }
+
+            return rtv;
+        }
         public static int selectMaxID(string nameId, string fromTableName)
         {
             FireBirdHelperBase fb = new ESILFireBirdHelper();

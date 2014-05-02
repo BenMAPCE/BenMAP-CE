@@ -18,6 +18,9 @@ namespace BenMAP
         }
         string _dataName = string.Empty;
         int _datasetID;
+        private int _dsMetadataID;
+        private int _dsSetupID;
+        private int _dsDatasetTypeId;
         private MetadataClassObj _metadataObj = null;
         private void btnAdd_Click(object sender, EventArgs e)
         {
@@ -38,7 +41,8 @@ namespace BenMAP
                     }
                 }
                 lstDataSetName.SelectedIndex = count;
-
+                lstDataSetName.ClearSelected();
+                btnViewMetadata.Enabled = false;
             }
             catch (Exception ex)
             {
@@ -51,6 +55,9 @@ namespace BenMAP
             try
             {
                 ExportDataForlistbox();
+                lstDataSetName.ClearSelected();
+                lstDataSetName.SelectedIndex = -1;
+                btnViewMetadata.Enabled = false;
             }
             catch (Exception ex)
             {
@@ -93,6 +100,12 @@ namespace BenMAP
                 commandText = string.Format("select INCOMEGROWTHADJDATASETID from INCOMEGROWTHADJDATASETS where INCOMEGROWTHADJDATASETNAME='{0}' and setupid={1}", str, CommonClass.ManageSetup.SetupID);
                 _datasetID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
                 _dataName = str;
+                _dsSetupID = CommonClass.ManageSetup.SetupID;
+                _dsDatasetTypeId = SQLStatementsCommonClass.getDatasetID("Incomegrowth");
+                commandText = string.Format("Select METADATAENTRYID from METADATAINFORMATION where DATASETID = {0} and SETUPID = {1}",_datasetID, _dsSetupID);
+                _dsMetadataID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)); //Convert.ToInt32(drv["metadataid"]);
+
+                btnViewMetadata.Enabled = true;
             }
             catch (Exception ex)
             {
@@ -135,6 +148,7 @@ namespace BenMAP
                 if (ds.Tables[0].Rows.Count == 0)
                 {
                     olvData.ClearObjects();
+                    btnViewMetadata.Enabled = false;
                 }
             }
             catch
@@ -188,13 +202,16 @@ namespace BenMAP
 
         private void btnViewMetadata_Click(object sender, EventArgs e)
         {
-            _metadataObj = SQLStatementsCommonClass.getMetadata(_datasetID, CommonClass.ManageSetup.SetupID);
-            _metadataObj.SetupName = _dataName;//_lstDataSetName;
+            //_metadataObj = SQLStatementsCommonClass.getMetadata(_datasetID, CommonClass.ManageSetup.SetupID);
+            _metadataObj = SQLStatementsCommonClass.getMetadata(_datasetID, _dsSetupID, _dsDatasetTypeId, _dsMetadataID);
+            _metadataObj.SetupName = CommonClass.ManageSetup.SetupName;//_dataName;//_lstDataSetName;
             ViewEditMetadata viewEMdata = new ViewEditMetadata(_metadataObj);
             DialogResult dr = viewEMdata.ShowDialog();
             if (dr.Equals(DialogResult.OK))
             {
                 _metadataObj = viewEMdata.MetadataObj;
+                lstDataSetName.SelectedIndex = -1;
+                btnViewMetadata.Enabled = false;
             }
         }
     }
