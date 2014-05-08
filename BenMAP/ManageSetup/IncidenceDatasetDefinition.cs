@@ -535,7 +535,8 @@ namespace BenMAP
                             commandText = "select max(IncidenceDatasetID) from INCIDENCEDATASETS";
                             obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
                             incidenceDatasetID = Convert.ToInt32(obj) + 1;
-                            commandText = string.Format("insert into INCIDENCEDATASETS (IncidenceDatasetID,SetupID,IncidenceDatasetName,GridDefinitionID) values( {0},{1},'{2}',{3})", incidenceDatasetID, CommonClass.ManageSetup.SetupID, txtDataName.Text, _grdiDefinitionID);
+                            //The 'F' is for the Locked column in INCIDENCEDATESTS - imported not predefined.
+                            commandText = string.Format("insert into INCIDENCEDATASETS (IncidenceDatasetID,SetupID,IncidenceDatasetName,GridDefinitionID, LOCKED) values( {0},{1},'{2}',{3}, 'F')", incidenceDatasetID, CommonClass.ManageSetup.SetupID, txtDataName.Text, _grdiDefinitionID);
                             fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                         }
                         _dataSetName = txtDataName.Text;

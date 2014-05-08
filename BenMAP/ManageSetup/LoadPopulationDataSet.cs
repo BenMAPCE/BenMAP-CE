@@ -737,8 +737,8 @@ namespace BenMAP
                             lblprogbar.Text = "";
                             return;
                         }
-
-                        commandText = string.Format("insert into PopulationDataSets values ({0},{1},'{2}',{3},{4},{5}, {6})", dataSetID, CommonClass.ManageSetup.SetupID, txtDataSetName.Text, _popConfigID, _gridDefinID, chkUseWoodsPoole.Checked ? 1 : 0, _metadataObj.MetadataId);
+                        //The 'F' is for the Locked column in PopulationDatasets - this is imported and not predefined.
+                        commandText = string.Format("insert into PopulationDataSets values ({0},{1},'{2}',{3},{4},{5}, 'F')", dataSetID, CommonClass.ManageSetup.SetupID, txtDataSetName.Text, _popConfigID, _gridDefinID, chkUseWoodsPoole.Checked ? 1 : 0);
                         fbCommand.CommandText = commandText;
                         fbCommand.ExecuteNonQuery();
 
@@ -855,7 +855,8 @@ namespace BenMAP
                     }
 
                     //commandText = string.Format("insert into PopulationDataSets values ({0},{1},'{2}',{3},{4},{5})", dataSetID, CommonClass.ManageSetup.SetupID, txtDataSetName.Text, _popConfigID, _gridDefinID, chkUseWoodsPoole.Checked ? 1 : 0);
-                    commandText = string.Format("insert into PopulationDataSets values ({0},{1},'{2}',{3},{4},{5}, {6})", dataSetID, CommonClass.ManageSetup.SetupID, txtDataSetName.Text, _popConfigID, _gridDefinID, chkUseWoodsPoole.Checked ? 1 : 0, _metadataObj.MetadataId);
+                    //The 'F' is for the Locked column in PopulationDataSets - this is imported not predefined.
+                    commandText = string.Format("insert into PopulationDataSets values ({0},{1},'{2}',{3},{4},{5}, 'F')", dataSetID, CommonClass.ManageSetup.SetupID, txtDataSetName.Text, _popConfigID, _gridDefinID, chkUseWoodsPoole.Checked ? 1 : 0);
                     fbCommand.CommandText = commandText;
                     fbCommand.ExecuteNonQuery();
 

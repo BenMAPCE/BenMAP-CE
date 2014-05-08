@@ -165,7 +165,8 @@ namespace BenMAP
                     obj = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText)) + 1;
                     datasetId = Convert.ToInt32(obj);
                     variableDatasetID = obj.ToString();
-                    commandText = string.Format("insert into SetUpVariableDataSets values({0},{1},'{2}')", variableDatasetID, CommonClass.ManageSetup.SetupID, txtDataSetName.Text);
+                    //The 'F' is for the Locked column in SetUpVariableDataSets - this is improted and not predefined
+                    commandText = string.Format("insert into SetUpVariableDataSets values({0},{1},'{2}', 'F')", variableDatasetID, CommonClass.ManageSetup.SetupID, txtDataSetName.Text);
                     fbCommand.CommandText = commandText;
                     fbCommand.ExecuteNonQuery();
                     commandText = string.Format("select GridDefinitionID from GridDefinitions where GridDefinitionName='{0}' and SetupID={1}", txtGridDefinition.Text, CommonClass.ManageSetup.SetupID);

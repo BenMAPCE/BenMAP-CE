@@ -18,10 +18,11 @@ namespace BenMAP
     public partial class ManageGridDefinetions : FormBase
     {
         string _dataName = string.Empty;
-        private int _datasetID;
+        private int _dsDataSetID;
         private int _dsSetupID;
         private int _dsDatasetTypeId;
         private int _dsMetadataID;
+        private int _dsMetadataEntryID;
         private object _gridDefinitionID;
         private MetadataClassObj _metadataObj = null;
 
@@ -228,7 +229,7 @@ namespace BenMAP
                 {
                     ListItem lst = lstAvailableGrid.SelectedItem as ListItem;
                     _gridDefinitionID = lst.ID;
-                    _datasetID = Convert.ToInt32(lst.ID);
+                    _dsDataSetID = Convert.ToInt32(lst.ID);
                     _dsSetupID = CommonClass.ManageSetup.SetupID;
                     _dsDatasetTypeId = SQLStatementsCommonClass.getDatasetID("GridDefinition");
                     _dataName = lst.Name;
@@ -262,10 +263,28 @@ namespace BenMAP
         private void btnViewMetadata_Click(object sender, EventArgs e)
         {
 
-            _dsMetadataID = SQLStatementsCommonClass.getMetadataID(_dsSetupID,_datasetID, _dsDatasetTypeId);
-            _metadataObj = SQLStatementsCommonClass.getMetadata(_datasetID, _dsSetupID, _dsDatasetTypeId, _dsMetadataID);
-            _metadataObj.SetupName = _dataName;//_lstDataSetName;
-            _metadataObj.MetadataId = _dsMetadataID;
+            //_dsMetadataID = SQLStatementsCommonClass.getMetadataID(_dsSetupID, _dsDataSetID, _dsDatasetTypeId);
+            _dsMetadataEntryID = SQLStatementsCommonClass.getMetadataEntryID(_dsSetupID, _dsDataSetID, _dsDatasetTypeId);
+            //_metadataObj = SQLStatementsCommonClass.getMetadata(_dsDataSetID, _dsSetupID, _dsDatasetTypeId, _dsMetadataID);
+            _metadataObj = SQLStatementsCommonClass.getMetadata(_dsDataSetID, _dsSetupID, _dsDatasetTypeId, _dsMetadataEntryID);
+            _metadataObj.SetupName = CommonClass.ManageSetup.SetupName;// _dataName;//_lstDataSetName;
+            //_metadataObj.MetadataId = _dsMetadataID;
+            if(string.IsNullOrEmpty(_metadataObj.FileName))
+            {   //if there is no file name, using the data name that is displayed in the list of datasets.
+                _metadataObj.FileName = _dataName;
+            }
+            if (_metadataObj.DatasetId == 0)
+            {
+                _metadataObj.DatasetId = _dsDataSetID;
+            }
+            if (_metadataObj.SetupId == 0)
+            {
+                _metadataObj.SetupId = _dsSetupID;
+            }
+            if (_metadataObj.DatasetTypeId == 0)
+            {
+                _metadataObj.DatasetTypeId = _dsDatasetTypeId;
+            }
             ViewEditMetadata viewEMdata = new ViewEditMetadata(_metadataObj);
             DialogResult dr = viewEMdata.ShowDialog();
             if (dr.Equals(DialogResult.OK))

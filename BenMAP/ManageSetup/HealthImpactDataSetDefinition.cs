@@ -514,6 +514,7 @@ namespace BenMAP
                     if (obj == null)
                     {
                         //this is inserting it to the CRFunctionDataSets table - check and see if it already exist, if it does then I am adding in an additional file
+                        //The F is for the locked column in CRFunctionDataSet - this is being imported and not predefined.
                         commandText = string.Format("insert into CRFunctionDataSets values ({0},{1},'{2}','F')", crFunctionDataSetID, CommonClass.ManageSetup.SetupID, txtHealthImpactFunction.Text.Replace("'", "''"));
                         rth = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                     }
