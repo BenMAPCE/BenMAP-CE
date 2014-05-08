@@ -9129,7 +9129,7 @@ namespace BenMAP
             TreeNode tnDataSetName = null;//i.e. MDS1
             TreeNode tnDataFileName = null;//i.e. DetroitMonitors PM 25
             TreeNode tnMetadata = new TreeNode();//Top node - Datasts
-            tnMetadata.Text = "Datasets with Metadata";
+            tnMetadata.Text = "Datasets";
             tnMetadata.Name = "Datasets";
             ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
             System.Data.DataSet ds = new System.Data.DataSet();

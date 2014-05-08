@@ -36,14 +36,14 @@ namespace BenMAP
         /// </summary>
         /// <param name="dataSetID">The data set identifier which is the current function dataset id (CrfunctiondatasetID).</param>
         public HealthImpactDataSetDefinition(int dataSetID, bool isEdit)
-        {
+        {   //this function should be called when doing an edit
             InitializeComponent();
             _datasetID = dataSetID;
             crFunctionDataSetID = dataSetID;//when doing an edit I need to have the current funciton dataset ID
             _isEdit = isEdit;
-            //btnViewMetadata.Visible = true;
-            //btnViewMetadata.Enabled = true;
+            txtHealthImpactFunction.Enabled = false;
         }
+        
         private void getcrFunctionDatasetID()
         {
             ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
@@ -515,7 +515,7 @@ namespace BenMAP
                     {
                         //this is inserting it to the CRFunctionDataSets table - check and see if it already exist, if it does then I am adding in an additional file
                         //The F is for the locked column in CRFunctionDataSet - this is being imported and not predefined.
-                        commandText = string.Format("insert into CRFunctionDataSets values ({0},{1},'{2}','F')", crFunctionDataSetID, CommonClass.ManageSetup.SetupID, txtHealthImpactFunction.Text.Replace("'", "''"));
+                        commandText = string.Format("insert into CRFunctionDataSets values ({0},{1},'{2}','F', 'F')", crFunctionDataSetID, CommonClass.ManageSetup.SetupID, txtHealthImpactFunction.Text.Replace("'", "''"));
                         rth = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                     }
                     Dictionary<string, int> dicEndpointGroup = new Dictionary<string, int>();
@@ -1710,14 +1710,17 @@ namespace BenMAP
             ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
             try
             {
-                commandText = string.Format("SELECT CRFUNCTIONDATASETID FROM CRFUNCTIONDATASETS WHERE SETUPID = {0} AND CRFunctionDataSetName = '{1}'", CommonClass.ManageSetup.SetupID, txtHealthImpactFunction.Text);
-                crFunctionDatasetId = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
-                commandText = string.Format("delete from CRFunctionDataSets where CRFunctionDataSetName='{0}' and setupid={1}", txtHealthImpactFunction.Text, CommonClass.ManageSetup.SetupID);
-                int i = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
-                commandText = "select DATASETID FROM DATASETS WHERE DATASETNAME = 'Healthfunctions'";
-                datasetid = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
-                commandText = string.Format("DELETE FROM METADATAINFORMATION WHERE SETUPID ={0} AND DATASETID = {1} AND DATASETTYPEID = {2}", CommonClass.ManageSetup.SetupID, crFunctionDatasetId, datasetid);
-                fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                //NOTE THIS IS WRONG - NOT GOOD.  It will delete all for the current dataset.  Problem - editing and adding in a new file then click cancel 
+                //will casue it to delete all references to the dataset.
+                //
+                //commandText = string.Format("SELECT CRFUNCTIONDATASETID FROM CRFUNCTIONDATASETS WHERE SETUPID = {0} AND CRFunctionDataSetName = '{1}'", CommonClass.ManageSetup.SetupID, txtHealthImpactFunction.Text);
+                //crFunctionDatasetId = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
+                //commandText = string.Format("delete from CRFunctionDataSets where CRFunctionDataSetName='{0}' and setupid={1}", txtHealthImpactFunction.Text, CommonClass.ManageSetup.SetupID);
+                //int i = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                //commandText = "select DATASETID FROM DATASETS WHERE DATASETNAME = 'Healthfunctions'";
+                //datasetid = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
+                //commandText = string.Format("DELETE FROM METADATAINFORMATION WHERE SETUPID ={0} AND DATASETID = {1} AND DATASETTYPEID = {2}", CommonClass.ManageSetup.SetupID, crFunctionDatasetId, datasetid);
+                //fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
             }
             catch (Exception ex)
             {
