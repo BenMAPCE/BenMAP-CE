@@ -111,9 +111,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Dll\DotSpatial\DotSpatial.Modeling.Forms.dll</HintPath>
     </Reference>
-    <Reference Include="DotSpatial.Plugins.TableEditor">
-      <HintPath>Dll\DotSpatial\Windows Extensions\DotSpatial.Plugins.TableEditor.1.0.1223\lib\net40-Client\DotSpatial.Plugins.TableEditor.dll</HintPath>
-    </Reference>
     <Reference Include="DotSpatial.Projections, Version=0.11.9.6, Culture=neutral, PublicKeyToken=272632bddd08a38b, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Dll\DotSpatial\DotSpatial.Projections.dll</HintPath>
