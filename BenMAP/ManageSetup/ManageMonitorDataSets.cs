@@ -10,7 +10,7 @@ namespace BenMAP
         {
             InitializeComponent();
         }
-
+        private bool bIsLocked = false;
         string _dataName = string.Empty;
         private string _lstDataSetName;
         private object _lstDataSetID;
@@ -38,13 +38,49 @@ namespace BenMAP
                 DataRowView drv = lst.SelectedItem as DataRowView;
                 _lstDataSetID = drv["MonitorDataSetID"];
                 _lstDataSetName = drv["MonitorDataSetName"].ToString();
+                _dsSetupID = CommonClass.ManageSetup.SetupID;
                 btnViewMetadata.Enabled = false;
                 addGridView();
+                bIsLocked = isLock();
+                setEditControl();
             }
             catch (Exception ex)
             {
                 Logger.LogError(ex);
             }
+        }
+        private void setEditControl()
+        {
+            if (bIsLocked)
+            {
+                btnEdit.Text = "Copy";
+            }
+            else
+            {
+                btnEdit.Text = "Edit";
+            }
+        }
+        private bool isLock()
+        {
+            bool isLocked = false;
+            string commandText = string.Empty;
+            object obtRtv = null;
+            ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+            try
+            {
+                commandText = string.Format("SELECT LOCKED FROM MONITORDATASETS WHERE MONITORDATASETID = {0} AND SETUPID = {1}", _lstDataSetID, _dsSetupID);
+                obtRtv = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+                if(obtRtv.ToString().Equals("T"))
+                {
+                    isLocked = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.Message);
+            }
+
+            return isLocked;
         }
 
         private void addLstBox()
@@ -105,7 +141,7 @@ namespace BenMAP
         {
             if (lstAvailableDataSets.Items.Count == 0)
             { return; }
-            MonitorDataSetDefinition frm = new MonitorDataSetDefinition(_lstDataSetName, _lstDataSetID, true);
+            MonitorDataSetDefinition frm = new MonitorDataSetDefinition(_lstDataSetName, _lstDataSetID, bIsLocked);
             DialogResult rtn = frm.ShowDialog();
             {
                 addLstBox();
@@ -168,13 +204,27 @@ namespace BenMAP
             try
             {
                 _metadataObj = SQLStatementsCommonClass.getMetadata(_dsDataSetId, _dsSetupID, _dsDatasetTypeId, _dsMetadataID);
-                _metadataObj.SetupName = _lstDataSetName;
+                if(_metadataObj.DatasetId == 0)
+                {
+                    _metadataObj.DatasetId = _dsDataSetId;
+                }
+                if(_metadataObj.SetupId == 0)
+                {
+                    _metadataObj.SetupId = _dsSetupID;
+                }
+                if(_metadataObj.DatasetTypeId == 0)
+                {
+                    _metadataObj.DatasetTypeId = _dsDatasetTypeId;
+                }
+                _metadataObj.SetupName = CommonClass.ManageSetup.SetupName;// _lstDataSetName;
                 btnViewMetadata.Enabled = false;
                 ViewEditMetadata viewEMdata = new ViewEditMetadata(_metadataObj);
                 DialogResult dr = viewEMdata.ShowDialog();
                 if (dr.Equals(DialogResult.OK))
                 {
                     _metadataObj = viewEMdata.MetadataObj;
+                    addLstBox();
+                    addGridView();
                 }
             }
             catch (Exception ex)
@@ -197,19 +247,24 @@ namespace BenMAP
                         btnViewMetadata.Enabled = true;
 
                         DataRowView drv = dlv.SelectedItem.RowObject as DataRowView;//dlv.SelectedItem.RowObject
-
-                        _dsMetadataID = Convert.ToInt32(drv["metadataid"]);
-                        _dsSetupID = CommonClass.ManageSetup.SetupID;//Convert.ToInt32(drv["setupid"]);
+                        if(!string.IsNullOrEmpty((drv["metadataid"].ToString())))
+                        {
+                            _dsMetadataID = Convert.ToInt32(drv["metadataid"]);
+                        }
+                        else
+                        {
+                            _dsMetadataID = 0;
+                        }
+                        //_dsSetupID = CommonClass.ManageSetup.SetupID;//Convert.ToInt32(drv["setupid"]);
                         _dsDataSetId = Convert.ToInt32(_lstDataSetID);//Convert.ToInt32(drv["datasetid"]);//Monitor Dataset Id
                         _dsDatasetTypeId = SQLStatementsCommonClass.getDatasetID("Monitor");//Convert.ToInt32(drv["datasettypeid"]);
+                        _metadataObj = null;//clearing out the old metadata object.
                     }
                 }
             }
             catch (Exception ex)
             {
-                //TODO:  FIX THIS.
-                //do nothing for now until I can get the metadta to run correctly
-                //throw new Exception(ex.Message);
+                Logger.LogError(ex);
             }
         }
     }

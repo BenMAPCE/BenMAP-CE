@@ -14,13 +14,7 @@ using LumenWorks.Framework.IO.Csv;
 using System.Collections;
 using Excel;
 //TODO:
-//1 on the LoadPopulationDataSet dialog add a validate button
-//2 make it disabled
-//3 make the OK button disabled
-//4 After selecting a database to load (a csv file or excel file)
-//  enabled the validate button.
-//5 on a positive validation enable the OK button
-//
+
 //Note:  If Use Population Growth weights is checked and a csv file is selected
 //       this file will need to be validated as well as the "Database" that is to be imported.
 
@@ -743,8 +737,8 @@ namespace BenMAP
                             lblprogbar.Text = "";
                             return;
                         }
-
-                        commandText = string.Format("insert into PopulationDataSets values ({0},{1},'{2}',{3},{4},{5})", dataSetID, CommonClass.ManageSetup.SetupID, txtDataSetName.Text, _popConfigID, _gridDefinID, chkUseWoodsPoole.Checked ? 1 : 0);
+                        //The 'F' is for the Locked column in PopulationDatasets - this is imported and not predefined.
+                        commandText = string.Format("insert into PopulationDataSets values ({0},{1},'{2}',{3},{4},{5}, 'F')", dataSetID, CommonClass.ManageSetup.SetupID, txtDataSetName.Text, _popConfigID, _gridDefinID, chkUseWoodsPoole.Checked ? 1 : 0);
                         fbCommand.CommandText = commandText;
                         fbCommand.ExecuteNonQuery();
 
@@ -860,7 +854,9 @@ namespace BenMAP
                         return;
                     }
 
-                    commandText = string.Format("insert into PopulationDataSets values ({0},{1},'{2}',{3},{4},{5})", dataSetID, CommonClass.ManageSetup.SetupID, txtDataSetName.Text, _popConfigID, _gridDefinID, chkUseWoodsPoole.Checked ? 1 : 0);
+                    //commandText = string.Format("insert into PopulationDataSets values ({0},{1},'{2}',{3},{4},{5})", dataSetID, CommonClass.ManageSetup.SetupID, txtDataSetName.Text, _popConfigID, _gridDefinID, chkUseWoodsPoole.Checked ? 1 : 0);
+                    //The 'F' is for the Locked column in PopulationDataSets - this is imported not predefined.
+                    commandText = string.Format("insert into PopulationDataSets values ({0},{1},'{2}',{3},{4},{5}, 'F')", dataSetID, CommonClass.ManageSetup.SetupID, txtDataSetName.Text, _popConfigID, _gridDefinID, chkUseWoodsPoole.Checked ? 1 : 0);
                     fbCommand.CommandText = commandText;
                     fbCommand.ExecuteNonQuery();
 

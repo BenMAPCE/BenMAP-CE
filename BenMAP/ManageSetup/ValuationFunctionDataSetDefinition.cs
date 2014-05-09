@@ -352,7 +352,8 @@ namespace BenMAP
                     obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
                     if (obj == null)
                     {
-                        commandText = string.Format("insert into ValuationFunctionDataSets values ({0},{1},'{2}','F')", valuationFunctionDataSetID, CommonClass.ManageSetup.SetupID, txtValuationFunctionDataSetName.Text.Replace("'", "''"));
+                        //The 'F' is for the locked column in ValuationFunctionDataSets - this is imported and is not predefined. the first 'F' is read only, the second 'F' is locked or not
+                        commandText = string.Format("insert into ValuationFunctionDataSets values ({0},{1},'{2}','F', 'F')", valuationFunctionDataSetID, CommonClass.ManageSetup.SetupID, txtValuationFunctionDataSetName.Text.Replace("'", "''"));
                         rth = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                     }
 

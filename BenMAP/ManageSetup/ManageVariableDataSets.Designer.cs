@@ -120,6 +120,7 @@ namespace BenMAP
             this.lstVariables.Name = "lstVariables";
             this.lstVariables.Size = new System.Drawing.Size(197, 298);
             this.lstVariables.TabIndex = 1;
+            this.lstVariables.SelectedIndexChanged += new System.EventHandler(this.lstVariables_SelectedIndexChanged);
             // 
             // btnCancel
             // 
@@ -169,6 +170,7 @@ namespace BenMAP
             // 
             // btnViewMetadata
             // 
+            this.btnViewMetadata.Enabled = false;
             this.btnViewMetadata.Location = new System.Drawing.Point(134, 3);
             this.btnViewMetadata.Name = "btnViewMetadata";
             this.btnViewMetadata.Size = new System.Drawing.Size(112, 27);

@@ -481,7 +481,8 @@ namespace BenMAP
                         MessageBox.Show("This population configuration name is already in use. Please enter a different name.");
                         return;
                     }
-                    commandText = "insert into PopulationConfigurations values (" + _configurationID + ",'" + txtConfigName.Text + "')";
+                    //The 'F' is for the locked column in POPULATIONCONFIGURATIONS - this is imported and not predefined
+                    commandText = "insert into PopulationConfigurations values (" + _configurationID + ",'" + txtConfigName.Text + "', 'F')";
                     fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                 }
                 else

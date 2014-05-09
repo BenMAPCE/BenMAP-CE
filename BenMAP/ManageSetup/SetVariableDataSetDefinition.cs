@@ -1,5 +1,7 @@
 using System;
 using System.Data;
+using System.Collections;
+using System.Collections.Generic;
 using System.Windows.Forms;
 using ESIL.DBUtility;
 
@@ -11,16 +13,28 @@ namespace BenMAP
         int variabledatasetID = -1;
         private MetadataClassObj _metadataObj = null;
         private bool _bEdit = false;
+
+        private List<MetadataClassObj> _lstMetadata;
+
+        //public List<MetadataClassObj> LstMetadata
+        //{
+        //    get { return _lstMetadata; }
+        //}
+
+        
+        
         public VariableDataSetDefinition()
         {
             InitializeComponent();
             _datasetName = string.Empty;
+            _lstMetadata = new List<MetadataClassObj>();
         }
-
+        
         public VariableDataSetDefinition(string datasetName)
         {
             InitializeComponent();
             _datasetName = datasetName;
+            _lstMetadata = new List<MetadataClassObj>();
         }
 
         public VariableDataSetDefinition(string datasetName, bool bEdit):this(datasetName)
@@ -151,7 +165,8 @@ namespace BenMAP
                     obj = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText)) + 1;
                     datasetId = Convert.ToInt32(obj);
                     variableDatasetID = obj.ToString();
-                    commandText = string.Format("insert into SetUpVariableDataSets values({0},{1},'{2}')", variableDatasetID, CommonClass.ManageSetup.SetupID, txtDataSetName.Text);
+                    //The 'F' is for the Locked column in SetUpVariableDataSets - this is improted and not predefined
+                    commandText = string.Format("insert into SetUpVariableDataSets values({0},{1},'{2}', 'F')", variableDatasetID, CommonClass.ManageSetup.SetupID, txtDataSetName.Text);
                     fbCommand.CommandText = commandText;
                     fbCommand.ExecuteNonQuery();
                     commandText = string.Format("select GridDefinitionID from GridDefinitions where GridDefinitionName='{0}' and SetupID={1}", txtGridDefinition.Text, CommonClass.ManageSetup.SetupID);
@@ -178,7 +193,7 @@ namespace BenMAP
                         if (obj == null)
                         {
                             variableID++;
-                            commandText = string.Format("insert into SetUpVariables values({0},{1},'{2}','{3}')", variableID, variableDatasetID, variableName, gridDefinationID);
+                            commandText = string.Format("insert into SetUpVariables values({0},{1},'{2}','{3}', {4})", variableID, variableDatasetID, variableName, gridDefinationID, _lstMetadata[i].MetadataId);
                             fbCommand.CommandText = commandText;
                             fbCommand.ExecuteNonQuery();
                             rowCount = dt.Rows.Count;
@@ -239,7 +254,7 @@ namespace BenMAP
                         obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
 
                         variableID++;
-                        commandText = string.Format("insert into SetUpVariables values({0},{1},'{2}','{3}')", variableID, variableDatasetID, variableName, gridDefinationID);
+                        commandText = string.Format("insert into SetUpVariables values({0},{1},'{2}','{3}', {4})", variableID, variableDatasetID, variableName, gridDefinationID, _lstMetadata[i].MetadataId);
                         fbCommand.CommandText = commandText;
                         fbCommand.ExecuteNonQuery();
                         rowCount = dt.Rows.Count;
@@ -270,10 +285,10 @@ namespace BenMAP
                 }
                 fbtra.Commit();
                 fbCommand.Connection.Close();
-                if(!_bEdit)
-                {
+                //if(!_bEdit)
+                //{
                     insertMetadata(datasetId);
-                }
+                //}
                 progBarVariable.Visible = false;
                 lblProgressBar.Visible = false;
 
@@ -293,13 +308,27 @@ namespace BenMAP
         }
         private void insertMetadata(int dataSetID)
         {
-            _metadataObj.DatasetId = dataSetID;
-
-            _metadataObj.DatasetTypeId = SQLStatementsCommonClass.getDatasetID("VariableDataset");
-            if (!SQLStatementsCommonClass.insertMetadata(_metadataObj))
+            //_metadataObj.DatasetId = dataSetID;
+            try
+            {
+                foreach (MetadataClassObj mcobj in _lstMetadata)
+                {
+                    mcobj.DatasetId = dataSetID;
+                    mcobj.SetupId = CommonClass.ManageSetup.SetupID;
+                    mcobj.DatasetTypeId = SQLStatementsCommonClass.getDatasetID("VariableDataset");
+                    SQLStatementsCommonClass.insertMetadata(mcobj);
+                }
+            }
+            catch (Exception ex)
             {
                 MessageBox.Show("Failed to save Metadata.");
+                Logger.LogError(ex);
             }
+
+            //if (!SQLStatementsCommonClass.insertMetadata(_metadataObj))
+            //{
+            //    MessageBox.Show("Failed to save Metadata.");
+            //}
         }
 
         DataSet _dsSelectedData = new DataSet();
@@ -316,7 +345,10 @@ namespace BenMAP
                 LoadVariableDatabase frm = new LoadVariableDatabase();
                 frm.DefinitionID = txtGridDefinition.Text;
                 DialogResult rtn = frm.ShowDialog();
-                if (rtn != DialogResult.OK) { return; }
+                if (rtn != DialogResult.OK) 
+                { 
+                    return; 
+                }
                 _metadataObj = frm.MetadataObj;
                 txtGridDefinition.Text = frm.DefinitionID;
                 txtGridDefinition.ReadOnly = false;
@@ -404,8 +436,22 @@ namespace BenMAP
                 }
 
                 lstDataSetVariable.SelectedIndex = 0;
+                if(_lstMetadata.Count < 1)
+                {
+                    _lstMetadata.Add(_metadataObj);
+                }
+                else
+                {   //no not glamorous. Get Metadata gets the most current METADATAENTRYID from the METADATAINFORMATION table.  
+                    //If an isert is not done, it will always retrun the same number.  In this case I am loading the metadata 
+                    //objects and will insert them once the final ok is done.
+                    //This will ensure that each metadataId is uniquie.
+                    int temp = _lstMetadata[_lstMetadata.Count - 1].MetadataId + 1;
+                    _metadataObj.MetadataId = temp;
+                    _lstMetadata.Add(_metadataObj);
+                }
                 txtGridDefinition.Enabled = false;
                 WaitClose();
+                
             }
             catch (Exception ex)
             {

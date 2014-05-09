@@ -414,7 +414,8 @@ namespace BenMAP
                                                 else
                                                     return;
                                             }
-                                            commandText = string.Format("insert into ShapeFileGridDefinitionDetails (GridDefinitionID,ShapeFileName) values ({0},'{1}')", _gridID, _shapeFileName);
+                                            //The 'F' is for the locked column in the SapeFileGridDefinitionDetails - this is imported and not predefined.
+                                            commandText = string.Format("insert into ShapeFileGridDefinitionDetails (GridDefinitionID,ShapeFileName) values ({0},'{1}', 'F')", _gridID, _shapeFileName);
                                             fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                                         }
                                     }
@@ -529,10 +530,11 @@ namespace BenMAP
                                     return;
                                 }
                             }
-                            
-                            commandText = string.Format("INSERT INTO GRIDDEFINITIONS (GridDefinitionID,SetUpID,GridDefinitionName,Columns,Rrows,Ttype,DefaultType) VALUES(" + _gridID + ",{0},'{1}',{2},{3},{4},{5})", CommonClass.ManageSetup.SetupID, txtGridID.Text, _shapeCol, _shapeRow, _gridType, 0);
+                            //The 'F' is for the column LOCKED in GRIDDEFINITIONS - it is being imported and not predefined
+                            commandText = string.Format("INSERT INTO GRIDDEFINITIONS (GridDefinitionID,SetUpID,GridDefinitionName,Columns,Rrows,Ttype,DefaultType, LOCKED) VALUES(" + _gridID + ",{0},'{1}',{2},{3},{4},{5}, 'F')", CommonClass.ManageSetup.SetupID, txtGridID.Text, _shapeCol, _shapeRow, _gridType, 0);
                             fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
-                            commandText = string.Format("INSERT INTO SHAPEFILEGRIDDEFINITIONDETAILS (GridDefinitionID,ShapeFileName) VALUES(" + _gridID + ",'{0}')", _shapeFileName);
+                            //The 'F' is for the locked column in the SapeFileGridDefinitionDetails - this is imported and not predefined
+                            commandText = string.Format("INSERT INTO SHAPEFILEGRIDDEFINITIONDETAILS (GridDefinitionID,ShapeFileName, LOCKED)  VALUES(" + _gridID + ",'{0}', 'F')", _shapeFileName);
                             fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                             CommonClass.DeleteShapeFileName(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.ManageSetup.SetupName + "\\" + _shapeFileName + ".shp");
                             IFeatureSet fs = FeatureSet.Open(_shapeFilePath);
@@ -561,11 +563,12 @@ namespace BenMAP
                             if (rtn == DialogResult.No) { this.DialogResult = DialogResult.Cancel; return; }
                             else
                             {
-                                commandText = string.Format("INSERT INTO GRIDDEFINITIONS (GridDefinitionID,SetUpID,GridDefinitionName,Columns,Rrows,Ttype,DefaultType) VALUES(" + _gridID + ",{0},'{1}',{2},{3},{4},{5})", CommonClass.ManageSetup.SetupID, txtGridID.Text, _columns, _rrows, _gridType, 0);
+                                //The 'F' is for the column LOCKED in GRIDDEFINITIONS - it is being imported and not predefined
+                                commandText = string.Format("INSERT INTO GRIDDEFINITIONS (GridDefinitionID, SetUpID, GridDefinitionName, Columns, Rrows, Ttype, DefaultType,  LOCKED) VALUES(" + _gridID + ",{0},'{1}',{2},{3},{4}, {5},'F')", CommonClass.ManageSetup.SetupID, txtGridID.Text, _columns, _rrows, _gridType, 0);
                                 fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
 
                                 if (Math.Abs(_minLongitude) > 180 || Math.Abs(_minLatitude) > 90) { MessageBox.Show("Please input valid longitude and latitude values."); return; }
-                                commandText = string.Format("INSERT INTO RegularGridDefinitionDetails (GridDefinitionID,MinimumLatitude,MinimumLongitude,ColumnsPerLongitude,RowsPerLatitude,ShapeFileName)  VALUES ({0},{1},{2},{3},{4},'{5}')", _gridID, txtMinimumLatitude.Text, txtMinimumLongitude.Text, nudColumnsPerLongitude.Value, nudRowsPerLatitude.Value, txtGridID.Text);
+                                commandText = string.Format("INSERT INTO RegularGridDefinitionDetails (GridDefinitionID,MinimumLatitude,MinimumLongitude,ColumnsPerLongitude,RowsPerLatitude,ShapeFileName, LOCKED)  VALUES ({0},{1},{2},{3},{4},'{5}')", _gridID, txtMinimumLatitude.Text, txtMinimumLongitude.Text, nudColumnsPerLongitude.Value, nudRowsPerLatitude.Value, txtGridID.Text);
                                 fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
 
                                 fs = getFeatureSetFromRegularGrid(_columns, _rrows, _minLatitude, _minLongitude, _colPerLongitude, _rowPerLatitude);

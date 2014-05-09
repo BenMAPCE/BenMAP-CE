@@ -8,13 +8,17 @@ namespace BenMAP
     {
         string _dataName = string.Empty;
         private MetadataClassObj _metadataObj = null;
+        private int _dsMetadataID;
+        private int _dsSetupID;
+        private int _dataSetID;
+        private int _dsDatasetTypeId;
 
         public ManagePopulationDataSets()
         {
             InitializeComponent();
         }
 
-        private int _dataSetID;
+        
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
@@ -79,6 +83,16 @@ namespace BenMAP
                 txtPopulationConfig.Text = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText).ToString();
                 commandText = string.Format("select first 100 Races.RaceName,Ethnicity.EthnicityName,Genders.GenderName,AgeRanges.AgeRangeName,PopulationEntries.CColumn,PopulationEntries.Row,PopulationEntries.VValue from Races,Ethnicity,Genders,AgeRanges,PopulationEntries,PopulationDataSets where (PopulationEntries.RaceID=Races.RaceID) and (PopulationEntries.EthnicityID=Ethnicity.EthnicityID) and (PopulationEntries.GenderID=Genders.GenderID) and (PopulationEntries.AgeRangeID=AgeRanges.AgeRangeID) and (PopulationEntries.PopulationDataSetID=PopulationDataSets.PopulationDataSetID) and PopulationDataSets.PopulationDataSetID={0} ", _dataSetID);
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+
+
+                commandText = string.Format("select POPULATIONDATASETID from POPULATIONDATASETS where POPULATIONDATASETNAME='{0}' and SETUPID={1}", _dataName, CommonClass.ManageSetup.SetupID);
+                _dataSetID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
+                _dsSetupID = CommonClass.ManageSetup.SetupID;
+                _dsDatasetTypeId = SQLStatementsCommonClass.getDatasetID("Population");
+                commandText = string.Format("Select METADATAENTRYID from METADATAINFORMATION where DATASETID = {0} and SETUPID = {1} and DATASETTYPEID = {2}", _dataSetID, _dsSetupID, _dsDatasetTypeId);
+                _dsMetadataID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)); 
+                
+
                 olvPopulationValues.DataSource = ds.Tables[0];
 
             }
@@ -140,8 +154,8 @@ namespace BenMAP
 
         private void btnViewMetadata_Click(object sender, EventArgs e)
         {
-            _metadataObj = SQLStatementsCommonClass.getMetadata(_dataSetID, CommonClass.ManageSetup.SetupID);
-            _metadataObj.SetupName = _dataName;//_lstDataSetName;
+            _metadataObj = SQLStatementsCommonClass.getMetadata(_dataSetID, _dsSetupID, _dsDatasetTypeId, _dsMetadataID);
+            _metadataObj.SetupName = CommonClass.ManageSetup.SetupName;
             ViewEditMetadata viewEMdata = new ViewEditMetadata(_metadataObj);
             DialogResult dr = viewEMdata.ShowDialog();
             if (dr.Equals(DialogResult.OK))

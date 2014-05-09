@@ -458,13 +458,15 @@ namespace BenMAP
                 DataRowView drv = lstAvailableDataSets.SelectedItem as DataRowView;
                 _metadataObj = SQLStatementsCommonClass.getMetadata(_dataSetID, _dsSetupID, _dsDatasetTypeId, _dsMetadataID);
                 _metadataObj.DatasetId = _dataSetID;//Convert.ToInt32(drv["VALUATIONFUNCTIONDATASETID"]);
-                _metadataObj.SetupName = drv["VALUATIONFUNCTIONDATASETNAME"].ToString();//_dataName
+                _metadataObj.SetupName = CommonClass.ManageSetup.SetupName;//drv["VALUATIONFUNCTIONDATASETNAME"].ToString();//_dataName
                 btnViewMetadata.Enabled = false;
                 ViewEditMetadata viewEMdata = new ViewEditMetadata(_metadataObj);
                 DialogResult dr = viewEMdata.ShowDialog();
                 if (dr.Equals(DialogResult.OK))
                 {
                     _metadataObj = viewEMdata.MetadataObj;
+                    olvData.ClearHotItem();
+                    olvData.SelectedIndex = -1;
                 }
             }
         }

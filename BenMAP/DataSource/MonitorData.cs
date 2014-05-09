@@ -256,6 +256,14 @@ namespace BenMAP
             set { _strPath = value; }
         }
 
+        /// <summary>
+        /// Asynchronouses the update monitor data.
+        /// </summary>
+        /// <param name="bcg">The BCG.</param>
+        /// <param name="m">The m.</param>
+        /// <param name="currentStat">The current stat.</param>
+        /// <param name="threadId">The thread identifier.</param>
+        /// <returns>System.String.</returns>
         private string AsyncUpdateMonitorData(BaseControlGroup bcg, ModelDataLine m, string currentStat, out int threadId)
         {
             threadId = -1;

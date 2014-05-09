@@ -112,7 +112,8 @@ namespace BenMAP
                 }
                 commandText = "SELECT max(INFLATIONDATASETID) from INFLATIONDATASETS";
                 int inflationdatasetid = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText)) + 1;
-                commandText = string.Format("insert into INFLATIONDATASETS VALUES({0},{1},'{2}' )", inflationdatasetid, CommonClass.ManageSetup.SetupID, txtInflationDataSetName.Text);
+                //The 'F' is for the locked column in inflationdatasets - this is imported not predefined
+                commandText = string.Format("insert into INFLATIONDATASETS VALUES({0},{1},'{2}', 'F' )", inflationdatasetid, CommonClass.ManageSetup.SetupID, txtInflationDataSetName.Text);
                 int rth = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                 int currentDataSetID = inflationdatasetid;
                 int rtn = 0;
@@ -145,6 +146,7 @@ namespace BenMAP
             this.DialogResult = DialogResult.OK;
             this.Close();
         }
+
         private void insertMetadata(int dataSetID)
         {
             _metadataObj.DatasetId = dataSetID;
@@ -155,6 +157,7 @@ namespace BenMAP
                 MessageBox.Show("Failed to save Metadata.");
             }
         }
+        
         private void btnBrowse_Click(object sender, EventArgs e)
         {
             try

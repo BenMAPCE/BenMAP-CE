@@ -2,14 +2,7 @@ using System;
 using System.Data;
 using System.Windows.Forms;
 using ESIL.DBUtility;
-//TODO:
-//1 on the LoadIncomeGrowthDataSet dialog add a validate button
-//2 make it disabled
-//3 make the OK button disabled
-//4 After selecting a database to load (a csv file or excel file)
-//  enabled the validate button.
-//5 on a positive validation enable the OK button
-//
+
 namespace BenMAP
 {
     public partial class LoadIncomeGrowthDataSet : FormBase
@@ -97,7 +90,8 @@ namespace BenMAP
 
                 commandText = "SELECT max(INCOMEGROWTHADJDATASETID) from INCOMEGROWTHADJDATASETS";
                 int incomegrowthadjdatasetID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText)) + 1;
-                commandText = string.Format("insert into INCOMEGROWTHADJDATASETS VALUES({0},{1},'{2}' )", incomegrowthadjdatasetID, CommonClass.ManageSetup.SetupID, txtDataSetName.Text);
+                //The 'F' is for the locked column in incomegrowthandadjatests - this is being imported and is not predefined.
+                commandText = string.Format("insert into INCOMEGROWTHADJDATASETS VALUES({0},{1},'{2}', 'F' )", incomegrowthadjdatasetID, CommonClass.ManageSetup.SetupID, txtDataSetName.Text);
                 fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                 int currentDataSetID = incomegrowthadjdatasetID;
 

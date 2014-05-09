@@ -73,6 +73,13 @@ namespace BenMAP
             this.Text= title;
             this.lblDataSetName.Text = datasetNamelabel;
             this.txtDataSetName.Text = datasetName;
+            if(dataset.Equals("Baseline") || dataset.Equals("Control"))
+            {
+                //baseline and control data are not stored in the database,
+                //it looks as if it is stored in the project file.  see the audit trail
+                //under air quality data
+                btnViewMetadata.Visible = false;
+            }
         }
         private void btnOK_Click(object sender, EventArgs e)
         {
@@ -104,8 +111,9 @@ namespace BenMAP
             DialogResult dlgR = vdi.ShowDialog();
             if (dlgR.Equals(DialogResult.OK))
             {
-                if(vdi.PassedValidation && _isForceValidate == "T")
-                    this.DialogResult = DialogResult.OK;
+                //if(vdi.PassedValidation && _isForceValidate == "T")
+                //    this.DialogResult = DialogResult.OK;
+                btnOK.Enabled = true;
 
             }
         }
@@ -129,6 +137,7 @@ namespace BenMAP
                 if (openFileDialog.ShowDialog() != DialogResult.OK)
                 { return; }
                 txtDatabase.Text = openFileDialog.FileName;
+                openFileDialog.RestoreDirectory = true;
                 GetMetadata();
             }
             catch (Exception ex)

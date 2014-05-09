@@ -44,26 +44,22 @@ namespace BenMAP
             bool bPassed = false;
             string commandText = string.Empty;
             try
-            {
+            {           //The 'F' is for the locked column in metadatainformation - it is created or imported not predefined.  
+                        //I think this could be removed because there is no predefined metadata
                         commandText = string.Format("INSERT INTO METADATAINFORMATION " +
                                         "(SETUPID, DATASETID, DATASETTYPEID, FILENAME, " +
                                         "EXTENSION, DATAREFERENCE, FILEDATE, IMPORTDATE, DESCRIPTION, " +
                                         "PROJECTION, GEONAME, DATUMNAME, DATUMTYPE, SPHEROIDNAME, " +
-                                        "MERIDIANNAME, UNITNAME, PROJ4STRING, NUMBEROFFEATURES, METADATAENTRYID) " +
+                                        "MERIDIANNAME, UNITNAME, PROJ4STRING, NUMBEROFFEATURES, METADATAENTRYID, LOCKED) " +
                                         "VALUES('{0}', '{1}', '{2}', '{3}', '{4}','{5}', '{6}', '{7}', '{8}', '{9}', " +
-                                        "'{10}', '{11}', '{12}', '{13}', '{14}','{15}', '{16}', '{17}', {18})",
+                                        "'{10}', '{11}', '{12}', '{13}', '{14}','{15}', '{16}', '{17}', {18}, 'F')",
                                         metadataObj.SetupId, metadataObj.DatasetId, metadataObj.DatasetTypeId, metadataObj.FileName,
                                         metadataObj.Extension, metadataObj.DataReference, metadataObj.FileDate, metadataObj.ImportDate,
                                         metadataObj.Description, metadataObj.Projection, metadataObj.GeoName, metadataObj.DatumName,
                                         metadataObj.DatumType, metadataObj.SpheroidName, metadataObj.MeridianName, metadataObj.UnitName,
                                         metadataObj.Proj4String, metadataObj.NumberOfFeatures, metadataObj.MetadataId);
                         rtv = fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
-
-                        //commandText = string.Format("SELECT METADATAID FROM METADATAINFORMATION WHERE setupid={0} and datasetid={1} and datasettypeid={2}",
-                        //                            metadataObj.SetupId, metadataObj.DatasetId,metadataObj.DatasetTypeId);
-
-                        //metadataObj.MetadataId = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
-                        
+                    
                         bPassed = true;
             }
             catch (Exception ex)
@@ -100,7 +96,7 @@ namespace BenMAP
         {
             FireBirdHelperBase fb = new ESILFireBirdHelper();
             bool bPassed = false;
-            int rtv = 0;
+            int rtv = -1;
             //int metaId = -1;
             string commandText = string.Empty;
             try
@@ -110,10 +106,20 @@ namespace BenMAP
                 //metaId = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection,CommandType.Text, commandText));
 
                 commandText = string.Format("UPDATE METADATAINFORMATION set DATAREFERENCE = '{0}', DESCRIPTION = '{1}' " +
-                                            "WHERE DATASETID = {2} AND SETUPID = {3} AND METADATAENTRYID = {4}", 
+                                            "WHERE DATASETID = {2} AND SETUPID = {3} AND METADATAENTRYID = {4}",
                                             metadataObj.DataReference, metadataObj.Description, metadataObj.DatasetId,
                                             metadataObj.SetupId, metadataObj.MetadataId);
+
+                //commandText = string.Format("UPDATE METADATAINFORMATION set DATAREFERENCE = '{0}', DESCRIPTION = '{1}' " +
+                //               "WHERE DATASETID = {2} AND SETUPID = {3} AND METADATAID = {4}",
+                //               metadataObj.DataReference, metadataObj.Description, metadataObj.DatasetId,
+                //               metadataObj.SetupId, metadataObj.MetadataId);
+
                 rtv = fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                if(rtv == 0)
+                {
+                    throw(new Exception("Metadata did not get updated"));
+                }
                 bPassed = true;
 
             }
@@ -193,7 +199,8 @@ namespace BenMAP
             return _metadataObj;
         }
 
-        public static MetadataClassObj getMetadata(int datasetID, int setupId, int datasetTypeId, int metadataId)
+        //public static MetadataClassObj getMetadata(int datasetID, int setupId, int datasetTypeId, int metadataId)
+        public static MetadataClassObj getMetadata(int datasetID, int setupId, int datasetTypeId, int metadataentryid)
         {
             FireBirdHelperBase fb = new ESILFireBirdHelper();
             MetadataClassObj _metadataObj = new MetadataClassObj();
@@ -205,7 +212,8 @@ namespace BenMAP
                       "MERIDIANNAME, UNITNAME, PROJ4STRING, NUMBEROFFEATURES " +
                       "FROM METADATAINFORMATION " +
                       "WHERE DATASETID = '{0}' AND SETUPID = '{1}' AND DATASETTYPEID = '{2}' AND METADATAENTRYID = '{3}'",
-                      datasetID, setupId, datasetTypeId, metadataId);
+                      datasetID, setupId, datasetTypeId, metadataentryid);
+                      //datasetID, setupId, datasetTypeId, metadataId);
 
             ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
             foreach (DataRow dr in ds.Tables[0].Rows)
@@ -235,6 +243,24 @@ namespace BenMAP
 
         }
 
+        public static int getMetadataEntryID(int setupId, int datasetId, int datasettypeid)
+        {
+            FireBirdHelperBase fb = new ESILFireBirdHelper();
+            int rtv;
+            string commandText = string.Empty;
+            try
+            {
+                commandText = string.Format("SELECT METADATAENTRYID FROM METADATAINFORMATION WHERE SETUPID = {0} AND DATASETID = {1} AND DATASETTYPEID = {2}", setupId, datasetId, datasettypeid);
+                rtv = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
+            }
+            catch (Exception ex)
+            {
+                throw (new Exception(ex.Message));
+            }
+
+            return rtv;
+        }
+        
         public static int selectMaxID(string nameId, string fromTableName)
         {
             FireBirdHelperBase fb = new ESILFireBirdHelper();
@@ -262,5 +288,7 @@ namespace BenMAP
 
             return rtvID;
         }
+        
+        
     }
 }

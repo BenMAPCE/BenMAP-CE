@@ -16,6 +16,9 @@ namespace BenMAP
     {
         private DataTable dt;//_dtDataFile;
         private MetadataClassObj _metadataObj = null;
+        DataTable _dt = new DataTable();
+        DataTable _dtEndpointGroup = new DataTable();
+        DataTable _dtPollutant = new DataTable();
         private int _datasetID;
         private int crFunctionDataSetID = 0;
         private bool _isEdit = false;
@@ -33,14 +36,14 @@ namespace BenMAP
         /// </summary>
         /// <param name="dataSetID">The data set identifier which is the current function dataset id (CrfunctiondatasetID).</param>
         public HealthImpactDataSetDefinition(int dataSetID, bool isEdit)
-        {
+        {   //this function should be called when doing an edit
             InitializeComponent();
             _datasetID = dataSetID;
             crFunctionDataSetID = dataSetID;//when doing an edit I need to have the current funciton dataset ID
             _isEdit = isEdit;
-            //btnViewMetadata.Visible = true;
-            //btnViewMetadata.Enabled = true;
+            txtHealthImpactFunction.Enabled = false;
         }
+        
         private void getcrFunctionDatasetID()
         {
             ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
@@ -458,7 +461,7 @@ namespace BenMAP
         private void LoadDatabase()
         {   //for this block only - replacing _dt with dtForLoading.  this is so that only new files that get loaded will/should get assoceated with the new metadata id.
             //if (_dt.Rows.Count < 1)
-            if(dtForLoading.Rows.Count < 1)
+            if (dtForLoading.Rows.Count < 1)
             {
                 MessageBox.Show("No dataset was selected for import or created.  Please select a dataset to import or 'Add' information to careate a data set.");
                 btnBrowse.Focus();
@@ -471,6 +474,7 @@ namespace BenMAP
             //int crFunctionDataSetID = 0;
             try
             {
+                #region if the _datasetID compairs to a -1
                 if (_datasetID == -1)
                 {
                     commandText = string.Format("select * from  CRFunctionDataSets where SetupID={0}", CommonClass.ManageSetup.SetupID);
@@ -502,15 +506,16 @@ namespace BenMAP
                     //object obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
                     ////int crFunctionDataSetID = int.Parse(obj.ToString()) + 1;
                     //crFunctionDataSetID = int.Parse(obj.ToString()) + 1;
-                    
+
                     #endregion
-                    
+
                     commandText = string.Format("select CRFUNCTIONDATASETID from CRFUNCTIONDATASETS where CRFUNCTIONDATASETID = {0} AND setupid = {1}", crFunctionDataSetID, CommonClass.ManageSetup.SetupID);
                     obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
-                    if(obj == null)
+                    if (obj == null)
                     {
                         //this is inserting it to the CRFunctionDataSets table - check and see if it already exist, if it does then I am adding in an additional file
-                        commandText = string.Format("insert into CRFunctionDataSets values ({0},{1},'{2}','F')", crFunctionDataSetID, CommonClass.ManageSetup.SetupID, txtHealthImpactFunction.Text.Replace("'", "''"));
+                        //The F is for the locked column in CRFunctionDataSet - this is being imported and not predefined.
+                        commandText = string.Format("insert into CRFunctionDataSets values ({0},{1},'{2}','F', 'F')", crFunctionDataSetID, CommonClass.ManageSetup.SetupID, txtHealthImpactFunction.Text.Replace("'", "''"));
                         rth = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                     }
                     Dictionary<string, int> dicEndpointGroup = new Dictionary<string, int>();
@@ -587,10 +592,10 @@ namespace BenMAP
                     {
                         dicLocationTypeID.Add(drLocationType["LOWER"].ToString(), drLocationType["LocationTypeID"].ToString());
                     }
-                    
+
                     for (int i = 0; i < dtForLoading.Rows.Count; i++)
                     {
-                        
+
                         DataRow dr = dtForLoading.Rows[i];
                         commandText = "select endpointGroupID from EndpointGroups where LOWER(EndpointGroupName)='" + dr[0].ToString().ToLower() + "' ";
                         obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
@@ -605,7 +610,7 @@ namespace BenMAP
 
                     }
 
-                    
+
                     int dgvRowCount = dtForLoading.Rows.Count;
                     string undefinePollutant = "";
                     for (int row = 0; row < dgvRowCount; row++)
@@ -614,7 +619,7 @@ namespace BenMAP
                         commandText = string.Format("select max(CRFUNCTIONID) from CRFunctions");
                         obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
                         int CRFunctionID = int.Parse(obj.ToString()) + 1;
-                        
+
                         int EndpointGroupID = dicEndpointGroup[dtForLoading.Rows[row][0].ToString().ToLower()];
 
                         //commandText = string.Format("select EndpointID from Endpoints where Replace(LOWER(EndpointName),' ','')='{0}' and EndpointGroupID={1}", dtForLoading.Rows[row][1].ToString().ToLower().Replace(" ", ""), dicEndpointGroup[dtForLoading.Rows[row][0].ToString().ToLower()]);
@@ -645,9 +650,9 @@ namespace BenMAP
                         int FunctionID = 0;
                         //if (dicFunction.ContainsKey(dtForLoading.Rows[row][18].ToString()))
                         if (dicFunction.ContainsKey(dtForLoading.Rows[row][18].ToString()))
-                        { 
+                        {
                             //FunctionID = dicFunction[dtForLoading.Rows[row][18].ToString()];
-                            FunctionID = dicFunction[dtForLoading.Rows[row][18].ToString()]; 
+                            FunctionID = dicFunction[dtForLoading.Rows[row][18].ToString()];
                         }
                         else
                         {
@@ -794,7 +799,9 @@ namespace BenMAP
                         undefinePollutant = undefinePollutant.Substring(0, undefinePollutant.Length - 2);
                         MessageBox.Show("Please define " + undefinePollutant + ".", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     }
-                }
+                } 
+                #endregion
+                #region Else it has a value (doing an edit)
                 else
                 {
                     commandText = string.Format("update CRFunctionDataSets set CRFunctionDataSetName='{0}' where CRFunctionDataSetID={1}", txtHealthImpactFunction.Text.Replace("'", "''"), _datasetID);
@@ -1088,7 +1095,8 @@ namespace BenMAP
                             }
                         }
                     }
-                }
+                } 
+                #endregion
                 insertMetadata(crFunctionDataSetID);
             }
             catch (Exception ex)
@@ -1317,16 +1325,13 @@ namespace BenMAP
 
         private void btnCancel_Click(object sender, EventArgs e)
         {
+            Cleanup_WhenCanceled();
             this.DialogResult = DialogResult.Cancel;
         }
 
         //private void btnOK_Click(object sender, EventArgs e)
         //{
         //}
-
-        DataTable _dt = new DataTable();
-        DataTable _dtEndpointGroup = new DataTable();
-        DataTable _dtPollutant = new DataTable();
 
         private void HealthImpactDataSetDefinition_Load(object sender, EventArgs e)
         {
@@ -1697,6 +1702,30 @@ namespace BenMAP
         //    //}
         //}
 
-
+        private void Cleanup_WhenCanceled()
+        {
+            int crFunctionDatasetId = 0;
+            int datasetid = 0;
+            string commandText = string.Empty;
+            ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+            try
+            {
+                //NOTE THIS IS WRONG - NOT GOOD.  It will delete all for the current dataset.  Problem - editing and adding in a new file then click cancel 
+                //will casue it to delete all references to the dataset.
+                //
+                //commandText = string.Format("SELECT CRFUNCTIONDATASETID FROM CRFUNCTIONDATASETS WHERE SETUPID = {0} AND CRFunctionDataSetName = '{1}'", CommonClass.ManageSetup.SetupID, txtHealthImpactFunction.Text);
+                //crFunctionDatasetId = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
+                //commandText = string.Format("delete from CRFunctionDataSets where CRFunctionDataSetName='{0}' and setupid={1}", txtHealthImpactFunction.Text, CommonClass.ManageSetup.SetupID);
+                //int i = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                //commandText = "select DATASETID FROM DATASETS WHERE DATASETNAME = 'Healthfunctions'";
+                //datasetid = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
+                //commandText = string.Format("DELETE FROM METADATAINFORMATION WHERE SETUPID ={0} AND DATASETID = {1} AND DATASETTYPEID = {2}", CommonClass.ManageSetup.SetupID, crFunctionDatasetId, datasetid);
+                //fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+            }
+        }
     }
 }
