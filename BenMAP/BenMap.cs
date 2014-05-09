@@ -14,6 +14,10 @@ using BrightIdeasSoftware;
 using DotSpatial.Controls;
 using DotSpatial.Data;
 using DotSpatial.Symbology;
+using DotSpatial.Extensions;  //MCB- needed?
+//using DotSpatial.Plugins; //MCB - needed?
+//using DotSpatial.Plugins.TableEditor;  // MCB-?
+//using DotSpatial.Plugins.AttributeDataExplorer;  //MCB- needed?
 using ZedGraph;
 using ESIL.DBUtility;
 using System.Configuration;
@@ -45,8 +49,9 @@ namespace BenMAP
         private string _baseFormTitle = "";
         public Main mainFrm = null;
 
-        private string CurrentMapTitle = "";
-
+        private string _CurrentMapTitle = "";
+        private string _CurrentMapTableTitle = "";
+        private Extent _SavedExtent;
         private List<string> _listAddGridTo36km = new List<string>();
         private string _reportTableFileName = "";
 
@@ -68,6 +73,7 @@ namespace BenMAP
         List<AllSelectCRFunction> lstCFGRpoolingforCDF = new List<AllSelectCRFunction>();
         List<AllSelectValuationMethodAndValue> lstAPVRforCDF = new List<AllSelectValuationMethodAndValue>();
 
+        //private DotSpatial.Plugins.AttributeDataExplorer.AttributeDataExplorerPlugin dspADE;  //-MCB
         public BenMAP(string homePageName)
         {
             try
@@ -84,6 +90,21 @@ namespace BenMAP
                 CommonClass.NodeAnscy += ChangeNodeStatus;
 
                 mainMap.LayerAdded += new EventHandler<LayerEventArgs>(mainMap_LayerAdded);
+
+                //appManager1.LoadExtensions();
+                Console.WriteLine("MCB-test");
+                //foreach (DotSpatial.Extensions.IExtension iext in appManager1.Extensions)
+                //{
+                //    Console.WriteLine(iext.Name);
+                //}
+           
+                //MCB- right place for this???
+                
+
+              //AttributeDataExplorerPlugin AttEx = new AttributeDataExplorerPlugin();
+              // AttEx.Activate();
+              //  AttEx.IsActive = true;
+
             }
             catch (Exception ex)
             {
@@ -827,12 +848,12 @@ namespace BenMAP
         {
             try
             {
-                Extent et = mainMap.Extent;
+                _SavedExtent = mainMap.Extent;
                 splitContainer2.Panel1.Hide();
                 splitContainer2.SplitterDistance = 0;
                 splitContainer2.BorderStyle = BorderStyle.None;
                 isLegendHide = true;
-                mainMap.ViewExtents = et;
+                mainMap.ViewExtents = _SavedExtent;
                 return true;
             }
             catch (Exception ex)
@@ -1233,9 +1254,9 @@ namespace BenMAP
                         DrawBaseline(currentNode, str); //-MCB
                         break;
                     case "delta":
-                        DrawDelta(currentNode, str);//-MCB
-                        
+                        DrawDelta(currentNode, str);
                         break;
+
                     case "control":
                         _currentNode = "control";
                         currStat = "control";
@@ -1248,7 +1269,6 @@ namespace BenMAP
                             trvSetting.SelectedNode = currentNode;
                             nodeName = currentNode.Name.ToLower();
                             DrawControlData(currentNode, str);
-
                             //Attempt to display the delta layer as well-MCB
                             //NOTE-uncomment when multiple layers can be displayed at once-MCB
                             //deltaNode = parentNode.LastNode as TreeNode;
@@ -1261,11 +1281,11 @@ namespace BenMAP
                             //}
                         }
                         break;
-                    case "controldata":
-                       
+
+                    case "controldata":              
                         DrawControlData(currentNode, str); //-MCB
-                        
                         break;
+
                     case "configuration":
                         _currentNode = "gridtype";
                         frm = new OpenExistingConfiguration();
@@ -1921,7 +1941,7 @@ namespace BenMAP
             //str = string.Format("{0}baseline", (currentNode.Tag as BenMAPLine).Pollutant.PollutantName);
             string _PollutantName = (currentNode.Tag as BenMAPLine).Pollutant.PollutantName;
             string _BenMapSetupName = (currentNode.Tag as BenMAPLine).GridType.SetupName;
-            CurrentMapTitle = _BenMapSetupName + " Setup: " + _PollutantName + ", Baseline";
+            _CurrentMapTitle = _BenMapSetupName + " Setup: " + _PollutantName + ", Baseline";
             
             if (CommonClass.LstAsynchronizationStates != null &&
                 CommonClass.LstAsynchronizationStates.Contains(str.ToLower()))
@@ -1933,7 +1953,7 @@ namespace BenMAP
             try
             {
                 tabCtlMain.SelectedIndex = 0;
-                mainMap.Layers.Clear();
+                //mainMap.Layers.Clear();
                 tsbChangeProjection.Text = "change projection to Albers";
                 BenMAPLine b = currentNode.Tag as BenMAPLine;
                 foreach (BaseControlGroup bc in CommonClass.LstBaseControlGroup)
@@ -1960,7 +1980,7 @@ namespace BenMAP
             //Map Title
             string _PollutantName = (currentNode.Tag as BenMAPLine).Pollutant.PollutantName;
             string _BenMapSetupName = (currentNode.Tag as BenMAPLine).GridType.SetupName;
-            CurrentMapTitle = _BenMapSetupName + " Setup: " + _PollutantName + ", Control";
+            _CurrentMapTitle = _BenMapSetupName + " Setup: " + _PollutantName + ", Control";
             
             str = string.Format("{0}control", (currentNode.Tag as BenMAPLine).Pollutant.PollutantName);
             if (CommonClass.LstAsynchronizationStates != null && CommonClass.LstAsynchronizationStates.Contains(str.ToLower()))
@@ -1972,7 +1992,7 @@ namespace BenMAP
             try
             {
                 tabCtlMain.SelectedIndex = 0;
-                mainMap.Layers.Clear();
+                //mainMap.Layers.Clear();
                 BenMAPLine cc = currentNode.Tag as BenMAPLine;
                 foreach (BaseControlGroup bc in CommonClass.LstBaseControlGroup)
                 {
@@ -2073,10 +2093,10 @@ namespace BenMAP
                 //Map Title
                 string _PollutantName = bcgDelta.DeltaQ.Pollutant.PollutantName;
                 string _BenMapSetupName = bcgDelta.Base.GridType.SetupName;
-                CurrentMapTitle = _BenMapSetupName + " Setup: " + _PollutantName + ", Delta";
+                _CurrentMapTitle = _BenMapSetupName + " Setup: " + _PollutantName + ", Delta";
             
                 tabCtlMain.SelectedIndex = 0;
-                mainMap.Layers.Clear();
+                //mainMap.Layers.Clear();
                 addBenMAPLineToMainMap(bcgDelta.DeltaQ, "D");
                 addRegionLayerGroupToMainMap();
                 LayerObject = bcgDelta.DeltaQ;
@@ -2368,158 +2388,177 @@ namespace BenMAP
             mainMap.ProjectionModeReproject = ActionMode.Never;
             mainMap.ProjectionModeDefine = ActionMode.Never;
            
-            string s = isBase;
-            MapGroup bcgMapGroup = new MapGroup();
-            MapPolygonLayer polLayer = new MapPolygonLayer();
-            try
+            //string s = isBase;
+            string IsBaseLongText;
+            switch (isBase)
             {
-                //Add Pollutants Mapgroup if it doesn't exist already -MCB
-                bool _mgFound = false;
-                foreach (IMapLayer layer in mainMap.Layers)
+                case "B":
+                    IsBaseLongText = "Baseline";
+                    break;
+                case "C":
+                    IsBaseLongText = "Control";
+                    break;
+                case "D":
+                    IsBaseLongText = "Delta";
+                    break;
+                default:
+                    return; 
+            }
+            
+            MapGroup bcgMapGroup = new MapGroup();
+            //MapPolygonLayer polLayer = new MapPolygonLayer();
+            string LayerNameText;
+            string LayerLegendText;
+
+            //Add Pollutants Mapgroup if it doesn't exist already -MCB
+            bcgMapGroup = AddMapGroup("Pollutants", true);
+            
+            //Get Metrics fields for this pollutant.  If no metrics then return with warning/error
+            List<string> lstAddField = new List<string>();
+            if (benMAPLine.Pollutant.Metrics != null)
+            {
+                foreach (Metric metric in benMAPLine.Pollutant.Metrics)
                 {
-                    if (layer is MapGroup || layer is IMapGroup)
+                    lstAddField.Add(metric.MetricName);
+                }
+            }
+            if (benMAPLine.Pollutant.SesonalMetrics != null)
+            {
+                foreach (SeasonalMetric sesonalMetric in benMAPLine.Pollutant.SesonalMetrics)
+                {
+                    lstAddField.Add(sesonalMetric.SeasonalMetricName);
+                }
+            }
+            //Add a layer for each metric for this pollutant
+            for (int iAddField = 2; iAddField < 2 + lstAddField.Count; iAddField++)
+            {
+                MapPolygonLayer polLayer = new MapPolygonLayer();
+
+                LayerLegendText = benMAPLine.Pollutant.PollutantName.ToString() + "_" + IsBaseLongText;
+                LayerNameText = LayerLegendText + "_" + lstAddField[iAddField - 2].ToString(); //benMAPLine.Pollutant.Metrics[0].MetricName.ToString();
+                
+                try
+                {
+                    //Remove the old version of the layer if exists already
+                    RemoveOldPolygonLayer(LayerNameText, bcgMapGroup.GetLayers(), true);
+
+                
+                    // Add a new layer baseline, control or delta layer to the Pollutants group
+                    if (File.Exists(benMAPLine.ShapeFile))
                     {
-                        if (layer.LegendText == "Pollutants")
+                        try
                         {
-                            bcgMapGroup = (MapGroup)layer;  //bcg map group found
-                            _mgFound = true;
-                            break;
+                           // mainMap.Layers.Add(benMAPLine.ShapeFile);
+                            polLayer = (MapPolygonLayer)bcgMapGroup.Layers.Add(benMAPLine.ShapeFile);
+                        
+                        }
+                        catch (Exception ex)
+                        {
+                            DataSourceCommonClass.SaveBenMAPLineShapeFile(CommonClass.GBenMAPGrid, benMAPLine.Pollutant, benMAPLine, benMAPLine.ShapeFile);
+                            polLayer = (MapPolygonLayer)bcgMapGroup.Layers.Add(benMAPLine.ShapeFile);   //-MCB use when mapgroup layers is working correctly
+                            //IMapLayer mylayer = mainMap.Layers.Add(benMAPLine.ShapeFile);
                         }
                     }
-                }
-                
-                if (!_mgFound)  //bcg map group not found, so add it
-                {
-                    bcgMapGroup.LegendText = "Pollutants";
-                    mainMap.Layers.Add(bcgMapGroup); //-MCB use when mapgroup layers is working correctly
-                }
-                // Add a new layer baseline, control or delta layer to the Pollutants group
-                if (File.Exists(benMAPLine.ShapeFile))
-                {
-                    try
+                    else
                     {
-                       // mainMap.Layers.Add(benMAPLine.ShapeFile);
-                        polLayer = (MapPolygonLayer)bcgMapGroup.Layers.Add(benMAPLine.ShapeFile);  // -MCB use when mapgroup layers is working correctly
-                        
-                    }
-                    catch (Exception ex)
-                    {
+                        if (string.IsNullOrEmpty(benMAPLine.ShapeFile))
+                        {
+                            benMAPLine.ShapeFile = benMAPLine.Pollutant.PollutantID + "G" + CommonClass.GBenMAPGrid.GridDefinitionID + "B" + isBase + ".shp";
+                            benMAPLine.ShapeFile = string.Format("{0}\\Tmp\\{1}", CommonClass.DataFilePath, benMAPLine.ShapeFile);
+                        }
                         DataSourceCommonClass.SaveBenMAPLineShapeFile(CommonClass.GBenMAPGrid, benMAPLine.Pollutant, benMAPLine, benMAPLine.ShapeFile);
-                        polLayer = (MapPolygonLayer)bcgMapGroup.Layers.Add(benMAPLine.ShapeFile);   //-MCB use when mapgroup layers is working correctly
-                        //IMapLayer mylayer = mainMap.Layers.Add(benMAPLine.ShapeFile);
+                        //mainMap.Layers.Add(benMAPLine.ShapeFile);
+                        polLayer = (MapPolygonLayer)bcgMapGroup.Layers.Add(benMAPLine.ShapeFile);  // -MCB use when mapgroup layers is working correctly
                     }
                 }
-                else
+                catch (Exception ex)
                 {
-                    if (string.IsNullOrEmpty(benMAPLine.ShapeFile))
-                    {
-                        benMAPLine.ShapeFile = benMAPLine.Pollutant.PollutantID + "G" + CommonClass.GBenMAPGrid.GridDefinitionID + "B" + s + ".shp";
-                        benMAPLine.ShapeFile = string.Format("{0}\\Tmp\\{1}", CommonClass.DataFilePath, benMAPLine.ShapeFile);
-                    }
-                    DataSourceCommonClass.SaveBenMAPLineShapeFile(CommonClass.GBenMAPGrid, benMAPLine.Pollutant, benMAPLine, benMAPLine.ShapeFile);
-                    //mainMap.Layers.Add(benMAPLine.ShapeFile);
-                    polLayer = (MapPolygonLayer)bcgMapGroup.Layers.Add(benMAPLine.ShapeFile);  // -MCB use when mapgroup layers is working correctly
                 }
+                //define the symbology, legend text and identifying name for the layer
+                polLayer.LegendText = LayerLegendText;
+                polLayer.Name = LayerNameText;
+                polLayer.DataSet.DataTable.Columns[iAddField].ColumnName = lstAddField[iAddField - 2];
+                _columnName = polLayer.DataSet.DataTable.Columns[iAddField].ColumnName;
+                    //MapPolygonLayer polLayer = bcgMapGroup.Layers[mainMap.Layers.Count-1] as MapPolygonLayer; -MCB use when mapgroup layers is working correctly
+                    //MapPolygonLayer polLayer = mainMap.Layers[mainMap.Layers.Count - 1] as MapPolygonLayer;
+                    ////Get Metrics fields.  If no metrics then return with warning/error
+                    //List<string> lstAddField = new List<string>();
+                    //if (benMAPLine.Pollutant.Metrics != null)
+                    //{
+                    //    foreach (Metric metric in benMAPLine.Pollutant.Metrics)
+                    //    {
+                    //        lstAddField.Add(metric.MetricName);
+                    //    }
+                    //}
+                    //if (benMAPLine.Pollutant.SesonalMetrics != null)
+                    //{
+                    //    foreach (SeasonalMetric sesonalMetric in benMAPLine.Pollutant.SesonalMetrics)
+                    //    {
+                    //        lstAddField.Add(sesonalMetric.SeasonalMetricName);
+                    //    }
+                    //}
+                    //-------------------------------------------------------------------------------------------
+                    ////Add a layer for each metric for this pollutant
+                    //for (int iAddField = 2; iAddField < 2 + lstAddField.Count; iAddField++)
+                    //{
+                    //    polLayer.DataSet.DataTable.Columns[iAddField].ColumnName = lstAddField[iAddField - 2];
+                    //}
                 
-                
-                //MapPolygonLayer polLayer = bcgMapGroup.Layers[mainMap.Layers.Count-1] as MapPolygonLayer; -MCB use when mapgroup layers is working correctly
-                //MapPolygonLayer polLayer = mainMap.Layers[mainMap.Layers.Count - 1] as MapPolygonLayer;
-                List<string> lstAddField = new List<string>();
-                if (benMAPLine.Pollutant.Metrics != null)
-                {
-                    foreach (Metric metric in benMAPLine.Pollutant.Metrics)
-                    {
-                        lstAddField.Add(metric.MetricName);
-                    }
-                }
-                if (benMAPLine.Pollutant.SesonalMetrics != null)
-                {
-                    foreach (SeasonalMetric sesonalMetric in benMAPLine.Pollutant.SesonalMetrics)
-                    {
-                        lstAddField.Add(sesonalMetric.SeasonalMetricName);
-                    }
-                }
-                for (int iAddField = 2; iAddField < 2 + lstAddField.Count; iAddField++)
-                {
-                    polLayer.DataSet.DataTable.Columns[iAddField].ColumnName = lstAddField[iAddField - 2];
-                }
-                
-                if (isBase == "B") polLayer.LegendText = "Baseline";
-                if (isBase == "D") polLayer.LegendText = "Delta";
-                if (isBase == "C") polLayer.LegendText = "Control";
+                    //if (isBase == "B") polLayer.LegendText = "Baseline";
+                    //if (isBase == "D") polLayer.LegendText = "Delta";
+                    //if (isBase == "C") polLayer.LegendText = "Control";
 
-                polLayer.Name = polLayer.LegendText;  //-MCB using name as a layer handle to grab it elsewhere
+                    //polLayer.LegendText = benMAPLine.Pollutant.PollutantName + "_" + IsBaseLongText;
+                    //polLayer.Name = polLayer.LegendText + "_" + benMAPLine.Pollutant.Metrics[0].MetricName;  //-MCB using name as a layer handle to grab it elsewhere
 
-                string strValueField = polLayer.DataSet.DataTable.Columns[2].ColumnName;
-                _columnName = strValueField;
-
-                //PolygonScheme myScheme1 = new PolygonScheme();
-                //float fl = (float)0.1;
-                //myScheme1.EditorSettings.StartColor = Color.Green;
-                //myScheme1.EditorSettings.StartColor.ToTransparent(fl);
-                //myScheme1.EditorSettings.EndColor = Color.Red;
-                //myScheme1.EditorSettings.EndColor.ToTransparent(fl);
-
-                //myScheme1.EditorSettings.ClassificationType = ClassificationType.Quantities;
-                ////myScheme1.EditorSettings.IntervalMethod = IntervalMethod.NaturalBreaks;
-                //myScheme1.EditorSettings.IntervalMethod = IntervalMethod.NaturalBreaks;
-
-                ////myScheme1.EditorSettings.IntervalSnapMethod = IntervalSnapMethod.Rounding;
-                //myScheme1.EditorSettings.IntervalSnapMethod = IntervalSnapMethod.SignificantFigures;
-                //myScheme1.EditorSettings.IntervalRoundingDigits = 3;
-                //myScheme1.EditorSettings.NumBreaks = 6;
-                //myScheme1.EditorSettings.FieldName = strValueField; 
-                //myScheme1.EditorSettings.UseGradient = false;
-                //myScheme1.CreateCategories(polLayer.DataSet.DataTable);
-                //myScheme1.AppearsInLegend = false;
-
-                //polLayer.Symbology = myScheme1;
-
+                    //string strValueField = polLayer.DataSet.DataTable.Columns[2].ColumnName;
+                    //_columnName = strValueField;
                 polLayer.Symbology = CreateBCGPolyScheme(ref polLayer, 6, isBase);
                 //set the layer to have its symbology expanded by default //-MCB
                 polLayer.Symbology.IsExpanded = true;
 
-                //double dMinValue = 0.0;
-                //double dMaxValue = 0.0;
-                //dMinValue = benMAPLine.ModelResultAttributes.Min(a => a.Values[strValueField]);
-                //dMaxValue = benMAPLine.ModelResultAttributes.Max(a => a.Values[strValueField]);
+                    //double dMinValue = 0.0;
+                    //double dMaxValue = 0.0;
+                    //dMinValue = benMAPLine.ModelResultAttributes.Min(a => a.Values[strValueField]);
+                    //dMaxValue = benMAPLine.ModelResultAttributes.Max(a => a.Values[strValueField]);
 
-                //if (double.IsNaN(dMinValue)) dMinValue = 0;
-                //if (double.IsNaN(dMaxValue)) dMaxValue = 0;
-                //if (isBase == "C")
-                //{
-                //    try
-                //    {
-                //        foreach (BaseControlGroup baseControlGroup in CommonClass.LstBaseControlGroup)
-                //        {
+                    //if (double.IsNaN(dMinValue)) dMinValue = 0;
+                    //if (double.IsNaN(dMaxValue)) dMaxValue = 0;
+                    //if (isBase == "C")
+                    //{
+                    //    try
+                    //    {
+                    //        foreach (BaseControlGroup baseControlGroup in CommonClass.LstBaseControlGroup)
+                    //        {
 
-                //            if (baseControlGroup.GridType.GridDefinitionID == benMAPLine.GridType.GridDefinitionID && baseControlGroup.Pollutant.PollutantID == benMAPLine.Pollutant.PollutantID)
-                //            {
-                //                if (baseControlGroup.Base != null && baseControlGroup.Base.ModelResultAttributes != null && baseControlGroup.Base.ModelResultAttributes.Count > 0)
-                //                {
-                //                    dMinValue = baseControlGroup.Base.ModelResultAttributes.Min(a => a.Values.ToArray()[0].Value);
-                //                    dMaxValue = baseControlGroup.Base.ModelResultAttributes.Max(a => a.Values.ToArray()[0].Value);
-                //                }
-                //            }
-                //        }
-                //    }
-                //    catch (Exception ex)
-                //    {
-                //    }
+                    //            if (baseControlGroup.GridType.GridDefinitionID == benMAPLine.GridType.GridDefinitionID && baseControlGroup.Pollutant.PollutantID == benMAPLine.Pollutant.PollutantID)
+                    //            {
+                    //                if (baseControlGroup.Base != null && baseControlGroup.Base.ModelResultAttributes != null && baseControlGroup.Base.ModelResultAttributes.Count > 0)
+                    //                {
+                    //                    dMinValue = baseControlGroup.Base.ModelResultAttributes.Min(a => a.Values.ToArray()[0].Value);
+                    //                    dMaxValue = baseControlGroup.Base.ModelResultAttributes.Max(a => a.Values.ToArray()[0].Value);
+                    //                }
+                    //            }
+                    //        }
+                    //    }
+                    //    catch (Exception ex)
+                    //    {
+                    //    }
 
-                //}
+                    //}
 
-                ////_currentLayerIndex = mainMap.Layers.Count - 1;
+                    ////_currentLayerIndex = mainMap.Layers.Count - 1;
 
-                //_dMinValue = dMinValue;
-                //_dMaxValue = dMaxValue;
-                //_columnName = strValueField;
-                RenderMainMap(true,isBase);
+                    //_dMinValue = dMinValue;
+                    //_dMaxValue = dMaxValue;
+                    //_columnName = strValueField;
+                }
                 
-            }
-            catch (Exception ex)
-            {
-            }
+
+            RenderMainMap(true,isBase); 
+            //}
+            return;
+            
         }
 
         private string _drawStatus = string.Empty; 
@@ -2616,7 +2655,7 @@ namespace BenMAP
             for (int catNum = 0; catNum < CategoryNumber; catNum++)
             {
                 myScheme1.Categories[catNum].Symbolizer.SetOutline(Color.Transparent, 0); //make the outlines invisble
-                myScheme1.Categories[catNum].SetColor(colorBlend.ColorArray[catNum]);
+                myScheme1.Categories[catNum].SetColor(colorBlend.ColorArray[catNum].ToTransparent((float)0.2));
             }
             myScheme1.AppearsInLegend = true; //if true then legend text displayed
             myScheme1.IsExpanded = true;
@@ -2750,12 +2789,13 @@ namespace BenMAP
                 //myScheme1.IsExpanded = true;
                 //myScheme1.LegendText = _columnName;
                 
-               // myScheme1.EditorSettings.ClassificationType = ClassificationType.Custom;
+                // myScheme1.EditorSettings.ClassificationType = ClassificationType.Custom;
 
                 //(mainMap.Layers[_currentLayerIndex] as IFeatureLayer).Symbology = myScheme1;
-               // (mainMap.Layers[_currentLayerIndex] as IFeatureLayer).Symbology = CreateBCGPolyScheme(ref polLayer, 6, isBase);
+                // (mainMap.Layers[_currentLayerIndex] as IFeatureLayer).Symbology = CreateBCGPolyScheme(ref polLayer, 6, isBase);
 
-               mainMap.ViewExtents = mainMap.GetAllLayers()[0].Extent;
+                _SavedExtent = mainMap.GetAllLayers()[0].Extent;
+                mainMap.ViewExtents = _SavedExtent;
             }
             catch (Exception ex)
             {
@@ -2769,7 +2809,7 @@ namespace BenMAP
             colorBlend.SetValueRange(min, max, true);
             colorBlend._minPlotValue = _dMinValue;
             colorBlend._maxPlotValue = _dMaxValue;
-            tbMapTitle.Text = CurrentMapTitle;
+            tbMapTitle.Text = _CurrentMapTitle;
             
             ResetGisMap(null, null, isBase);
             _MapAlreadyDisplayed = true;   //-MCB lets other parts of the program know that the map is present.
@@ -5751,7 +5791,9 @@ namespace BenMAP
 
                     mainMap.Projection.CopyProperties(mainMap.Projection);
 
-                    mainMap.ViewExtents = mainMap.GetAllLayers()[0].Extent;
+                    //mainMap.ViewExtents = mainMap.GetAllLayers()[0].Extent;
+                    _SavedExtent = mainMap.GetAllLayers()[0].Extent;
+                    mainMap.ViewExtents = _SavedExtent;
                     return;
                 }
 
@@ -5784,8 +5826,9 @@ namespace BenMAP
                 //}
 
                 mainMap.Projection.CopyProperties(mainMap.Projection);
-
-                mainMap.ViewExtents = mainMap.GetAllLayers()[0].Extent;
+                _SavedExtent = mainMap.GetAllLayers()[0].Extent;
+                mainMap.ViewExtents = _SavedExtent;
+               
             }
             catch (Exception ex)
             {
@@ -5794,16 +5837,21 @@ namespace BenMAP
 
         private void tsbAddLayer_Click(object sender, EventArgs e)
         {
-            mainMap.AddLayer();
-
-
-
-
-
+            IMapLayer mylayer =  mainMap.AddLayer();
+            if (mylayer != null)
+            {
+                //MapPointLayer myptlayer = (MapPointLayer)mylayer;
+                //myptlayer.DataSet.FillAttributes();
+                
+                //dt = stateLayer.DataSet.DataTable
+                // 'Set the datagridview datasource from datatable dt
+                //dgvAttributeTable.DataSource = myptlayer.DataSet.DataTable;
+                //btnShowHideAttributeTable.Visible = true;
+            }
         }
 
         private void tsbSaveMap_Click(object sender, EventArgs e)
-        {
+        {// MCB- Shouldn't this be changed 
             try
             {
                 if (mainMap.GetAllLayers().Count == 0)
@@ -5871,13 +5919,13 @@ namespace BenMAP
             }
             else
             {
-                Extent et = mainMap.Extent;
+                _SavedExtent = mainMap.Extent;
                 splitContainer2.Panel1.Hide();
                 splitContainer2.SplitterDistance = 0;
                 this.splitContainer2.BorderStyle = BorderStyle.None;
                 isLegendHide = true;
 
-                mainMap.ViewExtents = et;
+                mainMap.ViewExtents = _SavedExtent;
             }
         }
         private FeatureSet getThemeFeatureSet(int iValue, ref double MinValue, ref double MaxValue)
@@ -6473,203 +6521,211 @@ namespace BenMAP
         private void olvCRFunctionResult_DoubleClick(object sender, EventArgs e)
         {
             btShowCRResult_Click(sender, e);
+
+            
             return;
-            if (olvCRFunctionResult.Objects == null) return;
-            string Tip = "Drawing health impact function result layer";
-            WaitShow(Tip);
-            bool bGIS = true;
-            bool bTable = true;
-            bool bChart = true;
-            int i = 0;
-            int iOldGridType = CommonClass.GBenMAPGrid.GridDefinitionID;
-            CRSelectFunctionCalculateValue crSelectFunctionCalculateValue = null;
-            for (int icro = 0; icro < CommonClass.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue.Count; icro++)
-            {
-                CRSelectFunctionCalculateValue cro = CommonClass.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue[icro];
-            }
-            foreach (CRSelectFunctionCalculateValue cr in olvCRFunctionResult.SelectedObjects)
-            {
-                crSelectFunctionCalculateValue = cr;
-            }
-            if (crSelectFunctionCalculateValue != null)
-            {
-                if (cbCRAggregation.SelectedIndex != -1 && cbCRAggregation.SelectedIndex != 0)
-                {
-                    DataRowView drv = cbCRAggregation.SelectedItem as DataRowView;
-                    int iAggregationGridType = Convert.ToInt32(drv["GridDefinitionID"]);
-                    if (iAggregationGridType != CommonClass.GBenMAPGrid.GridDefinitionID)
-                    {
-                        crSelectFunctionCalculateValue = APVX.APVCommonClass.ApplyAggregationCRSelectFunctionCalculateValue(crSelectFunctionCalculateValue, CommonClass.GBenMAPGrid.GridDefinitionID, iAggregationGridType);
-                        CommonClass.GBenMAPGrid = Grid.GridCommon.getBenMAPGridFromID(iAggregationGridType);
-                    }
 
-                }
-                if (i == 0)
-                {
-                    ClearMapTableChart();
-                    if (rdbShowActiveCR.Checked)
-                    {
-                        if (tabCtlMain.SelectedIndex == 0)
-                        {
-                            bTable = false;
-                            bChart = false;
-                        }
-                        else if (tabCtlMain.SelectedIndex == 1)
-                        {
-                            bGIS = false;
-                            bChart = false;
-                        }
-                        else if (tabCtlMain.SelectedIndex == 2)
-                        {
-                            bGIS = false;
-                            bTable = false;
-                        }
-                    }
-                    if (bTable)
-                    {
-                        InitTableResult(crSelectFunctionCalculateValue);
+            //NOTE: nothing done here!  All done by btShowCRResult_Click()
 
-                    }
-                    if (bChart)
-                    {
-                        foreach (CRSelectFunctionCalculateValue cr in olvCRFunctionResult.SelectedObjects)
-                        {
-                            InitChartResult(cr, iOldGridType);
-                            break;
-                        }
-                    }
-                    if (bGIS)
-                    {
-                        mainMap.ProjectionModeReproject = ActionMode.Never;
-                        mainMap.ProjectionModeDefine = ActionMode.Never;
-                        string shapeFileName = "";
-                        MapPolygonLayer _ResultPolygonLayer = new MapPolygonLayer();
-                        if (CommonClass.GBenMAPGrid is ShapefileGrid)
-                        {
-                            mainMap.Layers.Clear();
-                            if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.GBenMAPGrid as ShapefileGrid).ShapefileName + ".shp"))
-                            {
-                                shapeFileName = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.GBenMAPGrid as ShapefileGrid).ShapefileName + ".shp";
-                            }
-                        }
-                        else if (CommonClass.GBenMAPGrid is RegularGrid)
-                        {
-                            mainMap.Layers.Clear();
-                            if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.GBenMAPGrid as RegularGrid).ShapefileName + ".shp"))
-                            {
-                                shapeFileName = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.GBenMAPGrid as RegularGrid).ShapefileName + ".shp";
-                            }
-                        }
-                        tsbChangeProjection.Text = "change projection to Albers";
-                        mainMap.Layers.Add(shapeFileName);
+            //if (olvCRFunctionResult.Objects == null) return;
+            //string Tip = "Drawing health impact function result layer";
+            //WaitShow(Tip);
+            //bool bGIS = true;
+            //bool bTable = true;
+            //bool bChart = true;
+            //int i = 0;
+            //int iOldGridType = CommonClass.GBenMAPGrid.GridDefinitionID;
+            //CRSelectFunctionCalculateValue crSelectFunctionCalculateValue = null;
+            //for (int icro = 0; icro < CommonClass.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue.Count; icro++)
+            //{
+            //    CRSelectFunctionCalculateValue cro = CommonClass.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue[icro];
+            //}
+            //foreach (CRSelectFunctionCalculateValue cr in olvCRFunctionResult.SelectedObjects)
+            //{
+            //    crSelectFunctionCalculateValue = cr;
+            //}
+            //if (crSelectFunctionCalculateValue != null)
+            //{
+            //    if (cbCRAggregation.SelectedIndex != -1 && cbCRAggregation.SelectedIndex != 0)
+            //    {
+            //        DataRowView drv = cbCRAggregation.SelectedItem as DataRowView;
+            //        int iAggregationGridType = Convert.ToInt32(drv["GridDefinitionID"]);
+            //        if (iAggregationGridType != CommonClass.GBenMAPGrid.GridDefinitionID)
+            //        {
+            //            crSelectFunctionCalculateValue = APVX.APVCommonClass.ApplyAggregationCRSelectFunctionCalculateValue(crSelectFunctionCalculateValue, CommonClass.GBenMAPGrid.GridDefinitionID, iAggregationGridType);
+            //            CommonClass.GBenMAPGrid = Grid.GridCommon.getBenMAPGridFromID(iAggregationGridType);
+            //        }
 
-                        //DataTable dt = (mainMap.Layers[mainMap.Layers.Count - 1] as MapPolygonLayer).DataSet.DataTable;                        
-                        //(mainMap.Layers[mainMap.Layers.Count - 1] as MapPolygonLayer).LegendText = "CRResult";
-                        //(mainMap.Layers[mainMap.Layers.Count - 1] as MapPolygonLayer).Name = "CRResult";
+            //    }
+            //    if (i == 0)
+            //    {
+            //        ClearMapTableChart();
+            //        if (rdbShowActiveCR.Checked)
+            //        {
+            //            if (tabCtlMain.SelectedIndex == 0)
+            //            {
+            //                bTable = false;
+            //                bChart = false;
+            //            }
+            //            else if (tabCtlMain.SelectedIndex == 1)
+            //            {
+            //                bGIS = false;
+            //                bChart = false;
+            //            }
+            //            else if (tabCtlMain.SelectedIndex == 2)
+            //            {
+            //                bGIS = false;
+            //                bTable = false;
+            //            }
+            //        }
+            //        if (bTable)
+            //        {
+            //            InitTableResult(crSelectFunctionCalculateValue);
 
-                        DataTable dt = _ResultPolygonLayer.DataSet.DataTable;
-                        _ResultPolygonLayer.LegendText = "CRResult";
-                        _ResultPolygonLayer.Name = "CRResult";
+            //        }
+            //        if (bChart)
+            //        {
+            //            foreach (CRSelectFunctionCalculateValue cr in olvCRFunctionResult.SelectedObjects)
+            //            {
+            //                InitChartResult(cr, iOldGridType);
+            //                break;
+            //            }
+            //        }
+            //        if (bGIS)
+            //        {   
+            //            //Remove the old version of the layer if exists already
+            //            foreach (MapPolygonLayer aLayer in mainMap.GetPolygonLayers())
+            //            {
+            //                if (aLayer.Name == "CRResult")
+            //                {
+            //                    mainMap.Layers.Remove(aLayer);
+            //                    break;
+            //                }
+            //            }
                         
-                        int j = 0;
-                        int iCol = 0;
-                        int iRow = 0;
-                        List<string> lstRemoveName = new List<string>();
-                        while (j < dt.Columns.Count)
-                        {
-                            if (dt.Columns[j].ColumnName.ToLower() == "col") iCol = j;
-                            if (dt.Columns[j].ColumnName.ToLower() == "row") iRow = j;
+            //            mainMap.ProjectionModeReproject = ActionMode.Never;
+            //            mainMap.ProjectionModeDefine = ActionMode.Never;
 
-                            j++;
-                        }
-                        j = 0;
+            //            string shapeFileName = "";
+                        
+            //            if (CommonClass.GBenMAPGrid is ShapefileGrid)
+            //            {
+            //                //mainMap.Layers.Clear();
+            //                if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.GBenMAPGrid as ShapefileGrid).ShapefileName + ".shp"))
+            //                {
+            //                    shapeFileName = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.GBenMAPGrid as ShapefileGrid).ShapefileName + ".shp";
+            //                }
+            //            }
+            //            else if (CommonClass.GBenMAPGrid is RegularGrid)
+            //            {
+            //                //mainMap.Layers.Clear();
+            //                if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.GBenMAPGrid as RegularGrid).ShapefileName + ".shp"))
+            //                {
+            //                    shapeFileName = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.GBenMAPGrid as RegularGrid).ShapefileName + ".shp";
+            //                }
+            //            }
+            //            tsbChangeProjection.Text = "change projection to Albers";
+            //            MapPolygonLayer _ResultPolygonLayer = new MapPolygonLayer();
+            //            _ResultPolygonLayer = (MapPolygonLayer)mainMap.AddLayer(shapeFileName);
 
-                        while (j < dt.Columns.Count)
-                        {
-                            if (dt.Columns[j].ColumnName.ToLower() == "col" || dt.Columns[j].ColumnName.ToLower() == "row")
-                            { }
-                            else
-                                lstRemoveName.Add(dt.Columns[j].ColumnName);
+            //            //DataTable dt = (mainMap.Layers[mainMap.Layers.Count - 1] as MapPolygonLayer).DataSet.DataTable;                        
+            //            //(mainMap.Layers[mainMap.Layers.Count - 1] as MapPolygonLayer).LegendText = "CRResult";
+            //            //(mainMap.Layers[mainMap.Layers.Count - 1] as MapPolygonLayer).Name = "CRResult";
 
-                            j++;
-                        }
-                        foreach (string s in lstRemoveName)
-                        {
-                            dt.Columns.Remove(s);
-                        }
-                        dt.Columns.Add("Value", typeof(double));
-                        j = 0;
-                        while (j < dt.Columns.Count)
-                        {
-                            if (dt.Columns[j].ColumnName.ToLower() == "col") iCol = j;
-                            if (dt.Columns[j].ColumnName.ToLower() == "row") iRow = j;
+            //            DataTable dt = _ResultPolygonLayer.DataSet.DataTable;
+            //            _ResultPolygonLayer.LegendText = "CRResult";
+            //            _ResultPolygonLayer.Name = "CRResult";
+                        
+            //            int j = 0;
+            //            int iCol = 0;
+            //            int iRow = 0;
+            //            List<string> lstRemoveName = new List<string>();
+            //            while (j < dt.Columns.Count)
+            //            {
+            //                if (dt.Columns[j].ColumnName.ToLower() == "col") iCol = j;
+            //                if (dt.Columns[j].ColumnName.ToLower() == "row") iRow = j;
 
-                            j++;
-                        }
-                        j = 0;
-                        Dictionary<string, double> dicAll = new Dictionary<string, double>();
-                        foreach (CRCalculateValue crcv in crSelectFunctionCalculateValue.CRCalculateValues)
-                        {
-                            if (!dicAll.ContainsKey(crcv.Col + "," + crcv.Row))
-                                dicAll.Add(crcv.Col + "," + crcv.Row, crcv.PointEstimate);
-                        }
-                        foreach (DataRow dr in dt.Rows)
-                        {
-                            try
-                            {
-                                if (dicAll.ContainsKey(dr[iCol] + "," + dr[iRow]))
-                                    dr["Value"] = dicAll[dr[iCol] + "," + dr[iRow]];
-                                else
-                                    dr["Value"] = 0;
-                            }
-                            catch (Exception ex)
-                            {
-                            }
-                        }
-                        if (File.Exists(CommonClass.DataFilePath + @"\Tmp\Incidence.shp")) CommonClass.DeleteShapeFileName(CommonClass.DataFilePath + @"\Tmp\Incidence.shp");
-                        //(mainMap.Layers[mainMap.Layers.Count - 1] as MapPolygonLayer).DataSet.SaveAs(CommonClass.DataFilePath + @"\Tmp\Incidence.shp", true);
-                        _ResultPolygonLayer.DataSet.SaveAs(CommonClass.DataFilePath + @"\Tmp\Incidence.shp", true);
-                        mainMap.Layers.Clear();
-                        MapPolygonLayer polLayer = (MapPolygonLayer)mainMap.Layers.Add(CommonClass.DataFilePath + @"\Tmp\Incidence.shp");
-                        //MapPolygonLayer polLayer = mainMap.Layers[mainMap.Layers.Count - 1] as MapPolygonLayer;
-                        string strValueField = polLayer.DataSet.DataTable.Columns[polLayer.DataSet.DataTable.Columns.Count - 1].ColumnName;
-                        //PolygonScheme myScheme1 = new PolygonScheme();
-                        //float fl = (float)0.1;
-                        //myScheme1.EditorSettings.StartColor = Color.Blue;
-                        //myScheme1.EditorSettings.StartColor.ToTransparent(fl);
-                        //myScheme1.EditorSettings.EndColor = Color.Red;
-                        //myScheme1.EditorSettings.EndColor.ToTransparent(fl);
+            //                j++;
+            //            }
+            //            j = 0;
 
-                        //myScheme1.EditorSettings.ClassificationType = ClassificationType.Quantities;
-                        //myScheme1.EditorSettings.IntervalMethod = IntervalMethod.NaturalBreaks;
-                        //myScheme1.EditorSettings.IntervalSnapMethod = IntervalSnapMethod.Rounding;
-                        //myScheme1.EditorSettings.IntervalRoundingDigits = 3;
-                        //myScheme1.EditorSettings.NumBreaks = 6;
-                        //myScheme1.EditorSettings.FieldName = strValueField; myScheme1.EditorSettings.UseGradient = false;
-                        //myScheme1.CreateCategories(polLayer.DataSet.DataTable);
-                        _columnName = strValueField;
-                        polLayer.Symbology = CreateResultPolyScheme(ref polLayer, 6, "H"); //-MCB added
-                        double dMinValue = 0.0;
-                        double dMaxValue = 0.0;
-                        dMinValue = crSelectFunctionCalculateValue.CRCalculateValues.Count == 0 ? 0 : crSelectFunctionCalculateValue.CRCalculateValues.Min(a => a.PointEstimate);
-                        dMaxValue = crSelectFunctionCalculateValue.CRCalculateValues.Count == 0 ? 0 : crSelectFunctionCalculateValue.CRCalculateValues.Max(a => a.PointEstimate);
+            //            while (j < dt.Columns.Count)
+            //            {
+            //                if (dt.Columns[j].ColumnName.ToLower() == "col" || dt.Columns[j].ColumnName.ToLower() == "row")
+            //                { }
+            //                else
+            //                    lstRemoveName.Add(dt.Columns[j].ColumnName);
 
-                        _dMinValue = dMinValue;
-                        _dMaxValue = dMaxValue;
-                        //_currentLayerIndex = mainMap.Layers.Count - 1;
-                        _CurrentIMapLayer = polLayer;
-                        string pollutantUnit = string.Empty; 
-                        _columnName = strValueField;
-                        CurrentMapTitle = CommonClass.MainSetup.SetupName + " Setup: " + _ResultPolygonLayer.LegendText + ", Health Impact Function Result"; 
-                        RenderMainMap(true, "H");
+            //                j++;
+            //            }
+            //            foreach (string s in lstRemoveName)
+            //            {
+            //                dt.Columns.Remove(s);
+            //            }
+            //            dt.Columns.Add("Value", typeof(double));
+            //            j = 0;
+            //            while (j < dt.Columns.Count)
+            //            {
+            //                if (dt.Columns[j].ColumnName.ToLower() == "col") iCol = j;
+            //                if (dt.Columns[j].ColumnName.ToLower() == "row") iRow = j;
 
-                        addRegionLayerGroupToMainMap();
-                    }
-                }
-                i++;
-                CommonClass.GBenMAPGrid = Grid.GridCommon.getBenMAPGridFromID(iOldGridType);
-            }
-            WaitClose();
+            //                j++;
+            //            }
+            //            j = 0;
+            //            Dictionary<string, double> dicAll = new Dictionary<string, double>();
+            //            foreach (CRCalculateValue crcv in crSelectFunctionCalculateValue.CRCalculateValues)
+            //            {
+            //                if (!dicAll.ContainsKey(crcv.Col + "," + crcv.Row))
+            //                    dicAll.Add(crcv.Col + "," + crcv.Row, crcv.PointEstimate);
+            //            }
+            //            foreach (DataRow dr in dt.Rows)
+            //            {
+            //                try
+            //                {
+            //                    if (dicAll.ContainsKey(dr[iCol] + "," + dr[iRow]))
+            //                        dr["Value"] = dicAll[dr[iCol] + "," + dr[iRow]];
+            //                    else
+            //                        dr["Value"] = 0;
+            //                }
+            //                catch (Exception ex)
+            //                {
+            //                }
+            //            }
+            //            if (File.Exists(CommonClass.DataFilePath + @"\Tmp\Incidence.shp")) CommonClass.DeleteShapeFileName(CommonClass.DataFilePath + @"\Tmp\Incidence.shp");
+            //            //(mainMap.Layers[mainMap.Layers.Count - 1] as MapPolygonLayer).DataSet.SaveAs(CommonClass.DataFilePath + @"\Tmp\Incidence.shp", true);
+            //            _ResultPolygonLayer.DataSet.SaveAs(CommonClass.DataFilePath + @"\Tmp\Incidence.shp", true);
+                        
+            //            //mainMap.Layers.Clear();
+
+            //            MapPolygonLayer polLayer = _ResultPolygonLayer;
+            //            //mainMap.Layers.Add(polLayer);           //(CommonClass.DataFilePath + @"\Tmp\Incidence.shp");
+                        
+            //            //MapPolygonLayer polLayer = mainMap.Layers[mainMap.Layers.Count - 1] as MapPolygonLayer;
+            //            string strValueField = polLayer.DataSet.DataTable.Columns[polLayer.DataSet.DataTable.Columns.Count - 1].ColumnName;
+                        
+            //            _columnName = strValueField;
+            //            polLayer.Symbology = CreateResultPolyScheme(ref polLayer, 6, "H"); //-MCB added
+            //            double dMinValue = 0.0;
+            //            double dMaxValue = 0.0;
+            //            dMinValue = crSelectFunctionCalculateValue.CRCalculateValues.Count == 0 ? 0 : crSelectFunctionCalculateValue.CRCalculateValues.Min(a => a.PointEstimate);
+            //            dMaxValue = crSelectFunctionCalculateValue.CRCalculateValues.Count == 0 ? 0 : crSelectFunctionCalculateValue.CRCalculateValues.Max(a => a.PointEstimate);
+
+            //            _dMinValue = dMinValue;
+            //            _dMaxValue = dMaxValue;
+            //            //_currentLayerIndex = mainMap.Layers.Count - 1;
+            //            _CurrentIMapLayer = polLayer;
+            //            string pollutantUnit = string.Empty; 
+            //            _columnName = strValueField;
+            //            CurrentMapTitle = CommonClass.MainSetup.SetupName + " Setup: " + _ResultPolygonLayer.LegendText + ", Health Impact Function Result"; 
+            //            RenderMainMap(true, "H");
+
+            //            addRegionLayerGroupToMainMap();
+            //        }
+            //    }
+            //    i++;
+            //    CommonClass.GBenMAPGrid = Grid.GridCommon.getBenMAPGridFromID(iOldGridType);
+            //}
+            //WaitClose();
         }
         private void tlvAPVResult_DoubleClick(object sender, EventArgs e)
         {
@@ -6757,9 +6813,20 @@ namespace BenMAP
                 }
                 else
                 {
-                    bGIS = false;
-                    bChart = false;
-                    tabCtlMain.SelectedIndex = 1;
+                    if (_MapAlreadyDisplayed && _APVdragged)//MCB- a kluge: Need a better way to determine if sender was from map
+                    {
+                        bGIS = true;
+                        bChart = false;
+                        tabCtlMain.SelectedIndex = 0;
+
+                    }
+                    else
+                    {
+                        bGIS = false;
+                        bChart = false;
+                        tabCtlMain.SelectedIndex = 1;
+                    }
+
                     foreach (KeyValuePair<AllSelectValuationMethod, string> keyValue in tlvAPVResult.Objects)
                     {
                         AllSelectValuationMethod allSelectValuationMethod = keyValue.Key;
@@ -6923,11 +6990,26 @@ namespace BenMAP
                     mainMap.ProjectionModeReproject = ActionMode.Never;
                     mainMap.ProjectionModeDefine = ActionMode.Never;
                     string shapeFileName = "";
-                    if (!chbAPVAggregation.Checked)
+
+                    MapGroup ResultsMG = AddMapGroup("Results", true);
+                    string author = "Unknown";
+                    if (lstallSelectValuationMethodAndValue.First().AllSelectValuationMethod != null
+                        && lstallSelectValuationMethodAndValue.First().AllSelectValuationMethod.Author != null)
                     {
-                        if (CommonClass.GBenMAPGrid is ShapefileGrid)
+                        author = lstallSelectValuationMethodAndValue.First().AllSelectValuationMethod.Author;
+                        if (author.IndexOf(" ") > -1)
                         {
-                            mainMap.Layers.Clear();
+                            author = author.Substring(0, author.IndexOf(" "));
+                        }
+                    }
+
+                    RemoveOldPolygonLayer("PV:"+ author, ResultsMG.GetLayers(), true);
+
+                    if (!chbAPVAggregation.Checked)
+                    {   
+                        //mainMap.Layers.Clear();
+                        if (CommonClass.GBenMAPGrid is ShapefileGrid)
+                        {        
                             if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.GBenMAPGrid as ShapefileGrid).ShapefileName + ".shp"))
                             {
                                 shapeFileName = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.GBenMAPGrid as ShapefileGrid).ShapefileName + ".shp";
@@ -6935,7 +7017,6 @@ namespace BenMAP
                         }
                         else if (CommonClass.GBenMAPGrid is RegularGrid)
                         {
-                            mainMap.Layers.Clear();
                             if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.GBenMAPGrid as RegularGrid).ShapefileName + ".shp"))
                             {
                                 shapeFileName = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.GBenMAPGrid as RegularGrid).ShapefileName + ".shp";
@@ -6946,7 +7027,6 @@ namespace BenMAP
                     {
                         if (CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance.ValuationAggregation is ShapefileGrid)
                         {
-                            mainMap.Layers.Clear();
                             if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance.ValuationAggregation as ShapefileGrid).ShapefileName + ".shp"))
                             {
                                 shapeFileName = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance.ValuationAggregation as ShapefileGrid).ShapefileName + ".shp";
@@ -6954,7 +7034,6 @@ namespace BenMAP
                         }
                         else if (CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance.ValuationAggregation is RegularGrid)
                         {
-                            mainMap.Layers.Clear();
                             if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance.ValuationAggregation as RegularGrid).ShapefileName + ".shp"))
                             {
                                 shapeFileName = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance.ValuationAggregation as RegularGrid).ShapefileName + ".shp";
@@ -6965,13 +7044,13 @@ namespace BenMAP
                     {
                         shapeFileName = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + ((benMapGridShow is ShapefileGrid) ? (benMapGridShow as ShapefileGrid).ShapefileName : (benMapGridShow as RegularGrid).ShapefileName) + ".shp";
                     }
-                    MapPolygonLayer APVResultPolyLayer1 = (MapPolygonLayer)mainMap.Layers.Add(shapeFileName);
+                    MapPolygonLayer APVResultPolyLayer1 = (MapPolygonLayer)ResultsMG.Layers.Add(shapeFileName);
                     //IFeatureSet fs = (mainMap.Layers[0] as MapPolygonLayer).DataSet;
                     //(mainMap.Layers[0] as MapPolygonLayer).Name = "APVResult";
                     //(mainMap.Layers[0] as MapPolygonLayer).LegendText = "APVResult";
                     IFeatureSet fs = APVResultPolyLayer1.DataSet;
-                    APVResultPolyLayer1.Name = "APVResult";
-                    APVResultPolyLayer1.LegendText = "APVResult";
+                    APVResultPolyLayer1.Name = "PV:" + author;
+                    APVResultPolyLayer1.LegendText = APVResultPolyLayer1.Name;
                     int j = 0;
                     int iCol = 0;
                     int iRow = 0;
@@ -7029,22 +7108,22 @@ namespace BenMAP
                     }
                     if (File.Exists(CommonClass.DataFilePath + @"\Tmp\APVTemp.shp")) CommonClass.DeleteShapeFileName(CommonClass.DataFilePath + @"\Tmp\APVTemp.shp");
                     fs.SaveAs(CommonClass.DataFilePath + @"\Tmp\APVTemp.shp", true);
-                    mainMap.Layers.Clear();
-                    APVResultPolyLayer1 = (MapPolygonLayer)mainMap.Layers.Add(CommonClass.DataFilePath + @"\Tmp\APVTemp.shp");
+                    //mainMap.Layers.Clear();
+                    
+                    //APVResultPolyLayer1 = (MapPolygonLayer)mainMap.Layers.Add(CommonClass.DataFilePath + @"\Tmp\APVTemp.shp");
                    //(mainMap.Layers[mainMap.Layers.Count - 1] as MapPolygonLayer).DataSet.DataTable.Columns[(mainMap.Layers[mainMap.Layers.Count - 1] as MapPolygonLayer).DataSet.DataTable.Columns.Count - 1].ColumnName = "Pooled Valuation";
-                    APVResultPolyLayer1.DataSet.DataTable.Columns[(APVResultPolyLayer1).DataSet.DataTable.Columns.Count - 1].ColumnName = "Pooled Valuation";
-               
-                    string author = "Pooled Valuation";
-                    if (lstallSelectValuationMethodAndValue.First().AllSelectValuationMethod != null
-                        && lstallSelectValuationMethodAndValue.First().AllSelectValuationMethod.Author != null)
-                    {
-                        author = lstallSelectValuationMethodAndValue.First().AllSelectValuationMethod.Author;
-                        if (author.IndexOf(" ") > -1)
-                        {
-                            author = author.Substring(0, author.IndexOf(" "));
-                        }
-                    }
-                    APVResultPolyLayer1.LegendText = author;
+                    APVResultPolyLayer1.DataSet.DataTable.Columns[(APVResultPolyLayer1).DataSet.DataTable.Columns.Count - 1].ColumnName = "Pooled Valuation";      
+                    //string author = "Pooled Valuation";
+                    //if (lstallSelectValuationMethodAndValue.First().AllSelectValuationMethod != null
+                    //    && lstallSelectValuationMethodAndValue.First().AllSelectValuationMethod.Author != null)
+                    //{
+                    //    author = lstallSelectValuationMethodAndValue.First().AllSelectValuationMethod.Author;
+                    //    if (author.IndexOf(" ") > -1)
+                    //    {
+                    //        author = author.Substring(0, author.IndexOf(" "));
+                    //    }
+                    //}   
+                    //APVResultPolyLayer1.LegendText = "PV:"+ author;
                     MapPolygonLayer polLayer = APVResultPolyLayer1;
                     string strValueField = polLayer.DataSet.DataTable.Columns[polLayer.DataSet.DataTable.Columns.Count - 1].ColumnName;
                     //PolygonScheme myScheme1 = new PolygonScheme();
@@ -7074,7 +7153,7 @@ namespace BenMAP
                     //_currentLayerIndex = mainMap.Layers.Count - 1;
                     _CurrentIMapLayer = APVResultPolyLayer1;
                     _columnName = strValueField;
-                    CurrentMapTitle = CommonClass.MainSetup.SetupName + " Setup: " + APVResultPolyLayer1.LegendText + ", Pooled Valuation Result"; 
+                    _CurrentMapTitle = CommonClass.MainSetup.SetupName + " Setup: " + APVResultPolyLayer1.LegendText + ", Pooled Valuation Result"; 
                     RenderMainMap(true,"A");
 
                     addRegionLayerGroupToMainMap();
@@ -9248,7 +9327,7 @@ namespace BenMAP
                         {
                             if (CommonClass.IncidencePoolingAndAggregationAdvance.IncidenceAggregation is ShapefileGrid)
                             {
-                                mainMap.Layers.Clear();
+                                //mainMap.Layers.Clear();
                                 if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.IncidencePoolingAndAggregationAdvance.IncidenceAggregation as ShapefileGrid).ShapefileName + ".shp"))
                                 {
                                     shapeFileName = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.IncidencePoolingAndAggregationAdvance.IncidenceAggregation as ShapefileGrid).ShapefileName + ".shp";
@@ -9256,7 +9335,7 @@ namespace BenMAP
                             }
                             else if (CommonClass.IncidencePoolingAndAggregationAdvance.IncidenceAggregation is RegularGrid)
                             {
-                                mainMap.Layers.Clear();
+                                //mainMap.Layers.Clear();
                                 if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.IncidencePoolingAndAggregationAdvance.IncidenceAggregation as RegularGrid).ShapefileName + ".shp"))
                                 {
                                     shapeFileName = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.IncidencePoolingAndAggregationAdvance.IncidenceAggregation as RegularGrid).ShapefileName + ".shp";
@@ -9267,7 +9346,7 @@ namespace BenMAP
                         {
                             if (CommonClass.GBenMAPGrid is ShapefileGrid)
                             {
-                                mainMap.Layers.Clear();
+                                //mainMap.Layers.Clear();
                                 if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.GBenMAPGrid as ShapefileGrid).ShapefileName + ".shp"))
                                 {
                                     shapeFileName = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.GBenMAPGrid as ShapefileGrid).ShapefileName + ".shp";
@@ -9275,7 +9354,7 @@ namespace BenMAP
                             }
                             else if (CommonClass.GBenMAPGrid is RegularGrid)
                             {
-                                mainMap.Layers.Clear();
+                                //mainMap.Layers.Clear();
                                 if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.GBenMAPGrid as RegularGrid).ShapefileName + ".shp"))
                                 {
                                     shapeFileName = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.GBenMAPGrid as RegularGrid).ShapefileName + ".shp";
@@ -9341,7 +9420,9 @@ namespace BenMAP
                         }
                         if (File.Exists(CommonClass.DataFilePath + @"\Tmp\CRTemp.shp")) CommonClass.DeleteShapeFileName(CommonClass.DataFilePath + @"\Tmp\CRTemp.shp");
                         fs.SaveAs(CommonClass.DataFilePath + @"\Tmp\CRTemp.shp", true);
-                        mainMap.Layers.Clear();
+                        
+                        //mainMap.Layers.Clear();
+                        
                         MapPolygonLayer polLayer = (MapPolygonLayer)mainMap.Layers.Add(CommonClass.DataFilePath + @"\Tmp\CRTemp.shp");
                         //MapPolygonLayer polLayer = mainMap.Layers[mainMap.Layers.Count - 1] as MapPolygonLayer;
                         string strValueField = polLayer.DataSet.DataTable.Columns[polLayer.DataSet.DataTable.Columns.Count - 1].ColumnName;
@@ -9371,7 +9452,7 @@ namespace BenMAP
                         //_currentLayerIndex = mainMap.Layers.Count - 1;
                         _CurrentIMapLayer = polLayer;
                         _columnName = strValueField;
-                        CurrentMapTitle = CommonClass.MainSetup.SetupName + " Setup: " + strValueField + ", Pooled Incidence Results"; 
+                        _CurrentMapTitle = CommonClass.MainSetup.SetupName + " Setup: " + strValueField + ", Pooled Incidence Results"; 
                         RenderMainMap(true, "IP");
 
                         addRegionLayerGroupToMainMap();
@@ -9394,61 +9475,18 @@ namespace BenMAP
             if (tabCtlReport.TabPages[tabCtlReport.SelectedIndex].Name == "tabPoolingIncidence")
             {
                 olvIncidence.SelectAll();
+                _IncidenceDragged = true;
                 tlvIncidence_DoubleClick(sender, e);
+                _IncidenceDragged = false;
             }
             if (tabCtlReport.TabPages[tabCtlReport.SelectedIndex].Name == "tabAPVResultGISShow")
             {
                 tlvAPVResult.SelectAll();
+                _APVdragged = true;
                 tlvAPVResult_DoubleClick(sender, e);
+                _APVdragged = false;
             }
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
         private void btnBrowse_Click(object sender, EventArgs e)
         {
@@ -10723,13 +10761,60 @@ namespace BenMAP
                                     OLVResultsShow.SetObjects(null);
                                 }
                             }
+                            //Add Pollutants Mapgroup if it doesn't exist already -MCB
+                            //MapGroup ResultsMapGroup = new MapGroup();
+                            MapGroup ResultsMapGroup = AddMapGroup("Results", true);
+                            //bool _mgFound = false;
+                            //foreach (IMapLayer layer in mainMap.Layers)
+                            //{
+                            //    if (layer is MapGroup || layer is IMapGroup)
+                            //    {
+                            //        if (layer.LegendText == "Results")
+                            //        {
+                            //            ResultsMapGroup = (MapGroup)layer;  //Results map group found
+                            //            _mgFound = true;
+                            //            break;
+                            //        }
+                            //        else
+                            //        { // Unexpand other mapgroups to increase display room for new layer and turn it off
+                            //            layer.IsExpanded = false;
+                            //            layer.IsVisible = false;
+                            //        }
+                            //    }
+                            //}
+
+                            //if (!_mgFound)  //Results map group not found, so add it
+                            //{
+                            //    ResultsMapGroup.LegendText = "Results";
+                            //    mainMap.Layers.Add(ResultsMapGroup);
+                            //}
+
+                            string author = lstCRSelectFunctionCalculateValue.First().CRSelectFunction.BenMAPHealthImpactFunction.Author;
+                            if (author.IndexOf(" ") != -1)
+                            {
+                                author = author.Substring(0, author.IndexOf(" "));
+                            }
+                            //Remove the old version of the layer if exists already
+                            RemoveOldPolygonLayer("HIF:"+ author, ResultsMapGroup.GetLayers(), true);
+                            //foreach (MapPolygonLayer aLayer in ResultsMapGroup.GetLayers())  //shrink & turn off existing layers or remove if a duplicate of the new layer
+                            //{
+                            //    if (aLayer.Name == "HIF")   //MCB-May want to make it more specific more than one HIF layer is allowed
+                            //    {
+                            //        ResultsMapGroup.Layers.Remove(aLayer);
+                            //        //break;
+                            //    }
+                            //    else  
+                            //    { // Unexpand it to increase display room for new layer
+                            //        aLayer.IsExpanded = false;
+                            //    }
+                            //}
                             tsbChangeProjection.Text = "change projection to Albers";
                             mainMap.ProjectionModeReproject = ActionMode.Never;
                             mainMap.ProjectionModeDefine = ActionMode.Never;
                             string shapeFileName = "";
+                            //mainMap.Layers.Clear();
                             if (CommonClass.GBenMAPGrid is ShapefileGrid)
-                            {
-                                mainMap.Layers.Clear();
+                            {                               
                                 if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.GBenMAPGrid as ShapefileGrid).ShapefileName + ".shp"))
                                 {
                                     shapeFileName = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.GBenMAPGrid as ShapefileGrid).ShapefileName + ".shp";
@@ -10737,22 +10822,23 @@ namespace BenMAP
                             }
                             else if (CommonClass.GBenMAPGrid is RegularGrid)
                             {
-                                mainMap.Layers.Clear();
                                 if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.GBenMAPGrid as RegularGrid).ShapefileName + ".shp"))
                                 {
                                     shapeFileName = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.GBenMAPGrid as RegularGrid).ShapefileName + ".shp";
                                 }
                             }
 
-                            MapPolygonLayer CRResultMapPolyLayer = (MapPolygonLayer)mainMap.Layers.Add(shapeFileName);
+                            //MapPolygonLayer CRResultMapPolyLayer = (MapPolygonLayer)mainMap.Layers.Add(shapeFileName);
+                            MapPolygonLayer CRResultMapPolyLayer = (MapPolygonLayer)ResultsMapGroup.Layers.Add(shapeFileName);
 
                             DataTable dt = CRResultMapPolyLayer.DataSet.DataTable;
-                            string author = lstCRSelectFunctionCalculateValue.First().CRSelectFunction.BenMAPHealthImpactFunction.Author; if (author.IndexOf(" ") != -1)
-                            {
-                                author = author.Substring(0, author.IndexOf(" "));
-                            }
-                            CRResultMapPolyLayer.LegendText = author;
-                            CRResultMapPolyLayer.Name = author;
+                            //string author = lstCRSelectFunctionCalculateValue.First().CRSelectFunction.BenMAPHealthImpactFunction.Author;
+                            //if (author.IndexOf(" ") != -1)
+                            //{
+                            //    author = author.Substring(0, author.IndexOf(" "));
+                            //}
+                            //CRResultMapPolyLayer.LegendText = author;
+                            //CRResultMapPolyLayer.Name = author;
                             int j = 0;
                             int iCol = 0;
                             int iRow = 0;
@@ -10809,25 +10895,14 @@ namespace BenMAP
                             }
                             if (File.Exists(CommonClass.DataFilePath + @"\Tmp\CRTemp.shp")) CommonClass.DeleteShapeFileName(CommonClass.DataFilePath + @"\Tmp\CRTemp.shp");
                             CRResultMapPolyLayer.DataSet.SaveAs(CommonClass.DataFilePath + @"\Tmp\CRTemp.shp", true);
-                            mainMap.Layers.Clear();
-                            CRResultMapPolyLayer = (MapPolygonLayer)mainMap.Layers.Add(CommonClass.DataFilePath + @"\Tmp\CRTemp.shp");
-                            MapPolygonLayer polLayer = CRResultMapPolyLayer;
-                            string strValueField = polLayer.DataSet.DataTable.Columns[polLayer.DataSet.DataTable.Columns.Count - 1].ColumnName;
-                            //PolygonScheme myScheme1 = new PolygonScheme();
-                            //float fl = (float)0.1;
-                            //myScheme1.EditorSettings.StartColor = Color.Blue;
-                            //myScheme1.EditorSettings.StartColor.ToTransparent(fl);
-                            //myScheme1.EditorSettings.EndColor = Color.Red;
-                            //myScheme1.EditorSettings.EndColor.ToTransparent(fl);
+                            //mainMap.Layers.Clear();
 
-                            //myScheme1.EditorSettings.ClassificationType = ClassificationType.Quantities;
-                            //myScheme1.EditorSettings.IntervalMethod = IntervalMethod.NaturalBreaks;
-                            //myScheme1.EditorSettings.IntervalSnapMethod = IntervalSnapMethod.Rounding;
-                            //myScheme1.EditorSettings.IntervalRoundingDigits = 1;
-                            //myScheme1.EditorSettings.NumBreaks = 6;
-                            //myScheme1.EditorSettings.FieldName = strValueField;
-                            //myScheme1.EditorSettings.UseGradient = false;
-                            //myScheme1.CreateCategories(polLayer.DataSet.DataTable);
+                            //CRResultMapPolyLayer = (MapPolygonLayer)mainMap.Layers.Add(CommonClass.DataFilePath + @"\Tmp\CRTemp.shp");
+                            
+                            MapPolygonLayer polLayer = CRResultMapPolyLayer;
+                            polLayer.LegendText = "HIF:" + author;
+                            polLayer.Name = polLayer.LegendText;
+                            string strValueField = polLayer.DataSet.DataTable.Columns[polLayer.DataSet.DataTable.Columns.Count - 1].ColumnName;
                             _columnName = strValueField;
                             polLayer.Symbology = CreateResultPolyScheme(ref polLayer, 6, "R"); //-MCB added
 
@@ -10840,12 +10915,13 @@ namespace BenMAP
                             _dMaxValue = dMaxValue;
                             //_currentLayerIndex = mainMap.Layers.Count - 1;
                             _CurrentIMapLayer = polLayer;
-                            string pollutantUnit = string.Empty; _columnName = strValueField;
-                            CurrentMapTitle = CommonClass.MainSetup.SetupName + " Setup: " + CRResultMapPolyLayer.LegendText + ",  Health Impact Function Result";  //-MCB draft until better title
-                            RenderMainMap(true, "R");
-                            polLayer.LegendText = author;
-                            polLayer.Name = author;
-
+                            string pollutantUnit = string.Empty;
+                            _columnName = strValueField;
+                            _CurrentMapTitle = CommonClass.MainSetup.SetupName + " Setup: " + CRResultMapPolyLayer.LegendText + ",  Health Impact Function Result";  //-MCB draft until better title
+                            
+                            //polLayer.LegendText = author;
+                            //polLayer.Name = "HIF_" + author;
+                            RenderMainMap(true, "H");   //"R"
                             addRegionLayerGroupToMainMap();
                         }
                     }
@@ -12212,6 +12288,98 @@ namespace BenMAP
         {
 
         }
+        private void RemoveOldPolygonLayer(string LayerName, IList<ILayer> layerList, bool ShrinkOtherLayersInMapGroup = true)
+        {
+            MapGroup aMGLayer = new MapGroup();
+            MapPolygonLayer aPolyLayer = new MapPolygonLayer();
+            //MapGroup aNestedMGLayer = new MapGroup();
+            //MapPolygonLayer aFLayer = new MapPolygonLayer();
+
+            //Remove the old version of the layer if exists already
+            foreach (ILayer aLayer in layerList)
+            {
+                if (aLayer is MapGroup || aLayer is IMapGroup) //Look within Map groups
+                {
+                    aMGLayer = (MapGroup)aLayer;
+                    RemoveOldPolygonLayer(LayerName, aMGLayer.GetLayers(), ShrinkOtherLayersInMapGroup);
+                    //foreach (IMapLayer aLayerInMG in aMGLayer.GetLayers())  //shrink & turn off existing layers or remove if a duplicate of the new layer
+                    //{
+                    //    if (aLayerInMG is MapGroup || aLayerInMG is IMapGroup) //Look within nested Map groups
+                    //    {
+                    //        aNestedMGLayer = (MapGroup)aLayerInMG;
+                    //        RemoveOldPolygonLayer(LayerName, aNestedMGLayer.GetLayers(), ShrinkOtherLayersInMapGroup);
+                    //    }
+                    //    else
+                    //    {
+                    //        if (aLayerInMG.Name == LayerName)   //MCB-May want to make it more specific more than one HIF layer is allowed
+                    //        {
+                    //            aMGLayer.Layers.Remove(aLayerInMG);
+                    //            //break;
+                    //        }
+                    //        else if (ShrinkOtherLayersInMapGroup)  // Unexpand this layer to increase display room for new layer
+                    //        {
+                    //            aLayerInMG.IsExpanded = false;
+                    //        }
+                    //    }
+                    //}
+                }
+                else 
+                    if (aLayer is FeatureLayer || aLayer is IFeatureLayer) // layer at root level(not in a mapgroup
+                    {
+                        if (aLayer is MapPolygonLayer)
+                        {
+                            //MapPolygonLayer aFLayer = new MapPolygonLayer();
+                            aPolyLayer = (MapPolygonLayer)aLayer;
+
+                            if (aPolyLayer.Name == LayerName)
+                            {
+                                layerList.Remove((IMapLayer)aLayer);
+                                //break;
+                            }
+                            else if (ShrinkOtherLayersInMapGroup)  // Unexpand this layer to increase display room for new layer
+                            {
+                                aLayer.IsExpanded = false;
+                            }
+                        }
+                    }
+            }
+
+           return;
+        }
+
+        private MapGroup AddMapGroup(string mgName, bool ShrinkOtherMG = true)
+        {
+            if (mgName == null || mgName =="") return null;   //confirm map group name is valid
+
+            bool _mgFound = false;
+            MapGroup NewMapGroup = new MapGroup();
+
+            //See if a map group with the Map group name already exists
+            foreach (IMapLayer layer in mainMap.Layers)
+            {
+                if (layer is MapGroup || layer is IMapGroup)
+                {
+                    if (layer.LegendText == mgName)
+                    {
+                        NewMapGroup = (MapGroup)layer;     //Results map group found
+                        _mgFound = true;
+                        break;
+                    }
+                    else if (ShrinkOtherMG)                // Unexpand other mapgroups to increase display room for new layer
+                    { 
+                        layer.IsExpanded = false;
+                    }
+                }
+            }
+
+            if (!_mgFound)  //Results map group not found, so add it
+            {
+                NewMapGroup.LegendText = mgName;
+                mainMap.Layers.Add(NewMapGroup);
+            }
+
+            return NewMapGroup;
+        }
 
         private void tlvIncidence_DoubleClick(object sender, EventArgs e)
         {
@@ -12278,9 +12446,19 @@ namespace BenMAP
                         }
 
                     }
-                    bGIS = false;
-                    bChart = false;
-                    tabCtlMain.SelectedIndex = 1;
+
+                    if (_MapAlreadyDisplayed && _IncidenceDragged)//MCB- a kluge: Need a better way to determine if sender was from map
+                    {
+                        bGIS = true;
+                        tabCtlMain.SelectedIndex = 0;
+                        bChart = false;
+                    }
+                    else
+                    {
+                        bGIS = false;
+                        bChart = false;
+                        tabCtlMain.SelectedIndex = 1;
+                    }
                 }
                 if (lstAllSelectCRFunction.Count > 0) crSelectFunctionCalculateValue = lstAllSelectCRFunction.First().CRSelectFunctionCalculateValue;
                 else return;
@@ -12349,9 +12527,11 @@ namespace BenMAP
                             mainMap.ProjectionModeDefine = ActionMode.Never;
                             string shapeFileName = "";
 
+                            MapGroup ResultsMG = AddMapGroup("Results", true);
+                            RemoveOldPolygonLayer("Pooled Incidence", mainMap.GetLayers(), true);
+                            //mainMap.Layers.Clear();
                             if (incidenceGrid is ShapefileGrid)
                             {
-                                mainMap.Layers.Clear();
                                 if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (incidenceGrid as ShapefileGrid).ShapefileName + ".shp"))
                                 {
                                     shapeFileName = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (incidenceGrid as ShapefileGrid).ShapefileName + ".shp";
@@ -12359,18 +12539,17 @@ namespace BenMAP
                             }
                             else if (incidenceGrid is RegularGrid)
                             {
-                                mainMap.Layers.Clear();
                                 if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (incidenceGrid as RegularGrid).ShapefileName + ".shp"))
                                 {
                                     shapeFileName = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (incidenceGrid as RegularGrid).ShapefileName + ".shp";
                                 }
                             }
 
-                            MapPolygonLayer tlvIPoolMapPolyLayer = (MapPolygonLayer)mainMap.Layers.Add(shapeFileName);
+                            MapPolygonLayer tlvIPoolMapPolyLayer = (MapPolygonLayer)ResultsMG.Layers.Add(shapeFileName);
 
                             DataTable dt = tlvIPoolMapPolyLayer.DataSet.DataTable;
-                            tlvIPoolMapPolyLayer.LegendText = "CRResult";
-                            tlvIPoolMapPolyLayer.Name = "CRResult";
+                            //tlvIPoolMapPolyLayer.LegendText = "Pooled Incidence";
+                            //tlvIPoolMapPolyLayer.Name = "Pooled Incidence";
                             int j = 0;
                             int iCol = 0;
                             int iRow = 0;
@@ -12426,12 +12605,14 @@ namespace BenMAP
                                 {
                                 }
                             }
+                            string author = "Pooled Incidence";
                             if (File.Exists(CommonClass.DataFilePath + @"\Tmp\CRTemp.shp")) CommonClass.DeleteShapeFileName(CommonClass.DataFilePath + @"\Tmp\CRTemp.shp");
                             tlvIPoolMapPolyLayer.DataSet.SaveAs(CommonClass.DataFilePath + @"\Tmp\CRTemp.shp", true);
-                            mainMap.Layers.Clear();
-                            tlvIPoolMapPolyLayer = (MapPolygonLayer)mainMap.Layers.Add(CommonClass.DataFilePath + @"\Tmp\CRTemp.shp");
+                            // mainMap.Layers.Clear();  -MCB, will need to add code to clear the equivalent layer if it exists already
+
+                            //tlvIPoolMapPolyLayer = (MapPolygonLayer)ResultsMG.Layers.Add(CommonClass.DataFilePath + @"\Tmp\CRTemp.shp");
                             tlvIPoolMapPolyLayer.DataSet.DataTable.Columns[tlvIPoolMapPolyLayer.DataSet.DataTable.Columns.Count - 1].ColumnName = "Pooled Incidence";
-                            string author = "Pooled Incidence";
+                            
                             if (crSelectFunctionCalculateValue.CRSelectFunction != null && crSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction != null
                                 && crSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Author != null)
                             {
@@ -12442,23 +12623,9 @@ namespace BenMAP
                                 }
                             }
 
-                            tlvIPoolMapPolyLayer.LegendText = author;
                             MapPolygonLayer polLayer = tlvIPoolMapPolyLayer;
                             string strValueField = polLayer.DataSet.DataTable.Columns[polLayer.DataSet.DataTable.Columns.Count - 1].ColumnName;
-                            //PolygonScheme myScheme1 = new PolygonScheme();
-                            //float fl = (float)0.1;
-                            //myScheme1.EditorSettings.StartColor = Color.Blue;
-                            //myScheme1.EditorSettings.StartColor.ToTransparent(fl);
-                            //myScheme1.EditorSettings.EndColor = Color.Red;
-                            //myScheme1.EditorSettings.EndColor.ToTransparent(fl);
-
-                            //myScheme1.EditorSettings.ClassificationType = ClassificationType.Quantities;
-                            //myScheme1.EditorSettings.IntervalMethod = IntervalMethod.NaturalBreaks;
-                            //myScheme1.EditorSettings.IntervalSnapMethod = IntervalSnapMethod.Rounding;
-                            //myScheme1.EditorSettings.IntervalRoundingDigits = 3;
-                            //myScheme1.EditorSettings.NumBreaks = 6;
-                            //myScheme1.EditorSettings.FieldName = strValueField; myScheme1.EditorSettings.UseGradient = false;
-                            //myScheme1.CreateCategories(polLayer.DataSet.DataTable);
+                           
                             _columnName = strValueField;
                             polLayer.Symbology = CreateResultPolyScheme(ref polLayer, 6, "I"); //-MCB added
 
@@ -12470,9 +12637,12 @@ namespace BenMAP
                             _dMinValue = dMinValue;
                             _dMaxValue = dMaxValue;
                             //_currentLayerIndex = mainMap.Layers.Count - 1;
+                            polLayer.LegendText = author;
+                            polLayer.Name = "Pooled Incidence"; // "PIR_" + author;
                             _CurrentIMapLayer = polLayer;
-                            string pollutantUnit = string.Empty; _columnName = strValueField;
-                            CurrentMapTitle = CommonClass.MainSetup.SetupName + " Setup: " + tlvIPoolMapPolyLayer.LegendText + ", Pooled Incidence Results"; 
+                            string pollutantUnit = string.Empty;
+                            _columnName = strValueField;
+                            _CurrentMapTitle = CommonClass.MainSetup.SetupName + " Setup: " + tlvIPoolMapPolyLayer.LegendText + ", Pooled Incidence Results"; 
                             RenderMainMap(true, "I");
 
                             addRegionLayerGroupToMainMap();
@@ -12865,11 +13035,13 @@ namespace BenMAP
             if (_IncidenceDragged)
             {
                 tlvIncidence_DoubleClick(sender, e);
+                _IncidenceDragged = false;
             }
 
             if (_APVdragged)
             {
                 tlvAPVResult_DoubleClick(sender, e);
+                _APVdragged = true;
             }
             return;
         }
@@ -12917,16 +13089,83 @@ namespace BenMAP
             return;
         }
 
-        private void toolStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        private void btnShowHideAttributeTable_Click(object sender, EventArgs e)
         {
+            if (dgvAttributeTable.Visible == false)
+            {
+                WaitShow("Loading Table...");                                                               //Need to change data source to 1st selected layer (if none selected, then first feature layer)
+                bool selLayerFound = false;
+                List<ILayer> ILlist = mainMap.GetAllLayers();
+                   
+                MapLayerCollection FLlist = new MapLayerCollection();// Get just the feature layers, within map groups too)
+                string strLayerType = null;
+               
+                foreach (IMapLayer aLayer in ILlist)
+                {
+                    strLayerType = aLayer.ToString();
+                    strLayerType = strLayerType.Replace("DotSpatial.Controls.", "");
+                    if (strLayerType == "MapPointLayer" | strLayerType == "MapPolygonLayer" | strLayerType == "MapLineLayer")
+                    {
+                        FLlist.Add(aLayer);
+                    }
+                }
 
-        }
-
-        private void legend1_Click(object sender, EventArgs e)
-        {
-
-        }
-
+                if (FLlist != null && FLlist.Count > 0)                      // if featurelayers are present 
+                {
+                    foreach (IFeatureLayer fLayer in FLlist) // find the first selected feature layer
+                    {
+                        if (fLayer.IsSelected && !selLayerFound)
+                        {                          
+                            if (dgvAttributeTable.DataSource == (null) || !dgvAttributeTable.DataSource.Equals(fLayer.DataSet.DataTable))
+                            {   
+                                if (!fLayer.DataSet.AttributesPopulated) fLayer.DataSet.FillAttributes();
+                                dgvAttributeTable.DataSource = fLayer.DataSet.DataTable;
+                                _CurrentMapTableTitle = fLayer.LegendText;
+                            }
+                            selLayerFound = true;
+                            break;
+                        }
+                    }
+                    if (!selLayerFound)                      //if no feature layers selected, then use the last feature layer added
+                    {
+                        IFeatureLayer fLayer = (IFeatureLayer)FLlist[0];
+                        if (dgvAttributeTable.DataSource == null || !dgvAttributeTable.DataSource.Equals(fLayer.DataSet.DataTable))
+                            {
+                                if (!fLayer.DataSet.AttributesPopulated) fLayer.DataSet.FillAttributes();
+                                dgvAttributeTable.DataSource = fLayer.DataSet.DataTable;
+                                _CurrentMapTableTitle = fLayer.LegendText;
+                            }
+                    }
+                    
+                                                             // Make the table visible and change the button's text (button acts as a toggle between map and table)
+                    dgvAttributeTable.Visible = true;
+                    _SavedExtent = mainMap.Extent;
+                    tabMapLayoutPanel1.SetRow(mainMap, 2);
+                    tabMapLayoutPanel1.SetRow(dgvAttributeTable, 1);
+                    
+                    tbMapTitle.Text = _CurrentMapTableTitle;
+                    btnShowHideAttributeTable.Text = "Map";  // button now allows the user to switch to the map
+                    Debug.WriteLine("Attribute table displayed");
+                }
+                else                                          // No feature layers present
+                {
+                     // Notify user that no features are present or do nothing? MCB-
+                }
+                WaitClose();
+            }
+            else
+            {
+                dgvAttributeTable.Visible = false;
+                tabMapLayoutPanel1.SetRow(dgvAttributeTable, 2);
+                tabMapLayoutPanel1.SetRow(mainMap, 1);
+                mainMap.ViewExtents = _SavedExtent;
+                btnShowHideAttributeTable.Text = "Attribute Table";  //button now allows the user to switch to the attribute table of the 1st selected layer
+               
+                tbMapTitle.Text = _CurrentMapTitle;
+                
+                Debug.WriteLine("Map displayed");
+            }
+        }       
         
     }
 }
