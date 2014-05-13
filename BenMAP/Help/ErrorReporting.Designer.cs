@@ -73,43 +73,45 @@
             // 
             // txtOS
             // 
-            this.txtOS.Location = new System.Drawing.Point(223, 61);
+            this.txtOS.BackColor = System.Drawing.SystemColors.Control;
+            this.txtOS.Location = new System.Drawing.Point(139, 61);
             this.txtOS.Name = "txtOS";
-            this.txtOS.Size = new System.Drawing.Size(261, 22);
+            this.txtOS.ReadOnly = true;
+            this.txtOS.Size = new System.Drawing.Size(302, 22);
             this.txtOS.TabIndex = 1;
             // 
             // txtEmail
             // 
-            this.txtEmail.Location = new System.Drawing.Point(695, 92);
+            this.txtEmail.Location = new System.Drawing.Point(650, 92);
             this.txtEmail.Name = "txtEmail";
-            this.txtEmail.Size = new System.Drawing.Size(261, 22);
+            this.txtEmail.Size = new System.Drawing.Size(306, 22);
             this.txtEmail.TabIndex = 2;
             // 
             // txtName
             // 
-            this.txtName.Location = new System.Drawing.Point(695, 64);
+            this.txtName.Location = new System.Drawing.Point(650, 64);
             this.txtName.Name = "txtName";
-            this.txtName.Size = new System.Drawing.Size(225, 22);
+            this.txtName.Size = new System.Drawing.Size(270, 22);
             this.txtName.TabIndex = 3;
             // 
             // txtCountry
             // 
-            this.txtCountry.Location = new System.Drawing.Point(695, 120);
+            this.txtCountry.Location = new System.Drawing.Point(650, 120);
             this.txtCountry.Name = "txtCountry";
-            this.txtCountry.Size = new System.Drawing.Size(225, 22);
+            this.txtCountry.Size = new System.Drawing.Size(270, 22);
             this.txtCountry.TabIndex = 4;
             // 
             // label2
             // 
             this.label2.Location = new System.Drawing.Point(14, 64);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(213, 13);
+            this.label2.Size = new System.Drawing.Size(123, 13);
             this.label2.TabIndex = 5;
-            this.label2.Text = "Operating System (e.g. Windows 7)";
+            this.label2.Text = "Operating System";
             // 
             // label3
             // 
-            this.label3.Location = new System.Drawing.Point(503, 95);
+            this.label3.Location = new System.Drawing.Point(464, 95);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(180, 13);
             this.label3.TabIndex = 6;
@@ -117,7 +119,7 @@
             // 
             // label4
             // 
-            this.label4.Location = new System.Drawing.Point(503, 64);
+            this.label4.Location = new System.Drawing.Point(464, 64);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(180, 13);
             this.label4.TabIndex = 7;
@@ -125,7 +127,7 @@
             // 
             // label5
             // 
-            this.label5.Location = new System.Drawing.Point(503, 120);
+            this.label5.Location = new System.Drawing.Point(464, 120);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(183, 33);
             this.label5.TabIndex = 8;
@@ -325,15 +327,17 @@
             // 
             this.label8.Location = new System.Drawing.Point(14, 98);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(213, 13);
+            this.label8.Size = new System.Drawing.Size(123, 13);
             this.label8.TabIndex = 29;
             this.label8.Text = "BenMAP-CE Version";
             // 
             // txtBenMAPCEVersion
             // 
-            this.txtBenMAPCEVersion.Location = new System.Drawing.Point(223, 95);
+            this.txtBenMAPCEVersion.BackColor = System.Drawing.SystemColors.Control;
+            this.txtBenMAPCEVersion.Location = new System.Drawing.Point(139, 95);
             this.txtBenMAPCEVersion.Name = "txtBenMAPCEVersion";
-            this.txtBenMAPCEVersion.Size = new System.Drawing.Size(261, 22);
+            this.txtBenMAPCEVersion.ReadOnly = true;
+            this.txtBenMAPCEVersion.Size = new System.Drawing.Size(302, 22);
             this.txtBenMAPCEVersion.TabIndex = 28;
             // 
             // ErrorReporting
