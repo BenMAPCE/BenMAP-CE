@@ -45,7 +45,7 @@
             this.lblSeverity = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.cboComponent = new System.Windows.Forms.ComboBox();
-            this.label10 = new System.Windows.Forms.Label();
+            this.lblAuditTrail = new System.Windows.Forms.Label();
             this.chkAuditTrail = new System.Windows.Forms.CheckBox();
             this.lblDescription = new System.Windows.Forms.Label();
             this.txtDescription = new System.Windows.Forms.TextBox();
@@ -197,14 +197,14 @@
             this.cboComponent.Size = new System.Drawing.Size(322, 22);
             this.cboComponent.TabIndex = 20;
             // 
-            // label10
+            // lblAuditTrail
             // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(407, 304);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(421, 14);
-            this.label10.TabIndex = 21;
-            this.label10.Text = "The audit trail report may help us to debug or understand your report better.";
+            this.lblAuditTrail.AutoSize = true;
+            this.lblAuditTrail.Location = new System.Drawing.Point(407, 304);
+            this.lblAuditTrail.Name = "lblAuditTrail";
+            this.lblAuditTrail.Size = new System.Drawing.Size(421, 14);
+            this.lblAuditTrail.TabIndex = 21;
+            this.lblAuditTrail.Text = "The audit trail report may help us to debug or understand your report better.";
             // 
             // chkAuditTrail
             // 
@@ -353,7 +353,7 @@
             this.Controls.Add(this.txtDescription);
             this.Controls.Add(this.lblDescription);
             this.Controls.Add(this.chkAuditTrail);
-            this.Controls.Add(this.label10);
+            this.Controls.Add(this.lblAuditTrail);
             this.Controls.Add(this.cboComponent);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.lblSeverity);
@@ -402,7 +402,7 @@
         private System.Windows.Forms.Label lblSeverity;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.ComboBox cboComponent;
-        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Label lblAuditTrail;
         private System.Windows.Forms.CheckBox chkAuditTrail;
         private System.Windows.Forms.Label lblDescription;
         private System.Windows.Forms.TextBox txtDescription;

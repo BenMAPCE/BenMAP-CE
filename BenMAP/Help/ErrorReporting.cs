@@ -23,6 +23,8 @@ namespace BenMAP
         private const string projectKey = "USERBUGS";
         private string errorMessage;
 
+        private bool auditTrailCanBeGenerated = false;
+
         public ErrorReporting()
         {
 
@@ -63,13 +65,17 @@ namespace BenMAP
                 if (retVal == -1)
                 {
                     lblErrorText.Text = "Audit Trail feature is disabled. Please open or configure a complete project to attach an audit trail.  Values in all other fields will be submitted.";
+                    lblAuditTrail.Enabled = false;
                     chkAuditTrail.Checked = false;
                     chkAuditTrail.Enabled = false;
+                    auditTrailCanBeGenerated = false;
                 }
                 else
                 {
+                    lblAuditTrail.Enabled = true;
                     chkAuditTrail.Checked = true;
                     chkAuditTrail.Enabled = true;
+                    auditTrailCanBeGenerated = true;
                 }
             
             }
@@ -275,6 +281,12 @@ namespace BenMAP
                 lblSeverity.Enabled = true;
                 gbSeverity.Enabled = true;
                 rbMajor.Checked = true;
+                if (auditTrailCanBeGenerated)
+                {
+                    lblAuditTrail.Enabled = true;
+                    chkAuditTrail.Checked = true;
+                    chkAuditTrail.Enabled = true;
+                }
                 lblDescription.Text = "Please describe what you were doing when you encountered the error.  Can you tell us how to reproduce the error? (5000 character limit)";
             }
             else 
@@ -284,6 +296,9 @@ namespace BenMAP
                 rbMajor.Checked = false;
                 rbMinor.Checked = false;
                 rbBlocking.Checked = false;
+                lblAuditTrail.Enabled = false;
+                chkAuditTrail.Checked = false;
+                chkAuditTrail.Enabled = false;                
                 lblDescription.Text = "Please describe the feature you are requesting. (5000 character limit)";
             }
         }
