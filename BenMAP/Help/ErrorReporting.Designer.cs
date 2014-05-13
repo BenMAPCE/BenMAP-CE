@@ -188,6 +188,7 @@
             // 
             // cboComponent
             // 
+            this.cboComponent.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboComponent.FormattingEnabled = true;
             this.cboComponent.Location = new System.Drawing.Point(30, 335);
             this.cboComponent.Name = "cboComponent";
