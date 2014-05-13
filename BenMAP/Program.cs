@@ -39,12 +39,14 @@ namespace BenMAP
             {
                 try
                 {
-                    DialogResult dialogResult = MessageBox.Show("The following error occurred:\n\n" + ex.Message + "\n\nWould you like to report this to the BenMAP-CE development team?", "Error", MessageBoxButtons.YesNo);
+                    DialogResult dialogResult = MessageBox.Show("The application encountered the following fatal error:" + Environment.NewLine + Environment.NewLine + ex.Message + Environment.NewLine + Environment.NewLine + "Would you like to report the error to the BenMAP-CE development team before the application terminates?", "Error", MessageBoxButtons.YesNo);
 
                     if (dialogResult == DialogResult.Yes)
                     {
                         ErrorReporting frm = new ErrorReporting();
-                        frm.ErrorMessage = ex.StackTrace;
+                        string err = ex.StackTrace + Environment.NewLine + Environment.NewLine + "Please enter any additional information about the error that might prove useful:";
+                        frm.ErrorMessage = err;
+                        
                         frm.ShowDialog();
                     }
                     
