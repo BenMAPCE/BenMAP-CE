@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.IO;
+using System.Reflection;
 
 using BenMAP.Jira;
 
@@ -15,12 +16,14 @@ namespace BenMAP
     partial class ErrorReporting : FormBase
     {
         private JiraClient client;
-        private const string baseURL = "https://f8nnm8p.atlassian.net/";
-        //private const string username = "mscruggs";
-        //private const string password = "tempAcct1";
-        private const string username = "BenMAP-CE";
-        private const string password = "BenMAPOpenSource14";
-        private const string projectKey = "USERBUGS";
+        //private string baseURL = "https://f8nnm8p.atlassian.net/";
+        //private string username = "BenMAP-CE";
+        //private string password = "BenMAPOpenSource14";
+        //private string projectKey = "USERBUGS";
+        private string baseURL = "";
+        private string username = "";
+        private string password = "";
+        private string projectKey = "";
         private string errorMessage;
 
         private bool auditTrailCanBeGenerated = false;
@@ -37,6 +40,24 @@ namespace BenMAP
             rbMajor.Checked = true;
             txtOS.Text = Environment.OSVersion.VersionString;
             txtBenMAPCEVersion.Text = frmAbout.AssemblyVersion.Replace("Version: ", "");
+
+
+            //if we have jira connector, then load and get info
+            if ((!String.IsNullOrEmpty(CommonClass.JiraConnectorFilePath)) && (!String.IsNullOrEmpty(CommonClass.JiraConnectorFilePathTXT)))
+            {
+                //load dll
+                var connectorDLL = Assembly.LoadFile(CommonClass.JiraConnectorFilePath);
+                var type = connectorDLL.GetType("BenMAPJiraConnector.Connection");
+                //Now you can use dynamic to call the method.
+                dynamic connection = Activator.CreateInstance(type);
+
+
+                baseURL = connection.GetURL();
+                username = connection.GetUsername();
+                password = connection.GetPassword();
+                projectKey = connection.GetProjectKey();
+
+            }
 
             //populate component combo from Jira
             client = new JiraClient(baseURL, username, password);
@@ -84,6 +105,8 @@ namespace BenMAP
 
 
         }
+
+
 
         public string ErrorMessage
         {
