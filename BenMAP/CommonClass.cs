@@ -130,6 +130,24 @@ namespace BenMAP
             }
         }
 
+        private const string JIRA_CONNECTOR_FILE_NAME_TXT = "BenMAPJiraConnector.txt";
+        public static string JiraConnectorFilePathTXT
+        {
+            get
+            {
+                string jiraConnectorFilePathTXT = AppDomain.CurrentDomain.BaseDirectory + @"\" + JIRA_CONNECTOR_FILE_NAME_TXT;
+
+                if (File.Exists(jiraConnectorFilePathTXT))
+                {
+                    return jiraConnectorFilePathTXT;
+                }
+                else
+                {
+                    return "";
+                }
+            }
+        }
+
         private static BenMAP _benMAPForm;
 
         public static BenMAP BenMAPForm

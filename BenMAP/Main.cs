@@ -245,7 +245,7 @@ namespace BenMAP
 
 
                 //check for Jira Connector
-                if (!String.IsNullOrEmpty(CommonClass.JiraConnectorFilePath))
+                if ((!String.IsNullOrEmpty(CommonClass.JiraConnectorFilePath)) && (!String.IsNullOrEmpty(CommonClass.JiraConnectorFilePathTXT)))
                 {
                     errorReportingToolStripMenuItem.Visible = true;
                 }

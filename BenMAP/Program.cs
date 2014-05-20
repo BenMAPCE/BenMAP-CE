@@ -36,7 +36,7 @@ namespace BenMAP
 
             //check for Jira Connector needed by error reporting form
             //if no jira connector, then terminate application
-            if (String.IsNullOrEmpty(CommonClass.JiraConnectorFilePath))
+            if (String.IsNullOrEmpty(CommonClass.JiraConnectorFilePath) || String.IsNullOrEmpty(CommonClass.JiraConnectorFilePathTXT))
             {
                 MessageBox.Show("The application encountered the following fatal error and will now terminate." + Environment.NewLine + Environment.NewLine + ex.Message, "Error", MessageBoxButtons.OK);
                 Environment.Exit(0);
