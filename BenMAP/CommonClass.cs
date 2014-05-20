@@ -112,6 +112,24 @@ namespace BenMAP
             set { CommonClass._resultFilePath = value; }
         }
 
+        private const string JIRA_CONNECTOR_FILE_NAME = "BenMAPJiraConnector.dll";
+        public static string JiraConnectorFilePath
+        {
+            get
+            {
+                string jiraConnectorFilePath = AppDomain.CurrentDomain.BaseDirectory + @"\" + JIRA_CONNECTOR_FILE_NAME;
+
+                if (File.Exists(jiraConnectorFilePath))
+                {
+                    return jiraConnectorFilePath;
+                }
+                else
+                {                
+                    return "";
+                }
+            }
+        }
+
         private static BenMAP _benMAPForm;
 
         public static BenMAP BenMAPForm

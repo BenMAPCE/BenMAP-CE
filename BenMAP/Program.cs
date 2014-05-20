@@ -30,9 +30,18 @@ namespace BenMAP
 
         static void FirstChanceExceptionHandler(object source, FirstChanceExceptionEventArgs args)
         {
-           
+
             Exception ex = args.Exception;
             Logger.LogError(ex);
+
+            //check for Jira Connector needed by error reporting form
+            //if no jira connector, then terminate application
+            if (String.IsNullOrEmpty(CommonClass.JiraConnectorFilePath))
+            {
+                MessageBox.Show("The application encountered the following fatal error and will now terminate." + Environment.NewLine + Environment.NewLine + ex.Message, "Error", MessageBoxButtons.OK);
+                Environment.Exit(0);
+            }           
+            
 
             //show error reporting form unless error is in error reporting form
             if (ex.StackTrace.IndexOf("ErrorReporting", StringComparison.OrdinalIgnoreCase) < 0)
