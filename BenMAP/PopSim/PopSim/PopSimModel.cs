@@ -872,8 +872,7 @@ Command121.Visible = True
                     source = "Disease_Rates_RM";
                     gender = "male";
                 }
-        
-            } // end for
+      
             //Reset year counter
             year = 1990;
 
@@ -890,7 +889,7 @@ Command121.Visible = True
                     dataCommand.CommandText = sqltext;
                     dataReader = dataCommand.ExecuteReader();
                     dataReader.Read();
-                    j = (double)dataReader[1];
+                    j = (double)dataReader[3];
                     dataReader.Close();
                     
                     //Look up age/year-specific value from hazards table
@@ -924,3 +923,4 @@ Command121.Visible = True
 
         } // end run illness calcs
     } // end popsim model
+} // end namespace
