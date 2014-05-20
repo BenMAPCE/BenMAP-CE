@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Data;
 using FirebirdSql.Data.FirebirdClient;
 
 // this is the PopSim data object used by the model to store its input data
@@ -73,8 +74,20 @@ namespace PopSim
         private int PM_Choice = 0;  // 1 = threshold
         private double PM_Threshold = 30; // threshold value
         private int Beta_adj_factor;
+        private FirebirdSql.Data.FirebirdClient.FbConnection dbConnection;
 
-
+        public PopSimInputData()    { // class constructor
+            // setup database - this probably should be moved to a class to minimize connection counts
+            // open database
+            // create link to Firebird database
+            dbConnection = new FbConnection();
+            string conStr = Properties.Settings.Default.PopSimConnectionString;
+            // temporarly hard code password and file location
+            conStr = "Database=C:\\eer\\active\\Projects\\0212979.002.026.001_Benmap\\popsimgui\\BenMAP\\PopSim\\PopSim\\bin\\Debug\\POPSIMDB.FDB;USER=SYSDBA;PASSWORD=masterkey";
+            // conStr = "Database=|DataDirectory|\\POPSIMDB.FDB;USER=SYSDBA;PASSWORD=masterkey";
+            dbConnection.ConnectionString = conStr;
+            dbConnection.Open();
+    }    
 
 
         // get methods
@@ -264,9 +277,33 @@ namespace PopSim
         {
             return Sub_Pop_Adjustment_5;
         }
+        // this function should be depricated and replaced by the study id in queries, etc.
+        public string getUser_Study_Name()
+        {
+            FbCommand dataCommand = new  FirebirdSql.Data.FirebirdClient.FbCommand();
+            dataCommand.Connection = dbConnection;
+            dataCommand.CommandType = CommandType.Text;
+            dataCommand.CommandText = "SELECT STUDY FROM STUDIES WHERE STUDY_ID=" + this.getUser_Study().ToString() ;
+            FbDataReader dataReader;
+            dataReader = dataCommand.ExecuteReader();
+            dataReader.Read();
+            if (dataReader.HasRows)
+            {
+                return (string) dataReader[0];
+            }
+            else
+            {
+                return "";  // no study available - return empty string
+            }
+            
+
+        }
                 
         // set methods
         private void getDataFromScenario(int Scenario_ID){
+        // NOT DONE YET
+
+
         }
 
     }

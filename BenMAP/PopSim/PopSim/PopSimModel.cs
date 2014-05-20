@@ -98,9 +98,112 @@ namespace PopSim
             //STEP 5: CALCULATE AGE-SPECIFIC ADJUSTMENT FACTORS
             run_age_specific_adjustment_factors();
 
+            //STEP 6: RUN ILLNESS CALCULATIONS
+            // all the references should be replaced with the study id to clean up
+            string User_Study_Name = InputData.getUser_Study_Name();
+            if (strApproach == "Aggregated") {
+                Illness_Type = "All-Cause";
+                Illness_Type_Specific = Illness_Type;
+                run_illness_calcs();
+            }
+            else if ((User_Study_Name == "Dockery et al., 1993") || (User_Study_Name == "Krewski (Six Cities) et al., 2000"))
+            { 
+                Illness_Type = "Cardiopulmonary";
+                Illness_Type_Specific = "Cardiopulmonary-2";
+                run_illness_calcs();
+        
+                Illness_Type = "Lung Cancer";
+                Illness_Type_Specific = Illness_Type;
+                run_illness_calcs();
+        
+                Illness_Type = "All Other Causes";
+                Illness_Type_Specific = "All Other Causes-2";
+                run_illness_calcs();
+            }
+            else if ((User_Study_Name == "Krewski (ACS median) et al., 2000") || (User_Study_Name == "Pope et al., 1995")
+                    || (User_Study_Name == "Pope et al., 2002"))
+            {
+                Illness_Type = "Cardiopulmonary";
+                Illness_Type_Specific = "Cardiopulmonary-1";
+                run_illness_calcs();
+        
+                Illness_Type = "Lung Cancer";
+                Illness_Type_Specific = Illness_Type;
+                run_illness_calcs();
+        
+                Illness_Type = "All Other Causes";
+                Illness_Type_Specific = "All Other Causes-1";
+                run_illness_calcs();
+            }
+            else if (User_Study_Name == "Pope et al., 2004 - 4 causes of death")
+            {
+                Illness_Type = "All Cardiovascular Disease Plus Diabetes";
+                Illness_Type_Specific = Illness_Type;
+                run_illness_calcs();
+                
+                Illness_Type = "Diseases of the Respiratory System";
+                Illness_Type_Specific = Illness_Type;
+                run_illness_calcs();
+                
+                Illness_Type = "Lung Cancer";
+                Illness_Type_Specific = Illness_Type;
+                run_illness_calcs();
+                
+                Illness_Type = "All Other Causes";
+                Illness_Type_Specific = "All Other Causes-3";
+                run_illness_calcs();
+            }
+            else if (User_Study_Name == "Pope et al., 2004 - 12 causes of death")
+            {
+                Illness_Type = "Ischemic Heart Disease";
+                Illness_Type_Specific = Illness_Type;
+                run_illness_calcs();
+                
+                Illness_Type = "Dysrhythmias, Heart Failure, Cardiac Arrest";
+                Illness_Type_Specific = Illness_Type;
+                run_illness_calcs();
+                
+                Illness_Type = "Hypertensive Disease";
+                Illness_Type_Specific = Illness_Type;
+                run_illness_calcs();
+                
+                Illness_Type = "Other Atherosclerosis and Aortic Aneurysms";
+                Illness_Type_Specific = Illness_Type;
+                run_illness_calcs();
+                
+                Illness_Type = "Cerebrovascular Disease";
+                Illness_Type_Specific = Illness_Type;
+                run_illness_calcs();
+                
+                Illness_Type = "Diabetes";
+                Illness_Type_Specific = Illness_Type;
+                run_illness_calcs();
+                
+                Illness_Type = "All Other Cardiovascular Diseases";
+                Illness_Type_Specific = Illness_Type;
+                run_illness_calcs();
+                
+                Illness_Type = "COPD and Allied Conditions";
+                Illness_Type_Specific = Illness_Type;
+                run_illness_calcs();
 
-             
-        }
+                Illness_Type = "Pneumonia and Influenza";
+                Illness_Type_Specific = Illness_Type;
+                run_illness_calcs();
+                
+                Illness_Type = "All Other Respiratory Diseases";
+                Illness_Type_Specific = Illness_Type;
+                run_illness_calcs();
+
+                Illness_Type = "Lung Cancer";
+                Illness_Type_Specific = Illness_Type;
+                run_illness_calcs();
+
+                Illness_Type = "All Other Causes";
+                Illness_Type_Specific = "All Other Causes-3";
+                run_illness_calcs();
+            } // endif
+        } // end run Pop Sim
         public void setupInternalVariables()
         {
             // setup up internal variables. This was done on in the Global code module of the original Access database program
@@ -421,8 +524,6 @@ Command121.Visible = True
                 dataReader = dataCommand.ExecuteReader();
                 dataReader.Read();
                 
-                // STOPPED HERE
-
                 PM_val = (double) dataReader[1];
                 dataReader.Close();
     
@@ -529,5 +630,297 @@ Command121.Visible = True
 
             } // wend 
         } //  end run age specific adjustment factors
+    
+        private void run_illness_calcs(){
+            double Beta, PM_val, PM_Impact, cum_impact;
+            string sqltext;
+            int year, age;
+            FbCommand dataCommand = new  FirebirdSql.Data.FirebirdClient.FbCommand();
+            FbDataReader dataReader;
+            dataCommand.Connection = dbConnection;        
+            //GET BETA VALUE FOR USE IN MODEL
+            
+            //If User specified a Beta value (only an option when Aggregated is selected), use user Beta in model
+            if (InputData.getUser_Beta() != 0) {
+                Beta = InputData.getUser_Beta();
+            //Otherwise if user did not specify a Beta value, then look up the relevant Beta in the study table
+            } else {
+                sqltext = "SELECT Studies.Study, Studies.Aggregation, Studies.Cause, Studies.Beta FROM Studies";
+                sqltext = sqltext + " where Studies.Study = '" + InputData.getUser_Study_Name() + 
+                        "' AND Studies.Aggregation = '" + strApproach + "' AND Studies.Cause = '" + Illness_Type + "'";
+                dataCommand.CommandText = sqltext;
+                dataReader = dataCommand.ExecuteReader();
+                dataReader.Read();
+                Beta = (double)dataReader[3];
+                dataReader.Close();
+            } 
+        
+            //Write illness type and beta value to beta summary table
+            sqltext = "INSERT INTO Report_Beta_Summary (Illness_Type, Beta_Value) VALUES('" + Illness_Type + "', " + Beta.ToString() + " ) ";
+            dataCommand.CommandText = sqltext;
+            dataCommand.ExecuteNonQuery();
+                
+            //Apply adjustment factor if user input a threshold and beta adjustment
+            if (InputData.getPM_Choice() == 1) {
+                Beta = InputData.getBeta_adj_factor() * Beta + Beta;
+
+            } 
+            //Set variables to beginning values
+            year = InputData.getBegin_Year();
+            PM_val = 0;
+    
+            while (year <= InputData.getEnd_Year()) {
+
+                //Look up year-specific PM value from PM_Changes table
+                sqltext = "SELECT PM_Changes.Year_Num, PM_Changes.PM_Change FROM PM_Changes";
+                sqltext = sqltext + " where PM_Changes.Year_Num = " + year.ToString();
+                dataCommand.CommandText = sqltext;
+                dataReader = dataCommand.ExecuteReader();
+                dataReader.Read();
+                
+                PM_val = (double)dataReader[1];
+                dataReader.Close();
+                
+                //If user has specified a threshold value, look up t
+                if (InputData.getPM_Choice() == 1) {
+    
+                    //Look up threshold value and store as variable t
+                    sqltext = "SELECT Thresholds.Year_Num, Thresholds.Threshold FROM Thresholds";
+                    sqltext = sqltext + " where Thresholds.Year_Num = " + year.ToString();
+                    dataCommand.CommandText = sqltext;
+                    dataReader = dataCommand.ExecuteReader();
+                    dataReader.Read();
+                
+                    t = (double)dataReader[1];
+                    dataReader.Close();
+                } else {
+                    t = 1;
+                } 
+    
+                //Calculate PM_Impact
+                PM_Impact = ((System.Math.Exp(Beta * PM_val)) - 1) * t;
+    
+                //Write values to MHAF_Calcs table
+                sqltext = "INSERT INTO MHAF_Calcs (Year_Num, Beta, PM_Impact, Type) Values(" + year.ToString() 
+                    + " , " + Beta.ToString() + " , " + PM_Impact.ToString()  + " , '" + Illness_Type + "' )";
+                dataCommand.CommandText = sqltext;
+                dataCommand.ExecuteNonQuery();
+            
+                //Proceed to next year
+                year = year + 1;
+    
+                } // wend 
+
+
+            //Reset counters
+            j = 1;
+    
+            while (j <= 61) {
+
+                //Reset counters
+                year = 1990;
+    
+                while (year <= 2050) {
+                    k = year - (j - 1);
+                    if ((k > InputData.getEnd_Year()) || (k < InputData.getBegin_Year())) {
+                        PM_Impact = 0;
+                    } else {
+                        //Look up year-specific value from MHAF_Calcs table
+                        sqltext = "SELECT MHAF_Calcs.Year_Num, MHAF_Calcs.PM_Impact, MHAF_Calcs.Type FROM MHAF_Calcs";
+                        sqltext = sqltext + " where MHAF_Calcs.Year_Num = " + k.ToString() + " AND MHAF_Calcs.Type = '" + Illness_Type + "' ";
+                        dataCommand.CommandText = sqltext;
+                        dataReader = dataCommand.ExecuteReader();
+                        dataReader.Read();
+                        PM_Impact = (double)dataReader[1];
+                        dataReader.Close();
+                    } 
+        
+                    //Write values to PM_Impact_Vectors table
+                    sqltext = "INSERT INTO PM_Impact_Vectors (Year_Num, Year_after_PM_Change, PM_Impact, Type) Values( " 
+                        + year.ToString() + " , " + j + " , " + PM_Impact.ToString() + " , '" + Illness_Type + "' )";
+                    dataCommand.CommandText = sqltext;
+                    dataCommand.ExecuteNonQuery();
+                    year = year + 1;
+                } // wend 
+                j = j + 1;
+            } // wend 
+            //Reset counters
+            year = 1990;
+            //If user selected the single lag option, use the single lag type
+            if (InputData.getLag_Type() == 0) { // Single Lag Type
+                strLag_Type = "Single";
+            //Otherwise, choose the relevant multi-cause lag given the current illness type
+            } else {
+                if (Illness_Type == "All-Cause") {
+                    strLag_Type = "Single";
+                }else if (Illness_Type == "Lung Cancer") {
+                    strLag_Type = "Multiple-LungCancer";
+                }else if (Illness_Type == "All Other Causes") {
+                    strLag_Type = "Multiple-AllOtherCauses";
+                }else {
+                    strLag_Type = "Multiple-Cardiopulmonary";
+                } 
+            } 
+            while (year <= 2050) {
+                //Reset counters
+                j = 1;
+                k = 0;
+                cum_impact = 0;
+    
+                while (j <= 61){
+        
+                    //Look up year-specific value from lag table
+                    sqltext = "SELECT lag.Year_after_PM_Change, lag.Perc_Impacts, lag.Type FROM lag";
+                    sqltext = sqltext + " where lag.Year_after_PM_Change = " + j.ToString() + " AND lag.Type = '" + strLag_Type + "'";
+                    dataCommand.CommandText = sqltext;
+                    dataReader = dataCommand.ExecuteReader();
+                    dataReader.Read();
+                    k = (double)dataReader[1];
+                    dataReader.Close();
+
+                    //Look up year-specific value from PM_Impact_Vectors table
+                    sqltext = "SELECT PM_Impact_Vectors.Year_Num, PM_Impact_Vectors.Year_after_PM_Change, PM_Impact_Vectors.PM_Impact, PM_Impact_Vectors.Type FROM PM_Impact_Vectors";
+                    sqltext = sqltext + " where (PM_Impact_Vectors.Year_Num = " + year.ToString() + " AND PM_Impact_Vectors.Year_after_PM_Change = " 
+                            + j.ToString() + " AND PM_Impact_Vectors.Type = '" + Illness_Type + "')";
+                    dataCommand.CommandText = sqltext;
+                    dataReader = dataCommand.ExecuteReader();
+                    dataReader.Read();
+                    PM_Impact = (double)dataReader[2];
+                    dataReader.Close();
+                    
+                    cum_impact = cum_impact + (k * PM_Impact);
+
+                    //Advance to next year
+                    j = j + 1;
+    
+                } // wend Loop
+    
+                //Write final value to table
+                sqltext = "INSERT INTO PM_Impact_Vectors_lag (Year_Num, PM_Impact, Type) Values(" + year +
+                    " , " + cum_impact + " , '" + Illness_Type + "') ";
+                dataCommand.CommandText = sqltext;
+                dataCommand.ExecuteNonQuery();
+                    
+                year = year + 1;
+
+            } // wend Loop
+
+            //Reset year counter
+            year = 1990;
+
+            while (year <= 2050) {
+
+                //If year <= 2050 Then
+    
+                    //m = year
+    
+                //Years 2051 through 2150 are copies of year 2050
+                //Else
+    
+                    //m = 2050
+    
+                //End If
+
+
+                //Look up year-specific value from PM_Impact_Vectors_lag table
+                sqltext = "SELECT PM_Impact_Vectors_lag.Year_Num, PM_Impact_Vectors_lag.PM_Impact, PM_Impact_Vectors_lag.Type FROM PM_Impact_Vectors_lag";
+                sqltext = sqltext + " where PM_Impact_Vectors_lag.Year_Num = " + year + " AND PM_Impact_Vectors_lag.Type = '" + Illness_Type + "' ";
+                dataCommand.CommandText = sqltext;
+                dataReader = dataCommand.ExecuteReader();
+                dataReader.Read();
+                // double check the index here 
+                k = (double)dataReader[1];
+                dataReader.Close();
+    
+                //Reset age counter
+                age = 0;
+    
+                while (age <= 100) {
+       
+                    //Look up age-specific value from ASAF table
+                    sqltext = "SELECT ASAF.Age, ASAF.ASAF FROM ASAF";
+                    sqltext = sqltext + " where ASAF.Age = " + age.ToString();
+                    dataCommand.CommandText = sqltext;
+                    dataReader = dataCommand.ExecuteReader();
+                    dataReader.Read();
+                    j = (double)dataReader[1];
+                    dataReader.Close();
+        
+                    //Write values to Hazards table
+                    sqltext = "INSERT INTO Hazards_Adj (Age, Year_Num, Type, Hazards_Adj) VALUES(" + age.ToString() + 
+                            " , " + year.ToString() + " , '" + Illness_Type + "' , " + (1 + j * k).ToString() + " )";
+                    dataCommand.CommandText = sqltext;
+                    dataCommand.ExecuteNonQuery();
+                
+                    //Proceed to next age
+                    age = age + 1;
+    
+                } // wend Loop
+    
+            //Proceed to next year
+            year = year + 1;
+    
+            } // wend Loop
+
+
+            for (GenderCount = 1; GenderCount <= 2; GenderCount++){
+
+                if (GenderCount == 1) {
+                    source = "Disease_Rates_RF";
+                    gender = "female";
+                }else {
+                    source = "Disease_Rates_RM";
+                    gender = "male";
+                }
+        
+            } // end for
+            //Reset year counter
+            year = 1990;
+
+            while (year <= 2050) {
+    
+                //Reset age counter
+                age = 0;
+    
+                while (age <= 100) {
+                    //Look up age/year-specific value from source table
+                    sqltext = "SELECT " + source + ".Age, " + source + ".Year_Num, " + source + ".Type, " + source + ".Rate FROM " + source;
+                    sqltext = sqltext + " where " + source + ".Age = " + age.ToString() + " AND " + source + ".Year_Num = " + year + 
+                        " AND " + source + ".Type = '" + Illness_Type_Specific + "'";
+                    dataCommand.CommandText = sqltext;
+                    dataReader = dataCommand.ExecuteReader();
+                    dataReader.Read();
+                    j = (double)dataReader[1];
+                    dataReader.Close();
+                    
+                    //Look up age/year-specific value from hazards table
+                    sqltext = "SELECT Hazards_Adj.Age, Hazards_Adj.Year_Num, Hazards_Adj.Type, Hazards_Adj.Hazards_Adj FROM Hazards_Adj";
+                    sqltext = sqltext + " where Hazards_Adj.Age = " + age.ToString() + " AND Hazards_Adj.Year_Num = " 
+                        + year.ToString() + " AND Hazards_Adj.Type = '" + Illness_Type + "'";
+                    dataCommand.CommandText = sqltext;
+                    dataReader = dataCommand.ExecuteReader();
+                    dataReader.Read();
+                    // double check the index here 
+                    k = (double)dataReader[3];
+                    dataReader.Close();
+           
+                    //Write values to Disease Rates Combined table
+                    sqltext = "INSERT INTO Disease_Rates_Combined (Age, Year_Num, Gender, Type, Rate) VALUES(" + age.ToString() + 
+                        " , " + year.ToString() + " , '" + gender + "', '" + Illness_Type + "' , " + (j * k).ToString() + " ) ";
+                    dataCommand.CommandText = sqltext;
+                    dataCommand.ExecuteNonQuery();
+                    
+                    //Proceed to next age
+                    age = age + 1;
+    
+                    } //wend 
+    
+            //Proceed to next year
+            year = year + 1;
+
+            } //wend 
+    
+        } // Next GenderCount
+
+        } // end run illness calcs
     } // end popsim model
-} // end namespace
