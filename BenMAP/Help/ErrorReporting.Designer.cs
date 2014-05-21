@@ -79,6 +79,7 @@
             this.txtOS.ReadOnly = true;
             this.txtOS.Size = new System.Drawing.Size(302, 22);
             this.txtOS.TabIndex = 1;
+            this.txtOS.TabStop = false;
             // 
             // txtEmail
             // 
@@ -92,14 +93,14 @@
             this.txtName.Location = new System.Drawing.Point(650, 64);
             this.txtName.Name = "txtName";
             this.txtName.Size = new System.Drawing.Size(270, 22);
-            this.txtName.TabIndex = 3;
+            this.txtName.TabIndex = 1;
             // 
             // txtCountry
             // 
             this.txtCountry.Location = new System.Drawing.Point(650, 120);
             this.txtCountry.Name = "txtCountry";
             this.txtCountry.Size = new System.Drawing.Size(270, 22);
-            this.txtCountry.TabIndex = 4;
+            this.txtCountry.TabIndex = 3;
             // 
             // label2
             // 
@@ -138,7 +139,7 @@
             this.btnSubmit.Location = new System.Drawing.Point(360, 687);
             this.btnSubmit.Name = "btnSubmit";
             this.btnSubmit.Size = new System.Drawing.Size(75, 23);
-            this.btnSubmit.TabIndex = 9;
+            this.btnSubmit.TabIndex = 12;
             this.btnSubmit.Text = "Submit";
             this.btnSubmit.UseVisualStyleBackColor = true;
             this.btnSubmit.Click += new System.EventHandler(this.btnSubmit_Click);
@@ -148,7 +149,7 @@
             this.btnCancel.Location = new System.Drawing.Point(484, 687);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
-            this.btnCancel.TabIndex = 10;
+            this.btnCancel.TabIndex = 13;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
@@ -195,7 +196,7 @@
             this.cboComponent.Location = new System.Drawing.Point(30, 335);
             this.cboComponent.Name = "cboComponent";
             this.cboComponent.Size = new System.Drawing.Size(322, 22);
-            this.cboComponent.TabIndex = 20;
+            this.cboComponent.TabIndex = 9;
             // 
             // lblAuditTrail
             // 
@@ -212,7 +213,7 @@
             this.chkAuditTrail.Location = new System.Drawing.Point(430, 335);
             this.chkAuditTrail.Name = "chkAuditTrail";
             this.chkAuditTrail.Size = new System.Drawing.Size(286, 18);
-            this.chkAuditTrail.TabIndex = 22;
+            this.chkAuditTrail.TabIndex = 10;
             this.chkAuditTrail.Text = "Include BenMAP-CE generated audit trail report.";
             this.chkAuditTrail.UseVisualStyleBackColor = true;
             // 
@@ -234,7 +235,7 @@
             this.txtDescription.Name = "txtDescription";
             this.txtDescription.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.txtDescription.Size = new System.Drawing.Size(693, 209);
-            this.txtDescription.TabIndex = 24;
+            this.txtDescription.TabIndex = 11;
             // 
             // gbReportType
             // 
@@ -252,7 +253,7 @@
             this.rbFeature.Location = new System.Drawing.Point(16, 43);
             this.rbFeature.Name = "rbFeature";
             this.rbFeature.Size = new System.Drawing.Size(129, 18);
-            this.rbFeature.TabIndex = 16;
+            this.rbFeature.TabIndex = 5;
             this.rbFeature.TabStop = true;
             this.rbFeature.Text = "Requested Feature";
             this.rbFeature.UseVisualStyleBackColor = true;
@@ -263,7 +264,7 @@
             this.rbError.Location = new System.Drawing.Point(16, 18);
             this.rbError.Name = "rbError";
             this.rbError.Size = new System.Drawing.Size(100, 18);
-            this.rbError.TabIndex = 15;
+            this.rbError.TabIndex = 4;
             this.rbError.TabStop = true;
             this.rbError.Text = "Software Error";
             this.rbError.UseVisualStyleBackColor = true;
@@ -286,7 +287,7 @@
             this.rbBlocking.Location = new System.Drawing.Point(10, 66);
             this.rbBlocking.Name = "rbBlocking";
             this.rbBlocking.Size = new System.Drawing.Size(329, 18);
-            this.rbBlocking.TabIndex = 21;
+            this.rbBlocking.TabIndex = 8;
             this.rbBlocking.TabStop = true;
             this.rbBlocking.Text = "Blocking - this issue prevents me from using BenMAP-CE";
             this.rbBlocking.UseVisualStyleBackColor = true;
@@ -297,7 +298,7 @@
             this.rbMajor.Location = new System.Drawing.Point(10, 42);
             this.rbMajor.Name = "rbMajor";
             this.rbMajor.Size = new System.Drawing.Size(389, 18);
-            this.rbMajor.TabIndex = 20;
+            this.rbMajor.TabIndex = 7;
             this.rbMajor.TabStop = true;
             this.rbMajor.Text = "Major - this issue significantly hinders my ability to use BenMAP-CE";
             this.rbMajor.UseVisualStyleBackColor = true;
@@ -308,7 +309,7 @@
             this.rbMinor.Location = new System.Drawing.Point(10, 17);
             this.rbMinor.Name = "rbMinor";
             this.rbMinor.Size = new System.Drawing.Size(418, 18);
-            this.rbMinor.TabIndex = 19;
+            this.rbMinor.TabIndex = 6;
             this.rbMinor.TabStop = true;
             this.rbMinor.Text = "Minor - this issue has little or no impact on my ability to use BenMAP-CE";
             this.rbMinor.UseVisualStyleBackColor = true;
@@ -339,6 +340,7 @@
             this.txtBenMAPCEVersion.ReadOnly = true;
             this.txtBenMAPCEVersion.Size = new System.Drawing.Size(302, 22);
             this.txtBenMAPCEVersion.TabIndex = 28;
+            this.txtBenMAPCEVersion.TabStop = false;
             // 
             // ErrorReporting
             // 

@@ -16,10 +16,6 @@ namespace BenMAP
     partial class ErrorReporting : FormBase
     {
         private JiraClient client;
-        //private string baseURL = "https://f8nnm8p.atlassian.net/";
-        //private string username = "BenMAP-CE";
-        //private string password = "BenMAPOpenSource14";
-        //private string projectKey = "USERBUGS";
         private string baseURL = "";
         private string username = "";
         private string password = "";
@@ -124,7 +120,7 @@ namespace BenMAP
         private void ErrorReporting_Shown(Object sender, EventArgs e)
         {
 
-            txtEmail.Focus();
+            txtName.Focus();
 
             if (!String.IsNullOrEmpty(errorMessage))
             {
