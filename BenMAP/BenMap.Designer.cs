@@ -21,7 +21,6 @@ namespace BenMAP
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(BenMAP));
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.SmallImageList = new System.Windows.Forms.ImageList(this.components);
             this.tipBallon = new System.Windows.Forms.ToolTip(this.components);
             this.tabCRFunctionResultGISShow = new System.Windows.Forms.TabPage();
@@ -1157,6 +1156,7 @@ namespace BenMAP
             // 
             // splitContainer3.Panel2
             // 
+            this.splitContainer3.Panel2.BackColor = System.Drawing.SystemColors.Control;
             this.splitContainer3.Panel2.Controls.Add(this.tabCtlMain);
             this.splitContainer3.Size = new System.Drawing.Size(707, 692);
             this.splitContainer3.SplitterDistance = 200;
@@ -1949,19 +1949,20 @@ namespace BenMAP
             this.picGIS.BackgroundImage = global::BenMAP.Properties.Resources.GISMapBG;
             this.picGIS.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.picGIS.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.picGIS.Location = new System.Drawing.Point(27, 3);
+            this.picGIS.Location = new System.Drawing.Point(3, 3);
             this.picGIS.Margin = new System.Windows.Forms.Padding(0);
             this.picGIS.Name = "picGIS";
-            this.picGIS.Size = new System.Drawing.Size(669, 458);
+            this.picGIS.Size = new System.Drawing.Size(693, 458);
             this.picGIS.TabIndex = 8;
             this.picGIS.TabStop = false;
+            this.picGIS.Click += new System.EventHandler(this.picGIS_Click);
             this.picGIS.DragDrop += new System.Windows.Forms.DragEventHandler(this.mainMap_DragDrop);
             this.picGIS.DragEnter += new System.Windows.Forms.DragEventHandler(this.picGIS_DragEnter);
             this.picGIS.DragLeave += new System.EventHandler(this.mainMap_DragLeave);
             // 
             // toolStrip1
             // 
-            this.toolStrip1.Dock = System.Windows.Forms.DockStyle.Left;
+            this.toolStrip1.Dock = System.Windows.Forms.DockStyle.None;
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.btnZoomIn,
             this.btnZoomOut,
@@ -1978,13 +1979,15 @@ namespace BenMAP
             this.tsbChangeCone,
             this.tsbAddLayer,
             this.toolStripButton6});
+            this.toolStrip1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.VerticalStackWithOverflow;
             this.toolStrip1.Location = new System.Drawing.Point(3, 3);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Padding = new System.Windows.Forms.Padding(0, 0, 1, 8);
-            this.toolStrip1.Size = new System.Drawing.Size(24, 458);
+            this.toolStrip1.Size = new System.Drawing.Size(24, 273);
             this.toolStrip1.Stretch = true;
             this.toolStrip1.TabIndex = 5;
             this.toolStrip1.Text = "toolStrip1";
+            this.toolStrip1.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.toolStrip1_ItemClicked);
             // 
             // btnZoomIn
             // 
@@ -1992,7 +1995,7 @@ namespace BenMAP
             this.btnZoomIn.Image = global::BenMAP.Properties.Resources.magnifier_zoom_in;
             this.btnZoomIn.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnZoomIn.Name = "btnZoomIn";
-            this.btnZoomIn.Size = new System.Drawing.Size(21, 20);
+            this.btnZoomIn.Size = new System.Drawing.Size(22, 20);
             this.btnZoomIn.Text = "toolStripButton1";
             this.btnZoomIn.ToolTipText = "Zoom in";
             this.btnZoomIn.Click += new System.EventHandler(this.btnZoomIn_Click);
@@ -2003,7 +2006,7 @@ namespace BenMAP
             this.btnZoomOut.Image = global::BenMAP.Properties.Resources.magnifier_zoom_out;
             this.btnZoomOut.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnZoomOut.Name = "btnZoomOut";
-            this.btnZoomOut.Size = new System.Drawing.Size(21, 20);
+            this.btnZoomOut.Size = new System.Drawing.Size(22, 20);
             this.btnZoomOut.Text = "toolStripButton2";
             this.btnZoomOut.ToolTipText = "Zoom out";
             this.btnZoomOut.Click += new System.EventHandler(this.btnZoomOut_Click);
@@ -2015,7 +2018,7 @@ namespace BenMAP
             this.btnPan.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnPan.Margin = new System.Windows.Forms.Padding(0, 1, 0, 3);
             this.btnPan.Name = "btnPan";
-            this.btnPan.Size = new System.Drawing.Size(21, 20);
+            this.btnPan.Size = new System.Drawing.Size(22, 20);
             this.btnPan.Text = "toolStripButton3";
             this.btnPan.ToolTipText = "Pan";
             this.btnPan.Click += new System.EventHandler(this.btnPan_Click);
@@ -2026,7 +2029,7 @@ namespace BenMAP
             this.btnFullExtent.Image = global::BenMAP.Properties.Resources.globe_7;
             this.btnFullExtent.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnFullExtent.Name = "btnFullExtent";
-            this.btnFullExtent.Size = new System.Drawing.Size(21, 20);
+            this.btnFullExtent.Size = new System.Drawing.Size(22, 20);
             this.btnFullExtent.Text = "toolStripButton4";
             this.btnFullExtent.ToolTipText = "Full extent";
             this.btnFullExtent.Click += new System.EventHandler(this.btnFullExtent_Click);
@@ -2037,7 +2040,7 @@ namespace BenMAP
             this.btnSpatial.Image = global::BenMAP.Properties.Resources.chart4;
             this.btnSpatial.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnSpatial.Name = "btnSpatial";
-            this.btnSpatial.Size = new System.Drawing.Size(21, 20);
+            this.btnSpatial.Size = new System.Drawing.Size(22, 20);
             this.btnSpatial.Text = "toolStripButton5";
             this.btnSpatial.ToolTipText = "Spatial analysis";
             this.btnSpatial.Visible = false;
@@ -2049,7 +2052,7 @@ namespace BenMAP
             this.btnIdentify.Image = global::BenMAP.Properties.Resources.identifier_16;
             this.btnIdentify.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnIdentify.Name = "btnIdentify";
-            this.btnIdentify.Size = new System.Drawing.Size(21, 20);
+            this.btnIdentify.Size = new System.Drawing.Size(22, 20);
             this.btnIdentify.Text = "Identify";
             this.btnIdentify.Click += new System.EventHandler(this.btnIdentify_Click);
             // 
@@ -2059,7 +2062,7 @@ namespace BenMAP
             this.btnLayerSet.Image = global::BenMAP.Properties.Resources.legend;
             this.btnLayerSet.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnLayerSet.Name = "btnLayerSet";
-            this.btnLayerSet.Size = new System.Drawing.Size(21, 20);
+            this.btnLayerSet.Size = new System.Drawing.Size(22, 20);
             this.btnLayerSet.Text = "Show Legend";
             this.btnLayerSet.ToolTipText = "Show Legend";
             this.btnLayerSet.Click += new System.EventHandler(this.btnLayerSet_Click);
@@ -2070,7 +2073,7 @@ namespace BenMAP
             this.btnPieTheme.Image = global::BenMAP.Properties.Resources.tableView1;
             this.btnPieTheme.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnPieTheme.Name = "btnPieTheme";
-            this.btnPieTheme.Size = new System.Drawing.Size(21, 20);
+            this.btnPieTheme.Size = new System.Drawing.Size(22, 20);
             this.btnPieTheme.Text = "Pie Theme";
             this.btnPieTheme.Visible = false;
             this.btnPieTheme.Click += new System.EventHandler(this.btnPieTheme_Click);
@@ -2081,7 +2084,7 @@ namespace BenMAP
             this.btnColumnTheme.Image = global::BenMAP.Properties.Resources.tableView_Bar;
             this.btnColumnTheme.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnColumnTheme.Name = "btnColumnTheme";
-            this.btnColumnTheme.Size = new System.Drawing.Size(21, 20);
+            this.btnColumnTheme.Size = new System.Drawing.Size(22, 20);
             this.btnColumnTheme.Text = "Column Theme";
             this.btnColumnTheme.Visible = false;
             this.btnColumnTheme.Click += new System.EventHandler(this.btnPieTheme_Click);
@@ -2092,7 +2095,7 @@ namespace BenMAP
             this.tsbSaveMap.Image = global::BenMAP.Properties.Resources.save_as;
             this.tsbSaveMap.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbSaveMap.Name = "tsbSaveMap";
-            this.tsbSaveMap.Size = new System.Drawing.Size(21, 20);
+            this.tsbSaveMap.Size = new System.Drawing.Size(22, 20);
             this.tsbSaveMap.Tag = "";
             this.tsbSaveMap.Text = "Save shapefile";
             this.tsbSaveMap.Click += new System.EventHandler(this.tsbSaveMap_Click);
@@ -2103,7 +2106,7 @@ namespace BenMAP
             this.tsbSavePic.Image = ((System.Drawing.Image)(resources.GetObject("tsbSavePic.Image")));
             this.tsbSavePic.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbSavePic.Name = "tsbSavePic";
-            this.tsbSavePic.Size = new System.Drawing.Size(21, 20);
+            this.tsbSavePic.Size = new System.Drawing.Size(22, 20);
             this.tsbSavePic.Tag = "";
             this.tsbSavePic.Text = "Export map image";
             this.tsbSavePic.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -2116,7 +2119,7 @@ namespace BenMAP
             this.tsbChangeProjection.Image = global::BenMAP.Properties.Resources.refreshTheme;
             this.tsbChangeProjection.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbChangeProjection.Name = "tsbChangeProjection";
-            this.tsbChangeProjection.Size = new System.Drawing.Size(21, 20);
+            this.tsbChangeProjection.Size = new System.Drawing.Size(22, 20);
             this.tsbChangeProjection.Text = "change projection to Albers";
             this.tsbChangeProjection.Click += new System.EventHandler(this.tsbChangeProjection_Click);
             // 
@@ -2126,7 +2129,7 @@ namespace BenMAP
             this.tsbChangeCone.Image = ((System.Drawing.Image)(resources.GetObject("tsbChangeCone.Image")));
             this.tsbChangeCone.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbChangeCone.Name = "tsbChangeCone";
-            this.tsbChangeCone.Size = new System.Drawing.Size(21, 20);
+            this.tsbChangeCone.Size = new System.Drawing.Size(22, 20);
             this.tsbChangeCone.Text = "Change to square view";
             this.tsbChangeCone.Visible = false;
             this.tsbChangeCone.Click += new System.EventHandler(this.tsbChangeCone_Click);
@@ -2137,7 +2140,7 @@ namespace BenMAP
             this.tsbAddLayer.Image = global::BenMAP.Properties.Resources.add;
             this.tsbAddLayer.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbAddLayer.Name = "tsbAddLayer";
-            this.tsbAddLayer.Size = new System.Drawing.Size(21, 20);
+            this.tsbAddLayer.Size = new System.Drawing.Size(22, 20);
             this.tsbAddLayer.Text = "Add Layer";
             this.tsbAddLayer.Click += new System.EventHandler(this.tsbAddLayer_Click);
             // 
@@ -2147,7 +2150,7 @@ namespace BenMAP
             this.toolStripButton6.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton6.Image")));
             this.toolStripButton6.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton6.Name = "toolStripButton6";
-            this.toolStripButton6.Size = new System.Drawing.Size(21, 20);
+            this.toolStripButton6.Size = new System.Drawing.Size(22, 20);
             this.toolStripButton6.Text = "toolStripButton6";
             // 
             // splitContainer2
@@ -2179,7 +2182,6 @@ namespace BenMAP
             // 
             this.btnShowHideAttributeTable.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.btnShowHideAttributeTable.Location = new System.Drawing.Point(0, 421);
-            this.btnShowHideAttributeTable.Margin = new System.Windows.Forms.Padding(100, 3, 3, 3);
             this.btnShowHideAttributeTable.Name = "btnShowHideAttributeTable";
             this.btnShowHideAttributeTable.Size = new System.Drawing.Size(199, 35);
             this.btnShowHideAttributeTable.TabIndex = 15;
@@ -2224,24 +2226,26 @@ namespace BenMAP
             // legend1
             // 
             this.legend1.BackColor = System.Drawing.Color.White;
-            this.legend1.ControlRectangle = new System.Drawing.Rectangle(0, 0, 180, 398);
-            this.legend1.DocumentRectangle = new System.Drawing.Rectangle(0, 0, 168, 284);
+            this.legend1.ControlRectangle = new System.Drawing.Rectangle(-20, -5, 199, 456);
+            this.legend1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.legend1.DocumentRectangle = new System.Drawing.Rectangle(0, 0, 168, 456);
             this.legend1.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.legend1.HorizontalScrollEnabled = true;
             this.legend1.Indentation = 9;
             this.legend1.IsInitialized = false;
-            this.legend1.Location = new System.Drawing.Point(19, 5);
+            this.legend1.Location = new System.Drawing.Point(0, 0);
+            this.legend1.Margin = new System.Windows.Forms.Padding(35, 3, 3, 3);
             this.legend1.MinimumSize = new System.Drawing.Size(5, 6);
             this.legend1.Name = "legend1";
-            this.legend1.Padding = new System.Windows.Forms.Padding(40, 50, 0, 0);
             this.legend1.ProgressHandler = null;
             this.legend1.ResetOnResize = false;
             this.legend1.SelectionFontColor = System.Drawing.Color.Black;
             this.legend1.SelectionHighlight = System.Drawing.Color.FromArgb(((int)(((byte)(215)))), ((int)(((byte)(238)))), ((int)(((byte)(252)))));
-            this.legend1.Size = new System.Drawing.Size(180, 398);
+            this.legend1.Size = new System.Drawing.Size(199, 456);
             this.legend1.TabIndex = 0;
             this.legend1.Text = "legend1";
             this.legend1.VerticalScrollEnabled = true;
+            this.legend1.Click += new System.EventHandler(this.legend1_Click);
             // 
             // tabMapLayoutPanel1
             // 
@@ -2305,14 +2309,6 @@ namespace BenMAP
             dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
             this.dgvAttributeTable.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
             this.dgvAttributeTable.Cursor = System.Windows.Forms.Cursors.Default;
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle3.ForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvAttributeTable.DefaultCellStyle = dataGridViewCellStyle3;
             this.dgvAttributeTable.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvAttributeTable.GridColor = System.Drawing.SystemColors.Control;
             this.dgvAttributeTable.Location = new System.Drawing.Point(3, 458);
