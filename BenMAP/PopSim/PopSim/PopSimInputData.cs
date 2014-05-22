@@ -15,10 +15,10 @@ namespace PopSim
 
         // dates 
         // these should be datetime, but are kept integers as in the original code
-        private int begin_year = 2000; // start of simulation run (Step 1)
-        private int end_year = 2016;   // end of simulation run (Step 1)
-        private int Age_Range_Start = 1;    // earliest age range affected 
-        private int Age_Range_End = 65;      // oldest age range affected
+        private int begin_year = 1990; // start of simulation run (Step 1)
+        private int end_year = 2020;   // end of simulation run (Step 1)
+        private int Age_Range_Start = 0;    // earliest age range affected 
+        private int Age_Range_End = 100;      // oldest age range affected
 
         // boolean values - these are integers because Firebird version 2 has no boolean data type
         private int wasRun = 0; // set to true (1) after model has been run
@@ -61,7 +61,7 @@ namespace PopSim
         private double Sub_Pop_Adjustment_4 = 0;
         private double Sub_Pop_Adjustment_5 = 0;
 
-        private int Birth_Type = 0;  // step 6 birth not dynamic if 0, dynamic if 1
+        private int Birth_Type = 1;  // step 6 birth not dynamic if 0, dynamic if 1
         private int Lag_Type = 0;    // LK_Lag_types, 0 = single, 1 = cause specific lag
         // private int Lag_Type_Specific; // appears to be unused 
         private int Lag_Function_Type;
