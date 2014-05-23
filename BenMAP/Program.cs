@@ -34,24 +34,44 @@ namespace BenMAP
             Exception ex = args.Exception;
             Logger.LogError(ex);
 
+            //check for Jira Connector needed by error reporting form
+            //if no jira connector, then terminate application
+            if (String.IsNullOrEmpty(CommonClass.JiraConnectorFilePath) || String.IsNullOrEmpty(CommonClass.JiraConnectorFilePathTXT))
+            {
+                MessageBox.Show("The application encountered the following fatal error and will now terminate." + Environment.NewLine + Environment.NewLine + ex.Message, "Error", MessageBoxButtons.OK);
+                Environment.Exit(0);
+            }           
+            
+
             //show error reporting form unless error is in error reporting form
             if (ex.StackTrace.IndexOf("ErrorReporting", StringComparison.OrdinalIgnoreCase) < 0)
             {
                 try
                 {
-                    DialogResult dialogResult = MessageBox.Show("The following error occurred:\n\n" + ex.Message + "\n\nWould you like to report this to the BenMAP-CE development team?", "Error", MessageBoxButtons.YesNo);
+                    DialogResult dialogResult = MessageBox.Show("The application encountered the following fatal error:" + Environment.NewLine + Environment.NewLine + ex.Message + Environment.NewLine + Environment.NewLine + "Would you like to report the error to the BenMAP-CE development team before the application terminates?", "Error", MessageBoxButtons.YesNo);
 
                     if (dialogResult == DialogResult.Yes)
                     {
                         ErrorReporting frm = new ErrorReporting();
-                        frm.ErrorMessage = ex.StackTrace;
+                        string err = ex.StackTrace + Environment.NewLine + Environment.NewLine + "Please enter any additional information about the error that might prove useful:";
+                        frm.ErrorMessage = err;
+                        
                         frm.ShowDialog();
                     }
+                    
+                    Environment.Exit(0);
+                    
                 }
                 catch (Exception ex2)
                 {
+                    //quit if error occurs opening or after opening error reporting form
                     Logger.LogError(ex2);
+                    Environment.Exit(0);
                 }
+            }
+            else //this error occurred in Error Reporting so just quit
+            {
+                Environment.Exit(0);
             }
 
         }

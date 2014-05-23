@@ -246,6 +246,17 @@ namespace BenMAP
                 lblStatus.Text = this.Status;
 
 
+                //check for Jira Connector
+                if ((!String.IsNullOrEmpty(CommonClass.JiraConnectorFilePath)) && (!String.IsNullOrEmpty(CommonClass.JiraConnectorFilePathTXT)))
+                {
+                    errorReportingToolStripMenuItem.Visible = true;
+                }
+                else
+                {
+                    errorReportingToolStripMenuItem.Visible = false;
+                }
+
+
 
 
             }
