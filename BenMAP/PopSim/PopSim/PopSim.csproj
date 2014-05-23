@@ -33,6 +33,10 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>
+    </StartupObject>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="FirebirdSql.Data.FirebirdClient">
       <HintPath>lib\FirebirdSql.Data.FirebirdClient.dll</HintPath>
@@ -55,6 +59,8 @@
     <Compile Include="frm_PopSim.Designer.cs">
       <DependentUpon>frm_PopSim.cs</DependentUpon>
     </Compile>
+    <Compile Include="PopSimInputData.cs" />
+    <Compile Include="PopSimModel.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="frm_PopSim.resx">
