@@ -99,8 +99,6 @@ namespace BenMAP
                 //}
            
                 //MCB- right place for this???
-                
-
               //AttributeDataExplorerPlugin AttEx = new AttributeDataExplorerPlugin();
               // AttEx.Activate();
               //  AttEx.IsActive = true;
@@ -1967,8 +1965,10 @@ namespace BenMAP
                 LayerObject = currentNode.Tag as BenMAPLine;
                 InitTableResult(currentNode.Tag as BenMAPLine);
             }
-            catch
+            catch (Exception ex)
             {
+                Logger.LogError(ex);
+                Debug.WriteLine("DraawBaseline: " + ex.ToString());
             }
             WaitClose();
             return;
@@ -2006,8 +2006,10 @@ namespace BenMAP
                 LayerObject = currentNode.Tag as BenMAPLine;
                 InitTableResult(currentNode.Tag as BenMAPLine);
             }
-            catch
+            catch (Exception ex)
             {
+                Logger.LogError(ex); 
+                Debug.WriteLine("DrawControlData: " + ex.ToString());
             }
             WaitClose();
             return;
@@ -2083,17 +2085,20 @@ namespace BenMAP
                             }
                         }
                     }
-                    catch
-                    { }
+                    catch (Exception ex)
+                    {
+                        Logger.LogError(ex); 
+                        Debug.WriteLine("DrawDelta: " + ex.ToString());
+                    }
                 }
             }
 
             try
             {
                 //Map Title
-                string _PollutantName = bcgDelta.DeltaQ.Pollutant.PollutantName;
-                string _BenMapSetupName = bcgDelta.Base.GridType.SetupName;
-                _CurrentMapTitle = _BenMapSetupName + " Setup: " + _PollutantName + ", Delta";
+                string PollutantName = bcgDelta.DeltaQ.Pollutant.PollutantName;
+                string BenMapSetupName = bcgDelta.Base.GridType.SetupName;
+                _CurrentMapTitle = BenMapSetupName + " Setup: " + PollutantName + ", Delta";
             
                 tabCtlMain.SelectedIndex = 0;
                 //mainMap.Layers.Clear();
@@ -2102,8 +2107,10 @@ namespace BenMAP
                 LayerObject = bcgDelta.DeltaQ;
                 InitTableResult(bcgDelta.DeltaQ);
             }
-            catch
+            catch (Exception ex)
             {
+                Logger.LogError(ex);
+                Debug.WriteLine("DrawDelta (2): " + ex.ToString());
             }
             WaitClose();
             return;
@@ -2406,13 +2413,18 @@ namespace BenMAP
             }
             
             MapGroup bcgMapGroup = new MapGroup();
+            MapGroup TopPollutantMapGroup = new MapGroup();
+            MapGroup polMapGroup = new MapGroup();
+
             //MapPolygonLayer polLayer = new MapPolygonLayer();
+            string pollutantMGText;
+            string bcgMGText;
             string LayerNameText;
             string LayerLegendText;
 
             //Add Pollutants Mapgroup if it doesn't exist already -MCB
-            bcgMapGroup = AddMapGroup("Pollutants", true);
-            
+            TopPollutantMapGroup = AddMapGroup("Pollutants", "Map Layers", true, true);
+
             //Get Metrics fields for this pollutant.  If no metrics then return with warning/error
             List<string> lstAddField = new List<string>();
             if (benMAPLine.Pollutant.Metrics != null)
@@ -2431,32 +2443,35 @@ namespace BenMAP
             }
             //Add a layer for each metric for this pollutant
             for (int iAddField = 2; iAddField < 2 + lstAddField.Count; iAddField++)
-            {
+            {   
                 MapPolygonLayer polLayer = new MapPolygonLayer();
 
-                LayerLegendText = benMAPLine.Pollutant.PollutantName.ToString() + "_" + IsBaseLongText;
-                LayerNameText = LayerLegendText + "_" + lstAddField[iAddField - 2].ToString(); //benMAPLine.Pollutant.Metrics[0].MetricName.ToString();
-                
+
+                pollutantMGText = benMAPLine.Pollutant.PollutantName.ToString();
+                _columnName = lstAddField[iAddField - 2];
+                bcgMGText = _columnName.ToString();
+                LayerLegendText = IsBaseLongText;
+                LayerNameText = pollutantMGText + "_" + "_" + bcgMGText + "_" + LayerLegendText;
+
                 try
                 {
+                    polMapGroup = AddMapGroup(pollutantMGText, "Pollutants", false, true);
+                    bcgMapGroup = AddMapGroup(bcgMGText, pollutantMGText, false, true);
                     //Remove the old version of the layer if exists already
-                    RemoveOldPolygonLayer(LayerNameText, bcgMapGroup.GetLayers(), true);
+                    RemoveOldPolygonLayer(LayerNameText, bcgMapGroup.GetLayers(), true);  //!!!!!!!!!!!!Need to trap for problems removing the old layer if it exists?
 
-                
                     // Add a new layer baseline, control or delta layer to the Pollutants group
                     if (File.Exists(benMAPLine.ShapeFile))
                     {
                         try
                         {
-                           // mainMap.Layers.Add(benMAPLine.ShapeFile);
+                            // mainMap.Layers.Add(benMAPLine.ShapeFile);
                             polLayer = (MapPolygonLayer)bcgMapGroup.Layers.Add(benMAPLine.ShapeFile);
-                        
                         }
                         catch (Exception ex)
                         {
                             DataSourceCommonClass.SaveBenMAPLineShapeFile(CommonClass.GBenMAPGrid, benMAPLine.Pollutant, benMAPLine, benMAPLine.ShapeFile);
                             polLayer = (MapPolygonLayer)bcgMapGroup.Layers.Add(benMAPLine.ShapeFile);   //-MCB use when mapgroup layers is working correctly
-                            //IMapLayer mylayer = mainMap.Layers.Add(benMAPLine.ShapeFile);
                         }
                     }
                     else
@@ -2467,92 +2482,104 @@ namespace BenMAP
                             benMAPLine.ShapeFile = string.Format("{0}\\Tmp\\{1}", CommonClass.DataFilePath, benMAPLine.ShapeFile);
                         }
                         DataSourceCommonClass.SaveBenMAPLineShapeFile(CommonClass.GBenMAPGrid, benMAPLine.Pollutant, benMAPLine, benMAPLine.ShapeFile);
-                        //mainMap.Layers.Add(benMAPLine.ShapeFile);
                         polLayer = (MapPolygonLayer)bcgMapGroup.Layers.Add(benMAPLine.ShapeFile);  // -MCB use when mapgroup layers is working correctly
                     }
                 }
                 catch (Exception ex)
                 {
+                    Logger.LogError(ex);
+                    Debug.WriteLine("addBenMAPLineToMainMap: Error adding new layer " + LayerNameText + " :" + ex.ToString());
                 }
+
                 //define the symbology, legend text and identifying name for the layer
+                polLayer.DataSet.DataTable.Columns[iAddField].ColumnName = _columnName; // lstAddField[iAddField - 2];
                 polLayer.LegendText = LayerLegendText;
                 polLayer.Name = LayerNameText;
-                polLayer.DataSet.DataTable.Columns[iAddField].ColumnName = lstAddField[iAddField - 2];
-                _columnName = polLayer.DataSet.DataTable.Columns[iAddField].ColumnName;
-                    //MapPolygonLayer polLayer = bcgMapGroup.Layers[mainMap.Layers.Count-1] as MapPolygonLayer; -MCB use when mapgroup layers is working correctly
-                    //MapPolygonLayer polLayer = mainMap.Layers[mainMap.Layers.Count - 1] as MapPolygonLayer;
-                    ////Get Metrics fields.  If no metrics then return with warning/error
-                    //List<string> lstAddField = new List<string>();
-                    //if (benMAPLine.Pollutant.Metrics != null)
-                    //{
-                    //    foreach (Metric metric in benMAPLine.Pollutant.Metrics)
-                    //    {
-                    //        lstAddField.Add(metric.MetricName);
-                    //    }
-                    //}
-                    //if (benMAPLine.Pollutant.SesonalMetrics != null)
-                    //{
-                    //    foreach (SeasonalMetric sesonalMetric in benMAPLine.Pollutant.SesonalMetrics)
-                    //    {
-                    //        lstAddField.Add(sesonalMetric.SeasonalMetricName);
-                    //    }
-                    //}
-                    //-------------------------------------------------------------------------------------------
-                    ////Add a layer for each metric for this pollutant
-                    //for (int iAddField = 2; iAddField < 2 + lstAddField.Count; iAddField++)
-                    //{
-                    //    polLayer.DataSet.DataTable.Columns[iAddField].ColumnName = lstAddField[iAddField - 2];
-                    //}
-                
-                    //if (isBase == "B") polLayer.LegendText = "Baseline";
-                    //if (isBase == "D") polLayer.LegendText = "Delta";
-                    //if (isBase == "C") polLayer.LegendText = "Control";
 
-                    //polLayer.LegendText = benMAPLine.Pollutant.PollutantName + "_" + IsBaseLongText;
-                    //polLayer.Name = polLayer.LegendText + "_" + benMAPLine.Pollutant.Metrics[0].MetricName;  //-MCB using name as a layer handle to grab it elsewhere
+                //MapPolygonLayer polLayer = bcgMapGroup.Layers[mainMap.Layers.Count-1] as MapPolygonLayer; -MCB use when mapgroup layers is working correctly
+                //MapPolygonLayer polLayer = mainMap.Layers[mainMap.Layers.Count - 1] as MapPolygonLayer;
+                ////Get Metrics fields.  If no metrics then return with warning/error
+                //List<string> lstAddField = new List<string>();
+                //if (benMAPLine.Pollutant.Metrics != null)
+                //{
+                //    foreach (Metric metric in benMAPLine.Pollutant.Metrics)
+                //    {
+                //        lstAddField.Add(metric.MetricName);
+                //    }
+                //}
+                //if (benMAPLine.Pollutant.SesonalMetrics != null)
+                //{
+                //    foreach (SeasonalMetric sesonalMetric in benMAPLine.Pollutant.SesonalMetrics)
+                //    {
+                //        lstAddField.Add(sesonalMetric.SeasonalMetricName);
+                //    }
+                //}
+                //-------------------------------------------------------------------------------------------
+                ////Add a layer for each metric for this pollutant
+                //for (int iAddField = 2; iAddField < 2 + lstAddField.Count; iAddField++)
+                //{
+                //    polLayer.DataSet.DataTable.Columns[iAddField].ColumnName = lstAddField[iAddField - 2];
+                //}
 
-                    //string strValueField = polLayer.DataSet.DataTable.Columns[2].ColumnName;
-                    //_columnName = strValueField;
-                polLayer.Symbology = CreateBCGPolyScheme(ref polLayer, 6, isBase);
-                //set the layer to have its symbology expanded by default //-MCB
-                polLayer.Symbology.IsExpanded = true;
+                //if (isBase == "B") polLayer.LegendText = "Baseline";
+                //if (isBase == "D") polLayer.LegendText = "Delta";
+                //if (isBase == "C") polLayer.LegendText = "Control";
 
-                    //double dMinValue = 0.0;
-                    //double dMaxValue = 0.0;
-                    //dMinValue = benMAPLine.ModelResultAttributes.Min(a => a.Values[strValueField]);
-                    //dMaxValue = benMAPLine.ModelResultAttributes.Max(a => a.Values[strValueField]);
+                //polLayer.LegendText = benMAPLine.Pollutant.PollutantName + "_" + IsBaseLongText;
+                //polLayer.Name = polLayer.LegendText + "_" + benMAPLine.Pollutant.Metrics[0].MetricName;  //-MCB using name as a layer handle to grab it elsewhere
 
-                    //if (double.IsNaN(dMinValue)) dMinValue = 0;
-                    //if (double.IsNaN(dMaxValue)) dMaxValue = 0;
-                    //if (isBase == "C")
-                    //{
-                    //    try
-                    //    {
-                    //        foreach (BaseControlGroup baseControlGroup in CommonClass.LstBaseControlGroup)
-                    //        {
+                //string strValueField = polLayer.DataSet.DataTable.Columns[2].ColumnName;
+                //_columnName = strValueField;
 
-                    //            if (baseControlGroup.GridType.GridDefinitionID == benMAPLine.GridType.GridDefinitionID && baseControlGroup.Pollutant.PollutantID == benMAPLine.Pollutant.PollutantID)
-                    //            {
-                    //                if (baseControlGroup.Base != null && baseControlGroup.Base.ModelResultAttributes != null && baseControlGroup.Base.ModelResultAttributes.Count > 0)
-                    //                {
-                    //                    dMinValue = baseControlGroup.Base.ModelResultAttributes.Min(a => a.Values.ToArray()[0].Value);
-                    //                    dMaxValue = baseControlGroup.Base.ModelResultAttributes.Max(a => a.Values.ToArray()[0].Value);
-                    //                }
-                    //            }
-                    //        }
-                    //    }
-                    //    catch (Exception ex)
-                    //    {
-                    //    }
+                try
+                {
+                    polLayer.Symbology = CreateBCGPolyScheme(ref polLayer, 6, isBase);
 
-                    //}
-
-                    ////_currentLayerIndex = mainMap.Layers.Count - 1;
-
-                    //_dMinValue = dMinValue;
-                    //_dMaxValue = dMaxValue;
-                    //_columnName = strValueField;
+                    //set the layer to have its symbology expanded by default //-MCB
+                    polLayer.Symbology.IsExpanded = true;
                 }
+                catch (Exception ex)
+                {
+                    Logger.LogError(ex);
+                    Debug.WriteLine("Error applying symbology for " + LayerNameText + " :" + ex.ToString());
+                }
+
+                //double dMinValue = 0.0;
+                //double dMaxValue = 0.0;
+                //dMinValue = benMAPLine.ModelResultAttributes.Min(a => a.Values[strValueField]);
+                //dMaxValue = benMAPLine.ModelResultAttributes.Max(a => a.Values[strValueField]);
+
+                //if (double.IsNaN(dMinValue)) dMinValue = 0;
+                //if (double.IsNaN(dMaxValue)) dMaxValue = 0;
+                //if (isBase == "C")
+                //{
+                //    try
+                //    {
+                //        foreach (BaseControlGroup baseControlGroup in CommonClass.LstBaseControlGroup)
+                //        {
+
+                //            if (baseControlGroup.GridType.GridDefinitionID == benMAPLine.GridType.GridDefinitionID && baseControlGroup.Pollutant.PollutantID == benMAPLine.Pollutant.PollutantID)
+                //            {
+                //                if (baseControlGroup.Base != null && baseControlGroup.Base.ModelResultAttributes != null && baseControlGroup.Base.ModelResultAttributes.Count > 0)
+                //                {
+                //                    dMinValue = baseControlGroup.Base.ModelResultAttributes.Min(a => a.Values.ToArray()[0].Value);
+                //                    dMaxValue = baseControlGroup.Base.ModelResultAttributes.Max(a => a.Values.ToArray()[0].Value);
+                //                }
+                //            }
+                //        }
+                //    }
+                //    catch (Exception ex)
+                //    {
+                //    }
+
+                //}
+
+                ////_currentLayerIndex = mainMap.Layers.Count - 1;
+
+                //_dMinValue = dMinValue;
+                //_dMaxValue = dMaxValue;
+                //_columnName = strValueField;
+            }
                 
 
             RenderMainMap(true,isBase); 
@@ -2565,7 +2592,7 @@ namespace BenMAP
         private double _dMinValue = 0.0;
         private double _dMaxValue = 0.0;
         private IMapLayer _CurrentIMapLayer = null;
-        //private int _currentLayerIndex = 1;
+        //private int _currentLayerIndex = 1; //MCB- used in old way of accessing layers
         private string _columnName = string.Empty;
         private string _regionGroupLegendText = "Region Admin Layers";
         private string _bcgGroupLegendText = "Pollutants";
@@ -2607,7 +2634,7 @@ namespace BenMAP
                 myScheme1.Categories[catNum].Symbolizer.SetOutline(Color.Transparent, 0); //make the outlines invisble
                 myScheme1.Categories[catNum].SetColor(colorBlend.ColorArray[catNum]);
             }
-            myScheme1.AppearsInLegend = true; //if true then legend text displayed
+            myScheme1.AppearsInLegend = false; //if true then legend text displayed
             myScheme1.IsExpanded = true;
             myScheme1.LegendText = _columnName;
 
@@ -2655,7 +2682,7 @@ namespace BenMAP
             for (int catNum = 0; catNum < CategoryNumber; catNum++)
             {
                 myScheme1.Categories[catNum].Symbolizer.SetOutline(Color.Transparent, 0); //make the outlines invisble
-                myScheme1.Categories[catNum].SetColor(colorBlend.ColorArray[catNum].ToTransparent((float)0.2));
+                myScheme1.Categories[catNum].SetColor(colorBlend.ColorArray[catNum].ToTransparent((float)0.9));
             }
             myScheme1.AppearsInLegend = true; //if true then legend text displayed
             myScheme1.IsExpanded = true;
@@ -3019,26 +3046,30 @@ namespace BenMAP
                 mainMap.ProjectionModeDefine = ActionMode.Never;
 
                 //-MCB  Add RegionAdmin group to the legend if it doesn't exist already---------
-                MapGroup RegionMapGroup = new MapGroup();
-                RegionMapGroup.LegendText = _regionGroupLegendText;
+                 MapGroup RegionMapGroup = AddMapGroup(_regionGroupLegendText, "Map Layers", false, false);
                 RegionMapGroup.IsExpanded = false;
+               
+                //MapGroup RegionMapGroup = new MapGroup();
+                //RegionMapGroup.LegendText = _regionGroupLegendText;
                 
-                //if it exists already then set it to the group on the legend
-                foreach (IMapGroup mgrp in mainMap.GetAllGroups())
-                {
-                    if (mgrp.LegendText == _regionGroupLegendText)
-                    {
-                        RegionMapGroup = (MapGroup)mgrp;
-                        break;
-                    }
-                }
-                //if the region admin group doesn't exist on the legend already then add it
-                if (!mainMap.GetAllGroups().Contains(RegionMapGroup))
-                {
-                    
-                    mainMap.Layers.Add(RegionMapGroup);
-                }
                 
+                ////if it exists already then set it to the group on the legend
+                //foreach (IMapGroup mgrp in mainMap.GetAllGroups())
+                //{
+                //    if (mgrp.LegendText == _regionGroupLegendText)
+                //    {
+                //        RegionMapGroup = (MapGroup)mgrp;
+                //        break;
+                //    }
+                //}
+                ////if the region admin group doesn't exist on the legend already then add it
+                //if (!mainMap.GetAllGroups().Contains(RegionMapGroup))
+                //{   
+                //    mainMap.Layers.Add(RegionMapGroup);
+                //}
+                ////------------------------- 
+
+
                 //add the default region admin layer if it doen't exist already
                 bool DefaultRegionLayerFound = false;
                 foreach (ILayer Ilay in mainMap.GetAllLayers())
@@ -6991,8 +7022,12 @@ namespace BenMAP
                     mainMap.ProjectionModeDefine = ActionMode.Never;
                     string shapeFileName = "";
 
-                    MapGroup ResultsMG = AddMapGroup("Results", true);
+                    MapGroup ResultsMG = AddMapGroup("Results", "Map Layers", true, true);
+                    MapGroup PVResultsMG = AddMapGroup("Pooled Valuation", "Results", false, true);
+
                     string author = "Unknown";
+                    string LayerTextName;
+
                     if (lstallSelectValuationMethodAndValue.First().AllSelectValuationMethod != null
                         && lstallSelectValuationMethodAndValue.First().AllSelectValuationMethod.Author != null)
                     {
@@ -7002,8 +7037,8 @@ namespace BenMAP
                             author = author.Substring(0, author.IndexOf(" "));
                         }
                     }
-
-                    RemoveOldPolygonLayer("PV:"+ author, ResultsMG.GetLayers(), true);
+                    LayerTextName = "PV:"+ author;
+                    RemoveOldPolygonLayer(LayerTextName, PVResultsMG.GetLayers(), false);
 
                     if (!chbAPVAggregation.Checked)
                     {   
@@ -7044,7 +7079,7 @@ namespace BenMAP
                     {
                         shapeFileName = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + ((benMapGridShow is ShapefileGrid) ? (benMapGridShow as ShapefileGrid).ShapefileName : (benMapGridShow as RegularGrid).ShapefileName) + ".shp";
                     }
-                    MapPolygonLayer APVResultPolyLayer1 = (MapPolygonLayer)ResultsMG.Layers.Add(shapeFileName);
+                    MapPolygonLayer APVResultPolyLayer1 = (MapPolygonLayer)PVResultsMG.Layers.Add(shapeFileName);
                     //IFeatureSet fs = (mainMap.Layers[0] as MapPolygonLayer).DataSet;
                     //(mainMap.Layers[0] as MapPolygonLayer).Name = "APVResult";
                     //(mainMap.Layers[0] as MapPolygonLayer).LegendText = "APVResult";
@@ -7126,20 +7161,7 @@ namespace BenMAP
                     //APVResultPolyLayer1.LegendText = "PV:"+ author;
                     MapPolygonLayer polLayer = APVResultPolyLayer1;
                     string strValueField = polLayer.DataSet.DataTable.Columns[polLayer.DataSet.DataTable.Columns.Count - 1].ColumnName;
-                    //PolygonScheme myScheme1 = new PolygonScheme();
-                    //float fl = (float)0.1;
-                    //myScheme1.EditorSettings.StartColor = Color.Blue;
-                    //myScheme1.EditorSettings.StartColor.ToTransparent(fl);
-                    //myScheme1.EditorSettings.EndColor = Color.Red;
-                    //myScheme1.EditorSettings.EndColor.ToTransparent(fl);
-
-                    //myScheme1.EditorSettings.ClassificationType = ClassificationType.Quantities;
-                    //myScheme1.EditorSettings.IntervalMethod = IntervalMethod.NaturalBreaks;
-                    //myScheme1.EditorSettings.IntervalSnapMethod = IntervalSnapMethod.SignificantFigures;
-                    //myScheme1.EditorSettings.IntervalRoundingDigits = 3;
-                    //myScheme1.EditorSettings.NumBreaks = 6;
-                    //myScheme1.EditorSettings.FieldName = strValueField; myScheme1.EditorSettings.UseGradient = false;
-                    //myScheme1.CreateCategories(polLayer.DataSet.DataTable);
+                    
                     _columnName = strValueField;
                     polLayer.Symbology = CreateResultPolyScheme(ref polLayer, 6, "A"); //-MCB added
 
@@ -10763,39 +10785,17 @@ namespace BenMAP
                             }
                             //Add Pollutants Mapgroup if it doesn't exist already -MCB
                             //MapGroup ResultsMapGroup = new MapGroup();
-                            MapGroup ResultsMapGroup = AddMapGroup("Results", true);
-                            //bool _mgFound = false;
-                            //foreach (IMapLayer layer in mainMap.Layers)
-                            //{
-                            //    if (layer is MapGroup || layer is IMapGroup)
-                            //    {
-                            //        if (layer.LegendText == "Results")
-                            //        {
-                            //            ResultsMapGroup = (MapGroup)layer;  //Results map group found
-                            //            _mgFound = true;
-                            //            break;
-                            //        }
-                            //        else
-                            //        { // Unexpand other mapgroups to increase display room for new layer and turn it off
-                            //            layer.IsExpanded = false;
-                            //            layer.IsVisible = false;
-                            //        }
-                            //    }
-                            //}
-
-                            //if (!_mgFound)  //Results map group not found, so add it
-                            //{
-                            //    ResultsMapGroup.LegendText = "Results";
-                            //    mainMap.Layers.Add(ResultsMapGroup);
-                            //}
-
+                            MapGroup ResultsMapGroup = AddMapGroup("Results", "Map Layers", true, true);
+                            MapGroup HIFResultsMapGroup = AddMapGroup("Health Impacts", "Results", false, true);
+                            
                             string author = lstCRSelectFunctionCalculateValue.First().CRSelectFunction.BenMAPHealthImpactFunction.Author;
                             if (author.IndexOf(" ") != -1)
                             {
                                 author = author.Substring(0, author.IndexOf(" "));
                             }
+                            string LayerNameText = "HIF:" + author;
                             //Remove the old version of the layer if exists already
-                            RemoveOldPolygonLayer("HIF:"+ author, ResultsMapGroup.GetLayers(), true);
+                            RemoveOldPolygonLayer(LayerNameText, HIFResultsMapGroup.GetLayers(), false);
                             //foreach (MapPolygonLayer aLayer in ResultsMapGroup.GetLayers())  //shrink & turn off existing layers or remove if a duplicate of the new layer
                             //{
                             //    if (aLayer.Name == "HIF")   //MCB-May want to make it more specific more than one HIF layer is allowed
@@ -10829,7 +10829,7 @@ namespace BenMAP
                             }
 
                             //MapPolygonLayer CRResultMapPolyLayer = (MapPolygonLayer)mainMap.Layers.Add(shapeFileName);
-                            MapPolygonLayer CRResultMapPolyLayer = (MapPolygonLayer)ResultsMapGroup.Layers.Add(shapeFileName);
+                            MapPolygonLayer CRResultMapPolyLayer = (MapPolygonLayer)HIFResultsMapGroup.Layers.Add(shapeFileName);
 
                             DataTable dt = CRResultMapPolyLayer.DataSet.DataTable;
                             //string author = lstCRSelectFunctionCalculateValue.First().CRSelectFunction.BenMAPHealthImpactFunction.Author;
@@ -12292,9 +12292,7 @@ namespace BenMAP
         {
             MapGroup aMGLayer = new MapGroup();
             MapPolygonLayer aPolyLayer = new MapPolygonLayer();
-            //MapGroup aNestedMGLayer = new MapGroup();
-            //MapPolygonLayer aFLayer = new MapPolygonLayer();
-
+           
             //Remove the old version of the layer if exists already
             foreach (ILayer aLayer in layerList)
             {
@@ -12302,80 +12300,84 @@ namespace BenMAP
                 {
                     aMGLayer = (MapGroup)aLayer;
                     RemoveOldPolygonLayer(LayerName, aMGLayer.GetLayers(), ShrinkOtherLayersInMapGroup);
-                    //foreach (IMapLayer aLayerInMG in aMGLayer.GetLayers())  //shrink & turn off existing layers or remove if a duplicate of the new layer
-                    //{
-                    //    if (aLayerInMG is MapGroup || aLayerInMG is IMapGroup) //Look within nested Map groups
-                    //    {
-                    //        aNestedMGLayer = (MapGroup)aLayerInMG;
-                    //        RemoveOldPolygonLayer(LayerName, aNestedMGLayer.GetLayers(), ShrinkOtherLayersInMapGroup);
-                    //    }
-                    //    else
-                    //    {
-                    //        if (aLayerInMG.Name == LayerName)   //MCB-May want to make it more specific more than one HIF layer is allowed
-                    //        {
-                    //            aMGLayer.Layers.Remove(aLayerInMG);
-                    //            //break;
-                    //        }
-                    //        else if (ShrinkOtherLayersInMapGroup)  // Unexpand this layer to increase display room for new layer
-                    //        {
-                    //            aLayerInMG.IsExpanded = false;
-                    //        }
-                    //    }
-                    //}
+                   
                 }
-                else 
-                    if (aLayer is FeatureLayer || aLayer is IFeatureLayer) // layer at root level(not in a mapgroup
+                else if (aLayer is FeatureLayer || aLayer is IFeatureLayer) // layer at root level(not in a mapgroup
+                {
+                    if (aLayer is MapPolygonLayer)
                     {
-                        if (aLayer is MapPolygonLayer)
-                        {
-                            //MapPolygonLayer aFLayer = new MapPolygonLayer();
-                            aPolyLayer = (MapPolygonLayer)aLayer;
+                        aPolyLayer = (MapPolygonLayer)aLayer;
 
-                            if (aPolyLayer.Name == LayerName)
-                            {
-                                layerList.Remove((IMapLayer)aLayer);
-                                //break;
-                            }
-                            else if (ShrinkOtherLayersInMapGroup)  // Unexpand this layer to increase display room for new layer
-                            {
-                                aLayer.IsExpanded = false;
-                            }
+                        if (aPolyLayer.Name == LayerName)
+                        {
+                            layerList.Remove((IMapLayer)aLayer);
+                            //break;
+                        }
+                        else if (ShrinkOtherLayersInMapGroup)  // Unexpand this layer to increase display room for new layer
+                        {
+                            aLayer.IsExpanded = false;
                         }
                     }
+                }
             }
 
            return;
         }
 
-        private MapGroup AddMapGroup(string mgName, bool ShrinkOtherMG = true)
+        private MapGroup AddMapGroup(string mgName, string parentMGText,  bool ShrinkOtherMG = true, bool TurnOffNonReference = true)
         {
             if (mgName == null || mgName =="") return null;   //confirm map group name is valid
 
             bool _mgFound = false;
             MapGroup NewMapGroup = new MapGroup();
-
-            //See if a map group with the Map group name already exists
-            foreach (IMapLayer layer in mainMap.Layers)
+            MapGroup ParentMapGroup = new MapGroup();
+            string parentText;
+            
+            //See if a map group with the Map group name already exists and find the name of the parent (if a map group)
+            foreach (IMapLayer layer in mainMap.GetAllGroups())
             {
                 if (layer is MapGroup || layer is IMapGroup)
                 {
-                    if (layer.LegendText == mgName)
+                    if (layer.LegendText == mgName) // && layer.GetParentItem().LegendText == parentMGText)
                     {
-                        NewMapGroup = (MapGroup)layer;     //Results map group found
-                        _mgFound = true;
-                        break;
+                        //Make sure the layer is in the same map group
+                        parentText = "Map Layers";           //default parent item- so top level map groups are detected correctly
+                        if (layer.GetParentItem() != null)   //MCB--problem getting the parent map group of some map groups??????
+                        {
+                            parentText = layer.GetParentItem().LegendText;
+                        }
+                        
+                        if (parentText == parentMGText)
+                        {
+                            NewMapGroup = (MapGroup)layer;     //Results map group found
+                            _mgFound = true;
+                            //break;
+                        }
                     }
-                    else if (ShrinkOtherMG)                // Unexpand other mapgroups to increase display room for new layer
-                    { 
-                        layer.IsExpanded = false;
+                    else 
+                    {    
+                        if (ShrinkOtherMG) layer.IsExpanded = false;             // Unexpand other mapgroups to increase display room for new layer    
+                        if (layer.LegendText != _regionGroupLegendText && parentMGText != _regionGroupLegendText)
+                        {
+                            if (TurnOffNonReference) layer.IsVisible = false;        //turn off other layers
+                        }
                     }
+                    if (layer.LegendText == parentMGText) ParentMapGroup = (MapGroup)layer;
                 }
             }
 
             if (!_mgFound)  //Results map group not found, so add it
             {
                 NewMapGroup.LegendText = mgName;
-                mainMap.Layers.Add(NewMapGroup);
+                if (parentMGText == "Map Layers")
+                {
+                    mainMap.Layers.Add(NewMapGroup);
+                }
+                else
+                {
+                    ParentMapGroup.Add(NewMapGroup);
+                    NewMapGroup.SetParentItem(ParentMapGroup);
+                }
             }
 
             return NewMapGroup;
@@ -12527,8 +12529,12 @@ namespace BenMAP
                             mainMap.ProjectionModeDefine = ActionMode.Never;
                             string shapeFileName = "";
 
-                            MapGroup ResultsMG = AddMapGroup("Results", true);
-                            RemoveOldPolygonLayer("Pooled Incidence", mainMap.GetLayers(), true);
+                            MapGroup ResultsMG = AddMapGroup("Results", "Map Layers", true, true);
+                            MapGroup PIResultsMapGroup = AddMapGroup("Pooled Incidence", "Results", false, true);
+                            string LayerNameText = "Pooled Incidence";
+
+                            RemoveOldPolygonLayer(LayerNameText, PIResultsMapGroup.GetLayers(), false);
+
                             //mainMap.Layers.Clear();
                             if (incidenceGrid is ShapefileGrid)
                             {
@@ -12545,7 +12551,7 @@ namespace BenMAP
                                 }
                             }
 
-                            MapPolygonLayer tlvIPoolMapPolyLayer = (MapPolygonLayer)ResultsMG.Layers.Add(shapeFileName);
+                            MapPolygonLayer tlvIPoolMapPolyLayer = (MapPolygonLayer)PIResultsMapGroup.Layers.Add(shapeFileName);
 
                             DataTable dt = tlvIPoolMapPolyLayer.DataSet.DataTable;
                             //tlvIPoolMapPolyLayer.LegendText = "Pooled Incidence";
@@ -12605,7 +12611,7 @@ namespace BenMAP
                                 {
                                 }
                             }
-                            string author = "Pooled Incidence";
+                            string author = "Pooled Incidence UNK";
                             if (File.Exists(CommonClass.DataFilePath + @"\Tmp\CRTemp.shp")) CommonClass.DeleteShapeFileName(CommonClass.DataFilePath + @"\Tmp\CRTemp.shp");
                             tlvIPoolMapPolyLayer.DataSet.SaveAs(CommonClass.DataFilePath + @"\Tmp\CRTemp.shp", true);
                             // mainMap.Layers.Clear();  -MCB, will need to add code to clear the equivalent layer if it exists already
@@ -13165,6 +13171,21 @@ namespace BenMAP
                 
                 Debug.WriteLine("Map displayed");
             }
+        }
+
+        private void picGIS_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void toolStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+
+        }
+
+        private void legend1_Click(object sender, EventArgs e)
+        {
+
         }       
         
     }
