@@ -216,7 +216,6 @@ namespace PopSim
 
             // STEP 7: CALCULATE THE PROBABILITY OF DEATH
             run_calculate_pdeath();
-            // STOPPED HERE
             //STEP 8: CALCULATE REGULATORY POPULATION, NUMBER OF DEATHS, AND LIFE EXPECTANCY
             strscenarioText = "Regulatory";
 
@@ -238,11 +237,12 @@ namespace PopSim
                     strinfant_migration_table = "Infant_Migration_Male";
                     strgenderText = "male";
                 } // End If
-                // next two routines have problems 
                 run_calculate_pop_and_death();
-                // run_calculate_life_expectancy();
+                // next routine has minor numerical problems and needs review
+                run_calculate_life_expectancy();
             } // Next GenderCount
-        
+            // STOPPED HERE
+            
         } // end run Pop Sim
         public void setupInternalVariables()
         {
@@ -1100,8 +1100,6 @@ Command121.Visible = True
                                 dataCommand.CommandText = sqltext;
                                 dataReader = dataCommand.ExecuteReader();
                                 dataReader.Read();
-                                // ERROR - THERE ARE NO DATA TO READ FOR 12 year old females in 1990 Regulatory - 
-                                // either an insertion error or incorrect closing brace
                                 pop = (double)dataReader[2];
                                 dataReader.Close();
 
@@ -1159,7 +1157,7 @@ Command121.Visible = True
                             dataCommand.CommandText = sqltext;
                             dataReader = dataCommand.ExecuteReader();
                             dataReader.Read();
-                            j = (double)dataReader[2];
+                            k = (double)dataReader[2];
                             dataReader.Close();
 
                             if ((year > 2005) && (strgenderText == "female"))
@@ -1206,7 +1204,7 @@ Command121.Visible = True
                         //Select records from death rate table for the previous age/year pair
                         sqltext = "SELECT " + strmortal_table + ".Age, " + strmortal_table + ".Year_Num, " + strmortal_table
                             + ".Rate FROM " + strmortal_table;
-                        sqltext = sqltext + " where Age = " + (age - 1).ToString() + "AND Year_Num = " + (year - 1).ToString();
+                        sqltext = sqltext + " where Age = " + (age - 1).ToString() + " AND Year_Num = " + (year - 1).ToString();
                         dataCommand.CommandText = sqltext;
                         dataReader = dataCommand.ExecuteReader();
                         dataReader.Read();
@@ -1232,7 +1230,7 @@ Command121.Visible = True
                             //Select records from death rate table for the same age/previous year pair
                             sqltext = "SELECT " + strmortal_table + ".Age, " + strmortal_table + ".Year_Num, "
                                 + strmortal_table + ".Rate FROM " + strmortal_table;
-                            sqltext = sqltext + " where Age = " + (age - 0).ToString() + "AND Year_Num = " + (year - 1).ToString();
+                            sqltext = sqltext + " where Age = " + (age - 0).ToString() + " AND Year_Num = " + (year - 1).ToString();
                             dataCommand.CommandText = sqltext;
                             dataReader = dataCommand.ExecuteReader();
                             dataReader.Read();
@@ -1265,7 +1263,7 @@ Command121.Visible = True
                     //Select records from death rate table for the same age/same year pair
                     sqltext = "SELECT " + strmortal_table + ".Age, " + strmortal_table + ".Year_Num, " + strmortal_table
                         + ".Rate FROM " + strmortal_table;
-                    sqltext = sqltext + " where Age = " + (age - 0).ToString() + "AND Year_Num = " + (year - 0).ToString();
+                    sqltext = sqltext + " where Age = " + (age - 0).ToString() + " AND Year_Num = " + (year - 0).ToString();
                     dataCommand.CommandText = sqltext;
                     dataReader = dataCommand.ExecuteReader();
                     dataReader.Read();
@@ -1300,11 +1298,14 @@ Command121.Visible = True
             //CALCULATE COHORT LY
             //Set initial values
             int year = 1990;
-            double pop = 0;
-            double rate = 0;
-            double m = 0;
+            double pop, rate, m;
             int age;
             string sqltext;
+            
+            year = 1990;
+            pop = 0;
+            rate = 0;
+            m = 0;
             
             //Repeat this loop for years 1990-2150
             while (year <= 2150) {
@@ -1346,20 +1347,21 @@ Command121.Visible = True
                         //Select records from death rate table for the previous age/year pair
                         sqltext = "SELECT " + strmortal_table + ".Age, " + strmortal_table + ".Year_Num, " + strmortal_table 
                             + ".Rate FROM " + strmortal_table;
-                        sqltext = sqltext + " where Age = " + (age - 1).ToString() + "AND Year = " + (year - 1).ToString();
+                        sqltext = sqltext + " where Age = " + (age - 1).ToString() + " AND Year_Num = " + (year - 1).ToString();
+                        dataCommand.CommandText = sqltext;
                         dataReader = dataCommand.ExecuteReader();
                         dataReader.Read();
                         rate  = (double)dataReader[2];
                         dataReader.Close();
 
-                        m = pop * (1 - rate);
+                        m = pop * (1.0 - rate);
             
                     } //End If
 
                     //Write value in LY table
                     sqltext = "INSERT INTO Final_Table_Cohort_LY (Age, Proj_Year, Val, Gender, Scenario) VALUES( " 
                         + age.ToString() + " , " + year.ToString() + " , " + m.ToString() + " , '" + strgenderText 
-                        + "' as Gender, '" + strscenarioText + "' )";
+                        + "' , '" + strscenarioText + "' )";
                     dataCommand.CommandText = sqltext;
                     dataCommand.ExecuteNonQuery();
         
@@ -1372,7 +1374,7 @@ Command121.Visible = True
                 year = year + 1;
     
             } // wend Loop
-
+            Debug.Print("End Cohort_LY loop");
 
             //CALCULATE COHORT ELY
             //Set initial values
@@ -1398,6 +1400,7 @@ Command121.Visible = True
                             + "Final_Table_Cohort_ELY.Gender, Final_Table_Cohort_ELY.Scenario FROM Final_Table_Cohort_ELY";
                         sqltext = sqltext + " where ((Age = (" + age.ToString() + " + 1)) AND (proj_Year = (" 
                             + year.ToString() + " + 1)) AND (Gender = '" + strgenderText + "') AND (Scenario = '" + strscenarioText + "'))";
+                        dataCommand.CommandText = sqltext;
                         dataReader = dataCommand.ExecuteReader();
                         dataReader.Read();
                         m = (double)dataReader[2];
@@ -1410,6 +1413,7 @@ Command121.Visible = True
                         + "Final_Table_Cohort_LY.Gender, Final_Table_Cohort_LY.Scenario FROM Final_Table_Cohort_LY";
                     sqltext = sqltext + " where ((Age = (" + age.ToString() + " + 0)) AND (proj_Year = (" 
                         + year.ToString() + " + 0)) AND (Gender = '"  + strgenderText + "') AND (Scenario = '" + strscenarioText + "'))";
+                    dataCommand.CommandText = sqltext;
                     dataReader = dataCommand.ExecuteReader();
                     dataReader.Read();
                     j = (double)dataReader[2];
@@ -1417,8 +1421,8 @@ Command121.Visible = True
 
                     //Write value in ELY table
                     sqltext = "INSERT INTO Final_Table_Cohort_ELY (Age, Proj_Year, Val, Gender, Scenario) VALUES( " 
-                        + age.ToString() + " , " + year.ToString() + " AS , " + (j + m).ToString() 
-                        + " AS Val, '" + strgenderText + "' as Gender, '" + strscenarioText + "' )";
+                        + age.ToString() + " , " + year.ToString() + " , " + (j + m).ToString() 
+                        + " , '" + strgenderText + "' , '" + strscenarioText + "' )";
                     dataCommand.CommandText = sqltext;
                     dataCommand.ExecuteNonQuery();
         
@@ -1427,7 +1431,7 @@ Command121.Visible = True
     
             //Proceed to next year
             } // Next year
-
+            Debug.Print("End Cohort_ELY loop");
 
             //CALCULATE COHORT CLE
             //Set initial values
@@ -1449,6 +1453,7 @@ Command121.Visible = True
                     + "Final_Table_Cohort_LY.Gender, Final_Table_Cohort_LY.Scenario FROM Final_Table_Cohort_LY";
                     sqltext = sqltext + " where ((Age = (" + age.ToString() + " - 0)) AND (proj_Year = (" 
                         + year.ToString() + " - 0)) AND (Gender = '" + strgenderText + "') AND (Scenario = '" + strscenarioText + "'))";
+                    dataCommand.CommandText = sqltext;
                     dataReader = dataCommand.ExecuteReader();
                     dataReader.Read();
                     j = (double)dataReader[2];
@@ -1459,6 +1464,7 @@ Command121.Visible = True
                         + "Final_Table_Cohort_ELY.Gender, Final_Table_Cohort_ELY.Scenario FROM Final_Table_Cohort_ELY";
                     sqltext = sqltext + " where ((Age = (" + age.ToString() + " - 0)) AND (proj_Year = (" + year.ToString()
                         + " - 0)) AND (Gender = '" + strgenderText + "') AND (Scenario = '" +  strscenarioText + "'))";
+                    dataCommand.CommandText = sqltext;
                     dataReader = dataCommand.ExecuteReader();
                     dataReader.Read();
                     m = (double)dataReader[2];
@@ -1504,6 +1510,7 @@ Command121.Visible = True
                             + "Final_Table_Pop.scenario FROM Final_Table_Pop";
                         sqltext = sqltext + " where ((Age = (" + age.ToString() + " - 0)) AND (proj_Year = (" 
                             + year.ToString()  + " - 0)) AND (Gender = '" + strgenderText + "') AND (Scenario = '" + strscenarioText + "'))";
+                        dataCommand.CommandText = sqltext;
                         dataReader = dataCommand.ExecuteReader();
                         dataReader.Read();
                         pop = (double)dataReader[2];
@@ -1518,14 +1525,16 @@ Command121.Visible = True
                             + "Final_Table_Period_LY.Gender, Final_Table_Period_LY.Scenario FROM Final_Table_Period_LY";
                         sqltext = sqltext + " where ((Age = (" + age.ToString() + " - 1)) AND (proj_Year = (" 
                             + year.ToString() + " - 0)) AND (Gender = '"  + strgenderText + "') AND (Scenario = '" + strscenarioText + "'))";
+                        dataCommand.CommandText = sqltext;
                         dataReader = dataCommand.ExecuteReader();
                         dataReader.Read();
                         pop = (double)dataReader[2];
                         dataReader.Close();
                    
                         //Select records from death rate table for the previous age/same year pair
-                        sqltext = "SELECT " + strmortal_table + ".Age, " + strmortal_table + ".Year, " + strmortal_table + ".Rate FROM " + strmortal_table;
-                        sqltext = sqltext + " where Age = " + (age - 1).ToString() + "AND Year = " + (year - 0).ToString();
+                        sqltext = "SELECT " + strmortal_table + ".Age, " + strmortal_table + ".Year_Num, " + strmortal_table + ".Rate FROM " + strmortal_table;
+                        sqltext = sqltext + " where Age = " + (age - 1).ToString() + " AND Year_Num = " + (year - 0).ToString();
+                        dataCommand.CommandText = sqltext;
                         dataReader = dataCommand.ExecuteReader();
                         dataReader.Read();
                         rate = (double)dataReader[2];
@@ -1537,8 +1546,8 @@ Command121.Visible = True
 
                     //Write value in LY table
                     sqltext = "INSERT INTO Final_Table_Period_LY (Age, Proj_Year, Val, Gender, Scenario) VALUES(" 
-                        + age.ToString() + " AS Age, " + year.ToString() + " AS Proj_Year, " + m.ToString() + " AS Val, '" 
-                        + strgenderText + "' as Gender, '" + strscenarioText + "') ";
+                        + age.ToString() + " , " + year.ToString() + " , " + m.ToString() + " , '" 
+                        + strgenderText + "' , '" + strscenarioText + "') ";
                     dataCommand.CommandText = sqltext;
                     dataCommand.ExecuteNonQuery();
         
@@ -1579,6 +1588,8 @@ Command121.Visible = True
                             + "Final_Table_Period_ELY.Gender, Final_Table_Period_ELY.Scenario FROM Final_Table_Period_ELY";
                         sqltext = sqltext + " where ((Age = (" + age.ToString() + " + 1)) AND (proj_Year = (" 
                             + year.ToString() + " + 0)) AND (Gender = '" + strgenderText + "') AND (Scenario = '" + strscenarioText + "'))";
+
+                        dataCommand.CommandText = sqltext;
                         dataReader = dataCommand.ExecuteReader();
                         dataReader.Read();
                         m = (double)dataReader[2];
@@ -1590,6 +1601,7 @@ Command121.Visible = True
                         + "Final_Table_Period_LY.Gender, Final_Table_Period_LY.Scenario FROM Final_Table_Period_LY";
                     sqltext = sqltext + " where ((Age = (" + age.ToString() + " + 0)) AND (proj_Year = (" + year.ToString() 
                         + " + 0)) AND (Gender = '" + strgenderText + "') AND (Scenario = '" + strscenarioText + "'))";
+                    dataCommand.CommandText = sqltext;
                     dataReader = dataCommand.ExecuteReader();
                     dataReader.Read();
                     j = (double)dataReader[2];
@@ -1597,8 +1609,8 @@ Command121.Visible = True
                     
                     //Write value in ELY table
                     sqltext = "INSERT INTO Final_Table_Period_ELY (Age, Proj_Year, Val, Gender, Scenario) VALUES(" 
-                        + age.ToString() + " , " + year.ToString() + " , " + (j + m).ToString() + " AS Val, '" 
-                        + strgenderText + "' as Gender, '" + strscenarioText + "' )";
+                        + age.ToString() + " , " + year.ToString() + " , " + (j + m).ToString() + " , '" 
+                        + strgenderText + "' , '" + strscenarioText + "' )";
                     dataCommand.CommandText = sqltext;
                     dataCommand.ExecuteNonQuery();
         
@@ -1629,6 +1641,7 @@ Command121.Visible = True
                         + "Final_Table_Period_LY.Gender, Final_Table_Period_LY.Scenario FROM Final_Table_Period_LY";
                     sqltext = sqltext + " where ((Age = (" + age.ToString() + " - 0)) AND (proj_Year = (" + year.ToString() 
                         + " - 0)) AND (Gender = '" + strgenderText + "') AND (Scenario = '" + strscenarioText + "'))";
+                    dataCommand.CommandText = sqltext;
                     dataReader = dataCommand.ExecuteReader();
                     dataReader.Read();
                     j = (double)dataReader[2];
@@ -1639,6 +1652,7 @@ Command121.Visible = True
                         + "Final_Table_Period_ELY.Gender, Final_Table_Period_ELY.Scenario FROM Final_Table_Period_ELY";
                     sqltext = sqltext + " where ((Age = (" + age.ToString() + " - 0)) AND (proj_Year = (" + year.ToString() 
                         + " - 0)) AND (Gender = '" + strgenderText + "') AND (Scenario = '" + strscenarioText + "'))";
+                    dataCommand.CommandText = sqltext;
                     dataReader = dataCommand.ExecuteReader();
                     dataReader.Read();
                     m = (double)dataReader[2];
@@ -1647,7 +1661,7 @@ Command121.Visible = True
                     //Write value in CLE table
                     sqltext = "INSERT INTO Final_Table_Period_CLE (Age, Proj_Year, Val, Gender, Scenario) VALUES(" 
                         + age.ToString() + " , " + year.ToString() + " , " + (m / j).ToString() + " , '" + strgenderText 
-                        + "' as Gender, '" + strscenarioText + "' )";
+                        + "' , '" + strscenarioText + "' )";
                     dataCommand.CommandText = sqltext;
                     dataCommand.ExecuteNonQuery();
         
