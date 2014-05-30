@@ -2157,7 +2157,7 @@ Command121.Visible = True
                     
 
                     //Write value into report table
-                    sqltext  = "INSERT INTO Report_Increase_Cohort_Conditional_Life_Expectancy (Age, Year_Num, Increase_Female, Increase_Male) VALUES( " 
+                    sqltext  = "INSERT INTO RPT_INC_Cohort_Cond_Life_Exp (Age, Year_Num, Increase_Female, Increase_Male) VALUES( " 
                         + age.ToString() + " , " + year.ToString() + " , " + System.Math.Round((j - k), 2).ToString() + " , " 
                         + System.Math.Round((m - p), 2) + " )";
                     dataCommand.CommandText = sqltext;
@@ -2237,7 +2237,7 @@ Command121.Visible = True
                     dataReader.Close();
                     
                     //Write value into report table
-                    sqltext = "INSERT INTO Report_Increase_Period_Conditional_Life_Expectancy (Age, Year_Num, Increase_Female, Increase_Male) VALUES( " 
+                    sqltext = "INSERT INTO RPT_Inc_PRD_Cond_Life_Exp (Age, Year_Num, Increase_Female, Increase_Male) VALUES( " 
                         + age + " , " + year + " , " + System.Math.Round((j - k), 2) + " , " 
                         + System.Math.Round((m - p), 2) + " )";
                     dataCommand.CommandText = sqltext;
