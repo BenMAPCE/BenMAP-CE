@@ -72,6 +72,7 @@ namespace PopSim
         private string strFolderName;
         private int Scenario_Name;
         private int PM_Choice = 0;  // 1 = threshold
+        private int PM_Trajectory = 0; // 0 = Linear, 1 = Step
         private double PM_Threshold = 30; // threshold value
         private int Beta_adj_factor;
         private FirebirdSql.Data.FirebirdClient.FbConnection dbConnection;
@@ -170,6 +171,11 @@ namespace PopSim
         {
             return PM_Threshold;
         }
+        public int getPM_Trajectory()
+        {
+            return PM_Trajectory;
+        }
+        
         public int getBeta_adj_factor()
         {
             return Beta_adj_factor;

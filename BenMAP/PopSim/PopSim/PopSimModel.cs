@@ -242,12 +242,17 @@ namespace PopSim
                 run_calculate_life_expectancy();
             } // Next GenderCount
             // STOPPED HERE
+            //STEP 9: GENERATE SUMMARY OF INPUTS
+            run_summarize_results();
+    
+
             
         } // end run Pop Sim
         public void setupInternalVariables()
         {
             // setup up internal variables. This was done on in the Global code module of the original Access database program
-            if (InputData.getPM_Choice() == 0) {
+            if (InputData.getPM_Choice() == 0)
+            {
                 strMethod = "Linear";
             }else{
                 strMethod = "Step";
@@ -413,7 +418,7 @@ Command121.Visible = True
             double PM_val = 0;
 
             //Step interpolation between PM years
-            if (strMethod == "Step"){    
+            if (InputData.getPM_Trajectory() ==0) { // strMethod == "Step")
                 while (PM_year <=  InputData.getEnd_Year()) {
                     // set PM value for year step
                     if (PM_year == InputData.getPM_year_1()){
@@ -1675,6 +1680,578 @@ Command121.Visible = True
     
                 } //wend Loop
         } // end run calculate life expectancy
+        private void run_summarize_results()
+        {
+            //CREATE INPUTS REPORT
+            //create loop for all variables
 
+            string tempValue = "";
+            string tempCategory= "";
+            string sqltext;
+            int I;
+
+            FbCommand dataCommand = new  FirebirdSql.Data.FirebirdClient.FbCommand();
+            FbDataReader dataReader;
+            dataCommand.Connection = dbConnection;        
+            
+
+            //approach = "Disaggregated"
+            //begin_year = 1990
+            //end_year = 2020
+
+            for (I = 1; I <= 44; I++) {
+
+                switch(I) {
+                    case 1:
+                        tempValue = InputData.getBegin_Year().ToString();
+                        tempCategory = "Begin Year";
+                        break;
+                    case 2:
+                        tempValue = InputData.getEnd_Year().ToString();
+                        tempCategory = "End Year";
+                        break;
+                    case 3:
+                        if (InputData.getApproach() == 0)
+                        {
+                            tempValue = "Aggregated";
+                        }
+                        else
+                        {
+                            tempValue = "Disaggregated";
+                        }
+                        tempCategory = "Dose-Response Technique";
+                        break;
+                    case 4:
+                        if (InputData.getBeta_Type() == 0)
+                        {
+                            tempValue = "Study beta";
+                        }
+                        else
+                        {
+                            tempValue = "User-defined beta";
+                        }
+                        tempCategory = "Beta Type";
+                        break;
+                    case 5:
+                        tempValue = InputData.getUser_Study_Name();
+                        tempCategory = "Study";
+                        break;
+                    case 6:
+                        tempValue = InputData.getUser_Beta().ToString();
+                        tempCategory = "User Beta";
+                        break;
+                    case 7:
+                        tempValue = InputData.getPM_year_1().ToString();
+                        tempCategory = "PM Change: Year 1";
+                        break;
+                    case 8:
+                        tempValue = InputData.getPM_year_2().ToString();
+                        tempCategory = "PM Change: Year 2";
+                        break;
+                    case 9:
+                        tempValue = InputData.getPM_year_3().ToString();
+                        tempCategory = "PM Change: Year 3";
+                        break;
+                    case 10:
+                        tempValue = InputData.getPM_year_4().ToString();
+                        tempCategory = "PM Change: Year 4";
+                        break;
+                    case 11:
+                        tempValue = InputData.getPM_year_5().ToString();
+                        tempCategory = "PM Change: Year 5";
+                        break;
+                    case 12:
+                        tempValue = InputData.getPM_val_1().ToString();
+                        tempCategory = "PM Change: Value 1";
+                        break;
+                    case 13:
+                        tempValue = InputData.getPM_val_2().ToString();
+                        tempCategory = "PM Change: Value 2";
+                        break;
+                    case 14:
+                        tempValue = InputData.getPM_val_3().ToString();
+                        tempCategory = "PM Change: Value 3";
+                        break;
+                    case 15:
+                        tempValue = InputData.getPM_val_4().ToString();
+                        tempCategory = "PM Change: Value 4";
+                        break;
+                    case 16:
+                        tempValue = InputData.getPM_val_5().ToString();
+                        tempCategory = "PM Change: Value 5";
+                        break;
+                    case 17:
+                        if (InputData.getPM_Trajectory() == 0)
+                        {
+                            tempValue = "Linear";
+                        }
+                        else
+                        {
+                            tempValue = "Step";
+                        }
+                        tempCategory = "PM Trajectory";
+                        break;
+                    case 18:
+                        if (InputData.getPM_Choice() == 0)
+                        {
+                            tempValue = "No PM Threshold";
+                        }
+                        else
+                        {
+                            tempValue = "PM Threshold";
+                        }
+                        tempCategory = "PM Threshold";
+                        break;
+                    case 19:
+                        tempValue = InputData.getPM_Threshold().ToString();
+                        tempCategory = "PM Threshold";
+                        break;
+                    case 20:
+                        tempValue = InputData.getBeta_adj_factor().ToString();
+                        tempCategory = "Beta Adjustment Factor";
+                        break;
+                    case 21:
+                        tempValue = InputData.getAge_Range_Start().ToString();
+                        tempCategory = "Age Range Affected: Start Age";
+                        break;
+                    case 22:
+                        tempValue = InputData.getAge_Range_End().ToString();
+                        tempCategory = "Age Range Affected: End Age";
+                        break;
+                    case 23:
+                        tempValue = InputData.getSub_Pop_Start_1().ToString();
+                        tempCategory = "Age-Specific Adjustment: Start Age 1";
+                        break;
+                    case 24:
+                        tempValue = InputData.getSub_Pop_Start_2().ToString();
+                        tempCategory = "Age-Specific Adjustment: Start Age 2";
+                        break;
+                    case 25:
+                        tempValue = InputData.getSub_Pop_Start_3().ToString();
+                        tempCategory = "Age-Specific Adjustment: Start Age 3";
+                        break;
+                    case 26:
+                        tempValue = InputData.getSub_Pop_Start_4().ToString();
+                        tempCategory = "Age-Specific Adjustment: Start Age 4";
+                        break;
+                    case 27:
+                        tempValue = InputData.getSub_Pop_Start_5().ToString();
+                        tempCategory = "Age-Specific Adjustment: Start Age 5";
+                        break;
+                    case 28:
+                        tempValue = InputData.getSub_Pop_End_1().ToString();
+                        tempCategory = "Age-Specific Adjustment: End Age 1";
+                        break;
+                    case 29:
+                        tempValue = InputData.getSub_Pop_End_2().ToString();
+                        tempCategory = "Age-Specific Adjustment: End Age 2";
+                        break;
+                    case 30:
+                        tempValue = InputData.getSub_Pop_End_3().ToString();
+                        tempCategory = "Age-Specific Adjustment: End Age 3";
+                        break;
+                    case 31:
+                        tempValue = InputData.getSub_Pop_End_4().ToString();
+                        tempCategory = "Age-Specific Adjustment: End Age 4";
+                        break;
+                    case 32:
+                        tempValue = InputData.getSub_Pop_End_5().ToString();
+                        tempCategory = "Age-Specific Adjustment: End Age 5";
+                        break;
+                    case 33:
+                        tempValue = InputData.getSub_Pop_Adjustment_1().ToString();
+                        tempCategory = "Age-Specific Adjustment: Factor 1";
+                        break;
+                    case 34:
+                        tempValue = InputData.getSub_Pop_Adjustment_2().ToString();
+                        tempCategory = "Age-Specific Adjustment: Factor 2";
+                        break;
+                    case 35:
+                        tempValue = InputData.getSub_Pop_Adjustment_3().ToString();
+                        tempCategory = "Age-Specific Adjustment: Factor 3";
+                        break;
+                    case 36:
+                        tempValue = InputData.getSub_Pop_Adjustment_4().ToString();
+                        tempCategory = "Age-Specific Adjustment: Factor 4";
+                        break;
+                    case 37:
+                        tempValue = InputData.getSub_Pop_Adjustment_5().ToString();
+                        tempCategory = "Age-Specific Adjustment: Factor 5";
+                        break;
+                    case 38:
+                        if (InputData.getLag_Type() == 0)
+                        {
+                            tempValue = "Single Lag";
+                        }
+                        else
+                        {
+                            tempValue = "Cause-Specific Lag";
+                        }
+                        tempCategory = "Lag Type";
+                        break;
+                    case 39:
+                        if (InputData.getLag_Function_Type() == 0) 
+                        { 
+                            tempValue = "HES_Default";
+                        }else if (InputData.getLag_Function_Type() == 1)
+                        {
+                            tempValue= "Smooth";
+                        } else 
+                        {
+                            tempValue = "User-defined";
+                        }
+                        tempCategory = "Lag Function Type";
+                        break;
+                    case 40:
+                        tempValue = InputData.getLag_k_single().ToString();
+                        tempCategory = "Single-lag k";
+                        break;
+                    case 41:
+                        tempValue = InputData.getLag_k_multiple_cardio().ToString();
+                        tempCategory = "Cause-specific lag cardio-k";
+                        break;
+                    case 42:
+                        tempValue = InputData.getLag_k_multiple_lung().ToString();
+                        tempCategory = "Cause-specific lag lung-k";
+                        break;
+                    case 43:
+                        tempValue = InputData.getLag_k_multiple_other().ToString();
+                        tempCategory = "Cause-specific lag all other-k";
+                        break;
+                    case 44:
+                        if(InputData.getBirth_Type() == 0) {
+                            tempValue = "Dynamic";
+                        } else {
+                            tempValue = "Static";
+                        }
+                        tempCategory = "Birth Type";
+                        break;
+                    default:
+                        tempValue = "Unknown";
+                        tempCategory = "Unknown";
+                        break;
+                } //End Select
+    
+                sqltext = "UPDATE Report_Input_Summary SET Report_Input_Summary.User_Selection = '" + tempValue + "' WHERE ((category='" + tempCategory + "'))";
+                dataCommand.CommandText = sqltext;
+                dataCommand.ExecuteNonQuery();
+        
+            } // Next I
+
+
+            //CALCULATE AVOIDED DEATHS
+            //Set initial values
+            int year = 1990;
+            int age;
+            j = 0;
+            k = 0;
+            m = 0;
+            p = 0;
+
+            //Repeat this loop for years 1990-2050
+            while (year <= 2050) {
+
+                //Reset age counter to zero for each year loop
+                age = 0;
+    
+                //Repeat this loop for ages 0-100
+                while (age <= 100) {
+               
+                    //Select BASELINE FEMALE deaths from the final deaths table
+                    sqltext = "SELECT Final_Table_Deaths.Age, Final_Table_Deaths.Proj_Year, Final_Table_Deaths.Deaths, " 
+                        + " Final_Table_Deaths.Gender, Final_Table_Deaths.Scenario FROM Final_Table_Deaths";
+                    sqltext = sqltext + " where ((Age = (" + age.ToString() + " - 0)) AND (proj_Year = (" + year.ToString() 
+                        + " - 0)) AND (Gender = 'female') AND (Scenario = 'Baseline'))";
+                    dataCommand.CommandText = sqltext;
+                    dataReader = dataCommand.ExecuteReader();
+                    dataReader.Read();
+                    j = (double)dataReader[2];
+                    dataReader.Close();
+                    
+                    //Select REGULATORY FEMALE deaths from the final deaths table
+                    sqltext = "SELECT Final_Table_Deaths.Age, Final_Table_Deaths.Proj_Year, Final_Table_Deaths.Deaths, "
+                        + " Final_Table_Deaths.Gender, Final_Table_Deaths.Scenario FROM Final_Table_Deaths";
+                    sqltext = sqltext + " where ((Age = (" + age.ToString() + " - 0)) AND (proj_Year = (" + year.ToString() + " - 0)) AND (Gender = 'female') AND (Scenario = 'Regulatory'))";
+                    dataCommand.CommandText = sqltext;
+                    dataReader = dataCommand.ExecuteReader();
+                    dataReader.Read();
+                    k = (double)dataReader[2];
+                    dataReader.Close();
+        
+                    //Select BASELINE MALE deaths from the final deaths table
+                    sqltext = "SELECT Final_Table_Deaths.Age, Final_Table_Deaths.Proj_Year, Final_Table_Deaths.Deaths, "
+                        + " Final_Table_Deaths.Gender, Final_Table_Deaths.Scenario FROM Final_Table_Deaths";
+                    sqltext = sqltext + " where ((Age = (" + age.ToString() + " - 0)) AND (proj_Year = (" + year.ToString() + " - 0)) AND (Gender = 'male') AND (Scenario = 'Baseline'))";
+                    dataCommand.CommandText = sqltext;
+                    dataReader = dataCommand.ExecuteReader();
+                    dataReader.Read();
+                    m = (double)dataReader[2];
+                    dataReader.Close();
+                    
+                    //Select REGULATORY MALE deaths from the final deaths table
+                    sqltext = "SELECT Final_Table_Deaths.Age, Final_Table_Deaths.Proj_Year, Final_Table_Deaths.Deaths, " 
+                        + " Final_Table_Deaths.Gender, Final_Table_Deaths.Scenario FROM Final_Table_Deaths";
+                    sqltext = sqltext + " where ((Age = (" + age.ToString() + " - 0)) AND (proj_Year = (" + year.ToString() + " - 0)) AND (Gender = 'male') AND (Scenario = 'Regulatory'))";
+                    dataCommand.CommandText = sqltext;
+                    dataReader = dataCommand.ExecuteReader();
+                    dataReader.Read();
+                    p = (double)dataReader[2];
+                    dataReader.Close();
+                    
+                    //Write value into report table
+                    sqltext = "INSERT INTO Report_Avoided_Deaths (Age, Year_Num, Avoided_Deaths) VALUES( " + age.ToString() 
+                        + " , " + year.ToString() + " , " + System.Math.Round(((j - k) + (m - p)), 0).ToString() + " )";
+                    dataCommand.CommandText = sqltext;
+                    dataCommand.ExecuteNonQuery();
+        
+        
+                    //Proceed to next age group in given year
+                    age = age + 1;
+    
+                } // for age Loop
+    
+                //Proceed to next year
+                year = year + 1;
+    
+            } // for year Loop
+
+
+            //CALCULATE LIFE YEARS GAINED
+            //Set initial values
+            year = 1990;
+            j = 0;
+            k = 0;
+            m = 0;
+            p = 0;
+
+            //Repeat this loop for years 1990-2050
+            while (year <= 2050) {
+
+                //Reset age counter to zero for each year loop
+                age = 0;
+    
+                //Repeat this loop for ages 0-100
+                while (age <= 100) {
+               
+                    //Select REGULATORY FEMALE pop from the final pop table
+                    sqltext = "SELECT Final_Table_Pop.Age, Final_Table_Pop.Proj_Year, Final_Table_Pop.Pop, Final_Table_Pop.Gender, "
+                        + " Final_Table_Pop.Scenario FROM Final_Table_Pop";
+                    sqltext = sqltext + " where ((Age = (" + age.ToString() + " - 0)) AND (proj_Year = (" + year.ToString() 
+                        + " - 0)) AND (Gender = 'female') AND (Scenario = 'Regulatory'))";
+                    dataCommand.CommandText = sqltext;
+                    dataReader = dataCommand.ExecuteReader();
+                    dataReader.Read();
+                    j = (double)dataReader[2];
+                    dataReader.Close();
+                    
+                    //Select BASELINE FEMALE pop from the final pop table
+                    sqltext = "SELECT Final_Table_Pop.Age, Final_Table_Pop.Proj_Year, Final_Table_Pop.Pop, Final_Table_Pop.Gender, "
+                        + " Final_Table_Pop.Scenario FROM Final_Table_Pop";
+                    sqltext = sqltext + " where ((Age = (" + age.ToString() + " - 0)) AND (proj_Year = (" 
+                        + year.ToString() + " - 0)) AND (Gender = 'female') AND (Scenario = 'Baseline'))";
+                    dataCommand.CommandText = sqltext;
+                    dataReader = dataCommand.ExecuteReader();
+                    dataReader.Read();
+                    k = (double)dataReader[2];
+                    dataReader.Close();
+                                        
+                    //Select REGULATORY MALE pop from the final pop table
+                    sqltext = "SELECT Final_Table_Pop.Age, Final_Table_Pop.Proj_Year, Final_Table_Pop.Pop, Final_Table_Pop.Gender, " 
+                        + "Final_Table_Pop.Scenario FROM Final_Table_Pop";
+                    sqltext = sqltext + " where ((Age = (" + age.ToString() + " - 0)) AND (proj_Year = (" 
+                        + year.ToString() + " - 0)) AND (Gender = 'male') AND (Scenario = 'Regulatory'))";
+                    dataCommand.CommandText = sqltext;
+                    dataReader = dataCommand.ExecuteReader();
+                    dataReader.Read();
+                    m = (double)dataReader[2];
+                    dataReader.Close();
+                    
+                    //Select BASELINE MALE pop from the final pop table
+                    sqltext = "SELECT Final_Table_Pop.Age, Final_Table_Pop.Proj_Year, Final_Table_Pop.Pop, Final_Table_Pop.Gender, "
+                        + " Final_Table_Pop.Scenario FROM Final_Table_Pop";
+                    sqltext = sqltext + " where ((Age = (" + age.ToString() + " - 0)) AND (proj_Year = (" 
+                        + year.ToString() + " - 0)) AND (Gender = 'male') AND (Scenario = 'Baseline'))";
+                    dataCommand.CommandText = sqltext;
+                    dataReader = dataCommand.ExecuteReader();
+                    dataReader.Read();
+                    p = (double)dataReader[2];
+                    dataReader.Close();
+                    
+                    //Write value into report table
+                    sqltext = "INSERT INTO Report_Life_Years_Gained (Age, Year_Num, Life_Years_Gained) VALUES( " 
+                        + age.ToString() + " , " + year.ToString() + " , " + System.Math.Round(((j - k) + (m - p)), 0).ToString() + " )";
+                    dataCommand.CommandText = sqltext;
+                    dataCommand.ExecuteNonQuery();
+        
+                    //Proceed to next age group in given year
+                    age = age + 1;
+    
+                } // age Loop
+    
+                //Proceed to next year
+                year = year + 1;
+    
+            } // year Loop
+
+
+            //CALCULATE INCREASE IN COHORT CONDITIONAL LIFE EXPECTANCY
+            //Set initial values
+            year = 1990;
+            j = 0;
+            k = 0;
+            m = 0;
+            p = 0;
+
+            //Repeat this loop for years 1990-2050
+            while (year <= 2050) {
+
+                //Reset age counter to zero for each year loop
+                age = 0;
+    
+                //Repeat this loop for ages 0-100
+                while (age <= 100) {
+               
+                    //Select REGULATORY FEMALE CLE
+                    sqltext = "SELECT Final_Table_Cohort_CLE.Age, Final_Table_Cohort_CLE.Proj_Year, Final_Table_Cohort_CLE.Val, "
+                        + " Final_Table_Cohort_CLE.Gender, Final_Table_Cohort_CLE.Scenario FROM Final_Table_Cohort_CLE";
+                    sqltext = sqltext + " where ((Age = (" + age.ToString() + " - 0)) AND (proj_Year = (" 
+                        + year.ToString() + " - 0)) AND (Gender = 'female') AND (Scenario = 'Regulatory'))";
+                    dataCommand.CommandText = sqltext;
+                    dataReader = dataCommand.ExecuteReader();
+                    dataReader.Read();
+                    j = (double)dataReader[2];
+                    dataReader.Close();
+                    
+                    //Select BASELINE FEMALE CLE
+                    sqltext = "SELECT Final_Table_Cohort_CLE.Age, Final_Table_Cohort_CLE.Proj_Year, Final_Table_Cohort_CLE.Val, "
+                        + " Final_Table_Cohort_CLE.Gender, Final_Table_Cohort_CLE.Scenario FROM Final_Table_Cohort_CLE";
+                    sqltext = sqltext + " where ((Age = (" + age.ToString() + " - 0)) AND (proj_Year = (" + year.ToString() 
+                        + " - 0)) AND (Gender = 'female') AND (Scenario = 'Baseline'))";
+                    dataCommand.CommandText = sqltext;
+                    dataReader = dataCommand.ExecuteReader();
+                    dataReader.Read();
+                    k = (double)dataReader[2];
+                    dataReader.Close();
+                    
+                    //Select REGULATORY MALE CLE
+                    sqltext = "SELECT Final_Table_Cohort_CLE.Age, Final_Table_Cohort_CLE.Proj_Year, Final_Table_Cohort_CLE.Val, "
+                        + " Final_Table_Cohort_CLE.Gender, Final_Table_Cohort_CLE.Scenario FROM Final_Table_Cohort_CLE";
+                    sqltext = sqltext + " where ((Age = (" + age.ToString() + " - 0)) AND (proj_Year = (" + year.ToString() 
+                        + " - 0)) AND (Gender = 'male') AND (Scenario = 'Regulatory'))";
+                    dataCommand.CommandText = sqltext;
+                    dataReader = dataCommand.ExecuteReader();
+                    dataReader.Read();
+                    m = (double)dataReader[2];
+                    dataReader.Close();
+                    
+                    //Select BASELINE MALE CLE
+                    sqltext = "SELECT Final_Table_Cohort_CLE.Age, Final_Table_Cohort_CLE.Proj_Year, Final_Table_Cohort_CLE.Val, "
+                        + " Final_Table_Cohort_CLE.Gender, Final_Table_Cohort_CLE.Scenario FROM Final_Table_Cohort_CLE";
+                    sqltext = sqltext + " where ((Age = (" + age.ToString() + " - 0)) AND (proj_Year = (" + year.ToString() 
+                        + " - 0)) AND (Gender = 'male') AND (Scenario = 'Baseline'))";
+                    dataCommand.CommandText = sqltext;
+                    dataReader = dataCommand.ExecuteReader();
+                    dataReader.Read();
+                    p = (double)dataReader[2];
+                    dataReader.Close();
+                    
+
+                    //Write value into report table
+                    sqltext  = "INSERT INTO Report_Increase_Cohort_Conditional_Life_Expectancy (Age, Year_Num, Increase_Female, Increase_Male) VALUES( " 
+                        + age.ToString() + " , " + year.ToString() + " , " + System.Math.Round((j - k), 2).ToString() + " , " 
+                        + System.Math.Round((m - p), 2) + " )";
+                    dataCommand.CommandText = sqltext;
+                    dataCommand.ExecuteNonQuery();
+        
+                    //Proceed to next age group in given year
+                    age = age + 1;
+    
+                } // ageLoop
+    
+                //Proceed to next year
+                year = year + 1;
+    
+        } // year Loop
+
+
+            //CALCULATE INCREASE IN PERIOD CONDITIONAL LIFE EXPECTANCY
+            //Set initial values
+            year = 1990;
+            j = 0;
+            k = 0;
+            m = 0;
+            p = 0;
+
+            //Repeat this loop for years 1990-2050
+            while (year <= 2050) {
+
+                //Reset age counter to zero for each year loop
+                age = 0;
+    
+                //Repeat this loop for ages 0-100
+                while (age <= 100){
+               
+                    //Select REGULATORY FEMALE CLE
+                    sqltext = "SELECT Final_Table_Period_CLE.Age, Final_Table_Period_CLE.Proj_Year, Final_Table_Period_CLE.Val, "
+                        + " Final_Table_Period_CLE.Gender, Final_Table_Period_CLE.Scenario FROM Final_Table_Period_CLE";
+                    sqltext = sqltext + " where ((Age = (" + age.ToString() + " - 0)) AND (proj_Year = (" + year.ToString() 
+                        + " - 0)) AND (Gender = 'female') AND (Scenario = 'Regulatory'))";
+                    dataCommand.CommandText = sqltext;
+                    dataReader = dataCommand.ExecuteReader();
+                    dataReader.Read();
+                    j = (double)dataReader[2];
+                    dataReader.Close();
+                    
+                    //Select BASELINE FEMALE CLE
+                    sqltext = "SELECT Final_Table_Period_CLE.Age, Final_Table_Period_CLE.Proj_Year, Final_Table_Period_CLE.Val, "
+                        + " Final_Table_Period_CLE.Gender, Final_Table_Period_CLE.Scenario FROM Final_Table_Period_CLE";
+                    sqltext = sqltext + " where ((Age = (" + age.ToString() + " - 0)) AND (proj_Year = (" + year.ToString() 
+                        + " - 0)) AND (Gender = 'female') AND (Scenario = 'Baseline'))";
+                    dataCommand.CommandText = sqltext;
+                    dataReader = dataCommand.ExecuteReader();
+                    dataReader.Read();
+                    k = (double)dataReader[2];
+                    dataReader.Close();
+                    
+                    //Select REGULATORY MALE CLE
+                    sqltext = "SELECT Final_Table_Period_CLE.Age, Final_Table_Period_CLE.Proj_Year, Final_Table_Period_CLE.Val, "
+                        + " Final_Table_Period_CLE.Gender, Final_Table_Period_CLE.Scenario FROM Final_Table_Period_CLE";
+                    sqltext = sqltext + " where ((Age = (" + age.ToString() + " - 0)) AND (proj_Year = (" + year.ToString() 
+                        + " - 0)) AND (Gender = 'male') AND (Scenario = 'Regulatory'))";
+                    dataCommand.CommandText = sqltext;
+                    dataReader = dataCommand.ExecuteReader();
+                    dataReader.Read();
+                    m = (double)dataReader[2];
+                    dataReader.Close();
+                    
+
+                    //Select BASELINE MALE CLE
+                    sqltext = "SELECT Final_Table_Period_CLE.Age, Final_Table_Period_CLE.Proj_Year, Final_Table_Period_CLE.Val, "
+                        + " Final_Table_Period_CLE.Gender, Final_Table_Period_CLE.Scenario FROM Final_Table_Period_CLE";
+                    sqltext = sqltext + " where ((Age = (" + age.ToString() + " - 0)) AND (proj_Year = (" + year.ToString() 
+                        + " - 0)) AND (Gender = 'male') AND (Scenario = 'Baseline'))";
+                    dataCommand.CommandText = sqltext;
+                    dataReader = dataCommand.ExecuteReader();
+                    dataReader.Read();
+                    p = (double)dataReader[2];
+                    dataReader.Close();
+                    
+                    //Write value into report table
+                    sqltext = "INSERT INTO Report_Increase_Period_Conditional_Life_Expectancy (Age, Year_Num, Increase_Female, Increase_Male) VALUES( " 
+                        + age + " , " + year + " , " + System.Math.Round((j - k), 2) + " , " 
+                        + System.Math.Round((m - p), 2) + " )";
+                    dataCommand.CommandText = sqltext;
+                    dataCommand.ExecuteNonQuery();
+        
+                    //Proceed to next age group in given year
+                    age = age + 1;
+    
+                } //wend Loop
+    
+                //Proceed to next year
+                year = year + 1;
+    
+        } // wend Loop
+        } // end run summarize results
     } // end popsim model
 } // end namespace
