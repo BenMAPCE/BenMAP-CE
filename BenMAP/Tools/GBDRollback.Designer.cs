@@ -28,9 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea5 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend5 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series5 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea7 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend7 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series7 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.gbAreaSelection = new System.Windows.Forms.GroupBox();
             this.gbRollbacks = new System.Windows.Forms.GroupBox();
             this.dgvRollbacks = new System.Windows.Forms.DataGridView();
@@ -286,16 +286,16 @@
             // 
             // chartPreview
             // 
-            chartArea5.Name = "ChartArea1";
-            this.chartPreview.ChartAreas.Add(chartArea5);
-            legend5.Name = "Legend1";
-            this.chartPreview.Legends.Add(legend5);
+            chartArea7.Name = "ChartArea1";
+            this.chartPreview.ChartAreas.Add(chartArea7);
+            legend7.Name = "Legend1";
+            this.chartPreview.Legends.Add(legend7);
             this.chartPreview.Location = new System.Drawing.Point(12, 261);
             this.chartPreview.Name = "chartPreview";
-            series5.ChartArea = "ChartArea1";
-            series5.Legend = "Legend1";
-            series5.Name = "Series1";
-            this.chartPreview.Series.Add(series5);
+            series7.ChartArea = "ChartArea1";
+            series7.Legend = "Legend1";
+            series7.Name = "Series1";
+            this.chartPreview.Series.Add(series7);
             this.chartPreview.Size = new System.Drawing.Size(256, 119);
             this.chartPreview.TabIndex = 3;
             this.chartPreview.Text = "chart1";
@@ -334,7 +334,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(900, 874);
+            this.ClientSize = new System.Drawing.Size(1260, 874);
             this.Controls.Add(this.gbParameterSelection);
             this.Controls.Add(this.gbMap);
             this.Controls.Add(this.btnClose);
@@ -342,6 +342,7 @@
             this.Controls.Add(this.gbRollbacks);
             this.Controls.Add(this.gbAreaSelection);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.MaximizeBox = false;
             this.Name = "GBDRollback";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "GBD Rollback Tool";
