@@ -27,6 +27,10 @@ namespace BenMAP
             gbOptionsStandard.Location = new Point(gbOptionsIncremental.Location.X, gbOptionsIncremental.Location.Y);
             gbParameterSelection.Controls.Add(gbOptionsStandard);
 
+            gbOptionsIncremental.Visible = false;
+            gbOptionsPercentage.Visible = false;
+            gbOptionsStandard.Visible = false;
+
         }
 
         private void btnClose_Click(object sender, EventArgs e)
@@ -38,7 +42,7 @@ namespace BenMAP
         {
             gbAreaSelection.Visible = false;
             gbParameterSelection.Visible = true;
-            cboRollbackType.SelectedIndex = -1;            
+            //cboRollbackType.SelectedIndex = -1;            
 
         }
 
