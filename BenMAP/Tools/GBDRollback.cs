@@ -20,6 +20,13 @@ namespace BenMAP
             gbAreaSelection.Visible = true;
             gbParameterSelection.Visible = false;
             Size = new Size(906, 902); //form size
+
+            //parameter options
+            gbOptionsPercentage.Location = new Point(gbOptionsIncremental.Location.X, gbOptionsIncremental.Location.Y);
+            gbParameterSelection.Controls.Add(gbOptionsPercentage);
+            gbOptionsStandard.Location = new Point(gbOptionsIncremental.Location.X, gbOptionsIncremental.Location.Y);
+            gbParameterSelection.Controls.Add(gbOptionsStandard);
+
         }
 
         private void btnClose_Click(object sender, EventArgs e)
@@ -31,7 +38,7 @@ namespace BenMAP
         {
             gbAreaSelection.Visible = false;
             gbParameterSelection.Visible = true;
-            
+            cboRollbackType.SelectedIndex = -1;            
 
         }
 
@@ -39,6 +46,34 @@ namespace BenMAP
         {
             gbAreaSelection.Visible = true;
             gbParameterSelection.Visible = false;
+        }
+
+        private void cboRollbackType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            switch (cboRollbackType.SelectedIndex)
+            {
+                case 0:
+                    gbOptionsIncremental.Visible = true;
+                    gbOptionsPercentage.Visible = false;
+                    gbOptionsStandard.Visible = false;
+                    break;
+                case 1:
+                    gbOptionsIncremental.Visible = false;
+                    gbOptionsPercentage.Visible = true;
+                    gbOptionsStandard.Visible = false;
+                    break;
+                case 2:
+                    gbOptionsIncremental.Visible = false;
+                    gbOptionsPercentage.Visible = false;
+                    gbOptionsStandard.Visible = true;
+                    break;
+                default:
+                    gbOptionsIncremental.Visible = false;
+                    gbOptionsPercentage.Visible = false;
+                    gbOptionsStandard.Visible = false;
+                    break;
+            }
+
         }
     }
 }
