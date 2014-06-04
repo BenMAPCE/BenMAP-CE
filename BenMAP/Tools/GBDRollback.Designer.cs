@@ -28,9 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea7 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend7 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series7 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea4 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend4 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series4 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.gbAreaSelection = new System.Windows.Forms.GroupBox();
             this.gbRollbacks = new System.Windows.Forms.GroupBox();
             this.dgvRollbacks = new System.Windows.Forms.DataGridView();
@@ -58,12 +58,27 @@
             this.label3 = new System.Windows.Forms.Label();
             this.cboRollbackType = new System.Windows.Forms.ComboBox();
             this.gbOptionsIncremental = new System.Windows.Forms.GroupBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.txtIncrement = new System.Windows.Forms.TextBox();
+            this.txtIncrementBackground = new System.Windows.Forms.TextBox();
+            this.gbOptionsPercentage = new System.Windows.Forms.GroupBox();
+            this.txtPercentageBackground = new System.Windows.Forms.TextBox();
+            this.txtPercentage = new System.Windows.Forms.TextBox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.gbOptionsStandard = new System.Windows.Forms.GroupBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.cboStandard = new System.Windows.Forms.ComboBox();
             this.gbAreaSelection.SuspendLayout();
             this.gbRollbacks.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvRollbacks)).BeginInit();
             this.gbMap.SuspendLayout();
             this.gbParameterSelection.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chartPreview)).BeginInit();
+            this.gbOptionsIncremental.SuspendLayout();
+            this.gbOptionsPercentage.SuspendLayout();
+            this.gbOptionsStandard.SuspendLayout();
             this.SuspendLayout();
             // 
             // gbAreaSelection
@@ -286,16 +301,16 @@
             // 
             // chartPreview
             // 
-            chartArea7.Name = "ChartArea1";
-            this.chartPreview.ChartAreas.Add(chartArea7);
-            legend7.Name = "Legend1";
-            this.chartPreview.Legends.Add(legend7);
+            chartArea4.Name = "ChartArea1";
+            this.chartPreview.ChartAreas.Add(chartArea4);
+            legend4.Name = "Legend1";
+            this.chartPreview.Legends.Add(legend4);
             this.chartPreview.Location = new System.Drawing.Point(12, 261);
             this.chartPreview.Name = "chartPreview";
-            series7.ChartArea = "ChartArea1";
-            series7.Legend = "Legend1";
-            series7.Name = "Series1";
-            this.chartPreview.Series.Add(series7);
+            series4.ChartArea = "ChartArea1";
+            series4.Legend = "Legend1";
+            series4.Name = "Series1";
+            this.chartPreview.Series.Add(series4);
             this.chartPreview.Size = new System.Drawing.Size(256, 119);
             this.chartPreview.TabIndex = 3;
             this.chartPreview.Text = "chart1";
@@ -311,11 +326,12 @@
             // 
             // cboRollbackType
             // 
+            this.cboRollbackType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboRollbackType.FormattingEnabled = true;
             this.cboRollbackType.Items.AddRange(new object[] {
             "Incremental",
             "Percentage",
-            "To Standard"});
+            "Standard"});
             this.cboRollbackType.Location = new System.Drawing.Point(98, 20);
             this.cboRollbackType.Name = "cboRollbackType";
             this.cboRollbackType.Size = new System.Drawing.Size(175, 21);
@@ -323,6 +339,10 @@
             // 
             // gbOptionsIncremental
             // 
+            this.gbOptionsIncremental.Controls.Add(this.txtIncrementBackground);
+            this.gbOptionsIncremental.Controls.Add(this.txtIncrement);
+            this.gbOptionsIncremental.Controls.Add(this.label5);
+            this.gbOptionsIncremental.Controls.Add(this.label4);
             this.gbOptionsIncremental.Location = new System.Drawing.Point(15, 48);
             this.gbOptionsIncremental.Name = "gbOptionsIncremental";
             this.gbOptionsIncremental.Size = new System.Drawing.Size(253, 206);
@@ -330,11 +350,119 @@
             this.gbOptionsIncremental.TabStop = false;
             this.gbOptionsIncremental.Text = "Options";
             // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(10, 19);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(57, 13);
+            this.label4.TabIndex = 0;
+            this.label4.Text = "Increment:";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(10, 45);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(68, 13);
+            this.label5.TabIndex = 1;
+            this.label5.Text = "Background:";
+            // 
+            // txtIncrement
+            // 
+            this.txtIncrement.Location = new System.Drawing.Point(96, 19);
+            this.txtIncrement.Name = "txtIncrement";
+            this.txtIncrement.Size = new System.Drawing.Size(100, 20);
+            this.txtIncrement.TabIndex = 2;
+            // 
+            // txtIncrementBackground
+            // 
+            this.txtIncrementBackground.Location = new System.Drawing.Point(96, 45);
+            this.txtIncrementBackground.Name = "txtIncrementBackground";
+            this.txtIncrementBackground.Size = new System.Drawing.Size(100, 20);
+            this.txtIncrementBackground.TabIndex = 3;
+            // 
+            // gbOptionsPercentage
+            // 
+            this.gbOptionsPercentage.Controls.Add(this.txtPercentageBackground);
+            this.gbOptionsPercentage.Controls.Add(this.txtPercentage);
+            this.gbOptionsPercentage.Controls.Add(this.label6);
+            this.gbOptionsPercentage.Controls.Add(this.label7);
+            this.gbOptionsPercentage.Location = new System.Drawing.Point(924, 446);
+            this.gbOptionsPercentage.Name = "gbOptionsPercentage";
+            this.gbOptionsPercentage.Size = new System.Drawing.Size(253, 206);
+            this.gbOptionsPercentage.TabIndex = 7;
+            this.gbOptionsPercentage.TabStop = false;
+            this.gbOptionsPercentage.Text = "Options";
+            // 
+            // txtPercentageBackground
+            // 
+            this.txtPercentageBackground.Location = new System.Drawing.Point(96, 45);
+            this.txtPercentageBackground.Name = "txtPercentageBackground";
+            this.txtPercentageBackground.Size = new System.Drawing.Size(100, 20);
+            this.txtPercentageBackground.TabIndex = 3;
+            // 
+            // txtPercentage
+            // 
+            this.txtPercentage.Location = new System.Drawing.Point(96, 19);
+            this.txtPercentage.Name = "txtPercentage";
+            this.txtPercentage.Size = new System.Drawing.Size(100, 20);
+            this.txtPercentage.TabIndex = 2;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(10, 45);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(68, 13);
+            this.label6.TabIndex = 1;
+            this.label6.Text = "Background:";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(10, 19);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(65, 13);
+            this.label7.TabIndex = 0;
+            this.label7.Text = "Percentage:";
+            // 
+            // gbOptionsStandard
+            // 
+            this.gbOptionsStandard.Controls.Add(this.cboStandard);
+            this.gbOptionsStandard.Controls.Add(this.label9);
+            this.gbOptionsStandard.Location = new System.Drawing.Point(929, 675);
+            this.gbOptionsStandard.Name = "gbOptionsStandard";
+            this.gbOptionsStandard.Size = new System.Drawing.Size(253, 206);
+            this.gbOptionsStandard.TabIndex = 8;
+            this.gbOptionsStandard.TabStop = false;
+            this.gbOptionsStandard.Text = "Options";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(10, 19);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(53, 13);
+            this.label9.TabIndex = 0;
+            this.label9.Text = "Standard:";
+            // 
+            // cboStandard
+            // 
+            this.cboStandard.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboStandard.FormattingEnabled = true;
+            this.cboStandard.Location = new System.Drawing.Point(91, 19);
+            this.cboStandard.Name = "cboStandard";
+            this.cboStandard.Size = new System.Drawing.Size(121, 21);
+            this.cboStandard.TabIndex = 1;
+            // 
             // GBDRollback
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1260, 874);
+            this.Controls.Add(this.gbOptionsStandard);
+            this.Controls.Add(this.gbOptionsPercentage);
             this.Controls.Add(this.gbParameterSelection);
             this.Controls.Add(this.gbMap);
             this.Controls.Add(this.btnClose);
@@ -355,6 +483,12 @@
             this.gbParameterSelection.ResumeLayout(false);
             this.gbParameterSelection.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chartPreview)).EndInit();
+            this.gbOptionsIncremental.ResumeLayout(false);
+            this.gbOptionsIncremental.PerformLayout();
+            this.gbOptionsPercentage.ResumeLayout(false);
+            this.gbOptionsPercentage.PerformLayout();
+            this.gbOptionsStandard.ResumeLayout(false);
+            this.gbOptionsStandard.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -388,5 +522,17 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.ComboBox cboRollbackType;
         private System.Windows.Forms.GroupBox gbOptionsIncremental;
+        private System.Windows.Forms.TextBox txtIncrementBackground;
+        private System.Windows.Forms.TextBox txtIncrement;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.GroupBox gbOptionsPercentage;
+        private System.Windows.Forms.TextBox txtPercentageBackground;
+        private System.Windows.Forms.TextBox txtPercentage;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.GroupBox gbOptionsStandard;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.ComboBox cboStandard;
     }
 }
