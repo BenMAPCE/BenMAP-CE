@@ -46,9 +46,12 @@
             this.txtInfo = new System.Windows.Forms.TextBox();
             this.btnExecuteRollbacks = new System.Windows.Forms.Button();
             this.btnClose = new System.Windows.Forms.Button();
+            this.gbMap = new System.Windows.Forms.GroupBox();
+            this.mapGBD = new DotSpatial.Controls.Map();
             this.gbAreaSelection.SuspendLayout();
             this.gbRollbacks.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvRollbacks)).BeginInit();
+            this.gbMap.SuspendLayout();
             this.SuspendLayout();
             // 
             // gbAreaSelection
@@ -70,7 +73,7 @@
             this.gbRollbacks.Controls.Add(this.lblTotalCountries);
             this.gbRollbacks.Controls.Add(this.label1);
             this.gbRollbacks.Controls.Add(this.dgvRollbacks);
-            this.gbRollbacks.Location = new System.Drawing.Point(13, 455);
+            this.gbRollbacks.Location = new System.Drawing.Point(13, 446);
             this.gbRollbacks.Name = "gbRollbacks";
             this.gbRollbacks.Size = new System.Drawing.Size(874, 387);
             this.gbRollbacks.TabIndex = 1;
@@ -186,7 +189,7 @@
             // 
             // btnExecuteRollbacks
             // 
-            this.btnExecuteRollbacks.Location = new System.Drawing.Point(657, 860);
+            this.btnExecuteRollbacks.Location = new System.Drawing.Point(674, 839);
             this.btnExecuteRollbacks.Name = "btnExecuteRollbacks";
             this.btnExecuteRollbacks.Size = new System.Drawing.Size(122, 23);
             this.btnExecuteRollbacks.TabIndex = 2;
@@ -195,7 +198,7 @@
             // 
             // btnClose
             // 
-            this.btnClose.Location = new System.Drawing.Point(796, 860);
+            this.btnClose.Location = new System.Drawing.Point(813, 839);
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(75, 23);
             this.btnClose.TabIndex = 3;
@@ -203,11 +206,43 @@
             this.btnClose.UseVisualStyleBackColor = true;
             this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
             // 
+            // gbMap
+            // 
+            this.gbMap.Controls.Add(this.mapGBD);
+            this.gbMap.Location = new System.Drawing.Point(299, 13);
+            this.gbMap.Name = "gbMap";
+            this.gbMap.Size = new System.Drawing.Size(588, 420);
+            this.gbMap.TabIndex = 4;
+            this.gbMap.TabStop = false;
+            this.gbMap.Text = "Map";
+            // 
+            // mapGBD
+            // 
+            this.mapGBD.AllowDrop = true;
+            this.mapGBD.BackColor = System.Drawing.Color.White;
+            this.mapGBD.CollectAfterDraw = false;
+            this.mapGBD.CollisionDetection = false;
+            this.mapGBD.ExtendBuffer = false;
+            this.mapGBD.FunctionMode = DotSpatial.Controls.FunctionMode.None;
+            this.mapGBD.IsBusy = false;
+            this.mapGBD.IsZoomedToMaxExtent = false;
+            this.mapGBD.Legend = null;
+            this.mapGBD.Location = new System.Drawing.Point(16, 20);
+            this.mapGBD.Name = "mapGBD";
+            this.mapGBD.ProgressHandler = null;
+            this.mapGBD.ProjectionModeDefine = DotSpatial.Controls.ActionMode.Prompt;
+            this.mapGBD.ProjectionModeReproject = DotSpatial.Controls.ActionMode.Prompt;
+            this.mapGBD.RedrawLayersWhileResizing = false;
+            this.mapGBD.SelectionEnabled = true;
+            this.mapGBD.Size = new System.Drawing.Size(556, 389);
+            this.mapGBD.TabIndex = 0;
+            // 
             // GBDRollback
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(908, 913);
+            this.ClientSize = new System.Drawing.Size(902, 874);
+            this.Controls.Add(this.gbMap);
             this.Controls.Add(this.btnClose);
             this.Controls.Add(this.btnExecuteRollbacks);
             this.Controls.Add(this.gbRollbacks);
@@ -221,6 +256,7 @@
             this.gbRollbacks.ResumeLayout(false);
             this.gbRollbacks.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvRollbacks)).EndInit();
+            this.gbMap.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -245,5 +281,7 @@
         private System.Windows.Forms.TextBox txtInfo;
         private System.Windows.Forms.Button btnExecuteRollbacks;
         private System.Windows.Forms.Button btnClose;
+        private System.Windows.Forms.GroupBox gbMap;
+        private DotSpatial.Controls.Map mapGBD;
     }
 }
