@@ -28,6 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea5 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend5 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series5 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.gbAreaSelection = new System.Windows.Forms.GroupBox();
             this.gbRollbacks = new System.Windows.Forms.GroupBox();
             this.dgvRollbacks = new System.Windows.Forms.DataGridView();
@@ -48,10 +51,19 @@
             this.btnClose = new System.Windows.Forms.Button();
             this.gbMap = new System.Windows.Forms.GroupBox();
             this.mapGBD = new DotSpatial.Controls.Map();
+            this.gbParameterSelection = new System.Windows.Forms.GroupBox();
+            this.btnAreaSelection = new System.Windows.Forms.Button();
+            this.btnAddParameters = new System.Windows.Forms.Button();
+            this.chartPreview = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.label3 = new System.Windows.Forms.Label();
+            this.cboRollbackType = new System.Windows.Forms.ComboBox();
+            this.gbOptionsIncremental = new System.Windows.Forms.GroupBox();
             this.gbAreaSelection.SuspendLayout();
             this.gbRollbacks.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvRollbacks)).BeginInit();
             this.gbMap.SuspendLayout();
+            this.gbParameterSelection.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.chartPreview)).BeginInit();
             this.SuspendLayout();
             // 
             // gbAreaSelection
@@ -163,7 +175,7 @@
             // 
             // tvCountries
             // 
-            this.tvCountries.Location = new System.Drawing.Point(7, 20);
+            this.tvCountries.Location = new System.Drawing.Point(10, 20);
             this.tvCountries.Name = "tvCountries";
             this.tvCountries.Size = new System.Drawing.Size(258, 234);
             this.tvCountries.TabIndex = 0;
@@ -176,11 +188,12 @@
             this.btnSelectAndContinue.TabIndex = 1;
             this.btnSelectAndContinue.Text = "Select And Continue ->";
             this.btnSelectAndContinue.UseVisualStyleBackColor = true;
+            this.btnSelectAndContinue.Click += new System.EventHandler(this.btnSelectAndContinue_Click);
             // 
             // txtInfo
             // 
             this.txtInfo.BackColor = System.Drawing.SystemColors.Window;
-            this.txtInfo.Location = new System.Drawing.Point(7, 261);
+            this.txtInfo.Location = new System.Drawing.Point(10, 261);
             this.txtInfo.Multiline = true;
             this.txtInfo.Name = "txtInfo";
             this.txtInfo.ReadOnly = true;
@@ -237,11 +250,92 @@
             this.mapGBD.Size = new System.Drawing.Size(556, 389);
             this.mapGBD.TabIndex = 0;
             // 
+            // gbParameterSelection
+            // 
+            this.gbParameterSelection.Controls.Add(this.gbOptionsIncremental);
+            this.gbParameterSelection.Controls.Add(this.cboRollbackType);
+            this.gbParameterSelection.Controls.Add(this.label3);
+            this.gbParameterSelection.Controls.Add(this.chartPreview);
+            this.gbParameterSelection.Controls.Add(this.btnAddParameters);
+            this.gbParameterSelection.Controls.Add(this.btnAreaSelection);
+            this.gbParameterSelection.Location = new System.Drawing.Point(909, 13);
+            this.gbParameterSelection.Name = "gbParameterSelection";
+            this.gbParameterSelection.Size = new System.Drawing.Size(279, 420);
+            this.gbParameterSelection.TabIndex = 3;
+            this.gbParameterSelection.TabStop = false;
+            this.gbParameterSelection.Text = "Parameter Selection";
+            // 
+            // btnAreaSelection
+            // 
+            this.btnAreaSelection.Location = new System.Drawing.Point(7, 386);
+            this.btnAreaSelection.Name = "btnAreaSelection";
+            this.btnAreaSelection.Size = new System.Drawing.Size(144, 23);
+            this.btnAreaSelection.TabIndex = 1;
+            this.btnAreaSelection.Text = "<- Area Selection";
+            this.btnAreaSelection.UseVisualStyleBackColor = true;
+            this.btnAreaSelection.Click += new System.EventHandler(this.btnAreaSelection_Click);
+            // 
+            // btnAddParameters
+            // 
+            this.btnAddParameters.Location = new System.Drawing.Point(157, 386);
+            this.btnAddParameters.Name = "btnAddParameters";
+            this.btnAddParameters.Size = new System.Drawing.Size(116, 23);
+            this.btnAddParameters.TabIndex = 2;
+            this.btnAddParameters.Text = "Add Parameters";
+            this.btnAddParameters.UseVisualStyleBackColor = true;
+            // 
+            // chartPreview
+            // 
+            chartArea5.Name = "ChartArea1";
+            this.chartPreview.ChartAreas.Add(chartArea5);
+            legend5.Name = "Legend1";
+            this.chartPreview.Legends.Add(legend5);
+            this.chartPreview.Location = new System.Drawing.Point(12, 261);
+            this.chartPreview.Name = "chartPreview";
+            series5.ChartArea = "ChartArea1";
+            series5.Legend = "Legend1";
+            series5.Name = "Series1";
+            this.chartPreview.Series.Add(series5);
+            this.chartPreview.Size = new System.Drawing.Size(256, 119);
+            this.chartPreview.TabIndex = 3;
+            this.chartPreview.Text = "chart1";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(12, 20);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(79, 13);
+            this.label3.TabIndex = 4;
+            this.label3.Text = "Rollback Type:";
+            // 
+            // cboRollbackType
+            // 
+            this.cboRollbackType.FormattingEnabled = true;
+            this.cboRollbackType.Items.AddRange(new object[] {
+            "Incremental",
+            "Percentage",
+            "To Standard"});
+            this.cboRollbackType.Location = new System.Drawing.Point(98, 20);
+            this.cboRollbackType.Name = "cboRollbackType";
+            this.cboRollbackType.Size = new System.Drawing.Size(175, 21);
+            this.cboRollbackType.TabIndex = 5;
+            // 
+            // gbOptionsIncremental
+            // 
+            this.gbOptionsIncremental.Location = new System.Drawing.Point(15, 48);
+            this.gbOptionsIncremental.Name = "gbOptionsIncremental";
+            this.gbOptionsIncremental.Size = new System.Drawing.Size(253, 206);
+            this.gbOptionsIncremental.TabIndex = 6;
+            this.gbOptionsIncremental.TabStop = false;
+            this.gbOptionsIncremental.Text = "Options";
+            // 
             // GBDRollback
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(902, 874);
+            this.ClientSize = new System.Drawing.Size(900, 874);
+            this.Controls.Add(this.gbParameterSelection);
             this.Controls.Add(this.gbMap);
             this.Controls.Add(this.btnClose);
             this.Controls.Add(this.btnExecuteRollbacks);
@@ -257,6 +351,9 @@
             this.gbRollbacks.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvRollbacks)).EndInit();
             this.gbMap.ResumeLayout(false);
+            this.gbParameterSelection.ResumeLayout(false);
+            this.gbParameterSelection.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.chartPreview)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -283,5 +380,12 @@
         private System.Windows.Forms.Button btnClose;
         private System.Windows.Forms.GroupBox gbMap;
         private DotSpatial.Controls.Map mapGBD;
+        private System.Windows.Forms.GroupBox gbParameterSelection;
+        private System.Windows.Forms.Button btnAreaSelection;
+        private System.Windows.Forms.Button btnAddParameters;
+        private System.Windows.Forms.DataVisualization.Charting.Chart chartPreview;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.ComboBox cboRollbackType;
+        private System.Windows.Forms.GroupBox gbOptionsIncremental;
     }
 }
