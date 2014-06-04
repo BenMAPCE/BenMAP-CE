@@ -28,9 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea5 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend5 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series5 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend3 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.gbAreaSelection = new System.Windows.Forms.GroupBox();
             this.gbRollbacks = new System.Windows.Forms.GroupBox();
             this.dgvRollbacks = new System.Windows.Forms.DataGridView();
@@ -70,6 +70,8 @@
             this.gbOptionsStandard = new System.Windows.Forms.GroupBox();
             this.label9 = new System.Windows.Forms.Label();
             this.cboStandard = new System.Windows.Forms.ComboBox();
+            this.toolStripGBD = new System.Windows.Forms.ToolStrip();
+            this.mnuFile = new System.Windows.Forms.ToolStripDropDownButton();
             this.gbAreaSelection.SuspendLayout();
             this.gbRollbacks.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvRollbacks)).BeginInit();
@@ -79,6 +81,7 @@
             this.gbOptionsIncremental.SuspendLayout();
             this.gbOptionsPercentage.SuspendLayout();
             this.gbOptionsStandard.SuspendLayout();
+            this.toolStripGBD.SuspendLayout();
             this.SuspendLayout();
             // 
             // gbAreaSelection
@@ -86,7 +89,7 @@
             this.gbAreaSelection.Controls.Add(this.txtInfo);
             this.gbAreaSelection.Controls.Add(this.btnSelectAndContinue);
             this.gbAreaSelection.Controls.Add(this.tvCountries);
-            this.gbAreaSelection.Location = new System.Drawing.Point(13, 13);
+            this.gbAreaSelection.Location = new System.Drawing.Point(13, 28);
             this.gbAreaSelection.Name = "gbAreaSelection";
             this.gbAreaSelection.Size = new System.Drawing.Size(279, 420);
             this.gbAreaSelection.TabIndex = 0;
@@ -100,7 +103,7 @@
             this.gbRollbacks.Controls.Add(this.lblTotalCountries);
             this.gbRollbacks.Controls.Add(this.label1);
             this.gbRollbacks.Controls.Add(this.dgvRollbacks);
-            this.gbRollbacks.Location = new System.Drawing.Point(13, 446);
+            this.gbRollbacks.Location = new System.Drawing.Point(13, 461);
             this.gbRollbacks.Name = "gbRollbacks";
             this.gbRollbacks.Size = new System.Drawing.Size(874, 387);
             this.gbRollbacks.TabIndex = 1;
@@ -217,7 +220,7 @@
             // 
             // btnExecuteRollbacks
             // 
-            this.btnExecuteRollbacks.Location = new System.Drawing.Point(674, 839);
+            this.btnExecuteRollbacks.Location = new System.Drawing.Point(674, 854);
             this.btnExecuteRollbacks.Name = "btnExecuteRollbacks";
             this.btnExecuteRollbacks.Size = new System.Drawing.Size(122, 23);
             this.btnExecuteRollbacks.TabIndex = 2;
@@ -226,7 +229,7 @@
             // 
             // btnClose
             // 
-            this.btnClose.Location = new System.Drawing.Point(813, 839);
+            this.btnClose.Location = new System.Drawing.Point(813, 854);
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(75, 23);
             this.btnClose.TabIndex = 3;
@@ -237,7 +240,7 @@
             // gbMap
             // 
             this.gbMap.Controls.Add(this.mapGBD);
-            this.gbMap.Location = new System.Drawing.Point(299, 13);
+            this.gbMap.Location = new System.Drawing.Point(299, 28);
             this.gbMap.Name = "gbMap";
             this.gbMap.Size = new System.Drawing.Size(588, 420);
             this.gbMap.TabIndex = 4;
@@ -273,7 +276,7 @@
             this.gbParameterSelection.Controls.Add(this.chartPreview);
             this.gbParameterSelection.Controls.Add(this.btnAddParameters);
             this.gbParameterSelection.Controls.Add(this.btnAreaSelection);
-            this.gbParameterSelection.Location = new System.Drawing.Point(909, 13);
+            this.gbParameterSelection.Location = new System.Drawing.Point(909, 28);
             this.gbParameterSelection.Name = "gbParameterSelection";
             this.gbParameterSelection.Size = new System.Drawing.Size(279, 420);
             this.gbParameterSelection.TabIndex = 3;
@@ -301,16 +304,16 @@
             // 
             // chartPreview
             // 
-            chartArea5.Name = "ChartArea1";
-            this.chartPreview.ChartAreas.Add(chartArea5);
-            legend5.Name = "Legend1";
-            this.chartPreview.Legends.Add(legend5);
+            chartArea3.Name = "ChartArea1";
+            this.chartPreview.ChartAreas.Add(chartArea3);
+            legend3.Name = "Legend1";
+            this.chartPreview.Legends.Add(legend3);
             this.chartPreview.Location = new System.Drawing.Point(12, 261);
             this.chartPreview.Name = "chartPreview";
-            series5.ChartArea = "ChartArea1";
-            series5.Legend = "Legend1";
-            series5.Name = "Series1";
-            this.chartPreview.Series.Add(series5);
+            series3.ChartArea = "ChartArea1";
+            series3.Legend = "Legend1";
+            series3.Name = "Series1";
+            this.chartPreview.Series.Add(series3);
             this.chartPreview.Size = new System.Drawing.Size(256, 119);
             this.chartPreview.TabIndex = 3;
             this.chartPreview.Text = "chart1";
@@ -389,7 +392,7 @@
             this.gbOptionsPercentage.Controls.Add(this.txtPercentage);
             this.gbOptionsPercentage.Controls.Add(this.label6);
             this.gbOptionsPercentage.Controls.Add(this.label7);
-            this.gbOptionsPercentage.Location = new System.Drawing.Point(924, 446);
+            this.gbOptionsPercentage.Location = new System.Drawing.Point(924, 461);
             this.gbOptionsPercentage.Name = "gbOptionsPercentage";
             this.gbOptionsPercentage.Size = new System.Drawing.Size(253, 206);
             this.gbOptionsPercentage.TabIndex = 7;
@@ -432,7 +435,7 @@
             // 
             this.gbOptionsStandard.Controls.Add(this.cboStandard);
             this.gbOptionsStandard.Controls.Add(this.label9);
-            this.gbOptionsStandard.Location = new System.Drawing.Point(929, 675);
+            this.gbOptionsStandard.Location = new System.Drawing.Point(929, 690);
             this.gbOptionsStandard.Name = "gbOptionsStandard";
             this.gbOptionsStandard.Size = new System.Drawing.Size(253, 206);
             this.gbOptionsStandard.TabIndex = 8;
@@ -457,11 +460,30 @@
             this.cboStandard.Size = new System.Drawing.Size(121, 21);
             this.cboStandard.TabIndex = 1;
             // 
+            // toolStripGBD
+            // 
+            this.toolStripGBD.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mnuFile});
+            this.toolStripGBD.Location = new System.Drawing.Point(0, 0);
+            this.toolStripGBD.Name = "toolStripGBD";
+            this.toolStripGBD.Size = new System.Drawing.Size(1260, 25);
+            this.toolStripGBD.TabIndex = 9;
+            this.toolStripGBD.Text = "toolStrip1";
+            // 
+            // mnuFile
+            // 
+            this.mnuFile.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.mnuFile.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.mnuFile.Name = "mnuFile";
+            this.mnuFile.Size = new System.Drawing.Size(38, 22);
+            this.mnuFile.Text = "File";
+            // 
             // GBDRollback
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1260, 874);
+            this.ClientSize = new System.Drawing.Size(1260, 892);
+            this.Controls.Add(this.toolStripGBD);
             this.Controls.Add(this.gbOptionsStandard);
             this.Controls.Add(this.gbOptionsPercentage);
             this.Controls.Add(this.gbParameterSelection);
@@ -490,7 +512,10 @@
             this.gbOptionsPercentage.PerformLayout();
             this.gbOptionsStandard.ResumeLayout(false);
             this.gbOptionsStandard.PerformLayout();
+            this.toolStripGBD.ResumeLayout(false);
+            this.toolStripGBD.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -535,5 +560,7 @@
         private System.Windows.Forms.GroupBox gbOptionsStandard;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.ComboBox cboStandard;
+        private System.Windows.Forms.ToolStrip toolStripGBD;
+        private System.Windows.Forms.ToolStripDropDownButton mnuFile;
     }
 }

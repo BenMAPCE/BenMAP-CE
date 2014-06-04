@@ -19,7 +19,7 @@ namespace BenMAP
             gbParameterSelection.Location = new Point(gbAreaSelection.Location.X, gbAreaSelection.Location.Y);
             gbAreaSelection.Visible = true;
             gbParameterSelection.Visible = false;
-            Size = new Size(906, 902); //form size
+            Size = new Size(906, 920); //form size
 
             //parameter options
             gbOptionsPercentage.Location = new Point(gbOptionsIncremental.Location.X, gbOptionsIncremental.Location.Y);
