@@ -28,18 +28,12 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend3 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea5 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend5 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series5 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.gbAreaSelection = new System.Windows.Forms.GroupBox();
             this.gbRollbacks = new System.Windows.Forms.GroupBox();
             this.dgvRollbacks = new System.Windows.Forms.DataGridView();
-            this.colAction = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colColor = new System.Windows.Forms.DataGridViewImageColumn();
-            this.colRegion = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colCountry = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colOperation = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colParameters = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.label1 = new System.Windows.Forms.Label();
             this.lblTotalCountries = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -79,6 +73,12 @@
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.closeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveAsToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.colAction = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colColor = new System.Windows.Forms.DataGridViewImageColumn();
+            this.colArea = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colCountry = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colRollbackType = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colParameters = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.gbAreaSelection.SuspendLayout();
             this.gbRollbacks.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvRollbacks)).BeginInit();
@@ -123,44 +123,14 @@
             this.dgvRollbacks.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.colAction,
             this.colColor,
-            this.colRegion,
+            this.colArea,
             this.colCountry,
-            this.colOperation,
+            this.colRollbackType,
             this.colParameters});
             this.dgvRollbacks.Location = new System.Drawing.Point(17, 64);
             this.dgvRollbacks.Name = "dgvRollbacks";
             this.dgvRollbacks.Size = new System.Drawing.Size(841, 308);
             this.dgvRollbacks.TabIndex = 0;
-            // 
-            // colAction
-            // 
-            this.colAction.HeaderText = "Action";
-            this.colAction.Name = "colAction";
-            // 
-            // colColor
-            // 
-            this.colColor.HeaderText = "Color";
-            this.colColor.Name = "colColor";
-            // 
-            // colRegion
-            // 
-            this.colRegion.HeaderText = "Region";
-            this.colRegion.Name = "colRegion";
-            // 
-            // colCountry
-            // 
-            this.colCountry.HeaderText = "Country";
-            this.colCountry.Name = "colCountry";
-            // 
-            // colOperation
-            // 
-            this.colOperation.HeaderText = "Operation";
-            this.colOperation.Name = "colOperation";
-            // 
-            // colParameters
-            // 
-            this.colParameters.HeaderText = "Parameters";
-            this.colParameters.Name = "colParameters";
             // 
             // label1
             // 
@@ -311,16 +281,16 @@
             // 
             // chartPreview
             // 
-            chartArea3.Name = "ChartArea1";
-            this.chartPreview.ChartAreas.Add(chartArea3);
-            legend3.Name = "Legend1";
-            this.chartPreview.Legends.Add(legend3);
+            chartArea5.Name = "ChartArea1";
+            this.chartPreview.ChartAreas.Add(chartArea5);
+            legend5.Name = "Legend1";
+            this.chartPreview.Legends.Add(legend5);
             this.chartPreview.Location = new System.Drawing.Point(12, 261);
             this.chartPreview.Name = "chartPreview";
-            series3.ChartArea = "ChartArea1";
-            series3.Legend = "Legend1";
-            series3.Name = "Series1";
-            this.chartPreview.Series.Add(series3);
+            series5.ChartArea = "ChartArea1";
+            series5.Legend = "Legend1";
+            series5.Name = "Series1";
+            this.chartPreview.Series.Add(series5);
             this.chartPreview.Size = new System.Drawing.Size(256, 119);
             this.chartPreview.TabIndex = 3;
             this.chartPreview.Text = "chart1";
@@ -534,6 +504,36 @@
             this.saveAsToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
             this.saveAsToolStripMenuItem1.Text = "Save as (.gbdx)";
             // 
+            // colAction
+            // 
+            this.colAction.HeaderText = "Action";
+            this.colAction.Name = "colAction";
+            // 
+            // colColor
+            // 
+            this.colColor.HeaderText = "Color";
+            this.colColor.Name = "colColor";
+            // 
+            // colArea
+            // 
+            this.colArea.HeaderText = "Area";
+            this.colArea.Name = "colArea";
+            // 
+            // colCountry
+            // 
+            this.colCountry.HeaderText = "Country";
+            this.colCountry.Name = "colCountry";
+            // 
+            // colRollbackType
+            // 
+            this.colRollbackType.HeaderText = "Rollback Type";
+            this.colRollbackType.Name = "colRollbackType";
+            // 
+            // colParameters
+            // 
+            this.colParameters.HeaderText = "Parameters";
+            this.colParameters.Name = "colParameters";
+            // 
             // GBDRollback
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -580,12 +580,6 @@
         private System.Windows.Forms.GroupBox gbAreaSelection;
         private System.Windows.Forms.GroupBox gbRollbacks;
         private System.Windows.Forms.DataGridView dgvRollbacks;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colAction;
-        private System.Windows.Forms.DataGridViewImageColumn colColor;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colRegion;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colCountry;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colOperation;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colParameters;
         private System.Windows.Forms.Label lblTotalPopulation;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label lblTotalCountries;
@@ -625,5 +619,11 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripMenuItem closeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveAsToolStripMenuItem1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colAction;
+        private System.Windows.Forms.DataGridViewImageColumn colColor;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colArea;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colCountry;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colRollbackType;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colParameters;
     }
 }
