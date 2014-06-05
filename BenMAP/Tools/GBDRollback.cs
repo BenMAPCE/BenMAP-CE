@@ -27,15 +27,35 @@ namespace BenMAP
             gbOptionsStandard.Location = new Point(gbOptionsIncremental.Location.X, gbOptionsIncremental.Location.Y);
             gbParameterSelection.Controls.Add(gbOptionsStandard);
 
-            gbOptionsIncremental.Visible = false;
+            gbOptionsIncremental.Visible = true;
+            cboRollbackType.SelectedIndex = 0;
             gbOptionsPercentage.Visible = false;
             gbOptionsStandard.Visible = false;
 
         }
 
+        private void PromptClose() 
+        {
+
+            //prompt to save changes
+            DialogResult dialogResult = MessageBox.Show("You are closing the GBD Rollback tool.  Any unsaved changes will be lost.  Do you wish to continue?", "Confirm Close", MessageBoxButtons.YesNo);
+
+            if (dialogResult == DialogResult.Yes)
+            {
+                Close();
+            }
+        
+        }
+
         private void btnClose_Click(object sender, EventArgs e)
         {
-            Close();
+            PromptClose();
+           
+        }
+
+        private void closeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            PromptClose();
         }
 
         private void btnSelectAndContinue_Click(object sender, EventArgs e)
@@ -79,5 +99,7 @@ namespace BenMAP
             }
 
         }
+
+       
     }
 }
