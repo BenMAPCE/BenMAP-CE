@@ -16,17 +16,18 @@ namespace BenMAP
             InitializeComponent();
 
             //set up locations,form size, visibility
-            gbParameterSelection.Location = new Point(gbAreaSelection.Location.X, gbAreaSelection.Location.Y);
-            gbAreaSelection.Visible = true;
+            gbAreaSelection.Location = new Point(gbName.Location.X, gbName.Location.Y);
+            gbParameterSelection.Location = new Point(gbName.Location.X, gbName.Location.Y);
+            gbName.Visible = true;
+            gbAreaSelection.Visible = false;
             gbParameterSelection.Visible = false;
             Size = new Size(906, 794); //form size
 
-            //parameter options
+            //parameter options in gbParameterSelection
             gbOptionsPercentage.Location = new Point(gbOptionsIncremental.Location.X, gbOptionsIncremental.Location.Y);
             gbParameterSelection.Controls.Add(gbOptionsPercentage);
             gbOptionsStandard.Location = new Point(gbOptionsIncremental.Location.X, gbOptionsIncremental.Location.Y);
-            gbParameterSelection.Controls.Add(gbOptionsStandard);
-            
+            gbParameterSelection.Controls.Add(gbOptionsStandard);            
             cboRollbackType.SelectedIndex = 0;
             gbOptionsPercentage.Visible = true;
             gbOptionsIncremental.Visible = false;

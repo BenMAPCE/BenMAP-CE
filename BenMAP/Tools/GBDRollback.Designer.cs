@@ -28,12 +28,12 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend3 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.gbAreaSelection = new System.Windows.Forms.GroupBox();
             this.txtInfo = new System.Windows.Forms.TextBox();
-            this.btnSelectAndContinue = new System.Windows.Forms.Button();
+            this.btnNext2 = new System.Windows.Forms.Button();
             this.tvCountries = new System.Windows.Forms.TreeView();
             this.gbRollbacks = new System.Windows.Forms.GroupBox();
             this.lblTotalPopulation = new System.Windows.Forms.Label();
@@ -70,6 +70,9 @@
             this.gbOptionsStandard = new System.Windows.Forms.GroupBox();
             this.cboStandard = new System.Windows.Forms.ComboBox();
             this.label9 = new System.Windows.Forms.Label();
+            this.gbName = new System.Windows.Forms.GroupBox();
+            this.btnNext = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
             this.gbAreaSelection.SuspendLayout();
             this.gbRollbacks.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvRollbacks)).BeginInit();
@@ -79,14 +82,16 @@
             ((System.ComponentModel.ISupportInitialize)(this.chartPreview)).BeginInit();
             this.gbOptionsPercentage.SuspendLayout();
             this.gbOptionsStandard.SuspendLayout();
+            this.gbName.SuspendLayout();
             this.SuspendLayout();
             // 
             // gbAreaSelection
             // 
+            this.gbAreaSelection.Controls.Add(this.button1);
             this.gbAreaSelection.Controls.Add(this.txtInfo);
-            this.gbAreaSelection.Controls.Add(this.btnSelectAndContinue);
+            this.gbAreaSelection.Controls.Add(this.btnNext2);
             this.gbAreaSelection.Controls.Add(this.tvCountries);
-            this.gbAreaSelection.Location = new System.Drawing.Point(13, 7);
+            this.gbAreaSelection.Location = new System.Drawing.Point(1208, 12);
             this.gbAreaSelection.Name = "gbAreaSelection";
             this.gbAreaSelection.Size = new System.Drawing.Size(279, 420);
             this.gbAreaSelection.TabIndex = 0;
@@ -103,15 +108,15 @@
             this.txtInfo.Size = new System.Drawing.Size(258, 119);
             this.txtInfo.TabIndex = 2;
             // 
-            // btnSelectAndContinue
+            // btnNext2
             // 
-            this.btnSelectAndContinue.Location = new System.Drawing.Point(121, 386);
-            this.btnSelectAndContinue.Name = "btnSelectAndContinue";
-            this.btnSelectAndContinue.Size = new System.Drawing.Size(144, 23);
-            this.btnSelectAndContinue.TabIndex = 1;
-            this.btnSelectAndContinue.Text = "Select And Continue ->";
-            this.btnSelectAndContinue.UseVisualStyleBackColor = true;
-            this.btnSelectAndContinue.Click += new System.EventHandler(this.btnSelectAndContinue_Click);
+            this.btnNext2.Location = new System.Drawing.Point(171, 386);
+            this.btnNext2.Name = "btnNext2";
+            this.btnNext2.Size = new System.Drawing.Size(97, 23);
+            this.btnNext2.TabIndex = 1;
+            this.btnNext2.Text = "Next ->";
+            this.btnNext2.UseVisualStyleBackColor = true;
+            this.btnNext2.Click += new System.EventHandler(this.btnSelectAndContinue_Click);
             // 
             // tvCountries
             // 
@@ -350,34 +355,34 @@
             // 
             // chartPreview
             // 
-            chartArea1.Name = "ChartArea1";
-            this.chartPreview.ChartAreas.Add(chartArea1);
-            legend1.Name = "Legend1";
-            this.chartPreview.Legends.Add(legend1);
+            chartArea3.Name = "ChartArea1";
+            this.chartPreview.ChartAreas.Add(chartArea3);
+            legend3.Name = "Legend1";
+            this.chartPreview.Legends.Add(legend3);
             this.chartPreview.Location = new System.Drawing.Point(12, 261);
             this.chartPreview.Name = "chartPreview";
-            series1.ChartArea = "ChartArea1";
-            series1.Legend = "Legend1";
-            series1.Name = "Series1";
-            this.chartPreview.Series.Add(series1);
+            series3.ChartArea = "ChartArea1";
+            series3.Legend = "Legend1";
+            series3.Name = "Series1";
+            this.chartPreview.Series.Add(series3);
             this.chartPreview.Size = new System.Drawing.Size(256, 119);
             this.chartPreview.TabIndex = 3;
             this.chartPreview.Text = "chart1";
             // 
             // btnAddParameters
             // 
-            this.btnAddParameters.Location = new System.Drawing.Point(157, 386);
+            this.btnAddParameters.Location = new System.Drawing.Point(171, 386);
             this.btnAddParameters.Name = "btnAddParameters";
-            this.btnAddParameters.Size = new System.Drawing.Size(116, 23);
+            this.btnAddParameters.Size = new System.Drawing.Size(97, 23);
             this.btnAddParameters.TabIndex = 2;
             this.btnAddParameters.Text = "Add Parameters";
             this.btnAddParameters.UseVisualStyleBackColor = true;
             // 
             // btnAreaSelection
             // 
-            this.btnAreaSelection.Location = new System.Drawing.Point(7, 386);
+            this.btnAreaSelection.Location = new System.Drawing.Point(68, 386);
             this.btnAreaSelection.Name = "btnAreaSelection";
-            this.btnAreaSelection.Size = new System.Drawing.Size(144, 23);
+            this.btnAreaSelection.Size = new System.Drawing.Size(97, 23);
             this.btnAreaSelection.TabIndex = 1;
             this.btnAreaSelection.Text = "<- Area Selection";
             this.btnAreaSelection.UseVisualStyleBackColor = true;
@@ -457,11 +462,40 @@
             this.label9.TabIndex = 0;
             this.label9.Text = "Standard:";
             // 
+            // gbName
+            // 
+            this.gbName.Controls.Add(this.btnNext);
+            this.gbName.Location = new System.Drawing.Point(12, 7);
+            this.gbName.Name = "gbName";
+            this.gbName.Size = new System.Drawing.Size(279, 420);
+            this.gbName.TabIndex = 3;
+            this.gbName.TabStop = false;
+            this.gbName.Text = "Name";
+            // 
+            // btnNext
+            // 
+            this.btnNext.Location = new System.Drawing.Point(171, 386);
+            this.btnNext.Name = "btnNext";
+            this.btnNext.Size = new System.Drawing.Size(97, 23);
+            this.btnNext.TabIndex = 1;
+            this.btnNext.Text = "Next ->";
+            this.btnNext.UseVisualStyleBackColor = true;
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(68, 386);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(97, 23);
+            this.button1.TabIndex = 3;
+            this.button1.Text = "<- Area Selection";
+            this.button1.UseVisualStyleBackColor = true;
+            // 
             // GBDRollback
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1260, 766);
+            this.ClientSize = new System.Drawing.Size(1567, 766);
+            this.Controls.Add(this.gbName);
             this.Controls.Add(this.gbOptionsStandard);
             this.Controls.Add(this.gbOptionsPercentage);
             this.Controls.Add(this.gbParameterSelection);
@@ -491,6 +525,7 @@
             this.gbOptionsPercentage.PerformLayout();
             this.gbOptionsStandard.ResumeLayout(false);
             this.gbOptionsStandard.PerformLayout();
+            this.gbName.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -505,7 +540,7 @@
         private System.Windows.Forms.Label lblTotalCountries;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TreeView tvCountries;
-        private System.Windows.Forms.Button btnSelectAndContinue;
+        private System.Windows.Forms.Button btnNext2;
         private System.Windows.Forms.TextBox txtInfo;
         private System.Windows.Forms.Button btnExecuteRollbacks;
         private System.Windows.Forms.Button btnClose;
@@ -536,5 +571,8 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn colCountry;
         private System.Windows.Forms.DataGridViewTextBoxColumn colRollbackType;
         private System.Windows.Forms.DataGridViewTextBoxColumn colParameters;
+        private System.Windows.Forms.GroupBox gbName;
+        private System.Windows.Forms.Button btnNext;
+        private System.Windows.Forms.Button button1;
     }
 }
