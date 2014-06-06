@@ -26,10 +26,10 @@ namespace BenMAP
             gbParameterSelection.Controls.Add(gbOptionsPercentage);
             gbOptionsStandard.Location = new Point(gbOptionsIncremental.Location.X, gbOptionsIncremental.Location.Y);
             gbParameterSelection.Controls.Add(gbOptionsStandard);
-
-            gbOptionsIncremental.Visible = true;
+            
             cboRollbackType.SelectedIndex = 0;
-            gbOptionsPercentage.Visible = false;
+            gbOptionsPercentage.Visible = true;
+            gbOptionsIncremental.Visible = false;
             gbOptionsStandard.Visible = false;
 
         }
@@ -37,13 +37,7 @@ namespace BenMAP
 
         private void btnClose_Click(object sender, EventArgs e)
         {
-            DialogResult dialogResult = MessageBox.Show("Are you sure you wish to close?", "Confirm Close", MessageBoxButtons.YesNo);
-
-            if (dialogResult == DialogResult.Yes)
-            {
-                Close();
-            }
-           
+            Close();           
         }
 
         private void btnSelectAndContinue_Click(object sender, EventArgs e)
@@ -65,15 +59,15 @@ namespace BenMAP
             switch (cboRollbackType.SelectedIndex)
             {
                 case 0:
-                    gbOptionsIncremental.Visible = true;
-                    gbOptionsPercentage.Visible = false;
-                    gbOptionsStandard.Visible = false;
-                    break;
-                case 1:
                     gbOptionsIncremental.Visible = false;
                     gbOptionsPercentage.Visible = true;
                     gbOptionsStandard.Visible = false;
                     break;
+                case 1:
+                    gbOptionsIncremental.Visible = true;
+                    gbOptionsPercentage.Visible = false;
+                    gbOptionsStandard.Visible = false;
+                    break;                
                 case 2:
                     gbOptionsIncremental.Visible = false;
                     gbOptionsPercentage.Visible = false;
@@ -87,6 +81,19 @@ namespace BenMAP
             }
 
         }
+
+        private void GBDRollback_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            DialogResult dialogResult = MessageBox.Show("Are you sure you wish to close?", "Confirm Close", MessageBoxButtons.YesNo);
+
+            if (dialogResult == DialogResult.No)
+            {
+                e.Cancel = true;
+            }
+        }
+
+
+        
 
        
     }

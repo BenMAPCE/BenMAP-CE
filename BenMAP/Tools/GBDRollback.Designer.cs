@@ -28,9 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea5 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend5 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series5 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.gbAreaSelection = new System.Windows.Forms.GroupBox();
             this.txtInfo = new System.Windows.Forms.TextBox();
             this.btnSelectAndContinue = new System.Windows.Forms.Button();
@@ -330,9 +330,9 @@
             this.cboRollbackType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboRollbackType.FormattingEnabled = true;
             this.cboRollbackType.Items.AddRange(new object[] {
-            "Incremental",
-            "Percentage",
-            "Standard"});
+            "Percentage Rollback",
+            "Incremental Rollback",
+            "Rollback to a Standard"});
             this.cboRollbackType.Location = new System.Drawing.Point(98, 20);
             this.cboRollbackType.Name = "cboRollbackType";
             this.cboRollbackType.Size = new System.Drawing.Size(175, 21);
@@ -350,16 +350,16 @@
             // 
             // chartPreview
             // 
-            chartArea5.Name = "ChartArea1";
-            this.chartPreview.ChartAreas.Add(chartArea5);
-            legend5.Name = "Legend1";
-            this.chartPreview.Legends.Add(legend5);
+            chartArea1.Name = "ChartArea1";
+            this.chartPreview.ChartAreas.Add(chartArea1);
+            legend1.Name = "Legend1";
+            this.chartPreview.Legends.Add(legend1);
             this.chartPreview.Location = new System.Drawing.Point(12, 261);
             this.chartPreview.Name = "chartPreview";
-            series5.ChartArea = "ChartArea1";
-            series5.Legend = "Legend1";
-            series5.Name = "Series1";
-            this.chartPreview.Series.Add(series5);
+            series1.ChartArea = "ChartArea1";
+            series1.Legend = "Legend1";
+            series1.Name = "Series1";
+            this.chartPreview.Series.Add(series1);
             this.chartPreview.Size = new System.Drawing.Size(256, 119);
             this.chartPreview.TabIndex = 3;
             this.chartPreview.Text = "chart1";
@@ -475,6 +475,7 @@
             this.Name = "GBDRollback";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "GBD Rollback Tool";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.GBDRollback_FormClosing);
             this.gbAreaSelection.ResumeLayout(false);
             this.gbAreaSelection.PerformLayout();
             this.gbRollbacks.ResumeLayout(false);
