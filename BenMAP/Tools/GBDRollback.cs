@@ -19,7 +19,7 @@ namespace BenMAP
             gbParameterSelection.Location = new Point(gbAreaSelection.Location.X, gbAreaSelection.Location.Y);
             gbAreaSelection.Visible = true;
             gbParameterSelection.Visible = false;
-            Size = new Size(906, 920); //form size
+            Size = new Size(906, 794); //form size
 
             //parameter options
             gbOptionsPercentage.Location = new Point(gbOptionsIncremental.Location.X, gbOptionsIncremental.Location.Y);
@@ -34,28 +34,16 @@ namespace BenMAP
 
         }
 
-        private void PromptClose() 
-        {
 
-            //prompt to save changes
-            DialogResult dialogResult = MessageBox.Show("You are closing the GBD Rollback tool.  Any unsaved changes will be lost.  Do you wish to continue?", "Confirm Close", MessageBoxButtons.YesNo);
+        private void btnClose_Click(object sender, EventArgs e)
+        {
+            DialogResult dialogResult = MessageBox.Show("Are you sure you wish to close?", "Confirm Close", MessageBoxButtons.YesNo);
 
             if (dialogResult == DialogResult.Yes)
             {
                 Close();
             }
-        
-        }
-
-        private void btnClose_Click(object sender, EventArgs e)
-        {
-            PromptClose();
            
-        }
-
-        private void closeToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            PromptClose();
         }
 
         private void btnSelectAndContinue_Click(object sender, EventArgs e)
