@@ -28,9 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend3 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea8 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend8 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series8 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.gbAreaSelection = new System.Windows.Forms.GroupBox();
             this.btnBack = new System.Windows.Forms.Button();
             this.txtInfo = new System.Windows.Forms.TextBox();
@@ -73,6 +73,11 @@
             this.label9 = new System.Windows.Forms.Label();
             this.gbName = new System.Windows.Forms.GroupBox();
             this.btnNext = new System.Windows.Forms.Button();
+            this.label8 = new System.Windows.Forms.Label();
+            this.txtName = new System.Windows.Forms.TextBox();
+            this.label10 = new System.Windows.Forms.Label();
+            this.txtDescription = new System.Windows.Forms.TextBox();
+            this.label11 = new System.Windows.Forms.Label();
             this.gbAreaSelection.SuspendLayout();
             this.gbRollbacks.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvRollbacks)).BeginInit();
@@ -365,16 +370,16 @@
             // 
             // chartPreview
             // 
-            chartArea3.Name = "ChartArea1";
-            this.chartPreview.ChartAreas.Add(chartArea3);
-            legend3.Name = "Legend1";
-            this.chartPreview.Legends.Add(legend3);
+            chartArea8.Name = "ChartArea1";
+            this.chartPreview.ChartAreas.Add(chartArea8);
+            legend8.Name = "Legend1";
+            this.chartPreview.Legends.Add(legend8);
             this.chartPreview.Location = new System.Drawing.Point(12, 261);
             this.chartPreview.Name = "chartPreview";
-            series3.ChartArea = "ChartArea1";
-            series3.Legend = "Legend1";
-            series3.Name = "Series1";
-            this.chartPreview.Series.Add(series3);
+            series8.ChartArea = "ChartArea1";
+            series8.Legend = "Legend1";
+            series8.Name = "Series1";
+            this.chartPreview.Series.Add(series8);
             this.chartPreview.Size = new System.Drawing.Size(256, 119);
             this.chartPreview.TabIndex = 3;
             this.chartPreview.Text = "chart1";
@@ -474,6 +479,11 @@
             // 
             // gbName
             // 
+            this.gbName.Controls.Add(this.label11);
+            this.gbName.Controls.Add(this.txtDescription);
+            this.gbName.Controls.Add(this.label10);
+            this.gbName.Controls.Add(this.txtName);
+            this.gbName.Controls.Add(this.label8);
             this.gbName.Controls.Add(this.btnNext);
             this.gbName.Location = new System.Drawing.Point(12, 7);
             this.gbName.Name = "gbName";
@@ -491,6 +501,50 @@
             this.btnNext.Text = "Next ->";
             this.btnNext.UseVisualStyleBackColor = true;
             this.btnNext.Click += new System.EventHandler(this.btnNext_Click);
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(7, 35);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(38, 13);
+            this.label8.TabIndex = 2;
+            this.label8.Text = "Name:";
+            // 
+            // txtName
+            // 
+            this.txtName.Location = new System.Drawing.Point(73, 35);
+            this.txtName.MaxLength = 15;
+            this.txtName.Name = "txtName";
+            this.txtName.Size = new System.Drawing.Size(195, 20);
+            this.txtName.TabIndex = 3;
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(7, 124);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(63, 13);
+            this.label10.TabIndex = 4;
+            this.label10.Text = "Description:";
+            // 
+            // txtDescription
+            // 
+            this.txtDescription.Location = new System.Drawing.Point(73, 124);
+            this.txtDescription.MaxLength = 255;
+            this.txtDescription.Multiline = true;
+            this.txtDescription.Name = "txtDescription";
+            this.txtDescription.Size = new System.Drawing.Size(195, 113);
+            this.txtDescription.TabIndex = 5;
+            // 
+            // label11
+            // 
+            this.label11.Location = new System.Drawing.Point(10, 64);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(258, 39);
+            this.label11.TabIndex = 6;
+            this.label11.Text = "(The name of the rollback will also be used in the rollback report filename.  It " +
+                "is limited to 15 characters.)";
             // 
             // GBDRollback
             // 
@@ -528,6 +582,7 @@
             this.gbOptionsStandard.ResumeLayout(false);
             this.gbOptionsStandard.PerformLayout();
             this.gbName.ResumeLayout(false);
+            this.gbName.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -576,5 +631,10 @@
         private System.Windows.Forms.GroupBox gbName;
         private System.Windows.Forms.Button btnNext;
         private System.Windows.Forms.Button btnBack;
+        private System.Windows.Forms.TextBox txtDescription;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.TextBox txtName;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Label label11;
     }
 }
