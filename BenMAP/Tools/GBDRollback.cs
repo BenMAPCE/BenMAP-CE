@@ -41,19 +41,8 @@ namespace BenMAP
             Close();           
         }
 
-        private void btnSelectAndContinue_Click(object sender, EventArgs e)
-        {
-            gbAreaSelection.Visible = false;
-            gbParameterSelection.Visible = true;
-            //cboRollbackType.SelectedIndex = -1;            
+        
 
-        }
-
-        private void btnAreaSelection_Click(object sender, EventArgs e)
-        {
-            gbAreaSelection.Visible = true;
-            gbParameterSelection.Visible = false;
-        }
 
         private void cboRollbackType_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -91,6 +80,42 @@ namespace BenMAP
             {
                 e.Cancel = true;
             }
+        }
+
+        private void btnNext_Click(object sender, EventArgs e)
+        {
+            gbName.Visible = false;
+            gbAreaSelection.Visible = true;
+            gbParameterSelection.Visible = false;
+            
+        }
+
+        private void btnNext2_Click(object sender, EventArgs e)
+        {
+            gbName.Visible = false;
+            gbAreaSelection.Visible = false;
+            gbParameterSelection.Visible = true;
+            //cboRollbackType.SelectedIndex = -1;            
+
+        }
+
+        private void btnBack_Click(object sender, EventArgs e)
+        {
+            gbName.Visible = true;
+            gbAreaSelection.Visible = false;
+            gbParameterSelection.Visible = false;
+        }
+
+        private void btnBack2_Click(object sender, EventArgs e)
+        {
+            gbName.Visible = false;
+            gbAreaSelection.Visible = true;
+            gbParameterSelection.Visible = false;
+        }
+
+        private void btnNext2_Click_1(object sender, EventArgs e)
+        {
+
         }
 
 

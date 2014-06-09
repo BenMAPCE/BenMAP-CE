@@ -32,6 +32,7 @@
             System.Windows.Forms.DataVisualization.Charting.Legend legend3 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.gbAreaSelection = new System.Windows.Forms.GroupBox();
+            this.btnBack = new System.Windows.Forms.Button();
             this.txtInfo = new System.Windows.Forms.TextBox();
             this.btnNext2 = new System.Windows.Forms.Button();
             this.tvCountries = new System.Windows.Forms.TreeView();
@@ -60,8 +61,8 @@
             this.cboRollbackType = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
             this.chartPreview = new System.Windows.Forms.DataVisualization.Charting.Chart();
-            this.btnAddParameters = new System.Windows.Forms.Button();
-            this.btnAreaSelection = new System.Windows.Forms.Button();
+            this.btnSaveRollback = new System.Windows.Forms.Button();
+            this.btnBack2 = new System.Windows.Forms.Button();
             this.gbOptionsPercentage = new System.Windows.Forms.GroupBox();
             this.txtPercentageBackground = new System.Windows.Forms.TextBox();
             this.txtPercentage = new System.Windows.Forms.TextBox();
@@ -72,7 +73,6 @@
             this.label9 = new System.Windows.Forms.Label();
             this.gbName = new System.Windows.Forms.GroupBox();
             this.btnNext = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
             this.gbAreaSelection.SuspendLayout();
             this.gbRollbacks.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvRollbacks)).BeginInit();
@@ -87,7 +87,7 @@
             // 
             // gbAreaSelection
             // 
-            this.gbAreaSelection.Controls.Add(this.button1);
+            this.gbAreaSelection.Controls.Add(this.btnBack);
             this.gbAreaSelection.Controls.Add(this.txtInfo);
             this.gbAreaSelection.Controls.Add(this.btnNext2);
             this.gbAreaSelection.Controls.Add(this.tvCountries);
@@ -97,6 +97,16 @@
             this.gbAreaSelection.TabIndex = 0;
             this.gbAreaSelection.TabStop = false;
             this.gbAreaSelection.Text = "Area Selection";
+            // 
+            // btnBack
+            // 
+            this.btnBack.Location = new System.Drawing.Point(68, 386);
+            this.btnBack.Name = "btnBack";
+            this.btnBack.Size = new System.Drawing.Size(97, 23);
+            this.btnBack.TabIndex = 3;
+            this.btnBack.Text = "<- Back";
+            this.btnBack.UseVisualStyleBackColor = true;
+            this.btnBack.Click += new System.EventHandler(this.btnBack_Click);
             // 
             // txtInfo
             // 
@@ -116,7 +126,7 @@
             this.btnNext2.TabIndex = 1;
             this.btnNext2.Text = "Next ->";
             this.btnNext2.UseVisualStyleBackColor = true;
-            this.btnNext2.Click += new System.EventHandler(this.btnSelectAndContinue_Click);
+            this.btnNext2.Click += new System.EventHandler(this.btnNext2_Click);
             // 
             // tvCountries
             // 
@@ -276,8 +286,8 @@
             this.gbParameterSelection.Controls.Add(this.cboRollbackType);
             this.gbParameterSelection.Controls.Add(this.label3);
             this.gbParameterSelection.Controls.Add(this.chartPreview);
-            this.gbParameterSelection.Controls.Add(this.btnAddParameters);
-            this.gbParameterSelection.Controls.Add(this.btnAreaSelection);
+            this.gbParameterSelection.Controls.Add(this.btnSaveRollback);
+            this.gbParameterSelection.Controls.Add(this.btnBack2);
             this.gbParameterSelection.Location = new System.Drawing.Point(909, 7);
             this.gbParameterSelection.Name = "gbParameterSelection";
             this.gbParameterSelection.Size = new System.Drawing.Size(279, 420);
@@ -369,24 +379,24 @@
             this.chartPreview.TabIndex = 3;
             this.chartPreview.Text = "chart1";
             // 
-            // btnAddParameters
+            // btnSaveRollback
             // 
-            this.btnAddParameters.Location = new System.Drawing.Point(171, 386);
-            this.btnAddParameters.Name = "btnAddParameters";
-            this.btnAddParameters.Size = new System.Drawing.Size(97, 23);
-            this.btnAddParameters.TabIndex = 2;
-            this.btnAddParameters.Text = "Add Parameters";
-            this.btnAddParameters.UseVisualStyleBackColor = true;
+            this.btnSaveRollback.Location = new System.Drawing.Point(171, 386);
+            this.btnSaveRollback.Name = "btnSaveRollback";
+            this.btnSaveRollback.Size = new System.Drawing.Size(97, 23);
+            this.btnSaveRollback.TabIndex = 2;
+            this.btnSaveRollback.Text = "Save Rollback";
+            this.btnSaveRollback.UseVisualStyleBackColor = true;
             // 
-            // btnAreaSelection
+            // btnBack2
             // 
-            this.btnAreaSelection.Location = new System.Drawing.Point(68, 386);
-            this.btnAreaSelection.Name = "btnAreaSelection";
-            this.btnAreaSelection.Size = new System.Drawing.Size(97, 23);
-            this.btnAreaSelection.TabIndex = 1;
-            this.btnAreaSelection.Text = "<- Area Selection";
-            this.btnAreaSelection.UseVisualStyleBackColor = true;
-            this.btnAreaSelection.Click += new System.EventHandler(this.btnAreaSelection_Click);
+            this.btnBack2.Location = new System.Drawing.Point(68, 386);
+            this.btnBack2.Name = "btnBack2";
+            this.btnBack2.Size = new System.Drawing.Size(97, 23);
+            this.btnBack2.TabIndex = 1;
+            this.btnBack2.Text = "<- Back";
+            this.btnBack2.UseVisualStyleBackColor = true;
+            this.btnBack2.Click += new System.EventHandler(this.btnBack2_Click);
             // 
             // gbOptionsPercentage
             // 
@@ -480,15 +490,7 @@
             this.btnNext.TabIndex = 1;
             this.btnNext.Text = "Next ->";
             this.btnNext.UseVisualStyleBackColor = true;
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(68, 386);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(97, 23);
-            this.button1.TabIndex = 3;
-            this.button1.Text = "<- Area Selection";
-            this.button1.UseVisualStyleBackColor = true;
+            this.btnNext.Click += new System.EventHandler(this.btnNext_Click);
             // 
             // GBDRollback
             // 
@@ -547,8 +549,8 @@
         private System.Windows.Forms.GroupBox gbMap;
         private DotSpatial.Controls.Map mapGBD;
         private System.Windows.Forms.GroupBox gbParameterSelection;
-        private System.Windows.Forms.Button btnAreaSelection;
-        private System.Windows.Forms.Button btnAddParameters;
+        private System.Windows.Forms.Button btnBack2;
+        private System.Windows.Forms.Button btnSaveRollback;
         private System.Windows.Forms.DataVisualization.Charting.Chart chartPreview;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.ComboBox cboRollbackType;
@@ -573,6 +575,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn colParameters;
         private System.Windows.Forms.GroupBox gbName;
         private System.Windows.Forms.Button btnNext;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button btnBack;
     }
 }
