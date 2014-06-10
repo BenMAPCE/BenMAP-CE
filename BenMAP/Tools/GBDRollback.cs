@@ -52,6 +52,8 @@ namespace BenMAP
             tvCountries.BeginUpdate();
             tvCountries.Nodes.Add("North America", "North America");
             tvCountries.Nodes["North America"].Nodes.Add("United States", "United States");
+            tvCountries.Nodes["North America"].Nodes.Add("Canada", "Canada");
+            tvCountries.Nodes["North America"].Nodes.Add("Mexico", "Mexico");
             tvCountries.EndUpdate();
         
         }
@@ -115,14 +117,18 @@ namespace BenMAP
 
         private void btnNext2_Click(object sender, EventArgs e)
         {
+            //check for country
+            if (checkedCountries.Count == 0)
+            {
+                MessageBox.Show("You must select at least one country.");
+                tvCountries.Focus();
+                return;
+            }
+
             gbName.Visible = false;
             gbAreaSelection.Visible = false;
             gbParameterSelection.Visible = true;
             //cboRollbackType.SelectedIndex = -1;     
-       
-            //get selected country
-            
-
         }
 
         private void btnBack_Click(object sender, EventArgs e)
@@ -141,17 +147,37 @@ namespace BenMAP
 
         private void tvCountries_AfterCheck(object sender, TreeViewEventArgs e)
         {
-            //handle region checking/unchecking
+            CheckTreeViewNode(e.Node);
 
-            if (e.Node.Checked)
+            //if this is checked AND a has no children)
+            //then, it is country and we add to list
+            if ((e.Node.Checked) && (e.Node.Nodes.Count == 0))
             {
-                checkedCountries.Add(e.Node.Text);
+                if (!checkedCountries.Exists(s => s.Equals(e.Node.Text, StringComparison.OrdinalIgnoreCase)))
+                {
+                    checkedCountries.Add(e.Node.Text);
+                }
             }
             else
             {
-                checkedCountries.Remove(e.Node.Text);
+                checkedCountries.Remove(e.Node.Text);               
             }
-        }        
+        }
+
+        private void CheckTreeViewNode(TreeNode node)
+        {
+            tvCountries.BeginUpdate();
+            foreach (TreeNode item in node.Nodes)
+            {
+                item.Checked = node.Checked;
+
+                if (item.Nodes.Count > 0)
+                {
+                    this.CheckTreeViewNode(item);
+                }
+            }
+            tvCountries.EndUpdate();
+        }
 
        
     }
