@@ -13,6 +13,7 @@ namespace BenMAP
     {
 
         List<String> checkedCountries = new List<String>();
+        List<GBDRollbackItem> rollbacks = new List<GBDRollbackItem>();
 
 
         public GBDRollback()
@@ -20,10 +21,10 @@ namespace BenMAP
             InitializeComponent();
 
             //set up locations,form size, visibility
-            gbAreaSelection.Location = new Point(gbName.Location.X, gbName.Location.Y);
+            gbCountrySelection.Location = new Point(gbName.Location.X, gbName.Location.Y);
             gbParameterSelection.Location = new Point(gbName.Location.X, gbName.Location.Y);
             gbName.Visible = true;
-            gbAreaSelection.Visible = false;
+            gbCountrySelection.Visible = false;
             gbParameterSelection.Visible = false;
             Size = new Size(906, 794); //form size
 
@@ -110,7 +111,7 @@ namespace BenMAP
 
 
             gbName.Visible = false;
-            gbAreaSelection.Visible = true;
+            gbCountrySelection.Visible = true;
             gbParameterSelection.Visible = false;
             
         }
@@ -126,7 +127,7 @@ namespace BenMAP
             }
 
             gbName.Visible = false;
-            gbAreaSelection.Visible = false;
+            gbCountrySelection.Visible = false;
             gbParameterSelection.Visible = true;
             //cboRollbackType.SelectedIndex = -1;     
         }
@@ -134,14 +135,14 @@ namespace BenMAP
         private void btnBack_Click(object sender, EventArgs e)
         {
             gbName.Visible = true;
-            gbAreaSelection.Visible = false;
+            gbCountrySelection.Visible = false;
             gbParameterSelection.Visible = false;
         }
 
         private void btnBack2_Click(object sender, EventArgs e)
         {
             gbName.Visible = false;
-            gbAreaSelection.Visible = true;
+            gbCountrySelection.Visible = true;
             gbParameterSelection.Visible = false;
         }
 
@@ -178,6 +179,69 @@ namespace BenMAP
             }
             tvCountries.EndUpdate();
         }
+
+        private void btnSaveRollback_Click(object sender, EventArgs e)
+        {
+
+            switch (cboRollbackType.SelectedIndex)
+            {
+                case 0: //percentage
+                    if (String.IsNullOrEmpty(txtPercentage.Text.Trim()))
+                    {
+                        MessageBox.Show("Percentage is required.");
+                        txtPercentage.Focus();
+                        return;
+                    }
+                    break;
+                case 1: //incremental
+                    if (String.IsNullOrEmpty(txtIncrement.Text.Trim()))
+                    {
+                        MessageBox.Show("Increment is required.");
+                        txtIncrement.Focus();
+                        return;
+                    }
+                    break;
+                case 2: //standard
+                    if (cboStandard.SelectedIndex < 0)
+                    {
+                        MessageBox.Show("Standard is required.");
+                        cboStandard.Focus();
+                        return;
+                    }
+                    break;
+            }
+
+            GBDRollbackItem rollback = new GBDRollbackItem();
+            rollback.Name = txtName.Text.Trim();
+            rollback.Description = txtDescription.Text.Trim();
+            rollback.Countries = checkedCountries;
+            switch (cboRollbackType.SelectedIndex)
+            {
+                case 0: //percentage
+                    rollback.Type = GBDRollbackItem.RollbackType.PERCENTAGE;
+                    rollback.Percentage = Double.Parse(txtPercentage.Text.Trim());
+                    rollback.Background = Double.Parse(txtPercentageBackground.Text.Trim());
+                    break;
+                case 1: //incremental
+                    rollback.Type = GBDRollbackItem.RollbackType.INCREMENTAL;
+                    rollback.Increment = Double.Parse(txtIncrement.Text.Trim());
+                    rollback.Background = Double.Parse(txtIncrementBackground.Text.Trim());
+                    break;
+                case 2: //standard
+                    rollback.Type = GBDRollbackItem.RollbackType.STANDARD;
+                    rollback.Standard = (GBDRollbackItem.StandardType)cboStandard.SelectedIndex;
+                    break;
+            }
+
+            rollbacks.Add(rollback);
+
+            
+
+
+           
+        }
+
+
 
        
     }
