@@ -11,6 +11,10 @@ namespace BenMAP
 {
     public partial class GBDRollback : Form
     {
+
+        List<String> checkedCountries = new List<String>();
+
+
         public GBDRollback()
         {
             InitializeComponent();
@@ -33,12 +37,23 @@ namespace BenMAP
             gbOptionsIncremental.Visible = false;
             gbOptionsStandard.Visible = false;
 
+            LoadCountryTreeView();
+
         }
 
 
         private void btnClose_Click(object sender, EventArgs e)
         {
             Close();           
+        }
+
+        private void LoadCountryTreeView()
+        {
+            tvCountries.BeginUpdate();
+            tvCountries.Nodes.Add("North America", "North America");
+            tvCountries.Nodes["North America"].Nodes.Add("United States", "United States");
+            tvCountries.EndUpdate();
+        
         }
 
         
@@ -84,6 +99,14 @@ namespace BenMAP
 
         private void btnNext_Click(object sender, EventArgs e)
         {
+            if (String.IsNullOrEmpty(txtName.Text.Trim()))
+            {
+                MessageBox.Show("Name is required.");
+                txtName.Focus();
+                return;
+            }
+
+
             gbName.Visible = false;
             gbAreaSelection.Visible = true;
             gbParameterSelection.Visible = false;
@@ -95,7 +118,10 @@ namespace BenMAP
             gbName.Visible = false;
             gbAreaSelection.Visible = false;
             gbParameterSelection.Visible = true;
-            //cboRollbackType.SelectedIndex = -1;            
+            //cboRollbackType.SelectedIndex = -1;     
+       
+            //get selected country
+            
 
         }
 
@@ -113,13 +139,19 @@ namespace BenMAP
             gbParameterSelection.Visible = false;
         }
 
-        private void btnNext2_Click_1(object sender, EventArgs e)
+        private void tvCountries_AfterCheck(object sender, TreeViewEventArgs e)
         {
+            //handle region checking/unchecking
 
-        }
-
-
-        
+            if (e.Node.Checked)
+            {
+                checkedCountries.Add(e.Node.Text);
+            }
+            else
+            {
+                checkedCountries.Remove(e.Node.Text);
+            }
+        }        
 
        
     }

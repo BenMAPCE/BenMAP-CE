@@ -28,9 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea8 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend8 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series8 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea11 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend11 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series11 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.gbAreaSelection = new System.Windows.Forms.GroupBox();
             this.btnBack = new System.Windows.Forms.Button();
             this.txtInfo = new System.Windows.Forms.TextBox();
@@ -135,10 +135,12 @@
             // 
             // tvCountries
             // 
+            this.tvCountries.CheckBoxes = true;
             this.tvCountries.Location = new System.Drawing.Point(10, 20);
             this.tvCountries.Name = "tvCountries";
             this.tvCountries.Size = new System.Drawing.Size(258, 234);
             this.tvCountries.TabIndex = 0;
+            this.tvCountries.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.tvCountries_AfterCheck);
             // 
             // gbRollbacks
             // 
@@ -370,16 +372,16 @@
             // 
             // chartPreview
             // 
-            chartArea8.Name = "ChartArea1";
-            this.chartPreview.ChartAreas.Add(chartArea8);
-            legend8.Name = "Legend1";
-            this.chartPreview.Legends.Add(legend8);
+            chartArea11.Name = "ChartArea1";
+            this.chartPreview.ChartAreas.Add(chartArea11);
+            legend11.Name = "Legend1";
+            this.chartPreview.Legends.Add(legend11);
             this.chartPreview.Location = new System.Drawing.Point(12, 261);
             this.chartPreview.Name = "chartPreview";
-            series8.ChartArea = "ChartArea1";
-            series8.Legend = "Legend1";
-            series8.Name = "Series1";
-            this.chartPreview.Series.Add(series8);
+            series11.ChartArea = "ChartArea1";
+            series11.Legend = "Legend1";
+            series11.Name = "Series1";
+            this.chartPreview.Series.Add(series11);
             this.chartPreview.Size = new System.Drawing.Size(256, 119);
             this.chartPreview.TabIndex = 3;
             this.chartPreview.Text = "chart1";
@@ -490,7 +492,7 @@
             this.gbName.Size = new System.Drawing.Size(279, 420);
             this.gbName.TabIndex = 3;
             this.gbName.TabStop = false;
-            this.gbName.Text = "Name";
+            this.gbName.Text = "Name/Description";
             // 
             // btnNext
             // 
