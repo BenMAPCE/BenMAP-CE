@@ -28,9 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend3 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.gbCountrySelection = new System.Windows.Forms.GroupBox();
             this.btnBack = new System.Windows.Forms.Button();
             this.txtInfo = new System.Windows.Forms.TextBox();
@@ -42,13 +42,6 @@
             this.lblTotalCountries = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.dgvRollbacks = new System.Windows.Forms.DataGridView();
-            this.colEdit = new System.Windows.Forms.DataGridViewButtonColumn();
-            this.colDelete = new System.Windows.Forms.DataGridViewButtonColumn();
-            this.colArea = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colColor = new System.Windows.Forms.DataGridViewImageColumn();
-            this.colCountry = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colRollbackType = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colParameters = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.btnExecuteRollbacks = new System.Windows.Forms.Button();
             this.btnClose = new System.Windows.Forms.Button();
             this.gbMap = new System.Windows.Forms.GroupBox();
@@ -79,6 +72,13 @@
             this.txtName = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
             this.btnNext = new System.Windows.Forms.Button();
+            this.colEdit = new System.Windows.Forms.DataGridViewButtonColumn();
+            this.colDelete = new System.Windows.Forms.DataGridViewButtonColumn();
+            this.colArea = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colColor = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colCountry = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colRollbackType = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colParameters = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.gbCountrySelection.SuspendLayout();
             this.gbRollbacks.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvRollbacks)).BeginInit();
@@ -211,54 +211,6 @@
             this.dgvRollbacks.ReadOnly = true;
             this.dgvRollbacks.Size = new System.Drawing.Size(841, 197);
             this.dgvRollbacks.TabIndex = 0;
-            // 
-            // colEdit
-            // 
-            this.colEdit.HeaderText = "";
-            this.colEdit.Name = "colEdit";
-            this.colEdit.ReadOnly = true;
-            this.colEdit.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.colEdit.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            this.colEdit.Text = "Edit";
-            this.colEdit.UseColumnTextForButtonValue = true;
-            // 
-            // colDelete
-            // 
-            this.colDelete.HeaderText = "";
-            this.colDelete.Name = "colDelete";
-            this.colDelete.ReadOnly = true;
-            this.colDelete.Text = "Delete";
-            this.colDelete.UseColumnTextForButtonValue = true;
-            // 
-            // colArea
-            // 
-            this.colArea.HeaderText = "Name";
-            this.colArea.Name = "colArea";
-            this.colArea.ReadOnly = true;
-            // 
-            // colColor
-            // 
-            this.colColor.HeaderText = "Color";
-            this.colColor.Name = "colColor";
-            this.colColor.ReadOnly = true;
-            // 
-            // colCountry
-            // 
-            this.colCountry.HeaderText = "Countries";
-            this.colCountry.Name = "colCountry";
-            this.colCountry.ReadOnly = true;
-            // 
-            // colRollbackType
-            // 
-            this.colRollbackType.HeaderText = "Rollback Type";
-            this.colRollbackType.Name = "colRollbackType";
-            this.colRollbackType.ReadOnly = true;
-            // 
-            // colParameters
-            // 
-            this.colParameters.HeaderText = "Parameters";
-            this.colParameters.Name = "colParameters";
-            this.colParameters.ReadOnly = true;
             // 
             // btnExecuteRollbacks
             // 
@@ -395,16 +347,16 @@
             // 
             // chartPreview
             // 
-            chartArea2.Name = "ChartArea1";
-            this.chartPreview.ChartAreas.Add(chartArea2);
-            legend2.Name = "Legend1";
-            this.chartPreview.Legends.Add(legend2);
+            chartArea3.Name = "ChartArea1";
+            this.chartPreview.ChartAreas.Add(chartArea3);
+            legend3.Name = "Legend1";
+            this.chartPreview.Legends.Add(legend3);
             this.chartPreview.Location = new System.Drawing.Point(12, 261);
             this.chartPreview.Name = "chartPreview";
-            series2.ChartArea = "ChartArea1";
-            series2.Legend = "Legend1";
-            series2.Name = "Series1";
-            this.chartPreview.Series.Add(series2);
+            series3.ChartArea = "ChartArea1";
+            series3.Legend = "Legend1";
+            series3.Name = "Series1";
+            this.chartPreview.Series.Add(series3);
             this.chartPreview.Size = new System.Drawing.Size(256, 119);
             this.chartPreview.TabIndex = 3;
             this.chartPreview.Text = "chart1";
@@ -576,6 +528,56 @@
             this.btnNext.UseVisualStyleBackColor = true;
             this.btnNext.Click += new System.EventHandler(this.btnNext_Click);
             // 
+            // colEdit
+            // 
+            this.colEdit.HeaderText = "";
+            this.colEdit.Name = "colEdit";
+            this.colEdit.ReadOnly = true;
+            this.colEdit.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.colEdit.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.colEdit.Text = "Edit";
+            this.colEdit.UseColumnTextForButtonValue = true;
+            // 
+            // colDelete
+            // 
+            this.colDelete.HeaderText = "";
+            this.colDelete.Name = "colDelete";
+            this.colDelete.ReadOnly = true;
+            this.colDelete.Text = "Delete";
+            this.colDelete.UseColumnTextForButtonValue = true;
+            // 
+            // colArea
+            // 
+            this.colArea.HeaderText = "Name";
+            this.colArea.Name = "colArea";
+            this.colArea.ReadOnly = true;
+            // 
+            // colColor
+            // 
+            this.colColor.HeaderText = "Color";
+            this.colColor.Name = "colColor";
+            this.colColor.ReadOnly = true;
+            this.colColor.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.colColor.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            // 
+            // colCountry
+            // 
+            this.colCountry.HeaderText = "Countries";
+            this.colCountry.Name = "colCountry";
+            this.colCountry.ReadOnly = true;
+            // 
+            // colRollbackType
+            // 
+            this.colRollbackType.HeaderText = "Rollback Type";
+            this.colRollbackType.Name = "colRollbackType";
+            this.colRollbackType.ReadOnly = true;
+            // 
+            // colParameters
+            // 
+            this.colParameters.HeaderText = "Parameters";
+            this.colParameters.Name = "colParameters";
+            this.colParameters.ReadOnly = true;
+            // 
             // GBDRollback
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -663,7 +665,7 @@
         private System.Windows.Forms.DataGridViewButtonColumn colEdit;
         private System.Windows.Forms.DataGridViewButtonColumn colDelete;
         private System.Windows.Forms.DataGridViewTextBoxColumn colArea;
-        private System.Windows.Forms.DataGridViewImageColumn colColor;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colColor;
         private System.Windows.Forms.DataGridViewTextBoxColumn colCountry;
         private System.Windows.Forms.DataGridViewTextBoxColumn colRollbackType;
         private System.Windows.Forms.DataGridViewTextBoxColumn colParameters;

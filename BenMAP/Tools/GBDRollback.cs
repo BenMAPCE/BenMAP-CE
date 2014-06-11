@@ -263,7 +263,7 @@ namespace BenMAP
             switch (cboRollbackType.SelectedIndex)
             {
                 case 0: //percentage
-                    rollback.Type = GBDRollbackItem.RollbackType.PERCENTAGE;
+                    rollback.Type = GBDRollbackItem.RollbackType.Percentage;
                     rollback.Percentage = Double.Parse(txtPercentage.Text);
                     if (!String.IsNullOrEmpty(txtPercentageBackground.Text))
                     {
@@ -271,7 +271,7 @@ namespace BenMAP
                     }
                     break;
                 case 1: //incremental
-                    rollback.Type = GBDRollbackItem.RollbackType.INCREMENTAL;
+                    rollback.Type = GBDRollbackItem.RollbackType.Incremental;
                     rollback.Increment = Double.Parse(txtIncrement.Text);
                     if (!String.IsNullOrEmpty(txtIncrementBackground.Text))
                     {
@@ -279,7 +279,7 @@ namespace BenMAP
                     }
                     break;
                 case 2: //standard
-                    rollback.Type = GBDRollbackItem.RollbackType.STANDARD;
+                    rollback.Type = GBDRollbackItem.RollbackType.Standard;
                     rollback.Standard = (GBDRollbackItem.StandardType)cboStandard.SelectedIndex;
                     break;
             }
@@ -289,6 +289,17 @@ namespace BenMAP
 
             //add to rollbacks
             rollbacks.Add(rollback);
+
+            //add to grid
+            DataGridViewRow row = new DataGridViewRow();
+            row.CreateCells(dgvRollbacks);
+            row.Cells[2].Value = rollback.Name;
+            row.Cells[3].Style.BackColor = rollback.Color;
+            rollback.Countries.Sort();
+            row.Cells[4].Value = String.Join(",", rollback.Countries.ToArray());
+            row.Cells[5].Value = rollback.Type.ToString();
+            row.Cells[6].Value = "";
+            dgvRollbacks.Rows.Add(row);
            
         }
 

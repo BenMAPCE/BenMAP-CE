@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Drawing;
 
 namespace BenMAP
 {
     class GBDRollbackItem
     {
-        public enum RollbackType { PERCENTAGE, INCREMENTAL, STANDARD }
-        public enum StandardType {ONE, TWO, THREE}
+        public enum RollbackType { Percentage, Incremental, Standard }
+        public enum StandardType {One, Two, Three}
 
         private string name;
         private string description;
@@ -18,6 +19,7 @@ namespace BenMAP
         private double increment;
         private StandardType standard;
         private double background;
+        private Color color;
 
         public string Name
         {
@@ -65,6 +67,12 @@ namespace BenMAP
         {
             get { return background; }
             set { background = value; }
+        }
+
+        public Color Color
+        {
+            get { return color; }
+            set { color = value; }
         }
 
 
