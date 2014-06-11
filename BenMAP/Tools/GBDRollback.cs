@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+
 
 namespace BenMAP
 {
@@ -148,7 +150,7 @@ namespace BenMAP
 
         private void tvCountries_AfterCheck(object sender, TreeViewEventArgs e)
         {
-            CheckTreeViewNode(e.Node);
+            CheckChildNodes(e.Node);
 
             //if this is checked AND a has no children)
             //then, it is country and we add to list
@@ -161,12 +163,15 @@ namespace BenMAP
             }
             else
             {
-                checkedCountries.Remove(e.Node.Text);               
+                checkedCountries.RemoveAll(x => x.Equals(e.Node.Text,StringComparison.OrdinalIgnoreCase));               
             }
         }
 
-        private void CheckTreeViewNode(TreeNode node)
+        private void CheckChildNodes(TreeNode node)
         {
+
+            //this will set child nodes, if any, to 
+            //same status as parent, checked or unchecked
             tvCountries.BeginUpdate();
             foreach (TreeNode item in node.Nodes)
             {
@@ -174,14 +179,17 @@ namespace BenMAP
 
                 if (item.Nodes.Count > 0)
                 {
-                    this.CheckTreeViewNode(item);
+                    this.CheckChildNodes(item);
                 }
             }
             tvCountries.EndUpdate();
         }
 
+
+
         private void btnSaveRollback_Click(object sender, EventArgs e)
         {
+            double d;
 
             switch (cboRollbackType.SelectedIndex)
             {
@@ -192,6 +200,21 @@ namespace BenMAP
                         txtPercentage.Focus();
                         return;
                     }
+                    if (!Double.TryParse(txtPercentage.Text.Trim(), out d))
+                    {
+                        MessageBox.Show("Percentage must be numeric.");
+                        txtPercentage.Focus();
+                        return;                        
+                    }
+                    if (!String.IsNullOrEmpty(txtPercentageBackground.Text.Trim()))
+                    {
+                        if (!Double.TryParse(txtPercentageBackground.Text.Trim(), out d))
+                        {
+                            MessageBox.Show("Background must be numeric.");
+                            txtPercentageBackground.Focus();
+                            return;
+                        }
+                    }
                     break;
                 case 1: //incremental
                     if (String.IsNullOrEmpty(txtIncrement.Text.Trim()))
@@ -199,6 +222,21 @@ namespace BenMAP
                         MessageBox.Show("Increment is required.");
                         txtIncrement.Focus();
                         return;
+                    }
+                    if (!Double.TryParse(txtIncrement.Text.Trim(), out d))
+                    {
+                        MessageBox.Show("Increment must be numeric.");
+                        txtIncrement.Focus();
+                        return;
+                    }
+                    if (!String.IsNullOrEmpty(txtIncrementBackground.Text.Trim()))
+                    {
+                        if (!Double.TryParse(txtIncrementBackground.Text.Trim(), out d))
+                        {
+                            MessageBox.Show("Background must be numeric.");
+                            txtIncrementBackground.Focus();
+                            return;
+                        }
                     }
                     break;
                 case 2: //standard
@@ -210,6 +248,7 @@ namespace BenMAP
                     }
                     break;
             }
+
 
             GBDRollbackItem rollback = new GBDRollbackItem();
             rollback.Name = txtName.Text.Trim();
@@ -233,11 +272,11 @@ namespace BenMAP
                     break;
             }
 
+            //remove rollback if it already exists
+            rollbacks.RemoveAll(x => x.Name.Equals(rollback.Name, StringComparison.OrdinalIgnoreCase));
+
+            //add to rollbacks
             rollbacks.Add(rollback);
-
-            
-
-
            
         }
 
