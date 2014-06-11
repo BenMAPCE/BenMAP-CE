@@ -291,15 +291,21 @@ namespace BenMAP
             rollbacks.Add(rollback);
 
             //add to grid
-            DataGridViewRow row = new DataGridViewRow();
-            row.CreateCells(dgvRollbacks);
-            row.Cells[2].Value = rollback.Name;
-            row.Cells[3].Style.BackColor = rollback.Color;
-            rollback.Countries.Sort();
-            row.Cells[4].Value = String.Join(",", rollback.Countries.ToArray());
-            row.Cells[5].Value = rollback.Type.ToString();
-            row.Cells[6].Value = "";
-            dgvRollbacks.Rows.Add(row);
+
+            dgvRollbacks.Rows.Clear();
+
+            foreach (GBDRollbackItem item in rollbacks)
+            { 
+                DataGridViewRow row = new DataGridViewRow();
+                row.CreateCells(dgvRollbacks);
+                row.Cells[2].Value = item.Name;
+                row.Cells[3].Style.BackColor = item.Color;
+                item.Countries.Sort();
+                row.Cells[4].Value = String.Join(", ", item.Countries.ToArray());
+                row.Cells[5].Value = item.Type.ToString();
+                row.Cells[6].Value = "";
+                dgvRollbacks.Rows.Add(row);
+            }
            
         }
 
