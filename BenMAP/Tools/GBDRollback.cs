@@ -191,24 +191,30 @@ namespace BenMAP
         {
             double d;
 
+            //clean text boxes for numerics
+            txtPercentage.Text = txtPercentage.Text.Trim();
+            txtPercentageBackground.Text = txtPercentageBackground.Text.Trim();
+            txtIncrement.Text = txtIncrement.Text.Trim();
+            txtIncrementBackground.Text = txtIncrementBackground.Text.Trim();
+
             switch (cboRollbackType.SelectedIndex)
             {
                 case 0: //percentage
-                    if (String.IsNullOrEmpty(txtPercentage.Text.Trim()))
+                    if (String.IsNullOrEmpty(txtPercentage.Text))
                     {
                         MessageBox.Show("Percentage is required.");
                         txtPercentage.Focus();
                         return;
                     }
-                    if (!Double.TryParse(txtPercentage.Text.Trim(), out d))
+                    if (!Double.TryParse(txtPercentage.Text, out d))
                     {
                         MessageBox.Show("Percentage must be numeric.");
                         txtPercentage.Focus();
                         return;                        
                     }
-                    if (!String.IsNullOrEmpty(txtPercentageBackground.Text.Trim()))
+                    if (!String.IsNullOrEmpty(txtPercentageBackground.Text))
                     {
-                        if (!Double.TryParse(txtPercentageBackground.Text.Trim(), out d))
+                        if (!Double.TryParse(txtPercentageBackground.Text, out d))
                         {
                             MessageBox.Show("Background must be numeric.");
                             txtPercentageBackground.Focus();
@@ -217,21 +223,21 @@ namespace BenMAP
                     }
                     break;
                 case 1: //incremental
-                    if (String.IsNullOrEmpty(txtIncrement.Text.Trim()))
+                    if (String.IsNullOrEmpty(txtIncrement.Text))
                     {
                         MessageBox.Show("Increment is required.");
                         txtIncrement.Focus();
                         return;
                     }
-                    if (!Double.TryParse(txtIncrement.Text.Trim(), out d))
+                    if (!Double.TryParse(txtIncrement.Text, out d))
                     {
                         MessageBox.Show("Increment must be numeric.");
                         txtIncrement.Focus();
                         return;
                     }
-                    if (!String.IsNullOrEmpty(txtIncrementBackground.Text.Trim()))
+                    if (!String.IsNullOrEmpty(txtIncrementBackground.Text))
                     {
-                        if (!Double.TryParse(txtIncrementBackground.Text.Trim(), out d))
+                        if (!Double.TryParse(txtIncrementBackground.Text, out d))
                         {
                             MessageBox.Show("Background must be numeric.");
                             txtIncrementBackground.Focus();
@@ -251,20 +257,26 @@ namespace BenMAP
 
 
             GBDRollbackItem rollback = new GBDRollbackItem();
-            rollback.Name = txtName.Text.Trim();
-            rollback.Description = txtDescription.Text.Trim();
+            rollback.Name = txtName.Text;
+            rollback.Description = txtDescription.Text;
             rollback.Countries = checkedCountries;
             switch (cboRollbackType.SelectedIndex)
             {
                 case 0: //percentage
                     rollback.Type = GBDRollbackItem.RollbackType.PERCENTAGE;
-                    rollback.Percentage = Double.Parse(txtPercentage.Text.Trim());
-                    rollback.Background = Double.Parse(txtPercentageBackground.Text.Trim());
+                    rollback.Percentage = Double.Parse(txtPercentage.Text);
+                    if (!String.IsNullOrEmpty(txtPercentageBackground.Text))
+                    {
+                        rollback.Background = Double.Parse(txtPercentageBackground.Text);
+                    }
                     break;
                 case 1: //incremental
                     rollback.Type = GBDRollbackItem.RollbackType.INCREMENTAL;
-                    rollback.Increment = Double.Parse(txtIncrement.Text.Trim());
-                    rollback.Background = Double.Parse(txtIncrementBackground.Text.Trim());
+                    rollback.Increment = Double.Parse(txtIncrement.Text);
+                    if (!String.IsNullOrEmpty(txtIncrementBackground.Text))
+                    {
+                        rollback.Background = Double.Parse(txtIncrementBackground.Text);
+                    }
                     break;
                 case 2: //standard
                     rollback.Type = GBDRollbackItem.RollbackType.STANDARD;
