@@ -77,7 +77,9 @@ namespace PopSim
             
             //STEP 3: CALCULATE LAG
             //If user selected the single lag option, then calculate the lag only for the single lag option
-            if (strLag_Type == "Single") {
+            // if (strLag_Type == "Single")
+            if ( InputData.getLag_Type() == 0) {
+                strLag_Type = "Single";
                 strLag_Type_Specific = "Single";
                 run_Lag_Calcs();
             //Otherwise, calculate the lag for all the multiple causes
@@ -418,7 +420,7 @@ Command121.Visible = True
             double PM_val = 0;
 
             //Step interpolation between PM years
-            if (InputData.getPM_Trajectory() ==0) { // strMethod == "Step")
+            if (InputData.getPM_Trajectory() ==1) { // strMethod == "Step")
                 while (PM_year <=  InputData.getEnd_Year()) {
                     // set PM value for year step
                     if (PM_year == InputData.getPM_year_1()){
@@ -1046,7 +1048,7 @@ Command121.Visible = True
             int maxRunAge = 100; //100 is max
             int maxRunYear = 2050; //2050 is max
             int age;
-            double age_mother;
+            int age_mother;
             string sqltext;
 
 
@@ -1101,7 +1103,7 @@ Command121.Visible = True
                                 sqltext = "SELECT Final_Table_Pop.Age, Final_Table_Pop.Proj_Year, Final_Table_Pop.Pop, "
                                     + " Final_Table_Pop.Gender, Final_Table_Pop.Scenario FROM Final_Table_Pop";
                                 sqltext = sqltext + " where ((Age = (" + age_mother.ToString() + ")) AND (proj_Year = "
-                                    + (year-1).ToString() + " ) AND (Gender = 'Female') AND (Scenario = '" + strscenarioText + "'))";
+                                    + (year-1).ToString() + " ) AND (Gender = 'female') AND (Scenario = '" + strscenarioText + "'))";
                                 dataCommand.CommandText = sqltext;
                                 dataReader = dataCommand.ExecuteReader();
                                 dataReader.Read();
@@ -1127,8 +1129,8 @@ Command121.Visible = True
                                 { //Use combined birth rates
 
                                     //Pull the birth rate for the previous year, for each age
-                                    sqltext = "SELECT Rate_of_Babies_Combined_Post_2005.Age, Rate_of_Babies_Combined_Post_2005.Year_Num, "
-                                        + " Rate_of_Babies_Combined_Post_2005.Rate FROM Rate_of_Babies_Combined_Post_2005";
+                                    sqltext = "SELECT Age, Year_Num, "
+                                        + " Rate FROM RT_BABIES_COMBINED_PST_2005 ";
                                     sqltext = sqltext + " where Age = " + age_mother.ToString() + " AND Year_Num = " + (year - 1).ToString();
                                     dataCommand.CommandText = sqltext;
                                     dataReader = dataCommand.ExecuteReader();

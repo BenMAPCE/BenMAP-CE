@@ -61,7 +61,7 @@ namespace PopSim
         private double Sub_Pop_Adjustment_4 = 0;
         private double Sub_Pop_Adjustment_5 = 0;
 
-        private int Birth_Type = 1;  // step 6 birth not dynamic if 0, dynamic if 1
+        private int Birth_Type = 0;  // step 6 birth  dynamic if 0, static if 1
         private int Lag_Type = 0;    // LK_Lag_types, 0 = single, 1 = cause specific lag
         // private int Lag_Type_Specific; // appears to be unused 
         private int Lag_Function_Type;
