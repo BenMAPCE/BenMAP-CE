@@ -110,7 +110,15 @@ namespace BenMAP
                 txtName.Focus();
                 return;
             }
-
+            if (rollbacks.Exists(x => x.Name.Equals(txtName.Text.Trim(), StringComparison.OrdinalIgnoreCase)))
+            {
+                DialogResult result = MessageBox.Show("A rollback with the name " + txtName.Text.Trim() + " already exists.  Do you wish to overwrite it?","", MessageBoxButtons.YesNo);
+                if (result == DialogResult.No)
+                {
+                    txtName.Focus();
+                    return;
+                }            
+            }
 
             gbName.Visible = false;
             gbCountrySelection.Visible = true;
@@ -291,9 +299,7 @@ namespace BenMAP
             rollbacks.Add(rollback);
 
             //add to grid
-
             dgvRollbacks.Rows.Clear();
-
             foreach (GBDRollbackItem item in rollbacks)
             { 
                 DataGridViewRow row = new DataGridViewRow();
@@ -306,7 +312,33 @@ namespace BenMAP
                 row.Cells[6].Value = "";
                 dgvRollbacks.Rows.Add(row);
             }
+
+            ClearFields();
            
+        }
+
+        private void ClearFields() 
+        {
+            //clear fields
+            txtName.Text = String.Empty;
+            txtDescription.Text = String.Empty;
+            foreach (TreeNode node in tvCountries.Nodes)
+            {
+                node.Checked = false;
+            }
+            cboRollbackType.SelectedIndex = (int)GBDRollbackItem.RollbackType.Percentage; 
+            txtPercentage.Text = String.Empty;
+            txtPercentageBackground.Text = String.Empty;
+            txtIncrement.Text = String.Empty;
+            txtIncrementBackground.Text = String.Empty;
+            cboStandard.SelectedIndex = -1;
+
+            gbName.Visible = true;
+            gbCountrySelection.Visible = false;
+            gbParameterSelection.Visible = false;
+           
+            
+
         }
 
 
