@@ -267,7 +267,7 @@ namespace BenMAP
             GBDRollbackItem rollback = new GBDRollbackItem();
             rollback.Name = txtName.Text;
             rollback.Description = txtDescription.Text;
-            rollback.Countries = checkedCountries;
+            rollback.Countries = new List<string>(checkedCountries);
             switch (cboRollbackType.SelectedIndex)
             {
                 case 0: //percentage
