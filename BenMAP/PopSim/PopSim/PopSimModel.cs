@@ -17,12 +17,11 @@ namespace PopSim
         private double k;
         private double m;
         private double p;
-        private double q;
         private double t;
        
         private string Illness_Type;
         private string Illness_Type_Specific;
-        private int IllnessCount;
+        //private int IllnessCount;
         private int GenderCount;
         private string gender;
         private string source;
@@ -61,6 +60,7 @@ namespace PopSim
             // conStr = "Database=|DataDirectory|\\POPSIMDB.FDB;USER=SYSDBA;PASSWORD=masterkey";
             dbConnection.ConnectionString = conStr;
             dbConnection.Open();
+            InputData.getDataFromScenario(1);   // only one scenario currently permitted
             
         }
 
@@ -243,12 +243,8 @@ namespace PopSim
                 // next routine has minor numerical problems and needs review
                 run_calculate_life_expectancy();
             } // Next GenderCount
-            // STOPPED HERE
             //STEP 9: GENERATE SUMMARY OF INPUTS
             run_summarize_results();
-    
-
-            
         } // end run Pop Sim
         public void setupInternalVariables()
         {
@@ -543,9 +539,6 @@ Command121.Visible = True
 
         private void run_threshold_calcs()
         {
-            // THIS ROUTINE ONLY APPEARS TO WORK WITH VERY CAREFUL MATCHING OF THE PM LEVELS
-            // FREQUENTLY CRASHES WITH NO DATA IN EITHER THE SORTED_PM_TABLE
-            
            //'Set variables to beginning values
             int year = InputData.getBegin_Year();
             double PM_val = 0;
