@@ -847,9 +847,8 @@ namespace BenMAP
                         DotSpatial.Topology.Polygon p = new DotSpatial.Topology.Polygon(lstCoordinate.ToArray());
                         f.BasicGeometry = p;
                         fs.AddFeature(f);
-                        fs.DataTable.Rows[i * Rows + j]["Col"] = i;
-                        fs.DataTable.Rows[i * Rows + j]["Row"] = j;
-
+                        fs.DataTable.Rows[i * Rows + j]["Col"] = i + 1;
+                        fs.DataTable.Rows[i * Rows + j]["Row"] = j + 1;
 
                     }
                 }

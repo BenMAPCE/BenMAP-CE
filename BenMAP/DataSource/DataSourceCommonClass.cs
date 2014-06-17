@@ -458,17 +458,7 @@ namespace BenMAP
                                     default:
                                         if (m.Values.Count() == 365)
                                         {
-                                            List<float> lstTemp = new List<float>();
-                                            if (benMAPPollutant.Seasons != null && benMAPPollutant.Seasons.Count > 0)
-                                            {
-                                                foreach (Season s in benMAPPollutant.Seasons)
-                                                {
-                                                    lstTemp.AddRange(m.Values.GetRange(s.StartDay, s.EndDay - s.StartDay + 1));
-                                                }
-
-                                            }
-                                            else
-                                                lstTemp = m.Values;
+                                            List<float> lstTemp = m.Values;
                                             lstModelAttribute365.Add(new ModelAttribute() { Col = m.Col, Row = m.Row, Metric = metric, Values = lstTemp });
                                         }
                                         break;
@@ -3542,7 +3532,7 @@ iPOC == 5 || iPOC == 6 || iPOC == 7 || iPOC == 8 || iPOC == 9))
             {
                 if (File.Exists(strAQGPath))
                     File.Delete(strAQGPath);
-                if (benMAPLine.ModelAttributes != null)
+                if ((benMAPLine.ModelAttributes != null && benMAPLine is MonitorDataLine))
                 {
                     benMAPLine.ModelAttributes.Clear();
                     GC.Collect();
