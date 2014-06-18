@@ -48,11 +48,30 @@ namespace BenMAP
 
         private void LoadCountryTreeView()
         {
+            DataTable dt = new DataTable();
+            dt.Columns.Add("Region");
+            dt.Columns.Add("Country");
+
+            dt.Rows.Add("North America", "United States");
+            dt.Rows.Add("North America", "Canada");
+            dt.Rows.Add("North America", "Mexico");   
+            //data table must be sorted by region and country
+
+            string region = String.Empty;
+            string country = String.Empty;
             tvCountries.BeginUpdate();
-            tvCountries.Nodes.Add("North America", "North America");
-            tvCountries.Nodes["North America"].Nodes.Add("United States", "United States");
-            tvCountries.Nodes["North America"].Nodes.Add("Canada", "Canada");
-            tvCountries.Nodes["North America"].Nodes.Add("Mexico", "Mexico");
+            foreach (DataRow dr in dt.Rows)
+            {                
+                //new region?
+                if (!region.Equals(dr["Region"].ToString(), StringComparison.OrdinalIgnoreCase))
+                {
+                    region = dr["Region"].ToString();
+                    tvCountries.Nodes.Add(region, region);
+                }
+
+                country = dr["Country"].ToString();
+                tvCountries.Nodes[region].Nodes.Add(country, country);                         
+            }            
             tvCountries.EndUpdate();
         
         }
@@ -423,9 +442,7 @@ namespace BenMAP
             
             }
 
-        }
-
-        
+        }      
 
 
 

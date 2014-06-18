@@ -29,10 +29,10 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend3 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.gbCountrySelection = new System.Windows.Forms.GroupBox();
             this.btnBack = new System.Windows.Forms.Button();
             this.txtInfo = new System.Windows.Forms.TextBox();
@@ -72,7 +72,7 @@
             this.btnExecuteRollbacks = new System.Windows.Forms.Button();
             this.btnEditRollback = new System.Windows.Forms.Button();
             this.btnDeleteRollback = new System.Windows.Forms.Button();
-            this.colArea = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colColor = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colCountry = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colTotalCountries = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -163,21 +163,21 @@
             this.dgvRollbacks.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
             this.dgvRollbacks.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvRollbacks.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.colArea,
+            this.colName,
             this.colColor,
             this.colCountry,
             this.colTotalCountries,
             this.colTotalPopulation,
             this.colRollbackType,
             this.colParameters});
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvRollbacks.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvRollbacks.DefaultCellStyle = dataGridViewCellStyle1;
             this.dgvRollbacks.Location = new System.Drawing.Point(17, 55);
             this.dgvRollbacks.MultiSelect = false;
             this.dgvRollbacks.Name = "dgvRollbacks";
@@ -311,16 +311,16 @@
             // 
             // chartPreview
             // 
-            chartArea3.Name = "ChartArea1";
-            this.chartPreview.ChartAreas.Add(chartArea3);
-            legend3.Name = "Legend1";
-            this.chartPreview.Legends.Add(legend3);
+            chartArea1.Name = "ChartArea1";
+            this.chartPreview.ChartAreas.Add(chartArea1);
+            legend1.Name = "Legend1";
+            this.chartPreview.Legends.Add(legend1);
             this.chartPreview.Location = new System.Drawing.Point(12, 261);
             this.chartPreview.Name = "chartPreview";
-            series3.ChartArea = "ChartArea1";
-            series3.Legend = "Legend1";
-            series3.Name = "Series1";
-            this.chartPreview.Series.Add(series3);
+            series1.ChartArea = "ChartArea1";
+            series1.Legend = "Legend1";
+            series1.Name = "Series1";
+            this.chartPreview.Series.Add(series1);
             this.chartPreview.Size = new System.Drawing.Size(256, 119);
             this.chartPreview.TabIndex = 3;
             this.chartPreview.Text = "chart1";
@@ -331,7 +331,7 @@
             this.btnSaveRollback.Name = "btnSaveRollback";
             this.btnSaveRollback.Size = new System.Drawing.Size(97, 23);
             this.btnSaveRollback.TabIndex = 2;
-            this.btnSaveRollback.Text = "Save Rollback";
+            this.btnSaveRollback.Text = "Save Scenario";
             this.btnSaveRollback.UseVisualStyleBackColor = true;
             this.btnSaveRollback.Click += new System.EventHandler(this.btnSaveRollback_Click);
             // 
@@ -512,11 +512,11 @@
             this.btnDeleteRollback.UseVisualStyleBackColor = true;
             this.btnDeleteRollback.Click += new System.EventHandler(this.btnDeleteRollback_Click);
             // 
-            // colArea
+            // colName
             // 
-            this.colArea.HeaderText = "Name";
-            this.colArea.Name = "colArea";
-            this.colArea.ReadOnly = true;
+            this.colName.HeaderText = "Scenario Name";
+            this.colName.Name = "colName";
+            this.colName.ReadOnly = true;
             // 
             // colColor
             // 
@@ -636,7 +636,7 @@
         private System.Windows.Forms.Button btnDeleteRollback;
         private System.Windows.Forms.Button btnEditRollback;
         private System.Windows.Forms.Button btnExecuteRollbacks;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colArea;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colName;
         private System.Windows.Forms.DataGridViewTextBoxColumn colColor;
         private System.Windows.Forms.DataGridViewTextBoxColumn colCountry;
         private System.Windows.Forms.DataGridViewTextBoxColumn colTotalCountries;
