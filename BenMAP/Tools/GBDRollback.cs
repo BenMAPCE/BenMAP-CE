@@ -324,6 +324,27 @@ namespace BenMAP
 
         }
 
+        private void LoadRollback(GBDRollbackItem item)
+        {            
+            txtName.Text = item.Name;
+            txtDescription.Text = item.Description;
+            foreach (string country in item.Countries)
+            {
+                TreeNode[] nodes = tvCountries.Nodes.Find(country,true);
+                foreach (TreeNode node in nodes)
+                {
+                    node.Checked = true;
+                }
+            }
+            cboRollbackType.SelectedIndex = (int)item.Type;
+            txtPercentage.Text = item.Percentage.ToString();
+            txtPercentageBackground.Text = item.Background.ToString();
+            txtIncrement.Text = item.Increment.ToString();
+            txtIncrementBackground.Text = item.Background.ToString();
+            cboStandard.SelectedIndex = (int)item.Standard;
+
+        }
+
         private void SetActivePanel(int index)
         {
             switch (index)
@@ -397,12 +418,14 @@ namespace BenMAP
                 GBDRollbackItem item = rollbacks.Find(x => x.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
 
                 ClearFields();
-                //LoadRollback();
-                //SetActivePanel(0);
+                LoadRollback(item);
+                SetActivePanel(0);
             
             }
 
         }
+
+        
 
 
 
