@@ -25,10 +25,8 @@ namespace BenMAP
             //set up locations,form size, visibility
             gbCountrySelection.Location = new Point(gbName.Location.X, gbName.Location.Y);
             gbParameterSelection.Location = new Point(gbName.Location.X, gbName.Location.Y);
-            gbName.Visible = true;
-            gbCountrySelection.Visible = false;
-            gbParameterSelection.Visible = false;
-            Size = new Size(906, 794); //form size
+            SetActivePanel(0);
+            Size = new Size(906, 777); //form size
 
             //parameter options in gbParameterSelection
             gbOptionsPercentage.Location = new Point(gbOptionsIncremental.Location.X, gbOptionsIncremental.Location.Y);
@@ -36,9 +34,7 @@ namespace BenMAP
             gbOptionsStandard.Location = new Point(gbOptionsIncremental.Location.X, gbOptionsIncremental.Location.Y);
             gbParameterSelection.Controls.Add(gbOptionsStandard);            
             cboRollbackType.SelectedIndex = 0;
-            gbOptionsPercentage.Visible = true;
-            gbOptionsIncremental.Visible = false;
-            gbOptionsStandard.Visible = false;
+            SetActiveOptionsPanel(0);
 
             LoadCountryTreeView();
 
@@ -66,12 +62,12 @@ namespace BenMAP
 
         private void cboRollbackType_SelectedIndexChanged(object sender, EventArgs e)
         {
+
+            SetActiveOptionsPanel(cboRollbackType.SelectedIndex);
             switch (cboRollbackType.SelectedIndex)
             {
                 case 0:
-                    gbOptionsIncremental.Visible = false;
-                    gbOptionsPercentage.Visible = true;
-                    gbOptionsStandard.Visible = false;
+                   
                     break;
                 case 1:
                     gbOptionsIncremental.Visible = true;
@@ -120,9 +116,7 @@ namespace BenMAP
                 }            
             }
 
-            gbName.Visible = false;
-            gbCountrySelection.Visible = true;
-            gbParameterSelection.Visible = false;
+            SetActivePanel(1);
             
         }
 
@@ -136,24 +130,18 @@ namespace BenMAP
                 return;
             }
 
-            gbName.Visible = false;
-            gbCountrySelection.Visible = false;
-            gbParameterSelection.Visible = true;
+            SetActivePanel(2);
             //cboRollbackType.SelectedIndex = -1;     
         }
 
         private void btnBack_Click(object sender, EventArgs e)
         {
-            gbName.Visible = true;
-            gbCountrySelection.Visible = false;
-            gbParameterSelection.Visible = false;
+            SetActivePanel(0);
         }
 
         private void btnBack2_Click(object sender, EventArgs e)
         {
-            gbName.Visible = false;
-            gbCountrySelection.Visible = true;
-            gbParameterSelection.Visible = false;
+            SetActivePanel(1);
         }
 
         private void tvCountries_AfterCheck(object sender, TreeViewEventArgs e)
@@ -314,6 +302,7 @@ namespace BenMAP
             }
 
             ClearFields();
+            SetActivePanel(0);
            
         }
 
@@ -331,13 +320,87 @@ namespace BenMAP
             txtPercentageBackground.Text = String.Empty;
             txtIncrement.Text = String.Empty;
             txtIncrementBackground.Text = String.Empty;
-            cboStandard.SelectedIndex = -1;
+            cboStandard.SelectedIndex = -1;       
 
-            gbName.Visible = true;
-            gbCountrySelection.Visible = false;
-            gbParameterSelection.Visible = false;
-           
+        }
+
+        private void SetActivePanel(int index)
+        {
+            switch (index)
+            {
+                case 0:
+                    gbName.Visible = true;
+                    gbCountrySelection.Visible = false;
+                    gbParameterSelection.Visible = false;
+                    break;
+                case 1:
+                    gbName.Visible = false;
+                    gbCountrySelection.Visible = true;
+                    gbParameterSelection.Visible = false;
+                    break;
+                case 2:
+                    gbName.Visible = false;
+                    gbCountrySelection.Visible = false;
+                    gbParameterSelection.Visible = true;
+                    break;
+            }
+        }
+
+        private void SetActiveOptionsPanel(int index)
+        {
+            switch (index)
+            {
+                case 0:
+                    gbOptionsPercentage.Visible = true;
+                    gbOptionsIncremental.Visible = false;                    
+                    gbOptionsStandard.Visible = false;
+                    break;
+                case 1:
+                    gbOptionsPercentage.Visible = false;
+                    gbOptionsIncremental.Visible = true;                    
+                    gbOptionsStandard.Visible = false;
+                    break;
+                case 2:
+                    gbOptionsPercentage.Visible = false;
+                    gbOptionsIncremental.Visible = false;                    
+                    gbOptionsStandard.Visible = true;
+                    break;
+            }
+        }
+
+
+        private void btnDeleteRollback_Click(object sender, EventArgs e)
+        {
+            if (dgvRollbacks.SelectedRows.Count > 0)
+            {
+                DialogResult result = MessageBox.Show("Are you sure you wish to delete the selected scenario?","", MessageBoxButtons.YesNo);
+                if (result == DialogResult.Yes)
+                {
+                    DataGridViewRow row = dgvRollbacks.SelectedRows[0];
+                    string name = row.Cells[0].Value.ToString();
+                    //delete rollback
+                    rollbacks.RemoveAll(x => x.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+                    //delete row
+                    dgvRollbacks.Rows.Remove(row);
+                }
             
+            }
+        }
+
+        private void btnEditRollback_Click(object sender, EventArgs e)
+        {
+            if (dgvRollbacks.SelectedRows.Count > 0)
+            { 
+                DataGridViewRow row = dgvRollbacks.SelectedRows[0];
+                string name = row.Cells[0].Value.ToString();
+                //get rollback
+                GBDRollbackItem item = rollbacks.Find(x => x.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+
+                ClearFields();
+                //LoadRollback();
+                //SetActivePanel(0);
+            
+            }
 
         }
 

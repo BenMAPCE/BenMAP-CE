@@ -29,10 +29,10 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend3 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.gbCountrySelection = new System.Windows.Forms.GroupBox();
             this.btnBack = new System.Windows.Forms.Button();
             this.txtInfo = new System.Windows.Forms.TextBox();
@@ -68,7 +68,7 @@
             this.txtName = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
             this.btnNext = new System.Windows.Forms.Button();
-            this.toolTipScenarioName = new System.Windows.Forms.ToolTip(this.components);
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.btnExecuteRollbacks = new System.Windows.Forms.Button();
             this.btnEditRollback = new System.Windows.Forms.Button();
             this.btnDeleteRollback = new System.Windows.Forms.Button();
@@ -102,15 +102,15 @@
             this.gbCountrySelection.Size = new System.Drawing.Size(279, 420);
             this.gbCountrySelection.TabIndex = 0;
             this.gbCountrySelection.TabStop = false;
-            this.gbCountrySelection.Text = "Country Selection";
+            this.gbCountrySelection.Text = "Region Selection";
             // 
             // btnBack
             // 
-            this.btnBack.Location = new System.Drawing.Point(68, 386);
+            this.btnBack.Location = new System.Drawing.Point(24, 386);
             this.btnBack.Name = "btnBack";
-            this.btnBack.Size = new System.Drawing.Size(97, 23);
+            this.btnBack.Size = new System.Drawing.Size(118, 23);
             this.btnBack.TabIndex = 3;
-            this.btnBack.Text = "<- Back";
+            this.btnBack.Text = "<- Scenario Name";
             this.btnBack.UseVisualStyleBackColor = true;
             this.btnBack.Click += new System.EventHandler(this.btnBack_Click);
             // 
@@ -126,11 +126,11 @@
             // 
             // btnNext2
             // 
-            this.btnNext2.Location = new System.Drawing.Point(171, 386);
+            this.btnNext2.Location = new System.Drawing.Point(149, 386);
             this.btnNext2.Name = "btnNext2";
-            this.btnNext2.Size = new System.Drawing.Size(97, 23);
+            this.btnNext2.Size = new System.Drawing.Size(118, 23);
             this.btnNext2.TabIndex = 1;
-            this.btnNext2.Text = "Next ->";
+            this.btnNext2.Text = "Rollback Settings ->";
             this.btnNext2.UseVisualStyleBackColor = true;
             this.btnNext2.Click += new System.EventHandler(this.btnNext2_Click);
             // 
@@ -170,15 +170,16 @@
             this.colTotalPopulation,
             this.colRollbackType,
             this.colParameters});
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvRollbacks.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvRollbacks.DefaultCellStyle = dataGridViewCellStyle3;
             this.dgvRollbacks.Location = new System.Drawing.Point(17, 55);
+            this.dgvRollbacks.MultiSelect = false;
             this.dgvRollbacks.Name = "dgvRollbacks";
             this.dgvRollbacks.ReadOnly = true;
             this.dgvRollbacks.Size = new System.Drawing.Size(841, 197);
@@ -186,7 +187,7 @@
             // 
             // btnClose
             // 
-            this.btnClose.Location = new System.Drawing.Point(813, 730);
+            this.btnClose.Location = new System.Drawing.Point(813, 716);
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(75, 23);
             this.btnClose.TabIndex = 3;
@@ -238,7 +239,7 @@
             this.gbParameterSelection.Size = new System.Drawing.Size(279, 420);
             this.gbParameterSelection.TabIndex = 3;
             this.gbParameterSelection.TabStop = false;
-            this.gbParameterSelection.Text = "Parameter Selection";
+            this.gbParameterSelection.Text = "Rollback Settings";
             // 
             // gbOptionsIncremental
             // 
@@ -310,16 +311,16 @@
             // 
             // chartPreview
             // 
-            chartArea1.Name = "ChartArea1";
-            this.chartPreview.ChartAreas.Add(chartArea1);
-            legend1.Name = "Legend1";
-            this.chartPreview.Legends.Add(legend1);
+            chartArea3.Name = "ChartArea1";
+            this.chartPreview.ChartAreas.Add(chartArea3);
+            legend3.Name = "Legend1";
+            this.chartPreview.Legends.Add(legend3);
             this.chartPreview.Location = new System.Drawing.Point(12, 261);
             this.chartPreview.Name = "chartPreview";
-            series1.ChartArea = "ChartArea1";
-            series1.Legend = "Legend1";
-            series1.Name = "Series1";
-            this.chartPreview.Series.Add(series1);
+            series3.ChartArea = "ChartArea1";
+            series3.Legend = "Legend1";
+            series3.Name = "Series1";
+            this.chartPreview.Series.Add(series3);
             this.chartPreview.Size = new System.Drawing.Size(256, 119);
             this.chartPreview.TabIndex = 3;
             this.chartPreview.Text = "chart1";
@@ -336,11 +337,11 @@
             // 
             // btnBack2
             // 
-            this.btnBack2.Location = new System.Drawing.Point(68, 386);
+            this.btnBack2.Location = new System.Drawing.Point(46, 386);
             this.btnBack2.Name = "btnBack2";
-            this.btnBack2.Size = new System.Drawing.Size(97, 23);
+            this.btnBack2.Size = new System.Drawing.Size(118, 23);
             this.btnBack2.TabIndex = 1;
-            this.btnBack2.Text = "<- Back";
+            this.btnBack2.Text = "<- Region Selection";
             this.btnBack2.UseVisualStyleBackColor = true;
             this.btnBack2.Click += new System.EventHandler(this.btnBack2_Click);
             // 
@@ -469,16 +470,16 @@
             this.label8.Size = new System.Drawing.Size(83, 13);
             this.label8.TabIndex = 2;
             this.label8.Text = "Scenario Name:";
-            this.toolTipScenarioName.SetToolTip(this.label8, "The name of the scenario will also be used in the rollback report filename.  It i" +
+            this.toolTip1.SetToolTip(this.label8, "The name of the scenario will also be used in the rollback report filename.  It i" +
                     "s limited to 15 characters.");
             // 
             // btnNext
             // 
-            this.btnNext.Location = new System.Drawing.Point(171, 386);
+            this.btnNext.Location = new System.Drawing.Point(150, 386);
             this.btnNext.Name = "btnNext";
-            this.btnNext.Size = new System.Drawing.Size(97, 23);
+            this.btnNext.Size = new System.Drawing.Size(118, 23);
             this.btnNext.TabIndex = 1;
-            this.btnNext.Text = "Next ->";
+            this.btnNext.Text = "Region Selection ->";
             this.btnNext.UseVisualStyleBackColor = true;
             this.btnNext.Click += new System.EventHandler(this.btnNext_Click);
             // 
@@ -499,6 +500,7 @@
             this.btnEditRollback.TabIndex = 4;
             this.btnEditRollback.Text = "Edit Scenario";
             this.btnEditRollback.UseVisualStyleBackColor = true;
+            this.btnEditRollback.Click += new System.EventHandler(this.btnEditRollback_Click);
             // 
             // btnDeleteRollback
             // 
@@ -508,6 +510,7 @@
             this.btnDeleteRollback.TabIndex = 5;
             this.btnDeleteRollback.Text = "Delete Scenario";
             this.btnDeleteRollback.UseVisualStyleBackColor = true;
+            this.btnDeleteRollback.Click += new System.EventHandler(this.btnDeleteRollback_Click);
             // 
             // colArea
             // 
@@ -557,7 +560,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1567, 766);
+            this.ClientSize = new System.Drawing.Size(1567, 749);
             this.Controls.Add(this.gbName);
             this.Controls.Add(this.gbOptionsStandard);
             this.Controls.Add(this.gbOptionsPercentage);
@@ -629,7 +632,7 @@
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.TextBox txtName;
         private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.ToolTip toolTipScenarioName;
+        private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.Button btnDeleteRollback;
         private System.Windows.Forms.Button btnEditRollback;
         private System.Windows.Forms.Button btnExecuteRollbacks;
