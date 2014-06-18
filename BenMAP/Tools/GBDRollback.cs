@@ -48,13 +48,16 @@ namespace BenMAP
 
         private void LoadCountryTreeView()
         {
-            DataTable dt = new DataTable();
-            dt.Columns.Add("Region");
-            dt.Columns.Add("Country");
+            DataSet ds = GBDRollbackDataSource.GetRegionCountryList();
 
-            dt.Rows.Add("North America", "United States");
-            dt.Rows.Add("North America", "Canada");
-            dt.Rows.Add("North America", "Mexico");   
+
+            DataTable dt = ds.Tables[0];//new DataTable();
+            //dt.Columns.Add("Region");
+            //dt.Columns.Add("Country");
+
+            //dt.Rows.Add("North America", "United States");
+            //dt.Rows.Add("North America", "Canada");
+            //dt.Rows.Add("North America", "Mexico");   
             //data table must be sorted by region and country
 
             string region = String.Empty;
@@ -63,13 +66,13 @@ namespace BenMAP
             foreach (DataRow dr in dt.Rows)
             {                
                 //new region?
-                if (!region.Equals(dr["Region"].ToString(), StringComparison.OrdinalIgnoreCase))
+                if (!region.Equals(dr["REGION"].ToString(), StringComparison.OrdinalIgnoreCase))
                 {
-                    region = dr["Region"].ToString();
+                    region = dr["REGION"].ToString();
                     tvCountries.Nodes.Add(region, region);
                 }
 
-                country = dr["Country"].ToString();
+                country = dr["COUNTRYNAME"].ToString();
                 tvCountries.Nodes[region].Nodes.Add(country, country);                         
             }            
             tvCountries.EndUpdate();
