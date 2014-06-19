@@ -313,14 +313,12 @@ namespace BenMAP
             foreach (GBDRollbackItem item in rollbacks)
             { 
                 DataGridViewRow row = new DataGridViewRow();
-                row.CreateCells(dgvRollbacks);
-                row.Cells[0].Value = item.Name;
-                row.Cells[1].Style.BackColor = item.Color;
+                int i = dgvRollbacks.Rows.Add(row);
+                dgvRollbacks.Rows[i].Cells["colName"].Value = item.Name;
+                dgvRollbacks.Rows[i].Cells["colColor"].Style.BackColor = item.Color;
                 item.Countries.Sort();
-                row.Cells[2].Value = String.Join(", ", item.Countries.ToArray());
-                row.Cells[5].Value = item.Type.ToString();
-                row.Cells[6].Value = "";
-                dgvRollbacks.Rows.Add(row);
+                dgvRollbacks.Rows[i].Cells["colRollbackType"].Value = item.Type.ToString();
+                dgvRollbacks.Rows[i].Cells["colParameters"].Value = "";              
             }
 
             ClearFields();
@@ -443,6 +441,24 @@ namespace BenMAP
                 LoadRollback(item);
                 SetActivePanel(0);
             
+            }
+
+        }
+
+        private void dgvRollbacks_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if ((e.RowIndex != -1) && (e.ColumnIndex != -1))
+            {
+                DataGridViewCell cell = (DataGridViewCell)dgvRollbacks.Rows[e.RowIndex].Cells[e.ColumnIndex];
+                if (dgvRollbacks.Columns[e.ColumnIndex].Name.Equals("colTotalCountries", StringComparison.OrdinalIgnoreCase))
+                {
+                    MessageBox.Show("TotalCountries");
+
+                }
+                else if (dgvRollbacks.Columns[e.ColumnIndex].Name.Equals("colTotalPopulation", StringComparison.OrdinalIgnoreCase))
+                {
+                    MessageBox.Show("TotalPopulation");
+                }
             }
 
         }      

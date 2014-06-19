@@ -39,6 +39,9 @@
             this.btnNext2 = new System.Windows.Forms.Button();
             this.tvCountries = new System.Windows.Forms.TreeView();
             this.gbRollbacks = new System.Windows.Forms.GroupBox();
+            this.btnDeleteRollback = new System.Windows.Forms.Button();
+            this.btnEditRollback = new System.Windows.Forms.Button();
+            this.btnExecuteRollbacks = new System.Windows.Forms.Button();
             this.dgvRollbacks = new System.Windows.Forms.DataGridView();
             this.btnClose = new System.Windows.Forms.Button();
             this.gbMap = new System.Windows.Forms.GroupBox();
@@ -69,12 +72,8 @@
             this.label8 = new System.Windows.Forms.Label();
             this.btnNext = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.btnExecuteRollbacks = new System.Windows.Forms.Button();
-            this.btnEditRollback = new System.Windows.Forms.Button();
-            this.btnDeleteRollback = new System.Windows.Forms.Button();
             this.colName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colColor = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colCountry = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colTotalCountries = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colTotalPopulation = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colRollbackType = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -156,6 +155,35 @@
             this.gbRollbacks.TabStop = false;
             this.gbRollbacks.Text = "Scenarios";
             // 
+            // btnDeleteRollback
+            // 
+            this.btnDeleteRollback.Location = new System.Drawing.Point(109, 20);
+            this.btnDeleteRollback.Name = "btnDeleteRollback";
+            this.btnDeleteRollback.Size = new System.Drawing.Size(99, 23);
+            this.btnDeleteRollback.TabIndex = 5;
+            this.btnDeleteRollback.Text = "Delete Scenario";
+            this.btnDeleteRollback.UseVisualStyleBackColor = true;
+            this.btnDeleteRollback.Click += new System.EventHandler(this.btnDeleteRollback_Click);
+            // 
+            // btnEditRollback
+            // 
+            this.btnEditRollback.Location = new System.Drawing.Point(17, 20);
+            this.btnEditRollback.Name = "btnEditRollback";
+            this.btnEditRollback.Size = new System.Drawing.Size(86, 23);
+            this.btnEditRollback.TabIndex = 4;
+            this.btnEditRollback.Text = "Edit Scenario";
+            this.btnEditRollback.UseVisualStyleBackColor = true;
+            this.btnEditRollback.Click += new System.EventHandler(this.btnEditRollback_Click);
+            // 
+            // btnExecuteRollbacks
+            // 
+            this.btnExecuteRollbacks.Location = new System.Drawing.Point(736, 20);
+            this.btnExecuteRollbacks.Name = "btnExecuteRollbacks";
+            this.btnExecuteRollbacks.Size = new System.Drawing.Size(122, 23);
+            this.btnExecuteRollbacks.TabIndex = 3;
+            this.btnExecuteRollbacks.Text = "Execute Scenarios";
+            this.btnExecuteRollbacks.UseVisualStyleBackColor = true;
+            // 
             // dgvRollbacks
             // 
             this.dgvRollbacks.AllowUserToAddRows = false;
@@ -165,7 +193,6 @@
             this.dgvRollbacks.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.colName,
             this.colColor,
-            this.colCountry,
             this.colTotalCountries,
             this.colTotalPopulation,
             this.colRollbackType,
@@ -184,6 +211,7 @@
             this.dgvRollbacks.ReadOnly = true;
             this.dgvRollbacks.Size = new System.Drawing.Size(841, 197);
             this.dgvRollbacks.TabIndex = 0;
+            this.dgvRollbacks.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvRollbacks_CellDoubleClick);
             // 
             // btnClose
             // 
@@ -483,35 +511,6 @@
             this.btnNext.UseVisualStyleBackColor = true;
             this.btnNext.Click += new System.EventHandler(this.btnNext_Click);
             // 
-            // btnExecuteRollbacks
-            // 
-            this.btnExecuteRollbacks.Location = new System.Drawing.Point(736, 20);
-            this.btnExecuteRollbacks.Name = "btnExecuteRollbacks";
-            this.btnExecuteRollbacks.Size = new System.Drawing.Size(122, 23);
-            this.btnExecuteRollbacks.TabIndex = 3;
-            this.btnExecuteRollbacks.Text = "Execute Scenarios";
-            this.btnExecuteRollbacks.UseVisualStyleBackColor = true;
-            // 
-            // btnEditRollback
-            // 
-            this.btnEditRollback.Location = new System.Drawing.Point(17, 20);
-            this.btnEditRollback.Name = "btnEditRollback";
-            this.btnEditRollback.Size = new System.Drawing.Size(86, 23);
-            this.btnEditRollback.TabIndex = 4;
-            this.btnEditRollback.Text = "Edit Scenario";
-            this.btnEditRollback.UseVisualStyleBackColor = true;
-            this.btnEditRollback.Click += new System.EventHandler(this.btnEditRollback_Click);
-            // 
-            // btnDeleteRollback
-            // 
-            this.btnDeleteRollback.Location = new System.Drawing.Point(109, 20);
-            this.btnDeleteRollback.Name = "btnDeleteRollback";
-            this.btnDeleteRollback.Size = new System.Drawing.Size(99, 23);
-            this.btnDeleteRollback.TabIndex = 5;
-            this.btnDeleteRollback.Text = "Delete Scenario";
-            this.btnDeleteRollback.UseVisualStyleBackColor = true;
-            this.btnDeleteRollback.Click += new System.EventHandler(this.btnDeleteRollback_Click);
-            // 
             // colName
             // 
             this.colName.HeaderText = "Scenario Name";
@@ -525,12 +524,6 @@
             this.colColor.ReadOnly = true;
             this.colColor.Resizable = System.Windows.Forms.DataGridViewTriState.True;
             this.colColor.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            // 
-            // colCountry
-            // 
-            this.colCountry.HeaderText = "Countries";
-            this.colCountry.Name = "colCountry";
-            this.colCountry.ReadOnly = true;
             // 
             // colTotalCountries
             // 
@@ -638,7 +631,6 @@
         private System.Windows.Forms.Button btnExecuteRollbacks;
         private System.Windows.Forms.DataGridViewTextBoxColumn colName;
         private System.Windows.Forms.DataGridViewTextBoxColumn colColor;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colCountry;
         private System.Windows.Forms.DataGridViewTextBoxColumn colTotalCountries;
         private System.Windows.Forms.DataGridViewTextBoxColumn colTotalPopulation;
         private System.Windows.Forms.DataGridViewTextBoxColumn colRollbackType;
