@@ -316,13 +316,35 @@ namespace BenMAP
                 dgvRollbacks.Rows[i].Cells["colName"].Value = item.Name;
                 dgvRollbacks.Rows[i].Cells["colColor"].Style.BackColor = item.Color;
                 item.Countries.Sort();
-                dgvRollbacks.Rows[i].Cells["colRollbackType"].Value = item.Type.ToString();
-                dgvRollbacks.Rows[i].Cells["colParameters"].Value = "";              
+                dgvRollbacks.Rows[i].Cells["colRollbackType"].Value = GetRollbackTypeSummary(item);         
             }
 
             ClearFields();
             SetActivePanel(0);
            
+        }
+
+        private string GetRollbackTypeSummary(GBDRollbackItem rollback)
+        {
+            string summary = String.Empty;
+
+            switch (rollback.Type)
+            {
+                case GBDRollbackItem.RollbackType.Percentage: //percentage
+                    summary = rollback.Percentage.ToString() + "% Rollback";
+                    break;
+                case GBDRollbackItem.RollbackType.Incremental: //incremental
+                    char micrograms = '\u00B5';
+                    char super = '\u00B3';
+                    summary = rollback.Increment.ToString() + micrograms.ToString() + "g/m" + super.ToString() + " Rollback";
+                    break;
+                case GBDRollbackItem.RollbackType.Standard:
+                    summary = "Rollback to " + rollback.Standard.ToString() + " Standard";
+                    break;
+            }
+
+
+            return summary;
         }
 
         private void ClearFields() 

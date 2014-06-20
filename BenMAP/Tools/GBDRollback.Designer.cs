@@ -77,7 +77,6 @@
             this.colTotalCountries = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colTotalPopulation = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colRollbackType = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colParameters = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.gbCountrySelection.SuspendLayout();
             this.gbRollbacks.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvRollbacks)).BeginInit();
@@ -195,8 +194,7 @@
             this.colColor,
             this.colTotalCountries,
             this.colTotalPopulation,
-            this.colRollbackType,
-            this.colParameters});
+            this.colRollbackType});
             dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
             dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -288,6 +286,7 @@
             this.txtIncrementBackground.Name = "txtIncrementBackground";
             this.txtIncrementBackground.Size = new System.Drawing.Size(100, 20);
             this.txtIncrementBackground.TabIndex = 3;
+            this.txtIncrementBackground.Visible = false;
             // 
             // txtIncrement
             // 
@@ -304,6 +303,7 @@
             this.label5.Size = new System.Drawing.Size(68, 13);
             this.label5.TabIndex = 1;
             this.label5.Text = "Background:";
+            this.label5.Visible = false;
             // 
             // label4
             // 
@@ -392,6 +392,7 @@
             this.txtPercentageBackground.Name = "txtPercentageBackground";
             this.txtPercentageBackground.Size = new System.Drawing.Size(100, 20);
             this.txtPercentageBackground.TabIndex = 3;
+            this.txtPercentageBackground.Visible = false;
             // 
             // txtPercentage
             // 
@@ -408,6 +409,7 @@
             this.label6.Size = new System.Drawing.Size(68, 13);
             this.label6.TabIndex = 1;
             this.label6.Text = "Background:";
+            this.label6.Visible = false;
             // 
             // label7
             // 
@@ -539,15 +541,9 @@
             // 
             // colRollbackType
             // 
-            this.colRollbackType.HeaderText = "Rollback Type";
+            this.colRollbackType.HeaderText = "Type Of Rollback";
             this.colRollbackType.Name = "colRollbackType";
             this.colRollbackType.ReadOnly = true;
-            // 
-            // colParameters
-            // 
-            this.colParameters.HeaderText = "Parameters";
-            this.colParameters.Name = "colParameters";
-            this.colParameters.ReadOnly = true;
             // 
             // GBDRollback
             // 
@@ -634,6 +630,5 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn colTotalCountries;
         private System.Windows.Forms.DataGridViewTextBoxColumn colTotalPopulation;
         private System.Windows.Forms.DataGridViewTextBoxColumn colRollbackType;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colParameters;
     }
 }

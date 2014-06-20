@@ -115,6 +115,7 @@
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "GBDRollbackCountriesPopulations";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Countries\\Populations";
             this.Shown += new System.EventHandler(this.GBDRollbackCountriesPopulations_Shown);
             this.groupBox1.ResumeLayout(false);
