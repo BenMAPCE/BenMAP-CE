@@ -16,6 +16,7 @@ namespace BenMAP
 
         List<String> checkedCountries = new List<String>();
         List<GBDRollbackItem> rollbacks = new List<GBDRollbackItem>();
+        DataTable dtCountries;
 
 
         public GBDRollback()
@@ -36,7 +37,8 @@ namespace BenMAP
             cboRollbackType.SelectedIndex = 0;
             SetActiveOptionsPanel(0);
 
-            LoadCountryTreeView();
+            LoadCountries();
+            LoadTreeView();
 
         }
 
@@ -46,36 +48,33 @@ namespace BenMAP
             Close();           
         }
 
-        private void LoadCountryTreeView()
+        private void LoadCountries()
         {
             DataSet ds = GBDRollbackDataSource.GetRegionCountryList();
+            dtCountries = ds.Tables[0].Copy();//new DataTable();
+        }
 
-
-            DataTable dt = ds.Tables[0];//new DataTable();
-            //dt.Columns.Add("Region");
-            //dt.Columns.Add("Country");
-
-            //dt.Rows.Add("North America", "United States");
-            //dt.Rows.Add("North America", "Canada");
-            //dt.Rows.Add("North America", "Mexico");   
-            //data table must be sorted by region and country
-
-            string region = String.Empty;
-            string country = String.Empty;
-            tvCountries.BeginUpdate();
-            foreach (DataRow dr in dt.Rows)
-            {                
-                //new region?
-                if (!region.Equals(dr["REGION"].ToString(), StringComparison.OrdinalIgnoreCase))
+        private void LoadTreeView()
+        {
+            if (dtCountries != null)
+            {
+                string region = String.Empty;
+                string country = String.Empty;
+                tvCountries.BeginUpdate();
+                foreach (DataRow dr in dtCountries.Rows)
                 {
-                    region = dr["REGION"].ToString();
-                    tvCountries.Nodes.Add(region, region);
-                }
+                    //new region?
+                    if (!region.Equals(dr["REGION"].ToString(), StringComparison.OrdinalIgnoreCase))
+                    {
+                        region = dr["REGION"].ToString();
+                        tvCountries.Nodes.Add(region, region);
+                    }
 
-                country = dr["COUNTRYNAME"].ToString();
-                tvCountries.Nodes[region].Nodes.Add(country, country);                         
-            }            
-            tvCountries.EndUpdate();
+                    country = dr["COUNTRYNAME"].ToString();
+                    tvCountries.Nodes[region].Nodes.Add(country, country);
+                }
+                tvCountries.EndUpdate();
+            }
         
         }
 
@@ -418,7 +417,7 @@ namespace BenMAP
                 if (result == DialogResult.Yes)
                 {
                     DataGridViewRow row = dgvRollbacks.SelectedRows[0];
-                    string name = row.Cells[0].Value.ToString();
+                    string name = row.Cells["colName"].Value.ToString();
                     //delete rollback
                     rollbacks.RemoveAll(x => x.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
                     //delete row
@@ -433,7 +432,7 @@ namespace BenMAP
             if (dgvRollbacks.SelectedRows.Count > 0)
             { 
                 DataGridViewRow row = dgvRollbacks.SelectedRows[0];
-                string name = row.Cells[0].Value.ToString();
+                string name = row.Cells["colName"].Value.ToString();
                 //get rollback
                 GBDRollbackItem item = rollbacks.Find(x => x.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
 
@@ -449,16 +448,28 @@ namespace BenMAP
         {
             if ((e.RowIndex != -1) && (e.ColumnIndex != -1))
             {
-                DataGridViewCell cell = (DataGridViewCell)dgvRollbacks.Rows[e.RowIndex].Cells[e.ColumnIndex];
-                if (dgvRollbacks.Columns[e.ColumnIndex].Name.Equals("colTotalCountries", StringComparison.OrdinalIgnoreCase))
+                string columnName = dgvRollbacks.Columns[e.ColumnIndex].Name;
+                
+                if ((columnName.Equals("colTotalCountries", StringComparison.OrdinalIgnoreCase)) ||
+                    (columnName.Equals("colTotalPopulation", StringComparison.OrdinalIgnoreCase)))
                 {
-                    MessageBox.Show("TotalCountries");
+                    string name = dgvRollbacks.Rows[e.RowIndex].Cells["colName"].Value.ToString();
+                    //get rollback
+                    GBDRollbackItem item = rollbacks.Find(x => x.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+                    GBDRollbackCountriesPopulations frm = new GBDRollbackCountriesPopulations();
 
-                }
-                else if (dgvRollbacks.Columns[e.ColumnIndex].Name.Equals("colTotalPopulation", StringComparison.OrdinalIgnoreCase))
-                {
-                    MessageBox.Show("TotalPopulation");
-                }
+                    //build selected list of countries, pops
+                    string[] countries = item.Countries.ToArray();
+                    for (int i = 0; i < countries.Length; i++)
+                    {
+                        countries[i] = "'" + countries[i] + "'";
+                    }
+                    string expression = "COUNTRYNAME in (" + String.Join(",", countries) +")";
+                    DataRow[] rows = dtCountries.Select(expression);
+                    DataTable dt = rows.CopyToDataTable<DataRow>();
+                    frm.CountryPop = dt.Copy();
+                    frm.ShowDialog();
+                }               
             }
 
         }      

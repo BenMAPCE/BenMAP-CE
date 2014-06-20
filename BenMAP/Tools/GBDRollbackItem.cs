@@ -6,7 +6,7 @@ using System.Drawing;
 
 namespace BenMAP
 {
-    class GBDRollbackItem
+    public class GBDRollbackItem
     {
         public enum RollbackType { Percentage, Incremental, Standard }
         public enum StandardType {One, Two, Three}
