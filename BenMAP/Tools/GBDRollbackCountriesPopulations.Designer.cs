@@ -115,7 +115,7 @@
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "GBDRollbackCountriesPopulations";
-            this.Text = "Total Countries\\Populations";
+            this.Text = "Countries\\Populations";
             this.Shown += new System.EventHandler(this.GBDRollbackCountriesPopulations_Shown);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();

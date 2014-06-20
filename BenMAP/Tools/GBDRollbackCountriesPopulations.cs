@@ -22,17 +22,22 @@ namespace BenMAP
         {
             if (dtCountryPop != null)
             {
+                dtCountryPop.Columns.Add("POPULATION_STRING", Type.GetType("System.String"));
                 dtCountryPop.DefaultView.Sort = "COUNTRYNAME ASC";
                 int iCountries=0;
+                int iPop = 0;
                 foreach (DataRow dr in dtCountryPop.Rows)
-                {                       
+                {
+                    dr["POPULATION_STRING"] = Int32.Parse(dr["POPULATION"].ToString()).ToString("#,###");
                     DataGridViewRow row = new DataGridViewRow();
                     int i = dgvCountryPop.Rows.Add(row);
                     dgvCountryPop.Rows[i].Cells["colCountry"].Value = dr["COUNTRYNAME"].ToString();
-                    dgvCountryPop.Rows[i].Cells["colPopulation"].Value = dr["POPULATION"].ToString();
+                    dgvCountryPop.Rows[i].Cells["colPopulation"].Value = dr["POPULATION_STRING"].ToString();
                     iCountries++;
+                    iPop = iPop + Int32.Parse(dr["POPULATION"].ToString());
                 }
-                lblTotalCountries.Text = "Total Countries: " + iCountries.ToString();            
+                lblTotalCountries.Text = "Total Countries: " + iCountries.ToString();
+                lblTotalPopulation.Text = "Total Popluation: " + iPop.ToString("#,###");
             }        
         }
 
