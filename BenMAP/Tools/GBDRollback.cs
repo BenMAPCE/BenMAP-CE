@@ -500,26 +500,71 @@ namespace BenMAP
 
         private void btnExecuteRollbacks_Click(object sender, EventArgs e)
         {
-
+            //save report
+            Microsoft.Office.Interop.Excel.Application xlApp = new Microsoft.Office.Interop.Excel.ApplicationClass();
+            Microsoft.Office.Interop.Excel.Workbook xlBook;            
             foreach (GBDRollbackItem rollback in rollbacks)
             {
-
-                //save report
-                Microsoft.Office.Interop.Excel.Application xlApp = new Microsoft.Office.Interop.Excel.ApplicationClass();
-                Microsoft.Office.Interop.Excel.Workbook xlBook = xlApp.Workbooks.Add();
+                //save report                
+                xlBook = xlApp.Workbooks.Add();
                 //get timestamp
                 string timeStamp = DateTime.Now.ToString("yyyyMMddHHmm");
                 //get application path
                 string appPath = AppDomain.CurrentDomain.BaseDirectory;
                 string filePath = appPath + "GBDRollback_" + rollback.Name + "_" + timeStamp + ".xlsx";
+
+
+                Microsoft.Office.Interop.Excel.Worksheet xlSheet = (Microsoft.Office.Interop.Excel.Worksheet)xlBook.Worksheets[1];
+                xlSheet.Name = "Summary";
+                xlSheet.Range["A2"].Value = "Scenario Name";
+                xlSheet.Range["B2"].Value = rollback.Name;
+                xlSheet.Range["A3"].Value = "Scenario Description";
+                xlSheet.Range["B3"].Value = rollback.Description;
+                xlSheet.Range["A4"].Value = "GBD Year";
+                xlSheet.Range["B4"].Value = rollback.Year.ToString();
+                xlSheet.Range["A5"].Value = "Pollutant";
+                char micrograms = '\u00B5';
+                char super3 = '\u00B3';
+                xlSheet.Range["B5"].Value = "PM 2.5" + micrograms.ToString() + "g/m" + super3.ToString();
+                xlSheet.Range["A6"].Value = "Countries";
+                int rowOffset = 0;
+                int nextRow;
+                foreach (string country in rollback.Countries)
+                {                    
+                    nextRow = 6 + rowOffset;
+                    xlSheet.Range["B" + nextRow.ToString()].Value = country;         
+                    rowOffset++;    
+                }
+                nextRow = rowOffset;
+
+                xlSheet.Range["A" + nextRow.ToString()].Value = "Rollback Type";               
+                string summary = String.Empty;
+                switch (rollback.Type)
+                {
+                    case GBDRollbackItem.RollbackType.Percentage: //percentage
+                        summary = rollback.Percentage.ToString() + "% Rollback";
+                        break;
+                    case GBDRollbackItem.RollbackType.Incremental: //incremental
+                        micrograms = '\u00B5';
+                        super3 = '\u00B3';
+                        summary = rollback.Increment.ToString() + micrograms.ToString() + "g/m" + super3.ToString() + " Rollback";
+                        break;
+                    case GBDRollbackItem.RollbackType.Standard:
+                        summary = "Rollback to " + rollback.Standard.ToString() + " Standard";
+                        break;
+                }
+                xlSheet.Range["B" + nextRow.ToString()].Value = summary;
+
+
+
+
                 xlBook.SaveAs(filePath,
                               FileFormat: XlFileFormat.xlOpenXMLWorkbook, 
                               AccessMode:XlSaveAsAccessMode.xlShared);
-                xlBook.Close();
-                xlApp.Quit();
-
+                xlBook.Close();                
             }
 
+            xlApp.Quit();
         }      
 
 

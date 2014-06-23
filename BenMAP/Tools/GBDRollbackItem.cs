@@ -20,6 +20,7 @@ namespace BenMAP
         private StandardType standard;
         private double background;
         private Color color;
+        private int year;
 
         public string Name
         {
@@ -73,6 +74,12 @@ namespace BenMAP
         {
             get { return color; }
             set { color = value; }
+        }
+
+        public int Year
+        {
+            get { return year; }
+            set { year = value; }
         }
 
 
