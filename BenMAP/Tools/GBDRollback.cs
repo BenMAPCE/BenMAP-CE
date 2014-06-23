@@ -7,6 +7,8 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Microsoft.Office.Interop.Excel;
+
 
 
 namespace BenMAP
@@ -16,7 +18,7 @@ namespace BenMAP
 
         List<String> checkedCountries = new List<String>();
         List<GBDRollbackItem> rollbacks = new List<GBDRollbackItem>();
-        DataTable dtCountries;
+        System.Data.DataTable dtCountries;
 
 
         public GBDRollback()
@@ -24,15 +26,15 @@ namespace BenMAP
             InitializeComponent();
 
             //set up locations,form size, visibility
-            gbCountrySelection.Location = new Point(gbName.Location.X, gbName.Location.Y);
-            gbParameterSelection.Location = new Point(gbName.Location.X, gbName.Location.Y);
+            gbCountrySelection.Location = new System.Drawing.Point(gbName.Location.X, gbName.Location.Y);
+            gbParameterSelection.Location = new System.Drawing.Point(gbName.Location.X, gbName.Location.Y);
             SetActivePanel(0);
             Size = new Size(906, 777); //form size
 
             //parameter options in gbParameterSelection
-            gbOptionsPercentage.Location = new Point(gbOptionsIncremental.Location.X, gbOptionsIncremental.Location.Y);
+            gbOptionsPercentage.Location = new System.Drawing.Point(gbOptionsIncremental.Location.X, gbOptionsIncremental.Location.Y);
             gbParameterSelection.Controls.Add(gbOptionsPercentage);
-            gbOptionsStandard.Location = new Point(gbOptionsIncremental.Location.X, gbOptionsIncremental.Location.Y);
+            gbOptionsStandard.Location = new System.Drawing.Point(gbOptionsIncremental.Location.X, gbOptionsIncremental.Location.Y);
             gbParameterSelection.Controls.Add(gbOptionsStandard);            
             cboRollbackType.SelectedIndex = 0;
             SetActiveOptionsPanel(0);
@@ -335,8 +337,8 @@ namespace BenMAP
                     break;
                 case GBDRollbackItem.RollbackType.Incremental: //incremental
                     char micrograms = '\u00B5';
-                    char super = '\u00B3';
-                    summary = rollback.Increment.ToString() + micrograms.ToString() + "g/m" + super.ToString() + " Rollback";
+                    char super3 = '\u00B3';
+                    summary = rollback.Increment.ToString() + micrograms.ToString() + "g/m" + super3.ToString() + " Rollback";
                     break;
                 case GBDRollbackItem.RollbackType.Standard:
                     summary = "Rollback to " + rollback.Standard.ToString() + " Standard";
@@ -488,10 +490,34 @@ namespace BenMAP
                     }
                     string expression = "COUNTRYNAME in (" + String.Join(",", countries) +")";
                     DataRow[] rows = dtCountries.Select(expression);
-                    DataTable dt = rows.CopyToDataTable<DataRow>();
+                    System.Data.DataTable dt = rows.CopyToDataTable<DataRow>();
                     frm.CountryPop = dt.Copy();
                     frm.ShowDialog();
                 }               
+            }
+
+        }
+
+        private void btnExecuteRollbacks_Click(object sender, EventArgs e)
+        {
+
+            foreach (GBDRollbackItem rollback in rollbacks)
+            {
+
+                //save report
+                Microsoft.Office.Interop.Excel.Application xlApp = new Microsoft.Office.Interop.Excel.ApplicationClass();
+                Microsoft.Office.Interop.Excel.Workbook xlBook = xlApp.Workbooks.Add();
+                //get timestamp
+                string timeStamp = DateTime.Now.ToString("yyyyMMddHHmm");
+                //get application path
+                string appPath = AppDomain.CurrentDomain.BaseDirectory;
+                string filePath = appPath + "GBDRollback_" + rollback.Name + "_" + timeStamp + ".xlsx";
+                xlBook.SaveAs(filePath,
+                              FileFormat: XlFileFormat.xlOpenXMLWorkbook, 
+                              AccessMode:XlSaveAsAccessMode.xlShared);
+                xlBook.Close();
+                xlApp.Quit();
+
             }
 
         }      
