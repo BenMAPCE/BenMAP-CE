@@ -535,7 +535,7 @@ namespace BenMAP
                     xlSheet.Range["B" + nextRow.ToString()].Value = country;         
                     rowOffset++;    
                 }
-                nextRow = rowOffset;
+                nextRow = 6 + rowOffset;
 
                 xlSheet.Range["A" + nextRow.ToString()].Value = "Rollback Type";               
                 string summary = String.Empty;
@@ -545,8 +545,6 @@ namespace BenMAP
                         summary = rollback.Percentage.ToString() + "% Rollback";
                         break;
                     case GBDRollbackItem.RollbackType.Incremental: //incremental
-                        micrograms = '\u00B5';
-                        super3 = '\u00B3';
                         summary = rollback.Increment.ToString() + micrograms.ToString() + "g/m" + super3.ToString() + " Rollback";
                         break;
                     case GBDRollbackItem.RollbackType.Standard:
@@ -555,9 +553,14 @@ namespace BenMAP
                 }
                 xlSheet.Range["B" + nextRow.ToString()].Value = summary;
 
+                //format
+                Microsoft.Office.Interop.Excel.Range xlRange = (Microsoft.Office.Interop.Excel.Range)(xlSheet.Columns[1]);
+                xlRange.Font.Bold = true;
+                xlRange.AutoFit();
+                xlRange = (Microsoft.Office.Interop.Excel.Range)(xlSheet.Columns[2]);
+                xlRange.AutoFit();
 
-
-
+                //save
                 xlBook.SaveAs(filePath,
                               FileFormat: XlFileFormat.xlOpenXMLWorkbook, 
                               AccessMode:XlSaveAsAccessMode.xlShared);
