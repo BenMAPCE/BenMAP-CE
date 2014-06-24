@@ -502,7 +502,8 @@ namespace BenMAP
         {
             //save report
             Microsoft.Office.Interop.Excel.Application xlApp = new Microsoft.Office.Interop.Excel.ApplicationClass();
-            Microsoft.Office.Interop.Excel.Workbook xlBook;            
+            Microsoft.Office.Interop.Excel.Workbook xlBook;
+
             foreach (GBDRollbackItem rollback in rollbacks)
             {
                 //save report                
@@ -526,18 +527,8 @@ namespace BenMAP
                 char micrograms = '\u00B5';
                 char super3 = '\u00B3';
                 xlSheet.Range["B5"].Value = "PM 2.5" + micrograms.ToString() + "g/m" + super3.ToString();
-                xlSheet.Range["A6"].Value = "Countries";
-                int rowOffset = 0;
-                int nextRow;
-                foreach (string country in rollback.Countries)
-                {                    
-                    nextRow = 6 + rowOffset;
-                    xlSheet.Range["B" + nextRow.ToString()].Value = country;         
-                    rowOffset++;    
-                }
-                nextRow = 6 + rowOffset;
 
-                xlSheet.Range["A" + nextRow.ToString()].Value = "Rollback Type";               
+                xlSheet.Range["A6"].Value = "Rollback Type";
                 string summary = String.Empty;
                 switch (rollback.Type)
                 {
@@ -551,7 +542,17 @@ namespace BenMAP
                         summary = "Rollback to " + rollback.Standard.ToString() + " Standard";
                         break;
                 }
-                xlSheet.Range["B" + nextRow.ToString()].Value = summary;
+                xlSheet.Range["B6"].Value = summary;
+
+                xlSheet.Range["A7"].Value = "Countries";
+                int rowOffset = 0;
+                int nextRow;
+                foreach (string country in rollback.Countries)
+                {                    
+                    nextRow = 7 + rowOffset;
+                    xlSheet.Range["B" + nextRow.ToString()].Value = country;         
+                    rowOffset++;    
+                }                
 
                 //format
                 Microsoft.Office.Interop.Excel.Range xlRange = (Microsoft.Office.Interop.Excel.Range)(xlSheet.Columns[1]);
@@ -561,9 +562,7 @@ namespace BenMAP
                 xlRange.AutoFit();
 
                 //save
-                xlBook.SaveAs(filePath,
-                              FileFormat: XlFileFormat.xlOpenXMLWorkbook, 
-                              AccessMode:XlSaveAsAccessMode.xlShared);
+                xlBook.SaveAs(filePath, FileFormat: XlFileFormat.xlOpenXMLWorkbook);
                 xlBook.Close();                
             }
 
