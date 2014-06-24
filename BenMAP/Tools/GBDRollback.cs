@@ -509,26 +509,30 @@ namespace BenMAP
                 //save report                
                 xlBook = xlApp.Workbooks.Add();
                 //get timestamp
-                string timeStamp = DateTime.Now.ToString("yyyyMMddHHmm");
+                DateTime dtNow = DateTime.Now;
+                string timeStamp = dtNow.ToString("yyyyMMddHHmm");
                 //get application path
                 string appPath = AppDomain.CurrentDomain.BaseDirectory;
                 string filePath = appPath + "GBDRollback_" + rollback.Name + "_" + timeStamp + ".xlsx";
 
-
+                #region summary sheet
+                //summary sheet
                 Microsoft.Office.Interop.Excel.Worksheet xlSheet = (Microsoft.Office.Interop.Excel.Worksheet)xlBook.Worksheets[1];
                 xlSheet.Name = "Summary";
-                xlSheet.Range["A2"].Value = "Scenario Name";
-                xlSheet.Range["B2"].Value = rollback.Name;
-                xlSheet.Range["A3"].Value = "Scenario Description";
-                xlSheet.Range["B3"].Value = rollback.Description;
-                xlSheet.Range["A4"].Value = "GBD Year";
-                xlSheet.Range["B4"].Value = rollback.Year.ToString();
-                xlSheet.Range["A5"].Value = "Pollutant";
+                xlSheet.Range["A2"].Value = "Date";
+                xlSheet.Range["B2"].Value = dtNow.ToString("yyyy/MM/dd");
+                xlSheet.Range["A3"].Value = "Scenario Name";
+                xlSheet.Range["B3"].Value = rollback.Name;
+                xlSheet.Range["A4"].Value = "Scenario Description";
+                xlSheet.Range["B4"].Value = rollback.Description;
+                xlSheet.Range["A5"].Value = "GBD Year";
+                xlSheet.Range["B5"].Value = rollback.Year.ToString();
+                xlSheet.Range["A6"].Value = "Pollutant";
                 char micrograms = '\u00B5';
                 char super3 = '\u00B3';
-                xlSheet.Range["B5"].Value = "PM 2.5" + micrograms.ToString() + "g/m" + super3.ToString();
+                xlSheet.Range["B6"].Value = "PM 2.5" + micrograms.ToString() + "g/m" + super3.ToString();
 
-                xlSheet.Range["A6"].Value = "Rollback Type";
+                xlSheet.Range["A7"].Value = "Rollback Type";
                 string summary = String.Empty;
                 switch (rollback.Type)
                 {
@@ -542,14 +546,14 @@ namespace BenMAP
                         summary = "Rollback to " + rollback.Standard.ToString() + " Standard";
                         break;
                 }
-                xlSheet.Range["B6"].Value = summary;
+                xlSheet.Range["B7"].Value = summary;
 
-                xlSheet.Range["A7"].Value = "Countries";
+                xlSheet.Range["A8"].Value = "Countries";
                 int rowOffset = 0;
                 int nextRow;
                 foreach (string country in rollback.Countries)
                 {                    
-                    nextRow = 7 + rowOffset;
+                    nextRow = 8 + rowOffset;
                     xlSheet.Range["B" + nextRow.ToString()].Value = country;         
                     rowOffset++;    
                 }                
@@ -559,7 +563,16 @@ namespace BenMAP
                 xlRange.Font.Bold = true;
                 xlRange.AutoFit();
                 xlRange = (Microsoft.Office.Interop.Excel.Range)(xlSheet.Columns[2]);
-                xlRange.AutoFit();
+                xlRange.ColumnWidth = 40;
+                xlRange.WrapText = true;
+                #endregion 
+
+                //results sheet
+                #region results sheet
+                xlSheet = (Microsoft.Office.Interop.Excel.Worksheet)xlBook.Worksheets[2];
+                xlSheet.Name = "Results";
+
+                #endregion
 
                 //save
                 xlBook.SaveAs(filePath, FileFormat: XlFileFormat.xlOpenXMLWorkbook);
@@ -568,6 +581,8 @@ namespace BenMAP
 
             xlApp.Quit();
         }      
+
+       
 
 
 
