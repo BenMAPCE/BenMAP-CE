@@ -19,6 +19,7 @@ namespace BenMAP
         List<String> checkedCountries = new List<String>();
         List<GBDRollbackItem> rollbacks = new List<GBDRollbackItem>();
         System.Data.DataTable dtCountries;
+        Microsoft.Office.Interop.Excel.Application xlApp;
 
 
         public GBDRollback()
@@ -500,87 +501,137 @@ namespace BenMAP
 
         private void btnExecuteRollbacks_Click(object sender, EventArgs e)
         {
-            //save report
-            Microsoft.Office.Interop.Excel.Application xlApp = new Microsoft.Office.Interop.Excel.ApplicationClass();
-            Microsoft.Office.Interop.Excel.Workbook xlBook;
 
+
+            //save rollback reports
+            xlApp = new Microsoft.Office.Interop.Excel.ApplicationClass();
+            xlApp.DisplayAlerts = false;
             foreach (GBDRollbackItem rollback in rollbacks)
             {
-                //save report                
-                xlBook = xlApp.Workbooks.Add();
-                //get timestamp
-                DateTime dtNow = DateTime.Now;
-                string timeStamp = dtNow.ToString("yyyyMMddHHmm");
-                //get application path
-                string appPath = AppDomain.CurrentDomain.BaseDirectory;
-                string filePath = appPath + "GBDRollback_" + rollback.Name + "_" + timeStamp + ".xlsx";
+                SaveRollbackReport(rollback);   
+            }
+            xlApp.Quit();
 
-                #region summary sheet
-                //summary sheet
-                Microsoft.Office.Interop.Excel.Worksheet xlSheet = (Microsoft.Office.Interop.Excel.Worksheet)xlBook.Worksheets[1];
-                xlSheet.Name = "Summary";
-                xlSheet.Range["A2"].Value = "Date";
-                xlSheet.Range["B2"].Value = dtNow.ToString("yyyy/MM/dd");
-                xlSheet.Range["A3"].Value = "Scenario Name";
-                xlSheet.Range["B3"].Value = rollback.Name;
-                xlSheet.Range["A4"].Value = "Scenario Description";
-                xlSheet.Range["B4"].Value = rollback.Description;
-                xlSheet.Range["A5"].Value = "GBD Year";
-                xlSheet.Range["B5"].Value = rollback.Year.ToString();
-                xlSheet.Range["A6"].Value = "Pollutant";
-                char micrograms = '\u00B5';
-                char super3 = '\u00B3';
-                xlSheet.Range["B6"].Value = "PM 2.5" + micrograms.ToString() + "g/m" + super3.ToString();
+            MessageBox.Show("Execute Scenarios successful!");
+        }
 
-                xlSheet.Range["A7"].Value = "Rollback Type";
-                string summary = String.Empty;
-                switch (rollback.Type)
-                {
-                    case GBDRollbackItem.RollbackType.Percentage: //percentage
-                        summary = rollback.Percentage.ToString() + "% Rollback";
-                        break;
-                    case GBDRollbackItem.RollbackType.Incremental: //incremental
-                        summary = rollback.Increment.ToString() + micrograms.ToString() + "g/m" + super3.ToString() + " Rollback";
-                        break;
-                    case GBDRollbackItem.RollbackType.Standard:
-                        summary = "Rollback to " + rollback.Standard.ToString() + " Standard";
-                        break;
-                }
-                xlSheet.Range["B7"].Value = summary;
+        private void SaveRollbackReport(GBDRollbackItem rollback)
+        {          
 
-                xlSheet.Range["A8"].Value = "Countries";
-                int rowOffset = 0;
-                int nextRow;
-                foreach (string country in rollback.Countries)
-                {                    
-                    nextRow = 8 + rowOffset;
-                    xlSheet.Range["B" + nextRow.ToString()].Value = country;         
-                    rowOffset++;    
-                }                
+            Microsoft.Office.Interop.Excel.Workbook xlBook;
 
-                //format
-                Microsoft.Office.Interop.Excel.Range xlRange = (Microsoft.Office.Interop.Excel.Range)(xlSheet.Columns[1]);
-                xlRange.Font.Bold = true;
-                xlRange.AutoFit();
-                xlRange = (Microsoft.Office.Interop.Excel.Range)(xlSheet.Columns[2]);
-                xlRange.ColumnWidth = 40;
-                xlRange.WrapText = true;
-                #endregion 
+            //save report                
+            xlBook = xlApp.Workbooks.Add();
+            //get timestamp
+            DateTime dtNow = DateTime.Now;
+            string timeStamp = dtNow.ToString("yyyyMMddHHmm");
+            //get application path
+            string appPath = AppDomain.CurrentDomain.BaseDirectory;
+            string filePath = appPath + "GBDRollback_" + rollback.Name + "_" + timeStamp + ".xlsx";
 
-                //results sheet
-                #region results sheet
-                xlSheet = (Microsoft.Office.Interop.Excel.Worksheet)xlBook.Worksheets[2];
-                xlSheet.Name = "Results";
+            #region summary sheet
+            //summary sheet
+            Microsoft.Office.Interop.Excel.Worksheet xlSheet = (Microsoft.Office.Interop.Excel.Worksheet)xlBook.Worksheets[1];
+            xlSheet.Name = "Summary";
+            xlSheet.Range["A2"].Value = "Date";
+            xlSheet.Range["B2"].Value = dtNow.ToString("yyyy/MM/dd");
+            xlSheet.Range["A3"].Value = "Scenario Name";
+            xlSheet.Range["B3"].Value = rollback.Name;
+            xlSheet.Range["A4"].Value = "Scenario Description";
+            xlSheet.Range["B4"].Value = rollback.Description;
+            xlSheet.Range["A5"].Value = "GBD Year";
+            xlSheet.Range["B5"].Value = rollback.Year.ToString();
+            xlSheet.Range["A6"].Value = "Pollutant";
+            char micrograms = '\u00B5';
+            char super3 = '\u00B3';
+            xlSheet.Range["B6"].Value = "PM 2.5" + micrograms.ToString() + "g/m" + super3.ToString();
 
-                #endregion
+            xlSheet.Range["A7"].Value = "Rollback Type";
+            string summary = String.Empty;
+            switch (rollback.Type)
+            {
+                case GBDRollbackItem.RollbackType.Percentage: //percentage
+                    summary = rollback.Percentage.ToString() + "% Rollback";
+                    break;
+                case GBDRollbackItem.RollbackType.Incremental: //incremental
+                    summary = rollback.Increment.ToString() + micrograms.ToString() + "g/m" + super3.ToString() + " Rollback";
+                    break;
+                case GBDRollbackItem.RollbackType.Standard:
+                    summary = "Rollback to " + rollback.Standard.ToString() + " Standard";
+                    break;
+            }
+            xlSheet.Range["B7"].Value = summary;
 
-                //save
-                xlBook.SaveAs(filePath, FileFormat: XlFileFormat.xlOpenXMLWorkbook);
-                xlBook.Close();                
+            xlSheet.Range["A8"].Value = "Countries";
+            int rowOffset = 0;
+            int nextRow;
+            foreach (string country in rollback.Countries)
+            {
+                nextRow = 8 + rowOffset;
+                xlSheet.Range["B" + nextRow.ToString()].Value = country;
+                rowOffset++;
             }
 
-            xlApp.Quit();
-        }      
+            //format
+            Microsoft.Office.Interop.Excel.Range xlRange = (Microsoft.Office.Interop.Excel.Range)(xlSheet.Columns[1]);
+            xlRange.Font.Bold = true;
+            xlRange.AutoFit();
+            xlRange = (Microsoft.Office.Interop.Excel.Range)(xlSheet.Columns[2]);
+            xlRange.ColumnWidth = 40;
+            xlRange.WrapText = true;
+            #endregion
+
+            //results sheet
+            #region results sheet
+            xlSheet = (Microsoft.Office.Interop.Excel.Worksheet)xlBook.Worksheets[2];
+            xlSheet.Name = "Results";
+            xlSheet.Range["A3"].Value = "Country";
+            xlSheet.Range["B3"].Value = "Population Affected";
+            xlSheet.Range["C3"].Value = "Avoided Deaths (Total)";
+            xlSheet.Range["D3"].Value = "Avoided Deaths (% Population)";
+            xlSheet.Range["E3"].Value = "Min";
+            xlSheet.Range["F3"].Value = "Median";
+            xlSheet.Range["G3"].Value = "Max";
+            xlSheet.Range["E2"].Value = "Baseline";
+            xlSheet.Range["E2:G2"].MergeCells = true;
+            xlSheet.Range["H3"].Value = "Min";
+            xlSheet.Range["I3"].Value = "Median";
+            xlSheet.Range["J3"].Value = "Max";
+            xlSheet.Range["H2"].Value = "Control";
+            xlSheet.Range["H2:J2"].MergeCells = true;
+            xlSheet.Range["K3"].Value = "Air Quality Change (Population Weighted)";
+
+            //format
+            xlSheet.Range["E2:J2"].Font.Bold = true;
+            xlSheet.Range["E2:J2"].HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignCenter;
+            xlSheet.Range["A3:K3"].Font.Bold = true;
+            xlSheet.Range["A3:K3"].HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignCenter;
+
+            xlSheet.Range["B3:D3"].ColumnWidth = 20;
+            xlSheet.Range["E3:J3"].ColumnWidth = 10;
+            xlSheet.Range["K3"].ColumnWidth = 20;
+            xlSheet.Range["B3:K3"].WrapText = true;
+
+
+
+            //country column
+            xlRange = (Microsoft.Office.Interop.Excel.Range)(xlSheet.Columns[1]);
+            xlRange.ColumnWidth = 40;
+            xlRange.WrapText = true;
+
+            
+
+
+
+            #endregion
+
+            //save
+            xlBook.SaveAs(filePath, FileFormat: XlFileFormat.xlOpenXMLWorkbook);
+            xlBook.Close();       
+        
+        
+        
+        }
 
        
 
