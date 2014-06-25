@@ -810,5 +810,12 @@ namespace BenMAP
             frm.ShowDialog();
         }
 
+        private void gbdRollbackToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            GBDRollback frm = new GBDRollback();
+            frm.ShowDialog();
+
+        }
+
     }
 }

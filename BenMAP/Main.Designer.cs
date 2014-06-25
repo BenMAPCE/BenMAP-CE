@@ -48,6 +48,7 @@ namespace BenMAP
             this.databaseExportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.databaseImportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportAirQualityGridToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.gbdRollbackToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.gISMappingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.neighborFileCreatorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -282,6 +283,7 @@ namespace BenMAP
             this.databaseExportToolStripMenuItem,
             this.databaseImportToolStripMenuItem,
             this.exportAirQualityGridToolStripMenuItem,
+            this.gbdRollbackToolStripMenuItem,
             this.gISMappingToolStripMenuItem,
             this.neighborFileCreatorToolStripMenuItem,
             this.optionsToolStripMenuItem});
@@ -326,6 +328,13 @@ namespace BenMAP
             this.exportAirQualityGridToolStripMenuItem.Size = new System.Drawing.Size(268, 22);
             this.exportAirQualityGridToolStripMenuItem.Text = "Export Air Quality Surface";
             this.exportAirQualityGridToolStripMenuItem.Click += new System.EventHandler(this.exportAirQualityGridToolStripMenuItem_Click);
+            // 
+            // gbdRollbackToolStripMenuItem
+            // 
+            this.gbdRollbackToolStripMenuItem.Name = "gbdRollbackToolStripMenuItem";
+            this.gbdRollbackToolStripMenuItem.Size = new System.Drawing.Size(268, 22);
+            this.gbdRollbackToolStripMenuItem.Text = "GBD Rollback";
+            this.gbdRollbackToolStripMenuItem.Click += new System.EventHandler(this.gbdRollbackToolStripMenuItem_Click);
             // 
             // gISMappingToolStripMenuItem
             // 
@@ -510,6 +519,7 @@ namespace BenMAP
         private System.Windows.Forms.ToolStripButton mnuModifySetup;
         private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem errorReportingToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem gbdRollbackToolStripMenuItem;
     }
 }
 
