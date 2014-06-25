@@ -221,8 +221,11 @@ namespace BenMAP
                 {
                     ConnectionStringSettings settings = ConfigurationManager.ConnectionStrings["ConnectionString"];
                     string str = settings.ConnectionString;
-                    if (!str.Contains(":"))
-                        str = str.Substring(0, str.IndexOf("initial catalog=")) + "initial catalog=" + Application.StartupPath + @"\" + str.Substring(str.IndexOf("initial catalog=") + 16);
+                    //if (!str.Contains(":"))
+                    //    str = str.Substring(0, str.IndexOf("initial catalog=")) + "initial catalog=" + Application.StartupPath + @"\" + str.Substring(str.IndexOf("initial catalog=") + 16);
+                    //need to modify string to use general data location
+                    str=str.Replace("##USERDATA##", Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData));
+                    
                     _connection = new FirebirdSql.Data.FirebirdClient.FbConnection(str);
                 }
                 return _connection;
@@ -237,8 +240,10 @@ namespace BenMAP
         {
             ConnectionStringSettings settings = ConfigurationManager.ConnectionStrings["ConnectionString"];
             string str = settings.ConnectionString;
-            if (!str.Contains(":"))
-                str = str.Substring(0, str.IndexOf("initial catalog=")) + "initial catalog=" + Application.StartupPath + @"\" + str.Substring(str.IndexOf("initial catalog=") + 16);
+            //if (!str.Contains(":"))
+            //    str = str.Substring(0, str.IndexOf("initial catalog=")) + "initial catalog=" + Application.StartupPath + @"\" + str.Substring(str.IndexOf("initial catalog=") + 16);
+            str = str.Replace("##USERDATA##", Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData));
+                    
             FbConnection connection = new FirebirdSql.Data.FirebirdClient.FbConnection(str);
 
             return connection;

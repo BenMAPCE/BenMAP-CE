@@ -11075,8 +11075,10 @@ namespace BenMAP
 
                 CommonClass.RBenMAPGrid = Grid.GridCommon.getBenMAPGridFromID(Convert.ToInt32(drGrid["GridDefinitionID"]));
             }
-            catch
+            catch(Exception E)
             {
+                Console.WriteLine("Error setting up grids: " + e.ToString());
+                
             }
         }
         private void btAPVSelectAttribute_Click(object sender, EventArgs e)

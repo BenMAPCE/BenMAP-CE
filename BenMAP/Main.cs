@@ -83,17 +83,18 @@ namespace BenMAP
                 }
                 if (isOK == true) return;
                 ConnectionStringSettings settings = ConfigurationManager.ConnectionStrings["ConnectionString"];
-                string str = settings.ConnectionString;
-                if (!str.Contains(":"))
-                    str = Application.StartupPath + @"\" + str.Substring(str.IndexOf("initial catalog=") + 16);
-                else
-                    str = str.Substring(str.IndexOf("initial catalog=") + 16);
-                str = str.Substring(0, str.IndexOf(";"));
-                if (!File.Exists(str))
-                {
-                    MessageBox.Show(string.Format("The BenMAP database file {0} does not exist.", str));
-                    Environment.Exit(0);
-                }
+                //string str = settings.ConnectionString;
+                //if (!str.Contains(":"))
+                //    str = Application.StartupPath + @"\" + str.Substring(str.IndexOf("initial catalog=") + 16);
+                //else
+                //    str = str.Substring(str.IndexOf("initial catalog=") + 16);
+                //str = str.Substring(0, str.IndexOf(";"));
+                //if (!File.Exists(str))
+                //{
+                //    MessageBox.Show(string.Format("The BenMAP database file {0} does not exist.", str));
+                //    Environment.Exit(0);
+                //}
+                /*
                 try
                 {
 
@@ -134,7 +135,7 @@ namespace BenMAP
                     catch
                     {
                     }
-                }
+                }*/
             }
             catch
             {
@@ -142,6 +143,8 @@ namespace BenMAP
                 Environment.Exit(0);
             }
         }
+
+
         public Main()
         {
             try
