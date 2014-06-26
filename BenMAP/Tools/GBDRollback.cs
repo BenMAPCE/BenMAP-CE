@@ -8,6 +8,9 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using Microsoft.Office.Interop.Excel;
+using DotSpatial.Controls;
+using DotSpatial.Data;
+using System.IO;
 
 
 
@@ -42,6 +45,7 @@ namespace BenMAP
 
             LoadCountries();
             LoadTreeView();
+            LoadMap();
 
         }
 
@@ -51,9 +55,22 @@ namespace BenMAP
             Close();           
         }
 
+        private void LoadMap()
+        {
+            //new map layer
+            string mapFile = AppDomain.CurrentDomain.BaseDirectory + "gadm2_simplify.shp";
+
+            if (File.Exists(mapFile))
+            {
+                IFeatureSet fs = (FeatureSet)FeatureSet.Open(mapFile);  
+                MapPolygonLayer l = new MapPolygonLayer(fs);
+                mapGBD.Layers.Add(fs);
+            }
+        }
+
         private void LoadCountries()
         {
-            DataSet ds = GBDRollbackDataSource.GetRegionCountryList();
+            System.Data.DataSet ds = GBDRollbackDataSource.GetRegionCountryList();
             dtCountries = ds.Tables[0].Copy();//new DataTable();
         }
 
@@ -606,14 +623,10 @@ namespace BenMAP
             xlSheet.Range["E2:J2"].HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignCenter;
             xlSheet.Range["A3:K3"].Font.Bold = true;
             xlSheet.Range["A3:K3"].HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignCenter;
-
             xlSheet.Range["B3:D3"].ColumnWidth = 20;
             xlSheet.Range["E3:J3"].ColumnWidth = 10;
             xlSheet.Range["K3"].ColumnWidth = 20;
             xlSheet.Range["B3:K3"].WrapText = true;
-
-
-
             //country column
             xlRange = (Microsoft.Office.Interop.Excel.Range)(xlSheet.Columns[1]);
             xlRange.ColumnWidth = 40;
