@@ -301,7 +301,6 @@ namespace PopSim
                 
         // set methods
         public void getDataFromScenario(int Scenario_ID){
-        // NOT DONE YET
             // get initial normalized values - will need to add others later
             // SELECT a.SCENARIO_ID, a.SCENARIO_NAME, a.BEGIN_YEAR, a.END_YEAR, a.DR_APPROACH_ID, a.BETA_TYPE_ID, a.STUDY_ID, a.USER_SPECIFIED_BETA, a.PM_THRESHOLD_CHOICE, a.PS_TRAJECTORY_ID, a.PM_THRESHOLD_VALUE, a.BETA_ADJ_FACTOR, a.LAG_TYPE_ID, a.LAG_FUNCT_TYPE_ID, a.LAG_K_SINGLE, a.LAG_K_MULTIPLE_CARDIO, a.LAG_K_MULTIPLE_LUNG, a.LAG_K_MULTIPLE_OTHER, a.BIRTHS_DYNAMIC, a.AGE_RANGE_START, a.AGE_RANGE_END FROM SCENARIOS a
             FbCommand dataCommand = new FirebirdSql.Data.FirebirdClient.FbCommand();
