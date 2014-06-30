@@ -761,6 +761,12 @@ namespace BenMAP
         private void deleteValidationLogFiles()
         {//doing clean up.
             string validationResultsPath = CommonClass.ResultFilePath + @"\ValidationResults";
+            //exit proc if dir does not exist
+            if (!Directory.Exists(validationResultsPath))
+            {
+                return;
+            }
+
             string[] strFiles = System.IO.Directory.GetFiles(validationResultsPath, "*rtf");
             string iniPath = CommonClass.ResultFilePath + @"\BenMAP.ini";
             int NumDaysToDelete = Convert.ToInt32(CommonClass.IniReadValue("appSettings", "NumDaysToDelete", iniPath));
