@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
-using Microsoft.Office.Interop.Excel;
 using DotSpatial.Controls;
 using DotSpatial.Data;
-using System.IO;
+using Microsoft.Office.Interop.Excel;
 
 
 
@@ -222,8 +219,6 @@ namespace BenMAP
             tvCountries.EndUpdate();
         }
 
-
-
         private void btnSaveRollback_Click(object sender, EventArgs e)
         {
             double d;
@@ -336,12 +331,39 @@ namespace BenMAP
                 dgvRollbacks.Rows[i].Cells["colName"].Value = item.Name;
                 dgvRollbacks.Rows[i].Cells["colColor"].Style.BackColor = item.Color;
                 item.Countries.Sort();
+                dgvRollbacks.Rows[i].Cells["colTotalCountries"].Value = item.Countries.Count().ToString();
+                dgvRollbacks.Rows[i].Cells["colTotalPopulation"].Value = GetRollbackTotalPopulation(item).ToString("#,###");
                 dgvRollbacks.Rows[i].Cells["colRollbackType"].Value = GetRollbackTypeSummary(item);         
             }
 
             ClearFields();
             SetActivePanel(0);
            
+        }
+
+        private int GetRollbackTotalPopulation(GBDRollbackItem rollback)
+        {
+            //build selected list of countries, pops
+            string[] countries = rollback.Countries.ToArray();
+            for (int i = 0; i < countries.Length; i++)
+            {
+                countries[i] = "'" + countries[i] + "'";
+            }
+            string expression = "COUNTRYNAME in (" + String.Join(",", countries) + ")";
+            DataRow[] rows = dtCountries.Select(expression);
+            System.Data.DataTable dt = rows.CopyToDataTable<DataRow>();
+
+            int iPop = 0;
+
+            // Declare an object variable. 
+            object sumObject;
+            sumObject = dt.Compute("Sum(POPULATION)","");
+            iPop = Int32.Parse(sumObject.ToString());
+
+            return iPop;
+
+
+
         }
 
         private string GetRollbackTypeSummary(GBDRollbackItem rollback)
@@ -515,6 +537,8 @@ namespace BenMAP
             }
 
         }
+
+       
 
         private void btnExecuteRollbacks_Click(object sender, EventArgs e)
         {
