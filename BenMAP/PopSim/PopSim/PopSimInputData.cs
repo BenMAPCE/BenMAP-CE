@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -79,15 +80,23 @@ namespace PopSim
             // setup database - this probably should be moved to a class to minimize connection counts
             // open database
             // create link to Firebird database
-            dbConnection = new FbConnection();
-            string conStr = Properties.Settings.Default.PopSimConnectionString;
-            // temporarly hard code password and file location
-            conStr = "Database=C:\\eer\\active\\Projects\\0212979.002.026.001_Benmap\\popsimgui\\BenMAP\\PopSim\\PopSim\\bin\\Debug\\POPSIMDB.FDB;USER=SYSDBA;PASSWORD=masterkey";
-            // conStr = "Database=|DataDirectory|\\POPSIMDB.FDB;USER=SYSDBA;PASSWORD=masterkey";
-            dbConnection.ConnectionString = conStr;
+            dbConnection = getNewConnection();
             dbConnection.Open();
-    }    
+    }
 
+        private static FbConnection getNewConnection()
+        {
+
+            ConnectionStringSettings settings = ConfigurationManager.ConnectionStrings["ConnectionString"];
+            string str = settings.ConnectionString;
+            //if (!str.Contains(":"))
+            //    str = str.Substring(0, str.IndexOf("initial catalog=")) + "initial catalog=" + Application.StartupPath + @"\" + str.Substring(str.IndexOf("initial catalog=") + 16);
+            str = str.Replace("##USERDATA##", Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData));
+
+            FbConnection connection = new FirebirdSql.Data.FirebirdClient.FbConnection(str);
+
+            return connection;
+        }
 
         // get methods
         public int getBegin_Year()
