@@ -5,6 +5,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PopSim", "PopSim\PopSim.csp
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{78B58EC3-2F32-49AE-B388-B044D475F1C5}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "PopSimSetup", "PopSimSetup\PopSimSetup.vdproj", "{BA9F5FDC-BA25-4A0A-A641-840823C85927}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -15,6 +17,8 @@ Global
 		{B414DC95-9F82-4050-94C9-CCF646E637BE}.Debug|x86.Build.0 = Debug|x86
 		{B414DC95-9F82-4050-94C9-CCF646E637BE}.Release|x86.ActiveCfg = Release|x86
 		{B414DC95-9F82-4050-94C9-CCF646E637BE}.Release|x86.Build.0 = Release|x86
+		{BA9F5FDC-BA25-4A0A-A641-840823C85927}.Debug|x86.ActiveCfg = Debug
+		{BA9F5FDC-BA25-4A0A-A641-840823C85927}.Release|x86.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
