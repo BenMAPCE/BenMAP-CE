@@ -7,6 +7,7 @@ using System.Linq;
 using System.Windows.Forms;
 using DotSpatial.Controls;
 using DotSpatial.Data;
+using DotSpatial.Symbology;
 using Microsoft.Office.Interop.Excel;
 
 
@@ -59,9 +60,8 @@ namespace BenMAP
 
             if (File.Exists(mapFile))
             {
-                IFeatureSet fs = (FeatureSet)FeatureSet.Open(mapFile);  
-                MapPolygonLayer l = new MapPolygonLayer(fs);
-                mapGBD.Layers.Add(fs);
+                IFeatureSet fs = (FeatureSet)FeatureSet.Open(mapFile);
+                mapGBD.Layers.Add(fs);                
             }
         }
 
@@ -77,6 +77,7 @@ namespace BenMAP
             {
                 string region = String.Empty;
                 string country = String.Empty;
+                string countryid = String.Empty;
                 tvCountries.BeginUpdate();
                 foreach (DataRow dr in dtCountries.Rows)
                 {
@@ -87,8 +88,9 @@ namespace BenMAP
                         tvCountries.Nodes.Add(region, region);
                     }
 
+                    countryid = dr["COUNTRYID"].ToString();
                     country = dr["COUNTRYNAME"].ToString();
-                    tvCountries.Nodes[region].Nodes.Add(country, country);
+                    tvCountries.Nodes[region].Nodes.Add(countryid, country);
                 }
                 tvCountries.EndUpdate();
             }
@@ -188,16 +190,23 @@ namespace BenMAP
 
             //if this is checked AND a has no children)
             //then, it is country and we add to list
+
+            IMapFeatureLayer[] mfl = mapGBD.GetFeatureLayers();
+            string filter =  "[ISO] = '" + e.Node.Name + "'";
             if ((e.Node.Checked) && (e.Node.Nodes.Count == 0))
             {
                 if (!checkedCountries.Exists(s => s.Equals(e.Node.Text, StringComparison.OrdinalIgnoreCase)))
                 {
                     checkedCountries.Add(e.Node.Text);
+                    //also select on map                   
+                    mfl[0].SelectByAttribute(filter,ModifySelectionMode.Append);
                 }
             }
             else
             {
-                checkedCountries.RemoveAll(x => x.Equals(e.Node.Text,StringComparison.OrdinalIgnoreCase));               
+                checkedCountries.RemoveAll(x => x.Equals(e.Node.Text,StringComparison.OrdinalIgnoreCase));  
+                //unselect on map
+                mfl[0].SelectByAttribute(filter, ModifySelectionMode.Subtract);
             }
         }
 
