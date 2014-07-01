@@ -17,10 +17,11 @@ namespace BenMAP
     public partial class GBDRollback : Form
     {
 
-        List<String> checkedCountries = new List<String>();
-        List<GBDRollbackItem> rollbacks = new List<GBDRollbackItem>();
-        System.Data.DataTable dtCountries;
-        Microsoft.Office.Interop.Excel.Application xlApp;
+        private List<String> checkedCountries = new List<String>();
+        private List<GBDRollbackItem> rollbacks = new List<GBDRollbackItem>();
+        private System.Data.DataTable dtCountries;
+        private Microsoft.Office.Interop.Excel.Application xlApp;
+        private bool selectMapFeaturesOnNodeCheck = true;
 
 
         public GBDRollback()
@@ -198,15 +199,21 @@ namespace BenMAP
                 if (!checkedCountries.Exists(s => s.Equals(e.Node.Text, StringComparison.OrdinalIgnoreCase)))
                 {
                     checkedCountries.Add(e.Node.Text);
-                    //also select on map                   
-                    mfl[0].SelectByAttribute(filter,ModifySelectionMode.Append);
+                    //also select on map                
+                    if (selectMapFeaturesOnNodeCheck)
+                    {
+                        mfl[0].SelectByAttribute(filter, ModifySelectionMode.Append);
+                    }
                 }
             }
             else
             {
                 checkedCountries.RemoveAll(x => x.Equals(e.Node.Text,StringComparison.OrdinalIgnoreCase));  
                 //unselect on map
-                mfl[0].SelectByAttribute(filter, ModifySelectionMode.Subtract);
+                if (selectMapFeaturesOnNodeCheck)
+                {
+                    mfl[0].SelectByAttribute(filter, ModifySelectionMode.Subtract);
+                }
             }
         }
 
@@ -403,10 +410,14 @@ namespace BenMAP
             //clear fields
             txtName.Text = String.Empty;
             txtDescription.Text = String.Empty;
+            selectMapFeaturesOnNodeCheck = false;
             foreach (TreeNode node in tvCountries.Nodes)
             {
                 node.Checked = false;
             }
+            //IMapFeatureLayer[] mfl = mapGBD.GetFeatureLayers();
+            //mfl[0].UnSelectAll();
+            selectMapFeaturesOnNodeCheck = true;
             cboRollbackType.SelectedIndex = (int)GBDRollbackItem.RollbackType.Percentage; 
             txtPercentage.Text = String.Empty;
             txtPercentageBackground.Text = String.Empty;
@@ -417,15 +428,21 @@ namespace BenMAP
         }
 
         private void LoadRollback(GBDRollbackItem item)
-        {            
+        {
             txtName.Text = item.Name;
             txtDescription.Text = item.Description;
             foreach (string country in item.Countries)
             {
-                TreeNode[] nodes = tvCountries.Nodes.Find(country,true);
-                foreach (TreeNode node in nodes)
+                string expression = "COUNTRYNAME = '" + country +"'";
+                DataRow[] rows = dtCountries.Select(expression);
+                if (rows.Length > 0)
                 {
-                    node.Checked = true;
+                    string countryid = rows[0]["COUNTRYID"].ToString();
+                    TreeNode[] nodes = tvCountries.Nodes.Find(countryid,true);
+                    foreach (TreeNode node in nodes)
+                    {
+                        node.Checked = true;
+                    }
                 }
             }
             cboRollbackType.SelectedIndex = (int)item.Type;
