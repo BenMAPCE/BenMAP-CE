@@ -678,6 +678,33 @@ namespace BenMAP
         
         
         }
+       
+
+        private void btnZoomIn_Click(object sender, EventArgs e)
+        {
+            mapGBD.FunctionMode = FunctionMode.ZoomIn;
+        }
+
+        private void btnZoomOut_Click(object sender, EventArgs e)
+        {
+            mapGBD.FunctionMode = FunctionMode.ZoomOut;
+        }
+
+        private void btnPan_Click(object sender, EventArgs e)
+        {
+            mapGBD.FunctionMode = FunctionMode.Pan;
+        }
+
+        private void btnFullExtent_Click(object sender, EventArgs e)
+        {
+            mapGBD.ZoomToMaxExtent();
+            mapGBD.FunctionMode = FunctionMode.None;
+        }
+
+        private void btnIdentify_Click(object sender, EventArgs e)
+        {
+            mapGBD.FunctionMode = FunctionMode.Info;
+        }
 
        
 
