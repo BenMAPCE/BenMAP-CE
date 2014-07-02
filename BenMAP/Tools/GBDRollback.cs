@@ -57,7 +57,7 @@ namespace BenMAP
         private void LoadMap()
         {
             //new map layer
-            string mapFile = AppDomain.CurrentDomain.BaseDirectory + "gadm2_simplify.shp";
+            string mapFile = AppDomain.CurrentDomain.BaseDirectory + @"\Data\Shapefiles\GBDRollback\gadm_worldsimplify.shp";
 
             if (File.Exists(mapFile))
             {
