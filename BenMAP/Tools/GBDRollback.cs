@@ -84,9 +84,9 @@ namespace BenMAP
                 foreach (DataRow dr in dtCountries.Rows)
                 {
                     //new region?
-                    if (!region.Equals(dr["REGION"].ToString(), StringComparison.OrdinalIgnoreCase))
+                    if (!region.Equals(dr["REGIONNAME"].ToString(), StringComparison.OrdinalIgnoreCase))
                     {
-                        region = dr["REGION"].ToString();
+                        region = dr["REGIONNAME"].ToString();
                         tvCountries.Nodes.Add(region, region);
                     }
 

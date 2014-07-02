@@ -37,7 +37,15 @@ namespace BenMAP
         public static DataSet GetRegionCountryList()
         {
             ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
-            string commandText = string.Format("select 'World' as REGION, COUNTRYID, COUNTRYNAME, 10000 as POPULATION from COUNTRIES order by REGION, COUNTRYNAME");
+            string commandText =
+                "select r.REGIONID, r.REGIONNAME, c.COUNTRYID, c.COUNTRYNAME, cp.POPULATION " +
+                "from REGIONS r " +
+                "INNER JOIN REGIONCOUNTRIES rc on r.REGIONID = rc.REGIONID " +
+                "INNER JOIN COUNTRIES c on rc.COUNTRYID = c.COUNTRYID " +
+                "INNER JOIN COUNTRYPOPULATIONS cp on c.COUNTRYID = cp.COUNTRYID " +
+                "WHERE cp.YEARNUM = 2010 " +
+                "ORDER BY r.REGIONNAME, c.COUNTRYNAME ";
+
             DataSet ds = fb.ExecuteDataset(GBDRollbackDataSource.Connection, CommandType.Text, commandText);
             return ds;
         }
