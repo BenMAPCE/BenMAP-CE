@@ -62,7 +62,8 @@ namespace BenMAP
             if (File.Exists(mapFile))
             {
                 IFeatureSet fs = (FeatureSet)FeatureSet.Open(mapFile);
-                mapGBD.Layers.Add(fs);                
+                mapGBD.Layers.Add(fs);     
+          
             }
         }
 
@@ -331,6 +332,8 @@ namespace BenMAP
                     rollback.Standard = (GBDRollbackItem.StandardType)cboStandard.SelectedIndex;
                     break;
             }
+            rollback.Color = GetRandomColor();
+
 
             //remove rollback if it already exists
             rollbacks.RemoveAll(x => x.Name.Equals(rollback.Name, StringComparison.OrdinalIgnoreCase));
@@ -352,10 +355,19 @@ namespace BenMAP
                 dgvRollbacks.Rows[i].Cells["colRollbackType"].Value = GetRollbackTypeSummary(item);         
             }
 
+            //set color of selected country features on map
+
             ClearFields();
             SetActivePanel(0);
            
         }
+
+        private Color GetRandomColor()
+        {
+            Random random = new Random();
+            return Color.FromArgb(random.Next(0, 255), random.Next(0, 255), random.Next(0, 255));
+        }  
+
 
         private int GetRollbackTotalPopulation(GBDRollbackItem rollback)
         {
