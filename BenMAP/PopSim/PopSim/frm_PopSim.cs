@@ -52,8 +52,10 @@ namespace PopSim
         int currentpage = 0;
         const int MAXPAGE = 7;  // maximum tab number
         const int DEFAULTSCENARIOID = 1;    // load default scenario, this may be removed in the future if the user is permitted to save and load scenarios
-        public FirebirdSql.Data.FirebirdClient.FbConnection dbConnection;       
-        
+        public FirebirdSql.Data.FirebirdClient.FbConnection dbConnection;
+        DateTime StartTime;
+        DateTime StopTime;
+                    
         
         public frm_PopSim()
         {
@@ -442,15 +444,18 @@ namespace PopSim
 
         private void btnRunModel_Click(object sender, EventArgs e)
         {
-            DateTime StartTime;
-            DateTime StopTime;
-            StartTime = DateTime.Now;
             updateScenarioDataFromForm(DEFAULTSCENARIOID);
-            PopSimModel psmModel = new PopSimModel();
-            psmModel.runPopSim();
-            StopTime = DateTime.Now;
-            MessageBox.Show("Model run completed in " + (StopTime-StartTime).ToString());
-            btnOutput.Visible = true;
+            // hide buttons to prevent changes to values or attempt to run more than once
+            btnRunModel.Visible = false;
+            btnBack.Visible = false;
+            btnNext.Visible = false;
+            progressBar1.Visible = true;
+            lblRunStatus.Text = "PopSIM Model Started";
+            lblRunProgress.Visible = true;
+            lblRunStatus.Visible = true;
+
+            // start model
+            backgroundWorker1.RunWorkerAsync();
         }
 
         private void btnOutput_Click(object sender, EventArgs e)
@@ -487,6 +492,36 @@ namespace PopSim
         {
 
         }
-      
+
+        private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
+        {
+            StartTime = DateTime.Now;
+            PopSimModel psmModel = new PopSimModel(backgroundWorker1, e);
+            psmModel.runPopSim();
+        }
+
+        private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            StopTime = DateTime.Now;
+            btnOutput.Visible = true;
+            progressBar1.Visible = true;
+            lblRunStatus.Text = "Model Run Completed";
+            MessageBox.Show("Run finished in " + (StopTime - StartTime).ToString(),"Run Completed");
+            progressBar1.Visible = false;
+            lblRunStatus.Visible = false;
+            lblRunProgress.Visible = false;
+            btnRunModel.Visible = false;
+        }
+
+        private void backgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            progressBar1.Value = e.ProgressPercentage;
+            // handle return status messages
+            if (typeof(string[]) == e.UserState.GetType())
+            {
+                string[] StatusMsg = (string[])e.UserState;
+                lblRunStatus.Text = StatusMsg[0];
+            }
+        }
     }
 }

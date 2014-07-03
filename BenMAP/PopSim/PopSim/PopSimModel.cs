@@ -6,6 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Data;
 using FirebirdSql.Data.FirebirdClient;
+// next namespace includes the background worker object
+using System.ComponentModel;
 
 // this is the module that runs the simulation
 namespace PopSim
@@ -41,17 +43,16 @@ namespace PopSim
         private string strbirth_table;
         private string strinfant_migration_table;
         private string strgenderText;
-            
-
-
-
+        private BackgroundWorker psWorker;
+        
 
         PopSimInputData InputData = new PopSimInputData();
         // setup database - this probably should be moved to a class to minimize connection counts
         private FirebirdSql.Data.FirebirdClient.FbConnection dbConnection;
 
-        public PopSimModel()    // class constructor
+        public PopSimModel(BackgroundWorker worker, DoWorkEventArgs e)    // class constructor
         {
+            psWorker = worker;
             // open database
             // create link to Firebird database
             dbConnection = getNewConnection();
@@ -76,14 +77,20 @@ namespace PopSim
 
         public void runPopSim()
         {
+            string[] CurrentStatus = new string[1];
             Debug.Print("run started");
             setupInternalVariables();
             // STEP 1: DELETE RECORDS
             delete_Records();
+            //psE.Result
+            CurrentStatus[0] = "Calculating Annual PM Values";
+            psWorker.ReportProgress(10, CurrentStatus);
             
             // STEP 2: CALCULATE ANNUAL PM VALUES
             run_Annual_PM_Values();
-            
+            CurrentStatus[0] = "Calculating Lag";
+            psWorker.ReportProgress(20, CurrentStatus);
+
             //STEP 3: CALCULATE LAG
             //If user selected the single lag option, then calculate the lag only for the single lag option
             // if (strLag_Type == "Single")
@@ -110,14 +117,21 @@ namespace PopSim
 
             End If
             */
+            CurrentStatus[0] = "Calculating Treshold";
+            psWorker.ReportProgress(30,CurrentStatus);
             
             //STEP 4: CALCULATE THRESHOLD
             //Only run threshold calcs if user specified a threshold value
             if (InputData.getPM_Choice() == 1) { 
                 run_threshold_calcs();
             }
+            CurrentStatus[0] = "Calculating Age-Specific Adjustment Factors";
+            psWorker.ReportProgress(40, CurrentStatus);
+
             //STEP 5: CALCULATE AGE-SPECIFIC ADJUSTMENT FACTORS
             run_age_specific_adjustment_factors();
+            CurrentStatus[0] = "Calculating Illness Factors";
+            psWorker.ReportProgress(50, CurrentStatus);
 
             //STEP 6: RUN ILLNESS CALCULATIONS
             // all the references should be replaced with the study id to clean up
@@ -224,9 +238,14 @@ namespace PopSim
                 Illness_Type_Specific = "All Other Causes-3";
                 run_illness_calcs();
             } // endif
+            CurrentStatus[0] = "Calculating Death Probabilities";
+            psWorker.ReportProgress(40, CurrentStatus);
 
             // STEP 7: CALCULATE THE PROBABILITY OF DEATH
             run_calculate_pdeath();
+            CurrentStatus[0] = "Calculating Regulatory Population, Number of Deaths, and Life Expectancy";
+            psWorker.ReportProgress(60,CurrentStatus);
+
             //STEP 8: CALCULATE REGULATORY POPULATION, NUMBER OF DEATHS, AND LIFE EXPECTANCY
             strscenarioText = "Regulatory";
 
@@ -252,8 +271,15 @@ namespace PopSim
                 // next routine has minor numerical problems and needs review
                 run_calculate_life_expectancy();
             } // Next GenderCount
+            CurrentStatus[0] = "Generating Input Summary";
+            psWorker.ReportProgress(90, CurrentStatus);
             //STEP 9: GENERATE SUMMARY OF INPUTS
             run_summarize_results();
+
+            CurrentStatus[0] = "PopSim Model Run Finished";
+            psWorker.ReportProgress(100, CurrentStatus);
+          
+
         } // end run Pop Sim
         public void setupInternalVariables()
         {
@@ -295,14 +321,6 @@ namespace PopSim
                 strBeta_Type = "User-Entered Beta";
             }
 
-/*    
-
-run_regulatory
-
-wasRun = True
-Command120.Visible = True
-Command121.Visible = True
-*/
         }
         private void delete_Records(){
 
