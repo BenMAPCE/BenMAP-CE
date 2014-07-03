@@ -425,9 +425,23 @@ namespace PopSim
 
         private void btnNext_Click(object sender, EventArgs e)
         { // select next page
-            currentpage++; 
-            if (currentpage > MAXPAGE) {    // don't go off end of tab control
+            currentpage++;
+            if (currentpage == MAXPAGE)
+            {
+                btnNext.Visible = false;
+            }
+            else if (currentpage > MAXPAGE)
+            {    // don't go off end of tab control
                 currentpage = MAXPAGE;
+                btnNext.Visible = false;
+            }
+            else
+            {
+                btnNext.Visible = true;
+                if (currentpage > 0)
+                {
+                    btnBack.Visible = true;
+                }
             };
             tabControl1.SelectTab(currentpage);
         }
@@ -435,9 +449,21 @@ namespace PopSim
         private void btnBack_Click(object sender, EventArgs e)
         {
             currentpage--;
-            if (currentpage < 0)
-            {    // don't go off end of tab control
+            if (currentpage == 0)
+            {
+                btnBack.Visible = false;
+                btnNext.Visible = true;
+            }else if (currentpage < 0)
+                {    // don't go off end of tab control
                 currentpage = 0;
+                btnBack.Visible = false;
+                btnNext.Visible = true;
+            } else {
+                btnBack.Visible = true;
+                if (currentpage < MAXPAGE - 1)
+                {
+                    btnNext.Visible = true;
+                }
             };
             tabControl1.SelectTab(currentpage);
         }
@@ -467,18 +493,35 @@ namespace PopSim
             outputRoutine.queryStringToFile("Select * from Report_Beta_Summary", "Report_Beta_Summary.txt");
            
             // crosstab queries
-            outputRoutine.queryStringToFile("SELECT Age, Year_Num, Sum(Avoided_Deaths) AS Avoided_Deaths "
-                + " FROM Report_Avoided_Deaths GROUP BY Age, Year_Num", "Report_Avoided_Deaths_Xtab.txt");
-            outputRoutine.queryStringToFile("Select Age, Year_Num, Sum(Life_Years_Gained) as Life_Years_Gained "
-                + "FROM Report_Life_Years_Gained Group By Age, Year_Num ", "Report_Life_Years_Gained_Xtab.txt");
-            outputRoutine.queryStringToFile("Select Age, Year_Num, Sum(Increase_Female) as Increase_Female from  "
-                + " RPT_INC_COHORT_COND_LIFE_EXP GROUP BY Age, Year_Num", "Report_Increase_CCLE_Female.txt");
-            outputRoutine.queryStringToFile("Select Age, Year_Num, Sum(Increase_Male) as Increase_Male from  "
-                            + " RPT_INC_COHORT_COND_LIFE_EXP GROUP BY Age, Year_Num", "Report_Increase_CCLE_Male.txt");
-            outputRoutine.queryStringToFile("Select Age, Year_Num, Sum(Increase_Female) as Increase_Female from  "
-                + " RPT_INC_COHORT_COND_LIFE_EXP GROUP BY Age, Year_Num", "Report_Increase_PCLE_Female.txt");
-            outputRoutine.queryStringToFile("Select Age, Year_Num, Sum(Increase_Male) as Increase_Female from  "
-                + " RPT_INC_COHORT_COND_LIFE_EXP GROUP BY Age, Year_Num", "Report_Increase_PCLE_Male.txt");
+            outputRoutine.queryStringToXTabFile("SELECT Age, Year_Num, Sum(Avoided_Deaths) AS Avoided_Deaths "
+                + " FROM Report_Avoided_Deaths GROUP BY Age, Year_Num ORDER BY Age, Year_Num", "Report_Avoided_Deaths_Xtab.txt",
+                "Age","Year_Num","Avoided_Deaths");
+
+            // outputRoutine.queryStringToFile("Select Age, Year_Num, Sum(Life_Years_Gained) as Life_Years_Gained "
+            //    + "FROM Report_Life_Years_Gained Group By Age, Year_Num ", "Report_Life_Years_Gained_Xtab.txt");
+            outputRoutine.queryStringToXTabFile("Select Age, Year_Num, Sum(Life_Years_Gained) as Life_Years_Gained "
+                + "FROM Report_Life_Years_Gained Group By Age, Year_Num ", "Report_Life_Years_Gained_Xtab.txt",
+                "Age", "Year_Num", "Life_Years_Gained");
+            //outputRoutine.queryStringToFile("Select Age, Year_Num, Sum(Increase_Female) as Increase_Female from  "
+            //    + " RPT_INC_COHORT_COND_LIFE_EXP GROUP BY Age, Year_Num", "Report_Increase_CCLE_Female.txt");
+            outputRoutine.queryStringToXTabFile("Select Age, Year_Num, Sum(Increase_Female) as Increase_Female from  "
+                + " RPT_INC_COHORT_COND_LIFE_EXP GROUP BY Age, Year_Num", "Report_Increase_CCLE_Female.txt",
+                "Age", "Year_Num", "Increase_Female");
+            //outputRoutine.queryStringToFile("Select Age, Year_Num, Sum(Increase_Male) as Increase_Male from  "
+            //                + " RPT_INC_COHORT_COND_LIFE_EXP GROUP BY Age, Year_Num", "Report_Increase_CCLE_Male.txt");
+            outputRoutine.queryStringToXTabFile("Select Age, Year_Num, Sum(Increase_Male) as Increase_Male from  "
+                            + " RPT_INC_COHORT_COND_LIFE_EXP GROUP BY Age, Year_Num", "Report_Increase_CCLE_Male.txt",
+                            "Age", "Year_Num", "Increase_Male");
+            //outputRoutine.queryStringToFile("Select Age, Year_Num, Sum(Increase_Female) as Increase_Female from  "
+            //    + " RPT_INC_COHORT_COND_LIFE_EXP GROUP BY Age, Year_Num", "Report_Increase_PCLE_Female.txt");
+            outputRoutine.queryStringToXTabFile("Select Age, Year_Num, Sum(Increase_Female) as Increase_Female from  "
+                + " RPT_INC_COHORT_COND_LIFE_EXP GROUP BY Age, Year_Num", "Report_Increase_PCLE_Female.txt",
+                "Age", "Year_Num", "Increase_Female");
+            //outputRoutine.queryStringToFile("Select Age, Year_Num, Sum(Increase_Male) as Increase_Female from  "
+            //    + " RPT_INC_COHORT_COND_LIFE_EXP GROUP BY Age, Year_Num", "Report_Increase_PCLE_Male.txt");
+            outputRoutine.queryStringToXTabFile("Select Age, Year_Num, Sum(Increase_Male) as Increase_Female from  "
+                + " RPT_INC_COHORT_COND_LIFE_EXP GROUP BY Age, Year_Num", "Report_Increase_PCLE_Male.txt",
+                "Age", "Year_Num", "Increase_Female");
             
             MessageBox.Show("Files Saved");
                 

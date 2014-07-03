@@ -1363,21 +1363,24 @@
             // 
             // btnBack
             // 
+            this.btnBack.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnBack.Location = new System.Drawing.Point(2, 475);
             this.btnBack.Margin = new System.Windows.Forms.Padding(2);
             this.btnBack.Name = "btnBack";
-            this.btnBack.Size = new System.Drawing.Size(56, 19);
+            this.btnBack.Size = new System.Drawing.Size(56, 30);
             this.btnBack.TabIndex = 1;
             this.btnBack.Text = "<Back";
             this.btnBack.UseVisualStyleBackColor = true;
+            this.btnBack.Visible = false;
             this.btnBack.Click += new System.EventHandler(this.btnBack_Click);
             // 
             // btnNext
             // 
+            this.btnNext.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnNext.Location = new System.Drawing.Point(272, 475);
             this.btnNext.Margin = new System.Windows.Forms.Padding(2);
             this.btnNext.Name = "btnNext";
-            this.btnNext.Size = new System.Drawing.Size(56, 19);
+            this.btnNext.Size = new System.Drawing.Size(56, 30);
             this.btnNext.TabIndex = 2;
             this.btnNext.Text = "Next>";
             this.btnNext.UseVisualStyleBackColor = true;
@@ -1402,8 +1405,8 @@
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel1.Controls.Add(this.btnBack, 0, 2);
             this.tableLayoutPanel1.Controls.Add(this.btnHelp, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.btnNext, 1, 2);
             this.tableLayoutPanel1.Controls.Add(this.tabControl1, 0, 1);
+            this.tableLayoutPanel1.Controls.Add(this.btnNext, 1, 2);
             this.tableLayoutPanel1.Location = new System.Drawing.Point(12, 12);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 3;
@@ -1417,7 +1420,7 @@
             // 
             this.pictureBox1.Location = new System.Drawing.Point(12, -17);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(530, 82);
+            this.pictureBox1.Size = new System.Drawing.Size(530, 90);
             this.pictureBox1.TabIndex = 6;
             this.pictureBox1.TabStop = false;
             // 
