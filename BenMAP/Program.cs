@@ -13,8 +13,8 @@ namespace BenMAP
         [STAThread]
         static void Main(string[] arg)
         {
-            AppDomain currentDomain = AppDomain.CurrentDomain;      
-            currentDomain.FirstChanceException += FirstChanceExceptionHandler;
+            //AppDomain currentDomain = AppDomain.CurrentDomain;      
+            //currentDomain.FirstChanceException += FirstChanceExceptionHandler;
    
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
@@ -27,7 +27,7 @@ namespace BenMAP
             Application.Run(new Main());
             
         }
-
+/*
         static void FirstChanceExceptionHandler(object source, FirstChanceExceptionEventArgs args)
         {
 
@@ -74,7 +74,7 @@ namespace BenMAP
                 Environment.Exit(0);
             }
 
-        }
+        }*/
         
     }
 }
