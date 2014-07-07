@@ -202,13 +202,14 @@
             // 
             // label6
             // 
+            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label6.Location = new System.Drawing.Point(19, 51);
             this.label6.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(418, 178);
             this.label6.TabIndex = 2;
-            this.label6.Text = "A very short description of what POPSIM does and how it works with BenMap CE goes" +
-    " here";
+            this.label6.Text = "Popsim is a dynamic population simulation that incorporates the cumulative effect" +
+    "s of air pollution on different age groups over time.";
             // 
             // label5
             // 
@@ -227,9 +228,9 @@
             this.label4.Location = new System.Drawing.Point(11, 2);
             this.label4.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(118, 29);
+            this.label4.Size = new System.Drawing.Size(101, 29);
             this.label4.TabIndex = 0;
-            this.label4.Text = "POP SIM";
+            this.label4.Text = "Popsim";
             // 
             // tabStep1
             // 
@@ -1441,7 +1442,7 @@
             this.Controls.Add(this.tableLayoutPanel1);
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "frm_PopSim";
-            this.Text = "PopSim";
+            this.Text = "Popsim";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.tabControl1.ResumeLayout(false);
             this.tabIntro.ResumeLayout(false);
