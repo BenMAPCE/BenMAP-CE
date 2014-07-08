@@ -55,8 +55,8 @@ namespace PopSim
         public FirebirdSql.Data.FirebirdClient.FbConnection dbConnection;
         DateTime StartTime;
         DateTime StopTime;
-                    
-        
+        string fileName;
+                
         public frm_PopSim()
         {
             InitializeComponent();
@@ -486,45 +486,32 @@ namespace PopSim
 
         private void btnOutput_Click(object sender, EventArgs e)
         {
+            fileName = "PopsimResults";
 
-            // output model results to file(s)
-            FirebirdOutput outputRoutine = new FirebirdOutput();
-            outputRoutine.queryStringToFile("Select * from Report_Input_Summary", "Report_Input_Summary.txt");
-            outputRoutine.queryStringToFile("Select * from Report_Beta_Summary", "Report_Beta_Summary.txt");
-           
-            // crosstab queries
-            outputRoutine.queryStringToXTabFile("SELECT Age, Year_Num, Sum(Avoided_Deaths) AS Avoided_Deaths "
-                + " FROM Report_Avoided_Deaths GROUP BY Age, Year_Num ORDER BY Age, Year_Num", "Report_Avoided_Deaths_Xtab.txt",
-                "Age","Year_Num","Avoided_Deaths");
+            // open file
+            // get user location for file save
+            SaveFileDialog myDialog = new SaveFileDialog();
+            myDialog.Filter = "Excel workbooks (*.xlsx)|*.xlsx|All files (*.*)|*.*";
+            // make the default save location "My Documents" - this is one of the few locations that is writable for all users
+            myDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            myDialog.FileName = fileName;
+            myDialog.OverwritePrompt = true;
 
-            // outputRoutine.queryStringToFile("Select Age, Year_Num, Sum(Life_Years_Gained) as Life_Years_Gained "
-            //    + "FROM Report_Life_Years_Gained Group By Age, Year_Num ", "Report_Life_Years_Gained_Xtab.txt");
-            outputRoutine.queryStringToXTabFile("Select Age, Year_Num, Sum(Life_Years_Gained) as Life_Years_Gained "
-                + "FROM Report_Life_Years_Gained Group By Age, Year_Num ", "Report_Life_Years_Gained_Xtab.txt",
-                "Age", "Year_Num", "Life_Years_Gained");
-            //outputRoutine.queryStringToFile("Select Age, Year_Num, Sum(Increase_Female) as Increase_Female from  "
-            //    + " RPT_INC_COHORT_COND_LIFE_EXP GROUP BY Age, Year_Num", "Report_Increase_CCLE_Female.txt");
-            outputRoutine.queryStringToXTabFile("Select Age, Year_Num, Sum(Increase_Female) as Increase_Female from  "
-                + " RPT_INC_COHORT_COND_LIFE_EXP GROUP BY Age, Year_Num", "Report_Increase_CCLE_Female.txt",
-                "Age", "Year_Num", "Increase_Female");
-            //outputRoutine.queryStringToFile("Select Age, Year_Num, Sum(Increase_Male) as Increase_Male from  "
-            //                + " RPT_INC_COHORT_COND_LIFE_EXP GROUP BY Age, Year_Num", "Report_Increase_CCLE_Male.txt");
-            outputRoutine.queryStringToXTabFile("Select Age, Year_Num, Sum(Increase_Male) as Increase_Male from  "
-                            + " RPT_INC_COHORT_COND_LIFE_EXP GROUP BY Age, Year_Num", "Report_Increase_CCLE_Male.txt",
-                            "Age", "Year_Num", "Increase_Male");
-            //outputRoutine.queryStringToFile("Select Age, Year_Num, Sum(Increase_Female) as Increase_Female from  "
-            //    + " RPT_INC_COHORT_COND_LIFE_EXP GROUP BY Age, Year_Num", "Report_Increase_PCLE_Female.txt");
-            outputRoutine.queryStringToXTabFile("Select Age, Year_Num, Sum(Increase_Female) as Increase_Female from  "
-                + " RPT_INC_COHORT_COND_LIFE_EXP GROUP BY Age, Year_Num", "Report_Increase_PCLE_Female.txt",
-                "Age", "Year_Num", "Increase_Female");
-            //outputRoutine.queryStringToFile("Select Age, Year_Num, Sum(Increase_Male) as Increase_Female from  "
-            //    + " RPT_INC_COHORT_COND_LIFE_EXP GROUP BY Age, Year_Num", "Report_Increase_PCLE_Male.txt");
-            outputRoutine.queryStringToXTabFile("Select Age, Year_Num, Sum(Increase_Male) as Increase_Female from  "
-                + " RPT_INC_COHORT_COND_LIFE_EXP GROUP BY Age, Year_Num", "Report_Increase_PCLE_Male.txt",
-                "Age", "Year_Num", "Increase_Female");
-            
-            MessageBox.Show("Files Saved");
-                
+            if (myDialog.ShowDialog() == DialogResult.OK)
+            {
+                fileName = myDialog.FileName;
+            }
+            else
+            {
+                MessageBox.Show("Cancelled by User - file not saved.");
+                return; // bail out
+            }
+            // show progress bar
+            progressBar1.Value = 0;
+            progressBar1.Visible = true;
+            btnOutput.Visible = false;
+            bwOutput.RunWorkerAsync();
+
         }
         private void btnHelp_Click(object sender, EventArgs e)
         {
@@ -545,6 +532,7 @@ namespace PopSim
 
         private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+
             StopTime = DateTime.Now;
             btnOutput.Visible = true;
             progressBar1.Visible = true;
@@ -565,6 +553,71 @@ namespace PopSim
                 string[] StatusMsg = (string[])e.UserState;
                 lblRunStatus.Text = StatusMsg[0];
             }
+        }
+
+        private void bwOutput_DoWork(object sender, DoWorkEventArgs e)
+        {
+            // output model results to workbook
+            FirebirdOutput outputRoutine = new FirebirdOutput();
+
+            outputRoutine.OpenWorkbook(fileName);
+            if (outputRoutine.GetWBOpen())
+            {    // output worksheets to workbook
+                bwOutput.ReportProgress(0);
+                bwOutput.ReportProgress(0);
+
+                outputRoutine.queryStringToWB("Select * from Report_Input_Summary", "Report_Input_Summary");
+                bwOutput.ReportProgress(10);
+                outputRoutine.queryStringToWB("Select * from Report_Beta_Summary", "Report_Beta_Summary");
+
+                // crosstab queries
+                bwOutput.ReportProgress(20);
+                outputRoutine.queryStringToXTabWB("SELECT Age, Year_Num, Sum(Avoided_Deaths) AS Avoided_Deaths "
+                    + " FROM Report_Avoided_Deaths GROUP BY Age, Year_Num ORDER BY Age, Year_Num", "Report_Avoided_Deaths_Xtab",
+                    "Age", "Year_Num", "Avoided_Deaths");
+
+                bwOutput.ReportProgress(30);
+                outputRoutine.queryStringToXTabWB("Select Age, Year_Num, Sum(Life_Years_Gained) as Life_Years_Gained "
+                    + "FROM Report_Life_Years_Gained Group By Age, Year_Num ", "Report_Life_Years_Gained_Xtab",
+                    "Age", "Year_Num", "Life_Years_Gained");
+
+                bwOutput.ReportProgress(40);
+                outputRoutine.queryStringToXTabWB("Select Age, Year_Num, Sum(Increase_Female) as Increase_Female from  "
+                    + " RPT_INC_COHORT_COND_LIFE_EXP GROUP BY Age, Year_Num", "Report_Increase_CCLE_Female",
+                    "Age", "Year_Num", "Increase_Female");
+
+                bwOutput.ReportProgress(50);
+                outputRoutine.queryStringToXTabWB("Select Age, Year_Num, Sum(Increase_Male) as Increase_Male from  "
+                                + " RPT_INC_COHORT_COND_LIFE_EXP GROUP BY Age, Year_Num", "Report_Increase_CCLE_Male",
+                                "Age", "Year_Num", "Increase_Male");
+
+                bwOutput.ReportProgress(70);
+                outputRoutine.queryStringToXTabWB("Select Age, Year_Num, Sum(Increase_Female) as Increase_Female from  "
+                    + " RPT_INC_COHORT_COND_LIFE_EXP GROUP BY Age, Year_Num", "Report_Increase_PCLE_Female",
+                    "Age", "Year_Num", "Increase_Female");
+
+                bwOutput.ReportProgress(90);
+                outputRoutine.queryStringToXTabWB("Select Age, Year_Num, Sum(Increase_Male) as Increase_Female from  "
+                    + " RPT_INC_COHORT_COND_LIFE_EXP GROUP BY Age, Year_Num", "Report_Increase_PCLE_Male",
+                    "Age", "Year_Num", "Increase_Female");
+
+                // close workbook
+                outputRoutine.CloseWorkbook(fileName);
+                bwOutput.ReportProgress(100);
+                MessageBox.Show("Files Saved");
+                
+            }                
+
+        }
+
+        private void bwOutput_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            progressBar1.Value = e.ProgressPercentage;
+        }
+
+        private void bwOutput_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            progressBar1.Visible = false;
         }
     }
 }

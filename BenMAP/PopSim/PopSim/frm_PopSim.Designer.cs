@@ -142,6 +142,7 @@
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
+            this.bwOutput = new System.ComponentModel.BackgroundWorker();
             this.tabControl1.SuspendLayout();
             this.tabIntro.SuspendLayout();
             this.tabStep1.SuspendLayout();
@@ -1310,7 +1311,7 @@
             // 
             // btnOutput
             // 
-            this.btnOutput.Location = new System.Drawing.Point(349, 365);
+            this.btnOutput.Location = new System.Drawing.Point(364, 271);
             this.btnOutput.Name = "btnOutput";
             this.btnOutput.Size = new System.Drawing.Size(98, 23);
             this.btnOutput.TabIndex = 4;
@@ -1421,7 +1422,7 @@
             // 
             this.pictureBox1.Location = new System.Drawing.Point(12, -17);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(530, 90);
+            this.pictureBox1.Size = new System.Drawing.Size(530, 86);
             this.pictureBox1.TabIndex = 6;
             this.pictureBox1.TabStop = false;
             // 
@@ -1431,6 +1432,13 @@
             this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
             this.backgroundWorker1.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.backgroundWorker1_ProgressChanged);
             this.backgroundWorker1.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker1_RunWorkerCompleted);
+            // 
+            // bwOutput
+            // 
+            this.bwOutput.WorkerReportsProgress = true;
+            this.bwOutput.DoWork += new System.ComponentModel.DoWorkEventHandler(this.bwOutput_DoWork);
+            this.bwOutput.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.bwOutput_ProgressChanged);
+            this.bwOutput.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.bwOutput_RunWorkerCompleted);
             // 
             // frm_PopSim
             // 
@@ -1597,6 +1605,7 @@
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Label label39;
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
+        private System.ComponentModel.BackgroundWorker bwOutput;
     }
 }
 

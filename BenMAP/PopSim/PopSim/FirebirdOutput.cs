@@ -6,18 +6,26 @@ using System.IO;
 using System.Windows.Forms;
 using System.Diagnostics;
 using FirebirdSql.Data.FirebirdClient;
-
+using Microsoft.Office.Interop.Excel;
 
 public class FirebirdOutput
 {
+    private Microsoft.Office.Interop.Excel.Application exApplication =  new Microsoft.Office.Interop.Excel.Application();
+    private Workbook wbOutput;
     private FirebirdSql.Data.FirebirdClient.FbConnection dbConnection;
-
+    private bool wbOpen = false;    // set to true when workbook is open
+    
 	public FirebirdOutput()
 	{
         dbConnection = getNewConnection();
         dbConnection.Open();
         
 	}
+
+    public bool GetWBOpen()
+    {
+        return wbOpen;
+    }
 
     private static FbConnection getNewConnection()
     {
@@ -59,8 +67,20 @@ public class FirebirdOutput
         readerToXTabTxtFile(filename, dataReader, keyColumn, pivotNameColumn, pivotValueColumn);
 
     }
-  
 
+    public void queryStringToXTabWB(string strSQL, string WBName, string keyColumn, string pivotNameColumn, string pivotValueColumn)
+    {
+        FbCommand dataCommand = new FirebirdSql.Data.FirebirdClient.FbCommand();
+        dataCommand.Connection = dbConnection;
+        dataCommand.CommandType = CommandType.Text;
+        dataCommand.CommandText = strSQL;
+        FbDataReader dataReader;
+        dataReader = dataCommand.ExecuteReader();
+
+        readerToXTabWB(WBName, dataReader, keyColumn, pivotNameColumn, pivotValueColumn);
+
+    }
+  
 
     public void readerToTxtFile(string fileName, IDataReader dataReader)
     {
@@ -137,7 +157,7 @@ public class FirebirdOutput
     public void readerToXTabTxtFile(string fileName, IDataReader dataReader, string keyColumn, string pivotNameColumn, string pivotValueColumn)
     {
         // create crosstab table from data reader using Pivot function
-        DataTable dtOutput = Pivot(dataReader, keyColumn, pivotNameColumn, pivotValueColumn);
+        System.Data.DataTable dtOutput = Pivot(dataReader, keyColumn, pivotNameColumn, pivotValueColumn);
 
         // create a data reader from the new crosstab data table
         IDataReader drXTab = dtOutput.CreateDataReader();
@@ -146,10 +166,22 @@ public class FirebirdOutput
         readerToTxtFile(fileName, drXTab);
 
     }
+
+    public void readerToXTabWB(string WBName, IDataReader dataReader, string keyColumn, string pivotNameColumn, string pivotValueColumn)
+    {
+        // create crosstab table from data reader using Pivot function
+        System.Data.DataTable dtOutput = Pivot(dataReader, keyColumn, pivotNameColumn, pivotValueColumn);
+
+        // create a data reader from the new crosstab data table
+        IDataReader drXTab = dtOutput.CreateDataReader();
+
+        // use the datareader output function to dump to file
+        readerToWB(WBName, drXTab);
+
+    }
     
 
-
-    public static DataTable Pivot(IDataReader dataValues, string keyColumn, string pivotNameColumn, string pivotValueColumn)
+    public static System.Data.DataTable Pivot(IDataReader dataValues, string keyColumn, string pivotNameColumn, string pivotValueColumn)
     {
         // written by Jeff Smith 
         // and taken from http://weblogs.sqlteam.com/jeffs/archive/2005/05/11/5101.aspx
@@ -162,7 +194,7 @@ public class FirebirdOutput
             pivotValueColumn -- This is the column that in the DataReader that contains the values to pivot into the appropriate columns.  For our example, it would be Qty, which has been defined in the SELECT statement as SUM(Qty).
         */
 
-        DataTable tmp = new DataTable();
+        System.Data.DataTable tmp = new System.Data.DataTable();
         DataRow r;
         string LastKey = "//dummy//";
         int i, pValIndex, pNameIndex;
@@ -215,4 +247,110 @@ public class FirebirdOutput
         return tmp;
     }
 
+    public void OpenWorkbook(string strWBName)
+    {
+        // does file exist?
+        if (System.IO.File.Exists(strWBName))
+        {
+            try // open workbook
+            {
+                wbOutput = exApplication.Workbooks.Open(strWBName);
+                wbOpen = true;
+            }
+            catch
+            {
+                MessageBox.Show("Can't open " + strWBName);
+                wbOpen = false;
+            }
+        }
+        else // create workbook
+        {
+            MessageBox.Show(strWBName + " doesn't exist, creating new file.");
+            wbOutput = exApplication.Workbooks.Add();  // empty workbook
+            
+            //exApplication.SaveWorkspace(strWBName); // attempt to save
+            wbOpen = true;
+        }
+    }
+
+    public void CloseWorkbook(string strWBName)
+    {
+        if (wbOpen)
+        {
+            try
+            {
+                wbOutput.Close(true,strWBName);
+                wbOpen = false;
+            }
+            catch
+            {
+                MessageBox.Show("Can't close workbook");
+            }
+        }
+        else
+        {
+            MessageBox.Show("Workbook not open - can't close.");
+        }
+    }
+
+    public void queryStringToWB(string strSQL, string stWBName)
+    {  
+        FbCommand dataCommand = new FirebirdSql.Data.FirebirdClient.FbCommand();
+        dataCommand.Connection = dbConnection;
+        dataCommand.CommandType = CommandType.Text;
+        dataCommand.CommandText = strSQL;
+        FbDataReader dataReader;
+        dataReader = dataCommand.ExecuteReader();
+
+        readerToWB(stWBName, dataReader);
+        
+    }
+
+    public void readerToWB(string stWBName, IDataReader dataReader){
+        // workbook must exist
+        
+        // create worksheet (must not exist)
+        Microsoft.Office.Interop.Excel.Worksheet wsSheet = wbOutput.Worksheets.Add();
+        // does worksheet with this name already exist?
+        // loop through all spreadsheets in workbook until you find the name and drop it
+        exApplication.DisplayAlerts = false;    // turn off warning boxes or workbook delete will fail
+        foreach(Microsoft.Office.Interop.Excel.Worksheet wsTemp in wbOutput.Worksheets){
+            if (wsTemp.Name == stWBName)
+            {
+                wsTemp.Delete();
+                break;
+            }
+        }
+        exApplication.DisplayAlerts = true;
+        // now name our new spreadsheet with the desired name
+        wsSheet.Name = stWBName;
+        
+        int iRow=1, iCol=1;
+        // write header
+        for (int i = 0; i < dataReader.FieldCount; i++)
+        {
+            wsSheet.Cells[iRow, iCol + i] = dataReader.GetName(i);
+        } 
+        // output records
+        while(dataReader.Read())
+        {
+            // write header on first row
+            if (iRow == 1)
+            {
+                for (int i = 0; i < dataReader.FieldCount; i++)
+                {
+                    wsSheet.Cells[iRow, iCol + i] = dataReader.GetName(i);
+                }
+                iRow++;
+            }
+            // output records
+            // output fields in record
+            for (int i = 0; i < dataReader.FieldCount; i++)
+            {
+                wsSheet.Cells[iRow, iCol + i] = dataReader[i].ToString();
+            }
+            iRow++;
+
+        }
+    }
 }
