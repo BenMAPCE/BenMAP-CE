@@ -122,6 +122,7 @@ namespace BenMAP
                 cboEndpointGroup.DropDownWidth = maxEndpointGroupWidth; cboEndpoint.DropDownWidth = maxEndpointWidth;
                 cboEndpointGroup.SelectedIndex = 0;
                 cboEndpoint.SelectedIndex = 0;
+                btnViewMetadata.Enabled = false;
             }
             catch (Exception ex)
             {
@@ -373,11 +374,33 @@ namespace BenMAP
         {
             _metadataObj = SQLStatementsCommonClass.getMetadata(Convert.ToInt32(_dataSetID), CommonClass.ManageSetup.SetupID);
             _metadataObj.SetupName = CommonClass.ManageSetup.SetupName;//_dataName;//_lstDataSetName;
+            btnViewMetadata.Enabled = false;
             ViewEditMetadata viewEMdata = new ViewEditMetadata(_metadataObj);
             DialogResult dr = viewEMdata.ShowDialog();
             if (dr.Equals(DialogResult.OK))
             {
                 _metadataObj = viewEMdata.MetadataObj;
+            }
+        }
+
+        private void olvIncidenceRates_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                if (sender != null)
+                {
+
+                    BrightIdeasSoftware.DataListView dlv = sender as BrightIdeasSoftware.DataListView;
+
+                    if (dlv.SelectedItem != null)
+                    {
+                        btnViewMetadata.Enabled = true;                        
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
             }
         }
     }
