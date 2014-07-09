@@ -148,6 +148,7 @@ namespace BenMAP
                     cboEndpointGroup.DropDownWidth = maxEndpointGroupWidth; cboEndpoint.DropDownWidth = maxEndpointWidth;
                     cboEndpointGroup.SelectedIndex = 0;
                     cboEndpoint.SelectedIndex = 0;
+                    btnViewMetadata.Enabled = false;
                 }
                 catch (Exception ex)
                 {
