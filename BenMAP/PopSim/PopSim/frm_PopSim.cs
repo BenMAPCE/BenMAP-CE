@@ -91,12 +91,13 @@ namespace PopSim
             dataCommand.CommandText = "Select BEGIN_YEAR, END_YEAR, SCENARIO_NAME, DR_APPROACH_ID, " 
                 + "BETA_TYPE_ID, PM_THRESHOLD_CHOICE, PS_TRAJECTORY_ID, LAG_TYPE_ID, BIRTHS_DYNAMIC, "
                 + "USER_SPECIFIED_BETA, PM_THRESHOLD_VALUE, BETA_ADJ_FACTOR, "
-                + "LAG_K_SINGLE, LAG_K_MULTIPLE_CARDIO, LAG_K_MULTIPLE_LUNG, LAG_K_MULTIPLE_OTHER "
+                + "LAG_K_SINGLE, LAG_K_MULTIPLE_CARDIO, LAG_K_MULTIPLE_LUNG, LAG_K_MULTIPLE_OTHER, "
                 + "AGE_RANGE_START, AGE_RANGE_END, STUDY_ID, "
                 + "PM_YEAR_1, PM_YEAR_2, PM_YEAR_3, PM_YEAR_4, PM_YEAR_5, PM_VAL_1, PM_VAL_2, "
                 + "PM_VAL_3, PM_VAL_4, PM_VAL_5, SUB_POP_START_1, SUB_POP_START_2, SUB_POP_START_3, "
                 + "SUB_POP_START_4, SUB_POP_START_5, SUB_POP_END_1, SUB_POP_END_2, SUB_POP_END_3, SUB_POP_END_4, "
-                + "SUB_POP_END_5, SUB_POP_ADJUSTMENT_1, SUB_POP_ADJUSTMENT_2, SUB_POP_ADJUSTMENT_3, SUB_POP_ADJUSTMENT_4, SUB_POP_ADJUSTMENT_5 "
+                + "SUB_POP_END_5, SUB_POP_ADJUSTMENT_1, SUB_POP_ADJUSTMENT_2, SUB_POP_ADJUSTMENT_3, SUB_POP_ADJUSTMENT_4, "
+                + "SUB_POP_ADJUSTMENT_5, LAG_FUNCT_TYPE_ID "
                 + "from SCENARIOS where SCENARIO_ID = " + Scenario_ID.ToString();
             FbDataReader dataReader;
             dataReader = dataCommand.ExecuteReader();
@@ -119,43 +120,43 @@ namespace PopSim
                 txtLagOther.Text = dataReader[15].ToString();
 
                 // + "AGE_RANGE_START, AGE_RANGE_END "
-                txtYoungest.Text = dataReader[15].ToString();
-                txtOldest.Text = dataReader[16].ToString();
+                txtYoungest.Text = dataReader[16].ToString();
+                txtOldest.Text = dataReader[17].ToString();
                
                 // PM_YEAR_1, PM_YEAR_2, PM_YEAR_3, PM_YEAR_4, PM_YEAR_5, 
-                txtPMYear_1.Text = dataReader[18].ToString();
-                txtPMYear_2.Text = dataReader[19].ToString();
-                txtPMYear_3.Text = dataReader[20].ToString();
-                txtPMYear_4.Text = dataReader[21].ToString();
-                txtPMYear_5.Text = dataReader[22].ToString();
+                txtPMYear_1.Text = dataReader[19].ToString();
+                txtPMYear_2.Text = dataReader[20].ToString();
+                txtPMYear_3.Text = dataReader[21].ToString();
+                txtPMYear_4.Text = dataReader[22].ToString();
+                txtPMYear_5.Text = dataReader[23].ToString();
 
                 //PM_VAL_1, PM_VAL_2, PM_VAL_3, PM_VAL_4, PM_VAL_5, 
-                txtPM_Val_1.Text = dataReader[23].ToString();
-                txtPM_Val_2.Text = dataReader[24].ToString();
-                txtPM_Val_3.Text = dataReader[25].ToString();
-                txtPM_Val_4.Text = dataReader[26].ToString();
-                txtPM_Val_5.Text = dataReader[27].ToString();
+                txtPM_Val_1.Text = dataReader[24].ToString();
+                txtPM_Val_2.Text = dataReader[25].ToString();
+                txtPM_Val_3.Text = dataReader[26].ToString();
+                txtPM_Val_4.Text = dataReader[27].ToString();
+                txtPM_Val_5.Text = dataReader[28].ToString();
                 
                 // SUB_POP_START_1, SUB_POP_START_2, SUB_POP_START_3, SUB_POP_START_4, SUB_POP_START_5, 
-                txtSUB_POP_START_1.Text = dataReader[28].ToString();
-                txtSUB_POP_START_2.Text = dataReader[29].ToString();
-                txtSUB_POP_START_3.Text = dataReader[30].ToString();
-                txtSUB_POP_START_4.Text = dataReader[31].ToString();
-                txtSUB_POP_START_5.Text = dataReader[32].ToString();
+                txtSUB_POP_START_1.Text = dataReader[29].ToString();
+                txtSUB_POP_START_2.Text = dataReader[30].ToString();
+                txtSUB_POP_START_3.Text = dataReader[31].ToString();
+                txtSUB_POP_START_4.Text = dataReader[32].ToString();
+                txtSUB_POP_START_5.Text = dataReader[33].ToString();
 
                 // SUB_POP_END_1, SUB_POP_END_2, SUB_POP_END_3, SUB_POP_END_4, SUB_POP_END_5, 
-                txtSUB_POP_END_1.Text = dataReader[33].ToString();
-                txtSUB_POP_END_2.Text = dataReader[34].ToString();
-                txtSUB_POP_END_3.Text = dataReader[35].ToString();
-                txtSUB_POP_END_4.Text = dataReader[36].ToString();
-                txtSUB_POP_END_5.Text = dataReader[37].ToString();
+                txtSUB_POP_END_1.Text = dataReader[34].ToString();
+                txtSUB_POP_END_2.Text = dataReader[35].ToString();
+                txtSUB_POP_END_3.Text = dataReader[36].ToString();
+                txtSUB_POP_END_4.Text = dataReader[37].ToString();
+                txtSUB_POP_END_5.Text = dataReader[38].ToString();
 
                 // SUB_POP_ADJUSTMENT_1, SUB_POP_ADJUSTMENT_2, SUB_POP_ADJUSTMENT_3, SUB_POP_ADJUSTMENT_4, SUB_POP_ADJUSTMENT_5
-                txtSUB_POP_ADJUSTMENT_1.Text = dataReader[38].ToString();
-                txtSUB_POP_ADJUSTMENT_2.Text = dataReader[39].ToString();
-                txtSUB_POP_ADJUSTMENT_3.Text = dataReader[40].ToString();
-                txtSUB_POP_ADJUSTMENT_4.Text = dataReader[41].ToString();
-                txtSUB_POP_ADJUSTMENT_5.Text = dataReader[42].ToString();
+                txtSUB_POP_ADJUSTMENT_1.Text = dataReader[39].ToString();
+                txtSUB_POP_ADJUSTMENT_2.Text = dataReader[40].ToString();
+                txtSUB_POP_ADJUSTMENT_3.Text = dataReader[41].ToString();
+                txtSUB_POP_ADJUSTMENT_4.Text = dataReader[42].ToString();
+                txtSUB_POP_ADJUSTMENT_5.Text = dataReader[43].ToString();
 
 
                 // set the radio buttons on form
@@ -170,7 +171,10 @@ namespace PopSim
                 // lag type
                 setRB(gbLagType, (int)dataReader[7]);
                 // dynamic birth type
-                setRB(gbBirthsDynamic, (int)dataReader[8]);              
+                setRB(gbBirthsDynamic, (int)dataReader[8]); 
+                // lag function type
+                setRB(gbLagFunction, (int)dataReader[44]); 
+                
 
                 // load combo boxes
                 string strSQL = "SELECT STUDY_ID, STUDY_NAME, BETA_VALUE FROM LK_STUDY_BETAS ORDER BY STUDY_NAME ";
@@ -185,7 +189,7 @@ namespace PopSim
                 cbStudy.DisplayMember = "STUDY_NAME";
                 cbStudy.ValueMember = "STUDY_ID";
                 // preselect study from scenario table
-                cbStudy.SelectedIndex = (int)dataReader[17];
+                cbStudy.SelectedIndex = (int)dataReader[18];
 
             }
         }
@@ -361,7 +365,13 @@ namespace PopSim
             strSQL = "UPDATE SCENARIOS SET BIRTHS_DYNAMIC = " + getRB(gbBirthsDynamic).ToString() + " WHERE SCENARIO_ID =" + Scenario_ID.ToString();
             cUpdate.CommandText = strSQL;
             cUpdate.ExecuteNonQuery();
+
+            // lag function type
+            strSQL = "UPDATE SCENARIOS SET LAG_FUNCT_TYPE_ID= " + getRB(gbLagFunction).ToString() + " WHERE SCENARIO_ID =" + Scenario_ID.ToString();
+            cUpdate.CommandText = strSQL;
+            cUpdate.ExecuteNonQuery();
             
+
             // Combo Boxes
             strSQL = "UPDATE SCENARIOS SET STUDY_ID = " + cbStudy.SelectedIndex.ToString()  + " WHERE SCENARIO_ID =" + Scenario_ID.ToString();
             cUpdate.CommandText = strSQL;
@@ -429,11 +439,13 @@ namespace PopSim
             if (currentpage == MAXPAGE)
             {
                 btnNext.Visible = false;
+                btnBack.Visible = true;
             }
             else if (currentpage > MAXPAGE)
             {    // don't go off end of tab control
                 currentpage = MAXPAGE;
                 btnNext.Visible = false;
+                btnBack.Visible = true;
             }
             else
             {

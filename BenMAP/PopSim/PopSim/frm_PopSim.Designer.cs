@@ -109,6 +109,10 @@
             this.label20 = new System.Windows.Forms.Label();
             this.label19 = new System.Windows.Forms.Label();
             this.tabStep6 = new System.Windows.Forms.TabPage();
+            this.gbLagFunction = new System.Windows.Forms.GroupBox();
+            this.radioButton13 = new System.Windows.Forms.RadioButton();
+            this.radioButton12 = new System.Windows.Forms.RadioButton();
+            this.radioButton2 = new System.Windows.Forms.RadioButton();
             this.txtLagOther = new System.Windows.Forms.TextBox();
             this.label38 = new System.Windows.Forms.Label();
             this.txtLagLung = new System.Windows.Forms.TextBox();
@@ -156,6 +160,7 @@
             this.gbPMTrajectory.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabStep6.SuspendLayout();
+            this.gbLagFunction.SuspendLayout();
             this.gbLagType.SuspendLayout();
             this.tabStep7.SuspendLayout();
             this.gbBirthsDynamic.SuspendLayout();
@@ -285,7 +290,7 @@
             this.nudEndYear.Location = new System.Drawing.Point(82, 80);
             this.nudEndYear.Margin = new System.Windows.Forms.Padding(2);
             this.nudEndYear.Maximum = new decimal(new int[] {
-            2015,
+            2020,
             0,
             0,
             0});
@@ -425,10 +430,10 @@
             this.radioButton5.Location = new System.Drawing.Point(16, 44);
             this.radioButton5.Margin = new System.Windows.Forms.Padding(2);
             this.radioButton5.Name = "radioButton5";
-            this.radioButton5.Size = new System.Drawing.Size(104, 17);
+            this.radioButton5.Size = new System.Drawing.Size(143, 17);
             this.radioButton5.TabIndex = 1;
             this.radioButton5.TabStop = true;
-            this.radioButton5.Text = "No PM threshold";
+            this.radioButton5.Text = "Yes - PM threshold exists";
             this.radioButton5.UseVisualStyleBackColor = true;
             // 
             // radioButton4
@@ -437,10 +442,10 @@
             this.radioButton4.Location = new System.Drawing.Point(16, 17);
             this.radioButton4.Margin = new System.Windows.Forms.Padding(2);
             this.radioButton4.Name = "radioButton4";
-            this.radioButton4.Size = new System.Drawing.Size(143, 17);
+            this.radioButton4.Size = new System.Drawing.Size(104, 17);
             this.radioButton4.TabIndex = 0;
             this.radioButton4.TabStop = true;
-            this.radioButton4.Text = "Yes - PM threshold exists";
+            this.radioButton4.Text = "No PM threshold";
             this.radioButton4.UseVisualStyleBackColor = true;
             // 
             // txtUserSuppliedBeta
@@ -1047,6 +1052,7 @@
             // 
             // tabStep6
             // 
+            this.tabStep6.Controls.Add(this.gbLagFunction);
             this.tabStep6.Controls.Add(this.txtLagOther);
             this.tabStep6.Controls.Add(this.label38);
             this.tabStep6.Controls.Add(this.txtLagLung);
@@ -1068,6 +1074,51 @@
             this.tabStep6.TabIndex = 5;
             this.tabStep6.Text = "Lag Type";
             this.tabStep6.UseVisualStyleBackColor = true;
+            // 
+            // gbLagFunction
+            // 
+            this.gbLagFunction.Controls.Add(this.radioButton13);
+            this.gbLagFunction.Controls.Add(this.radioButton12);
+            this.gbLagFunction.Controls.Add(this.radioButton2);
+            this.gbLagFunction.Location = new System.Drawing.Point(22, 135);
+            this.gbLagFunction.Name = "gbLagFunction";
+            this.gbLagFunction.Size = new System.Drawing.Size(150, 100);
+            this.gbLagFunction.TabIndex = 13;
+            this.gbLagFunction.TabStop = false;
+            this.gbLagFunction.Text = "Lag Function Type";
+            // 
+            // radioButton13
+            // 
+            this.radioButton13.AutoSize = true;
+            this.radioButton13.Location = new System.Drawing.Point(33, 27);
+            this.radioButton13.Name = "radioButton13";
+            this.radioButton13.Size = new System.Drawing.Size(84, 17);
+            this.radioButton13.TabIndex = 0;
+            this.radioButton13.TabStop = true;
+            this.radioButton13.Text = "HES Default";
+            this.radioButton13.UseVisualStyleBackColor = true;
+            // 
+            // radioButton12
+            // 
+            this.radioButton12.AutoSize = true;
+            this.radioButton12.Location = new System.Drawing.Point(33, 50);
+            this.radioButton12.Name = "radioButton12";
+            this.radioButton12.Size = new System.Drawing.Size(61, 17);
+            this.radioButton12.TabIndex = 1;
+            this.radioButton12.TabStop = true;
+            this.radioButton12.Text = "Smooth";
+            this.radioButton12.UseVisualStyleBackColor = true;
+            // 
+            // radioButton2
+            // 
+            this.radioButton2.AutoSize = true;
+            this.radioButton2.Location = new System.Drawing.Point(33, 73);
+            this.radioButton2.Name = "radioButton2";
+            this.radioButton2.Size = new System.Drawing.Size(87, 17);
+            this.radioButton2.TabIndex = 2;
+            this.radioButton2.TabStop = true;
+            this.radioButton2.Text = "User Defined";
+            this.radioButton2.UseVisualStyleBackColor = true;
             // 
             // txtLagOther
             // 
@@ -1422,7 +1473,7 @@
             // 
             this.pictureBox1.Location = new System.Drawing.Point(12, -17);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(530, 86);
+            this.pictureBox1.Size = new System.Drawing.Size(530, 91);
             this.pictureBox1.TabIndex = 6;
             this.pictureBox1.TabStop = false;
             // 
@@ -1475,6 +1526,8 @@
             this.tabPage1.PerformLayout();
             this.tabStep6.ResumeLayout(false);
             this.tabStep6.PerformLayout();
+            this.gbLagFunction.ResumeLayout(false);
+            this.gbLagFunction.PerformLayout();
             this.gbLagType.ResumeLayout(false);
             this.gbLagType.PerformLayout();
             this.tabStep7.ResumeLayout(false);
@@ -1606,6 +1659,10 @@
         private System.Windows.Forms.Label label39;
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
         private System.ComponentModel.BackgroundWorker bwOutput;
+        private System.Windows.Forms.GroupBox gbLagFunction;
+        private System.Windows.Forms.RadioButton radioButton13;
+        private System.Windows.Forms.RadioButton radioButton12;
+        private System.Windows.Forms.RadioButton radioButton2;
     }
 }
 

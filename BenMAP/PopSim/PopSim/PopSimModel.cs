@@ -117,7 +117,7 @@ namespace PopSim
 
             End If
             */
-            CurrentStatus[0] = "Calculating Treshold";
+            CurrentStatus[0] = "Calculating Threshold";
             psWorker.ReportProgress(30,CurrentStatus);
             
             //STEP 4: CALCULATE THRESHOLD
@@ -239,12 +239,12 @@ namespace PopSim
                 run_illness_calcs();
             } // endif
             CurrentStatus[0] = "Calculating Death Probabilities";
-            psWorker.ReportProgress(40, CurrentStatus);
+            psWorker.ReportProgress(60, CurrentStatus);
 
             // STEP 7: CALCULATE THE PROBABILITY OF DEATH
             run_calculate_pdeath();
             CurrentStatus[0] = "Calculating Regulatory Population, Number of Deaths, and Life Expectancy";
-            psWorker.ReportProgress(60,CurrentStatus);
+            psWorker.ReportProgress(70,CurrentStatus);
 
             //STEP 8: CALCULATE REGULATORY POPULATION, NUMBER OF DEATHS, AND LIFE EXPECTANCY
             strscenarioText = "Regulatory";
@@ -567,13 +567,14 @@ namespace PopSim
         private void run_threshold_calcs()
         {
            //'Set variables to beginning values
-            int year = InputData.getBegin_Year();
+            int year;
             double PM_val = 0;
             t = 0;
             j = 0;
             k = 0;
             m = 0;
-            
+
+            year = InputData.getBegin_Year();
             while (year <= InputData.getEnd_Year()){
 
                 // Calculate threshold value
@@ -618,7 +619,7 @@ namespace PopSim
         
                     // Find adjusted threshold value in sorted PM Concentration table
                     sqltext = "SELECT Sorted_PM_Conc.PM_Conc, Sorted_PM_Conc.Perc1, Sorted_PM_Conc.Perc2 FROM Sorted_PM_Conc";
-                    sqltext = sqltext + " where Sorted_PM_Conc.PM_Conc = " + System.Math.Round((double)InputData.getPM_Threshold() - PM_val, 1);
+                    sqltext = sqltext + " where Sorted_PM_Conc.PM_Conc = " + System.Math.Round(((double)InputData.getPM_Threshold() - PM_val), 1);
                     dataCommand.CommandText = sqltext;
                     dataReader = dataCommand.ExecuteReader();
                     dataReader.Read();

@@ -415,8 +415,6 @@ namespace PopSim
                 Sub_Pop_End_4 = (int)dataReader[39];
                 // a.SUB_POP_END_5, 
                 Sub_Pop_End_5 = (int)dataReader[40];
-                //STOPPED HERE
-                
                 
                 // a.SUB_POP_ADJUSTMENT_1, 
                 Sub_Pop_Adjustment_1 = (double)dataReader[41];
