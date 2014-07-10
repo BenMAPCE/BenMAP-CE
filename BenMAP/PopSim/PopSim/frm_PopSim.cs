@@ -423,10 +423,6 @@ namespace PopSim
 
         }
 
-        private void radioButton3_CheckedChanged(object sender, EventArgs e)
-        {
-
-        }
 
         private void tabPage2_Click(object sender, EventArgs e)
         {
@@ -631,5 +627,139 @@ namespace PopSim
         {
             progressBar1.Visible = false;
         }
+
+        private void radioButton1_CheckedChanged(object sender, EventArgs e)
+        {
+            if (getRB(gbBetaSource) == 0)
+            {
+                cbStudy.Visible = true;
+                lblStudyBeta.Visible = true;
+                txtUserSuppliedBeta.Visible = false;
+                lblUserSuppliedBeta.Visible = false;
+            }
+            else
+            {
+                cbStudy.Visible = false;
+                lblStudyBeta.Visible = false;
+                txtUserSuppliedBeta.Visible = true;
+                lblUserSuppliedBeta.Visible = true;
+            }
+        }
+        private void radioButton3_CheckedChanged(object sender, EventArgs e)
+        {
+            if (getRB(gbBetaSource) == 1)
+            {
+                cbStudy.Visible = false;
+                lblStudyBeta.Visible = false;
+                txtUserSuppliedBeta.Visible = true;
+                lblUserSuppliedBeta.Visible = true;
+            }
+            else
+            {
+                cbStudy.Visible = true;
+                cbStudy.Visible = true;
+                txtUserSuppliedBeta.Visible = false;
+                lblUserSuppliedBeta.Visible = false;
+            }
+        }
+
+        private void radioButton4_CheckedChanged(object sender, EventArgs e)
+        {
+            if (getRB(gbPMTresholdType) == 0)
+            {
+                lblPMThreshold.Visible = false;
+                txtPMThreshold.Visible = false;
+                lblBetaAdjAtThreshold.Visible = false;
+                txtBetaAdj.Visible = false;
+
+            }
+            else
+            {
+                lblPMThreshold.Visible = true;
+                txtPMThreshold.Visible = true;
+                lblBetaAdjAtThreshold.Visible = true;
+                txtBetaAdj.Visible = true;
+            }
+        }
+
+        private void radioButton5_CheckedChanged(object sender, EventArgs e)
+        {
+            if (getRB(gbPMTresholdType) == 0)
+            {
+                lblPMThreshold.Visible = false;
+                txtPMThreshold.Visible = false;
+                lblBetaAdjAtThreshold.Visible = false;
+                txtBetaAdj.Visible = false;
+
+            }
+            else
+            {
+                lblPMThreshold.Visible = true;
+                txtPMThreshold.Visible = true;
+                lblBetaAdjAtThreshold.Visible = true;
+                txtBetaAdj.Visible = true;
+            }
+        }
+
+        private void rbAggregated_CheckedChanged(object sender, EventArgs e)
+        {
+            if (getRB(gbDoseResponse) == 0) // can't have a cause-specific lag for an aggregated response
+            {
+                radioButton11.Visible = false;
+                setRB(gbLagType, 0);
+                makeLagTypeControlsVisible(0);
+            }
+            else
+            {
+                radioButton11.Visible = true;
+                makeLagTypeControlsVisible(getRB(gbLagType));
+                
+            }
+            makeLagTypeControlsVisible(getRB(gbLagType));
+        }
+
+        private void radioButton10_CheckedChanged(object sender, EventArgs e)
+        {
+            makeLagTypeControlsVisible(getRB(gbLagType));
+        }
+
+        private void makeLagTypeControlsVisible(int iLagType)
+        {
+            // toggle the boxes based on lag type (single or cause specific)
+            if (iLagType == 0)
+            {
+                lblSingleLag.Visible = true;
+                txtLagSingle.Visible = true;
+                lblCauseSpecificLag.Visible = false;
+                lblCause.Visible = false;
+                lblK.Visible = false;
+                lblCardio.Visible = false;
+                txtLagCardio.Visible = false;
+                lblLung.Visible = false;
+                txtLagLung.Visible = false;
+                lblOther.Visible = false;
+                txtLagOther.Visible = false;
+            }
+            else
+            {
+                lblSingleLag.Visible = false;
+                txtLagSingle.Visible = false;
+                lblCauseSpecificLag.Visible = true;
+                lblCause.Visible = true;
+                lblK.Visible = true;
+                lblCardio.Visible = true;
+                txtLagCardio.Visible = true;
+                lblLung.Visible = true;
+                txtLagLung.Visible = true;
+                lblOther.Visible = true;
+                txtLagOther.Visible = true;
+            }
+        }
+
+        private void rbDisaggregated_CheckedChanged(object sender, EventArgs e)
+        {
+            makeLagTypeControlsVisible(getRB(gbLagType));
+        }
+    
     }
 }

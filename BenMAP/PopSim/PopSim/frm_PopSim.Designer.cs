@@ -43,15 +43,15 @@
             this.label1 = new System.Windows.Forms.Label();
             this.tabStep2 = new System.Windows.Forms.TabPage();
             this.txtBetaAdj = new System.Windows.Forms.TextBox();
-            this.label13 = new System.Windows.Forms.Label();
+            this.lblBetaAdjAtThreshold = new System.Windows.Forms.Label();
             this.txtPMThreshold = new System.Windows.Forms.TextBox();
-            this.label12 = new System.Windows.Forms.Label();
+            this.lblPMThreshold = new System.Windows.Forms.Label();
             this.gbPMTresholdType = new System.Windows.Forms.GroupBox();
             this.radioButton5 = new System.Windows.Forms.RadioButton();
             this.radioButton4 = new System.Windows.Forms.RadioButton();
             this.txtUserSuppliedBeta = new System.Windows.Forms.TextBox();
-            this.label10 = new System.Windows.Forms.Label();
-            this.label9 = new System.Windows.Forms.Label();
+            this.lblUserSuppliedBeta = new System.Windows.Forms.Label();
+            this.lblStudyBeta = new System.Windows.Forms.Label();
             this.cbStudy = new System.Windows.Forms.ComboBox();
             this.gbBetaSource = new System.Windows.Forms.GroupBox();
             this.radioButton3 = new System.Windows.Forms.RadioButton();
@@ -114,16 +114,16 @@
             this.radioButton12 = new System.Windows.Forms.RadioButton();
             this.radioButton2 = new System.Windows.Forms.RadioButton();
             this.txtLagOther = new System.Windows.Forms.TextBox();
-            this.label38 = new System.Windows.Forms.Label();
+            this.lblOther = new System.Windows.Forms.Label();
             this.txtLagLung = new System.Windows.Forms.TextBox();
-            this.label37 = new System.Windows.Forms.Label();
+            this.lblLung = new System.Windows.Forms.Label();
             this.txtLagCardio = new System.Windows.Forms.TextBox();
-            this.label36 = new System.Windows.Forms.Label();
-            this.label35 = new System.Windows.Forms.Label();
-            this.label34 = new System.Windows.Forms.Label();
-            this.label33 = new System.Windows.Forms.Label();
+            this.lblCardio = new System.Windows.Forms.Label();
+            this.lblK = new System.Windows.Forms.Label();
+            this.lblCause = new System.Windows.Forms.Label();
+            this.lblCauseSpecificLag = new System.Windows.Forms.Label();
             this.txtLagSingle = new System.Windows.Forms.TextBox();
-            this.label32 = new System.Windows.Forms.Label();
+            this.lblSingleLag = new System.Windows.Forms.Label();
             this.gbLagType = new System.Windows.Forms.GroupBox();
             this.radioButton11 = new System.Windows.Forms.RadioButton();
             this.radioButton10 = new System.Windows.Forms.RadioButton();
@@ -355,13 +355,13 @@
             // tabStep2
             // 
             this.tabStep2.Controls.Add(this.txtBetaAdj);
-            this.tabStep2.Controls.Add(this.label13);
+            this.tabStep2.Controls.Add(this.lblBetaAdjAtThreshold);
             this.tabStep2.Controls.Add(this.txtPMThreshold);
-            this.tabStep2.Controls.Add(this.label12);
+            this.tabStep2.Controls.Add(this.lblPMThreshold);
             this.tabStep2.Controls.Add(this.gbPMTresholdType);
             this.tabStep2.Controls.Add(this.txtUserSuppliedBeta);
-            this.tabStep2.Controls.Add(this.label10);
-            this.tabStep2.Controls.Add(this.label9);
+            this.tabStep2.Controls.Add(this.lblUserSuppliedBeta);
+            this.tabStep2.Controls.Add(this.lblStudyBeta);
             this.tabStep2.Controls.Add(this.cbStudy);
             this.tabStep2.Controls.Add(this.gbBetaSource);
             this.tabStep2.Controls.Add(this.label7);
@@ -383,15 +383,15 @@
             this.txtBetaAdj.Size = new System.Drawing.Size(76, 20);
             this.txtBetaAdj.TabIndex = 11;
             // 
-            // label13
+            // lblBetaAdjAtThreshold
             // 
-            this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(220, 281);
-            this.label13.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(141, 13);
-            this.label13.TabIndex = 10;
-            this.label13.Text = "Beta adjustment at threshold";
+            this.lblBetaAdjAtThreshold.AutoSize = true;
+            this.lblBetaAdjAtThreshold.Location = new System.Drawing.Point(220, 281);
+            this.lblBetaAdjAtThreshold.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblBetaAdjAtThreshold.Name = "lblBetaAdjAtThreshold";
+            this.lblBetaAdjAtThreshold.Size = new System.Drawing.Size(141, 13);
+            this.lblBetaAdjAtThreshold.TabIndex = 10;
+            this.lblBetaAdjAtThreshold.Text = "Beta adjustment at threshold";
             // 
             // txtPMThreshold
             // 
@@ -401,15 +401,15 @@
             this.txtPMThreshold.Size = new System.Drawing.Size(76, 20);
             this.txtPMThreshold.TabIndex = 9;
             // 
-            // label12
+            // lblPMThreshold
             // 
-            this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(220, 261);
-            this.label12.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(115, 13);
-            this.label12.TabIndex = 8;
-            this.label12.Text = "PM threshold (ug/m^3)";
+            this.lblPMThreshold.AutoSize = true;
+            this.lblPMThreshold.Location = new System.Drawing.Point(220, 261);
+            this.lblPMThreshold.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblPMThreshold.Name = "lblPMThreshold";
+            this.lblPMThreshold.Size = new System.Drawing.Size(115, 13);
+            this.lblPMThreshold.TabIndex = 8;
+            this.lblPMThreshold.Text = "PM threshold (ug/m^3)";
             // 
             // gbPMTresholdType
             // 
@@ -435,6 +435,7 @@
             this.radioButton5.TabStop = true;
             this.radioButton5.Text = "Yes - PM threshold exists";
             this.radioButton5.UseVisualStyleBackColor = true;
+            this.radioButton5.CheckedChanged += new System.EventHandler(this.radioButton5_CheckedChanged);
             // 
             // radioButton4
             // 
@@ -447,6 +448,7 @@
             this.radioButton4.TabStop = true;
             this.radioButton4.Text = "No PM threshold";
             this.radioButton4.UseVisualStyleBackColor = true;
+            this.radioButton4.CheckedChanged += new System.EventHandler(this.radioButton4_CheckedChanged);
             // 
             // txtUserSuppliedBeta
             // 
@@ -456,25 +458,25 @@
             this.txtUserSuppliedBeta.Size = new System.Drawing.Size(92, 20);
             this.txtUserSuppliedBeta.TabIndex = 6;
             // 
-            // label10
+            // lblUserSuppliedBeta
             // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(56, 216);
-            this.label10.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(124, 13);
-            this.label10.TabIndex = 5;
-            this.label10.Text = "Enter User-supplied Beta";
+            this.lblUserSuppliedBeta.AutoSize = true;
+            this.lblUserSuppliedBeta.Location = new System.Drawing.Point(56, 216);
+            this.lblUserSuppliedBeta.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblUserSuppliedBeta.Name = "lblUserSuppliedBeta";
+            this.lblUserSuppliedBeta.Size = new System.Drawing.Size(124, 13);
+            this.lblUserSuppliedBeta.TabIndex = 5;
+            this.lblUserSuppliedBeta.Text = "Enter User-supplied Beta";
             // 
-            // label9
+            // lblStudyBeta
             // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(56, 195);
-            this.label9.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(135, 13);
-            this.label9.TabIndex = 4;
-            this.label9.Text = "Study to use for Beta value";
+            this.lblStudyBeta.AutoSize = true;
+            this.lblStudyBeta.Location = new System.Drawing.Point(56, 195);
+            this.lblStudyBeta.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblStudyBeta.Name = "lblStudyBeta";
+            this.lblStudyBeta.Size = new System.Drawing.Size(135, 13);
+            this.lblStudyBeta.TabIndex = 4;
+            this.lblStudyBeta.Text = "Study to use for Beta value";
             // 
             // cbStudy
             // 
@@ -522,6 +524,7 @@
             this.radioButton1.TabStop = true;
             this.radioButton1.Text = "Beta from Study";
             this.radioButton1.UseVisualStyleBackColor = true;
+            this.radioButton1.CheckedChanged += new System.EventHandler(this.radioButton1_CheckedChanged);
             // 
             // label7
             // 
@@ -558,6 +561,7 @@
             this.rbDisaggregated.TabStop = true;
             this.rbDisaggregated.Text = "Disaggregated";
             this.rbDisaggregated.UseVisualStyleBackColor = true;
+            this.rbDisaggregated.CheckedChanged += new System.EventHandler(this.rbDisaggregated_CheckedChanged);
             // 
             // rbAggregated
             // 
@@ -570,6 +574,7 @@
             this.rbAggregated.TabStop = true;
             this.rbAggregated.Text = "Aggregated";
             this.rbAggregated.UseVisualStyleBackColor = true;
+            this.rbAggregated.CheckedChanged += new System.EventHandler(this.rbAggregated_CheckedChanged);
             // 
             // tabStep4
             // 
@@ -1054,16 +1059,16 @@
             // 
             this.tabStep6.Controls.Add(this.gbLagFunction);
             this.tabStep6.Controls.Add(this.txtLagOther);
-            this.tabStep6.Controls.Add(this.label38);
+            this.tabStep6.Controls.Add(this.lblOther);
             this.tabStep6.Controls.Add(this.txtLagLung);
-            this.tabStep6.Controls.Add(this.label37);
+            this.tabStep6.Controls.Add(this.lblLung);
             this.tabStep6.Controls.Add(this.txtLagCardio);
-            this.tabStep6.Controls.Add(this.label36);
-            this.tabStep6.Controls.Add(this.label35);
-            this.tabStep6.Controls.Add(this.label34);
-            this.tabStep6.Controls.Add(this.label33);
+            this.tabStep6.Controls.Add(this.lblCardio);
+            this.tabStep6.Controls.Add(this.lblK);
+            this.tabStep6.Controls.Add(this.lblCause);
+            this.tabStep6.Controls.Add(this.lblCauseSpecificLag);
             this.tabStep6.Controls.Add(this.txtLagSingle);
-            this.tabStep6.Controls.Add(this.label32);
+            this.tabStep6.Controls.Add(this.lblSingleLag);
             this.tabStep6.Controls.Add(this.gbLagType);
             this.tabStep6.Controls.Add(this.label31);
             this.tabStep6.Location = new System.Drawing.Point(4, 22);
@@ -1128,15 +1133,15 @@
             this.txtLagOther.Size = new System.Drawing.Size(76, 20);
             this.txtLagOther.TabIndex = 12;
             // 
-            // label38
+            // lblOther
             // 
-            this.label38.AutoSize = true;
-            this.label38.Location = new System.Drawing.Point(244, 184);
-            this.label38.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label38.Name = "label38";
-            this.label38.Size = new System.Drawing.Size(31, 13);
-            this.label38.TabIndex = 11;
-            this.label38.Text = "other";
+            this.lblOther.AutoSize = true;
+            this.lblOther.Location = new System.Drawing.Point(244, 184);
+            this.lblOther.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblOther.Name = "lblOther";
+            this.lblOther.Size = new System.Drawing.Size(31, 13);
+            this.lblOther.TabIndex = 11;
+            this.lblOther.Text = "other";
             // 
             // txtLagLung
             // 
@@ -1146,15 +1151,15 @@
             this.txtLagLung.Size = new System.Drawing.Size(76, 20);
             this.txtLagLung.TabIndex = 10;
             // 
-            // label37
+            // lblLung
             // 
-            this.label37.AutoSize = true;
-            this.label37.Location = new System.Drawing.Point(244, 162);
-            this.label37.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label37.Name = "label37";
-            this.label37.Size = new System.Drawing.Size(27, 13);
-            this.label37.TabIndex = 9;
-            this.label37.Text = "lung";
+            this.lblLung.AutoSize = true;
+            this.lblLung.Location = new System.Drawing.Point(244, 162);
+            this.lblLung.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblLung.Name = "lblLung";
+            this.lblLung.Size = new System.Drawing.Size(27, 13);
+            this.lblLung.TabIndex = 9;
+            this.lblLung.Text = "lung";
             // 
             // txtLagCardio
             // 
@@ -1164,45 +1169,45 @@
             this.txtLagCardio.Size = new System.Drawing.Size(76, 20);
             this.txtLagCardio.TabIndex = 8;
             // 
-            // label36
+            // lblCardio
             // 
-            this.label36.AutoSize = true;
-            this.label36.Location = new System.Drawing.Point(244, 139);
-            this.label36.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label36.Name = "label36";
-            this.label36.Size = new System.Drawing.Size(36, 13);
-            this.label36.TabIndex = 7;
-            this.label36.Text = "cardio";
+            this.lblCardio.AutoSize = true;
+            this.lblCardio.Location = new System.Drawing.Point(244, 139);
+            this.lblCardio.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblCardio.Name = "lblCardio";
+            this.lblCardio.Size = new System.Drawing.Size(36, 13);
+            this.lblCardio.TabIndex = 7;
+            this.lblCardio.Text = "cardio";
             // 
-            // label35
+            // lblK
             // 
-            this.label35.AutoSize = true;
-            this.label35.Location = new System.Drawing.Point(325, 114);
-            this.label35.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label35.Name = "label35";
-            this.label35.Size = new System.Drawing.Size(13, 13);
-            this.label35.TabIndex = 6;
-            this.label35.Text = "k";
+            this.lblK.AutoSize = true;
+            this.lblK.Location = new System.Drawing.Point(325, 114);
+            this.lblK.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblK.Name = "lblK";
+            this.lblK.Size = new System.Drawing.Size(13, 13);
+            this.lblK.TabIndex = 6;
+            this.lblK.Text = "k";
             // 
-            // label34
+            // lblCause
             // 
-            this.label34.AutoSize = true;
-            this.label34.Location = new System.Drawing.Point(225, 114);
-            this.label34.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label34.Name = "label34";
-            this.label34.Size = new System.Drawing.Size(37, 13);
-            this.label34.TabIndex = 5;
-            this.label34.Text = "Cause";
+            this.lblCause.AutoSize = true;
+            this.lblCause.Location = new System.Drawing.Point(225, 114);
+            this.lblCause.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblCause.Name = "lblCause";
+            this.lblCause.Size = new System.Drawing.Size(37, 13);
+            this.lblCause.TabIndex = 5;
+            this.lblCause.Text = "Cause";
             // 
-            // label33
+            // lblCauseSpecificLag
             // 
-            this.label33.AutoSize = true;
-            this.label33.Location = new System.Drawing.Point(199, 90);
-            this.label33.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label33.Name = "label33";
-            this.label33.Size = new System.Drawing.Size(93, 13);
-            this.label33.TabIndex = 4;
-            this.label33.Text = "Cause-specific lag";
+            this.lblCauseSpecificLag.AutoSize = true;
+            this.lblCauseSpecificLag.Location = new System.Drawing.Point(199, 90);
+            this.lblCauseSpecificLag.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblCauseSpecificLag.Name = "lblCauseSpecificLag";
+            this.lblCauseSpecificLag.Size = new System.Drawing.Size(93, 13);
+            this.lblCauseSpecificLag.TabIndex = 4;
+            this.lblCauseSpecificLag.Text = "Cause-specific lag";
             // 
             // txtLagSingle
             // 
@@ -1212,15 +1217,15 @@
             this.txtLagSingle.Size = new System.Drawing.Size(76, 20);
             this.txtLagSingle.TabIndex = 3;
             // 
-            // label32
+            // lblSingleLag
             // 
-            this.label32.AutoSize = true;
-            this.label32.Location = new System.Drawing.Point(196, 64);
-            this.label32.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label32.Name = "label32";
-            this.label32.Size = new System.Drawing.Size(68, 13);
-            this.label32.TabIndex = 2;
-            this.label32.Text = "Single lag - k";
+            this.lblSingleLag.AutoSize = true;
+            this.lblSingleLag.Location = new System.Drawing.Point(196, 64);
+            this.lblSingleLag.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblSingleLag.Name = "lblSingleLag";
+            this.lblSingleLag.Size = new System.Drawing.Size(68, 13);
+            this.lblSingleLag.TabIndex = 2;
+            this.lblSingleLag.Text = "Single lag - k";
             // 
             // gbLagType
             // 
@@ -1258,6 +1263,7 @@
             this.radioButton10.TabStop = true;
             this.radioButton10.Text = "Single lag";
             this.radioButton10.UseVisualStyleBackColor = true;
+            this.radioButton10.CheckedChanged += new System.EventHandler(this.radioButton10_CheckedChanged);
             // 
             // label31
             // 
@@ -1566,16 +1572,16 @@
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Button btnHelp;
         private System.Windows.Forms.GroupBox gbBetaSource;
-        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Label lblStudyBeta;
         private System.Windows.Forms.ComboBox cbStudy;
         private System.Windows.Forms.RadioButton radioButton3;
         private System.Windows.Forms.RadioButton radioButton1;
         private System.Windows.Forms.TextBox txtUserSuppliedBeta;
-        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Label lblUserSuppliedBeta;
         private System.Windows.Forms.TextBox txtBetaAdj;
-        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.Label lblBetaAdjAtThreshold;
         private System.Windows.Forms.TextBox txtPMThreshold;
-        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.Label lblPMThreshold;
         private System.Windows.Forms.GroupBox gbPMTresholdType;
         private System.Windows.Forms.RadioButton radioButton5;
         private System.Windows.Forms.RadioButton radioButton4;
@@ -1638,16 +1644,16 @@
         private System.Windows.Forms.Label label23;
         private System.Windows.Forms.Label label31;
         private System.Windows.Forms.TextBox txtLagOther;
-        private System.Windows.Forms.Label label38;
+        private System.Windows.Forms.Label lblOther;
         private System.Windows.Forms.TextBox txtLagLung;
-        private System.Windows.Forms.Label label37;
+        private System.Windows.Forms.Label lblLung;
         private System.Windows.Forms.TextBox txtLagCardio;
-        private System.Windows.Forms.Label label36;
-        private System.Windows.Forms.Label label35;
-        private System.Windows.Forms.Label label34;
-        private System.Windows.Forms.Label label33;
+        private System.Windows.Forms.Label lblCardio;
+        private System.Windows.Forms.Label lblK;
+        private System.Windows.Forms.Label lblCause;
+        private System.Windows.Forms.Label lblCauseSpecificLag;
         private System.Windows.Forms.TextBox txtLagSingle;
-        private System.Windows.Forms.Label label32;
+        private System.Windows.Forms.Label lblSingleLag;
         private System.Windows.Forms.GroupBox gbLagType;
         private System.Windows.Forms.RadioButton radioButton11;
         private System.Windows.Forms.RadioButton radioButton10;
