@@ -228,7 +228,7 @@ namespace BenMAP
                 {
                     commandText = string.Format("SELECT VALUATIONFUNCTIONDATASETID FROM VALUATIONFUNCTIONDATASETS WHERE ValuationFunctionDataSetName = '{0}' and SETUPID = {1}", lstAvailableDataSets.Text, CommonClass.ManageSetup.SetupID);
                     vfdID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
-                    commandText = "SELECT DATASETID FROM DATASETS WHERE DATASETNAME = 'Valuationfunction'";
+                    commandText = "SELECT DATASETTYPEID FROM DATASETTYPES WHERE DATASETTYPENAME = 'Valuationfunction'";
                     dstID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
                     
                     commandText = string.Format("delete from ValuationFunctionDataSets where ValuationFunctionDataSetName='{0}' and setupid={1} and VALUATIONFUNCTIONDATASETID = {2}", lstAvailableDataSets.Text, CommonClass.ManageSetup.SetupID, vfdID);

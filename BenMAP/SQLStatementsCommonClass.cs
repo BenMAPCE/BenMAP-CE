@@ -134,7 +134,7 @@ namespace BenMAP
         /// <summary>
         /// Gets the dataset identifier.
         /// Selects Dataset Id from Datasets table where Dataset Name is the name passed in.
-        /// "SELECT DATASETID FROM DATASETS WHERE DATASETNAME = '{0}'"
+        /// "SELECT DATASETTYPEID FROM DATASETTYPES WHERE DATASETTYPENAME = '{0}'"
         /// </summary>
         /// <param name="datasetname">The datasetname.</param>
         /// <returns>System.Int32.</returns>
@@ -146,7 +146,7 @@ namespace BenMAP
             string commandText = string.Empty;
             try
             {
-                commandText = string.Format("SELECT DATASETID FROM DATASETS WHERE DATASETNAME = '{0}'", datasetname);
+                commandText = string.Format("SELECT DATASETTYPEID FROM DATASETTYPES WHERE DATASETTYPENAME = '{0}'", datasetname);
                 rtvID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
             }
             catch (Exception ex)
@@ -164,7 +164,7 @@ namespace BenMAP
             MetadataClassObj _metadataObj = new MetadataClassObj();
             DataSet ds = null;
 
-            string commandText = string.Format("SELECT METADATAID, SETUPID, DATASETID, DATASETTYPEID, FILENAME, " +
+            string commandText = string.Format("SELECT METADATAID, METADATAENTRYID, SETUPID, DATASETID, DATASETTYPEID, FILENAME, " +
                       "EXTENSION, DATAREFERENCE, FILEDATE, IMPORTDATE, DESCRIPTION, " +
                       "PROJECTION, GEONAME, DATUMNAME, DATUMTYPE, SPHEROIDNAME, " +
                       "MERIDIANNAME, UNITNAME, PROJ4STRING, NUMBEROFFEATURES " +
@@ -175,7 +175,7 @@ namespace BenMAP
             ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
             foreach(DataRow dr in ds.Tables[0].Rows)
             {
-                _metadataObj.MetadataId = Convert.ToInt32(dr["METADATAID"]);
+                _metadataObj.MetadataId = Convert.ToInt32(dr["METADATAENTRYID"]);//Convert.ToInt32(dr["METADATAID"]);
                 _metadataObj.SetupId = Convert.ToInt32(dr["SETUPID"]);
                 _metadataObj.DatasetId = Convert.ToInt32(dr["DATASETID"]);
                 _metadataObj.DatasetTypeId = Convert.ToInt32(dr["DATASETTYPEID"]);

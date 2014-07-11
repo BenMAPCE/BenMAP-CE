@@ -9144,7 +9144,7 @@ namespace BenMAP
             foreach(DataRow dr in ds.Tables[0].Rows)
             {
                 //get the dataset ID, with the dataset ID get the dataset name
-                commandText = string.Format("SELECT DATASETNAME FROM DATASETS WHERE DATASETID = {0}", dr["DATASETTYPEID"].ToString());
+                commandText = string.Format("SELECT DATASETTYPENAME FROM DATASETTYPES WHERE DATASETTYPEID = {0}", dr["DATASETTYPEID"].ToString());
                 object temp = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
                 datasetTypeName = temp.ToString();
 

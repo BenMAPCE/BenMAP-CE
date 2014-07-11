@@ -120,7 +120,7 @@ namespace BenMAP
                 {
                     commandText = string.Format("SELECT POPULATIONDATASETID FROM POPULATIONDATASETS WHERE POPULATIONDATASETNAME = '{0}' and SETUPID = {1}", populationDatasetName, CommonClass.ManageSetup.SetupID);
                     popDstID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
-                    commandText = "SELECT DATASETID FROM DATASETS WHERE DATASETNAME = 'Population'";
+                    commandText = "SELECT DATASETTYPEID FROM DATASETTYPES WHERE DATASETTYPENAME = 'Population'";
                     dstID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
 
                     commandText = "delete from PopulationEntries where PopulationDataSetID=" + _dataSetID + "";
