@@ -453,7 +453,7 @@ namespace BenMAP
                                                     dtForLoading.Rows[row][8].ToString().Replace("'", "''"), dtForLoading.Rows[row][9].ToString().Replace("'", "''"),
                                                     dtForLoading.Rows[row][10], dtForLoading.Rows[row][11], dtForLoading.Rows[row][12], dtForLoading.Rows[row][13].ToString().Replace("'", "''"),
                                                     dtForLoading.Rows[row][14], dtForLoading.Rows[row][15].ToString().Replace("'", "''"),
-                                                    dtForLoading.Rows[row][16], dtForLoading.Rows[row][17].ToString().Replace("'", "''"), _metadataObj.MetadataId);
+                                                    dtForLoading.Rows[row][16], dtForLoading.Rows[row][17].ToString().Replace("'", "''"), _metadataObj.MetadataEntryId);
 
                         rth = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                         //if (_dt.Rows[row][9].ToString() == "Custom" && dicCustomValue.ContainsKey(Convert.ToInt32(_dt.Rows[row][18])) && dicCustomValue[Convert.ToInt32(_dt.Rows[row][18])].Count > 0)
@@ -607,7 +607,7 @@ namespace BenMAP
                                                         dtForLoading.Rows[row][3].ToString().Replace("'", "''"), dtForLoading.Rows[row][4], dtForLoading.Rows[row][5], FunctionalFormID, dtForLoading.Rows[row][7],
                                                         dtForLoading.Rows[row][8].ToString().Replace("'", "''"), dtForLoading.Rows[row][9].ToString().Replace("'", "''"), dtForLoading.Rows[row][10], dtForLoading.Rows[row][11],
                                                         dtForLoading.Rows[row][12], dtForLoading.Rows[row][13].ToString().Replace("'", "''"), dtForLoading.Rows[row][14], dtForLoading.Rows[row][15].ToString().Replace("'", "''"),
-                                                        dtForLoading.Rows[row][16], dtForLoading.Rows[row][17].ToString().Replace("'", "''"), _metadataObj.MetadataId);
+                                                        dtForLoading.Rows[row][16], dtForLoading.Rows[row][17].ToString().Replace("'", "''"), _metadataObj.MetadataEntryId);
                             
                             int rth = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                             //if (_dt.Rows[row][9].ToString() == "Custom" && dicCustomValue.ContainsKey(Convert.ToInt32(_dt.Rows[row][18])) && dicCustomValue[Convert.ToInt32(_dt.Rows[row][18])].Count > 0)

@@ -193,7 +193,7 @@ namespace BenMAP
                         if (obj == null)
                         {
                             variableID++;
-                            commandText = string.Format("insert into SetUpVariables values({0},{1},'{2}','{3}', {4})", variableID, variableDatasetID, variableName, gridDefinationID, _lstMetadata[i].MetadataId);
+                            commandText = string.Format("insert into SetUpVariables values({0},{1},'{2}','{3}', {4})", variableID, variableDatasetID, variableName, gridDefinationID, _lstMetadata[i].MetadataEntryId);
                             fbCommand.CommandText = commandText;
                             fbCommand.ExecuteNonQuery();
                             rowCount = dt.Rows.Count;
@@ -254,7 +254,7 @@ namespace BenMAP
                         obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
 
                         variableID++;
-                        commandText = string.Format("insert into SetUpVariables values({0},{1},'{2}','{3}', {4})", variableID, variableDatasetID, variableName, gridDefinationID, _lstMetadata[i].MetadataId);
+                        commandText = string.Format("insert into SetUpVariables values({0},{1},'{2}','{3}', {4})", variableID, variableDatasetID, variableName, gridDefinationID, _lstMetadata[i].MetadataEntryId);
                         fbCommand.CommandText = commandText;
                         fbCommand.ExecuteNonQuery();
                         rowCount = dt.Rows.Count;
@@ -445,8 +445,8 @@ namespace BenMAP
                     //If an isert is not done, it will always retrun the same number.  In this case I am loading the metadata 
                     //objects and will insert them once the final ok is done.
                     //This will ensure that each metadataId is uniquie.
-                    int temp = _lstMetadata[_lstMetadata.Count - 1].MetadataId + 1;
-                    _metadataObj.MetadataId = temp;
+                    int temp = _lstMetadata[_lstMetadata.Count - 1].MetadataEntryId + 1;
+                    _metadataObj.MetadataEntryId = temp;
                     _lstMetadata.Add(_metadataObj);
                 }
                 txtGridDefinition.Enabled = false;

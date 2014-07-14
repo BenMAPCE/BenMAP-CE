@@ -57,7 +57,7 @@ namespace BenMAP
                                         metadataObj.Extension, metadataObj.DataReference, metadataObj.FileDate, metadataObj.ImportDate,
                                         metadataObj.Description, metadataObj.Projection, metadataObj.GeoName, metadataObj.DatumName,
                                         metadataObj.DatumType, metadataObj.SpheroidName, metadataObj.MeridianName, metadataObj.UnitName,
-                                        metadataObj.Proj4String, metadataObj.NumberOfFeatures, metadataObj.MetadataId);
+                                        metadataObj.Proj4String, metadataObj.NumberOfFeatures, metadataObj.MetadataEntryId);
                         rtv = fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                     
                         bPassed = true;
@@ -108,7 +108,7 @@ namespace BenMAP
                 commandText = string.Format("UPDATE METADATAINFORMATION set DATAREFERENCE = '{0}', DESCRIPTION = '{1}' " +
                                             "WHERE DATASETID = {2} AND SETUPID = {3} AND METADATAENTRYID = {4}",
                                             metadataObj.DataReference, metadataObj.Description, metadataObj.DatasetId,
-                                            metadataObj.SetupId, metadataObj.MetadataId);
+                                            metadataObj.SetupId, metadataObj.MetadataEntryId);
 
                 //commandText = string.Format("UPDATE METADATAINFORMATION set DATAREFERENCE = '{0}', DESCRIPTION = '{1}' " +
                 //               "WHERE DATASETID = {2} AND SETUPID = {3} AND METADATAID = {4}",
@@ -178,7 +178,7 @@ namespace BenMAP
             ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
             foreach(DataRow dr in ds.Tables[0].Rows)
             {
-                _metadataObj.MetadataId = Convert.ToInt32(dr["METADATAENTRYID"]);//Convert.ToInt32(dr["METADATAID"]);
+                _metadataObj.MetadataEntryId = Convert.ToInt32(dr["METADATAENTRYID"]);//Convert.ToInt32(dr["METADATAID"]);
                 _metadataObj.SetupId = Convert.ToInt32(dr["SETUPID"]);
                 _metadataObj.DatasetId = Convert.ToInt32(dr["DATASETID"]);
                 _metadataObj.DatasetTypeId = Convert.ToInt32(dr["DATASETTYPEID"]);
@@ -223,7 +223,7 @@ namespace BenMAP
             ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
             foreach (DataRow dr in ds.Tables[0].Rows)
             {
-                _metadataObj.MetadataId = Convert.ToInt32(dr["METADATAENTRYID"]);//Convert.ToInt32(dr["METADATAID"]);
+                _metadataObj.MetadataEntryId = Convert.ToInt32(dr["METADATAENTRYID"]);//Convert.ToInt32(dr["METADATAID"]);
                 _metadataObj.SetupId = Convert.ToInt32(dr["SETUPID"]);
                 _metadataObj.DatasetId = Convert.ToInt32(dr["DATASETID"]);
                 _metadataObj.DatasetTypeId = Convert.ToInt32(dr["DATASETTYPEID"]);
