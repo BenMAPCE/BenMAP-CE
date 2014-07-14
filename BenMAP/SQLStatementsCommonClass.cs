@@ -157,6 +157,9 @@ namespace BenMAP
             return rtvID;
         }
 
+
+        //this version of getMetadata is used
+        //by incidence and inflation datasets
         public static MetadataClassObj getMetadata(int datasetID, int setupId)
         {
             FireBirdHelperBase fb = new ESILFireBirdHelper();
@@ -199,7 +202,9 @@ namespace BenMAP
             return _metadataObj;
         }
 
-        //public static MetadataClassObj getMetadata(int datasetID, int setupId, int datasetTypeId, int metadataId)
+        //this version of getMetadata is called by
+        //incomegrowth, grid definitions, health impact, monitor, population, valuation function,
+        //and variable datasets
         public static MetadataClassObj getMetadata(int datasetID, int setupId, int datasetTypeId, int metadataentryid)
         {
             FireBirdHelperBase fb = new ESILFireBirdHelper();
