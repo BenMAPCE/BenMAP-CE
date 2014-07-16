@@ -188,11 +188,14 @@ namespace BenMAP
 
         private void tvCountries_AfterCheck(object sender, TreeViewEventArgs e)
         {
-            CheckChildNodes(e.Node);
+            if (e.Action != TreeViewAction.Unknown)
+            {
+                CheckChildNodes(e.Node);
+                CheckParentNode(e.Node);
+            }
 
-            //if this is checked AND a has no children)
+            //if this is checked AND has no children)
             //then, it is country and we add to list
-
             IMapFeatureLayer[] mfl = mapGBD.GetFeatureLayers();
             string filter =  "[ISO] = '" + e.Node.Name + "'";
             if ((e.Node.Checked) && (e.Node.Nodes.Count == 0))
@@ -233,6 +236,36 @@ namespace BenMAP
                     this.CheckChildNodes(item);
                 }
             }
+            tvCountries.EndUpdate();
+        }
+
+
+        private void CheckParentNode(TreeNode node)
+        {
+            if (node.Parent == null)
+            {
+                return;
+            }
+
+            //this will set parent node, if any
+            //to checked if all children are checked
+            //otherwise parent will be unchecked
+            tvCountries.BeginUpdate();
+
+            bool allChecked = true;
+
+            //loop siblings of current
+            foreach (TreeNode item in node.Parent.Nodes)
+            {
+                if (!item.Checked)
+                {
+                    allChecked = false;
+                    break;
+                }
+            }
+
+            node.Parent.Checked = allChecked;
+
             tvCountries.EndUpdate();
         }
 
@@ -454,7 +487,9 @@ namespace BenMAP
                     foreach (TreeNode node in nodes)
                     {
                         node.Checked = true;
+                        CheckParentNode(node);
                     }
+                    
                 }
             }
             cboRollbackType.SelectedIndex = (int)item.Type;

@@ -878,6 +878,18 @@
     </Compile>
     <None Include="BenMAP_TemporaryKey.pfx" />
     <Compile Include="Jira\NewIssue.cs" />
+    <None Include="Data\Shapefiles\GBDRollback\gadm_worldsimplify.dbf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Shapefiles\GBDRollback\gadm_worldsimplify.prj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Shapefiles\GBDRollback\gadm_worldsimplify.shp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Shapefiles\GBDRollback\gadm_worldsimplify.shx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Resources\Welcome1.png" />
     <EmbeddedResource Include="APV\Aggregation.resx">
       <DependentUpon>Aggregation.cs</DependentUpon>
