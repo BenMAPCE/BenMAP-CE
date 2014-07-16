@@ -3481,11 +3481,16 @@ namespace BenMAP
                     string s = "";
                     try
                     {
+                        //ModelDataLine mdl = (BenMAPLine)bcg.Base;
+                        //String test = mdl.DatabaseFilePath;
+                        //bcg.Base.da
                         s = (bcg.Base as ModelDataLine).DatabaseFilePath.Substring((bcg.Base as ModelDataLine).DatabaseFilePath.LastIndexOf(@"\") + 1);
 
                     }
-                    catch
-                    { }
+                    catch(Exception e)
+                    {
+                        Console.WriteLine("Broken cast "+e.ToString());
+                    }
                     node.Nodes[0].Nodes.Add(new TreeNode()
                     {
                         Name = "basedata",
