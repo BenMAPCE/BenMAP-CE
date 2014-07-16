@@ -95,6 +95,8 @@ namespace BenMAP
 
                 olvPopulationValues.DataSource = ds.Tables[0];
 
+                btnViewMetadata.Enabled = false;
+
             }
             catch (Exception ex)
             {
@@ -118,7 +120,7 @@ namespace BenMAP
                 {
                     commandText = string.Format("SELECT POPULATIONDATASETID FROM POPULATIONDATASETS WHERE POPULATIONDATASETNAME = '{0}' and SETUPID = {1}", populationDatasetName, CommonClass.ManageSetup.SetupID);
                     popDstID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
-                    commandText = "SELECT DATASETID FROM DATASETS WHERE DATASETNAME = 'Population'";
+                    commandText = "SELECT DATASETTYPEID FROM DATASETTYPES WHERE DATASETTYPENAME = 'Population'";
                     dstID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
 
                     commandText = "delete from PopulationEntries where PopulationDataSetID=" + _dataSetID + "";
@@ -156,11 +158,33 @@ namespace BenMAP
         {
             _metadataObj = SQLStatementsCommonClass.getMetadata(_dataSetID, _dsSetupID, _dsDatasetTypeId, _dsMetadataID);
             _metadataObj.SetupName = CommonClass.ManageSetup.SetupName;
+            btnViewMetadata.Enabled = false;
             ViewEditMetadata viewEMdata = new ViewEditMetadata(_metadataObj);
             DialogResult dr = viewEMdata.ShowDialog();
             if (dr.Equals(DialogResult.OK))
             {
                 _metadataObj = viewEMdata.MetadataObj;
+            }
+        }
+
+        private void olvPopulationValues_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                if (sender != null)
+                {
+
+                    BrightIdeasSoftware.DataListView dlv = sender as BrightIdeasSoftware.DataListView;
+
+                    if (dlv.SelectedItem != null)
+                    {
+                        btnViewMetadata.Enabled = true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
             }
         }
     }

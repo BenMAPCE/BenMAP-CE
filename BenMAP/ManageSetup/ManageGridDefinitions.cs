@@ -188,7 +188,7 @@ namespace BenMAP
                         int dstID = 0;
                         commandText = string.Format("SELECT GRIDDEFINITIONID FROM GRIDDEFINITIONS WHERE GRIDDEFINITIONNAME = '{0}' and SETUPID = {1}", lstAvailableGrid.SelectedItem.ToString(), CommonClass.ManageSetup.SetupID);
                         gdID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
-                        commandText = "SELECT DATASETID FROM DATASETS WHERE DATASETNAME = 'GridDefinition'";
+                        commandText = "SELECT DATASETTYPEID FROM DATASETTYPES WHERE DATASETTYPENAME = 'GridDefinition'";
                         dstID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
 
                         commandText = "select ttype from GridDefinitions where GridDefinitionID=" + _gridDefinitionID + "";

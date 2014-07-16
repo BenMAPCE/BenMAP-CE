@@ -138,7 +138,7 @@ namespace BenMAP
            // _dicTableDef = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             try
             {
-                cmdText = string.Format("SELECT COLUMNNAME, DATATYPE, REQUIRED, LOWERLIMIT, UPPERLIMIT, CHECKTYPE FROM DATASETDEFININTION WHERE DATASETNAME='{0}'", _datasetname);
+                cmdText = string.Format("SELECT COLUMNNAME, DATATYPE, REQUIRED, LOWERLIMIT, UPPERLIMIT, CHECKTYPE FROM DATASETDEFINITION WHERE DATASETTYPENAME='{0}'", _datasetname);
                 DataTable _obj = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, cmdText).Tables[0] as DataTable;
                 foreach(DataRow dr in _obj.Rows)
                 {
@@ -838,7 +838,7 @@ namespace BenMAP
         /// <returns>System.String.</returns>
         private string Get_Min(string columnName, string dataType)
         {
-            string cmdText = string.Format("SELECT LOWERLIMIT FROM DATASETDEFININTION where DATASETNAME='{0}' " +
+            string cmdText = string.Format("SELECT LOWERLIMIT FROM DATASETDEFINITION where DATASETTYPENAME='{0}' " +
                                             "and COLUMNNAME='{1}' and DATATYPE='{2}'", _datasetname, columnName, dataType);
             FireBirdHelperBase fb = new ESILFireBirdHelper();
             string obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, cmdText).ToString();
@@ -855,7 +855,7 @@ namespace BenMAP
         /// <returns>System.String.</returns>
         private string Get_Max(string columnName, string dataType)
         {
-            string cmdText = string.Format("SELECT UPPERLIMIT FROM DATASETDEFININTION where DATASETNAME='{0}' " +
+            string cmdText = string.Format("SELECT UPPERLIMIT FROM DATASETDEFINITION where DATASETTYPENAME='{0}' " +
                                 "and COLUMNNAME='{1}' and DATATYPE='{2}'", _datasetname, columnName, dataType);
             FireBirdHelperBase fb = new ESILFireBirdHelper();
             string obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, cmdText).ToString();

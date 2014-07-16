@@ -100,7 +100,7 @@ namespace BenMAP
                 commandText = string.Format("select INFLATIONDATASETID from INFLATIONDATASETS where INFLATIONDATASETNAME='{0}' and setupid={1}", str, CommonClass.ManageSetup.SetupID);
                 _datasetID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
                 _dataName = str;
-                btnViewMetadata.Enabled = true;
+                btnViewMetadata.Enabled = false;
             }
             catch (Exception ex)
             {
@@ -121,7 +121,7 @@ namespace BenMAP
                 {
                     commandText = string.Format("SELECT INFLATIONDATASETID FROM INFLATIONDATASETS WHERE INFLATIONDATASETNAME = '{0}' and SETUPID = {1}", lstAvailableDataSets.Text, CommonClass.ManageSetup.SetupID);
                     infDstID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
-                    commandText = "SELECT DATASETID FROM DATASETS WHERE DATASETNAME = 'Inflation'";
+                    commandText = "SELECT DATASETTYPEID FROM DATASETTYPES WHERE DATASETTYPENAME = 'Inflation'";
                     dstID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
                     
                     commandText = string.Format("delete from Inflationdatasets where Inflationdatasetname='{0}' and setupid={1}", lstAvailableDataSets.Text, CommonClass.ManageSetup.SetupID);
@@ -194,13 +194,35 @@ namespace BenMAP
         {
             _metadataObj = SQLStatementsCommonClass.getMetadata(_datasetID, CommonClass.ManageSetup.SetupID);
             _metadataObj.SetupName = CommonClass.ManageSetup.SetupName;//_dataName;//_lstDataSetName;
+            btnViewMetadata.Enabled = false;
+            BrightIdeasSoftware.DataListView dlv = olvData as BrightIdeasSoftware.DataListView;
+            dlv.SelectedItems.Clear();
             ViewEditMetadata viewEMdata = new ViewEditMetadata(_metadataObj);
             DialogResult dr = viewEMdata.ShowDialog();
             if (dr.Equals(DialogResult.OK))
             {
                 _metadataObj = viewEMdata.MetadataObj;
-                lstAvailableDataSets.SelectedIndex = -1;
-                btnViewMetadata.Enabled = false;
+            }
+        }
+
+        private void olvData_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                if (sender != null)
+                {
+
+                    BrightIdeasSoftware.DataListView dlv = sender as BrightIdeasSoftware.DataListView;
+
+                    if (dlv.SelectedItem != null)
+                    {
+                        btnViewMetadata.Enabled = true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
             }
         }
 
