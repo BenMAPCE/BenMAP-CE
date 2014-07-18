@@ -17,7 +17,7 @@ namespace BenMAP
     public partial class GBDRollback : Form
     {
 
-        private List<String> checkedCountries = new List<String>();
+        private Dictionary<string, string> checkedCountries = new Dictionary<string, string>();
         private List<GBDRollbackItem> rollbacks = new List<GBDRollbackItem>();
         private System.Data.DataTable dtCountries;
         private Microsoft.Office.Interop.Excel.Application xlApp;
@@ -62,7 +62,10 @@ namespace BenMAP
             if (File.Exists(mapFile))
             {
                 IFeatureSet fs = (FeatureSet)FeatureSet.Open(mapFile);
-                mapGBD.Layers.Add(fs);     
+                mapGBD.Layers.Add(fs);
+                IMapFeatureLayer[] mfl = mapGBD.GetFeatureLayers();
+                //mfl[0].Symbolizer = new PolygonSymbolizer(Color.Chocolate);
+                //mfl[0].SelectionSymbolizer = new PolygonSymbolizer(Color.AliceBlue);
           
             }
         }
@@ -200,9 +203,9 @@ namespace BenMAP
             string filter =  "[ISO] = '" + e.Node.Name + "'";
             if ((e.Node.Checked) && (e.Node.Nodes.Count == 0))
             {
-                if (!checkedCountries.Exists(s => s.Equals(e.Node.Text, StringComparison.OrdinalIgnoreCase)))
+                if (!checkedCountries.ContainsKey(e.Node.Name))
                 {
-                    checkedCountries.Add(e.Node.Text);
+                    checkedCountries.Add(e.Node.Name,e.Node.Text);
                     //also select on map                
                     if (selectMapFeaturesOnNodeCheck)
                     {
@@ -212,7 +215,7 @@ namespace BenMAP
             }
             else
             {
-                checkedCountries.RemoveAll(x => x.Equals(e.Node.Text,StringComparison.OrdinalIgnoreCase));  
+                checkedCountries.Remove(e.Node.Name);  
                 //unselect on map
                 if (selectMapFeaturesOnNodeCheck)
                 {
@@ -341,7 +344,7 @@ namespace BenMAP
             GBDRollbackItem rollback = new GBDRollbackItem();
             rollback.Name = txtName.Text;
             rollback.Description = txtDescription.Text;
-            rollback.Countries = new List<string>(checkedCountries);
+            rollback.Countries = new Dictionary<string,string>(checkedCountries);
             switch (cboRollbackType.SelectedIndex)
             {
                 case 0: //percentage
@@ -382,13 +385,14 @@ namespace BenMAP
                 int i = dgvRollbacks.Rows.Add(row);
                 dgvRollbacks.Rows[i].Cells["colName"].Value = item.Name;
                 dgvRollbacks.Rows[i].Cells["colColor"].Style.BackColor = item.Color;
-                item.Countries.Sort();
                 dgvRollbacks.Rows[i].Cells["colTotalCountries"].Value = item.Countries.Count().ToString();
                 dgvRollbacks.Rows[i].Cells["colTotalPopulation"].Value = GetRollbackTotalPopulation(item).ToString("#,###");
                 dgvRollbacks.Rows[i].Cells["colRollbackType"].Value = GetRollbackTypeSummary(item);         
             }
 
             //set color of selected country features on map
+            IMapFeatureLayer[] mfl = mapGBD.GetFeatureLayers();
+            //mfl[0].SelectionSymbolizer = new PolygonSymbolizer(Color.Blue);
 
             ClearFields();
             SetActivePanel(0);
@@ -401,16 +405,10 @@ namespace BenMAP
             return Color.FromArgb(random.Next(0, 255), random.Next(0, 255), random.Next(0, 255));
         }  
 
-
         private int GetRollbackTotalPopulation(GBDRollbackItem rollback)
         {
             //build selected list of countries, pops
-            string[] countries = rollback.Countries.ToArray();
-            for (int i = 0; i < countries.Length; i++)
-            {
-                countries[i] = "'" + countries[i] + "'";
-            }
-            string expression = "COUNTRYNAME in (" + String.Join(",", countries) + ")";
+            string expression = "COUNTRYID in (" + String.Join(",", rollback.Countries.Select(x=> "'" + x.Key + "'")) + ")";
             DataRow[] rows = dtCountries.Select(expression);
             System.Data.DataTable dt = rows.CopyToDataTable<DataRow>();
 
@@ -476,21 +474,15 @@ namespace BenMAP
         {
             txtName.Text = item.Name;
             txtDescription.Text = item.Description;
-            foreach (string country in item.Countries)
+            foreach (KeyValuePair<string,string> kvp in item.Countries)
             {
-                string expression = "COUNTRYNAME = '" + country +"'";
-                DataRow[] rows = dtCountries.Select(expression);
-                if (rows.Length > 0)
+                string countryid = kvp.Key;
+                TreeNode[] nodes = tvCountries.Nodes.Find(countryid,true);
+                foreach (TreeNode node in nodes)
                 {
-                    string countryid = rows[0]["COUNTRYID"].ToString();
-                    TreeNode[] nodes = tvCountries.Nodes.Find(countryid,true);
-                    foreach (TreeNode node in nodes)
-                    {
-                        node.Checked = true;
-                        CheckParentNode(node);
-                    }
-                    
-                }
+                    node.Checked = true;
+                    CheckParentNode(node);
+                }                 
             }
             cboRollbackType.SelectedIndex = (int)item.Type;
             txtPercentage.Text = item.Percentage.ToString();
@@ -596,12 +588,7 @@ namespace BenMAP
                     GBDRollbackCountriesPopulations frm = new GBDRollbackCountriesPopulations();
 
                     //build selected list of countries, pops
-                    string[] countries = item.Countries.ToArray();
-                    for (int i = 0; i < countries.Length; i++)
-                    {
-                        countries[i] = "'" + countries[i] + "'";
-                    }
-                    string expression = "COUNTRYNAME in (" + String.Join(",", countries) +")";
+                    string expression = "COUNTRYID in (" + String.Join(",", item.Countries.Select(x => "'" + x.Key + "'")) + ")";
                     DataRow[] rows = dtCountries.Select(expression);
                     System.Data.DataTable dt = rows.CopyToDataTable<DataRow>();
                     frm.CountryPop = dt.Copy();
@@ -679,8 +666,9 @@ namespace BenMAP
             xlSheet.Range["A8"].Value = "Countries";
             int rowOffset = 0;
             int nextRow;
-            foreach (string country in rollback.Countries)
+            foreach (KeyValuePair<string,string> kvp in rollback.Countries)
             {
+                string country = kvp.Value;
                 nextRow = 8 + rowOffset;
                 xlSheet.Range["B" + nextRow.ToString()].Value = country;
                 rowOffset++;

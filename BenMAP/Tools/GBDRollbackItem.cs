@@ -13,7 +13,7 @@ namespace BenMAP
 
         private string name;
         private string description;
-        List<string> countries;
+        Dictionary<string,string> countries;
         private RollbackType type;
         private double percentage;
         private double increment;
@@ -34,7 +34,7 @@ namespace BenMAP
             set { description = value; }
         }
 
-        public List<string> Countries
+        public Dictionary<string,string> Countries
         {
             get { return countries; }
             set { countries = value; }
