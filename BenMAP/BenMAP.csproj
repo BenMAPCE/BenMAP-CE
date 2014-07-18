@@ -728,7 +728,9 @@
       <DependentUpon>GBDRollbackCountriesPopulations.cs</DependentUpon>
     </Compile>
     <Compile Include="Tools\GBDRollbackDataSource.cs" />
+    <Compile Include="Tools\GBDRollBackFunction.cs" />
     <Compile Include="Tools\GBDRollbackItem.cs" />
+    <Compile Include="Tools\GBDRollBackResult.cs" />
     <Compile Include="Tools\Metadata.cs" />
     <Compile Include="Tools\MetadataClassObj.cs" />
     <Compile Include="Tools\Options.cs">
