@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace BenMAP.Tools
+namespace BenMAP
 {
-    class GBDRollBackResult
+    class GBDRollbackKrewskiResult
     {
-        public GBDRollBackResult(double krewski, double krewski2_5, double krewski97_5)
+        public GBDRollbackKrewskiResult(double krewski, double krewski2_5, double krewski97_5)
         {
             this.krewski = krewski;
             this.krewski2_5 = krewski2_5;

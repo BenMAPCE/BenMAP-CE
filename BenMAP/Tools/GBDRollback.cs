@@ -392,7 +392,12 @@ namespace BenMAP
 
             //set color of selected country features on map
             IMapFeatureLayer[] mfl = mapGBD.GetFeatureLayers();
-            //mfl[0].SelectionSymbolizer = new PolygonSymbolizer(Color.Blue);
+            string filter = "[ISO] in (" + String.Join(",", rollback.Countries.Select(x => "'" + x.Key + "'")) + ")";
+            mfl[0].SelectByAttribute(filter, ModifySelectionMode.Subtract);
+            PolygonCategory category = new PolygonCategory(rollback.Color, Color.Black, 4);
+            category.FilterExpression = filter;
+            mfl[0].Symbology.AddCategory(category);        
+
 
             ClearFields();
             SetActivePanel(0);
@@ -602,9 +607,33 @@ namespace BenMAP
 
         private void btnExecuteRollbacks_Click(object sender, EventArgs e)
         {
+            //loop rollbacks
+
+            //for each rollback...
+
+            //get data
+            //countryname, population, incidencerate, beta, se
+
+            //run rollback
+
+            //background is 5.8 (if conc is less than 5.8, then make 5.8)
+
+            //get results
+            double[] concDelta = new double[1];
+            double[] population = new double[1];
+            concDelta[0] = 5;
+            population[0] = 3.45;
+            double incrate = 0.0086917710;
+            double beta = 0.00582689;
+            double se = 0.00096276;
 
 
-            //save rollback reports
+            GBDRollbackKrewskiFunction func = new GBDRollbackKrewskiFunction();
+            GBDRollbackKrewskiResult result;
+            result = func.GBD_math(concDelta, population, incrate, beta, se);            
+
+
+            //save rollback report
             xlApp = new Microsoft.Office.Interop.Excel.ApplicationClass();
             xlApp.DisplayAlerts = false;
             foreach (GBDRollbackItem rollback in rollbacks)
