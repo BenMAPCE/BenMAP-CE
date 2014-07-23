@@ -23,6 +23,10 @@ namespace BenMAP
         private Microsoft.Office.Interop.Excel.Application xlApp;
         private bool selectMapFeaturesOnNodeCheck = true;
 
+        private const int POLLUTANT_ID = 1;
+        private const double BACKGROUND = 5.8;
+        private const int YEAR = 2010;
+
 
         public GBDRollback()
         {
@@ -72,7 +76,7 @@ namespace BenMAP
 
         private void LoadCountries()
         {
-            System.Data.DataSet ds = GBDRollbackDataSource.GetRegionCountryList();
+            System.Data.DataSet ds = GBDRollbackDataSource.GetRegionCountryList(YEAR);
             dtCountries = ds.Tables[0].Copy();//new DataTable();
         }
 
@@ -607,40 +611,63 @@ namespace BenMAP
 
         private void btnExecuteRollbacks_Click(object sender, EventArgs e)
         {
-            //loop rollbacks
-
-            //for each rollback...
-
-            //get data
-            //countryname, population, incidencerate, beta, se
-
-            //run rollback
-
-            //background is 5.8 (if conc is less than 5.8, then make 5.8)
-
-            //get results
+            System.Data.DataTable dtConcBase;
+            System.Data.DataTable dtConcControl;
+            System.Data.DataTable dtConcDelta;
             double[] concDelta = new double[1];
             double[] population = new double[1];
             concDelta[0] = 5;
             population[0] = 3.45;
-            double incrate = 0.0086917710;
-            double beta = 0.00582689;
-            double se = 0.00096276;
+            double incrate = 0;
+            double beta = 0;
+            double se = 0;
 
+            //get pollutant beta, se
+            GBDRollbackDataSource.GetPollutantBeta(POLLUTANT_ID, out beta, out se);
 
-            GBDRollbackKrewskiFunction func = new GBDRollbackKrewskiFunction();
-            GBDRollbackKrewskiResult result;
-            result = func.GBD_math(concDelta, population, incrate, beta, se);            
-
-
-            //save rollback report
-            xlApp = new Microsoft.Office.Interop.Excel.ApplicationClass();
-            xlApp.DisplayAlerts = false;
+            //for each rollback...
             foreach (GBDRollbackItem rollback in rollbacks)
             {
-                SaveRollbackReport(rollback);   
+                //create new rollback output
+
+                //for each country in rollback...
+                foreach (string countryid in rollback.Countries.Keys)
+                {
+                    //get data
+                    //country incidencerate
+                    incrate = GBDRollbackDataSource.GetIncidenceRate(countryid);
+                   
+                    //get baseline concs
+                    dtConcBase = GBDRollbackDataSource.GetCountryConcs(countryid, POLLUTANT_ID, YEAR);                    
+
+                    //run rollback
+
+                    //background is 5.8 (if conc is less than 5.8, then make 5.8)
+
+                    //get results
+                    
+
+
+                    GBDRollbackKrewskiFunction func = new GBDRollbackKrewskiFunction();
+                    GBDRollbackKrewskiResult result;
+                    result = func.GBD_math(concDelta, population, incrate, beta, se);
+
+                    //create new country output
+
+                    //add to rollback output
+
+
+                }
+
+
+                //save rollback report using rollback output
+                xlApp = new Microsoft.Office.Interop.Excel.ApplicationClass();
+                xlApp.DisplayAlerts = false;
+                SaveRollbackReport(rollback);
+                xlApp.Quit();
+
             }
-            xlApp.Quit();
+
 
             MessageBox.Show("Execute Scenarios successful!");
         }
