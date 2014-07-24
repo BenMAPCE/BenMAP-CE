@@ -27,6 +27,10 @@ namespace BenMAP
         private const double BACKGROUND = 5.8;
         private const int YEAR = 2010;
 
+        private System.Data.DataTable dtConcBase;
+        private System.Data.DataTable dtConcControl;
+        private System.Data.DataTable dtConcDelta;
+
 
         public GBDRollback()
         {
@@ -354,18 +358,20 @@ namespace BenMAP
                 case 0: //percentage
                     rollback.Type = GBDRollbackItem.RollbackType.Percentage;
                     rollback.Percentage = Double.Parse(txtPercentage.Text);
-                    if (!String.IsNullOrEmpty(txtPercentageBackground.Text))
-                    {
-                        rollback.Background = Double.Parse(txtPercentageBackground.Text);
-                    }
+                    rollback.Background = BACKGROUND;
+                    //if (!String.IsNullOrEmpty(txtPercentageBackground.Text))
+                    //{
+                    //    rollback.Background = Double.Parse(txtPercentageBackground.Text);
+                    //}
                     break;
                 case 1: //incremental
                     rollback.Type = GBDRollbackItem.RollbackType.Incremental;
                     rollback.Increment = Double.Parse(txtIncrement.Text);
-                    if (!String.IsNullOrEmpty(txtIncrementBackground.Text))
-                    {
-                        rollback.Background = Double.Parse(txtIncrementBackground.Text);
-                    }
+                    rollback.Background = BACKGROUND;
+                    //if (!String.IsNullOrEmpty(txtIncrementBackground.Text))
+                    //{
+                    //    rollback.Background = Double.Parse(txtIncrementBackground.Text);
+                    //}
                     break;
                 case 2: //standard
                     rollback.Type = GBDRollbackItem.RollbackType.Standard;
@@ -611,9 +617,7 @@ namespace BenMAP
 
         private void btnExecuteRollbacks_Click(object sender, EventArgs e)
         {
-            System.Data.DataTable dtConcBase;
-            System.Data.DataTable dtConcControl;
-            System.Data.DataTable dtConcDelta;
+            
             double[] concDelta = new double[1];
             double[] population = new double[1];
             concDelta[0] = 5;
@@ -641,6 +645,7 @@ namespace BenMAP
                     dtConcBase = GBDRollbackDataSource.GetCountryConcs(countryid, POLLUTANT_ID, YEAR);                    
 
                     //run rollback
+                    DoRollback(rollback);
 
                     //background is 5.8 (if conc is less than 5.8, then make 5.8)
 
@@ -670,6 +675,47 @@ namespace BenMAP
 
 
             MessageBox.Show("Execute Scenarios successful!");
+        }
+
+        private void DoRollback (GBDRollbackItem rollback)
+        {
+            switch (rollback.Type)
+            {
+                case GBDRollbackItem.RollbackType.Percentage:
+                    DoPercentageRollback(rollback.Percentage, rollback.Background);
+                    break;
+                case GBDRollbackItem.RollbackType.Incremental:
+                    DoIncrementalRollback(rollback.Increment, rollback.Background);
+                    break;
+                case GBDRollbackItem.RollbackType.Standard:
+                    DoRollbackToStandard();
+                    break;            
+            }
+        
+        }
+
+        private void DoPercentageRollback(double percentage, double background)
+        { 
+            //rollback
+            dtConcControl = dtConcBase.Copy();
+            dtConcControl.Columns.Add("CONCENTRATION_ADJ", dtConcControl.Columns["CONCENTRATION"].DataType, "CONCENTRATION - (CONCENTRATION * " + (percentage/100).ToString() + ")");
+            
+            //check against background
+            dtConcControl.Columns.Add("CONCENTRATION_ADJ_BACK", dtConcControl.Columns["CONCENTRATION"].DataType, "IIF(CONCENTRATION_ADJ < " + background + ", " +  background  +", CONCENTRATION_ADJ)");
+
+            //get delta (orig. conc - rolled back conc. (corrected for background)
+            dtConcControl.Columns.Add("CONCENTRATION_DELTA", dtConcControl.Columns["CONCENTRATION"].DataType, "CONCENTRATION - CONCENTRATION_ADJ_BACK");
+
+            int i = 0;
+
+        }
+
+        private void DoIncrementalRollback(double increment, double background)
+        {
+        }
+
+        private void DoRollbackToStandard()
+        {
         }
 
         private void SaveRollbackReport(GBDRollbackItem rollback)
