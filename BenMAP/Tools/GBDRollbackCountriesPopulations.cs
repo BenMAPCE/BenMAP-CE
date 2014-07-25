@@ -27,7 +27,7 @@ namespace BenMAP
                 
                 foreach (DataRow dr in dtCountryPop.Rows)
                 {
-                    dr["POPULATION_STRING"] = Int32.Parse(dr["POPULATION"].ToString()).ToString("#,###");
+                    dr["POPULATION_STRING"] = Int64.Parse(dr["POPULATION"].ToString()).ToString("#,###");
                     DataGridViewRow row = new DataGridViewRow();
                     int i = dgvCountryPop.Rows.Add(row);
                     dgvCountryPop.Rows[i].Cells["colCountry"].Value = dr["COUNTRYNAME"].ToString();
@@ -36,11 +36,11 @@ namespace BenMAP
 
                 lblTotalCountries.Text = "Total Countries: " + dtCountryPop.Rows.Count.ToString();
 
-                int iPop = 0;
+                long lPop = 0;
                 object sumObject;
                 sumObject = dtCountryPop.Compute("Sum(POPULATION)", "");
-                iPop = Int32.Parse(sumObject.ToString());
-                lblTotalPopulation.Text = "Total Popluation: " + iPop.ToString("#,###");
+                lPop = Int64.Parse(sumObject.ToString());
+                lblTotalPopulation.Text = "Total Popluation: " + lPop.ToString("#,###");
             }        
         }
 

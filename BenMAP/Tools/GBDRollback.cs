@@ -420,21 +420,21 @@ namespace BenMAP
             return Color.FromArgb(random.Next(0, 255), random.Next(0, 255), random.Next(0, 255));
         }  
 
-        private int GetRollbackTotalPopulation(GBDRollbackItem rollback)
+        private long GetRollbackTotalPopulation(GBDRollbackItem rollback)
         {
             //build selected list of countries, pops
             string expression = "COUNTRYID in (" + String.Join(",", rollback.Countries.Select(x=> "'" + x.Key + "'")) + ")";
             DataRow[] rows = dtCountries.Select(expression);
             System.Data.DataTable dt = rows.CopyToDataTable<DataRow>();
 
-            int iPop = 0;
+            long lPop = 0;
 
             // Declare an object variable. 
             object sumObject;
             sumObject = dt.Compute("Sum(POPULATION)","");
-            iPop = Int32.Parse(sumObject.ToString());
+            lPop = Int64.Parse(sumObject.ToString());
 
-            return iPop;
+            return lPop;
 
 
 
@@ -703,8 +703,12 @@ namespace BenMAP
             //check against background
             dtConcControl.Columns.Add("CONCENTRATION_ADJ_BACK", dtConcControl.Columns["CONCENTRATION"].DataType, "IIF(CONCENTRATION_ADJ < " + background + ", " +  background  +", CONCENTRATION_ADJ)");
 
+            //get final, keep original values if <= background.
+            dtConcControl.Columns.Add("CONCENTRATION_FINAL", dtConcControl.Columns["CONCENTRATION"].DataType, "IIF(CONCENTRATION <= " + background + ", CONCENTRATION, CONCENTRATION_ADJ_BACK)");
+
+            
             //get delta (orig. conc - rolled back conc. (corrected for background)
-            dtConcControl.Columns.Add("CONCENTRATION_DELTA", dtConcControl.Columns["CONCENTRATION"].DataType, "CONCENTRATION - CONCENTRATION_ADJ_BACK");
+            dtConcControl.Columns.Add("CONCENTRATION_DELTA", dtConcControl.Columns["CONCENTRATION"].DataType, "CONCENTRATION - CONCENTRATION_FINAL");
 
             int i = 0;
 
