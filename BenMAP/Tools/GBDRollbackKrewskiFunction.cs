@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace BenMAP.Tools
+namespace BenMAP
 {
-    class GBDRollBackFunction
+    class GBDRollbackKrewskiFunction
     {
 
         //first argument is expected to be differential (change) of concentration when rollback is applied
         //example:  Baseline 50, rollback to 35 standard, delta=15
-        public GBDRollBackResult GBD_math(double[] concDelta, double[] population, double incrate, double beta, double se)
+        public GBDRollbackKrewskiResult GBD_math(double[] concDelta, double[] population, double incrate, double beta, double se)
         {
             double Sum_97_5 = 0;
             double Krewski = 0;
@@ -38,7 +38,7 @@ namespace BenMAP.Tools
             Console.WriteLine("Krewski: "+Krewski);
             Console.WriteLine("2.5: "+Sum_2_5);
             Console.WriteLine("97.5: " +Sum_97_5);
-            return new GBDRollBackResult(Krewski, Sum_2_5, Sum_97_5);
+            return new GBDRollbackKrewskiResult(Krewski, Sum_2_5, Sum_97_5);
         }
 
         //qnorm function

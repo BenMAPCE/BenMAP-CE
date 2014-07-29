@@ -23,6 +23,11 @@ namespace BenMAP
         private Microsoft.Office.Interop.Excel.Application xlApp;
         private bool selectMapFeaturesOnNodeCheck = true;
 
+        private const int POLLUTANT_ID = 1;
+        private const double BACKGROUND = 5.8;
+        private const int YEAR = 2010;
+
+        private System.Data.DataTable dtConcentrations;
 
         public GBDRollback()
         {
@@ -72,7 +77,7 @@ namespace BenMAP
 
         private void LoadCountries()
         {
-            System.Data.DataSet ds = GBDRollbackDataSource.GetRegionCountryList();
+            System.Data.DataSet ds = GBDRollbackDataSource.GetRegionCountryList(YEAR);
             dtCountries = ds.Tables[0].Copy();//new DataTable();
         }
 
@@ -350,18 +355,20 @@ namespace BenMAP
                 case 0: //percentage
                     rollback.Type = GBDRollbackItem.RollbackType.Percentage;
                     rollback.Percentage = Double.Parse(txtPercentage.Text);
-                    if (!String.IsNullOrEmpty(txtPercentageBackground.Text))
-                    {
-                        rollback.Background = Double.Parse(txtPercentageBackground.Text);
-                    }
+                    rollback.Background = BACKGROUND;
+                    //if (!String.IsNullOrEmpty(txtPercentageBackground.Text))
+                    //{
+                    //    rollback.Background = Double.Parse(txtPercentageBackground.Text);
+                    //}
                     break;
                 case 1: //incremental
                     rollback.Type = GBDRollbackItem.RollbackType.Incremental;
                     rollback.Increment = Double.Parse(txtIncrement.Text);
-                    if (!String.IsNullOrEmpty(txtIncrementBackground.Text))
-                    {
-                        rollback.Background = Double.Parse(txtIncrementBackground.Text);
-                    }
+                    rollback.Background = BACKGROUND;
+                    //if (!String.IsNullOrEmpty(txtIncrementBackground.Text))
+                    //{
+                    //    rollback.Background = Double.Parse(txtIncrementBackground.Text);
+                    //}
                     break;
                 case 2: //standard
                     rollback.Type = GBDRollbackItem.RollbackType.Standard;
@@ -392,7 +399,12 @@ namespace BenMAP
 
             //set color of selected country features on map
             IMapFeatureLayer[] mfl = mapGBD.GetFeatureLayers();
-            //mfl[0].SelectionSymbolizer = new PolygonSymbolizer(Color.Blue);
+            string filter = "[ISO] in (" + String.Join(",", rollback.Countries.Select(x => "'" + x.Key + "'")) + ")";
+            mfl[0].SelectByAttribute(filter, ModifySelectionMode.Subtract);
+            PolygonCategory category = new PolygonCategory(rollback.Color, Color.Black, 4);
+            category.FilterExpression = filter;
+            mfl[0].Symbology.AddCategory(category);        
+
 
             ClearFields();
             SetActivePanel(0);
@@ -405,21 +417,21 @@ namespace BenMAP
             return Color.FromArgb(random.Next(0, 255), random.Next(0, 255), random.Next(0, 255));
         }  
 
-        private int GetRollbackTotalPopulation(GBDRollbackItem rollback)
+        private long GetRollbackTotalPopulation(GBDRollbackItem rollback)
         {
             //build selected list of countries, pops
             string expression = "COUNTRYID in (" + String.Join(",", rollback.Countries.Select(x=> "'" + x.Key + "'")) + ")";
             DataRow[] rows = dtCountries.Select(expression);
             System.Data.DataTable dt = rows.CopyToDataTable<DataRow>();
 
-            int iPop = 0;
+            long lPop = 0;
 
             // Declare an object variable. 
             object sumObject;
             sumObject = dt.Compute("Sum(POPULATION)","");
-            iPop = Int32.Parse(sumObject.ToString());
+            lPop = Int64.Parse(sumObject.ToString());
 
-            return iPop;
+            return lPop;
 
 
 
@@ -603,17 +615,116 @@ namespace BenMAP
         private void btnExecuteRollbacks_Click(object sender, EventArgs e)
         {
 
-
-            //save rollback reports
-            xlApp = new Microsoft.Office.Interop.Excel.ApplicationClass();
-            xlApp.DisplayAlerts = false;
-            foreach (GBDRollbackItem rollback in rollbacks)
+            try
             {
-                SaveRollbackReport(rollback);   
-            }
-            xlApp.Quit();
 
-            MessageBox.Show("Execute Scenarios successful!");
+                Cursor.Current = Cursors.WaitCursor;
+
+                double incrate = 0;
+                double beta = 0;
+                double se = 0;
+
+                //get pollutant beta, se
+                GBDRollbackDataSource.GetPollutantBeta(POLLUTANT_ID, out beta, out se);
+
+                //for each rollback...
+                foreach (GBDRollbackItem rollback in rollbacks)
+                {
+                    //create new rollback output
+
+                    //for each country in rollback...
+                    foreach (string countryid in rollback.Countries.Keys)
+                    {
+                        //get data
+                        //country incidencerate
+                        incrate = GBDRollbackDataSource.GetIncidenceRate(countryid);
+
+                        //get baseline concs
+                        dtConcentrations = GBDRollbackDataSource.GetCountryConcs(countryid, POLLUTANT_ID, YEAR);
+
+                        //run rollback
+                        DoRollback(rollback);
+
+                        //get concentration delta and population arrays
+                        double[] concDelta = Array.ConvertAll<DataRow, double>(dtConcentrations.Select(),
+                            delegate(DataRow row) { return Convert.ToDouble(row["CONCENTRATION_DELTA"]); });
+                        double[] population = Array.ConvertAll<DataRow, double>(dtConcentrations.Select(),
+                            delegate(DataRow row) { return Convert.ToDouble(row["POPESTIMATE"]); });
+
+                        //get results                
+                        GBDRollbackKrewskiFunction func = new GBDRollbackKrewskiFunction();
+                        GBDRollbackKrewskiResult result;
+                        result = func.GBD_math(concDelta, population, incrate, beta, se);
+
+                        //create new country output
+
+                        //add to rollback output
+
+
+                    }
+
+
+                    //save rollback report using rollback output
+                    xlApp = new Microsoft.Office.Interop.Excel.ApplicationClass();
+                    xlApp.DisplayAlerts = false;
+                    SaveRollbackReport(rollback);
+                    xlApp.Quit();
+
+                }
+
+                Cursor.Current = Cursors.Default;
+                MessageBox.Show("Execute Scenarios successful!");
+
+            }
+            catch (Exception ex)
+            {
+                Cursor.Current = Cursors.Default;
+                MessageBox.Show("Execute Scenarios failure!");                
+            }
+
+
+           
+        }
+
+        private void DoRollback (GBDRollbackItem rollback)
+        {
+            switch (rollback.Type)
+            {
+                case GBDRollbackItem.RollbackType.Percentage:
+                    DoPercentageRollback(rollback.Percentage, rollback.Background);
+                    break;
+                case GBDRollbackItem.RollbackType.Incremental:
+                    DoIncrementalRollback(rollback.Increment, rollback.Background);
+                    break;
+                case GBDRollbackItem.RollbackType.Standard:
+                    DoRollbackToStandard();
+                    break;            
+            }
+        
+        }
+
+        private void DoPercentageRollback(double percentage, double background)
+        { 
+            //rollback
+            dtConcentrations.Columns.Add("CONCENTRATION_ADJ", dtConcentrations.Columns["CONCENTRATION"].DataType, "CONCENTRATION - (CONCENTRATION * " + (percentage / 100).ToString() + ")");
+            
+            //check against background
+            dtConcentrations.Columns.Add("CONCENTRATION_ADJ_BACK", dtConcentrations.Columns["CONCENTRATION"].DataType, "IIF(CONCENTRATION_ADJ < " + background + ", " + background + ", CONCENTRATION_ADJ)");
+
+            //get final, keep original values if <= background.
+            dtConcentrations.Columns.Add("CONCENTRATION_FINAL", dtConcentrations.Columns["CONCENTRATION"].DataType, "IIF(CONCENTRATION <= " + background + ", CONCENTRATION, CONCENTRATION_ADJ_BACK)");
+
+            //get delta (orig. conc - rolled back conc. (corrected for background)
+            dtConcentrations.Columns.Add("CONCENTRATION_DELTA", dtConcentrations.Columns["CONCENTRATION"].DataType, "CONCENTRATION - CONCENTRATION_FINAL");
+
+        }
+
+        private void DoIncrementalRollback(double increment, double background)
+        {
+        }
+
+        private void DoRollbackToStandard()
+        {
         }
 
         private void SaveRollbackReport(GBDRollbackItem rollback)
