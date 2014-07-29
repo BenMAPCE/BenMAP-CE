@@ -27,7 +27,8 @@ namespace BenMAP
         private const double BACKGROUND = 5.8;
         private const int YEAR = 2010;
 
-        private System.Data.DataTable dtConcentrations;
+        private System.Data.DataTable dtConcCountry = null;
+        private System.Data.DataTable dtConcEntireRollback = null;
 
         public GBDRollback()
         {
@@ -630,7 +631,7 @@ namespace BenMAP
                 //for each rollback...
                 foreach (GBDRollbackItem rollback in rollbacks)
                 {
-                    //create new rollback output
+                    dtConcEntireRollback = null;
 
                     //for each country in rollback...
                     foreach (string countryid in rollback.Countries.Keys)
@@ -640,15 +641,16 @@ namespace BenMAP
                         incrate = GBDRollbackDataSource.GetIncidenceRate(countryid);
 
                         //get baseline concs
-                        dtConcentrations = GBDRollbackDataSource.GetCountryConcs(countryid, POLLUTANT_ID, YEAR);
+                        dtConcCountry = null;
+                        dtConcCountry = GBDRollbackDataSource.GetCountryConcs(countryid, POLLUTANT_ID, YEAR);
 
                         //run rollback
                         DoRollback(rollback);
 
                         //get concentration delta and population arrays
-                        double[] concDelta = Array.ConvertAll<DataRow, double>(dtConcentrations.Select(),
+                        double[] concDelta = Array.ConvertAll<DataRow, double>(dtConcCountry.Select(),
                             delegate(DataRow row) { return Convert.ToDouble(row["CONCENTRATION_DELTA"]); });
-                        double[] population = Array.ConvertAll<DataRow, double>(dtConcentrations.Select(),
+                        double[] population = Array.ConvertAll<DataRow, double>(dtConcCountry.Select(),
                             delegate(DataRow row) { return Convert.ToDouble(row["POPESTIMATE"]); });
 
                         //get results                
@@ -656,13 +658,18 @@ namespace BenMAP
                         GBDRollbackKrewskiResult result;
                         result = func.GBD_math(concDelta, population, incrate, beta, se);
 
-                        //create new country output
-
-                        //add to rollback output
+                        //append country data to data for entire rollback
+                        if (dtConcEntireRollback == null)
+                        {
+                            dtConcEntireRollback = dtConcCountry.Copy();
+                        }
+                        else 
+                        {
+                            dtConcEntireRollback.Merge(dtConcCountry);
+                        }
 
 
                     }
-
 
                     //save rollback report using rollback output
                     xlApp = new Microsoft.Office.Interop.Excel.ApplicationClass();
@@ -697,7 +704,7 @@ namespace BenMAP
                     DoIncrementalRollback(rollback.Increment, rollback.Background);
                     break;
                 case GBDRollbackItem.RollbackType.Standard:
-                    DoRollbackToStandard();
+                    DoRollbackToStandard(rollback.Standard);
                     break;            
             }
         
@@ -706,25 +713,48 @@ namespace BenMAP
         private void DoPercentageRollback(double percentage, double background)
         { 
             //rollback
-            dtConcentrations.Columns.Add("CONCENTRATION_ADJ", dtConcentrations.Columns["CONCENTRATION"].DataType, "CONCENTRATION - (CONCENTRATION * " + (percentage / 100).ToString() + ")");
+            dtConcCountry.Columns.Add("CONCENTRATION_ADJ", dtConcCountry.Columns["CONCENTRATION"].DataType, "CONCENTRATION - (CONCENTRATION * " + (percentage / 100).ToString() + ")");
             
             //check against background
-            dtConcentrations.Columns.Add("CONCENTRATION_ADJ_BACK", dtConcentrations.Columns["CONCENTRATION"].DataType, "IIF(CONCENTRATION_ADJ < " + background + ", " + background + ", CONCENTRATION_ADJ)");
+            dtConcCountry.Columns.Add("CONCENTRATION_ADJ_BACK", dtConcCountry.Columns["CONCENTRATION"].DataType, "IIF(CONCENTRATION_ADJ < " + background + ", " + background + ", CONCENTRATION_ADJ)");
 
             //get final, keep original values if <= background.
-            dtConcentrations.Columns.Add("CONCENTRATION_FINAL", dtConcentrations.Columns["CONCENTRATION"].DataType, "IIF(CONCENTRATION <= " + background + ", CONCENTRATION, CONCENTRATION_ADJ_BACK)");
+            dtConcCountry.Columns.Add("CONCENTRATION_FINAL", dtConcCountry.Columns["CONCENTRATION"].DataType, "IIF(CONCENTRATION <= " + background + ", CONCENTRATION, CONCENTRATION_ADJ_BACK)");
 
             //get delta (orig. conc - rolled back conc. (corrected for background)
-            dtConcentrations.Columns.Add("CONCENTRATION_DELTA", dtConcentrations.Columns["CONCENTRATION"].DataType, "CONCENTRATION - CONCENTRATION_FINAL");
+            dtConcCountry.Columns.Add("CONCENTRATION_DELTA", dtConcCountry.Columns["CONCENTRATION"].DataType, "CONCENTRATION - CONCENTRATION_FINAL");
 
         }
 
         private void DoIncrementalRollback(double increment, double background)
         {
+            //rollback
+            dtConcCountry.Columns.Add("CONCENTRATION_ADJ", dtConcCountry.Columns["CONCENTRATION"].DataType, "CONCENTRATION - " + increment);
+
+            //check against background
+            dtConcCountry.Columns.Add("CONCENTRATION_ADJ_BACK", dtConcCountry.Columns["CONCENTRATION"].DataType, "IIF(CONCENTRATION_ADJ < " + background + ", " + background + ", CONCENTRATION_ADJ)");
+
+            //get final, keep original values if <= background.
+            dtConcCountry.Columns.Add("CONCENTRATION_FINAL", dtConcCountry.Columns["CONCENTRATION"].DataType, "IIF(CONCENTRATION <= " + background + ", CONCENTRATION, CONCENTRATION_ADJ_BACK)");
+
+            //get delta (orig. conc - rolled back conc. (corrected for background)
+            dtConcCountry.Columns.Add("CONCENTRATION_DELTA", dtConcCountry.Columns["CONCENTRATION"].DataType, "CONCENTRATION - CONCENTRATION_FINAL");
+
         }
 
-        private void DoRollbackToStandard()
+        private void DoRollbackToStandard(GBDRollbackItem.StandardType standardType)
         {
+
+            double standard = 10;
+
+            //rollback to standard
+            dtConcCountry.Columns.Add("CONCENTRATION_ADJ", dtConcCountry.Columns["CONCENTRATION"].DataType, standard.ToString());
+
+            //get final, keep original values if <= standard.
+            dtConcCountry.Columns.Add("CONCENTRATION_FINAL", dtConcCountry.Columns["CONCENTRATION"].DataType, "IIF(CONCENTRATION <= " + standard + ", CONCENTRATION, CONCENTRATION_ADJ)");
+
+            //get delta (orig. conc - rolled back conc.)
+            dtConcCountry.Columns.Add("CONCENTRATION_DELTA", dtConcCountry.Columns["CONCENTRATION"].DataType, "CONCENTRATION - CONCENTRATION_FINAL");
         }
 
         private void SaveRollbackReport(GBDRollbackItem rollback)
