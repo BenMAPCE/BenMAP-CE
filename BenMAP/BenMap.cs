@@ -970,6 +970,7 @@ namespace BenMAP
                             if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (currentNode.Tag as ShapefileGrid).ShapefileName + ".shp"))
                             {
                                 player = (PolygonLayer)mainMap.Layers.Add(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (currentNode.Tag as ShapefileGrid).ShapefileName + ".shp");
+                            
                             }
                         }
                         else if (currentNode.Tag is RegularGrid)
@@ -1924,14 +1925,147 @@ namespace BenMAP
                     FireBirdHelperBase fb = new ESILFireBirdHelper();
                     string commandText = "";
 
-
-
                 }
             }
             catch (Exception ex)
             {
                 Logger.LogError(ex);
             }
+        }
+        private int EnforceLegendOrder() //string mapgroup, string newLayerPath)
+        {  //Reorders the top level map groups, (Region Admin, Pollutants, Results) and the baseline, control, and delta layers within the Pollutant map groups
+
+            MapGroup TopMG1 = new MapGroup(); //"Region Admin Layers"
+            MapGroup TopMG2 = new MapGroup(); //"Pollutants"
+            MapGroup TopMG3 = new MapGroup(); //"Results"
+            MapGroup polMG = new MapGroup();  //A temp pollutant map group
+            MapGroup statMG = new MapGroup(); // temp pollutant stat map group
+            
+            MapGroup HI_ResultMG = new MapGroup();  //Health Impacts
+            MapGroup PI_ResultMG = new MapGroup();  //Pooled Incidence
+            MapGroup PV_ResultMG = new MapGroup();  //Pooled Valuation
+
+            IMapLayer baseIML = new MapPolygonLayer();
+            IMapLayer controlIML = new MapPolygonLayer();
+            IMapLayer deltaIML = new MapPolygonLayer();
+            
+            //Cycle through top level map groups first to get a pointer to each map group and remove the layer from the mainMapLayers list
+            if (mainMap.Layers.Count > 1)
+            {   
+                mainMap.Layers.SuspendEvents();
+                foreach (IMapLayer Toplayer in mainMap.Layers)
+                {
+                    if (Toplayer.LegendText == "Region Admin Layers") TopMG1 = (MapGroup)Toplayer;
+                    if (Toplayer.LegendText == "Pollutants")
+                    {
+                        TopMG2 = (MapGroup)Toplayer;
+                        if (TopMG2.Count > 0)
+                        {
+                            foreach (IMapLayer polLayer in TopMG2.GetLayers())
+                            {
+                                polMG = (MapGroup)polLayer;
+                                foreach (IMapLayer statLayer in polMG.GetLayers())
+                                {
+                                    statMG = (MapGroup)statLayer;
+                                    if (statMG.Count > 1) //
+                                    {
+                                        baseIML = null;
+                                        controlIML = null;
+                                        deltaIML = null;
+                                        foreach (IMapLayer lowlayer in statMG)
+                                        {
+                                            if (lowlayer.LegendText == "Baseline") baseIML = lowlayer;
+                                            if (lowlayer.LegendText == "Control") controlIML = lowlayer;
+                                            if (lowlayer.LegendText == "Delta") deltaIML = lowlayer;
+                                        }
+                                        if (deltaIML != null)
+                                        {
+                                            deltaIML.LockDispose();
+                                            statMG.Remove(deltaIML);
+                                            statMG.Add(deltaIML);
+                                            deltaIML.UnlockDispose();
+                                        }
+                                        if (controlIML != null)
+                                        {
+                                            controlIML.LockDispose();
+                                            statMG.Remove(controlIML);
+                                            statMG.Add(controlIML);
+                                            controlIML.UnlockDispose();
+                                        }
+                                        if (baseIML != null)
+                                        {
+                                            baseIML.LockDispose();
+                                            statMG.Remove(baseIML);
+                                            statMG.Add(baseIML);
+                                            baseIML.UnlockDispose();
+                                        }
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+                    if (Toplayer.LegendText == "Results")
+                    {
+                        TopMG3 = (MapGroup)Toplayer;
+                        if (TopMG3.Count > 0)
+                        {
+                            foreach (IMapLayer resultMGLayer in TopMG3.GetLayers())
+                            {
+                                if (resultMGLayer.LegendText == "Health Impacts") { HI_ResultMG = (MapGroup)resultMGLayer; }
+                                if (resultMGLayer.LegendText == "Pooled Incidence") { PI_ResultMG = (MapGroup)resultMGLayer; }
+                                if (resultMGLayer.LegendText == "Pooled Valuation") { PV_ResultMG = (MapGroup)resultMGLayer; }
+                            }
+                            if (!(PV_ResultMG.LegendText == null))
+                            {
+                                PV_ResultMG.LockDispose();
+                                TopMG3.Remove(PV_ResultMG);
+                                TopMG3.Add((IMapLayer)PV_ResultMG);
+                                PV_ResultMG.UnlockDispose();
+                            }
+                            if (!(PI_ResultMG.LegendText == null))
+                            {
+                                PI_ResultMG.LockDispose();
+                                TopMG3.Remove(PI_ResultMG);
+                                TopMG3.Add((IMapLayer)PI_ResultMG);
+                                PI_ResultMG.UnlockDispose();
+                            }
+                            if (!(HI_ResultMG.LegendText == null))
+                            {
+                                HI_ResultMG.LockDispose();
+                                TopMG3.Remove(HI_ResultMG);
+                                TopMG3.Add((IMapLayer)HI_ResultMG);
+                                HI_ResultMG.UnlockDispose();
+                            }
+                        }
+                    }
+                }        
+           
+                //Add the layers in reverse desired display order
+                if (!(TopMG3.LegendText == null))
+                {
+                    TopMG3.LockDispose();
+                    mainMap.Layers.Remove(TopMG3);
+                    mainMap.Layers.Add((IMapLayer)TopMG3);
+                    TopMG3.UnlockDispose();
+                }
+                if (!(TopMG2.LegendText == null))
+                {
+                    TopMG2.LockDispose();
+                    mainMap.Layers.Remove(TopMG2);
+                    mainMap.Layers.Add((IMapLayer)TopMG2);
+                    TopMG2.UnlockDispose();
+                }
+                if (!(TopMG1.LegendText == null))
+                {
+                    TopMG1.LockDispose();
+                    mainMap.Layers.Remove(TopMG1);
+                    mainMap.Layers.Add((IMapLayer)TopMG1);
+                    TopMG1.UnlockDispose();
+                }
+                mainMap.Layers.ResumeEvents();
+            }
+            return 1; //if no result
         }
         private void DrawBaseline (TreeNode currentNode, string str)
         {   //MCB- draws base data on main map
@@ -1971,6 +2105,7 @@ namespace BenMAP
                 Debug.WriteLine("DraawBaseline: " + ex.ToString());
             }
             WaitClose();
+            int result = EnforceLegendOrder();
             return;
         }
         private void DrawControlData(TreeNode currentNode, string str)
@@ -2012,6 +2147,7 @@ namespace BenMAP
                 Debug.WriteLine("DrawControlData: " + ex.ToString());
             }
             WaitClose();
+            int result = EnforceLegendOrder();
             return;
         }
         private void DrawDelta(TreeNode currentNode, string str)
@@ -2113,6 +2249,7 @@ namespace BenMAP
                 Debug.WriteLine("DrawDelta (2): " + ex.ToString());
             }
             WaitClose();
+            int result = EnforceLegendOrder();
             return;
         }
         private void CRResultChangeVPV()
@@ -2467,6 +2604,7 @@ namespace BenMAP
                         {
                             // mainMap.Layers.Add(benMAPLine.ShapeFile);
                             polLayer = (MapPolygonLayer)bcgMapGroup.Layers.Add(benMAPLine.ShapeFile);
+                            
                         }
                         catch (Exception ex)
                         {
@@ -2611,7 +2749,7 @@ namespace BenMAP
         {
             if (isBase == "D") //use the delta color ramp
             {   
-                colorBlend.ColorArray = GetColorRamp("red_blue", CategoryNumber);
+                colorBlend.ColorArray = GetColorRamp("oranges", CategoryNumber);
             }
             else //use the default color ramp
             {   
@@ -2645,7 +2783,8 @@ namespace BenMAP
             switch (isBase)
             {
                 case "D":  //use the delta color ramp
-                    colorBlend.ColorArray = GetColorRamp("blue_red", CategoryNumber);
+                    //colorBlend.ColorArray = GetColorRamp("blue_red", CategoryNumber);
+                    colorBlend.ColorArray = GetColorRamp("oranges", CategoryNumber);
                     break;
                 case "R": //Configuration Results -MCB choose another color ramp???
                     colorBlend.ColorArray = GetColorRamp("brown_green", CategoryNumber);
@@ -7184,7 +7323,7 @@ namespace BenMAP
                     RenderMainMap(true,"A");
 
                     addRegionLayerGroupToMainMap();
-
+                    int result = EnforceLegendOrder();
                 }
                 WaitClose();
             }
@@ -9483,6 +9622,7 @@ namespace BenMAP
                         RenderMainMap(true, "IP");
 
                         addRegionLayerGroupToMainMap();
+                        int result = EnforceLegendOrder();
                     }
                     WaitClose();
                 }
@@ -10933,12 +11073,15 @@ namespace BenMAP
                     i++;
                     CommonClass.GBenMAPGrid = Grid.GridCommon.getBenMAPGridFromID(iOldGridType);
                 }
+                
                 WaitClose();
+                int result = EnforceLegendOrder();
             }
             catch (Exception ex)
             {
                 Logger.LogError(ex.Message);
                 WaitClose();
+                int result = EnforceLegendOrder();
             }
 
         }
@@ -11069,6 +11212,7 @@ namespace BenMAP
 
                             CommonClass.RBenMAPGrid = Grid.GridCommon.getBenMAPGridFromID(Convert.ToInt32(drGrid["GridDefinitionID"]));
                             addRegionLayerGroupToMainMap();
+                            int result = EnforceLegendOrder();
                         }
 
                     }
@@ -12378,15 +12522,21 @@ namespace BenMAP
                 NewMapGroup.LegendText = mgName;
                 if (parentMGText == "Map Layers")
                 {
-                    mainMap.Layers.Add(NewMapGroup);
+                    //mainMap.Layers.Add(NewMapGroup);
+                    mainMap.Layers.Insert(mainMap.Layers.Count(),NewMapGroup);
                 }
                 else
                 {
                     ParentMapGroup.Add(NewMapGroup);
                     NewMapGroup.SetParentItem(ParentMapGroup);
                 }
+               
             }
-
+            //testing of index
+            int MGindex = mainMap.Layers.IndexOf(NewMapGroup);
+            int MGIndex2 = mainMap.GetAllLayers().Count - 1;
+            string MGname = NewMapGroup.LegendText;
+            //MessageBox.Show("Index of new map group: " + MGname + " is " + MGindex + " or this: " + MGIndex2);
             return NewMapGroup;
         }
 
@@ -12659,6 +12809,7 @@ namespace BenMAP
                             RenderMainMap(true, "I");
 
                             addRegionLayerGroupToMainMap();
+                            int result = EnforceLegendOrder();
                         }
                     }
                     i++;
@@ -13180,20 +13331,7 @@ namespace BenMAP
             }
         }
 
-        private void picGIS_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void toolStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
-        {
-
-        }
-
-        private void legend1_Click(object sender, EventArgs e)
-        {
-
-        }       
+          
         
     }
 }
