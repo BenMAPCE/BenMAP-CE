@@ -728,9 +728,9 @@
       <DependentUpon>GBDRollbackCountriesPopulations.cs</DependentUpon>
     </Compile>
     <Compile Include="Tools\GBDRollbackDataSource.cs" />
-    <Compile Include="Tools\GBDRollBackFunction.cs" />
+    <Compile Include="Tools\GBDRollbackKrewskiFunction.cs" />
     <Compile Include="Tools\GBDRollbackItem.cs" />
-    <Compile Include="Tools\GBDRollBackResult.cs" />
+    <Compile Include="Tools\GBDRollbackKrewskiResult.cs" />
     <Compile Include="Tools\Metadata.cs" />
     <Compile Include="Tools\MetadataClassObj.cs" />
     <Compile Include="Tools\Options.cs">
@@ -1406,6 +1406,9 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <None Include="Tools\GBDRollBackOutputTemplate.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="GISMapping\" />

@@ -119,7 +119,7 @@ namespace BenMAP
 
             ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
             string commandText =
-                "select r.REGIONID, r.REGIONNAME, c.COUNTRYID, pv.CONCENTRATION, pop.POPESTIMATE " +
+                "select r.REGIONID, r.REGIONNAME, c.COUNTRYID, c.COUNTRYNAME, pv.CONCENTRATION, pop.POPESTIMATE " +
                 "from REGIONS r " +
                 "INNER JOIN REGIONCOUNTRIES rc on r.REGIONID = rc.REGIONID " +
                 "INNER JOIN COUNTRIES c on rc.COUNTRYID = c.COUNTRYID " +

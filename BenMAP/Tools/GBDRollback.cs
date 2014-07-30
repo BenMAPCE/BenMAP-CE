@@ -376,6 +376,7 @@ namespace BenMAP
                     rollback.Standard = (GBDRollbackItem.StandardType)cboStandard.SelectedIndex;
                     break;
             }
+            rollback.Year = YEAR;
             rollback.Color = GetRandomColor();
 
 
@@ -657,6 +658,8 @@ namespace BenMAP
                         GBDRollbackKrewskiFunction func = new GBDRollbackKrewskiFunction();
                         GBDRollbackKrewskiResult result;
                         result = func.GBD_math(concDelta, population, incrate, beta, se);
+                        //add results to dtConcCountry
+                        dtConcCountry.Columns.Add("KREWSKI", dtConcCountry.Columns["CONCENTRATION"].DataType, result.Krewski.ToString());
 
                         //append country data to data for entire rollback
                         if (dtConcEntireRollback == null)
@@ -758,18 +761,21 @@ namespace BenMAP
         }
 
         private void SaveRollbackReport(GBDRollbackItem rollback)
-        {          
+        {
+
+            //get application path
+            string appPath = AppDomain.CurrentDomain.BaseDirectory;
+            string filePath = appPath + @"Tools\GBDRollbackOutputTemplate.xlsx";
 
             Microsoft.Office.Interop.Excel.Workbook xlBook;
+            //open report template                
+            xlBook = xlApp.Workbooks.Open(filePath);
 
-            //save report                
-            xlBook = xlApp.Workbooks.Add();
             //get timestamp
             DateTime dtNow = DateTime.Now;
             string timeStamp = dtNow.ToString("yyyyMMddHHmm");
             //get application path
-            string appPath = AppDomain.CurrentDomain.BaseDirectory;
-            string filePath = appPath + "GBDRollback_" + rollback.Name + "_" + timeStamp + ".xlsx";
+            filePath = appPath + @"Tools\GBDRollback_" + rollback.Name + "_" + timeStamp + ".xlsx";
 
             #region summary sheet
             //summary sheet
@@ -804,24 +810,46 @@ namespace BenMAP
             }
             xlSheet.Range["B7"].Value = summary;
 
-            xlSheet.Range["A8"].Value = "Countries";
+            xlSheet.Range["A8"].Value = "Regions and Countries";
             int rowOffset = 0;
             int nextRow;
-            foreach (KeyValuePair<string,string> kvp in rollback.Countries)
+
+            Microsoft.Office.Interop.Excel.Range xlRange;
+            System.Data.DataTable dtTemp = dtConcEntireRollback.DefaultView.ToTable(true, "REGIONNAME", "COUNTRYNAME");
+            dtTemp.DefaultView.Sort = "REGIONNAME, COUNTRYNAME";
+            string region = String.Empty;
+            string country = String.Empty;
+            foreach (DataRow dr in dtTemp.Rows)
             {
-                string country = kvp.Value;
+                //new region? write region
+                if (!region.Equals(dr["REGIONNAME"].ToString(), StringComparison.OrdinalIgnoreCase))
+                {
+                    region = dr["REGIONNAME"].ToString();
+                    nextRow = 8 + rowOffset;
+                    xlSheet.Range["B" + nextRow.ToString()].Value = region;
+                    xlSheet.Range["B" + nextRow.ToString()].Font.Italic = true;
+                    rowOffset++;
+                }
+
+                //write country
+                country = dr["COUNTRYNAME"].ToString();
                 nextRow = 8 + rowOffset;
-                xlSheet.Range["B" + nextRow.ToString()].Value = country;
+                xlRange = xlSheet.Range["B" + nextRow.ToString()];
+                xlRange.Value = country;
+                //xlSheet.Range["B" + nextRow.ToString()].HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignDistributed;
+                //xlRange.ColumnWidth = 40;
+                //xlRange.WrapText = true;
+                //xlRange.InsertIndent(1);
                 rowOffset++;
             }
 
             //format
-            Microsoft.Office.Interop.Excel.Range xlRange = (Microsoft.Office.Interop.Excel.Range)(xlSheet.Columns[1]);
+            xlRange = (Microsoft.Office.Interop.Excel.Range)(xlSheet.Columns[1]);
             xlRange.Font.Bold = true;
             xlRange.AutoFit();
             xlRange = (Microsoft.Office.Interop.Excel.Range)(xlSheet.Columns[2]);
-            xlRange.ColumnWidth = 40;
-            xlRange.WrapText = true;
+            //xlRange.ColumnWidth = 40;
+            //xlRange.WrapText = true;
             #endregion
 
             //results sheet
