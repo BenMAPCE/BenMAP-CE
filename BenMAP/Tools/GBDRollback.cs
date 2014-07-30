@@ -812,9 +812,8 @@ namespace BenMAP
 
             xlSheet.Range["A8"].Value = "Regions and Countries";
             int rowOffset = 0;
-            int nextRow;
+            int nextRow = 0;
 
-            Microsoft.Office.Interop.Excel.Range xlRange;
             System.Data.DataTable dtTemp = dtConcEntireRollback.DefaultView.ToTable(true, "REGIONNAME", "COUNTRYNAME");
             dtTemp.DefaultView.Sort = "REGIONNAME, COUNTRYNAME";
             string region = String.Empty;
@@ -834,22 +833,29 @@ namespace BenMAP
                 //write country
                 country = dr["COUNTRYNAME"].ToString();
                 nextRow = 8 + rowOffset;
-                xlRange = xlSheet.Range["B" + nextRow.ToString()];
-                xlRange.Value = country;
-                //xlSheet.Range["B" + nextRow.ToString()].HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignDistributed;
-                //xlRange.ColumnWidth = 40;
-                //xlRange.WrapText = true;
-                //xlRange.InsertIndent(1);
+                xlSheet.Range["B" + nextRow.ToString()].Value = country;
+                xlSheet.Range["B" + nextRow.ToString()].ColumnWidth = 40;
+                xlSheet.Range["B" + nextRow.ToString()].WrapText = true;
+                xlSheet.Range["B" + nextRow.ToString()].InsertIndent(2);
                 rowOffset++;
             }
 
             //format
-            xlRange = (Microsoft.Office.Interop.Excel.Range)(xlSheet.Columns[1]);
-            xlRange.Font.Bold = true;
+            Microsoft.Office.Interop.Excel.Range xlRange;
+            xlRange = (Microsoft.Office.Interop.Excel.Range)(xlSheet.Columns[1]);            
             xlRange.AutoFit();
-            xlRange = (Microsoft.Office.Interop.Excel.Range)(xlSheet.Columns[2]);
-            //xlRange.ColumnWidth = 40;
-            //xlRange.WrapText = true;
+            //add borders
+            //nextRow = 8 + rowOffset;
+            xlRange = xlSheet.Range["A2:B" + nextRow.ToString()];
+            xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeTop].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
+            xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeRight].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
+            xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeBottom].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
+            xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeLeft].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;            
+            xlRange.Borders.Color = Color.Black;
+            //bold, color label cells
+            xlRange = xlSheet.Range["A2:A" + nextRow.ToString()];
+            xlRange.Font.Bold = true;
+            xlRange.Interior.Color = xlSheet.Range["A2"].Interior.Color;
             #endregion
 
             //results sheet
