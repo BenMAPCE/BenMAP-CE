@@ -1958,6 +1958,7 @@ namespace BenMAP
             this.picGIS.Size = new System.Drawing.Size(693, 458);
             this.picGIS.TabIndex = 8;
             this.picGIS.TabStop = false;
+            this.picGIS.Click += new System.EventHandler(this.picGIS_Click);
             this.picGIS.DragDrop += new System.Windows.Forms.DragEventHandler(this.mainMap_DragDrop);
             this.picGIS.DragEnter += new System.Windows.Forms.DragEventHandler(this.picGIS_DragEnter);
             this.picGIS.DragLeave += new System.EventHandler(this.mainMap_DragLeave);
