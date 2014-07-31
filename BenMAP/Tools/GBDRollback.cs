@@ -783,21 +783,21 @@ namespace BenMAP
             #region summary sheet
             //summary sheet
             Microsoft.Office.Interop.Excel.Worksheet xlSheet = (Microsoft.Office.Interop.Excel.Worksheet)xlBook.Worksheets[1];
-            xlSheet.Name = "Summary";
-            xlSheet.Range["A2"].Value = "Date";
+            //xlSheet.Name = "Summary";
+            //xlSheet.Range["A2"].Value = "Date";
             xlSheet.Range["B2"].Value = dtNow.ToString("yyyy/MM/dd");
-            xlSheet.Range["A3"].Value = "Scenario Name";
+            //xlSheet.Range["A3"].Value = "Scenario Name";
             xlSheet.Range["B3"].Value = rollback.Name;
-            xlSheet.Range["A4"].Value = "Scenario Description";
+            //xlSheet.Range["A4"].Value = "Scenario Description";
             xlSheet.Range["B4"].Value = rollback.Description;
-            xlSheet.Range["A5"].Value = "GBD Year";
+            //xlSheet.Range["A5"].Value = "GBD Year";
             xlSheet.Range["B5"].Value = rollback.Year.ToString();
-            xlSheet.Range["A6"].Value = "Pollutant";
+            //xlSheet.Range["A6"].Value = "Pollutant";
             char micrograms = '\u00B5';
             char super3 = '\u00B3';
             xlSheet.Range["B6"].Value = "PM 2.5" + micrograms.ToString() + "g/m" + super3.ToString();
 
-            xlSheet.Range["A7"].Value = "Rollback Type";
+            //xlSheet.Range["A7"].Value = "Rollback Type";
             string summary = String.Empty;
             switch (rollback.Type)
             {
@@ -813,7 +813,7 @@ namespace BenMAP
             }
             xlSheet.Range["B7"].Value = summary;
 
-            xlSheet.Range["A8"].Value = "Regions and Countries";
+            //xlSheet.Range["A8"].Value = "Regions and Countries";
             int rowOffset = 0;
             int nextRow = 0;
 
@@ -859,41 +859,45 @@ namespace BenMAP
             xlRange = xlSheet.Range["A2:A" + nextRow.ToString()];
             xlRange.Font.Bold = true;
             xlRange.Interior.Color = xlSheet.Range["A2"].Interior.Color;
+
+
+            xlSheet.Range["G2"].Value = rollback.Year.ToString() + " " + xlSheet.Range["G2"].Value.ToString();
+
             #endregion
 
             //results sheet
             #region results sheet
             xlSheet = (Microsoft.Office.Interop.Excel.Worksheet)xlBook.Worksheets[2];
-            xlSheet.Name = "Results";
-            xlSheet.Range["A3"].Value = "Country";
-            xlSheet.Range["B3"].Value = "Population Affected";
-            xlSheet.Range["C3"].Value = "Avoided Deaths (Total)";
-            xlSheet.Range["D3"].Value = "Avoided Deaths (% Population)";
-            xlSheet.Range["E3"].Value = "Min";
-            xlSheet.Range["F3"].Value = "Median";
-            xlSheet.Range["G3"].Value = "Max";
-            xlSheet.Range["E2"].Value = "Baseline";
-            xlSheet.Range["E2:G2"].MergeCells = true;
-            xlSheet.Range["H3"].Value = "Min";
-            xlSheet.Range["I3"].Value = "Median";
-            xlSheet.Range["J3"].Value = "Max";
-            xlSheet.Range["H2"].Value = "Control";
-            xlSheet.Range["H2:J2"].MergeCells = true;
-            xlSheet.Range["K3"].Value = "Air Quality Change (Population Weighted)";
+            //xlSheet.Name = "Results";
+            //xlSheet.Range["A3"].Value = "Country";
+            //xlSheet.Range["B3"].Value = "Population Affected";
+            //xlSheet.Range["C3"].Value = "Avoided Deaths (Total)";
+            //xlSheet.Range["D3"].Value = "Avoided Deaths (% Population)";
+            //xlSheet.Range["E3"].Value = "Min";
+            //xlSheet.Range["F3"].Value = "Median";
+            //xlSheet.Range["G3"].Value = "Max";
+            xlSheet.Range["E2"].Value = rollback.Year.ToString() + " " + xlSheet.Range["E2"].Value.ToString();
+            //xlSheet.Range["E2:G2"].MergeCells = true;
+            //xlSheet.Range["H3"].Value = "Min";
+            //xlSheet.Range["I3"].Value = "Median";
+            //xlSheet.Range["J3"].Value = "Max";
+            //xlSheet.Range["H2"].Value = "Control";
+            //xlSheet.Range["H2:J2"].MergeCells = true;
+            //xlSheet.Range["K3"].Value = "Air Quality Change (Population Weighted)";
 
             //format
-            xlSheet.Range["E2:J2"].Font.Bold = true;
-            xlSheet.Range["E2:J2"].HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignCenter;
-            xlSheet.Range["A3:K3"].Font.Bold = true;
-            xlSheet.Range["A3:K3"].HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignCenter;
-            xlSheet.Range["B3:D3"].ColumnWidth = 20;
-            xlSheet.Range["E3:J3"].ColumnWidth = 10;
-            xlSheet.Range["K3"].ColumnWidth = 20;
-            xlSheet.Range["B3:K3"].WrapText = true;
-            //country column
-            xlRange = (Microsoft.Office.Interop.Excel.Range)(xlSheet.Columns[1]);
-            xlRange.ColumnWidth = 40;
-            xlRange.WrapText = true;
+            //xlSheet.Range["E2:J2"].Font.Bold = true;
+            //xlSheet.Range["E2:J2"].HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignCenter;
+            //xlSheet.Range["A3:K3"].Font.Bold = true;
+            //xlSheet.Range["A3:K3"].HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignCenter;
+            //xlSheet.Range["B3:D3"].ColumnWidth = 20;
+            //xlSheet.Range["E3:J3"].ColumnWidth = 10;
+            //xlSheet.Range["K3"].ColumnWidth = 20;
+            //xlSheet.Range["B3:K3"].WrapText = true;
+            ////country column
+            //xlRange = (Microsoft.Office.Interop.Excel.Range)(xlSheet.Columns[1]);
+            //xlRange.ColumnWidth = 40;
+            //xlRange.WrapText = true;
 
             
 
