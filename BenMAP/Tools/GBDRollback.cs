@@ -27,7 +27,8 @@ namespace BenMAP
         private const double BACKGROUND = 5.8;
         private const int YEAR = 2010;
 
-        private System.Data.DataTable dtConcentrations;
+        private System.Data.DataTable dtConcCountry = null;
+        private System.Data.DataTable dtConcEntireRollback = null;
 
         public GBDRollback()
         {
@@ -375,6 +376,7 @@ namespace BenMAP
                     rollback.Standard = (GBDRollbackItem.StandardType)cboStandard.SelectedIndex;
                     break;
             }
+            rollback.Year = YEAR;
             rollback.Color = GetRandomColor();
 
 
@@ -630,7 +632,7 @@ namespace BenMAP
                 //for each rollback...
                 foreach (GBDRollbackItem rollback in rollbacks)
                 {
-                    //create new rollback output
+                    dtConcEntireRollback = null;
 
                     //for each country in rollback...
                     foreach (string countryid in rollback.Countries.Keys)
@@ -640,29 +642,40 @@ namespace BenMAP
                         incrate = GBDRollbackDataSource.GetIncidenceRate(countryid);
 
                         //get baseline concs
-                        dtConcentrations = GBDRollbackDataSource.GetCountryConcs(countryid, POLLUTANT_ID, YEAR);
+                        dtConcCountry = null;
+                        dtConcCountry = GBDRollbackDataSource.GetCountryConcs(countryid, POLLUTANT_ID, YEAR);
+
+                        //build schema of entire rollback table
+                        if (dtConcEntireRollback == null)
+                        {
+                            dtConcEntireRollback = dtConcCountry.Clone();
+                            dtConcEntireRollback.Columns.Add("CONCENTRATION_ADJ", dtConcCountry.Columns["CONCENTRATION"].DataType);
+                            dtConcEntireRollback.Columns.Add("CONCENTRATION_ADJ_BACK", dtConcCountry.Columns["CONCENTRATION"].DataType);
+                            dtConcEntireRollback.Columns.Add("CONCENTRATION_FINAL", dtConcCountry.Columns["CONCENTRATION"].DataType);
+                            dtConcEntireRollback.Columns.Add("CONCENTRATION_DELTA", dtConcCountry.Columns["CONCENTRATION"].DataType);
+                            dtConcEntireRollback.Columns.Add("KREWSKI", dtConcCountry.Columns["CONCENTRATION"].DataType);
+                        }
 
                         //run rollback
                         DoRollback(rollback);
 
                         //get concentration delta and population arrays
-                        double[] concDelta = Array.ConvertAll<DataRow, double>(dtConcentrations.Select(),
+                        double[] concDelta = Array.ConvertAll<DataRow, double>(dtConcCountry.Select(),
                             delegate(DataRow row) { return Convert.ToDouble(row["CONCENTRATION_DELTA"]); });
-                        double[] population = Array.ConvertAll<DataRow, double>(dtConcentrations.Select(),
+                        double[] population = Array.ConvertAll<DataRow, double>(dtConcCountry.Select(),
                             delegate(DataRow row) { return Convert.ToDouble(row["POPESTIMATE"]); });
 
                         //get results                
                         GBDRollbackKrewskiFunction func = new GBDRollbackKrewskiFunction();
                         GBDRollbackKrewskiResult result;
                         result = func.GBD_math(concDelta, population, incrate, beta, se);
+                        //add results to dtConcCountry
+                        dtConcCountry.Columns.Add("KREWSKI", dtConcCountry.Columns["CONCENTRATION"].DataType, result.Krewski.ToString());
 
-                        //create new country output
-
-                        //add to rollback output
-
+                        //add records to entire rollback dataset
+                        dtConcEntireRollback.Merge(dtConcCountry, true, MissingSchemaAction.Ignore);
 
                     }
-
 
                     //save rollback report using rollback output
                     xlApp = new Microsoft.Office.Interop.Excel.ApplicationClass();
@@ -697,7 +710,7 @@ namespace BenMAP
                     DoIncrementalRollback(rollback.Increment, rollback.Background);
                     break;
                 case GBDRollbackItem.RollbackType.Standard:
-                    DoRollbackToStandard();
+                    DoRollbackToStandard(rollback.Standard);
                     break;            
             }
         
@@ -706,59 +719,85 @@ namespace BenMAP
         private void DoPercentageRollback(double percentage, double background)
         { 
             //rollback
-            dtConcentrations.Columns.Add("CONCENTRATION_ADJ", dtConcentrations.Columns["CONCENTRATION"].DataType, "CONCENTRATION - (CONCENTRATION * " + (percentage / 100).ToString() + ")");
+            dtConcCountry.Columns.Add("CONCENTRATION_ADJ", dtConcCountry.Columns["CONCENTRATION"].DataType, "CONCENTRATION - (CONCENTRATION * " + (percentage / 100).ToString() + ")");
             
             //check against background
-            dtConcentrations.Columns.Add("CONCENTRATION_ADJ_BACK", dtConcentrations.Columns["CONCENTRATION"].DataType, "IIF(CONCENTRATION_ADJ < " + background + ", " + background + ", CONCENTRATION_ADJ)");
+            dtConcCountry.Columns.Add("CONCENTRATION_ADJ_BACK", dtConcCountry.Columns["CONCENTRATION"].DataType, "IIF(CONCENTRATION_ADJ < " + background + ", " + background + ", CONCENTRATION_ADJ)");
 
             //get final, keep original values if <= background.
-            dtConcentrations.Columns.Add("CONCENTRATION_FINAL", dtConcentrations.Columns["CONCENTRATION"].DataType, "IIF(CONCENTRATION <= " + background + ", CONCENTRATION, CONCENTRATION_ADJ_BACK)");
+            dtConcCountry.Columns.Add("CONCENTRATION_FINAL", dtConcCountry.Columns["CONCENTRATION"].DataType, "IIF(CONCENTRATION <= " + background + ", CONCENTRATION, CONCENTRATION_ADJ_BACK)");
 
             //get delta (orig. conc - rolled back conc. (corrected for background)
-            dtConcentrations.Columns.Add("CONCENTRATION_DELTA", dtConcentrations.Columns["CONCENTRATION"].DataType, "CONCENTRATION - CONCENTRATION_FINAL");
+            dtConcCountry.Columns.Add("CONCENTRATION_DELTA", dtConcCountry.Columns["CONCENTRATION"].DataType, "CONCENTRATION - CONCENTRATION_FINAL");
 
         }
 
         private void DoIncrementalRollback(double increment, double background)
         {
+            //rollback
+            dtConcCountry.Columns.Add("CONCENTRATION_ADJ", dtConcCountry.Columns["CONCENTRATION"].DataType, "CONCENTRATION - " + increment);
+
+            //check against background
+            dtConcCountry.Columns.Add("CONCENTRATION_ADJ_BACK", dtConcCountry.Columns["CONCENTRATION"].DataType, "IIF(CONCENTRATION_ADJ < " + background + ", " + background + ", CONCENTRATION_ADJ)");
+
+            //get final, keep original values if <= background.
+            dtConcCountry.Columns.Add("CONCENTRATION_FINAL", dtConcCountry.Columns["CONCENTRATION"].DataType, "IIF(CONCENTRATION <= " + background + ", CONCENTRATION, CONCENTRATION_ADJ_BACK)");
+
+            //get delta (orig. conc - rolled back conc. (corrected for background)
+            dtConcCountry.Columns.Add("CONCENTRATION_DELTA", dtConcCountry.Columns["CONCENTRATION"].DataType, "CONCENTRATION - CONCENTRATION_FINAL");
+
         }
 
-        private void DoRollbackToStandard()
+        private void DoRollbackToStandard(GBDRollbackItem.StandardType standardType)
         {
+
+            double standard = 10;
+
+            //rollback to standard
+            dtConcCountry.Columns.Add("CONCENTRATION_ADJ", dtConcCountry.Columns["CONCENTRATION"].DataType, standard.ToString());
+
+            //get final, keep original values if <= standard.
+            dtConcCountry.Columns.Add("CONCENTRATION_FINAL", dtConcCountry.Columns["CONCENTRATION"].DataType, "IIF(CONCENTRATION <= " + standard + ", CONCENTRATION, CONCENTRATION_ADJ)");
+
+            //get delta (orig. conc - rolled back conc.)
+            dtConcCountry.Columns.Add("CONCENTRATION_DELTA", dtConcCountry.Columns["CONCENTRATION"].DataType, "CONCENTRATION - CONCENTRATION_FINAL");
         }
 
         private void SaveRollbackReport(GBDRollbackItem rollback)
-        {          
+        {
+
+            //get application path
+            string appPath = AppDomain.CurrentDomain.BaseDirectory;
+            string filePath = appPath + @"Tools\GBDRollbackOutputTemplate.xlsx";
 
             Microsoft.Office.Interop.Excel.Workbook xlBook;
+            //open report template                
+            xlBook = xlApp.Workbooks.Open(filePath);
 
-            //save report                
-            xlBook = xlApp.Workbooks.Add();
             //get timestamp
             DateTime dtNow = DateTime.Now;
             string timeStamp = dtNow.ToString("yyyyMMddHHmm");
             //get application path
-            string appPath = AppDomain.CurrentDomain.BaseDirectory;
-            string filePath = appPath + "GBDRollback_" + rollback.Name + "_" + timeStamp + ".xlsx";
+            filePath = appPath + @"Tools\GBDRollback_" + rollback.Name + "_" + timeStamp + ".xlsx";
 
             #region summary sheet
             //summary sheet
             Microsoft.Office.Interop.Excel.Worksheet xlSheet = (Microsoft.Office.Interop.Excel.Worksheet)xlBook.Worksheets[1];
-            xlSheet.Name = "Summary";
-            xlSheet.Range["A2"].Value = "Date";
+            //xlSheet.Name = "Summary";
+            //xlSheet.Range["A2"].Value = "Date";
             xlSheet.Range["B2"].Value = dtNow.ToString("yyyy/MM/dd");
-            xlSheet.Range["A3"].Value = "Scenario Name";
+            //xlSheet.Range["A3"].Value = "Scenario Name";
             xlSheet.Range["B3"].Value = rollback.Name;
-            xlSheet.Range["A4"].Value = "Scenario Description";
+            //xlSheet.Range["A4"].Value = "Scenario Description";
             xlSheet.Range["B4"].Value = rollback.Description;
-            xlSheet.Range["A5"].Value = "GBD Year";
+            //xlSheet.Range["A5"].Value = "GBD Year";
             xlSheet.Range["B5"].Value = rollback.Year.ToString();
-            xlSheet.Range["A6"].Value = "Pollutant";
+            //xlSheet.Range["A6"].Value = "Pollutant";
             char micrograms = '\u00B5';
             char super3 = '\u00B3';
             xlSheet.Range["B6"].Value = "PM 2.5" + micrograms.ToString() + "g/m" + super3.ToString();
 
-            xlSheet.Range["A7"].Value = "Rollback Type";
+            //xlSheet.Range["A7"].Value = "Rollback Type";
             string summary = String.Empty;
             switch (rollback.Type)
             {
@@ -774,59 +813,91 @@ namespace BenMAP
             }
             xlSheet.Range["B7"].Value = summary;
 
-            xlSheet.Range["A8"].Value = "Countries";
+            //xlSheet.Range["A8"].Value = "Regions and Countries";
             int rowOffset = 0;
-            int nextRow;
-            foreach (KeyValuePair<string,string> kvp in rollback.Countries)
+            int nextRow = 0;
+
+            System.Data.DataTable dtTemp = dtConcEntireRollback.DefaultView.ToTable(true, "REGIONNAME", "COUNTRYNAME");
+            dtTemp.DefaultView.Sort = "REGIONNAME, COUNTRYNAME";
+            string region = String.Empty;
+            string country = String.Empty;
+            foreach (DataRow dr in dtTemp.Rows)
             {
-                string country = kvp.Value;
+                //new region? write region
+                if (!region.Equals(dr["REGIONNAME"].ToString(), StringComparison.OrdinalIgnoreCase))
+                {
+                    region = dr["REGIONNAME"].ToString();
+                    nextRow = 8 + rowOffset;
+                    xlSheet.Range["B" + nextRow.ToString()].Value = region;
+                    xlSheet.Range["B" + nextRow.ToString()].Font.Italic = true;
+                    rowOffset++;
+                }
+
+                //write country
+                country = dr["COUNTRYNAME"].ToString();
                 nextRow = 8 + rowOffset;
                 xlSheet.Range["B" + nextRow.ToString()].Value = country;
+                xlSheet.Range["B" + nextRow.ToString()].ColumnWidth = 40;
+                xlSheet.Range["B" + nextRow.ToString()].WrapText = true;
+                xlSheet.Range["B" + nextRow.ToString()].InsertIndent(2);
                 rowOffset++;
             }
 
             //format
-            Microsoft.Office.Interop.Excel.Range xlRange = (Microsoft.Office.Interop.Excel.Range)(xlSheet.Columns[1]);
-            xlRange.Font.Bold = true;
+            Microsoft.Office.Interop.Excel.Range xlRange;
+            xlRange = (Microsoft.Office.Interop.Excel.Range)(xlSheet.Columns[1]);            
             xlRange.AutoFit();
-            xlRange = (Microsoft.Office.Interop.Excel.Range)(xlSheet.Columns[2]);
-            xlRange.ColumnWidth = 40;
-            xlRange.WrapText = true;
+            //add borders
+            //nextRow = 8 + rowOffset;
+            xlRange = xlSheet.Range["A2:B" + nextRow.ToString()];
+            xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeTop].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
+            xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeRight].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
+            xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeBottom].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
+            xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeLeft].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;            
+            xlRange.Borders.Color = Color.Black;
+            //bold, color label cells
+            xlRange = xlSheet.Range["A2:A" + nextRow.ToString()];
+            xlRange.Font.Bold = true;
+            xlRange.Interior.Color = xlSheet.Range["A2"].Interior.Color;
+
+
+            xlSheet.Range["G2"].Value = rollback.Year.ToString() + " " + xlSheet.Range["G2"].Value.ToString();
+
             #endregion
 
             //results sheet
             #region results sheet
             xlSheet = (Microsoft.Office.Interop.Excel.Worksheet)xlBook.Worksheets[2];
-            xlSheet.Name = "Results";
-            xlSheet.Range["A3"].Value = "Country";
-            xlSheet.Range["B3"].Value = "Population Affected";
-            xlSheet.Range["C3"].Value = "Avoided Deaths (Total)";
-            xlSheet.Range["D3"].Value = "Avoided Deaths (% Population)";
-            xlSheet.Range["E3"].Value = "Min";
-            xlSheet.Range["F3"].Value = "Median";
-            xlSheet.Range["G3"].Value = "Max";
-            xlSheet.Range["E2"].Value = "Baseline";
-            xlSheet.Range["E2:G2"].MergeCells = true;
-            xlSheet.Range["H3"].Value = "Min";
-            xlSheet.Range["I3"].Value = "Median";
-            xlSheet.Range["J3"].Value = "Max";
-            xlSheet.Range["H2"].Value = "Control";
-            xlSheet.Range["H2:J2"].MergeCells = true;
-            xlSheet.Range["K3"].Value = "Air Quality Change (Population Weighted)";
+            //xlSheet.Name = "Results";
+            //xlSheet.Range["A3"].Value = "Country";
+            //xlSheet.Range["B3"].Value = "Population Affected";
+            //xlSheet.Range["C3"].Value = "Avoided Deaths (Total)";
+            //xlSheet.Range["D3"].Value = "Avoided Deaths (% Population)";
+            //xlSheet.Range["E3"].Value = "Min";
+            //xlSheet.Range["F3"].Value = "Median";
+            //xlSheet.Range["G3"].Value = "Max";
+            xlSheet.Range["E2"].Value = rollback.Year.ToString() + " " + xlSheet.Range["E2"].Value.ToString();
+            //xlSheet.Range["E2:G2"].MergeCells = true;
+            //xlSheet.Range["H3"].Value = "Min";
+            //xlSheet.Range["I3"].Value = "Median";
+            //xlSheet.Range["J3"].Value = "Max";
+            //xlSheet.Range["H2"].Value = "Control";
+            //xlSheet.Range["H2:J2"].MergeCells = true;
+            //xlSheet.Range["K3"].Value = "Air Quality Change (Population Weighted)";
 
             //format
-            xlSheet.Range["E2:J2"].Font.Bold = true;
-            xlSheet.Range["E2:J2"].HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignCenter;
-            xlSheet.Range["A3:K3"].Font.Bold = true;
-            xlSheet.Range["A3:K3"].HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignCenter;
-            xlSheet.Range["B3:D3"].ColumnWidth = 20;
-            xlSheet.Range["E3:J3"].ColumnWidth = 10;
-            xlSheet.Range["K3"].ColumnWidth = 20;
-            xlSheet.Range["B3:K3"].WrapText = true;
-            //country column
-            xlRange = (Microsoft.Office.Interop.Excel.Range)(xlSheet.Columns[1]);
-            xlRange.ColumnWidth = 40;
-            xlRange.WrapText = true;
+            //xlSheet.Range["E2:J2"].Font.Bold = true;
+            //xlSheet.Range["E2:J2"].HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignCenter;
+            //xlSheet.Range["A3:K3"].Font.Bold = true;
+            //xlSheet.Range["A3:K3"].HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignCenter;
+            //xlSheet.Range["B3:D3"].ColumnWidth = 20;
+            //xlSheet.Range["E3:J3"].ColumnWidth = 10;
+            //xlSheet.Range["K3"].ColumnWidth = 20;
+            //xlSheet.Range["B3:K3"].WrapText = true;
+            ////country column
+            //xlRange = (Microsoft.Office.Interop.Excel.Range)(xlSheet.Columns[1]);
+            //xlRange.ColumnWidth = 40;
+            //xlRange.WrapText = true;
 
             
 
