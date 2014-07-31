@@ -645,6 +645,17 @@ namespace BenMAP
                         dtConcCountry = null;
                         dtConcCountry = GBDRollbackDataSource.GetCountryConcs(countryid, POLLUTANT_ID, YEAR);
 
+                        //build schema of entire rollback table
+                        if (dtConcEntireRollback == null)
+                        {
+                            dtConcEntireRollback = dtConcCountry.Clone();
+                            dtConcEntireRollback.Columns.Add("CONCENTRATION_ADJ", dtConcCountry.Columns["CONCENTRATION"].DataType);
+                            dtConcEntireRollback.Columns.Add("CONCENTRATION_ADJ_BACK", dtConcCountry.Columns["CONCENTRATION"].DataType);
+                            dtConcEntireRollback.Columns.Add("CONCENTRATION_FINAL", dtConcCountry.Columns["CONCENTRATION"].DataType);
+                            dtConcEntireRollback.Columns.Add("CONCENTRATION_DELTA", dtConcCountry.Columns["CONCENTRATION"].DataType);
+                            dtConcEntireRollback.Columns.Add("KREWSKI", dtConcCountry.Columns["CONCENTRATION"].DataType);
+                        }
+
                         //run rollback
                         DoRollback(rollback);
 
@@ -661,16 +672,8 @@ namespace BenMAP
                         //add results to dtConcCountry
                         dtConcCountry.Columns.Add("KREWSKI", dtConcCountry.Columns["CONCENTRATION"].DataType, result.Krewski.ToString());
 
-                        //append country data to data for entire rollback
-                        if (dtConcEntireRollback == null)
-                        {
-                            dtConcEntireRollback = dtConcCountry.Copy();
-                        }
-                        else 
-                        {
-                            dtConcEntireRollback.Merge(dtConcCountry);
-                        }
-
+                        //add records to entire rollback dataset
+                        dtConcEntireRollback.Merge(dtConcCountry, true, MissingSchemaAction.Ignore);
 
                     }
 
