@@ -90,6 +90,7 @@ namespace BenMAP
                 CommonClass.NodeAnscy += ChangeNodeStatus;
 
                 mainMap.LayerAdded += new EventHandler<LayerEventArgs>(mainMap_LayerAdded);
+                mainMap.Layers.LayerVisibleChanged += new EventHandler(mainMap_LayerVisibleChanged);
 
                 //appManager1.LoadExtensions();
                 Console.WriteLine("MCB-test");
@@ -313,6 +314,76 @@ namespace BenMAP
             picGIS.Visible = false;
         }
 
+        private void mainMap_LayerVisibleChanged(object sender, EventArgs e)
+        {
+            Update_Map_Title();   
+        }
+
+        private void Update_Map_Title()   //Change the map title to be equal to the top layer that is visible
+        {
+            ILayer TopLayer = null;
+            bool IgnoreAdminMapGroup = true;
+            TopLayer = FindTopVisibleLayer(IgnoreAdminMapGroup);
+            if (TopLayer != null & TopLayer is FeatureLayer)  //Change the map title depending on the layer legendtext and the map group that it is in. 
+            { 
+                //string ParentText = "";
+                //string NewMapText = "";
+                
+                //string LayerText = TopLayer.LegendText;
+                //string[] TopArray = new string[] { regionGroupLegendText, "Pollutants", "Results" };
+                //string[] ResultsArray = new string[] { };
+                //IEnumerable<string> TopMGs = (IEnumerable<string>)TopArray;
+                //List<string> TopLevelMGs = new List<string>(TopMGs);
+               //Find the Parent, grandparent, etc. nodes of the layer of interest and based on identity of parent, grandparent or greate grandparent, modify the title
+                MapGroup ParentMG = null;
+                MapGroup GrandParentMG = null;
+                MapGroup GreatGrandParent = null;
+                
+                List<IMapGroup> AllMG = new List<IMapGroup>();
+                AllMG = mainMap.GetAllGroups();
+                ParentMG = (MapGroup)AllMG.Find(m => m.Contains(TopLayer));
+                if (ParentMG != null) 
+                {
+                    GrandParentMG = (MapGroup)AllMG.Find(m => m.Contains(ParentMG));
+                    if (GrandParentMG != null) 
+                    {
+                        if (GrandParentMG.LegendText.ToLower() == "results")
+                        {
+                            _CurrentMapTitle = CommonClass.MainSetup.SetupName + " Setup:" + ParentMG.LegendText + " , " + TopLayer.LegendText;
+                            tbMapTitle.Text = _CurrentMapTitle;
+                        }
+                        else //May be in the Pollutants Mapgroup
+                        {
+                            GreatGrandParent = (MapGroup)AllMG.Find(m => m.Contains(GrandParentMG));
+                            if (GreatGrandParent != null & GreatGrandParent.LegendText.ToLower() == "pollutants")
+                            { 
+                                string polText = GrandParentMG.LegendText;
+                                string statText = ParentMG.LegendText;
+                                _CurrentMapTitle = CommonClass.MainSetup.SetupName + " Setup:" + polText + " - " + statText + " , " + TopLayer.LegendText;
+                                tbMapTitle.Text = _CurrentMapTitle;
+                            }
+                            else  //Unknown mapgroup 
+                            {
+                                // Don't update the map title
+                                return; 
+                            }
+
+                        }
+                    }
+                    else//layer only has a parent MapGroup - could be "Region Admin group or unknkown MapGroup
+                    {   
+                        // Don't update the map title
+                        return; 
+                    }
+                }
+                else //Top visible layer not in a map group;
+                {
+                    // Don't update the map title. 
+                    return;
+                }
+
+            }
+        }
 
         private bool AddData2CommonClass(TreeView tree)
         {
@@ -2560,7 +2631,7 @@ namespace BenMAP
             string LayerLegendText;
 
             //Add Pollutants Mapgroup if it doesn't exist already -MCB
-            TopPollutantMapGroup = AddMapGroup("Pollutants", "Map Layers", true, true);
+            TopPollutantMapGroup = AddMapGroup("Pollutants", "Map Layers", false, false);
 
             //Get Metrics fields for this pollutant.  If no metrics then return with warning/error
             List<string> lstAddField = new List<string>();
@@ -2592,7 +2663,7 @@ namespace BenMAP
 
                 try
                 {
-                    polMapGroup = AddMapGroup(pollutantMGText, "Pollutants", false, true);
+                    polMapGroup = AddMapGroup(pollutantMGText, "Pollutants", false, false);
                     bcgMapGroup = AddMapGroup(bcgMGText, pollutantMGText, false, true);
                     //Remove the old version of the layer if exists already
                     RemoveOldPolygonLayer(LayerNameText, bcgMapGroup.GetLayers(), true);  //!!!!!!!!!!!!Need to trap for problems removing the old layer if it exists?
@@ -2732,7 +2803,7 @@ namespace BenMAP
         private IMapLayer _CurrentIMapLayer = null;
         //private int _currentLayerIndex = 1; //MCB- used in old way of accessing layers
         private string _columnName = string.Empty;
-        private string _regionGroupLegendText = "Region Admin Layers";
+        private string regionGroupLegendText = "Region Admin Layers";
         private string _bcgGroupLegendText = "Pollutants";
         private bool _HealthResultsDragged = false;
         private bool _IncidenceDragged = false;
@@ -2793,7 +2864,7 @@ namespace BenMAP
                     colorBlend.ColorArray = GetColorRamp("yellow_red", CategoryNumber);
                     break;
                 case "H": //Health Impact Function -MCB choose another color ramp???
-                    colorBlend.ColorArray = GetColorRamp("pale_blue_green", CategoryNumber);
+                    colorBlend.ColorArray = GetColorRamp("blues", CategoryNumber);  //"pale_blue_green"
                     break;
                 case "A": //Pooled Valuation Results -MCB choose another color ramp???
                     colorBlend.ColorArray = GetColorRamp("purples", CategoryNumber);
@@ -3185,7 +3256,7 @@ namespace BenMAP
                 mainMap.ProjectionModeDefine = ActionMode.Never;
 
                 //-MCB  Add RegionAdmin group to the legend if it doesn't exist already---------
-                 MapGroup RegionMapGroup = AddMapGroup(_regionGroupLegendText, "Map Layers", false, false);
+                 MapGroup RegionMapGroup = AddMapGroup(regionGroupLegendText, "Map Layers", false, false);
                 RegionMapGroup.IsExpanded = false;
                
                 //MapGroup RegionMapGroup = new MapGroup();
@@ -7166,10 +7237,10 @@ namespace BenMAP
                     mainMap.ProjectionModeDefine = ActionMode.Never;
                     string shapeFileName = "";
 
-                    MapGroup ResultsMG = AddMapGroup("Results", "Map Layers", true, true);
-                    MapGroup PVResultsMG = AddMapGroup("Pooled Valuation", "Results", false, true);
+                    MapGroup ResultsMG = AddMapGroup("Results", "Map Layers", false, false);
+                    MapGroup PVResultsMG = AddMapGroup("Pooled Valuation", "Results", false, false);
 
-                    string author = "Unknown";
+                    string author = "Author Unknown";
                     string LayerTextName;
 
                     if (lstallSelectValuationMethodAndValue.First().AllSelectValuationMethod != null
@@ -7228,7 +7299,7 @@ namespace BenMAP
                     //(mainMap.Layers[0] as MapPolygonLayer).Name = "APVResult";
                     //(mainMap.Layers[0] as MapPolygonLayer).LegendText = "APVResult";
                     IFeatureSet fs = APVResultPolyLayer1.DataSet;
-                    APVResultPolyLayer1.Name = "PV:" + author;
+                    APVResultPolyLayer1.Name = author;
                     APVResultPolyLayer1.LegendText = APVResultPolyLayer1.Name;
                     int j = 0;
                     int iCol = 0;
@@ -7319,7 +7390,7 @@ namespace BenMAP
                     //_currentLayerIndex = mainMap.Layers.Count - 1;
                     _CurrentIMapLayer = APVResultPolyLayer1;
                     _columnName = strValueField;
-                    _CurrentMapTitle = CommonClass.MainSetup.SetupName + " Setup: " + APVResultPolyLayer1.LegendText + ", Pooled Valuation Result"; 
+                    _CurrentMapTitle = CommonClass.MainSetup.SetupName + " Setup: Pooled Valuation- " + APVResultPolyLayer1.LegendText; 
                     RenderMainMap(true,"A");
 
                     addRegionLayerGroupToMainMap();
@@ -9592,20 +9663,7 @@ namespace BenMAP
                         MapPolygonLayer polLayer = (MapPolygonLayer)mainMap.Layers.Add(CommonClass.DataFilePath + @"\Tmp\CRTemp.shp");
                         //MapPolygonLayer polLayer = mainMap.Layers[mainMap.Layers.Count - 1] as MapPolygonLayer;
                         string strValueField = polLayer.DataSet.DataTable.Columns[polLayer.DataSet.DataTable.Columns.Count - 1].ColumnName;
-                        //PolygonScheme myScheme1 = new PolygonScheme();
-                        //float fl = (float)0.1;
-                        //myScheme1.EditorSettings.StartColor = Color.Blue;
-                        //myScheme1.EditorSettings.StartColor.ToTransparent(fl);
-                        //myScheme1.EditorSettings.EndColor = Color.Red;
-                        //myScheme1.EditorSettings.EndColor.ToTransparent(fl);
-
-                        //myScheme1.EditorSettings.ClassificationType = ClassificationType.Quantities;
-                        //myScheme1.EditorSettings.IntervalMethod = IntervalMethod.NaturalBreaks;
-                        //myScheme1.EditorSettings.IntervalSnapMethod = IntervalSnapMethod.SignificantFigures;
-                        //myScheme1.EditorSettings.IntervalRoundingDigits = 3;
-                        //myScheme1.EditorSettings.NumBreaks = 6;
-                        //myScheme1.EditorSettings.FieldName = strValueField; myScheme1.EditorSettings.UseGradient = false;
-                        //myScheme1.CreateCategories(polLayer.DataSet.DataTable);
+                       
                         _columnName = strValueField;
                         polLayer.Symbology = CreateResultPolyScheme(ref polLayer, 6, "IP"); //-MCB added
 
@@ -9618,7 +9676,7 @@ namespace BenMAP
                         //_currentLayerIndex = mainMap.Layers.Count - 1;
                         _CurrentIMapLayer = polLayer;
                         _columnName = strValueField;
-                        _CurrentMapTitle = CommonClass.MainSetup.SetupName + " Setup: " + strValueField + ", Pooled Incidence Results"; 
+                        _CurrentMapTitle = CommonClass.MainSetup.SetupName + " Setup: Pooled Incidence- " + strValueField; 
                         RenderMainMap(true, "IP");
 
                         addRegionLayerGroupToMainMap();
@@ -9641,17 +9699,17 @@ namespace BenMAP
             }
             if (tabCtlReport.TabPages[tabCtlReport.SelectedIndex].Name == "tabPoolingIncidence")
             {
-                olvIncidence.SelectAll();
-                _IncidenceDragged = true;
-                tlvIncidence_DoubleClick(sender, e);
+               // olvIncidence.SelectAll();
+               // _IncidenceDragged = true;
+               //tlvIncidence_DoubleClick(sender, e);
                 _IncidenceDragged = false;
             }
             if (tabCtlReport.TabPages[tabCtlReport.SelectedIndex].Name == "tabAPVResultGISShow")
             {
-                tlvAPVResult.SelectAll();
-                _APVdragged = true;
-                tlvAPVResult_DoubleClick(sender, e);
-                _APVdragged = false;
+                // tlvAPVResult.SelectAll();
+                // _APVdragged = true;
+                // tlvAPVResult_DoubleClick(sender, e);
+                 _APVdragged = false;
             }
         }
 
@@ -10930,29 +10988,18 @@ namespace BenMAP
                             }
                             //Add Pollutants Mapgroup if it doesn't exist already -MCB
                             //MapGroup ResultsMapGroup = new MapGroup();
-                            MapGroup ResultsMapGroup = AddMapGroup("Results", "Map Layers", true, true);
-                            MapGroup HIFResultsMapGroup = AddMapGroup("Health Impacts", "Results", false, true);
+                            MapGroup ResultsMapGroup = AddMapGroup("Results", "Map Layers", false, false);
+                            MapGroup HIFResultsMapGroup = AddMapGroup("Health Impacts", "Results", false, false);
                             
                             string author = lstCRSelectFunctionCalculateValue.First().CRSelectFunction.BenMAPHealthImpactFunction.Author;
                             if (author.IndexOf(" ") != -1)
                             {
                                 author = author.Substring(0, author.IndexOf(" "));
                             }
-                            string LayerNameText = "HIF:" + author;
+                            string LayerNameText = author;
                             //Remove the old version of the layer if exists already
                             RemoveOldPolygonLayer(LayerNameText, HIFResultsMapGroup.GetLayers(), false);
-                            //foreach (MapPolygonLayer aLayer in ResultsMapGroup.GetLayers())  //shrink & turn off existing layers or remove if a duplicate of the new layer
-                            //{
-                            //    if (aLayer.Name == "HIF")   //MCB-May want to make it more specific more than one HIF layer is allowed
-                            //    {
-                            //        ResultsMapGroup.Layers.Remove(aLayer);
-                            //        //break;
-                            //    }
-                            //    else  
-                            //    { // Unexpand it to increase display room for new layer
-                            //        aLayer.IsExpanded = false;
-                            //    }
-                            //}
+                           
                             tsbChangeProjection.Text = "change projection to Albers";
                             mainMap.ProjectionModeReproject = ActionMode.Never;
                             mainMap.ProjectionModeDefine = ActionMode.Never;
@@ -11045,7 +11092,7 @@ namespace BenMAP
                             //CRResultMapPolyLayer = (MapPolygonLayer)mainMap.Layers.Add(CommonClass.DataFilePath + @"\Tmp\CRTemp.shp");
                             
                             MapPolygonLayer polLayer = CRResultMapPolyLayer;
-                            polLayer.LegendText = "HIF:" + author;
+                            polLayer.LegendText = author;
                             polLayer.Name = polLayer.LegendText;
                             string strValueField = polLayer.DataSet.DataTable.Columns[polLayer.DataSet.DataTable.Columns.Count - 1].ColumnName;
                             _columnName = strValueField;
@@ -11062,10 +11109,8 @@ namespace BenMAP
                             _CurrentIMapLayer = polLayer;
                             string pollutantUnit = string.Empty;
                             _columnName = strValueField;
-                            _CurrentMapTitle = CommonClass.MainSetup.SetupName + " Setup: " + CRResultMapPolyLayer.LegendText + ",  Health Impact Function Result";  //-MCB draft until better title
+                            _CurrentMapTitle = CommonClass.MainSetup.SetupName + " Setup: " +  "Health Impacts- " + CRResultMapPolyLayer.LegendText ;  //-MCB draft until better title
                             
-                            //polLayer.LegendText = author;
-                            //polLayer.Name = "HIF_" + author;
                             RenderMainMap(true, "H");   //"R"
                             addRegionLayerGroupToMainMap();
                         }
@@ -12474,14 +12519,48 @@ namespace BenMAP
 
            return;
         }
+        private ILayer FindTopVisibleLayer(bool ignoreAdminMapGroup=false)
+        {  //Loop through all of the layers and find the topmost visible one - used to update the map title
+            //if ignoreAdminMapGroup = true then ignore the visible layers within that map group when finding the topvislayer.
 
-        private MapGroup AddMapGroup(string mgName, string parentMGText,  bool ShrinkOtherMG = true, bool TurnOffNonReference = true)
+            ILayer TopVisLayer = null;
+            ILayer ThisLayer = null;
+            List<ILayer> AllLayers = null;
+            AllLayers = mainMap.GetAllLayers();
+            AllLayers.Reverse(); //reverser list so Last added one is top visible
+            TopVisLayer = null;
+            for (int j=0; j <= AllLayers.Count-1; j++)
+            {   
+                ThisLayer = AllLayers[j];
+                if (ThisLayer.IsVisible)
+                {
+                    if (!ignoreAdminMapGroup)
+                    {
+                        TopVisLayer = ThisLayer;
+                        break;
+                    }
+                    else //make sure the layer is not in the admin group
+                    {
+                        foreach (MapGroup ThisMG in mainMap.GetAllGroups())
+                        { 
+                            if (ThisMG.LegendText == regionGroupLegendText & !ThisMG.Contains(ThisLayer))
+                            {
+                                TopVisLayer = ThisLayer;
+                                return TopVisLayer;
+                            }
+                        }
+                    }
+                }
+            }
+            return TopVisLayer;
+        }
+        private MapGroup AddMapGroup(string mgName, string parentMGText,  bool ShrinkOtherMG = false, bool TurnOffNonReference = false)
         {
             if (mgName == null || mgName =="") return null;   //confirm map group name is valid
 
-            bool _mgFound = false;
+            bool mgFound = false;
             MapGroup NewMapGroup = new MapGroup();
-            MapGroup ParentMapGroup = new MapGroup();
+            MapGroup ParentMapGroup = null;
             string parentText;
             
             //See if a map group with the Map group name already exists and find the name of the parent (if a map group)
@@ -12492,50 +12571,77 @@ namespace BenMAP
                     if (layer.LegendText == mgName) // && layer.GetParentItem().LegendText == parentMGText)
                     {
                         //Make sure the layer is in the same map group
-                        parentText = "Map Layers";           //default parent item- so top level map groups are detected correctly
-                        if (layer.GetParentItem() != null)   //MCB--problem getting the parent map group of some map groups??????
+                        ParentMapGroup = (MapGroup)mainMap.GetAllGroups().Find(m => m.Contains(layer));
+                        if (ParentMapGroup == null)
                         {
-                            parentText = layer.GetParentItem().LegendText;
+                            //then assume top level
+                            parentText = "Map Layers";           //default parent item- so top level map groups are detected correctly
                         }
-                        
-                        if (parentText == parentMGText)
+                        else
                         {
-                            NewMapGroup = (MapGroup)layer;     //Results map group found
-                            _mgFound = true;
+                            parentText = ParentMapGroup.LegendText;
+                        }
+
+                        //if (layer.GetParentItem() != null)   //MCB--problem getting the parent map group of some map groups??????
+                        //{
+                        //    parentText = layer.GetParentItem().LegendText;
+                        //}
+                        
+                        if (parentText == parentMGText)      //Map group already exists
+                        {
+                            NewMapGroup = (MapGroup)layer;    
+                            mgFound = true;
                             //break;
                         }
                     }
                     else 
-                    {    
-                        if (ShrinkOtherMG) layer.IsExpanded = false;             // Unexpand other mapgroups to increase display room for new layer    
-                        if (layer.LegendText != _regionGroupLegendText && parentMGText != _regionGroupLegendText)
+                    {
+                        if (ShrinkOtherMG)
                         {
-                            if (TurnOffNonReference) layer.IsVisible = false;        //turn off other layers
+                            layer.IsExpanded = false;             // Unexpand other mapgroups to increase display room for new layer    
+                        }
+                        if (layer.LegendText != regionGroupLegendText && parentMGText != regionGroupLegendText)
+                        {
+                            if (TurnOffNonReference)
+                            {
+                                layer.IsVisible = false;        //turn off other layers
+                            }
                         }
                     }
                     if (layer.LegendText == parentMGText) ParentMapGroup = (MapGroup)layer;
                 }
             }
 
-            if (!_mgFound)  //Results map group not found, so add it
+            if (!mgFound)  //New map group not found already, so add it
             {
                 NewMapGroup.LegendText = mgName;
-                if (parentMGText == "Map Layers")
+                if (parentMGText == "Map Layers")  //add map group at top level
                 {
-                    //mainMap.Layers.Add(NewMapGroup);
-                    mainMap.Layers.Insert(mainMap.Layers.Count(),NewMapGroup);
+                    mainMap.Layers.Add(NewMapGroup);
+                    //mainMap.Layers.Insert(mainMap.Layers.Count(),NewMapGroup);
                 }
                 else
                 {
-                    ParentMapGroup.Add(NewMapGroup);
+                    if (ParentMapGroup == null)
+                    {
+                        ParentMapGroup = (MapGroup)mainMap.GetAllGroups().Find(m => m.LegendText == parentMGText);
+                    }
+                    if (ParentMapGroup == null)  //If parent still null then we can't find a map group to put this layer in.
+                    {
+                        mainMap.Layers.Add(NewMapGroup);   //adding it to top level
+                    }
+                    else  //Add new group under it's parent Map Group
+                    {
+                        ParentMapGroup.Add(NewMapGroup);
+                    }
                     NewMapGroup.SetParentItem(ParentMapGroup);
                 }
                
             }
             //testing of index
-            int MGindex = mainMap.Layers.IndexOf(NewMapGroup);
-            int MGIndex2 = mainMap.GetAllLayers().Count - 1;
-            string MGname = NewMapGroup.LegendText;
+            //int MGindex = mainMap.Layers.IndexOf(NewMapGroup);
+            //int MGIndex2 = mainMap.GetAllLayers().Count - 1;
+            //string MGname = NewMapGroup.LegendText;
             //MessageBox.Show("Index of new map group: " + MGname + " is " + MGindex + " or this: " + MGIndex2);
             return NewMapGroup;
         }
@@ -12582,7 +12688,6 @@ namespace BenMAP
                     tabCtlMain.SelectedIndex = 1;
                     if (olvIncidence.SelectedObjects.Count > 1)
                     {
-
                         bGIS = false;
                         bChart = false;
                     }
@@ -12686,10 +12791,21 @@ namespace BenMAP
                             mainMap.ProjectionModeDefine = ActionMode.Never;
                             string shapeFileName = "";
 
-                            MapGroup ResultsMG = AddMapGroup("Results", "Map Layers", true, true);
-                            MapGroup PIResultsMapGroup = AddMapGroup("Pooled Incidence", "Results", false, true);
-                            string LayerNameText = "Pooled Incidence";
-
+                            MapGroup ResultsMG = AddMapGroup("Results", "Map Layers", false, false);
+                            MapGroup PIResultsMapGroup = AddMapGroup("Pooled Incidence", "Results", false, false);
+                            
+                            //string LayerNameText = "Pooled Incidence";
+                            string author = "Author Unknown";
+                            if (crSelectFunctionCalculateValue.CRSelectFunction != null && crSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction != null
+                                                            && crSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Author != null)
+                            {
+                                author = crSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Author;
+                                if (author.IndexOf(" ") > -1)
+                                {
+                                    author = author.Substring(0, author.IndexOf(" "));
+                                }
+                            }
+                            string LayerNameText = "Pooled Incidence:" + author; 
                             RemoveOldPolygonLayer(LayerNameText, PIResultsMapGroup.GetLayers(), false);
 
                             //mainMap.Layers.Clear();
@@ -12768,7 +12884,7 @@ namespace BenMAP
                                 {
                                 }
                             }
-                            string author = "Pooled Incidence UNK";
+                            
                             if (File.Exists(CommonClass.DataFilePath + @"\Tmp\CRTemp.shp")) CommonClass.DeleteShapeFileName(CommonClass.DataFilePath + @"\Tmp\CRTemp.shp");
                             tlvIPoolMapPolyLayer.DataSet.SaveAs(CommonClass.DataFilePath + @"\Tmp\CRTemp.shp", true);
                             // mainMap.Layers.Clear();  -MCB, will need to add code to clear the equivalent layer if it exists already
@@ -12776,15 +12892,15 @@ namespace BenMAP
                             //tlvIPoolMapPolyLayer = (MapPolygonLayer)ResultsMG.Layers.Add(CommonClass.DataFilePath + @"\Tmp\CRTemp.shp");
                             tlvIPoolMapPolyLayer.DataSet.DataTable.Columns[tlvIPoolMapPolyLayer.DataSet.DataTable.Columns.Count - 1].ColumnName = "Pooled Incidence";
                             
-                            if (crSelectFunctionCalculateValue.CRSelectFunction != null && crSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction != null
-                                && crSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Author != null)
-                            {
-                                author = crSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Author;
-                                if (author.IndexOf(" ") > -1)
-                                {
-                                    author = author.Substring(0, author.IndexOf(" "));
-                                }
-                            }
+                            //if (crSelectFunctionCalculateValue.CRSelectFunction != null && crSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction != null
+                            //    && crSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Author != null)
+                            //{
+                            //    author = crSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Author;
+                            //    if (author.IndexOf(" ") > -1)
+                            //    {
+                            //        author = author.Substring(0, author.IndexOf(" "));
+                            //    }
+                            //}
 
                             MapPolygonLayer polLayer = tlvIPoolMapPolyLayer;
                             string strValueField = polLayer.DataSet.DataTable.Columns[polLayer.DataSet.DataTable.Columns.Count - 1].ColumnName;
@@ -12801,11 +12917,11 @@ namespace BenMAP
                             _dMaxValue = dMaxValue;
                             //_currentLayerIndex = mainMap.Layers.Count - 1;
                             polLayer.LegendText = author;
-                            polLayer.Name = "Pooled Incidence"; // "PIR_" + author;
+                            polLayer.Name = "Pooled Incidence:" + author; // "PIR_" + author;
                             _CurrentIMapLayer = polLayer;
                             string pollutantUnit = string.Empty;
                             _columnName = strValueField;
-                            _CurrentMapTitle = CommonClass.MainSetup.SetupName + " Setup: " + tlvIPoolMapPolyLayer.LegendText + ", Pooled Incidence Results"; 
+                            _CurrentMapTitle = CommonClass.MainSetup.SetupName + " Setup: Pooled Incidence-" + tlvIPoolMapPolyLayer.LegendText; 
                             RenderMainMap(true, "I");
 
                             addRegionLayerGroupToMainMap();
@@ -13255,80 +13371,139 @@ namespace BenMAP
 
         private void btnShowHideAttributeTable_Click(object sender, EventArgs e)
         {
-            if (dgvAttributeTable.Visible == false)
+            //User has to select a feature layer to see it's attribute table.  If none selected then show the attribute table of the top visible layer.  If none then don't show an attribute table.
+            //If the selected layer is not a feature layer (point, line, polygon_ then don't show an attribute table.
+
+            if (mainMap.GetAllLayers().Count > 0) //Only perform if any featurelayers present
             {
-                WaitShow("Loading Table...");                                                               //Need to change data source to 1st selected layer (if none selected, then first feature layer)
-                bool selLayerFound = false;
-                List<ILayer> ILlist = mainMap.GetAllLayers();
-                   
-                MapLayerCollection FLlist = new MapLayerCollection();// Get just the feature layers, within map groups too)
-                string strLayerType = null;
-               
-                foreach (IMapLayer aLayer in ILlist)
+                ILayer SelLayer = null;
+                string LayerType;
+                MapPolygonLayer SelPolyMapLayer;
+                MapPointLayer SelPointLayer;
+                MapLineLayer SelLineMapLayer;
+
+                //Get the selected layer
+                SelLayer = mainMap.Layers.SelectedLayer;
+                if (SelLayer == null)                    //Use the top visible layer
                 {
-                    strLayerType = aLayer.ToString();
-                    strLayerType = strLayerType.Replace("DotSpatial.Controls.", "");
-                    if (strLayerType == "MapPointLayer" | strLayerType == "MapPolygonLayer" | strLayerType == "MapLineLayer")
-                    {
-                        FLlist.Add(aLayer);
-                    }
+                    SelLayer = FindTopVisibleLayer(false);
+                    Debug.WriteLine("No layer selected, top visible layer used instead to dsplay the attribute table of");
                 }
 
-                if (FLlist != null && FLlist.Count > 0)                      // if featurelayers are present 
+                if (SelLayer == null)                   //No layers are visible on the map
                 {
-                    foreach (IFeatureLayer fLayer in FLlist) // find the first selected feature layer
-                    {
-                        if (fLayer.IsSelected && !selLayerFound)
-                        {                          
-                            if (dgvAttributeTable.DataSource == (null) || !dgvAttributeTable.DataSource.Equals(fLayer.DataSet.DataTable))
-                            {   
-                                if (!fLayer.DataSet.AttributesPopulated) fLayer.DataSet.FillAttributes();
-                                dgvAttributeTable.DataSource = fLayer.DataSet.DataTable;
-                                _CurrentMapTableTitle = fLayer.LegendText;
-                            }
-                            selLayerFound = true;
-                            break;
-                        }
-                    }
-                    if (!selLayerFound)                      //if no feature layers selected, then use the last feature layer added
-                    {
-                        IFeatureLayer fLayer = (IFeatureLayer)FLlist[0];
-                        if (dgvAttributeTable.DataSource == null || !dgvAttributeTable.DataSource.Equals(fLayer.DataSet.DataTable))
-                            {
-                                if (!fLayer.DataSet.AttributesPopulated) fLayer.DataSet.FillAttributes();
-                                dgvAttributeTable.DataSource = fLayer.DataSet.DataTable;
-                                _CurrentMapTableTitle = fLayer.LegendText;
-                            }
-                    }
-                    
-                                                             // Make the table visible and change the button's text (button acts as a toggle between map and table)
-                    dgvAttributeTable.Visible = true;
-                    _SavedExtent = mainMap.Extent;
-                    tabMapLayoutPanel1.SetRow(mainMap, 2);
-                    tabMapLayoutPanel1.SetRow(dgvAttributeTable, 1);
-                    
-                    tbMapTitle.Text = _CurrentMapTableTitle;
-                    btnShowHideAttributeTable.Text = "Map";  // button now allows the user to switch to the map
-                    Debug.WriteLine("Attribute table displayed");
+                    Debug.WriteLine("User tried to show an attribute table When none of the layers are visible or selected.");
+                    return;
                 }
-                else                                          // No feature layers present
+
+                //Get it's type
+                LayerType = SelLayer.ToString();
+                switch (LayerType.ToLower())
                 {
-                     // Notify user that no features are present or do nothing? MCB-
+                    case "dotspatial.controls.mappolygonlayer":
+                        SelPolyMapLayer = (MapPolygonLayer)SelLayer;
+                        SelPolyMapLayer.ShowAttributes();
+                        break;
+                    case "dotspatial.controls.mapmultipointlayer":
+                    case "dotspatial.controls.mappointlayer":
+                        SelPointLayer = (MapPointLayer)SelLayer;
+                        SelPointLayer.ShowAttributes();
+                        break;
+                    case "dotspatial.controls.mappolylinelayer":
+                    case "dotspatial.controls.maplinelayer":
+                        SelLineMapLayer = (MapLineLayer)SelLayer;
+                        SelLineMapLayer.ShowAttributes();
+                        break;
+                    default:
+                        Debug.WriteLine("user tried to show the Attribute table for a non-feature layer.");
+                        break;
                 }
-                WaitClose();
             }
             else
             {
-                dgvAttributeTable.Visible = false;
-                tabMapLayoutPanel1.SetRow(dgvAttributeTable, 2);
-                tabMapLayoutPanel1.SetRow(mainMap, 1);
-                mainMap.ViewExtents = _SavedExtent;
-                btnShowHideAttributeTable.Text = "Attribute Table";  //button now allows the user to switch to the attribute table of the 1st selected layer
-               
-                tbMapTitle.Text = _CurrentMapTitle;
-                
-                Debug.WriteLine("Map displayed");
+                Debug.WriteLine("No Layers to display the attribute table of");
             }
+            return;
+            //-----------------OLD WAY-------------------------
+            //if (dgvAttributeTable.Visible == false)
+            //{
+            //    WaitShow("Loading Table...");                                                               //Need to change data source to 1st selected layer (if none selected, then first feature layer)
+            //    bool selLayerFound = false;
+            //    List<ILayer> ILlist = mainMap.GetAllLayers();
+                   
+            //    MapLayerCollection FLlist = new MapLayerCollection();// Get just the feature layers, within map groups too)
+            //    string strLayerType = null;
+               
+            //    foreach (IMapLayer aLayer in ILlist)
+            //    {
+            //        strLayerType = aLayer.ToString();
+            //        strLayerType = strLayerType.Replace("DotSpatial.Controls.", "");
+            //        if (strLayerType == "MapPointLayer" | strLayerType == "MapPolygonLayer" | strLayerType == "MapLineLayer")
+            //        {
+            //            FLlist.Add(aLayer);
+            //        }
+            //    }
+
+            //    if (FLlist != null && FLlist.Count > 0)                      // if featurelayers are present 
+            //    {
+            //        foreach (IFeatureLayer fLayer in FLlist) // find the first selected feature layer
+            //        {
+            //            if (fLayer.IsSelected && !selLayerFound)
+            //            {                          
+            //                if (dgvAttributeTable.DataSource == (null) || !dgvAttributeTable.DataSource.Equals(fLayer.DataSet.DataTable))
+            //                {   
+            //                    if (!fLayer.DataSet.AttributesPopulated) fLayer.DataSet.FillAttributes();
+            //                    dgvAttributeTable.DataSource = fLayer.DataSet.DataTable;
+            //                    _CurrentMapTableTitle = fLayer.LegendText;
+            //                }
+            //                selLayerFound = true;
+            //                break;
+            //            }
+            //        }
+            //        if (!selLayerFound)                      //if no feature layers selected, then use the last feature layer added
+            //        {
+            //            IFeatureLayer fLayer = (IFeatureLayer)FLlist[0];
+            //            if (dgvAttributeTable.DataSource == null || !dgvAttributeTable.DataSource.Equals(fLayer.DataSet.DataTable))
+            //                {
+            //                    if (!fLayer.DataSet.AttributesPopulated) fLayer.DataSet.FillAttributes();
+            //                    dgvAttributeTable.DataSource = fLayer.DataSet.DataTable;
+            //                    _CurrentMapTableTitle = fLayer.LegendText;
+            //                }
+            //        }
+                    
+            //                                                 // Make the table visible and change the button's text (button acts as a toggle between map and table)
+            //        dgvAttributeTable.Visible = true;
+            //        _SavedExtent = mainMap.Extent;
+            //        tabMapLayoutPanel1.SetRow(mainMap, 2);
+            //        tabMapLayoutPanel1.SetRow(dgvAttributeTable, 1);
+                    
+            //        tbMapTitle.Text = _CurrentMapTableTitle;
+            //        btnShowHideAttributeTable.Text = "Map";  // button now allows the user to switch to the map
+            //        Debug.WriteLine("Attribute table displayed");
+            //    }
+            //    else                                          // No feature layers present
+            //    {
+            //         // Notify user that no features are present or do nothing? MCB-
+            //    }
+            //    WaitClose();
+            //}
+            //else
+            //{
+            //    dgvAttributeTable.Visible = false;
+            //    tabMapLayoutPanel1.SetRow(dgvAttributeTable, 2);
+            //    tabMapLayoutPanel1.SetRow(mainMap, 1);
+            //    mainMap.ViewExtents = _SavedExtent;
+            //    btnShowHideAttributeTable.Text = "Attribute Table";  //button now allows the user to switch to the attribute table of the 1st selected layer
+               
+            //    tbMapTitle.Text = _CurrentMapTitle;
+                
+            //    Debug.WriteLine("Map displayed");
+            //}
+        }
+
+        private void picGIS_Click(object sender, EventArgs e)
+        {
+
         }
 
           
