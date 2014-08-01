@@ -817,11 +817,11 @@ namespace BenMAP
             int rowOffset = 0;
             int nextRow = 0;
 
-            System.Data.DataTable dtTemp = dtConcEntireRollback.DefaultView.ToTable(true, "REGIONNAME", "COUNTRYNAME");
-            dtTemp.DefaultView.Sort = "REGIONNAME, COUNTRYNAME";
+            System.Data.DataTable dtRegionsCountries = dtConcEntireRollback.DefaultView.ToTable(true,  "REGIONID", "REGIONNAME", "COUNTRYID", "COUNTRYNAME");
+            dtRegionsCountries.DefaultView.Sort = "REGIONID, REGIONNAME, COUNTRYID, COUNTRYNAME";
             string region = String.Empty;
             string country = String.Empty;
-            foreach (DataRow dr in dtTemp.Rows)
+            foreach (DataRow dr in dtRegionsCountries.Rows)
             {
                 //new region? write region
                 if (!region.Equals(dr["REGIONNAME"].ToString(), StringComparison.OrdinalIgnoreCase))
@@ -899,9 +899,74 @@ namespace BenMAP
             //xlRange.ColumnWidth = 40;
             //xlRange.WrapText = true;
 
-            
+            //build output table
+            System.Data.DataTable dtDetailedResults = new System.Data.DataTable();
+            dtDetailedResults.Columns.Add("NAME", Type.GetType("System.String"));
+            dtDetailedResults.Columns.Add("IS_REGION", Type.GetType("System.Boolean"));
+            dtDetailedResults.Columns.Add("POP_AFFECTED", Type.GetType("System.Double"));
+            dtDetailedResults.Columns.Add("AVOIDED_DEATHS", Type.GetType("System.Double"));
+            dtDetailedResults.Columns.Add("AVOIDED_DEATHS_PERCENT_POP", Type.GetType("System.Double"));
+            dtDetailedResults.Columns.Add("BASELINE_MIN", Type.GetType("System.Double"));
+            dtDetailedResults.Columns.Add("BASELINE_MEDIAN", Type.GetType("System.Double"));
+            dtDetailedResults.Columns.Add("BASELINE_MAX", Type.GetType("System.Double"));
+            dtDetailedResults.Columns.Add("CONTROL_MIN", Type.GetType("System.Double"));
+            dtDetailedResults.Columns.Add("CONTROL_MEDIAN", Type.GetType("System.Double"));
+            dtDetailedResults.Columns.Add("CONTROL_MAX", Type.GetType("System.Double"));
+            dtDetailedResults.Columns.Add("AIR_QUALITY_CHANGE", Type.GetType("System.Double"));
 
 
+            string regionid = String.Empty;
+            string countryid = String.Empty;
+            foreach (DataRow dr in dtRegionsCountries.Rows)
+            {
+                //new region? get region data
+                if (!regionid.Equals(dr["REGIONID"].ToString(), StringComparison.OrdinalIgnoreCase))
+                {
+                    regionid = dr["REGIONID"].ToString();
+                    GetResults(regionid, dr["REGIONNAME"].ToString(), true, dtDetailedResults);
+                }
+
+                //get country data
+                countryid = dr["COUNTRYID"].ToString();
+                GetResults(countryid, dr["COUNTRYNAME"].ToString(), false, dtDetailedResults);
+            }
+
+
+            //write results to spreadsheet
+            nextRow = 4;
+            foreach (DataRow dr in dtDetailedResults.Rows)
+            {
+                xlSheet.Range["A" + nextRow.ToString()].Value = dr["NAME"].ToString();
+                if (Convert.ToBoolean(dr["IS_REGION"].ToString()))
+                {
+                    xlSheet.Range["A" + nextRow.ToString()].Font.Italic = true;
+                }
+                else 
+                {
+                    //xlSheet.Range["A" + nextRow.ToString()].ColumnWidth = 40;
+                    //xlSheet.Range["A" + nextRow.ToString()].WrapText = true;
+                    xlSheet.Range["A" + nextRow.ToString()].InsertIndent(2);                
+                }
+                xlSheet.Range["B" + nextRow.ToString()].Value = dr["POP_AFFECTED"].ToString();
+                xlSheet.Range["C" + nextRow.ToString()].Value = dr["AVOIDED_DEATHS"].ToString();
+                xlSheet.Range["D" + nextRow.ToString()].Value = dr["AVOIDED_DEATHS_PERCENT_POP"].ToString();
+                xlSheet.Range["E" + nextRow.ToString()].Value = dr["BASELINE_MIN"].ToString();
+                xlSheet.Range["F" + nextRow.ToString()].Value = dr["BASELINE_MEDIAN"].ToString();
+                xlSheet.Range["G" + nextRow.ToString()].Value = dr["BASELINE_MAX"].ToString();
+                xlSheet.Range["H" + nextRow.ToString()].Value = dr["CONTROL_MIN"].ToString();
+                xlSheet.Range["I" + nextRow.ToString()].Value = dr["CONTROL_MEDIAN"].ToString();
+                xlSheet.Range["J" + nextRow.ToString()].Value = dr["CONTROL_MAX"].ToString();
+                xlSheet.Range["K" + nextRow.ToString()].Value = dr["AIR_QUALITY_CHANGE"].ToString();
+                nextRow++;
+                
+            }
+
+            xlRange = xlSheet.Range["A4:K" + (nextRow - 1).ToString()];
+            xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeTop].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
+            xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeRight].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
+            xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeBottom].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
+            xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeLeft].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
+            xlRange.Borders.Color = Color.Black;
 
             #endregion
 
@@ -910,6 +975,76 @@ namespace BenMAP
             xlBook.Close();       
         
         
+        
+        }
+
+        private void GetResults(string id, string name, bool isRegion, System.Data.DataTable dt)
+        {
+            double popAffected;
+            double avoidedDeaths;
+            double avoidedDeathsPercentPop;
+            double baselineMin;
+            double baselineMedian;
+            double baselineMax;
+            double controlMin;
+            double controlMedian;
+            double controlMax;
+            double airQualityChange;
+            object result;
+
+            string filter = string.Empty;
+            if (isRegion)
+            {
+                filter = "REGIONID = " + id;
+            }
+            else
+            { 
+                filter = "COUNTRYID = '" + id + "'";
+            }
+
+            result = dtConcEntireRollback.Compute("SUM(POPESTIMATE)", filter);
+            popAffected = Double.Parse(result.ToString());
+
+            result = dtConcEntireRollback.Compute("MIN(KREWSKI)", filter); //need to get avoided deaths
+            avoidedDeaths = Double.Parse(result.ToString());
+
+            avoidedDeathsPercentPop = (avoidedDeaths / popAffected) * 100;
+
+            result = dtConcEntireRollback.Compute("MIN(CONCENTRATION)", filter);
+            baselineMin = Double.Parse(result.ToString());
+
+            result = dtConcEntireRollback.Compute("AVG(CONCENTRATION)", filter); //need to get median, not mean
+            baselineMedian = Double.Parse(result.ToString());
+
+            result = dtConcEntireRollback.Compute("MAX(CONCENTRATION)", filter);
+            baselineMax = Double.Parse(result.ToString());
+
+            result = dtConcEntireRollback.Compute("MIN(CONCENTRATION_FINAL)", filter);
+            controlMin = Double.Parse(result.ToString());
+
+            result = dtConcEntireRollback.Compute("AVG(CONCENTRATION_FINAL)", filter); //need to get median, not mean
+            controlMedian = Double.Parse(result.ToString());
+
+            result = dtConcEntireRollback.Compute("MAX(CONCENTRATION_FINAL)", filter);
+            controlMax = Double.Parse(result.ToString());
+
+            airQualityChange = 0;
+
+            DataRow dr = dt.NewRow();
+            dr["NAME"] = name;
+            dr["IS_REGION"] = isRegion;
+            dr["POP_AFFECTED"] = popAffected;
+            dr["AVOIDED_DEATHS"] = avoidedDeaths;
+            dr["AVOIDED_DEATHS_PERCENT_POP"] = avoidedDeathsPercentPop;
+            dr["BASELINE_MIN"] = baselineMin;
+            dr["BASELINE_MEDIAN"] = baselineMedian;
+            dr["BASELINE_MAX"] = baselineMax;
+            dr["CONTROL_MIN"] = controlMin;
+            dr["CONTROL_MEDIAN"] = controlMedian;
+            dr["CONTROL_MAX"] = controlMax;
+            dr["AIR_QUALITY_CHANGE"] = airQualityChange;
+
+            dt.Rows.Add(dr);
         
         }
        
