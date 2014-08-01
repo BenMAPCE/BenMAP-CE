@@ -26,9 +26,11 @@ namespace BenMAP
         private const int POLLUTANT_ID = 1;
         private const double BACKGROUND = 5.8;
         private const int YEAR = 2010;
+        private const string FORMAT_DECIMAL_2_PLACES = "#,###.00";
 
         private System.Data.DataTable dtConcCountry = null;
         private System.Data.DataTable dtConcEntireRollback = null;
+      
 
         public GBDRollback()
         {
@@ -947,16 +949,16 @@ namespace BenMAP
                     //xlSheet.Range["A" + nextRow.ToString()].WrapText = true;
                     xlSheet.Range["A" + nextRow.ToString()].InsertIndent(2);                
                 }
-                xlSheet.Range["B" + nextRow.ToString()].Value = dr["POP_AFFECTED"].ToString();
-                xlSheet.Range["C" + nextRow.ToString()].Value = dr["AVOIDED_DEATHS"].ToString();
-                xlSheet.Range["D" + nextRow.ToString()].Value = dr["AVOIDED_DEATHS_PERCENT_POP"].ToString();
-                xlSheet.Range["E" + nextRow.ToString()].Value = dr["BASELINE_MIN"].ToString();
-                xlSheet.Range["F" + nextRow.ToString()].Value = dr["BASELINE_MEDIAN"].ToString();
-                xlSheet.Range["G" + nextRow.ToString()].Value = dr["BASELINE_MAX"].ToString();
-                xlSheet.Range["H" + nextRow.ToString()].Value = dr["CONTROL_MIN"].ToString();
-                xlSheet.Range["I" + nextRow.ToString()].Value = dr["CONTROL_MEDIAN"].ToString();
-                xlSheet.Range["J" + nextRow.ToString()].Value = dr["CONTROL_MAX"].ToString();
-                xlSheet.Range["K" + nextRow.ToString()].Value = dr["AIR_QUALITY_CHANGE"].ToString();
+                xlSheet.Range["B" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["POP_AFFECTED"].ToString());
+                xlSheet.Range["C" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AVOIDED_DEATHS"].ToString());
+                xlSheet.Range["D" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AVOIDED_DEATHS_PERCENT_POP"].ToString());
+                xlSheet.Range["E" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MIN"].ToString());
+                xlSheet.Range["F" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MEDIAN"].ToString());
+                xlSheet.Range["G" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MAX"].ToString());
+                xlSheet.Range["H" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MIN"].ToString());
+                xlSheet.Range["I" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MEDIAN"].ToString());
+                xlSheet.Range["J" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MAX"].ToString());
+                xlSheet.Range["K" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AIR_QUALITY_CHANGE"].ToString());
                 nextRow++;
                 
             }
@@ -976,6 +978,11 @@ namespace BenMAP
         
         
         
+        }
+
+        private string FormatDoubleString(string format, string str)
+        {         
+            return Double.Parse(str).ToString(format);
         }
 
         private void GetResults(string id, string name, bool isRegion, System.Data.DataTable dt)
