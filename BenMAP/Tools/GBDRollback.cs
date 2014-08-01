@@ -50,6 +50,8 @@ namespace BenMAP
             cboRollbackType.SelectedIndex = 0;
             SetActiveOptionsPanel(0);
 
+            txtFilePath.Text = CommonClass.ResultFilePath + @"\GBD";
+
             LoadCountries();
             LoadTreeView();
             LoadMap();
