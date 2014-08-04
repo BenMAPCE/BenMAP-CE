@@ -776,13 +776,20 @@ namespace BenMAP
 
             Microsoft.Office.Interop.Excel.Workbook xlBook;
             //open report template                
-            xlBook = xlApp.Workbooks.Open(filePath);
+            xlBook = xlApp.Workbooks.Open(filePath);           
+
+            //check save dir 
+            string resultsDir = txtFilePath.Text.Trim();
+            if(!Directory.Exists(resultsDir))
+            {
+                Directory.CreateDirectory(resultsDir);
+            }
 
             //get timestamp
             DateTime dtNow = DateTime.Now;
             string timeStamp = dtNow.ToString("yyyyMMddHHmm");
             //get application path
-            filePath = appPath + @"Tools\GBDRollback_" + rollback.Name + "_" + timeStamp + ".xlsx";
+            filePath = resultsDir + @"\GBDRollback_" + rollback.Name + "_" + timeStamp + ".xlsx";
 
             #region summary sheet
             //summary sheet
