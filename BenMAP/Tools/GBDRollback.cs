@@ -867,6 +867,7 @@ namespace BenMAP
 
             xlSheet.Range["G2"].Value = rollback.Year.ToString() + " " + xlSheet.Range["G2"].Value.ToString();
 
+
             #endregion
 
             //results sheet
@@ -974,6 +975,38 @@ namespace BenMAP
 
             #endregion
 
+            #region back to summary sheet
+
+            //get results for summary table
+            xlSheet = (Microsoft.Office.Interop.Excel.Worksheet)xlBook.Worksheets[1];
+            System.Data.DataTable dtSummaryResults = dtDetailedResults.Clone();
+            GetResults(null, "SUMMARY", false, dtSummaryResults);
+            if (dtSummaryResults.Rows.Count > 0)
+            {
+                DataRow dr = dtSummaryResults.Rows[0];
+                xlSheet.Range["D4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["POP_AFFECTED"].ToString());
+                xlSheet.Range["E4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AVOIDED_DEATHS"].ToString());
+                xlSheet.Range["F4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AVOIDED_DEATHS_PERCENT_POP"].ToString());
+                xlSheet.Range["G4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MIN"].ToString());
+                xlSheet.Range["H4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MEDIAN"].ToString());
+                xlSheet.Range["I4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MAX"].ToString());
+                xlSheet.Range["J4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MIN"].ToString());
+                xlSheet.Range["K4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MEDIAN"].ToString());
+                xlSheet.Range["L4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MAX"].ToString());
+                xlSheet.Range["M4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AIR_QUALITY_CHANGE"].ToString());
+
+            }
+            xlRange = xlSheet.Range["D4:M4"];
+            xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeTop].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
+            xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeRight].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
+            xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeBottom].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
+            xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeLeft].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
+            xlRange.Borders.Color = Color.Black;
+
+            #endregion
+
+
+
             //save
             xlBook.SaveAs(filePath, FileFormat: XlFileFormat.xlOpenXMLWorkbook);
             xlBook.Close();       
@@ -1002,13 +1035,20 @@ namespace BenMAP
             object result;
 
             string filter = string.Empty;
-            if (isRegion)
+            if (!String.IsNullOrEmpty(id))
             {
-                filter = "REGIONID = " + id;
+                if (isRegion)
+                {
+                    filter = "REGIONID = " + id;
+                }
+                else
+                {
+                    filter = "COUNTRYID = '" + id + "'";
+                }
             }
             else
-            { 
-                filter = "COUNTRYID = '" + id + "'";
+            {
+                filter = "1=1"; //no filter (i.e., all rows)
             }
 
             result = dtConcEntireRollback.Compute("SUM(POPESTIMATE)", filter);
