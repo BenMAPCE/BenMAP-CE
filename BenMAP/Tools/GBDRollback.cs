@@ -1037,6 +1037,33 @@ namespace BenMAP
             return Double.Parse(str).ToString(format);
         }
 
+        private double Median(IEnumerable<double> list)
+        {
+            List<double> orderedList = list
+                .OrderBy(numbers => numbers)
+                .ToList();
+
+            int listSize = orderedList.Count;
+            double result;
+
+            if (listSize % 2 == 0) // even
+            {
+                int midIndex = listSize / 2;
+                result = ((orderedList.ElementAt(midIndex - 1) +
+                           orderedList.ElementAt(midIndex)) / 2);
+            }
+            else // odd
+            {
+                double element = (double)listSize / 2;
+                element = Math.Round(element, MidpointRounding.AwayFromZero);
+
+                result = orderedList.ElementAt((int)(element - 1));
+            }
+
+            return result;
+        }
+
+
         private void GetResults(string id, string name, bool isRegion, System.Data.DataTable dt)
         {
             double popAffected;
@@ -1083,8 +1110,9 @@ namespace BenMAP
             result = dtConcEntireRollback.Compute("MIN(CONCENTRATION)", filter);
             baselineMin = Double.Parse(result.ToString());
 
-            result = dtConcEntireRollback.Compute("AVG(CONCENTRATION)", filter); //need to get median, not mean
-            baselineMedian = Double.Parse(result.ToString());
+            double[] concBase = Array.ConvertAll<DataRow, double>(dtConcEntireRollback.Select(filter),
+                            delegate(DataRow row) { return Convert.ToDouble(row["CONCENTRATION"]); });
+            baselineMedian = Median(concBase.ToList<double>());
 
             result = dtConcEntireRollback.Compute("MAX(CONCENTRATION)", filter);
             baselineMax = Double.Parse(result.ToString());
@@ -1092,8 +1120,9 @@ namespace BenMAP
             result = dtConcEntireRollback.Compute("MIN(CONCENTRATION_FINAL)", filter);
             controlMin = Double.Parse(result.ToString());
 
-            result = dtConcEntireRollback.Compute("AVG(CONCENTRATION_FINAL)", filter); //need to get median, not mean
-            controlMedian = Double.Parse(result.ToString());
+            double[] concControl = Array.ConvertAll<DataRow, double>(dtConcEntireRollback.Select(filter),
+                             delegate(DataRow row) { return Convert.ToDouble(row["CONCENTRATION_FINAL"]); });
+            controlMedian = Median(concControl.ToList<double>());
 
             result = dtConcEntireRollback.Compute("MAX(CONCENTRATION_FINAL)", filter);
             controlMax = Double.Parse(result.ToString());
