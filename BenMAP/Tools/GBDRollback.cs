@@ -657,6 +657,7 @@ namespace BenMAP
                             dtConcEntireRollback.Columns.Add("CONCENTRATION_ADJ_BACK", dtConcCountry.Columns["CONCENTRATION"].DataType);
                             dtConcEntireRollback.Columns.Add("CONCENTRATION_FINAL", dtConcCountry.Columns["CONCENTRATION"].DataType);
                             dtConcEntireRollback.Columns.Add("CONCENTRATION_DELTA", dtConcCountry.Columns["CONCENTRATION"].DataType);
+                            dtConcEntireRollback.Columns.Add("AIR_QUALITY_DELTA", dtConcCountry.Columns["CONCENTRATION"].DataType);
                             dtConcEntireRollback.Columns.Add("KREWSKI", dtConcCountry.Columns["CONCENTRATION"].DataType);
                         }
 
@@ -734,6 +735,9 @@ namespace BenMAP
             //get delta (orig. conc - rolled back conc. (corrected for background)
             dtConcCountry.Columns.Add("CONCENTRATION_DELTA", dtConcCountry.Columns["CONCENTRATION"].DataType, "CONCENTRATION - CONCENTRATION_FINAL");
 
+            //get air quality delta (conc delta * population)
+            dtConcCountry.Columns.Add("AIR_QUALITY_DELTA", dtConcCountry.Columns["CONCENTRATION"].DataType, "CONCENTRATION_DELTA * POPESTIMATE");
+
         }
 
         private void DoIncrementalRollback(double increment, double background)
@@ -750,6 +754,9 @@ namespace BenMAP
             //get delta (orig. conc - rolled back conc. (corrected for background)
             dtConcCountry.Columns.Add("CONCENTRATION_DELTA", dtConcCountry.Columns["CONCENTRATION"].DataType, "CONCENTRATION - CONCENTRATION_FINAL");
 
+            //get air quality delta (conc delta * population)
+            dtConcCountry.Columns.Add("AIR_QUALITY_DELTA", dtConcCountry.Columns["CONCENTRATION"].DataType, "CONCENTRATION_DELTA * POPESTIMATE");
+
         }
 
         private void DoRollbackToStandard(GBDRollbackItem.StandardType standardType)
@@ -765,6 +772,9 @@ namespace BenMAP
 
             //get delta (orig. conc - rolled back conc.)
             dtConcCountry.Columns.Add("CONCENTRATION_DELTA", dtConcCountry.Columns["CONCENTRATION"].DataType, "CONCENTRATION - CONCENTRATION_FINAL");
+
+            //get air quality delta (conc delta * population)
+            dtConcCountry.Columns.Add("AIR_QUALITY_DELTA", dtConcCountry.Columns["CONCENTRATION"].DataType, "CONCENTRATION_DELTA * POPESTIMATE");
         }
 
         private void SaveRollbackReport(GBDRollbackItem rollback)
@@ -1088,7 +1098,9 @@ namespace BenMAP
             result = dtConcEntireRollback.Compute("MAX(CONCENTRATION_FINAL)", filter);
             controlMax = Double.Parse(result.ToString());
 
-            airQualityChange = 0;
+            result = dtConcEntireRollback.Compute("SUM(AIR_QUALITY_DELTA)", filter);
+            airQualityChange = Double.Parse(result.ToString());
+            airQualityChange = airQualityChange / popAffected;
 
             DataRow dr = dt.NewRow();
             dr["NAME"] = name;
