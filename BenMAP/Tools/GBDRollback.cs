@@ -829,7 +829,7 @@ namespace BenMAP
             int nextRow = 0;
 
             System.Data.DataTable dtRegionsCountries = dtConcEntireRollback.DefaultView.ToTable(true,  "REGIONID", "REGIONNAME", "COUNTRYID", "COUNTRYNAME");
-            dtRegionsCountries.DefaultView.Sort = "REGIONID, REGIONNAME, COUNTRYID, COUNTRYNAME";
+            dtRegionsCountries.DefaultView.Sort = "REGIONNAME, COUNTRYNAME";
             string region = String.Empty;
             string country = String.Empty;
             foreach (DataRow dr in dtRegionsCountries.Rows)
@@ -1061,7 +1061,11 @@ namespace BenMAP
             result = dtConcEntireRollback.Compute("SUM(POPESTIMATE)", filter);
             popAffected = Double.Parse(result.ToString());
 
-            result = dtConcEntireRollback.Compute("MIN(KREWSKI)", filter); //need to get avoided deaths
+
+            System.Data.DataTable dtKrewski = dtConcEntireRollback.DefaultView.ToTable(true, "REGIONID", "REGIONNAME", "COUNTRYID", "COUNTRYNAME", "KREWSKI");
+            dtKrewski.DefaultView.Sort = "REGIONNAME, COUNTRYNAME";
+
+            result = dtKrewski.Compute("SUM(KREWSKI)", filter);
             avoidedDeaths = Double.Parse(result.ToString());
 
             avoidedDeathsPercentPop = (avoidedDeaths / popAffected) * 100;
