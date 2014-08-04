@@ -1131,6 +1131,20 @@ namespace BenMAP
             mapGBD.FunctionMode = FunctionMode.Info;
         }
 
+        private void btnBrowse_Click(object sender, EventArgs e)
+        {
+            FolderBrowserDialog fbd = new FolderBrowserDialog();
+            //fbd.RootFolder = Environment.SpecialFolder.txtFilePath.Text.Trim();
+            DialogResult result = fbd.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                txtFilePath.Text = fbd.SelectedPath;
+               
+            }
+
+
+        }
+
        
 
 
