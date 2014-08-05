@@ -2664,9 +2664,9 @@ namespace BenMAP
                 try
                 {
                     polMapGroup = AddMapGroup(pollutantMGText, "Pollutants", false, false);
-                    bcgMapGroup = AddMapGroup(bcgMGText, pollutantMGText, false, true);
+                    bcgMapGroup = AddMapGroup(bcgMGText, pollutantMGText, false, false);
                     //Remove the old version of the layer if exists already
-                    RemoveOldPolygonLayer(LayerNameText, bcgMapGroup.GetLayers(), true);  //!!!!!!!!!!!!Need to trap for problems removing the old layer if it exists?
+                    RemoveOldPolygonLayer(LayerNameText, bcgMapGroup.GetLayers(), false);  //!!!!!!!!!!!!Need to trap for problems removing the old layer if it exists?
 
                     // Add a new layer baseline, control or delta layer to the Pollutants group
                     if (File.Exists(benMAPLine.ShapeFile))
@@ -12484,7 +12484,7 @@ namespace BenMAP
         {
 
         }
-        private void RemoveOldPolygonLayer(string LayerName, IList<ILayer> layerList, bool ShrinkOtherLayersInMapGroup = true)
+        private void RemoveOldPolygonLayer(string LayerName, IList<ILayer> layerList, bool ShrinkOtherLayersInMapGroup = false)
         {
             MapGroup aMGLayer = new MapGroup();
             MapPolygonLayer aPolyLayer = new MapPolygonLayer();
