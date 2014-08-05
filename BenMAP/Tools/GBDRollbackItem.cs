@@ -22,14 +22,11 @@ namespace BenMAP
         private double background;
         private Color color;
         private int year;
-        private List<IPolygonCategory> ipcList;
+        private List<IPolygonCategory> ipcList=new List<IPolygonCategory>();
 
         public void addIPC(IPolygonCategory ipc)
         {
-            if (ipcList == null)
-            {
-                ipcList = new List<IPolygonCategory>();
-            }
+          
             ipcList.Add(ipc);
         }
 

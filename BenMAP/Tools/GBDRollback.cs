@@ -413,6 +413,7 @@ namespace BenMAP
             }
             IMapFeatureLayer[] mfl = mapGBD.GetFeatureLayers();
             mfl[0].ClearSelection();
+
             IPolygonScheme ips = (IPolygonScheme)mfl[0].Symbology;
             IPolygonCategory ipc = null;
             //grab existing ips and add to it
@@ -514,6 +515,14 @@ namespace BenMAP
         {
             txtName.Text = item.Name;
             txtDescription.Text = item.Description;
+            IMapFeatureLayer[] mfl = mapGBD.GetFeatureLayers();
+            //IPCs can be hanging if scenario is edited then a country is deselected.
+            foreach (IPolygonCategory ipcOld in item.IpcList)
+            {
+                mfl[0].Symbology.RemoveCategory(ipcOld);
+            }
+            item.IpcList.Clear();
+            mfl[0].ApplyScheme(mfl[0].Symbology);
             foreach (KeyValuePair<string,string> kvp in item.Countries)
             {
                 string countryid = kvp.Key;
@@ -530,7 +539,7 @@ namespace BenMAP
             txtIncrement.Text = item.Increment.ToString();
             txtIncrementBackground.Text = item.Background.ToString();
             cboStandard.SelectedIndex = (int)item.Standard;
-
+           
         }
 
         private void SetActivePanel(int index)
