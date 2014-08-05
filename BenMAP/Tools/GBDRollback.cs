@@ -494,6 +494,9 @@ namespace BenMAP
             foreach (TreeNode node in tvCountries.Nodes)
             {
                 node.Checked = false;
+                foreach(TreeNode tn in node.Nodes){
+                    tn.Checked=false;
+                }
             }
             //IMapFeatureLayer[] mfl = mapGBD.GetFeatureLayers();
             //mfl[0].UnSelectAll();
