@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Drawing;
+using DotSpatial.Symbology;
 
 namespace BenMAP
 {
@@ -21,6 +22,21 @@ namespace BenMAP
         private double background;
         private Color color;
         private int year;
+        private List<IPolygonCategory> ipcList;
+
+        public void addIPC(IPolygonCategory ipc)
+        {
+            if (ipcList == null)
+            {
+                ipcList = new List<IPolygonCategory>();
+            }
+            ipcList.Add(ipc);
+        }
+
+        public List<IPolygonCategory> IpcList
+        {
+            get { return ipcList; }
+        }
 
         public string Name
         {

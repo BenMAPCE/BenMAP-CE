@@ -68,15 +68,24 @@ namespace BenMAP
         {
             //new map layer
             string mapFile = AppDomain.CurrentDomain.BaseDirectory + @"\Data\Shapefiles\GBDRollback\gadm_worldsimplify.shp";
-
+            IMapPolygonLayer impl = null;
             if (File.Exists(mapFile))
             {
                 IFeatureSet fs = (FeatureSet)FeatureSet.Open(mapFile);
-                mapGBD.Layers.Add(fs);
-                IMapFeatureLayer[] mfl = mapGBD.GetFeatureLayers();
+                //mapGBD.Layers.Add(fs);
+                //IMapFeatureLayer[] mfl = mapGBD.GetFeatureLayers();
+                //IFeatureSet fs = (FeatureSet)FeatureSet.Open(mapFile);
+                //mapGBD.Layers.Add(fs);
+                //IMapFeatureLayer[] mfl = mapGBD.GetFeatureLayers();
                 //mfl[0].Symbolizer = new PolygonSymbolizer(Color.Chocolate);
                 //mfl[0].SelectionSymbolizer = new PolygonSymbolizer(Color.AliceBlue);
-          
+                impl = new MapPolygonLayer(FeatureSet.OpenFile(mapFile));
+                //impl.Reproject(_mapArgs.Map.Projection);
+                impl.LegendText = "Countries";
+                impl.Symbolizer.SetFillColor(Color.NavajoWhite);
+                impl.Symbolizer.SetOutlineWidth(1);
+                impl.Symbolizer.OutlineSymbolizer.SetFillColor(Color.Black);
+                mapGBD.Layers.Add(impl);
             }
         }
 
@@ -402,15 +411,25 @@ namespace BenMAP
                 dgvRollbacks.Rows[i].Cells["colTotalPopulation"].Value = GetRollbackTotalPopulation(item).ToString("#,###");
                 dgvRollbacks.Rows[i].Cells["colRollbackType"].Value = GetRollbackTypeSummary(item);         
             }
-
-            //set color of selected country features on map
             IMapFeatureLayer[] mfl = mapGBD.GetFeatureLayers();
-            string filter = "[ISO] in (" + String.Join(",", rollback.Countries.Select(x => "'" + x.Key + "'")) + ")";
-            mfl[0].SelectByAttribute(filter, ModifySelectionMode.Subtract);
-            PolygonCategory category = new PolygonCategory(rollback.Color, Color.Black, 4);
-            category.FilterExpression = filter;
-            mfl[0].Symbology.AddCategory(category);        
-
+            mfl[0].ClearSelection();
+            IPolygonScheme ips = (IPolygonScheme)mfl[0].Symbology;
+            IPolygonCategory ipc = null;
+            //grab existing ips and add to it
+            foreach(String s in rollback.Countries.Keys){
+                ipc = new PolygonCategory(rollback.Color, Color.Black, 1);
+                ipc.FilterExpression = "[ISO]='" + s+"'";
+                rollback.addIPC(ipc);
+                ips.AddCategory(ipc);
+            //set color of selected country features on map
+            //string filter = "[ISO] in (" + String.Join(",", rollback.Countries.Select(x => "'" + x.Key + "'")) + ")";
+            //mfl[0].SelectByAttribute(filter, ModifySelectionMode.Subtract);
+            //PolygonCategory category = new PolygonCategory(rollback.Color, Color.Black, 4);
+            //category.FilterExpression = filter;
+            //mfl[0].Symbology.AddCategory(ipc);        
+                
+            }
+            mfl[0].ApplyScheme(ips);
 
             ClearFields();
             SetActivePanel(0);
@@ -560,11 +579,19 @@ namespace BenMAP
         {
             if (dgvRollbacks.SelectedRows.Count > 0)
             {
+                IMapFeatureLayer[] mfl = mapGBD.GetFeatureLayers();
                 DialogResult result = MessageBox.Show("Are you sure you wish to delete the selected scenario?","", MessageBoxButtons.YesNo);
                 if (result == DialogResult.Yes)
                 {
                     DataGridViewRow row = dgvRollbacks.SelectedRows[0];
                     string name = row.Cells["colName"].Value.ToString();
+                    GBDRollbackItem item = rollbacks.Find(x => x.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+                    foreach (IPolygonCategory ipc in item.IpcList)
+                    {
+                        mfl[0].Symbology.RemoveCategory(ipc);
+                    }
+                    item.IpcList.Clear();
+                    mfl[0].ApplyScheme(mfl[0].Symbology);
                     //delete rollback
                     rollbacks.RemoveAll(x => x.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
                     //delete row
