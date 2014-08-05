@@ -756,7 +756,7 @@ namespace BenMAP
                                                     IncidenceID, PrevalenceID, VariableID, dtForLoading.Rows[row][20], dtForLoading.Rows[row][21].ToString().Replace("'", "''"), dtForLoading.Rows[row][22], dtForLoading.Rows[row][23],
                                                     dtForLoading.Rows[row][24], dtForLoading.Rows[row][25].ToString().Replace("'", "''"), dtForLoading.Rows[row][26], dtForLoading.Rows[row][27].ToString().Replace("'", "''"),
                                                     dtForLoading.Rows[row][28], dtForLoading.Rows[row][29].ToString().Replace("'", "''"), BaselineFunctionID, dtForLoading.Rows[row][14].ToString().Replace("'", "''"), 0,
-                                                    LocationtypeID, _metadataObj.MetadataId);
+                                                    LocationtypeID, _metadataObj.MetadataEntryId);
 
                         rth = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                         if (dtForLoading.Rows[row][21].ToString() == "Custom" && dicCustomValue.ContainsKey(Convert.ToInt32(dtForLoading.Rows[row][33].ToString())) && dicCustomValue[Convert.ToInt32(dtForLoading.Rows[row][33].ToString())].Count > 0)
@@ -1054,7 +1054,7 @@ namespace BenMAP
                                                         FunctionID, IncidenceID, PrevalenceID, VariableID, dtForLoading.Rows[row][20], dtForLoading.Rows[row][21].ToString().Replace("'", "''"), dtForLoading.Rows[row][22],
                                                         dtForLoading.Rows[row][23], dtForLoading.Rows[row][24], dtForLoading.Rows[row][25].ToString().Replace("'", "''"), dtForLoading.Rows[row][26], dtForLoading.Rows[row][27].ToString().Replace("'", "''"),
                                                         dtForLoading.Rows[row][28], dtForLoading.Rows[row][29].ToString().Replace("'", "''"), BaselineFunctionID, dtForLoading.Rows[row][14].ToString().Replace("'", "''"), 0,
-                                                        LocationtypeID, _metadataObj.MetadataId);
+                                                        LocationtypeID, _metadataObj.MetadataEntryId);
 
                             fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                             if (dtForLoading.Rows[row][21].ToString() == "Custom" && dicCustomValue.ContainsKey(Convert.ToInt32(dtForLoading.Rows[row][33].ToString())) && dicCustomValue[Convert.ToInt32(dtForLoading.Rows[row][33].ToString())].Count > 0)
@@ -1717,7 +1717,7 @@ namespace BenMAP
                 //crFunctionDatasetId = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
                 //commandText = string.Format("delete from CRFunctionDataSets where CRFunctionDataSetName='{0}' and setupid={1}", txtHealthImpactFunction.Text, CommonClass.ManageSetup.SetupID);
                 //int i = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
-                //commandText = "select DATASETID FROM DATASETS WHERE DATASETNAME = 'Healthfunctions'";
+                //commandText = "select DATASETTYPEID FROM DATASETTYPES WHERE DATASETTYPENAME = 'Healthfunctions'";
                 //datasetid = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
                 //commandText = string.Format("DELETE FROM METADATAINFORMATION WHERE SETUPID ={0} AND DATASETID = {1} AND DATASETTYPEID = {2}", CommonClass.ManageSetup.SetupID, crFunctionDatasetId, datasetid);
                 //fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);

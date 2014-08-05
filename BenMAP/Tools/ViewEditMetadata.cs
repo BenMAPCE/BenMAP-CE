@@ -47,7 +47,12 @@ namespace BenMAP
         public ViewEditMetadata(MetadataClassObj metaObj): this()
         {
             _metadataObj = metaObj;
-            bEditMode = true;
+            // metadataentryid will be > 0 for any imported or copied datasets
+            // but not for those predefined
+            if (_metadataObj.MetadataEntryId > 0)
+            {
+                bEditMode = true;
+            }
         }
 
         public ViewEditMetadata(string fileName, MetadataClassObj metadataClsObj) : this()
@@ -193,7 +198,8 @@ namespace BenMAP
             }
             else
             {
-                //else just exit out.  The changes will auto saved when the new dataset is added.
+                //else just exit out.  
+                //if this is a dataset import, the changes will auto saved when the new dataset is added 
                 this.DialogResult = DialogResult.OK;
             }
         }

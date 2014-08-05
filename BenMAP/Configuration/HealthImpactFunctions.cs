@@ -1136,18 +1136,18 @@ namespace BenMAP
                     List<string> SystemVariableNameList = Configuration.ConfigurationCommonClass.getAllSystemVariableNameList();
                     foreach (string s in SystemVariableNameList)
                     {
-                        if (DatabaseFunction.ToLower().Contains(str.ToLower()))
+                        if (DatabaseFunction.ToLower().Contains(s.ToLower()))
                         {
-                            if (dicBaseLineVariables.ContainsKey(crid.ToString()))
+                            if (dicEstimateVariables.ContainsKey(crid.ToString()))
                             {
-                                if (dicBaseLineVariables[crid.ToString()] == "")
-                                    dicBaseLineVariables[crid.ToString()] = s;
-                                else
-                                    dicBaseLineVariables[crid.ToString()] += "," + s;
+                                if (dicEstimateVariables[crid.ToString()] == "")
+                                    dicEstimateVariables[crid.ToString()] = " double " + s.ToLower();
+                                else if (!dicEstimateVariables[crid.ToString()].Contains("double " + s.ToLower()))
+                                    dicEstimateVariables[crid.ToString()] += " , double " + s.ToLower();
                             }
                             else
                             {
-                                dicBaseLineVariables.Add(crid.ToString(), s);
+                                dicEstimateVariables.Add(crid.ToString(), " double " + s.ToLower());
                             }
                         }
                     }
@@ -1183,18 +1183,18 @@ namespace BenMAP
 
                     foreach (string s in SystemVariableNameList)
                     {
-                        if (DatabaseFunction.ToLower().Contains(str.ToLower()))
+                        if (DatabaseFunction.ToLower().Contains(s.ToLower()))
                         {
                             if (dicEstimateVariables.ContainsKey(crid.ToString()))
                             {
                                 if (dicEstimateVariables[crid.ToString()] == "")
-                                    dicEstimateVariables[crid.ToString()] = "double " + s.ToLower();
-                                else
-                                    dicEstimateVariables[crid.ToString()] += ",double " + s.ToLower();
+                                    dicEstimateVariables[crid.ToString()] = " double " + s.ToLower();
+                                else if (!dicEstimateVariables[crid.ToString()].Contains("double " + s.ToLower()))
+                                    dicEstimateVariables[crid.ToString()] += " , double " + s.ToLower();
                             }
                             else
                             {
-                                dicEstimateVariables.Add(crid.ToString(), "double " + s.ToLower());
+                                dicEstimateVariables.Add(crid.ToString(), " double " + s.ToLower());
                             }
                         }
                     }
@@ -1202,7 +1202,7 @@ namespace BenMAP
                     crid = crid + 1;
                 }
                 CalculateFunctionString calculateFunctionString = new CalculateFunctionString();
-                calculateFunctionString.CreateAllBaselineEvalObjects(dicBaseLine, dicBaseLineVariables);
+                calculateFunctionString.CreateAllBaselineEvalObjects(dicBaseLine, dicEstimateVariables);
                 calculateFunctionString.CreateAllPointEstimateEvalObjects(dicEstimate, dicEstimateVariables);
                 crid = 1;
                 foreach (CRSelectFunction crSelectFunction in CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction)

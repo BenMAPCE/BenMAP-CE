@@ -141,7 +141,7 @@ namespace BenMAP
 
                     commandText = string.Format("SELECT VALUATIONFUNCTIONDATASETID FROM VALUATIONFUNCTIONDATASETS WHERE VALUATIONFUNCTIONDATASETNAME = '{0}' and SETUPID = {1}", lstAvailable.Text, CommonClass.ManageSetup.SetupID);
                     varDts = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
-                    commandText = "SELECT DATASETID FROM DATASETS WHERE DATASETNAME = 'VariableDataset'";
+                    commandText = "SELECT DATASETTYPEID FROM DATASETTYPES WHERE DATASETTYPENAME = 'VariableDataset'";
                     dstID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
 
                     commandText = string.Format("delete from  SETUPVARIABLEDATASETS where SETUPVARIABLEDATASETNAME='{0}' and setupid={1}", lstAvailable.Text, CommonClass.ManageSetup.SetupID);

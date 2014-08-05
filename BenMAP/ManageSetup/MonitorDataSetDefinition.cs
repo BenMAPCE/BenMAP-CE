@@ -287,7 +287,7 @@ namespace BenMAP
                         commandText = "select max(MonitorID) from MONITORS";
                         monitorID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
                         FbParameter Parameter = new FbParameter("@Description", _dtDataFile.Rows[i][iMonitorDescription]);
-                        commandText = string.Format("insert into Monitors(Monitorid,Monitordatasetid,Pollutantid,Latitude,Longitude,Monitorname,Monitordescription, Metadataid) values ({0},{1},{2},{3},{4},'{5}',@Description, {6})", monitorID, _dataSetID, pollutantID, _dtDataFile.Rows[i][iLatitude], _dtDataFile.Rows[i][iLongitude], _dtDataFile.Rows[i][iMonitorName], _metadataObj.MetadataId);
+                        commandText = string.Format("insert into Monitors(Monitorid,Monitordatasetid,Pollutantid,Latitude,Longitude,Monitorname,Monitordescription, Metadataid) values ({0},{1},{2},{3},{4},'{5}',@Description, {6})", monitorID, _dataSetID, pollutantID, _dtDataFile.Rows[i][iLatitude], _dtDataFile.Rows[i][iLongitude], _dtDataFile.Rows[i][iMonitorName], _metadataObj.MetadataEntryId);
                         fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText, Parameter);
                         commandText = "select max(MonitorEntryID) from MonitorEntries";
                         int monitorEntriesID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;

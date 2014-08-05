@@ -57,7 +57,7 @@ namespace BenMAP
                                         metadataObj.Extension, metadataObj.DataReference, metadataObj.FileDate, metadataObj.ImportDate,
                                         metadataObj.Description, metadataObj.Projection, metadataObj.GeoName, metadataObj.DatumName,
                                         metadataObj.DatumType, metadataObj.SpheroidName, metadataObj.MeridianName, metadataObj.UnitName,
-                                        metadataObj.Proj4String, metadataObj.NumberOfFeatures, metadataObj.MetadataId);
+                                        metadataObj.Proj4String, metadataObj.NumberOfFeatures, metadataObj.MetadataEntryId);
                         rtv = fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                     
                         bPassed = true;
@@ -108,7 +108,7 @@ namespace BenMAP
                 commandText = string.Format("UPDATE METADATAINFORMATION set DATAREFERENCE = '{0}', DESCRIPTION = '{1}' " +
                                             "WHERE DATASETID = {2} AND SETUPID = {3} AND METADATAENTRYID = {4}",
                                             metadataObj.DataReference, metadataObj.Description, metadataObj.DatasetId,
-                                            metadataObj.SetupId, metadataObj.MetadataId);
+                                            metadataObj.SetupId, metadataObj.MetadataEntryId);
 
                 //commandText = string.Format("UPDATE METADATAINFORMATION set DATAREFERENCE = '{0}', DESCRIPTION = '{1}' " +
                 //               "WHERE DATASETID = {2} AND SETUPID = {3} AND METADATAID = {4}",
@@ -134,7 +134,7 @@ namespace BenMAP
         /// <summary>
         /// Gets the dataset identifier.
         /// Selects Dataset Id from Datasets table where Dataset Name is the name passed in.
-        /// "SELECT DATASETID FROM DATASETS WHERE DATASETNAME = '{0}'"
+        /// "SELECT DATASETTYPEID FROM DATASETTYPES WHERE DATASETTYPENAME = '{0}'"
         /// </summary>
         /// <param name="datasetname">The datasetname.</param>
         /// <returns>System.Int32.</returns>
@@ -146,7 +146,7 @@ namespace BenMAP
             string commandText = string.Empty;
             try
             {
-                commandText = string.Format("SELECT DATASETID FROM DATASETS WHERE DATASETNAME = '{0}'", datasetname);
+                commandText = string.Format("SELECT DATASETTYPEID FROM DATASETTYPES WHERE DATASETTYPENAME = '{0}'", datasetname);
                 rtvID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
             }
             catch (Exception ex)
@@ -157,6 +157,9 @@ namespace BenMAP
             return rtvID;
         }
 
+
+        //this version of getMetadata is used
+        //by incidence and inflation datasets
         public static MetadataClassObj getMetadata(int datasetID, int setupId)
         {
             FireBirdHelperBase fb = new ESILFireBirdHelper();
@@ -164,7 +167,7 @@ namespace BenMAP
             MetadataClassObj _metadataObj = new MetadataClassObj();
             DataSet ds = null;
 
-            string commandText = string.Format("SELECT METADATAID, SETUPID, DATASETID, DATASETTYPEID, FILENAME, " +
+            string commandText = string.Format("SELECT METADATAID, METADATAENTRYID, SETUPID, DATASETID, DATASETTYPEID, FILENAME, " +
                       "EXTENSION, DATAREFERENCE, FILEDATE, IMPORTDATE, DESCRIPTION, " +
                       "PROJECTION, GEONAME, DATUMNAME, DATUMTYPE, SPHEROIDNAME, " +
                       "MERIDIANNAME, UNITNAME, PROJ4STRING, NUMBEROFFEATURES " +
@@ -175,7 +178,7 @@ namespace BenMAP
             ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
             foreach(DataRow dr in ds.Tables[0].Rows)
             {
-                _metadataObj.MetadataId = Convert.ToInt32(dr["METADATAID"]);
+                _metadataObj.MetadataEntryId = Convert.ToInt32(dr["METADATAENTRYID"]);//Convert.ToInt32(dr["METADATAID"]);
                 _metadataObj.SetupId = Convert.ToInt32(dr["SETUPID"]);
                 _metadataObj.DatasetId = Convert.ToInt32(dr["DATASETID"]);
                 _metadataObj.DatasetTypeId = Convert.ToInt32(dr["DATASETTYPEID"]);
@@ -199,7 +202,9 @@ namespace BenMAP
             return _metadataObj;
         }
 
-        //public static MetadataClassObj getMetadata(int datasetID, int setupId, int datasetTypeId, int metadataId)
+        //this version of getMetadata is called by
+        //incomegrowth, grid definitions, health impact, monitor, population, valuation function,
+        //and variable datasets
         public static MetadataClassObj getMetadata(int datasetID, int setupId, int datasetTypeId, int metadataentryid)
         {
             FireBirdHelperBase fb = new ESILFireBirdHelper();
@@ -218,7 +223,7 @@ namespace BenMAP
             ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
             foreach (DataRow dr in ds.Tables[0].Rows)
             {
-                _metadataObj.MetadataId = Convert.ToInt32(dr["METADATAENTRYID"]);//Convert.ToInt32(dr["METADATAID"]);
+                _metadataObj.MetadataEntryId = Convert.ToInt32(dr["METADATAENTRYID"]);//Convert.ToInt32(dr["METADATAID"]);
                 _metadataObj.SetupId = Convert.ToInt32(dr["SETUPID"]);
                 _metadataObj.DatasetId = Convert.ToInt32(dr["DATASETID"]);
                 _metadataObj.DatasetTypeId = Convert.ToInt32(dr["DATASETTYPEID"]);

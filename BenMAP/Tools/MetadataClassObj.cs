@@ -14,7 +14,7 @@ namespace BenMAP
         private int _setupId;
         private int _datasetId;
         private int _datasetTypeId;
-        private int _metadataId;
+        private int _metadataEntryId;
         private string _fileName;
         private string _extension;
         private string _dataReference;
@@ -147,14 +147,14 @@ namespace BenMAP
 
         /// <summary>
         /// Gets or sets the metadata identifier.
-        /// This should be the Metadataentryid
+        /// This is the MetadataEntryId
         /// </summary>
         /// <value>The metadata identifier.</value>
         [ProtoMember(17)]
-        public int MetadataId
+        public int MetadataEntryId
         {
-            get { return _metadataId; }
-            set { _metadataId = value; }
+            get { return _metadataEntryId; }
+            set { _metadataEntryId = value; }
         }
 
         [ProtoMember(18)]

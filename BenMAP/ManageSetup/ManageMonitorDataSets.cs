@@ -170,7 +170,7 @@ namespace BenMAP
                     string commandText = string.Empty;
                     ESIL.DBUtility.ESILFireBirdHelper fb = new ESIL.DBUtility.ESILFireBirdHelper();
 
-                    commandText = "select DATASETID FROM DATASETS WHERE DATASETNAME = 'Monitor'";
+                    commandText = "SELECT DATASETTYPEID FROM DATASETTYPES WHERE DATASETTYPENAME = 'Monitor'";
                     int datasetid = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
 
                     commandText = string.Format("delete from MonitorDataSets where MonitorDataSetID={0}", _lstDataSetID);
