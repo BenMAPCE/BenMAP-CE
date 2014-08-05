@@ -117,6 +117,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_16D9A084F89E40BCA0886582AEA50FE8"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_18D70D1AF4244C8392738CBE59CFD492"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -209,6 +215,12 @@
         {
         "MsmKey" = "8:_29E879F016C2DCDADD97CBA06B875CBB"
         "OwnerKey" = "8:_1C4BCDA727BD99C1ACD20E5827631B81"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_2F5177452AF449DD93427AC871453129"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -345,6 +357,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_5C845D8220EE450A9FD67A79B4CD68D0"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_615B083F2C524A4E98504F2EC345EBFC"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -406,6 +424,12 @@
         "Entry"
         {
         "MsmKey" = "8:_76A5162167224E1094879714F89B615F"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_796D4309E2724C18BD1C00A5F7C348B8"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -832,6 +856,12 @@
         "Entry"
         {
         "MsmKey" = "8:_D9A530547B9A448385F21D6F9CF0043C"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_D9E61E1DDB2D48FBB62F0A14CCBA8ADC"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -1614,6 +1644,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_16D9A084F89E40BCA0886582AEA50FE8"
+            {
+            "SourcePath" = "8:..\\Data\\Shapefiles\\GBDRollback\\gadm_worldsimplify.shx"
+            "TargetName" = "8:gadm_worldsimplify.shx"
+            "Tag" = "8:"
+            "Folder" = "8:_6D4A1D1B0E9448CDA292C227C81F8BB1"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_18D70D1AF4244C8392738CBE59CFD492"
             {
             "SourcePath" = "8:..\\Data\\Shapefiles\\United States\\Nation_epa2.shp"
@@ -1867,6 +1917,26 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_2F5177452AF449DD93427AC871453129"
+            {
+            "SourcePath" = "8:..\\Data\\Shapefiles\\GBDRollback\\gadm_worldsimplify.dbf"
+            "TargetName" = "8:gadm_worldsimplify.dbf"
+            "Tag" = "8:"
+            "Folder" = "8:_6D4A1D1B0E9448CDA292C227C81F8BB1"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_36402EB1CED84E659AEEA12D4FACEBD0"
@@ -2153,6 +2223,26 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_5C845D8220EE450A9FD67A79B4CD68D0"
+            {
+            "SourcePath" = "8:..\\Tools\\GBDRollBackOutputTemplate.xlsx"
+            "TargetName" = "8:GBDRollBackOutputTemplate.xlsx"
+            "Tag" = "8:"
+            "Folder" = "8:_7F14A08004844B0EA5911A553BEDF44C"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_615B083F2C524A4E98504F2EC345EBFC"
             {
             "SourcePath" = "8:..\\FireBirdHelper\\icuuc30.dll"
@@ -2330,6 +2420,26 @@
             "TargetName" = "8:YRD__04km_grid_WGS84_LCC_Pro1.sbx"
             "Tag" = "8:"
             "Folder" = "8:_8DEE80A1D3354E67A67DC9453B3B1FB9"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_796D4309E2724C18BD1C00A5F7C348B8"
+            {
+            "SourcePath" = "8:..\\Data\\Shapefiles\\GBDRollback\\gadm_worldsimplify.prj"
+            "TargetName" = "8:gadm_worldsimplify.prj"
+            "Tag" = "8:"
+            "Folder" = "8:_6D4A1D1B0E9448CDA292C227C81F8BB1"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -3640,6 +3750,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D9E61E1DDB2D48FBB62F0A14CCBA8ADC"
+            {
+            "SourcePath" = "8:..\\Data\\Shapefiles\\GBDRollback\\gadm_worldsimplify.shp"
+            "TargetName" = "8:gadm_worldsimplify.shp"
+            "Tag" = "8:"
+            "Folder" = "8:_6D4A1D1B0E9448CDA292C227C81F8BB1"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_DA42830D9B3CDB980BAC129336FDDA0E"
             {
             "AssemblyRegister" = "3:1"
@@ -4255,6 +4385,17 @@
                         {
                         }
                     }
+                    "{9EF0B969-E518-4E46-987F-47570745A589}:_7F14A08004844B0EA5911A553BEDF44C"
+                    {
+                    "Name" = "8:Tools"
+                    "AlwaysCreate" = "11:FALSE"
+                    "Condition" = "8:"
+                    "Transitive" = "11:FALSE"
+                    "Property" = "8:_BF3CEAE1E8EB4560969DCE23EF6BB563"
+                        "Folders"
+                        {
+                        }
+                    }
                     "{9EF0B969-E518-4E46-987F-47570745A589}:_94E95E03EA724E0CB2168033DF366281"
                     {
                     "Name" = "8:Configs"
@@ -4264,6 +4405,39 @@
                     "Property" = "8:_7FBF97182BDA44818BD3E231A9F78E94"
                         "Folders"
                         {
+                        }
+                    }
+                    "{9EF0B969-E518-4E46-987F-47570745A589}:_C1DB8A74FA6D421FA57CD7669EF553D1"
+                    {
+                    "Name" = "8:Data"
+                    "AlwaysCreate" = "11:FALSE"
+                    "Condition" = "8:"
+                    "Transitive" = "11:FALSE"
+                    "Property" = "8:_8744DC88F27E469CB1096808763A69A1"
+                        "Folders"
+                        {
+                            "{9EF0B969-E518-4E46-987F-47570745A589}:_07516F0ADFF645D2A01331AD27123FFC"
+                            {
+                            "Name" = "8:Shapefiles"
+                            "AlwaysCreate" = "11:FALSE"
+                            "Condition" = "8:"
+                            "Transitive" = "11:FALSE"
+                            "Property" = "8:_054922AEB622407EB2A8C554FE38B41E"
+                                "Folders"
+                                {
+                                    "{9EF0B969-E518-4E46-987F-47570745A589}:_6D4A1D1B0E9448CDA292C227C81F8BB1"
+                                    {
+                                    "Name" = "8:GBDRollback"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_9258115B774945DF8A13B7B34851B867"
+                                        "Folders"
+                                        {
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -4296,7 +4470,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:BenMap-CE"
         "ProductCode" = "8:{C0EE7A7B-F840-4092-97D2-C7DE49BDA162}"
-        "PackageCode" = "8:{BC0CB98A-A331-4AEC-9CCD-E6EF1C3E8086}"
+        "PackageCode" = "8:{E2B56EA9-6682-4D84-9D3C-F60B39A912D2}"
         "UpgradeCode" = "8:{10C0CCD0-CE12-43BB-BB3E-44059FCA4ADB}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -4432,7 +4606,7 @@
             }
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_575F78EE29BB4A19B77DD2AFD72C7E11"
             {
-            "Name" = "8:BenMAP-CE 1.0.10"
+            "Name" = "8:BenMAP-CE 1.0.12"
             "Arguments" = "8:"
             "Description" = "8:"
             "ShowCmd" = "3:1"
