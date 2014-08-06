@@ -1050,35 +1050,35 @@ namespace BenMAP
 
             //results sheet
             #region results sheet
-            xlSheet = (Microsoft.Office.Interop.Excel.Worksheet)xlBook.Worksheets[2];
-            //xlSheet.Name = "Results";
-            //xlSheet.Range["A3"].Value = "Country";
-            //xlSheet.Range["B3"].Value = "Population Affected";
-            //xlSheet.Range["C3"].Value = "Avoided Deaths (Total)";
-            //xlSheet.Range["D3"].Value = "Avoided Deaths (% Population)";
-            //xlSheet.Range["E3"].Value = "Min";
-            //xlSheet.Range["F3"].Value = "Median";
-            //xlSheet.Range["G3"].Value = "Max";
-            xlSheet.Range["E2"].Value = rollback.Year.ToString() + " " + xlSheet.Range["E2"].Value.ToString();
-            //xlSheet.Range["E2:G2"].MergeCells = true;
-            //xlSheet.Range["H3"].Value = "Min";
-            //xlSheet.Range["I3"].Value = "Median";
-            //xlSheet.Range["J3"].Value = "Max";
-            //xlSheet.Range["H2"].Value = "Control";
-            //xlSheet.Range["H2:J2"].MergeCells = true;
-            //xlSheet.Range["K3"].Value = "Air Quality Change (Population Weighted)";
+            Microsoft.Office.Interop.Excel.Worksheet xlSheet2 = (Microsoft.Office.Interop.Excel.Worksheet)xlBook.Worksheets[2];
+            //xlSheet2.Name = "Results";
+            //xlSheet2.Range["A3"].Value = "Country";
+            //xlSheet2.Range["B3"].Value = "Population Affected";
+            //xlSheet2.Range["C3"].Value = "Avoided Deaths (Total)";
+            //xlSheet2.Range["D3"].Value = "Avoided Deaths (% Population)";
+            //xlSheet2.Range["E3"].Value = "Min";
+            //xlSheet2.Range["F3"].Value = "Median";
+            //xlSheet2.Range["G3"].Value = "Max";
+            xlSheet2.Range["E2"].Value = rollback.Year.ToString() + " " + xlSheet2.Range["E2"].Value.ToString();
+            //xlSheet2.Range["E2:G2"].MergeCells = true;
+            //xlSheet2.Range["H3"].Value = "Min";
+            //xlSheet2.Range["I3"].Value = "Median";
+            //xlSheet2.Range["J3"].Value = "Max";
+            //xlSheet2.Range["H2"].Value = "Control";
+            //xlSheet2.Range["H2:J2"].MergeCells = true;
+            //xlSheet2.Range["K3"].Value = "Air Quality Change (Population Weighted)";
 
             //format
-            //xlSheet.Range["E2:J2"].Font.Bold = true;
-            //xlSheet.Range["E2:J2"].HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignCenter;
-            //xlSheet.Range["A3:K3"].Font.Bold = true;
-            //xlSheet.Range["A3:K3"].HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignCenter;
-            //xlSheet.Range["B3:D3"].ColumnWidth = 20;
-            //xlSheet.Range["E3:J3"].ColumnWidth = 10;
-            //xlSheet.Range["K3"].ColumnWidth = 20;
-            //xlSheet.Range["B3:K3"].WrapText = true;
+            //xlSheet2.Range["E2:J2"].Font.Bold = true;
+            //xlSheet2.Range["E2:J2"].HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignCenter;
+            //xlSheet2.Range["A3:K3"].Font.Bold = true;
+            //xlSheet2.Range["A3:K3"].HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignCenter;
+            //xlSheet2.Range["B3:D3"].ColumnWidth = 20;
+            //xlSheet2.Range["E3:J3"].ColumnWidth = 10;
+            //xlSheet2.Range["K3"].ColumnWidth = 20;
+            //xlSheet2.Range["B3:K3"].WrapText = true;
             ////country column
-            //xlRange = (Microsoft.Office.Interop.Excel.Range)(xlSheet.Columns[1]);
+            //xlRange = (Microsoft.Office.Interop.Excel.Range)(xlSheet2.Columns[1]);
             //xlRange.ColumnWidth = 40;
             //xlRange.WrapText = true;
 
@@ -1119,32 +1119,32 @@ namespace BenMAP
             nextRow = 4;
             foreach (DataRow dr in dtDetailedResults.Rows)
             {
-                xlSheet.Range["A" + nextRow.ToString()].Value = dr["NAME"].ToString();
+                xlSheet2.Range["A" + nextRow.ToString()].Value = dr["NAME"].ToString();
                 if (Convert.ToBoolean(dr["IS_REGION"].ToString()))
                 {
-                    xlSheet.Range["A" + nextRow.ToString()].Font.Italic = true;
+                    xlSheet2.Range["A" + nextRow.ToString()].Font.Italic = true;
                 }
                 else 
                 {
-                    //xlSheet.Range["A" + nextRow.ToString()].ColumnWidth = 40;
-                    //xlSheet.Range["A" + nextRow.ToString()].WrapText = true;
-                    xlSheet.Range["A" + nextRow.ToString()].InsertIndent(2);                
+                    //xlSheet2.Range["A" + nextRow.ToString()].ColumnWidth = 40;
+                    //xlSheet2.Range["A" + nextRow.ToString()].WrapText = true;
+                    xlSheet2.Range["A" + nextRow.ToString()].InsertIndent(2);                
                 }
-                xlSheet.Range["B" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["POP_AFFECTED"].ToString());
-                xlSheet.Range["C" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AVOIDED_DEATHS"].ToString());
-                xlSheet.Range["D" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AVOIDED_DEATHS_PERCENT_POP"].ToString());
-                xlSheet.Range["E" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MIN"].ToString());
-                xlSheet.Range["F" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MEDIAN"].ToString());
-                xlSheet.Range["G" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MAX"].ToString());
-                xlSheet.Range["H" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MIN"].ToString());
-                xlSheet.Range["I" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MEDIAN"].ToString());
-                xlSheet.Range["J" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MAX"].ToString());
-                xlSheet.Range["K" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AIR_QUALITY_CHANGE"].ToString());
+                xlSheet2.Range["B" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["POP_AFFECTED"].ToString());
+                xlSheet2.Range["C" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AVOIDED_DEATHS"].ToString());
+                xlSheet2.Range["D" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AVOIDED_DEATHS_PERCENT_POP"].ToString());
+                xlSheet2.Range["E" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MIN"].ToString());
+                xlSheet2.Range["F" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MEDIAN"].ToString());
+                xlSheet2.Range["G" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MAX"].ToString());
+                xlSheet2.Range["H" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MIN"].ToString());
+                xlSheet2.Range["I" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MEDIAN"].ToString());
+                xlSheet2.Range["J" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MAX"].ToString());
+                xlSheet2.Range["K" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AIR_QUALITY_CHANGE"].ToString());
                 nextRow++;
                 
             }
 
-            xlRange = xlSheet.Range["A4:K" + (nextRow - 1).ToString()];
+            xlRange = xlSheet2.Range["A4:K" + (nextRow - 1).ToString()];
             xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeTop].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
             xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeRight].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
             xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeBottom].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
@@ -1156,7 +1156,6 @@ namespace BenMAP
             #region back to summary sheet
 
             //get results for summary table
-            xlSheet = (Microsoft.Office.Interop.Excel.Worksheet)xlBook.Worksheets[1];
             System.Data.DataTable dtSummaryResults = dtDetailedResults.Clone();
             GetResults(null, "SUMMARY", false, dtSummaryResults);
             if (dtSummaryResults.Rows.Count > 0)
@@ -1180,6 +1179,11 @@ namespace BenMAP
             xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeBottom].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
             xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeLeft].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
             xlRange.Borders.Color = Color.Black;
+
+            //summary chart
+            Microsoft.Office.Interop.Excel.ChartObject xlChartObject = (Microsoft.Office.Interop.Excel.ChartObject)xlSheet.ChartObjects(1);
+            Microsoft.Office.Interop.Excel.Chart xlChart = (Microsoft.Office.Interop.Excel.Chart)xlChartObject.Chart;
+            xlChart.SetSourceData(xlSheet2.Range["A4:C" + (nextRow - 1).ToString()], Microsoft.Office.Interop.Excel.XlRowCol.xlColumns);
 
             #endregion
 
