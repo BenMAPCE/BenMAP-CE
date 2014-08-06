@@ -31,6 +31,8 @@ namespace BenMAP
 
         private System.Data.DataTable dtConcCountry = null;
         private System.Data.DataTable dtConcEntireRollback = null;
+
+        List<IPolygonCategory> selectedButNotSavedIPCs = new List<IPolygonCategory>();
       
 
         public GBDRollback()
@@ -234,9 +236,9 @@ namespace BenMAP
                 CheckChildNodes(e.Node);
                 CheckParentNode(e.Node);
             }
-
+            //Color.FromArgb(224, 243, 248)
             //if this is checked AND has no children)
-            //then, it is country and we add to list
+            //then, it is country and we add to listd
             IMapFeatureLayer[] mfl = mapGBD.GetFeatureLayers();
             string filter =  "[ID] = '" + e.Node.Name + "'";
             if ((e.Node.Checked) && (e.Node.Nodes.Count == 0))
@@ -247,7 +249,18 @@ namespace BenMAP
                     //also select on map                
                     if (selectMapFeaturesOnNodeCheck)
                     {
-                        mfl[0].SelectByAttribute(filter, ModifySelectionMode.Append);
+
+                        //mfl[0].SelectByAttribute(filter, ModifySelectionMode.Append);
+                        //update map
+                        IPolygonScheme ips = (IPolygonScheme)mfl[0].Symbology;
+                        IPolygonCategory ipc = null;
+                        ipc = new PolygonCategory(Color.FromArgb(0, 255, 255), Color.Black, 1);
+                        ipc.FilterExpression = "[ID]='" + e.Node.Name + "'";
+                        selectedButNotSavedIPCs.Add(ipc);
+                        mfl[0].Symbology.AddCategory(ipc);
+
+
+                        mfl[0].ApplyScheme(mfl[0].Symbology);
                     }
                 }
             }
@@ -446,7 +459,11 @@ namespace BenMAP
             //update map
             IMapFeatureLayer[] mfl = mapGBD.GetFeatureLayers();
             mfl[0].ClearSelection();
-
+            foreach (IPolygonCategory ipcToRemove in selectedButNotSavedIPCs)
+            {
+                mfl[0].Symbology.RemoveCategory(ipcToRemove);
+            }
+            selectedButNotSavedIPCs.Clear();
             IPolygonScheme ips = (IPolygonScheme)mfl[0].Symbology;
             IPolygonCategory ipc = null;
             //grab existing ips and add to it
