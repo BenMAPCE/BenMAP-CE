@@ -18,6 +18,7 @@ namespace BenMAP
     {
 
         private Dictionary<string, string> checkedCountries = new Dictionary<string, string>();
+        private List<Color> colorPalette = new List<Color>();
         private List<GBDRollbackItem> rollbacks = new List<GBDRollbackItem>();
         private System.Data.DataTable dtCountries;
         private Microsoft.Office.Interop.Excel.Application xlApp;
@@ -55,6 +56,7 @@ namespace BenMAP
             LoadCountries();
             LoadTreeView();
             LoadMap();
+            LoadColorPalette();
 
         }
 
@@ -62,6 +64,23 @@ namespace BenMAP
         private void btnClose_Click(object sender, EventArgs e)
         {
             Close();           
+        }
+
+        private void LoadColorPalette()
+        { 
+            
+            colorPalette.Add(Color.FromArgb(165,0,38));
+            colorPalette.Add(Color.FromArgb(215, 48, 39));
+            colorPalette.Add(Color.FromArgb(244, 109, 67));
+            colorPalette.Add(Color.FromArgb(253, 174, 97));
+            colorPalette.Add(Color.FromArgb(254, 224, 144));
+            colorPalette.Add(Color.FromArgb(255, 255, 191));
+            colorPalette.Add(Color.FromArgb(224, 243, 248));
+            colorPalette.Add(Color.FromArgb(171, 217, 233));
+            colorPalette.Add(Color.FromArgb(116, 173, 209));
+            colorPalette.Add(Color.FromArgb(69, 117, 180));
+            colorPalette.Add(Color.FromArgb(49, 54, 149));
+        
         }
 
         private void LoadMap()
@@ -82,7 +101,7 @@ namespace BenMAP
                 impl = new MapPolygonLayer(FeatureSet.OpenFile(mapFile));
                 //impl.Reproject(_mapArgs.Map.Projection);
                 impl.LegendText = "Countries";
-                impl.Symbolizer.SetFillColor(Color.NavajoWhite);
+                impl.Symbolizer.SetFillColor(Color.White);
                 impl.Symbolizer.SetOutlineWidth(1);
                 impl.Symbolizer.OutlineSymbolizer.SetFillColor(Color.Black);
                 mapGBD.Layers.Add(impl);
@@ -390,7 +409,7 @@ namespace BenMAP
                     break;
             }
             rollback.Year = YEAR;
-            rollback.Color = GetRandomColor();
+            rollback.Color = GetNextColor();
 
 
             //remove rollback if it already exists
@@ -462,6 +481,21 @@ namespace BenMAP
                     return;                    
                 }            
             }        
+        }
+
+        private Color GetNextColor()
+        {
+            foreach (Color c in colorPalette)
+            {
+                GBDRollbackItem item = rollbacks.Find(x => x.Color.ToArgb() == c.ToArgb());
+                if (item == null)
+                {
+                    return c;
+                }             
+            
+            }
+
+            return GetRandomColor();        
         }
 
         private Color GetRandomColor()
