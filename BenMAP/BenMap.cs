@@ -13501,12 +13501,7 @@ namespace BenMAP
             //}
         }
 
-        private void picGIS_Click(object sender, EventArgs e)
-        {
-
-        }
-
-          
+      
         
     }
 }

@@ -32,7 +32,7 @@ namespace BenMAP
         private System.Data.DataTable dtConcCountry = null;
         private System.Data.DataTable dtConcEntireRollback = null;
 
-        List<IPolygonCategory> selectedButNotSavedIPCs = new List<IPolygonCategory>();
+        Dictionary<String,IPolygonCategory> selectedButNotSavedIPCs = new Dictionary<String,IPolygonCategory>();
       
 
         public GBDRollback()
@@ -277,22 +277,26 @@ namespace BenMAP
                         IPolygonCategory ipc = null;
                         ipc = new PolygonCategory(Color.FromArgb(0, 255, 255), Color.FromArgb(0, 225, 225), 1);
                         ipc.FilterExpression = "[ID]='" + e.Node.Name + "'";
-                        selectedButNotSavedIPCs.Add(ipc);
+                        selectedButNotSavedIPCs.Add(e.Node.Name,ipc);
                         mfl[0].Symbology.AddCategory(ipc);
-
-
                         mfl[0].ApplyScheme(mfl[0].Symbology);
                     }
                 }
             }
             else
             {
-                checkedCountries.Remove(e.Node.Name);  
+                checkedCountries.Remove(e.Node.Name);
+                if(selectedButNotSavedIPCs.ContainsKey(e.Node.Name)){
+                    IPolygonCategory ipc = selectedButNotSavedIPCs[e.Node.Name];
+                    mfl[0].Symbology.RemoveCategory(ipc);
+                    selectedButNotSavedIPCs.Remove(e.Node.Name);
+                    mfl[0].ApplyScheme(mfl[0].Symbology);
+                 }
                 //unselect on map
-                if (selectMapFeaturesOnNodeCheck)
-                {
-                    mfl[0].SelectByAttribute(filter, ModifySelectionMode.Subtract);
-                }
+                //if (selectMapFeaturesOnNodeCheck)
+                //{
+                //    mfl[0].SelectByAttribute(filter, ModifySelectionMode.Subtract);
+                //}
             }
         }
 
@@ -493,7 +497,7 @@ namespace BenMAP
             //update map
             IMapFeatureLayer[] mfl = mapGBD.GetFeatureLayers();
             mfl[0].ClearSelection();
-            foreach (IPolygonCategory ipcToRemove in selectedButNotSavedIPCs)
+            foreach (IPolygonCategory ipcToRemove in selectedButNotSavedIPCs.Values)
             {
                 mfl[0].Symbology.RemoveCategory(ipcToRemove);
             }

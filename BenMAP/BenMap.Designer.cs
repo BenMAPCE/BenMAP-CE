@@ -19,10 +19,10 @@ namespace BenMAP
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(BenMAP));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle13 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle14 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle15 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle16 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             this.SmallImageList = new System.Windows.Forms.ImageList(this.components);
             this.tipBallon = new System.Windows.Forms.ToolTip(this.components);
             this.tabCRFunctionResultGISShow = new System.Windows.Forms.TabPage();
@@ -190,7 +190,7 @@ namespace BenMAP
             this.tsbChangeProjection = new System.Windows.Forms.ToolStripButton();
             this.tsbChangeCone = new System.Windows.Forms.ToolStripButton();
             this.tsbAddLayer = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButton6 = new System.Windows.Forms.ToolStripButton();
+            this.tsbAttributes = new System.Windows.Forms.ToolStripButton();
             this.legend1 = new DotSpatial.Controls.Legend();
             this.cboRegion = new System.Windows.Forms.ComboBox();
             this.tabMapLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
@@ -1956,7 +1956,6 @@ namespace BenMAP
             this.picGIS.Size = new System.Drawing.Size(693, 458);
             this.picGIS.TabIndex = 8;
             this.picGIS.TabStop = false;
-            this.picGIS.Click += new System.EventHandler(this.picGIS_Click);
             this.picGIS.DragDrop += new System.Windows.Forms.DragEventHandler(this.mainMap_DragDrop);
             this.picGIS.DragEnter += new System.Windows.Forms.DragEventHandler(this.picGIS_DragEnter);
             this.picGIS.DragLeave += new System.EventHandler(this.mainMap_DragLeave);
@@ -1991,7 +1990,7 @@ namespace BenMAP
             this.panel3.Dock = System.Windows.Forms.DockStyle.Left;
             this.panel3.Location = new System.Drawing.Point(0, 0);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(21, 456);
+            this.panel3.Size = new System.Drawing.Size(33, 456);
             this.panel3.TabIndex = 7;
             // 
             // toolStrip1
@@ -2012,12 +2011,13 @@ namespace BenMAP
             this.tsbChangeProjection,
             this.tsbChangeCone,
             this.tsbAddLayer,
-            this.toolStripButton6});
+            this.tsbAttributes});
             this.toolStrip1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.VerticalStackWithOverflow;
-            this.toolStrip1.Location = new System.Drawing.Point(0, 0);
+            this.toolStrip1.Location = new System.Drawing.Point(2, 0);
+            this.toolStrip1.MaximumSize = new System.Drawing.Size(50, 500);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Padding = new System.Windows.Forms.Padding(0, 0, 1, 8);
-            this.toolStrip1.Size = new System.Drawing.Size(24, 273);
+            this.toolStrip1.Padding = new System.Windows.Forms.Padding(0);
+            this.toolStrip1.Size = new System.Drawing.Size(23, 265);
             this.toolStrip1.Stretch = true;
             this.toolStrip1.TabIndex = 5;
             this.toolStrip1.Text = "toolStrip1";
@@ -2177,15 +2177,17 @@ namespace BenMAP
             this.tsbAddLayer.Text = "Add Layer";
             this.tsbAddLayer.Click += new System.EventHandler(this.tsbAddLayer_Click);
             // 
-            // toolStripButton6
+            // tsbAttributes
             // 
-            this.toolStripButton6.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButton6.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton6.Image")));
-            this.toolStripButton6.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton6.Name = "toolStripButton6";
-            this.toolStripButton6.Size = new System.Drawing.Size(22, 20);
-            this.toolStripButton6.Text = "Attribute Table";
-            this.toolStripButton6.Click += new System.EventHandler(this.btnShowHideAttributeTable_Click);
+            this.tsbAttributes.AutoSize = false;
+            this.tsbAttributes.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("tsbAttributes.BackgroundImage")));
+            this.tsbAttributes.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbAttributes.Image = ((System.Drawing.Image)(resources.GetObject("tsbAttributes.Image")));
+            this.tsbAttributes.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbAttributes.Name = "tsbAttributes";
+            this.tsbAttributes.Size = new System.Drawing.Size(23, 20);
+            this.tsbAttributes.Text = "Attribute Table";
+            this.tsbAttributes.Click += new System.EventHandler(this.btnShowHideAttributeTable_Click);
             // 
             // legend1
             // 
@@ -2193,20 +2195,20 @@ namespace BenMAP
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.legend1.BackColor = System.Drawing.Color.White;
-            this.legend1.ControlRectangle = new System.Drawing.Rectangle(-20, -5, 169, 456);
+            this.legend1.ControlRectangle = new System.Drawing.Rectangle(-20, -5, 165, 456);
             this.legend1.DocumentRectangle = new System.Drawing.Rectangle(0, 0, 168, 456);
             this.legend1.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.legend1.HorizontalScrollEnabled = true;
-            this.legend1.Indentation = 5;
+            this.legend1.Indentation = 3;
             this.legend1.IsInitialized = false;
-            this.legend1.Location = new System.Drawing.Point(27, 0);
+            this.legend1.Location = new System.Drawing.Point(31, 0);
             this.legend1.MinimumSize = new System.Drawing.Size(5, 6);
             this.legend1.Name = "legend1";
             this.legend1.ProgressHandler = null;
             this.legend1.ResetOnResize = false;
             this.legend1.SelectionFontColor = System.Drawing.Color.Black;
             this.legend1.SelectionHighlight = System.Drawing.Color.FromArgb(((int)(((byte)(215)))), ((int)(((byte)(238)))), ((int)(((byte)(252)))));
-            this.legend1.Size = new System.Drawing.Size(169, 456);
+            this.legend1.Size = new System.Drawing.Size(165, 456);
             this.legend1.TabIndex = 0;
             this.legend1.Text = "legend1";
             this.legend1.VerticalScrollEnabled = true;
@@ -2267,41 +2269,41 @@ namespace BenMAP
             this.dgvAttributeTable.AllowUserToAddRows = false;
             this.dgvAttributeTable.AllowUserToDeleteRows = false;
             this.dgvAttributeTable.AllowUserToOrderColumns = true;
-            dataGridViewCellStyle13.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle13.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            dataGridViewCellStyle13.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle13.ForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle13.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            dataGridViewCellStyle13.SelectionForeColor = System.Drawing.Color.Maroon;
-            this.dgvAttributeTable.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle13;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.Color.Maroon;
+            this.dgvAttributeTable.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             this.dgvAttributeTable.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.DisplayedCells;
-            dataGridViewCellStyle14.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle14.BackColor = System.Drawing.SystemColors.ControlDark;
-            dataGridViewCellStyle14.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle14.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle14.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle14.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle14.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvAttributeTable.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle14;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.ControlDark;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvAttributeTable.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
             this.dgvAttributeTable.Cursor = System.Windows.Forms.Cursors.Default;
-            dataGridViewCellStyle15.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle15.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle15.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle15.ForeColor = System.Drawing.Color.White;
-            dataGridViewCellStyle15.SelectionBackColor = System.Drawing.SystemColors.GradientInactiveCaption;
-            dataGridViewCellStyle15.SelectionForeColor = System.Drawing.SystemColors.InfoText;
-            dataGridViewCellStyle15.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvAttributeTable.DefaultCellStyle = dataGridViewCellStyle15;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle3.ForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.GradientInactiveCaption;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.InfoText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvAttributeTable.DefaultCellStyle = dataGridViewCellStyle3;
             this.dgvAttributeTable.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvAttributeTable.GridColor = System.Drawing.SystemColors.Control;
             this.dgvAttributeTable.Location = new System.Drawing.Point(3, 458);
             this.dgvAttributeTable.Name = "dgvAttributeTable";
             this.dgvAttributeTable.ReadOnly = true;
             this.dgvAttributeTable.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.AutoSizeToDisplayedHeaders;
-            dataGridViewCellStyle16.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            dataGridViewCellStyle16.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            dataGridViewCellStyle16.SelectionForeColor = System.Drawing.Color.Black;
-            this.dgvAttributeTable.RowsDefaultCellStyle = dataGridViewCellStyle16;
+            dataGridViewCellStyle4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            dataGridViewCellStyle4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.Color.Black;
+            this.dgvAttributeTable.RowsDefaultCellStyle = dataGridViewCellStyle4;
             this.dgvAttributeTable.RowTemplate.DefaultCellStyle.ForeColor = System.Drawing.Color.Black;
             this.dgvAttributeTable.RowTemplate.DefaultCellStyle.SelectionForeColor = System.Drawing.Color.Black;
             this.dgvAttributeTable.Size = new System.Drawing.Size(479, 1);
@@ -2957,14 +2959,6 @@ namespace BenMAP
         private System.Windows.Forms.SplitContainer splitContainer2;
         private DotSpatial.Controls.Legend legend1;
         private DotSpatial.Controls.Map mainMap;
-        private System.Windows.Forms.ToolStrip toolStrip1;
-        private System.Windows.Forms.ToolStripButton btnZoomIn;
-        private System.Windows.Forms.ToolStripButton btnZoomOut;
-        private System.Windows.Forms.ToolStripButton btnPan;
-        private System.Windows.Forms.ToolStripButton btnFullExtent;
-        private System.Windows.Forms.ToolStripButton btnSpatial;
-        private System.Windows.Forms.ToolStripButton btnIdentify;
-        private System.Windows.Forms.ToolStripButton btnLayerSet;
         private System.Windows.Forms.TabPage tabData;
         private System.Windows.Forms.Button btnTableOutput;
         private System.Windows.Forms.TabPage tabChart;
@@ -2973,8 +2967,6 @@ namespace BenMAP
         private System.Windows.Forms.Panel pnlChart;
         private System.Windows.Forms.TabPage tabCRFunctionResultGISShow;
         private System.Windows.Forms.TabPage tabAPVResultGISShow;
-        private System.Windows.Forms.ToolStripButton btnPieTheme;
-        private System.Windows.Forms.ToolStripButton btnColumnTheme;
         private BrightIdeasSoftware.ObjectListView olvCRFunctionResult;
         private BrightIdeasSoftware.OLVColumn olvColumn2;
         private BrightIdeasSoftware.OLVColumn olvcEndPointGroup;
@@ -3058,7 +3050,6 @@ namespace BenMAP
         private System.Windows.Forms.RadioButton rbShowActiveAPV;
         private BrightIdeasSoftware.OLVColumn olvColumn62;
         private System.Windows.Forms.Label lbIncidencePoolingMethod;
-        private System.Windows.Forms.ToolStripButton tsbSaveMap;
         private System.Windows.Forms.TabPage tabAuditTrialReport;
         private System.Windows.Forms.RadioButton rbAuditFile;
         private System.Windows.Forms.RadioButton rbAuditCurrent;
@@ -3073,14 +3064,10 @@ namespace BenMAP
         private BrightIdeasSoftware.OLVColumn olvColumn99;
         private System.Windows.Forms.GroupBox groupBox9;
         private System.Windows.Forms.TextBox textChartFilter;
-        private System.Windows.Forms.ToolStripButton tsbSavePic;
         private BrightIdeasSoftware.OLVColumn olvColumn69;
         private BrightIdeasSoftware.OLVColumn olvColumn70;
-        private System.Windows.Forms.ToolStripButton tsbChangeProjection;
-        private System.Windows.Forms.ToolStripButton tsbChangeCone;
         private System.Windows.Forms.ComboBox cbPoolingWindowAPV;
         private System.Windows.Forms.CheckBox chbAPVAggregation;
-        private System.Windows.Forms.ToolStripButton tsbAddLayer;
         private System.Windows.Forms.SplitContainer spAPVResult;
         private System.Windows.Forms.SplitContainer spCRFunction;
         private System.Windows.Forms.SplitContainer spTable;
@@ -3147,10 +3134,25 @@ namespace BenMAP
         private System.Windows.Forms.ComboBox cbGraph;
         private System.Windows.Forms.Button btnSelectAll;
         private System.Windows.Forms.TableLayoutPanel tabMapLayoutPanel1;
-        private System.Windows.Forms.ToolStripButton toolStripButton6;
         private System.Windows.Forms.TextBox tbMapTitle;
         private System.Windows.Forms.DataGridView dgvAttributeTable;
         private System.Windows.Forms.ComboBox cboRegion;
         private System.Windows.Forms.Panel panel3;
+        private System.Windows.Forms.ToolStrip toolStrip1;
+        private System.Windows.Forms.ToolStripButton btnZoomIn;
+        private System.Windows.Forms.ToolStripButton btnZoomOut;
+        private System.Windows.Forms.ToolStripButton btnPan;
+        private System.Windows.Forms.ToolStripButton btnFullExtent;
+        private System.Windows.Forms.ToolStripButton btnSpatial;
+        private System.Windows.Forms.ToolStripButton btnIdentify;
+        private System.Windows.Forms.ToolStripButton btnLayerSet;
+        private System.Windows.Forms.ToolStripButton btnPieTheme;
+        private System.Windows.Forms.ToolStripButton btnColumnTheme;
+        private System.Windows.Forms.ToolStripButton tsbSaveMap;
+        private System.Windows.Forms.ToolStripButton tsbSavePic;
+        private System.Windows.Forms.ToolStripButton tsbChangeProjection;
+        private System.Windows.Forms.ToolStripButton tsbChangeCone;
+        private System.Windows.Forms.ToolStripButton tsbAddLayer;
+        private System.Windows.Forms.ToolStripButton tsbAttributes;
     }
 }
