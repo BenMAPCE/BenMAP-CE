@@ -268,8 +268,8 @@ namespace BenMAP
             this.btnLayerSet.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnLayerSet.Name = "btnLayerSet";
             this.btnLayerSet.Size = new System.Drawing.Size(23, 22);
-            this.btnLayerSet.Text = "Show Legend";
-            this.btnLayerSet.ToolTipText = "Show Legend";
+            this.btnLayerSet.Text = "Show Table of Contents";
+            this.btnLayerSet.ToolTipText = "Show Table of Contents";
             this.btnLayerSet.Visible = false;
                                                 this.btnPieTheme.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.btnPieTheme.Image = global::BenMAP.Properties.Resources.tableView1;
