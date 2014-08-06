@@ -152,22 +152,43 @@ namespace BenMAP
             switch (cboRollbackType.SelectedIndex)
             {
                 case 0:
-                   
+                    gbOptionsIncremental.Visible = false;
+                    gbOptionsPercentage.Visible = true;
+                    gbOptionsStandard.Visible = false;
+                    
+                    pb_incremental.Visible = false;
+                    pb_percent.Visible = true;
+                    pb_standard.Visible = false;
                     break;
                 case 1:
                     gbOptionsIncremental.Visible = true;
                     gbOptionsPercentage.Visible = false;
                     gbOptionsStandard.Visible = false;
+                    
+                    pb_incremental.Visible = true;
+                    pb_percent.Visible = false;
+                    pb_standard.Visible = false;
+
                     break;                
                 case 2:
                     gbOptionsIncremental.Visible = false;
                     gbOptionsPercentage.Visible = false;
                     gbOptionsStandard.Visible = true;
+
+                    pb_incremental.Visible = false;
+                    pb_percent.Visible = false;
+                    pb_standard.Visible = true;
+
                     break;
                 default:
                     gbOptionsIncremental.Visible = false;
                     gbOptionsPercentage.Visible = false;
                     gbOptionsStandard.Visible = false;
+
+                    pb_incremental.Visible = false;;
+                    pb_percent.Visible = false;
+                    pb_standard.Visible = false;
+
                     break;
             }
 
@@ -254,7 +275,7 @@ namespace BenMAP
                         //update map
                         IPolygonScheme ips = (IPolygonScheme)mfl[0].Symbology;
                         IPolygonCategory ipc = null;
-                        ipc = new PolygonCategory(Color.FromArgb(0, 255, 255), Color.Black, 1);
+                        ipc = new PolygonCategory(Color.FromArgb(0, 255, 255), Color.FromArgb(0, 225, 225), 1);
                         ipc.FilterExpression = "[ID]='" + e.Node.Name + "'";
                         selectedButNotSavedIPCs.Add(ipc);
                         mfl[0].Symbology.AddCategory(ipc);
@@ -348,6 +369,18 @@ namespace BenMAP
                         txtPercentage.Focus();
                         return;                        
                     }
+                     if (d > 100)
+                        {
+                            MessageBox.Show("Percentage can not be > 100");
+                            txtPercentageBackground.Focus();
+                            return;
+                        }
+                        if (d < 0)
+                        {
+                            MessageBox.Show("Percentage can not be < 0");
+                            txtPercentageBackground.Focus();
+                            return;
+                        }
                     if (!String.IsNullOrEmpty(txtPercentageBackground.Text))
                     {
                         if (!Double.TryParse(txtPercentageBackground.Text, out d))
@@ -356,6 +389,7 @@ namespace BenMAP
                             txtPercentageBackground.Focus();
                             return;
                         }
+                       
                     }
                     break;
                 case 1: //incremental
