@@ -1600,6 +1600,7 @@
     <None Include="Resources\SPEXit.png" />
     <None Include="Resources\SPLoadAPVR.png" />
     <None Include="Resources\SPLoadCFGR.png" />
+    <Content Include="Resources\Table-icon.png" />
     <Content Include="Resources\tableView_Bar.png" />
     <None Include="Resources\tableView1.png" />
     <None Include="Resources\Welcome.png" />
