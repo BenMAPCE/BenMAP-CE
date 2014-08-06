@@ -219,7 +219,7 @@ namespace BenMAP
             //if this is checked AND has no children)
             //then, it is country and we add to list
             IMapFeatureLayer[] mfl = mapGBD.GetFeatureLayers();
-            string filter =  "[ISO] = '" + e.Node.Name + "'";
+            string filter =  "[ID] = '" + e.Node.Name + "'";
             if ((e.Node.Checked) && (e.Node.Nodes.Count == 0))
             {
                 if (!checkedCountries.ContainsKey(e.Node.Name))
@@ -400,17 +400,31 @@ namespace BenMAP
             rollbacks.Add(rollback);
 
             //add to grid
-            dgvRollbacks.Rows.Clear();
-            foreach (GBDRollbackItem item in rollbacks)
-            { 
-                DataGridViewRow row = new DataGridViewRow();
-                int i = dgvRollbacks.Rows.Add(row);
-                dgvRollbacks.Rows[i].Cells["colName"].Value = item.Name;
-                dgvRollbacks.Rows[i].Cells["colColor"].Style.BackColor = item.Color;
-                dgvRollbacks.Rows[i].Cells["colTotalCountries"].Value = item.Countries.Count().ToString();
-                dgvRollbacks.Rows[i].Cells["colTotalPopulation"].Value = GetRollbackTotalPopulation(item).ToString("#,###");
-                dgvRollbacks.Rows[i].Cells["colRollbackType"].Value = GetRollbackTypeSummary(item);         
-            }
+            //dgvRollbacks.Rows.Clear();
+            //foreach (GBDRollbackItem item in rollbacks)
+            //{ 
+            //    DataGridViewRow row = new DataGridViewRow();
+            //    int i = dgvRollbacks.Rows.Add(row);
+            //    dgvRollbacks.Rows[i].Cells["colName"].Value = item.Name;
+            //    dgvRollbacks.Rows[i].Cells["colColor"].Style.BackColor = item.Color;
+            //    dgvRollbacks.Rows[i].Cells["colTotalCountries"].Value = item.Countries.Count().ToString();
+            //    dgvRollbacks.Rows[i].Cells["colTotalPopulation"].Value = GetRollbackTotalPopulation(item).ToString("#,###");
+            //    dgvRollbacks.Rows[i].Cells["colRollbackType"].Value = GetRollbackTypeSummary(item);         
+            //}
+
+            RemoveGridRow(rollback.Name);
+            DataGridViewRow row = new DataGridViewRow();
+            int i = dgvRollbacks.Rows.Add(row);
+            dgvRollbacks.Rows[i].Cells["colName"].Value = rollback.Name;
+            dgvRollbacks.Rows[i].Cells["colColor"].Style.BackColor = rollback.Color;
+            dgvRollbacks.Rows[i].Cells["colTotalCountries"].Value = rollback.Countries.Count().ToString();
+            dgvRollbacks.Rows[i].Cells["colTotalPopulation"].Value = GetRollbackTotalPopulation(rollback).ToString("#,###");
+            dgvRollbacks.Rows[i].Cells["colRollbackType"].Value = GetRollbackTypeSummary(rollback);
+            dgvRollbacks.Rows[i].Cells["colExecute"].Value = true;
+            btnExecuteRollbacks.Enabled = true;
+
+
+            //update map
             IMapFeatureLayer[] mfl = mapGBD.GetFeatureLayers();
             mfl[0].ClearSelection();
 
@@ -419,11 +433,11 @@ namespace BenMAP
             //grab existing ips and add to it
             foreach(String s in rollback.Countries.Keys){
                 ipc = new PolygonCategory(rollback.Color, Color.Black, 1);
-                ipc.FilterExpression = "[ISO]='" + s+"'";
+                ipc.FilterExpression = "[ID]='" + s+"'";
                 rollback.addIPC(ipc);
                 ips.AddCategory(ipc);
             //set color of selected country features on map
-            //string filter = "[ISO] in (" + String.Join(",", rollback.Countries.Select(x => "'" + x.Key + "'")) + ")";
+            //string filter = "[ID] in (" + String.Join(",", rollback.Countries.Select(x => "'" + x.Key + "'")) + ")";
             //mfl[0].SelectByAttribute(filter, ModifySelectionMode.Subtract);
             //PolygonCategory category = new PolygonCategory(rollback.Color, Color.Black, 4);
             //category.FilterExpression = filter;
@@ -435,6 +449,19 @@ namespace BenMAP
             ClearFields();
             SetActivePanel(0);
            
+        }
+
+        private void RemoveGridRow(string name)
+        {
+            foreach (DataGridViewRow row in dgvRollbacks.Rows)
+            {
+                string s = row.Cells["colName"].Value.ToString();
+                if (s.Equals(name, StringComparison.OrdinalIgnoreCase))
+                {
+                    dgvRollbacks.Rows.Remove(row);
+                    return;                    
+                }            
+            }        
         }
 
         private Color GetRandomColor()
@@ -665,68 +692,23 @@ namespace BenMAP
 
                 Cursor.Current = Cursors.WaitCursor;
 
-                double incrate = 0;
                 double beta = 0;
                 double se = 0;
 
                 //get pollutant beta, se
                 GBDRollbackDataSource.GetPollutantBeta(POLLUTANT_ID, out beta, out se);
 
-                //for each rollback...
-                foreach (GBDRollbackItem rollback in rollbacks)
-                {
-                    dtConcEntireRollback = null;
-
-                    //for each country in rollback...
-                    foreach (string countryid in rollback.Countries.Keys)
+                //for each checked rollback...
+                foreach (DataGridViewRow row in dgvRollbacks.Rows)
+                { 
+                    //is row selected
+                    if (Boolean.Parse(row.Cells["colExecute"].Value.ToString()) == true)
                     {
-                        //get data
-                        //country incidencerate
-                        incrate = GBDRollbackDataSource.GetIncidenceRate(countryid);
-
-                        //get baseline concs
-                        dtConcCountry = null;
-                        dtConcCountry = GBDRollbackDataSource.GetCountryConcs(countryid, POLLUTANT_ID, YEAR);
-
-                        //build schema of entire rollback table
-                        if (dtConcEntireRollback == null)
-                        {
-                            dtConcEntireRollback = dtConcCountry.Clone();
-                            dtConcEntireRollback.Columns.Add("CONCENTRATION_ADJ", dtConcCountry.Columns["CONCENTRATION"].DataType);
-                            dtConcEntireRollback.Columns.Add("CONCENTRATION_ADJ_BACK", dtConcCountry.Columns["CONCENTRATION"].DataType);
-                            dtConcEntireRollback.Columns.Add("CONCENTRATION_FINAL", dtConcCountry.Columns["CONCENTRATION"].DataType);
-                            dtConcEntireRollback.Columns.Add("CONCENTRATION_DELTA", dtConcCountry.Columns["CONCENTRATION"].DataType);
-                            dtConcEntireRollback.Columns.Add("AIR_QUALITY_DELTA", dtConcCountry.Columns["CONCENTRATION"].DataType);
-                            dtConcEntireRollback.Columns.Add("KREWSKI", dtConcCountry.Columns["CONCENTRATION"].DataType);
-                        }
-
-                        //run rollback
-                        DoRollback(rollback);
-
-                        //get concentration delta and population arrays
-                        double[] concDelta = Array.ConvertAll<DataRow, double>(dtConcCountry.Select(),
-                            delegate(DataRow row) { return Convert.ToDouble(row["CONCENTRATION_DELTA"]); });
-                        double[] population = Array.ConvertAll<DataRow, double>(dtConcCountry.Select(),
-                            delegate(DataRow row) { return Convert.ToDouble(row["POPESTIMATE"]); });
-
-                        //get results                
-                        GBDRollbackKrewskiFunction func = new GBDRollbackKrewskiFunction();
-                        GBDRollbackKrewskiResult result;
-                        result = func.GBD_math(concDelta, population, incrate, beta, se);
-                        //add results to dtConcCountry
-                        dtConcCountry.Columns.Add("KREWSKI", dtConcCountry.Columns["CONCENTRATION"].DataType, result.Krewski.ToString());
-
-                        //add records to entire rollback dataset
-                        dtConcEntireRollback.Merge(dtConcCountry, true, MissingSchemaAction.Ignore);
-
-                    }
-
-                    //save rollback report using rollback output
-                    xlApp = new Microsoft.Office.Interop.Excel.ApplicationClass();
-                    xlApp.DisplayAlerts = false;
-                    SaveRollbackReport(rollback);
-                    xlApp.Quit();
-
+                        string name = row.Cells["colName"].Value.ToString();
+                        //get rollback
+                        GBDRollbackItem item = rollbacks.Find(x => x.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+                        ExecuteRollback(item, beta, se);                    
+                    }                
                 }
 
                 Cursor.Current = Cursors.Default;
@@ -741,6 +723,62 @@ namespace BenMAP
 
 
            
+        }
+
+        private void ExecuteRollback(GBDRollbackItem rollback, double beta, double se)
+        {
+            dtConcEntireRollback = null;
+
+            //for each country in rollback...
+            foreach (string countryid in rollback.Countries.Keys)
+            {
+                //get data
+                //country incidencerate
+                double incrate = GBDRollbackDataSource.GetIncidenceRate(countryid);
+
+                //get baseline concs
+                dtConcCountry = null;
+                dtConcCountry = GBDRollbackDataSource.GetCountryConcs(countryid, POLLUTANT_ID, YEAR);
+
+                //build schema of entire rollback table
+                if (dtConcEntireRollback == null)
+                {
+                    dtConcEntireRollback = dtConcCountry.Clone();
+                    dtConcEntireRollback.Columns.Add("CONCENTRATION_ADJ", dtConcCountry.Columns["CONCENTRATION"].DataType);
+                    dtConcEntireRollback.Columns.Add("CONCENTRATION_ADJ_BACK", dtConcCountry.Columns["CONCENTRATION"].DataType);
+                    dtConcEntireRollback.Columns.Add("CONCENTRATION_FINAL", dtConcCountry.Columns["CONCENTRATION"].DataType);
+                    dtConcEntireRollback.Columns.Add("CONCENTRATION_DELTA", dtConcCountry.Columns["CONCENTRATION"].DataType);
+                    dtConcEntireRollback.Columns.Add("AIR_QUALITY_DELTA", dtConcCountry.Columns["CONCENTRATION"].DataType);
+                    dtConcEntireRollback.Columns.Add("KREWSKI", dtConcCountry.Columns["CONCENTRATION"].DataType);
+                }
+
+                //run rollback
+                DoRollback(rollback);
+
+                //get concentration delta and population arrays
+                double[] concDelta = Array.ConvertAll<DataRow, double>(dtConcCountry.Select(),
+                    delegate(DataRow row) { return Convert.ToDouble(row["CONCENTRATION_DELTA"]); });
+                double[] population = Array.ConvertAll<DataRow, double>(dtConcCountry.Select(),
+                    delegate(DataRow row) { return Convert.ToDouble(row["POPESTIMATE"]); });
+
+                //get results                
+                GBDRollbackKrewskiFunction func = new GBDRollbackKrewskiFunction();
+                GBDRollbackKrewskiResult result;
+                result = func.GBD_math(concDelta, population, incrate, beta, se);
+                //add results to dtConcCountry
+                dtConcCountry.Columns.Add("KREWSKI", dtConcCountry.Columns["CONCENTRATION"].DataType, result.Krewski.ToString());
+
+                //add records to entire rollback dataset
+                dtConcEntireRollback.Merge(dtConcCountry, true, MissingSchemaAction.Ignore);
+
+            }                
+
+            //save rollback report using rollback output
+            xlApp = new Microsoft.Office.Interop.Excel.ApplicationClass();
+            xlApp.DisplayAlerts = false;
+            SaveRollbackReport(rollback);
+            xlApp.Quit();
+
         }
 
         private void DoRollback (GBDRollbackItem rollback)
@@ -1227,6 +1265,34 @@ namespace BenMAP
             }
 
 
+        }
+
+        private void dgvRollbacks_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            // if ((e.RowIndex != -1) && (e.ColumnIndex != -1))
+            //{
+            //    string columnName = dgvRollbacks.Columns[e.ColumnIndex].Name;
+
+            //    if (columnName.Equals("colExecute", StringComparison.OrdinalIgnoreCase))
+            //    {
+            //        bool rowChecked = false;
+            //        //see if any rows are checked for execution
+            //        //for each checked rollback...
+            //        foreach (DataGridViewRow row in dgvRollbacks.Rows)
+            //        {
+            //            //is row selected
+            //            //bool checkBoxStatus = Convert.ToBoolean(gGridView1.CurrentCell.EditedFormattedValue);
+
+
+            //            if (Boolean.Parse(row.Cells["colExecute"].Value.ToString()) == true)
+            //            {
+            //                rowChecked = true;
+            //                break;
+            //            }
+            //        }
+
+            //        btnExecuteRollbacks.Enabled = rowChecked;
+            //    }
         }
 
        
