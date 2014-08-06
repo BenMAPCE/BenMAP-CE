@@ -251,7 +251,6 @@
             this.dgvRollbacks.Location = new System.Drawing.Point(17, 55);
             this.dgvRollbacks.MultiSelect = false;
             this.dgvRollbacks.Name = "dgvRollbacks";
-            this.dgvRollbacks.ReadOnly = true;
             this.dgvRollbacks.Size = new System.Drawing.Size(841, 197);
             this.dgvRollbacks.TabIndex = 0;
             this.dgvRollbacks.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvRollbacks_CellContentClick);
@@ -769,7 +768,6 @@
             // 
             this.colExecute.HeaderText = "Execute?";
             this.colExecute.Name = "colExecute";
-            this.colExecute.ReadOnly = true;
             this.colExecute.Resizable = System.Windows.Forms.DataGridViewTriState.True;
             this.colExecute.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
             // 

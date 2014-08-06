@@ -440,7 +440,7 @@ namespace BenMAP
             dgvRollbacks.Rows[i].Cells["colTotalPopulation"].Value = GetRollbackTotalPopulation(rollback).ToString("#,###");
             dgvRollbacks.Rows[i].Cells["colRollbackType"].Value = GetRollbackTypeSummary(rollback);
             dgvRollbacks.Rows[i].Cells["colExecute"].Value = true;
-            btnExecuteRollbacks.Enabled = true;
+            ToggleExecuteScenariosButton();
 
 
             //update map
@@ -669,6 +669,7 @@ namespace BenMAP
                     rollbacks.RemoveAll(x => x.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
                     //delete row
                     dgvRollbacks.Rows.Remove(row);
+                    ToggleExecuteScenariosButton();
                 }
             
             }
@@ -693,6 +694,7 @@ namespace BenMAP
 
         private void dgvRollbacks_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
+            dgvRollbacks.EndEdit();
             if ((e.RowIndex != -1) && (e.ColumnIndex != -1))
             {
                 string columnName = dgvRollbacks.Columns[e.ColumnIndex].Name;
@@ -733,16 +735,13 @@ namespace BenMAP
                 GBDRollbackDataSource.GetPollutantBeta(POLLUTANT_ID, out beta, out se);
 
                 //for each checked rollback...
-                foreach (DataGridViewRow row in dgvRollbacks.Rows)
-                { 
-                    //is row selected
-                    if (Boolean.Parse(row.Cells["colExecute"].Value.ToString()) == true)
-                    {
-                        string name = row.Cells["colName"].Value.ToString();
-                        //get rollback
-                        GBDRollbackItem item = rollbacks.Find(x => x.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
-                        ExecuteRollback(item, beta, se);                    
-                    }                
+                List<DataGridViewRow> list = dgvRollbacks.Rows.Cast<DataGridViewRow>().Where(k => Convert.ToBoolean(k.Cells["colExecute"].Value) == true).ToList();
+                foreach (DataGridViewRow row in list)
+                {                    
+                    string name = row.Cells["colName"].Value.ToString();
+                    //get rollback
+                    GBDRollbackItem item = rollbacks.Find(x => x.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+                    ExecuteRollback(item, beta, se);                                       
                 }
 
                 Cursor.Current = Cursors.Default;
@@ -1301,32 +1300,24 @@ namespace BenMAP
 
         }
 
+        private void ToggleExecuteScenariosButton()
+        {
+            List<DataGridViewRow> list = dgvRollbacks.Rows.Cast<DataGridViewRow>().Where(k => Convert.ToBoolean(k.Cells["colExecute"].Value) == true).ToList();            
+            btnExecuteRollbacks.Enabled = (list.Count > 0);
+        }
+
         private void dgvRollbacks_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-            // if ((e.RowIndex != -1) && (e.ColumnIndex != -1))
-            //{
-            //    string columnName = dgvRollbacks.Columns[e.ColumnIndex].Name;
+            dgvRollbacks.EndEdit();
+            if ((e.RowIndex != -1) && (e.ColumnIndex != -1))
+            {
+                string columnName = dgvRollbacks.Columns[e.ColumnIndex].Name;
 
-            //    if (columnName.Equals("colExecute", StringComparison.OrdinalIgnoreCase))
-            //    {
-            //        bool rowChecked = false;
-            //        //see if any rows are checked for execution
-            //        //for each checked rollback...
-            //        foreach (DataGridViewRow row in dgvRollbacks.Rows)
-            //        {
-            //            //is row selected
-            //            //bool checkBoxStatus = Convert.ToBoolean(gGridView1.CurrentCell.EditedFormattedValue);
-
-
-            //            if (Boolean.Parse(row.Cells["colExecute"].Value.ToString()) == true)
-            //            {
-            //                rowChecked = true;
-            //                break;
-            //            }
-            //        }
-
-            //        btnExecuteRollbacks.Enabled = rowChecked;
-            //    }
+                if (columnName.Equals("colExecute", StringComparison.OrdinalIgnoreCase))
+                {
+                    ToggleExecuteScenariosButton();
+                }
+            }
         }
 
        
