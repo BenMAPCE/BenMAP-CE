@@ -12,6 +12,7 @@ using FirebirdSql.Data.FirebirdClient;
 using System.IO;
 using ESIL.DBUtility;
 using DotSpatial.Topology;
+using DotSpatial.Projections;
 
 
 namespace BenMAP
@@ -231,12 +232,40 @@ namespace BenMAP
                 {
                     txtShapefile.Text = openFileDialog.FileName; lblShapeFileName.Text = System.IO.Path.GetFileNameWithoutExtension(txtShapefile.Text);
                     _shapeFilePath = openFileDialog.FileName;
+
                     if(CheckforSupportingfiles(_shapeFilePath))
-                    {
+                    {   
+                        DotSpatial.Projections.ProjectionInfo GCSNAD83prj = DotSpatial.Projections.KnownCoordinateSystems.Geographic.NorthAmerica.NorthAmericanDatum1983;
+                        bool ProjectionOK = false;
+                        //get projection info from the ESRI shape file's .prj file.
+                        FileInfo fInfo = new FileInfo(_shapeFilePath);
+                        string strDir = fInfo.DirectoryName;
+                        string fName = fInfo.Name.Substring(0,fInfo.Name.Length - fInfo.Extension.Length);
+                        string prjfile = Path.Combine(strDir, fName + ".prj");
+                        string GCSNAD83ShapeFilePath = Path.Combine(strDir, fName + "_GCSNAD83 "+ ".shp");
+
+                        if (File.Exists(prjfile))    //check for acceptable projection (GCS/NAD83)
+                        {
+                            //sets the ESRI PCS to the ESRI .prj file
+                            ProjectionInfo pESRI = new ProjectionInfo();
+                            StreamReader re = File.OpenText(prjfile);
+                            pESRI.ParseEsriString(re.ReadLine());
+                            if (pESRI.Equals(GCSNAD83prj)) ProjectionOK = true;  //MCB will need to add more code for other regions
+                        }
+                        if (!ProjectionOK)  //Then attempt to reporject it to GCS/NAD83
+                        {   
+                            MessageBox.Show("BenMAP-CE will attempt to reproject to GCS/NAD83.","WARNING: The shape file is not in the correct projection: GCS NAD83");
+                            string originalShapeFilePath = _shapeFilePath;
+                            _shapeFilePath = GCSNAD83ShapeFilePath;
+                            if (File.Exists(_shapeFilePath)) CommonClass.DeleteShapeFileName(_shapeFilePath);
+                            IFeatureSet fs = FeatureSet.Open(originalShapeFilePath);
+                            fs.SaveAs(_shapeFilePath, true);
+                        }
+                        // Add the grid 
                         AddLayerAndGetAtt(_shapeFilePath);
                         lblCol.Text = _shapeCol.ToString();
                         lblRow.Text = _shapeRow.ToString();
-                        GetMetadata();
+                        GetMetadata();                       
                     }
                     
                 }
@@ -246,6 +275,93 @@ namespace BenMAP
                 Logger.LogError(ex.Message);
             }
         }
+        //private void btnProjection_Click(object sender, EventArgs e)
+        //{
+        //    //declares a new ProjectionInfo for the startind and ending coordinate systems
+        //    //sets the start GCS to WGS_1984
+        //    //ProjectionInfo pStart = KnownCoordinateSystems.Geographic.World.WGS1984;
+        //    //ProjectionInfo pESRIEnd = new ProjectionInfo();
+        //    ProjectionInfo pESRIStart = new ProjectionInfo();
+        //    ProjectionInfo pEnd = DotSpatial.Projections.KnownCoordinateSystems.Geographic.NorthAmerica.NorthAmericanDatum1983;
+        //    //declares the point(s) that will be reprojected
+        //    double[] xy = new double[2];
+        //    double[] z = new double[1];
+        //    //initiates a StreamReader to read the ESRI .prj file
+        //    StreamReader re = File.OpenText("C:\\Program Files\\ArcGIS\\Coordinate Systems\\Projected Coordinate Systems\\UTM\\WGS 1984\\WGS 1984 UTM Zone 1N.prj");
+        //    //sets the ending PCS to the ESRI .prj file
+        //    pESRIEnd.ReadEsriString(re.ReadLine());
+        //    //calls the reprojection function
+        //    Reproject.ReprojectPoints(xy, z, pStart, pESRIEnd, 0, 1);
+        //    MessageBox.Show("Points have been projected successfully.");
+        //}
+        //private void ChangeShapeFileProjection(object sender, EventArgs e)
+        //{
+        //    try
+        //    {
+        //        if (mainMap.GetAllLayers().Count == 0) return;
+        //        if (CommonClass.MainSetup.SetupName.ToLower() == "china")
+        //        {
+        //            if (mainMap.Projection != DotSpatial.Projections.KnownCoordinateSystems.Projected.Asia.AsiaLambertConformalConic)
+        //            {
+        //                mainMap.Projection = DotSpatial.Projections.KnownCoordinateSystems.Projected.Asia.AsiaLambertConformalConic;
+        //                foreach (FeatureLayer layer in mainMap.GetAllLayers())
+        //                {
+        //                    layer.Projection = DotSpatial.Projections.KnownCoordinateSystems.Geographic.World.WGS1984;
+        //                    layer.Reproject(mainMap.Projection);
+        //                }
+        //                tsbChangeProjection.Text = "change projection to GCS/NAD 83";
+        //            }
+        //            else
+        //            {
+        //                mainMap.Projection = DotSpatial.Projections.KnownCoordinateSystems.Geographic.World.WGS1984;
+        //                foreach (FeatureLayer layer in mainMap.GetAllLayers())
+        //                {
+        //                    layer.Projection = DotSpatial.Projections.KnownCoordinateSystems.Projected.Asia.AsiaLambertConformalConic;
+        //                    layer.Reproject(mainMap.Projection);
+        //                }
+        //                tsbChangeProjection.Text = "change projection to Albers";
+        //            }
+
+
+        //            mainMap.Projection.CopyProperties(mainMap.Projection);
+
+        //            //mainMap.ViewExtents = mainMap.GetAllLayers()[0].Extent;
+        //            _SavedExtent = mainMap.GetAllLayers()[0].Extent;
+        //            mainMap.ViewExtents = _SavedExtent;
+        //            return;
+        //        }
+
+
+        //        if (mainMap.Projection != DotSpatial.Projections.KnownCoordinateSystems.Projected.NorthAmerica.USAContiguousLambertConformalConic)
+        //        {
+        //            mainMap.Projection = DotSpatial.Projections.KnownCoordinateSystems.Projected.NorthAmerica.USAContiguousLambertConformalConic;
+        //            foreach (FeatureLayer layer in mainMap.GetAllLayers())
+        //            {
+        //                layer.Projection = DotSpatial.Projections.KnownCoordinateSystems.Geographic.World.WGS1984;
+        //                layer.Reproject(mainMap.Projection);
+        //            }
+        //            tsbChangeProjection.Text = "change projection to GCS/NAD 83";
+        //        }
+        //        else
+        //        {
+        //            mainMap.Projection = DotSpatial.Projections.KnownCoordinateSystems.Geographic.World.WGS1984;
+        //            foreach (FeatureLayer layer in mainMap.GetAllLayers())
+        //            {
+        //                layer.Projection = DotSpatial.Projections.KnownCoordinateSystems.Projected.NorthAmerica.USAContiguousLambertConformalConic;
+        //                layer.Reproject(mainMap.Projection);
+        //            }
+        //            tsbChangeProjection.Text = "change projection to Albers";
+        //        }
+
+        //        mainMap.Projection.CopyProperties(mainMap.Projection);
+        //        _SavedExtent = mainMap.GetAllLayers()[0].Extent;
+        //        mainMap.ViewExtents = _SavedExtent;
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //    }
+        //}
         private void GetMetadata()
         {
             _metadataObj = new MetadataClassObj();
