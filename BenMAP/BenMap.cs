@@ -2666,8 +2666,7 @@ namespace BenMAP
                         try
                         {
                             // mainMap.Layers.Add(benMAPLine.ShapeFile);
-                            polLayer = (MapPolygonLayer)bcgMapGroup.Layers.Add(benMAPLine.ShapeFile);
-                            
+                            polLayer = (MapPolygonLayer)bcgMapGroup.Layers.Add(benMAPLine.ShapeFile);                           
                         }
                         catch (Exception ex)
                         {
@@ -2734,7 +2733,9 @@ namespace BenMAP
 
                 try
                 {
-                    polLayer.Symbology = CreateBCGPolyScheme(ref polLayer, 6, isBase);
+                    PolygonScheme myNewScheme = CreateBCGPolyScheme(ref polLayer, 6, isBase);
+                    polLayer.Symbology = myNewScheme;
+                    polLayer.ApplyScheme(myNewScheme);
 
                     //set the layer to have its symbology expanded by default //-MCB
                     polLayer.Symbology.IsExpanded = true;
@@ -2826,19 +2827,43 @@ namespace BenMAP
             myScheme1.EditorSettings.NumBreaks = CategoryNumber;
             myScheme1.EditorSettings.FieldName = _columnName;
             myScheme1.EditorSettings.UseGradient = false;
-
+            myScheme1.ClearCategories();
             myScheme1.CreateCategories(polLayer.DataSet.DataTable);
 
             // Set the category colors equal to the selected color ramp
+           
             for (int catNum = 0; catNum < CategoryNumber; catNum++)
-            {
-                myScheme1.Categories[catNum].Symbolizer.SetOutline(Color.Transparent, 0); //make the outlines invisble
-                myScheme1.Categories[catNum].SetColor(colorBlend.ColorArray[catNum]);
+            { 
+                //Create the simple pattern with opacity
+                SimplePattern sp = new SimplePattern(colorBlend.ColorArray[catNum]);
+                //SimplePattern sp = new SimplePattern(Color.Purple);
+                sp.Opacity = 0.8F;  //80% opaque = 20% transparent
+                PolygonSymbolizer poly = new PolygonSymbolizer(colorBlend.ColorArray[catNum], Color.Transparent, 0);
+                //PolygonSymbolizer poly = new PolygonSymbolizer(Color.Red, Color.Transparent, 0);
+                poly.Patterns.Clear();
+                poly.Patterns.Add(sp);
+
+                myScheme1.Categories[catNum].Symbolizer = poly;
+                //myScheme1.Categories[catNum].SetColor(colorBlend.ColorArray[catNum]);
+
+                //make a copy of the category and add it to the color ramp:  -MCB - needed to get the property editor to work correctly
+                PolygonCategory tempCat = new PolygonCategory();
+                tempCat = (PolygonCategory)myScheme1.Categories[catNum].Clone();
+                myScheme1.AddCategory(tempCat);
+                //myScheme1.Categories[catNum + 6] = tempCat;
+                //myScheme1.Categories[catNum].Symbolizer.SetOutline(Color.Transparent, 0); //make the outlines invisble
+                //myScheme1.Categories[catNum].SetColor(colorBlend.ColorArray[catNum]);
             }
+
+            for (int catNum = 0; catNum < (CategoryNumber); catNum++)
+            {
+                myScheme1.RemoveCategory(myScheme1.Categories[0]);
+            }
+
             myScheme1.AppearsInLegend = false; //if true then legend text displayed
             myScheme1.IsExpanded = true;
             myScheme1.LegendText = _columnName;
-
+            
             return myScheme1;
         }
         private PolygonScheme CreateResultPolyScheme(ref MapPolygonLayer polLayer, int CategoryNumber = 6, string isBase = "R")
@@ -3033,119 +3058,119 @@ namespace BenMAP
         }
         private void RenderMainMap(bool isCone, string isBase)
         {
-            double min = _dMinValue;
-            double max = _dMaxValue;
-            colorBlend.SetValueRange(min, max, true);
-            colorBlend._minPlotValue = _dMinValue;
-            colorBlend._maxPlotValue = _dMaxValue;
+            //double min = _dMinValue;
+            //double max = _dMaxValue;
+            //colorBlend.SetValueRange(min, max, true);
+            //colorBlend._minPlotValue = _dMinValue;
+            //colorBlend._maxPlotValue = _dMaxValue;
             tbMapTitle.Text = _CurrentMapTitle;
             
             ResetGisMap(null, null, isBase);
             _MapAlreadyDisplayed = true;   //-MCB lets other parts of the program know that the map is present.
             return;
-            //Color[] colors = new Color[] { Color.Blue, Color.FromArgb(0, 255, 255), Color.FromArgb(0, 255, 0), Color.Yellow, Color.Red, Color.FromArgb(255, 0, 255) };
+            ////Color[] colors = new Color[] { Color.Blue, Color.FromArgb(0, 255, 255), Color.FromArgb(0, 255, 0), Color.Yellow, Color.Red, Color.FromArgb(255, 0, 255) };
            
-            //Replace the color ramp -MCB
-            Color[] colors = GetColorRamp("pale_yellow_blue", 6);
+            ////Replace the color ramp -MCB
+            //Color[] colors = GetColorRamp("pale_yellow_blue", 6);
             
-            colorBlend.SetValueRange(min, max, true);
-            _blendColors = colorBlend.ColorArray;
-            _dMinValue = colorBlend.MinValue;
-            _dMaxValue = colorBlend.MaxValue;
+            //colorBlend.SetValueRange(min, max, true);
+            //_blendColors = colorBlend.ColorArray;
+            //_dMinValue = colorBlend.MinValue;
+            //_dMaxValue = colorBlend.MaxValue;
 
-            PolygonCategoryCollection pcc = new PolygonCategoryCollection();
-            int iColor = 0;
-            PolygonScheme myScheme1 = new PolygonScheme();
-            float fl = (float)0.1;
-            //Replaced originial rainbow schme with current scheme
-            // myScheme1.EditorSettings.StartColor = Color.Blue;
-            // myScheme1.EditorSettings.EndColor = Color.FromArgb(255, 0, 255);
-            myScheme1.EditorSettings.StartColor = colors[0];
-            myScheme1.EditorSettings.EndColor = colors[5];
+            //PolygonCategoryCollection pcc = new PolygonCategoryCollection();
+            //int iColor = 0;
+            //PolygonScheme myScheme1 = new PolygonScheme();
+            //float fl = (float)0.1;
+            ////Replaced originial rainbow schme with current scheme
+            //// myScheme1.EditorSettings.StartColor = Color.Blue;
+            //// myScheme1.EditorSettings.EndColor = Color.FromArgb(255, 0, 255);
+            //myScheme1.EditorSettings.StartColor = colors[0];
+            //myScheme1.EditorSettings.EndColor = colors[5];
  
-            float fColor = (float)0.2;
-            Color ctemp = new Color();
-            if (isCone)
-            {
-                myScheme1.EditorSettings.ClassificationType = ClassificationType.Quantities;
-                myScheme1.EditorSettings.IntervalMethod = IntervalMethod.NaturalBreaks;
-                myScheme1.EditorSettings.IntervalSnapMethod = IntervalSnapMethod.Rounding;
-                myScheme1.EditorSettings.IntervalRoundingDigits = 1;
-                myScheme1.EditorSettings.NumBreaks = 6;
-                myScheme1.EditorSettings.FieldName = _columnName; myScheme1.EditorSettings.UseGradient = false;
-                myScheme1.CreateCategories((_CurrentIMapLayer as IFeatureLayer).DataSet.DataTable);
-                if (myScheme1.Categories.Count == 1)
-                {
+            //float fColor = (float)0.2;
+            //Color ctemp = new Color();
+            //if (isCone)
+            //{
+            //    myScheme1.EditorSettings.ClassificationType = ClassificationType.Quantities;
+            //    myScheme1.EditorSettings.IntervalMethod = IntervalMethod.NaturalBreaks;
+            //    myScheme1.EditorSettings.IntervalSnapMethod = IntervalSnapMethod.Rounding;
+            //    myScheme1.EditorSettings.IntervalRoundingDigits = 1;
+            //    myScheme1.EditorSettings.NumBreaks = 6;
+            //    myScheme1.EditorSettings.FieldName = _columnName; myScheme1.EditorSettings.UseGradient = false;
+            //    myScheme1.CreateCategories((_CurrentIMapLayer as IFeatureLayer).DataSet.DataTable);
+            //    if (myScheme1.Categories.Count == 1)
+            //    {
 
-                    PolygonSymbolizer ps = new PolygonSymbolizer();
-                    ps.SetFillColor(colors[iColor]);
-                    ps.SetOutline(Color.Transparent, 0);
+            //        PolygonSymbolizer ps = new PolygonSymbolizer();
+            //        ps.SetFillColor(colors[iColor]);
+            //        ps.SetOutline(Color.Transparent, 0);
 
-                    (_CurrentIMapLayer as IFeatureLayer).Symbolizer = ps;
-                    return;
+            //        (_CurrentIMapLayer as IFeatureLayer).Symbolizer = ps;
+            //        return;
 
-                }
-                else
-                {
-                    foreach (PolygonCategory pc in myScheme1.Categories)
-                    {
-                        PolygonCategory pcin = pc;
-                        double dnow = Math.Round(_dMinValue + ((_dMaxValue - _dMinValue) / 6.0000) * Convert.ToDouble(iColor), 3);
-                        double dnowUp = Math.Round(_dMinValue + ((_dMaxValue - _dMinValue) / 6.0000) * Convert.ToDouble(iColor + 1), 3);
+            //    }
+            //    else
+            //    {
+            //        foreach (PolygonCategory pc in myScheme1.Categories)
+            //        {
+            //            PolygonCategory pcin = pc;
+            //            double dnow = Math.Round(_dMinValue + ((_dMaxValue - _dMinValue) / 6.0000) * Convert.ToDouble(iColor), 3);
+            //            double dnowUp = Math.Round(_dMinValue + ((_dMaxValue - _dMinValue) / 6.0000) * Convert.ToDouble(iColor + 1), 3);
 
-                        pcin.FilterExpression = string.Format("[{0}]>=" + dnow + " and [{0}] <" + dnowUp, _columnName);
-                        pcin.LegendText = string.Format(">=" + dnow.ToString("E2") + " and  <" + dnowUp.ToString("E2"), _columnName);
-                        if (iColor == 0)
-                        {
-                            pcin.FilterExpression = string.Format(" [{0}] <" + dnowUp, _columnName);
-                            pcin.LegendText = string.Format("<" + dnowUp.ToString("E2"), _columnName);
-                        }
-                        if (iColor == myScheme1.Categories.Count - 1)
-                        {
-                            pcin.FilterExpression = string.Format(" [{0}] >=" + dnow, _columnName);
-                            pcin.LegendText = string.Format("<" + dnowUp.ToString("E2"), _columnName);
+            //            pcin.FilterExpression = string.Format("[{0}]>=" + dnow + " and [{0}] <" + dnowUp, _columnName);
+            //            pcin.LegendText = string.Format(">=" + dnow.ToString("E2") + " and  <" + dnowUp.ToString("E2"), _columnName);
+            //            if (iColor == 0)
+            //            {
+            //                pcin.FilterExpression = string.Format(" [{0}] <" + dnowUp, _columnName);
+            //                pcin.LegendText = string.Format("<" + dnowUp.ToString("E2"), _columnName);
+            //            }
+            //            if (iColor == myScheme1.Categories.Count - 1)
+            //            {
+            //                pcin.FilterExpression = string.Format(" [{0}] >=" + dnow, _columnName);
+            //                pcin.LegendText = string.Format("<" + dnowUp.ToString("E2"), _columnName);
 
-                        }
+            //            }
 
 
-                        pcin.Symbolizer.SetOutline(Color.Transparent, 0);
-                        ctemp = pcin.Symbolizer.GetFillColor();
-                        pcin.Symbolizer.SetFillColor(ctemp.ToTransparent(fColor));
-                        ctemp.ToTransparent(fColor);
-                        pcin.Symbolizer.SetFillColor(colors[iColor]);
-                        pcc.Add(pcin);
-                        iColor++;
-                    }
-                }
-                myScheme1.ClearCategories();  //-MCB
-                foreach (PolygonCategory pct in pcc)
-                {
-                    myScheme1.Categories.Add(pct);
-                }
-                (_CurrentIMapLayer as IFeatureLayer).Symbology = myScheme1;
-            }
-            else  //Results?
-            {
-                pcc = new PolygonCategoryCollection();
-                myScheme1.EditorSettings.ClassificationType = ClassificationType.UniqueValues;
-                myScheme1.EditorSettings.FieldName = _columnName; myScheme1.EditorSettings.UseGradient = false;
+            //            pcin.Symbolizer.SetOutline(Color.Transparent, 0);
+            //            ctemp = pcin.Symbolizer.GetFillColor();
+            //            pcin.Symbolizer.SetFillColor(ctemp.ToTransparent(fColor));
+            //            ctemp.ToTransparent(fColor);
+            //            pcin.Symbolizer.SetFillColor(colors[iColor]);
+            //            pcc.Add(pcin);
+            //            iColor++;
+            //        }
+            //    }
+            //    myScheme1.ClearCategories();  //-MCB
+            //    foreach (PolygonCategory pct in pcc)
+            //    {
+            //        myScheme1.Categories.Add(pct);
+            //    }
+            //    (_CurrentIMapLayer as IFeatureLayer).Symbology = myScheme1;
+            //}
+            //else  //Results?
+            //{
+            //    pcc = new PolygonCategoryCollection();
+            //    myScheme1.EditorSettings.ClassificationType = ClassificationType.UniqueValues;
+            //    myScheme1.EditorSettings.FieldName = _columnName; myScheme1.EditorSettings.UseGradient = false;
 
-                myScheme1.CreateCategories((_CurrentIMapLayer as IFeatureLayer).DataSet.DataTable);
-                foreach (PolygonCategory pc in myScheme1.Categories)
-                {
-                    PolygonCategory pcin = pc;
-                    pcin.Symbolizer.SetOutline(Color.Transparent, 0);
-                    pcc.Add(pcin);
-                }
-                myScheme1.ClearCategories();
-                foreach (PolygonCategory pct in pcc)
-                {
-                    myScheme1.Categories.Add(pct);
-                }
-                if (myScheme1.LegendText == "Pooled Inci") myScheme1.LegendText = "Pooled Incidence";
-                if (myScheme1.LegendText == "Pooled Valu") myScheme1.LegendText = "Pooled Valuation";
-                (_CurrentIMapLayer as IFeatureLayer).Symbology = myScheme1;
-            }
+            //    myScheme1.CreateCategories((_CurrentIMapLayer as IFeatureLayer).DataSet.DataTable);
+            //    foreach (PolygonCategory pc in myScheme1.Categories)
+            //    {
+            //        PolygonCategory pcin = pc;
+            //        pcin.Symbolizer.SetOutline(Color.Transparent, 0);
+            //        pcc.Add(pcin);
+            //    }
+            //    myScheme1.ClearCategories();
+            //    foreach (PolygonCategory pct in pcc)
+            //    {
+            //        myScheme1.Categories.Add(pct);
+            //    }
+            //    if (myScheme1.LegendText == "Pooled Inci") myScheme1.LegendText = "Pooled Incidence";
+            //    if (myScheme1.LegendText == "Pooled Valu") myScheme1.LegendText = "Pooled Valuation";
+            //    (_CurrentIMapLayer as IFeatureLayer).Symbology = myScheme1;
+            //}
 
         }
         private void addRegionLayerToMainMap()
