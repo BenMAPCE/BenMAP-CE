@@ -275,5 +275,17 @@ namespace BenMAP
             }
 
         }
+
+        private void cboMonitorLibraryYear_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cboMonitorLibraryYear.SelectedIndex >= 0)
+            {
+                btnNext.Enabled = true;
+            }
+            else
+            {
+                btnNext.Enabled = false;
+            }
+        }
     }
 }

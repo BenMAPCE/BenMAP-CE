@@ -28,6 +28,7 @@ namespace BenMAP
             this.label2 = new System.Windows.Forms.Label();
             this.lblMonitorDataSet = new System.Windows.Forms.Label();
             this.tbgTextFile = new System.Windows.Forms.TabPage();
+            this.btnValidate = new System.Windows.Forms.Button();
             this.btnBrowse = new System.Windows.Forms.Button();
             this.txtMonitorDataFile = new System.Windows.Forms.TextBox();
             this.lblMonitorDataFile = new System.Windows.Forms.Label();
@@ -35,7 +36,6 @@ namespace BenMAP
             this.btnNext = new System.Windows.Forms.Button();
             this.btnAdvanced = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
-            this.btnValidate = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tbpLibrary.SuspendLayout();
@@ -123,6 +123,7 @@ namespace BenMAP
             this.cboMonitorLibraryYear.Name = "cboMonitorLibraryYear";
             this.cboMonitorLibraryYear.Size = new System.Drawing.Size(221, 22);
             this.cboMonitorLibraryYear.TabIndex = 3;
+            this.cboMonitorLibraryYear.SelectedIndexChanged += new System.EventHandler(this.cboMonitorLibraryYear_SelectedIndexChanged);
             // 
             // cboMonitorDataSet
             // 
@@ -165,6 +166,17 @@ namespace BenMAP
             this.tbgTextFile.TabIndex = 1;
             this.tbgTextFile.Text = "Text File";
             this.tbgTextFile.UseVisualStyleBackColor = true;
+            // 
+            // btnValidate
+            // 
+            this.btnValidate.Enabled = false;
+            this.btnValidate.Location = new System.Drawing.Point(19, 108);
+            this.btnValidate.Name = "btnValidate";
+            this.btnValidate.Size = new System.Drawing.Size(75, 23);
+            this.btnValidate.TabIndex = 3;
+            this.btnValidate.Text = "Validate";
+            this.btnValidate.UseVisualStyleBackColor = true;
+            this.btnValidate.Click += new System.EventHandler(this.btnValidate_Click);
             // 
             // btnBrowse
             // 
@@ -234,17 +246,6 @@ namespace BenMAP
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
-            // 
-            // btnValidate
-            // 
-            this.btnValidate.Enabled = false;
-            this.btnValidate.Location = new System.Drawing.Point(19, 108);
-            this.btnValidate.Name = "btnValidate";
-            this.btnValidate.Size = new System.Drawing.Size(75, 23);
-            this.btnValidate.TabIndex = 3;
-            this.btnValidate.Text = "Validate";
-            this.btnValidate.UseVisualStyleBackColor = true;
-            this.btnValidate.Click += new System.EventHandler(this.btnValidate_Click);
             // 
             // MonitorRollback
             // 

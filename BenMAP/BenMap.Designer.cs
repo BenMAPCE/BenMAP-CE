@@ -2199,7 +2199,7 @@ namespace BenMAP
             this.legend1.DocumentRectangle = new System.Drawing.Rectangle(0, 0, 168, 456);
             this.legend1.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.legend1.HorizontalScrollEnabled = true;
-            this.legend1.Indentation = 3;
+            this.legend1.Indentation = 8;
             this.legend1.IsInitialized = false;
             this.legend1.Location = new System.Drawing.Point(31, 0);
             this.legend1.MinimumSize = new System.Drawing.Size(5, 6);
