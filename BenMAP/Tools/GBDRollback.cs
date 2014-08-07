@@ -1180,13 +1180,29 @@ namespace BenMAP
             xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeLeft].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
             xlRange.Borders.Color = Color.Black;
 
+            #endregion
+
+            #region charts
+
             //summary chart
             Microsoft.Office.Interop.Excel.ChartObject xlChartObject = (Microsoft.Office.Interop.Excel.ChartObject)xlSheet.ChartObjects(1);
             Microsoft.Office.Interop.Excel.Chart xlChart = (Microsoft.Office.Interop.Excel.Chart)xlChartObject.Chart;
             Microsoft.Office.Interop.Excel.Series xlSeries = (Microsoft.Office.Interop.Excel.Series)xlChart.SeriesCollection(1);
             xlSeries.Values = xlSheet2.Range["C4:C" + (nextRow - 1).ToString()];
             xlSeries.XValues = xlSheet2.Range["A4:A" + (nextRow - 1).ToString()];
-            //xlChart.SetSourceData(xlSheet2.Range["A4:C" + (nextRow - 1).ToString()], Microsoft.Office.Interop.Excel.XlRowCol.xlColumns);
+
+            //avoided deaths chart sheet
+            xlChart = (Microsoft.Office.Interop.Excel.Chart)xlBook.Charts[1];
+            xlSeries = (Microsoft.Office.Interop.Excel.Series)xlChart.SeriesCollection(1);
+            xlSeries.Values = xlSheet2.Range["C4:C" + (nextRow - 1).ToString()];
+            xlSeries.XValues = xlSheet2.Range["A4:A" + (nextRow - 1).ToString()];
+
+            //avoided deaths percent pop chart sheet
+            xlChart = (Microsoft.Office.Interop.Excel.Chart)xlBook.Charts[2];
+            xlSeries = (Microsoft.Office.Interop.Excel.Series)xlChart.SeriesCollection(1);
+            xlSeries.Values = xlSheet2.Range["D4:D" + (nextRow - 1).ToString()];
+            xlSeries.XValues = xlSheet2.Range["A4:A" + (nextRow - 1).ToString()];
+
 
             #endregion
 
