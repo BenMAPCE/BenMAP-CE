@@ -3279,6 +3279,7 @@ namespace BenMAP
                         }
                     }
 
+                    if (CommonClass.RBenMAPGrid.GridDefinitionName == "State") CommonClass.RBenMAPGrid.GridDefinitionName = "States";
                     ReferenceLayer1.LegendText = CommonClass.RBenMAPGrid.GridDefinitionName;
                     Color cRegion = Color.Transparent;
                     PolygonSymbolizer TransparentRegion = new PolygonSymbolizer(cRegion);
@@ -3289,7 +3290,7 @@ namespace BenMAP
                     ReferenceLayer1.IsVisible = true;
                 }
                 
-                if (CommonClass.MainSetup.SetupName.ToLower() != "china")  // If layer in U.S. then add State and County layers too if they don't exist on the legend already
+                if (CommonClass.MainSetup.SetupName.ToLower() != "china")  // If layer in U.S. then add States and County layers too if they don't exist on the legend already
                 {
                     bool CountiesLayFound = false;
                     bool StatesLayFound = false;
