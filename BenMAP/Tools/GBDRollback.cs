@@ -1183,7 +1183,10 @@ namespace BenMAP
             //summary chart
             Microsoft.Office.Interop.Excel.ChartObject xlChartObject = (Microsoft.Office.Interop.Excel.ChartObject)xlSheet.ChartObjects(1);
             Microsoft.Office.Interop.Excel.Chart xlChart = (Microsoft.Office.Interop.Excel.Chart)xlChartObject.Chart;
-            xlChart.SetSourceData(xlSheet2.Range["A4:C" + (nextRow - 1).ToString()], Microsoft.Office.Interop.Excel.XlRowCol.xlColumns);
+            Microsoft.Office.Interop.Excel.Series xlSeries = (Microsoft.Office.Interop.Excel.Series)xlChart.SeriesCollection(1);
+            xlSeries.Values = xlSheet2.Range["C4:C" + (nextRow - 1).ToString()];
+            xlSeries.XValues = xlSheet2.Range["A4:A" + (nextRow - 1).ToString()];
+            //xlChart.SetSourceData(xlSheet2.Range["A4:C" + (nextRow - 1).ToString()], Microsoft.Office.Interop.Excel.XlRowCol.xlColumns);
 
             #endregion
 
