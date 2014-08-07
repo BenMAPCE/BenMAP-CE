@@ -59,6 +59,7 @@ namespace BenMAP
             LoadTreeView();
             LoadMap();
             LoadColorPalette();
+            LoadStandards();
 
         }
 
@@ -67,6 +68,8 @@ namespace BenMAP
         {
             Close();           
         }
+
+
 
         private void LoadColorPalette()
         { 
@@ -108,6 +111,17 @@ namespace BenMAP
                 impl.Symbolizer.OutlineSymbolizer.SetFillColor(Color.Black);
                 mapGBD.Layers.Add(impl);
             }
+        }
+
+        private void LoadStandards()
+        {
+            System.Data.DataSet ds = GBDRollbackDataSource.GetStandardList();
+            System.Data.DataTable dtStandards = ds.Tables[0].Copy();//new DataTable();
+
+            //load standard drop down
+            cboStandard.DisplayMember = "STANDARD_NAME";
+            cboStandard.ValueMember = "STD_ID";
+            cboStandard.DataSource = dtStandards;
         }
 
         private void LoadCountries()
@@ -452,7 +466,8 @@ namespace BenMAP
                     break;
                 case 2: //standard
                     rollback.Type = GBDRollbackItem.RollbackType.Standard;
-                    rollback.Standard = (GBDRollbackItem.StandardType)cboStandard.SelectedIndex;
+                    rollback.StandardId = (int)cboStandard.SelectedValue;
+                    rollback.Standard = GBDRollbackDataSource.GetStandardValue(rollback.StandardId);
                     break;
             }
             rollback.Year = YEAR;
@@ -829,7 +844,10 @@ namespace BenMAP
                 {
                     dtConcEntireRollback = dtConcCountry.Clone();
                     dtConcEntireRollback.Columns.Add("CONCENTRATION_ADJ", dtConcCountry.Columns["CONCENTRATION"].DataType);
-                    dtConcEntireRollback.Columns.Add("CONCENTRATION_ADJ_BACK", dtConcCountry.Columns["CONCENTRATION"].DataType);
+                    if (rollback.Type != GBDRollbackItem.RollbackType.Standard)
+                    {
+                        dtConcEntireRollback.Columns.Add("CONCENTRATION_ADJ_BACK", dtConcCountry.Columns["CONCENTRATION"].DataType);
+                    }
                     dtConcEntireRollback.Columns.Add("CONCENTRATION_FINAL", dtConcCountry.Columns["CONCENTRATION"].DataType);
                     dtConcEntireRollback.Columns.Add("CONCENTRATION_DELTA", dtConcCountry.Columns["CONCENTRATION"].DataType);
                     dtConcEntireRollback.Columns.Add("AIR_QUALITY_DELTA", dtConcCountry.Columns["CONCENTRATION"].DataType);
@@ -920,11 +938,8 @@ namespace BenMAP
 
         }
 
-        private void DoRollbackToStandard(GBDRollbackItem.StandardType standardType)
+        private void DoRollbackToStandard(double standard)
         {
-
-            double standard = 10;
-
             //rollback to standard
             dtConcCountry.Columns.Add("CONCENTRATION_ADJ", dtConcCountry.Columns["CONCENTRATION"].DataType, standard.ToString());
 

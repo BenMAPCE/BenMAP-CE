@@ -36,6 +36,47 @@ namespace BenMAP
             }
         }
 
+        public static DataSet GetStandardList()
+        {
+            ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+            string commandText =
+                "SELECT a.STD_ID, a.POLLUTANT, a.UNITS, a.EXPOSURE_DURATION, a.SAMP_PRD_DAYS, a.STD_GROUP, a.CONC_LIMIT, " +
+                "a.STD_GROUP || ' (' || a.EXPOSURE_DURATION || ')' as STANDARD_NAME " +
+                "FROM STANDARDS a " +
+                "WHERE a.POLLUTANT = 'PM2.5' " +
+                "ORDER BY a.STD_GROUP, a.EXPOSURE_DURATION";
+
+            DataSet ds = fb.ExecuteDataset(GBDRollbackDataSource.Connection, CommandType.Text, commandText);
+            return ds;
+        }
+
+        public static double GetStandardValue(int standardId)
+        {
+            double standard = 0;
+
+            ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+            string commandText =
+                "select conc_limit " +
+                "from standards " +
+                "where std_id = " + standardId;
+
+            DataSet ds = fb.ExecuteDataset(GBDRollbackDataSource.Connection, CommandType.Text, commandText);
+
+            if (ds != null)
+            {
+                if (ds.Tables.Count > 0)
+                {
+                    if (ds.Tables[0].Rows[0]["conc_limit"] != DBNull.Value)
+                    {
+                        string val = ds.Tables[0].Rows[0]["conc_limit"].ToString();
+                        Double.TryParse(val, out standard);
+                    }
+                }
+            }
+
+            return standard;
+        }
+
         public static DataSet GetRegionCountryList(int year)
         {
             ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
@@ -51,6 +92,8 @@ namespace BenMAP
             DataSet ds = fb.ExecuteDataset(GBDRollbackDataSource.Connection, CommandType.Text, commandText);
             return ds;
         }
+
+
 
         public static double GetIncidenceRate(string countryid)
         {
