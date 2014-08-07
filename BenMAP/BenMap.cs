@@ -326,14 +326,6 @@ namespace BenMAP
             TopLayer = FindTopVisibleLayer(IgnoreAdminMapGroup);
             if (TopLayer != null & TopLayer is FeatureLayer)  //Change the map title depending on the layer legendtext and the map group that it is in. 
             { 
-                //string ParentText = "";
-                //string NewMapText = "";
-                
-                //string LayerText = TopLayer.LegendText;
-                //string[] TopArray = new string[] { regionGroupLegendText, "Pollutants", "Results" };
-                //string[] ResultsArray = new string[] { };
-                //IEnumerable<string> TopMGs = (IEnumerable<string>)TopArray;
-                //List<string> TopLevelMGs = new List<string>(TopMGs);
                //Find the Parent, grandparent, etc. nodes of the layer of interest and based on identity of parent, grandparent or greate grandparent, modify the title
                 MapGroup ParentMG = null;
                 MapGroup GrandParentMG = null;
@@ -3259,27 +3251,6 @@ namespace BenMAP
                  MapGroup RegionMapGroup = AddMapGroup(regionGroupLegendText, "Map Layers", false, false);
                 RegionMapGroup.IsExpanded = false;
                
-                //MapGroup RegionMapGroup = new MapGroup();
-                //RegionMapGroup.LegendText = _regionGroupLegendText;
-                
-                
-                ////if it exists already then set it to the group on the legend
-                //foreach (IMapGroup mgrp in mainMap.GetAllGroups())
-                //{
-                //    if (mgrp.LegendText == _regionGroupLegendText)
-                //    {
-                //        RegionMapGroup = (MapGroup)mgrp;
-                //        break;
-                //    }
-                //}
-                ////if the region admin group doesn't exist on the legend already then add it
-                //if (!mainMap.GetAllGroups().Contains(RegionMapGroup))
-                //{   
-                //    mainMap.Layers.Add(RegionMapGroup);
-                //}
-                ////------------------------- 
-
-
                 //add the default region admin layer if it doen't exist already
                 bool DefaultRegionLayerFound = false;
                 foreach (ILayer Ilay in mainMap.GetAllLayers())
@@ -3354,7 +3325,7 @@ namespace BenMAP
                     //Add US States if it is not on the map yet -----------------------
                     foreach (ILayer Ilay in mainMap.GetAllLayers())
                     {
-                        if (Ilay.LegendText == "State")
+                        if (Ilay.LegendText == "States")
                         {
                             StatesLayFound = true;
                             break;
@@ -3366,7 +3337,7 @@ namespace BenMAP
                         {
                             MapPolygonLayer StateReferenceLayer = new MapPolygonLayer();
                             StateReferenceLayer = (MapPolygonLayer)RegionMapGroup.Layers.Add(USDataPath + "State_epa2" + ".shp");
-                            StateReferenceLayer.LegendText = "State";
+                            StateReferenceLayer.LegendText = "States";
                             PolygonSymbolizer StateRegionSym = new PolygonSymbolizer(Color.Transparent);
                             StateRegionSym.OutlineSymbolizer = new LineSymbolizer(Color.DarkBlue, 1);
                             StateReferenceLayer.Symbolizer = StateRegionSym;
