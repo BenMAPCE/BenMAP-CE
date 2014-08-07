@@ -466,6 +466,7 @@ namespace BenMAP
                     break;
                 case 2: //standard
                     rollback.Type = GBDRollbackItem.RollbackType.Standard;
+                    rollback.StandardName = cboStandard.GetItemText(cboStandard.SelectedItem);
                     rollback.StandardId = (int)cboStandard.SelectedValue;
                     rollback.Standard = GBDRollbackDataSource.GetStandardValue(rollback.StandardId);
                     break;
@@ -593,6 +594,8 @@ namespace BenMAP
         private string GetRollbackTypeSummary(GBDRollbackItem rollback)
         {
             string summary = String.Empty;
+            char micrograms = '\u00B5';
+            char super3 = '\u00B3';
 
             switch (rollback.Type)
             {
@@ -600,12 +603,10 @@ namespace BenMAP
                     summary = rollback.Percentage.ToString() + "% Rollback";
                     break;
                 case GBDRollbackItem.RollbackType.Incremental: //incremental
-                    char micrograms = '\u00B5';
-                    char super3 = '\u00B3';
                     summary = rollback.Increment.ToString() + micrograms.ToString() + "g/m" + super3.ToString() + " Rollback";
                     break;
                 case GBDRollbackItem.RollbackType.Standard:
-                    summary = "Rollback to " + rollback.Standard.ToString() + " Standard";
+                    summary = "Rollback to " + rollback.StandardName + " Standard (" + rollback.Standard.ToString() + micrograms.ToString() + "g/m" + super3.ToString() + ")";
                     break;
             }
 
@@ -1005,7 +1006,7 @@ namespace BenMAP
                     summary = rollback.Increment.ToString() + micrograms.ToString() + "g/m" + super3.ToString() + " Rollback";
                     break;
                 case GBDRollbackItem.RollbackType.Standard:
-                    summary = "Rollback to " + rollback.Standard.ToString() + " Standard";
+                    summary = "Rollback to " + rollback.StandardName + " Standard (" + rollback.Standard.ToString() + micrograms.ToString() + "g/m" + super3.ToString() + ")";
                     break;
             }
             xlSheet.Range["B7"].Value = summary;

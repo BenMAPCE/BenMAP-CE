@@ -17,6 +17,7 @@ namespace BenMAP
         private RollbackType type;
         private double percentage;
         private double increment;
+        private string standardName;
         private int standardId;
         private double standard;
         private double background;
@@ -81,6 +82,12 @@ namespace BenMAP
         {
             get { return standardId; }
             set { standardId = value; }
+        }
+
+        public string StandardName
+        {
+            get { return standardName; }
+            set { standardName = value; }
         }
 
         public double Background
