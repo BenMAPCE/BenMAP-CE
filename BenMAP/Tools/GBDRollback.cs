@@ -18,6 +18,7 @@ namespace BenMAP
     {
 
         private Dictionary<string, string> checkedCountries = new Dictionary<string, string>();
+        private List<Color> colorPalette = new List<Color>();
         private List<GBDRollbackItem> rollbacks = new List<GBDRollbackItem>();
         private System.Data.DataTable dtCountries;
         private Microsoft.Office.Interop.Excel.Application xlApp;
@@ -26,9 +27,13 @@ namespace BenMAP
         private const int POLLUTANT_ID = 1;
         private const double BACKGROUND = 5.8;
         private const int YEAR = 2010;
+        private const string FORMAT_DECIMAL_2_PLACES = "#,###.00";
 
         private System.Data.DataTable dtConcCountry = null;
         private System.Data.DataTable dtConcEntireRollback = null;
+
+        Dictionary<String,IPolygonCategory> selectedButNotSavedIPCs = new Dictionary<String,IPolygonCategory>();
+      
 
         public GBDRollback()
         {
@@ -48,9 +53,12 @@ namespace BenMAP
             cboRollbackType.SelectedIndex = 0;
             SetActiveOptionsPanel(0);
 
+            txtFilePath.Text = CommonClass.ResultFilePath + @"\GBD";
+
             LoadCountries();
             LoadTreeView();
             LoadMap();
+            LoadColorPalette();
 
         }
 
@@ -60,19 +68,45 @@ namespace BenMAP
             Close();           
         }
 
+        private void LoadColorPalette()
+        { 
+            
+            colorPalette.Add(Color.FromArgb(165,0,38));
+            colorPalette.Add(Color.FromArgb(215, 48, 39));
+            colorPalette.Add(Color.FromArgb(244, 109, 67));
+            colorPalette.Add(Color.FromArgb(253, 174, 97));
+            colorPalette.Add(Color.FromArgb(254, 224, 144));
+            colorPalette.Add(Color.FromArgb(255, 255, 191));
+            colorPalette.Add(Color.FromArgb(224, 243, 248));
+            colorPalette.Add(Color.FromArgb(171, 217, 233));
+            colorPalette.Add(Color.FromArgb(116, 173, 209));
+            colorPalette.Add(Color.FromArgb(69, 117, 180));
+            colorPalette.Add(Color.FromArgb(49, 54, 149));
+        
+        }
+
         private void LoadMap()
         {
             //new map layer
             string mapFile = AppDomain.CurrentDomain.BaseDirectory + @"\Data\Shapefiles\GBDRollback\gadm_worldsimplify.shp";
-
+            IMapPolygonLayer impl = null;
             if (File.Exists(mapFile))
             {
                 IFeatureSet fs = (FeatureSet)FeatureSet.Open(mapFile);
-                mapGBD.Layers.Add(fs);
-                IMapFeatureLayer[] mfl = mapGBD.GetFeatureLayers();
+                //mapGBD.Layers.Add(fs);
+                //IMapFeatureLayer[] mfl = mapGBD.GetFeatureLayers();
+                //IFeatureSet fs = (FeatureSet)FeatureSet.Open(mapFile);
+                //mapGBD.Layers.Add(fs);
+                //IMapFeatureLayer[] mfl = mapGBD.GetFeatureLayers();
                 //mfl[0].Symbolizer = new PolygonSymbolizer(Color.Chocolate);
                 //mfl[0].SelectionSymbolizer = new PolygonSymbolizer(Color.AliceBlue);
-          
+                impl = new MapPolygonLayer(FeatureSet.OpenFile(mapFile));
+                //impl.Reproject(_mapArgs.Map.Projection);
+                impl.LegendText = "Countries";
+                impl.Symbolizer.SetFillColor(Color.White);
+                impl.Symbolizer.SetOutlineWidth(1);
+                impl.Symbolizer.OutlineSymbolizer.SetFillColor(Color.Black);
+                mapGBD.Layers.Add(impl);
             }
         }
 
@@ -118,22 +152,43 @@ namespace BenMAP
             switch (cboRollbackType.SelectedIndex)
             {
                 case 0:
-                   
+                    gbOptionsIncremental.Visible = false;
+                    gbOptionsPercentage.Visible = true;
+                    gbOptionsStandard.Visible = false;
+                    
+                    pb_incremental.Visible = false;
+                    pb_percent.Visible = true;
+                    pb_standard.Visible = false;
                     break;
                 case 1:
                     gbOptionsIncremental.Visible = true;
                     gbOptionsPercentage.Visible = false;
                     gbOptionsStandard.Visible = false;
+                    
+                    pb_incremental.Visible = true;
+                    pb_percent.Visible = false;
+                    pb_standard.Visible = false;
+
                     break;                
                 case 2:
                     gbOptionsIncremental.Visible = false;
                     gbOptionsPercentage.Visible = false;
                     gbOptionsStandard.Visible = true;
+
+                    pb_incremental.Visible = false;
+                    pb_percent.Visible = false;
+                    pb_standard.Visible = true;
+
                     break;
                 default:
                     gbOptionsIncremental.Visible = false;
                     gbOptionsPercentage.Visible = false;
                     gbOptionsStandard.Visible = false;
+
+                    pb_incremental.Visible = false;;
+                    pb_percent.Visible = false;
+                    pb_standard.Visible = false;
+
                     break;
             }
 
@@ -202,11 +257,11 @@ namespace BenMAP
                 CheckChildNodes(e.Node);
                 CheckParentNode(e.Node);
             }
-
+            //Color.FromArgb(224, 243, 248)
             //if this is checked AND has no children)
-            //then, it is country and we add to list
+            //then, it is country and we add to listd
             IMapFeatureLayer[] mfl = mapGBD.GetFeatureLayers();
-            string filter =  "[ISO] = '" + e.Node.Name + "'";
+            string filter =  "[ID] = '" + e.Node.Name + "'";
             if ((e.Node.Checked) && (e.Node.Nodes.Count == 0))
             {
                 if (!checkedCountries.ContainsKey(e.Node.Name))
@@ -215,18 +270,33 @@ namespace BenMAP
                     //also select on map                
                     if (selectMapFeaturesOnNodeCheck)
                     {
-                        mfl[0].SelectByAttribute(filter, ModifySelectionMode.Append);
+
+                        //mfl[0].SelectByAttribute(filter, ModifySelectionMode.Append);
+                        //update map
+                        IPolygonScheme ips = (IPolygonScheme)mfl[0].Symbology;
+                        IPolygonCategory ipc = null;
+                        ipc = new PolygonCategory(Color.FromArgb(0, 255, 255), Color.FromArgb(0, 225, 225), 1);
+                        ipc.FilterExpression = "[ID]='" + e.Node.Name + "'";
+                        selectedButNotSavedIPCs.Add(e.Node.Name,ipc);
+                        mfl[0].Symbology.AddCategory(ipc);
+                        mfl[0].ApplyScheme(mfl[0].Symbology);
                     }
                 }
             }
             else
             {
-                checkedCountries.Remove(e.Node.Name);  
+                checkedCountries.Remove(e.Node.Name);
+                if(selectedButNotSavedIPCs.ContainsKey(e.Node.Name)){
+                    IPolygonCategory ipc = selectedButNotSavedIPCs[e.Node.Name];
+                    mfl[0].Symbology.RemoveCategory(ipc);
+                    selectedButNotSavedIPCs.Remove(e.Node.Name);
+                    mfl[0].ApplyScheme(mfl[0].Symbology);
+                 }
                 //unselect on map
-                if (selectMapFeaturesOnNodeCheck)
-                {
-                    mfl[0].SelectByAttribute(filter, ModifySelectionMode.Subtract);
-                }
+                //if (selectMapFeaturesOnNodeCheck)
+                //{
+                //    mfl[0].SelectByAttribute(filter, ModifySelectionMode.Subtract);
+                //}
             }
         }
 
@@ -303,6 +373,18 @@ namespace BenMAP
                         txtPercentage.Focus();
                         return;                        
                     }
+                     if (d > 100)
+                        {
+                            MessageBox.Show("Percentage can not be > 100");
+                            txtPercentageBackground.Focus();
+                            return;
+                        }
+                        if (d < 0)
+                        {
+                            MessageBox.Show("Percentage can not be < 0");
+                            txtPercentageBackground.Focus();
+                            return;
+                        }
                     if (!String.IsNullOrEmpty(txtPercentageBackground.Text))
                     {
                         if (!Double.TryParse(txtPercentageBackground.Text, out d))
@@ -311,6 +393,7 @@ namespace BenMAP
                             txtPercentageBackground.Focus();
                             return;
                         }
+                       
                     }
                     break;
                 case 1: //incremental
@@ -377,7 +460,7 @@ namespace BenMAP
                     break;
             }
             rollback.Year = YEAR;
-            rollback.Color = GetRandomColor();
+            rollback.Color = GetNextColor();
 
 
             //remove rollback if it already exists
@@ -387,30 +470,87 @@ namespace BenMAP
             rollbacks.Add(rollback);
 
             //add to grid
-            dgvRollbacks.Rows.Clear();
-            foreach (GBDRollbackItem item in rollbacks)
-            { 
-                DataGridViewRow row = new DataGridViewRow();
-                int i = dgvRollbacks.Rows.Add(row);
-                dgvRollbacks.Rows[i].Cells["colName"].Value = item.Name;
-                dgvRollbacks.Rows[i].Cells["colColor"].Style.BackColor = item.Color;
-                dgvRollbacks.Rows[i].Cells["colTotalCountries"].Value = item.Countries.Count().ToString();
-                dgvRollbacks.Rows[i].Cells["colTotalPopulation"].Value = GetRollbackTotalPopulation(item).ToString("#,###");
-                dgvRollbacks.Rows[i].Cells["colRollbackType"].Value = GetRollbackTypeSummary(item);         
-            }
+            //dgvRollbacks.Rows.Clear();
+            //foreach (GBDRollbackItem item in rollbacks)
+            //{ 
+            //    DataGridViewRow row = new DataGridViewRow();
+            //    int i = dgvRollbacks.Rows.Add(row);
+            //    dgvRollbacks.Rows[i].Cells["colName"].Value = item.Name;
+            //    dgvRollbacks.Rows[i].Cells["colColor"].Style.BackColor = item.Color;
+            //    dgvRollbacks.Rows[i].Cells["colTotalCountries"].Value = item.Countries.Count().ToString();
+            //    dgvRollbacks.Rows[i].Cells["colTotalPopulation"].Value = GetRollbackTotalPopulation(item).ToString("#,###");
+            //    dgvRollbacks.Rows[i].Cells["colRollbackType"].Value = GetRollbackTypeSummary(item);         
+            //}
 
-            //set color of selected country features on map
+            RemoveGridRow(rollback.Name);
+            DataGridViewRow row = new DataGridViewRow();
+            int i = dgvRollbacks.Rows.Add(row);
+            dgvRollbacks.Rows[i].Cells["colName"].Value = rollback.Name;
+            dgvRollbacks.Rows[i].Cells["colColor"].Style.BackColor = rollback.Color;
+            dgvRollbacks.Rows[i].Cells["colTotalCountries"].Value = rollback.Countries.Count().ToString();
+            dgvRollbacks.Rows[i].Cells["colTotalPopulation"].Value = GetRollbackTotalPopulation(rollback).ToString("#,###");
+            dgvRollbacks.Rows[i].Cells["colRollbackType"].Value = GetRollbackTypeSummary(rollback);
+            dgvRollbacks.Rows[i].Cells["colExecute"].Value = true;
+            ToggleExecuteScenariosButton();
+
+
+            //update map
             IMapFeatureLayer[] mfl = mapGBD.GetFeatureLayers();
-            string filter = "[ISO] in (" + String.Join(",", rollback.Countries.Select(x => "'" + x.Key + "'")) + ")";
-            mfl[0].SelectByAttribute(filter, ModifySelectionMode.Subtract);
-            PolygonCategory category = new PolygonCategory(rollback.Color, Color.Black, 4);
-            category.FilterExpression = filter;
-            mfl[0].Symbology.AddCategory(category);        
-
+            mfl[0].ClearSelection();
+            foreach (IPolygonCategory ipcToRemove in selectedButNotSavedIPCs.Values)
+            {
+                mfl[0].Symbology.RemoveCategory(ipcToRemove);
+            }
+            selectedButNotSavedIPCs.Clear();
+            IPolygonScheme ips = (IPolygonScheme)mfl[0].Symbology;
+            IPolygonCategory ipc = null;
+            //grab existing ips and add to it
+            foreach(String s in rollback.Countries.Keys){
+                ipc = new PolygonCategory(rollback.Color, Color.Black, 1);
+                ipc.FilterExpression = "[ID]='" + s+"'";
+                rollback.addIPC(ipc);
+                ips.AddCategory(ipc);
+            //set color of selected country features on map
+            //string filter = "[ID] in (" + String.Join(",", rollback.Countries.Select(x => "'" + x.Key + "'")) + ")";
+            //mfl[0].SelectByAttribute(filter, ModifySelectionMode.Subtract);
+            //PolygonCategory category = new PolygonCategory(rollback.Color, Color.Black, 4);
+            //category.FilterExpression = filter;
+            //mfl[0].Symbology.AddCategory(ipc);        
+                
+            }
+            mfl[0].ApplyScheme(ips);
 
             ClearFields();
             SetActivePanel(0);
            
+        }
+
+        private void RemoveGridRow(string name)
+        {
+            foreach (DataGridViewRow row in dgvRollbacks.Rows)
+            {
+                string s = row.Cells["colName"].Value.ToString();
+                if (s.Equals(name, StringComparison.OrdinalIgnoreCase))
+                {
+                    dgvRollbacks.Rows.Remove(row);
+                    return;                    
+                }            
+            }        
+        }
+
+        private Color GetNextColor()
+        {
+            foreach (Color c in colorPalette)
+            {
+                GBDRollbackItem item = rollbacks.Find(x => x.Color.ToArgb() == c.ToArgb());
+                if (item == null)
+                {
+                    return c;
+                }             
+            
+            }
+
+            return GetRandomColor();        
         }
 
         private Color GetRandomColor()
@@ -471,6 +611,9 @@ namespace BenMAP
             foreach (TreeNode node in tvCountries.Nodes)
             {
                 node.Checked = false;
+                foreach(TreeNode tn in node.Nodes){
+                    tn.Checked=false;
+                }
             }
             //IMapFeatureLayer[] mfl = mapGBD.GetFeatureLayers();
             //mfl[0].UnSelectAll();
@@ -488,6 +631,14 @@ namespace BenMAP
         {
             txtName.Text = item.Name;
             txtDescription.Text = item.Description;
+            IMapFeatureLayer[] mfl = mapGBD.GetFeatureLayers();
+            //IPCs can be hanging if scenario is edited then a country is deselected.
+            foreach (IPolygonCategory ipcOld in item.IpcList)
+            {
+                mfl[0].Symbology.RemoveCategory(ipcOld);
+            }
+            item.IpcList.Clear();
+            mfl[0].ApplyScheme(mfl[0].Symbology);
             foreach (KeyValuePair<string,string> kvp in item.Countries)
             {
                 string countryid = kvp.Key;
@@ -504,7 +655,7 @@ namespace BenMAP
             txtIncrement.Text = item.Increment.ToString();
             txtIncrementBackground.Text = item.Background.ToString();
             cboStandard.SelectedIndex = (int)item.Standard;
-
+           
         }
 
         private void SetActivePanel(int index)
@@ -556,15 +707,24 @@ namespace BenMAP
         {
             if (dgvRollbacks.SelectedRows.Count > 0)
             {
+                IMapFeatureLayer[] mfl = mapGBD.GetFeatureLayers();
                 DialogResult result = MessageBox.Show("Are you sure you wish to delete the selected scenario?","", MessageBoxButtons.YesNo);
                 if (result == DialogResult.Yes)
                 {
                     DataGridViewRow row = dgvRollbacks.SelectedRows[0];
                     string name = row.Cells["colName"].Value.ToString();
+                    GBDRollbackItem item = rollbacks.Find(x => x.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+                    foreach (IPolygonCategory ipc in item.IpcList)
+                    {
+                        mfl[0].Symbology.RemoveCategory(ipc);
+                    }
+                    item.IpcList.Clear();
+                    mfl[0].ApplyScheme(mfl[0].Symbology);
                     //delete rollback
                     rollbacks.RemoveAll(x => x.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
                     //delete row
                     dgvRollbacks.Rows.Remove(row);
+                    ToggleExecuteScenariosButton();
                 }
             
             }
@@ -589,6 +749,7 @@ namespace BenMAP
 
         private void dgvRollbacks_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
+            dgvRollbacks.EndEdit();
             if ((e.RowIndex != -1) && (e.ColumnIndex != -1))
             {
                 string columnName = dgvRollbacks.Columns[e.ColumnIndex].Name;
@@ -622,67 +783,20 @@ namespace BenMAP
 
                 Cursor.Current = Cursors.WaitCursor;
 
-                double incrate = 0;
                 double beta = 0;
                 double se = 0;
 
                 //get pollutant beta, se
                 GBDRollbackDataSource.GetPollutantBeta(POLLUTANT_ID, out beta, out se);
 
-                //for each rollback...
-                foreach (GBDRollbackItem rollback in rollbacks)
-                {
-                    dtConcEntireRollback = null;
-
-                    //for each country in rollback...
-                    foreach (string countryid in rollback.Countries.Keys)
-                    {
-                        //get data
-                        //country incidencerate
-                        incrate = GBDRollbackDataSource.GetIncidenceRate(countryid);
-
-                        //get baseline concs
-                        dtConcCountry = null;
-                        dtConcCountry = GBDRollbackDataSource.GetCountryConcs(countryid, POLLUTANT_ID, YEAR);
-
-                        //build schema of entire rollback table
-                        if (dtConcEntireRollback == null)
-                        {
-                            dtConcEntireRollback = dtConcCountry.Clone();
-                            dtConcEntireRollback.Columns.Add("CONCENTRATION_ADJ", dtConcCountry.Columns["CONCENTRATION"].DataType);
-                            dtConcEntireRollback.Columns.Add("CONCENTRATION_ADJ_BACK", dtConcCountry.Columns["CONCENTRATION"].DataType);
-                            dtConcEntireRollback.Columns.Add("CONCENTRATION_FINAL", dtConcCountry.Columns["CONCENTRATION"].DataType);
-                            dtConcEntireRollback.Columns.Add("CONCENTRATION_DELTA", dtConcCountry.Columns["CONCENTRATION"].DataType);
-                            dtConcEntireRollback.Columns.Add("KREWSKI", dtConcCountry.Columns["CONCENTRATION"].DataType);
-                        }
-
-                        //run rollback
-                        DoRollback(rollback);
-
-                        //get concentration delta and population arrays
-                        double[] concDelta = Array.ConvertAll<DataRow, double>(dtConcCountry.Select(),
-                            delegate(DataRow row) { return Convert.ToDouble(row["CONCENTRATION_DELTA"]); });
-                        double[] population = Array.ConvertAll<DataRow, double>(dtConcCountry.Select(),
-                            delegate(DataRow row) { return Convert.ToDouble(row["POPESTIMATE"]); });
-
-                        //get results                
-                        GBDRollbackKrewskiFunction func = new GBDRollbackKrewskiFunction();
-                        GBDRollbackKrewskiResult result;
-                        result = func.GBD_math(concDelta, population, incrate, beta, se);
-                        //add results to dtConcCountry
-                        dtConcCountry.Columns.Add("KREWSKI", dtConcCountry.Columns["CONCENTRATION"].DataType, result.Krewski.ToString());
-
-                        //add records to entire rollback dataset
-                        dtConcEntireRollback.Merge(dtConcCountry, true, MissingSchemaAction.Ignore);
-
-                    }
-
-                    //save rollback report using rollback output
-                    xlApp = new Microsoft.Office.Interop.Excel.ApplicationClass();
-                    xlApp.DisplayAlerts = false;
-                    SaveRollbackReport(rollback);
-                    xlApp.Quit();
-
+                //for each checked rollback...
+                List<DataGridViewRow> list = dgvRollbacks.Rows.Cast<DataGridViewRow>().Where(k => Convert.ToBoolean(k.Cells["colExecute"].Value) == true).ToList();
+                foreach (DataGridViewRow row in list)
+                {                    
+                    string name = row.Cells["colName"].Value.ToString();
+                    //get rollback
+                    GBDRollbackItem item = rollbacks.Find(x => x.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+                    ExecuteRollback(item, beta, se);                                       
                 }
 
                 Cursor.Current = Cursors.Default;
@@ -697,6 +811,62 @@ namespace BenMAP
 
 
            
+        }
+
+        private void ExecuteRollback(GBDRollbackItem rollback, double beta, double se)
+        {
+            dtConcEntireRollback = null;
+
+            //for each country in rollback...
+            foreach (string countryid in rollback.Countries.Keys)
+            {
+                //get data
+                //country incidencerate
+                double incrate = GBDRollbackDataSource.GetIncidenceRate(countryid);
+
+                //get baseline concs
+                dtConcCountry = null;
+                dtConcCountry = GBDRollbackDataSource.GetCountryConcs(countryid, POLLUTANT_ID, YEAR);
+
+                //build schema of entire rollback table
+                if (dtConcEntireRollback == null)
+                {
+                    dtConcEntireRollback = dtConcCountry.Clone();
+                    dtConcEntireRollback.Columns.Add("CONCENTRATION_ADJ", dtConcCountry.Columns["CONCENTRATION"].DataType);
+                    dtConcEntireRollback.Columns.Add("CONCENTRATION_ADJ_BACK", dtConcCountry.Columns["CONCENTRATION"].DataType);
+                    dtConcEntireRollback.Columns.Add("CONCENTRATION_FINAL", dtConcCountry.Columns["CONCENTRATION"].DataType);
+                    dtConcEntireRollback.Columns.Add("CONCENTRATION_DELTA", dtConcCountry.Columns["CONCENTRATION"].DataType);
+                    dtConcEntireRollback.Columns.Add("AIR_QUALITY_DELTA", dtConcCountry.Columns["CONCENTRATION"].DataType);
+                    dtConcEntireRollback.Columns.Add("KREWSKI", dtConcCountry.Columns["CONCENTRATION"].DataType);
+                }
+
+                //run rollback
+                DoRollback(rollback);
+
+                //get concentration delta and population arrays
+                double[] concDelta = Array.ConvertAll<DataRow, double>(dtConcCountry.Select(),
+                    delegate(DataRow row) { return Convert.ToDouble(row["CONCENTRATION_DELTA"]); });
+                double[] population = Array.ConvertAll<DataRow, double>(dtConcCountry.Select(),
+                    delegate(DataRow row) { return Convert.ToDouble(row["POPESTIMATE"]); });
+
+                //get results                
+                GBDRollbackKrewskiFunction func = new GBDRollbackKrewskiFunction();
+                GBDRollbackKrewskiResult result;
+                result = func.GBD_math(concDelta, population, incrate, beta, se);
+                //add results to dtConcCountry
+                dtConcCountry.Columns.Add("KREWSKI", dtConcCountry.Columns["CONCENTRATION"].DataType, result.Krewski.ToString());
+
+                //add records to entire rollback dataset
+                dtConcEntireRollback.Merge(dtConcCountry, true, MissingSchemaAction.Ignore);
+
+            }                
+
+            //save rollback report using rollback output
+            xlApp = new Microsoft.Office.Interop.Excel.ApplicationClass();
+            xlApp.DisplayAlerts = false;
+            SaveRollbackReport(rollback);
+            xlApp.Quit();
+
         }
 
         private void DoRollback (GBDRollbackItem rollback)
@@ -730,6 +900,9 @@ namespace BenMAP
             //get delta (orig. conc - rolled back conc. (corrected for background)
             dtConcCountry.Columns.Add("CONCENTRATION_DELTA", dtConcCountry.Columns["CONCENTRATION"].DataType, "CONCENTRATION - CONCENTRATION_FINAL");
 
+            //get air quality delta (conc delta * population)
+            dtConcCountry.Columns.Add("AIR_QUALITY_DELTA", dtConcCountry.Columns["CONCENTRATION"].DataType, "CONCENTRATION_DELTA * POPESTIMATE");
+
         }
 
         private void DoIncrementalRollback(double increment, double background)
@@ -746,6 +919,9 @@ namespace BenMAP
             //get delta (orig. conc - rolled back conc. (corrected for background)
             dtConcCountry.Columns.Add("CONCENTRATION_DELTA", dtConcCountry.Columns["CONCENTRATION"].DataType, "CONCENTRATION - CONCENTRATION_FINAL");
 
+            //get air quality delta (conc delta * population)
+            dtConcCountry.Columns.Add("AIR_QUALITY_DELTA", dtConcCountry.Columns["CONCENTRATION"].DataType, "CONCENTRATION_DELTA * POPESTIMATE");
+
         }
 
         private void DoRollbackToStandard(GBDRollbackItem.StandardType standardType)
@@ -761,6 +937,9 @@ namespace BenMAP
 
             //get delta (orig. conc - rolled back conc.)
             dtConcCountry.Columns.Add("CONCENTRATION_DELTA", dtConcCountry.Columns["CONCENTRATION"].DataType, "CONCENTRATION - CONCENTRATION_FINAL");
+
+            //get air quality delta (conc delta * population)
+            dtConcCountry.Columns.Add("AIR_QUALITY_DELTA", dtConcCountry.Columns["CONCENTRATION"].DataType, "CONCENTRATION_DELTA * POPESTIMATE");
         }
 
         private void SaveRollbackReport(GBDRollbackItem rollback)
@@ -772,13 +951,20 @@ namespace BenMAP
 
             Microsoft.Office.Interop.Excel.Workbook xlBook;
             //open report template                
-            xlBook = xlApp.Workbooks.Open(filePath);
+            xlBook = xlApp.Workbooks.Open(filePath);           
+
+            //check save dir 
+            string resultsDir = txtFilePath.Text.Trim();
+            if(!Directory.Exists(resultsDir))
+            {
+                Directory.CreateDirectory(resultsDir);
+            }
 
             //get timestamp
             DateTime dtNow = DateTime.Now;
             string timeStamp = dtNow.ToString("yyyyMMddHHmm");
             //get application path
-            filePath = appPath + @"Tools\GBDRollback_" + rollback.Name + "_" + timeStamp + ".xlsx";
+            filePath = resultsDir + @"\GBDRollback_" + rollback.Name + "_" + timeStamp + ".xlsx";
 
             #region summary sheet
             //summary sheet
@@ -817,11 +1003,11 @@ namespace BenMAP
             int rowOffset = 0;
             int nextRow = 0;
 
-            System.Data.DataTable dtTemp = dtConcEntireRollback.DefaultView.ToTable(true, "REGIONNAME", "COUNTRYNAME");
-            dtTemp.DefaultView.Sort = "REGIONNAME, COUNTRYNAME";
+            System.Data.DataTable dtRegionsCountries = dtConcEntireRollback.DefaultView.ToTable(true,  "REGIONID", "REGIONNAME", "COUNTRYID", "COUNTRYNAME");
+            dtRegionsCountries.DefaultView.Sort = "REGIONNAME, COUNTRYNAME";
             string region = String.Empty;
             string country = String.Empty;
-            foreach (DataRow dr in dtTemp.Rows)
+            foreach (DataRow dr in dtRegionsCountries.Rows)
             {
                 //new region? write region
                 if (!region.Equals(dr["REGIONNAME"].ToString(), StringComparison.OrdinalIgnoreCase))
@@ -863,6 +1049,7 @@ namespace BenMAP
 
             xlSheet.Range["G2"].Value = rollback.Year.ToString() + " " + xlSheet.Range["G2"].Value.ToString();
 
+
             #endregion
 
             //results sheet
@@ -899,17 +1086,231 @@ namespace BenMAP
             //xlRange.ColumnWidth = 40;
             //xlRange.WrapText = true;
 
-            
+            //build output table
+            System.Data.DataTable dtDetailedResults = new System.Data.DataTable();
+            dtDetailedResults.Columns.Add("NAME", Type.GetType("System.String"));
+            dtDetailedResults.Columns.Add("IS_REGION", Type.GetType("System.Boolean"));
+            dtDetailedResults.Columns.Add("POP_AFFECTED", Type.GetType("System.Double"));
+            dtDetailedResults.Columns.Add("AVOIDED_DEATHS", Type.GetType("System.Double"));
+            dtDetailedResults.Columns.Add("AVOIDED_DEATHS_PERCENT_POP", Type.GetType("System.Double"));
+            dtDetailedResults.Columns.Add("BASELINE_MIN", Type.GetType("System.Double"));
+            dtDetailedResults.Columns.Add("BASELINE_MEDIAN", Type.GetType("System.Double"));
+            dtDetailedResults.Columns.Add("BASELINE_MAX", Type.GetType("System.Double"));
+            dtDetailedResults.Columns.Add("CONTROL_MIN", Type.GetType("System.Double"));
+            dtDetailedResults.Columns.Add("CONTROL_MEDIAN", Type.GetType("System.Double"));
+            dtDetailedResults.Columns.Add("CONTROL_MAX", Type.GetType("System.Double"));
+            dtDetailedResults.Columns.Add("AIR_QUALITY_CHANGE", Type.GetType("System.Double"));
 
 
+            string regionid = String.Empty;
+            string countryid = String.Empty;
+            foreach (DataRow dr in dtRegionsCountries.Rows)
+            {
+                //new region? get region data
+                if (!regionid.Equals(dr["REGIONID"].ToString(), StringComparison.OrdinalIgnoreCase))
+                {
+                    regionid = dr["REGIONID"].ToString();
+                    GetResults(regionid, dr["REGIONNAME"].ToString(), true, dtDetailedResults);
+                }
+
+                //get country data
+                countryid = dr["COUNTRYID"].ToString();
+                GetResults(countryid, dr["COUNTRYNAME"].ToString(), false, dtDetailedResults);
+            }
+
+
+            //write results to spreadsheet
+            nextRow = 4;
+            foreach (DataRow dr in dtDetailedResults.Rows)
+            {
+                xlSheet.Range["A" + nextRow.ToString()].Value = dr["NAME"].ToString();
+                if (Convert.ToBoolean(dr["IS_REGION"].ToString()))
+                {
+                    xlSheet.Range["A" + nextRow.ToString()].Font.Italic = true;
+                }
+                else 
+                {
+                    //xlSheet.Range["A" + nextRow.ToString()].ColumnWidth = 40;
+                    //xlSheet.Range["A" + nextRow.ToString()].WrapText = true;
+                    xlSheet.Range["A" + nextRow.ToString()].InsertIndent(2);                
+                }
+                xlSheet.Range["B" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["POP_AFFECTED"].ToString());
+                xlSheet.Range["C" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AVOIDED_DEATHS"].ToString());
+                xlSheet.Range["D" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AVOIDED_DEATHS_PERCENT_POP"].ToString());
+                xlSheet.Range["E" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MIN"].ToString());
+                xlSheet.Range["F" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MEDIAN"].ToString());
+                xlSheet.Range["G" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MAX"].ToString());
+                xlSheet.Range["H" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MIN"].ToString());
+                xlSheet.Range["I" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MEDIAN"].ToString());
+                xlSheet.Range["J" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MAX"].ToString());
+                xlSheet.Range["K" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AIR_QUALITY_CHANGE"].ToString());
+                nextRow++;
+                
+            }
+
+            xlRange = xlSheet.Range["A4:K" + (nextRow - 1).ToString()];
+            xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeTop].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
+            xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeRight].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
+            xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeBottom].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
+            xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeLeft].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
+            xlRange.Borders.Color = Color.Black;
 
             #endregion
+
+            #region back to summary sheet
+
+            //get results for summary table
+            xlSheet = (Microsoft.Office.Interop.Excel.Worksheet)xlBook.Worksheets[1];
+            System.Data.DataTable dtSummaryResults = dtDetailedResults.Clone();
+            GetResults(null, "SUMMARY", false, dtSummaryResults);
+            if (dtSummaryResults.Rows.Count > 0)
+            {
+                DataRow dr = dtSummaryResults.Rows[0];
+                xlSheet.Range["D4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["POP_AFFECTED"].ToString());
+                xlSheet.Range["E4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AVOIDED_DEATHS"].ToString());
+                xlSheet.Range["F4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AVOIDED_DEATHS_PERCENT_POP"].ToString());
+                xlSheet.Range["G4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MIN"].ToString());
+                xlSheet.Range["H4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MEDIAN"].ToString());
+                xlSheet.Range["I4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MAX"].ToString());
+                xlSheet.Range["J4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MIN"].ToString());
+                xlSheet.Range["K4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MEDIAN"].ToString());
+                xlSheet.Range["L4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MAX"].ToString());
+                xlSheet.Range["M4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AIR_QUALITY_CHANGE"].ToString());
+
+            }
+            xlRange = xlSheet.Range["D4:M4"];
+            xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeTop].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
+            xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeRight].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
+            xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeBottom].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
+            xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeLeft].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
+            xlRange.Borders.Color = Color.Black;
+
+            #endregion
+
+
 
             //save
             xlBook.SaveAs(filePath, FileFormat: XlFileFormat.xlOpenXMLWorkbook);
             xlBook.Close();       
         
         
+        
+        }
+
+        private string FormatDoubleString(string format, string str)
+        {         
+            return Double.Parse(str).ToString(format);
+        }
+
+        private double Median(IEnumerable<double> list)
+        {
+            List<double> orderedList = list
+                .OrderBy(numbers => numbers)
+                .ToList();
+
+            int listSize = orderedList.Count;
+            double result;
+
+            if (listSize % 2 == 0) // even
+            {
+                int midIndex = listSize / 2;
+                result = ((orderedList.ElementAt(midIndex - 1) +
+                           orderedList.ElementAt(midIndex)) / 2);
+            }
+            else // odd
+            {
+                double element = (double)listSize / 2;
+                element = Math.Round(element, MidpointRounding.AwayFromZero);
+
+                result = orderedList.ElementAt((int)(element - 1));
+            }
+
+            return result;
+        }
+
+
+        private void GetResults(string id, string name, bool isRegion, System.Data.DataTable dt)
+        {
+            double popAffected;
+            double avoidedDeaths;
+            double avoidedDeathsPercentPop;
+            double baselineMin;
+            double baselineMedian;
+            double baselineMax;
+            double controlMin;
+            double controlMedian;
+            double controlMax;
+            double airQualityChange;
+            object result;
+
+            string filter = string.Empty;
+            if (!String.IsNullOrEmpty(id))
+            {
+                if (isRegion)
+                {
+                    filter = "REGIONID = " + id;
+                }
+                else
+                {
+                    filter = "COUNTRYID = '" + id + "'";
+                }
+            }
+            else
+            {
+                filter = "1=1"; //no filter (i.e., all rows)
+            }
+
+            result = dtConcEntireRollback.Compute("SUM(POPESTIMATE)", filter);
+            popAffected = Double.Parse(result.ToString());
+
+
+            System.Data.DataTable dtKrewski = dtConcEntireRollback.DefaultView.ToTable(true, "REGIONID", "REGIONNAME", "COUNTRYID", "COUNTRYNAME", "KREWSKI");
+            dtKrewski.DefaultView.Sort = "REGIONNAME, COUNTRYNAME";
+
+            result = dtKrewski.Compute("SUM(KREWSKI)", filter);
+            avoidedDeaths = Double.Parse(result.ToString());
+
+            avoidedDeathsPercentPop = (avoidedDeaths / popAffected) * 100;
+
+            result = dtConcEntireRollback.Compute("MIN(CONCENTRATION)", filter);
+            baselineMin = Double.Parse(result.ToString());
+
+            double[] concBase = Array.ConvertAll<DataRow, double>(dtConcEntireRollback.Select(filter),
+                            delegate(DataRow row) { return Convert.ToDouble(row["CONCENTRATION"]); });
+            baselineMedian = Median(concBase.ToList<double>());
+
+            result = dtConcEntireRollback.Compute("MAX(CONCENTRATION)", filter);
+            baselineMax = Double.Parse(result.ToString());
+
+            result = dtConcEntireRollback.Compute("MIN(CONCENTRATION_FINAL)", filter);
+            controlMin = Double.Parse(result.ToString());
+
+            double[] concControl = Array.ConvertAll<DataRow, double>(dtConcEntireRollback.Select(filter),
+                             delegate(DataRow row) { return Convert.ToDouble(row["CONCENTRATION_FINAL"]); });
+            controlMedian = Median(concControl.ToList<double>());
+
+            result = dtConcEntireRollback.Compute("MAX(CONCENTRATION_FINAL)", filter);
+            controlMax = Double.Parse(result.ToString());
+
+            result = dtConcEntireRollback.Compute("SUM(AIR_QUALITY_DELTA)", filter);
+            airQualityChange = Double.Parse(result.ToString());
+            airQualityChange = airQualityChange / popAffected;
+
+            DataRow dr = dt.NewRow();
+            dr["NAME"] = name;
+            dr["IS_REGION"] = isRegion;
+            dr["POP_AFFECTED"] = popAffected;
+            dr["AVOIDED_DEATHS"] = avoidedDeaths;
+            dr["AVOIDED_DEATHS_PERCENT_POP"] = avoidedDeathsPercentPop;
+            dr["BASELINE_MIN"] = baselineMin;
+            dr["BASELINE_MEDIAN"] = baselineMedian;
+            dr["BASELINE_MAX"] = baselineMax;
+            dr["CONTROL_MIN"] = controlMin;
+            dr["CONTROL_MEDIAN"] = controlMedian;
+            dr["CONTROL_MAX"] = controlMax;
+            dr["AIR_QUALITY_CHANGE"] = airQualityChange;
+
+            dt.Rows.Add(dr);
         
         }
        
@@ -938,6 +1339,40 @@ namespace BenMAP
         private void btnIdentify_Click(object sender, EventArgs e)
         {
             mapGBD.FunctionMode = FunctionMode.Info;
+        }
+
+        private void btnBrowse_Click(object sender, EventArgs e)
+        {
+            FolderBrowserDialog fbd = new FolderBrowserDialog();
+            //fbd.RootFolder = Environment.SpecialFolder.txtFilePath.Text.Trim();
+            DialogResult result = fbd.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                txtFilePath.Text = fbd.SelectedPath;
+               
+            }
+
+
+        }
+
+        private void ToggleExecuteScenariosButton()
+        {
+            List<DataGridViewRow> list = dgvRollbacks.Rows.Cast<DataGridViewRow>().Where(k => Convert.ToBoolean(k.Cells["colExecute"].Value) == true).ToList();            
+            btnExecuteRollbacks.Enabled = (list.Count > 0);
+        }
+
+        private void dgvRollbacks_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            dgvRollbacks.EndEdit();
+            if ((e.RowIndex != -1) && (e.ColumnIndex != -1))
+            {
+                string columnName = dgvRollbacks.Columns[e.ColumnIndex].Name;
+
+                if (columnName.Equals("colExecute", StringComparison.OrdinalIgnoreCase))
+                {
+                    ToggleExecuteScenariosButton();
+                }
+            }
         }
 
        
