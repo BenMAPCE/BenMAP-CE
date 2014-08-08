@@ -4109,7 +4109,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:FireBirdHelper, Version=1.0.13.0, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:FireBirdHelper, Version=1.0.14.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_F6BB7CCF262AFA2F805AB7C08B325388"
@@ -4469,15 +4469,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:BenMap-CE"
-        "ProductCode" = "8:{39575A75-7FE3-4F30-9CD9-B64C863E2F3C}"
-        "PackageCode" = "8:{2504F15B-75DC-481A-8115-E49875F65457}"
+        "ProductCode" = "8:{D21E4CBC-D5C8-4D6B-8E04-A03AC6D6F063}"
+        "PackageCode" = "8:{F3EDAED5-1435-45E1-A6F0-2FAE8722E04A}"
         "UpgradeCode" = "8:{10C0CCD0-CE12-43BB-BB3E-44059FCA4ADB}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:1.0.13"
+        "ProductVersion" = "8:1.0.14"
         "Manufacturer" = "8:US EPA"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
