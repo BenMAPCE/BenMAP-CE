@@ -38,7 +38,11 @@ namespace BenMAP
 
         public static DataSet GetStandardList()
         {
+
             ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+            char micrograms = '\u00B5';
+            char super3 = '\u00B3';
+            
             string commandText =
                 "SELECT a.STD_ID, a.POLLUTANT, a.UNITS, a.EXPOSURE_DURATION, a.SAMP_PRD_DAYS, a.STD_GROUP, a.CONC_LIMIT, " +
                 "a.STD_GROUP || ' (' || a.EXPOSURE_DURATION || ')' as STANDARD_NAME " +
@@ -47,6 +51,18 @@ namespace BenMAP
                 "ORDER BY a.STD_GROUP, a.EXPOSURE_DURATION";
 
             DataSet ds = fb.ExecuteDataset(GBDRollbackDataSource.Connection, CommandType.Text, commandText);
+            if (ds != null)
+            {
+                if (ds.Tables.Count > 0)
+                {
+                    foreach (DataRow dr in ds.Tables[0].Rows)
+                    {
+                        string val = dr["STANDARD_NAME"].ToString();
+                        dr["STANDARD_NAME"] = val + " (" + dr["CONC_LIMIT"].ToString() + micrograms.ToString() + "g/m" + super3.ToString() + ")";
+                    }
+                }
+            }
+
             return ds;
         }
 

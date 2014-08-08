@@ -606,7 +606,7 @@ namespace BenMAP
                     summary = rollback.Increment.ToString() + micrograms.ToString() + "g/m" + super3.ToString() + " Rollback";
                     break;
                 case GBDRollbackItem.RollbackType.Standard:
-                    summary = "Rollback to " + rollback.StandardName + " Standard (" + rollback.Standard.ToString() + micrograms.ToString() + "g/m" + super3.ToString() + ")";
+                    summary = "Rollback to " + rollback.StandardName + " Standard";
                     break;
             }
 
@@ -666,7 +666,7 @@ namespace BenMAP
             txtPercentageBackground.Text = item.Background.ToString();
             txtIncrement.Text = item.Increment.ToString();
             txtIncrementBackground.Text = item.Background.ToString();
-            cboStandard.SelectedIndex = (int)item.Standard;
+            cboStandard.SelectedIndex = (int)item.StandardId;
            
         }
 
@@ -1006,7 +1006,7 @@ namespace BenMAP
                     summary = rollback.Increment.ToString() + micrograms.ToString() + "g/m" + super3.ToString() + " Rollback";
                     break;
                 case GBDRollbackItem.RollbackType.Standard:
-                    summary = "Rollback to " + rollback.StandardName + " Standard (" + rollback.Standard.ToString() + micrograms.ToString() + "g/m" + super3.ToString() + ")";
+                    summary = "Rollback to " + rollback.StandardName + " Standard";
                     break;
             }
             xlSheet.Range["B7"].Value = summary;
