@@ -1201,11 +1201,24 @@ namespace BenMAP
             #region charts
 
             //summary chart
+            //write summary chart data to hidden sheet
+            Microsoft.Office.Interop.Excel.Worksheet xlSheet3 = (Microsoft.Office.Interop.Excel.Worksheet)xlBook.Worksheets[3];
+            int nextRowForSummary = 1;
+            foreach (DataRow dr in dtDetailedResults.Rows)
+            {
+                //only write countries, skip regions
+                if (!Convert.ToBoolean(dr["IS_REGION"].ToString()))
+                {
+                    xlSheet3.Range["A" + nextRowForSummary.ToString()].Value = dr["NAME"].ToString();
+                    xlSheet3.Range["B" + nextRowForSummary.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AVOIDED_DEATHS"].ToString());
+                    nextRowForSummary++;                    
+                }
+            }
             Microsoft.Office.Interop.Excel.ChartObject xlChartObject = (Microsoft.Office.Interop.Excel.ChartObject)xlSheet.ChartObjects(1);
             Microsoft.Office.Interop.Excel.Chart xlChart = (Microsoft.Office.Interop.Excel.Chart)xlChartObject.Chart;
             Microsoft.Office.Interop.Excel.Series xlSeries = (Microsoft.Office.Interop.Excel.Series)xlChart.SeriesCollection(1);
-            xlSeries.Values = xlSheet2.Range["C4:C" + (nextRow - 1).ToString()];
-            xlSeries.XValues = xlSheet2.Range["A4:A" + (nextRow - 1).ToString()];
+            xlSeries.Values = xlSheet3.Range["B4:B" + (nextRowForSummary - 1).ToString()];
+            xlSeries.XValues = xlSheet3.Range["A4:A" + (nextRowForSummary - 1).ToString()];
 
             //avoided deaths chart sheet
             xlChart = (Microsoft.Office.Interop.Excel.Chart)xlBook.Charts[1];
