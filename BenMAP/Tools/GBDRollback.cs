@@ -1219,6 +1219,10 @@ namespace BenMAP
             Microsoft.Office.Interop.Excel.Series xlSeries = (Microsoft.Office.Interop.Excel.Series)xlChart.SeriesCollection(1);
             xlSeries.Values = xlSheet3.Range["B1:B" + (nextRowForSummary - 1).ToString()];
             xlSeries.XValues = xlSheet3.Range["A1:A" + (nextRowForSummary - 1).ToString()];
+            //write to total avoided deaths text box on chart
+            Microsoft.Office.Interop.Excel.Shape txtBox = (Microsoft.Office.Interop.Excel.Shape)xlSheet.Shapes.Item("TextBox1");
+            txtBox.TextFrame.Characters().Text = txtBox.TextFrame.Characters().Text + xlSheet.Range["E4"].Value;
+
 
             //avoided deaths chart sheet
             xlChart = (Microsoft.Office.Interop.Excel.Chart)xlBook.Charts[1];
