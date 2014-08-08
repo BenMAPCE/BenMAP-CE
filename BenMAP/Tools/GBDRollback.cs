@@ -1217,8 +1217,8 @@ namespace BenMAP
             Microsoft.Office.Interop.Excel.ChartObject xlChartObject = (Microsoft.Office.Interop.Excel.ChartObject)xlSheet.ChartObjects(1);
             Microsoft.Office.Interop.Excel.Chart xlChart = (Microsoft.Office.Interop.Excel.Chart)xlChartObject.Chart;
             Microsoft.Office.Interop.Excel.Series xlSeries = (Microsoft.Office.Interop.Excel.Series)xlChart.SeriesCollection(1);
-            xlSeries.Values = xlSheet3.Range["B4:B" + (nextRowForSummary - 1).ToString()];
-            xlSeries.XValues = xlSheet3.Range["A4:A" + (nextRowForSummary - 1).ToString()];
+            xlSeries.Values = xlSheet3.Range["B1:B" + (nextRowForSummary - 1).ToString()];
+            xlSeries.XValues = xlSheet3.Range["A1:A" + (nextRowForSummary - 1).ToString()];
 
             //avoided deaths chart sheet
             xlChart = (Microsoft.Office.Interop.Excel.Chart)xlBook.Charts[1];
