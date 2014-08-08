@@ -1978,7 +1978,8 @@ namespace BenMAP
                         changeNodeImage(currentNode);
                         SetTabControl(tabCtlReport);
                         break;
-                } if (iGridTypeOld != CommonClass.MainSetup.SetupID)
+                }
+                if (iGridTypeOld != CommonClass.MainSetup.SetupID)
                 {
                     ChangeAllAggregationCombox();
                 }
@@ -1987,7 +1988,6 @@ namespace BenMAP
                     changeNodeImage(trvSetting.Nodes[trvSetting.Nodes.Count - 1].Nodes[0]);
                     FireBirdHelperBase fb = new ESILFireBirdHelper();
                     string commandText = "";
-
                 }
             }
             catch (Exception ex)
@@ -2135,7 +2135,8 @@ namespace BenMAP
             _currentNode = "basedata";
             //str = string.Format("{0}baseline", (currentNode.Tag as BenMAPLine).Pollutant.PollutantName);
             string _PollutantName = (currentNode.Tag as BenMAPLine).Pollutant.PollutantName;
-            string _BenMapSetupName = (currentNode.Tag as BenMAPLine).GridType.SetupName;
+            //string _BenMapSetupName = (currentNode.Tag as BenMAPLine).GridType.SetupName;
+            string _BenMapSetupName = CommonClass.MainSetup.SetupName;
             _CurrentMapTitle = _BenMapSetupName + " Setup: " + _PollutantName + ", Baseline";
             
             if (CommonClass.LstAsynchronizationStates != null &&
@@ -2681,8 +2682,8 @@ namespace BenMAP
                             benMAPLine.ShapeFile = benMAPLine.Pollutant.PollutantID + "G" + CommonClass.GBenMAPGrid.GridDefinitionID + "B" + isBase + ".shp";
                             benMAPLine.ShapeFile = string.Format("{0}\\Tmp\\{1}", CommonClass.DataFilePath, benMAPLine.ShapeFile);
                         }
-                        DataSourceCommonClass.SaveBenMAPLineShapeFile(CommonClass.GBenMAPGrid, benMAPLine.Pollutant, benMAPLine, benMAPLine.ShapeFile);
-                        polLayer = (MapPolygonLayer)bcgMapGroup.Layers.Add(benMAPLine.ShapeFile);  // -MCB use when mapgroup layers is working correctly
+                        //DataSourceCommonClass.SaveBenMAPLineShapeFile(CommonClass.GBenMAPGrid, benMAPLine.Pollutant, benMAPLine, benMAPLine.ShapeFile);    ///MCB- Commemented out to resolve issues with not drawing non-saved data (e.g., Monitor data).  This may just be a twmp fix and May cause problems elsewhere
+                        polLayer = (MapPolygonLayer)bcgMapGroup.Layers.Add(benMAPLine.ShapeFile);  
                     }
                 }
                 catch (Exception ex)
