@@ -42,6 +42,12 @@
             this.btnEditRollback = new System.Windows.Forms.Button();
             this.btnExecuteRollbacks = new System.Windows.Forms.Button();
             this.dgvRollbacks = new System.Windows.Forms.DataGridView();
+            this.colName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colColor = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colTotalCountries = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colTotalPopulation = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colRollbackType = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colExecute = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.btnClose = new System.Windows.Forms.Button();
             this.gbMap = new System.Windows.Forms.GroupBox();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
@@ -88,12 +94,6 @@
             this.label8 = new System.Windows.Forms.Label();
             this.btnNext = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.colName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colColor = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colTotalCountries = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colTotalPopulation = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colRollbackType = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colExecute = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.gbCountrySelection.SuspendLayout();
             this.gbRollbacks.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvRollbacks)).BeginInit();
@@ -244,6 +244,45 @@
             this.dgvRollbacks.TabIndex = 0;
             this.dgvRollbacks.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvRollbacks_CellContentClick);
             this.dgvRollbacks.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvRollbacks_CellDoubleClick);
+            // 
+            // colName
+            // 
+            this.colName.HeaderText = "Scenario Name";
+            this.colName.Name = "colName";
+            this.colName.ReadOnly = true;
+            // 
+            // colColor
+            // 
+            this.colColor.HeaderText = "Color";
+            this.colColor.Name = "colColor";
+            this.colColor.ReadOnly = true;
+            this.colColor.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.colColor.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            // 
+            // colTotalCountries
+            // 
+            this.colTotalCountries.HeaderText = "Total Countries";
+            this.colTotalCountries.Name = "colTotalCountries";
+            this.colTotalCountries.ReadOnly = true;
+            // 
+            // colTotalPopulation
+            // 
+            this.colTotalPopulation.HeaderText = "Total Population";
+            this.colTotalPopulation.Name = "colTotalPopulation";
+            this.colTotalPopulation.ReadOnly = true;
+            // 
+            // colRollbackType
+            // 
+            this.colRollbackType.HeaderText = "Type Of Rollback";
+            this.colRollbackType.Name = "colRollbackType";
+            this.colRollbackType.ReadOnly = true;
+            // 
+            // colExecute
+            // 
+            this.colExecute.HeaderText = "Execute?";
+            this.colExecute.Name = "colExecute";
+            this.colExecute.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.colExecute.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
             // 
             // btnClose
             // 
@@ -462,14 +501,14 @@
             // 
             // gbParameterSelection
             // 
-            this.gbParameterSelection.Controls.Add(this.pb_standard);
-            this.gbParameterSelection.Controls.Add(this.pb_percent);
             this.gbParameterSelection.Controls.Add(this.pb_incremental);
             this.gbParameterSelection.Controls.Add(this.gbOptionsIncremental);
             this.gbParameterSelection.Controls.Add(this.cboRollbackType);
             this.gbParameterSelection.Controls.Add(this.label3);
             this.gbParameterSelection.Controls.Add(this.btnSaveRollback);
             this.gbParameterSelection.Controls.Add(this.btnBack2);
+            this.gbParameterSelection.Controls.Add(this.pb_standard);
+            this.gbParameterSelection.Controls.Add(this.pb_percent);
             this.gbParameterSelection.Location = new System.Drawing.Point(909, 7);
             this.gbParameterSelection.Name = "gbParameterSelection";
             this.gbParameterSelection.Size = new System.Drawing.Size(279, 420);
@@ -741,45 +780,6 @@
             this.btnNext.Text = "Select Region ->";
             this.btnNext.UseVisualStyleBackColor = true;
             this.btnNext.Click += new System.EventHandler(this.btnNext_Click);
-            // 
-            // colName
-            // 
-            this.colName.HeaderText = "Scenario Name";
-            this.colName.Name = "colName";
-            this.colName.ReadOnly = true;
-            // 
-            // colColor
-            // 
-            this.colColor.HeaderText = "Color";
-            this.colColor.Name = "colColor";
-            this.colColor.ReadOnly = true;
-            this.colColor.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.colColor.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            // 
-            // colTotalCountries
-            // 
-            this.colTotalCountries.HeaderText = "Total Countries";
-            this.colTotalCountries.Name = "colTotalCountries";
-            this.colTotalCountries.ReadOnly = true;
-            // 
-            // colTotalPopulation
-            // 
-            this.colTotalPopulation.HeaderText = "Total Population";
-            this.colTotalPopulation.Name = "colTotalPopulation";
-            this.colTotalPopulation.ReadOnly = true;
-            // 
-            // colRollbackType
-            // 
-            this.colRollbackType.HeaderText = "Type Of Rollback";
-            this.colRollbackType.Name = "colRollbackType";
-            this.colRollbackType.ReadOnly = true;
-            // 
-            // colExecute
-            // 
-            this.colExecute.HeaderText = "Execute?";
-            this.colExecute.Name = "colExecute";
-            this.colExecute.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.colExecute.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
             // 
             // GBDRollback
             // 
