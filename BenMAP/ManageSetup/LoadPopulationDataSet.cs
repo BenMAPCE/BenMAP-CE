@@ -1276,7 +1276,9 @@ namespace BenMAP
             {
                 if (vdi.PassedValidation && _isForceValidate == "T")
                 {
-                    this.DialogResult = DialogResult.OK;
+                    //this.DialogResult = DialogResult.OK;
+                    //btnOK.DialogResult = DialogResult.OK;
+                    btnOK.Enabled = true;
                 }
             }
         }
@@ -1321,6 +1323,11 @@ namespace BenMAP
         }
 
         private void btnViewMetadataGW_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lblPopulationDataSetName_Click(object sender, EventArgs e)
         {
 
         }
