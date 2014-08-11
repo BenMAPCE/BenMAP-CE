@@ -1220,8 +1220,8 @@ namespace BenMAP
             xlSeries.Values = xlSheet3.Range["B1:B" + (nextRowForSummary - 1).ToString()];
             xlSeries.XValues = xlSheet3.Range["A1:A" + (nextRowForSummary - 1).ToString()];
             //write to total avoided deaths text box on chart
-            Microsoft.Office.Interop.Excel.Shape txtBox = (Microsoft.Office.Interop.Excel.Shape)xlSheet.Shapes.Item("TextBox1");
-            txtBox.TextFrame.Characters().Text = txtBox.TextFrame.Characters().Text + xlSheet.Range["E4"].Value;
+            Microsoft.Office.Interop.Excel.Shape txtBox = (Microsoft.Office.Interop.Excel.Shape)xlSheet.Shapes.Item("TextBox 1");
+            txtBox.TextFrame.Characters().Text = txtBox.TextFrame.Characters().Text + " " + xlSheet.Range["E4"].Text; //use .Text rather than .Value on the range here, because it is formatted
 
 
             //avoided deaths chart sheet
