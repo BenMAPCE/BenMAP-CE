@@ -59,6 +59,7 @@ namespace BenMAP
             LoadTreeView();
             LoadMap();
             LoadColorPalette();
+            LoadStandards();
 
         }
 
@@ -67,6 +68,8 @@ namespace BenMAP
         {
             Close();           
         }
+
+
 
         private void LoadColorPalette()
         { 
@@ -108,6 +111,17 @@ namespace BenMAP
                 impl.Symbolizer.OutlineSymbolizer.SetFillColor(Color.Black);
                 mapGBD.Layers.Add(impl);
             }
+        }
+
+        private void LoadStandards()
+        {
+            System.Data.DataSet ds = GBDRollbackDataSource.GetStandardList();
+            System.Data.DataTable dtStandards = ds.Tables[0].Copy();//new DataTable();
+
+            //load standard drop down
+            cboStandard.DisplayMember = "STANDARD_NAME";
+            cboStandard.ValueMember = "STD_ID";
+            cboStandard.DataSource = dtStandards;
         }
 
         private void LoadCountries()
@@ -456,7 +470,9 @@ namespace BenMAP
                     break;
                 case 2: //standard
                     rollback.Type = GBDRollbackItem.RollbackType.Standard;
-                    rollback.Standard = (GBDRollbackItem.StandardType)cboStandard.SelectedIndex;
+                    rollback.StandardName = cboStandard.GetItemText(cboStandard.SelectedItem);
+                    rollback.StandardId = (int)cboStandard.SelectedValue;
+                    rollback.Standard = GBDRollbackDataSource.GetStandardValue(rollback.StandardId);
                     break;
             }
             rollback.Year = YEAR;
@@ -582,6 +598,8 @@ namespace BenMAP
         private string GetRollbackTypeSummary(GBDRollbackItem rollback)
         {
             string summary = String.Empty;
+            char micrograms = '\u00B5';
+            char super3 = '\u00B3';
 
             switch (rollback.Type)
             {
@@ -589,12 +607,10 @@ namespace BenMAP
                     summary = rollback.Percentage.ToString() + "% Rollback";
                     break;
                 case GBDRollbackItem.RollbackType.Incremental: //incremental
-                    char micrograms = '\u00B5';
-                    char super3 = '\u00B3';
                     summary = rollback.Increment.ToString() + micrograms.ToString() + "g/m" + super3.ToString() + " Rollback";
                     break;
                 case GBDRollbackItem.RollbackType.Standard:
-                    summary = "Rollback to " + rollback.Standard.ToString() + " Standard";
+                    summary = "Rollback to " + rollback.StandardName + " Standard";
                     break;
             }
 
@@ -654,7 +670,7 @@ namespace BenMAP
             txtPercentageBackground.Text = item.Background.ToString();
             txtIncrement.Text = item.Increment.ToString();
             txtIncrementBackground.Text = item.Background.ToString();
-            cboStandard.SelectedIndex = (int)item.Standard;
+            cboStandard.SelectedIndex = (int)item.StandardId;
            
         }
 
@@ -833,7 +849,10 @@ namespace BenMAP
                 {
                     dtConcEntireRollback = dtConcCountry.Clone();
                     dtConcEntireRollback.Columns.Add("CONCENTRATION_ADJ", dtConcCountry.Columns["CONCENTRATION"].DataType);
-                    dtConcEntireRollback.Columns.Add("CONCENTRATION_ADJ_BACK", dtConcCountry.Columns["CONCENTRATION"].DataType);
+                    if (rollback.Type != GBDRollbackItem.RollbackType.Standard)
+                    {
+                        dtConcEntireRollback.Columns.Add("CONCENTRATION_ADJ_BACK", dtConcCountry.Columns["CONCENTRATION"].DataType);
+                    }
                     dtConcEntireRollback.Columns.Add("CONCENTRATION_FINAL", dtConcCountry.Columns["CONCENTRATION"].DataType);
                     dtConcEntireRollback.Columns.Add("CONCENTRATION_DELTA", dtConcCountry.Columns["CONCENTRATION"].DataType);
                     dtConcEntireRollback.Columns.Add("AIR_QUALITY_DELTA", dtConcCountry.Columns["CONCENTRATION"].DataType);
@@ -924,11 +943,8 @@ namespace BenMAP
 
         }
 
-        private void DoRollbackToStandard(GBDRollbackItem.StandardType standardType)
+        private void DoRollbackToStandard(double standard)
         {
-
-            double standard = 10;
-
             //rollback to standard
             dtConcCountry.Columns.Add("CONCENTRATION_ADJ", dtConcCountry.Columns["CONCENTRATION"].DataType, standard.ToString());
 
@@ -994,7 +1010,7 @@ namespace BenMAP
                     summary = rollback.Increment.ToString() + micrograms.ToString() + "g/m" + super3.ToString() + " Rollback";
                     break;
                 case GBDRollbackItem.RollbackType.Standard:
-                    summary = "Rollback to " + rollback.Standard.ToString() + " Standard";
+                    summary = "Rollback to " + rollback.StandardName + " Standard";
                     break;
             }
             xlSheet.Range["B7"].Value = summary;
@@ -1189,11 +1205,28 @@ namespace BenMAP
             #region charts
 
             //summary chart
+            //write summary chart data to hidden sheet
+            Microsoft.Office.Interop.Excel.Worksheet xlSheet3 = (Microsoft.Office.Interop.Excel.Worksheet)xlBook.Worksheets[3];
+            int nextRowForSummary = 1;
+            foreach (DataRow dr in dtDetailedResults.Rows)
+            {
+                //only write countries, skip regions
+                if (!Convert.ToBoolean(dr["IS_REGION"].ToString()))
+                {
+                    xlSheet3.Range["A" + nextRowForSummary.ToString()].Value = dr["NAME"].ToString();
+                    xlSheet3.Range["B" + nextRowForSummary.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AVOIDED_DEATHS"].ToString());
+                    nextRowForSummary++;                    
+                }
+            }
             Microsoft.Office.Interop.Excel.ChartObject xlChartObject = (Microsoft.Office.Interop.Excel.ChartObject)xlSheet.ChartObjects(1);
             Microsoft.Office.Interop.Excel.Chart xlChart = (Microsoft.Office.Interop.Excel.Chart)xlChartObject.Chart;
             Microsoft.Office.Interop.Excel.Series xlSeries = (Microsoft.Office.Interop.Excel.Series)xlChart.SeriesCollection(1);
-            xlSeries.Values = xlSheet2.Range["C4:C" + (nextRow - 1).ToString()];
-            xlSeries.XValues = xlSheet2.Range["A4:A" + (nextRow - 1).ToString()];
+            xlSeries.Values = xlSheet3.Range["B1:B" + (nextRowForSummary - 1).ToString()];
+            xlSeries.XValues = xlSheet3.Range["A1:A" + (nextRowForSummary - 1).ToString()];
+            //write to total avoided deaths text box on chart
+            Microsoft.Office.Interop.Excel.Shape txtBox = (Microsoft.Office.Interop.Excel.Shape)xlSheet.Shapes.Item("TextBox 1");
+            txtBox.TextFrame.Characters().Text = txtBox.TextFrame.Characters().Text + " " + xlSheet.Range["E4"].Text; //use .Text rather than .Value on the range here, because it is formatted
+
 
             //avoided deaths chart sheet
             xlChart = (Microsoft.Office.Interop.Excel.Chart)xlBook.Charts[1];

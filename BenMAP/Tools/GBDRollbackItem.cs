@@ -10,7 +10,6 @@ namespace BenMAP
     public class GBDRollbackItem
     {
         public enum RollbackType { Percentage, Incremental, Standard }
-        public enum StandardType {One, Two, Three}
 
         private string name;
         private string description;
@@ -18,7 +17,9 @@ namespace BenMAP
         private RollbackType type;
         private double percentage;
         private double increment;
-        private StandardType standard;
+        private string standardName;
+        private int standardId;
+        private double standard;
         private double background;
         private Color color;
         private int year;
@@ -71,10 +72,22 @@ namespace BenMAP
             set { increment = value; }
         }
 
-        public StandardType Standard
+        public double Standard
         {
             get { return standard; }
             set { standard = value; }
+        }
+
+        public int StandardId
+        {
+            get { return standardId; }
+            set { standardId = value; }
+        }
+
+        public string StandardName
+        {
+            get { return standardName; }
+            set { standardName = value; }
         }
 
         public double Background
