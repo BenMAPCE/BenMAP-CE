@@ -178,7 +178,7 @@ namespace BenMAP
             this.grpHealthImpactFunctions.Size = new System.Drawing.Size(632, 535);
             this.grpHealthImpactFunctions.TabIndex = 1;
             this.grpHealthImpactFunctions.TabStop = false;
-            this.grpHealthImpactFunctions.Text = "Health Impact Functions In DataSet";
+            this.grpHealthImpactFunctions.Text = "Health Impact Functions In Dataset";
             // 
             // chbGroup
             // 
