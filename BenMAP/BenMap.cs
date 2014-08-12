@@ -6069,8 +6069,12 @@ namespace BenMAP
         }
         private void SetUpPortaitMainMapLayout()
         {
+            //LayoutControl mylayout = new LayoutControl();
+            
             LayoutForm _layout = new LayoutForm{ MapControl = mainMap };
+
             _layout.ShowDialog(this);
+
             //LayoutControl _myLayout = new LayoutControl();
             //_myLayout.LoadLayout(true, true, true);
             
