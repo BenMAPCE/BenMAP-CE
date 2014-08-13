@@ -1068,7 +1068,8 @@ namespace BenMAP
                             MessageBox.Show(string.Format("BenMAP is still creating the air quality surface map."), "Please wait", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                             return;
                         }
-                        BenMAPPollutant[] benMAPPollutantArray = null; if (CommonClass.LstPollutant != null)
+                        BenMAPPollutant[] benMAPPollutantArray = null; 
+                        if (CommonClass.LstPollutant != null)
                         {
                             benMAPPollutantArray = CommonClass.LstPollutant.ToArray();
                         }
@@ -1088,7 +1089,7 @@ namespace BenMAP
                         }
                         changeNodeImage(currentNode);
                         int nodesCount = currentNode.Parent.Nodes.Count;
-                        if (CommonClass.LstPollutant == null || CommonClass.LstPollutant.Count == 0)
+                        if (CommonClass.LstPollutant == null || CommonClass.LstPollutant.Count == 0)  //the branch under this if statement never called as far as I can tell????-MCB
                         {
                             for (int i = nodesCount - 2; i > -1; i--)
                             {
@@ -1120,66 +1121,163 @@ namespace BenMAP
 
                             cbPoolingWindowIncidence.Items.Clear();
                             cbPoolingWindowAPV.Items.Clear();
+                            //ClearMapTableChart();
                             ClearMapTableChart();
-                            ClearMapTableChart();
+
+                            //Update tree node symbols
                             initNodeImage(trvSetting.Nodes[trvSetting.Nodes.Count - 3].Nodes[trvSetting.Nodes[trvSetting.Nodes.Count - 3].Nodes.Count - 1]);
-                            foreach (TreeNode tn in trvSetting.Nodes[trvSetting.Nodes.Count - 1].Nodes)
+                            foreach (TreeNode tn in trvSetting.Nodes[trvSetting.Nodes.Count - 1].Nodes) //turn yellow the pooled nodes
                             {
                                 initNodeImage(tn);
                             }
-                            foreach (TreeNode tn in trvSetting.Nodes[trvSetting.Nodes.Count - 2].Nodes)
+                            foreach (TreeNode tn in trvSetting.Nodes[trvSetting.Nodes.Count - 2].Nodes)  //turn yellow the population nodes
                             {
                                 initNodeImage(tn);
                             }
 
                             return;
                         }
-                        else if (benMAPPollutantArray == null || (benMAPPollutantArray != null && CommonClass.lstPollutantAll.Count != benMAPPollutantArray.Count()) ||
-                            (benMAPPollutantArray != null && benMAPPollutantArray.ToList().Select(pp => pp.PollutantID).ToList() != CommonClass.lstPollutantAll.Select(ppp => ppp.PollutantID).ToList()))
+                        else
                         {
-                            currentNode.Tag = CommonClass.LstPollutant;
-
-                            for (int i = nodesCount - 1; i > -1; i--)
+                  
+                            if (benMAPPollutantArray == null || (benMAPPollutantArray != null && CommonClass.lstPollutantAll.Count != benMAPPollutantArray.Count()) ||
+                            (benMAPPollutantArray != null && benMAPPollutantArray.ToList().Select(pp => pp.PollutantID).ToList() != CommonClass.lstPollutantAll.Select(ppp => ppp.PollutantID).ToList()))
                             {
-                                TreeNode node = currentNode.Parent.Nodes[i];
-                                if (currentNode.Parent.Nodes[i].Name == "datasource") { currentNode.Parent.Nodes.RemoveAt(i); }
-                            }
-                            CommonClass.LstBaseControlGroup = null;
-                            GC.Collect();
-                            CommonClass.LstBaseControlGroup = new List<BaseControlGroup>(CommonClass.LstPollutant.Count);
-                            for (int i = CommonClass.LstPollutant.Count - 1; i > -1; i--)
-                            {
-                                p = CommonClass.LstPollutant[i];
-                                bcg = new BaseControlGroup() { GridType = CommonClass.GBenMAPGrid, Pollutant = p };
-                                CommonClass.LstBaseControlGroup.Add(bcg);
-                                AddDataSourceNode(bcg, currentNode.Parent);
-                            }
-                            CommonClass.BaseControlCRSelectFunction = null;
-                            CommonClass.BaseControlCRSelectFunctionCalculateValue = null;
-                            CommonClass.lstIncidencePoolingAndAggregation = null;
-                            CommonClass.IncidencePoolingResult = null;
-                            CommonClass.ValuationMethodPoolingAndAggregation = null;
-                            ClearMapTableChart();
-                            initNodeImage(trvSetting.Nodes[trvSetting.Nodes.Count - 3].Nodes[trvSetting.Nodes[trvSetting.Nodes.Count - 3].Nodes.Count - 1]);
+                                currentNode.Tag = CommonClass.LstPollutant;
 
-                            foreach (TreeNode tn in trvSetting.Nodes[trvSetting.Nodes.Count - 1].Nodes)
-                            {
-                                initNodeImage(tn);
-                            }
-                            foreach (TreeNode tn in trvSetting.Nodes[trvSetting.Nodes.Count - 2].Nodes)
-                            {
-                                initNodeImage(tn);
-                            }
-                            CommonClass.BenMAPPopulation = null;
-                            CommonClass.IncidencePoolingAndAggregationAdvance = null;
+                                List<BaseControlGroup> ExtraListBCG = new List<BaseControlGroup>(CommonClass.LstPollutant.Count + 1); 
+                                List<BenMAPPollutant> MissingLstPollutant = new List<BenMAPPollutant>(CommonClass.LstPollutant.Count);
 
-                            olvCRFunctionResult.SetObjects(null);
-                            olvIncidence.SetObjects(null);
-                            tlvAPVResult.SetObjects(null);
+                                //removes the pollunat template node in the pollutant area if it exists
+                                for (int i = nodesCount - 1; i > -1; i--)
+                                {
+                                    TreeNode node = currentNode.Parent.Nodes[i];
+                                    if (currentNode.Parent.Nodes[i].Name == "datasource" &&  currentNode.Parent.Nodes[i].Text == "Source of Air Quality Data")
+                                    { 
+                                        currentNode.Parent.Nodes.RemoveAt(i); 
+                                    }
+                                }
+                               
+                                //check for extra bcgs and remove if found
+                                if (CommonClass.LstBaseControlGroup != null)  //Pollutants have been added earlier already, add these to the existing pollutants
+                                {
+                                    foreach (BaseControlGroup testbcg in CommonClass.LstBaseControlGroup)  //look for matching pollutant in pollutant list
+                                    {    
+                                        bool PopulatedPollutantsAlreadyExist = false;
+                                        foreach (BenMAPPollutant BMpol in CommonClass.LstPollutant)
+                                        {
+                                            if (BMpol.PollutantID == testbcg.Pollutant.PollutantID)
+                                            {
+                                                PopulatedPollutantsAlreadyExist = true;
+                                                break;
+                                            }
+                                        }
+                                        if (!PopulatedPollutantsAlreadyExist)  //can't find it in pollutant list, so it must be an extra bcg record
+                                        {
+                                            ExtraListBCG.Add(testbcg);  
+                                        }
 
-                            cbPoolingWindowIncidence.Items.Clear();
-                            cbPoolingWindowAPV.Items.Clear();
-                            ClearMapTableChart();
+                                    }
+                                    if (ExtraListBCG.Count > 0)                 //remove extra bcg records
+                                    {
+                                        foreach (BaseControlGroup extrabcg in ExtraListBCG)
+                                        {                                              
+                                            //remove this pollutant node
+                                            for (int i = nodesCount - 1; i > -1; i--)
+                                            {
+                                                TreeNode node = currentNode.Parent.Nodes[i];
+                                                if (currentNode.Parent.Nodes[i].Name == "datasource" && (int)currentNode.Parent.Nodes[i].Tag == extrabcg.Pollutant.PollutantID)
+                                                {
+                                                    currentNode.Parent.Nodes.RemoveAt(i);
+                                                }
+                                            } 
+                                            //remove this pollutant's bcg record too
+                                            CommonClass.LstBaseControlGroup.Remove(extrabcg);
+                                        }
+                                    }
+
+                                    //Find any missing bcgs and add them
+                                    foreach (BenMAPPollutant BMpol in CommonClass.LstPollutant)  //look for matching pollutant in bcg records
+                                    {
+                                        bool PopulatedPollutantsAlreadyExist = false;
+                                        foreach (BaseControlGroup testBCG in CommonClass.LstBaseControlGroup)
+                                        {
+
+                                            if (testBCG.Pollutant.PollutantID == BMpol.PollutantID)
+                                            {
+                                                PopulatedPollutantsAlreadyExist = true;
+                                                break;
+                                            }
+                                        }
+                                        if (!PopulatedPollutantsAlreadyExist)  //can't find match so need to add a bcg record for this pollutant
+                                        {
+                                            MissingLstPollutant.Add(BMpol);
+                                        }
+
+                                    }
+                                    if (MissingLstPollutant.Count > 0)                 //Add missing bcg records
+                                    {
+                                        foreach (BenMAPPollutant missingPol in MissingLstPollutant)
+                                        {
+                                            p = missingPol;
+                                            bcg = new BaseControlGroup() { GridType = CommonClass.GBenMAPGrid, Pollutant = p };
+                                            CommonClass.LstBaseControlGroup.Add(bcg);
+                                            AddDataSourceNode(bcg, currentNode.Parent);
+                                            //turn the new pollutant header node yellow.
+                                            initNodeImage(trvSetting.Nodes[trvSetting.Nodes.Count - 3].Nodes[trvSetting.Nodes[trvSetting.Nodes.Count - 3].Nodes.Count - 1]);
+                                        }
+                                    }
+                          
+
+                                }
+                                else
+                                {                                
+                                    CommonClass.LstBaseControlGroup = null;
+                                    GC.Collect();
+
+                                    //rebuilds the polluntant section of the tree
+                                    CommonClass.LstBaseControlGroup = new List<BaseControlGroup>(CommonClass.LstPollutant.Count);
+                                    for (int i = CommonClass.LstPollutant.Count - 1; i > -1; i--)
+                                    {
+                                       
+
+                                        p = CommonClass.LstPollutant[i];
+                                        bcg = new BaseControlGroup() { GridType = CommonClass.GBenMAPGrid, Pollutant = p };
+                                        CommonClass.LstBaseControlGroup.Add(bcg);
+                                        AddDataSourceNode(bcg, currentNode.Parent);
+
+                                        //turn the new pollutant header node yellow.
+                                        initNodeImage(trvSetting.Nodes[trvSetting.Nodes.Count - 3].Nodes[trvSetting.Nodes[trvSetting.Nodes.Count - 3].Nodes.Count - 1]);
+                                    }
+                                }
+                                //turn all nodes after BCDG to yellow (AKA unready)
+                                foreach (TreeNode tn in trvSetting.Nodes[trvSetting.Nodes.Count - 1].Nodes) //turn yellow the pooled nodes
+                                {
+                                    initNodeImage(tn);
+                                }
+                                foreach (TreeNode tn in trvSetting.Nodes[trvSetting.Nodes.Count - 2].Nodes)  //turn yellow the population nodes
+                                {
+                                    initNodeImage(tn);
+                                }
+                                //Assumes everything else is unready
+                                CommonClass.BaseControlCRSelectFunction = null;
+                                CommonClass.BaseControlCRSelectFunctionCalculateValue = null;
+                                CommonClass.lstIncidencePoolingAndAggregation = null;
+                                CommonClass.IncidencePoolingResult = null;
+                                CommonClass.ValuationMethodPoolingAndAggregation = null;
+                                //ClearMapTableChart();
+
+                                CommonClass.BenMAPPopulation = null;
+                                CommonClass.IncidencePoolingAndAggregationAdvance = null;
+
+                                olvCRFunctionResult.SetObjects(null);
+                                olvIncidence.SetObjects(null);
+                                tlvAPVResult.SetObjects(null);
+
+                                cbPoolingWindowIncidence.Items.Clear();
+                                cbPoolingWindowAPV.Items.Clear();
+                                ClearMapTableChart();
+                            }
                         }
                         currentNode.Parent.ExpandAll();
 
@@ -2851,7 +2949,8 @@ namespace BenMAP
                 PolygonCategory tempCat = new PolygonCategory();
                 tempCat = (PolygonCategory)myScheme1.Categories[catNum].Clone();
                 myScheme1.AddCategory(tempCat);
-                //myScheme1.Categories[catNum + 6] = tempCat;
+
+                //alternate method ignoring transparency of inside color  
                 //myScheme1.Categories[catNum].Symbolizer.SetOutline(Color.Transparent, 0); //make the outlines invisble
                 //myScheme1.Categories[catNum].SetColor(colorBlend.ColorArray[catNum]);
             }
@@ -5970,8 +6069,12 @@ namespace BenMAP
         }
         private void SetUpPortaitMainMapLayout()
         {
+            //LayoutControl mylayout = new LayoutControl();
+            
             LayoutForm _layout = new LayoutForm{ MapControl = mainMap };
+
             _layout.ShowDialog(this);
+
             //LayoutControl _myLayout = new LayoutControl();
             //_myLayout.LoadLayout(true, true, true);
             
