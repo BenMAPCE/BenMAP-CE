@@ -572,7 +572,7 @@ namespace BenMAP
             this.lblHealthImpactFunctionName.Name = "lblHealthImpactFunctionName";
             this.lblHealthImpactFunctionName.Size = new System.Drawing.Size(217, 14);
             this.lblHealthImpactFunctionName.TabIndex = 0;
-            this.lblHealthImpactFunctionName.Text = "Health Impact Function DataSet Name:";
+            this.lblHealthImpactFunctionName.Text = "Health Impact Function Dataset Name:";
             // 
             // txtHealthImpactFunction
             // 
