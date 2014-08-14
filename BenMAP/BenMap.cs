@@ -6065,37 +6065,173 @@ namespace BenMAP
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex);
+                Debug.WriteLine("tsbSavePic_Click: " + ex.ToString());
             }
         }
         private void SetUpPortaitMainMapLayout()
         {
-            //LayoutControl mylayout = new LayoutControl();
-            
-            LayoutForm _layout = new LayoutForm{ MapControl = mainMap };
+            //Map MapClone = new Map();
+            //string newtype, newLeg;
+            //LegendItem newLegSym = null;
+            //int laycount = mainMap.Layers.Cast<IMapLayer>().Count();
+            //foreach (IMapLayer thislayer in mainMap.GetAllLayers().Cast<IMapLayer>())
+            //{
+            //    IMapLayer NewLayer = (IMapLayer)thislayer.Clone();
+            //    MapPolygonLayer mpoly = null;
+            //    mpoly = (MapPolygonLayer)NewLayer;
+            //    mpoly.LegendItemVisible = true;
+            //    if (mpoly.Projection == null)
+            //    {
+            //        mpoly.Projection = mainMap.Projection;
+            //    }
+            //    mpoly.Symbology.AppearsInLegend = true;
+            //    mpoly.Symbolizer.LegendText = "Default text";
+               
+            //    newtype = NewLayer.LegendType.ToString();
+            //    newLegSym = (LegendItem)NewLayer;
+                
+            //    newLeg = NewLayer.LegendSymbolMode.ToString();
+            //    MapClone.Layers.Add(NewLayer);
+            //}
+            //MapClone.Legend = mainMap.Legend;
 
-            _layout.ShowDialog(this);
+            //Create Layout form and Layout control            
+            LayoutForm _myLayoutForm = new LayoutForm { MapControl = mainMap };
+            //MapClone };
+            LayoutControl _myLayout = new LayoutControl();
+            LayoutMenuStrip lms = null;
+            foreach (Control curCTL in _myLayoutForm.Controls)
+            {
+                if (curCTL is LayoutMenuStrip)
+                {
+                    lms = (LayoutMenuStrip)curCTL;
+                }
+            }
+            _myLayout = lms.LayoutControl;
 
-            //LayoutControl _myLayout = new LayoutControl();
-            //_myLayout.LoadLayout(true, true, true);
-            
+            //Get a list of the layout element
+            List<DotSpatial.Controls.LayoutElement> lstMmyLE = new List<DotSpatial.Controls.LayoutElement>();
+
+            //Load an export template (landscape by default)
+            //string ExportTemplatePath =   "C:/ProgramData/BenMAP-CE/Data/ExportTemplates";
+
+            string ExportTemplateFile = "BenMAP-CE_landscape_8.5x11.mwl";
+            string ExportTemplateFilePath = Path.Combine(CommonClass.DataFilePath, "Data\\ExportTemplates", ExportTemplateFile);
+            if (File.Exists(ExportTemplateFilePath))
+            {
+                _myLayout.LoadLayout(ExportTemplateFilePath, true, false);
+            }
+
             // Add MapDisplayElement
            // LayoutMap _MapDisplay = new LayoutMap(mainMap);
-            //_MapDisplay.Location.X = (int)15;
-            //_MapDisplay.Location.Y = (int)15;
-            
-            //LayoutElement _MapDisplay1 = new LayoutElement();
+            LayoutElement MapLE = _myLayout.LayoutElements.Find(le => le.Name == "Map 1");
+            lstMmyLE.Add(MapLE);
 
             // Add Map Title
+            string MapTitleName = "Title 1";
+            if (File.Exists(ExportTemplateFilePath))
+            {
+                MapTitleName = "MapTitle";
+            }
+            LayoutElement MapTitle =_myLayout.LayoutElements.Find(le => le.Name == MapTitleName);
+            if (MapTitle != null)
+            {
+                LayoutText MapTitleText = null;
+                MapTitleText = (LayoutText)MapTitle;
+                MapTitleText.Text = _CurrentMapTitle;
+                lstMmyLE.Add(MapTitle);              
+            }
 
-            // Add MapLegend
+            //Fit the title & map to the width (and top) of the margins
+            _myLayout.MatchElementsSize(lstMmyLE, Fit.Width, true);
 
-            // Add North Arrow
+            List<LayoutElement> lstMyLE2 = (List<LayoutElement>)lstMmyLE;
+            _myLayout.AlignElements(lstMyLE2, Alignment.Top, true);
+            _myLayout.AlignElements(lstMyLE2, Alignment.Left, true);
 
-            //Add 
-            //Add Map neatline
+            //Fit & align Legend to the width (and bottom) of the margins
+            lstMmyLE.Clear();
+            LayoutElement LegendLE = _myLayout.LayoutElements.Find(le => le.Name == "Legend 1");
+            lstMmyLE.Add(LegendLE);
+            _myLayout.MatchElementsSize(lstMmyLE, Fit.Width, true);
+            _myLayout.AlignElements(lstMyLE2, Alignment.Left, true);
+            _myLayout.AlignElements(lstMyLE2, Alignment.Bottom, true);
+            _myLayout.AlignElements(lstMyLE2, Alignment.Vertical, false);
+            int MapTop = MapLE.Location.Y;
+            int MapBottom = MapTop - (int)MapLE.Size.Height;
+            int LegendTop = MapLE.Location.Y;
+            int LegendBottom = LegendTop - (int)LegendLE.Size.Height;
+            //LegendLE.Size.Height = (float)(MapBottom - LegendBottom);
+            //LegendLE.LocationF.Y = MapBottom;
             
-            //_layout.Dispose();
-            return;
+            //remove extra map 2 (if possible???)
+            //string LEName = "", LELoc = "";
+            //LayoutElement Map2LE = _myLayout.LayoutElements.Find(le => le.Name == "Map 2");
+            //if (Map2LE != null) _myLayout.LayoutElements.Remove(Map2LE);
+            //foreach (LayoutElement LE in _myLayout.LayoutElements)
+            //{
+            //    LEName = LE.Name.ToString();
+            //    LELoc = LE.Location.ToString();
+            //}
+
+            //Resize the screen so the map is bigger -------------------
+            Size prefsize = new Size(1800, 1000);
+            _myLayoutForm.Size = prefsize;
+            _myLayout.ShowMargin = true;
+            _myLayout.ZoomFitToScreen();
+            //_myLayout.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            _myLayout.ZoomFullViewExtentMap();
+            //_myLayoutForm.PerformAutoScale();
+            _myLayout.RefreshElements();
+            _myLayout.Refresh();
+                
+            //Add/modify MapLegend
+            //LayoutElement _myMapLegendLE = _myLayout.CreateLegendElement();
+            //LayoutLegend _myMapLegend = null; // (LayoutLegend)_myMapLegendLE;
+            //string thisname = "";
+            //int NumLayers = 0;
+            //NumLayers = mainMap.GetAllLayers().Count();
+            ////_myLayout.MapControl.Layers.Clear();
+            //NumLayers = mainMap.GetAllLayers().Count();
+            //foreach (IMapLayer thislayer in mainMap.GetAllLayers().Cast<IMapLayer>())
+            //{ 
+            //    thisname = thislayer.LegendText;
+            //    _myLayout.MapControl.Layers.Add(thislayer);
+            //}
+
+            //LayoutElement MapLegend = _myLayout.LayoutElements.Find(le => le.Name == "Legend 1");
+            //_myMapLegend = (LayoutLegend)MapLegend;
+
+            //int laypos = 0;
+            //laypos = _myLayout.MapControl.Layers.Count();
+            //foreach (IMapLayer thislayer in _myLayout.MapControl.Layers)
+            //{
+            //    thisname = thislayer.LegendText;
+            //    if (thislayer.IsVisible && thislayer is MapPolygonLayer)
+            //    {
+            //        IMapLayer modML = new MapPolygonLayer();
+
+            //        modML = (IMapLayer)thislayer.Clone();
+            //        modML.LegendText = "test " + laypos.ToString();
+            //        //_myLayout.MapControl.Layers.RemoveAt(laypos);
+            //        _myLayout.MapControl.Layers.Insert(laypos, modML);
+            //        _myMapLegend.Layers.Add(laypos);
+            //    }
+            //    laypos++;
+            //}
+            
+            //MapLegend = (LayoutElement)_myMapLegend;
+
+            //string LayersString = _myMapLegend.Layers.ToString();
+            // Add North Arrow
+ 
+            //Add Map neatline
+
+            _myLayoutForm.ShowDialog(this);
+
+            _myLayoutForm.Dispose();
+            //return;
         }
 
 
