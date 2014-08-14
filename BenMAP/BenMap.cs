@@ -13579,7 +13579,7 @@ namespace BenMAP
             if (_APVdragged)
             {
                 tlvAPVResult_DoubleClick(sender, e);
-                _APVdragged = true;
+                _APVdragged = false;
             }
             return;
         }
@@ -13587,6 +13587,8 @@ namespace BenMAP
         {
             Debug.WriteLine("mainMap_DragLeave"); 
             _HealthResultsDragged = false;
+            _IncidenceDragged = false;
+            _APVdragged = false;
             return;
         }
 
