@@ -1386,28 +1386,19 @@ namespace BenMAP
                     case "baseline":
                         _currentNode = "baseline";
                         currStat = "baseline";
-                       
-                        BaseControlOP(currStat, ref currentNode);
 
-                        //Advance to first child node and draw base data layer-MCB
-                        childNode = currentNode.FirstNode;  //refresh child node
-                        if (childNode != null)
+                        bool BCResultOK = BaseControlOP(currStat, ref currentNode);
+                        if (BCResultOK)
                         {
-                            currentNode = childNode;
-                            trvSetting.SelectedNode = currentNode;
-                            nodeName = currentNode.Name.ToLower();
-                            DrawBaseline(currentNode, str);
-                            
-                            //Attempt to display the delta layer as well-MCB
-                            //NOTE-uncomment when multiple layers can be displayed at once-MCb
-                            //deltaNode = parentNode.LastNode; // as TreeNode;
-                            //if ( deltaNode != null)
-                            //{
-                            //    currentNode = deltaNode;
-                            //    trvSetting.SelectedNode = currentNode;
-                            //    nodeName = currentNode.Name.ToLower();
-                            //    DrawDelta(currentNode, str);
-                            //}
+                            //Advance to first child node and draw base data layer-MCB
+                            childNode = currentNode.FirstNode;  //refresh child node
+                            if (childNode != null)
+                            {
+                                currentNode = childNode;
+                                trvSetting.SelectedNode = currentNode;
+                                nodeName = currentNode.Name.ToLower();
+                                DrawBaseline(currentNode, str);
+                            }
                         }
                         break;
                     case "basedata":
@@ -1420,25 +1411,28 @@ namespace BenMAP
                     case "control":
                         _currentNode = "control";
                         currStat = "control";
-                        BaseControlOP(currStat, ref currentNode);
-                        //Advance to first child node and draw control data layer-MCB
-                        childNode = currentNode.FirstNode;
-                        if (childNode != null)
+                        bool BCResultOK2 = BaseControlOP(currStat, ref currentNode);
+                        if (BCResultOK2)
                         {
-                            currentNode = childNode;
-                            trvSetting.SelectedNode = currentNode;
-                            nodeName = currentNode.Name.ToLower();
-                            DrawControlData(currentNode, str);
-                            //Attempt to display the delta layer as well-MCB
-                            //NOTE-uncomment when multiple layers can be displayed at once-MCB
-                            //deltaNode = parentNode.LastNode as TreeNode;
-                            //if (deltaNode != null)
-                            //{
-                            //    currentNode = deltaNode;
-                            //    trvSetting.SelectedNode = currentNode;
-                            //    nodeName = currentNode.Name.ToLower();
-                            //    DrawDelta(currentNode, str);
-                            //}
+                            //Advance to first child node and draw control data layer-MCB
+                            childNode = currentNode.FirstNode;
+                            if (childNode != null)
+                            {
+                                currentNode = childNode;
+                                trvSetting.SelectedNode = currentNode;
+                                nodeName = currentNode.Name.ToLower();
+                                DrawControlData(currentNode, str);
+                                //Attempt to display the delta layer as well-MCB
+                                //NOTE-uncomment when multiple layers can be displayed at once-MCB
+                                //deltaNode = parentNode.LastNode as TreeNode;
+                                //if (deltaNode != null)
+                                //{
+                                //    currentNode = deltaNode;
+                                //    trvSetting.SelectedNode = currentNode;
+                                //    nodeName = currentNode.Name.ToLower();
+                                //    DrawDelta(currentNode, str);
+                                //}
+                            }
                         }
                         break;
 
@@ -2240,7 +2234,7 @@ namespace BenMAP
             if (CommonClass.LstAsynchronizationStates != null &&
                 CommonClass.LstAsynchronizationStates.Contains(str.ToLower()))
             {
-                MessageBox.Show(string.Format("BenMAP is still creating the air quality surface map.", (currentNode.Tag as BenMAPLine).Pollutant.PollutantName), "Please wait", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(string.Format("BenMAP is still creating the Baseline air quality surface map.", (currentNode.Tag as BenMAPLine).Pollutant.PollutantName), "Please wait", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
             WaitShow("Drawing layer...");
@@ -2282,7 +2276,7 @@ namespace BenMAP
             str = string.Format("{0}control", (currentNode.Tag as BenMAPLine).Pollutant.PollutantName);
             if (CommonClass.LstAsynchronizationStates != null && CommonClass.LstAsynchronizationStates.Contains(str.ToLower()))
             {
-                MessageBox.Show(string.Format("BenMAP is still creating the air quality surface map. ", (currentNode.Tag as BenMAPLine).Pollutant.PollutantName), "Please wait", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(string.Format("BenMAP is still creating the Control air quality surface map. ", (currentNode.Tag as BenMAPLine).Pollutant.PollutantName), "Please wait", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
             WaitShow("Drawing layer...");
@@ -2335,13 +2329,13 @@ namespace BenMAP
             if (CommonClass.LstAsynchronizationStates != null &&
                 CommonClass.LstAsynchronizationStates.Contains(str.ToLower()))
             {
-                MessageBox.Show(string.Format("BenMAP is still creating the air quality surface map. ", bcgDelta.Pollutant.PollutantName), "Please wait", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(string.Format("BenMAP is still creating the Baseline air quality surface map. ", bcgDelta.Pollutant.PollutantName), "Please wait", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
             str = string.Format("{0}control", bcgDelta.Pollutant.PollutantName);
             if (CommonClass.LstAsynchronizationStates != null && CommonClass.LstAsynchronizationStates.Contains(str.ToLower()))
             {
-                MessageBox.Show(string.Format("BenMAP is still creating the air quality surface map. ", bcgDelta.Pollutant.PollutantName), "Please wait", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(string.Format("BenMAP is still creating the Control air quality surface map. ", bcgDelta.Pollutant.PollutantName), "Please wait", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
             WaitShow("Drawing layer...");
@@ -2777,10 +2771,14 @@ namespace BenMAP
                     {
                         if (string.IsNullOrEmpty(benMAPLine.ShapeFile))
                         {
-                            benMAPLine.ShapeFile = benMAPLine.Pollutant.PollutantID + "G" + CommonClass.GBenMAPGrid.GridDefinitionID + "B" + isBase + ".shp";
+                            //benMAPLine.ShapeFile = benMAPLine.Pollutant.PollutantID + "G" + CommonClass.GBenMAPGrid.GridDefinitionID + "B" + isBase + ".shp";
+                            benMAPLine.ShapeFile = benMAPLine.Pollutant.PollutantID + "G" + CommonClass.GBenMAPGrid.GridDefinitionID + "B" + IsBaseLongText + ".shp";
                             benMAPLine.ShapeFile = string.Format("{0}\\Tmp\\{1}", CommonClass.DataFilePath, benMAPLine.ShapeFile);
                         }
-                        //DataSourceCommonClass.SaveBenMAPLineShapeFile(CommonClass.GBenMAPGrid, benMAPLine.Pollutant, benMAPLine, benMAPLine.ShapeFile);    ///MCB- Commemented out to resolve issues with not drawing non-saved data (e.g., Monitor data).  This may just be a twmp fix and May cause problems elsewhere
+                        if (benMAPLine.ModelResultAttributes != null)  //MCB added this until we can figure out why the result attributes are not being populated 
+                        {
+                            DataSourceCommonClass.SaveBenMAPLineShapeFile(CommonClass.GBenMAPGrid, benMAPLine.Pollutant, benMAPLine, benMAPLine.ShapeFile);    ///MCB- Commemented out to resolve issues with not drawing non-saved data (e.g., Monitor data).  This may just be a twmp fix and May cause problems elsewhere
+                        }
                         polLayer = (MapPolygonLayer)bcgMapGroup.Layers.Add(benMAPLine.ShapeFile);  
                     }
                 }
@@ -3414,8 +3412,51 @@ namespace BenMAP
                     ReferenceLayer1.IsExpanded = false;
                     ReferenceLayer1.IsVisible = true;
                 }
-                
-                if (CommonClass.MainSetup.SetupName.ToLower() != "china")  // If layer in U.S. then add States and County layers too if they don't exist on the legend already
+
+                //MCB - NEED to add code to handle other countries eventually !!!!!!!!!!!!!!!!!!!!
+                //If Setup in china then add national boundary and regions
+                // If Setup in U.S. then add States and County layers too if they don't exist on the legend already
+                if (CommonClass.MainSetup.SetupName.ToLower() == "china")  
+                {
+                    bool ChinaNationLayFound = false;
+                    bool ChinaRegionLayFound = false;
+                    string ChinaDataPath = System.Windows.Forms.Application.StartupPath + @"\Data\Shapefiles\China\";  /// MCB- Should this be the PROGRAMDATA Path instead???? 
+                    ChinaRegionLayFound = mainMap.GetAllLayers().Any<ILayer>(mylay => mylay.LegendText == "Nation");
+                    ChinaNationLayFound = mainMap.GetAllLayers().Any<ILayer>(mylay => mylay.LegendText == "Regions");
+
+                    //Add China Regional boundaries
+                    if (!ChinaRegionLayFound)
+                    {
+                        if (File.Exists(ChinaDataPath + "China_Region" + ".shp"))   //*grabbing US county layer from known location
+                        {
+                            MapPolygonLayer RegionReferenceLayer = new MapPolygonLayer();
+                            RegionReferenceLayer = (MapPolygonLayer)RegionMapGroup.Layers.Add(ChinaDataPath + "China_Region" + ".shp");
+                            RegionReferenceLayer.LegendText = "Regions";
+                            PolygonSymbolizer StateRegionSym = new PolygonSymbolizer(Color.Transparent);
+                            StateRegionSym.OutlineSymbolizer = new LineSymbolizer(Color.DarkBlue, 1);
+                            RegionReferenceLayer.Symbolizer = StateRegionSym;
+                            RegionReferenceLayer.IsExpanded = false;
+                            RegionReferenceLayer.IsVisible = false;
+                        }
+                    }
+
+                    //Add China National border
+                    if (!ChinaNationLayFound)
+                    {
+                        if (File.Exists(ChinaDataPath + "China_Boundary" + ".shp"))   //*grabbing China boundary layer from known location
+                        {
+                            MapPolygonLayer NationReferenceLayer = new MapPolygonLayer();
+                            NationReferenceLayer = (MapPolygonLayer)RegionMapGroup.Layers.Add(ChinaDataPath + "China_Boundary" + ".shp");
+                            NationReferenceLayer.LegendText = "Nation";
+                            PolygonSymbolizer NationRegionSym = new PolygonSymbolizer(Color.Transparent);
+                            NationRegionSym.OutlineSymbolizer = new LineSymbolizer(Color.Black, 1.5);
+                            NationReferenceLayer.Symbolizer = NationRegionSym;
+                            NationReferenceLayer.IsExpanded = false;
+                            NationReferenceLayer.IsVisible = true;
+                        }
+                    }
+                }
+                else  ///Assume conterminous US (or subset of contrerminous US) setup for now
                 {
                     bool CountiesLayFound = false;
                     bool StatesLayFound = false;
@@ -3423,18 +3464,11 @@ namespace BenMAP
                     string USDataPath = System.Windows.Forms.Application.StartupPath + @"\Data\Shapefiles\United States\";
 
                     //Add US Counties if it is not on the map yet -----------------------
-                    foreach (ILayer Ilay in mainMap.GetAllLayers())
-                    {
-                        if (Ilay.LegendText == "Counties")
-                        {
-                            CountiesLayFound = true; 
-                            break;
-                        }
-                    }
+                    CountiesLayFound = mainMap.GetAllLayers().Any<ILayer>(mylay => mylay.LegendText == "Counties");
                     if (!CountiesLayFound)
-                    {   
+                    {
                         //if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + "County_epa2" + ".shp"))
-                        
+
                         if (File.Exists(USDataPath + "County_epa2" + ".shp"))   //*grabbing US county layer from known location
                         {
                             MapPolygonLayer CountyReferenceLayer = new MapPolygonLayer();
@@ -3449,14 +3483,7 @@ namespace BenMAP
                     }
 
                     //Add US States if it is not on the map yet -----------------------
-                    foreach (ILayer Ilay in mainMap.GetAllLayers())
-                    {
-                        if (Ilay.LegendText == "States")
-                        {
-                            StatesLayFound = true;
-                            break;
-                        }
-                    }
+                    StatesLayFound = mainMap.GetAllLayers().Any<ILayer>(mylay => mylay.LegendText == "States");
                     if (!StatesLayFound)
                     {
                         if (File.Exists(USDataPath + "State_epa2" + ".shp"))   //*grabbing US county layer from known location
@@ -3472,14 +3499,7 @@ namespace BenMAP
                         }
                     }
                     //Add US Nation border if it is not on the map yet -----------------------
-                    foreach (ILayer Ilay in mainMap.GetAllLayers())
-                    {
-                        if (Ilay.LegendText == "Nation")
-                        {
-                            USNationLayFound = true;
-                            break;
-                        }
-                    }
+                    USNationLayFound = mainMap.GetAllLayers().Any<ILayer>(mylay => mylay.LegendText == "Nation");
                     if (!USNationLayFound)
                     {
                         if (File.Exists(USDataPath + "Nation_epa2" + ".shp"))   //*grabbing US county layer from known location
@@ -3497,6 +3517,7 @@ namespace BenMAP
                 }
 
                 //Change the projection back to it's original projection
+                //MCB- NEED better way to handle each countries default projections.  Store it in the grid definition or setup maybe?  XXXXXXXXXXXXXXXXXXXXXXXXXXXXX
                 if (isWGS83 == false)
                 {
                     tsbChangeProjection_Click(null, null);
