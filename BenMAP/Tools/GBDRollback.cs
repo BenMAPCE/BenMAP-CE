@@ -1015,8 +1015,10 @@ namespace BenMAP
             int rowOffset = 0;
             int nextRow = 0;
 
-            System.Data.DataTable dtRegionsCountries = dtConcEntireRollback.DefaultView.ToTable(true,  "REGIONID", "REGIONNAME", "COUNTRYID", "COUNTRYNAME");
-            dtRegionsCountries.DefaultView.Sort = "REGIONNAME, COUNTRYNAME";
+            System.Data.DataTable dtTemp = dtConcEntireRollback.DefaultView.ToTable(true,  "REGIONID", "REGIONNAME", "COUNTRYID", "COUNTRYNAME");
+            DataView dv = new DataView(dtTemp);
+            dv.Sort = "REGIONNAME ASC, COUNTRYNAME ASC";
+            System.Data.DataTable dtRegionsCountries = dv.ToTable();
             string region = String.Empty;
             string country = String.Empty;
             foreach (DataRow dr in dtRegionsCountries.Rows)
