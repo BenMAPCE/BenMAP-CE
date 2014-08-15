@@ -7510,7 +7510,7 @@ namespace BenMAP
                             author = author.Substring(0, author.IndexOf(" "));
                         }
                     }
-                    LayerTextName = "PV:"+ author;
+                    LayerTextName = author;
                     RemoveOldPolygonLayer(LayerTextName, PVResultsMG.GetLayers(), false);
 
                     if (!chbAPVAggregation.Checked)
