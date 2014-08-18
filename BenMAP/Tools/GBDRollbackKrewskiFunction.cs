@@ -29,11 +29,11 @@ namespace BenMAP
                     ConcIn = 0.0;
                 }
                 double krewski = (1 - (1 / Math.Exp(beta * ConcIn))) * PopIn * incrate;
-                double krewski_2_5pct = (1 - (1 / Math.Exp(qnorm5(.025, beta, se, true, false) * ConcIn))) * PopIn * incrate;
-                double krewski_97_5pct = (1 - (1 / Math.Exp(qnorm5(.975, beta, se, true, false) * ConcIn))) * PopIn * incrate;
+                //double krewski_2_5pct = (1 - (1 / Math.Exp(qnorm5(.025, beta, se, true, false) * ConcIn))) * PopIn * incrate;
+                //double krewski_97_5pct = (1 - (1 / Math.Exp(qnorm5(.975, beta, se, true, false) * ConcIn))) * PopIn * incrate;
                 Krewski += krewski;
-                Sum_2_5 += krewski_2_5pct;
-                Sum_97_5 += krewski_97_5pct;
+                //Sum_2_5 += krewski_2_5pct;
+                //Sum_97_5 += krewski_97_5pct;
             }
             Console.WriteLine("Krewski: "+Krewski);
             Console.WriteLine("2.5: "+Sum_2_5);
