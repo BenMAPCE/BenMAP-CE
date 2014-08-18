@@ -2347,7 +2347,7 @@ namespace BenMAP
                 
                 bcgDelta.DeltaQ.GridType = bcgDelta.Base.GridType;
                 bcgDelta.DeltaQ.ModelResultAttributes = new List<ModelResultAttribute>();
-
+                float deltaresult;
                 Dictionary<string, Dictionary<string, float>> dicControl = new Dictionary<string, Dictionary<string, float>>();
                 foreach (ModelResultAttribute mra in bcgDelta.Control.ModelResultAttributes)
                 {
@@ -2368,10 +2368,14 @@ namespace BenMAP
                                 Row = mra.Row
                             });
                             bcgDelta.DeltaQ.ModelResultAttributes[bcgDelta.DeltaQ.ModelResultAttributes.Count - 1].Values = new Dictionary<string, float>();
-                            foreach (KeyValuePair<string, float> k in mra.Values)
+                            foreach (KeyValuePair<string, float> k in mra.Values)        //Populates the Delta modelresultattributes by subtracting the control values from the base line values
                             {
                                 if (dicControl[mra.Col + "," + mra.Row].ContainsKey(k.Key))
-                                    bcgDelta.DeltaQ.ModelResultAttributes[bcgDelta.DeltaQ.ModelResultAttributes.Count - 1].Values.Add(k.Key, k.Value - (dicControl[mra.Col + "," + mra.Row][k.Key]));
+                                {
+                                    deltaresult = k.Value - (dicControl[mra.Col + "," + mra.Row][k.Key]);
+                                    if (deltaresult < 0) deltaresult = (float)0.0;
+                                    bcgDelta.DeltaQ.ModelResultAttributes[bcgDelta.DeltaQ.ModelResultAttributes.Count - 1].Values.Add(k.Key, deltaresult);
+                                }
                                 else
                                     bcgDelta.DeltaQ.ModelResultAttributes[bcgDelta.DeltaQ.ModelResultAttributes.Count - 1].Values.Add(k.Key, Convert.ToSingle(0.0));
                             }
@@ -2925,8 +2929,8 @@ namespace BenMAP
             myScheme1.EditorSettings.FieldName = _columnName;
             myScheme1.EditorSettings.UseGradient = false;
             myScheme1.ClearCategories();
-            myScheme1.CreateCategories(polLayer.DataSet.DataTable);
-
+            myScheme1.CreateCategories(polLayer.DataSet.DataTable);    ///MCB- Note: This method can't deal with negative numbers correctly
+            
             // Set the category colors equal to the selected color ramp
            
             for (int catNum = 0; catNum < CategoryNumber; catNum++)
@@ -6130,6 +6134,8 @@ namespace BenMAP
                 }
             }
             _myLayout = lms.LayoutControl;
+            
+           
 
             //Get a list of the layout element
             List<DotSpatial.Controls.LayoutElement> lstMmyLE = new List<DotSpatial.Controls.LayoutElement>();
@@ -6143,9 +6149,18 @@ namespace BenMAP
             {
                 _myLayout.LoadLayout(ExportTemplateFilePath, true, false);
             }
+            
+            //Reset the page margins to 1/2 inch.
+            _myLayout.PrinterSettings.DefaultPageSettings.Margins.Left = 50;
+            _myLayout.PrinterSettings.DefaultPageSettings.Margins.Right = 50;
+            _myLayout.PrinterSettings.DefaultPageSettings.Margins.Top = 50;
+            _myLayout.PrinterSettings.DefaultPageSettings.Margins.Bottom = 50;
 
+            //Set drawing quality
+            _myLayout.DrawingQuality = SmoothingMode.HighQuality;
+            
             // Add MapDisplayElement
-           // LayoutMap _MapDisplay = new LayoutMap(mainMap);
+            // LayoutMap _MapDisplay = new LayoutMap(mainMap);
             LayoutElement MapLE = _myLayout.LayoutElements.Find(le => le.Name == "Map 1");
             lstMmyLE.Add(MapLE);
 
@@ -6179,13 +6194,17 @@ namespace BenMAP
             _myLayout.AlignElements(lstMyLE2, Alignment.Left, true);
             _myLayout.AlignElements(lstMyLE2, Alignment.Bottom, true);
             _myLayout.AlignElements(lstMyLE2, Alignment.Vertical, false);
+
+            //Resize and reposition the legend so it is just below the map layout element
             int MapTop = MapLE.Location.Y;
-            int MapBottom = MapTop - (int)MapLE.Size.Height;
-            int LegendTop = MapLE.Location.Y;
-            int LegendBottom = LegendTop - (int)LegendLE.Size.Height;
-            //LegendLE.Size.Height = (float)(MapBottom - LegendBottom);
-            //LegendLE.LocationF.Y = MapBottom;
-            
+            int MapBottom = MapTop + (int)MapLE.Size.Height;
+            int LegendTop = LegendLE.Location.Y;
+            int LegendBottom = LegendTop + (int)LegendLE.Size.Height;
+            Size newsize = new System.Drawing.Size((int)LegendLE.Size.Width,(int)(LegendBottom - MapBottom));
+            LegendLE.Size = newsize;
+            Point newlegendTopPoint = new Point(LegendLE.Location.X,MapBottom);
+            LegendLE.Location = newlegendTopPoint;
+
             //remove extra map 2 (if possible???)
             //string LEName = "", LELoc = "";
             //LayoutElement Map2LE = _myLayout.LayoutElements.Find(le => le.Name == "Map 2");
