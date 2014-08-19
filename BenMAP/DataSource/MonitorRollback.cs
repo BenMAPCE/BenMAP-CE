@@ -57,18 +57,24 @@ namespace BenMAP
                     txtPollutant.Text = _bgc.Pollutant.PollutantName;
                     txtPollutant.Enabled = false;
                 }
-                commandText = string.Format("select MonitorDataSetID, MonitorDataSetName from MonitorDataSets where SetupID={0}  and MonitorDataSetID in (select distinct MonitorDataSetID from monitors where pollutantID={1}) order by MonitorDataSetName asc", CommonClass.MainSetup.SetupID, _bgc.Pollutant.PollutantID);
-                ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
-                cboMonitorDataSet.DataSource = ds.Tables[0];
-                cboMonitorDataSet.DisplayMember = "MonitorDataSetName";
-                cboMonitorDataSet.SelectedIndex = 0;
-
+                
                 fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 commandText = string.Format("select * from GridDefinitions where SetupID={0} order by GridDefinitionName asc ", CommonClass.MainSetup.SetupID);
                 dsGrid = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                 cboRollbackGridType.DataSource = dsGrid.Tables[0];
                 cboRollbackGridType.DisplayMember = "GridDefinitionName";
                 cboRollbackGridType.SelectedIndex = -1;
+
+                commandText = string.Format("select MonitorDataSetID, MonitorDataSetName from MonitorDataSets where SetupID={0}  and MonitorDataSetID in (select distinct MonitorDataSetID from monitors where pollutantID={1}) order by MonitorDataSetName asc", CommonClass.MainSetup.SetupID, _bgc.Pollutant.PollutantID);
+                ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+                cboMonitorDataSet.DataSource = ds.Tables[0];
+                cboMonitorDataSet.DisplayMember = "MonitorDataSetName";
+                if (cboMonitorDataSet.Items.Count > 0)
+                {
+                    cboMonitorDataSet.SelectedIndex = 0;
+                }
+
+
             }
             catch (Exception ex)
             {

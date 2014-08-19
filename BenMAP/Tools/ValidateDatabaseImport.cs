@@ -779,7 +779,7 @@ namespace BenMAP
                         {
                             if (float.TryParse(valToVerify, out longitude))
                             {
-                                if (longitude < -180 || longitude > 80)
+                                if (longitude < -180 || longitude > 180)
                                 {
                                     errMsg = "Longitude must be between -180 and 180 degrees inclusive";
                                 }

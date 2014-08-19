@@ -96,7 +96,11 @@ namespace BenMAP
                         feature = new Feature(point);
                         fsPoints.AddFeature(feature);
                     }
-                    mainMap.Layers.Add(fsPoints);
+                    MapPointLayer mpl = new MapPointLayer(fsPoints);
+                    mpl.Symbolizer = new PointSymbolizer();
+                    mpl.Symbolizer.SetFillColor(Color.FromArgb(0,255,255));
+                    mpl.Symbolizer.SetOutline(Color.Black, 1);
+                    mainMap.Layers.Add(mpl);
                 }
             }
             catch (Exception ex)
@@ -109,7 +113,19 @@ namespace BenMAP
         {
             try
             {
-                if (_monitorRollbackLine.BenMAPRollbacks.Count < 1) { MessageBox.Show("You must select at least one region."); return; }
+                if (_monitorRollbackLine.BenMAPRollbacks.Count < 1) 
+                { 
+                    MessageBox.Show("You must add at least one region."); 
+                    return; 
+                }
+                foreach (BenMAPRollback brb in _monitorRollbackLine.BenMAPRollbacks)
+                {
+                    if (brb.SelectRegions.Count < 1)
+                    {
+                        MessageBox.Show("Region "+brb.RegionID + " does not have any areas selected");
+                        return;
+                    }
+                }
                 if (chbExportAfterRollback.Checked)
                 {
                     SaveFileDialog saveFileDialog1 = new SaveFileDialog();

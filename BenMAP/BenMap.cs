@@ -3424,7 +3424,7 @@ namespace BenMAP
                 {
                     bool ChinaNationLayFound = false;
                     bool ChinaRegionLayFound = false;
-                    string ChinaDataPath = System.Windows.Forms.Application.StartupPath + @"\Data\Shapefiles\China\";  /// MCB- Should this be the PROGRAMDATA Path instead???? 
+                    string ChinaDataPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\BenMap-CE\Data\Shapefiles\China\";  /// MCB- Should this be the PROGRAMDATA Path instead???? 
                     ChinaRegionLayFound = mainMap.GetAllLayers().Any<ILayer>(mylay => mylay.LegendText == "Nation");
                     ChinaNationLayFound = mainMap.GetAllLayers().Any<ILayer>(mylay => mylay.LegendText == "Regions");
 
@@ -3465,7 +3465,7 @@ namespace BenMAP
                     bool CountiesLayFound = false;
                     bool StatesLayFound = false;
                     bool USNationLayFound = false;
-                    string USDataPath = System.Windows.Forms.Application.StartupPath + @"\Data\Shapefiles\United States\";
+                    string USDataPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\BenMap-CE\Data\Shapefiles\United States\";
 
                     //Add US Counties if it is not on the map yet -----------------------
                     CountiesLayFound = mainMap.GetAllLayers().Any<ILayer>(mylay => mylay.LegendText == "Counties");

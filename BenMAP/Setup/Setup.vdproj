@@ -429,6 +429,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_7852FCF7BCE84205823CC58D12F64D7A"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_796D4309E2724C18BD1C00A5F7C348B8"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -545,6 +551,12 @@
         {
         "MsmKey" = "8:_A2B2BBED12E79253003B1B2265092E0D"
         "OwnerKey" = "8:_95FFA0C1861744A8AEDD30730C62BC71"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_A47D855851D24EF48CD885198170885A"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -2434,6 +2446,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_7852FCF7BCE84205823CC58D12F64D7A"
+            {
+            "SourcePath" = "8:..\\Resources\\BenMAP-CE_portrait_8.5x11.mwl"
+            "TargetName" = "8:BenMAP-CE_portrait_8.5x11.mwl"
+            "Tag" = "8:"
+            "Folder" = "8:_6E88E7E5F1754DCD8269CC214DFC1B50"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_796D4309E2724C18BD1C00A5F7C348B8"
             {
             "SourcePath" = "8:..\\Data\\Shapefiles\\GBDRollback\\gadm_worldsimplify.prj"
@@ -2889,6 +2921,26 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A47D855851D24EF48CD885198170885A"
+            {
+            "SourcePath" = "8:..\\Resources\\BenMAP-CE_landscape_8.5x11.mwl"
+            "TargetName" = "8:BenMAP-CE_landscape_8.5x11.mwl"
+            "Tag" = "8:"
+            "Folder" = "8:_6E88E7E5F1754DCD8269CC214DFC1B50"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_A788ACB8342AC5FCA553FEAB4070D62B"
@@ -4109,7 +4161,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:FireBirdHelper, Version=1.0.14.0, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:FireBirdHelper, Version=1.0.16.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_F6BB7CCF262AFA2F805AB7C08B325388"
@@ -4292,6 +4344,17 @@
                             "Property" = "8:_6CFD4B51121C43F69BF4866FB7E3B927"
                                 "Folders"
                                 {
+                                    "{9EF0B969-E518-4E46-987F-47570745A589}:_6E88E7E5F1754DCD8269CC214DFC1B50"
+                                    {
+                                    "Name" = "8:ExportTemplates"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_FF819558685644A0AB65C56145122E9D"
+                                        "Folders"
+                                        {
+                                        }
+                                    }
                                     "{9EF0B969-E518-4E46-987F-47570745A589}:_94CAE09193414A06A365267088DF780A"
                                     {
                                     "Name" = "8:SampleData"
@@ -4469,15 +4532,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:BenMap-CE"
-        "ProductCode" = "8:{D21E4CBC-D5C8-4D6B-8E04-A03AC6D6F063}"
-        "PackageCode" = "8:{F3EDAED5-1435-45E1-A6F0-2FAE8722E04A}"
+        "ProductCode" = "8:{F5F3C98B-890A-4558-AA3E-3C25FA1009EE}"
+        "PackageCode" = "8:{6D15CDDF-A79B-49C7-999E-A554CFACE544}"
         "UpgradeCode" = "8:{10C0CCD0-CE12-43BB-BB3E-44059FCA4ADB}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:1.0.14"
+        "ProductVersion" = "8:1.0.16"
         "Manufacturer" = "8:US EPA"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -4592,7 +4655,7 @@
         {
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_41DA277E3DC34C36A4FE9B6BC1251C29"
             {
-            "Name" = "8:BenMAP-CE 1.0.13"
+            "Name" = "8:BenMAP-CE 1.0.16"
             "Arguments" = "8:"
             "Description" = "8:"
             "ShowCmd" = "3:1"
@@ -4606,7 +4669,7 @@
             }
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_575F78EE29BB4A19B77DD2AFD72C7E11"
             {
-            "Name" = "8:BenMAP-CE 1.0.13"
+            "Name" = "8:BenMAP-CE 1.0.16"
             "Arguments" = "8:"
             "Description" = "8:"
             "ShowCmd" = "3:1"
