@@ -15,7 +15,7 @@ namespace PopSim
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new PopSim());
+            Application.Run(new frm_PopSim());
         }
     }
 }
