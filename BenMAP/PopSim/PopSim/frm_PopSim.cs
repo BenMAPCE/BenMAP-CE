@@ -707,6 +707,25 @@ namespace PopSim
 
         private void rbAggregated_CheckedChanged(object sender, EventArgs e)
         {
+            // STOPPED HERE
+            // restrict study box to aggregated studies
+            // load combo boxes
+            string strSQL = "SELECT STUDY_ID, STUDY_NAME, BETA_VALUE FROM LK_STUDY_BETAS ORDER BY STUDY_NAME WHERE ";
+            FbCommand cmdStudies = new FbCommand();
+            cmdStudies.Connection = dbConnection;
+            cmdStudies.CommandType = CommandType.Text;
+            cmdStudies.CommandText = strSQL;
+            FbDataReader drStudies = cmdStudies.ExecuteReader();
+            DataTable dtStudies = new DataTable();
+            dtStudies.Load(drStudies);
+            cbStudy.DataSource = dtStudies;
+            cbStudy.DisplayMember = "STUDY_NAME";
+            cbStudy.ValueMember = "STUDY_ID";
+            // preselect study from scenario table
+            cbStudy.SelectedIndex = (int)dataReader[18];
+
+
+
             if (getRB(gbDoseResponse) == 0) // can't have a cause-specific lag for an aggregated response
             {
                 radioButton11.Visible = false;
