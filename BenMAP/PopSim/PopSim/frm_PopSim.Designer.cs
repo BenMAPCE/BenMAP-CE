@@ -182,7 +182,7 @@
             this.tabControl1.Controls.Add(this.tabStep7);
             this.tabControl1.Controls.Add(this.tabRun);
             this.tabControl1.HotTrack = true;
-            this.tabControl1.ItemSize = new System.Drawing.Size(68, 18);
+            this.tabControl1.ItemSize = new System.Drawing.Size(68, 25);
             this.tabControl1.Location = new System.Drawing.Point(2, 32);
             this.tabControl1.Margin = new System.Windows.Forms.Padding(2);
             this.tabControl1.Multiline = true;
@@ -196,11 +196,11 @@
             this.tabIntro.Controls.Add(this.label6);
             this.tabIntro.Controls.Add(this.label5);
             this.tabIntro.Controls.Add(this.label4);
-            this.tabIntro.Location = new System.Drawing.Point(4, 22);
+            this.tabIntro.Location = new System.Drawing.Point(4, 29);
             this.tabIntro.Margin = new System.Windows.Forms.Padding(2);
             this.tabIntro.Name = "tabIntro";
             this.tabIntro.Padding = new System.Windows.Forms.Padding(2);
-            this.tabIntro.Size = new System.Drawing.Size(524, 403);
+            this.tabIntro.Size = new System.Drawing.Size(524, 396);
             this.tabIntro.TabIndex = 0;
             this.tabIntro.Text = "Introduction";
             this.tabIntro.UseVisualStyleBackColor = true;
@@ -247,11 +247,11 @@
             this.tabStep1.Controls.Add(this.label2);
             this.tabStep1.Controls.Add(this.nudStartYear);
             this.tabStep1.Controls.Add(this.label1);
-            this.tabStep1.Location = new System.Drawing.Point(4, 22);
+            this.tabStep1.Location = new System.Drawing.Point(4, 29);
             this.tabStep1.Margin = new System.Windows.Forms.Padding(2);
             this.tabStep1.Name = "tabStep1";
             this.tabStep1.Padding = new System.Windows.Forms.Padding(2);
-            this.tabStep1.Size = new System.Drawing.Size(524, 403);
+            this.tabStep1.Size = new System.Drawing.Size(524, 396);
             this.tabStep1.TabIndex = 1;
             this.tabStep1.Text = "Years";
             this.tabStep1.UseVisualStyleBackColor = true;
@@ -366,11 +366,11 @@
             this.tabStep2.Controls.Add(this.gbBetaSource);
             this.tabStep2.Controls.Add(this.label7);
             this.tabStep2.Controls.Add(this.gbDoseResponse);
-            this.tabStep2.Location = new System.Drawing.Point(4, 22);
+            this.tabStep2.Location = new System.Drawing.Point(4, 29);
             this.tabStep2.Margin = new System.Windows.Forms.Padding(2);
             this.tabStep2.Name = "tabStep2";
             this.tabStep2.Padding = new System.Windows.Forms.Padding(2);
-            this.tabStep2.Size = new System.Drawing.Size(524, 403);
+            this.tabStep2.Size = new System.Drawing.Size(524, 396);
             this.tabStep2.TabIndex = 2;
             this.tabStep2.Text = "Response";
             this.tabStep2.UseVisualStyleBackColor = true;
@@ -452,11 +452,12 @@
             // 
             // txtUserSuppliedBeta
             // 
-            this.txtUserSuppliedBeta.Location = new System.Drawing.Point(212, 219);
+            this.txtUserSuppliedBeta.Location = new System.Drawing.Point(243, 216);
             this.txtUserSuppliedBeta.Margin = new System.Windows.Forms.Padding(2);
             this.txtUserSuppliedBeta.Name = "txtUserSuppliedBeta";
             this.txtUserSuppliedBeta.Size = new System.Drawing.Size(92, 20);
             this.txtUserSuppliedBeta.TabIndex = 6;
+            this.txtUserSuppliedBeta.Leave += new System.EventHandler(this.txtUserSuppliedBeta_Leave);
             // 
             // lblUserSuppliedBeta
             // 
@@ -464,9 +465,9 @@
             this.lblUserSuppliedBeta.Location = new System.Drawing.Point(56, 216);
             this.lblUserSuppliedBeta.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblUserSuppliedBeta.Name = "lblUserSuppliedBeta";
-            this.lblUserSuppliedBeta.Size = new System.Drawing.Size(124, 13);
+            this.lblUserSuppliedBeta.Size = new System.Drawing.Size(183, 13);
             this.lblUserSuppliedBeta.TabIndex = 5;
-            this.lblUserSuppliedBeta.Text = "Enter User-supplied Beta";
+            this.lblUserSuppliedBeta.Text = "Enter User-supplied Beta (from 0 to 1)";
             // 
             // lblStudyBeta
             // 
@@ -593,11 +594,11 @@
             this.tabStep4.Controls.Add(this.label15);
             this.tabStep4.Controls.Add(this.label14);
             this.tabStep4.Controls.Add(this.label11);
-            this.tabStep4.Location = new System.Drawing.Point(4, 22);
+            this.tabStep4.Location = new System.Drawing.Point(4, 29);
             this.tabStep4.Margin = new System.Windows.Forms.Padding(2);
             this.tabStep4.Name = "tabStep4";
             this.tabStep4.Padding = new System.Windows.Forms.Padding(2);
-            this.tabStep4.Size = new System.Drawing.Size(524, 403);
+            this.tabStep4.Size = new System.Drawing.Size(524, 396);
             this.tabStep4.TabIndex = 3;
             this.tabStep4.Text = "PM Changes";
             this.tabStep4.UseVisualStyleBackColor = true;
@@ -789,11 +790,11 @@
             this.tabPage1.Controls.Add(this.label21);
             this.tabPage1.Controls.Add(this.label20);
             this.tabPage1.Controls.Add(this.label19);
-            this.tabPage1.Location = new System.Drawing.Point(4, 22);
+            this.tabPage1.Location = new System.Drawing.Point(4, 29);
             this.tabPage1.Margin = new System.Windows.Forms.Padding(2);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(2);
-            this.tabPage1.Size = new System.Drawing.Size(524, 403);
+            this.tabPage1.Size = new System.Drawing.Size(524, 396);
             this.tabPage1.TabIndex = 4;
             this.tabPage1.Text = "Ages Affected";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -1071,11 +1072,11 @@
             this.tabStep6.Controls.Add(this.lblSingleLag);
             this.tabStep6.Controls.Add(this.gbLagType);
             this.tabStep6.Controls.Add(this.label31);
-            this.tabStep6.Location = new System.Drawing.Point(4, 22);
+            this.tabStep6.Location = new System.Drawing.Point(4, 29);
             this.tabStep6.Margin = new System.Windows.Forms.Padding(2);
             this.tabStep6.Name = "tabStep6";
             this.tabStep6.Padding = new System.Windows.Forms.Padding(2);
-            this.tabStep6.Size = new System.Drawing.Size(524, 403);
+            this.tabStep6.Size = new System.Drawing.Size(524, 396);
             this.tabStep6.TabIndex = 5;
             this.tabStep6.Text = "Lag Type";
             this.tabStep6.UseVisualStyleBackColor = true;
@@ -1280,11 +1281,11 @@
             // 
             this.tabStep7.Controls.Add(this.label18);
             this.tabStep7.Controls.Add(this.gbBirthsDynamic);
-            this.tabStep7.Location = new System.Drawing.Point(4, 22);
+            this.tabStep7.Location = new System.Drawing.Point(4, 29);
             this.tabStep7.Margin = new System.Windows.Forms.Padding(2);
             this.tabStep7.Name = "tabStep7";
             this.tabStep7.Padding = new System.Windows.Forms.Padding(2);
-            this.tabStep7.Size = new System.Drawing.Size(524, 403);
+            this.tabStep7.Size = new System.Drawing.Size(524, 396);
             this.tabStep7.TabIndex = 6;
             this.tabStep7.Text = "Other";
             this.tabStep7.UseVisualStyleBackColor = true;
@@ -1345,11 +1346,11 @@
             this.tabRun.Controls.Add(this.lblRunStatus);
             this.tabRun.Controls.Add(this.lblRunProgress);
             this.tabRun.Controls.Add(this.progressBar1);
-            this.tabRun.Location = new System.Drawing.Point(4, 22);
+            this.tabRun.Location = new System.Drawing.Point(4, 29);
             this.tabRun.Margin = new System.Windows.Forms.Padding(2);
             this.tabRun.Name = "tabRun";
             this.tabRun.Padding = new System.Windows.Forms.Padding(2);
-            this.tabRun.Size = new System.Drawing.Size(524, 403);
+            this.tabRun.Size = new System.Drawing.Size(524, 396);
             this.tabRun.TabIndex = 7;
             this.tabRun.Text = "Run";
             this.tabRun.UseVisualStyleBackColor = true;
@@ -1479,7 +1480,7 @@
             // 
             this.pictureBox1.Location = new System.Drawing.Point(12, -17);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(530, 82);
+            this.pictureBox1.Size = new System.Drawing.Size(530, 23);
             this.pictureBox1.TabIndex = 6;
             this.pictureBox1.TabStop = false;
             // 

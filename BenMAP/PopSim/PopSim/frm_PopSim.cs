@@ -56,11 +56,11 @@ namespace PopSim
         DateTime StartTime;
         DateTime StopTime;
         string fileName;
-                
+
         public frm_PopSim()
         {
             InitializeComponent();
-            
+
             // create link to Firebird database
             dbConnection = getNewConnection();
             dbConnection.Open();
@@ -70,7 +70,7 @@ namespace PopSim
 
         private static FbConnection getNewConnection()
         {
-            
+
             ConnectionStringSettings settings = ConfigurationManager.ConnectionStrings["ConnectionString"];
             string str = settings.ConnectionString;
             //if (!str.Contains(":"))
@@ -85,10 +85,10 @@ namespace PopSim
         private void fillFormWithScenarioData(int Scenario_ID)
         {
             // load form data for scenario from database
-            FbCommand dataCommand = new  FirebirdSql.Data.FirebirdClient.FbCommand();
+            FbCommand dataCommand = new FirebirdSql.Data.FirebirdClient.FbCommand();
             dataCommand.Connection = dbConnection;
             dataCommand.CommandType = CommandType.Text;
-            dataCommand.CommandText = "Select BEGIN_YEAR, END_YEAR, SCENARIO_NAME, DR_APPROACH_ID, " 
+            dataCommand.CommandText = "Select BEGIN_YEAR, END_YEAR, SCENARIO_NAME, DR_APPROACH_ID, "
                 + "BETA_TYPE_ID, PM_THRESHOLD_CHOICE, PS_TRAJECTORY_ID, LAG_TYPE_ID, BIRTHS_DYNAMIC, "
                 + "USER_SPECIFIED_BETA, PM_THRESHOLD_VALUE, BETA_ADJ_FACTOR, "
                 + "LAG_K_SINGLE, LAG_K_MULTIPLE_CARDIO, LAG_K_MULTIPLE_LUNG, LAG_K_MULTIPLE_OTHER, "
@@ -104,11 +104,11 @@ namespace PopSim
             while (dataReader.Read())
             {
                 nudStartYear.Value = decimal.Parse(dataReader[0].ToString());
-                nudEndYear.Value  = decimal.Parse(dataReader[1].ToString());
+                nudEndYear.Value = decimal.Parse(dataReader[1].ToString());
                 txtScenarioName.Text = dataReader[2].ToString();
-               
+
                 // add new boxes - need to check indexes
-               //  USER_SPECIFIED_BETA, PM_THRESHOLD_VALUE, BETA_ADJ_FACTOR, "
+                //  USER_SPECIFIED_BETA, PM_THRESHOLD_VALUE, BETA_ADJ_FACTOR, "
                 txtUserSuppliedBeta.Text = dataReader[9].ToString();
                 txtPMThreshold.Text = dataReader[10].ToString();
                 txtBetaAdj.Text = dataReader[11].ToString();
@@ -122,7 +122,7 @@ namespace PopSim
                 // + "AGE_RANGE_START, AGE_RANGE_END "
                 txtYoungest.Text = dataReader[16].ToString();
                 txtOldest.Text = dataReader[17].ToString();
-               
+
                 // PM_YEAR_1, PM_YEAR_2, PM_YEAR_3, PM_YEAR_4, PM_YEAR_5, 
                 txtPMYear_1.Text = dataReader[19].ToString();
                 txtPMYear_2.Text = dataReader[20].ToString();
@@ -136,7 +136,7 @@ namespace PopSim
                 txtPM_Val_3.Text = dataReader[26].ToString();
                 txtPM_Val_4.Text = dataReader[27].ToString();
                 txtPM_Val_5.Text = dataReader[28].ToString();
-                
+
                 // SUB_POP_START_1, SUB_POP_START_2, SUB_POP_START_3, SUB_POP_START_4, SUB_POP_START_5, 
                 txtSUB_POP_START_1.Text = dataReader[29].ToString();
                 txtSUB_POP_START_2.Text = dataReader[30].ToString();
@@ -171,10 +171,10 @@ namespace PopSim
                 // lag type
                 setRB(gbLagType, (int)dataReader[7]);
                 // dynamic birth type
-                setRB(gbBirthsDynamic, (int)dataReader[8]); 
+                setRB(gbBirthsDynamic, (int)dataReader[8]);
                 // lag function type
-                setRB(gbLagFunction, (int)dataReader[44]); 
-                
+                setRB(gbLagFunction, (int)dataReader[44]);
+
 
                 // load combo boxes
                 string strSQL = "SELECT STUDY_ID, STUDY_NAME, BETA_VALUE FROM LK_STUDY_BETAS ORDER BY STUDY_NAME ";
@@ -211,7 +211,7 @@ namespace PopSim
             strSQL = "UPDATE SCENARIOS SET END_YEAR =" + nudEndYear.Value.ToString() + " WHERE SCENARIO_ID =" + Scenario_ID.ToString();
             cUpdate.CommandText = strSQL;
             cUpdate.ExecuteNonQuery();
-            
+
             // add new boxes - - need to check indexes
             //  USER_SPECIFIED_BETA, PM_THRESHOLD_VALUE, BETA_ADJ_FACTOR, "
             strSQL = "UPDATE SCENARIOS SET USER_SPECIFIED_BETA=" + txtUserSuppliedBeta.Text + " WHERE SCENARIO_ID =" + Scenario_ID.ToString();
@@ -225,7 +225,7 @@ namespace PopSim
             strSQL = "UPDATE SCENARIOS SET BETA_ADJ_FACTOR=" + txtBetaAdj.Text + " WHERE SCENARIO_ID =" + Scenario_ID.ToString();
             cUpdate.CommandText = strSQL;
             cUpdate.ExecuteNonQuery();
-            
+
             // + "LAG_K_SINGLE, LAG_K_MULTIPLE_CARDIO, LAG_K_MULTIPLE_LUNG, LAG_K_MULTIPLE_OTHER "
             strSQL = "UPDATE SCENARIOS SET LAG_K_SINGLE=" + txtLagSingle.Text + " WHERE SCENARIO_ID =" + Scenario_ID.ToString();
             cUpdate.CommandText = strSQL;
@@ -303,7 +303,7 @@ namespace PopSim
             strSQL = "UPDATE SCENARIOS SET SUB_POP_START_5 =" + txtSUB_POP_START_5.Text + " WHERE SCENARIO_ID =" + Scenario_ID.ToString();
             cUpdate.CommandText = strSQL;
             cUpdate.ExecuteNonQuery();
-                        
+
             //SUB_POP_END_1, SUB_POP_END_2, SUB_POP_END_3, SUB_POP_END_4, SUB_POP_END_5,
             strSQL = "UPDATE SCENARIOS SET SUB_POP_END_1 =" + txtSUB_POP_END_1.Text + " WHERE SCENARIO_ID =" + Scenario_ID.ToString();
             cUpdate.CommandText = strSQL;
@@ -353,7 +353,7 @@ namespace PopSim
             strSQL = "UPDATE SCENARIOS SET PM_THRESHOLD_CHOICE = " + getRB(gbPMTresholdType).ToString() + " WHERE SCENARIO_ID =" + Scenario_ID.ToString();
             cUpdate.CommandText = strSQL;
             cUpdate.ExecuteNonQuery();
-           // pm trajectory type
+            // pm trajectory type
             strSQL = "UPDATE SCENARIOS SET PS_TRAJECTORY_ID = " + getRB(gbPMTrajectory).ToString() + " WHERE SCENARIO_ID =" + Scenario_ID.ToString();
             cUpdate.CommandText = strSQL;
             cUpdate.ExecuteNonQuery();
@@ -370,18 +370,19 @@ namespace PopSim
             strSQL = "UPDATE SCENARIOS SET LAG_FUNCT_TYPE_ID= " + getRB(gbLagFunction).ToString() + " WHERE SCENARIO_ID =" + Scenario_ID.ToString();
             cUpdate.CommandText = strSQL;
             cUpdate.ExecuteNonQuery();
-            
+
 
             // Combo Boxes
-            strSQL = "UPDATE SCENARIOS SET STUDY_ID = " + cbStudy.SelectedIndex.ToString()  + " WHERE SCENARIO_ID =" + Scenario_ID.ToString();
+            strSQL = "UPDATE SCENARIOS SET STUDY_ID = " + cbStudy.SelectedIndex.ToString() + " WHERE SCENARIO_ID =" + Scenario_ID.ToString();
             cUpdate.CommandText = strSQL;
             cUpdate.ExecuteNonQuery();
         }
 
         private void setRB(GroupBox gbBox, int iToSet)
         {
-            foreach (Control myControl in gbBox.Controls ){
-                if ((myControl is RadioButton ) && (myControl.TabIndex == iToSet))
+            foreach (Control myControl in gbBox.Controls)
+            {
+                if ((myControl is RadioButton) && (myControl.TabIndex == iToSet))
                 {
                     RadioButton tempBox = (RadioButton)myControl;
                     tempBox.Checked = true;
@@ -395,7 +396,7 @@ namespace PopSim
             // returns tab index of selected radio button in group box, 0 if nothing selected
             foreach (Control myControl in gbBox.Controls)
             {
-                if (myControl is RadioButton) 
+                if (myControl is RadioButton)
                 {
                     RadioButton tempBox = (RadioButton)myControl;
                     if (tempBox.Checked)
@@ -407,7 +408,7 @@ namespace PopSim
             }
             return 0;
         }
-        
+
         private void Form1_Load(object sender, EventArgs e)
         {
 
@@ -461,12 +462,15 @@ namespace PopSim
             {
                 btnBack.Visible = false;
                 btnNext.Visible = true;
-            }else if (currentpage < 0)
-                {    // don't go off end of tab control
+            }
+            else if (currentpage < 0)
+            {    // don't go off end of tab control
                 currentpage = 0;
                 btnBack.Visible = false;
                 btnNext.Visible = true;
-            } else {
+            }
+            else
+            {
                 btnBack.Visible = true;
                 if (currentpage < MAXPAGE - 1)
                 {
@@ -545,7 +549,7 @@ namespace PopSim
             btnOutput.Visible = true;
             progressBar1.Visible = true;
             lblRunStatus.Text = "Model Run Completed";
-            MessageBox.Show("Run finished in " + (StopTime - StartTime).ToString(),"Run Completed");
+            MessageBox.Show("Run finished in " + (StopTime - StartTime).ToString(), "Run Completed");
             progressBar1.Visible = false;
             lblRunStatus.Visible = false;
             lblRunProgress.Visible = false;
@@ -613,8 +617,8 @@ namespace PopSim
                 outputRoutine.CloseWorkbook(fileName);
                 bwOutput.ReportProgress(100);
                 MessageBox.Show("Files Saved");
-                
-            }                
+
+            }
 
         }
 
@@ -713,7 +717,7 @@ namespace PopSim
             {
                 radioButton11.Visible = true;
                 makeLagTypeControlsVisible(getRB(gbLagType));
-                
+
             }
             makeLagTypeControlsVisible(getRB(gbLagType));
         }
@@ -760,6 +764,28 @@ namespace PopSim
         {
             makeLagTypeControlsVisible(getRB(gbLagType));
         }
-    
+
+        private void txtUserSuppliedBeta_Leave(object sender, EventArgs e)
+        {
+            double dblTemp;
+            try // is this numeric?
+            {
+                dblTemp = double.Parse( txtUserSuppliedBeta.Text);
+                if (dblTemp < 0)
+                {
+                    MessageBox.Show("Beta must be greater than or equal to 0","Reset Beta to 0");
+                    txtUserSuppliedBeta.Text = "0.0";
+   
+                }else if (dblTemp > 1)
+                {
+                    MessageBox.Show("Beta must be less than or equal to 1", "Reset value to 1.0");
+                    txtUserSuppliedBeta.Text = "1.0";
+                }
+            }catch {
+                MessageBox.Show("Beta value must be a number");
+                txtUserSuppliedBeta.Focus();    // return to box so user can fix value
+            
+            }
+        }
     }
-}
+    }
