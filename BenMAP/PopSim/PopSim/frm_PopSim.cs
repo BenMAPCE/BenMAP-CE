@@ -177,7 +177,7 @@ namespace PopSim
 
 
                 // load combo boxes
-                string strSQL = "SELECT STUDY_ID, STUDY_NAME, BETA_VALUE FROM LK_STUDY_BETAS ORDER BY STUDY_NAME ";
+                string strSQL = "SELECT STUDY_ID, STUDY_NAME FROM LK_STUDIES ORDER BY STUDY_NAME ";
                 FbCommand cmdStudies = new FbCommand();
                 cmdStudies.Connection = dbConnection;
                 cmdStudies.CommandType = CommandType.Text;
@@ -710,7 +710,10 @@ namespace PopSim
             // STOPPED HERE
             // restrict study box to aggregated studies
             // load combo boxes
-            string strSQL = "SELECT STUDY_ID, STUDY_NAME, BETA_VALUE FROM LK_STUDY_BETAS ORDER BY STUDY_NAME WHERE ";
+            string strSQL = "SELECT SB.STUDY_ID, SB.STUDY_NAME FROM LK_STUDIES AS SB LEFT JOIN "
+                + "STUDY_BETAS AS S ON S.STUDY_ID = SB.STUDY_ID WHERE S.AGGREGATION = 'Aggregated' or S.AGGREGATION IS NULL "
+                + "ORDER BY STUDY_NAME ";
+
             FbCommand cmdStudies = new FbCommand();
             cmdStudies.Connection = dbConnection;
             cmdStudies.CommandType = CommandType.Text;
@@ -722,7 +725,7 @@ namespace PopSim
             cbStudy.DisplayMember = "STUDY_NAME";
             cbStudy.ValueMember = "STUDY_ID";
             // preselect study from scenario table
-            cbStudy.SelectedIndex = (int)dataReader[18];
+            // cbStudy.SelectedIndex = (int)dataReader[18];
 
 
 
@@ -782,6 +785,21 @@ namespace PopSim
         private void rbDisaggregated_CheckedChanged(object sender, EventArgs e)
         {
             makeLagTypeControlsVisible(getRB(gbLagType));
+            // load combo boxes
+            string strSQL = "SELECT SB.STUDY_ID, SB.STUDY_NAME FROM LK_STUDIES AS SB INNER JOIN "
+                + "STUDY_BETAS AS S ON S.STUDY_ID = SB.STUDY_ID WHERE S.AGGREGATION = 'Disaggregated' "
+                + "ORDER BY STUDY_NAME ";
+            FbCommand cmdStudies = new FbCommand();
+            cmdStudies.Connection = dbConnection;
+            cmdStudies.CommandType = CommandType.Text;
+            cmdStudies.CommandText = strSQL;
+            FbDataReader drStudies = cmdStudies.ExecuteReader();
+            DataTable dtStudies = new DataTable();
+            dtStudies.Load(drStudies);
+            cbStudy.DataSource = dtStudies;
+            cbStudy.DisplayMember = "STUDY_NAME";
+            cbStudy.ValueMember = "STUDY_ID";
+
         }
 
         private void txtUserSuppliedBeta_Leave(object sender, EventArgs e)

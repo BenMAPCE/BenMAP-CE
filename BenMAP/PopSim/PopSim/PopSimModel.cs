@@ -713,9 +713,9 @@ namespace PopSim
                 Beta = InputData.getUser_Beta();
             //Otherwise if user did not specify a Beta value, then look up the relevant Beta in the study table
             } else {
-                sqltext = "SELECT Studies.Study, Studies.Aggregation, Studies.Cause, Studies.Beta FROM Studies";
-                sqltext = sqltext + " where Studies.Study = '" + InputData.getUser_Study_Name() + 
-                        "' AND Studies.Aggregation = '" + strApproach + "' AND Studies.Cause = '" + Illness_Type + "'";
+                sqltext = "SELECT Study, Aggregation, Cause, Beta FROM LK_Studies";
+                sqltext = sqltext + " where Study = '" + InputData.getUser_Study_Name() + 
+                        "' AND Aggregation = '" + strApproach + "' AND Cause = '" + Illness_Type + "'";
                 dataCommand.CommandText = sqltext;
                 dataReader = dataCommand.ExecuteReader();
                 dataReader.Read();

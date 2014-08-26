@@ -293,7 +293,7 @@ namespace PopSim
             FbCommand dataCommand = new  FirebirdSql.Data.FirebirdClient.FbCommand();
             dataCommand.Connection = dbConnection;
             dataCommand.CommandType = CommandType.Text;
-            dataCommand.CommandText = "SELECT STUDY FROM STUDIES WHERE STUDY_ID=" + this.getUser_Study().ToString() ;
+            dataCommand.CommandText = "SELECT STUDY_NAME FROM LK_STUDIES WHERE STUDY_ID=" + this.getUser_Study().ToString() ;
             FbDataReader dataReader;
             dataReader = dataCommand.ExecuteReader();
             dataReader.Read();
