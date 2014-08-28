@@ -487,6 +487,7 @@
             this.cbStudy.Name = "cbStudy";
             this.cbStudy.Size = new System.Drawing.Size(209, 21);
             this.cbStudy.TabIndex = 3;
+           
             // 
             // gbBetaSource
             // 

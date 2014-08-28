@@ -8,6 +8,7 @@ using System.Data;
 using FirebirdSql.Data.FirebirdClient;
 // next namespace includes the background worker object
 using System.ComponentModel;
+using System.Windows.Forms; // for message box function
 
 // this is the module that runs the simulation
 namespace PopSim

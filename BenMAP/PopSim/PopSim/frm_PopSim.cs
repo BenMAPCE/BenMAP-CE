@@ -386,9 +386,8 @@ namespace PopSim
             cUpdate.CommandText = strSQL;
             cUpdate.ExecuteNonQuery();
 
-
             // Combo Boxes
-            strSQL = "UPDATE SCENARIOS SET STUDY_ID = " + cbStudy.SelectedIndex.ToString() + " WHERE SCENARIO_ID =" + Scenario_ID.ToString();
+            strSQL = "UPDATE SCENARIOS SET STUDY_ID = " + cbStudy.SelectedValue.ToString() + " WHERE SCENARIO_ID =" + Scenario_ID.ToString();
             cUpdate.CommandText = strSQL;
             cUpdate.ExecuteNonQuery();
         }
@@ -837,5 +836,7 @@ namespace PopSim
             
             }
         }
+
+       
     }
     }
