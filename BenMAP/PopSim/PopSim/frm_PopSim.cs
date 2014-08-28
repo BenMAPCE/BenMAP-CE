@@ -588,44 +588,48 @@ namespace PopSim
 
             outputRoutine.OpenWorkbook(fileName);
             if (outputRoutine.GetWBOpen())
-            {    // output worksheets to workbook
+            {    // output worksheets to workbook - modified to be in inverse order from original to get workbooks in correct output order
                 bwOutput.ReportProgress(0);
                 bwOutput.ReportProgress(0);
 
-                outputRoutine.queryStringToWB("Select * from Report_Input_Summary", "Report_Input_Summary");
-                bwOutput.ReportProgress(10);
-                outputRoutine.queryStringToWB("Select * from Report_Beta_Summary", "Report_Beta_Summary");
-
+            
                 // crosstab queries
+                bwOutput.ReportProgress(10);
+                outputRoutine.queryStringToXTabWB("Select Age, Year_Num, Sum(Increase_Male) as Increase_Female from  "
+                    + " RPT_INC_COHORT_COND_LIFE_EXP GROUP BY Age, Year_Num", "Report_Increase_PCLE_Male",
+                    "Age", "Year_Num", "Increase_Female");
+
                 bwOutput.ReportProgress(20);
-                outputRoutine.queryStringToXTabWB("SELECT Age, Year_Num, Sum(Avoided_Deaths) AS Avoided_Deaths "
-                    + " FROM Report_Avoided_Deaths GROUP BY Age, Year_Num ORDER BY Age, Year_Num", "Report_Avoided_Deaths_Xtab",
-                    "Age", "Year_Num", "Avoided_Deaths");
+                outputRoutine.queryStringToXTabWB("Select Age, Year_Num, Sum(Increase_Female) as Increase_Female from  "
+                    + " RPT_INC_COHORT_COND_LIFE_EXP GROUP BY Age, Year_Num", "Report_Increase_PCLE_Female",
+                    "Age", "Year_Num", "Increase_Female");
 
                 bwOutput.ReportProgress(30);
-                outputRoutine.queryStringToXTabWB("Select Age, Year_Num, Sum(Life_Years_Gained) as Life_Years_Gained "
-                    + "FROM Report_Life_Years_Gained Group By Age, Year_Num ", "Report_Life_Years_Gained_Xtab",
-                    "Age", "Year_Num", "Life_Years_Gained");
-
+                outputRoutine.queryStringToXTabWB("Select Age, Year_Num, Sum(Increase_Male) as Increase_Male from  "
+                                + " RPT_INC_COHORT_COND_LIFE_EXP GROUP BY Age, Year_Num", "Report_Increase_CCLE_Male",
+                                "Age", "Year_Num", "Increase_Male");
+                
                 bwOutput.ReportProgress(40);
                 outputRoutine.queryStringToXTabWB("Select Age, Year_Num, Sum(Increase_Female) as Increase_Female from  "
                     + " RPT_INC_COHORT_COND_LIFE_EXP GROUP BY Age, Year_Num", "Report_Increase_CCLE_Female",
                     "Age", "Year_Num", "Increase_Female");
 
-                bwOutput.ReportProgress(50);
-                outputRoutine.queryStringToXTabWB("Select Age, Year_Num, Sum(Increase_Male) as Increase_Male from  "
-                                + " RPT_INC_COHORT_COND_LIFE_EXP GROUP BY Age, Year_Num", "Report_Increase_CCLE_Male",
-                                "Age", "Year_Num", "Increase_Male");
-
+                bwOutput.ReportProgress(60);
+                outputRoutine.queryStringToXTabWB("Select Age, Year_Num, Sum(Life_Years_Gained) as Life_Years_Gained "
+                    + "FROM Report_Life_Years_Gained Group By Age, Year_Num ", "Report_Life_Years_Gained_Xtab",
+                    "Age", "Year_Num", "Life_Years_Gained");
+                                
                 bwOutput.ReportProgress(70);
-                outputRoutine.queryStringToXTabWB("Select Age, Year_Num, Sum(Increase_Female) as Increase_Female from  "
-                    + " RPT_INC_COHORT_COND_LIFE_EXP GROUP BY Age, Year_Num", "Report_Increase_PCLE_Female",
-                    "Age", "Year_Num", "Increase_Female");
+                outputRoutine.queryStringToXTabWB("SELECT Age, Year_Num, Sum(Avoided_Deaths) AS Avoided_Deaths "
+                    + " FROM Report_Avoided_Deaths GROUP BY Age, Year_Num ORDER BY Age, Year_Num", "Report_Avoided_Deaths_Xtab",
+                    "Age", "Year_Num", "Avoided_Deaths");
 
+                
+                
+                outputRoutine.queryStringToWB("Select * from Report_Input_Summary", "Report_Input_Summary");
                 bwOutput.ReportProgress(90);
-                outputRoutine.queryStringToXTabWB("Select Age, Year_Num, Sum(Increase_Male) as Increase_Female from  "
-                    + " RPT_INC_COHORT_COND_LIFE_EXP GROUP BY Age, Year_Num", "Report_Increase_PCLE_Male",
-                    "Age", "Year_Num", "Increase_Female");
+                outputRoutine.queryStringToWB("Select * from Report_Beta_Summary", "Report_Beta_Summary");
+
 
                 // close workbook
                 outputRoutine.CloseWorkbook(fileName);
