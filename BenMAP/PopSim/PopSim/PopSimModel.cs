@@ -713,7 +713,7 @@ namespace PopSim
                 Beta = InputData.getUser_Beta();
             //Otherwise if user did not specify a Beta value, then look up the relevant Beta in the study table
             } else {
-                sqltext = "SELECT Study, Aggregation, Cause, Beta FROM LK_Studies";
+                sqltext = "SELECT Study, Aggregation, Cause, Beta FROM Study_Betas";
                 sqltext = sqltext + " where Study = '" + InputData.getUser_Study_Name() + 
                         "' AND Aggregation = '" + strApproach + "' AND Cause = '" + Illness_Type + "'";
                 dataCommand.CommandText = sqltext;
@@ -750,6 +750,7 @@ namespace PopSim
                 dataReader.Close();
                 
                 //If user has specified a threshold value, look up t
+                // 
                 if (InputData.getPM_Choice() == 1) {
     
                     //Look up threshold value and store as variable t

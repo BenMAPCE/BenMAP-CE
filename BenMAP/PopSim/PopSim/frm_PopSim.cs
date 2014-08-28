@@ -177,7 +177,22 @@ namespace PopSim
 
 
                 // load combo boxes
-                string strSQL = "SELECT STUDY_ID, STUDY_NAME FROM LK_STUDIES ORDER BY STUDY_NAME ";
+                // combo box load varies with aggregation/disaggregation
+                string strSQL = "";
+                if ((int)dataReader[3] > 0)
+                { // disaggregated
+                    strSQL = "SELECT SB.STUDY_ID, SB.STUDY_NAME FROM LK_STUDIES AS SB INNER JOIN "
+                                   + "STUDY_BETAS AS S ON S.STUDY_ID = SB.STUDY_ID WHERE S.AGGREGATION = 'Disaggregated' "
+                                   + "ORDER BY STUDY_NAME ";
+                }
+                else // aggregated
+                {
+                    strSQL = "SELECT SB.STUDY_ID, SB.STUDY_NAME FROM LK_STUDIES AS SB LEFT JOIN "
+                        + "STUDY_BETAS AS S ON S.STUDY_ID = SB.STUDY_ID WHERE S.AGGREGATION = 'Aggregated' or S.AGGREGATION IS NULL "
+                        + "ORDER BY STUDY_NAME ";
+                }
+
+
                 FbCommand cmdStudies = new FbCommand();
                 cmdStudies.Connection = dbConnection;
                 cmdStudies.CommandType = CommandType.Text;
@@ -694,7 +709,7 @@ namespace PopSim
                 txtPMThreshold.Visible = false;
                 lblBetaAdjAtThreshold.Visible = false;
                 txtBetaAdj.Visible = false;
-
+                
             }
             else
             {
@@ -707,7 +722,6 @@ namespace PopSim
 
         private void rbAggregated_CheckedChanged(object sender, EventArgs e)
         {
-            // STOPPED HERE
             // restrict study box to aggregated studies
             // load combo boxes
             string strSQL = "SELECT SB.STUDY_ID, SB.STUDY_NAME FROM LK_STUDIES AS SB LEFT JOIN "
@@ -726,7 +740,6 @@ namespace PopSim
             cbStudy.ValueMember = "STUDY_ID";
             // preselect study from scenario table
             // cbStudy.SelectedIndex = (int)dataReader[18];
-
 
 
             if (getRB(gbDoseResponse) == 0) // can't have a cause-specific lag for an aggregated response
@@ -799,7 +812,7 @@ namespace PopSim
             cbStudy.DataSource = dtStudies;
             cbStudy.DisplayMember = "STUDY_NAME";
             cbStudy.ValueMember = "STUDY_ID";
-
+            txtUserSuppliedBeta.Text = "0"; // can't have user supplied beta for disaggregated model
         }
 
         private void txtUserSuppliedBeta_Leave(object sender, EventArgs e)
