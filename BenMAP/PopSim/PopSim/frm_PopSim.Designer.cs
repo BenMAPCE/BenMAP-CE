@@ -190,6 +190,7 @@
             this.tabControl1.SelectedIndex = 0;
             this.tabControl1.Size = new System.Drawing.Size(532, 429);
             this.tabControl1.TabIndex = 0;
+            this.tabControl1.SelectedIndexChanged += new System.EventHandler(this.tabControl1_SelectedIndexChanged);
             // 
             // tabIntro
             // 
@@ -382,6 +383,7 @@
             this.txtBetaAdj.Name = "txtBetaAdj";
             this.txtBetaAdj.Size = new System.Drawing.Size(76, 20);
             this.txtBetaAdj.TabIndex = 11;
+            this.txtBetaAdj.Leave += new System.EventHandler(this.txtBetaAdj_Leave);
             // 
             // lblBetaAdjAtThreshold
             // 
@@ -400,6 +402,7 @@
             this.txtPMThreshold.Name = "txtPMThreshold";
             this.txtPMThreshold.Size = new System.Drawing.Size(76, 20);
             this.txtPMThreshold.TabIndex = 9;
+            this.txtPMThreshold.Leave += new System.EventHandler(this.txtPMThreshold_Leave);
             // 
             // lblPMThreshold
             // 
@@ -487,7 +490,6 @@
             this.cbStudy.Name = "cbStudy";
             this.cbStudy.Size = new System.Drawing.Size(209, 21);
             this.cbStudy.TabIndex = 3;
-           
             // 
             // gbBetaSource
             // 

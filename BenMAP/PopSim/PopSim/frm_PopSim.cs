@@ -448,7 +448,16 @@ namespace PopSim
         private void btnNext_Click(object sender, EventArgs e)
         { // select next page
             currentpage++;
-            if (currentpage == MAXPAGE)
+            pageChange();
+        }
+
+        private void btnBack_Click(object sender, EventArgs e)
+        {
+            currentpage--;
+            pageChange();
+        }
+
+        /*if (currentpage == MAXPAGE)
             {
                 btnNext.Visible = false;
                 btnBack.Visible = true;
@@ -468,11 +477,11 @@ namespace PopSim
                 }
             };
             tabControl1.SelectTab(currentpage);
-        }
+         */
 
-        private void btnBack_Click(object sender, EventArgs e)
+        private void pageChange()   
         {
-            currentpage--;
+            // handle page change on tab or next button
             if (currentpage == 0)
             {
                 btnBack.Visible = false;
@@ -484,7 +493,18 @@ namespace PopSim
                 btnBack.Visible = false;
                 btnNext.Visible = true;
             }
-            else
+            else if (currentpage == MAXPAGE)
+            {
+                btnNext.Visible = false;
+                btnBack.Visible = true;
+            }
+            else if (currentpage > MAXPAGE)
+            {    // don't go off end of tab control
+                currentpage = MAXPAGE;
+                btnNext.Visible = false;
+                btnBack.Visible = true;
+
+            } else
             {
                 btnBack.Visible = true;
                 if (currentpage < MAXPAGE - 1)
@@ -494,6 +514,7 @@ namespace PopSim
             };
             tabControl1.SelectTab(currentpage);
         }
+
 
         private void btnRunModel_Click(object sender, EventArgs e)
         {
@@ -625,12 +646,13 @@ namespace PopSim
                     + " FROM Report_Avoided_Deaths GROUP BY Age, Year_Num ORDER BY Age, Year_Num", "Report_Avoided_Deaths_Xtab",
                     "Age", "Year_Num", "Avoided_Deaths");
 
-                
-                
-                outputRoutine.queryStringToWB("Select * from Report_Input_Summary", "Report_Input_Summary");
-                bwOutput.ReportProgress(90);
-                outputRoutine.queryStringToWB("Select * from Report_Beta_Summary", "Report_Beta_Summary");
 
+
+                bwOutput.ReportProgress(80);
+                outputRoutine.queryStringToWB("Select * from Report_Beta_Summary", "Report_Beta_Summary");
+                bwOutput.ReportProgress(90);
+                outputRoutine.queryStringToWB("Select * from Report_Input_Summary", "Report_Input_Summary");
+                
 
                 // close workbook
                 outputRoutine.CloseWorkbook(fileName);
@@ -822,18 +844,20 @@ namespace PopSim
         private void txtUserSuppliedBeta_Leave(object sender, EventArgs e)
         {
             double dblTemp;
+            const double MIN_BETA = -1.74E-02;
+            const double MAX_BETA = 0.031;
+                    
             try // is this numeric?
             {
                 dblTemp = double.Parse( txtUserSuppliedBeta.Text);
-                if (dblTemp < 0)
-                {
-                    MessageBox.Show("Beta must be greater than or equal to 0","Reset Beta to 0");
-                    txtUserSuppliedBeta.Text = "0.0";
+                if (dblTemp < MIN_BETA)
+                {   MessageBox.Show("Beta must be greater than or equal to "+MIN_BETA.ToString(),"Reset Beta to "+MIN_BETA.ToString());
+                    txtUserSuppliedBeta.Text = MIN_BETA.ToString();
    
-                }else if (dblTemp > 1)
+                }else if (dblTemp > MAX_BETA)
                 {
-                    MessageBox.Show("Beta must be less than or equal to 1", "Reset value to 1.0");
-                    txtUserSuppliedBeta.Text = "1.0";
+                    MessageBox.Show("Beta must be less than or equal to " + MAX_BETA.ToString(), "Reset value to " + MAX_BETA.ToString());
+                    txtUserSuppliedBeta.Text = MAX_BETA.ToString();
                 }
             }catch {
                 MessageBox.Show("Beta value must be a number");
@@ -842,6 +866,67 @@ namespace PopSim
             }
         }
 
-       
+        private void txtBetaAdj_Leave(object sender, EventArgs e)
+        {
+            double dblTemp;
+            const double MIN_BETA = 0;
+            const double MAX_BETA = 1;
+
+            try // is this numeric?
+            {
+                dblTemp = double.Parse(txtBetaAdj.Text);
+                if (dblTemp < MIN_BETA)
+                {
+                    MessageBox.Show("Beta adjustment must be greater than or equal to " + MIN_BETA.ToString(), "Reset Beta to " + MIN_BETA.ToString());
+                    txtBetaAdj.Text = MIN_BETA.ToString();
+
+                }
+                else if (dblTemp > MAX_BETA)
+                {
+                    MessageBox.Show("Beta adjustment must be less than or equal to " + MAX_BETA.ToString(), "Reset value to " + MAX_BETA.ToString());
+                    txtBetaAdj.Text = MAX_BETA.ToString();
+                }
+            }
+            catch
+            {
+                MessageBox.Show("Beta adjustment value must be a number");
+                txtBetaAdj.Focus();    // return to box so user can fix value
+
+            }
+
+        }
+
+        private void txtPMThreshold_Leave(object sender, EventArgs e)
+        {
+            double dblTemp;
+            const double MIN_PM = 4;
+
+            try // is this numeric?
+            {
+                dblTemp = double.Parse(txtPMThreshold.Text);
+                if (dblTemp < MIN_PM)
+                {
+                    MessageBox.Show("PM Threshold must be greater than or equal to " + MIN_PM.ToString(), "Reset Beta to " + MIN_PM.ToString());
+                    txtBetaAdj.Text = MIN_PM.ToString();
+
+                }
+                
+            }
+            catch
+            {
+                MessageBox.Show("PM threshold must be a number");
+                txtBetaAdj.Focus();    // return to box so user can fix value
+
+            }
+
+        }
+
+        private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // update current page counter to match tab clicked by user
+            currentpage = tabControl1.SelectedIndex;
+            // refresh next and back buttons based on current page
+            pageChange();
+        }
     }
     }
