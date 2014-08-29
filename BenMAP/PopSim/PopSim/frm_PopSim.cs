@@ -851,7 +851,7 @@ namespace PopSim
             {
                 dblTemp = double.Parse( txtUserSuppliedBeta.Text);
                 if (dblTemp < MIN_BETA)
-                {   MessageBox.Show("Beta must be greater than or equal to "+MIN_BETA.ToString(),"Reset Beta to "+MIN_BETA.ToString());
+                {   MessageBox.Show("Beta must be greater than or equal to "+MIN_BETA.ToString(),"Reset value to "+MIN_BETA.ToString());
                     txtUserSuppliedBeta.Text = MIN_BETA.ToString();
    
                 }else if (dblTemp > MAX_BETA)
@@ -877,7 +877,7 @@ namespace PopSim
                 dblTemp = double.Parse(txtBetaAdj.Text);
                 if (dblTemp < MIN_BETA)
                 {
-                    MessageBox.Show("Beta adjustment must be greater than or equal to " + MIN_BETA.ToString(), "Reset Beta to " + MIN_BETA.ToString());
+                    MessageBox.Show("Beta adjustment must be greater than or equal to " + MIN_BETA.ToString(), "Reset value to " + MIN_BETA.ToString());
                     txtBetaAdj.Text = MIN_BETA.ToString();
 
                 }
@@ -906,8 +906,8 @@ namespace PopSim
                 dblTemp = double.Parse(txtPMThreshold.Text);
                 if (dblTemp < MIN_PM)
                 {
-                    MessageBox.Show("PM Threshold must be greater than or equal to " + MIN_PM.ToString(), "Reset Beta to " + MIN_PM.ToString());
-                    txtBetaAdj.Text = MIN_PM.ToString();
+                    MessageBox.Show("PM Threshold must be greater than or equal to " + MIN_PM.ToString(), "Reset value to " + MIN_PM.ToString());
+                    txtPMThreshold.Text = MIN_PM.ToString();
 
                 }
                 
