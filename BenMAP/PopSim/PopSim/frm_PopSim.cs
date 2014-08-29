@@ -204,7 +204,8 @@ namespace PopSim
                 cbStudy.DisplayMember = "STUDY_NAME";
                 cbStudy.ValueMember = "STUDY_ID";
                 // preselect study from scenario table
-                cbStudy.SelectedIndex = (int)dataReader[18];
+                cbStudy.SelectedValue = (int)dataReader[18];
+                
 
             }
         }
