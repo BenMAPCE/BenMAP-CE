@@ -928,5 +928,27 @@ namespace PopSim
             // refresh next and back buttons based on current page
             pageChange();
         }
+
+        private void tabControl1_DrawItem(object sender, DrawItemEventArgs e)
+        {
+            // from http://arsalantamiz.blogspot.com/2008/07/custom-tab-control-layout.html
+            // translated from VB.Net
+            Graphics g; 
+            String sText;
+            int iX;
+            int iY;
+            SizeF sizeText;
+            TabControl ctlTab;
+
+            ctlTab = (TabControl) sender;
+
+            g = e.Graphics;
+
+            sText = ctlTab.TabPages[e.Index].Text;
+            sizeText = g.MeasureString(sText, ctlTab.Font);
+            iX = e.Bounds.Left + 6;
+            iY =(int) (e.Bounds.Top + (e.Bounds.Height - sizeText.Height) / 2);
+            g.DrawString(sText, ctlTab.Font, Brushes.Black, iX, iY);
+        }
     }
     }

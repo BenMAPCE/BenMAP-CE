@@ -147,6 +147,8 @@
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.bwOutput = new System.ComponentModel.BackgroundWorker();
+            this.label9 = new System.Windows.Forms.Label();
+            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.tabControl1.SuspendLayout();
             this.tabIntro.SuspendLayout();
             this.tabStep1.SuspendLayout();
@@ -171,7 +173,7 @@
             // 
             // tabControl1
             // 
-            this.tabControl1.Appearance = System.Windows.Forms.TabAppearance.Buttons;
+            this.tabControl1.Alignment = System.Windows.Forms.TabAlignment.Left;
             this.tableLayoutPanel1.SetColumnSpan(this.tabControl1, 2);
             this.tabControl1.Controls.Add(this.tabIntro);
             this.tabControl1.Controls.Add(this.tabStep1);
@@ -181,27 +183,33 @@
             this.tabControl1.Controls.Add(this.tabStep6);
             this.tabControl1.Controls.Add(this.tabStep7);
             this.tabControl1.Controls.Add(this.tabRun);
+            this.tabControl1.DrawMode = System.Windows.Forms.TabDrawMode.OwnerDrawFixed;
+            this.tabControl1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tabControl1.HotTrack = true;
-            this.tabControl1.ItemSize = new System.Drawing.Size(68, 25);
+            this.tabControl1.ItemSize = new System.Drawing.Size(30, 120);
             this.tabControl1.Location = new System.Drawing.Point(2, 32);
             this.tabControl1.Margin = new System.Windows.Forms.Padding(2);
             this.tabControl1.Multiline = true;
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
             this.tabControl1.Size = new System.Drawing.Size(532, 429);
+            this.tabControl1.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
             this.tabControl1.TabIndex = 0;
+            this.tabControl1.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.tabControl1_DrawItem);
             this.tabControl1.SelectedIndexChanged += new System.EventHandler(this.tabControl1_SelectedIndexChanged);
             // 
             // tabIntro
             // 
+            this.tabIntro.Controls.Add(this.richTextBox1);
+            this.tabIntro.Controls.Add(this.label9);
             this.tabIntro.Controls.Add(this.label6);
             this.tabIntro.Controls.Add(this.label5);
             this.tabIntro.Controls.Add(this.label4);
-            this.tabIntro.Location = new System.Drawing.Point(4, 29);
+            this.tabIntro.Location = new System.Drawing.Point(124, 4);
             this.tabIntro.Margin = new System.Windows.Forms.Padding(2);
             this.tabIntro.Name = "tabIntro";
             this.tabIntro.Padding = new System.Windows.Forms.Padding(2);
-            this.tabIntro.Size = new System.Drawing.Size(524, 396);
+            this.tabIntro.Size = new System.Drawing.Size(404, 421);
             this.tabIntro.TabIndex = 0;
             this.tabIntro.Text = "Introduction";
             this.tabIntro.UseVisualStyleBackColor = true;
@@ -213,10 +221,10 @@
             this.label6.Location = new System.Drawing.Point(19, 51);
             this.label6.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(418, 178);
+            this.label6.Size = new System.Drawing.Size(381, 73);
             this.label6.TabIndex = 2;
             this.label6.Text = "Popsim is a dynamic population simulation that incorporates the cumulative effect" +
-    "s of air pollution on different age groups over time.";
+    "s of air pollution on different age groups over time. ";
             // 
             // label5
             // 
@@ -235,9 +243,9 @@
             this.label4.Location = new System.Drawing.Point(11, 2);
             this.label4.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(101, 29);
+            this.label4.Size = new System.Drawing.Size(187, 29);
             this.label4.TabIndex = 0;
-            this.label4.Text = "Popsim";
+            this.label4.Text = "PopSim (Beta)";
             // 
             // tabStep1
             // 
@@ -248,11 +256,11 @@
             this.tabStep1.Controls.Add(this.label2);
             this.tabStep1.Controls.Add(this.nudStartYear);
             this.tabStep1.Controls.Add(this.label1);
-            this.tabStep1.Location = new System.Drawing.Point(4, 29);
+            this.tabStep1.Location = new System.Drawing.Point(29, 4);
             this.tabStep1.Margin = new System.Windows.Forms.Padding(2);
             this.tabStep1.Name = "tabStep1";
             this.tabStep1.Padding = new System.Windows.Forms.Padding(2);
-            this.tabStep1.Size = new System.Drawing.Size(524, 396);
+            this.tabStep1.Size = new System.Drawing.Size(499, 421);
             this.tabStep1.TabIndex = 1;
             this.tabStep1.Text = "Years";
             this.tabStep1.UseVisualStyleBackColor = true;
@@ -282,7 +290,7 @@
             this.label3.Location = new System.Drawing.Point(27, 84);
             this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(51, 13);
+            this.label3.Size = new System.Drawing.Size(59, 13);
             this.label3.TabIndex = 4;
             this.label3.Text = "End Year";
             // 
@@ -315,7 +323,7 @@
             this.label2.Location = new System.Drawing.Point(23, 57);
             this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(54, 13);
+            this.label2.Size = new System.Drawing.Size(64, 13);
             this.label2.TabIndex = 2;
             this.label2.Text = "Start Year";
             // 
@@ -367,11 +375,11 @@
             this.tabStep2.Controls.Add(this.gbBetaSource);
             this.tabStep2.Controls.Add(this.label7);
             this.tabStep2.Controls.Add(this.gbDoseResponse);
-            this.tabStep2.Location = new System.Drawing.Point(4, 29);
+            this.tabStep2.Location = new System.Drawing.Point(29, 4);
             this.tabStep2.Margin = new System.Windows.Forms.Padding(2);
             this.tabStep2.Name = "tabStep2";
             this.tabStep2.Padding = new System.Windows.Forms.Padding(2);
-            this.tabStep2.Size = new System.Drawing.Size(524, 396);
+            this.tabStep2.Size = new System.Drawing.Size(499, 421);
             this.tabStep2.TabIndex = 2;
             this.tabStep2.Text = "Response";
             this.tabStep2.UseVisualStyleBackColor = true;
@@ -391,7 +399,7 @@
             this.lblBetaAdjAtThreshold.Location = new System.Drawing.Point(220, 281);
             this.lblBetaAdjAtThreshold.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblBetaAdjAtThreshold.Name = "lblBetaAdjAtThreshold";
-            this.lblBetaAdjAtThreshold.Size = new System.Drawing.Size(141, 13);
+            this.lblBetaAdjAtThreshold.Size = new System.Drawing.Size(169, 13);
             this.lblBetaAdjAtThreshold.TabIndex = 10;
             this.lblBetaAdjAtThreshold.Text = "Beta adjustment at threshold";
             // 
@@ -410,7 +418,7 @@
             this.lblPMThreshold.Location = new System.Drawing.Point(220, 261);
             this.lblPMThreshold.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblPMThreshold.Name = "lblPMThreshold";
-            this.lblPMThreshold.Size = new System.Drawing.Size(115, 13);
+            this.lblPMThreshold.Size = new System.Drawing.Size(136, 13);
             this.lblPMThreshold.TabIndex = 8;
             this.lblPMThreshold.Text = "PM threshold (ug/m^3)";
             // 
@@ -433,7 +441,7 @@
             this.radioButton5.Location = new System.Drawing.Point(16, 44);
             this.radioButton5.Margin = new System.Windows.Forms.Padding(2);
             this.radioButton5.Name = "radioButton5";
-            this.radioButton5.Size = new System.Drawing.Size(143, 17);
+            this.radioButton5.Size = new System.Drawing.Size(168, 17);
             this.radioButton5.TabIndex = 1;
             this.radioButton5.TabStop = true;
             this.radioButton5.Text = "Yes - PM threshold exists";
@@ -446,7 +454,7 @@
             this.radioButton4.Location = new System.Drawing.Point(16, 17);
             this.radioButton4.Margin = new System.Windows.Forms.Padding(2);
             this.radioButton4.Name = "radioButton4";
-            this.radioButton4.Size = new System.Drawing.Size(104, 17);
+            this.radioButton4.Size = new System.Drawing.Size(119, 17);
             this.radioButton4.TabIndex = 0;
             this.radioButton4.TabStop = true;
             this.radioButton4.Text = "No PM threshold";
@@ -468,7 +476,7 @@
             this.lblUserSuppliedBeta.Location = new System.Drawing.Point(56, 216);
             this.lblUserSuppliedBeta.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblUserSuppliedBeta.Name = "lblUserSuppliedBeta";
-            this.lblUserSuppliedBeta.Size = new System.Drawing.Size(183, 13);
+            this.lblUserSuppliedBeta.Size = new System.Drawing.Size(221, 13);
             this.lblUserSuppliedBeta.TabIndex = 5;
             this.lblUserSuppliedBeta.Text = "Enter User-supplied Beta (from 0 to 1)";
             // 
@@ -478,7 +486,7 @@
             this.lblStudyBeta.Location = new System.Drawing.Point(56, 195);
             this.lblStudyBeta.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblStudyBeta.Name = "lblStudyBeta";
-            this.lblStudyBeta.Size = new System.Drawing.Size(135, 13);
+            this.lblStudyBeta.Size = new System.Drawing.Size(162, 13);
             this.lblStudyBeta.TabIndex = 4;
             this.lblStudyBeta.Text = "Study to use for Beta value";
             // 
@@ -510,7 +518,7 @@
             this.radioButton3.Location = new System.Drawing.Point(16, 40);
             this.radioButton3.Margin = new System.Windows.Forms.Padding(2);
             this.radioButton3.Name = "radioButton3";
-            this.radioButton3.Size = new System.Drawing.Size(131, 17);
+            this.radioButton3.Size = new System.Drawing.Size(154, 17);
             this.radioButton3.TabIndex = 1;
             this.radioButton3.TabStop = true;
             this.radioButton3.Text = "Input Beta on this form";
@@ -523,7 +531,7 @@
             this.radioButton1.Location = new System.Drawing.Point(16, 18);
             this.radioButton1.Margin = new System.Windows.Forms.Padding(2);
             this.radioButton1.Name = "radioButton1";
-            this.radioButton1.Size = new System.Drawing.Size(100, 17);
+            this.radioButton1.Size = new System.Drawing.Size(115, 17);
             this.radioButton1.TabIndex = 0;
             this.radioButton1.TabStop = true;
             this.radioButton1.Text = "Beta from Study";
@@ -560,7 +568,7 @@
             this.rbDisaggregated.Location = new System.Drawing.Point(16, 45);
             this.rbDisaggregated.Margin = new System.Windows.Forms.Padding(2);
             this.rbDisaggregated.Name = "rbDisaggregated";
-            this.rbDisaggregated.Size = new System.Drawing.Size(94, 17);
+            this.rbDisaggregated.Size = new System.Drawing.Size(107, 17);
             this.rbDisaggregated.TabIndex = 1;
             this.rbDisaggregated.TabStop = true;
             this.rbDisaggregated.Text = "Disaggregated";
@@ -573,7 +581,7 @@
             this.rbAggregated.Location = new System.Drawing.Point(16, 23);
             this.rbAggregated.Margin = new System.Windows.Forms.Padding(2);
             this.rbAggregated.Name = "rbAggregated";
-            this.rbAggregated.Size = new System.Drawing.Size(80, 17);
+            this.rbAggregated.Size = new System.Drawing.Size(90, 17);
             this.rbAggregated.TabIndex = 0;
             this.rbAggregated.TabStop = true;
             this.rbAggregated.Text = "Aggregated";
@@ -597,11 +605,11 @@
             this.tabStep4.Controls.Add(this.label15);
             this.tabStep4.Controls.Add(this.label14);
             this.tabStep4.Controls.Add(this.label11);
-            this.tabStep4.Location = new System.Drawing.Point(4, 29);
+            this.tabStep4.Location = new System.Drawing.Point(29, 4);
             this.tabStep4.Margin = new System.Windows.Forms.Padding(2);
             this.tabStep4.Name = "tabStep4";
             this.tabStep4.Padding = new System.Windows.Forms.Padding(2);
-            this.tabStep4.Size = new System.Drawing.Size(524, 396);
+            this.tabStep4.Size = new System.Drawing.Size(499, 421);
             this.tabStep4.TabIndex = 3;
             this.tabStep4.Text = "PM Changes";
             this.tabStep4.UseVisualStyleBackColor = true;
@@ -641,7 +649,7 @@
             this.radioButton7.Location = new System.Drawing.Point(5, 40);
             this.radioButton7.Margin = new System.Windows.Forms.Padding(2);
             this.radioButton7.Name = "radioButton7";
-            this.radioButton7.Size = new System.Drawing.Size(47, 17);
+            this.radioButton7.Size = new System.Drawing.Size(51, 17);
             this.radioButton7.TabIndex = 1;
             this.radioButton7.TabStop = true;
             this.radioButton7.Text = "Step";
@@ -653,7 +661,7 @@
             this.radioButton6.Location = new System.Drawing.Point(5, 18);
             this.radioButton6.Margin = new System.Windows.Forms.Padding(2);
             this.radioButton6.Name = "radioButton6";
-            this.radioButton6.Size = new System.Drawing.Size(54, 17);
+            this.radioButton6.Size = new System.Drawing.Size(60, 17);
             this.radioButton6.TabIndex = 0;
             this.radioButton6.TabStop = true;
             this.radioButton6.Text = "Linear";
@@ -737,7 +745,7 @@
             this.label15.Location = new System.Drawing.Point(87, 33);
             this.label15.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(108, 13);
+            this.label15.Size = new System.Drawing.Size(126, 13);
             this.label15.TabIndex = 2;
             this.label15.Text = "PM change (ug/m^3)";
             // 
@@ -747,7 +755,7 @@
             this.label14.Location = new System.Drawing.Point(12, 34);
             this.label14.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(29, 13);
+            this.label14.Size = new System.Drawing.Size(33, 13);
             this.label14.TabIndex = 1;
             this.label14.Text = "Year";
             // 
@@ -793,11 +801,11 @@
             this.tabPage1.Controls.Add(this.label21);
             this.tabPage1.Controls.Add(this.label20);
             this.tabPage1.Controls.Add(this.label19);
-            this.tabPage1.Location = new System.Drawing.Point(4, 29);
+            this.tabPage1.Location = new System.Drawing.Point(29, 4);
             this.tabPage1.Margin = new System.Windows.Forms.Padding(2);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(2);
-            this.tabPage1.Size = new System.Drawing.Size(524, 396);
+            this.tabPage1.Size = new System.Drawing.Size(499, 421);
             this.tabPage1.TabIndex = 4;
             this.tabPage1.Text = "Ages Affected";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -848,7 +856,7 @@
             this.label30.Location = new System.Drawing.Point(259, 128);
             this.label30.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label30.Name = "label30";
-            this.label30.Size = new System.Drawing.Size(92, 13);
+            this.label30.Size = new System.Drawing.Size(109, 13);
             this.label30.TabIndex = 23;
             this.label30.Text = "Adjustment Factor";
             // 
@@ -874,7 +882,7 @@
             this.label29.Location = new System.Drawing.Point(37, 237);
             this.label29.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label29.Name = "label29";
-            this.label29.Size = new System.Drawing.Size(43, 13);
+            this.label29.Size = new System.Drawing.Size(50, 13);
             this.label29.TabIndex = 20;
             this.label29.Text = "range 5";
             // 
@@ -900,7 +908,7 @@
             this.label28.Location = new System.Drawing.Point(37, 214);
             this.label28.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label28.Name = "label28";
-            this.label28.Size = new System.Drawing.Size(43, 13);
+            this.label28.Size = new System.Drawing.Size(50, 13);
             this.label28.TabIndex = 17;
             this.label28.Text = "range 4";
             // 
@@ -926,7 +934,7 @@
             this.label27.Location = new System.Drawing.Point(37, 192);
             this.label27.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label27.Name = "label27";
-            this.label27.Size = new System.Drawing.Size(43, 13);
+            this.label27.Size = new System.Drawing.Size(50, 13);
             this.label27.TabIndex = 14;
             this.label27.Text = "range 3";
             // 
@@ -952,7 +960,7 @@
             this.label26.Location = new System.Drawing.Point(37, 169);
             this.label26.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label26.Name = "label26";
-            this.label26.Size = new System.Drawing.Size(43, 13);
+            this.label26.Size = new System.Drawing.Size(50, 13);
             this.label26.TabIndex = 11;
             this.label26.Text = "range 2";
             // 
@@ -978,7 +986,7 @@
             this.label25.Location = new System.Drawing.Point(179, 128);
             this.label25.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label25.Name = "label25";
-            this.label25.Size = new System.Drawing.Size(63, 13);
+            this.label25.Size = new System.Drawing.Size(75, 13);
             this.label25.TabIndex = 8;
             this.label25.Text = "End (oldest)";
             // 
@@ -988,7 +996,7 @@
             this.label24.Location = new System.Drawing.Point(92, 128);
             this.label24.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label24.Name = "label24";
-            this.label24.Size = new System.Drawing.Size(81, 13);
+            this.label24.Size = new System.Drawing.Size(97, 13);
             this.label24.TabIndex = 7;
             this.label24.Text = "Start (youngest)";
             // 
@@ -998,7 +1006,7 @@
             this.label23.Location = new System.Drawing.Point(37, 146);
             this.label23.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label23.Name = "label23";
-            this.label23.Size = new System.Drawing.Size(43, 13);
+            this.label23.Size = new System.Drawing.Size(50, 13);
             this.label23.TabIndex = 6;
             this.label23.Text = "range 1";
             // 
@@ -1008,7 +1016,7 @@
             this.label22.Location = new System.Drawing.Point(16, 106);
             this.label22.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label22.Name = "label22";
-            this.label22.Size = new System.Drawing.Size(160, 13);
+            this.label22.Size = new System.Drawing.Size(191, 13);
             this.label22.TabIndex = 5;
             this.label22.Text = "Age-Specific Adjustment Factors";
             // 
@@ -1034,7 +1042,7 @@
             this.label21.Location = new System.Drawing.Point(130, 32);
             this.label21.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label21.Name = "label21";
-            this.label21.Size = new System.Drawing.Size(37, 13);
+            this.label21.Size = new System.Drawing.Size(43, 13);
             this.label21.TabIndex = 2;
             this.label21.Text = "Oldest";
             // 
@@ -1044,7 +1052,7 @@
             this.label20.Location = new System.Drawing.Point(37, 32);
             this.label20.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(52, 13);
+            this.label20.Size = new System.Drawing.Size(60, 13);
             this.label20.TabIndex = 1;
             this.label20.Text = "Youngest";
             // 
@@ -1075,11 +1083,11 @@
             this.tabStep6.Controls.Add(this.lblSingleLag);
             this.tabStep6.Controls.Add(this.gbLagType);
             this.tabStep6.Controls.Add(this.label31);
-            this.tabStep6.Location = new System.Drawing.Point(4, 29);
+            this.tabStep6.Location = new System.Drawing.Point(29, 4);
             this.tabStep6.Margin = new System.Windows.Forms.Padding(2);
             this.tabStep6.Name = "tabStep6";
             this.tabStep6.Padding = new System.Windows.Forms.Padding(2);
-            this.tabStep6.Size = new System.Drawing.Size(524, 396);
+            this.tabStep6.Size = new System.Drawing.Size(499, 421);
             this.tabStep6.TabIndex = 5;
             this.tabStep6.Text = "Lag Type";
             this.tabStep6.UseVisualStyleBackColor = true;
@@ -1101,7 +1109,7 @@
             this.radioButton13.AutoSize = true;
             this.radioButton13.Location = new System.Drawing.Point(33, 27);
             this.radioButton13.Name = "radioButton13";
-            this.radioButton13.Size = new System.Drawing.Size(84, 17);
+            this.radioButton13.Size = new System.Drawing.Size(95, 17);
             this.radioButton13.TabIndex = 0;
             this.radioButton13.TabStop = true;
             this.radioButton13.Text = "HES Default";
@@ -1112,7 +1120,7 @@
             this.radioButton12.AutoSize = true;
             this.radioButton12.Location = new System.Drawing.Point(33, 50);
             this.radioButton12.Name = "radioButton12";
-            this.radioButton12.Size = new System.Drawing.Size(61, 17);
+            this.radioButton12.Size = new System.Drawing.Size(67, 17);
             this.radioButton12.TabIndex = 1;
             this.radioButton12.TabStop = true;
             this.radioButton12.Text = "Smooth";
@@ -1123,7 +1131,7 @@
             this.radioButton2.AutoSize = true;
             this.radioButton2.Location = new System.Drawing.Point(33, 73);
             this.radioButton2.Name = "radioButton2";
-            this.radioButton2.Size = new System.Drawing.Size(87, 17);
+            this.radioButton2.Size = new System.Drawing.Size(99, 17);
             this.radioButton2.TabIndex = 2;
             this.radioButton2.TabStop = true;
             this.radioButton2.Text = "User Defined";
@@ -1143,7 +1151,7 @@
             this.lblOther.Location = new System.Drawing.Point(244, 184);
             this.lblOther.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblOther.Name = "lblOther";
-            this.lblOther.Size = new System.Drawing.Size(31, 13);
+            this.lblOther.Size = new System.Drawing.Size(36, 13);
             this.lblOther.TabIndex = 11;
             this.lblOther.Text = "other";
             // 
@@ -1161,7 +1169,7 @@
             this.lblLung.Location = new System.Drawing.Point(244, 162);
             this.lblLung.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblLung.Name = "lblLung";
-            this.lblLung.Size = new System.Drawing.Size(27, 13);
+            this.lblLung.Size = new System.Drawing.Size(31, 13);
             this.lblLung.TabIndex = 9;
             this.lblLung.Text = "lung";
             // 
@@ -1179,7 +1187,7 @@
             this.lblCardio.Location = new System.Drawing.Point(244, 139);
             this.lblCardio.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblCardio.Name = "lblCardio";
-            this.lblCardio.Size = new System.Drawing.Size(36, 13);
+            this.lblCardio.Size = new System.Drawing.Size(42, 13);
             this.lblCardio.TabIndex = 7;
             this.lblCardio.Text = "cardio";
             // 
@@ -1189,7 +1197,7 @@
             this.lblK.Location = new System.Drawing.Point(325, 114);
             this.lblK.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblK.Name = "lblK";
-            this.lblK.Size = new System.Drawing.Size(13, 13);
+            this.lblK.Size = new System.Drawing.Size(14, 13);
             this.lblK.TabIndex = 6;
             this.lblK.Text = "k";
             // 
@@ -1199,7 +1207,7 @@
             this.lblCause.Location = new System.Drawing.Point(225, 114);
             this.lblCause.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblCause.Name = "lblCause";
-            this.lblCause.Size = new System.Drawing.Size(37, 13);
+            this.lblCause.Size = new System.Drawing.Size(42, 13);
             this.lblCause.TabIndex = 5;
             this.lblCause.Text = "Cause";
             // 
@@ -1209,7 +1217,7 @@
             this.lblCauseSpecificLag.Location = new System.Drawing.Point(199, 90);
             this.lblCauseSpecificLag.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblCauseSpecificLag.Name = "lblCauseSpecificLag";
-            this.lblCauseSpecificLag.Size = new System.Drawing.Size(93, 13);
+            this.lblCauseSpecificLag.Size = new System.Drawing.Size(111, 13);
             this.lblCauseSpecificLag.TabIndex = 4;
             this.lblCauseSpecificLag.Text = "Cause-specific lag";
             // 
@@ -1227,7 +1235,7 @@
             this.lblSingleLag.Location = new System.Drawing.Point(196, 64);
             this.lblSingleLag.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblSingleLag.Name = "lblSingleLag";
-            this.lblSingleLag.Size = new System.Drawing.Size(68, 13);
+            this.lblSingleLag.Size = new System.Drawing.Size(82, 13);
             this.lblSingleLag.TabIndex = 2;
             this.lblSingleLag.Text = "Single lag - k";
             // 
@@ -1250,7 +1258,7 @@
             this.radioButton11.Location = new System.Drawing.Point(21, 46);
             this.radioButton11.Margin = new System.Windows.Forms.Padding(2);
             this.radioButton11.Name = "radioButton11";
-            this.radioButton11.Size = new System.Drawing.Size(111, 17);
+            this.radioButton11.Size = new System.Drawing.Size(129, 17);
             this.radioButton11.TabIndex = 1;
             this.radioButton11.TabStop = true;
             this.radioButton11.Text = "Cause-specific lag";
@@ -1262,7 +1270,7 @@
             this.radioButton10.Location = new System.Drawing.Point(21, 24);
             this.radioButton10.Margin = new System.Windows.Forms.Padding(2);
             this.radioButton10.Name = "radioButton10";
-            this.radioButton10.Size = new System.Drawing.Size(71, 17);
+            this.radioButton10.Size = new System.Drawing.Size(81, 17);
             this.radioButton10.TabIndex = 0;
             this.radioButton10.TabStop = true;
             this.radioButton10.Text = "Single lag";
@@ -1284,11 +1292,11 @@
             // 
             this.tabStep7.Controls.Add(this.label18);
             this.tabStep7.Controls.Add(this.gbBirthsDynamic);
-            this.tabStep7.Location = new System.Drawing.Point(4, 29);
+            this.tabStep7.Location = new System.Drawing.Point(54, 4);
             this.tabStep7.Margin = new System.Windows.Forms.Padding(2);
             this.tabStep7.Name = "tabStep7";
             this.tabStep7.Padding = new System.Windows.Forms.Padding(2);
-            this.tabStep7.Size = new System.Drawing.Size(524, 396);
+            this.tabStep7.Size = new System.Drawing.Size(474, 421);
             this.tabStep7.TabIndex = 6;
             this.tabStep7.Text = "Other";
             this.tabStep7.UseVisualStyleBackColor = true;
@@ -1323,7 +1331,7 @@
             this.radioButton9.Location = new System.Drawing.Point(30, 58);
             this.radioButton9.Margin = new System.Windows.Forms.Padding(2);
             this.radioButton9.Name = "radioButton9";
-            this.radioButton9.Size = new System.Drawing.Size(39, 17);
+            this.radioButton9.Size = new System.Drawing.Size(41, 17);
             this.radioButton9.TabIndex = 1;
             this.radioButton9.TabStop = true;
             this.radioButton9.Text = "No";
@@ -1335,7 +1343,7 @@
             this.radioButton8.Location = new System.Drawing.Point(30, 36);
             this.radioButton8.Margin = new System.Windows.Forms.Padding(2);
             this.radioButton8.Name = "radioButton8";
-            this.radioButton8.Size = new System.Drawing.Size(43, 17);
+            this.radioButton8.Size = new System.Drawing.Size(46, 17);
             this.radioButton8.TabIndex = 0;
             this.radioButton8.TabStop = true;
             this.radioButton8.Text = "Yes";
@@ -1349,11 +1357,11 @@
             this.tabRun.Controls.Add(this.lblRunStatus);
             this.tabRun.Controls.Add(this.lblRunProgress);
             this.tabRun.Controls.Add(this.progressBar1);
-            this.tabRun.Location = new System.Drawing.Point(4, 29);
+            this.tabRun.Location = new System.Drawing.Point(54, 4);
             this.tabRun.Margin = new System.Windows.Forms.Padding(2);
             this.tabRun.Name = "tabRun";
             this.tabRun.Padding = new System.Windows.Forms.Padding(2);
-            this.tabRun.Size = new System.Drawing.Size(524, 396);
+            this.tabRun.Size = new System.Drawing.Size(474, 421);
             this.tabRun.TabIndex = 7;
             this.tabRun.Text = "Run";
             this.tabRun.UseVisualStyleBackColor = true;
@@ -1398,7 +1406,7 @@
             this.lblRunStatus.Location = new System.Drawing.Point(16, 329);
             this.lblRunStatus.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblRunStatus.Name = "lblRunStatus";
-            this.lblRunStatus.Size = new System.Drawing.Size(147, 13);
+            this.lblRunStatus.Size = new System.Drawing.Size(174, 13);
             this.lblRunStatus.TabIndex = 2;
             this.lblRunStatus.Text = "Run status messages go here";
             this.lblRunStatus.Visible = false;
@@ -1501,6 +1509,29 @@
             this.bwOutput.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.bwOutput_ProgressChanged);
             this.bwOutput.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.bwOutput_RunWorkerCompleted);
             // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label9.Location = new System.Drawing.Point(19, 141);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(360, 20);
+            this.label9.TabIndex = 3;
+            this.label9.Text = "This is a beta version that only includes U.S. Data.";
+            // 
+            // richTextBox1
+            // 
+            this.richTextBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.richTextBox1.Enabled = false;
+            this.richTextBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.richTextBox1.Location = new System.Drawing.Point(16, 176);
+            this.richTextBox1.Name = "richTextBox1";
+            this.richTextBox1.Size = new System.Drawing.Size(381, 75);
+            this.richTextBox1.TabIndex = 4;
+            this.richTextBox1.Text = "Reference: Second Prospective Study - 1990 to 2020 - Benefits and Costs of the Cl" +
+    "ean Air Act, U.S. Environmental Protection Agency, Office of Air and Radiation, " +
+    "April 2011";
+            // 
             // frm_PopSim
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1511,7 +1542,7 @@
             this.Controls.Add(this.tableLayoutPanel1);
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "frm_PopSim";
-            this.Text = "Popsim";
+            this.Text = "PopSim (Beta)";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.tabControl1.ResumeLayout(false);
             this.tabIntro.ResumeLayout(false);
@@ -1673,6 +1704,8 @@
         private System.Windows.Forms.RadioButton radioButton13;
         private System.Windows.Forms.RadioButton radioButton12;
         private System.Windows.Forms.RadioButton radioButton2;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.RichTextBox richTextBox1;
     }
 }
 
