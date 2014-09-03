@@ -30,6 +30,8 @@
         {
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabIntro = new System.Windows.Forms.TabPage();
+            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
+            this.label9 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
@@ -147,8 +149,6 @@
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.bwOutput = new System.ComponentModel.BackgroundWorker();
-            this.label9 = new System.Windows.Forms.Label();
-            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.tabControl1.SuspendLayout();
             this.tabIntro.SuspendLayout();
             this.tabStep1.SuspendLayout();
@@ -215,15 +215,38 @@
             this.tabIntro.UseVisualStyleBackColor = true;
             this.tabIntro.Click += new System.EventHandler(this.tabIntro_Click);
             // 
+            // richTextBox1
+            // 
+            this.richTextBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.richTextBox1.Enabled = false;
+            this.richTextBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.richTextBox1.Location = new System.Drawing.Point(20, 157);
+            this.richTextBox1.Name = "richTextBox1";
+            this.richTextBox1.Size = new System.Drawing.Size(381, 57);
+            this.richTextBox1.TabIndex = 4;
+            this.richTextBox1.Text = "Reference: Second Prospective Study - 1990 to 2020 - Benefits and Costs of the Cl" +
+    "ean Air Act, U.S. Environmental Protection Agency, Office of Air and Radiation, " +
+    "April 2011";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label9.Location = new System.Drawing.Point(19, 123);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(360, 20);
+            this.label9.TabIndex = 3;
+            this.label9.Text = "This is a beta version that only includes U.S. Data.";
+            // 
             // label6
             // 
             this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label6.Location = new System.Drawing.Point(19, 51);
             this.label6.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(381, 73);
+            this.label6.Size = new System.Drawing.Size(381, 63);
             this.label6.TabIndex = 2;
-            this.label6.Text = "Popsim is a dynamic population simulation that incorporates the cumulative effect" +
+            this.label6.Text = "PopSim is a dynamic population simulation that incorporates the cumulative effect" +
     "s of air pollution on different age groups over time. ";
             // 
             // label5
@@ -256,11 +279,11 @@
             this.tabStep1.Controls.Add(this.label2);
             this.tabStep1.Controls.Add(this.nudStartYear);
             this.tabStep1.Controls.Add(this.label1);
-            this.tabStep1.Location = new System.Drawing.Point(29, 4);
+            this.tabStep1.Location = new System.Drawing.Point(124, 4);
             this.tabStep1.Margin = new System.Windows.Forms.Padding(2);
             this.tabStep1.Name = "tabStep1";
             this.tabStep1.Padding = new System.Windows.Forms.Padding(2);
-            this.tabStep1.Size = new System.Drawing.Size(499, 421);
+            this.tabStep1.Size = new System.Drawing.Size(404, 421);
             this.tabStep1.TabIndex = 1;
             this.tabStep1.Text = "Years";
             this.tabStep1.UseVisualStyleBackColor = true;
@@ -375,11 +398,11 @@
             this.tabStep2.Controls.Add(this.gbBetaSource);
             this.tabStep2.Controls.Add(this.label7);
             this.tabStep2.Controls.Add(this.gbDoseResponse);
-            this.tabStep2.Location = new System.Drawing.Point(29, 4);
+            this.tabStep2.Location = new System.Drawing.Point(124, 4);
             this.tabStep2.Margin = new System.Windows.Forms.Padding(2);
             this.tabStep2.Name = "tabStep2";
             this.tabStep2.Padding = new System.Windows.Forms.Padding(2);
-            this.tabStep2.Size = new System.Drawing.Size(499, 421);
+            this.tabStep2.Size = new System.Drawing.Size(404, 421);
             this.tabStep2.TabIndex = 2;
             this.tabStep2.Text = "Response";
             this.tabStep2.UseVisualStyleBackColor = true;
@@ -605,11 +628,11 @@
             this.tabStep4.Controls.Add(this.label15);
             this.tabStep4.Controls.Add(this.label14);
             this.tabStep4.Controls.Add(this.label11);
-            this.tabStep4.Location = new System.Drawing.Point(29, 4);
+            this.tabStep4.Location = new System.Drawing.Point(124, 4);
             this.tabStep4.Margin = new System.Windows.Forms.Padding(2);
             this.tabStep4.Name = "tabStep4";
             this.tabStep4.Padding = new System.Windows.Forms.Padding(2);
-            this.tabStep4.Size = new System.Drawing.Size(499, 421);
+            this.tabStep4.Size = new System.Drawing.Size(404, 421);
             this.tabStep4.TabIndex = 3;
             this.tabStep4.Text = "PM Changes";
             this.tabStep4.UseVisualStyleBackColor = true;
@@ -801,11 +824,11 @@
             this.tabPage1.Controls.Add(this.label21);
             this.tabPage1.Controls.Add(this.label20);
             this.tabPage1.Controls.Add(this.label19);
-            this.tabPage1.Location = new System.Drawing.Point(29, 4);
+            this.tabPage1.Location = new System.Drawing.Point(124, 4);
             this.tabPage1.Margin = new System.Windows.Forms.Padding(2);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(2);
-            this.tabPage1.Size = new System.Drawing.Size(499, 421);
+            this.tabPage1.Size = new System.Drawing.Size(404, 421);
             this.tabPage1.TabIndex = 4;
             this.tabPage1.Text = "Ages Affected";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -1083,11 +1106,11 @@
             this.tabStep6.Controls.Add(this.lblSingleLag);
             this.tabStep6.Controls.Add(this.gbLagType);
             this.tabStep6.Controls.Add(this.label31);
-            this.tabStep6.Location = new System.Drawing.Point(29, 4);
+            this.tabStep6.Location = new System.Drawing.Point(124, 4);
             this.tabStep6.Margin = new System.Windows.Forms.Padding(2);
             this.tabStep6.Name = "tabStep6";
             this.tabStep6.Padding = new System.Windows.Forms.Padding(2);
-            this.tabStep6.Size = new System.Drawing.Size(499, 421);
+            this.tabStep6.Size = new System.Drawing.Size(404, 421);
             this.tabStep6.TabIndex = 5;
             this.tabStep6.Text = "Lag Type";
             this.tabStep6.UseVisualStyleBackColor = true;
@@ -1292,11 +1315,11 @@
             // 
             this.tabStep7.Controls.Add(this.label18);
             this.tabStep7.Controls.Add(this.gbBirthsDynamic);
-            this.tabStep7.Location = new System.Drawing.Point(54, 4);
+            this.tabStep7.Location = new System.Drawing.Point(124, 4);
             this.tabStep7.Margin = new System.Windows.Forms.Padding(2);
             this.tabStep7.Name = "tabStep7";
             this.tabStep7.Padding = new System.Windows.Forms.Padding(2);
-            this.tabStep7.Size = new System.Drawing.Size(474, 421);
+            this.tabStep7.Size = new System.Drawing.Size(404, 421);
             this.tabStep7.TabIndex = 6;
             this.tabStep7.Text = "Other";
             this.tabStep7.UseVisualStyleBackColor = true;
@@ -1357,11 +1380,11 @@
             this.tabRun.Controls.Add(this.lblRunStatus);
             this.tabRun.Controls.Add(this.lblRunProgress);
             this.tabRun.Controls.Add(this.progressBar1);
-            this.tabRun.Location = new System.Drawing.Point(54, 4);
+            this.tabRun.Location = new System.Drawing.Point(124, 4);
             this.tabRun.Margin = new System.Windows.Forms.Padding(2);
             this.tabRun.Name = "tabRun";
             this.tabRun.Padding = new System.Windows.Forms.Padding(2);
-            this.tabRun.Size = new System.Drawing.Size(474, 421);
+            this.tabRun.Size = new System.Drawing.Size(404, 421);
             this.tabRun.TabIndex = 7;
             this.tabRun.Text = "Run";
             this.tabRun.UseVisualStyleBackColor = true;
@@ -1508,29 +1531,6 @@
             this.bwOutput.DoWork += new System.ComponentModel.DoWorkEventHandler(this.bwOutput_DoWork);
             this.bwOutput.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.bwOutput_ProgressChanged);
             this.bwOutput.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.bwOutput_RunWorkerCompleted);
-            // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label9.Location = new System.Drawing.Point(19, 141);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(360, 20);
-            this.label9.TabIndex = 3;
-            this.label9.Text = "This is a beta version that only includes U.S. Data.";
-            // 
-            // richTextBox1
-            // 
-            this.richTextBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.richTextBox1.Enabled = false;
-            this.richTextBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.richTextBox1.Location = new System.Drawing.Point(16, 176);
-            this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.Size = new System.Drawing.Size(381, 75);
-            this.richTextBox1.TabIndex = 4;
-            this.richTextBox1.Text = "Reference: Second Prospective Study - 1990 to 2020 - Benefits and Costs of the Cl" +
-    "ean Air Act, U.S. Environmental Protection Agency, Office of Air and Radiation, " +
-    "April 2011";
             // 
             // frm_PopSim
             // 
