@@ -72,7 +72,6 @@
             this.txtPM_Val_3 = new System.Windows.Forms.TextBox();
             this.txtPM_Val_2 = new System.Windows.Forms.TextBox();
             this.txtPM_Val_1 = new System.Windows.Forms.TextBox();
-            this.textBox9 = new System.Windows.Forms.TextBox();
             this.txtPMYear_4 = new System.Windows.Forms.TextBox();
             this.txtPMYear_3 = new System.Windows.Forms.TextBox();
             this.txtPMYear_2 = new System.Windows.Forms.TextBox();
@@ -184,7 +183,7 @@
             this.tabControl1.Controls.Add(this.tabStep7);
             this.tabControl1.Controls.Add(this.tabRun);
             this.tabControl1.DrawMode = System.Windows.Forms.TabDrawMode.OwnerDrawFixed;
-            this.tabControl1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tabControl1.Font = new System.Drawing.Font("Calibri", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tabControl1.HotTrack = true;
             this.tabControl1.ItemSize = new System.Drawing.Size(30, 120);
             this.tabControl1.Location = new System.Drawing.Point(2, 32);
@@ -225,13 +224,14 @@
             this.richTextBox1.Size = new System.Drawing.Size(381, 57);
             this.richTextBox1.TabIndex = 4;
             this.richTextBox1.Text = "Reference: Second Prospective Study - 1990 to 2020 - Benefits and Costs of the Cl" +
-                "ean Air Act, U.S. Environmental Protection Agency, Office of Air and Radiation, " +
-                "April 2011";
+    "ean Air Act, U.S. Environmental Protection Agency, Office of Air and Radiation, " +
+    "April 2011";
             // 
             // label9
             // 
             this.label9.AutoSize = true;
             this.label9.Font = new System.Drawing.Font("Calibri", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label9.ForeColor = System.Drawing.SystemColors.Desktop;
             this.label9.Location = new System.Drawing.Point(11, 207);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(388, 23);
@@ -247,7 +247,7 @@
             this.label6.Size = new System.Drawing.Size(381, 106);
             this.label6.TabIndex = 2;
             this.label6.Text = "PopSim is a dynamic population simulation that incorporates the cumulative effect" +
-                "s of air pollution on different age groups over time. ";
+    "s of air pollution on different age groups over time. ";
             // 
             // label5
             // 
@@ -255,7 +255,7 @@
             this.label5.Location = new System.Drawing.Point(4, 32);
             this.label5.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(0, 13);
+            this.label5.Size = new System.Drawing.Size(0, 18);
             this.label5.TabIndex = 1;
             this.label5.Click += new System.EventHandler(this.label5_Click);
             // 
@@ -637,7 +637,6 @@
             this.tabStep4.Controls.Add(this.txtPM_Val_3);
             this.tabStep4.Controls.Add(this.txtPM_Val_2);
             this.tabStep4.Controls.Add(this.txtPM_Val_1);
-            this.tabStep4.Controls.Add(this.textBox9);
             this.tabStep4.Controls.Add(this.txtPMYear_4);
             this.tabStep4.Controls.Add(this.txtPMYear_3);
             this.tabStep4.Controls.Add(this.txtPMYear_2);
@@ -745,15 +744,6 @@
             this.txtPM_Val_1.Name = "txtPM_Val_1";
             this.txtPM_Val_1.Size = new System.Drawing.Size(82, 22);
             this.txtPM_Val_1.TabIndex = 8;
-            // 
-            // textBox9
-            // 
-            this.textBox9.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox9.Location = new System.Drawing.Point(220, 68);
-            this.textBox9.Margin = new System.Windows.Forms.Padding(2);
-            this.textBox9.Name = "textBox9";
-            this.textBox9.Size = new System.Drawing.Size(76, 22);
-            this.textBox9.TabIndex = 7;
             // 
             // txtPMYear_4
             // 
@@ -1705,7 +1695,6 @@
         private System.Windows.Forms.TextBox txtPM_Val_3;
         private System.Windows.Forms.TextBox txtPM_Val_2;
         private System.Windows.Forms.TextBox txtPM_Val_1;
-        private System.Windows.Forms.TextBox textBox9;
         private System.Windows.Forms.TextBox txtPMYear_4;
         private System.Windows.Forms.TextBox txtPMYear_3;
         private System.Windows.Forms.TextBox txtPMYear_2;
