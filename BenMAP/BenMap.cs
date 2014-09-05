@@ -354,7 +354,7 @@ namespace BenMAP
                 }
                 this.OpenFile();
                 CommonClass.LstPollutant = null; CommonClass.RBenMAPGrid = null;
-                CommonClass.GBenMAPGrid = null; CommonClass.LstBaseControlGroup = null; CommonClass.CRThreshold = 0; CommonClass.CRLatinHypercubePoints = 10; CommonClass.CRRunInPointMode = false;
+                CommonClass.GBenMAPGrid = null; CommonClass.LstBaseControlGroup = null; CommonClass.CRThreshold = 0; CommonClass.CRLatinHypercubePoints = 20; CommonClass.CRRunInPointMode = false;
                 CommonClass.BenMAPPopulation = null;
                 CommonClass.BaseControlCRSelectFunction = null; CommonClass.BaseControlCRSelectFunctionCalculateValue = null;
                 CommonClass.lstIncidencePoolingAndAggregation = null;
@@ -5060,7 +5060,7 @@ namespace BenMAP
                     ClearMapTableChart();
                     SetTabControl(tabCtlReport);
                     CommonClass.LstPollutant = null; CommonClass.RBenMAPGrid = null;
-                    CommonClass.GBenMAPGrid = null; CommonClass.LstBaseControlGroup = null; CommonClass.CRThreshold = 0; CommonClass.CRLatinHypercubePoints = 10; CommonClass.CRRunInPointMode = false;
+                    CommonClass.GBenMAPGrid = null; CommonClass.LstBaseControlGroup = null; CommonClass.CRThreshold = 0; CommonClass.CRLatinHypercubePoints = 20; CommonClass.CRRunInPointMode = false;
                     CommonClass.BenMAPPopulation = null;
                     CommonClass.BaseControlCRSelectFunction = null; CommonClass.BaseControlCRSelectFunctionCalculateValue = null;
                     CommonClass.lstIncidencePoolingAndAggregation = null;
@@ -5247,6 +5247,76 @@ namespace BenMAP
                         changeNodeImage(trvSetting.Nodes[2].Nodes[0]);
                     }
 
+
+                }
+                else if (CommonClass.InputParams != null && CommonClass.InputParams.Length > 0 && CommonClass.InputParams[0].ToLower().IndexOf("smat") > 0)
+                {
+                    splitContainer1.Visible = true;
+                    CommonClass.ClearAllObject();
+                    ClearAll();
+                    ResetParamsTree("");
+
+                    ClearMapTableChart();
+                    initNodeImage(trvSetting.Nodes[trvSetting.Nodes.Count - 3].Nodes[trvSetting.Nodes[trvSetting.Nodes.Count - 3].Nodes.Count - 1]);
+
+                    initNodeImage(trvSetting.Nodes[trvSetting.Nodes.Count - 1].Nodes[trvSetting.Nodes[trvSetting.Nodes.Count - 1].Nodes.Count - 1]);
+                    initNodeImage(trvSetting.Nodes[trvSetting.Nodes.Count - 1].Nodes[0]);
+                    CommonClass.IncidencePoolingAndAggregationAdvance = null;
+
+                    olvCRFunctionResult.SetObjects(null);
+                    olvIncidence.SetObjects(null);
+                    tlvAPVResult.SetObjects(null);
+
+                    cbPoolingWindowIncidence.Items.Clear();
+                    cbPoolingWindowAPV.Items.Clear();
+                    ClearMapTableChart();
+                    SetTabControl(tabCtlReport);
+                    CommonClass.LstPollutant = null;
+                    CommonClass.RBenMAPGrid = null;
+
+                    CommonClass.GBenMAPGrid = null;
+                    CommonClass.LstBaseControlGroup = null;
+                    CommonClass.CRThreshold = 0;
+                    CommonClass.CRLatinHypercubePoints = 20;
+                    CommonClass.CRRunInPointMode = false;
+
+                    CommonClass.BenMAPPopulation = null;
+
+                    CommonClass.BaseControlCRSelectFunction = null;
+                    CommonClass.BaseControlCRSelectFunctionCalculateValue = null;
+
+                    CommonClass.lstIncidencePoolingAndAggregation = null;
+
+                    CommonClass.IncidencePoolingResult = null;
+                    CommonClass.ValuationMethodPoolingAndAggregation = null;
+                    CommonClass.BaseControlCRSelectFunction = null;
+                    CommonClass.BaseControlCRSelectFunctionCalculateValue = null;
+                    CommonClass.ValuationMethodPoolingAndAggregation = null;
+                    GC.Collect();
+
+                    LoadAirQualityData frm = new LoadAirQualityData(CommonClass.InputParams[0]);
+                    DialogResult dr = frm.ShowDialog();
+                    if (dr != DialogResult.OK)
+                        Environment.Exit(0);
+                    BaseControlGroup bcg = frm.bcgOpenAQG;
+                    frm.Dispose();
+
+                    for (int i = 0; i < trvSetting.Nodes.Count; i++)
+                    {
+                        TreeNode trchild = trvSetting.Nodes[i];
+                        if (trchild.Name == "airqualitygridgroup")
+                        {
+                            int nodesCount = trchild.Nodes.Count;
+                            for (int j = nodesCount - 1; j > -1; j--)
+                            {
+                                TreeNode node = trchild.Nodes[j];
+                                if (trchild.Nodes[j].Name == "datasource")
+                                {
+                                    BrushBaseControl(ref trchild, bcg, trchild.Nodes[j].Index);
+                                }
+                            }
+                        }
+                    }
 
                 }
             }

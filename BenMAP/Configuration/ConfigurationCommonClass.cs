@@ -5824,15 +5824,17 @@ namespace BenMAP.Configuration
                                             foreach (KeyValuePair<string, double> k in kO.Value)
                                             {
                                                 string[] s = k.Key.Split(new char[] { ',' });
-
-                                                d = Convert.ToSingle(dicOld[kO.Key] * k.Value);
-                                                if (dicNew.ContainsKey(k.Key))
+                                                if (dicOld.ContainsKey(kO.Key))
                                                 {
-                                                    dicNew[k.Key] += d;
-                                                }
-                                                else
-                                                {
-                                                    dicNew.Add(k.Key, d);
+                                                    d = Convert.ToSingle(dicOld[kO.Key] * k.Value);
+                                                    if (dicNew.ContainsKey(k.Key))
+                                                    {
+                                                        dicNew[k.Key] += d;
+                                                    }
+                                                    else
+                                                    {
+                                                        dicNew.Add(k.Key, d);
+                                                    }
                                                 }
                                             }
 
