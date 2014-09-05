@@ -618,12 +618,12 @@ namespace PopSim
                 // crosstab queries
                 bwOutput.ReportProgress(10);
                 outputRoutine.queryStringToXTabWB("Select Age, Year_Num, Sum(Increase_Male) as Increase_Female from  "
-                    + " RPT_INC_COHORT_COND_LIFE_EXP GROUP BY Age, Year_Num", "Report_Increase_PCLE_Male",
+                    + " RPT_INC_PERIOD_COND_LIFE_EXP GROUP BY Age, Year_Num", "Report_Increase_PCLE_Male",
                     "Age", "Year_Num", "Increase_Female");
 
                 bwOutput.ReportProgress(20);
                 outputRoutine.queryStringToXTabWB("Select Age, Year_Num, Sum(Increase_Female) as Increase_Female from  "
-                    + " RPT_INC_COHORT_COND_LIFE_EXP GROUP BY Age, Year_Num", "Report_Increase_PCLE_Female",
+                    + " RPT_INC_PERIOD_COND_LIFE_EXP GROUP BY Age, Year_Num", "Report_Increase_PCLE_Female",
                     "Age", "Year_Num", "Increase_Female");
 
                 bwOutput.ReportProgress(30);
