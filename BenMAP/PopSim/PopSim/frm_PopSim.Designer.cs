@@ -325,7 +325,7 @@
             this.nudEndYear.Location = new System.Drawing.Point(120, 104);
             this.nudEndYear.Margin = new System.Windows.Forms.Padding(2);
             this.nudEndYear.Maximum = new decimal(new int[] {
-            2020,
+            2050,
             0,
             0,
             0});
@@ -360,7 +360,7 @@
             this.nudStartYear.Location = new System.Drawing.Point(120, 80);
             this.nudStartYear.Margin = new System.Windows.Forms.Padding(2);
             this.nudStartYear.Maximum = new decimal(new int[] {
-            2015,
+            2050,
             0,
             0,
             0});
