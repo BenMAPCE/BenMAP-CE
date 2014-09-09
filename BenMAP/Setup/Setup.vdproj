@@ -4533,7 +4533,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:BenMap-CE"
         "ProductCode" = "8:{F5F3C98B-890A-4558-AA3E-3C25FA1009EE}"
-        "PackageCode" = "8:{6D15CDDF-A79B-49C7-999E-A554CFACE544}"
+        "PackageCode" = "8:{23EEB70A-CBC5-4B89-AB13-F5E37C589A9B}"
         "UpgradeCode" = "8:{10C0CCD0-CE12-43BB-BB3E-44059FCA4ADB}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
