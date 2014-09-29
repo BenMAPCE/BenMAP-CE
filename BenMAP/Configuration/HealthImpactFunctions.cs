@@ -137,16 +137,35 @@ namespace BenMAP
 
                     string commandText = "";
                     string strPollutants = "";
+                    string strMetric = "";
                     foreach (BenMAPPollutant benMAPPollutant in CommonClass.LstPollutant)
                     {
                         strPollutants = strPollutants + "," + benMAPPollutant.PollutantID;
                     }
                     strPollutants = strPollutants.Substring(1);
+                    foreach (BaseControlGroup bcg in CommonClass.LstBaseControlGroup)
+                    {
+                        int pollutantID = bcg.Pollutant.PollutantID;
+                        List<int> lstMetricID = new List<int>();
+                        if (bcg.Base.ModelResultAttributes.Count > 0)
+                        {
+                            foreach (string m in bcg.Base.ModelResultAttributes[0].Values.Keys)
+                            {
+                                string metric = m.Split(',')[0];
+                                commandText = string.Format("select metricid from metrics where pollutantid={0} and metricname='{1}'", pollutantID, metric);
+                                int metricid = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
+                                if (metricid > 0 && !lstMetricID.Contains(metricid))
+                                {
+                                    strMetric = strMetric + "," + metricid;
+                                    lstMetricID.Add(metricid);
+                                }
+                            }
+                        }
+                    }
+                    strMetric = strMetric.Substring(1);
                     if (Convert.ToInt32(drv["EndPointGroupID"]) == -1)
                     {
-
-
-                        commandText = string.Format(" select CRFunctionID from CRFunctions where CRFunctionDataSetID={0} and PollutantID in ({1})", drvDataSet["CRFunctionDatasetID"], strPollutants);
+                        commandText = string.Format(" select CRFunctionID from CRFunctions where CRFunctionDataSetID={0} and PollutantID in ({1}) and MetricID in ({2})", drvDataSet["CRFunctionDatasetID"], strPollutants, strMetric);
                         System.Data.DataSet dsCRFunction = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
                         lstBenMAPHealthImpactFunction.Clear();
                         foreach (DataRow dr in dsCRFunction.Tables[0].Rows)
@@ -158,7 +177,7 @@ namespace BenMAP
                     }
                     else
                     {
-                        commandText = string.Format(" select CRFunctionID from CRFunctions where CRFunctionDataSetID={0} and PollutantID in ({1}) and EndPointGroupID={2}", drvDataSet["CRFunctionDatasetID"], strPollutants, Convert.ToInt32(Convert.ToInt32(drv["EndPointGroupID"])));
+                        commandText = string.Format(" select CRFunctionID from CRFunctions where CRFunctionDataSetID={0} and PollutantID in ({1}) and EndPointGroupID={2} and MetricID in ({3})", drvDataSet["CRFunctionDatasetID"], strPollutants, Convert.ToInt32(Convert.ToInt32(drv["EndPointGroupID"])), strMetric);
                         System.Data.DataSet dsCRFunction = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
                         lstBenMAPHealthImpactFunction.Clear();
                         foreach (DataRow dr in dsCRFunction.Tables[0].Rows)
