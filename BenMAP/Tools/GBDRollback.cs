@@ -1520,6 +1520,20 @@ namespace BenMAP
             ToggleRegionsCountries();
         }
 
+        private void listCountries_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            //check country in regions tree view
+            CountryItem item = (CountryItem)listCountries.Items[e.Index];
+            TreeNode[] nodes = tvRegions.Nodes.Find(item.Id, true);
+            bool IsChecked = (e.NewValue == CheckState.Checked);
+            foreach (TreeNode node in nodes)
+            {
+                node.Checked = IsChecked;
+                CheckParentNode(node);
+            }             
+
+        }
+
 
        
 
