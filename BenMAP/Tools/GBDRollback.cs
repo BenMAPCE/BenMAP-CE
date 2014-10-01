@@ -40,10 +40,16 @@ namespace BenMAP
             InitializeComponent();
 
             //set up locations,form size, visibility
+
+            listCountries.Location = new System.Drawing.Point(tvRegions.Location.X, tvRegions.Location.Y);
+            listCountries.Size = tvRegions.Size;
+
             gbCountrySelection.Location = new System.Drawing.Point(gbName.Location.X, gbName.Location.Y);
             gbParameterSelection.Location = new System.Drawing.Point(gbName.Location.X, gbName.Location.Y);
             SetActivePanel(0);
             Size = new Size(906, 777); //form size
+
+            
 
             //parameter options in gbParameterSelection
             gbOptionsPercentage.Location = new System.Drawing.Point(gbOptionsIncremental.Location.X, gbOptionsIncremental.Location.Y);
@@ -52,6 +58,7 @@ namespace BenMAP
             gbParameterSelection.Controls.Add(gbOptionsStandard);            
             cboRollbackType.SelectedIndex = 0;
             SetActiveOptionsPanel(0);
+            rbRegions.Checked = true;
 
             txtFilePath.Text = CommonClass.ResultFilePath + @"\GBD";
 
@@ -137,21 +144,21 @@ namespace BenMAP
                 string region = String.Empty;
                 string country = String.Empty;
                 string countryid = String.Empty;
-                tvCountries.BeginUpdate();
+                tvRegions.BeginUpdate();
                 foreach (DataRow dr in dtCountries.Rows)
                 {
                     //new region?
                     if (!region.Equals(dr["REGIONNAME"].ToString(), StringComparison.OrdinalIgnoreCase))
                     {
                         region = dr["REGIONNAME"].ToString();
-                        tvCountries.Nodes.Add(region, region);
+                        tvRegions.Nodes.Add(region, region);
                     }
 
                     countryid = dr["COUNTRYID"].ToString();
                     country = dr["COUNTRYNAME"].ToString();
-                    tvCountries.Nodes[region].Nodes.Add(countryid, country);
+                    tvRegions.Nodes[region].Nodes.Add(countryid, country);
                 }
-                tvCountries.EndUpdate();
+                tvRegions.EndUpdate();
             }
         
         }
@@ -246,7 +253,7 @@ namespace BenMAP
             if (checkedCountries.Count == 0)
             {
                 MessageBox.Show("You must select at least one country.");
-                tvCountries.Focus();
+                tvRegions.Focus();
                 return;
             }
 
@@ -264,7 +271,7 @@ namespace BenMAP
             SetActivePanel(1);
         }
 
-        private void tvCountries_AfterCheck(object sender, TreeViewEventArgs e)
+        private void tvRegions_AfterCheck(object sender, TreeViewEventArgs e)
         {
             if (e.Action != TreeViewAction.Unknown)
             {
@@ -319,7 +326,7 @@ namespace BenMAP
 
             //this will set child nodes, if any, to 
             //same status as parent, checked or unchecked
-            tvCountries.BeginUpdate();
+            tvRegions.BeginUpdate();
             foreach (TreeNode item in node.Nodes)
             {
                 item.Checked = node.Checked;
@@ -329,7 +336,7 @@ namespace BenMAP
                     this.CheckChildNodes(item);
                 }
             }
-            tvCountries.EndUpdate();
+            tvRegions.EndUpdate();
         }
 
 
@@ -343,7 +350,7 @@ namespace BenMAP
             //this will set parent node, if any
             //to checked if all children are checked
             //otherwise parent will be unchecked
-            tvCountries.BeginUpdate();
+            tvRegions.BeginUpdate();
 
             bool allChecked = true;
 
@@ -359,7 +366,7 @@ namespace BenMAP
 
             node.Parent.Checked = allChecked;
 
-            tvCountries.EndUpdate();
+            tvRegions.EndUpdate();
         }
 
         private void btnSaveRollback_Click(object sender, EventArgs e)
@@ -624,7 +631,7 @@ namespace BenMAP
             txtName.Text = String.Empty;
             txtDescription.Text = String.Empty;
             selectMapFeaturesOnNodeCheck = false;
-            foreach (TreeNode node in tvCountries.Nodes)
+            foreach (TreeNode node in tvRegions.Nodes)
             {
                 node.Checked = false;
                 foreach(TreeNode tn in node.Nodes){
@@ -658,7 +665,7 @@ namespace BenMAP
             foreach (KeyValuePair<string,string> kvp in item.Countries)
             {
                 string countryid = kvp.Key;
-                TreeNode[] nodes = tvCountries.Nodes.Find(countryid,true);
+                TreeNode[] nodes = tvRegions.Nodes.Find(countryid,true);
                 foreach (TreeNode node in nodes)
                 {
                     node.Checked = true;
@@ -1432,6 +1439,33 @@ namespace BenMAP
                 }
             }
         }
+
+
+        private void ToggleRegionsCountries()
+        {
+            if (rbRegions.Checked)
+            {
+                tvRegions.Visible = true;
+                listCountries.Visible = false;
+            }
+            else
+            {
+                tvRegions.Visible = false;
+                listCountries.Visible = true;
+            }
+        
+        }
+
+        private void rbRegions_CheckedChanged(object sender, EventArgs e)
+        {
+            ToggleRegionsCountries();
+        }
+
+        private void rbCountries_CheckedChanged(object sender, EventArgs e)
+        {
+            ToggleRegionsCountries();
+        }
+
 
        
 
