@@ -33,6 +33,35 @@ namespace BenMAP
         private System.Data.DataTable dtConcEntireRollback = null;
 
         Dictionary<String,IPolygonCategory> selectedButNotSavedIPCs = new Dictionary<String,IPolygonCategory>();
+
+        private class CountryItem 
+        {
+            string _id;
+            string _name;
+
+            public CountryItem(string Id, string Name)
+            {
+                _id = Id;
+                _name = Name;
+            }
+
+            public string Id
+            {
+                get { return _id; }
+                set { _id = value; }
+            }
+
+            public string Name
+            {
+                get { return _name; }
+                set { _name = value; }
+            }
+
+            public override string ToString()
+            {
+                return _name;
+            }
+        }
       
 
         public GBDRollback()
@@ -64,6 +93,7 @@ namespace BenMAP
 
             LoadCountries();
             LoadTreeView();
+            LoadCountryList();
             LoadMap();
             LoadColorPalette();
             LoadStandards();
@@ -161,6 +191,30 @@ namespace BenMAP
                 tvRegions.EndUpdate();
             }
         
+        }
+
+
+        private void LoadCountryList()
+        {
+            if (dtCountries != null)
+            {
+                System.Data.DataTable dtTemp = dtCountries.DefaultView.ToTable(true, "COUNTRYID", "COUNTRYNAME");
+                DataView dv = new DataView(dtTemp);
+                dv.Sort = "COUNTRYNAME ASC";
+                System.Data.DataTable dtAlph = dv.ToTable();
+
+                string country = String.Empty;
+                string countryid = String.Empty;
+                foreach (DataRow dr in dtAlph.Rows)
+                {
+                    countryid = dr["COUNTRYID"].ToString();
+                    country = dr["COUNTRYNAME"].ToString();
+
+                    listCountries.Items.Add(new CountryItem(countryid, country));
+                   
+                }
+            }
+
         }
 
         
