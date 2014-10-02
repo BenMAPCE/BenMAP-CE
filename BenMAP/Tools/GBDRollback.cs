@@ -4,6 +4,7 @@ using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Collections;
 using System.Windows.Forms;
 using DotSpatial.Controls;
 using DotSpatial.Data;
@@ -210,8 +211,7 @@ namespace BenMAP
                     countryid = dr["COUNTRYID"].ToString();
                     country = dr["COUNTRYNAME"].ToString();
 
-                    listCountries.Items.Add(new CountryItem(countryid, country));
-                   
+                    listCountries.Items.Add(new CountryItem(countryid, country));                   
                 }
             }
 
@@ -341,12 +341,11 @@ namespace BenMAP
             {
                 if (!checkedCountries.ContainsKey(e.Node.Name))
                 {
+                    //add to country list
                     checkedCountries.Add(e.Node.Name,e.Node.Text);
                     //also select on map                
                     if (selectMapFeaturesOnNodeCheck)
                     {
-
-                        //mfl[0].SelectByAttribute(filter, ModifySelectionMode.Append);
                         //update map
                         IPolygonScheme ips = (IPolygonScheme)mfl[0].Symbology;
                         IPolygonCategory ipc = null;
@@ -360,19 +359,30 @@ namespace BenMAP
             }
             else
             {
+                //remove from country list
                 checkedCountries.Remove(e.Node.Name);
-                if(selectedButNotSavedIPCs.ContainsKey(e.Node.Name)){
+                //deselect from map
+                if(selectedButNotSavedIPCs.ContainsKey(e.Node.Name))
+                {
                     IPolygonCategory ipc = selectedButNotSavedIPCs[e.Node.Name];
                     mfl[0].Symbology.RemoveCategory(ipc);
                     selectedButNotSavedIPCs.Remove(e.Node.Name);
                     mfl[0].ApplyScheme(mfl[0].Symbology);
                  }
-                //unselect on map
-                //if (selectMapFeaturesOnNodeCheck)
-                //{
-                //    mfl[0].SelectByAttribute(filter, ModifySelectionMode.Subtract);
-                //}
             }
+
+            //finally check/uncheck on country-only list box
+            //but only if tvRegions is visible to avoid infinite loop
+            //see listCountries_ItemCheck event
+            if (tvRegions.Visible)
+            {
+                int index = listCountries.FindStringExact(e.Node.Text);
+                if (index >= 0)
+                {
+                    listCountries.SetItemChecked(index, e.Node.Checked);
+                }
+            }
+
         }
 
         private void CheckChildNodes(TreeNode node)
@@ -1522,15 +1532,23 @@ namespace BenMAP
 
         private void listCountries_ItemCheck(object sender, ItemCheckEventArgs e)
         {
-            //check country in regions tree view
-            CountryItem item = (CountryItem)listCountries.Items[e.Index];
-            TreeNode[] nodes = tvRegions.Nodes.Find(item.Id, true);
-            bool IsChecked = (e.NewValue == CheckState.Checked);
-            foreach (TreeNode node in nodes)
+            //if countries is visible then synchronize the check state
+            //on the regions/countries tree view
+            //otherwise ignore to avoid a feedback loop because the user is checking/unchecking on 
+            //the regions/countries tree view and the check state will be sychronized from 
+            //tvCountries_AfterCheck event. 
+            if (listCountries.Visible)
             {
-                node.Checked = IsChecked;
-                CheckParentNode(node);
-            }             
+                //check country in regions tree view
+                CountryItem item = (CountryItem)listCountries.Items[e.Index];
+                TreeNode[] nodes = tvRegions.Nodes.Find(item.Id, true);
+                bool IsChecked = (e.NewValue == CheckState.Checked);
+                foreach (TreeNode node in nodes)
+                {
+                    node.Checked = IsChecked;
+                    CheckParentNode(node);
+                }
+            }
 
         }
 
