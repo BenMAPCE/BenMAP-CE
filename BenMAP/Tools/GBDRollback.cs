@@ -72,7 +72,9 @@ namespace BenMAP
             //set up locations,form size, visibility
 
             listCountries.Location = new System.Drawing.Point(tvRegions.Location.X, tvRegions.Location.Y);
-            listCountries.Size = tvRegions.Size;
+            //increase height of list countries to better match that of tvRegions
+            //to compensate for a rendering bug in the controls
+            listCountries.Size = new Size(tvRegions.Size.Width, tvRegions.Size.Height + 2 );
 
             gbCountrySelection.Location = new System.Drawing.Point(gbName.Location.X, gbName.Location.Y);
             gbParameterSelection.Location = new System.Drawing.Point(gbName.Location.X, gbName.Location.Y);
