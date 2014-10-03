@@ -74,7 +74,7 @@ namespace BenMAP
             listCountries.Location = new System.Drawing.Point(tvRegions.Location.X, tvRegions.Location.Y);
             //increase height of list countries to better match that of tvRegions
             //to compensate for a rendering bug in the controls
-            listCountries.Size = new Size(tvRegions.Size.Width, tvRegions.Size.Height + 2 );
+            listCountries.Size = new Size(tvRegions.Size.Width, tvRegions.Size.Height + 2);
 
             gbCountrySelection.Location = new System.Drawing.Point(gbName.Location.X, gbName.Location.Y);
             gbParameterSelection.Location = new System.Drawing.Point(gbName.Location.X, gbName.Location.Y);
@@ -1068,11 +1068,14 @@ namespace BenMAP
             //xlSheet.Range["A5"].Value = "GBD Year";
             xlSheet.Range["B5"].Value = rollback.Year.ToString();
             //xlSheet.Range["A6"].Value = "Pollutant";
+            xlSheet.Range["B6"].Value = "PM 2.5";
+
+            //xlSheet.Range["A7"].Value = "Background Concentration";
             char micrograms = '\u00B5';
             char super3 = '\u00B3';
-            xlSheet.Range["B6"].Value = "PM 2.5" + micrograms.ToString() + "g/m" + super3.ToString();
+            xlSheet.Range["B7"].Value = rollback.Background.ToString() + " " + micrograms.ToString() + "g/m" + super3.ToString();
 
-            //xlSheet.Range["A7"].Value = "Rollback Type";
+            //xlSheet.Range["A8"].Value = "Rollback Type";
             string summary = String.Empty;
             switch (rollback.Type)
             {
@@ -1086,9 +1089,9 @@ namespace BenMAP
                     summary = "Rollback to " + rollback.StandardName + " Standard";
                     break;
             }
-            xlSheet.Range["B7"].Value = summary;
+            xlSheet.Range["B8"].Value = summary;
 
-            //xlSheet.Range["A8"].Value = "Regions and Countries";
+            //xlSheet.Range["A9"].Value = "Regions and Countries";
             int rowOffset = 0;
             int nextRow = 0;
 
@@ -1104,7 +1107,7 @@ namespace BenMAP
                 if (!region.Equals(dr["REGIONNAME"].ToString(), StringComparison.OrdinalIgnoreCase))
                 {
                     region = dr["REGIONNAME"].ToString();
-                    nextRow = 8 + rowOffset;
+                    nextRow = 9 + rowOffset;
                     xlSheet.Range["B" + nextRow.ToString()].Value = region;
                     xlSheet.Range["B" + nextRow.ToString()].Font.Italic = true;
                     rowOffset++;
@@ -1112,7 +1115,7 @@ namespace BenMAP
 
                 //write country
                 country = dr["COUNTRYNAME"].ToString();
-                nextRow = 8 + rowOffset;
+                nextRow = 9 + rowOffset;
                 xlSheet.Range["B" + nextRow.ToString()].Value = country;
                 xlSheet.Range["B" + nextRow.ToString()].ColumnWidth = 40;
                 xlSheet.Range["B" + nextRow.ToString()].WrapText = true;
@@ -1125,7 +1128,7 @@ namespace BenMAP
             xlRange = (Microsoft.Office.Interop.Excel.Range)(xlSheet.Columns[1]);            
             xlRange.AutoFit();
             //add borders
-            //nextRow = 8 + rowOffset;
+            //nextRow = 9 + rowOffset;
             xlRange = xlSheet.Range["A2:B" + nextRow.ToString()];
             xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeTop].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
             xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeRight].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
