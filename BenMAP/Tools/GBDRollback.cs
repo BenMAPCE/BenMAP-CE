@@ -930,6 +930,9 @@ namespace BenMAP
                     dtConcEntireRollback.Columns.Add("CONCENTRATION_DELTA", dtConcCountry.Columns["CONCENTRATION"].DataType);
                     dtConcEntireRollback.Columns.Add("AIR_QUALITY_DELTA", dtConcCountry.Columns["CONCENTRATION"].DataType);
                     dtConcEntireRollback.Columns.Add("KREWSKI", dtConcCountry.Columns["CONCENTRATION"].DataType);
+                    dtConcEntireRollback.Columns.Add("KREWSKI_2_5", dtConcCountry.Columns["CONCENTRATION"].DataType);
+                    dtConcEntireRollback.Columns.Add("KREWSKI_97_5", dtConcCountry.Columns["CONCENTRATION"].DataType);
+                    dtConcEntireRollback.Columns.Add("INCIDENCE_RATE", dtConcCountry.Columns["CONCENTRATION"].DataType);
                 }
 
                 //run rollback
@@ -947,6 +950,10 @@ namespace BenMAP
                 result = func.GBD_math(concDelta, population, incrate, beta, se);
                 //add results to dtConcCountry
                 dtConcCountry.Columns.Add("KREWSKI", dtConcCountry.Columns["CONCENTRATION"].DataType, result.Krewski.ToString());
+                dtConcCountry.Columns.Add("KREWSKI_2_5", dtConcCountry.Columns["CONCENTRATION"].DataType, result.Krewski2_5.ToString());
+                dtConcCountry.Columns.Add("KREWSKI_97_5", dtConcCountry.Columns["CONCENTRATION"].DataType, result.Krewski97_5.ToString());
+                dtConcCountry.Columns.Add("INCIDENCE_RATE", dtConcCountry.Columns["CONCENTRATION"].DataType, incrate.ToString());
+
 
                 //add records to entire rollback dataset
                 dtConcEntireRollback.Merge(dtConcCountry, true, MissingSchemaAction.Ignore);
@@ -1186,6 +1193,9 @@ namespace BenMAP
             dtDetailedResults.Columns.Add("IS_REGION", Type.GetType("System.Boolean"));
             dtDetailedResults.Columns.Add("POP_AFFECTED", Type.GetType("System.Double"));
             dtDetailedResults.Columns.Add("AVOIDED_DEATHS", Type.GetType("System.Double"));
+            dtDetailedResults.Columns.Add("CONFIDENCE_INTERVAL", Type.GetType("System.String"));
+            dtDetailedResults.Columns.Add("PERCENT_BASELINE_MORTALITY", Type.GetType("System.Double"));
+            dtDetailedResults.Columns.Add("DEATHS_PER_100_THOUSAND", Type.GetType("System.Double"));
             dtDetailedResults.Columns.Add("AVOIDED_DEATHS_PERCENT_POP", Type.GetType("System.Double"));
             dtDetailedResults.Columns.Add("BASELINE_MIN", Type.GetType("System.Double"));
             dtDetailedResults.Columns.Add("BASELINE_MEDIAN", Type.GetType("System.Double"));
@@ -1230,6 +1240,9 @@ namespace BenMAP
                 }
                 xlSheet2.Range["B" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["POP_AFFECTED"].ToString());
                 xlSheet2.Range["C" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AVOIDED_DEATHS"].ToString());
+                xlSheet2.Range["D" + nextRow.ToString()].Value = dr["CONFIDENCE_INTERVAL"].ToString();
+                xlSheet2.Range["E" + nextRow.ToString()].Value = dr["PERCENT_BASELINE_MORTALITY"].ToString();
+                xlSheet2.Range["F" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["DEATHS_PER_100_THOUSAND"].ToString());
                 xlSheet2.Range["G" + nextRow.ToString()].Value = dr["AVOIDED_DEATHS_PERCENT_POP"].ToString();//FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AVOIDED_DEATHS_PERCENT_POP"].ToString());
                 xlSheet2.Range["H" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MIN"].ToString());
                 xlSheet2.Range["I" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MEDIAN"].ToString());
@@ -1261,6 +1274,9 @@ namespace BenMAP
                 DataRow dr = dtSummaryResults.Rows[0];
                 xlSheet.Range["D4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["POP_AFFECTED"].ToString());
                 xlSheet.Range["E4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AVOIDED_DEATHS"].ToString());
+                xlSheet.Range["F4"].Value = dr["CONFIDENCE_INTERVAL"].ToString();
+                xlSheet.Range["G4"].Value = dr["PERCENT_BASELINE_MORTALITY"].ToString();
+                xlSheet.Range["H4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["DEATHS_PER_100_THOUSAND"].ToString());
                 xlSheet.Range["I4"].Value = dr["AVOIDED_DEATHS_PERCENT_POP"].ToString();//FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AVOIDED_DEATHS_PERCENT_POP"].ToString());
                 xlSheet.Range["J4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MIN"].ToString());
                 xlSheet.Range["K4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MEDIAN"].ToString());
@@ -1367,6 +1383,13 @@ namespace BenMAP
         {
             double popAffected;
             double avoidedDeaths;
+            double krewski_2_5;
+            double krewski_97_5;
+            string confidenceInterval;
+            double incidenceRate;
+            double baselineMortality;
+            double percentBaselineMortality;
+            double deathsPer100Thousand;
             double avoidedDeathsPercentPop;
             double baselineMin;
             double baselineMedian;
@@ -1394,18 +1417,40 @@ namespace BenMAP
                 filter = "1=1"; //no filter (i.e., all rows)
             }
 
+            //population
             result = dtConcEntireRollback.Compute("SUM(POPESTIMATE)", filter);
             popAffected = Double.Parse(result.ToString());
 
 
-            System.Data.DataTable dtKrewski = dtConcEntireRollback.DefaultView.ToTable(true, "REGIONID", "REGIONNAME", "COUNTRYID", "COUNTRYNAME", "KREWSKI");
+            System.Data.DataTable dtKrewski = dtConcEntireRollback.DefaultView.ToTable(true, "REGIONID", "REGIONNAME", "COUNTRYID", "COUNTRYNAME",
+                                                                                            "KREWSKI", "KREWSKI_2_5", "KREWSKI_97_5", "INCIDENCE_RATE");
             dtKrewski.DefaultView.Sort = "REGIONNAME, COUNTRYNAME";
 
+            //avoided deaths
             result = dtKrewski.Compute("SUM(KREWSKI)", filter);
             avoidedDeaths = Double.Parse(result.ToString());
-
+            
+            //avoided deaths percent pop
             avoidedDeathsPercentPop = (avoidedDeaths / popAffected) * 100;
+            
+            //confidence interval
+            result = dtKrewski.Compute("SUM(KREWSKI_2_5)", filter);
+            krewski_2_5 = Double.Parse(result.ToString());
+            result = dtKrewski.Compute("SUM(KREWSKI_97_5)", filter);
+            krewski_97_5 = Double.Parse(result.ToString());
+            confidenceInterval = krewski_2_5.ToString() + " - " + krewski_97_5.ToString();
 
+            //percent baseline mortality
+            result = dtKrewski.Compute("SUM(INCIDENCE_RATE)", filter);
+            incidenceRate = Double.Parse(result.ToString());
+            baselineMortality = incidenceRate * popAffected;
+            percentBaselineMortality = (avoidedDeaths / baselineMortality) * 100;
+
+
+            //deaths per 100,000
+            deathsPer100Thousand = avoidedDeaths/(popAffected/100000);
+
+            //baseline min, median, max
             result = dtConcEntireRollback.Compute("MIN(CONCENTRATION)", filter);
             baselineMin = Double.Parse(result.ToString());
 
@@ -1416,6 +1461,7 @@ namespace BenMAP
             result = dtConcEntireRollback.Compute("MAX(CONCENTRATION)", filter);
             baselineMax = Double.Parse(result.ToString());
 
+            //control min, median, max
             result = dtConcEntireRollback.Compute("MIN(CONCENTRATION_FINAL)", filter);
             controlMin = Double.Parse(result.ToString());
 
@@ -1426,6 +1472,7 @@ namespace BenMAP
             result = dtConcEntireRollback.Compute("MAX(CONCENTRATION_FINAL)", filter);
             controlMax = Double.Parse(result.ToString());
 
+            //air quality delta
             result = dtConcEntireRollback.Compute("SUM(AIR_QUALITY_DELTA)", filter);
             airQualityChange = Double.Parse(result.ToString());
             airQualityChange = airQualityChange / popAffected;
@@ -1435,6 +1482,9 @@ namespace BenMAP
             dr["IS_REGION"] = isRegion;
             dr["POP_AFFECTED"] = popAffected;
             dr["AVOIDED_DEATHS"] = avoidedDeaths;
+            dr["CONFIDENCE_INTERVAL"] = confidenceInterval;
+            dr["PERCENT_BASELINE_MORTALITY"] = percentBaselineMortality;
+            dr["DEATHS_PER_100_THOUSAND"] = deathsPer100Thousand;
             dr["AVOIDED_DEATHS_PERCENT_POP"] = avoidedDeathsPercentPop;
             dr["BASELINE_MIN"] = baselineMin;
             dr["BASELINE_MEDIAN"] = baselineMedian;
