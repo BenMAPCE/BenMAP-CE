@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GBDRollback));
             this.gbCountrySelection = new System.Windows.Forms.GroupBox();
             this.btnBack = new System.Windows.Forms.Button();
@@ -71,8 +71,8 @@
             this.gbOptionsIncremental = new System.Windows.Forms.GroupBox();
             this.txtIncrementBackground = new System.Windows.Forms.TextBox();
             this.txtIncrement = new System.Windows.Forms.TextBox();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
+            this.lblIncrementBackground = new System.Windows.Forms.Label();
+            this.lblIncrement = new System.Windows.Forms.Label();
             this.cboRollbackType = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
             this.btnSaveRollback = new System.Windows.Forms.Button();
@@ -82,7 +82,7 @@
             this.gbOptionsPercentage = new System.Windows.Forms.GroupBox();
             this.txtPercentageBackground = new System.Windows.Forms.TextBox();
             this.txtPercentage = new System.Windows.Forms.TextBox();
-            this.label6 = new System.Windows.Forms.Label();
+            this.lblPercentageBackground = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.gbOptionsStandard = new System.Windows.Forms.GroupBox();
             this.cboStandard = new System.Windows.Forms.ComboBox();
@@ -235,14 +235,14 @@
             this.colTotalPopulation,
             this.colRollbackType,
             this.colExecute});
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvRollbacks.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvRollbacks.DefaultCellStyle = dataGridViewCellStyle2;
             this.dgvRollbacks.Location = new System.Drawing.Point(17, 55);
             this.dgvRollbacks.MultiSelect = false;
             this.dgvRollbacks.Name = "dgvRollbacks";
@@ -538,8 +538,8 @@
             // 
             this.gbOptionsIncremental.Controls.Add(this.txtIncrementBackground);
             this.gbOptionsIncremental.Controls.Add(this.txtIncrement);
-            this.gbOptionsIncremental.Controls.Add(this.label5);
-            this.gbOptionsIncremental.Controls.Add(this.label4);
+            this.gbOptionsIncremental.Controls.Add(this.lblIncrementBackground);
+            this.gbOptionsIncremental.Controls.Add(this.lblIncrement);
             this.gbOptionsIncremental.Location = new System.Drawing.Point(15, 48);
             this.gbOptionsIncremental.Name = "gbOptionsIncremental";
             this.gbOptionsIncremental.Size = new System.Drawing.Size(253, 206);
@@ -549,7 +549,7 @@
             // 
             // txtIncrementBackground
             // 
-            this.txtIncrementBackground.Location = new System.Drawing.Point(96, 45);
+            this.txtIncrementBackground.Location = new System.Drawing.Point(108, 45);
             this.txtIncrementBackground.Name = "txtIncrementBackground";
             this.txtIncrementBackground.Size = new System.Drawing.Size(100, 20);
             this.txtIncrementBackground.TabIndex = 3;
@@ -557,29 +557,29 @@
             // 
             // txtIncrement
             // 
-            this.txtIncrement.Location = new System.Drawing.Point(96, 19);
+            this.txtIncrement.Location = new System.Drawing.Point(108, 19);
             this.txtIncrement.Name = "txtIncrement";
             this.txtIncrement.Size = new System.Drawing.Size(100, 20);
             this.txtIncrement.TabIndex = 2;
             // 
-            // label5
+            // lblIncrementBackground
             // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(10, 45);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(68, 13);
-            this.label5.TabIndex = 1;
-            this.label5.Text = "Background:";
-            this.label5.Visible = false;
+            this.lblIncrementBackground.AutoSize = true;
+            this.lblIncrementBackground.Location = new System.Drawing.Point(10, 45);
+            this.lblIncrementBackground.Name = "lblIncrementBackground";
+            this.lblIncrementBackground.Size = new System.Drawing.Size(68, 13);
+            this.lblIncrementBackground.TabIndex = 1;
+            this.lblIncrementBackground.Text = "Background:";
+            this.lblIncrementBackground.Visible = false;
             // 
-            // label4
+            // lblIncrement
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(10, 19);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(57, 13);
-            this.label4.TabIndex = 0;
-            this.label4.Text = "Increment:";
+            this.lblIncrement.AutoSize = true;
+            this.lblIncrement.Location = new System.Drawing.Point(10, 19);
+            this.lblIncrement.Name = "lblIncrement";
+            this.lblIncrement.Size = new System.Drawing.Size(57, 13);
+            this.lblIncrement.TabIndex = 0;
+            this.lblIncrement.Text = "Increment:";
             // 
             // cboRollbackType
             // 
@@ -651,7 +651,7 @@
             // 
             this.gbOptionsPercentage.Controls.Add(this.txtPercentageBackground);
             this.gbOptionsPercentage.Controls.Add(this.txtPercentage);
-            this.gbOptionsPercentage.Controls.Add(this.label6);
+            this.gbOptionsPercentage.Controls.Add(this.lblPercentageBackground);
             this.gbOptionsPercentage.Controls.Add(this.label7);
             this.gbOptionsPercentage.Location = new System.Drawing.Point(924, 440);
             this.gbOptionsPercentage.Name = "gbOptionsPercentage";
@@ -662,7 +662,7 @@
             // 
             // txtPercentageBackground
             // 
-            this.txtPercentageBackground.Location = new System.Drawing.Point(96, 45);
+            this.txtPercentageBackground.Location = new System.Drawing.Point(108, 45);
             this.txtPercentageBackground.Name = "txtPercentageBackground";
             this.txtPercentageBackground.Size = new System.Drawing.Size(100, 20);
             this.txtPercentageBackground.TabIndex = 3;
@@ -670,29 +670,29 @@
             // 
             // txtPercentage
             // 
-            this.txtPercentage.Location = new System.Drawing.Point(96, 19);
+            this.txtPercentage.Location = new System.Drawing.Point(108, 19);
             this.txtPercentage.Name = "txtPercentage";
             this.txtPercentage.Size = new System.Drawing.Size(100, 20);
             this.txtPercentage.TabIndex = 2;
             // 
-            // label6
+            // lblPercentageBackground
             // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(10, 45);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(68, 13);
-            this.label6.TabIndex = 1;
-            this.label6.Text = "Background:";
-            this.label6.Visible = false;
+            this.lblPercentageBackground.AutoSize = true;
+            this.lblPercentageBackground.Location = new System.Drawing.Point(10, 45);
+            this.lblPercentageBackground.Name = "lblPercentageBackground";
+            this.lblPercentageBackground.Size = new System.Drawing.Size(68, 13);
+            this.lblPercentageBackground.TabIndex = 1;
+            this.lblPercentageBackground.Text = "Background:";
+            this.lblPercentageBackground.Visible = false;
             // 
             // label7
             // 
             this.label7.AutoSize = true;
             this.label7.Location = new System.Drawing.Point(10, 19);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(65, 13);
+            this.label7.Size = new System.Drawing.Size(82, 13);
             this.label7.TabIndex = 0;
-            this.label7.Text = "Percentage:";
+            this.label7.Text = "Percentage (%):";
             // 
             // gbOptionsStandard
             // 
@@ -880,12 +880,12 @@
         private System.Windows.Forms.GroupBox gbOptionsIncremental;
         private System.Windows.Forms.TextBox txtIncrementBackground;
         private System.Windows.Forms.TextBox txtIncrement;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label lblIncrementBackground;
+        private System.Windows.Forms.Label lblIncrement;
         private System.Windows.Forms.GroupBox gbOptionsPercentage;
         private System.Windows.Forms.TextBox txtPercentageBackground;
         private System.Windows.Forms.TextBox txtPercentage;
-        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label lblPercentageBackground;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.GroupBox gbOptionsStandard;
         private System.Windows.Forms.Label label9;

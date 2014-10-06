@@ -84,6 +84,13 @@ namespace BenMAP
             
 
             //parameter options in gbParameterSelection
+            char micrograms = '\u00B5';
+            char super3 = '\u00B3';
+            lblIncrement.Text = "Increment (" + micrograms.ToString() + "g/m" + super3.ToString() + "):";
+
+            lblIncrementBackground.Text = "Background (" + micrograms.ToString() + "g/m" + super3.ToString() + "):";
+            lblPercentageBackground.Text = lblIncrementBackground.Text;
+
             gbOptionsPercentage.Location = new System.Drawing.Point(gbOptionsIncremental.Location.X, gbOptionsIncremental.Location.Y);
             gbParameterSelection.Controls.Add(gbOptionsPercentage);
             gbOptionsStandard.Location = new System.Drawing.Point(gbOptionsIncremental.Location.X, gbOptionsIncremental.Location.Y);
