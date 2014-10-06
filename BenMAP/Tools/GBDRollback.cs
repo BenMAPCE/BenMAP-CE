@@ -933,6 +933,7 @@ namespace BenMAP
                     dtConcEntireRollback.Columns.Add("KREWSKI_2_5", dtConcCountry.Columns["CONCENTRATION"].DataType);
                     dtConcEntireRollback.Columns.Add("KREWSKI_97_5", dtConcCountry.Columns["CONCENTRATION"].DataType);
                     dtConcEntireRollback.Columns.Add("INCIDENCE_RATE", dtConcCountry.Columns["CONCENTRATION"].DataType);
+                    dtConcEntireRollback.Columns.Add("BASELINE_MORTALITY", dtConcCountry.Columns["CONCENTRATION"].DataType);
                 }
 
                 //run rollback
@@ -953,6 +954,7 @@ namespace BenMAP
                 dtConcCountry.Columns.Add("KREWSKI_2_5", dtConcCountry.Columns["CONCENTRATION"].DataType, result.Krewski2_5.ToString());
                 dtConcCountry.Columns.Add("KREWSKI_97_5", dtConcCountry.Columns["CONCENTRATION"].DataType, result.Krewski97_5.ToString());
                 dtConcCountry.Columns.Add("INCIDENCE_RATE", dtConcCountry.Columns["CONCENTRATION"].DataType, incrate.ToString());
+                dtConcCountry.Columns.Add("BASELINE_MORTALITY", dtConcCountry.Columns["CONCENTRATION"].DataType, "INCIDENCE_RATE * POPESTIMATE" );
 
 
                 //add records to entire rollback dataset
@@ -1391,7 +1393,6 @@ namespace BenMAP
             double krewski_2_5;
             double krewski_97_5;
             string confidenceInterval;
-            double incidenceRate;
             double baselineMortality;
             double percentBaselineMortality;
             double deathsPer100Thousand;
@@ -1426,17 +1427,17 @@ namespace BenMAP
             result = dtConcEntireRollback.Compute("SUM(POPESTIMATE)", filter);
             popAffected = Double.Parse(result.ToString());
 
+            //baselineMortality
+            result = dtConcEntireRollback.Compute("SUM(BASELINE_MORTALITY)", filter);
+            baselineMortality = Double.Parse(result.ToString());
 
             System.Data.DataTable dtKrewski = dtConcEntireRollback.DefaultView.ToTable(true, "REGIONID", "REGIONNAME", "COUNTRYID", "COUNTRYNAME",
-                                                                                            "KREWSKI", "KREWSKI_2_5", "KREWSKI_97_5", "INCIDENCE_RATE");
+                                                                                            "KREWSKI", "KREWSKI_2_5", "KREWSKI_97_5");
             dtKrewski.DefaultView.Sort = "REGIONNAME, COUNTRYNAME";
 
             //avoided deaths
             result = dtKrewski.Compute("SUM(KREWSKI)", filter);
             avoidedDeaths = Double.Parse(result.ToString());
-            
-            //avoided deaths percent pop
-            avoidedDeathsPercentPop = (avoidedDeaths / popAffected) * 100;
             
             //confidence interval
             result = dtKrewski.Compute("SUM(KREWSKI_2_5)", filter);
@@ -1446,15 +1447,14 @@ namespace BenMAP
             confidenceInterval = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, krewski_2_5.ToString()) + " - " + FormatDoubleString(FORMAT_DECIMAL_2_PLACES, krewski_97_5.ToString());
 
             //percent baseline mortality
-            result = dtKrewski.Compute("SUM(INCIDENCE_RATE)", filter);
-            incidenceRate = Double.Parse(result.ToString());
-            baselineMortality = incidenceRate * popAffected;
             percentBaselineMortality = (avoidedDeaths / baselineMortality) * 100;
-
 
             //deaths per 100,000
             deathsPer100Thousand = avoidedDeaths/(popAffected/100000);
 
+            //avoided deaths percent pop
+            avoidedDeathsPercentPop = (avoidedDeaths / popAffected) * 100;
+            
             //baseline min, median, max
             result = dtConcEntireRollback.Compute("MIN(CONCENTRATION)", filter);
             baselineMin = Double.Parse(result.ToString());
