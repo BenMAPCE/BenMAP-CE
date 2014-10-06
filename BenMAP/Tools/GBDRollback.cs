@@ -1255,6 +1255,11 @@ namespace BenMAP
                 
             }
 
+            //center confidence interval
+            xlRange = xlSheet2.Range["D4:D" + (nextRow - 1).ToString()];
+            xlRange.Cells.HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignCenter;
+            
+            //add cell borders
             xlRange = xlSheet2.Range["A4:N" + (nextRow - 1).ToString()];
             xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeTop].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
             xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeRight].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
@@ -1438,7 +1443,7 @@ namespace BenMAP
             krewski_2_5 = Double.Parse(result.ToString());
             result = dtKrewski.Compute("SUM(KREWSKI_97_5)", filter);
             krewski_97_5 = Double.Parse(result.ToString());
-            confidenceInterval = krewski_2_5.ToString() + " - " + krewski_97_5.ToString();
+            confidenceInterval = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, krewski_2_5.ToString()) + " - " + FormatDoubleString(FORMAT_DECIMAL_2_PLACES, krewski_97_5.ToString());
 
             //percent baseline mortality
             result = dtKrewski.Compute("SUM(INCIDENCE_RATE)", filter);
