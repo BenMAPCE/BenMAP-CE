@@ -1314,23 +1314,24 @@ namespace BenMAP
 
             //summary chart
             //write summary chart data to hidden sheet
-            Microsoft.Office.Interop.Excel.Worksheet xlSheet3 = (Microsoft.Office.Interop.Excel.Worksheet)xlBook.Worksheets[3];
+            //sheet DataSource is hidden and is the 4th sheet (Metadata is the third sheet)
+            Microsoft.Office.Interop.Excel.Worksheet xlSheet4 = (Microsoft.Office.Interop.Excel.Worksheet)xlBook.Worksheets[4];             
             int nextRowForSummary = 1;
             foreach (DataRow dr in dtDetailedResults.Rows)
             {
                 //only write countries, skip regions
                 if (!Convert.ToBoolean(dr["IS_REGION"].ToString()))
                 {
-                    xlSheet3.Range["A" + nextRowForSummary.ToString()].Value = dr["NAME"].ToString();
-                    xlSheet3.Range["B" + nextRowForSummary.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AVOIDED_DEATHS"].ToString());
+                    xlSheet4.Range["A" + nextRowForSummary.ToString()].Value = dr["NAME"].ToString();
+                    xlSheet4.Range["B" + nextRowForSummary.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AVOIDED_DEATHS"].ToString());
                     nextRowForSummary++;                    
                 }
             }
             Microsoft.Office.Interop.Excel.ChartObject xlChartObject = (Microsoft.Office.Interop.Excel.ChartObject)xlSheet.ChartObjects(1);
             Microsoft.Office.Interop.Excel.Chart xlChart = (Microsoft.Office.Interop.Excel.Chart)xlChartObject.Chart;
             Microsoft.Office.Interop.Excel.Series xlSeries = (Microsoft.Office.Interop.Excel.Series)xlChart.SeriesCollection(1);
-            xlSeries.Values = xlSheet3.Range["B1:B" + (nextRowForSummary - 1).ToString()];
-            xlSeries.XValues = xlSheet3.Range["A1:A" + (nextRowForSummary - 1).ToString()];
+            xlSeries.Values = xlSheet4.Range["B1:B" + (nextRowForSummary - 1).ToString()];
+            xlSeries.XValues = xlSheet4.Range["A1:A" + (nextRowForSummary - 1).ToString()];
             //write to total avoided deaths text box on chart
             Microsoft.Office.Interop.Excel.Shape txtBox = (Microsoft.Office.Interop.Excel.Shape)xlSheet.Shapes.Item("TextBox 1");
             txtBox.TextFrame.Characters().Text = txtBox.TextFrame.Characters().Text + " " + xlSheet.Range["E4"].Text; //use .Text rather than .Value on the range here, because it is formatted
