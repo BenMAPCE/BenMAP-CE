@@ -29,6 +29,7 @@ namespace BenMAP
         private const double BACKGROUND = 5.8;
         private const int YEAR = 2010;
         private const string FORMAT_DECIMAL_2_PLACES = "#,###.00";
+        private const string FORMAT_DECIMAL_0_PLACES = "N0";
 
         private System.Data.DataTable dtConcCountry = null;
         private System.Data.DataTable dtConcEntireRollback = null;
@@ -1247,9 +1248,9 @@ namespace BenMAP
                     //xlSheet2.Range["A" + nextRow.ToString()].WrapText = true;
                     xlSheet2.Range["A" + nextRow.ToString()].InsertIndent(2);                
                 }
-                xlSheet2.Range["B" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["POP_AFFECTED"].ToString());
-                xlSheet2.Range["C" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AVOIDED_DEATHS"].ToString());
-                xlSheet2.Range["D" + nextRow.ToString()].Value = dr["CONFIDENCE_INTERVAL"].ToString();
+                xlSheet2.Range["B" + nextRow.ToString()].Value = FormatDoubleStringTwoSignificantFigures(FORMAT_DECIMAL_0_PLACES, dr["POP_AFFECTED"].ToString());
+                xlSheet2.Range["C" + nextRow.ToString()].Value = FormatDoubleStringTwoSignificantFigures(FORMAT_DECIMAL_0_PLACES, dr["AVOIDED_DEATHS"].ToString());
+                xlSheet2.Range["D" + nextRow.ToString()].Value = "'" + dr["CONFIDENCE_INTERVAL"].ToString(); //prepend apostrophe so Excel treats this as text not date
                 xlSheet2.Range["E" + nextRow.ToString()].Value = dr["PERCENT_BASELINE_MORTALITY"].ToString();
                 xlSheet2.Range["F" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["DEATHS_PER_100_THOUSAND"].ToString());
                 xlSheet2.Range["G" + nextRow.ToString()].Value = dr["AVOIDED_DEATHS_PERCENT_POP"].ToString();//FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AVOIDED_DEATHS_PERCENT_POP"].ToString());
@@ -1286,9 +1287,9 @@ namespace BenMAP
             if (dtSummaryResults.Rows.Count > 0)
             {
                 DataRow dr = dtSummaryResults.Rows[0];
-                xlSheet.Range["D4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["POP_AFFECTED"].ToString());
-                xlSheet.Range["E4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AVOIDED_DEATHS"].ToString());
-                xlSheet.Range["F4"].Value = dr["CONFIDENCE_INTERVAL"].ToString();
+                xlSheet.Range["D4"].Value = FormatDoubleStringTwoSignificantFigures(FORMAT_DECIMAL_0_PLACES, dr["POP_AFFECTED"].ToString());
+                xlSheet.Range["E4"].Value = FormatDoubleStringTwoSignificantFigures(FORMAT_DECIMAL_0_PLACES, dr["AVOIDED_DEATHS"].ToString());
+                xlSheet.Range["F4"].Value =  "'" + dr["CONFIDENCE_INTERVAL"].ToString(); //prepend apostrophe so Excel treats this as text not date
                 xlSheet.Range["G4"].Value = dr["PERCENT_BASELINE_MORTALITY"].ToString();
                 xlSheet.Range["H4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["DEATHS_PER_100_THOUSAND"].ToString());
                 xlSheet.Range["I4"].Value = dr["AVOIDED_DEATHS_PERCENT_POP"].ToString();//FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AVOIDED_DEATHS_PERCENT_POP"].ToString());
@@ -1365,6 +1366,29 @@ namespace BenMAP
         private string FormatDoubleString(string format, string str)
         {         
             return Double.Parse(str).ToString(format);
+        }
+
+        private string FormatDoubleStringTwoSignificantFigures(string format, string str)
+        {
+            Double dbl = Double.Parse(str);
+
+            if ((dbl > 100) || (dbl < -100))
+            {
+                //absolute value, log10, floor (round down to nearest int), round function
+                //original Excel function: =ROUND(T19,2-1-INT(LOG10(ABS(T19))))
+
+                long numDecimalPlaces = Math.Abs(Convert.ToInt64(1 - Math.Floor(Math.Log10(Math.Abs(dbl)))));
+
+                double tenFactor = Math.Pow(Convert.ToDouble(10), Convert.ToDouble(numDecimalPlaces));
+
+                dbl = dbl / tenFactor;
+
+                dbl = Math.Round(dbl, 0, MidpointRounding.AwayFromZero);
+
+                dbl = dbl * tenFactor;
+            }
+
+            return dbl.ToString(format);
         }
 
         private double Median(IEnumerable<double> list)
@@ -1452,7 +1476,7 @@ namespace BenMAP
             krewski_2_5 = Double.Parse(result.ToString());
             result = dtKrewski.Compute("SUM(KREWSKI_97_5)", filter);
             krewski_97_5 = Double.Parse(result.ToString());
-            confidenceInterval = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, krewski_2_5.ToString()) + " - " + FormatDoubleString(FORMAT_DECIMAL_2_PLACES, krewski_97_5.ToString());
+            confidenceInterval = FormatDoubleStringTwoSignificantFigures(FORMAT_DECIMAL_0_PLACES, krewski_2_5.ToString()) + " - " + FormatDoubleStringTwoSignificantFigures(FORMAT_DECIMAL_0_PLACES, krewski_97_5.ToString());
 
             //percent baseline mortality
             percentBaselineMortality = (avoidedDeaths / baselineMortality) * 100;
