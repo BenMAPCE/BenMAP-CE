@@ -111,6 +111,7 @@ namespace BenMAP
             this.btnViewMetadata.TabIndex = 3;
             this.btnViewMetadata.Text = "View Metadata";
             this.btnViewMetadata.UseVisualStyleBackColor = true;
+            this.btnViewMetadata.Visible = false;
             this.btnViewMetadata.Click += new System.EventHandler(this.btnViewMetadata_Click);
             // 
             // btnValidate
@@ -122,6 +123,7 @@ namespace BenMAP
             this.btnValidate.TabIndex = 2;
             this.btnValidate.Text = "Validate";
             this.btnValidate.UseVisualStyleBackColor = true;
+            this.btnValidate.Visible = false;
             this.btnValidate.Click += new System.EventHandler(this.btnValidate_Click);
             // 
             // btnOK
