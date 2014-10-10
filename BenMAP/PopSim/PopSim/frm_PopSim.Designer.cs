@@ -502,6 +502,7 @@
             this.txtUserSuppliedBeta.Name = "txtUserSuppliedBeta";
             this.txtUserSuppliedBeta.Size = new System.Drawing.Size(92, 22);
             this.txtUserSuppliedBeta.TabIndex = 6;
+            this.txtUserSuppliedBeta.TextChanged += new System.EventHandler(this.txtUserSuppliedBeta_TextChanged);
             this.txtUserSuppliedBeta.Leave += new System.EventHandler(this.txtUserSuppliedBeta_Leave);
             // 
             // lblUserSuppliedBeta
@@ -511,9 +512,10 @@
             this.lblUserSuppliedBeta.Location = new System.Drawing.Point(9, 217);
             this.lblUserSuppliedBeta.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblUserSuppliedBeta.Name = "lblUserSuppliedBeta";
-            this.lblUserSuppliedBeta.Size = new System.Drawing.Size(242, 18);
+            this.lblUserSuppliedBeta.Size = new System.Drawing.Size(297, 18);
             this.lblUserSuppliedBeta.TabIndex = 5;
-            this.lblUserSuppliedBeta.Text = "Enter User-supplied Beta (from 0 to 1)";
+            this.lblUserSuppliedBeta.Text = "Enter User-supplied Beta (from -0.017 to 0.031)";
+            this.lblUserSuppliedBeta.Click += new System.EventHandler(this.lblUserSuppliedBeta_Click);
             // 
             // lblStudyBeta
             // 

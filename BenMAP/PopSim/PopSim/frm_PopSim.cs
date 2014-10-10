@@ -950,5 +950,15 @@ namespace PopSim
             iY =(int) (e.Bounds.Top + (e.Bounds.Height - sizeText.Height) / 2);
             g.DrawString(sText, ctlTab.Font, Brushes.Black, iX, iY);
         }
+
+        private void txtUserSuppliedBeta_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lblUserSuppliedBeta_Click(object sender, EventArgs e)
+        {
+
+        }
     }
     }
