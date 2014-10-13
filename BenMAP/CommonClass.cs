@@ -217,15 +217,7 @@ namespace BenMAP
         {
             get
             {
-                //if connection is established, ensure it is open
-                if (_connection != null)
-                {
-                    if (_connection.State != ConnectionState.Open)
-                    {
-                        _connection.Open();
-                    }
-                }
-                else //we have no connection so get one.
+                if ((_connection == null) || (_connection.State != ConnectionState.Open))
                 {
                     ConnectionStringSettings settings = ConfigurationManager.ConnectionStrings["ConnectionString"];
                     string str = settings.ConnectionString;
@@ -236,6 +228,7 @@ namespace BenMAP
 
                     _connection = new FirebirdSql.Data.FirebirdClient.FbConnection(str);
                 }
+
                 return _connection;
             }
             set
