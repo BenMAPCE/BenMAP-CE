@@ -217,15 +217,23 @@ namespace BenMAP
         {
             get
             {
-                if (_connection == null)
+                //if connection is established, ensure it is open
+                if (_connection != null)
+                {
+                    if (_connection.State != ConnectionState.Open)
+                    {
+                        _connection.Open();
+                    }
+                }
+                else //we have no connection so get one.
                 {
                     ConnectionStringSettings settings = ConfigurationManager.ConnectionStrings["ConnectionString"];
                     string str = settings.ConnectionString;
                     //if (!str.Contains(":"))
                     //    str = str.Substring(0, str.IndexOf("initial catalog=")) + "initial catalog=" + Application.StartupPath + @"\" + str.Substring(str.IndexOf("initial catalog=") + 16);
                     //need to modify string to use general data location
-                    str=str.Replace("##USERDATA##", Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData));
-                    
+                    str = str.Replace("##USERDATA##", Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData));
+
                     _connection = new FirebirdSql.Data.FirebirdClient.FbConnection(str);
                 }
                 return _connection;
