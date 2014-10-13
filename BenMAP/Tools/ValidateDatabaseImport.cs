@@ -524,7 +524,9 @@ namespace BenMAP
             string max = _hashTableDef[columnName + "##UPPERLIMIT"].ToString();//Get_Max(columnName, dataType);
             bool required = Convert.ToBoolean(Convert.ToInt32(_hashTableDef[columnName + "##REQUIRED"].ToString()));//Get required value (true (1) or false (0))
             string checkType = _hashTableDef[columnName + "##CHECKTYPE"].ToString();//Get check type - error, warning, or none (empty string or null)
-            Regex regx = new Regex(@"^[^~!@#%`^]+$");
+            // removed $ and %, as these are used in the valuation functions (and several others, as well)
+            //Regex regx = new Regex(@"^[^~!@#%`^]+$");
+            Regex regx = new Regex(@"^[^~!@#`^]+");
             double tempVal;
             int outVal = -1;
             bool bPassed = true;

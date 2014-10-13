@@ -35,9 +35,11 @@ namespace BenMAP
         
         public LoadVariableDatabase()
         {
+            // turned off validation as it did not permit most variable datasets to be loaded
             InitializeComponent();
             _iniPath = CommonClass.ResultFilePath + @"\BenMAP.ini";
-            _isForceValidate = CommonClass.IniReadValue("appSettings", "IsForceValidate", _iniPath);
+            //_isForceValidate = CommonClass.IniReadValue("appSettings", "IsForceValidate", _iniPath);
+            /*
             if (_isForceValidate == "T")
             {
                 btnOK.Enabled = false;
@@ -46,6 +48,8 @@ namespace BenMAP
             {
                 btnOK.Enabled = true;
             }
+             */
+            btnOK.Enabled = true;
         }
 
         private string _dataPath = string.Empty;
