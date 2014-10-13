@@ -716,6 +716,9 @@ namespace PopSim
                 txtPMThreshold.Visible = false;
                 lblBetaAdjAtThreshold.Visible = false;
                 txtBetaAdj.Visible = false;
+                // set threshold and threshold beta adjustment to zero if no threshold is to be used, this makes the output summary correct
+                txtPMThreshold.Text = "0";  
+                txtBetaAdj.Text = "0";  
 
             }
             else
@@ -791,10 +794,18 @@ namespace PopSim
         private void makeLagTypeControlsVisible(int iLagType)
         {
             // toggle the boxes based on lag type (single or cause specific)
-            if (iLagType == 0)
+            if (iLagType == 0) // single lag
             {
-                lblSingleLag.Visible = true;
-                txtLagSingle.Visible = true;
+                if (radioButton12.Checked) {
+                    lblSingleLag.Visible = true;
+                    txtLagSingle.Visible = true;
+                }
+                else
+                {
+                    lblSingleLag.Visible = false;
+                    txtLagSingle.Text = "0";
+                    txtLagSingle.Visible = false;
+                }
                 lblCauseSpecificLag.Visible = false;
                 lblCause.Visible = false;
                 lblK.Visible = false;
@@ -805,7 +816,7 @@ namespace PopSim
                 lblOther.Visible = false;
                 txtLagOther.Visible = false;
             }
-            else
+            else // cause specific lag
             {
                 lblSingleLag.Visible = false;
                 txtLagSingle.Visible = false;
@@ -959,6 +970,24 @@ namespace PopSim
         private void lblUserSuppliedBeta_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void radioButton13_CheckedChanged(object sender, EventArgs e)
+        {
+            //HES Default checked
+            makeLagTypeControlsVisible(getRB(gbLagType));            
+        }
+
+        private void radioButton2_CheckedChanged(object sender, EventArgs e)
+        {
+            // user defined lag function checked
+            makeLagTypeControlsVisible(getRB(gbLagType));
+        }
+
+        private void radioButton12_CheckedChanged(object sender, EventArgs e)
+        {
+            // Smooth Lag function checked
+            makeLagTypeControlsVisible(getRB(gbLagType));
         }
     }
     }

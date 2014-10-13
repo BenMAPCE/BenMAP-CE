@@ -1189,6 +1189,7 @@
             this.radioButton13.TabStop = true;
             this.radioButton13.Text = "HES Default";
             this.radioButton13.UseVisualStyleBackColor = true;
+            this.radioButton13.CheckedChanged += new System.EventHandler(this.radioButton13_CheckedChanged);
             // 
             // radioButton12
             // 
@@ -1200,6 +1201,7 @@
             this.radioButton12.TabStop = true;
             this.radioButton12.Text = "Smooth";
             this.radioButton12.UseVisualStyleBackColor = true;
+            this.radioButton12.CheckedChanged += new System.EventHandler(this.radioButton12_CheckedChanged);
             // 
             // radioButton2
             // 
@@ -1211,6 +1213,7 @@
             this.radioButton2.TabStop = true;
             this.radioButton2.Text = "User Defined";
             this.radioButton2.UseVisualStyleBackColor = true;
+            this.radioButton2.CheckedChanged += new System.EventHandler(this.radioButton2_CheckedChanged);
             // 
             // txtLagOther
             // 
