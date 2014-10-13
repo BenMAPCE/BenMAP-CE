@@ -448,6 +448,12 @@
     <Compile Include="Kriging\MatrixCompute.cs" />
     <Compile Include="Kriging\Statgetargs.cs" />
     <Compile Include="Kriging\Strmatch.cs" />
+    <Compile Include="LoadAirQualityData.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LoadAirQualityData.Designer.cs">
+      <DependentUpon>LoadAirQualityData.cs</DependentUpon>
+    </Compile>
     <Compile Include="Logger.cs" />
     <Compile Include="Main.cs">
       <SubType>Form</SubType>
@@ -1006,6 +1012,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="HomePage.resx">
       <DependentUpon>HomePage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LoadAirQualityData.resx">
+      <DependentUpon>LoadAirQualityData.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Main.resx">
       <DependentUpon>Main.cs</DependentUpon>
