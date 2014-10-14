@@ -1347,7 +1347,7 @@ namespace BenMAP
             //deaths per 100,000
             xlChart = (Microsoft.Office.Interop.Excel.Chart)xlBook.Charts[2];
             xlSeries = (Microsoft.Office.Interop.Excel.Series)xlChart.SeriesCollection(1);
-            xlSeries.Values = xlSheet2.Range["F4:G" + (nextRow - 1).ToString()];
+            xlSeries.Values = xlSheet2.Range["F4:F" + (nextRow - 1).ToString()];
             xlSeries.XValues = xlSheet2.Range["A4:A" + (nextRow - 1).ToString()];
 
             #endregion
