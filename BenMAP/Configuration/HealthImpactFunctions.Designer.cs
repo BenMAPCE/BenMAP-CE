@@ -270,6 +270,7 @@ namespace BenMAP
             this.olvSimple.OverlayText.BorderWidth = 2F;
             this.olvSimple.OverlayText.Rotation = -20;
             this.olvSimple.OverlayText.Text = "";
+            this.olvSimple.OwnerDraw = true;
             this.olvSimple.SelectColumnsOnRightClickBehaviour = BrightIdeasSoftware.ObjectListView.ColumnSelectBehaviour.Submenu;
             this.olvSimple.ShowCommandMenuOnRightClick = true;
             this.olvSimple.ShowImagesOnSubItems = true;

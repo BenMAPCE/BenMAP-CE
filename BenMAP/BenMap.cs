@@ -22,6 +22,7 @@ using ZedGraph;
 using ESIL.DBUtility;
 using System.Configuration;
 using ProtoBuf;
+using System.Collections;
 
 namespace BenMAP
 {
@@ -5705,6 +5706,25 @@ namespace BenMAP
             InitAggregationAndRegionList();
             Dictionary<string, string> dicSeasonStaticsAll = DataSourceCommonClass.DicSeasonStaticsAll;
             InitColumnsShowSet();
+
+            this.treeListView.CanExpandGetter = delegate(object x)
+            {
+                return (x is TreeNode && (x as TreeNode).Nodes.Count > 0);
+            };
+            this.treeListView.ChildrenGetter = delegate(object x)
+            {
+                TreeNode dir = (TreeNode)x;
+                try
+                {
+                    return dir.Nodes;
+                }
+                catch (UnauthorizedAccessException ex)
+                {
+                    MessageBox.Show(this, ex.Message, "ObjectListViewDemo", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    return null;
+                }
+            };
+
             isLoad = true;
         }
 
@@ -10082,6 +10102,7 @@ namespace BenMAP
             {
                 About about = new About();
                 tabCtlMain.SelectedIndex = 3;
+                List<TreeNode> lstTmp = new List<TreeNode>();
                 if (rbAuditFile.Checked)
                 {
                     string filePath = txtExistingConfiguration.Text;
@@ -10111,9 +10132,10 @@ namespace BenMAP
                             }
                             TreeNode aqgTreeNode = new TreeNode();
                             aqgTreeNode = AuditTrailReportCommonClass.getTreeNodeFromBenMAPLine(aqgBenMAPLine);
-                            trvAuditTrialReport.Nodes.Clear();
-                            trvAuditTrialReport.Nodes.Add(aqgBenMAPLine.Version == null ? "BenMAP-CE" : aqgBenMAPLine.Version);
-                            trvAuditTrialReport.Nodes.Add(aqgTreeNode);
+                            TreeNode tnVersion = new TreeNode();
+                            tnVersion.Text = aqgBenMAPLine.Version == null ? "BenMAP-CE" : aqgBenMAPLine.Version;
+                            lstTmp.Add(tnVersion);
+                            lstTmp.Add(aqgTreeNode);
                             break;
                         case ".cfgx":
                             BaseControlCRSelectFunction cfgFunction = new BaseControlCRSelectFunction();
@@ -10139,9 +10161,10 @@ namespace BenMAP
                             }
                             TreeNode cfgTreeNode = new TreeNode();
                             cfgTreeNode = AuditTrailReportCommonClass.getTreeNodeFromBaseControlCRSelectFunction(cfgFunction);
-                            trvAuditTrialReport.Nodes.Clear();
-                            trvAuditTrialReport.Nodes.Add(cfgFunction.Version == null ? "BenMAP-CE" : cfgFunction.Version);
-                            trvAuditTrialReport.Nodes.Add(cfgTreeNode);
+                            tnVersion = new TreeNode();
+                            tnVersion.Text = cfgFunction.Version == null ? "BenMAP-CE" : cfgFunction.Version;
+                            lstTmp.Add(tnVersion);
+                            lstTmp.Add(cfgTreeNode);
                             break;
                         case ".cfgrx":
                             BaseControlCRSelectFunctionCalculateValue cfgrFunctionCV = new BaseControlCRSelectFunctionCalculateValue();
@@ -10166,9 +10189,10 @@ namespace BenMAP
                             }
                             TreeNode cfgrTreeNode = new TreeNode();
                             cfgrTreeNode = AuditTrailReportCommonClass.getTreeNodeFromBaseControlCRSelectFunctionCalculateValue(cfgrFunctionCV);
-                            trvAuditTrialReport.Nodes.Clear();
-                            trvAuditTrialReport.Nodes.Add(cfgrFunctionCV.Version == null ? "BenMAP-CE" : cfgrFunctionCV.Version);
-                            trvAuditTrialReport.Nodes.Add(cfgrTreeNode);
+                            tnVersion = new TreeNode();
+                            tnVersion.Text = cfgrFunctionCV.Version == null ? "BenMAP-CE" : cfgrFunctionCV.Version;
+                            lstTmp.Add(tnVersion);
+                            lstTmp.Add(cfgrTreeNode);
                             break;
                         case ".apvx":
                             ValuationMethodPoolingAndAggregation apvVMPA = new ValuationMethodPoolingAndAggregation();
@@ -10199,9 +10223,10 @@ namespace BenMAP
                             }
                             TreeNode apvTreeNode = new TreeNode();
                             apvTreeNode = AuditTrailReportCommonClass.getTreeNodeFromValuationMethodPoolingAndAggregation(apvVMPA);
-                            trvAuditTrialReport.Nodes.Clear();
-                            trvAuditTrialReport.Nodes.Add(apvVMPA.Version == null ? "BenMAP-CE" : apvVMPA.Version);
-                            trvAuditTrialReport.Nodes.Add(apvTreeNode);
+                            tnVersion = new TreeNode();
+                            tnVersion.Text = apvVMPA.Version == null ? "BenMAP-CE" : apvVMPA.Version;
+                            lstTmp.Add(tnVersion);
+                            lstTmp.Add(apvTreeNode);
                             break;
                         case ".apvrx":
                             ValuationMethodPoolingAndAggregation apvrVMPA = new ValuationMethodPoolingAndAggregation();
@@ -10230,9 +10255,10 @@ namespace BenMAP
                             }
                             TreeNode apvrTreeNode = new TreeNode();
                             apvrTreeNode = AuditTrailReportCommonClass.getTreeNodeFromValuationMethodPoolingAndAggregation(apvrVMPA);
-                            trvAuditTrialReport.Nodes.Clear();
-                            trvAuditTrialReport.Nodes.Add(apvrVMPA.Version == null ? "BenMAP-CE" : apvrVMPA.Version);
-                            trvAuditTrialReport.Nodes.Add(apvrTreeNode);
+                            tnVersion = new TreeNode();
+                            tnVersion.Text = apvrVMPA.Version == null ? "BenMAP-CE" : apvrVMPA.Version;
+                            lstTmp.Add(tnVersion);
+                            lstTmp.Add(apvrTreeNode);
                             break;
                     }
                 }
@@ -10242,8 +10268,13 @@ namespace BenMAP
                     if (retVal == -1)
                     {
                         MessageBox.Show("Please finish your configuration first.");
+                        return;
                     }
                 }
+				//MERGE CHECK From them
+                treeListView.Objects = lstTmp;
+                treeListView.ExpandAll();
+				//MERGE Check FROM US
                 if(trvAuditTrialReport.Nodes.Count > 0)
                 {
                     getMetadataForAuditTrail(trvAuditTrialReport);
@@ -10734,8 +10765,13 @@ namespace BenMAP
             {
                 olv.DefaultRenderer = new HighlightTextRenderer(filter);
 
-                olv.DefaultRenderer = new HighlightTextRenderer { Filter = filter, UseGdiTextRendering = true };
+                //olv.DefaultRenderer = new HighlightTextRenderer { Filter = filter, UseGdiTextRendering = true };
             }
+
+            // Some lists have renderers already installed
+            HighlightTextRenderer highlightingRenderer = olv.GetColumn(0).Renderer as HighlightTextRenderer;
+            if (highlightingRenderer != null)
+                highlightingRenderer.Filter = filter;
 
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
@@ -11219,9 +11255,29 @@ namespace BenMAP
                             }
                             break;
                         case ".txt":
+							//MERGE CHECK
+                            List<TreeNode> lstTmp = new List<TreeNode>();//treeListView.Objects as List<TreeNode>;
+                            for (int i = 0; i < (treeListView.Objects as ArrayList).ToArray().Count(); i++)
+                            {
+                                lstTmp.Add((treeListView.Objects as ArrayList).ToArray()[i] as TreeNode);
+                            }
+                            if (lstTmp.Count > 0)
+                            {
+                                saveOk = exportToTxt(lstTmp, sDlg.FileName);
+                            }
                             saveOk = AuditTrailReportCommonClass.exportToTxt(trvAuditTrialReport, sDlg.FileName);
                             break;
                         case ".xml":
+							//MERGE CHECK
+                            List<TreeNode> lstTmpXML = new List<TreeNode>();//treeListView.Objects as List<TreeNode>;
+                            for (int i = 0; i < (treeListView.Objects as ArrayList).ToArray().Count(); i++)
+                            {
+                                lstTmpXML.Add((treeListView.Objects as ArrayList).ToArray()[i] as TreeNode);
+                            }
+                            if (lstTmpXML.Count > 0)
+                            {
+                                saveOk = exportToXml(lstTmpXML, sDlg.FileName);
+                            }
                             saveOk = AuditTrailReportCommonClass.exportToXml(trvAuditTrialReport, sDlg.FileName);
                             break;
                     }
@@ -13710,7 +13766,11 @@ namespace BenMAP
             _IncidenceDragged = true;
             return;
         }
-
+		//MERGE Check
+        private void textBoxFilterSimple_TextChanged(object sender, EventArgs e)
+        {
+            this.TimedFilter(this.treeListView, textBoxFilterSimple.Text);
+        }
         private void tlvAPVResult_DragLeave(object sender, EventArgs e)
         {
             Debug.WriteLine("APVdragged_DragLeave");
