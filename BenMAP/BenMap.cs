@@ -2225,7 +2225,7 @@ namespace BenMAP
         private void DrawBaseline (TreeNode currentNode, string str)
         {   //MCB- draws base data on main map
             _currentNode = "basedata";
-            //str = string.Format("{0}baseline", (currentNode.Tag as BenMAPLine).Pollutant.PollutantName);
+            str = string.Format("{0}baseline", (currentNode.Tag as BenMAPLine).Pollutant.PollutantName);
             string _PollutantName = (currentNode.Tag as BenMAPLine).Pollutant.PollutantName;
             //string _BenMapSetupName = (currentNode.Tag as BenMAPLine).GridType.SetupName;
             string _BenMapSetupName = CommonClass.MainSetup.SetupName;
