@@ -2482,7 +2482,7 @@ namespace BenMAP
             this.btnResultShow.MovePreviousItem = this.bindingNavigatorMovePreviousItem;
             this.btnResultShow.Name = "btnResultShow";
             this.btnResultShow.PositionItem = this.bindingNavigatorPositionItem;
-            this.btnResultShow.Size = new System.Drawing.Size(206, 25);
+            this.btnResultShow.Size = new System.Drawing.Size(209, 25);
             this.btnResultShow.TabIndex = 3;
             this.btnResultShow.Text = "bindingNavigator1";
             this.btnResultShow.RefreshItems += new System.EventHandler(this.btnResultShow_RefreshItems);
@@ -2491,8 +2491,8 @@ namespace BenMAP
             // bindingNavigatorCountItem
             // 
             this.bindingNavigatorCountItem.Name = "bindingNavigatorCountItem";
-            this.bindingNavigatorCountItem.Size = new System.Drawing.Size(32, 22);
-            this.bindingNavigatorCountItem.Text = "/ {0}";
+            this.bindingNavigatorCountItem.Size = new System.Drawing.Size(35, 22);
+            this.bindingNavigatorCountItem.Text = "of {0}";
             this.bindingNavigatorCountItem.ToolTipText = "Total number of Pages";
             // 
             // bindingNavigatorMoveFirstItem
@@ -2878,21 +2878,6 @@ namespace BenMAP
             this.btnAuditTrailOutput.Text = "Output";
             this.btnAuditTrailOutput.UseVisualStyleBackColor = true;
             this.btnAuditTrailOutput.Click += new System.EventHandler(this.btnAuditTrailOutput_Click);
-            // 
-<<<<<<< HEAD
-
-=======
-            // trvAuditTrialReport
-            // 
-            this.trvAuditTrialReport.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.trvAuditTrialReport.BackColor = System.Drawing.Color.White;
-            this.trvAuditTrialReport.Location = new System.Drawing.Point(0, 0);
-            this.trvAuditTrialReport.Name = "trvAuditTrialReport";
-            this.trvAuditTrialReport.Size = new System.Drawing.Size(699, 425);
-            this.trvAuditTrialReport.TabIndex = 0;
->>>>>>> gis
             // 
             // colorBlend
             // 
