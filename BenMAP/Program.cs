@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Configuration;
 using System.Runtime.ExceptionServices;
+using System.Threading;
 
 
 namespace BenMAP
@@ -13,11 +14,23 @@ namespace BenMAP
         [STAThread]
         static void Main(string[] arg)
         {
-            AppDomain currentDomain = AppDomain.CurrentDomain;      
-            currentDomain.FirstChanceException += FirstChanceExceptionHandler;
-   
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+
+
+            AppDomain currentDomain = AppDomain.CurrentDomain;
+            // Add handler for UI thread exceptions
+            Application.ThreadException += new ThreadExceptionEventHandler(ThreadExceptionHandler);
+            // Force all WinForms errors to go through handler
+            Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
+            // This handler is for catching non-UI thread exceptions          
+            currentDomain.UnhandledException += new UnhandledExceptionEventHandler(UnhandledExceptionHandler);
+
+            // This handler is for catching all exceptions, handled or not     
+            //currentDomain.FirstChanceException += FirstChanceExceptionHandler;
+   
+            
             string strArg = "";
             foreach (string s in arg)
             {
@@ -28,10 +41,32 @@ namespace BenMAP
             
         }
 
-        static void FirstChanceExceptionHandler(object source, FirstChanceExceptionEventArgs args)
+        //static void FirstChanceExceptionHandler(object source, FirstChanceExceptionEventArgs args)
+        //{
+
+        //    Exception ex = args.Exception;
+
+        //    HandleException(ex);
+        //}
+
+
+        static void ThreadExceptionHandler(object sender, ThreadExceptionEventArgs args)
+        {
+            Exception ex = (Exception)args.Exception;
+
+            HandleException(ex);
+        }
+
+        static void UnhandledExceptionHandler(object sender, UnhandledExceptionEventArgs args)
+        {
+            Exception ex = (Exception)args.ExceptionObject;
+
+            HandleException(ex);
+        }
+
+        static void HandleException(Exception ex)
         {
 
-            Exception ex = args.Exception;
             Logger.LogError(ex);
 
             //check for Jira Connector needed by error reporting form
@@ -40,8 +75,8 @@ namespace BenMAP
             {
                 MessageBox.Show("The application encountered the following fatal error and will now terminate." + Environment.NewLine + Environment.NewLine + ex.Message, "Error", MessageBoxButtons.OK);
                 Environment.Exit(0);
-            }           
-            
+            }
+
 
             //show error reporting form unless error is in error reporting form
             if (ex.StackTrace.IndexOf("ErrorReporting", StringComparison.OrdinalIgnoreCase) < 0)
@@ -55,12 +90,12 @@ namespace BenMAP
                         ErrorReporting frm = new ErrorReporting();
                         string err = ex.StackTrace + Environment.NewLine + Environment.NewLine + "Please enter any additional information about the error that might prove useful:";
                         frm.ErrorMessage = err;
-                        
+
                         frm.ShowDialog();
                     }
-                    
+
                     Environment.Exit(0);
-                    
+
                 }
                 catch (Exception ex2)
                 {
@@ -73,8 +108,11 @@ namespace BenMAP
             {
                 Environment.Exit(0);
             }
-
+        
         }
+
+
+        
         
     }
 }
