@@ -911,8 +911,9 @@ namespace BenMAP
             try
             {
                 _SavedExtent = mainMap.Extent;
-                splitContainer2.Panel1.Hide();
-                splitContainer2.SplitterDistance = 0;
+                //splitContainer2.Panel1.Hide();
+                splitContainer2.SplitterDistance = 50;
+                //splitContainer2.SplitterDistance = 0;
                 splitContainer2.BorderStyle = BorderStyle.None;
                 isLegendHide = true;
                 mainMap.ViewExtents = _SavedExtent;
@@ -2226,7 +2227,7 @@ namespace BenMAP
         private void DrawBaseline (TreeNode currentNode, string str)
         {   //MCB- draws base data on main map
             _currentNode = "basedata";
-            //str = string.Format("{0}baseline", (currentNode.Tag as BenMAPLine).Pollutant.PollutantName);
+            str = string.Format("{0}baseline", (currentNode.Tag as BenMAPLine).Pollutant.PollutantName);
             string _PollutantName = (currentNode.Tag as BenMAPLine).Pollutant.PollutantName;
             //string _BenMapSetupName = (currentNode.Tag as BenMAPLine).GridType.SetupName;
             string _BenMapSetupName = CommonClass.MainSetup.SetupName;
@@ -6527,14 +6528,15 @@ namespace BenMAP
                 if (_currentNode == "grid" || _currentNode == "region") { return; }
                 this.splitContainer2.BorderStyle = BorderStyle.FixedSingle;
                 this.splitContainer2.Panel1.Show();
-                splitContainer2.SplitterDistance = 204;
+                splitContainer2.SplitterDistance = 264;
                 isLegendHide = false;
+                mainMap.ViewExtents = _SavedExtent;  //MCB
             }
             else
             {
                 _SavedExtent = mainMap.Extent;
-                splitContainer2.Panel1.Hide();
-                splitContainer2.SplitterDistance = 0;
+                //splitContainer2.Panel1.Hide();
+                splitContainer2.SplitterDistance = 50;
                 this.splitContainer2.BorderStyle = BorderStyle.None;
                 isLegendHide = true;
 
@@ -14029,6 +14031,14 @@ namespace BenMAP
             //}
         }
 
+        private void toolStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+
+        }
+
+        
+      
+      
       
         
     }
