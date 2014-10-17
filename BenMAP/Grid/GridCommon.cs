@@ -403,13 +403,16 @@ namespace BenMAP.Grid
         {
 
             ConnectionStringSettings settings = ConfigurationManager.ConnectionStrings["ConnectionString"];
-            string str = settings.ConnectionString;
-            if (!str.Contains(":"))
-                str = str.Substring(0, str.IndexOf("initial catalog=")) + "initial catalog=" + Application.StartupPath + @"\" + str.Substring(str.IndexOf("initial catalog=") + 16);
-            FbConnection _connection = new FirebirdSql.Data.FirebirdClient.FbConnection(str);
+            //string str = settings.ConnectionString;
+            //if (!str.Contains(":"))
+            //    str = str.Substring(0, str.IndexOf("initial catalog=")) + "initial catalog=" + Application.StartupPath + @"\" + str.Substring(str.IndexOf("initial catalog=") + 16);
+            //str = str.Replace("##USERDATA##", Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData));
+            //FbConnection _connection = new FirebirdSql.Data.FirebirdClient.FbConnection(str);
+            FbConnection _connection = CommonClass.getNewConnection();
             try
             {
                 BenMAPGrid benMAPGrid = new BenMAPGrid();
+                BenMAPGrid toReturn = null;
                 benMAPGrid.SetupName = CommonClass.MainSetup.SetupName;
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 string commandText = string.Format("select GridDefinitionID,SetupID,GridDefinitionName,Columns,RRows,TType from GridDefinitions where GridDefinitionID ={0}", GridID);
@@ -437,7 +440,7 @@ namespace BenMAP.Grid
                         };
                         commandText = string.Format("select ShapeFileName  from ShapeFileGridDefinitionDetails where GridDefinitionID={0}", GridID);
                         shapefileGrid.ShapefileName = fb.ExecuteScalar(_connection, CommandType.Text, commandText).ToString();
-                        return shapefileGrid;
+                        toReturn= shapefileGrid;
                         break;
                     case GridTypeEnum.Regular:
                         RegularGrid regularGrid = new RegularGrid()
@@ -458,12 +461,16 @@ namespace BenMAP.Grid
                         regularGrid.ColumnsperLongitude = Convert.ToInt32(dr["ColumnsperLongitude"]);
                         regularGrid.RowsperLatitude = Convert.ToInt32(dr["RowsperLatitude"]);
                         regularGrid.ShapefileName = dr["ShapeFileName"].ToString();
-                        return regularGrid;
+                        toReturn= regularGrid;
 
                         break;
                 }
                 _connection.Close();
-                return benMAPGrid;
+                if (toReturn == null)
+                {
+                    toReturn = benMAPGrid;
+                }
+                return toReturn;
 
             }
             catch (Exception ex)

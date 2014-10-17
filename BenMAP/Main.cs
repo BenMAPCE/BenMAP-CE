@@ -83,17 +83,18 @@ namespace BenMAP
                 }
                 if (isOK == true) return;
                 ConnectionStringSettings settings = ConfigurationManager.ConnectionStrings["ConnectionString"];
-                string str = settings.ConnectionString;
-                if (!str.Contains(":"))
-                    str = Application.StartupPath + @"\" + str.Substring(str.IndexOf("initial catalog=") + 16);
-                else
-                    str = str.Substring(str.IndexOf("initial catalog=") + 16);
-                str = str.Substring(0, str.IndexOf(";"));
-                if (!File.Exists(str))
-                {
-                    MessageBox.Show(string.Format("The BenMAP database file {0} does not exist.", str));
-                    Environment.Exit(0);
-                }
+                //string str = settings.ConnectionString;
+                //if (!str.Contains(":"))
+                //    str = Application.StartupPath + @"\" + str.Substring(str.IndexOf("initial catalog=") + 16);
+                //else
+                //    str = str.Substring(str.IndexOf("initial catalog=") + 16);
+                //str = str.Substring(0, str.IndexOf(";"));
+                //if (!File.Exists(str))
+                //{
+                //    MessageBox.Show(string.Format("The BenMAP database file {0} does not exist.", str));
+                //    Environment.Exit(0);
+                //}
+                /*
                 try
                 {
 
@@ -134,7 +135,7 @@ namespace BenMAP
                     catch
                     {
                     }
-                }
+                }*/
             }
             catch
             {
@@ -142,6 +143,8 @@ namespace BenMAP
                 Environment.Exit(0);
             }
         }
+
+
         public Main()
         {
             try
@@ -167,6 +170,8 @@ namespace BenMAP
                     CommonClass.IniWriteValue("appSettings", "IsShowStart", "T", iniPath);
                     CommonClass.IniWriteValue("appSettings", "IsShowExit", "T", iniPath);
                     CommonClass.IniWriteValue("appSettings", "DefaultSetup", "United States", iniPath);
+                    CommonClass.IniWriteValue("appSettings", "IsForceValidate", "T", iniPath);
+                    CommonClass.IniWriteValue("appSettings", "NumDaysToDelete", "30", iniPath);
                 }
                 DataRow[] drs = ds.Tables[0].Select("SetupName='" + defaultSetup + "'");
                 DataRow dr;
@@ -759,13 +764,46 @@ namespace BenMAP
                 if (isShowExit == "T")
                 { rtn = exit.ShowDialog(); }
                 if (rtn == System.Windows.Forms.DialogResult.Cancel) { e.Cancel = true; return; }
+                deleteValidationLogFiles();
             }
             catch (Exception ex)
             {
                 Logger.LogError(ex);
             }
         }
+        //this is for deleting the validation log files after the specified time listed in the BenMAP.ini file
+        private void deleteValidationLogFiles()
+        {//doing clean up.
+            string validationResultsPath = CommonClass.ResultFilePath + @"\ValidationResults";
+            //exit proc if dir does not exist
+            if (!Directory.Exists(validationResultsPath))
+            {
+                return;
+            }
 
+            string[] strFiles = System.IO.Directory.GetFiles(validationResultsPath, "*rtf");
+            string iniPath = CommonClass.ResultFilePath + @"\BenMAP.ini";
+            int NumDaysToDelete = Convert.ToInt32(CommonClass.IniReadValue("appSettings", "NumDaysToDelete", iniPath));
+            DateTime createDate;
+            try
+            {
+                System.IO.FileInfo fInfo = null;
+                foreach (string s in strFiles)
+                {
+                    fInfo = new System.IO.FileInfo(s);
+                    createDate = fInfo.CreationTime;
+
+                    if (createDate.Date < DateTime.Now.Date.Subtract(TimeSpan.FromDays(NumDaysToDelete)))
+                    {
+                        System.IO.File.Delete(s);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+               Logger.LogError(ex);
+            }
+        }
         private void optionsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Options frm = new Options();
@@ -776,6 +814,13 @@ namespace BenMAP
         {
             ErrorReporting frm = new ErrorReporting();
             frm.ShowDialog();
+        }
+
+        private void gbdRollbackToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            GBDRollback frm = new GBDRollback();
+            frm.ShowDialog();
+
         }
 
     }

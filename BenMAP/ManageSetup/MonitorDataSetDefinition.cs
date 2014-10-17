@@ -18,9 +18,33 @@ namespace BenMAP
         }
 
         private string _dataSetName;
-        private object _dataSetID;
+        private object _dataSetID;//used for when a new dataset is created.
+        private object _newDataSetID = null;//used for copying an existing dataset that is locked. (the new datasetid)
+        private object _oldDataSetID = null;//used for copying an existing dataset that is locked. (the locked datasetid)
         private DataTable _dtDataFile;
+        private MetadataClassObj _metadataObj = null;
+        private bool _isLocked = false;
+        
+        private bool _CopyingDataset = false;
+        //private string _strPath;
 
+        public MonitorDataSetDefinition(string name, object id, bool isLocked)
+            : this(name, id)
+        {
+            _isLocked = isLocked;
+            if(_isLocked)
+            {
+                txtDataSetName.Enabled = true;//false;
+                _dataSetName  = name + "_Copy";
+                txtDataSetName.Text = _dataSetName;
+                _oldDataSetID = _dataSetID;
+                _CopyingDataset = true;
+            }
+            else
+            {
+                txtDataSetName.Enabled = false;
+            }
+        }
         public MonitorDataSetDefinition(string name, object id)
         {
             InitializeComponent();
@@ -72,6 +96,11 @@ namespace BenMAP
             {
                 FireBirdHelperBase fb = new ESILFireBirdHelper();
                 string commandText = string.Format("select c.pollutantname,a.yyear,count(*) from monitorentries a,monitors b,pollutants c where a.monitorid=b.monitorid and b.pollutantid=c.pollutantid and b.monitordatasetID={0} group by c.pollutantname,a.yyear", id);
+                //string commandText = string.Format("select distinct c.pollutantname,a.yyear, d.metadataid, count(*) " +
+                //                                    "from monitorentries a, monitors b, pollutants c, METADATAINFORMATION d " +
+                //                                    "where a.monitorid=b.monitorid and b.pollutantid=c.pollutantid and " +
+                //                                    "d.DATASETID=b.monitordatasetID and b.monitordatasetID={0} and d.DATASETTYPEID={1} " +
+                //                                    "group by c.pollutantname,a.yyear, b.monitordatasetID, d.metadataid", _metadataObj.DatasetId, _metadataObj.DatasetTypeId);
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                 olvMonitorDataSets.DataSource = ds.Tables[0];
             }
@@ -89,11 +118,15 @@ namespace BenMAP
         {
             try
             {
-                if (_dataSetID != null)
+                if (_dataSetID != null && !_isLocked)
                 {
                     ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                     string commandText = string.Format("update MonitorDataSets set MonitorDataSetName='{0}' where MonitorDataSetID={1} and SetUpID={2}", txtDataSetName.Text, _dataSetID, CommonClass.ManageSetup.SetupID);
                     fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                }
+                if(_isLocked)//doing a copy
+                {
+                    CopyDatabase();
                 }
                 this.DialogResult = DialogResult.OK;
             }
@@ -148,23 +181,29 @@ namespace BenMAP
 
         private void btnLoad_Click(object sender, EventArgs e)
         {
+            LoadDatabase();
+        }
+
+        private void LoadDatabase()
+        {
             FireBirdHelperBase fb = new ESILFireBirdHelper();
             try
             {
                 string commandText = string.Empty;
                 if (cboPollutant.Text == string.Empty)
                 {
-                    MessageBox.Show("Please select a pollutant."); return;
+                    MessageBox.Show("Please select a pollutant."); 
+                    return;
                 }
                 if (txtYear.Text.Length != 4)
                 {
-                    MessageBox.Show("Please input a valid year."); return;
+                    MessageBox.Show("Please input a valid year."); 
+                    return;
                 }
-                if (txtMonitorDataFile.Text == string.Empty) { MessageBox.Show("Please select a monitor data file."); return; }
                 string msg = string.Format("Save this file associated with {0} and {1} ?", cboPollutant.GetItemText(cboPollutant.SelectedItem), txtYear.Text);
                 DialogResult result = MessageBox.Show(msg, "Confirm Edit", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                 if (result == DialogResult.No) return;
-                _dtDataFile = CommonClass.ExcelToDataTable(txtMonitorDataFile.Text);
+                //_dtDataFile = CommonClass.ExcelToDataTable(txtMonitorDataFile.Text);
                 int iMonitorName = -1;
                 int iMonitorDescription = -1;
                 int iLatitude = -1;
@@ -207,7 +246,8 @@ namespace BenMAP
                 if (warningtip != "")
                 {
                     warningtip = warningtip.Substring(0, warningtip.Length - 2);
-                    warningtip = "Please check the column header of " + warningtip + ". It is incorrect or does not exist.";
+                    warningtip = "Please check the column header of " + warningtip + ". It is incorrect or does not exist.\r\n";
+                    warningtip += "\r\nFile failed to load, please validate the file for a more detail explanation of errors.";
                     MessageBox.Show(warningtip, "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     progressBar1.Visible = false;
                     return;
@@ -221,9 +261,16 @@ namespace BenMAP
                     {
                         commandText = "select max(MonitorDataSetID) from MonitorDataSets";
                         _dataSetID = Convert.ToInt16(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
-                        commandText = string.Format("insert into MonitorDataSets values ({0},{1},'{2}')", _dataSetID, CommonClass.ManageSetup.SetupID, txtDataSetName.Text);
+                        //the 'F' is for the LOCKED column in MonitorDataSets.  This is being added and is not a predefined.
+                        commandText = string.Format("insert into MonitorDataSets values ({0},{1},'{2}', 'F')", _dataSetID, CommonClass.ManageSetup.SetupID, txtDataSetName.Text);
                         fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                     }
+                }
+                //If copying a predefined dataset, a new deataset id will be needed. The user can load additional data into the dataset before doing a copy of the 
+                //Old dataset.  If that be the case, the new dataset that is needed can be grabed here.
+                if(_CopyingDataset)
+                {
+                    _newDataSetID = _dataSetID;
                 }
                 if (_dtDataFile != null)
                 {
@@ -234,13 +281,13 @@ namespace BenMAP
                     progressBar1.Value = progressBar1.Minimum;
                     commandText = string.Format("select pollutantid from pollutants where pollutantname='{0}' and setupid={1}", cboPollutant.Text, CommonClass.ManageSetup.SetupID);
                     int pollutantID = Convert.ToInt16(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
-
+                    int monitorID = 0;
                     for (int i = 0; i < _dtDataFile.Rows.Count; i++)
                     {
                         commandText = "select max(MonitorID) from MONITORS";
-                        int monitorID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
+                        monitorID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
                         FbParameter Parameter = new FbParameter("@Description", _dtDataFile.Rows[i][iMonitorDescription]);
-                        commandText = string.Format("insert into Monitors(Monitorid,Monitordatasetid,Pollutantid,Latitude,Longitude,Monitorname,Monitordescription) values ({0},{1},{2},{3},{4},'{5}',@Description)", monitorID, _dataSetID, pollutantID, _dtDataFile.Rows[i][iLatitude], _dtDataFile.Rows[i][iLongitude], _dtDataFile.Rows[i][iMonitorName]);
+                        commandText = string.Format("insert into Monitors(Monitorid,Monitordatasetid,Pollutantid,Latitude,Longitude,Monitorname,Monitordescription, Metadataid) values ({0},{1},{2},{3},{4},'{5}',@Description, {6})", monitorID, _dataSetID, pollutantID, _dtDataFile.Rows[i][iLatitude], _dtDataFile.Rows[i][iLongitude], _dtDataFile.Rows[i][iMonitorName], _metadataObj.MetadataEntryId);
                         fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText, Parameter);
                         commandText = "select max(MonitorEntryID) from MonitorEntries";
                         int monitorEntriesID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
@@ -255,17 +302,21 @@ namespace BenMAP
                         if (metricID != null) strMetricID = metricID.ToString();
                         string strSeasonalMetricID = "null";
                         if (seaMetricID != null) strSeasonalMetricID = seaMetricID.ToString();
-                        commandText = string.Format("insert into MonitorEntries(Monitorentryid,Monitorid,Yyear,Metricid,Seasonalmetricid,Statistic,Vvalues) values ({0},{1},{2},{3},{4},'{5}',@VValues)", monitorEntriesID, monitorID, txtYear.Text, strMetricID, strSeasonalMetricID, _dtDataFile.Rows[i][iStatistic]);
+                        commandText = string.Format("insert into MonitorEntries(Monitorentryid,Monitorid,Yyear,Metricid,Seasonalmetricid,Statistic,Vvalues) values ({0},{1},{2},{3},{4},'{5}',@VValues)",
+                         monitorEntriesID, monitorID, txtYear.Text, strMetricID, strSeasonalMetricID, _dtDataFile.Rows[i][iStatistic]);
 
                         fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText, fbParameter);
                         progressBar1.PerformStep();
                         lblProgress.Text = Convert.ToString((int)((double)progressBar1.Value / _dtDataFile.Rows.Count * 100)) + "%";
                         lblProgress.Refresh();
                     }
+
+                    //insertMetadata(Convert.ToInt16(_dataSetID), pollutantID);
+                    insertMetadata(Convert.ToInt16(_dataSetID));
                 }
                 progressBar1.Visible = false;
                 lblProgress.Text = "";
-                addGridView(_dataSetID); return;
+                addGridView(_dataSetID); //return;
             }
             catch (Exception ex)
             {
@@ -275,6 +326,102 @@ namespace BenMAP
                 Logger.LogError(ex.Message);
             }
         }
+        
+        private void CopyDatabase()
+        {
+            FireBirdHelperBase fb = new ESILFireBirdHelper();
+            try
+            {
+                string commandText = string.Empty;
+                int maxID = 0;
+                int minID = 0;
+                object rVal = null;
+                if (cboPollutant.Text == string.Empty)
+                {
+                    MessageBox.Show("Please select a pollutant.");
+                    return;
+                }
+                if (txtYear.Text.Length != 4)
+                {
+                    MessageBox.Show("Please input a valid year.");
+                    return;
+                }
+                //check and see if name is used
+                commandText = string.Format("Select MONITORDATASETNAME from MONITORDATASETS WHERE MONITORDATASETNAME = '{0}'",txtDataSetName.Text.Trim());
+                rVal = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
+                if(rVal != null)
+                {
+                    MessageBox.Show("Name is already used.  Please select a new name.");
+                    txtDataSetName.Focus();
+                    return;
+                }
+
+                string msg = string.Format("Save this file associated with {0} and {1} ?", cboPollutant.GetItemText(cboPollutant.SelectedItem), txtYear.Text);
+                DialogResult result = MessageBox.Show(msg, "Confirm Copy", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                if (result == DialogResult.No) return;
+                //getting a new dataset
+                if(_newDataSetID == null)
+                {
+                    commandText = commandText = "select max(MonitorDataSetID) from MonitorDataSets";
+                    _newDataSetID = Convert.ToInt16(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
+                }
+                //the 'F' is for the LOCKED column in MonitorDataSets.  This is being added and is not a predefined.
+                commandText = string.Format("insert into MonitorDataSets values ({0},{1},'{2}', 'F')", _newDataSetID, CommonClass.ManageSetup.SetupID, txtDataSetName.Text);
+                fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                commandText = "select max(MonitorID) from MONITORS";
+                maxID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
+                commandText = string.Format("select min(MonitorID) from MONITORS where MONITORDATASETID = {0}", _oldDataSetID);
+                minID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
+                //inserting - copying the locked data to the new data set
+                commandText = string.Format("insert into Monitors(Monitorid, Monitordatasetid, Pollutantid, Latitude, Longitude, Monitorname, Monitordescription, Metadataid) " +
+                              "SELECT Monitorid + ({0} - {1}) + 1, " +
+                              "{2}, Pollutantid, Latitude, Longitude, Monitorname,Monitordescription, " +
+                              "Metadataid FROM Monitors WHERE MONITORDATASETID = {3}", maxID, minID, _newDataSetID, _oldDataSetID );
+                fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+
+                commandText = string.Format("insert into MonitorEntries (MONITORENTRYID,MONITORID,YYEAR,METRICID,SEASONALMETRICID,STATISTIC,VVALUES) " +
+                                            "SELECT (SELECT MAX(MONITORENTRYID) FROM MONITORENTRIES)+OE.MONITORENTRYID - (SELECT MIN(MONITORENTRYID) FROM MONITORENTRIES A " +
+                                            "INNER JOIN MONITORS B " +
+                                            "ON A.MONITORID = B.MONITORID " +
+                                            "WHERE B.MONITORDATASETID = {0}) +1 AS NEWMONITORENTRYID, " +
+                                            "NM.MONITORID AS NEWMONITORID, OE.YYEAR,OE.METRICID, OE.SEASONALMETRICID, OE.STATISTIC, OE.VVALUES FROM MONITORENTRIES OE " +
+                                            "INNER JOIN MONITORS OM " +
+                                            "ON OE.MONITORID = OM.MONITORID " +
+                                            "INNER JOIN MONITORS NM " +
+                                            "ON NM.MONITORID = OM.Monitorid + ({2} - {3}) + 1 " +
+                                            "WHERE OM.MONITORDATASETID = {0} " +
+                                            "AND NM.MONITORDATASETID = {1}", _oldDataSetID, _newDataSetID, maxID, minID);
+                fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                _metadataObj = new MetadataClassObj();
+                _metadataObj.DatasetId =  Convert.ToInt32(_newDataSetID);
+                _metadataObj.FileName = txtDataSetName.Text;
+
+            }
+            catch (Exception ex)
+            {
+                progressBar1.Visible = false;
+                lblProgress.Text = "";
+                addGridView(_dataSetID);
+                Logger.LogError(ex.Message);
+            }
+        }
+
+        //private void insertMetadata(int dataSetID, int pollutantId)
+        private void insertMetadata(int dataSetID)
+        {
+            _metadataObj.DatasetId = dataSetID;
+
+            _metadataObj.DatasetTypeId = SQLStatementsCommonClass.getDatasetID("Monitor");
+            if (!SQLStatementsCommonClass.insertMetadata(_metadataObj))
+            {
+                MessageBox.Show("Failed to save Metadata.");
+            }
+            //if(!SQLStatementsCommonClass.updateMonitorsTable(_metadataObj.MetadataId, dataSetID, pollutantId))
+            //{
+            //    MessageBox.Show("Failed to save metadataId to Monitors table.");
+            //}
+        }
+       
         private static Dictionary<int, string> getMetric()
         {
             try
@@ -435,6 +582,46 @@ namespace BenMAP
             sw.Close();
             fs.Close();
             MessageBox.Show("CSV file saved.", "File saved");
+        }
+
+        private void btnBrowse1_Click(object sender, EventArgs e)
+        {
+            if(checkForDuplicate())
+            {
+
+                LoadSelectedDataSet lmdataset = new LoadSelectedDataSet("Load Monitor Dataset", "Monitor Dataset Name:", txtDataSetName.Text, "Monitor");
+
+                DialogResult dlgr = lmdataset.ShowDialog();
+                if(dlgr.Equals(DialogResult.OK))
+                {
+                    _dtDataFile = lmdataset.MonitorDataSet;
+                    _metadataObj = lmdataset.MetadataObj;
+                    olvMonitorDataSets.ClearObjects();
+                    LoadDatabase();
+                }
+            }
+            else
+            {
+                MessageBox.Show("Dublicate entry.  There is alrady an entry for the selected pollutant and year"); 
+            }
+        }
+       
+        private bool checkForDuplicate()
+        {
+            bool bPassed = true;
+            string pollutant = cboPollutant.Text;
+            string year = txtYear.Text;
+
+            foreach(ListViewItem lvi in olvMonitorDataSets.Items)
+            {
+                if(pollutant.Equals(lvi.SubItems[0].Text) && year.Equals(lvi.SubItems[1].Text))
+                {
+                    bPassed = false;
+                    break;
+                }
+            }
+
+            return bPassed;
         }
     }
 }

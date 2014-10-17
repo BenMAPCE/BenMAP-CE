@@ -12,16 +12,44 @@ namespace BenMAP
 {
     public partial class LoadVariableDatabase : FormBase
     {
-        public LoadVariableDatabase()
-        {
-            InitializeComponent();
-        }
+        private MetadataClassObj _metadataObj = null;
 
+        public MetadataClassObj MetadataObj
+        {
+            get { return _metadataObj; }
+        }
+        private DataTable _variableDatabase;
+        public DataTable VariableDatabase
+        {
+            get {return _variableDatabase; }
+        }
+        private string _strPath;
         private string _definitionID = string.Empty;
+        private string _isForceValidate = string.Empty;
+        private string _iniPath = string.Empty;
         public string DefinitionID
         {
             get { return _definitionID; }
             set { _definitionID = value; }
+        }
+        
+        public LoadVariableDatabase()
+        {
+            // turned off validation as it did not permit most variable datasets to be loaded
+            InitializeComponent();
+            _iniPath = CommonClass.ResultFilePath + @"\BenMAP.ini";
+            //_isForceValidate = CommonClass.IniReadValue("appSettings", "IsForceValidate", _iniPath);
+            /*
+            if (_isForceValidate == "T")
+            {
+                btnOK.Enabled = false;
+            }
+            else
+            {
+                btnOK.Enabled = true;
+            }
+             */
+            btnOK.Enabled = true;
         }
 
         private string _dataPath = string.Empty;
@@ -33,6 +61,16 @@ namespace BenMAP
 
         private void btnOK_Click(object sender, EventArgs e)
         {
+            LoadDatabase();
+        }
+        private void GetMetadata()
+        {
+            _metadataObj = new MetadataClassObj();
+            Metadata metadata = new Metadata(_strPath);
+            _metadataObj = metadata.GetMetadata();
+        }
+        private void LoadDatabase()
+        {
             if (cboGridDefinition.Text == string.Empty || txtDatabase.Text == string.Empty)
             {
                 MessageBox.Show("Please input the 'QALY Dataset Name' and 'Database'.");
@@ -41,7 +79,11 @@ namespace BenMAP
             string msg = string.Empty;
             try
             {
-                if (!File.Exists(txtDatabase.Text)) { msg = "Please select a valid database path. "; return; }
+                if (!File.Exists(txtDatabase.Text)) 
+                { 
+                    msg = "Please select a valid database path. "; 
+                    return; 
+                }
                 _dataPath = txtDatabase.Text;
                 if (cboGridDefinition.Text == string.Empty)
                 {
@@ -80,12 +122,16 @@ namespace BenMAP
             try
             {
                 OpenFileDialog openFileDialog = new OpenFileDialog();
-                openFileDialog.InitialDirectory = Application.StartupPath + @"E:\";
+                openFileDialog.InitialDirectory = CommonClass.ResultFilePath;
                 openFileDialog.Filter = "All Files|*.*|CSV files|*.csv|XLS files|*.xls|XLSX files|*.xlsx";
                 openFileDialog.FilterIndex = 2;
                 openFileDialog.RestoreDirectory = true;
-                if (openFileDialog.ShowDialog() != DialogResult.OK) { return; }
+                if (openFileDialog.ShowDialog() != DialogResult.OK) 
+                { 
+                    return; 
+                }
                 txtDatabase.Text = openFileDialog.FileName;
+                GetMetadata();
             }
             catch (Exception ex)
             {
@@ -97,6 +143,43 @@ namespace BenMAP
         {
             this.DialogResult = DialogResult.Cancel;
             this.Close();
+        }
+
+        private void btnValidate_Click(object sender, EventArgs e)
+        {
+            _variableDatabase = CommonClass.ExcelToDataTable(_strPath);
+            ValidateDatabaseImport vdi = new ValidateDatabaseImport(_variableDatabase, "VariableDataset", _strPath);
+
+            DialogResult dlgR = vdi.ShowDialog();
+            if (dlgR.Equals(DialogResult.OK))
+            {
+                if (vdi.PassedValidation && _isForceValidate == "T")
+                {
+                    LoadDatabase();
+                }
+            }
+        }
+
+        private void txtDatabase_TextChanged(object sender, EventArgs e)
+        {
+            btnValidate.Enabled = !string.IsNullOrEmpty(txtDatabase.Text);
+            btnViewMetadata.Enabled = !string.IsNullOrEmpty(txtDatabase.Text);
+            _strPath = txtDatabase.Text;
+        }
+
+        private void btnViewMetadata_Click(object sender, EventArgs e)
+        {
+            ViewEditMetadata viewEMdata = null;
+            if (_metadataObj != null)
+            {
+                viewEMdata = new ViewEditMetadata(_strPath, _metadataObj);
+            }
+            else
+            {
+                viewEMdata = new ViewEditMetadata(_strPath);
+            }
+            viewEMdata.ShowDialog();
+            _metadataObj = viewEMdata.MetadataObj;
         }
     }
 }

@@ -15,6 +15,7 @@ namespace BenMAP
     public partial class OpenExistingAQG : FormBase
     {
         string pathBaseControl = "";
+        private MetadataClassObj _metadataObj = null;
 
         public OpenExistingAQG()
         {
@@ -82,25 +83,35 @@ namespace BenMAP
         {
             try
             {
-                OpenFileDialog openFileDialog = new OpenFileDialog();
-                if (string.IsNullOrEmpty(pathBaseControl) || !System.IO.Directory.Exists(pathBaseControl))
-                {
-                    openFileDialog.InitialDirectory = System.Windows.Forms.Application.StartupPath + @"\Data\SampleData\";
-                }
-                if (txtPollutant.Text.Trim() == "")
-                {
-                    openFileDialog.InitialDirectory = CommonClass.ResultFilePath + @"\Result\AQG\";
-                    openFileDialog.Filter = "AQG files (*.aqgx)|*.aqgx";
-                }
-                else
-                {
-                    openFileDialog.Filter = "CSV file(*.csv)|*.csv|AQG files (*.aqgx)|*.aqgx|Excel file (*.xls)|*.xls|Excel file (*.xlsx)|*.xlsx";
-                }
-                openFileDialog.FilterIndex = 1;
-                if (openFileDialog.ShowDialog() != DialogResult.OK) { return; }
-                txtBase.Text = openFileDialog.FileName;
-                pathBaseControl = System.IO.Directory.GetCurrentDirectory();
-                openFileDialog.RestoreDirectory = true;
+            LoadSelectedDataSet lmdataset = new LoadSelectedDataSet("Load Baseline Data", "Baseline","Baseline", "Baseline");
+
+            DialogResult dlgr = lmdataset.ShowDialog();
+            if(dlgr.Equals(DialogResult.OK))
+            {
+                txtBase.Text = lmdataset.StrPath;
+                _metadataObj = lmdataset.MetadataObj;
+            }
+                #region Dead Code
+                //OpenFileDialog openFileDialog = new OpenFileDialog();
+                //if (string.IsNullOrEmpty(pathBaseControl) || !System.IO.Directory.Exists(pathBaseControl))
+                //{
+                //    openFileDialog.InitialDirectory = System.Windows.Forms.Application.StartupPath + @"\Data\SampleData\";
+                //}
+                //if (txtPollutant.Text.Trim() == "")
+                //{
+                //    openFileDialog.InitialDirectory = CommonClass.ResultFilePath + @"\Result\AQG\";
+                //    openFileDialog.Filter = "AQG files (*.aqgx)|*.aqgx";
+                //}
+                //else
+                //{
+                //    openFileDialog.Filter = "CSV file(*.csv)|*.csv|AQG files (*.aqgx)|*.aqgx|Excel file (*.xls)|*.xls|Excel file (*.xlsx)|*.xlsx";
+                //}
+                //openFileDialog.FilterIndex = 1;
+                //if (openFileDialog.ShowDialog() != DialogResult.OK) { return; }
+                //txtBase.Text = openFileDialog.FileName;
+                //pathBaseControl = System.IO.Directory.GetCurrentDirectory();
+                //openFileDialog.RestoreDirectory = true; 
+                #endregion
             }
             catch (Exception ex)
             {
@@ -118,25 +129,34 @@ namespace BenMAP
         {
             try
             {
-                OpenFileDialog openFileDialog = new OpenFileDialog();
-                if (string.IsNullOrEmpty(pathBaseControl) || !System.IO.Directory.Exists(pathBaseControl))
+                LoadSelectedDataSet lmdataset = new LoadSelectedDataSet("Load Control Data", "Control Data", "Control", "Control");
+
+                DialogResult dlgr = lmdataset.ShowDialog();
+                if (dlgr.Equals(DialogResult.OK))
                 {
-                    openFileDialog.InitialDirectory = System.Windows.Forms.Application.StartupPath + @"\Data\SampleData\";
+                    txtControl.Text = lmdataset.StrPath;
                 }
-                if (txtPollutant.Text.Trim() == "")
-                {
-                    openFileDialog.InitialDirectory = CommonClass.ResultFilePath + @"\Result\AQG\";
-                    openFileDialog.Filter = "AQG files (*.aqgx)|*.aqgx";
-                }
-                else
-                {
-                    openFileDialog.Filter = "CSV file(*.csv)|*.csv|AQG files (*.aqgx)|*.aqgx|Excel file (*.xls)|*.xls|Excel file (*.xlsx)|*.xlsx";
-                }
-                openFileDialog.FilterIndex = 1;
-                if (openFileDialog.ShowDialog() != DialogResult.OK) { return; }
-                txtControl.Text = openFileDialog.FileName;
-                pathBaseControl = System.IO.Directory.GetCurrentDirectory();
-                openFileDialog.RestoreDirectory = true;
+                #region Dead Code
+                //OpenFileDialog openFileDialog = new OpenFileDialog();
+                //if (string.IsNullOrEmpty(pathBaseControl) || !System.IO.Directory.Exists(pathBaseControl))
+                //{
+                //    openFileDialog.InitialDirectory = System.Windows.Forms.Application.StartupPath + @"\Data\SampleData\";
+                //}
+                //if (txtPollutant.Text.Trim() == "")
+                //{
+                //    openFileDialog.InitialDirectory = CommonClass.ResultFilePath + @"\Result\AQG\";
+                //    openFileDialog.Filter = "AQG files (*.aqgx)|*.aqgx";
+                //}
+                //else
+                //{
+                //    openFileDialog.Filter = "CSV file(*.csv)|*.csv|AQG files (*.aqgx)|*.aqgx|Excel file (*.xls)|*.xls|Excel file (*.xlsx)|*.xlsx";
+                //}
+                //openFileDialog.FilterIndex = 1;
+                //if (openFileDialog.ShowDialog() != DialogResult.OK) { return; }
+                //txtControl.Text = openFileDialog.FileName;
+                //pathBaseControl = System.IO.Directory.GetCurrentDirectory();
+                //openFileDialog.RestoreDirectory = true; 
+                #endregion
             }
             catch (Exception ex)
             {

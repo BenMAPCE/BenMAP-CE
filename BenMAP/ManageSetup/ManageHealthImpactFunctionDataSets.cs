@@ -19,8 +19,14 @@ namespace BenMAP
         {
             InitializeComponent();
         }
+        private MetadataClassObj _metadataObj = null;
+        private int _datasetID;
         string commandText = string.Empty;
         string _dataName = string.Empty;
+        private int _dsMetadataID;
+        private int _dsSetupID;
+        private int _dsDataSetId;
+        private int _dsDatasetTypeId;
         ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
         DataSet ds;
         DataTable _dt = new DataTable();
@@ -31,9 +37,33 @@ namespace BenMAP
         {
             try
             {
+                //this is calling the constructor to create a NEW dataset - get the ID in the constructor
                 HealthImpactDataSetDefinition frm = new HealthImpactDataSetDefinition();
                 DialogResult rth = frm.ShowDialog();
                 if (rth != DialogResult.OK) { return; }
+                commandText = string.Format("select * from CRFunctionDataSets where SetupID={0}", CommonClass.ManageSetup.SetupID);
+                ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+                lstAvailableDataSets.DataSource = ds.Tables[0];
+                lstAvailableDataSets.DisplayMember = "CRFunctionDataSetName";
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+            }
+        }
+
+        private void btnEdit_Click(object sender, EventArgs e)
+        {
+            string str = lstAvailableDataSets.GetItemText(lstAvailableDataSets.SelectedItem);
+            try
+            {
+                DataRowView drv = lstAvailableDataSets.SelectedItem as DataRowView;
+                HealthImpactDataSetDefinition frm = new HealthImpactDataSetDefinition(Convert.ToInt16(drv["CrfunctiondatasetID"]), true);//doing an edit
+                DialogResult rth = frm.ShowDialog();
+                if (rth != DialogResult.OK) 
+                { 
+                    return;
+                }
                 commandText = string.Format("select * from CRFunctionDataSets where SetupID={0}", CommonClass.ManageSetup.SetupID);
                 ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                 lstAvailableDataSets.DataSource = ds.Tables[0];
@@ -66,6 +96,7 @@ namespace BenMAP
 
         private void lstAvailableDataSets_SelectedValueChanged(object sender, EventArgs e)
         {
+            //_metadataObj = SQLStatementsCommonClass.getMetadata(_datasetID, CommonClass.ManageSetup.SetupID);
             if (isload)
             {
                 try
@@ -74,9 +105,32 @@ namespace BenMAP
                     cboEndpointGroup.Text = string.Empty;
                     cboPollutant.Items.Clear();
                     cboPollutant.Text = string.Empty;
-                    if (lstAvailableDataSets.SelectedItem == null) return;
+                    if (lstAvailableDataSets.SelectedItem == null)
+                    {
+                        return;
+                    }
                     DataRowView drv = lstAvailableDataSets.SelectedItem as DataRowView;
-                    commandText = string.Format("select b.endpointgroupname,c.endpointname,d.pollutantname,e.metricname,f.seasonalmetricname,case when Metricstatistic=0 then 'None'  when Metricstatistic=1 then 'Mean' when Metricstatistic=2 then 'Median' when Metricstatistic=3 then 'Max' when Metricstatistic=4 then 'Min' when Metricstatistic=5 then 'Sum'  END as MetricstatisticName,author,yyear,g.locationtypename,location,otherpollutants,qualifier,reference,race,ethnicity,gender,startage,endage,h.functionalformtext,i.functionalformtext,beta,distbeta,p1beta,p2beta,a,namea,b,nameb,c,namec,j.incidencedatasetname,k.incidencedatasetname,l.setupvariabledatasetname as variabeldatasetname,CRFUNCTIONID from crfunctions a join endpointgroups b on (a.ENDPOINTGROUPID=b.ENDPOINTGROUPID) join endpoints c on (a.endpointid=c.endpointid) join pollutants d on (a.pollutantid=d.pollutantid)join metrics e on (a.metricid=e.metricid) left join seasonalmetrics f on (a.seasonalmetricid=f.seasonalmetricid) left join locationtype g on (a.locationtypeid=g.locationtypeid) join functionalforms h on (a.functionalformid=h.functionalformid) join baselinefunctionalforms i on (a.baselinefunctionalformid=i.functionalformid) left join incidencedatasets j on (a.incidencedatasetid=j.incidencedatasetid) left join incidencedatasets k on (a.prevalencedatasetid=k.incidencedatasetid) left join setupvariabledatasets l on (a.variabledatasetid=l.setupvariabledatasetid) where CRFUNCTIONDATASETID={0}", drv["CRFunctionDataSetID"]);
+                    _dataName = drv["CRFUNCTIONDATASETNAME"].ToString();
+                    _datasetID = Convert.ToInt32( drv["CRFunctionDataSetID"]);
+                    btnViewMetadata.Enabled = false;
+                    //commandText = string.Format("select b.endpointgroupname,c.endpointname,d.pollutantname,e.metricname,f.seasonalmetricname,case when Metricstatistic=0 then 'None'  when Metricstatistic=1 then 'Mean' when Metricstatistic=2 then 'Median' when Metricstatistic=3 then 'Max' when Metricstatistic=4 then 'Min' when Metricstatistic=5 then 'Sum'  END as MetricstatisticName,author,yyear,g.locationtypename,location,otherpollutants,qualifier,reference,race,ethnicity,gender,startage,endage,h.functionalformtext,i.functionalformtext,beta,distbeta,p1beta,p2beta,a,namea,b,nameb,c,namec,j.incidencedatasetname,k.incidencedatasetname,l.setupvariabledatasetname as variabeldatasetname,CRFUNCTIONID from crfunctions a join endpointgroups b on (a.ENDPOINTGROUPID=b.ENDPOINTGROUPID) join endpoints c on (a.endpointid=c.endpointid) join pollutants d on (a.pollutantid=d.pollutantid)join metrics e on (a.metricid=e.metricid) left join seasonalmetrics f on (a.seasonalmetricid=f.seasonalmetricid) left join locationtype g on (a.locationtypeid=g.locationtypeid) join functionalforms h on (a.functionalformid=h.functionalformid) join baselinefunctionalforms i on (a.baselinefunctionalformid=i.functionalformid) left join incidencedatasets j on (a.incidencedatasetid=j.incidencedatasetid) left join incidencedatasets k on (a.prevalencedatasetid=k.incidencedatasetid) left join setupvariabledatasets l on (a.variabledatasetid=l.setupvariabledatasetid) where CRFUNCTIONDATASETID={0}", drv["CRFunctionDataSetID"]);
+                    commandText = string.Format("select b.endpointgroupname,c.endpointname,d.pollutantname,e.metricname,f.seasonalmetricname, a.metadataid, " +
+                                                "case when Metricstatistic=0 then 'None'  when Metricstatistic=1 then 'Mean' when Metricstatistic=2 " +
+                                                "then 'Median' when Metricstatistic=3 then 'Max' when Metricstatistic=4 then 'Min' when Metricstatistic=5 " +
+                                                "then 'Sum'  END as MetricstatisticName,author,yyear,g.locationtypename,location,otherpollutants,qualifier,reference, " +
+                                                "race,ethnicity,gender,startage,endage,h.functionalformtext,i.functionalformtext,beta,distbeta,p1beta,p2beta,a,namea,b, " +
+                                                "nameb,c,namec,j.incidencedatasetname,k.incidencedatasetname,l.setupvariabledatasetname as variabeldatasetname,CRFUNCTIONID " +
+                                                "from crfunctions a join endpointgroups b on (a.ENDPOINTGROUPID=b.ENDPOINTGROUPID) " +
+                                                "join endpoints c on (a.endpointid=c.endpointid) " +
+                                                "join pollutants d on (a.pollutantid=d.pollutantid) " +
+                                                "join metrics e on (a.metricid=e.metricid) left join seasonalmetrics f on (a.seasonalmetricid=f.seasonalmetricid) " +
+                                                "left join locationtype g on (a.locationtypeid=g.locationtypeid) join functionalforms h on (a.functionalformid=h.functionalformid) " +
+                                                "join baselinefunctionalforms i on (a.baselinefunctionalformid=i.functionalformid) " + 
+                                                "left join incidencedatasets j on (a.incidencedatasetid=j.incidencedatasetid) " +
+                                                "left join incidencedatasets k on (a.prevalencedatasetid=k.incidencedatasetid) " +
+                                                "left join setupvariabledatasets l on (a.variabledatasetid=l.setupvariabledatasetid) " +
+                                                "where CRFUNCTIONDATASETID={0}", drv["CRFunctionDataSetID"]);
+                    
                     ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                     olvData.DataSource = ds.Tables[0];
                     _dt = ds.Tables[0];
@@ -107,14 +161,22 @@ namespace BenMAP
         }
 
         private void btnDelete_Click(object sender, EventArgs e)
-        {
+        {   
+            int crFunctionDatasetId = 0;
+            int datasetid = 0;
             try
             {
                 if (lstAvailableDataSets.SelectedItem == null) return;
                 if (MessageBox.Show("Delete the selected health impact function dataset?", "Confirm Deletion", MessageBoxButtons.YesNo) == DialogResult.Yes)
                 {
+                    commandText = string.Format("SELECT CRFUNCTIONDATASETID FROM CRFUNCTIONDATASETS WHERE SETUPID = {0} AND CRFunctionDataSetName = '{1}'", CommonClass.ManageSetup.SetupID, lstAvailableDataSets.Text);
+                    crFunctionDatasetId = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text,commandText));
                     commandText = string.Format("delete from CRFunctionDataSets where CRFunctionDataSetName='{0}' and setupid={1}", lstAvailableDataSets.Text, CommonClass.ManageSetup.SetupID);
                     int i = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                    commandText = "select DATASETTYPEID FROM DATASETTYPES WHERE DATASETTYPENAME = 'Healthfunctions'";
+                    datasetid = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
+                    commandText = string.Format("DELETE FROM METADATAINFORMATION WHERE SETUPID ={0} AND DATASETID = {1} AND DATASETTYPEID = {2}", CommonClass.ManageSetup.SetupID, crFunctionDatasetId, datasetid);
+                    fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                 }
                 DataRowView drv = lstAvailableDataSets.SelectedItem as DataRowView;
                 lstAvailableDataSets.Items.Remove(drv["CRFunctionDataSetID"]);
@@ -131,6 +193,7 @@ namespace BenMAP
                 {
                     olvData.ClearObjects();
                 }
+                
             }
             catch (Exception ex)
             {
@@ -148,25 +211,7 @@ namespace BenMAP
             this.DialogResult = DialogResult.Cancel;
         }
 
-        private void btnEdit_Click(object sender, EventArgs e)
-        {
-            string str = lstAvailableDataSets.GetItemText(lstAvailableDataSets.SelectedItem);
-            try
-            {
-                DataRowView drv = lstAvailableDataSets.SelectedItem as DataRowView;
-                HealthImpactDataSetDefinition frm = new HealthImpactDataSetDefinition(Convert.ToInt16(drv["CrfunctiondatasetID"]));
-                DialogResult rth = frm.ShowDialog();
-                if (rth != DialogResult.OK) { return; }
-                commandText = string.Format("select * from CRFunctionDataSets where SetupID={0}", CommonClass.ManageSetup.SetupID);
-                ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
-                lstAvailableDataSets.DataSource = ds.Tables[0];
-                lstAvailableDataSets.DisplayMember = "CRFunctionDataSetName";
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex);
-            }
-        }
+        
 
         DataTable _dtEndpointGroup = new DataTable();
         DataTable _dtPollutant = new DataTable();
@@ -197,11 +242,42 @@ namespace BenMAP
                     DataRowView drv = lstAvailableDataSets.SelectedItem as DataRowView;
                     if (cboEndpointGroup.Text == "")
                     {
-                        commandText = string.Format("select b.endpointgroupname,c.endpointname,d.pollutantname,e.metricname,f.seasonalmetricname,case when Metricstatistic=0 then 'None'  when Metricstatistic=1 then 'Mean' when Metricstatistic=2 then 'Median' when Metricstatistic=3 then 'Max' when Metricstatistic=4 then 'Min' when Metricstatistic=5 then 'Sum'  END as MetricstatisticName,author,yyear,g.locationtypename,location,otherpollutants,qualifier,reference,race,ethnicity,gender,startage,endage,h.functionalformtext,i.functionalformtext,beta,distbeta,p1beta,p2beta,a,namea,b,nameb,c,namec,j.incidencedatasetname,k.incidencedatasetname,l.setupvariabledatasetname as variabeldatasetname,CRFUNCTIONID from crfunctions a join endpointgroups b on (a.ENDPOINTGROUPID=b.ENDPOINTGROUPID) join endpoints c on (a.endpointid=c.endpointid) join pollutants d on (a.pollutantid=d.pollutantid)join metrics e on (a.metricid=e.metricid) left join seasonalmetrics f on (a.seasonalmetricid=f.seasonalmetricid) left join locationtype g on (a.locationtypeid=g.locationtypeid) join functionalforms h on (a.functionalformid=h.functionalformid) join baselinefunctionalforms i on (a.baselinefunctionalformid=i.functionalformid) left join incidencedatasets j on (a.incidencedatasetid=j.incidencedatasetid) left join incidencedatasets k on (a.prevalencedatasetid=k.incidencedatasetid) left join setupvariabledatasets l on (a.variabledatasetid=l.setupvariabledatasetid) where CRFUNCTIONDATASETID={0}", drv["CRFunctionDataSetID"]);
+                        commandText = string.Format("select b.endpointgroupname,c.endpointname,d.pollutantname,e.metricname,f.seasonalmetricname, a.metadataid,case " +
+                                                    "when Metricstatistic=0 then 'None'  when Metricstatistic=1 then 'Mean' when Metricstatistic=2 " +
+                                                    "then 'Median' when Metricstatistic=3 then 'Max' when Metricstatistic=4 then 'Min' " +
+                                                    "when Metricstatistic=5 then 'Sum'  " +
+                                                    "END as MetricstatisticName,author,yyear,g.locationtypename,location,otherpollutants,qualifier,reference, " +
+                                                    "race,ethnicity,gender,startage,endage,h.functionalformtext,i.functionalformtext,beta,distbeta,p1beta,p2beta,a," +
+                                                    "namea,b,nameb,c,namec,j.incidencedatasetname,k.incidencedatasetname,l.setupvariabledatasetname " +
+                                                    "as variabeldatasetname,CRFUNCTIONID from crfunctions a join endpointgroups b " + 
+                                                    "on (a.ENDPOINTGROUPID=b.ENDPOINTGROUPID) join endpoints c on (a.endpointid=c.endpointid) " +
+                                                    "join pollutants d on (a.pollutantid=d.pollutantid)join metrics e on (a.metricid=e.metricid) " +
+                                                    "left join seasonalmetrics f on (a.seasonalmetricid=f.seasonalmetricid) left join locationtype g " + 
+                                                    "on (a.locationtypeid=g.locationtypeid) join functionalforms h on (a.functionalformid=h.functionalformid) " +
+                                                    "join baselinefunctionalforms i on (a.baselinefunctionalformid=i.functionalformid) " +
+                                                    "left join incidencedatasets j on (a.incidencedatasetid=j.incidencedatasetid) " +
+                                                    "left join incidencedatasets k on (a.prevalencedatasetid=k.incidencedatasetid) " +
+                                                    "left join setupvariabledatasets l on (a.variabledatasetid=l.setupvariabledatasetid) " + 
+                                                    "where CRFUNCTIONDATASETID={0}", drv["CRFunctionDataSetID"]);
                     }
                     else
                     {
-                        commandText = string.Format("select b.endpointgroupname,c.endpointname,d.pollutantname,e.metricname,f.seasonalmetricname,case when Metricstatistic=0 then 'None'  when Metricstatistic=1 then 'Mean' when Metricstatistic=2 then 'Median' when Metricstatistic=3 then 'Max' when Metricstatistic=4 then 'Min' when Metricstatistic=5 then 'Sum'  END as MetricstatisticName,author,yyear,g.locationtypename,location,otherpollutants,qualifier,reference,race,ethnicity,gender,startage,endage,h.functionalformtext,i.functionalformtext,beta,distbeta,p1beta,p2beta,a,namea,b,nameb,c,namec,j.incidencedatasetname,k.incidencedatasetname,l.setupvariabledatasetname as variabeldatasetname,CRFUNCTIONID from crfunctions a join endpointgroups b on (a.ENDPOINTGROUPID=b.ENDPOINTGROUPID) join endpoints c on (a.endpointid=c.endpointid) join pollutants d on (a.pollutantid=d.pollutantid)join metrics e on (a.metricid=e.metricid) left join seasonalmetrics f on (a.seasonalmetricid=f.seasonalmetricid) left join locationtype g on (a.locationtypeid=g.locationtypeid) join functionalforms h on (a.functionalformid=h.functionalformid) join baselinefunctionalforms i on (a.baselinefunctionalformid=i.functionalformid) left join incidencedatasets j on (a.incidencedatasetid=j.incidencedatasetid) left join incidencedatasets k on (a.prevalencedatasetid=k.incidencedatasetid) left join setupvariabledatasets l on (a.variabledatasetid=l.setupvariabledatasetid) where CRFUNCTIONDATASETID={0} and b.endpointgroupname='{1}'", drv["CRFunctionDataSetID"], cboEndpointGroup.Text);
+                        commandText = string.Format("select b.endpointgroupname,c.endpointname,d.pollutantname,e.metricname,f.seasonalmetricname, a.metadataid,case " +
+                                                    "when Metricstatistic=0 then 'None'  when Metricstatistic=1 then 'Mean' when Metricstatistic=2 " +
+                                                    "then 'Median' when Metricstatistic=3 then 'Max' when Metricstatistic=4 then 'Min' when Metricstatistic=5 " +
+                                                    "then 'Sum'  END as MetricstatisticName,author,yyear,g.locationtypename,location,otherpollutants,qualifier, " +
+                                                    "reference,race,ethnicity,gender,startage,endage,h.functionalformtext,i.functionalformtext,beta,distbeta,p1beta, " +
+                                                    "p2beta,a,namea,b,nameb,c,namec,j.incidencedatasetname,k.incidencedatasetname,l.setupvariabledatasetname " +
+                                                    "as variabeldatasetname,CRFUNCTIONID from crfunctions a join endpointgroups b on  " +
+                                                    "(a.ENDPOINTGROUPID=b.ENDPOINTGROUPID) join endpoints c on (a.endpointid=c.endpointid)  " +
+                                                    "join pollutants d on (a.pollutantid=d.pollutantid)join metrics e on (a.metricid=e.metricid)  " +
+                                                    "left join seasonalmetrics f on (a.seasonalmetricid=f.seasonalmetricid) left join locationtype g  " +
+                                                    "on (a.locationtypeid=g.locationtypeid) join functionalforms h on (a.functionalformid=h.functionalformid)  " +
+                                                    "join baselinefunctionalforms i on (a.baselinefunctionalformid=i.functionalformid)  " +
+                                                    "left join incidencedatasets j on (a.incidencedatasetid=j.incidencedatasetid)  " +
+                                                    "left join incidencedatasets k on (a.prevalencedatasetid=k.incidencedatasetid)  " +
+                                                    "left join setupvariabledatasets l on (a.variabledatasetid=l.setupvariabledatasetid)  " +
+                                                    "where CRFUNCTIONDATASETID={0} and b.endpointgroupname='{1}'", drv["CRFunctionDataSetID"], cboEndpointGroup.Text);
                     }
                     ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                     olvData.DataSource = ds.Tables[0];
@@ -345,6 +421,49 @@ namespace BenMAP
             {
                 olv.ShowGroups = cb.Checked;
                 olv.BuildList();
+            }
+        }
+
+        private void btnViewMetadata_Click(object sender, EventArgs e)
+        {
+            //_metadataObj = SQLStatementsCommonClass.getMetadata(_datasetID, CommonClass.ManageSetup.SetupID);
+            _metadataObj = SQLStatementsCommonClass.getMetadata(_dsDataSetId, _dsSetupID, _dsDatasetTypeId, _dsMetadataID);//(_datasetID, CommonClass.ManageSetup.SetupID);
+            _metadataObj.SetupName = CommonClass.ManageSetup.SetupName;//_dataName;
+            btnViewMetadata.Enabled = false;
+            ViewEditMetadata viewEMdata = new ViewEditMetadata(_metadataObj);
+            DialogResult dr = viewEMdata.ShowDialog();
+            if (dr.Equals(DialogResult.OK))
+            {
+                _metadataObj = viewEMdata.MetadataObj;
+            }
+        }
+
+        private void olvData_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                if(sender != null)
+                {
+                    BrightIdeasSoftware.DataListView dlv = sender as BrightIdeasSoftware.DataListView;
+
+                    if(dlv.SelectedItem != null)
+                    {
+                        btnViewMetadata.Enabled = true;
+
+                        DataRowView drv = dlv.SelectedItem.RowObject as DataRowView;//dlv.SelectedItem.RowObject
+
+                        _dsMetadataID = Convert.ToInt32(drv["metadataid"]);
+                        _dsSetupID = CommonClass.ManageSetup.SetupID;//Convert.ToInt32(drv["setupid"]);
+                        _dsDataSetId = Convert.ToInt32(_datasetID);//Convert.ToInt32(drv["datasetid"]);//Monitor Dataset Id
+                        _dsDatasetTypeId = SQLStatementsCommonClass.getDatasetID("Healthfunctions");//Convert.ToInt32(drv["datasettypeid"]);
+                    }
+                }
+            }
+            catch
+            {
+                //TODO:  FIX THIS.
+                //do nothing for now until I can get the metadta to run correctly
+                //throw new Exception(ex.Message);
             }
         }
 

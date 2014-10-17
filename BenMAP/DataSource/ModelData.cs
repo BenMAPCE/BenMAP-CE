@@ -12,19 +12,44 @@ namespace BenMAP
 {
     public partial class ModelData : FormBase
     {
+        private MetadataClassObj _metadataObj = null;
+        private BaseControlGroup _bgc = null;
+        private string _currentStat = string.Empty;
+        private string _isForceValidate = string.Empty;
+        private string _iniPath = string.Empty;
+        private string _strPath;
+
+        public string StrPath
+        {
+            get { return _strPath; }
+            set { _strPath = value; }
+        }
+        public MetadataClassObj MetadataObj
+        {
+            get { return _metadataObj; }
+        }
+
         public ModelData()
         {
             InitializeComponent();
         }
-
-        private BaseControlGroup _bgc = null;
-        private string _currentStat = string.Empty;
 
         public ModelData(BaseControlGroup currentPollutant, string currentStat)
         {
             InitializeComponent();
             _bgc = currentPollutant;
             _currentStat = currentStat;
+
+            _iniPath = CommonClass.ResultFilePath + @"\BenMAP.ini";
+            _isForceValidate = CommonClass.IniReadValue("appSettings", "IsForceValidate", _iniPath);
+            if (_isForceValidate == "T")
+            {
+                btnOK.Enabled = false;
+            }
+            else
+            {
+                btnOK.Enabled = true;
+            }
         }
 
         private void ModelData_Load(object sender, EventArgs e)
@@ -93,6 +118,11 @@ namespace BenMAP
         BaseControlGroup saveBCG = new BaseControlGroup();
         private void btnOK_Click(object sender, EventArgs e)
         {
+            LoadDatabase();
+        }
+
+        private void LoadDatabase()
+        {
             string msg = string.Empty;
             bool bCreateShapeFile = false;
             try
@@ -157,14 +187,6 @@ namespace BenMAP
             }
         }
 
-        private string _strPath;
-
-        public string StrPath
-        {
-            get { return _strPath; }
-            set { _strPath = value; }
-        }
-
         private bool CreateShapeFile(BaseControlGroup b)
         {
             string msg = string.Empty;
@@ -174,7 +196,8 @@ namespace BenMAP
             {
                 currentStat = _currentStat;
 
-                ModelDataLine modelDataLine = new ModelDataLine(); if (tabControl1.SelectedIndex == 0)
+                ModelDataLine modelDataLine = new ModelDataLine(); 
+                if (tabControl1.SelectedIndex == 0)
                 {
                     WaitShow("Loading model data file.");
 
@@ -342,7 +365,6 @@ namespace BenMAP
             }
         }
 
-
         TipFormGIF waitMess = new TipFormGIF(); bool sFlog = true;
 
         private void ShowWaitMess()
@@ -412,5 +434,52 @@ namespace BenMAP
             }
         }
 
+        private void btnValidate_Click(object sender, EventArgs e)
+        {
+            string datasetName = string.Empty;
+            if(_currentStat.ToLower().Equals("control"))
+            {
+                datasetName = "Control";//this is how it is listed in the db
+            }
+            if(_currentStat.ToLower().Equals("baseline"))
+            {
+                datasetName = "Baseline";//this is how it is listed in the db
+            }
+            DataTable modelDT = new DataTable();
+            modelDT = CommonClass.ExcelToDataTable(txtModelDatabase.Text);
+            ValidateDatabaseImport vdi = new ValidateDatabaseImport(modelDT, datasetName, txtModelDatabase.Text);
+            DialogResult dlgR = vdi.ShowDialog();
+            if (dlgR.Equals(DialogResult.OK))
+            {
+                if (vdi.PassedValidation && _isForceValidate == "T")
+                {
+                    LoadDatabase(); 
+                }
+            }
+
+        }
+
+        private void btnViewMetadata_Click(object sender, EventArgs e)
+        {
+            ViewEditMetadata viewEMdata = null;
+            if (_metadataObj != null)
+            {
+                viewEMdata = new ViewEditMetadata(_strPath, _metadataObj);
+            }
+            else
+            {
+                viewEMdata = new ViewEditMetadata(_strPath);
+            }
+            DialogResult dr = viewEMdata.ShowDialog();
+            if (dr.Equals(DialogResult.OK))
+            {
+                _metadataObj = viewEMdata.MetadataObj;
+            }
+        }
+
+        private void txtModelDatabase_TextChanged(object sender, EventArgs e)
+        {
+            btnValidate.Enabled = !string.IsNullOrEmpty(txtModelDatabase.Text);
+        }
     }
 }

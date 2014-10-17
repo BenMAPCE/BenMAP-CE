@@ -14,6 +14,8 @@ namespace BenMAP
 {
     public partial class IncidenceDatasetDefinition : FormBase
     {
+        private MetadataClassObj _metadataObj = null;
+
         public IncidenceDatasetDefinition()
         {
             InitializeComponent();
@@ -416,11 +418,25 @@ namespace BenMAP
                 {
                     DialogResult rtn = frm.ShowDialog();
                     if (rtn != DialogResult.OK) { return; }
+                    _metadataObj = frm.MetadataObj;
                     str = frm.StrPath;
                     commandText = "select GridDefinitionName from GridDefinitions where GridDefinitionID=" + _grdiDefinitionID + "";
                     cboGridDefinition.Text = (fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)).ToString();
-                    _dtLoadTable = CommonClass.ExcelToDataTable(str); if (_dtLoadTable == null)
-                    { MessageBox.Show("Failed to import data from CSV file."); return; }
+                    if(frm.IncidneceData != null)
+                    {
+                        _dtLoadTable = frm.IncidneceData;
+                    }
+                    else
+                    {
+                        _dtLoadTable = CommonClass.ExcelToDataTable(str); 
+                        if (_dtLoadTable == null)
+                            { MessageBox.Show("Failed to import data from CSV file."); return; }
+                    }
+
+                    #region Validation has been moved to LoadIncidenceDatabase
+                    //This section will be handled by the new validation window launched by LoadIncidenceDatabase window.
+                    //A datatable will be available from the LoadIncidenceDatabase window on a true (passed) validation.
+
 
                     int iEndpointGroup = -1;
                     int iEndpoint = -1;
@@ -461,25 +477,27 @@ namespace BenMAP
                                 break;
                         }
                     }
-                    string warningtip = "";
-                    if (iEndpointGroup < 0) warningtip = "'Endpoint Group', ";
-                    if (iEndpoint < 0) warningtip += "'Endpoint', ";
-                    if (iRace < 0) warningtip += "'Race', ";
-                    if (iGender < 0) warningtip += "'Gender', ";
-                    if (iEthnicity < 0) warningtip += "'Ethnicity', ";
-                    if (iStartAge < 0) warningtip += "'Start Age', ";
-                    if (iEndAge < 0) warningtip += "'End Age', ";
-                    if (iColumn < 0) warningtip += "'Column', ";
-                    if (iRow < 0) warningtip += "'Row', ";
-                    if (iType < 0) warningtip += "'Type', ";
-                    if (iValue < 0) warningtip += "'Value', ";
-                    if (warningtip != "")
-                    {
-                        warningtip = warningtip.Substring(0, warningtip.Length - 2);
-                        warningtip = "Please check the column header of " + warningtip + ". It is incorrect or does not exist.";
-                        MessageBox.Show(warningtip, "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        return;
-                    }
+                    //string warningtip = "";
+                    //if (iEndpointGroup < 0) warningtip = "'Endpoint Group', ";
+                    //if (iEndpoint < 0) warningtip += "'Endpoint', ";
+                    //if (iRace < 0) warningtip += "'Race', ";
+                    //if (iGender < 0) warningtip += "'Gender', ";
+                    //if (iEthnicity < 0) warningtip += "'Ethnicity', ";
+                    //if (iStartAge < 0) warningtip += "'Start Age', ";
+                    //if (iEndAge < 0) warningtip += "'End Age', ";
+                    //if (iColumn < 0) warningtip += "'Column', ";
+                    //if (iRow < 0) warningtip += "'Row', ";
+                    //if (iType < 0) warningtip += "'Type', ";
+                    //if (iValue < 0) warningtip += "'Value', ";
+                    //if (warningtip != "")
+                    //{
+                    //    warningtip = warningtip.Substring(0, warningtip.Length - 2);
+                    //    warningtip = "Please check the column header of " + warningtip + ". It is incorrect or does not exist.";
+                    //    MessageBox.Show(warningtip, "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    //    return;
+                    //}
+                    #endregion
+                    
                     lblProgress.Visible = true;
                     progressBar1.Visible = true;
 
@@ -517,7 +535,8 @@ namespace BenMAP
                             commandText = "select max(IncidenceDatasetID) from INCIDENCEDATASETS";
                             obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
                             incidenceDatasetID = Convert.ToInt32(obj) + 1;
-                            commandText = string.Format("insert into INCIDENCEDATASETS (IncidenceDatasetID,SetupID,IncidenceDatasetName,GridDefinitionID) values( {0},{1},'{2}',{3})", incidenceDatasetID, CommonClass.ManageSetup.SetupID, txtDataName.Text, _grdiDefinitionID);
+                            //The 'F' is for the Locked column in INCIDENCEDATESTS - imported not predefined.
+                            commandText = string.Format("insert into INCIDENCEDATASETS (IncidenceDatasetID,SetupID,IncidenceDatasetName,GridDefinitionID, LOCKED) values( {0},{1},'{2}',{3}, 'F')", incidenceDatasetID, CommonClass.ManageSetup.SetupID, txtDataName.Text, _grdiDefinitionID);
                             fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                         }
                         _dataSetName = txtDataName.Text;
@@ -690,14 +709,17 @@ namespace BenMAP
                         commandText = commandText + "END";
                         fbCommand.CommandText = commandText;
                         fbCommand.ExecuteNonQuery();
-                    } progressBar1.Visible = false;
+                    } 
+                    insertMetadata(incidenceDatasetID);
+                    progressBar1.Visible = false;
                     lblProgress.Text = "";
                     lblProgress.Visible = false;
                     BindDataGridView(null, null);
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("File import failed. Please check the file for errors.", "Error", MessageBoxButtons.OK);
+                    //MessageBox.Show("File import failed. Please check the file for errors.", "Error", MessageBoxButtons.OK);
+                    MessageBox.Show("File import failed. Please validate file for more detailed informaton.", "Error", MessageBoxButtons.OK);
                     progressBar1.Visible = false;
                     lblProgress.Text = "";
                     lblProgress.Visible = false;
@@ -705,7 +727,17 @@ namespace BenMAP
                 }
             }
         }
+        private void insertMetadata(int dataSetID)
+        {
 
+            _metadataObj.DatasetId = dataSetID;
+
+            _metadataObj.DatasetTypeId = SQLStatementsCommonClass.getDatasetID("Incidence");
+            if (!SQLStatementsCommonClass.insertMetadata(_metadataObj))
+            {
+                MessageBox.Show("Failed to save Metadata.");
+            }
+        }
         private void btnOK_Click(object sender, EventArgs e)
         {
             try

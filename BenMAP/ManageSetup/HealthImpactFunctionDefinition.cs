@@ -8,11 +8,24 @@ using System.Text;
 using System.Windows.Forms;
 using ESIL.DBUtility;
 using System.Text.RegularExpressions;
+using BenMAP.Tools;
 
 namespace BenMAP
 {
     public partial class HealthImpactFunctionOfUser_defined : FormBase
     {
+        private static Tools.CalculateFunctionString _pointEstimateEval;
+        internal static Tools.CalculateFunctionString PointEstimateEval
+        {
+            get
+            {
+                if (_pointEstimateEval == null)
+                    _pointEstimateEval = new Tools.CalculateFunctionString();
+                return _pointEstimateEval;
+            }
+
+        }
+
         private string _dataName;
 
         private HealthImpact _healthImpacts;
@@ -66,14 +79,44 @@ namespace BenMAP
                     listBaselineFunctions.Add(dsBaselineFunctions.Tables[0].Rows[j][1].ToString());
                 }
                 List<string> lstSystemVariableName = Configuration.ConfigurationCommonClass.getAllSystemVariableNameList();
+                string functionText = Configuration.ConfigurationCommonClass.getFunctionStringFromDatabaseFunction(txtFunction.Text);
                 Dictionary<string, double> dicVariable = new Dictionary<string, double>();
+                Dictionary<string, string> dicEstimateVariables = new Dictionary<string, string>();
+                string DatabaseFunction = functionText.Replace("prevalence", "").Replace("incidence", "").Replace("deltaq", "")
+                   .Replace("pop", "").Replace("beta", "").Replace("q0", "").Replace("q1", "")
+                   .Replace("abs", " ").Replace("acos", " ").Replace("asin", " ").Replace("atan", " ")
+                   .Replace("atan2", " ").Replace("bigmul", " ").Replace("ceiling", " ").Replace("cos", " ")
+                   .Replace("cosh", " ").Replace("divrem", " ").Replace("exp", " ").Replace("floor", " ")
+                   .Replace("ieeeremainder", " ").Replace("log", " ").Replace("log10", " ").Replace("max", " ")
+                   .Replace("min", " ").Replace("pow", " ").Replace("round", " ").Replace("sign", " ")
+                   .Replace("sin", " ").Replace("sinh", " ").Replace("sqrt", " ").Replace("tan", " ")
+                   .Replace("tanh", " ").Replace("truncate", " ");
+                int crid = 1;
                 foreach (string s in lstSystemVariableName)
                 {
-                    dicVariable.Add(s, 1);
+                    if (DatabaseFunction.ToLower().Contains(s.ToLower()))
+                    {
+                        dicVariable.Add(s, 1);
+                        if (dicEstimateVariables.ContainsKey(crid.ToString()))
+                        {
+                            if (dicEstimateVariables[crid.ToString()] == "")
+                                dicEstimateVariables[crid.ToString()] = " double " + s.ToLower();
+                            else if (!dicEstimateVariables[crid.ToString()].Contains("double " + s.ToLower()))
+                                dicEstimateVariables[crid.ToString()] += " , double " + s.ToLower();
+                        }
+                        else
+                        {
+                            dicEstimateVariables.Add(crid.ToString(), " double " + s.ToLower());
+                        }
+                    }
                 }
-                string functionText = Configuration.ConfigurationCommonClass.getFunctionStringFromDatabaseFunction(txtFunction.Text);
-                double functionResult = Configuration.ConfigurationCommonClass.getValueFromPointEstimateFunctionString("0", functionText, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, dicVariable);
-                if (txtFunction.Text == string.Empty || functionResult == -999999999.0)
+                Dictionary<string, string> dicEstimate = new Dictionary<string, string>();
+                dicEstimate.Add(crid.ToString(), functionText);
+                CalculateFunctionString calculateFunctionString = new CalculateFunctionString();
+                calculateFunctionString.CreateAllPointEstimateEvalObjects(dicEstimate, dicEstimateVariables);
+                object result = PointEstimateEval.PointEstimateEval(crid.ToString(), functionText, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, dicVariable);
+                if (Tools.CalculateFunctionString.dicPointEstimateMethodInfo != null) Tools.CalculateFunctionString.dicPointEstimateMethodInfo.Clear();
+                if (!(result is double) || double.IsNaN(Convert.ToDouble(result)) || Convert.ToDouble(result) == -999999999)
                 {
                     MessageBox.Show("Please input a valid value for 'Function'.");
                     return;
@@ -89,10 +132,43 @@ namespace BenMAP
                         int rth = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                     }
                 }
+                functionText = Configuration.ConfigurationCommonClass.getFunctionStringFromDatabaseFunction(txtBaselineIncidenceFunction.Text);
+                dicVariable = new Dictionary<string, double>();
+                dicEstimateVariables = new Dictionary<string, string>();
+                DatabaseFunction = functionText.Replace("prevalence", "").Replace("incidence", "").Replace("deltaq", "")
+                   .Replace("pop", "").Replace("beta", "").Replace("q0", "").Replace("q1", "")
+                   .Replace("abs", " ").Replace("acos", " ").Replace("asin", " ").Replace("atan", " ")
+                   .Replace("atan2", " ").Replace("bigmul", " ").Replace("ceiling", " ").Replace("cos", " ")
+                   .Replace("cosh", " ").Replace("divrem", " ").Replace("exp", " ").Replace("floor", " ")
+                   .Replace("ieeeremainder", " ").Replace("log", " ").Replace("log10", " ").Replace("max", " ")
+                   .Replace("min", " ").Replace("pow", " ").Replace("round", " ").Replace("sign", " ")
+                   .Replace("sin", " ").Replace("sinh", " ").Replace("sqrt", " ").Replace("tan", " ")
+                   .Replace("tanh", " ").Replace("truncate", " ");
+                foreach (string s in lstSystemVariableName)
+                {
+                    if (DatabaseFunction.ToLower().Contains(s.ToLower()))
+                    {
+                        dicVariable.Add(s, 1);
+                        if (dicEstimateVariables.ContainsKey(crid.ToString()))
+                        {
+                            if (dicEstimateVariables[crid.ToString()] == "")
+                                dicEstimateVariables[crid.ToString()] = " double " + s.ToLower();
+                            else if (!dicEstimateVariables[crid.ToString()].Contains("double " + s.ToLower()))
+                                dicEstimateVariables[crid.ToString()] += " , double " + s.ToLower();
+                        }
+                        else
+                        {
+                            dicEstimateVariables.Add(crid.ToString(), " double " + s.ToLower());
+                        }
+                    }
+                }
+                dicEstimate = new Dictionary<string, string>();
+                dicEstimate.Add(crid.ToString(), functionText);
+                calculateFunctionString = new CalculateFunctionString();
+                calculateFunctionString.CreateAllPointEstimateEvalObjects(dicEstimate, dicEstimateVariables);
+                result = PointEstimateEval.PointEstimateEval(crid.ToString(), functionText, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, dicVariable);
                 if (Tools.CalculateFunctionString.dicPointEstimateMethodInfo != null) Tools.CalculateFunctionString.dicPointEstimateMethodInfo.Clear();
-                string baselineFunctionText = Configuration.ConfigurationCommonClass.getFunctionStringFromDatabaseFunction(txtBaselineIncidenceFunction.Text);
-                double baselineFunctionResult = Configuration.ConfigurationCommonClass.getValueFromBaseFunctionString("1", baselineFunctionText, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, dicVariable);
-                if (baselineFunctionResult == -999999999.0)
+                if (!(result is double) || double.IsNaN(Convert.ToDouble(result)) || Convert.ToDouble(result) == -999999999)
                 {
                     MessageBox.Show("Please input a valid value for 'Baseline Function'.");
                     return;

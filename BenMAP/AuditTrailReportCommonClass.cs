@@ -655,7 +655,12 @@ namespace BenMAP
 
         }
 
+        public static void getTreeNodeFromAllDatasetsMetadata(List<MetadataClassObj> lstMetadataObjs, ref TreeNode treeNode)
+        {
 
+
+
+        }
 
 
 

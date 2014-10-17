@@ -17,6 +17,11 @@ namespace BenMAP
             InitializeComponent();
         }
         string _dataName = string.Empty;
+        int _datasetID;
+        private int _dsMetadataID;
+        private int _dsSetupID;
+        private int _dsDatasetTypeId;
+        private MetadataClassObj _metadataObj = null;
         private void btnAdd_Click(object sender, EventArgs e)
         {
             try
@@ -36,7 +41,8 @@ namespace BenMAP
                     }
                 }
                 lstDataSetName.SelectedIndex = count;
-
+                lstDataSetName.ClearSelected();
+                btnViewMetadata.Enabled = false;
             }
             catch (Exception ex)
             {
@@ -49,6 +55,9 @@ namespace BenMAP
             try
             {
                 ExportDataForlistbox();
+                lstDataSetName.ClearSelected();
+                lstDataSetName.SelectedIndex = -1;
+                btnViewMetadata.Enabled = false;
             }
             catch (Exception ex)
             {
@@ -87,6 +96,16 @@ namespace BenMAP
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
 
                 olvData.DataSource = ds.Tables[0];
+
+                commandText = string.Format("select INCOMEGROWTHADJDATASETID from INCOMEGROWTHADJDATASETS where INCOMEGROWTHADJDATASETNAME='{0}' and setupid={1}", str, CommonClass.ManageSetup.SetupID);
+                _datasetID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
+                _dataName = str;
+                _dsSetupID = CommonClass.ManageSetup.SetupID;
+                _dsDatasetTypeId = SQLStatementsCommonClass.getDatasetID("Incomegrowth");
+                commandText = string.Format("Select METADATAENTRYID from METADATAINFORMATION where DATASETID = {0} and SETUPID = {1}",_datasetID, _dsSetupID);
+                _dsMetadataID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)); //Convert.ToInt32(drv["metadataid"]);
+
+                btnViewMetadata.Enabled = false;
             }
             catch (Exception ex)
             {
@@ -107,10 +126,20 @@ namespace BenMAP
                 if (lstDataSetName.SelectedItem == null) return;
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 string commandText = string.Empty;
+                int igaDstID = 0; //Income Growth Adjustment Dataset ID
+                int dstID = 0;//DataSetTypeID
                 if (MessageBox.Show("Delete the selected income growth adjustment dataset?", "Confirm Deletion", MessageBoxButtons.YesNo) == DialogResult.Yes)
                 {
+                    commandText = string.Format("SELECT INCOMEGROWTHADJDATASETID FROM INCOMEGROWTHADJDATASETS WHERE INCOMEGROWTHADJDATASETNAME = '{0}' and SETUPID = {1}", lstDataSetName.Text, CommonClass.ManageSetup.SetupID);
+                    igaDstID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
+                    commandText = "SELECT DATASETTYPEID FROM DATASETTYPES WHERE DATASETTYPENAME = 'Incomegrowth'";
+                    dstID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
+
                     commandText = string.Format("delete from INCOMEGROWTHADJDATASETS where INCOMEGROWTHADJDATASETNAME='{0}' and setupid={1}", lstDataSetName.Text, CommonClass.ManageSetup.SetupID);
                     int i = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+
+                    commandText = string.Format("DELETE FROM METADATAINFORMATION WHERE SETUPID = {0} AND DATASETID = {1} AND DATASETTYPEID = {2}", CommonClass.ManageSetup.SetupID, igaDstID, dstID);
+                    fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                 }
                 commandText = string.Format("select * from INCOMEGROWTHADJDATASETS where SetupID={0}", CommonClass.ManageSetup.SetupID);
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
@@ -119,6 +148,7 @@ namespace BenMAP
                 if (ds.Tables[0].Rows.Count == 0)
                 {
                     olvData.ClearObjects();
+                    btnViewMetadata.Enabled = false;
                 }
             }
             catch
@@ -167,6 +197,41 @@ namespace BenMAP
             catch (Exception ex)
             {
                 Logger.LogError(ex.Message);
+            }
+        }
+
+        private void btnViewMetadata_Click(object sender, EventArgs e)
+        {
+            //_metadataObj = SQLStatementsCommonClass.getMetadata(_datasetID, CommonClass.ManageSetup.SetupID);
+            _metadataObj = SQLStatementsCommonClass.getMetadata(_datasetID, _dsSetupID, _dsDatasetTypeId, _dsMetadataID);
+            _metadataObj.SetupName = CommonClass.ManageSetup.SetupName;//_dataName;//_lstDataSetName;
+            btnViewMetadata.Enabled = false;
+            ViewEditMetadata viewEMdata = new ViewEditMetadata(_metadataObj);
+            DialogResult dr = viewEMdata.ShowDialog();
+            if (dr.Equals(DialogResult.OK))
+            {
+                _metadataObj = viewEMdata.MetadataObj;                
+            }
+        }
+
+        private void olvData_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                if (sender != null)
+                {
+
+                    BrightIdeasSoftware.DataListView dlv = sender as BrightIdeasSoftware.DataListView;
+
+                    if (dlv.SelectedItem != null)
+                    {
+                        btnViewMetadata.Enabled = true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
             }
         }
     }

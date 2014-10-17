@@ -28,6 +28,7 @@ namespace BenMAP
             this.label2 = new System.Windows.Forms.Label();
             this.lblMonitorDataSet = new System.Windows.Forms.Label();
             this.tbgTextFile = new System.Windows.Forms.TabPage();
+            this.btnValidate = new System.Windows.Forms.Button();
             this.btnBrowse = new System.Windows.Forms.Button();
             this.txtMonitorDataFile = new System.Windows.Forms.TextBox();
             this.lblMonitorDataFile = new System.Windows.Forms.Label();
@@ -41,19 +42,28 @@ namespace BenMAP
             this.tbgTextFile.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
-                                                this.lblPollutant.AutoSize = true;
+            // 
+            // lblPollutant
+            // 
+            this.lblPollutant.AutoSize = true;
             this.lblPollutant.Location = new System.Drawing.Point(19, 20);
             this.lblPollutant.Name = "lblPollutant";
             this.lblPollutant.Size = new System.Drawing.Size(60, 14);
             this.lblPollutant.TabIndex = 0;
             this.lblPollutant.Text = "Pollutant:";
-                                                this.lblRollbackGridType.AutoSize = true;
+            // 
+            // lblRollbackGridType
+            // 
+            this.lblRollbackGridType.AutoSize = true;
             this.lblRollbackGridType.Location = new System.Drawing.Point(19, 59);
             this.lblRollbackGridType.Name = "lblRollbackGridType";
             this.lblRollbackGridType.Size = new System.Drawing.Size(110, 14);
             this.lblRollbackGridType.TabIndex = 2;
             this.lblRollbackGridType.Text = "Rollback Grid Type:";
-                                                this.groupBox1.Controls.Add(this.cboRollbackGridType);
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.cboRollbackGridType);
             this.groupBox1.Controls.Add(this.txtPollutant);
             this.groupBox1.Controls.Add(this.tabControl1);
             this.groupBox1.Controls.Add(this.lblPollutant);
@@ -63,25 +73,37 @@ namespace BenMAP
             this.groupBox1.Size = new System.Drawing.Size(340, 289);
             this.groupBox1.TabIndex = 4;
             this.groupBox1.TabStop = false;
-                                                this.cboRollbackGridType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            // 
+            // cboRollbackGridType
+            // 
+            this.cboRollbackGridType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboRollbackGridType.FormattingEnabled = true;
             this.cboRollbackGridType.Location = new System.Drawing.Point(126, 55);
             this.cboRollbackGridType.Name = "cboRollbackGridType";
             this.cboRollbackGridType.Size = new System.Drawing.Size(189, 22);
             this.cboRollbackGridType.TabIndex = 7;
             this.cboRollbackGridType.SelectedIndexChanged += new System.EventHandler(this.cboRollbackGridType_SelectedIndexChanged);
-                                                this.txtPollutant.Location = new System.Drawing.Point(126, 17);
+            // 
+            // txtPollutant
+            // 
+            this.txtPollutant.Location = new System.Drawing.Point(126, 17);
             this.txtPollutant.Name = "txtPollutant";
             this.txtPollutant.Size = new System.Drawing.Size(189, 22);
             this.txtPollutant.TabIndex = 5;
-                                                this.tabControl1.Controls.Add(this.tbpLibrary);
+            // 
+            // tabControl1
+            // 
+            this.tabControl1.Controls.Add(this.tbpLibrary);
             this.tabControl1.Controls.Add(this.tbgTextFile);
             this.tabControl1.Location = new System.Drawing.Point(19, 100);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
             this.tabControl1.Size = new System.Drawing.Size(301, 171);
             this.tabControl1.TabIndex = 4;
-                                                this.tbpLibrary.Controls.Add(this.cboMonitorLibraryYear);
+            // 
+            // tbpLibrary
+            // 
+            this.tbpLibrary.Controls.Add(this.cboMonitorLibraryYear);
             this.tbpLibrary.Controls.Add(this.cboMonitorDataSet);
             this.tbpLibrary.Controls.Add(this.label2);
             this.tbpLibrary.Controls.Add(this.lblMonitorDataSet);
@@ -92,32 +114,49 @@ namespace BenMAP
             this.tbpLibrary.TabIndex = 0;
             this.tbpLibrary.Text = "Library";
             this.tbpLibrary.UseVisualStyleBackColor = true;
-                                                this.cboMonitorLibraryYear.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            // 
+            // cboMonitorLibraryYear
+            // 
+            this.cboMonitorLibraryYear.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboMonitorLibraryYear.FormattingEnabled = true;
             this.cboMonitorLibraryYear.Location = new System.Drawing.Point(20, 97);
             this.cboMonitorLibraryYear.Name = "cboMonitorLibraryYear";
             this.cboMonitorLibraryYear.Size = new System.Drawing.Size(221, 22);
             this.cboMonitorLibraryYear.TabIndex = 3;
-                                                this.cboMonitorDataSet.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboMonitorLibraryYear.SelectedIndexChanged += new System.EventHandler(this.cboMonitorLibraryYear_SelectedIndexChanged);
+            // 
+            // cboMonitorDataSet
+            // 
+            this.cboMonitorDataSet.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboMonitorDataSet.FormattingEnabled = true;
             this.cboMonitorDataSet.Location = new System.Drawing.Point(20, 37);
             this.cboMonitorDataSet.Name = "cboMonitorDataSet";
             this.cboMonitorDataSet.Size = new System.Drawing.Size(221, 22);
             this.cboMonitorDataSet.TabIndex = 2;
             this.cboMonitorDataSet.SelectedIndexChanged += new System.EventHandler(this.cboMonitorDataSet_SelectedIndexChanged);
-                                                this.label2.AutoSize = true;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(18, 79);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(118, 14);
             this.label2.TabIndex = 1;
             this.label2.Text = "Monitor Library Year:";
-                                                this.lblMonitorDataSet.AutoSize = true;
+            // 
+            // lblMonitorDataSet
+            // 
+            this.lblMonitorDataSet.AutoSize = true;
             this.lblMonitorDataSet.Location = new System.Drawing.Point(18, 20);
             this.lblMonitorDataSet.Name = "lblMonitorDataSet";
             this.lblMonitorDataSet.Size = new System.Drawing.Size(99, 14);
             this.lblMonitorDataSet.TabIndex = 0;
             this.lblMonitorDataSet.Text = "Monitor Dataset:";
-                                                this.tbgTextFile.Controls.Add(this.btnBrowse);
+            // 
+            // tbgTextFile
+            // 
+            this.tbgTextFile.Controls.Add(this.btnValidate);
+            this.tbgTextFile.Controls.Add(this.btnBrowse);
             this.tbgTextFile.Controls.Add(this.txtMonitorDataFile);
             this.tbgTextFile.Controls.Add(this.lblMonitorDataFile);
             this.tbgTextFile.Location = new System.Drawing.Point(4, 23);
@@ -127,25 +166,49 @@ namespace BenMAP
             this.tbgTextFile.TabIndex = 1;
             this.tbgTextFile.Text = "Text File";
             this.tbgTextFile.UseVisualStyleBackColor = true;
-                                                this.btnBrowse.Image = global::BenMAP.Properties.Resources.folder_add;
+            // 
+            // btnValidate
+            // 
+            this.btnValidate.Enabled = false;
+            this.btnValidate.Location = new System.Drawing.Point(19, 108);
+            this.btnValidate.Name = "btnValidate";
+            this.btnValidate.Size = new System.Drawing.Size(75, 23);
+            this.btnValidate.TabIndex = 3;
+            this.btnValidate.Text = "Validate";
+            this.btnValidate.UseVisualStyleBackColor = true;
+            this.btnValidate.Click += new System.EventHandler(this.btnValidate_Click);
+            // 
+            // btnBrowse
+            // 
+            this.btnBrowse.Image = global::BenMAP.Properties.Resources.folder_add;
             this.btnBrowse.Location = new System.Drawing.Point(244, 52);
             this.btnBrowse.Name = "btnBrowse";
             this.btnBrowse.Size = new System.Drawing.Size(43, 27);
             this.btnBrowse.TabIndex = 2;
             this.btnBrowse.UseVisualStyleBackColor = true;
             this.btnBrowse.Click += new System.EventHandler(this.btnBrowse_Click);
-                                                this.txtMonitorDataFile.Location = new System.Drawing.Point(18, 52);
+            // 
+            // txtMonitorDataFile
+            // 
+            this.txtMonitorDataFile.Location = new System.Drawing.Point(18, 52);
             this.txtMonitorDataFile.Name = "txtMonitorDataFile";
             this.txtMonitorDataFile.ReadOnly = true;
             this.txtMonitorDataFile.Size = new System.Drawing.Size(220, 22);
             this.txtMonitorDataFile.TabIndex = 1;
-                                                this.lblMonitorDataFile.AutoSize = true;
+            this.txtMonitorDataFile.TextChanged += new System.EventHandler(this.txtMonitorDataFile_TextChanged);
+            // 
+            // lblMonitorDataFile
+            // 
+            this.lblMonitorDataFile.AutoSize = true;
             this.lblMonitorDataFile.Location = new System.Drawing.Point(16, 19);
             this.lblMonitorDataFile.Name = "lblMonitorDataFile";
             this.lblMonitorDataFile.Size = new System.Drawing.Size(106, 14);
             this.lblMonitorDataFile.TabIndex = 0;
             this.lblMonitorDataFile.Text = "Monitor Data File:";
-                                                this.groupBox2.Controls.Add(this.btnNext);
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.btnNext);
             this.groupBox2.Controls.Add(this.btnAdvanced);
             this.groupBox2.Controls.Add(this.btnCancel);
             this.groupBox2.Location = new System.Drawing.Point(11, 297);
@@ -153,28 +216,40 @@ namespace BenMAP
             this.groupBox2.Size = new System.Drawing.Size(340, 61);
             this.groupBox2.TabIndex = 5;
             this.groupBox2.TabStop = false;
-                                                this.btnNext.Location = new System.Drawing.Point(248, 23);
+            // 
+            // btnNext
+            // 
+            this.btnNext.Location = new System.Drawing.Point(248, 23);
             this.btnNext.Name = "btnNext";
             this.btnNext.Size = new System.Drawing.Size(67, 27);
             this.btnNext.TabIndex = 2;
             this.btnNext.Text = "Next";
             this.btnNext.UseVisualStyleBackColor = true;
             this.btnNext.Click += new System.EventHandler(this.btnNext_Click);
-                                                this.btnAdvanced.Location = new System.Drawing.Point(164, 23);
+            // 
+            // btnAdvanced
+            // 
+            this.btnAdvanced.Location = new System.Drawing.Point(164, 23);
             this.btnAdvanced.Name = "btnAdvanced";
             this.btnAdvanced.Size = new System.Drawing.Size(67, 27);
             this.btnAdvanced.TabIndex = 1;
             this.btnAdvanced.Text = "Advanced";
             this.btnAdvanced.UseVisualStyleBackColor = true;
             this.btnAdvanced.Click += new System.EventHandler(this.btnAdvanced_Click);
-                                                this.btnCancel.Location = new System.Drawing.Point(74, 23);
+            // 
+            // btnCancel
+            // 
+            this.btnCancel.Location = new System.Drawing.Point(74, 23);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(67, 27);
             this.btnCancel.TabIndex = 0;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
-                                                this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
+            // 
+            // MonitorRollback
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(363, 365);
             this.Controls.Add(this.groupBox2);
@@ -218,5 +293,6 @@ namespace BenMAP
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.TextBox txtPollutant;
         private System.Windows.Forms.ComboBox cboRollbackGridType;
+        private System.Windows.Forms.Button btnValidate;
     }
 }

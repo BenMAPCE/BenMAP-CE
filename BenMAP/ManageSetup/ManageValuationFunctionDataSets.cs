@@ -17,19 +17,30 @@ namespace BenMAP
         {
             InitializeComponent();
         }
-        string _dataName = string.Empty;
-        string commandText = string.Empty;
+        private MetadataClassObj _metadataObj = null;
+        private int _dsMetadataID;
+        private int _dsSetupID;
+        private int _dataSetID = -1;
+        //private int _dsDataSetId;
+        private int _dsDatasetTypeId;
+        private string _dataName = string.Empty;
+
+        private string commandText = string.Empty;
         ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
         DataSet ds;
         DataTable _dt = new DataTable();
         private bool isload = false;
+        
         private void btnAdd_Click(object sender, EventArgs e)
         {
             try
             {
                 ValuationFunctionDataSetDefinition frm = new ValuationFunctionDataSetDefinition();
                 DialogResult rth = frm.ShowDialog();
-                if (rth != DialogResult.OK) { return; }
+                if (rth != DialogResult.OK) 
+                { 
+                    return; 
+                }
                 commandText = string.Format("select * from VALUATIONFUNCTIONDATASETS where SetupID={0}", CommonClass.ManageSetup.SetupID);
                 ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                 lstAvailableDataSets.DataSource = ds.Tables[0];
@@ -69,7 +80,7 @@ namespace BenMAP
                 Logger.LogError(ex);
             }
         }
-        int _dataSetID = -1;
+        
         private void lstAvailableDataSets_SelectedValueChanged(object sender, EventArgs e)
         {
             if (isload)
@@ -84,7 +95,19 @@ namespace BenMAP
                     if (sender == null || lstAvailableDataSets.SelectedItem == null) { return; }
                     DataRowView drv = lstAvailableDataSets.SelectedItem as DataRowView;
                     _dataSetID = Convert.ToInt16(drv["VALUATIONFUNCTIONDATASETID"]);
-                    commandText = string.Format("select endpointgroups.endpointgroupname,endpoints.endpointname, valuationfunctions.qualifier, valuationfunctions.reference,valuationfunctions.startage,valuationfunctions.endage,valuationfunctionalforms.functionalformtext,valuationfunctions.a,valuationfunctions.namea,valuationfunctions.dista,valuationfunctions.p1a,valuationfunctions.p2a,valuationfunctions.b,valuationfunctions.nameb,valuationfunctions.c,valuationfunctions.namec,valuationfunctions.d,valuationfunctions.named from valuationfunctions , endpoints , endpointgroups,valuationfunctionalforms where valuationfunctions.endpointid=endpoints.endpointid and endpointgroups.endpointgroupid=valuationfunctions.endpointgroupid and valuationfunctions.functionalformid=valuationfunctionalforms.functionalformid and valuationfunctiondatasetid={0} order by endpointgroupname asc", drv["VALUATIONFUNCTIONDATASETID"]);
+                    
+                    commandText = string.Format("select endpointgroups.endpointgroupname,endpoints.endpointname, valuationfunctions.qualifier, " +
+                                                "valuationfunctions.reference,valuationfunctions.startage,valuationfunctions.endage, " +
+                                                "valuationfunctionalforms.functionalformtext,valuationfunctions.a,valuationfunctions.namea, " +
+                                                "valuationfunctions.dista,valuationfunctions.p1a,valuationfunctions.p2a,valuationfunctions.b, " +
+                                                "valuationfunctions.nameb,valuationfunctions.c,valuationfunctions.namec,valuationfunctions.d, " +
+                                                "valuationfunctions.named, valuationfunctions.metadataid " +
+                                                "from valuationfunctions , endpoints , endpointgroups,valuationfunctionalforms " +
+                                                "where valuationfunctions.endpointid=endpoints.endpointid " +
+                                                "and endpointgroups.endpointgroupid=valuationfunctions.endpointgroupid " +
+                                                "and valuationfunctions.functionalformid=valuationfunctionalforms.functionalformid " +
+                                                "and valuationfunctiondatasetid={0} order by valuationfunctions.metadataid, endpointgroupname asc", _dataSetID);//drv["VALUATIONFUNCTIONDATASETID"]);
+
                     ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                     olvData.DataSource = ds.Tables[0];
                     _dt = ds.Tables[0];
@@ -125,6 +148,7 @@ namespace BenMAP
                     cboEndpointGroup.DropDownWidth = maxEndpointGroupWidth; cboEndpoint.DropDownWidth = maxEndpointWidth;
                     cboEndpointGroup.SelectedIndex = 0;
                     cboEndpoint.SelectedIndex = 0;
+                    btnViewMetadata.Enabled = false;
                 }
                 catch (Exception ex)
                 {
@@ -177,7 +201,7 @@ namespace BenMAP
             string str = lstAvailableDataSets.GetItemText(lstAvailableDataSets.SelectedItem);
             try
             {
-                ValuationFunctionDataSetDefinition frm = new ValuationFunctionDataSetDefinition(str);
+                ValuationFunctionDataSetDefinition frm = new ValuationFunctionDataSetDefinition(str, _dataSetID, true);
                 DialogResult rth = frm.ShowDialog();
                 if (rth != DialogResult.OK) { return; }
                 commandText = string.Format("select * from VALUATIONFUNCTIONDATASETS where SetupID={0}", CommonClass.ManageSetup.SetupID);
@@ -198,10 +222,20 @@ namespace BenMAP
                 if (lstAvailableDataSets.SelectedItem == null) return;
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 string commandText = string.Empty;
+                int vfdID = 0;//ValuationFunctionDatasetID
+                int dstID = 0;//DataSetTypeID
                 if (MessageBox.Show("Delete the selected valuation function dataset?", "Confirm Deletion", MessageBoxButtons.YesNo) == DialogResult.Yes)
                 {
-                    commandText = string.Format("delete from ValuationFunctionDataSets where ValuationFunctionDataSetName='{0}' and setupid={1}", lstAvailableDataSets.Text, CommonClass.ManageSetup.SetupID);
+                    commandText = string.Format("SELECT VALUATIONFUNCTIONDATASETID FROM VALUATIONFUNCTIONDATASETS WHERE ValuationFunctionDataSetName = '{0}' and SETUPID = {1}", lstAvailableDataSets.Text, CommonClass.ManageSetup.SetupID);
+                    vfdID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
+                    commandText = "SELECT DATASETTYPEID FROM DATASETTYPES WHERE DATASETTYPENAME = 'Valuationfunction'";
+                    dstID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
+                    
+                    commandText = string.Format("delete from ValuationFunctionDataSets where ValuationFunctionDataSetName='{0}' and setupid={1} and VALUATIONFUNCTIONDATASETID = {2}", lstAvailableDataSets.Text, CommonClass.ManageSetup.SetupID, vfdID);
                     int i = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                    
+                    commandText = string.Format("DELETE FROM METADATAINFORMATION WHERE SETUPID = {0} AND DATASETID = {1} AND DATASETTYPEID = {2}",CommonClass.ManageSetup.SetupID,vfdID, dstID);
+                    i = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                 }
                 commandText = string.Format("select * from ValuationFunctionDataSets where SetupID={0}", CommonClass.ManageSetup.SetupID);
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
@@ -248,11 +282,31 @@ namespace BenMAP
                     string commandText = "";
                     if (cboEndpointGroup.Text == "")
                     {
-                        commandText = string.Format("select endpointgroups.endpointgroupname,endpoints.endpointname, valuationfunctions.qualifier, valuationfunctions.reference,valuationfunctions.startage,valuationfunctions.endage,valuationfunctionalforms.functionalformtext,valuationfunctions.a,valuationfunctions.namea,valuationfunctions.dista,valuationfunctions.p1a,valuationfunctions.p2a,valuationfunctions.b,valuationfunctions.nameb,valuationfunctions.c,valuationfunctions.namec,valuationfunctions.d,valuationfunctions.named from valuationfunctions , endpoints , endpointgroups,valuationfunctionalforms where valuationfunctions.endpointid=endpoints.endpointid and endpointgroups.endpointgroupid=valuationfunctions.endpointgroupid and valuationfunctions.functionalformid=valuationfunctionalforms.functionalformid and valuationfunctiondatasetid={0} order by endpointgroupname asc", _dataSetID);
+                        commandText = string.Format("select endpointgroups.endpointgroupname,endpoints.endpointname, valuationfunctions.qualifier, " +
+                                                    "valuationfunctions.reference,valuationfunctions.startage,valuationfunctions.endage," +
+                                                    "valuationfunctionalforms.functionalformtext,valuationfunctions.a,valuationfunctions.namea, " + 
+                                                    "valuationfunctions.dista,valuationfunctions.p1a,valuationfunctions.p2a,valuationfunctions.b, " +
+                                                    "valuationfunctions.nameb,valuationfunctions.c,valuationfunctions.namec,valuationfunctions.d, " +
+                                                    "valuationfunctions.named, valuationfunctions.metadataid " +
+                                                    "from valuationfunctions , endpoints , endpointgroups,valuationfunctionalforms " +
+                                                    "where valuationfunctions.endpointid=endpoints.endpointid and endpointgroups.endpointgroupid=valuationfunctions.endpointgroupid " +
+                                                    " and valuationfunctions.functionalformid=valuationfunctionalforms.functionalformid and " +
+                                                    "valuationfunctiondatasetid={0} order by endpointgroupname asc", _dataSetID);
                     }
                     else
                     {
-                        commandText = string.Format("select endpointgroups.endpointgroupname,endpoints.endpointname, valuationfunctions.qualifier, valuationfunctions.reference,valuationfunctions.startage,valuationfunctions.endage,valuationfunctionalforms.functionalformtext,valuationfunctions.a,valuationfunctions.namea,valuationfunctions.dista,valuationfunctions.p1a,valuationfunctions.p2a,valuationfunctions.b,valuationfunctions.nameb,valuationfunctions.c,valuationfunctions.namec,valuationfunctions.d,valuationfunctions.named from valuationfunctions , endpoints , endpointgroups,valuationfunctionalforms where valuationfunctions.endpointid=endpoints.endpointid and endpointgroups.endpointgroupid=valuationfunctions.endpointgroupid and valuationfunctions.functionalformid=valuationfunctionalforms.functionalformid and valuationfunctiondatasetid={0} and endpointGroups.endpointGroupName='{1}' order by endpointgroupname asc", _dataSetID, cboEndpointGroup.Text);
+                        commandText = string.Format("select endpointgroups.endpointgroupname,endpoints.endpointname, valuationfunctions.qualifier, " +
+                                                    "valuationfunctions.reference,valuationfunctions.startage,valuationfunctions.endage, " +
+                                                    "valuationfunctionalforms.functionalformtext,valuationfunctions.a,valuationfunctions.namea, " +
+                                                    "valuationfunctions.dista,valuationfunctions.p1a,valuationfunctions.p2a,valuationfunctions.b, " +
+                                                    "valuationfunctions.nameb,valuationfunctions.c,valuationfunctions.namec,valuationfunctions.d, " +
+                                                    "valuationfunctions.named, valuationfunctions.metadataid " +
+                                                    "from valuationfunctions , endpoints , endpointgroups,valuationfunctionalforms " +
+                                                    "where valuationfunctions.endpointid=endpoints.endpointid and " +
+                                                    "endpointgroups.endpointgroupid=valuationfunctions.endpointgroupid and " +
+                                                    "valuationfunctions.functionalformid=valuationfunctionalforms.functionalformid " +
+                                                    "and valuationfunctiondatasetid={0} and endpointGroups.endpointGroupName='{1}' " +
+                                                    "order by endpointgroupname asc", _dataSetID, cboEndpointGroup.Text);
                     }
                     ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                     DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
@@ -394,6 +448,56 @@ namespace BenMAP
             {
                 olv.ShowGroups = cb.Checked;
                 olv.BuildList();
+            }
+        }
+
+        private void btnViewMetadata_Click(object sender, EventArgs e)
+        {
+            if(lstAvailableDataSets.SelectedItem != null)
+            {//_dataSetID = Convert.ToInt16(drv["VALUATIONFUNCTIONDATASETID"]);
+
+                DataRowView drv = lstAvailableDataSets.SelectedItem as DataRowView;
+                _metadataObj = SQLStatementsCommonClass.getMetadata(_dataSetID, _dsSetupID, _dsDatasetTypeId, _dsMetadataID);
+                _metadataObj.DatasetId = _dataSetID;//Convert.ToInt32(drv["VALUATIONFUNCTIONDATASETID"]);
+                _metadataObj.SetupName = CommonClass.ManageSetup.SetupName;//drv["VALUATIONFUNCTIONDATASETNAME"].ToString();//_dataName
+                btnViewMetadata.Enabled = false;
+                ViewEditMetadata viewEMdata = new ViewEditMetadata(_metadataObj);
+                DialogResult dr = viewEMdata.ShowDialog();
+                if (dr.Equals(DialogResult.OK))
+                {
+                    _metadataObj = viewEMdata.MetadataObj;
+                    olvData.ClearHotItem();
+                    olvData.SelectedIndex = -1;
+                }
+            }
+        }
+
+        private void olvData_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                if(sender != null)
+                {
+                    BrightIdeasSoftware.DataListView dlv = sender as BrightIdeasSoftware.DataListView;
+
+                    if (dlv.SelectedItem != null)
+                    {
+                        btnViewMetadata.Enabled = true;
+
+                        DataRowView drv = dlv.SelectedItem.RowObject as DataRowView;
+
+                        _dsMetadataID = Convert.ToInt32(drv["metadataid"]);
+                        _dsSetupID = CommonClass.ManageSetup.SetupID;
+                        //_dataSetID = Convert.ToInt32(drv["VALUATIONFUNCTIONDATASETID"]);
+                        _dsDatasetTypeId = SQLStatementsCommonClass.getDatasetID("Valuationfunction");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                //TODO:  FIX THIS.
+                //do nothing for now until I can get the metadta to run correctly
+                //throw new Exception(ex.Message);
             }
         }
 

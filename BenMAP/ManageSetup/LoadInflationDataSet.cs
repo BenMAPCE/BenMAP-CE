@@ -2,23 +2,66 @@ using System;
 using System.Data;
 using System.Windows.Forms;
 using ESIL.DBUtility;
-
+//TODO:
+//make sure there is a name in the txtInflationDataSetName text box
 namespace BenMAP
 {
     public partial class LoadInflationDataSet : FormBase
     {
+        private MetadataClassObj _metadataObj = null;
+        private DataTable _inflationData;
+        public DataTable InflationData
+        {
+            get { return _inflationData; }
+        }
+        private string _strPath;
+        private string _inflationDataSetName;
+        private string _isForceValidate = string.Empty;
+        private string _iniPath = string.Empty;
+        public string InflationDataSetName
+        {
+            get { return _inflationDataSetName; }
+            set { _inflationDataSetName = value; }
+        }
+        
         public LoadInflationDataSet()
         {
             InitializeComponent();
+            _iniPath = CommonClass.ResultFilePath + @"\BenMAP.ini";
+            _isForceValidate = CommonClass.IniReadValue("appSettings", "IsForceValidate", _iniPath);
+            if (_isForceValidate == "T")
+            {
+                btnOK.Enabled = false;
+            }
+            else
+            {
+                btnOK.Enabled = true;
+            }
         }
 
         private void btnOK_Click(object sender, EventArgs e)
+        {
+           LoadDatabase();
+        }
+        private void GetMetadata()
+        {
+            _metadataObj = new MetadataClassObj();
+            Metadata metadata = new Metadata(_strPath);
+            _metadataObj = metadata.GetMetadata();
+        }
+        private void LoadDatabase()
         {
             try
             {
                 if (txtDatabase.Text == string.Empty)
                 {
                     MessageBox.Show("Please select a datafile.");
+                    return;
+                }
+                if(string.IsNullOrEmpty(txtInflationDataSetName.Text))
+                {
+                    MessageBox.Show("Please enter a dataset name.");
+                    txtInflationDataSetName.Focus();
                     return;
                 }
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
@@ -62,17 +105,24 @@ namespace BenMAP
                 if (warningtip != "")
                 {
                     warningtip = warningtip.Substring(0, warningtip.Length - 2);
-                    warningtip = "Please check the column header of " + warningtip + ". It is incorrect or does not exist.";
+                    warningtip = "Please check the column header of " + warningtip + ". It is incorrect or does not exist.\r\n";
+                    warningtip += "\r\nFile failed to load, please validate the file for a more detail explanation of errors.";
                     MessageBox.Show(warningtip, "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
                 commandText = "SELECT max(INFLATIONDATASETID) from INFLATIONDATASETS";
                 int inflationdatasetid = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText)) + 1;
-                commandText = string.Format("insert into INFLATIONDATASETS VALUES({0},{1},'{2}' )", inflationdatasetid, CommonClass.ManageSetup.SetupID, txtInflationDataSetName.Text);
+                //The 'F' is for the locked column in inflationdatasets - this is imported not predefined
+                commandText = string.Format("insert into INFLATIONDATASETS VALUES({0},{1},'{2}', 'F' )", inflationdatasetid, CommonClass.ManageSetup.SetupID, txtInflationDataSetName.Text);
                 int rth = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                 int currentDataSetID = inflationdatasetid;
-                if (dt == null) { return; }
                 int rtn = 0;
+
+                if (dt == null) 
+                { 
+                    return; 
+                }
+                
                 foreach (DataRow row in dt.Rows)
                 {
                     if (row == null)
@@ -80,10 +130,13 @@ namespace BenMAP
                     commandText = string.Format("insert into INFLATIONENTRIES values({0},{1},{2},{3},{4})", currentDataSetID, int.Parse(row[iYear].ToString()), row[iAllGoodsIndex], row[iMedicalCostIndex], row[iWageIndex]);
                     rtn = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                 }
+
                 if (rtn != 0)
                 {
                     InflationDataSetName = txtInflationDataSetName.Text;
                 }
+
+                insertMetadata(inflationdatasetid);
             }
 
             catch (Exception ex)
@@ -94,30 +147,37 @@ namespace BenMAP
             this.Close();
         }
 
+        private void insertMetadata(int dataSetID)
+        {
+            _metadataObj.DatasetId = dataSetID;
+
+            _metadataObj.DatasetTypeId = SQLStatementsCommonClass.getDatasetID("Inflation");
+            if (!SQLStatementsCommonClass.insertMetadata(_metadataObj))
+            {
+                MessageBox.Show("Failed to save Metadata.");
+            }
+        }
+        
         private void btnBrowse_Click(object sender, EventArgs e)
         {
             try
             {
                 OpenFileDialog openFileDialog = new OpenFileDialog();
-                openFileDialog.InitialDirectory = Application.StartupPath + @"E:\";
+                openFileDialog.InitialDirectory = CommonClass.ResultFilePath;
                 openFileDialog.Filter = "All Files|*.*|CSV files|*.csv|XLS files|*.xls|XLSX files|*.xlsx";
                 openFileDialog.FilterIndex = 2;
                 openFileDialog.RestoreDirectory = true;
-                if (openFileDialog.ShowDialog() != DialogResult.OK) { return; }
+                if (openFileDialog.ShowDialog() != DialogResult.OK) 
+                { 
+                    return; 
+                }
                 txtDatabase.Text = openFileDialog.FileName;
+                GetMetadata();
             }
             catch (Exception ex)
             {
                 Logger.LogError(ex);
             }
-        }
-
-        private string _inflationDataSetName;
-
-        public string InflationDataSetName
-        {
-            get { return _inflationDataSetName; }
-            set { _inflationDataSetName = value; }
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
@@ -147,6 +207,43 @@ namespace BenMAP
             }
             catch (Exception)
             { }
+        }
+
+        private void txtDatabase_TextChanged(object sender, EventArgs e)
+        {
+            btnValidate.Enabled = !string.IsNullOrEmpty(txtDatabase.Text);
+            btnViewMetadata.Enabled = !string.IsNullOrEmpty(txtDatabase.Text);
+            _strPath = txtDatabase.Text;
+        }
+
+        private void btnValidate_Click(object sender, EventArgs e)
+        {
+            _inflationData = CommonClass.ExcelToDataTable(_strPath);
+            ValidateDatabaseImport vdi = new ValidateDatabaseImport(_inflationData, "Inflation", _strPath);
+
+            DialogResult dlgR = vdi.ShowDialog();
+            if (dlgR.Equals(DialogResult.OK))
+            {
+                if (vdi.PassedValidation && _isForceValidate == "T")
+                {
+                    LoadDatabase();
+                }
+            }
+        }
+
+        private void btnViewMetadata_Click(object sender, EventArgs e)
+        {
+            ViewEditMetadata viewEMdata = null;
+            if (_metadataObj != null)
+            {
+                viewEMdata = new ViewEditMetadata(_strPath, _metadataObj);
+            }
+            else
+            {
+                viewEMdata = new ViewEditMetadata(_strPath);
+            }
+            viewEMdata.ShowDialog();
+            _metadataObj = viewEMdata.MetadataObj;
         }
     }
 }

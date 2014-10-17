@@ -60,6 +60,16 @@ namespace BenMAP.DataSource
             try
             {
                 _PercentageRollback.Percent = Double.Parse(txtPercent.Text);
+                if (_PercentageRollback.Percent < 0.0)
+                {
+                    txtPercent.Text = "0.00";
+                    _PercentageRollback.Percent = 0.0;
+                }
+                if (_PercentageRollback.Percent > 100.0)
+                {
+                    txtPercent.Text = "100.00";
+                    _PercentageRollback.Percent = 100.0;
+                }
             }
             catch
             { txtPercent.Text = "0.00"; }
@@ -70,6 +80,11 @@ namespace BenMAP.DataSource
             try
             {
                 _PercentageRollback.Background = Double.Parse(txtBackground.Text);
+                if (_PercentageRollback.Background < 0.0)
+                {
+                    txtBackground.Text = "0.00";
+                    _PercentageRollback.Background = 0.0;
+                }
             }
             catch
             { txtBackground.Text = "0.00"; }

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Serialization.Json;
 using System.Windows.Forms;
+using System.Diagnostics;
 using DotSpatial.Data;
 using DotSpatial.Topology;
 using DotSpatial.Topology.Voronoi;
@@ -458,17 +459,7 @@ namespace BenMAP
                                     default:
                                         if (m.Values.Count() == 365)
                                         {
-                                            List<float> lstTemp = new List<float>();
-                                            if (benMAPPollutant.Seasons != null && benMAPPollutant.Seasons.Count > 0)
-                                            {
-                                                foreach (Season s in benMAPPollutant.Seasons)
-                                                {
-                                                    lstTemp.AddRange(m.Values.GetRange(s.StartDay, s.EndDay - s.StartDay + 1));
-                                                }
-
-                                            }
-                                            else
-                                                lstTemp = m.Values;
+                                            List<float> lstTemp = m.Values;
                                             lstModelAttribute365.Add(new ModelAttribute() { Col = m.Col, Row = m.Row, Metric = metric, Values = lstTemp });
                                         }
                                         break;
@@ -1234,9 +1225,16 @@ namespace BenMAP
             }
             i = 0;
             Dictionary<string, Dictionary<string, float>> DicResult = new Dictionary<string, Dictionary<string, float>>();
-            foreach (ModelResultAttribute mra in modelDataLine.ModelResultAttributes)
+            if (modelDataLine.ModelResultAttributes != null)
             {
-                DicResult.Add(mra.Col + "," + mra.Row, mra.Values);
+                foreach (ModelResultAttribute mra in modelDataLine.ModelResultAttributes)
+                {
+                    DicResult.Add(mra.Col + "," + mra.Row, mra.Values);
+                }
+            }
+            else  
+            {
+                Debug.WriteLine("SaveBenMAPLineShapeFile: modelDataLine.ModelResultAttributes is null");
             }
             while (i < fs.DataTable.Rows.Count)
             {
@@ -3542,7 +3540,7 @@ iPOC == 5 || iPOC == 6 || iPOC == 7 || iPOC == 8 || iPOC == 9))
             {
                 if (File.Exists(strAQGPath))
                     File.Delete(strAQGPath);
-                if (benMAPLine.ModelAttributes != null)
+                if ((benMAPLine.ModelAttributes != null && benMAPLine is MonitorDataLine))
                 {
                     benMAPLine.ModelAttributes.Clear();
                     GC.Collect();

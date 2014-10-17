@@ -18,6 +18,15 @@ namespace BenMAP
     public partial class ManageGridDefinetions : FormBase
     {
         string _dataName = string.Empty;
+        private int _dsDataSetID;
+        private int _dsSetupID;
+        private int _dsDatasetTypeId;
+        private int _dsMetadataID;
+        private int _dsMetadataEntryID;
+        private object _gridDefinitionID;
+        private MetadataClassObj _metadataObj = null;
+
+
         public ManageGridDefinetions()
         {
             InitializeComponent();
@@ -175,6 +184,12 @@ namespace BenMAP
                 {
                     try
                     {
+                        int gdID = 0; //Grid Definition ID
+                        int dstID = 0;
+                        commandText = string.Format("SELECT GRIDDEFINITIONID FROM GRIDDEFINITIONS WHERE GRIDDEFINITIONNAME = '{0}' and SETUPID = {1}", lstAvailableGrid.SelectedItem.ToString(), CommonClass.ManageSetup.SetupID);
+                        gdID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
+                        commandText = "SELECT DATASETTYPEID FROM DATASETTYPES WHERE DATASETTYPENAME = 'GridDefinition'";
+                        dstID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
 
                         commandText = "select ttype from GridDefinitions where GridDefinitionID=" + _gridDefinitionID + "";
                         int ttype = Convert.ToInt16(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
@@ -187,6 +202,10 @@ namespace BenMAP
                         fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                         commandText = "delete from Regulargriddefinitiondetails where griddefinitionid=" + _gridDefinitionID + "";
                         fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+
+                        commandText = string.Format("DELETE FROM METADATAINFORMATION WHERE SETUPID = {0} AND DATASETID = {1} AND DATASETTYPEID = {2}", CommonClass.ManageSetup.SetupID, gdID, dstID);
+                        fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                        
                         lstAvailableGrid.Items.Clear();
                         cboDefaultGridType.Items.Clear();
                         loadGrid();
@@ -201,7 +220,7 @@ namespace BenMAP
 
         }
 
-        private object _gridDefinitionID;
+        
         private void lstAvailableGrid_SelectedValueChanged(object sender, EventArgs e)
         {
             try
@@ -210,6 +229,10 @@ namespace BenMAP
                 {
                     ListItem lst = lstAvailableGrid.SelectedItem as ListItem;
                     _gridDefinitionID = lst.ID;
+                    _dsDataSetID = Convert.ToInt32(lst.ID);
+                    _dsSetupID = CommonClass.ManageSetup.SetupID;
+                    _dsDatasetTypeId = SQLStatementsCommonClass.getDatasetID("GridDefinition");
+                    _dataName = lst.Name;
                 }
                 if (dicShapeOrRegular.ContainsKey(Convert.ToInt16(_gridDefinitionID)))
                 {
@@ -237,6 +260,38 @@ namespace BenMAP
             rth = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
         }
 
+        private void btnViewMetadata_Click(object sender, EventArgs e)
+        {
+
+            //_dsMetadataID = SQLStatementsCommonClass.getMetadataID(_dsSetupID, _dsDataSetID, _dsDatasetTypeId);
+            _dsMetadataEntryID = SQLStatementsCommonClass.getMetadataEntryID(_dsSetupID, _dsDataSetID, _dsDatasetTypeId);
+            //_metadataObj = SQLStatementsCommonClass.getMetadata(_dsDataSetID, _dsSetupID, _dsDatasetTypeId, _dsMetadataID);
+            _metadataObj = SQLStatementsCommonClass.getMetadata(_dsDataSetID, _dsSetupID, _dsDatasetTypeId, _dsMetadataEntryID);
+            _metadataObj.SetupName = CommonClass.ManageSetup.SetupName;// _dataName;//_lstDataSetName;
+            //_metadataObj.MetadataId = _dsMetadataID;
+            if(string.IsNullOrEmpty(_metadataObj.FileName))
+            {   //if there is no file name, using the data name that is displayed in the list of datasets.
+                _metadataObj.FileName = _dataName;
+            }
+            if (_metadataObj.DatasetId == 0)
+            {
+                _metadataObj.DatasetId = _dsDataSetID;
+            }
+            if (_metadataObj.SetupId == 0)
+            {
+                _metadataObj.SetupId = _dsSetupID;
+            }
+            if (_metadataObj.DatasetTypeId == 0)
+            {
+                _metadataObj.DatasetTypeId = _dsDatasetTypeId;
+            }
+            ViewEditMetadata viewEMdata = new ViewEditMetadata(_metadataObj);
+            DialogResult dr = viewEMdata.ShowDialog();
+            if (dr.Equals(DialogResult.OK))
+            {
+                _metadataObj = viewEMdata.MetadataObj;
+            }
+        }
 
     }
 }

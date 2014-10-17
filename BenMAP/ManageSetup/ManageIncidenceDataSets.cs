@@ -18,6 +18,7 @@ namespace BenMAP
 
         string _dataName = string.Empty;
         private object _dataSetID;
+        private MetadataClassObj _metadataObj = null;
 
         private void ManageIncidenceDataSets_Load(object sender, EventArgs e)
         {
@@ -64,6 +65,7 @@ namespace BenMAP
                 if (lst.SelectedItem == null) return;
                 DataRowView drv = lst.SelectedItem as DataRowView;
                 _dataSetID = drv[1];
+                _dataName = drv[0].ToString();
                 string commandText = string.Format("select EndPointGroups.EndPointGroupName,EndPoints.EndPointName,IncidenceRates.Prevalence,Races.RaceName,Ethnicity.EthnicityName,Genders.GenderName,IncidenceRates.StartAge,IncidenceRates.EndAge from IncidenceRates,EndPointGroups,EndPoints,Races,Ethnicity,Genders ,IncidenceDataSets where (IncidenceDataSets.IncidenceDataSetID= IncidenceRates.IncidenceDataSetID) and (IncidenceRates.EndPointGroupID=EndPointGroups.EndPointGroupID) and (IncidenceRates.EndPointID=EndPoints.EndPointID) and (IncidenceRates.RaceID=Races.RaceID) and (IncidenceRates.GenderID=Genders.GenderID) and (IncidenceRates.EthnicityID=Ethnicity.EthnicityID) and IncidenceDataSets.IncidenceDataSetID='{0}'", _dataSetID);
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
@@ -120,6 +122,7 @@ namespace BenMAP
                 cboEndpointGroup.DropDownWidth = maxEndpointGroupWidth; cboEndpoint.DropDownWidth = maxEndpointWidth;
                 cboEndpointGroup.SelectedIndex = 0;
                 cboEndpoint.SelectedIndex = 0;
+                btnViewMetadata.Enabled = false;
             }
             catch (Exception ex)
             {
@@ -167,12 +170,26 @@ namespace BenMAP
             try
             {
                 if (lstAvailableDataSets.SelectedItem == null) return;
-                string msg = string.Format("Delete the selected incidence or prevalence dataset?", lstAvailableDataSets.GetItemText(lstAvailableDataSets.SelectedItem));
+                string dstName = lstAvailableDataSets.GetItemText(lstAvailableDataSets.SelectedItem);
+                string msg = string.Format("Delete the selected incidence or prevalence dataset?", dstName);//lstAvailableDataSets.GetItemText(lstAvailableDataSets.SelectedItem));
                 DialogResult result = MessageBox.Show(msg, "Confirm Deletion", MessageBoxButtons.YesNo);
                 if (result == DialogResult.Yes)
                 {
-                    string commandText = string.Format("delete from IncidenceDataSets where IncidenceDataSetID='{0}'", _dataSetID);
+                    string commandText = string.Empty;
+                    int iprDstID = 0; //Incidence Prevalence Rate Dataset ID
+                    int dstID = 0;//DataSetTypeID
+
+                    commandText = string.Format("SELECT INCIDENCEDATASETID FROM INCIDENCEDATASETS WHERE INCIDENCEDATASETNAME = '{0}' and SETUPID = {1}", dstName, CommonClass.ManageSetup.SetupID);
+                    iprDstID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
+                    commandText = "SELECT DATASETTYPEID FROM DATASETTYPES WHERE DATASETTYPENAME = 'Incidence'";
+                    dstID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
+
+                    commandText = string.Format("delete from IncidenceDataSets where IncidenceDataSetID='{0}'", _dataSetID);
                     fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+
+                    commandText = string.Format("DELETE FROM METADATAINFORMATION WHERE SETUPID = {0} AND DATASETID = {1} AND DATASETTYPEID = {2}", CommonClass.ManageSetup.SetupID, iprDstID, dstID);
+                    fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+
                     BindControls();
                     if (lstAvailableDataSets.Items.Count == 0)
                     {
@@ -350,6 +367,40 @@ namespace BenMAP
             catch (Exception ex)
             {
                 Logger.LogError(ex.Message);
+            }
+        }
+
+        private void btnViewMetadata_Click(object sender, EventArgs e)
+        {
+            _metadataObj = SQLStatementsCommonClass.getMetadata(Convert.ToInt32(_dataSetID), CommonClass.ManageSetup.SetupID);
+            _metadataObj.SetupName = CommonClass.ManageSetup.SetupName;//_dataName;//_lstDataSetName;
+            btnViewMetadata.Enabled = false;
+            ViewEditMetadata viewEMdata = new ViewEditMetadata(_metadataObj);
+            DialogResult dr = viewEMdata.ShowDialog();
+            if (dr.Equals(DialogResult.OK))
+            {
+                _metadataObj = viewEMdata.MetadataObj;
+            }
+        }
+
+        private void olvIncidenceRates_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                if (sender != null)
+                {
+
+                    BrightIdeasSoftware.DataListView dlv = sender as BrightIdeasSoftware.DataListView;
+
+                    if (dlv.SelectedItem != null)
+                    {
+                        btnViewMetadata.Enabled = true;                        
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
             }
         }
     }

@@ -13,6 +13,10 @@ using System.Threading;
 using LumenWorks.Framework.IO.Csv;
 using System.Collections;
 using Excel;
+//TODO:
+
+//Note:  If Use Population Growth weights is checked and a csv file is selected
+//       this file will need to be validated as well as the "Database" that is to be imported.
 
 namespace BenMAP
 {
@@ -21,6 +25,16 @@ namespace BenMAP
         public LoadPopulationDataSet()
         {
             InitializeComponent();
+            _iniPath = CommonClass.ResultFilePath + @"\BenMAP.ini";
+            _isForceValidate = CommonClass.IniReadValue("appSettings", "IsForceValidate", _iniPath);
+            if (_isForceValidate == "T")
+            {
+                btnOK.Enabled = false;
+            }
+            else
+            {
+                btnOK.Enabled = true;
+            }
         }
 
         Dictionary<string, int> dicGender = null;
@@ -30,9 +44,18 @@ namespace BenMAP
         Dictionary<string, int> dicRaceAll = null;
         Dictionary<string, int> dicEthnicityAll = null;
 
+        private MetadataClassObj _metadataObj = null;
         private string _popConfig = "";
         private object _gridDefinID;
+        private DataTable _populationDataset;
+        private DataTable _populationGrowthDataset;
+        private string _strPathDB;
+        private string _strPathGW;
         public object _popConfigID;
+        private string _isForceValidate = string.Empty;
+        private string _iniPath = string.Empty;
+        
+
         private void LoadPopulationDataSet_Load(object sender, EventArgs e)
         {
             FireBirdHelperBase fb = new ESILFireBirdHelper();
@@ -174,7 +197,16 @@ namespace BenMAP
                 Logger.LogError(ex.Message);
             }
         }
+        private void insertMetadata(int dataSetID)
+        {
+            _metadataObj.DatasetId = dataSetID;
 
+            _metadataObj.DatasetTypeId = SQLStatementsCommonClass.getDatasetID("Population");
+            if (!SQLStatementsCommonClass.insertMetadata(_metadataObj))
+            {
+                MessageBox.Show("Failed to save Metadata.");
+            }
+        }
         private void btnBrowseDB_Click(object sender, EventArgs e)
         {
 
@@ -188,7 +220,7 @@ namespace BenMAP
                 if (openFileDialog.ShowDialog() != DialogResult.OK)
                 { return; }
                 txtDataBase.Text = openFileDialog.FileName;
-
+                GetMetadata();
             }
             catch (Exception ex)
             {
@@ -537,6 +569,41 @@ namespace BenMAP
 
         private void btnOK_Click(object sender, EventArgs e)
         {
+            if(IsFileSelected())
+            {
+                LoadDatabase();
+            }
+        }
+        private bool IsFileSelected()
+        {
+            //bool bPassed = true;
+            if (!string.IsNullOrEmpty(_strPathDB))
+            {
+                _populationDataset = CommonClass.ExcelToDataTable(_strPathDB);
+            }
+            else
+            {
+                MessageBox.Show("Please select a file");
+                btnBrowseDB.Focus();
+                return false;
+            }
+            if (chkPopulationGrowth.Checked)
+            {
+                if (!string.IsNullOrEmpty(_strPathGW))
+                {
+                    _populationGrowthDataset = CommonClass.ExcelToDataTable(_strPathGW);
+                }
+                else
+                {
+                    MessageBox.Show("Please select a file");
+                    btnBrowseGW.Focus();
+                    return false;
+                }
+            }
+            return true;
+        }
+        private void LoadDatabase()
+        {
             FireBirdHelperBase fb = new ESILFireBirdHelper();
             string commandText = string.Empty;
             if (CommonClass.Connection.State != ConnectionState.Open)
@@ -547,6 +614,7 @@ namespace BenMAP
             fbCommand.Connection = fbconnection;
             fbCommand.CommandType = CommandType.Text;
             fbCommand.Transaction = fbtra;
+            int dataSetID = 0;
             try
             {
                 dicGender = getAllGender();
@@ -594,7 +662,7 @@ namespace BenMAP
                 lblprogbar.Text = "Saving Population...";
                 lblprogbar.Refresh();
                 commandText = "select max(POPULATIONDATASETID) from POPULATIONDATASETS";
-                object dataSetID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
+                dataSetID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
                 int fileCount = 0;
 
                 string fileName = txtDataBase.Text;
@@ -669,8 +737,8 @@ namespace BenMAP
                             lblprogbar.Text = "";
                             return;
                         }
-
-                        commandText = string.Format("insert into PopulationDataSets values ({0},{1},'{2}',{3},{4},{5})", dataSetID, CommonClass.ManageSetup.SetupID, txtDataSetName.Text, _popConfigID, _gridDefinID, chkUseWoodsPoole.Checked ? 1 : 0);
+                        //The 'F' is for the Locked column in PopulationDatasets - this is imported and not predefined.
+                        commandText = string.Format("insert into PopulationDataSets values ({0},{1},'{2}',{3},{4},{5}, 'F')", dataSetID, CommonClass.ManageSetup.SetupID, txtDataSetName.Text, _popConfigID, _gridDefinID, chkUseWoodsPoole.Checked ? 1 : 0);
                         fbCommand.CommandText = commandText;
                         fbCommand.ExecuteNonQuery();
 
@@ -786,7 +854,9 @@ namespace BenMAP
                         return;
                     }
 
-                    commandText = string.Format("insert into PopulationDataSets values ({0},{1},'{2}',{3},{4},{5})", dataSetID, CommonClass.ManageSetup.SetupID, txtDataSetName.Text, _popConfigID, _gridDefinID, chkUseWoodsPoole.Checked ? 1 : 0);
+                    //commandText = string.Format("insert into PopulationDataSets values ({0},{1},'{2}',{3},{4},{5})", dataSetID, CommonClass.ManageSetup.SetupID, txtDataSetName.Text, _popConfigID, _gridDefinID, chkUseWoodsPoole.Checked ? 1 : 0);
+                    //The 'F' is for the Locked column in PopulationDataSets - this is imported not predefined.
+                    commandText = string.Format("insert into PopulationDataSets values ({0},{1},'{2}',{3},{4},{5}, 'F')", dataSetID, CommonClass.ManageSetup.SetupID, txtDataSetName.Text, _popConfigID, _gridDefinID, chkUseWoodsPoole.Checked ? 1 : 0);
                     fbCommand.CommandText = commandText;
                     fbCommand.ExecuteNonQuery();
 
@@ -1089,11 +1159,15 @@ namespace BenMAP
 
                 }
                 if (wrongAgeRange)
+                {
                     MessageBox.Show("Population data with non-corresponding age range will not be imported into database.");
+                }
                 if (!containYear)
+                {
                     MessageBox.Show("Population growth weights with non-corresponding year will not be imported into database.");
-
+                }
                 fbtra.Commit();
+                insertMetadata(dataSetID);
                 this.DialogResult = DialogResult.OK;
             }
             catch (Exception ex)
@@ -1176,6 +1250,87 @@ namespace BenMAP
         }
 
 
+        private void txtDataBase_TextChanged(object sender, EventArgs e)
+        {
+            btnValidateDB.Enabled = !string.IsNullOrEmpty(txtDataBase.Text);
+            btnViewMetadataDB.Enabled = !string.IsNullOrEmpty(txtDataBase.Text);
+            _strPathDB = txtDataBase.Text;
+        }
+
+        private void txtGrowthWeights_TextChanged(object sender, EventArgs e)
+        {
+            _strPathGW = txtGrowthWeights.Text;
+            btnValidateGW.Enabled = !string.IsNullOrEmpty(txtGrowthWeights.Text);
+            btnViewMetadataGW.Enabled = !string.IsNullOrEmpty(txtGrowthWeights.Text);
+            _strPathGW = txtGrowthWeights.Text;
+        }
+
+        private void btnValidateDB_Click(object sender, EventArgs e)
+        {
+            _populationDataset = CommonClass.ExcelToDataTable(_strPathDB);
+
+            ValidateDatabaseImport vdi = new ValidateDatabaseImport(_populationDataset, "Population", _strPathDB);
+
+            DialogResult dlgR = vdi.ShowDialog();
+            if (dlgR.Equals(DialogResult.OK))
+            {
+                if (vdi.PassedValidation && _isForceValidate == "T")
+                {
+                    //this.DialogResult = DialogResult.OK;
+                    //btnOK.DialogResult = DialogResult.OK;
+                    btnOK.Enabled = true;
+                }
+            }
+        }
+
+        private void btnViewMetadataDB_Click(object sender, EventArgs e)
+        {
+            ViewEditMetadata viewEMdata = null; ;
+            if (_metadataObj != null)
+            {
+                viewEMdata = new ViewEditMetadata(_strPathDB, _metadataObj);
+            }
+            else
+            {
+                viewEMdata = new ViewEditMetadata(_strPathDB);
+            }
+            DialogResult dr = viewEMdata.ShowDialog();
+            if (dr.Equals(DialogResult.OK))
+            {
+                _metadataObj = viewEMdata.MetadataObj;
+            }
+        }
+
+        private void btnValidateGW_Click(object sender, EventArgs e)
+        {
+            //_populationDataset = CommonClass.ExcelToDataTable(_strPathDB);
+
+            //ValidateDatabaseImport vdi = new ValidateDatabaseImport(_populationDataset, "Population", _strPathDB);
+
+            //DialogResult dlgR = vdi.ShowDialog();
+            //if (dlgR.Equals(DialogResult.OK))
+            //{
+            //    if (vdi.PassedValidation && _isForceValidate == "T")
+            //        this.DialogResult = DialogResult.OK;
+            //}
+        }
+
+        private void GetMetadata()
+        {
+            _metadataObj = new MetadataClassObj();
+            Metadata metadata = new Metadata(_strPathDB);
+            _metadataObj = metadata.GetMetadata();
+        }
+
+        private void btnViewMetadataGW_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lblPopulationDataSetName_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 
 }

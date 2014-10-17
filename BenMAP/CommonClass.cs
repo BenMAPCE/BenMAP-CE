@@ -217,14 +217,18 @@ namespace BenMAP
         {
             get
             {
-                if (_connection == null)
+                if ((_connection == null) || (_connection.State != ConnectionState.Open))
                 {
                     ConnectionStringSettings settings = ConfigurationManager.ConnectionStrings["ConnectionString"];
                     string str = settings.ConnectionString;
-                    if (!str.Contains(":"))
-                        str = str.Substring(0, str.IndexOf("initial catalog=")) + "initial catalog=" + Application.StartupPath + @"\" + str.Substring(str.IndexOf("initial catalog=") + 16);
+                    //if (!str.Contains(":"))
+                    //    str = str.Substring(0, str.IndexOf("initial catalog=")) + "initial catalog=" + Application.StartupPath + @"\" + str.Substring(str.IndexOf("initial catalog=") + 16);
+                    //need to modify string to use general data location
+                    str = str.Replace("##USERDATA##", Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData));
+
                     _connection = new FirebirdSql.Data.FirebirdClient.FbConnection(str);
                 }
+
                 return _connection;
             }
             set
@@ -237,8 +241,10 @@ namespace BenMAP
         {
             ConnectionStringSettings settings = ConfigurationManager.ConnectionStrings["ConnectionString"];
             string str = settings.ConnectionString;
-            if (!str.Contains(":"))
-                str = str.Substring(0, str.IndexOf("initial catalog=")) + "initial catalog=" + Application.StartupPath + @"\" + str.Substring(str.IndexOf("initial catalog=") + 16);
+            //if (!str.Contains(":"))
+            //    str = str.Substring(0, str.IndexOf("initial catalog=")) + "initial catalog=" + Application.StartupPath + @"\" + str.Substring(str.IndexOf("initial catalog=") + 16);
+            str = str.Replace("##USERDATA##", Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData));
+                    
             FbConnection connection = new FirebirdSql.Data.FirebirdClient.FbConnection(str);
 
             return connection;
@@ -478,7 +484,7 @@ namespace BenMAP
             fs.Dispose();
         }
 
-        public static BenMAPGrid GBenMAPGrid; public static List<BaseControlGroup> LstBaseControlGroup; public static double CRThreshold = 0; public static int CRLatinHypercubePoints = 10; public static bool CRRunInPointMode = false; public static int CRSeeds = 1; public static BenMAPPopulation BenMAPPopulation;
+        public static BenMAPGrid GBenMAPGrid; public static List<BaseControlGroup> LstBaseControlGroup; public static double CRThreshold = 0; public static int CRLatinHypercubePoints = 20; public static bool CRRunInPointMode = false; public static int CRSeeds = 1; public static BenMAPPopulation BenMAPPopulation;
         public static List<GridRelationship> LstCurrentGridRelationship; public static string CurrentStat;
         public static List<string> LstAsynchronizationStates;
         private static List<GridRelationship> lstGridRelationshipAll;
@@ -936,9 +942,29 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
                                         if (selfFeature.IsWithinDistance(other.Features[iotherFeature], 0.00001))
                                         {
                                             if (selfFeature.Area() > other.Features[iotherFeature].Area())
-                                                intersactFeature = other.Features[iotherFeature];
-                                            else
+                                            {
+                                                bool isContains = false;
+                                                isContains = polygonContainPolygon(selfFeature, other.Features[iotherFeature]);
+                                                if (isContains)
+                                                {
+                                                    intersactFeature = other.Features[iotherFeature];
+                                                }
+                                                else
+                                                    intersactFeature = null;
+                                            }
+                                            else if (selfFeature.Area() < other.Features[iotherFeature].Area())
+                                            {
                                                 intersactFeature = selfFeature;
+
+                                                bool isContains = false;
+                                                isContains = polygonContainPolygon(other.Features[iotherFeature], selfFeature);
+                                                if (isContains)
+                                                {
+                                                    intersactFeature = selfFeature;
+                                                }
+                                                else
+                                                    intersactFeature = null;
+                                            }
                                         }
                                     }
                                     catch
@@ -949,7 +975,6 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
                             }
                             if (intersactFeature != null && intersactFeature.BasicGeometry != null)
                             {
-
                                 try
                                 {
                                     double dArea = 0;
@@ -959,7 +984,42 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
                                     }
                                     catch
                                     {
-                                        dArea = Math.Abs(DotSpatial.Topology.Algorithm.CgAlgorithms.SignedArea(intersactFeature.BasicGeometry.Coordinates));
+                                        if (selfFeature.IsWithinDistance(other.Features[iotherFeature], 0.00001))
+                                        {
+                                            if (selfFeature.Area() > other.Features[iotherFeature].Area())
+                                            {
+                                                bool isContains = false;
+                                                isContains = polygonContainPolygon(selfFeature, other.Features[iotherFeature]);
+                                                if (isContains)
+                                                {
+                                                    intersactFeature = other.Features[iotherFeature];
+                                                    dArea = intersactFeature.Area();
+                                                }
+                                                else
+                                                    dArea = 0;
+
+                                            }
+                                            else if (selfFeature.Area() < other.Features[iotherFeature].Area())
+                                            {
+                                                intersactFeature = selfFeature;
+                                                dArea = intersactFeature.Area();
+
+                                                bool isContains = false;
+                                                isContains = polygonContainPolygon(other.Features[iotherFeature], selfFeature);
+                                                if (isContains)
+                                                {
+                                                    intersactFeature = selfFeature;
+                                                    dArea = intersactFeature.Area();
+                                                }
+                                                else
+                                                    dArea = 0;
+                                            }
+                                            else
+                                                dArea = 0;
+
+                                        }
+                                        else
+                                            dArea = 0;
                                     }
                                     if (dArea > 0)
                                     {
@@ -1034,18 +1094,24 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
                                     targetRow = Convert.ToInt32(strin[1]),
                                     percentage = 1,
                                 };
+                                if (k.Value.First().Value > 0.000000000001)
                                 result.Add(gr);
 
                             }
                             else
                             {
+                                double d = 0.0;
                                 foreach (KeyValuePair<string, double> kin in k.Value)
                                 {
+                                    if (kin.Value > 0.000000000001) d = d + kin.Value;
+                                }
+                                foreach (KeyValuePair<string, double> kin in k.Value)
+                                {
+                                    if (kin.Value < 0.000000000001) continue;
                                     string[] strin = kin.Key.Split(new char[] { ',' });
-                                    double d = k.Value.Sum(p => p.Value);
+
                                     GridRelationshipAttributePercentage gr = new GridRelationshipAttributePercentage()
                                     {
-
                                         sourceCol = Convert.ToInt32(str[0]),
                                         sourceRow = Convert.ToInt32(str[1]),
                                         targetCol = Convert.ToInt32(strin[0]),
@@ -1064,6 +1130,26 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
             }
             return result;
         }
+
+        public static bool polygonContainPolygon(IFeature big, IFeature small)
+        {
+            try
+            {
+                for (int i = 0; i < small.Coordinates.Count; i++)
+                {
+                    if (!big.IsWithinDistance((new Feature(small.Coordinates[i])), 0.00001))
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         public static void getRelationshipFromBenMAPGridPercentage(int big, int small)
         {
             try
@@ -1387,7 +1473,7 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
             try
             {
                 CommonClass.LstPollutant = null; CommonClass.RBenMAPGrid = null;
-                CommonClass.GBenMAPGrid = null; CommonClass.LstBaseControlGroup = null; CommonClass.CRThreshold = 0; CommonClass.CRLatinHypercubePoints = 10; CommonClass.CRRunInPointMode = false;
+                CommonClass.GBenMAPGrid = null; CommonClass.LstBaseControlGroup = null; CommonClass.CRThreshold = 0; CommonClass.CRLatinHypercubePoints = 20; CommonClass.CRRunInPointMode = false;
                 CommonClass.BenMAPPopulation = null;
                 if (CommonClass.BaseControlCRSelectFunction != null)
                 {

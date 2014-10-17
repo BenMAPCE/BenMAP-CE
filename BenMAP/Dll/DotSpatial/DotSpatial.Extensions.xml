@@ -4,17 +4,6 @@
         <name>DotSpatial.Extensions</name>
     </assembly>
     <members>
-        <member name="T:DotSpatial.Extensions.SplashScreens.SplashScreenHelper">
-            <summary>
-            TODO: Update summary.
-            </summary>
-        </member>
-        <member name="M:DotSpatial.Extensions.SplashScreens.SplashScreenHelper.GetSplashScreenManager">
-            <summary>
-            Searches "Application Extensions" for and activates "*SplashScreen*.dll"
-            </summary>
-            <returns></returns>
-        </member>
         <member name="T:DotSpatial.Extensions.AssemblyInformation">
             <summary>
             Information about the assembly containing the extension
@@ -67,21 +56,6 @@
         <member name="P:DotSpatial.Extensions.AssemblyInformation.AssemblyQualifiedName">
             <summary>
             Gets the name of the assembly and class.
-            </summary>
-        </member>
-        <member name="T:DotSpatial.Extensions.ISatisfyImportsExtension">
-            <summary>
-            Extensions of this type are activiated before other extensions and may be used to help satisfy required imports.
-            </summary>
-        </member>
-        <member name="M:DotSpatial.Extensions.ISatisfyImportsExtension.Activate">
-            <summary>
-            Activates this extension
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Extensions.ISatisfyImportsExtension.Priority">
-            <summary>
-            Specifies the activation priority order
             </summary>
         </member>
         <member name="T:DotSpatial.Extensions.IExtension">
@@ -143,6 +117,92 @@
             Gets the Assembly Qualified FullName.
             </summary>
         </member>
+        <member name="T:DotSpatial.Extensions.IExtensionExtensionMethods">
+            <summary>
+            Extension methods for IExtension
+            </summary>
+        </member>
+        <member name="M:DotSpatial.Extensions.IExtensionExtensionMethods.TryActivate(DotSpatial.Extensions.IExtension)">
+            <summary>
+            Tries to activate the extension.
+            </summary>
+            <param name="extension">The extension.</param>
+            <returns></returns>
+        </member>
+        <member name="T:DotSpatial.Extensions.IOpenProjectFileProvider">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="T:DotSpatial.Extensions.IProjectFileProvider">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="P:DotSpatial.Extensions.IProjectFileProvider.FileTypeDescription">
+            <summary>
+            Gets the file type description.
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Extensions.IProjectFileProvider.Extension">
+            <summary>
+            Gets the extension, which by convention will be lower case.
+            </summary>
+        </member>
+        <member name="M:DotSpatial.Extensions.IOpenProjectFileProvider.Open(System.String)">
+            <summary>
+            Opens the specified file name.
+            </summary>
+            <param name="fileName">Name of the file.</param>
+            <returns></returns>
+        </member>
+        <member name="T:DotSpatial.Extensions.ISampleProject">
+            <summary>
+            Used to specify a sample .dspx project that the user can download as a package and open.
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Extensions.ISampleProject.AbsolutePathToProjectFile">
+            <summary>
+            Gets the absolute path to project file. This includes the directory, filename, and extension
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Extensions.ISampleProject.Name">
+            <summary>
+            Gets the name to display to the user when they are selecting a project.
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Extensions.ISampleProject.Description">
+            <summary>
+            Gets the description of the project
+            </summary>
+        </member>
+        <member name="T:DotSpatial.Extensions.ISaveProjectFileProvider">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="M:DotSpatial.Extensions.ISaveProjectFileProvider.Save(System.String,System.String)">
+            <summary>
+            Saves the specified file.
+            </summary>
+            <param name="fileName">Name of the file.</param>
+            <param name="graph">The control graph.</param>
+        </member>
+        <member name="T:DotSpatial.Extensions.ISatisfyImportsExtension">
+            <summary>
+            Extensions of this type are activiated before other extensions and may be used to help satisfy required imports.
+            </summary>
+        </member>
+        <member name="M:DotSpatial.Extensions.ISatisfyImportsExtension.Activate">
+            <summary>
+            Activates this extension
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Extensions.ISatisfyImportsExtension.Priority">
+            <summary>
+            Specifies the activation priority order
+            </summary>
+        </member>
         <member name="T:DotSpatial.Extensions.SplashScreens.ISplashScreenManager">
             <summary>
             An interface that allows the creation of a splash screen extension, which will be loaded before other extensions.
@@ -165,57 +225,6 @@
             Deactivates this instance.
             </summary>
         </member>
-        <member name="T:DotSpatial.Extensions.IProjectFileProvider">
-             <summary>
-            
-             </summary>
-        </member>
-        <member name="P:DotSpatial.Extensions.IProjectFileProvider.FileTypeDescription">
-            <summary>
-            Gets the file type description.
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Extensions.IProjectFileProvider.Extension">
-            <summary>
-            Gets the extension, which by convention will be lower case.
-            </summary>
-        </member>
-        <member name="T:DotSpatial.Extensions.IOpenProjectFileProvider">
-             <summary>
-            
-             </summary>
-        </member>
-        <member name="M:DotSpatial.Extensions.IOpenProjectFileProvider.Open(System.String)">
-            <summary>
-            Opens the specified file name.
-            </summary>
-            <param name="fileName">Name of the file.</param>
-            <returns></returns>
-        </member>
-        <member name="T:DotSpatial.Extensions.IExtensionExtensionMethods">
-            <summary>
-            Extension methods for IExtension
-            </summary>
-        </member>
-        <member name="M:DotSpatial.Extensions.IExtensionExtensionMethods.TryActivate(DotSpatial.Extensions.IExtension)">
-            <summary>
-            Tries to activate the extension.
-            </summary>
-            <param name="extension">The extension.</param>
-            <returns></returns>
-        </member>
-        <member name="T:DotSpatial.Extensions.ISaveProjectFileProvider">
-             <summary>
-            
-             </summary>
-        </member>
-        <member name="M:DotSpatial.Extensions.ISaveProjectFileProvider.Save(System.String,System.String)">
-            <summary>
-            Saves the specified file.
-            </summary>
-            <param name="fileName">Name of the file.</param>
-            <param name="graph">The control graph.</param>
-        </member>
         <member name="T:DotSpatial.Extensions.SplashScreens.SplashScreenCommand">
             <summary>
             The type of splash screen command
@@ -226,6 +235,17 @@
             <summary>
             Displays a string on the splash screen.
             </summary>
+        </member>
+        <member name="T:DotSpatial.Extensions.SplashScreens.SplashScreenHelper">
+            <summary>
+            TODO: Update summary.
+            </summary>
+        </member>
+        <member name="M:DotSpatial.Extensions.SplashScreens.SplashScreenHelper.GetSplashScreenManager">
+            <summary>
+            Searches "Application Extensions" for and activates "*SplashScreen*.dll"
+            </summary>
+            <returns></returns>
         </member>
     </members>
 </doc>

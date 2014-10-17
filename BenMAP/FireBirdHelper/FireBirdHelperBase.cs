@@ -946,7 +946,7 @@ namespace ESIL.DBUtility
 		public  FbDataReader ExecuteReader(FbConnection connection, CommandType commandType, string commandText, params FbParameter[] commandParameters)
 		{
 			// Pass through the call to the private overload using a null transaction value and an externally owned connection
-			return ExecuteReader(connection, (FbTransaction)null, commandType, commandText, commandParameters, FbConnectionOwnership.External);
+			return ExecuteReader(connection, (FbTransaction)null, commandType, commandText, commandParameters, FbConnectionOwnership.Internal);
 		}
 
 		/// <summary>

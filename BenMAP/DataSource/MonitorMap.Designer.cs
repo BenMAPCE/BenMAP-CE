@@ -61,7 +61,8 @@ namespace BenMAP
             this.mapLegend.ControlRectangle = new System.Drawing.Rectangle(0, 0, 129, 363);
             this.mapLegend.DocumentRectangle = new System.Drawing.Rectangle(0, 0, 168, 284);
             this.mapLegend.HorizontalScrollEnabled = true;
-            this.mapLegend.Indentation = 30;
+            //this.mapLegend.Indentation = 30;
+            this.mapLegend.Indentation = 7; //MCB
             this.mapLegend.IsInitialized = false;
             this.mapLegend.Location = new System.Drawing.Point(-1, -1);
             this.mapLegend.MinimumSize = new System.Drawing.Size(5, 6);
@@ -147,8 +148,8 @@ namespace BenMAP
             this.btnLayerSet.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnLayerSet.Name = "btnLayerSet";
             this.btnLayerSet.Size = new System.Drawing.Size(23, 22);
-            this.btnLayerSet.Text = "Show Legend";
-            this.btnLayerSet.ToolTipText = "Show Legend";
+            this.btnLayerSet.Text = "Show Table of Contents";
+            this.btnLayerSet.ToolTipText = "Show Table of Contents";
             this.btnLayerSet.Visible = false;
             this.btnLayerSet.Click += new System.EventHandler(this.btnLayerSet_Click);
                                                 this.btnPieTheme.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;

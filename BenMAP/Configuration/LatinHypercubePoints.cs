@@ -11,7 +11,7 @@ namespace BenMAP
 {
     public partial class LatinHypercubePoints : FormBase
     {
-        private int latinHypercubePointsCount = 10;
+        private int latinHypercubePointsCount = 20;
 
         public int LatinHypercubePointsCount
         {

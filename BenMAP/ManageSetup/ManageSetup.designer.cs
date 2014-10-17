@@ -72,8 +72,11 @@ namespace BenMAP
             this.grpVariableDataSets.SuspendLayout();
             this.grpNewName.SuspendLayout();
             this.SuspendLayout();
-                                                this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox2.Controls.Add(this.btnCancel);
             this.groupBox2.Controls.Add(this.btnOk);
             this.groupBox2.Location = new System.Drawing.Point(15, 618);
@@ -81,7 +84,10 @@ namespace BenMAP
             this.groupBox2.Size = new System.Drawing.Size(663, 41);
             this.groupBox2.TabIndex = 3;
             this.groupBox2.TabStop = false;
-                                                this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            // 
+            // btnCancel
+            // 
+            this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.Location = new System.Drawing.Point(525, 11);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(62, 25);
@@ -90,7 +96,10 @@ namespace BenMAP
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Visible = false;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
-                                                this.btnOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            // 
+            // btnOk
+            // 
+            this.btnOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOk.Location = new System.Drawing.Point(593, 11);
             this.btnOk.Name = "btnOk";
             this.btnOk.Size = new System.Drawing.Size(64, 25);
@@ -98,7 +107,10 @@ namespace BenMAP
             this.btnOk.Text = "OK";
             this.btnOk.UseVisualStyleBackColor = true;
             this.btnOk.Click += new System.EventHandler(this.btnOk_Click);
-                                                this.grpManageSet.Controls.Add(this.tableLayoutPanel1);
+            // 
+            // grpManageSet
+            // 
+            this.grpManageSet.Controls.Add(this.tableLayoutPanel1);
             this.grpManageSet.Controls.Add(this.grpNewName);
             this.grpManageSet.Controls.Add(this.groupBox1);
             this.grpManageSet.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -107,9 +119,12 @@ namespace BenMAP
             this.grpManageSet.Size = new System.Drawing.Size(691, 661);
             this.grpManageSet.TabIndex = 0;
             this.grpManageSet.TabStop = false;
-                                                this.tableLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            // 
+            // tableLayoutPanel1
+            // 
+            this.tableLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel1.ColumnCount = 3;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33334F));
@@ -133,7 +148,10 @@ namespace BenMAP
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(667, 556);
             this.tableLayoutPanel1.TabIndex = 15;
-                                                this.grpIncidenceOrPrevalence.Controls.Add(this.btnIncidence);
+            // 
+            // grpIncidenceOrPrevalence
+            // 
+            this.grpIncidenceOrPrevalence.Controls.Add(this.btnIncidence);
             this.grpIncidenceOrPrevalence.Controls.Add(this.lstIncidenceOrPrevalence);
             this.grpIncidenceOrPrevalence.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpIncidenceOrPrevalence.Location = new System.Drawing.Point(3, 142);
@@ -142,17 +160,23 @@ namespace BenMAP
             this.grpIncidenceOrPrevalence.TabIndex = 4;
             this.grpIncidenceOrPrevalence.TabStop = false;
             this.grpIncidenceOrPrevalence.Text = "Incidence/Prevalence Rates";
-                                                this.btnIncidence.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnIncidence.Location = new System.Drawing.Point(158, 107);
+            // 
+            // btnIncidence
+            // 
+            this.btnIncidence.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnIncidence.Location = new System.Drawing.Point(153, 107);
             this.btnIncidence.Name = "btnIncidence";
-            this.btnIncidence.Size = new System.Drawing.Size(55, 25);
+            this.btnIncidence.Size = new System.Drawing.Size(60, 25);
             this.btnIncidence.TabIndex = 1;
-            this.btnIncidence.Text = "Edit";
+            this.btnIncidence.Text = "Manage";
             this.btnIncidence.UseVisualStyleBackColor = true;
             this.btnIncidence.Click += new System.EventHandler(this.btnIncidence_Click);
-                                                this.lstIncidenceOrPrevalence.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            // 
+            // lstIncidenceOrPrevalence
+            // 
+            this.lstIncidenceOrPrevalence.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lstIncidenceOrPrevalence.FormattingEnabled = true;
             this.lstIncidenceOrPrevalence.ItemHeight = 14;
             this.lstIncidenceOrPrevalence.Location = new System.Drawing.Point(3, 17);
@@ -160,7 +184,10 @@ namespace BenMAP
             this.lstIncidenceOrPrevalence.SelectionMode = System.Windows.Forms.SelectionMode.None;
             this.lstIncidenceOrPrevalence.Size = new System.Drawing.Size(210, 88);
             this.lstIncidenceOrPrevalence.TabIndex = 0;
-                                                this.grpMonitorDataSets.Controls.Add(this.btnMonitor);
+            // 
+            // grpMonitorDataSets
+            // 
+            this.grpMonitorDataSets.Controls.Add(this.btnMonitor);
             this.grpMonitorDataSets.Controls.Add(this.lstMonitor);
             this.grpMonitorDataSets.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpMonitorDataSets.Location = new System.Drawing.Point(447, 3);
@@ -169,17 +196,23 @@ namespace BenMAP
             this.grpMonitorDataSets.TabIndex = 3;
             this.grpMonitorDataSets.TabStop = false;
             this.grpMonitorDataSets.Text = "Monitor Datasets";
-                                                this.btnMonitor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnMonitor.Location = new System.Drawing.Point(158, 107);
+            // 
+            // btnMonitor
+            // 
+            this.btnMonitor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnMonitor.Location = new System.Drawing.Point(151, 107);
             this.btnMonitor.Name = "btnMonitor";
-            this.btnMonitor.Size = new System.Drawing.Size(55, 25);
+            this.btnMonitor.Size = new System.Drawing.Size(60, 25);
             this.btnMonitor.TabIndex = 1;
-            this.btnMonitor.Text = "Edit";
+            this.btnMonitor.Text = "Manage";
             this.btnMonitor.UseVisualStyleBackColor = true;
             this.btnMonitor.Click += new System.EventHandler(this.btnMonitor_Click);
-                                                this.lstMonitor.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            // 
+            // lstMonitor
+            // 
+            this.lstMonitor.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lstMonitor.FormattingEnabled = true;
             this.lstMonitor.ItemHeight = 14;
             this.lstMonitor.Location = new System.Drawing.Point(3, 18);
@@ -187,7 +220,10 @@ namespace BenMAP
             this.lstMonitor.SelectionMode = System.Windows.Forms.SelectionMode.None;
             this.lstMonitor.Size = new System.Drawing.Size(208, 88);
             this.lstMonitor.TabIndex = 0;
-                                                this.grpPollutants.Controls.Add(this.btnPollutants);
+            // 
+            // grpPollutants
+            // 
+            this.grpPollutants.Controls.Add(this.btnPollutants);
             this.grpPollutants.Controls.Add(this.lstPollutans);
             this.grpPollutants.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpPollutants.Location = new System.Drawing.Point(225, 3);
@@ -196,17 +232,23 @@ namespace BenMAP
             this.grpPollutants.TabIndex = 2;
             this.grpPollutants.TabStop = false;
             this.grpPollutants.Text = "Pollutants";
-                                                this.btnPollutants.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnPollutants.Location = new System.Drawing.Point(158, 107);
+            // 
+            // btnPollutants
+            // 
+            this.btnPollutants.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnPollutants.Location = new System.Drawing.Point(153, 107);
             this.btnPollutants.Name = "btnPollutants";
-            this.btnPollutants.Size = new System.Drawing.Size(55, 25);
+            this.btnPollutants.Size = new System.Drawing.Size(60, 25);
             this.btnPollutants.TabIndex = 1;
-            this.btnPollutants.Text = "Edit";
+            this.btnPollutants.Text = "Manage";
             this.btnPollutants.UseVisualStyleBackColor = true;
             this.btnPollutants.Click += new System.EventHandler(this.btnPollutants_Click);
-                                                this.lstPollutans.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            // 
+            // lstPollutans
+            // 
+            this.lstPollutans.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lstPollutans.FormattingEnabled = true;
             this.lstPollutans.ItemHeight = 14;
             this.lstPollutans.Location = new System.Drawing.Point(3, 18);
@@ -214,7 +256,10 @@ namespace BenMAP
             this.lstPollutans.SelectionMode = System.Windows.Forms.SelectionMode.None;
             this.lstPollutans.Size = new System.Drawing.Size(210, 88);
             this.lstPollutans.TabIndex = 0;
-                                                this.groupBox3.Controls.Add(this.btnGridDef);
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.btnGridDef);
             this.groupBox3.Controls.Add(this.lstGridDefinitions);
             this.groupBox3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox3.Location = new System.Drawing.Point(3, 3);
@@ -223,18 +268,24 @@ namespace BenMAP
             this.groupBox3.TabIndex = 1;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Grid Definitions";
-                                                this.btnGridDef.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnGridDef.Location = new System.Drawing.Point(158, 107);
+            // 
+            // btnGridDef
+            // 
+            this.btnGridDef.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnGridDef.Location = new System.Drawing.Point(153, 107);
             this.btnGridDef.Name = "btnGridDef";
-            this.btnGridDef.Size = new System.Drawing.Size(55, 25);
+            this.btnGridDef.Size = new System.Drawing.Size(60, 25);
             this.btnGridDef.TabIndex = 1;
-            this.btnGridDef.Text = "Edit";
+            this.btnGridDef.Text = "Manage";
             this.btnGridDef.UseVisualStyleBackColor = true;
             this.btnGridDef.Click += new System.EventHandler(this.btnGridDef_Click);
-                                                this.lstGridDefinitions.AllowDrop = true;
-            this.lstGridDefinitions.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            // 
+            // lstGridDefinitions
+            // 
+            this.lstGridDefinitions.AllowDrop = true;
+            this.lstGridDefinitions.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lstGridDefinitions.FormattingEnabled = true;
             this.lstGridDefinitions.ItemHeight = 14;
             this.lstGridDefinitions.Location = new System.Drawing.Point(3, 18);
@@ -242,7 +293,10 @@ namespace BenMAP
             this.lstGridDefinitions.SelectionMode = System.Windows.Forms.SelectionMode.None;
             this.lstGridDefinitions.Size = new System.Drawing.Size(210, 88);
             this.lstGridDefinitions.TabIndex = 0;
-                                                this.grpIncomeGrowthAdjustments.Controls.Add(this.btnIncome);
+            // 
+            // grpIncomeGrowthAdjustments
+            // 
+            this.grpIncomeGrowthAdjustments.Controls.Add(this.btnIncome);
             this.grpIncomeGrowthAdjustments.Controls.Add(this.lstIncome);
             this.grpIncomeGrowthAdjustments.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpIncomeGrowthAdjustments.Location = new System.Drawing.Point(3, 420);
@@ -251,17 +305,23 @@ namespace BenMAP
             this.grpIncomeGrowthAdjustments.TabIndex = 10;
             this.grpIncomeGrowthAdjustments.TabStop = false;
             this.grpIncomeGrowthAdjustments.Text = "Income Growth Adjustments";
-                                                this.btnIncome.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnIncome.Location = new System.Drawing.Point(158, 107);
+            // 
+            // btnIncome
+            // 
+            this.btnIncome.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnIncome.Location = new System.Drawing.Point(153, 107);
             this.btnIncome.Name = "btnIncome";
-            this.btnIncome.Size = new System.Drawing.Size(55, 25);
+            this.btnIncome.Size = new System.Drawing.Size(60, 25);
             this.btnIncome.TabIndex = 1;
-            this.btnIncome.Text = "Edit";
+            this.btnIncome.Text = "Manage";
             this.btnIncome.UseVisualStyleBackColor = true;
             this.btnIncome.Click += new System.EventHandler(this.btnIncome_Click);
-                                                this.lstIncome.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            // 
+            // lstIncome
+            // 
+            this.lstIncome.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lstIncome.FormattingEnabled = true;
             this.lstIncome.ItemHeight = 14;
             this.lstIncome.Location = new System.Drawing.Point(3, 17);
@@ -269,7 +329,10 @@ namespace BenMAP
             this.lstIncome.SelectionMode = System.Windows.Forms.SelectionMode.None;
             this.lstIncome.Size = new System.Drawing.Size(210, 88);
             this.lstIncome.TabIndex = 0;
-                                                this.grpPopulationDataSets.Controls.Add(this.btnPopulation);
+            // 
+            // grpPopulationDataSets
+            // 
+            this.grpPopulationDataSets.Controls.Add(this.btnPopulation);
             this.grpPopulationDataSets.Controls.Add(this.lstPopulation);
             this.grpPopulationDataSets.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpPopulationDataSets.Location = new System.Drawing.Point(225, 142);
@@ -278,17 +341,23 @@ namespace BenMAP
             this.grpPopulationDataSets.TabIndex = 5;
             this.grpPopulationDataSets.TabStop = false;
             this.grpPopulationDataSets.Text = "Population Datasets";
-                                                this.btnPopulation.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnPopulation.Location = new System.Drawing.Point(158, 107);
+            // 
+            // btnPopulation
+            // 
+            this.btnPopulation.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnPopulation.Location = new System.Drawing.Point(153, 107);
             this.btnPopulation.Name = "btnPopulation";
-            this.btnPopulation.Size = new System.Drawing.Size(55, 25);
+            this.btnPopulation.Size = new System.Drawing.Size(60, 25);
             this.btnPopulation.TabIndex = 1;
-            this.btnPopulation.Text = "Edit";
+            this.btnPopulation.Text = "Manage";
             this.btnPopulation.UseVisualStyleBackColor = true;
             this.btnPopulation.Click += new System.EventHandler(this.btnPopulation_Click);
-                                                this.lstPopulation.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            // 
+            // lstPopulation
+            // 
+            this.lstPopulation.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lstPopulation.FormattingEnabled = true;
             this.lstPopulation.ItemHeight = 14;
             this.lstPopulation.Location = new System.Drawing.Point(3, 17);
@@ -296,7 +365,10 @@ namespace BenMAP
             this.lstPopulation.SelectionMode = System.Windows.Forms.SelectionMode.None;
             this.lstPopulation.Size = new System.Drawing.Size(210, 88);
             this.lstPopulation.TabIndex = 0;
-                                                this.grpValuationDataSets.Controls.Add(this.btnValuation);
+            // 
+            // grpValuationDataSets
+            // 
+            this.grpValuationDataSets.Controls.Add(this.btnValuation);
             this.grpValuationDataSets.Controls.Add(this.lstValuation);
             this.grpValuationDataSets.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpValuationDataSets.Location = new System.Drawing.Point(447, 281);
@@ -305,17 +377,23 @@ namespace BenMAP
             this.grpValuationDataSets.TabIndex = 9;
             this.grpValuationDataSets.TabStop = false;
             this.grpValuationDataSets.Text = "Valuation Functions";
-                                                this.btnValuation.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnValuation.Location = new System.Drawing.Point(158, 107);
+            // 
+            // btnValuation
+            // 
+            this.btnValuation.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnValuation.Location = new System.Drawing.Point(151, 107);
             this.btnValuation.Name = "btnValuation";
-            this.btnValuation.Size = new System.Drawing.Size(55, 25);
+            this.btnValuation.Size = new System.Drawing.Size(60, 25);
             this.btnValuation.TabIndex = 1;
-            this.btnValuation.Text = "Edit";
+            this.btnValuation.Text = "Manage";
             this.btnValuation.UseVisualStyleBackColor = true;
             this.btnValuation.Click += new System.EventHandler(this.btnValuation_Click);
-                                                this.lstValuation.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            // 
+            // lstValuation
+            // 
+            this.lstValuation.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lstValuation.FormattingEnabled = true;
             this.lstValuation.ItemHeight = 14;
             this.lstValuation.Location = new System.Drawing.Point(3, 17);
@@ -323,7 +401,10 @@ namespace BenMAP
             this.lstValuation.SelectionMode = System.Windows.Forms.SelectionMode.None;
             this.lstValuation.Size = new System.Drawing.Size(208, 88);
             this.lstValuation.TabIndex = 0;
-                                                this.grpHealthImpactDataSets.Controls.Add(this.btnHealthImpact);
+            // 
+            // grpHealthImpactDataSets
+            // 
+            this.grpHealthImpactDataSets.Controls.Add(this.btnHealthImpact);
             this.grpHealthImpactDataSets.Controls.Add(this.lstHealthImpact);
             this.grpHealthImpactDataSets.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpHealthImpactDataSets.Location = new System.Drawing.Point(447, 142);
@@ -332,17 +413,23 @@ namespace BenMAP
             this.grpHealthImpactDataSets.TabIndex = 5;
             this.grpHealthImpactDataSets.TabStop = false;
             this.grpHealthImpactDataSets.Text = "Health Impact Functions";
-                                                this.btnHealthImpact.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnHealthImpact.Location = new System.Drawing.Point(158, 107);
+            // 
+            // btnHealthImpact
+            // 
+            this.btnHealthImpact.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnHealthImpact.Location = new System.Drawing.Point(151, 107);
             this.btnHealthImpact.Name = "btnHealthImpact";
-            this.btnHealthImpact.Size = new System.Drawing.Size(55, 25);
+            this.btnHealthImpact.Size = new System.Drawing.Size(60, 25);
             this.btnHealthImpact.TabIndex = 1;
-            this.btnHealthImpact.Text = "Edit";
+            this.btnHealthImpact.Text = "Manage";
             this.btnHealthImpact.UseVisualStyleBackColor = true;
             this.btnHealthImpact.Click += new System.EventHandler(this.btnHealthImpact_Click);
-                                                this.lstHealthImpact.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            // 
+            // lstHealthImpact
+            // 
+            this.lstHealthImpact.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lstHealthImpact.FormattingEnabled = true;
             this.lstHealthImpact.ItemHeight = 14;
             this.lstHealthImpact.Location = new System.Drawing.Point(3, 17);
@@ -350,7 +437,10 @@ namespace BenMAP
             this.lstHealthImpact.SelectionMode = System.Windows.Forms.SelectionMode.None;
             this.lstHealthImpact.Size = new System.Drawing.Size(208, 88);
             this.lstHealthImpact.TabIndex = 0;
-                                                this.grpInflationDataSets.Controls.Add(this.btnInflation);
+            // 
+            // grpInflationDataSets
+            // 
+            this.grpInflationDataSets.Controls.Add(this.btnInflation);
             this.grpInflationDataSets.Controls.Add(this.lstInflation);
             this.grpInflationDataSets.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpInflationDataSets.Location = new System.Drawing.Point(225, 281);
@@ -359,17 +449,23 @@ namespace BenMAP
             this.grpInflationDataSets.TabIndex = 8;
             this.grpInflationDataSets.TabStop = false;
             this.grpInflationDataSets.Text = "Inflation Datasets";
-                                                this.btnInflation.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnInflation.Location = new System.Drawing.Point(158, 107);
+            // 
+            // btnInflation
+            // 
+            this.btnInflation.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnInflation.Location = new System.Drawing.Point(153, 107);
             this.btnInflation.Name = "btnInflation";
-            this.btnInflation.Size = new System.Drawing.Size(55, 25);
+            this.btnInflation.Size = new System.Drawing.Size(60, 25);
             this.btnInflation.TabIndex = 1;
-            this.btnInflation.Text = "Edit";
+            this.btnInflation.Text = "Manage";
             this.btnInflation.UseVisualStyleBackColor = true;
             this.btnInflation.Click += new System.EventHandler(this.btnInflation_Click);
-                                                this.lstInflation.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            // 
+            // lstInflation
+            // 
+            this.lstInflation.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lstInflation.FormattingEnabled = true;
             this.lstInflation.ItemHeight = 14;
             this.lstInflation.Location = new System.Drawing.Point(3, 17);
@@ -377,7 +473,10 @@ namespace BenMAP
             this.lstInflation.SelectionMode = System.Windows.Forms.SelectionMode.None;
             this.lstInflation.Size = new System.Drawing.Size(210, 88);
             this.lstInflation.TabIndex = 0;
-                                                this.grpVariableDataSets.Controls.Add(this.btnVariable);
+            // 
+            // grpVariableDataSets
+            // 
+            this.grpVariableDataSets.Controls.Add(this.btnVariable);
             this.grpVariableDataSets.Controls.Add(this.lstVariable);
             this.grpVariableDataSets.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpVariableDataSets.Location = new System.Drawing.Point(3, 281);
@@ -386,17 +485,23 @@ namespace BenMAP
             this.grpVariableDataSets.TabIndex = 7;
             this.grpVariableDataSets.TabStop = false;
             this.grpVariableDataSets.Text = "Variable Datasets";
-                                                this.btnVariable.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnVariable.Location = new System.Drawing.Point(158, 107);
+            // 
+            // btnVariable
+            // 
+            this.btnVariable.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnVariable.Location = new System.Drawing.Point(153, 107);
             this.btnVariable.Name = "btnVariable";
-            this.btnVariable.Size = new System.Drawing.Size(55, 25);
+            this.btnVariable.Size = new System.Drawing.Size(60, 25);
             this.btnVariable.TabIndex = 7;
-            this.btnVariable.Text = "Edit";
+            this.btnVariable.Text = "Manage";
             this.btnVariable.UseVisualStyleBackColor = true;
             this.btnVariable.Click += new System.EventHandler(this.btnVariable_Click);
-                                                this.lstVariable.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            // 
+            // lstVariable
+            // 
+            this.lstVariable.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lstVariable.FormattingEnabled = true;
             this.lstVariable.ItemHeight = 14;
             this.lstVariable.Location = new System.Drawing.Point(3, 17);
@@ -404,8 +509,11 @@ namespace BenMAP
             this.lstVariable.SelectionMode = System.Windows.Forms.SelectionMode.None;
             this.lstVariable.Size = new System.Drawing.Size(210, 88);
             this.lstVariable.TabIndex = 6;
-                                                this.grpNewName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            // 
+            // grpNewName
+            // 
+            this.grpNewName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.grpNewName.Controls.Add(this.btnDelete);
             this.grpNewName.Controls.Add(this.btnAdd);
             this.grpNewName.Controls.Add(this.lblSetupName);
@@ -415,7 +523,10 @@ namespace BenMAP
             this.grpNewName.Size = new System.Drawing.Size(663, 41);
             this.grpNewName.TabIndex = 2;
             this.grpNewName.TabStop = false;
-                                                this.btnDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            // 
+            // btnDelete
+            // 
+            this.btnDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnDelete.Location = new System.Drawing.Point(595, 11);
             this.btnDelete.Name = "btnDelete";
             this.btnDelete.Size = new System.Drawing.Size(62, 25);
@@ -423,7 +534,10 @@ namespace BenMAP
             this.btnDelete.Text = "Delete";
             this.btnDelete.UseVisualStyleBackColor = true;
             this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
-                                                this.btnAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            // 
+            // btnAdd
+            // 
+            this.btnAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnAdd.Location = new System.Drawing.Point(525, 11);
             this.btnAdd.Name = "btnAdd";
             this.btnAdd.Size = new System.Drawing.Size(62, 25);
@@ -431,14 +545,20 @@ namespace BenMAP
             this.btnAdd.Text = "Add";
             this.btnAdd.UseVisualStyleBackColor = true;
             this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
-                                                this.lblSetupName.AutoSize = true;
+            // 
+            // lblSetupName
+            // 
+            this.lblSetupName.AutoSize = true;
             this.lblSetupName.Location = new System.Drawing.Point(6, 17);
             this.lblSetupName.Name = "lblSetupName";
             this.lblSetupName.Size = new System.Drawing.Size(99, 14);
             this.lblSetupName.TabIndex = 13;
             this.lblSetupName.Text = "Available Setups";
-                                                this.cboSetupName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            // 
+            // cboSetupName
+            // 
+            this.cboSetupName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.cboSetupName.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboSetupName.FormattingEnabled = true;
             this.cboSetupName.Location = new System.Drawing.Point(111, 12);
@@ -446,13 +566,19 @@ namespace BenMAP
             this.cboSetupName.Size = new System.Drawing.Size(158, 22);
             this.cboSetupName.TabIndex = 12;
             this.cboSetupName.SelectedValueChanged += new System.EventHandler(this.cboSetupName_SelectedValueChanged);
-                                                this.groupBox1.Location = new System.Drawing.Point(191, -86);
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Location = new System.Drawing.Point(191, -86);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(50, 79);
             this.groupBox1.TabIndex = 14;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "groupBox1";
-                                                this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
+            // 
+            // ManageSetup
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(691, 661);
             this.Controls.Add(this.groupBox2);

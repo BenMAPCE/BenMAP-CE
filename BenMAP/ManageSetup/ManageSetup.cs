@@ -14,6 +14,7 @@ namespace BenMAP
     public partial class ManageSetup : FormBase
     {
         string _dataName = string.Empty;
+
         public ManageSetup()
         {
             InitializeComponent();
@@ -55,6 +56,7 @@ namespace BenMAP
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                 lstMonitor.DataSource = ds.Tables[0];
                 lstMonitor.DisplayMember = "MonitorDataSetName";
+                
             }
         }
 
@@ -278,7 +280,8 @@ namespace BenMAP
             string commandText = "select max(SETUPID) from Setups";
             object objSetup = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
             int setupID = int.Parse(objSetup.ToString()) + 1;
-            commandText = string.Format("insert into Setups values({0},'{1}')", setupID, frm.NewSetupName);
+            //The 'F' is for the Locked column in Setups - this is imported and not predefined
+            commandText = string.Format("insert into Setups values({0},'{1}', 'F')", setupID, frm.NewSetupName);
             int rht = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
             commandText = string.Format("select SetupID,SetupName from Setups order by SetupID");
             DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
