@@ -810,8 +810,22 @@ namespace BenMAP
                     case "Type":
 
                     break;
-                    case "Value":
-
+                    case "Value": // note that Values (plural) is used for monitor data and Value (singular) is used for incidence data
+                        
+                    break;
+                    case "Values":  // note that Values (plural) is used for monitor data and Value (singular) is used for incidence data
+                        if (!string.IsNullOrEmpty(valToVerify))
+                        {
+                            // monitor values must have 365 or 366 (leap year) records
+                            int iDayCount;
+                            iDayCount = Regex.Matches(valToVerify, ",").Count;
+                            if (!((iDayCount == 364) || (iDayCount == 365))) // should be either 364 or 365 (leap year) commas in string
+                            {
+                                errMsg = string.Format("Wrong number of days for monitor.  ({0})", valToVerify);
+                            }
+                            
+                        }
+                        
                     break;
                     case "Variable":
 
