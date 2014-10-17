@@ -275,6 +275,29 @@ namespace BenMAP
                 return null;
             }
         }
+        public static Dictionary<string, int> getAllOrigEndPointGroup()
+        {
+            // this is a dictionary without case lowering
+            // used by output example file routine
+            try
+            {
+                Dictionary<string, int> dicEndPointGroup = new Dictionary<string, int>();
+                string commandText = "select EndPointGroupID, EndPointGroupName from EndPointGroups";
+                ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
+                foreach (DataRow dr in ds.Tables[0].Rows)
+                {
+                    dicEndPointGroup.Add(dr["EndPointGroupName"].ToString(), Convert.ToInt32(dr["EndPointGroupID"]));
+                }
+
+                return dicEndPointGroup;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
 
         public static Dictionary<int, List<string>> getEndPointID()
         {
@@ -297,7 +320,7 @@ namespace BenMAP
                 return null;
             }
         }
-
+       
         public static Dictionary<string, int> getAllEndPoint()
         {
             try
@@ -1152,8 +1175,9 @@ namespace BenMAP
                 Dictionary<string, int> dicGender = getAllGender();
                 Dictionary<string, int> dicRace = getAllRace();
                 Dictionary<string, int> dicEthnicity = getAllEthnicity();
-                Dictionary<string, int> dicEndPointGroup = getAllEndPointGroup();
-                Dictionary<string, int> dicEndPoint = getAllEndPoint();
+                // changed to mixed case version of endpoint group to prevent case folding - example will not import if lower case
+                Dictionary<string, int> dicEndPointGroup = getAllOrigEndPointGroup();
+                Dictionary<string, int> dicEndPoint = getAllOrigEndPoint();
                 commandText = "select count(*) from IncidenceRates";
                 int count = (int)fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
                 if (count < outputRowsNumber) { outputRowsNumber = count; }
