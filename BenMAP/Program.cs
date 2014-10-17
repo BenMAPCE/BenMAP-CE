@@ -104,8 +104,9 @@ namespace BenMAP
                     Environment.Exit(0);
                 }
             }
-            else //this error occurred in Error Reporting so just quit
+            else //this error occurred in Error Reporting so alert user then quit
             {
+                MessageBox.Show("The application encountered the following fatal error and will now terminate." + Environment.NewLine + Environment.NewLine + ex.Message, "Error", MessageBoxButtons.OK);
                 Environment.Exit(0);
             }
         
