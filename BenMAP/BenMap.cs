@@ -1166,23 +1166,30 @@ namespace BenMAP
                                         bool PopulatedPollutantsAlreadyExist = false;
                                         foreach (BenMAPPollutant BMpol in CommonClass.LstPollutant)
                                         {
-                                            if (BMpol.PollutantID == testbcg.Pollutant.PollutantID)
+                                            if (testbcg.Pollutant != null)
                                             {
-                                                PopulatedPollutantsAlreadyExist = true;
-                                                break;
+                                                if (BMpol.PollutantID == testbcg.Pollutant.PollutantID)
+                                                {
+                                                    PopulatedPollutantsAlreadyExist = true;
+                                                    break;
+                                                }
                                             }
                                         }
+
                                         if (!PopulatedPollutantsAlreadyExist)  //can't find it in pollutant list, so it must be an extra bcg record
                                         {
                                             ExtraListBCG.Add(testbcg);  
                                         }
 
                                     }
+
                                     if (ExtraListBCG.Count > 0)                 //remove extra bcg records
                                     {
                                         foreach (BaseControlGroup extrabcg in ExtraListBCG)
                                         {                                              
                                             //remove this pollutant node
+                                            //refresh node count in case a node was removed above
+                                            nodesCount = currentNode.Parent.Nodes.Count; 
                                             for (int i = nodesCount - 1; i > -1; i--)
                                             {
                                                 TreeNode node = currentNode.Parent.Nodes[i];
