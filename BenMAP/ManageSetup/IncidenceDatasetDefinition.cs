@@ -427,7 +427,8 @@ namespace BenMAP
         DataTable _dt = new DataTable();
 
         private void btnBrowse_Click(object sender, EventArgs e)
-        {
+        {   // this button is labeled "Load from file" in the GUI
+            // the input file is loaded into the database here
             if (txtDataName.Text == string.Empty || cboGridDefinition.SelectedItem == null)
             { MessageBox.Show("Please input a dataset name and select a grid definition."); return; }
             else
@@ -564,7 +565,7 @@ namespace BenMAP
                         }
                         _dataSetName = txtDataName.Text;
                     }
-
+                    // look for duplicate rows in imput file and make a copy in lstMustRemove
                     List<DataRow> lstMustRemove = new List<DataRow>();
                     Dictionary<string, int> dicDtLoadTable = new Dictionary<string, int>();
                     for (int i = 0; i < _dtLoadTable.Rows.Count; i++)
@@ -594,6 +595,15 @@ namespace BenMAP
                             + _dtLoadTable.Rows[i][iType] + "," + _dtLoadTable.Rows[i][iEthnicity] + ","
                             + _dtLoadTable.Rows[i][iColumn] + "," + _dtLoadTable.Rows[i][iRow] + "," + _dtLoadTable.Rows[i][iValue], i);
 
+                        }
+                    }
+
+                    if (lstMustRemove.Count() > 0) {
+                        // duplicates were found - ask user to overwrite or cancel
+                        DialogResult dlgOverwrite = MessageBox.Show("Duplicate incidence data were found in the import file","Continue with load?",MessageBoxButtons.OKCancel);
+                        if (dlgOverwrite != DialogResult.OK) {  // user selects cancel import
+                            MessageBox.Show("Load cancelled by user");
+                            return;
                         }
                     }
                     foreach (DataRow dr in lstMustRemove)
@@ -707,6 +717,24 @@ namespace BenMAP
                     fbCommand.CommandType = CommandType.Text;
                     if (fbCommand.Connection.State != ConnectionState.Open)
                     { fbCommand.Connection.Open(); }
+                    // STOPPED HERE
+                    // add check for import rows that duplicate existing rows
+                    bool bDupRows = false;
+                    int iRowCount = 0;
+                    while ((iRowCount < _dtLoadTable.Rows.Count) && !bDupRows) {
+
+
+                        iRowCount++;
+                    }
+                    if (bDupRows)   // duplicates have been found
+                    {
+                        DialogResult dlgOverwrite = MessageBox.Show("Imput file contains incident data already in BenMAP ","Load with duplicates?",MessageBoxButtons.OKCancel);
+                        if (dlgOverwrite != DialogResult.OK)
+                        {  // user selects cancel import
+                            MessageBox.Show("Load cancelled by user");
+                            return;
+                        }
+                    }
 
                     progressBar1.Maximum = _dtLoadTable.Rows.Count;
                     for (int i = 0; i < (_dtLoadTable.Rows.Count / 125) + 1; i++)
