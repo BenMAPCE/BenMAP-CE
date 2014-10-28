@@ -3017,7 +3017,7 @@ namespace BenMAP
             myScheme1.CreateCategories(polLayer.DataSet.DataTable);
 
             // Set the category colors equal to the selected color ramp
-            for (int catNum = 0; catNum < CategoryNumber; catNum++)
+            for (int catNum = 0; catNum < myScheme1.Categories.Count; catNum++)
             {
                 myScheme1.Categories[catNum].Symbolizer.SetOutline(Color.Transparent, 0); //make the outlines invisble
                 myScheme1.Categories[catNum].SetColor(colorBlend.ColorArray[catNum].ToTransparent((float)0.9));
