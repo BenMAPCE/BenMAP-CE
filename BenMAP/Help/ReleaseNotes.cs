@@ -29,14 +29,18 @@ namespace BenMAP
         {
             this.Close();
         }
-        private static string fileName = Application.StartupPath + @"\Data\BenMap CE Release Notes.rtf";
+        private static string fileName = Application.StartupPath + @"\Data\BenMap-CE Release Notes.rtf";
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenFileDialog openRTFImplement = new OpenFileDialog();
-            openRTFImplement.Filter = "RTF files(*.RTF)|*.RTF"; if (openRTFImplement.ShowDialog() == DialogResult.OK && openRTFImplement.FileName.Length > 0)
+            try
             {
-                fileName = openRTFImplement.FileName; this.richTextBoxPrintCtrl1.LoadFile(fileName, RichTextBoxStreamType.RichText);
+                OpenFileDialog openRTFImplement = new OpenFileDialog();
+                openRTFImplement.Filter = "RTF files(*.RTF)|*.RTF"; if (openRTFImplement.ShowDialog() == DialogResult.OK && openRTFImplement.FileName.Length > 0)
+                {
+                    fileName = openRTFImplement.FileName; this.richTextBoxPrintCtrl1.LoadFile(fileName, RichTextBoxStreamType.RichText);
+                }
             }
+            catch (ArgumentException e1) { e1.ToString(); }
         }
 
         private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -60,8 +64,10 @@ namespace BenMAP
             {
                 this.richTextBoxPrintCtrl1.LoadFile(Application.StartupPath + @"\Data\BenMap-CE Release Notes.rtf", RichTextBoxStreamType.RichText);
             }
-            catch
-            { }
+            catch(ArgumentException e1)
+            { e1.ToString();
+            MessageBox.Show("IncorrectFile");
+            }
         }
 
         private int checkPrint;

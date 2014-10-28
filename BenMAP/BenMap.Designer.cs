@@ -695,7 +695,7 @@ namespace BenMAP
             // 
             // btShowCRResult
             // 
-            this.btShowCRResult.Location = new System.Drawing.Point(417, 30);
+            this.btShowCRResult.Location = new System.Drawing.Point(422, 30);
             this.btShowCRResult.Name = "btShowCRResult";
             this.btShowCRResult.Size = new System.Drawing.Size(101, 23);
             this.btShowCRResult.TabIndex = 15;
@@ -2400,7 +2400,7 @@ namespace BenMAP
             this.OLVResultsShow.CopySelectionOnControlC = false;
             this.OLVResultsShow.Cursor = System.Windows.Forms.Cursors.Default;
             this.OLVResultsShow.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.OLVResultsShow.EmptyListMsg = "Results table will appear here.";
+            this.OLVResultsShow.EmptyListMsg = "Shift click several studies and then click \"Show Results\"  ";
             this.OLVResultsShow.EmptyListMsgFont = new System.Drawing.Font("Calibri", 14.25F);
             this.OLVResultsShow.FullRowSelect = true;
             this.OLVResultsShow.HeaderUsesThemes = false;
