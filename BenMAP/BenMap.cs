@@ -2764,7 +2764,7 @@ namespace BenMAP
                     polMapGroup = AddMapGroup(pollutantMGText, "Pollutants", false, false);
                     bcgMapGroup = AddMapGroup(bcgMGText, pollutantMGText, false, false);
                     //Remove the old version of the layer if exists already
-                    RemoveOldPolygonLayer(LayerNameText, bcgMapGroup.GetLayers(), false);  //!!!!!!!!!!!!Need to trap for problems removing the old layer if it exists?
+                    RemoveOldPolygonLayer(LayerNameText, bcgMapGroup.Layers, false);  //!!!!!!!!!!!!Need to trap for problems removing the old layer if it exists?
 
                     // Add a new layer baseline, control or delta layer to the Pollutants group
                     if (File.Exists(benMAPLine.ShapeFile))
@@ -7629,7 +7629,7 @@ namespace BenMAP
                         }
                     }
                     LayerTextName = author;
-                    RemoveOldPolygonLayer(LayerTextName, PVResultsMG.GetLayers(), false);
+                    RemoveOldPolygonLayer(LayerTextName, PVResultsMG.Layers, false);
 
                     if (!chbAPVAggregation.Checked)
                     {   
@@ -11529,7 +11529,8 @@ namespace BenMAP
                             }
                             string LayerNameText = author;
                             //Remove the old version of the layer if exists already
-                            RemoveOldPolygonLayer(LayerNameText, HIFResultsMapGroup.GetLayers(), false);
+                            RemoveOldPolygonLayer(LayerNameText, HIFResultsMapGroup.Layers, false);
+                            
                            
                             tsbChangeProjection.Text = "change projection to Albers";
                             mainMap.ProjectionModeReproject = ActionMode.Never;
@@ -13015,7 +13016,7 @@ namespace BenMAP
         {
 
         }
-        private void RemoveOldPolygonLayer(string LayerName, IList<ILayer> layerList, bool ShrinkOtherLayersInMapGroup = false)
+        private void RemoveOldPolygonLayer(string LayerName, IMapLayerCollection layerList, bool ShrinkOtherLayersInMapGroup = false)
         {
             MapGroup aMGLayer = new MapGroup();
             MapPolygonLayer aPolyLayer = new MapPolygonLayer();
@@ -13027,7 +13028,7 @@ namespace BenMAP
                 if (aLayer is MapGroup || aLayer is IMapGroup) //Look within Map groups
                 {
                     aMGLayer = (MapGroup)aLayer;
-                    RemoveOldPolygonLayer(LayerName, aMGLayer.GetLayers(), ShrinkOtherLayersInMapGroup);
+                    RemoveOldPolygonLayer(LayerName, aMGLayer.Layers, ShrinkOtherLayersInMapGroup);
                    
                 }
                 else if (aLayer is FeatureLayer || aLayer is IFeatureLayer) // layer at root level(not in a mapgroup
@@ -13343,7 +13344,7 @@ namespace BenMAP
                                 }
                             }
                             string LayerNameText = "Pooled Incidence:" + author; 
-                            RemoveOldPolygonLayer(LayerNameText, PIResultsMapGroup.GetLayers(), false);
+                            RemoveOldPolygonLayer(LayerNameText, PIResultsMapGroup.Layers, false);
 
                             //mainMap.Layers.Clear();
                             if (incidenceGrid is ShapefileGrid)
