@@ -3017,7 +3017,7 @@ namespace BenMAP
             myScheme1.CreateCategories(polLayer.DataSet.DataTable);
 
             // Set the category colors equal to the selected color ramp
-            for (int catNum = 0; catNum < CategoryNumber; catNum++)
+            for (int catNum = 0; catNum < myScheme1.Categories.Count; catNum++)
             {
                 myScheme1.Categories[catNum].Symbolizer.SetOutline(Color.Transparent, 0); //make the outlines invisble
                 myScheme1.Categories[catNum].SetColor(colorBlend.ColorArray[catNum].ToTransparent((float)0.9));
@@ -13019,6 +13019,7 @@ namespace BenMAP
         {
             MapGroup aMGLayer = new MapGroup();
             MapPolygonLayer aPolyLayer = new MapPolygonLayer();
+            List<ILayer> layersToRemove = new List<ILayer>();
            
             //Remove the old version of the layer if exists already
             foreach (ILayer aLayer in layerList)
@@ -13037,8 +13038,7 @@ namespace BenMAP
 
                         if (aPolyLayer.Name == LayerName)
                         {
-                            layerList.Remove((IMapLayer)aLayer);
-                            //break;
+                            layersToRemove.Add(aLayer); //add to list of layers to remove                            
                         }
                         else if (ShrinkOtherLayersInMapGroup)  // Unexpand this layer to increase display room for new layer
                         {
@@ -13046,6 +13046,12 @@ namespace BenMAP
                         }
                     }
                 }
+            }
+
+            //remove layers
+            foreach (ILayer layer in layersToRemove)
+            {
+                layerList.Remove((IMapLayer)layer);
             }
 
            return;
