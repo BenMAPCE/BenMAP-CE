@@ -153,8 +153,9 @@ namespace BenMAP
                 dt = lmdataset.MonitorDataSet;
                 _metadataObj = lmdataset.MetadataObj;
                 olvFunction.ClearObjects();
+                
+                //LoadDatabase();
                 LoadFunctionOLV();
-                LoadDatabase();
                 //after loading the datafile, the dataset is Edit flag should be reset to true.  
                 //This will allow for additional files to be added.
                 _isEdit = true;
@@ -429,7 +430,8 @@ namespace BenMAP
                     dr[33] = --AddCount;
                     _dt.Rows.Add(dr);
                     //dtForLoading.ImportRow(dr);
-                    _dt.ImportRow(dr);
+                    // removed next row to avoid double importing of file records
+                    //_dt.ImportRow(dr);
                 }   
                     
                 //dtLoad = _dt;
