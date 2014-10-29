@@ -165,12 +165,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_308CB6C822134462B2B27B33FAA55EA8"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_33F40EB6CF6705DDD0350F1F2F69DEF1"
         "OwnerKey" = "8:_3A449D36F2D7D6FCD21F114440FBD25D"
         "MsmSig" = "8:_UNDEFINED"
@@ -537,12 +531,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_917FEA2D45B842AFAFF4B7DF836C1A5E"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_92D008EF20DF46228A6F6A5C70569F6B"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -586,6 +574,12 @@
         "Entry"
         {
         "MsmKey" = "8:_9BBCB4CAF47842449487E00CB2E88511"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_9BF66BECB0754C0B8B7ABB9DA6DED48D"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -911,6 +905,12 @@
         {
         "MsmKey" = "8:_DA42830D9B3CDB980BAC129336FDDA0E"
         "OwnerKey" = "8:_1C4BCDA727BD99C1ACD20E5827631B81"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_DA443A4265C740F88FF6E9A410FB303B"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -2025,26 +2025,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_308CB6C822134462B2B27B33FAA55EA8"
-            {
-            "SourcePath" = "8:..\\Data\\BenMAP-CE Release Notes.rtf"
-            "TargetName" = "8:BenMAP-CE Release Notes.rtf"
-            "Tag" = "8:"
-            "Folder" = "8:_C1DB8A74FA6D421FA57CD7669EF553D1"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_33F40EB6CF6705DDD0350F1F2F69DEF1"
             {
             "AssemblyRegister" = "3:1"
@@ -2877,26 +2857,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_917FEA2D45B842AFAFF4B7DF836C1A5E"
-            {
-            "SourcePath" = "8:..\\Data\\BenMAP-CE Release Notes.rtf"
-            "TargetName" = "8:BenMAP-CE Release Notes.rtf"
-            "Tag" = "8:"
-            "Folder" = "8:_2544133200444F37B792B72DFB60B46E"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_92D008EF20DF46228A6F6A5C70569F6B"
             {
             "SourcePath" = "8:..\\Data\\Shapefiles\\United States\\State_epa2.sbn"
@@ -2994,6 +2954,26 @@
             "TargetName" = "8:YRD__04km_grid_WGS84_LCC_Pro1.dbf"
             "Tag" = "8:"
             "Folder" = "8:_8DEE80A1D3354E67A67DC9453B3B1FB9"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9BF66BECB0754C0B8B7ABB9DA6DED48D"
+            {
+            "SourcePath" = "8:..\\Data\\BenMAP-CE Release Notes.rtf"
+            "TargetName" = "8:BenMAP-CE Release Notes.rtf"
+            "Tag" = "8:"
+            "Folder" = "8:_2544133200444F37B792B72DFB60B46E"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -3905,6 +3885,26 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_DA443A4265C740F88FF6E9A410FB303B"
+            {
+            "SourcePath" = "8:..\\Data\\BenMAP-CE Release Notes.rtf"
+            "TargetName" = "8:BenMAP-CE Release Notes.rtf"
+            "Tag" = "8:"
+            "Folder" = "8:_C1DB8A74FA6D421FA57CD7669EF553D1"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_E0D5A7E9C2CFFB5A79832F8A5421FA25"
             {
             "AssemblyRegister" = "3:1"
@@ -4585,7 +4585,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:BenMap-CE"
         "ProductCode" = "8:{D565775A-2B13-4F8E-B882-2762B82D8749}"
-        "PackageCode" = "8:{AA54F182-FFB0-4D91-89A5-307F462965E2}"
+        "PackageCode" = "8:{9211ABB9-F2F7-4A0B-B1BE-3854BDA6DA41}"
         "UpgradeCode" = "8:{10C0CCD0-CE12-43BB-BB3E-44059FCA4ADB}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
