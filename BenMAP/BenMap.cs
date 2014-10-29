@@ -499,9 +499,8 @@ namespace BenMAP
                 }
                 else if (CommonClass.BaseControlCRSelectFunctionCalculateValue != null && CommonClass.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue != null)
                 {
-
-                    showExistBaseControlCRSelectFunction(CommonClass.BaseControlCRSelectFunction, this.trvSetting.Nodes["aggregationpoolingvaluation"]);
                     errorNodeImage(trvSetting.Nodes[1].Nodes[trvSetting.Nodes[1].Nodes.Count - 1]);
+                    showExistBaseControlCRSelectFunction(CommonClass.BaseControlCRSelectFunction, this.trvSetting.Nodes["aggregationpoolingvaluation"]);                    
                 }
                 else if (CommonClass.BaseControlCRSelectFunction != null)
                 {
