@@ -69,7 +69,7 @@ namespace BenMAP
             // btnOK
             // 
             this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnOK.Location = new System.Drawing.Point(711, 375);
+            this.btnOK.Location = new System.Drawing.Point(711, 364);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 23);
             this.btnOK.TabIndex = 5;
@@ -305,7 +305,7 @@ namespace BenMAP
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImage = global::BenMAP.Properties.Resources.Welcome;
-            this.ClientSize = new System.Drawing.Size(798, 401);
+            this.ClientSize = new System.Drawing.Size(798, 390);
             this.ControlBox = false;
             this.Controls.Add(this.chkCloseTip);
             this.Controls.Add(this.btnOK);

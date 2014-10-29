@@ -2391,6 +2391,7 @@ namespace BenMAP
             // 
             // OLVResultsShow
             // 
+            this.OLVResultsShow.AccessibleRole = System.Windows.Forms.AccessibleRole.MenuBar;
             this.OLVResultsShow.AllowColumnReorder = true;
             this.OLVResultsShow.AllowDrop = true;
             this.OLVResultsShow.AlternateRowBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(240)))), ((int)(((byte)(220)))));
@@ -2400,7 +2401,7 @@ namespace BenMAP
             this.OLVResultsShow.CopySelectionOnControlC = false;
             this.OLVResultsShow.Cursor = System.Windows.Forms.Cursors.Default;
             this.OLVResultsShow.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.OLVResultsShow.EmptyListMsg = "Results appear hereShift click several studies and then click \"Show Results\"  ";
+            this.OLVResultsShow.EmptyListMsg = "Shift click several studies and then click \"Show Results\"  ";
             this.OLVResultsShow.EmptyListMsgFont = new System.Drawing.Font("Calibri", 14.25F);
             this.OLVResultsShow.FullRowSelect = true;
             this.OLVResultsShow.HeaderUsesThemes = false;
