@@ -684,22 +684,22 @@ namespace BenMAP
             // 
             // btSelectAttribute
             // 
-            this.btSelectAttribute.Location = new System.Drawing.Point(532, 30);
+            this.btSelectAttribute.Location = new System.Drawing.Point(383, 32);
             this.btSelectAttribute.Name = "btSelectAttribute";
-            this.btSelectAttribute.Size = new System.Drawing.Size(124, 23);
+            this.btSelectAttribute.Size = new System.Drawing.Size(145, 23);
             this.btSelectAttribute.TabIndex = 16;
-            this.btSelectAttribute.Text = "Column headers";
+            this.btSelectAttribute.Text = "Select Result Fields";
             this.btSelectAttribute.UseCompatibleTextRendering = true;
             this.btSelectAttribute.UseVisualStyleBackColor = true;
             this.btSelectAttribute.Click += new System.EventHandler(this.btSelectAttribute_Click);
             // 
             // btShowCRResult
             // 
-            this.btShowCRResult.Location = new System.Drawing.Point(422, 30);
+            this.btShowCRResult.Location = new System.Drawing.Point(532, 32);
             this.btShowCRResult.Name = "btShowCRResult";
-            this.btShowCRResult.Size = new System.Drawing.Size(101, 23);
+            this.btShowCRResult.Size = new System.Drawing.Size(133, 23);
             this.btShowCRResult.TabIndex = 15;
-            this.btShowCRResult.Text = "Show results";
+            this.btShowCRResult.Text = "Show Results";
             this.btShowCRResult.UseVisualStyleBackColor = true;
             this.btShowCRResult.Click += new System.EventHandler(this.btShowCRResult_Click);
             // 
@@ -2400,7 +2400,7 @@ namespace BenMAP
             this.OLVResultsShow.CopySelectionOnControlC = false;
             this.OLVResultsShow.Cursor = System.Windows.Forms.Cursors.Default;
             this.OLVResultsShow.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.OLVResultsShow.EmptyListMsg = "Shift click several studies and then click \"Show Results\"  ";
+            this.OLVResultsShow.EmptyListMsg = "Results appear hereShift click several studies and then click \"Show Results\"  ";
             this.OLVResultsShow.EmptyListMsgFont = new System.Drawing.Font("Calibri", 14.25F);
             this.OLVResultsShow.FullRowSelect = true;
             this.OLVResultsShow.HeaderUsesThemes = false;
