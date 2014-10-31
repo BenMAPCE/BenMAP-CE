@@ -719,13 +719,28 @@ namespace BenMAP
                     { fbCommand.Connection.Open(); }
                     // STOPPED HERE
                     // add check for import rows that duplicate existing rows
+                    /*
                     bool bDupRows = false;
                     int iRowCount = 0;
                     while ((iRowCount < _dtLoadTable.Rows.Count) && !bDupRows) {
-
-
+                        // a duplicate has the same [EndpointGroup], [Endpoint], [Race], [Gender], [StartAge], [EndAge], [Type], [Ethnicity], [Column], [Row]
+                        //dicDtLoadTable.Add(_dtLoadTable.Rows[i][iEndpointGroup] + "," + _dtLoadTable.Rows[i][iEndpoint] + ","
+                        //    + _dtLoadTable.Rows[i][iRace] + "," + _dtLoadTable.Rows[i][iGender] + ","
+                        //    + _dtLoadTable.Rows[i][iStartAge] + "," + _dtLoadTable.Rows[i][iEndAge] + ","
+                        //    + _dtLoadTable.Rows[i][iType] + "," + _dtLoadTable.Rows[i][iEthnicity] + ","
+                        //    + _dtLoadTable.Rows[i][iColumn] + "," + _dtLoadTable.Rows[i][iRow], i);
+                        
+                        commandText = "Select INCIDENCERATEID from INCIDENCERATES where EndpointGroupID =" + _dtLoadTable.Rows[iRowCount][iEndpointGroup] 
+                                + ", and EndpointID=" + _dtLoadTable.Rows[iRowCount][iEndpoint] 
+                                + ", and RaceID=" + _dtLoadTable.Rows[iRowCount][iRace] 
+                                + ", and GenderID=" + _dtLoadTable.Rows[iRowCount][iGender] + ","
+                                + _dtLoadTable.Rows[iRowCount][iStartAge] + "," + _dtLoadTable.Rows[iRowCount][iEndAge] + ","
+                                + _dtLoadTable.Rows[iRowCount][iType] + "," + _dtLoadTable.Rows[iRowCount][iEthnicity] + ","
+                                + _dtLoadTable.Rows[iRowCount][iColumn] + "," + _dtLoadTable.Rows[iRowCount][iRow] );;
+                        
                         iRowCount++;
                     }
+                   
                     if (bDupRows)   // duplicates have been found
                     {
                         DialogResult dlgOverwrite = MessageBox.Show("Imput file contains incident data already in BenMAP ","Load with duplicates?",MessageBoxButtons.OKCancel);
@@ -735,7 +750,7 @@ namespace BenMAP
                             return;
                         }
                     }
-
+                    */
                     progressBar1.Maximum = _dtLoadTable.Rows.Count;
                     for (int i = 0; i < (_dtLoadTable.Rows.Count / 125) + 1; i++)
                     {
