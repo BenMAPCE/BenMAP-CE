@@ -4,6 +4,7 @@ using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Collections;
 using System.Windows.Forms;
 using DotSpatial.Controls;
 using DotSpatial.Data;
@@ -28,11 +29,41 @@ namespace BenMAP
         private const double BACKGROUND = 5.8;
         private const int YEAR = 2010;
         private const string FORMAT_DECIMAL_2_PLACES = "#,###.00";
+        private const string FORMAT_DECIMAL_0_PLACES = "N0";
 
         private System.Data.DataTable dtConcCountry = null;
         private System.Data.DataTable dtConcEntireRollback = null;
 
         Dictionary<String,IPolygonCategory> selectedButNotSavedIPCs = new Dictionary<String,IPolygonCategory>();
+
+        private class CountryItem 
+        {
+            string _id;
+            string _name;
+
+            public CountryItem(string Id, string Name)
+            {
+                _id = Id;
+                _name = Name;
+            }
+
+            public string Id
+            {
+                get { return _id; }
+                set { _id = value; }
+            }
+
+            public string Name
+            {
+                get { return _name; }
+                set { _name = value; }
+            }
+
+            public override string ToString()
+            {
+                return _name;
+            }
+        }
       
 
         public GBDRollback()
@@ -40,23 +71,40 @@ namespace BenMAP
             InitializeComponent();
 
             //set up locations,form size, visibility
+
+            listCountries.Location = new System.Drawing.Point(tvRegions.Location.X, tvRegions.Location.Y);
+            //increase height of list countries to better match that of tvRegions
+            //to compensate for a rendering bug in the controls
+            listCountries.Size = new Size(tvRegions.Size.Width, tvRegions.Size.Height + 2);
+
             gbCountrySelection.Location = new System.Drawing.Point(gbName.Location.X, gbName.Location.Y);
             gbParameterSelection.Location = new System.Drawing.Point(gbName.Location.X, gbName.Location.Y);
             SetActivePanel(0);
             Size = new Size(906, 777); //form size
 
+            
+
             //parameter options in gbParameterSelection
+            char micrograms = '\u00B5';
+            char super3 = '\u00B3';
+            lblIncrement.Text = "Increment (" + micrograms.ToString() + "g/m" + super3.ToString() + "):";
+
+            lblIncrementBackground.Text = "Background (" + micrograms.ToString() + "g/m" + super3.ToString() + "):";
+            lblPercentageBackground.Text = lblIncrementBackground.Text;
+
             gbOptionsPercentage.Location = new System.Drawing.Point(gbOptionsIncremental.Location.X, gbOptionsIncremental.Location.Y);
             gbParameterSelection.Controls.Add(gbOptionsPercentage);
             gbOptionsStandard.Location = new System.Drawing.Point(gbOptionsIncremental.Location.X, gbOptionsIncremental.Location.Y);
             gbParameterSelection.Controls.Add(gbOptionsStandard);            
             cboRollbackType.SelectedIndex = 0;
             SetActiveOptionsPanel(0);
+            rbRegions.Checked = true;
 
             txtFilePath.Text = CommonClass.ResultFilePath + @"\GBD";
 
             LoadCountries();
             LoadTreeView();
+            LoadCountryList();
             LoadMap();
             LoadColorPalette();
             LoadStandards();
@@ -137,23 +185,46 @@ namespace BenMAP
                 string region = String.Empty;
                 string country = String.Empty;
                 string countryid = String.Empty;
-                tvCountries.BeginUpdate();
+                tvRegions.BeginUpdate();
                 foreach (DataRow dr in dtCountries.Rows)
                 {
                     //new region?
                     if (!region.Equals(dr["REGIONNAME"].ToString(), StringComparison.OrdinalIgnoreCase))
                     {
                         region = dr["REGIONNAME"].ToString();
-                        tvCountries.Nodes.Add(region, region);
+                        tvRegions.Nodes.Add(region, region);
                     }
 
                     countryid = dr["COUNTRYID"].ToString();
                     country = dr["COUNTRYNAME"].ToString();
-                    tvCountries.Nodes[region].Nodes.Add(countryid, country);
+                    tvRegions.Nodes[region].Nodes.Add(countryid, country);
                 }
-                tvCountries.EndUpdate();
+                tvRegions.EndUpdate();
             }
         
+        }
+
+
+        private void LoadCountryList()
+        {
+            if (dtCountries != null)
+            {
+                System.Data.DataTable dtTemp = dtCountries.DefaultView.ToTable(true, "COUNTRYID", "COUNTRYNAME");
+                DataView dv = new DataView(dtTemp);
+                dv.Sort = "COUNTRYNAME ASC";
+                System.Data.DataTable dtAlph = dv.ToTable();
+
+                string country = String.Empty;
+                string countryid = String.Empty;
+                foreach (DataRow dr in dtAlph.Rows)
+                {
+                    countryid = dr["COUNTRYID"].ToString();
+                    country = dr["COUNTRYNAME"].ToString();
+
+                    listCountries.Items.Add(new CountryItem(countryid, country));                   
+                }
+            }
+
         }
 
         
@@ -246,7 +317,7 @@ namespace BenMAP
             if (checkedCountries.Count == 0)
             {
                 MessageBox.Show("You must select at least one country.");
-                tvCountries.Focus();
+                tvRegions.Focus();
                 return;
             }
 
@@ -264,7 +335,7 @@ namespace BenMAP
             SetActivePanel(1);
         }
 
-        private void tvCountries_AfterCheck(object sender, TreeViewEventArgs e)
+        private void tvRegions_AfterCheck(object sender, TreeViewEventArgs e)
         {
             if (e.Action != TreeViewAction.Unknown)
             {
@@ -280,12 +351,11 @@ namespace BenMAP
             {
                 if (!checkedCountries.ContainsKey(e.Node.Name))
                 {
+                    //add to country list
                     checkedCountries.Add(e.Node.Name,e.Node.Text);
                     //also select on map                
                     if (selectMapFeaturesOnNodeCheck)
                     {
-
-                        //mfl[0].SelectByAttribute(filter, ModifySelectionMode.Append);
                         //update map
                         IPolygonScheme ips = (IPolygonScheme)mfl[0].Symbology;
                         IPolygonCategory ipc = null;
@@ -299,19 +369,30 @@ namespace BenMAP
             }
             else
             {
+                //remove from country list
                 checkedCountries.Remove(e.Node.Name);
-                if(selectedButNotSavedIPCs.ContainsKey(e.Node.Name)){
+                //deselect from map
+                if(selectedButNotSavedIPCs.ContainsKey(e.Node.Name))
+                {
                     IPolygonCategory ipc = selectedButNotSavedIPCs[e.Node.Name];
                     mfl[0].Symbology.RemoveCategory(ipc);
                     selectedButNotSavedIPCs.Remove(e.Node.Name);
                     mfl[0].ApplyScheme(mfl[0].Symbology);
                  }
-                //unselect on map
-                //if (selectMapFeaturesOnNodeCheck)
-                //{
-                //    mfl[0].SelectByAttribute(filter, ModifySelectionMode.Subtract);
-                //}
             }
+
+            //finally check/uncheck on country-only list box
+            //but only if tvRegions is visible to avoid infinite loop
+            //see listCountries_ItemCheck event
+            if (tvRegions.Visible)
+            {
+                int index = listCountries.FindStringExact(e.Node.Text);
+                if (index >= 0)
+                {
+                    listCountries.SetItemChecked(index, e.Node.Checked);
+                }
+            }
+
         }
 
         private void CheckChildNodes(TreeNode node)
@@ -319,7 +400,7 @@ namespace BenMAP
 
             //this will set child nodes, if any, to 
             //same status as parent, checked or unchecked
-            tvCountries.BeginUpdate();
+            tvRegions.BeginUpdate();
             foreach (TreeNode item in node.Nodes)
             {
                 item.Checked = node.Checked;
@@ -329,7 +410,7 @@ namespace BenMAP
                     this.CheckChildNodes(item);
                 }
             }
-            tvCountries.EndUpdate();
+            tvRegions.EndUpdate();
         }
 
 
@@ -343,7 +424,7 @@ namespace BenMAP
             //this will set parent node, if any
             //to checked if all children are checked
             //otherwise parent will be unchecked
-            tvCountries.BeginUpdate();
+            tvRegions.BeginUpdate();
 
             bool allChecked = true;
 
@@ -359,7 +440,7 @@ namespace BenMAP
 
             node.Parent.Checked = allChecked;
 
-            tvCountries.EndUpdate();
+            tvRegions.EndUpdate();
         }
 
         private void btnSaveRollback_Click(object sender, EventArgs e)
@@ -624,7 +705,7 @@ namespace BenMAP
             txtName.Text = String.Empty;
             txtDescription.Text = String.Empty;
             selectMapFeaturesOnNodeCheck = false;
-            foreach (TreeNode node in tvCountries.Nodes)
+            foreach (TreeNode node in tvRegions.Nodes)
             {
                 node.Checked = false;
                 foreach(TreeNode tn in node.Nodes){
@@ -658,7 +739,7 @@ namespace BenMAP
             foreach (KeyValuePair<string,string> kvp in item.Countries)
             {
                 string countryid = kvp.Key;
-                TreeNode[] nodes = tvCountries.Nodes.Find(countryid,true);
+                TreeNode[] nodes = tvRegions.Nodes.Find(countryid,true);
                 foreach (TreeNode node in nodes)
                 {
                     node.Checked = true;
@@ -857,6 +938,10 @@ namespace BenMAP
                     dtConcEntireRollback.Columns.Add("CONCENTRATION_DELTA", dtConcCountry.Columns["CONCENTRATION"].DataType);
                     dtConcEntireRollback.Columns.Add("AIR_QUALITY_DELTA", dtConcCountry.Columns["CONCENTRATION"].DataType);
                     dtConcEntireRollback.Columns.Add("KREWSKI", dtConcCountry.Columns["CONCENTRATION"].DataType);
+                    dtConcEntireRollback.Columns.Add("KREWSKI_2_5", dtConcCountry.Columns["CONCENTRATION"].DataType);
+                    dtConcEntireRollback.Columns.Add("KREWSKI_97_5", dtConcCountry.Columns["CONCENTRATION"].DataType);
+                    dtConcEntireRollback.Columns.Add("INCIDENCE_RATE", dtConcCountry.Columns["CONCENTRATION"].DataType);
+                    dtConcEntireRollback.Columns.Add("BASELINE_MORTALITY", dtConcCountry.Columns["CONCENTRATION"].DataType);
                 }
 
                 //run rollback
@@ -874,6 +959,11 @@ namespace BenMAP
                 result = func.GBD_math(concDelta, population, incrate, beta, se);
                 //add results to dtConcCountry
                 dtConcCountry.Columns.Add("KREWSKI", dtConcCountry.Columns["CONCENTRATION"].DataType, result.Krewski.ToString());
+                dtConcCountry.Columns.Add("KREWSKI_2_5", dtConcCountry.Columns["CONCENTRATION"].DataType, result.Krewski2_5.ToString());
+                dtConcCountry.Columns.Add("KREWSKI_97_5", dtConcCountry.Columns["CONCENTRATION"].DataType, result.Krewski97_5.ToString());
+                dtConcCountry.Columns.Add("INCIDENCE_RATE", dtConcCountry.Columns["CONCENTRATION"].DataType, incrate.ToString());
+                dtConcCountry.Columns.Add("BASELINE_MORTALITY", dtConcCountry.Columns["CONCENTRATION"].DataType, "INCIDENCE_RATE * POPESTIMATE" );
+
 
                 //add records to entire rollback dataset
                 dtConcEntireRollback.Merge(dtConcCountry, true, MissingSchemaAction.Ignore);
@@ -995,11 +1085,14 @@ namespace BenMAP
             //xlSheet.Range["A5"].Value = "GBD Year";
             xlSheet.Range["B5"].Value = rollback.Year.ToString();
             //xlSheet.Range["A6"].Value = "Pollutant";
+            xlSheet.Range["B6"].Value = "PM 2.5";
+
+            //xlSheet.Range["A7"].Value = "Background Concentration";
             char micrograms = '\u00B5';
             char super3 = '\u00B3';
-            xlSheet.Range["B6"].Value = "PM 2.5" + micrograms.ToString() + "g/m" + super3.ToString();
+            xlSheet.Range["B7"].Value = rollback.Background.ToString() + " " + micrograms.ToString() + "g/m" + super3.ToString();
 
-            //xlSheet.Range["A7"].Value = "Rollback Type";
+            //xlSheet.Range["A8"].Value = "Rollback Type";
             string summary = String.Empty;
             switch (rollback.Type)
             {
@@ -1013,9 +1106,9 @@ namespace BenMAP
                     summary = "Rollback to " + rollback.StandardName + " Standard";
                     break;
             }
-            xlSheet.Range["B7"].Value = summary;
+            xlSheet.Range["B8"].Value = summary;
 
-            //xlSheet.Range["A8"].Value = "Regions and Countries";
+            //xlSheet.Range["A9"].Value = "Regions and Countries";
             int rowOffset = 0;
             int nextRow = 0;
 
@@ -1031,7 +1124,7 @@ namespace BenMAP
                 if (!region.Equals(dr["REGIONNAME"].ToString(), StringComparison.OrdinalIgnoreCase))
                 {
                     region = dr["REGIONNAME"].ToString();
-                    nextRow = 8 + rowOffset;
+                    nextRow = 9 + rowOffset;
                     xlSheet.Range["B" + nextRow.ToString()].Value = region;
                     xlSheet.Range["B" + nextRow.ToString()].Font.Italic = true;
                     rowOffset++;
@@ -1039,7 +1132,7 @@ namespace BenMAP
 
                 //write country
                 country = dr["COUNTRYNAME"].ToString();
-                nextRow = 8 + rowOffset;
+                nextRow = 9 + rowOffset;
                 xlSheet.Range["B" + nextRow.ToString()].Value = country;
                 xlSheet.Range["B" + nextRow.ToString()].ColumnWidth = 40;
                 xlSheet.Range["B" + nextRow.ToString()].WrapText = true;
@@ -1052,7 +1145,7 @@ namespace BenMAP
             xlRange = (Microsoft.Office.Interop.Excel.Range)(xlSheet.Columns[1]);            
             xlRange.AutoFit();
             //add borders
-            //nextRow = 8 + rowOffset;
+            //nextRow = 9 + rowOffset;
             xlRange = xlSheet.Range["A2:B" + nextRow.ToString()];
             xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeTop].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
             xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeRight].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
@@ -1065,7 +1158,7 @@ namespace BenMAP
             xlRange.Interior.Color = xlSheet.Range["A2"].Interior.Color;
 
 
-            xlSheet.Range["G2"].Value = rollback.Year.ToString() + " " + xlSheet.Range["G2"].Value.ToString();
+            xlSheet.Range["J2"].Value = rollback.Year.ToString() + " " + xlSheet.Range["J2"].Value.ToString();
 
 
             #endregion
@@ -1081,7 +1174,7 @@ namespace BenMAP
             //xlSheet2.Range["E3"].Value = "Min";
             //xlSheet2.Range["F3"].Value = "Median";
             //xlSheet2.Range["G3"].Value = "Max";
-            xlSheet2.Range["E2"].Value = rollback.Year.ToString() + " " + xlSheet2.Range["E2"].Value.ToString();
+            xlSheet2.Range["H2"].Value = rollback.Year.ToString() + " " + xlSheet2.Range["H2"].Value.ToString();
             //xlSheet2.Range["E2:G2"].MergeCells = true;
             //xlSheet2.Range["H3"].Value = "Min";
             //xlSheet2.Range["I3"].Value = "Median";
@@ -1110,6 +1203,9 @@ namespace BenMAP
             dtDetailedResults.Columns.Add("IS_REGION", Type.GetType("System.Boolean"));
             dtDetailedResults.Columns.Add("POP_AFFECTED", Type.GetType("System.Double"));
             dtDetailedResults.Columns.Add("AVOIDED_DEATHS", Type.GetType("System.Double"));
+            dtDetailedResults.Columns.Add("CONFIDENCE_INTERVAL", Type.GetType("System.String"));
+            dtDetailedResults.Columns.Add("PERCENT_BASELINE_MORTALITY", Type.GetType("System.Double"));
+            dtDetailedResults.Columns.Add("DEATHS_PER_100_THOUSAND", Type.GetType("System.Double"));
             dtDetailedResults.Columns.Add("AVOIDED_DEATHS_PERCENT_POP", Type.GetType("System.Double"));
             dtDetailedResults.Columns.Add("BASELINE_MIN", Type.GetType("System.Double"));
             dtDetailedResults.Columns.Add("BASELINE_MEDIAN", Type.GetType("System.Double"));
@@ -1152,21 +1248,29 @@ namespace BenMAP
                     //xlSheet2.Range["A" + nextRow.ToString()].WrapText = true;
                     xlSheet2.Range["A" + nextRow.ToString()].InsertIndent(2);                
                 }
-                xlSheet2.Range["B" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["POP_AFFECTED"].ToString());
-                xlSheet2.Range["C" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AVOIDED_DEATHS"].ToString());
-                xlSheet2.Range["D" + nextRow.ToString()].Value = dr["AVOIDED_DEATHS_PERCENT_POP"].ToString();//FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AVOIDED_DEATHS_PERCENT_POP"].ToString());
-                xlSheet2.Range["E" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MIN"].ToString());
-                xlSheet2.Range["F" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MEDIAN"].ToString());
-                xlSheet2.Range["G" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MAX"].ToString());
-                xlSheet2.Range["H" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MIN"].ToString());
-                xlSheet2.Range["I" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MEDIAN"].ToString());
-                xlSheet2.Range["J" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MAX"].ToString());
-                xlSheet2.Range["K" + nextRow.ToString()].Value = dr["AIR_QUALITY_CHANGE"].ToString();// FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AIR_QUALITY_CHANGE"].ToString());
+                xlSheet2.Range["B" + nextRow.ToString()].Value = FormatDoubleStringTwoSignificantFigures(FORMAT_DECIMAL_0_PLACES, dr["POP_AFFECTED"].ToString());
+                xlSheet2.Range["C" + nextRow.ToString()].Value = FormatDoubleStringTwoSignificantFigures(FORMAT_DECIMAL_0_PLACES, dr["AVOIDED_DEATHS"].ToString());
+                xlSheet2.Range["D" + nextRow.ToString()].Value = "'" + dr["CONFIDENCE_INTERVAL"].ToString(); //prepend apostrophe so Excel treats this as text not date
+                xlSheet2.Range["E" + nextRow.ToString()].Value = dr["PERCENT_BASELINE_MORTALITY"].ToString();
+                xlSheet2.Range["F" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["DEATHS_PER_100_THOUSAND"].ToString());
+                xlSheet2.Range["G" + nextRow.ToString()].Value = dr["AVOIDED_DEATHS_PERCENT_POP"].ToString();//FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AVOIDED_DEATHS_PERCENT_POP"].ToString());
+                xlSheet2.Range["H" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MIN"].ToString());
+                xlSheet2.Range["I" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MEDIAN"].ToString());
+                xlSheet2.Range["J" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MAX"].ToString());
+                xlSheet2.Range["K" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MIN"].ToString());
+                xlSheet2.Range["L" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MEDIAN"].ToString());
+                xlSheet2.Range["M" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MAX"].ToString());
+                xlSheet2.Range["N" + nextRow.ToString()].Value = dr["AIR_QUALITY_CHANGE"].ToString();// FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AIR_QUALITY_CHANGE"].ToString());
                 nextRow++;
                 
             }
 
-            xlRange = xlSheet2.Range["A4:K" + (nextRow - 1).ToString()];
+            //center confidence interval
+            xlRange = xlSheet2.Range["D4:D" + (nextRow - 1).ToString()];
+            xlRange.Cells.HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignCenter;
+            
+            //add cell borders
+            xlRange = xlSheet2.Range["A4:N" + (nextRow - 1).ToString()];
             xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeTop].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
             xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeRight].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
             xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeBottom].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
@@ -1183,19 +1287,22 @@ namespace BenMAP
             if (dtSummaryResults.Rows.Count > 0)
             {
                 DataRow dr = dtSummaryResults.Rows[0];
-                xlSheet.Range["D4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["POP_AFFECTED"].ToString());
-                xlSheet.Range["E4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AVOIDED_DEATHS"].ToString());
-                xlSheet.Range["F4"].Value = dr["AVOIDED_DEATHS_PERCENT_POP"].ToString();//FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AVOIDED_DEATHS_PERCENT_POP"].ToString());
-                xlSheet.Range["G4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MIN"].ToString());
-                xlSheet.Range["H4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MEDIAN"].ToString());
-                xlSheet.Range["I4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MAX"].ToString());
-                xlSheet.Range["J4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MIN"].ToString());
-                xlSheet.Range["K4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MEDIAN"].ToString());
-                xlSheet.Range["L4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MAX"].ToString());
-                xlSheet.Range["M4"].Value = dr["AIR_QUALITY_CHANGE"].ToString();// FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AIR_QUALITY_CHANGE"].ToString());
+                xlSheet.Range["D4"].Value = FormatDoubleStringTwoSignificantFigures(FORMAT_DECIMAL_0_PLACES, dr["POP_AFFECTED"].ToString());
+                xlSheet.Range["E4"].Value = FormatDoubleStringTwoSignificantFigures(FORMAT_DECIMAL_0_PLACES, dr["AVOIDED_DEATHS"].ToString());
+                xlSheet.Range["F4"].Value =  "'" + dr["CONFIDENCE_INTERVAL"].ToString(); //prepend apostrophe so Excel treats this as text not date
+                xlSheet.Range["G4"].Value = dr["PERCENT_BASELINE_MORTALITY"].ToString();
+                xlSheet.Range["H4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["DEATHS_PER_100_THOUSAND"].ToString());
+                xlSheet.Range["I4"].Value = dr["AVOIDED_DEATHS_PERCENT_POP"].ToString();//FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AVOIDED_DEATHS_PERCENT_POP"].ToString());
+                xlSheet.Range["J4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MIN"].ToString());
+                xlSheet.Range["K4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MEDIAN"].ToString());
+                xlSheet.Range["L4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MAX"].ToString());
+                xlSheet.Range["M4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MIN"].ToString());
+                xlSheet.Range["N4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MEDIAN"].ToString());
+                xlSheet.Range["O4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MAX"].ToString());
+                xlSheet.Range["P4"].Value = dr["AIR_QUALITY_CHANGE"].ToString();// FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AIR_QUALITY_CHANGE"].ToString());
 
             }
-            xlRange = xlSheet.Range["D4:M4"];
+            xlRange = xlSheet.Range["D4:P4"];
             xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeTop].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
             xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeRight].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
             xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeBottom].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
@@ -1208,23 +1315,24 @@ namespace BenMAP
 
             //summary chart
             //write summary chart data to hidden sheet
-            Microsoft.Office.Interop.Excel.Worksheet xlSheet3 = (Microsoft.Office.Interop.Excel.Worksheet)xlBook.Worksheets[3];
+            //sheet DataSource is hidden and is the 4th sheet (Metadata is the third sheet)
+            Microsoft.Office.Interop.Excel.Worksheet xlSheet4 = (Microsoft.Office.Interop.Excel.Worksheet)xlBook.Worksheets[4];             
             int nextRowForSummary = 1;
             foreach (DataRow dr in dtDetailedResults.Rows)
             {
                 //only write countries, skip regions
                 if (!Convert.ToBoolean(dr["IS_REGION"].ToString()))
                 {
-                    xlSheet3.Range["A" + nextRowForSummary.ToString()].Value = dr["NAME"].ToString();
-                    xlSheet3.Range["B" + nextRowForSummary.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AVOIDED_DEATHS"].ToString());
+                    xlSheet4.Range["A" + nextRowForSummary.ToString()].Value = dr["NAME"].ToString();
+                    xlSheet4.Range["B" + nextRowForSummary.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AVOIDED_DEATHS"].ToString());
                     nextRowForSummary++;                    
                 }
             }
             Microsoft.Office.Interop.Excel.ChartObject xlChartObject = (Microsoft.Office.Interop.Excel.ChartObject)xlSheet.ChartObjects(1);
             Microsoft.Office.Interop.Excel.Chart xlChart = (Microsoft.Office.Interop.Excel.Chart)xlChartObject.Chart;
             Microsoft.Office.Interop.Excel.Series xlSeries = (Microsoft.Office.Interop.Excel.Series)xlChart.SeriesCollection(1);
-            xlSeries.Values = xlSheet3.Range["B1:B" + (nextRowForSummary - 1).ToString()];
-            xlSeries.XValues = xlSheet3.Range["A1:A" + (nextRowForSummary - 1).ToString()];
+            xlSeries.Values = xlSheet4.Range["B1:B" + (nextRowForSummary - 1).ToString()];
+            xlSeries.XValues = xlSheet4.Range["A1:A" + (nextRowForSummary - 1).ToString()];
             //write to total avoided deaths text box on chart
             Microsoft.Office.Interop.Excel.Shape txtBox = (Microsoft.Office.Interop.Excel.Shape)xlSheet.Shapes.Item("TextBox 1");
             txtBox.TextFrame.Characters().Text = txtBox.TextFrame.Characters().Text + " " + xlSheet.Range["E4"].Text; //use .Text rather than .Value on the range here, because it is formatted
@@ -1236,12 +1344,11 @@ namespace BenMAP
             xlSeries.Values = xlSheet2.Range["C4:C" + (nextRow - 1).ToString()];
             xlSeries.XValues = xlSheet2.Range["A4:A" + (nextRow - 1).ToString()];
 
-            //avoided deaths percent pop chart sheet
+            //deaths per 100,000
             xlChart = (Microsoft.Office.Interop.Excel.Chart)xlBook.Charts[2];
             xlSeries = (Microsoft.Office.Interop.Excel.Series)xlChart.SeriesCollection(1);
-            xlSeries.Values = xlSheet2.Range["D4:D" + (nextRow - 1).ToString()];
+            xlSeries.Values = xlSheet2.Range["F4:F" + (nextRow - 1).ToString()];
             xlSeries.XValues = xlSheet2.Range["A4:A" + (nextRow - 1).ToString()];
-
 
             #endregion
 
@@ -1258,6 +1365,29 @@ namespace BenMAP
         private string FormatDoubleString(string format, string str)
         {         
             return Double.Parse(str).ToString(format);
+        }
+
+        private string FormatDoubleStringTwoSignificantFigures(string format, string str)
+        {
+            Double dbl = Double.Parse(str);
+
+            if ((dbl > 100) || (dbl < -100))
+            {
+                //absolute value, log10, floor (round down to nearest int), round function
+                //original Excel function: =ROUND(T19,2-1-INT(LOG10(ABS(T19))))
+
+                long numDecimalPlaces = Math.Abs(Convert.ToInt64(1 - Math.Floor(Math.Log10(Math.Abs(dbl)))));
+
+                double tenFactor = Math.Pow(Convert.ToDouble(10), Convert.ToDouble(numDecimalPlaces));
+
+                dbl = dbl / tenFactor;
+
+                dbl = Math.Round(dbl, 0, MidpointRounding.AwayFromZero);
+
+                dbl = dbl * tenFactor;
+            }
+
+            return dbl.ToString(format);
         }
 
         private double Median(IEnumerable<double> list)
@@ -1291,6 +1421,12 @@ namespace BenMAP
         {
             double popAffected;
             double avoidedDeaths;
+            double krewski_2_5;
+            double krewski_97_5;
+            string confidenceInterval;
+            double baselineMortality;
+            double percentBaselineMortality;
+            double deathsPer100Thousand;
             double avoidedDeathsPercentPop;
             double baselineMin;
             double baselineMedian;
@@ -1318,18 +1454,39 @@ namespace BenMAP
                 filter = "1=1"; //no filter (i.e., all rows)
             }
 
+            //population
             result = dtConcEntireRollback.Compute("SUM(POPESTIMATE)", filter);
             popAffected = Double.Parse(result.ToString());
 
+            //baselineMortality
+            result = dtConcEntireRollback.Compute("SUM(BASELINE_MORTALITY)", filter);
+            baselineMortality = Double.Parse(result.ToString());
 
-            System.Data.DataTable dtKrewski = dtConcEntireRollback.DefaultView.ToTable(true, "REGIONID", "REGIONNAME", "COUNTRYID", "COUNTRYNAME", "KREWSKI");
+            System.Data.DataTable dtKrewski = dtConcEntireRollback.DefaultView.ToTable(true, "REGIONID", "REGIONNAME", "COUNTRYID", "COUNTRYNAME",
+                                                                                            "KREWSKI", "KREWSKI_2_5", "KREWSKI_97_5");
             dtKrewski.DefaultView.Sort = "REGIONNAME, COUNTRYNAME";
 
+            //avoided deaths
             result = dtKrewski.Compute("SUM(KREWSKI)", filter);
             avoidedDeaths = Double.Parse(result.ToString());
+            
+            //confidence interval
+            result = dtKrewski.Compute("SUM(KREWSKI_2_5)", filter);
+            krewski_2_5 = Double.Parse(result.ToString());
+            result = dtKrewski.Compute("SUM(KREWSKI_97_5)", filter);
+            krewski_97_5 = Double.Parse(result.ToString());
+            confidenceInterval = FormatDoubleStringTwoSignificantFigures(FORMAT_DECIMAL_0_PLACES, krewski_2_5.ToString()) + " - " + FormatDoubleStringTwoSignificantFigures(FORMAT_DECIMAL_0_PLACES, krewski_97_5.ToString());
 
+            //percent baseline mortality
+            percentBaselineMortality = (avoidedDeaths / baselineMortality) * 100;
+
+            //deaths per 100,000
+            deathsPer100Thousand = avoidedDeaths/(popAffected/100000);
+
+            //avoided deaths percent pop
             avoidedDeathsPercentPop = (avoidedDeaths / popAffected) * 100;
-
+            
+            //baseline min, median, max
             result = dtConcEntireRollback.Compute("MIN(CONCENTRATION)", filter);
             baselineMin = Double.Parse(result.ToString());
 
@@ -1340,6 +1497,7 @@ namespace BenMAP
             result = dtConcEntireRollback.Compute("MAX(CONCENTRATION)", filter);
             baselineMax = Double.Parse(result.ToString());
 
+            //control min, median, max
             result = dtConcEntireRollback.Compute("MIN(CONCENTRATION_FINAL)", filter);
             controlMin = Double.Parse(result.ToString());
 
@@ -1350,6 +1508,7 @@ namespace BenMAP
             result = dtConcEntireRollback.Compute("MAX(CONCENTRATION_FINAL)", filter);
             controlMax = Double.Parse(result.ToString());
 
+            //air quality delta
             result = dtConcEntireRollback.Compute("SUM(AIR_QUALITY_DELTA)", filter);
             airQualityChange = Double.Parse(result.ToString());
             airQualityChange = airQualityChange / popAffected;
@@ -1359,6 +1518,9 @@ namespace BenMAP
             dr["IS_REGION"] = isRegion;
             dr["POP_AFFECTED"] = popAffected;
             dr["AVOIDED_DEATHS"] = avoidedDeaths;
+            dr["CONFIDENCE_INTERVAL"] = confidenceInterval;
+            dr["PERCENT_BASELINE_MORTALITY"] = percentBaselineMortality;
+            dr["DEATHS_PER_100_THOUSAND"] = deathsPer100Thousand;
             dr["AVOIDED_DEATHS_PERCENT_POP"] = avoidedDeathsPercentPop;
             dr["BASELINE_MIN"] = baselineMin;
             dr["BASELINE_MEDIAN"] = baselineMedian;
@@ -1432,6 +1594,55 @@ namespace BenMAP
                 }
             }
         }
+
+
+        private void ToggleRegionsCountries()
+        {
+            if (rbRegions.Checked)
+            {
+                tvRegions.Visible = true;
+                listCountries.Visible = false;
+            }
+            else
+            {
+                tvRegions.Visible = false;
+                listCountries.Visible = true;
+            }
+        
+        }
+
+        private void rbRegions_CheckedChanged(object sender, EventArgs e)
+        {
+            ToggleRegionsCountries();
+        }
+
+        private void rbCountries_CheckedChanged(object sender, EventArgs e)
+        {
+            ToggleRegionsCountries();
+        }
+
+        private void listCountries_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            //if countries is visible then synchronize the check state
+            //on the regions/countries tree view
+            //otherwise ignore to avoid a feedback loop because the user is checking/unchecking on 
+            //the regions/countries tree view and the check state will be sychronized from 
+            //tvCountries_AfterCheck event. 
+            if (listCountries.Visible)
+            {
+                //check country in regions tree view
+                CountryItem item = (CountryItem)listCountries.Items[e.Index];
+                TreeNode[] nodes = tvRegions.Nodes.Find(item.Id, true);
+                bool IsChecked = (e.NewValue == CheckState.Checked);
+                foreach (TreeNode node in nodes)
+                {
+                    node.Checked = IsChecked;
+                    CheckParentNode(node);
+                }
+            }
+
+        }
+
 
        
 

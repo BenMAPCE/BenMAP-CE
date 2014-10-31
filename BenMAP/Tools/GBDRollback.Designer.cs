@@ -29,12 +29,12 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GBDRollback));
             this.gbCountrySelection = new System.Windows.Forms.GroupBox();
             this.btnBack = new System.Windows.Forms.Button();
             this.btnNext2 = new System.Windows.Forms.Button();
-            this.tvCountries = new System.Windows.Forms.TreeView();
+            this.tvRegions = new System.Windows.Forms.TreeView();
             this.gbRollbacks = new System.Windows.Forms.GroupBox();
             this.btnBrowse = new System.Windows.Forms.Button();
             this.txtFilePath = new System.Windows.Forms.TextBox();
@@ -67,22 +67,22 @@
             this.tsbAddLayer = new System.Windows.Forms.ToolStripButton();
             this.mapGBD = new DotSpatial.Controls.Map();
             this.gbParameterSelection = new System.Windows.Forms.GroupBox();
-            this.pb_standard = new System.Windows.Forms.PictureBox();
-            this.pb_percent = new System.Windows.Forms.PictureBox();
             this.pb_incremental = new System.Windows.Forms.PictureBox();
             this.gbOptionsIncremental = new System.Windows.Forms.GroupBox();
             this.txtIncrementBackground = new System.Windows.Forms.TextBox();
             this.txtIncrement = new System.Windows.Forms.TextBox();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
+            this.lblIncrementBackground = new System.Windows.Forms.Label();
+            this.lblIncrement = new System.Windows.Forms.Label();
             this.cboRollbackType = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
             this.btnSaveRollback = new System.Windows.Forms.Button();
             this.btnBack2 = new System.Windows.Forms.Button();
+            this.pb_standard = new System.Windows.Forms.PictureBox();
+            this.pb_percent = new System.Windows.Forms.PictureBox();
             this.gbOptionsPercentage = new System.Windows.Forms.GroupBox();
             this.txtPercentageBackground = new System.Windows.Forms.TextBox();
             this.txtPercentage = new System.Windows.Forms.TextBox();
-            this.label6 = new System.Windows.Forms.Label();
+            this.lblPercentageBackground = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.gbOptionsStandard = new System.Windows.Forms.GroupBox();
             this.cboStandard = new System.Windows.Forms.ComboBox();
@@ -94,16 +94,19 @@
             this.label8 = new System.Windows.Forms.Label();
             this.btnNext = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.rbRegions = new System.Windows.Forms.RadioButton();
+            this.rbCountries = new System.Windows.Forms.RadioButton();
+            this.listCountries = new System.Windows.Forms.CheckedListBox();
             this.gbCountrySelection.SuspendLayout();
             this.gbRollbacks.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvRollbacks)).BeginInit();
             this.gbMap.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.gbParameterSelection.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pb_standard)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pb_percent)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pb_incremental)).BeginInit();
             this.gbOptionsIncremental.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pb_standard)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pb_percent)).BeginInit();
             this.gbOptionsPercentage.SuspendLayout();
             this.gbOptionsStandard.SuspendLayout();
             this.gbName.SuspendLayout();
@@ -111,9 +114,12 @@
             // 
             // gbCountrySelection
             // 
+            this.gbCountrySelection.Controls.Add(this.listCountries);
+            this.gbCountrySelection.Controls.Add(this.rbCountries);
+            this.gbCountrySelection.Controls.Add(this.rbRegions);
             this.gbCountrySelection.Controls.Add(this.btnBack);
             this.gbCountrySelection.Controls.Add(this.btnNext2);
-            this.gbCountrySelection.Controls.Add(this.tvCountries);
+            this.gbCountrySelection.Controls.Add(this.tvRegions);
             this.gbCountrySelection.Location = new System.Drawing.Point(1208, 12);
             this.gbCountrySelection.Name = "gbCountrySelection";
             this.gbCountrySelection.Size = new System.Drawing.Size(279, 420);
@@ -141,14 +147,14 @@
             this.btnNext2.UseVisualStyleBackColor = true;
             this.btnNext2.Click += new System.EventHandler(this.btnNext2_Click);
             // 
-            // tvCountries
+            // tvRegions
             // 
-            this.tvCountries.CheckBoxes = true;
-            this.tvCountries.Location = new System.Drawing.Point(10, 20);
-            this.tvCountries.Name = "tvCountries";
-            this.tvCountries.Size = new System.Drawing.Size(258, 355);
-            this.tvCountries.TabIndex = 0;
-            this.tvCountries.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.tvCountries_AfterCheck);
+            this.tvRegions.CheckBoxes = true;
+            this.tvRegions.Location = new System.Drawing.Point(10, 43);
+            this.tvRegions.Name = "tvRegions";
+            this.tvRegions.Size = new System.Drawing.Size(258, 332);
+            this.tvRegions.TabIndex = 0;
+            this.tvRegions.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.tvRegions_AfterCheck);
             // 
             // gbRollbacks
             // 
@@ -229,14 +235,14 @@
             this.colTotalPopulation,
             this.colRollbackType,
             this.colExecute});
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvRollbacks.DefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvRollbacks.DefaultCellStyle = dataGridViewCellStyle2;
             this.dgvRollbacks.Location = new System.Drawing.Point(17, 55);
             this.dgvRollbacks.MultiSelect = false;
             this.dgvRollbacks.Name = "dgvRollbacks";
@@ -516,29 +522,6 @@
             this.gbParameterSelection.TabStop = false;
             this.gbParameterSelection.Text = "Rollback Settings";
             // 
-            // pb_standard
-            // 
-            this.pb_standard.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("pb_standard.BackgroundImage")));
-            this.pb_standard.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.pb_standard.InitialImage = null;
-            this.pb_standard.Location = new System.Drawing.Point(15, 261);
-            this.pb_standard.Name = "pb_standard";
-            this.pb_standard.Size = new System.Drawing.Size(253, 119);
-            this.pb_standard.TabIndex = 9;
-            this.pb_standard.TabStop = false;
-            this.pb_standard.Visible = false;
-            // 
-            // pb_percent
-            // 
-            this.pb_percent.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("pb_percent.BackgroundImage")));
-            this.pb_percent.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.pb_percent.InitialImage = null;
-            this.pb_percent.Location = new System.Drawing.Point(15, 260);
-            this.pb_percent.Name = "pb_percent";
-            this.pb_percent.Size = new System.Drawing.Size(253, 119);
-            this.pb_percent.TabIndex = 8;
-            this.pb_percent.TabStop = false;
-            // 
             // pb_incremental
             // 
             this.pb_incremental.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("pb_incremental.BackgroundImage")));
@@ -555,8 +538,8 @@
             // 
             this.gbOptionsIncremental.Controls.Add(this.txtIncrementBackground);
             this.gbOptionsIncremental.Controls.Add(this.txtIncrement);
-            this.gbOptionsIncremental.Controls.Add(this.label5);
-            this.gbOptionsIncremental.Controls.Add(this.label4);
+            this.gbOptionsIncremental.Controls.Add(this.lblIncrementBackground);
+            this.gbOptionsIncremental.Controls.Add(this.lblIncrement);
             this.gbOptionsIncremental.Location = new System.Drawing.Point(15, 48);
             this.gbOptionsIncremental.Name = "gbOptionsIncremental";
             this.gbOptionsIncremental.Size = new System.Drawing.Size(253, 206);
@@ -566,7 +549,7 @@
             // 
             // txtIncrementBackground
             // 
-            this.txtIncrementBackground.Location = new System.Drawing.Point(96, 45);
+            this.txtIncrementBackground.Location = new System.Drawing.Point(108, 45);
             this.txtIncrementBackground.Name = "txtIncrementBackground";
             this.txtIncrementBackground.Size = new System.Drawing.Size(100, 20);
             this.txtIncrementBackground.TabIndex = 3;
@@ -574,29 +557,29 @@
             // 
             // txtIncrement
             // 
-            this.txtIncrement.Location = new System.Drawing.Point(96, 19);
+            this.txtIncrement.Location = new System.Drawing.Point(108, 19);
             this.txtIncrement.Name = "txtIncrement";
             this.txtIncrement.Size = new System.Drawing.Size(100, 20);
             this.txtIncrement.TabIndex = 2;
             // 
-            // label5
+            // lblIncrementBackground
             // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(10, 45);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(68, 13);
-            this.label5.TabIndex = 1;
-            this.label5.Text = "Background:";
-            this.label5.Visible = false;
+            this.lblIncrementBackground.AutoSize = true;
+            this.lblIncrementBackground.Location = new System.Drawing.Point(10, 45);
+            this.lblIncrementBackground.Name = "lblIncrementBackground";
+            this.lblIncrementBackground.Size = new System.Drawing.Size(68, 13);
+            this.lblIncrementBackground.TabIndex = 1;
+            this.lblIncrementBackground.Text = "Background:";
+            this.lblIncrementBackground.Visible = false;
             // 
-            // label4
+            // lblIncrement
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(10, 19);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(57, 13);
-            this.label4.TabIndex = 0;
-            this.label4.Text = "Increment:";
+            this.lblIncrement.AutoSize = true;
+            this.lblIncrement.Location = new System.Drawing.Point(10, 19);
+            this.lblIncrement.Name = "lblIncrement";
+            this.lblIncrement.Size = new System.Drawing.Size(57, 13);
+            this.lblIncrement.TabIndex = 0;
+            this.lblIncrement.Text = "Increment:";
             // 
             // cboRollbackType
             // 
@@ -641,11 +624,34 @@
             this.btnBack2.UseVisualStyleBackColor = true;
             this.btnBack2.Click += new System.EventHandler(this.btnBack2_Click);
             // 
+            // pb_standard
+            // 
+            this.pb_standard.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("pb_standard.BackgroundImage")));
+            this.pb_standard.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.pb_standard.InitialImage = null;
+            this.pb_standard.Location = new System.Drawing.Point(15, 261);
+            this.pb_standard.Name = "pb_standard";
+            this.pb_standard.Size = new System.Drawing.Size(253, 119);
+            this.pb_standard.TabIndex = 9;
+            this.pb_standard.TabStop = false;
+            this.pb_standard.Visible = false;
+            // 
+            // pb_percent
+            // 
+            this.pb_percent.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("pb_percent.BackgroundImage")));
+            this.pb_percent.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.pb_percent.InitialImage = null;
+            this.pb_percent.Location = new System.Drawing.Point(15, 260);
+            this.pb_percent.Name = "pb_percent";
+            this.pb_percent.Size = new System.Drawing.Size(253, 119);
+            this.pb_percent.TabIndex = 8;
+            this.pb_percent.TabStop = false;
+            // 
             // gbOptionsPercentage
             // 
             this.gbOptionsPercentage.Controls.Add(this.txtPercentageBackground);
             this.gbOptionsPercentage.Controls.Add(this.txtPercentage);
-            this.gbOptionsPercentage.Controls.Add(this.label6);
+            this.gbOptionsPercentage.Controls.Add(this.lblPercentageBackground);
             this.gbOptionsPercentage.Controls.Add(this.label7);
             this.gbOptionsPercentage.Location = new System.Drawing.Point(924, 440);
             this.gbOptionsPercentage.Name = "gbOptionsPercentage";
@@ -656,7 +662,7 @@
             // 
             // txtPercentageBackground
             // 
-            this.txtPercentageBackground.Location = new System.Drawing.Point(96, 45);
+            this.txtPercentageBackground.Location = new System.Drawing.Point(108, 45);
             this.txtPercentageBackground.Name = "txtPercentageBackground";
             this.txtPercentageBackground.Size = new System.Drawing.Size(100, 20);
             this.txtPercentageBackground.TabIndex = 3;
@@ -664,29 +670,29 @@
             // 
             // txtPercentage
             // 
-            this.txtPercentage.Location = new System.Drawing.Point(96, 19);
+            this.txtPercentage.Location = new System.Drawing.Point(108, 19);
             this.txtPercentage.Name = "txtPercentage";
             this.txtPercentage.Size = new System.Drawing.Size(100, 20);
             this.txtPercentage.TabIndex = 2;
             // 
-            // label6
+            // lblPercentageBackground
             // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(10, 45);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(68, 13);
-            this.label6.TabIndex = 1;
-            this.label6.Text = "Background:";
-            this.label6.Visible = false;
+            this.lblPercentageBackground.AutoSize = true;
+            this.lblPercentageBackground.Location = new System.Drawing.Point(10, 45);
+            this.lblPercentageBackground.Name = "lblPercentageBackground";
+            this.lblPercentageBackground.Size = new System.Drawing.Size(68, 13);
+            this.lblPercentageBackground.TabIndex = 1;
+            this.lblPercentageBackground.Text = "Background:";
+            this.lblPercentageBackground.Visible = false;
             // 
             // label7
             // 
             this.label7.AutoSize = true;
             this.label7.Location = new System.Drawing.Point(10, 19);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(65, 13);
+            this.label7.Size = new System.Drawing.Size(82, 13);
             this.label7.TabIndex = 0;
-            this.label7.Text = "Percentage:";
+            this.label7.Text = "Percentage (%):";
             // 
             // gbOptionsStandard
             // 
@@ -777,6 +783,40 @@
             this.btnNext.UseVisualStyleBackColor = true;
             this.btnNext.Click += new System.EventHandler(this.btnNext_Click);
             // 
+            // rbRegions
+            // 
+            this.rbRegions.AutoSize = true;
+            this.rbRegions.Location = new System.Drawing.Point(12, 20);
+            this.rbRegions.Name = "rbRegions";
+            this.rbRegions.Size = new System.Drawing.Size(64, 17);
+            this.rbRegions.TabIndex = 4;
+            this.rbRegions.TabStop = true;
+            this.rbRegions.Text = "Regions";
+            this.rbRegions.UseVisualStyleBackColor = true;
+            this.rbRegions.CheckedChanged += new System.EventHandler(this.rbRegions_CheckedChanged);
+            // 
+            // rbCountries
+            // 
+            this.rbCountries.AutoSize = true;
+            this.rbCountries.Location = new System.Drawing.Point(80, 20);
+            this.rbCountries.Name = "rbCountries";
+            this.rbCountries.Size = new System.Drawing.Size(69, 17);
+            this.rbCountries.TabIndex = 5;
+            this.rbCountries.TabStop = true;
+            this.rbCountries.Text = "Countries";
+            this.rbCountries.UseVisualStyleBackColor = true;
+            this.rbCountries.CheckedChanged += new System.EventHandler(this.rbCountries_CheckedChanged);
+            // 
+            // listCountries
+            // 
+            this.listCountries.CheckOnClick = true;
+            this.listCountries.FormattingEnabled = true;
+            this.listCountries.Location = new System.Drawing.Point(172, 18);
+            this.listCountries.Name = "listCountries";
+            this.listCountries.Size = new System.Drawing.Size(95, 19);
+            this.listCountries.TabIndex = 7;
+            this.listCountries.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.listCountries_ItemCheck);
+            // 
             // GBDRollback
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -797,6 +837,7 @@
             this.Text = "GBD Rollback Tool";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.GBDRollback_FormClosing);
             this.gbCountrySelection.ResumeLayout(false);
+            this.gbCountrySelection.PerformLayout();
             this.gbRollbacks.ResumeLayout(false);
             this.gbRollbacks.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvRollbacks)).EndInit();
@@ -806,11 +847,11 @@
             this.toolStrip1.PerformLayout();
             this.gbParameterSelection.ResumeLayout(false);
             this.gbParameterSelection.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pb_standard)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pb_percent)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pb_incremental)).EndInit();
             this.gbOptionsIncremental.ResumeLayout(false);
             this.gbOptionsIncremental.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pb_standard)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pb_percent)).EndInit();
             this.gbOptionsPercentage.ResumeLayout(false);
             this.gbOptionsPercentage.PerformLayout();
             this.gbOptionsStandard.ResumeLayout(false);
@@ -826,7 +867,7 @@
         private System.Windows.Forms.GroupBox gbCountrySelection;
         private System.Windows.Forms.GroupBox gbRollbacks;
         private System.Windows.Forms.DataGridView dgvRollbacks;
-        private System.Windows.Forms.TreeView tvCountries;
+        private System.Windows.Forms.TreeView tvRegions;
         private System.Windows.Forms.Button btnNext2;
         private System.Windows.Forms.Button btnClose;
         private System.Windows.Forms.GroupBox gbMap;
@@ -839,12 +880,12 @@
         private System.Windows.Forms.GroupBox gbOptionsIncremental;
         private System.Windows.Forms.TextBox txtIncrementBackground;
         private System.Windows.Forms.TextBox txtIncrement;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label lblIncrementBackground;
+        private System.Windows.Forms.Label lblIncrement;
         private System.Windows.Forms.GroupBox gbOptionsPercentage;
         private System.Windows.Forms.TextBox txtPercentageBackground;
         private System.Windows.Forms.TextBox txtPercentage;
-        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label lblPercentageBackground;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.GroupBox gbOptionsStandard;
         private System.Windows.Forms.Label label9;
@@ -886,5 +927,8 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn colTotalPopulation;
         private System.Windows.Forms.DataGridViewTextBoxColumn colRollbackType;
         private System.Windows.Forms.DataGridViewCheckBoxColumn colExecute;
+        private System.Windows.Forms.RadioButton rbCountries;
+        private System.Windows.Forms.RadioButton rbRegions;
+        private System.Windows.Forms.CheckedListBox listCountries;
     }
 }

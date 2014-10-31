@@ -217,17 +217,18 @@ namespace BenMAP
         {
             get
             {
-                if (_connection == null)
+                if ((_connection == null) || (_connection.State != ConnectionState.Open))
                 {
                     ConnectionStringSettings settings = ConfigurationManager.ConnectionStrings["ConnectionString"];
                     string str = settings.ConnectionString;
                     //if (!str.Contains(":"))
                     //    str = str.Substring(0, str.IndexOf("initial catalog=")) + "initial catalog=" + Application.StartupPath + @"\" + str.Substring(str.IndexOf("initial catalog=") + 16);
                     //need to modify string to use general data location
-                    str=str.Replace("##USERDATA##", Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData));
-                    
+                    str = str.Replace("##USERDATA##", Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData));
+
                     _connection = new FirebirdSql.Data.FirebirdClient.FbConnection(str);
                 }
+
                 return _connection;
             }
             set
@@ -483,7 +484,7 @@ namespace BenMAP
             fs.Dispose();
         }
 
-        public static BenMAPGrid GBenMAPGrid; public static List<BaseControlGroup> LstBaseControlGroup; public static double CRThreshold = 0; public static int CRLatinHypercubePoints = 10; public static bool CRRunInPointMode = false; public static int CRSeeds = 1; public static BenMAPPopulation BenMAPPopulation;
+        public static BenMAPGrid GBenMAPGrid; public static List<BaseControlGroup> LstBaseControlGroup; public static double CRThreshold = 0; public static int CRLatinHypercubePoints = 20; public static bool CRRunInPointMode = false; public static int CRSeeds = 1; public static BenMAPPopulation BenMAPPopulation;
         public static List<GridRelationship> LstCurrentGridRelationship; public static string CurrentStat;
         public static List<string> LstAsynchronizationStates;
         private static List<GridRelationship> lstGridRelationshipAll;
@@ -1472,7 +1473,7 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
             try
             {
                 CommonClass.LstPollutant = null; CommonClass.RBenMAPGrid = null;
-                CommonClass.GBenMAPGrid = null; CommonClass.LstBaseControlGroup = null; CommonClass.CRThreshold = 0; CommonClass.CRLatinHypercubePoints = 10; CommonClass.CRRunInPointMode = false;
+                CommonClass.GBenMAPGrid = null; CommonClass.LstBaseControlGroup = null; CommonClass.CRThreshold = 0; CommonClass.CRLatinHypercubePoints = 20; CommonClass.CRRunInPointMode = false;
                 CommonClass.BenMAPPopulation = null;
                 if (CommonClass.BaseControlCRSelectFunction != null)
                 {

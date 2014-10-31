@@ -137,16 +137,35 @@ namespace BenMAP
 
                     string commandText = "";
                     string strPollutants = "";
+                    string strMetric = "";
                     foreach (BenMAPPollutant benMAPPollutant in CommonClass.LstPollutant)
                     {
                         strPollutants = strPollutants + "," + benMAPPollutant.PollutantID;
                     }
                     strPollutants = strPollutants.Substring(1);
+                    foreach (BaseControlGroup bcg in CommonClass.LstBaseControlGroup)
+                    {
+                        int pollutantID = bcg.Pollutant.PollutantID;
+                        List<int> lstMetricID = new List<int>();
+                        if (bcg.Base.ModelResultAttributes.Count > 0)
+                        {
+                            foreach (string m in bcg.Base.ModelResultAttributes[0].Values.Keys)
+                            {
+                                string metric = m.Split(',')[0];
+                                commandText = string.Format("select metricid from metrics where pollutantid={0} and metricname='{1}'", pollutantID, metric);
+                                int metricid = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
+                                if (metricid > 0 && !lstMetricID.Contains(metricid))
+                                {
+                                    strMetric = strMetric + "," + metricid;
+                                    lstMetricID.Add(metricid);
+                                }
+                            }
+                        }
+                    }
+                    strMetric = strMetric.Substring(1);
                     if (Convert.ToInt32(drv["EndPointGroupID"]) == -1)
                     {
-
-
-                        commandText = string.Format(" select CRFunctionID from CRFunctions where CRFunctionDataSetID={0} and PollutantID in ({1})", drvDataSet["CRFunctionDatasetID"], strPollutants);
+                        commandText = string.Format(" select CRFunctionID from CRFunctions where CRFunctionDataSetID={0} and PollutantID in ({1}) and MetricID in ({2})", drvDataSet["CRFunctionDatasetID"], strPollutants, strMetric);
                         System.Data.DataSet dsCRFunction = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
                         lstBenMAPHealthImpactFunction.Clear();
                         foreach (DataRow dr in dsCRFunction.Tables[0].Rows)
@@ -158,7 +177,7 @@ namespace BenMAP
                     }
                     else
                     {
-                        commandText = string.Format(" select CRFunctionID from CRFunctions where CRFunctionDataSetID={0} and PollutantID in ({1}) and EndPointGroupID={2}", drvDataSet["CRFunctionDatasetID"], strPollutants, Convert.ToInt32(Convert.ToInt32(drv["EndPointGroupID"])));
+                        commandText = string.Format(" select CRFunctionID from CRFunctions where CRFunctionDataSetID={0} and PollutantID in ({1}) and EndPointGroupID={2} and MetricID in ({3})", drvDataSet["CRFunctionDatasetID"], strPollutants, Convert.ToInt32(Convert.ToInt32(drv["EndPointGroupID"])), strMetric);
                         System.Data.DataSet dsCRFunction = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
                         lstBenMAPHealthImpactFunction.Clear();
                         foreach (DataRow dr in dsCRFunction.Tables[0].Rows)
@@ -314,52 +333,55 @@ namespace BenMAP
      .Replace("tanh", " ")
      .Replace("truncate", " ").ToLower();
                     bool inLst = false;
-                    foreach (string s in lstVariable)
+                    foreach (string variablename in dicVariable.Keys)
                     {
-                        if (DatabaseFunction.Contains(s.ToLower()))
+                        if (DatabaseFunction.Contains(variablename.ToLower()))
                         {
+                            crSelectFunction.VariableDataSetName = dicVariable[variablename].First();
+                            crSelectFunction.VariableDataSetID = DicVariableDataSet[dicVariable[variablename].First()];
                             inLst = true;
+                            break;
                         }
                     }
-                    DatabaseFunction = crSelectFunction.BenMAPHealthImpactFunction.BaseLineIncidenceFunction.Replace("prevalence", "").Replace("incidence", "").Replace("deltaq", "")
-                .Replace("pop", "").Replace("beta", "").Replace("q0", "").Replace("q1", "").Replace("allgoodsindex", "").Replace("medicalcostindex", "").Replace("wageindex", "")
-               .Replace("abs", " ")
- .Replace("acos", " ")
- .Replace("asin", " ")
- .Replace("atan", " ")
- .Replace("atan2", " ")
- .Replace("bigmul", " ")
- .Replace("ceiling", " ")
- .Replace("cos", " ")
- .Replace("cosh", " ")
- .Replace("divrem", " ")
- .Replace("exp", " ")
- .Replace("floor", " ")
- .Replace("ieeeremainder", " ")
- .Replace("log", " ")
- .Replace("log10", " ")
- .Replace("max", " ")
- .Replace("min", " ")
- .Replace("pow", " ")
- .Replace("round", " ")
- .Replace("sign", " ")
- .Replace("sin", " ")
- .Replace("sinh", " ")
- .Replace("sqrt", " ")
- .Replace("tan", " ")
- .Replace("tanh", " ")
- .Replace("truncate", " ").ToLower();
-                    foreach (string s in lstVariable)
+                    if (!inLst)
                     {
-                        if (DatabaseFunction.Contains(s.ToLower()))
+                        DatabaseFunction = crSelectFunction.BenMAPHealthImpactFunction.BaseLineIncidenceFunction.Replace("prevalence", "").Replace("incidence", "").Replace("deltaq", "")
+                    .Replace("pop", "").Replace("beta", "").Replace("q0", "").Replace("q1", "").Replace("allgoodsindex", "").Replace("medicalcostindex", "").Replace("wageindex", "")
+                   .Replace("abs", " ")
+     .Replace("acos", " ")
+     .Replace("asin", " ")
+     .Replace("atan", " ")
+     .Replace("atan2", " ")
+     .Replace("bigmul", " ")
+     .Replace("ceiling", " ")
+     .Replace("cos", " ")
+     .Replace("cosh", " ")
+     .Replace("divrem", " ")
+     .Replace("exp", " ")
+     .Replace("floor", " ")
+     .Replace("ieeeremainder", " ")
+     .Replace("log", " ")
+     .Replace("log10", " ")
+     .Replace("max", " ")
+     .Replace("min", " ")
+     .Replace("pow", " ")
+     .Replace("round", " ")
+     .Replace("sign", " ")
+     .Replace("sin", " ")
+     .Replace("sinh", " ")
+     .Replace("sqrt", " ")
+     .Replace("tan", " ")
+     .Replace("tanh", " ")
+     .Replace("truncate", " ").ToLower();
+                        foreach (string variablename in dicVariable.Keys)
                         {
-                            inLst = true;
+                            if (DatabaseFunction.Contains(variablename.ToLower()))
+                            {
+                                crSelectFunction.VariableDataSetName = dicVariable[variablename].First();
+                                crSelectFunction.VariableDataSetID = DicVariableDataSet[dicVariable[variablename].First()];
+                                break;
+                            }
                         }
-                    }
-                    if (inLst)
-                    {
-                        crSelectFunction.VariableDataSetID = DicVariableDataSet.First().Value;
-                        crSelectFunction.VariableDataSetName = DicVariableDataSet.First().Key;
                     }
                     crSelectFunction.StartAge = benMAPHealthImpactFunction.StartAge;
                     crSelectFunction.EndAge = benMAPHealthImpactFunction.EndAge;
@@ -576,11 +598,12 @@ namespace BenMAP
   .Replace("tanh", " ")
   .Replace("truncate", " ").ToLower();
                 bool inLst = false;
-                foreach (string s in lstVariable)
+                foreach (string s in dicVariable.Keys)
                 {
                     if (DatabaseFunction.Contains(s.ToLower()))
                     {
                         inLst = true;
+                        break;
                     }
                 }
                 DatabaseFunction = cr.BenMAPHealthImpactFunction.BaseLineIncidenceFunction.Replace("prevalence", "").Replace("incidence", "").Replace("deltaq", "")
@@ -611,11 +634,12 @@ namespace BenMAP
  .Replace("tan", " ")
  .Replace("tanh", " ")
  .Replace("truncate", " ").ToLower();
-                foreach (string s in lstVariable)
+                foreach (string s in dicVariable.Keys)
                 {
                     if (DatabaseFunction.Contains(s.ToLower()))
                     {
                         inLst = true;
+                        break;
                     }
                 }
                 if (inLst)
@@ -866,7 +890,7 @@ namespace BenMAP
                 e.Cancel = true;
             }
         }
-        List<string> lstVariable = Configuration.ConfigurationCommonClass.getAllSystemVariableNameList();
+        Dictionary<string, List<string>> dicVariable = getDicVariableNameList();
         Dictionary<string, Dictionary<string, double>> DicAllSetupVariableValues = new Dictionary<string, Dictionary<string, double>>();
         Dictionary<string, Dictionary<string, double>> dicAllIncidence = new Dictionary<string, Dictionary<string, double>>();
         Dictionary<string, Dictionary<string, double>> dicAllPrevalence = new Dictionary<string, Dictionary<string, double>>();
@@ -875,6 +899,28 @@ namespace BenMAP
         Dictionary<string, Dictionary<string, float>> dicALlPopulationAge = new Dictionary<string, Dictionary<string, float>>();
         public string _filePath = "";
         DateTime dtRunStart;
+
+        static Dictionary<string, List<string>> getDicVariableNameList()
+        {
+            Dictionary<string, List<string>> dicVariable = new Dictionary<string, List<string>>();
+            try
+            {
+                ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                string commandText = "select setupvariablename, setupvariabledatasetname from  setupvariables a join setupvariabledatasets b on a.setupvariabledatasetid=b.setupvariabledatasetid where b.setupid = " + CommonClass.MainSetup.SetupID + " ";
+                DataTable dt = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText).Tables[0];
+                foreach (DataRow dr in dt.Rows)
+                {
+                    if (!dicVariable.ContainsKey(dr["setupvariablename"].ToString()))
+                        dicVariable.Add(dr["setupvariablename"].ToString(), new List<string>());
+                    dicVariable[dr["setupvariablename"].ToString()].Add(dr["setupvariabledatasetname"].ToString());
+                }
+                return dicVariable;
+            }
+            catch
+            {
+                return dicVariable;
+            }
+        }
 
         public void btnRun_Click(object sender, EventArgs e)
         {
