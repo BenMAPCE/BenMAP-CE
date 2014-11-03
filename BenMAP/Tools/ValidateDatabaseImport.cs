@@ -819,7 +819,7 @@ namespace BenMAP
                             // monitor values must have 365 or 366 (leap year) records
                             int iDayCount;
                             iDayCount = Regex.Matches(valToVerify, ",").Count;
-                            if (!((iDayCount == 364) || (iDayCount == 365))) // should be either 364 or 365 (leap year) commas in string
+                            if (!((iDayCount == 364) || (iDayCount == 365) || (iDayCount == 8759) || (iDayCount == 8783) || (iDayCount == 0))) // should be either annual, 364 or 365 (leap year) commas in string or the equivalent for hourly data
                             {
                                 errMsg = string.Format("Wrong number of days for monitor.  ({0})", valToVerify);
                             }
