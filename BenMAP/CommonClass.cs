@@ -1394,7 +1394,7 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
                     benMAPProject.IncidencePoolingResult = IncidencePoolingResult;
                     benMAPProject.BaseControlCRSelectFunction = BaseControlCRSelectFunction;
                     benMAPProject.BaseControlCRSelectFunction.Version = "BenMAP-CE " + Assembly.GetExecutingAssembly().GetName().Version.ToString().Substring(0, Assembly.GetExecutingAssembly().GetName().Version.ToString().Count() - 4);
-
+                    benMAPProject.BaseControlCRSelectFunctionCalculateValue = BaseControlCRSelectFunctionCalculateValue;
                 }
                 else if (BaseControlCRSelectFunction != null)
                 {

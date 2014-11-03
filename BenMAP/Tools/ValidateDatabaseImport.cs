@@ -3,8 +3,8 @@
 // Author           :
 // Created          : 03-17-2014
 //
-// Last Modified By : 
-// Last Modified On : 03-21-2014
+// Last Modified By : Adam Shelton
+// Last Modified On : 11-03-2014
 // ***********************************************************************
 // <copyright file="ValidateDatabaseImport.cs" company="RTI International">
 //     RTI International. All rights reserved.
@@ -819,7 +819,11 @@ namespace BenMAP
                             // monitor values must have 365 or 366 (leap year) records
                             int iDayCount;
                             iDayCount = Regex.Matches(valToVerify, ",").Count;
+<<<<<<< HEAD
                             if (!((iDayCount == 364) || (iDayCount == 365) || (iDayCount == 8759) || (iDayCount == 8783) || (iDayCount == 0))) // should be either annual, 364 or 365 (leap year) commas in string or the equivalent for hourly data
+=======
+                            if (!((iDayCount == 364) || (iDayCount == 365) || (iDayCount == 8759) || (iDayCount == 8783) || (iDayCount == 0))) // should be either 364 or 365 (leap year) commas in string or the equivalent for hourly data
+>>>>>>> 0f6d4ede85acb719d06ae90890582681d25f33b8
                             {
                                 errMsg = string.Format("Wrong number of days for monitor.  ({0})", valToVerify);
                             }
