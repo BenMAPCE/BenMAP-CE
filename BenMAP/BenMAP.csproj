@@ -179,8 +179,10 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.configuration" />
+    <Reference Include="System.Configuration.Install" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.Linq" />
+    <Reference Include="System.Management" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceProcess" />
     <Reference Include="System.Web.Extensions" />
@@ -413,6 +415,12 @@
     </Compile>
     <Compile Include="HomePage.Designer.cs">
       <DependentUpon>HomePage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Installer1.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Installer1.Designer.cs">
+      <DependentUpon>Installer1.cs</DependentUpon>
     </Compile>
     <Compile Include="Jira\ProjectComponent.cs" />
     <Compile Include="Jira\JiraClient.cs" />
@@ -880,6 +888,9 @@
     </Compile>
     <None Include="BenMAP_TemporaryKey.pfx" />
     <Compile Include="Jira\NewIssue.cs" />
+    <None Include="Data\BenMAP-CE Release Notes.rtf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Data\Shapefiles\GBDRollback\gadm_worldsimplify.dbf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

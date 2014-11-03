@@ -499,9 +499,8 @@ namespace BenMAP
                 }
                 else if (CommonClass.BaseControlCRSelectFunctionCalculateValue != null && CommonClass.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue != null)
                 {
-
-                    showExistBaseControlCRSelectFunction(CommonClass.BaseControlCRSelectFunction, this.trvSetting.Nodes["aggregationpoolingvaluation"]);
                     errorNodeImage(trvSetting.Nodes[1].Nodes[trvSetting.Nodes[1].Nodes.Count - 1]);
+                    showExistBaseControlCRSelectFunction(CommonClass.BaseControlCRSelectFunction, this.trvSetting.Nodes["aggregationpoolingvaluation"]);                    
                 }
                 else if (CommonClass.BaseControlCRSelectFunction != null)
                 {
@@ -1168,23 +1167,30 @@ namespace BenMAP
                                         bool PopulatedPollutantsAlreadyExist = false;
                                         foreach (BenMAPPollutant BMpol in CommonClass.LstPollutant)
                                         {
-                                            if (BMpol.PollutantID == testbcg.Pollutant.PollutantID)
+                                            if (testbcg.Pollutant != null)
                                             {
-                                                PopulatedPollutantsAlreadyExist = true;
-                                                break;
+                                                if (BMpol.PollutantID == testbcg.Pollutant.PollutantID)
+                                                {
+                                                    PopulatedPollutantsAlreadyExist = true;
+                                                    break;
+                                                }
                                             }
                                         }
+
                                         if (!PopulatedPollutantsAlreadyExist)  //can't find it in pollutant list, so it must be an extra bcg record
                                         {
                                             ExtraListBCG.Add(testbcg);  
                                         }
 
                                     }
+
                                     if (ExtraListBCG.Count > 0)                 //remove extra bcg records
                                     {
                                         foreach (BaseControlGroup extrabcg in ExtraListBCG)
                                         {                                              
                                             //remove this pollutant node
+                                            //refresh node count in case a node was removed above
+                                            nodesCount = currentNode.Parent.Nodes.Count; 
                                             for (int i = nodesCount - 1; i > -1; i--)
                                             {
                                                 TreeNode node = currentNode.Parent.Nodes[i];
@@ -2757,7 +2763,7 @@ namespace BenMAP
                     polMapGroup = AddMapGroup(pollutantMGText, "Pollutants", false, false);
                     bcgMapGroup = AddMapGroup(bcgMGText, pollutantMGText, false, false);
                     //Remove the old version of the layer if exists already
-                    RemoveOldPolygonLayer(LayerNameText, bcgMapGroup.GetLayers(), false);  //!!!!!!!!!!!!Need to trap for problems removing the old layer if it exists?
+                    RemoveOldPolygonLayer(LayerNameText, bcgMapGroup.Layers, false);  //!!!!!!!!!!!!Need to trap for problems removing the old layer if it exists?
 
                     // Add a new layer baseline, control or delta layer to the Pollutants group
                     if (File.Exists(benMAPLine.ShapeFile))
@@ -3010,7 +3016,7 @@ namespace BenMAP
             myScheme1.CreateCategories(polLayer.DataSet.DataTable);
 
             // Set the category colors equal to the selected color ramp
-            for (int catNum = 0; catNum < CategoryNumber; catNum++)
+            for (int catNum = 0; catNum < myScheme1.Categories.Count; catNum++)
             {
                 myScheme1.Categories[catNum].Symbolizer.SetOutline(Color.Transparent, 0); //make the outlines invisble
                 myScheme1.Categories[catNum].SetColor(colorBlend.ColorArray[catNum].ToTransparent((float)0.9));
@@ -7622,7 +7628,7 @@ namespace BenMAP
                         }
                     }
                     LayerTextName = author;
-                    RemoveOldPolygonLayer(LayerTextName, PVResultsMG.GetLayers(), false);
+                    RemoveOldPolygonLayer(LayerTextName, PVResultsMG.Layers, false);
 
                     if (!chbAPVAggregation.Checked)
                     {   
@@ -11522,7 +11528,8 @@ namespace BenMAP
                             }
                             string LayerNameText = author;
                             //Remove the old version of the layer if exists already
-                            RemoveOldPolygonLayer(LayerNameText, HIFResultsMapGroup.GetLayers(), false);
+                            RemoveOldPolygonLayer(LayerNameText, HIFResultsMapGroup.Layers, false);
+                            
                            
                             tsbChangeProjection.Text = "change projection to Albers";
                             mainMap.ProjectionModeReproject = ActionMode.Never;
@@ -13008,10 +13015,11 @@ namespace BenMAP
         {
 
         }
-        private void RemoveOldPolygonLayer(string LayerName, IList<ILayer> layerList, bool ShrinkOtherLayersInMapGroup = false)
+        private void RemoveOldPolygonLayer(string LayerName, IMapLayerCollection layerList, bool ShrinkOtherLayersInMapGroup = false)
         {
             MapGroup aMGLayer = new MapGroup();
             MapPolygonLayer aPolyLayer = new MapPolygonLayer();
+            List<ILayer> layersToRemove = new List<ILayer>();
            
             //Remove the old version of the layer if exists already
             foreach (ILayer aLayer in layerList)
@@ -13019,7 +13027,7 @@ namespace BenMAP
                 if (aLayer is MapGroup || aLayer is IMapGroup) //Look within Map groups
                 {
                     aMGLayer = (MapGroup)aLayer;
-                    RemoveOldPolygonLayer(LayerName, aMGLayer.GetLayers(), ShrinkOtherLayersInMapGroup);
+                    RemoveOldPolygonLayer(LayerName, aMGLayer.Layers, ShrinkOtherLayersInMapGroup);
                    
                 }
                 else if (aLayer is FeatureLayer || aLayer is IFeatureLayer) // layer at root level(not in a mapgroup
@@ -13030,8 +13038,7 @@ namespace BenMAP
 
                         if (aPolyLayer.Name == LayerName)
                         {
-                            layerList.Remove((IMapLayer)aLayer);
-                            //break;
+                            layersToRemove.Add(aLayer); //add to list of layers to remove                            
                         }
                         else if (ShrinkOtherLayersInMapGroup)  // Unexpand this layer to increase display room for new layer
                         {
@@ -13039,6 +13046,12 @@ namespace BenMAP
                         }
                     }
                 }
+            }
+
+            //remove layers
+            foreach (ILayer layer in layersToRemove)
+            {
+                layerList.Remove((IMapLayer)layer);
             }
 
            return;
@@ -13330,7 +13343,7 @@ namespace BenMAP
                                 }
                             }
                             string LayerNameText = "Pooled Incidence:" + author; 
-                            RemoveOldPolygonLayer(LayerNameText, PIResultsMapGroup.GetLayers(), false);
+                            RemoveOldPolygonLayer(LayerNameText, PIResultsMapGroup.Layers, false);
 
                             //mainMap.Layers.Clear();
                             if (incidenceGrid is ShapefileGrid)
