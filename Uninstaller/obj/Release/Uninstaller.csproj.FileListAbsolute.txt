@@ -2,3 +2,4 @@ C:\Repositories\BenMAP-CE\Uninstaller\bin\Release\Uninstaller.dll
 C:\Repositories\BenMAP-CE\Uninstaller\bin\Release\Uninstaller.pdb
 C:\Repositories\BenMAP-CE\Uninstaller\obj\Release\Uninstaller.dll
 C:\Repositories\BenMAP-CE\Uninstaller\obj\Release\Uninstaller.pdb
+C:\Repositories\BenMAP-CE\Uninstaller\obj\Release\Uninstaller.csprojResolveAssemblyReference.cache
