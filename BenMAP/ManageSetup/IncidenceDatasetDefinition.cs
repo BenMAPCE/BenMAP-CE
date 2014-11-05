@@ -717,9 +717,10 @@ namespace BenMAP
                     fbCommand.CommandType = CommandType.Text;
                     if (fbCommand.Connection.State != ConnectionState.Open)
                     { fbCommand.Connection.Open(); }
+                    /////////////////////////////////////////////////////////////
                     // STOPPED HERE
                     // add check for import rows that duplicate existing rows
-                    /*
+                    
                     bool bDupRows = false;
                     int iRowCount = 0;
                     while ((iRowCount < _dtLoadTable.Rows.Count) && !bDupRows) {
@@ -730,7 +731,7 @@ namespace BenMAP
                         //    + _dtLoadTable.Rows[i][iStartAge] + "," + _dtLoadTable.Rows[i][iEndAge] + ","
                         //    + _dtLoadTable.Rows[i][iType] + "," + _dtLoadTable.Rows[i][iEthnicity] + ","
                         //    + _dtLoadTable.Rows[i][iColumn] + "," + _dtLoadTable.Rows[i][iRow], i);
-                        
+                      
                         commandText = "Select INCIDENCERATEID from INCIDENCERATES as R Inner Join IncidenceEntries as E "
                                 + " on R.IncidenceRateID = E.IncidenceRateID "
                                 + "where R.EndpointGroupID =" + _dtLoadTable.Rows[iRowCount][iEndpointGroup] 
@@ -741,9 +742,12 @@ namespace BenMAP
                                 + ", and R.EndAge=" + _dtLoadTable.Rows[iRowCount][iEndAge] 
                                 + ", and R.EthnicityID= " + _dtLoadTable.Rows[iRowCount][iEthnicity] 
                                 + ", and R.GridDefinition =" + _grdiDefinitionID.ToString()
-                                + ", and Column =" + _dtLoadTable.Rows[iRowCount][iColumn] + "," + _dtLoadTable.Rows[iRowCount][iRow] );;
-                                + ", " + _dtLoadTable.Rows[iRowCount][iType] + "," 
-                                
+                                + ", and E.Column =" + _dtLoadTable.Rows[iRowCount][iColumn] 
+                                + ", and E.Row=" + _dtLoadTable.Rows[iRowCount][iRow] + ") ";
+                        FirebirdSql.Data.FirebirdClient.FbDataReader drDups = fb.ExecuteReader(CommonClass.Connection,CommandType.Text,commandText);
+                        if (drDups.HasRows)
+                        {
+                        }
                         iRowCount++;
                     }
                    
@@ -756,7 +760,8 @@ namespace BenMAP
                             return;
                         }
                     }
-                    */
+                    /////////////////////////////////////////////////////////////
+                    
                     progressBar1.Maximum = _dtLoadTable.Rows.Count;
                     for (int i = 0; i < (_dtLoadTable.Rows.Count / 125) + 1; i++)
                     {
