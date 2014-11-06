@@ -456,6 +456,10 @@ namespace BenMAP
                 BenMAP_Load(this, null);
                 if (CommonClass.ValuationMethodPoolingAndAggregation != null)
                 {
+                    errorNodeImage(trvSetting.Nodes[1].Nodes[trvSetting.Nodes[1].Nodes.Count - 1]); //health impact functions
+                    errorNodeImage(trvSetting.Nodes[2].Nodes[1]); //pooling
+                    errorNodeImage(trvSetting.Nodes[2].Nodes[2]); //valuation
+
                     CommonClass.lstIncidencePoolingAndAggregation = CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase.Select(a => a.IncidencePoolingAndAggregation).ToList();
                     CommonClass.IncidencePoolingAndAggregationAdvance = CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance;
                     cbPoolingWindowAPV.Items.Clear();
@@ -488,10 +492,7 @@ namespace BenMAP
                         Logger.LogError(ex);
                     }
 
-                    errorNodeImage(trvSetting.Nodes[1].Nodes[trvSetting.Nodes[1].Nodes.Count - 1]);
-
-                    errorNodeImage(trvSetting.Nodes[2].Nodes[1]);
-                    errorNodeImage(trvSetting.Nodes[2].Nodes[2]);
+                    
 
 
 
