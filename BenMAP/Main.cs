@@ -313,9 +313,10 @@ namespace BenMAP
                 if ((_currentForm as BenMAP).HomePageName != "")
                     (_currentForm as BenMAP).loadHomePageFunction();
             }
-            catch
+            catch(Exception ex)
             {
-                MessageBox.Show("Database may be broken. Please install BenMAP CE again.");
+              //  MessageBox.Show("Database may be broken. Please install BenMAP CE again.");
+                MessageBox.Show("Error found launching application: " + ex.ToString());
                 Environment.Exit(0);
             }
             _projFileName = "";

@@ -89,8 +89,9 @@ namespace BenMAP
                 mainMap.ProjectionModeReproject = ActionMode.Never;
                 mainMap.ProjectionModeDefine = ActionMode.Never;
                 mainMap.Layers.Clear();
-           //     if (File.Exists(this._gridShapeFile))
-           //     { mainMap.Layers.Add(this._gridShapeFile); }
+
+                if (File.Exists(this._gridShapeFile))
+                { mainMap.Layers.Add(this._gridShapeFile); }
                 if (this._lstMonitorPoints != null && this.LstMonitorPoints.Count > 0)
                 {
                     PolygonScheme myScheme = new PolygonScheme();
@@ -115,13 +116,14 @@ namespace BenMAP
                     PointSymbolizer ps = new PointSymbolizer(Color.Yellow, DotSpatial.Symbology.PointShape.Ellipse, 8);
                     ps.SetOutline(Color.Black, 1);
                     imfl.Symbolizer = ps;
-            //        mainMap.Layers[0].LegendText = "Air quality grid";
+                    mainMap.Layers[0].LegendText = "Air quality grid";
                 }
-           //     PolygonLayer player = mainMap.Layers[0] as PolygonLayer;
-           //     Color c = Color.Transparent;
-           //     PolygonSymbolizer Transparent = new PolygonSymbolizer(c);
-           //     Transparent.OutlineSymbolizer = new LineSymbolizer(Color.DarkBlue, 1);
-           //     player.Symbolizer = Transparent;
+                
+                PolygonLayer player = mainMap.Layers[0] as PolygonLayer;
+                Color c = Color.Transparent;
+                PolygonSymbolizer Transparent = new PolygonSymbolizer(c);
+                Transparent.OutlineSymbolizer = new LineSymbolizer(Color.DarkBlue, 1);
+                player.Symbolizer = Transparent;
                 return true;
             }
             catch (Exception ex)
