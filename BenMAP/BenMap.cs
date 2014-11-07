@@ -1395,18 +1395,18 @@ namespace BenMAP
                         currStat = "baseline";
 
                         bool BCResultOK = BaseControlOP(currStat, ref currentNode);
-                        if (BCResultOK)
-                        {
-                            //Advance to first child node and draw base data layer-MCB
-                            childNode = currentNode.FirstNode;  //refresh child node
-                            if (childNode != null)
-                            {
-                                currentNode = childNode;
-                                trvSetting.SelectedNode = currentNode;
-                                nodeName = currentNode.Name.ToLower();
-                                DrawBaseline(currentNode, str);
-                            }
-                        }
+                        //if (BCResultOK)
+                        //{
+                        //    //Advance to first child node and draw base data layer-MCB
+                        //    childNode = currentNode.FirstNode;  //refresh child node
+                        //    if (childNode != null)
+                        //    {
+                        //        currentNode = childNode;
+                        //        trvSetting.SelectedNode = currentNode;
+                        //        nodeName = currentNode.Name.ToLower();
+                        //        DrawBaseline(currentNode, str);
+                        //    }
+                        //}
                         break;
                     case "basedata":
                         DrawBaseline(currentNode, str); //-MCB
@@ -1419,28 +1419,28 @@ namespace BenMAP
                         _currentNode = "control";
                         currStat = "control";
                         bool BCResultOK2 = BaseControlOP(currStat, ref currentNode);
-                        if (BCResultOK2)
-                        {
-                            //Advance to first child node and draw control data layer-MCB
-                            childNode = currentNode.FirstNode;
-                            if (childNode != null)
-                            {
-                                currentNode = childNode;
-                                trvSetting.SelectedNode = currentNode;
-                                nodeName = currentNode.Name.ToLower();
-                                DrawControlData(currentNode, str);
-                                //Attempt to display the delta layer as well-MCB
-                                //NOTE-uncomment when multiple layers can be displayed at once-MCB
-                                //deltaNode = parentNode.LastNode as TreeNode;
-                                //if (deltaNode != null)
-                                //{
-                                //    currentNode = deltaNode;
-                                //    trvSetting.SelectedNode = currentNode;
-                                //    nodeName = currentNode.Name.ToLower();
-                                //    DrawDelta(currentNode, str);
-                                //}
-                            }
-                        }
+                        //if (BCResultOK2)
+                        //{
+                        //    //Advance to first child node and draw control data layer-MCB
+                        //    childNode = currentNode.FirstNode;
+                        //    if (childNode != null)
+                        //    {
+                        //        currentNode = childNode;
+                        //        trvSetting.SelectedNode = currentNode;
+                        //        nodeName = currentNode.Name.ToLower();
+                        //        DrawControlData(currentNode, str);
+                        //        //Attempt to display the delta layer as well-MCB
+                        //        //NOTE-uncomment when multiple layers can be displayed at once-MCB
+                        //        //deltaNode = parentNode.LastNode as TreeNode;
+                        //        //if (deltaNode != null)
+                        //        //{
+                        //        //    currentNode = deltaNode;
+                        //        //    trvSetting.SelectedNode = currentNode;
+                        //        //    nodeName = currentNode.Name.ToLower();
+                        //        //    DrawDelta(currentNode, str);
+                        //        //}
+                        //    }
+                        //}
                         break;
 
                     case "controldata":              
