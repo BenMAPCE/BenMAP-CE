@@ -895,15 +895,20 @@ namespace BenMAP
                     GBDRollbackItem item = rollbacks.Find(x => x.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
                     ExecuteRollback(item, beta, se);                                       
                 }
-
+         //       throw new Exception("debug Test");
                 Cursor.Current = Cursors.Default;
                 MessageBox.Show("Execute Scenarios successful!");
-
+                
             }
             catch (Exception ex)
             {
                 Cursor.Current = Cursors.Default;
-                MessageBox.Show("Execute Scenarios failure!");                
+                MessageBox.Show(ex.ToString());
+                String user = Environment.GetEnvironmentVariable("username");
+                using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:\Users\"+user+@"\My Documents\My BenMAP-CE Files\error.txt"))
+                {                              
+                            file.Write(ex.ToString());
+                }
             }
 
 
@@ -971,7 +976,7 @@ namespace BenMAP
             }                
 
             //save rollback report using rollback output
-            xlApp = new Microsoft.Office.Interop.Excel.ApplicationClass();
+            xlApp = new Microsoft.Office.Interop.Excel.Application();
             xlApp.DisplayAlerts = false;
             SaveRollbackReport(rollback);
             xlApp.Quit();
