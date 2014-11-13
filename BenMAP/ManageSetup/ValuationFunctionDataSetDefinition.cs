@@ -449,13 +449,13 @@ namespace BenMAP
                         // removed metadata object from insert -
                         commandText = string.Format("insert into ValuationFunctions(VALUATIONFUNCTIONID, VALUATIONFUNCTIONDATASETID, ENDPOINTGROUPID, ENDPOINTID, "
                                     + "QUALIFIER, REFERENCE, STARTAGE, ENDAGE, FUNCTIONALFORMID, A, NAMEA, DISTA, P1A, P2A, B, NAMEB, C, NAMEC, D, NAMED) "
-                                    + "values({0},{1},{2},{3},'{4}','{5}',{6},{7},{8},{9},'{10}','{11}',{12},{13},{14},'{15}',{16},'{17}',{18},'{19}',{20})",
+                                    + "values({0},{1},{2},{3},'{4}','{5}',{6},{7},{8},{9},'{10}','{11}',{12},{13},{14},'{15}',{16},'{17}',{18},'{19}')",
                                                     valuationFunctionID, VValuationFunctionDataSetID, EndpointGroupID, EndpointID, _dt.Rows[row][2].ToString().Replace("'", "''"),
                                                     _dt.Rows[row][3].ToString().Replace("'", "''"), _dt.Rows[row][4], _dt.Rows[row][5], FunctionalFormID, _dt.Rows[row][7],
                                                     _dt.Rows[row][8].ToString().Replace("'", "''"), _dt.Rows[row][9].ToString().Replace("'", "''"),
                                                     _dt.Rows[row][10], _dt.Rows[row][11], _dt.Rows[row][12], _dt.Rows[row][13].ToString().Replace("'", "''"),
                                                     _dt.Rows[row][14], _dt.Rows[row][15].ToString().Replace("'", "''"),
-                                                   _dt.Rows[row][16], _dt.Rows[row][17].ToString().Replace("'", "''"),"NULL");
+                                                   _dt.Rows[row][16], _dt.Rows[row][17].ToString().Replace("'", "''"));
 
                         //commandText = string.Format("insert into ValuationFunctions values({0},{1},{2},{3},'{4}','{5}',{6},{7},{8},{9},'{10}','{11}',{12},{13},{14},'{15}',{16},'{17}',{18},'{19}', {20})",
                         //                            valuationFunctionID, VValuationFunctionDataSetID, EndpointGroupID, EndpointID, dtForLoading.Rows[row][2].ToString().Replace("'", "''"),

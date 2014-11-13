@@ -816,10 +816,14 @@ namespace BenMAP
                     case "Values":  // note that Values (plural) is used for monitor data and Value (singular) is used for incidence data
                         if (!string.IsNullOrEmpty(valToVerify))
                         {
-                            // monitor values must have 365 or 366 (leap year) records
+                            // monitor values must have correct number of records
+                            // this is checked by testing that commas are 1 less than the number of records for the period 
+                            // (note that years and hours are in twice; once for leap and once for non-leap years)
                             int iDayCount;
                             iDayCount = Regex.Matches(valToVerify, ",").Count;
-                            if (!((iDayCount == 364) || (iDayCount == 365) || (iDayCount == 8759) || (iDayCount == 8783) || (iDayCount == 0))) // should be either 364 or 365 (leap year) commas in string or the equivalent for hourly data
+                            // 2014 11 13 - added check for monthly data (11 commas) and quarterly data (3 commas) 
+                            if (!((iDayCount == 364) || (iDayCount == 365) || (iDayCount == 8759) || (iDayCount == 8783) 
+                                    || (iDayCount == 0) || (iDayCount == 11) || (iDayCount == 3))) 
                             {
                                 errMsg = string.Format("Wrong number of days for monitor.  ({0})", valToVerify);
                             }
