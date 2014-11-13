@@ -109,11 +109,18 @@ namespace DataConversion
 
                 int hello = 0;
                 hello = 1;
-                //string outputPath = txtFilePathOutput.Text.Trim();
-                //using (StreamWriter sw = new StreamWriter(outputPath))
-                //{
-                //    sw.WriteLine(
-                //}
+                string outputPath = txtFilePathOutput.Text.Trim();
+                using (StreamWriter sw = new StreamWriter(outputPath))
+                {
+                    string outputLine = "Monitor Name,Monitor Description,Latitude,Longitude,Metric,Seasonal Metric,Statistic,Date,Value";
+                    sw.WriteLine(outputLine);
+                    foreach (DataRow dr in dt.Rows)
+                    {
+                        outputLine = string.Join(",", dr.ItemArray);
+                        sw.WriteLine(outputLine);
+                    }
+                    
+                }
 
                 txtStatus.AppendText(Environment.NewLine);
                 txtStatus.AppendText("Conversion Complete!");
