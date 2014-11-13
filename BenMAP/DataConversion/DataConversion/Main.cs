@@ -107,21 +107,31 @@ namespace DataConversion
                     }
                 }
 
-                //sort data by monitor name
+                //sort data by monitor name, date
                 DataView dv = new DataView(dt);
                 dv.Sort = "MonitorName ASC, Date ASC";
                 dt = dv.ToTable();
 
-
                 string outputPath = txtFilePathOutput.Text.Trim();
                 using (StreamWriter sw = new StreamWriter(outputPath))
                 {
-                    string outputLine = "Monitor Name,Monitor Description,Latitude,Longitude,Metric,Seasonal Metric,Statistic,Date,Value";
+                    string outputLine = "Monitor Name,Monitor Description,Latitude,Longitude,Metric,Seasonal Metric,Statistic,Values";
                     sw.WriteLine(outputLine);
+                    string monitorName = "";
+                    string monitorNameNext = "";
                     foreach (DataRow dr in dt.Rows)
                     {
-                        outputLine = string.Join(",", dr.ItemArray);
-                        sw.WriteLine(outputLine);
+                        monitorNameNext = dr["MonitorName"].ToString();
+                        if (!monitorNameNext.Equals(monitorName, StringComparison.OrdinalIgnoreCase))
+                        {
+                            monitorName = monitorNameNext;
+                            //remove data field
+                            List<object> items = dr.ItemArray.ToList<object>();
+                            items.RemoveAt(7);    
+                            //write output line
+                            outputLine = string.Join(",", items);
+                            sw.WriteLine(outputLine);                        
+                        }                        
                     }
                     
                 }
