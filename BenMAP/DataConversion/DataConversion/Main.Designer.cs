@@ -125,10 +125,10 @@
             // 
             // txtStatus
             // 
-            this.txtStatus.Location = new System.Drawing.Point(27, 224);
+            this.txtStatus.Location = new System.Drawing.Point(12, 224);
             this.txtStatus.Multiline = true;
             this.txtStatus.Name = "txtStatus";
-            this.txtStatus.Size = new System.Drawing.Size(602, 102);
+            this.txtStatus.Size = new System.Drawing.Size(617, 102);
             this.txtStatus.TabIndex = 13;
             // 
             // Main

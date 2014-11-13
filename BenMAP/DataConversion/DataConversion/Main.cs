@@ -119,8 +119,22 @@ namespace DataConversion
                     sw.WriteLine(outputLine);
                     string monitorName = "";
                     string monitorNameNext = "";
+                    DateTime year = DateTime.MinValue;
+                    int numDays = 365;
                     foreach (DataRow dr in dt.Rows)
                     {
+                        if (year == DateTime.MinValue)
+                        {
+                            year = DateTime.Parse(dr["Date"].ToString());
+                            if (DateTime.IsLeapYear(year.Year))
+                            {
+                                //add day for leap year
+                                numDays++;
+                            }
+                        }
+
+                        
+
                         monitorNameNext = dr["MonitorName"].ToString();
                         if (!monitorNameNext.Equals(monitorName, StringComparison.OrdinalIgnoreCase))
                         {
