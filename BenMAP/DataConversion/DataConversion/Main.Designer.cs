@@ -36,6 +36,7 @@
             this.btnBrowseOutput = new System.Windows.Forms.Button();
             this.txtFilePathOutput = new System.Windows.Forms.TextBox();
             this.btnClose = new System.Windows.Forms.Button();
+            this.txtStatus = new System.Windows.Forms.TextBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -79,6 +80,7 @@
             this.btnConvert.TabIndex = 9;
             this.btnConvert.Text = "Convert";
             this.btnConvert.UseVisualStyleBackColor = true;
+            this.btnConvert.Click += new System.EventHandler(this.btnConvert_Click);
             // 
             // groupBox2
             // 
@@ -121,11 +123,20 @@
             this.btnClose.UseVisualStyleBackColor = true;
             this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
             // 
+            // txtStatus
+            // 
+            this.txtStatus.Location = new System.Drawing.Point(27, 224);
+            this.txtStatus.Multiline = true;
+            this.txtStatus.Name = "txtStatus";
+            this.txtStatus.Size = new System.Drawing.Size(602, 102);
+            this.txtStatus.TabIndex = 13;
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(642, 218);
+            this.ClientSize = new System.Drawing.Size(642, 345);
+            this.Controls.Add(this.txtStatus);
             this.Controls.Add(this.btnClose);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.btnConvert);
@@ -139,6 +150,7 @@
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -152,6 +164,7 @@
         private System.Windows.Forms.Button btnBrowseOutput;
         private System.Windows.Forms.TextBox txtFilePathOutput;
         private System.Windows.Forms.Button btnClose;
+        private System.Windows.Forms.TextBox txtStatus;
     }
 }
 
