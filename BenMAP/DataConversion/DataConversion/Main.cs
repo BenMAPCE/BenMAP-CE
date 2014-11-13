@@ -63,14 +63,14 @@ namespace DataConversion
 
                 //Monitor Name,Monitor Description,Latitude,Longitude,Metric,Seasonal Metric,Statistic,Date,Value
                 DataTable dt = new DataTable();
-                dt.Columns.Add("Monitor Name",typeof(String));
-                dt.Columns.Add("Monitor Description",typeof(String));
+                dt.Columns.Add("MonitorName",typeof(String));
+                dt.Columns.Add("MonitorDescription",typeof(String));
                 dt.Columns.Add("Latitude",typeof(String));
                 dt.Columns.Add("Longitude",typeof(String));
                 dt.Columns.Add("Metric",typeof(String));
-                dt.Columns.Add("Seasonal Metric",typeof(String));
+                dt.Columns.Add("SeasonalMetric",typeof(String));
                 dt.Columns.Add("Statistic",typeof(String));
-                dt.Columns.Add("Date",typeof(String));
+                dt.Columns.Add("Date",typeof(DateTime));
                 dt.Columns.Add("Value",typeof(String));
 
                 //open files
@@ -107,8 +107,12 @@ namespace DataConversion
                     }
                 }
 
-                int hello = 0;
-                hello = 1;
+                //sort data by monitor name
+                DataView dv = new DataView(dt);
+                dv.Sort = "MonitorName ASC, Date ASC";
+                dt = dv.ToTable();
+
+
                 string outputPath = txtFilePathOutput.Text.Trim();
                 using (StreamWriter sw = new StreamWriter(outputPath))
                 {
