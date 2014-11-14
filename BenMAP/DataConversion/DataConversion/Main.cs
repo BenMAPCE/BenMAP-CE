@@ -118,10 +118,13 @@ namespace DataConversion
                     DateTime year = DateTime.MinValue;
                     int numValues = 365;
                     string[] arrValues = null;
+                    string values = "";
+                    List<object> listOutputLine = null;
 
                     //set up first monitor
                     if (dt.Rows.Count > 0)
-                    {
+                    {                      
+
                         monitorName = dt.Rows[0]["MonitorName"].ToString();
                         //determine year based on date in first row
                         year = DateTime.Parse(dt.Rows[0]["Date"].ToString());
@@ -136,6 +139,13 @@ namespace DataConversion
                         {
                             arrValues[i] = ".";
                         }
+
+                        //set up list for output line
+                        listOutputLine = dt.Rows[0].ItemArray.ToList<object>();
+                        //remove value field
+                        listOutputLine.RemoveAt(8);
+                        //remove date field
+                        listOutputLine.RemoveAt(7); 
                     }
 
                     foreach (DataRow dr in dt.Rows)
@@ -155,17 +165,12 @@ namespace DataConversion
                         monitorNameNext = dr["MonitorName"].ToString();
                         if (!monitorNameNext.Equals(monitorName, StringComparison.OrdinalIgnoreCase))
                         {
-                            //we are on new monitor, so print data for current monitor
-                            List<object> items = dr.ItemArray.ToList<object>();
-                            //remove value field
-                            items.RemoveAt(8);                            
-                            //remove date field
-                            items.RemoveAt(7);                            
+                            //we are on new monitor so print current monitor                        
                             //add array of values
-                            string values = "\"" + string.Join(",", arrValues) + "\"";
-                            items.Add(values);
+                            values = "\"" + string.Join(",", arrValues) + "\"";
+                            listOutputLine.Add(values);
                             //write output line
-                            outputLine = string.Join(",", items);
+                            outputLine = string.Join(",", listOutputLine);
                             sw.WriteLine(outputLine);
 
                             //set up new monitor and its values
@@ -177,8 +182,22 @@ namespace DataConversion
                                 arrValues[i] = ".";
                             }
 
+                            //set up list for output line of new monitor
+                            listOutputLine = dr.ItemArray.ToList<object>();
+                            //remove value field
+                            listOutputLine.RemoveAt(8);
+                            //remove date field
+                            listOutputLine.RemoveAt(7); 
+
                         }                        
                     }
+                    //print last monitor
+                    //add array of values
+                    values = "\"" + string.Join(",", arrValues) + "\"";
+                    listOutputLine.Add(values);
+                    //write output line
+                    outputLine = string.Join(",", listOutputLine);
+                    sw.WriteLine(outputLine);
                     
                 }
 
