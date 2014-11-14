@@ -142,7 +142,15 @@ namespace DataConversion
                         }                    
 
                         //build list of values
-
+                        DateTime date = DateTime.Parse(dr["Date"].ToString());
+                        string value = dr["Value"].ToString();
+                        double valTest;
+                        if (Double.TryParse(value, out valTest))
+                        { 
+                            //get value index
+                            int valIndex = date.DayOfYear - 1;
+                            arrValues[valIndex] = value;
+                        }
 
                         //get monitor name
                         monitorNameNext = dr["MonitorName"].ToString();
