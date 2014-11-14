@@ -37,6 +37,7 @@
             this.txtFilePathOutput = new System.Windows.Forms.TextBox();
             this.btnClose = new System.Windows.Forms.Button();
             this.txtStatus = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -45,7 +46,7 @@
             // 
             this.groupBox1.Controls.Add(this.btnBrowseInput);
             this.groupBox1.Controls.Add(this.txtFilePathInput);
-            this.groupBox1.Location = new System.Drawing.Point(12, 12);
+            this.groupBox1.Location = new System.Drawing.Point(12, 43);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(617, 68);
             this.groupBox1.TabIndex = 0;
@@ -74,7 +75,7 @@
             // 
             // btnConvert
             // 
-            this.btnConvert.Location = new System.Drawing.Point(437, 179);
+            this.btnConvert.Location = new System.Drawing.Point(437, 210);
             this.btnConvert.Name = "btnConvert";
             this.btnConvert.Size = new System.Drawing.Size(93, 23);
             this.btnConvert.TabIndex = 9;
@@ -86,7 +87,7 @@
             // 
             this.groupBox2.Controls.Add(this.btnBrowseOutput);
             this.groupBox2.Controls.Add(this.txtFilePathOutput);
-            this.groupBox2.Location = new System.Drawing.Point(12, 93);
+            this.groupBox2.Location = new System.Drawing.Point(12, 124);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(617, 68);
             this.groupBox2.TabIndex = 11;
@@ -115,7 +116,7 @@
             // 
             // btnClose
             // 
-            this.btnClose.Location = new System.Drawing.Point(536, 179);
+            this.btnClose.Location = new System.Drawing.Point(536, 210);
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(93, 23);
             this.btnClose.TabIndex = 12;
@@ -125,17 +126,28 @@
             // 
             // txtStatus
             // 
-            this.txtStatus.Location = new System.Drawing.Point(12, 224);
+            this.txtStatus.Location = new System.Drawing.Point(12, 255);
             this.txtStatus.Multiline = true;
             this.txtStatus.Name = "txtStatus";
             this.txtStatus.Size = new System.Drawing.Size(617, 102);
             this.txtStatus.TabIndex = 13;
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(12, 12);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(411, 17);
+            this.label1.TabIndex = 14;
+            this.label1.Text = "This tool converts daily monitor data to a BenMAP-ready format.";
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(642, 345);
+            this.ClientSize = new System.Drawing.Size(642, 376);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.txtStatus);
             this.Controls.Add(this.btnClose);
             this.Controls.Add(this.groupBox2);
@@ -165,6 +177,7 @@
         private System.Windows.Forms.TextBox txtFilePathOutput;
         private System.Windows.Forms.Button btnClose;
         private System.Windows.Forms.TextBox txtStatus;
+        private System.Windows.Forms.Label label1;
     }
 }
 
