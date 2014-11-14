@@ -59,8 +59,6 @@ namespace DataConversion
             {
                 txtStatus.AppendText("Begin Conversion...");
 
-
-
                 //Monitor Name,Monitor Description,Latitude,Longitude,Metric,Seasonal Metric,Statistic,Date,Value
                 DataTable dt = new DataTable();
                 dt.Columns.Add("MonitorName",typeof(String));
@@ -80,8 +78,6 @@ namespace DataConversion
                     return;
                 }
 
-
-                
                 using (StreamReader sr = new StreamReader(inputPath))
                 {
                     sr.ReadLine(); //skip header line
@@ -122,25 +118,28 @@ namespace DataConversion
                     DateTime year = DateTime.MinValue;
                     int numValues = 365;
                     string[] arrValues = null;
-                    foreach (DataRow dr in dt.Rows)
-                    {
-                        //determine year based on date in first row
-                        if (year == DateTime.MinValue)
-                        {
-                            year = DateTime.Parse(dr["Date"].ToString());
-                            if (DateTime.IsLeapYear(year.Year))
-                            {
-                                //add day for leap year
-                                numValues++;
-                            }
-                            arrValues = new string[numValues];
-                            //set default values
-                            for (int i = 0; i < arrValues.Length; i++ )
-                            {
-                                arrValues[i] = ".";
-                            }
-                        }                    
 
+                    //set up first monitor
+                    if (dt.Rows.Count > 0)
+                    {
+                        monitorName = dt.Rows[0]["MonitorName"].ToString();
+                        //determine year based on date in first row
+                        year = DateTime.Parse(dt.Rows[0]["Date"].ToString());
+                        if (DateTime.IsLeapYear(year.Year))
+                        {
+                            //add day for leap year
+                            numValues++;
+                        }
+                        arrValues = new string[numValues];
+                        //set default values
+                        for (int i = 0; i < arrValues.Length; i++)
+                        {
+                            arrValues[i] = ".";
+                        }
+                    }
+
+                    foreach (DataRow dr in dt.Rows)
+                    {                          
                         //build list of values
                         DateTime date = DateTime.Parse(dr["Date"].ToString());
                         string value = dr["Value"].ToString();
@@ -156,8 +155,7 @@ namespace DataConversion
                         monitorNameNext = dr["MonitorName"].ToString();
                         if (!monitorNameNext.Equals(monitorName, StringComparison.OrdinalIgnoreCase))
                         {
-                            monitorName = monitorNameNext;
-                            //remove date field
+                            //we are on new monitor, so print data for current monitor
                             List<object> items = dr.ItemArray.ToList<object>();
                             //remove value field
                             items.RemoveAt(8);                            
@@ -168,7 +166,17 @@ namespace DataConversion
                             items.Add(values);
                             //write output line
                             outputLine = string.Join(",", items);
-                            sw.WriteLine(outputLine);                        
+                            sw.WriteLine(outputLine);
+
+                            //set up new monitor and its values
+                            monitorName = monitorNameNext;
+                            arrValues = new string[numValues];
+                            //set default values
+                            for (int i = 0; i < arrValues.Length; i++)
+                            {
+                                arrValues[i] = ".";
+                            }
+
                         }                        
                     }
                     
