@@ -120,28 +120,44 @@ namespace DataConversion
                     string monitorName = "";
                     string monitorNameNext = "";
                     DateTime year = DateTime.MinValue;
-                    int numDays = 365;
+                    int numValues = 365;
+                    string[] arrValues = null;
                     foreach (DataRow dr in dt.Rows)
                     {
+                        //determine year based on date in first row
                         if (year == DateTime.MinValue)
                         {
                             year = DateTime.Parse(dr["Date"].ToString());
                             if (DateTime.IsLeapYear(year.Year))
                             {
                                 //add day for leap year
-                                numDays++;
+                                numValues++;
                             }
-                        }
+                            arrValues = new string[numValues];
+                            //set default values
+                            for (int i = 0; i < arrValues.Length; i++ )
+                            {
+                                arrValues[i] = ".";
+                            }
+                        }                    
 
-                        
+                        //build list of values
 
+
+                        //get monitor name
                         monitorNameNext = dr["MonitorName"].ToString();
                         if (!monitorNameNext.Equals(monitorName, StringComparison.OrdinalIgnoreCase))
                         {
                             monitorName = monitorNameNext;
-                            //remove data field
+                            //remove date field
                             List<object> items = dr.ItemArray.ToList<object>();
-                            items.RemoveAt(7);    
+                            //remove value field
+                            items.RemoveAt(8);                            
+                            //remove date field
+                            items.RemoveAt(7);                            
+                            //add array of values
+                            string values = "\"" + string.Join(",", arrValues) + "\"";
+                            items.Add(values);
                             //write output line
                             outputLine = string.Join(",", items);
                             sw.WriteLine(outputLine);                        
