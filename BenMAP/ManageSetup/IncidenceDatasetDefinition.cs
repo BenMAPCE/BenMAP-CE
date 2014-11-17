@@ -720,7 +720,7 @@ namespace BenMAP
                     /////////////////////////////////////////////////////////////
                     // STOPPED HERE
                     // add check for import rows that duplicate existing rows
-                    
+                    /*
                     bool bDupRows = false;
                     int iRowCount = 0;
                     while ((iRowCount < _dtLoadTable.Rows.Count) && !bDupRows) {
@@ -761,7 +761,7 @@ namespace BenMAP
                         }
                     }
                     /////////////////////////////////////////////////////////////
-                    
+                    */
                     progressBar1.Maximum = _dtLoadTable.Rows.Count;
                     for (int i = 0; i < (_dtLoadTable.Rows.Count / 125) + 1; i++)
                     {
