@@ -444,7 +444,7 @@ namespace BenMAP
                     if (rtn != DialogResult.OK) { return; }
                     _metadataObj = frm.MetadataObj;
                     str = frm.StrPath;
-                    commandText = "select GridDefinitionName from GridDefinitions where GridDefinitionID=" + _grdiDefinitionID + "";
+                    commandText = "select GridDefinitionName from GridDefinitions where GridDefinitionID=" + _grdiDefinitionID + "";                    
                     cboGridDefinition.Text = (fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)).ToString();
                     if(frm.IncidneceData != null)
                     {
@@ -456,7 +456,7 @@ namespace BenMAP
                         if (_dtLoadTable == null)
                             { MessageBox.Show("Failed to import data from CSV file."); return; }
                     }
-
+                    
                     #region Validation has been moved to LoadIncidenceDatabase
                     //This section will be handled by the new validation window launched by LoadIncidenceDatabase window.
                     //A datatable will be available from the LoadIncidenceDatabase window on a true (passed) validation.
@@ -565,6 +565,7 @@ namespace BenMAP
                         }
                         _dataSetName = txtDataName.Text;
                     }
+                    
                     // look for duplicate rows in imput file and make a copy in lstMustRemove
                     List<DataRow> lstMustRemove = new List<DataRow>();
                     Dictionary<string, int> dicDtLoadTable = new Dictionary<string, int>();
@@ -637,7 +638,7 @@ namespace BenMAP
                     }
                     dicDtLoadTable.Clear();
                     GC.Collect();
-
+                    
                     DataView dv = _dtLoadTable.DefaultView;
                     DataTable dtDistinct = dv.ToTable(true, dv.Table.Columns[iEndpointGroup].ColumnName, dv.Table.Columns[iEndpoint].ColumnName, dv.Table.Columns[iRace].ColumnName, dv.Table.Columns[iGender].ColumnName, dv.Table.Columns[iEthnicity].ColumnName, dv.Table.Columns[iStartAge].ColumnName, dv.Table.Columns[iEndAge].ColumnName, dv.Table.Columns[iType].ColumnName);
                     Dictionary<string, string> dicIncidence = new Dictionary<string, string>();
@@ -706,17 +707,13 @@ namespace BenMAP
                             fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                         }
                     }
-
+                    
                     Dictionary<string, int> dicEndPointGroup = getAllEndPointGroup();
                     Dictionary<int, List<string>> dicEndpointID = getEndPointID();
                     Dictionary<string, int> dicGender = getAllGender();
                     Dictionary<string, int> dicRace = getAllRace();
                     Dictionary<string, int> dicEthnicity = getAllEthnicity();
-                    FirebirdSql.Data.FirebirdClient.FbCommand fbCommand = new FirebirdSql.Data.FirebirdClient.FbCommand();
-                    fbCommand.Connection = CommonClass.Connection;
-                    fbCommand.CommandType = CommandType.Text;
-                    if (fbCommand.Connection.State != ConnectionState.Open)
-                    { fbCommand.Connection.Open(); }
+                    
                     /////////////////////////////////////////////////////////////
                     // STOPPED HERE
                     // add check for import rows that duplicate existing rows
@@ -784,8 +781,7 @@ namespace BenMAP
 
                         }
                         commandText = commandText + "END";
-                        fbCommand.CommandText = commandText;
-                        fbCommand.ExecuteNonQuery();
+                        fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                     } 
                     insertMetadata(incidenceDatasetID);
                     progressBar1.Visible = false;
