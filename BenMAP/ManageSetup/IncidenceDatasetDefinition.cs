@@ -83,23 +83,26 @@ namespace BenMAP
             try
             {
                 if (_dataSetName != string.Empty)
-                {
+                    {
                     txtDataName.Text = _dataSetName;
+                    // added next two lines to try and get edit to show data
+                    string comText = "select incidenceDatasetID from incidenceDataSets where incidenceDatasetName='" + _dataSetName + "'";
+                    incidenceDatasetID = Convert.ToInt16(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, comText));
                     BindDataGridView(null, null);
                     cboGridDefinition.Enabled = false;
                 }
                 else
                 {
-
+            
                     int number = 0;
                     int incidenceDatasetID = 0;
                     do
                     {
                         string comText = "select incidenceDatasetID from incidenceDataSets where incidenceDatasetName=" + "'IncidenceDataSet" + Convert.ToString(number) + "'";
                         incidenceDatasetID = Convert.ToInt16(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, comText));
-                        number++;
+                        //number++;
                     } while (incidenceDatasetID > 0);
-                    txtDataName.Text = "IncidenceDataSet" + Convert.ToString(number - 1);
+                    // txtDataName.Text = "IncidenceDataSet" + Convert.ToString(number - 1);
                     cboGridDefinition.Enabled = true;
                 }
 
