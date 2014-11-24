@@ -19,7 +19,12 @@ namespace BenMAP
         string _dataName = string.Empty;
         private object _dataSetID;
         private MetadataClassObj _metadataObj = null;
-
+        private bool bIsLocked = false;
+        // 2014 11 20 - added to support locking and copying (cloning)
+        //private object _lstDataSetID;
+        private int _dsSetupID;//Setup Id is stored in the olvMonitorDatasets - hidden column olvColumn4
+        
+        
         private void ManageIncidenceDataSets_Load(object sender, EventArgs e)
         {
             try
@@ -66,6 +71,8 @@ namespace BenMAP
                 DataRowView drv = lst.SelectedItem as DataRowView;
                 _dataSetID = drv[1];
                 _dataName = drv[0].ToString();
+                // 2014 11 20 added next line to support lock/copy (cloning)
+                _dsSetupID = CommonClass.ManageSetup.SetupID;
                 string commandText = string.Format("select EndPointGroups.EndPointGroupName,EndPoints.EndPointName,IncidenceRates.Prevalence,Races.RaceName,Ethnicity.EthnicityName,Genders.GenderName,IncidenceRates.StartAge,IncidenceRates.EndAge from IncidenceRates,EndPointGroups,EndPoints,Races,Ethnicity,Genders ,IncidenceDataSets where (IncidenceDataSets.IncidenceDataSetID= IncidenceRates.IncidenceDataSetID) and (IncidenceRates.EndPointGroupID=EndPointGroups.EndPointGroupID) and (IncidenceRates.EndPointID=EndPoints.EndPointID) and (IncidenceRates.RaceID=Races.RaceID) and (IncidenceRates.GenderID=Genders.GenderID) and (IncidenceRates.EthnicityID=Ethnicity.EthnicityID) and IncidenceDataSets.IncidenceDataSetID='{0}'", _dataSetID);
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
@@ -123,6 +130,9 @@ namespace BenMAP
                 cboEndpointGroup.SelectedIndex = 0;
                 cboEndpoint.SelectedIndex = 0;
                 btnViewMetadata.Enabled = false;
+                // 2014 11 20 - lock control for default data sets
+                bIsLocked = isLock();
+                setEditControl();
             }
             catch (Exception ex)
             {
@@ -138,7 +148,8 @@ namespace BenMAP
             {
                 if (dataSetName == string.Empty)
                     return;
-                IncidenceDatasetDefinition frm = new IncidenceDatasetDefinition(dataSetName, Convert.ToInt32(_dataSetID));
+                // 2014 11 20 - added bIsLocked to support copy (clone)
+                IncidenceDatasetDefinition frm = new IncidenceDatasetDefinition(dataSetName, Convert.ToInt32(_dataSetID),bIsLocked);
                 DialogResult rtn = frm.ShowDialog();
                 {
                     BindControls();
@@ -403,5 +414,41 @@ namespace BenMAP
                 Logger.LogError(ex);
             }
         }
+
+        // 2014 11 20 added for copy (clone)
+        private void setEditControl()
+        {
+            if (bIsLocked)
+            {
+                btnEdit.Text = "Copy";
+            }
+            else
+            {
+                btnEdit.Text = "Edit";
+            }
+        }
+        private bool isLock()
+        {
+            bool isLocked = false;
+            string commandText = string.Empty;
+            object obtRtv = null;
+            ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+            try
+            {
+                commandText = string.Format("SELECT LOCKED FROM INCIDENCEDATASETS WHERE INCIDENCEDATASETID = {0} AND SETUPID = {1}", _dataSetID, _dsSetupID);
+                obtRtv = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+                if (obtRtv.ToString().Equals("T"))
+                {
+                    isLocked = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.Message);
+            }
+
+            return isLocked;
+        }
+
     }
 }
