@@ -100,9 +100,9 @@ namespace BenMAP
                     {
                         string comText = "select incidenceDatasetID from incidenceDataSets where incidenceDatasetName=" + "'IncidenceDataSet" + Convert.ToString(number) + "'";
                         incidenceDatasetID = Convert.ToInt16(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, comText));
-                        //number++;
+                        number++;
                     } while (incidenceDatasetID > 0);
-                    // txtDataName.Text = "IncidenceDataSet" + Convert.ToString(number - 1);
+                    txtDataName.Text = "IncidenceDataSet" + Convert.ToString(number - 1);
                     cboGridDefinition.Enabled = true;
                 }
 
