@@ -71,11 +71,11 @@ namespace BenMAP
             this.lblHealthImpactFunctionName = new System.Windows.Forms.Label();
             this.txtHealthImpactFunction = new System.Windows.Forms.TextBox();
             this.grpCancelOK = new System.Windows.Forms.GroupBox();
+            this.lblProgress = new System.Windows.Forms.Label();
+            this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.progressBar1 = new System.Windows.Forms.ProgressBar();
-            this.lblProgress = new System.Windows.Forms.Label();
             this.statusStrip1.SuspendLayout();
             this.grpHealthImpactFunction.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
@@ -598,6 +598,22 @@ namespace BenMAP
             this.grpCancelOK.TabIndex = 7;
             this.grpCancelOK.TabStop = false;
             // 
+            // lblProgress
+            // 
+            this.lblProgress.AutoSize = true;
+            this.lblProgress.Location = new System.Drawing.Point(600, 18);
+            this.lblProgress.Name = "lblProgress";
+            this.lblProgress.Size = new System.Drawing.Size(42, 14);
+            this.lblProgress.TabIndex = 3;
+            this.lblProgress.Text = "label1";
+            // 
+            // progressBar1
+            // 
+            this.progressBar1.Location = new System.Drawing.Point(12, 20);
+            this.progressBar1.Name = "progressBar1";
+            this.progressBar1.Size = new System.Drawing.Size(578, 23);
+            this.progressBar1.TabIndex = 2;
+            // 
             // btnOK
             // 
             this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -619,22 +635,6 @@ namespace BenMAP
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
-            // 
-            // progressBar1
-            // 
-            this.progressBar1.Location = new System.Drawing.Point(12, 20);
-            this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(578, 23);
-            this.progressBar1.TabIndex = 2;
-            // 
-            // lblProgress
-            // 
-            this.lblProgress.AutoSize = true;
-            this.lblProgress.Location = new System.Drawing.Point(600, 18);
-            this.lblProgress.Name = "lblProgress";
-            this.lblProgress.Size = new System.Drawing.Size(42, 14);
-            this.lblProgress.TabIndex = 3;
-            this.lblProgress.Text = "label1";
             // 
             // HealthImpactDataSetDefinition
             // 
