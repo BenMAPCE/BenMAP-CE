@@ -45,11 +45,10 @@ namespace BenMAP
         //public HealthImpactDataSetDefinition(int dataSetID, bool isEdit)
         public HealthImpactDataSetDefinition(int dataSetID, bool isLocked)
         {   //this function should be called when doing an edit
-            // STOPPED HERE
             ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
             InitializeComponent();
             _isLocked = isLocked;
-            if (_isLocked)
+            if (_isLocked)  // copy dataset
             {
                 _datasetID = dataSetID;
                 _isEdit = !isLocked;
@@ -63,14 +62,17 @@ namespace BenMAP
                 _oldDataSetID = _datasetID;
                 _CopyingDataset = true;
             }
-            else
+            else // edit dataset
             {
                 crFunctionDataSetID = dataSetID;//when doing an edit I need to have the current funciton dataset ID
-                txtHealthImpactFunction.Enabled = false;
+                string commandText = string.Format("select CRFUNCTIONDATASETNAME from CRFunctionDatasets WHERE CRFUNCTIONDATASETID={0} ", dataSetID);
+                object obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+                string name = obj.ToString();
+                txtHealthImpactFunction.Text = name;
+                _dataSetName = name;
+                txtHealthImpactFunction.Enabled = true;
             }
-            // 2014 12 01 added to load data back into grid
-            //stopped here
-            
+           
         }
         
         private void getcrFunctionDatasetID()
@@ -1466,11 +1468,43 @@ namespace BenMAP
             lblProgress.Visible = false;
             progressBar1.Visible = false;
             FireBirdHelperBase fb = new ESILFireBirdHelper();
+            DataSet ds = new DataSet();
+            string commandText = string.Empty;
+                
             try
             {
                 if (_dataSetName != string.Empty)
                 {
                     txtHealthImpactFunction.Text = _dataSetName;
+                     // 2014 12 01 - replaced code to load data in edit page
+                    commandText = string.Format("select crfunctiondatasetid from crfunctiondatasets where crfunctiondatasetname='{0}'", _dataSetName);
+                    _datasetID= Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
+                    commandText = string.Format("select b.endpointgroupname,c.endpointname,d.pollutantname,e.metricname,f.seasonalmetricname,case when Metricstatistic=0 then 'None'  when Metricstatistic=1 then 'Mean' when Metricstatistic=2 then 'Median' when Metricstatistic=3 then 'Max' when Metricstatistic=4 then 'Min' when Metricstatistic=5 then 'Sum'  END as MetricstatisticName,author,yyear,g.locationtypename,location,otherpollutants,qualifier,reference,race,ethnicity,gender,startage,endage,h.functionalformtext,i.functionalformtext,beta,distbeta,p1beta,p2beta,a,namea,b,nameb,c,namec,j.incidencedatasetname,k.incidencedatasetname,l.setupvariabledatasetname as variabeldatasetname,CRFUNCTIONID from crfunctions a join endpointgroups b on (a.ENDPOINTGROUPID=b.ENDPOINTGROUPID) join endpoints c on (a.endpointid=c.endpointid) join pollutants d on (a.pollutantid=d.pollutantid)join metrics e on (a.metricid=e.metricid) left join seasonalmetrics f on (a.seasonalmetricid=f.seasonalmetricid) left join locationtype g on (a.locationtypeid=g.locationtypeid) join functionalforms h on (a.functionalformid=h.functionalformid) join baselinefunctionalforms i on (a.baselinefunctionalformid=i.functionalformid) left join incidencedatasets j on (a.incidencedatasetid=j.incidencedatasetid) left join incidencedatasets k on (a.prevalencedatasetid=k.incidencedatasetid) left join setupvariabledatasets l on (a.variabledatasetid=l.setupvariabledatasetid) where CRFUNCTIONDATASETID={0}", _datasetID);
+                    ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+                    olvFunction.DataSource = ds.Tables[0];
+                    _dt = ds.Tables[0];
+                    cboFilterEndpointGroup.Items.Add("All");
+                    cboFilterPollutants.Items.Add("All");
+                    int dtRow = _dt.Rows.Count;
+                    string strTableName = string.Empty;
+                    string strPolluantName = string.Empty;
+                    for (int i = 0; i < dtRow; i++)
+                    {
+                        strTableName = _dt.Rows[i][0].ToString();
+                        if (!cboFilterEndpointGroup.Items.Contains(strTableName))
+                        {
+                            cboFilterEndpointGroup.Items.Add(strTableName);
+
+                        }
+
+                        strPolluantName = _dt.Rows[i][2].ToString();
+                        if (!cboFilterPollutants.Items.Contains(strPolluantName))
+                        {
+                            cboFilterPollutants.Items.Add(strPolluantName);
+
+                        }
+                    }
+
                 }
                 else
                 {
@@ -1500,7 +1534,6 @@ namespace BenMAP
         {
             // 2014 11 26 - commented out next line as part of adding copy (cloning)
             // LoadDatabase();
-            // STOPPED HERE
             //this.DialogResult = DialogResult.OK;
             try
             {   // 2014 11 19 modified to deal with copy (clone)

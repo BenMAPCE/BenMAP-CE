@@ -505,8 +505,7 @@ namespace BenMAP
             try
             {
                 DataRowView drv = lstAvailableDataSets.SelectedItem as DataRowView;
-                // STOPPED HERE
-                HealthImpactDataSetDefinition frm = new HealthImpactDataSetDefinition(Convert.ToInt16(drv["CrfunctiondatasetID"]), true);//doing an edit
+                HealthImpactDataSetDefinition frm = new HealthImpactDataSetDefinition(Convert.ToInt16(drv["CrfunctiondatasetID"]), isLock());//doing an edit
                 DialogResult rth = frm.ShowDialog();
                 if (rth != DialogResult.OK)
                 {
