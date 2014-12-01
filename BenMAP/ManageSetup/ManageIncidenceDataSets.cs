@@ -16,12 +16,12 @@ namespace BenMAP
             InitializeComponent();
         }
 
+        private bool bIsLocked = false;
+
         string _dataName = string.Empty;
         private object _dataSetID;
         private MetadataClassObj _metadataObj = null;
-        private bool bIsLocked = false;
         // 2014 11 20 - added to support locking and copying (cloning)
-        //private object _lstDataSetID;
         private int _dsSetupID;//Setup Id is stored in the olvMonitorDatasets - hidden column olvColumn4
         
         
@@ -405,7 +405,8 @@ namespace BenMAP
 
                     if (dlv.SelectedItem != null)
                     {
-                        btnViewMetadata.Enabled = true;                        
+                        btnViewMetadata.Enabled = true;    
+                    
                     }
                 }
             }
