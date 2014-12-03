@@ -10,10 +10,15 @@ namespace BenMAP
     public partial class VariableDataSetDefinition : FormBase
     {
         private string _datasetName = string.Empty;
+
         int variabledatasetID = -1;
         private MetadataClassObj _metadataObj = null;
         private bool _bEdit = false;
-
+        private bool _isLocked = false;
+        private bool _CopyingDataset = false;
+        private object _newDataSetID = null;//used for copying an existing dataset that is locked. (the new datasetid)
+        private object _oldDataSetID = null;//used for copying an existing dataset that is locked. (the locked datasetid)
+       
         private List<MetadataClassObj> _lstMetadata;
 
         //public List<MetadataClassObj> LstMetadata
@@ -37,9 +42,29 @@ namespace BenMAP
             _lstMetadata = new List<MetadataClassObj>();
         }
 
-        public VariableDataSetDefinition(string datasetName, bool bEdit):this(datasetName)
+        public VariableDataSetDefinition(string datasetName, bool isLocked):this(datasetName)
         {
-            _bEdit = bEdit;
+            
+            _bEdit = !isLocked;
+            _isLocked = isLocked;
+
+            FireBirdHelperBase fb = new ESILFireBirdHelper();
+            
+            if (_isLocked)
+            {
+                txtDataSetName.Enabled = true;
+                _datasetName = datasetName + "_Copy";
+                // get old data set ID for use in copy
+               
+                txtDataSetName.Text = _datasetName;
+                string commandText = string.Format("Select SetupVariableDataSetID from SetupVariableDataSets where SetupVariableDataSetName='{0}'", datasetName);
+                _oldDataSetID = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+                _CopyingDataset = true;
+            }
+            else
+            {
+                txtDataSetName.Enabled = false;
+            }
         }
 
         private void VariableDataSetDefinition_Load(object sender, EventArgs e)
@@ -126,7 +151,14 @@ namespace BenMAP
                 MessageBox.Show("Please input a valid dataset name.");
                 return;
             }
-            if (lstDataSetVariable.Items.Count == 0)
+             if (_isLocked)//doing a copy
+            {
+                CopyDatabase();
+                this.DialogResult = DialogResult.OK;
+                this.Close();
+                return;
+            }
+            else if (lstDataSetVariable.Items.Count == 0)
             {
                 MessageBox.Show("Please load a variable datafile.");
                 return;
@@ -655,5 +687,89 @@ namespace BenMAP
                 Logger.LogError(ex.Message);
             }
         }
+        private void CopyDatabase()
+        {
+            FireBirdHelperBase fb = new ESILFireBirdHelper();
+            try
+            {
+                string commandText = string.Empty;
+                int maxID = 0;
+                int minID = 0;
+                object rVal = null;
+                //check and see if name is used
+                commandText = string.Format("Select SetupVariableDATASETNAME from SetupVariableDATASETS WHERE SetupVariableDATASETNAME = '{0}'", txtDataSetName.Text.Trim());
+                rVal = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
+                if (rVal != null)
+                {
+                    MessageBox.Show("Name is already used.  Please select a new name.");
+                    txtDataSetName.Focus();
+                    return;
+                }
+
+                // string msg = string.Format("Save this file associated with {0} and {1} ?", cboPollutant.GetItemText(cboPollutant.SelectedItem), txtYear.Text);
+                string msg = "Copy Variable Data Set";
+                DialogResult result = MessageBox.Show(msg, "Confirm Copy", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                if (result == DialogResult.No) return;
+                //getting a new dataset id
+                if (_newDataSetID == null)
+                {
+                    commandText = commandText = "select max(SetupVariableDataSetID) from SetupVariableDataSets";
+                    _newDataSetID = Convert.ToInt16(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
+                }
+                // first, create a new variable data set
+                //the 'F' is for the LOCKED column in SetupVariableDataSets.  This is being added and is not a predefined.
+                commandText = string.Format("insert into SetupVariableDataSets(SetupVariableDATASETID, SETUPID, SETUPVARIABLEDATASETNAME, LOCKED) "
+                         + " values ({0},{1},'{2}', 'F')", _newDataSetID, CommonClass.ManageSetup.SetupID, txtDataSetName.Text);
+                fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                
+                // then, fill the setup variables table with copies of records linked to the original variable dataset
+                // get max id for all records
+                commandText = "select max(SetupVariableID) from SetupVariables ";
+                maxID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
+                // get minimum id (in old dataset)
+                commandText = string.Format("select min(SetupVariableID) from SetupVariables "
+                                + " where SETUPVARIABLEDATASETID = {0}", _oldDataSetID);
+                minID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
+
+                 //inserting - copying the locked data to the new data set
+                commandText = string.Format("insert into SetupVariables(SetupVariableID, SetupVariableDataSetID, SetupVariableName, GridDefinitionID, MetaDataID) " +
+                              "SELECT SetupVariableID + ({0} - {1}) + 1, " +
+                              "{2}, SetupVariableName, GridDefinitionID, MetaDataID " +
+                              "FROM SetupVariables WHERE SetupVariableDataSetID = {3}", maxID, minID, _newDataSetID, _oldDataSetID);
+
+                fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                
+                // now copy the geographic values to the new set
+                commandText = string.Format("INSERT INTO SetupGeographicVariables(SetupVariableID, CCOLUMN, \"ROW\", VVALUE) "
+                                + "SELECT {0} + 1 + C.SetupVariableID - {1}, CCOLUMN, \"ROW\", VVALUE "
+                                + "from SetupGeographicVariables as C INNER JOIN SetupVariables AS P ON C.SetupVariableID = P.SetupVariableID "
+                                + "WHERE P.SetupVariableDataSetID = {2} ", maxID, minID, _oldDataSetID);
+
+                fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+
+                 // now copy the global values to the new set
+                commandText = string.Format("INSERT INTO SetupGlobalVariables(SetupVariableID, VVALUE) "
+                                + "SELECT {0} + 1 + C.SetupVariableID - {1}, VVALUE "
+                                + "from SetupGlobalVariables as C INNER JOIN SetupVariables AS P ON C.SetupVariableID = P.SetupVariableID "
+                                + "WHERE P.SetupVariableDataSetID = {2} ", maxID, minID, _oldDataSetID);
+
+                fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+
+                _metadataObj = new MetadataClassObj();
+                _metadataObj.DatasetId = Convert.ToInt32(_newDataSetID);
+                _metadataObj.FileName = txtDataSetName.Text;
+
+            }
+            catch (Exception ex)
+            {
+                progBarVariable.Visible = false;
+                lblProgressBar.Text = "";
+                Logger.LogError(ex.Message);
+            }
+        }
+
+
+
+
     }
 }
