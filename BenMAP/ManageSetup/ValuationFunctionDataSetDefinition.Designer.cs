@@ -58,6 +58,8 @@ namespace BenMAP
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this.lblProgress = new System.Windows.Forms.Label();
             this.grpValuationFunctionDefinition.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -429,6 +431,8 @@ namespace BenMAP
             // 
             this.grpCancelOK.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.grpCancelOK.Controls.Add(this.lblProgress);
+            this.grpCancelOK.Controls.Add(this.progressBar1);
             this.grpCancelOK.Controls.Add(this.btnOK);
             this.grpCancelOK.Controls.Add(this.btnCancel);
             this.grpCancelOK.Location = new System.Drawing.Point(12, 512);
@@ -476,6 +480,22 @@ namespace BenMAP
             this.toolStripStatusLabel1.Text = "toolStripStatusLabel1";
             this.toolStripStatusLabel1.Visible = false;
             // 
+            // progressBar1
+            // 
+            this.progressBar1.Location = new System.Drawing.Point(0, 13);
+            this.progressBar1.Name = "progressBar1";
+            this.progressBar1.Size = new System.Drawing.Size(482, 23);
+            this.progressBar1.TabIndex = 2;
+            // 
+            // lblProgress
+            // 
+            this.lblProgress.AutoSize = true;
+            this.lblProgress.Location = new System.Drawing.Point(0, 2);
+            this.lblProgress.Name = "lblProgress";
+            this.lblProgress.Size = new System.Drawing.Size(42, 14);
+            this.lblProgress.TabIndex = 3;
+            this.lblProgress.Text = "label1";
+            // 
             // ValuationFunctionDataSetDefinition
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
@@ -498,6 +518,7 @@ namespace BenMAP
             this.groupBox1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.olvData)).EndInit();
             this.grpCancelOK.ResumeLayout(false);
+            this.grpCancelOK.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             this.ResumeLayout(false);
@@ -547,5 +568,7 @@ namespace BenMAP
         private BrightIdeasSoftware.OLVColumn olvColumn19;
         private System.Windows.Forms.Button btnOutput;
         private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.ProgressBar progressBar1;
+        private System.Windows.Forms.Label lblProgress;
     }
 }
