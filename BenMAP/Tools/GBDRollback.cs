@@ -10,6 +10,9 @@ using DotSpatial.Controls;
 using DotSpatial.Data;
 using DotSpatial.Symbology;
 using Microsoft.Office.Interop.Excel;
+using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Spreadsheet; 
 
 
 
@@ -19,9 +22,10 @@ namespace BenMAP
     {
 
         private Dictionary<string, string> checkedCountries = new Dictionary<string, string>();
-        private List<Color> colorPalette = new List<Color>();
+        private List<System.Drawing.Color> colorPalette = new List<System.Drawing.Color>();
         private List<GBDRollbackItem> rollbacks = new List<GBDRollbackItem>();
         private System.Data.DataTable dtCountries;
+        private SpreadsheetDocument spreadsheetDocument;
         private Microsoft.Office.Interop.Excel.Application xlApp;
         private bool selectMapFeaturesOnNodeCheck = true;
 
@@ -122,17 +126,17 @@ namespace BenMAP
         private void LoadColorPalette()
         { 
             
-            colorPalette.Add(Color.FromArgb(165,0,38));
-            colorPalette.Add(Color.FromArgb(215, 48, 39));
-            colorPalette.Add(Color.FromArgb(244, 109, 67));
-            colorPalette.Add(Color.FromArgb(253, 174, 97));
-            colorPalette.Add(Color.FromArgb(254, 224, 144));
-            colorPalette.Add(Color.FromArgb(255, 255, 191));
-            colorPalette.Add(Color.FromArgb(224, 243, 248));
-            colorPalette.Add(Color.FromArgb(171, 217, 233));
-            colorPalette.Add(Color.FromArgb(116, 173, 209));
-            colorPalette.Add(Color.FromArgb(69, 117, 180));
-            colorPalette.Add(Color.FromArgb(49, 54, 149));
+            colorPalette.Add(System.Drawing.Color.FromArgb(165,0,38));
+            colorPalette.Add(System.Drawing.Color.FromArgb(215, 48, 39));
+            colorPalette.Add(System.Drawing.Color.FromArgb(244, 109, 67));
+            colorPalette.Add(System.Drawing.Color.FromArgb(253, 174, 97));
+            colorPalette.Add(System.Drawing.Color.FromArgb(254, 224, 144));
+            colorPalette.Add(System.Drawing.Color.FromArgb(255, 255, 191));
+            colorPalette.Add(System.Drawing.Color.FromArgb(224, 243, 248));
+            colorPalette.Add(System.Drawing.Color.FromArgb(171, 217, 233));
+            colorPalette.Add(System.Drawing.Color.FromArgb(116, 173, 209));
+            colorPalette.Add(System.Drawing.Color.FromArgb(69, 117, 180));
+            colorPalette.Add(System.Drawing.Color.FromArgb(49, 54, 149));
         
         }
 
@@ -154,9 +158,9 @@ namespace BenMAP
                 impl = new MapPolygonLayer(FeatureSet.OpenFile(mapFile));
                 //impl.Reproject(_mapArgs.Map.Projection);
                 impl.LegendText = "Countries";
-                impl.Symbolizer.SetFillColor(Color.White);
+                impl.Symbolizer.SetFillColor(System.Drawing.Color.White);
                 impl.Symbolizer.SetOutlineWidth(1);
-                impl.Symbolizer.OutlineSymbolizer.SetFillColor(Color.Black);
+                impl.Symbolizer.OutlineSymbolizer.SetFillColor(System.Drawing.Color.Black);
                 mapGBD.Layers.Add(impl);
             }
         }
@@ -359,7 +363,7 @@ namespace BenMAP
                         //update map
                         IPolygonScheme ips = (IPolygonScheme)mfl[0].Symbology;
                         IPolygonCategory ipc = null;
-                        ipc = new PolygonCategory(Color.FromArgb(0, 255, 255), Color.FromArgb(0, 225, 225), 1);
+                        ipc = new PolygonCategory(System.Drawing.Color.FromArgb(0, 255, 255), System.Drawing.Color.FromArgb(0, 225, 225), 1);
                         ipc.FilterExpression = "[ID]='" + e.Node.Name + "'";
                         selectedButNotSavedIPCs.Add(e.Node.Name,ipc);
                         mfl[0].Symbology.AddCategory(ipc);
@@ -603,7 +607,7 @@ namespace BenMAP
             IPolygonCategory ipc = null;
             //grab existing ips and add to it
             foreach(String s in rollback.Countries.Keys){
-                ipc = new PolygonCategory(rollback.Color, Color.Black, 1);
+                ipc = new PolygonCategory(rollback.Color, System.Drawing.Color.Black, 1);
                 ipc.FilterExpression = "[ID]='" + s+"'";
                 rollback.addIPC(ipc);
                 ips.AddCategory(ipc);
@@ -635,9 +639,9 @@ namespace BenMAP
             }        
         }
 
-        private Color GetNextColor()
+        private System.Drawing.Color GetNextColor()
         {
-            foreach (Color c in colorPalette)
+            foreach (System.Drawing.Color c in colorPalette)
             {
                 GBDRollbackItem item = rollbacks.Find(x => x.Color.ToArgb() == c.ToArgb());
                 if (item == null)
@@ -650,10 +654,10 @@ namespace BenMAP
             return GetRandomColor();        
         }
 
-        private Color GetRandomColor()
+        private System.Drawing.Color GetRandomColor()
         {
             Random random = new Random();
-            return Color.FromArgb(random.Next(0, 255), random.Next(0, 255), random.Next(0, 255));
+            return System.Drawing.Color.FromArgb(random.Next(0, 255), random.Next(0, 255), random.Next(0, 255));
         }  
 
         private long GetRollbackTotalPopulation(GBDRollbackItem rollback)
@@ -1053,6 +1057,320 @@ namespace BenMAP
             dtConcCountry.Columns.Add("AIR_QUALITY_DELTA", dtConcCountry.Columns["CONCENTRATION"].DataType, "CONCENTRATION_DELTA * POPESTIMATE");
         }
 
+        //private void SaveRollbackReport(GBDRollbackItem rollback)
+        //{
+
+        //    //get application path
+        //    string appPath = AppDomain.CurrentDomain.BaseDirectory;
+        //    string filePath = appPath + @"Tools\GBDRollbackOutputTemplate.xlsx";
+
+        //    Microsoft.Office.Interop.Excel.Workbook xlBook;
+        //    //open report template                
+        //    xlBook = xlApp.Workbooks.Open(filePath);           
+
+        //    //check save dir 
+        //    string resultsDir = txtFilePath.Text.Trim();
+        //    if(!Directory.Exists(resultsDir))
+        //    {
+        //        Directory.CreateDirectory(resultsDir);
+        //    }
+
+        //    //get timestamp
+        //    DateTime dtNow = DateTime.Now;
+        //    string timeStamp = dtNow.ToString("yyyyMMddHHmm");
+        //    //get application path
+        //    filePath = resultsDir + @"\GBDRollback_" + rollback.Name + "_" + timeStamp + ".xlsx";
+
+        //    #region summary sheet
+        //    //summary sheet
+        //    Microsoft.Office.Interop.Excel.Worksheet xlSheet = (Microsoft.Office.Interop.Excel.Worksheet)xlBook.Worksheets[1];
+        //    //xlSheet.Name = "Summary";
+        //    //xlSheet.Range["A2"].Value = "Date";
+        //    xlSheet.Range["B2"].Value = dtNow.ToString("yyyy/MM/dd");
+        //    //xlSheet.Range["A3"].Value = "Scenario Name";
+        //    xlSheet.Range["B3"].Value = rollback.Name;
+        //    //xlSheet.Range["A4"].Value = "Scenario Description";
+        //    xlSheet.Range["B4"].Value = rollback.Description;
+        //    //xlSheet.Range["A5"].Value = "GBD Year";
+        //    xlSheet.Range["B5"].Value = rollback.Year.ToString();
+        //    //xlSheet.Range["A6"].Value = "Pollutant";
+        //    xlSheet.Range["B6"].Value = "PM 2.5";
+
+        //    //xlSheet.Range["A7"].Value = "Background Concentration";
+        //    char micrograms = '\u00B5';
+        //    char super3 = '\u00B3';
+        //    xlSheet.Range["B7"].Value = rollback.Background.ToString() + " " + micrograms.ToString() + "g/m" + super3.ToString();
+
+        //    //xlSheet.Range["A8"].Value = "Rollback Type";
+        //    string summary = String.Empty;
+        //    switch (rollback.Type)
+        //    {
+        //        case GBDRollbackItem.RollbackType.Percentage: //percentage
+        //            summary = rollback.Percentage.ToString() + "% Rollback";
+        //            break;
+        //        case GBDRollbackItem.RollbackType.Incremental: //incremental
+        //            summary = rollback.Increment.ToString() + micrograms.ToString() + "g/m" + super3.ToString() + " Rollback";
+        //            break;
+        //        case GBDRollbackItem.RollbackType.Standard:
+        //            summary = "Rollback to " + rollback.StandardName + " Standard";
+        //            break;
+        //    }
+        //    xlSheet.Range["B8"].Value = summary;
+
+        //    //xlSheet.Range["A9"].Value = "Regions and Countries";
+        //    int rowOffset = 0;
+        //    int nextRow = 0;
+
+        //    System.Data.DataTable dtTemp = dtConcEntireRollback.DefaultView.ToTable(true,  "REGIONID", "REGIONNAME", "COUNTRYID", "COUNTRYNAME");
+        //    DataView dv = new DataView(dtTemp);
+        //    dv.Sort = "REGIONNAME ASC, COUNTRYNAME ASC";
+        //    System.Data.DataTable dtRegionsCountries = dv.ToTable();
+        //    string region = String.Empty;
+        //    string country = String.Empty;
+        //    foreach (DataRow dr in dtRegionsCountries.Rows)
+        //    {
+        //        //new region? write region
+        //        if (!region.Equals(dr["REGIONNAME"].ToString(), StringComparison.OrdinalIgnoreCase))
+        //        {
+        //            region = dr["REGIONNAME"].ToString();
+        //            nextRow = 9 + rowOffset;
+        //            xlSheet.Range["B" + nextRow.ToString()].Value = region;
+        //            xlSheet.Range["B" + nextRow.ToString()].Font.Italic = true;
+        //            rowOffset++;
+        //        }
+
+        //        //write country
+        //        country = dr["COUNTRYNAME"].ToString();
+        //        nextRow = 9 + rowOffset;
+        //        xlSheet.Range["B" + nextRow.ToString()].Value = country;
+        //        xlSheet.Range["B" + nextRow.ToString()].ColumnWidth = 40;
+        //        xlSheet.Range["B" + nextRow.ToString()].WrapText = true;
+        //        xlSheet.Range["B" + nextRow.ToString()].InsertIndent(2);
+        //        rowOffset++;
+        //    }
+
+        //    //format
+        //    Microsoft.Office.Interop.Excel.Range xlRange;
+        //    xlRange = (Microsoft.Office.Interop.Excel.Range)(xlSheet.Columns[1]);            
+        //    xlRange.AutoFit();
+        //    //add borders
+        //    //nextRow = 9 + rowOffset;
+        //    xlRange = xlSheet.Range["A2:B" + nextRow.ToString()];
+        //    xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeTop].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
+        //    xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeRight].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
+        //    xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeBottom].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
+        //    xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeLeft].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;            
+        //    xlRange.Borders.Color = Color.Black;
+        //    //bold, color label cells
+        //    xlRange = xlSheet.Range["A2:A" + nextRow.ToString()];
+        //    xlRange.Font.Bold = true;
+        //    xlRange.Interior.Color = xlSheet.Range["A2"].Interior.Color;
+
+
+        //    xlSheet.Range["J2"].Value = rollback.Year.ToString() + " " + xlSheet.Range["J2"].Value.ToString();
+
+
+        //    #endregion
+
+        //    //results sheet
+        //    #region results sheet
+        //    Microsoft.Office.Interop.Excel.Worksheet xlSheet2 = (Microsoft.Office.Interop.Excel.Worksheet)xlBook.Worksheets[2];
+        //    //xlSheet2.Name = "Results";
+        //    //xlSheet2.Range["A3"].Value = "Country";
+        //    //xlSheet2.Range["B3"].Value = "Population Affected";
+        //    //xlSheet2.Range["C3"].Value = "Avoided Deaths (Total)";
+        //    //xlSheet2.Range["D3"].Value = "Avoided Deaths (% Population)";
+        //    //xlSheet2.Range["E3"].Value = "Min";
+        //    //xlSheet2.Range["F3"].Value = "Median";
+        //    //xlSheet2.Range["G3"].Value = "Max";
+        //    xlSheet2.Range["H2"].Value = rollback.Year.ToString() + " " + xlSheet2.Range["H2"].Value.ToString();
+        //    //xlSheet2.Range["E2:G2"].MergeCells = true;
+        //    //xlSheet2.Range["H3"].Value = "Min";
+        //    //xlSheet2.Range["I3"].Value = "Median";
+        //    //xlSheet2.Range["J3"].Value = "Max";
+        //    //xlSheet2.Range["H2"].Value = "Control";
+        //    //xlSheet2.Range["H2:J2"].MergeCells = true;
+        //    //xlSheet2.Range["K3"].Value = "Air Quality Change (Population Weighted)";
+
+        //    //format
+        //    //xlSheet2.Range["E2:J2"].Font.Bold = true;
+        //    //xlSheet2.Range["E2:J2"].HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignCenter;
+        //    //xlSheet2.Range["A3:K3"].Font.Bold = true;
+        //    //xlSheet2.Range["A3:K3"].HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignCenter;
+        //    //xlSheet2.Range["B3:D3"].ColumnWidth = 20;
+        //    //xlSheet2.Range["E3:J3"].ColumnWidth = 10;
+        //    //xlSheet2.Range["K3"].ColumnWidth = 20;
+        //    //xlSheet2.Range["B3:K3"].WrapText = true;
+        //    ////country column
+        //    //xlRange = (Microsoft.Office.Interop.Excel.Range)(xlSheet2.Columns[1]);
+        //    //xlRange.ColumnWidth = 40;
+        //    //xlRange.WrapText = true;
+
+        //    //build output table
+        //    System.Data.DataTable dtDetailedResults = new System.Data.DataTable();
+        //    dtDetailedResults.Columns.Add("NAME", Type.GetType("System.String"));
+        //    dtDetailedResults.Columns.Add("IS_REGION", Type.GetType("System.Boolean"));
+        //    dtDetailedResults.Columns.Add("POP_AFFECTED", Type.GetType("System.Double"));
+        //    dtDetailedResults.Columns.Add("AVOIDED_DEATHS", Type.GetType("System.Double"));
+        //    dtDetailedResults.Columns.Add("CONFIDENCE_INTERVAL", Type.GetType("System.String"));
+        //    dtDetailedResults.Columns.Add("PERCENT_BASELINE_MORTALITY", Type.GetType("System.Double"));
+        //    dtDetailedResults.Columns.Add("DEATHS_PER_100_THOUSAND", Type.GetType("System.Double"));
+        //    dtDetailedResults.Columns.Add("AVOIDED_DEATHS_PERCENT_POP", Type.GetType("System.Double"));
+        //    dtDetailedResults.Columns.Add("BASELINE_MIN", Type.GetType("System.Double"));
+        //    dtDetailedResults.Columns.Add("BASELINE_MEDIAN", Type.GetType("System.Double"));
+        //    dtDetailedResults.Columns.Add("BASELINE_MAX", Type.GetType("System.Double"));
+        //    dtDetailedResults.Columns.Add("CONTROL_MIN", Type.GetType("System.Double"));
+        //    dtDetailedResults.Columns.Add("CONTROL_MEDIAN", Type.GetType("System.Double"));
+        //    dtDetailedResults.Columns.Add("CONTROL_MAX", Type.GetType("System.Double"));
+        //    dtDetailedResults.Columns.Add("AIR_QUALITY_CHANGE", Type.GetType("System.Double"));
+
+
+        //    string regionid = String.Empty;
+        //    string countryid = String.Empty;
+        //    foreach (DataRow dr in dtRegionsCountries.Rows)
+        //    {
+        //        //new region? get region data
+        //        if (!regionid.Equals(dr["REGIONID"].ToString(), StringComparison.OrdinalIgnoreCase))
+        //        {
+        //            regionid = dr["REGIONID"].ToString();
+        //            GetResults(regionid, dr["REGIONNAME"].ToString(), true, dtDetailedResults);
+        //        }
+
+        //        //get country data
+        //        countryid = dr["COUNTRYID"].ToString();
+        //        GetResults(countryid, dr["COUNTRYNAME"].ToString(), false, dtDetailedResults);
+        //    }
+
+
+        //    //write results to spreadsheet
+        //    nextRow = 4;
+        //    foreach (DataRow dr in dtDetailedResults.Rows)
+        //    {
+        //        xlSheet2.Range["A" + nextRow.ToString()].Value = dr["NAME"].ToString();
+        //        if (Convert.ToBoolean(dr["IS_REGION"].ToString()))
+        //        {
+        //            xlSheet2.Range["A" + nextRow.ToString()].Font.Italic = true;
+        //        }
+        //        else 
+        //        {
+        //            //xlSheet2.Range["A" + nextRow.ToString()].ColumnWidth = 40;
+        //            //xlSheet2.Range["A" + nextRow.ToString()].WrapText = true;
+        //            xlSheet2.Range["A" + nextRow.ToString()].InsertIndent(2);                
+        //        }
+        //        xlSheet2.Range["B" + nextRow.ToString()].Value = FormatDoubleStringTwoSignificantFigures(FORMAT_DECIMAL_0_PLACES, dr["POP_AFFECTED"].ToString());
+        //        xlSheet2.Range["C" + nextRow.ToString()].Value = FormatDoubleStringTwoSignificantFigures(FORMAT_DECIMAL_0_PLACES, dr["AVOIDED_DEATHS"].ToString());
+        //        xlSheet2.Range["D" + nextRow.ToString()].Value = "'" + dr["CONFIDENCE_INTERVAL"].ToString(); //prepend apostrophe so Excel treats this as text not date
+        //        xlSheet2.Range["E" + nextRow.ToString()].Value = dr["PERCENT_BASELINE_MORTALITY"].ToString();
+        //        xlSheet2.Range["F" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["DEATHS_PER_100_THOUSAND"].ToString());
+        //        xlSheet2.Range["G" + nextRow.ToString()].Value = dr["AVOIDED_DEATHS_PERCENT_POP"].ToString();//FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AVOIDED_DEATHS_PERCENT_POP"].ToString());
+        //        xlSheet2.Range["H" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MIN"].ToString());
+        //        xlSheet2.Range["I" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MEDIAN"].ToString());
+        //        xlSheet2.Range["J" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MAX"].ToString());
+        //        xlSheet2.Range["K" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MIN"].ToString());
+        //        xlSheet2.Range["L" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MEDIAN"].ToString());
+        //        xlSheet2.Range["M" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MAX"].ToString());
+        //        xlSheet2.Range["N" + nextRow.ToString()].Value = dr["AIR_QUALITY_CHANGE"].ToString();// FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AIR_QUALITY_CHANGE"].ToString());
+        //        nextRow++;
+                
+        //    }
+
+        //    //center confidence interval
+        //    xlRange = xlSheet2.Range["D4:D" + (nextRow - 1).ToString()];
+        //    xlRange.Cells.HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignCenter;
+            
+        //    //add cell borders
+        //    xlRange = xlSheet2.Range["A4:N" + (nextRow - 1).ToString()];
+        //    xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeTop].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
+        //    xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeRight].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
+        //    xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeBottom].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
+        //    xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeLeft].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
+        //    xlRange.Borders.Color = Color.Black;
+
+        //    #endregion
+
+        //    #region back to summary sheet
+
+        //    //get results for summary table
+        //    System.Data.DataTable dtSummaryResults = dtDetailedResults.Clone();
+        //    GetResults(null, "SUMMARY", false, dtSummaryResults);
+        //    if (dtSummaryResults.Rows.Count > 0)
+        //    {
+        //        DataRow dr = dtSummaryResults.Rows[0];
+        //        xlSheet.Range["D4"].Value = FormatDoubleStringTwoSignificantFigures(FORMAT_DECIMAL_0_PLACES, dr["POP_AFFECTED"].ToString());
+        //        xlSheet.Range["E4"].Value = FormatDoubleStringTwoSignificantFigures(FORMAT_DECIMAL_0_PLACES, dr["AVOIDED_DEATHS"].ToString());
+        //        xlSheet.Range["F4"].Value =  "'" + dr["CONFIDENCE_INTERVAL"].ToString(); //prepend apostrophe so Excel treats this as text not date
+        //        xlSheet.Range["G4"].Value = dr["PERCENT_BASELINE_MORTALITY"].ToString();
+        //        xlSheet.Range["H4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["DEATHS_PER_100_THOUSAND"].ToString());
+        //        xlSheet.Range["I4"].Value = dr["AVOIDED_DEATHS_PERCENT_POP"].ToString();//FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AVOIDED_DEATHS_PERCENT_POP"].ToString());
+        //        xlSheet.Range["J4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MIN"].ToString());
+        //        xlSheet.Range["K4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MEDIAN"].ToString());
+        //        xlSheet.Range["L4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MAX"].ToString());
+        //        xlSheet.Range["M4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MIN"].ToString());
+        //        xlSheet.Range["N4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MEDIAN"].ToString());
+        //        xlSheet.Range["O4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MAX"].ToString());
+        //        xlSheet.Range["P4"].Value = dr["AIR_QUALITY_CHANGE"].ToString();// FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AIR_QUALITY_CHANGE"].ToString());
+
+        //    }
+        //    xlRange = xlSheet.Range["D4:P4"];
+        //    xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeTop].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
+        //    xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeRight].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
+        //    xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeBottom].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
+        //    xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeLeft].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
+        //    xlRange.Borders.Color = Color.Black;
+
+        //    #endregion
+
+        //    #region charts
+
+        //    //summary chart
+        //    //write summary chart data to hidden sheet
+        //    //sheet DataSource is hidden and is the 4th sheet (Metadata is the third sheet)
+        //    Microsoft.Office.Interop.Excel.Worksheet xlSheet4 = (Microsoft.Office.Interop.Excel.Worksheet)xlBook.Worksheets[4];             
+        //    int nextRowForSummary = 1;
+        //    foreach (DataRow dr in dtDetailedResults.Rows)
+        //    {
+        //        //only write countries, skip regions
+        //        if (!Convert.ToBoolean(dr["IS_REGION"].ToString()))
+        //        {
+        //            xlSheet4.Range["A" + nextRowForSummary.ToString()].Value = dr["NAME"].ToString();
+        //            xlSheet4.Range["B" + nextRowForSummary.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AVOIDED_DEATHS"].ToString());
+        //            nextRowForSummary++;                    
+        //        }
+        //    }
+        //    Microsoft.Office.Interop.Excel.ChartObject xlChartObject = (Microsoft.Office.Interop.Excel.ChartObject)xlSheet.ChartObjects(1);
+        //    Microsoft.Office.Interop.Excel.Chart xlChart = (Microsoft.Office.Interop.Excel.Chart)xlChartObject.Chart;
+        //    Microsoft.Office.Interop.Excel.Series xlSeries = (Microsoft.Office.Interop.Excel.Series)xlChart.SeriesCollection(1);
+        //    xlSeries.Values = xlSheet4.Range["B1:B" + (nextRowForSummary - 1).ToString()];
+        //    xlSeries.XValues = xlSheet4.Range["A1:A" + (nextRowForSummary - 1).ToString()];
+        //    //write to total avoided deaths text box on chart
+        //    Microsoft.Office.Interop.Excel.Shape txtBox = (Microsoft.Office.Interop.Excel.Shape)xlSheet.Shapes.Item("TextBox 1");
+        //    txtBox.TextFrame.Characters().Text = txtBox.TextFrame.Characters().Text + " " + xlSheet.Range["E4"].Text; //use .Text rather than .Value on the range here, because it is formatted
+
+
+        //    //avoided deaths chart sheet
+        //    xlChart = (Microsoft.Office.Interop.Excel.Chart)xlBook.Charts[1];
+        //    xlSeries = (Microsoft.Office.Interop.Excel.Series)xlChart.SeriesCollection(1);
+        //    xlSeries.Values = xlSheet2.Range["C4:C" + (nextRow - 1).ToString()];
+        //    xlSeries.XValues = xlSheet2.Range["A4:A" + (nextRow - 1).ToString()];
+
+        //    //deaths per 100,000
+        //    xlChart = (Microsoft.Office.Interop.Excel.Chart)xlBook.Charts[2];
+        //    xlSeries = (Microsoft.Office.Interop.Excel.Series)xlChart.SeriesCollection(1);
+        //    xlSeries.Values = xlSheet2.Range["F4:F" + (nextRow - 1).ToString()];
+        //    xlSeries.XValues = xlSheet2.Range["A4:A" + (nextRow - 1).ToString()];
+
+        //    #endregion
+
+
+
+        //    //save
+        //    xlBook.SaveAs(filePath, FileFormat: XlFileFormat.xlOpenXMLWorkbook);
+        //    xlBook.Close();       
+        
+        
+        
+        //}
+
         private void SaveRollbackReport(GBDRollbackItem rollback)
         {
 
@@ -1062,11 +1380,11 @@ namespace BenMAP
 
             Microsoft.Office.Interop.Excel.Workbook xlBook;
             //open report template                
-            xlBook = xlApp.Workbooks.Open(filePath);           
+            xlBook = xlApp.Workbooks.Open(filePath);
 
             //check save dir 
             string resultsDir = txtFilePath.Text.Trim();
-            if(!Directory.Exists(resultsDir))
+            if (!Directory.Exists(resultsDir))
             {
                 Directory.CreateDirectory(resultsDir);
             }
@@ -1117,7 +1435,7 @@ namespace BenMAP
             int rowOffset = 0;
             int nextRow = 0;
 
-            System.Data.DataTable dtTemp = dtConcEntireRollback.DefaultView.ToTable(true,  "REGIONID", "REGIONNAME", "COUNTRYID", "COUNTRYNAME");
+            System.Data.DataTable dtTemp = dtConcEntireRollback.DefaultView.ToTable(true, "REGIONID", "REGIONNAME", "COUNTRYID", "COUNTRYNAME");
             DataView dv = new DataView(dtTemp);
             dv.Sort = "REGIONNAME ASC, COUNTRYNAME ASC";
             System.Data.DataTable dtRegionsCountries = dv.ToTable();
@@ -1147,7 +1465,7 @@ namespace BenMAP
 
             //format
             Microsoft.Office.Interop.Excel.Range xlRange;
-            xlRange = (Microsoft.Office.Interop.Excel.Range)(xlSheet.Columns[1]);            
+            xlRange = (Microsoft.Office.Interop.Excel.Range)(xlSheet.Columns[1]);
             xlRange.AutoFit();
             //add borders
             //nextRow = 9 + rowOffset;
@@ -1155,8 +1473,8 @@ namespace BenMAP
             xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeTop].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
             xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeRight].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
             xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeBottom].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
-            xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeLeft].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;            
-            xlRange.Borders.Color = Color.Black;
+            xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeLeft].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
+            xlRange.Borders.Color = System.Drawing.Color.Black;
             //bold, color label cells
             xlRange = xlSheet.Range["A2:A" + nextRow.ToString()];
             xlRange.Font.Bold = true;
@@ -1247,11 +1565,11 @@ namespace BenMAP
                 {
                     xlSheet2.Range["A" + nextRow.ToString()].Font.Italic = true;
                 }
-                else 
+                else
                 {
                     //xlSheet2.Range["A" + nextRow.ToString()].ColumnWidth = 40;
                     //xlSheet2.Range["A" + nextRow.ToString()].WrapText = true;
-                    xlSheet2.Range["A" + nextRow.ToString()].InsertIndent(2);                
+                    xlSheet2.Range["A" + nextRow.ToString()].InsertIndent(2);
                 }
                 xlSheet2.Range["B" + nextRow.ToString()].Value = FormatDoubleStringTwoSignificantFigures(FORMAT_DECIMAL_0_PLACES, dr["POP_AFFECTED"].ToString());
                 xlSheet2.Range["C" + nextRow.ToString()].Value = FormatDoubleStringTwoSignificantFigures(FORMAT_DECIMAL_0_PLACES, dr["AVOIDED_DEATHS"].ToString());
@@ -1267,20 +1585,20 @@ namespace BenMAP
                 xlSheet2.Range["M" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MAX"].ToString());
                 xlSheet2.Range["N" + nextRow.ToString()].Value = dr["AIR_QUALITY_CHANGE"].ToString();// FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AIR_QUALITY_CHANGE"].ToString());
                 nextRow++;
-                
+
             }
 
             //center confidence interval
             xlRange = xlSheet2.Range["D4:D" + (nextRow - 1).ToString()];
             xlRange.Cells.HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignCenter;
-            
+
             //add cell borders
             xlRange = xlSheet2.Range["A4:N" + (nextRow - 1).ToString()];
             xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeTop].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
             xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeRight].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
             xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeBottom].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
             xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeLeft].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
-            xlRange.Borders.Color = Color.Black;
+            xlRange.Borders.Color = System.Drawing.Color.Black;
 
             #endregion
 
@@ -1294,7 +1612,7 @@ namespace BenMAP
                 DataRow dr = dtSummaryResults.Rows[0];
                 xlSheet.Range["D4"].Value = FormatDoubleStringTwoSignificantFigures(FORMAT_DECIMAL_0_PLACES, dr["POP_AFFECTED"].ToString());
                 xlSheet.Range["E4"].Value = FormatDoubleStringTwoSignificantFigures(FORMAT_DECIMAL_0_PLACES, dr["AVOIDED_DEATHS"].ToString());
-                xlSheet.Range["F4"].Value =  "'" + dr["CONFIDENCE_INTERVAL"].ToString(); //prepend apostrophe so Excel treats this as text not date
+                xlSheet.Range["F4"].Value = "'" + dr["CONFIDENCE_INTERVAL"].ToString(); //prepend apostrophe so Excel treats this as text not date
                 xlSheet.Range["G4"].Value = dr["PERCENT_BASELINE_MORTALITY"].ToString();
                 xlSheet.Range["H4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["DEATHS_PER_100_THOUSAND"].ToString());
                 xlSheet.Range["I4"].Value = dr["AVOIDED_DEATHS_PERCENT_POP"].ToString();//FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AVOIDED_DEATHS_PERCENT_POP"].ToString());
@@ -1312,7 +1630,7 @@ namespace BenMAP
             xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeRight].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
             xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeBottom].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
             xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeLeft].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
-            xlRange.Borders.Color = Color.Black;
+            xlRange.Borders.Color = System.Drawing.Color.Black;
 
             #endregion
 
@@ -1321,7 +1639,7 @@ namespace BenMAP
             //summary chart
             //write summary chart data to hidden sheet
             //sheet DataSource is hidden and is the 4th sheet (Metadata is the third sheet)
-            Microsoft.Office.Interop.Excel.Worksheet xlSheet4 = (Microsoft.Office.Interop.Excel.Worksheet)xlBook.Worksheets[4];             
+            Microsoft.Office.Interop.Excel.Worksheet xlSheet4 = (Microsoft.Office.Interop.Excel.Worksheet)xlBook.Worksheets[4];
             int nextRowForSummary = 1;
             foreach (DataRow dr in dtDetailedResults.Rows)
             {
@@ -1330,7 +1648,7 @@ namespace BenMAP
                 {
                     xlSheet4.Range["A" + nextRowForSummary.ToString()].Value = dr["NAME"].ToString();
                     xlSheet4.Range["B" + nextRowForSummary.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AVOIDED_DEATHS"].ToString());
-                    nextRowForSummary++;                    
+                    nextRowForSummary++;
                 }
             }
             Microsoft.Office.Interop.Excel.ChartObject xlChartObject = (Microsoft.Office.Interop.Excel.ChartObject)xlSheet.ChartObjects(1);
@@ -1361,10 +1679,10 @@ namespace BenMAP
 
             //save
             xlBook.SaveAs(filePath, FileFormat: XlFileFormat.xlOpenXMLWorkbook);
-            xlBook.Close();       
-        
-        
-        
+            xlBook.Close();
+
+
+
         }
 
         private string FormatDoubleString(string format, string str)
