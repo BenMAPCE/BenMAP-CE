@@ -26,7 +26,6 @@ namespace BenMAP
         private List<GBDRollbackItem> rollbacks = new List<GBDRollbackItem>();
         private System.Data.DataTable dtCountries;
         private SpreadsheetDocument spreadsheetDocument;
-        private Microsoft.Office.Interop.Excel.Application xlApp;
         private bool selectMapFeaturesOnNodeCheck = true;
 
         private const int POLLUTANT_ID = 1;
@@ -979,11 +978,8 @@ namespace BenMAP
 
             }                
 
-            //save rollback report using rollback output
-            xlApp = new Microsoft.Office.Interop.Excel.Application();
-            xlApp.DisplayAlerts = false;
-            SaveRollbackReport(rollback);
-            xlApp.Quit();
+            //save rollback report using rollback output           
+            SaveRollbackReport(rollback);            
 
         }
 
