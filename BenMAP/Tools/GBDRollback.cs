@@ -1082,7 +1082,9 @@ namespace BenMAP
 
             #region summary sheet
             //summary sheet
-            Worksheet workSheet = workBook.Elements<Worksheet>().ElementAt<Worksheet>(1);
+            Sheet sheet = workBook.Sheets.Descendants<Sheet>().ElementAt<Sheet>(0);
+            WorksheetPart worksheetPart = (WorksheetPart)workBookPart.GetPartById(sheet.Id);
+            Worksheet workSheet = worksheetPart.Worksheet;
             //xlSheet.Name = "Summary";
             //xlSheet.Range["A2"].Value = "Date";
             workSheet.Descendants<Cell>().Where(c => c.CellReference == "B2").FirstOrDefault().CellValue = new CellValue(dtNow.ToString("yyyy/MM/dd"));
