@@ -363,11 +363,11 @@ namespace BenMAP
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScroll = true;
             this.ClientSize = new System.Drawing.Size(794, 459);
             this.Controls.Add(this.grpCancelOK);
             this.Controls.Add(this.grpDataSetIncidenceRate);
             this.Controls.Add(this.grpAvailableDataSets);
-            this.MinimumSize = new System.Drawing.Size(810, 487);
             this.Name = "ManageIncidenceDataSets";
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;

@@ -32,6 +32,9 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GBDRollback));
             this.gbCountrySelection = new System.Windows.Forms.GroupBox();
+            this.listCountries = new System.Windows.Forms.CheckedListBox();
+            this.rbCountries = new System.Windows.Forms.RadioButton();
+            this.rbRegions = new System.Windows.Forms.RadioButton();
             this.btnBack = new System.Windows.Forms.Button();
             this.btnNext2 = new System.Windows.Forms.Button();
             this.tvRegions = new System.Windows.Forms.TreeView();
@@ -94,9 +97,6 @@
             this.label8 = new System.Windows.Forms.Label();
             this.btnNext = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.rbRegions = new System.Windows.Forms.RadioButton();
-            this.rbCountries = new System.Windows.Forms.RadioButton();
-            this.listCountries = new System.Windows.Forms.CheckedListBox();
             this.gbCountrySelection.SuspendLayout();
             this.gbRollbacks.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvRollbacks)).BeginInit();
@@ -114,6 +114,8 @@
             // 
             // gbCountrySelection
             // 
+            this.gbCountrySelection.AutoSize = true;
+            this.gbCountrySelection.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.gbCountrySelection.Controls.Add(this.listCountries);
             this.gbCountrySelection.Controls.Add(this.rbCountries);
             this.gbCountrySelection.Controls.Add(this.rbRegions);
@@ -122,10 +124,44 @@
             this.gbCountrySelection.Controls.Add(this.tvRegions);
             this.gbCountrySelection.Location = new System.Drawing.Point(1208, 12);
             this.gbCountrySelection.Name = "gbCountrySelection";
-            this.gbCountrySelection.Size = new System.Drawing.Size(279, 420);
+            this.gbCountrySelection.Size = new System.Drawing.Size(274, 428);
             this.gbCountrySelection.TabIndex = 0;
             this.gbCountrySelection.TabStop = false;
             this.gbCountrySelection.Text = "Region Selection";
+            // 
+            // listCountries
+            // 
+            this.listCountries.CheckOnClick = true;
+            this.listCountries.FormattingEnabled = true;
+            this.listCountries.Location = new System.Drawing.Point(172, 18);
+            this.listCountries.Name = "listCountries";
+            this.listCountries.Size = new System.Drawing.Size(95, 19);
+            this.listCountries.TabIndex = 7;
+            this.listCountries.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.listCountries_ItemCheck);
+            // 
+            // rbCountries
+            // 
+            this.rbCountries.AutoSize = true;
+            this.rbCountries.Location = new System.Drawing.Point(80, 20);
+            this.rbCountries.Name = "rbCountries";
+            this.rbCountries.Size = new System.Drawing.Size(69, 17);
+            this.rbCountries.TabIndex = 5;
+            this.rbCountries.TabStop = true;
+            this.rbCountries.Text = "Countries";
+            this.rbCountries.UseVisualStyleBackColor = true;
+            this.rbCountries.CheckedChanged += new System.EventHandler(this.rbCountries_CheckedChanged);
+            // 
+            // rbRegions
+            // 
+            this.rbRegions.AutoSize = true;
+            this.rbRegions.Location = new System.Drawing.Point(12, 20);
+            this.rbRegions.Name = "rbRegions";
+            this.rbRegions.Size = new System.Drawing.Size(64, 17);
+            this.rbRegions.TabIndex = 4;
+            this.rbRegions.TabStop = true;
+            this.rbRegions.Text = "Regions";
+            this.rbRegions.UseVisualStyleBackColor = true;
+            this.rbRegions.CheckedChanged += new System.EventHandler(this.rbRegions_CheckedChanged);
             // 
             // btnBack
             // 
@@ -507,6 +543,8 @@
             // 
             // gbParameterSelection
             // 
+            this.gbParameterSelection.AutoSize = true;
+            this.gbParameterSelection.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.gbParameterSelection.Controls.Add(this.pb_incremental);
             this.gbParameterSelection.Controls.Add(this.gbOptionsIncremental);
             this.gbParameterSelection.Controls.Add(this.cboRollbackType);
@@ -517,7 +555,7 @@
             this.gbParameterSelection.Controls.Add(this.pb_percent);
             this.gbParameterSelection.Location = new System.Drawing.Point(909, 7);
             this.gbParameterSelection.Name = "gbParameterSelection";
-            this.gbParameterSelection.Size = new System.Drawing.Size(279, 420);
+            this.gbParameterSelection.Size = new System.Drawing.Size(279, 428);
             this.gbParameterSelection.TabIndex = 3;
             this.gbParameterSelection.TabStop = false;
             this.gbParameterSelection.Text = "Rollback Settings";
@@ -783,45 +821,12 @@
             this.btnNext.UseVisualStyleBackColor = true;
             this.btnNext.Click += new System.EventHandler(this.btnNext_Click);
             // 
-            // rbRegions
-            // 
-            this.rbRegions.AutoSize = true;
-            this.rbRegions.Location = new System.Drawing.Point(12, 20);
-            this.rbRegions.Name = "rbRegions";
-            this.rbRegions.Size = new System.Drawing.Size(64, 17);
-            this.rbRegions.TabIndex = 4;
-            this.rbRegions.TabStop = true;
-            this.rbRegions.Text = "Regions";
-            this.rbRegions.UseVisualStyleBackColor = true;
-            this.rbRegions.CheckedChanged += new System.EventHandler(this.rbRegions_CheckedChanged);
-            // 
-            // rbCountries
-            // 
-            this.rbCountries.AutoSize = true;
-            this.rbCountries.Location = new System.Drawing.Point(80, 20);
-            this.rbCountries.Name = "rbCountries";
-            this.rbCountries.Size = new System.Drawing.Size(69, 17);
-            this.rbCountries.TabIndex = 5;
-            this.rbCountries.TabStop = true;
-            this.rbCountries.Text = "Countries";
-            this.rbCountries.UseVisualStyleBackColor = true;
-            this.rbCountries.CheckedChanged += new System.EventHandler(this.rbCountries_CheckedChanged);
-            // 
-            // listCountries
-            // 
-            this.listCountries.CheckOnClick = true;
-            this.listCountries.FormattingEnabled = true;
-            this.listCountries.Location = new System.Drawing.Point(172, 18);
-            this.listCountries.Name = "listCountries";
-            this.listCountries.Size = new System.Drawing.Size(95, 19);
-            this.listCountries.TabIndex = 7;
-            this.listCountries.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.listCountries_ItemCheck);
-            // 
             // GBDRollback
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1567, 749);
+            this.AutoScroll = true;
+            this.ClientSize = new System.Drawing.Size(1550, 749);
             this.Controls.Add(this.gbName);
             this.Controls.Add(this.gbOptionsStandard);
             this.Controls.Add(this.gbOptionsPercentage);
@@ -830,7 +835,6 @@
             this.Controls.Add(this.btnClose);
             this.Controls.Add(this.gbRollbacks);
             this.Controls.Add(this.gbCountrySelection);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.Name = "GBDRollback";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
@@ -859,6 +863,7 @@
             this.gbName.ResumeLayout(false);
             this.gbName.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 

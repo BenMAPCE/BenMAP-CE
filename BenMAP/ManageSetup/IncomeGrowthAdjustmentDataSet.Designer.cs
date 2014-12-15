@@ -240,11 +240,11 @@ namespace BenMAP
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScroll = true;
             this.ClientSize = new System.Drawing.Size(580, 493);
             this.Controls.Add(this.grpCancelOK);
             this.Controls.Add(this.grpGrowthDetail);
             this.Controls.Add(this.grpAvailableDataSets);
-            this.MinimumSize = new System.Drawing.Size(596, 531);
             this.Name = "frmIncomeGrowthAdjustmentDataSet";
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;

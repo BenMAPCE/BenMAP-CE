@@ -367,6 +367,7 @@ namespace BenMAP
             // 
             // spCRFunction.Panel2
             // 
+            this.spCRFunction.Panel2.AutoScroll = true;
             this.spCRFunction.Panel2.Controls.Add(this.btSelectAttribute);
             this.spCRFunction.Panel2.Controls.Add(this.btShowCRResult);
             this.spCRFunction.Panel2.Controls.Add(this.cbCRAggregation);
@@ -1216,6 +1217,7 @@ namespace BenMAP
             // 
             // splitContainer5.Panel2
             // 
+            this.splitContainer5.Panel2.AutoScroll = true;
             this.splitContainer5.Panel2.Controls.Add(this.panel2);
             this.splitContainer5.Panel2.Controls.Add(this.rbIncidenceAll);
             this.splitContainer5.Panel2.Controls.Add(this.rbIncidenceOnlyOne);
@@ -1434,6 +1436,7 @@ namespace BenMAP
             // 
             // panel2
             // 
+            this.panel2.AutoScroll = true;
             this.panel2.Controls.Add(this.rbShowAllIncidence);
             this.panel2.Controls.Add(this.rbShowActiveIncidence);
             this.panel2.Location = new System.Drawing.Point(1, 0);
@@ -1576,6 +1579,7 @@ namespace BenMAP
             // 
             // spAPVResult.Panel2
             // 
+            this.spAPVResult.Panel2.AutoScroll = true;
             this.spAPVResult.Panel2.Controls.Add(this.btShowDetailValuation);
             this.spAPVResult.Panel2.Controls.Add(this.panel1);
             this.spAPVResult.Panel2.Controls.Add(this.rbAPVAll);
@@ -1852,6 +1856,7 @@ namespace BenMAP
             // 
             // tabAuditTrialReport
             // 
+            this.tabAuditTrialReport.AutoScroll = true;
             this.tabAuditTrialReport.Controls.Add(this.btShowAudit);
             this.tabAuditTrialReport.Controls.Add(this.btnBrowse);
             this.tabAuditTrialReport.Controls.Add(this.txtExistingConfiguration);
@@ -2759,6 +2764,7 @@ namespace BenMAP
             // 
             // zedGraphCtl
             // 
+            this.zedGraphCtl.AutoScroll = true;
             this.zedGraphCtl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.zedGraphCtl.IsPrintScaleAll = false;
             this.zedGraphCtl.Location = new System.Drawing.Point(0, 0);
@@ -2927,6 +2933,7 @@ namespace BenMAP
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScroll = true;
             this.ClientSize = new System.Drawing.Size(939, 692);
             this.Controls.Add(this.splitContainer1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));

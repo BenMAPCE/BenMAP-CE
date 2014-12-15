@@ -75,11 +75,11 @@ namespace BenMAP
             // 
             // groupBox2
             // 
-            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox2.Controls.Add(this.btnCancel);
             this.groupBox2.Controls.Add(this.btnOk);
-            this.groupBox2.Location = new System.Drawing.Point(15, 618);
+            this.groupBox2.Location = new System.Drawing.Point(15, 622);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(663, 41);
             this.groupBox2.TabIndex = 3;
@@ -110,21 +110,22 @@ namespace BenMAP
             // 
             // grpManageSet
             // 
+            this.grpManageSet.AutoSize = true;
             this.grpManageSet.Controls.Add(this.tableLayoutPanel1);
             this.grpManageSet.Controls.Add(this.grpNewName);
             this.grpManageSet.Controls.Add(this.groupBox1);
             this.grpManageSet.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpManageSet.Location = new System.Drawing.Point(0, 0);
             this.grpManageSet.Name = "grpManageSet";
-            this.grpManageSet.Size = new System.Drawing.Size(691, 661);
+            this.grpManageSet.Size = new System.Drawing.Size(691, 665);
             this.grpManageSet.TabIndex = 0;
             this.grpManageSet.TabStop = false;
             // 
             // tableLayoutPanel1
             // 
-            this.tableLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tableLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel1.ColumnCount = 3;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33334F));
@@ -146,7 +147,7 @@ namespace BenMAP
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(667, 556);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(667, 560);
             this.tableLayoutPanel1.TabIndex = 15;
             // 
             // grpIncidenceOrPrevalence
@@ -154,9 +155,9 @@ namespace BenMAP
             this.grpIncidenceOrPrevalence.Controls.Add(this.btnIncidence);
             this.grpIncidenceOrPrevalence.Controls.Add(this.lstIncidenceOrPrevalence);
             this.grpIncidenceOrPrevalence.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.grpIncidenceOrPrevalence.Location = new System.Drawing.Point(3, 142);
+            this.grpIncidenceOrPrevalence.Location = new System.Drawing.Point(3, 143);
             this.grpIncidenceOrPrevalence.Name = "grpIncidenceOrPrevalence";
-            this.grpIncidenceOrPrevalence.Size = new System.Drawing.Size(216, 133);
+            this.grpIncidenceOrPrevalence.Size = new System.Drawing.Size(216, 134);
             this.grpIncidenceOrPrevalence.TabIndex = 4;
             this.grpIncidenceOrPrevalence.TabStop = false;
             this.grpIncidenceOrPrevalence.Text = "Incidence/Prevalence Rates";
@@ -164,7 +165,7 @@ namespace BenMAP
             // btnIncidence
             // 
             this.btnIncidence.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnIncidence.Location = new System.Drawing.Point(153, 107);
+            this.btnIncidence.Location = new System.Drawing.Point(153, 108);
             this.btnIncidence.Name = "btnIncidence";
             this.btnIncidence.Size = new System.Drawing.Size(60, 25);
             this.btnIncidence.TabIndex = 1;
@@ -174,9 +175,9 @@ namespace BenMAP
             // 
             // lstIncidenceOrPrevalence
             // 
-            this.lstIncidenceOrPrevalence.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lstIncidenceOrPrevalence.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.lstIncidenceOrPrevalence.FormattingEnabled = true;
             this.lstIncidenceOrPrevalence.ItemHeight = 14;
             this.lstIncidenceOrPrevalence.Location = new System.Drawing.Point(3, 17);
@@ -192,7 +193,7 @@ namespace BenMAP
             this.grpMonitorDataSets.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpMonitorDataSets.Location = new System.Drawing.Point(447, 3);
             this.grpMonitorDataSets.Name = "grpMonitorDataSets";
-            this.grpMonitorDataSets.Size = new System.Drawing.Size(217, 133);
+            this.grpMonitorDataSets.Size = new System.Drawing.Size(217, 134);
             this.grpMonitorDataSets.TabIndex = 3;
             this.grpMonitorDataSets.TabStop = false;
             this.grpMonitorDataSets.Text = "Monitor Datasets";
@@ -200,7 +201,7 @@ namespace BenMAP
             // btnMonitor
             // 
             this.btnMonitor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnMonitor.Location = new System.Drawing.Point(151, 107);
+            this.btnMonitor.Location = new System.Drawing.Point(151, 108);
             this.btnMonitor.Name = "btnMonitor";
             this.btnMonitor.Size = new System.Drawing.Size(60, 25);
             this.btnMonitor.TabIndex = 1;
@@ -210,9 +211,9 @@ namespace BenMAP
             // 
             // lstMonitor
             // 
-            this.lstMonitor.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lstMonitor.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.lstMonitor.FormattingEnabled = true;
             this.lstMonitor.ItemHeight = 14;
             this.lstMonitor.Location = new System.Drawing.Point(3, 18);
@@ -228,7 +229,7 @@ namespace BenMAP
             this.grpPollutants.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpPollutants.Location = new System.Drawing.Point(225, 3);
             this.grpPollutants.Name = "grpPollutants";
-            this.grpPollutants.Size = new System.Drawing.Size(216, 133);
+            this.grpPollutants.Size = new System.Drawing.Size(216, 134);
             this.grpPollutants.TabIndex = 2;
             this.grpPollutants.TabStop = false;
             this.grpPollutants.Text = "Pollutants";
@@ -236,7 +237,7 @@ namespace BenMAP
             // btnPollutants
             // 
             this.btnPollutants.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnPollutants.Location = new System.Drawing.Point(153, 107);
+            this.btnPollutants.Location = new System.Drawing.Point(153, 108);
             this.btnPollutants.Name = "btnPollutants";
             this.btnPollutants.Size = new System.Drawing.Size(60, 25);
             this.btnPollutants.TabIndex = 1;
@@ -246,9 +247,9 @@ namespace BenMAP
             // 
             // lstPollutans
             // 
-            this.lstPollutans.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lstPollutans.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.lstPollutans.FormattingEnabled = true;
             this.lstPollutans.ItemHeight = 14;
             this.lstPollutans.Location = new System.Drawing.Point(3, 18);
@@ -264,7 +265,7 @@ namespace BenMAP
             this.groupBox3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox3.Location = new System.Drawing.Point(3, 3);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(216, 133);
+            this.groupBox3.Size = new System.Drawing.Size(216, 134);
             this.groupBox3.TabIndex = 1;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Grid Definitions";
@@ -272,7 +273,7 @@ namespace BenMAP
             // btnGridDef
             // 
             this.btnGridDef.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnGridDef.Location = new System.Drawing.Point(153, 107);
+            this.btnGridDef.Location = new System.Drawing.Point(153, 108);
             this.btnGridDef.Name = "btnGridDef";
             this.btnGridDef.Size = new System.Drawing.Size(60, 25);
             this.btnGridDef.TabIndex = 1;
@@ -283,9 +284,9 @@ namespace BenMAP
             // lstGridDefinitions
             // 
             this.lstGridDefinitions.AllowDrop = true;
-            this.lstGridDefinitions.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lstGridDefinitions.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.lstGridDefinitions.FormattingEnabled = true;
             this.lstGridDefinitions.ItemHeight = 14;
             this.lstGridDefinitions.Location = new System.Drawing.Point(3, 18);
@@ -299,9 +300,9 @@ namespace BenMAP
             this.grpIncomeGrowthAdjustments.Controls.Add(this.btnIncome);
             this.grpIncomeGrowthAdjustments.Controls.Add(this.lstIncome);
             this.grpIncomeGrowthAdjustments.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.grpIncomeGrowthAdjustments.Location = new System.Drawing.Point(3, 420);
+            this.grpIncomeGrowthAdjustments.Location = new System.Drawing.Point(3, 423);
             this.grpIncomeGrowthAdjustments.Name = "grpIncomeGrowthAdjustments";
-            this.grpIncomeGrowthAdjustments.Size = new System.Drawing.Size(216, 133);
+            this.grpIncomeGrowthAdjustments.Size = new System.Drawing.Size(216, 134);
             this.grpIncomeGrowthAdjustments.TabIndex = 10;
             this.grpIncomeGrowthAdjustments.TabStop = false;
             this.grpIncomeGrowthAdjustments.Text = "Income Growth Adjustments";
@@ -309,7 +310,7 @@ namespace BenMAP
             // btnIncome
             // 
             this.btnIncome.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnIncome.Location = new System.Drawing.Point(153, 107);
+            this.btnIncome.Location = new System.Drawing.Point(153, 108);
             this.btnIncome.Name = "btnIncome";
             this.btnIncome.Size = new System.Drawing.Size(60, 25);
             this.btnIncome.TabIndex = 1;
@@ -319,9 +320,9 @@ namespace BenMAP
             // 
             // lstIncome
             // 
-            this.lstIncome.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lstIncome.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.lstIncome.FormattingEnabled = true;
             this.lstIncome.ItemHeight = 14;
             this.lstIncome.Location = new System.Drawing.Point(3, 17);
@@ -335,9 +336,9 @@ namespace BenMAP
             this.grpPopulationDataSets.Controls.Add(this.btnPopulation);
             this.grpPopulationDataSets.Controls.Add(this.lstPopulation);
             this.grpPopulationDataSets.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.grpPopulationDataSets.Location = new System.Drawing.Point(225, 142);
+            this.grpPopulationDataSets.Location = new System.Drawing.Point(225, 143);
             this.grpPopulationDataSets.Name = "grpPopulationDataSets";
-            this.grpPopulationDataSets.Size = new System.Drawing.Size(216, 133);
+            this.grpPopulationDataSets.Size = new System.Drawing.Size(216, 134);
             this.grpPopulationDataSets.TabIndex = 5;
             this.grpPopulationDataSets.TabStop = false;
             this.grpPopulationDataSets.Text = "Population Datasets";
@@ -345,7 +346,7 @@ namespace BenMAP
             // btnPopulation
             // 
             this.btnPopulation.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnPopulation.Location = new System.Drawing.Point(153, 107);
+            this.btnPopulation.Location = new System.Drawing.Point(153, 108);
             this.btnPopulation.Name = "btnPopulation";
             this.btnPopulation.Size = new System.Drawing.Size(60, 25);
             this.btnPopulation.TabIndex = 1;
@@ -355,9 +356,9 @@ namespace BenMAP
             // 
             // lstPopulation
             // 
-            this.lstPopulation.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lstPopulation.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.lstPopulation.FormattingEnabled = true;
             this.lstPopulation.ItemHeight = 14;
             this.lstPopulation.Location = new System.Drawing.Point(3, 17);
@@ -371,9 +372,9 @@ namespace BenMAP
             this.grpValuationDataSets.Controls.Add(this.btnValuation);
             this.grpValuationDataSets.Controls.Add(this.lstValuation);
             this.grpValuationDataSets.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.grpValuationDataSets.Location = new System.Drawing.Point(447, 281);
+            this.grpValuationDataSets.Location = new System.Drawing.Point(447, 283);
             this.grpValuationDataSets.Name = "grpValuationDataSets";
-            this.grpValuationDataSets.Size = new System.Drawing.Size(217, 133);
+            this.grpValuationDataSets.Size = new System.Drawing.Size(217, 134);
             this.grpValuationDataSets.TabIndex = 9;
             this.grpValuationDataSets.TabStop = false;
             this.grpValuationDataSets.Text = "Valuation Functions";
@@ -381,7 +382,7 @@ namespace BenMAP
             // btnValuation
             // 
             this.btnValuation.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnValuation.Location = new System.Drawing.Point(151, 107);
+            this.btnValuation.Location = new System.Drawing.Point(151, 108);
             this.btnValuation.Name = "btnValuation";
             this.btnValuation.Size = new System.Drawing.Size(60, 25);
             this.btnValuation.TabIndex = 1;
@@ -391,9 +392,9 @@ namespace BenMAP
             // 
             // lstValuation
             // 
-            this.lstValuation.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lstValuation.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.lstValuation.FormattingEnabled = true;
             this.lstValuation.ItemHeight = 14;
             this.lstValuation.Location = new System.Drawing.Point(3, 17);
@@ -407,9 +408,9 @@ namespace BenMAP
             this.grpHealthImpactDataSets.Controls.Add(this.btnHealthImpact);
             this.grpHealthImpactDataSets.Controls.Add(this.lstHealthImpact);
             this.grpHealthImpactDataSets.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.grpHealthImpactDataSets.Location = new System.Drawing.Point(447, 142);
+            this.grpHealthImpactDataSets.Location = new System.Drawing.Point(447, 143);
             this.grpHealthImpactDataSets.Name = "grpHealthImpactDataSets";
-            this.grpHealthImpactDataSets.Size = new System.Drawing.Size(217, 133);
+            this.grpHealthImpactDataSets.Size = new System.Drawing.Size(217, 134);
             this.grpHealthImpactDataSets.TabIndex = 5;
             this.grpHealthImpactDataSets.TabStop = false;
             this.grpHealthImpactDataSets.Text = "Health Impact Functions";
@@ -417,7 +418,7 @@ namespace BenMAP
             // btnHealthImpact
             // 
             this.btnHealthImpact.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnHealthImpact.Location = new System.Drawing.Point(151, 107);
+            this.btnHealthImpact.Location = new System.Drawing.Point(151, 108);
             this.btnHealthImpact.Name = "btnHealthImpact";
             this.btnHealthImpact.Size = new System.Drawing.Size(60, 25);
             this.btnHealthImpact.TabIndex = 1;
@@ -427,9 +428,9 @@ namespace BenMAP
             // 
             // lstHealthImpact
             // 
-            this.lstHealthImpact.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lstHealthImpact.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.lstHealthImpact.FormattingEnabled = true;
             this.lstHealthImpact.ItemHeight = 14;
             this.lstHealthImpact.Location = new System.Drawing.Point(3, 17);
@@ -443,9 +444,9 @@ namespace BenMAP
             this.grpInflationDataSets.Controls.Add(this.btnInflation);
             this.grpInflationDataSets.Controls.Add(this.lstInflation);
             this.grpInflationDataSets.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.grpInflationDataSets.Location = new System.Drawing.Point(225, 281);
+            this.grpInflationDataSets.Location = new System.Drawing.Point(225, 283);
             this.grpInflationDataSets.Name = "grpInflationDataSets";
-            this.grpInflationDataSets.Size = new System.Drawing.Size(216, 133);
+            this.grpInflationDataSets.Size = new System.Drawing.Size(216, 134);
             this.grpInflationDataSets.TabIndex = 8;
             this.grpInflationDataSets.TabStop = false;
             this.grpInflationDataSets.Text = "Inflation Datasets";
@@ -453,7 +454,7 @@ namespace BenMAP
             // btnInflation
             // 
             this.btnInflation.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnInflation.Location = new System.Drawing.Point(153, 107);
+            this.btnInflation.Location = new System.Drawing.Point(153, 108);
             this.btnInflation.Name = "btnInflation";
             this.btnInflation.Size = new System.Drawing.Size(60, 25);
             this.btnInflation.TabIndex = 1;
@@ -463,9 +464,9 @@ namespace BenMAP
             // 
             // lstInflation
             // 
-            this.lstInflation.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lstInflation.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.lstInflation.FormattingEnabled = true;
             this.lstInflation.ItemHeight = 14;
             this.lstInflation.Location = new System.Drawing.Point(3, 17);
@@ -479,9 +480,9 @@ namespace BenMAP
             this.grpVariableDataSets.Controls.Add(this.btnVariable);
             this.grpVariableDataSets.Controls.Add(this.lstVariable);
             this.grpVariableDataSets.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.grpVariableDataSets.Location = new System.Drawing.Point(3, 281);
+            this.grpVariableDataSets.Location = new System.Drawing.Point(3, 283);
             this.grpVariableDataSets.Name = "grpVariableDataSets";
-            this.grpVariableDataSets.Size = new System.Drawing.Size(216, 133);
+            this.grpVariableDataSets.Size = new System.Drawing.Size(216, 134);
             this.grpVariableDataSets.TabIndex = 7;
             this.grpVariableDataSets.TabStop = false;
             this.grpVariableDataSets.Text = "Variable Datasets";
@@ -489,7 +490,7 @@ namespace BenMAP
             // btnVariable
             // 
             this.btnVariable.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnVariable.Location = new System.Drawing.Point(153, 107);
+            this.btnVariable.Location = new System.Drawing.Point(153, 108);
             this.btnVariable.Name = "btnVariable";
             this.btnVariable.Size = new System.Drawing.Size(60, 25);
             this.btnVariable.TabIndex = 7;
@@ -499,9 +500,9 @@ namespace BenMAP
             // 
             // lstVariable
             // 
-            this.lstVariable.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lstVariable.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.lstVariable.FormattingEnabled = true;
             this.lstVariable.ItemHeight = 14;
             this.lstVariable.Location = new System.Drawing.Point(3, 17);
@@ -512,8 +513,8 @@ namespace BenMAP
             // 
             // grpNewName
             // 
-            this.grpNewName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.grpNewName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.grpNewName.Controls.Add(this.btnDelete);
             this.grpNewName.Controls.Add(this.btnAdd);
             this.grpNewName.Controls.Add(this.lblSetupName);
@@ -557,8 +558,8 @@ namespace BenMAP
             // 
             // cboSetupName
             // 
-            this.cboSetupName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboSetupName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.cboSetupName.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboSetupName.FormattingEnabled = true;
             this.cboSetupName.Location = new System.Drawing.Point(111, 12);
@@ -580,10 +581,11 @@ namespace BenMAP
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(691, 661);
+            this.AutoScroll = true;
+            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.ClientSize = new System.Drawing.Size(691, 665);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.grpManageSet);
-            this.MinimumSize = new System.Drawing.Size(707, 699);
             this.Name = "ManageSetup";
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -605,6 +607,7 @@ namespace BenMAP
             this.grpNewName.ResumeLayout(false);
             this.grpNewName.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 

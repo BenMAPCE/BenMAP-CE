@@ -65,17 +65,26 @@ namespace BenMAP
             this.grpRace.SuspendLayout();
             this.grp6.SuspendLayout();
             this.SuspendLayout();
-                                                this.label1.AutoSize = true;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(6, 20);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(178, 14);
             this.label1.TabIndex = 0;
             this.label1.Text = "Population Configuration Name:";
-                                                this.txtConfigName.Location = new System.Drawing.Point(197, 16);
+            // 
+            // txtConfigName
+            // 
+            this.txtConfigName.Location = new System.Drawing.Point(197, 16);
             this.txtConfigName.Name = "txtConfigName";
             this.txtConfigName.Size = new System.Drawing.Size(510, 22);
             this.txtConfigName.TabIndex = 1;
-                                                this.grp1.Controls.Add(this.grp5);
+            // 
+            // grp1
+            // 
+            this.grp1.Controls.Add(this.grp5);
             this.grp1.Controls.Add(this.grp4);
             this.grp1.Controls.Add(this.grp3);
             this.grp1.Controls.Add(this.grp2);
@@ -86,7 +95,10 @@ namespace BenMAP
             this.grp1.Size = new System.Drawing.Size(751, 581);
             this.grp1.TabIndex = 2;
             this.grp1.TabStop = false;
-                                                this.grp5.Controls.Add(this.btnAdd);
+            // 
+            // grp5
+            // 
+            this.grp5.Controls.Add(this.btnAdd);
             this.grp5.Controls.Add(this.btnDelete);
             this.grp5.Controls.Add(this.dgvAgeRangs);
             this.grp5.Location = new System.Drawing.Point(408, 36);
@@ -95,21 +107,30 @@ namespace BenMAP
             this.grp5.TabIndex = 5;
             this.grp5.TabStop = false;
             this.grp5.Text = "Age Ranges";
-                                                this.btnAdd.Location = new System.Drawing.Point(250, 504);
+            // 
+            // btnAdd
+            // 
+            this.btnAdd.Location = new System.Drawing.Point(250, 504);
             this.btnAdd.Name = "btnAdd";
             this.btnAdd.Size = new System.Drawing.Size(75, 27);
             this.btnAdd.TabIndex = 2;
             this.btnAdd.Text = "Add";
             this.btnAdd.UseVisualStyleBackColor = true;
             this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
-                                                this.btnDelete.Location = new System.Drawing.Point(169, 504);
+            // 
+            // btnDelete
+            // 
+            this.btnDelete.Location = new System.Drawing.Point(169, 504);
             this.btnDelete.Name = "btnDelete";
             this.btnDelete.Size = new System.Drawing.Size(75, 27);
             this.btnDelete.TabIndex = 1;
             this.btnDelete.Text = "Delete";
             this.btnDelete.UseVisualStyleBackColor = true;
             this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
-                                                this.dgvAgeRangs.AllowUserToAddRows = false;
+            // 
+            // dgvAgeRangs
+            // 
+            this.dgvAgeRangs.AllowUserToAddRows = false;
             this.dgvAgeRangs.BackgroundColor = System.Drawing.SystemColors.ButtonHighlight;
             this.dgvAgeRangs.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvAgeRangs.Enabled = false;
@@ -119,7 +140,10 @@ namespace BenMAP
             this.dgvAgeRangs.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvAgeRangs.Size = new System.Drawing.Size(319, 475);
             this.dgvAgeRangs.TabIndex = 0;
-                                                this.grp4.Controls.Add(this.grp9);
+            // 
+            // grp4
+            // 
+            this.grp4.Controls.Add(this.grp9);
             this.grp4.Controls.Add(this.btnAddEthnicity);
             this.grp4.Controls.Add(this.grpEthnicities);
             this.grp4.Location = new System.Drawing.Point(9, 392);
@@ -128,27 +152,39 @@ namespace BenMAP
             this.grp4.TabIndex = 4;
             this.grp4.TabStop = false;
             this.grp4.Text = "Ethnicity";
-                                                this.grp9.Controls.Add(this.lstAvailableEthnicity);
+            // 
+            // grp9
+            // 
+            this.grp9.Controls.Add(this.lstAvailableEthnicity);
             this.grp9.Location = new System.Drawing.Point(4, 20);
             this.grp9.Name = "grp9";
             this.grp9.Size = new System.Drawing.Size(158, 157);
             this.grp9.TabIndex = 0;
             this.grp9.TabStop = false;
             this.grp9.Text = "Available Ethnicity";
-                                                this.lstAvailableEthnicity.FormattingEnabled = true;
+            // 
+            // lstAvailableEthnicity
+            // 
+            this.lstAvailableEthnicity.FormattingEnabled = true;
             this.lstAvailableEthnicity.ItemHeight = 14;
             this.lstAvailableEthnicity.Location = new System.Drawing.Point(6, 23);
             this.lstAvailableEthnicity.Name = "lstAvailableEthnicity";
             this.lstAvailableEthnicity.Size = new System.Drawing.Size(143, 130);
             this.lstAvailableEthnicity.TabIndex = 0;
-                                                this.btnAddEthnicity.Image = ((System.Drawing.Image)(resources.GetObject("btnAddEthnicity.Image")));
+            // 
+            // btnAddEthnicity
+            // 
+            this.btnAddEthnicity.Image = ((System.Drawing.Image)(resources.GetObject("btnAddEthnicity.Image")));
             this.btnAddEthnicity.Location = new System.Drawing.Point(167, 94);
             this.btnAddEthnicity.Name = "btnAddEthnicity";
             this.btnAddEthnicity.Size = new System.Drawing.Size(53, 30);
             this.btnAddEthnicity.TabIndex = 2;
             this.btnAddEthnicity.UseVisualStyleBackColor = true;
             this.btnAddEthnicity.Click += new System.EventHandler(this.btnAddEthnicity_Click);
-                                                this.grpEthnicities.Controls.Add(this.btnEthnicitiesRemove);
+            // 
+            // grpEthnicities
+            // 
+            this.grpEthnicities.Controls.Add(this.btnEthnicitiesRemove);
             this.grpEthnicities.Controls.Add(this.btnEthnicitiesNew);
             this.grpEthnicities.Controls.Add(this.lstEthnicities);
             this.grpEthnicities.Location = new System.Drawing.Point(226, 20);
@@ -157,27 +193,39 @@ namespace BenMAP
             this.grpEthnicities.TabIndex = 0;
             this.grpEthnicities.TabStop = false;
             this.grpEthnicities.Text = "Ethnicities";
-                                                this.btnEthnicitiesRemove.Location = new System.Drawing.Point(84, 126);
+            // 
+            // btnEthnicitiesRemove
+            // 
+            this.btnEthnicitiesRemove.Location = new System.Drawing.Point(84, 126);
             this.btnEthnicitiesRemove.Name = "btnEthnicitiesRemove";
             this.btnEthnicitiesRemove.Size = new System.Drawing.Size(63, 27);
             this.btnEthnicitiesRemove.TabIndex = 2;
             this.btnEthnicitiesRemove.Text = "Remove";
             this.btnEthnicitiesRemove.UseVisualStyleBackColor = true;
             this.btnEthnicitiesRemove.Click += new System.EventHandler(this.btnEthnicitiesRemove_Click);
-                                                this.btnEthnicitiesNew.Location = new System.Drawing.Point(16, 126);
+            // 
+            // btnEthnicitiesNew
+            // 
+            this.btnEthnicitiesNew.Location = new System.Drawing.Point(16, 126);
             this.btnEthnicitiesNew.Name = "btnEthnicitiesNew";
             this.btnEthnicitiesNew.Size = new System.Drawing.Size(52, 27);
             this.btnEthnicitiesNew.TabIndex = 3;
             this.btnEthnicitiesNew.Text = "New";
             this.btnEthnicitiesNew.UseVisualStyleBackColor = true;
             this.btnEthnicitiesNew.Click += new System.EventHandler(this.btnEthnicitiesNew_Click);
-                                                this.lstEthnicities.FormattingEnabled = true;
+            // 
+            // lstEthnicities
+            // 
+            this.lstEthnicities.FormattingEnabled = true;
             this.lstEthnicities.ItemHeight = 14;
             this.lstEthnicities.Location = new System.Drawing.Point(6, 20);
             this.lstEthnicities.Name = "lstEthnicities";
             this.lstEthnicities.Size = new System.Drawing.Size(141, 102);
             this.lstEthnicities.TabIndex = 1;
-                                                this.grp3.Controls.Add(this.grp8);
+            // 
+            // grp3
+            // 
+            this.grp3.Controls.Add(this.grp8);
             this.grp3.Controls.Add(this.btnAddGender);
             this.grp3.Controls.Add(this.grpGenders);
             this.grp3.Location = new System.Drawing.Point(9, 213);
@@ -186,27 +234,39 @@ namespace BenMAP
             this.grp3.TabIndex = 3;
             this.grp3.TabStop = false;
             this.grp3.Text = "Gender";
-                                                this.grp8.Controls.Add(this.lstAvailableGrnders);
+            // 
+            // grp8
+            // 
+            this.grp8.Controls.Add(this.lstAvailableGrnders);
             this.grp8.Location = new System.Drawing.Point(6, 17);
             this.grp8.Name = "grp8";
             this.grp8.Size = new System.Drawing.Size(158, 157);
             this.grp8.TabIndex = 0;
             this.grp8.TabStop = false;
             this.grp8.Text = "Available Genders";
-                                                this.lstAvailableGrnders.FormattingEnabled = true;
+            // 
+            // lstAvailableGrnders
+            // 
+            this.lstAvailableGrnders.FormattingEnabled = true;
             this.lstAvailableGrnders.ItemHeight = 14;
             this.lstAvailableGrnders.Location = new System.Drawing.Point(6, 23);
             this.lstAvailableGrnders.Name = "lstAvailableGrnders";
             this.lstAvailableGrnders.Size = new System.Drawing.Size(143, 130);
             this.lstAvailableGrnders.TabIndex = 0;
-                                                this.btnAddGender.Image = ((System.Drawing.Image)(resources.GetObject("btnAddGender.Image")));
+            // 
+            // btnAddGender
+            // 
+            this.btnAddGender.Image = ((System.Drawing.Image)(resources.GetObject("btnAddGender.Image")));
             this.btnAddGender.Location = new System.Drawing.Point(167, 77);
             this.btnAddGender.Name = "btnAddGender";
             this.btnAddGender.Size = new System.Drawing.Size(53, 31);
             this.btnAddGender.TabIndex = 3;
             this.btnAddGender.UseVisualStyleBackColor = true;
             this.btnAddGender.Click += new System.EventHandler(this.btnAddGender_Click);
-                                                this.grpGenders.Controls.Add(this.btnGendersRemove);
+            // 
+            // grpGenders
+            // 
+            this.grpGenders.Controls.Add(this.btnGendersRemove);
             this.grpGenders.Controls.Add(this.btnGendersNew);
             this.grpGenders.Controls.Add(this.lstGenders);
             this.grpGenders.Location = new System.Drawing.Point(226, 17);
@@ -215,27 +275,39 @@ namespace BenMAP
             this.grpGenders.TabIndex = 1;
             this.grpGenders.TabStop = false;
             this.grpGenders.Text = "Genders";
-                                                this.btnGendersRemove.Location = new System.Drawing.Point(84, 125);
+            // 
+            // btnGendersRemove
+            // 
+            this.btnGendersRemove.Location = new System.Drawing.Point(84, 125);
             this.btnGendersRemove.Name = "btnGendersRemove";
             this.btnGendersRemove.Size = new System.Drawing.Size(63, 27);
             this.btnGendersRemove.TabIndex = 2;
             this.btnGendersRemove.Text = "Remove";
             this.btnGendersRemove.UseVisualStyleBackColor = true;
             this.btnGendersRemove.Click += new System.EventHandler(this.btnGendersRemove_Click);
-                                                this.btnGendersNew.Location = new System.Drawing.Point(16, 125);
+            // 
+            // btnGendersNew
+            // 
+            this.btnGendersNew.Location = new System.Drawing.Point(16, 125);
             this.btnGendersNew.Name = "btnGendersNew";
             this.btnGendersNew.Size = new System.Drawing.Size(52, 27);
             this.btnGendersNew.TabIndex = 3;
             this.btnGendersNew.Text = "New";
             this.btnGendersNew.UseVisualStyleBackColor = true;
             this.btnGendersNew.Click += new System.EventHandler(this.btnGendersNew_Click);
-                                                this.lstGenders.FormattingEnabled = true;
+            // 
+            // lstGenders
+            // 
+            this.lstGenders.FormattingEnabled = true;
             this.lstGenders.ItemHeight = 14;
             this.lstGenders.Location = new System.Drawing.Point(6, 18);
             this.lstGenders.Name = "lstGenders";
             this.lstGenders.Size = new System.Drawing.Size(141, 102);
             this.lstGenders.TabIndex = 1;
-                                                this.grp2.Controls.Add(this.grp7);
+            // 
+            // grp2
+            // 
+            this.grp2.Controls.Add(this.grp7);
             this.grp2.Controls.Add(this.btnAddRace);
             this.grp2.Controls.Add(this.grpRace);
             this.grp2.Location = new System.Drawing.Point(10, 36);
@@ -244,27 +316,39 @@ namespace BenMAP
             this.grp2.TabIndex = 2;
             this.grp2.TabStop = false;
             this.grp2.Text = "Race";
-                                                this.grp7.Controls.Add(this.lstAvailableRaces);
+            // 
+            // grp7
+            // 
+            this.grp7.Controls.Add(this.lstAvailableRaces);
             this.grp7.Location = new System.Drawing.Point(6, 15);
             this.grp7.Name = "grp7";
             this.grp7.Size = new System.Drawing.Size(158, 157);
             this.grp7.TabIndex = 0;
             this.grp7.TabStop = false;
             this.grp7.Text = "Available Races";
-                                                this.lstAvailableRaces.FormattingEnabled = true;
+            // 
+            // lstAvailableRaces
+            // 
+            this.lstAvailableRaces.FormattingEnabled = true;
             this.lstAvailableRaces.ItemHeight = 14;
             this.lstAvailableRaces.Location = new System.Drawing.Point(6, 23);
             this.lstAvailableRaces.Name = "lstAvailableRaces";
             this.lstAvailableRaces.Size = new System.Drawing.Size(143, 130);
             this.lstAvailableRaces.TabIndex = 0;
-                                                this.btnAddRace.Image = ((System.Drawing.Image)(resources.GetObject("btnAddRace.Image")));
+            // 
+            // btnAddRace
+            // 
+            this.btnAddRace.Image = ((System.Drawing.Image)(resources.GetObject("btnAddRace.Image")));
             this.btnAddRace.Location = new System.Drawing.Point(170, 68);
             this.btnAddRace.Name = "btnAddRace";
             this.btnAddRace.Size = new System.Drawing.Size(50, 31);
             this.btnAddRace.TabIndex = 3;
             this.btnAddRace.UseVisualStyleBackColor = true;
             this.btnAddRace.Click += new System.EventHandler(this.btnAddRace_Click);
-                                                this.grpRace.Controls.Add(this.btnRaceNew);
+            // 
+            // grpRace
+            // 
+            this.grpRace.Controls.Add(this.btnRaceNew);
             this.grpRace.Controls.Add(this.btnRaceRemove);
             this.grpRace.Controls.Add(this.lstRaces);
             this.grpRace.Location = new System.Drawing.Point(226, 15);
@@ -273,27 +357,39 @@ namespace BenMAP
             this.grpRace.TabIndex = 1;
             this.grpRace.TabStop = false;
             this.grpRace.Text = "Races";
-                                                this.btnRaceNew.Location = new System.Drawing.Point(16, 126);
+            // 
+            // btnRaceNew
+            // 
+            this.btnRaceNew.Location = new System.Drawing.Point(16, 126);
             this.btnRaceNew.Name = "btnRaceNew";
             this.btnRaceNew.Size = new System.Drawing.Size(52, 27);
             this.btnRaceNew.TabIndex = 3;
             this.btnRaceNew.Text = "New";
             this.btnRaceNew.UseVisualStyleBackColor = true;
             this.btnRaceNew.Click += new System.EventHandler(this.btnRaceNew_Click);
-                                                this.btnRaceRemove.Location = new System.Drawing.Point(84, 126);
+            // 
+            // btnRaceRemove
+            // 
+            this.btnRaceRemove.Location = new System.Drawing.Point(84, 126);
             this.btnRaceRemove.Name = "btnRaceRemove";
             this.btnRaceRemove.Size = new System.Drawing.Size(63, 27);
             this.btnRaceRemove.TabIndex = 2;
             this.btnRaceRemove.Text = "Remove";
             this.btnRaceRemove.UseVisualStyleBackColor = true;
             this.btnRaceRemove.Click += new System.EventHandler(this.btnRaceRemove_Click);
-                                                this.lstRaces.FormattingEnabled = true;
+            // 
+            // lstRaces
+            // 
+            this.lstRaces.FormattingEnabled = true;
             this.lstRaces.ItemHeight = 14;
             this.lstRaces.Location = new System.Drawing.Point(6, 16);
             this.lstRaces.Name = "lstRaces";
             this.lstRaces.Size = new System.Drawing.Size(141, 102);
             this.lstRaces.TabIndex = 1;
-                                                this.grp6.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+            // 
+            // grp6
+            // 
+            this.grp6.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.grp6.Controls.Add(this.btnOK);
             this.grp6.Controls.Add(this.btnCancel);
@@ -302,7 +398,10 @@ namespace BenMAP
             this.grp6.Size = new System.Drawing.Size(751, 51);
             this.grp6.TabIndex = 3;
             this.grp6.TabStop = false;
-                                                this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            // 
+            // btnOK
+            // 
+            this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOK.Location = new System.Drawing.Point(658, 18);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 27);
@@ -310,7 +409,10 @@ namespace BenMAP
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
-                                                this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            // 
+            // btnCancel
+            // 
+            this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.Location = new System.Drawing.Point(577, 17);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 27);
@@ -318,12 +420,15 @@ namespace BenMAP
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
-                                                this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
+            // 
+            // PopulationConfigurationDefinition
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScroll = true;
             this.ClientSize = new System.Drawing.Size(760, 629);
             this.Controls.Add(this.grp6);
             this.Controls.Add(this.grp1);
-            this.MinimumSize = new System.Drawing.Size(776, 667);
             this.Name = "PopulationConfigurationDefinition";
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;

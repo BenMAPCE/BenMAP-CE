@@ -252,11 +252,11 @@ namespace BenMAP
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScroll = true;
             this.ClientSize = new System.Drawing.Size(681, 497);
             this.Controls.Add(this.grpInflationDetail);
             this.Controls.Add(this.grpCancelOK);
             this.Controls.Add(this.grpAvailableDataSets);
-            this.MinimumSize = new System.Drawing.Size(697, 535);
             this.Name = "ManageInflationDataSet";
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;

@@ -16,10 +16,11 @@ namespace BenMAP
         
         private void InitializeComponent()
         {
-            this.grpAvailableDataSets = new System.Windows.Forms.GroupBox();
-            this.btnAdd = new System.Windows.Forms.Button();
-            this.btnDelete = new System.Windows.Forms.Button();
-            this.lstAvailableDataSetsName = new System.Windows.Forms.ListBox();
+            this.grpCancelOK = new System.Windows.Forms.GroupBox();
+            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.btnOK = new System.Windows.Forms.Button();
+            this.btnCancel = new System.Windows.Forms.Button();
+            this.btnViewMetadata = new System.Windows.Forms.Button();
             this.grpDataSetsDetail = new System.Windows.Forms.GroupBox();
             this.grpValues = new System.Windows.Forms.GroupBox();
             this.olvPopulationValues = new BrightIdeasSoftware.DataListView();
@@ -34,67 +35,74 @@ namespace BenMAP
             this.txtGridDefinition = new System.Windows.Forms.TextBox();
             this.lblPopulationConfiguration = new System.Windows.Forms.Label();
             this.lblGridDefinition = new System.Windows.Forms.Label();
-            this.grpCancelOK = new System.Windows.Forms.GroupBox();
-            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
-            this.btnOK = new System.Windows.Forms.Button();
-            this.btnCancel = new System.Windows.Forms.Button();
-            this.btnViewMetadata = new System.Windows.Forms.Button();
-            this.grpAvailableDataSets.SuspendLayout();
+            this.grpAvailableDataSets = new System.Windows.Forms.GroupBox();
+            this.btnAdd = new System.Windows.Forms.Button();
+            this.btnDelete = new System.Windows.Forms.Button();
+            this.lstAvailableDataSetsName = new System.Windows.Forms.ListBox();
+            this.grpCancelOK.SuspendLayout();
+            this.flowLayoutPanel1.SuspendLayout();
             this.grpDataSetsDetail.SuspendLayout();
             this.grpValues.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.olvPopulationValues)).BeginInit();
-            this.grpCancelOK.SuspendLayout();
-            this.flowLayoutPanel1.SuspendLayout();
+            this.grpAvailableDataSets.SuspendLayout();
             this.SuspendLayout();
             // 
-            // grpAvailableDataSets
+            // grpCancelOK
             // 
-            this.grpAvailableDataSets.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)));
-            this.grpAvailableDataSets.Controls.Add(this.btnAdd);
-            this.grpAvailableDataSets.Controls.Add(this.btnDelete);
-            this.grpAvailableDataSets.Controls.Add(this.lstAvailableDataSetsName);
-            this.grpAvailableDataSets.Location = new System.Drawing.Point(12, 8);
-            this.grpAvailableDataSets.Name = "grpAvailableDataSets";
-            this.grpAvailableDataSets.Size = new System.Drawing.Size(162, 330);
-            this.grpAvailableDataSets.TabIndex = 0;
-            this.grpAvailableDataSets.TabStop = false;
-            this.grpAvailableDataSets.Text = "Available Datasets";
+            this.grpCancelOK.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.grpCancelOK.Controls.Add(this.flowLayoutPanel1);
+            this.grpCancelOK.Location = new System.Drawing.Point(12, 344);
+            this.grpCancelOK.Name = "grpCancelOK";
+            this.grpCancelOK.Size = new System.Drawing.Size(615, 52);
+            this.grpCancelOK.TabIndex = 2;
+            this.grpCancelOK.TabStop = false;
             // 
-            // btnAdd
+            // flowLayoutPanel1
             // 
-            this.btnAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnAdd.Location = new System.Drawing.Point(81, 292);
-            this.btnAdd.Name = "btnAdd";
-            this.btnAdd.Size = new System.Drawing.Size(69, 27);
-            this.btnAdd.TabIndex = 5;
-            this.btnAdd.Text = "Add";
-            this.btnAdd.UseVisualStyleBackColor = true;
-            this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
+            this.flowLayoutPanel1.Controls.Add(this.btnOK);
+            this.flowLayoutPanel1.Controls.Add(this.btnCancel);
+            this.flowLayoutPanel1.Controls.Add(this.btnViewMetadata);
+            this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(3, 18);
+            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(609, 31);
+            this.flowLayoutPanel1.TabIndex = 2;
             // 
-            // btnDelete
+            // btnOK
             // 
-            this.btnDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnDelete.Location = new System.Drawing.Point(6, 292);
-            this.btnDelete.Name = "btnDelete";
-            this.btnDelete.Size = new System.Drawing.Size(69, 27);
-            this.btnDelete.TabIndex = 4;
-            this.btnDelete.Text = "Delete";
-            this.btnDelete.UseVisualStyleBackColor = true;
-            this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
+            this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnOK.Location = new System.Drawing.Point(531, 3);
+            this.btnOK.Name = "btnOK";
+            this.btnOK.Size = new System.Drawing.Size(75, 27);
+            this.btnOK.TabIndex = 1;
+            this.btnOK.Text = "OK";
+            this.btnOK.UseVisualStyleBackColor = true;
+            this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
             // 
-            // lstAvailableDataSetsName
+            // btnCancel
             // 
-            this.lstAvailableDataSetsName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)));
-            this.lstAvailableDataSetsName.FormattingEnabled = true;
-            this.lstAvailableDataSetsName.HorizontalScrollbar = true;
-            this.lstAvailableDataSetsName.ItemHeight = 14;
-            this.lstAvailableDataSetsName.Location = new System.Drawing.Point(6, 17);
-            this.lstAvailableDataSetsName.Name = "lstAvailableDataSetsName";
-            this.lstAvailableDataSetsName.Size = new System.Drawing.Size(150, 256);
-            this.lstAvailableDataSetsName.TabIndex = 3;
-            this.lstAvailableDataSetsName.SelectedValueChanged += new System.EventHandler(this.lstAvailableDataSetsName_SelectedValueChanged);
+            this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnCancel.Location = new System.Drawing.Point(450, 3);
+            this.btnCancel.Name = "btnCancel";
+            this.btnCancel.Size = new System.Drawing.Size(75, 27);
+            this.btnCancel.TabIndex = 0;
+            this.btnCancel.Text = "Cancel";
+            this.btnCancel.UseVisualStyleBackColor = true;
+            this.btnCancel.Visible = false;
+            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
+            // 
+            // btnViewMetadata
+            // 
+            this.btnViewMetadata.Enabled = false;
+            this.btnViewMetadata.Location = new System.Drawing.Point(332, 3);
+            this.btnViewMetadata.Name = "btnViewMetadata";
+            this.btnViewMetadata.Size = new System.Drawing.Size(112, 27);
+            this.btnViewMetadata.TabIndex = 33;
+            this.btnViewMetadata.Text = "View Metadata";
+            this.btnViewMetadata.UseVisualStyleBackColor = true;
+            this.btnViewMetadata.Click += new System.EventHandler(this.btnViewMetadata_Click);
             // 
             // grpDataSetsDetail
             // 
@@ -254,84 +262,76 @@ namespace BenMAP
             this.lblGridDefinition.TabIndex = 0;
             this.lblGridDefinition.Text = "Grid Definition:";
             // 
-            // grpCancelOK
+            // grpAvailableDataSets
             // 
-            this.grpCancelOK.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.grpCancelOK.Controls.Add(this.flowLayoutPanel1);
-            this.grpCancelOK.Location = new System.Drawing.Point(12, 344);
-            this.grpCancelOK.Name = "grpCancelOK";
-            this.grpCancelOK.Size = new System.Drawing.Size(615, 52);
-            this.grpCancelOK.TabIndex = 2;
-            this.grpCancelOK.TabStop = false;
+            this.grpAvailableDataSets.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)));
+            this.grpAvailableDataSets.Controls.Add(this.btnAdd);
+            this.grpAvailableDataSets.Controls.Add(this.btnDelete);
+            this.grpAvailableDataSets.Controls.Add(this.lstAvailableDataSetsName);
+            this.grpAvailableDataSets.Location = new System.Drawing.Point(12, 8);
+            this.grpAvailableDataSets.Name = "grpAvailableDataSets";
+            this.grpAvailableDataSets.Size = new System.Drawing.Size(162, 330);
+            this.grpAvailableDataSets.TabIndex = 0;
+            this.grpAvailableDataSets.TabStop = false;
+            this.grpAvailableDataSets.Text = "Available Datasets";
             // 
-            // flowLayoutPanel1
+            // btnAdd
             // 
-            this.flowLayoutPanel1.Controls.Add(this.btnOK);
-            this.flowLayoutPanel1.Controls.Add(this.btnCancel);
-            this.flowLayoutPanel1.Controls.Add(this.btnViewMetadata);
-            this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(3, 18);
-            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(609, 31);
-            this.flowLayoutPanel1.TabIndex = 2;
+            this.btnAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnAdd.Location = new System.Drawing.Point(81, 292);
+            this.btnAdd.Name = "btnAdd";
+            this.btnAdd.Size = new System.Drawing.Size(69, 27);
+            this.btnAdd.TabIndex = 5;
+            this.btnAdd.Text = "Add";
+            this.btnAdd.UseVisualStyleBackColor = true;
+            this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
             // 
-            // btnOK
+            // btnDelete
             // 
-            this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnOK.Location = new System.Drawing.Point(531, 3);
-            this.btnOK.Name = "btnOK";
-            this.btnOK.Size = new System.Drawing.Size(75, 27);
-            this.btnOK.TabIndex = 1;
-            this.btnOK.Text = "OK";
-            this.btnOK.UseVisualStyleBackColor = true;
-            this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
+            this.btnDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnDelete.Location = new System.Drawing.Point(6, 292);
+            this.btnDelete.Name = "btnDelete";
+            this.btnDelete.Size = new System.Drawing.Size(69, 27);
+            this.btnDelete.TabIndex = 4;
+            this.btnDelete.Text = "Delete";
+            this.btnDelete.UseVisualStyleBackColor = true;
+            this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
             // 
-            // btnCancel
+            // lstAvailableDataSetsName
             // 
-            this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnCancel.Location = new System.Drawing.Point(450, 3);
-            this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(75, 27);
-            this.btnCancel.TabIndex = 0;
-            this.btnCancel.Text = "Cancel";
-            this.btnCancel.UseVisualStyleBackColor = true;
-            this.btnCancel.Visible = false;
-            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
-            // 
-            // btnViewMetadata
-            // 
-            this.btnViewMetadata.Enabled = false;
-            this.btnViewMetadata.Location = new System.Drawing.Point(332, 3);
-            this.btnViewMetadata.Name = "btnViewMetadata";
-            this.btnViewMetadata.Size = new System.Drawing.Size(112, 27);
-            this.btnViewMetadata.TabIndex = 33;
-            this.btnViewMetadata.Text = "View Metadata";
-            this.btnViewMetadata.UseVisualStyleBackColor = true;
-            this.btnViewMetadata.Click += new System.EventHandler(this.btnViewMetadata_Click);
+            this.lstAvailableDataSetsName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)));
+            this.lstAvailableDataSetsName.FormattingEnabled = true;
+            this.lstAvailableDataSetsName.HorizontalScrollbar = true;
+            this.lstAvailableDataSetsName.ItemHeight = 14;
+            this.lstAvailableDataSetsName.Location = new System.Drawing.Point(6, 17);
+            this.lstAvailableDataSetsName.Name = "lstAvailableDataSetsName";
+            this.lstAvailableDataSetsName.Size = new System.Drawing.Size(150, 256);
+            this.lstAvailableDataSetsName.TabIndex = 3;
+            this.lstAvailableDataSetsName.SelectedValueChanged += new System.EventHandler(this.lstAvailableDataSetsName_SelectedValueChanged);
             // 
             // ManagePopulationDataSets
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScroll = true;
             this.ClientSize = new System.Drawing.Size(639, 403);
             this.Controls.Add(this.grpCancelOK);
             this.Controls.Add(this.grpDataSetsDetail);
             this.Controls.Add(this.grpAvailableDataSets);
-            this.MinimumSize = new System.Drawing.Size(655, 441);
             this.Name = "ManagePopulationDataSets";
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Manage Population Datasets";
             this.Load += new System.EventHandler(this.ManagePopulationDataSets_Load);
-            this.grpAvailableDataSets.ResumeLayout(false);
+            this.grpCancelOK.ResumeLayout(false);
+            this.flowLayoutPanel1.ResumeLayout(false);
             this.grpDataSetsDetail.ResumeLayout(false);
             this.grpDataSetsDetail.PerformLayout();
             this.grpValues.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.olvPopulationValues)).EndInit();
-            this.grpCancelOK.ResumeLayout(false);
-            this.flowLayoutPanel1.ResumeLayout(false);
+            this.grpAvailableDataSets.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }

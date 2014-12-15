@@ -95,7 +95,10 @@ namespace BenMAP
             this.tableLayoutPanel2.SuspendLayout();
             this.panel6.SuspendLayout();
             this.SuspendLayout();
-                                                this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox1.Controls.Add(this.btnCancel);
             this.groupBox1.Controls.Add(this.btnOK);
@@ -104,7 +107,10 @@ namespace BenMAP
             this.groupBox1.Size = new System.Drawing.Size(847, 47);
             this.groupBox1.TabIndex = 25;
             this.groupBox1.TabStop = false;
-                                                this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            // 
+            // btnCancel
+            // 
+            this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.Location = new System.Drawing.Point(671, 14);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 27);
@@ -112,7 +118,10 @@ namespace BenMAP
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
-                                                this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            // 
+            // btnOK
+            // 
+            this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOK.Location = new System.Drawing.Point(752, 14);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 27);
@@ -120,7 +129,10 @@ namespace BenMAP
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
-                                                this.grpParameter3.Controls.Add(this.label1);
+            // 
+            // grpParameter3
+            // 
+            this.grpParameter3.Controls.Add(this.label1);
             this.grpParameter3.Controls.Add(this.txtDValue);
             this.grpParameter3.Controls.Add(this.lblConstantDescription);
             this.grpParameter3.Controls.Add(this.txtCValue);
@@ -138,13 +150,19 @@ namespace BenMAP
             this.grpParameter3.Size = new System.Drawing.Size(209, 326);
             this.grpParameter3.TabIndex = 24;
             this.grpParameter3.TabStop = false;
-                                                this.label1.AutoSize = true;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(10, 275);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(103, 14);
             this.label1.TabIndex = 23;
             this.label1.Text = "D Constant Value:";
-                                                this.txtDValue.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            // 
+            // txtDValue
+            // 
+            this.txtDValue.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.txtDValue.Location = new System.Drawing.Point(13, 292);
             this.txtDValue.Name = "txtDValue";
@@ -152,13 +170,19 @@ namespace BenMAP
             this.txtDValue.TabIndex = 22;
             this.txtDValue.Text = "0";
             this.txtDValue.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtDValue_KeyPress);
-                                                this.lblConstantDescription.AutoSize = true;
+            // 
+            // lblConstantDescription
+            // 
+            this.lblConstantDescription.AutoSize = true;
             this.lblConstantDescription.Location = new System.Drawing.Point(6, 20);
             this.lblConstantDescription.Name = "lblConstantDescription";
             this.lblConstantDescription.Size = new System.Drawing.Size(133, 14);
             this.lblConstantDescription.TabIndex = 15;
             this.lblConstantDescription.Text = "B Constant Description:";
-                                                this.txtCValue.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            // 
+            // txtCValue
+            // 
+            this.txtCValue.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.txtCValue.Location = new System.Drawing.Point(13, 193);
             this.txtCValue.Name = "txtCValue";
@@ -166,13 +190,19 @@ namespace BenMAP
             this.txtCValue.TabIndex = 21;
             this.txtCValue.Text = "0";
             this.txtCValue.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtCValue_KeyPress);
-                                                this.lblConstantValue.AutoSize = true;
+            // 
+            // lblConstantValue
+            // 
+            this.lblConstantValue.AutoSize = true;
             this.lblConstantValue.Location = new System.Drawing.Point(6, 72);
             this.lblConstantValue.Name = "lblConstantValue";
             this.lblConstantValue.Size = new System.Drawing.Size(102, 14);
             this.lblConstantValue.TabIndex = 16;
             this.lblConstantValue.Text = "B Constant Value:";
-                                                this.txtBValue.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            // 
+            // txtBValue
+            // 
+            this.txtBValue.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.txtBValue.Location = new System.Drawing.Point(10, 87);
             this.txtBValue.Name = "txtBValue";
@@ -180,43 +210,64 @@ namespace BenMAP
             this.txtBValue.TabIndex = 20;
             this.txtBValue.Text = "0";
             this.txtBValue.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtBValue_KeyPress);
-                                                this.txtBDescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            // 
+            // txtBDescription
+            // 
+            this.txtBDescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.txtBDescription.Location = new System.Drawing.Point(9, 37);
             this.txtBDescription.Name = "txtBDescription";
             this.txtBDescription.Size = new System.Drawing.Size(180, 22);
             this.txtBDescription.TabIndex = 17;
-                                                this.txtDDescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            // 
+            // txtDDescription
+            // 
+            this.txtDDescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.txtDDescription.Location = new System.Drawing.Point(13, 246);
             this.txtDDescription.Name = "txtDDescription";
             this.txtDDescription.Size = new System.Drawing.Size(176, 22);
             this.txtDDescription.TabIndex = 19;
-                                                this.lblB.AutoSize = true;
+            // 
+            // lblB
+            // 
+            this.lblB.AutoSize = true;
             this.lblB.Location = new System.Drawing.Point(8, 176);
             this.lblB.Name = "lblB";
             this.lblB.Size = new System.Drawing.Size(101, 14);
             this.lblB.TabIndex = 12;
             this.lblB.Text = "C Constant Value:";
-                                                this.txtCDescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            // 
+            // txtCDescription
+            // 
+            this.txtCDescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.txtCDescription.Location = new System.Drawing.Point(12, 145);
             this.txtCDescription.Name = "txtCDescription";
             this.txtCDescription.Size = new System.Drawing.Size(177, 22);
             this.txtCDescription.TabIndex = 18;
-                                                this.lblC.AutoSize = true;
+            // 
+            // lblC
+            // 
+            this.lblC.AutoSize = true;
             this.lblC.Location = new System.Drawing.Point(8, 128);
             this.lblC.Name = "lblC";
             this.lblC.Size = new System.Drawing.Size(132, 14);
             this.lblC.TabIndex = 13;
             this.lblC.Text = "C Constant Description:";
-                                                this.lblD.AutoSize = true;
+            // 
+            // lblD
+            // 
+            this.lblD.AutoSize = true;
             this.lblD.Location = new System.Drawing.Point(10, 224);
             this.lblD.Name = "lblD";
             this.lblD.Size = new System.Drawing.Size(134, 14);
             this.lblD.TabIndex = 14;
             this.lblD.Text = "D Constant Description:";
-                                                this.grpFunction.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            // 
+            // grpFunction
+            // 
+            this.grpFunction.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.grpFunction.Controls.Add(this.tableLayoutPanel1);
@@ -228,7 +279,10 @@ namespace BenMAP
             this.grpFunction.TabIndex = 21;
             this.grpFunction.TabStop = false;
             this.grpFunction.Text = "Edit Function";
-                                                this.tableLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            // 
+            // tableLayoutPanel1
+            // 
+            this.tableLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel1.ColumnCount = 5;
@@ -248,20 +302,29 @@ namespace BenMAP
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(832, 139);
             this.tableLayoutPanel1.TabIndex = 26;
-                                                this.panel1.Controls.Add(this.lblComposeFunctions);
+            // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.lblComposeFunctions);
             this.panel1.Controls.Add(this.lstComposeF);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(3, 3);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(174, 133);
             this.panel1.TabIndex = 0;
-                                                this.lblComposeFunctions.AutoSize = true;
+            // 
+            // lblComposeFunctions
+            // 
+            this.lblComposeFunctions.AutoSize = true;
             this.lblComposeFunctions.Location = new System.Drawing.Point(3, 0);
             this.lblComposeFunctions.Name = "lblComposeFunctions";
             this.lblComposeFunctions.Size = new System.Drawing.Size(117, 14);
             this.lblComposeFunctions.TabIndex = 0;
             this.lblComposeFunctions.Text = "Available Functions:";
-                                                this.lstComposeF.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            // 
+            // lstComposeF
+            // 
+            this.lstComposeF.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.lstComposeF.FormattingEnabled = true;
@@ -272,20 +335,29 @@ namespace BenMAP
             this.lstComposeF.Size = new System.Drawing.Size(174, 116);
             this.lstComposeF.TabIndex = 5;
             this.lstComposeF.DoubleClick += new System.EventHandler(this.lstComposeF_DoubleClick);
-                                                this.panel2.Controls.Add(this.lblExistingCompiledFunctions);
+            // 
+            // panel2
+            // 
+            this.panel2.Controls.Add(this.lblExistingCompiledFunctions);
             this.panel2.Controls.Add(this.lstExistingComposeF);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel2.Location = new System.Drawing.Point(183, 3);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(174, 133);
             this.panel2.TabIndex = 1;
-                                                this.lblExistingCompiledFunctions.AutoSize = true;
+            // 
+            // lblExistingCompiledFunctions
+            // 
+            this.lblExistingCompiledFunctions.AutoSize = true;
             this.lblExistingCompiledFunctions.Location = new System.Drawing.Point(3, 0);
             this.lblExistingCompiledFunctions.Name = "lblExistingCompiledFunctions";
             this.lblExistingCompiledFunctions.Size = new System.Drawing.Size(172, 14);
             this.lblExistingCompiledFunctions.TabIndex = 1;
             this.lblExistingCompiledFunctions.Text = "Available Compiled Functions:";
-                                                this.lstExistingComposeF.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            // 
+            // lstExistingComposeF
+            // 
+            this.lstExistingComposeF.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.lstExistingComposeF.FormattingEnabled = true;
@@ -297,20 +369,29 @@ namespace BenMAP
             this.lstExistingComposeF.Size = new System.Drawing.Size(174, 116);
             this.lstExistingComposeF.TabIndex = 6;
             this.lstExistingComposeF.DoubleClick += new System.EventHandler(this.lstExistingComposeF_DoubleClick);
-                                                this.panel3.Controls.Add(this.lblExistingFunctions);
+            // 
+            // panel3
+            // 
+            this.panel3.Controls.Add(this.lblExistingFunctions);
             this.panel3.Controls.Add(this.lstExistingF);
             this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel3.Location = new System.Drawing.Point(363, 3);
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(174, 133);
             this.panel3.TabIndex = 2;
-                                                this.lblExistingFunctions.AutoSize = true;
+            // 
+            // lblExistingFunctions
+            // 
+            this.lblExistingFunctions.AutoSize = true;
             this.lblExistingFunctions.Location = new System.Drawing.Point(0, 0);
             this.lblExistingFunctions.Name = "lblExistingFunctions";
             this.lblExistingFunctions.Size = new System.Drawing.Size(135, 14);
             this.lblExistingFunctions.TabIndex = 2;
             this.lblExistingFunctions.Text = "All Available Functions:";
-                                                this.lstExistingF.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            // 
+            // lstExistingF
+            // 
+            this.lstExistingF.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.lstExistingF.FormattingEnabled = true;
@@ -322,20 +403,29 @@ namespace BenMAP
             this.lstExistingF.Size = new System.Drawing.Size(174, 116);
             this.lstExistingF.TabIndex = 7;
             this.lstExistingF.DoubleClick += new System.EventHandler(this.lstExistingF_DoubleClick);
-                                                this.panel4.Controls.Add(this.lblComposeVariables);
+            // 
+            // panel4
+            // 
+            this.panel4.Controls.Add(this.lblComposeVariables);
             this.panel4.Controls.Add(this.lstComposeVariables);
             this.panel4.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel4.Location = new System.Drawing.Point(543, 3);
             this.panel4.Name = "panel4";
             this.panel4.Size = new System.Drawing.Size(129, 133);
             this.panel4.TabIndex = 3;
-                                                this.lblComposeVariables.AutoSize = true;
+            // 
+            // lblComposeVariables
+            // 
+            this.lblComposeVariables.AutoSize = true;
             this.lblComposeVariables.Location = new System.Drawing.Point(4, 0);
             this.lblComposeVariables.Name = "lblComposeVariables";
             this.lblComposeVariables.Size = new System.Drawing.Size(117, 14);
             this.lblComposeVariables.TabIndex = 3;
             this.lblComposeVariables.Text = "Available Variables:";
-                                                this.lstComposeVariables.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            // 
+            // lstComposeVariables
+            // 
+            this.lstComposeVariables.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.lstComposeVariables.FormattingEnabled = true;
@@ -346,20 +436,29 @@ namespace BenMAP
             this.lstComposeVariables.Size = new System.Drawing.Size(129, 116);
             this.lstComposeVariables.TabIndex = 8;
             this.lstComposeVariables.DoubleClick += new System.EventHandler(this.lstComposeVariables_DoubleClick);
-                                                this.panel5.Controls.Add(this.lblComposeSetupVariables);
+            // 
+            // panel5
+            // 
+            this.panel5.Controls.Add(this.lblComposeSetupVariables);
             this.panel5.Controls.Add(this.lstComposeSetupVariables);
             this.panel5.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel5.Location = new System.Drawing.Point(678, 3);
             this.panel5.Name = "panel5";
             this.panel5.Size = new System.Drawing.Size(151, 133);
             this.panel5.TabIndex = 4;
-                                                this.lblComposeSetupVariables.AutoSize = true;
+            // 
+            // lblComposeSetupVariables
+            // 
+            this.lblComposeSetupVariables.AutoSize = true;
             this.lblComposeSetupVariables.Location = new System.Drawing.Point(0, 0);
             this.lblComposeSetupVariables.Name = "lblComposeSetupVariables";
             this.lblComposeSetupVariables.Size = new System.Drawing.Size(151, 14);
             this.lblComposeSetupVariables.TabIndex = 4;
             this.lblComposeSetupVariables.Text = "Available Setup Variables:";
-                                                this.lstComposeSetupVariables.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            // 
+            // lstComposeSetupVariables
+            // 
+            this.lstComposeSetupVariables.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.lstComposeSetupVariables.FormattingEnabled = true;
@@ -370,7 +469,10 @@ namespace BenMAP
             this.lstComposeSetupVariables.Size = new System.Drawing.Size(151, 116);
             this.lstComposeSetupVariables.TabIndex = 9;
             this.lstComposeSetupVariables.DoubleClick += new System.EventHandler(this.lstComposeSetupVariables_DoubleClick);
-                                                this.txtFunction.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+            // 
+            // txtFunction
+            // 
+            this.txtFunction.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.txtFunction.Location = new System.Drawing.Point(9, 173);
             this.txtFunction.Multiline = true;
@@ -378,14 +480,20 @@ namespace BenMAP
             this.txtFunction.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.txtFunction.Size = new System.Drawing.Size(826, 59);
             this.txtFunction.TabIndex = 11;
-                                                this.lblFunction.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            // 
+            // lblFunction
+            // 
+            this.lblFunction.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblFunction.AutoSize = true;
             this.lblFunction.Location = new System.Drawing.Point(12, 156);
             this.lblFunction.Name = "lblFunction";
             this.lblFunction.Size = new System.Drawing.Size(56, 14);
             this.lblFunction.TabIndex = 10;
             this.lblFunction.Text = "Function:";
-                                                this.grpParameter2.Controls.Add(this.txtAParameter2);
+            // 
+            // grpParameter2
+            // 
+            this.grpParameter2.Controls.Add(this.txtAParameter2);
             this.grpParameter2.Controls.Add(this.txtAParameter1);
             this.grpParameter2.Controls.Add(this.cboADistribution);
             this.grpParameter2.Controls.Add(this.txtADescription);
@@ -401,7 +509,10 @@ namespace BenMAP
             this.grpParameter2.Size = new System.Drawing.Size(207, 326);
             this.grpParameter2.TabIndex = 20;
             this.grpParameter2.TabStop = false;
-                                                this.txtAParameter2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            // 
+            // txtAParameter2
+            // 
+            this.txtAParameter2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.txtAParameter2.Location = new System.Drawing.Point(6, 246);
             this.txtAParameter2.Name = "txtAParameter2";
@@ -409,7 +520,10 @@ namespace BenMAP
             this.txtAParameter2.TabIndex = 16;
             this.txtAParameter2.Text = "0";
             this.txtAParameter2.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtAParameter2_KeyPress);
-                                                this.txtAParameter1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            // 
+            // txtAParameter1
+            // 
+            this.txtAParameter1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.txtAParameter1.Location = new System.Drawing.Point(8, 196);
             this.txtAParameter1.Name = "txtAParameter1";
@@ -417,7 +531,10 @@ namespace BenMAP
             this.txtAParameter1.TabIndex = 15;
             this.txtAParameter1.Text = "0";
             this.txtAParameter1.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtAParameter1_KeyPress);
-                                                this.cboADistribution.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            // 
+            // cboADistribution
+            // 
+            this.cboADistribution.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.cboADistribution.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboADistribution.ForeColor = System.Drawing.SystemColors.WindowText;
@@ -425,13 +542,19 @@ namespace BenMAP
             this.cboADistribution.Name = "cboADistribution";
             this.cboADistribution.Size = new System.Drawing.Size(176, 22);
             this.cboADistribution.TabIndex = 14;
-                                                this.txtADescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            // 
+            // txtADescription
+            // 
+            this.txtADescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.txtADescription.Location = new System.Drawing.Point(6, 87);
             this.txtADescription.Name = "txtADescription";
             this.txtADescription.Size = new System.Drawing.Size(178, 22);
             this.txtADescription.TabIndex = 13;
-                                                this.txtA.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            // 
+            // txtA
+            // 
+            this.txtA.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.txtA.Location = new System.Drawing.Point(8, 37);
             this.txtA.Name = "txtA";
@@ -439,37 +562,55 @@ namespace BenMAP
             this.txtA.TabIndex = 12;
             this.txtA.Text = "0";
             this.txtA.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtA_KeyPress);
-                                                this.lalA.AutoSize = true;
+            // 
+            // lalA
+            // 
+            this.lalA.AutoSize = true;
             this.lalA.Location = new System.Drawing.Point(6, 20);
             this.lalA.Name = "lalA";
             this.lalA.Size = new System.Drawing.Size(17, 14);
             this.lalA.TabIndex = 8;
             this.lalA.Text = "A:";
-                                                this.lblADescription.AutoSize = true;
+            // 
+            // lblADescription
+            // 
+            this.lblADescription.AutoSize = true;
             this.lblADescription.Location = new System.Drawing.Point(6, 72);
             this.lblADescription.Name = "lblADescription";
             this.lblADescription.Size = new System.Drawing.Size(82, 14);
             this.lblADescription.TabIndex = 7;
             this.lblADescription.Text = "A Description:";
-                                                this.lblADistribution.AutoSize = true;
+            // 
+            // lblADistribution
+            // 
+            this.lblADistribution.AutoSize = true;
             this.lblADistribution.Location = new System.Drawing.Point(6, 128);
             this.lblADistribution.Name = "lblADistribution";
             this.lblADistribution.Size = new System.Drawing.Size(85, 14);
             this.lblADistribution.TabIndex = 9;
             this.lblADistribution.Text = "A Distribution:";
-                                                this.lblAparameter1.AutoSize = true;
+            // 
+            // lblAparameter1
+            // 
+            this.lblAparameter1.AutoSize = true;
             this.lblAparameter1.Location = new System.Drawing.Point(6, 176);
             this.lblAparameter1.Name = "lblAparameter1";
             this.lblAparameter1.Size = new System.Drawing.Size(82, 14);
             this.lblAparameter1.TabIndex = 10;
             this.lblAparameter1.Text = "A Parameter1:";
-                                                this.label12.AutoSize = true;
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
             this.label12.Location = new System.Drawing.Point(6, 224);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(82, 14);
             this.label12.TabIndex = 11;
             this.label12.Text = "A Parameter2:";
-                                                this.grpParameter1.Controls.Add(this.nudownEndAge);
+            // 
+            // grpParameter1
+            // 
+            this.grpParameter1.Controls.Add(this.nudownEndAge);
             this.grpParameter1.Controls.Add(this.nudownStartAge);
             this.grpParameter1.Controls.Add(this.txtReference);
             this.grpParameter1.Controls.Add(this.txtQualifier);
@@ -484,7 +625,10 @@ namespace BenMAP
             this.grpParameter1.Size = new System.Drawing.Size(413, 230);
             this.grpParameter1.TabIndex = 19;
             this.grpParameter1.TabStop = false;
-                                                this.nudownEndAge.Location = new System.Drawing.Point(195, 43);
+            // 
+            // nudownEndAge
+            // 
+            this.nudownEndAge.Location = new System.Drawing.Point(195, 43);
             this.nudownEndAge.Name = "nudownEndAge";
             this.nudownEndAge.Size = new System.Drawing.Size(175, 22);
             this.nudownEndAge.TabIndex = 10;
@@ -494,48 +638,72 @@ namespace BenMAP
             0,
             0,
             0});
-                                                this.nudownStartAge.Location = new System.Drawing.Point(6, 43);
+            // 
+            // nudownStartAge
+            // 
+            this.nudownStartAge.Location = new System.Drawing.Point(6, 43);
             this.nudownStartAge.Name = "nudownStartAge";
             this.nudownStartAge.Size = new System.Drawing.Size(176, 22);
             this.nudownStartAge.TabIndex = 9;
             this.nudownStartAge.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-                                                this.txtReference.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            // 
+            // txtReference
+            // 
+            this.txtReference.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.txtReference.Location = new System.Drawing.Point(6, 155);
             this.txtReference.Name = "txtReference";
             this.txtReference.Size = new System.Drawing.Size(384, 22);
             this.txtReference.TabIndex = 8;
-                                                this.txtQualifier.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            // 
+            // txtQualifier
+            // 
+            this.txtQualifier.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.txtQualifier.Location = new System.Drawing.Point(8, 105);
             this.txtQualifier.Name = "txtQualifier";
             this.txtQualifier.Size = new System.Drawing.Size(382, 22);
             this.txtQualifier.TabIndex = 7;
-                                                this.lblQualifier.AutoSize = true;
+            // 
+            // lblQualifier
+            // 
+            this.lblQualifier.AutoSize = true;
             this.lblQualifier.Location = new System.Drawing.Point(6, 85);
             this.lblQualifier.Name = "lblQualifier";
             this.lblQualifier.Size = new System.Drawing.Size(57, 14);
             this.lblQualifier.TabIndex = 3;
             this.lblQualifier.Text = "Qualifier:";
-                                                this.lblReference.AutoSize = true;
+            // 
+            // lblReference
+            // 
+            this.lblReference.AutoSize = true;
             this.lblReference.Location = new System.Drawing.Point(4, 133);
             this.lblReference.Name = "lblReference";
             this.lblReference.Size = new System.Drawing.Size(65, 14);
             this.lblReference.TabIndex = 4;
             this.lblReference.Text = "Reference:";
-                                                this.lblStartAge.AutoSize = true;
+            // 
+            // lblStartAge
+            // 
+            this.lblStartAge.AutoSize = true;
             this.lblStartAge.Location = new System.Drawing.Point(8, 26);
             this.lblStartAge.Name = "lblStartAge";
             this.lblStartAge.Size = new System.Drawing.Size(58, 14);
             this.lblStartAge.TabIndex = 5;
             this.lblStartAge.Text = "Start Age:";
-                                                this.lblEndAge.AutoSize = true;
+            // 
+            // lblEndAge
+            // 
+            this.lblEndAge.AutoSize = true;
             this.lblEndAge.Location = new System.Drawing.Point(193, 26);
             this.lblEndAge.Name = "lblEndAge";
             this.lblEndAge.Size = new System.Drawing.Size(53, 14);
             this.lblEndAge.TabIndex = 6;
             this.lblEndAge.Text = "End Age:";
-                                                this.grpEndpoint.Controls.Add(this.cboEndpoint);
+            // 
+            // grpEndpoint
+            // 
+            this.grpEndpoint.Controls.Add(this.cboEndpoint);
             this.grpEndpoint.Controls.Add(this.cboEndpointGroup);
             this.grpEndpoint.Controls.Add(this.lblEndpointGroup);
             this.grpEndpoint.Controls.Add(this.lblEndpoint);
@@ -546,7 +714,10 @@ namespace BenMAP
             this.grpEndpoint.Size = new System.Drawing.Size(413, 86);
             this.grpEndpoint.TabIndex = 18;
             this.grpEndpoint.TabStop = false;
-                                                this.cboEndpoint.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            // 
+            // cboEndpoint
+            // 
+            this.cboEndpoint.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.cboEndpoint.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboEndpoint.FormattingEnabled = true;
@@ -554,26 +725,38 @@ namespace BenMAP
             this.cboEndpoint.Name = "cboEndpoint";
             this.cboEndpoint.Size = new System.Drawing.Size(195, 22);
             this.cboEndpoint.TabIndex = 4;
-                                                this.cboEndpointGroup.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            // 
+            // cboEndpointGroup
+            // 
+            this.cboEndpointGroup.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboEndpointGroup.FormattingEnabled = true;
             this.cboEndpointGroup.Location = new System.Drawing.Point(8, 40);
             this.cboEndpointGroup.Name = "cboEndpointGroup";
             this.cboEndpointGroup.Size = new System.Drawing.Size(189, 22);
             this.cboEndpointGroup.TabIndex = 3;
             this.cboEndpointGroup.SelectedValueChanged += new System.EventHandler(this.cboEndpointGroup_SelectedValueChanged);
-                                                this.lblEndpointGroup.AutoSize = true;
+            // 
+            // lblEndpointGroup
+            // 
+            this.lblEndpointGroup.AutoSize = true;
             this.lblEndpointGroup.Location = new System.Drawing.Point(6, 20);
             this.lblEndpointGroup.Name = "lblEndpointGroup";
             this.lblEndpointGroup.Size = new System.Drawing.Size(95, 14);
             this.lblEndpointGroup.TabIndex = 1;
             this.lblEndpointGroup.Text = "Endpoint Group:";
-                                                this.lblEndpoint.AutoSize = true;
+            // 
+            // lblEndpoint
+            // 
+            this.lblEndpoint.AutoSize = true;
             this.lblEndpoint.Location = new System.Drawing.Point(215, 19);
             this.lblEndpoint.Name = "lblEndpoint";
             this.lblEndpoint.Size = new System.Drawing.Size(59, 14);
             this.lblEndpoint.TabIndex = 2;
             this.lblEndpoint.Text = "Endpoint:";
-                                                this.tableLayoutPanel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            // 
+            // tableLayoutPanel2
+            // 
+            this.tableLayoutPanel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel2.ColumnCount = 3;
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 49.57453F));
@@ -588,20 +771,26 @@ namespace BenMAP
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel2.Size = new System.Drawing.Size(847, 332);
             this.tableLayoutPanel2.TabIndex = 11;
-                                                this.panel6.Controls.Add(this.grpEndpoint);
+            // 
+            // panel6
+            // 
+            this.panel6.Controls.Add(this.grpEndpoint);
             this.panel6.Controls.Add(this.grpParameter1);
             this.panel6.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel6.Location = new System.Drawing.Point(3, 3);
             this.panel6.Name = "panel6";
             this.panel6.Size = new System.Drawing.Size(413, 326);
             this.panel6.TabIndex = 25;
-                                                this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
+            // 
+            // ValuationFunctionDefinition
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScroll = true;
             this.ClientSize = new System.Drawing.Size(871, 633);
             this.Controls.Add(this.tableLayoutPanel2);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.grpFunction);
-            this.MinimumSize = new System.Drawing.Size(887, 671);
             this.Name = "ValuationFunctionDefinition";
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
