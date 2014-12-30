@@ -99,6 +99,7 @@ namespace BenMAP
             cboRollbackType.SelectedIndex = 0;
             SetActiveOptionsPanel(0);
             rbRegions.Checked = true;
+            cboExportFormat.SelectedIndex = 0;
 
             txtFilePath.Text = CommonClass.ResultFilePath + @"\GBD";
 
@@ -973,13 +974,22 @@ namespace BenMAP
                 //add records to entire rollback dataset
                 dtConcEntireRollback.Merge(dtConcCountry, true, MissingSchemaAction.Ignore);
 
-            }                
+            }
 
-            //save rollback report using rollback output
-            xlApp = new Microsoft.Office.Interop.Excel.Application();
-            xlApp.DisplayAlerts = false;
-            SaveRollbackReport(rollback);
-            xlApp.Quit();
+
+            //save results as XLSX or CSV?
+            if (cboExportFormat.SelectedIndex == 0)
+            {
+                //save rollback report using rollback output
+                xlApp = new Microsoft.Office.Interop.Excel.Application();
+                xlApp.DisplayAlerts = false;
+                SaveRollbackReport(rollback);
+                xlApp.Quit();
+            }
+            else
+            {
+                SaveRollbackReportCSV(rollback);
+            }
 
         }
 
@@ -1365,6 +1375,38 @@ namespace BenMAP
         
         
         
+        }
+
+        private void SaveRollbackReportCSV(GBDRollbackItem rollback)
+        {
+            //get application path
+            string appPath = AppDomain.CurrentDomain.BaseDirectory;
+            string filePath = String.Empty;       
+
+            //check save dir 
+            string resultsDir = txtFilePath.Text.Trim();
+            if (!Directory.Exists(resultsDir))
+            {
+                Directory.CreateDirectory(resultsDir);
+            }
+
+            //get timestamp
+            DateTime dtNow = DateTime.Now;
+            string timeStamp = dtNow.ToString("yyyyMMddHHmm");
+            //get application path
+            filePath = resultsDir + @"\GBDRollback_" + rollback.Name + "_" + timeStamp + ".csv";
+          
+            using (StreamWriter sw = new StreamWriter(filePath))
+            {
+                string outputLine = "Region and Country,Population Affected,Avoided Deaths (Total)," + 
+                    "95% CI,% of Baseline Mortality,Deaths per 100000,Avoided Deaths (% Population)," + 
+                    "2010 Air Quality Levels Min,2010 Air Quality Levels Median,2010 Air Quality Levels Max,Policy Scenario Min," +
+                    "Policy Scenario Median,Policy Scenario Max,Air Quality Change (Population Weighted)";
+
+                sw.WriteLine(outputLine);
+             
+            }
+
         }
 
         private string FormatDoubleString(string format, string str)

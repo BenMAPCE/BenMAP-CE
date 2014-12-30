@@ -32,6 +32,9 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GBDRollback));
             this.gbCountrySelection = new System.Windows.Forms.GroupBox();
+            this.listCountries = new System.Windows.Forms.CheckedListBox();
+            this.rbCountries = new System.Windows.Forms.RadioButton();
+            this.rbRegions = new System.Windows.Forms.RadioButton();
             this.btnBack = new System.Windows.Forms.Button();
             this.btnNext2 = new System.Windows.Forms.Button();
             this.tvRegions = new System.Windows.Forms.TreeView();
@@ -94,9 +97,8 @@
             this.label8 = new System.Windows.Forms.Label();
             this.btnNext = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.rbRegions = new System.Windows.Forms.RadioButton();
-            this.rbCountries = new System.Windows.Forms.RadioButton();
-            this.listCountries = new System.Windows.Forms.CheckedListBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.cboExportFormat = new System.Windows.Forms.ComboBox();
             this.gbCountrySelection.SuspendLayout();
             this.gbRollbacks.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvRollbacks)).BeginInit();
@@ -126,6 +128,40 @@
             this.gbCountrySelection.TabIndex = 0;
             this.gbCountrySelection.TabStop = false;
             this.gbCountrySelection.Text = "Region Selection";
+            // 
+            // listCountries
+            // 
+            this.listCountries.CheckOnClick = true;
+            this.listCountries.FormattingEnabled = true;
+            this.listCountries.Location = new System.Drawing.Point(172, 18);
+            this.listCountries.Name = "listCountries";
+            this.listCountries.Size = new System.Drawing.Size(95, 19);
+            this.listCountries.TabIndex = 7;
+            this.listCountries.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.listCountries_ItemCheck);
+            // 
+            // rbCountries
+            // 
+            this.rbCountries.AutoSize = true;
+            this.rbCountries.Location = new System.Drawing.Point(80, 20);
+            this.rbCountries.Name = "rbCountries";
+            this.rbCountries.Size = new System.Drawing.Size(69, 17);
+            this.rbCountries.TabIndex = 5;
+            this.rbCountries.TabStop = true;
+            this.rbCountries.Text = "Countries";
+            this.rbCountries.UseVisualStyleBackColor = true;
+            this.rbCountries.CheckedChanged += new System.EventHandler(this.rbCountries_CheckedChanged);
+            // 
+            // rbRegions
+            // 
+            this.rbRegions.AutoSize = true;
+            this.rbRegions.Location = new System.Drawing.Point(12, 20);
+            this.rbRegions.Name = "rbRegions";
+            this.rbRegions.Size = new System.Drawing.Size(64, 17);
+            this.rbRegions.TabIndex = 4;
+            this.rbRegions.TabStop = true;
+            this.rbRegions.Text = "Regions";
+            this.rbRegions.UseVisualStyleBackColor = true;
+            this.rbRegions.CheckedChanged += new System.EventHandler(this.rbRegions_CheckedChanged);
             // 
             // btnBack
             // 
@@ -158,6 +194,8 @@
             // 
             // gbRollbacks
             // 
+            this.gbRollbacks.Controls.Add(this.cboExportFormat);
+            this.gbRollbacks.Controls.Add(this.label1);
             this.gbRollbacks.Controls.Add(this.btnBrowse);
             this.gbRollbacks.Controls.Add(this.txtFilePath);
             this.gbRollbacks.Controls.Add(this.btnDeleteRollback);
@@ -173,7 +211,7 @@
             // 
             // btnBrowse
             // 
-            this.btnBrowse.Location = new System.Drawing.Point(783, 20);
+            this.btnBrowse.Location = new System.Drawing.Point(677, 20);
             this.btnBrowse.Name = "btnBrowse";
             this.btnBrowse.Size = new System.Drawing.Size(75, 23);
             this.btnBrowse.TabIndex = 7;
@@ -184,7 +222,7 @@
             // txtFilePath
             // 
             this.txtFilePath.BackColor = System.Drawing.SystemColors.Window;
-            this.txtFilePath.Location = new System.Drawing.Point(456, 23);
+            this.txtFilePath.Location = new System.Drawing.Point(350, 23);
             this.txtFilePath.MaxLength = 15;
             this.txtFilePath.Name = "txtFilePath";
             this.txtFilePath.ReadOnly = true;
@@ -214,7 +252,7 @@
             // btnExecuteRollbacks
             // 
             this.btnExecuteRollbacks.Enabled = false;
-            this.btnExecuteRollbacks.Location = new System.Drawing.Point(328, 21);
+            this.btnExecuteRollbacks.Location = new System.Drawing.Point(222, 21);
             this.btnExecuteRollbacks.Name = "btnExecuteRollbacks";
             this.btnExecuteRollbacks.Size = new System.Drawing.Size(122, 23);
             this.btnExecuteRollbacks.TabIndex = 3;
@@ -783,39 +821,26 @@
             this.btnNext.UseVisualStyleBackColor = true;
             this.btnNext.Click += new System.EventHandler(this.btnNext_Click);
             // 
-            // rbRegions
+            // label1
             // 
-            this.rbRegions.AutoSize = true;
-            this.rbRegions.Location = new System.Drawing.Point(12, 20);
-            this.rbRegions.Name = "rbRegions";
-            this.rbRegions.Size = new System.Drawing.Size(64, 17);
-            this.rbRegions.TabIndex = 4;
-            this.rbRegions.TabStop = true;
-            this.rbRegions.Text = "Regions";
-            this.rbRegions.UseVisualStyleBackColor = true;
-            this.rbRegions.CheckedChanged += new System.EventHandler(this.rbRegions_CheckedChanged);
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(758, 25);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(42, 13);
+            this.label1.TabIndex = 8;
+            this.label1.Text = "Format:";
             // 
-            // rbCountries
+            // cboExportFormat
             // 
-            this.rbCountries.AutoSize = true;
-            this.rbCountries.Location = new System.Drawing.Point(80, 20);
-            this.rbCountries.Name = "rbCountries";
-            this.rbCountries.Size = new System.Drawing.Size(69, 17);
-            this.rbCountries.TabIndex = 5;
-            this.rbCountries.TabStop = true;
-            this.rbCountries.Text = "Countries";
-            this.rbCountries.UseVisualStyleBackColor = true;
-            this.rbCountries.CheckedChanged += new System.EventHandler(this.rbCountries_CheckedChanged);
-            // 
-            // listCountries
-            // 
-            this.listCountries.CheckOnClick = true;
-            this.listCountries.FormattingEnabled = true;
-            this.listCountries.Location = new System.Drawing.Point(172, 18);
-            this.listCountries.Name = "listCountries";
-            this.listCountries.Size = new System.Drawing.Size(95, 19);
-            this.listCountries.TabIndex = 7;
-            this.listCountries.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.listCountries_ItemCheck);
+            this.cboExportFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboExportFormat.FormattingEnabled = true;
+            this.cboExportFormat.Items.AddRange(new object[] {
+            "XLSX",
+            "CSV"});
+            this.cboExportFormat.Location = new System.Drawing.Point(800, 21);
+            this.cboExportFormat.Name = "cboExportFormat";
+            this.cboExportFormat.Size = new System.Drawing.Size(58, 21);
+            this.cboExportFormat.TabIndex = 9;
             // 
             // GBDRollback
             // 
@@ -930,5 +955,7 @@
         private System.Windows.Forms.RadioButton rbCountries;
         private System.Windows.Forms.RadioButton rbRegions;
         private System.Windows.Forms.CheckedListBox listCountries;
+        private System.Windows.Forms.ComboBox cboExportFormat;
+        private System.Windows.Forms.Label label1;
     }
 }
