@@ -28,8 +28,10 @@ namespace BenMAP
         private const int POLLUTANT_ID = 1;
         private const double BACKGROUND = 5.8;
         private const int YEAR = 2010;
-        private const string FORMAT_DECIMAL_2_PLACES = "#,###.00";
+        private const string FORMAT_DECIMAL_2_PLACES = "N";
+        private const string FORMAT_DECIMAL_2_PLACES_CSV = "F";
         private const string FORMAT_DECIMAL_0_PLACES = "N0";
+        private const string FORMAT_DECIMAL_0_PLACES_CSV = "F0";
 
         private System.Data.DataTable dtConcCountry = null;
         private System.Data.DataTable dtConcEntireRollback = null;
@@ -99,6 +101,7 @@ namespace BenMAP
             cboRollbackType.SelectedIndex = 0;
             SetActiveOptionsPanel(0);
             rbRegions.Checked = true;
+            cboExportFormat.SelectedIndex = 0;
 
             txtFilePath.Text = CommonClass.ResultFilePath + @"\GBD";
 
@@ -893,7 +896,12 @@ namespace BenMAP
                     string name = row.Cells["colName"].Value.ToString();
                     //get rollback
                     GBDRollbackItem item = rollbacks.Find(x => x.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
-                    ExecuteRollback(item, beta, se);                                       
+                    int retCode = ExecuteRollback(item, beta, se);
+                    if (retCode != 0)
+                    {
+                        Cursor.Current = Cursors.Default;
+                        return;
+                    }
                 }
          //       throw new Exception("debug Test");
                 Cursor.Current = Cursors.Default;
@@ -915,7 +923,7 @@ namespace BenMAP
            
         }
 
-        private void ExecuteRollback(GBDRollbackItem rollback, double beta, double se)
+        private int ExecuteRollback(GBDRollbackItem rollback, double beta, double se)
         {
             dtConcEntireRollback = null;
 
@@ -973,13 +981,32 @@ namespace BenMAP
                 //add records to entire rollback dataset
                 dtConcEntireRollback.Merge(dtConcCountry, true, MissingSchemaAction.Ignore);
 
-            }                
+            }
 
-            //save rollback report using rollback output
-            xlApp = new Microsoft.Office.Interop.Excel.Application();
-            xlApp.DisplayAlerts = false;
-            SaveRollbackReport(rollback);
-            xlApp.Quit();
+
+            //save results as XLSX or CSV?
+            if (cboExportFormat.SelectedIndex == 0)
+            {
+                try
+                {                   
+                    //save rollback report using rollback output
+                    xlApp = new Microsoft.Office.Interop.Excel.Application();
+                    xlApp.DisplayAlerts = false;
+                    SaveRollbackReport(rollback);
+                    xlApp.Quit();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("An error occurred while exporting to XLSX format.  Please use CSV format to export GBD results.");
+                    return 1;
+                }
+            }
+            else
+            {
+                SaveRollbackReportCSV(rollback);
+            }
+
+            return 0;
 
         }
 
@@ -1053,6 +1080,102 @@ namespace BenMAP
             dtConcCountry.Columns.Add("AIR_QUALITY_DELTA", dtConcCountry.Columns["CONCENTRATION"].DataType, "CONCENTRATION_DELTA * POPESTIMATE");
         }
 
+        private System.Data.DataTable GetRegionsCountriesTable()
+        {
+
+            System.Data.DataTable dtTemp = dtConcEntireRollback.DefaultView.ToTable(true, "REGIONID", "REGIONNAME", "COUNTRYID", "COUNTRYNAME");
+            DataView dv = new DataView(dtTemp);
+            dv.Sort = "REGIONNAME ASC, COUNTRYNAME ASC";
+            System.Data.DataTable dtRegionsCountries = dv.ToTable();
+
+            return dtRegionsCountries;
+        
+        
+        }
+
+
+        private System.Data.DataTable GetDetailedResultsTable(System.Data.DataTable dtRegionsCountries, string format)
+        {
+
+            //build output table
+            System.Data.DataTable dtDetailedResults = new System.Data.DataTable();
+            dtDetailedResults.Columns.Add("NAME", Type.GetType("System.String"));
+            dtDetailedResults.Columns.Add("IS_REGION", Type.GetType("System.Boolean"));
+            dtDetailedResults.Columns.Add("POP_AFFECTED", Type.GetType("System.Double"));
+            dtDetailedResults.Columns.Add("AVOIDED_DEATHS", Type.GetType("System.Double"));
+            dtDetailedResults.Columns.Add("CONFIDENCE_INTERVAL", Type.GetType("System.String"));
+            dtDetailedResults.Columns.Add("PERCENT_BASELINE_MORTALITY", Type.GetType("System.Double"));
+            dtDetailedResults.Columns.Add("DEATHS_PER_100_THOUSAND", Type.GetType("System.Double"));
+            dtDetailedResults.Columns.Add("AVOIDED_DEATHS_PERCENT_POP", Type.GetType("System.Double"));
+            dtDetailedResults.Columns.Add("BASELINE_MIN", Type.GetType("System.Double"));
+            dtDetailedResults.Columns.Add("BASELINE_MEDIAN", Type.GetType("System.Double"));
+            dtDetailedResults.Columns.Add("BASELINE_MAX", Type.GetType("System.Double"));
+            dtDetailedResults.Columns.Add("CONTROL_MIN", Type.GetType("System.Double"));
+            dtDetailedResults.Columns.Add("CONTROL_MEDIAN", Type.GetType("System.Double"));
+            dtDetailedResults.Columns.Add("CONTROL_MAX", Type.GetType("System.Double"));
+            dtDetailedResults.Columns.Add("AIR_QUALITY_CHANGE", Type.GetType("System.Double"));
+
+
+            string regionid = String.Empty;
+            string countryid = String.Empty;
+            foreach (DataRow dr in dtRegionsCountries.Rows)
+            {
+                //new region? get region data
+                if (!regionid.Equals(dr["REGIONID"].ToString(), StringComparison.OrdinalIgnoreCase))
+                {
+                    regionid = dr["REGIONID"].ToString();
+                    GetResults(regionid, dr["REGIONNAME"].ToString(), true, dtDetailedResults, format);
+                }
+
+                //get country data
+                countryid = dr["COUNTRYID"].ToString();
+                GetResults(countryid, dr["COUNTRYNAME"].ToString(), false, dtDetailedResults, format);
+            }
+
+            return dtDetailedResults;
+
+
+        }
+
+
+        private System.Data.DataTable GetSummaryResultsTable(System.Data.DataTable dtDetailedResults, string format)
+        {
+            //get results for summary table
+            System.Data.DataTable dtSummaryResults = dtDetailedResults.Clone();
+            GetResults(null, "SUMMARY", false, dtSummaryResults, format);
+            return dtSummaryResults;
+            
+        }
+
+        private string GetBackgroundConcentrationText(GBDRollbackItem rollback)
+        {
+            char micrograms = '\u00B5';
+            char super3 = '\u00B3';
+            return rollback.Background.ToString() + " " + micrograms.ToString() + "g/m" + super3.ToString();        
+        }
+
+        private string GetRollbackTypeText(GBDRollbackItem rollback)
+        {
+            char micrograms = '\u00B5';
+            char super3 = '\u00B3';
+            string summary = String.Empty;
+            switch (rollback.Type)
+            {
+                case GBDRollbackItem.RollbackType.Percentage: //percentage
+                    summary = rollback.Percentage.ToString() + "% Rollback";
+                    break;
+                case GBDRollbackItem.RollbackType.Incremental: //incremental
+                    summary = rollback.Increment.ToString() + micrograms.ToString() + "g/m" + super3.ToString() + " Rollback";
+                    break;
+                case GBDRollbackItem.RollbackType.Standard:
+                    summary = "Rollback to " + rollback.StandardName + " Standard";
+                    break;
+            }
+
+            return summary;
+
+        }
+
         private void SaveRollbackReport(GBDRollbackItem rollback)
         {
 
@@ -1093,34 +1216,16 @@ namespace BenMAP
             xlSheet.Range["B6"].Value = "PM 2.5";
 
             //xlSheet.Range["A7"].Value = "Background Concentration";
-            char micrograms = '\u00B5';
-            char super3 = '\u00B3';
-            xlSheet.Range["B7"].Value = rollback.Background.ToString() + " " + micrograms.ToString() + "g/m" + super3.ToString();
+            xlSheet.Range["B7"].Value = GetBackgroundConcentrationText(rollback);
 
-            //xlSheet.Range["A8"].Value = "Rollback Type";
-            string summary = String.Empty;
-            switch (rollback.Type)
-            {
-                case GBDRollbackItem.RollbackType.Percentage: //percentage
-                    summary = rollback.Percentage.ToString() + "% Rollback";
-                    break;
-                case GBDRollbackItem.RollbackType.Incremental: //incremental
-                    summary = rollback.Increment.ToString() + micrograms.ToString() + "g/m" + super3.ToString() + " Rollback";
-                    break;
-                case GBDRollbackItem.RollbackType.Standard:
-                    summary = "Rollback to " + rollback.StandardName + " Standard";
-                    break;
-            }
-            xlSheet.Range["B8"].Value = summary;
+            //xlSheet.Range["A8"].Value = "Rollback Type";            
+            xlSheet.Range["B8"].Value = GetRollbackTypeText(rollback);
 
             //xlSheet.Range["A9"].Value = "Regions and Countries";
             int rowOffset = 0;
             int nextRow = 0;
 
-            System.Data.DataTable dtTemp = dtConcEntireRollback.DefaultView.ToTable(true,  "REGIONID", "REGIONNAME", "COUNTRYID", "COUNTRYNAME");
-            DataView dv = new DataView(dtTemp);
-            dv.Sort = "REGIONNAME ASC, COUNTRYNAME ASC";
-            System.Data.DataTable dtRegionsCountries = dv.ToTable();
+            System.Data.DataTable dtRegionsCountries = GetRegionsCountriesTable();
             string region = String.Empty;
             string country = String.Empty;
             foreach (DataRow dr in dtRegionsCountries.Rows)
@@ -1203,40 +1308,7 @@ namespace BenMAP
             //xlRange.WrapText = true;
 
             //build output table
-            System.Data.DataTable dtDetailedResults = new System.Data.DataTable();
-            dtDetailedResults.Columns.Add("NAME", Type.GetType("System.String"));
-            dtDetailedResults.Columns.Add("IS_REGION", Type.GetType("System.Boolean"));
-            dtDetailedResults.Columns.Add("POP_AFFECTED", Type.GetType("System.Double"));
-            dtDetailedResults.Columns.Add("AVOIDED_DEATHS", Type.GetType("System.Double"));
-            dtDetailedResults.Columns.Add("CONFIDENCE_INTERVAL", Type.GetType("System.String"));
-            dtDetailedResults.Columns.Add("PERCENT_BASELINE_MORTALITY", Type.GetType("System.Double"));
-            dtDetailedResults.Columns.Add("DEATHS_PER_100_THOUSAND", Type.GetType("System.Double"));
-            dtDetailedResults.Columns.Add("AVOIDED_DEATHS_PERCENT_POP", Type.GetType("System.Double"));
-            dtDetailedResults.Columns.Add("BASELINE_MIN", Type.GetType("System.Double"));
-            dtDetailedResults.Columns.Add("BASELINE_MEDIAN", Type.GetType("System.Double"));
-            dtDetailedResults.Columns.Add("BASELINE_MAX", Type.GetType("System.Double"));
-            dtDetailedResults.Columns.Add("CONTROL_MIN", Type.GetType("System.Double"));
-            dtDetailedResults.Columns.Add("CONTROL_MEDIAN", Type.GetType("System.Double"));
-            dtDetailedResults.Columns.Add("CONTROL_MAX", Type.GetType("System.Double"));
-            dtDetailedResults.Columns.Add("AIR_QUALITY_CHANGE", Type.GetType("System.Double"));
-
-
-            string regionid = String.Empty;
-            string countryid = String.Empty;
-            foreach (DataRow dr in dtRegionsCountries.Rows)
-            {
-                //new region? get region data
-                if (!regionid.Equals(dr["REGIONID"].ToString(), StringComparison.OrdinalIgnoreCase))
-                {
-                    regionid = dr["REGIONID"].ToString();
-                    GetResults(regionid, dr["REGIONNAME"].ToString(), true, dtDetailedResults);
-                }
-
-                //get country data
-                countryid = dr["COUNTRYID"].ToString();
-                GetResults(countryid, dr["COUNTRYNAME"].ToString(), false, dtDetailedResults);
-            }
-
+            System.Data.DataTable dtDetailedResults = GetDetailedResultsTable(dtRegionsCountries, FORMAT_DECIMAL_0_PLACES);
 
             //write results to spreadsheet
             nextRow = 4;
@@ -1287,8 +1359,7 @@ namespace BenMAP
             #region back to summary sheet
 
             //get results for summary table
-            System.Data.DataTable dtSummaryResults = dtDetailedResults.Clone();
-            GetResults(null, "SUMMARY", false, dtSummaryResults);
+            System.Data.DataTable dtSummaryResults = GetSummaryResultsTable(dtDetailedResults, FORMAT_DECIMAL_0_PLACES);
             if (dtSummaryResults.Rows.Count > 0)
             {
                 DataRow dr = dtSummaryResults.Rows[0];
@@ -1367,6 +1438,83 @@ namespace BenMAP
         
         }
 
+        private void SaveRollbackReportCSV(GBDRollbackItem rollback)
+        {
+            //get application path
+            string appPath = AppDomain.CurrentDomain.BaseDirectory;
+            string filePath = String.Empty;       
+
+            //check save dir 
+            string resultsDir = txtFilePath.Text.Trim();
+            if (!Directory.Exists(resultsDir))
+            {
+                Directory.CreateDirectory(resultsDir);
+            }
+
+            //get timestamp
+            DateTime dtNow = DateTime.Now;
+            string timeStamp = dtNow.ToString("yyyyMMddHHmm");
+            
+            //export details
+            //get details path
+            filePath = resultsDir + @"\GBDRollback_" + rollback.Name + "_Details_" + timeStamp + ".csv";
+            System.Data.DataTable dtRegionsCountries = GetRegionsCountriesTable();
+            //build output table
+            System.Data.DataTable dtDetailedResults = GetDetailedResultsTable(dtRegionsCountries, FORMAT_DECIMAL_0_PLACES_CSV);
+          
+            using (StreamWriter sw = new StreamWriter(filePath))
+            {
+                List<object> listOutputLine = null;
+                string outputLine = "Region and Country,Is Region,Population Affected,Avoided Deaths (Total)," + 
+                    "95% CI,% of Baseline Mortality,Deaths per 100000,Avoided Deaths (% Population)," + 
+                    "2010 Air Quality Levels Min,2010 Air Quality Levels Median,2010 Air Quality Levels Max," + 
+                    "Policy Scenario Min,Policy Scenario Median,Policy Scenario Max,Air Quality Change (Population Weighted)";
+
+                sw.WriteLine(outputLine);
+
+                foreach (DataRow dr in dtDetailedResults.Rows)
+                {
+                    listOutputLine = dr.ItemArray.ToList<object>();
+                    //write output line
+                    outputLine = string.Join(",", listOutputLine);
+                    sw.WriteLine(outputLine);
+                }
+             
+            }
+
+            //export summary
+            //get results for summary table
+            filePath = resultsDir + @"\GBDRollback_" + rollback.Name + "_Summary_" + timeStamp + ".csv";
+            System.Data.DataTable dtSummaryResults = GetSummaryResultsTable(dtDetailedResults, FORMAT_DECIMAL_0_PLACES_CSV);
+            using (StreamWriter sw = new StreamWriter(filePath))
+            {
+                List<object> listOutputLine = null;
+                string outputLine = "Pollutant,Background Concentration,Rollback Type,Population Affected,Avoided Deaths (Total)," +
+                    "95% CI,% of Baseline Mortality,Deaths per 100000,Avoided Deaths (% Population)," +
+                    "2010 Air Quality Levels Min,2010 Air Quality Levels Median,2010 Air Quality Levels Max," +
+                    "Policy Scenario Min,Policy Scenario Median,Policy Scenario Max,Air Quality Change (Population Weighted)";
+
+                sw.WriteLine(outputLine);
+
+                foreach (DataRow dr in dtSummaryResults.Rows)
+                {
+                    listOutputLine = dr.ItemArray.ToList<object>();
+                    //remove name and is region columns 
+                    listOutputLine[0] = "PM2.5";
+                    listOutputLine[1] = GetBackgroundConcentrationText(rollback); 
+                    listOutputLine.Insert(2, GetRollbackTypeText(rollback));
+                    
+                    //write output line
+                    outputLine = string.Join(",", listOutputLine);
+                    sw.WriteLine(outputLine);
+                }
+
+            }
+
+
+
+        }
+
         private string FormatDoubleString(string format, string str)
         {         
             return Double.Parse(str).ToString(format);
@@ -1422,7 +1570,7 @@ namespace BenMAP
         }
 
 
-        private void GetResults(string id, string name, bool isRegion, System.Data.DataTable dt)
+        private void GetResults(string id, string name, bool isRegion, System.Data.DataTable dt, string format)
         {
             double popAffected;
             double avoidedDeaths;
@@ -1480,7 +1628,7 @@ namespace BenMAP
             krewski_2_5 = Double.Parse(result.ToString());
             result = dtKrewski.Compute("SUM(KREWSKI_97_5)", filter);
             krewski_97_5 = Double.Parse(result.ToString());
-            confidenceInterval = FormatDoubleStringTwoSignificantFigures(FORMAT_DECIMAL_0_PLACES, krewski_2_5.ToString()) + " - " + FormatDoubleStringTwoSignificantFigures(FORMAT_DECIMAL_0_PLACES, krewski_97_5.ToString());
+            confidenceInterval = FormatDoubleStringTwoSignificantFigures(format, krewski_2_5.ToString()) + " - " + FormatDoubleStringTwoSignificantFigures(format, krewski_97_5.ToString());
 
             //percent baseline mortality
             percentBaselineMortality = (avoidedDeaths / baselineMortality) * 100;

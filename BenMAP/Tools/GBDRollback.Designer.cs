@@ -97,6 +97,8 @@
             this.label8 = new System.Windows.Forms.Label();
             this.btnNext = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.label1 = new System.Windows.Forms.Label();
+            this.cboExportFormat = new System.Windows.Forms.ComboBox();
             this.gbCountrySelection.SuspendLayout();
             this.gbRollbacks.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvRollbacks)).BeginInit();
@@ -114,8 +116,6 @@
             // 
             // gbCountrySelection
             // 
-            this.gbCountrySelection.AutoSize = true;
-            this.gbCountrySelection.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.gbCountrySelection.Controls.Add(this.listCountries);
             this.gbCountrySelection.Controls.Add(this.rbCountries);
             this.gbCountrySelection.Controls.Add(this.rbRegions);
@@ -124,7 +124,7 @@
             this.gbCountrySelection.Controls.Add(this.tvRegions);
             this.gbCountrySelection.Location = new System.Drawing.Point(1208, 12);
             this.gbCountrySelection.Name = "gbCountrySelection";
-            this.gbCountrySelection.Size = new System.Drawing.Size(274, 428);
+            this.gbCountrySelection.Size = new System.Drawing.Size(279, 420);
             this.gbCountrySelection.TabIndex = 0;
             this.gbCountrySelection.TabStop = false;
             this.gbCountrySelection.Text = "Region Selection";
@@ -194,6 +194,8 @@
             // 
             // gbRollbacks
             // 
+            this.gbRollbacks.Controls.Add(this.cboExportFormat);
+            this.gbRollbacks.Controls.Add(this.label1);
             this.gbRollbacks.Controls.Add(this.btnBrowse);
             this.gbRollbacks.Controls.Add(this.txtFilePath);
             this.gbRollbacks.Controls.Add(this.btnDeleteRollback);
@@ -209,7 +211,7 @@
             // 
             // btnBrowse
             // 
-            this.btnBrowse.Location = new System.Drawing.Point(783, 20);
+            this.btnBrowse.Location = new System.Drawing.Point(677, 20);
             this.btnBrowse.Name = "btnBrowse";
             this.btnBrowse.Size = new System.Drawing.Size(75, 23);
             this.btnBrowse.TabIndex = 7;
@@ -220,7 +222,7 @@
             // txtFilePath
             // 
             this.txtFilePath.BackColor = System.Drawing.SystemColors.Window;
-            this.txtFilePath.Location = new System.Drawing.Point(456, 23);
+            this.txtFilePath.Location = new System.Drawing.Point(350, 23);
             this.txtFilePath.MaxLength = 15;
             this.txtFilePath.Name = "txtFilePath";
             this.txtFilePath.ReadOnly = true;
@@ -250,7 +252,7 @@
             // btnExecuteRollbacks
             // 
             this.btnExecuteRollbacks.Enabled = false;
-            this.btnExecuteRollbacks.Location = new System.Drawing.Point(328, 21);
+            this.btnExecuteRollbacks.Location = new System.Drawing.Point(222, 21);
             this.btnExecuteRollbacks.Name = "btnExecuteRollbacks";
             this.btnExecuteRollbacks.Size = new System.Drawing.Size(122, 23);
             this.btnExecuteRollbacks.TabIndex = 3;
@@ -543,8 +545,6 @@
             // 
             // gbParameterSelection
             // 
-            this.gbParameterSelection.AutoSize = true;
-            this.gbParameterSelection.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.gbParameterSelection.Controls.Add(this.pb_incremental);
             this.gbParameterSelection.Controls.Add(this.gbOptionsIncremental);
             this.gbParameterSelection.Controls.Add(this.cboRollbackType);
@@ -555,7 +555,7 @@
             this.gbParameterSelection.Controls.Add(this.pb_percent);
             this.gbParameterSelection.Location = new System.Drawing.Point(909, 7);
             this.gbParameterSelection.Name = "gbParameterSelection";
-            this.gbParameterSelection.Size = new System.Drawing.Size(279, 428);
+            this.gbParameterSelection.Size = new System.Drawing.Size(279, 420);
             this.gbParameterSelection.TabIndex = 3;
             this.gbParameterSelection.TabStop = false;
             this.gbParameterSelection.Text = "Rollback Settings";
@@ -821,12 +821,32 @@
             this.btnNext.UseVisualStyleBackColor = true;
             this.btnNext.Click += new System.EventHandler(this.btnNext_Click);
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(758, 25);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(42, 13);
+            this.label1.TabIndex = 8;
+            this.label1.Text = "Format:";
+            // 
+            // cboExportFormat
+            // 
+            this.cboExportFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboExportFormat.FormattingEnabled = true;
+            this.cboExportFormat.Items.AddRange(new object[] {
+            "XLSX",
+            "CSV"});
+            this.cboExportFormat.Location = new System.Drawing.Point(800, 21);
+            this.cboExportFormat.Name = "cboExportFormat";
+            this.cboExportFormat.Size = new System.Drawing.Size(58, 21);
+            this.cboExportFormat.TabIndex = 9;
+            // 
             // GBDRollback
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.AutoScroll = true;
-            this.ClientSize = new System.Drawing.Size(1550, 749);
+            this.ClientSize = new System.Drawing.Size(1567, 749);
             this.Controls.Add(this.gbName);
             this.Controls.Add(this.gbOptionsStandard);
             this.Controls.Add(this.gbOptionsPercentage);
@@ -835,6 +855,7 @@
             this.Controls.Add(this.btnClose);
             this.Controls.Add(this.gbRollbacks);
             this.Controls.Add(this.gbCountrySelection);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.Name = "GBDRollback";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
@@ -863,7 +884,6 @@
             this.gbName.ResumeLayout(false);
             this.gbName.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -935,5 +955,7 @@
         private System.Windows.Forms.RadioButton rbCountries;
         private System.Windows.Forms.RadioButton rbRegions;
         private System.Windows.Forms.CheckedListBox listCountries;
+        private System.Windows.Forms.ComboBox cboExportFormat;
+        private System.Windows.Forms.Label label1;
     }
 }
