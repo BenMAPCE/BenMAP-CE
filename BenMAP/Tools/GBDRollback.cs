@@ -28,8 +28,10 @@ namespace BenMAP
         private const int POLLUTANT_ID = 1;
         private const double BACKGROUND = 5.8;
         private const int YEAR = 2010;
-        private const string FORMAT_DECIMAL_2_PLACES = "#,###.00";
+        private const string FORMAT_DECIMAL_2_PLACES = "N";
+        private const string FORMAT_DECIMAL_2_PLACES_CSV = "F";
         private const string FORMAT_DECIMAL_0_PLACES = "N0";
+        private const string FORMAT_DECIMAL_0_PLACES_CSV = "F0";
 
         private System.Data.DataTable dtConcCountry = null;
         private System.Data.DataTable dtConcEntireRollback = null;
@@ -1077,7 +1079,7 @@ namespace BenMAP
         }
 
 
-        private System.Data.DataTable GetDetailedResultsTable(System.Data.DataTable dtRegionsCountries)
+        private System.Data.DataTable GetDetailedResultsTable(System.Data.DataTable dtRegionsCountries, string format)
         {
 
             //build output table
@@ -1107,12 +1109,12 @@ namespace BenMAP
                 if (!regionid.Equals(dr["REGIONID"].ToString(), StringComparison.OrdinalIgnoreCase))
                 {
                     regionid = dr["REGIONID"].ToString();
-                    GetResults(regionid, dr["REGIONNAME"].ToString(), true, dtDetailedResults);
+                    GetResults(regionid, dr["REGIONNAME"].ToString(), true, dtDetailedResults, format);
                 }
 
                 //get country data
                 countryid = dr["COUNTRYID"].ToString();
-                GetResults(countryid, dr["COUNTRYNAME"].ToString(), false, dtDetailedResults);
+                GetResults(countryid, dr["COUNTRYNAME"].ToString(), false, dtDetailedResults, format);
             }
 
             return dtDetailedResults;
@@ -1267,7 +1269,7 @@ namespace BenMAP
             //xlRange.WrapText = true;
 
             //build output table
-            System.Data.DataTable dtDetailedResults = GetDetailedResultsTable(dtRegionsCountries);
+            System.Data.DataTable dtDetailedResults = GetDetailedResultsTable(dtRegionsCountries, FORMAT_DECIMAL_0_PLACES);
 
             //write results to spreadsheet
             nextRow = 4;
@@ -1319,7 +1321,7 @@ namespace BenMAP
 
             //get results for summary table
             System.Data.DataTable dtSummaryResults = dtDetailedResults.Clone();
-            GetResults(null, "SUMMARY", false, dtSummaryResults);
+            GetResults(null, "SUMMARY", false, dtSummaryResults, FORMAT_DECIMAL_0_PLACES);
             if (dtSummaryResults.Rows.Count > 0)
             {
                 DataRow dr = dtSummaryResults.Rows[0];
@@ -1416,15 +1418,28 @@ namespace BenMAP
             string timeStamp = dtNow.ToString("yyyyMMddHHmm");
             //get application path
             filePath = resultsDir + @"\GBDRollback_" + rollback.Name + "_" + timeStamp + ".csv";
+
+            System.Data.DataTable dtRegionsCountries = GetRegionsCountriesTable();
+            //build output table
+            System.Data.DataTable dtDetailedResults = GetDetailedResultsTable(dtRegionsCountries, FORMAT_DECIMAL_0_PLACES_CSV);
           
             using (StreamWriter sw = new StreamWriter(filePath))
             {
-                string outputLine = "Region and Country,Population Affected,Avoided Deaths (Total)," + 
+                List<object> listOutputLine = null;
+                string outputLine = "Region and Country,Is Region,Population Affected,Avoided Deaths (Total)," + 
                     "95% CI,% of Baseline Mortality,Deaths per 100000,Avoided Deaths (% Population)," + 
-                    "2010 Air Quality Levels Min,2010 Air Quality Levels Median,2010 Air Quality Levels Max,Policy Scenario Min," +
-                    "Policy Scenario Median,Policy Scenario Max,Air Quality Change (Population Weighted)";
+                    "2010 Air Quality Levels Min,2010 Air Quality Levels Median,2010 Air Quality Levels Max," + 
+                    "Policy Scenario Min,Policy Scenario Median,Policy Scenario Max,Air Quality Change (Population Weighted)";
 
                 sw.WriteLine(outputLine);
+
+                foreach (DataRow dr in dtDetailedResults.Rows)
+                {
+                    listOutputLine = dr.ItemArray.ToList<object>();
+                    //write output line
+                    outputLine = string.Join(",", listOutputLine);
+                    sw.WriteLine(outputLine);
+                }
              
             }
 
@@ -1485,7 +1500,7 @@ namespace BenMAP
         }
 
 
-        private void GetResults(string id, string name, bool isRegion, System.Data.DataTable dt)
+        private void GetResults(string id, string name, bool isRegion, System.Data.DataTable dt, string format)
         {
             double popAffected;
             double avoidedDeaths;
@@ -1543,7 +1558,7 @@ namespace BenMAP
             krewski_2_5 = Double.Parse(result.ToString());
             result = dtKrewski.Compute("SUM(KREWSKI_97_5)", filter);
             krewski_97_5 = Double.Parse(result.ToString());
-            confidenceInterval = FormatDoubleStringTwoSignificantFigures(FORMAT_DECIMAL_0_PLACES, krewski_2_5.ToString()) + " - " + FormatDoubleStringTwoSignificantFigures(FORMAT_DECIMAL_0_PLACES, krewski_97_5.ToString());
+            confidenceInterval = FormatDoubleStringTwoSignificantFigures(format, krewski_2_5.ToString()) + " - " + FormatDoubleStringTwoSignificantFigures(format, krewski_97_5.ToString());
 
             //percent baseline mortality
             percentBaselineMortality = (avoidedDeaths / baselineMortality) * 100;
