@@ -34,6 +34,13 @@ namespace BenMAP.Tools
                 mi = type.GetMethod("myMethod");
 
                 object result = mi.Invoke(tmp, lstParam.ToArray());
+                System.Console.WriteLine("Baseline Data " + crid);
+                foreach (object i in lstParam)
+                {
+                    System.Console.Write(i.ToString() + ",");
+                }
+                System.Console.Write("\n");
+                System.Console.WriteLine(result);
                 return result;
 
             }
@@ -77,6 +84,7 @@ namespace BenMAP.Tools
                     myCode.Append("class myLibBaseLine" + k.Key + " { public double myPow(double a) { return Math.Pow(a,2);} public double myMethod(double a, double b, double c, double beta, double deltaq, double q0, double q1, double incidence, double pop, double prevalence" + strVariables +
     "){ try{" + k.Value + "} catch (Exception ex) { return -999999999; }}}");
                     myCode.Append("}");
+                    System.Console.WriteLine(myCode.ToString());
                     CompilerResults cr = provider.CompileAssemblyFromSource(cp, myCode.ToString());
                     Assembly assembly = cr.CompiledAssembly;
                     Type[] types = new Type[] { typeof(double), typeof(double), typeof(double), typeof(double), typeof(double), typeof(double), typeof(double), typeof(double), typeof(double), typeof(double) };
@@ -130,6 +138,7 @@ namespace BenMAP.Tools
                         myCode.Append("class myLibPointEstimate" + k.Key + " { public double myPow(double a) { return Math.Pow(a,2);}  public double myMethod(double a, double b, double c, double beta, double deltaq, double q0, double q1, double incidence, double pop, double prevalence" + strVariables +
         "){ try{" + k.Value + "} catch (Exception ex) { return -999999999; }}}");
                         myCode.Append("}");
+                        System.Console.WriteLine(myCode.ToString());
                         CompilerResults cr = csharpCodeProvider.CompileAssemblyFromSource(cp, myCode.ToString());
 
                         Assembly assembly = cr.CompiledAssembly;
@@ -166,21 +175,18 @@ namespace BenMAP.Tools
 
                 }
 
-
-
-
-
-
-
-
-
-
                 tmp = dicPointEstimateMethodInfo[crID.ToString()];
                 Type type = tmp.GetType();
                 mi = type.GetMethod("myMethod");
 
                 object result = mi.Invoke(tmp, lstParam.ToArray());
-
+                System.Console.WriteLine("Point Estimate Data " + crID);
+                foreach (object i in lstParam)
+                {
+                    System.Console.Write(i.ToString() + ",");
+                }
+                System.Console.Write("\n");
+                System.Console.WriteLine(result);
                 return result;
 
             }
