@@ -896,7 +896,12 @@ namespace BenMAP
                     string name = row.Cells["colName"].Value.ToString();
                     //get rollback
                     GBDRollbackItem item = rollbacks.Find(x => x.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
-                    ExecuteRollback(item, beta, se);                                       
+                    int retCode = ExecuteRollback(item, beta, se);
+                    if (retCode != 0)
+                    {
+                        Cursor.Current = Cursors.Default;
+                        return;
+                    }
                 }
          //       throw new Exception("debug Test");
                 Cursor.Current = Cursors.Default;
@@ -918,7 +923,7 @@ namespace BenMAP
            
         }
 
-        private void ExecuteRollback(GBDRollbackItem rollback, double beta, double se)
+        private int ExecuteRollback(GBDRollbackItem rollback, double beta, double se)
         {
             dtConcEntireRollback = null;
 
@@ -982,16 +987,26 @@ namespace BenMAP
             //save results as XLSX or CSV?
             if (cboExportFormat.SelectedIndex == 0)
             {
-                //save rollback report using rollback output
-                xlApp = new Microsoft.Office.Interop.Excel.Application();
-                xlApp.DisplayAlerts = false;
-                SaveRollbackReport(rollback);
-                xlApp.Quit();
+                try
+                {                   
+                    //save rollback report using rollback output
+                    xlApp = new Microsoft.Office.Interop.Excel.Application();
+                    xlApp.DisplayAlerts = false;
+                    SaveRollbackReport(rollback);
+                    xlApp.Quit();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("An error occurred while exporting to XLSX format.  Please use CSV format to export GBD results.");
+                    return 1;
+                }
             }
             else
             {
                 SaveRollbackReportCSV(rollback);
             }
+
+            return 0;
 
         }
 
