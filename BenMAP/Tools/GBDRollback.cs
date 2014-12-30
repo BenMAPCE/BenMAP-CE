@@ -1063,6 +1063,63 @@ namespace BenMAP
             dtConcCountry.Columns.Add("AIR_QUALITY_DELTA", dtConcCountry.Columns["CONCENTRATION"].DataType, "CONCENTRATION_DELTA * POPESTIMATE");
         }
 
+        private System.Data.DataTable GetRegionsCountriesTable()
+        {
+
+            System.Data.DataTable dtTemp = dtConcEntireRollback.DefaultView.ToTable(true, "REGIONID", "REGIONNAME", "COUNTRYID", "COUNTRYNAME");
+            DataView dv = new DataView(dtTemp);
+            dv.Sort = "REGIONNAME ASC, COUNTRYNAME ASC";
+            System.Data.DataTable dtRegionsCountries = dv.ToTable();
+
+            return dtRegionsCountries;
+        
+        
+        }
+
+
+        private System.Data.DataTable GetDetailedResultsTable(System.Data.DataTable dtRegionsCountries)
+        {
+
+            //build output table
+            System.Data.DataTable dtDetailedResults = new System.Data.DataTable();
+            dtDetailedResults.Columns.Add("NAME", Type.GetType("System.String"));
+            dtDetailedResults.Columns.Add("IS_REGION", Type.GetType("System.Boolean"));
+            dtDetailedResults.Columns.Add("POP_AFFECTED", Type.GetType("System.Double"));
+            dtDetailedResults.Columns.Add("AVOIDED_DEATHS", Type.GetType("System.Double"));
+            dtDetailedResults.Columns.Add("CONFIDENCE_INTERVAL", Type.GetType("System.String"));
+            dtDetailedResults.Columns.Add("PERCENT_BASELINE_MORTALITY", Type.GetType("System.Double"));
+            dtDetailedResults.Columns.Add("DEATHS_PER_100_THOUSAND", Type.GetType("System.Double"));
+            dtDetailedResults.Columns.Add("AVOIDED_DEATHS_PERCENT_POP", Type.GetType("System.Double"));
+            dtDetailedResults.Columns.Add("BASELINE_MIN", Type.GetType("System.Double"));
+            dtDetailedResults.Columns.Add("BASELINE_MEDIAN", Type.GetType("System.Double"));
+            dtDetailedResults.Columns.Add("BASELINE_MAX", Type.GetType("System.Double"));
+            dtDetailedResults.Columns.Add("CONTROL_MIN", Type.GetType("System.Double"));
+            dtDetailedResults.Columns.Add("CONTROL_MEDIAN", Type.GetType("System.Double"));
+            dtDetailedResults.Columns.Add("CONTROL_MAX", Type.GetType("System.Double"));
+            dtDetailedResults.Columns.Add("AIR_QUALITY_CHANGE", Type.GetType("System.Double"));
+
+
+            string regionid = String.Empty;
+            string countryid = String.Empty;
+            foreach (DataRow dr in dtRegionsCountries.Rows)
+            {
+                //new region? get region data
+                if (!regionid.Equals(dr["REGIONID"].ToString(), StringComparison.OrdinalIgnoreCase))
+                {
+                    regionid = dr["REGIONID"].ToString();
+                    GetResults(regionid, dr["REGIONNAME"].ToString(), true, dtDetailedResults);
+                }
+
+                //get country data
+                countryid = dr["COUNTRYID"].ToString();
+                GetResults(countryid, dr["COUNTRYNAME"].ToString(), false, dtDetailedResults);
+            }
+
+            return dtDetailedResults;
+
+
+        }
+
         private void SaveRollbackReport(GBDRollbackItem rollback)
         {
 
@@ -1127,10 +1184,7 @@ namespace BenMAP
             int rowOffset = 0;
             int nextRow = 0;
 
-            System.Data.DataTable dtTemp = dtConcEntireRollback.DefaultView.ToTable(true,  "REGIONID", "REGIONNAME", "COUNTRYID", "COUNTRYNAME");
-            DataView dv = new DataView(dtTemp);
-            dv.Sort = "REGIONNAME ASC, COUNTRYNAME ASC";
-            System.Data.DataTable dtRegionsCountries = dv.ToTable();
+            System.Data.DataTable dtRegionsCountries = GetRegionsCountriesTable();
             string region = String.Empty;
             string country = String.Empty;
             foreach (DataRow dr in dtRegionsCountries.Rows)
@@ -1213,40 +1267,7 @@ namespace BenMAP
             //xlRange.WrapText = true;
 
             //build output table
-            System.Data.DataTable dtDetailedResults = new System.Data.DataTable();
-            dtDetailedResults.Columns.Add("NAME", Type.GetType("System.String"));
-            dtDetailedResults.Columns.Add("IS_REGION", Type.GetType("System.Boolean"));
-            dtDetailedResults.Columns.Add("POP_AFFECTED", Type.GetType("System.Double"));
-            dtDetailedResults.Columns.Add("AVOIDED_DEATHS", Type.GetType("System.Double"));
-            dtDetailedResults.Columns.Add("CONFIDENCE_INTERVAL", Type.GetType("System.String"));
-            dtDetailedResults.Columns.Add("PERCENT_BASELINE_MORTALITY", Type.GetType("System.Double"));
-            dtDetailedResults.Columns.Add("DEATHS_PER_100_THOUSAND", Type.GetType("System.Double"));
-            dtDetailedResults.Columns.Add("AVOIDED_DEATHS_PERCENT_POP", Type.GetType("System.Double"));
-            dtDetailedResults.Columns.Add("BASELINE_MIN", Type.GetType("System.Double"));
-            dtDetailedResults.Columns.Add("BASELINE_MEDIAN", Type.GetType("System.Double"));
-            dtDetailedResults.Columns.Add("BASELINE_MAX", Type.GetType("System.Double"));
-            dtDetailedResults.Columns.Add("CONTROL_MIN", Type.GetType("System.Double"));
-            dtDetailedResults.Columns.Add("CONTROL_MEDIAN", Type.GetType("System.Double"));
-            dtDetailedResults.Columns.Add("CONTROL_MAX", Type.GetType("System.Double"));
-            dtDetailedResults.Columns.Add("AIR_QUALITY_CHANGE", Type.GetType("System.Double"));
-
-
-            string regionid = String.Empty;
-            string countryid = String.Empty;
-            foreach (DataRow dr in dtRegionsCountries.Rows)
-            {
-                //new region? get region data
-                if (!regionid.Equals(dr["REGIONID"].ToString(), StringComparison.OrdinalIgnoreCase))
-                {
-                    regionid = dr["REGIONID"].ToString();
-                    GetResults(regionid, dr["REGIONNAME"].ToString(), true, dtDetailedResults);
-                }
-
-                //get country data
-                countryid = dr["COUNTRYID"].ToString();
-                GetResults(countryid, dr["COUNTRYNAME"].ToString(), false, dtDetailedResults);
-            }
-
+            System.Data.DataTable dtDetailedResults = GetDetailedResultsTable(dtRegionsCountries);
 
             //write results to spreadsheet
             nextRow = 4;
