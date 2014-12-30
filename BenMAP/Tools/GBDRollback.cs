@@ -1122,6 +1122,45 @@ namespace BenMAP
 
         }
 
+
+        private System.Data.DataTable GetSummaryResultsTable(System.Data.DataTable dtDetailedResults, string format)
+        {
+            //get results for summary table
+            System.Data.DataTable dtSummaryResults = dtDetailedResults.Clone();
+            GetResults(null, "SUMMARY", false, dtSummaryResults, format);
+            return dtSummaryResults;
+            
+        }
+
+        private string GetBackgroundConcentrationText(GBDRollbackItem rollback)
+        {
+            char micrograms = '\u00B5';
+            char super3 = '\u00B3';
+            return rollback.Background.ToString() + " " + micrograms.ToString() + "g/m" + super3.ToString();        
+        }
+
+        private string GetRollbackTypeText(GBDRollbackItem rollback)
+        {
+            char micrograms = '\u00B5';
+            char super3 = '\u00B3';
+            string summary = String.Empty;
+            switch (rollback.Type)
+            {
+                case GBDRollbackItem.RollbackType.Percentage: //percentage
+                    summary = rollback.Percentage.ToString() + "% Rollback";
+                    break;
+                case GBDRollbackItem.RollbackType.Incremental: //incremental
+                    summary = rollback.Increment.ToString() + micrograms.ToString() + "g/m" + super3.ToString() + " Rollback";
+                    break;
+                case GBDRollbackItem.RollbackType.Standard:
+                    summary = "Rollback to " + rollback.StandardName + " Standard";
+                    break;
+            }
+
+            return summary;
+
+        }
+
         private void SaveRollbackReport(GBDRollbackItem rollback)
         {
 
@@ -1162,25 +1201,10 @@ namespace BenMAP
             xlSheet.Range["B6"].Value = "PM 2.5";
 
             //xlSheet.Range["A7"].Value = "Background Concentration";
-            char micrograms = '\u00B5';
-            char super3 = '\u00B3';
-            xlSheet.Range["B7"].Value = rollback.Background.ToString() + " " + micrograms.ToString() + "g/m" + super3.ToString();
+            xlSheet.Range["B7"].Value = GetBackgroundConcentrationText(rollback);
 
-            //xlSheet.Range["A8"].Value = "Rollback Type";
-            string summary = String.Empty;
-            switch (rollback.Type)
-            {
-                case GBDRollbackItem.RollbackType.Percentage: //percentage
-                    summary = rollback.Percentage.ToString() + "% Rollback";
-                    break;
-                case GBDRollbackItem.RollbackType.Incremental: //incremental
-                    summary = rollback.Increment.ToString() + micrograms.ToString() + "g/m" + super3.ToString() + " Rollback";
-                    break;
-                case GBDRollbackItem.RollbackType.Standard:
-                    summary = "Rollback to " + rollback.StandardName + " Standard";
-                    break;
-            }
-            xlSheet.Range["B8"].Value = summary;
+            //xlSheet.Range["A8"].Value = "Rollback Type";            
+            xlSheet.Range["B8"].Value = GetRollbackTypeText(rollback);
 
             //xlSheet.Range["A9"].Value = "Regions and Countries";
             int rowOffset = 0;
@@ -1320,8 +1344,7 @@ namespace BenMAP
             #region back to summary sheet
 
             //get results for summary table
-            System.Data.DataTable dtSummaryResults = dtDetailedResults.Clone();
-            GetResults(null, "SUMMARY", false, dtSummaryResults, FORMAT_DECIMAL_0_PLACES);
+            System.Data.DataTable dtSummaryResults = GetSummaryResultsTable(dtDetailedResults, FORMAT_DECIMAL_0_PLACES);
             if (dtSummaryResults.Rows.Count > 0)
             {
                 DataRow dr = dtSummaryResults.Rows[0];
@@ -1416,9 +1439,10 @@ namespace BenMAP
             //get timestamp
             DateTime dtNow = DateTime.Now;
             string timeStamp = dtNow.ToString("yyyyMMddHHmm");
-            //get application path
-            filePath = resultsDir + @"\GBDRollback_" + rollback.Name + "_" + timeStamp + ".csv";
-
+            
+            //export details
+            //get details path
+            filePath = resultsDir + @"\GBDRollback_" + rollback.Name + "_Details_" + timeStamp + ".csv";
             System.Data.DataTable dtRegionsCountries = GetRegionsCountriesTable();
             //build output table
             System.Data.DataTable dtDetailedResults = GetDetailedResultsTable(dtRegionsCountries, FORMAT_DECIMAL_0_PLACES_CSV);
@@ -1442,6 +1466,37 @@ namespace BenMAP
                 }
              
             }
+
+            //export summary
+            //get results for summary table
+            filePath = resultsDir + @"\GBDRollback_" + rollback.Name + "_Summary_" + timeStamp + ".csv";
+            System.Data.DataTable dtSummaryResults = GetSummaryResultsTable(dtDetailedResults, FORMAT_DECIMAL_0_PLACES_CSV);
+            using (StreamWriter sw = new StreamWriter(filePath))
+            {
+                List<object> listOutputLine = null;
+                string outputLine = "Pollutant,Background Concentration,Rollback Type,Population Affected,Avoided Deaths (Total)," +
+                    "95% CI,% of Baseline Mortality,Deaths per 100000,Avoided Deaths (% Population)," +
+                    "2010 Air Quality Levels Min,2010 Air Quality Levels Median,2010 Air Quality Levels Max," +
+                    "Policy Scenario Min,Policy Scenario Median,Policy Scenario Max,Air Quality Change (Population Weighted)";
+
+                sw.WriteLine(outputLine);
+
+                foreach (DataRow dr in dtSummaryResults.Rows)
+                {
+                    listOutputLine = dr.ItemArray.ToList<object>();
+                    //remove name and is region columns 
+                    listOutputLine[0] = "PM2.5";
+                    listOutputLine[1] = GetBackgroundConcentrationText(rollback); 
+                    listOutputLine.Insert(2, GetRollbackTypeText(rollback));
+                    
+                    //write output line
+                    outputLine = string.Join(",", listOutputLine);
+                    sw.WriteLine(outputLine);
+                }
+
+            }
+
+
 
         }
 
