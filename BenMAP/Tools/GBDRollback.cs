@@ -1053,6 +1053,115 @@ namespace BenMAP
             dtConcCountry.Columns.Add("AIR_QUALITY_DELTA", dtConcCountry.Columns["CONCENTRATION"].DataType, "CONCENTRATION_DELTA * POPESTIMATE");
         }
 
+
+        public void CreateSpreadsheetWorkbook(string filepath)
+        {
+            // Create a spreadsheet document by supplying the filepath.
+            // By default, AutoSave = true, Editable = true, and Type = xlsx.
+            SpreadsheetDocument spreadsheetDocument = SpreadsheetDocument.Create(filepath, SpreadsheetDocumentType.Workbook);
+
+            // Add a WorkbookPart to the document.
+            WorkbookPart workbookPart = spreadsheetDocument.AddWorkbookPart();
+            workbookPart.Workbook = new Workbook();
+
+            // Add a WorksheetPart to the WorkbookPart.
+            WorksheetPart worksheetPart = workbookPart.AddNewPart<WorksheetPart>();
+            worksheetPart.Worksheet = new Worksheet(new SheetData());
+            DateTime dtNow = DateTime.Now;            
+
+            // Add Sheets to the Workbook.
+            DocumentFormat.OpenXml.Spreadsheet.Sheets sheets = spreadsheetDocument.WorkbookPart.Workbook.AppendChild<DocumentFormat.OpenXml.Spreadsheet.Sheets>(new DocumentFormat.OpenXml.Spreadsheet.Sheets());
+
+            // Append a new worksheet and associate it with the workbook.
+            Sheet sheet = new Sheet()
+            {
+                Id = spreadsheetDocument.WorkbookPart.GetIdOfPart(worksheetPart),
+                SheetId = 1,
+                Name = "mySheet"
+            };
+            sheets.Append(sheet);        
+
+            //write to sheet
+            worksheetPart = GetWorksheetPartByName(spreadsheetDocument, "mySheet");
+            //UpdateCell(worksheetPart.Worksheet, "hello world", "B", 3);
+
+            worksheetPart.Worksheet.Save();
+            workbookPart.Workbook.Save();
+
+            // Close the document.
+            spreadsheetDocument.Close();
+        }
+
+
+        private WorksheetPart GetWorksheetPartByName(SpreadsheetDocument document, string sheetName)
+        {
+            IEnumerable<Sheet> sheets = document.WorkbookPart.Workbook.GetFirstChild<DocumentFormat.OpenXml.Spreadsheet.Sheets>().Elements<Sheet>().Where(s => s.Name == sheetName);
+            if (sheets.Count() == 0)
+            {
+                return null;
+            }
+            string relationshipId = sheets.First().Id.Value;
+            WorksheetPart worksheetPart = (WorksheetPart)document.WorkbookPart.GetPartById(relationshipId);
+            return worksheetPart;
+        }
+
+        public void UpdateCell(Worksheet worksheet, string text, string columnName, uint rowIndex)
+        {
+            Cell cell = GetCell(worksheet, columnName, rowIndex);
+            cell.DataType = CellValues.String;
+            cell.CellValue = new CellValue(text);      
+            // Save the worksheet.
+            //worksheet.Save();
+        }
+
+        private Cell GetCell(Worksheet worksheet, string columnName, uint rowIndex)
+        {
+            Row row;
+            string cellReference = columnName + rowIndex;
+            if (worksheet.Elements<Row>().Where(r => r.RowIndex == rowIndex).Count() != 0)
+            {
+                row = worksheet.GetFirstChild<SheetData>().Elements<Row>().Where(r => r.RowIndex == rowIndex).FirstOrDefault();
+            }
+            else
+            {
+                row = new Row() { RowIndex = rowIndex };
+                worksheet.Append(row);               
+            }
+
+            if (row == null)
+            {
+                return null;
+            }
+
+            if (row.Elements<Cell>().Where(c => c.CellReference.Value == cellReference).Count() > 0)
+            {
+                return row.Elements<Cell>().Where(c => c.CellReference.Value == cellReference).First();
+            }
+            else
+            {
+                Cell refCell = null;
+                foreach (Cell cell in row.Elements<Cell>())
+                {
+                    if (String.Compare(cell.CellReference.Value, cellReference, true) > 0)
+                    {
+                        refCell = cell;
+                        break;
+                    }
+                }
+                Cell newCell = new Cell()
+                {
+                    CellReference = cellReference
+                    //StyleIndex = (UInt32Value)1U
+                    
+
+                };
+                row.InsertBefore<Cell>(newCell, refCell);               
+                //worksheet.Save();
+                return newCell;
+            }
+        }
+
+
         private void SaveRollbackReport(GBDRollbackItem rollback)
         {
 
@@ -1072,22 +1181,28 @@ namespace BenMAP
             string timeStamp = dtNow.ToString("yyyyMMddHHmm");
             //get application path
             string filePathCopy = resultsDir + @"\GBDRollback_" + rollback.Name + "_" + timeStamp + ".xlsx";
+
+            CreateSpreadsheetWorkbook(filePathCopy);
+            return;
+
+
             //copy template
             File.Copy(filePath, filePathCopy, true);
 
-            //open copied report template             
-            spreadsheetDocument = SpreadsheetDocument.Open(filePathCopy, true);
-            WorkbookPart workBookPart = spreadsheetDocument.WorkbookPart;
-            Workbook workBook = workBookPart.Workbook;
+            //open copied report template            
+            spreadsheetDocument = SpreadsheetDocument.Open(filePathCopy, true);       
 
             #region summary sheet
-            //summary sheet
-            Sheet sheet = workBook.Sheets.Descendants<Sheet>().ElementAt<Sheet>(0);
-            WorksheetPart worksheetPart = (WorksheetPart)workBookPart.GetPartById(sheet.Id);
-            Worksheet workSheet = worksheetPart.Worksheet;
+            //summary sheet          
+
+            WorksheetPart worksheetPart = GetWorksheetPartByName(spreadsheetDocument, "Summary");
+            UpdateCell(worksheetPart.Worksheet, "hello world", "B", 3);
             //xlSheet.Name = "Summary";
             //xlSheet.Range["A2"].Value = "Date";
-            workSheet.Descendants<Cell>().Where(c => c.CellReference == "B2").FirstOrDefault().CellValue = new CellValue(dtNow.ToString("yyyy/MM/dd"));
+            //workSheet.Descendants<Cell>().Where(c => c.CellReference == "B2").FirstOrDefault().CellValue = new CellValue(dtNow.ToString("yyyy/MM/dd"));
+
+
+            
 
             ////xlSheet.Range["A3"].Value = "Scenario Name";
             //xlSheet.Range["B3"].Value = rollback.Name;
@@ -1366,7 +1481,7 @@ namespace BenMAP
 
 
             //save
-            workBook.Save();
+            spreadsheetDocument.WorkbookPart.Workbook.Save();
             spreadsheetDocument.Close();
         
         }
