@@ -1119,7 +1119,7 @@ namespace BenMAP
             SheetData sheetData = worksheet.GetFirstChild<SheetData>();
             if (sheetData.Elements<Row>().Where(r => r.RowIndex == rowIndex).Count() != 0)
             {
-                row = sheetData.GetFirstChild<SheetData>().Elements<Row>().Where(r => r.RowIndex == rowIndex).FirstOrDefault();
+                row = sheetData.Elements<Row>().Where(r => r.RowIndex == rowIndex).FirstOrDefault();
             }
             else
             {
@@ -1180,10 +1180,6 @@ namespace BenMAP
             string timeStamp = dtNow.ToString("yyyyMMddHHmm");
             //get application path
             string filePathCopy = resultsDir + @"\GBDRollback_" + rollback.Name + "_" + timeStamp + ".xlsx";
-
-            CreateSpreadsheetWorkbook(filePathCopy);
-            return;
-
 
             //copy template
             File.Copy(filePath, filePathCopy, true);
@@ -1476,8 +1472,6 @@ namespace BenMAP
             //xlSeries.XValues = xlSheet2.Range["A4:A" + (nextRow - 1).ToString()];
 
             //#endregion
-
-
 
             //save
             spreadsheetDocument.WorkbookPart.Workbook.Save();
