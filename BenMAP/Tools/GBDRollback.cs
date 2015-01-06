@@ -1083,7 +1083,7 @@ namespace BenMAP
 
             //write to sheet
             worksheetPart = GetWorksheetPartByName(spreadsheetDocument, "mySheet");
-            //UpdateCell(worksheetPart.Worksheet, "hello world", "B", 3);
+            UpdateCell(worksheetPart.Worksheet, "hello world", "A", 1);
 
             worksheetPart.Worksheet.Save();
             workbookPart.Workbook.Save();
@@ -1107,25 +1107,24 @@ namespace BenMAP
 
         public void UpdateCell(Worksheet worksheet, string text, string columnName, uint rowIndex)
         {
-            Cell cell = GetCell(worksheet, columnName, rowIndex);
-            cell.DataType = CellValues.String;
-            cell.CellValue = new CellValue(text);      
-            // Save the worksheet.
-            //worksheet.Save();
+            Cell cell = GetCell(worksheet, columnName, rowIndex);            
+            cell.CellValue = new CellValue(text);
+            cell.DataType = new EnumValue<CellValues>(CellValues.String);
         }
 
         private Cell GetCell(Worksheet worksheet, string columnName, uint rowIndex)
         {
             Row row;
             string cellReference = columnName + rowIndex;
-            if (worksheet.Elements<Row>().Where(r => r.RowIndex == rowIndex).Count() != 0)
+            SheetData sheetData = worksheet.GetFirstChild<SheetData>();
+            if (sheetData.Elements<Row>().Where(r => r.RowIndex == rowIndex).Count() != 0)
             {
-                row = worksheet.GetFirstChild<SheetData>().Elements<Row>().Where(r => r.RowIndex == rowIndex).FirstOrDefault();
+                row = sheetData.GetFirstChild<SheetData>().Elements<Row>().Where(r => r.RowIndex == rowIndex).FirstOrDefault();
             }
             else
             {
                 row = new Row() { RowIndex = rowIndex };
-                worksheet.Append(row);               
+                sheetData.Append(row);               
             }
 
             if (row == null)
@@ -1148,17 +1147,17 @@ namespace BenMAP
                         break;
                     }
                 }
+
                 Cell newCell = new Cell()
                 {
-                    CellReference = cellReference
-                    //StyleIndex = (UInt32Value)1U
-                    
-
+                    CellReference = cellReference                   
                 };
-                row.InsertBefore<Cell>(newCell, refCell);               
-                //worksheet.Save();
+                row.InsertBefore(newCell, refCell);
+            
                 return newCell;
             }
+
+           
         }
 
 
