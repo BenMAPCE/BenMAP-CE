@@ -1272,27 +1272,31 @@ namespace BenMAP
             UpdateCellNumber(worksheetPart.Worksheet,  rollback.Year.ToString(), "B", 5);
             ////xlSheet.Range["A6"].Value = "Pollutant";
             //xlSheet.Range["B6"].Value = "PM 2.5";
+            UpdateCellSharedString(worksheetPart.Worksheet, "PM 2.5", "B", 6);
 
             ////xlSheet.Range["A7"].Value = "Background Concentration";
-            //char micrograms = '\u00B5';
-            //char super3 = '\u00B3';
+            char micrograms = '\u00B5';
+            char super3 = '\u00B3';
             //xlSheet.Range["B7"].Value = rollback.Background.ToString() + " " + micrograms.ToString() + "g/m" + super3.ToString();
+            string backgroundConc = rollback.Background.ToString() + " " + micrograms.ToString() + "g/m" + super3.ToString();
+            UpdateCellSharedString(worksheetPart.Worksheet, backgroundConc, "B", 7);
 
             ////xlSheet.Range["A8"].Value = "Rollback Type";
-            //string summary = String.Empty;
-            //switch (rollback.Type)
-            //{
-            //    case GBDRollbackItem.RollbackType.Percentage: //percentage
-            //        summary = rollback.Percentage.ToString() + "% Rollback";
-            //        break;
-            //    case GBDRollbackItem.RollbackType.Incremental: //incremental
-            //        summary = rollback.Increment.ToString() + micrograms.ToString() + "g/m" + super3.ToString() + " Rollback";
-            //        break;
-            //    case GBDRollbackItem.RollbackType.Standard:
-            //        summary = "Rollback to " + rollback.StandardName + " Standard";
-            //        break;
-            //}
+            string summary = String.Empty;
+            switch (rollback.Type)
+            {
+                case GBDRollbackItem.RollbackType.Percentage: //percentage
+                    summary = rollback.Percentage.ToString() + "% Rollback";
+                    break;
+                case GBDRollbackItem.RollbackType.Incremental: //incremental
+                    summary = rollback.Increment.ToString() + micrograms.ToString() + "g/m" + super3.ToString() + " Rollback";
+                    break;
+                case GBDRollbackItem.RollbackType.Standard:
+                    summary = "Rollback to " + rollback.StandardName + " Standard";
+                    break;
+            }
             //xlSheet.Range["B8"].Value = summary;
+            UpdateCellSharedString(worksheetPart.Worksheet, summary, "B", 8);
 
             ////xlSheet.Range["A9"].Value = "Regions and Countries";
             //int rowOffset = 0;
