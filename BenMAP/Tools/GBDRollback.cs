@@ -1193,6 +1193,29 @@ namespace BenMAP
            
         }
 
+
+        private string GetCellValue(Worksheet worksheet, string columnName, uint rowIndex)
+        {
+
+            string value = String.Empty;
+            Cell cell = GetCell(worksheet, columnName, rowIndex);
+
+            value = cell.InnerText;
+
+            if (cell.DataType != null)
+            {
+                if (cell.DataType.Value == CellValues.SharedString)
+                {   
+                    // For shared strings, look up the value in the
+                    // shared strings table.
+                    SharedStringTablePart sharedStringPart = spreadsheetDocument.WorkbookPart.GetPartsOfType<SharedStringTablePart>().First();
+                    value = sharedStringPart.SharedStringTable.ElementAt(int.Parse(value)).InnerText;
+                }
+            }
+
+            return value;
+        }
+
         // Given text and a SharedStringTablePart, creates a SharedStringItem with the specified text 
         // and inserts it into the SharedStringTablePart. If the item already exists, returns its index.
         private static int InsertSharedStringItem(string text, SharedStringTablePart sharedStringPart)
@@ -1351,7 +1374,8 @@ namespace BenMAP
 
 
             //xlSheet.Range["J2"].Value = rollback.Year.ToString() + " " + xlSheet.Range["J2"].Value.ToString();
-
+            string value = GetCellValue(worksheetPart.Worksheet, "J", 2);
+            UpdateCellSharedString(worksheetPart.Worksheet, rollback.Year.ToString() + " " + value, "J", 2);
 
             #endregion
 
