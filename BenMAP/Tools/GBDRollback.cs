@@ -1131,15 +1131,18 @@ namespace BenMAP
         {
             Cell cell = GetCell(worksheet, columnName, rowIndex);
             cell.CellValue = new CellValue(text);
-            cell.DataType = new EnumValue<CellValues>(CellValues.Number);
+            cell.StyleIndex = (UInt32Value)5U;
+            //cell.DataType = new EnumValue<CellValues>(CellValues.Number);
         }
 
-        public void UpdateCellDate(Worksheet worksheet, string text, string columnName, uint rowIndex)
+        public void UpdateCellDate(Worksheet worksheet, DateTime date, string columnName, uint rowIndex)
         {
+            double doubleDate = date.ToOADate();
+
             Cell cell = GetCell(worksheet, columnName, rowIndex);
-            cell.CellValue = new CellValue(text);
-            cell.DataType = new EnumValue<CellValues>(CellValues.Number);
-            cell.StyleIndex = 5;
+            cell.CellValue = new CellValue(doubleDate.ToString());
+            cell.StyleIndex = (UInt32Value)2U;            
+            //cell.DataType = new EnumValue<CellValues>(CellValues.Number);
         }
 
         private Cell GetCell(Worksheet worksheet, string columnName, uint rowIndex)
@@ -1255,10 +1258,7 @@ namespace BenMAP
             
             //xlSheet.Name = "Summary";
             //xlSheet.Range["A2"].Value = "Date";
-            //workSheet.Descendants<Cell>().Where(c => c.CellReference == "B2").FirstOrDefault().CellValue = new CellValue(dtNow.ToString("yyyy/MM/dd"));
-            //UpdateCellSharedString(worksheetPart.Worksheet, dtNow.ToString("yyyy/MM/dd"), "B", 2);
-
-
+            UpdateCellDate(worksheetPart.Worksheet, dtNow, "B", 2);
             
 
             ////xlSheet.Range["A3"].Value = "Scenario Name";
