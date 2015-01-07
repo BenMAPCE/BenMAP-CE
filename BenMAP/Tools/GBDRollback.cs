@@ -1083,7 +1083,7 @@ namespace BenMAP
 
             //write to sheet
             worksheetPart = GetWorksheetPartByName(spreadsheetDocument, "mySheet");
-            UpdateCell(worksheetPart.Worksheet, "hello world", "A", 1);
+            UpdateCellSharedString(worksheetPart.Worksheet, "hello world", "A", 1);
 
             worksheetPart.Worksheet.Save();
             workbookPart.Workbook.Save();
@@ -1105,11 +1105,41 @@ namespace BenMAP
             return worksheetPart;
         }
 
-        public void UpdateCell(Worksheet worksheet, string text, string columnName, uint rowIndex)
+        public void UpdateCellSharedString(Worksheet worksheet, string text, string columnName, uint rowIndex)
         {
+
+            // Get the SharedStringTablePart. If it does not exist, create a new one.
+            SharedStringTablePart sharedStringPart;
+            if (spreadsheetDocument.WorkbookPart.GetPartsOfType<SharedStringTablePart>().Count() > 0)
+            {
+                sharedStringPart = spreadsheetDocument.WorkbookPart.GetPartsOfType<SharedStringTablePart>().First();
+            }
+            else
+            {
+                sharedStringPart = spreadsheetDocument.WorkbookPart.AddNewPart<SharedStringTablePart>();
+            }
+
+            // Insert the text into the SharedStringTablePart.
+            int index = InsertSharedStringItem(text, sharedStringPart);        
+
             Cell cell = GetCell(worksheet, columnName, rowIndex);            
+            cell.CellValue = new CellValue(index.ToString());
+            cell.DataType = new EnumValue<CellValues>(CellValues.SharedString);
+        }
+
+        public void UpdateCellNumber(Worksheet worksheet, string text, string columnName, uint rowIndex)
+        {
+            Cell cell = GetCell(worksheet, columnName, rowIndex);
             cell.CellValue = new CellValue(text);
-            cell.DataType = new EnumValue<CellValues>(CellValues.String);
+            cell.DataType = new EnumValue<CellValues>(CellValues.Number);
+        }
+
+        public void UpdateCellDate(Worksheet worksheet, string text, string columnName, uint rowIndex)
+        {
+            Cell cell = GetCell(worksheet, columnName, rowIndex);
+            cell.CellValue = new CellValue(text);
+            cell.DataType = new EnumValue<CellValues>(CellValues.Number);
+            cell.StyleIndex = 5;
         }
 
         private Cell GetCell(Worksheet worksheet, string columnName, uint rowIndex)
@@ -1160,6 +1190,37 @@ namespace BenMAP
            
         }
 
+        // Given text and a SharedStringTablePart, creates a SharedStringItem with the specified text 
+        // and inserts it into the SharedStringTablePart. If the item already exists, returns its index.
+        private static int InsertSharedStringItem(string text, SharedStringTablePart sharedStringPart)
+        {
+            // If the part does not contain a SharedStringTable, create one.
+            if (sharedStringPart.SharedStringTable == null)
+            {
+                sharedStringPart.SharedStringTable = new SharedStringTable();
+            }
+
+            int i = 0;
+
+            // Iterate through all the items in the SharedStringTable. If the text already exists, return its index.
+            foreach (SharedStringItem item in sharedStringPart.SharedStringTable.Elements<SharedStringItem>())
+            {
+                if (item.InnerText == text)
+                {
+                    return i;
+                }
+
+                i++;
+            }
+
+            // The text does not exist in the part. Create the SharedStringItem and return its index.
+            sharedStringPart.SharedStringTable.AppendChild(new SharedStringItem(new DocumentFormat.OpenXml.Spreadsheet.Text(text)));
+            sharedStringPart.SharedStringTable.Save();
+
+            return i;
+        }
+
+
 
         private void SaveRollbackReport(GBDRollbackItem rollback)
         {
@@ -1191,16 +1252,18 @@ namespace BenMAP
             //summary sheet          
 
             WorksheetPart worksheetPart = GetWorksheetPartByName(spreadsheetDocument, "Summary");
-            UpdateCell(worksheetPart.Worksheet, "hello world", "B", 3);
+            
             //xlSheet.Name = "Summary";
             //xlSheet.Range["A2"].Value = "Date";
             //workSheet.Descendants<Cell>().Where(c => c.CellReference == "B2").FirstOrDefault().CellValue = new CellValue(dtNow.ToString("yyyy/MM/dd"));
+            //UpdateCellSharedString(worksheetPart.Worksheet, dtNow.ToString("yyyy/MM/dd"), "B", 2);
 
 
             
 
             ////xlSheet.Range["A3"].Value = "Scenario Name";
             //xlSheet.Range["B3"].Value = rollback.Name;
+            UpdateCellSharedString(worksheetPart.Worksheet, rollback.Name, "B", 3);
             ////xlSheet.Range["A4"].Value = "Scenario Description";
             //xlSheet.Range["B4"].Value = rollback.Description;
             ////xlSheet.Range["A5"].Value = "GBD Year";
