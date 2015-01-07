@@ -1299,36 +1299,38 @@ namespace BenMAP
             UpdateCellSharedString(worksheetPart.Worksheet, summary, "B", 8);
 
             ////xlSheet.Range["A9"].Value = "Regions and Countries";
-            //int rowOffset = 0;
-            //int nextRow = 0;
+            uint rowOffset = 0;
+            uint nextRow = 0;
 
-            //System.Data.DataTable dtTemp = dtConcEntireRollback.DefaultView.ToTable(true, "REGIONID", "REGIONNAME", "COUNTRYID", "COUNTRYNAME");
-            //DataView dv = new DataView(dtTemp);
-            //dv.Sort = "REGIONNAME ASC, COUNTRYNAME ASC";
-            //System.Data.DataTable dtRegionsCountries = dv.ToTable();
-            //string region = String.Empty;
-            //string country = String.Empty;
-            //foreach (DataRow dr in dtRegionsCountries.Rows)
-            //{
-            //    //new region? write region
-            //    if (!region.Equals(dr["REGIONNAME"].ToString(), StringComparison.OrdinalIgnoreCase))
-            //    {
-            //        region = dr["REGIONNAME"].ToString();
-            //        nextRow = 9 + rowOffset;
-            //        xlSheet.Range["B" + nextRow.ToString()].Value = region;
-            //        xlSheet.Range["B" + nextRow.ToString()].Font.Italic = true;
-            //        rowOffset++;
-            //    }
+            System.Data.DataTable dtTemp = dtConcEntireRollback.DefaultView.ToTable(true, "REGIONID", "REGIONNAME", "COUNTRYID", "COUNTRYNAME");
+            DataView dv = new DataView(dtTemp);
+            dv.Sort = "REGIONNAME ASC, COUNTRYNAME ASC";
+            System.Data.DataTable dtRegionsCountries = dv.ToTable();
+            string region = String.Empty;
+            string country = String.Empty;
+            foreach (DataRow dr in dtRegionsCountries.Rows)
+            {
+                //new region? write region
+                if (!region.Equals(dr["REGIONNAME"].ToString(), StringComparison.OrdinalIgnoreCase))
+                {
+                    region = dr["REGIONNAME"].ToString();
+                    nextRow = 9 + rowOffset;
+                    //xlSheet.Range["B" + nextRow.ToString()].Value = region;
+                    UpdateCellSharedString(worksheetPart.Worksheet, region, "B", nextRow);
+                    //xlSheet.Range["B" + nextRow.ToString()].Font.Italic = true;
+                    rowOffset++;
+                }
 
-            //    //write country
-            //    country = dr["COUNTRYNAME"].ToString();
-            //    nextRow = 9 + rowOffset;
-            //    xlSheet.Range["B" + nextRow.ToString()].Value = country;
-            //    xlSheet.Range["B" + nextRow.ToString()].ColumnWidth = 40;
-            //    xlSheet.Range["B" + nextRow.ToString()].WrapText = true;
-            //    xlSheet.Range["B" + nextRow.ToString()].InsertIndent(2);
-            //    rowOffset++;
-            //}
+                //write country
+                country = dr["COUNTRYNAME"].ToString();
+                nextRow = 9 + rowOffset;
+                //xlSheet.Range["B" + nextRow.ToString()].Value = country;
+                UpdateCellSharedString(worksheetPart.Worksheet, country, "B", nextRow);
+                //xlSheet.Range["B" + nextRow.ToString()].ColumnWidth = 40;
+                //xlSheet.Range["B" + nextRow.ToString()].WrapText = true;
+                //xlSheet.Range["B" + nextRow.ToString()].InsertIndent(2);
+                rowOffset++;
+            }
 
             ////format
             //Microsoft.Office.Interop.Excel.Range xlRange;
