@@ -1266,8 +1266,10 @@ namespace BenMAP
             UpdateCellSharedString(worksheetPart.Worksheet, rollback.Name, "B", 3);
             ////xlSheet.Range["A4"].Value = "Scenario Description";
             //xlSheet.Range["B4"].Value = rollback.Description;
+            UpdateCellSharedString(worksheetPart.Worksheet, rollback.Description, "B", 4);
             ////xlSheet.Range["A5"].Value = "GBD Year";
             //xlSheet.Range["B5"].Value = rollback.Year.ToString();
+            UpdateCellNumber(worksheetPart.Worksheet,  rollback.Year.ToString(), "B", 5);
             ////xlSheet.Range["A6"].Value = "Pollutant";
             //xlSheet.Range["B6"].Value = "PM 2.5";
 
