@@ -1286,11 +1286,9 @@ namespace BenMAP
             styleSheet.CellFormats.Append(cellFormat1);
             styleSheet.CellFormats.Count++;
             styleIndexItalicsWithBorders = styleSheet.CellFormats.Count - 1;
-
-
-            //gray fill with borders
-
-
+            
+            styleIndexGrayFillWithBorders = 1U;
+            styleIndexNoFillWithBorders = 5U;
         
         
         }
@@ -1394,6 +1392,7 @@ namespace BenMAP
                     UpdateCellSharedString(worksheetPart.Worksheet, region, "B", nextRow);
                     //xlSheet.Range["B" + nextRow.ToString()].Font.Italic = true;
                     GetCell(worksheetPart.Worksheet, "B", nextRow).StyleIndex = styleIndexItalicsWithBorders;
+                    GetCell(worksheetPart.Worksheet, "A", nextRow).StyleIndex = styleIndexGrayFillWithBorders;
                     rowOffset++;
                 }
 
@@ -1402,9 +1401,12 @@ namespace BenMAP
                 nextRow = 9 + rowOffset;
                 //xlSheet.Range["B" + nextRow.ToString()].Value = country;
                 UpdateCellSharedString(worksheetPart.Worksheet, country, "B", nextRow);
+                GetCell(worksheetPart.Worksheet, "B", nextRow).StyleIndex = styleIndexNoFillWithBorders;
+                GetCell(worksheetPart.Worksheet, "A", nextRow).StyleIndex = styleIndexGrayFillWithBorders;
                 //xlSheet.Range["B" + nextRow.ToString()].ColumnWidth = 40;
                 //xlSheet.Range["B" + nextRow.ToString()].WrapText = true;
                 //xlSheet.Range["B" + nextRow.ToString()].InsertIndent(2);
+
                 rowOffset++;
             }
 
