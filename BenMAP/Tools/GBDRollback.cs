@@ -29,6 +29,7 @@ namespace BenMAP
         private uint styleIndexItalicsWithBorders;
         private uint styleIndexGrayFillWithBorders;
         private uint styleIndexNoFillWithBorders;
+        private uint styleIndexNoFillIndentWithBorders;
         private bool selectMapFeaturesOnNodeCheck = true;
 
         private const int POLLUTANT_ID = 1;
@@ -1289,7 +1290,26 @@ namespace BenMAP
             
             styleIndexGrayFillWithBorders = 1U;
             styleIndexNoFillWithBorders = 5U;
-        
+
+            //indent
+            CellFormat cellFormat2 = new CellFormat()
+            {
+                NumberFormatId = (UInt32Value)0U,
+                FontId = (UInt32Value)2U,
+                FillId = (UInt32Value)0U,
+                BorderId = (UInt32Value)1U,
+                FormatId = (UInt32Value)0U,
+                ApplyNumberFormat = true,
+                ApplyFont = true,
+                ApplyFill = true,
+                ApplyBorder = true,
+                ApplyAlignment = true
+            };
+            DocumentFormat.OpenXml.Spreadsheet.Alignment alignment2 = new DocumentFormat.OpenXml.Spreadsheet.Alignment() { Horizontal = HorizontalAlignmentValues.Left, Indent = 2 };
+            cellFormat2.Append(alignment2);
+            styleSheet.CellFormats.Append(cellFormat2);
+            styleSheet.CellFormats.Count++;
+            styleIndexNoFillIndentWithBorders = styleSheet.CellFormats.Count - 1;
         
         }
 
@@ -1401,7 +1421,7 @@ namespace BenMAP
                 nextRow = 9 + rowOffset;
                 //xlSheet.Range["B" + nextRow.ToString()].Value = country;
                 UpdateCellSharedString(worksheetPart.Worksheet, country, "B", nextRow);
-                GetCell(worksheetPart.Worksheet, "B", nextRow).StyleIndex = styleIndexNoFillWithBorders;
+                GetCell(worksheetPart.Worksheet, "B", nextRow).StyleIndex = styleIndexNoFillIndentWithBorders;
                 GetCell(worksheetPart.Worksheet, "A", nextRow).StyleIndex = styleIndexGrayFillWithBorders;
                 //xlSheet.Range["B" + nextRow.ToString()].ColumnWidth = 40;
                 //xlSheet.Range["B" + nextRow.ToString()].WrapText = true;
