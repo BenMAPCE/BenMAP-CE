@@ -30,6 +30,7 @@ namespace BenMAP
         private uint styleIndexGrayFillWithBorders;
         private uint styleIndexNoFillWithBorders;
         private uint styleIndexNoFillIndentWithBorders;
+        private uint styleIndexNoFillCenterWithBorders;
         private bool selectMapFeaturesOnNodeCheck = true;
 
         private const int POLLUTANT_ID = 1;
@@ -1135,7 +1136,7 @@ namespace BenMAP
         {
             Cell cell = GetCell(worksheet, columnName, rowIndex);
             cell.CellValue = new CellValue(text);
-            cell.StyleIndex = (UInt32Value)5U;
+            //cell.StyleIndex = (UInt32Value)5U;
             //cell.DataType = new EnumValue<CellValues>(CellValues.Number);
         }
 
@@ -1310,6 +1311,26 @@ namespace BenMAP
             styleSheet.CellFormats.Append(cellFormat2);
             styleSheet.CellFormats.Count++;
             styleIndexNoFillIndentWithBorders = styleSheet.CellFormats.Count - 1;
+
+            //center
+            CellFormat cellFormat3 = new CellFormat()
+            {
+                NumberFormatId = (UInt32Value)0U,
+                FontId = (UInt32Value)2U,
+                FillId = (UInt32Value)0U,
+                BorderId = (UInt32Value)1U,
+                FormatId = (UInt32Value)0U,
+                ApplyNumberFormat = true,
+                ApplyFont = true,
+                ApplyFill = true,
+                ApplyBorder = true,
+                ApplyAlignment = true
+            };
+            DocumentFormat.OpenXml.Spreadsheet.Alignment alignment3 = new DocumentFormat.OpenXml.Spreadsheet.Alignment() { Horizontal = HorizontalAlignmentValues.Center };
+            cellFormat3.Append(alignment3);
+            styleSheet.CellFormats.Append(cellFormat3);
+            styleSheet.CellFormats.Count++;
+            styleIndexNoFillCenterWithBorders = styleSheet.CellFormats.Count - 1;
         
         }
 
@@ -1454,107 +1475,138 @@ namespace BenMAP
 
             #endregion
 
-            ////results sheet
-            //#region results sheet
-            //Microsoft.Office.Interop.Excel.Worksheet xlSheet2 = (Microsoft.Office.Interop.Excel.Worksheet)xlBook.Worksheets[2];
-            ////xlSheet2.Name = "Results";
-            ////xlSheet2.Range["A3"].Value = "Country";
-            ////xlSheet2.Range["B3"].Value = "Population Affected";
-            ////xlSheet2.Range["C3"].Value = "Avoided Deaths (Total)";
-            ////xlSheet2.Range["D3"].Value = "Avoided Deaths (% Population)";
-            ////xlSheet2.Range["E3"].Value = "Min";
-            ////xlSheet2.Range["F3"].Value = "Median";
-            ////xlSheet2.Range["G3"].Value = "Max";
+            //results sheet
+            #region results sheet
+            WorksheetPart worksheetPart2 = GetWorksheetPartByName(spreadsheetDocument, "Detailed Results");
+            //xlSheet2.Name = "Results";
+            //xlSheet2.Range["A3"].Value = "Country";
+            //xlSheet2.Range["B3"].Value = "Population Affected";
+            //xlSheet2.Range["C3"].Value = "Avoided Deaths (Total)";
+            //xlSheet2.Range["D3"].Value = "Avoided Deaths (% Population)";
+            //xlSheet2.Range["E3"].Value = "Min";
+            //xlSheet2.Range["F3"].Value = "Median";
+            //xlSheet2.Range["G3"].Value = "Max";
             //xlSheet2.Range["H2"].Value = rollback.Year.ToString() + " " + xlSheet2.Range["H2"].Value.ToString();
-            ////xlSheet2.Range["E2:G2"].MergeCells = true;
-            ////xlSheet2.Range["H3"].Value = "Min";
-            ////xlSheet2.Range["I3"].Value = "Median";
-            ////xlSheet2.Range["J3"].Value = "Max";
-            ////xlSheet2.Range["H2"].Value = "Control";
-            ////xlSheet2.Range["H2:J2"].MergeCells = true;
-            ////xlSheet2.Range["K3"].Value = "Air Quality Change (Population Weighted)";
+            value = GetCellValue(worksheetPart2.Worksheet, "H", 2);
+            UpdateCellSharedString(worksheetPart2.Worksheet, rollback.Year.ToString() + " " + value, "H", 2);
+            //xlSheet2.Range["E2:G2"].MergeCells = true;
+            //xlSheet2.Range["H3"].Value = "Min";
+            //xlSheet2.Range["I3"].Value = "Median";
+            //xlSheet2.Range["J3"].Value = "Max";
+            //xlSheet2.Range["H2"].Value = "Control";
+            //xlSheet2.Range["H2:J2"].MergeCells = true;
+            //xlSheet2.Range["K3"].Value = "Air Quality Change (Population Weighted)";
 
-            ////format
-            ////xlSheet2.Range["E2:J2"].Font.Bold = true;
-            ////xlSheet2.Range["E2:J2"].HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignCenter;
-            ////xlSheet2.Range["A3:K3"].Font.Bold = true;
-            ////xlSheet2.Range["A3:K3"].HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignCenter;
-            ////xlSheet2.Range["B3:D3"].ColumnWidth = 20;
-            ////xlSheet2.Range["E3:J3"].ColumnWidth = 10;
-            ////xlSheet2.Range["K3"].ColumnWidth = 20;
-            ////xlSheet2.Range["B3:K3"].WrapText = true;
-            //////country column
-            ////xlRange = (Microsoft.Office.Interop.Excel.Range)(xlSheet2.Columns[1]);
-            ////xlRange.ColumnWidth = 40;
-            ////xlRange.WrapText = true;
+            //format
+            //xlSheet2.Range["E2:J2"].Font.Bold = true;
+            //xlSheet2.Range["E2:J2"].HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignCenter;
+            //xlSheet2.Range["A3:K3"].Font.Bold = true;
+            //xlSheet2.Range["A3:K3"].HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignCenter;
+            //xlSheet2.Range["B3:D3"].ColumnWidth = 20;
+            //xlSheet2.Range["E3:J3"].ColumnWidth = 10;
+            //xlSheet2.Range["K3"].ColumnWidth = 20;
+            //xlSheet2.Range["B3:K3"].WrapText = true;
+            ////country column
+            //xlRange = (Microsoft.Office.Interop.Excel.Range)(xlSheet2.Columns[1]);
+            //xlRange.ColumnWidth = 40;
+            //xlRange.WrapText = true;
 
-            ////build output table
-            //System.Data.DataTable dtDetailedResults = new System.Data.DataTable();
-            //dtDetailedResults.Columns.Add("NAME", Type.GetType("System.String"));
-            //dtDetailedResults.Columns.Add("IS_REGION", Type.GetType("System.Boolean"));
-            //dtDetailedResults.Columns.Add("POP_AFFECTED", Type.GetType("System.Double"));
-            //dtDetailedResults.Columns.Add("AVOIDED_DEATHS", Type.GetType("System.Double"));
-            //dtDetailedResults.Columns.Add("CONFIDENCE_INTERVAL", Type.GetType("System.String"));
-            //dtDetailedResults.Columns.Add("PERCENT_BASELINE_MORTALITY", Type.GetType("System.Double"));
-            //dtDetailedResults.Columns.Add("DEATHS_PER_100_THOUSAND", Type.GetType("System.Double"));
-            //dtDetailedResults.Columns.Add("AVOIDED_DEATHS_PERCENT_POP", Type.GetType("System.Double"));
-            //dtDetailedResults.Columns.Add("BASELINE_MIN", Type.GetType("System.Double"));
-            //dtDetailedResults.Columns.Add("BASELINE_MEDIAN", Type.GetType("System.Double"));
-            //dtDetailedResults.Columns.Add("BASELINE_MAX", Type.GetType("System.Double"));
-            //dtDetailedResults.Columns.Add("CONTROL_MIN", Type.GetType("System.Double"));
-            //dtDetailedResults.Columns.Add("CONTROL_MEDIAN", Type.GetType("System.Double"));
-            //dtDetailedResults.Columns.Add("CONTROL_MAX", Type.GetType("System.Double"));
-            //dtDetailedResults.Columns.Add("AIR_QUALITY_CHANGE", Type.GetType("System.Double"));
-
-
-            //string regionid = String.Empty;
-            //string countryid = String.Empty;
-            //foreach (DataRow dr in dtRegionsCountries.Rows)
-            //{
-            //    //new region? get region data
-            //    if (!regionid.Equals(dr["REGIONID"].ToString(), StringComparison.OrdinalIgnoreCase))
-            //    {
-            //        regionid = dr["REGIONID"].ToString();
-            //        GetResults(regionid, dr["REGIONNAME"].ToString(), true, dtDetailedResults);
-            //    }
-
-            //    //get country data
-            //    countryid = dr["COUNTRYID"].ToString();
-            //    GetResults(countryid, dr["COUNTRYNAME"].ToString(), false, dtDetailedResults);
-            //}
+            //build output table
+            System.Data.DataTable dtDetailedResults = new System.Data.DataTable();
+            dtDetailedResults.Columns.Add("NAME", Type.GetType("System.String"));
+            dtDetailedResults.Columns.Add("IS_REGION", Type.GetType("System.Boolean"));
+            dtDetailedResults.Columns.Add("POP_AFFECTED", Type.GetType("System.Double"));
+            dtDetailedResults.Columns.Add("AVOIDED_DEATHS", Type.GetType("System.Double"));
+            dtDetailedResults.Columns.Add("CONFIDENCE_INTERVAL", Type.GetType("System.String"));
+            dtDetailedResults.Columns.Add("PERCENT_BASELINE_MORTALITY", Type.GetType("System.Double"));
+            dtDetailedResults.Columns.Add("DEATHS_PER_100_THOUSAND", Type.GetType("System.Double"));
+            dtDetailedResults.Columns.Add("AVOIDED_DEATHS_PERCENT_POP", Type.GetType("System.Double"));
+            dtDetailedResults.Columns.Add("BASELINE_MIN", Type.GetType("System.Double"));
+            dtDetailedResults.Columns.Add("BASELINE_MEDIAN", Type.GetType("System.Double"));
+            dtDetailedResults.Columns.Add("BASELINE_MAX", Type.GetType("System.Double"));
+            dtDetailedResults.Columns.Add("CONTROL_MIN", Type.GetType("System.Double"));
+            dtDetailedResults.Columns.Add("CONTROL_MEDIAN", Type.GetType("System.Double"));
+            dtDetailedResults.Columns.Add("CONTROL_MAX", Type.GetType("System.Double"));
+            dtDetailedResults.Columns.Add("AIR_QUALITY_CHANGE", Type.GetType("System.Double"));
 
 
-            ////write results to spreadsheet
-            //nextRow = 4;
-            //foreach (DataRow dr in dtDetailedResults.Rows)
-            //{
-            //    xlSheet2.Range["A" + nextRow.ToString()].Value = dr["NAME"].ToString();
-            //    if (Convert.ToBoolean(dr["IS_REGION"].ToString()))
-            //    {
-            //        xlSheet2.Range["A" + nextRow.ToString()].Font.Italic = true;
-            //    }
-            //    else
-            //    {
-            //        //xlSheet2.Range["A" + nextRow.ToString()].ColumnWidth = 40;
-            //        //xlSheet2.Range["A" + nextRow.ToString()].WrapText = true;
-            //        xlSheet2.Range["A" + nextRow.ToString()].InsertIndent(2);
-            //    }
-            //    xlSheet2.Range["B" + nextRow.ToString()].Value = FormatDoubleStringTwoSignificantFigures(FORMAT_DECIMAL_0_PLACES, dr["POP_AFFECTED"].ToString());
-            //    xlSheet2.Range["C" + nextRow.ToString()].Value = FormatDoubleStringTwoSignificantFigures(FORMAT_DECIMAL_0_PLACES, dr["AVOIDED_DEATHS"].ToString());
-            //    xlSheet2.Range["D" + nextRow.ToString()].Value = "'" + dr["CONFIDENCE_INTERVAL"].ToString(); //prepend apostrophe so Excel treats this as text not date
-            //    xlSheet2.Range["E" + nextRow.ToString()].Value = dr["PERCENT_BASELINE_MORTALITY"].ToString();
-            //    xlSheet2.Range["F" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["DEATHS_PER_100_THOUSAND"].ToString());
-            //    xlSheet2.Range["G" + nextRow.ToString()].Value = dr["AVOIDED_DEATHS_PERCENT_POP"].ToString();//FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AVOIDED_DEATHS_PERCENT_POP"].ToString());
-            //    xlSheet2.Range["H" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MIN"].ToString());
-            //    xlSheet2.Range["I" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MEDIAN"].ToString());
-            //    xlSheet2.Range["J" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MAX"].ToString());
-            //    xlSheet2.Range["K" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MIN"].ToString());
-            //    xlSheet2.Range["L" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MEDIAN"].ToString());
-            //    xlSheet2.Range["M" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MAX"].ToString());
-            //    xlSheet2.Range["N" + nextRow.ToString()].Value = dr["AIR_QUALITY_CHANGE"].ToString();// FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AIR_QUALITY_CHANGE"].ToString());
-            //    nextRow++;
+            string regionid = String.Empty;
+            string countryid = String.Empty;
+            foreach (DataRow dr in dtRegionsCountries.Rows)
+            {
+                //new region? get region data
+                if (!regionid.Equals(dr["REGIONID"].ToString(), StringComparison.OrdinalIgnoreCase))
+                {
+                    regionid = dr["REGIONID"].ToString();
+                    GetResults(regionid, dr["REGIONNAME"].ToString(), true, dtDetailedResults);
+                }
 
-            //}
+                //get country data
+                countryid = dr["COUNTRYID"].ToString();
+                GetResults(countryid, dr["COUNTRYNAME"].ToString(), false, dtDetailedResults);
+            }
+
+
+            //write results to spreadsheet
+            nextRow = 4;
+            foreach (DataRow dr in dtDetailedResults.Rows)
+            {
+                //xlSheet2.Range["A" + nextRow.ToString()].Value = dr["NAME"].ToString();
+                UpdateCellSharedString(worksheetPart2.Worksheet, dr["NAME"].ToString(), "A", nextRow);
+                if (Convert.ToBoolean(dr["IS_REGION"].ToString()))
+                {
+                    //xlSheet2.Range["A" + nextRow.ToString()].Font.Italic = true;
+                    GetCell(worksheetPart2.Worksheet, "A", nextRow).StyleIndex = styleIndexItalicsWithBorders;
+                }
+                else
+                {
+                    //xlSheet2.Range["A" + nextRow.ToString()].ColumnWidth = 40;
+                    //xlSheet2.Range["A" + nextRow.ToString()].WrapText = true;
+                    //xlSheet2.Range["A" + nextRow.ToString()].InsertIndent(2);
+                    GetCell(worksheetPart2.Worksheet, "A", nextRow).StyleIndex = styleIndexNoFillIndentWithBorders;
+                }
+                //xlSheet2.Range["B" + nextRow.ToString()].Value = FormatDoubleStringTwoSignificantFigures(FORMAT_DECIMAL_0_PLACES, dr["POP_AFFECTED"].ToString());
+                UpdateCellNumber(worksheetPart2.Worksheet, FormatDoubleStringTwoSignificantFigures(FORMAT_DECIMAL_0_PLACES, dr["POP_AFFECTED"].ToString()), "B", nextRow);
+                GetCell(worksheetPart2.Worksheet, "B", nextRow).StyleIndex = styleIndexNoFillWithBorders;
+                //xlSheet2.Range["C" + nextRow.ToString()].Value = FormatDoubleStringTwoSignificantFigures(FORMAT_DECIMAL_0_PLACES, dr["AVOIDED_DEATHS"].ToString());
+                UpdateCellNumber(worksheetPart2.Worksheet, FormatDoubleStringTwoSignificantFigures(FORMAT_DECIMAL_0_PLACES, dr["AVOIDED_DEATHS"].ToString()), "C", nextRow);
+                GetCell(worksheetPart2.Worksheet, "C", nextRow).StyleIndex = styleIndexNoFillWithBorders;
+                //xlSheet2.Range["D" + nextRow.ToString()].Value = "'" + dr["CONFIDENCE_INTERVAL"].ToString(); //prepend apostrophe so Excel treats this as text not date
+                UpdateCellSharedString(worksheetPart2.Worksheet, dr["CONFIDENCE_INTERVAL"].ToString() , "D", nextRow);
+                GetCell(worksheetPart2.Worksheet, "D", nextRow).StyleIndex = styleIndexNoFillCenterWithBorders;
+                //xlSheet2.Range["E" + nextRow.ToString()].Value = dr["PERCENT_BASELINE_MORTALITY"].ToString();
+                UpdateCellNumber(worksheetPart2.Worksheet, dr["PERCENT_BASELINE_MORTALITY"].ToString(), "E", nextRow);
+                GetCell(worksheetPart2.Worksheet, "E", nextRow).StyleIndex = styleIndexNoFillWithBorders;
+                //xlSheet2.Range["F" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["DEATHS_PER_100_THOUSAND"].ToString());
+                UpdateCellNumber(worksheetPart2.Worksheet, FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["DEATHS_PER_100_THOUSAND"].ToString()), "F", nextRow);
+                GetCell(worksheetPart2.Worksheet, "F", nextRow).StyleIndex = styleIndexNoFillWithBorders;
+                //xlSheet2.Range["G" + nextRow.ToString()].Value = dr["AVOIDED_DEATHS_PERCENT_POP"].ToString();//FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AVOIDED_DEATHS_PERCENT_POP"].ToString());
+                UpdateCellNumber(worksheetPart2.Worksheet, dr["AVOIDED_DEATHS_PERCENT_POP"].ToString(), "G", nextRow);
+                GetCell(worksheetPart2.Worksheet, "G", nextRow).StyleIndex = styleIndexNoFillWithBorders;
+                //xlSheet2.Range["H" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MIN"].ToString());
+                UpdateCellNumber(worksheetPart2.Worksheet, FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MIN"].ToString()), "H", nextRow);
+                GetCell(worksheetPart2.Worksheet, "H", nextRow).StyleIndex = styleIndexNoFillWithBorders;
+                //xlSheet2.Range["I" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MEDIAN"].ToString());
+                UpdateCellNumber(worksheetPart2.Worksheet, FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MEDIAN"].ToString()), "I", nextRow);
+                GetCell(worksheetPart2.Worksheet, "I", nextRow).StyleIndex = styleIndexNoFillWithBorders;
+                //xlSheet2.Range["J" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MAX"].ToString());
+                UpdateCellNumber(worksheetPart2.Worksheet, FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MAX"].ToString()), "J", nextRow);
+                GetCell(worksheetPart2.Worksheet, "J", nextRow).StyleIndex = styleIndexNoFillWithBorders;
+                //xlSheet2.Range["K" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MIN"].ToString());
+                UpdateCellNumber(worksheetPart2.Worksheet, FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MIN"].ToString()), "K", nextRow);
+                GetCell(worksheetPart2.Worksheet, "K", nextRow).StyleIndex = styleIndexNoFillWithBorders;
+                //xlSheet2.Range["L" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MEDIAN"].ToString());
+                UpdateCellNumber(worksheetPart2.Worksheet, FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MEDIAN"].ToString()), "L", nextRow);
+                GetCell(worksheetPart2.Worksheet, "L", nextRow).StyleIndex = styleIndexNoFillWithBorders;
+                //xlSheet2.Range["M" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MAX"].ToString());
+                UpdateCellNumber(worksheetPart2.Worksheet, FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MAX"].ToString()), "M", nextRow);
+                GetCell(worksheetPart2.Worksheet, "M", nextRow).StyleIndex = styleIndexNoFillWithBorders;
+                //xlSheet2.Range["N" + nextRow.ToString()].Value = dr["AIR_QUALITY_CHANGE"].ToString();// FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AIR_QUALITY_CHANGE"].ToString());
+                UpdateCellNumber(worksheetPart2.Worksheet, dr["AIR_QUALITY_CHANGE"].ToString(), "N", nextRow);
+                GetCell(worksheetPart2.Worksheet, "N", nextRow).StyleIndex = styleIndexNoFillWithBorders;
+                nextRow++;
+
+            }
 
             ////center confidence interval
             //xlRange = xlSheet2.Range["D4:D" + (nextRow - 1).ToString()];
@@ -1568,7 +1620,7 @@ namespace BenMAP
             //xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeLeft].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
             //xlRange.Borders.Color = Color.Black;
 
-            //#endregion
+            #endregion
 
             //#region back to summary sheet
 
