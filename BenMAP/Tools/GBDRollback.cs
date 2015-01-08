@@ -26,6 +26,9 @@ namespace BenMAP
         private List<GBDRollbackItem> rollbacks = new List<GBDRollbackItem>();
         private System.Data.DataTable dtCountries;
         private SpreadsheetDocument spreadsheetDocument;
+        private uint styleIndexItalicsWithBorders;
+        private uint styleIndexGrayFillWithBorders;
+        private uint styleIndexNoFillWithBorders;
         private bool selectMapFeaturesOnNodeCheck = true;
 
         private const int POLLUTANT_ID = 1;
@@ -1246,6 +1249,52 @@ namespace BenMAP
             return i;
         }
 
+        private void ConfigureCellFormats()
+        {
+
+            WorkbookStylesPart stylesPart = spreadsheetDocument.WorkbookPart.GetPartsOfType<WorkbookStylesPart>().First();
+            Stylesheet styleSheet = stylesPart.Stylesheet;          
+
+
+            //italics
+            DocumentFormat.OpenXml.Spreadsheet.Font font1 = new DocumentFormat.OpenXml.Spreadsheet.Font();
+            Italic italic1 = new Italic();
+            FontSize fontSize1 = new FontSize() { Val = 11D };
+            DocumentFormat.OpenXml.Spreadsheet.Color color1 = new DocumentFormat.OpenXml.Spreadsheet.Color() { Rgb = "00000000" };
+            FontName fontName1 = new FontName() { Val = "Gill Sans MT" };
+
+            font1.Append(italic1);
+            font1.Append(fontSize1);
+            font1.Append(color1);
+            font1.Append(fontName1);
+            styleSheet.Fonts.Append(font1);
+            styleSheet.Fonts.Count++;           
+
+            CellFormat cellFormat1 = new CellFormat() { NumberFormatId = (UInt32Value)0U, 
+                                                        FontId = (UInt32Value)styleSheet.Fonts.Count - 1, 
+                                                        FillId = (UInt32Value)0U, 
+                                                        BorderId = (UInt32Value)1U, 
+                                                        FormatId = (UInt32Value)0U, 
+                                                        ApplyNumberFormat = true, 
+                                                        ApplyFont = true, 
+                                                        ApplyFill = true, 
+                                                        ApplyBorder = true, 
+                                                        ApplyAlignment = true };
+            DocumentFormat.OpenXml.Spreadsheet.Alignment alignment1 = new DocumentFormat.OpenXml.Spreadsheet.Alignment() { Horizontal = HorizontalAlignmentValues.Left };
+
+            cellFormat1.Append(alignment1);
+            styleSheet.CellFormats.Append(cellFormat1);
+            styleSheet.CellFormats.Count++;
+            styleIndexItalicsWithBorders = styleSheet.CellFormats.Count - 1;
+
+
+            //gray fill with borders
+
+
+        
+        
+        }
+
 
 
         private void SaveRollbackReport(GBDRollbackItem rollback)
@@ -1272,7 +1321,10 @@ namespace BenMAP
             File.Copy(filePath, filePathCopy, true);
 
             //open copied report template            
-            spreadsheetDocument = SpreadsheetDocument.Open(filePathCopy, true);       
+            spreadsheetDocument = SpreadsheetDocument.Open(filePathCopy, true);
+
+            ConfigureCellFormats();
+
 
             #region summary sheet
             //summary sheet          
@@ -1341,6 +1393,7 @@ namespace BenMAP
                     //xlSheet.Range["B" + nextRow.ToString()].Value = region;
                     UpdateCellSharedString(worksheetPart.Worksheet, region, "B", nextRow);
                     //xlSheet.Range["B" + nextRow.ToString()].Font.Italic = true;
+                    GetCell(worksheetPart.Worksheet, "B", nextRow).StyleIndex = styleIndexItalicsWithBorders;
                     rowOffset++;
                 }
 
