@@ -1748,11 +1748,29 @@ namespace BenMAP
                     nextRowForSummary++;
                 }
             }
-            //Microsoft.Office.Interop.Excel.ChartObject xlChartObject = (Microsoft.Office.Interop.Excel.ChartObject)xlSheet.ChartObjects(1);
+            //Microsoft.Office.Interop.Excel.ChartObject xlChartObject = (Microsoft.Office.Interop.Excel.ChartObject)xlSheet.ChartObjects(1);            
             //Microsoft.Office.Interop.Excel.Chart xlChart = (Microsoft.Office.Interop.Excel.Chart)xlChartObject.Chart;
             //Microsoft.Office.Interop.Excel.Series xlSeries = (Microsoft.Office.Interop.Excel.Series)xlChart.SeriesCollection(1);
             //xlSeries.Values = xlSheet4.Range["B1:B" + (nextRowForSummary - 1).ToString()];
             //xlSeries.XValues = xlSheet4.Range["A1:A" + (nextRowForSummary - 1).ToString()];
+            DrawingsPart drawingsPart = worksheetPart.GetPartsOfType<DrawingsPart>().First();
+            ChartPart chartPart = drawingsPart.GetPartsOfType<ChartPart>().First();
+            DocumentFormat.OpenXml.Drawing.Charts.Chart chart = chartPart.ChartSpace.Elements<DocumentFormat.OpenXml.Drawing.Charts.Chart>().First();
+            DocumentFormat.OpenXml.Drawing.Charts.PlotArea plotArea = chart.Elements<DocumentFormat.OpenXml.Drawing.Charts.PlotArea>().First();
+            DocumentFormat.OpenXml.Drawing.Charts.PieChart pieChart = plotArea.Elements<DocumentFormat.OpenXml.Drawing.Charts.PieChart>().First();
+            DocumentFormat.OpenXml.Drawing.Charts.PieChartSeries pieChartSeries = pieChart.Elements<DocumentFormat.OpenXml.Drawing.Charts.PieChartSeries>().First();
+            DocumentFormat.OpenXml.Drawing.Charts.CategoryAxisData categoryAxisData = pieChartSeries.Elements<DocumentFormat.OpenXml.Drawing.Charts.CategoryAxisData>().First();
+            DocumentFormat.OpenXml.Drawing.Charts.MultiLevelStringReference multiLevelStringReference = categoryAxisData.Elements<DocumentFormat.OpenXml.Drawing.Charts.MultiLevelStringReference>().First();
+            DocumentFormat.OpenXml.Drawing.Charts.Formula formula = multiLevelStringReference.Elements<DocumentFormat.OpenXml.Drawing.Charts.Formula>().First();
+            formula.Text = "\'DataSource\'!$A$1:$A$" + (nextRowForSummary - 1).ToString();
+
+            DocumentFormat.OpenXml.Drawing.Charts.Values values = pieChartSeries.Elements<DocumentFormat.OpenXml.Drawing.Charts.Values>().First();
+            DocumentFormat.OpenXml.Drawing.Charts.NumberReference numberReference = values.Elements<DocumentFormat.OpenXml.Drawing.Charts.NumberReference>().First();
+            DocumentFormat.OpenXml.Drawing.Charts.Formula formulaValues = numberReference.Elements<DocumentFormat.OpenXml.Drawing.Charts.Formula>().First();
+            formulaValues.Text = "\'DataSource\'!$B$1:$B$" + (nextRowForSummary - 1).ToString();
+
+            
+
             ////write to total avoided deaths text box on chart
             //Microsoft.Office.Interop.Excel.Shape txtBox = (Microsoft.Office.Interop.Excel.Shape)xlSheet.Shapes.Item("TextBox 1");
             //txtBox.TextFrame.Characters().Text = txtBox.TextFrame.Characters().Text + " " + xlSheet.Range["E4"].Text; //use .Text rather than .Value on the range here, because it is formatted
