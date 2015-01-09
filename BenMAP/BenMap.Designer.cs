@@ -734,8 +734,8 @@ namespace BenMAP
             this.picCRHelp.TabStop = false;
             this.picCRHelp.Tag = "";
             this.toolTip1.SetToolTip(this.picCRHelp, "Double click datagrid to create result.\r\nIf you choose \'Create All\',GIS Map/Table" +
-                    "/Chart results will be created.\r\nIf you choose \'Active Study Only\',Only one acti" +
-                    "ve result will be created.");
+        "/Chart results will be created.\r\nIf you choose \'Active Study Only\',Only one acti" +
+        "ve result will be created.");
             this.picCRHelp.Visible = false;
             this.picCRHelp.Click += new System.EventHandler(this.picCRHelp_Click);
             // 
@@ -1130,9 +1130,9 @@ namespace BenMAP
             // 
             // trvSetting
             // 
-            this.trvSetting.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.trvSetting.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.trvSetting.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.trvSetting.HideSelection = false;
             this.trvSetting.ImageKey = "yibu.gif";
@@ -1902,7 +1902,7 @@ namespace BenMAP
             this.rbAuditFile.Size = new System.Drawing.Size(551, 18);
             this.rbAuditFile.TabIndex = 1;
             this.rbAuditFile.Text = "Audit Trail Reports (Created from *.aqgx files, *.cfgx files, *.cfgrx files, *.ap" +
-                "vx files and *.apvrx files)";
+    "vx files and *.apvrx files)";
             this.rbAuditFile.UseVisualStyleBackColor = true;
             this.rbAuditFile.Click += new System.EventHandler(this.rbAuditFile_Click);
             // 
@@ -2207,9 +2207,9 @@ namespace BenMAP
             // 
             // legend1
             // 
-            this.legend1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.legend1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.legend1.BackColor = System.Drawing.SystemColors.Window;
             this.legend1.ControlRectangle = new System.Drawing.Rectangle(0, -5, 211, 454);
             this.legend1.DocumentRectangle = new System.Drawing.Rectangle(0, 0, 210, 430);
@@ -2431,6 +2431,7 @@ namespace BenMAP
             this.OLVResultsShow.View = System.Windows.Forms.View.Details;
             this.OLVResultsShow.BeforeSorting += new System.EventHandler<BrightIdeasSoftware.BeforeSortingEventArgs>(this.OLVResultsShow_BeforeSorting);
             this.OLVResultsShow.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.OLVResultsShow_ColumnClick);
+            this.OLVResultsShow.SelectedIndexChanged += new System.EventHandler(this.OLVResultsShow_SelectedIndexChanged);
             // 
             // label17
             // 
@@ -2607,8 +2608,8 @@ namespace BenMAP
             // 
             // btnSelectAll
             // 
-            this.btnSelectAll.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnSelectAll.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.btnSelectAll.Location = new System.Drawing.Point(8, 324);
             this.btnSelectAll.Name = "btnSelectAll";
             this.btnSelectAll.Size = new System.Drawing.Size(153, 23);
@@ -2619,8 +2620,8 @@ namespace BenMAP
             // 
             // cbGraph
             // 
-            this.cbGraph.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.cbGraph.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.cbGraph.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbGraph.DropDownWidth = 200;
             this.cbGraph.FormattingEnabled = true;
@@ -2635,8 +2636,8 @@ namespace BenMAP
             // 
             // groupBox1
             // 
-            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox1.Controls.Add(this.cbChartXAxis);
             this.groupBox1.Location = new System.Drawing.Point(5, 353);
             this.groupBox1.Name = "groupBox1";
@@ -2658,8 +2659,8 @@ namespace BenMAP
             // 
             // groupBox9
             // 
-            this.groupBox9.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox9.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox9.Controls.Add(this.textChartFilter);
             this.groupBox9.Location = new System.Drawing.Point(5, 408);
             this.groupBox9.Name = "groupBox9";
@@ -2684,9 +2685,9 @@ namespace BenMAP
             this.olvRegions.AllColumns.Add(this.olvColumn70);
             this.olvRegions.AllowColumnReorder = true;
             this.olvRegions.AllowDrop = true;
-            this.olvRegions.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.olvRegions.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.olvRegions.CellEditActivation = BrightIdeasSoftware.ObjectListView.CellEditActivateMode.SingleClick;
             this.olvRegions.CheckBoxes = true;
             this.olvRegions.CheckedAspectName = "";
@@ -2831,9 +2832,9 @@ namespace BenMAP
             this.treeListView.AllColumns.Add(this.treeColumnName);
             this.treeListView.AllowColumnReorder = true;
             this.treeListView.AllowDrop = true;
-            this.treeListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.treeListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.treeListView.CheckBoxes = false;
             this.treeListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.treeColumnName});

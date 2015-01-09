@@ -177,7 +177,8 @@ namespace BenMAP
 
         private void LoadFromFile()
         {
-            LoadSelectedDataSet lmdataset = new LoadSelectedDataSet("Load Health Impact Dataset", "Health Impact Dataset Name:", txtHealthImpactFunction.Text, "Healthfunctions");
+            //LoadSelectedDataSet lmdataset = new LoadSelectedDataSet("Load Health Impact Dataset", "Health Impact Dataset Name:", txtHealthImpactFunction.Text, "Healthfunctions");
+            LoadSelectedDataSet lmdataset = new  LoadSelectedDataSet("Load Health Impact Dataset", "Health Impact Dataset Name:", txtHealthImpactFunction.Text, "Healthfunctions");
             DialogResult dlgr = lmdataset.ShowDialog();
             if (dlgr.Equals(DialogResult.OK))
             {

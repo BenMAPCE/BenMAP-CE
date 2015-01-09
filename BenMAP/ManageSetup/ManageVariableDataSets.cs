@@ -125,7 +125,13 @@ namespace BenMAP
                 // 2014 12 02 changed next line to 
                 //VariableDataSetDefinition frm = new VariableDataSetDefinition(str, bEdit);
                 VariableDataSetDefinition frm = new VariableDataSetDefinition(str, bIsLocked);
+
                 DialogResult rth = frm.ShowDialog();
+               
+                // STOPPED HERE
+                return;
+               
+               
                 ExportDataForlistbox();
             }
             catch (Exception ex)

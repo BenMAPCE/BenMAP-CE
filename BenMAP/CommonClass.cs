@@ -36,6 +36,15 @@ namespace BenMAP
 
     public class CommonClass
     {
+        // 2014 12 22 - added destructor to try and force connection to close on exit
+        ~CommonClass(){ // class destructor
+            // close connection if open
+            if ((_connection == null) || (_connection.State != ConnectionState.Open))
+            {
+                _connection.Close();
+            }
+            
+        }
         public static void DeleteShapeFileName(string FileName)
         {
             if (!File.Exists(FileName)) return;

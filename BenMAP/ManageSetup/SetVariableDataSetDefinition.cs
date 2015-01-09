@@ -15,12 +15,12 @@ namespace BenMAP
         private MetadataClassObj _metadataObj = null;
         private bool _bEdit = false;
         private bool _isLocked = false;
-        private bool _CopyingDataset = false;
+        // private bool _CopyingDataset = false;
         private object _newDataSetID = null;//used for copying an existing dataset that is locked. (the new datasetid)
         private object _oldDataSetID = null;//used for copying an existing dataset that is locked. (the locked datasetid)
        
         private List<MetadataClassObj> _lstMetadata;
-
+            
         //public List<MetadataClassObj> LstMetadata
         //{
         //    get { return _lstMetadata; }
@@ -59,7 +59,8 @@ namespace BenMAP
                 txtDataSetName.Text = _datasetName;
                 string commandText = string.Format("Select SetupVariableDataSetID from SetupVariableDataSets where SetupVariableDataSetName='{0}'", datasetName);
                 _oldDataSetID = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
-                _CopyingDataset = true;
+               
+                //_CopyingDataset = true;
             }
             else
             {
@@ -144,16 +145,27 @@ namespace BenMAP
 
         private void btnOK_Click(object sender, EventArgs e)
         {
+
+            
             Object obj = null;
+           
+            
             string commandText = string.Empty;
+            
             if (txtDataSetName.Text == string.Empty)
             {
                 MessageBox.Show("Please input a valid dataset name.");
                 return;
             }
+           
              if (_isLocked)//doing a copy
             {
+                
                 CopyDatabase();
+
+                // STOPPED HERE
+                return;
+
                 this.DialogResult = DialogResult.OK;
                 this.Close();
                 return;
@@ -163,16 +175,23 @@ namespace BenMAP
                 MessageBox.Show("Please load a variable datafile.");
                 return;
             }
-            ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
-            if (CommonClass.Connection.State != ConnectionState.Open)
+            //ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+            FireBirdHelperBase fb = new ESILFireBirdHelper();
+             if (CommonClass.Connection.State != ConnectionState.Open)
             { CommonClass.Connection.Open(); }
 
-            FirebirdSql.Data.FirebirdClient.FbConnection fbconnection = CommonClass.getNewConnection();
-            fbconnection.Open();
-            FirebirdSql.Data.FirebirdClient.FbTransaction fbtra = fbconnection.BeginTransaction(); FirebirdSql.Data.FirebirdClient.FbCommand fbCommand = new FirebirdSql.Data.FirebirdClient.FbCommand();
-            fbCommand.Connection = fbconnection;
-            fbCommand.CommandType = CommandType.Text;
-            fbCommand.Transaction = fbtra;
+            // STOPPED HERE
+            // attempt to use common connection without transaction (commented out transactions)
+            //FirebirdSql.Data.FirebirdClient.FbConnection fbconnection = CommonClass.getNewConnection();
+            //FirebirdSql.Data.FirebirdClient.FbConnection fbconnection = CommonClass.Connection;
+            //fbconnection.Open();
+            //FirebirdSql.Data.FirebirdClient.FbTransaction fbtra = fbconnection.BeginTransaction(); 
+            //FirebirdSql.Data.FirebirdClient.FbCommand fbCommand = new FirebirdSql.Data.FirebirdClient.FbCommand();
+            //FirebirdSql.Data.FirebirdClient.FbCommand fbCommand = CommonClass.Connection.CreateCommand();
+            //fbCommand.Connection = fbconnection;
+            //fbCommand.CommandType = CommandType.Text;
+           // fbCommand.Transaction = fbtra;
+
 
             DataSet ds = new DataSet();
             DataTable dt;
@@ -199,8 +218,10 @@ namespace BenMAP
                     variableDatasetID = obj.ToString();
                     //The 'F' is for the Locked column in SetUpVariableDataSets - this is improted and not predefined
                     commandText = string.Format("insert into SetUpVariableDataSets values({0},{1},'{2}', 'F')", variableDatasetID, CommonClass.ManageSetup.SetupID, txtDataSetName.Text);
-                    fbCommand.CommandText = commandText;
-                    fbCommand.ExecuteNonQuery();
+                    // fbCommand.CommandText = commandText;
+                    // fbCommand.ExecuteNonQuery();
+                    // STOPPED HERE
+                    fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                     commandText = string.Format("select GridDefinitionID from GridDefinitions where GridDefinitionName='{0}' and SetupID={1}", txtGridDefinition.Text, CommonClass.ManageSetup.SetupID);
                     obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
                     string gridDefinationID = obj.ToString();
@@ -229,8 +250,11 @@ namespace BenMAP
                             //commandText = string.Format("insert into SetUpVariables values({0},{1},'{2}','{3}', {4})", variableID, variableDatasetID, variableName, gridDefinationID, _lstMetadata[i].MetadataEntryId);
                             commandText = string.Format("insert into SetUpVariables(SETUPVARIABLEID, SETUPVARIABLEDATASETID, SETUPVARIABLENAME, GRIDDEFINITIONID ) " 
                                 + "values({0},{1},'{2}',{3})", variableID, variableDatasetID, variableName, gridDefinationID);
-                            fbCommand.CommandText = commandText;
-                            fbCommand.ExecuteNonQuery();
+
+                            //fbCommand.CommandText = commandText;
+                            //fbCommand.ExecuteNonQuery();
+                            fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                    
                             rowCount = dt.Rows.Count;
                             for (int j = 0; j < (rowCount / 125) + 1; j++)
                             {
@@ -252,8 +276,10 @@ namespace BenMAP
                                     commandText = commandText + string.Format(" insert into SETUPGEOGRAPHICVARIABLES values (:SetupVariableID,{0},{1},{2});", dt.Rows[j * 125 + k][0], dt.Rows[j * 125 + k][1], dt.Rows[j * 125 + k][2]);
                                 }
                                 commandText = commandText + "END";
-                                fbCommand.CommandText = commandText;
-                                fbCommand.ExecuteNonQuery();
+                                //fbCommand.CommandText = commandText;
+                                //fbCommand.ExecuteNonQuery();
+                                fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                    
                             }
                         }
                     }
@@ -264,8 +290,10 @@ namespace BenMAP
                     obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
                     variableDatasetID = obj.ToString();
                     commandText = string.Format("update SETUPVARIABLEDATASETS set SETUPVARIABLEDATASETNAME='{0}' where setupid={1} and SETUPVARIABLEDATASETID={2}", txtDataSetName.Text, CommonClass.ManageSetup.SetupID, variableDatasetID);
-                    fbCommand.CommandText = commandText;
-                    fbCommand.ExecuteNonQuery();
+                    //fbCommand.CommandText = commandText;
+                    //fbCommand.ExecuteNonQuery();
+                    fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                    
 
                     commandText = string.Format("select GridDefinitionID from GridDefinitions where GridDefinitionName='{0}' and SetupID={1}", txtGridDefinition.Text, CommonClass.ManageSetup.SetupID);
                     obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
@@ -290,8 +318,9 @@ namespace BenMAP
 
                         variableID++;
                         commandText = string.Format("insert into SetUpVariables values({0},{1},'{2}','{3}', {4})", variableID, variableDatasetID, variableName, gridDefinationID, _lstMetadata[i].MetadataEntryId);
-                        fbCommand.CommandText = commandText;
-                        fbCommand.ExecuteNonQuery();
+                        //fbCommand.CommandText = commandText;
+                        //fbCommand.ExecuteNonQuery();
+                        fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                         rowCount = dt.Rows.Count;
                         for (int j = 0; j < (rowCount / 125) + 1; j++)
                         {
@@ -313,13 +342,18 @@ namespace BenMAP
                                 commandText = commandText + string.Format(" insert into SETUPGEOGRAPHICVARIABLES values (:SetupVariableID,{0},{1},{2});", dt.Rows[j * 125 + k][0], dt.Rows[j * 125 + k][1], dt.Rows[j * 125 + k][2]);
                             }
                             commandText = commandText + "END";
-                            fbCommand.CommandText = commandText;
-                            fbCommand.ExecuteNonQuery();
+                            //fbCommand.CommandText = commandText;
+                            //fbCommand.ExecuteNonQuery();
+                            fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                    
                         }
                     }
                 }
-                fbtra.Commit();
-                fbCommand.Connection.Close();
+                // STOPPED HERE
+                //fbtra.Commit();
+                // turned off connection close to allow exit routine to handle
+                // fbCommand.Connection.Close();
+               
                 //if(!_bEdit)
                 //{
                     insertMetadata(datasetId);
@@ -333,7 +367,8 @@ namespace BenMAP
             catch (Exception ex)
             {
                 MessageBox.Show("Failed to load variable dataset.  Please validate file for more detailed informaton.");
-                fbtra.Rollback();
+                // STOPPED HERE
+                // fbtra.Rollback();
                 progBarVariable.Value = 0;
                 progBarVariable.Visible = false;
                 lblProgressBar.Text = "";
@@ -689,16 +724,29 @@ namespace BenMAP
         }
         private void CopyDatabase()
         {
+
+
+           
             FireBirdHelperBase fb = new ESILFireBirdHelper();
+
+            // STOPPED HERE
+            return;
+
+
+
             try
             {
                 string commandText = string.Empty;
                 int maxID = 0;
                 int minID = 0;
                 object rVal = null;
+
                 //check and see if name is used
                 commandText = string.Format("Select SetupVariableDATASETNAME from SetupVariableDATASETS WHERE SetupVariableDATASETNAME = '{0}'", txtDataSetName.Text.Trim());
                 rVal = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
+                // STOPPED HERE
+                return;
+          
                 if (rVal != null)
                 {
                     MessageBox.Show("Name is already used.  Please select a new name.");
