@@ -1727,23 +1727,27 @@ namespace BenMAP
 
             #endregion
 
-            //#region charts
+            #region charts
 
-            ////summary chart
-            ////write summary chart data to hidden sheet
-            ////sheet DataSource is hidden and is the 4th sheet (Metadata is the third sheet)
+            //summary chart
+            //write summary chart data to hidden sheet
+            //sheet DataSource is hidden and is the 4th sheet (Metadata is the third sheet)
             //Microsoft.Office.Interop.Excel.Worksheet xlSheet4 = (Microsoft.Office.Interop.Excel.Worksheet)xlBook.Worksheets[4];
-            //int nextRowForSummary = 1;
-            //foreach (DataRow dr in dtDetailedResults.Rows)
-            //{
-            //    //only write countries, skip regions
-            //    if (!Convert.ToBoolean(dr["IS_REGION"].ToString()))
-            //    {
-            //        xlSheet4.Range["A" + nextRowForSummary.ToString()].Value = dr["NAME"].ToString();
-            //        xlSheet4.Range["B" + nextRowForSummary.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AVOIDED_DEATHS"].ToString());
-            //        nextRowForSummary++;
-            //    }
-            //}
+            WorksheetPart worksheetPart3 = GetWorksheetPartByName(spreadsheetDocument, "DataSource");
+            uint nextRowForSummary = 1;
+            foreach (DataRow dr in dtDetailedResults.Rows)
+            {
+                //only write countries, skip regions
+                if (!Convert.ToBoolean(dr["IS_REGION"].ToString()))
+                {
+                    //xlSheet4.Range["A" + nextRowForSummary.ToString()].Value = dr["NAME"].ToString();
+                    UpdateCellSharedString(worksheetPart3.Worksheet, dr["NAME"].ToString(), "A", nextRowForSummary);
+                    //xlSheet4.Range["B" + nextRowForSummary.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AVOIDED_DEATHS"].ToString());
+                    UpdateCellNumber(worksheetPart3.Worksheet, FormatDoubleStringTwoSignificantFigures(FORMAT_DECIMAL_0_PLACES, dr["AVOIDED_DEATHS"].ToString()), "B", nextRowForSummary);
+                    GetCell(worksheetPart3.Worksheet, "B", nextRowForSummary).StyleIndex = styleIndexNoFillNumber0DecimalPlacesWithBorders;
+                    nextRowForSummary++;
+                }
+            }
             //Microsoft.Office.Interop.Excel.ChartObject xlChartObject = (Microsoft.Office.Interop.Excel.ChartObject)xlSheet.ChartObjects(1);
             //Microsoft.Office.Interop.Excel.Chart xlChart = (Microsoft.Office.Interop.Excel.Chart)xlChartObject.Chart;
             //Microsoft.Office.Interop.Excel.Series xlSeries = (Microsoft.Office.Interop.Excel.Series)xlChart.SeriesCollection(1);
@@ -1766,7 +1770,7 @@ namespace BenMAP
             //xlSeries.Values = xlSheet2.Range["F4:F" + (nextRow - 1).ToString()];
             //xlSeries.XValues = xlSheet2.Range["A4:A" + (nextRow - 1).ToString()];
 
-            //#endregion
+            #endregion
 
             //save
             spreadsheetDocument.WorkbookPart.Workbook.Save();
