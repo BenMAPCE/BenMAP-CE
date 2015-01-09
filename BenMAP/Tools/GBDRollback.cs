@@ -1112,6 +1112,18 @@ namespace BenMAP
             return worksheetPart;
         }
 
+        private ChartsheetPart GetChartsheetPartByName(SpreadsheetDocument document, string sheetName)
+        {
+            IEnumerable<Sheet> sheets = document.WorkbookPart.Workbook.GetFirstChild<DocumentFormat.OpenXml.Spreadsheet.Sheets>().Elements<Sheet>().Where(s => s.Name == sheetName);
+            if (sheets.Count() == 0)
+            {
+                return null;
+            }
+            string relationshipId = sheets.First().Id.Value;
+            ChartsheetPart chartsheetPart = (ChartsheetPart)document.WorkbookPart.GetPartById(relationshipId);
+            return chartsheetPart;
+        }
+
         public void UpdateCellSharedString(Worksheet worksheet, string text, string columnName, uint rowIndex)
         {
 
@@ -1789,12 +1801,44 @@ namespace BenMAP
             //xlSeries = (Microsoft.Office.Interop.Excel.Series)xlChart.SeriesCollection(1);
             //xlSeries.Values = xlSheet2.Range["C4:C" + (nextRow - 1).ToString()];
             //xlSeries.XValues = xlSheet2.Range["A4:A" + (nextRow - 1).ToString()];
+            ChartsheetPart chartsheetPart = GetChartsheetPartByName(spreadsheetDocument, "Avoided Deaths By Country");
+            drawingsPart = chartsheetPart.GetPartsOfType<DrawingsPart>().First();
+            chartPart = drawingsPart.GetPartsOfType<ChartPart>().First();
+            chart = chartPart.ChartSpace.Elements<DocumentFormat.OpenXml.Drawing.Charts.Chart>().First();
+            plotArea = chart.Elements<DocumentFormat.OpenXml.Drawing.Charts.PlotArea>().First();
+            DocumentFormat.OpenXml.Drawing.Charts.BarChart barChart = plotArea.Elements<DocumentFormat.OpenXml.Drawing.Charts.BarChart>().First();
+            DocumentFormat.OpenXml.Drawing.Charts.BarChartSeries barChartSeries = barChart.Elements<DocumentFormat.OpenXml.Drawing.Charts.BarChartSeries>().First();
+            categoryAxisData = barChartSeries.Elements<DocumentFormat.OpenXml.Drawing.Charts.CategoryAxisData>().First();
+            DocumentFormat.OpenXml.Drawing.Charts.StringReference stringReference = categoryAxisData.Elements<DocumentFormat.OpenXml.Drawing.Charts.StringReference>().First();
+            formula = stringReference.Elements<DocumentFormat.OpenXml.Drawing.Charts.Formula>().First();
+            formula.Text = "\'Detailed Results\'!$A$4:$A$" + (nextRow - 1).ToString();
+
+            values = barChartSeries.Elements<DocumentFormat.OpenXml.Drawing.Charts.Values>().First();
+            numberReference = values.Elements<DocumentFormat.OpenXml.Drawing.Charts.NumberReference>().First();
+            formulaValues = numberReference.Elements<DocumentFormat.OpenXml.Drawing.Charts.Formula>().First();
+            formulaValues.Text = "\'Detailed Results\'!$C$4:$C$" + (nextRow - 1).ToString();
 
             ////deaths per 100,000
             //xlChart = (Microsoft.Office.Interop.Excel.Chart)xlBook.Charts[2];
             //xlSeries = (Microsoft.Office.Interop.Excel.Series)xlChart.SeriesCollection(1);
             //xlSeries.Values = xlSheet2.Range["F4:F" + (nextRow - 1).ToString()];
             //xlSeries.XValues = xlSheet2.Range["A4:A" + (nextRow - 1).ToString()];
+            chartsheetPart = GetChartsheetPartByName(spreadsheetDocument, "Deaths Per 100,000");
+            drawingsPart = chartsheetPart.GetPartsOfType<DrawingsPart>().First();
+            chartPart = drawingsPart.GetPartsOfType<ChartPart>().First();
+            chart = chartPart.ChartSpace.Elements<DocumentFormat.OpenXml.Drawing.Charts.Chart>().First();
+            plotArea = chart.Elements<DocumentFormat.OpenXml.Drawing.Charts.PlotArea>().First();
+            barChart = plotArea.Elements<DocumentFormat.OpenXml.Drawing.Charts.BarChart>().First();
+            barChartSeries = barChart.Elements<DocumentFormat.OpenXml.Drawing.Charts.BarChartSeries>().First();
+            categoryAxisData = barChartSeries.Elements<DocumentFormat.OpenXml.Drawing.Charts.CategoryAxisData>().First();
+            stringReference = categoryAxisData.Elements<DocumentFormat.OpenXml.Drawing.Charts.StringReference>().First();
+            formula = stringReference.Elements<DocumentFormat.OpenXml.Drawing.Charts.Formula>().First();
+            formula.Text = "\'Detailed Results\'!$A$4:$A$" + (nextRow - 1).ToString();
+
+            values = barChartSeries.Elements<DocumentFormat.OpenXml.Drawing.Charts.Values>().First();
+            numberReference = values.Elements<DocumentFormat.OpenXml.Drawing.Charts.NumberReference>().First();
+            formulaValues = numberReference.Elements<DocumentFormat.OpenXml.Drawing.Charts.Formula>().First();
+            formulaValues.Text = "\'Detailed Results\'!$F$4:$F$" + (nextRow - 1).ToString();
 
             #endregion
 
