@@ -1769,11 +1769,19 @@ namespace BenMAP
             DocumentFormat.OpenXml.Drawing.Charts.Formula formulaValues = numberReference.Elements<DocumentFormat.OpenXml.Drawing.Charts.Formula>().First();
             formulaValues.Text = "\'DataSource\'!$B$1:$B$" + (nextRowForSummary - 1).ToString();
 
-            
 
-            ////write to total avoided deaths text box on chart
+
+            //write to total avoided deaths text box on chart
             //Microsoft.Office.Interop.Excel.Shape txtBox = (Microsoft.Office.Interop.Excel.Shape)xlSheet.Shapes.Item("TextBox 1");
             //txtBox.TextFrame.Characters().Text = txtBox.TextFrame.Characters().Text + " " + xlSheet.Range["E4"].Text; //use .Text rather than .Value on the range here, because it is formatted
+            DocumentFormat.OpenXml.Drawing.Spreadsheet.WorksheetDrawing worksheetDrawing = drawingsPart.WorksheetDrawing;
+            DocumentFormat.OpenXml.Drawing.Spreadsheet.TwoCellAnchor twoCellAnchor = worksheetDrawing.Elements<DocumentFormat.OpenXml.Drawing.Spreadsheet.TwoCellAnchor>().ElementAt(1);
+            DocumentFormat.OpenXml.Drawing.Spreadsheet.Shape shape = twoCellAnchor.Elements<DocumentFormat.OpenXml.Drawing.Spreadsheet.Shape>().First();
+            DocumentFormat.OpenXml.Drawing.Spreadsheet.TextBody textBody = shape.Elements<DocumentFormat.OpenXml.Drawing.Spreadsheet.TextBody>().First();
+            DocumentFormat.OpenXml.Drawing.Paragraph paragraph = textBody.Elements<DocumentFormat.OpenXml.Drawing.Paragraph>().First();
+            DocumentFormat.OpenXml.Drawing.Run run = paragraph.Elements<DocumentFormat.OpenXml.Drawing.Run>().First();
+            DocumentFormat.OpenXml.Drawing.Text text = run.Elements<DocumentFormat.OpenXml.Drawing.Text>().First();
+            text.Text = text.Text + " " + Double.Parse(GetCellValue(worksheetPart.Worksheet, "E", 4)).ToString(FORMAT_DECIMAL_0_PLACES);
 
 
             ////avoided deaths chart sheet
