@@ -31,6 +31,8 @@ namespace BenMAP
         private uint styleIndexNoFillWithBorders;
         private uint styleIndexNoFillIndentWithBorders;
         private uint styleIndexNoFillCenterWithBorders;
+        private uint styleIndexNoFillNumber2DecimalPlacesWithBorders;
+        private uint styleIndexNoFillNumber0DecimalPlacesWithBorders;
         private bool selectMapFeaturesOnNodeCheck = true;
 
         private const int POLLUTANT_ID = 1;
@@ -1135,9 +1137,8 @@ namespace BenMAP
         public void UpdateCellNumber(Worksheet worksheet, string text, string columnName, uint rowIndex)
         {
             Cell cell = GetCell(worksheet, columnName, rowIndex);
-            cell.CellValue = new CellValue(text);
-            //cell.StyleIndex = (UInt32Value)5U;
-            //cell.DataType = new EnumValue<CellValues>(CellValues.Number);
+            cell.CellValue = new CellValue(text.Replace(",","")); //remove any commas from number string, number cell will not be formatted here           
+            cell.DataType = new EnumValue<CellValues>(CellValues.Number);
         }
 
         public void UpdateCellDate(Worksheet worksheet, DateTime date, string columnName, uint rowIndex)
@@ -1255,8 +1256,13 @@ namespace BenMAP
         {
 
             WorkbookStylesPart stylesPart = spreadsheetDocument.WorkbookPart.GetPartsOfType<WorkbookStylesPart>().First();
-            Stylesheet styleSheet = stylesPart.Stylesheet;          
+            Stylesheet styleSheet = stylesPart.Stylesheet;
 
+            //styleSheet.NumberingFormats = new NumberingFormats();
+            //NumberingFormat nf2decimal = new NumberingFormat();
+            //nf2decimal.NumberFormatId = UInt32Value.FromUInt32(3453);
+            //nf2decimal.FormatCode = StringValue.FromString("0.0%");
+            //styleSheet.NumberingFormat.Append(nf2decimal);            
 
             //italics
             DocumentFormat.OpenXml.Spreadsheet.Font font1 = new DocumentFormat.OpenXml.Spreadsheet.Font();
@@ -1331,6 +1337,47 @@ namespace BenMAP
             styleSheet.CellFormats.Append(cellFormat3);
             styleSheet.CellFormats.Count++;
             styleIndexNoFillCenterWithBorders = styleSheet.CellFormats.Count - 1;
+
+
+            //number format 2 decimal places format 4U = #,##0.00
+            CellFormat cellFormat4 = new CellFormat()
+            {
+                NumberFormatId = (UInt32Value)4U, 
+                FontId = (UInt32Value)2U,
+                FillId = (UInt32Value)0U,
+                BorderId = (UInt32Value)1U,
+                FormatId = (UInt32Value)0U,
+                ApplyNumberFormat = true,
+                ApplyFont = true,
+                ApplyFill = true,
+                ApplyBorder = true,
+                ApplyAlignment = true
+            };
+            //DocumentFormat.OpenXml.Spreadsheet.Alignment alignment4 = new DocumentFormat.OpenXml.Spreadsheet.Alignment() { Horizontal = HorizontalAlignmentValues.Right };
+            //cellFormat4.Append(alignment4);
+            styleSheet.CellFormats.Append(cellFormat4);
+            styleSheet.CellFormats.Count++;
+            styleIndexNoFillNumber2DecimalPlacesWithBorders = styleSheet.CellFormats.Count - 1;
+
+            //number format 0 decimal places format 3U = #,##0
+            CellFormat cellFormat5 = new CellFormat()
+            {
+                NumberFormatId = (UInt32Value)3U,
+                FontId = (UInt32Value)2U,
+                FillId = (UInt32Value)0U,
+                BorderId = (UInt32Value)1U,
+                FormatId = (UInt32Value)0U,
+                ApplyNumberFormat = true,
+                ApplyFont = true,
+                ApplyFill = true,
+                ApplyBorder = true,
+                ApplyAlignment = true
+            };
+            //DocumentFormat.OpenXml.Spreadsheet.Alignment alignment5 = new DocumentFormat.OpenXml.Spreadsheet.Alignment() { Horizontal = HorizontalAlignmentValues.Right };
+            //cellFormat5.Append(alignment5);
+            styleSheet.CellFormats.Append(cellFormat5);
+            styleSheet.CellFormats.Count++;
+            styleIndexNoFillNumber0DecimalPlacesWithBorders = styleSheet.CellFormats.Count - 1;
         
         }
 
@@ -1565,45 +1612,45 @@ namespace BenMAP
                     //xlSheet2.Range["A" + nextRow.ToString()].InsertIndent(2);
                     GetCell(worksheetPart2.Worksheet, "A", nextRow).StyleIndex = styleIndexNoFillIndentWithBorders;
                 }
-                //xlSheet2.Range["B" + nextRow.ToString()].Value = FormatDoubleStringTwoSignificantFigures(FORMAT_DECIMAL_0_PLACES, dr["POP_AFFECTED"].ToString());
+                ////xlSheet2.Range["B" + nextRow.ToString()].Value = FormatDoubleStringTwoSignificantFigures(FORMAT_DECIMAL_0_PLACES, dr["POP_AFFECTED"].ToString());
                 UpdateCellNumber(worksheetPart2.Worksheet, FormatDoubleStringTwoSignificantFigures(FORMAT_DECIMAL_0_PLACES, dr["POP_AFFECTED"].ToString()), "B", nextRow);
-                GetCell(worksheetPart2.Worksheet, "B", nextRow).StyleIndex = styleIndexNoFillWithBorders;
+                GetCell(worksheetPart2.Worksheet, "B", nextRow).StyleIndex = styleIndexNoFillNumber0DecimalPlacesWithBorders;
                 //xlSheet2.Range["C" + nextRow.ToString()].Value = FormatDoubleStringTwoSignificantFigures(FORMAT_DECIMAL_0_PLACES, dr["AVOIDED_DEATHS"].ToString());
-                UpdateCellNumber(worksheetPart2.Worksheet, FormatDoubleStringTwoSignificantFigures(FORMAT_DECIMAL_0_PLACES, dr["AVOIDED_DEATHS"].ToString()), "C", nextRow);
-                GetCell(worksheetPart2.Worksheet, "C", nextRow).StyleIndex = styleIndexNoFillWithBorders;
-                //xlSheet2.Range["D" + nextRow.ToString()].Value = "'" + dr["CONFIDENCE_INTERVAL"].ToString(); //prepend apostrophe so Excel treats this as text not date
-                UpdateCellSharedString(worksheetPart2.Worksheet, dr["CONFIDENCE_INTERVAL"].ToString() , "D", nextRow);
-                GetCell(worksheetPart2.Worksheet, "D", nextRow).StyleIndex = styleIndexNoFillCenterWithBorders;
-                //xlSheet2.Range["E" + nextRow.ToString()].Value = dr["PERCENT_BASELINE_MORTALITY"].ToString();
-                UpdateCellNumber(worksheetPart2.Worksheet, dr["PERCENT_BASELINE_MORTALITY"].ToString(), "E", nextRow);
-                GetCell(worksheetPart2.Worksheet, "E", nextRow).StyleIndex = styleIndexNoFillWithBorders;
-                //xlSheet2.Range["F" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["DEATHS_PER_100_THOUSAND"].ToString());
-                UpdateCellNumber(worksheetPart2.Worksheet, FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["DEATHS_PER_100_THOUSAND"].ToString()), "F", nextRow);
-                GetCell(worksheetPart2.Worksheet, "F", nextRow).StyleIndex = styleIndexNoFillWithBorders;
-                //xlSheet2.Range["G" + nextRow.ToString()].Value = dr["AVOIDED_DEATHS_PERCENT_POP"].ToString();//FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AVOIDED_DEATHS_PERCENT_POP"].ToString());
-                UpdateCellNumber(worksheetPart2.Worksheet, dr["AVOIDED_DEATHS_PERCENT_POP"].ToString(), "G", nextRow);
-                GetCell(worksheetPart2.Worksheet, "G", nextRow).StyleIndex = styleIndexNoFillWithBorders;
-                //xlSheet2.Range["H" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MIN"].ToString());
-                UpdateCellNumber(worksheetPart2.Worksheet, FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MIN"].ToString()), "H", nextRow);
-                GetCell(worksheetPart2.Worksheet, "H", nextRow).StyleIndex = styleIndexNoFillWithBorders;
-                //xlSheet2.Range["I" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MEDIAN"].ToString());
-                UpdateCellNumber(worksheetPart2.Worksheet, FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MEDIAN"].ToString()), "I", nextRow);
-                GetCell(worksheetPart2.Worksheet, "I", nextRow).StyleIndex = styleIndexNoFillWithBorders;
-                //xlSheet2.Range["J" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MAX"].ToString());
-                UpdateCellNumber(worksheetPart2.Worksheet, FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MAX"].ToString()), "J", nextRow);
-                GetCell(worksheetPart2.Worksheet, "J", nextRow).StyleIndex = styleIndexNoFillWithBorders;
-                //xlSheet2.Range["K" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MIN"].ToString());
-                UpdateCellNumber(worksheetPart2.Worksheet, FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MIN"].ToString()), "K", nextRow);
-                GetCell(worksheetPart2.Worksheet, "K", nextRow).StyleIndex = styleIndexNoFillWithBorders;
-                //xlSheet2.Range["L" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MEDIAN"].ToString());
-                UpdateCellNumber(worksheetPart2.Worksheet, FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MEDIAN"].ToString()), "L", nextRow);
-                GetCell(worksheetPart2.Worksheet, "L", nextRow).StyleIndex = styleIndexNoFillWithBorders;
-                //xlSheet2.Range["M" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MAX"].ToString());
-                UpdateCellNumber(worksheetPart2.Worksheet, FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MAX"].ToString()), "M", nextRow);
-                GetCell(worksheetPart2.Worksheet, "M", nextRow).StyleIndex = styleIndexNoFillWithBorders;
-                //xlSheet2.Range["N" + nextRow.ToString()].Value = dr["AIR_QUALITY_CHANGE"].ToString();// FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AIR_QUALITY_CHANGE"].ToString());
-                UpdateCellNumber(worksheetPart2.Worksheet, dr["AIR_QUALITY_CHANGE"].ToString(), "N", nextRow);
-                GetCell(worksheetPart2.Worksheet, "N", nextRow).StyleIndex = styleIndexNoFillWithBorders;
+                //UpdateCellNumber(worksheetPart2.Worksheet, FormatDoubleStringTwoSignificantFigures(FORMAT_DECIMAL_0_PLACES, dr["AVOIDED_DEATHS"].ToString()), "C", nextRow);
+                //GetCell(worksheetPart2.Worksheet, "C", nextRow).StyleIndex = styleIndexNoFillWithBorders;
+                ////xlSheet2.Range["D" + nextRow.ToString()].Value = "'" + dr["CONFIDENCE_INTERVAL"].ToString(); //prepend apostrophe so Excel treats this as text not date
+                //UpdateCellSharedString(worksheetPart2.Worksheet, dr["CONFIDENCE_INTERVAL"].ToString() , "D", nextRow);
+                //GetCell(worksheetPart2.Worksheet, "D", nextRow).StyleIndex = styleIndexNoFillCenterWithBorders;
+                ////xlSheet2.Range["E" + nextRow.ToString()].Value = dr["PERCENT_BASELINE_MORTALITY"].ToString();
+                //UpdateCellNumber(worksheetPart2.Worksheet, dr["PERCENT_BASELINE_MORTALITY"].ToString(), "E", nextRow);
+                //GetCell(worksheetPart2.Worksheet, "E", nextRow).StyleIndex = styleIndexNoFillWithBorders;
+                ////xlSheet2.Range["F" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["DEATHS_PER_100_THOUSAND"].ToString());
+                //UpdateCellNumber(worksheetPart2.Worksheet, FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["DEATHS_PER_100_THOUSAND"].ToString()), "F", nextRow);
+                //GetCell(worksheetPart2.Worksheet, "F", nextRow).StyleIndex = styleIndexNoFillWithBorders;
+                ////xlSheet2.Range["G" + nextRow.ToString()].Value = dr["AVOIDED_DEATHS_PERCENT_POP"].ToString();//FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AVOIDED_DEATHS_PERCENT_POP"].ToString());
+                //UpdateCellNumber(worksheetPart2.Worksheet, dr["AVOIDED_DEATHS_PERCENT_POP"].ToString(), "G", nextRow);
+                //GetCell(worksheetPart2.Worksheet, "G", nextRow).StyleIndex = styleIndexNoFillWithBorders;
+                ////xlSheet2.Range["H" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MIN"].ToString());
+                //UpdateCellNumber(worksheetPart2.Worksheet, FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MIN"].ToString()), "H", nextRow);
+                //GetCell(worksheetPart2.Worksheet, "H", nextRow).StyleIndex = styleIndexNoFillWithBorders;
+                ////xlSheet2.Range["I" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MEDIAN"].ToString());
+                //UpdateCellNumber(worksheetPart2.Worksheet, FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MEDIAN"].ToString()), "I", nextRow);
+                //GetCell(worksheetPart2.Worksheet, "I", nextRow).StyleIndex = styleIndexNoFillWithBorders;
+                ////xlSheet2.Range["J" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MAX"].ToString());
+                //UpdateCellNumber(worksheetPart2.Worksheet, FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MAX"].ToString()), "J", nextRow);
+                //GetCell(worksheetPart2.Worksheet, "J", nextRow).StyleIndex = styleIndexNoFillWithBorders;
+                ////xlSheet2.Range["K" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MIN"].ToString());
+                //UpdateCellNumber(worksheetPart2.Worksheet, FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MIN"].ToString()), "K", nextRow);
+                //GetCell(worksheetPart2.Worksheet, "K", nextRow).StyleIndex = styleIndexNoFillWithBorders;
+                ////xlSheet2.Range["L" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MEDIAN"].ToString());
+                //UpdateCellNumber(worksheetPart2.Worksheet, FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MEDIAN"].ToString()), "L", nextRow);
+                //GetCell(worksheetPart2.Worksheet, "L", nextRow).StyleIndex = styleIndexNoFillWithBorders;
+                ////xlSheet2.Range["M" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MAX"].ToString());
+                //UpdateCellNumber(worksheetPart2.Worksheet, FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MAX"].ToString()), "M", nextRow);
+                //GetCell(worksheetPart2.Worksheet, "M", nextRow).StyleIndex = styleIndexNoFillWithBorders;
+                ////xlSheet2.Range["N" + nextRow.ToString()].Value = dr["AIR_QUALITY_CHANGE"].ToString();// FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AIR_QUALITY_CHANGE"].ToString());
+                //UpdateCellNumber(worksheetPart2.Worksheet, dr["AIR_QUALITY_CHANGE"].ToString(), "N", nextRow);
+                //GetCell(worksheetPart2.Worksheet, "N", nextRow).StyleIndex = styleIndexNoFillWithBorders;
                 nextRow++;
 
             }
