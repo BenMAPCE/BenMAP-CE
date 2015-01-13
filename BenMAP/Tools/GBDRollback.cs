@@ -615,7 +615,7 @@ namespace BenMAP
             IPolygonCategory ipc = null;
             //grab existing ips and add to it
             foreach(String s in rollback.Countries.Keys){
-                ipc = new PolygonCategory(rollback.Color, Color.Black, 1);
+                ipc = new PolygonCategory(rollback.Color, System.Drawing.Color.Black, 1);
                 ipc.FilterExpression = "[ID]='" + s+"'";
                 rollback.addIPC(ipc);
                 ips.AddCategory(ipc);

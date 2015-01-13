@@ -199,6 +199,7 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
     <Reference Include="ZedGraph">
       <HintPath>Dll\ZedGraph\ZedGraph.dll</HintPath>
     </Reference>
