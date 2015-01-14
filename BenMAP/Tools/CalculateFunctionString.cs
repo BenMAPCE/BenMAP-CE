@@ -12,7 +12,7 @@ namespace BenMAP.Tools
     class CalculateFunctionString
     {
         private string _CharpCode = "";
-        public object BaseLineEval(string crid, string cCharpCode, double a, double b, double c, double beta, double deltaq, double q0, double q1, double incidence, double pop, double prevalence, Dictionary<string, double> dicSetupVariables)
+        public object BaseLineEval(string crid, string cCharpCode, double a, double b, double c, double beta, double deltaq, double q0, double q1, double incidence, double pop, double prevalence, Dictionary<string, double> dicSetupVariables, System.IO.StreamWriter file)
         {
             try
             {
@@ -37,13 +37,13 @@ namespace BenMAP.Tools
                 // debug code
                 if (CommonClass.getDebugValue())
                 {
-                    System.Console.WriteLine("Baseline");
+                    file.Write("Baseline,");
                     foreach (object i in lstParam)
                     {
-                        System.Console.Write(i.ToString() + ",");
+                        file.Write(i.ToString() + ",");
                     }
-                    System.Console.Write("\n");
-                    System.Console.WriteLine(result);
+                    //System.Console.Write(",");
+                    file.Write(result+"\n");
                 }
                 return result;
 
@@ -94,10 +94,7 @@ namespace BenMAP.Tools
                     myCode.Append("class myLibBaseLine" + k.Key + " { public double myPow(double a) { return Math.Pow(a,2);} public double myMethod(double a, double b, double c, double beta, double deltaq, double q0, double q1, double incidence, double pop, double prevalence" + strVariables +
     "){try{" + k.Value + "} catch (Exception ex) { return -999999999; }}}");
                     myCode.Append("}");
-                    if (CommonClass.getDebugValue())
-                    {
-                        System.Console.WriteLine("Baseline");
-                    }
+                   
                     CompilerResults cr = provider.CompileAssemblyFromSource(cp, myCode.ToString());
                     Assembly assembly = cr.CompiledAssembly;
                     Type[] types = new Type[] { typeof(double), typeof(double), typeof(double), typeof(double), typeof(double), typeof(double), typeof(double), typeof(double), typeof(double), typeof(double) };
@@ -157,10 +154,7 @@ namespace BenMAP.Tools
                     myCode.Append("class myLibPointEstimate" + k.Key + " { public double myPow(double a) { return Math.Pow(a,2);}  public double myMethod(double a, double b, double c, double beta, double deltaq, double q0, double q1, double incidence, double pop, double prevalence" + strVariables +
     "){ try{" + k.Value + "} catch (Exception ex) { return -999999999; }}}");
                     myCode.Append("}");
-                    if (CommonClass.getDebugValue())
-                    {
-                        System.Console.WriteLine("Point Estimate");
-                    }
+              
                     CompilerResults cr = csharpCodeProvider.CompileAssemblyFromSource(cp, myCode.ToString());
 
                     Assembly assembly = cr.CompiledAssembly;
@@ -178,7 +172,7 @@ namespace BenMAP.Tools
             {
             }
         }
-        public object PointEstimateEval(string crID, string cCharpCode, double a, double b, double c, double beta, double deltaq, double q0, double q1, double incidence, double pop, double prevalence, Dictionary<string, double> dicSetupVariables)
+        public object PointEstimateEval(string crID, string cCharpCode, double a, double b, double c, double beta, double deltaq, double q0, double q1, double incidence, double pop, double prevalence, Dictionary<string, double> dicSetupVariables, System.IO.StreamWriter file)
         {
             try
             {
@@ -204,13 +198,13 @@ namespace BenMAP.Tools
                 object result = mi.Invoke(tmp, lstParam.ToArray());
                 if (CommonClass.getDebugValue())
                 {
-                    System.Console.WriteLine("Point Estimate Value");
+                    file.Write("PointEstimateValue,");
                     foreach (object i in lstParam)
                     {
-                        System.Console.Write(i.ToString() + ",");
+                        file.Write(i.ToString() + ",");
                     }
-                    System.Console.Write("\n");
-                    System.Console.WriteLine(result);
+                   // System.Console.Write(",");
+                    file.Write(result+"\n");
                 }
                 
                 return result;
