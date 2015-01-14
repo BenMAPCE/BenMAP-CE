@@ -388,8 +388,22 @@ namespace BenMAP
                     }
                     dr[20] = dt.Rows[i][iBeta];
                     dr[21] = dt.Rows[i][iDistributionBeta];
-                    dr[22] = dt.Rows[i][iP1Beta];
-                    dr[23] = dt.Rows[i][iP2Beta];
+                    if (string.IsNullOrEmpty(dt.Rows[i][iP1Beta].ToString()))
+                    {
+                        dr[22] = 0;
+                    }
+                    else
+                    {
+                        dr[22] = dt.Rows[i][iP1Beta];
+                    }
+                    if (string.IsNullOrEmpty(dt.Rows[i][iP2Beta].ToString()))
+                    {
+                        dr[23] = 0;
+                    }
+                    else
+                    {
+                        dr[23] = dt.Rows[i][iP2Beta];
+                    }
                     if (string.IsNullOrEmpty(dt.Rows[i][iA].ToString()))
                     {
                         dr[24] = 0;

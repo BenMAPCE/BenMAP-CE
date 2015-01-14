@@ -677,20 +677,24 @@ namespace BenMAP
                         //cmdText = string.Format("SELECT DISTINCT ENDPOINTGROUPID FROM ENDPOINTGROUPS WHERE ENDPOINTGROUPNAME = '{0}'", valToVerify);
                         //rtv = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, cmdText);
                         //if (rtv == null) //did not find anyting from the query
+                        /* -- commented out next block to remove value checking 
                         if(!_hashTableEPG.ContainsValue(valToVerify))
                         {
                             errMsg = string.Format("Invalid Endpoint Group Name.  ({0})", valToVerify);
                         }
+                         */
                         break;
 
                     case "Endpoint":
                         //cmdText = string.Format("SELECT DISTINCT ENDPOINTID FROM ENDPOINTS WHERE ENDPOINTNAME = '{0}'", valToVerify);
                         //rtv = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, cmdText);
                         //if (rtv == null)
+                        /* -- commented out next block to remove value checking 
                         if(!_hashTableEPS.ContainsValue(valToVerify))
                         {
                                 errMsg = string.Format("Invalid Endpoint Name given.  ({0})", valToVerify);
                         }
+                         */
                         break;
                     case "Study Year":
                     case "Year":
@@ -703,28 +707,34 @@ namespace BenMAP
                         //cmdText = string.Format("SELECT DISTINCT RACEID FROM RACES WHERE RACENAME = '{0}'", valToVerify);
                         //rtv = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, cmdText);
                         //if(rtv == null)
+                        /* -- commented out next block to remove value checking 
                         if(!_hashTableRace.ContainsValue(valToVerify))
                         {
                             errMsg = string.Format("'{0}' is not a valid race.", valToVerify);
                         }
+                         */
                         break;
                     case "Gender":
                         //cmdText = string.Format("SELECT DISTINCT GENDERID FROM GENDERS WHERE GENDERNAME = '{0}'", valToVerify);
                         //rtv = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, cmdText);
                         //if (rtv == null)
+                        /* -- commented out next block to remove value checking 
                         if(!_hashTableGender.ContainsValue(valToVerify))
                         {
                             errMsg = string.Format("'{0}' is not valid gender.", valToVerify);
                         }
+                        */
                         break;
                     case "Ethnicity":
                         //cmdText = string.Format("SELECT DISTINCT ETHNICITYID FROM ETHNICITY WHERE ETHNICITYNAME = '{0}'", valToVerify);
                         //rtv = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, cmdText);
                         //if (rtv == null)
+                        /* -- commented out next block to remove value checking 
                         if(!_hashTableEthnicity.ContainsValue(valToVerify))
                         {
                             errMsg = string.Format("'{0}' is not valid ethnicity.", valToVerify);
                         }
+                        */
                         break;
                     case "Start Age":
                     case "End Age":
