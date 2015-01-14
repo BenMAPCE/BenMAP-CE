@@ -39,6 +39,8 @@
             this.btnNext2 = new System.Windows.Forms.Button();
             this.tvRegions = new System.Windows.Forms.TreeView();
             this.gbRollbacks = new System.Windows.Forms.GroupBox();
+            this.cboExportFormat = new System.Windows.Forms.ComboBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.btnBrowse = new System.Windows.Forms.Button();
             this.txtFilePath = new System.Windows.Forms.TextBox();
             this.btnDeleteRollback = new System.Windows.Forms.Button();
@@ -97,8 +99,6 @@
             this.label8 = new System.Windows.Forms.Label();
             this.btnNext = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.label1 = new System.Windows.Forms.Label();
-            this.cboExportFormat = new System.Windows.Forms.ComboBox();
             this.gbCountrySelection.SuspendLayout();
             this.gbRollbacks.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvRollbacks)).BeginInit();
@@ -208,6 +208,27 @@
             this.gbRollbacks.TabIndex = 1;
             this.gbRollbacks.TabStop = false;
             this.gbRollbacks.Text = "Scenarios";
+            // 
+            // cboExportFormat
+            // 
+            this.cboExportFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboExportFormat.FormattingEnabled = true;
+            this.cboExportFormat.Items.AddRange(new object[] {
+            "XLSX",
+            "CSV"});
+            this.cboExportFormat.Location = new System.Drawing.Point(800, 21);
+            this.cboExportFormat.Name = "cboExportFormat";
+            this.cboExportFormat.Size = new System.Drawing.Size(58, 21);
+            this.cboExportFormat.TabIndex = 9;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(758, 25);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(42, 13);
+            this.label1.TabIndex = 8;
+            this.label1.Text = "Format:";
             // 
             // btnBrowse
             // 
@@ -821,31 +842,12 @@
             this.btnNext.UseVisualStyleBackColor = true;
             this.btnNext.Click += new System.EventHandler(this.btnNext_Click);
             // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(758, 25);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(42, 13);
-            this.label1.TabIndex = 8;
-            this.label1.Text = "Format:";
-            // 
-            // cboExportFormat
-            // 
-            this.cboExportFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboExportFormat.FormattingEnabled = true;
-            this.cboExportFormat.Items.AddRange(new object[] {
-            "XLSX",
-            "CSV"});
-            this.cboExportFormat.Location = new System.Drawing.Point(800, 21);
-            this.cboExportFormat.Name = "cboExportFormat";
-            this.cboExportFormat.Size = new System.Drawing.Size(58, 21);
-            this.cboExportFormat.TabIndex = 9;
-            // 
             // GBDRollback
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScroll = true;
+            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.ClientSize = new System.Drawing.Size(1567, 749);
             this.Controls.Add(this.gbName);
             this.Controls.Add(this.gbOptionsStandard);
@@ -855,7 +857,6 @@
             this.Controls.Add(this.btnClose);
             this.Controls.Add(this.gbRollbacks);
             this.Controls.Add(this.gbCountrySelection);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.Name = "GBDRollback";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

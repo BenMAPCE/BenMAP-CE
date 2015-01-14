@@ -229,7 +229,7 @@
   <data name="pb_incremental.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAnAAAADlCAIAAABcRV0tAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
-        vwAADr8BOAVTJAAAABZ0RVh0U29mdHdhcmUAcGFpbnQubmV0IDQuMDvo9WkAAHkBSURBVHhe7Z0HWBzH
+        vgAADr4B6kKxwAAAABZ0RVh0U29mdHdhcmUAcGFpbnQubmV0IDQuMDvo9WkAAHkBSURBVHhe7Z0HWBzH
         3f/zJvknfpM4xXkTp9lx4jh2XBLH3Y4ty5ItW26SZdlqLuoFNVSs3rtQBwlUESAJFYoQvXfu4G7pvfde
         jl6OY+b/ndsTQSAhhA6Eze/z3MOzOzs3O7PszWd+W7/HCYIgCIK4a0ioBEEQBGEESKgEQRAEYQRIqARB
         EARhBEioBEEQBGEESKgEQRAEYQRIqARBEARhBEioBEEQBGEESKgEQRAEYQRIqARBEARhBEioBEEQBGEE
@@ -752,7 +752,7 @@
   <data name="pb_standard.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAokAAAESCAIAAAAe/NhrAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
-        vwAADr8BOAVTJAAAABZ0RVh0U29mdHdhcmUAcGFpbnQubmV0IDQuMDvo9WkAAKixSURBVHhe7Z0HWBTH
+        vgAADr4B6kKxwAAAABZ0RVh0U29mdHdhcmUAcGFpbnQubmV0IDQuMDvo9WkAAKixSURBVHhe7Z0HWBTH
         +8f/Kb/0YnovJiamJ2rUJMbYe6+xoSj2YK+R2EBFUVFAERBEkN5RihTpcJSld5Dee+/c7v+7N+dJQGly
         eMb5Pvfw3M1OeWd25v3Mu+zt/R9HRUVFRUVFJUuibKaioqKiopItUTZTUVFRUVHJliibqaioqKioZEuU
         zVRUVFRUVLIlymYqKioqKirZEmUzFRUVFRWVbImymYqKioqKSrZE2UxFRUVFRSVbomymoqKioqKSLVE2
@@ -1478,7 +1478,7 @@
   <data name="pb_percent.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAtoAAADTCAIAAAAwHCOFAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADsAAAA7AAWrWiQkAAAAWdEVYdFNvZnR3YXJlAHBhaW50Lm5ldCA0LjA76PVpAABn
+        YQUAAAAJcEhZcwAADr8AAA6/ATgFUyQAAAAWdEVYdFNvZnR3YXJlAHBhaW50Lm5ldCA0LjA76PVpAABn
         UUlEQVR4Xu2dB1gVV97/t7ybsvtufzfJJrtJdt//lmRTd2PM5k1iihpLTDSaNZqoSew9Go1EIyooVoyK
         sStWEBFQQIogKAoozKX33nvvdc7/e+4ZLleQywUuF67+Ps88PHfOnDlz5swwv8+0Mz9gBEEQBEEQAwrp
         CEEQBEEQAwzpCEEQBEEQAwzpCEEQBEEQAwzpCEEQBEEQAwzpCEEQBEEQAwzpCEEQBEEQAwzpCEEQBEEQ
