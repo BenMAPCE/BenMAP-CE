@@ -9,7 +9,9 @@ using System.Windows.Forms;
 using DotSpatial.Controls;
 using DotSpatial.Data;
 using DotSpatial.Symbology;
-using Microsoft.Office.Interop.Excel;
+using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Spreadsheet; 
 
 
 
@@ -19,10 +21,17 @@ namespace BenMAP
     {
 
         private Dictionary<string, string> checkedCountries = new Dictionary<string, string>();
-        private List<Color> colorPalette = new List<Color>();
+        private List<System.Drawing.Color> colorPalette = new List<System.Drawing.Color>();
         private List<GBDRollbackItem> rollbacks = new List<GBDRollbackItem>();
         private System.Data.DataTable dtCountries;
-        private Microsoft.Office.Interop.Excel.Application xlApp;
+        private SpreadsheetDocument spreadsheetDocument;
+        private uint styleIndexItalicsWithBorders;
+        private uint styleIndexGrayFillWithBorders;
+        private uint styleIndexNoFillWithBorders;
+        private uint styleIndexNoFillIndentWithBorders;
+        private uint styleIndexNoFillCenterWithBorders;
+        private uint styleIndexNoFillNumber2DecimalPlacesWithBorders;
+        private uint styleIndexNoFillNumber0DecimalPlacesWithBorders;
         private bool selectMapFeaturesOnNodeCheck = true;
 
         private const int POLLUTANT_ID = 1;
@@ -123,19 +132,19 @@ namespace BenMAP
 
 
         private void LoadColorPalette()
-        { 
-            
-            colorPalette.Add(Color.FromArgb(165,0,38));
-            colorPalette.Add(Color.FromArgb(215, 48, 39));
-            colorPalette.Add(Color.FromArgb(244, 109, 67));
-            colorPalette.Add(Color.FromArgb(253, 174, 97));
-            colorPalette.Add(Color.FromArgb(254, 224, 144));
-            colorPalette.Add(Color.FromArgb(255, 255, 191));
-            colorPalette.Add(Color.FromArgb(224, 243, 248));
-            colorPalette.Add(Color.FromArgb(171, 217, 233));
-            colorPalette.Add(Color.FromArgb(116, 173, 209));
-            colorPalette.Add(Color.FromArgb(69, 117, 180));
-            colorPalette.Add(Color.FromArgb(49, 54, 149));
+        {
+
+            colorPalette.Add(System.Drawing.Color.FromArgb(165, 0, 38));
+            colorPalette.Add(System.Drawing.Color.FromArgb(215, 48, 39));
+            colorPalette.Add(System.Drawing.Color.FromArgb(244, 109, 67));
+            colorPalette.Add(System.Drawing.Color.FromArgb(253, 174, 97));
+            colorPalette.Add(System.Drawing.Color.FromArgb(254, 224, 144));
+            colorPalette.Add(System.Drawing.Color.FromArgb(255, 255, 191));
+            colorPalette.Add(System.Drawing.Color.FromArgb(224, 243, 248));
+            colorPalette.Add(System.Drawing.Color.FromArgb(171, 217, 233));
+            colorPalette.Add(System.Drawing.Color.FromArgb(116, 173, 209));
+            colorPalette.Add(System.Drawing.Color.FromArgb(69, 117, 180));
+            colorPalette.Add(System.Drawing.Color.FromArgb(49, 54, 149));
         
         }
 
@@ -157,9 +166,9 @@ namespace BenMAP
                 impl = new MapPolygonLayer(FeatureSet.OpenFile(mapFile));
                 //impl.Reproject(_mapArgs.Map.Projection);
                 impl.LegendText = "Countries";
-                impl.Symbolizer.SetFillColor(Color.White);
+                impl.Symbolizer.SetFillColor(System.Drawing.Color.White);
                 impl.Symbolizer.SetOutlineWidth(1);
-                impl.Symbolizer.OutlineSymbolizer.SetFillColor(Color.Black);
+                impl.Symbolizer.OutlineSymbolizer.SetFillColor(System.Drawing.Color.Black);
                 mapGBD.Layers.Add(impl);
             }
         }
@@ -362,7 +371,7 @@ namespace BenMAP
                         //update map
                         IPolygonScheme ips = (IPolygonScheme)mfl[0].Symbology;
                         IPolygonCategory ipc = null;
-                        ipc = new PolygonCategory(Color.FromArgb(0, 255, 255), Color.FromArgb(0, 225, 225), 1);
+                        ipc = new PolygonCategory(System.Drawing.Color.FromArgb(0, 255, 255), System.Drawing.Color.FromArgb(0, 225, 225), 1);
                         ipc.FilterExpression = "[ID]='" + e.Node.Name + "'";
                         selectedButNotSavedIPCs.Add(e.Node.Name,ipc);
                         mfl[0].Symbology.AddCategory(ipc);
@@ -606,7 +615,7 @@ namespace BenMAP
             IPolygonCategory ipc = null;
             //grab existing ips and add to it
             foreach(String s in rollback.Countries.Keys){
-                ipc = new PolygonCategory(rollback.Color, Color.Black, 1);
+                ipc = new PolygonCategory(rollback.Color, System.Drawing.Color.Black, 1);
                 ipc.FilterExpression = "[ID]='" + s+"'";
                 rollback.addIPC(ipc);
                 ips.AddCategory(ipc);
@@ -638,9 +647,9 @@ namespace BenMAP
             }        
         }
 
-        private Color GetNextColor()
+        private System.Drawing.Color GetNextColor()
         {
-            foreach (Color c in colorPalette)
+            foreach (System.Drawing.Color c in colorPalette)
             {
                 GBDRollbackItem item = rollbacks.Find(x => x.Color.ToArgb() == c.ToArgb());
                 if (item == null)
@@ -653,10 +662,10 @@ namespace BenMAP
             return GetRandomColor();        
         }
 
-        private Color GetRandomColor()
+        private System.Drawing.Color GetRandomColor()
         {
             Random random = new Random();
-            return Color.FromArgb(random.Next(0, 255), random.Next(0, 255), random.Next(0, 255));
+            return System.Drawing.Color.FromArgb(random.Next(0, 255), random.Next(0, 255), random.Next(0, 255));
         }  
 
         private long GetRollbackTotalPopulation(GBDRollbackItem rollback)
@@ -989,11 +998,7 @@ namespace BenMAP
             {
                 try
                 {                   
-                    //save rollback report using rollback output
-                    xlApp = new Microsoft.Office.Interop.Excel.Application();
-                    xlApp.DisplayAlerts = false;
-                    SaveRollbackReport(rollback);
-                    xlApp.Quit();
+                    SaveRollbackReport(rollback);                    
                 }
                 catch (Exception ex)
                 {
@@ -1094,6 +1099,344 @@ namespace BenMAP
         }
 
 
+        public void CreateSpreadsheetWorkbook(string filepath)
+        {
+            // Create a spreadsheet document by supplying the filepath.
+            // By default, AutoSave = true, Editable = true, and Type = xlsx.
+            SpreadsheetDocument spreadsheetDocument = SpreadsheetDocument.Create(filepath, SpreadsheetDocumentType.Workbook);
+
+            // Add a WorkbookPart to the document.
+            WorkbookPart workbookPart = spreadsheetDocument.AddWorkbookPart();
+            workbookPart.Workbook = new Workbook();
+
+            // Add a WorksheetPart to the WorkbookPart.
+            WorksheetPart worksheetPart = workbookPart.AddNewPart<WorksheetPart>();
+            worksheetPart.Worksheet = new Worksheet(new SheetData());
+            DateTime dtNow = DateTime.Now;
+
+            // Add Sheets to the Workbook.
+            DocumentFormat.OpenXml.Spreadsheet.Sheets sheets = spreadsheetDocument.WorkbookPart.Workbook.AppendChild<DocumentFormat.OpenXml.Spreadsheet.Sheets>(new DocumentFormat.OpenXml.Spreadsheet.Sheets());
+
+            // Append a new worksheet and associate it with the workbook.
+            Sheet sheet = new Sheet()
+            {
+                Id = spreadsheetDocument.WorkbookPart.GetIdOfPart(worksheetPart),
+                SheetId = 1,
+                Name = "mySheet"
+            };
+            sheets.Append(sheet);
+
+            //write to sheet
+            worksheetPart = GetWorksheetPartByName(spreadsheetDocument, "mySheet");
+            UpdateCellSharedString(worksheetPart.Worksheet, "hello world", "A", 1);
+
+            worksheetPart.Worksheet.Save();
+            workbookPart.Workbook.Save();
+
+            // Close the document.
+            spreadsheetDocument.Close();
+        }
+
+
+        private WorksheetPart GetWorksheetPartByName(SpreadsheetDocument document, string sheetName)
+        {
+            IEnumerable<Sheet> sheets = document.WorkbookPart.Workbook.GetFirstChild<DocumentFormat.OpenXml.Spreadsheet.Sheets>().Elements<Sheet>().Where(s => s.Name == sheetName);
+            if (sheets.Count() == 0)
+            {
+                return null;
+            }
+            string relationshipId = sheets.First().Id.Value;
+            WorksheetPart worksheetPart = (WorksheetPart)document.WorkbookPart.GetPartById(relationshipId);
+            return worksheetPart;
+        }
+
+        private ChartsheetPart GetChartsheetPartByName(SpreadsheetDocument document, string sheetName)
+        {
+            IEnumerable<Sheet> sheets = document.WorkbookPart.Workbook.GetFirstChild<DocumentFormat.OpenXml.Spreadsheet.Sheets>().Elements<Sheet>().Where(s => s.Name == sheetName);
+            if (sheets.Count() == 0)
+            {
+                return null;
+            }
+            string relationshipId = sheets.First().Id.Value;
+            ChartsheetPart chartsheetPart = (ChartsheetPart)document.WorkbookPart.GetPartById(relationshipId);
+            return chartsheetPart;
+        }
+
+        public void UpdateCellSharedString(Worksheet worksheet, string text, string columnName, uint rowIndex)
+        {
+
+            // Get the SharedStringTablePart. If it does not exist, create a new one.
+            SharedStringTablePart sharedStringPart;
+            if (spreadsheetDocument.WorkbookPart.GetPartsOfType<SharedStringTablePart>().Count() > 0)
+            {
+                sharedStringPart = spreadsheetDocument.WorkbookPart.GetPartsOfType<SharedStringTablePart>().First();
+            }
+            else
+            {
+                sharedStringPart = spreadsheetDocument.WorkbookPart.AddNewPart<SharedStringTablePart>();
+            }
+
+            // Insert the text into the SharedStringTablePart.
+            int index = InsertSharedStringItem(text, sharedStringPart);
+
+            Cell cell = GetCell(worksheet, columnName, rowIndex);
+            cell.CellValue = new CellValue(index.ToString());
+            cell.DataType = new EnumValue<CellValues>(CellValues.SharedString);
+        }
+
+        public void UpdateCellNumber(Worksheet worksheet, string text, string columnName, uint rowIndex)
+        {
+            Cell cell = GetCell(worksheet, columnName, rowIndex);
+            cell.CellValue = new CellValue(text.Replace(",", "")); //remove any commas from number string, number cell will not be formatted here           
+            cell.DataType = new EnumValue<CellValues>(CellValues.Number);
+        }
+
+        public void UpdateCellDate(Worksheet worksheet, DateTime date, string columnName, uint rowIndex)
+        {
+            double doubleDate = date.ToOADate();
+
+            Cell cell = GetCell(worksheet, columnName, rowIndex);
+            cell.CellValue = new CellValue(doubleDate.ToString());
+            cell.StyleIndex = (UInt32Value)2U;
+            //cell.DataType = new EnumValue<CellValues>(CellValues.Number);
+        }
+
+        private Cell GetCell(Worksheet worksheet, string columnName, uint rowIndex)
+        {
+            Row row;
+            string cellReference = columnName + rowIndex;
+            SheetData sheetData = worksheet.GetFirstChild<SheetData>();
+            if (sheetData.Elements<Row>().Where(r => r.RowIndex == rowIndex).Count() != 0)
+            {
+                row = sheetData.Elements<Row>().Where(r => r.RowIndex == rowIndex).FirstOrDefault();
+            }
+            else
+            {
+                row = new Row() { RowIndex = rowIndex };
+                sheetData.Append(row);
+            }
+
+            if (row == null)
+            {
+                return null;
+            }
+
+            if (row.Elements<Cell>().Where(c => c.CellReference.Value == cellReference).Count() > 0)
+            {
+                return row.Elements<Cell>().Where(c => c.CellReference.Value == cellReference).First();
+            }
+            else
+            {
+                Cell refCell = null;
+                foreach (Cell cell in row.Elements<Cell>())
+                {
+                    if (String.Compare(cell.CellReference.Value, cellReference, true) > 0)
+                    {
+                        refCell = cell;
+                        break;
+                    }
+                }
+
+                Cell newCell = new Cell()
+                {
+                    CellReference = cellReference
+                };
+                row.InsertBefore(newCell, refCell);
+
+                return newCell;
+            }
+
+
+        }
+
+
+        private string GetCellValue(Worksheet worksheet, string columnName, uint rowIndex)
+        {
+
+            string value = String.Empty;
+            Cell cell = GetCell(worksheet, columnName, rowIndex);
+
+            value = cell.InnerText;
+
+            if (cell.DataType != null)
+            {
+                if (cell.DataType.Value == CellValues.SharedString)
+                {
+                    // For shared strings, look up the value in the
+                    // shared strings table.
+                    SharedStringTablePart sharedStringPart = spreadsheetDocument.WorkbookPart.GetPartsOfType<SharedStringTablePart>().First();
+                    value = sharedStringPart.SharedStringTable.ElementAt(int.Parse(value)).InnerText;
+                }
+            }
+
+            return value;
+        }
+
+        // Given text and a SharedStringTablePart, creates a SharedStringItem with the specified text 
+        // and inserts it into the SharedStringTablePart. If the item already exists, returns its index.
+        private static int InsertSharedStringItem(string text, SharedStringTablePart sharedStringPart)
+        {
+            // If the part does not contain a SharedStringTable, create one.
+            if (sharedStringPart.SharedStringTable == null)
+            {
+                sharedStringPart.SharedStringTable = new SharedStringTable();
+            }
+
+            int i = 0;
+
+            // Iterate through all the items in the SharedStringTable. If the text already exists, return its index.
+            foreach (SharedStringItem item in sharedStringPart.SharedStringTable.Elements<SharedStringItem>())
+            {
+                if (item.InnerText == text)
+                {
+                    return i;
+                }
+
+                i++;
+            }
+
+            // The text does not exist in the part. Create the SharedStringItem and return its index.
+            sharedStringPart.SharedStringTable.AppendChild(new SharedStringItem(new DocumentFormat.OpenXml.Spreadsheet.Text(text)));
+            sharedStringPart.SharedStringTable.Save();
+
+            return i;
+        }
+
+        private void ConfigureCellFormats()
+        {
+
+            WorkbookStylesPart stylesPart = spreadsheetDocument.WorkbookPart.GetPartsOfType<WorkbookStylesPart>().First();
+            Stylesheet styleSheet = stylesPart.Stylesheet;
+
+            //styleSheet.NumberingFormats = new NumberingFormats();
+            //NumberingFormat nf2decimal = new NumberingFormat();
+            //nf2decimal.NumberFormatId = UInt32Value.FromUInt32(3453);
+            //nf2decimal.FormatCode = StringValue.FromString("0.0%");
+            //styleSheet.NumberingFormat.Append(nf2decimal);            
+
+            //italics
+            DocumentFormat.OpenXml.Spreadsheet.Font font1 = new DocumentFormat.OpenXml.Spreadsheet.Font();
+            Italic italic1 = new Italic();
+            FontSize fontSize1 = new FontSize() { Val = 11D };
+            DocumentFormat.OpenXml.Spreadsheet.Color color1 = new DocumentFormat.OpenXml.Spreadsheet.Color() { Rgb = "00000000" };
+            FontName fontName1 = new FontName() { Val = "Gill Sans MT" };
+
+            font1.Append(italic1);
+            font1.Append(fontSize1);
+            font1.Append(color1);
+            font1.Append(fontName1);
+            styleSheet.Fonts.Append(font1);
+            styleSheet.Fonts.Count++;
+
+            CellFormat cellFormat1 = new CellFormat()
+            {
+                NumberFormatId = (UInt32Value)0U,
+                FontId = (UInt32Value)styleSheet.Fonts.Count - 1,
+                FillId = (UInt32Value)0U,
+                BorderId = (UInt32Value)1U,
+                FormatId = (UInt32Value)0U,
+                ApplyNumberFormat = true,
+                ApplyFont = true,
+                ApplyFill = true,
+                ApplyBorder = true,
+                ApplyAlignment = true
+            };
+            DocumentFormat.OpenXml.Spreadsheet.Alignment alignment1 = new DocumentFormat.OpenXml.Spreadsheet.Alignment() { Horizontal = HorizontalAlignmentValues.Left };
+
+            cellFormat1.Append(alignment1);
+            styleSheet.CellFormats.Append(cellFormat1);
+            styleSheet.CellFormats.Count++;
+            styleIndexItalicsWithBorders = styleSheet.CellFormats.Count - 1;
+
+            styleIndexGrayFillWithBorders = 1U;
+            styleIndexNoFillWithBorders = 5U;
+
+            //indent
+            CellFormat cellFormat2 = new CellFormat()
+            {
+                NumberFormatId = (UInt32Value)0U,
+                FontId = (UInt32Value)2U,
+                FillId = (UInt32Value)0U,
+                BorderId = (UInt32Value)1U,
+                FormatId = (UInt32Value)0U,
+                ApplyNumberFormat = true,
+                ApplyFont = true,
+                ApplyFill = true,
+                ApplyBorder = true,
+                ApplyAlignment = true
+            };
+            DocumentFormat.OpenXml.Spreadsheet.Alignment alignment2 = new DocumentFormat.OpenXml.Spreadsheet.Alignment() { Horizontal = HorizontalAlignmentValues.Left, Indent = 2 };
+            cellFormat2.Append(alignment2);
+            styleSheet.CellFormats.Append(cellFormat2);
+            styleSheet.CellFormats.Count++;
+            styleIndexNoFillIndentWithBorders = styleSheet.CellFormats.Count - 1;
+
+            //center
+            CellFormat cellFormat3 = new CellFormat()
+            {
+                NumberFormatId = (UInt32Value)0U,
+                FontId = (UInt32Value)2U,
+                FillId = (UInt32Value)0U,
+                BorderId = (UInt32Value)1U,
+                FormatId = (UInt32Value)0U,
+                ApplyNumberFormat = true,
+                ApplyFont = true,
+                ApplyFill = true,
+                ApplyBorder = true,
+                ApplyAlignment = true
+            };
+            DocumentFormat.OpenXml.Spreadsheet.Alignment alignment3 = new DocumentFormat.OpenXml.Spreadsheet.Alignment() { Horizontal = HorizontalAlignmentValues.Center };
+            cellFormat3.Append(alignment3);
+            styleSheet.CellFormats.Append(cellFormat3);
+            styleSheet.CellFormats.Count++;
+            styleIndexNoFillCenterWithBorders = styleSheet.CellFormats.Count - 1;
+
+
+            //number format 2 decimal places format 4U = #,##0.00
+            CellFormat cellFormat4 = new CellFormat()
+            {
+                NumberFormatId = (UInt32Value)4U,
+                FontId = (UInt32Value)2U,
+                FillId = (UInt32Value)0U,
+                BorderId = (UInt32Value)1U,
+                FormatId = (UInt32Value)0U,
+                ApplyNumberFormat = true,
+                ApplyFont = true,
+                ApplyFill = true,
+                ApplyBorder = true,
+                ApplyAlignment = true
+            };
+            //DocumentFormat.OpenXml.Spreadsheet.Alignment alignment4 = new DocumentFormat.OpenXml.Spreadsheet.Alignment() { Horizontal = HorizontalAlignmentValues.Right };
+            //cellFormat4.Append(alignment4);
+            styleSheet.CellFormats.Append(cellFormat4);
+            styleSheet.CellFormats.Count++;
+            styleIndexNoFillNumber2DecimalPlacesWithBorders = styleSheet.CellFormats.Count - 1;
+
+            //number format 0 decimal places format 3U = #,##0
+            CellFormat cellFormat5 = new CellFormat()
+            {
+                NumberFormatId = (UInt32Value)3U,
+                FontId = (UInt32Value)2U,
+                FillId = (UInt32Value)0U,
+                BorderId = (UInt32Value)1U,
+                FormatId = (UInt32Value)0U,
+                ApplyNumberFormat = true,
+                ApplyFont = true,
+                ApplyFill = true,
+                ApplyBorder = true,
+                ApplyAlignment = true
+            };
+            //DocumentFormat.OpenXml.Spreadsheet.Alignment alignment5 = new DocumentFormat.OpenXml.Spreadsheet.Alignment() { Horizontal = HorizontalAlignmentValues.Right };
+            //cellFormat5.Append(alignment5);
+            styleSheet.CellFormats.Append(cellFormat5);
+            styleSheet.CellFormats.Count++;
+            styleIndexNoFillNumber0DecimalPlacesWithBorders = styleSheet.CellFormats.Count - 1;
+
+        }
+
+        
+
+
         private System.Data.DataTable GetDetailedResultsTable(System.Data.DataTable dtRegionsCountries, string format)
         {
 
@@ -1183,13 +1526,9 @@ namespace BenMAP
             string appPath = AppDomain.CurrentDomain.BaseDirectory;
             string filePath = appPath + @"Tools\GBDRollbackOutputTemplate.xlsx";
 
-            Microsoft.Office.Interop.Excel.Workbook xlBook;
-            //open report template                
-            xlBook = xlApp.Workbooks.Open(filePath);           
-
             //check save dir 
             string resultsDir = txtFilePath.Text.Trim();
-            if(!Directory.Exists(resultsDir))
+            if (!Directory.Exists(resultsDir))
             {
                 Directory.CreateDirectory(resultsDir);
             }
@@ -1198,34 +1537,72 @@ namespace BenMAP
             DateTime dtNow = DateTime.Now;
             string timeStamp = dtNow.ToString("yyyyMMddHHmm");
             //get application path
-            filePath = resultsDir + @"\GBDRollback_" + rollback.Name + "_" + timeStamp + ".xlsx";
+            string filePathCopy = resultsDir + @"\GBDRollback_" + rollback.Name + "_" + timeStamp + ".xlsx";
+
+            //copy template
+            File.Copy(filePath, filePathCopy, true);
+
+            //open copied report template            
+            spreadsheetDocument = SpreadsheetDocument.Open(filePathCopy, true);
+
+            ConfigureCellFormats();
+
 
             #region summary sheet
-            //summary sheet
-            Microsoft.Office.Interop.Excel.Worksheet xlSheet = (Microsoft.Office.Interop.Excel.Worksheet)xlBook.Worksheets[1];
+            //summary sheet          
+
+            WorksheetPart worksheetPart = GetWorksheetPartByName(spreadsheetDocument, "Summary");
+
             //xlSheet.Name = "Summary";
             //xlSheet.Range["A2"].Value = "Date";
-            xlSheet.Range["B2"].Value = dtNow.ToString("yyyy/MM/dd");
-            //xlSheet.Range["A3"].Value = "Scenario Name";
-            xlSheet.Range["B3"].Value = rollback.Name;
-            //xlSheet.Range["A4"].Value = "Scenario Description";
-            xlSheet.Range["B4"].Value = rollback.Description;
-            //xlSheet.Range["A5"].Value = "GBD Year";
-            xlSheet.Range["B5"].Value = rollback.Year.ToString();
-            //xlSheet.Range["A6"].Value = "Pollutant";
-            xlSheet.Range["B6"].Value = "PM 2.5";
+            UpdateCellDate(worksheetPart.Worksheet, dtNow, "B", 2);
 
-            //xlSheet.Range["A7"].Value = "Background Concentration";
-            xlSheet.Range["B7"].Value = GetBackgroundConcentrationText(rollback);
 
-            //xlSheet.Range["A8"].Value = "Rollback Type";            
-            xlSheet.Range["B8"].Value = GetRollbackTypeText(rollback);
+            ////xlSheet.Range["A3"].Value = "Scenario Name";
+            //xlSheet.Range["B3"].Value = rollback.Name;
+            UpdateCellSharedString(worksheetPart.Worksheet, rollback.Name, "B", 3);
+            ////xlSheet.Range["A4"].Value = "Scenario Description";
+            //xlSheet.Range["B4"].Value = rollback.Description;
+            UpdateCellSharedString(worksheetPart.Worksheet, rollback.Description, "B", 4);
+            ////xlSheet.Range["A5"].Value = "GBD Year";
+            //xlSheet.Range["B5"].Value = rollback.Year.ToString();
+            UpdateCellNumber(worksheetPart.Worksheet, rollback.Year.ToString(), "B", 5);
+            ////xlSheet.Range["A6"].Value = "Pollutant";
+            //xlSheet.Range["B6"].Value = "PM 2.5";
+            UpdateCellSharedString(worksheetPart.Worksheet, "PM 2.5", "B", 6);
 
-            //xlSheet.Range["A9"].Value = "Regions and Countries";
-            int rowOffset = 0;
-            int nextRow = 0;
+            ////xlSheet.Range["A7"].Value = "Background Concentration";
+            char micrograms = '\u00B5';
+            char super3 = '\u00B3';
+            //xlSheet.Range["B7"].Value = rollback.Background.ToString() + " " + micrograms.ToString() + "g/m" + super3.ToString();
+            string backgroundConc = rollback.Background.ToString() + " " + micrograms.ToString() + "g/m" + super3.ToString();
+            UpdateCellSharedString(worksheetPart.Worksheet, backgroundConc, "B", 7);
 
-            System.Data.DataTable dtRegionsCountries = GetRegionsCountriesTable();
+            ////xlSheet.Range["A8"].Value = "Rollback Type";
+            string summary = String.Empty;
+            switch (rollback.Type)
+            {
+                case GBDRollbackItem.RollbackType.Percentage: //percentage
+                    summary = rollback.Percentage.ToString() + "% Rollback";
+                    break;
+                case GBDRollbackItem.RollbackType.Incremental: //incremental
+                    summary = rollback.Increment.ToString() + micrograms.ToString() + "g/m" + super3.ToString() + " Rollback";
+                    break;
+                case GBDRollbackItem.RollbackType.Standard:
+                    summary = "Rollback to " + rollback.StandardName + " Standard";
+                    break;
+            }
+            //xlSheet.Range["B8"].Value = summary;
+            UpdateCellSharedString(worksheetPart.Worksheet, summary, "B", 8);
+
+            ////xlSheet.Range["A9"].Value = "Regions and Countries";
+            uint rowOffset = 0;
+            uint nextRow = 0;
+
+            System.Data.DataTable dtTemp = dtConcEntireRollback.DefaultView.ToTable(true, "REGIONID", "REGIONNAME", "COUNTRYID", "COUNTRYNAME");
+            DataView dv = new DataView(dtTemp);
+            dv.Sort = "REGIONNAME ASC, COUNTRYNAME ASC";
+            System.Data.DataTable dtRegionsCountries = dv.ToTable();
             string region = String.Empty;
             string country = String.Empty;
             foreach (DataRow dr in dtRegionsCountries.Rows)
@@ -1235,47 +1612,55 @@ namespace BenMAP
                 {
                     region = dr["REGIONNAME"].ToString();
                     nextRow = 9 + rowOffset;
-                    xlSheet.Range["B" + nextRow.ToString()].Value = region;
-                    xlSheet.Range["B" + nextRow.ToString()].Font.Italic = true;
+                    //xlSheet.Range["B" + nextRow.ToString()].Value = region;
+                    UpdateCellSharedString(worksheetPart.Worksheet, region, "B", nextRow);
+                    //xlSheet.Range["B" + nextRow.ToString()].Font.Italic = true;
+                    GetCell(worksheetPart.Worksheet, "B", nextRow).StyleIndex = styleIndexItalicsWithBorders;
+                    GetCell(worksheetPart.Worksheet, "A", nextRow).StyleIndex = styleIndexGrayFillWithBorders;
                     rowOffset++;
                 }
 
                 //write country
                 country = dr["COUNTRYNAME"].ToString();
                 nextRow = 9 + rowOffset;
-                xlSheet.Range["B" + nextRow.ToString()].Value = country;
-                xlSheet.Range["B" + nextRow.ToString()].ColumnWidth = 40;
-                xlSheet.Range["B" + nextRow.ToString()].WrapText = true;
-                xlSheet.Range["B" + nextRow.ToString()].InsertIndent(2);
+                //xlSheet.Range["B" + nextRow.ToString()].Value = country;
+                UpdateCellSharedString(worksheetPart.Worksheet, country, "B", nextRow);
+                GetCell(worksheetPart.Worksheet, "B", nextRow).StyleIndex = styleIndexNoFillIndentWithBorders;
+                GetCell(worksheetPart.Worksheet, "A", nextRow).StyleIndex = styleIndexGrayFillWithBorders;
+                //xlSheet.Range["B" + nextRow.ToString()].ColumnWidth = 40;
+                //xlSheet.Range["B" + nextRow.ToString()].WrapText = true;
+                //xlSheet.Range["B" + nextRow.ToString()].InsertIndent(2);
+
                 rowOffset++;
             }
 
-            //format
-            Microsoft.Office.Interop.Excel.Range xlRange;
-            xlRange = (Microsoft.Office.Interop.Excel.Range)(xlSheet.Columns[1]);            
-            xlRange.AutoFit();
-            //add borders
-            //nextRow = 9 + rowOffset;
-            xlRange = xlSheet.Range["A2:B" + nextRow.ToString()];
-            xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeTop].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
-            xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeRight].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
-            xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeBottom].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
-            xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeLeft].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;            
-            xlRange.Borders.Color = Color.Black;
-            //bold, color label cells
-            xlRange = xlSheet.Range["A2:A" + nextRow.ToString()];
-            xlRange.Font.Bold = true;
-            xlRange.Interior.Color = xlSheet.Range["A2"].Interior.Color;
+            ////format
+            //Microsoft.Office.Interop.Excel.Range xlRange;
+            //xlRange = (Microsoft.Office.Interop.Excel.Range)(xlSheet.Columns[1]);
+            //xlRange.AutoFit();
+            ////add borders
+            ////nextRow = 9 + rowOffset;
+            //xlRange = xlSheet.Range["A2:B" + nextRow.ToString()];
+            //xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeTop].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
+            //xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeRight].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
+            //xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeBottom].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
+            //xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeLeft].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
+            //xlRange.Borders.Color = Color.Black;
+            ////bold, color label cells
+            //xlRange = xlSheet.Range["A2:A" + nextRow.ToString()];
+            //xlRange.Font.Bold = true;
+            //xlRange.Interior.Color = xlSheet.Range["A2"].Interior.Color;
 
 
-            xlSheet.Range["J2"].Value = rollback.Year.ToString() + " " + xlSheet.Range["J2"].Value.ToString();
-
+            //xlSheet.Range["J2"].Value = rollback.Year.ToString() + " " + xlSheet.Range["J2"].Value.ToString();
+            string value = GetCellValue(worksheetPart.Worksheet, "J", 2);
+            UpdateCellSharedString(worksheetPart.Worksheet, rollback.Year.ToString() + " " + value, "J", 2);
 
             #endregion
 
             //results sheet
             #region results sheet
-            Microsoft.Office.Interop.Excel.Worksheet xlSheet2 = (Microsoft.Office.Interop.Excel.Worksheet)xlBook.Worksheets[2];
+            WorksheetPart worksheetPart2 = GetWorksheetPartByName(spreadsheetDocument, "Detailed Results");
             //xlSheet2.Name = "Results";
             //xlSheet2.Range["A3"].Value = "Country";
             //xlSheet2.Range["B3"].Value = "Population Affected";
@@ -1284,7 +1669,9 @@ namespace BenMAP
             //xlSheet2.Range["E3"].Value = "Min";
             //xlSheet2.Range["F3"].Value = "Median";
             //xlSheet2.Range["G3"].Value = "Max";
-            xlSheet2.Range["H2"].Value = rollback.Year.ToString() + " " + xlSheet2.Range["H2"].Value.ToString();
+            //xlSheet2.Range["H2"].Value = rollback.Year.ToString() + " " + xlSheet2.Range["H2"].Value.ToString();
+            value = GetCellValue(worksheetPart2.Worksheet, "H", 2);
+            UpdateCellSharedString(worksheetPart2.Worksheet, rollback.Year.ToString() + " " + value, "H", 2);
             //xlSheet2.Range["E2:G2"].MergeCells = true;
             //xlSheet2.Range["H3"].Value = "Min";
             //xlSheet2.Range["I3"].Value = "Median";
@@ -1308,82 +1695,171 @@ namespace BenMAP
             //xlRange.WrapText = true;
 
             //build output table
-            System.Data.DataTable dtDetailedResults = GetDetailedResultsTable(dtRegionsCountries, FORMAT_DECIMAL_0_PLACES);
+            System.Data.DataTable dtDetailedResults = new System.Data.DataTable();
+            dtDetailedResults.Columns.Add("NAME", Type.GetType("System.String"));
+            dtDetailedResults.Columns.Add("IS_REGION", Type.GetType("System.Boolean"));
+            dtDetailedResults.Columns.Add("POP_AFFECTED", Type.GetType("System.Double"));
+            dtDetailedResults.Columns.Add("AVOIDED_DEATHS", Type.GetType("System.Double"));
+            dtDetailedResults.Columns.Add("CONFIDENCE_INTERVAL", Type.GetType("System.String"));
+            dtDetailedResults.Columns.Add("PERCENT_BASELINE_MORTALITY", Type.GetType("System.Double"));
+            dtDetailedResults.Columns.Add("DEATHS_PER_100_THOUSAND", Type.GetType("System.Double"));
+            dtDetailedResults.Columns.Add("AVOIDED_DEATHS_PERCENT_POP", Type.GetType("System.Double"));
+            dtDetailedResults.Columns.Add("BASELINE_MIN", Type.GetType("System.Double"));
+            dtDetailedResults.Columns.Add("BASELINE_MEDIAN", Type.GetType("System.Double"));
+            dtDetailedResults.Columns.Add("BASELINE_MAX", Type.GetType("System.Double"));
+            dtDetailedResults.Columns.Add("CONTROL_MIN", Type.GetType("System.Double"));
+            dtDetailedResults.Columns.Add("CONTROL_MEDIAN", Type.GetType("System.Double"));
+            dtDetailedResults.Columns.Add("CONTROL_MAX", Type.GetType("System.Double"));
+            dtDetailedResults.Columns.Add("AIR_QUALITY_CHANGE", Type.GetType("System.Double"));
+
+
+            string regionid = String.Empty;
+            string countryid = String.Empty;
+            foreach (DataRow dr in dtRegionsCountries.Rows)
+            {
+                //new region? get region data
+                if (!regionid.Equals(dr["REGIONID"].ToString(), StringComparison.OrdinalIgnoreCase))
+                {
+                    regionid = dr["REGIONID"].ToString();
+                    GetResults(regionid, dr["REGIONNAME"].ToString(), true, dtDetailedResults, FORMAT_DECIMAL_0_PLACES);
+                }
+
+                //get country data
+                countryid = dr["COUNTRYID"].ToString();
+                GetResults(countryid, dr["COUNTRYNAME"].ToString(), false, dtDetailedResults, FORMAT_DECIMAL_0_PLACES);
+            }
+
 
             //write results to spreadsheet
             nextRow = 4;
             foreach (DataRow dr in dtDetailedResults.Rows)
             {
-                xlSheet2.Range["A" + nextRow.ToString()].Value = dr["NAME"].ToString();
+                //xlSheet2.Range["A" + nextRow.ToString()].Value = dr["NAME"].ToString();
+                UpdateCellSharedString(worksheetPart2.Worksheet, dr["NAME"].ToString(), "A", nextRow);
                 if (Convert.ToBoolean(dr["IS_REGION"].ToString()))
                 {
-                    xlSheet2.Range["A" + nextRow.ToString()].Font.Italic = true;
+                    //xlSheet2.Range["A" + nextRow.ToString()].Font.Italic = true;
+                    GetCell(worksheetPart2.Worksheet, "A", nextRow).StyleIndex = styleIndexItalicsWithBorders;
                 }
-                else 
+                else
                 {
                     //xlSheet2.Range["A" + nextRow.ToString()].ColumnWidth = 40;
                     //xlSheet2.Range["A" + nextRow.ToString()].WrapText = true;
-                    xlSheet2.Range["A" + nextRow.ToString()].InsertIndent(2);                
+                    //xlSheet2.Range["A" + nextRow.ToString()].InsertIndent(2);
+                    GetCell(worksheetPart2.Worksheet, "A", nextRow).StyleIndex = styleIndexNoFillIndentWithBorders;
                 }
-                xlSheet2.Range["B" + nextRow.ToString()].Value = FormatDoubleStringTwoSignificantFigures(FORMAT_DECIMAL_0_PLACES, dr["POP_AFFECTED"].ToString());
-                xlSheet2.Range["C" + nextRow.ToString()].Value = FormatDoubleStringTwoSignificantFigures(FORMAT_DECIMAL_0_PLACES, dr["AVOIDED_DEATHS"].ToString());
-                xlSheet2.Range["D" + nextRow.ToString()].Value = "'" + dr["CONFIDENCE_INTERVAL"].ToString(); //prepend apostrophe so Excel treats this as text not date
-                xlSheet2.Range["E" + nextRow.ToString()].Value = dr["PERCENT_BASELINE_MORTALITY"].ToString();
-                xlSheet2.Range["F" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["DEATHS_PER_100_THOUSAND"].ToString());
-                xlSheet2.Range["G" + nextRow.ToString()].Value = dr["AVOIDED_DEATHS_PERCENT_POP"].ToString();//FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AVOIDED_DEATHS_PERCENT_POP"].ToString());
-                xlSheet2.Range["H" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MIN"].ToString());
-                xlSheet2.Range["I" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MEDIAN"].ToString());
-                xlSheet2.Range["J" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MAX"].ToString());
-                xlSheet2.Range["K" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MIN"].ToString());
-                xlSheet2.Range["L" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MEDIAN"].ToString());
-                xlSheet2.Range["M" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MAX"].ToString());
-                xlSheet2.Range["N" + nextRow.ToString()].Value = dr["AIR_QUALITY_CHANGE"].ToString();// FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AIR_QUALITY_CHANGE"].ToString());
+                //xlSheet2.Range["B" + nextRow.ToString()].Value = FormatDoubleStringTwoSignificantFigures(FORMAT_DECIMAL_0_PLACES, dr["POP_AFFECTED"].ToString());
+                UpdateCellNumber(worksheetPart2.Worksheet, FormatDoubleStringTwoSignificantFigures(FORMAT_DECIMAL_0_PLACES, dr["POP_AFFECTED"].ToString()), "B", nextRow);
+                GetCell(worksheetPart2.Worksheet, "B", nextRow).StyleIndex = styleIndexNoFillNumber0DecimalPlacesWithBorders;
+                //xlSheet2.Range["C" + nextRow.ToString()].Value = FormatDoubleStringTwoSignificantFigures(FORMAT_DECIMAL_0_PLACES, dr["AVOIDED_DEATHS"].ToString());
+                UpdateCellNumber(worksheetPart2.Worksheet, FormatDoubleStringTwoSignificantFigures(FORMAT_DECIMAL_0_PLACES, dr["AVOIDED_DEATHS"].ToString()), "C", nextRow);
+                GetCell(worksheetPart2.Worksheet, "C", nextRow).StyleIndex = styleIndexNoFillNumber0DecimalPlacesWithBorders;
+                //xlSheet2.Range["D" + nextRow.ToString()].Value = "'" + dr["CONFIDENCE_INTERVAL"].ToString(); //prepend apostrophe so Excel treats this as text not date
+                UpdateCellSharedString(worksheetPart2.Worksheet, dr["CONFIDENCE_INTERVAL"].ToString(), "D", nextRow);
+                GetCell(worksheetPart2.Worksheet, "D", nextRow).StyleIndex = styleIndexNoFillCenterWithBorders;
+                //xlSheet2.Range["E" + nextRow.ToString()].Value = dr["PERCENT_BASELINE_MORTALITY"].ToString();
+                UpdateCellNumber(worksheetPart2.Worksheet, dr["PERCENT_BASELINE_MORTALITY"].ToString(), "E", nextRow);
+                GetCell(worksheetPart2.Worksheet, "E", nextRow).StyleIndex = styleIndexNoFillWithBorders;
+                //xlSheet2.Range["F" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["DEATHS_PER_100_THOUSAND"].ToString());
+                UpdateCellNumber(worksheetPart2.Worksheet, FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["DEATHS_PER_100_THOUSAND"].ToString()), "F", nextRow);
+                GetCell(worksheetPart2.Worksheet, "F", nextRow).StyleIndex = styleIndexNoFillNumber2DecimalPlacesWithBorders;
+                //xlSheet2.Range["G" + nextRow.ToString()].Value = dr["AVOIDED_DEATHS_PERCENT_POP"].ToString();//FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AVOIDED_DEATHS_PERCENT_POP"].ToString());
+                UpdateCellNumber(worksheetPart2.Worksheet, dr["AVOIDED_DEATHS_PERCENT_POP"].ToString(), "G", nextRow);
+                GetCell(worksheetPart2.Worksheet, "G", nextRow).StyleIndex = styleIndexNoFillWithBorders;
+                //xlSheet2.Range["H" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MIN"].ToString());
+                UpdateCellNumber(worksheetPart2.Worksheet, FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MIN"].ToString()), "H", nextRow);
+                GetCell(worksheetPart2.Worksheet, "H", nextRow).StyleIndex = styleIndexNoFillNumber2DecimalPlacesWithBorders;
+                //xlSheet2.Range["I" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MEDIAN"].ToString());
+                UpdateCellNumber(worksheetPart2.Worksheet, FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MEDIAN"].ToString()), "I", nextRow);
+                GetCell(worksheetPart2.Worksheet, "I", nextRow).StyleIndex = styleIndexNoFillNumber2DecimalPlacesWithBorders;
+                //xlSheet2.Range["J" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MAX"].ToString());
+                UpdateCellNumber(worksheetPart2.Worksheet, FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MAX"].ToString()), "J", nextRow);
+                GetCell(worksheetPart2.Worksheet, "J", nextRow).StyleIndex = styleIndexNoFillNumber2DecimalPlacesWithBorders;
+                //xlSheet2.Range["K" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MIN"].ToString());
+                UpdateCellNumber(worksheetPart2.Worksheet, FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MIN"].ToString()), "K", nextRow);
+                GetCell(worksheetPart2.Worksheet, "K", nextRow).StyleIndex = styleIndexNoFillNumber2DecimalPlacesWithBorders;
+                //xlSheet2.Range["L" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MEDIAN"].ToString());
+                UpdateCellNumber(worksheetPart2.Worksheet, FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MEDIAN"].ToString()), "L", nextRow);
+                GetCell(worksheetPart2.Worksheet, "L", nextRow).StyleIndex = styleIndexNoFillNumber2DecimalPlacesWithBorders;
+                //xlSheet2.Range["M" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MAX"].ToString());
+                UpdateCellNumber(worksheetPart2.Worksheet, FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MAX"].ToString()), "M", nextRow);
+                GetCell(worksheetPart2.Worksheet, "M", nextRow).StyleIndex = styleIndexNoFillNumber2DecimalPlacesWithBorders;
+                //xlSheet2.Range["N" + nextRow.ToString()].Value = dr["AIR_QUALITY_CHANGE"].ToString();// FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AIR_QUALITY_CHANGE"].ToString());
+                UpdateCellNumber(worksheetPart2.Worksheet, dr["AIR_QUALITY_CHANGE"].ToString(), "N", nextRow);
+                GetCell(worksheetPart2.Worksheet, "N", nextRow).StyleIndex = styleIndexNoFillWithBorders;
                 nextRow++;
-                
+
             }
 
-            //center confidence interval
-            xlRange = xlSheet2.Range["D4:D" + (nextRow - 1).ToString()];
-            xlRange.Cells.HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignCenter;
-            
-            //add cell borders
-            xlRange = xlSheet2.Range["A4:N" + (nextRow - 1).ToString()];
-            xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeTop].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
-            xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeRight].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
-            xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeBottom].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
-            xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeLeft].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
-            xlRange.Borders.Color = Color.Black;
+            ////center confidence interval
+            //xlRange = xlSheet2.Range["D4:D" + (nextRow - 1).ToString()];
+            //xlRange.Cells.HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignCenter;
+
+            ////add cell borders
+            //xlRange = xlSheet2.Range["A4:N" + (nextRow - 1).ToString()];
+            //xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeTop].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
+            //xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeRight].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
+            //xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeBottom].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
+            //xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeLeft].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
+            //xlRange.Borders.Color = Color.Black;
 
             #endregion
 
             #region back to summary sheet
 
             //get results for summary table
-            System.Data.DataTable dtSummaryResults = GetSummaryResultsTable(dtDetailedResults, FORMAT_DECIMAL_0_PLACES);
+            System.Data.DataTable dtSummaryResults = dtDetailedResults.Clone();
+            GetResults(null, "SUMMARY", false, dtSummaryResults, FORMAT_DECIMAL_0_PLACES);
             if (dtSummaryResults.Rows.Count > 0)
             {
                 DataRow dr = dtSummaryResults.Rows[0];
-                xlSheet.Range["D4"].Value = FormatDoubleStringTwoSignificantFigures(FORMAT_DECIMAL_0_PLACES, dr["POP_AFFECTED"].ToString());
-                xlSheet.Range["E4"].Value = FormatDoubleStringTwoSignificantFigures(FORMAT_DECIMAL_0_PLACES, dr["AVOIDED_DEATHS"].ToString());
-                xlSheet.Range["F4"].Value =  "'" + dr["CONFIDENCE_INTERVAL"].ToString(); //prepend apostrophe so Excel treats this as text not date
-                xlSheet.Range["G4"].Value = dr["PERCENT_BASELINE_MORTALITY"].ToString();
-                xlSheet.Range["H4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["DEATHS_PER_100_THOUSAND"].ToString());
-                xlSheet.Range["I4"].Value = dr["AVOIDED_DEATHS_PERCENT_POP"].ToString();//FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AVOIDED_DEATHS_PERCENT_POP"].ToString());
-                xlSheet.Range["J4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MIN"].ToString());
-                xlSheet.Range["K4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MEDIAN"].ToString());
-                xlSheet.Range["L4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MAX"].ToString());
-                xlSheet.Range["M4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MIN"].ToString());
-                xlSheet.Range["N4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MEDIAN"].ToString());
-                xlSheet.Range["O4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MAX"].ToString());
-                xlSheet.Range["P4"].Value = dr["AIR_QUALITY_CHANGE"].ToString();// FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AIR_QUALITY_CHANGE"].ToString());
+                //xlSheet.Range["D4"].Value = FormatDoubleStringTwoSignificantFigures(FORMAT_DECIMAL_0_PLACES, dr["POP_AFFECTED"].ToString());
+                UpdateCellNumber(worksheetPart.Worksheet, FormatDoubleStringTwoSignificantFigures(FORMAT_DECIMAL_0_PLACES, dr["POP_AFFECTED"].ToString()), "D", 4);
+                GetCell(worksheetPart.Worksheet, "D", 4).StyleIndex = styleIndexNoFillNumber0DecimalPlacesWithBorders;
+                //xlSheet.Range["E4"].Value = FormatDoubleStringTwoSignificantFigures(FORMAT_DECIMAL_0_PLACES, dr["AVOIDED_DEATHS"].ToString());
+                UpdateCellNumber(worksheetPart.Worksheet, FormatDoubleStringTwoSignificantFigures(FORMAT_DECIMAL_0_PLACES, dr["AVOIDED_DEATHS"].ToString()), "E", 4);
+                GetCell(worksheetPart.Worksheet, "E", 4).StyleIndex = styleIndexNoFillNumber0DecimalPlacesWithBorders;
+                //xlSheet.Range["F4"].Value = "'" + dr["CONFIDENCE_INTERVAL"].ToString(); //prepend apostrophe so Excel treats this as text not date
+                UpdateCellSharedString(worksheetPart.Worksheet, dr["CONFIDENCE_INTERVAL"].ToString(), "F", 4);
+                GetCell(worksheetPart.Worksheet, "F", 4).StyleIndex = styleIndexNoFillCenterWithBorders;
+                //xlSheet.Range["G4"].Value = dr["PERCENT_BASELINE_MORTALITY"].ToString();
+                UpdateCellNumber(worksheetPart.Worksheet, dr["PERCENT_BASELINE_MORTALITY"].ToString(), "G", 4);
+                GetCell(worksheetPart.Worksheet, "G", 4).StyleIndex = styleIndexNoFillWithBorders;
+                //xlSheet.Range["H4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["DEATHS_PER_100_THOUSAND"].ToString());
+                UpdateCellNumber(worksheetPart.Worksheet, FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["DEATHS_PER_100_THOUSAND"].ToString()), "H", 4);
+                GetCell(worksheetPart.Worksheet, "H", 4).StyleIndex = styleIndexNoFillNumber2DecimalPlacesWithBorders;
+                //xlSheet.Range["I4"].Value = dr["AVOIDED_DEATHS_PERCENT_POP"].ToString();//FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AVOIDED_DEATHS_PERCENT_POP"].ToString());
+                UpdateCellNumber(worksheetPart.Worksheet, dr["AVOIDED_DEATHS_PERCENT_POP"].ToString(), "I", 4);
+                GetCell(worksheetPart.Worksheet, "I", 4).StyleIndex = styleIndexNoFillWithBorders;
+                //xlSheet.Range["J4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MIN"].ToString());
+                UpdateCellNumber(worksheetPart.Worksheet, FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MIN"].ToString()), "J", 4);
+                GetCell(worksheetPart.Worksheet, "J", 4).StyleIndex = styleIndexNoFillNumber2DecimalPlacesWithBorders;
+                //xlSheet.Range["K4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MEDIAN"].ToString());
+                UpdateCellNumber(worksheetPart.Worksheet, FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MEDIAN"].ToString()), "K", 4);
+                GetCell(worksheetPart.Worksheet, "K", 4).StyleIndex = styleIndexNoFillNumber2DecimalPlacesWithBorders;
+                //xlSheet.Range["L4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MAX"].ToString());
+                UpdateCellNumber(worksheetPart.Worksheet, FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MAX"].ToString()), "L", 4);
+                GetCell(worksheetPart.Worksheet, "L", 4).StyleIndex = styleIndexNoFillNumber2DecimalPlacesWithBorders;
+                //xlSheet.Range["M4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MIN"].ToString());
+                UpdateCellNumber(worksheetPart.Worksheet, FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MIN"].ToString()), "M", 4);
+                GetCell(worksheetPart.Worksheet, "M", 4).StyleIndex = styleIndexNoFillNumber2DecimalPlacesWithBorders;
+                //xlSheet.Range["N4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MEDIAN"].ToString());
+                UpdateCellNumber(worksheetPart.Worksheet, FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MEDIAN"].ToString()), "N", 4);
+                GetCell(worksheetPart.Worksheet, "N", 4).StyleIndex = styleIndexNoFillNumber2DecimalPlacesWithBorders;
+                //xlSheet.Range["O4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MAX"].ToString());
+                UpdateCellNumber(worksheetPart.Worksheet, FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MAX"].ToString()), "O", 4);
+                GetCell(worksheetPart.Worksheet, "O", 4).StyleIndex = styleIndexNoFillNumber2DecimalPlacesWithBorders;
+                //xlSheet.Range["P4"].Value = dr["AIR_QUALITY_CHANGE"].ToString();// FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AIR_QUALITY_CHANGE"].ToString());
+                UpdateCellNumber(worksheetPart.Worksheet, dr["AIR_QUALITY_CHANGE"].ToString(), "P", 4);
+                GetCell(worksheetPart.Worksheet, "P", 4).StyleIndex = styleIndexNoFillWithBorders;
 
             }
-            xlRange = xlSheet.Range["D4:P4"];
-            xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeTop].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
-            xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeRight].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
-            xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeBottom].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
-            xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeLeft].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
-            xlRange.Borders.Color = Color.Black;
+            //xlRange = xlSheet.Range["D4:P4"];
+            //xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeTop].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
+            //xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeRight].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
+            //xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeBottom].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
+            //xlRange.Borders[Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeLeft].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
+            //xlRange.Borders.Color = Color.Black;
 
             #endregion
 
@@ -1392,50 +1868,108 @@ namespace BenMAP
             //summary chart
             //write summary chart data to hidden sheet
             //sheet DataSource is hidden and is the 4th sheet (Metadata is the third sheet)
-            Microsoft.Office.Interop.Excel.Worksheet xlSheet4 = (Microsoft.Office.Interop.Excel.Worksheet)xlBook.Worksheets[4];             
-            int nextRowForSummary = 1;
+            //Microsoft.Office.Interop.Excel.Worksheet xlSheet4 = (Microsoft.Office.Interop.Excel.Worksheet)xlBook.Worksheets[4];
+            WorksheetPart worksheetPart3 = GetWorksheetPartByName(spreadsheetDocument, "DataSource");
+            uint nextRowForSummary = 1;
             foreach (DataRow dr in dtDetailedResults.Rows)
             {
                 //only write countries, skip regions
                 if (!Convert.ToBoolean(dr["IS_REGION"].ToString()))
                 {
-                    xlSheet4.Range["A" + nextRowForSummary.ToString()].Value = dr["NAME"].ToString();
-                    xlSheet4.Range["B" + nextRowForSummary.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AVOIDED_DEATHS"].ToString());
-                    nextRowForSummary++;                    
+                    //xlSheet4.Range["A" + nextRowForSummary.ToString()].Value = dr["NAME"].ToString();
+                    UpdateCellSharedString(worksheetPart3.Worksheet, dr["NAME"].ToString(), "A", nextRowForSummary);
+                    //xlSheet4.Range["B" + nextRowForSummary.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AVOIDED_DEATHS"].ToString());
+                    UpdateCellNumber(worksheetPart3.Worksheet, FormatDoubleStringTwoSignificantFigures(FORMAT_DECIMAL_0_PLACES, dr["AVOIDED_DEATHS"].ToString()), "B", nextRowForSummary);
+                    GetCell(worksheetPart3.Worksheet, "B", nextRowForSummary).StyleIndex = styleIndexNoFillNumber0DecimalPlacesWithBorders;
+                    nextRowForSummary++;
                 }
             }
-            Microsoft.Office.Interop.Excel.ChartObject xlChartObject = (Microsoft.Office.Interop.Excel.ChartObject)xlSheet.ChartObjects(1);
-            Microsoft.Office.Interop.Excel.Chart xlChart = (Microsoft.Office.Interop.Excel.Chart)xlChartObject.Chart;
-            Microsoft.Office.Interop.Excel.Series xlSeries = (Microsoft.Office.Interop.Excel.Series)xlChart.SeriesCollection(1);
-            xlSeries.Values = xlSheet4.Range["B1:B" + (nextRowForSummary - 1).ToString()];
-            xlSeries.XValues = xlSheet4.Range["A1:A" + (nextRowForSummary - 1).ToString()];
+            //Microsoft.Office.Interop.Excel.ChartObject xlChartObject = (Microsoft.Office.Interop.Excel.ChartObject)xlSheet.ChartObjects(1);            
+            //Microsoft.Office.Interop.Excel.Chart xlChart = (Microsoft.Office.Interop.Excel.Chart)xlChartObject.Chart;
+            //Microsoft.Office.Interop.Excel.Series xlSeries = (Microsoft.Office.Interop.Excel.Series)xlChart.SeriesCollection(1);
+            //xlSeries.Values = xlSheet4.Range["B1:B" + (nextRowForSummary - 1).ToString()];
+            //xlSeries.XValues = xlSheet4.Range["A1:A" + (nextRowForSummary - 1).ToString()];
+            DrawingsPart drawingsPart = worksheetPart.GetPartsOfType<DrawingsPart>().First();
+            ChartPart chartPart = drawingsPart.GetPartsOfType<ChartPart>().First();
+            DocumentFormat.OpenXml.Drawing.Charts.Chart chart = chartPart.ChartSpace.Elements<DocumentFormat.OpenXml.Drawing.Charts.Chart>().First();
+            DocumentFormat.OpenXml.Drawing.Charts.PlotArea plotArea = chart.Elements<DocumentFormat.OpenXml.Drawing.Charts.PlotArea>().First();
+            DocumentFormat.OpenXml.Drawing.Charts.PieChart pieChart = plotArea.Elements<DocumentFormat.OpenXml.Drawing.Charts.PieChart>().First();
+            DocumentFormat.OpenXml.Drawing.Charts.PieChartSeries pieChartSeries = pieChart.Elements<DocumentFormat.OpenXml.Drawing.Charts.PieChartSeries>().First();
+            DocumentFormat.OpenXml.Drawing.Charts.CategoryAxisData categoryAxisData = pieChartSeries.Elements<DocumentFormat.OpenXml.Drawing.Charts.CategoryAxisData>().First();
+            DocumentFormat.OpenXml.Drawing.Charts.MultiLevelStringReference multiLevelStringReference = categoryAxisData.Elements<DocumentFormat.OpenXml.Drawing.Charts.MultiLevelStringReference>().First();
+            DocumentFormat.OpenXml.Drawing.Charts.Formula formula = multiLevelStringReference.Elements<DocumentFormat.OpenXml.Drawing.Charts.Formula>().First();
+            formula.Text = "\'DataSource\'!$A$1:$A$" + (nextRowForSummary - 1).ToString();
+
+            DocumentFormat.OpenXml.Drawing.Charts.Values values = pieChartSeries.Elements<DocumentFormat.OpenXml.Drawing.Charts.Values>().First();
+            DocumentFormat.OpenXml.Drawing.Charts.NumberReference numberReference = values.Elements<DocumentFormat.OpenXml.Drawing.Charts.NumberReference>().First();
+            DocumentFormat.OpenXml.Drawing.Charts.Formula formulaValues = numberReference.Elements<DocumentFormat.OpenXml.Drawing.Charts.Formula>().First();
+            formulaValues.Text = "\'DataSource\'!$B$1:$B$" + (nextRowForSummary - 1).ToString();
+
+
+
             //write to total avoided deaths text box on chart
-            Microsoft.Office.Interop.Excel.Shape txtBox = (Microsoft.Office.Interop.Excel.Shape)xlSheet.Shapes.Item("TextBox 1");
-            txtBox.TextFrame.Characters().Text = txtBox.TextFrame.Characters().Text + " " + xlSheet.Range["E4"].Text; //use .Text rather than .Value on the range here, because it is formatted
+            //Microsoft.Office.Interop.Excel.Shape txtBox = (Microsoft.Office.Interop.Excel.Shape)xlSheet.Shapes.Item("TextBox 1");
+            //txtBox.TextFrame.Characters().Text = txtBox.TextFrame.Characters().Text + " " + xlSheet.Range["E4"].Text; //use .Text rather than .Value on the range here, because it is formatted
+            DocumentFormat.OpenXml.Drawing.Spreadsheet.WorksheetDrawing worksheetDrawing = drawingsPart.WorksheetDrawing;
+            DocumentFormat.OpenXml.Drawing.Spreadsheet.TwoCellAnchor twoCellAnchor = worksheetDrawing.Elements<DocumentFormat.OpenXml.Drawing.Spreadsheet.TwoCellAnchor>().ElementAt(1);
+            DocumentFormat.OpenXml.Drawing.Spreadsheet.Shape shape = twoCellAnchor.Elements<DocumentFormat.OpenXml.Drawing.Spreadsheet.Shape>().First();
+            DocumentFormat.OpenXml.Drawing.Spreadsheet.TextBody textBody = shape.Elements<DocumentFormat.OpenXml.Drawing.Spreadsheet.TextBody>().First();
+            DocumentFormat.OpenXml.Drawing.Paragraph paragraph = textBody.Elements<DocumentFormat.OpenXml.Drawing.Paragraph>().First();
+            DocumentFormat.OpenXml.Drawing.Run run = paragraph.Elements<DocumentFormat.OpenXml.Drawing.Run>().First();
+            DocumentFormat.OpenXml.Drawing.Text text = run.Elements<DocumentFormat.OpenXml.Drawing.Text>().First();
+            text.Text = text.Text + " " + Double.Parse(GetCellValue(worksheetPart.Worksheet, "E", 4)).ToString(FORMAT_DECIMAL_0_PLACES);
 
 
-            //avoided deaths chart sheet
-            xlChart = (Microsoft.Office.Interop.Excel.Chart)xlBook.Charts[1];
-            xlSeries = (Microsoft.Office.Interop.Excel.Series)xlChart.SeriesCollection(1);
-            xlSeries.Values = xlSheet2.Range["C4:C" + (nextRow - 1).ToString()];
-            xlSeries.XValues = xlSheet2.Range["A4:A" + (nextRow - 1).ToString()];
+            ////avoided deaths chart sheet
+            //xlChart = (Microsoft.Office.Interop.Excel.Chart)xlBook.Charts[1];
+            //xlSeries = (Microsoft.Office.Interop.Excel.Series)xlChart.SeriesCollection(1);
+            //xlSeries.Values = xlSheet2.Range["C4:C" + (nextRow - 1).ToString()];
+            //xlSeries.XValues = xlSheet2.Range["A4:A" + (nextRow - 1).ToString()];
+            ChartsheetPart chartsheetPart = GetChartsheetPartByName(spreadsheetDocument, "Avoided Deaths By Country");
+            drawingsPart = chartsheetPart.GetPartsOfType<DrawingsPart>().First();
+            chartPart = drawingsPart.GetPartsOfType<ChartPart>().First();
+            chart = chartPart.ChartSpace.Elements<DocumentFormat.OpenXml.Drawing.Charts.Chart>().First();
+            plotArea = chart.Elements<DocumentFormat.OpenXml.Drawing.Charts.PlotArea>().First();
+            DocumentFormat.OpenXml.Drawing.Charts.BarChart barChart = plotArea.Elements<DocumentFormat.OpenXml.Drawing.Charts.BarChart>().First();
+            DocumentFormat.OpenXml.Drawing.Charts.BarChartSeries barChartSeries = barChart.Elements<DocumentFormat.OpenXml.Drawing.Charts.BarChartSeries>().First();
+            categoryAxisData = barChartSeries.Elements<DocumentFormat.OpenXml.Drawing.Charts.CategoryAxisData>().First();
+            DocumentFormat.OpenXml.Drawing.Charts.StringReference stringReference = categoryAxisData.Elements<DocumentFormat.OpenXml.Drawing.Charts.StringReference>().First();
+            formula = stringReference.Elements<DocumentFormat.OpenXml.Drawing.Charts.Formula>().First();
+            formula.Text = "\'Detailed Results\'!$A$4:$A$" + (nextRow - 1).ToString();
 
-            //deaths per 100,000
-            xlChart = (Microsoft.Office.Interop.Excel.Chart)xlBook.Charts[2];
-            xlSeries = (Microsoft.Office.Interop.Excel.Series)xlChart.SeriesCollection(1);
-            xlSeries.Values = xlSheet2.Range["F4:F" + (nextRow - 1).ToString()];
-            xlSeries.XValues = xlSheet2.Range["A4:A" + (nextRow - 1).ToString()];
+            values = barChartSeries.Elements<DocumentFormat.OpenXml.Drawing.Charts.Values>().First();
+            numberReference = values.Elements<DocumentFormat.OpenXml.Drawing.Charts.NumberReference>().First();
+            formulaValues = numberReference.Elements<DocumentFormat.OpenXml.Drawing.Charts.Formula>().First();
+            formulaValues.Text = "\'Detailed Results\'!$C$4:$C$" + (nextRow - 1).ToString();
+
+            ////deaths per 100,000
+            //xlChart = (Microsoft.Office.Interop.Excel.Chart)xlBook.Charts[2];
+            //xlSeries = (Microsoft.Office.Interop.Excel.Series)xlChart.SeriesCollection(1);
+            //xlSeries.Values = xlSheet2.Range["F4:F" + (nextRow - 1).ToString()];
+            //xlSeries.XValues = xlSheet2.Range["A4:A" + (nextRow - 1).ToString()];
+            chartsheetPart = GetChartsheetPartByName(spreadsheetDocument, "Deaths Per 100,000");
+            drawingsPart = chartsheetPart.GetPartsOfType<DrawingsPart>().First();
+            chartPart = drawingsPart.GetPartsOfType<ChartPart>().First();
+            chart = chartPart.ChartSpace.Elements<DocumentFormat.OpenXml.Drawing.Charts.Chart>().First();
+            plotArea = chart.Elements<DocumentFormat.OpenXml.Drawing.Charts.PlotArea>().First();
+            barChart = plotArea.Elements<DocumentFormat.OpenXml.Drawing.Charts.BarChart>().First();
+            barChartSeries = barChart.Elements<DocumentFormat.OpenXml.Drawing.Charts.BarChartSeries>().First();
+            categoryAxisData = barChartSeries.Elements<DocumentFormat.OpenXml.Drawing.Charts.CategoryAxisData>().First();
+            stringReference = categoryAxisData.Elements<DocumentFormat.OpenXml.Drawing.Charts.StringReference>().First();
+            formula = stringReference.Elements<DocumentFormat.OpenXml.Drawing.Charts.Formula>().First();
+            formula.Text = "\'Detailed Results\'!$A$4:$A$" + (nextRow - 1).ToString();
+
+            values = barChartSeries.Elements<DocumentFormat.OpenXml.Drawing.Charts.Values>().First();
+            numberReference = values.Elements<DocumentFormat.OpenXml.Drawing.Charts.NumberReference>().First();
+            formulaValues = numberReference.Elements<DocumentFormat.OpenXml.Drawing.Charts.Formula>().First();
+            formulaValues.Text = "\'Detailed Results\'!$F$4:$F$" + (nextRow - 1).ToString();
 
             #endregion
 
-
-
             //save
-            xlBook.SaveAs(filePath, FileFormat: XlFileFormat.xlOpenXMLWorkbook);
-            xlBook.Close();       
-        
-        
-        
+            spreadsheetDocument.WorkbookPart.Workbook.Save();
+            spreadsheetDocument.Close();
+
         }
 
         private void SaveRollbackReportCSV(GBDRollbackItem rollback)
