@@ -2,7 +2,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyTitle("BenMAP-CE 1.0.18 Training Beta")]
+[assembly: AssemblyTitle("BenMAP-CE 1.0.18 ")]
 [assembly: AssemblyDescription("U.S. EPA, 2014. Environmental Benefits Mapping and Analysis Program - Community Edition (Version 1.0.18), 2014. Research Triangle Park, NC. Available on the Internet at <http://www.epa.gov/air/benmap/>.\r\nBenMAP-CE is free and open source software. Requests for the source code, as well as comments and questions, should be sent to benmap@epa.gov.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
