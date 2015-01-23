@@ -66,7 +66,8 @@ namespace BenMAP
                 Logger.LogError(ex);
             }
         }
-        public void CheckFirebirdAndStartFirebird()
+       //public void CheckFirebirdAndStartFirebird()
+        public bool CheckFirebirdAndStartFirebird()
         {
             try
             {
@@ -76,14 +77,21 @@ namespace BenMAP
                     string commandText = "select SetupID,SetupName from Setups order by SetupID";
                     ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                     System.Data.DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
+                    //MessageBox.Show(CommonClass.Connection.ConnectionString);
+                  
+                //    ConnectionStringSettings settings = ConfigurationManager.ConnectionStrings["ConnectionString"];
+                    return isOK;
                 }
                 catch(Exception ex)
                 {
                     isOK = false;
-                    MessageBox.Show("Firebird connection is NOT OK\n"+ex.StackTrace);
+                   
+                    MessageBox.Show(ex.StackTrace);
+                    return isOK;
                 }
-                if (isOK == true) return;
-                ConnectionStringSettings settings = ConfigurationManager.ConnectionStrings["ConnectionString"];
+                
+            //   if (isOK == true) return isOK;
+               // ConnectionStringSettings settings = ConfigurationManager.ConnectionStrings["ConnectionString"];
                 //string str = settings.ConnectionString;
                 //if (!str.Contains(":"))
                 //    str = Application.StartupPath + @"\" + str.Substring(str.IndexOf("initial catalog=") + 16);
@@ -138,9 +146,11 @@ namespace BenMAP
                     }
                 }*/
             }
-            catch
+            catch(Exception ex)
             {
+  //              System.Console.WriteLine(ex.StackTrace);
 
+                return false;
                 Environment.Exit(0);
             }
         }
@@ -151,7 +161,11 @@ namespace BenMAP
             try
             {
                 InitializeComponent();
-                CheckFirebirdAndStartFirebird();
+             //  CheckFirebirdAndStartFirebird();
+                 if (CheckFirebirdAndStartFirebird() == false)
+                {
+                    MessageBox.Show("Firebird Database connection not found.");
+                }
                 _baseFormTitle = this.Text + Assembly.GetExecutingAssembly().GetName().Version.ToString().Substring(0, Assembly.GetExecutingAssembly().GetName().Version.ToString().Count() - 2); mnuOverview.Text = "Quick-Start Guide"; this.Text = _baseFormTitle;
 
                 string sPicName = "";
@@ -327,10 +341,10 @@ namespace BenMAP
                     {
                         (_currentForm as BenMAP).loadHomePageFunction();
                     }
-                    else
-                    {
-                        MessageBox.Show("Home page name is empty string");
-                    }
+                //    else
+                //    {
+                //        MessageBox.Show("Home page name is empty string");
+                //    }
                 }
 
                 else
