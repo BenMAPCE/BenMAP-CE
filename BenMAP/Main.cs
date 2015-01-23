@@ -77,9 +77,10 @@ namespace BenMAP
                     ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                     System.Data.DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
                 }
-                catch
+                catch(Exception ex)
                 {
                     isOK = false;
+                    MessageBox.Show("Firebird connection is NOT OK\n"+ex.StackTrace);
                 }
                 if (isOK == true) return;
                 ConnectionStringSettings settings = ConfigurationManager.ConnectionStrings["ConnectionString"];
@@ -298,28 +299,52 @@ namespace BenMAP
 
         private void Main_Load(object sender, EventArgs e)
         {
+            _projFileName = "";
             if (CommonClass.InputParams != null && CommonClass.InputParams.Count() != 0
                      && CommonClass.InputParams[0].ToLower().Contains(".ctlx"))
             {
                 if (BatchCommonClass.RunBatch(CommonClass.InputParams[0]) == false)
                 {
+                    System.Console.WriteLine("false return from batch call");
                 };
                 Environment.Exit(0);
-                return;
+                
             }
             CommonClass.BenMAPForm = _currentForm as BenMAP;
-            try
+            String errorcode = "0";
+            if (_currentForm.Equals(null))
             {
-                if ((_currentForm as BenMAP).HomePageName != "")
-                    (_currentForm as BenMAP).loadHomePageFunction();
+                errorcode = "1"; 
+                MessageBox.Show("currentform is null");
+                return;
+            }
+
+            try
+            {   //NOT EQUAL
+                if (!(_currentForm as BenMAP).HomePageName.Equals(null))
+                {
+                    if ((_currentForm as BenMAP).HomePageName != "")
+                    {
+                        (_currentForm as BenMAP).loadHomePageFunction();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Home page name is empty string");
+                    }
+                }
+
+                else
+                {
+                    MessageBox.Show("CurrentForm.homepageName is Null");
+                }
             }
             catch(Exception ex)
             {
               //  MessageBox.Show("Database may be broken. Please install BenMAP CE again.");
-                MessageBox.Show("Error found launching application: " + ex.ToString());
+                MessageBox.Show("Error "+ errorcode+" found launching application: " + ex.ToString() +"\n Stack trace : " + ex.StackTrace);
                 Environment.Exit(0);
             }
-            _projFileName = "";
+            
 
         }
 
