@@ -29,10 +29,10 @@ namespace BenMAP
         public void ExecuteDelete()
         {
             String[] cmds = new String[4];
-            cmds[0] =@"del /F /S /Q %ProgramData%\BenMap-CE\Data\*.* ";
-            cmds[1] =@"del /F /S /Q %ProgramData%\BenMap-CE\Database\*.*";
-            cmds[2] =@"del /F /S /Q %ProgramData%\BenMap-CE\Tmp\*.*";
-            cmds[3] =@"rmdir /S /Q  %ProgramData%\BenMap-CE\";
+            cmds[0] =@"del /F /S /Q %LocalAppData%\BenMap-CE\Data\*.* ";
+            cmds[1] =@"del /F /S /Q %LocalAppData%\BenMap-CE\Database\*.*";
+            cmds[2] =@"del /F /S /Q %LocalAppData%\BenMap-CE\Tmp\*.*";
+            cmds[3] =@"rmdir /S /Q  %LocalAppData%\BenMap-CE\";
             for (int i = 0; i < cmds.Length; i++)
             {
 

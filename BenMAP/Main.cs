@@ -74,10 +74,11 @@ namespace BenMAP
                 bool isOK = true;
                 try
                 {
+                //     MessageBox.Show("Database Path Information: "+ CommonClass.Connection.ConnectionString);
                     string commandText = "select SetupID,SetupName from Setups order by SetupID";
                     ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                     System.Data.DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
-                    //MessageBox.Show(CommonClass.Connection.ConnectionString);
+                    
                   
                 //    ConnectionStringSettings settings = ConfigurationManager.ConnectionStrings["ConnectionString"];
                     return isOK;
