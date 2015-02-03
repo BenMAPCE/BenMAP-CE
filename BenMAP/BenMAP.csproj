@@ -1501,6 +1501,7 @@
     <None Include="Resources\btn4_1.png" />
     <None Include="Resources\btn4_2.png" />
     <None Include="Resources\btn4_3.png" />
+    <None Include="Resources\BuildDate.txt" />
     <Content Include="Resources\chart4.gif" />
     <Content Include="Resources\cuahsi_logo1.GIF" />
     <Content Include="Resources\DistributionFormula\2000px-Exponential_pdf_svg.png">
@@ -1642,6 +1643,9 @@
     <PostBuildEvent>call "$(DevEnvDir)..\tools\vsvars32.bat"
 
 editbin /LARGEADDRESSAWARE "$(TargetPath)"</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>python $(ProjectDir)BuildDate.py</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

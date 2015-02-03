@@ -4506,7 +4506,7 @@
             "{994432C3-9487-495D-8656-3E829A8DBDDE}:_A32A674BD1544A8D89DED06182A8E5F4"
             {
             "DefaultLocation" = "8:[LocalAppDataFolder]"
-            "Name" = "8:BenMap-CE"
+            "Name" = "8:BenMAP-CE"
             "AlwaysCreate" = "11:TRUE"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
@@ -4515,7 +4515,7 @@
                 {
                     "{9EF0B969-E518-4E46-987F-47570745A589}:_427CD2979DD5407E9C5328352F98F1CF"
                     {
-                    "Name" = "8:BenMap-CE"
+                    "Name" = "8:BenMAP-CE"
                     "AlwaysCreate" = "11:TRUE"
                     "Condition" = "8:"
                     "Transitive" = "11:FALSE"
@@ -4692,17 +4692,6 @@
                     }
                 }
             }
-            "{1525181F-901A-416C-8A58-119130FE478E}:_D37BC24C254B4543A0BCC2AB7D189EE2"
-            {
-            "Name" = "8:#1915"
-            "AlwaysCreate" = "11:FALSE"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Property" = "8:AppDataFolder"
-                "Folders"
-                {
-                }
-            }
             "{1525181F-901A-416C-8A58-119130FE478E}:_E606EAE42EE342F896F2F1851E38F70D"
             {
             "Name" = "8:#1919"
@@ -4729,7 +4718,7 @@
         "Product"
         {
         "Name" = "8:Microsoft Visual Studio"
-        "ProductName" = "8:BenMap-CE"
+        "ProductName" = "8:BenMAP-CE"
         "ProductCode" = "8:{D565775A-2B13-4F8E-B882-2762B82D8749}"
         "PackageCode" = "8:{C439D8A3-2AA2-4284-981D-80DA9576E760}"
         "UpgradeCode" = "8:{10C0CCD0-CE12-43BB-BB3E-44059FCA4ADB}"
@@ -4739,10 +4728,10 @@
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
         "ProductVersion" = "8:1.0.18"
-        "Manufacturer" = "8:US EPA"
+        "Manufacturer" = "8:BenMAP-CE Development Team"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
-        "Title" = "8:BenMap-CE Setup"
+        "Title" = "8:BenMAP-CE Setup"
         "Subject" = "8:"
         "ARPCONTACT" = "8:US EPA"
         "Keywords" = "8:"
@@ -4943,9 +4932,9 @@
                             }
                         }
                     }
-                    "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_25967A4C26314760A342BFF985E50E54"
+                    "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_62BBE3B2CFF6408CB985B0DAF7DBA10D"
                     {
-                    "Sequence" = "3:300"
+                    "Sequence" = "3:210"
                     "DisplayName" = "8:Confirm Installation"
                     "UseDynamicProperties" = "11:TRUE"
                     "IsDependency" = "11:FALSE"
@@ -5029,7 +5018,7 @@
                 {
                     "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_1BE1780C31AF49D595D44C36BEFC690B"
                     {
-                    "Sequence" = "3:100"
+                    "Sequence" = "3:110"
                     "DisplayName" = "8:Progress"
                     "UseDynamicProperties" = "11:TRUE"
                     "IsDependency" = "11:FALSE"
