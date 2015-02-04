@@ -256,7 +256,9 @@ namespace BenMAP
                 commandText = string.Format("select IncomeGrowthAdjDataSetID from IncomeGrowthAdjDataSets where IncomeGrowthAdjDataSetName='{0}'", str);
                 object obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
                 int incomeGrowthID = int.Parse(obj.ToString());
-                commandText = string.Format("select EndpointGroups from IncomeGrowthAdjFactors where Yyear={0}", Year);
+                // 2015 02 03 modified next line to add dataset to filter. otherwise all endpoints were shown, even if not in the income growth dataset 
+                //commandText = string.Format("select EndpointGroups from IncomeGrowthAdjFactors where Yyear={0}", Year);
+                commandText = string.Format("select EndpointGroups from IncomeGrowthAdjFactors where Yyear={0} AND IncomeGrowthAdjDataSetID={1}", Year, incomeGrowthID);
                 dsGrid = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                 lstEndpointGroups.DataSource = dsGrid.Tables[0];
                 lstEndpointGroups.DisplayMember = "EndpointGroups";
@@ -392,6 +394,16 @@ namespace BenMAP
         }
 
         private void txtRandomSeed_KeyPress(object sender, KeyPressEventArgs e)
+        {
+
+        }
+
+        private void cboIncomeGrowthDataset_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void cboIncomeGrowthYear_SelectedIndexChanged(object sender, EventArgs e)
         {
 
         }
