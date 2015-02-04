@@ -59,41 +59,59 @@ namespace BenMAP
             this.grpIncomeGrowthAdjustment.SuspendLayout();
             this.grpInflationAdjustment.SuspendLayout();
             this.SuspendLayout();
-                                                this.groupBox2.Controls.Add(this.btnOK);
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.btnOK);
             this.groupBox2.Controls.Add(this.btnCancel);
             this.groupBox2.Location = new System.Drawing.Point(13, 498);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(433, 62);
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
-                                                this.btnOK.Location = new System.Drawing.Point(332, 23);
+            // 
+            // btnOK
+            // 
+            this.btnOK.Location = new System.Drawing.Point(332, 23);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 27);
             this.btnOK.TabIndex = 1;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
-                                                this.btnCancel.Location = new System.Drawing.Point(227, 23);
+            // 
+            // btnCancel
+            // 
+            this.btnCancel.Location = new System.Drawing.Point(227, 23);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 27);
             this.btnCancel.TabIndex = 0;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
-                                                this.groupBox1.Controls.Add(this.tab);
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.tab);
             this.groupBox1.Location = new System.Drawing.Point(13, 15);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(433, 476);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
-                                                this.tab.Controls.Add(this.tbpAggreationAndPooling);
+            // 
+            // tab
+            // 
+            this.tab.Controls.Add(this.tbpAggreationAndPooling);
             this.tab.Controls.Add(this.tbpCurrencyAndIncome);
             this.tab.Location = new System.Drawing.Point(15, 12);
             this.tab.Name = "tab";
             this.tab.SelectedIndex = 0;
             this.tab.Size = new System.Drawing.Size(412, 457);
             this.tab.TabIndex = 0;
-                                                this.tbpAggreationAndPooling.Controls.Add(this.chbSortIncidenceResults);
+            // 
+            // tbpAggreationAndPooling
+            // 
+            this.tbpAggreationAndPooling.Controls.Add(this.chbSortIncidenceResults);
             this.tbpAggreationAndPooling.Controls.Add(this.txtRandomSeed);
             this.tbpAggreationAndPooling.Controls.Add(this.cboDefaultMonteCarloIterations);
             this.tbpAggreationAndPooling.Controls.Add(this.cboDefaultAdvancedPoolingMethod);
@@ -113,91 +131,133 @@ namespace BenMAP
             this.tbpAggreationAndPooling.TabIndex = 0;
             this.tbpAggreationAndPooling.Text = "Aggregation and Pooling";
             this.tbpAggreationAndPooling.UseVisualStyleBackColor = true;
-                                                this.chbSortIncidenceResults.AutoSize = true;
+            // 
+            // chbSortIncidenceResults
+            // 
+            this.chbSortIncidenceResults.AutoSize = true;
             this.chbSortIncidenceResults.Location = new System.Drawing.Point(16, 161);
             this.chbSortIncidenceResults.Name = "chbSortIncidenceResults";
             this.chbSortIncidenceResults.Size = new System.Drawing.Size(147, 18);
             this.chbSortIncidenceResults.TabIndex = 13;
             this.chbSortIncidenceResults.Text = "Sort Incidence Results";
             this.chbSortIncidenceResults.UseVisualStyleBackColor = true;
-                                                this.txtRandomSeed.Location = new System.Drawing.Point(215, 119);
+            // 
+            // txtRandomSeed
+            // 
+            this.txtRandomSeed.Location = new System.Drawing.Point(215, 119);
             this.txtRandomSeed.Name = "txtRandomSeed";
             this.txtRandomSeed.Size = new System.Drawing.Size(173, 22);
             this.txtRandomSeed.TabIndex = 12;
             this.txtRandomSeed.Text = "1";
-                                                this.cboDefaultMonteCarloIterations.FormattingEnabled = true;
+            // 
+            // cboDefaultMonteCarloIterations
+            // 
+            this.cboDefaultMonteCarloIterations.FormattingEnabled = true;
             this.cboDefaultMonteCarloIterations.Location = new System.Drawing.Point(215, 78);
             this.cboDefaultMonteCarloIterations.Name = "cboDefaultMonteCarloIterations";
             this.cboDefaultMonteCarloIterations.Size = new System.Drawing.Size(173, 22);
             this.cboDefaultMonteCarloIterations.TabIndex = 11;
             this.cboDefaultMonteCarloIterations.Text = "5000";
-                                                this.cboDefaultAdvancedPoolingMethod.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            // 
+            // cboDefaultAdvancedPoolingMethod
+            // 
+            this.cboDefaultAdvancedPoolingMethod.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboDefaultAdvancedPoolingMethod.FormattingEnabled = true;
             this.cboDefaultAdvancedPoolingMethod.Location = new System.Drawing.Point(215, 37);
             this.cboDefaultAdvancedPoolingMethod.Name = "cboDefaultAdvancedPoolingMethod";
             this.cboDefaultAdvancedPoolingMethod.Size = new System.Drawing.Size(173, 22);
             this.cboDefaultAdvancedPoolingMethod.TabIndex = 10;
-                                                this.cboQALYAggregation.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            // 
+            // cboQALYAggregation
+            // 
+            this.cboQALYAggregation.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboQALYAggregation.FormattingEnabled = true;
             this.cboQALYAggregation.Location = new System.Drawing.Point(216, 296);
             this.cboQALYAggregation.Name = "cboQALYAggregation";
             this.cboQALYAggregation.Size = new System.Drawing.Size(172, 22);
             this.cboQALYAggregation.TabIndex = 9;
             this.cboQALYAggregation.Visible = false;
-                                                this.cboValuationAggregation.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            // 
+            // cboValuationAggregation
+            // 
+            this.cboValuationAggregation.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboValuationAggregation.FormattingEnabled = true;
             this.cboValuationAggregation.Location = new System.Drawing.Point(215, 251);
             this.cboValuationAggregation.Name = "cboValuationAggregation";
             this.cboValuationAggregation.Size = new System.Drawing.Size(172, 22);
             this.cboValuationAggregation.TabIndex = 8;
             this.cboValuationAggregation.Visible = false;
-                                                this.cboIncidenceAggregation.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            // 
+            // cboIncidenceAggregation
+            // 
+            this.cboIncidenceAggregation.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboIncidenceAggregation.FormattingEnabled = true;
             this.cboIncidenceAggregation.Location = new System.Drawing.Point(215, 206);
             this.cboIncidenceAggregation.Name = "cboIncidenceAggregation";
             this.cboIncidenceAggregation.Size = new System.Drawing.Size(172, 22);
             this.cboIncidenceAggregation.TabIndex = 7;
             this.cboIncidenceAggregation.Visible = false;
-                                                this.label6.AutoSize = true;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
             this.label6.Location = new System.Drawing.Point(14, 122);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(85, 14);
             this.label6.TabIndex = 5;
             this.label6.Text = "Random Seed:";
-                                                this.label5.AutoSize = true;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
             this.label5.Location = new System.Drawing.Point(14, 81);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(176, 14);
             this.label5.TabIndex = 4;
             this.label5.Text = "Default Monte Carlo Iterations:";
-                                                this.label4.AutoSize = true;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(14, 40);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(195, 14);
             this.label4.TabIndex = 3;
             this.label4.Text = "Default Advanced Pooling Method:";
-                                                this.label3.AutoSize = true;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(14, 299);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(102, 14);
             this.label3.TabIndex = 2;
             this.label3.Text = "QALY Aggregation:";
             this.label3.Visible = false;
-                                                this.label2.AutoSize = true;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(14, 254);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(129, 14);
             this.label2.TabIndex = 1;
             this.label2.Text = "Valuation Aggregation:";
             this.label2.Visible = false;
-                                                this.label1.AutoSize = true;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(14, 209);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(130, 14);
             this.label1.TabIndex = 0;
             this.label1.Text = "Incidence Aggregation:";
             this.label1.Visible = false;
-                                                this.tbpCurrencyAndIncome.Controls.Add(this.grpIncomeGrowthAdjustment);
+            // 
+            // tbpCurrencyAndIncome
+            // 
+            this.tbpCurrencyAndIncome.Controls.Add(this.grpIncomeGrowthAdjustment);
             this.tbpCurrencyAndIncome.Controls.Add(this.grpInflationAdjustment);
             this.tbpCurrencyAndIncome.Location = new System.Drawing.Point(4, 23);
             this.tbpCurrencyAndIncome.Name = "tbpCurrencyAndIncome";
@@ -206,7 +266,10 @@ namespace BenMAP
             this.tbpCurrencyAndIncome.TabIndex = 1;
             this.tbpCurrencyAndIncome.Text = "Currency Year and Income Growth";
             this.tbpCurrencyAndIncome.UseVisualStyleBackColor = true;
-                                                this.grpIncomeGrowthAdjustment.Controls.Add(this.lstEndpointGroups);
+            // 
+            // grpIncomeGrowthAdjustment
+            // 
+            this.grpIncomeGrowthAdjustment.Controls.Add(this.lstEndpointGroups);
             this.grpIncomeGrowthAdjustment.Controls.Add(this.label14);
             this.grpIncomeGrowthAdjustment.Controls.Add(this.label13);
             this.grpIncomeGrowthAdjustment.Controls.Add(this.label12);
@@ -221,7 +284,10 @@ namespace BenMAP
             this.grpIncomeGrowthAdjustment.TabIndex = 1;
             this.grpIncomeGrowthAdjustment.TabStop = false;
             this.grpIncomeGrowthAdjustment.Text = "Income Growth Adjustment";
-                                                this.lstEndpointGroups.FormattingEnabled = true;
+            // 
+            // lstEndpointGroups
+            // 
+            this.lstEndpointGroups.FormattingEnabled = true;
             this.lstEndpointGroups.HorizontalScrollbar = true;
             this.lstEndpointGroups.ItemHeight = 14;
             this.lstEndpointGroups.Location = new System.Drawing.Point(157, 101);
@@ -229,55 +295,84 @@ namespace BenMAP
             this.lstEndpointGroups.SelectionMode = System.Windows.Forms.SelectionMode.MultiSimple;
             this.lstEndpointGroups.Size = new System.Drawing.Size(193, 116);
             this.lstEndpointGroups.TabIndex = 9;
-                                                this.label14.Location = new System.Drawing.Point(13, 232);
+            // 
+            // label14
+            // 
+            this.label14.Location = new System.Drawing.Point(13, 232);
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(337, 48);
             this.label14.TabIndex = 8;
             this.label14.Text = "Select the income growth dataset, then the year and the endpoint groups to which " +
-                "you want to apply the adjustment. You may select more than one endpoint group.";
-                                                this.label13.AutoSize = true;
+    "you want to apply the adjustment. You may select more than one endpoint group.";
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
             this.label13.Location = new System.Drawing.Point(19, 169);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(0, 14);
             this.label13.TabIndex = 7;
-                                                this.label12.AutoSize = true;
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
             this.label12.Location = new System.Drawing.Point(13, 101);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(101, 14);
             this.label12.TabIndex = 5;
             this.label12.Text = "Endpoint Groups:";
-                                                this.cboIncomeGrowthYear.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            // 
+            // cboIncomeGrowthYear
+            // 
+            this.cboIncomeGrowthYear.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboIncomeGrowthYear.FormattingEnabled = true;
             this.cboIncomeGrowthYear.Location = new System.Drawing.Point(157, 65);
             this.cboIncomeGrowthYear.Name = "cboIncomeGrowthYear";
             this.cboIncomeGrowthYear.Size = new System.Drawing.Size(193, 22);
             this.cboIncomeGrowthYear.TabIndex = 4;
+            this.cboIncomeGrowthYear.SelectedIndexChanged += new System.EventHandler(this.cboIncomeGrowthYear_SelectedIndexChanged);
             this.cboIncomeGrowthYear.SelectedValueChanged += new System.EventHandler(this.cboIncomeGrowthYear_SelectedValueChanged);
-                                                this.cboIncomeGrowthDataset.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            // 
+            // cboIncomeGrowthDataset
+            // 
+            this.cboIncomeGrowthDataset.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboIncomeGrowthDataset.FormattingEnabled = true;
             this.cboIncomeGrowthDataset.Location = new System.Drawing.Point(157, 33);
             this.cboIncomeGrowthDataset.Name = "cboIncomeGrowthDataset";
             this.cboIncomeGrowthDataset.Size = new System.Drawing.Size(193, 22);
             this.cboIncomeGrowthDataset.TabIndex = 3;
+            this.cboIncomeGrowthDataset.SelectedIndexChanged += new System.EventHandler(this.cboIncomeGrowthDataset_SelectedIndexChanged);
             this.cboIncomeGrowthDataset.SelectedValueChanged += new System.EventHandler(this.cboIncomeGrowthDataset_SelectedValueChanged);
-                                                this.label11.AutoSize = true;
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
             this.label11.Location = new System.Drawing.Point(13, 36);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(138, 14);
             this.label11.TabIndex = 2;
             this.label11.Text = "Income Growth Dataset:";
-                                                this.label10.AutoSize = true;
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
             this.label10.Location = new System.Drawing.Point(13, 65);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(118, 14);
             this.label10.TabIndex = 1;
             this.label10.Text = "Income Growth Year:";
-                                                this.label9.AutoSize = true;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
             this.label9.Location = new System.Drawing.Point(19, 36);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(0, 14);
             this.label9.TabIndex = 0;
-                                                this.grpInflationAdjustment.Controls.Add(this.cboCurrencyYear);
+            // 
+            // grpInflationAdjustment
+            // 
+            this.grpInflationAdjustment.Controls.Add(this.cboCurrencyYear);
             this.grpInflationAdjustment.Controls.Add(this.cboInflationDataset);
             this.grpInflationAdjustment.Controls.Add(this.label8);
             this.grpInflationAdjustment.Controls.Add(this.label7);
@@ -287,32 +382,47 @@ namespace BenMAP
             this.grpInflationAdjustment.TabIndex = 0;
             this.grpInflationAdjustment.TabStop = false;
             this.grpInflationAdjustment.Text = "Inflation Adjustment";
-                                                this.cboCurrencyYear.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            // 
+            // cboCurrencyYear
+            // 
+            this.cboCurrencyYear.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboCurrencyYear.FormattingEnabled = true;
             this.cboCurrencyYear.Location = new System.Drawing.Point(157, 69);
             this.cboCurrencyYear.Name = "cboCurrencyYear";
             this.cboCurrencyYear.Size = new System.Drawing.Size(193, 22);
             this.cboCurrencyYear.TabIndex = 3;
-                                                this.cboInflationDataset.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            // 
+            // cboInflationDataset
+            // 
+            this.cboInflationDataset.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboInflationDataset.FormattingEnabled = true;
             this.cboInflationDataset.Location = new System.Drawing.Point(157, 31);
             this.cboInflationDataset.Name = "cboInflationDataset";
             this.cboInflationDataset.Size = new System.Drawing.Size(193, 22);
             this.cboInflationDataset.TabIndex = 2;
             this.cboInflationDataset.SelectedValueChanged += new System.EventHandler(this.cboInflationDataset_SelectedValueChanged);
-                                                this.label8.AutoSize = true;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
             this.label8.Location = new System.Drawing.Point(13, 69);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(81, 14);
             this.label8.TabIndex = 1;
             this.label8.Text = "Currency Year:";
-                                                this.label7.AutoSize = true;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
             this.label7.Location = new System.Drawing.Point(13, 31);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(101, 14);
             this.label7.TabIndex = 0;
             this.label7.Text = "Inflation Dataset:";
-                                                this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
+            // 
+            // APVConfigurationAdvancedSettings
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(458, 574);
             this.Controls.Add(this.groupBox2);
