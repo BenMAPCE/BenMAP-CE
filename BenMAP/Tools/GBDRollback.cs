@@ -717,6 +717,11 @@ namespace BenMAP
             txtName.Text = String.Empty;
             txtDescription.Text = String.Empty;
             selectMapFeaturesOnNodeCheck = false;
+            //hide regions tree and countries list to avoid any feedback loop
+            //see tvRegions_AfterCheck and listCountries_ItemCheck
+            tvRegions.Visible = false;
+            listCountries.Visible = false;
+            //clear regions tree
             foreach (TreeNode node in tvRegions.Nodes)
             {
                 node.Checked = false;
@@ -724,6 +729,18 @@ namespace BenMAP
                     tn.Checked=false;
                 }
             }
+            //collapse tree nodes
+            tvRegions.CollapseAll();
+            //clear country list
+            foreach (int checkedItemIndex in listCountries.CheckedIndices)
+            {
+
+                listCountries.SetItemChecked(checkedItemIndex, false);
+
+            }
+            //check regions radio button
+            rbRegions.Checked = true; //this will show regions tree via rbRegions_CheckedChanged
+            tvRegions.Visible = true; //the line above is not firing rbRegions_CheckedChanged, so set regions tree to visible
             //IMapFeatureLayer[] mfl = mapGBD.GetFeatureLayers();
             //mfl[0].UnSelectAll();
             selectMapFeaturesOnNodeCheck = true;
@@ -748,16 +765,31 @@ namespace BenMAP
             }
             item.IpcList.Clear();
             mfl[0].ApplyScheme(mfl[0].Symbology);
+
+            //hide regions tree and countries list to avoid any feedback loop
+            //see tvRegions_AfterCheck and listCountries_ItemCheck
+            tvRegions.Visible = false;
+            listCountries.Visible = false;
             foreach (KeyValuePair<string,string> kvp in item.Countries)
             {
+                //check regions tree node
                 string countryid = kvp.Key;
                 TreeNode[] nodes = tvRegions.Nodes.Find(countryid,true);
                 foreach (TreeNode node in nodes)
                 {
                     node.Checked = true;
                     CheckParentNode(node);
-                }                 
+                }
+                //check country list item
+                int index = listCountries.FindStringExact(kvp.Value);
+                if (index >= 0)
+                {
+                    listCountries.SetItemChecked(index, true);
+                }
             }
+            rbRegions.Checked = true; //this will show regions tree via rbRegions_CheckedChanged
+            tvRegions.Visible = true; //the line above is not firing rbRegions_CheckedChanged, so set regions tree to visible
+
             cboRollbackType.SelectedIndex = (int)item.Type;
             txtPercentage.Text = item.Percentage.ToString();
             txtPercentageBackground.Text = item.Background.ToString();
