@@ -1693,7 +1693,7 @@ namespace BenMAP.APVX
                 CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance.RandomSeed != "" &&
                 CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance.RandomSeed != "Random Integer" && CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance.RandomSeed != null)
                     iRandomSeed = Convert.ToInt32(CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance.RandomSeed);
-
+                // calculates percentiles here
                 allSelectValuationMethod.lstMonte.Add(new LatinPoints() { values = getLHSArrayValuationFunctionSeed(100, allSelectValuationMethod.BenMAPValuationFunction, iRandomSeed).ToList() });
                 int iSeed = 0;
                 Dictionary<string, double> dicVariable = new Dictionary<string, double>();
@@ -4149,7 +4149,9 @@ benMAPValuationFunction.P2A);
                                 }
                             }
                             catch (Exception ex)
-                            { }
+                            {
+                                MessageBox.Show(ex.Message+"\n"+ex.StackTrace);
+                            }
 
 
                         }

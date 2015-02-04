@@ -87,7 +87,7 @@ namespace BenMAP
                 if (_dataFilePath == "")
                 {
                     if (IsWindows7 || IsElse || IsWindowsVista)
-                        _dataFilePath = Environment.GetEnvironmentVariable("ALLUSERSPROFILE") + @"\BenMAP-CE";
+                        _dataFilePath = Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData) + @"\BenMAP-CE";
                     else
                         _dataFilePath = Environment.GetEnvironmentVariable("ALLUSERSPROFILE") + @"\Application Data\BenMAP-CE";
                 }
