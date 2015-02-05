@@ -1730,7 +1730,7 @@
             "SourcePath" = "8:..\\Data\\SampleData\\PM25_36km_base.xls"
             "TargetName" = "8:PM25_36km_base.xls"
             "Tag" = "8:"
-            "Folder" = "8:_94CAE09193414A06A365267088DF780A"
+            "Folder" = "8:_C71EE5D698954FC4B19232FD2ACC64CE"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -3290,7 +3290,7 @@
             "SourcePath" = "8:..\\Data\\SampleData\\CMAQ36km_China_Baseline_PM2.5_2005.xls"
             "TargetName" = "8:CMAQ36km_China_Baseline_PM2.5_2005.xls"
             "Tag" = "8:"
-            "Folder" = "8:_94CAE09193414A06A365267088DF780A"
+            "Folder" = "8:_C71EE5D698954FC4B19232FD2ACC64CE"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -3823,7 +3823,7 @@
             "SourcePath" = "8:..\\Data\\SampleData\\PM25_36km_control.xls"
             "TargetName" = "8:PM25_36km_control.xls"
             "Tag" = "8:"
-            "Folder" = "8:_94CAE09193414A06A365267088DF780A"
+            "Folder" = "8:_C71EE5D698954FC4B19232FD2ACC64CE"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -3843,7 +3843,7 @@
             "SourcePath" = "8:..\\Data\\SampleData\\CMAQ36km_China_Control_PM2.5.xls"
             "TargetName" = "8:CMAQ36km_China_Control_PM2.5.xls"
             "Tag" = "8:"
-            "Folder" = "8:_94CAE09193414A06A365267088DF780A"
+            "Folder" = "8:_C71EE5D698954FC4B19232FD2ACC64CE"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -4542,17 +4542,6 @@
                                         {
                                         }
                                     }
-                                    "{9EF0B969-E518-4E46-987F-47570745A589}:_94CAE09193414A06A365267088DF780A"
-                                    {
-                                    "Name" = "8:SampleData"
-                                    "AlwaysCreate" = "11:FALSE"
-                                    "Condition" = "8:"
-                                    "Transitive" = "11:FALSE"
-                                    "Property" = "8:_81AED151C7FC4BE68FFCCA15632F97B4"
-                                        "Folders"
-                                        {
-                                        }
-                                    }
                                     "{9EF0B969-E518-4E46-987F-47570745A589}:_A3970BE706CB407A9F30722553439773"
                                     {
                                     "Name" = "8:Shapefiles"
@@ -4606,6 +4595,39 @@
                             "Condition" = "8:"
                             "Transitive" = "11:FALSE"
                             "Property" = "8:_FD9CE078EF414D49ADB5613DC501629E"
+                                "Folders"
+                                {
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            "{1525181F-901A-416C-8A58-119130FE478E}:_C2EBF59B6127478B9D24D0617F6C23E5"
+            {
+            "Name" = "8:#1918"
+            "AlwaysCreate" = "11:FALSE"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Property" = "8:PersonalFolder"
+                "Folders"
+                {
+                    "{9EF0B969-E518-4E46-987F-47570745A589}:_9D901B01227C4C47B7F9162CCB71BB6B"
+                    {
+                    "Name" = "8:My BenMAP-CE Files"
+                    "AlwaysCreate" = "11:FALSE"
+                    "Condition" = "8:"
+                    "Transitive" = "11:FALSE"
+                    "Property" = "8:_81AED151C7FC4BE68FFCCA15632F97B4"
+                        "Folders"
+                        {
+                            "{9EF0B969-E518-4E46-987F-47570745A589}:_C71EE5D698954FC4B19232FD2ACC64CE"
+                            {
+                            "Name" = "8:SampleData"
+                            "AlwaysCreate" = "11:FALSE"
+                            "Condition" = "8:"
+                            "Transitive" = "11:FALSE"
+                            "Property" = "8:_0F28CF3187E34518B2345488317A7FFA"
                                 "Folders"
                                 {
                                 }
@@ -4720,13 +4742,13 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:BenMAP-CE"
         "ProductCode" = "8:{D565775A-2B13-4F8E-B882-2762B82D8749}"
-        "PackageCode" = "8:{C439D8A3-2AA2-4284-981D-80DA9576E760}"
+        "PackageCode" = "8:{B4D5C22B-41A2-43C0-A0B4-DB05CFC5CE83}"
         "UpgradeCode" = "8:{10C0CCD0-CE12-43BB-BB3E-44059FCA4ADB}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
-        "InstallAllUsers" = "11:TRUE"
+        "InstallAllUsers" = "11:FALSE"
         "ProductVersion" = "8:1.0.18"
         "Manufacturer" = "8:BenMAP-CE Development Team"
         "ARPHELPTELEPHONE" = "8:"
@@ -5137,7 +5159,7 @@
                             "ContextData" = "8:1;True=1;False=0"
                             "Attributes" = "3:0"
                             "Setting" = "3:0"
-                            "Value" = "3:1"
+                            "Value" = "3:0"
                             "DefaultValue" = "3:1"
                             "UsePlugInResources" = "11:TRUE"
                             }
