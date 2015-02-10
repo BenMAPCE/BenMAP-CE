@@ -1645,7 +1645,10 @@
 editbin /LARGEADDRESSAWARE "$(TargetPath)"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>python $(ProjectDir)BuildDate.py</PreBuildEvent>
+    <PreBuildEvent>python $(ProjectDir)BuildDate.py
+
+UpdateVersion.exe -b Fixed -r Increment -i $(ProjectDir)Properties\AssemblyInfo.cs -o $(ProjectDir)Properties\AssemblyInfo.cs
+UpdateVersion.exe  -v File -b Fixed -r Increment -i $(ProjectDir)Properties\AssemblyInfo.cs -o $(ProjectDir)Properties\AssemblyInfo.cs</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

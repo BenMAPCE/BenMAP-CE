@@ -1299,7 +1299,7 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
         {
             get
             {
-                return (Environment.OSVersion.Platform == PlatformID.Win32NT) && (Environment.OSVersion.Version.Major == 6) && (Environment.OSVersion.Version.Minor == 1);
+                return (Environment.OSVersion.Platform == PlatformID.Win32NT) && (Environment.OSVersion.Version.Major >= 6) && (Environment.OSVersion.Version.Minor >= 1);
             }
         }
 

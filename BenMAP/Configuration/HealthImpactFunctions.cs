@@ -1393,7 +1393,7 @@ namespace BenMAP
                             , dicAll365Base[baseControlGroup.Pollutant.PollutantID], dicAll365Control[baseControlGroup.Pollutant.PollutantID], DicControlAll[baseControlGroup.Pollutant.PollutantID],
                             DicAllSetupVariableValues, dicPopulationAge, dicIncidenceRateAttribute, dicPrevalenceRateAttribute, incidenceDataSetGridType, PrevalenceDataSetGridType, dicRace, dicEthnicity, dicGender, CommonClass.CRThreshold, CommonClass.CRLatinHypercubePoints,
                             CommonClass.CRRunInPointMode, lstGridRelationshipAll, crSelectFunction, baseControlGroup, null, CommonClass.BenMAPPopulation, lhsResultArray);
-
+                     
                     }
                     crid = crid + 1; ;
                 }
@@ -1502,8 +1502,9 @@ namespace BenMAP
                 Thread.Sleep(3000);
                 GC.Collect();
             }
-            catch
+            catch(Exception e)
             {
+                MessageBox.Show(e.StackTrace);
             }
 
 
@@ -1525,12 +1526,14 @@ namespace BenMAP
                         olvSelected.GetItem(iSelect).UseItemStyleForSubItems = true; olvSelected.GetItem(iSelect).Font = new Font(olvSelected.GetItem(iSelect).Font, FontStyle.Bold);
                     }
                     olvSelected.Refresh();
-                    string strAuthorCount = icount.ToString() + " of " + CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction.Count.ToString(); while (strAuthorCount.Length < CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction.Count.ToString().Length * 2 + 4)
+                    string strAuthorCount = icount.ToString() + " of " + CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction.Count.ToString(); 
+                    while (strAuthorCount.Length < CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction.Count.ToString().Length * 2 + 4)
                     {
                         strAuthorCount = " " + strAuthorCount;
 
                     }
-                    string sProgressBar = String.Format("Processing. Completed {0} Health Impact Functions.", strAuthorCount);
+                  //  string sProgressBar = String.Format("Processing {0} Health Impact Functions. Currently calculating {1}", strAuthorCount, CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction.ElementAt(icount).VariableDataSetName.ToString());
+                    string sProgressBar = String.Format("Processing {0} Health Impact Functions.", strAuthorCount);
                     while (sProgressBar.Length < 57)
                     {
                         sProgressBar = sProgressBar + " ";
