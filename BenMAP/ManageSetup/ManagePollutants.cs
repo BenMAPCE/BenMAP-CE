@@ -156,5 +156,30 @@ namespace BenMAP
         {
             this.DialogResult = DialogResult.Cancel;
         }
+
+        private void btnCopy_Click(object sender, EventArgs e)
+        {
+            // get current list item for copy
+            object pollutantID = (lstAvailablePollutants.SelectedItem as DataRowView).Row["pollutantID"];
+            string pollutantName = (lstAvailablePollutants.SelectedItem as DataRowView).Row["pollutantName"].ToString();
+
+            Tools.InputBox myBox = new Tools.InputBox("Copy Pollutant " + pollutantName, "Enter New Pollutant Name", pollutantName + "_copy");
+             DialogResult inputResult = myBox.ShowDialog();
+            if (inputResult == DialogResult.OK)
+            {
+                // copy routine goes here
+                CopyPollutant cp = new CopyPollutant();
+                cp.Copy(int.Parse(pollutantID.ToString()), CommonClass.ManageSetup.SetupID, myBox.InputText);
+                MessageBox.Show("Pollutant " + pollutantName + " was copied as " + myBox.InputText);
+            }
+            else if (inputResult == DialogResult.Cancel)
+            {
+                MessageBox.Show("Copy cancelled by user");
+            }
+            // first check to see if a pollutant has been selected 
+            // open a box and ask for the name of the new pollutant (default is old name + 'Copy')
+            // 
+            
+        }
     }
 }
