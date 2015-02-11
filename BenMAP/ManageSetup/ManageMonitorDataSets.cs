@@ -53,11 +53,13 @@ namespace BenMAP
         {
             if (bIsLocked)
             {
-                btnEdit.Text = "Copy";
+                btnEdit.Text = "Copy1";
+                btnEdit.Visible = false;
             }
             else
             {
                 btnEdit.Text = "Edit";
+                btnEdit.Visible = true;
             }
         }
         private bool isLock()
@@ -266,6 +268,29 @@ namespace BenMAP
             {
                 Logger.LogError(ex);
             }
+        }
+
+        private void btnCopy_Click(object sender, EventArgs e)
+        {
+            if (lstAvailableDataSets.SelectedItem == null) return;
+            string strSetName = lstAvailableDataSets.GetItemText(lstAvailableDataSets.SelectedItem);
+            Tools.InputBox myBox = new Tools.InputBox("Copy Monitor Dataset " + strSetName, "Enter New Monitor Dataset Name", strSetName + "_copy");
+            DialogResult inputResult = myBox.ShowDialog();
+            if (inputResult == DialogResult.OK)
+            {
+                // copy routine goes here
+                CopyMonitors cp = new CopyMonitors();
+
+                cp.Copy(int.Parse(_lstDataSetID.ToString()), CommonClass.ManageSetup.SetupID, myBox.InputText);
+                //MessageBox.Show("Pollutant " + pollutantName + " was copied as " + myBox.InputText);
+            }
+            else if (inputResult == DialogResult.Cancel)
+            {
+                MessageBox.Show("Copy cancelled by user");
+            }
+            // refresh form
+            addLstBox();
+            addGridView();
         }
     }
 }

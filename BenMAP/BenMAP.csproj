@@ -474,6 +474,7 @@
     <Compile Include="ManageSetup\AgeRangeDefinition.Designer.cs">
       <DependentUpon>AgeRangeDefinition.cs</DependentUpon>
     </Compile>
+    <Compile Include="ManageSetup\CopyMonitors.cs" />
     <Compile Include="ManageSetup\CopyPollutant.cs" />
     <Compile Include="ManageSetup\CopyVariableDataset.cs" />
     <Compile Include="ManageSetup\CustomDistributionEntries.cs">
