@@ -128,10 +128,6 @@ namespace BenMAP
 
                 DialogResult rth = frm.ShowDialog();
                
-                // STOPPED HERE
-                return;
-               
-               
                 ExportDataForlistbox();
             }
             catch (Exception ex)
@@ -328,11 +324,13 @@ namespace BenMAP
         {
             if (bIsLocked)
             {
-                btnEdit.Text = "Copy";
+                //btnEdit.Text = "Copy1";
+                btnEdit.Visible = false;
             }
             else
             {
                 btnEdit.Text = "Edit";
+                btnEdit.Visible = true;
             }
         }
         private bool isLock()
@@ -358,6 +356,26 @@ namespace BenMAP
             return isLocked;
         }
 
-
+        private void btnCopy_Click(object sender, EventArgs e)
+        {
+            // get properties for dialog box
+            if (lstAvailable.SelectedItem == null) return;
+            string strSetName = lstAvailable.GetItemText(lstAvailable.SelectedItem);
+                
+            Tools.InputBox myBox = new Tools.InputBox("Copy variable dataset " + strSetName, "Enter New Variable Set Name", strSetName + "_copy");
+            DialogResult inputResult = myBox.ShowDialog();
+            if (inputResult == DialogResult.OK)
+            {
+                // copy routine goes here
+                CopyVariableDataset cpDataset = new CopyVariableDataset();
+                cpDataset.Copy(_datasetID,CommonClass.ManageSetup.SetupID,myBox.InputText);
+            }
+            else if (inputResult == DialogResult.Cancel)
+            {
+                MessageBox.Show("Copy cancelled by user");
+            }
+            // refresh list
+            ExportDataForlistbox();
+        }
     }
 }

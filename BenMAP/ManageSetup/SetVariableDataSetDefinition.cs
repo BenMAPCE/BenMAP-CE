@@ -162,10 +162,7 @@ namespace BenMAP
             {
                 
                 CopyDatabase();
-
-                // STOPPED HERE
-                return;
-
+               
                 this.DialogResult = DialogResult.OK;
                 this.Close();
                 return;
@@ -724,15 +721,7 @@ namespace BenMAP
         }
         private void CopyDatabase()
         {
-
-
-           
             FireBirdHelperBase fb = new ESILFireBirdHelper();
-
-            // STOPPED HERE
-            return;
-
-
 
             try
             {
@@ -744,8 +733,6 @@ namespace BenMAP
                 //check and see if name is used
                 commandText = string.Format("Select SetupVariableDATASETNAME from SetupVariableDATASETS WHERE SetupVariableDATASETNAME = '{0}'", txtDataSetName.Text.Trim());
                 rVal = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
-                // STOPPED HERE
-                return;
           
                 if (rVal != null)
                 {
@@ -815,9 +802,5 @@ namespace BenMAP
                 Logger.LogError(ex.Message);
             }
         }
-
-
-
-
     }
 }
