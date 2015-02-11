@@ -176,10 +176,8 @@ namespace BenMAP
             {
                 MessageBox.Show("Copy cancelled by user");
             }
-            // first check to see if a pollutant has been selected 
-            // open a box and ask for the name of the new pollutant (default is old name + 'Copy')
-            // 
-            
+            // reflect changes in GUI
+            BindPollutants();
         }
     }
 }
