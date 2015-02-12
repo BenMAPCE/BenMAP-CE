@@ -11,6 +11,8 @@ namespace BenMAP
 {
     class CopyMonitors
     {
+        TipFormGIF waitMess = new TipFormGIF(); bool sFlog = true;
+                
         public int Copy(int oldID, int SetupID, string VariableDataSetName)
         {
             FireBirdHelperBase fb = new ESILFireBirdHelper();
@@ -36,8 +38,8 @@ namespace BenMAP
                 if (result == DialogResult.No) return 0;
 
                 // display wait form (as it will take a long time to do the copy)
-
-
+                WaitShow("Copying monitor dataset - please wait");
+                
                 //getting a new dataset
                 commandText = commandText = "select max(MonitorDataSetID) from MonitorDataSets";
                 newID = Convert.ToInt16(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
@@ -70,15 +72,84 @@ namespace BenMAP
                                             "WHERE OM.MONITORDATASETID = {0} " +
                                             "AND NM.MONITORDATASETID = {1}", oldID, newID, maxID, minID);
                 fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
-                
+                // close wait form
+                waitMess.Close();
                 return newID;
-
             }
             catch (Exception ex)
             {
                Logger.LogError(ex.Message);
             }
             return 0;
+
         }
+
+
+        private void ShowWaitMess()
+        {
+            try
+            {
+                if (!waitMess.IsDisposed)
+                {
+                    waitMess.ShowDialog();
+                }
+
+            }
+            catch (System.Threading.ThreadAbortException Err)
+            {
+                MessageBox.Show(Err.Message);
+            }
+        }
+
+        public void WaitShow(string msg)
+        {
+            try
+            {
+                if (sFlog == true)
+                {
+                    sFlog = false;
+                    waitMess.Msg = msg;
+                    System.Threading.Thread upgradeThread = null;
+                    upgradeThread = new System.Threading.Thread(new System.Threading.ThreadStart(ShowWaitMess));
+                    upgradeThread.Start();
+                }
+            }
+            catch (System.Threading.ThreadAbortException Err)
+            {
+                MessageBox.Show(Err.Message);
+            }
+        }
+
+        private delegate void CloseFormDelegate();
+
+        public void WaitClose()
+        {
+            if (waitMess.InvokeRequired)
+                waitMess.Invoke(new CloseFormDelegate(DoCloseJob));
+            else
+                DoCloseJob();
+        }
+
+        private void DoCloseJob()
+        {
+            try
+            {
+                if (!waitMess.IsDisposed)
+                {
+                    if (waitMess.Created)
+                    {
+                        sFlog = true;
+                        waitMess.Close();
+                    }
+                }
+            }
+            catch (System.Threading.ThreadAbortException Err)
+            {
+                MessageBox.Show(Err.Message);
+            }
+        }            
+                
     }
+
+
 }
