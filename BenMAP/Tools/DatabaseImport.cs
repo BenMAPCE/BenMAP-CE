@@ -203,7 +203,8 @@ namespace BenMAP
                             break;
                         case "shapefile":
                             //The 'F' is for the locked column in the SapeFileGridDefinitionDetails - this is imported and not predefined
-                            commandText = string.Format("insert into shapefilegriddefinitiondetails(GriddefinitionID,shapefilename) values({0},'{1}', 'F')", dicGriddefinitionID.ContainsKey(GriddefinitionID) ? dicGriddefinitionID[GriddefinitionID] : GriddefinitionID, shapefilename);
+                            // 2015 02 12 added Locked to field list
+                            commandText = string.Format("insert into shapefilegriddefinitiondetails(GriddefinitionID,shapefilename,LOCKED) values({0},'{1}', 'F')", dicGriddefinitionID.ContainsKey(GriddefinitionID) ? dicGriddefinitionID[GriddefinitionID] : GriddefinitionID, shapefilename);
                             fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                             break;
                     }
@@ -677,7 +678,8 @@ namespace BenMAP
                         }
                     }
                     //the 'F' is for the LOCKED column in MonitorDataSets.  This is being added and is not a predefined.
-                    commandText = string.Format("insert into MonitorDataSets(MonitorDatasetID,SetupID,MonitorDatasetName) values({0},{1},'{2}', 'F')", MonitorDatasetID, importsetupID == -1 ? lstSetupID[oldSetupid] : importsetupID, MonitorDatasetName);
+                    // 2015 02 12 added LOCKED to field list
+                    commandText = string.Format("insert into MonitorDataSets(MonitorDatasetID,SetupID,MonitorDatasetName, LOCKED) values({0},{1},'{2}', 'F')", MonitorDatasetID, importsetupID == -1 ? lstSetupID[oldSetupid] : importsetupID, MonitorDatasetName);
                     fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                     pBarImport.PerformStep();
                 }
@@ -1206,7 +1208,8 @@ namespace BenMAP
                                 break;
                             case "shapefile":
                                 //The 'F' is for the locked column in the SapeFileGridDefinitionDetails - this is imported and not predefined
-                                commandText = string.Format("insert into shapefilegriddefinitiondetails(GriddefinitionID,shapefilename) values({0},'{1}', 'F')", dicGriddefinitionID[GriddefinitionID], shapefilename);
+                                // 2015 02 12 added LOCKED to field list
+                                commandText = string.Format("insert into shapefilegriddefinitiondetails(GriddefinitionID,shapefilename, LOCKED) values({0},'{1}', 'F')", dicGriddefinitionID[GriddefinitionID], shapefilename);
                                 fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                                 break;
                         }
@@ -2091,7 +2094,8 @@ namespace BenMAP
                         int PopulationConfigurationID = reader.ReadInt32();
                         int GriddefinitionID = reader.ReadInt32();
                         //The 'F' is for the Locked column in PopulationDataSets - this is imported not predefined.
-                        commandText = string.Format("insert into PopulationDatasets(PopulationDatasetID,SetupID,PopulationDatasetName,PopulationConfigurationID,GriddefinitionID,ApplyGrowth) values({0},{1},'{2}',{3},{4},{5}, 'F')", PopulationDatasetID, importsetupID == -1 ? lstSetupID[oldSetupid] : importsetupID, PopulationDatasetName, dicPopulationConfigurationID.ContainsKey(PopulationConfigurationID) ? dicPopulationConfigurationID[PopulationConfigurationID] : PopulationConfigurationID, dicGriddefinitionID.ContainsKey(GriddefinitionID) ? dicGriddefinitionID[GriddefinitionID] : GriddefinitionID, reader.ReadInt32());
+                        // 2015 02 12 added LOCKED to field list
+                        commandText = string.Format("insert into PopulationDatasets(PopulationDatasetID,SetupID,PopulationDatasetName,PopulationConfigurationID,GriddefinitionID,ApplyGrowth,LOCKED) values({0},{1},'{2}',{3},{4},{5}, 'F')", PopulationDatasetID, importsetupID == -1 ? lstSetupID[oldSetupid] : importsetupID, PopulationDatasetName, dicPopulationConfigurationID.ContainsKey(PopulationConfigurationID) ? dicPopulationConfigurationID[PopulationConfigurationID] : PopulationConfigurationID, dicGriddefinitionID.ContainsKey(GriddefinitionID) ? dicGriddefinitionID[GriddefinitionID] : GriddefinitionID, reader.ReadInt32());
                         fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                         pBarImport.PerformStep();
                     }
@@ -2269,7 +2273,8 @@ namespace BenMAP
                         }
                     }
                     //The F is for the locked column in CRFunctionDataSet - this is being imported and not predefined.
-                    commandText = string.Format("insert into CrFunctionDatasets(CrfunctionDatasetID,SetupID,CrfunctionDatasetName,Readonly) values({0},{1},'{2}','{3}', 'F')", dicCrfunctionDatasetID[CrfunctionDatasetID], importsetupID == -1 ? lstSetupID[oldSetupid] : importsetupID, CrfunctionDatasetName, reader.ReadChar());
+                    // added locked column to values list
+                    commandText = string.Format("insert into CrFunctionDatasets(CrfunctionDatasetID,SetupID,CrfunctionDatasetName,Readonly,Locked) values({0},{1},'{2}','{3}', 'F')", dicCrfunctionDatasetID[CrfunctionDatasetID], importsetupID == -1 ? lstSetupID[oldSetupid] : importsetupID, CrfunctionDatasetName, reader.ReadChar());
                     fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                     pBarImport.PerformStep();
                 }
@@ -2958,7 +2963,8 @@ namespace BenMAP
                         }
                     }
                     //The 'F' is for the Locked column in SetUpVariableDataSets - this is improted and not predefined
-                    commandText = string.Format("insert into SetupVariableDatasets(SetupVariableDatasetID,SetupID,SetupVariableDatasetName) values({0},{1},'{2}', 'F')", SetupVariableDatasetID, importsetupID == -1 ? lstSetupID[oldSetupid] : importsetupID, SetupVariableDatasetName);
+                    // 2015 02 12 added LOCKED to field list
+                    commandText = string.Format("insert into SetupVariableDatasets(SetupVariableDatasetID,SetupID,SetupVariableDatasetName,LOCKED) values({0},{1},'{2}', 'F')", SetupVariableDatasetID, importsetupID == -1 ? lstSetupID[oldSetupid] : importsetupID, SetupVariableDatasetName);
                     fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                     pBarImport.PerformStep();
                 }
@@ -3289,7 +3295,8 @@ namespace BenMAP
                         }
                     }
                     //The 'F' is for the locked column in inflationdatasets - this is imported not predefined
-                    commandText = string.Format("insert into InflationDatasets(InflationDatasetID,SetupID,InflationDatasetName) values({0},{1},'{2}', 'F')", InflationDatasetID, importsetupID == -1 ? lstSetupID[oldSetupid] : importsetupID, InflationDatasetName);
+                    // 2015 02 12 added LOCKED to field list
+                    commandText = string.Format("insert into InflationDatasets(InflationDatasetID,SetupID,InflationDatasetName, LOCKED) values({0},{1},'{2}', 'F')", InflationDatasetID, importsetupID == -1 ? lstSetupID[oldSetupid] : importsetupID, InflationDatasetName);
                     fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                     pBarImport.PerformStep();
                 }
@@ -3383,7 +3390,8 @@ namespace BenMAP
                         }
                     }
                     //The 'F' is for the locked column in ValuationFunctionDataSets - this is imported and is not predefined.
-                    commandText = string.Format("insert into ValuationFunctionDatasets(ValuationFunctionDatasetID,SetupID,ValuationFunctionDatasetName,Readonly) values({0},{1},'{2}','{3}', 'F', 'F')", ValuationFunctionDatasetID, importsetupID == -1 ? lstSetupID[oldSetupid] : importsetupID, ValuationFunctionDatasetName, reader.ReadChar());
+                    // 2015 02 12 added LOCKED to field list - also removed extra 'F' from values list
+                    commandText = string.Format("insert into ValuationFunctionDatasets(ValuationFunctionDatasetID,SetupID,ValuationFunctionDatasetName,Readonly, LOCKED) values({0},{1},'{2}','{3}', 'F')", ValuationFunctionDatasetID, importsetupID == -1 ? lstSetupID[oldSetupid] : importsetupID, ValuationFunctionDatasetName, reader.ReadChar());
                     fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                     pBarImport.PerformStep();
                 }
@@ -3647,7 +3655,8 @@ namespace BenMAP
                         }
                     }
                     //The 'F' is for the locked column in incomegrowthandadjatests - this is being imported and is not predefined.
-                    commandText = string.Format("insert into IncomeGrowthAdjDatasets(IncomeGrowthAdjDatasetID,SetupID,IncomeGrowthAdjDatasetName) values({0},{1},'{2}', 'F')", IncomeGrowthAdjDatasetID, importsetupID == -1 ? lstSetupID[oldSetupid] : importsetupID, IncomeGrowthAdjDatasetName);
+                    // 2015 02 12 added LOCKED to field list
+                    commandText = string.Format("insert into IncomeGrowthAdjDatasets(IncomeGrowthAdjDatasetID,SetupID,IncomeGrowthAdjDatasetName,LOCKED) values({0},{1},'{2}', 'F')", IncomeGrowthAdjDatasetID, importsetupID == -1 ? lstSetupID[oldSetupid] : importsetupID, IncomeGrowthAdjDatasetName);
                     fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                     pBarImport.PerformStep();
                 }
@@ -3738,7 +3747,8 @@ namespace BenMAP
                             newsetupid = 1;
                         }
                         //The 'F' is for the Locked column in Setups - this is imported and not predefined
-                        commandText = string.Format("insert into Setups(setupID,setupName) values({0},'{1}', 'F')", newsetupid, entry.Value);
+                        // 2012 02 15 added LOCKED to field list
+                        commandText = string.Format("insert into Setups(setupID,setupName,LOCKED) values({0},'{1}', 'F')", newsetupid, entry.Value);
                         fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                     }
                 }
