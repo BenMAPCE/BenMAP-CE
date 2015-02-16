@@ -56,6 +56,8 @@ namespace BenMAP
             openfile.Filter = "BenMAPCEDatabase(*.bdbx)|*.bdbx";
             openfile.FilterIndex = 1;
             openfile.RestoreDirectory = true;
+            // 2015 02 16 - added initial directory
+            openfile.InitialDirectory = Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments) + @"\My BenMAP-CE Files\Exports";              
             if (openfile.ShowDialog() != DialogResult.OK)
             { return; }
             txtFile.Text = openfile.FileName;

@@ -137,6 +137,9 @@ namespace BenMAP
                 }
                 SaveFileDialog sfd = new SaveFileDialog();
                 sfd.Filter = "BenMAPCEDatabase(*.bdbx)|*.bdbx";
+                // 2015 02 16 - set initial directory
+                sfd.InitialDirectory = Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments) + @"\My BenMAP-CE Files\Exports";              
+                
                 pBarExport.Value = 0;
                 if (sfd.ShowDialog() == DialogResult.OK)
                 {
