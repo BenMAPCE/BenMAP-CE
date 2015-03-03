@@ -168,7 +168,7 @@ namespace BenMAP
                 {
                     MessageBox.Show("Firebird Database connection not found.");
                 }
-                _baseFormTitle = this.Text + Assembly.GetExecutingAssembly().GetName().Version.ToString().Substring(0, Assembly.GetExecutingAssembly().GetName().Version.ToString().Count() - 3); mnuOverview.Text = "Quick-Start Guide"; this.Text = _baseFormTitle;
+                _baseFormTitle = this.Text + Assembly.GetExecutingAssembly().GetName().Version.ToString().Substring(0, Assembly.GetExecutingAssembly().GetName().Version.ToString().Count() - 4); mnuOverview.Text = "Quick-Start Guide"; this.Text = _baseFormTitle;
 
                 string sPicName = "";
                 CommonClass.ActiveSetup = "USA";
