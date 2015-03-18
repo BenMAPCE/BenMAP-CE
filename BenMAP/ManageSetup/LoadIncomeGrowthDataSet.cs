@@ -2,14 +2,7 @@ using System;
 using System.Data;
 using System.Windows.Forms;
 using ESIL.DBUtility;
-//TODO:
-//1 on the LoadIncomeGrowthDataSet dialog add a validate button
-//2 make it disabled
-//3 make the OK button disabled
-//4 After selecting a database to load (a csv file or excel file)
-//  enabled the validate button.
-//5 on a positive validation enable the OK button
-//
+
 namespace BenMAP
 {
     public partial class LoadIncomeGrowthDataSet : FormBase
@@ -30,9 +23,13 @@ namespace BenMAP
             _iniPath = CommonClass.ResultFilePath + @"\BenMAP.ini";
             _isForceValidate = CommonClass.IniReadValue("appSettings", "IsForceValidate", _iniPath);
             if (_isForceValidate == "T")
+            {
                 btnOK.Enabled = false;
+            }
             else
+            {
                 btnOK.Enabled = true;
+             }
         }
 
         private void btnOK_Click(object sender, EventArgs e)
@@ -93,7 +90,8 @@ namespace BenMAP
 
                 commandText = "SELECT max(INCOMEGROWTHADJDATASETID) from INCOMEGROWTHADJDATASETS";
                 int incomegrowthadjdatasetID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText)) + 1;
-                commandText = string.Format("insert into INCOMEGROWTHADJDATASETS VALUES({0},{1},'{2}' )", incomegrowthadjdatasetID, CommonClass.ManageSetup.SetupID, txtDataSetName.Text);
+                //The 'F' is for the locked column in incomegrowthandadjatests - this is being imported and is not predefined.
+                commandText = string.Format("insert into INCOMEGROWTHADJDATASETS VALUES({0},{1},'{2}', 'F' )", incomegrowthadjdatasetID, CommonClass.ManageSetup.SetupID, txtDataSetName.Text);
                 fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                 int currentDataSetID = incomegrowthadjdatasetID;
 
@@ -112,33 +110,7 @@ namespace BenMAP
                     
                 }
 
-                commandText = "select max(METADATAID) FROM METADATAINFORMATION";
-                int metadataid = 0;
-                object objmetadata = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
-
-                if (string.IsNullOrEmpty(objmetadata.ToString()))
-                {
-                    metadataid = 1;
-                }
-                else
-                {
-                    metadataid = Convert.ToInt32(objmetadata) + 1;
-                }
-
-                rtn = 0;//reseting the return number
-                commandText = string.Format("INSERT INTO METADATAINFORMATION " +
-                                            "(METADATAID, SETUPID, DATASETID, DATASETTYPEID, FILENAME, " +
-                                            "EXTENSION, DATAREFERENCE, FILEDATE, IMPORTDATE, DESCRIPTION, " +
-                                            "PROJECTION, GEONAME, DATUMNAME, DATUMTYPE, SPHEROIDNAME, " +
-                                            "MERIDIANNAME, UNITNAME, PROJ4STRING, NUMBEROFFEATURES) " +
-                                            "VALUES('{0}', '{1}', '{2}', '{3}', '{4}','{5}', '{6}', '{7}', '{8}', '{9}', " +
-                                            "'{10}', '{11}', '{12}', '{13}', '{14}','{15}', '{16}', '{17}', '{18}')",
-                                            metadataid, _metadataObj.SetupId, incomegrowthadjdatasetID, _metadataObj.DatasetTypeId, _metadataObj.FileName,
-                                            _metadataObj.Extension, _metadataObj.DataReference, _metadataObj.FileDate, _metadataObj.ImportDate,
-                                            _metadataObj.Description, _metadataObj.Projection, _metadataObj.GeoName, _metadataObj.DatumName,
-                                            _metadataObj.DatumType, _metadataObj.SpheroidName, _metadataObj.MeridianName, _metadataObj.UnitName,
-                                            _metadataObj.Proj4String, _metadataObj.NumberOfFeatures);
-                rtn = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                insertMetadata(currentDataSetID);
             }
 
             catch (Exception ex)
@@ -148,13 +120,23 @@ namespace BenMAP
             this.DialogResult = DialogResult.OK;
             this.Close();
         }
+        private void insertMetadata(int dataSetID)
+        {
 
+            _metadataObj.DatasetId = dataSetID;
+
+            _metadataObj.DatasetTypeId = SQLStatementsCommonClass.getDatasetID("Incomegrowth");
+            if (!SQLStatementsCommonClass.insertMetadata(_metadataObj))
+            {
+                MessageBox.Show("Failed to save Metadata.");
+            }
+        }
         private void btnBrowse_Click(object sender, EventArgs e)
         {
             try
             {
                 OpenFileDialog openFileDialog = new OpenFileDialog();
-                openFileDialog.InitialDirectory = Application.StartupPath + @"E:\";
+                openFileDialog.InitialDirectory = CommonClass.ResultFilePath;
                 openFileDialog.Filter = "All Files|*.*|CSV files|*.csv|XLS files|*.xls|XLSX files|*.xlsx";
                 openFileDialog.FilterIndex = 2;
                 openFileDialog.RestoreDirectory = true;
@@ -219,7 +201,9 @@ namespace BenMAP
             if (dlgR.Equals(DialogResult.OK))
             {
                 if (vdi.PassedValidation && _isForceValidate == "T")
+                {
                     LoadDatabase();
+                }
             }
         }
 

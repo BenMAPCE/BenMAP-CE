@@ -373,7 +373,8 @@ namespace BenMAP
             this.lblPopulationDataSetName.Name = "lblPopulationDataSetName";
             this.lblPopulationDataSetName.Size = new System.Drawing.Size(150, 14);
             this.lblPopulationDataSetName.TabIndex = 0;
-            this.lblPopulationDataSetName.Text = "Population DataSet Name:";
+            this.lblPopulationDataSetName.Text = "Population Dataset Name:";
+            this.lblPopulationDataSetName.Click += new System.EventHandler(this.lblPopulationDataSetName_Click);
             // 
             // LoadPopulationDataSet
             // 

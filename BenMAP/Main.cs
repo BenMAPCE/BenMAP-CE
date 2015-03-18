@@ -66,34 +66,46 @@ namespace BenMAP
                 Logger.LogError(ex);
             }
         }
-        public void CheckFirebirdAndStartFirebird()
+       //public void CheckFirebirdAndStartFirebird()
+        public bool CheckFirebirdAndStartFirebird()
         {
             try
             {
                 bool isOK = true;
                 try
                 {
+                //  MessageBox.Show("Database Path Information: "+ CommonClass.Connection.ConnectionString);
                     string commandText = "select SetupID,SetupName from Setups order by SetupID";
                     ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                     System.Data.DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
+                    
+                  
+                //    ConnectionStringSettings settings = ConfigurationManager.ConnectionStrings["ConnectionString"];
+                    return isOK;
                 }
-                catch
+                catch(Exception ex)
                 {
                     isOK = false;
+                   
+                    //MessageBox.Show(ex.StackTrace);
+                    MessageBox.Show("Unable to load database at "+CommonClass.Connection.ConnectionString+".");//\nReason: "+ex.ToString());
+                    return isOK;
                 }
-                if (isOK == true) return;
-                ConnectionStringSettings settings = ConfigurationManager.ConnectionStrings["ConnectionString"];
-                string str = settings.ConnectionString;
-                if (!str.Contains(":"))
-                    str = Application.StartupPath + @"\" + str.Substring(str.IndexOf("initial catalog=") + 16);
-                else
-                    str = str.Substring(str.IndexOf("initial catalog=") + 16);
-                str = str.Substring(0, str.IndexOf(";"));
-                if (!File.Exists(str))
-                {
-                    MessageBox.Show(string.Format("The BenMAP database file {0} does not exist.", str));
-                    Environment.Exit(0);
-                }
+                
+            //   if (isOK == true) return isOK;
+               // ConnectionStringSettings settings = ConfigurationManager.ConnectionStrings["ConnectionString"];
+                //string str = settings.ConnectionString;
+                //if (!str.Contains(":"))
+                //    str = Application.StartupPath + @"\" + str.Substring(str.IndexOf("initial catalog=") + 16);
+                //else
+                //    str = str.Substring(str.IndexOf("initial catalog=") + 16);
+                //str = str.Substring(0, str.IndexOf(";"));
+                //if (!File.Exists(str))
+                //{
+                //    MessageBox.Show(string.Format("The BenMAP database file {0} does not exist.", str));
+                //    Environment.Exit(0);
+                //}
+                /*
                 try
                 {
 
@@ -134,21 +146,29 @@ namespace BenMAP
                     catch
                     {
                     }
-                }
+                }*/
             }
-            catch
+            catch(Exception ex)
             {
+  //              System.Console.WriteLine(ex.StackTrace);
 
+                return false;
                 Environment.Exit(0);
             }
         }
+
+
         public Main()
         {
             try
             {
                 InitializeComponent();
-                CheckFirebirdAndStartFirebird();
-                _baseFormTitle = this.Text + Assembly.GetExecutingAssembly().GetName().Version.ToString().Substring(0, Assembly.GetExecutingAssembly().GetName().Version.ToString().Count() - 2); mnuOverview.Text = "Quick-Start Guide"; this.Text = _baseFormTitle;
+             //  CheckFirebirdAndStartFirebird();
+                 if (CheckFirebirdAndStartFirebird() == false)
+                {
+                    MessageBox.Show("Firebird Database connection not found.");
+                }
+                _baseFormTitle = this.Text + Assembly.GetExecutingAssembly().GetName().Version.ToString().Substring(0, Assembly.GetExecutingAssembly().GetName().Version.ToString().Count() - 4); mnuOverview.Text = "Quick-Start Guide"; this.Text = _baseFormTitle;
 
                 string sPicName = "";
                 CommonClass.ActiveSetup = "USA";
@@ -246,6 +266,17 @@ namespace BenMAP
                 lblStatus.Text = this.Status;
 
 
+                //check for Jira Connector
+                if ((!String.IsNullOrEmpty(CommonClass.JiraConnectorFilePath)) && (!String.IsNullOrEmpty(CommonClass.JiraConnectorFilePathTXT)))
+                {
+                    errorReportingToolStripMenuItem.Visible = true;
+                }
+                else
+                {
+                    errorReportingToolStripMenuItem.Visible = false;
+                }
+
+
 
 
             }
@@ -284,27 +315,52 @@ namespace BenMAP
 
         private void Main_Load(object sender, EventArgs e)
         {
+            _projFileName = "";
             if (CommonClass.InputParams != null && CommonClass.InputParams.Count() != 0
                      && CommonClass.InputParams[0].ToLower().Contains(".ctlx"))
             {
                 if (BatchCommonClass.RunBatch(CommonClass.InputParams[0]) == false)
                 {
+                    System.Console.WriteLine("false return from batch call");
                 };
                 Environment.Exit(0);
-                return;
+                
             }
             CommonClass.BenMAPForm = _currentForm as BenMAP;
-            try
+            String errorcode = "0";
+            if (_currentForm==null)
             {
-                if ((_currentForm as BenMAP).HomePageName != "")
-                    (_currentForm as BenMAP).loadHomePageFunction();
+                errorcode = "1"; 
+                //MessageBox.Show("Currentform is null, exiting load.");
+                return;
             }
-            catch
+
+            try
+            {   //NOT EQUAL
+                if (!(_currentForm as BenMAP).HomePageName.Equals(null))
+                {
+                    if ((_currentForm as BenMAP).HomePageName != "")
+                    {
+                        (_currentForm as BenMAP).loadHomePageFunction();
+                    }
+                //    else
+                //    {
+                //        MessageBox.Show("Home page name is empty string");
+                //    }
+                }
+
+                else
+                {
+                    MessageBox.Show("CurrentForm.homepageName is Null");
+                }
+            }
+            catch(Exception ex)
             {
-                MessageBox.Show("Database may be broken. Please install BenMAP CE again.");
+              //  MessageBox.Show("Database may be broken. Please install BenMAP CE again.");
+                MessageBox.Show("Error "+ errorcode+" found launching application: " + ex.ToString() +"\n Stack trace : " + ex.StackTrace);
                 Environment.Exit(0);
             }
-            _projFileName = "";
+            
 
         }
 
@@ -757,10 +813,16 @@ namespace BenMAP
                 Logger.LogError(ex);
             }
         }
-
+        //this is for deleting the validation log files after the specified time listed in the BenMAP.ini file
         private void deleteValidationLogFiles()
         {//doing clean up.
             string validationResultsPath = CommonClass.ResultFilePath + @"\ValidationResults";
+            //exit proc if dir does not exist
+            if (!Directory.Exists(validationResultsPath))
+            {
+                return;
+            }
+
             string[] strFiles = System.IO.Directory.GetFiles(validationResultsPath, "*rtf");
             string iniPath = CommonClass.ResultFilePath + @"\BenMAP.ini";
             int NumDaysToDelete = Convert.ToInt32(CommonClass.IniReadValue("appSettings", "NumDaysToDelete", iniPath));
@@ -794,6 +856,13 @@ namespace BenMAP
         {
             ErrorReporting frm = new ErrorReporting();
             frm.ShowDialog();
+        }
+
+        private void gbdRollbackToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            GBDRollback frm = new GBDRollback();
+            frm.ShowDialog();
+
         }
 
     }

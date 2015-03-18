@@ -1,5 +1,12 @@
-C:\BillO\benmap-ce\BenMAP\FireBirdHelper\bin\Debug\FireBirdHelper.dll
-C:\BillO\benmap-ce\BenMAP\FireBirdHelper\bin\Debug\FireBirdHelper.pdb
-C:\BillO\benmap-ce\BenMAP\FireBirdHelper\bin\Debug\FirebirdSql.Data.FirebirdClient.dll
-C:\BillO\benmap-ce\BenMAP\FireBirdHelper\obj\Debug\FireBirdHelper.dll
-C:\BillO\benmap-ce\BenMAP\FireBirdHelper\obj\Debug\FireBirdHelper.pdb
+D:\Project\BenMAP_Combine\BenMAP\FireBirdHelper\bin\Debug\fbembed.dll
+D:\Project\BenMAP_Combine\BenMAP\FireBirdHelper\bin\Debug\icudt30.dll
+D:\Project\BenMAP_Combine\BenMAP\FireBirdHelper\bin\Debug\icuin30.dll
+D:\Project\BenMAP_Combine\BenMAP\FireBirdHelper\bin\Debug\icuuc30.dll
+D:\Project\BenMAP_Combine\BenMAP\FireBirdHelper\bin\Debug\intl\fbintl.dll
+D:\Project\BenMAP_Combine\BenMAP\FireBirdHelper\bin\Debug\intl\fbintl.conf
+D:\Project\BenMAP_Combine\BenMAP\FireBirdHelper\bin\Debug\FireBirdHelper.dll
+D:\Project\BenMAP_Combine\BenMAP\FireBirdHelper\bin\Debug\FireBirdHelper.pdb
+D:\Project\BenMAP_Combine\BenMAP\FireBirdHelper\bin\Debug\FirebirdSql.Data.FirebirdClient.dll
+D:\Project\BenMAP_Combine\BenMAP\FireBirdHelper\obj\Debug\FireBirdHelper.csprojResolveAssemblyReference.cache
+D:\Project\BenMAP_Combine\BenMAP\FireBirdHelper\obj\Debug\FireBirdHelper.dll
+D:\Project\BenMAP_Combine\BenMAP\FireBirdHelper\obj\Debug\FireBirdHelper.pdb

@@ -14,6 +14,8 @@ namespace BenMAP
 {
     public partial class IncidenceDatasetDefinition : FormBase
     {
+        private MetadataClassObj _metadataObj = null;
+
         public IncidenceDatasetDefinition()
         {
             InitializeComponent();
@@ -273,6 +275,29 @@ namespace BenMAP
                 return null;
             }
         }
+        public static Dictionary<string, int> getAllOrigEndPointGroup()
+        {
+            // this is a dictionary without case lowering
+            // used by output example file routine
+            try
+            {
+                Dictionary<string, int> dicEndPointGroup = new Dictionary<string, int>();
+                string commandText = "select EndPointGroupID, EndPointGroupName from EndPointGroups";
+                ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
+                foreach (DataRow dr in ds.Tables[0].Rows)
+                {
+                    dicEndPointGroup.Add(dr["EndPointGroupName"].ToString(), Convert.ToInt32(dr["EndPointGroupID"]));
+                }
+
+                return dicEndPointGroup;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
 
         public static Dictionary<int, List<string>> getEndPointID()
         {
@@ -295,7 +320,7 @@ namespace BenMAP
                 return null;
             }
         }
-
+       
         public static Dictionary<string, int> getAllEndPoint()
         {
             try
@@ -402,7 +427,8 @@ namespace BenMAP
         DataTable _dt = new DataTable();
 
         private void btnBrowse_Click(object sender, EventArgs e)
-        {
+        {   // this button is labeled "Load from file" in the GUI
+            // the input file is loaded into the database here
             if (txtDataName.Text == string.Empty || cboGridDefinition.SelectedItem == null)
             { MessageBox.Show("Please input a dataset name and select a grid definition."); return; }
             else
@@ -416,8 +442,9 @@ namespace BenMAP
                 {
                     DialogResult rtn = frm.ShowDialog();
                     if (rtn != DialogResult.OK) { return; }
+                    _metadataObj = frm.MetadataObj;
                     str = frm.StrPath;
-                    commandText = "select GridDefinitionName from GridDefinitions where GridDefinitionID=" + _grdiDefinitionID + "";
+                    commandText = "select GridDefinitionName from GridDefinitions where GridDefinitionID=" + _grdiDefinitionID + "";                    
                     cboGridDefinition.Text = (fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)).ToString();
                     if(frm.IncidneceData != null)
                     {
@@ -429,11 +456,7 @@ namespace BenMAP
                         if (_dtLoadTable == null)
                             { MessageBox.Show("Failed to import data from CSV file."); return; }
                     }
-                    //_dtLoadTable = CommonClass.ExcelToDataTable(str); if (_dtLoadTable == null)
-                    //_dtLoadTable = frm.IncidneceData; if (_dtLoadTable == null)
                     
-                    
-
                     #region Validation has been moved to LoadIncidenceDatabase
                     //This section will be handled by the new validation window launched by LoadIncidenceDatabase window.
                     //A datatable will be available from the LoadIncidenceDatabase window on a true (passed) validation.
@@ -536,12 +559,14 @@ namespace BenMAP
                             commandText = "select max(IncidenceDatasetID) from INCIDENCEDATASETS";
                             obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
                             incidenceDatasetID = Convert.ToInt32(obj) + 1;
-                            commandText = string.Format("insert into INCIDENCEDATASETS (IncidenceDatasetID,SetupID,IncidenceDatasetName,GridDefinitionID) values( {0},{1},'{2}',{3})", incidenceDatasetID, CommonClass.ManageSetup.SetupID, txtDataName.Text, _grdiDefinitionID);
+                            //The 'F' is for the Locked column in INCIDENCEDATESTS - imported not predefined.
+                            commandText = string.Format("insert into INCIDENCEDATASETS (IncidenceDatasetID,SetupID,IncidenceDatasetName,GridDefinitionID, LOCKED) values( {0},{1},'{2}',{3}, 'F')", incidenceDatasetID, CommonClass.ManageSetup.SetupID, txtDataName.Text, _grdiDefinitionID);
                             fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                         }
                         _dataSetName = txtDataName.Text;
                     }
-
+                    
+                    // look for duplicate rows in imput file and make a copy in lstMustRemove
                     List<DataRow> lstMustRemove = new List<DataRow>();
                     Dictionary<string, int> dicDtLoadTable = new Dictionary<string, int>();
                     for (int i = 0; i < _dtLoadTable.Rows.Count; i++)
@@ -571,6 +596,15 @@ namespace BenMAP
                             + _dtLoadTable.Rows[i][iType] + "," + _dtLoadTable.Rows[i][iEthnicity] + ","
                             + _dtLoadTable.Rows[i][iColumn] + "," + _dtLoadTable.Rows[i][iRow] + "," + _dtLoadTable.Rows[i][iValue], i);
 
+                        }
+                    }
+
+                    if (lstMustRemove.Count() > 0) {
+                        // duplicates were found - ask user to overwrite or cancel
+                        DialogResult dlgOverwrite = MessageBox.Show("Duplicate incidence data were found in the import file","Continue with load?",MessageBoxButtons.OKCancel);
+                        if (dlgOverwrite != DialogResult.OK) {  // user selects cancel import
+                            MessageBox.Show("Load cancelled by user");
+                            return;
                         }
                     }
                     foreach (DataRow dr in lstMustRemove)
@@ -604,7 +638,7 @@ namespace BenMAP
                     }
                     dicDtLoadTable.Clear();
                     GC.Collect();
-
+                    
                     DataView dv = _dtLoadTable.DefaultView;
                     DataTable dtDistinct = dv.ToTable(true, dv.Table.Columns[iEndpointGroup].ColumnName, dv.Table.Columns[iEndpoint].ColumnName, dv.Table.Columns[iRace].ColumnName, dv.Table.Columns[iGender].ColumnName, dv.Table.Columns[iEthnicity].ColumnName, dv.Table.Columns[iStartAge].ColumnName, dv.Table.Columns[iEndAge].ColumnName, dv.Table.Columns[iType].ColumnName);
                     Dictionary<string, string> dicIncidence = new Dictionary<string, string>();
@@ -673,18 +707,58 @@ namespace BenMAP
                             fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                         }
                     }
-
+                    
                     Dictionary<string, int> dicEndPointGroup = getAllEndPointGroup();
                     Dictionary<int, List<string>> dicEndpointID = getEndPointID();
                     Dictionary<string, int> dicGender = getAllGender();
                     Dictionary<string, int> dicRace = getAllRace();
                     Dictionary<string, int> dicEthnicity = getAllEthnicity();
-                    FirebirdSql.Data.FirebirdClient.FbCommand fbCommand = new FirebirdSql.Data.FirebirdClient.FbCommand();
-                    fbCommand.Connection = CommonClass.Connection;
-                    fbCommand.CommandType = CommandType.Text;
-                    if (fbCommand.Connection.State != ConnectionState.Open)
-                    { fbCommand.Connection.Open(); }
-
+                    
+                    /////////////////////////////////////////////////////////////
+                    // STOPPED HERE
+                    // add check for import rows that duplicate existing rows
+                    /*
+                    bool bDupRows = false;
+                    int iRowCount = 0;
+                    while ((iRowCount < _dtLoadTable.Rows.Count) && !bDupRows) {
+                        // a duplicate has the same [EndpointGroup], [Endpoint], [Race], [Gender], [StartAge], [EndAge], [Type], [Ethnicity], [Column], [Row]
+                        // because the column and row are a property of the gridpoint definitions, the gridpoint id must also match for the row-column match to be match
+                        //dicDtLoadTable.Add(_dtLoadTable.Rows[i][iEndpointGroup] + "," + _dtLoadTable.Rows[i][iEndpoint] + ","
+                        //    + _dtLoadTable.Rows[i][iRace] + "," + _dtLoadTable.Rows[i][iGender] + ","
+                        //    + _dtLoadTable.Rows[i][iStartAge] + "," + _dtLoadTable.Rows[i][iEndAge] + ","
+                        //    + _dtLoadTable.Rows[i][iType] + "," + _dtLoadTable.Rows[i][iEthnicity] + ","
+                        //    + _dtLoadTable.Rows[i][iColumn] + "," + _dtLoadTable.Rows[i][iRow], i);
+                      
+                        commandText = "Select INCIDENCERATEID from INCIDENCERATES as R Inner Join IncidenceEntries as E "
+                                + " on R.IncidenceRateID = E.IncidenceRateID "
+                                + "where R.EndpointGroupID =" + _dtLoadTable.Rows[iRowCount][iEndpointGroup] 
+                                + ", and R.EndpointID=" + _dtLoadTable.Rows[iRowCount][iEndpoint] 
+                                + ", and R.RaceID=" + _dtLoadTable.Rows[iRowCount][iRace] 
+                                + ", and R.GenderID=" + _dtLoadTable.Rows[iRowCount][iGender] 
+                                + ", and R.StartAge=" + _dtLoadTable.Rows[iRowCount][iStartAge] 
+                                + ", and R.EndAge=" + _dtLoadTable.Rows[iRowCount][iEndAge] 
+                                + ", and R.EthnicityID= " + _dtLoadTable.Rows[iRowCount][iEthnicity] 
+                                + ", and R.GridDefinition =" + _grdiDefinitionID.ToString()
+                                + ", and E.Column =" + _dtLoadTable.Rows[iRowCount][iColumn] 
+                                + ", and E.Row=" + _dtLoadTable.Rows[iRowCount][iRow] + ") ";
+                        FirebirdSql.Data.FirebirdClient.FbDataReader drDups = fb.ExecuteReader(CommonClass.Connection,CommandType.Text,commandText);
+                        if (drDups.HasRows)
+                        {
+                        }
+                        iRowCount++;
+                    }
+                   
+                    if (bDupRows)   // duplicates have been found
+                    {
+                        DialogResult dlgOverwrite = MessageBox.Show("Imput file contains incident data already in BenMAP ","Load with duplicates?",MessageBoxButtons.OKCancel);
+                        if (dlgOverwrite != DialogResult.OK)
+                        {  // user selects cancel import
+                            MessageBox.Show("Load cancelled by user");
+                            return;
+                        }
+                    }
+                    /////////////////////////////////////////////////////////////
+                    */
                     progressBar1.Maximum = _dtLoadTable.Rows.Count;
                     for (int i = 0; i < (_dtLoadTable.Rows.Count / 125) + 1; i++)
                     {
@@ -707,9 +781,10 @@ namespace BenMAP
 
                         }
                         commandText = commandText + "END";
-                        fbCommand.CommandText = commandText;
-                        fbCommand.ExecuteNonQuery();
-                    } progressBar1.Visible = false;
+                        fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                    } 
+                    insertMetadata(incidenceDatasetID);
+                    progressBar1.Visible = false;
                     lblProgress.Text = "";
                     lblProgress.Visible = false;
                     BindDataGridView(null, null);
@@ -725,7 +800,17 @@ namespace BenMAP
                 }
             }
         }
+        private void insertMetadata(int dataSetID)
+        {
 
+            _metadataObj.DatasetId = dataSetID;
+
+            _metadataObj.DatasetTypeId = SQLStatementsCommonClass.getDatasetID("Incidence");
+            if (!SQLStatementsCommonClass.insertMetadata(_metadataObj))
+            {
+                MessageBox.Show("Failed to save Metadata.");
+            }
+        }
         private void btnOK_Click(object sender, EventArgs e)
         {
             try
@@ -1140,8 +1225,9 @@ namespace BenMAP
                 Dictionary<string, int> dicGender = getAllGender();
                 Dictionary<string, int> dicRace = getAllRace();
                 Dictionary<string, int> dicEthnicity = getAllEthnicity();
-                Dictionary<string, int> dicEndPointGroup = getAllEndPointGroup();
-                Dictionary<string, int> dicEndPoint = getAllEndPoint();
+                // changed to mixed case version of endpoint group to prevent case folding - example will not import if lower case
+                Dictionary<string, int> dicEndPointGroup = getAllOrigEndPointGroup();
+                Dictionary<string, int> dicEndPoint = getAllOrigEndPoint();
                 commandText = "select count(*) from IncidenceRates";
                 int count = (int)fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
                 if (count < outputRowsNumber) { outputRowsNumber = count; }

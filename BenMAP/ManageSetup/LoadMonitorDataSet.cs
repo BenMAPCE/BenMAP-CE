@@ -55,9 +55,13 @@ namespace BenMAP
             _iniPath = CommonClass.ResultFilePath + @"\BenMAP.ini";
             _isForceValidate = CommonClass.IniReadValue("appSettings", "IsForceValidate", _iniPath);
             if(_isForceValidate == "T")
+            {
                 btnOK.Enabled = false;
+            }
             else
+            {
                 btnOK.Enabled = true;
+            }
                 
         }
         public LoadSelectedDataSet(string title, string datasetNamelabel, string datasetName, string dataset):this()
@@ -69,6 +73,13 @@ namespace BenMAP
             this.Text= title;
             this.lblDataSetName.Text = datasetNamelabel;
             this.txtDataSetName.Text = datasetName;
+            if(dataset.Equals("Baseline") || dataset.Equals("Control"))
+            {
+                //baseline and control data are not stored in the database,
+                //it looks as if it is stored in the project file.  see the audit trail
+                //under air quality data
+                btnViewMetadata.Visible = false;
+            }
         }
         private void btnOK_Click(object sender, EventArgs e)
         {
@@ -100,18 +111,15 @@ namespace BenMAP
             DialogResult dlgR = vdi.ShowDialog();
             if (dlgR.Equals(DialogResult.OK))
             {
-                if(vdi.PassedValidation && _isForceValidate == "T")
-                    this.DialogResult = DialogResult.OK;
+                //if(vdi.PassedValidation && _isForceValidate == "T")
+                //    this.DialogResult = DialogResult.OK;
+                btnOK.Enabled = true;
 
             }
         }
 
         private void txtDatabase_TextChanged(object sender, EventArgs e)
         {
-            //if (_isForceValidate == "T" && !string.IsNullOrEmpty(txtDatabase.Text))
-            //    btnValidate.Enabled = true;
-            //else
-            //    btnValidate.Enabled = false;
             btnValidate.Enabled = !string.IsNullOrEmpty(txtDatabase.Text);
             btnViewMetadata.Enabled = !string.IsNullOrEmpty(txtDatabase.Text);
             _strPath = txtDatabase.Text;
@@ -123,12 +131,13 @@ namespace BenMAP
             {
                 OpenFileDialog openFileDialog = new OpenFileDialog() { RestoreDirectory = true };
                 openFileDialog.InitialDirectory = CommonClass.ResultFilePath;
-                openFileDialog.Filter = "All Files|*.*|CSV files|*.csv|XLS files|*.xls|XLSX files|*.xlsx";
+                openFileDialog.Filter = "All Files|*.*|CSV files|*.csv|XLS files|*.xls|XLSX files|*.xlsx|AQGX files|*.aqgx";
                 openFileDialog.FilterIndex = 2;
                 openFileDialog.RestoreDirectory = true;
                 if (openFileDialog.ShowDialog() != DialogResult.OK)
                 { return; }
                 txtDatabase.Text = openFileDialog.FileName;
+                openFileDialog.RestoreDirectory = true;
                 GetMetadata();
             }
             catch (Exception ex)
@@ -140,6 +149,7 @@ namespace BenMAP
         private void btnViewMetadata_Click(object sender, EventArgs e)
         {
             ViewEditMetadata viewEMdata = null;
+            //_metadataObj.SetupName = txtDataSetName.Text;
             if(_metadataObj != null)
             {
                 viewEMdata = new ViewEditMetadata(_strPath, _metadataObj);

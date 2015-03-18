@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Serialization.Json;
 using System.Windows.Forms;
+using System.Diagnostics;
 using DotSpatial.Data;
 using DotSpatial.Topology;
 using DotSpatial.Topology.Voronoi;
@@ -1224,9 +1225,16 @@ namespace BenMAP
             }
             i = 0;
             Dictionary<string, Dictionary<string, float>> DicResult = new Dictionary<string, Dictionary<string, float>>();
-            foreach (ModelResultAttribute mra in modelDataLine.ModelResultAttributes)
+            if (modelDataLine.ModelResultAttributes != null)
             {
-                DicResult.Add(mra.Col + "," + mra.Row, mra.Values);
+                foreach (ModelResultAttribute mra in modelDataLine.ModelResultAttributes)
+                {
+                    DicResult.Add(mra.Col + "," + mra.Row, mra.Values);
+                }
+            }
+            else  
+            {
+                Debug.WriteLine("SaveBenMAPLineShapeFile: modelDataLine.ModelResultAttributes is null");
             }
             while (i < fs.DataTable.Rows.Count)
             {

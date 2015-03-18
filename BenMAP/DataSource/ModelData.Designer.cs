@@ -21,6 +21,8 @@ namespace BenMAP
             this.txtGridType = new System.Windows.Forms.TextBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tbp = new System.Windows.Forms.TabPage();
+            this.btnViewMetadata = new System.Windows.Forms.Button();
+            this.btnValidate = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.btnBrowseDatabase = new System.Windows.Forms.Button();
             this.txtModelDatabase = new System.Windows.Forms.TextBox();
@@ -36,7 +38,6 @@ namespace BenMAP
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
-            this.btnValidate = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tbp.SuspendLayout();
@@ -84,6 +85,7 @@ namespace BenMAP
             // 
             // tbp
             // 
+            this.tbp.Controls.Add(this.btnViewMetadata);
             this.tbp.Controls.Add(this.btnValidate);
             this.tbp.Controls.Add(this.label1);
             this.tbp.Controls.Add(this.btnBrowseDatabase);
@@ -96,6 +98,28 @@ namespace BenMAP
             this.tbp.TabIndex = 0;
             this.tbp.Text = "Generic Model Database";
             this.tbp.UseVisualStyleBackColor = true;
+            // 
+            // btnViewMetadata
+            // 
+            this.btnViewMetadata.Location = new System.Drawing.Point(91, 131);
+            this.btnViewMetadata.Name = "btnViewMetadata";
+            this.btnViewMetadata.Size = new System.Drawing.Size(105, 27);
+            this.btnViewMetadata.TabIndex = 5;
+            this.btnViewMetadata.Text = "View Metadata";
+            this.btnViewMetadata.UseVisualStyleBackColor = true;
+            this.btnViewMetadata.Visible = false;
+            this.btnViewMetadata.Click += new System.EventHandler(this.btnViewMetadata_Click);
+            // 
+            // btnValidate
+            // 
+            this.btnValidate.Enabled = false;
+            this.btnValidate.Location = new System.Drawing.Point(10, 131);
+            this.btnValidate.Name = "btnValidate";
+            this.btnValidate.Size = new System.Drawing.Size(75, 27);
+            this.btnValidate.TabIndex = 4;
+            this.btnValidate.Text = "Validate";
+            this.btnValidate.UseVisualStyleBackColor = true;
+            this.btnValidate.Click += new System.EventHandler(this.btnValidate_Click);
             // 
             // label1
             // 
@@ -123,6 +147,7 @@ namespace BenMAP
             this.txtModelDatabase.ReadOnly = true;
             this.txtModelDatabase.Size = new System.Drawing.Size(239, 22);
             this.txtModelDatabase.TabIndex = 1;
+            this.txtModelDatabase.TextChanged += new System.EventHandler(this.txtModelDatabase_TextChanged);
             // 
             // lblModelDatabase
             // 
@@ -239,16 +264,6 @@ namespace BenMAP
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
-            // btnValidate
-            // 
-            this.btnValidate.Location = new System.Drawing.Point(10, 131);
-            this.btnValidate.Name = "btnValidate";
-            this.btnValidate.Size = new System.Drawing.Size(75, 27);
-            this.btnValidate.TabIndex = 4;
-            this.btnValidate.Text = "Validate";
-            this.btnValidate.UseVisualStyleBackColor = true;
-            this.btnValidate.Click += new System.EventHandler(this.btnValidate_Click);
-            // 
             // ModelData
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
@@ -297,5 +312,6 @@ namespace BenMAP
         private System.Windows.Forms.TextBox txtPollutant;
         private System.Windows.Forms.TextBox txtGridType;
         private System.Windows.Forms.Button btnValidate;
+        private System.Windows.Forms.Button btnViewMetadata;
     }
 }

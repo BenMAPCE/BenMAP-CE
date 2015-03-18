@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using BenMAP;
+using System.Collections.Generic;
 
 namespace WinControls
 {
@@ -145,7 +146,7 @@ namespace WinControls
             if (isFirstLoad)
             {
                 SetDefaultValues(minValue, maxValue);
-                SetDefaultColors();
+                //SetDefaultColors();
             }
             else
             {
@@ -173,6 +174,24 @@ namespace WinControls
             lblMin.Visible = true;
             this.Invalidate();
         }
+
+        public void pharseValue(double[] v)
+        {
+            if (!(v.Length == 5))
+            { return; }
+            ValueArray[0] = 0;
+            for (int i = 1; i < 6; i++)
+            {
+                ValueArray[i] = v[i - 1];
+            }
+            lblMin.Text = ValueArray[0].ToString();
+            lblMin.Visible = true;
+            lblMax.Text = v[4].ToString();
+            lblMax.Visible = true;
+            SetUnitLabelPosition();
+            this.Refresh();
+        }
+        
 
         private void SetDefaultValues(double minValue, double maxValue)
         {
@@ -296,6 +315,8 @@ namespace WinControls
             try
             {
                 lblUnit.Left = (this.ClientSize.Width - lblUnit.Width) / 2;
+                lblMax.Left = this.ClientSize.Width-lblMax.Width;
+                lblMin.Left = 0;
             }
             catch (Exception ex)
             {
@@ -327,8 +348,8 @@ namespace WinControls
             try
             {
                 SetValueRange frm = new SetValueRange();
-                frm.MinValue = _minValue;
-                frm.MaxValue = _maxValue;
+                frm.MinValue = _valueArray[0];
+                frm.MaxValue = _valueArray[5];
 
                 frm.Unit = lblUnit.Text;
                 frm.ValueArray = _valueArray;
@@ -433,6 +454,6 @@ namespace WinControls
                 Logger.LogError(ex);
                 return null;
             }
-        }
+        }       
     }
 }

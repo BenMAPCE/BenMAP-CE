@@ -12,6 +12,7 @@ using FirebirdSql.Data.FirebirdClient;
 using System.IO;
 using ESIL.DBUtility;
 using DotSpatial.Topology;
+using DotSpatial.Projections;
 
 
 namespace BenMAP
@@ -40,8 +41,8 @@ namespace BenMAP
 
         private string _isForceValidate = string.Empty;
         private string _iniPath = string.Empty;
-        private string _strPath;
-        private MetadataClassObj metadataObj = null;
+        //private string _strPath;
+        private MetadataClassObj _metadataObj = null;
 
         private void GridDefinition_Load(object sender, EventArgs e)
         {
@@ -231,12 +232,40 @@ namespace BenMAP
                 {
                     txtShapefile.Text = openFileDialog.FileName; lblShapeFileName.Text = System.IO.Path.GetFileNameWithoutExtension(txtShapefile.Text);
                     _shapeFilePath = openFileDialog.FileName;
+
                     if(CheckforSupportingfiles(_shapeFilePath))
-                    {
+                    {   
+                        DotSpatial.Projections.ProjectionInfo GCSNAD83prj = DotSpatial.Projections.KnownCoordinateSystems.Geographic.NorthAmerica.NorthAmericanDatum1983;
+                        bool ProjectionOK = false;
+                        //get projection info from the ESRI shape file's .prj file.
+                        FileInfo fInfo = new FileInfo(_shapeFilePath);
+                        string strDir = fInfo.DirectoryName;
+                        string fName = fInfo.Name.Substring(0,fInfo.Name.Length - fInfo.Extension.Length);
+                        string prjfile = Path.Combine(strDir, fName + ".prj");
+                        string GCSNAD83ShapeFilePath = Path.Combine(strDir, fName + "_GCSNAD83 "+ ".shp");
+
+                        if (File.Exists(prjfile))    //check for acceptable projection (GCS/NAD83)
+                        {
+                            //sets the ESRI PCS to the ESRI .prj file
+                            ProjectionInfo pESRI = new ProjectionInfo();
+                            StreamReader re = File.OpenText(prjfile);
+                            pESRI.ParseEsriString(re.ReadLine());
+                            if (pESRI.Equals(GCSNAD83prj)) ProjectionOK = true;  //MCB will need to add more code for other regions
+                        }
+                        if (!ProjectionOK)  //Then attempt to reporject it to GCS/NAD83
+                        {   
+                            MessageBox.Show("BenMAP-CE will attempt to reproject to GCS/NAD83.","WARNING: The shape file is not in the correct projection: GCS NAD83");
+                            string originalShapeFilePath = _shapeFilePath;
+                            _shapeFilePath = GCSNAD83ShapeFilePath;
+                            if (File.Exists(_shapeFilePath)) CommonClass.DeleteShapeFileName(_shapeFilePath);
+                            IFeatureSet fs = FeatureSet.Open(originalShapeFilePath);
+                            fs.SaveAs(_shapeFilePath, true);
+                        }
+                        // Add the grid 
                         AddLayerAndGetAtt(_shapeFilePath);
                         lblCol.Text = _shapeCol.ToString();
                         lblRow.Text = _shapeRow.ToString();
-                        GetMetadata();
+                        GetMetadata();                       
                     }
                     
                 }
@@ -246,11 +275,98 @@ namespace BenMAP
                 Logger.LogError(ex.Message);
             }
         }
+        //private void btnProjection_Click(object sender, EventArgs e)
+        //{
+        //    //declares a new ProjectionInfo for the startind and ending coordinate systems
+        //    //sets the start GCS to WGS_1984
+        //    //ProjectionInfo pStart = KnownCoordinateSystems.Geographic.World.WGS1984;
+        //    //ProjectionInfo pESRIEnd = new ProjectionInfo();
+        //    ProjectionInfo pESRIStart = new ProjectionInfo();
+        //    ProjectionInfo pEnd = DotSpatial.Projections.KnownCoordinateSystems.Geographic.NorthAmerica.NorthAmericanDatum1983;
+        //    //declares the point(s) that will be reprojected
+        //    double[] xy = new double[2];
+        //    double[] z = new double[1];
+        //    //initiates a StreamReader to read the ESRI .prj file
+        //    StreamReader re = File.OpenText("C:\\Program Files\\ArcGIS\\Coordinate Systems\\Projected Coordinate Systems\\UTM\\WGS 1984\\WGS 1984 UTM Zone 1N.prj");
+        //    //sets the ending PCS to the ESRI .prj file
+        //    pESRIEnd.ReadEsriString(re.ReadLine());
+        //    //calls the reprojection function
+        //    Reproject.ReprojectPoints(xy, z, pStart, pESRIEnd, 0, 1);
+        //    MessageBox.Show("Points have been projected successfully.");
+        //}
+        //private void ChangeShapeFileProjection(object sender, EventArgs e)
+        //{
+        //    try
+        //    {
+        //        if (mainMap.GetAllLayers().Count == 0) return;
+        //        if (CommonClass.MainSetup.SetupName.ToLower() == "china")
+        //        {
+        //            if (mainMap.Projection != DotSpatial.Projections.KnownCoordinateSystems.Projected.Asia.AsiaLambertConformalConic)
+        //            {
+        //                mainMap.Projection = DotSpatial.Projections.KnownCoordinateSystems.Projected.Asia.AsiaLambertConformalConic;
+        //                foreach (FeatureLayer layer in mainMap.GetAllLayers())
+        //                {
+        //                    layer.Projection = DotSpatial.Projections.KnownCoordinateSystems.Geographic.World.WGS1984;
+        //                    layer.Reproject(mainMap.Projection);
+        //                }
+        //                tsbChangeProjection.Text = "change projection to GCS/NAD 83";
+        //            }
+        //            else
+        //            {
+        //                mainMap.Projection = DotSpatial.Projections.KnownCoordinateSystems.Geographic.World.WGS1984;
+        //                foreach (FeatureLayer layer in mainMap.GetAllLayers())
+        //                {
+        //                    layer.Projection = DotSpatial.Projections.KnownCoordinateSystems.Projected.Asia.AsiaLambertConformalConic;
+        //                    layer.Reproject(mainMap.Projection);
+        //                }
+        //                tsbChangeProjection.Text = "change projection to Albers";
+        //            }
+
+
+        //            mainMap.Projection.CopyProperties(mainMap.Projection);
+
+        //            //mainMap.ViewExtents = mainMap.GetAllLayers()[0].Extent;
+        //            _SavedExtent = mainMap.GetAllLayers()[0].Extent;
+        //            mainMap.ViewExtents = _SavedExtent;
+        //            return;
+        //        }
+
+
+        //        if (mainMap.Projection != DotSpatial.Projections.KnownCoordinateSystems.Projected.NorthAmerica.USAContiguousLambertConformalConic)
+        //        {
+        //            mainMap.Projection = DotSpatial.Projections.KnownCoordinateSystems.Projected.NorthAmerica.USAContiguousLambertConformalConic;
+        //            foreach (FeatureLayer layer in mainMap.GetAllLayers())
+        //            {
+        //                layer.Projection = DotSpatial.Projections.KnownCoordinateSystems.Geographic.World.WGS1984;
+        //                layer.Reproject(mainMap.Projection);
+        //            }
+        //            tsbChangeProjection.Text = "change projection to GCS/NAD 83";
+        //        }
+        //        else
+        //        {
+        //            mainMap.Projection = DotSpatial.Projections.KnownCoordinateSystems.Geographic.World.WGS1984;
+        //            foreach (FeatureLayer layer in mainMap.GetAllLayers())
+        //            {
+        //                layer.Projection = DotSpatial.Projections.KnownCoordinateSystems.Projected.NorthAmerica.USAContiguousLambertConformalConic;
+        //                layer.Reproject(mainMap.Projection);
+        //            }
+        //            tsbChangeProjection.Text = "change projection to Albers";
+        //        }
+
+        //        mainMap.Projection.CopyProperties(mainMap.Projection);
+        //        _SavedExtent = mainMap.GetAllLayers()[0].Extent;
+        //        mainMap.ViewExtents = _SavedExtent;
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //    }
+        //}
         private void GetMetadata()
         {
-            metadataObj = new MetadataClassObj();
-            Metadata metadata = new Metadata(_shapeFilePath); //new Metadata(_strPath);
-            metadataObj = metadata.GetMetadata();
+            _metadataObj = new MetadataClassObj();
+            Metadata metadata = new Metadata(_shapeFilePath);
+            _metadataObj = metadata.GetMetadata();
         }
         private void btnPreview_Click(object sender, EventArgs e)
         {
@@ -414,7 +530,8 @@ namespace BenMAP
                                                 else
                                                     return;
                                             }
-                                            commandText = string.Format("insert into ShapeFileGridDefinitionDetails (GridDefinitionID,ShapeFileName) values ({0},'{1}')", _gridID, _shapeFileName);
+                                            //The 'F' is for the locked column in the SapeFileGridDefinitionDetails - this is imported and not predefined.
+                                            commandText = string.Format("insert into ShapeFileGridDefinitionDetails (GridDefinitionID,ShapeFileName) values ({0},'{1}', 'F')", _gridID, _shapeFileName);
                                             fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                                         }
                                     }
@@ -505,8 +622,11 @@ namespace BenMAP
                         MessageBox.Show("This grid definition name is already in use. Please enter a different name.");
                         return;
                     }
+                    //_metadataObj.DatasetId = SQLStatementsCommonClass.selectMaxID("GRIDDEFINITIONID", "GRIDDEFINITIONS"); 
+                    //_gridID =  _metadataObj.DatasetId;
                     commandText = string.Format("select max(GRIDDEFINITIONID) from GRIDDEFINITIONS");
                     _gridID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText)) + 1;
+                    _metadataObj.DatasetId = _gridID;
                     string _filePath = string.Empty;
                     switch (_gridType)
                     {
@@ -526,10 +646,11 @@ namespace BenMAP
                                     return;
                                 }
                             }
-
-                            commandText = string.Format("INSERT INTO GRIDDEFINITIONS (GridDefinitionID,SetUpID,GridDefinitionName,Columns,Rrows,Ttype,DefaultType) VALUES(" + _gridID + ",{0},'{1}',{2},{3},{4},{5})", CommonClass.ManageSetup.SetupID, txtGridID.Text, _shapeCol, _shapeRow, _gridType, 0);
+                            //The 'F' is for the column LOCKED in GRIDDEFINITIONS - it is being imported and not predefined
+                            commandText = string.Format("INSERT INTO GRIDDEFINITIONS (GridDefinitionID,SetUpID,GridDefinitionName,Columns,Rrows,Ttype,DefaultType, LOCKED) VALUES(" + _gridID + ",{0},'{1}',{2},{3},{4},{5}, 'F')", CommonClass.ManageSetup.SetupID, txtGridID.Text, _shapeCol, _shapeRow, _gridType, 0);
                             fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
-                            commandText = string.Format("INSERT INTO SHAPEFILEGRIDDEFINITIONDETAILS (GridDefinitionID,ShapeFileName) VALUES(" + _gridID + ",'{0}')", _shapeFileName);
+                            //The 'F' is for the locked column in the SapeFileGridDefinitionDetails - this is imported and not predefined
+                            commandText = string.Format("INSERT INTO SHAPEFILEGRIDDEFINITIONDETAILS (GridDefinitionID,ShapeFileName, LOCKED)  VALUES(" + _gridID + ",'{0}', 'F')", _shapeFileName);
                             fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                             CommonClass.DeleteShapeFileName(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.ManageSetup.SetupName + "\\" + _shapeFileName + ".shp");
                             IFeatureSet fs = FeatureSet.Open(_shapeFilePath);
@@ -558,11 +679,12 @@ namespace BenMAP
                             if (rtn == DialogResult.No) { this.DialogResult = DialogResult.Cancel; return; }
                             else
                             {
-                                commandText = string.Format("INSERT INTO GRIDDEFINITIONS (GridDefinitionID,SetUpID,GridDefinitionName,Columns,Rrows,Ttype,DefaultType) VALUES(" + _gridID + ",{0},'{1}',{2},{3},{4},{5})", CommonClass.ManageSetup.SetupID, txtGridID.Text, _columns, _rrows, _gridType, 0);
+                                //The 'F' is for the column LOCKED in GRIDDEFINITIONS - it is being imported and not predefined
+                                commandText = string.Format("INSERT INTO GRIDDEFINITIONS (GridDefinitionID, SetUpID, GridDefinitionName, Columns, Rrows, Ttype, DefaultType,  LOCKED) VALUES(" + _gridID + ",{0},'{1}',{2},{3},{4}, {5},'F')", CommonClass.ManageSetup.SetupID, txtGridID.Text, _columns, _rrows, _gridType, 0);
                                 fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
 
                                 if (Math.Abs(_minLongitude) > 180 || Math.Abs(_minLatitude) > 90) { MessageBox.Show("Please input valid longitude and latitude values."); return; }
-                                commandText = string.Format("INSERT INTO RegularGridDefinitionDetails (GridDefinitionID,MinimumLatitude,MinimumLongitude,ColumnsPerLongitude,RowsPerLatitude,ShapeFileName)  VALUES ({0},{1},{2},{3},{4},'{5}')", _gridID, txtMinimumLatitude.Text, txtMinimumLongitude.Text, nudColumnsPerLongitude.Value, nudRowsPerLatitude.Value, txtGridID.Text);
+                                commandText = string.Format("INSERT INTO RegularGridDefinitionDetails (GridDefinitionID,MinimumLatitude,MinimumLongitude,ColumnsPerLongitude,RowsPerLatitude,ShapeFileName, LOCKED)  VALUES ({0},{1},{2},{3},{4},'{5}')", _gridID, txtMinimumLatitude.Text, txtMinimumLongitude.Text, nudColumnsPerLongitude.Value, nudRowsPerLatitude.Value, txtGridID.Text);
                                 fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
 
                                 fs = getFeatureSetFromRegularGrid(_columns, _rrows, _minLatitude, _minLongitude, _colPerLongitude, _rowPerLatitude);
@@ -661,42 +783,13 @@ namespace BenMAP
 
         private void saveMetadata(string filePath, int gridID, int gridType)
         {
-            //_shapeFilePath;
-            //_shapeFileName;
-            //_gridID;
-            FireBirdHelperBase fb = new ESILFireBirdHelper();
-            string commandText = "select max(METADATAID) FROM METADATAINFORMATION";
-            int metadataid = 0;
-            int rtv = 0;
-            object objmetadata = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
-            if (string.IsNullOrEmpty(objmetadata.ToString()))
-            {
-                metadataid = 1;
-            }
-            else
-            {
-                metadataid = Convert.ToInt32(objmetadata) + 1;
-            }
 
-            if(metadataObj == null)
-            {
-                Metadata mdata = new Metadata(filePath);
-                metadataObj = mdata.GetMetadata();
-            }
+            _metadataObj.DatasetTypeId = SQLStatementsCommonClass.getDatasetID("GridDefinition");
 
-            commandText = string.Format("INSERT INTO METADATAINFORMATION " +
-                                        "(METADATAID, SETUPID, DATASETID, DATASETTYPEID, FILENAME, " +
-                                        "EXTENSION, DATAREFERENCE, FILEDATE, IMPORTDATE, DESCRIPTION, " +
-                                        "PROJECTION, GEONAME, DATUMNAME, DATUMTYPE, SPHEROIDNAME, " +
-                                        "MERIDIANNAME, UNITNAME, PROJ4STRING, NUMBEROFFEATURES) " +
-                                        "VALUES('{0}', '{1}', '{2}', '{3}', '{4}','{5}', '{6}', '{7}', '{8}', '{9}', " +
-                                        "'{10}', '{11}', '{12}', '{13}', '{14}','{15}', '{16}', '{17}', '{18}')",
-                                        metadataid, metadataObj.SetupId, gridID, metadataObj.DatasetTypeId, metadataObj.FileName,
-                                        metadataObj.Extension, metadataObj.DataReference, metadataObj.FileDate, metadataObj.ImportDate,
-                                        metadataObj.Description, metadataObj.Projection, metadataObj.GeoName, metadataObj.DatumName,
-                                        metadataObj.DatumType, metadataObj.SpheroidName, metadataObj.MeridianName, metadataObj.UnitName,
-                                        metadataObj.Proj4String, metadataObj.NumberOfFeatures);
-            rtv = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+            if(!SQLStatementsCommonClass.insertMetadata(_metadataObj))
+            {
+                MessageBox.Show("Failed to save Metadata.");
+            }
 
         }
 
@@ -984,9 +1077,18 @@ namespace BenMAP
 
         private void btnViewMetadata_Click(object sender, EventArgs e)
         {
-            ViewEditMetadata viewEMdata = new ViewEditMetadata(_shapeFilePath);
+            //ViewEditMetadata viewEMdata = new ViewEditMetadata(_shapeFilePath);
+            ViewEditMetadata viewEMdata = null;
+            if (_metadataObj != null)
+            {
+                viewEMdata = new ViewEditMetadata(_shapeFilePath, _metadataObj);
+            }
+            else
+            {
+                viewEMdata = new ViewEditMetadata(_shapeFilePath);
+            }
             viewEMdata.ShowDialog();
-            metadataObj = viewEMdata.MetadataObj;
+            _metadataObj = viewEMdata.MetadataObj;
         }
 
         private void txtShapefile_TextChanged(object sender, EventArgs e)

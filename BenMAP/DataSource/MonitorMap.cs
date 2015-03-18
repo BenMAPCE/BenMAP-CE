@@ -80,9 +80,7 @@ namespace BenMAP
                 string[] tmps = new string[_lstMonitorPoints[0].dicMetricValues.Count];
                 _lstMonitorPoints[0].dicMetricValues.Keys.CopyTo(tmps, 0);
                 for (int i = 0; i < tmps.Length; i++)
-                {
-                    fsPoints.DataTable.Columns.Add(tmps[i]);
-                }
+                { fsPoints.DataTable.Columns.Add(tmps[i]); }
                 MonitorValue mv = null;
                 Feature feature = null;
                 List<Coordinate> lstCoordinate = new List<Coordinate>();
@@ -91,10 +89,9 @@ namespace BenMAP
                 mainMap.ProjectionModeReproject = ActionMode.Never;
                 mainMap.ProjectionModeDefine = ActionMode.Never;
                 mainMap.Layers.Clear();
+
                 if (File.Exists(this._gridShapeFile))
-                {
-                    mainMap.Layers.Add(this._gridShapeFile);
-                }
+                { mainMap.Layers.Add(this._gridShapeFile); }
                 if (this._lstMonitorPoints != null && this.LstMonitorPoints.Count > 0)
                 {
                     PolygonScheme myScheme = new PolygonScheme();
@@ -107,35 +104,30 @@ namespace BenMAP
                         mv = LstMonitorPoints[i];
                         point = new DotSpatial.Topology.Point(mv.Longitude, mv.Latitude);
                         feature = new Feature(point);
-
                         fsPoints.AddFeature(feature);
-
                         fsPoints.DataTable.Rows[i]["Name"] = mv.MonitorName;
                         fsPoints.DataTable.Rows[i]["Latitude"] = mv.Latitude;
                         fsPoints.DataTable.Rows[i]["Longitude"] = mv.Longitude;
                         for (int col = 0; col < tmps.Length; col++)
-                        {
-                            fsPoints.DataTable.Rows[i][tmps[col]] = mv.dicMetricValues[tmps[col]];
-                        }
-
+                        { fsPoints.DataTable.Rows[i][tmps[col]] = mv.dicMetricValues[tmps[col]]; }
                     }
-                    mainMap.Layers.Add(fsPoints);
+                    IMapFeatureLayer imfl = mainMap.Layers.Add(fsPoints);
+                    imfl.LegendText = "Monitors";
+                    PointSymbolizer ps = new PointSymbolizer(Color.Yellow, DotSpatial.Symbology.PointShape.Ellipse, 8);
+                    ps.SetOutline(Color.Black, 1);
+                    imfl.Symbolizer = ps;
                     mainMap.Layers[0].LegendText = "Air quality grid";
-                    mainMap.Layers[1].LegendText = "Monitors";
                 }
+                
                 PolygonLayer player = mainMap.Layers[0] as PolygonLayer;
-                float f = 0.9f;
                 Color c = Color.Transparent;
                 PolygonSymbolizer Transparent = new PolygonSymbolizer(c);
-                Transparent.OutlineSymbolizer = new LineSymbolizer(Color.DarkBlue, 1); player.Symbolizer = Transparent;
-                LayerObject = null;
+                Transparent.OutlineSymbolizer = new LineSymbolizer(Color.DarkBlue, 1);
+                player.Symbolizer = Transparent;
                 return true;
             }
             catch (Exception ex)
-            {
-                Logger.LogError(ex);
-                return false;
-            }
+            { Logger.LogError(ex); return false; }
         }
 
         private void btnZoomIn_Click(object sender, EventArgs e)

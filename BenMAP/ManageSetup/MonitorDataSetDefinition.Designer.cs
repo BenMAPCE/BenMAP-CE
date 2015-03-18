@@ -61,13 +61,15 @@ namespace BenMAP
             this.btnOutput.TabIndex = 6;
             this.btnOutput.Text = "Output Sample File";
             this.toolTip1.SetToolTip(this.btnOutput, "Click to save a template with standard .csv format. It only contains 50 rows data" +
-        " and can be used as an example to prepare the input file.");
+                    " and can be used as an example to prepare the input file.");
             this.btnOutput.UseVisualStyleBackColor = true;
             this.btnOutput.Click += new System.EventHandler(this.btnOutput_Click);
             // 
             // grpMonitorDataSetDefinition
             // 
             this.grpMonitorDataSetDefinition.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.grpMonitorDataSetDefinition.AutoSize = true;
+            this.grpMonitorDataSetDefinition.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.grpMonitorDataSetDefinition.Controls.Add(this.olvMonitorDataSets);
             this.grpMonitorDataSetDefinition.Controls.Add(this.grpFileSource);
             this.grpMonitorDataSetDefinition.Controls.Add(this.txtDataSetName);
@@ -75,7 +77,7 @@ namespace BenMAP
             this.grpMonitorDataSetDefinition.Controls.Add(this.lblDataSetContents);
             this.grpMonitorDataSetDefinition.Location = new System.Drawing.Point(4, 7);
             this.grpMonitorDataSetDefinition.Name = "grpMonitorDataSetDefinition";
-            this.grpMonitorDataSetDefinition.Size = new System.Drawing.Size(421, 455);
+            this.grpMonitorDataSetDefinition.Size = new System.Drawing.Size(412, 506);
             this.grpMonitorDataSetDefinition.TabIndex = 0;
             this.grpMonitorDataSetDefinition.TabStop = false;
             // 
@@ -100,7 +102,7 @@ namespace BenMAP
             this.olvMonitorDataSets.GroupWithItemCountSingularFormat = "";
             this.olvMonitorDataSets.HeaderUsesThemes = false;
             this.olvMonitorDataSets.HideSelection = false;
-            this.olvMonitorDataSets.Location = new System.Drawing.Point(10, 71);
+            this.olvMonitorDataSets.Location = new System.Drawing.Point(9, 78);
             this.olvMonitorDataSets.MultiSelect = false;
             this.olvMonitorDataSets.Name = "olvMonitorDataSets";
             this.olvMonitorDataSets.OwnerDraw = true;
@@ -143,7 +145,7 @@ namespace BenMAP
             this.grpFileSource.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.grpFileSource.Controls.Add(this.btnLoad);
             this.grpFileSource.Controls.Add(this.tabControl1);
-            this.grpFileSource.Location = new System.Drawing.Point(503, 24);
+            this.grpFileSource.Location = new System.Drawing.Point(499, 49);
             this.grpFileSource.Name = "grpFileSource";
             this.grpFileSource.Size = new System.Drawing.Size(25, 436);
             this.grpFileSource.TabIndex = 6;
@@ -163,8 +165,8 @@ namespace BenMAP
             // 
             // tabControl1
             // 
-            this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.tabControl1.Controls.Add(this.tbpTextFile);
             this.tabControl1.Location = new System.Drawing.Point(-302, 56);
             this.tabControl1.Name = "tabControl1";
@@ -194,7 +196,7 @@ namespace BenMAP
             this.label1.Size = new System.Drawing.Size(297, 63);
             this.label1.TabIndex = 3;
             this.label1.Text = "The file layout is: Column, Row, Metric, Seasonal Metric, Statistic, Values; Valu" +
-    "es is a string of comma delimited model values.";
+                "es is a string of comma delimited model values.";
             this.label1.Visible = false;
             // 
             // btnBrowse
@@ -255,6 +257,8 @@ namespace BenMAP
             // groupBox1
             // 
             this.groupBox1.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.groupBox1.AutoSize = true;
+            this.groupBox1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.groupBox1.Controls.Add(this.btnBrowse1);
             this.groupBox1.Controls.Add(this.btnOutput);
             this.groupBox1.Controls.Add(this.cboPollutant);
@@ -263,7 +267,7 @@ namespace BenMAP
             this.groupBox1.Controls.Add(this.lblYear);
             this.groupBox1.Location = new System.Drawing.Point(4, 468);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(421, 89);
+            this.groupBox1.Size = new System.Drawing.Size(413, 96);
             this.groupBox1.TabIndex = 5;
             this.groupBox1.TabStop = false;
             // 
@@ -273,7 +277,7 @@ namespace BenMAP
             this.btnBrowse1.Name = "btnBrowse1";
             this.btnBrowse1.Size = new System.Drawing.Size(141, 27);
             this.btnBrowse1.TabIndex = 7;
-            this.btnBrowse1.Text = "Load From Database";
+            this.btnBrowse1.Text = "Load Data From File";
             this.btnBrowse1.UseVisualStyleBackColor = true;
             this.btnBrowse1.Click += new System.EventHandler(this.btnBrowse1_Click);
             // 
@@ -326,8 +330,8 @@ namespace BenMAP
             // 
             // progressBar1
             // 
-            this.progressBar1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.progressBar1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.progressBar1.Location = new System.Drawing.Point(13, 573);
             this.progressBar1.Name = "progressBar1";
             this.progressBar1.Size = new System.Drawing.Size(263, 12);
@@ -360,6 +364,9 @@ namespace BenMAP
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScroll = true;
+            this.AutoScrollMargin = new System.Drawing.Size(1, 1);
+            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.ClientSize = new System.Drawing.Size(427, 599);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.grpMonitorDataSetDefinition);

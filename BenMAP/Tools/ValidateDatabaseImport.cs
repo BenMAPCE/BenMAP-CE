@@ -3,8 +3,8 @@
 // Author           :
 // Created          : 03-17-2014
 //
-// Last Modified By : 
-// Last Modified On : 03-21-2014
+// Last Modified By : Adam Shelton
+// Last Modified On : 11-03-2014
 // ***********************************************************************
 // <copyright file="ValidateDatabaseImport.cs" company="RTI International">
 //     RTI International. All rights reserved.
@@ -50,6 +50,13 @@ namespace BenMAP
         /// </summary>
         //private Dictionary<string,string> _dicTableDef = null;
         private Hashtable _hashTableDef = null;
+        private Hashtable _hashTableEPG = null;//Endpointgroups lookup table.
+        private Hashtable _hashTableEPS = null; //Endpoints Lookup table.
+        private Hashtable _hashTableRace = null; //Race Lookup table.
+        private Hashtable _hashTableGender = null;//Genders Lookup table.
+        private Hashtable _hashTableEthnicity = null;//Ethnicity lookup table.
+        private Hashtable _hashTableAgeRange = null;//Ageranges lookup tabel.
+
         /// <summary>
         /// The _datasetname
         /// </summary>
@@ -92,6 +99,12 @@ namespace BenMAP
             txtReportOutput.SelectionIndent = 10;
             Get_ColumnNames();
             Get_DatasetDefinition();
+            Get_EndPointGroup();
+            Get_EndPoints();
+            Get_Race();
+            Get_Genders();
+            Get_Ethnicity();
+            Get_AgeRange();
         }
         /// <summary>
         /// Initializes a new instance of the <see cref="ValidateDatabaseImport"/> class.
@@ -125,16 +138,18 @@ namespace BenMAP
            // _dicTableDef = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             try
             {
-                cmdText = string.Format("SELECT COLUMNNAME, DATATYPE, LOWERLIMIT, UPPERLIMIT FROM DATASETDEFININTION WHERE DATASETNAME='{0}'", _datasetname);
-                DataTable _obj =   fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, cmdText).Tables[0] as DataTable;
+                cmdText = string.Format("SELECT COLUMNNAME, DATATYPE, REQUIRED, LOWERLIMIT, UPPERLIMIT, CHECKTYPE FROM DATASETDEFINITION WHERE DATASETTYPENAME='{0}'", _datasetname);
+                DataTable _obj = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, cmdText).Tables[0] as DataTable;
                 foreach(DataRow dr in _obj.Rows)
                 {
                     
                     //_dicTableDef.Add(dr[0].ToString(), dr[1].ToString());
                     _hashTableDef.Add(dr[0].ToString() + "##COLUMNNAME", dr[0].ToString());
                     _hashTableDef.Add(dr[0].ToString() + "##DATATYPE", dr[1].ToString());
-                    _hashTableDef.Add(dr[0].ToString() + "##LOWERLIMIT", dr[2].ToString());
-                    _hashTableDef.Add(dr[0].ToString() + "##UPPERLIMIT", dr[3].ToString());
+                    _hashTableDef.Add(dr[0].ToString() + "##REQUIRED", dr[2].ToString());
+                    _hashTableDef.Add(dr[0].ToString() + "##LOWERLIMIT", dr[3].ToString());
+                    _hashTableDef.Add(dr[0].ToString() + "##UPPERLIMIT", dr[4].ToString());
+                    _hashTableDef.Add(dr[0].ToString() + "##CHECKTYPE", dr[5].ToString());
                 }
             }
             catch (Exception ex)
@@ -143,6 +158,78 @@ namespace BenMAP
             }
 
         }
+
+        private void Get_EndPointGroup()
+        {
+            FireBirdHelperBase fb = new ESILFireBirdHelper();
+            _hashTableEPG = new Hashtable(StringComparer.OrdinalIgnoreCase);
+            string commandText = "SELECT DISTINCT ENDPOINTGROUPID, ENDPOINTGROUPNAME FROM ENDPOINTGROUPS";
+            DataTable _obj = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText).Tables[0] as DataTable;
+            foreach(DataRow dr in _obj.Rows)
+            {
+                _hashTableEPG.Add(dr[0], dr[1].ToString());
+            }
+        }
+
+        private void Get_EndPoints()
+        {
+            FireBirdHelperBase fb = new ESILFireBirdHelper();
+            _hashTableEPS = new Hashtable(StringComparer.OrdinalIgnoreCase);
+            string commandText = "SELECT DISTINCT ENDPOINTID, ENDPOINTNAME from ENDPOINTS";
+            DataTable _obj = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText).Tables[0] as DataTable;
+            foreach (DataRow dr in _obj.Rows)
+            {
+                _hashTableEPS.Add(dr[0], dr[1].ToString());
+            }
+        }
+
+        private void Get_Race()
+        {
+            FireBirdHelperBase fb = new ESILFireBirdHelper();
+            _hashTableRace = new Hashtable(StringComparer.OrdinalIgnoreCase);
+            string commandText = "select DISTINCT RACEID, RACENAME from RACES";
+            DataTable _obj = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText).Tables[0] as DataTable;
+            foreach (DataRow dr in _obj.Rows)
+            {
+                _hashTableRace.Add(dr[0], dr[1].ToString());
+            }
+        }
+
+        private void Get_Genders()
+        {
+            FireBirdHelperBase fb = new ESILFireBirdHelper();
+            _hashTableGender = new Hashtable(StringComparer.OrdinalIgnoreCase);
+            string commandText = "select DISTINCT GENDERID, GENDERNAME from GENDERS";
+            DataTable _obj = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText).Tables[0] as DataTable;
+            foreach (DataRow dr in _obj.Rows)
+            {
+                _hashTableGender.Add(dr[0], dr[1].ToString());
+            }
+        }
+        
+        private void Get_Ethnicity()
+        {
+            FireBirdHelperBase fb = new ESILFireBirdHelper();
+            _hashTableEthnicity = new Hashtable(StringComparer.OrdinalIgnoreCase);
+            string commandText = "select DISTINCT ETHNICITYID, ETHNICITYNAME from ETHNICITY";
+            DataTable _obj = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText).Tables[0] as DataTable;
+            foreach (DataRow dr in _obj.Rows)
+            {
+                _hashTableEthnicity.Add(dr[0], dr[1].ToString());
+            }
+        }
+       
+       private void Get_AgeRange()
+       {
+           FireBirdHelperBase fb = new ESILFireBirdHelper();
+           _hashTableAgeRange = new Hashtable(StringComparer.OrdinalIgnoreCase);
+           string commandText = "select DISTINCT AGERANGEID, AGERANGENAME from AGERANGES";
+           DataTable _obj = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText).Tables[0] as DataTable;
+           foreach (DataRow dr in _obj.Rows)
+           {
+               _hashTableAgeRange.Add(dr[0], dr[1].ToString());
+           }
+       }
 
         /// <summary>
         /// Handles the Load event of the ValidateDatabaseImport control.
@@ -170,6 +257,8 @@ namespace BenMAP
             bool bPassed = true;
             string tip = "Validating, this could take several minutes.";
             WaitShow(tip);
+            lblPassedFailed.BackColor = Color.Orange;
+            lblPassedFailed.Text = "Validating";
             Application.DoEvents();
             if(bPassed)
             {
@@ -183,6 +272,8 @@ namespace BenMAP
             }
             if(bPassed)
             {
+                errors = 0;
+                warnings = 0;
                 bPassed = VerifyTableDataTypes();//errors
                 txtReportOutput.Refresh();
             }
@@ -195,6 +286,17 @@ namespace BenMAP
             txtReportOutput.Refresh();
             SaveValidateResults();
             btnLoad.Enabled = bPassed;
+            if(!bPassed)
+            {
+                lblPassedFailed.BackColor = Color.Red;
+                lblPassedFailed.Text = string.Format("Validation failed with {0} errors.", errors);
+            }
+            else
+            {
+                lblPassedFailed.BackColor = Color.Green;
+                lblPassedFailed.Text = string.Format("Validation passed with {0} warnings.", warnings);
+                
+            }
             WaitClose();
         }
         /// <summary>
@@ -250,16 +352,6 @@ namespace BenMAP
 
             }
 
-            //foreach(KeyValuePair<string,string> kvpEntry in _dicTableDef)
-            //{
-            //    if(!_colNames.Contains(kvpEntry.Key))
-            //    {
-            //        txtReportOutput.Text += string.Format("Error\t\t{0}\t column is missing for dataset {1}\r\n", kvpEntry.Key.ToString(), _datasetname);
-            //        errors++;
-            //        bPassed = false;
-            //    }
-            //}
-
             if(!bPassed)
                 txtReportOutput.Text +="\r\nValidation of columns failed.\r\nPlease check the column header and file.  The columns could be incorrect or the incorrect file was selected.\r\n";
             else
@@ -293,9 +385,11 @@ namespace BenMAP
         {
             string errMsg = string.Empty;
             bool bPassed = true;
+            bool required = true;
             int numChecked = 0;
             string dataType = string.Empty;
             string dataVal = string.Empty;
+            string checkType = string.Empty;
             lblProgress.Visible = true;
             pbarValidation.Visible = true;
 
@@ -312,27 +406,45 @@ namespace BenMAP
                    foreach(DataColumn dc in dr.Table.Columns)
                    {
                         dataType = _hashTableDef[dc.ColumnName + "##DATATYPE"].ToString();
+                        checkType = _hashTableDef[dc.ColumnName + "##CHECKTYPE"].ToString();//Get check type - error, warning, or none (empty string or null)
+                        required = Convert.ToBoolean(Convert.ToInt32(_hashTableDef[dc.ColumnName + "##REQUIRED"].ToString()));
                         dataVal = dr[dc.ColumnName].ToString();
-                        
+                        errMsg = string.Empty;//resetting to be on the safe side
                         try
                         {
-                            if (dataVal != string.Empty)
+                            if (!VerifyDataRowValues(dataType, dc.ColumnName, dataVal, dr, out errMsg))
                             {
-                                if (!VerifyDataRowValues(dataType, dc.ColumnName, dataVal, out errMsg))
+                                if (checkType.ToLower() == "error")//if check type is "Error" and Verify Data Row Values fail - it's an error.
                                 {
                                     txtReportOutput.Text += string.Format("Error\t {0}\t {1} \t {2}\r\n", _tbl.Rows.IndexOf(dr), dc.ColumnName, errMsg);
-                                    txtReportOutput.Refresh();
                                     errors++;
-                                    numChecked++;
-                                    bPassed = false;
-                                    if(errors == 50)
-                                    {
-                                        return;
-                                    }
                                 }
-                                else
+                                else if (checkType.ToLower() == "warning" && !required)//if a check type is a warning and it is not a required field it is a warning.
                                 {
-                                    numChecked++;
+                                    txtReportOutput.Text += string.Format("Warning\t {0}\t {1} \t {2}\r\n", _tbl.Rows.IndexOf(dr), dc.ColumnName, errMsg);
+                                    warnings++;
+                                }
+                                else if (checkType.ToLower() == "warning" && required)//if a check type is a warning and it is a required field it is a error.
+                                {
+                                    txtReportOutput.Text += string.Format("Error\t {0}\t {1} \t {2}\r\n", _tbl.Rows.IndexOf(dr), dc.ColumnName, errMsg);
+                                    errors++;
+                                }
+                                else if (checkType == string.Empty && required)//if check type is an empty string and it is a required field it is a error.
+                                {
+                                    txtReportOutput.Text += string.Format("Error\t {0}\t {1} \t {2}\r\n", _tbl.Rows.IndexOf(dr), dc.ColumnName, errMsg);
+                                    errors++;
+                                }
+                                else if(checkType == string.Empty && !required)//if check type is an empty string and it is not a required field it is a warning.
+                                {
+                                    txtReportOutput.Text += string.Format("Warning\t {0}\t {1} \t {2}\r\n", _tbl.Rows.IndexOf(dr), dc.ColumnName, errMsg);
+                                    warnings++;
+                                }
+                                txtReportOutput.Refresh();
+                                numChecked++;
+                                bPassed = false;
+                                if(errors == 50)
+                                {
+                                    return;
                                 }
                             }
                             else
@@ -366,6 +478,37 @@ namespace BenMAP
             return bPassed;
         }
 
+        private bool VerifyStartAge(int startAge, int endAge, out string errMsg)
+        {
+            bool bPassed = true;
+            errMsg = string.Empty;
+            if(startAge < 0 )
+            {
+                errMsg = "Age can not be a negitive value";
+                return false;
+            }
+            if(startAge > endAge && endAge > 0)
+            {
+                return false;
+            }
+            return bPassed;
+        }
+        private bool VerifyEndAge(int startAge, int endAge, out string errMsg)
+        {
+            bool bPassed = true;
+            errMsg = string.Empty;
+            if (endAge < 0)
+            {
+                errMsg = "Age can not be a negitive value";
+                return false;
+            }
+            if (endAge < startAge && endAge > 0)
+            {
+                return false;
+            }
+            return bPassed;
+        }
+
         /// <summary>
         /// Verifies the data row values.
         /// </summary>
@@ -374,12 +517,16 @@ namespace BenMAP
         /// <param name="valToVerify">The value to verify.</param>
         /// <param name="errMsg">The error MSG.</param>
         /// <returns><c>true</c> if XXXX, <c>false</c> otherwise</returns>
-        private bool VerifyDataRowValues(string dataType, string columnName, string valToVerify, out string errMsg)
+        private bool VerifyDataRowValues(string dataType, string columnName, string valToVerify, DataRow dr, out string errMsg)
         {
             
             string min = _hashTableDef[columnName + "##LOWERLIMIT"].ToString();// Get_Min(columnName, dataType);
             string max = _hashTableDef[columnName + "##UPPERLIMIT"].ToString();//Get_Max(columnName, dataType);
-            Regex regx = new Regex(@"^[^~!@#%`^]+$");
+            bool required = Convert.ToBoolean(Convert.ToInt32(_hashTableDef[columnName + "##REQUIRED"].ToString()));//Get required value (true (1) or false (0))
+            string checkType = _hashTableDef[columnName + "##CHECKTYPE"].ToString();//Get check type - error, warning, or none (empty string or null)
+            // removed $ and %, as these are used in the valuation functions (and several others, as well)
+            //Regex regx = new Regex(@"^[^~!@#%`^]+$");
+            Regex regx = new Regex(@"^[^~!@#`^]+");
             double tempVal;
             int outVal = -1;
             bool bPassed = true;
@@ -388,15 +535,22 @@ namespace BenMAP
 
             try
             {
+                //is the field required and the value to varify is null or empty, it should fail. go no further
+                if(required && string.IsNullOrEmpty(valToVerify))
+                {
+                    errMsg = string.Format("Missing values.  {0} is a required field.", columnName);
+                    return false;
+                }
+
                 switch (dataType)
                 {
                     case "string":
-
+                        //getting value to varify. (some strings are doubles such as the monitors name.
                         if (double.TryParse(valToVerify, out tempVal))
                         {
                             valToVerify = tempVal.ToString();
                         }
-
+                        //checking it's min
                         if (!string.IsNullOrEmpty(min) && bPassed)
                         {
                             if (valToVerify.Length < Convert.ToInt32(min))
@@ -405,6 +559,7 @@ namespace BenMAP
                                 bPassed = false;
                             }
                         }
+                        //checking it's max
                         if (!string.IsNullOrEmpty(max) && bPassed)
                         {
                             if (valToVerify.Length > Convert.ToInt32(max))
@@ -413,13 +568,15 @@ namespace BenMAP
                                 bPassed = false;
                             }
                         }
-
-                        if (!regx.IsMatch(valToVerify) && bPassed)
+                        //checking for invalid characters
+                        if(!String.IsNullOrEmpty(valToVerify))
                         {
-                            errMsg = "Value has invalid characters.";
-                            bPassed = false;
+                            if (!regx.IsMatch(valToVerify) && bPassed)
+                            {
+                                errMsg = "Value has invalid characters.";
+                                bPassed = false;
+                            }
                         }
-
                         break;
                     case "integer":
 
@@ -444,35 +601,36 @@ namespace BenMAP
                         }
                         else
                         {
-                            errMsg = "Value is not a valid integer.";
+                            errMsg = string.Format("Value '{0}' is not a valid integer.", valToVerify);
                             bPassed = false;
                         }
                         break;
                     case "float":
                         float outValf = -1;
+                        //do a try parse
+                        //do a min and max check
+                        //if there is a Max there must be a min.
                         if (float.TryParse(valToVerify, out outValf))
                         {
-                            if (!string.IsNullOrEmpty(min) && bPassed)
+                            if(!string.IsNullOrEmpty(min) && !string.IsNullOrEmpty(max) && bPassed)
                             {
-                                if (outValf < Convert.ToInt32(min))
+                                if (outValf < Convert.ToInt32(min) || outValf > Convert.ToInt32(max))
                                 {
-                                    errMsg = string.Format("Value is not within min({0}) range.", min);
-                                    bPassed = false;
-                                }
-                            }
-                            if (!string.IsNullOrEmpty(max) && bPassed)
-                            {
-                                if (outValf > Convert.ToInt32(max))
-                                {
-                                    errMsg = string.Format("Value is not within max({0}) range.", max);
+                                    errMsg = string.Format("Value is not within min({0}) or max({1}) range.", min, max);
                                     bPassed = false;
                                 }
                             }
                         }
                         else
-                        {
-                            errMsg = "Value is not a valid float.";
-                            bPassed = false;
+                        {   //If it is required and the val is empty it is an invalid float.  This is actully caught at line 418
+                            //this should handle the case where a value is not required and is empty - then there is no issue
+                            //if it is not required and a value exists, then it is not a float and is an issue
+                            //if it failed to tryparse then chances are it is not a valid float.
+                            if (!required && !string.IsNullOrEmpty(valToVerify))
+                            {
+                                errMsg = string.Format("Value '{0}' is not a valid float.", valToVerify);
+                                bPassed = false;
+                            }
                         }
                         break;
                     case "double":
@@ -483,12 +641,222 @@ namespace BenMAP
                     default:
                         break;
                 }
+                string errorMsg = string.Empty;
+                if (!verifyAgainstTable(columnName, valToVerify, dr, out errorMsg))
+                {
+                    if(errorMsg != string.Empty)
+                    {
+                        errMsg += " " + errorMsg;
+                    }
+                    bPassed = false;
+                }
+            }
+            catch (Exception ex)
+            {
+                bPassed = false;
+                MessageBox.Show(ex.Message);
+            }
+            //txtReportOutput.Refresh();
+            return bPassed;
+        }
+
+        private bool verifyAgainstTable(string columnName, string valToVerify, DataRow dr, out string errMsg)
+        {
+            FireBirdHelperBase fb = new ESILFireBirdHelper();
+            string cmdText = string.Empty;
+            bool bPassed = true;
+            object rtv = null;
+            string strRtv = string.Empty;
+            errMsg = string.Empty;
+            try
+            {
+                switch (columnName)
+                {
+                    case "EndpointGroup":
+                    case "Endpoint Group":
+                        //cmdText = string.Format("SELECT DISTINCT ENDPOINTGROUPID FROM ENDPOINTGROUPS WHERE ENDPOINTGROUPNAME = '{0}'", valToVerify);
+                        //rtv = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, cmdText);
+                        //if (rtv == null) //did not find anyting from the query
+                        /* -- commented out next block to remove value checking 
+                        if(!_hashTableEPG.ContainsValue(valToVerify))
+                        {
+                            errMsg = string.Format("Invalid Endpoint Group Name.  ({0})", valToVerify);
+                        }
+                         */
+                        break;
+
+                    case "Endpoint":
+                        //cmdText = string.Format("SELECT DISTINCT ENDPOINTID FROM ENDPOINTS WHERE ENDPOINTNAME = '{0}'", valToVerify);
+                        //rtv = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, cmdText);
+                        //if (rtv == null)
+                        /* -- commented out next block to remove value checking 
+                        if(!_hashTableEPS.ContainsValue(valToVerify))
+                        {
+                                errMsg = string.Format("Invalid Endpoint Name given.  ({0})", valToVerify);
+                        }
+                         */
+                        break;
+                    case "Study Year":
+                    case "Year":
+                        if (!Regex.IsMatch(valToVerify, "^(19|20)[0-9][0-9]"))
+                        {
+                            errMsg = string.Format("Invalid year entry. ({0})", valToVerify);
+                        }
+                        break;
+                    case "Race":
+                        //cmdText = string.Format("SELECT DISTINCT RACEID FROM RACES WHERE RACENAME = '{0}'", valToVerify);
+                        //rtv = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, cmdText);
+                        //if(rtv == null)
+                        /* -- commented out next block to remove value checking 
+                        if(!_hashTableRace.ContainsValue(valToVerify))
+                        {
+                            errMsg = string.Format("'{0}' is not a valid race.", valToVerify);
+                        }
+                         */
+                        break;
+                    case "Gender":
+                        //cmdText = string.Format("SELECT DISTINCT GENDERID FROM GENDERS WHERE GENDERNAME = '{0}'", valToVerify);
+                        //rtv = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, cmdText);
+                        //if (rtv == null)
+                        /* -- commented out next block to remove value checking 
+                        if(!_hashTableGender.ContainsValue(valToVerify))
+                        {
+                            errMsg = string.Format("'{0}' is not valid gender.", valToVerify);
+                        }
+                        */
+                        break;
+                    case "Ethnicity":
+                        //cmdText = string.Format("SELECT DISTINCT ETHNICITYID FROM ETHNICITY WHERE ETHNICITYNAME = '{0}'", valToVerify);
+                        //rtv = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, cmdText);
+                        //if (rtv == null)
+                        /* -- commented out next block to remove value checking 
+                        if(!_hashTableEthnicity.ContainsValue(valToVerify))
+                        {
+                            errMsg = string.Format("'{0}' is not valid ethnicity.", valToVerify);
+                        }
+                        */
+                        break;
+                    case "Start Age":
+                    case "End Age":
+                        //this is for validating start Age and End Age
+                        string erMsg = string.Empty;
+                        if (columnName.Equals("Start Age"))
+                        {
+                            //get the end age and do a quick compair.
+                            if (!VerifyStartAge(Convert.ToInt32(valToVerify), Convert.ToInt32(dr["End Age"].ToString()), out erMsg))
+                            {
+                                if(string.IsNullOrEmpty(erMsg))//passed checking for negitives 
+                                {
+                                    errMsg = string.Format("Start Age ({0}) should not be less than End Age.", valToVerify);
+                                }
+                            }
+                        }
+                        if (columnName.Equals("End Age"))
+                        {
+                            //get the start age and do a quick compair.
+                            if (!VerifyEndAge(Convert.ToInt32(dr["Start Age"].ToString()), Convert.ToInt32(valToVerify), out erMsg))
+                            {
+                                if (string.IsNullOrEmpty(erMsg))//passed checking for negitives 
+                                {
+                                    errMsg = string.Format("End Age ({0}) should not be greater than Start Age.", valToVerify);
+                                }
+                            }
+                        }
+                        if (!string.IsNullOrEmpty(erMsg))
+                        {
+                            errMsg += " " + erMsg;
+                        }
+                    break;
+                    case "Latitude":
+                        float lat = 0;
+                        if(!string.IsNullOrEmpty(valToVerify))
+                        {
+                            if(float.TryParse(valToVerify, out lat))
+                            {
+                                if(lat < -90 || lat > 90)
+                                {
+                                    errMsg = "Latitude must be between -90 and 90 degrees inclusive";
+                                }
+                            }
+                            else
+                            {
+                                errMsg = string.Format("Latitude '{0}' is an invalid value", valToVerify);
+                            }
+                        }
+
+                    break;
+                    case "Longitude":
+                        float longitude = 0;
+                        if(!string.IsNullOrEmpty(valToVerify))
+                        {
+                            if (float.TryParse(valToVerify, out longitude))
+                            {
+                                if (longitude < -180 || longitude > 180)
+                                {
+                                    errMsg = "Longitude must be between -180 and 180 degrees inclusive";
+                                }
+                            }
+                            else
+                            {
+                                errMsg = string.Format("Longitude '{0}' is an invalid value", valToVerify);
+                            }
+                        }
+                    break;
+                    case "AgeRange":
+                        //cmdText = string.Format("SELECT DISTINCT AGERANGEID FROM AGERANGES WHERE AGERANGENAME  = '{0}'", valToVerify);
+                        //rtv = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, cmdText);
+                        //if (rtv == null)
+                        if(!_hashTableAgeRange.ContainsValue(valToVerify))
+                        {
+                                errMsg = string.Format("Invalid Age Range Name given.  ({0})", valToVerify);
+                        }
+                    break;
+                    case "Column":
+
+                    break;
+                    case "Row":
+
+                    break;
+                    case "Type":
+
+                    break;
+                    case "Value": // note that Values (plural) is used for monitor data and Value (singular) is used for incidence data
+                        
+                    break;
+                    case "Values":  // note that Values (plural) is used for monitor data and Value (singular) is used for incidence data
+                        if (!string.IsNullOrEmpty(valToVerify))
+                        {
+                            // monitor values must have correct number of records
+                            // this is checked by testing that commas are 1 less than the number of records for the period 
+                            // (note that years and hours are in twice; once for leap and once for non-leap years)
+                            int iDayCount;
+                            iDayCount = Regex.Matches(valToVerify, ",").Count;
+                            // 2014 11 13 - added check for monthly data (11 commas) and quarterly data (3 commas) 
+                            if (!((iDayCount == 364) || (iDayCount == 365) || (iDayCount == 8759) || (iDayCount == 8783) 
+                                    || (iDayCount == 0) || (iDayCount == 11) || (iDayCount == 3))) 
+                            {
+                                errMsg = string.Format("Wrong number of days for monitor.  ({0})", valToVerify);
+                            }
+                            
+                        }
+                        
+                    break;
+                    case "Variable":
+
+                    break;
+                    default:
+                        break;
+                }
+                if (errMsg != string.Empty)
+                {
+                    bPassed = false;
+                }
+
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
-            //txtReportOutput.Refresh();
             return bPassed;
         }
 
@@ -500,7 +868,7 @@ namespace BenMAP
         /// <returns>System.String.</returns>
         private string Get_Min(string columnName, string dataType)
         {
-            string cmdText = string.Format("SELECT LOWERLIMIT FROM DATASETDEFININTION where DATASETNAME='{0}' " +
+            string cmdText = string.Format("SELECT LOWERLIMIT FROM DATASETDEFINITION where DATASETTYPENAME='{0}' " +
                                             "and COLUMNNAME='{1}' and DATATYPE='{2}'", _datasetname, columnName, dataType);
             FireBirdHelperBase fb = new ESILFireBirdHelper();
             string obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, cmdText).ToString();
@@ -517,7 +885,7 @@ namespace BenMAP
         /// <returns>System.String.</returns>
         private string Get_Max(string columnName, string dataType)
         {
-            string cmdText = string.Format("SELECT UPPERLIMIT FROM DATASETDEFININTION where DATASETNAME='{0}' " +
+            string cmdText = string.Format("SELECT UPPERLIMIT FROM DATASETDEFINITION where DATASETTYPENAME='{0}' " +
                                 "and COLUMNNAME='{1}' and DATATYPE='{2}'", _datasetname, columnName, dataType);
             FireBirdHelperBase fb = new ESILFireBirdHelper();
             string obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, cmdText).ToString();

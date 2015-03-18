@@ -35,24 +35,40 @@ namespace BenMAP
                     isShow = CommonClass.IniReadValue("appSettings", "IsShowStart", iniPath);
                     isShowExit = CommonClass.IniReadValue("appSettings", "IsShowExit", iniPath);
                     isForceValidate = CommonClass.IniReadValue("appSettings", "IsForceValidate", iniPath);
-                    strNumDaysToDelete = CommonClass.IniReadValue("appSettings", "NumDaysToDelete", iniPath);
+                    string temp = CommonClass.IniReadValue("appSettings", "NumDaysToDelete", iniPath);
+                    if(!string.IsNullOrEmpty(temp))
+                    {
+                        strNumDaysToDelete = temp;
+                    }
                     defaultSetup = CommonClass.IniReadValue("appSettings", "DefaultSetup", iniPath);
                 }
 
                 if (isShow == "T")
+                {
                     cboStart.Checked = true;
+                }
                 else
+                {
                     cboStart.Checked = false;
+                }
 
                 if (isShowExit == "T")
+                {
                     cboExit.Checked = true;
+                }
                 else
+                {
                     cboExit.Checked = false;
+                }
 
                 if (isForceValidate == "T")
+                {
                     cboRequireValidation.Checked = true;
+                }
                 else
+                {
                     cboRequireValidation.Checked = false;
+                }
 
                 txtNumDays.Text = strNumDaysToDelete;
 
@@ -101,23 +117,24 @@ namespace BenMAP
         {
             deleteValidationLogFiles();
         }
+        //this is for deleting the validation log files NOW
         private void deleteValidationLogFiles()
         {
             string validationResultsPath = CommonClass.ResultFilePath + @"\ValidationResults";
             string[] strFiles = System.IO.Directory.GetFiles(validationResultsPath, "*rtf");
-            string iniPath = CommonClass.ResultFilePath + @"\BenMAP.ini";
-            int NumDaysToDelete = Convert.ToInt32( CommonClass.IniReadValue("appSettings", "NumDaysToDelete", iniPath));
-            DateTime createDate;
+            //string iniPath = CommonClass.ResultFilePath + @"\BenMAP.ini";
+            //int NumDaysToDelete = Convert.ToInt32( CommonClass.IniReadValue("appSettings", "NumDaysToDelete", iniPath));
+            //DateTime createDate;
             System.IO.FileInfo fInfo = null;
             foreach(string s in strFiles)
             {
                 fInfo = new System.IO.FileInfo(s);
-                createDate = fInfo.CreationTime;
+                //createDate = fInfo.CreationTime;
 
-                if (createDate.Date < DateTime.Now.Date.Subtract(TimeSpan.FromDays(NumDaysToDelete)))
-                {
-                    System.IO.File.Delete(s);
-                }
+                //if (createDate.Date < DateTime.Now.Date.Subtract(TimeSpan.FromDays(NumDaysToDelete)))
+                //{
+                System.IO.File.Delete(s);
+                //}
             }
         }
     }

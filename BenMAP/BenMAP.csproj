@@ -15,7 +15,7 @@
     </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
     <IsWebBootstrapper>false</IsWebBootstrapper>
-    <PublishUrl>publish\</PublishUrl>
+    <PublishUrl>C:\Temp\BenMAP\Install\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
     <UpdateEnabled>false</UpdateEnabled>
@@ -25,9 +25,10 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationRevision>1</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
+    <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
@@ -54,7 +55,7 @@
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <DebugType>full</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
     <CodeAnalysisFailOnMissingRules>true</CodeAnalysisFailOnMissingRules>
@@ -64,7 +65,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <PropertyGroup>
@@ -74,7 +75,7 @@
     <TargetZone>LocalIntranet</TargetZone>
   </PropertyGroup>
   <PropertyGroup>
-    <GenerateManifests>false</GenerateManifests>
+    <GenerateManifests>true</GenerateManifests>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
@@ -82,7 +83,19 @@
   <PropertyGroup>
     <RunPostBuildEvent>Always</RunPostBuildEvent>
   </PropertyGroup>
+  <PropertyGroup>
+    <ManifestCertificateThumbprint>B2864565339390281CF478E34447255767D1B56C</ManifestCertificateThumbprint>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestKeyFile>BenMAP_TemporaryKey.pfx</ManifestKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignManifests>false</SignManifests>
+  </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DocumentFormat.OpenXml">
+      <HintPath>Dll\DocumentFormat.OpenXml.dll</HintPath>
+    </Reference>
     <Reference Include="DotSpatial.Analysis, Version=0.11.9.6, Culture=neutral, PublicKeyToken=df3f45fb0fe4cb0c, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Dll\DotSpatial\DotSpatial.Analysis.dll</HintPath>
@@ -169,12 +182,15 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.configuration" />
+    <Reference Include="System.Configuration.Install" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.Linq" />
+    <Reference Include="System.Management" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceProcess" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Web.Services" />
+    <Reference Include="System.Windows.Forms.DataVisualization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -183,6 +199,7 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
     <Reference Include="ZedGraph">
       <HintPath>Dll\ZedGraph\ZedGraph.dll</HintPath>
     </Reference>
@@ -703,12 +720,29 @@
     <Compile Include="Configuration\PopulationInformation.Designer.cs">
       <DependentUpon>PopulationInformation.cs</DependentUpon>
     </Compile>
+    <Compile Include="SQLStatementsCommonClass.cs" />
     <Compile Include="TipFormGIF.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="TipFormGIF.Designer.cs">
       <DependentUpon>TipFormGIF.cs</DependentUpon>
     </Compile>
+    <Compile Include="Tools\GBDRollback.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Tools\GBDRollback.Designer.cs">
+      <DependentUpon>GBDRollback.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Tools\GBDRollbackCountriesPopulations.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Tools\GBDRollbackCountriesPopulations.Designer.cs">
+      <DependentUpon>GBDRollbackCountriesPopulations.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Tools\GBDRollbackDataSource.cs" />
+    <Compile Include="Tools\GBDRollbackKrewskiFunction.cs" />
+    <Compile Include="Tools\GBDRollbackItem.cs" />
+    <Compile Include="Tools\GBDRollbackKrewskiResult.cs" />
     <Compile Include="Tools\Metadata.cs" />
     <Compile Include="Tools\MetadataClassObj.cs" />
     <Compile Include="Tools\Options.cs">
@@ -851,6 +885,18 @@
       <DependentUpon>QALYResulesReport.cs</DependentUpon>
     </Compile>
     <Compile Include="Jira\NewIssue.cs" />
+    <None Include="Data\Shapefiles\GBDRollback\gadm_worldsimplify.dbf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Shapefiles\GBDRollback\gadm_worldsimplify.prj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Shapefiles\GBDRollback\gadm_worldsimplify.shp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Shapefiles\GBDRollback\gadm_worldsimplify.shx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Resources\Welcome1.png" />
     <EmbeddedResource Include="APV\Aggregation.resx">
       <DependentUpon>Aggregation.cs</DependentUpon>
@@ -1135,6 +1181,12 @@
     <EmbeddedResource Include="Tools\ExportAirQualitySurface.resx">
       <DependentUpon>ExportAirQualitySurface.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Tools\GBDRollback.resx">
+      <DependentUpon>GBDRollback.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tools\GBDRollbackCountriesPopulations.resx">
+      <DependentUpon>GBDRollbackCountriesPopulations.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Tools\ModelFileConcatenator.resx">
       <DependentUpon>ModelFileConcatenator.cs</DependentUpon>
     </EmbeddedResource>
@@ -1358,6 +1410,7 @@
     </None>
     <None Include="Properties\app.manifest">
       <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Properties\Settings.settings">
       <Generator>PublicSettingsSingleFileGenerator</Generator>
@@ -1368,6 +1421,9 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <None Include="Tools\GBDRollBackOutputTemplate.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="GISMapping\" />
@@ -1445,6 +1501,7 @@
     <None Include="Resources\btn4_1.png" />
     <None Include="Resources\btn4_2.png" />
     <None Include="Resources\btn4_3.png" />
+    <None Include="Resources\BuildDate.txt" />
     <Content Include="Resources\chart4.gif" />
     <Content Include="Resources\cuahsi_logo1.GIF" />
     <Content Include="Resources\DistributionFormula\2000px-Exponential_pdf_svg.png">
@@ -1559,6 +1616,7 @@
     <None Include="Resources\SPEXit.png" />
     <None Include="Resources\SPLoadAPVR.png" />
     <None Include="Resources\SPLoadCFGR.png" />
+    <Content Include="Resources\Table-icon.png" />
     <Content Include="Resources\tableView_Bar.png" />
     <None Include="Resources\tableView1.png" />
     <None Include="Resources\Welcome.png" />
@@ -1569,11 +1627,30 @@
       <Name>FireBirdHelper</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="VBIDE">
+      <Guid>{0002E157-0000-0000-C000-000000000046}</Guid>
+      <VersionMajor>5</VersionMajor>
+      <VersionMinor>3</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>call "$(DevEnvDir)..\tools\vsvars32.bat"
 
+editbin /LARGEADDRESSAWARE "$(TargetPath)"
+
+call "$(DevEnvDir)..\tools\vsvars32.bat"
+
 editbin /LARGEADDRESSAWARE "$(TargetPath)"</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

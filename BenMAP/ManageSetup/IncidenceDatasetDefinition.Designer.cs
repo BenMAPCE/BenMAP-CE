@@ -76,7 +76,10 @@ namespace BenMAP
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.olvIncidenceRates)).BeginInit();
             this.SuspendLayout();
-                                                this.btnOutPut.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            // 
+            // btnOutPut
+            // 
+            this.btnOutPut.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnOutPut.Location = new System.Drawing.Point(5, 426);
             this.btnOutPut.Name = "btnOutPut";
             this.btnOutPut.Size = new System.Drawing.Size(131, 27);
@@ -86,7 +89,10 @@ namespace BenMAP
                     " and can be used as an example to prepare the input file.");
             this.btnOutPut.UseVisualStyleBackColor = true;
             this.btnOutPut.Click += new System.EventHandler(this.btnOutPut_Click);
-                                                this.grpCancelOK.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+            // 
+            // grpCancelOK
+            // 
+            this.grpCancelOK.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.grpCancelOK.Controls.Add(this.lblProgress);
             this.grpCancelOK.Controls.Add(this.progressBar1);
@@ -97,17 +103,26 @@ namespace BenMAP
             this.grpCancelOK.Size = new System.Drawing.Size(810, 43);
             this.grpCancelOK.TabIndex = 2;
             this.grpCancelOK.TabStop = false;
-                                                this.lblProgress.AutoSize = true;
+            // 
+            // lblProgress
+            // 
+            this.lblProgress.AutoSize = true;
             this.lblProgress.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblProgress.Location = new System.Drawing.Point(673, 18);
             this.lblProgress.Name = "lblProgress";
             this.lblProgress.Size = new System.Drawing.Size(0, 14);
             this.lblProgress.TabIndex = 3;
-                                                this.progressBar1.Location = new System.Drawing.Point(6, 19);
+            // 
+            // progressBar1
+            // 
+            this.progressBar1.Location = new System.Drawing.Point(6, 19);
             this.progressBar1.Name = "progressBar1";
             this.progressBar1.Size = new System.Drawing.Size(661, 12);
             this.progressBar1.TabIndex = 2;
-                                                this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            // 
+            // btnOK
+            // 
+            this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOK.Location = new System.Drawing.Point(732, 12);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 27);
@@ -115,7 +130,10 @@ namespace BenMAP
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
-                                                this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            // 
+            // btnCancel
+            // 
+            this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.Location = new System.Drawing.Point(651, 12);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 27);
@@ -124,7 +142,10 @@ namespace BenMAP
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Visible = false;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
-                                                this.grpDataView.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            // 
+            // grpDataView
+            // 
+            this.grpDataView.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.grpDataView.Controls.Add(this.olvValues);
             this.grpDataView.Controls.Add(this.bdnInfo);
@@ -133,7 +154,10 @@ namespace BenMAP
             this.grpDataView.Size = new System.Drawing.Size(233, 555);
             this.grpDataView.TabIndex = 1;
             this.grpDataView.TabStop = false;
-                                                this.olvValues.AllColumns.Add(this.olvColumn15);
+            // 
+            // olvValues
+            // 
+            this.olvValues.AllColumns.Add(this.olvColumn15);
             this.olvValues.AllColumns.Add(this.olvColumn16);
             this.olvValues.AllColumns.Add(this.olvcValue);
             this.olvValues.AllowColumnReorder = true;
@@ -175,16 +199,28 @@ namespace BenMAP
             this.olvValues.UseOverlays = false;
             this.olvValues.View = System.Windows.Forms.View.Details;
             this.olvValues.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.olvValues_ColumnClick);
-                                                this.olvColumn15.AspectName = "CColumn";
+            // 
+            // olvColumn15
+            // 
+            this.olvColumn15.AspectName = "CColumn";
             this.olvColumn15.Text = "Column";
-                                                this.olvColumn16.AspectName = "Row";
+            // 
+            // olvColumn16
+            // 
+            this.olvColumn16.AspectName = "Row";
             this.olvColumn16.Text = "Row";
-                                                this.olvcValue.AspectName = "VValue";
+            // 
+            // olvcValue
+            // 
+            this.olvcValue.AspectName = "VValue";
             this.olvcValue.AspectToStringFormat = "{0:N8}";
             this.olvcValue.FillsFreeSpace = true;
             this.olvcValue.Text = "Value";
             this.olvcValue.Width = 74;
-                                                this.bdnInfo.AddNewItem = null;
+            // 
+            // bdnInfo
+            // 
+            this.bdnInfo.AddNewItem = null;
             this.bdnInfo.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.bdnInfo.BackColor = System.Drawing.Color.Transparent;
             this.bdnInfo.CountItem = this.lblPageCount;
@@ -208,55 +244,85 @@ namespace BenMAP
             this.bdnInfo.MovePreviousItem = this.tsbPrevious;
             this.bdnInfo.Name = "bdnInfo";
             this.bdnInfo.PositionItem = this.txtCurrentPage;
-            this.bdnInfo.Size = new System.Drawing.Size(195, 23);
+            this.bdnInfo.Size = new System.Drawing.Size(198, 23);
             this.bdnInfo.TabIndex = 1;
             this.bdnInfo.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.bdnInfo_ItemClicked);
-                                                this.lblPageCount.Name = "lblPageCount";
-            this.lblPageCount.Size = new System.Drawing.Size(32, 17);
-            this.lblPageCount.Text = "/ {0}";
+            // 
+            // lblPageCount
+            // 
+            this.lblPageCount.Name = "lblPageCount";
+            this.lblPageCount.Size = new System.Drawing.Size(35, 15);
+            this.lblPageCount.Text = "of {0}";
             this.lblPageCount.ToolTipText = "Total number of items";
-                                                this.tsbFirst.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            // 
+            // tsbFirst
+            // 
+            this.tsbFirst.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.tsbFirst.Image = ((System.Drawing.Image)(resources.GetObject("tsbFirst.Image")));
             this.tsbFirst.Name = "tsbFirst";
             this.tsbFirst.RightToLeftAutoMirrorImage = true;
             this.tsbFirst.Size = new System.Drawing.Size(23, 20);
             this.tsbFirst.Tag = "first";
             this.tsbFirst.ToolTipText = "Move to First Page";
-                                                this.tsbPrevious.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            // 
+            // tsbPrevious
+            // 
+            this.tsbPrevious.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.tsbPrevious.Image = ((System.Drawing.Image)(resources.GetObject("tsbPrevious.Image")));
             this.tsbPrevious.Name = "tsbPrevious";
             this.tsbPrevious.RightToLeftAutoMirrorImage = true;
             this.tsbPrevious.Size = new System.Drawing.Size(23, 20);
             this.tsbPrevious.Tag = "previous";
             this.tsbPrevious.ToolTipText = "Move to Previous Page";
-                                                this.bindingNavigatorSeparator.Name = "bindingNavigatorSeparator";
+            // 
+            // bindingNavigatorSeparator
+            // 
+            this.bindingNavigatorSeparator.Name = "bindingNavigatorSeparator";
             this.bindingNavigatorSeparator.Size = new System.Drawing.Size(6, 23);
-                                                this.txtCurrentPage.AccessibleName = "Position";
+            // 
+            // txtCurrentPage
+            // 
+            this.txtCurrentPage.AccessibleName = "Position";
             this.txtCurrentPage.AutoSize = false;
             this.txtCurrentPage.Name = "txtCurrentPage";
             this.txtCurrentPage.Size = new System.Drawing.Size(50, 23);
             this.txtCurrentPage.Text = "0";
             this.txtCurrentPage.ToolTipText = "Current position";
             this.txtCurrentPage.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtCurrentPage_KeyDown);
-                                                this.bindingNavigatorSeparator1.Name = "bindingNavigatorSeparator1";
+            // 
+            // bindingNavigatorSeparator1
+            // 
+            this.bindingNavigatorSeparator1.Name = "bindingNavigatorSeparator1";
             this.bindingNavigatorSeparator1.Size = new System.Drawing.Size(6, 23);
-                                                this.tsbNext.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            // 
+            // tsbNext
+            // 
+            this.tsbNext.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.tsbNext.Image = ((System.Drawing.Image)(resources.GetObject("tsbNext.Image")));
             this.tsbNext.Name = "tsbNext";
             this.tsbNext.RightToLeftAutoMirrorImage = true;
             this.tsbNext.Size = new System.Drawing.Size(23, 20);
             this.tsbNext.Tag = "next";
             this.tsbNext.ToolTipText = "Move to Next Page";
-                                                this.tsbLast.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            // 
+            // tsbLast
+            // 
+            this.tsbLast.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.tsbLast.Image = ((System.Drawing.Image)(resources.GetObject("tsbLast.Image")));
             this.tsbLast.Name = "tsbLast";
             this.tsbLast.RightToLeftAutoMirrorImage = true;
             this.tsbLast.Size = new System.Drawing.Size(23, 20);
             this.tsbLast.Tag = "last";
             this.tsbLast.ToolTipText = "Move to Last Page";
-                                                this.bindingNavigatorSeparator2.Name = "bindingNavigatorSeparator2";
+            // 
+            // bindingNavigatorSeparator2
+            // 
+            this.bindingNavigatorSeparator2.Name = "bindingNavigatorSeparator2";
             this.bindingNavigatorSeparator2.Size = new System.Drawing.Size(6, 23);
-                                                this.grpIncidenceDataSetDefinition.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            // 
+            // grpIncidenceDataSetDefinition
+            // 
+            this.grpIncidenceDataSetDefinition.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.grpIncidenceDataSetDefinition.Controls.Add(this.grpDataSetIncidenceRates);
@@ -269,7 +335,10 @@ namespace BenMAP
             this.grpIncidenceDataSetDefinition.Size = new System.Drawing.Size(571, 555);
             this.grpIncidenceDataSetDefinition.TabIndex = 0;
             this.grpIncidenceDataSetDefinition.TabStop = false;
-                                                this.grpDataSetIncidenceRates.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            // 
+            // grpDataSetIncidenceRates
+            // 
+            this.grpDataSetIncidenceRates.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.grpDataSetIncidenceRates.Controls.Add(this.btnOutPut);
@@ -286,34 +355,49 @@ namespace BenMAP
             this.grpDataSetIncidenceRates.TabIndex = 0;
             this.grpDataSetIncidenceRates.TabStop = false;
             this.grpDataSetIncidenceRates.Text = "Dataset Incidence Rates";
-                                                this.chbGroup.AutoSize = true;
+            // 
+            // chbGroup
+            // 
+            this.chbGroup.AutoSize = true;
             this.chbGroup.Location = new System.Drawing.Point(484, 38);
             this.chbGroup.Name = "chbGroup";
-            this.chbGroup.Size = new System.Drawing.Size(54, 16);
+            this.chbGroup.Size = new System.Drawing.Size(59, 18);
             this.chbGroup.TabIndex = 33;
             this.chbGroup.Text = "Group";
             this.chbGroup.UseVisualStyleBackColor = true;
             this.chbGroup.CheckedChanged += new System.EventHandler(this.chbGroup_CheckedChanged);
-                                                this.groupBox3.Controls.Add(this.txtFilter);
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.txtFilter);
             this.groupBox3.Location = new System.Drawing.Point(371, 23);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(106, 46);
             this.groupBox3.TabIndex = 32;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Filter";
-                                                this.txtFilter.Location = new System.Drawing.Point(6, 16);
+            // 
+            // txtFilter
+            // 
+            this.txtFilter.Location = new System.Drawing.Point(6, 16);
             this.txtFilter.Name = "txtFilter";
             this.txtFilter.Size = new System.Drawing.Size(94, 22);
             this.txtFilter.TabIndex = 0;
             this.txtFilter.TextChanged += new System.EventHandler(this.txtFilter_TextChanged);
-                                                this.groupBox1.Controls.Add(this.cboEndpointGroup);
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.cboEndpointGroup);
             this.groupBox1.Location = new System.Drawing.Point(7, 23);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(204, 46);
             this.groupBox1.TabIndex = 30;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Filter Endpoint Group";
-                                                this.cboEndpointGroup.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            // 
+            // cboEndpointGroup
+            // 
+            this.cboEndpointGroup.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.cboEndpointGroup.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboEndpointGroup.FormattingEnabled = true;
             this.cboEndpointGroup.Location = new System.Drawing.Point(6, 16);
@@ -321,14 +405,20 @@ namespace BenMAP
             this.cboEndpointGroup.Size = new System.Drawing.Size(192, 22);
             this.cboEndpointGroup.TabIndex = 0;
             this.cboEndpointGroup.SelectedIndexChanged += new System.EventHandler(this.cboEndpointGroup_SelectedIndexChanged);
-                                                this.groupBox2.Controls.Add(this.cboEndpoint);
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.cboEndpoint);
             this.groupBox2.Location = new System.Drawing.Point(217, 23);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(148, 46);
             this.groupBox2.TabIndex = 31;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Filter Endpoint";
-                                                this.cboEndpoint.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            // 
+            // cboEndpoint
+            // 
+            this.cboEndpoint.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.cboEndpoint.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboEndpoint.FormattingEnabled = true;
             this.cboEndpoint.Location = new System.Drawing.Point(6, 16);
@@ -336,7 +426,10 @@ namespace BenMAP
             this.cboEndpoint.Size = new System.Drawing.Size(136, 22);
             this.cboEndpoint.TabIndex = 0;
             this.cboEndpoint.SelectedIndexChanged += new System.EventHandler(this.cboEndpoint_SelectedIndexChanged);
-                                                this.olvIncidenceRates.AllColumns.Add(this.olvcEndpointGroup);
+            // 
+            // olvIncidenceRates
+            // 
+            this.olvIncidenceRates.AllColumns.Add(this.olvcEndpointGroup);
             this.olvIncidenceRates.AllColumns.Add(this.olvcEndpoint);
             this.olvIncidenceRates.AllColumns.Add(this.olvColumn3);
             this.olvIncidenceRates.AllColumns.Add(this.olvColumn4);
@@ -387,33 +480,63 @@ namespace BenMAP
             this.olvIncidenceRates.UseOverlays = false;
             this.olvIncidenceRates.View = System.Windows.Forms.View.Details;
             this.olvIncidenceRates.SelectionChanged += new System.EventHandler(this.olvIncidenceRates_SelectionChanged);
-                                                this.olvcEndpointGroup.AspectName = "EndPointGroupName";
+            // 
+            // olvcEndpointGroup
+            // 
+            this.olvcEndpointGroup.AspectName = "EndPointGroupName";
             this.olvcEndpointGroup.Text = "Endpoint Group";
             this.olvcEndpointGroup.Width = 98;
-                                                this.olvcEndpoint.AspectName = "EndPointName";
+            // 
+            // olvcEndpoint
+            // 
+            this.olvcEndpoint.AspectName = "EndPointName";
             this.olvcEndpoint.Text = "Endpoint";
             this.olvcEndpoint.Width = 78;
-                                                this.olvColumn3.AspectName = "Prevalence";
+            // 
+            // olvColumn3
+            // 
+            this.olvColumn3.AspectName = "Prevalence";
             this.olvColumn3.Text = "Type";
-                                                this.olvColumn4.AspectName = "RaceName";
+            // 
+            // olvColumn4
+            // 
+            this.olvColumn4.AspectName = "RaceName";
             this.olvColumn4.Text = "Race";
-                                                this.olvColumn5.AspectName = "EthnicityName";
+            // 
+            // olvColumn5
+            // 
+            this.olvColumn5.AspectName = "EthnicityName";
             this.olvColumn5.Text = "Ethnicity";
-                                                this.olvColumn6.AspectName = "GenderName";
+            // 
+            // olvColumn6
+            // 
+            this.olvColumn6.AspectName = "GenderName";
             this.olvColumn6.Text = "Gender";
-                                                this.olvColumn7.AspectName = "StartAge";
+            // 
+            // olvColumn7
+            // 
+            this.olvColumn7.AspectName = "StartAge";
             this.olvColumn7.Text = "Start Age";
-                                                this.olvColumn8.AspectName = "EndAge";
+            // 
+            // olvColumn8
+            // 
+            this.olvColumn8.AspectName = "EndAge";
             this.olvColumn8.Text = "End Age";
-                                                this.btnBrowse.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            // 
+            // btnBrowse
+            // 
+            this.btnBrowse.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnBrowse.Location = new System.Drawing.Point(340, 426);
             this.btnBrowse.Name = "btnBrowse";
             this.btnBrowse.Size = new System.Drawing.Size(131, 27);
             this.btnBrowse.TabIndex = 6;
-            this.btnBrowse.Text = "Load From Database";
+            this.btnBrowse.Text = "Load From File";
             this.btnBrowse.UseVisualStyleBackColor = true;
             this.btnBrowse.Click += new System.EventHandler(this.btnBrowse_Click);
-                                                this.btnDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            // 
+            // btnDelete
+            // 
+            this.btnDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnDelete.Location = new System.Drawing.Point(474, 426);
             this.btnDelete.Name = "btnDelete";
             this.btnDelete.Size = new System.Drawing.Size(75, 27);
@@ -421,36 +544,51 @@ namespace BenMAP
             this.btnDelete.Text = "Delete";
             this.btnDelete.UseVisualStyleBackColor = true;
             this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
-                                                this.cboGridDefinition.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            // 
+            // cboGridDefinition
+            // 
+            this.cboGridDefinition.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboGridDefinition.FormattingEnabled = true;
             this.cboGridDefinition.Location = new System.Drawing.Point(121, 56);
             this.cboGridDefinition.Name = "cboGridDefinition";
             this.cboGridDefinition.Size = new System.Drawing.Size(211, 22);
             this.cboGridDefinition.TabIndex = 3;
             this.cboGridDefinition.SelectedValueChanged += new System.EventHandler(this.cboGridDefinition_SelectedValueChanged);
-                                                this.txtDataName.Location = new System.Drawing.Point(121, 20);
+            // 
+            // txtDataName
+            // 
+            this.txtDataName.Location = new System.Drawing.Point(121, 20);
             this.txtDataName.Name = "txtDataName";
             this.txtDataName.Size = new System.Drawing.Size(211, 22);
             this.txtDataName.TabIndex = 2;
-                                                this.lblGridDefinition.AutoSize = true;
+            // 
+            // lblGridDefinition
+            // 
+            this.lblGridDefinition.AutoSize = true;
             this.lblGridDefinition.Location = new System.Drawing.Point(14, 59);
             this.lblGridDefinition.Name = "lblGridDefinition";
             this.lblGridDefinition.Size = new System.Drawing.Size(89, 14);
             this.lblGridDefinition.TabIndex = 1;
             this.lblGridDefinition.Text = "Grid Definition:";
-                                                this.lblDataSetName.AutoSize = true;
+            // 
+            // lblDataSetName
+            // 
+            this.lblDataSetName.AutoSize = true;
             this.lblDataSetName.Location = new System.Drawing.Point(14, 23);
             this.lblDataSetName.Name = "lblDataSetName";
             this.lblDataSetName.Size = new System.Drawing.Size(88, 14);
             this.lblDataSetName.TabIndex = 0;
             this.lblDataSetName.Text = "Dataset Name:";
-                                                this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
+            // 
+            // IncidenceDatasetDefinition
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScroll = true;
             this.ClientSize = new System.Drawing.Size(823, 614);
             this.Controls.Add(this.grpCancelOK);
             this.Controls.Add(this.grpDataView);
             this.Controls.Add(this.grpIncidenceDataSetDefinition);
-            this.MinimumSize = new System.Drawing.Size(839, 652);
             this.Name = "IncidenceDatasetDefinition";
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;

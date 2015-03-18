@@ -29,11 +29,17 @@ namespace BenMAP
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnOK = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.btnViewMetadata = new System.Windows.Forms.Button();
             this.grpManageGrid.SuspendLayout();
             this.grpAvailableGrid.SuspendLayout();
             this.groupBox1.SuspendLayout();
+            this.flowLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
-                                                this.grpManageGrid.Controls.Add(this.btnEdit);
+            // 
+            // grpManageGrid
+            // 
+            this.grpManageGrid.Controls.Add(this.btnEdit);
             this.grpManageGrid.Controls.Add(this.btnAdd);
             this.grpManageGrid.Controls.Add(this.btnDelete);
             this.grpManageGrid.Controls.Add(this.grpAvailableGrid);
@@ -42,28 +48,40 @@ namespace BenMAP
             this.grpManageGrid.Size = new System.Drawing.Size(417, 252);
             this.grpManageGrid.TabIndex = 0;
             this.grpManageGrid.TabStop = false;
-                                                this.btnEdit.Location = new System.Drawing.Point(325, 214);
+            // 
+            // btnEdit
+            // 
+            this.btnEdit.Location = new System.Drawing.Point(325, 214);
             this.btnEdit.Name = "btnEdit";
             this.btnEdit.Size = new System.Drawing.Size(77, 27);
             this.btnEdit.TabIndex = 3;
             this.btnEdit.Text = "Edit";
             this.btnEdit.UseVisualStyleBackColor = true;
             this.btnEdit.Click += new System.EventHandler(this.btnEdit_Click);
-                                                this.btnAdd.Location = new System.Drawing.Point(238, 214);
+            // 
+            // btnAdd
+            // 
+            this.btnAdd.Location = new System.Drawing.Point(238, 214);
             this.btnAdd.Name = "btnAdd";
             this.btnAdd.Size = new System.Drawing.Size(81, 27);
             this.btnAdd.TabIndex = 2;
             this.btnAdd.Text = "Add";
             this.btnAdd.UseVisualStyleBackColor = true;
             this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
-                                                this.btnDelete.Location = new System.Drawing.Point(156, 214);
+            // 
+            // btnDelete
+            // 
+            this.btnDelete.Location = new System.Drawing.Point(156, 214);
             this.btnDelete.Name = "btnDelete";
             this.btnDelete.Size = new System.Drawing.Size(76, 27);
             this.btnDelete.TabIndex = 1;
             this.btnDelete.Text = "Delete";
             this.btnDelete.UseVisualStyleBackColor = true;
             this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
-                                                this.grpAvailableGrid.Controls.Add(this.cboDefaultGridType);
+            // 
+            // grpAvailableGrid
+            // 
+            this.grpAvailableGrid.Controls.Add(this.cboDefaultGridType);
             this.grpAvailableGrid.Controls.Add(this.label1);
             this.grpAvailableGrid.Controls.Add(this.txtGridType);
             this.grpAvailableGrid.Controls.Add(this.lblGridType);
@@ -74,39 +92,57 @@ namespace BenMAP
             this.grpAvailableGrid.TabIndex = 0;
             this.grpAvailableGrid.TabStop = false;
             this.grpAvailableGrid.Text = "Available Grid Definitions";
-                                                this.cboDefaultGridType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            // 
+            // cboDefaultGridType
+            // 
+            this.cboDefaultGridType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboDefaultGridType.FormattingEnabled = true;
             this.cboDefaultGridType.Location = new System.Drawing.Point(230, 145);
             this.cboDefaultGridType.Name = "cboDefaultGridType";
             this.cboDefaultGridType.Size = new System.Drawing.Size(164, 22);
             this.cboDefaultGridType.TabIndex = 4;
             this.cboDefaultGridType.SelectedValueChanged += new System.EventHandler(this.cboDefaultGridType_SelectedValueChanged);
-                                                this.label1.AutoSize = true;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(227, 113);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(104, 14);
             this.label1.TabIndex = 3;
             this.label1.Text = "Default Grid Type:";
-                                                this.txtGridType.Location = new System.Drawing.Point(230, 76);
+            // 
+            // txtGridType
+            // 
+            this.txtGridType.Location = new System.Drawing.Point(230, 76);
             this.txtGridType.Name = "txtGridType";
             this.txtGridType.ReadOnly = true;
             this.txtGridType.Size = new System.Drawing.Size(164, 22);
             this.txtGridType.TabIndex = 2;
             this.txtGridType.Text = "Shapefile";
-                                                this.lblGridType.AutoSize = true;
+            // 
+            // lblGridType
+            // 
+            this.lblGridType.AutoSize = true;
             this.lblGridType.Location = new System.Drawing.Point(227, 40);
             this.lblGridType.Name = "lblGridType";
             this.lblGridType.Size = new System.Drawing.Size(60, 14);
             this.lblGridType.TabIndex = 1;
             this.lblGridType.Text = "Grid Type:";
-                                                this.lstAvailableGrid.FormattingEnabled = true;
+            // 
+            // lstAvailableGrid
+            // 
+            this.lstAvailableGrid.FormattingEnabled = true;
             this.lstAvailableGrid.ItemHeight = 14;
             this.lstAvailableGrid.Location = new System.Drawing.Point(6, 23);
             this.lstAvailableGrid.Name = "lstAvailableGrid";
             this.lstAvailableGrid.Size = new System.Drawing.Size(215, 144);
             this.lstAvailableGrid.TabIndex = 0;
             this.lstAvailableGrid.SelectedValueChanged += new System.EventHandler(this.lstAvailableGrid_SelectedValueChanged);
-                                                this.btnCancel.Location = new System.Drawing.Point(238, 21);
+            // 
+            // btnCancel
+            // 
+            this.btnCancel.Location = new System.Drawing.Point(244, 3);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(81, 27);
             this.btnCancel.TabIndex = 1;
@@ -114,21 +150,52 @@ namespace BenMAP
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Visible = false;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
-                                                this.btnOK.Location = new System.Drawing.Point(325, 21);
+            // 
+            // btnOK
+            // 
+            this.btnOK.Location = new System.Drawing.Point(331, 3);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(77, 27);
             this.btnOK.TabIndex = 2;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
-                                                this.groupBox1.Controls.Add(this.btnCancel);
-            this.groupBox1.Controls.Add(this.btnOK);
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.flowLayoutPanel1);
             this.groupBox1.Location = new System.Drawing.Point(6, 261);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(417, 56);
             this.groupBox1.TabIndex = 3;
             this.groupBox1.TabStop = false;
-                                                this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
+            // 
+            // flowLayoutPanel1
+            // 
+            this.flowLayoutPanel1.Controls.Add(this.btnOK);
+            this.flowLayoutPanel1.Controls.Add(this.btnCancel);
+            this.flowLayoutPanel1.Controls.Add(this.btnViewMetadata);
+            this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(3, 18);
+            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(411, 35);
+            this.flowLayoutPanel1.TabIndex = 3;
+            this.flowLayoutPanel1.WrapContents = false;
+            // 
+            // btnViewMetadata
+            // 
+            this.btnViewMetadata.Location = new System.Drawing.Point(126, 3);
+            this.btnViewMetadata.Name = "btnViewMetadata";
+            this.btnViewMetadata.Size = new System.Drawing.Size(112, 27);
+            this.btnViewMetadata.TabIndex = 33;
+            this.btnViewMetadata.Text = "View Metadata";
+            this.btnViewMetadata.UseVisualStyleBackColor = true;
+            this.btnViewMetadata.Click += new System.EventHandler(this.btnViewMetadata_Click);
+            // 
+            // ManageGridDefinetions
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(430, 326);
             this.Controls.Add(this.groupBox1);
@@ -145,6 +212,7 @@ namespace BenMAP
             this.grpAvailableGrid.ResumeLayout(false);
             this.grpAvailableGrid.PerformLayout();
             this.groupBox1.ResumeLayout(false);
+            this.flowLayoutPanel1.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -163,5 +231,7 @@ namespace BenMAP
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.ComboBox cboDefaultGridType;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
+        private System.Windows.Forms.Button btnViewMetadata;
     }
 }

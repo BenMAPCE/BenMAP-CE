@@ -17,6 +17,7 @@ namespace BenMAP
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.grpPictureView = new System.Windows.Forms.GroupBox();
             this.mainMap = new DotSpatial.Controls.Map();
             this.grpGridDefinition = new System.Windows.Forms.GroupBox();
@@ -58,7 +59,6 @@ namespace BenMAP
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnOK = new System.Windows.Forms.Button();
-            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.grpPictureView.SuspendLayout();
             this.grpGridDefinition.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picCRHelp)).BeginInit();
@@ -74,9 +74,9 @@ namespace BenMAP
             // 
             // grpPictureView
             // 
-            this.grpPictureView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.grpPictureView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.grpPictureView.Controls.Add(this.mainMap);
             this.grpPictureView.Location = new System.Drawing.Point(363, 14);
             this.grpPictureView.Name = "grpPictureView";
@@ -87,6 +87,7 @@ namespace BenMAP
             // mainMap
             // 
             this.mainMap.AllowDrop = true;
+            this.mainMap.AutoScroll = true;
             this.mainMap.BackColor = System.Drawing.Color.White;
             this.mainMap.CollectAfterDraw = false;
             this.mainMap.CollisionDetection = false;
@@ -94,6 +95,7 @@ namespace BenMAP
             this.mainMap.ExtendBuffer = false;
             this.mainMap.FunctionMode = DotSpatial.Controls.FunctionMode.None;
             this.mainMap.IsBusy = false;
+            this.mainMap.IsZoomedToMaxExtent = false;
             this.mainMap.Legend = null;
             this.mainMap.Location = new System.Drawing.Point(3, 18);
             this.mainMap.Name = "mainMap";
@@ -107,8 +109,9 @@ namespace BenMAP
             // 
             // grpGridDefinition
             // 
-            this.grpGridDefinition.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
+            this.grpGridDefinition.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)));
+            this.grpGridDefinition.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.grpGridDefinition.Controls.Add(this.btnViewMetadata);
             this.grpGridDefinition.Controls.Add(this.picCRHelp);
             this.grpGridDefinition.Controls.Add(this.label3);
@@ -160,7 +163,7 @@ namespace BenMAP
             this.label3.Size = new System.Drawing.Size(287, 28);
             this.label3.TabIndex = 6;
             this.label3.Text = "Selecting this option will substantially increase the\r\ntime required to import th" +
-    "e shapefile.";
+                "e shapefile.";
             // 
             // chkBoxCreatePercentage
             // 
@@ -170,7 +173,7 @@ namespace BenMAP
             this.chkBoxCreatePercentage.Size = new System.Drawing.Size(296, 32);
             this.chkBoxCreatePercentage.TabIndex = 5;
             this.chkBoxCreatePercentage.Text = "Create crosswalk between this grid definition and\r\nall other grid definitions in " +
-    "this setup.";
+                "this setup.";
             this.chkBoxCreatePercentage.UseVisualStyleBackColor = true;
             // 
             // cboGridType
@@ -478,8 +481,8 @@ namespace BenMAP
             // 
             // grpCancelOK
             // 
-            this.grpCancelOK.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.grpCancelOK.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.grpCancelOK.Controls.Add(this.lblprogress);
             this.grpCancelOK.Controls.Add(this.progressBar1);
             this.grpCancelOK.Controls.Add(this.btnCancel);
@@ -503,8 +506,8 @@ namespace BenMAP
             // 
             // progressBar1
             // 
-            this.progressBar1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.progressBar1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.progressBar1.Location = new System.Drawing.Point(146, 26);
             this.progressBar1.Name = "progressBar1";
             this.progressBar1.Size = new System.Drawing.Size(460, 10);
@@ -537,11 +540,11 @@ namespace BenMAP
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScroll = true;
             this.ClientSize = new System.Drawing.Size(801, 561);
             this.Controls.Add(this.grpPictureView);
             this.Controls.Add(this.grpGridDefinition);
             this.Controls.Add(this.grpCancelOK);
-            this.MinimumSize = new System.Drawing.Size(817, 599);
             this.Name = "GridDefinition";
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;

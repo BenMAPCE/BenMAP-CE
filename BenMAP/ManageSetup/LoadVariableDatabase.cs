@@ -7,14 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.IO;
-//TODO:
-//1 on the LoadVariableDatabase dialog add a validate button
-//2 make it disabled
-//3 make the OK button disabled
-//4 After selecting a database to load (a csv file or excel file)
-//  enabled the validate button.
-//5 on a positive validation enable the OK button
-//
+
 namespace BenMAP
 {
     public partial class LoadVariableDatabase : FormBase
@@ -42,13 +35,21 @@ namespace BenMAP
         
         public LoadVariableDatabase()
         {
+            // turned off validation as it did not permit most variable datasets to be loaded
             InitializeComponent();
             _iniPath = CommonClass.ResultFilePath + @"\BenMAP.ini";
-            _isForceValidate = CommonClass.IniReadValue("appSettings", "IsForceValidate", _iniPath);
+            //_isForceValidate = CommonClass.IniReadValue("appSettings", "IsForceValidate", _iniPath);
+            /*
             if (_isForceValidate == "T")
+            {
                 btnOK.Enabled = false;
+            }
             else
+            {
                 btnOK.Enabled = true;
+            }
+             */
+            btnOK.Enabled = true;
         }
 
         private string _dataPath = string.Empty;
@@ -78,7 +79,11 @@ namespace BenMAP
             string msg = string.Empty;
             try
             {
-                if (!File.Exists(txtDatabase.Text)) { msg = "Please select a valid database path. "; return; }
+                if (!File.Exists(txtDatabase.Text)) 
+                { 
+                    msg = "Please select a valid database path. "; 
+                    return; 
+                }
                 _dataPath = txtDatabase.Text;
                 if (cboGridDefinition.Text == string.Empty)
                 {
@@ -117,11 +122,14 @@ namespace BenMAP
             try
             {
                 OpenFileDialog openFileDialog = new OpenFileDialog();
-                openFileDialog.InitialDirectory = Application.StartupPath + @"E:\";
+                openFileDialog.InitialDirectory = CommonClass.ResultFilePath;
                 openFileDialog.Filter = "All Files|*.*|CSV files|*.csv|XLS files|*.xls|XLSX files|*.xlsx";
                 openFileDialog.FilterIndex = 2;
                 openFileDialog.RestoreDirectory = true;
-                if (openFileDialog.ShowDialog() != DialogResult.OK) { return; }
+                if (openFileDialog.ShowDialog() != DialogResult.OK) 
+                { 
+                    return; 
+                }
                 txtDatabase.Text = openFileDialog.FileName;
                 GetMetadata();
             }
@@ -146,7 +154,9 @@ namespace BenMAP
             if (dlgR.Equals(DialogResult.OK))
             {
                 if (vdi.PassedValidation && _isForceValidate == "T")
+                {
                     LoadDatabase();
+                }
             }
         }
 

@@ -74,7 +74,10 @@ namespace BenMAP
             this.grpPollutant.SuspendLayout();
             this.grpMetrics.SuspendLayout();
             this.SuspendLayout();
-                                                this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox1.Controls.Add(this.btnCancel);
             this.groupBox1.Controls.Add(this.btnOK);
@@ -83,7 +86,10 @@ namespace BenMAP
             this.groupBox1.Size = new System.Drawing.Size(683, 44);
             this.groupBox1.TabIndex = 4;
             this.groupBox1.TabStop = false;
-                                                this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            // 
+            // btnCancel
+            // 
+            this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.Location = new System.Drawing.Point(497, 11);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 27);
@@ -91,7 +97,10 @@ namespace BenMAP
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
-                                                this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            // 
+            // btnOK
+            // 
+            this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOK.Location = new System.Drawing.Point(589, 11);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 27);
@@ -99,7 +108,10 @@ namespace BenMAP
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
-                                                this.grpDetail.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            // 
+            // grpDetail
+            // 
+            this.grpDetail.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.grpDetail.Controls.Add(this.grpSeasonalMetrics);
@@ -110,7 +122,10 @@ namespace BenMAP
             this.grpDetail.TabIndex = 1;
             this.grpDetail.TabStop = false;
             this.grpDetail.Text = "Detail";
-                                                this.grpSeasonalMetrics.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            // 
+            // grpSeasonalMetrics
+            // 
+            this.grpSeasonalMetrics.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.grpSeasonalMetrics.Controls.Add(this.btnEdit);
@@ -121,7 +136,10 @@ namespace BenMAP
             this.grpSeasonalMetrics.TabIndex = 3;
             this.grpSeasonalMetrics.TabStop = false;
             this.grpSeasonalMetrics.Text = "Seasonal Metrics";
-                                                this.btnEdit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            // 
+            // btnEdit
+            // 
+            this.btnEdit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnEdit.Location = new System.Drawing.Point(379, 185);
             this.btnEdit.Name = "btnEdit";
             this.btnEdit.Size = new System.Drawing.Size(75, 27);
@@ -129,7 +147,10 @@ namespace BenMAP
             this.btnEdit.Text = "Edit";
             this.btnEdit.UseVisualStyleBackColor = true;
             this.btnEdit.Click += new System.EventHandler(this.btnEdit_Click);
-                                                this.lstSeasonalMetrics.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            // 
+            // lstSeasonalMetrics
+            // 
+            this.lstSeasonalMetrics.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.lstSeasonalMetrics.FormattingEnabled = true;
@@ -139,7 +160,10 @@ namespace BenMAP
             this.lstSeasonalMetrics.SelectionMode = System.Windows.Forms.SelectionMode.None;
             this.lstSeasonalMetrics.Size = new System.Drawing.Size(451, 158);
             this.lstSeasonalMetrics.TabIndex = 1;
-                                                this.grpHourlyMetricGeneration.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            // 
+            // grpHourlyMetricGeneration
+            // 
+            this.grpHourlyMetricGeneration.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.grpHourlyMetricGeneration.Controls.Add(this.label1);
             this.grpHourlyMetricGeneration.Controls.Add(this.txtMetricName);
@@ -151,27 +175,39 @@ namespace BenMAP
             this.grpHourlyMetricGeneration.Size = new System.Drawing.Size(457, 324);
             this.grpHourlyMetricGeneration.TabIndex = 2;
             this.grpHourlyMetricGeneration.TabStop = false;
-                                                this.label1.AutoSize = true;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.Location = new System.Drawing.Point(11, 22);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(79, 14);
             this.label1.TabIndex = 5;
             this.label1.Text = "Metric Name:";
-                                                this.txtMetricName.Location = new System.Drawing.Point(206, 19);
+            // 
+            // txtMetricName
+            // 
+            this.txtMetricName.Location = new System.Drawing.Point(206, 19);
             this.txtMetricName.Name = "txtMetricName";
             this.txtMetricName.Size = new System.Drawing.Size(212, 22);
             this.txtMetricName.TabIndex = 4;
             this.txtMetricName.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtMetricName_KeyDown);
             this.txtMetricName.Leave += new System.EventHandler(this.txtMetricName_Leave);
-                                                this.lblhourlymetricgeneration.AutoSize = true;
+            // 
+            // lblhourlymetricgeneration
+            // 
+            this.lblhourlymetricgeneration.AutoSize = true;
             this.lblhourlymetricgeneration.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblhourlymetricgeneration.Location = new System.Drawing.Point(11, 54);
             this.lblhourlymetricgeneration.Name = "lblhourlymetricgeneration";
             this.lblhourlymetricgeneration.Size = new System.Drawing.Size(146, 14);
             this.lblhourlymetricgeneration.TabIndex = 3;
             this.lblhourlymetricgeneration.Text = "Hourly Metric Generation:";
-                                                this.cbohourlymetricgeneration.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            // 
+            // cbohourlymetricgeneration
+            // 
+            this.cbohourlymetricgeneration.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbohourlymetricgeneration.FormattingEnabled = true;
             this.cbohourlymetricgeneration.Items.AddRange(new object[] {
             "Fixed Window",
@@ -182,7 +218,10 @@ namespace BenMAP
             this.cbohourlymetricgeneration.Size = new System.Drawing.Size(212, 22);
             this.cbohourlymetricgeneration.TabIndex = 2;
             this.cbohourlymetricgeneration.SelectedValueChanged += new System.EventHandler(this.cbohourlymetricgeneration_SelectedValueChanged);
-                                                this.tabHourlyMetricGeneration.Controls.Add(this.tpFix);
+            // 
+            // tabHourlyMetricGeneration
+            // 
+            this.tabHourlyMetricGeneration.Controls.Add(this.tpFix);
             this.tabHourlyMetricGeneration.Controls.Add(this.tpMovingWindow);
             this.tabHourlyMetricGeneration.Controls.Add(this.tpCustom);
             this.tabHourlyMetricGeneration.Dock = System.Windows.Forms.DockStyle.Bottom;
@@ -192,7 +231,10 @@ namespace BenMAP
             this.tabHourlyMetricGeneration.SelectedIndex = 0;
             this.tabHourlyMetricGeneration.Size = new System.Drawing.Size(451, 229);
             this.tabHourlyMetricGeneration.TabIndex = 1;
-                                                this.tpFix.Controls.Add(this.cboFixStatistic);
+            // 
+            // tpFix
+            // 
+            this.tpFix.Controls.Add(this.cboFixStatistic);
             this.tpFix.Controls.Add(this.lblStatistic);
             this.tpFix.Controls.Add(this.nudownEndHour);
             this.tpFix.Controls.Add(this.nudownStartHour);
@@ -205,7 +247,10 @@ namespace BenMAP
             this.tpFix.TabIndex = 0;
             this.tpFix.Text = "Fixed Window";
             this.tpFix.UseVisualStyleBackColor = true;
-                                                this.cboFixStatistic.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            // 
+            // cboFixStatistic
+            // 
+            this.cboFixStatistic.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboFixStatistic.FormattingEnabled = true;
             this.cboFixStatistic.Items.AddRange(new object[] {
             "Mean",
@@ -217,13 +262,19 @@ namespace BenMAP
             this.cboFixStatistic.Name = "cboFixStatistic";
             this.cboFixStatistic.Size = new System.Drawing.Size(74, 22);
             this.cboFixStatistic.TabIndex = 5;
-                                                this.lblStatistic.AutoSize = true;
+            // 
+            // lblStatistic
+            // 
+            this.lblStatistic.AutoSize = true;
             this.lblStatistic.Location = new System.Drawing.Point(14, 99);
             this.lblStatistic.Name = "lblStatistic";
             this.lblStatistic.Size = new System.Drawing.Size(52, 14);
             this.lblStatistic.TabIndex = 4;
             this.lblStatistic.Text = "Statistic:";
-                                                this.nudownEndHour.Location = new System.Drawing.Point(119, 60);
+            // 
+            // nudownEndHour
+            // 
+            this.nudownEndHour.Location = new System.Drawing.Point(119, 60);
             this.nudownEndHour.Maximum = new decimal(new int[] {
             23,
             0,
@@ -237,7 +288,10 @@ namespace BenMAP
             0,
             0,
             0});
-                                                this.nudownStartHour.Location = new System.Drawing.Point(119, 25);
+            // 
+            // nudownStartHour
+            // 
+            this.nudownStartHour.Location = new System.Drawing.Point(119, 25);
             this.nudownStartHour.Maximum = new decimal(new int[] {
             22,
             0,
@@ -246,19 +300,28 @@ namespace BenMAP
             this.nudownStartHour.Name = "nudownStartHour";
             this.nudownStartHour.Size = new System.Drawing.Size(74, 22);
             this.nudownStartHour.TabIndex = 2;
-                                                this.lblEndHour.AutoSize = true;
+            // 
+            // lblEndHour
+            // 
+            this.lblEndHour.AutoSize = true;
             this.lblEndHour.Location = new System.Drawing.Point(14, 63);
             this.lblEndHour.Name = "lblEndHour";
             this.lblEndHour.Size = new System.Drawing.Size(59, 14);
             this.lblEndHour.TabIndex = 1;
             this.lblEndHour.Text = "End Hour:";
-                                                this.lblStartHour.AutoSize = true;
+            // 
+            // lblStartHour
+            // 
+            this.lblStartHour.AutoSize = true;
             this.lblStartHour.Location = new System.Drawing.Point(14, 27);
             this.lblStartHour.Name = "lblStartHour";
             this.lblStartHour.Size = new System.Drawing.Size(64, 14);
             this.lblStartHour.TabIndex = 0;
             this.lblStartHour.Text = "Start Hour:";
-                                                this.tpMovingWindow.Controls.Add(this.cboMovingStatistic);
+            // 
+            // tpMovingWindow
+            // 
+            this.tpMovingWindow.Controls.Add(this.cboMovingStatistic);
             this.tpMovingWindow.Controls.Add(this.cboWindowStatistic);
             this.tpMovingWindow.Controls.Add(this.nudownWindowSize);
             this.tpMovingWindow.Controls.Add(this.lblDailyStatistic);
@@ -271,7 +334,10 @@ namespace BenMAP
             this.tpMovingWindow.TabIndex = 1;
             this.tpMovingWindow.Text = "Moving Window";
             this.tpMovingWindow.UseVisualStyleBackColor = true;
-                                                this.cboMovingStatistic.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            // 
+            // cboMovingStatistic
+            // 
+            this.cboMovingStatistic.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboMovingStatistic.FormattingEnabled = true;
             this.cboMovingStatistic.Items.AddRange(new object[] {
             "Mean",
@@ -283,7 +349,10 @@ namespace BenMAP
             this.cboMovingStatistic.Name = "cboMovingStatistic";
             this.cboMovingStatistic.Size = new System.Drawing.Size(74, 22);
             this.cboMovingStatistic.TabIndex = 5;
-                                                this.cboWindowStatistic.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            // 
+            // cboWindowStatistic
+            // 
+            this.cboWindowStatistic.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboWindowStatistic.FormattingEnabled = true;
             this.cboWindowStatistic.Items.AddRange(new object[] {
             "Mean",
@@ -295,7 +364,10 @@ namespace BenMAP
             this.cboWindowStatistic.Name = "cboWindowStatistic";
             this.cboWindowStatistic.Size = new System.Drawing.Size(74, 22);
             this.cboWindowStatistic.TabIndex = 4;
-                                                this.nudownWindowSize.Location = new System.Drawing.Point(119, 25);
+            // 
+            // nudownWindowSize
+            // 
+            this.nudownWindowSize.Location = new System.Drawing.Point(119, 25);
             this.nudownWindowSize.Maximum = new decimal(new int[] {
             23,
             0,
@@ -314,25 +386,37 @@ namespace BenMAP
             0,
             0,
             0});
-                                                this.lblDailyStatistic.AutoSize = true;
+            // 
+            // lblDailyStatistic
+            // 
+            this.lblDailyStatistic.AutoSize = true;
             this.lblDailyStatistic.Location = new System.Drawing.Point(14, 99);
             this.lblDailyStatistic.Name = "lblDailyStatistic";
             this.lblDailyStatistic.Size = new System.Drawing.Size(83, 14);
             this.lblDailyStatistic.TabIndex = 2;
             this.lblDailyStatistic.Text = "Daily Statistic:";
-                                                this.lblWindowStatistic.AutoSize = true;
+            // 
+            // lblWindowStatistic
+            // 
+            this.lblWindowStatistic.AutoSize = true;
             this.lblWindowStatistic.Location = new System.Drawing.Point(13, 63);
             this.lblWindowStatistic.Name = "lblWindowStatistic";
             this.lblWindowStatistic.Size = new System.Drawing.Size(100, 14);
             this.lblWindowStatistic.TabIndex = 1;
             this.lblWindowStatistic.Text = "Window Statistic:";
-                                                this.lblWindowSize.AutoSize = true;
+            // 
+            // lblWindowSize
+            // 
+            this.lblWindowSize.AutoSize = true;
             this.lblWindowSize.Location = new System.Drawing.Point(14, 27);
             this.lblWindowSize.Name = "lblWindowSize";
             this.lblWindowSize.Size = new System.Drawing.Size(80, 14);
             this.lblWindowSize.TabIndex = 0;
             this.lblWindowSize.Text = "Window Size:";
-                                                this.tpCustom.Controls.Add(this.txtFunctionManage);
+            // 
+            // tpCustom
+            // 
+            this.tpCustom.Controls.Add(this.txtFunctionManage);
             this.tpCustom.Controls.Add(this.lblFunction);
             this.tpCustom.Controls.Add(this.lstVariables);
             this.tpCustom.Controls.Add(this.lstFunctions);
@@ -345,21 +429,30 @@ namespace BenMAP
             this.tpCustom.TabIndex = 2;
             this.tpCustom.Text = "Custom";
             this.tpCustom.UseVisualStyleBackColor = true;
-                                                this.txtFunctionManage.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+            // 
+            // txtFunctionManage
+            // 
+            this.txtFunctionManage.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.txtFunctionManage.Location = new System.Drawing.Point(69, 173);
             this.txtFunctionManage.Multiline = true;
             this.txtFunctionManage.Name = "txtFunctionManage";
             this.txtFunctionManage.Size = new System.Drawing.Size(368, 24);
             this.txtFunctionManage.TabIndex = 5;
-                                                this.lblFunction.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            // 
+            // lblFunction
+            // 
+            this.lblFunction.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblFunction.AutoSize = true;
             this.lblFunction.Location = new System.Drawing.Point(7, 176);
             this.lblFunction.Name = "lblFunction";
             this.lblFunction.Size = new System.Drawing.Size(56, 14);
             this.lblFunction.TabIndex = 4;
             this.lblFunction.Text = "Function:";
-                                                this.lstVariables.FormattingEnabled = true;
+            // 
+            // lstVariables
+            // 
+            this.lstVariables.FormattingEnabled = true;
             this.lstVariables.ItemHeight = 14;
             this.lstVariables.Items.AddRange(new object[] {
             "Observations[]",
@@ -377,7 +470,10 @@ namespace BenMAP
             this.lstVariables.Size = new System.Drawing.Size(227, 144);
             this.lstVariables.TabIndex = 3;
             this.lstVariables.DoubleClick += new System.EventHandler(this.lstVariables_DoubleClick);
-                                                this.lstFunctions.FormattingEnabled = true;
+            // 
+            // lstFunctions
+            // 
+            this.lstFunctions.FormattingEnabled = true;
             this.lstFunctions.ItemHeight = 14;
             this.lstFunctions.Items.AddRange(new object[] {
             "ABS(x)",
@@ -392,19 +488,28 @@ namespace BenMAP
             this.lstFunctions.Size = new System.Drawing.Size(198, 144);
             this.lstFunctions.TabIndex = 2;
             this.lstFunctions.DoubleClick += new System.EventHandler(this.lstFunctions_DoubleClick);
-                                                this.lblVariables.AutoSize = true;
+            // 
+            // lblVariables
+            // 
+            this.lblVariables.AutoSize = true;
             this.lblVariables.Location = new System.Drawing.Point(208, 6);
             this.lblVariables.Name = "lblVariables";
             this.lblVariables.Size = new System.Drawing.Size(117, 14);
             this.lblVariables.TabIndex = 1;
             this.lblVariables.Text = "Available Variables:";
-                                                this.lblFunctions.AutoSize = true;
+            // 
+            // lblFunctions
+            // 
+            this.lblFunctions.AutoSize = true;
             this.lblFunctions.Location = new System.Drawing.Point(7, 6);
             this.lblFunctions.Name = "lblFunctions";
             this.lblFunctions.Size = new System.Drawing.Size(117, 14);
             this.lblFunctions.TabIndex = 0;
             this.lblFunctions.Text = "Available Functions:";
-                                                this.grpPollutant.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            // 
+            // grpPollutant
+            // 
+            this.grpPollutant.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)));
             this.grpPollutant.Controls.Add(this.grpMetrics);
             this.grpPollutant.Controls.Add(this.cboObservationType);
@@ -417,7 +522,10 @@ namespace BenMAP
             this.grpPollutant.TabIndex = 0;
             this.grpPollutant.TabStop = false;
             this.grpPollutant.Text = "Main";
-                                                this.grpMetrics.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            // 
+            // grpMetrics
+            // 
+            this.grpMetrics.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.grpMetrics.Controls.Add(this.btnAdvancedOptions);
@@ -430,7 +538,10 @@ namespace BenMAP
             this.grpMetrics.TabIndex = 4;
             this.grpMetrics.TabStop = false;
             this.grpMetrics.Text = "Metrics";
-                                                this.btnAdvancedOptions.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            // 
+            // btnAdvancedOptions
+            // 
+            this.btnAdvancedOptions.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnAdvancedOptions.Location = new System.Drawing.Point(6, 423);
             this.btnAdvancedOptions.Name = "btnAdvancedOptions";
             this.btnAdvancedOptions.Size = new System.Drawing.Size(174, 27);
@@ -438,7 +549,10 @@ namespace BenMAP
             this.btnAdvancedOptions.Text = "Advanced Pollutant Options";
             this.btnAdvancedOptions.UseVisualStyleBackColor = true;
             this.btnAdvancedOptions.Click += new System.EventHandler(this.btnAdvancedOptions_Click);
-                                                this.btnMetricsAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            // 
+            // btnMetricsAdd
+            // 
+            this.btnMetricsAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnMetricsAdd.Location = new System.Drawing.Point(106, 392);
             this.btnMetricsAdd.Name = "btnMetricsAdd";
             this.btnMetricsAdd.Size = new System.Drawing.Size(74, 27);
@@ -446,7 +560,10 @@ namespace BenMAP
             this.btnMetricsAdd.Text = "Add";
             this.btnMetricsAdd.UseVisualStyleBackColor = true;
             this.btnMetricsAdd.Click += new System.EventHandler(this.btnMetricsAdd_Click);
-                                                this.btnMetricsDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            // 
+            // btnMetricsDelete
+            // 
+            this.btnMetricsDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnMetricsDelete.Location = new System.Drawing.Point(6, 392);
             this.btnMetricsDelete.Name = "btnMetricsDelete";
             this.btnMetricsDelete.Size = new System.Drawing.Size(68, 27);
@@ -454,7 +571,10 @@ namespace BenMAP
             this.btnMetricsDelete.Text = "Delete";
             this.btnMetricsDelete.UseVisualStyleBackColor = true;
             this.btnMetricsDelete.Click += new System.EventHandler(this.btnMetricsDelete_Click);
-                                                this.lstMetrics.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            // 
+            // lstMetrics
+            // 
+            this.lstMetrics.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)));
             this.lstMetrics.FormattingEnabled = true;
             this.lstMetrics.ItemHeight = 14;
@@ -463,7 +583,10 @@ namespace BenMAP
             this.lstMetrics.Size = new System.Drawing.Size(174, 368);
             this.lstMetrics.TabIndex = 0;
             this.lstMetrics.SelectedIndexChanged += new System.EventHandler(this.lstMetrics_SelectedIndexChanged);
-                                                this.cboObservationType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            // 
+            // cboObservationType
+            // 
+            this.cboObservationType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboObservationType.FormattingEnabled = true;
             this.cboObservationType.Items.AddRange(new object[] {
             "Hourly",
@@ -473,29 +596,41 @@ namespace BenMAP
             this.cboObservationType.Size = new System.Drawing.Size(145, 22);
             this.cboObservationType.TabIndex = 3;
             this.cboObservationType.SelectedIndexChanged += new System.EventHandler(this.cboObservationType_SelectedIndexChanged);
-                                                this.lblObservationType.AutoSize = true;
+            // 
+            // lblObservationType
+            // 
+            this.lblObservationType.AutoSize = true;
             this.lblObservationType.Location = new System.Drawing.Point(7, 64);
             this.lblObservationType.Name = "lblObservationType";
             this.lblObservationType.Size = new System.Drawing.Size(102, 14);
             this.lblObservationType.TabIndex = 2;
             this.lblObservationType.Text = "Observation Type:";
-                                                this.txtPollutantID.Location = new System.Drawing.Point(8, 38);
+            // 
+            // txtPollutantID
+            // 
+            this.txtPollutantID.Location = new System.Drawing.Point(8, 38);
             this.txtPollutantID.Name = "txtPollutantID";
             this.txtPollutantID.Size = new System.Drawing.Size(146, 22);
             this.txtPollutantID.TabIndex = 1;
-                                                this.lblPollutantID.AutoSize = true;
+            // 
+            // lblPollutantID
+            // 
+            this.lblPollutantID.AutoSize = true;
             this.lblPollutantID.Location = new System.Drawing.Point(6, 20);
             this.lblPollutantID.Name = "lblPollutantID";
             this.lblPollutantID.Size = new System.Drawing.Size(75, 14);
             this.lblPollutantID.TabIndex = 0;
             this.lblPollutantID.Text = "Pollutant ID:";
-                                                this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            // 
+            // PollutantDefinition
+            // 
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
+            this.AutoScroll = true;
+            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.ClientSize = new System.Drawing.Size(700, 619);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.grpDetail);
             this.Controls.Add(this.grpPollutant);
-            this.MinimumSize = new System.Drawing.Size(716, 657);
             this.Name = "PollutantDefinition";
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;

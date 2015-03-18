@@ -16,6 +16,8 @@ namespace BenMAP
 
         BenMAPGrid _monitorRollbackGrid = new BenMAPGrid();
 
+        private string _iniPath = string.Empty;
+        private string _isForceValidate = string.Empty;
         private string _strPath;
 
         public string StrPath
@@ -31,6 +33,16 @@ namespace BenMAP
             _bgc = currentPollutant;
             _currentStat = currentStat;
             _monitorRollbackLine = new MonitorModelRollbackLine();
+            _iniPath = CommonClass.ResultFilePath + @"\BenMAP.ini";
+            _isForceValidate = CommonClass.IniReadValue("appSettings", "IsForceValidate", _iniPath);
+            if (_isForceValidate == "T")
+            {
+                btnNext.Enabled = false;
+            }
+            else
+            {
+                btnNext.Enabled = true;
+            }
         }
 
         private void MonitorRollback_Load(object sender, EventArgs e)
@@ -45,18 +57,24 @@ namespace BenMAP
                     txtPollutant.Text = _bgc.Pollutant.PollutantName;
                     txtPollutant.Enabled = false;
                 }
-                commandText = string.Format("select MonitorDataSetID, MonitorDataSetName from MonitorDataSets where SetupID={0}  and MonitorDataSetID in (select distinct MonitorDataSetID from monitors where pollutantID={1}) order by MonitorDataSetName asc", CommonClass.MainSetup.SetupID, _bgc.Pollutant.PollutantID);
-                ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
-                cboMonitorDataSet.DataSource = ds.Tables[0];
-                cboMonitorDataSet.DisplayMember = "MonitorDataSetName";
-                cboMonitorDataSet.SelectedIndex = 0;
-
+                
                 fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 commandText = string.Format("select * from GridDefinitions where SetupID={0} order by GridDefinitionName asc ", CommonClass.MainSetup.SetupID);
                 dsGrid = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                 cboRollbackGridType.DataSource = dsGrid.Tables[0];
                 cboRollbackGridType.DisplayMember = "GridDefinitionName";
                 cboRollbackGridType.SelectedIndex = -1;
+
+                commandText = string.Format("select MonitorDataSetID, MonitorDataSetName from MonitorDataSets where SetupID={0}  and MonitorDataSetID in (select distinct MonitorDataSetID from monitors where pollutantID={1}) order by MonitorDataSetName asc", CommonClass.MainSetup.SetupID, _bgc.Pollutant.PollutantID);
+                ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+                cboMonitorDataSet.DataSource = ds.Tables[0];
+                cboMonitorDataSet.DisplayMember = "MonitorDataSetName";
+                if (cboMonitorDataSet.Items.Count > 0)
+                {
+                    cboMonitorDataSet.SelectedIndex = 0;
+                }
+
+
             }
             catch (Exception ex)
             {
@@ -241,6 +259,39 @@ namespace BenMAP
             if (cboRollbackGridType.SelectedIndex == -1) return;
             DataRowView drv = (cboRollbackGridType.SelectedItem as DataRowView);
             _monitorRollbackGrid = Grid.GridCommon.getBenMAPGridFromID(Convert.ToInt32(drv["GridDefinitionID"]));
+        }
+
+        private void txtMonitorDataFile_TextChanged(object sender, EventArgs e)
+        {
+            btnValidate.Enabled = !string.IsNullOrEmpty(txtMonitorDataFile.Text);
+        }
+
+        private void btnValidate_Click(object sender, EventArgs e)
+        {
+            DataTable modelDT = new DataTable();
+            modelDT = CommonClass.ExcelToDataTable(txtMonitorDataFile.Text);
+            ValidateDatabaseImport vdi = new ValidateDatabaseImport(modelDT, "Monitor", txtMonitorDataFile.Text);
+            DialogResult dlgR = vdi.ShowDialog();
+            if (dlgR.Equals(DialogResult.OK))
+            {
+                if (vdi.PassedValidation && _isForceValidate == "T")
+                {
+                    btnNext.Enabled = vdi.PassedValidation;//it is true becasue it passed.
+                }
+            }
+
+        }
+
+        private void cboMonitorLibraryYear_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cboMonitorLibraryYear.SelectedIndex >= 0)
+            {
+                btnNext.Enabled = true;
+            }
+            else
+            {
+                btnNext.Enabled = false;
+            }
         }
     }
 }

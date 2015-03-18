@@ -205,11 +205,14 @@ namespace WinControls
                 newRowValueArray.Height = 33;
                 dgvSetColor.AutoSize = false;
                 DataGridViewTextBoxCell newCell = new DataGridViewTextBoxCell();
+                Color[] col = new Color[6];
+                _colorArray.CopyTo(col, 0);
                 for (int i = 0; i < count; i++)
                 {
                     newCell = new DataGridViewTextBoxCell();
                     newRowColor.Cells.Add(newCell);
-                    newCell.Style.BackColor = _colorArray[i];
+                    col[i] = Color.FromArgb(col[i].R, col[i].G, col[i].B);
+                    newCell.Style.BackColor = col[i];
                     newCell.ToolTipText = "Double click to customize the color.";
 
                     newCell.ReadOnly = true;
@@ -275,7 +278,7 @@ namespace WinControls
                     dgvSetColor.Rows[1].Cells[i].Value = _valueArray[i];
                 }
 
-                OnValueRangeChanged(this);
+                //OnValueRangeChanged(this);
             }
             catch (Exception ex)
             {
