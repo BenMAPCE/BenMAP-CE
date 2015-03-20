@@ -2778,7 +2778,8 @@ namespace BenMAP.APVX
             try
             {
                 asvvnew.AllSelectValuationMethod = asvv.AllSelectValuationMethod;
-                asvvnew.lstAPVValueAttributes = new List<APVValueAttribute>(); string str = string.Format("select sourcecolumn, sourcerow, targetcolumn, targetrow,Percentage from GridDefinitionPercentages a,GridDefinitionPercentageEntries b where a.PercentageID=b.PercentageID and a.SourceGridDefinitionID={0} and a.TargetGridDefinitionID={1} and normalizationstate in (0,1)", gridRelationship.smallGridID, gridRelationship.bigGridID);
+                asvvnew.lstAPVValueAttributes = new List<APVValueAttribute>(); 
+                string str = string.Format("select sourcecolumn, sourcerow, targetcolumn, targetrow,Percentage from GridDefinitionPercentages a,GridDefinitionPercentageEntries b where a.PercentageID=b.PercentageID and a.SourceGridDefinitionID={0} and a.TargetGridDefinitionID={1} and normalizationstate in (0,1)", gridRelationship.smallGridID, gridRelationship.bigGridID);
                 if (gridRelationship.smallGridID == benMAPGrid.GridDefinitionID)
                 {
                     str = string.Format("select sourcecolumn, sourcerow, targetcolumn, targetrow,Percentage from GridDefinitionPercentages a,GridDefinitionPercentageEntries b where a.PercentageID=b.PercentageID and a.SourceGridDefinitionID={0} and a.TargetGridDefinitionID={1} and normalizationstate in (0,1)", benMAPGrid.GridDefinitionID, gridRelationship.bigGridID);
