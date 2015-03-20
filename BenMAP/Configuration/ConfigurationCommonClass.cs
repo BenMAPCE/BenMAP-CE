@@ -1806,10 +1806,10 @@ namespace BenMAP.Configuration
 
             }
         }
-        public static void creatPercentageToDatabase(int big, int small)
+        public static void creatPercentageToDatabase(int big, int small,String popRasterLoc)
         {
             GridDefinition grd = new GridDefinition();
-            Dictionary<string, List<GridRelationshipAttributePercentage>> dicAllGridPercentage = grd.getRelationshipFromBenMAPGridPercentage(big, small);
+            Dictionary<string, List<GridRelationshipAttributePercentage>> dicAllGridPercentage = grd.getRelationshipFromBenMAPGridPercentage(big, small, popRasterLoc);
             updatePercentageToDatabase(dicAllGridPercentage.ToArray()[0]);
             CommonClass.IsAddPercentage = true;
             return;
@@ -2117,7 +2117,7 @@ namespace BenMAP.Configuration
                                     dsPercentage = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, str);
                                     if (dsPercentage.Tables[0].Rows.Count == 0)
                                     {
-                                        Configuration.ConfigurationCommonClass.creatPercentageToDatabase(18, benMAPPopulation.GridType.GridDefinitionID);
+                                        Configuration.ConfigurationCommonClass.creatPercentageToDatabase(18, benMAPPopulation.GridType.GridDefinitionID, null);
                                         dsPercentage = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, str);
                                     }
                                     foreach (DataRow dr in dsPercentage.Tables[0].Rows)
@@ -2284,7 +2284,7 @@ namespace BenMAP.Configuration
                         dsPercentage = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, str);
                         if (dsPercentage.Tables[0].Rows.Count == 0)
                         {
-                            creatPercentageToDatabase(CommonClass.GBenMAPGrid.GridDefinitionID, (benMAPPopulation.GridType.GridDefinitionID == 28 ? 27 : benMAPPopulation.GridType.GridDefinitionID));
+                            creatPercentageToDatabase(CommonClass.GBenMAPGrid.GridDefinitionID, (benMAPPopulation.GridType.GridDefinitionID == 28 ? 27 : benMAPPopulation.GridType.GridDefinitionID), null);
                             dsPercentage = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, str);
                         }
                         foreach (DataRow dr in dsPercentage.Tables[0].Rows)
@@ -3720,7 +3720,7 @@ namespace BenMAP.Configuration
                     DataSet dsPercentage = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, str);
                     if (dsPercentage.Tables[0].Rows.Count == 0)
                     {
-                        creatPercentageToDatabase(iPopulationDataSetGridID, CommonClass.GBenMAPGrid.GridDefinitionID);
+                        creatPercentageToDatabase(iPopulationDataSetGridID, CommonClass.GBenMAPGrid.GridDefinitionID, null);
                         int iPercentageID = Convert.ToInt16(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, "select percentageid from  griddefinitionpercentages where sourcegriddefinitionid =" + CommonClass.GBenMAPGrid.GridDefinitionID + " and  targetgriddefinitionid = " + iPopulationDataSetGridID));
                         str = "select sourcecolumn, sourcerow, targetcolumn, targetrow, percentage, normalizationstate from griddefinitionpercentageentries where percentageid=( select percentageid from  griddefinitionpercentages where sourcegriddefinitionid =" + (CommonClass.GBenMAPGrid.GridDefinitionID == 28 ? 27 : CommonClass.GBenMAPGrid.GridDefinitionID) + " and  targetgriddefinitionid = " + iPopulationDataSetGridID + " ) and normalizationstate in (0,1)";
                         dsPercentage = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, str);
@@ -3842,7 +3842,7 @@ namespace BenMAP.Configuration
                     DataSet dsPercentage = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, str);
                     if (dsPercentage.Tables[0].Rows.Count == 0)
                     {
-                        creatPercentageToDatabase(iPopulationDataSetGridID, CommonClass.GBenMAPGrid.GridDefinitionID);
+                        creatPercentageToDatabase(iPopulationDataSetGridID, CommonClass.GBenMAPGrid.GridDefinitionID, null);
                         int iPercentageID = Convert.ToInt16(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, "select percentageid from  griddefinitionpercentages where sourcegriddefinitionid =" + CommonClass.GBenMAPGrid.GridDefinitionID + " and  targetgriddefinitionid = " + iPopulationDataSetGridID));
                         str = "select sourcecolumn, sourcerow, targetcolumn, targetrow, percentage, normalizationstate from griddefinitionpercentageentries where percentageid=( select percentageid from  griddefinitionpercentages where sourcegriddefinitionid =" + (CommonClass.GBenMAPGrid.GridDefinitionID == 28 ? 27 : CommonClass.GBenMAPGrid.GridDefinitionID) + " and  targetgriddefinitionid = " + iPopulationDataSetGridID + " ) and normalizationstate in (0,1)";
                         dsPercentage = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, str);

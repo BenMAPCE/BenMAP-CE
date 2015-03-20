@@ -21,6 +21,9 @@ using System.Text;
 using System.Reflection;
 using System.Globalization;
 using System.Text.RegularExpressions;
+using benmap;
+using DotSpatial.Projections;
+using System.Diagnostics;
 
 
 namespace BenMAP
@@ -690,8 +693,8 @@ namespace BenMAP
                     if (!other.AttributesPopulated) other.FillAttributes();
                     int i = 0;
                     Dictionary<string, Dictionary<string, double>> dicRelation = new Dictionary<string, Dictionary<string, double>>();
-                    Polygon pSelfExtent = null;
-                    Polygon pOtherExtent = null;
+                    //Polygon pSelfExtent = null;
+                   // Polygon pOtherExtent = null;
                     double dSumArea = 0.0;
                     foreach (IFeature selfFeature in self.Features)
                     {
@@ -888,8 +891,26 @@ namespace BenMAP
             }
             return result;
         }
-        public static List<GridRelationshipAttributePercentage> IntersectionPercentage(IFeatureSet self, IFeatureSet other, FieldJoinType joinType)
+
+        public static String GetTimestamp(DateTime value)
         {
+            return value.ToString("HH:mm:ss");
+        }
+
+        public static List<GridRelationshipAttributePercentage> IntersectionPercentage(IFeatureSet self, IFeatureSet other, FieldJoinType joinType, String popRasterLoc)
+        {
+            IRaster myRS=null;
+            string gdalWarpEXELoc = (new FileInfo(System.Reflection.Assembly.GetEntryAssembly().Location)).Directory.ToString();
+            gdalWarpEXELoc += @"\GDAL-EXE\gdalwarp.exe";
+            String tempRasterLocDir = CommonClass.DataFilePath + @"\Tmp";
+            String tempRasterFullPath = null;
+            ProcessStartInfo warpStep = new System.Diagnostics.ProcessStartInfo();
+
+            double minx = 0.0;
+            double maxy = 0.0;
+            double maxx = 0.0;
+            double miny = 0.0;
+
             List<GridRelationshipAttributePercentage> result = new List<GridRelationshipAttributePercentage>();
             try
             {
@@ -899,44 +920,170 @@ namespace BenMAP
                     if (!other.AttributesPopulated) other.FillAttributes();
                     int i = 0;
                     Dictionary<string, Dictionary<string, double>> dicRelation = new Dictionary<string, Dictionary<string, double>>();
-                    Polygon pSelfExtent = null;
-                    Polygon pOtherExtent = null;
+                    IFeatureSet ifs = new FeatureSet();
+                    //self.SaveAs(@"P:\temp\self.shp",true);
+                    //other.SaveAs(@"P:\temp\other.shp", true);
+                    //Console.WriteLine("In fun");
+                    //Console.WriteLine("Starting loop");
+                    self.Reproject(ProjectionInfo.FromEsriString("PROJCS[\"NAD_1983_Albers\",GEOGCS[\"GCS_North_American_1983\",DATUM[\"D_North_American_1983\",SPHEROID[\"GRS_1980\",6378137.0,298.257222101]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Albers\"],PARAMETER[\"false_easting\",0.0],PARAMETER[\"false_northing\",0.0],PARAMETER[\"central_meridian\",-96.0],PARAMETER[\"standard_parallel_1\",29.5],PARAMETER[\"standard_parallel_2\",45.5],PARAMETER[\"latitude_of_origin\",37.5],UNIT[\"Meter\",1.0]]"));
+                    //self.SaveAs(@"P:\temp\selfReProject.shp", true);
+                    ifs.Projection = self.Projection;
+                        
+                    //Console.WriteLine("Self proj4: " + self.Projection.ToProj4String());
 
+                    //other.Reproject(myRS.Projection);
+                    other.Reproject(ProjectionInfo.FromEsriString("PROJCS[\"NAD_1983_Albers\",GEOGCS[\"GCS_North_American_1983\",DATUM[\"D_North_American_1983\",SPHEROID[\"GRS_1980\",6378137.0,298.257222101]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Albers\"],PARAMETER[\"false_easting\",0.0],PARAMETER[\"false_northing\",0.0],PARAMETER[\"central_meridian\",-96.0],PARAMETER[\"standard_parallel_1\",29.5],PARAMETER[\"standard_parallel_2\",45.5],PARAMETER[\"latitude_of_origin\",37.5],UNIT[\"Meter\",1.0]]"));
+                    Dictionary<int,double> otherXRef=new Dictionary<int,double>();
+                    //other.SaveAs(@"P:\temp\otherReProject.shp", true);
+                    //Console.WriteLine("Other proj4: " + other.Projection.ToProj4String());
+                    //Console.WriteLine("raster proj4: " + myRS.Projection.ToProj4String());
+                    Console.WriteLine("Starting other cache at " + GetTimestamp(DateTime.Now));
+                    
+                    foreach (IFeature otherFeature in other.Features)
+                    {
+                        //make a much smaller one
+                        minx = otherFeature.Envelope.Minimum.X -100.0;
+                        maxy = otherFeature.Envelope.Maximum.Y + 100.0;
+                        maxx = otherFeature.Envelope.Maximum.X + 100.0;
+                        miny = otherFeature.Envelope.Minimum.Y - 100.0;
+
+                        warpStep = new System.Diagnostics.ProcessStartInfo();
+
+                        //warpStep.FileName = @"P:\Projects\BenMAP\Code\Git-BB\BenMAP\GDAL-EXE\gdalwarp.exe";
+                        warpStep.FileName = gdalWarpEXELoc;
+                        tempRasterFullPath = Path.Combine(tempRasterLocDir,"clippedRaster-" + otherFeature.Fid + ".tif");
+                        warpStep.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
+                        warpStep.UseShellExecute = false;
+                        warpStep.CreateNoWindow = true;
+                        //warpStep.Arguments = "-ot Float32 ";
+                        warpStep.Arguments += " -te " + minx + " " + miny + " " + maxx + " " + maxy + " ";
+                        //warpStep.Arguments += "-t_srs \"+proj=merc +lon_0=0 +k=1 +x_0=0 +y_0=0 +a=6378137 +b=6378137 +units=m +no_defs \" ";
+                        warpStep.Arguments += "\"" + popRasterLoc + "\" \"" + tempRasterFullPath + "\"";
+                        try
+                        {
+                            // Start the process with the info we specified.
+                            // Call WaitForExit and then the using statement will close.
+                            using (Process exeProcess = Process.Start(warpStep))
+                            {
+                                exeProcess.WaitForExit();
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine("Couldn't output: " + e.ToString());
+                        }
+                        myRS = Raster.Open(tempRasterFullPath);
+                        double popValForOtherShape = ClipRasterRTI.ClipRasterWithPolygon(otherFeature, myRS, null, null);
+                        Console.WriteLine("Cacheing "+popValForOtherShape+" for "+otherFeature.Fid+ " out of "+other.Features.Count+ " at " +GetTimestamp(DateTime.Now));
+                        otherXRef.Add(otherFeature.Fid,popValForOtherShape);
+                        myRS.Close();
+                        File.Delete(tempRasterFullPath);
+                    }
+                    
                     foreach (IFeature selfFeature in self.Features)
                     {
+
+
+
+                        //Console.WriteLine("CurFeature: " + selfFeature.Fid);
+                        ifs.Features.Clear();
+                        ifs.AddFeature(selfFeature);
+                        Console.WriteLine("My new fid: " + selfFeature.Fid);
+                        //ifs.SaveAs(@"P:\temp\singleShape"+selfFeature.Fid+".shp", true);
+                        
+                        //ifs.Reproject(myRS.Projection);
+                        //ifs.SaveAs(@"P:\temp\singleShapeReproj.shp",true);
+
+                       
                         List<int> potentialOthers = other.SelectIndices(selfFeature.Envelope.ToExtent());
+                        
                         foreach (int iotherFeature in potentialOthers)
                         {
-                            if (iotherFeature == 33)
-                            {
-                            }
-                            IFeature intersactFeature = null;
+                           // if (iotherFeature == 33)
+                           // {
+                           // }
+                            IFeature intersectFeature = null;
+                            double popVal = 0.0;
 
-
-                            if ((other.Features.Count < 5 || self.Features.Count < 5) && other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum)) == 0 &&
-other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Maximum.X, selfFeature.Envelope.Minimum.Y)) == 0 &&
-other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Maximum)) == 0 &&
-other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X, selfFeature.Envelope.Maximum.Y)) == 0
-)
+                            if ((other.Features.Count < 5 || self.Features.Count < 5) 
+                                        && other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum)) == 0 
+                                        && other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Maximum.X, selfFeature.Envelope.Minimum.Y)) == 0 
+                                        && other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Maximum)) == 0 
+                                        && other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X, selfFeature.Envelope.Maximum.Y)) == 0)
                             {
-                                intersactFeature = selfFeature;
-                            }
-
-                            else if ((other.Features.Count < 5 || self.Features.Count < 5) && selfFeature.Distance(new Point(other.Features[iotherFeature].Envelope.Minimum)) == 0 &&
-                           selfFeature.Distance(new Point(other.Features[iotherFeature].Envelope.Maximum.X, other.Features[iotherFeature].Envelope.Minimum.Y)) == 0 &&
-                            selfFeature.Distance(new Point(other.Features[iotherFeature].Envelope.Maximum)) == 0 &&
-                            selfFeature.Distance(new Point(other.Features[iotherFeature].Envelope.Minimum.X, other.Features[iotherFeature].Envelope.Maximum.Y)) == 0)
+                                intersectFeature = selfFeature;
+                            } else if ((other.Features.Count < 5 || self.Features.Count < 5) 
+                                        && selfFeature.Distance(new Point(other.Features[iotherFeature].Envelope.Minimum)) == 0 
+                                        && selfFeature.Distance(new Point(other.Features[iotherFeature].Envelope.Maximum.X, other.Features[iotherFeature].Envelope.Minimum.Y)) == 0 
+                                        && selfFeature.Distance(new Point(other.Features[iotherFeature].Envelope.Maximum)) == 0 
+                                        && selfFeature.Distance(new Point(other.Features[iotherFeature].Envelope.Minimum.X, other.Features[iotherFeature].Envelope.Maximum.Y)) == 0)
                             {
-                                intersactFeature = other.Features[iotherFeature];
-                            }
-                            else
+                                intersectFeature = other.Features[iotherFeature];
+                            } else
                             {
                                 try
                                 {
-                                    intersactFeature = selfFeature.Intersection(other.Features[iotherFeature]);
+                                    intersectFeature = selfFeature.Intersection(other.Features[iotherFeature]);
+                                    //IFeatureSet ifsTemp = new FeatureSet();
+                                    //ifsTemp.Projection = other.Projection;
+                                    //ifsTemp.AddFeature(selfFeature);
+                                    //ifsTemp.AddFeature(other.Features[iotherFeature]);
+                                    //if (intersectFeature != null)
+                                    //{
+                                    //    ifsTemp.AddFeature(intersectFeature);
+                                    //}
+
+                                    //ifsTemp.SaveAs(@"p:\temp\interSectFeat-" + selfFeature.Fid + "-" + iotherFeature + ".shp", true);
+                                    //fist population of selfFeature\ warpStep.FileName = gdalWarpEXELoc;
+                                    warpStep = new System.Diagnostics.ProcessStartInfo();
+                                    //make a much smaller one
+                                    if (intersectFeature == null || intersectFeature.Envelope == null)
+                                    {
+                                        //this case is when shape is in bounding box, but not actually overlapping.
+                                        continue;
+                                    }
+                                    minx = intersectFeature.Envelope.Minimum.X - 100.0;
+                                    maxy = intersectFeature.Envelope.Maximum.Y + 100.0;
+                                    maxx = intersectFeature.Envelope.Maximum.X + 100.0;
+                                    miny = intersectFeature.Envelope.Minimum.Y - 100.0;
+                                    tempRasterFullPath = Path.Combine(tempRasterLocDir, "clippedRaster-Intersection-"+selfFeature.Fid+"-"+iotherFeature+".tif");
+                                    warpStep.FileName = gdalWarpEXELoc;
+                                    warpStep.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
+                                    warpStep.UseShellExecute = false;
+                                    warpStep.CreateNoWindow = true;
+                                    //warpStep.Arguments = "-ot Float32 ";
+                                    warpStep.Arguments += " -te " + minx + " " + miny + " " + maxx + " " + maxy + " ";
+                                    //warpStep.Arguments += "-t_srs \"+proj=merc +lon_0=0 +k=1 +x_0=0 +y_0=0 +a=6378137 +b=6378137 +units=m +no_defs \" ";
+                                    warpStep.Arguments += "\"" + popRasterLoc + "\" \"" + tempRasterFullPath + "\"";
+                                    try
+                                    {
+                                        // Start the process with the info we specified.
+                                        // Call WaitForExit and then the using statement will close.
+                                        using (Process exeProcess = Process.Start(warpStep))
+                                        {
+                                            exeProcess.WaitForExit();
+                                        }
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        Console.WriteLine("Couldn't output: " + e.ToString());
+                                    }
+                                    myRS = Raster.Open(tempRasterFullPath);
+
+
+                                    popVal = ClipRasterRTI.ClipRasterWithPolygon(intersectFeature, myRS, null, null);
+                                    Console.WriteLine("Got population: " + popVal);
+                                    if (popVal > 0)
+                                    {
+                                        Console.WriteLine("NonZero val on -" + selfFeature.Fid + "-" + iotherFeature);
+                                    }
+                                    myRS.Close();
+                                    File.Delete(tempRasterFullPath);
+                                    //myRS.Close();
                                 }
                                 catch (Exception ex)
                                 {
+                                    Console.WriteLine("Caught an error getting counts: " + ex.ToString());
                                     try
                                     {
                                         if (selfFeature.IsWithinDistance(other.Features[iotherFeature], 0.00001))
@@ -947,40 +1094,47 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
                                                 isContains = polygonContainPolygon(selfFeature, other.Features[iotherFeature]);
                                                 if (isContains)
                                                 {
-                                                    intersactFeature = other.Features[iotherFeature];
+                                                    intersectFeature = other.Features[iotherFeature];
                                                 }
                                                 else
-                                                    intersactFeature = null;
+                                                {
+                                                    intersectFeature = null;
+                                                }
                                             }
                                             else if (selfFeature.Area() < other.Features[iotherFeature].Area())
                                             {
-                                                intersactFeature = selfFeature;
+                                                intersectFeature = selfFeature;
 
                                                 bool isContains = false;
                                                 isContains = polygonContainPolygon(other.Features[iotherFeature], selfFeature);
                                                 if (isContains)
                                                 {
-                                                    intersactFeature = selfFeature;
+                                                    intersectFeature = selfFeature;
                                                 }
                                                 else
-                                                    intersactFeature = null;
+                                                {
+                                                    intersectFeature = null;
+                                                }
                                             }
                                         }
                                     }
-                                    catch
+                                    catch(Exception e)
                                     {
+                                        Console.WriteLine("Error finding matching features: " + e.ToString());
                                     }
                                 }
 
                             }
-                            if (intersactFeature != null && intersactFeature.BasicGeometry != null)
+                            if (intersectFeature != null && intersectFeature.BasicGeometry != null)
                             {
+                                
                                 try
                                 {
+                                    /*
                                     double dArea = 0;
                                     try
                                     {
-                                        dArea = intersactFeature.Area();
+                                        dArea = intersectFeature.Area();
                                     }
                                     catch
                                     {
@@ -992,8 +1146,8 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
                                                 isContains = polygonContainPolygon(selfFeature, other.Features[iotherFeature]);
                                                 if (isContains)
                                                 {
-                                                    intersactFeature = other.Features[iotherFeature];
-                                                    dArea = intersactFeature.Area();
+                                                    intersectFeature = other.Features[iotherFeature];
+                                                    dArea = intersectFeature.Area();
                                                 }
                                                 else
                                                     dArea = 0;
@@ -1001,15 +1155,15 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
                                             }
                                             else if (selfFeature.Area() < other.Features[iotherFeature].Area())
                                             {
-                                                intersactFeature = selfFeature;
-                                                dArea = intersactFeature.Area();
+                                                intersectFeature = selfFeature;
+                                                dArea = intersectFeature.Area();
 
                                                 bool isContains = false;
                                                 isContains = polygonContainPolygon(other.Features[iotherFeature], selfFeature);
                                                 if (isContains)
                                                 {
-                                                    intersactFeature = selfFeature;
-                                                    dArea = intersactFeature.Area();
+                                                    intersectFeature = selfFeature;
+                                                    dArea = intersectFeature.Area();
                                                 }
                                                 else
                                                     dArea = 0;
@@ -1020,21 +1174,21 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
                                         }
                                         else
                                             dArea = 0;
-                                    }
-                                    if (dArea > 0)
+                                    }*/
+                                    if (popVal > 0)
                                     {
 
                                         if (dicRelation.ContainsKey(other.Features[iotherFeature].DataRow["Col"] + "," + other.Features[iotherFeature].DataRow["Row"]))
                                         {
                                             dicRelation[other.Features[iotherFeature].DataRow["Col"] + "," + other.Features[iotherFeature].DataRow["Row"]].Add
-                                                (selfFeature.DataRow["Col"] + "," + selfFeature.DataRow["Row"], dArea / other.Features[iotherFeature].Area());
+                                                (selfFeature.DataRow["Col"] + "," + selfFeature.DataRow["Row"], popVal / otherXRef[other.Features[iotherFeature].Fid]);
                                         }
                                         else
                                         {
                                             dicRelation.Add(other.Features[iotherFeature].DataRow["Col"] + "," + other.Features[iotherFeature].DataRow["Row"],
                                                 new Dictionary<string, double>());
                                             dicRelation[other.Features[iotherFeature].DataRow["Col"] + "," + other.Features[iotherFeature].DataRow["Row"]].Add
-                                               (selfFeature.DataRow["Col"] + "," + selfFeature.DataRow["Row"], dArea / other.Features[iotherFeature].Area());
+                                               (selfFeature.DataRow["Col"] + "," + selfFeature.DataRow["Row"], popVal / otherXRef[other.Features[iotherFeature].Fid]);
                                         }
                                     }
                                 }
@@ -1045,24 +1199,24 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
                                         if (selfFeature.IsWithinDistance(other.Features[iotherFeature], 0.00001))
                                         {
                                             if (selfFeature.Area() > other.Features[iotherFeature].Area())
-                                                intersactFeature = other.Features[iotherFeature];
+                                                intersectFeature = other.Features[iotherFeature];
                                             else
-                                                intersactFeature = selfFeature;
+                                                intersectFeature = selfFeature;
                                         }
-                                        if (intersactFeature.Area() > 0)
+                                        if (intersectFeature.Area() > 0)
                                         {
 
                                             if (dicRelation.ContainsKey(other.Features[iotherFeature].DataRow["Col"] + "," + other.Features[iotherFeature].DataRow["Row"]))
                                             {
                                                 dicRelation[other.Features[iotherFeature].DataRow["Col"] + "," + other.Features[iotherFeature].DataRow["Row"]].Add
-                                                    (selfFeature.DataRow["Col"] + "," + selfFeature.DataRow["Row"], intersactFeature.Area() / other.Features[iotherFeature].Area());
+                                                    (selfFeature.DataRow["Col"] + "," + selfFeature.DataRow["Row"], intersectFeature.Area() / other.Features[iotherFeature].Area());
                                             }
                                             else
                                             {
                                                 dicRelation.Add(other.Features[iotherFeature].DataRow["Col"] + "," + other.Features[iotherFeature].DataRow["Row"],
                                                     new Dictionary<string, double>());
                                                 dicRelation[other.Features[iotherFeature].DataRow["Col"] + "," + other.Features[iotherFeature].DataRow["Row"]].Add
-                                                   (selfFeature.DataRow["Col"] + "," + selfFeature.DataRow["Row"], intersactFeature.Area() / other.Features[iotherFeature].Area());
+                                                   (selfFeature.DataRow["Col"] + "," + selfFeature.DataRow["Row"], intersectFeature.Area() / other.Features[iotherFeature].Area());
                                             }
                                         }
                                     }
@@ -1095,7 +1249,9 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
                                     percentage = 1,
                                 };
                                 if (k.Value.First().Value > 0.000000000001)
-                                result.Add(gr);
+                                {
+                                    result.Add(gr);
+                                }
 
                             }
                             else
@@ -1103,7 +1259,10 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
                                 double d = 0.0;
                                 foreach (KeyValuePair<string, double> kin in k.Value)
                                 {
-                                    if (kin.Value > 0.000000000001) d = d + kin.Value;
+                                    if (kin.Value > 0.000000000001)
+                                    {
+                                        d = d + kin.Value;
+                                    }
                                 }
                                 foreach (KeyValuePair<string, double> kin in k.Value)
                                 {
@@ -1127,6 +1286,7 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
             }
             catch (Exception ex)
             {
+                Console.WriteLine("Exception doing calcs: " + ex.ToString());
             }
             return result;
         }
@@ -1150,7 +1310,7 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
             }
         }
 
-        public static void getRelationshipFromBenMAPGridPercentage(int big, int small)
+        public static void getRelationshipFromBenMAPGridPercentage(int big, int small, String popRasterFileLoc)
         {
             try
             {
@@ -1170,7 +1330,7 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
                     fsSmall = DotSpatial.Data.FeatureSet.Open(shapeFileNameSmall);
 
 
-                    List<GridRelationshipAttributePercentage> lstGR = IntersectionPercentage(fsBig, fsSmall, FieldJoinType.All);
+                    List<GridRelationshipAttributePercentage> lstGR = IntersectionPercentage(fsBig, fsSmall, FieldJoinType.All, popRasterFileLoc);
                     string commandText = "select max(PercentageID) from GridDefinitionPercentages";
                     int iMax = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
 

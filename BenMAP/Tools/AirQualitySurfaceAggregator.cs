@@ -111,7 +111,7 @@ namespace BenMAP
                     if (iCount == 0)
                     {
 
-                        Configuration.ConfigurationCommonClass.creatPercentageToDatabase(GridTo, GridFrom);
+                        Configuration.ConfigurationCommonClass.creatPercentageToDatabase(GridTo, GridFrom,null);
                         iCount = 1;
 
                     }

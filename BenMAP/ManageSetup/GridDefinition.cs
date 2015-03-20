@@ -370,6 +370,9 @@ namespace BenMAP
         }
         private void btnPreview_Click(object sender, EventArgs e)
         {
+
+            
+            
             try
             {
                 if (cboGridType.SelectedIndex == 0)
@@ -432,6 +435,25 @@ namespace BenMAP
             _rrows = int.Parse(nudRows.Value.ToString());
             try
             {
+                String rasterFileLoc = txtb_popGridLoc.Text;
+                if (rasterFileLoc == null || rasterFileLoc.Trim().Length == 0)
+                {
+                    MessageBox.Show("Please enter a raster path before continuing");
+                    return;
+                }
+                //see if it is relative path, if so assume from base of EXE
+                if (!System.IO.Path.IsPathRooted(rasterFileLoc))
+                {
+                    String exeDir = (new FileInfo(System.Reflection.Assembly.GetEntryAssembly().Location)).Directory.ToString();
+                    rasterFileLoc = Path.Combine(exeDir, rasterFileLoc);
+                }
+
+                if (!File.Exists(rasterFileLoc))
+                {
+                    MessageBox.Show("No raster file found at " + rasterFileLoc);
+                    return;
+                }
+
                 if (cboGridType.SelectedIndex == 0)
                 {
                     _shapeFileName = lblShapeFileName.Text;
@@ -626,7 +648,7 @@ namespace BenMAP
                     //_gridID =  _metadataObj.DatasetId;
                     commandText = string.Format("select max(GRIDDEFINITIONID) from GRIDDEFINITIONS");
                     _gridID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText)) + 1;
-                    _metadataObj.DatasetId = _gridID;
+                    //_metadataObj.DatasetId = _gridID;
                     string _filePath = string.Empty;
                     switch (_gridType)
                     {
@@ -730,39 +752,47 @@ namespace BenMAP
                     fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                     string AppPath = Application.StartupPath;
                     if (ds.Tables[0].Rows.Count == 1) this.DialogResult = System.Windows.Forms.DialogResult.OK;
+                    int counter = 0;
+
+                    
                     foreach (DataRow dr in ds.Tables[0].Rows)
                     {
-
-                        int gridDefinitionID = Convert.ToInt32(dr["GridDefinitionID"]);
-                        if (gridDefinitionID == addBenMAPGrid.GridDefinitionID)
+                        //AP-for testing
+                        if (counter == 0)
                         {
-                            continue;
+                            counter++;
+                            int gridDefinitionID = Convert.ToInt32(dr["GridDefinitionID"]);
+                            if (gridDefinitionID == addBenMAPGrid.GridDefinitionID)
+                            {
+                                continue;
+                            }
+
+
+
+
+                            int bigGridID, smallGridID;
+
+
+
+
+                            bigGridID = gridDefinitionID;
+                            smallGridID = addBenMAPGrid.GridDefinitionID;
+                            //AP-launches here
+                            AsyncgetRelationshipFromBenMAPGridPercentage dlgt = new AsyncgetRelationshipFromBenMAPGridPercentage(getRelationshipFromBenMAPGridPercentage);
+                            lstAsyns.Add(bigGridID + "," + smallGridID);
+                            //lstAsyns.Add(smallGridID + "," + bigGridID);
+                            iAsyns++; iAsyns++;
+                            IAsyncResult ar = dlgt.BeginInvoke(bigGridID, smallGridID, rasterFileLoc, new AsyncCallback(outPut), dlgt);
+
+
+                            //IAsyncResult ar2 = dlgt.BeginInvoke(smallGridID, bigGridID, new AsyncCallback(outPut), dlgt);
+
                         }
-
-
-
-
-                        int bigGridID, smallGridID;
-
-
-
-
-                        bigGridID = gridDefinitionID;
-                        smallGridID = addBenMAPGrid.GridDefinitionID;
-                        AsyncgetRelationshipFromBenMAPGridPercentage dlgt = new AsyncgetRelationshipFromBenMAPGridPercentage(getRelationshipFromBenMAPGridPercentage);
-                        lstAsyns.Add(bigGridID + "," + smallGridID);
-                        lstAsyns.Add(smallGridID + "," + bigGridID);
-                        iAsyns++; iAsyns++;
-                        IAsyncResult ar = dlgt.BeginInvoke(bigGridID, smallGridID, new AsyncCallback(outPut), dlgt);
-
-
-                        IAsyncResult ar2 = dlgt.BeginInvoke(smallGridID, bigGridID, new AsyncCallback(outPut), dlgt);
-
+                        progressBar1.Step = 1;
+                        progressBar1.Minimum = 1;
+                        progressBar1.Maximum = iAsyns + 1;
+                        this.Enabled = false;
                     }
-                    progressBar1.Step = 1;
-                    progressBar1.Minimum = 1;
-                    progressBar1.Maximum = iAsyns + 1;
-                    this.Enabled = false;
                 }
 
                 catch (Exception ex)
@@ -823,8 +853,8 @@ namespace BenMAP
 
             }
         }
-        public delegate Dictionary<string, List<GridRelationshipAttributePercentage>> AsyncgetRelationshipFromBenMAPGridPercentage(int big, int small);
-        public Dictionary<string, List<GridRelationshipAttributePercentage>> getRelationshipFromBenMAPGridPercentage(int big, int small)
+        public delegate Dictionary<string, List<GridRelationshipAttributePercentage>> AsyncgetRelationshipFromBenMAPGridPercentage(int big, int small,String poplocation);
+        public Dictionary<string, List<GridRelationshipAttributePercentage>> getRelationshipFromBenMAPGridPercentage(int big, int small,String popLocation)
         {
             try
             {
@@ -864,14 +894,16 @@ namespace BenMAP
                     fsSmall = DotSpatial.Data.FeatureSet.Open(shapeFileNameSmall);
 
 
-                    List<GridRelationshipAttributePercentage> lstGR = null; if (big == 20 || small == 20)
+                    List<GridRelationshipAttributePercentage> lstGR = null; 
+                    
+                    if (big == 20 || small == 20)
                     {
 
                         lstGR = CommonClass.IntersectionPercentageNation(fsBig, fsSmall, FieldJoinType.All, big, small);
                     }
                     else
                     {
-                        lstGR = CommonClass.IntersectionPercentage(fsBig, fsSmall, FieldJoinType.All);
+                        lstGR = CommonClass.IntersectionPercentage(fsBig, fsSmall, FieldJoinType.All, popLocation);
                     }
                     Dictionary<string, List<GridRelationshipAttributePercentage>> dic = new Dictionary<string, List<GridRelationshipAttributePercentage>>();
                     dic.Add(small + "," + big, lstGR);
@@ -1096,6 +1128,17 @@ namespace BenMAP
             btnViewMetadata.Enabled = !string.IsNullOrEmpty(txtShapefile.Text);
             //btnViewMetadata.Enabled = !string.IsNullOrEmpty(txtShapefile.Text);
             //_strPath = txtShapefile.Text;
+        }
+
+        private void btn_browsePopRaster_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog ofd=new OpenFileDialog();
+             DialogResult result =ofd.ShowDialog(); // Show the dialog.
+             if (result == DialogResult.OK) // Test result.
+             {
+                 txtb_popGridLoc.Text=ofd.FileName;
+             }
+
         }
 
     }
