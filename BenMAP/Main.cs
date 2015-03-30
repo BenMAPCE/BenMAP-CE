@@ -330,8 +330,10 @@ namespace BenMAP
             String errorcode = "0";
             if (_currentForm==null)
             {
+                //if ((_currentForm as BenMAP).HomePageName != "")
+                //    (_currentForm as BenMAP).loadHomePageFunction();
                 errorcode = "1"; 
-                //MessageBox.Show("Currentform is null, exiting load.");
+                MessageBox.Show("Currentform is null, unable to load main page.");
                 return;
             }
 

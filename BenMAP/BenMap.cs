@@ -317,8 +317,7 @@ namespace BenMAP
 
         private void mainMap_LayerVisibleChanged(object sender, EventArgs e)
         {
-            Update_Map_Title();
-            updateLegend();
+            Update_Map_Title();   
         }
 
         private void Update_Map_Title()   //Change the map title to be equal to the top layer that is visible
@@ -2938,14 +2937,7 @@ namespace BenMAP
             myScheme1.EditorSettings.UseGradient = false;
             myScheme1.ClearCategories();
             myScheme1.CreateCategories(polLayer.DataSet.DataTable);    ///MCB- Note: This method can't deal with negative numbers correctly
-
-            double[] value = new double[5];
-            for (int i = 0; i < 5; i++)
-            {
-                value[i] = myScheme1.Categories[i].Maximum.Value;
-            }
-            colorBlend.pharseValue(value);//
-
+            
             // Set the category colors equal to the selected color ramp
            
             for (int catNum = 0; catNum < CategoryNumber; catNum++)
@@ -5715,8 +5707,8 @@ namespace BenMAP
             bindingNavigatorMoveLastItem.Enabled = true;
             bindingNavigatorMovePreviousItem.Enabled = true;
             bindingNavigatorPositionItem.Enabled = true;
-            colorBlend.CustomizeValueRange -= ResetGISColorValue;//-MCB - may still be needed 
-            colorBlend.CustomizeValueRange += ResetGISColorValue;
+            //colorBlend.CustomizeValueRange -= ResetGISColorValue;//-MCB - may still be needed 
+            //colorBlend.CustomizeValueRange += ResetGISColorValue;
             InitAggregationAndRegionList();
             Dictionary<string, string> dicSeasonStaticsAll = DataSourceCommonClass.DicSeasonStaticsAll;
             InitColumnsShowSet();
@@ -14056,168 +14048,10 @@ namespace BenMAP
 
         }
 
-        private void legend1_CheckBoxMouseUp(object sender, ItemMouseEventArgs e)
-        {
-            try
-            {
-                tbMapTitle.Text = "";
-                List<ILayer> lstlayer = mainMap.GetAllLayers();
-                for (int i = lstlayer.Count-1; i >= 0; i--)
-                {
-                    if (lstlayer[i].LegendText != "Nation" && lstlayer[i].LegendText != "States" && lstlayer[i].LegendText != "Countries" 
-                        && lstlayer[i] is MapPolygonLayer && lstlayer[i].Checked)
-                    {
-                        int j = (lstlayer[i] as MapPolygonLayer).Symbology.Categories.Count();
-                        Color[] color = new Color[6];
-                        double[] value = new double[5];
-                        for (int k = 0; k < j - 1; k++)
-                        {
-                            color[k] = (lstlayer[i] as MapPolygonLayer).Symbology.Categories[k].GetColor();
-                            value[k] = (lstlayer[i] as MapPolygonLayer).Symbology.Categories[k].Maximum.Value;
-                        }
-                        color[5] = (lstlayer[i] as MapPolygonLayer).Symbology.Categories[5].GetColor();
-                        colorBlend.ColorArray = color;
-                        colorBlend.pharseValue(value);
-                        break;
-                    }
-                }
-                
-            }
-            catch (Exception ex )
-            {
-                Logger.LogError(ex);
-            }
-        }
-        private void  updateLegend()
-        {
-            try
-            {
-                ILayer TopLayer = null;
-                bool IgnoreAdminMapGroup = true;
-                TopLayer = FindTopVisibleLayer(IgnoreAdminMapGroup);
-
-                int j = (TopLayer as MapPolygonLayer).Symbology.Categories.Count();
-                Color[] color = new Color[6];
-                double[] value = new double[5];
-                for (int k = 0; k < j - 1; k++)
-                {
-                    color[k] = (TopLayer as MapPolygonLayer).Symbology.Categories[k].GetColor();
-                    value[k] = (TopLayer as MapPolygonLayer).Symbology.Categories[k].Maximum.Value;
-                }
-                color[5] = (TopLayer as MapPolygonLayer).Symbology.Categories[5].GetColor();
-                colorBlend.ColorArray = color;
-                colorBlend.pharseValue(value);
-                string fieldname= (TopLayer as MapPolygonLayer).Symbology.EditorSettings.FieldName;     
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex);
-            }
-        }
-        private void ResetGISColorValue(object sender, EventArgs e)
-        {
-            try
-            {
-                ILayer TopLayer = null;
-                bool IgnoreAdminMapGroup = true;
-                TopLayer = FindTopVisibleLayer(IgnoreAdminMapGroup);
-
-
-                //List<ILayer> lstlayer = mainMap.GetAllLayers();
-                //int iToplayer = lstlayer.Count - 1;
-                //for (; iToplayer >= 0; iToplayer--)
-                //{
-                //    if (lstlayer[iToplayer].LegendText != "Nation" && lstlayer[iToplayer].LegendText != "States" && lstlayer[iToplayer].LegendText != "Countries"
-                //        && lstlayer[iToplayer] is MapPolygonLayer && lstlayer[iToplayer].Checked)
-                //    {
-                //        break;
-                //    }
-                //}
-                string fieldname = (TopLayer as MapPolygonLayer).Symbology.EditorSettings.FieldName.ToUpper();
-
-                PolygonScheme myScheme1 = new PolygonScheme();
-                myScheme1.Categories.Clear();
-
-                myScheme1.EditorSettings.CopyProperties((TopLayer as MapPolygonLayer).Symbology.EditorSettings);
-                myScheme1.CreateCategories((TopLayer as MapPolygonLayer).DataSet.DataTable);
-                myScheme1.Categories[0].Maximum = colorBlend.ValueArray[1];
-                myScheme1.Categories[5].Minimum = colorBlend.ValueArray[5];
-                for (int i = 0; i < 6; i++)
-                {
-                    if (i != 0 && i != 5)
-                    {
-                        myScheme1.Categories[i].Maximum = colorBlend.ValueArray[i + 1];
-                        myScheme1.Categories[i].Minimum = colorBlend.ValueArray[i];
-                    }
-                    myScheme1.Categories[i].ApplyMinMax(myScheme1.EditorSettings);
-                    myScheme1.Categories[i].Symbolizer.SetOutline(Color.Transparent, 0);
-                    //ctemp = pcin.Symbolizer.GetFillColor();
-                    //pcin.Symbolizer.SetFillColor(ctemp.ToTransparent(fColor));
-                    //ctemp.ToTransparent(fColor);
-                    myScheme1.Categories[i].Symbolizer.SetFillColor(colorBlend.ColorArray[i]);
-                }
-
-                //for (int i = 0; i < 6; i++)
-                //{
-                //    //pc.Symbolizer.SetOutlineWidth(0);
-                //    PolygonCategory pcin = new PolygonCategory();
-                //    double dnow = 0;
-                //    double dnowUp = 0;
-                //    dnow = colorBlend.ValueArray[i];
-                //    if (i == 0)
-                //    {
-                //        dnowUp = colorBlend.ValueArray[i + 1];
-                //        pcin.FilterExpression = string.Format(" [{0}] <= " + dnowUp, fieldname);
-                //        pcin.Maximum = dnowUp;
-                //        pcin.LegendText = "<= " + dnowUp.ToString("F2");
-                //    }
-                //    else if (i == 5)
-                //    {
-                //        pcin.FilterExpression = string.Format(" [{0}] > " + dnow, fieldname);
-                //        pcin.LegendText = "> " + dnow.ToString("F2");
-                //        pcin.Minimum = dnow;
-                //    }
-                //    else if (i < 5)
-                //    {
-                //        dnowUp = colorBlend.ValueArray[i + 1];
-                //        pcin.FilterExpression = string.Format("[{0}] >= " + dnow + " and [{0}] <" + dnowUp, fieldname);
-                //        pcin.LegendText = dnow.ToString("F2") + " - " + dnowUp.ToString("F2");
-                //        pcin.Maximum = dnowUp;
-                //        pcin.Minimum = dnow;
-                //    }
-                //    EditorSettings es = new EditorSettings();
-                    
-
-                //    pcin.Symbolizer.SetOutline(Color.Transparent, 0);
-                //    //ctemp = pcin.Symbolizer.GetFillColor();
-                //    //pcin.Symbolizer.SetFillColor(ctemp.ToTransparent(fColor));
-                //    //ctemp.ToTransparent(fColor);
-
-                //    pcin.Symbolizer.SetFillColor(colorBlend.ColorArray[i]);
-
-                //    myScheme1.Categories.Add(pcin);
-                //}
-                
-                myScheme1.EditorSettings.ClassificationType = ClassificationType.Quantities;
-                //myScheme1.EditorSettings.IntervalMethod = IntervalMethod.NaturalBreaks;
-                //myScheme1.EditorSettings.IntervalSnapMethod = IntervalSnapMethod.SignificantFigures;
-                //myScheme1.EditorSettings.IntervalRoundingDigits = 3; //number of significant figures (or decimal places if using rounding)
-                //myScheme1.EditorSettings.NumBreaks = 6;
-                myScheme1.EditorSettings.FieldName = fieldname;
-                //myScheme1.EditorSettings.UseGradient = false;
-
-                myScheme1.AppearsInLegend = false; //if true then legend text displayed
-                //myScheme1.IsExpanded = true;
-                myScheme1.LegendText = fieldname;
-                //(lstlayer[iToplayer] as MapPolygonLayer).Symbology.Categories.Clear();
-
-                (TopLayer as MapPolygonLayer).Symbology = myScheme1;
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex);
-            }
-  
-        }        
+        
+      
+      
+      
+        
     }
 }
