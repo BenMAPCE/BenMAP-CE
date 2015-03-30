@@ -626,7 +626,7 @@ namespace BenMAP
                     //_gridID =  _metadataObj.DatasetId;
                     commandText = string.Format("select max(GRIDDEFINITIONID) from GRIDDEFINITIONS");
                     _gridID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText)) + 1;
-                    _metadataObj.DatasetId = _gridID;
+                    //_metadataObj.DatasetId = _gridID;
                     string _filePath = string.Empty;
                     switch (_gridType)
                     {
