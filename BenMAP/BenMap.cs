@@ -5598,7 +5598,8 @@ namespace BenMAP
 
 
 
-        TipFormGIF waitMess = new TipFormGIF(); bool sFlog = true;
+        TipFormGIF waitMess = new TipFormGIF(); 
+        bool sFlog = true;
 
         private void ShowWaitMess()
         {
@@ -14046,6 +14047,11 @@ namespace BenMAP
         }
 
         private void toolStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+
+        }
+
+        private void OLVResultsShow_SelectedIndexChanged(object sender, EventArgs e)
         {
 
         }

@@ -14,7 +14,40 @@ namespace BenMAP
 {
     public partial class IncidenceDatasetDefinition : FormBase
     {
+         // 2014 11 19 modified to support lock and copy (clone)
+        private bool _isLocked = false;
+        private bool _CopyingDataset = false;
+        private string _dataSetName;
+        private object _dataSetID;//used for when a new dataset is created.
+        private object _newDataSetID = null;//used for copying an existing dataset that is locked. (the new datasetid)
+        private object _oldDataSetID = null;//used for copying an existing dataset that is locked. (the locked datasetid)
+        private DataTable _dtDataFile;
         private MetadataClassObj _metadataObj = null;
+
+        // 2014 11 19 added new overloaded creation class to support lock and copy (clone)
+        public IncidenceDatasetDefinition(string name, object id, bool isLocked)
+            : this(name, id)
+        {
+            _isLocked = isLocked;
+            if(_isLocked)
+            {
+                txtDataName.Enabled = true;//false;
+                _dataSetName  = name + "_Copy";
+                txtDataName.Text = _dataSetName;
+                _oldDataSetID = _dataSetID;
+                _CopyingDataset = true;
+            }
+            else
+            {
+                txtDataName.Enabled = false;
+            }
+        }
+         public IncidenceDatasetDefinition(string name, object id)
+        {
+            InitializeComponent();
+            _dataSetName = name;
+            _dataSetID = id;
+        }
 
         public IncidenceDatasetDefinition()
         {
@@ -23,6 +56,8 @@ namespace BenMAP
         }
 
         DataTable dtIncidence = new DataTable();
+
+        
 
         public IncidenceDatasetDefinition(string dataSetName, int dataSetID)
         {
@@ -36,7 +71,7 @@ namespace BenMAP
             this.DialogResult = DialogResult.Cancel;
         }
 
-        private string _dataSetName = string.Empty;
+        //private string _dataSetName = string.Empty;
         private int incidenceDatasetID;
         private int _grdiDefinitionID;
 
@@ -48,14 +83,17 @@ namespace BenMAP
             try
             {
                 if (_dataSetName != string.Empty)
-                {
+                    {
                     txtDataName.Text = _dataSetName;
+                    // added next two lines to try and get edit to show data
+                    string comText = "select incidenceDatasetID from incidenceDataSets where incidenceDatasetName='" + _dataSetName + "'";
+                    incidenceDatasetID = Convert.ToInt16(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, comText));
                     BindDataGridView(null, null);
                     cboGridDefinition.Enabled = false;
                 }
                 else
                 {
-
+            
                     int number = 0;
                     int incidenceDatasetID = 0;
                     do
@@ -814,13 +852,17 @@ namespace BenMAP
         private void btnOK_Click(object sender, EventArgs e)
         {
             try
-            {
-                if (string.IsNullOrEmpty(txtDataName.Text))
+            {   // 2014 11 19 modified to deal with copy (clone)
+                if (string.IsNullOrEmpty(txtDataName.Text) && !_isLocked)
                 {
                     MessageBox.Show("Please input dataset name.");
                     return;
                 }
-                if (_dataSetName != txtDataName.Text)
+                if (_isLocked)//doing a copy
+                {
+                    CopyDatabase();
+                }
+                else if (_dataSetName != txtDataName.Text)
                 {
                     string commandText = string.Format("select INCIDENCEDATASETID from INCIDENCEDATASETS where INCIDENCEDATASETNAME='{0}' and setupID={1} and incidencedatasetid <> {2}", txtDataName.Text, CommonClass.ManageSetup.SetupID, incidenceDatasetID);
                     FireBirdHelperBase fb = new ESILFireBirdHelper();
@@ -842,6 +884,12 @@ namespace BenMAP
 
         private void btnDelete_Click(object sender, EventArgs e)
         {
+            // 2014 11 19 - don't allow user to delete locked set
+            if (_isLocked)
+            {
+                MessageBox.Show("Default (locked) datasets may not be deleted");   
+                return;
+            }
             ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
             string commandText = string.Empty;
             string msg = string.Empty;
@@ -1308,8 +1356,85 @@ namespace BenMAP
         {
         }
 
+        private void CopyDatabase()
+        {
+            FireBirdHelperBase fb = new ESILFireBirdHelper();
+            try
+            {
+                string commandText = string.Empty;
+                int maxID = 0;
+                int minID = 0;
+                object rVal = null;
+               //check and see if name is used
+                commandText = string.Format("Select INCIDENCEDATASETNAME from INCIDENCEDATASETS WHERE INCIDENCEDATASETNAME = '{0}'", txtDataName.Text.Trim());
+                rVal = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
+                if (rVal != null)
+                {
+                    MessageBox.Show("Name is already used.  Please select a new name.");
+                    txtDataName.Focus();
+                    return;
+                }
 
+                // string msg = string.Format("Save this file associated with {0} and {1} ?", cboPollutant.GetItemText(cboPollutant.SelectedItem), txtYear.Text);
+                string msg = "Copy Incidence Data Set";
+                DialogResult result = MessageBox.Show(msg, "Confirm Copy", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                if (result == DialogResult.No) return;
+                //getting a new dataset id
+                if (_newDataSetID == null)
+                {
+                    commandText = commandText = "select max(IncidenceDataSetID) from IncidenceDataSets";
+                    _newDataSetID = Convert.ToInt16(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
+                }
+                // first, create a new incidence data set
+                //the 'F' is for the LOCKED column in IncidenceDataSets.  This is being added and is not a predefined.
+                commandText = string.Format("Select GridDefinitionID from INCIDENCEDATASETS WHERE INCIDENCEDATASETID = {0}", _oldDataSetID);
+                rVal = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
+                if (rVal != null)   // no Grid Definition
+                {
+                    commandText = string.Format("insert into IncidenceDataSets(INCIDENCEDATASETID, SETUPID, INCIDENCEDATASETNAME, LOCKED) "
+                         + " values ({0},{1},'{2}', 'F')", _newDataSetID, CommonClass.ManageSetup.SetupID, txtDataName.Text);
+                }
+                else
+                { // insert with grid definition id
 
+                    commandText = string.Format("insert into IncidenceDataSets(INCIDENCEDATASETID, SETUPID, INCIDENCEDATASETNAME, GRIDDEFINITIONID, LOCKED) "
+                            + " values ({0},{1},'{2}',{3}, 'F')", _newDataSetID, CommonClass.ManageSetup.SetupID, rVal.ToString(), txtDataName.Text);
+                }
+                fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                // then, fill the incidence rates table
+                commandText = "select max(IncidenceRateID) from INCIDENCERATES";
+
+                maxID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
+                commandText = string.Format("select min(INCIDENCERATEID) from INCIDENCERATES where INCIDENCEDATASETID = {0}", _oldDataSetID);
+                minID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
+                //inserting - copying the locked data to the new data set
+                commandText = string.Format("insert into IncidenceRates(IncidenceRateid, IncidenceDataSetID, GridDefinitionID, EndpointGroupID, EndpointID, RaceID, "  +
+                               "GenderID, StartAge, EndAge, Prevalence, EthnicityID) " +
+                              "SELECT IncidenceRateID + ({0} - {1}) + 1, " +
+                              "{2}, GridDefinitionID, EndpointGroupID, EndpointID, RaceID, GenderID, StartAge, EndAge, Prevalence, EthnicityID " +
+                              "FROM IncidenceRates WHERE IncidenceDataSetID = {3}", maxID, minID, _newDataSetID, _oldDataSetID);
+                
+                fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                // now copy the old values to the new set
+                commandText = string.Format("INSERT INTO INCIDENCEENTRIES(INCIDENCERATEID, CCOLUMN, \"ROW\", VVALUE) "
+                                + "SELECT {0} + 1 + IR.INCIDENCERATEID - {1} 	AS NEWINCIDENCERATEID, CCOLUMN, \"ROW\", VVALUE "
+                                + "from INCIDENCEENTRIES as IE INNER JOIN INCIDENCERATES AS IR 	ON IE.INCIDENCERATEID = IR.INCIDENCERATEID "
+                                + "WHERE IR.INCIDENCEDATASETID = {2} ", maxID, minID, _oldDataSetID);
+                
+                fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                _metadataObj = new MetadataClassObj();
+                _metadataObj.DatasetId = Convert.ToInt32(_newDataSetID);
+                _metadataObj.FileName = txtDataName.Text;
+
+            }
+            catch (Exception ex)
+            {
+                progressBar1.Visible = false;
+                lblProgress.Text = "";
+                //addGridView(_dataSetID);
+                Logger.LogError(ex.Message);
+            }
+        }
 
 
 

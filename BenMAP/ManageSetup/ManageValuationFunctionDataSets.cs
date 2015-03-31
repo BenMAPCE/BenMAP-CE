@@ -16,7 +16,11 @@ namespace BenMAP
         public ManageValuationFunctionDataSets()
         {
             InitializeComponent();
+            // set current setup id for use in later queries
+            _dsSetupID = CommonClass.ManageSetup.SetupID;
+
         }
+        private bool bIsLocked = false;
         private MetadataClassObj _metadataObj = null;
         private int _dsMetadataID;
         private int _dsSetupID;
@@ -149,6 +153,9 @@ namespace BenMAP
                     cboEndpointGroup.SelectedIndex = 0;
                     cboEndpoint.SelectedIndex = 0;
                     btnViewMetadata.Enabled = false;
+                    // 2014 12 03 - lock control for default data sets
+                    bIsLocked = isLock();
+                    setEditControl();
                 }
                 catch (Exception ex)
                 {
@@ -201,7 +208,7 @@ namespace BenMAP
             string str = lstAvailableDataSets.GetItemText(lstAvailableDataSets.SelectedItem);
             try
             {
-                ValuationFunctionDataSetDefinition frm = new ValuationFunctionDataSetDefinition(str, _dataSetID, true);
+                ValuationFunctionDataSetDefinition frm = new ValuationFunctionDataSetDefinition(str, _dataSetID, bIsLocked);
                 DialogResult rth = frm.ShowDialog();
                 if (rth != DialogResult.OK) { return; }
                 commandText = string.Format("select * from VALUATIONFUNCTIONDATASETS where SetupID={0}", CommonClass.ManageSetup.SetupID);
@@ -500,6 +507,42 @@ namespace BenMAP
                 //throw new Exception(ex.Message);
             }
         }
+
+        // 2014 12 03 added for copy (clone)
+        private void setEditControl()
+        {
+            if (bIsLocked)
+            {
+                btnEdit.Text = "Copy";
+            }
+            else
+            {
+                btnEdit.Text = "Edit";
+            }
+        }
+        private bool isLock()
+        {
+            bool isLocked = false;
+            string commandText = string.Empty;
+            object obtRtv = null;
+            ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+            try
+            {
+                commandText = string.Format("SELECT LOCKED FROM ValuationFunctionDATASETS WHERE ValuationFunctionDATASETID = {0} AND SETUPID = {1}", _dataSetID, _dsSetupID);
+                obtRtv = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+                if (obtRtv.ToString().Equals("T"))
+                {
+                    isLocked = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.Message);
+            }
+
+            return isLocked;
+        }
+
 
     }
 }

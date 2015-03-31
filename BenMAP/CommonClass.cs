@@ -39,6 +39,15 @@ namespace BenMAP
 
     public class CommonClass
     {
+        // 2014 12 22 - added destructor to try and force connection to close on exit
+        ~CommonClass(){ // class destructor
+            // close connection if open
+            if ((_connection == null) || (_connection.State != ConnectionState.Open))
+            {
+                _connection.Close();
+            }
+            
+        }
         public static void DeleteShapeFileName(string FileName)
         {
             if (!File.Exists(FileName)) return;
@@ -242,6 +251,11 @@ namespace BenMAP
 
         public static FbConnection getNewConnection()
         {
+            // 2015 01 29 - removed code and return class connection to prevent spawning connections that were never closing.
+            // STOPPED HERE
+            return CommonClass.Connection;
+
+            /*
             ConnectionStringSettings settings = ConfigurationManager.ConnectionStrings["ConnectionString"];
             string str = settings.ConnectionString;
             //if (!str.Contains(":"))
@@ -251,6 +265,7 @@ namespace BenMAP
             FbConnection connection = new FirebirdSql.Data.FirebirdClient.FbConnection(str);
 
             return connection;
+             */
         }
 
 
