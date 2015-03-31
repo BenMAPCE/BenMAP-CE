@@ -44,7 +44,7 @@ namespace BenMAP
         {
             get
             {
-                return Assembly.GetExecutingAssembly().GetName().Version.ToString().Substring(0, Assembly.GetExecutingAssembly().GetName().Version.ToString().Count()-4) + " ("+ Properties.Resources.BuildDate +")";
+                return Assembly.GetExecutingAssembly().GetName().Version.ToString().Substring(0, Assembly.GetExecutingAssembly().GetName().Version.ToString().Count()-2) + " ("+ Properties.Resources.BuildDate +")";
             }
         }
 
