@@ -9,6 +9,8 @@ using System.Collections.Generic;
 using DotSpatial.Data;
 using DotSpatial.Topology;
 using DotSpatial.Analysis;
+using BenMAP;
+using System.IO;
 
 namespace benmap
 {
@@ -158,8 +160,51 @@ namespace benmap
                 xCurrent = xStart + col * input.CellWidth;
                 //Console.WriteLine(GetTimestamp(DateTime.Now) + ": starting cell");
                 var intersections = GetYIntersections(borders, xCurrent);
+                //for our application we know that if the first and last entry
+                //are same we need to pull out one of them to ensure
+                //groups are picked correctly.
+                //only matters if count >2
+                if (CommonClass.Debug)
+                {
+                    Console.WriteLine("Raw from function");
+                    for (int i = 0; i < intersections.Count; i++) // Loop with for.
+                    {
+                        Console.Write(intersections[i] + ",");
+                    }
+                    Console.WriteLine();
+                    if (intersections.Count % 2 == 1)
+                    {
+                        Console.WriteLine("Diff on last record="+(intersections[0]-intersections[intersections.Count - 1]));
+                    }
+
+                }
+                if (intersections.Count > 2 && intersections.Count%2==1)
+                {
+                    //if (intersections[0] == intersections[intersections.Count - 1])
+                    //{
+                        intersections.RemoveAt(intersections.Count - 1);
+                    //}
+                }
+                if (CommonClass.Debug)
+                {
+                    Console.WriteLine("before sort");
+                    for (int i = 0; i < intersections.Count; i++) // Loop with for.
+                    {
+                        Console.Write(intersections[i] + ",");
+                    }
+                    Console.WriteLine();
+
+                }
                 //Console.WriteLine(GetTimestamp(DateTime.Now) + ": Intesections done");
                 intersections.Sort();
+                if(CommonClass.Debug){
+                    Console.WriteLine("After sort");
+                    for (int i = 0; i < intersections.Count; i++) // Loop with for.
+                    {
+                        Console.Write(intersections[i]+",");
+                    }
+                    Console.WriteLine();
+                }
                 //Console.WriteLine(GetTimestamp(DateTime.Now) + ": Done sorting");
                 sum+=ParseIntersections(intersections, xCurrent, columnCurrent, input);
                 //Console.WriteLine(GetTimestamp(DateTime.Now) + ": Done parsing");
@@ -194,6 +239,23 @@ namespace benmap
         private static double ParseIntersections(List<double> intersections, double xCurrent, int column,
                                                IRaster input)
         {
+            //IRaster whatAmIDoing = (Raster)input.Clone();
+            IRaster whatAmIDoing=null;
+            if(CommonClass.Debug){
+                if (!File.Exists(input.Filename + "-copy.tif"))
+                {
+
+                    File.Copy(input.Filename, input.Filename + "-copy.tif");
+                }
+                whatAmIDoing = Raster.Open(input.Filename + "-copy.tif");
+                for (int x = 0; x < whatAmIDoing.NumRows; x++)
+                {
+                    for (int y = 0; y < whatAmIDoing.NumColumns; y++)
+                    {
+                        whatAmIDoing.Value[x, y] = 0;
+                    }
+                }
+            }
             double sum = 0.0;
             double yStart = 0;
             double yEnd;
@@ -215,19 +277,42 @@ namespace benmap
                     int rowEnd = rowCurrent - (int)(Math.Ceiling((yEnd - yStart) / input.CellHeight));
 
                     //traverse from bottom to top between the two intersections
+                    if (CommonClass.Debug)
+                    {
+                        Console.WriteLine("Going from current " + rowCurrent + " to row end " + rowEnd + " for column " + column);
+                    }
+
                     while (rowCurrent > rowEnd)
                     {
                         if (rowCurrent < 0 && rowEnd < 0) break;
-
+                         if (CommonClass.Debug)
+                        {
+                            whatAmIDoing.Value[rowCurrent, column] = 1;
+                         }
                         if (rowCurrent >= 0 && rowCurrent < input.NumRows)
                         {
                            sum += input.Value[rowCurrent, column];
+                        }
+                        if (CommonClass.Debug)
+                        {
+                            if (input.Value[rowCurrent, column] > 0)
+                            {
+                                Console.WriteLine("Got a value for " + rowCurrent + "," + column + ", of " + input.Value[rowCurrent, column] + " sum of " + sum);
+                            }
                         }
                         rowCurrent--;
                     }
                     nextIntersectionIsEndPoint = false;
                 }
             }
+
+            if (CommonClass.Debug)
+            {
+                whatAmIDoing.SaveAs(@"p:\temp\curSet-" + column + "-"+xCurrent+".tif");
+                whatAmIDoing.Close();
+            }
+            
+
             return sum;
         }
 
@@ -252,6 +337,7 @@ namespace benmap
                     intersections.Add(border.M * x + border.Q);
                 }
             }
+            
             return intersections;
         }
 
@@ -263,9 +349,47 @@ namespace benmap
         private static List<Border> GetBorders(IFeature feature)
         {
             List<Border> borders = new List<Border>();
+            int curGeom = 0;
 
+            //ShapeRange sr = feature.ParentFeatureSet.ShapeIndices[feature.ShapeIndex];
+            ShapeRange sr = feature.ShapeIndex;
+            Vertex lastVr = new Vertex() ;
+            bool firstVRset = false;
+            foreach (PartRange part in sr.Parts)
+            {
+                firstVRset = false;
+                foreach (Vertex vert in part)
+                {
+                    if (!firstVRset)
+                    {
+                        lastVr = vert;
+                        firstVRset = true;
+                    }
+                    else
+                    {
+                        Border border = new Border();
+                        border.X1 = lastVr.X;
+                        border.X2 = vert.X;
+
+
+                        double y1 = lastVr.Y;
+                        double y2 = vert.Y;
+                        border.M = (y2 - y1) / (border.X2 - border.X1);
+                        border.Q = y1 - (border.M * border.X1);
+
+                        // if a line is a vertical line, it should not be added to the list of borders.
+                        if (border.X1 != border.X2)
+                            borders.Add(border);
+                    }
+                    lastVr = vert;
+                }
+            }
+                
+
+                /*
             for (int i = 0; i < feature.Coordinates.Count - 1; i++)
             {
+                
                 Border border = new Border();
                 border.X1 = feature.Coordinates[i].X;
                 border.X2 = feature.Coordinates[i + 1].X;
@@ -278,7 +402,7 @@ namespace benmap
                 // if a line is a vertical line, it should not be added to the list of borders.
                 if (border.X1 != border.X2)
                     borders.Add(border);
-            }
+            }*/
             return borders;
         }
 

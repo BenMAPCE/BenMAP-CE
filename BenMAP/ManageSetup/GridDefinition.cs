@@ -754,13 +754,16 @@ namespace BenMAP
                     if (ds.Tables[0].Rows.Count == 1) this.DialogResult = System.Windows.Forms.DialogResult.OK;
                     int counter = 0;
 
-                    
+                    this.Enabled = false;
+                    progressBar1.Step = 1;
+                    progressBar1.Minimum = 1;
+                    progressBar1.Maximum = ds.Tables[0].Rows.Count*2;
                     foreach (DataRow dr in ds.Tables[0].Rows)
                     {
                         //AP-for testing
-                        if (counter == 0)
-                        {
-                            counter++;
+                        //if (counter == 0)
+                        //{
+                            //counter++;
                             int gridDefinitionID = Convert.ToInt32(dr["GridDefinitionID"]);
                             if (gridDefinitionID == addBenMAPGrid.GridDefinitionID)
                             {
@@ -778,21 +781,29 @@ namespace BenMAP
                             bigGridID = gridDefinitionID;
                             smallGridID = addBenMAPGrid.GridDefinitionID;
                             //AP-launches here
-                            AsyncgetRelationshipFromBenMAPGridPercentage dlgt = new AsyncgetRelationshipFromBenMAPGridPercentage(getRelationshipFromBenMAPGridPercentage);
-                            lstAsyns.Add(bigGridID + "," + smallGridID);
+                            //AsyncgetRelationshipFromBenMAPGridPercentage dlgt = new AsyncgetRelationshipFromBenMAPGridPercentage(getRelationshipFromBenMAPGridPercentage);
+                            //lstAsyns.Add(bigGridID + "," + smallGridID);
                             //lstAsyns.Add(smallGridID + "," + bigGridID);
-                            iAsyns++; iAsyns++;
-                            IAsyncResult ar = dlgt.BeginInvoke(bigGridID, smallGridID, rasterFileLoc, new AsyncCallback(outPut), dlgt);
-
-
-                            //IAsyncResult ar2 = dlgt.BeginInvoke(smallGridID, bigGridID, new AsyncCallback(outPut), dlgt);
-
+                            //iAsyns++; iAsyns++;
+                            //IAsyncResult ar = dlgt.BeginInvoke(bigGridID, smallGridID, rasterFileLoc, new AsyncCallback(outPut), dlgt);
+                            //IAsyncResult ar2 = dlgt.BeginInvoke(smallGridID, bigGridID, rasterFileLoc, new AsyncCallback(outPut), dlgt);
+                            Console.WriteLine("Starting grid " + bigGridID + " against " + smallGridID);
+                            getRelationshipFromBenMAPGridPercentage(bigGridID, smallGridID, rasterFileLoc);
+                            counter++;
+                            progressBar1.Value = counter;
+                            Application.DoEvents();
+                            Console.WriteLine("Starting grid " + smallGridID + " against " + bigGridID);
+                            getRelationshipFromBenMAPGridPercentage(smallGridID, bigGridID, rasterFileLoc);
+                            counter++;
+                            progressBar1.Value = counter;
+                            Application.DoEvents();
                         }
-                        progressBar1.Step = 1;
-                        progressBar1.Minimum = 1;
-                        progressBar1.Maximum = iAsyns + 1;
-                        this.Enabled = false;
-                    }
+                        //progressBar1.Step = 1;
+                        //progressBar1.Minimum = 1;
+                        //progressBar1.Maximum = iAsyns + 1;
+                        //this.Enabled = false;
+                    this.Enabled = true;
+                    //}
                 }
 
                 catch (Exception ex)
@@ -850,7 +861,7 @@ namespace BenMAP
             }
             catch (Exception ex)
             {
-
+                Console.WriteLine("Errot in asynch output function: "+ex.ToString());
             }
         }
         public delegate Dictionary<string, List<GridRelationshipAttributePercentage>> AsyncgetRelationshipFromBenMAPGridPercentage(int big, int small,String poplocation);

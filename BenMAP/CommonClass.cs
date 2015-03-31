@@ -899,7 +899,7 @@ namespace BenMAP
         {
             return value.ToString("HH:mm:ss");
         }
-
+        public static bool Debug=false;
         public static List<GridRelationshipAttributePercentage> IntersectionPercentage(IFeatureSet self, IFeatureSet other, FieldJoinType joinType, String popRasterLoc)
         {
             IRaster myRS=null;
@@ -907,6 +907,7 @@ namespace BenMAP
             gdalWarpEXELoc += @"\GDAL-EXE\gdalwarp.exe";
             String tempRasterLocDir = CommonClass.DataFilePath + @"\Tmp";
             String tempRasterFullPath = null;
+            String tempShapeFullPath = null;
             ProcessStartInfo warpStep = new System.Diagnostics.ProcessStartInfo();
 
             double minx = 0.0;
@@ -937,13 +938,25 @@ namespace BenMAP
                     //other.Reproject(myRS.Projection);
                     other.Reproject(ProjectionInfo.FromEsriString("PROJCS[\"NAD_1983_Albers\",GEOGCS[\"GCS_North_American_1983\",DATUM[\"D_North_American_1983\",SPHEROID[\"GRS_1980\",6378137.0,298.257222101]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Albers\"],PARAMETER[\"false_easting\",0.0],PARAMETER[\"false_northing\",0.0],PARAMETER[\"central_meridian\",-96.0],PARAMETER[\"standard_parallel_1\",29.5],PARAMETER[\"standard_parallel_2\",45.5],PARAMETER[\"latitude_of_origin\",37.5],UNIT[\"Meter\",1.0]]"));
                     Dictionary<int,double> otherXRef=new Dictionary<int,double>();
-                    //other.SaveAs(@"P:\temp\otherReProject.shp", true);
+                   // other.SaveAs(@"P:\temp\otherReProject.shp", true);
                     //Console.WriteLine("Other proj4: " + other.Projection.ToProj4String());
                     //Console.WriteLine("raster proj4: " + myRS.Projection.ToProj4String());
                     Console.WriteLine("Starting other cache at " + GetTimestamp(DateTime.Now));
+                    ArrayList lines = new ArrayList();
+                    lines.Add("File,"+other.Filename);
+                    lines.Add("PopVal,fid");
                     
+                    //int polyToDebug = 1790;
                     foreach (IFeature otherFeature in other.Features)
                     {
+                        //if (otherFeature.Fid == polyToDebug)
+                        //{
+                        //    CommonClass.Debug = true;
+                        //}
+                        //else
+                        //{
+                        //    continue;
+                        //}
                         //make a much smaller one
                         minx = otherFeature.Envelope.Minimum.X -100.0;
                         maxy = otherFeature.Envelope.Maximum.Y + 100.0;
@@ -953,8 +966,9 @@ namespace BenMAP
                         warpStep = new System.Diagnostics.ProcessStartInfo();
 
                         //warpStep.FileName = @"P:\Projects\BenMAP\Code\Git-BB\BenMAP\GDAL-EXE\gdalwarp.exe";
+                        
                         warpStep.FileName = gdalWarpEXELoc;
-                        tempRasterFullPath = Path.Combine(tempRasterLocDir,"clippedRaster-" + otherFeature.Fid + ".tif");
+                        tempRasterFullPath = Path.Combine(tempRasterLocDir,"clippedRaster-" + otherFeature.Fid + "-"+Guid.NewGuid().ToString()+".tif");
                         warpStep.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
                         warpStep.UseShellExecute = false;
                         warpStep.CreateNoWindow = true;
@@ -977,12 +991,50 @@ namespace BenMAP
                         }
                         myRS = Raster.Open(tempRasterFullPath);
                         double popValForOtherShape = ClipRasterRTI.ClipRasterWithPolygon(otherFeature, myRS, null, null);
-                        Console.WriteLine("Cacheing "+popValForOtherShape+" for "+otherFeature.Fid+ " out of "+other.Features.Count+ " at " +GetTimestamp(DateTime.Now));
+                        //Console.WriteLine("Cacheing "+popValForOtherShape+" for "+otherFeature.Fid+ " out of "+other.Features.Count+ " at " +GetTimestamp(DateTime.Now));
+                        lines.Add(popValForOtherShape + "," + otherFeature.Fid);
                         otherXRef.Add(otherFeature.Fid,popValForOtherShape);
                         myRS.Close();
-                        File.Delete(tempRasterFullPath);
+                        Boolean deleted = false;
+                        int counter = 5;
+                        while (!deleted && counter > 0)
+                        {
+                            try
+                            {
+                                if(File.Exists(tempRasterFullPath)){
+                                    File.Delete(tempRasterFullPath);
+                                }
+                                
+                                if (File.Exists(tempRasterFullPath + ".aux.xml"))
+                                {
+                                    File.Delete(tempRasterFullPath + ".aux.xml");
+                                }
+                                deleted = true;
+                            }
+                            catch (Exception e)
+                            {
+                                Console.WriteLine("Could not delete temp raster, waiting 1 second and trying again, " + counter + " attemps left.");
+                                System.Threading.Thread.Sleep(1000);
+                                counter--;
+                            }
+                        }
+
+                        if (counter == 0)
+                        {
+                            Console.WriteLine("Could not delete temp raster " + tempRasterFullPath);
+                        }
+                        //if (otherFeature.Fid % 100 == 0)
+                       // {
+                       //     Console.WriteLine(otherFeature.Fid + " done of " +other.Features.Count);
+                       // }
+                        //CommonClass.Debug = false;
                     }
-                    
+
+                    //System.IO.File.WriteAllLines(@"p:\temp\otherPopCounts.csv", (String[])lines.ToArray(typeof(string)));
+
+                    lines.Clear();
+                    lines.Add("Population,SelfFID,OtherFid");
+                    //CommonClass.Debug = true;
                     foreach (IFeature selfFeature in self.Features)
                     {
 
@@ -991,11 +1043,11 @@ namespace BenMAP
                         //Console.WriteLine("CurFeature: " + selfFeature.Fid);
                         ifs.Features.Clear();
                         ifs.AddFeature(selfFeature);
-                        Console.WriteLine("My new fid: " + selfFeature.Fid);
-                        //ifs.SaveAs(@"P:\temp\singleShape"+selfFeature.Fid+".shp", true);
+                        //Console.WriteLine("My new fid: " + selfFeature.Fid);
+                        //ifs.SaveAs(@"P:\temp\singleShape-"+selfFeature.Fid+".shp", true);
                         
                         //ifs.Reproject(myRS.Projection);
-                        //ifs.SaveAs(@"P:\temp\singleShapeReproj.shp",true);
+                        //ifs.SaveAs(@"P:\temp\singleShapeReproj-" + selfFeature.Fid + ".shp", true);
 
                        
                         List<int> potentialOthers = other.SelectIndices(selfFeature.Envelope.ToExtent());
@@ -1027,16 +1079,21 @@ namespace BenMAP
                                 try
                                 {
                                     intersectFeature = selfFeature.Intersection(other.Features[iotherFeature]);
-                                    //IFeatureSet ifsTemp = new FeatureSet();
-                                    //ifsTemp.Projection = other.Projection;
-                                    //ifsTemp.AddFeature(selfFeature);
-                                    //ifsTemp.AddFeature(other.Features[iotherFeature]);
-                                    //if (intersectFeature != null)
-                                    //{
-                                    //    ifsTemp.AddFeature(intersectFeature);
-                                    //}
+                                   
+                                    
+                                    if (CommonClass.Debug)
+                                    {
+                                        IFeatureSet ifsTemp = new FeatureSet();
+                                        ifsTemp.Projection = other.Projection;
+                                        //ifsTemp.AddFeature(selfFeature);
+                                        //ifsTemp.AddFeature(other.Features[iotherFeature]);
+                                        if (intersectFeature != null)
+                                        {
+                                            ifsTemp.AddFeature(intersectFeature);
+                                        }
 
-                                    //ifsTemp.SaveAs(@"p:\temp\interSectFeat-" + selfFeature.Fid + "-" + iotherFeature + ".shp", true);
+                                        ifsTemp.SaveAs(@"p:\temp\interSectFeat-" + selfFeature.Fid + "-" + iotherFeature + ".shp", true);
+                                    }
                                     //fist population of selfFeature\ warpStep.FileName = gdalWarpEXELoc;
                                     warpStep = new System.Diagnostics.ProcessStartInfo();
                                     //make a much smaller one
@@ -1045,11 +1102,32 @@ namespace BenMAP
                                         //this case is when shape is in bounding box, but not actually overlapping.
                                         continue;
                                     }
+                                    //this object is needed to set up structure for calculating edges
+                                    IFeatureSet ifsHold = new FeatureSet();
+                                    ifsHold.Projection = other.Projection;
+                                    ifsHold.AddFeature(intersectFeature);
+                                    tempShapeFullPath = Path.Combine(tempRasterLocDir, "clippedShape-" + selfFeature.Fid + "-" + iotherFeature + "-" + Guid.NewGuid().ToString() + ".shp");
+                                    try
+                                    {
+                                        ifsHold.SaveAs(tempShapeFullPath, true);
+                                        ifsHold.Close();
+                                        ifsHold = null;
+                                        intersectFeature = null;
+                                        ifsHold = FeatureSet.Open(tempShapeFullPath);
+                                        intersectFeature = ifsHold.Features[0];
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        //can't save poly?
+                                        Console.WriteLine("Can't save poly? "+e.ToString());
+                                        continue;
+                                    }
+
                                     minx = intersectFeature.Envelope.Minimum.X - 100.0;
                                     maxy = intersectFeature.Envelope.Maximum.Y + 100.0;
                                     maxx = intersectFeature.Envelope.Maximum.X + 100.0;
                                     miny = intersectFeature.Envelope.Minimum.Y - 100.0;
-                                    tempRasterFullPath = Path.Combine(tempRasterLocDir, "clippedRaster-Intersection-"+selfFeature.Fid+"-"+iotherFeature+".tif");
+                                    tempRasterFullPath = Path.Combine(tempRasterLocDir, "clippedRaster-Intersection-"+selfFeature.Fid+"-"+iotherFeature+ "-"+Guid.NewGuid().ToString()+".tif");
                                     warpStep.FileName = gdalWarpEXELoc;
                                     warpStep.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
                                     warpStep.UseShellExecute = false;
@@ -1075,13 +1153,56 @@ namespace BenMAP
 
 
                                     popVal = ClipRasterRTI.ClipRasterWithPolygon(intersectFeature, myRS, null, null);
-                                    Console.WriteLine("Got population: " + popVal);
+                                    //Console.WriteLine("Got population: " + popVal);
                                     if (popVal > 0)
                                     {
-                                        Console.WriteLine("NonZero val on -" + selfFeature.Fid + "-" + iotherFeature);
+                                        //Console.WriteLine("NonZero val on -" + selfFeature.Fid + "-" + iotherFeature);
+                                        lines.Add(popVal+","+ selfFeature.Fid+","+ iotherFeature);
                                     }
                                     myRS.Close();
-                                    File.Delete(tempRasterFullPath);
+                                    ifsHold.Close();
+                                    Boolean deleted = false;
+                                    int counter = 5;
+                                    while (!deleted && counter>0)
+                                    {
+                                        try
+                                        {
+
+                                            string foldPath = Path.GetDirectoryName(tempShapeFullPath);
+                                            string contains = Path.GetFileNameWithoutExtension(tempShapeFullPath)+".*";
+                                            string[] files = Directory.GetFiles(foldPath,contains);
+                                            foreach(string file in files)
+                                            {
+                                            //    System.Diagnostics.Debug.WriteLine(file + "will be deleted");
+                                                if (file.ToUpper().Contains("TMP"))
+                                                {
+                                                    System.IO.File.Delete(file);
+                                                }
+                                            }
+                                            
+                                            if(File.Exists(tempRasterFullPath)){
+                                                File.Delete(tempRasterFullPath);
+                                            }
+                                
+                                            if (File.Exists(tempRasterFullPath + ".aux.xml"))
+                                            {
+                                                File.Delete(tempRasterFullPath + ".aux.xml");
+                                            }
+                                            deleted = true;
+                                        }
+                                        catch (Exception e)
+                                        {
+                                            Console.WriteLine("Could not delete temp raster, waiting 1 second and trying again, " + counter + " attemps left.");
+                                            System.Threading.Thread.Sleep(1000);
+                                            counter--;
+                                        }
+                                    }
+
+                                    if (counter == 0)
+                                    {
+                                        Console.WriteLine("Could not delete temp raster " + tempRasterFullPath);
+                                    }
+                                    
                                     //myRS.Close();
                                 }
                                 catch (Exception ex)
@@ -1231,7 +1352,12 @@ namespace BenMAP
                         }
 
                         i++;
+                        if (selfFeature.Fid % 100 == 0)
+                        {
+                            Console.WriteLine(selfFeature.Fid + " done of " + self.Features.Count);
+                        }
                     }
+                    //System.IO.File.WriteAllLines(@"p:\temp\otherSelfIntersectPopCounts.csv", (String[])lines.ToArray(typeof(string)));
                     foreach (KeyValuePair<string, Dictionary<string, double>> k in dicRelation)
                     {
                         if (k.Value.Count > 0)
@@ -1293,6 +1419,8 @@ namespace BenMAP
             }
             return result;
         }
+
+        
 
         public static bool polygonContainPolygon(IFeature big, IFeature small)
         {
