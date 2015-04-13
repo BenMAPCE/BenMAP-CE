@@ -11,6 +11,7 @@ using DotSpatial.Topology;
 using DotSpatial.Analysis;
 using BenMAP;
 using System.IO;
+using System.Diagnostics;
 
 namespace benmap
 {
@@ -86,12 +87,12 @@ namespace benmap
         public static double ClipRasterWithPolygon(string inputFileName, IFeature polygon, string outputFileName,
                                                     ICancelProgressHandler cancelProgressHandler = null)
         {
-            return ClipRasterWithPolygon(polygon, Raster.Open(inputFileName), outputFileName, cancelProgressHandler);
+            return ClipRasterWithPolygon(polygon, Raster.Open(inputFileName), outputFileName, false, cancelProgressHandler);
         }
 
         public static String GetTimestamp(DateTime value)
         {
-            return value.ToString("yyyyMMddHHmmssffff");
+            return value.ToString("HH:mm:ss.ffff");
         }
 
 
@@ -105,10 +106,11 @@ namespace benmap
         /// <remarks>We assume there is only one part in the polygon. 
         /// Traverses the raster with a vertical scan line from left to right, bottom to top</remarks>
         /// <returns></returns>
-        public static double ClipRasterWithPolygon(IFeature polygon, IRaster input, string outputFileName,
+        public static double ClipRasterWithPolygon(IFeature polygon, IRaster input, string outputFileName,Boolean doSingleColumnClips,
                                                     ICancelProgressHandler cancelProgressHandler = null)
         {
             double sum = 0.0;
+            String tempRasterDir= CommonClass.DataFilePath + @"\Tmp";
             //if the polygon is completely outside the raster
             if (input == null || polygon == null)
             {
@@ -154,11 +156,65 @@ namespace benmap
             pm.StartValue = columnStart;
 
             int col = 0;
+            int colToUse = 0;
+            IRaster rasterToUse = null;
+            String tempRasterFullPath = null;
+            long start = 0;
+            Stopwatch st = new Stopwatch();
+            //CommonClass.Debug = true;
             //Console.WriteLine("Starting at " + columnStart + ", ending at " + input.NumColumns);
             for (int columnCurrent = columnStart; columnCurrent < input.NumColumns; columnCurrent++)
             {
+                st.Start();
                 xCurrent = xStart + col * input.CellWidth;
-                //Console.WriteLine(GetTimestamp(DateTime.Now) + ": starting cell");
+                start = DateTime.Now.Ticks;
+                Console.WriteLine(GetTimestamp(DateTime.Now) + ": starting col "+columnCurrent);
+                //check sizze
+                FileInfo f = new FileInfo(input.Filename);
+                //Console.WriteLine("Got file of size : " + f.Length);
+                colToUse = columnCurrent;
+                rasterToUse = input;
+                
+                tempRasterFullPath = null;
+                if (doSingleColumnClips)
+                {
+                    //chop it a little more
+                    double minx = xCurrent-.5*input.CellWidth;
+                    double maxy = input.Bounds.Top();
+                    double maxx = xCurrent + .5 * input.CellWidth;
+                    double miny= input.Bounds.Bottom();
+
+                    Console.WriteLine("minx: " + minx + ", miny: " + miny + ", maxx: " + maxx + ", maxy: " + maxy);
+
+                    ProcessStartInfo warpStep = new System.Diagnostics.ProcessStartInfo();
+                    string gdalWarpEXELoc = (new FileInfo(System.Reflection.Assembly.GetEntryAssembly().Location)).Directory.ToString();
+                    gdalWarpEXELoc += @"\GDAL-EXE\gdalwarp.exe";
+                    warpStep.FileName = gdalWarpEXELoc;
+                    tempRasterFullPath = Path.Combine(tempRasterDir, "clippedRaster-SingleRow-" + Guid.NewGuid().ToString() + ".tif");
+                    warpStep.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
+                    warpStep.UseShellExecute = false;
+                    warpStep.CreateNoWindow = true;
+                    //warpStep.Arguments = "-ot Float32 ";
+                    warpStep.Arguments += " -te " + minx + " " + miny + " " + maxx + " " + maxy + " ";
+                    //warpStep.Arguments += "-t_srs \"+proj=merc +lon_0=0 +k=1 +x_0=0 +y_0=0 +a=6378137 +b=6378137 +units=m +no_defs \" ";
+                    warpStep.Arguments += "\"" + input.Filename + "\" \"" + tempRasterFullPath + "\"";
+                    try
+                    {
+                        // Start the process with the info we specified.
+                        // Call WaitForExit and then the using statement will close.
+                        using (Process exeProcess = Process.Start(warpStep))
+                        {
+                            exeProcess.WaitForExit();
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine("Couldn't output: " + e.ToString());
+                    }
+                    colToUse = 0;
+                    rasterToUse = Raster.Open(tempRasterFullPath);
+                }
+
                 var intersections = GetYIntersections(borders, xCurrent);
                 //for our application we know that if the first and last entry
                 //are same we need to pull out one of them to ensure
@@ -206,21 +262,53 @@ namespace benmap
                     Console.WriteLine();
                 }
                 //Console.WriteLine(GetTimestamp(DateTime.Now) + ": Done sorting");
-                sum+=ParseIntersections(intersections, xCurrent, columnCurrent, input);
+                sum += ParseIntersections(intersections, xCurrent, colToUse, rasterToUse);
+                if (doSingleColumnClips)
+                {
+                    rasterToUse.Close();
+                    Boolean deleted = false;
+                    int counter = 5;
+                    while (!deleted && counter > 0)
+                    {
+                        try
+                        {
+                            if (File.Exists(tempRasterFullPath) && tempRasterFullPath.ToUpper().Contains("TMP"))
+                            {
+                                File.Delete(tempRasterFullPath);
+                            }
+
+                            if (File.Exists(tempRasterFullPath + ".aux.xml") && tempRasterFullPath.ToUpper().Contains("TMP"))
+                            {
+                                File.Delete(tempRasterFullPath + ".aux.xml");
+                            }
+                            deleted = true;
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine("Could not delete temp raster, waiting 1 second and trying again, " + counter + " attemps left.");
+                            System.Threading.Thread.Sleep(1000);
+                            counter--;
+                        }
+                    }
+                }
+                
                 //Console.WriteLine(GetTimestamp(DateTime.Now) + ": Done parsing");
                 
                 // update progess meter
                 pm.CurrentValue = xCurrent;
-                if (xCurrent % 20 == 0)
-                {
-                    Console.WriteLine("XCurrent " + xCurrent);
-                }
+                //if (xCurrent % 20 == 0)
+               // {
+               //     Console.WriteLine("XCurrent " + xCurrent);
+                //}
                 //update counter
                 col++;
 
                 // cancel if requested
                 if (cancelProgressHandler != null && cancelProgressHandler.Cancel)
                     return 0.0;
+                st.Stop();
+                Console.WriteLine("Seconds: " + st.Elapsed);            
+                st.Reset();
             }
 
             //output.Save();
@@ -275,6 +363,8 @@ namespace benmap
 
                     int rowCurrent = input.NumRows - RowIndexToProcess(yStart, input.Extent.MinY, input.CellHeight);
                     int rowEnd = rowCurrent - (int)(Math.Ceiling((yEnd - yStart) / input.CellHeight));
+
+                    //chop out just the rows we need
 
                     //traverse from bottom to top between the two intersections
                     if (CommonClass.Debug)

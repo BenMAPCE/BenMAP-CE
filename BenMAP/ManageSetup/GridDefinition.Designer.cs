@@ -201,6 +201,8 @@ namespace BenMAP
             // chkBoxCreatePercentage
             // 
             this.chkBoxCreatePercentage.AutoSize = true;
+            this.chkBoxCreatePercentage.Checked = true;
+            this.chkBoxCreatePercentage.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkBoxCreatePercentage.Location = new System.Drawing.Point(9, 407);
             this.chkBoxCreatePercentage.Name = "chkBoxCreatePercentage";
             this.chkBoxCreatePercentage.Size = new System.Drawing.Size(296, 32);
