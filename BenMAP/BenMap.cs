@@ -92,9 +92,11 @@ namespace BenMAP
 
                 mainMap.LayerAdded += new EventHandler<LayerEventArgs>(mainMap_LayerAdded);
                 mainMap.Layers.LayerVisibleChanged += new EventHandler(mainMap_LayerVisibleChanged);
-
-                //appManager1.LoadExtensions();
-                Console.WriteLine("MCB-test");
+                //this.appManager1 = new DotSpatial.Controls.AppManager();
+                //appManager1.Directories.Clear();
+                //appManager1.Directories.Add(@"Plugins\GDAL");
+                appManager1.LoadExtensions();
+                //Console.WriteLine("MCB-test");
                 //foreach (DotSpatial.Extensions.IExtension iext in appManager1.Extensions)
                 //{
                 //    Console.WriteLine(iext.Name);
@@ -5596,7 +5598,8 @@ namespace BenMAP
 
 
 
-        TipFormGIF waitMess = new TipFormGIF(); bool sFlog = true;
+        TipFormGIF waitMess = new TipFormGIF(); 
+        bool sFlog = true;
 
         private void ShowWaitMess()
         {
@@ -14044,6 +14047,11 @@ namespace BenMAP
         }
 
         private void toolStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+
+        }
+
+        private void OLVResultsShow_SelectedIndexChanged(object sender, EventArgs e)
         {
 
         }

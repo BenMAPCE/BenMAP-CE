@@ -2778,7 +2778,8 @@ namespace BenMAP.APVX
             try
             {
                 asvvnew.AllSelectValuationMethod = asvv.AllSelectValuationMethod;
-                asvvnew.lstAPVValueAttributes = new List<APVValueAttribute>(); string str = string.Format("select sourcecolumn, sourcerow, targetcolumn, targetrow,Percentage from GridDefinitionPercentages a,GridDefinitionPercentageEntries b where a.PercentageID=b.PercentageID and a.SourceGridDefinitionID={0} and a.TargetGridDefinitionID={1} and normalizationstate in (0,1)", gridRelationship.smallGridID, gridRelationship.bigGridID);
+                asvvnew.lstAPVValueAttributes = new List<APVValueAttribute>(); 
+                string str = string.Format("select sourcecolumn, sourcerow, targetcolumn, targetrow,Percentage from GridDefinitionPercentages a,GridDefinitionPercentageEntries b where a.PercentageID=b.PercentageID and a.SourceGridDefinitionID={0} and a.TargetGridDefinitionID={1} and normalizationstate in (0,1)", gridRelationship.smallGridID, gridRelationship.bigGridID);
                 if (gridRelationship.smallGridID == benMAPGrid.GridDefinitionID)
                 {
                     str = string.Format("select sourcecolumn, sourcerow, targetcolumn, targetrow,Percentage from GridDefinitionPercentages a,GridDefinitionPercentageEntries b where a.PercentageID=b.PercentageID and a.SourceGridDefinitionID={0} and a.TargetGridDefinitionID={1} and normalizationstate in (0,1)", benMAPGrid.GridDefinitionID, gridRelationship.bigGridID);
@@ -4242,7 +4243,7 @@ benMAPValuationFunction.P2A);
                     DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, str);
                     if (ds.Tables[0].Rows.Count == 0)
                     {
-                        Configuration.ConfigurationCommonClass.creatPercentageToDatabase(gridRelationShipPopulation.bigGridID, gridRelationShipPopulation.smallGridID == 28 ? 27 : gridRelationShipPopulation.smallGridID);
+                        Configuration.ConfigurationCommonClass.creatPercentageToDatabase(gridRelationShipPopulation.bigGridID, gridRelationShipPopulation.smallGridID == 28 ? 27 : gridRelationShipPopulation.smallGridID,null);
                         ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, str);
                     }
                     foreach (DataRow dr in ds.Tables[0].Rows)
@@ -4293,7 +4294,7 @@ benMAPValuationFunction.P2A);
                 }
                 if (gridRelationship == null)
                 {
-                    Configuration.ConfigurationCommonClass.creatPercentageToDatabase(GridTo, GridFrom);
+                    Configuration.ConfigurationCommonClass.creatPercentageToDatabase(GridTo, GridFrom,null);
                     if (CommonClass.LstGridRelationshipAll.Where(p => p.bigGridID == GridTo && p.smallGridID == GridFrom).Count() > 0)
                     {
                         gridRelationship = CommonClass.LstGridRelationshipAll.Where(p => p.bigGridID == GridTo && p.smallGridID == GridFrom).First();
@@ -4316,7 +4317,7 @@ benMAPValuationFunction.P2A);
                 if (iCount == 0)
                 {
 
-                    Configuration.ConfigurationCommonClass.creatPercentageToDatabase(GridTo, GridFrom);
+                    Configuration.ConfigurationCommonClass.creatPercentageToDatabase(GridTo, GridFrom,null);
                     iCount = 1;
 
                 }

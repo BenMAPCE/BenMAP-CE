@@ -999,7 +999,7 @@ namespace BenMAP.Grid
             }
         }
 
-        public static void getGridRelationshipFromGridPercentage(BenMAPGrid benMAPGrid)
+        public static void getGridRelationshipFromGridPercentage(BenMAPGrid benMAPGrid, String popGridRasterLoc)
         {
             try
             {
@@ -1057,7 +1057,7 @@ namespace BenMAP.Grid
                     }
 
 
-                    CommonClass.getRelationshipFromBenMAPGridPercentage(bigGridID, smallGridID);
+                    CommonClass.getRelationshipFromBenMAPGridPercentage(bigGridID, smallGridID, popGridRasterLoc);
 
 
 

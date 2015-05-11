@@ -546,7 +546,7 @@ namespace BenMAP
                                 if (dsPercentage.Tables[0].Rows.Count == 0)
                                 {
                                     WaitChangeMsg("Creating percentage...");
-                                    Configuration.ConfigurationCommonClass.creatPercentageToDatabase(18, benMAPPopulation.GridType.GridDefinitionID);
+                                    Configuration.ConfigurationCommonClass.creatPercentageToDatabase(18, benMAPPopulation.GridType.GridDefinitionID,null);
                                     dsPercentage = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, str);
                                 }
                                 WaitChangeMsg("Loading weight...");

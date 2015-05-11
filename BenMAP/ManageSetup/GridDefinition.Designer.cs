@@ -21,6 +21,9 @@ namespace BenMAP
             this.grpPictureView = new System.Windows.Forms.GroupBox();
             this.mainMap = new DotSpatial.Controls.Map();
             this.grpGridDefinition = new System.Windows.Forms.GroupBox();
+            this.btn_browsePopRaster = new System.Windows.Forms.Button();
+            this.txtb_popGridLoc = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
             this.btnViewMetadata = new System.Windows.Forms.Button();
             this.picCRHelp = new System.Windows.Forms.PictureBox();
             this.label3 = new System.Windows.Forms.Label();
@@ -112,6 +115,9 @@ namespace BenMAP
             this.grpGridDefinition.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)));
             this.grpGridDefinition.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.grpGridDefinition.Controls.Add(this.btn_browsePopRaster);
+            this.grpGridDefinition.Controls.Add(this.txtb_popGridLoc);
+            this.grpGridDefinition.Controls.Add(this.label4);
             this.grpGridDefinition.Controls.Add(this.btnViewMetadata);
             this.grpGridDefinition.Controls.Add(this.picCRHelp);
             this.grpGridDefinition.Controls.Add(this.label3);
@@ -129,10 +135,37 @@ namespace BenMAP
             this.grpGridDefinition.TabStop = false;
             this.grpGridDefinition.Text = "Grid Definition";
             // 
+            // btn_browsePopRaster
+            // 
+            this.btn_browsePopRaster.Location = new System.Drawing.Point(266, 114);
+            this.btn_browsePopRaster.Name = "btn_browsePopRaster";
+            this.btn_browsePopRaster.Size = new System.Drawing.Size(73, 27);
+            this.btn_browsePopRaster.TabIndex = 11;
+            this.btn_browsePopRaster.Text = "Browse . .";
+            this.btn_browsePopRaster.UseVisualStyleBackColor = true;
+            this.btn_browsePopRaster.Click += new System.EventHandler(this.btn_browsePopRaster_Click);
+            // 
+            // txtb_popGridLoc
+            // 
+            this.txtb_popGridLoc.Location = new System.Drawing.Point(24, 114);
+            this.txtb_popGridLoc.Name = "txtb_popGridLoc";
+            this.txtb_popGridLoc.Size = new System.Drawing.Size(236, 22);
+            this.txtb_popGridLoc.TabIndex = 10;
+            this.txtb_popGridLoc.Text = "Data\\populationRaster\\PopUS_90mX10_int16uWz4.tif";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(6, 91);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(283, 14);
+            this.label4.TabIndex = 9;
+            this.label4.Text = "Population Raster (tif: NAD_1983_Albers projection)";
+            // 
             // btnViewMetadata
             // 
             this.btnViewMetadata.Enabled = false;
-            this.btnViewMetadata.Location = new System.Drawing.Point(12, 327);
+            this.btnViewMetadata.Location = new System.Drawing.Point(13, 370);
             this.btnViewMetadata.Name = "btnViewMetadata";
             this.btnViewMetadata.Size = new System.Drawing.Size(130, 27);
             this.btnViewMetadata.TabIndex = 8;
@@ -145,7 +178,7 @@ namespace BenMAP
             this.picCRHelp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.picCRHelp.BackgroundImage = global::BenMAP.Properties.Resources.help_16x16;
             this.picCRHelp.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.picCRHelp.Location = new System.Drawing.Point(314, 389);
+            this.picCRHelp.Location = new System.Drawing.Point(311, 414);
             this.picCRHelp.Name = "picCRHelp";
             this.picCRHelp.Size = new System.Drawing.Size(20, 19);
             this.picCRHelp.TabIndex = 7;
@@ -158,7 +191,7 @@ namespace BenMAP
             // 
             this.label3.AutoSize = true;
             this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(21)))), ((int)(((byte)(21)))));
-            this.label3.Location = new System.Drawing.Point(26, 417);
+            this.label3.Location = new System.Drawing.Point(23, 442);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(287, 28);
             this.label3.TabIndex = 6;
@@ -168,7 +201,7 @@ namespace BenMAP
             // chkBoxCreatePercentage
             // 
             this.chkBoxCreatePercentage.AutoSize = true;
-            this.chkBoxCreatePercentage.Location = new System.Drawing.Point(12, 382);
+            this.chkBoxCreatePercentage.Location = new System.Drawing.Point(9, 407);
             this.chkBoxCreatePercentage.Name = "chkBoxCreatePercentage";
             this.chkBoxCreatePercentage.Size = new System.Drawing.Size(296, 32);
             this.chkBoxCreatePercentage.TabIndex = 5;
@@ -180,7 +213,7 @@ namespace BenMAP
             // 
             this.cboGridType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboGridType.FormattingEnabled = true;
-            this.cboGridType.Location = new System.Drawing.Point(78, 72);
+            this.cboGridType.Location = new System.Drawing.Point(78, 55);
             this.cboGridType.Name = "cboGridType";
             this.cboGridType.Size = new System.Drawing.Size(247, 22);
             this.cboGridType.TabIndex = 4;
@@ -189,7 +222,7 @@ namespace BenMAP
             // lblGridType
             // 
             this.lblGridType.AutoSize = true;
-            this.lblGridType.Location = new System.Drawing.Point(6, 72);
+            this.lblGridType.Location = new System.Drawing.Point(6, 55);
             this.lblGridType.Name = "lblGridType";
             this.lblGridType.Size = new System.Drawing.Size(60, 14);
             this.lblGridType.TabIndex = 3;
@@ -197,7 +230,7 @@ namespace BenMAP
             // 
             // btnPreview
             // 
-            this.btnPreview.Location = new System.Drawing.Point(252, 331);
+            this.btnPreview.Location = new System.Drawing.Point(253, 374);
             this.btnPreview.Name = "btnPreview";
             this.btnPreview.Size = new System.Drawing.Size(73, 27);
             this.btnPreview.TabIndex = 1;
@@ -209,7 +242,7 @@ namespace BenMAP
             // 
             this.tabGrid.Controls.Add(this.tpShapefileGrid);
             this.tabGrid.Controls.Add(this.tpgRegularGrid);
-            this.tabGrid.Location = new System.Drawing.Point(8, 99);
+            this.tabGrid.Location = new System.Drawing.Point(9, 142);
             this.tabGrid.Name = "tabGrid";
             this.tabGrid.SelectedIndex = 0;
             this.tabGrid.Size = new System.Drawing.Size(321, 226);
@@ -612,5 +645,8 @@ namespace BenMAP
         private System.Windows.Forms.PictureBox picCRHelp;
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.Button btnViewMetadata;
+        private System.Windows.Forms.Button btn_browsePopRaster;
+        private System.Windows.Forms.TextBox txtb_popGridLoc;
+        private System.Windows.Forms.Label label4;
     }
 }

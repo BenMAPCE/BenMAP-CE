@@ -19,87 +19,71 @@ namespace BenMAP
         {
             InitializeComponent();
         }
-        private MetadataClassObj _metadataObj = null;
-        private int _datasetID;
-        string commandText = string.Empty;
+        
+        private bool bIsLocked = false;
+
         string _dataName = string.Empty;
+        private int _datasetID;
+        private MetadataClassObj _metadataObj = null;
+        string commandText = string.Empty;
         private int _dsMetadataID;
         private int _dsSetupID;
+
         private int _dsDataSetId;
         private int _dsDatasetTypeId;
+
         ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
         DataSet ds;
         DataTable _dt = new DataTable();
         private bool isload = false;
         private List<CRSelectFunction> lstCRSelectFunction = new List<CRSelectFunction>();
         private List<BenMAPHealthImpactFunction> lstBenMAPHealthImpactFunction = new List<BenMAPHealthImpactFunction>();
-        private void btnAdd_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                //this is calling the constructor to create a NEW dataset - get the ID in the constructor
-                HealthImpactDataSetDefinition frm = new HealthImpactDataSetDefinition();
-                DialogResult rth = frm.ShowDialog();
-                if (rth != DialogResult.OK) { return; }
-                commandText = string.Format("select * from CRFunctionDataSets where SetupID={0}", CommonClass.ManageSetup.SetupID);
-                ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
-                lstAvailableDataSets.DataSource = ds.Tables[0];
-                lstAvailableDataSets.DisplayMember = "CRFunctionDataSetName";
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex);
-            }
-        }
 
-        private void btnEdit_Click(object sender, EventArgs e)
-        {
-            string str = lstAvailableDataSets.GetItemText(lstAvailableDataSets.SelectedItem);
-            try
-            {
-                DataRowView drv = lstAvailableDataSets.SelectedItem as DataRowView;
-                HealthImpactDataSetDefinition frm = new HealthImpactDataSetDefinition(Convert.ToInt16(drv["CrfunctiondatasetID"]), true);//doing an edit
-                DialogResult rth = frm.ShowDialog();
-                if (rth != DialogResult.OK) 
-                { 
-                    return;
-                }
-                commandText = string.Format("select * from CRFunctionDataSets where SetupID={0}", CommonClass.ManageSetup.SetupID);
-                ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
-                lstAvailableDataSets.DataSource = ds.Tables[0];
-                lstAvailableDataSets.DisplayMember = "CRFunctionDataSetName";
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex);
-            }
-        }
+
 
         private void ManageHealthImpactFunctionDataSets_Load(object sender, EventArgs e)
         {
             try
             {
-                commandText = string.Format("select CRfunctionDataSetID,CRfunctionDataSetName from CRfunctionDataSets where setupid={0}", CommonClass.ManageSetup.SetupID);
-                ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
-                lstAvailableDataSets.DataSource = ds.Tables[0];
-                lstAvailableDataSets.DisplayMember = "CRfunctionDataSetName";
-                isload = true;
-                lstAvailableDataSets_SelectedValueChanged(sender, e);
-
-
+                BindControls();
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex);
+                Logger.LogError(ex.Message);
             }
         }
+
+        private void BindControls()
+        {
+            try
+            {
+                ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                string commandText = string.Format("select CRFunctionDataSetName, CRFunctionDataSetID from CRFunctionDataSets where setupid={0} order  by CRFunctionDataSetName asc", CommonClass.ManageSetup.SetupID);
+                DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+                lstAvailableDataSets.DataSource = ds.Tables[0];
+                lstAvailableDataSets.DisplayMember = "CRFunctionDataSetName";
+                if (ds.Tables[0].Rows.Count == 0)
+                {
+                    olvData.ClearObjects();
+                }
+                else
+                {
+                    lstAvailableDataSets.SelectedIndex = 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.Message);
+            }
+        }
+
 
         private void lstAvailableDataSets_SelectedValueChanged(object sender, EventArgs e)
         {
             //_metadataObj = SQLStatementsCommonClass.getMetadata(_datasetID, CommonClass.ManageSetup.SetupID);
-            if (isload)
-            {
-                try
+            //if (isload)
+            //{
+              try
                 {
                     cboEndpointGroup.Items.Clear();
                     cboEndpointGroup.Text = string.Empty;
@@ -152,12 +136,15 @@ namespace BenMAP
                     cboPollutant.SelectedIndex = 0;
                     txtFilter.Text = "";
                     toolStripStatusLabel1.Text = "";
+                    // 2014 11 26 - lock control for default data sets
+                    bIsLocked = isLock();
+                    setEditControl();
                 }
                 catch (Exception ex)
                 {
                     Logger.LogError(ex);
                 }
-            }
+            //}
         }
 
         private void btnDelete_Click(object sender, EventArgs e)
@@ -217,8 +204,8 @@ namespace BenMAP
         DataTable _dtPollutant = new DataTable();
         private void cboEndpointGroup_SelectedValueChanged(object sender, EventArgs e)
         {
-            if (isload)
-            {
+            //if (isload)
+            //{
                 try
                 {
                     ObjectListView olv = olvData;
@@ -301,12 +288,15 @@ namespace BenMAP
                     {
                         cboPollutant.Text = pollutant;
                     }
+                    // 2014 11 20 - lock control for default data sets
+                    bIsLocked = isLock();
+                    setEditControl();
                 }
                 catch (Exception ex)
                 {
                     Logger.LogError(ex);
                 }
-            }
+            //}
         }
 
         private void cboPollutant_SelectedValueChanged(object sender, EventArgs e)
@@ -450,20 +440,85 @@ namespace BenMAP
                     {
                         btnViewMetadata.Enabled = true;
 
-                        DataRowView drv = dlv.SelectedItem.RowObject as DataRowView;//dlv.SelectedItem.RowObject
-
-                        _dsMetadataID = Convert.ToInt32(drv["metadataid"]);
-                        _dsSetupID = CommonClass.ManageSetup.SetupID;//Convert.ToInt32(drv["setupid"]);
-                        _dsDataSetId = Convert.ToInt32(_datasetID);//Convert.ToInt32(drv["datasetid"]);//Monitor Dataset Id
-                        _dsDatasetTypeId = SQLStatementsCommonClass.getDatasetID("Healthfunctions");//Convert.ToInt32(drv["datasettypeid"]);
                     }
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                //TODO:  FIX THIS.
-                //do nothing for now until I can get the metadta to run correctly
-                //throw new Exception(ex.Message);
+                Logger.LogError(ex);
+            }
+        }
+        // 2014 11 25 added for copy (clone)
+        private void setEditControl()
+        {
+            if (bIsLocked)
+            {
+                btnEdit.Text = "Copy";
+            }
+            else
+            {
+                btnEdit.Text = "Edit";
+            }
+        }
+        private bool isLock()
+        {
+            bool isLocked = false;
+            string commandText = string.Empty;
+            object obtRtv = null;
+            ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+            try
+            {
+                _dsSetupID = CommonClass.ManageSetup.SetupID;//Convert.ToInt32(drv["setupid"]);
+                       
+                commandText = string.Format("SELECT LOCKED FROM CRFUNCTIONDATASETS WHERE CRFUNCTIONDATASETID = {0} AND SETUPID = {1}", _datasetID , _dsSetupID);
+                obtRtv = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+                if (obtRtv.ToString().Equals("T"))
+                {
+                    isLocked = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.Message);
+            }
+
+            return isLocked;
+        }
+
+        private void btnAdd_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                HealthImpactDataSetDefinition frm = new HealthImpactDataSetDefinition();
+                DialogResult rtn = frm.ShowDialog();
+                BindControls();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+            }
+        }
+
+        private void btnEdit_Click(object sender, EventArgs e)
+        {
+            string str = lstAvailableDataSets.GetItemText(lstAvailableDataSets.SelectedItem);
+            try
+            {
+                DataRowView drv = lstAvailableDataSets.SelectedItem as DataRowView;
+                HealthImpactDataSetDefinition frm = new HealthImpactDataSetDefinition(Convert.ToInt16(drv["CrfunctiondatasetID"]), isLock());//doing an edit
+                DialogResult rth = frm.ShowDialog();
+                if (rth != DialogResult.OK)
+                {
+                    return;
+                }
+                commandText = string.Format("select * from CRFunctionDataSets where SetupID={0}", CommonClass.ManageSetup.SetupID);
+                ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+                lstAvailableDataSets.DataSource = ds.Tables[0];
+                lstAvailableDataSets.DisplayMember = "CRFunctionDataSetName";
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
             }
         }
 

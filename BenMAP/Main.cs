@@ -327,10 +327,10 @@ namespace BenMAP
             }
             CommonClass.BenMAPForm = _currentForm as BenMAP;
             String errorcode = "0";
-            if (_currentForm==null)
+            if (_currentForm == null)
             {
                 errorcode = "1"; 
-                MessageBox.Show("Unable to load main form.");
+                MessageBox.Show("Currentform is null, this happens when DB is not found or is locked by another process.  Exiting BenMAP.");
                 return;
             }
 
