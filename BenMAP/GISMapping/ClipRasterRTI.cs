@@ -160,15 +160,15 @@ namespace benmap
             IRaster rasterToUse = null;
             String tempRasterFullPath = null;
             long start = 0;
-            Stopwatch st = new Stopwatch();
+            //Stopwatch st = new Stopwatch();
             //CommonClass.Debug = true;
             //Console.WriteLine("Starting at " + columnStart + ", ending at " + input.NumColumns);
             for (int columnCurrent = columnStart; columnCurrent < input.NumColumns; columnCurrent++)
             {
-                st.Start();
+                //st.Start();
                 xCurrent = xStart + col * input.CellWidth;
                 start = DateTime.Now.Ticks;
-                Console.WriteLine(GetTimestamp(DateTime.Now) + ": starting col "+columnCurrent);
+                //Console.WriteLine(GetTimestamp(DateTime.Now) + ": starting col "+columnCurrent);
                 //check sizze
                 FileInfo f = new FileInfo(input.Filename);
                 //Console.WriteLine("Got file of size : " + f.Length);
@@ -184,7 +184,7 @@ namespace benmap
                     double maxx = xCurrent + .5 * input.CellWidth;
                     double miny= input.Bounds.Bottom();
 
-                    Console.WriteLine("minx: " + minx + ", miny: " + miny + ", maxx: " + maxx + ", maxy: " + maxy);
+                    //Console.WriteLine("minx: " + minx + ", miny: " + miny + ", maxx: " + maxx + ", maxy: " + maxy);
 
                     ProcessStartInfo warpStep = new System.Diagnostics.ProcessStartInfo();
                     string gdalWarpEXELoc = (new FileInfo(System.Reflection.Assembly.GetEntryAssembly().Location)).Directory.ToString();
@@ -306,9 +306,9 @@ namespace benmap
                 // cancel if requested
                 if (cancelProgressHandler != null && cancelProgressHandler.Cancel)
                     return 0.0;
-                st.Stop();
-                Console.WriteLine("Seconds: " + st.Elapsed);            
-                st.Reset();
+                //st.Stop();
+                //Console.WriteLine("Seconds: " + st.Elapsed);            
+                //st.Reset();
             }
 
             //output.Save();
@@ -398,7 +398,7 @@ namespace benmap
 
             if (CommonClass.Debug)
             {
-                whatAmIDoing.SaveAs(@"p:\temp\curSet-" + column + "-"+xCurrent+".tif");
+                whatAmIDoing.SaveAs(@"p:\temp\curSet-" + column + "-"+xCurrent+"-"+Guid.NewGuid().ToString()+".tif");
                 whatAmIDoing.Close();
             }
             
@@ -439,12 +439,16 @@ namespace benmap
         private static List<Border> GetBorders(IFeature feature)
         {
             List<Border> borders = new List<Border>();
-            int curGeom = 0;
-
+            
             //ShapeRange sr = feature.ParentFeatureSet.ShapeIndices[feature.ShapeIndex];
             ShapeRange sr = feature.ShapeIndex;
             Vertex lastVr = new Vertex() ;
             bool firstVRset = false;
+            if (sr == null || sr.Parts == null)
+            {
+                Console.WriteLine("Sr or sr.parts is null!");
+                return borders;
+            }
             foreach (PartRange part in sr.Parts)
             {
                 firstVRset = false;

@@ -918,6 +918,8 @@ namespace BenMAP
         public static Dictionary<String, Dictionary<int, double>> otherXrefCache = new Dictionary<string, Dictionary<int, double>>();
         public static List<GridRelationshipAttributePercentage> IntersectionPercentage(IFeatureSet self, IFeatureSet other, FieldJoinType joinType, String popRasterLoc)
         {
+            
+            //CommonClass.Debug = true;
             IRaster myRS=null;
             ArrayList lines = new ArrayList();
             string gdalWarpEXELoc = (new FileInfo(System.Reflection.Assembly.GetEntryAssembly().Location)).Directory.ToString();
@@ -945,7 +947,6 @@ namespace BenMAP
                     IFeatureSet ifs = new FeatureSet();
                     //self.SaveAs(@"P:\temp\self.shp",true);
                     //other.SaveAs(@"P:\temp\other.shp", true);
-                    //Console.WriteLine("In fun");
                     //Console.WriteLine("Starting loop");
                     self.Reproject(ProjectionInfo.FromEsriString("PROJCS[\"NAD_1983_Albers\",GEOGCS[\"GCS_North_American_1983\",DATUM[\"D_North_American_1983\",SPHEROID[\"GRS_1980\",6378137.0,298.257222101]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Albers\"],PARAMETER[\"false_easting\",0.0],PARAMETER[\"false_northing\",0.0],PARAMETER[\"central_meridian\",-96.0],PARAMETER[\"standard_parallel_1\",29.5],PARAMETER[\"standard_parallel_2\",45.5],PARAMETER[\"latitude_of_origin\",37.5],UNIT[\"Meter\",1.0]]"));
                     //self.SaveAs(@"P:\temp\selfReProject.shp", true);
@@ -964,7 +965,7 @@ namespace BenMAP
                     {
                         Console.WriteLine("Using cached value for "+other.Filename);
                         otherXRef = otherXrefCache[other.Filename];
-                        lines.Add("File," + other.Filename);
+                        lines.Add("File," + other.Filename+",cached");
                         lines.Add("PopVal,fid");
 
                         foreach(int iDx in otherXRef.Keys){
@@ -974,8 +975,8 @@ namespace BenMAP
                     }
                     else
                     {
+                         //other.SaveAs(@"P:\temp\otherReProject.shp", true);
 
-                        // other.SaveAs(@"P:\temp\otherReProject.shp", true);
                         //Console.WriteLine("Other proj4: " + other.Projection.ToProj4String());
                         //Console.WriteLine("raster proj4: " + myRS.Projection.ToProj4String());
                         Console.WriteLine("Starting other cache at " + GetTimestamp(DateTime.Now));
@@ -1086,9 +1087,10 @@ namespace BenMAP
                         }
                     }
 
-                    System.IO.File.WriteAllLines(@"p:\temp\otherPopCounts."+ Guid.NewGuid().ToString()+".csv", (String[])lines.ToArray(typeof(string)));
+                    //System.IO.File.WriteAllLines(@"p:\temp\otherPopCounts."+ Guid.NewGuid().ToString()+".csv", (String[])lines.ToArray(typeof(string)));
 
                     lines.Clear();
+                    lines.Add("File," + self.Filename);
                     lines.Add("Population,SelfFID,OtherFid");
                     //CommonClass.Debug = true;
                     foreach (IFeature selfFeature in self.Features)
@@ -1103,7 +1105,10 @@ namespace BenMAP
                         //ifs.SaveAs(@"P:\temp\singleShape-"+selfFeature.Fid+".shp", true);
                         
                         //ifs.Reproject(myRS.Projection);
-                        //ifs.SaveAs(@"P:\temp\singleShapeReproj-" + selfFeature.Fid + ".shp", true);
+                        if (CommonClass.Debug)
+                        {
+                            ifs.SaveAs(@"P:\temp\singleShapeReproj-" + selfFeature.Fid + ".shp", true);
+                        }
 
                        
                         List<int> potentialOthers = other.SelectIndices(selfFeature.Envelope.ToExtent());
@@ -1116,22 +1121,22 @@ namespace BenMAP
                             IFeature intersectFeature = null;
                             double popVal = 0.0;
 
-                            if ((other.Features.Count < 5 || self.Features.Count < 5) 
-                                        && other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum)) == 0 
-                                        && other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Maximum.X, selfFeature.Envelope.Minimum.Y)) == 0 
-                                        && other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Maximum)) == 0 
-                                        && other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X, selfFeature.Envelope.Maximum.Y)) == 0)
-                            {
-                                intersectFeature = selfFeature;
-                            } else if ((other.Features.Count < 5 || self.Features.Count < 5) 
-                                        && selfFeature.Distance(new Point(other.Features[iotherFeature].Envelope.Minimum)) == 0 
-                                        && selfFeature.Distance(new Point(other.Features[iotherFeature].Envelope.Maximum.X, other.Features[iotherFeature].Envelope.Minimum.Y)) == 0 
-                                        && selfFeature.Distance(new Point(other.Features[iotherFeature].Envelope.Maximum)) == 0 
-                                        && selfFeature.Distance(new Point(other.Features[iotherFeature].Envelope.Minimum.X, other.Features[iotherFeature].Envelope.Maximum.Y)) == 0)
-                            {
-                                intersectFeature = other.Features[iotherFeature];
-                            } else
-                            {
+                            //if ((other.Features.Count < 5 || self.Features.Count < 5) 
+                            //            && other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum)) == 0 
+                            //            && other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Maximum.X, selfFeature.Envelope.Minimum.Y)) == 0 
+                            //            && other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Maximum)) == 0 
+                            //            && other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X, selfFeature.Envelope.Maximum.Y)) == 0)
+                            //{
+                            //    intersectFeature = selfFeature;
+                            //} else if ((other.Features.Count < 5 || self.Features.Count < 5) 
+                            //            && selfFeature.Distance(new Point(other.Features[iotherFeature].Envelope.Minimum)) == 0 
+                            //            && selfFeature.Distance(new Point(other.Features[iotherFeature].Envelope.Maximum.X, other.Features[iotherFeature].Envelope.Minimum.Y)) == 0 
+                            //            && selfFeature.Distance(new Point(other.Features[iotherFeature].Envelope.Maximum)) == 0 
+                            //            && selfFeature.Distance(new Point(other.Features[iotherFeature].Envelope.Minimum.X, other.Features[iotherFeature].Envelope.Maximum.Y)) == 0)
+                           // {
+                            //    intersectFeature = other.Features[iotherFeature];
+                           // } else
+                           // {
                                 try
                                 {
                                     intersectFeature = selfFeature.Intersection(other.Features[iotherFeature]);
@@ -1146,9 +1151,13 @@ namespace BenMAP
                                         if (intersectFeature != null)
                                         {
                                             ifsTemp.AddFeature(intersectFeature);
+                                            if (CommonClass.Debug)
+                                            {
+                                                ifsTemp.SaveAs(@"p:\temp\interSectFeat-" + selfFeature.Fid + "-" + iotherFeature + ".shp", true);
+                                            }
                                         }
 
-                                        ifsTemp.SaveAs(@"p:\temp\interSectFeat-" + selfFeature.Fid + "-" + iotherFeature + ".shp", true);
+                                       
                                     }
                                     //fist population of selfFeature\ warpStep.FileName = gdalWarpEXELoc;
                                     warpStep = new System.Diagnostics.ProcessStartInfo();
@@ -1161,7 +1170,22 @@ namespace BenMAP
                                     //this object is needed to set up structure for calculating edges
                                     IFeatureSet ifsHold = new FeatureSet();
                                     ifsHold.Projection = other.Projection;
-                                    ifsHold.AddFeature(intersectFeature);
+                                    //this intersectFeature may have multiple geometries
+                                    if (intersectFeature.BasicGeometry.NumGeometries > 1)
+                                    {
+                                        for (int idx = 0; idx < intersectFeature.BasicGeometry.NumGeometries; idx++)
+                                        {
+
+                                            IBasicGeometry ibm = intersectFeature.GetBasicGeometryN(idx);
+                                            IFeature newFeat = new Feature(ibm);
+                                            ifsHold.AddFeature(newFeat);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        ifsHold.AddFeature(intersectFeature);
+                                    }
+                                   
                                     tempShapeFullPath = Path.Combine(tempRasterLocDir, "clippedShape-" + selfFeature.Fid + "-" + iotherFeature + "-" + Guid.NewGuid().ToString() + ".shp");
                                     try
                                     {
@@ -1170,7 +1194,7 @@ namespace BenMAP
                                         ifsHold = null;
                                         intersectFeature = null;
                                         ifsHold = FeatureSet.Open(tempShapeFullPath);
-                                        intersectFeature = ifsHold.Features[0];
+                                        //intersectFeature = ifsHold.Features[0];
                                     }
                                     catch (Exception e)
                                     {
@@ -1179,10 +1203,10 @@ namespace BenMAP
                                         continue;
                                     }
 
-                                    minx = intersectFeature.Envelope.Minimum.X - 100.0;
-                                    maxy = intersectFeature.Envelope.Maximum.Y + 100.0;
-                                    maxx = intersectFeature.Envelope.Maximum.X + 100.0;
-                                    miny = intersectFeature.Envelope.Minimum.Y - 100.0;
+                                    minx = ifsHold.Extent.ToEnvelope().Minimum.X - 100.0;
+                                    maxy = ifsHold.Extent.ToEnvelope().Maximum.Y + 100.0;
+                                    maxx = ifsHold.Extent.ToEnvelope().Maximum.X + 100.0;
+                                    miny = ifsHold.Extent.ToEnvelope().Minimum.Y - 100.0;
                                     tempRasterFullPath = Path.Combine(tempRasterLocDir, "clippedRaster-Intersection-"+selfFeature.Fid+"-"+iotherFeature+ "-"+Guid.NewGuid().ToString()+".tif");
                                     warpStep.FileName = gdalWarpEXELoc;
                                     warpStep.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
@@ -1207,8 +1231,10 @@ namespace BenMAP
                                     }
                                     myRS = Raster.Open(tempRasterFullPath);
 
-
-                                    popVal = ClipRasterRTI.ClipRasterWithPolygon(intersectFeature, myRS, null, false, null);
+                                    for (int curFS = 0; curFS < ifsHold.Features.Count; curFS++)
+                                    {
+                                        popVal += ClipRasterRTI.ClipRasterWithPolygon(ifsHold.Features[curFS], myRS, null, false, null);
+                                    }
                                     //Console.WriteLine("Got population: " + popVal);
                                     if (popVal > 0)
                                     {
@@ -1305,7 +1331,7 @@ namespace BenMAP
                                     }
                                 }
 
-                            }
+                            //}
                             if (intersectFeature != null && intersectFeature.BasicGeometry != null)
                             {
                                 
@@ -1414,7 +1440,7 @@ namespace BenMAP
                             Console.WriteLine(selfFeature.Fid + " done of " + self.Features.Count);
                         }
                     }
-                    System.IO.File.WriteAllLines(@"p:\temp\otherSelfIntersectPopCounts."+ Guid.NewGuid().ToString()+".csv", (String[])lines.ToArray(typeof(string)));
+                    //System.IO.File.WriteAllLines(@"p:\temp\otherSelfIntersectPopCounts."+ Guid.NewGuid().ToString()+".csv", (String[])lines.ToArray(typeof(string)));
                     foreach (KeyValuePair<string, Dictionary<string, double>> k in dicRelation)
                     {
                         if (k.Value.Count > 0)
@@ -1536,7 +1562,7 @@ namespace BenMAP
             }
             catch (Exception ex)
             {
-
+                Console.WriteLine("Error in getRelationshipFromBenMAPGridPercentage: "+ex.ToString());
             }
         }
         public static List<BenMAPPollutant> lstPollutantAll;

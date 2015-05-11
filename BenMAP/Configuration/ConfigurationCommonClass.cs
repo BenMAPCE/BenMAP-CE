@@ -1825,7 +1825,7 @@ namespace BenMAP.Configuration
                 // assumed that all new crosswalks are of type 1 (i.e., crosswalk_type_id = 1)
                 // note that k.Key is a list of two values (both source and destination crosswalk type)
                 commandText = string.Format("insert into GridDefinitionPercentages(PERCENTAGEID,SOURCEGRIDDEFINITIONID, TARGETGRIDDEFINITIONID, CROSSWALK_TYPE_ID) "
-                    + "values({0},{1},[2])", iMax, k.Key, 1);
+                    + "values({0},{1},{2})", iMax, k.Key, 1);
                 fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                 int i = 1;
                 commandText = "execute block as declare incidenceRateID int;" + " BEGIN ";

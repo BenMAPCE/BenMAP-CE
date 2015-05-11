@@ -242,7 +242,7 @@ namespace BenMAP
                         string strDir = fInfo.DirectoryName;
                         string fName = fInfo.Name.Substring(0,fInfo.Name.Length - fInfo.Extension.Length);
                         string prjfile = Path.Combine(strDir, fName + ".prj");
-                        string GCSNAD83ShapeFilePath = Path.Combine(strDir, fName + "_GCSNAD83 "+ ".shp");
+                        string GCSNAD83ShapeFilePath = Path.Combine(strDir, fName + "_GCSNAD83"+ ".shp");
 
                         if (File.Exists(prjfile))    //check for acceptable projection (GCS/NAD83)
                         {
@@ -802,7 +802,9 @@ namespace BenMAP
                         //progressBar1.Minimum = 1;
                         //progressBar1.Maximum = iAsyns + 1;
                         //this.Enabled = false;
+
                     this.Enabled = true;
+                    this.Close();
                     //}
                 }
 
@@ -900,6 +902,7 @@ namespace BenMAP
                 if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + bigShapefileName + ".shp"))
                 {
                     string shapeFileName = CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + bigShapefileName + ".shp";
+                    //for debugging!
                     fsBig = DotSpatial.Data.FeatureSet.Open(shapeFileName);
                     string shapeFileNameSmall = CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + smallShapefileName + ".shp";
                     fsSmall = DotSpatial.Data.FeatureSet.Open(shapeFileNameSmall);
@@ -918,24 +921,30 @@ namespace BenMAP
                     }
                     Dictionary<string, List<GridRelationshipAttributePercentage>> dic = new Dictionary<string, List<GridRelationshipAttributePercentage>>();
                     dic.Add(small + "," + big, lstGR);
-                    return dic;
+                    
                     string commandText = "select max(PercentageID) from GridDefinitionPercentages";
                     int iMax = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
-
-                    commandText = string.Format("insert into GridDefinitionPercentages values({0},{1},{2})", iMax, small, big);
+                    //assume all are pop based.
+                    commandText = string.Format("insert into GridDefinitionPercentages(PERCENTAGEID, SOURCEGRIDDEFINITIONID, TARGETGRIDDEFINITIONID, CROSSWALK_TYPE_ID) values({0},{1},{2},1)", iMax, small, big);
                     fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                     foreach (GridRelationshipAttributePercentage grp in lstGR)
                     {
-                        commandText = string.Format("insert into GridDefinitionPercentageEntries values({0},{1},{2},{3},{4},{5},{6})",
+                        commandText = string.Format("insert into GridDefinitionPercentageEntries(PERCENTAGEID, SOURCECOLUMN, SOURCEROW, TARGETCOLUMN, TARGETROW, PERCENTAGE,NORMALIZATIONSTATE) values({0},{1},{2},{3},{4},{5},{6})",
                             iMax, grp.sourceCol, grp.sourceRow, grp.targetCol, grp.targetRow, grp.percentage, 0);
                         fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                        commandText = String.Format("Select PERCENTAGE from GridDefinitionPercentageEntries where PERCENTAGEID={0} AND SOURCECOLUMN={1} and SOURCEROW={2} AND TARGETCOLUMN={3} and TARGETROW={4};",iMax, grp.sourceCol, grp.sourceRow, grp.targetCol, grp.targetRow);
+                        Object result = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
+                        Console.WriteLine("got back type " + result.GetType() + " value of " + result.ToString());
+
                     }
+                    return dic;
                 }
                 else
                     return null;
             }
             catch (Exception ex)
             {
+                Console.WriteLine("Could not write ratio:  " + ex.ToString());
                 return null;
             }
         }
