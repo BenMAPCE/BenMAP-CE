@@ -441,10 +441,10 @@ namespace BenMAP
                     MessageBox.Show("Please enter a raster path before continuing");
                     return;
                 }
-                //see if it is relative path, if so assume from base of EXE
+                //see if it is relative path, if so assume from base of data
                 if (!System.IO.Path.IsPathRooted(rasterFileLoc))
                 {
-                    String exeDir = (new FileInfo(System.Reflection.Assembly.GetEntryAssembly().Location)).Directory.ToString();
+                    String exeDir = (new FileInfo(CommonClass.DataFilePath)).Directory.ToString();
                     rasterFileLoc = Path.Combine(exeDir, rasterFileLoc);
                 }
 
