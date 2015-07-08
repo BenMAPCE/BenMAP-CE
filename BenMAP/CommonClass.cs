@@ -960,7 +960,7 @@ namespace BenMAP
                     
                     Dictionary<int,double> otherXRef=new Dictionary<int,double>();
 
-
+                    //CommonClass.Debug = true;
                     if (other.Filename!=null && otherXrefCache.ContainsKey(other.Filename))
                     {
                         Console.WriteLine("Using cached value for "+other.Filename);
@@ -1027,7 +1027,7 @@ namespace BenMAP
                             }
                             FileInfo fiTemp = new FileInfo(tempRasterFullPath);
                             FileInfo fiOrig = new FileInfo(popRasterLoc);
-                            if (fiTemp.Length < fiOrig.Length)
+                            if (fiTemp.Length < fiOrig.Length*2)
                             {
                                 //clip made a smaller one use that
                                 doSingleColumnClip = false;
@@ -1049,7 +1049,13 @@ namespace BenMAP
                             //Console.WriteLine("Cacheing "+popValForOtherShape+" for "+otherFeature.Fid+ " out of "+other.Features.Count+ " at " +GetTimestamp(DateTime.Now));
                             lines.Add(popValForOtherShape + "," + otherFeature.Fid);
                             otherXRef.Add(otherFeature.Fid, popValForOtherShape);
-                            myRS.Close();
+                            try
+                            {
+                                myRS.Close();
+                            }catch(Exception e){
+                                Console.WriteLine("Error closing file: "+myRS.Filename+", reason: "+e.ToString());
+                            }
+                            myRS=null;
                             Boolean deleted = false;
                             int counter = 5;
                             while (!deleted && counter > 0)
@@ -1087,7 +1093,7 @@ namespace BenMAP
                         }
                     }
 
-                    //System.IO.File.WriteAllLines(@"p:\temp\otherPopCounts."+ Guid.NewGuid().ToString()+".csv", (String[])lines.ToArray(typeof(string)));
+                    System.IO.File.WriteAllLines(@"p:\temp\otherPopCounts."+ Guid.NewGuid().ToString()+".csv", (String[])lines.ToArray(typeof(string)));
 
                     lines.Clear();
                     lines.Add("File," + self.Filename);
@@ -1139,8 +1145,28 @@ namespace BenMAP
                            // {
                                 try
                                 {
-                                    intersectFeature = selfFeature.Intersection(other.Features[iotherFeature]);
-                                   
+                                    Boolean goodIntersection=false;
+                                    int count = 1;
+                                    int maxTries = 15;
+                                    Random rand = new Random();
+                                    double valToTry = .00001;
+                                    while(!goodIntersection && count<maxTries)
+                                        try{
+                                            intersectFeature = selfFeature.Buffer(valToTry).Intersection(other.Features[iotherFeature]);
+                                            goodIntersection = true;
+                                        }catch(Exception e){
+                                            Console.WriteLine("Could not do intersection on try "+count+" of "+maxTries+", reason: "+e.ToString());
+                                            count++;
+                                            if (count % 2 == 0)
+                                            {
+                                                valToTry = rand.NextDouble() * (double)count / 10.0;
+                                            }
+                                            else
+                                            {
+                                                valToTry = rand.NextDouble() / (double)count;
+                                            }                               
+
+                                    }
                                     
                                     if (CommonClass.Debug)
                                     {
@@ -1153,7 +1179,24 @@ namespace BenMAP
                                             ifsTemp.AddFeature(intersectFeature);
                                             if (CommonClass.Debug)
                                             {
-                                                ifsTemp.SaveAs(@"p:\temp\interSectFeat-" + selfFeature.Fid + "-" + iotherFeature + ".shp", true);
+                                                try{
+                                                    ifsTemp.SaveAs(@"p:\temp\interSectFeat-" + selfFeature.Fid + "-" + iotherFeature + ".shp", true);
+                                                }catch(Exception e){
+                                                    Console.WriteLine("could not save intersectFeat debug: "+e.ToString());
+                                                    try
+                                                    {
+                                                        ifsTemp.Features.Clear();
+                                                        ifsTemp.AddFeature(selfFeature);
+                                                        ifsTemp.AddFeature(other.Features[iotherFeature]);
+                                                        ifsTemp.AddFeature(intersectFeature);
+                                                        ifsTemp.SaveAs(@"p:\temp\interSectFeat-" + selfFeature.Fid + "-" + iotherFeature + "-T2.shp", true);
+                                                    }
+                                                    catch (Exception ex)
+                                                    {
+                                                        Console.WriteLine("could not save intersectFeat 2 debug: " + ex.ToString());
+                                                    }
+
+                                                }
                                             }
                                         }
 
@@ -1177,15 +1220,22 @@ namespace BenMAP
                                         {
 
                                             IBasicGeometry ibm = intersectFeature.GetBasicGeometryN(idx);
-                                            IFeature newFeat = new Feature(ibm);
-                                            ifsHold.AddFeature(newFeat);
+                                            if (ibm.FeatureType == FeatureType.Polygon)
+                                            {
+                                                IFeature newFeat = new Feature(ibm);
+                                                ifsHold.AddFeature(newFeat);
+                                            }
                                         }
                                     }
                                     else
                                     {
                                         ifsHold.AddFeature(intersectFeature);
                                     }
-                                   
+                                    if (ifsHold.Features.Count < 1)
+                                    {
+                                        //if all we got from intersection was ponts/lines, don't do any more processing.
+                                        continue;
+                                    }
                                     tempShapeFullPath = Path.Combine(tempRasterLocDir, "clippedShape-" + selfFeature.Fid + "-" + iotherFeature + "-" + Guid.NewGuid().ToString() + ".shp");
                                     try
                                     {
@@ -1238,11 +1288,18 @@ namespace BenMAP
                                     //Console.WriteLine("Got population: " + popVal);
                                     if (popVal > 0)
                                     {
-                                        //Console.WriteLine("NonZero val on -" + selfFeature.Fid + "-" + iotherFeature);
+                                        Console.WriteLine("NonZero val on -" + selfFeature.Fid + "-" + iotherFeature);
                                         lines.Add(popVal+","+ selfFeature.Fid+","+ iotherFeature);
                                     }
-                                    myRS.Close();
-                                    ifsHold.Close();
+                                    try
+                                    {
+                                        myRS.Close();
+                                        ifsHold.Close();
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        Console.WriteLine("Could not close raster/shape: "+e.ToString());
+                                    }
                                     Boolean deleted = false;
                                     int counter = 5;
                                     while (!deleted && counter>0)
@@ -1291,52 +1348,52 @@ namespace BenMAP
                                 catch (Exception ex)
                                 {
                                     Console.WriteLine("Caught an error getting counts: " + ex.ToString());
-                                    try
-                                    {
-                                        if (selfFeature.IsWithinDistance(other.Features[iotherFeature], 0.00001))
-                                        {
-                                            if (selfFeature.Area() > other.Features[iotherFeature].Area())
-                                            {
-                                                bool isContains = false;
-                                                isContains = polygonContainPolygon(selfFeature, other.Features[iotherFeature]);
-                                                if (isContains)
-                                                {
-                                                    intersectFeature = other.Features[iotherFeature];
-                                                }
-                                                else
-                                                {
-                                                    intersectFeature = null;
-                                                }
-                                            }
-                                            else if (selfFeature.Area() < other.Features[iotherFeature].Area())
-                                            {
-                                                intersectFeature = selfFeature;
+                                    //try
+                                   // {
+                                   //     if (selfFeature.IsWithinDistance(other.Features[iotherFeature], 0.00001))
+                                   //     {
+                                   //         if (selfFeature.Area() > other.Features[iotherFeature].Area())
+                                   //         {
+                                   //             bool isContains = false;
+                                   //             isContains = polygonContainPolygon(selfFeature, other.Features[iotherFeature]);
+                                  //              if (isContains)
+                                  //              {
+                                  //                  intersectFeature = other.Features[iotherFeature];
+                                  //              }
+                                  //              else
+                                  //              {
+                                  //                  intersectFeature = null;
+                                  //              }
+                                  //          }
+                                  //          else if (selfFeature.Area() < other.Features[iotherFeature].Area())
+                                  //          {
+                                  //              intersectFeature = selfFeature;
 
-                                                bool isContains = false;
-                                                isContains = polygonContainPolygon(other.Features[iotherFeature], selfFeature);
-                                                if (isContains)
-                                                {
-                                                    intersectFeature = selfFeature;
-                                                }
-                                                else
-                                                {
-                                                    intersectFeature = null;
-                                                }
-                                            }
-                                        }
-                                    }
-                                    catch(Exception e)
-                                    {
-                                        Console.WriteLine("Error finding matching features: " + e.ToString());
-                                    }
+                                  //              bool isContains = false;
+                                  //              isContains = polygonContainPolygon(other.Features[iotherFeature], selfFeature);
+                                  //              if (isContains)
+                                  //              {
+                                  //                  intersectFeature = selfFeature;
+                                  //              }
+                                  //              else
+                                  //              {
+                                   //                 intersectFeature = null;
+                                  //              }
+                                   //         }
+                                    //    }
+                                   // }
+                                    //catch(Exception e)
+                                   // {
+                                  //      Console.WriteLine("Error finding matching features: " + e.ToString());
+                                    //}
                                 }
 
                             //}
-                            if (intersectFeature != null && intersectFeature.BasicGeometry != null)
-                            {
+                           // if (intersectFeature != null && intersectFeature.BasicGeometry != null)
+                           // {
                                 
-                                try
-                                {
+                               // try
+                               // {
                                     /*
                                     double dArea = 0;
                                     try
@@ -1384,7 +1441,7 @@ namespace BenMAP
                                     }*/
                                     if (popVal > 0)
                                     {
-
+                                        Console.WriteLine("Got a pop of " + popVal + " for " + other.Features[iotherFeature].DataRow["Col"] + "," + other.Features[iotherFeature].DataRow["Row"]);
                                         if (dicRelation.ContainsKey(other.Features[iotherFeature].DataRow["Col"] + "," + other.Features[iotherFeature].DataRow["Row"]))
                                         {
                                             dicRelation[other.Features[iotherFeature].DataRow["Col"] + "," + other.Features[iotherFeature].DataRow["Row"]].Add
@@ -1398,40 +1455,40 @@ namespace BenMAP
                                                (selfFeature.DataRow["Col"] + "," + selfFeature.DataRow["Row"], popVal / otherXRef[other.Features[iotherFeature].Fid]);
                                         }
                                     }
-                                }
-                                catch
-                                {
-                                    try
-                                    {
-                                        if (selfFeature.IsWithinDistance(other.Features[iotherFeature], 0.00001))
-                                        {
-                                            if (selfFeature.Area() > other.Features[iotherFeature].Area())
-                                                intersectFeature = other.Features[iotherFeature];
-                                            else
-                                                intersectFeature = selfFeature;
-                                        }
-                                        if (intersectFeature.Area() > 0)
-                                        {
-
-                                            if (dicRelation.ContainsKey(other.Features[iotherFeature].DataRow["Col"] + "," + other.Features[iotherFeature].DataRow["Row"]))
-                                            {
-                                                dicRelation[other.Features[iotherFeature].DataRow["Col"] + "," + other.Features[iotherFeature].DataRow["Row"]].Add
-                                                    (selfFeature.DataRow["Col"] + "," + selfFeature.DataRow["Row"], intersectFeature.Area() / other.Features[iotherFeature].Area());
-                                            }
-                                            else
-                                            {
-                                                dicRelation.Add(other.Features[iotherFeature].DataRow["Col"] + "," + other.Features[iotherFeature].DataRow["Row"],
-                                                    new Dictionary<string, double>());
-                                                dicRelation[other.Features[iotherFeature].DataRow["Col"] + "," + other.Features[iotherFeature].DataRow["Row"]].Add
-                                                   (selfFeature.DataRow["Col"] + "," + selfFeature.DataRow["Row"], intersectFeature.Area() / other.Features[iotherFeature].Area());
-                                            }
-                                        }
-                                    }
-                                    catch
-                                    {
-                                    }
-                                }
-                            }
+                               // }
+                               // catch
+                               // {
+                               //     try
+                                //    {
+                               //         if (selfFeature.IsWithinDistance(other.Features[iotherFeature], 0.00001))
+                               //         {
+                              //              if (selfFeature.Area() > other.Features[iotherFeature].Area())
+                              //                  intersectFeature = other.Features[iotherFeature];
+                              //              else
+                              //                  intersectFeature = selfFeature;
+                              //          }
+                               //         if (intersectFeature.Area() > 0)
+                               //         {
+                            //
+                              //              if (dicRelation.ContainsKey(other.Features[iotherFeature].DataRow["Col"] + "," + other.Features[iotherFeature].DataRow["Row"]))
+                              //              {
+                              //                  dicRelation[other.Features[iotherFeature].DataRow["Col"] + "," + other.Features[iotherFeature].DataRow["Row"]].Add
+                              //                      (selfFeature.DataRow["Col"] + "," + selfFeature.DataRow["Row"], intersectFeature.Area() / other.Features[iotherFeature].Area());
+                              //              }
+                              ////              else
+                               //             {
+                               //                 dicRelation.Add(other.Features[iotherFeature].DataRow["Col"] + "," + other.Features[iotherFeature].DataRow["Row"],
+                              //                      new Dictionary<string, double>());
+                               //                 dicRelation[other.Features[iotherFeature].DataRow["Col"] + "," + other.Features[iotherFeature].DataRow["Row"]].Add
+                               //                    (selfFeature.DataRow["Col"] + "," + selfFeature.DataRow["Row"], intersectFeature.Area() / other.Features[iotherFeature].Area());
+                               //             }
+                               //         }
+                               //     }
+                               //     catch
+                               //     {
+                               //     }
+                                ////}
+                            //}
                         }
 
                         i++;
@@ -1440,7 +1497,7 @@ namespace BenMAP
                             Console.WriteLine(selfFeature.Fid + " done of " + self.Features.Count);
                         }
                     }
-                    //System.IO.File.WriteAllLines(@"p:\temp\otherSelfIntersectPopCounts."+ Guid.NewGuid().ToString()+".csv", (String[])lines.ToArray(typeof(string)));
+                    System.IO.File.WriteAllLines(@"p:\temp\otherSelfIntersectPopCounts."+ Guid.NewGuid().ToString()+".csv", (String[])lines.ToArray(typeof(string)));
                     foreach (KeyValuePair<string, Dictionary<string, double>> k in dicRelation)
                     {
                         if (k.Value.Count > 0)
