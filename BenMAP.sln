@@ -16,6 +16,8 @@ Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Setup", "BenMAP\Setup\Setup
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Uninstaller", "Uninstaller\Uninstaller.csproj", "{8B39647D-8B62-4C7B-8EF7-BEA67152CD9C}"
 EndProject
+Project("{E729F059-12D4-455F-A2A4-FDA8DD25E08A}") = "my project test", "..\..\InstallShield 2014 Projects\my project test.isproj", "{BF956753-1238-4F05-A649-4C1B16BA0BC3}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = BenMAP.vsmdi
@@ -67,6 +69,18 @@ Global
 		{8B39647D-8B62-4C7B-8EF7-BEA67152CD9C}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{8B39647D-8B62-4C7B-8EF7-BEA67152CD9C}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{8B39647D-8B62-4C7B-8EF7-BEA67152CD9C}.Release|x86.ActiveCfg = Release|Any CPU
+		{BF956753-1238-4F05-A649-4C1B16BA0BC3}.Debug|Any CPU.ActiveCfg = Debug
+		{BF956753-1238-4F05-A649-4C1B16BA0BC3}.Debug|Any CPU.Build.0 = Debug
+		{BF956753-1238-4F05-A649-4C1B16BA0BC3}.Debug|Mixed Platforms.ActiveCfg = Debug
+		{BF956753-1238-4F05-A649-4C1B16BA0BC3}.Debug|Mixed Platforms.Build.0 = Debug
+		{BF956753-1238-4F05-A649-4C1B16BA0BC3}.Debug|x86.ActiveCfg = Debug
+		{BF956753-1238-4F05-A649-4C1B16BA0BC3}.Debug|x86.Build.0 = Debug
+		{BF956753-1238-4F05-A649-4C1B16BA0BC3}.Release|Any CPU.ActiveCfg = Release
+		{BF956753-1238-4F05-A649-4C1B16BA0BC3}.Release|Any CPU.Build.0 = Release
+		{BF956753-1238-4F05-A649-4C1B16BA0BC3}.Release|Mixed Platforms.ActiveCfg = Release
+		{BF956753-1238-4F05-A649-4C1B16BA0BC3}.Release|Mixed Platforms.Build.0 = Release
+		{BF956753-1238-4F05-A649-4C1B16BA0BC3}.Release|x86.ActiveCfg = Release
+		{BF956753-1238-4F05-A649-4C1B16BA0BC3}.Release|x86.Build.0 = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
