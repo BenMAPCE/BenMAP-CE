@@ -6168,7 +6168,43 @@ namespace BenMAP.Configuration
             return Convert.ToSingle(dResult);
         }
 
+        public static void dumpSetupVariableJoinAllValueToDebugFile(ref List<SetupVariableJoinAllValues> lstSetupVariable)
+        {   // dump information about the current lstVariables to a debugging file
+            // this can be used to find out what veriables are being used in the HealthImpactFunctions run and what grid definitions they use
+            // output file name is HARDCODED!
+            System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:\Users\Public\outputfunctionlist" + ".txt", true);
+            file.Write("Variable_Name:\tVariable_Grid_Type:\tCell_Count\tCell_Col\tCell_Row\tCell_Value\n");
+            // write out variables to file
+            foreach (SetupVariableJoinAllValues sv in lstSetupVariable)
+            {
+                int gridCount=0;
+                // ignore error if there is no grid
+                try
+                {
 
+                    gridCount = sv.lstValues.Count();
+                }
+                catch { }
+
+                if (gridCount > 0)
+                {
+                    foreach (SetupVariableValues cell in sv.lstValues)
+                    {
+                        file.Write("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\n", sv.SetupVariableName.ToString(), sv.SetupVariableGridType.ToString(), gridCount,
+                                cell.Col.ToString(),cell.Row.ToString(),cell.Value.ToString());                    
+                    }
+                    
+                }
+                else
+                {
+                    file.Write("{0}\t{1}\t{2}\n", sv.SetupVariableName.ToString(), sv.SetupVariableGridType.ToString(), gridCount);
+                    
+                }
+                file.Flush();
+            }
+
+            file.Close();
+        }
 
 
     }

@@ -1343,7 +1343,8 @@ namespace BenMAP
                         lstSetupVariable = new List<SetupVariableJoinAllValues>();
                         Configuration.ConfigurationCommonClass.getSetupVariableNameListFromDatabaseFunction(crSelectFunction.VariableDataSetID, CommonClass.GBenMAPGrid.GridDefinitionID, crSelectFunction.BenMAPHealthImpactFunction.Function, Configuration.ConfigurationCommonClass.LstSystemVariableName, ref lstSetupVariable);
                         Configuration.ConfigurationCommonClass.getSetupVariableNameListFromDatabaseFunction(crSelectFunction.VariableDataSetID, CommonClass.GBenMAPGrid.GridDefinitionID, crSelectFunction.BenMAPHealthImpactFunction.BaseLineIncidenceFunction, Configuration.ConfigurationCommonClass.LstSystemVariableName, ref lstSetupVariable);
-
+                        // dump variable list to debug file after adding baseline function
+                        Configuration.ConfigurationCommonClass.dumpSetupVariableJoinAllValueToDebugFile(ref lstSetupVariable);
                         if (lstSetupVariable != null)
                         {
                             foreach (SetupVariableJoinAllValues sv in lstSetupVariable)
