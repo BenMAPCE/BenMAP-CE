@@ -765,17 +765,22 @@ namespace BenMAP
                         //{
                             //counter++;
                             int gridDefinitionID = Convert.ToInt32(dr["GridDefinitionID"]);
+                        //don't run against myself
                             if (gridDefinitionID == addBenMAPGrid.GridDefinitionID)
                             {
                                 continue;
                             }
 
 
-
+                            
 
                             int bigGridID, smallGridID;
 
-
+                            //AP-for testing-remove
+                            //if (gridDefinitionID != 20)
+                            //{
+                            //    continue;
+                            //}
 
 
                             bigGridID = gridDefinitionID;
@@ -910,15 +915,15 @@ namespace BenMAP
 
                     List<GridRelationshipAttributePercentage> lstGR = null; 
                     
-                    if (big == 20 || small == 20)
-                    {
+                    //if (big == 20 || small == 20)
+                    //{
 
-                        lstGR = CommonClass.IntersectionPercentageNation(fsBig, fsSmall, FieldJoinType.All, big, small);
-                    }
-                    else
-                    {
+//                        lstGR = CommonClass.IntersectionPercentageNation(fsBig, fsSmall, FieldJoinType.All, big, small);
+  //                  }
+    //                else
+      //              {
                         lstGR = CommonClass.IntersectionPercentage(fsBig, fsSmall, FieldJoinType.All, popLocation);
-                    }
+        //            }
                     Dictionary<string, List<GridRelationshipAttributePercentage>> dic = new Dictionary<string, List<GridRelationshipAttributePercentage>>();
                     dic.Add(small + "," + big, lstGR);
                     
