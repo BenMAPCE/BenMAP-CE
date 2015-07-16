@@ -45,12 +45,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_098275C0CC7E4D449D4D1A9C75284E6B"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_0AC9AC2CA8D047C3BA6DE6C99363FC84"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -65,18 +59,6 @@
         {
         "MsmKey" = "8:_1377248F10844737BAED6675EAC09EEE"
         "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_1408C60533F6FDB97B8CAD4CF391E690"
-        "OwnerKey" = "8:_728C6FC8F5A9489E99B90267CF222057"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_1408C60533F6FDB97B8CAD4CF391E690"
-        "OwnerKey" = "8:_95FFA0C1861744A8AEDD30730C62BC71"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -159,14 +141,20 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_256C48F2B224489F862C4DF2CDE28BB1"
+        "MsmKey" = "8:_2660DABC4A104177AA5687A179176E18"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_2660DABC4A104177AA5687A179176E18"
-        "OwnerKey" = "8:_UNDEFINED"
+        "MsmKey" = "8:_287F4B673C6047FE85190CD583630946"
+        "OwnerKey" = "8:_728C6FC8F5A9489E99B90267CF222057"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_287F4B673C6047FE85190CD583630946"
+        "OwnerKey" = "8:_95FFA0C1861744A8AEDD30730C62BC71"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -249,12 +237,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_39DCB27E498442C8A471316E271BB4E2"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_3A449D36F2D7D6FCD21F114440FBD25D"
         "OwnerKey" = "8:_F818609D927362D448C202480E647E84"
         "MsmSig" = "8:_UNDEFINED"
@@ -279,14 +261,14 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_4532CC9160D5441E866E6603F3592601"
-        "OwnerKey" = "8:_UNDEFINED"
+        "MsmKey" = "8:_462DFCF63A4B211281BB66B8042FDDE6"
+        "OwnerKey" = "8:_728C6FC8F5A9489E99B90267CF222057"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_462DFCF63A4B211281BB66B8042FDDE6"
-        "OwnerKey" = "8:_728C6FC8F5A9489E99B90267CF222057"
+        "OwnerKey" = "8:_287F4B673C6047FE85190CD583630946"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -299,12 +281,6 @@
         {
         "MsmKey" = "8:_462DFCF63A4B211281BB66B8042FDDE6"
         "OwnerKey" = "8:_95FFA0C1861744A8AEDD30730C62BC71"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_462DFCF63A4B211281BB66B8042FDDE6"
-        "OwnerKey" = "8:_1408C60533F6FDB97B8CAD4CF391E690"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -399,12 +375,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_615B083F2C524A4E98504F2EC345EBFC"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_63B715DB9FE55BFABAA239D1BB071F5A"
         "OwnerKey" = "8:_728C6FC8F5A9489E99B90267CF222057"
         "MsmSig" = "8:_UNDEFINED"
@@ -437,6 +407,30 @@
         {
         "MsmKey" = "8:_6D925AB8BAF64E3DAF402ABA51B4FD43"
         "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_6E59BEEA5CB19C81BD1B1EC4B4A3C58B"
+        "OwnerKey" = "8:_3A449D36F2D7D6FCD21F114440FBD25D"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_6E59BEEA5CB19C81BD1B1EC4B4A3C58B"
+        "OwnerKey" = "8:_95FFA0C1861744A8AEDD30730C62BC71"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_6E59BEEA5CB19C81BD1B1EC4B4A3C58B"
+        "OwnerKey" = "8:_728C6FC8F5A9489E99B90267CF222057"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_6E59BEEA5CB19C81BD1B1EC4B4A3C58B"
+        "OwnerKey" = "8:_F818609D927362D448C202480E647E84"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -615,18 +609,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_7EE2B758C52F4545801D15258EB5220B"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_7F6134F094384ADC967F6D3740236932"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_82D72864538F4F67874A3C677452761B"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -665,30 +647,6 @@
         {
         "MsmKey" = "8:_99B4C389BFAC48A195D7C68D3EED7BCF"
         "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_9A71874F3678796B0EFFACB59E577D02"
-        "OwnerKey" = "8:_F818609D927362D448C202480E647E84"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_9A71874F3678796B0EFFACB59E577D02"
-        "OwnerKey" = "8:_95FFA0C1861744A8AEDD30730C62BC71"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_9A71874F3678796B0EFFACB59E577D02"
-        "OwnerKey" = "8:_728C6FC8F5A9489E99B90267CF222057"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_9A71874F3678796B0EFFACB59E577D02"
-        "OwnerKey" = "8:_3A449D36F2D7D6FCD21F114440FBD25D"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -795,12 +753,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_B4019CA9D43647C5B7B1E6F05FFAECF5"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_B7EF6975964349DCB904DD8F6621EB48"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -863,12 +815,6 @@
         {
         "MsmKey" = "8:_BDA2BA1318165AEB843D88C7231ECC48"
         "OwnerKey" = "8:_3A449D36F2D7D6FCD21F114440FBD25D"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_BE5C4D0D515A4377B78F9747C4C88864"
-        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -941,6 +887,12 @@
         {
         "MsmKey" = "8:_C6EBB359DC4FFB09720B8EBB8E3BF707"
         "OwnerKey" = "8:_95FFA0C1861744A8AEDD30730C62BC71"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_C6F6DB98DADB402C8E96EE5388F67AE0"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -1179,6 +1131,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_F632F143600449AD8E67D36076BECB72"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_F6FC93ABFD3A42D0B2E147D648C1A936"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -1300,6 +1258,12 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_287F4B673C6047FE85190CD583630946"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_B8E1647CB7624E10A757ECDE438D6909"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -1331,12 +1295,6 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_728C6FC8F5A9489E99B90267CF222057"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_1408C60533F6FDB97B8CAD4CF391E690"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -1426,13 +1384,13 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_33F40EB6CF6705DDD0350F1F2F69DEF1"
+        "OwnerKey" = "8:_6E59BEEA5CB19C81BD1B1EC4B4A3C58B"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_9A71874F3678796B0EFFACB59E577D02"
+        "OwnerKey" = "8:_33F40EB6CF6705DDD0350F1F2F69DEF1"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -1745,26 +1703,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_098275C0CC7E4D449D4D1A9C75284E6B"
-            {
-            "SourcePath" = "8:..\\FireBirdHelper\\intl\\fbintl.conf"
-            "TargetName" = "8:fbintl.conf"
-            "Tag" = "8:"
-            "Folder" = "8:_633730C2E64F466EBBA42EA711F478F7"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_0AC9AC2CA8D047C3BA6DE6C99363FC84"
             {
             "SourcePath" = "8:..\\Data\\Shapefiles\\United States\\Report_Regions.shx"
@@ -1823,37 +1761,6 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_1408C60533F6FDB97B8CAD4CF391E690"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:FireBirdHelper, Version=1.0.18.0, Culture=neutral, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                    "_1408C60533F6FDB97B8CAD4CF391E690"
-                    {
-                    "Name" = "8:FireBirdHelper.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:FireBirdHelper.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_CFC83EA26393402992AA74648BF4EBD1"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_142CCD84E1DAF5BB31981E21F14DC81D"
@@ -2060,26 +1967,6 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_256C48F2B224489F862C4DF2CDE28BB1"
-            {
-            "SourcePath" = "8:..\\FireBirdHelper\\intl\\fbintl.dll"
-            "TargetName" = "8:fbintl.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_633730C2E64F466EBBA42EA711F478F7"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_2660DABC4A104177AA5687A179176E18"
             {
             "SourcePath" = "8:..\\Data\\Shapefiles\\United States\\County_epa2.sbx"
@@ -2098,6 +1985,37 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_287F4B673C6047FE85190CD583630946"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:FireBirdHelper, Version=1.0.18.0, Culture=neutral, processorArchitecture=AMD64"
+                "ScatterAssemblies"
+                {
+                    "_287F4B673C6047FE85190CD583630946"
+                    {
+                    "Name" = "8:FireBirdHelper.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:FireBirdHelper.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_CFC83EA26393402992AA74648BF4EBD1"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:TRUE"
+            "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_2914476F2D275306718B9A9E69394D8E"
@@ -2264,26 +2182,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_39DCB27E498442C8A471316E271BB4E2"
-            {
-            "SourcePath" = "8:..\\Data\\Shapefiles\\United States\\State.shx"
-            "TargetName" = "8:State.shx"
-            "Tag" = "8:"
-            "Folder" = "8:_34CF21406BF74E749595F66DE4D37218"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_3A449D36F2D7D6FCD21F114440FBD25D"
             {
             "AssemblyRegister" = "3:1"
@@ -2321,26 +2219,6 @@
             "TargetName" = "8:County_epa2.sbn"
             "Tag" = "8:"
             "Folder" = "8:_34CF21406BF74E749595F66DE4D37218"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_4532CC9160D5441E866E6603F3592601"
-            {
-            "SourcePath" = "8:..\\FireBirdHelper\\icuin30.dll"
-            "TargetName" = "8:icuin30.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_CFC83EA26393402992AA74648BF4EBD1"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -2548,26 +2426,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_615B083F2C524A4E98504F2EC345EBFC"
-            {
-            "SourcePath" = "8:..\\FireBirdHelper\\icuuc30.dll"
-            "TargetName" = "8:icuuc30.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_CFC83EA26393402992AA74648BF4EBD1"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_63B715DB9FE55BFABAA239D1BB071F5A"
             {
             "AssemblyRegister" = "3:1"
@@ -2677,6 +2535,37 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_6E59BEEA5CB19C81BD1B1EC4B4A3C58B"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:DotSpatial.Extensions, Version=1.6.0.0, Culture=neutral, PublicKeyToken=4d9e49339a7d240c, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_6E59BEEA5CB19C81BD1B1EC4B4A3C58B"
+                    {
+                    "Name" = "8:DotSpatial.Extensions.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:DotSpatial.Extensions.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_CFC83EA26393402992AA74648BF4EBD1"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_6E9077371AC6EF0E7B0542B0AE61DBB1"
@@ -2903,46 +2792,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_7EE2B758C52F4545801D15258EB5220B"
-            {
-            "SourcePath" = "8:..\\FireBirdHelper\\fbembed.dll"
-            "TargetName" = "8:fbembed.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_CFC83EA26393402992AA74648BF4EBD1"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_7F6134F094384ADC967F6D3740236932"
-            {
-            "SourcePath" = "8:..\\bin\\Release\\BenMAP.exe.manifest"
-            "TargetName" = "8:BenMAP.exe.manifest"
-            "Tag" = "8:"
-            "Folder" = "8:_CFC83EA26393402992AA74648BF4EBD1"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_82D72864538F4F67874A3C677452761B"
             {
             "SourcePath" = "8:..\\Data\\Shapefiles\\United States\\Report_Regions.shp"
@@ -3061,37 +2910,6 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_9A71874F3678796B0EFFACB59E577D02"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:DotSpatial.Extensions, Version=1.6.0.0, Culture=neutral, PublicKeyToken=4d9e49339a7d240c, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                    "_9A71874F3678796B0EFFACB59E577D02"
-                    {
-                    "Name" = "8:DotSpatial.Extensions.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:DotSpatial.Extensions.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_CFC83EA26393402992AA74648BF4EBD1"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9BBCB4CAF47842449487E00CB2E88511"
@@ -3305,26 +3123,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B4019CA9D43647C5B7B1E6F05FFAECF5"
-            {
-            "SourcePath" = "8:..\\Data\\Shapefiles\\United States\\State.shp.xml"
-            "TargetName" = "8:State.shp.xml"
-            "Tag" = "8:"
-            "Folder" = "8:_34CF21406BF74E749595F66DE4D37218"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B7EF6975964349DCB904DD8F6621EB48"
             {
             "SourcePath" = "8:..\\Data\\Shapefiles\\China\\YRD_04km_city_WGS84_LCC_Proj1.prj"
@@ -3485,26 +3283,6 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_BE5C4D0D515A4377B78F9747C4C88864"
-            {
-            "SourcePath" = "8:..\\FireBirdHelper\\icudt30.dll"
-            "TargetName" = "8:icudt30.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_CFC83EA26393402992AA74648BF4EBD1"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_BE95BE237E664949B09F14C2A387F744"
@@ -3736,6 +3514,26 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C6F6DB98DADB402C8E96EE5388F67AE0"
+            {
+            "SourcePath" = "8:..\\bin\\x64\\Release\\BenMAP.exe.manifest"
+            "TargetName" = "8:BenMAP.exe.manifest"
+            "Tag" = "8:"
+            "Folder" = "8:_CFC83EA26393402992AA74648BF4EBD1"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C7CFA072F4E5459BB7A4238687C41235"
@@ -4313,6 +4111,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F632F143600449AD8E67D36076BECB72"
+            {
+            "SourcePath" = "8:..\\bin\\x86\\Release\\BenMAP.exe.manifest"
+            "TargetName" = "8:BenMAP.exe.manifest"
+            "Tag" = "8:"
+            "Folder" = "8:_CFC83EA26393402992AA74648BF4EBD1"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F6FC93ABFD3A42D0B2E147D648C1A936"
             {
             "SourcePath" = "8:..\\Configs\\ParamsTreeForNew.xml"
@@ -4657,17 +4475,6 @@
             "Property" = "8:TARGETDIR"
                 "Folders"
                 {
-                    "{9EF0B969-E518-4E46-987F-47570745A589}:_633730C2E64F466EBBA42EA711F478F7"
-                    {
-                    "Name" = "8:intl"
-                    "AlwaysCreate" = "11:FALSE"
-                    "Condition" = "8:"
-                    "Transitive" = "11:FALSE"
-                    "Property" = "8:_D44C2EE350F5426394AD3BEB195C1E61"
-                        "Folders"
-                        {
-                        }
-                    }
                     "{9EF0B969-E518-4E46-987F-47570745A589}:_7F14A08004844B0EA5911A553BEDF44C"
                     {
                     "Name" = "8:Tools"
@@ -4753,7 +4560,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:BenMAP-CE"
         "ProductCode" = "8:{D565775A-2B13-4F8E-B882-2762B82D8749}"
-        "PackageCode" = "8:{F3CB8EDB-F670-44DC-9310-3E68AC028358}"
+        "PackageCode" = "8:{E5298F7F-DF68-4404-8C4B-1F4ED9F7C0CE}"
         "UpgradeCode" = "8:{10C0CCD0-CE12-43BB-BB3E-44059FCA4ADB}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -4774,7 +4581,7 @@
         "ARPIconIndex" = "3:0"
         "SearchPath" = "8:"
         "UseSystemSearchPath" = "11:TRUE"
-        "TargetPlatform" = "3:0"
+        "TargetPlatform" = "3:1"
         "PreBuildEvent" = "8:"
         "PostBuildEvent" = "8:"
         "RunPostBuildEvent" = "3:0"
@@ -4875,7 +4682,7 @@
         {
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_41DA277E3DC34C36A4FE9B6BC1251C29"
             {
-            "Name" = "8:BenMAP-CE 1.1.1"
+            "Name" = "8:BenMAP-CE 1.2"
             "Arguments" = "8:"
             "Description" = "8:"
             "ShowCmd" = "3:1"
@@ -4889,7 +4696,7 @@
             }
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_575F78EE29BB4A19B77DD2AFD72C7E11"
             {
-            "Name" = "8:BenMAP-CE 1.1"
+            "Name" = "8:BenMAP-CE 1.2"
             "Arguments" = "8:"
             "Description" = "8:"
             "ShowCmd" = "3:1"
@@ -5302,7 +5109,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_2044FD8C9FB448899339364CCD70199E"
             {
-            "SourcePath" = "8:..\\..\\Uninstaller\\obj\\Release\\Uninstaller.dll"
+            "SourcePath" = "8:..\\..\\Uninstaller\\obj\\x86\\Release\\Uninstaller.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_CFC83EA26393402992AA74648BF4EBD1"
@@ -5328,9 +5135,37 @@
                 {
                 }
             }
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_30D76ACE23DE4D0F8501170812F098DF"
+            {
+            "SourcePath" = "8:"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_CFC83EA26393402992AA74648BF4EBD1"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            "ProjectOutputGroupRegister" = "3:1"
+            "OutputConfiguration" = "8:"
+            "OutputGroupCanonicalName" = "8:ContentFiles"
+            "OutputProjectGuid" = "8:{8F093A2A-30D8-4144-8177-0772B0CD1C03}"
+            "ShowKeyOutput" = "11:TRUE"
+                "ExcludeFilters"
+                {
+                }
+            }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_728C6FC8F5A9489E99B90267CF222057"
             {
-            "SourcePath" = "8:..\\obj\\Release\\BenMAP.exe"
+            "SourcePath" = "8:..\\obj\\x64\\Release\\BenMAP.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_CFC83EA26393402992AA74648BF4EBD1"
@@ -5358,7 +5193,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_95FFA0C1861744A8AEDD30730C62BC71"
             {
-            "SourcePath" = "8:..\\obj\\Release\\BenMAP.exe"
+            "SourcePath" = "8:..\\obj\\x64\\Release\\BenMAP.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_CFC83EA26393402992AA74648BF4EBD1"
@@ -5414,7 +5249,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_CFDE562FCC9A4998ABF72EF2340B98E4"
             {
-            "SourcePath" = "8:..\\FireBirdHelper\\obj\\Release\\FireBirdHelper.dll"
+            "SourcePath" = "8:..\\FireBirdHelper\\obj\\x64\\Release\\FireBirdHelper.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_CFC83EA26393402992AA74648BF4EBD1"
