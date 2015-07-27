@@ -903,9 +903,24 @@
       <DependentUpon>QALYResulesReport.cs</DependentUpon>
     </Compile>
     <Compile Include="Jira\NewIssue.cs" />
+    <None Include="Data\BenMAP-CE Release Notes.rtf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Data\PopulationRaster\PopUS_90mX10_int16uWz4.tfw">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Data\Shapefiles\Detroit\Detroit_1km.dbf" />
+    <None Include="Data\Shapefiles\Detroit\Detroit_1km.prj" />
+    <None Include="Data\Shapefiles\Detroit\Detroit_1km.shp" />
+    <None Include="Data\Shapefiles\Detroit\Detroit_1km.shx" />
+    <None Include="Data\Shapefiles\Detroit\Detroit_Counties.dbf" />
+    <None Include="Data\Shapefiles\Detroit\Detroit_Counties.prj" />
+    <None Include="Data\Shapefiles\Detroit\Detroit_Counties.shp" />
+    <None Include="Data\Shapefiles\Detroit\Detroit_Counties.shx" />
+    <None Include="Data\Shapefiles\Detroit\Detroit_ZIP.dbf" />
+    <None Include="Data\Shapefiles\Detroit\Detroit_ZIP.prj" />
+    <None Include="Data\Shapefiles\Detroit\Detroit_ZIP.shp" />
+    <None Include="Data\Shapefiles\Detroit\Detroit_ZIP.shx" />
     <None Include="Data\Shapefiles\GBDRollback\gadm_worldsimplify.dbf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -2103,10 +2118,10 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>call "$(DevEnvDir)..\tools\vsvars32.bat"
+    <PostBuildEvent>
+call "$(DevEnvDir)..\tools\vsvars32.bat"
 
 editbin /LARGEADDRESSAWARE "$(TargetPath)"
-
 
 </PostBuildEvent>
   </PropertyGroup>
