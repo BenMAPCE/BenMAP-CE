@@ -27,6 +27,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_02659AEAB3584679845F530632DFBF8B"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_050922F0DB8443DFA4D253D061C14E2A"
         "OwnerKey" = "8:_728C6FC8F5A9489E99B90267CF222057"
         "MsmSig" = "8:_UNDEFINED"
@@ -35,6 +41,12 @@
         {
         "MsmKey" = "8:_050922F0DB8443DFA4D253D061C14E2A"
         "OwnerKey" = "8:_95FFA0C1861744A8AEDD30730C62BC71"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_0525034FA526442A9E31DADED4D87733"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -147,18 +159,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_287F4B673C6047FE85190CD583630946"
-        "OwnerKey" = "8:_728C6FC8F5A9489E99B90267CF222057"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_287F4B673C6047FE85190CD583630946"
-        "OwnerKey" = "8:_95FFA0C1861744A8AEDD30730C62BC71"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_2914476F2D275306718B9A9E69394D8E"
         "OwnerKey" = "8:_728C6FC8F5A9489E99B90267CF222057"
         "MsmSig" = "8:_UNDEFINED"
@@ -237,6 +237,18 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_37CD51787CC74668B99F470684C11803"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_3A13D40CE5014D79852B819857DA8BC5"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_3A449D36F2D7D6FCD21F114440FBD25D"
         "OwnerKey" = "8:_F818609D927362D448C202480E647E84"
         "MsmSig" = "8:_UNDEFINED"
@@ -261,6 +273,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_3F088A4FD9004A64B312025F92D2C58A"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_462DFCF63A4B211281BB66B8042FDDE6"
         "OwnerKey" = "8:_728C6FC8F5A9489E99B90267CF222057"
         "MsmSig" = "8:_UNDEFINED"
@@ -268,7 +286,7 @@
         "Entry"
         {
         "MsmKey" = "8:_462DFCF63A4B211281BB66B8042FDDE6"
-        "OwnerKey" = "8:_287F4B673C6047FE85190CD583630946"
+        "OwnerKey" = "8:_51BD30CA2EFA51A5E154319F1AC40A43"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -333,6 +351,24 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_511861D44C294CC49E6ADEECFF6D280D"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_51BD30CA2EFA51A5E154319F1AC40A43"
+        "OwnerKey" = "8:_728C6FC8F5A9489E99B90267CF222057"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_51BD30CA2EFA51A5E154319F1AC40A43"
+        "OwnerKey" = "8:_95FFA0C1861744A8AEDD30730C62BC71"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_5310221CD08F44D292DCF0B0ED87D3B7"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -383,6 +419,12 @@
         {
         "MsmKey" = "8:_63B715DB9FE55BFABAA239D1BB071F5A"
         "OwnerKey" = "8:_95FFA0C1861744A8AEDD30730C62BC71"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_63BB210B1D4A4942884D0AF9D014669C"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -621,6 +663,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_87C9AF51DD794F15A6BBD4CE377528DB"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_8A7CD7035A644CC7A7545F4A6CD21F30"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -682,6 +730,12 @@
         "Entry"
         {
         "MsmKey" = "8:_A47D855851D24EF48CD885198170885A"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_A4F587479211426EB2AF88A8E977FB95"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -915,6 +969,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_CFD8BA6A00624BFBB3B8ADBFF5998120"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_CFDE562FCC9A4998ABF72EF2340B98E4"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -976,6 +1036,12 @@
         "Entry"
         {
         "MsmKey" = "8:_D4C5952A574D468EB26A7521B23897EE"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_D8CACC4645FF455CA2BE333CF16E8E74"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -1125,6 +1191,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_F342EF60C8F0456483934730E076AFA2"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_F361B1A3D80543F39327D2AA777577BC"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -1258,7 +1330,7 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_287F4B673C6047FE85190CD583630946"
+        "OwnerKey" = "8:_51BD30CA2EFA51A5E154319F1AC40A43"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -1652,6 +1724,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_02659AEAB3584679845F530632DFBF8B"
+            {
+            "SourcePath" = "8:..\\Data\\Shapefiles\\Detroit\\Detroit_Counties.dbf"
+            "TargetName" = "8:Detroit_Counties.dbf"
+            "Tag" = "8:"
+            "Folder" = "8:_1112322FBEAA45B786D82DEE8A1D434F"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_050922F0DB8443DFA4D253D061C14E2A"
             {
             "AssemblyRegister" = "3:1"
@@ -1681,6 +1773,26 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_0525034FA526442A9E31DADED4D87733"
+            {
+            "SourcePath" = "8:..\\Data\\Shapefiles\\Detroit\\Detroit_1km.shx"
+            "TargetName" = "8:Detroit_1km.shx"
+            "Tag" = "8:"
+            "Folder" = "8:_1112322FBEAA45B786D82DEE8A1D434F"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_05A23EC98F8E4914A66BE2B49C797A3F"
@@ -1987,37 +2099,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_287F4B673C6047FE85190CD583630946"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:FireBirdHelper, Version=1.0.18.0, Culture=neutral, processorArchitecture=AMD64"
-                "ScatterAssemblies"
-                {
-                    "_287F4B673C6047FE85190CD583630946"
-                    {
-                    "Name" = "8:FireBirdHelper.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:FireBirdHelper.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_CFC83EA26393402992AA74648BF4EBD1"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:TRUE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_2914476F2D275306718B9A9E69394D8E"
             {
             "AssemblyRegister" = "3:1"
@@ -2182,6 +2263,46 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_37CD51787CC74668B99F470684C11803"
+            {
+            "SourcePath" = "8:..\\Data\\Shapefiles\\Detroit\\Detroit_ZIP.shp"
+            "TargetName" = "8:Detroit_ZIP.shp"
+            "Tag" = "8:"
+            "Folder" = "8:_1112322FBEAA45B786D82DEE8A1D434F"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_3A13D40CE5014D79852B819857DA8BC5"
+            {
+            "SourcePath" = "8:..\\Data\\Shapefiles\\Detroit\\Detroit_Counties.shp"
+            "TargetName" = "8:Detroit_Counties.shp"
+            "Tag" = "8:"
+            "Folder" = "8:_1112322FBEAA45B786D82DEE8A1D434F"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_3A449D36F2D7D6FCD21F114440FBD25D"
             {
             "AssemblyRegister" = "3:1"
@@ -2219,6 +2340,26 @@
             "TargetName" = "8:County_epa2.sbn"
             "Tag" = "8:"
             "Folder" = "8:_34CF21406BF74E749595F66DE4D37218"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_3F088A4FD9004A64B312025F92D2C58A"
+            {
+            "SourcePath" = "8:..\\Data\\Shapefiles\\Detroit\\Detroit_ZIP.prj"
+            "TargetName" = "8:Detroit_ZIP.prj"
+            "Tag" = "8:"
+            "Folder" = "8:_1112322FBEAA45B786D82DEE8A1D434F"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -2333,6 +2474,57 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_511861D44C294CC49E6ADEECFF6D280D"
+            {
+            "SourcePath" = "8:..\\Data\\Shapefiles\\Detroit\\Detroit_1km.prj"
+            "TargetName" = "8:Detroit_1km.prj"
+            "Tag" = "8:"
+            "Folder" = "8:_1112322FBEAA45B786D82DEE8A1D434F"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_51BD30CA2EFA51A5E154319F1AC40A43"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:FireBirdHelper, Version=1.0.18.0, Culture=neutral, processorArchitecture=x86"
+                "ScatterAssemblies"
+                {
+                    "_51BD30CA2EFA51A5E154319F1AC40A43"
+                    {
+                    "Name" = "8:FireBirdHelper.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:FireBirdHelper.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_CFC83EA26393402992AA74648BF4EBD1"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:TRUE"
+            "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_5310221CD08F44D292DCF0B0ED87D3B7"
@@ -2455,6 +2647,26 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_63BB210B1D4A4942884D0AF9D014669C"
+            {
+            "SourcePath" = "8:..\\Data\\Shapefiles\\Detroit\\Detroit_1km.dbf"
+            "TargetName" = "8:Detroit_1km.dbf"
+            "Tag" = "8:"
+            "Folder" = "8:_1112322FBEAA45B786D82DEE8A1D434F"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_66B011508F644F0B80AAA5AA8EBBC495"
@@ -2832,6 +3044,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_87C9AF51DD794F15A6BBD4CE377528DB"
+            {
+            "SourcePath" = "8:..\\Data\\Shapefiles\\Detroit\\Detroit_Counties.shx"
+            "TargetName" = "8:Detroit_Counties.shx"
+            "Tag" = "8:"
+            "Folder" = "8:_1112322FBEAA45B786D82DEE8A1D434F"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8A7CD7035A644CC7A7545F4A6CD21F30"
             {
             "SourcePath" = "8:..\\Data\\Shapefiles\\United States\\CMAQ_12km_Nation.shp"
@@ -3018,6 +3250,26 @@
             "TargetName" = "8:BenMAP-CE_landscape_8.5x11.mwl"
             "Tag" = "8:"
             "Folder" = "8:_6E88E7E5F1754DCD8269CC214DFC1B50"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A4F587479211426EB2AF88A8E977FB95"
+            {
+            "SourcePath" = "8:..\\Data\\Shapefiles\\Detroit\\Detroit_ZIP.dbf"
+            "TargetName" = "8:Detroit_ZIP.dbf"
+            "Tag" = "8:"
+            "Folder" = "8:_1112322FBEAA45B786D82DEE8A1D434F"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -3596,6 +3848,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_CFD8BA6A00624BFBB3B8ADBFF5998120"
+            {
+            "SourcePath" = "8:..\\Data\\Shapefiles\\Detroit\\Detroit_1km.shp"
+            "TargetName" = "8:Detroit_1km.shp"
+            "Tag" = "8:"
+            "Folder" = "8:_1112322FBEAA45B786D82DEE8A1D434F"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D11E98ECE51B47C28D15830355EF00E4"
             {
             "SourcePath" = "8:..\\Data\\Shapefiles\\China\\YRD_04km_city_WGS84_LCC_Proj1.sbn"
@@ -3744,6 +4016,26 @@
             "TargetName" = "8:Report_Regions.dbf"
             "Tag" = "8:"
             "Folder" = "8:_34CF21406BF74E749595F66DE4D37218"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D8CACC4645FF455CA2BE333CF16E8E74"
+            {
+            "SourcePath" = "8:..\\Data\\Shapefiles\\Detroit\\Detroit_Counties.prj"
+            "TargetName" = "8:Detroit_Counties.prj"
+            "Tag" = "8:"
+            "Folder" = "8:_1112322FBEAA45B786D82DEE8A1D434F"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -4091,6 +4383,26 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F342EF60C8F0456483934730E076AFA2"
+            {
+            "SourcePath" = "8:..\\Data\\Shapefiles\\Detroit\\Detroit_ZIP.shx"
+            "TargetName" = "8:Detroit_ZIP.shx"
+            "Tag" = "8:"
+            "Folder" = "8:_1112322FBEAA45B786D82DEE8A1D434F"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F361B1A3D80543F39327D2AA777577BC"
             {
             "SourcePath" = "8:..\\Data\\Shapefiles\\United States\\CMAQ_12km_Nation_Clipped.shx"
@@ -4369,6 +4681,17 @@
                                     "Property" = "8:_57096883A66944A3BA74E6A60DDFA8F5"
                                         "Folders"
                                         {
+                                            "{9EF0B969-E518-4E46-987F-47570745A589}:_1112322FBEAA45B786D82DEE8A1D434F"
+                                            {
+                                            "Name" = "8:Detroit"
+                                            "AlwaysCreate" = "11:FALSE"
+                                            "Condition" = "8:"
+                                            "Transitive" = "11:FALSE"
+                                            "Property" = "8:_653C03DD4E474BEE99CBFD0C0AA20B6D"
+                                                "Folders"
+                                                {
+                                                }
+                                            }
                                             "{9EF0B969-E518-4E46-987F-47570745A589}:_34CF21406BF74E749595F66DE4D37218"
                                             {
                                             "Name" = "8:United States"
@@ -4560,7 +4883,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:BenMAP-CE"
         "ProductCode" = "8:{D565775A-2B13-4F8E-B882-2762B82D8749}"
-        "PackageCode" = "8:{E5298F7F-DF68-4404-8C4B-1F4ED9F7C0CE}"
+        "PackageCode" = "8:{F0CAF76C-70EF-4728-AF23-E6B525D63404}"
         "UpgradeCode" = "8:{10C0CCD0-CE12-43BB-BB3E-44059FCA4ADB}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -4581,7 +4904,7 @@
         "ARPIconIndex" = "3:0"
         "SearchPath" = "8:"
         "UseSystemSearchPath" = "11:TRUE"
-        "TargetPlatform" = "3:1"
+        "TargetPlatform" = "3:0"
         "PreBuildEvent" = "8:"
         "PostBuildEvent" = "8:"
         "RunPostBuildEvent" = "3:0"
@@ -4682,7 +5005,7 @@
         {
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_41DA277E3DC34C36A4FE9B6BC1251C29"
             {
-            "Name" = "8:BenMAP-CE 1.2"
+            "Name" = "8:BenMAP-CE 1.1.2"
             "Arguments" = "8:"
             "Description" = "8:"
             "ShowCmd" = "3:1"
@@ -4696,7 +5019,7 @@
             }
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_575F78EE29BB4A19B77DD2AFD72C7E11"
             {
-            "Name" = "8:BenMAP-CE 1.2"
+            "Name" = "8:BenMAP-CE 1.1"
             "Arguments" = "8:"
             "Description" = "8:"
             "ShowCmd" = "3:1"
@@ -5165,7 +5488,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_728C6FC8F5A9489E99B90267CF222057"
             {
-            "SourcePath" = "8:..\\obj\\x64\\Release\\BenMAP.exe"
+            "SourcePath" = "8:..\\obj\\x86\\Release\\BenMAP.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_CFC83EA26393402992AA74648BF4EBD1"
@@ -5193,7 +5516,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_95FFA0C1861744A8AEDD30730C62BC71"
             {
-            "SourcePath" = "8:..\\obj\\x64\\Release\\BenMAP.exe"
+            "SourcePath" = "8:..\\obj\\x86\\Release\\BenMAP.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_CFC83EA26393402992AA74648BF4EBD1"
@@ -5249,7 +5572,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_CFDE562FCC9A4998ABF72EF2340B98E4"
             {
-            "SourcePath" = "8:..\\FireBirdHelper\\obj\\x64\\Release\\FireBirdHelper.dll"
+            "SourcePath" = "8:..\\FireBirdHelper\\obj\\x86\\Release\\FireBirdHelper.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_CFC83EA26393402992AA74648BF4EBD1"
