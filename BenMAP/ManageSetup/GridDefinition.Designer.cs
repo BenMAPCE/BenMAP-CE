@@ -151,7 +151,7 @@ namespace BenMAP
             this.txtb_popGridLoc.Name = "txtb_popGridLoc";
             this.txtb_popGridLoc.Size = new System.Drawing.Size(236, 22);
             this.txtb_popGridLoc.TabIndex = 10;
-            this.txtb_popGridLoc.Text = "Data\\populationRaster\\PopUS_90mX10_int16uWz4.tif";
+            this.txtb_popGridLoc.Text = "BenMAP-CE\\Data\\populationRaster\\PopUS_90mX10_int16uWz4.tif";
             // 
             // label4
             // 
