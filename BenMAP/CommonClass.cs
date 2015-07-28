@@ -1149,7 +1149,7 @@ namespace BenMAP
                                     int count = 1;
                                     int maxTries = 15;
                                     Random rand = new Random();
-                                    double valToTry = .00001;
+                                    double valToTry = 0.0; // .00001;
                                     while(!goodIntersection && count<maxTries)
                                         try{
                                             intersectFeature = selfFeature.Buffer(valToTry).Intersection(other.Features[iotherFeature]);
