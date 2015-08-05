@@ -1093,7 +1093,7 @@ namespace BenMAP
                         }
                     }
 
-                    System.IO.File.WriteAllLines(@"p:\temp\otherPopCounts."+ Guid.NewGuid().ToString()+".csv", (String[])lines.ToArray(typeof(string)));
+                    //System.IO.File.WriteAllLines(@"p:\temp\otherPopCounts."+ Guid.NewGuid().ToString()+".csv", (String[])lines.ToArray(typeof(string)));
 
                     lines.Clear();
                     lines.Add("File," + self.Filename);
@@ -1497,7 +1497,7 @@ namespace BenMAP
                             Console.WriteLine(selfFeature.Fid + " done of " + self.Features.Count);
                         }
                     }
-                    System.IO.File.WriteAllLines(@"p:\temp\otherSelfIntersectPopCounts."+ Guid.NewGuid().ToString()+".csv", (String[])lines.ToArray(typeof(string)));
+                    //System.IO.File.WriteAllLines(@"p:\temp\otherSelfIntersectPopCounts."+ Guid.NewGuid().ToString()+".csv", (String[])lines.ToArray(typeof(string)));
                     foreach (KeyValuePair<string, Dictionary<string, double>> k in dicRelation)
                     {
                         if (k.Value.Count > 0)
