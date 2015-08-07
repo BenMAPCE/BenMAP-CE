@@ -273,7 +273,6 @@ namespace BenMAP
                         int PercentageID = reader.ReadInt32();
                         int SourceGriddefinitionID = reader.ReadInt32();
                         int TargetGriddefinitionID = reader.ReadInt32();
-                        int Crosswalk_Type_ID = reader.ReadInt32();
                         string commandText = string.Format("select PercentageID from GriddefinitionPercentages where PercentageID={0}", PercentageID);
                         object obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
                         if (obj != null)
@@ -289,12 +288,9 @@ namespace BenMAP
                                 PercentageID = maxPercentageID + 1;
                             }
                         }
-                        // 2015 03 20 - added crosswalk type id to support new crosswalk types
-                        commandText = string.Format("insert into GriddefinitionPercentages(PercentageID,SourceGriddefinitionID,TargetGriddefinitionID, "
-                            + "crosswalk_type_id) values({0},{1},{2},{3})", PercentageID, 
+                        commandText = string.Format("insert into GriddefinitionPercentages(PercentageID,SourceGriddefinitionID,TargetGriddefinitionID) values({0},{1},{2})", PercentageID, 
                             dicGriddefinitionID.ContainsKey(SourceGriddefinitionID) ? dicGriddefinitionID[SourceGriddefinitionID] : SourceGriddefinitionID, 
-                            dicGriddefinitionID.ContainsKey(TargetGriddefinitionID) ? dicGriddefinitionID[TargetGriddefinitionID] : TargetGriddefinitionID,
-                            dicGriddefinitionID.ContainsKey(Crosswalk_Type_ID) ? dicGriddefinitionID[Crosswalk_Type_ID] : Crosswalk_Type_ID);
+                            dicGriddefinitionID.ContainsKey(TargetGriddefinitionID) ? dicGriddefinitionID[TargetGriddefinitionID] : TargetGriddefinitionID);
                         fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                         pBarImport.PerformStep();
                     }

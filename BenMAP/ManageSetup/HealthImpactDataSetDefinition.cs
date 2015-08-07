@@ -12,7 +12,7 @@ using ESIL.DBUtility;
 
 namespace BenMAP
 {
-    public partial class HealthImpactDataSetDefinition : FormBase
+    public partial class HealthImpactDataSetDefinition: FormBase
     {
         private bool _isEdit = false;
         private bool _isLocked = false;

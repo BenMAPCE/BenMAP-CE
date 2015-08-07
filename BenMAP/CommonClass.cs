@@ -520,10 +520,9 @@ namespace BenMAP
                 if (lstGridRelationshipAll == null || isAddPercentage == true)
                 {
                     isAddPercentage = false;
-                    // 2015 03 20 - added crosswalk type id to support new crosswalk types
                     List<GridRelationship> lstGridRelationship = new List<GridRelationship>(); 
                     lstGridRelationshipAll = new List<GridRelationship>(); 
-                    string commandText = "select   PercentageID,SourceGridDefinitionID,TargetGridDefinitionID,Crosswalk_Type_ID  from GridDefinitionPercentages";
+                    string commandText = "select   PercentageID,SourceGridDefinitionID,TargetGridDefinitionID  from GridDefinitionPercentages";
                     ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                     System.Data.DataSet dsGrid = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                     foreach (DataRow dr in dsGrid.Tables[0].Rows)
@@ -1605,9 +1604,8 @@ namespace BenMAP
                     string commandText = "select max(PercentageID) from GridDefinitionPercentages";
                     int iMax = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
 
-                    // 2015 03 20 - assume that all new crosswalks are of type 1
-                    commandText = string.Format("insert into GridDefinitionPercentages(PERCENTAGEID,SOURCEGRIDDEFINITIONID, TARGETGRIDDEFINITIONID, CROSSWALK_TYPE_ID) "
-                        + "values({0},{1},{2}, {3})", iMax, small, big, 1);
+                    commandText = string.Format("insert into GridDefinitionPercentages(PERCENTAGEID,SOURCEGRIDDEFINITIONID, TARGETGRIDDEFINITIONID) "
+                        + "values({0},{1},{2})", iMax, small, big);
                     fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                     foreach (GridRelationshipAttributePercentage grp in lstGR)
                     {

@@ -930,7 +930,7 @@ namespace BenMAP
                     string commandText = "select max(PercentageID) from GridDefinitionPercentages";
                     int iMax = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
                     //assume all are pop based.
-                    commandText = string.Format("insert into GridDefinitionPercentages(PERCENTAGEID, SOURCEGRIDDEFINITIONID, TARGETGRIDDEFINITIONID, CROSSWALK_TYPE_ID) values({0},{1},{2},1)", iMax, small, big);
+                    commandText = string.Format("insert into GridDefinitionPercentages(PERCENTAGEID, SOURCEGRIDDEFINITIONID, TARGETGRIDDEFINITIONID) values({0},{1},{2})", iMax, small, big);
                     fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                     foreach (GridRelationshipAttributePercentage grp in lstGR)
                     {
