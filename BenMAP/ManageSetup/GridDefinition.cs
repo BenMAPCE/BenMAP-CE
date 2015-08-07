@@ -436,23 +436,23 @@ namespace BenMAP
             try
             {
                 String rasterFileLoc = txtb_popGridLoc.Text;
-                if (rasterFileLoc == null || rasterFileLoc.Trim().Length == 0)
-                {
-                    MessageBox.Show("Please enter a raster path before continuing");
-                    return;
-                }
-                //see if it is relative path, if so assume from base of data
-                if (!System.IO.Path.IsPathRooted(rasterFileLoc))
-                {
-                    String exeDir = (new FileInfo(CommonClass.DataFilePath)).Directory.ToString();
-                    rasterFileLoc = Path.Combine(exeDir, rasterFileLoc);
-                }
+                //if (rasterFileLoc == null || rasterFileLoc.Trim().Length == 0)
+                //{
+                //    MessageBox.Show("Please enter a raster path before continuing");
+                //    return;
+                //}
+                ////see if it is relative path, if so assume from base of data
+                //if (!System.IO.Path.IsPathRooted(rasterFileLoc))
+                //{
+                //    String exeDir = (new FileInfo(CommonClass.DataFilePath)).Directory.ToString();
+                //    rasterFileLoc = Path.Combine(exeDir, rasterFileLoc);
+                //}
 
-                if (!File.Exists(rasterFileLoc))
-                {
-                    MessageBox.Show("No raster file found at " + rasterFileLoc);
-                    return;
-                }
+                //if (!File.Exists(rasterFileLoc))
+                //{
+                //    MessageBox.Show("No raster file found at " + rasterFileLoc);
+                //    return;
+                //}
 
                 if (cboGridType.SelectedIndex == 0)
                 {

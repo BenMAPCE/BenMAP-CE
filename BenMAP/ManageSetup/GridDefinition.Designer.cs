@@ -144,6 +144,7 @@ namespace BenMAP
             this.btn_browsePopRaster.Text = "Browse . .";
             this.btn_browsePopRaster.UseVisualStyleBackColor = true;
             this.btn_browsePopRaster.Click += new System.EventHandler(this.btn_browsePopRaster_Click);
+            this.btn_browsePopRaster.Visible = false;
             // 
             // txtb_popGridLoc
             // 
@@ -152,6 +153,7 @@ namespace BenMAP
             this.txtb_popGridLoc.Size = new System.Drawing.Size(236, 22);
             this.txtb_popGridLoc.TabIndex = 10;
             this.txtb_popGridLoc.Text = "BenMAP-CE\\Data\\populationRaster\\PopUS_90mX10_int16uWz4.tif";
+            this.txtb_popGridLoc.Visible = false;
             // 
             // label4
             // 
@@ -161,6 +163,7 @@ namespace BenMAP
             this.label4.Size = new System.Drawing.Size(283, 14);
             this.label4.TabIndex = 9;
             this.label4.Text = "Population Raster (tif: NAD_1983_Albers projection)";
+            this.label4.Visible = false;
             // 
             // btnViewMetadata
             // 
