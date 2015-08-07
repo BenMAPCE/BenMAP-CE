@@ -922,7 +922,7 @@ namespace BenMAP
   //                  }
     //                else
       //              {
-                        lstGR = CommonClass.IntersectionPercentage(fsBig, fsSmall, FieldJoinType.All, popLocation);
+                        lstGR = CommonClass.IntersectionPercentage(fsBig, fsSmall, FieldJoinType.All);
         //            }
                     Dictionary<string, List<GridRelationshipAttributePercentage>> dic = new Dictionary<string, List<GridRelationshipAttributePercentage>>();
                     dic.Add(small + "," + big, lstGR);
