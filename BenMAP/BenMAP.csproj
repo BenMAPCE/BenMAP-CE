@@ -2119,14 +2119,14 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>
-call "$(DevEnvDir)..\tools\vsvars32.bat"
+rem call "$(DevEnvDir)..\tools\vsvars32.bat"
 
-editbin /LARGEADDRESSAWARE "$(TargetPath)"
+rem editbin /LARGEADDRESSAWARE "$(TargetPath)"
 
 </PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>python $(ProjectDir)BuildDate.py</PreBuildEvent>
+    <PreBuildEvent>rem python $(ProjectDir)BuildDate.py</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
