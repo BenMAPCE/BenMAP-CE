@@ -914,6 +914,253 @@ namespace BenMAP
         {
             return value.ToString("HH:mm:ss");
         }
+
+
+        public static List<GridRelationshipAttributePercentage> IntersectionPercentage(IFeatureSet self, IFeatureSet other, FieldJoinType joinType)
+        {
+            List<GridRelationshipAttributePercentage> result = new List<GridRelationshipAttributePercentage>();
+            try
+            {
+                if (joinType == FieldJoinType.All)
+                {
+                    if (!self.AttributesPopulated) self.FillAttributes();
+                    if (!other.AttributesPopulated) other.FillAttributes();
+                    int i = 0;
+                    Dictionary<string, Dictionary<string, double>> dicRelation = new Dictionary<string, Dictionary<string, double>>();
+                    Polygon pSelfExtent = null;
+                    Polygon pOtherExtent = null;
+
+                    foreach (IFeature selfFeature in self.Features)
+                    {
+                        List<int> potentialOthers = other.SelectIndices(selfFeature.Envelope.ToExtent());
+                        foreach (int iotherFeature in potentialOthers)
+                        {
+                            if (iotherFeature == 33)
+                            {
+                            }
+                            IFeature intersactFeature = null;
+
+
+                            if ((other.Features.Count < 5 || self.Features.Count < 5) && other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum)) == 0 &&
+other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Maximum.X, selfFeature.Envelope.Minimum.Y)) == 0 &&
+other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Maximum)) == 0 &&
+other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X, selfFeature.Envelope.Maximum.Y)) == 0
+)
+                            {
+                                intersactFeature = selfFeature;
+                            }
+
+                            else if ((other.Features.Count < 5 || self.Features.Count < 5) && selfFeature.Distance(new Point(other.Features[iotherFeature].Envelope.Minimum)) == 0 &&
+                           selfFeature.Distance(new Point(other.Features[iotherFeature].Envelope.Maximum.X, other.Features[iotherFeature].Envelope.Minimum.Y)) == 0 &&
+                            selfFeature.Distance(new Point(other.Features[iotherFeature].Envelope.Maximum)) == 0 &&
+                            selfFeature.Distance(new Point(other.Features[iotherFeature].Envelope.Minimum.X, other.Features[iotherFeature].Envelope.Maximum.Y)) == 0)
+                            {
+                                intersactFeature = other.Features[iotherFeature];
+                            }
+                            else
+                            {
+                                try
+                                {
+                                    intersactFeature = selfFeature.Intersection(other.Features[iotherFeature]);
+                                }
+                                catch (Exception ex)
+                                {
+                                    try
+                                    {
+                                        if (selfFeature.IsWithinDistance(other.Features[iotherFeature], 0.00001))
+                                        {
+                                            if (selfFeature.Area() > other.Features[iotherFeature].Area())
+                                            {
+                                                bool isContains = false;
+                                                isContains = polygonContainPolygon(selfFeature, other.Features[iotherFeature]);
+                                                if (isContains)
+                                                {
+                                                    intersactFeature = other.Features[iotherFeature];
+                                                }
+                                                else
+                                                    intersactFeature = null;
+                                            }
+                                            else if (selfFeature.Area() < other.Features[iotherFeature].Area())
+                                            {
+                                                intersactFeature = selfFeature;
+
+                                                bool isContains = false;
+                                                isContains = polygonContainPolygon(other.Features[iotherFeature], selfFeature);
+                                                if (isContains)
+                                                {
+                                                    intersactFeature = selfFeature;
+                                                }
+                                                else
+                                                    intersactFeature = null;
+                                            }
+                                        }
+                                    }
+                                    catch
+                                    {
+                                    }
+                                }
+
+                            }
+                            if (intersactFeature != null && intersactFeature.BasicGeometry != null)
+                            {
+                                try
+                                {
+                                    double dArea = 0;
+                                    try
+                                    {
+                                        dArea = intersactFeature.Area();
+                                    }
+                                    catch
+                                    {
+                                        if (selfFeature.IsWithinDistance(other.Features[iotherFeature], 0.00001))
+                                        {
+                                            if (selfFeature.Area() > other.Features[iotherFeature].Area())
+                                            {
+                                                bool isContains = false;
+                                                isContains = polygonContainPolygon(selfFeature, other.Features[iotherFeature]);
+                                                if (isContains)
+                                                {
+                                                    intersactFeature = other.Features[iotherFeature];
+                                                    dArea = intersactFeature.Area();
+                                                }
+                                                else
+                                                    dArea = 0;
+
+                                            }
+                                            else if (selfFeature.Area() < other.Features[iotherFeature].Area())
+                                            {
+                                                intersactFeature = selfFeature;
+                                                dArea = intersactFeature.Area();
+
+                                                bool isContains = false;
+                                                isContains = polygonContainPolygon(other.Features[iotherFeature], selfFeature);
+                                                if (isContains)
+                                                {
+                                                    intersactFeature = selfFeature;
+                                                    dArea = intersactFeature.Area();
+                                                }
+                                                else
+                                                    dArea = 0;
+                                            }
+                                            else
+                                                dArea = 0;
+
+                                        }
+                                        else
+                                            dArea = 0;
+                                    }
+                                    if (dArea > 0)
+                                    {
+
+                                        if (dicRelation.ContainsKey(other.Features[iotherFeature].DataRow["Col"] + "," + other.Features[iotherFeature].DataRow["Row"]))
+                                        {
+                                            dicRelation[other.Features[iotherFeature].DataRow["Col"] + "," + other.Features[iotherFeature].DataRow["Row"]].Add
+                                                (selfFeature.DataRow["Col"] + "," + selfFeature.DataRow["Row"], dArea / other.Features[iotherFeature].Area());
+                                        }
+                                        else
+                                        {
+                                            dicRelation.Add(other.Features[iotherFeature].DataRow["Col"] + "," + other.Features[iotherFeature].DataRow["Row"],
+                                                new Dictionary<string, double>());
+                                            dicRelation[other.Features[iotherFeature].DataRow["Col"] + "," + other.Features[iotherFeature].DataRow["Row"]].Add
+                                               (selfFeature.DataRow["Col"] + "," + selfFeature.DataRow["Row"], dArea / other.Features[iotherFeature].Area());
+                                        }
+                                    }
+                                }
+                                catch
+                                {
+                                    try
+                                    {
+                                        if (selfFeature.IsWithinDistance(other.Features[iotherFeature], 0.00001))
+                                        {
+                                            if (selfFeature.Area() > other.Features[iotherFeature].Area())
+                                                intersactFeature = other.Features[iotherFeature];
+                                            else
+                                                intersactFeature = selfFeature;
+                                        }
+                                        if (intersactFeature.Area() > 0)
+                                        {
+
+                                            if (dicRelation.ContainsKey(other.Features[iotherFeature].DataRow["Col"] + "," + other.Features[iotherFeature].DataRow["Row"]))
+                                            {
+                                                dicRelation[other.Features[iotherFeature].DataRow["Col"] + "," + other.Features[iotherFeature].DataRow["Row"]].Add
+                                                    (selfFeature.DataRow["Col"] + "," + selfFeature.DataRow["Row"], intersactFeature.Area() / other.Features[iotherFeature].Area());
+                                            }
+                                            else
+                                            {
+                                                dicRelation.Add(other.Features[iotherFeature].DataRow["Col"] + "," + other.Features[iotherFeature].DataRow["Row"],
+                                                    new Dictionary<string, double>());
+                                                dicRelation[other.Features[iotherFeature].DataRow["Col"] + "," + other.Features[iotherFeature].DataRow["Row"]].Add
+                                                   (selfFeature.DataRow["Col"] + "," + selfFeature.DataRow["Row"], intersactFeature.Area() / other.Features[iotherFeature].Area());
+                                            }
+                                        }
+                                    }
+                                    catch
+                                    {
+                                    }
+                                }
+                            }
+                        }
+
+                        i++;
+                    }
+                    foreach (KeyValuePair<string, Dictionary<string, double>> k in dicRelation)
+                    {
+                        if (k.Value.Count > 0)
+                        {
+                            string[] str = k.Key.Split(new char[] { ',' });
+                            if (k.Value.Count == 1)
+                            {
+
+                                string[] strin = k.Value.ToArray()[0].Key.Split(new char[] { ',' });
+
+                                GridRelationshipAttributePercentage gr = new GridRelationshipAttributePercentage()
+                                {
+
+                                    sourceCol = Convert.ToInt32(str[0]),
+                                    sourceRow = Convert.ToInt32(str[1]),
+                                    targetCol = Convert.ToInt32(strin[0]),
+                                    targetRow = Convert.ToInt32(strin[1]),
+                                    percentage = 1,
+                                };
+                                if (k.Value.First().Value > 0.000000000001)
+                                    result.Add(gr);
+
+                            }
+                            else
+                            {
+                                double d = 0.0;
+                                foreach (KeyValuePair<string, double> kin in k.Value)
+                                {
+                                    if (kin.Value > 0.000000000001) d = d + kin.Value;
+                                }
+                                foreach (KeyValuePair<string, double> kin in k.Value)
+                                {
+                                    if (kin.Value < 0.000000000001) continue;
+                                    string[] strin = kin.Key.Split(new char[] { ',' });
+
+                                    GridRelationshipAttributePercentage gr = new GridRelationshipAttributePercentage()
+                                    {
+                                        sourceCol = Convert.ToInt32(str[0]),
+                                        sourceRow = Convert.ToInt32(str[1]),
+                                        targetCol = Convert.ToInt32(strin[0]),
+                                        targetRow = Convert.ToInt32(strin[1]),
+                                        percentage = kin.Value / d,
+                                    };
+                                    result.Add(gr);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+            return result;
+        }
+
+
+
         public static bool Debug=false;
         public static Dictionary<String, Dictionary<int, double>> otherXrefCache = new Dictionary<string, Dictionary<int, double>>();
         public static List<GridRelationshipAttributePercentage> IntersectionPercentagePopulation(IFeatureSet self, IFeatureSet other, FieldJoinType joinType, String popRasterLoc)
