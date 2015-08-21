@@ -436,23 +436,23 @@ namespace BenMAP
             try
             {
                 String rasterFileLoc = txtb_popGridLoc.Text;
-                //if (rasterFileLoc == null || rasterFileLoc.Trim().Length == 0)
-                //{
-                //    MessageBox.Show("Please enter a raster path before continuing");
-                //    return;
-                //}
-                ////see if it is relative path, if so assume from base of data
-                //if (!System.IO.Path.IsPathRooted(rasterFileLoc))
-                //{
-                //    String exeDir = (new FileInfo(CommonClass.DataFilePath)).Directory.ToString();
-                //    rasterFileLoc = Path.Combine(exeDir, rasterFileLoc);
-                //}
+                if (rasterFileLoc == null || rasterFileLoc.Trim().Length == 0)
+                {
+                    MessageBox.Show("Please enter a raster path before continuing");
+                    return;
+                }
+                //see if it is relative path, if so assume from base of data
+                if (!System.IO.Path.IsPathRooted(rasterFileLoc))
+                {
+                    String exeDir = (new FileInfo(CommonClass.DataFilePath)).Directory.ToString();
+                    rasterFileLoc = Path.Combine(exeDir, rasterFileLoc);
+                }
 
-                //if (!File.Exists(rasterFileLoc))
-                //{
-                //    MessageBox.Show("No raster file found at " + rasterFileLoc);
-                //    return;
-                //}
+                if (!File.Exists(rasterFileLoc))
+                {
+                    MessageBox.Show("No raster file found at " + rasterFileLoc);
+                    return;
+                }
 
                 if (cboGridType.SelectedIndex == 0)
                 {
@@ -922,7 +922,7 @@ namespace BenMAP
   //                  }
     //                else
       //              {
-                        lstGR = CommonClass.IntersectionPercentage(fsBig, fsSmall, FieldJoinType.All);
+                        lstGR = CommonClass.IntersectionPercentage(fsBig, fsSmall, FieldJoinType.All, popLocation);
         //            }
                     Dictionary<string, List<GridRelationshipAttributePercentage>> dic = new Dictionary<string, List<GridRelationshipAttributePercentage>>();
                     dic.Add(small + "," + big, lstGR);
@@ -930,7 +930,7 @@ namespace BenMAP
                     string commandText = "select max(PercentageID) from GridDefinitionPercentages";
                     int iMax = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
                     //assume all are pop based.
-                    commandText = string.Format("insert into GridDefinitionPercentages(PERCENTAGEID, SOURCEGRIDDEFINITIONID, TARGETGRIDDEFINITIONID) values({0},{1},{2})", iMax, small, big);
+                    commandText = string.Format("insert into GridDefinitionPercentages(PERCENTAGEID, SOURCEGRIDDEFINITIONID, TARGETGRIDDEFINITIONID, CROSSWALK_TYPE_ID) values({0},{1},{2},1)", iMax, small, big);
                     fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                     foreach (GridRelationshipAttributePercentage grp in lstGR)
                     {
