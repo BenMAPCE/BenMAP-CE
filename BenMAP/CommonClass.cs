@@ -919,7 +919,7 @@ namespace BenMAP
         public static List<GridRelationshipAttributePercentage> IntersectionPercentage(IFeatureSet self, IFeatureSet other, FieldJoinType joinType, String popRasterLoc)
         {
             
-            //CommonClass.Debug = true;
+            ////CommonClass.Debug = true;
             IRaster myRS=null;
             ArrayList lines = new ArrayList();
             string gdalWarpEXELoc = (new FileInfo(System.Reflection.Assembly.GetEntryAssembly().Location)).Directory.ToString();
