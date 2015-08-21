@@ -916,7 +916,7 @@ namespace BenMAP
         }
         public static bool Debug=false;
         public static Dictionary<String, Dictionary<int, double>> otherXrefCache = new Dictionary<string, Dictionary<int, double>>();
-        public static List<GridRelationshipAttributePercentage> IntersectionPercentage(IFeatureSet self, IFeatureSet other, FieldJoinType joinType, String popRasterLoc)
+        public static List<GridRelationshipAttributePercentage> IntersectionPercentagePopulation(IFeatureSet self, IFeatureSet other, FieldJoinType joinType, String popRasterLoc)
         {
             
             ////CommonClass.Debug = true;
@@ -1601,7 +1601,7 @@ namespace BenMAP
                     fsSmall = DotSpatial.Data.FeatureSet.Open(shapeFileNameSmall);
 
 
-                    List<GridRelationshipAttributePercentage> lstGR = IntersectionPercentage(fsBig, fsSmall, FieldJoinType.All, popRasterFileLoc);
+                    List<GridRelationshipAttributePercentage> lstGR = IntersectionPercentagePopulation(fsBig, fsSmall, FieldJoinType.All, popRasterFileLoc);
                     string commandText = "select max(PercentageID) from GridDefinitionPercentages";
                     int iMax = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
 
