@@ -1,9 +1,19 @@
 #!/usr/bin/python
 import time
 import datetime
+import os
+import sys
+
+
+basepath = sys.argv[1]
+os.chdir(basepath)
 
 i = datetime.datetime.now()
-with open('//../BenMAP-CE/BenMAP/Resources/BuildDate.txt','w') as f:
+
+
+filename ='BuildDate.txt'
+#print "Date updated in: " + filename
+with open(filename,'w') as f:
     f.write ( time.strftime("%B") + " %s, %s" %(i.day,i.year))
 
 
