@@ -2127,7 +2127,7 @@ rem editbin /LARGEADDRESSAWARE "$(TargetPath)"
 </PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>call $(ProjectDir)\BuildScript\BuildDate.exe</PreBuildEvent>
+    <PreBuildEvent>call $(ProjectDir)\BuildScript\BuildDate.exe $(ProjectDir)Resources</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
