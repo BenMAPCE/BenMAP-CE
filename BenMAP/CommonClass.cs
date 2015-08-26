@@ -253,9 +253,9 @@ namespace BenMAP
         {
             // 2015 01 29 - removed code and return class connection to prevent spawning connections that were never closing.
             // STOPPED HERE
-            return CommonClass.Connection;
+           // return CommonClass.Connection;
 
-            /*
+            
             ConnectionStringSettings settings = ConfigurationManager.ConnectionStrings["ConnectionString"];
             string str = settings.ConnectionString;
             //if (!str.Contains(":"))
@@ -265,7 +265,7 @@ namespace BenMAP
             FbConnection connection = new FirebirdSql.Data.FirebirdClient.FbConnection(str);
 
             return connection;
-             */
+             
         }
 
 

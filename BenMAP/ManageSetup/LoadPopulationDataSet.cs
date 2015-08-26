@@ -610,7 +610,8 @@ namespace BenMAP
             { CommonClass.Connection.Open(); }
             FirebirdSql.Data.FirebirdClient.FbConnection fbconnection = CommonClass.getNewConnection();
             fbconnection.Open();
-            FirebirdSql.Data.FirebirdClient.FbTransaction fbtra = fbconnection.BeginTransaction(); FirebirdSql.Data.FirebirdClient.FbCommand fbCommand = new FirebirdSql.Data.FirebirdClient.FbCommand();
+            FirebirdSql.Data.FirebirdClient.FbTransaction fbtra = fbconnection.BeginTransaction(); 
+            FirebirdSql.Data.FirebirdClient.FbCommand fbCommand = new FirebirdSql.Data.FirebirdClient.FbCommand();
             fbCommand.Connection = fbconnection;
             fbCommand.CommandType = CommandType.Text;
             fbCommand.Transaction = fbtra;
