@@ -608,7 +608,7 @@ namespace BenMAP
             string commandText = string.Empty;
             if (CommonClass.Connection.State != ConnectionState.Open)
             { CommonClass.Connection.Open(); }
-            FirebirdSql.Data.FirebirdClient.FbConnection fbconnection = CommonClass.getNewConnection();
+            FirebirdSql.Data.FirebirdClient.FbConnection fbconnection = CommonClass.getNewConnectionForTransactions();
             fbconnection.Open();
             FirebirdSql.Data.FirebirdClient.FbTransaction fbtra = fbconnection.BeginTransaction(); 
             FirebirdSql.Data.FirebirdClient.FbCommand fbCommand = new FirebirdSql.Data.FirebirdClient.FbCommand();
@@ -1169,6 +1169,9 @@ namespace BenMAP
                 }
                 fbtra.Commit();
                 insertMetadata(dataSetID);
+                //added dispose and close to deal with hanging 8/27/2015 -AS
+                fbtra.Dispose();
+                fbconnection.Close();
                 this.DialogResult = DialogResult.OK;
             }
             catch (Exception ex)
