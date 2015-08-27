@@ -1178,6 +1178,9 @@ namespace BenMAP
             {
                 MessageBox.Show(ex.Message);
                 fbtra.Rollback();
+                //added dispose and close to deal with hanging 8/27/2015 -AS
+                fbtra.Dispose();
+                fbconnection.Close();
                 lblprogbar.Text = "";
                 WaitClose();
             }
