@@ -17,7 +17,6 @@ namespace BenMAP
         private void InitializeComponent()
         {
             this.olvColumn34 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvColumn7 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.grpCancelOK = new System.Windows.Forms.GroupBox();
@@ -61,6 +60,7 @@ namespace BenMAP
             this.olvColumn31 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn32 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn33 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvColumn7 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.txtFilter = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -90,13 +90,6 @@ namespace BenMAP
             this.olvColumn34.Text = "CRFunctionID";
             this.olvColumn34.Width = 100;
             // 
-            // olvColumn7
-            // 
-            this.olvColumn7.AspectName = "metadataid";
-            this.olvColumn7.DisplayIndex = 33;
-            this.olvColumn7.IsVisible = false;
-            this.olvColumn7.Text = "Metadata ID";
-            // 
             // statusStrip1
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -114,8 +107,8 @@ namespace BenMAP
             // 
             // grpCancelOK
             // 
-            this.grpCancelOK.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.grpCancelOK.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.grpCancelOK.Controls.Add(this.flowLayoutPanel1);
             this.grpCancelOK.Location = new System.Drawing.Point(12, 543);
             this.grpCancelOK.Name = "grpCancelOK";
@@ -171,9 +164,9 @@ namespace BenMAP
             // 
             // grpHealthImpactFunctions
             // 
-            this.grpHealthImpactFunctions.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.grpHealthImpactFunctions.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.grpHealthImpactFunctions.BackColor = System.Drawing.SystemColors.Control;
             this.grpHealthImpactFunctions.Controls.Add(this.chbGroup);
             this.grpHealthImpactFunctions.Controls.Add(this.olvData);
@@ -182,7 +175,7 @@ namespace BenMAP
             this.grpHealthImpactFunctions.Controls.Add(this.groupBox2);
             this.grpHealthImpactFunctions.Location = new System.Drawing.Point(208, 8);
             this.grpHealthImpactFunctions.Name = "grpHealthImpactFunctions";
-            this.grpHealthImpactFunctions.Size = new System.Drawing.Size(624, 547);
+            this.grpHealthImpactFunctions.Size = new System.Drawing.Size(632, 535);
             this.grpHealthImpactFunctions.TabIndex = 1;
             this.grpHealthImpactFunctions.TabStop = false;
             this.grpHealthImpactFunctions.Text = "Health Impact Functions In Dataset";
@@ -191,7 +184,7 @@ namespace BenMAP
             // 
             this.chbGroup.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.chbGroup.AutoSize = true;
-            this.chbGroup.Location = new System.Drawing.Point(559, 493);
+            this.chbGroup.Location = new System.Drawing.Point(559, 496);
             this.chbGroup.Name = "chbGroup";
             this.chbGroup.Size = new System.Drawing.Size(59, 18);
             this.chbGroup.TabIndex = 24;
@@ -239,9 +232,9 @@ namespace BenMAP
             this.olvData.AllowColumnReorder = true;
             this.olvData.AllowDrop = true;
             this.olvData.AlternateRowBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(240)))), ((int)(((byte)(220)))));
-            this.olvData.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.olvData.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.olvData.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.olvcEndpointGroup,
             this.olvColumn8,
@@ -295,7 +288,7 @@ namespace BenMAP
             this.olvData.ShowImagesOnSubItems = true;
             this.olvData.ShowItemCountOnGroups = true;
             this.olvData.ShowItemToolTips = true;
-            this.olvData.Size = new System.Drawing.Size(618, 441);
+            this.olvData.Size = new System.Drawing.Size(626, 444);
             this.olvData.TabIndex = 23;
             this.olvData.UseAlternatingBackColors = true;
             this.olvData.UseCellFormatEvents = true;
@@ -495,11 +488,18 @@ namespace BenMAP
             this.olvColumn33.Text = "Variable";
             this.olvColumn33.Width = 100;
             // 
+            // olvColumn7
+            // 
+            this.olvColumn7.AspectName = "metadataid";
+            this.olvColumn7.DisplayIndex = 33;
+            this.olvColumn7.IsVisible = false;
+            this.olvColumn7.Text = "Metadata ID";
+            // 
             // groupBox3
             // 
             this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.groupBox3.Controls.Add(this.txtFilter);
-            this.groupBox3.Location = new System.Drawing.Point(413, 472);
+            this.groupBox3.Location = new System.Drawing.Point(413, 475);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(140, 52);
             this.groupBox3.TabIndex = 22;
@@ -519,7 +519,7 @@ namespace BenMAP
             // 
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.groupBox1.Controls.Add(this.cboEndpointGroup);
-            this.groupBox1.Location = new System.Drawing.Point(7, 472);
+            this.groupBox1.Location = new System.Drawing.Point(7, 475);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(254, 52);
             this.groupBox1.TabIndex = 20;
@@ -541,7 +541,7 @@ namespace BenMAP
             // 
             this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.groupBox2.Controls.Add(this.cboPollutant);
-            this.groupBox2.Location = new System.Drawing.Point(267, 472);
+            this.groupBox2.Location = new System.Drawing.Point(267, 475);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(140, 52);
             this.groupBox2.TabIndex = 21;
@@ -561,8 +561,8 @@ namespace BenMAP
             // 
             // grpAvailableDataSets
             // 
-            this.grpAvailableDataSets.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)));
+            this.grpAvailableDataSets.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.grpAvailableDataSets.Controls.Add(this.btnEdit);
             this.grpAvailableDataSets.Controls.Add(this.btnAdd);
             this.grpAvailableDataSets.Controls.Add(this.btnDelete);
@@ -609,8 +609,8 @@ namespace BenMAP
             // 
             // lstAvailableDataSets
             // 
-            this.lstAvailableDataSets.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)));
+            this.lstAvailableDataSets.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.lstAvailableDataSets.FormattingEnabled = true;
             this.lstAvailableDataSets.HorizontalScrollbar = true;
             this.lstAvailableDataSets.ItemHeight = 14;
@@ -624,13 +624,12 @@ namespace BenMAP
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.AutoScroll = true;
-            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.ClientSize = new System.Drawing.Size(852, 641);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.grpCancelOK);
             this.Controls.Add(this.grpHealthImpactFunctions);
             this.Controls.Add(this.grpAvailableDataSets);
+            this.MinimumSize = new System.Drawing.Size(868, 679);
             this.Name = "ManageHealthImpactFunctionDataSets";
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
