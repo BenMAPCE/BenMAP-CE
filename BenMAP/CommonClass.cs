@@ -252,11 +252,10 @@ namespace BenMAP
         public static FbConnection getNewConnection()
         {
             // 2015 01 29 - removed code and return class connection to prevent spawning connections that were never closing.
-            // STOPPED HERE
             return CommonClass.Connection;
 
-            /*
-            ConnectionStringSettings settings = ConfigurationManager.ConnectionStrings["ConnectionString"];
+            
+     /*       ConnectionStringSettings settings = ConfigurationManager.ConnectionStrings["ConnectionString"];
             string str = settings.ConnectionString;
             //if (!str.Contains(":"))
             //    str = str.Substring(0, str.IndexOf("initial catalog=")) + "initial catalog=" + Application.StartupPath + @"\" + str.Substring(str.IndexOf("initial catalog=") + 16);
@@ -264,11 +263,28 @@ namespace BenMAP
                     
             FbConnection connection = new FirebirdSql.Data.FirebirdClient.FbConnection(str);
 
-            return connection;
-             */
+            return connection;*/
+             
         }
 
+        public static FbConnection getNewConnectionForTransactions()
+        {
+            // 2015 01 29 - removed code and return class connection to prevent spawning connections that were never closing.
+            // STOPPED HERE
+            // return CommonClass.Connection;
 
+
+            ConnectionStringSettings settings = ConfigurationManager.ConnectionStrings["ConnectionString"];
+            string str = settings.ConnectionString;
+            //if (!str.Contains(":"))
+            //    str = str.Substring(0, str.IndexOf("initial catalog=")) + "initial catalog=" + Application.StartupPath + @"\" + str.Substring(str.IndexOf("initial catalog=") + 16);
+            str = str.Replace("##USERDATA##", Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData));
+
+            FbConnection connection = new FirebirdSql.Data.FirebirdClient.FbConnection(str);
+
+            return connection;
+
+        }
 
 
 

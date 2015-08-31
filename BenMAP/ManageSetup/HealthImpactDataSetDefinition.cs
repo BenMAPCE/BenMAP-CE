@@ -12,23 +12,16 @@ using ESIL.DBUtility;
 
 namespace BenMAP
 {
-    public partial class HealthImpactDataSetDefinition: FormBase
+    public partial class HealthImpactDataSetDefinition : FormBase
     {
-        private bool _isEdit = false;
-        private bool _isLocked = false;
-        private bool _CopyingDataset = false;
-        private string _dataSetName;
-        
         private DataTable dt;//_dtDataFile;
         private MetadataClassObj _metadataObj = null;
         DataTable _dt = new DataTable();
         DataTable _dtEndpointGroup = new DataTable();
         DataTable _dtPollutant = new DataTable();
         private int _datasetID;
-        private object _newDataSetID = null;//used for copying an existing dataset that is locked. (the new datasetid)
-        private object _oldDataSetID = null;//used for copying an existing dataset that is locked. (the locked datasetid)
         private int crFunctionDataSetID = 0;
-        
+        private bool _isEdit = false;
         List<int> lstdeleteCRFunctionid = new List<int>();
 
         public HealthImpactDataSetDefinition()
@@ -42,37 +35,13 @@ namespace BenMAP
         /// Initializes a new instance of the <see cref="HealthImpactDataSetDefinition"/> class.
         /// </summary>
         /// <param name="dataSetID">The data set identifier which is the current function dataset id (CrfunctiondatasetID).</param>
-        //public HealthImpactDataSetDefinition(int dataSetID, bool isEdit)
-        public HealthImpactDataSetDefinition(int dataSetID, bool isLocked)
+        public HealthImpactDataSetDefinition(int dataSetID, bool isEdit)
         {   //this function should be called when doing an edit
-            ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
             InitializeComponent();
-            _isLocked = isLocked;
-            if (_isLocked)  // copy dataset
-            {
-                _datasetID = dataSetID;
-                _isEdit = !isLocked;
-                txtHealthImpactFunction.Enabled = true;//false;
-                // get selected dataset name for use in copy
-                string commandText = string.Format("select CRFUNCTIONDATASETNAME from CRFunctionDatasets WHERE CRFUNCTIONDATASETID={0} ",_datasetID);
-                object obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
-                string name = obj.ToString();
-                _dataSetName = name + "_Copy";
-                txtHealthImpactFunction.Text = _dataSetName;
-                _oldDataSetID = _datasetID;
-                _CopyingDataset = true;
-            }
-            else // edit dataset
-            {
-                crFunctionDataSetID = dataSetID;//when doing an edit I need to have the current funciton dataset ID
-                string commandText = string.Format("select CRFUNCTIONDATASETNAME from CRFunctionDatasets WHERE CRFUNCTIONDATASETID={0} ", dataSetID);
-                object obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
-                string name = obj.ToString();
-                txtHealthImpactFunction.Text = name;
-                _dataSetName = name;
-                txtHealthImpactFunction.Enabled = true;
-            }
-           
+            _datasetID = dataSetID;
+            crFunctionDataSetID = dataSetID;//when doing an edit I need to have the current funciton dataset ID
+            _isEdit = isEdit;
+            txtHealthImpactFunction.Enabled = false;
         }
         
         private void getcrFunctionDatasetID()
@@ -177,8 +146,7 @@ namespace BenMAP
 
         private void LoadFromFile()
         {
-            //LoadSelectedDataSet lmdataset = new LoadSelectedDataSet("Load Health Impact Dataset", "Health Impact Dataset Name:", txtHealthImpactFunction.Text, "Healthfunctions");
-            LoadSelectedDataSet lmdataset = new  LoadSelectedDataSet("Load Health Impact Dataset", "Health Impact Dataset Name:", txtHealthImpactFunction.Text, "Healthfunctions");
+            LoadSelectedDataSet lmdataset = new LoadSelectedDataSet("Load Health Impact Dataset", "Health Impact Dataset Name:", txtHealthImpactFunction.Text, "Healthfunctions");
             DialogResult dlgr = lmdataset.ShowDialog();
             if (dlgr.Equals(DialogResult.OK))
             {
@@ -1478,22 +1446,21 @@ namespace BenMAP
             this.DialogResult = DialogResult.Cancel;
         }
 
+        //private void btnOK_Click(object sender, EventArgs e)
+        //{
+        //}
+
         private void HealthImpactDataSetDefinition_Load(object sender, EventArgs e)
         {
-            lblProgress.Visible = false;
-            progressBar1.Visible = false;
-            FireBirdHelperBase fb = new ESILFireBirdHelper();
-            DataSet ds = new DataSet();
-            string commandText = string.Empty;
-                
             try
             {
-                if (_dataSetName != string.Empty)
+                ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                DataSet ds = new DataSet();
+                string commandText = string.Empty;
+                if (_datasetID != -1)
                 {
-                    txtHealthImpactFunction.Text = _dataSetName;
-                     // 2014 12 01 - replaced code to load data in edit page
-                    commandText = string.Format("select crfunctiondatasetid from crfunctiondatasets where crfunctiondatasetname='{0}'", _dataSetName);
-                    _datasetID= Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
+                    commandText = string.Format("select crfunctiondatasetname from crfunctiondatasets where crfunctiondatasetid={0}", _datasetID);
+                    txtHealthImpactFunction.Text = Convert.ToString(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
                     commandText = string.Format("select b.endpointgroupname,c.endpointname,d.pollutantname,e.metricname,f.seasonalmetricname,case when Metricstatistic=0 then 'None'  when Metricstatistic=1 then 'Mean' when Metricstatistic=2 then 'Median' when Metricstatistic=3 then 'Max' when Metricstatistic=4 then 'Min' when Metricstatistic=5 then 'Sum'  END as MetricstatisticName,author,yyear,g.locationtypename,location,otherpollutants,qualifier,reference,race,ethnicity,gender,startage,endage,h.functionalformtext,i.functionalformtext,beta,distbeta,p1beta,p2beta,a,namea,b,nameb,c,namec,j.incidencedatasetname,k.incidencedatasetname,l.setupvariabledatasetname as variabeldatasetname,CRFUNCTIONID from crfunctions a join endpointgroups b on (a.ENDPOINTGROUPID=b.ENDPOINTGROUPID) join endpoints c on (a.endpointid=c.endpointid) join pollutants d on (a.pollutantid=d.pollutantid)join metrics e on (a.metricid=e.metricid) left join seasonalmetrics f on (a.seasonalmetricid=f.seasonalmetricid) left join locationtype g on (a.locationtypeid=g.locationtypeid) join functionalforms h on (a.functionalformid=h.functionalformid) join baselinefunctionalforms i on (a.baselinefunctionalformid=i.functionalformid) left join incidencedatasets j on (a.incidencedatasetid=j.incidencedatasetid) left join incidencedatasets k on (a.prevalencedatasetid=k.incidencedatasetid) left join setupvariabledatasets l on (a.variabledatasetid=l.setupvariabledatasetid) where CRFUNCTIONDATASETID={0}", _datasetID);
                     ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                     olvFunction.DataSource = ds.Tables[0];
@@ -1519,66 +1486,36 @@ namespace BenMAP
 
                         }
                     }
-
                 }
                 else
                 {
+                    commandText = string.Format("select b.endpointgroupname,c.endpointname,d.pollutantname,e.metricname,f.seasonalmetricname,case when Metricstatistic=0 then 'None'  when Metricstatistic=1 then 'Mean' when Metricstatistic=2 then 'Median' when Metricstatistic=3 then 'Max' when Metricstatistic=4 then 'Min' when Metricstatistic=5 then 'Sum'  END as MetricstatisticName,author,yyear,g.locationtypename,location,otherpollutants,qualifier,reference,race,ethnicity,gender,startage,endage,h.functionalformtext,i.functionalformtext,beta,distbeta,p1beta,p2beta,a,namea,b,nameb,c,namec,j.incidencedatasetname,k.incidencedatasetname,l.setupvariabledatasetname as variabeldatasetname,CRFUNCTIONID from crfunctions a join endpointgroups b on (a.ENDPOINTGROUPID=b.ENDPOINTGROUPID) join endpoints c on (a.endpointid=c.endpointid) join pollutants d on (a.pollutantid=d.pollutantid)join metrics e on (a.metricid=e.metricid) left join seasonalmetrics f on (a.seasonalmetricid=f.seasonalmetricid) left join locationtype g on (a.locationtypeid=g.locationtypeid) join functionalforms h on (a.functionalformid=h.functionalformid) join baselinefunctionalforms i on (a.baselinefunctionalformid=i.functionalformid) left join incidencedatasets j on (a.incidencedatasetid=j.incidencedatasetid) left join incidencedatasets k on (a.prevalencedatasetid=k.incidencedatasetid) left join setupvariabledatasets l on (a.variabledatasetid=l.setupvariabledatasetid) where CRFUNCTIONDATASETID=null");
+                    ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+                    olvFunction.DataSource = ds.Tables[0];
+                    _dt = ds.Tables[0];
 
                     int number = 0;
-                    int incidenceDatasetID = 0;
+                    int HealthImpactFunctionDatasetID = 0;
                     do
                     {
-                        string comText = "select CRFUNCTIONDatasetID from CRFUNCTIONDataSets where CRFUNCTIONDatasetName=" + "'HealthImpactFunctionDataSet" + Convert.ToString(number) + "'";
-                        incidenceDatasetID = Convert.ToInt16(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, comText));
+                        string comText = "select crfunctionDatasetID from crfunctionDataSets where crfunctionDatasetName=" + "'HealthImpactFunctionDataSet" + Convert.ToString(number) + "'";
+                        HealthImpactFunctionDatasetID = Convert.ToInt16(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, comText));
                         number++;
-                    } while (incidenceDatasetID > 0);
+                    } while (HealthImpactFunctionDatasetID > 0);
                     txtHealthImpactFunction.Text = "HealthImpactFunctionDataSet" + Convert.ToString(number - 1);
-                
                 }
 
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex.Message);
+                Logger.LogError(ex);
             }
-
-
         }
 
         private void btnOK_Click_1(object sender, EventArgs e)
         {
-            // 2014 11 26 - commented out next line as part of adding copy (cloning)
-            // LoadDatabase();
-            //this.DialogResult = DialogResult.OK;
-            try
-            {   // 2014 11 19 modified to deal with copy (clone)
-                if (string.IsNullOrEmpty(txtHealthImpactFunction.Text) && !_isLocked)
-                {
-                    MessageBox.Show("Please input dataset name.");
-                    return;
-                }
-                if (_isLocked)//doing a copy
-                {
-                    CopyDatabase();
-                }
-                else if (_dataSetName != txtHealthImpactFunction.Text)
-                {
-                    string commandText = string.Format("select CRFUNCTIONDATASETID from CRFUNCTIONDATASETS where CRFUNCTIONDATASETNAME='{0}' and setupID={1} and incidencedatasetid <> {2}", txtHealthImpactFunction.Text, CommonClass.ManageSetup.SetupID, _datasetID);
-                    FireBirdHelperBase fb = new ESILFireBirdHelper();
-                    object obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
-                    if (obj != null) { MessageBox.Show("The dataset name already exists. Please enter a different name."); return; }
-                    else
-                    {
-                        commandText = string.Format("update INCIDENCEDATASETS set INCIDENCEDATASETNAME='{0}' where INCIDENCEDATASETID='{1}'", txtHealthImpactFunction.Text, _datasetID);
-                        fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
-                    }
-                }
-                this.DialogResult = DialogResult.OK;
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex.Message);
-            }
+            LoadDatabase();
+            this.DialogResult = DialogResult.OK;
         }
 
         private void insertMetadata(int crFunctionDataSetID)
@@ -1907,83 +1844,5 @@ namespace BenMAP
                 Logger.LogError(ex);
             }
         }
-
-        private void CopyDatabase()
-        {
-            FireBirdHelperBase fb = new ESILFireBirdHelper();
-            try
-            {
-                string commandText = string.Empty;
-                int maxID = 0;
-                int minID = 0;
-                object rVal = null;
-                //check and see if name is used
-                commandText = string.Format("Select CRFUNCTIONDATASETNAME from CRFUNCTIONDATASETS WHERE CRFUNCTIONDATASETNAME = '{0}'", txtHealthImpactFunction.Text.Trim());
-                rVal = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
-                if (rVal != null)
-                {
-                    MessageBox.Show("Name is already used.  Please select a new name.");
-                    txtHealthImpactFunction.Focus();
-                    return;
-                }
-
-                // string msg = string.Format("Save this file associated with {0} and {1} ?", cboPollutant.GetItemText(cboPollutant.SelectedItem), txtYear.Text);
-                string msg = "Copy Health Impact Function Data Set";
-                DialogResult result = MessageBox.Show(msg, "Confirm Copy", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-                if (result == DialogResult.No) return;
-                //getting a new dataset id
-                if (_newDataSetID == null)
-                {
-                    commandText = "select max(CRFunctionDataSetID) from CRFunctionDataSets";
-                    _newDataSetID = Convert.ToInt16(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
-                }
-                // first, create a new Health Impact Function data set
-                //the 'F'S  for the READONLY and LOCKED columns in CRFunctionDataSets.  This is being added and is not a predefined.
-                commandText = string.Format("insert into CRFunctionDataSets(CRFUNCTIONDATASETID, SETUPID, CRFUNCTIONDATASETNAME, READONLY, LOCKED) "
-                         + " values ({0},{1},'{2}','F','F')", _newDataSetID, CommonClass.ManageSetup.SetupID, txtHealthImpactFunction.Text);
-                
-                fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
-                // then, fill the CR Functions table
-                commandText = "select max(CRFUNCTIONID) from CRFUNCTIONS";
-
-                maxID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
-                commandText = string.Format("select min(CRFUNCTIONID) from CRFUNCTIONS where CRFUNCTIONDATASETID = {0}", _oldDataSetID);
-                minID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
-                //inserting - copying the locked data to the new data set
-                commandText = string.Format("insert into CRFUNCTIONS(CRFUNCTIONID, CRFUNCTIONDataSetID, EndpointGroupID, EndpointID, POLLUTANTID, " +
-                               "METRICID, SEASONALMETRICID, METRICSTATISTIC, AUTHOR, YYEAR, LOCATION, OTHERPOLLUTANTS, QUALIFIER, REFERENCE, RACE, GENDER, "
-                               + "STARTAGE, ENDAGE, FUNCTIONALFORMID, INCIDENCEDATASETID, PREVALENCEDATASETID, VARIABLEDATASETID, BETA, DISTBETA, "
-                               + "P1BETA, P2BETA, A, NAMEA, B, NAMEB, C, NAMEC, BASELINEFUNCTIONALFORMID, ETHNICITY, PERCENTILE, LOCATIONTYPEID, METADATAID) " +
-                              "SELECT CRFUNCTIONID + ({0} - {1}) + 1, {2}, " +
-                              "EndpointGroupID, EndpointID, POLLUTANTID, " +
-                               "METRICID, SEASONALMETRICID, METRICSTATISTIC, AUTHOR, YYEAR, LOCATION, OTHERPOLLUTANTS, QUALIFIER, REFERENCE, RACE, GENDER, "
-                               + "STARTAGE, ENDAGE, FUNCTIONALFORMID, INCIDENCEDATASETID, PREVALENCEDATASETID, VARIABLEDATASETID, BETA, DISTBETA, "
-                               + "P1BETA, P2BETA, A, NAMEA, B, NAMEB, C, NAMEC, BASELINEFUNCTIONALFORMID, ETHNICITY, PERCENTILE, LOCATIONTYPEID, METADATAID " +
-                              "FROM CRFUNCTIONS WHERE CRFUNCTIONDataSetID = {3}", maxID, minID, _newDataSetID, _oldDataSetID);
-
-                fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
-                 
-                // now fill the CRFunctionCustomEntries table
-                commandText = string.Format("insert into CRFUNCTIONCUSTOMENTRIES(CRFUNCTIONID, VVALUE) " +
-                              "SELECT B.CRFUNCTIONID + ({0} - {1}) + 1, " +
-                              " B.VVALUE " +
-                              "FROM CRFUNCTIONS AS A INNER JOIN CRFUNCTIONCUSTOMENTRIES AS B " +
-                              " ON A.CRFUNCTIONID = B.CRFUNCTIONID WHERE CRFUNCTIONDataSetID = {3} ", maxID, minID, _newDataSetID, _oldDataSetID);
-
-                fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
-                _metadataObj = new MetadataClassObj();
-                _metadataObj.DatasetId = Convert.ToInt32(_newDataSetID);
-                _metadataObj.FileName = txtHealthImpactFunction.Text;
-
-            }
-            catch (Exception ex)
-            {
-                progressBar1.Visible = false;
-                lblProgress.Text = "";
-                //addGridView(_dataSetID);
-                Logger.LogError(ex.Message);
-            }
-        }
-
     }
 }
