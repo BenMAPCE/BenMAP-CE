@@ -559,6 +559,12 @@ namespace BenMAP
             int index = 0;
             string commandText = string.Empty;
             object obj;
+            // 2015 09 02 - add conformation form - BENMAP 327 
+            if (MessageBox.Show("Delete the selected variable?", "Confirm Deletion", MessageBoxButtons.YesNo) == DialogResult.No)
+            {
+                return; // cancel action 
+            }
+
             ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
             string setupVariableID = string.Empty;
             string variableDatasetID = string.Empty;
