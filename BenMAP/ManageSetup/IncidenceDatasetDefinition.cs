@@ -160,7 +160,9 @@ namespace BenMAP
                     }
                     cboEndpointGroup.SelectedIndex = 0;
                     cboEndpoint.SelectedIndex = 0;
-                    olvIncidenceRates.SelectedIndex = 0;
+                    // 2015 09 08 - don't select a row by default BENMAP-330
+                    //olvIncidenceRates.SelectedIndex = 0;
+                    olvIncidenceRates.SelectedIndex = -1;
                 }
                 else
                 {
@@ -218,7 +220,9 @@ namespace BenMAP
                         else
                             cboEndpoint.SelectedIndex = 0;
                     }
-                    olvIncidenceRates.SelectedIndex = 0;
+                    // 2015 09 08 - don't select a row by default BENMAP-330
+                    // olvIncidenceRates.SelectedIndex = 0;
+                    olvIncidenceRates.SelectedIndex = -1;
                 }
             }
             catch (Exception ex)
@@ -895,8 +899,12 @@ namespace BenMAP
             string msg = string.Empty;
             try
             {
-                if (olvIncidenceRates.Items.Count == 0) { msg = "There are no data to be deleted."; return; }
-                if (olvIncidenceRates.SelectedObject == null) return;
+                // 2015 09 08 - Add confirmation message BENMAP-330
+                if (olvIncidenceRates.Items.Count == 0) { MessageBox.Show("There are no data to be deleted."); return; }
+                if (olvIncidenceRates.SelectedObject == null) { MessageBox.Show("You must select a row to delete."); return; }
+                int selectedRow = olvIncidenceRates.SelectedIndex;
+               // if (olvIncidenceRates.Items.Count == 0) { msg = "There are no data to be deleted."; return; }
+               // if (olvIncidenceRates.SelectedObject == null) return;
                 if (olvIncidenceRates.SelectedObject is DataRow)
                 {
                     DataRow drv = olvIncidenceRates.SelectedObject as DataRow;
