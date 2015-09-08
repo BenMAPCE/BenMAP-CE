@@ -902,9 +902,6 @@ namespace BenMAP
                 // 2015 09 08 - Add confirmation message BENMAP-330
                 if (olvIncidenceRates.Items.Count == 0) { MessageBox.Show("There are no data to be deleted."); return; }
                 if (olvIncidenceRates.SelectedObject == null) { MessageBox.Show("You must select a row to delete."); return; }
-                int selectedRow = olvIncidenceRates.SelectedIndex;
-               // if (olvIncidenceRates.Items.Count == 0) { msg = "There are no data to be deleted."; return; }
-               // if (olvIncidenceRates.SelectedObject == null) return;
                 if (olvIncidenceRates.SelectedObject is DataRow)
                 {
                     DataRow drv = olvIncidenceRates.SelectedObject as DataRow;
