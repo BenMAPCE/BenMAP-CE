@@ -426,7 +426,7 @@ namespace BenMAP
 
         private void btnViewMetadata_Click(object sender, EventArgs e)
         {
-            // 2015 09 10 - BENMAP322 - modified to get health impact metadata (was setting _dsDatasetTypeID = 0, which is invalid - hard coded to 6 for health impact functions
+            // 2015 09 10 - BENMAP335 - modified to get health impact metadata (was setting _dsDatasetTypeID = 0, which is invalid - hard coded to 6 for health impact functions
             //_metadataObj = SQLStatementsCommonClass.getMetadata(_dsDataSetId, _dsSetupID, _dsDatasetTypeId, _dsMetadataID);//(_datasetID, CommonClass.ManageSetup.SetupID);
             _metadataObj = SQLStatementsCommonClass.getMetadata(_dsDataSetId, _dsSetupID, 6, _dsMetadataID);//(_datasetID, CommonClass.ManageSetup.SetupID);
             _metadataObj.SetupName = CommonClass.ManageSetup.SetupName;//_dataName;
