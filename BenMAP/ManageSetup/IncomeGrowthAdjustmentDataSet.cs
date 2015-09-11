@@ -12,6 +12,7 @@ namespace BenMAP
 {
     public partial class frmIncomeGrowthAdjustmentDataSet : FormBase
     {
+        
         public frmIncomeGrowthAdjustmentDataSet()
         {
             InitializeComponent();
@@ -21,7 +22,9 @@ namespace BenMAP
         private int _dsMetadataID;
         private int _dsSetupID;
         private int _dsDatasetTypeId;
+        const int DATASETTYPEID =4; // HARDCODED for the data set id of an Income Growth Adjustment - must match the value in the DatasetTypes Firebird database
         private MetadataClassObj _metadataObj = null;
+        
         private void btnAdd_Click(object sender, EventArgs e)
         {
             try
@@ -101,8 +104,10 @@ namespace BenMAP
                 _datasetID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
                 _dataName = str;
                 _dsSetupID = CommonClass.ManageSetup.SetupID;
-                _dsDatasetTypeId = SQLStatementsCommonClass.getDatasetID("Incomegrowth");
-                commandText = string.Format("Select METADATAENTRYID from METADATAINFORMATION where DATASETID = {0} and SETUPID = {1}",_datasetID, _dsSetupID);
+                // 2015 09 11 - BENMAP 339 - use constant to to get correct dataset type id (was lookup on name which had wrong case);
+                _dsDatasetTypeId = DATASETTYPEID; // SQLStatementsCommonClass.getDatasetID("IncomeGrowth");
+                // 2015 09 11 - BENMMAP 339 added dataset type id to selection to avoid problems of different types having the same dataset id
+                commandText = string.Format("Select METADATAENTRYID from METADATAINFORMATION where DATASETID = {0} and SETUPID = {1} and DatasetTypeID ={2}", _datasetID, _dsSetupID, _dsDatasetTypeId);
                 _dsMetadataID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)); //Convert.ToInt32(drv["metadataid"]);
 
                 btnViewMetadata.Enabled = false;
@@ -204,6 +209,7 @@ namespace BenMAP
         {
             //_metadataObj = SQLStatementsCommonClass.getMetadata(_datasetID, CommonClass.ManageSetup.SetupID);
             _metadataObj = SQLStatementsCommonClass.getMetadata(_datasetID, _dsSetupID, _dsDatasetTypeId, _dsMetadataID);
+            //_metadataObj = SQLStatementsCommonClass.getMetadata(_datasetID, _dsSetupID, 4, _dsMetadataID);
             _metadataObj.SetupName = CommonClass.ManageSetup.SetupName;//_dataName;//_lstDataSetName;
             btnViewMetadata.Enabled = false;
             ViewEditMetadata viewEMdata = new ViewEditMetadata(_metadataObj);
