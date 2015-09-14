@@ -463,7 +463,7 @@ namespace BenMAP
                     }
                 }
             }
-            catch
+            catch(Exception ex)
             {
                 // 2015 09 14 - BENMAP 335 - modified catch to log error message
                 Logger.LogError(ex.Message);
