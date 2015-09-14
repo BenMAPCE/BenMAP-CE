@@ -455,16 +455,18 @@ namespace BenMAP
 
                         _dsMetadataID = Convert.ToInt32(drv["metadataid"]);
                         _dsSetupID = CommonClass.ManageSetup.SetupID;//Convert.ToInt32(drv["setupid"]);
-                        _dsDataSetId = Convert.ToInt32(_datasetID);//Convert.ToInt32(drv["datasetid"]);//Monitor Dataset Id
-                        _dsDatasetTypeId = SQLStatementsCommonClass.getDatasetID("Healthfunctions");//Convert.ToInt32(drv["datasettypeid"]);
+                        _dsDataSetId = Convert.ToInt32(_datasetID);
+                        // _dsDataSetId = Convert.ToInt32(drv["datasetid"]);//Monitor Dataset Id
+                        // 2015 09 14 - BENMAP 335 - hard code dataset id to avoid problems with future name change
+                        _dsDatasetTypeId = 6;
+                        // _dsDatasetTypeId = SQLStatementsCommonClass.getDatasetID("Healthfunctions");//Convert.ToInt32(drv["datasettypeid"]);
                     }
                 }
             }
             catch
             {
-                //TODO:  FIX THIS.
-                //do nothing for now until I can get the metadta to run correctly
-                //throw new Exception(ex.Message);
+                // 2015 09 14 - BENMAP 335 - modified catch to log error message
+                Logger.LogError(ex.Message);
             }
         }
 
