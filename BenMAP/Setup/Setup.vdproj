@@ -465,6 +465,18 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_338A081A1472752B089ABFA64DC3EB33"
+        "OwnerKey" = "8:_728C6FC8F5A9489E99B90267CF222057"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_338A081A1472752B089ABFA64DC3EB33"
+        "OwnerKey" = "8:_95FFA0C1861744A8AEDD30730C62BC71"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_35945E90580B4E59BC2790A96DE259B3"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -1732,7 +1744,7 @@
         "Entry"
         {
         "MsmKey" = "8:_BDD9C6C5594F27B9E2E177493A55BC2F"
-        "OwnerKey" = "8:_DFBE6615355F2731EC8BA0074DAD302F"
+        "OwnerKey" = "8:_338A081A1472752B089ABFA64DC3EB33"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -2111,18 +2123,6 @@
         {
         "MsmKey" = "8:_DF6FEF8EDDFA44838B213108F39DE9F4"
         "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_DFBE6615355F2731EC8BA0074DAD302F"
-        "OwnerKey" = "8:_728C6FC8F5A9489E99B90267CF222057"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_DFBE6615355F2731EC8BA0074DAD302F"
-        "OwnerKey" = "8:_95FFA0C1861744A8AEDD30730C62BC71"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -2554,7 +2554,7 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_DFBE6615355F2731EC8BA0074DAD302F"
+        "OwnerKey" = "8:_338A081A1472752B089ABFA64DC3EB33"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -4078,6 +4078,32 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_338A081A1472752B089ABFA64DC3EB33"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:FireBirdHelper, Version=1.0.18.0, Culture=neutral, processorArchitecture=AMD64"
+                "ScatterAssemblies"
+                {
+                }
+            "SourcePath" = "8:FireBirdHelper.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_CFC83EA26393402992AA74648BF4EBD1"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_35945E90580B4E59BC2790A96DE259B3"
@@ -8564,37 +8590,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_DFBE6615355F2731EC8BA0074DAD302F"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:FireBirdHelper, Version=1.0.18.0, Culture=neutral, processorArchitecture=x86"
-                "ScatterAssemblies"
-                {
-                    "_DFBE6615355F2731EC8BA0074DAD302F"
-                    {
-                    "Name" = "8:FireBirdHelper.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:FireBirdHelper.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_CFC83EA26393402992AA74648BF4EBD1"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E071E783A1F64339805B65C5D7525B95"
             {
             "SourcePath" = "8:..\\Plugins\\GDAL\\gdal\\x64\\proj.dll"
@@ -9951,7 +9946,7 @@
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.1.5"
+        "ProductVersion" = "8:1.1.6"
         "Manufacturer" = "8:BenMAP-CE Development Team"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -9965,7 +9960,7 @@
         "ARPIconIndex" = "3:0"
         "SearchPath" = "8:"
         "UseSystemSearchPath" = "11:TRUE"
-        "TargetPlatform" = "3:0"
+        "TargetPlatform" = "3:1"
         "PreBuildEvent" = "8:"
         "PostBuildEvent" = "8:"
         "RunPostBuildEvent" = "3:0"
@@ -10066,7 +10061,7 @@
         {
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_41DA277E3DC34C36A4FE9B6BC1251C29"
             {
-            "Name" = "8:BenMAP-CE 1.1.5"
+            "Name" = "8:BenMAP-CE 1.1.6"
             "Arguments" = "8:"
             "Description" = "8:"
             "ShowCmd" = "3:1"
@@ -10549,7 +10544,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_728C6FC8F5A9489E99B90267CF222057"
             {
-            "SourcePath" = "8:..\\obj\\x86\\Release\\BenMAP.exe"
+            "SourcePath" = "8:..\\obj\\x64\\Release\\BenMAP.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_CFC83EA26393402992AA74648BF4EBD1"
@@ -10577,7 +10572,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_95FFA0C1861744A8AEDD30730C62BC71"
             {
-            "SourcePath" = "8:..\\obj\\x86\\Release\\BenMAP.exe"
+            "SourcePath" = "8:..\\obj\\x64\\Release\\BenMAP.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_CFC83EA26393402992AA74648BF4EBD1"
@@ -10633,7 +10628,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_CFDE562FCC9A4998ABF72EF2340B98E4"
             {
-            "SourcePath" = "8:..\\FireBirdHelper\\obj\\x86\\Release\\FireBirdHelper.dll"
+            "SourcePath" = "8:..\\FireBirdHelper\\obj\\x64\\Release\\FireBirdHelper.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_CFC83EA26393402992AA74648BF4EBD1"
