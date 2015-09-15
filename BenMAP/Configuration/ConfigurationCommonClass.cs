@@ -4700,7 +4700,7 @@ namespace BenMAP.Configuration
                                                 break;
                                             }
                                         }
-                                   }
+                                    }
                                     #region if (is365)
                                    if (is365)
                                    {
@@ -4903,18 +4903,18 @@ namespace BenMAP.Configuration
                                           Baseline = fBaselineSum,                                           
                                       };
                                       crCalculateValue.StandardDeviation = lstFPSum.Count() == 0 ? float.NaN : Convert.ToSingle(Math.Sqrt(crCalculateValue.Variance));
-                                 } //end if (is365)
+                                  } //end if (is365)
                                     #endregion
                                    
                                     crCalculateValue.PercentOfBaseline = crCalculateValue.Baseline == 0 ? 0 : Convert.ToSingle(Math.Round((crCalculateValue.Mean / crCalculateValue.Baseline) * 100, 4));
                                     double baseValueForDelta = modelResultAttribute.Values[crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName];
                                     double controlValueForDelta = baseValueForDelta;
-
+                                    
                                     if (dicControl.Keys.Contains(modelResultAttribute.Col + "," + modelResultAttribute.Row))
                                     {
 
                                         if (dicControl[modelResultAttribute.Col + "," + modelResultAttribute.Row].Values.Keys.Contains(crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName))
-                                            controlValueForDelta = dicControl[modelResultAttribute.Col + "," + modelResultAttribute.Row].Values[crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName];
+                                             controlValueForDelta = dicControl[modelResultAttribute.Col + "," + modelResultAttribute.Row].Values[crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName];
 
                                     }
                                     if (Threshold != 0 && baseValueForDelta < Threshold)
@@ -4925,7 +4925,6 @@ namespace BenMAP.Configuration
                                     crCalculateValue.Delta = Convert.ToSingle(baseValueForDelta - controlValueForDelta);
                                     crSelectFunctionCalculateValue.CRCalculateValues.Add(crCalculateValue);
 
-
                                     continue;
                                 } //end if (baseControlGroup.Base is MonitorDataLine && baseControlGroup.Control is MonitorDataLine && baseValue != controlValue
                                 #endregion
@@ -4934,18 +4933,15 @@ namespace BenMAP.Configuration
 
                                 if (dicControl.Keys.Contains(modelResultAttribute.Col + "," + modelResultAttribute.Row))
                                 {
-
                                     if (dicControl[modelResultAttribute.Col + "," + modelResultAttribute.Row].Values.Keys.Contains(crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName))
                                         controlValue = dicControl[modelResultAttribute.Col + "," + modelResultAttribute.Row].Values[crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName];
-
                                 }
                                 i365 = crSelectFunction.BenMAPHealthImpactFunction.Pollutant.Seasons.Count();
                             } //end if (dicBase365.ContainsKey(modelResultAttribute.Col + "," + modelResultAttribute.Row)...
                             #endregion
                         }//end if (crSelectFunction.BenMAPHealthImpactFunction.MetricStatistic != MetricStatic.None)
                         #endregion
-
-                    } 
+                    }    
                     else
                     {
                         #region if (crSelectFunction.BenMAPHealthImpactFunction.MetricStatistic != MetricStatic.None)
