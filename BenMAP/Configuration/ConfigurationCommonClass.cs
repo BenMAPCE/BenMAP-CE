@@ -4460,13 +4460,10 @@ namespace BenMAP.Configuration
                         }
                     }
                 }
+
+                #region foreach (ModelResultAttribute modelResultAttribute in baseControlGroup.Base.ModelResultAttributes)
                 foreach (ModelResultAttribute modelResultAttribute in baseControlGroup.Base.ModelResultAttributes)
                 {
-
-
-
-
-
                     populationValue = 0;
                     incidenceValue = 0;
                     prevalenceValue = 0;
@@ -4532,8 +4529,10 @@ namespace BenMAP.Configuration
                         }
                     }
 
+                    #region if (crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric != null)
                     if (crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric != null)
                     {
+                        #region if (crSelectFunction.BenMAPHealthImpactFunction.MetricStatistic != MetricStatic.None)
                         if (crSelectFunction.BenMAPHealthImpactFunction.MetricStatistic != MetricStatic.None)
                         {
                             if (dicBaseMetricData.ContainsKey(modelResultAttribute.Col + "," + modelResultAttribute.Row) && dicBaseMetricData[modelResultAttribute.Col + "," + modelResultAttribute.Row].ContainsKey(crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName + ","
@@ -4551,21 +4550,21 @@ namespace BenMAP.Configuration
                             else
                             {
                                 crCalculateValue = new CRCalculateValue()
- {
-     Baseline = 0,
-     Col = modelResultAttribute.Col,
-     Row = modelResultAttribute.Row,
-     Delta = 0,
-     Incidence = Convert.ToSingle(incidenceValue),
-     Population = Convert.ToSingle(populationValue),
-     LstPercentile = new List<float>(),
-     Mean = 0,
-     PercentOfBaseline = 0,
-     PointEstimate = 0,
-     StandardDeviation = 0,
-     Variance = 0
+                                {
+                                    Baseline = 0,
+                                    Col = modelResultAttribute.Col,
+                                    Row = modelResultAttribute.Row,
+                                    Delta = 0,
+                                    Incidence = Convert.ToSingle(incidenceValue),
+                                    Population = Convert.ToSingle(populationValue),
+                                    LstPercentile = new List<float>(),
+                                    Mean = 0,
+                                    PercentOfBaseline = 0,
+                                    PointEstimate = 0,
+                                    StandardDeviation = 0,
+                                    Variance = 0
 
- };
+                                };
                                 if (lhsResultArray != null)
                                 {
                                     foreach (double dlhs in lhsResultArray)
@@ -4577,7 +4576,7 @@ namespace BenMAP.Configuration
                                 continue;
                             }
                         }
-                        else
+                        else //else in if (crSelectFunction.BenMAPHealthImpactFunction.MetricStatistic != MetricStatic.None)
                         {
                             if (dicBase365.ContainsKey(modelResultAttribute.Col + "," + modelResultAttribute.Row) &&
      dicBase365[modelResultAttribute.Col + "," + modelResultAttribute.Row].ContainsKey(crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName)
@@ -4941,11 +4940,13 @@ namespace BenMAP.Configuration
                                 }
                                 i365 = crSelectFunction.BenMAPHealthImpactFunction.Pollutant.Seasons.Count();
                             }
-                        }
+                        }//end if (crSelectFunction.BenMAPHealthImpactFunction.MetricStatistic != MetricStatic.None)
+                        #endregion
 
-                    }
+                    } 
                     else
                     {
+                        #region if (crSelectFunction.BenMAPHealthImpactFunction.MetricStatistic != MetricStatic.None)
                         if (crSelectFunction.BenMAPHealthImpactFunction.MetricStatistic != MetricStatic.None)
                         {
                             if (dicBaseMetricData.ContainsKey(modelResultAttribute.Col + "," + modelResultAttribute.Row) && dicBaseMetricData[modelResultAttribute.Col + "," + modelResultAttribute.Row].ContainsKey(crSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName + ","
@@ -4963,21 +4964,21 @@ namespace BenMAP.Configuration
                             else
                             {
                                 crCalculateValue = new CRCalculateValue()
- {
-     Baseline = 0,
-     Col = modelResultAttribute.Col,
-     Row = modelResultAttribute.Row,
-     Delta = 0,
-     Incidence = Convert.ToSingle(incidenceValue),
-     Population = Convert.ToSingle(populationValue),
-     LstPercentile = new List<float>(),
-     Mean = 0,
-     PercentOfBaseline = 0,
-     PointEstimate = 0,
-     StandardDeviation = 0,
-     Variance = 0
+                                {
+                                    Baseline = 0,
+                                    Col = modelResultAttribute.Col,
+                                    Row = modelResultAttribute.Row,
+                                    Delta = 0,
+                                    Incidence = Convert.ToSingle(incidenceValue),
+                                    Population = Convert.ToSingle(populationValue),
+                                    LstPercentile = new List<float>(),
+                                    Mean = 0,
+                                    PercentOfBaseline = 0,
+                                    PointEstimate = 0,
+                                    StandardDeviation = 0,
+                                    Variance = 0
 
- };
+                                };
                                 if (lhsResultArray != null)
                                 {
                                     foreach (double dlhs in lhsResultArray)
@@ -4989,12 +4990,12 @@ namespace BenMAP.Configuration
                                 continue;
                             }
                         }
-                        else
+                        else //else in if (crSelectFunction.BenMAPHealthImpactFunction.MetricStatistic != MetricStatic.None)
                         {
                             if (dicBase365.ContainsKey(modelResultAttribute.Col + "," + modelResultAttribute.Row) &&
-     dicBase365[modelResultAttribute.Col + "," + modelResultAttribute.Row].ContainsKey(crSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName)
-     && dicControl365.ContainsKey(modelResultAttribute.Col + "," + modelResultAttribute.Row) &&
-     dicControl365[modelResultAttribute.Col + "," + modelResultAttribute.Row].ContainsKey(crSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName))
+                            dicBase365[modelResultAttribute.Col + "," + modelResultAttribute.Row].ContainsKey(crSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName)
+                            && dicControl365.ContainsKey(modelResultAttribute.Col + "," + modelResultAttribute.Row) &&
+                            dicControl365[modelResultAttribute.Col + "," + modelResultAttribute.Row].ContainsKey(crSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName))
                             {
 
                                 float fPSum = 0, fBaselineSum = 0;
@@ -5338,9 +5339,11 @@ namespace BenMAP.Configuration
                                 }
 
                             }
-                        }
+                        } //end if (crSelectFunction.BenMAPHealthImpactFunction.MetricStatistic != MetricStatic.None)
+                        #endregion 
 
                     }
+                    #endregion//end if (crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric != null)
                     if (Threshold != 0 && baseValue < Threshold)
                         baseValue = Threshold;
 
@@ -5360,6 +5363,7 @@ namespace BenMAP.Configuration
                     }
                     dicVariable = null;
                 }
+                #endregion //end foreach (ModelResultAttribute modelResultAttribute in baseControlGroup.Base.ModelResultAttributes)
 
                 CommonClass.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue.Add(crSelectFunctionCalculateValue);
                 DicAllSetupVariableValues = null;
