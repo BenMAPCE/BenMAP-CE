@@ -19,6 +19,7 @@ namespace BenMAP
             this.grpPollutantMetrics = new System.Windows.Forms.GroupBox();
             this.lstPollutantMetrics = new System.Windows.Forms.ListBox();
             this.grpAvailablePollutants = new System.Windows.Forms.GroupBox();
+            this.btnCopy = new System.Windows.Forms.Button();
             this.btnEdit = new System.Windows.Forms.Button();
             this.lstAvailablePollutants = new System.Windows.Forms.ListBox();
             this.btnAdd = new System.Windows.Forms.Button();
@@ -26,7 +27,6 @@ namespace BenMAP
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnOK = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.btnCopy = new System.Windows.Forms.Button();
             this.grpPollutantMetrics.SuspendLayout();
             this.grpAvailablePollutants.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -66,6 +66,17 @@ namespace BenMAP
             this.grpAvailablePollutants.TabIndex = 0;
             this.grpAvailablePollutants.TabStop = false;
             this.grpAvailablePollutants.Text = "Available Pollutants";
+            // 
+            // btnCopy
+            // 
+            this.btnCopy.Location = new System.Drawing.Point(195, 176);
+            this.btnCopy.Name = "btnCopy";
+            this.btnCopy.Size = new System.Drawing.Size(55, 27);
+            this.btnCopy.TabIndex = 5;
+            this.btnCopy.Text = "Copy";
+            this.btnCopy.UseVisualStyleBackColor = true;
+            this.btnCopy.Visible = false;
+            this.btnCopy.Click += new System.EventHandler(this.btnCopy_Click);
             // 
             // btnEdit
             // 
@@ -137,16 +148,6 @@ namespace BenMAP
             this.groupBox1.Size = new System.Drawing.Size(424, 59);
             this.groupBox1.TabIndex = 3;
             this.groupBox1.TabStop = false;
-            // 
-            // btnCopy
-            // 
-            this.btnCopy.Location = new System.Drawing.Point(195, 176);
-            this.btnCopy.Name = "btnCopy";
-            this.btnCopy.Size = new System.Drawing.Size(55, 27);
-            this.btnCopy.TabIndex = 5;
-            this.btnCopy.Text = "Copy";
-            this.btnCopy.UseVisualStyleBackColor = true;
-            this.btnCopy.Click += new System.EventHandler(this.btnCopy_Click);
             // 
             // ManagePollutants
             // 

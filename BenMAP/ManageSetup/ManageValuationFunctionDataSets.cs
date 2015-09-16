@@ -464,7 +464,9 @@ namespace BenMAP
             {//_dataSetID = Convert.ToInt16(drv["VALUATIONFUNCTIONDATASETID"]);
 
                 DataRowView drv = lstAvailableDataSets.SelectedItem as DataRowView;
-                _metadataObj = SQLStatementsCommonClass.getMetadata(_dataSetID, _dsSetupID, _dsDatasetTypeId, _dsMetadataID);
+                // 2015 09 10 BENMAP-338 - _dsDatasetTypeID is not being set correctly (is 0 when called) - hard coded to 7 for valuation function
+                //_metadataObj = SQLStatementsCommonClass.getMetadata(_dataSetID, _dsSetupID, _dsDatasetTypeId, _dsMetadataID);
+                _metadataObj = SQLStatementsCommonClass.getMetadata(_dataSetID, _dsSetupID, 7, _dsMetadataID);
                 _metadataObj.DatasetId = _dataSetID;//Convert.ToInt32(drv["VALUATIONFUNCTIONDATASETID"]);
                 _metadataObj.SetupName = CommonClass.ManageSetup.SetupName;//drv["VALUATIONFUNCTIONDATASETNAME"].ToString();//_dataName
                 btnViewMetadata.Enabled = false;
@@ -496,15 +498,16 @@ namespace BenMAP
                         _dsMetadataID = Convert.ToInt32(drv["metadataid"]);
                         _dsSetupID = CommonClass.ManageSetup.SetupID;
                         //_dataSetID = Convert.ToInt32(drv["VALUATIONFUNCTIONDATASETID"]);
-                        _dsDatasetTypeId = SQLStatementsCommonClass.getDatasetID("Valuationfunction");
+                        // 2015 09 14 BENMAP 338 - hard code datasettype id to avoid problem is dataset type name is changed
+                        _dsDatasetTypeId = 7;
+                        //_dsDatasetTypeId = SQLStatementsCommonClass.getDatasetID("Valuationfunction");
                     }
                 }
             }
             catch (Exception ex)
             {
-                //TODO:  FIX THIS.
-                //do nothing for now until I can get the metadta to run correctly
-                //throw new Exception(ex.Message);
+                // 2015 09 14 - BENMAP 338 - added log to previously empty catch statement/
+                Logger.LogError(ex);
             }
         }
 

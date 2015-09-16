@@ -707,8 +707,12 @@ namespace BenMAP
         {
             try
             {
-                if (olvData.SelectedObjects == null || olvData.Items.Count == 0)
-                { return; }
+                // 2015 09 09 - Add confirmation message BENMAP-332
+                if (olvData.Items.Count == 0) { MessageBox.Show("There are no data to be deleted."); return; }
+                if (olvData.SelectedObject == null) { MessageBox.Show("You must select a row to delete."); return; }
+               
+                //if (olvData.SelectedObjects == null || olvData.Items.Count == 0)
+                //{ return; }
                 DialogResult rtn = MessageBox.Show("Delete this function?", "Confirm Deletion", MessageBoxButtons.YesNo);
                 if (rtn == DialogResult.Yes)
                 {

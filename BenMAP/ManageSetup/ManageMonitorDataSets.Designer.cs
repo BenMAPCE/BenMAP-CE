@@ -17,6 +17,7 @@ namespace BenMAP
         private void InitializeComponent()
         {
             this.grpAvailableDataSets = new System.Windows.Forms.GroupBox();
+            this.btnCopy = new System.Windows.Forms.Button();
             this.btnEdit = new System.Windows.Forms.Button();
             this.btnAdd = new System.Windows.Forms.Button();
             this.btnDelete = new System.Windows.Forms.Button();
@@ -33,7 +34,6 @@ namespace BenMAP
             this.grpCancelOK = new System.Windows.Forms.GroupBox();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.btnViewMetadata = new System.Windows.Forms.Button();
-            this.btnCopy = new System.Windows.Forms.Button();
             this.grpAvailableDataSets.SuspendLayout();
             this.grpDataSetContents.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.olvMonitorDataSets)).BeginInit();
@@ -56,6 +56,17 @@ namespace BenMAP
             this.grpAvailableDataSets.TabIndex = 0;
             this.grpAvailableDataSets.TabStop = false;
             this.grpAvailableDataSets.Text = "Available Datasets";
+            // 
+            // btnCopy
+            // 
+            this.btnCopy.Location = new System.Drawing.Point(201, 407);
+            this.btnCopy.Name = "btnCopy";
+            this.btnCopy.Size = new System.Drawing.Size(67, 27);
+            this.btnCopy.TabIndex = 4;
+            this.btnCopy.Text = "Copy";
+            this.btnCopy.UseVisualStyleBackColor = true;
+            this.btnCopy.Visible = false;
+            this.btnCopy.Click += new System.EventHandler(this.btnCopy_Click);
             // 
             // btnEdit
             // 
@@ -252,16 +263,6 @@ namespace BenMAP
             this.btnViewMetadata.Text = "View Metadata";
             this.btnViewMetadata.UseVisualStyleBackColor = true;
             this.btnViewMetadata.Click += new System.EventHandler(this.btnViewMetadata_Click);
-            // 
-            // btnCopy
-            // 
-            this.btnCopy.Location = new System.Drawing.Point(201, 407);
-            this.btnCopy.Name = "btnCopy";
-            this.btnCopy.Size = new System.Drawing.Size(67, 27);
-            this.btnCopy.TabIndex = 4;
-            this.btnCopy.Text = "Copy";
-            this.btnCopy.UseVisualStyleBackColor = true;
-            this.btnCopy.Click += new System.EventHandler(this.btnCopy_Click);
             // 
             // ManageMonitorDataSets
             // 

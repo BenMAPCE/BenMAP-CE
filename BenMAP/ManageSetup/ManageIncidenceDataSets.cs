@@ -23,7 +23,7 @@ namespace BenMAP
         private MetadataClassObj _metadataObj = null;
         // 2014 11 20 - added to support locking and copying (cloning)
         private int _dsSetupID;//Setup Id is stored in the olvMonitorDatasets - hidden column olvColumn4
-        
+        const int DATASETTYPEID = 1; // HARDCODED for the data set id of an Incidence dataset - must match the value in the DatasetTypes Firebird database
         
         private void ManageIncidenceDataSets_Load(object sender, EventArgs e)
         {
@@ -192,8 +192,9 @@ namespace BenMAP
 
                     commandText = string.Format("SELECT INCIDENCEDATASETID FROM INCIDENCEDATASETS WHERE INCIDENCEDATASETNAME = '{0}' and SETUPID = {1}", dstName, CommonClass.ManageSetup.SetupID);
                     iprDstID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
-                    commandText = "SELECT DATASETTYPEID FROM DATASETTYPES WHERE DATASETTYPENAME = 'Incidence'";
-                    dstID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
+                    // 2015 09 11 - BENMAP 333 - used constant to set dataset type id (to prevent breakage if name is changed in database)
+                    //commandText = "SELECT DATASETTYPEID FROM DATASETTYPES WHERE DATASETTYPENAME = 'Incidence'";
+                    dstID = DATASETTYPEID; //Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
 
                     commandText = string.Format("delete from IncidenceDataSets where IncidenceDataSetID='{0}'", _dataSetID);
                     fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
