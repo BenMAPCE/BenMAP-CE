@@ -384,7 +384,8 @@ namespace BenMAP
 
         private void btnViewMetadata_Click(object sender, EventArgs e)
         {
-            _metadataObj = SQLStatementsCommonClass.getMetadata(Convert.ToInt32(_dataSetID), CommonClass.ManageSetup.SetupID);
+
+            _metadataObj = SQLStatementsCommonClass.getMetadata(Convert.ToInt32(_dataSetID), CommonClass.ManageSetup.SetupID, DATASETTYPEID);
             _metadataObj.SetupName = CommonClass.ManageSetup.SetupName;//_dataName;//_lstDataSetName;
             btnViewMetadata.Enabled = false;
             ViewEditMetadata viewEMdata = new ViewEditMetadata(_metadataObj);
