@@ -15,6 +15,7 @@ namespace BenMAP
         private string _strPath;
         private string _isForceValidate = string.Empty;
         private string _iniPath = string.Empty;
+        private const int INCOMEGROWTHDATASETTYPEID = 4;
         private MetadataClassObj _metadataObj = null;
 
         public LoadIncomeGrowthDataSet()
@@ -124,8 +125,9 @@ namespace BenMAP
         {
 
             _metadataObj.DatasetId = dataSetID;
-
-            _metadataObj.DatasetTypeId = SQLStatementsCommonClass.getDatasetID("Incomegrowth");
+            // 2015 09 23 BENMAP-350 - hard coded dataset type id, as it was defaulting to zero. This prevented proper loading of metadata
+            //_metadataObj.DatasetTypeId = SQLStatementsCommonClass.getDatasetID("Incomegrowth");
+            _metadataObj.DatasetTypeId = INCOMEGROWTHDATASETTYPEID;
             if (!SQLStatementsCommonClass.insertMetadata(_metadataObj))
             {
                 MessageBox.Show("Failed to save Metadata.");
@@ -198,13 +200,14 @@ namespace BenMAP
             ValidateDatabaseImport vdi = new ValidateDatabaseImport(_incomeGrowthData, "Incomegrowth", _strPath);
 
             DialogResult dlgR = vdi.ShowDialog();
-            if (dlgR.Equals(DialogResult.OK))
+            // 2015 09 24 - BENMAP349 attempt to fix problem with autoload on validation
+           /* if (dlgR.Equals(DialogResult.OK))
             {
                 if (vdi.PassedValidation && _isForceValidate == "T")
                 {
                     LoadDatabase();
                 }
-            }
+            } */
         }
 
         private void txtDatabase_TextChanged(object sender, EventArgs e)

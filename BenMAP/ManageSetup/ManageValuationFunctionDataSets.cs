@@ -466,8 +466,10 @@ namespace BenMAP
                 DataRowView drv = lstAvailableDataSets.SelectedItem as DataRowView;
                 // 2015 09 10 BENMAP-338 - _dsDatasetTypeID is not being set correctly (is 0 when called) - hard coded to 7 for valuation function
                 //_metadataObj = SQLStatementsCommonClass.getMetadata(_dataSetID, _dsSetupID, _dsDatasetTypeId, _dsMetadataID);
+                // 2015 09 23 - BENMAP 351 - quick fix for metadata being saved by datasetid, not metadataid
                 _metadataObj = SQLStatementsCommonClass.getMetadata(_dataSetID, _dsSetupID, 7, _dsMetadataID);
-                _metadataObj.DatasetId = _dataSetID;//Convert.ToInt32(drv["VALUATIONFUNCTIONDATASETID"]);
+                //_metadataObj = SQLStatementsCommonClass.getMetadata(_dataSetID, _dsSetupID, 7);
+                //_metadataObj.DatasetId = _dataSetID;//Convert.ToInt32(drv["VALUATIONFUNCTIONDATASETID"]);
                 _metadataObj.SetupName = CommonClass.ManageSetup.SetupName;//drv["VALUATIONFUNCTIONDATASETNAME"].ToString();//_dataName
                 btnViewMetadata.Enabled = false;
                 ViewEditMetadata viewEMdata = new ViewEditMetadata(_metadataObj);

@@ -243,10 +243,11 @@ namespace BenMAP
                         if (obj == null)
                         {
                             variableID++;
+                            // 2015 09 23 - BENMAP-347 - replaced metada data on insert statement
                             // removed metaadata from insert statement
                             //commandText = string.Format("insert into SetUpVariables values({0},{1},'{2}','{3}', {4})", variableID, variableDatasetID, variableName, gridDefinationID, _lstMetadata[i].MetadataEntryId);
-                            commandText = string.Format("insert into SetUpVariables(SETUPVARIABLEID, SETUPVARIABLEDATASETID, SETUPVARIABLENAME, GRIDDEFINITIONID ) " 
-                                + "values({0},{1},'{2}',{3})", variableID, variableDatasetID, variableName, gridDefinationID);
+                            commandText = string.Format("insert into SetUpVariables(SETUPVARIABLEID, SETUPVARIABLEDATASETID, SETUPVARIABLENAME, GRIDDEFINITIONID, METADATAID ) "
+                                + "values({0},{1},'{2}',{3}, {4})", variableID, variableDatasetID, variableName, gridDefinationID, _lstMetadata[i].MetadataEntryId);
 
                             //fbCommand.CommandText = commandText;
                             //fbCommand.ExecuteNonQuery();
