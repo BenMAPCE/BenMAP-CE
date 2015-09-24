@@ -200,13 +200,14 @@ namespace BenMAP
             ValidateDatabaseImport vdi = new ValidateDatabaseImport(_incomeGrowthData, "Incomegrowth", _strPath);
 
             DialogResult dlgR = vdi.ShowDialog();
-            if (dlgR.Equals(DialogResult.OK))
+            // 2015 09 24 - BENMAP349 attempt to fix problem with autoload on validation
+           /* if (dlgR.Equals(DialogResult.OK))
             {
                 if (vdi.PassedValidation && _isForceValidate == "T")
                 {
                     LoadDatabase();
                 }
-            }
+            } */
         }
 
         private void txtDatabase_TextChanged(object sender, EventArgs e)
