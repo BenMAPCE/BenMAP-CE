@@ -644,7 +644,8 @@ namespace BenMAP
                         MessageBox.Show("This grid definition name is already in use. Please enter a different name.");
                         return;
                     }
-                    //_metadataObj.DatasetId = SQLStatementsCommonClass.selectMaxID("GRIDDEFINITIONID", "GRIDDEFINITIONS"); 
+                    // 2015 09 23 - BENMAP -345 modified next line to try and fix metadata load
+                    _metadataObj.DatasetId = SQLStatementsCommonClass.selectMaxID("GRIDDEFINITIONID", "GRIDDEFINITIONS"); 
                     //_gridID =  _metadataObj.DatasetId;
                     commandText = string.Format("select max(GRIDDEFINITIONID) from GRIDDEFINITIONS");
                     _gridID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText)) + 1;
