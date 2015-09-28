@@ -201,13 +201,15 @@ namespace BenMAP
 
             DialogResult dlgR = vdi.ShowDialog();
             // 2015 09 24 - BENMAP349 attempt to fix problem with autoload on validation
-           /* if (dlgR.Equals(DialogResult.OK))
+            if (dlgR.Equals(DialogResult.OK))
             {
                 if (vdi.PassedValidation && _isForceValidate == "T")
                 {
-                    LoadDatabase();
+                   // LoadDatabase();
+                    // 2015 09 28 BENMAP-351 - fix OK button not enabled on successful validation
+                    btnOK.Enabled = true;   // if OK, then enable loading
                 }
-            } */
+            } 
         }
 
         private void txtDatabase_TextChanged(object sender, EventArgs e)
