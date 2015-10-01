@@ -152,7 +152,9 @@ namespace BenMAP
             if (dlgr.Equals(DialogResult.OK))
             {
                 dt = lmdataset.MonitorDataSet;
+                // 2015 09 29 - BENMAP-353 
                 _metadataObj = lmdataset.MetadataObj;
+                
                 olvFunction.ClearObjects();
                 
                 //LoadDatabase();
@@ -789,7 +791,9 @@ namespace BenMAP
                         {
                             MetricStatisticID = 5;
                         }
-                        _metadataObj = SQLStatementsCommonClass.getMetadata(_datasetID, CommonClass.ManageSetup.SetupID, HEALTHIMPACTDATASETID);
+                         // 2015 09 29 BENMAP-353                       
+                        //_metadataObj = SQLStatementsCommonClass.getMetadata(_datasetID, CommonClass.ManageSetup.SetupID, HEALTHIMPACTDATASETID);
+                        
                         /*commandText = string.Format("insert into CRFunctions values({0},{1},{2},{3},{4},{5},{6},{7},'{8}',{9},'{10}','{11}','{12}','{13}','{14}','{15}'," +
                                                     "{16},{17},{18},{19},{20},{21},{22},'{23}',{24},{25},{26},'{27}',{28},'{29}',{30},'{31}',{32},'{33}',{34},{35}, {36})",
                                                     CRFunctionID, crFunctionDataSetID, EndpointGroupID, EndpointID, PollutantID, MetricID, SeasonalMetricID, MetricStatisticID,
@@ -1215,6 +1219,8 @@ namespace BenMAP
                     }
                 } 
                 #endregion
+                // 2015 09 29 - BENMAP-353 save metadataobject
+                //SQLStatementsCommonClass.insertMetadata(_metadataObj);
                 insertMetadata(crFunctionDataSetID);
             }
             catch (Exception ex)
@@ -1523,11 +1529,15 @@ namespace BenMAP
             this.DialogResult = DialogResult.OK;
         }
 
+       
+
         private void insertMetadata(int crFunctionDataSetID)
         {
             _metadataObj.DatasetId = crFunctionDataSetID;
-
-            _metadataObj.DatasetTypeId = SQLStatementsCommonClass.getDatasetID("Healthfunctions");
+            // 2015 09 28 BENMAP-353 set Dataset Type ID, to hardcoded value - was not getting previously set. This caused metadata to be unretrievable
+            //_metadataObj.DatasetTypeId = SQLStatementsCommonClass.getDatasetID("Healthfunctions");
+            _metadataObj.DatasetTypeId = HEALTHIMPACTDATASETID;
+            
             if (!SQLStatementsCommonClass.insertMetadata(_metadataObj))
             {
                 MessageBox.Show("Failed to save Metadata.");
