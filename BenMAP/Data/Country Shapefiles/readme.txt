@@ -2,7 +2,7 @@ Country Shapefiles from GBD Tool for Use in BenMAP-CE
 (Sept. 29, 2015)
 
 
-BenMAP_country_files.zip contains a folder for each country contained in the BenMAP-CE Global Burden of Disease Rollback Tool.  The files contained in these folders are for use in BenMAP-Community Edition (BenMAP-CE).  
+BenMAP_country_files_v2.zip contains a folder for each country contained in the BenMAP-CE Global Burden of Disease Rollback Tool.  The files contained in these folders are for use in BenMAP-Community Edition (BenMAP-CE).  
 
 
 The folders are named using the 3-character ISO code for each country.  The file "country_names.csv" contains a list of all countries and their ISO codes in alphabetical order.
