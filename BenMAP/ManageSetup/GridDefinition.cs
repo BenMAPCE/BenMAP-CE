@@ -259,6 +259,7 @@ namespace BenMAP
                             _shapeFilePath = GCSNAD83ShapeFilePath;
                             if (File.Exists(_shapeFilePath)) CommonClass.DeleteShapeFileName(_shapeFilePath);
                             IFeatureSet fs = FeatureSet.Open(originalShapeFilePath);
+                            fs.Reproject(GCSNAD83prj); //reproject
                             fs.SaveAs(_shapeFilePath, true);
                         }
                         // Add the grid 
