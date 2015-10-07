@@ -102,81 +102,87 @@ namespace BenMAP
 
         }
 
-        private void AddLayerAndGetAtt(string strPath)
+        private void AddLayer(string strPath)
         {
             try
             {
-                mainMap.ProjectionModeReproject = ActionMode.Never; mainMap.ProjectionModeDefine = ActionMode.Never;
+                mainMap.ProjectionModeReproject = ActionMode.Never; 
+                mainMap.ProjectionModeDefine = ActionMode.Never;
                 mainMap.Layers.Clear();
-                mainMap.Layers.Add(strPath);
-                IFeatureSet fs = FeatureSet.Open(strPath);
-                List<int> lsCol = new List<int>();
-                List<int> lsRow = new List<int>();
-                int icol = -1;
-                int irow = -1;
-                bool colname = false;
-                bool rowname = false;
-                for (int i = 0; i < fs.DataTable.Columns.Count; i++)
-                {
-                    if (fs.DataTable.Columns[i].ToString() == "ROW")
-                    {
-                        irow = i;
-                        rowname = true;
-                    }
-                    else if (fs.DataTable.Columns[i].ToString().ToLower() == "row")
-                    {
-                        irow = i;
-                    }
-
-                    if (fs.DataTable.Columns[i].ToString() == "COL")
-                    {
-                        icol = i;
-                        colname = true;
-                    }
-                    else if (fs.DataTable.Columns[i].ToString().ToLower() == "col" || fs.DataTable.Columns[i].ToString().ToLower() == "column")
-                    {
-                        icol = i;
-                    }
-                }
-
-                if (icol >= 0 && irow >= 0)
-                {
-                    try
-                    {
-                        foreach (DataRow dr in fs.DataTable.Rows)
-                        {
-                            lsCol.Add(Convert.ToInt32(Convert.ToDouble(dr[icol].ToString())));
-                            lsRow.Add(Convert.ToInt32(Convert.ToDouble(dr[irow].ToString())));
-                        }
-                    }
-                    catch
-                    {
-                        MessageBox.Show("Column/Row value are invalid.");
-                        fs.Close();
-                        return;
-                    }
-                    _shapeCol = lsCol.Max();
-                    _shapeRow = lsRow.Max();
-                }
-                else
-                {
-                    txtShapefile.Text = "";
-                    MessageBox.Show("This shapefile does not have the required column and row variables.");
-                }
-
-                if (colname == false || rowname == false)
-                {
-                    fs.DataTable.Columns[icol].ColumnName = "COL";
-                    fs.DataTable.Columns[irow].ColumnName = "ROW";
-                    fs.SaveAs(strPath, true);
-                }
-                fs.Close();
+                mainMap.Layers.Add(strPath);                
             }
             catch (Exception ex)
             {
                 Logger.LogError(ex.Message);
             }
         }
+
+        private bool GetColumnsRows(string strPath)
+        {
+            try
+            {
+                IFeatureSet fs = FeatureSet.Open(strPath);
+                List<int> lsCol = new List<int>();
+                List<int> lsRow = new List<int>();
+
+                //search for ROW and COL fields
+                int icol = -1;
+                int irow = -1;
+                for (int i = 0; i < fs.DataTable.Columns.Count; i++)
+                {
+                    if (fs.DataTable.Columns[i].ToString().ToLower() == "row")
+                    {
+                        irow = i;
+                    }
+
+                    if (fs.DataTable.Columns[i].ToString().ToLower() == "col" || fs.DataTable.Columns[i].ToString().ToLower() == "column")
+                    {
+                        icol = i;
+                    }
+                }
+
+                //exit if we are missing fields
+                if ((icol < 0) || (irow < 0))
+                {
+                    MessageBox.Show("This shapefile does not have the required ROW and COL fields.");
+                    txtShapefile.Text = "";
+                    fs.Close();
+                    return false;                
+                }
+
+                //ensure that ROW, COL fields contain integers
+                try
+                {
+                    foreach (DataRow dr in fs.DataTable.Rows)
+                    {
+                        lsCol.Add(Convert.ToInt32(Convert.ToDouble(dr[icol].ToString())));
+                        lsRow.Add(Convert.ToInt32(Convert.ToDouble(dr[irow].ToString())));
+                    }
+                }
+                catch
+                {
+                    MessageBox.Show("Values in the ROW and COL fields must be integers.");
+                    fs.Close();
+                    return false;
+                }
+                _shapeCol = lsCol.Max();
+                _shapeRow = lsRow.Max();
+  
+                //rename COL, ROW field names to upper case
+                fs.DataTable.Columns[icol].ColumnName = "COL";
+                fs.DataTable.Columns[irow].ColumnName = "ROW";
+                fs.SaveAs(strPath, true);               
+                fs.Close();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.Message);
+                return false;
+            }
+        }
+
         private bool CheckforSupportingfiles(string strPath)
         {
             bool bPassed = true;
@@ -262,8 +268,13 @@ namespace BenMAP
                             fs.Reproject(GCSNAD83prj); //reproject
                             fs.SaveAs(_shapeFilePath, true);
                         }
+
                         // Add the grid 
-                        AddLayerAndGetAtt(_shapeFilePath);
+                        AddLayer(_shapeFilePath);
+                        if (!GetColumnsRows(_shapeFilePath))
+                        {
+                            return;
+                        }
                         lblCol.Text = _shapeCol.ToString();
                         lblRow.Text = _shapeRow.ToString();
                         GetMetadata();                       
@@ -370,9 +381,7 @@ namespace BenMAP
             _metadataObj = metadata.GetMetadata();
         }
         private void btnPreview_Click(object sender, EventArgs e)
-        {
-
-            
+        {           
             
             try
             {
@@ -388,7 +397,11 @@ namespace BenMAP
                     {
                         if (string.IsNullOrEmpty(lblShapeFileName.Text)) return;
                         string strPath = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.ManageSetup.SetupName + "\\" + lblShapeFileName.Text + ".shp";
-                        AddLayerAndGetAtt(strPath);
+                        AddLayer(_shapeFilePath);
+                        if (!GetColumnsRows(_shapeFilePath))
+                        {
+                            return;
+                        }
                         lblCol.Text = _shapeCol.ToString();
                         lblRow.Text = _shapeRow.ToString();
                     }
@@ -638,6 +651,13 @@ namespace BenMAP
 
                 else
                 {
+                    //ensure shapefile is correctly formatted.
+                    if (!GetColumnsRows(_shapeFilePath))
+                    {
+                        return;
+                    }
+
+
                     commandText = "select GridDefinitionID from GridDefinitions where GridDefinitionName='" + txtGridID.Text + "' and SetupID=" + CommonClass.ManageSetup.SetupID;
                     object obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
                     if (obj != null)
@@ -677,7 +697,10 @@ namespace BenMAP
                             commandText = string.Format("INSERT INTO SHAPEFILEGRIDDEFINITIONDETAILS (GridDefinitionID,ShapeFileName, LOCKED)  VALUES(" + _gridID + ",'{0}', 'F')", _shapeFileName);
                             fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                             CommonClass.DeleteShapeFileName(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.ManageSetup.SetupName + "\\" + _shapeFileName + ".shp");
+
+                            //open shapeFilePath.  This could be original or reprojected file.  See btnShapefile_Click event.
                             IFeatureSet fs = FeatureSet.Open(_shapeFilePath);
+
                             try
                             {
                                 if (fs.DataTable.Columns["ROW"].DataType == typeof(System.String) || fs.DataTable.Columns["COL"].DataType == typeof(System.String))
@@ -733,6 +756,9 @@ namespace BenMAP
                         return;
                     }
                 }
+
+
+                //code reaches this line of execution if crosswalks are being created.
                 lblprogress.Visible = true;
                 lblprogress.Refresh();
                 progressBar1.Visible = true;
