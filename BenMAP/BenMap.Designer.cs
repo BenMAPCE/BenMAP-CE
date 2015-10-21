@@ -1,4 +1,7 @@
 
+using OxyPlot;
+using OxyPlot.WindowsForms;
+
 namespace BenMAP
 {
     partial class BenMAP
@@ -226,7 +229,7 @@ namespace BenMAP
             this.olvColumn69 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn70 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.btnApply = new System.Windows.Forms.Button();
-            this.zedGraphCtl = new ZedGraph.ZedGraphControl();
+            this.oxyPlotView = new OxyPlot.WindowsForms.PlotView();
             this.btnSaveChart = new System.Windows.Forms.Button();
             this.pnlChart = new System.Windows.Forms.Panel();
             this.tabATReport = new System.Windows.Forms.TabPage();
@@ -2606,7 +2609,7 @@ namespace BenMAP
             // 
             // splitContainer4.Panel2
             // 
-            this.splitContainer4.Panel2.Controls.Add(this.zedGraphCtl);
+            this.splitContainer4.Panel2.Controls.Add(this.oxyPlotView);
             this.splitContainer4.Size = new System.Drawing.Size(699, 464);
             this.splitContainer4.SplitterDistance = 168;
             this.splitContainer4.TabIndex = 7;
@@ -2763,22 +2766,18 @@ namespace BenMAP
             this.btnApply.UseVisualStyleBackColor = true;
             this.btnApply.Click += new System.EventHandler(this.btnApply_Click);
             // 
-            // zedGraphCtl
+            // oxyPlotView
             // 
-            this.zedGraphCtl.AutoScroll = true;
-            this.zedGraphCtl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.zedGraphCtl.IsPrintScaleAll = false;
-            this.zedGraphCtl.Location = new System.Drawing.Point(0, 0);
-            this.zedGraphCtl.Name = "zedGraphCtl";
-            this.zedGraphCtl.ScrollGrace = 0D;
-            this.zedGraphCtl.ScrollMaxX = 0D;
-            this.zedGraphCtl.ScrollMaxY = 0D;
-            this.zedGraphCtl.ScrollMaxY2 = 0D;
-            this.zedGraphCtl.ScrollMinX = 0D;
-            this.zedGraphCtl.ScrollMinY = 0D;
-            this.zedGraphCtl.ScrollMinY2 = 0D;
-            this.zedGraphCtl.Size = new System.Drawing.Size(527, 464);
-            this.zedGraphCtl.TabIndex = 6;
+            this.oxyPlotView.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.oxyPlotView.Location = new System.Drawing.Point(0, 34);
+            this.oxyPlotView.Name = "oxyPlotView";
+            this.oxyPlotView.PanCursor = System.Windows.Forms.Cursors.Hand;
+            this.oxyPlotView.Size = new System.Drawing.Size(527, 430);
+            this.oxyPlotView.TabIndex = 0;
+            this.oxyPlotView.Text = "plot1";
+            this.oxyPlotView.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
+            this.oxyPlotView.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
+            this.oxyPlotView.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
             // 
             // btnSaveChart
             // 
@@ -3043,7 +3042,8 @@ namespace BenMAP
         private System.Windows.Forms.TabPage tabData;
         private System.Windows.Forms.Button btnTableOutput;
         private System.Windows.Forms.TabPage tabChart;
-        private ZedGraph.ZedGraphControl zedGraphCtl;
+        private OxyPlot.WindowsForms.PlotView oxyPlotView;
+        // private ZedGraph.ZedGraphControl zedGraphCtl2; // temporary use for CDF ZED
         private System.Windows.Forms.Button btnSaveChart;
         private System.Windows.Forms.Panel pnlChart;
         private System.Windows.Forms.TabPage tabCRFunctionResultGISShow;

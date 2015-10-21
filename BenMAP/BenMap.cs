@@ -18,11 +18,14 @@ using DotSpatial.Extensions;  //MCB- needed?
 //using DotSpatial.Plugins; //MCB - needed?
 //using DotSpatial.Plugins.TableEditor;  // MCB-?
 //using DotSpatial.Plugins.AttributeDataExplorer;  //MCB- needed?
-using ZedGraph;
+// using ZedGraph; // ZED
+using OxyPlot;
+using OxyPlot.Series;
 using ESIL.DBUtility;
 using System.Configuration;
 using ProtoBuf;
 using System.Collections;
+using OxyPlot.Axes;
 
 namespace BenMAP
 {
@@ -83,7 +86,7 @@ namespace BenMAP
                 Control.CheckForIllegalCrossThreadCalls = false;
                 _homePageName = homePageName;
                 splitContainer1.Visible = false;
-                zedGraphCtl.Visible = false;
+                oxyPlotView.Visible = false;
                 this.tabCtlReport.DrawMode = System.Windows.Forms.TabDrawMode.OwnerDrawFixed;
                 this.tabCtlReport.DrawItem += new DrawItemEventHandler(DrawTabControlItems);
 
@@ -3167,6 +3170,8 @@ namespace BenMAP
                 Logger.LogError(ex);
             }
         }
+
+        // Large amount commented out that might could be removed
         private void RenderMainMap(bool isCone, string isBase)
         {
             //double min = _dMinValue;
@@ -4058,29 +4063,24 @@ namespace BenMAP
         {
         }
 
-
-
-
-
         private void ShowTable(string file)
         {
-
             _reportTableFileName = file;
             tabCtlMain.SelectTab(tabData);
         }
 
-
         private void ShowChart(string resultFile)
         {
-            zedGraphCtl.Visible = true;
+            /* zedGraphCtl.Visible = true;
             ZedGraphResult(zedGraphCtl, resultFile);
             zedGraphCtl.AxisChange();
             zedGraphCtl.Refresh();
-            tabCtlMain.SelectTab(tabChart);
+            tabCtlMain.SelectTab(tabChart); */
         }
 
-        private void ZedGraphResult(ZedGraphControl zgc, string file)
-        {
+        // ZED
+        /* private void ZedGraphResult(ZedGraphControl zgc, string file)
+        { 
             try
             {
                 System.Data.DataTable dt = DataSourceCommonClass.getDataSetFromCSV(file).Tables[0]; System.Data.DataSet dsOut = new System.Data.DataSet();
@@ -4162,7 +4162,8 @@ namespace BenMAP
                         j++;
                     }
 
-                    BarItem myCurve = myPane.AddBar(strValuationsNow[i], list, colorArray[i]);
+                    OxyPlot.ColumnSeries
+                    OxyPlot.Series.BarItem myCurve = myPane.AddBar(strValuationsNow[i], list, colorArray[i]);
 
                     i++;
                 }
@@ -4184,8 +4185,8 @@ namespace BenMAP
             catch (Exception err)
             {
                 Logger.LogError(err);
-            }
-        }
+            } 
+        } */
 
         private Dictionary<string, double> addRegionValue(DataTable dt)
         {
@@ -4199,8 +4200,9 @@ namespace BenMAP
             return DicRegionValue;
         }
 
-        private void ZedGraphDemo(ZedGraphControl zgc)
-        {
+        // ZED 
+        /* private void ZedGraphDemo(ZedGraphControl zgc)
+        { 
             GraphPane myPane = zgc.GraphPane;
             string[] str = { "North", "South", "West", "East", "Central" };
 
@@ -4225,26 +4227,26 @@ namespace BenMAP
                 list3.Add(x, y3);
             }
 
-            BarItem myCurve = myPane.AddBar("curve 1", list, Color.Blue);
-            BarItem myCurve2 = myPane.AddBar("curve 2", list2, Color.Red);
-            BarItem myCurve3 = myPane.AddBar("curve 3", list3, Color.Green);
+            OxyPlot.Series.BarItem myCurve = myPane.AddBar("curve 1", list, Color.Blue);
+            OxyPlot.Series.BarItem myCurve2 = myPane.AddBar("curve 2", list2, Color.Red);
+            OxyPlot.Series.BarItem myCurve3 = myPane.AddBar("curve 3", list3, Color.Green);
 
             myPane.Chart.Fill = new Fill(Color.White,
     Color.FromArgb(255, 255, 166), 45.0F);
 
             myPane.XAxis.Scale.TextLabels = str;
             myPane.XAxis.Type = AxisType.Text;
-            BarItem.CreateBarLabels(myPane, false, "f0");
+            OxyPlot.Series.BarItem.CreateBarLabels(myPane, false, "f0");
             zgc.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
 
             zgc.AxisChange();
-            zgc.Refresh();
+            zgc.Refresh(); 
 
-        }
+        } */ 
 
         private void ShowCumulative()
         {
-            zedGraphCtl.Visible = false;
+            oxyPlotView.Visible = false;
             System.Drawing.Image backImg = System.Drawing.Image.FromFile(Application.StartupPath + @"\Data\Image\Cumulative Distributions.JPG");
             pnlChart.BackgroundImage = backImg;
             tabCtlMain.SelectTab(tabChart);
@@ -4252,20 +4254,11 @@ namespace BenMAP
 
         private void ShowBoxPlot()
         {
-            zedGraphCtl.Visible = false;
+            oxyPlotView.Visible = false;
             System.Drawing.Image backImg = System.Drawing.Image.FromFile(Application.StartupPath + @"\Data\Image\BoxPlot.jpg");
             pnlChart.BackgroundImage = backImg;
             tabCtlMain.SelectTab(tabChart);
         }
-
-
-
-
-
-
-
-
-
 
         private bool ExportDataset2CSV(System.Data.DataSet ds, string fileName)
         {
@@ -4300,7 +4293,6 @@ namespace BenMAP
                 return false;
             }
         }
-
 
         private void btnExit_Click(object sender, EventArgs e)
         {
@@ -7130,7 +7122,7 @@ namespace BenMAP
 
             OLVResultsShow.SetObjects(null);
             _tableObject = null;
-            zedGraphCtl.Visible = false;
+            oxyPlotView.Visible = false;
             btnApply.Visible = false;
             olvRegions.Visible = false;
             cbGraph.Visible = false;
@@ -9239,7 +9231,7 @@ namespace BenMAP
         {
             try
             {
-                zedGraphCtl.Visible = true;
+                oxyPlotView.Visible = true;
                 olvRegions.Visible = true;
                 cbGraph.Visible = true;
                 btnApply.Visible = true;
@@ -9253,7 +9245,8 @@ namespace BenMAP
                 List<RowCol> lstRowCol = null;
                 int iRowCount = 0;
                 double d = 0;
-                GraphPane myPane = this.zedGraphCtl.GraphPane;
+                // GraphPane myPane = this.oxyPlotView.GraphPane;
+                PlotModel myPane = new PlotModel();
                 DataRowView drGrid = cboRegion.SelectedItem as DataRowView;
                 bool showOriginalGrid;
                 if (tabCtlReport.SelectedTab == tabPoolingIncidence || tabCtlReport.SelectedTab == tabAPVResultGISShow)
@@ -9264,7 +9257,6 @@ namespace BenMAP
                 {
                     if (CommonClass.RBenMAPGrid == null)
                     {
-
                         CommonClass.RBenMAPGrid = Grid.GridCommon.getBenMAPGridFromID(Convert.ToInt32(drGrid["GridDefinitionID"]));
                     }
                     if (GridID != CommonClass.RBenMAPGrid.GridDefinitionID)
@@ -10643,49 +10635,63 @@ namespace BenMAP
         }
         private void btnApply_Click(object sender, EventArgs e)
         {
-            try
             {
-                GraphPane myPane = this.zedGraphCtl.GraphPane;
-                List<string> lstPane = new List<string>();
-                myPane.CurveList.Clear();
-                int i = 0;
-                Color[] colorArray = new Color[] { Color.Blue, Color.Red, Color.Green };
-                while (i < 1)
+                try
                 {
-                    PointPairList list = new PointPairList();
-                    int j = 0;
-                    foreach (ChartResult cr in olvRegions.CheckedObjects)
+                    PlotModel plotModel = new PlotModel();
+                    ColumnSeries barChart = new ColumnSeries();
+                    CategoryAxis catAxis = new CategoryAxis();
+                    LinearAxis yAxis = new LinearAxis();
+
+                    barChart.FillColor = OxyColors.RoyalBlue;
+                    barChart.Background = OxyColor.FromRgb(255, 255, 255);
+
+                    int i = 0;
+                    while (i < 1)
                     {
-                        list.Add(new PointPair(Convert.ToInt32(j), cr.RegionValue));
-                        lstPane.Add(cr.RegionName);
-                        j++;
+                        int j = 0;
+                        foreach (ChartResult cr in olvRegions.CheckedObjects)
+                        {
+                            barChart.Items.Add(new ColumnItem(cr.RegionValue, -1));
+                            catAxis.Labels.Add(cr.RegionName);
+                            j++;
+                        }
+                        i++;
                     }
-                    BarItem myCurve = myPane.AddBar("Result", list, colorArray[i]);
+ 
+                    catAxis.Title = strchartX;
+                    catAxis.TitleFontWeight = 700;
+                    catAxis.TitleFontSize = 14;
+                    catAxis.Angle = 30;
+                    catAxis.TickStyle = OxyPlot.Axes.TickStyle.Crossing;
+                    catAxis.Position = OxyPlot.Axes.AxisPosition.Bottom;
+                    catAxis.MinimumRange = 5;
+                    catAxis.DataMaximum.Equals(5);
 
-                    i++;
+                    yAxis.Title = strchartY;
+                    yAxis.TitleFontWeight = 700;
+                    yAxis.TitleFontSize = 14;
+                    yAxis.AxisTitleDistance = 15;
+                    yAxis.Minimum = 0;
+                    yAxis.MinimumPadding = 2;
+                    yAxis.MaximumPadding = 0.1; 
+                    yAxis.TickStyle = OxyPlot.Axes.TickStyle.Crossing;
+                    yAxis.Position = OxyPlot.Axes.AxisPosition.Left;
+                    yAxis.StringFormat = String.Format("#,##0.####");
+
+                    plotModel.Title = strchartTitle;
+                    plotModel.TitleFont = "Helvetica";
+                    plotModel.Padding = new OxyThickness(15);
+                    plotModel.Axes.Add(catAxis);
+                    plotModel.Axes.Add(yAxis);
+                    plotModel.Series.Add(barChart);
+                    this.oxyPlotView.Model = plotModel;
+
                 }
-                myPane.Chart.Fill = new Fill(Color.White,
-                 Color.FromArgb(255, 255, 166), 45.0F);
-
-
-                myPane.XAxis.Scale.TextLabels = lstPane.ToArray(); myPane.XAxis.Type = AxisType.Text;
-                myPane.XAxis.Scale.FontSpec.Angle = 65;
-                myPane.XAxis.Scale.FontSpec.IsBold = true;
-                myPane.XAxis.Scale.FontSpec.Size = 12;
-                zedGraphCtl.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
-                myPane.IsFontsScaled = false; myPane.YAxis.Scale.MinAuto = true; myPane.YAxis.Scale.MaxAuto = true;
-                myPane.XAxis.Scale.MinAuto = true;
-                myPane.XAxis.Scale.MaxAuto = true;
-                myPane.Title.Text = strchartTitle;
-                myPane.XAxis.Title.Text = strchartX;
-                myPane.YAxis.Title.Text = strchartY;
-                myPane.YAxis.Scale.Format = "#,##0.####";
-                zedGraphCtl.AxisChange();
-                zedGraphCtl.Refresh();
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex.Message);
+                catch (Exception ex)
+                {
+                    Logger.LogError(ex.Message);
+                }
             }
         }
 
@@ -11423,6 +11429,7 @@ namespace BenMAP
                 else sw.WriteLine(node.Text);
             }
         }
+
         private void btShowCRResult_Click(object sender, EventArgs e)
         {
             try
@@ -13611,7 +13618,7 @@ namespace BenMAP
         {
             try
             {
-                zedGraphCtl.GraphPane = new GraphPane(new Rectangle(0, 0, zedGraphCtl.Width, zedGraphCtl.Height), "", "", "");
+               //  zedGraphCtl2.GraphPane = new GraphPane(new Rectangle(0, 0, zedGraphCtl2.Width, zedGraphCtl2.Height), "", "", "");
                 switch (cbGraph.Text)
                 {
                     case "Bar Graph":
@@ -13637,10 +13644,10 @@ namespace BenMAP
         }
 
         private void ShowCDFgraph()
-        {
+        {/* 
             try
             {
-                GraphPane myPane = zedGraphCtl.GraphPane;
+                GraphPane myPane = zedGraphCtl2.GraphPane;
                 switch (iCDF)
                 {
                     case 0:
@@ -13711,11 +13718,11 @@ namespace BenMAP
                 myPane.Title.Text = strCDFTitle;
                 myPane.XAxis.Title.Text = strCDFX;
                 myPane.YAxis.Title.Text = strCDFY;
-                zedGraphCtl.AxisChange();
-                zedGraphCtl.Refresh();
+                zedGraphCtl2.AxisChange();
+                zedGraphCtl2.Refresh();
             }
             catch
-            { }
+            { } */
         }
 
         public System.Drawing.Color GetRandomColor()
@@ -13811,7 +13818,7 @@ namespace BenMAP
                     _colorArray = _red_blue_Array;
                     break;
                 case "blue_red":
-                    _colorArray = (System.Drawing.Color[])_red_blue_Array.Reverse();
+                    // _colorArray = (System.Drawing.Color[])_red_blue_Array.Reverse();
                     break;
                 case "red_black":
                     _colorArray = _red_black_Array;
