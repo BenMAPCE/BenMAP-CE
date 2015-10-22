@@ -19,6 +19,9 @@ namespace BenMAP
 {
     public partial class GridDefinition : FormBase
     {
+
+        private enum RowColFieldsValidationCode { BOTH_EXIST = 0, BOTH_MISSING = 1, COL_MISSING = 2, ROW_MISSING = 3, INCORRECT_FORMAT = 4, UNSPECIFIED_ERROR = 5};
+
         public GridDefinition()
         {
             InitializeComponent();
@@ -117,10 +120,12 @@ namespace BenMAP
             }
         }
 
-        private bool HasColumnsRows(string strPath)
+        private RowColFieldsValidationCode ValidateColumnsRows(string strPath)
         {
             try
             {
+
+
                 IFeatureSet fs = FeatureSet.Open(strPath);
                 List<int> lsCol = new List<int>();
                 List<int> lsRow = new List<int>();
@@ -141,13 +146,26 @@ namespace BenMAP
                     }
                 }
 
-                //exit if we are missing fields
-                if ((icol < 0) || (irow < 0))
+                //if both fields are missing
+                if ((icol < 0) && (irow < 0))
                 {
-                    //MessageBox.Show("This shapefile does not have the required ROW and COL fields.");
+                    MessageBox.Show("This shapefile does not have the required ROW and COL fields.");
+                    fs.Close();
+                    return RowColFieldsValidationCode.BOTH_MISSING;
+                }
+                else if (icol < 0) 
+                {
+                    MessageBox.Show("This shapefile does not have the required COL field.");
                     //txtShapefile.Text = "";
                     fs.Close();
-                    return false;
+                    return RowColFieldsValidationCode.COL_MISSING;
+                }
+                else if (irow < 0)
+                {
+                    MessageBox.Show("This shapefile does not have the required ROW field.");
+                    //txtShapefile.Text = "";
+                    fs.Close();
+                    return RowColFieldsValidationCode.ROW_MISSING;
                 }
 
                 //ensure that ROW, COL fields contain integers
@@ -158,7 +176,7 @@ namespace BenMAP
                     {
                         MessageBox.Show("Values in the ROW and COL fields must be integers.");
                         fs.Close();
-                        return false;
+                        return RowColFieldsValidationCode.INCORRECT_FORMAT;
                     }                   
                     
                 }                
@@ -169,12 +187,12 @@ namespace BenMAP
                 fs.SaveAs(strPath, true);
                 fs.Close();
 
-                return true;
+                return RowColFieldsValidationCode.BOTH_EXIST;
             }
             catch (Exception ex)
             {
                 Logger.LogError(ex.Message);
-                return false;
+                return RowColFieldsValidationCode.INCORRECT_FORMAT;
             }
         }
 
@@ -183,6 +201,11 @@ namespace BenMAP
             try
             {
                 IFeatureSet fs = FeatureSet.Open(strPath);
+
+                if (fs.DataTable.Columns.Contains("COL"))
+                {
+                    fs.DataTable.Columns.Remove("COL");
+                }
                 
                 fs.DataTable.Columns.Add("COL", typeof(int));
                 fs.DataTable.Columns.Add("ROW", typeof(int));
@@ -318,9 +341,10 @@ namespace BenMAP
                         // Add the grid 
                         AddLayer(_shapeFilePath);
                         //get columns, rows
-                        if (!HasColumnsRows(_shapeFilePath))
+                        if (ValidateColumnsRows(_shapeFilePath) != RowColFieldsValidationCode.BOTH_EXIST)
                         {
-                            AddColumnsRows(_shapeFilePath);
+                            return;
+                            //AddColumnsRows(_shapeFilePath);
                         }
                         GetColumnsRows(_shapeFilePath);
                         lblCol.Text = _shapeCol.ToString();
@@ -447,9 +471,10 @@ namespace BenMAP
                         string strPath = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.ManageSetup.SetupName + "\\" + lblShapeFileName.Text + ".shp";
                         AddLayer(_shapeFilePath);
                         //get columns, rows
-                        if (!HasColumnsRows(_shapeFilePath))
+                        if (ValidateColumnsRows(_shapeFilePath) != RowColFieldsValidationCode.BOTH_EXIST)
                         {
-                            AddColumnsRows(_shapeFilePath);
+                            return;
+                            //AddColumnsRows(_shapeFilePath);
                         }
                         GetColumnsRows(_shapeFilePath);
                         lblCol.Text = _shapeCol.ToString();
@@ -702,7 +727,7 @@ namespace BenMAP
                 else
                 {
                     //ensure shapefile is correctly formatted.
-                    if (!HasColumnsRows(_shapeFilePath))
+                    if (ValidateColumnsRows(_shapeFilePath) != RowColFieldsValidationCode.BOTH_EXIST)
                     {
                         return;
                     }
