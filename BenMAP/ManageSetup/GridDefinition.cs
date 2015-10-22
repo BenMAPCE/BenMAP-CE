@@ -117,7 +117,7 @@ namespace BenMAP
             }
         }
 
-        private bool GetColumnsRows(string strPath)
+        private bool HasColumnsRows(string strPath)
         {
             try
             {
@@ -144,34 +144,29 @@ namespace BenMAP
                 //exit if we are missing fields
                 if ((icol < 0) || (irow < 0))
                 {
-                    MessageBox.Show("This shapefile does not have the required ROW and COL fields.");
-                    txtShapefile.Text = "";
-                    fs.Close();
-                    return false;                
-                }
-
-                //ensure that ROW, COL fields contain integers
-                try
-                {
-                    foreach (DataRow dr in fs.DataTable.Rows)
-                    {
-                        lsCol.Add(Convert.ToInt32(Convert.ToDouble(dr[icol].ToString())));
-                        lsRow.Add(Convert.ToInt32(Convert.ToDouble(dr[irow].ToString())));
-                    }
-                }
-                catch
-                {
-                    MessageBox.Show("Values in the ROW and COL fields must be integers.");
+                    //MessageBox.Show("This shapefile does not have the required ROW and COL fields.");
+                    //txtShapefile.Text = "";
                     fs.Close();
                     return false;
                 }
-                _shapeCol = lsCol.Max();
-                _shapeRow = lsRow.Max();
-  
+
+                //ensure that ROW, COL fields contain integers
+                foreach (DataRow dr in fs.DataTable.Rows)
+                {
+                    int iTest;
+                    if ((!Int32.TryParse(dr[icol].ToString(), out iTest)) || (!Int32.TryParse(dr[irow].ToString(), out iTest)))
+                    {
+                        MessageBox.Show("Values in the ROW and COL fields must be integers.");
+                        fs.Close();
+                        return false;
+                    }                   
+                    
+                }                
+
                 //rename COL, ROW field names to upper case
                 fs.DataTable.Columns[icol].ColumnName = "COL";
                 fs.DataTable.Columns[irow].ColumnName = "ROW";
-                fs.SaveAs(strPath, true);               
+                fs.SaveAs(strPath, true);
                 fs.Close();
 
                 return true;
@@ -180,6 +175,57 @@ namespace BenMAP
             {
                 Logger.LogError(ex.Message);
                 return false;
+            }
+        }
+
+        private void AddColumnsRows(string strPath)
+        {
+            try
+            {
+                IFeatureSet fs = FeatureSet.Open(strPath);
+                
+                fs.DataTable.Columns.Add("COL", typeof(int));
+                fs.DataTable.Columns.Add("ROW", typeof(int));
+
+                int iRow = 0;
+                foreach (DataRow dr in fs.DataTable.Rows)
+                {
+                    dr["COL"] = 1; //set COL to 1
+
+                    iRow++;
+                    dr["ROW"] = iRow; //increment ROW                
+                }
+
+                fs.SaveAs(strPath, true);
+                fs.Close();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.Message);
+            }
+        }
+
+        private void GetColumnsRows(string strPath)
+        {
+            try
+            {
+                IFeatureSet fs = FeatureSet.Open(strPath);
+                List<int> lsCol = new List<int>();
+                List<int> lsRow = new List<int>();                
+
+                foreach (DataRow dr in fs.DataTable.Rows)
+                {
+                    lsCol.Add(Convert.ToInt32(dr["COL"].ToString()));
+                    lsRow.Add(Convert.ToInt32(dr["ROW"].ToString()));
+                }
+               
+                _shapeCol = lsCol.Max();
+                _shapeRow = lsRow.Max();  
+              
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.Message);
             }
         }
 
@@ -271,10 +317,12 @@ namespace BenMAP
 
                         // Add the grid 
                         AddLayer(_shapeFilePath);
-                        if (!GetColumnsRows(_shapeFilePath))
+                        //get columns, rows
+                        if (!HasColumnsRows(_shapeFilePath))
                         {
-                            return;
+                            AddColumnsRows(_shapeFilePath);
                         }
+                        GetColumnsRows(_shapeFilePath);
                         lblCol.Text = _shapeCol.ToString();
                         lblRow.Text = _shapeRow.ToString();
                         GetMetadata();                       
@@ -398,10 +446,12 @@ namespace BenMAP
                         if (string.IsNullOrEmpty(lblShapeFileName.Text)) return;
                         string strPath = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.ManageSetup.SetupName + "\\" + lblShapeFileName.Text + ".shp";
                         AddLayer(_shapeFilePath);
-                        if (!GetColumnsRows(_shapeFilePath))
+                        //get columns, rows
+                        if (!HasColumnsRows(_shapeFilePath))
                         {
-                            return;
+                            AddColumnsRows(_shapeFilePath);
                         }
+                        GetColumnsRows(_shapeFilePath);
                         lblCol.Text = _shapeCol.ToString();
                         lblRow.Text = _shapeRow.ToString();
                     }
@@ -652,7 +702,7 @@ namespace BenMAP
                 else
                 {
                     //ensure shapefile is correctly formatted.
-                    if (!GetColumnsRows(_shapeFilePath))
+                    if (!HasColumnsRows(_shapeFilePath))
                     {
                         return;
                     }
