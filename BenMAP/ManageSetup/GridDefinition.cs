@@ -464,14 +464,14 @@ namespace BenMAP
                     {
                         if (string.IsNullOrEmpty(lblShapeFileName.Text)) return;
                         string strPath = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.ManageSetup.SetupName + "\\" + lblShapeFileName.Text + ".shp";
-                        AddLayer(_shapeFilePath);
+                        AddLayer(strPath);
                         //get columns, rows
-                        if (ValidateColumnsRows(_shapeFilePath) != RowColFieldsValidationCode.BOTH_EXIST)
+                        if (ValidateColumnsRows(strPath) != RowColFieldsValidationCode.BOTH_EXIST)
                         {
                             return;
-                            //AddColumnsRows(_shapeFilePath);
+                            //AddColumnsRows(strPath);
                         }
-                        GetColumnsRows(_shapeFilePath);
+                        GetColumnsRows(strPath);
                         lblCol.Text = _shapeCol.ToString();
                         lblRow.Text = _shapeRow.ToString();
                     }
