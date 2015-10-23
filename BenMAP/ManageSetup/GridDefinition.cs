@@ -201,11 +201,6 @@ namespace BenMAP
             try
             {
                 IFeatureSet fs = FeatureSet.Open(strPath);
-
-                if (fs.DataTable.Columns.Contains("COL"))
-                {
-                    fs.DataTable.Columns.Remove("COL");
-                }
                 
                 fs.DataTable.Columns.Add("COL", typeof(int));
                 fs.DataTable.Columns.Add("ROW", typeof(int));
