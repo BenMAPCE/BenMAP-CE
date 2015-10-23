@@ -120,7 +120,7 @@ namespace BenMAP
             }
         }
 
-        private RowColFieldsValidationCode ValidateColumnsRows(string strPath)
+        private RowColFieldsValidationCode ValidateColumnsRows(string strPath, bool offerAdd)
         {
             try
             {
@@ -149,9 +149,28 @@ namespace BenMAP
                 //if both fields are missing
                 if ((icol < 0) && (irow < 0))
                 {
-                    MessageBox.Show("This shapefile does not have the required ROW and COL fields.");
-                    fs.Close();
-                    return RowColFieldsValidationCode.BOTH_MISSING;
+                    if (offerAdd)
+                    {
+                        
+                        DialogResult result = MessageBox.Show("This shapefile does not have the required ROW and COL fields.  Would you like BenMAP-CE to add them?", "Add Fields", MessageBoxButtons.YesNo);
+                        if (result == DialogResult.Yes)
+                        {
+                            fs.Close();
+                            AddColumnsRows(strPath);
+                            return RowColFieldsValidationCode.BOTH_EXIST;
+                        }
+                        else 
+                        {
+                            fs.Close();
+                            return RowColFieldsValidationCode.BOTH_MISSING;
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("This shapefile does not have the required ROW and COL fields.");
+                        fs.Close();
+                        return RowColFieldsValidationCode.BOTH_MISSING;
+                    }
                 }
                 else if (icol < 0) 
                 {
@@ -192,7 +211,7 @@ namespace BenMAP
             catch (Exception ex)
             {
                 Logger.LogError(ex.Message);
-                return RowColFieldsValidationCode.INCORRECT_FORMAT;
+                return RowColFieldsValidationCode.UNSPECIFIED_ERROR;
             }
         }
 
@@ -336,7 +355,7 @@ namespace BenMAP
                         // Add the grid 
                         AddLayer(_shapeFilePath);
                         //get columns, rows
-                        if (ValidateColumnsRows(_shapeFilePath) != RowColFieldsValidationCode.BOTH_EXIST)
+                        if (ValidateColumnsRows(_shapeFilePath, true) != RowColFieldsValidationCode.BOTH_EXIST)
                         {
                             return;
                             //AddColumnsRows(_shapeFilePath);
@@ -466,10 +485,9 @@ namespace BenMAP
                         string strPath = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.ManageSetup.SetupName + "\\" + lblShapeFileName.Text + ".shp";
                         AddLayer(strPath);
                         //get columns, rows
-                        if (ValidateColumnsRows(strPath) != RowColFieldsValidationCode.BOTH_EXIST)
+                        if (ValidateColumnsRows(strPath, false) != RowColFieldsValidationCode.BOTH_EXIST)
                         {
                             return;
-                            //AddColumnsRows(strPath);
                         }
                         GetColumnsRows(strPath);
                         lblCol.Text = _shapeCol.ToString();
@@ -722,7 +740,7 @@ namespace BenMAP
                 else
                 {
                     //ensure shapefile is correctly formatted.
-                    if (ValidateColumnsRows(_shapeFilePath) != RowColFieldsValidationCode.BOTH_EXIST)
+                    if (ValidateColumnsRows(_shapeFilePath,false) != RowColFieldsValidationCode.BOTH_EXIST)
                     {
                         return;
                     }
