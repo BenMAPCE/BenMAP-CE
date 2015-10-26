@@ -10677,7 +10677,7 @@ namespace BenMAP
                     yAxis.MaximumPadding = 0.1; 
                     yAxis.TickStyle = OxyPlot.Axes.TickStyle.Crossing;
                     yAxis.Position = OxyPlot.Axes.AxisPosition.Left;
-                    yAxis.StringFormat = String.Format("#,##0.####");
+                    yAxis.StringFormat = String.Format("#,##0.#####");
 
                     plotModel.Title = strchartTitle;
                     plotModel.TitleFont = "Helvetica";
@@ -10686,7 +10686,7 @@ namespace BenMAP
                     plotModel.Axes.Add(yAxis);
                     plotModel.Series.Add(barChart);
                     this.oxyPlotView.Model = plotModel;
-
+                    this.splitContainer4.Panel2.Refresh();
                 }
                 catch (Exception ex)
                 {
