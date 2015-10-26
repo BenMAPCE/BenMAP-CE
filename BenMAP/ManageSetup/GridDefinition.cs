@@ -203,7 +203,7 @@ namespace BenMAP
                 //rename COL, ROW field names to upper case
                 fs.DataTable.Columns[icol].ColumnName = "COL";
                 fs.DataTable.Columns[irow].ColumnName = "ROW";
-                fs.SaveAs(strPath, true);
+                fs.Save();
                 fs.Close();
 
                 return RowColFieldsValidationCode.BOTH_EXIST;
@@ -339,6 +339,7 @@ namespace BenMAP
                             ProjectionInfo pESRI = new ProjectionInfo();
                             StreamReader re = File.OpenText(prjfile);
                             pESRI.ParseEsriString(re.ReadLine());
+                            re.Close();
                             if (pESRI.Equals(GCSNAD83prj)) ProjectionOK = true;  //MCB will need to add more code for other regions
                         }
                         if (!ProjectionOK)  //Then attempt to reporject it to GCS/NAD83
@@ -350,6 +351,7 @@ namespace BenMAP
                             IFeatureSet fs = FeatureSet.Open(originalShapeFilePath);
                             fs.Reproject(GCSNAD83prj); //reproject
                             fs.SaveAs(_shapeFilePath, true);
+                            fs.Close();
                         }
 
                         // Add the grid 
