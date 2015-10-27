@@ -811,10 +811,9 @@ namespace BenMAP
                                 fs.SaveAs(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.ManageSetup.SetupName + "\\" + _shapeFileName + ".shp", true);
                                 _filePath = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.ManageSetup.SetupName + "\\" + _shapeFileName + ".shp";
                                 
-                                //reset shapefilepath and getmetadata;  we have to do this here in case the file is renamed above
-                                _shapeFilePath = _filePath;
-                                GetMetadata();
-                                _metadataObj.DatasetId = _gridID; //datasetid of metadata obj is griddefinitionid
+                                //update metadata, we have to do this here in case the file is renamed above
+                                _metadataObj.FileName = _shapeFileName;
+                                _metadataObj.DatasetId = _gridID; //ensure datasetid of metadata obj is griddefinitionid
                             }
                             finally
                             {
