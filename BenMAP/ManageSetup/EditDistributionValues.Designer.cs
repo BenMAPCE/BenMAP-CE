@@ -16,6 +16,7 @@ namespace BenMAP
         
         private void InitializeComponent()
         {
+            this.plot1 = new OxyPlot.WindowsForms.PlotView();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
@@ -58,7 +59,9 @@ namespace BenMAP
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
-                                                this.groupBox1.Controls.Add(this.pictureBox2);
+
+            this.groupBox1.Controls.Add(this.plot1);
+            this.groupBox1.Controls.Add(this.pictureBox2);
             this.groupBox1.Controls.Add(this.lblNotesContext);
             this.groupBox1.Controls.Add(this.pictureBox1);
             this.groupBox1.Controls.Add(this.txtParameter2);
@@ -72,10 +75,23 @@ namespace BenMAP
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBox1.Location = new System.Drawing.Point(0, 0);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(511, 407);
+            this.groupBox1.Size = new System.Drawing.Size(511, 325);
             this.groupBox1.TabIndex = 5;
             this.groupBox1.TabStop = false;
-                                                this.pictureBox2.Location = new System.Drawing.Point(109, 74);
+
+            // this.plot1.Dock = System.Windows.Forms.
+            this.plot1.Location = new System.Drawing.Point(109, 74); // new System.Drawing.Point(0, 0);
+            this.plot1.Left = (this.ClientSize.Width - this.plot1.Width) / 2;
+            this.plot1.Name = "plot1";
+            this.plot1.Size = new System.Drawing.Size(400, 300);
+            this.plot1.TabIndex = 0;
+            // this.plot1.Padding = new System.Windows.Forms.Padding(100);
+            this.plot1.Text = "plot1";
+            //this.plot1.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
+            //this.plot1.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
+            //this.plot1.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
+
+            this.pictureBox2.Location = new System.Drawing.Point(109, 74);
             this.pictureBox2.Name = "pictureBox2";
             this.pictureBox2.Size = new System.Drawing.Size(358, 185);
             this.pictureBox2.TabIndex = 11;
@@ -83,21 +99,22 @@ namespace BenMAP
                                                 this.lblNotesContext.AutoSize = true;
             this.lblNotesContext.BackColor = System.Drawing.SystemColors.HighlightText;
             this.lblNotesContext.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.lblNotesContext.Location = new System.Drawing.Point(109, 262);
+            this.lblNotesContext.Location = new System.Drawing.Point(109, 370); // new System.Drawing.Point(109, 262);
             this.lblNotesContext.Name = "lblNotesContext";
             this.lblNotesContext.Size = new System.Drawing.Size(42, 14);
             this.lblNotesContext.TabIndex = 10;
             this.lblNotesContext.Text = "label1";
-                                                this.pictureBox1.Location = new System.Drawing.Point(109, 20);
+
+            this.pictureBox1.Location = new System.Drawing.Point(109, 20);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(358, 58);
             this.pictureBox1.TabIndex = 9;
             this.pictureBox1.TabStop = false;
-                                                this.txtParameter2.Location = new System.Drawing.Point(109, 378);
+                                                this.txtParameter2.Location = new System.Drawing.Point(109, 385);
             this.txtParameter2.Name = "txtParameter2";
             this.txtParameter2.Size = new System.Drawing.Size(119, 22);
             this.txtParameter2.TabIndex = 8;
-                                                this.txtParameter1.Location = new System.Drawing.Point(109, 350);
+                                                this.txtParameter1.Location = new System.Drawing.Point(109, 410);
             this.txtParameter1.Name = "txtParameter1";
             this.txtParameter1.Size = new System.Drawing.Size(119, 22);
             this.txtParameter1.TabIndex = 7;
@@ -150,7 +167,7 @@ namespace BenMAP
             this.Controls.Add(this.groupBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(517, 495);
+            this.MinimumSize = new System.Drawing.Size(517, 515);
             this.Name = "EditDistributionValues";
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -181,5 +198,6 @@ namespace BenMAP
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Label lblNotesContext;
         private System.Windows.Forms.PictureBox pictureBox2;
+        private OxyPlot.WindowsForms.PlotView plot1;
     }
 }

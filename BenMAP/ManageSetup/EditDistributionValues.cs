@@ -1,3 +1,5 @@
+using OxyPlot;
+using OxyPlot.Series;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -11,6 +13,8 @@ namespace BenMAP
 {
     public partial class EditDistributionValues : FormBase
     {
+        PlotModel distModel = new PlotModel();
+
         private string _distributionName;
         private HealthImpact _healthImpactDistribution;
         public HealthImpact HealthImpactDistribution
@@ -41,8 +45,29 @@ namespace BenMAP
                     txtParameter1.Text = _healthImpactDistribution.BetaParameter1;
                     Image normal = Image.FromFile(Application.StartupPath + @"\Resources\DistributionFormula\Normal PDF.png");
                     pictureBox1.Image = normal;
-                    normal = Image.FromFile(Application.StartupPath + @"\Resources\DistributionFormula\720px-Normal_Distribution_PDF_svg.png");
-                    pictureBox2.Image = normal;
+                    // normal = Image.FromFile(Application.StartupPath + @"\Resources\DistributionFormula\720px-Normal_Distribution_PDF_svg.png");
+                    // pictureBox2.Image = normal;
+
+                    distModel.Axes.Add(new OxyPlot.Axes.LinearAxis
+                    {
+                        Position = OxyPlot.Axes.AxisPosition.Left,
+                        Minimum = -0.05,
+                        Maximum = 1.05,
+                        MajorStep = 0.2,
+                        MinorStep = 0.05,
+                    });
+
+                    distModel.Axes.Add(new OxyPlot.Axes.LinearAxis
+                    {
+                        Position = OxyPlot.Axes.AxisPosition.Bottom,
+                        Minimum = -5.25,
+                        Maximum = 5.25,
+                        MajorStep = 1,
+                        MinorStep = 0.25,
+                    });
+
+                    distModel.Series.Add(CreateNormalDistributionSeries(-5, 5, 0, 0.5));
+                    this.plot1.Model = distModel;
                 }
                 if (_distributionName == "Triangular")
                 {
@@ -219,6 +244,23 @@ namespace BenMAP
                 Logger.LogError(ex);
             }
 
+        }
+
+        private static DataPointSeries CreateNormalDistributionSeries(double x0, double x1, double mean, double variance,
+                                                 int n = 1001)
+        {
+            var ls = new LineSeries
+            {
+                //Title = String.Format("?={0}, ?²={1}", mean, variance)
+            };
+
+            for (int i = 0; i < n; i++)
+            {
+                double x = x0 + (x1 - x0) * i / (n - 1);
+                double f = 1.0 / Math.Sqrt(2 * Math.PI * variance) * Math.Exp(-(x - mean) * (x - mean) / 2 / variance);
+                ls.Points.Add(new DataPoint(x, f));
+            }
+            return ls;
         }
 
         private string _meanValue;
