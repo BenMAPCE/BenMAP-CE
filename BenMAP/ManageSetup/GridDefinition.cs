@@ -319,7 +319,9 @@ namespace BenMAP
                 _filePath = openFileDialog.FileName;
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
-                    txtShapefile.Text = openFileDialog.FileName; lblShapeFileName.Text = System.IO.Path.GetFileNameWithoutExtension(txtShapefile.Text);
+                    //set shapefile path and name variables
+                    txtShapefile.Text = openFileDialog.FileName; 
+                    lblShapeFileName.Text = System.IO.Path.GetFileNameWithoutExtension(txtShapefile.Text);
                     _shapeFilePath = openFileDialog.FileName;
 
                     if(CheckforSupportingfiles(_shapeFilePath))
@@ -352,6 +354,10 @@ namespace BenMAP
                             fs.Reproject(GCSNAD83prj); //reproject
                             fs.SaveAs(_shapeFilePath, true);
                             fs.Close();
+
+                            //set shapefile path and name variables to reprojected file
+                            txtShapefile.Text = _shapeFilePath;
+                            lblShapeFileName.Text = System.IO.Path.GetFileNameWithoutExtension(txtShapefile.Text);                           
                         }
 
                         // Add the grid 
@@ -805,6 +811,10 @@ namespace BenMAP
                                 }
                                 fs.SaveAs(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.ManageSetup.SetupName + "\\" + _shapeFileName + ".shp", true);
                                 _filePath = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.ManageSetup.SetupName + "\\" + _shapeFileName + ".shp";
+                                
+                                //reset shapefilepath and getmetadata;  we have to do this here in case the file is renamed above
+                                _shapeFilePath = _filePath;
+                                GetMetadata();
                             }
                             finally
                             {
@@ -842,7 +852,7 @@ namespace BenMAP
                     if (!chkBoxCreatePercentage.Checked)
                     {
                         this.DialogResult = DialogResult.OK;
-                        saveMetadata(_filePath, _gridID, _gridType);
+                        saveMetadata();
                         return;
                     }
                 }
@@ -947,7 +957,7 @@ namespace BenMAP
 
         }
 
-        private void saveMetadata(string filePath, int gridID, int gridType)
+        private void saveMetadata()
         {
 
             _metadataObj.DatasetTypeId = SQLStatementsCommonClass.getDatasetID("GridDefinition");
