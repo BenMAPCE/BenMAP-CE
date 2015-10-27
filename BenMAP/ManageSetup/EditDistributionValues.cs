@@ -37,36 +37,49 @@ namespace BenMAP
                 txtParameter1.Text = _healthImpactDistribution.BetaParameter1;
                 if (_distributionName == "Normal")
                 {
-                    lblPDF.Text = _distributionName + " PDF:";
+                    lblPDF.Text = _distributionName +" Dist.:";
                     lblNotesContext.Text = "The Normal distribution has two parameters - the mean,\nmu, and the standard deviation, sigma.";
                     lblParameter2.Visible = false;
                     txtParameter2.Visible = false;
-                    lblParameter1.Text = "sigma:";
+                    lblParameter1.Text = "Sigma:";
                     txtParameter1.Text = _healthImpactDistribution.BetaParameter1;
                     Image normal = Image.FromFile(Application.StartupPath + @"\Resources\DistributionFormula\Normal PDF.png");
                     pictureBox1.Image = normal;
                     // normal = Image.FromFile(Application.StartupPath + @"\Resources\DistributionFormula\720px-Normal_Distribution_PDF_svg.png");
                     // pictureBox2.Image = normal;
 
+                    // distModel.Background = OxyColors.White;
+                    distModel.PlotAreaBackground = OxyColors.White;
+                    // distModel.PlotMargins = new OxyThickness(5);
+                    distModel.Padding = new OxyThickness(9);
+
                     distModel.Axes.Add(new OxyPlot.Axes.LinearAxis
                     {
                         Position = OxyPlot.Axes.AxisPosition.Left,
-                        Minimum = -0.05,
-                        Maximum = 1.05,
-                        MajorStep = 0.2,
-                        MinorStep = 0.05,
-                    });
+                        Minimum = -2,
+                        Maximum = 27, //  1.0,
+                        // MajorStep = 0.2,
+                        // MinorStep = 0.05,
+                        MajorGridlineStyle = LineStyle.Solid,
+                        MinorGridlineStyle = LineStyle.Dot,
+                        Title = "Standard Deviation",
+                        AxisTitleDistance = 15,
+                });
 
                     distModel.Axes.Add(new OxyPlot.Axes.LinearAxis
                     {
                         Position = OxyPlot.Axes.AxisPosition.Bottom,
-                        Minimum = -5.25,
-                        Maximum = 5.25,
-                        MajorStep = 1,
-                        MinorStep = 0.25,
+                        Minimum = -0.1, // .25,
+                        Maximum = 0.1, // .25,
+                        // MajorStep = 1,
+                        // MinorStep = 0.25,
+                        MajorGridlineStyle = LineStyle.Solid,
+                        MinorGridlineStyle = LineStyle.Dot,
+                        Title = "Mean",
+                        AxisTitleDistance = 10,
                     });
 
-                    distModel.Series.Add(CreateNormalDistributionSeries(-5, 5, 0, 0.5));
+                    distModel.Series.Add(CreateNormalDistributionSeries(-0.1, 0.1, Convert.ToDouble(_healthImpactDistribution.Beta), Convert.ToDouble(_healthImpactDistribution.BetaParameter1)));
                     this.plot1.Model = distModel;
                 }
                 if (_distributionName == "Triangular")
