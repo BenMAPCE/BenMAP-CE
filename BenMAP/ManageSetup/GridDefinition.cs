@@ -761,8 +761,7 @@ namespace BenMAP
                         MessageBox.Show("This grid definition name is already in use. Please enter a different name.");
                         return;
                     }
-                    // 2015 09 23 - BENMAP -345 modified next line to try and fix metadata load
-                    _metadataObj.DatasetId = SQLStatementsCommonClass.selectMaxID("GRIDDEFINITIONID", "GRIDDEFINITIONS"); 
+                   
                     //_gridID =  _metadataObj.DatasetId;
                     commandText = string.Format("select max(GRIDDEFINITIONID) from GRIDDEFINITIONS");
                     _gridID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText)) + 1;
@@ -815,6 +814,7 @@ namespace BenMAP
                                 //reset shapefilepath and getmetadata;  we have to do this here in case the file is renamed above
                                 _shapeFilePath = _filePath;
                                 GetMetadata();
+                                _metadataObj.DatasetId = _gridID; //datasetid of metadata obj is griddefinitionid
                             }
                             finally
                             {
