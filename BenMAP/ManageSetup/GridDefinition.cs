@@ -20,7 +20,7 @@ namespace BenMAP
     public partial class GridDefinition : FormBase
     {
 
-        private enum RowColFieldsValidationCode { BOTH_EXIST = 0, BOTH_MISSING = 1, COL_MISSING = 2, ROW_MISSING = 3, INCORRECT_FORMAT = 4, UNSPECIFIED_ERROR = 5};
+        private enum RowColFieldsValidationCode { BOTH_EXIST = 0, BOTH_MISSING = 1, COL_MISSING = 2, ROW_MISSING = 3, DUPLICATE_PAIR = 4, INCORRECT_FORMAT = 5, UNSPECIFIED_ERROR = 6};
 
         public GridDefinition()
         {
@@ -198,7 +198,28 @@ namespace BenMAP
                         return RowColFieldsValidationCode.INCORRECT_FORMAT;
                     }                   
                     
-                }                
+                }
+
+                //ensure that ROW, COL fields contain integers
+                List<string> lstPairs = new List<string>();
+                foreach (DataRow dr in fs.DataTable.Rows)
+                {
+                    string col = dr[icol].ToString();
+                    string row = dr[irow].ToString();
+                    string pair = col  + "_" + row;
+
+                    if (lstPairs.Contains(pair))
+                    {
+                        MessageBox.Show("Duplicate ROW and COL pair found. ROW: " + row + " COL: " + col + ". Each ROW and COL pair must be unique.");
+                        fs.Close();
+                        return RowColFieldsValidationCode.DUPLICATE_PAIR;
+                    }
+                    else 
+                    {
+                        lstPairs.Add(pair);
+                    }                   
+
+                }   
 
                 //rename COL, ROW field names to upper case
                 fs.DataTable.Columns[icol].ColumnName = "COL";
