@@ -210,7 +210,7 @@ namespace BenMAP
 
                     if (lstPairs.Contains(pair))
                     {
-                        MessageBox.Show("Duplicate ROW and COL pair found. ROW: " + row + " COL: " + col + ". Each ROW and COL pair must be unique.");
+                        MessageBox.Show("Duplicate ROW and COL pair found. ROW " + row + ", COL " + col);
                         fs.Close();
                         return RowColFieldsValidationCode.DUPLICATE_PAIR;
                     }
