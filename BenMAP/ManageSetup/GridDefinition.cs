@@ -19,6 +19,9 @@ namespace BenMAP
 {
     public partial class GridDefinition : FormBase
     {
+
+        private enum RowColFieldsValidationCode { BOTH_EXIST = 0, BOTH_MISSING = 1, COL_MISSING = 2, ROW_MISSING = 3, DUPLICATE_PAIR = 4, INCORRECT_FORMAT = 5, UNSPECIFIED_ERROR = 6};
+
         public GridDefinition()
         {
             InitializeComponent();
@@ -102,74 +105,156 @@ namespace BenMAP
 
         }
 
-        private void AddLayerAndGetAtt(string strPath)
+        private void AddLayer(string strPath)
         {
             try
             {
-                mainMap.ProjectionModeReproject = ActionMode.Never; mainMap.ProjectionModeDefine = ActionMode.Never;
+                mainMap.ProjectionModeReproject = ActionMode.Never; 
+                mainMap.ProjectionModeDefine = ActionMode.Never;
                 mainMap.Layers.Clear();
-                mainMap.Layers.Add(strPath);
+                mainMap.Layers.Add(strPath);                
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.Message);
+            }
+        }
+
+        private RowColFieldsValidationCode ValidateColumnsRows(string strPath, bool offerAdd)
+        {
+            try
+            {
+
+
                 IFeatureSet fs = FeatureSet.Open(strPath);
                 List<int> lsCol = new List<int>();
                 List<int> lsRow = new List<int>();
+
+                //search for ROW and COL fields
                 int icol = -1;
                 int irow = -1;
-                bool colname = false;
-                bool rowname = false;
                 for (int i = 0; i < fs.DataTable.Columns.Count; i++)
                 {
-                    if (fs.DataTable.Columns[i].ToString() == "ROW")
-                    {
-                        irow = i;
-                        rowname = true;
-                    }
-                    else if (fs.DataTable.Columns[i].ToString().ToLower() == "row")
+                    if (fs.DataTable.Columns[i].ToString().ToLower() == "row")
                     {
                         irow = i;
                     }
 
-                    if (fs.DataTable.Columns[i].ToString() == "COL")
-                    {
-                        icol = i;
-                        colname = true;
-                    }
-                    else if (fs.DataTable.Columns[i].ToString().ToLower() == "col" || fs.DataTable.Columns[i].ToString().ToLower() == "column")
+                    if (fs.DataTable.Columns[i].ToString().ToLower() == "col" || fs.DataTable.Columns[i].ToString().ToLower() == "column")
                     {
                         icol = i;
                     }
                 }
 
-                if (icol >= 0 && irow >= 0)
+                //if both fields are missing
+                if ((icol < 0) && (irow < 0))
                 {
-                    try
+                    if (offerAdd)
                     {
-                        foreach (DataRow dr in fs.DataTable.Rows)
+                        
+                        DialogResult result = MessageBox.Show("This shapefile does not have the required ROW and COL fields.  Would you like BenMAP-CE to add them?", "Add Fields", MessageBoxButtons.YesNo);
+                        if (result == DialogResult.Yes)
                         {
-                            lsCol.Add(Convert.ToInt32(Convert.ToDouble(dr[icol].ToString())));
-                            lsRow.Add(Convert.ToInt32(Convert.ToDouble(dr[irow].ToString())));
+                            fs.Close();
+                            AddColumnsRows(strPath);
+                            return RowColFieldsValidationCode.BOTH_EXIST;
+                        }
+                        else 
+                        {
+                            fs.Close();
+                            return RowColFieldsValidationCode.BOTH_MISSING;
                         }
                     }
-                    catch
+                    else
                     {
-                        MessageBox.Show("Column/Row value are invalid.");
+                        MessageBox.Show("This shapefile does not have the required ROW and COL fields.");
                         fs.Close();
-                        return;
+                        return RowColFieldsValidationCode.BOTH_MISSING;
                     }
-                    _shapeCol = lsCol.Max();
-                    _shapeRow = lsRow.Max();
                 }
-                else
+                else if (icol < 0) 
                 {
-                    txtShapefile.Text = "";
-                    MessageBox.Show("This shapefile does not have the required column and row variables.");
+                    MessageBox.Show("This shapefile does not have the required COL field.");
+                    //txtShapefile.Text = "";
+                    fs.Close();
+                    return RowColFieldsValidationCode.COL_MISSING;
+                }
+                else if (irow < 0)
+                {
+                    MessageBox.Show("This shapefile does not have the required ROW field.");
+                    //txtShapefile.Text = "";
+                    fs.Close();
+                    return RowColFieldsValidationCode.ROW_MISSING;
                 }
 
-                if (colname == false || rowname == false)
+                //ensure that ROW, COL fields contain integers
+                foreach (DataRow dr in fs.DataTable.Rows)
                 {
-                    fs.DataTable.Columns[icol].ColumnName = "COL";
-                    fs.DataTable.Columns[irow].ColumnName = "ROW";
-                    fs.SaveAs(strPath, true);
+                    int iTest;
+                    if ((!Int32.TryParse(dr[icol].ToString(), out iTest)) || (!Int32.TryParse(dr[irow].ToString(), out iTest)))
+                    {
+                        MessageBox.Show("Values in the ROW and COL fields must be integers.");
+                        fs.Close();
+                        return RowColFieldsValidationCode.INCORRECT_FORMAT;
+                    }                   
+                    
                 }
+
+                //ensure that ROW, COL fields contain integers
+                List<string> lstPairs = new List<string>();
+                foreach (DataRow dr in fs.DataTable.Rows)
+                {
+                    string col = dr[icol].ToString();
+                    string row = dr[irow].ToString();
+                    string pair = col  + "_" + row;
+
+                    if (lstPairs.Contains(pair))
+                    {
+                        MessageBox.Show("Duplicate ROW and COL pair found. ROW " + row + ", COL " + col);
+                        fs.Close();
+                        return RowColFieldsValidationCode.DUPLICATE_PAIR;
+                    }
+                    else 
+                    {
+                        lstPairs.Add(pair);
+                    }                   
+
+                }   
+
+                //rename COL, ROW field names to upper case
+                fs.DataTable.Columns[icol].ColumnName = "COL";
+                fs.DataTable.Columns[irow].ColumnName = "ROW";
+                fs.Save();
+                fs.Close();
+
+                return RowColFieldsValidationCode.BOTH_EXIST;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.Message);
+                return RowColFieldsValidationCode.UNSPECIFIED_ERROR;
+            }
+        }
+
+        private void AddColumnsRows(string strPath)
+        {
+            try
+            {
+                IFeatureSet fs = FeatureSet.Open(strPath);
+                
+                fs.DataTable.Columns.Add("COL", typeof(int));
+                fs.DataTable.Columns.Add("ROW", typeof(int));
+
+                int iRow = 0;
+                foreach (DataRow dr in fs.DataTable.Rows)
+                {
+                    dr["COL"] = 1; //set COL to 1
+
+                    iRow++;
+                    dr["ROW"] = iRow; //increment ROW                
+                }
+
+                fs.SaveAs(strPath, true);
                 fs.Close();
             }
             catch (Exception ex)
@@ -177,6 +262,31 @@ namespace BenMAP
                 Logger.LogError(ex.Message);
             }
         }
+
+        private void GetColumnsRows(string strPath)
+        {
+            try
+            {
+                IFeatureSet fs = FeatureSet.Open(strPath);
+                List<int> lsCol = new List<int>();
+                List<int> lsRow = new List<int>();                
+
+                foreach (DataRow dr in fs.DataTable.Rows)
+                {
+                    lsCol.Add(Convert.ToInt32(dr["COL"].ToString()));
+                    lsRow.Add(Convert.ToInt32(dr["ROW"].ToString()));
+                }
+               
+                _shapeCol = lsCol.Max();
+                _shapeRow = lsRow.Max();  
+              
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.Message);
+            }
+        }
+
         private bool CheckforSupportingfiles(string strPath)
         {
             bool bPassed = true;
@@ -230,7 +340,9 @@ namespace BenMAP
                 _filePath = openFileDialog.FileName;
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
-                    txtShapefile.Text = openFileDialog.FileName; lblShapeFileName.Text = System.IO.Path.GetFileNameWithoutExtension(txtShapefile.Text);
+                    //set shapefile path and name variables
+                    txtShapefile.Text = openFileDialog.FileName; 
+                    lblShapeFileName.Text = System.IO.Path.GetFileNameWithoutExtension(txtShapefile.Text);
                     _shapeFilePath = openFileDialog.FileName;
 
                     if(CheckforSupportingfiles(_shapeFilePath))
@@ -250,6 +362,7 @@ namespace BenMAP
                             ProjectionInfo pESRI = new ProjectionInfo();
                             StreamReader re = File.OpenText(prjfile);
                             pESRI.ParseEsriString(re.ReadLine());
+                            re.Close();
                             if (pESRI.Equals(GCSNAD83prj)) ProjectionOK = true;  //MCB will need to add more code for other regions
                         }
                         if (!ProjectionOK)  //Then attempt to reporject it to GCS/NAD83
@@ -259,10 +372,24 @@ namespace BenMAP
                             _shapeFilePath = GCSNAD83ShapeFilePath;
                             if (File.Exists(_shapeFilePath)) CommonClass.DeleteShapeFileName(_shapeFilePath);
                             IFeatureSet fs = FeatureSet.Open(originalShapeFilePath);
+                            fs.Reproject(GCSNAD83prj); //reproject
                             fs.SaveAs(_shapeFilePath, true);
+                            fs.Close();
+
+                            //set shapefile path and name variables to reprojected file
+                            txtShapefile.Text = _shapeFilePath;
+                            lblShapeFileName.Text = System.IO.Path.GetFileNameWithoutExtension(txtShapefile.Text);                           
                         }
+
                         // Add the grid 
-                        AddLayerAndGetAtt(_shapeFilePath);
+                        AddLayer(_shapeFilePath);
+                        //get columns, rows
+                        if (ValidateColumnsRows(_shapeFilePath, true) != RowColFieldsValidationCode.BOTH_EXIST)
+                        {
+                            return;
+                            //AddColumnsRows(_shapeFilePath);
+                        }
+                        GetColumnsRows(_shapeFilePath);
                         lblCol.Text = _shapeCol.ToString();
                         lblRow.Text = _shapeRow.ToString();
                         GetMetadata();                       
@@ -369,9 +496,7 @@ namespace BenMAP
             _metadataObj = metadata.GetMetadata();
         }
         private void btnPreview_Click(object sender, EventArgs e)
-        {
-
-            
+        {           
             
             try
             {
@@ -387,7 +512,13 @@ namespace BenMAP
                     {
                         if (string.IsNullOrEmpty(lblShapeFileName.Text)) return;
                         string strPath = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.ManageSetup.SetupName + "\\" + lblShapeFileName.Text + ".shp";
-                        AddLayerAndGetAtt(strPath);
+                        AddLayer(strPath);
+                        //get columns, rows
+                        if (ValidateColumnsRows(strPath, false) != RowColFieldsValidationCode.BOTH_EXIST)
+                        {
+                            return;
+                        }
+                        GetColumnsRows(strPath);
                         lblCol.Text = _shapeCol.ToString();
                         lblRow.Text = _shapeRow.ToString();
                     }
@@ -637,6 +768,13 @@ namespace BenMAP
 
                 else
                 {
+                    //ensure shapefile is correctly formatted.
+                    if (ValidateColumnsRows(_shapeFilePath,false) != RowColFieldsValidationCode.BOTH_EXIST)
+                    {
+                        return;
+                    }
+
+
                     commandText = "select GridDefinitionID from GridDefinitions where GridDefinitionName='" + txtGridID.Text + "' and SetupID=" + CommonClass.ManageSetup.SetupID;
                     object obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
                     if (obj != null)
@@ -644,8 +782,7 @@ namespace BenMAP
                         MessageBox.Show("This grid definition name is already in use. Please enter a different name.");
                         return;
                     }
-                    // 2015 09 23 - BENMAP -345 modified next line to try and fix metadata load
-                    _metadataObj.DatasetId = SQLStatementsCommonClass.selectMaxID("GRIDDEFINITIONID", "GRIDDEFINITIONS"); 
+                   
                     //_gridID =  _metadataObj.DatasetId;
                     commandText = string.Format("select max(GRIDDEFINITIONID) from GRIDDEFINITIONS");
                     _gridID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText)) + 1;
@@ -676,7 +813,10 @@ namespace BenMAP
                             commandText = string.Format("INSERT INTO SHAPEFILEGRIDDEFINITIONDETAILS (GridDefinitionID,ShapeFileName, LOCKED)  VALUES(" + _gridID + ",'{0}', 'F')", _shapeFileName);
                             fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                             CommonClass.DeleteShapeFileName(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.ManageSetup.SetupName + "\\" + _shapeFileName + ".shp");
+
+                            //open shapeFilePath.  This could be original or reprojected file.  See btnShapefile_Click event.
                             IFeatureSet fs = FeatureSet.Open(_shapeFilePath);
+
                             try
                             {
                                 if (fs.DataTable.Columns["ROW"].DataType == typeof(System.String) || fs.DataTable.Columns["COL"].DataType == typeof(System.String))
@@ -691,6 +831,10 @@ namespace BenMAP
                                 }
                                 fs.SaveAs(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.ManageSetup.SetupName + "\\" + _shapeFileName + ".shp", true);
                                 _filePath = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.ManageSetup.SetupName + "\\" + _shapeFileName + ".shp";
+                                
+                                //update metadata, we have to do this here in case the file is renamed above
+                                _metadataObj.FileName = _shapeFileName;
+                                _metadataObj.DatasetId = _gridID; //ensure datasetid of metadata obj is griddefinitionid
                             }
                             finally
                             {
@@ -728,10 +872,13 @@ namespace BenMAP
                     if (!chkBoxCreatePercentage.Checked)
                     {
                         this.DialogResult = DialogResult.OK;
-                        saveMetadata(_filePath, _gridID, _gridType);
+                        saveMetadata();
                         return;
                     }
                 }
+
+
+                //code reaches this line of execution if crosswalks are being created.
                 lblprogress.Visible = true;
                 lblprogress.Refresh();
                 progressBar1.Visible = true;
@@ -830,7 +977,7 @@ namespace BenMAP
 
         }
 
-        private void saveMetadata(string filePath, int gridID, int gridType)
+        private void saveMetadata()
         {
 
             _metadataObj.DatasetTypeId = SQLStatementsCommonClass.getDatasetID("GridDefinition");
