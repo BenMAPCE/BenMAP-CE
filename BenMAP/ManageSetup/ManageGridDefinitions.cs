@@ -30,7 +30,7 @@ namespace BenMAP
         public ManageGridDefinetions()
         {
             InitializeComponent();
-            LoadProjections(true);
+            LoadProjections(false);
         }
 
         private void btnAdd_Click(object sender, EventArgs e)
@@ -523,12 +523,42 @@ namespace BenMAP
                 dt.Rows.Add(group + " - " + s, s);
             }
 
-            cboProjections.DataSource = dt;
+            //filter results
+            DataRow [] rows;
+            if (!showAll)
+            {
+                List<string> filtered = new List<string>();
+                filtered.Add("'AfricaAlbersEqualAreaConic'");
+                filtered.Add("'AsiaNorthAlbersEqualAreaConic'");
+                filtered.Add("'AsiaSouthAlbersEqualAreaConic'");
+                filtered.Add("'EuropeAlbersEqualAreaConic'");
+                filtered.Add("'AlaskaAlbersEqualAreaConic'");
+                filtered.Add("'CanadaAlbersEqualAreaConic'");
+                filtered.Add("'HawaiiAlbersEqualAreaConic'");
+                filtered.Add("'NorthAmericaAlbersEqualAreaConic'");
+                filtered.Add("'USAContiguousAlbersEqualAreaConicUSGS'");
+                filtered.Add("'SouthAmericaAlbersEqualAreaConic'");
+
+                rows = dt.Select("VALUE in (" + String.Join(",", filtered.ToArray()) + ")");
+
+                DataTable dtFiltered;
+                dtFiltered = rows.CopyToDataTable();
+
+                cboProjections.DataSource = dtFiltered;
+            }
+            else
+            {
+                cboProjections.DataSource = dt;
+            }
+            
             cboProjections.DisplayMember = "DISPLAY";
             cboProjections.ValueMember = "VALUE";  
 
+        }
 
-
+        private void chkShowAll_CheckedChanged(object sender, EventArgs e)
+        {
+            LoadProjections(chkShowAll.Checked);
         }
 
     }

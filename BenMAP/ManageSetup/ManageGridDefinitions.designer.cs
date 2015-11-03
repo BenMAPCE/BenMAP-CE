@@ -109,6 +109,7 @@ namespace BenMAP
             this.chkShowAll.TabIndex = 7;
             this.chkShowAll.Text = "Show All";
             this.chkShowAll.UseVisualStyleBackColor = true;
+            this.chkShowAll.CheckedChanged += new System.EventHandler(this.chkShowAll_CheckedChanged);
             // 
             // label2
             // 
