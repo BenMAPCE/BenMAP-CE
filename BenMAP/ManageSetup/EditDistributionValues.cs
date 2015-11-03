@@ -35,8 +35,14 @@ namespace BenMAP
             {
                 txtMeanValue.Text = _healthImpactDistribution.Beta;
                 txtParameter1.Text = _healthImpactDistribution.BetaParameter1;
+
                 if (_distributionName == "Normal")
                 {
+                    double mean = Convert.ToDouble(_healthImpactDistribution.Beta);
+                    double sd = Convert.ToDouble(_healthImpactDistribution.BetaParameter1);
+                    double x0 = mean - (sd * 5); 
+                    double x1 = mean + (sd * 5); 
+
                     lblPDF.Text = _distributionName +" Dist.:";
                     lblNotesContext.Text = "The Normal distribution has two parameters - the mean,\nmu, and the standard deviation, sigma.";
                     lblParameter2.Visible = false;
@@ -45,41 +51,39 @@ namespace BenMAP
                     txtParameter1.Text = _healthImpactDistribution.BetaParameter1;
                     Image normal = Image.FromFile(Application.StartupPath + @"\Resources\DistributionFormula\Normal PDF.png");
                     pictureBox1.Image = normal;
-                    // normal = Image.FromFile(Application.StartupPath + @"\Resources\DistributionFormula\720px-Normal_Distribution_PDF_svg.png");
-                    // pictureBox2.Image = normal;
 
-                    // distModel.Background = OxyColors.White;
                     distModel.PlotAreaBackground = OxyColors.White;
-                    // distModel.PlotMargins = new OxyThickness(5);
                     distModel.Padding = new OxyThickness(9);
 
                     distModel.Axes.Add(new OxyPlot.Axes.LinearAxis
                     {
                         Position = OxyPlot.Axes.AxisPosition.Left,
-                        Minimum = -2,
-                        Maximum = 27, //  1.0,
+                        MinimumPadding = 0.1,
+                        MaximumPadding = 0.1,
                         // MajorStep = 0.2,
                         // MinorStep = 0.05,
                         MajorGridlineStyle = LineStyle.Solid,
                         MinorGridlineStyle = LineStyle.Dot,
                         Title = "Standard Deviation",
                         AxisTitleDistance = 15,
-                });
+
+                    });
 
                     distModel.Axes.Add(new OxyPlot.Axes.LinearAxis
                     {
                         Position = OxyPlot.Axes.AxisPosition.Bottom,
-                        Minimum = -0.1, // .25,
-                        Maximum = 0.1, // .25,
                         // MajorStep = 1,
                         // MinorStep = 0.25,
+                        MaximumPadding = 0,
+                        MinimumPadding = 0,
                         MajorGridlineStyle = LineStyle.Solid,
                         MinorGridlineStyle = LineStyle.Dot,
                         Title = "Mean",
                         AxisTitleDistance = 10,
                     });
 
-                    distModel.Series.Add(CreateNormalDistributionSeries(-0.1, 0.1, Convert.ToDouble(_healthImpactDistribution.Beta), Convert.ToDouble(_healthImpactDistribution.BetaParameter1)));
+                    LineSeries norm = (CreateNormalDistributionSeries(x0, x1, mean, (sd*sd)));
+                    distModel.Series.Add(norm);
                     this.plot1.Model = distModel;
                 }
                 if (_distributionName == "Triangular")
@@ -259,18 +263,18 @@ namespace BenMAP
 
         }
 
-        private static DataPointSeries CreateNormalDistributionSeries(double x0, double x1, double mean, double variance,
-                                                 int n = 1001)
+        private static LineSeries CreateNormalDistributionSeries(double x0, double x1, double mean, double variance, int n = 500000)
         {
             var ls = new LineSeries
             {
-                //Title = String.Format("?={0}, ?²={1}", mean, variance)
+                Color = OxyColors.ForestGreen,
+                StrokeThickness = 3
             };
 
             for (int i = 0; i < n; i++)
             {
-                double x = x0 + (x1 - x0) * i / (n - 1);
-                double f = 1.0 / Math.Sqrt(2 * Math.PI * variance) * Math.Exp(-(x - mean) * (x - mean) / 2 / variance);
+                double x = x0 + (x1 - x0) * i / (n - 1.0);
+                double f = 1.0 / Math.Sqrt(2.0 * Math.PI * variance) * Math.Exp(- (x - mean) * (x - mean) / 2.0 / variance);
                 ls.Points.Add(new DataPoint(x, f));
             }
             return ls;
