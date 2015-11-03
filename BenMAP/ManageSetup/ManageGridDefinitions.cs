@@ -30,6 +30,7 @@ namespace BenMAP
         public ManageGridDefinetions()
         {
             InitializeComponent();
+            LoadProjections(true);
         }
 
         private void btnAdd_Click(object sender, EventArgs e)
@@ -291,6 +292,243 @@ namespace BenMAP
             {
                 _metadataObj = viewEMdata.MetadataObj;
             }
+        }        
+
+        private void LoadProjections(bool showAll)
+        {
+            DataTable dt = new DataTable();
+            dt.Columns.Add("DISPLAY", typeof(string));
+            dt.Columns.Add("VALUE", typeof(string));         
+           
+            System.Collections.Generic.List<string> names = DotSpatial.Projections.KnownCoordinateSystems.Projected.Africa.Names.ToList<string>();
+            string group = "Africa";
+            foreach (string s in names)
+            {
+                dt.Rows.Add(group + " - " + s, s);
+            }
+            names = DotSpatial.Projections.KnownCoordinateSystems.Projected.Asia.Names.ToList<string>();
+            group = "Asia";
+            foreach (string s in names)
+            {
+                dt.Rows.Add(group + " - " + s, s);
+            }
+            names = DotSpatial.Projections.KnownCoordinateSystems.Projected.Europe.Names.ToList<string>();
+            group = "Europe";
+            foreach (string s in names)
+            {
+                dt.Rows.Add(group + " - " + s, s);
+            }
+            names = DotSpatial.Projections.KnownCoordinateSystems.Projected.GausKrugerBeijing1954.Names.ToList<string>();
+            group = "GausKrugerBeijing1954";
+            foreach (string s in names)
+            {
+                dt.Rows.Add(group + " - " + s, s);
+            }
+            names = DotSpatial.Projections.KnownCoordinateSystems.Projected.GausKrugerOther.Names.ToList<string>();
+            group = "GausKrugerOther";
+            foreach (string s in names)
+            {
+                dt.Rows.Add(group + " - " + s, s);
+            }
+            names = DotSpatial.Projections.KnownCoordinateSystems.Projected.GaussKrugerPulkovo1942.Names.ToList<string>();
+            group = "GaussKrugerPulkovo1942";
+            foreach (string s in names)
+            {
+                dt.Rows.Add(group + " - " + s, s);
+            }
+            names = DotSpatial.Projections.KnownCoordinateSystems.Projected.KrugerXian1980.Names.ToList<string>();
+            group = "KrugerXian1980";
+            foreach (string s in names)
+            {
+                dt.Rows.Add(group + " - " + s, s);
+            }
+            names = DotSpatial.Projections.KnownCoordinateSystems.Projected.MinnesotaCounties.Names.ToList<string>();
+            group = "MinnesotaCounties";
+            foreach (string s in names)
+            {
+                dt.Rows.Add(group + " - " + s, s);
+            }
+            names = DotSpatial.Projections.KnownCoordinateSystems.Projected.Nad1983IntlFeet.Names.ToList<string>();
+            group = "Nad1983IntlFeet";
+            foreach (string s in names)
+            {
+                dt.Rows.Add(group + " - " + s, s);
+            }
+            names = DotSpatial.Projections.KnownCoordinateSystems.Projected.NationalGrids.Names.ToList<string>();
+            group = "NationalGrids";
+            foreach (string s in names)
+            {
+                dt.Rows.Add(group + " - " + s, s);
+            }
+            names = DotSpatial.Projections.KnownCoordinateSystems.Projected.NationalGridsAustralia.Names.ToList<string>();
+            group = "NationalGridsAustralia";
+            foreach (string s in names)
+            {
+                dt.Rows.Add(group + " - " + s, s);
+            }
+            names = DotSpatial.Projections.KnownCoordinateSystems.Projected.NationalGridsCanada.Names.ToList<string>();
+            group = "NationalGridsCanada";
+            foreach (string s in names)
+            {
+                dt.Rows.Add(group + " - " + s, s);
+            }
+            names = DotSpatial.Projections.KnownCoordinateSystems.Projected.NationalGridsIndia.Names.ToList<string>();
+            group = "NationalGridsIndia";
+            foreach (string s in names)
+            {
+                dt.Rows.Add(group + " - " + s, s);
+            }
+            names = DotSpatial.Projections.KnownCoordinateSystems.Projected.NationalGridsJapan.Names.ToList<string>();
+            group = "NationalGridsJapan";
+            foreach (string s in names)
+            {
+                dt.Rows.Add(group + " - " + s, s);
+            }
+            names = DotSpatial.Projections.KnownCoordinateSystems.Projected.NationalGridsNewZealand.Names.ToList<string>();
+            group = "NationalGridsNewZealand";
+            foreach (string s in names)
+            {
+                dt.Rows.Add(group + " - " + s, s);
+            }
+            names = DotSpatial.Projections.KnownCoordinateSystems.Projected.NationalGridsNorway.Names.ToList<string>();
+            group = "NationalGridsNorway";
+            foreach (string s in names)
+            {
+                dt.Rows.Add(group + " - " + s, s);
+            }
+            names = DotSpatial.Projections.KnownCoordinateSystems.Projected.NationalGridsSweden.Names.ToList<string>();
+            group = "NationalGridsSweden";
+            foreach (string s in names)
+            {
+                dt.Rows.Add(group + " - " + s, s);
+            }
+            names = DotSpatial.Projections.KnownCoordinateSystems.Projected.NorthAmerica.Names.ToList<string>();
+            group = "NorthAmerica";
+            foreach (string s in names)
+            {
+                dt.Rows.Add(group + " - " + s, s);
+            }
+            names = DotSpatial.Projections.KnownCoordinateSystems.Projected.Polar.Names.ToList<string>();
+            group = "Polar";
+            foreach (string s in names)
+            {
+                dt.Rows.Add(group + " - " + s, s);
+            }
+            names = DotSpatial.Projections.KnownCoordinateSystems.Projected.SouthAmerica.Names.ToList<string>();
+            group = "SouthAmerica";
+            foreach (string s in names)
+            {
+                dt.Rows.Add(group + " - " + s, s);
+            }
+            names = DotSpatial.Projections.KnownCoordinateSystems.Projected.SpheroidBased.Names.ToList<string>();
+            group = "SpheroidBased";
+            foreach (string s in names)
+            {
+                dt.Rows.Add(group + " - " + s, s);
+            }
+            names = DotSpatial.Projections.KnownCoordinateSystems.Projected.StatePlaneNad1927.Names.ToList<string>();
+            group = "StatePlaneNad1927";
+            foreach (string s in names)
+            {
+                dt.Rows.Add(group + " - " + s, s);
+            }
+            names = DotSpatial.Projections.KnownCoordinateSystems.Projected.StatePlaneNad1983.Names.ToList<string>();
+            group = "StatePlaneNad1983";
+            foreach (string s in names)
+            {
+                dt.Rows.Add(group + " - " + s, s);
+            }
+            names = DotSpatial.Projections.KnownCoordinateSystems.Projected.StatePlaneNad1983Feet.Names.ToList<string>();
+            group = "StatePlaneNad1983Feet";
+            foreach (string s in names)
+            {
+                dt.Rows.Add(group + " - " + s, s);
+            }
+            names = DotSpatial.Projections.KnownCoordinateSystems.Projected.StatePlaneNad1983Harn.Names.ToList<string>();
+            group = "StatePlaneNad1983Harn";
+            foreach (string s in names)
+            {
+                dt.Rows.Add(group + " - " + s, s);
+            }
+            names = DotSpatial.Projections.KnownCoordinateSystems.Projected.StatePlaneNad1983HarnFeet.Names.ToList<string>();
+            group = "StatePlaneNad1983HarnFeet";
+            foreach (string s in names)
+            {
+                dt.Rows.Add(group + " - " + s, s);
+            }
+            names = DotSpatial.Projections.KnownCoordinateSystems.Projected.StatePlaneOther.Names.ToList<string>();
+            group = "StatePlaneOther";
+            foreach (string s in names)
+            {
+                dt.Rows.Add(group + " - " + s, s);
+            }
+            names = DotSpatial.Projections.KnownCoordinateSystems.Projected.StateSystems.Names.ToList<string>();
+            group = "StateSystems";
+            foreach (string s in names)
+            {
+                dt.Rows.Add(group + " - " + s, s);
+            }
+            names = DotSpatial.Projections.KnownCoordinateSystems.Projected.TransverseMercator.Names.ToList<string>();
+            group = "TransverseMercator";
+            foreach (string s in names)
+            {
+                dt.Rows.Add(group + " - " + s, s);
+            }
+            names = DotSpatial.Projections.KnownCoordinateSystems.Projected.UtmNad1927.Names.ToList<string>();
+            group = "UtmNad1927";
+            foreach (string s in names)
+            {
+                dt.Rows.Add(group + " - " + s, s);
+            }
+            names = DotSpatial.Projections.KnownCoordinateSystems.Projected.UtmNad1983.Names.ToList<string>();
+            group = "UtmNad1983";
+            foreach (string s in names)
+            {
+                dt.Rows.Add(group + " - " + s, s);
+            }
+            names = DotSpatial.Projections.KnownCoordinateSystems.Projected.UtmOther.Names.ToList<string>();
+            group = "UtmOther";
+            foreach (string s in names)
+            {
+                dt.Rows.Add(group + " - " + s, s);
+            }
+            names = DotSpatial.Projections.KnownCoordinateSystems.Projected.UtmWgs1972.Names.ToList<string>();
+            group = "UtmWgs1972";
+            foreach (string s in names)
+            {
+                dt.Rows.Add(group + " - " + s, s);
+            }
+            names = DotSpatial.Projections.KnownCoordinateSystems.Projected.UtmWgs1984.Names.ToList<string>();
+            group = "UtmWgs1984";
+            foreach (string s in names)
+            {
+                dt.Rows.Add(group + " - " + s, s);
+            }
+            names = DotSpatial.Projections.KnownCoordinateSystems.Projected.Wisconsin.Names.ToList<string>();
+            group = "Wisconsin";
+            foreach (string s in names)
+            {
+                dt.Rows.Add(group + " - " + s, s);
+            }
+            names = DotSpatial.Projections.KnownCoordinateSystems.Projected.World.Names.ToList<string>();
+            group = "World";
+            foreach (string s in names)
+            {
+                dt.Rows.Add(group + " - " + s, s);
+            }
+            names = DotSpatial.Projections.KnownCoordinateSystems.Projected.WorldSpheroid.Names.ToList<string>();
+            group = "WorldSpheroid";
+            foreach (string s in names)
+            {
+                dt.Rows.Add(group + " - " + s, s);
+            }
+
+            cboProjections.DataSource = dt;
+            cboProjections.DisplayMember = "DISPLAY";
+            cboProjections.ValueMember = "VALUE";  
+
+
+
         }
 
     }

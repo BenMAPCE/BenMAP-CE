@@ -21,8 +21,9 @@ namespace BenMAP
             this.btnAdd = new System.Windows.Forms.Button();
             this.btnDelete = new System.Windows.Forms.Button();
             this.grpAvailableGrid = new System.Windows.Forms.GroupBox();
+            this.chkShowAll = new System.Windows.Forms.CheckBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.cboProjections = new System.Windows.Forms.ComboBox();
             this.cboDefaultGridType = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.txtGridType = new System.Windows.Forms.TextBox();
@@ -33,7 +34,6 @@ namespace BenMAP
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.btnViewMetadata = new System.Windows.Forms.Button();
-            this.chkShowAll = new System.Windows.Forms.CheckBox();
             this.grpManageGrid.SuspendLayout();
             this.grpAvailableGrid.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -86,7 +86,7 @@ namespace BenMAP
             // 
             this.grpAvailableGrid.Controls.Add(this.chkShowAll);
             this.grpAvailableGrid.Controls.Add(this.label2);
-            this.grpAvailableGrid.Controls.Add(this.comboBox1);
+            this.grpAvailableGrid.Controls.Add(this.cboProjections);
             this.grpAvailableGrid.Controls.Add(this.cboDefaultGridType);
             this.grpAvailableGrid.Controls.Add(this.label1);
             this.grpAvailableGrid.Controls.Add(this.txtGridType);
@@ -99,6 +99,17 @@ namespace BenMAP
             this.grpAvailableGrid.TabStop = false;
             this.grpAvailableGrid.Text = "Available Grid Definitions";
             // 
+            // chkShowAll
+            // 
+            this.chkShowAll.AutoSize = true;
+            this.chkShowAll.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.chkShowAll.Location = new System.Drawing.Point(317, 221);
+            this.chkShowAll.Name = "chkShowAll";
+            this.chkShowAll.Size = new System.Drawing.Size(73, 18);
+            this.chkShowAll.TabIndex = 7;
+            this.chkShowAll.Text = "Show All";
+            this.chkShowAll.UseVisualStyleBackColor = true;
+            // 
             // label2
             // 
             this.label2.Location = new System.Drawing.Point(6, 187);
@@ -108,14 +119,14 @@ namespace BenMAP
             this.label2.Text = "GIS Projection (to be used when performing area- or distance-based calculations o" +
     "n all shapefile grid definitions in this setup):";
             // 
-            // comboBox1
+            // cboProjections
             // 
-            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(6, 245);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(388, 22);
-            this.comboBox1.TabIndex = 5;
+            this.cboProjections.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboProjections.FormattingEnabled = true;
+            this.cboProjections.Location = new System.Drawing.Point(6, 245);
+            this.cboProjections.Name = "cboProjections";
+            this.cboProjections.Size = new System.Drawing.Size(388, 22);
+            this.cboProjections.TabIndex = 5;
             // 
             // cboDefaultGridType
             // 
@@ -217,17 +228,6 @@ namespace BenMAP
             this.btnViewMetadata.UseVisualStyleBackColor = true;
             this.btnViewMetadata.Click += new System.EventHandler(this.btnViewMetadata_Click);
             // 
-            // chkShowAll
-            // 
-            this.chkShowAll.AutoSize = true;
-            this.chkShowAll.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.chkShowAll.Location = new System.Drawing.Point(317, 221);
-            this.chkShowAll.Name = "chkShowAll";
-            this.chkShowAll.Size = new System.Drawing.Size(73, 18);
-            this.chkShowAll.TabIndex = 7;
-            this.chkShowAll.Text = "Show All";
-            this.chkShowAll.UseVisualStyleBackColor = true;
-            // 
             // ManageGridDefinetions
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
@@ -269,7 +269,7 @@ namespace BenMAP
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         private System.Windows.Forms.Button btnViewMetadata;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.ComboBox cboProjections;
         private System.Windows.Forms.CheckBox chkShowAll;
     }
 }
