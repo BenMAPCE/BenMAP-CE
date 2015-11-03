@@ -21,6 +21,8 @@ namespace BenMAP
             this.btnAdd = new System.Windows.Forms.Button();
             this.btnDelete = new System.Windows.Forms.Button();
             this.grpAvailableGrid = new System.Windows.Forms.GroupBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.cboDefaultGridType = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.txtGridType = new System.Windows.Forms.TextBox();
@@ -31,6 +33,7 @@ namespace BenMAP
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.btnViewMetadata = new System.Windows.Forms.Button();
+            this.chkShowAll = new System.Windows.Forms.CheckBox();
             this.grpManageGrid.SuspendLayout();
             this.grpAvailableGrid.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -45,13 +48,13 @@ namespace BenMAP
             this.grpManageGrid.Controls.Add(this.grpAvailableGrid);
             this.grpManageGrid.Location = new System.Drawing.Point(6, 3);
             this.grpManageGrid.Name = "grpManageGrid";
-            this.grpManageGrid.Size = new System.Drawing.Size(417, 252);
+            this.grpManageGrid.Size = new System.Drawing.Size(417, 348);
             this.grpManageGrid.TabIndex = 0;
             this.grpManageGrid.TabStop = false;
             // 
             // btnEdit
             // 
-            this.btnEdit.Location = new System.Drawing.Point(325, 214);
+            this.btnEdit.Location = new System.Drawing.Point(325, 306);
             this.btnEdit.Name = "btnEdit";
             this.btnEdit.Size = new System.Drawing.Size(77, 27);
             this.btnEdit.TabIndex = 3;
@@ -61,7 +64,7 @@ namespace BenMAP
             // 
             // btnAdd
             // 
-            this.btnAdd.Location = new System.Drawing.Point(238, 214);
+            this.btnAdd.Location = new System.Drawing.Point(238, 306);
             this.btnAdd.Name = "btnAdd";
             this.btnAdd.Size = new System.Drawing.Size(81, 27);
             this.btnAdd.TabIndex = 2;
@@ -71,7 +74,7 @@ namespace BenMAP
             // 
             // btnDelete
             // 
-            this.btnDelete.Location = new System.Drawing.Point(156, 214);
+            this.btnDelete.Location = new System.Drawing.Point(156, 306);
             this.btnDelete.Name = "btnDelete";
             this.btnDelete.Size = new System.Drawing.Size(76, 27);
             this.btnDelete.TabIndex = 1;
@@ -81,6 +84,9 @@ namespace BenMAP
             // 
             // grpAvailableGrid
             // 
+            this.grpAvailableGrid.Controls.Add(this.chkShowAll);
+            this.grpAvailableGrid.Controls.Add(this.label2);
+            this.grpAvailableGrid.Controls.Add(this.comboBox1);
             this.grpAvailableGrid.Controls.Add(this.cboDefaultGridType);
             this.grpAvailableGrid.Controls.Add(this.label1);
             this.grpAvailableGrid.Controls.Add(this.txtGridType);
@@ -88,10 +94,28 @@ namespace BenMAP
             this.grpAvailableGrid.Controls.Add(this.lstAvailableGrid);
             this.grpAvailableGrid.Location = new System.Drawing.Point(6, 12);
             this.grpAvailableGrid.Name = "grpAvailableGrid";
-            this.grpAvailableGrid.Size = new System.Drawing.Size(400, 196);
+            this.grpAvailableGrid.Size = new System.Drawing.Size(400, 283);
             this.grpAvailableGrid.TabIndex = 0;
             this.grpAvailableGrid.TabStop = false;
             this.grpAvailableGrid.Text = "Available Grid Definitions";
+            // 
+            // label2
+            // 
+            this.label2.Location = new System.Drawing.Point(6, 187);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(377, 35);
+            this.label2.TabIndex = 6;
+            this.label2.Text = "GIS Projection (to be used when performing area- or distance-based calculations o" +
+    "n all shapefile grid definitions in this setup):";
+            // 
+            // comboBox1
+            // 
+            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Location = new System.Drawing.Point(6, 245);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(388, 22);
+            this.comboBox1.TabIndex = 5;
             // 
             // cboDefaultGridType
             // 
@@ -164,7 +188,7 @@ namespace BenMAP
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.flowLayoutPanel1);
-            this.groupBox1.Location = new System.Drawing.Point(6, 261);
+            this.groupBox1.Location = new System.Drawing.Point(6, 356);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(417, 56);
             this.groupBox1.TabIndex = 3;
@@ -193,11 +217,22 @@ namespace BenMAP
             this.btnViewMetadata.UseVisualStyleBackColor = true;
             this.btnViewMetadata.Click += new System.EventHandler(this.btnViewMetadata_Click);
             // 
+            // chkShowAll
+            // 
+            this.chkShowAll.AutoSize = true;
+            this.chkShowAll.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.chkShowAll.Location = new System.Drawing.Point(317, 221);
+            this.chkShowAll.Name = "chkShowAll";
+            this.chkShowAll.Size = new System.Drawing.Size(73, 18);
+            this.chkShowAll.TabIndex = 7;
+            this.chkShowAll.Text = "Show All";
+            this.chkShowAll.UseVisualStyleBackColor = true;
+            // 
             // ManageGridDefinetions
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(430, 326);
+            this.ClientSize = new System.Drawing.Size(430, 421);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.grpManageGrid);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -233,5 +268,8 @@ namespace BenMAP
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         private System.Windows.Forms.Button btnViewMetadata;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.CheckBox chkShowAll;
     }
 }
