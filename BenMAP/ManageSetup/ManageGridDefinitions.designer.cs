@@ -48,7 +48,7 @@ namespace BenMAP
             this.grpManageGrid.Controls.Add(this.grpAvailableGrid);
             this.grpManageGrid.Location = new System.Drawing.Point(6, 3);
             this.grpManageGrid.Name = "grpManageGrid";
-            this.grpManageGrid.Size = new System.Drawing.Size(417, 348);
+            this.grpManageGrid.Size = new System.Drawing.Size(516, 348);
             this.grpManageGrid.TabIndex = 0;
             this.grpManageGrid.TabStop = false;
             // 
@@ -94,7 +94,7 @@ namespace BenMAP
             this.grpAvailableGrid.Controls.Add(this.lstAvailableGrid);
             this.grpAvailableGrid.Location = new System.Drawing.Point(6, 12);
             this.grpAvailableGrid.Name = "grpAvailableGrid";
-            this.grpAvailableGrid.Size = new System.Drawing.Size(400, 283);
+            this.grpAvailableGrid.Size = new System.Drawing.Size(504, 283);
             this.grpAvailableGrid.TabIndex = 0;
             this.grpAvailableGrid.TabStop = false;
             this.grpAvailableGrid.Text = "Available Grid Definitions";
@@ -126,7 +126,7 @@ namespace BenMAP
             this.cboProjections.FormattingEnabled = true;
             this.cboProjections.Location = new System.Drawing.Point(6, 245);
             this.cboProjections.Name = "cboProjections";
-            this.cboProjections.Size = new System.Drawing.Size(388, 22);
+            this.cboProjections.Size = new System.Drawing.Size(492, 22);
             this.cboProjections.TabIndex = 5;
             // 
             // cboDefaultGridType
@@ -233,7 +233,7 @@ namespace BenMAP
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(430, 421);
+            this.ClientSize = new System.Drawing.Size(534, 421);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.grpManageGrid);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;

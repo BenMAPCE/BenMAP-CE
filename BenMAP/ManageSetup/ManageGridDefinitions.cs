@@ -543,6 +543,7 @@ namespace BenMAP
 
                 DataTable dtFiltered;
                 dtFiltered = rows.CopyToDataTable();
+                dtFiltered.DefaultView.Sort = "DISPLAY ASC";
 
                 cboProjections.DataSource = dtFiltered;
             }
