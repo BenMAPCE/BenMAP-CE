@@ -384,6 +384,9 @@ namespace BenMAP
                             lblShapeFileName.Text = System.IO.Path.GetFileNameWithoutExtension(txtShapefile.Text);                           
                         }
 
+                        IFeatureSet fsVertices = FeatureSet.Open(_shapeFilePath);
+                        int numVertices = fsVertices.Vertex.Count();
+
                         // Add the grid 
                         AddLayer(_shapeFilePath);
                         //get columns, rows
