@@ -128,6 +128,7 @@ namespace BenMAP
             this.cboProjections.Name = "cboProjections";
             this.cboProjections.Size = new System.Drawing.Size(525, 22);
             this.cboProjections.TabIndex = 5;
+            this.cboProjections.SelectedValueChanged += new System.EventHandler(this.cboProjections_SelectedValueChanged);
             // 
             // cboDefaultGridType
             // 

@@ -261,6 +261,15 @@ namespace BenMAP
             rth = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
         }
 
+        private void cboProjections_SelectedValueChanged(object sender, EventArgs e)
+        {
+            string projection = ((DataRowView)cboProjections.SelectedItem).Row["VALUE"].ToString();
+            FireBirdHelperBase fb = new ESILFireBirdHelper();
+            string commandText = string.Empty;
+            commandText = string.Format("update SETUPS set SETUPPROJECTION='{0}' where setupid={1}", projection, CommonClass.ManageSetup.SetupID);
+            int rth = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);            
+        }
+
         private void btnViewMetadata_Click(object sender, EventArgs e)
         {
 
