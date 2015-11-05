@@ -41,7 +41,7 @@ namespace BenMAP
             // plot1
             // 
             this.plot1.BackColor = System.Drawing.SystemColors.Control;
-            this.plot1.Location = new System.Drawing.Point(24, 68);
+            this.plot1.Location = new System.Drawing.Point(20, 65);
             this.plot1.Name = "plot1";
             this.plot1.PanCursor = System.Windows.Forms.Cursors.Hand;
             this.plot1.Size = new System.Drawing.Size(460, 319);
@@ -57,7 +57,7 @@ namespace BenMAP
             this.groupBox2.Controls.Add(this.btnOK);
             this.groupBox2.Controls.Add(this.btnCancel);
             this.groupBox2.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.groupBox2.Location = new System.Drawing.Point(0, 512);
+            this.groupBox2.Location = new System.Drawing.Point(0, 544);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(511, 61);
             this.groupBox2.TabIndex = 6;
@@ -119,7 +119,7 @@ namespace BenMAP
             this.lblNotesContext.BackColor = System.Drawing.SystemColors.HighlightText;
             this.lblNotesContext.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.lblNotesContext.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.lblNotesContext.Location = new System.Drawing.Point(109, 388);
+            this.lblNotesContext.Location = new System.Drawing.Point(109, 387);
             this.lblNotesContext.Name = "lblNotesContext";
             this.lblNotesContext.Size = new System.Drawing.Size(44, 16);
             this.lblNotesContext.TabIndex = 10;
@@ -129,7 +129,7 @@ namespace BenMAP
             // 
             this.pictureBox1.BackColor = System.Drawing.SystemColors.Window;
             this.pictureBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pictureBox1.Location = new System.Drawing.Point(109, 20);
+            this.pictureBox1.Location = new System.Drawing.Point(110, 20);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(358, 42);
             this.pictureBox1.TabIndex = 9;
@@ -138,16 +138,16 @@ namespace BenMAP
             // txtParameter2
             // 
             this.txtParameter2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtParameter2.Location = new System.Drawing.Point(109, 491);
+            this.txtParameter2.Location = new System.Drawing.Point(109, 492);
             this.txtParameter2.Name = "txtParameter2";
-            this.txtParameter2.Size = new System.Drawing.Size(119, 22);
+            this.txtParameter2.Size = new System.Drawing.Size(90, 22);
             this.txtParameter2.TabIndex = 8;
             this.txtParameter2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // txtParameter1
             // 
             this.txtParameter1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtParameter1.Location = new System.Drawing.Point(109, 460);
+            this.txtParameter1.Location = new System.Drawing.Point(109, 461);
             this.txtParameter1.Name = "txtParameter1";
             this.txtParameter1.Size = new System.Drawing.Size(90, 22);
             this.txtParameter1.TabIndex = 7;
@@ -156,7 +156,7 @@ namespace BenMAP
             // txtMeanValue
             // 
             this.txtMeanValue.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtMeanValue.Location = new System.Drawing.Point(109, 426);
+            this.txtMeanValue.Location = new System.Drawing.Point(109, 428);
             this.txtMeanValue.Name = "txtMeanValue";
             this.txtMeanValue.Size = new System.Drawing.Size(90, 22);
             this.txtMeanValue.TabIndex = 6;
@@ -165,7 +165,7 @@ namespace BenMAP
             // lblPDF
             // 
             this.lblPDF.AutoSize = true;
-            this.lblPDF.Location = new System.Drawing.Point(8, 20);
+            this.lblPDF.Location = new System.Drawing.Point(9, 21);
             this.lblPDF.Name = "lblPDF";
             this.lblPDF.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.lblPDF.Size = new System.Drawing.Size(97, 14);
@@ -176,7 +176,7 @@ namespace BenMAP
             // lblParameter2
             // 
             this.lblParameter2.AutoSize = true;
-            this.lblParameter2.Location = new System.Drawing.Point(55, 494);
+            this.lblParameter2.Location = new System.Drawing.Point(55, 496);
             this.lblParameter2.Name = "lblParameter2";
             this.lblParameter2.Size = new System.Drawing.Size(45, 14);
             this.lblParameter2.TabIndex = 4;
@@ -197,7 +197,7 @@ namespace BenMAP
             // lblParameter1
             // 
             this.lblParameter1.AutoSize = true;
-            this.lblParameter1.Location = new System.Drawing.Point(55, 463);
+            this.lblParameter1.Location = new System.Drawing.Point(55, 465);
             this.lblParameter1.Name = "lblParameter1";
             this.lblParameter1.Size = new System.Drawing.Size(45, 14);
             this.lblParameter1.TabIndex = 3;
@@ -207,7 +207,7 @@ namespace BenMAP
             // lblMeanValue
             // 
             this.lblMeanValue.AutoSize = true;
-            this.lblMeanValue.Location = new System.Drawing.Point(25, 429);
+            this.lblMeanValue.Location = new System.Drawing.Point(25, 432);
             this.lblMeanValue.Name = "lblMeanValue";
             this.lblMeanValue.Size = new System.Drawing.Size(75, 14);
             this.lblMeanValue.TabIndex = 2;
@@ -219,8 +219,9 @@ namespace BenMAP
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.SystemColors.Window;
-            this.ClientSize = new System.Drawing.Size(511, 573);
+            this.AutoSize = true;
+            this.BackColor = System.Drawing.SystemColors.Control;
+            this.ClientSize = new System.Drawing.Size(511, 605);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;

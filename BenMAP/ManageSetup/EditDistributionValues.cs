@@ -33,15 +33,18 @@ namespace BenMAP
         {
             try
             {
+                double mean = Convert.ToDouble(_healthImpactDistribution.Beta);
                 txtMeanValue.Text = _healthImpactDistribution.Beta;
                 txtParameter1.Text = _healthImpactDistribution.BetaParameter1;
 
+                distModel.PlotAreaBackground = OxyColors.White;
+                distModel.Padding = new OxyThickness(9);
+
                 if (_distributionName == "Normal")
                 {
-                    double mean = Convert.ToDouble(_healthImpactDistribution.Beta);
                     double sd = Convert.ToDouble(_healthImpactDistribution.BetaParameter1);
-                    double x0 = mean - (sd * 5); 
-                    double x1 = mean + (sd * 5); 
+                    double x0 = mean - (sd * 4); 
+                    double x1 = mean + (sd * 4); 
 
                     lblPDF.Text = _distributionName +" Dist.:";
                     lblNotesContext.Text = "The Normal distribution has two parameters - the mean,\nmu, and the standard deviation, sigma.";
@@ -51,9 +54,6 @@ namespace BenMAP
                     txtParameter1.Text = _healthImpactDistribution.BetaParameter1;
                     Image normal = Image.FromFile(Application.StartupPath + @"\Resources\DistributionFormula\Normal PDF.png");
                     pictureBox1.Image = normal;
-
-                    distModel.PlotAreaBackground = OxyColors.White;
-                    distModel.Padding = new OxyThickness(9);
 
                     distModel.Axes.Add(new OxyPlot.Axes.LinearAxis
                     {
@@ -82,12 +82,14 @@ namespace BenMAP
                         AxisTitleDistance = 10,
                     });
 
-                    LineSeries norm = (CreateNormalDistributionSeries(x0, x1, mean, (sd*sd)));
+                    LineSeries norm = (CreateNormalSeries(x0, x1, mean, (sd*sd)));
                     distModel.Series.Add(norm);
                     this.plot1.Model = distModel;
                 }
                 if (_distributionName == "Triangular")
                 {
+                    double min = Convert.ToDouble(_healthImpactDistribution.BetaParameter1);
+                    double max = Convert.ToDouble(_healthImpactDistribution.BetaParameter2);
                     lblPDF.Text = _distributionName + " PDF:";
                     lblNotesContext.Text = "The Triangular distribution has three parameters-the \nminimum value(a), the maximum value(b), and the most \nlikely value(c).BenMAP uses the mean value, the minimum, \nand the maximum to calculate the most likely value.";
                     lblParameter1.Text = "a:";
@@ -98,7 +100,46 @@ namespace BenMAP
                     pictureBox1.Image = Triangular;
                     Triangular = Image.FromFile(Application.StartupPath + @"\Resources\DistributionFormula\800px-Triangular_distribution_PMF.png");
                     pictureBox2.Image = Triangular;
+
+                    distModel.Axes.Add(new OxyPlot.Axes.LinearAxis
+                    {
+                        Position = OxyPlot.Axes.AxisPosition.Left,
+                        MinimumPadding = 0,
+                        MaximumPadding = 0.1,
+                        // MajorStep = 0.2,
+                        // MinorStep = 0.05,
+                        MajorGridlineStyle = LineStyle.Solid,
+                        MinorGridlineStyle = LineStyle.Dot,
+                        Title = "2 / (b - a)",
+                        AxisTitleDistance = 15,
+
+                    });
+
+                    distModel.Axes.Add(new OxyPlot.Axes.LinearAxis
+                    {
+                        Position = OxyPlot.Axes.AxisPosition.Bottom,
+                        // MajorStep = 1,
+                        // MinorStep = 0.25,
+                        MaximumPadding = 0.1,
+                        MinimumPadding = 0.1,
+                        MajorGridlineStyle = LineStyle.Solid,
+                        MinorGridlineStyle = LineStyle.Dot,
+                        Title = "x",
+                        AxisTitleDistance = 10,
+                        TextColor = OxyColors.Transparent,
+                    });
+
+                    double c = CreateTriangularSeries(min, max, mean);
+                    LineSeries tri = new LineSeries() { Color = OxyColors.ForestGreen, StrokeThickness = 3 };
+
+                    tri.Points.Add(new DataPoint(min, 0));
+                    tri.Points.Add(new DataPoint(c, (2.0 / Math.Abs(max - min))));
+                    tri.Points.Add(new DataPoint(max, 0));
+
+                    distModel.Series.Add(tri);
+                    this.plot1.Model = distModel;
                 }
+
                 if (_distributionName == "Poisson")
                 {
                     lblPDF.Text = _distributionName + " PDF:";
@@ -263,7 +304,7 @@ namespace BenMAP
 
         }
 
-        private static LineSeries CreateNormalDistributionSeries(double x0, double x1, double mean, double variance, int n = 500000)
+        private static LineSeries CreateNormalSeries(double x0, double x1, double mean, double variance, int n = 500000)
         {
             var ls = new LineSeries
             {
@@ -278,6 +319,17 @@ namespace BenMAP
                 ls.Points.Add(new DataPoint(x, f));
             }
             return ls;
+        }
+
+        private static double CreateTriangularSeries(double a, double b, double c)
+        {
+            Random r = new Random();
+            double rand = r.NextDouble();
+            double F = (c - a) / (b - a);
+
+            if (rand < F) { return (a + Math.Sqrt(rand * (b - a) * (c - a))); }
+
+            else { return (b - Math.Sqrt((1 - rand) * (b - a) * (b - c))); }
         }
 
         private string _meanValue;
