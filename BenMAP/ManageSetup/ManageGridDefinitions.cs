@@ -31,6 +31,7 @@ namespace BenMAP
         {
             InitializeComponent();
             LoadProjections(false);
+            SetSavedProjection();
         }
 
         private void btnAdd_Click(object sender, EventArgs e)
@@ -131,17 +132,12 @@ namespace BenMAP
 
         private void btnOK_Click(object sender, EventArgs e)
         {
-
-
-
-
-
-
-
-
-
-
-
+            //save selected projection
+            string projection = ((DataRowView)cboProjections.SelectedItem).Row["VALUE"].ToString();
+            FireBirdHelperBase fb = new ESILFireBirdHelper();
+            string commandText = string.Empty;
+            commandText = string.Format("update SETUPS set SETUPPROJECTION='{0}' where setupid={1}", projection, CommonClass.ManageSetup.SetupID);
+            int rth = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);   
 
 
             this.DialogResult = DialogResult.OK;
@@ -261,14 +257,6 @@ namespace BenMAP
             rth = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
         }
 
-        private void cboProjections_SelectedValueChanged(object sender, EventArgs e)
-        {
-            string projection = ((DataRowView)cboProjections.SelectedItem).Row["VALUE"].ToString();
-            FireBirdHelperBase fb = new ESILFireBirdHelper();
-            string commandText = string.Empty;
-            commandText = string.Format("update SETUPS set SETUPPROJECTION='{0}' where setupid={1}", projection, CommonClass.ManageSetup.SetupID);
-            int rth = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);            
-        }
 
         private void btnViewMetadata_Click(object sender, EventArgs e)
         {
@@ -301,7 +289,29 @@ namespace BenMAP
             {
                 _metadataObj = viewEMdata.MetadataObj;
             }
-        }        
+        }
+
+        private void SetSavedProjection()
+        {
+            //select saved projection?
+            FireBirdHelperBase fb = new ESILFireBirdHelper();
+            string commandText = string.Format("select SETUPPROJECTION from SETUPS where setupid={0}", CommonClass.ManageSetup.SetupID);
+            object rtv = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
+            string projection = "USAContiguousAlbersEqualAreaConicUSGS"; //this will be default
+            if (rtv != null)
+            {
+                projection = Convert.ToString(rtv);
+            }
+            cboProjections.SelectedValue = projection;
+
+            //if we still don't have a selected value,
+            //show full list and reset value
+            if (cboProjections.SelectedValue == null)
+            {
+                chkShowAll.Checked = true;
+            }
+            cboProjections.SelectedValue = projection;
+        }
 
         private void LoadProjections(bool showAll)
         {
@@ -562,7 +572,8 @@ namespace BenMAP
             }
             
             cboProjections.DisplayMember = "DISPLAY";
-            cboProjections.ValueMember = "VALUE";  
+            cboProjections.ValueMember = "VALUE";        
+
 
         }
 
