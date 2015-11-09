@@ -2129,6 +2129,11 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
 
         public static ProjectionInfo getProjectionInfoFromName(string projName)
         {
+            if (String.IsNullOrEmpty(projName))
+            {
+                return null;
+            }
+
             projName = projName.Replace(" ", "");
             string [] name = projName.Split('-');
 

@@ -139,6 +139,9 @@ namespace BenMAP
             commandText = string.Format("update SETUPS set SETUPPROJECTION='{0}' where setupid={1}", projection, CommonClass.ManageSetup.SetupID);
             int rth = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);   
 
+            //update MainSetup global var
+            CommonClass.MainSetup = CommonClass.getBenMAPSetupFromID(CommonClass.MainSetup.SetupID);
+
 
             this.DialogResult = DialogResult.OK;
         }
@@ -298,7 +301,7 @@ namespace BenMAP
             string commandText = string.Format("select SETUPPROJECTION from SETUPS where setupid={0}", CommonClass.ManageSetup.SetupID);
             object rtv = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
             string projection = "NorthAmerica - USAContiguousAlbersEqualAreaConicUSGS"; //this will be default
-            if (rtv != null)
+            if (rtv != DBNull.Value)
             {
                 projection = Convert.ToString(rtv);
             }
@@ -309,8 +312,9 @@ namespace BenMAP
             if (cboProjections.SelectedValue == null)
             {
                 chkShowAll.Checked = true;
+                cboProjections.SelectedValue = projection;
             }
-            cboProjections.SelectedValue = projection;
+            
         }
 
         private void LoadProjections(bool showAll)

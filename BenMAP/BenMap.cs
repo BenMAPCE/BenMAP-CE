@@ -15,6 +15,7 @@ using DotSpatial.Controls;
 using DotSpatial.Data;
 using DotSpatial.Symbology;
 using DotSpatial.Extensions;  //MCB- needed?
+using DotSpatial.Projections;
 //using DotSpatial.Plugins; //MCB - needed?
 //using DotSpatial.Plugins.TableEditor;  // MCB-?
 //using DotSpatial.Plugins.AttributeDataExplorer;  //MCB- needed?
@@ -3368,7 +3369,7 @@ namespace BenMAP
 
                     }
                 }
-                //Change the projection to GCS/NAD83 if needed
+                //Change the projection to WGS1984 if needed
                 bool isWGS84 = true;
                 if (tsbChangeProjection.Text == "change projection to WGS1984")
                 {
@@ -6382,47 +6383,22 @@ namespace BenMAP
             try
             {
                 if (mainMap.GetAllLayers().Count == 0) return;
-                if (CommonClass.MainSetup.SetupName.ToLower() == "china")
+
+                //exit if we have no setup projection
+                if (String.IsNullOrEmpty(CommonClass.MainSetup.SetupProjection))
                 {
-                    if (mainMap.Projection != DotSpatial.Projections.KnownCoordinateSystems.Projected.Asia.AsiaLambertConformalConic)
-                    {
-                        mainMap.Projection = DotSpatial.Projections.KnownCoordinateSystems.Projected.Asia.AsiaLambertConformalConic;
-                        foreach (FeatureLayer layer in mainMap.GetAllLayers())
-                        {
-                            layer.Projection = DotSpatial.Projections.KnownCoordinateSystems.Geographic.World.WGS1984;
-                            layer.Reproject(mainMap.Projection);
-                        }
-                        tsbChangeProjection.Text = "change projection to WGS1984";
-                    }
-                    else
-                    {
-                        mainMap.Projection = DotSpatial.Projections.KnownCoordinateSystems.Geographic.World.WGS1984;
-                        foreach (FeatureLayer layer in mainMap.GetAllLayers())
-                        {
-                            layer.Projection = DotSpatial.Projections.KnownCoordinateSystems.Projected.Asia.AsiaLambertConformalConic;
-                            layer.Reproject(mainMap.Projection);
-                        }
-                        tsbChangeProjection.Text = "change projection to Albers";
-                    }
-
-
-                    //foreach (IMapGroup grp in mainMap.GetAllGroups())
-                    //{
-                    //    grp.Projection.CopyProperties(mainMap.Projection);
-                    //}
-
-                    mainMap.Projection.CopyProperties(mainMap.Projection);
-
-                    //mainMap.ViewExtents = mainMap.GetAllLayers()[0].Extent;
-                    _SavedExtent = mainMap.GetAllLayers()[0].Extent;
-                    mainMap.ViewExtents = _SavedExtent;
                     return;
                 }
 
-
-                if (mainMap.Projection != DotSpatial.Projections.KnownCoordinateSystems.Projected.NorthAmerica.USAContiguousLambertConformalConic)
+                ProjectionInfo setupProjection = CommonClass.getProjectionInfoFromName(CommonClass.MainSetup.SetupProjection);
+                if (setupProjection == null)
                 {
-                    mainMap.Projection = DotSpatial.Projections.KnownCoordinateSystems.Projected.NorthAmerica.USAContiguousLambertConformalConic;
+                    return;
+                }                
+
+                if (mainMap.Projection != setupProjection)
+                {
+                    mainMap.Projection = setupProjection;
                     foreach (FeatureLayer layer in mainMap.GetAllLayers())
                     {
                         layer.Projection = DotSpatial.Projections.KnownCoordinateSystems.Geographic.World.WGS1984;
@@ -6435,17 +6411,11 @@ namespace BenMAP
                     mainMap.Projection = DotSpatial.Projections.KnownCoordinateSystems.Geographic.World.WGS1984;
                     foreach (FeatureLayer layer in mainMap.GetAllLayers())
                     {
-                        layer.Projection = DotSpatial.Projections.KnownCoordinateSystems.Projected.NorthAmerica.USAContiguousLambertConformalConic;
+                        layer.Projection = setupProjection;
                         layer.Reproject(mainMap.Projection);
                     }
-                    tsbChangeProjection.Text = "change projection to Albers";
+                    tsbChangeProjection.Text = "change projection to setup projection (" + CommonClass.MainSetup.SetupProjection + ")";
                 }
-
-
-                //foreach (IMapGroup grp in mainMap.GetAllGroups())
-                //{
-                //    grp.Projection.CopyProperties(mainMap.Projection);
-                //}
 
                 mainMap.Projection.CopyProperties(mainMap.Projection);
                 _SavedExtent = mainMap.GetAllLayers()[0].Extent;
