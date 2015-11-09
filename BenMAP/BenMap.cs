@@ -3369,11 +3369,11 @@ namespace BenMAP
                     }
                 }
                 //Change the projection to GCS/NAD83 if needed
-                bool isWGS83 = true;
+                bool isWGS84 = true;
                 if (tsbChangeProjection.Text == "change projection to WGS1984")
                 {
                     tsbChangeProjection_Click(null, null);
-                    isWGS83 = false;
+                    isWGS84 = false;
                 }
                 //If no region selected then take first region from region dropdown ?
                 if (CommonClass.RBenMAPGrid == null)
@@ -3531,7 +3531,7 @@ namespace BenMAP
 
                 //Change the projection back to it's original projection
                 //MCB- NEED better way to handle each countries default projections.  Store it in the grid definition or setup maybe?  XXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-                if (isWGS83 == false)
+                if (isWGS84 == false)
                 {
                     tsbChangeProjection_Click(null, null);
                 }
