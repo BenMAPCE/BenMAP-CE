@@ -2127,9 +2127,17 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
             }
         }
 
+        public static ProjectionInfo getProjectionInfoFromName(string projName)
+        {
+            projName = projName.Replace(" ", "");
+            string [] name = projName.Split('-');
+
+            return KnownCoordinateSystems.Projected.GetCategory(name[0]).GetProjection(name[1]);        
+        }
+
         public static BenMAPSetup getBenMAPSetupFromID(int setupID)
         {
-            string commandText = "select SetupID,SetupName from Setups where  SetupID=" + setupID;
+            string commandText = "select SetupID,SetupName,SetupProjection from Setups where  SetupID=" + setupID;
             ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
             System.Data.DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
             DataRow dr = ds.Tables[0].Rows[0];
@@ -2138,6 +2146,10 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
                 SetupID = Convert.ToInt32(dr["SetupID"]),
                 SetupName = dr["SetupName"].ToString()
             };
+            if (dr["SetupProjection"] != DBNull.Value)
+            {
+                benMAPSetup.SetupProjection = dr["SetupProjection"].ToString();
+            }
             return benMAPSetup;
         }
 
@@ -2145,7 +2157,7 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
         {
             try
             {
-                string commandText = "select SetupID,SetupName from Setups where  SetupName='" + SetupName + "'";
+                string commandText = "select SetupID,SetupName,SetupProjection from Setups where  SetupName='" + SetupName + "'";
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 System.Data.DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
                 DataRow dr = ds.Tables[0].Rows[0];
@@ -2154,6 +2166,10 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
                     SetupID = Convert.ToInt32(dr["SetupID"]),
                     SetupName = dr["SetupName"].ToString()
                 };
+                if (dr["SetupProjection"] != DBNull.Value)
+                {
+                    benMAPSetup.SetupProjection = dr["SetupProjection"].ToString();
+                }
                 return benMAPSetup;
             }
             catch
@@ -2628,6 +2644,8 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
         public int SetupID;
         [ProtoMember(2)]
         public string SetupName;
+        [ProtoMember(3)]
+        public string SetupProjection;
     }
 
 

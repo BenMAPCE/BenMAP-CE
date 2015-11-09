@@ -442,7 +442,7 @@ namespace BenMAP
         //                    layer.Projection = DotSpatial.Projections.KnownCoordinateSystems.Geographic.World.WGS1984;
         //                    layer.Reproject(mainMap.Projection);
         //                }
-        //                tsbChangeProjection.Text = "change projection to GCS/NAD 83";
+        //                tsbChangeProjection.Text = "change projection to WGS1984";
         //            }
         //            else
         //            {
@@ -473,7 +473,7 @@ namespace BenMAP
         //                layer.Projection = DotSpatial.Projections.KnownCoordinateSystems.Geographic.World.WGS1984;
         //                layer.Reproject(mainMap.Projection);
         //            }
-        //            tsbChangeProjection.Text = "change projection to GCS/NAD 83";
+        //            tsbChangeProjection.Text = "change projection to WGS1984";
         //        }
         //        else
         //        {

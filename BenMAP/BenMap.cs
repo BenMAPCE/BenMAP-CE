@@ -3299,11 +3299,11 @@ namespace BenMAP
                     {
                     }
                 }
-                bool isWGS83 = true;
-                if (tsbChangeProjection.Text == "change projection to GCS/NAD 83")
+                bool isWGS84 = true;
+                if (tsbChangeProjection.Text == "change projection to WGS1984")
                 {
                     tsbChangeProjection_Click(null, null);
-                    isWGS83 = false;
+                    isWGS84 = false;
                 }
                 if (CommonClass.RBenMAPGrid == null)
                 {
@@ -3341,7 +3341,7 @@ namespace BenMAP
                 PolygonSymbolizer TransparentRegion = new PolygonSymbolizer(cRegion);
 
                 TransparentRegion.OutlineSymbolizer = new LineSymbolizer(Color.DarkBlue, 1); playerRegion.Symbolizer = TransparentRegion;
-                if (isWGS83 == false)
+                if (isWGS84 == false)
                 {
                     tsbChangeProjection_Click(null, null);
                 }
@@ -3370,7 +3370,7 @@ namespace BenMAP
                 }
                 //Change the projection to GCS/NAD83 if needed
                 bool isWGS83 = true;
-                if (tsbChangeProjection.Text == "change projection to GCS/NAD 83")
+                if (tsbChangeProjection.Text == "change projection to WGS1984")
                 {
                     tsbChangeProjection_Click(null, null);
                     isWGS83 = false;
@@ -6392,7 +6392,7 @@ namespace BenMAP
                             layer.Projection = DotSpatial.Projections.KnownCoordinateSystems.Geographic.World.WGS1984;
                             layer.Reproject(mainMap.Projection);
                         }
-                        tsbChangeProjection.Text = "change projection to GCS/NAD 83";
+                        tsbChangeProjection.Text = "change projection to WGS1984";
                     }
                     else
                     {
@@ -6428,7 +6428,7 @@ namespace BenMAP
                         layer.Projection = DotSpatial.Projections.KnownCoordinateSystems.Geographic.World.WGS1984;
                         layer.Reproject(mainMap.Projection);
                     }
-                    tsbChangeProjection.Text = "change projection to GCS/NAD 83";
+                    tsbChangeProjection.Text = "change projection to WGS1984";
                 }
                 else
                 {

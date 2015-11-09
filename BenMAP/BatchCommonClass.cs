@@ -1578,7 +1578,7 @@ namespace BenMAP
         {
             try
             {
-                string commandText = string.Format("select SetupID,SetupName from Setups order by SetupID");
+                string commandText = string.Format("select SetupID,SetupName,SetupProjection from Setups order by SetupID");
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 System.Data.DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
                 foreach (DataRow dr in ds.Tables[0].Rows)
@@ -1590,6 +1590,10 @@ namespace BenMAP
                             SetupID = Convert.ToInt32(dr["SetupID"]),
                             SetupName = dr["SetupName"].ToString()
                         };
+                        if (dr["SetupProjection"] != DBNull.Value)
+                        {
+                            benMAPSetup.SetupProjection = dr["SetupProjection"].ToString();
+                        }
                         CommonClass.MainSetup = benMAPSetup;
                         return benMAPSetup;
                     }
