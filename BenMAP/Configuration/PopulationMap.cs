@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using System.IO;
 using DotSpatial.Controls;
 using DotSpatial.Symbology;
+using DotSpatial.Projections;
 using System.Threading;
 using FirebirdSql.Data.FirebirdClient;
 using System.Text.RegularExpressions;
@@ -831,46 +832,23 @@ namespace BenMAP
             try
             {
                 if (mainMap.Layers.Count == 0) return;
-                if (CommonClass.MainSetup.SetupName.ToLower() == "china")
+
+                //exit if we have no setup projection
+                if (String.IsNullOrEmpty(CommonClass.MainSetup.SetupProjection))
                 {
-                    if (mainMap.Projection != DotSpatial.Projections.KnownCoordinateSystems.Projected.Asia.AsiaLambertConformalConic)
-                    {
-                        mainMap.Projection = DotSpatial.Projections.KnownCoordinateSystems.Projected.Asia.AsiaLambertConformalConic;
-                        foreach (FeatureLayer layer in mainMap.Layers)
-                        {
-                            layer.Projection = DotSpatial.Projections.KnownCoordinateSystems.Geographic.World.WGS1984;
-                            layer.Reproject(mainMap.Projection);
-                        }
-                        tsbChangeProjection.Text = "change projection to WGS1984";
-                    }
-                    else
-                    {
-                        mainMap.Projection = DotSpatial.Projections.KnownCoordinateSystems.Geographic.World.WGS1984;
-                        foreach (FeatureLayer layer in mainMap.Layers)
-                        {
-                            layer.Projection = DotSpatial.Projections.KnownCoordinateSystems.Projected.Asia.AsiaLambertConformalConic;
-                            layer.Reproject(mainMap.Projection);
-                        }
-                        tsbChangeProjection.Text = "change projection to Albers";
-                    }
-
-
-                    foreach (IMapGroup grp in mainMap.GetAllGroups())
-                    {
-                        grp.Projection.CopyProperties(mainMap.Projection);
-                    }
-
-                    mainMap.Projection.CopyProperties(mainMap.Projection);
-
-                    mainMap.ViewExtents = mainMap.Layers[0].Extent;
                     return;
                 }
 
-
-                if (mainMap.Projection != DotSpatial.Projections.KnownCoordinateSystems.Projected.NorthAmerica.USAContiguousLambertConformalConic)
+                ProjectionInfo setupProjection = CommonClass.getProjectionInfoFromName(CommonClass.MainSetup.SetupProjection);
+                if (setupProjection == null)
                 {
-                    mainMap.Projection = DotSpatial.Projections.KnownCoordinateSystems.Projected.NorthAmerica.USAContiguousLambertConformalConic;
-                    foreach (FeatureLayer layer in mainMap.Layers)
+                    return;
+                }
+
+                if (mainMap.Projection != setupProjection)
+                {
+                    mainMap.Projection = setupProjection;
+                    foreach (FeatureLayer layer in mainMap.GetAllLayers())
                     {
                         layer.Projection = DotSpatial.Projections.KnownCoordinateSystems.Geographic.World.WGS1984;
                         layer.Reproject(mainMap.Projection);
@@ -880,13 +858,13 @@ namespace BenMAP
                 else
                 {
                     mainMap.Projection = DotSpatial.Projections.KnownCoordinateSystems.Geographic.World.WGS1984;
-                    foreach (FeatureLayer layer in mainMap.Layers)
+                    foreach (FeatureLayer layer in mainMap.GetAllLayers())
                     {
-                        layer.Projection = DotSpatial.Projections.KnownCoordinateSystems.Projected.NorthAmerica.USAContiguousLambertConformalConic;
+                        layer.Projection = setupProjection;
                         layer.Reproject(mainMap.Projection);
                     }
-                    tsbChangeProjection.Text = "change projection to Albers";
-                }
+                    tsbChangeProjection.Text = "change projection to setup projection (" + CommonClass.MainSetup.SetupProjection + ")";
+                }               
 
 
                 foreach (IMapGroup grp in mainMap.GetAllGroups())
