@@ -36,6 +36,9 @@ namespace BenMAP
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
+
+            SaveProjection();
+
             GridDefinition frm = new GridDefinition();
 
             try
@@ -58,6 +61,9 @@ namespace BenMAP
 
         private void btnEdit_Click(object sender, EventArgs e)
         {
+
+            SaveProjection();
+
             GridDefinition frm = new GridDefinition();
             try
             {
@@ -128,20 +134,9 @@ namespace BenMAP
             }
         }
 
-
-
         private void btnOK_Click(object sender, EventArgs e)
         {
-            //save selected projection
-            string projection = ((DataRowView)cboProjections.SelectedItem).Row["VALUE"].ToString();
-            FireBirdHelperBase fb = new ESILFireBirdHelper();
-            string commandText = string.Empty;
-            commandText = string.Format("update SETUPS set SETUPPROJECTION='{0}' where setupid={1}", projection, CommonClass.ManageSetup.SetupID);
-            int rth = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);   
-
-            //update MainSetup global var
-            CommonClass.MainSetup = CommonClass.getBenMAPSetupFromID(CommonClass.MainSetup.SetupID);
-
+            SaveProjection();
 
             this.DialogResult = DialogResult.OK;
         }
@@ -292,6 +287,19 @@ namespace BenMAP
             {
                 _metadataObj = viewEMdata.MetadataObj;
             }
+        }
+
+        private void SaveProjection()
+        {
+            //save selected projection
+            string projection = ((DataRowView)cboProjections.SelectedItem).Row["VALUE"].ToString();
+            FireBirdHelperBase fb = new ESILFireBirdHelper();
+            string commandText = string.Empty;
+            commandText = string.Format("update SETUPS set SETUPPROJECTION='{0}' where setupid={1}", projection, CommonClass.ManageSetup.SetupID);
+            int rth = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+
+            //update MainSetup global var
+            CommonClass.MainSetup = CommonClass.getBenMAPSetupFromID(CommonClass.MainSetup.SetupID);        
         }
 
         private void SetSavedProjection()

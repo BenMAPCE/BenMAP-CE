@@ -728,6 +728,25 @@ namespace BenMAP
                     Dictionary<string, Dictionary<string, double>> dicRelation = new Dictionary<string, Dictionary<string, double>>();
                     //Polygon pSelfExtent = null;
                    // Polygon pOtherExtent = null;
+
+
+                    //ensure consistent GIS projections
+                    //check for setup projection
+                    ProjectionInfo projInfo = null;
+                    if (!String.IsNullOrEmpty(CommonClass.MainSetup.SetupProjection))
+                    {
+                        projInfo = CommonClass.getProjectionInfoFromName(CommonClass.MainSetup.SetupProjection);
+                    }
+                    if (projInfo == null) //if no setup projection, use default of WGS1984
+                    {
+                        projInfo = KnownCoordinateSystems.Geographic.World.WGS1984;
+                    }
+
+                    self.Reproject(projInfo);
+
+                    other.Reproject(projInfo);
+
+
                     double dSumArea = 0.0;
                     foreach (IFeature selfFeature in self.Features)
                     {
@@ -944,6 +963,22 @@ namespace BenMAP
                     Dictionary<string, Dictionary<string, double>> dicRelation = new Dictionary<string, Dictionary<string, double>>();
                     Polygon pSelfExtent = null;
                     Polygon pOtherExtent = null;
+
+                    //ensure consistent GIS projections
+                    //check for setup projection
+                    ProjectionInfo projInfo = null;
+                    if (!String.IsNullOrEmpty(CommonClass.MainSetup.SetupProjection))
+                    {
+                        projInfo = CommonClass.getProjectionInfoFromName(CommonClass.MainSetup.SetupProjection);
+                    }
+                    if (projInfo == null) //if no setup projection, use default of WGS1984
+                    {
+                        projInfo = KnownCoordinateSystems.Geographic.World.WGS1984;
+                    }
+
+                    self.Reproject(projInfo);
+       
+                    other.Reproject(projInfo);
 
                     foreach (IFeature selfFeature in self.Features)
                     {
@@ -1209,14 +1244,26 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
                     //self.SaveAs(@"P:\temp\self.shp",true);
                     //other.SaveAs(@"P:\temp\other.shp", true);
                     //Console.WriteLine("Starting loop");
-                    self.Reproject(ProjectionInfo.FromEsriString("PROJCS[\"NAD_1983_Albers\",GEOGCS[\"GCS_North_American_1983\",DATUM[\"D_North_American_1983\",SPHEROID[\"GRS_1980\",6378137.0,298.257222101]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Albers\"],PARAMETER[\"false_easting\",0.0],PARAMETER[\"false_northing\",0.0],PARAMETER[\"central_meridian\",-96.0],PARAMETER[\"standard_parallel_1\",29.5],PARAMETER[\"standard_parallel_2\",45.5],PARAMETER[\"latitude_of_origin\",37.5],UNIT[\"Meter\",1.0]]"));
-                    //self.SaveAs(@"P:\temp\selfReProject.shp", true);
-                    ifs.Projection = self.Projection;
-                        
-                    //Console.WriteLine("Self proj4: " + self.Projection.ToProj4String());
 
+
+                    //ensure consistent GIS projections
+                    //check for setup projection
+                    ProjectionInfo projInfo = null;
+                    if (!String.IsNullOrEmpty(CommonClass.MainSetup.SetupProjection))
+                    {
+                        projInfo = CommonClass.getProjectionInfoFromName(CommonClass.MainSetup.SetupProjection);
+                    }
+                    if (projInfo == null) //if no setup projection, use default of WGS1984
+                    {
+                        projInfo = KnownCoordinateSystems.Geographic.World.WGS1984;
+                    }
+
+                    self.Reproject(projInfo);
+                    //self.SaveAs(@"P:\temp\selfReProject.shp", true);
+                    ifs.Projection = self.Projection;                        
+                    //Console.WriteLine("Self proj4: " + self.Projection.ToProj4String());
                     //other.Reproject(myRS.Projection);
-                    other.Reproject(ProjectionInfo.FromEsriString("PROJCS[\"NAD_1983_Albers\",GEOGCS[\"GCS_North_American_1983\",DATUM[\"D_North_American_1983\",SPHEROID[\"GRS_1980\",6378137.0,298.257222101]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Albers\"],PARAMETER[\"false_easting\",0.0],PARAMETER[\"false_northing\",0.0],PARAMETER[\"central_meridian\",-96.0],PARAMETER[\"standard_parallel_1\",29.5],PARAMETER[\"standard_parallel_2\",45.5],PARAMETER[\"latitude_of_origin\",37.5],UNIT[\"Meter\",1.0]]"));
+                    other.Reproject(projInfo);
                     
                     
                     Dictionary<int,double> otherXRef=new Dictionary<int,double>();

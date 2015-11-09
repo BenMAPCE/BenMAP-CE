@@ -365,7 +365,7 @@ namespace BenMAP
                             re.Close();
                             if (pESRI.Equals(WGS1984prj)) ProjectionOK = true;  
                         }
-                        if (!ProjectionOK)  //Then attempt to reporject it to GCS/NAD83
+                        if (!ProjectionOK)  //Then reproject it to WGS1984
                         {
                             string title = "WARNING: The shape file is not in the correct projection: WGS1984";
                             string message = "BenMAP-CE will attempt to reproject to WGS1984.";                            
