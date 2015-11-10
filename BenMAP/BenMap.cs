@@ -2252,7 +2252,15 @@ namespace BenMAP
             {
                 tabCtlMain.SelectedIndex = 0;
                 //mainMap.Layers.Clear();
-                tsbChangeProjection.Text = "change projection to Albers";
+
+                //set change projection text
+                string changeProjText = "change projection to setup projection";
+                if (!String.IsNullOrEmpty(CommonClass.MainSetup.SetupProjection))
+                {
+                    changeProjText = changeProjText + " (" + CommonClass.MainSetup.SetupProjection + ")";
+                }
+                tsbChangeProjection.Text = changeProjText;
+
                 BenMAPLine b = currentNode.Tag as BenMAPLine;
                 foreach (BaseControlGroup bc in CommonClass.LstBaseControlGroup)
                 {
@@ -2349,7 +2357,15 @@ namespace BenMAP
                 return;
             }
             WaitShow("Drawing layer...");
-            tsbChangeProjection.Text = "change projection to Albers";
+
+            //set change projection text
+            string changeProjText = "change projection to setup projection";
+            if (!String.IsNullOrEmpty(CommonClass.MainSetup.SetupProjection))
+            {
+                changeProjText = changeProjText + " (" + CommonClass.MainSetup.SetupProjection + ")";
+            }
+            tsbChangeProjection.Text = changeProjText;
+
             if (bcgDelta.DeltaQ == null)
             {
                 bcgDelta.DeltaQ = new BenMAPLine();
@@ -7579,7 +7595,14 @@ namespace BenMAP
 
                 if (bGIS)
                 {
-                    tsbChangeProjection.Text = "Change projection to Albers";
+                    //set change projection text
+                    string changeProjText = "change projection to setup projection";
+                    if (!String.IsNullOrEmpty(CommonClass.MainSetup.SetupProjection))
+                    {
+                        changeProjText = changeProjText + " (" + CommonClass.MainSetup.SetupProjection + ")";
+                    }
+                    tsbChangeProjection.Text = changeProjText;
+
                     mainMap.ProjectionModeReproject = ActionMode.Never;
                     mainMap.ProjectionModeDefine = ActionMode.Never;
                     string shapeFileName = "";
@@ -9903,7 +9926,14 @@ namespace BenMAP
 
                     if (bGIS)
                     {
-                        tsbChangeProjection.Text = "Change projection to Albers";
+                        //set change projection text
+                        string changeProjText = "change projection to setup projection";
+                        if (!String.IsNullOrEmpty(CommonClass.MainSetup.SetupProjection))
+                        {
+                            changeProjText = changeProjText + " (" + CommonClass.MainSetup.SetupProjection + ")";
+                        }
+                        tsbChangeProjection.Text = changeProjText;
+
                         mainMap.ProjectionModeReproject = ActionMode.Never;
                         mainMap.ProjectionModeDefine = ActionMode.Never;
                         string shapeFileName = "";
@@ -11501,9 +11531,16 @@ namespace BenMAP
                             string LayerNameText = author;
                             //Remove the old version of the layer if exists already
                             RemoveOldPolygonLayer(LayerNameText, HIFResultsMapGroup.Layers, false);
-                            
-                           
-                            tsbChangeProjection.Text = "change projection to Albers";
+
+
+                            //set change projection text
+                            string changeProjText = "change projection to setup projection";
+                            if (!String.IsNullOrEmpty(CommonClass.MainSetup.SetupProjection))
+                            {
+                                changeProjText = changeProjText + " (" + CommonClass.MainSetup.SetupProjection + ")";
+                            }
+                            tsbChangeProjection.Text = changeProjText;
+
                             mainMap.ProjectionModeReproject = ActionMode.Never;
                             mainMap.ProjectionModeDefine = ActionMode.Never;
                             string shapeFileName = "";
@@ -13295,7 +13332,14 @@ namespace BenMAP
                         }
                         if (bGIS)
                         {
-                            tsbChangeProjection.Text = "change projection to Albers";
+                            //set change projection text
+                            string changeProjText = "change projection to setup projection";
+                            if (!String.IsNullOrEmpty(CommonClass.MainSetup.SetupProjection))
+                            {
+                                changeProjText = changeProjText + " (" + CommonClass.MainSetup.SetupProjection + ")";
+                            }
+                            tsbChangeProjection.Text = changeProjText;
+
                             mainMap.ProjectionModeReproject = ActionMode.Never;
                             mainMap.ProjectionModeDefine = ActionMode.Never;
                             string shapeFileName = "";
