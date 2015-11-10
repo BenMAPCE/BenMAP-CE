@@ -42,6 +42,7 @@ namespace BenMAP
                 txtParameter1.Text = _healthImpactDistribution.BetaParameter1;
 
                 var p2pos = txtParameter2.Location.Y;
+                var pdfPos = pictureBox1.Location.Y; 
 
                 distModel.PlotAreaBackground = OxyColors.White;
                 distModel.Padding = new OxyThickness(9);
@@ -55,7 +56,8 @@ namespace BenMAP
                     TickStyle = OxyPlot.Axes.TickStyle.Crossing,
                     MajorGridlineStyle = LineStyle.Solid,
                     MinorGridlineStyle = LineStyle.Dot,
-                    AxisTitleDistance = 12,
+                    AxisTitleDistance = 10,
+                    TitleFontSize = 14,
                 };
 
                 var yAxis = new OxyPlot.Axes.LinearAxis()
@@ -65,6 +67,7 @@ namespace BenMAP
                     MajorGridlineStyle = LineStyle.Solid,
                     MinorGridlineStyle = LineStyle.Dot,
                     AxisTitleDistance = 12,
+                    TitleFontSize = 14,
                 };
 
                 if (_distributionName == "Normal")
@@ -74,13 +77,14 @@ namespace BenMAP
 
                     lblPDF.Visible = false;
                     lblNotesContext.Text = "The Normal distribution has two parameters - the mean,\nmu, and the standard deviation, sigma.";
-                    lblNotesContext.Location = new Point(76, p2pos);
+                    lblNotesContext.Location = new Point(76, pdfPos + 20);
                     lblParameter2.Visible = false;
                     txtParameter2.Visible = false;
                     lblParameter1.Text = "Sigma:";
                     txtParameter1.Text = _healthImpactDistribution.BetaParameter1;
                     Image normal = Image.FromFile(Application.StartupPath + @"\Resources\DistributionFormula\Normal PDF.png");
                     pictureBox1.Image = normal;
+                    pictureBox1.Location = new Point(76, p2pos);
 
                     distModel.Title = _distributionName + " Distribution";
 
@@ -113,17 +117,16 @@ namespace BenMAP
 
                     xAxis.MinimumPadding = 0.2;
                     xAxis.MaximumPadding = 0.2;
-                    xAxis.AxisTitleDistance = -0.5;
                     xAxis.Title = "x";
-                    xAxis.TextColor = OxyColors.Transparent;
                     distModel.Axes.Add(xAxis);
 
                     yAxis.MinimumPadding = 0;
                     yAxis.MaximumPadding = 0.25;
+                    yAxis.Title = "P(x)";
                     distModel.Axes.Add(yAxis);
 
                     double mostLikely = CreateTriangularSeries(param1, param2, mean);
-                    LineSeries tri = new LineSeries() { Color = OxyColors.ForestGreen, StrokeThickness = 3 };
+                    LineSeries tri = new LineSeries() { Color = OxyColors.MidnightBlue, StrokeThickness = 3 };
 
                     tri.Points.Add(new DataPoint(param1, 0));
                     tri.Points.Add(new DataPoint(mostLikely, (2.0 / Math.Abs(param2 - param1))));
@@ -135,7 +138,7 @@ namespace BenMAP
                         Y = (tri.Points.ElementAt(1).Y / 2),
                         Text = String.Format("a = {0:0.0000}", tri.Points.ElementAt(0).X), 
                         TextHorizontalAlignment = OxyPlot.HorizontalAlignment.Center,
-                        TextColor = OxyColors.Blue,
+                        TextColor = OxyColors.DarkSlateBlue,
                         FontSize = 13,
                         FontWeight = FontWeights.Bold,
                         Fill = OxyColors.Transparent,
@@ -148,7 +151,7 @@ namespace BenMAP
                         Text = String.Format("c = {0:0.0000}", tri.Points.ElementAt(1).X),
                         TextHorizontalAlignment = OxyPlot.HorizontalAlignment.Left,
                         TextVerticalAlignment = OxyPlot.VerticalAlignment.Top,
-                        TextColor = OxyColors.Blue,
+                        TextColor = OxyColors.DarkSlateBlue,
                         FontSize = 13,
                         FontWeight = FontWeights.Bold,
                         Fill = OxyColors.Transparent,
@@ -160,7 +163,7 @@ namespace BenMAP
                         Y = (tri.Points.ElementAt(1).Y / 2),
                         Text = String.Format("b = {0:0.0000}", tri.Points.ElementAt(2).X), 
                         TextHorizontalAlignment = OxyPlot.HorizontalAlignment.Center,
-                        TextColor = OxyColors.Blue,
+                        TextColor = OxyColors.DarkSlateBlue,
                         FontSize = 13,
                         FontWeight = FontWeights.Bold,
                         Fill = OxyColors.Transparent,
@@ -168,18 +171,19 @@ namespace BenMAP
                     var lineAnn = new LineAnnotation()
                     {
                         Slope = 0,
-                        StrokeThickness = 1.5,
+                        StrokeThickness = 1.3,
                         Intercept = tri.Points.ElementAt(1).Y,
-                        Color = OxyColors.CornflowerBlue,
+                        // Color = OxyColors.CornflowerBlue,
+                        Color = OxyColors.DarkSlateGray
                     };
 
                     var txtAnn = new TextAnnotation()
                     {
                         Stroke = OxyColors.Transparent,
-                        FontSize = 14,
+                        FontSize = 13,
                         Text = "2 / (b - a)",
                         TextPosition = new DataPoint(((tri.Points.ElementAt(1).X + tri.Points.ElementAt(0).X) / 2), tri.Points.ElementAt(1).Y),
-                        TextColor = OxyColors.CornflowerBlue,
+                        TextColor = OxyColors.Gray,
                         FontWeight = FontWeights.Bold,
                     };
                     

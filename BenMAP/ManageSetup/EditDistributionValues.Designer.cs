@@ -41,10 +41,10 @@ namespace BenMAP
             // plot1
             // 
             this.plot1.BackColor = System.Drawing.SystemColors.Control;
-            this.plot1.Location = new System.Drawing.Point(18, 13);
+            this.plot1.Location = new System.Drawing.Point(4, 12);
             this.plot1.Name = "plot1";
             this.plot1.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plot1.Size = new System.Drawing.Size(460, 319);
+            this.plot1.Size = new System.Drawing.Size(477, 319);
             this.plot1.TabIndex = 11;
             this.plot1.Text = "plot1";
             this.plot1.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -57,7 +57,7 @@ namespace BenMAP
             this.groupBox2.Controls.Add(this.btnOK);
             this.groupBox2.Controls.Add(this.btnCancel);
             this.groupBox2.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.groupBox2.Location = new System.Drawing.Point(0, 484);
+            this.groupBox2.Location = new System.Drawing.Point(0, 559);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(511, 56);
             this.groupBox2.TabIndex = 6;
@@ -103,7 +103,7 @@ namespace BenMAP
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBox1.Location = new System.Drawing.Point(0, 0);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(511, 530);
+            this.groupBox1.Size = new System.Drawing.Size(511, 529);
             this.groupBox1.TabIndex = 5;
             this.groupBox1.TabStop = false;
             // 
@@ -122,7 +122,7 @@ namespace BenMAP
             this.lblNotesContext.BackColor = System.Drawing.SystemColors.HighlightText;
             this.lblNotesContext.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.lblNotesContext.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.lblNotesContext.Location = new System.Drawing.Point(76, 496);
+            this.lblNotesContext.Location = new System.Drawing.Point(76, 495);
             this.lblNotesContext.MinimumSize = new System.Drawing.Size(358, 10);
             this.lblNotesContext.Name = "lblNotesContext";
             this.lblNotesContext.Size = new System.Drawing.Size(358, 16);
@@ -133,7 +133,7 @@ namespace BenMAP
             // 
             this.pictureBox1.BackColor = System.Drawing.SystemColors.Window;
             this.pictureBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pictureBox1.Location = new System.Drawing.Point(76, 332);
+            this.pictureBox1.Location = new System.Drawing.Point(76, 440);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(358, 42);
             this.pictureBox1.TabIndex = 9;
@@ -142,7 +142,7 @@ namespace BenMAP
             // txtParameter2
             // 
             this.txtParameter2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtParameter2.Location = new System.Drawing.Point(242, 458);
+            this.txtParameter2.Location = new System.Drawing.Point(242, 405);
             this.txtParameter2.Name = "txtParameter2";
             this.txtParameter2.Size = new System.Drawing.Size(90, 22);
             this.txtParameter2.TabIndex = 8;
@@ -151,7 +151,7 @@ namespace BenMAP
             // txtParameter1
             // 
             this.txtParameter1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtParameter1.Location = new System.Drawing.Point(242, 423);
+            this.txtParameter1.Location = new System.Drawing.Point(242, 370);
             this.txtParameter1.Name = "txtParameter1";
             this.txtParameter1.Size = new System.Drawing.Size(90, 22);
             this.txtParameter1.TabIndex = 7;
@@ -160,7 +160,7 @@ namespace BenMAP
             // txtMeanValue
             // 
             this.txtMeanValue.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtMeanValue.Location = new System.Drawing.Point(242, 388);
+            this.txtMeanValue.Location = new System.Drawing.Point(242, 335);
             this.txtMeanValue.Name = "txtMeanValue";
             this.txtMeanValue.Size = new System.Drawing.Size(90, 22);
             this.txtMeanValue.TabIndex = 6;
@@ -181,9 +181,10 @@ namespace BenMAP
             // lblParameter2
             // 
             this.lblParameter2.AutoSize = true;
-            this.lblParameter2.Location = new System.Drawing.Point(188, 462);
+            this.lblParameter2.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblParameter2.Location = new System.Drawing.Point(188, 409);
             this.lblParameter2.Name = "lblParameter2";
-            this.lblParameter2.Size = new System.Drawing.Size(45, 14);
+            this.lblParameter2.Size = new System.Drawing.Size(40, 14);
             this.lblParameter2.TabIndex = 4;
             this.lblParameter2.Text = "label5:";
             this.lblParameter2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -201,9 +202,10 @@ namespace BenMAP
             // lblParameter1
             // 
             this.lblParameter1.AutoSize = true;
-            this.lblParameter1.Location = new System.Drawing.Point(188, 427);
+            this.lblParameter1.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblParameter1.Location = new System.Drawing.Point(188, 374);
             this.lblParameter1.Name = "lblParameter1";
-            this.lblParameter1.Size = new System.Drawing.Size(45, 14);
+            this.lblParameter1.Size = new System.Drawing.Size(40, 14);
             this.lblParameter1.TabIndex = 3;
             this.lblParameter1.Text = "label4:";
             this.lblParameter1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -211,9 +213,10 @@ namespace BenMAP
             // lblMeanValue
             // 
             this.lblMeanValue.AutoSize = true;
-            this.lblMeanValue.Location = new System.Drawing.Point(158, 392);
+            this.lblMeanValue.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblMeanValue.Location = new System.Drawing.Point(158, 339);
             this.lblMeanValue.Name = "lblMeanValue";
-            this.lblMeanValue.Size = new System.Drawing.Size(75, 14);
+            this.lblMeanValue.Size = new System.Drawing.Size(68, 14);
             this.lblMeanValue.TabIndex = 2;
             this.lblMeanValue.Text = "Mean Value:";
             this.lblMeanValue.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -226,7 +229,7 @@ namespace BenMAP
             this.AutoSize = true;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.BackColor = System.Drawing.SystemColors.Control;
-            this.ClientSize = new System.Drawing.Size(511, 540);
+            this.ClientSize = new System.Drawing.Size(511, 615);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
