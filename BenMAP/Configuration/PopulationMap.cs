@@ -66,6 +66,17 @@ namespace BenMAP
         {
             try
             {
+                //configure map
+                mainMap.Projection = DotSpatial.Projections.KnownCoordinateSystems.Geographic.World.WGS1984;
+                //set change projection text
+                string changeProjText = "change projection to setup projection";
+                if (!String.IsNullOrEmpty(CommonClass.MainSetup.SetupProjection))
+                {
+                    changeProjText = changeProjText + " (" + CommonClass.MainSetup.SetupProjection + ")";
+                }
+                tsbChangeProjection.Text = changeProjText;
+
+
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 string commandText = string.Empty;
                 commandText = string.Format("select * from PopulationDataSets where PopulationDataSetID<>37 and  SetupID={0} order by PopulationDataSetID", CommonClass.MainSetup.SetupID);

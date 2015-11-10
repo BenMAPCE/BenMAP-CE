@@ -182,8 +182,11 @@ namespace BenMAP
                 CommonClass.ManageSetup = new BenMAPSetup()
                 {
                     SetupID = CommonClass.MainSetup.SetupID,
-                    SetupName = CommonClass.MainSetup.SetupName
+                    SetupName = CommonClass.MainSetup.SetupName,
+                    SetupProjection = CommonClass.MainSetup.SetupProjection
                 };
+               
+                
             }
             catch (Exception ex)
             {

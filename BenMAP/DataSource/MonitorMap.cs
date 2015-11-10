@@ -86,6 +86,18 @@ namespace BenMAP
                 Feature feature = null;
                 List<Coordinate> lstCoordinate = new List<Coordinate>();
                 List<double> fsInter = new List<double>();
+
+
+                //configure map
+                mainMap.Projection = DotSpatial.Projections.KnownCoordinateSystems.Geographic.World.WGS1984;
+                //set change projection text
+                string changeProjText = "change projection to setup projection";
+                if (!String.IsNullOrEmpty(CommonClass.MainSetup.SetupProjection))
+                {
+                    changeProjText = changeProjText + " (" + CommonClass.MainSetup.SetupProjection + ")";
+                }
+                tsbChangeProjection.Text = changeProjText;
+
                 mainMap.Layers.Clear();
                 mainMap.ProjectionModeReproject = ActionMode.Never;
                 mainMap.ProjectionModeDefine = ActionMode.Never;
