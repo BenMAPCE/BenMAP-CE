@@ -243,6 +243,7 @@ namespace BenMAP
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Manage Grid Definitions";
+            this.Activated += new System.EventHandler(this.ManageGridDefinetions_Activated);
             this.Load += new System.EventHandler(this.ManageGridDefinetions_Load);
             this.grpManageGrid.ResumeLayout(false);
             this.grpAvailableGrid.ResumeLayout(false);

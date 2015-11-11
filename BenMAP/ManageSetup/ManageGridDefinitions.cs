@@ -29,9 +29,7 @@ namespace BenMAP
 
         public ManageGridDefinetions()
         {
-            InitializeComponent();
-            LoadProjections(false);
-            SetSavedProjection();
+            InitializeComponent();            
         }
 
         private void btnAdd_Click(object sender, EventArgs e)
@@ -86,17 +84,32 @@ namespace BenMAP
             }
 
         }
+
         private void ManageGridDefinetions_Load(object sender, EventArgs e)
         {
             try
             {
                 loadGrid();
+                LoadProjections(false);
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
             }
         }
+
+        private void ManageGridDefinetions_Activated(object sender, EventArgs e)
+        {
+            try
+            {
+                SetSavedProjection();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
+
         Dictionary<int, int> dicShapeOrRegular;
         private void loadGrid()
         {
@@ -343,6 +356,7 @@ namespace BenMAP
                         cboProjections.Enabled = false;
                     }
                 }
+
             }
             else
             {
@@ -408,6 +422,8 @@ namespace BenMAP
         {
             LoadProjections(chkShowAll.Checked);
         }
+
+        
 
     }
 }
