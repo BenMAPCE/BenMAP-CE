@@ -37,7 +37,7 @@ namespace BenMAP
         private void btnAdd_Click(object sender, EventArgs e)
         {
 
-            SaveProjection();
+            if (!SaveProjection()) return;
 
             GridDefinition frm = new GridDefinition();
 
@@ -62,7 +62,7 @@ namespace BenMAP
         private void btnEdit_Click(object sender, EventArgs e)
         {
 
-            SaveProjection();
+            if (!SaveProjection()) return;
 
             GridDefinition frm = new GridDefinition();
             try
@@ -136,7 +136,7 @@ namespace BenMAP
 
         private void btnOK_Click(object sender, EventArgs e)
         {
-            SaveProjection();
+            if (!SaveProjection()) return;
 
             this.DialogResult = DialogResult.OK;
         }
@@ -289,17 +289,26 @@ namespace BenMAP
             }
         }
 
-        private void SaveProjection()
+        private bool SaveProjection()
         {
-            //save selected projection
-            string projection = ((DataRowView)cboProjections.SelectedItem).Row["VALUE"].ToString();
-            FireBirdHelperBase fb = new ESILFireBirdHelper();
-            string commandText = string.Empty;
-            commandText = string.Format("update SETUPS set SETUPPROJECTION='{0}' where setupid={1}", projection, CommonClass.ManageSetup.SetupID);
-            int rth = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+            if (cboProjections.SelectedItem != null)
+            {
+                //save selected projection
+                string projection = ((DataRowView)cboProjections.SelectedItem).Row["VALUE"].ToString();
+                FireBirdHelperBase fb = new ESILFireBirdHelper();
+                string commandText = string.Empty;
+                commandText = string.Format("update SETUPS set SETUPPROJECTION='{0}' where setupid={1}", projection, CommonClass.ManageSetup.SetupID);
+                int rth = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
 
-            //update MainSetup global var
-            CommonClass.MainSetup = CommonClass.getBenMAPSetupFromID(CommonClass.MainSetup.SetupID);        
+                //update MainSetup global var
+                CommonClass.MainSetup = CommonClass.getBenMAPSetupFromID(CommonClass.MainSetup.SetupID);
+                return true;
+            }
+            else
+            {
+                MessageBox.Show("You must select a GIS Projection for this setup.", "GIS Projection");
+                return false;
+            }
         }
 
         private void SetSavedProjection()
@@ -308,21 +317,28 @@ namespace BenMAP
             FireBirdHelperBase fb = new ESILFireBirdHelper();
             string commandText = string.Format("select SETUPPROJECTION from SETUPS where setupid={0}", CommonClass.ManageSetup.SetupID);
             object rtv = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
-            string projection = "NorthAmerica - USAContiguousAlbersEqualAreaConicUSGS"; //this will be default
             if (rtv != DBNull.Value)
             {
-                projection = Convert.ToString(rtv);
-            }
-            cboProjections.SelectedValue = projection;
 
-            //if we still don't have a selected value,
-            //show full list and reset value
-            if (cboProjections.SelectedValue == null)
-            {
-                chkShowAll.Checked = true;
+                //set selected item
+                string projection = Convert.ToString(rtv);
                 cboProjections.SelectedValue = projection;
+                //if we still don't have a selected value,
+                //show full list and reset value
+                if (cboProjections.SelectedValue == null)
+                {
+                    chkShowAll.Checked = true;
+                    cboProjections.SelectedValue = projection;
+                }
+
+                //disable control?
+
+
             }
-            
+            else
+            {
+                cboProjections.SelectedItem = null;
+            }
         }
 
         private void LoadProjections(bool showAll)
