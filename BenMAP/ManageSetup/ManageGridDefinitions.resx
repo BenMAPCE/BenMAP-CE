@@ -117,4 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="label3.Text" xml:space="preserve">
+    <value>We recommend using one of the Albers projections in the list below. For U.S. setups, we suggest USAContiguousAlbersEqualAreaConicUSGS. To see a list of all available projections, check the "Show All" box. </value>
+  </data>
 </root>
