@@ -10645,28 +10645,54 @@ namespace BenMAP
 
                     barChart.FillColor = OxyColors.RoyalBlue;
                     barChart.Background = OxyColor.FromRgb(255, 255, 255);
+                    //barChart.TrackerFormatString
 
                     int i = 0;
                     while (i < 1)
                     {
                         int j = 0;
-                        foreach (ChartResult cr in olvRegions.CheckedObjects)
-                        {
-                            barChart.Items.Add(new ColumnItem(cr.RegionValue, -1));
-                            catAxis.Labels.Add(cr.RegionName);
-                            j++;
+                        int count = olvRegions.CheckedObjects.Count;
+                        int maxDisplay = 8;
+                        
+                        if(count <= maxDisplay) {
+                            foreach (ChartResult cr in olvRegions.CheckedObjects)
+                            {
+                                barChart.Items.Add(new ColumnItem(cr.RegionValue, -1));
+                                catAxis.Labels.Add(cr.RegionName);
+                            }
+                            i++;
                         }
-                        i++;
+                        else
+                        {
+                            int findLast = 0;
+                            int skip = count / maxDisplay;
+                            catAxis.MajorGridlineThickness = 0.2;
+                            catAxis.MajorTickSize = 2;
+                            string label = "";
+                            foreach (ChartResult cr in olvRegions.CheckedObjects)
+                            {
+                                barChart.Items.Add(new ColumnItem(cr.RegionValue, -1));
+
+                                if (j == 0 || findLast == count) { label = cr.RegionName; }
+                                else { label = ""; }
+                                catAxis.Labels.Add(label);
+
+                                if (j == skip) { j = 0; }
+                                else { j++; }
+                                findLast++;
+                            }
+                            i++;
+                        }
                     }
  
                     catAxis.Title = strchartX;
                     catAxis.TitleFontWeight = 700;
                     catAxis.TitleFontSize = 14;
-                    catAxis.Angle = 30;
+                    catAxis.Angle = -30;
                     catAxis.TickStyle = OxyPlot.Axes.TickStyle.Crossing;
                     catAxis.Position = OxyPlot.Axes.AxisPosition.Bottom;
                     catAxis.MinimumRange = 5;
-                    catAxis.DataMaximum.Equals(5);
+                    // catAxis.DataMaximum.Equals(5);
 
                     yAxis.Title = strchartY;
                     yAxis.TitleFontWeight = 700;
