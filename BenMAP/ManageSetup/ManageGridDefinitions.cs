@@ -331,9 +331,18 @@ namespace BenMAP
                     cboProjections.SelectedValue = projection;
                 }
 
-                //disable control?
-
-
+                //disable control if any crosswalks exist for this setup
+                commandText = string.Format("select count(*) from GRIDDEFINITIONS gd inner join GRIDDEFINITIONPERCENTAGES gdp " + 
+                                            "on gd.GRIDDEFINITIONID = gdp.SOURCEGRIDDEFINITIONID where gd.setupid = {0}", CommonClass.ManageSetup.SetupID);
+                rtv = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
+                if (rtv != DBNull.Value)
+                {
+                    int count = Convert.ToInt32(rtv);
+                    if (count > 0)
+                    {
+                        cboProjections.Enabled = false;
+                    }
+                }
             }
             else
             {
