@@ -52,13 +52,13 @@ namespace BenMAP
             this.grpManageGrid.Controls.Add(this.grpAvailableGrid);
             this.grpManageGrid.Location = new System.Drawing.Point(6, 3);
             this.grpManageGrid.Name = "grpManageGrid";
-            this.grpManageGrid.Size = new System.Drawing.Size(628, 522);
+            this.grpManageGrid.Size = new System.Drawing.Size(628, 412);
             this.grpManageGrid.TabIndex = 0;
             this.grpManageGrid.TabStop = false;
             // 
             // btnEdit
             // 
-            this.btnEdit.Location = new System.Drawing.Point(465, 481);
+            this.btnEdit.Location = new System.Drawing.Point(517, 371);
             this.btnEdit.Name = "btnEdit";
             this.btnEdit.Size = new System.Drawing.Size(77, 27);
             this.btnEdit.TabIndex = 3;
@@ -68,7 +68,7 @@ namespace BenMAP
             // 
             // btnAdd
             // 
-            this.btnAdd.Location = new System.Drawing.Point(378, 481);
+            this.btnAdd.Location = new System.Drawing.Point(430, 371);
             this.btnAdd.Name = "btnAdd";
             this.btnAdd.Size = new System.Drawing.Size(81, 27);
             this.btnAdd.TabIndex = 2;
@@ -78,7 +78,7 @@ namespace BenMAP
             // 
             // btnDelete
             // 
-            this.btnDelete.Location = new System.Drawing.Point(296, 481);
+            this.btnDelete.Location = new System.Drawing.Point(348, 371);
             this.btnDelete.Name = "btnDelete";
             this.btnDelete.Size = new System.Drawing.Size(76, 27);
             this.btnDelete.TabIndex = 1;
@@ -94,9 +94,9 @@ namespace BenMAP
             this.grpAvailableGrid.Controls.Add(this.txtGridType);
             this.grpAvailableGrid.Controls.Add(this.lblGridType);
             this.grpAvailableGrid.Controls.Add(this.lstAvailableGrid);
-            this.grpAvailableGrid.Location = new System.Drawing.Point(6, 12);
+            this.grpAvailableGrid.Location = new System.Drawing.Point(6, 8);
             this.grpAvailableGrid.Name = "grpAvailableGrid";
-            this.grpAvailableGrid.Size = new System.Drawing.Size(616, 451);
+            this.grpAvailableGrid.Size = new System.Drawing.Size(616, 357);
             this.grpAvailableGrid.TabIndex = 0;
             this.grpAvailableGrid.TabStop = false;
             this.grpAvailableGrid.Text = "Available Grid Definitions";
@@ -109,7 +109,7 @@ namespace BenMAP
             this.groupBox2.Controls.Add(this.label2);
             this.groupBox2.Location = new System.Drawing.Point(11, 182);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(599, 197);
+            this.groupBox2.Size = new System.Drawing.Size(599, 167);
             this.groupBox2.TabIndex = 10;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "GIS Projection";
@@ -118,7 +118,7 @@ namespace BenMAP
             // 
             this.chkShowAll.AutoSize = true;
             this.chkShowAll.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.chkShowAll.Location = new System.Drawing.Point(504, 115);
+            this.chkShowAll.Location = new System.Drawing.Point(504, 105);
             this.chkShowAll.Name = "chkShowAll";
             this.chkShowAll.Size = new System.Drawing.Size(73, 18);
             this.chkShowAll.TabIndex = 13;
@@ -130,7 +130,7 @@ namespace BenMAP
             // 
             this.cboProjections.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboProjections.FormattingEnabled = true;
-            this.cboProjections.Location = new System.Drawing.Point(19, 139);
+            this.cboProjections.Location = new System.Drawing.Point(19, 129);
             this.cboProjections.Name = "cboProjections";
             this.cboProjections.Size = new System.Drawing.Size(558, 22);
             this.cboProjections.TabIndex = 12;
@@ -150,7 +150,7 @@ namespace BenMAP
             this.label2.Size = new System.Drawing.Size(577, 35);
             this.label2.TabIndex = 10;
             this.label2.Text = "This projection will be used when performing area- or distance-based calculations" +
-    " on all shapefile grid definitions in this setup).";
+    " on all shapefile grid definitions in this setup.";
             // 
             // cboDefaultGridType
             // 
@@ -201,7 +201,7 @@ namespace BenMAP
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(376, 3);
+            this.btnCancel.Location = new System.Drawing.Point(455, 3);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(81, 27);
             this.btnCancel.TabIndex = 1;
@@ -212,7 +212,7 @@ namespace BenMAP
             // 
             // btnOK
             // 
-            this.btnOK.Location = new System.Drawing.Point(463, 3);
+            this.btnOK.Location = new System.Drawing.Point(542, 3);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(77, 27);
             this.btnOK.TabIndex = 2;
@@ -223,9 +223,9 @@ namespace BenMAP
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.flowLayoutPanel1);
-            this.groupBox1.Location = new System.Drawing.Point(6, 531);
+            this.groupBox1.Location = new System.Drawing.Point(6, 416);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(549, 56);
+            this.groupBox1.Size = new System.Drawing.Size(628, 56);
             this.groupBox1.TabIndex = 3;
             this.groupBox1.TabStop = false;
             // 
@@ -238,13 +238,13 @@ namespace BenMAP
             this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
             this.flowLayoutPanel1.Location = new System.Drawing.Point(3, 18);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(543, 35);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(622, 35);
             this.flowLayoutPanel1.TabIndex = 3;
             this.flowLayoutPanel1.WrapContents = false;
             // 
             // btnViewMetadata
             // 
-            this.btnViewMetadata.Location = new System.Drawing.Point(258, 3);
+            this.btnViewMetadata.Location = new System.Drawing.Point(337, 3);
             this.btnViewMetadata.Name = "btnViewMetadata";
             this.btnViewMetadata.Size = new System.Drawing.Size(112, 27);
             this.btnViewMetadata.TabIndex = 33;
@@ -256,7 +256,7 @@ namespace BenMAP
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(647, 601);
+            this.ClientSize = new System.Drawing.Size(647, 479);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.grpManageGrid);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
