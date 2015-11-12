@@ -3752,7 +3752,7 @@ namespace BenMAP
                         }
                         //The 'F' is for the Locked column in Setups - this is imported and not predefined
                         // 2012 02 15 added LOCKED to field list
-                        commandText = string.Format("insert into Setups(setupID,setupName,LOCKED) values({0},'{1}', 'F')", newsetupid, entry.Value);
+                        commandText = string.Format("insert into Setups (setupID,setupName,LOCKED) values({0},'{1}', 'F')", newsetupid, entry.Value);
                         fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                     }
                 }

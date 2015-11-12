@@ -346,33 +346,36 @@ namespace BenMAP
                     _shapeFilePath = openFileDialog.FileName;
 
                     if(CheckforSupportingfiles(_shapeFilePath))
-                    {   
-                        DotSpatial.Projections.ProjectionInfo GCSNAD83prj = DotSpatial.Projections.KnownCoordinateSystems.Geographic.NorthAmerica.NorthAmericanDatum1983;
+                    {
+                        DotSpatial.Projections.ProjectionInfo WGS1984prj = DotSpatial.Projections.KnownCoordinateSystems.Geographic.World.WGS1984;
                         bool ProjectionOK = false;
                         //get projection info from the ESRI shape file's .prj file.
                         FileInfo fInfo = new FileInfo(_shapeFilePath);
                         string strDir = fInfo.DirectoryName;
                         string fName = fInfo.Name.Substring(0,fInfo.Name.Length - fInfo.Extension.Length);
                         string prjfile = Path.Combine(strDir, fName + ".prj");
-                        string GCSNAD83ShapeFilePath = Path.Combine(strDir, fName + "_GCSNAD83"+ ".shp");
+                        string WGS1984ShapeFilePath = Path.Combine(strDir, fName + "_WGS1984" + ".shp");
 
-                        if (File.Exists(prjfile))    //check for acceptable projection (GCS/NAD83)
+                        if (File.Exists(prjfile))    //check for acceptable projection (WGS1984)
                         {
                             //sets the ESRI PCS to the ESRI .prj file
                             ProjectionInfo pESRI = new ProjectionInfo();
                             StreamReader re = File.OpenText(prjfile);
                             pESRI.ParseEsriString(re.ReadLine());
                             re.Close();
-                            if (pESRI.Equals(GCSNAD83prj)) ProjectionOK = true;  //MCB will need to add more code for other regions
+                            if (pESRI.Equals(WGS1984prj)) ProjectionOK = true;  
                         }
-                        if (!ProjectionOK)  //Then attempt to reporject it to GCS/NAD83
-                        {   
-                            MessageBox.Show("BenMAP-CE will attempt to reproject to GCS/NAD83.","WARNING: The shape file is not in the correct projection: GCS NAD83");
+                        if (!ProjectionOK)  //Then reproject it to WGS1984
+                        {
+                            string title = "WARNING: The shape file is not in the correct projection: WGS1984";
+                            string message = "BenMAP-CE will attempt to reproject to WGS1984.";                            
+                            message = message.PadRight(title.Length + 20); // padding necessary so full title is displayed in message box
+                            MessageBox.Show(message, title);
                             string originalShapeFilePath = _shapeFilePath;
-                            _shapeFilePath = GCSNAD83ShapeFilePath;
+                            _shapeFilePath = WGS1984ShapeFilePath;
                             if (File.Exists(_shapeFilePath)) CommonClass.DeleteShapeFileName(_shapeFilePath);
                             IFeatureSet fs = FeatureSet.Open(originalShapeFilePath);
-                            fs.Reproject(GCSNAD83prj); //reproject
+                            fs.Reproject(WGS1984prj); //reproject
                             fs.SaveAs(_shapeFilePath, true);
                             fs.Close();
 
@@ -380,6 +383,9 @@ namespace BenMAP
                             txtShapefile.Text = _shapeFilePath;
                             lblShapeFileName.Text = System.IO.Path.GetFileNameWithoutExtension(txtShapefile.Text);                           
                         }
+
+                        IFeatureSet fsVertices = FeatureSet.Open(_shapeFilePath);
+                        int numVertices = fsVertices.Vertex.Count();
 
                         // Add the grid 
                         AddLayer(_shapeFilePath);
@@ -436,7 +442,7 @@ namespace BenMAP
         //                    layer.Projection = DotSpatial.Projections.KnownCoordinateSystems.Geographic.World.WGS1984;
         //                    layer.Reproject(mainMap.Projection);
         //                }
-        //                tsbChangeProjection.Text = "change projection to GCS/NAD 83";
+        //                tsbChangeProjection.Text = "change projection to WGS1984";
         //            }
         //            else
         //            {
@@ -467,7 +473,7 @@ namespace BenMAP
         //                layer.Projection = DotSpatial.Projections.KnownCoordinateSystems.Geographic.World.WGS1984;
         //                layer.Reproject(mainMap.Projection);
         //            }
-        //            tsbChangeProjection.Text = "change projection to GCS/NAD 83";
+        //            tsbChangeProjection.Text = "change projection to WGS1984";
         //        }
         //        else
         //        {
