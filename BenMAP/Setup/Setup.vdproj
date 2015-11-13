@@ -465,6 +465,18 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_338A081A1472752B089ABFA64DC3EB33"
+        "OwnerKey" = "8:_728C6FC8F5A9489E99B90267CF222057"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_338A081A1472752B089ABFA64DC3EB33"
+        "OwnerKey" = "8:_95FFA0C1861744A8AEDD30730C62BC71"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_35945E90580B4E59BC2790A96DE259B3"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -1732,7 +1744,7 @@
         "Entry"
         {
         "MsmKey" = "8:_BDD9C6C5594F27B9E2E177493A55BC2F"
-        "OwnerKey" = "8:_DFBE6615355F2731EC8BA0074DAD302F"
+        "OwnerKey" = "8:_338A081A1472752B089ABFA64DC3EB33"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -2111,18 +2123,6 @@
         {
         "MsmKey" = "8:_DF6FEF8EDDFA44838B213108F39DE9F4"
         "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_DFBE6615355F2731EC8BA0074DAD302F"
-        "OwnerKey" = "8:_728C6FC8F5A9489E99B90267CF222057"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_DFBE6615355F2731EC8BA0074DAD302F"
-        "OwnerKey" = "8:_95FFA0C1861744A8AEDD30730C62BC71"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -2554,7 +2554,7 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_DFBE6615355F2731EC8BA0074DAD302F"
+        "OwnerKey" = "8:_338A081A1472752B089ABFA64DC3EB33"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -3119,11 +3119,6 @@
             "AssemblyAsmDisplayName" = "8:DotSpatial.Symbology, Version=1.6.0.0, Culture=neutral, PublicKeyToken=6178c08da7998387, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_0695E42B79A0BBACF1671D8EA94EF237"
-                    {
-                    "Name" = "8:DotSpatial.Symbology.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:DotSpatial.Symbology.dll"
             "TargetName" = "8:"
@@ -3270,11 +3265,6 @@
             "AssemblyAsmDisplayName" = "8:gdal_csharp, Version=1.0.4704.32537, Culture=neutral, PublicKeyToken=db5a52b08dc5b321, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_0D6EFA22EBAE2DB767C01E5969BE4C62"
-                    {
-                    "Name" = "8:gdal_csharp.DLL"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:gdal_csharp.DLL"
             "TargetName" = "8:"
@@ -3461,11 +3451,6 @@
             "AssemblyAsmDisplayName" = "8:DotSpatial.Data.Forms, Version=1.6.0.0, Culture=neutral, PublicKeyToken=53ab5a198378d4c1, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_164EDE372557008CB48259433EED73B2"
-                    {
-                    "Name" = "8:DotSpatial.Data.Forms.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:DotSpatial.Data.Forms.dll"
             "TargetName" = "8:"
@@ -3532,11 +3517,6 @@
             "AssemblyAsmDisplayName" = "8:Meta.Numerics, Version=2.1.0.0, Culture=neutral, PublicKeyToken=67d25c65a6631347, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_1857B36208B67C315A5E794111814BB4"
-                    {
-                    "Name" = "8:Meta.Numerics.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:Meta.Numerics.dll"
             "TargetName" = "8:"
@@ -3674,11 +3654,6 @@
             "AssemblyAsmDisplayName" = "8:Microsoft.ReportViewer.Common, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_1C4BCDA727BD99C1ACD20E5827631B81"
-                    {
-                    "Name" = "8:Microsoft.ReportViewer.Common.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:Microsoft.ReportViewer.Common.dll"
             "TargetName" = "8:"
@@ -3785,11 +3760,6 @@
             "AssemblyAsmDisplayName" = "8:RichTextBoxPrintCtrl, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_227922ABE60C5C4F9602F7B684F938EA"
-                    {
-                    "Name" = "8:RichTextBoxPrintCtrl.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:RichTextBoxPrintCtrl.dll"
             "TargetName" = "8:"
@@ -4078,6 +4048,32 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_338A081A1472752B089ABFA64DC3EB33"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:FireBirdHelper, Version=1.0.18.0, Culture=neutral, processorArchitecture=AMD64"
+                "ScatterAssemblies"
+                {
+                }
+            "SourcePath" = "8:FireBirdHelper.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_CFC83EA26393402992AA74648BF4EBD1"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_35945E90580B4E59BC2790A96DE259B3"
@@ -4398,11 +4394,6 @@
             "AssemblyAsmDisplayName" = "8:LumenWorks.Framework.IO, Version=3.8.0.0, Culture=neutral, PublicKeyToken=5ad3ea2f85776344, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_4487F4928F78816F3FE2060DBA71CE14"
-                    {
-                    "Name" = "8:LumenWorks.Framework.IO.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:LumenWorks.Framework.IO.dll"
             "TargetName" = "8:"
@@ -4769,11 +4760,6 @@
             "AssemblyAsmDisplayName" = "8:osr_csharp, Version=1.0.4704.32536, Culture=neutral, PublicKeyToken=db5a52b08dc5b321, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_5913C76C8367691669171CA442FECFF8"
-                    {
-                    "Name" = "8:osr_csharp.DLL"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:osr_csharp.DLL"
             "TargetName" = "8:"
@@ -5140,11 +5126,6 @@
             "AssemblyAsmDisplayName" = "8:DotSpatial.Modeling.Forms, Version=1.6.0.0, Culture=neutral, PublicKeyToken=712bef29a31a9354, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_6B4BF126BE99D2E0637BF427B7634E12"
-                    {
-                    "Name" = "8:DotSpatial.Modeling.Forms.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:DotSpatial.Modeling.Forms.dll"
             "TargetName" = "8:"
@@ -5422,11 +5403,6 @@
             "AssemblyAsmDisplayName" = "8:DotSpatial.Mono, Version=1.6.0.0, Culture=neutral, PublicKeyToken=425ba4de41127026, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_74674C5F91968C210F9A81CBBBD9CEB7"
-                    {
-                    "Name" = "8:DotSpatial.Mono.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:DotSpatial.Mono.dll"
             "TargetName" = "8:"
@@ -5633,11 +5609,6 @@
             "AssemblyAsmDisplayName" = "8:ogr_csharp, Version=1.0.4704.32537, Culture=neutral, PublicKeyToken=db5a52b08dc5b321, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_79BC2441F691DF26E1C6018D159EE4A8"
-                    {
-                    "Name" = "8:ogr_csharp.DLL"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:ogr_csharp.DLL"
             "TargetName" = "8:"
@@ -5915,11 +5886,6 @@
             "AssemblyAsmDisplayName" = "8:DotSpatial.Compatibility, Version=1.6.0.0, Culture=neutral, PublicKeyToken=094c8fdea7f4a002, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_87ABEF27CE6924B0ACD5A59568595EE8"
-                    {
-                    "Name" = "8:DotSpatial.Compatibility.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:DotSpatial.Compatibility.dll"
             "TargetName" = "8:"
@@ -5966,11 +5932,6 @@
             "AssemblyAsmDisplayName" = "8:DotSpatial.Projections, Version=1.6.0.0, Culture=neutral, PublicKeyToken=272632bddd08a38b, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_880BA4344FCEB8F9F40699C46A3D82C5"
-                    {
-                    "Name" = "8:DotSpatial.Projections.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:DotSpatial.Projections.dll"
             "TargetName" = "8:"
@@ -6077,11 +6038,6 @@
             "AssemblyAsmDisplayName" = "8:DotSpatial.Serialization, Version=1.6.0.0, Culture=neutral, PublicKeyToken=441f200f827611e7, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_8D47518BDDD2719928560E93DB34ABE6"
-                    {
-                    "Name" = "8:DotSpatial.Serialization.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:DotSpatial.Serialization.dll"
             "TargetName" = "8:"
@@ -6639,11 +6595,6 @@
             "AssemblyAsmDisplayName" = "8:DotSpatial.Data, Version=1.6.0.0, Culture=neutral, PublicKeyToken=c29dbf30e059ca9d, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_A2F7B8E60F3CE7227456BFDB0D4A59A7"
-                    {
-                    "Name" = "8:DotSpatial.Data.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:DotSpatial.Data.dll"
             "TargetName" = "8:"
@@ -7050,11 +7001,6 @@
             "AssemblyAsmDisplayName" = "8:ICSharpCode.SharpZipLib, Version=0.85.5.452, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_AF8C0443E69FFC7A967CC29843190D54"
-                    {
-                    "Name" = "8:ICSharpCode.SharpZipLib.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:ICSharpCode.SharpZipLib.dll"
             "TargetName" = "8:"
@@ -7141,11 +7087,6 @@
             "AssemblyAsmDisplayName" = "8:DotSpatial.Extensions, Version=1.6.0.0, Culture=neutral, PublicKeyToken=4d9e49339a7d240c, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_B4A1123A49A52473B611E7F1F0F62977"
-                    {
-                    "Name" = "8:DotSpatial.Extensions.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:DotSpatial.Extensions.dll"
             "TargetName" = "8:"
@@ -7212,11 +7153,6 @@
             "AssemblyAsmDisplayName" = "8:DotSpatial.Projections.Forms, Version=1.6.0.0, Culture=neutral, PublicKeyToken=52099474f11b7ff0, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_B5B7A9D609461071B42A61CC14CCE0CD"
-                    {
-                    "Name" = "8:DotSpatial.Projections.Forms.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:DotSpatial.Projections.Forms.dll"
             "TargetName" = "8:"
@@ -7334,11 +7270,6 @@
             "AssemblyAsmDisplayName" = "8:ObjectListView, Version=2.5.0.29523, Culture=neutral, PublicKeyToken=b1c5bf581481bcd4, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_B9AAC984CF779752E7182F16C9FAE91E"
-                    {
-                    "Name" = "8:ObjectListView.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:ObjectListView.dll"
             "TargetName" = "8:"
@@ -7505,11 +7436,6 @@
             "AssemblyAsmDisplayName" = "8:FirebirdSql.Data.FirebirdClient, Version=4.1.0.0, Culture=neutral, PublicKeyToken=3750abcc3150b00c, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_BDD9C6C5594F27B9E2E177493A55BC2F"
-                    {
-                    "Name" = "8:FirebirdSql.Data.FirebirdClient.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:FirebirdSql.Data.FirebirdClient.dll"
             "TargetName" = "8:"
@@ -7816,11 +7742,6 @@
             "AssemblyAsmDisplayName" = "8:Microsoft.ReportViewer.WinForms, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_C6EBB359DC4FFB09720B8EBB8E3BF707"
-                    {
-                    "Name" = "8:Microsoft.ReportViewer.WinForms.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:Microsoft.ReportViewer.WinForms.dll"
             "TargetName" = "8:"
@@ -7978,11 +7899,6 @@
             "AssemblyAsmDisplayName" = "8:DotSpatial.Topology, Version=1.6.0.0, Culture=neutral, PublicKeyToken=a66b5e9434ca3671, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_CD73431AC06A470265B0596060C90013"
-                    {
-                    "Name" = "8:DotSpatial.Topology.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:DotSpatial.Topology.dll"
             "TargetName" = "8:"
@@ -8564,37 +8480,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_DFBE6615355F2731EC8BA0074DAD302F"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:FireBirdHelper, Version=1.0.18.0, Culture=neutral, processorArchitecture=x86"
-                "ScatterAssemblies"
-                {
-                    "_DFBE6615355F2731EC8BA0074DAD302F"
-                    {
-                    "Name" = "8:FireBirdHelper.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:FireBirdHelper.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_CFC83EA26393402992AA74648BF4EBD1"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E071E783A1F64339805B65C5D7525B95"
             {
             "SourcePath" = "8:..\\Plugins\\GDAL\\gdal\\x64\\proj.dll"
@@ -8662,11 +8547,6 @@
             "AssemblyAsmDisplayName" = "8:DotSpatial.Symbology.Forms, Version=1.6.0.0, Culture=neutral, PublicKeyToken=0544cdeefb662382, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_E22A6D9AF4C9E7C93EE071BB74470D41"
-                    {
-                    "Name" = "8:DotSpatial.Symbology.Forms.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:DotSpatial.Symbology.Forms.dll"
             "TargetName" = "8:"
@@ -8824,11 +8704,6 @@
             "AssemblyAsmDisplayName" = "8:protobuf-net, Version=2.0.0.622, Culture=neutral, PublicKeyToken=257b51d87d2e4d67, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_E67C02C6FD4D22485969785ACC3A8537"
-                    {
-                    "Name" = "8:protobuf-net.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:protobuf-net.dll"
             "TargetName" = "8:"
@@ -9035,11 +8910,6 @@
             "AssemblyAsmDisplayName" = "8:DotSpatial.Controls, Version=1.6.0.0, Culture=neutral, PublicKeyToken=4d9e49339a7d240c, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_ECCD48CDD367A1638BF877384E20667A"
-                    {
-                    "Name" = "8:DotSpatial.Controls.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:DotSpatial.Controls.dll"
             "TargetName" = "8:"
@@ -9086,11 +8956,6 @@
             "AssemblyAsmDisplayName" = "8:DocumentFormat.OpenXml, Version=2.5.5631.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_ED7A78FA4C24F756F8C8B75D3147470E"
-                    {
-                    "Name" = "8:DocumentFormat.OpenXml.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:DocumentFormat.OpenXml.dll"
             "TargetName" = "8:"
@@ -9257,11 +9122,6 @@
             "AssemblyAsmDisplayName" = "8:ZedGraph, Version=5.1.4.17629, Culture=neutral, PublicKeyToken=02a83cbd123fcd60, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_F65CFB2C04DEBF3D57C4BA2D861534A5"
-                    {
-                    "Name" = "8:ZedGraph.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:ZedGraph.dll"
             "TargetName" = "8:"
@@ -9328,11 +9188,6 @@
             "AssemblyAsmDisplayName" = "8:Excel, Version=2.1.0.0, Culture=neutral, PublicKeyToken=93517dbe6a4012fa, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_F8965ACA596DE0BFE6A8629C26CFA1A4"
-                    {
-                    "Name" = "8:Excel.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:Excel.dll"
             "TargetName" = "8:"
@@ -9399,11 +9254,6 @@
             "AssemblyAsmDisplayName" = "8:RestSharp, Version=104.4.0.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_FB45A6B05F977B5F6AC3B3B476F7B037"
-                    {
-                    "Name" = "8:RestSharp.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:RestSharp.dll"
             "TargetName" = "8:"
@@ -9510,11 +9360,6 @@
             "AssemblyAsmDisplayName" = "8:DotSpatial.Analysis, Version=1.6.0.0, Culture=neutral, PublicKeyToken=df3f45fb0fe4cb0c, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_FDBF47664B41B5DB05B2902B2454FE7E"
-                    {
-                    "Name" = "8:DotSpatial.Analysis.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:DotSpatial.Analysis.dll"
             "TargetName" = "8:"
@@ -9951,7 +9796,7 @@
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.1.5"
+        "ProductVersion" = "8:1.1.7"
         "Manufacturer" = "8:BenMAP-CE Development Team"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -9965,7 +9810,7 @@
         "ARPIconIndex" = "3:0"
         "SearchPath" = "8:"
         "UseSystemSearchPath" = "11:TRUE"
-        "TargetPlatform" = "3:0"
+        "TargetPlatform" = "3:1"
         "PreBuildEvent" = "8:"
         "PostBuildEvent" = "8:"
         "RunPostBuildEvent" = "3:0"
@@ -10066,7 +9911,7 @@
         {
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_41DA277E3DC34C36A4FE9B6BC1251C29"
             {
-            "Name" = "8:BenMAP-CE 1.1.5"
+            "Name" = "8:BenMAP-CE 1.1.7"
             "Arguments" = "8:"
             "Description" = "8:"
             "ShowCmd" = "3:1"
@@ -10549,7 +10394,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_728C6FC8F5A9489E99B90267CF222057"
             {
-            "SourcePath" = "8:..\\obj\\x86\\Release\\BenMAP.exe"
+            "SourcePath" = "8:..\\obj\\x64\\Release\\BenMAP.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_CFC83EA26393402992AA74648BF4EBD1"
@@ -10577,7 +10422,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_95FFA0C1861744A8AEDD30730C62BC71"
             {
-            "SourcePath" = "8:..\\obj\\x86\\Release\\BenMAP.exe"
+            "SourcePath" = "8:..\\obj\\x64\\Release\\BenMAP.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_CFC83EA26393402992AA74648BF4EBD1"
@@ -10633,7 +10478,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_CFDE562FCC9A4998ABF72EF2340B98E4"
             {
-            "SourcePath" = "8:..\\FireBirdHelper\\obj\\x86\\Release\\FireBirdHelper.dll"
+            "SourcePath" = "8:..\\FireBirdHelper\\obj\\x64\\Release\\FireBirdHelper.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_CFC83EA26393402992AA74648BF4EBD1"

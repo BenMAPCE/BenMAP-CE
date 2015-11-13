@@ -243,10 +243,11 @@ namespace BenMAP
                         if (obj == null)
                         {
                             variableID++;
+                            // 2015 09 23 - BENMAP-347 - replaced metada data on insert statement
                             // removed metaadata from insert statement
                             //commandText = string.Format("insert into SetUpVariables values({0},{1},'{2}','{3}', {4})", variableID, variableDatasetID, variableName, gridDefinationID, _lstMetadata[i].MetadataEntryId);
-                            commandText = string.Format("insert into SetUpVariables(SETUPVARIABLEID, SETUPVARIABLEDATASETID, SETUPVARIABLENAME, GRIDDEFINITIONID ) " 
-                                + "values({0},{1},'{2}',{3})", variableID, variableDatasetID, variableName, gridDefinationID);
+                            commandText = string.Format("insert into SetUpVariables(SETUPVARIABLEID, SETUPVARIABLEDATASETID, SETUPVARIABLENAME, GRIDDEFINITIONID, METADATAID ) "
+                                + "values({0},{1},'{2}',{3}, {4})", variableID, variableDatasetID, variableName, gridDefinationID, _lstMetadata[i].MetadataEntryId);
 
                             //fbCommand.CommandText = commandText;
                             //fbCommand.ExecuteNonQuery();
@@ -559,6 +560,12 @@ namespace BenMAP
             int index = 0;
             string commandText = string.Empty;
             object obj;
+            // 2015 09 02 - add conformation form - BENMAP 327 
+            if (MessageBox.Show("Delete the selected variable?", "Confirm Deletion", MessageBoxButtons.YesNo) == DialogResult.No)
+            {
+                return; // cancel action 
+            }
+
             ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
             string setupVariableID = string.Empty;
             string variableDatasetID = string.Empty;

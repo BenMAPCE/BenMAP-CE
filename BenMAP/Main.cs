@@ -171,7 +171,7 @@ namespace BenMAP
 
                 string sPicName = "";
                 CommonClass.ActiveSetup = "USA";
-                string commandText = "select SetupID,SetupName from Setups order by SetupID";
+                string commandText = "select SetupID,SetupName,SetupProjection from Setups order by SetupID";
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 System.Data.DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
 
@@ -203,6 +203,11 @@ namespace BenMAP
                     SetupID = Convert.ToInt32(dr["SetupID"]),
                     SetupName = dr["SetupName"].ToString()
                 };
+                if (dr["SetupProjection"] != DBNull.Value)
+                {
+                    benMAPSetup.SetupProjection = dr["SetupProjection"].ToString();
+                }
+
                 mnuActiveSetup.DropDownItems.Clear();
 
                 foreach (DataRow drSetup in ds.Tables[0].Rows)
@@ -212,6 +217,10 @@ namespace BenMAP
                         SetupID = Convert.ToInt32(drSetup["SetupID"]),
                         SetupName = drSetup["SetupName"].ToString()
                     };
+                    if (drSetup["SetupProjection"] != DBNull.Value)
+                    {
+                        benMAPSetupIn.SetupProjection = drSetup["SetupProjection"].ToString();
+                    }
                     ToolStripMenuItem toolStripMenuItem = new ToolStripMenuItem();
                     toolStripMenuItem.Text = drSetup["SetupName"].ToString();
                     toolStripMenuItem.Tag = benMAPSetupIn;
@@ -642,7 +651,7 @@ namespace BenMAP
             }
 
 
-            string commandText = "select SetupID,SetupName from Setups order by SetupID";
+            string commandText = "select SetupID,SetupName,SetupProjection from Setups order by SetupID";
             ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
             System.Data.DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
 
@@ -655,6 +664,11 @@ namespace BenMAP
                     SetupID = Convert.ToInt32(drSetup["SetupID"]),
                     SetupName = drSetup["SetupName"].ToString()
                 };
+                if (drSetup["SetupProjection"] != DBNull.Value)
+                {
+                    benMAPSetupIn.SetupProjection = drSetup["SetupProjection"].ToString();
+                }
+                
                 ToolStripMenuItem toolStripMenuItem = new ToolStripMenuItem();
                 toolStripMenuItem.Text = drSetup["SetupName"].ToString();
                 toolStripMenuItem.Tag = benMAPSetupIn;

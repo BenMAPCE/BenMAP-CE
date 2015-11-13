@@ -520,7 +520,7 @@
             this.tsbChangeProjection.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbChangeProjection.Name = "tsbChangeProjection";
             this.tsbChangeProjection.Size = new System.Drawing.Size(23, 22);
-            this.tsbChangeProjection.Text = "ChangeProjection";
+            this.tsbChangeProjection.Text = "Change projection";
             this.tsbChangeProjection.Visible = false;
             // 
             // tsbChangeCone

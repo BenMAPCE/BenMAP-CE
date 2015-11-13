@@ -226,7 +226,9 @@ namespace BenMAP
             {
                 if (vdi.PassedValidation && _isForceValidate == "T")
                 {
-                    LoadDatabase();
+                    // 2015 09 28 BENMAP-354 modify to enable OK button and not load database from validation (should load from OK, instead)
+                    //LoadDatabase();
+                    btnOK.Enabled = true;
                 }
             }
         }

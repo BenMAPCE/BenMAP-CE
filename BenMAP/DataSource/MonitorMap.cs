@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using DotSpatial.Symbology;
 using DotSpatial.Controls;
+using DotSpatial.Projections;
 using System.IO;
 using DotSpatial.Topology;
 using DotSpatial.Data;
@@ -85,6 +86,18 @@ namespace BenMAP
                 Feature feature = null;
                 List<Coordinate> lstCoordinate = new List<Coordinate>();
                 List<double> fsInter = new List<double>();
+
+
+                //configure map
+                mainMap.Projection = DotSpatial.Projections.KnownCoordinateSystems.Geographic.World.WGS1984;
+                //set change projection text
+                string changeProjText = "change projection to setup projection";
+                if (!String.IsNullOrEmpty(CommonClass.MainSetup.SetupProjection))
+                {
+                    changeProjText = changeProjText + " (" + CommonClass.MainSetup.SetupProjection + ")";
+                }
+                tsbChangeProjection.Text = changeProjText;
+
                 mainMap.Layers.Clear();
                 mainMap.ProjectionModeReproject = ActionMode.Never;
                 mainMap.ProjectionModeDefine = ActionMode.Never;
@@ -221,24 +234,41 @@ namespace BenMAP
         {
             try
             {
-                if (mainMap.Projection != DotSpatial.Projections.KnownCoordinateSystems.Projected.NorthAmerica.USAContiguousLambertConformalConic)
+                if (mainMap.Layers.Count == 0) return;
+
+                //exit if we have no setup projection
+                if (String.IsNullOrEmpty(CommonClass.MainSetup.SetupProjection))
                 {
-                    mainMap.Projection = DotSpatial.Projections.KnownCoordinateSystems.Projected.NorthAmerica.USAContiguousLambertConformalConic;
-                    foreach (FeatureLayer layer in mainMap.Layers)
+                    return;
+                }
+
+                ProjectionInfo setupProjection = CommonClass.getProjectionInfoFromName(CommonClass.MainSetup.SetupProjection);
+                if (setupProjection == null)
+                {
+                    return;
+                }
+
+                if (mainMap.Projection != setupProjection)
+                {
+                    mainMap.Projection = setupProjection;
+                    foreach (FeatureLayer layer in mainMap.GetAllLayers())
                     {
                         layer.Projection = DotSpatial.Projections.KnownCoordinateSystems.Geographic.World.WGS1984;
                         layer.Reproject(mainMap.Projection);
                     }
+                    tsbChangeProjection.Text = "change projection to WGS1984";
                 }
                 else
                 {
                     mainMap.Projection = DotSpatial.Projections.KnownCoordinateSystems.Geographic.World.WGS1984;
-                    foreach (FeatureLayer layer in mainMap.Layers)
+                    foreach (FeatureLayer layer in mainMap.GetAllLayers())
                     {
-                        layer.Projection = DotSpatial.Projections.KnownCoordinateSystems.Projected.NorthAmerica.USAContiguousLambertConformalConic;
+                        layer.Projection = setupProjection;
                         layer.Reproject(mainMap.Projection);
                     }
+                    tsbChangeProjection.Text = "change projection to setup projection (" + CommonClass.MainSetup.SetupProjection + ")";
                 }
+
                 foreach (IMapGroup grp in mainMap.GetAllGroups())
                 {
                     grp.Projection.CopyProperties(mainMap.Projection);

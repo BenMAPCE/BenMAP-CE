@@ -728,6 +728,25 @@ namespace BenMAP
                     Dictionary<string, Dictionary<string, double>> dicRelation = new Dictionary<string, Dictionary<string, double>>();
                     //Polygon pSelfExtent = null;
                    // Polygon pOtherExtent = null;
+
+
+                    //ensure consistent GIS projections
+                    //check for setup projection
+                    ProjectionInfo projInfo = null;
+                    if (!String.IsNullOrEmpty(CommonClass.MainSetup.SetupProjection))
+                    {
+                        projInfo = CommonClass.getProjectionInfoFromName(CommonClass.MainSetup.SetupProjection);
+                    }
+                    if (projInfo == null) //if no setup projection, use default of WGS1984
+                    {
+                        projInfo = KnownCoordinateSystems.Geographic.World.WGS1984;
+                    }
+
+                    self.Reproject(projInfo);
+
+                    other.Reproject(projInfo);
+
+
                     double dSumArea = 0.0;
                     foreach (IFeature selfFeature in self.Features)
                     {
@@ -944,6 +963,22 @@ namespace BenMAP
                     Dictionary<string, Dictionary<string, double>> dicRelation = new Dictionary<string, Dictionary<string, double>>();
                     Polygon pSelfExtent = null;
                     Polygon pOtherExtent = null;
+
+                    //ensure consistent GIS projections
+                    //check for setup projection
+                    ProjectionInfo projInfo = null;
+                    if (!String.IsNullOrEmpty(CommonClass.MainSetup.SetupProjection))
+                    {
+                        projInfo = CommonClass.getProjectionInfoFromName(CommonClass.MainSetup.SetupProjection);
+                    }
+                    if (projInfo == null) //if no setup projection, use default of WGS1984
+                    {
+                        projInfo = KnownCoordinateSystems.Geographic.World.WGS1984;
+                    }
+
+                    self.Reproject(projInfo);
+       
+                    other.Reproject(projInfo);
 
                     foreach (IFeature selfFeature in self.Features)
                     {
@@ -1209,14 +1244,26 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
                     //self.SaveAs(@"P:\temp\self.shp",true);
                     //other.SaveAs(@"P:\temp\other.shp", true);
                     //Console.WriteLine("Starting loop");
-                    self.Reproject(ProjectionInfo.FromEsriString("PROJCS[\"NAD_1983_Albers\",GEOGCS[\"GCS_North_American_1983\",DATUM[\"D_North_American_1983\",SPHEROID[\"GRS_1980\",6378137.0,298.257222101]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Albers\"],PARAMETER[\"false_easting\",0.0],PARAMETER[\"false_northing\",0.0],PARAMETER[\"central_meridian\",-96.0],PARAMETER[\"standard_parallel_1\",29.5],PARAMETER[\"standard_parallel_2\",45.5],PARAMETER[\"latitude_of_origin\",37.5],UNIT[\"Meter\",1.0]]"));
-                    //self.SaveAs(@"P:\temp\selfReProject.shp", true);
-                    ifs.Projection = self.Projection;
-                        
-                    //Console.WriteLine("Self proj4: " + self.Projection.ToProj4String());
 
+
+                    //ensure consistent GIS projections
+                    //check for setup projection
+                    ProjectionInfo projInfo = null;
+                    if (!String.IsNullOrEmpty(CommonClass.MainSetup.SetupProjection))
+                    {
+                        projInfo = CommonClass.getProjectionInfoFromName(CommonClass.MainSetup.SetupProjection);
+                    }
+                    if (projInfo == null) //if no setup projection, use default of WGS1984
+                    {
+                        projInfo = KnownCoordinateSystems.Geographic.World.WGS1984;
+                    }
+
+                    self.Reproject(projInfo);
+                    //self.SaveAs(@"P:\temp\selfReProject.shp", true);
+                    ifs.Projection = self.Projection;                        
+                    //Console.WriteLine("Self proj4: " + self.Projection.ToProj4String());
                     //other.Reproject(myRS.Projection);
-                    other.Reproject(ProjectionInfo.FromEsriString("PROJCS[\"NAD_1983_Albers\",GEOGCS[\"GCS_North_American_1983\",DATUM[\"D_North_American_1983\",SPHEROID[\"GRS_1980\",6378137.0,298.257222101]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Albers\"],PARAMETER[\"false_easting\",0.0],PARAMETER[\"false_northing\",0.0],PARAMETER[\"central_meridian\",-96.0],PARAMETER[\"standard_parallel_1\",29.5],PARAMETER[\"standard_parallel_2\",45.5],PARAMETER[\"latitude_of_origin\",37.5],UNIT[\"Meter\",1.0]]"));
+                    other.Reproject(projInfo);
                     
                     
                     Dictionary<int,double> otherXRef=new Dictionary<int,double>();
@@ -2127,9 +2174,22 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
             }
         }
 
+        public static ProjectionInfo getProjectionInfoFromName(string projName)
+        {
+            if (String.IsNullOrEmpty(projName))
+            {
+                return null;
+            }
+
+            projName = projName.Replace(" ", "");
+            string [] name = projName.Split('-');
+
+            return KnownCoordinateSystems.Projected.GetCategory(name[0]).GetProjection(name[1]);        
+        }
+
         public static BenMAPSetup getBenMAPSetupFromID(int setupID)
         {
-            string commandText = "select SetupID,SetupName from Setups where  SetupID=" + setupID;
+            string commandText = "select SetupID,SetupName,SetupProjection from Setups where  SetupID=" + setupID;
             ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
             System.Data.DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
             DataRow dr = ds.Tables[0].Rows[0];
@@ -2138,6 +2198,10 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
                 SetupID = Convert.ToInt32(dr["SetupID"]),
                 SetupName = dr["SetupName"].ToString()
             };
+            if (dr["SetupProjection"] != DBNull.Value)
+            {
+                benMAPSetup.SetupProjection = dr["SetupProjection"].ToString();
+            }
             return benMAPSetup;
         }
 
@@ -2145,7 +2209,7 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
         {
             try
             {
-                string commandText = "select SetupID,SetupName from Setups where  SetupName='" + SetupName + "'";
+                string commandText = "select SetupID,SetupName,SetupProjection from Setups where  SetupName='" + SetupName + "'";
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 System.Data.DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
                 DataRow dr = ds.Tables[0].Rows[0];
@@ -2154,6 +2218,10 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
                     SetupID = Convert.ToInt32(dr["SetupID"]),
                     SetupName = dr["SetupName"].ToString()
                 };
+                if (dr["SetupProjection"] != DBNull.Value)
+                {
+                    benMAPSetup.SetupProjection = dr["SetupProjection"].ToString();
+                }
                 return benMAPSetup;
             }
             catch
@@ -2628,6 +2696,8 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
         public int SetupID;
         [ProtoMember(2)]
         public string SetupName;
+        [ProtoMember(3)]
+        public string SetupProjection;
     }
 
 

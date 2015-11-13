@@ -15,6 +15,7 @@ using DotSpatial.Controls;
 using DotSpatial.Data;
 using DotSpatial.Symbology;
 using DotSpatial.Extensions;  //MCB- needed?
+using DotSpatial.Projections;
 //using DotSpatial.Plugins; //MCB - needed?
 //using DotSpatial.Plugins.TableEditor;  // MCB-?
 //using DotSpatial.Plugins.AttributeDataExplorer;  //MCB- needed?
@@ -2251,7 +2252,15 @@ namespace BenMAP
             {
                 tabCtlMain.SelectedIndex = 0;
                 //mainMap.Layers.Clear();
-                tsbChangeProjection.Text = "change projection to Albers";
+
+                //set change projection text
+                string changeProjText = "change projection to setup projection";
+                if (!String.IsNullOrEmpty(CommonClass.MainSetup.SetupProjection))
+                {
+                    changeProjText = changeProjText + " (" + CommonClass.MainSetup.SetupProjection + ")";
+                }
+                tsbChangeProjection.Text = changeProjText;
+
                 BenMAPLine b = currentNode.Tag as BenMAPLine;
                 foreach (BaseControlGroup bc in CommonClass.LstBaseControlGroup)
                 {
@@ -2348,7 +2357,15 @@ namespace BenMAP
                 return;
             }
             WaitShow("Drawing layer...");
-            tsbChangeProjection.Text = "change projection to Albers";
+
+            //set change projection text
+            string changeProjText = "change projection to setup projection";
+            if (!String.IsNullOrEmpty(CommonClass.MainSetup.SetupProjection))
+            {
+                changeProjText = changeProjText + " (" + CommonClass.MainSetup.SetupProjection + ")";
+            }
+            tsbChangeProjection.Text = changeProjText;
+
             if (bcgDelta.DeltaQ == null)
             {
                 bcgDelta.DeltaQ = new BenMAPLine();
@@ -3299,11 +3316,11 @@ namespace BenMAP
                     {
                     }
                 }
-                bool isWGS83 = true;
-                if (tsbChangeProjection.Text == "change projection to GCS/NAD 83")
+                bool isWGS84 = true;
+                if (tsbChangeProjection.Text == "change projection to WGS1984")
                 {
                     tsbChangeProjection_Click(null, null);
-                    isWGS83 = false;
+                    isWGS84 = false;
                 }
                 if (CommonClass.RBenMAPGrid == null)
                 {
@@ -3341,7 +3358,7 @@ namespace BenMAP
                 PolygonSymbolizer TransparentRegion = new PolygonSymbolizer(cRegion);
 
                 TransparentRegion.OutlineSymbolizer = new LineSymbolizer(Color.DarkBlue, 1); playerRegion.Symbolizer = TransparentRegion;
-                if (isWGS83 == false)
+                if (isWGS84 == false)
                 {
                     tsbChangeProjection_Click(null, null);
                 }
@@ -3368,12 +3385,12 @@ namespace BenMAP
 
                     }
                 }
-                //Change the projection to GCS/NAD83 if needed
-                bool isWGS83 = true;
-                if (tsbChangeProjection.Text == "change projection to GCS/NAD 83")
+                //Change the projection to WGS1984 if needed
+                bool isWGS84 = true;
+                if (tsbChangeProjection.Text == "change projection to WGS1984")
                 {
                     tsbChangeProjection_Click(null, null);
-                    isWGS83 = false;
+                    isWGS84 = false;
                 }
                 //If no region selected then take first region from region dropdown ?
                 if (CommonClass.RBenMAPGrid == null)
@@ -3531,7 +3548,7 @@ namespace BenMAP
 
                 //Change the projection back to it's original projection
                 //MCB- NEED better way to handle each countries default projections.  Store it in the grid definition or setup maybe?  XXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-                if (isWGS83 == false)
+                if (isWGS84 == false)
                 {
                     tsbChangeProjection_Click(null, null);
                 }
@@ -6382,70 +6399,39 @@ namespace BenMAP
             try
             {
                 if (mainMap.GetAllLayers().Count == 0) return;
-                if (CommonClass.MainSetup.SetupName.ToLower() == "china")
+
+                //exit if we have no setup projection
+                if (String.IsNullOrEmpty(CommonClass.MainSetup.SetupProjection))
                 {
-                    if (mainMap.Projection != DotSpatial.Projections.KnownCoordinateSystems.Projected.Asia.AsiaLambertConformalConic)
-                    {
-                        mainMap.Projection = DotSpatial.Projections.KnownCoordinateSystems.Projected.Asia.AsiaLambertConformalConic;
-                        foreach (FeatureLayer layer in mainMap.GetAllLayers())
-                        {
-                            layer.Projection = DotSpatial.Projections.KnownCoordinateSystems.Geographic.World.WGS1984;
-                            layer.Reproject(mainMap.Projection);
-                        }
-                        tsbChangeProjection.Text = "change projection to GCS/NAD 83";
-                    }
-                    else
-                    {
-                        mainMap.Projection = DotSpatial.Projections.KnownCoordinateSystems.Geographic.World.WGS1984;
-                        foreach (FeatureLayer layer in mainMap.GetAllLayers())
-                        {
-                            layer.Projection = DotSpatial.Projections.KnownCoordinateSystems.Projected.Asia.AsiaLambertConformalConic;
-                            layer.Reproject(mainMap.Projection);
-                        }
-                        tsbChangeProjection.Text = "change projection to Albers";
-                    }
-
-
-                    //foreach (IMapGroup grp in mainMap.GetAllGroups())
-                    //{
-                    //    grp.Projection.CopyProperties(mainMap.Projection);
-                    //}
-
-                    mainMap.Projection.CopyProperties(mainMap.Projection);
-
-                    //mainMap.ViewExtents = mainMap.GetAllLayers()[0].Extent;
-                    _SavedExtent = mainMap.GetAllLayers()[0].Extent;
-                    mainMap.ViewExtents = _SavedExtent;
                     return;
                 }
 
-
-                if (mainMap.Projection != DotSpatial.Projections.KnownCoordinateSystems.Projected.NorthAmerica.USAContiguousLambertConformalConic)
+                ProjectionInfo setupProjection = CommonClass.getProjectionInfoFromName(CommonClass.MainSetup.SetupProjection);
+                if (setupProjection == null)
                 {
-                    mainMap.Projection = DotSpatial.Projections.KnownCoordinateSystems.Projected.NorthAmerica.USAContiguousLambertConformalConic;
+                    return;
+                }                
+
+                if (mainMap.Projection != setupProjection)
+                {
+                    mainMap.Projection = setupProjection;
                     foreach (FeatureLayer layer in mainMap.GetAllLayers())
                     {
                         layer.Projection = DotSpatial.Projections.KnownCoordinateSystems.Geographic.World.WGS1984;
                         layer.Reproject(mainMap.Projection);
                     }
-                    tsbChangeProjection.Text = "change projection to GCS/NAD 83";
+                    tsbChangeProjection.Text = "change projection to WGS1984";
                 }
                 else
                 {
                     mainMap.Projection = DotSpatial.Projections.KnownCoordinateSystems.Geographic.World.WGS1984;
                     foreach (FeatureLayer layer in mainMap.GetAllLayers())
                     {
-                        layer.Projection = DotSpatial.Projections.KnownCoordinateSystems.Projected.NorthAmerica.USAContiguousLambertConformalConic;
+                        layer.Projection = setupProjection;
                         layer.Reproject(mainMap.Projection);
                     }
-                    tsbChangeProjection.Text = "change projection to Albers";
+                    tsbChangeProjection.Text = "change projection to setup projection (" + CommonClass.MainSetup.SetupProjection + ")";
                 }
-
-
-                //foreach (IMapGroup grp in mainMap.GetAllGroups())
-                //{
-                //    grp.Projection.CopyProperties(mainMap.Projection);
-                //}
 
                 mainMap.Projection.CopyProperties(mainMap.Projection);
                 _SavedExtent = mainMap.GetAllLayers()[0].Extent;
@@ -7609,7 +7595,14 @@ namespace BenMAP
 
                 if (bGIS)
                 {
-                    tsbChangeProjection.Text = "Change projection to Albers";
+                    //set change projection text
+                    string changeProjText = "change projection to setup projection";
+                    if (!String.IsNullOrEmpty(CommonClass.MainSetup.SetupProjection))
+                    {
+                        changeProjText = changeProjText + " (" + CommonClass.MainSetup.SetupProjection + ")";
+                    }
+                    tsbChangeProjection.Text = changeProjText;
+
                     mainMap.ProjectionModeReproject = ActionMode.Never;
                     mainMap.ProjectionModeDefine = ActionMode.Never;
                     string shapeFileName = "";
@@ -9933,7 +9926,14 @@ namespace BenMAP
 
                     if (bGIS)
                     {
-                        tsbChangeProjection.Text = "Change projection to Albers";
+                        //set change projection text
+                        string changeProjText = "change projection to setup projection";
+                        if (!String.IsNullOrEmpty(CommonClass.MainSetup.SetupProjection))
+                        {
+                            changeProjText = changeProjText + " (" + CommonClass.MainSetup.SetupProjection + ")";
+                        }
+                        tsbChangeProjection.Text = changeProjText;
+
                         mainMap.ProjectionModeReproject = ActionMode.Never;
                         mainMap.ProjectionModeDefine = ActionMode.Never;
                         string shapeFileName = "";
@@ -11531,9 +11531,16 @@ namespace BenMAP
                             string LayerNameText = author;
                             //Remove the old version of the layer if exists already
                             RemoveOldPolygonLayer(LayerNameText, HIFResultsMapGroup.Layers, false);
-                            
-                           
-                            tsbChangeProjection.Text = "change projection to Albers";
+
+
+                            //set change projection text
+                            string changeProjText = "change projection to setup projection";
+                            if (!String.IsNullOrEmpty(CommonClass.MainSetup.SetupProjection))
+                            {
+                                changeProjText = changeProjText + " (" + CommonClass.MainSetup.SetupProjection + ")";
+                            }
+                            tsbChangeProjection.Text = changeProjText;
+
                             mainMap.ProjectionModeReproject = ActionMode.Never;
                             mainMap.ProjectionModeDefine = ActionMode.Never;
                             string shapeFileName = "";
@@ -13325,7 +13332,14 @@ namespace BenMAP
                         }
                         if (bGIS)
                         {
-                            tsbChangeProjection.Text = "change projection to Albers";
+                            //set change projection text
+                            string changeProjText = "change projection to setup projection";
+                            if (!String.IsNullOrEmpty(CommonClass.MainSetup.SetupProjection))
+                            {
+                                changeProjText = changeProjText + " (" + CommonClass.MainSetup.SetupProjection + ")";
+                            }
+                            tsbChangeProjection.Text = changeProjText;
+
                             mainMap.ProjectionModeReproject = ActionMode.Never;
                             mainMap.ProjectionModeDefine = ActionMode.Never;
                             string shapeFileName = "";

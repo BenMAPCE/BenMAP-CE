@@ -240,7 +240,7 @@ namespace BenMAP
             this.tsbChangeProjection.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbChangeProjection.Name = "tsbChangeProjection";
             this.tsbChangeProjection.Size = new System.Drawing.Size(23, 22);
-            this.tsbChangeProjection.Text = "ChangeProjection";
+            this.tsbChangeProjection.Text = "change projection to setup projection";
             this.tsbChangeProjection.Click += new System.EventHandler(this.tsbChangeProjection_Click);
             // 
             // tsbChangeCone
