@@ -963,6 +963,7 @@ namespace BenMAP
                         //this.Enabled = false;
 
                     this.Enabled = true;
+                    this.DialogResult = DialogResult.OK;
                     this.Close();
                     //}
                 }
