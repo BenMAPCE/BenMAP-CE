@@ -13,3 +13,8 @@ BenMAP/DataConversion/DataConversion/bin/
 BenMAP/FireBirdHelper/obj/
 packages/
 BenMAP/Resources/BuildDate.txt
+BenMAP/FireBirdHelper/fbembed.dll
+BenMAP/FireBirdHelper/icudt30.dll
+BenMAP/FireBirdHelper/icuin30.dll
+BenMAP/FireBirdHelper/icuuc30.dll
+BenMAP/FireBirdHelper/intl/fbintl.dll
