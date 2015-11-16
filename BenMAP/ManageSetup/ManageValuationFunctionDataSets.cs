@@ -16,7 +16,11 @@ namespace BenMAP
         public ManageValuationFunctionDataSets()
         {
             InitializeComponent();
+            // set current setup id for use in later queries
+            _dsSetupID = CommonClass.ManageSetup.SetupID;
+
         }
+        private bool bIsLocked = false;
         private MetadataClassObj _metadataObj = null;
         private int _dsMetadataID;
         private int _dsSetupID;
@@ -149,6 +153,9 @@ namespace BenMAP
                     cboEndpointGroup.SelectedIndex = 0;
                     cboEndpoint.SelectedIndex = 0;
                     btnViewMetadata.Enabled = false;
+                    // 2014 12 03 - lock control for default data sets
+                    bIsLocked = isLock();
+                    setEditControl();
                 }
                 catch (Exception ex)
                 {
@@ -201,7 +208,7 @@ namespace BenMAP
             string str = lstAvailableDataSets.GetItemText(lstAvailableDataSets.SelectedItem);
             try
             {
-                ValuationFunctionDataSetDefinition frm = new ValuationFunctionDataSetDefinition(str, _dataSetID, true);
+                ValuationFunctionDataSetDefinition frm = new ValuationFunctionDataSetDefinition(str, _dataSetID, bIsLocked);
                 DialogResult rth = frm.ShowDialog();
                 if (rth != DialogResult.OK) { return; }
                 commandText = string.Format("select * from VALUATIONFUNCTIONDATASETS where SetupID={0}", CommonClass.ManageSetup.SetupID);
@@ -457,8 +464,12 @@ namespace BenMAP
             {//_dataSetID = Convert.ToInt16(drv["VALUATIONFUNCTIONDATASETID"]);
 
                 DataRowView drv = lstAvailableDataSets.SelectedItem as DataRowView;
-                _metadataObj = SQLStatementsCommonClass.getMetadata(_dataSetID, _dsSetupID, _dsDatasetTypeId, _dsMetadataID);
-                _metadataObj.DatasetId = _dataSetID;//Convert.ToInt32(drv["VALUATIONFUNCTIONDATASETID"]);
+                // 2015 09 10 BENMAP-338 - _dsDatasetTypeID is not being set correctly (is 0 when called) - hard coded to 7 for valuation function
+                //_metadataObj = SQLStatementsCommonClass.getMetadata(_dataSetID, _dsSetupID, _dsDatasetTypeId, _dsMetadataID);
+                // 2015 09 23 - BENMAP 351 - quick fix for metadata being saved by datasetid, not metadataid
+                _metadataObj = SQLStatementsCommonClass.getMetadata(_dataSetID, _dsSetupID, 7, _dsMetadataID);
+                //_metadataObj = SQLStatementsCommonClass.getMetadata(_dataSetID, _dsSetupID, 7);
+                //_metadataObj.DatasetId = _dataSetID;//Convert.ToInt32(drv["VALUATIONFUNCTIONDATASETID"]);
                 _metadataObj.SetupName = CommonClass.ManageSetup.SetupName;//drv["VALUATIONFUNCTIONDATASETNAME"].ToString();//_dataName
                 btnViewMetadata.Enabled = false;
                 ViewEditMetadata viewEMdata = new ViewEditMetadata(_metadataObj);
@@ -489,17 +500,54 @@ namespace BenMAP
                         _dsMetadataID = Convert.ToInt32(drv["metadataid"]);
                         _dsSetupID = CommonClass.ManageSetup.SetupID;
                         //_dataSetID = Convert.ToInt32(drv["VALUATIONFUNCTIONDATASETID"]);
-                        _dsDatasetTypeId = SQLStatementsCommonClass.getDatasetID("Valuationfunction");
+                        // 2015 09 14 BENMAP 338 - hard code datasettype id to avoid problem is dataset type name is changed
+                        _dsDatasetTypeId = 7;
+                        //_dsDatasetTypeId = SQLStatementsCommonClass.getDatasetID("Valuationfunction");
                     }
                 }
             }
             catch (Exception ex)
             {
-                //TODO:  FIX THIS.
-                //do nothing for now until I can get the metadta to run correctly
-                //throw new Exception(ex.Message);
+                // 2015 09 14 - BENMAP 338 - added log to previously empty catch statement/
+                Logger.LogError(ex);
             }
         }
+
+        // 2014 12 03 added for copy (clone)
+        private void setEditControl()
+        {
+            if (bIsLocked)
+            {
+                btnEdit.Text = "Copy";
+            }
+            else
+            {
+                btnEdit.Text = "Edit";
+            }
+        }
+        private bool isLock()
+        {
+            bool isLocked = false;
+            string commandText = string.Empty;
+            object obtRtv = null;
+            ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+            try
+            {
+                commandText = string.Format("SELECT LOCKED FROM ValuationFunctionDATASETS WHERE ValuationFunctionDATASETID = {0} AND SETUPID = {1}", _dataSetID, _dsSetupID);
+                obtRtv = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+                if (obtRtv.ToString().Equals("T"))
+                {
+                    isLocked = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.Message);
+            }
+
+            return isLocked;
+        }
+
 
     }
 }

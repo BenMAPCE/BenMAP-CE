@@ -19,6 +19,7 @@ namespace BenMAP
         private int _dsDataSetId;//Dataset Id is stored in the olvMonitorDatasets - hidden column olvColumn5
         private int _dsDatasetTypeId;//Dataset Type Id is stored in the olvMonitorDataset - hidden column olvColumn6
         private MetadataClassObj _metadataObj = null;
+        const int DATASETTYPEID = 5; // HARDCODED for the data set id of an monitor dataset - must match the value in the DatasetTypes Firebird database
 
 
         private void ManageMonitorDataSets_Load(object sender, EventArgs e)
@@ -53,11 +54,13 @@ namespace BenMAP
         {
             if (bIsLocked)
             {
-                btnEdit.Text = "Copy";
+                btnEdit.Text = "Copy1";
+                btnEdit.Visible = false;
             }
             else
             {
                 btnEdit.Text = "Edit";
+                btnEdit.Visible = true;
             }
         }
         private bool isLock()
@@ -257,7 +260,8 @@ namespace BenMAP
                         }
                         //_dsSetupID = CommonClass.ManageSetup.SetupID;//Convert.ToInt32(drv["setupid"]);
                         _dsDataSetId = Convert.ToInt32(_lstDataSetID);//Convert.ToInt32(drv["datasetid"]);//Monitor Dataset Id
-                        _dsDatasetTypeId = SQLStatementsCommonClass.getDatasetID("Monitor");//Convert.ToInt32(drv["datasettypeid"]);
+                        // 2015 09 11 - BENMAP 340 - switched to constant for Monitor dataset to keep from breakage if we change the name of the dataset (e.g,. case)
+                        _dsDatasetTypeId = DATASETTYPEID; ///SQLStatementsCommonClass.getDatasetID("Monitor");//Convert.ToInt32(drv["datasettypeid"]);
                         _metadataObj = null;//clearing out the old metadata object.
                     }
                 }
@@ -266,6 +270,29 @@ namespace BenMAP
             {
                 Logger.LogError(ex);
             }
+        }
+
+        private void btnCopy_Click(object sender, EventArgs e)
+        {
+            if (lstAvailableDataSets.SelectedItem == null) return;
+            string strSetName = lstAvailableDataSets.GetItemText(lstAvailableDataSets.SelectedItem);
+            Tools.InputBox myBox = new Tools.InputBox("Copy Monitor Dataset " + strSetName, "Enter New Monitor Dataset Name", strSetName + "_copy");
+            DialogResult inputResult = myBox.ShowDialog();
+            if (inputResult == DialogResult.OK)
+            {
+                // copy routine goes here
+                CopyMonitors cp = new CopyMonitors();
+
+                cp.Copy(int.Parse(_lstDataSetID.ToString()), CommonClass.ManageSetup.SetupID, myBox.InputText);
+                //MessageBox.Show("Pollutant " + pollutantName + " was copied as " + myBox.InputText);
+            }
+            else if (inputResult == DialogResult.Cancel)
+            {
+                MessageBox.Show("Copy cancelled by user");
+            }
+            // refresh form
+            addLstBox();
+            addGridView();
         }
     }
 }

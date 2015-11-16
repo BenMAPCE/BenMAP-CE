@@ -172,7 +172,7 @@ namespace BenMAP
 
                 string sPicName = "";
                 CommonClass.ActiveSetup = "USA";
-                string commandText = "select SetupID,SetupName from Setups order by SetupID";
+                string commandText = "select SetupID,SetupName,SetupProjection from Setups order by SetupID";
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 System.Data.DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
 
@@ -204,6 +204,11 @@ namespace BenMAP
                     SetupID = Convert.ToInt32(dr["SetupID"]),
                     SetupName = dr["SetupName"].ToString()
                 };
+                if (dr["SetupProjection"] != DBNull.Value)
+                {
+                    benMAPSetup.SetupProjection = dr["SetupProjection"].ToString();
+                }
+
                 mnuActiveSetup.DropDownItems.Clear();
 
                 foreach (DataRow drSetup in ds.Tables[0].Rows)
@@ -213,6 +218,10 @@ namespace BenMAP
                         SetupID = Convert.ToInt32(drSetup["SetupID"]),
                         SetupName = drSetup["SetupName"].ToString()
                     };
+                    if (drSetup["SetupProjection"] != DBNull.Value)
+                    {
+                        benMAPSetupIn.SetupProjection = drSetup["SetupProjection"].ToString();
+                    }
                     ToolStripMenuItem toolStripMenuItem = new ToolStripMenuItem();
                     toolStripMenuItem.Text = drSetup["SetupName"].ToString();
                     toolStripMenuItem.Tag = benMAPSetupIn;
@@ -328,10 +337,10 @@ namespace BenMAP
             }
             CommonClass.BenMAPForm = _currentForm as BenMAP;
             String errorcode = "0";
-            if (_currentForm==null)
+            if (_currentForm == null)
             {
                 errorcode = "1"; 
-                //MessageBox.Show("Currentform is null, exiting load.");
+                MessageBox.Show("Currentform is null, this happens when DB is not found or is locked by another process.  Exiting BenMAP.");
                 return;
             }
 
@@ -643,7 +652,7 @@ namespace BenMAP
             }
 
 
-            string commandText = "select SetupID,SetupName from Setups order by SetupID";
+            string commandText = "select SetupID,SetupName,SetupProjection from Setups order by SetupID";
             ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
             System.Data.DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
 
@@ -656,6 +665,11 @@ namespace BenMAP
                     SetupID = Convert.ToInt32(drSetup["SetupID"]),
                     SetupName = drSetup["SetupName"].ToString()
                 };
+                if (drSetup["SetupProjection"] != DBNull.Value)
+                {
+                    benMAPSetupIn.SetupProjection = drSetup["SetupProjection"].ToString();
+                }
+                
                 ToolStripMenuItem toolStripMenuItem = new ToolStripMenuItem();
                 toolStripMenuItem.Text = drSetup["SetupName"].ToString();
                 toolStripMenuItem.Tag = benMAPSetupIn;

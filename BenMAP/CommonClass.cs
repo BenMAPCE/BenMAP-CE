@@ -21,6 +21,9 @@ using System.Text;
 using System.Reflection;
 using System.Globalization;
 using System.Text.RegularExpressions;
+using benmap;
+using DotSpatial.Projections;
+using System.Diagnostics;
 
 
 namespace BenMAP
@@ -36,6 +39,15 @@ namespace BenMAP
 
     public class CommonClass
     {
+        // 2014 12 22 - added destructor to try and force connection to close on exit
+        ~CommonClass(){ // class destructor
+            // close connection if open
+            if ((_connection == null) || (_connection.State != ConnectionState.Open))
+            {
+                _connection.Close();
+            }
+            
+        }
         public static void DeleteShapeFileName(string FileName)
         {
             if (!File.Exists(FileName)) return;
@@ -239,7 +251,11 @@ namespace BenMAP
 
         public static FbConnection getNewConnection()
         {
-            ConnectionStringSettings settings = ConfigurationManager.ConnectionStrings["ConnectionString"];
+            // 2015 01 29 - removed code and return class connection to prevent spawning connections that were never closing.
+            return CommonClass.Connection;
+
+            
+     /*       ConnectionStringSettings settings = ConfigurationManager.ConnectionStrings["ConnectionString"];
             string str = settings.ConnectionString;
             //if (!str.Contains(":"))
             //    str = str.Substring(0, str.IndexOf("initial catalog=")) + "initial catalog=" + Application.StartupPath + @"\" + str.Substring(str.IndexOf("initial catalog=") + 16);
@@ -247,10 +263,28 @@ namespace BenMAP
                     
             FbConnection connection = new FirebirdSql.Data.FirebirdClient.FbConnection(str);
 
-            return connection;
+            return connection;*/
+             
         }
 
+        public static FbConnection getNewConnectionForTransactions()
+        {
+            // 2015 01 29 - removed code and return class connection to prevent spawning connections that were never closing.
+            // STOPPED HERE
+            // return CommonClass.Connection;
 
+
+            ConnectionStringSettings settings = ConfigurationManager.ConnectionStrings["ConnectionString"];
+            string str = settings.ConnectionString;
+            //if (!str.Contains(":"))
+            //    str = str.Substring(0, str.IndexOf("initial catalog=")) + "initial catalog=" + Application.StartupPath + @"\" + str.Substring(str.IndexOf("initial catalog=") + 16);
+            str = str.Replace("##USERDATA##", Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData));
+
+            FbConnection connection = new FirebirdSql.Data.FirebirdClient.FbConnection(str);
+
+            return connection;
+
+        }
 
 
 
@@ -502,7 +536,9 @@ namespace BenMAP
                 if (lstGridRelationshipAll == null || isAddPercentage == true)
                 {
                     isAddPercentage = false;
-                    List<GridRelationship> lstGridRelationship = new List<GridRelationship>(); lstGridRelationshipAll = new List<GridRelationship>(); string commandText = "select   PercentageID,SourceGridDefinitionID,TargetGridDefinitionID  from GridDefinitionPercentages";
+                    List<GridRelationship> lstGridRelationship = new List<GridRelationship>(); 
+                    lstGridRelationshipAll = new List<GridRelationship>(); 
+                    string commandText = "select   PercentageID,SourceGridDefinitionID,TargetGridDefinitionID  from GridDefinitionPercentages";
                     ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                     System.Data.DataSet dsGrid = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                     foreach (DataRow dr in dsGrid.Tables[0].Rows)
@@ -690,8 +726,27 @@ namespace BenMAP
                     if (!other.AttributesPopulated) other.FillAttributes();
                     int i = 0;
                     Dictionary<string, Dictionary<string, double>> dicRelation = new Dictionary<string, Dictionary<string, double>>();
-                    Polygon pSelfExtent = null;
-                    Polygon pOtherExtent = null;
+                    //Polygon pSelfExtent = null;
+                   // Polygon pOtherExtent = null;
+
+
+                    //ensure consistent GIS projections
+                    //check for setup projection
+                    ProjectionInfo projInfo = null;
+                    if (!String.IsNullOrEmpty(CommonClass.MainSetup.SetupProjection))
+                    {
+                        projInfo = CommonClass.getProjectionInfoFromName(CommonClass.MainSetup.SetupProjection);
+                    }
+                    if (projInfo == null) //if no setup projection, use default of WGS1984
+                    {
+                        projInfo = KnownCoordinateSystems.Geographic.World.WGS1984;
+                    }
+
+                    self.Reproject(projInfo);
+
+                    other.Reproject(projInfo);
+
+
                     double dSumArea = 0.0;
                     foreach (IFeature selfFeature in self.Features)
                     {
@@ -888,6 +943,13 @@ namespace BenMAP
             }
             return result;
         }
+
+        public static String GetTimestamp(DateTime value)
+        {
+            return value.ToString("HH:mm:ss");
+        }
+
+
         public static List<GridRelationshipAttributePercentage> IntersectionPercentage(IFeatureSet self, IFeatureSet other, FieldJoinType joinType)
         {
             List<GridRelationshipAttributePercentage> result = new List<GridRelationshipAttributePercentage>();
@@ -901,6 +963,22 @@ namespace BenMAP
                     Dictionary<string, Dictionary<string, double>> dicRelation = new Dictionary<string, Dictionary<string, double>>();
                     Polygon pSelfExtent = null;
                     Polygon pOtherExtent = null;
+
+                    //ensure consistent GIS projections
+                    //check for setup projection
+                    ProjectionInfo projInfo = null;
+                    if (!String.IsNullOrEmpty(CommonClass.MainSetup.SetupProjection))
+                    {
+                        projInfo = CommonClass.getProjectionInfoFromName(CommonClass.MainSetup.SetupProjection);
+                    }
+                    if (projInfo == null) //if no setup projection, use default of WGS1984
+                    {
+                        projInfo = KnownCoordinateSystems.Geographic.World.WGS1984;
+                    }
+
+                    self.Reproject(projInfo);
+       
+                    other.Reproject(projInfo);
 
                     foreach (IFeature selfFeature in self.Features)
                     {
@@ -1095,7 +1173,7 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
                                     percentage = 1,
                                 };
                                 if (k.Value.First().Value > 0.000000000001)
-                                result.Add(gr);
+                                    result.Add(gr);
 
                             }
                             else
@@ -1131,6 +1209,667 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
             return result;
         }
 
+
+        public static bool Debug=false;
+        public static Dictionary<String, Dictionary<int, double>> otherXrefCache = new Dictionary<string, Dictionary<int, double>>();
+        public static List<GridRelationshipAttributePercentage> IntersectionPercentagePopulation(IFeatureSet self, IFeatureSet other, FieldJoinType joinType, String popRasterLoc)
+        {
+            
+            //CommonClass.Debug = true;
+            IRaster myRS=null;
+            ArrayList lines = new ArrayList();
+            string gdalWarpEXELoc = (new FileInfo(System.Reflection.Assembly.GetEntryAssembly().Location)).Directory.ToString();
+            gdalWarpEXELoc += @"\GDAL-EXE\gdalwarp.exe";
+            String tempRasterLocDir = CommonClass.DataFilePath + @"\Tmp";
+            String tempRasterFullPath = null;
+            String tempShapeFullPath = null;
+            ProcessStartInfo warpStep = new System.Diagnostics.ProcessStartInfo();
+
+            double minx = 0.0;
+            double maxy = 0.0;
+            double maxx = 0.0;
+            double miny = 0.0;
+            Boolean doSingleColumnClip=false;
+
+            List<GridRelationshipAttributePercentage> result = new List<GridRelationshipAttributePercentage>();
+            try
+            {
+                if (joinType == FieldJoinType.All)
+                {
+                    if (!self.AttributesPopulated) self.FillAttributes();
+                    if (!other.AttributesPopulated) other.FillAttributes();
+                    int i = 0;
+                    Dictionary<string, Dictionary<string, double>> dicRelation = new Dictionary<string, Dictionary<string, double>>();
+                    IFeatureSet ifs = new FeatureSet();
+                    //self.SaveAs(@"P:\temp\self.shp",true);
+                    //other.SaveAs(@"P:\temp\other.shp", true);
+                    //Console.WriteLine("Starting loop");
+
+
+                    //ensure consistent GIS projections
+                    //check for setup projection
+                    ProjectionInfo projInfo = null;
+                    if (!String.IsNullOrEmpty(CommonClass.MainSetup.SetupProjection))
+                    {
+                        projInfo = CommonClass.getProjectionInfoFromName(CommonClass.MainSetup.SetupProjection);
+                    }
+                    if (projInfo == null) //if no setup projection, use default of WGS1984
+                    {
+                        projInfo = KnownCoordinateSystems.Geographic.World.WGS1984;
+                    }
+
+                    self.Reproject(projInfo);
+                    //self.SaveAs(@"P:\temp\selfReProject.shp", true);
+                    ifs.Projection = self.Projection;                        
+                    //Console.WriteLine("Self proj4: " + self.Projection.ToProj4String());
+                    //other.Reproject(myRS.Projection);
+                    other.Reproject(projInfo);
+                    
+                    
+                    Dictionary<int,double> otherXRef=new Dictionary<int,double>();
+
+                    //CommonClass.Debug = true;
+                    if (other.Filename!=null && otherXrefCache.ContainsKey(other.Filename))
+                    {
+                        Console.WriteLine("Using cached value for "+other.Filename);
+                        otherXRef = otherXrefCache[other.Filename];
+                        lines.Add("File," + other.Filename+",cached");
+                        lines.Add("PopVal,fid");
+
+                        foreach(int iDx in otherXRef.Keys){
+                            
+                            lines.Add(iDx + "," + otherXRef[iDx]);
+                        }
+                    }
+                    else
+                    {
+                         //other.SaveAs(@"P:\temp\otherReProject.shp", true);
+
+                        //Console.WriteLine("Other proj4: " + other.Projection.ToProj4String());
+                        //Console.WriteLine("raster proj4: " + myRS.Projection.ToProj4String());
+                        Console.WriteLine("Starting other cache at " + GetTimestamp(DateTime.Now));
+                        
+                        lines.Add("File," + other.Filename);
+                        lines.Add("PopVal,fid");
+
+                        //int polyToDebug = 1790;
+                        foreach (IFeature otherFeature in other.Features)
+                        {
+                            //if (otherFeature.Fid == polyToDebug)
+                            //{
+                            //    CommonClass.Debug = true;
+                            //}
+                            //else
+                            //{
+                            //    continue;
+                            //}
+                            //make a much smaller one
+                            minx = otherFeature.Envelope.Minimum.X - 100.0;
+                            maxy = otherFeature.Envelope.Maximum.Y + 100.0;
+                            maxx = otherFeature.Envelope.Maximum.X + 100.0;
+                            miny = otherFeature.Envelope.Minimum.Y - 100.0;
+
+                            warpStep = new System.Diagnostics.ProcessStartInfo();
+
+                            warpStep.FileName = gdalWarpEXELoc;
+                            tempRasterFullPath = Path.Combine(tempRasterLocDir, "clippedRaster-" + otherFeature.Fid + "-" + Guid.NewGuid().ToString() + ".tif");
+                            warpStep.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
+                            warpStep.UseShellExecute = false;
+                            warpStep.CreateNoWindow = true;
+                            //warpStep.Arguments = "-ot Float32 ";
+                            warpStep.Arguments += " -te " + minx + " " + miny + " " + maxx + " " + maxy + " ";
+                            //warpStep.Arguments += "-t_srs \"+proj=merc +lon_0=0 +k=1 +x_0=0 +y_0=0 +a=6378137 +b=6378137 +units=m +no_defs \" ";
+                            warpStep.Arguments += "\"" + popRasterLoc + "\" \"" + tempRasterFullPath + "\"";
+                            try
+                            {
+                                // Start the process with the info we specified.
+                                // Call WaitForExit and then the using statement will close.
+                                using (Process exeProcess = Process.Start(warpStep))
+                                {
+                                    exeProcess.WaitForExit();
+                                }
+                            }
+                            catch (Exception e)
+                            {
+                                Console.WriteLine("Couldn't output: " + e.ToString());
+                            }
+                            FileInfo fiTemp = new FileInfo(tempRasterFullPath);
+                            FileInfo fiOrig = new FileInfo(popRasterLoc);
+                            if (fiTemp.Length < fiOrig.Length*2)
+                            {
+                                //clip made a smaller one use that
+                                doSingleColumnClip = false;
+                                myRS = Raster.Open(tempRasterFullPath);
+                            }
+                            else
+                            {
+                                doSingleColumnClip = true;
+                                //no need to reopen over and over again if we keep using same source raster
+                                if (myRS == null)
+                                {
+                                    myRS = Raster.Open(popRasterLoc);
+                                }
+
+                            }
+                            //myRS = Raster.Open(tempRasterFullPath);
+                            //myRS = Raster.Open(@"P:\Projects\BenMAP\Code\Git-BB\BenMAP\bin\Release\Data\PopulationRaster\PopUS_90mX10_int16uWz4.tif");
+                            double popValForOtherShape = ClipRasterRTI.ClipRasterWithPolygon(otherFeature, myRS, null, doSingleColumnClip, null);
+                            //Console.WriteLine("Cacheing "+popValForOtherShape+" for "+otherFeature.Fid+ " out of "+other.Features.Count+ " at " +GetTimestamp(DateTime.Now));
+                            lines.Add(popValForOtherShape + "," + otherFeature.Fid);
+                            otherXRef.Add(otherFeature.Fid, popValForOtherShape);
+                            try
+                            {
+                                myRS.Close();
+                            }catch(Exception e){
+                                Console.WriteLine("Error closing file: "+myRS.Filename+", reason: "+e.ToString());
+                            }
+                            myRS=null;
+                            Boolean deleted = false;
+                            int counter = 5;
+                            while (!deleted && counter > 0)
+                            {
+                                try
+                                {
+                                    if (File.Exists(tempRasterFullPath))
+                                    {
+                                        File.Delete(tempRasterFullPath);
+                                    }
+
+                                    if (File.Exists(tempRasterFullPath + ".aux.xml"))
+                                    {
+                                        File.Delete(tempRasterFullPath + ".aux.xml");
+                                    }
+                                    deleted = true;
+                                }
+                                catch (Exception e)
+                                {
+                                    Console.WriteLine("Could not delete temp raster, waiting 1 second and trying again, " + counter + " attemps left.");
+                                    System.Threading.Thread.Sleep(1000);
+                                    counter--;
+                                }
+                            }
+
+                            if (counter == 0)
+                            {
+                                Console.WriteLine("Could not delete temp raster " + tempRasterFullPath);
+                            }
+                            //if (otherFeature.Fid % 100 == 0)
+                            // {
+                            //     Console.WriteLine(otherFeature.Fid + " done of " +other.Features.Count);
+                            // }
+                            //CommonClass.Debug = false;
+                        }
+                    }
+
+                    //System.IO.File.WriteAllLines(@"p:\temp\otherPopCounts."+ Guid.NewGuid().ToString()+".csv", (String[])lines.ToArray(typeof(string)));
+
+                    lines.Clear();
+                    lines.Add("File," + self.Filename);
+                    lines.Add("Population,SelfFID,OtherFid");
+                    //CommonClass.Debug = true;
+                    foreach (IFeature selfFeature in self.Features)
+                    {
+
+
+
+                        //Console.WriteLine("CurFeature: " + selfFeature.Fid);
+                        ifs.Features.Clear();
+                        ifs.AddFeature(selfFeature);
+                        //Console.WriteLine("My new fid: " + selfFeature.Fid);
+                        //ifs.SaveAs(@"P:\temp\singleShape-"+selfFeature.Fid+".shp", true);
+                        
+                        //ifs.Reproject(myRS.Projection);
+                        if (CommonClass.Debug)
+                        {
+                            ifs.SaveAs(@"P:\temp\singleShapeReproj-" + selfFeature.Fid + ".shp", true);
+                        }
+
+                       
+                        List<int> potentialOthers = other.SelectIndices(selfFeature.Envelope.ToExtent());
+                        
+                        foreach (int iotherFeature in potentialOthers)
+                        {
+                           // if (iotherFeature == 33)
+                           // {
+                           // }
+                            IFeature intersectFeature = null;
+                            double popVal = 0.0;
+
+                            //if ((other.Features.Count < 5 || self.Features.Count < 5) 
+                            //            && other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum)) == 0 
+                            //            && other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Maximum.X, selfFeature.Envelope.Minimum.Y)) == 0 
+                            //            && other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Maximum)) == 0 
+                            //            && other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X, selfFeature.Envelope.Maximum.Y)) == 0)
+                            //{
+                            //    intersectFeature = selfFeature;
+                            //} else if ((other.Features.Count < 5 || self.Features.Count < 5) 
+                            //            && selfFeature.Distance(new Point(other.Features[iotherFeature].Envelope.Minimum)) == 0 
+                            //            && selfFeature.Distance(new Point(other.Features[iotherFeature].Envelope.Maximum.X, other.Features[iotherFeature].Envelope.Minimum.Y)) == 0 
+                            //            && selfFeature.Distance(new Point(other.Features[iotherFeature].Envelope.Maximum)) == 0 
+                            //            && selfFeature.Distance(new Point(other.Features[iotherFeature].Envelope.Minimum.X, other.Features[iotherFeature].Envelope.Maximum.Y)) == 0)
+                           // {
+                            //    intersectFeature = other.Features[iotherFeature];
+                           // } else
+                           // {
+                                try
+                                {
+                                    Boolean goodIntersection=false;
+                                    int count = 1;
+                                    int maxTries = 15;
+                                    Random rand = new Random();
+                                    double valToTry = 0.0; // .00001;
+                                    while(!goodIntersection && count<maxTries)
+                                        try{
+                                            intersectFeature = selfFeature.Buffer(valToTry).Intersection(other.Features[iotherFeature]);
+                                            goodIntersection = true;
+                                        }catch(Exception e){
+                                            Console.WriteLine("Could not do intersection on try "+count+" of "+maxTries+", reason: "+e.ToString());
+                                            count++;
+                                            if (count % 2 == 0)
+                                            {
+                                                valToTry = rand.NextDouble() * (double)count / 10.0;
+                                            }
+                                            else
+                                            {
+                                                valToTry = rand.NextDouble() / (double)count;
+                                            }                               
+
+                                    }
+                                    
+                                    if (CommonClass.Debug)
+                                    {
+                                        IFeatureSet ifsTemp = new FeatureSet();
+                                        ifsTemp.Projection = other.Projection;
+                                        //ifsTemp.AddFeature(selfFeature);
+                                        //ifsTemp.AddFeature(other.Features[iotherFeature]);
+                                        if (intersectFeature != null)
+                                        {
+                                            ifsTemp.AddFeature(intersectFeature);
+                                            if (CommonClass.Debug)
+                                            {
+                                                try{
+                                                    ifsTemp.SaveAs(@"p:\temp\interSectFeat-" + selfFeature.Fid + "-" + iotherFeature + ".shp", true);
+                                                }catch(Exception e){
+                                                    Console.WriteLine("could not save intersectFeat debug: "+e.ToString());
+                                                    try
+                                                    {
+                                                        ifsTemp.Features.Clear();
+                                                        ifsTemp.AddFeature(selfFeature);
+                                                        ifsTemp.AddFeature(other.Features[iotherFeature]);
+                                                        ifsTemp.AddFeature(intersectFeature);
+                                                        ifsTemp.SaveAs(@"p:\temp\interSectFeat-" + selfFeature.Fid + "-" + iotherFeature + "-T2.shp", true);
+                                                    }
+                                                    catch (Exception ex)
+                                                    {
+                                                        Console.WriteLine("could not save intersectFeat 2 debug: " + ex.ToString());
+                                                    }
+
+                                                }
+                                            }
+                                        }
+
+                                       
+                                    }
+                                    //fist population of selfFeature\ warpStep.FileName = gdalWarpEXELoc;
+                                    warpStep = new System.Diagnostics.ProcessStartInfo();
+                                    //make a much smaller one
+                                    if (intersectFeature == null || intersectFeature.Envelope == null)
+                                    {
+                                        //this case is when shape is in bounding box, but not actually overlapping.
+                                        continue;
+                                    }
+                                    //this object is needed to set up structure for calculating edges
+                                    IFeatureSet ifsHold = new FeatureSet();
+                                    ifsHold.Projection = other.Projection;
+                                    //this intersectFeature may have multiple geometries
+                                    if (intersectFeature.BasicGeometry.NumGeometries > 1)
+                                    {
+                                        for (int idx = 0; idx < intersectFeature.BasicGeometry.NumGeometries; idx++)
+                                        {
+
+                                            IBasicGeometry ibm = intersectFeature.GetBasicGeometryN(idx);
+                                            if (ibm.FeatureType == FeatureType.Polygon)
+                                            {
+                                                IFeature newFeat = new Feature(ibm);
+                                                ifsHold.AddFeature(newFeat);
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        ifsHold.AddFeature(intersectFeature);
+                                    }
+                                    if (ifsHold.Features.Count < 1)
+                                    {
+                                        //if all we got from intersection was ponts/lines, don't do any more processing.
+                                        continue;
+                                    }
+                                    tempShapeFullPath = Path.Combine(tempRasterLocDir, "clippedShape-" + selfFeature.Fid + "-" + iotherFeature + "-" + Guid.NewGuid().ToString() + ".shp");
+                                    try
+                                    {
+                                        ifsHold.SaveAs(tempShapeFullPath, true);
+                                        ifsHold.Close();
+                                        ifsHold = null;
+                                        intersectFeature = null;
+                                        ifsHold = FeatureSet.Open(tempShapeFullPath);
+                                        //intersectFeature = ifsHold.Features[0];
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        //can't save poly?
+                                        Console.WriteLine("Can't save poly? "+e.ToString());
+                                        continue;
+                                    }
+
+                                    minx = ifsHold.Extent.ToEnvelope().Minimum.X - 100.0;
+                                    maxy = ifsHold.Extent.ToEnvelope().Maximum.Y + 100.0;
+                                    maxx = ifsHold.Extent.ToEnvelope().Maximum.X + 100.0;
+                                    miny = ifsHold.Extent.ToEnvelope().Minimum.Y - 100.0;
+                                    tempRasterFullPath = Path.Combine(tempRasterLocDir, "clippedRaster-Intersection-"+selfFeature.Fid+"-"+iotherFeature+ "-"+Guid.NewGuid().ToString()+".tif");
+                                    warpStep.FileName = gdalWarpEXELoc;
+                                    warpStep.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
+                                    warpStep.UseShellExecute = false;
+                                    warpStep.CreateNoWindow = true;
+                                    //warpStep.Arguments = "-ot Float32 ";
+                                    warpStep.Arguments += " -te " + minx + " " + miny + " " + maxx + " " + maxy + " ";
+                                    //warpStep.Arguments += "-t_srs \"+proj=merc +lon_0=0 +k=1 +x_0=0 +y_0=0 +a=6378137 +b=6378137 +units=m +no_defs \" ";
+                                    warpStep.Arguments += "\"" + popRasterLoc + "\" \"" + tempRasterFullPath + "\"";
+                                    try
+                                    {
+                                        // Start the process with the info we specified.
+                                        // Call WaitForExit and then the using statement will close.
+                                        using (Process exeProcess = Process.Start(warpStep))
+                                        {
+                                            exeProcess.WaitForExit();
+                                        }
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        Console.WriteLine("Couldn't output: " + e.ToString());
+                                    }
+                                    myRS = Raster.Open(tempRasterFullPath);
+
+                                    for (int curFS = 0; curFS < ifsHold.Features.Count; curFS++)
+                                    {
+                                        popVal += ClipRasterRTI.ClipRasterWithPolygon(ifsHold.Features[curFS], myRS, null, false, null);
+                                    }
+                                    //Console.WriteLine("Got population: " + popVal);
+                                    if (popVal > 0)
+                                    {
+                                        Console.WriteLine("NonZero val on -" + selfFeature.Fid + "-" + iotherFeature);
+                                        lines.Add(popVal+","+ selfFeature.Fid+","+ iotherFeature);
+                                    }
+                                    try
+                                    {
+                                        myRS.Close();
+                                        ifsHold.Close();
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        Console.WriteLine("Could not close raster/shape: "+e.ToString());
+                                    }
+                                    Boolean deleted = false;
+                                    int counter = 5;
+                                    while (!deleted && counter>0)
+                                    {
+                                        try
+                                        {
+
+                                            string foldPath = Path.GetDirectoryName(tempShapeFullPath);
+                                            string contains = Path.GetFileNameWithoutExtension(tempShapeFullPath)+".*";
+                                            string[] files = Directory.GetFiles(foldPath,contains);
+                                            foreach(string file in files)
+                                            {
+                                            //    System.Diagnostics.Debug.WriteLine(file + "will be deleted");
+                                                if (file.ToUpper().Contains("TMP"))
+                                                {
+                                                    System.IO.File.Delete(file);
+                                                }
+                                            }
+
+                                            if (File.Exists(tempRasterFullPath) && tempRasterFullPath.ToUpper().Contains("TMP"))
+                                            {
+                                                File.Delete(tempRasterFullPath);
+                                            }
+
+                                            if (File.Exists(tempRasterFullPath + ".aux.xml") && tempRasterFullPath.ToUpper().Contains("TMP"))
+                                            {
+                                                File.Delete(tempRasterFullPath + ".aux.xml");
+                                            }
+                                            deleted = true;
+                                        }
+                                        catch (Exception e)
+                                        {
+                                            Console.WriteLine("Could not delete temp raster, waiting 1 second and trying again, " + counter + " attemps left.");
+                                            System.Threading.Thread.Sleep(1000);
+                                            counter--;
+                                        }
+                                    }
+
+                                    if (counter == 0)
+                                    {
+                                        Console.WriteLine("Could not delete temp raster " + tempRasterFullPath);
+                                    }
+                                    
+                                    //myRS.Close();
+                                }
+                                catch (Exception ex)
+                                {
+                                    Console.WriteLine("Caught an error getting counts: " + ex.ToString());
+                                    //try
+                                   // {
+                                   //     if (selfFeature.IsWithinDistance(other.Features[iotherFeature], 0.00001))
+                                   //     {
+                                   //         if (selfFeature.Area() > other.Features[iotherFeature].Area())
+                                   //         {
+                                   //             bool isContains = false;
+                                   //             isContains = polygonContainPolygon(selfFeature, other.Features[iotherFeature]);
+                                  //              if (isContains)
+                                  //              {
+                                  //                  intersectFeature = other.Features[iotherFeature];
+                                  //              }
+                                  //              else
+                                  //              {
+                                  //                  intersectFeature = null;
+                                  //              }
+                                  //          }
+                                  //          else if (selfFeature.Area() < other.Features[iotherFeature].Area())
+                                  //          {
+                                  //              intersectFeature = selfFeature;
+
+                                  //              bool isContains = false;
+                                  //              isContains = polygonContainPolygon(other.Features[iotherFeature], selfFeature);
+                                  //              if (isContains)
+                                  //              {
+                                  //                  intersectFeature = selfFeature;
+                                  //              }
+                                  //              else
+                                  //              {
+                                   //                 intersectFeature = null;
+                                  //              }
+                                   //         }
+                                    //    }
+                                   // }
+                                    //catch(Exception e)
+                                   // {
+                                  //      Console.WriteLine("Error finding matching features: " + e.ToString());
+                                    //}
+                                }
+
+                            //}
+                           // if (intersectFeature != null && intersectFeature.BasicGeometry != null)
+                           // {
+                                
+                               // try
+                               // {
+                                    /*
+                                    double dArea = 0;
+                                    try
+                                    {
+                                        dArea = intersectFeature.Area();
+                                    }
+                                    catch
+                                    {
+                                        if (selfFeature.IsWithinDistance(other.Features[iotherFeature], 0.00001))
+                                        {
+                                            if (selfFeature.Area() > other.Features[iotherFeature].Area())
+                                            {
+                                                bool isContains = false;
+                                                isContains = polygonContainPolygon(selfFeature, other.Features[iotherFeature]);
+                                                if (isContains)
+                                                {
+                                                    intersectFeature = other.Features[iotherFeature];
+                                                    dArea = intersectFeature.Area();
+                                                }
+                                                else
+                                                    dArea = 0;
+
+                                            }
+                                            else if (selfFeature.Area() < other.Features[iotherFeature].Area())
+                                            {
+                                                intersectFeature = selfFeature;
+                                                dArea = intersectFeature.Area();
+
+                                                bool isContains = false;
+                                                isContains = polygonContainPolygon(other.Features[iotherFeature], selfFeature);
+                                                if (isContains)
+                                                {
+                                                    intersectFeature = selfFeature;
+                                                    dArea = intersectFeature.Area();
+                                                }
+                                                else
+                                                    dArea = 0;
+                                            }
+                                            else
+                                                dArea = 0;
+
+                                        }
+                                        else
+                                            dArea = 0;
+                                    }*/
+                                    if (popVal > 0)
+                                    {
+                                        Console.WriteLine("Got a pop of " + popVal + " for " + other.Features[iotherFeature].DataRow["Col"] + "," + other.Features[iotherFeature].DataRow["Row"]);
+                                        if (dicRelation.ContainsKey(other.Features[iotherFeature].DataRow["Col"] + "," + other.Features[iotherFeature].DataRow["Row"]))
+                                        {
+                                            dicRelation[other.Features[iotherFeature].DataRow["Col"] + "," + other.Features[iotherFeature].DataRow["Row"]].Add
+                                                (selfFeature.DataRow["Col"] + "," + selfFeature.DataRow["Row"], popVal / otherXRef[other.Features[iotherFeature].Fid]);
+                                        }
+                                        else
+                                        {
+                                            dicRelation.Add(other.Features[iotherFeature].DataRow["Col"] + "," + other.Features[iotherFeature].DataRow["Row"],
+                                                new Dictionary<string, double>());
+                                            dicRelation[other.Features[iotherFeature].DataRow["Col"] + "," + other.Features[iotherFeature].DataRow["Row"]].Add
+                                               (selfFeature.DataRow["Col"] + "," + selfFeature.DataRow["Row"], popVal / otherXRef[other.Features[iotherFeature].Fid]);
+                                        }
+                                    }
+                               // }
+                               // catch
+                               // {
+                               //     try
+                                //    {
+                               //         if (selfFeature.IsWithinDistance(other.Features[iotherFeature], 0.00001))
+                               //         {
+                              //              if (selfFeature.Area() > other.Features[iotherFeature].Area())
+                              //                  intersectFeature = other.Features[iotherFeature];
+                              //              else
+                              //                  intersectFeature = selfFeature;
+                              //          }
+                               //         if (intersectFeature.Area() > 0)
+                               //         {
+                            //
+                              //              if (dicRelation.ContainsKey(other.Features[iotherFeature].DataRow["Col"] + "," + other.Features[iotherFeature].DataRow["Row"]))
+                              //              {
+                              //                  dicRelation[other.Features[iotherFeature].DataRow["Col"] + "," + other.Features[iotherFeature].DataRow["Row"]].Add
+                              //                      (selfFeature.DataRow["Col"] + "," + selfFeature.DataRow["Row"], intersectFeature.Area() / other.Features[iotherFeature].Area());
+                              //              }
+                              ////              else
+                               //             {
+                               //                 dicRelation.Add(other.Features[iotherFeature].DataRow["Col"] + "," + other.Features[iotherFeature].DataRow["Row"],
+                              //                      new Dictionary<string, double>());
+                               //                 dicRelation[other.Features[iotherFeature].DataRow["Col"] + "," + other.Features[iotherFeature].DataRow["Row"]].Add
+                               //                    (selfFeature.DataRow["Col"] + "," + selfFeature.DataRow["Row"], intersectFeature.Area() / other.Features[iotherFeature].Area());
+                               //             }
+                               //         }
+                               //     }
+                               //     catch
+                               //     {
+                               //     }
+                                ////}
+                            //}
+                        }
+
+                        i++;
+                        if (selfFeature.Fid % 100 == 0)
+                        {
+                            Console.WriteLine(selfFeature.Fid + " done of " + self.Features.Count);
+                        }
+                    }
+                    //System.IO.File.WriteAllLines(@"p:\temp\otherSelfIntersectPopCounts."+ Guid.NewGuid().ToString()+".csv", (String[])lines.ToArray(typeof(string)));
+                    foreach (KeyValuePair<string, Dictionary<string, double>> k in dicRelation)
+                    {
+                        if (k.Value.Count > 0)
+                        {
+                            string[] str = k.Key.Split(new char[] { ',' });
+                            if (k.Value.Count == 1)
+                            {
+
+                                string[] strin = k.Value.ToArray()[0].Key.Split(new char[] { ',' });
+
+                                GridRelationshipAttributePercentage gr = new GridRelationshipAttributePercentage()
+                                {
+
+                                    sourceCol = Convert.ToInt32(str[0]),
+                                    sourceRow = Convert.ToInt32(str[1]),
+                                    targetCol = Convert.ToInt32(strin[0]),
+                                    targetRow = Convert.ToInt32(strin[1]),
+                                    percentage = 1,
+                                };
+                                if (k.Value.First().Value > 0.000000000001)
+                                {
+                                    result.Add(gr);
+                                }
+
+                            }
+                            else
+                            {
+                                double d = 0.0;
+                                foreach (KeyValuePair<string, double> kin in k.Value)
+                                {
+                                    if (kin.Value > 0.000000000001)
+                                    {
+                                        d = d + kin.Value;
+                                    }
+                                }
+                                foreach (KeyValuePair<string, double> kin in k.Value)
+                                {
+                                    if (kin.Value < 0.000000000001) continue;
+                                    string[] strin = kin.Key.Split(new char[] { ',' });
+
+                                    GridRelationshipAttributePercentage gr = new GridRelationshipAttributePercentage()
+                                    {
+                                        sourceCol = Convert.ToInt32(str[0]),
+                                        sourceRow = Convert.ToInt32(str[1]),
+                                        targetCol = Convert.ToInt32(strin[0]),
+                                        targetRow = Convert.ToInt32(strin[1]),
+                                        percentage = kin.Value / d,
+                                    };
+                                    result.Add(gr);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Exception doing calcs: " + ex.ToString());
+            }
+            return result;
+        }
+
+        
+
         public static bool polygonContainPolygon(IFeature big, IFeature small)
         {
             try
@@ -1150,7 +1889,7 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
             }
         }
 
-        public static void getRelationshipFromBenMAPGridPercentage(int big, int small)
+        public static void getRelationshipFromBenMAPGridPercentage(int big, int small, String popRasterFileLoc)
         {
             try
             {
@@ -1174,7 +1913,8 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
                     string commandText = "select max(PercentageID) from GridDefinitionPercentages";
                     int iMax = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
 
-                    commandText = string.Format("insert into GridDefinitionPercentages values({0},{1},{2})", iMax, small, big);
+                    commandText = string.Format("insert into GridDefinitionPercentages(PERCENTAGEID,SOURCEGRIDDEFINITIONID, TARGETGRIDDEFINITIONID) "
+                        + "values({0},{1},{2})", iMax, small, big);
                     fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                     foreach (GridRelationshipAttributePercentage grp in lstGR)
                     {
@@ -1186,7 +1926,7 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
             }
             catch (Exception ex)
             {
-
+                Console.WriteLine("Error in getRelationshipFromBenMAPGridPercentage: "+ex.ToString());
             }
         }
         public static List<BenMAPPollutant> lstPollutantAll;
@@ -1434,9 +2174,22 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
             }
         }
 
+        public static ProjectionInfo getProjectionInfoFromName(string projName)
+        {
+            if (String.IsNullOrEmpty(projName))
+            {
+                return null;
+            }
+
+            projName = projName.Replace(" ", "");
+            string [] name = projName.Split('-');
+
+            return KnownCoordinateSystems.Projected.GetCategory(name[0]).GetProjection(name[1]);        
+        }
+
         public static BenMAPSetup getBenMAPSetupFromID(int setupID)
         {
-            string commandText = "select SetupID,SetupName from Setups where  SetupID=" + setupID;
+            string commandText = "select SetupID,SetupName,SetupProjection from Setups where  SetupID=" + setupID;
             ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
             System.Data.DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
             DataRow dr = ds.Tables[0].Rows[0];
@@ -1445,6 +2198,10 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
                 SetupID = Convert.ToInt32(dr["SetupID"]),
                 SetupName = dr["SetupName"].ToString()
             };
+            if (dr["SetupProjection"] != DBNull.Value)
+            {
+                benMAPSetup.SetupProjection = dr["SetupProjection"].ToString();
+            }
             return benMAPSetup;
         }
 
@@ -1452,7 +2209,7 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
         {
             try
             {
-                string commandText = "select SetupID,SetupName from Setups where  SetupName='" + SetupName + "'";
+                string commandText = "select SetupID,SetupName,SetupProjection from Setups where  SetupName='" + SetupName + "'";
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 System.Data.DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
                 DataRow dr = ds.Tables[0].Rows[0];
@@ -1461,6 +2218,10 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
                     SetupID = Convert.ToInt32(dr["SetupID"]),
                     SetupName = dr["SetupName"].ToString()
                 };
+                if (dr["SetupProjection"] != DBNull.Value)
+                {
+                    benMAPSetup.SetupProjection = dr["SetupProjection"].ToString();
+                }
                 return benMAPSetup;
             }
             catch
@@ -1935,6 +2696,8 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
         public int SetupID;
         [ProtoMember(2)]
         public string SetupName;
+        [ProtoMember(3)]
+        public string SetupProjection;
     }
 
 

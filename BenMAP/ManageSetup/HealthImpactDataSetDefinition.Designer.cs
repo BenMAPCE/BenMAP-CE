@@ -17,8 +17,7 @@ namespace BenMAP
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.olvColumn33 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.olvColumn32 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.grpHealthImpactFunction = new System.Windows.Forms.GroupBox();
@@ -68,12 +67,13 @@ namespace BenMAP
             this.olvColumn29 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn30 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn31 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvColumn32 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvColumn33 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.lblHealthImpactFunctionName = new System.Windows.Forms.Label();
             this.txtHealthImpactFunction = new System.Windows.Forms.TextBox();
             this.grpCancelOK = new System.Windows.Forms.GroupBox();
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.statusStrip1.SuspendLayout();
             this.grpHealthImpactFunction.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
@@ -84,13 +84,11 @@ namespace BenMAP
             this.grpCancelOK.SuspendLayout();
             this.SuspendLayout();
             // 
-            // olvColumn33
+            // olvColumn32
             // 
-            this.olvColumn33.AspectName = "crfunctionid";
-            this.olvColumn33.DisplayIndex = 33;
-            this.olvColumn33.IsVisible = false;
-            this.olvColumn33.Text = "CRFuntionID";
-            this.olvColumn33.Width = 100;
+            this.olvColumn32.AspectName = "variabeldatasetname";
+            this.olvColumn32.Text = "Variable";
+            this.olvColumn32.Width = 100;
             // 
             // statusStrip1
             // 
@@ -111,9 +109,9 @@ namespace BenMAP
             // 
             // grpHealthImpactFunction
             // 
-            this.grpHealthImpactFunction.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.grpHealthImpactFunction.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.grpHealthImpactFunction.Controls.Add(this.flowLayoutPanel1);
             this.grpHealthImpactFunction.Controls.Add(this.chbGroup);
             this.grpHealthImpactFunction.Controls.Add(this.groupBox3);
@@ -195,7 +193,7 @@ namespace BenMAP
             this.btnOutPut.TabIndex = 29;
             this.btnOutPut.Text = "Output Sample File";
             this.toolTip1.SetToolTip(this.btnOutPut, "Click to save a template with standard .csv format. It only contains 50 rows data" +
-                    " and can be used as an example to prepare the input file.");
+        " and can be used as an example to prepare the input file.");
             this.btnOutPut.UseVisualStyleBackColor = true;
             this.btnOutPut.Click += new System.EventHandler(this.btnOutPut_Click);
             // 
@@ -310,9 +308,9 @@ namespace BenMAP
             this.olvFunction.AllowColumnReorder = true;
             this.olvFunction.AllowDrop = true;
             this.olvFunction.AlternateRowBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(240)))), ((int)(((byte)(220)))));
-            this.olvFunction.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.olvFunction.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.olvFunction.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.olvcEndpointGroup,
             this.olvcEndpoint,
@@ -559,11 +557,13 @@ namespace BenMAP
             this.olvColumn31.Text = "Prevalence";
             this.olvColumn31.Width = 100;
             // 
-            // olvColumn32
+            // olvColumn33
             // 
-            this.olvColumn32.AspectName = "variabeldatasetname";
-            this.olvColumn32.Text = "Variable";
-            this.olvColumn32.Width = 100;
+            this.olvColumn33.AspectName = "crfunctionid";
+            this.olvColumn33.DisplayIndex = 33;
+            this.olvColumn33.IsVisible = false;
+            this.olvColumn33.Text = "CRFuntionID";
+            this.olvColumn33.Width = 100;
             // 
             // lblHealthImpactFunctionName
             // 
@@ -584,8 +584,8 @@ namespace BenMAP
             // 
             // grpCancelOK
             // 
-            this.grpCancelOK.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.grpCancelOK.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.grpCancelOK.Controls.Add(this.btnOK);
             this.grpCancelOK.Controls.Add(this.btnCancel);
             this.grpCancelOK.Location = new System.Drawing.Point(12, 464);
@@ -614,17 +614,18 @@ namespace BenMAP
             this.btnCancel.TabIndex = 0;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
+            this.btnCancel.Visible = false;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
             // HealthImpactDataSetDefinition
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.AutoScroll = true;
             this.ClientSize = new System.Drawing.Size(780, 554);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.grpHealthImpactFunction);
             this.Controls.Add(this.grpCancelOK);
+            this.MinimumSize = new System.Drawing.Size(796, 592);
             this.Name = "HealthImpactDataSetDefinition";
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;

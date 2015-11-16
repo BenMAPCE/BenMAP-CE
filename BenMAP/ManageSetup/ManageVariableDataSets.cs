@@ -13,6 +13,8 @@ namespace BenMAP
     {
         bool bEdit = false;//Edit flag
         int _datasetID;
+        private bool bIsLocked = false;
+
         private int _dsMetadataID;
         private int _dsSetupID;
         private int _dsDatasetTypeId;
@@ -107,17 +109,25 @@ namespace BenMAP
             {
                 Logger.LogError(ex);
             }
+            // 2014 12 02 - lock control for default data sets
+            bIsLocked = isLock();
+            setEditControl();
+            
         }
 
         private void btnEdit_Click(object sender, EventArgs e)
         {
             try
             {
-                bEdit = true;
+                //bEdit = true;
                 if (lstAvailable.SelectedItem == null) return;
                 string str = lstAvailable.GetItemText(lstAvailable.SelectedItem);
-                VariableDataSetDefinition frm = new VariableDataSetDefinition(str, bEdit);
+                // 2014 12 02 changed next line to 
+                //VariableDataSetDefinition frm = new VariableDataSetDefinition(str, bEdit);
+                VariableDataSetDefinition frm = new VariableDataSetDefinition(str, bIsLocked);
+
                 DialogResult rth = frm.ShowDialog();
+               
                 ExportDataForlistbox();
             }
             catch (Exception ex)
@@ -307,8 +317,65 @@ namespace BenMAP
             {
                 btnViewMetadata.Enabled = false;
             }
+          
+        }
+        // 2014 12 02 added for copy (clone)
+        private void setEditControl()
+        {
+            if (bIsLocked)
+            {
+                //btnEdit.Text = "Copy1";
+                btnEdit.Visible = false;
+            }
+            else
+            {
+                btnEdit.Text = "Edit";
+                btnEdit.Visible = true;
+            }
+        }
+        private bool isLock()
+        {
+            bool isLocked = false;
+            string commandText = string.Empty;
+            object obtRtv = null;
+            ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+            try
+            {
+                commandText = string.Format("SELECT LOCKED FROM SETUPVARIABLEDATASETS WHERE SETUPVARIABLEDATASETID = {0} AND SETUPID = {1}", _datasetID, _dsSetupID);
+                obtRtv = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+                if (obtRtv.ToString().Equals("T"))
+                {
+                    isLocked = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.Message);
+            }
+
+            return isLocked;
         }
 
-
+        private void btnCopy_Click(object sender, EventArgs e)
+        {
+            // get properties for dialog box
+            if (lstAvailable.SelectedItem == null) return;
+            string strSetName = lstAvailable.GetItemText(lstAvailable.SelectedItem);
+                
+            Tools.InputBox myBox = new Tools.InputBox("Copy variable dataset " + strSetName, "Enter New Variable Set Name", strSetName + "_copy");
+            DialogResult inputResult = myBox.ShowDialog();
+            if (inputResult == DialogResult.OK)
+            {
+                // copy routine goes here
+                CopyVariableDataset cpDataset = new CopyVariableDataset();
+                cpDataset.Copy(_datasetID,CommonClass.ManageSetup.SetupID,myBox.InputText);
+            }
+            else if (inputResult == DialogResult.Cancel)
+            {
+                MessageBox.Show("Copy cancelled by user");
+            }
+            // refresh list
+            ExportDataForlistbox();
+        }
     }
 }

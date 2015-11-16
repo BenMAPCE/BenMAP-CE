@@ -160,7 +160,9 @@ namespace BenMAP
 
         //this version of getMetadata is used
         //by incidence and inflation datasets
-        public static MetadataClassObj getMetadata(int datasetID, int setupId)
+        // 2015 09 22 BENMAP-322 - fix problems with metadata not displaying when two different dataset types ahve the same datasetID
+        // - in other words, to retrieve metadata id from metadatainformation table, the datasettypeid is always needed
+        public static MetadataClassObj getMetadata(int datasetID, int setupId, int datasetTypeID)
         {
             FireBirdHelperBase fb = new ESILFireBirdHelper();
             //FbDataReader fbDataReader = null;
@@ -172,7 +174,7 @@ namespace BenMAP
                       "PROJECTION, GEONAME, DATUMNAME, DATUMTYPE, SPHEROIDNAME, " +
                       "MERIDIANNAME, UNITNAME, PROJ4STRING, NUMBEROFFEATURES " +
                       "FROM METADATAINFORMATION " +
-                      "WHERE DATASETID = '{0}' AND SETUPID = '{1}'", datasetID, setupId);
+                      "WHERE DATASETID = '{0}' AND SETUPID = '{1}' AND DATASETTYPEID = {2}", datasetID, setupId, datasetTypeID);
 
             //fbDataReader = fb.ExecuteReader(CommonClass.Connection, CommandType.Text, commandText);
             ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);

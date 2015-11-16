@@ -127,10 +127,13 @@ namespace BenMAP
                     return;
                 }
                 _strPath = txtDatabase.Text;
-                DialogResult rtn = MessageBox.Show("Do you want to load this database?", "Confirm", MessageBoxButtons.YesNo);
-                if (rtn == DialogResult.Yes)
-                { this.DialogResult = DialogResult.OK; }
-                else { return; }
+                // 2015 09 28 BENMAP-354 - remove confirmation dialog from OK button
+                //DialogResult rtn = MessageBox.Show("Do you want to load this database?", "Confirm", MessageBoxButtons.YesNo);
+                //if (rtn == DialogResult.Yes)
+                //{ 
+                    this.DialogResult = DialogResult.OK; 
+                //}
+                //else { return; }
             }
             catch (Exception ex)
             {
@@ -153,7 +156,9 @@ namespace BenMAP
             {
                 if (vdi.PassedValidation && _isForceValidate == "T")
                 {
-                    LoadDatabase();
+                    // 2015 09 28 BENMAP- fix to enable OK and not load databade on validate
+                    btnOK.Enabled = true;
+                    //LoadDatabase();
                 }
             }
         }

@@ -19,6 +19,7 @@ namespace BenMAP
         }
         string _dataName = string.Empty;
         private int _datasetID;
+        private int _datasetTypeID;
         private MetadataClassObj _metadataObj = null;
 
         private void btnOK_Click(object sender, EventArgs e)
@@ -192,7 +193,8 @@ namespace BenMAP
 
         private void btnViewMetadata_Click(object sender, EventArgs e)
         {
-            _metadataObj = SQLStatementsCommonClass.getMetadata(_datasetID, CommonClass.ManageSetup.SetupID);
+            _datasetTypeID = 3; // hardcoded for inflation dataset type
+            _metadataObj = SQLStatementsCommonClass.getMetadata(_datasetID, CommonClass.ManageSetup.SetupID, _datasetTypeID);
             _metadataObj.SetupName = CommonClass.ManageSetup.SetupName;//_dataName;//_lstDataSetName;
             btnViewMetadata.Enabled = false;
             BrightIdeasSoftware.DataListView dlv = olvData as BrightIdeasSoftware.DataListView;

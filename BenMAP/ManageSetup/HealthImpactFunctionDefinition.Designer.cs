@@ -137,10 +137,7 @@ namespace BenMAP
             this.tbpFunction.SuspendLayout();
             this.tbpBaselineFunction.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // grpCancelOK
-            // 
-            this.grpCancelOK.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+                                                this.grpCancelOK.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.grpCancelOK.Controls.Add(this.btnOK);
             this.grpCancelOK.Controls.Add(this.btnCancel);
@@ -149,10 +146,7 @@ namespace BenMAP
             this.grpCancelOK.Size = new System.Drawing.Size(781, 54);
             this.grpCancelOK.TabIndex = 1;
             this.grpCancelOK.TabStop = false;
-            // 
-            // btnOK
-            // 
-            this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+                                                this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOK.Location = new System.Drawing.Point(684, 20);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 27);
@@ -160,10 +154,7 @@ namespace BenMAP
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
-            // 
-            // btnCancel
-            // 
-            this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+                                                this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.Location = new System.Drawing.Point(603, 20);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 27);
@@ -171,10 +162,7 @@ namespace BenMAP
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
-            // 
-            // tableLayoutPanel1
-            // 
-            this.tableLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                                                this.tableLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel1.ColumnCount = 3;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 24.9313F));
@@ -189,10 +177,7 @@ namespace BenMAP
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(778, 350);
             this.tableLayoutPanel1.TabIndex = 24;
-            // 
-            // grpParameter1
-            // 
-            this.grpParameter1.Controls.Add(this.tableLayoutPanel3);
+                                                this.grpParameter1.Controls.Add(this.tableLayoutPanel3);
             this.grpParameter1.Controls.Add(this.cboVariableDataSet);
             this.grpParameter1.Controls.Add(this.lblVariableDataSet);
             this.grpParameter1.Controls.Add(this.cboPrevalenceDataSet);
@@ -205,10 +190,7 @@ namespace BenMAP
             this.grpParameter1.Size = new System.Drawing.Size(308, 344);
             this.grpParameter1.TabIndex = 4;
             this.grpParameter1.TabStop = false;
-            // 
-            // tableLayoutPanel3
-            // 
-            this.tableLayoutPanel3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                                                this.tableLayoutPanel3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel3.ColumnCount = 2;
             this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 54.54546F));
@@ -221,10 +203,7 @@ namespace BenMAP
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel3.Size = new System.Drawing.Size(299, 196);
             this.tableLayoutPanel3.TabIndex = 2;
-            // 
-            // panel4
-            // 
-            this.panel4.Controls.Add(this.lblBetaDisribution);
+                                                this.panel4.Controls.Add(this.lblBetaDisribution);
             this.panel4.Controls.Add(this.lblConstantDescription);
             this.panel4.Controls.Add(this.txtBetaParameter1);
             this.panel4.Controls.Add(this.lblBetaParameter1);
@@ -240,28 +219,19 @@ namespace BenMAP
             this.panel4.Name = "panel4";
             this.panel4.Size = new System.Drawing.Size(157, 190);
             this.panel4.TabIndex = 0;
-            // 
-            // lblBetaDisribution
-            // 
-            this.lblBetaDisribution.AutoSize = true;
+                                                this.lblBetaDisribution.AutoSize = true;
             this.lblBetaDisribution.Location = new System.Drawing.Point(21, 1);
             this.lblBetaDisribution.Name = "lblBetaDisribution";
             this.lblBetaDisribution.Size = new System.Drawing.Size(103, 14);
             this.lblBetaDisribution.TabIndex = 0;
             this.lblBetaDisribution.Text = "Beta Distribution:";
-            // 
-            // lblConstantDescription
-            // 
-            this.lblConstantDescription.AutoSize = true;
+                                                this.lblConstantDescription.AutoSize = true;
             this.lblConstantDescription.Location = new System.Drawing.Point(23, 92);
             this.lblConstantDescription.Name = "lblConstantDescription";
             this.lblConstantDescription.Size = new System.Drawing.Size(123, 14);
             this.lblConstantDescription.TabIndex = 0;
             this.lblConstantDescription.Text = "Constant Description:";
-            // 
-            // txtBetaParameter1
-            // 
-            this.txtBetaParameter1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                                                this.txtBetaParameter1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.txtBetaParameter1.Location = new System.Drawing.Point(25, 64);
             this.txtBetaParameter1.Name = "txtBetaParameter1";
@@ -269,73 +239,49 @@ namespace BenMAP
             this.txtBetaParameter1.TabIndex = 6;
             this.txtBetaParameter1.Text = "0";
             this.txtBetaParameter1.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtBetaParameter1_KeyPress);
-            // 
-            // lblBetaParameter1
-            // 
-            this.lblBetaParameter1.AutoSize = true;
+                                                this.lblBetaParameter1.AutoSize = true;
             this.lblBetaParameter1.Location = new System.Drawing.Point(23, 48);
             this.lblBetaParameter1.Name = "lblBetaParameter1";
             this.lblBetaParameter1.Size = new System.Drawing.Size(100, 14);
             this.lblBetaParameter1.TabIndex = 2;
             this.lblBetaParameter1.Text = "Beta Parameter1:";
-            // 
-            // txtAconstantDescription
-            // 
-            this.txtAconstantDescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                                                this.txtAconstantDescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.txtAconstantDescription.Location = new System.Drawing.Point(25, 109);
             this.txtAconstantDescription.Name = "txtAconstantDescription";
             this.txtAconstantDescription.Size = new System.Drawing.Size(126, 22);
             this.txtAconstantDescription.TabIndex = 2;
-            // 
-            // lblC
-            // 
-            this.lblC.AutoSize = true;
+                                                this.lblC.AutoSize = true;
             this.lblC.Location = new System.Drawing.Point(3, 168);
             this.lblC.Name = "lblC";
             this.lblC.Size = new System.Drawing.Size(16, 14);
             this.lblC.TabIndex = 10;
             this.lblC.Text = "C:";
-            // 
-            // lblA
-            // 
-            this.lblA.AutoSize = true;
+                                                this.lblA.AutoSize = true;
             this.lblA.Location = new System.Drawing.Point(3, 113);
             this.lblA.Name = "lblA";
             this.lblA.Size = new System.Drawing.Size(17, 14);
             this.lblA.TabIndex = 8;
             this.lblA.Text = "A:";
-            // 
-            // txtCconstantDescription
-            // 
-            this.txtCconstantDescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                                                this.txtCconstantDescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.txtCconstantDescription.Location = new System.Drawing.Point(25, 164);
             this.txtCconstantDescription.Name = "txtCconstantDescription";
             this.txtCconstantDescription.Size = new System.Drawing.Size(126, 22);
             this.txtCconstantDescription.TabIndex = 6;
-            // 
-            // lblB
-            // 
-            this.lblB.AutoSize = true;
+                                                this.lblB.AutoSize = true;
             this.lblB.Location = new System.Drawing.Point(3, 141);
             this.lblB.Name = "lblB";
             this.lblB.Size = new System.Drawing.Size(17, 14);
             this.lblB.TabIndex = 9;
             this.lblB.Text = "B:";
-            // 
-            // txtBconstantDescription
-            // 
-            this.txtBconstantDescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                                                this.txtBconstantDescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.txtBconstantDescription.Location = new System.Drawing.Point(25, 136);
             this.txtBconstantDescription.Name = "txtBconstantDescription";
             this.txtBconstantDescription.Size = new System.Drawing.Size(126, 22);
             this.txtBconstantDescription.TabIndex = 4;
-            // 
-            // cboBetaDistribution
-            // 
-            this.cboBetaDistribution.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                                                this.cboBetaDistribution.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.cboBetaDistribution.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboBetaDistribution.FormattingEnabled = true;
@@ -343,10 +289,7 @@ namespace BenMAP
             this.cboBetaDistribution.Name = "cboBetaDistribution";
             this.cboBetaDistribution.Size = new System.Drawing.Size(126, 22);
             this.cboBetaDistribution.TabIndex = 4;
-            // 
-            // panel5
-            // 
-            this.panel5.Controls.Add(this.lblBeta);
+                                                this.panel5.Controls.Add(this.lblBeta);
             this.panel5.Controls.Add(this.txtBetaParameter2);
             this.panel5.Controls.Add(this.txtBconstantValue);
             this.panel5.Controls.Add(this.txtAconstantValue);
@@ -359,19 +302,13 @@ namespace BenMAP
             this.panel5.Name = "panel5";
             this.panel5.Size = new System.Drawing.Size(130, 190);
             this.panel5.TabIndex = 1;
-            // 
-            // lblBeta
-            // 
-            this.lblBeta.AutoSize = true;
+                                                this.lblBeta.AutoSize = true;
             this.lblBeta.Location = new System.Drawing.Point(3, 0);
             this.lblBeta.Name = "lblBeta";
             this.lblBeta.Size = new System.Drawing.Size(35, 14);
             this.lblBeta.TabIndex = 1;
             this.lblBeta.Text = "Beta:";
-            // 
-            // txtBetaParameter2
-            // 
-            this.txtBetaParameter2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                                                this.txtBetaParameter2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.txtBetaParameter2.Location = new System.Drawing.Point(5, 63);
             this.txtBetaParameter2.Name = "txtBetaParameter2";
@@ -379,10 +316,7 @@ namespace BenMAP
             this.txtBetaParameter2.TabIndex = 7;
             this.txtBetaParameter2.Text = "0";
             this.txtBetaParameter2.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtBetaParameter2_KeyPress);
-            // 
-            // txtBconstantValue
-            // 
-            this.txtBconstantValue.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                                                this.txtBconstantValue.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.txtBconstantValue.Location = new System.Drawing.Point(5, 135);
             this.txtBconstantValue.Name = "txtBconstantValue";
@@ -390,10 +324,7 @@ namespace BenMAP
             this.txtBconstantValue.TabIndex = 5;
             this.txtBconstantValue.Text = "0";
             this.txtBconstantValue.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtBconstantValue_KeyPress);
-            // 
-            // txtAconstantValue
-            // 
-            this.txtAconstantValue.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                                                this.txtAconstantValue.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.txtAconstantValue.Location = new System.Drawing.Point(5, 107);
             this.txtAconstantValue.Name = "txtAconstantValue";
@@ -401,10 +332,7 @@ namespace BenMAP
             this.txtAconstantValue.TabIndex = 3;
             this.txtAconstantValue.Text = "0";
             this.txtAconstantValue.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtAconstantValue_KeyPress);
-            // 
-            // txtBeta
-            // 
-            this.txtBeta.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                                                this.txtBeta.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.txtBeta.Location = new System.Drawing.Point(5, 15);
             this.txtBeta.Name = "txtBeta";
@@ -412,10 +340,7 @@ namespace BenMAP
             this.txtBeta.TabIndex = 5;
             this.txtBeta.Text = "0";
             this.txtBeta.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtBeta_KeyPress);
-            // 
-            // txtCconstantValue
-            // 
-            this.txtCconstantValue.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                                                this.txtCconstantValue.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.txtCconstantValue.Location = new System.Drawing.Point(5, 163);
             this.txtCconstantValue.Name = "txtCconstantValue";
@@ -423,28 +348,19 @@ namespace BenMAP
             this.txtCconstantValue.TabIndex = 7;
             this.txtCconstantValue.Text = "0";
             this.txtCconstantValue.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtCconstantValue_KeyPress);
-            // 
-            // lblConstantValue
-            // 
-            this.lblConstantValue.AutoSize = true;
+                                                this.lblConstantValue.AutoSize = true;
             this.lblConstantValue.Location = new System.Drawing.Point(3, 91);
             this.lblConstantValue.Name = "lblConstantValue";
             this.lblConstantValue.Size = new System.Drawing.Size(92, 14);
             this.lblConstantValue.TabIndex = 1;
             this.lblConstantValue.Text = "Constant Value:";
-            // 
-            // lblBetaParameter2
-            // 
-            this.lblBetaParameter2.AutoSize = true;
+                                                this.lblBetaParameter2.AutoSize = true;
             this.lblBetaParameter2.Location = new System.Drawing.Point(3, 47);
             this.lblBetaParameter2.Name = "lblBetaParameter2";
             this.lblBetaParameter2.Size = new System.Drawing.Size(100, 14);
             this.lblBetaParameter2.TabIndex = 3;
             this.lblBetaParameter2.Text = "Beta Parameter2:";
-            // 
-            // cboVariableDataSet
-            // 
-            this.cboVariableDataSet.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                                                this.cboVariableDataSet.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.cboVariableDataSet.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboVariableDataSet.FormattingEnabled = true;
@@ -452,19 +368,13 @@ namespace BenMAP
             this.cboVariableDataSet.Name = "cboVariableDataSet";
             this.cboVariableDataSet.Size = new System.Drawing.Size(265, 22);
             this.cboVariableDataSet.TabIndex = 17;
-            // 
-            // lblVariableDataSet
-            // 
-            this.lblVariableDataSet.AutoSize = true;
+                                                this.lblVariableDataSet.AutoSize = true;
             this.lblVariableDataSet.Location = new System.Drawing.Point(32, 251);
             this.lblVariableDataSet.Name = "lblVariableDataSet";
             this.lblVariableDataSet.Size = new System.Drawing.Size(102, 14);
             this.lblVariableDataSet.TabIndex = 14;
             this.lblVariableDataSet.Text = "Variable DataSet:";
-            // 
-            // cboPrevalenceDataSet
-            // 
-            this.cboPrevalenceDataSet.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                                                this.cboPrevalenceDataSet.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.cboPrevalenceDataSet.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboPrevalenceDataSet.FormattingEnabled = true;
@@ -472,19 +382,13 @@ namespace BenMAP
             this.cboPrevalenceDataSet.Name = "cboPrevalenceDataSet";
             this.cboPrevalenceDataSet.Size = new System.Drawing.Size(265, 22);
             this.cboPrevalenceDataSet.TabIndex = 16;
-            // 
-            // lblPrevalenceDataSet
-            // 
-            this.lblPrevalenceDataSet.AutoSize = true;
+                                                this.lblPrevalenceDataSet.AutoSize = true;
             this.lblPrevalenceDataSet.Location = new System.Drawing.Point(31, 297);
             this.lblPrevalenceDataSet.Name = "lblPrevalenceDataSet";
             this.lblPrevalenceDataSet.Size = new System.Drawing.Size(115, 14);
             this.lblPrevalenceDataSet.TabIndex = 12;
             this.lblPrevalenceDataSet.Text = "Prevalence DataSet:";
-            // 
-            // cboIncidenceDataSet
-            // 
-            this.cboIncidenceDataSet.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                                                this.cboIncidenceDataSet.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.cboIncidenceDataSet.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboIncidenceDataSet.FormattingEnabled = true;
@@ -492,19 +396,13 @@ namespace BenMAP
             this.cboIncidenceDataSet.Name = "cboIncidenceDataSet";
             this.cboIncidenceDataSet.Size = new System.Drawing.Size(266, 22);
             this.cboIncidenceDataSet.TabIndex = 15;
-            // 
-            // lblIncidenceDataSet
-            // 
-            this.lblIncidenceDataSet.AutoSize = true;
+                                                this.lblIncidenceDataSet.AutoSize = true;
             this.lblIncidenceDataSet.Location = new System.Drawing.Point(30, 204);
             this.lblIncidenceDataSet.Name = "lblIncidenceDataSet";
             this.lblIncidenceDataSet.Size = new System.Drawing.Size(109, 14);
             this.lblIncidenceDataSet.TabIndex = 13;
             this.lblIncidenceDataSet.Text = "Incidence Dataset:";
-            // 
-            // grpParameter
-            // 
-            this.grpParameter.Controls.Add(this.tableLayoutPanel2);
+                                                this.grpParameter.Controls.Add(this.tableLayoutPanel2);
             this.grpParameter.Controls.Add(this.txtReference);
             this.grpParameter.Controls.Add(this.txtOtherPollutant);
             this.grpParameter.Controls.Add(this.lblReference);
@@ -515,10 +413,7 @@ namespace BenMAP
             this.grpParameter.Size = new System.Drawing.Size(265, 344);
             this.grpParameter.TabIndex = 3;
             this.grpParameter.TabStop = false;
-            // 
-            // tableLayoutPanel2
-            // 
-            this.tableLayoutPanel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                                                this.tableLayoutPanel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel2.ColumnCount = 2;
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
@@ -531,10 +426,7 @@ namespace BenMAP
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel2.Size = new System.Drawing.Size(255, 244);
             this.tableLayoutPanel2.TabIndex = 2;
-            // 
-            // panel2
-            // 
-            this.panel2.Controls.Add(this.label9);
+                                                this.panel2.Controls.Add(this.label9);
             this.panel2.Controls.Add(this.lblRace);
             this.panel2.Controls.Add(this.cboLocationName);
             this.panel2.Controls.Add(this.lblEthnicity);
@@ -549,28 +441,19 @@ namespace BenMAP
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(121, 238);
             this.panel2.TabIndex = 0;
-            // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
+                                                this.label9.AutoSize = true;
             this.label9.Location = new System.Drawing.Point(3, 146);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(90, 14);
+            this.label9.Size = new System.Drawing.Size(87, 14);
             this.label9.TabIndex = 23;
             this.label9.Text = "Location Name:";
-            // 
-            // lblRace
-            // 
-            this.lblRace.AutoSize = true;
+                                                this.lblRace.AutoSize = true;
             this.lblRace.Location = new System.Drawing.Point(3, 0);
             this.lblRace.Name = "lblRace";
             this.lblRace.Size = new System.Drawing.Size(36, 14);
             this.lblRace.TabIndex = 0;
             this.lblRace.Text = "Race:";
-            // 
-            // cboLocationName
-            // 
-            this.cboLocationName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                                                this.cboLocationName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.cboLocationName.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboLocationName.FormattingEnabled = true;
@@ -578,47 +461,32 @@ namespace BenMAP
             this.cboLocationName.Name = "cboLocationName";
             this.cboLocationName.Size = new System.Drawing.Size(113, 22);
             this.cboLocationName.TabIndex = 22;
-            // 
-            // lblEthnicity
-            // 
-            this.lblEthnicity.AutoSize = true;
+                                                this.lblEthnicity.AutoSize = true;
             this.lblEthnicity.Location = new System.Drawing.Point(3, 47);
             this.lblEthnicity.Name = "lblEthnicity";
             this.lblEthnicity.Size = new System.Drawing.Size(56, 14);
             this.lblEthnicity.TabIndex = 1;
             this.lblEthnicity.Text = "Ethnicity:";
-            // 
-            // lblGender
-            // 
-            this.lblGender.AutoSize = true;
+                                                this.lblGender.AutoSize = true;
             this.lblGender.Location = new System.Drawing.Point(3, 91);
             this.lblGender.Name = "lblGender";
             this.lblGender.Size = new System.Drawing.Size(50, 14);
             this.lblGender.TabIndex = 2;
             this.lblGender.Text = "Gender:";
-            // 
-            // lblStartAge
-            // 
-            this.lblStartAge.AutoSize = true;
+                                                this.lblStartAge.AutoSize = true;
             this.lblStartAge.Location = new System.Drawing.Point(3, 191);
             this.lblStartAge.Name = "lblStartAge";
             this.lblStartAge.Size = new System.Drawing.Size(58, 14);
             this.lblStartAge.TabIndex = 8;
             this.lblStartAge.Text = "Start Age:";
-            // 
-            // nudownStartAge
-            // 
-            this.nudownStartAge.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                                                this.nudownStartAge.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.nudownStartAge.Location = new System.Drawing.Point(5, 209);
             this.nudownStartAge.Name = "nudownStartAge";
             this.nudownStartAge.Size = new System.Drawing.Size(113, 22);
             this.nudownStartAge.TabIndex = 19;
             this.nudownStartAge.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            // 
-            // cboRace
-            // 
-            this.cboRace.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                                                this.cboRace.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.cboRace.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboRace.FormattingEnabled = true;
@@ -626,10 +494,7 @@ namespace BenMAP
             this.cboRace.Name = "cboRace";
             this.cboRace.Size = new System.Drawing.Size(113, 22);
             this.cboRace.TabIndex = 11;
-            // 
-            // cboEthnicity
-            // 
-            this.cboEthnicity.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                                                this.cboEthnicity.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.cboEthnicity.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboEthnicity.FormattingEnabled = true;
@@ -637,10 +502,7 @@ namespace BenMAP
             this.cboEthnicity.Name = "cboEthnicity";
             this.cboEthnicity.Size = new System.Drawing.Size(113, 22);
             this.cboEthnicity.TabIndex = 12;
-            // 
-            // cboGender
-            // 
-            this.cboGender.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                                                this.cboGender.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.cboGender.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboGender.FormattingEnabled = true;
@@ -648,10 +510,7 @@ namespace BenMAP
             this.cboGender.Name = "cboGender";
             this.cboGender.Size = new System.Drawing.Size(113, 22);
             this.cboGender.TabIndex = 13;
-            // 
-            // panel3
-            // 
-            this.panel3.Controls.Add(this.lblAnthor);
+                                                this.panel3.Controls.Add(this.lblAnthor);
             this.panel3.Controls.Add(this.nudownEndAge);
             this.panel3.Controls.Add(this.lblLocation);
             this.panel3.Controls.Add(this.lblYear);
@@ -666,92 +525,62 @@ namespace BenMAP
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(122, 238);
             this.panel3.TabIndex = 1;
-            // 
-            // lblAnthor
-            // 
-            this.lblAnthor.AutoSize = true;
+                                                this.lblAnthor.AutoSize = true;
             this.lblAnthor.Location = new System.Drawing.Point(3, 0);
             this.lblAnthor.Name = "lblAnthor";
             this.lblAnthor.Size = new System.Drawing.Size(46, 14);
             this.lblAnthor.TabIndex = 3;
             this.lblAnthor.Text = "Author:";
-            // 
-            // nudownEndAge
-            // 
-            this.nudownEndAge.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                                                this.nudownEndAge.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.nudownEndAge.Location = new System.Drawing.Point(6, 209);
             this.nudownEndAge.Name = "nudownEndAge";
             this.nudownEndAge.Size = new System.Drawing.Size(113, 22);
             this.nudownEndAge.TabIndex = 20;
             this.nudownEndAge.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            // 
-            // lblLocation
-            // 
-            this.lblLocation.AutoSize = true;
+                                                this.lblLocation.AutoSize = true;
             this.lblLocation.Location = new System.Drawing.Point(3, 146);
             this.lblLocation.Name = "lblLocation";
             this.lblLocation.Size = new System.Drawing.Size(55, 14);
             this.lblLocation.TabIndex = 5;
             this.lblLocation.Text = "Location:";
-            // 
-            // lblYear
-            // 
-            this.lblYear.AutoSize = true;
+                                                this.lblYear.AutoSize = true;
             this.lblYear.Location = new System.Drawing.Point(3, 47);
             this.lblYear.Name = "lblYear";
             this.lblYear.Size = new System.Drawing.Size(111, 14);
             this.lblYear.TabIndex = 4;
             this.lblYear.Text = "Year of Publication:";
-            // 
-            // lblQualifier
-            // 
-            this.lblQualifier.AutoSize = true;
+                                                this.lblQualifier.AutoSize = true;
             this.lblQualifier.Location = new System.Drawing.Point(3, 91);
             this.lblQualifier.Name = "lblQualifier";
             this.lblQualifier.Size = new System.Drawing.Size(57, 14);
             this.lblQualifier.TabIndex = 6;
             this.lblQualifier.Text = "Qualifier:";
-            // 
-            // lblEndAge
-            // 
-            this.lblEndAge.AutoSize = true;
+                                                this.lblEndAge.AutoSize = true;
             this.lblEndAge.Location = new System.Drawing.Point(3, 191);
             this.lblEndAge.Name = "lblEndAge";
             this.lblEndAge.Size = new System.Drawing.Size(53, 14);
             this.lblEndAge.TabIndex = 9;
             this.lblEndAge.Text = "End Age:";
-            // 
-            // txtQualifier
-            // 
-            this.txtQualifier.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                                                this.txtQualifier.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.txtQualifier.Location = new System.Drawing.Point(6, 108);
             this.txtQualifier.Name = "txtQualifier";
             this.txtQualifier.Size = new System.Drawing.Size(113, 22);
             this.txtQualifier.TabIndex = 17;
-            // 
-            // txtAnthor
-            // 
-            this.txtAnthor.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                                                this.txtAnthor.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.txtAnthor.Location = new System.Drawing.Point(6, 16);
             this.txtAnthor.Name = "txtAnthor";
             this.txtAnthor.Size = new System.Drawing.Size(112, 22);
             this.txtAnthor.TabIndex = 14;
-            // 
-            // txtLocation
-            // 
-            this.txtLocation.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                                                this.txtLocation.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.txtLocation.Location = new System.Drawing.Point(6, 164);
             this.txtLocation.Name = "txtLocation";
             this.txtLocation.Size = new System.Drawing.Size(113, 22);
             this.txtLocation.TabIndex = 16;
-            // 
-            // txtYear
-            // 
-            this.txtYear.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                                                this.txtYear.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.txtYear.Location = new System.Drawing.Point(6, 63);
             this.txtYear.Name = "txtYear";
@@ -759,56 +588,38 @@ namespace BenMAP
             this.txtYear.TabIndex = 15;
             this.txtYear.Text = "0";
             this.txtYear.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtYear_KeyPress);
-            // 
-            // txtReference
-            // 
-            this.txtReference.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                                                this.txtReference.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.txtReference.Location = new System.Drawing.Point(11, 316);
             this.txtReference.Name = "txtReference";
             this.txtReference.Size = new System.Drawing.Size(248, 22);
             this.txtReference.TabIndex = 21;
-            // 
-            // txtOtherPollutant
-            // 
-            this.txtOtherPollutant.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                                                this.txtOtherPollutant.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.txtOtherPollutant.Location = new System.Drawing.Point(11, 274);
             this.txtOtherPollutant.Name = "txtOtherPollutant";
             this.txtOtherPollutant.Size = new System.Drawing.Size(248, 22);
             this.txtOtherPollutant.TabIndex = 18;
-            // 
-            // lblReference
-            // 
-            this.lblReference.AutoSize = true;
+                                                this.lblReference.AutoSize = true;
             this.lblReference.Location = new System.Drawing.Point(9, 298);
             this.lblReference.Name = "lblReference";
             this.lblReference.Size = new System.Drawing.Size(65, 14);
             this.lblReference.TabIndex = 10;
             this.lblReference.Text = "Reference:";
-            // 
-            // lblOtherPollutant
-            // 
-            this.lblOtherPollutant.AutoSize = true;
+                                                this.lblOtherPollutant.AutoSize = true;
             this.lblOtherPollutant.Location = new System.Drawing.Point(8, 257);
             this.lblOtherPollutant.Name = "lblOtherPollutant";
             this.lblOtherPollutant.Size = new System.Drawing.Size(251, 14);
             this.lblOtherPollutant.TabIndex = 7;
             this.lblOtherPollutant.Text = "Co-Pollutants Specified in Regression Model:";
-            // 
-            // panel1
-            // 
-            this.panel1.Controls.Add(this.grpEndpoint);
+                                                this.panel1.Controls.Add(this.grpEndpoint);
             this.panel1.Controls.Add(this.grpMetric);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(3, 3);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(187, 344);
             this.panel1.TabIndex = 5;
-            // 
-            // grpEndpoint
-            // 
-            this.grpEndpoint.Controls.Add(this.cboEndpoint);
+                                                this.grpEndpoint.Controls.Add(this.cboEndpoint);
             this.grpEndpoint.Controls.Add(this.cboEndpointGroup);
             this.grpEndpoint.Controls.Add(this.lblEndpoint);
             this.grpEndpoint.Controls.Add(this.lblEndpointGroup);
@@ -818,10 +629,7 @@ namespace BenMAP
             this.grpEndpoint.Size = new System.Drawing.Size(187, 108);
             this.grpEndpoint.TabIndex = 1;
             this.grpEndpoint.TabStop = false;
-            // 
-            // cboEndpoint
-            // 
-            this.cboEndpoint.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                                                this.cboEndpoint.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.cboEndpoint.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboEndpoint.FormattingEnabled = true;
@@ -829,10 +637,7 @@ namespace BenMAP
             this.cboEndpoint.Name = "cboEndpoint";
             this.cboEndpoint.Size = new System.Drawing.Size(175, 22);
             this.cboEndpoint.TabIndex = 3;
-            // 
-            // cboEndpointGroup
-            // 
-            this.cboEndpointGroup.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                                                this.cboEndpointGroup.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.cboEndpointGroup.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboEndpointGroup.FormattingEnabled = true;
@@ -841,28 +646,19 @@ namespace BenMAP
             this.cboEndpointGroup.Size = new System.Drawing.Size(175, 22);
             this.cboEndpointGroup.TabIndex = 2;
             this.cboEndpointGroup.SelectedValueChanged += new System.EventHandler(this.cboEndpointGroup_SelectedValueChanged_1);
-            // 
-            // lblEndpoint
-            // 
-            this.lblEndpoint.AutoSize = true;
+                                                this.lblEndpoint.AutoSize = true;
             this.lblEndpoint.Location = new System.Drawing.Point(6, 61);
             this.lblEndpoint.Name = "lblEndpoint";
             this.lblEndpoint.Size = new System.Drawing.Size(59, 14);
             this.lblEndpoint.TabIndex = 1;
             this.lblEndpoint.Text = "Endpoint:";
-            // 
-            // lblEndpointGroup
-            // 
-            this.lblEndpointGroup.AutoSize = true;
+                                                this.lblEndpointGroup.AutoSize = true;
             this.lblEndpointGroup.Location = new System.Drawing.Point(6, 14);
             this.lblEndpointGroup.Name = "lblEndpointGroup";
             this.lblEndpointGroup.Size = new System.Drawing.Size(95, 14);
             this.lblEndpointGroup.TabIndex = 0;
             this.lblEndpointGroup.Text = "Endpoint Group:";
-            // 
-            // grpMetric
-            // 
-            this.grpMetric.Controls.Add(this.cboPercentile);
+                                                this.grpMetric.Controls.Add(this.cboPercentile);
             this.grpMetric.Controls.Add(this.lblPercentile);
             this.grpMetric.Controls.Add(this.cboSeasonalMetric);
             this.grpMetric.Controls.Add(this.cboMetricStatistic);
@@ -878,10 +674,7 @@ namespace BenMAP
             this.grpMetric.Size = new System.Drawing.Size(187, 229);
             this.grpMetric.TabIndex = 2;
             this.grpMetric.TabStop = false;
-            // 
-            // cboPercentile
-            // 
-            this.cboPercentile.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                                                this.cboPercentile.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.cboPercentile.FormattingEnabled = true;
             this.cboPercentile.Location = new System.Drawing.Point(8, 201);
@@ -889,20 +682,14 @@ namespace BenMAP
             this.cboPercentile.Size = new System.Drawing.Size(173, 22);
             this.cboPercentile.TabIndex = 9;
             this.cboPercentile.Visible = false;
-            // 
-            // lblPercentile
-            // 
-            this.lblPercentile.AutoSize = true;
+                                                this.lblPercentile.AutoSize = true;
             this.lblPercentile.Location = new System.Drawing.Point(8, 185);
             this.lblPercentile.Name = "lblPercentile";
             this.lblPercentile.Size = new System.Drawing.Size(64, 14);
             this.lblPercentile.TabIndex = 8;
             this.lblPercentile.Text = "Percentile:";
             this.lblPercentile.Visible = false;
-            // 
-            // cboSeasonalMetric
-            // 
-            this.cboSeasonalMetric.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                                                this.cboSeasonalMetric.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.cboSeasonalMetric.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboSeasonalMetric.FormattingEnabled = true;
@@ -910,10 +697,7 @@ namespace BenMAP
             this.cboSeasonalMetric.Name = "cboSeasonalMetric";
             this.cboSeasonalMetric.Size = new System.Drawing.Size(174, 22);
             this.cboSeasonalMetric.TabIndex = 7;
-            // 
-            // cboMetricStatistic
-            // 
-            this.cboMetricStatistic.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                                                this.cboMetricStatistic.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.cboMetricStatistic.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboMetricStatistic.FormattingEnabled = true;
@@ -921,10 +705,7 @@ namespace BenMAP
             this.cboMetricStatistic.Name = "cboMetricStatistic";
             this.cboMetricStatistic.Size = new System.Drawing.Size(175, 22);
             this.cboMetricStatistic.TabIndex = 6;
-            // 
-            // cboMetric
-            // 
-            this.cboMetric.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                                                this.cboMetric.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.cboMetric.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboMetric.FormattingEnabled = true;
@@ -933,10 +714,7 @@ namespace BenMAP
             this.cboMetric.Size = new System.Drawing.Size(174, 22);
             this.cboMetric.TabIndex = 5;
             this.cboMetric.SelectedValueChanged += new System.EventHandler(this.cboMetric_SelectedValueChanged);
-            // 
-            // cboPollutant
-            // 
-            this.cboPollutant.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                                                this.cboPollutant.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.cboPollutant.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboPollutant.FormattingEnabled = true;
@@ -945,46 +723,31 @@ namespace BenMAP
             this.cboPollutant.Size = new System.Drawing.Size(174, 22);
             this.cboPollutant.TabIndex = 4;
             this.cboPollutant.SelectedValueChanged += new System.EventHandler(this.cboPollutant_SelectedValueChanged);
-            // 
-            // lblSeasonalMetric
-            // 
-            this.lblSeasonalMetric.AutoSize = true;
+                                                this.lblSeasonalMetric.AutoSize = true;
             this.lblSeasonalMetric.Location = new System.Drawing.Point(6, 145);
             this.lblSeasonalMetric.Name = "lblSeasonalMetric";
             this.lblSeasonalMetric.Size = new System.Drawing.Size(98, 14);
             this.lblSeasonalMetric.TabIndex = 3;
             this.lblSeasonalMetric.Text = "Seasonal Metric:";
-            // 
-            // lblMetricStatistic
-            // 
-            this.lblMetricStatistic.AutoSize = true;
+                                                this.lblMetricStatistic.AutoSize = true;
             this.lblMetricStatistic.Location = new System.Drawing.Point(6, 103);
             this.lblMetricStatistic.Name = "lblMetricStatistic";
             this.lblMetricStatistic.Size = new System.Drawing.Size(94, 14);
             this.lblMetricStatistic.TabIndex = 2;
             this.lblMetricStatistic.Text = "Annual Statistic:";
-            // 
-            // lblMetric
-            // 
-            this.lblMetric.AutoSize = true;
+                                                this.lblMetric.AutoSize = true;
             this.lblMetric.Location = new System.Drawing.Point(8, 62);
             this.lblMetric.Name = "lblMetric";
             this.lblMetric.Size = new System.Drawing.Size(44, 14);
             this.lblMetric.TabIndex = 1;
             this.lblMetric.Text = "Metric:";
-            // 
-            // lblPollutant
-            // 
-            this.lblPollutant.AutoSize = true;
+                                                this.lblPollutant.AutoSize = true;
             this.lblPollutant.Location = new System.Drawing.Point(6, 14);
             this.lblPollutant.Name = "lblPollutant";
             this.lblPollutant.Size = new System.Drawing.Size(60, 14);
             this.lblPollutant.TabIndex = 0;
             this.lblPollutant.Text = "Pollutant:";
-            // 
-            // tabControl1
-            // 
-            this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                                                this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.tabControl1.Controls.Add(this.tbpFunction);
@@ -994,10 +757,7 @@ namespace BenMAP
             this.tabControl1.SelectedIndex = 0;
             this.tabControl1.Size = new System.Drawing.Size(782, 245);
             this.tabControl1.TabIndex = 5;
-            // 
-            // tbpFunction
-            // 
-            this.tbpFunction.Controls.Add(this.lblFunction);
+                                                this.tbpFunction.Controls.Add(this.lblFunction);
             this.tbpFunction.Controls.Add(this.lstFuncAvailableSetupVariables);
             this.tbpFunction.Controls.Add(this.lstFuncAvailableVariables);
             this.tbpFunction.Controls.Add(this.txtFunction);
@@ -1015,20 +775,14 @@ namespace BenMAP
             this.tbpFunction.TabIndex = 0;
             this.tbpFunction.Text = "Function";
             this.tbpFunction.UseVisualStyleBackColor = true;
-            // 
-            // lblFunction
-            // 
-            this.lblFunction.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+                                                this.lblFunction.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblFunction.AutoSize = true;
             this.lblFunction.Location = new System.Drawing.Point(3, 126);
             this.lblFunction.Name = "lblFunction";
             this.lblFunction.Size = new System.Drawing.Size(56, 14);
             this.lblFunction.TabIndex = 11;
             this.lblFunction.Text = "Function:";
-            // 
-            // lstFuncAvailableSetupVariables
-            // 
-            this.lstFuncAvailableSetupVariables.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                                                this.lstFuncAvailableSetupVariables.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.lstFuncAvailableSetupVariables.FormattingEnabled = true;
             this.lstFuncAvailableSetupVariables.ItemHeight = 14;
@@ -1037,10 +791,7 @@ namespace BenMAP
             this.lstFuncAvailableSetupVariables.Size = new System.Drawing.Size(187, 102);
             this.lstFuncAvailableSetupVariables.TabIndex = 10;
             this.lstFuncAvailableSetupVariables.DoubleClick += new System.EventHandler(this.lstFuncAvailableSetupVariables_DoubleClick);
-            // 
-            // lstFuncAvailableVariables
-            // 
-            this.lstFuncAvailableVariables.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                                                this.lstFuncAvailableVariables.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.lstFuncAvailableVariables.FormattingEnabled = true;
             this.lstFuncAvailableVariables.ItemHeight = 14;
@@ -1049,10 +800,7 @@ namespace BenMAP
             this.lstFuncAvailableVariables.Size = new System.Drawing.Size(145, 102);
             this.lstFuncAvailableVariables.TabIndex = 9;
             this.lstFuncAvailableVariables.DoubleClick += new System.EventHandler(this.lstFuncAvailableVariables_DoubleClick);
-            // 
-            // txtFunction
-            // 
-            this.txtFunction.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+                                                this.txtFunction.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.txtFunction.Location = new System.Drawing.Point(6, 143);
             this.txtFunction.Multiline = true;
@@ -1060,10 +808,7 @@ namespace BenMAP
             this.txtFunction.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.txtFunction.Size = new System.Drawing.Size(762, 64);
             this.txtFunction.TabIndex = 12;
-            // 
-            // lstCommonUsedFunctions
-            // 
-            this.lstCommonUsedFunctions.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                                                this.lstCommonUsedFunctions.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.lstCommonUsedFunctions.FormattingEnabled = true;
@@ -1075,10 +820,7 @@ namespace BenMAP
             this.lstCommonUsedFunctions.Size = new System.Drawing.Size(267, 102);
             this.lstCommonUsedFunctions.TabIndex = 8;
             this.lstCommonUsedFunctions.DoubleClick += new System.EventHandler(this.lstFuncAllAvailableFunctions_DoubleClick);
-            // 
-            // lstFuncAvailableFunctions
-            // 
-            this.lstFuncAvailableFunctions.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                                                this.lstFuncAvailableFunctions.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.lstFuncAvailableFunctions.FormattingEnabled = true;
             this.lstFuncAvailableFunctions.ItemHeight = 14;
@@ -1087,57 +829,39 @@ namespace BenMAP
             this.lstFuncAvailableFunctions.Size = new System.Drawing.Size(145, 102);
             this.lstFuncAvailableFunctions.TabIndex = 6;
             this.lstFuncAvailableFunctions.DoubleClick += new System.EventHandler(this.lstFuncAvailableFunctions_DoubleClick);
-            // 
-            // lblExistingFunctions
-            // 
-            this.lblExistingFunctions.AutoSize = true;
+                                                this.lblExistingFunctions.AutoSize = true;
             this.lblExistingFunctions.Location = new System.Drawing.Point(6, 3);
             this.lblExistingFunctions.Name = "lblExistingFunctions";
             this.lblExistingFunctions.Size = new System.Drawing.Size(193, 14);
             this.lblExistingFunctions.TabIndex = 5;
             this.lblExistingFunctions.Text = "Commonly Used Functional Forms:";
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
+                                                this.label5.AutoSize = true;
             this.label5.Location = new System.Drawing.Point(477, 44);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(0, 14);
             this.label5.TabIndex = 3;
-            // 
-            // lblComposeSetupVariables
-            // 
-            this.lblComposeSetupVariables.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+                                                this.lblComposeSetupVariables.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblComposeSetupVariables.AutoSize = true;
             this.lblComposeSetupVariables.Location = new System.Drawing.Point(580, 3);
             this.lblComposeSetupVariables.Name = "lblComposeSetupVariables";
             this.lblComposeSetupVariables.Size = new System.Drawing.Size(178, 14);
             this.lblComposeSetupVariables.TabIndex = 2;
             this.lblComposeSetupVariables.Text = "Population Variables(optional):";
-            // 
-            // lblComposeVariables
-            // 
-            this.lblComposeVariables.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+                                                this.lblComposeVariables.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblComposeVariables.AutoSize = true;
             this.lblComposeVariables.Location = new System.Drawing.Point(428, 3);
             this.lblComposeVariables.Name = "lblComposeVariables";
             this.lblComposeVariables.Size = new System.Drawing.Size(117, 14);
             this.lblComposeVariables.TabIndex = 1;
             this.lblComposeVariables.Text = "Available Variables:";
-            // 
-            // lbl
-            // 
-            this.lbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+                                                this.lbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lbl.AutoSize = true;
             this.lbl.Location = new System.Drawing.Point(277, 3);
             this.lbl.Name = "lbl";
             this.lbl.Size = new System.Drawing.Size(64, 14);
             this.lbl.TabIndex = 0;
             this.lbl.Text = "Operators:";
-            // 
-            // tbpBaselineFunction
-            // 
-            this.tbpBaselineFunction.Controls.Add(this.txtBaselineIncidenceFunction);
+                                                this.tbpBaselineFunction.Controls.Add(this.txtBaselineIncidenceFunction);
             this.tbpBaselineFunction.Controls.Add(this.label8);
             this.tbpBaselineFunction.Controls.Add(this.label7);
             this.tbpBaselineFunction.Controls.Add(this.label6);
@@ -1154,10 +878,7 @@ namespace BenMAP
             this.tbpBaselineFunction.TabIndex = 1;
             this.tbpBaselineFunction.Text = "Baseline Incidence Function";
             this.tbpBaselineFunction.UseVisualStyleBackColor = true;
-            // 
-            // txtBaselineIncidenceFunction
-            // 
-            this.txtBaselineIncidenceFunction.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+                                                this.txtBaselineIncidenceFunction.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.txtBaselineIncidenceFunction.Location = new System.Drawing.Point(6, 143);
             this.txtBaselineIncidenceFunction.Multiline = true;
@@ -1165,59 +886,41 @@ namespace BenMAP
             this.txtBaselineIncidenceFunction.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.txtBaselineIncidenceFunction.Size = new System.Drawing.Size(762, 64);
             this.txtBaselineIncidenceFunction.TabIndex = 11;
-            // 
-            // label8
-            // 
-            this.label8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+                                                this.label8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label8.AutoSize = true;
             this.label8.Location = new System.Drawing.Point(3, 126);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(56, 14);
             this.label8.TabIndex = 10;
             this.label8.Text = "Function:";
-            // 
-            // label7
-            // 
-            this.label7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+                                                this.label7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label7.AutoSize = true;
             this.label7.Location = new System.Drawing.Point(579, 3);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(178, 14);
             this.label7.TabIndex = 9;
             this.label7.Text = "Population Variables(optional):";
-            // 
-            // label6
-            // 
-            this.label6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+                                                this.label6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label6.AutoSize = true;
             this.label6.Location = new System.Drawing.Point(428, 3);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(117, 14);
             this.label6.TabIndex = 8;
             this.label6.Text = "Available Variables:";
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
+                                                this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(6, 3);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(193, 14);
             this.label4.TabIndex = 7;
             this.label4.Text = "Commonly Used Functional Forms:";
-            // 
-            // label2
-            // 
-            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+                                                this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(277, 3);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(64, 14);
             this.label2.TabIndex = 5;
             this.label2.Text = "Operators:";
-            // 
-            // lstBaselineAvailableSetupVariables
-            // 
-            this.lstBaselineAvailableSetupVariables.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                                                this.lstBaselineAvailableSetupVariables.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.lstBaselineAvailableSetupVariables.FormattingEnabled = true;
             this.lstBaselineAvailableSetupVariables.ItemHeight = 14;
@@ -1226,10 +929,7 @@ namespace BenMAP
             this.lstBaselineAvailableSetupVariables.Size = new System.Drawing.Size(187, 102);
             this.lstBaselineAvailableSetupVariables.TabIndex = 4;
             this.lstBaselineAvailableSetupVariables.DoubleClick += new System.EventHandler(this.lstBaselineAvailableSetupVariables_DoubleClick);
-            // 
-            // lstBaselineAvailableVariables
-            // 
-            this.lstBaselineAvailableVariables.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                                                this.lstBaselineAvailableVariables.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.lstBaselineAvailableVariables.FormattingEnabled = true;
             this.lstBaselineAvailableVariables.ItemHeight = 14;
@@ -1238,10 +938,7 @@ namespace BenMAP
             this.lstBaselineAvailableVariables.Size = new System.Drawing.Size(145, 102);
             this.lstBaselineAvailableVariables.TabIndex = 3;
             this.lstBaselineAvailableVariables.DoubleClick += new System.EventHandler(this.lstBaselineAvailableVariables_DoubleClick);
-            // 
-            // lstBaselineCommonUsedFunctions
-            // 
-            this.lstBaselineCommonUsedFunctions.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                                                this.lstBaselineCommonUsedFunctions.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.lstBaselineCommonUsedFunctions.FormattingEnabled = true;
@@ -1253,10 +950,7 @@ namespace BenMAP
             this.lstBaselineCommonUsedFunctions.Size = new System.Drawing.Size(267, 102);
             this.lstBaselineCommonUsedFunctions.TabIndex = 2;
             this.lstBaselineCommonUsedFunctions.DoubleClick += new System.EventHandler(this.lstBaselineAllAvailableFunctions_DoubleClick);
-            // 
-            // lstBaselineAvailableFunctions
-            // 
-            this.lstBaselineAvailableFunctions.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                                                this.lstBaselineAvailableFunctions.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.lstBaselineAvailableFunctions.FormattingEnabled = true;
             this.lstBaselineAvailableFunctions.ItemHeight = 14;
@@ -1265,16 +959,14 @@ namespace BenMAP
             this.lstBaselineAvailableFunctions.Size = new System.Drawing.Size(145, 102);
             this.lstBaselineAvailableFunctions.TabIndex = 0;
             this.lstBaselineAvailableFunctions.DoubleClick += new System.EventHandler(this.lstBaselineAvailableFunctions_DoubleClick);
-            // 
-            // HealthImpactFunctionOfUser_defined
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
+                                                this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
             this.ClientSize = new System.Drawing.Size(803, 658);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.grpCancelOK);
+            this.MinimumSize = new System.Drawing.Size(819, 696);
             this.Name = "HealthImpactFunctionOfUser_defined";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Health Impact Function Definition";

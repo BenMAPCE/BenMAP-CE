@@ -288,7 +288,9 @@ namespace BenMAP
                                 PercentageID = maxPercentageID + 1;
                             }
                         }
-                        commandText = string.Format("insert into GriddefinitionPercentages(PercentageID,SourceGriddefinitionID,TargetGriddefinitionID) values({0},{1},{2})", PercentageID, dicGriddefinitionID.ContainsKey(SourceGriddefinitionID) ? dicGriddefinitionID[SourceGriddefinitionID] : SourceGriddefinitionID, dicGriddefinitionID.ContainsKey(TargetGriddefinitionID) ? dicGriddefinitionID[TargetGriddefinitionID] : TargetGriddefinitionID);
+                        commandText = string.Format("insert into GriddefinitionPercentages(PercentageID,SourceGriddefinitionID,TargetGriddefinitionID) values({0},{1},{2})", PercentageID, 
+                            dicGriddefinitionID.ContainsKey(SourceGriddefinitionID) ? dicGriddefinitionID[SourceGriddefinitionID] : SourceGriddefinitionID, 
+                            dicGriddefinitionID.ContainsKey(TargetGriddefinitionID) ? dicGriddefinitionID[TargetGriddefinitionID] : TargetGriddefinitionID);
                         fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                         pBarImport.PerformStep();
                     }
@@ -3750,7 +3752,7 @@ namespace BenMAP
                         }
                         //The 'F' is for the Locked column in Setups - this is imported and not predefined
                         // 2012 02 15 added LOCKED to field list
-                        commandText = string.Format("insert into Setups(setupID,setupName,LOCKED) values({0},'{1}', 'F')", newsetupid, entry.Value);
+                        commandText = string.Format("insert into Setups (setupID,setupName,LOCKED) values({0},'{1}', 'F')", newsetupid, entry.Value);
                         fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                     }
                 }

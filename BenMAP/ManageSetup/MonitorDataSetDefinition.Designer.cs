@@ -45,6 +45,7 @@ namespace BenMAP
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
+            this.btnDelete = new System.Windows.Forms.Button();
             this.grpMonitorDataSetDefinition.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.olvMonitorDataSets)).BeginInit();
             this.grpFileSource.SuspendLayout();
@@ -61,7 +62,7 @@ namespace BenMAP
             this.btnOutput.TabIndex = 6;
             this.btnOutput.Text = "Output Sample File";
             this.toolTip1.SetToolTip(this.btnOutput, "Click to save a template with standard .csv format. It only contains 50 rows data" +
-                    " and can be used as an example to prepare the input file.");
+        " and can be used as an example to prepare the input file.");
             this.btnOutput.UseVisualStyleBackColor = true;
             this.btnOutput.Click += new System.EventHandler(this.btnOutput_Click);
             // 
@@ -75,7 +76,7 @@ namespace BenMAP
             this.grpMonitorDataSetDefinition.Controls.Add(this.txtDataSetName);
             this.grpMonitorDataSetDefinition.Controls.Add(this.lblDataSetName);
             this.grpMonitorDataSetDefinition.Controls.Add(this.lblDataSetContents);
-            this.grpMonitorDataSetDefinition.Location = new System.Drawing.Point(4, 7);
+            this.grpMonitorDataSetDefinition.Location = new System.Drawing.Point(4, 48);
             this.grpMonitorDataSetDefinition.Name = "grpMonitorDataSetDefinition";
             this.grpMonitorDataSetDefinition.Size = new System.Drawing.Size(412, 506);
             this.grpMonitorDataSetDefinition.TabIndex = 0;
@@ -165,8 +166,8 @@ namespace BenMAP
             // 
             // tabControl1
             // 
-            this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.tabControl1.Controls.Add(this.tbpTextFile);
             this.tabControl1.Location = new System.Drawing.Point(-302, 56);
             this.tabControl1.Name = "tabControl1";
@@ -196,7 +197,7 @@ namespace BenMAP
             this.label1.Size = new System.Drawing.Size(297, 63);
             this.label1.TabIndex = 3;
             this.label1.Text = "The file layout is: Column, Row, Metric, Seasonal Metric, Statistic, Values; Valu" +
-                "es is a string of comma delimited model values.";
+    "es is a string of comma delimited model values.";
             this.label1.Visible = false;
             // 
             // btnBrowse
@@ -265,7 +266,7 @@ namespace BenMAP
             this.groupBox1.Controls.Add(this.lblPollutant);
             this.groupBox1.Controls.Add(this.txtYear);
             this.groupBox1.Controls.Add(this.lblYear);
-            this.groupBox1.Location = new System.Drawing.Point(4, 468);
+            this.groupBox1.Location = new System.Drawing.Point(4, 509);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(413, 96);
             this.groupBox1.TabIndex = 5;
@@ -323,24 +324,24 @@ namespace BenMAP
             this.lblProgress.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.lblProgress.AutoSize = true;
             this.lblProgress.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblProgress.Location = new System.Drawing.Point(282, 571);
+            this.lblProgress.Location = new System.Drawing.Point(282, 652);
             this.lblProgress.Name = "lblProgress";
             this.lblProgress.Size = new System.Drawing.Size(0, 14);
             this.lblProgress.TabIndex = 4;
             // 
             // progressBar1
             // 
-            this.progressBar1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.progressBar1.Location = new System.Drawing.Point(13, 573);
+            this.progressBar1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.progressBar1.Location = new System.Drawing.Point(13, 654);
             this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(263, 12);
+            this.progressBar1.Size = new System.Drawing.Size(224, 12);
             this.progressBar1.TabIndex = 3;
             // 
             // btnOK
             // 
             this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnOK.Location = new System.Drawing.Point(328, 565);
+            this.btnOK.Location = new System.Drawing.Point(328, 646);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 27);
             this.btnOK.TabIndex = 2;
@@ -351,7 +352,7 @@ namespace BenMAP
             // btnCancel
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnCancel.Location = new System.Drawing.Point(243, 565);
+            this.btnCancel.Location = new System.Drawing.Point(328, 613);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 27);
             this.btnCancel.TabIndex = 1;
@@ -360,6 +361,16 @@ namespace BenMAP
             this.btnCancel.Visible = false;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
+            // btnDelete
+            // 
+            this.btnDelete.Location = new System.Drawing.Point(247, 646);
+            this.btnDelete.Name = "btnDelete";
+            this.btnDelete.Size = new System.Drawing.Size(75, 27);
+            this.btnDelete.TabIndex = 6;
+            this.btnDelete.Text = "Delete";
+            this.btnDelete.UseVisualStyleBackColor = true;
+            this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
+            // 
             // MonitorDataSetDefinition
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
@@ -367,7 +378,8 @@ namespace BenMAP
             this.AutoScroll = true;
             this.AutoScrollMargin = new System.Drawing.Size(1, 1);
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.ClientSize = new System.Drawing.Size(427, 599);
+            this.ClientSize = new System.Drawing.Size(427, 680);
+            this.Controls.Add(this.btnDelete);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.grpMonitorDataSetDefinition);
             this.Controls.Add(this.lblProgress);
@@ -422,5 +434,6 @@ namespace BenMAP
         private System.Windows.Forms.Label lblProgress;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Button btnBrowse1;
+        private System.Windows.Forms.Button btnDelete;
     }
 }

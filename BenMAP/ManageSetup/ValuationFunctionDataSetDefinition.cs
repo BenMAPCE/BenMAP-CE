@@ -18,9 +18,18 @@ namespace BenMAP
     {
         List<int> lstdeleteValuationid = new List<int>();
         private object _dataSetID = -1;
+        private string _dataSetName;
+        private object _newDataSetID = null;//used for copying an existing dataset that is locked. (the new datasetid)
+        private object _oldDataSetID = null;//used for copying an existing dataset that is locked. (the locked datasetid)
+        
         private bool _isEdit = false;
         //DataTable dtForLoading = new DataTable();
         int valuationFunctionDataSetID = -1;
+        private bool _isLocked = false;
+        private bool _CopyingDataset = false;
+        private const int VALUATIONDATASETTYPEID = 7;
+        
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ValuationFunctionDataSetDefinition"/> class.
         /// </summary>
@@ -45,12 +54,25 @@ namespace BenMAP
         /// </summary>
         /// <param name="dataSetName">Name of the data set.</param>
         /// <param name="datasetId">The dataset identifier.</param>
-        public ValuationFunctionDataSetDefinition(string dataSetName, object datasetId, bool isEdit): this(dataSetName)//calls the constructor that sets the data set name
+        public ValuationFunctionDataSetDefinition(string dataSetName, object datasetId, bool isLocked): this(dataSetName)//calls the constructor that sets the data set name
         {
             _dataSetID = datasetId;
-            _isEdit  = isEdit;
+            _isEdit  = !isLocked;
             valuationFunctionDataSetID = Convert.ToInt32(datasetId.ToString());//when doing an edit I need to have the current funciton dataset ID
-            txtValuationFunctionDataSetName.Enabled = false;
+            _isLocked = isLocked;
+            if (_isLocked)
+            {
+                txtValuationFunctionDataSetName.Enabled = true;//false;
+                _dataSetName = dataSetName + "_Copy";
+                _dataName = _dataSetName;
+                txtValuationFunctionDataSetName.Text = _dataSetName;
+                _oldDataSetID = _dataSetID;
+                _CopyingDataset = true;
+            }
+            else
+            {
+                txtValuationFunctionDataSetName.Enabled = false;
+            }
         }
 
         DataTable dt = new DataTable();
@@ -446,16 +468,17 @@ namespace BenMAP
                         //                                _dt.Rows[row][4], _dt.Rows[row][5], FunctionalFormID, _dt.Rows[row][7], _dt.Rows[row][8].ToString().Replace("'", "''"), _dt.Rows[row][9].ToString().Replace("'", "''"),
                         //                                _dt.Rows[row][10], _dt.Rows[row][11], _dt.Rows[row][12], _dt.Rows[row][13].ToString().Replace("'", "''"), _dt.Rows[row][14], _dt.Rows[row][15].ToString().Replace("'", "''"),
                         //                                _dt.Rows[row][16], _dt.Rows[row][17].ToString().Replace("'", "''"), _metadataObj.MetadataEntryId);
-                        // removed metadata object from insert -
+                        // 2015 09 23 - BENMAP-357 replaced metadata objext in insert
+                        /// // removed metadata object from insert -
                         commandText = string.Format("insert into ValuationFunctions(VALUATIONFUNCTIONID, VALUATIONFUNCTIONDATASETID, ENDPOINTGROUPID, ENDPOINTID, "
-                                    + "QUALIFIER, REFERENCE, STARTAGE, ENDAGE, FUNCTIONALFORMID, A, NAMEA, DISTA, P1A, P2A, B, NAMEB, C, NAMEC, D, NAMED) "
-                                    + "values({0},{1},{2},{3},'{4}','{5}',{6},{7},{8},{9},'{10}','{11}',{12},{13},{14},'{15}',{16},'{17}',{18},'{19}')",
+                                    + "QUALIFIER, REFERENCE, STARTAGE, ENDAGE, FUNCTIONALFORMID, A, NAMEA, DISTA, P1A, P2A, B, NAMEB, C, NAMEC, D, NAMED, METADATAID) "
+                                    + "values({0},{1},{2},{3},'{4}','{5}',{6},{7},{8},{9},'{10}','{11}',{12},{13},{14},'{15}',{16},'{17}',{18},'{19}', {20})",
                                                     valuationFunctionID, VValuationFunctionDataSetID, EndpointGroupID, EndpointID, _dt.Rows[row][2].ToString().Replace("'", "''"),
                                                     _dt.Rows[row][3].ToString().Replace("'", "''"), _dt.Rows[row][4], _dt.Rows[row][5], FunctionalFormID, _dt.Rows[row][7],
                                                     _dt.Rows[row][8].ToString().Replace("'", "''"), _dt.Rows[row][9].ToString().Replace("'", "''"),
                                                     _dt.Rows[row][10], _dt.Rows[row][11], _dt.Rows[row][12], _dt.Rows[row][13].ToString().Replace("'", "''"),
                                                     _dt.Rows[row][14], _dt.Rows[row][15].ToString().Replace("'", "''"),
-                                                   _dt.Rows[row][16], _dt.Rows[row][17].ToString().Replace("'", "''"));
+                                                   _dt.Rows[row][16], _dt.Rows[row][17].ToString().Replace("'", "''"), _metadataObj.MetadataEntryId);
 
                         //commandText = string.Format("insert into ValuationFunctions values({0},{1},{2},{3},'{4}','{5}',{6},{7},{8},{9},'{10}','{11}',{12},{13},{14},'{15}',{16},'{17}',{18},'{19}', {20})",
                         //                            valuationFunctionID, VValuationFunctionDataSetID, EndpointGroupID, EndpointID, dtForLoading.Rows[row][2].ToString().Replace("'", "''"),
@@ -686,8 +709,12 @@ namespace BenMAP
         {
             try
             {
-                if (olvData.SelectedObjects == null || olvData.Items.Count == 0)
-                { return; }
+                // 2015 09 09 - Add confirmation message BENMAP-332
+                if (olvData.Items.Count == 0) { MessageBox.Show("There are no data to be deleted."); return; }
+                if (olvData.SelectedObject == null) { MessageBox.Show("You must select a row to delete."); return; }
+               
+                //if (olvData.SelectedObjects == null || olvData.Items.Count == 0)
+                //{ return; }
                 DialogResult rtn = MessageBox.Show("Delete this function?", "Confirm Deletion", MessageBoxButtons.YesNo);
                 if (rtn == DialogResult.Yes)
                 {
@@ -722,15 +749,26 @@ namespace BenMAP
 
         private void btnOK_Click(object sender, EventArgs e)
         {
-            LoadDatabase();
-            this.DialogResult = DialogResult.OK;
+            if (_isLocked)//doing a copy
+            {
+                CopyDatabase();
+                this.DialogResult = DialogResult.OK;
+                return;
+            }
+            else
+            {
+                LoadDatabase();
+                this.DialogResult = DialogResult.OK;
+            }
         }
 
         private void insertMetadata(int valuationFunctionDataSetID)
         {
             _metadataObj.DatasetId = valuationFunctionDataSetID;
 
-            _metadataObj.DatasetTypeId = SQLStatementsCommonClass.getDatasetID("Valuationfunction");
+            // BENMAP-346 - hardcoded datasettypeid as it was not getting set by common class getDatasetID call
+            _metadataObj.DatasetTypeId = VALUATIONDATASETTYPEID;
+            // _metadataObj.DatasetTypeId = SQLStatementsCommonClass.getDatasetID("Valuationfunction");
             if (!SQLStatementsCommonClass.insertMetadata(_metadataObj))
             {
                 MessageBox.Show("Failed to save Metadata.");
@@ -753,10 +791,13 @@ namespace BenMAP
                     object obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
                     commandText = string.Format("select endpointgroups.endpointgroupname,endpoints.endpointname, valuationfunctions.qualifier, valuationfunctions.reference,valuationfunctions.startage,valuationfunctions.endage,valuationfunctionalforms.functionalformtext,valuationfunctions.a,valuationfunctions.namea,valuationfunctions.dista,valuationfunctions.p1a,valuationfunctions.p2a,valuationfunctions.b,valuationfunctions.nameb,valuationfunctions.c,valuationfunctions.namec,valuationfunctions.d,valuationfunctions.named,valuationfunctions.valuationfunctionid from valuationfunctions , endpoints , endpointgroups,valuationfunctionalforms where valuationfunctions.endpointid=endpoints.endpointid and endpointgroups.endpointgroupid=valuationfunctions.endpointgroupid and valuationfunctions.functionalformid=valuationfunctionalforms.functionalformid and valuationfunctiondatasetid={0} order by endpointgroupname asc", obj);
                     dt = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText).Tables[0];
-                    olvData.DataSource = dt;
-                    _dt = dt;
-                    cboEndpointGroup.Items.Add("");
-                    cboEndpoint.Items.Add("");
+                    if (dt != null)
+                    {
+                        olvData.DataSource = dt;
+                        _dt = dt;
+                        cboEndpointGroup.Items.Add("");
+                        cboEndpoint.Items.Add("");
+                    }
                 }
                 else
                 {
@@ -1172,5 +1213,84 @@ namespace BenMAP
                 cboEndpoint.DropDownWidth = maxEndpointWidth;
             }
         }
+        private void CopyDatabase()
+        {
+            
+            FireBirdHelperBase fb = new ESILFireBirdHelper();
+            try
+            {
+                string commandText = string.Empty;
+                int maxID = 0;
+                int minID = 0;
+                object rVal = null;
+               //check and see if name is used
+                commandText = string.Format("Select ValuationFunctionDATASETNAME from ValuationFunctionDATASETS WHERE ValuationFunctionDATASETNAME = '{0}'", txtValuationFunctionDataSetName.Text.Trim());
+                rVal = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
+                if (rVal != null)
+                {
+                    MessageBox.Show("Name is already used.  Please select a new name.");
+                    txtValuationFunctionDataSetName.Focus();
+                    return;
+                }
+
+                // string msg = string.Format("Save this file associated with {0} and {1} ?", cboPollutant.GetItemText(cboPollutant.SelectedItem), txtYear.Text);
+                string msg = "Copy Valuation Function  Data Set";
+                DialogResult result = MessageBox.Show(msg, "Confirm Copy", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                if (result == DialogResult.No) return;
+                //getting a new dataset id
+                if (_newDataSetID == null)
+                {
+                    commandText = commandText = "select max(valuationFunctionDataSetID) from ValuationFunctionDataSets";
+                    _newDataSetID = Convert.ToInt16(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
+                }
+                // first, create a new valuation function data set
+                //the 'F's are for the READONLY and LOCKED columns. No idea why we have both. Locked is 'F' for the copy.
+                commandText = string.Format("insert into ValuationFunctionDataSets(ValuationFunctionDATASETID, SETUPID, " 
+                         + "ValuationFunctionDATASETNAME, READONLY, LOCKED) "
+                         + " values ({0},{1},'{2}', 'F', 'F' )", _newDataSetID, CommonClass.ManageSetup.SetupID, txtValuationFunctionDataSetName.Text);
+                fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+               
+                // then, fill the valuation functions table
+                commandText = "select max(ValuationFunctionID) from ValuationFunctions";
+
+                maxID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
+                commandText = string.Format("select min(ValuationFunctionID) from ValuationFunctions where ValuationFunctionDATASETID = {0}", _oldDataSetID);
+                minID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
+                
+                //inserting - copying the locked data to the new data set
+                commandText = string.Format("insert into ValuationFunctions(VALUATIONFUNCTIONID, VALUATIONFUNCTIONDATASETID, ENDPOINTGROUPID, " +
+                              "ENDPOINTID, QUALIFIER, REFERENCE, STARTAGE, ENDAGE, FUNCTIONALFORMID, A, NAMEA, DISTA, P1A, P2A, B, NAMEB, " +
+                              "C, NAMEC, D, NAMED, METADATAID) " +
+                              "SELECT ValuationFunctionID + ({0} - {1}) + 1, " +
+                              "{2}, ENDPOINTGROUPID, ENDPOINTID, QUALIFIER, REFERENCE, STARTAGE, ENDAGE, FUNCTIONALFORMID, A, NAMEA, DISTA, " + 
+                              "P1A, P2A, B, NAMEB, C, NAMEC, D, NAMED, METADATAID " +
+                              "FROM ValuationFunctions WHERE ValuationFunctionDataSetID= {3}", maxID, minID, _newDataSetID, _oldDataSetID);
+                
+                fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                // now copy the valuation custom entries
+                commandText = string.Format("INSERT INTO ValuationFunctionCustomEntries(ValuationFunctionID, VVALUE) "
+                                + "SELECT {0} + 1 + C.ValuationFunctionID - {1} AS NEWValuationFunctionID, VVALUE "
+                                + "from ValuationFunctionCustomEntries as C INNER JOIN ValuationFunctions AS P "
+                                + "ON C.ValuationFunctionID = P.ValuationFunctionID "
+                                + "WHERE P.ValuationFunctionDATASETID = {2} ", maxID, minID, _oldDataSetID);
+                
+                fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                
+
+                _metadataObj = new MetadataClassObj();
+                _metadataObj.DatasetId = Convert.ToInt32(_newDataSetID);
+                _metadataObj.FileName = txtValuationFunctionDataSetName.Text;
+
+            }
+            catch (Exception ex)
+            {
+                progressBar1.Visible = false;
+                lblProgress.Text = "";
+                //addGridView(_dataSetID);
+                Logger.LogError(ex.Message);
+            }
+        }
+
+
     }
 }

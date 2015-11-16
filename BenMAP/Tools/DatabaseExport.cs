@@ -533,7 +533,7 @@ namespace BenMAP
                 writer.Write(drGriddefinitionPercentagescount);
                 commandText = string.Format("select PercentageID,SourceGriddefinitionID,TargetGriddefinitionID from GriddefinitionPercentages where SourceGriddefinitionID in (select GriddefinitionID from griddefinitions where {0}) and TargetGriddefinitionID in (select GriddefinitionID from griddefinitions where {0})", setupid);
                 System.Data.DataSet dsGriddefinitionPercentages = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
-                lstType = new List<string>() { "int", "int", "int" };
+                lstType = new List<string>() { "int", "int", "int", "int"};
                 writeOneTable(writer, commandText, lstType);
 
                 pBarExport.Value = 0;

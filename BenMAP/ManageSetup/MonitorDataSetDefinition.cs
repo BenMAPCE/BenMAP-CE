@@ -623,5 +623,63 @@ namespace BenMAP
 
             return bPassed;
         }
+
+        private void btnDelete_Click(object sender, EventArgs e)
+        {
+            // 2015 09 03 new code for delete
+            // don't allow user to delete locked set
+            if (_isLocked)
+            {
+                MessageBox.Show("Default (locked) datasets may not be deleted");   
+                return;
+            }
+            ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+            string commandText = string.Empty;
+            string msg = string.Empty;
+            String pollutantName = "pollutant" ;   // name of selected pollutant
+            String yearName = "year";        // selected year for deletion
+            string pollutantDSName = txtDataSetName.Text;
+            try
+            {
+                if (olvMonitorDataSets.Items.Count == 0) { MessageBox.Show("There are no data to be deleted."); return; }
+                if (olvMonitorDataSets.SelectedObject == null)  { MessageBox.Show("You must select a row to delete."); return;}
+                DataRowView drv = olvMonitorDataSets.SelectedObject as DataRowView;
+                pollutantName = drv.Row[0].ToString();
+                yearName = drv.Row[1].ToString();
+                
+                msg = string.Format("Delete {0} - {1} from {2}?", pollutantName, yearName, pollutantDSName);
+                DialogResult result = MessageBox.Show(msg, "Confirm Deletion", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                if (result == DialogResult.Yes)
+                {
+                     // get setupID
+                    String setupID = CommonClass.ManageSetup.SetupID.ToString();
+                    // get pollutant ID
+                    commandText = string.Format("Select PollutantID from Pollutants where PollutantName = '{0}' and SetupID ={1}", pollutantName, setupID);
+                    String pollutantID = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText).ToString();
+
+                    // get monitor data set id
+                    commandText = string.Format("Select MonitorDataSetID from MonitorDataSets where MonitorDataSetName = '{0}' and SetupID = {1} "
+                            , pollutantDSName, setupID);
+                    String monitorDataSetID = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText).ToString();
+                    commandText = string.Format("delete from MonitorEntries where MonitorID in (select MonitorID from Monitors where MonitorDataSetID = {0}  "
+                        + "  and PollutantID ={2}) and YYear = {1}", monitorDataSetID, yearName, pollutantID);
+ 
+                    int deleteMonitorEntries = fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+
+                    // remove orphaned monitors (those with no values) (note that this removes ALL orphaned monitors, not just those orphaned in this delete!
+                    commandText = "Delete from Monitors where MonitorID in (Select M.MonitorID from Monitors as M left join MonitorEntries as E on M.MonitorID = E.MonitorID "
+                        + " where E.MonitorID is NULL)";
+                    int deleteEmptyMonitors = fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+
+                    // refresh box to show deletion
+                    addGridView(_dataSetID);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.Message);
+            }
+        }
+
     }
 }
