@@ -66,7 +66,8 @@ namespace BenMAP
             try
             {
                 listCustomValue.Clear();
-                HealthImpactFunctionOfUser_defined frm = new HealthImpactFunctionOfUser_defined();
+                //HealthImpactFunctionOfUser_defined frm = new HealthImpactFunctionOfUser_defined();
+                HIFDefinitionMulti frm = new HIFDefinitionMulti();
                 DialogResult rth = frm.ShowDialog();
                 if (rth != DialogResult.OK) { return; }
                 AddCount--;
@@ -1393,7 +1394,8 @@ namespace BenMAP
                 else
                     listCustomValue = new List<double>();
                 if (_dt.Rows.Count == 0) { return; }
-                HealthImpactFunctionOfUser_defined frm = new HealthImpactFunctionOfUser_defined(txtHealthImpactFunction.Text, healthImpact, listCustomValue);
+                // HealthImpactFunctionOfUser_defined frm = new HealthImpactFunctionOfUser_defined(txtHealthImpactFunction.Text, healthImpact, listCustomValue);
+                HIFDefinitionMulti frm = new HIFDefinitionMulti(txtHealthImpactFunction.Text, healthImpact, listCustomValue);
                 DialogResult rth = frm.ShowDialog();
                 if (rth != DialogResult.OK) { return; }
                 for (int i = 0; i < _dt.Rows.Count; i++)

@@ -302,7 +302,7 @@ namespace BenMAP
                     cboBetaDistribution.Items.Add("Beta");
                     cboBetaDistribution.Items.Add("Pareto");
                     cboBetaDistribution.Items.Add("Cauchy");
-                    cboBetaDistribution.Items.Add("Custom");
+                    cboBetaDistribution.Items.Add("Custom"); 
                     cboEndpointGroup.Text = _healthImpacts.EndpointGroup;
                     cboEndpoint.Text = _healthImpacts.Endpoint;
                     cboPollutant.Text = _healthImpacts.Pollutant;
@@ -358,7 +358,7 @@ namespace BenMAP
                     cboBetaDistribution.Items.Add("Pareto");
                     cboBetaDistribution.Items.Add("Cauchy");
                     cboBetaDistribution.Items.Add("Custom");
-                    cboBetaDistribution.SelectedIndex = 0;
+                    cboBetaDistribution.SelectedIndex = 0; 
 
                 }
                 cboBetaDistribution.SelectedValueChanged -= cboBetaDistribution_SelectedValueChanged;
@@ -426,7 +426,7 @@ namespace BenMAP
                 string[] AvailableFunctions = new string[] { "ABS(x)", "EXP(x)", "LOG(x)", "POW(x,y)", "SQR(x)", "ACOS(x)", "ASIN(x)", "ATAN(x)", "ATAN2(x,y)", "BIGMUL(x,y)", "CEILING(x)", "COS(x)", "COSH(x)", "DIVREM(x,y,z)", "FLOOR(x)", "IEEEREMAINDER(x,y)", "LOG10(x)", "MAX(x,y)", "MIN(x,y)", "ROUND(x,y)", "SIGN(x)", "SIN(x)", "SINH(x)", "TAN(x)", "TANH(x)", "TRUNCATE(x)" };
                 lstFuncAvailableFunctions.Items.AddRange(AvailableFunctions);
 
-                commandText = "select * from COMMONFNFORMS";
+                commandText = "select * from COMMONFNFORMS"; 
                 ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                 lstCommonUsedFunctions.DataSource = ds.Tables[0];
                 lstCommonUsedFunctions.DisplayMember = "FUNCTIONALFORMTEXT";

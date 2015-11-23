@@ -24,6 +24,7 @@ using ESIL.DBUtility;
 using System.Configuration;
 using ProtoBuf;
 using System.Collections;
+using BenMAP.Grid;
 
 namespace BenMAP
 {
@@ -1076,7 +1077,8 @@ namespace BenMAP
                         {
                             benMAPPollutantArray = CommonClass.LstPollutant.ToArray();
                         }
-                        frm = new Pollutant();
+                        // frm = new Pollutant();
+                        frm = new PollutantMulti();
                         rtn = frm.ShowDialog();
                         if (rtn != DialogResult.OK)
                         {
