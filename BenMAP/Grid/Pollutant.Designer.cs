@@ -63,7 +63,10 @@ namespace BenMAP
             this.tabMoving.SuspendLayout();
             this.tabCustom.SuspendLayout();
             this.SuspendLayout();
-                                                this.groupBox3.Controls.Add(this.label13);
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.label13);
             this.groupBox3.Controls.Add(this.label12);
             this.groupBox3.Controls.Add(this.cbShowDetails);
             this.groupBox3.Controls.Add(this.btnCancel);
@@ -80,29 +83,41 @@ namespace BenMAP
             this.groupBox3.TabIndex = 10;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Main";
-                                                this.label13.AutoSize = true;
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
             this.label13.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
             this.label13.Location = new System.Drawing.Point(31, 165);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(134, 14);
             this.label13.TabIndex = 11;
             this.label13.Text = "Drag and drop to select";
-                                                this.label12.AutoSize = true;
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
             this.label12.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
             this.label12.Location = new System.Drawing.Point(215, 164);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(128, 14);
             this.label12.TabIndex = 10;
             this.label12.Text = "Double-click to delete";
-                                                this.cbShowDetails.AutoSize = true;
+            // 
+            // cbShowDetails
+            // 
+            this.cbShowDetails.AutoSize = true;
             this.cbShowDetails.Location = new System.Drawing.Point(30, 199);
             this.cbShowDetails.Name = "cbShowDetails";
-            this.cbShowDetails.Size = new System.Drawing.Size(126, 16);
+            this.cbShowDetails.Size = new System.Drawing.Size(119, 18);
             this.cbShowDetails.TabIndex = 6;
             this.cbShowDetails.Text = "Pollutant Details";
             this.cbShowDetails.UseVisualStyleBackColor = true;
             this.cbShowDetails.CheckedChanged += new System.EventHandler(this.cbShowDetails_CheckedChanged);
-                                                this.btnCancel.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            // 
+            // btnCancel
+            // 
+            this.btnCancel.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.btnCancel.Location = new System.Drawing.Point(221, 194);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 27);
@@ -110,7 +125,10 @@ namespace BenMAP
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
-                                                this.btnOK.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            // 
+            // btnOK
+            // 
+            this.btnOK.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.btnOK.Location = new System.Drawing.Point(306, 194);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 27);
@@ -118,7 +136,10 @@ namespace BenMAP
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
-                                                this.btnSelect.Location = new System.Drawing.Point(134, 190);
+            // 
+            // btnSelect
+            // 
+            this.btnSelect.Location = new System.Drawing.Point(134, 190);
             this.btnSelect.Name = "btnSelect";
             this.btnSelect.Size = new System.Drawing.Size(75, 27);
             this.btnSelect.TabIndex = 5;
@@ -126,7 +147,10 @@ namespace BenMAP
             this.btnSelect.UseVisualStyleBackColor = true;
             this.btnSelect.Visible = false;
             this.btnSelect.Click += new System.EventHandler(this.btnSelect_Click);
-                                                this.btnDelete.Location = new System.Drawing.Point(64, 194);
+            // 
+            // btnDelete
+            // 
+            this.btnDelete.Location = new System.Drawing.Point(64, 194);
             this.btnDelete.Name = "btnDelete";
             this.btnDelete.Size = new System.Drawing.Size(75, 27);
             this.btnDelete.TabIndex = 4;
@@ -134,7 +158,10 @@ namespace BenMAP
             this.btnDelete.UseVisualStyleBackColor = true;
             this.btnDelete.Visible = false;
             this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
-                                                this.lstSPollutant.AllowDrop = true;
+            // 
+            // lstSPollutant
+            // 
+            this.lstSPollutant.AllowDrop = true;
             this.lstSPollutant.FormattingEnabled = true;
             this.lstSPollutant.ItemHeight = 14;
             this.lstSPollutant.Location = new System.Drawing.Point(212, 42);
@@ -145,7 +172,10 @@ namespace BenMAP
             this.lstSPollutant.DragDrop += new System.Windows.Forms.DragEventHandler(this.lstSPollutant_DragDrop);
             this.lstSPollutant.DragOver += new System.Windows.Forms.DragEventHandler(this.lstSPollutant_DragOver);
             this.lstSPollutant.DoubleClick += new System.EventHandler(this.lstSPollutant_DoubleClick);
-                                                this.lstPollutant.AllowDrop = true;
+            // 
+            // lstPollutant
+            // 
+            this.lstPollutant.AllowDrop = true;
             this.lstPollutant.FormattingEnabled = true;
             this.lstPollutant.ItemHeight = 14;
             this.lstPollutant.Location = new System.Drawing.Point(29, 42);
@@ -155,19 +185,28 @@ namespace BenMAP
             this.lstPollutant.SelectedIndexChanged += new System.EventHandler(this.lstPollutant_SelectedIndexChanged);
             this.lstPollutant.DoubleClick += new System.EventHandler(this.lstPollutant_DoubleClick);
             this.lstPollutant.MouseDown += new System.Windows.Forms.MouseEventHandler(this.lstPollutant_MouseDown);
-                                                this.label19.AutoSize = true;
+            // 
+            // label19
+            // 
+            this.label19.AutoSize = true;
             this.label19.Location = new System.Drawing.Point(209, 24);
             this.label19.Name = "label19";
             this.label19.Size = new System.Drawing.Size(116, 14);
             this.label19.TabIndex = 1;
             this.label19.Text = "Selected Pollutants:";
-                                                this.label18.AutoSize = true;
+            // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
             this.label18.Location = new System.Drawing.Point(27, 24);
             this.label18.Name = "label18";
             this.label18.Size = new System.Drawing.Size(66, 14);
             this.label18.TabIndex = 0;
             this.label18.Text = "Pollutants:";
-                                                this.groupBox2.Controls.Add(this.cmbMetric);
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.cmbMetric);
             this.groupBox2.Controls.Add(this.txtObservationType);
             this.groupBox2.Controls.Add(this.label3);
             this.groupBox2.Controls.Add(this.txtPollutantName);
@@ -183,7 +222,10 @@ namespace BenMAP
             this.groupBox2.TabIndex = 7;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Details";
-                                                this.cmbMetric.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            // 
+            // cmbMetric
+            // 
+            this.cmbMetric.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbMetric.FormattingEnabled = true;
             this.cmbMetric.Items.AddRange(new object[] {
             "D24HourMean"});
@@ -192,35 +234,53 @@ namespace BenMAP
             this.cmbMetric.Size = new System.Drawing.Size(114, 22);
             this.cmbMetric.TabIndex = 5;
             this.cmbMetric.SelectedIndexChanged += new System.EventHandler(this.cmbMetric_SelectedIndexChanged);
-                                                this.txtObservationType.Location = new System.Drawing.Point(299, 20);
+            // 
+            // txtObservationType
+            // 
+            this.txtObservationType.Location = new System.Drawing.Point(299, 20);
             this.txtObservationType.Name = "txtObservationType";
             this.txtObservationType.ReadOnly = true;
             this.txtObservationType.Size = new System.Drawing.Size(112, 22);
             this.txtObservationType.TabIndex = 5;
-                                                this.label3.AutoSize = true;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(12, 55);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(44, 14);
             this.label3.TabIndex = 4;
             this.label3.Text = "Metric:";
-                                                this.txtPollutantName.Location = new System.Drawing.Point(75, 20);
+            // 
+            // txtPollutantName
+            // 
+            this.txtPollutantName.Location = new System.Drawing.Point(75, 20);
             this.txtPollutantName.Name = "txtPollutantName";
             this.txtPollutantName.ReadOnly = true;
             this.txtPollutantName.Size = new System.Drawing.Size(114, 22);
             this.txtPollutantName.TabIndex = 1;
-                                                this.label2.AutoSize = true;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(198, 24);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(102, 14);
             this.label2.TabIndex = 2;
             this.label2.Text = "Observation Type:";
-                                                this.label1.AutoSize = true;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(12, 24);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(60, 14);
             this.label1.TabIndex = 0;
             this.label1.Text = "Pollutant:";
-                                                this.cmbSeasonalMetric.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            // 
+            // cmbSeasonalMetric
+            // 
+            this.cmbSeasonalMetric.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbSeasonalMetric.FormattingEnabled = true;
             this.cmbSeasonalMetric.Items.AddRange(new object[] {
             "QuarterlyMean",
@@ -229,19 +289,28 @@ namespace BenMAP
             this.cmbSeasonalMetric.Name = "cmbSeasonalMetric";
             this.cmbSeasonalMetric.Size = new System.Drawing.Size(112, 22);
             this.cmbSeasonalMetric.TabIndex = 3;
-                                                this.label8.AutoSize = true;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
             this.label8.Location = new System.Drawing.Point(198, 55);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(98, 14);
             this.label8.TabIndex = 2;
             this.label8.Text = "Seasonal Metric:";
-                                                this.label4.AutoSize = true;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(5, 86);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(79, 14);
             this.label4.TabIndex = 0;
             this.label4.Text = "Hourly Metric";
-                                                this.tclFixed.Controls.Add(this.tabFixed);
+            // 
+            // tclFixed
+            // 
+            this.tclFixed.Controls.Add(this.tabFixed);
             this.tclFixed.Controls.Add(this.tabMoving);
             this.tclFixed.Controls.Add(this.tabCustom);
             this.tclFixed.Location = new System.Drawing.Point(7, 104);
@@ -249,7 +318,10 @@ namespace BenMAP
             this.tclFixed.SelectedIndex = 0;
             this.tclFixed.Size = new System.Drawing.Size(404, 130);
             this.tclFixed.TabIndex = 1;
-                                                this.tabFixed.Controls.Add(this.cmbStatistic);
+            // 
+            // tabFixed
+            // 
+            this.tabFixed.Controls.Add(this.cmbStatistic);
             this.tabFixed.Controls.Add(this.label7);
             this.tabFixed.Controls.Add(this.txtEndHour);
             this.tabFixed.Controls.Add(this.txtStartHour);
@@ -262,7 +334,10 @@ namespace BenMAP
             this.tabFixed.TabIndex = 0;
             this.tabFixed.Text = "Fixed Window";
             this.tabFixed.UseVisualStyleBackColor = true;
-                                                this.cmbStatistic.FormattingEnabled = true;
+            // 
+            // cmbStatistic
+            // 
+            this.cmbStatistic.FormattingEnabled = true;
             this.cmbStatistic.Items.AddRange(new object[] {
             "Mean",
             "Median",
@@ -274,37 +349,55 @@ namespace BenMAP
             this.cmbStatistic.Size = new System.Drawing.Size(100, 22);
             this.cmbStatistic.TabIndex = 5;
             this.cmbStatistic.Text = "Mean";
-                                                this.label7.AutoSize = true;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
             this.label7.Location = new System.Drawing.Point(6, 73);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(52, 14);
             this.label7.TabIndex = 4;
             this.label7.Text = "Statistic:";
-                                                this.txtEndHour.Location = new System.Drawing.Point(78, 37);
+            // 
+            // txtEndHour
+            // 
+            this.txtEndHour.Location = new System.Drawing.Point(78, 37);
             this.txtEndHour.Name = "txtEndHour";
             this.txtEndHour.ReadOnly = true;
             this.txtEndHour.Size = new System.Drawing.Size(100, 22);
             this.txtEndHour.TabIndex = 3;
             this.txtEndHour.Text = "23";
-                                                this.txtStartHour.Location = new System.Drawing.Point(78, 5);
+            // 
+            // txtStartHour
+            // 
+            this.txtStartHour.Location = new System.Drawing.Point(78, 5);
             this.txtStartHour.Name = "txtStartHour";
             this.txtStartHour.ReadOnly = true;
             this.txtStartHour.Size = new System.Drawing.Size(100, 22);
             this.txtStartHour.TabIndex = 1;
             this.txtStartHour.Text = "0";
-                                                this.label6.AutoSize = true;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
             this.label6.Location = new System.Drawing.Point(6, 41);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(59, 14);
             this.label6.TabIndex = 2;
             this.label6.Text = "End Hour:";
-                                                this.label5.AutoSize = true;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
             this.label5.Location = new System.Drawing.Point(6, 8);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(64, 14);
             this.label5.TabIndex = 0;
             this.label5.Text = "Start Hour:";
-                                                this.tabMoving.Controls.Add(this.cmbDaily);
+            // 
+            // tabMoving
+            // 
+            this.tabMoving.Controls.Add(this.cmbDaily);
             this.tabMoving.Controls.Add(this.cmbWStatistic);
             this.tabMoving.Controls.Add(this.txtMovingWindowSize);
             this.tabMoving.Controls.Add(this.label11);
@@ -317,7 +410,10 @@ namespace BenMAP
             this.tabMoving.TabIndex = 1;
             this.tabMoving.Text = "Moving Window";
             this.tabMoving.UseVisualStyleBackColor = true;
-                                                this.cmbDaily.FormattingEnabled = true;
+            // 
+            // cmbDaily
+            // 
+            this.cmbDaily.FormattingEnabled = true;
             this.cmbDaily.Items.AddRange(new object[] {
             "Mean",
             "Median",
@@ -329,7 +425,10 @@ namespace BenMAP
             this.cmbDaily.Size = new System.Drawing.Size(121, 22);
             this.cmbDaily.TabIndex = 5;
             this.cmbDaily.Text = "Mean";
-                                                this.cmbWStatistic.FormattingEnabled = true;
+            // 
+            // cmbWStatistic
+            // 
+            this.cmbWStatistic.FormattingEnabled = true;
             this.cmbWStatistic.Items.AddRange(new object[] {
             "Mean",
             "Median",
@@ -341,31 +440,46 @@ namespace BenMAP
             this.cmbWStatistic.Size = new System.Drawing.Size(121, 22);
             this.cmbWStatistic.TabIndex = 4;
             this.cmbWStatistic.Text = "Mean";
-                                                this.txtMovingWindowSize.Location = new System.Drawing.Point(127, 7);
+            // 
+            // txtMovingWindowSize
+            // 
+            this.txtMovingWindowSize.Location = new System.Drawing.Point(127, 7);
             this.txtMovingWindowSize.Name = "txtMovingWindowSize";
             this.txtMovingWindowSize.ReadOnly = true;
             this.txtMovingWindowSize.Size = new System.Drawing.Size(121, 22);
             this.txtMovingWindowSize.TabIndex = 3;
             this.txtMovingWindowSize.Text = "1";
-                                                this.label11.AutoSize = true;
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
             this.label11.Location = new System.Drawing.Point(10, 70);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(83, 14);
             this.label11.TabIndex = 2;
             this.label11.Text = "Daily Statistic:";
-                                                this.label10.AutoSize = true;
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
             this.label10.Location = new System.Drawing.Point(10, 41);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(100, 14);
             this.label10.TabIndex = 1;
             this.label10.Text = "Window Statistic:";
-                                                this.label9.AutoSize = true;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
             this.label9.Location = new System.Drawing.Point(13, 10);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(80, 14);
             this.label9.TabIndex = 0;
             this.label9.Text = "Window Size:";
-                                                this.tabCustom.Controls.Add(this.txtFunction);
+            // 
+            // tabCustom
+            // 
+            this.tabCustom.Controls.Add(this.txtFunction);
             this.tabCustom.Controls.Add(this.label14);
             this.tabCustom.Location = new System.Drawing.Point(4, 23);
             this.tabCustom.Name = "tabCustom";
@@ -373,18 +487,27 @@ namespace BenMAP
             this.tabCustom.TabIndex = 2;
             this.tabCustom.Text = "Custom";
             this.tabCustom.UseVisualStyleBackColor = true;
-                                                this.txtFunction.Location = new System.Drawing.Point(78, 58);
+            // 
+            // txtFunction
+            // 
+            this.txtFunction.Location = new System.Drawing.Point(78, 58);
             this.txtFunction.Multiline = true;
             this.txtFunction.Name = "txtFunction";
             this.txtFunction.Size = new System.Drawing.Size(294, 20);
             this.txtFunction.TabIndex = 5;
-                                                this.label14.AutoSize = true;
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
             this.label14.Location = new System.Drawing.Point(19, 58);
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(56, 14);
             this.label14.TabIndex = 4;
             this.label14.Text = "Function:";
-                                                this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
+            // 
+            // Pollutant
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(459, 256);
             this.Controls.Add(this.groupBox3);
