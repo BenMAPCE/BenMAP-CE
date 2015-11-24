@@ -373,10 +373,10 @@ namespace BenMAP
 
         private void PollutantPanel_Load(object sender, EventArgs e)
         {
-            int panelWidthSingle = 363;
-            int panelWidthGroup = 180;
-            int panelYAxSingle = 48;
-            int panelYAxGroup = 109; 
+            int panelWidthSingle = 275;
+            int panelWidthGroup = 121;
+            int panelYAxSingle = 37;
+            int panelYAxGroup = 82; 
 
             if (singleButton.Checked)
             {
@@ -384,8 +384,8 @@ namespace BenMAP
                 lblModelSpec.Visible = false;
                 cboModelSpec.Visible = false;
                 pollCtlPanel.Width = panelWidthSingle;
-                pollCtlPanel.Location = new Point(4, panelYAxSingle);
-                betaVarGroup.Location = new Point(10, 245);
+                pollCtlPanel.Location = new Point(3, panelYAxSingle);
+                betaVarGroup.Location = new Point(6, 194);
                 pollCtlPanel.Invalidate();
             }
             else
@@ -394,8 +394,8 @@ namespace BenMAP
                 lblModelSpec.Visible = true;
                 cboModelSpec.Visible = true;
                 pollCtlPanel.Width = panelWidthGroup;
-                pollCtlPanel.Location = new Point(4, panelYAxGroup);
-                betaVarGroup.Location = new Point(10, 302);
+                pollCtlPanel.Location = new Point(3, panelYAxGroup);
+                betaVarGroup.Location = new Point(6, 231);
                 pollCtlPanel.Invalidate();
             }
         }
@@ -932,7 +932,21 @@ namespace BenMAP
 
         private void editEffect_Click(object sender, EventArgs e)
         {
+            try
+            {
+                String pass = "";
+                if (bvFullYear.Checked) pass = bvFullYear.Text;
+                else if (bvGeographic.Checked) pass = bvGeographic.Text;
+                else pass = bvSeasonal.Text;
 
+                EffectCoefficients form = new EffectCoefficients(pass);
+                DialogResult res = form.ShowDialog();
+            }
+           
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+            }
         }
     }
 }

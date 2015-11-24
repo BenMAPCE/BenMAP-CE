@@ -28,10 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.ListViewItem listViewItem3 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem(new string[] {
             "P1",
             "P1 sub"}, -1);
-            System.Windows.Forms.ListViewItem listViewItem4 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem(new string[] {
             "P2",
             "P2 sub"}, -1);
             this.cboSeasonalMetric = new System.Windows.Forms.ComboBox();
@@ -42,6 +42,7 @@
             this.lblMetric = new System.Windows.Forms.Label();
             this.grpMetric = new System.Windows.Forms.GroupBox();
             this.panel4 = new System.Windows.Forms.Panel();
+            this.cboModelSpec = new System.Windows.Forms.ComboBox();
             this.editEffect = new System.Windows.Forms.Button();
             this.betaVarGroup = new System.Windows.Forms.Panel();
             this.lblBetaVar = new System.Windows.Forms.Label();
@@ -58,7 +59,6 @@
             this.singleButton = new System.Windows.Forms.RadioButton();
             this.groupButton = new System.Windows.Forms.RadioButton();
             this.lblModelSpec = new System.Windows.Forms.Label();
-            this.cboModelSpec = new System.Windows.Forms.ComboBox();
             this.cboEndpoint = new System.Windows.Forms.ComboBox();
             this.cboEndpointGroup = new System.Windows.Forms.ComboBox();
             this.lblEndpoint = new System.Windows.Forms.Label();
@@ -155,10 +155,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cboSeasonalMetric.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboSeasonalMetric.FormattingEnabled = true;
-            this.cboSeasonalMetric.Location = new System.Drawing.Point(6, 157);
-            this.cboSeasonalMetric.Margin = new System.Windows.Forms.Padding(4);
+            this.cboSeasonalMetric.Location = new System.Drawing.Point(4, 122);
             this.cboSeasonalMetric.Name = "cboSeasonalMetric";
-            this.cboSeasonalMetric.Size = new System.Drawing.Size(353, 26);
+            this.cboSeasonalMetric.Size = new System.Drawing.Size(266, 22);
             this.cboSeasonalMetric.TabIndex = 7;
             // 
             // cboMetricStatistic
@@ -167,10 +166,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cboMetricStatistic.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboMetricStatistic.FormattingEnabled = true;
-            this.cboMetricStatistic.Location = new System.Drawing.Point(6, 95);
-            this.cboMetricStatistic.Margin = new System.Windows.Forms.Padding(4);
+            this.cboMetricStatistic.Location = new System.Drawing.Point(4, 74);
             this.cboMetricStatistic.Name = "cboMetricStatistic";
-            this.cboMetricStatistic.Size = new System.Drawing.Size(354, 26);
+            this.cboMetricStatistic.Size = new System.Drawing.Size(266, 22);
             this.cboMetricStatistic.TabIndex = 6;
             // 
             // cboMetric
@@ -179,10 +177,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cboMetric.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboMetric.FormattingEnabled = true;
-            this.cboMetric.Location = new System.Drawing.Point(6, 36);
-            this.cboMetric.Margin = new System.Windows.Forms.Padding(4);
+            this.cboMetric.Location = new System.Drawing.Point(4, 28);
             this.cboMetric.Name = "cboMetric";
-            this.cboMetric.Size = new System.Drawing.Size(353, 26);
+            this.cboMetric.Size = new System.Drawing.Size(266, 22);
             this.cboMetric.TabIndex = 5;
             this.cboMetric.SelectedValueChanged += new System.EventHandler(this.cboMetric_SelectedValueChanged);
             // 
@@ -192,30 +189,28 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cboPollutant.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboPollutant.FormattingEnabled = true;
-            this.cboPollutant.Location = new System.Drawing.Point(10, 22);
+            this.cboPollutant.Location = new System.Drawing.Point(7, 17);
             this.cboPollutant.Margin = new System.Windows.Forms.Padding(0);
             this.cboPollutant.Name = "cboPollutant";
-            this.cboPollutant.Size = new System.Drawing.Size(353, 26);
+            this.cboPollutant.Size = new System.Drawing.Size(266, 22);
             this.cboPollutant.TabIndex = 4;
             this.cboPollutant.SelectedValueChanged += new System.EventHandler(this.cboPollutant_SelectedValueChanged);
             // 
             // lblSeasonalMetric
             // 
             this.lblSeasonalMetric.AutoSize = true;
-            this.lblSeasonalMetric.Location = new System.Drawing.Point(5, 135);
-            this.lblSeasonalMetric.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblSeasonalMetric.Location = new System.Drawing.Point(3, 105);
             this.lblSeasonalMetric.Name = "lblSeasonalMetric";
-            this.lblSeasonalMetric.Size = new System.Drawing.Size(110, 18);
+            this.lblSeasonalMetric.Size = new System.Drawing.Size(98, 14);
             this.lblSeasonalMetric.TabIndex = 3;
             this.lblSeasonalMetric.Text = "Seasonal Metric:";
             // 
             // lblMetric
             // 
             this.lblMetric.AutoSize = true;
-            this.lblMetric.Location = new System.Drawing.Point(8, 14);
-            this.lblMetric.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblMetric.Location = new System.Drawing.Point(3, 11);
             this.lblMetric.Name = "lblMetric";
-            this.lblMetric.Size = new System.Drawing.Size(52, 18);
+            this.lblMetric.Size = new System.Drawing.Size(44, 14);
             this.lblMetric.TabIndex = 1;
             this.lblMetric.Text = "Metric:";
             // 
@@ -223,36 +218,45 @@
             // 
             this.grpMetric.Controls.Add(this.panel4);
             this.grpMetric.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.grpMetric.Location = new System.Drawing.Point(652, 4);
-            this.grpMetric.Margin = new System.Windows.Forms.Padding(4);
+            this.grpMetric.Location = new System.Drawing.Point(489, 3);
             this.grpMetric.Name = "grpMetric";
-            this.grpMetric.Padding = new System.Windows.Forms.Padding(4);
-            this.grpMetric.Size = new System.Drawing.Size(387, 442);
+            this.grpMetric.Size = new System.Drawing.Size(290, 344);
             this.grpMetric.TabIndex = 2;
             this.grpMetric.TabStop = false;
             // 
             // panel4
             // 
+            this.panel4.Controls.Add(this.cboPollutant);
             this.panel4.Controls.Add(this.cboModelSpec);
             this.panel4.Controls.Add(this.editEffect);
             this.panel4.Controls.Add(this.betaVarGroup);
             this.panel4.Controls.Add(this.pollutantList);
             this.panel4.Controls.Add(this.pollCtlPanel);
-            this.panel4.Controls.Add(this.cboPollutant);
             this.panel4.Controls.Add(this.lblPollutant);
             this.panel4.Controls.Add(this.togglePanel);
             this.panel4.Controls.Add(this.lblModelSpec);
-            this.panel4.Location = new System.Drawing.Point(7, 13);
+            this.panel4.Location = new System.Drawing.Point(5, 10);
+            this.panel4.Margin = new System.Windows.Forms.Padding(2);
             this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(373, 422);
+            this.panel4.Size = new System.Drawing.Size(280, 328);
             this.panel4.TabIndex = 16;
+            // 
+            // cboModelSpec
+            // 
+            this.cboModelSpec.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboModelSpec.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboModelSpec.FormattingEnabled = true;
+            this.cboModelSpec.Location = new System.Drawing.Point(7, 65);
+            this.cboModelSpec.Name = "cboModelSpec";
+            this.cboModelSpec.Size = new System.Drawing.Size(266, 22);
+            this.cboModelSpec.TabIndex = 20;
             // 
             // editEffect
             // 
-            this.editEffect.Location = new System.Drawing.Point(95, 388);
-            this.editEffect.Margin = new System.Windows.Forms.Padding(4);
+            this.editEffect.Location = new System.Drawing.Point(71, 302);
             this.editEffect.Name = "editEffect";
-            this.editEffect.Size = new System.Drawing.Size(203, 30);
+            this.editEffect.Size = new System.Drawing.Size(152, 23);
             this.editEffect.TabIndex = 15;
             this.editEffect.Text = "Edit Effect Coefficients";
             this.editEffect.UseVisualStyleBackColor = true;
@@ -264,27 +268,28 @@
             this.betaVarGroup.Controls.Add(this.bvGeographic);
             this.betaVarGroup.Controls.Add(this.bvSeasonal);
             this.betaVarGroup.Controls.Add(this.bvFullYear);
-            this.betaVarGroup.Location = new System.Drawing.Point(10, 245);
+            this.betaVarGroup.Location = new System.Drawing.Point(3, 194);
+            this.betaVarGroup.Margin = new System.Windows.Forms.Padding(2);
             this.betaVarGroup.Name = "betaVarGroup";
-            this.betaVarGroup.Size = new System.Drawing.Size(135, 91);
+            this.betaVarGroup.Size = new System.Drawing.Size(101, 71);
             this.betaVarGroup.TabIndex = 17;
             // 
             // lblBetaVar
             // 
             this.lblBetaVar.AutoSize = true;
-            this.lblBetaVar.Location = new System.Drawing.Point(4, 4);
-            this.lblBetaVar.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblBetaVar.Location = new System.Drawing.Point(3, 3);
             this.lblBetaVar.Name = "lblBetaVar";
-            this.lblBetaVar.Size = new System.Drawing.Size(98, 18);
+            this.lblBetaVar.Size = new System.Drawing.Size(87, 14);
             this.lblBetaVar.TabIndex = 16;
             this.lblBetaVar.Text = "Beta Variation:";
             // 
             // bvGeographic
             // 
             this.bvGeographic.AutoSize = true;
-            this.bvGeographic.Location = new System.Drawing.Point(5, 62);
+            this.bvGeographic.Location = new System.Drawing.Point(5, 48);
+            this.bvGeographic.Margin = new System.Windows.Forms.Padding(2);
             this.bvGeographic.Name = "bvGeographic";
-            this.bvGeographic.Size = new System.Drawing.Size(99, 22);
+            this.bvGeographic.Size = new System.Drawing.Size(87, 18);
             this.bvGeographic.TabIndex = 2;
             this.bvGeographic.Text = "Geographic";
             this.bvGeographic.UseVisualStyleBackColor = true;
@@ -292,9 +297,10 @@
             // bvSeasonal
             // 
             this.bvSeasonal.AutoSize = true;
-            this.bvSeasonal.Location = new System.Drawing.Point(5, 41);
+            this.bvSeasonal.Location = new System.Drawing.Point(5, 32);
+            this.bvSeasonal.Margin = new System.Windows.Forms.Padding(2);
             this.bvSeasonal.Name = "bvSeasonal";
-            this.bvSeasonal.Size = new System.Drawing.Size(84, 22);
+            this.bvSeasonal.Size = new System.Drawing.Size(76, 18);
             this.bvSeasonal.TabIndex = 1;
             this.bvSeasonal.Text = "Seasonal";
             this.bvSeasonal.UseVisualStyleBackColor = true;
@@ -303,9 +309,10 @@
             // 
             this.bvFullYear.AutoSize = true;
             this.bvFullYear.Checked = true;
-            this.bvFullYear.Location = new System.Drawing.Point(5, 20);
+            this.bvFullYear.Location = new System.Drawing.Point(5, 16);
+            this.bvFullYear.Margin = new System.Windows.Forms.Padding(2);
             this.bvFullYear.Name = "bvFullYear";
-            this.bvFullYear.Size = new System.Drawing.Size(81, 22);
+            this.bvFullYear.Size = new System.Drawing.Size(72, 18);
             this.bvFullYear.TabIndex = 0;
             this.bvFullYear.TabStop = true;
             this.bvFullYear.Text = "Full Year";
@@ -316,28 +323,29 @@
             this.pollutantList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1,
             this.columnHeader2});
+            this.pollutantList.FullRowSelect = true;
             this.pollutantList.GridLines = true;
             this.pollutantList.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem3,
-            listViewItem4});
-            this.pollutantList.Location = new System.Drawing.Point(192, 121);
+            listViewItem1,
+            listViewItem2});
+            this.pollutantList.Location = new System.Drawing.Point(128, 94);
+            this.pollutantList.Margin = new System.Windows.Forms.Padding(2);
             this.pollutantList.Name = "pollutantList";
-            this.pollutantList.Size = new System.Drawing.Size(172, 260);
+            this.pollutantList.Size = new System.Drawing.Size(146, 203);
             this.pollutantList.TabIndex = 18;
             this.pollutantList.UseCompatibleStateImageBehavior = false;
             this.pollutantList.View = System.Windows.Forms.View.Details;
             this.pollutantList.Visible = false;
-            this.pollutantList.FullRowSelect = true;
             // 
             // columnHeader1
             // 
             this.columnHeader1.Text = "Variable";
-            this.columnHeader1.Width = 65;
+            this.columnHeader1.Width = 61;
             // 
             // columnHeader2
             // 
             this.columnHeader2.Text = "Pollutant";
-            this.columnHeader2.Width = 103;
+            this.columnHeader2.Width = 81;
             // 
             // pollCtlPanel
             // 
@@ -347,28 +355,27 @@
             this.pollCtlPanel.Controls.Add(this.cboMetricStatistic);
             this.pollCtlPanel.Controls.Add(this.lblSeasonalMetric);
             this.pollCtlPanel.Controls.Add(this.lblMetricStatistic);
-            this.pollCtlPanel.Location = new System.Drawing.Point(4, 48);
+            this.pollCtlPanel.Location = new System.Drawing.Point(3, 37);
+            this.pollCtlPanel.Margin = new System.Windows.Forms.Padding(2);
             this.pollCtlPanel.Name = "pollCtlPanel";
-            this.pollCtlPanel.Size = new System.Drawing.Size(363, 197);
+            this.pollCtlPanel.Size = new System.Drawing.Size(275, 153);
             this.pollCtlPanel.TabIndex = 21;
             // 
             // lblMetricStatistic
             // 
             this.lblMetricStatistic.AutoSize = true;
-            this.lblMetricStatistic.Location = new System.Drawing.Point(5, 73);
-            this.lblMetricStatistic.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblMetricStatistic.Location = new System.Drawing.Point(3, 57);
             this.lblMetricStatistic.Name = "lblMetricStatistic";
-            this.lblMetricStatistic.Size = new System.Drawing.Size(106, 18);
+            this.lblMetricStatistic.Size = new System.Drawing.Size(94, 14);
             this.lblMetricStatistic.TabIndex = 2;
             this.lblMetricStatistic.Text = "Annual Statistic:";
             // 
             // lblPollutant
             // 
             this.lblPollutant.AutoSize = true;
-            this.lblPollutant.Location = new System.Drawing.Point(4, 29);
-            this.lblPollutant.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblPollutant.Location = new System.Drawing.Point(3, 23);
             this.lblPollutant.Name = "lblPollutant";
-            this.lblPollutant.Size = new System.Drawing.Size(0, 18);
+            this.lblPollutant.Size = new System.Drawing.Size(0, 14);
             this.lblPollutant.TabIndex = 0;
             // 
             // togglePanel
@@ -378,19 +385,17 @@
             this.togglePanel.Controls.Add(this.groupButton);
             this.togglePanel.Dock = System.Windows.Forms.DockStyle.Top;
             this.togglePanel.Location = new System.Drawing.Point(0, 0);
-            this.togglePanel.Margin = new System.Windows.Forms.Padding(4);
             this.togglePanel.Name = "togglePanel";
-            this.togglePanel.Size = new System.Drawing.Size(373, 22);
+            this.togglePanel.Size = new System.Drawing.Size(280, 17);
             this.togglePanel.TabIndex = 14;
             // 
             // singleButton
             // 
             this.singleButton.AutoSize = true;
             this.singleButton.Checked = true;
-            this.singleButton.Location = new System.Drawing.Point(19, -2);
-            this.singleButton.Margin = new System.Windows.Forms.Padding(4);
+            this.singleButton.Location = new System.Drawing.Point(14, -2);
             this.singleButton.Name = "singleButton";
-            this.singleButton.Size = new System.Drawing.Size(92, 22);
+            this.singleButton.Size = new System.Drawing.Size(81, 18);
             this.singleButton.TabIndex = 12;
             this.singleButton.TabStop = true;
             this.singleButton.Text = "Pollutants";
@@ -400,10 +405,9 @@
             // groupButton
             // 
             this.groupButton.AutoSize = true;
-            this.groupButton.Location = new System.Drawing.Point(145, -2);
-            this.groupButton.Margin = new System.Windows.Forms.Padding(4);
+            this.groupButton.Location = new System.Drawing.Point(109, -2);
             this.groupButton.Name = "groupButton";
-            this.groupButton.Size = new System.Drawing.Size(133, 22);
+            this.groupButton.Size = new System.Drawing.Size(117, 18);
             this.groupButton.TabIndex = 13;
             this.groupButton.Text = "Pollutant Groups";
             this.groupButton.UseVisualStyleBackColor = true;
@@ -412,24 +416,11 @@
             // lblModelSpec
             // 
             this.lblModelSpec.AutoSize = true;
-            this.lblModelSpec.Location = new System.Drawing.Point(8, 62);
-            this.lblModelSpec.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblModelSpec.Location = new System.Drawing.Point(6, 48);
             this.lblModelSpec.Name = "lblModelSpec";
-            this.lblModelSpec.Size = new System.Drawing.Size(133, 18);
+            this.lblModelSpec.Size = new System.Drawing.Size(116, 14);
             this.lblModelSpec.TabIndex = 19;
             this.lblModelSpec.Text = "Model Specification:";
-            // 
-            // cboModelSpec
-            // 
-            this.cboModelSpec.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.cboModelSpec.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboModelSpec.FormattingEnabled = true;
-            this.cboModelSpec.Location = new System.Drawing.Point(10, 84);
-            this.cboModelSpec.Margin = new System.Windows.Forms.Padding(4);
-            this.cboModelSpec.Name = "cboModelSpec";
-            this.cboModelSpec.Size = new System.Drawing.Size(353, 26);
-            this.cboModelSpec.TabIndex = 20;
             // 
             // cboEndpoint
             // 
@@ -437,10 +428,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cboEndpoint.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboEndpoint.FormattingEnabled = true;
-            this.cboEndpoint.Location = new System.Drawing.Point(8, 109);
-            this.cboEndpoint.Margin = new System.Windows.Forms.Padding(4);
+            this.cboEndpoint.Location = new System.Drawing.Point(6, 85);
             this.cboEndpoint.Name = "cboEndpoint";
-            this.cboEndpoint.Size = new System.Drawing.Size(253, 26);
+            this.cboEndpoint.Size = new System.Drawing.Size(191, 22);
             this.cboEndpoint.TabIndex = 3;
             // 
             // cboEndpointGroup
@@ -449,30 +439,27 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cboEndpointGroup.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboEndpointGroup.FormattingEnabled = true;
-            this.cboEndpointGroup.Location = new System.Drawing.Point(8, 42);
-            this.cboEndpointGroup.Margin = new System.Windows.Forms.Padding(4);
+            this.cboEndpointGroup.Location = new System.Drawing.Point(6, 33);
             this.cboEndpointGroup.Name = "cboEndpointGroup";
-            this.cboEndpointGroup.Size = new System.Drawing.Size(253, 26);
+            this.cboEndpointGroup.Size = new System.Drawing.Size(191, 22);
             this.cboEndpointGroup.TabIndex = 2;
             this.cboEndpointGroup.SelectedValueChanged += new System.EventHandler(this.cboEndpointGroup_SelectedValueChanged_1);
             // 
             // lblEndpoint
             // 
             this.lblEndpoint.AutoSize = true;
-            this.lblEndpoint.Location = new System.Drawing.Point(8, 87);
-            this.lblEndpoint.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblEndpoint.Location = new System.Drawing.Point(6, 68);
             this.lblEndpoint.Name = "lblEndpoint";
-            this.lblEndpoint.Size = new System.Drawing.Size(68, 18);
+            this.lblEndpoint.Size = new System.Drawing.Size(59, 14);
             this.lblEndpoint.TabIndex = 1;
             this.lblEndpoint.Text = "Endpoint:";
             // 
             // lblEndpointGroup
             // 
             this.lblEndpointGroup.AutoSize = true;
-            this.lblEndpointGroup.Location = new System.Drawing.Point(8, 21);
-            this.lblEndpointGroup.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblEndpointGroup.Location = new System.Drawing.Point(6, 16);
             this.lblEndpointGroup.Name = "lblEndpointGroup";
-            this.lblEndpointGroup.Size = new System.Drawing.Size(109, 18);
+            this.lblEndpointGroup.Size = new System.Drawing.Size(95, 14);
             this.lblEndpointGroup.TabIndex = 0;
             this.lblEndpointGroup.Text = "Endpoint Group:";
             // 
@@ -484,10 +471,8 @@
             this.grpEndpoint.Controls.Add(this.lblEndpointGroup);
             this.grpEndpoint.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpEndpoint.Location = new System.Drawing.Point(0, 0);
-            this.grpEndpoint.Margin = new System.Windows.Forms.Padding(4);
             this.grpEndpoint.Name = "grpEndpoint";
-            this.grpEndpoint.Padding = new System.Windows.Forms.Padding(4);
-            this.grpEndpoint.Size = new System.Drawing.Size(270, 152);
+            this.grpEndpoint.Size = new System.Drawing.Size(202, 118);
             this.grpEndpoint.TabIndex = 1;
             this.grpEndpoint.TabStop = false;
             // 
@@ -496,10 +481,9 @@
             this.panel1.Controls.Add(this.grpEndpoint);
             this.panel1.Controls.Add(this.grpParameter1);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel1.Location = new System.Drawing.Point(4, 4);
-            this.panel1.Margin = new System.Windows.Forms.Padding(4);
+            this.panel1.Location = new System.Drawing.Point(3, 3);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(270, 442);
+            this.panel1.Size = new System.Drawing.Size(202, 344);
             this.panel1.TabIndex = 5;
             // 
             // grpParameter1
@@ -510,11 +494,9 @@
             this.grpParameter1.Controls.Add(this.lblPrevalenceDataSet);
             this.grpParameter1.Controls.Add(this.cboIncidenceDataSet);
             this.grpParameter1.Controls.Add(this.lblIncidenceDataSet);
-            this.grpParameter1.Location = new System.Drawing.Point(0, 156);
-            this.grpParameter1.Margin = new System.Windows.Forms.Padding(4);
+            this.grpParameter1.Location = new System.Drawing.Point(0, 121);
             this.grpParameter1.Name = "grpParameter1";
-            this.grpParameter1.Padding = new System.Windows.Forms.Padding(4);
-            this.grpParameter1.Size = new System.Drawing.Size(269, 287);
+            this.grpParameter1.Size = new System.Drawing.Size(202, 223);
             this.grpParameter1.TabIndex = 4;
             this.grpParameter1.TabStop = false;
             // 
@@ -524,19 +506,17 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cboVariableDataSet.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboVariableDataSet.FormattingEnabled = true;
-            this.cboVariableDataSet.Location = new System.Drawing.Point(8, 116);
-            this.cboVariableDataSet.Margin = new System.Windows.Forms.Padding(4);
+            this.cboVariableDataSet.Location = new System.Drawing.Point(6, 90);
             this.cboVariableDataSet.Name = "cboVariableDataSet";
-            this.cboVariableDataSet.Size = new System.Drawing.Size(252, 26);
+            this.cboVariableDataSet.Size = new System.Drawing.Size(190, 22);
             this.cboVariableDataSet.TabIndex = 17;
             // 
             // lblVariableDataSet
             // 
             this.lblVariableDataSet.AutoSize = true;
-            this.lblVariableDataSet.Location = new System.Drawing.Point(8, 91);
-            this.lblVariableDataSet.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblVariableDataSet.Location = new System.Drawing.Point(6, 71);
             this.lblVariableDataSet.Name = "lblVariableDataSet";
-            this.lblVariableDataSet.Size = new System.Drawing.Size(114, 18);
+            this.lblVariableDataSet.Size = new System.Drawing.Size(102, 14);
             this.lblVariableDataSet.TabIndex = 14;
             this.lblVariableDataSet.Text = "Variable DataSet:";
             // 
@@ -546,19 +526,17 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cboPrevalenceDataSet.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboPrevalenceDataSet.FormattingEnabled = true;
-            this.cboPrevalenceDataSet.Location = new System.Drawing.Point(8, 179);
-            this.cboPrevalenceDataSet.Margin = new System.Windows.Forms.Padding(4);
+            this.cboPrevalenceDataSet.Location = new System.Drawing.Point(6, 139);
             this.cboPrevalenceDataSet.Name = "cboPrevalenceDataSet";
-            this.cboPrevalenceDataSet.Size = new System.Drawing.Size(252, 26);
+            this.cboPrevalenceDataSet.Size = new System.Drawing.Size(190, 22);
             this.cboPrevalenceDataSet.TabIndex = 16;
             // 
             // lblPrevalenceDataSet
             // 
             this.lblPrevalenceDataSet.AutoSize = true;
-            this.lblPrevalenceDataSet.Location = new System.Drawing.Point(8, 157);
-            this.lblPrevalenceDataSet.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblPrevalenceDataSet.Location = new System.Drawing.Point(6, 122);
             this.lblPrevalenceDataSet.Name = "lblPrevalenceDataSet";
-            this.lblPrevalenceDataSet.Size = new System.Drawing.Size(132, 18);
+            this.lblPrevalenceDataSet.Size = new System.Drawing.Size(115, 14);
             this.lblPrevalenceDataSet.TabIndex = 12;
             this.lblPrevalenceDataSet.Text = "Prevalence DataSet:";
             // 
@@ -568,19 +546,17 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cboIncidenceDataSet.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboIncidenceDataSet.FormattingEnabled = true;
-            this.cboIncidenceDataSet.Location = new System.Drawing.Point(8, 48);
-            this.cboIncidenceDataSet.Margin = new System.Windows.Forms.Padding(4);
+            this.cboIncidenceDataSet.Location = new System.Drawing.Point(6, 37);
             this.cboIncidenceDataSet.Name = "cboIncidenceDataSet";
-            this.cboIncidenceDataSet.Size = new System.Drawing.Size(252, 26);
+            this.cboIncidenceDataSet.Size = new System.Drawing.Size(190, 22);
             this.cboIncidenceDataSet.TabIndex = 15;
             // 
             // lblIncidenceDataSet
             // 
             this.lblIncidenceDataSet.AutoSize = true;
-            this.lblIncidenceDataSet.Location = new System.Drawing.Point(8, 24);
-            this.lblIncidenceDataSet.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblIncidenceDataSet.Location = new System.Drawing.Point(6, 19);
             this.lblIncidenceDataSet.Name = "lblIncidenceDataSet";
-            this.lblIncidenceDataSet.Size = new System.Drawing.Size(122, 18);
+            this.lblIncidenceDataSet.Size = new System.Drawing.Size(109, 14);
             this.lblIncidenceDataSet.TabIndex = 13;
             this.lblIncidenceDataSet.Text = "Incidence Dataset:";
             // 
@@ -588,39 +564,35 @@
             // 
             this.txtReference.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtReference.Location = new System.Drawing.Point(15, 406);
-            this.txtReference.Margin = new System.Windows.Forms.Padding(4);
+            this.txtReference.Location = new System.Drawing.Point(11, 316);
             this.txtReference.Name = "txtReference";
-            this.txtReference.Size = new System.Drawing.Size(338, 26);
+            this.txtReference.Size = new System.Drawing.Size(254, 22);
             this.txtReference.TabIndex = 21;
             // 
             // txtOtherPollutant
             // 
             this.txtOtherPollutant.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtOtherPollutant.Location = new System.Drawing.Point(15, 352);
-            this.txtOtherPollutant.Margin = new System.Windows.Forms.Padding(4);
+            this.txtOtherPollutant.Location = new System.Drawing.Point(11, 274);
             this.txtOtherPollutant.Name = "txtOtherPollutant";
-            this.txtOtherPollutant.Size = new System.Drawing.Size(338, 26);
+            this.txtOtherPollutant.Size = new System.Drawing.Size(254, 22);
             this.txtOtherPollutant.TabIndex = 18;
             // 
             // lblReference
             // 
             this.lblReference.AutoSize = true;
-            this.lblReference.Location = new System.Drawing.Point(12, 383);
-            this.lblReference.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblReference.Location = new System.Drawing.Point(9, 298);
             this.lblReference.Name = "lblReference";
-            this.lblReference.Size = new System.Drawing.Size(76, 18);
+            this.lblReference.Size = new System.Drawing.Size(65, 14);
             this.lblReference.TabIndex = 10;
             this.lblReference.Text = "Reference:";
             // 
             // lblOtherPollutant
             // 
             this.lblOtherPollutant.AutoSize = true;
-            this.lblOtherPollutant.Location = new System.Drawing.Point(11, 330);
-            this.lblOtherPollutant.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblOtherPollutant.Location = new System.Drawing.Point(8, 257);
             this.lblOtherPollutant.Name = "lblOtherPollutant";
-            this.lblOtherPollutant.Size = new System.Drawing.Size(285, 18);
+            this.lblOtherPollutant.Size = new System.Drawing.Size(251, 14);
             this.lblOtherPollutant.TabIndex = 7;
             this.lblOtherPollutant.Text = "Co-Pollutants Specified in Regression Model:";
             // 
@@ -631,32 +603,29 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lstBaselineCommonUsedFunctions.FormattingEnabled = true;
             this.lstBaselineCommonUsedFunctions.HorizontalScrollbar = true;
-            this.lstBaselineCommonUsedFunctions.ItemHeight = 18;
-            this.lstBaselineCommonUsedFunctions.Location = new System.Drawing.Point(8, 27);
-            this.lstBaselineCommonUsedFunctions.Margin = new System.Windows.Forms.Padding(4);
-            this.lstBaselineCommonUsedFunctions.MinimumSize = new System.Drawing.Size(355, 130);
+            this.lstBaselineCommonUsedFunctions.ItemHeight = 14;
+            this.lstBaselineCommonUsedFunctions.Location = new System.Drawing.Point(6, 21);
+            this.lstBaselineCommonUsedFunctions.MinimumSize = new System.Drawing.Size(267, 102);
             this.lstBaselineCommonUsedFunctions.Name = "lstBaselineCommonUsedFunctions";
-            this.lstBaselineCommonUsedFunctions.Size = new System.Drawing.Size(355, 130);
+            this.lstBaselineCommonUsedFunctions.Size = new System.Drawing.Size(267, 102);
             this.lstBaselineCommonUsedFunctions.TabIndex = 2;
             this.lstBaselineCommonUsedFunctions.DoubleClick += new System.EventHandler(this.lstBaselineAllAvailableFunctions_DoubleClick);
             // 
             // lblLocation
             // 
             this.lblLocation.AutoSize = true;
-            this.lblLocation.Location = new System.Drawing.Point(4, 183);
-            this.lblLocation.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblLocation.Location = new System.Drawing.Point(3, 142);
             this.lblLocation.Name = "lblLocation";
-            this.lblLocation.Size = new System.Drawing.Size(63, 18);
+            this.lblLocation.Size = new System.Drawing.Size(55, 14);
             this.lblLocation.TabIndex = 5;
             this.lblLocation.Text = "Location:";
             // 
             // lblAnthor
             // 
             this.lblAnthor.AutoSize = true;
-            this.lblAnthor.Location = new System.Drawing.Point(4, 0);
-            this.lblAnthor.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblAnthor.Location = new System.Drawing.Point(3, 0);
             this.lblAnthor.Name = "lblAnthor";
-            this.lblAnthor.Size = new System.Drawing.Size(55, 18);
+            this.lblAnthor.Size = new System.Drawing.Size(46, 14);
             this.lblAnthor.TabIndex = 3;
             this.lblAnthor.Text = "Author:";
             // 
@@ -665,11 +634,10 @@
             this.lstBaselineAvailableVariables.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lstBaselineAvailableVariables.FormattingEnabled = true;
-            this.lstBaselineAvailableVariables.ItemHeight = 18;
-            this.lstBaselineAvailableVariables.Location = new System.Drawing.Point(573, 27);
-            this.lstBaselineAvailableVariables.Margin = new System.Windows.Forms.Padding(4);
+            this.lstBaselineAvailableVariables.ItemHeight = 14;
+            this.lstBaselineAvailableVariables.Location = new System.Drawing.Point(430, 21);
             this.lstBaselineAvailableVariables.Name = "lstBaselineAvailableVariables";
-            this.lstBaselineAvailableVariables.Size = new System.Drawing.Size(192, 130);
+            this.lstBaselineAvailableVariables.Size = new System.Drawing.Size(145, 102);
             this.lstBaselineAvailableVariables.TabIndex = 3;
             this.lstBaselineAvailableVariables.DoubleClick += new System.EventHandler(this.lstBaselineAvailableVariables_DoubleClick);
             // 
@@ -678,11 +646,10 @@
             this.lstBaselineAvailableFunctions.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lstBaselineAvailableFunctions.FormattingEnabled = true;
-            this.lstBaselineAvailableFunctions.ItemHeight = 18;
-            this.lstBaselineAvailableFunctions.Location = new System.Drawing.Point(372, 27);
-            this.lstBaselineAvailableFunctions.Margin = new System.Windows.Forms.Padding(4);
+            this.lstBaselineAvailableFunctions.ItemHeight = 14;
+            this.lstBaselineAvailableFunctions.Location = new System.Drawing.Point(279, 21);
             this.lstBaselineAvailableFunctions.Name = "lstBaselineAvailableFunctions";
-            this.lstBaselineAvailableFunctions.Size = new System.Drawing.Size(192, 130);
+            this.lstBaselineAvailableFunctions.Size = new System.Drawing.Size(145, 102);
             this.lstBaselineAvailableFunctions.TabIndex = 0;
             this.lstBaselineAvailableFunctions.DoubleClick += new System.EventHandler(this.lstBaselineAvailableFunctions_DoubleClick);
             // 
@@ -690,10 +657,9 @@
             // 
             this.lblFunction.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblFunction.AutoSize = true;
-            this.lblFunction.Location = new System.Drawing.Point(4, 162);
-            this.lblFunction.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblFunction.Location = new System.Drawing.Point(3, 126);
             this.lblFunction.Name = "lblFunction";
-            this.lblFunction.Size = new System.Drawing.Size(65, 18);
+            this.lblFunction.Size = new System.Drawing.Size(56, 14);
             this.lblFunction.TabIndex = 11;
             this.lblFunction.Text = "Function:";
             // 
@@ -702,11 +668,10 @@
             this.lstFuncAvailableSetupVariables.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lstFuncAvailableSetupVariables.FormattingEnabled = true;
-            this.lstFuncAvailableSetupVariables.ItemHeight = 18;
-            this.lstFuncAvailableSetupVariables.Location = new System.Drawing.Point(775, 27);
-            this.lstFuncAvailableSetupVariables.Margin = new System.Windows.Forms.Padding(4);
+            this.lstFuncAvailableSetupVariables.ItemHeight = 14;
+            this.lstFuncAvailableSetupVariables.Location = new System.Drawing.Point(581, 21);
             this.lstFuncAvailableSetupVariables.Name = "lstFuncAvailableSetupVariables";
-            this.lstFuncAvailableSetupVariables.Size = new System.Drawing.Size(248, 130);
+            this.lstFuncAvailableSetupVariables.Size = new System.Drawing.Size(187, 102);
             this.lstFuncAvailableSetupVariables.TabIndex = 10;
             this.lstFuncAvailableSetupVariables.DoubleClick += new System.EventHandler(this.lstFuncAvailableSetupVariables_DoubleClick);
             // 
@@ -715,11 +680,10 @@
             this.lstFuncAvailableVariables.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lstFuncAvailableVariables.FormattingEnabled = true;
-            this.lstFuncAvailableVariables.ItemHeight = 18;
-            this.lstFuncAvailableVariables.Location = new System.Drawing.Point(573, 27);
-            this.lstFuncAvailableVariables.Margin = new System.Windows.Forms.Padding(4);
+            this.lstFuncAvailableVariables.ItemHeight = 14;
+            this.lstFuncAvailableVariables.Location = new System.Drawing.Point(430, 21);
             this.lstFuncAvailableVariables.Name = "lstFuncAvailableVariables";
-            this.lstFuncAvailableVariables.Size = new System.Drawing.Size(192, 130);
+            this.lstFuncAvailableVariables.Size = new System.Drawing.Size(145, 102);
             this.lstFuncAvailableVariables.TabIndex = 9;
             this.lstFuncAvailableVariables.DoubleClick += new System.EventHandler(this.lstFuncAvailableVariables_DoubleClick);
             // 
@@ -727,12 +691,11 @@
             // 
             this.txtFunction.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtFunction.Location = new System.Drawing.Point(8, 184);
-            this.txtFunction.Margin = new System.Windows.Forms.Padding(4);
+            this.txtFunction.Location = new System.Drawing.Point(6, 143);
             this.txtFunction.Multiline = true;
             this.txtFunction.Name = "txtFunction";
             this.txtFunction.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtFunction.Size = new System.Drawing.Size(1015, 81);
+            this.txtFunction.Size = new System.Drawing.Size(762, 64);
             this.txtFunction.TabIndex = 12;
             // 
             // lstCommonUsedFunctions
@@ -742,12 +705,11 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lstCommonUsedFunctions.FormattingEnabled = true;
             this.lstCommonUsedFunctions.HorizontalScrollbar = true;
-            this.lstCommonUsedFunctions.ItemHeight = 18;
-            this.lstCommonUsedFunctions.Location = new System.Drawing.Point(8, 27);
-            this.lstCommonUsedFunctions.Margin = new System.Windows.Forms.Padding(4);
-            this.lstCommonUsedFunctions.MinimumSize = new System.Drawing.Size(355, 130);
+            this.lstCommonUsedFunctions.ItemHeight = 14;
+            this.lstCommonUsedFunctions.Location = new System.Drawing.Point(6, 21);
+            this.lstCommonUsedFunctions.MinimumSize = new System.Drawing.Size(267, 102);
             this.lstCommonUsedFunctions.Name = "lstCommonUsedFunctions";
-            this.lstCommonUsedFunctions.Size = new System.Drawing.Size(355, 130);
+            this.lstCommonUsedFunctions.Size = new System.Drawing.Size(267, 102);
             this.lstCommonUsedFunctions.TabIndex = 8;
             this.lstCommonUsedFunctions.DoubleClick += new System.EventHandler(this.lstFuncAllAvailableFunctions_DoubleClick);
             // 
@@ -756,41 +718,37 @@
             this.lstFuncAvailableFunctions.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lstFuncAvailableFunctions.FormattingEnabled = true;
-            this.lstFuncAvailableFunctions.ItemHeight = 18;
-            this.lstFuncAvailableFunctions.Location = new System.Drawing.Point(372, 27);
-            this.lstFuncAvailableFunctions.Margin = new System.Windows.Forms.Padding(4);
+            this.lstFuncAvailableFunctions.ItemHeight = 14;
+            this.lstFuncAvailableFunctions.Location = new System.Drawing.Point(279, 21);
             this.lstFuncAvailableFunctions.Name = "lstFuncAvailableFunctions";
-            this.lstFuncAvailableFunctions.Size = new System.Drawing.Size(192, 130);
+            this.lstFuncAvailableFunctions.Size = new System.Drawing.Size(145, 102);
             this.lstFuncAvailableFunctions.TabIndex = 6;
             this.lstFuncAvailableFunctions.DoubleClick += new System.EventHandler(this.lstFuncAvailableFunctions_DoubleClick);
             // 
             // lblExistingFunctions
             // 
             this.lblExistingFunctions.AutoSize = true;
-            this.lblExistingFunctions.Location = new System.Drawing.Point(8, 4);
-            this.lblExistingFunctions.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblExistingFunctions.Location = new System.Drawing.Point(6, 3);
             this.lblExistingFunctions.Name = "lblExistingFunctions";
-            this.lblExistingFunctions.Size = new System.Drawing.Size(221, 18);
+            this.lblExistingFunctions.Size = new System.Drawing.Size(193, 14);
             this.lblExistingFunctions.TabIndex = 5;
             this.lblExistingFunctions.Text = "Commonly Used Functional Forms:";
             // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(636, 57);
-            this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label5.Location = new System.Drawing.Point(477, 44);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(0, 18);
+            this.label5.Size = new System.Drawing.Size(0, 14);
             this.label5.TabIndex = 3;
             // 
             // lblComposeSetupVariables
             // 
             this.lblComposeSetupVariables.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblComposeSetupVariables.AutoSize = true;
-            this.lblComposeSetupVariables.Location = new System.Drawing.Point(773, 4);
-            this.lblComposeSetupVariables.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblComposeSetupVariables.Location = new System.Drawing.Point(580, 3);
             this.lblComposeSetupVariables.Name = "lblComposeSetupVariables";
-            this.lblComposeSetupVariables.Size = new System.Drawing.Size(200, 18);
+            this.lblComposeSetupVariables.Size = new System.Drawing.Size(178, 14);
             this.lblComposeSetupVariables.TabIndex = 2;
             this.lblComposeSetupVariables.Text = "Population Variables(optional):";
             // 
@@ -798,10 +756,9 @@
             // 
             this.label7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(772, 4);
-            this.label7.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label7.Location = new System.Drawing.Point(579, 3);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(200, 18);
+            this.label7.Size = new System.Drawing.Size(178, 14);
             this.label7.TabIndex = 9;
             this.label7.Text = "Population Variables(optional):";
             // 
@@ -809,20 +766,18 @@
             // 
             this.label6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(571, 4);
-            this.label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label6.Location = new System.Drawing.Point(428, 3);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(130, 18);
+            this.label6.Size = new System.Drawing.Size(117, 14);
             this.label6.TabIndex = 8;
             this.label6.Text = "Available Variables:";
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(8, 4);
-            this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label4.Location = new System.Drawing.Point(6, 3);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(221, 18);
+            this.label4.Size = new System.Drawing.Size(193, 14);
             this.label4.TabIndex = 7;
             this.label4.Text = "Commonly Used Functional Forms:";
             // 
@@ -830,10 +785,9 @@
             // 
             this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(369, 4);
-            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label2.Location = new System.Drawing.Point(277, 3);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(74, 18);
+            this.label2.Size = new System.Drawing.Size(64, 14);
             this.label2.TabIndex = 5;
             this.label2.Text = "Operators:";
             // 
@@ -842,11 +796,10 @@
             this.lstBaselineAvailableSetupVariables.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lstBaselineAvailableSetupVariables.FormattingEnabled = true;
-            this.lstBaselineAvailableSetupVariables.ItemHeight = 18;
-            this.lstBaselineAvailableSetupVariables.Location = new System.Drawing.Point(775, 27);
-            this.lstBaselineAvailableSetupVariables.Margin = new System.Windows.Forms.Padding(4);
+            this.lstBaselineAvailableSetupVariables.ItemHeight = 14;
+            this.lstBaselineAvailableSetupVariables.Location = new System.Drawing.Point(581, 21);
             this.lstBaselineAvailableSetupVariables.Name = "lstBaselineAvailableSetupVariables";
-            this.lstBaselineAvailableSetupVariables.Size = new System.Drawing.Size(248, 130);
+            this.lstBaselineAvailableSetupVariables.Size = new System.Drawing.Size(187, 102);
             this.lstBaselineAvailableSetupVariables.TabIndex = 4;
             this.lstBaselineAvailableSetupVariables.DoubleClick += new System.EventHandler(this.lstBaselineAvailableSetupVariables_DoubleClick);
             // 
@@ -854,10 +807,9 @@
             // 
             this.lblComposeVariables.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblComposeVariables.AutoSize = true;
-            this.lblComposeVariables.Location = new System.Drawing.Point(571, 4);
-            this.lblComposeVariables.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblComposeVariables.Location = new System.Drawing.Point(428, 3);
             this.lblComposeVariables.Name = "lblComposeVariables";
-            this.lblComposeVariables.Size = new System.Drawing.Size(130, 18);
+            this.lblComposeVariables.Size = new System.Drawing.Size(117, 14);
             this.lblComposeVariables.TabIndex = 1;
             this.lblComposeVariables.Text = "Available Variables:";
             // 
@@ -865,12 +817,11 @@
             // 
             this.txtBaselineIncidenceFunction.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtBaselineIncidenceFunction.Location = new System.Drawing.Point(8, 184);
-            this.txtBaselineIncidenceFunction.Margin = new System.Windows.Forms.Padding(4);
+            this.txtBaselineIncidenceFunction.Location = new System.Drawing.Point(6, 143);
             this.txtBaselineIncidenceFunction.Multiline = true;
             this.txtBaselineIncidenceFunction.Name = "txtBaselineIncidenceFunction";
             this.txtBaselineIncidenceFunction.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtBaselineIncidenceFunction.Size = new System.Drawing.Size(1015, 81);
+            this.txtBaselineIncidenceFunction.Size = new System.Drawing.Size(762, 64);
             this.txtBaselineIncidenceFunction.TabIndex = 11;
             // 
             // tbpBaselineFunction
@@ -885,11 +836,10 @@
             this.tbpBaselineFunction.Controls.Add(this.lstBaselineAvailableVariables);
             this.tbpBaselineFunction.Controls.Add(this.lstBaselineCommonUsedFunctions);
             this.tbpBaselineFunction.Controls.Add(this.lstBaselineAvailableFunctions);
-            this.tbpBaselineFunction.Location = new System.Drawing.Point(4, 27);
-            this.tbpBaselineFunction.Margin = new System.Windows.Forms.Padding(4);
+            this.tbpBaselineFunction.Location = new System.Drawing.Point(4, 23);
             this.tbpBaselineFunction.Name = "tbpBaselineFunction";
-            this.tbpBaselineFunction.Padding = new System.Windows.Forms.Padding(4);
-            this.tbpBaselineFunction.Size = new System.Drawing.Size(1035, 284);
+            this.tbpBaselineFunction.Padding = new System.Windows.Forms.Padding(3);
+            this.tbpBaselineFunction.Size = new System.Drawing.Size(774, 218);
             this.tbpBaselineFunction.TabIndex = 1;
             this.tbpBaselineFunction.Text = "Baseline Incidence Function";
             this.tbpBaselineFunction.UseVisualStyleBackColor = true;
@@ -898,10 +848,9 @@
             // 
             this.label8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(4, 162);
-            this.label8.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label8.Location = new System.Drawing.Point(3, 126);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(65, 18);
+            this.label8.Size = new System.Drawing.Size(56, 14);
             this.label8.TabIndex = 10;
             this.label8.Text = "Function:";
             // 
@@ -909,10 +858,9 @@
             // 
             this.lbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lbl.AutoSize = true;
-            this.lbl.Location = new System.Drawing.Point(369, 4);
-            this.lbl.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lbl.Location = new System.Drawing.Point(277, 3);
             this.lbl.Name = "lbl";
-            this.lbl.Size = new System.Drawing.Size(74, 18);
+            this.lbl.Size = new System.Drawing.Size(64, 14);
             this.lbl.TabIndex = 0;
             this.lbl.Text = "Operators:";
             // 
@@ -920,10 +868,9 @@
             // 
             this.nudownEndAge.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.nudownEndAge.Location = new System.Drawing.Point(8, 267);
-            this.nudownEndAge.Margin = new System.Windows.Forms.Padding(4);
+            this.nudownEndAge.Location = new System.Drawing.Point(6, 208);
             this.nudownEndAge.Name = "nudownEndAge";
-            this.nudownEndAge.Size = new System.Drawing.Size(154, 26);
+            this.nudownEndAge.Size = new System.Drawing.Size(117, 22);
             this.nudownEndAge.TabIndex = 20;
             this.nudownEndAge.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
@@ -940,11 +887,10 @@
             this.tbpFunction.Controls.Add(this.lblComposeSetupVariables);
             this.tbpFunction.Controls.Add(this.lblComposeVariables);
             this.tbpFunction.Controls.Add(this.lbl);
-            this.tbpFunction.Location = new System.Drawing.Point(4, 27);
-            this.tbpFunction.Margin = new System.Windows.Forms.Padding(4);
+            this.tbpFunction.Location = new System.Drawing.Point(4, 23);
             this.tbpFunction.Name = "tbpFunction";
-            this.tbpFunction.Padding = new System.Windows.Forms.Padding(4);
-            this.tbpFunction.Size = new System.Drawing.Size(1035, 284);
+            this.tbpFunction.Padding = new System.Windows.Forms.Padding(3);
+            this.tbpFunction.Size = new System.Drawing.Size(774, 218);
             this.tbpFunction.TabIndex = 0;
             this.tbpFunction.Text = "Function";
             this.tbpFunction.UseVisualStyleBackColor = true;
@@ -956,20 +902,18 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tabControl1.Controls.Add(this.tbpFunction);
             this.tabControl1.Controls.Add(this.tbpBaselineFunction);
-            this.tabControl1.Location = new System.Drawing.Point(13, 463);
-            this.tabControl1.Margin = new System.Windows.Forms.Padding(4);
+            this.tabControl1.Location = new System.Drawing.Point(10, 360);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(1043, 315);
+            this.tabControl1.Size = new System.Drawing.Size(782, 245);
             this.tabControl1.TabIndex = 26;
             // 
             // lblYear
             // 
             this.lblYear.AutoSize = true;
-            this.lblYear.Location = new System.Drawing.Point(4, 62);
-            this.lblYear.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblYear.Location = new System.Drawing.Point(3, 48);
             this.lblYear.Name = "lblYear";
-            this.lblYear.Size = new System.Drawing.Size(126, 18);
+            this.lblYear.Size = new System.Drawing.Size(111, 14);
             this.lblYear.TabIndex = 4;
             this.lblYear.Text = "Year of Publication:";
             // 
@@ -987,29 +931,26 @@
             this.panel3.Controls.Add(this.txtLocation);
             this.panel3.Controls.Add(this.txtYear);
             this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel3.Location = new System.Drawing.Point(178, 4);
-            this.panel3.Margin = new System.Windows.Forms.Padding(4);
+            this.panel3.Location = new System.Drawing.Point(133, 3);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(166, 306);
+            this.panel3.Size = new System.Drawing.Size(125, 238);
             this.panel3.TabIndex = 1;
             // 
             // lblQualifier
             // 
             this.lblQualifier.AutoSize = true;
-            this.lblQualifier.Location = new System.Drawing.Point(4, 121);
-            this.lblQualifier.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblQualifier.Location = new System.Drawing.Point(3, 94);
             this.lblQualifier.Name = "lblQualifier";
-            this.lblQualifier.Size = new System.Drawing.Size(66, 18);
+            this.lblQualifier.Size = new System.Drawing.Size(57, 14);
             this.lblQualifier.TabIndex = 6;
             this.lblQualifier.Text = "Qualifier:";
             // 
             // lblEndAge
             // 
             this.lblEndAge.AutoSize = true;
-            this.lblEndAge.Location = new System.Drawing.Point(4, 245);
-            this.lblEndAge.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblEndAge.Location = new System.Drawing.Point(3, 191);
             this.lblEndAge.Name = "lblEndAge";
-            this.lblEndAge.Size = new System.Drawing.Size(62, 18);
+            this.lblEndAge.Size = new System.Drawing.Size(53, 14);
             this.lblEndAge.TabIndex = 9;
             this.lblEndAge.Text = "End Age:";
             // 
@@ -1017,40 +958,36 @@
             // 
             this.txtQualifier.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtQualifier.Location = new System.Drawing.Point(8, 143);
-            this.txtQualifier.Margin = new System.Windows.Forms.Padding(4);
+            this.txtQualifier.Location = new System.Drawing.Point(6, 111);
             this.txtQualifier.Name = "txtQualifier";
-            this.txtQualifier.Size = new System.Drawing.Size(152, 26);
+            this.txtQualifier.Size = new System.Drawing.Size(116, 22);
             this.txtQualifier.TabIndex = 17;
             // 
             // txtAnthor
             // 
             this.txtAnthor.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtAnthor.Location = new System.Drawing.Point(8, 21);
-            this.txtAnthor.Margin = new System.Windows.Forms.Padding(4);
+            this.txtAnthor.Location = new System.Drawing.Point(6, 16);
             this.txtAnthor.Name = "txtAnthor";
-            this.txtAnthor.Size = new System.Drawing.Size(151, 26);
+            this.txtAnthor.Size = new System.Drawing.Size(115, 22);
             this.txtAnthor.TabIndex = 14;
             // 
             // txtLocation
             // 
             this.txtLocation.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtLocation.Location = new System.Drawing.Point(8, 205);
-            this.txtLocation.Margin = new System.Windows.Forms.Padding(4);
+            this.txtLocation.Location = new System.Drawing.Point(6, 159);
             this.txtLocation.Name = "txtLocation";
-            this.txtLocation.Size = new System.Drawing.Size(152, 26);
+            this.txtLocation.Size = new System.Drawing.Size(116, 22);
             this.txtLocation.TabIndex = 16;
             // 
             // txtYear
             // 
             this.txtYear.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtYear.Location = new System.Drawing.Point(8, 84);
-            this.txtYear.Margin = new System.Windows.Forms.Padding(4);
+            this.txtYear.Location = new System.Drawing.Point(6, 65);
             this.txtYear.Name = "txtYear";
-            this.txtYear.Size = new System.Drawing.Size(152, 26);
+            this.txtYear.Size = new System.Drawing.Size(116, 22);
             this.txtYear.TabIndex = 15;
             this.txtYear.Text = "0";
             // 
@@ -1065,12 +1002,11 @@
             this.tableLayoutPanel1.Controls.Add(this.grpMetric, 2, 0);
             this.tableLayoutPanel1.Controls.Add(this.grpParameter, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.panel1, 0, 0);
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(13, 5);
-            this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(4);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(10, 4);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(1043, 450);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(782, 350);
             this.tableLayoutPanel1.TabIndex = 27;
             // 
             // grpParameter
@@ -1081,11 +1017,9 @@
             this.grpParameter.Controls.Add(this.lblReference);
             this.grpParameter.Controls.Add(this.lblOtherPollutant);
             this.grpParameter.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.grpParameter.Location = new System.Drawing.Point(282, 4);
-            this.grpParameter.Margin = new System.Windows.Forms.Padding(4);
+            this.grpParameter.Location = new System.Drawing.Point(211, 3);
             this.grpParameter.Name = "grpParameter";
-            this.grpParameter.Padding = new System.Windows.Forms.Padding(4);
-            this.grpParameter.Size = new System.Drawing.Size(362, 442);
+            this.grpParameter.Size = new System.Drawing.Size(272, 344);
             this.grpParameter.TabIndex = 3;
             this.grpParameter.TabStop = false;
             // 
@@ -1098,12 +1032,11 @@
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel2.Controls.Add(this.panel2, 0, 0);
             this.tableLayoutPanel2.Controls.Add(this.panel3, 1, 0);
-            this.tableLayoutPanel2.Location = new System.Drawing.Point(8, 13);
-            this.tableLayoutPanel2.Margin = new System.Windows.Forms.Padding(4);
+            this.tableLayoutPanel2.Location = new System.Drawing.Point(6, 10);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
             this.tableLayoutPanel2.RowCount = 1;
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(348, 314);
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(261, 244);
             this.tableLayoutPanel2.TabIndex = 2;
             // 
             // panel2
@@ -1119,29 +1052,26 @@
             this.panel2.Controls.Add(this.cboEthnicity);
             this.panel2.Controls.Add(this.cboGender);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel2.Location = new System.Drawing.Point(4, 4);
-            this.panel2.Margin = new System.Windows.Forms.Padding(4);
+            this.panel2.Location = new System.Drawing.Point(3, 3);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(166, 306);
+            this.panel2.Size = new System.Drawing.Size(124, 238);
             this.panel2.TabIndex = 0;
             // 
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(4, 183);
-            this.label9.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label9.Location = new System.Drawing.Point(3, 142);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(103, 18);
+            this.label9.Size = new System.Drawing.Size(90, 14);
             this.label9.TabIndex = 23;
             this.label9.Text = "Location Name:";
             // 
             // lblRace
             // 
             this.lblRace.AutoSize = true;
-            this.lblRace.Location = new System.Drawing.Point(4, 0);
-            this.lblRace.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblRace.Location = new System.Drawing.Point(3, 0);
             this.lblRace.Name = "lblRace";
-            this.lblRace.Size = new System.Drawing.Size(41, 18);
+            this.lblRace.Size = new System.Drawing.Size(36, 14);
             this.lblRace.TabIndex = 0;
             this.lblRace.Text = "Race:";
             // 
@@ -1151,39 +1081,35 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cboLocationName.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboLocationName.FormattingEnabled = true;
-            this.cboLocationName.Location = new System.Drawing.Point(7, 205);
-            this.cboLocationName.Margin = new System.Windows.Forms.Padding(4);
+            this.cboLocationName.Location = new System.Drawing.Point(5, 159);
             this.cboLocationName.Name = "cboLocationName";
-            this.cboLocationName.Size = new System.Drawing.Size(154, 26);
+            this.cboLocationName.Size = new System.Drawing.Size(116, 22);
             this.cboLocationName.TabIndex = 22;
             // 
             // lblEthnicity
             // 
             this.lblEthnicity.AutoSize = true;
-            this.lblEthnicity.Location = new System.Drawing.Point(4, 62);
-            this.lblEthnicity.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblEthnicity.Location = new System.Drawing.Point(3, 48);
             this.lblEthnicity.Name = "lblEthnicity";
-            this.lblEthnicity.Size = new System.Drawing.Size(66, 18);
+            this.lblEthnicity.Size = new System.Drawing.Size(56, 14);
             this.lblEthnicity.TabIndex = 1;
             this.lblEthnicity.Text = "Ethnicity:";
             // 
             // lblGender
             // 
             this.lblGender.AutoSize = true;
-            this.lblGender.Location = new System.Drawing.Point(4, 121);
-            this.lblGender.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblGender.Location = new System.Drawing.Point(3, 94);
             this.lblGender.Name = "lblGender";
-            this.lblGender.Size = new System.Drawing.Size(58, 18);
+            this.lblGender.Size = new System.Drawing.Size(50, 14);
             this.lblGender.TabIndex = 2;
             this.lblGender.Text = "Gender:";
             // 
             // lblStartAge
             // 
             this.lblStartAge.AutoSize = true;
-            this.lblStartAge.Location = new System.Drawing.Point(4, 245);
-            this.lblStartAge.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblStartAge.Location = new System.Drawing.Point(3, 191);
             this.lblStartAge.Name = "lblStartAge";
-            this.lblStartAge.Size = new System.Drawing.Size(68, 18);
+            this.lblStartAge.Size = new System.Drawing.Size(58, 14);
             this.lblStartAge.TabIndex = 8;
             this.lblStartAge.Text = "Start Age:";
             // 
@@ -1191,10 +1117,9 @@
             // 
             this.nudownStartAge.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.nudownStartAge.Location = new System.Drawing.Point(7, 267);
-            this.nudownStartAge.Margin = new System.Windows.Forms.Padding(4);
+            this.nudownStartAge.Location = new System.Drawing.Point(5, 208);
             this.nudownStartAge.Name = "nudownStartAge";
-            this.nudownStartAge.Size = new System.Drawing.Size(155, 26);
+            this.nudownStartAge.Size = new System.Drawing.Size(116, 22);
             this.nudownStartAge.TabIndex = 19;
             this.nudownStartAge.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
@@ -1204,10 +1129,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cboRace.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboRace.FormattingEnabled = true;
-            this.cboRace.Location = new System.Drawing.Point(7, 22);
-            this.cboRace.Margin = new System.Windows.Forms.Padding(4);
+            this.cboRace.Location = new System.Drawing.Point(5, 17);
             this.cboRace.Name = "cboRace";
-            this.cboRace.Size = new System.Drawing.Size(154, 26);
+            this.cboRace.Size = new System.Drawing.Size(116, 22);
             this.cboRace.TabIndex = 11;
             // 
             // cboEthnicity
@@ -1216,10 +1140,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cboEthnicity.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboEthnicity.FormattingEnabled = true;
-            this.cboEthnicity.Location = new System.Drawing.Point(7, 84);
-            this.cboEthnicity.Margin = new System.Windows.Forms.Padding(4);
+            this.cboEthnicity.Location = new System.Drawing.Point(5, 65);
             this.cboEthnicity.Name = "cboEthnicity";
-            this.cboEthnicity.Size = new System.Drawing.Size(154, 26);
+            this.cboEthnicity.Size = new System.Drawing.Size(116, 22);
             this.cboEthnicity.TabIndex = 12;
             // 
             // cboGender
@@ -1228,19 +1151,17 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cboGender.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboGender.FormattingEnabled = true;
-            this.cboGender.Location = new System.Drawing.Point(7, 143);
-            this.cboGender.Margin = new System.Windows.Forms.Padding(4);
+            this.cboGender.Location = new System.Drawing.Point(5, 111);
             this.cboGender.Name = "cboGender";
-            this.cboGender.Size = new System.Drawing.Size(154, 26);
+            this.cboGender.Size = new System.Drawing.Size(116, 22);
             this.cboGender.TabIndex = 13;
             // 
             // btnOK
             // 
             this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnOK.Location = new System.Drawing.Point(913, 26);
-            this.btnOK.Margin = new System.Windows.Forms.Padding(4);
+            this.btnOK.Location = new System.Drawing.Point(685, 20);
             this.btnOK.Name = "btnOK";
-            this.btnOK.Size = new System.Drawing.Size(100, 35);
+            this.btnOK.Size = new System.Drawing.Size(75, 27);
             this.btnOK.TabIndex = 1;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
@@ -1249,10 +1170,9 @@
             // btnCancel
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnCancel.Location = new System.Drawing.Point(805, 26);
-            this.btnCancel.Margin = new System.Windows.Forms.Padding(4);
+            this.btnCancel.Location = new System.Drawing.Point(604, 20);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(100, 35);
+            this.btnCancel.Size = new System.Drawing.Size(75, 27);
             this.btnCancel.TabIndex = 0;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
@@ -1264,23 +1184,20 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.grpCancelOK.Controls.Add(this.btnOK);
             this.grpCancelOK.Controls.Add(this.btnCancel);
-            this.grpCancelOK.Location = new System.Drawing.Point(13, 771);
-            this.grpCancelOK.Margin = new System.Windows.Forms.Padding(4);
+            this.grpCancelOK.Location = new System.Drawing.Point(10, 600);
             this.grpCancelOK.Name = "grpCancelOK";
-            this.grpCancelOK.Padding = new System.Windows.Forms.Padding(4);
-            this.grpCancelOK.Size = new System.Drawing.Size(1043, 69);
+            this.grpCancelOK.Size = new System.Drawing.Size(782, 54);
             this.grpCancelOK.TabIndex = 25;
             this.grpCancelOK.TabStop = false;
             // 
             // HIFDefinitionMulti
-            //  
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 18F);
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1071, 846);
+            this.ClientSize = new System.Drawing.Size(803, 658);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.grpCancelOK);
-            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "HIFDefinitionMulti";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Health Impact Function Definition";
