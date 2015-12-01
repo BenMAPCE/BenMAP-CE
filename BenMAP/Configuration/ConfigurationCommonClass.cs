@@ -515,7 +515,7 @@ namespace BenMAP.Configuration
 
                 string commandText = string.Format("select a.CRFunctionID,a.CRFunctionDatasetID,f.CRFunctionDataSetName,a.EndpointGroupID,b.EndPointGroupName,a.EndpointID,c.EndPointName,PollutantID,"
     + " MetricID,SeasonalMetricID,MetricStatistic,Author,YYear,Location,OtherPollutants,Qualifier,Reference,Race,Gender,Startage,Endage,a.FunctionalFormid,d.FunctionalFormText,"
-    + " a.IncidenceDatasetID,a.PrevalenceDatasetID,a.VariableDatasetID,betas.Beta,dt.DistributionName,betas.P1Beta,betas.P2Beta,betas.A,betas.NameA,betas.B,betas.NameB,betas.C,betas.NameC,"
+    + " a.IncidenceDatasetID,a.PrevalenceDatasetID,a.VariableDatasetID,betas.Beta,dt.DistributionName as DistBeta,betas.P1Beta,betas.P2Beta,betas.A,betas.NameA,betas.B,betas.NameB,betas.C,betas.NameC,"
     + " a.BaselineFunctionalFormID,e.FunctionalFormText as BaselineFunctionalFormText,Ethnicity,Percentile,Locationtypeid, g.IncidenceDataSetName,i.IncidenceDataSetName as PrevalenceDataSetName,"
     + " h.SetupVariableDataSetName as VariableDatasetName"
     + " from crFunctions a"
@@ -529,7 +529,7 @@ namespace BenMAP.Configuration
     + " left join IncidenceDataSets g on a.IncidenceDatasetID=g.IncidenceDatasetID"
     + " left join IncidenceDataSets i on a.PrevalenceDatasetID=i.IncidenceDatasetID"
     + " left join SetupVariableDataSets h on a.VariableDatasetID=h.SetupVariableDataSetID"
-    + " where CRFunctionID={0}", ID);
+    + " where a.CRFunctionID={0}", ID);
 
                 BenMAPHealthImpactFunction benMapHealthImpactFunction = new BenMAPHealthImpactFunction();
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
@@ -554,7 +554,7 @@ namespace BenMAP.Configuration
 
 
                 benMapHealthImpactFunction.Beta = Convert.ToDouble(dr["Beta"]);
-                benMapHealthImpactFunction.BetaDistribution = dr["DistributionName"].ToString();
+                benMapHealthImpactFunction.BetaDistribution = dr["DistBeta"].ToString();
                 benMapHealthImpactFunction.BetaParameter1 = Convert.ToDouble(dr["P1Beta"]);
                 benMapHealthImpactFunction.BetaParameter2 = Convert.ToDouble(dr["P2Beta"]);
                 if ((dr["A"] is DBNull) == false)
