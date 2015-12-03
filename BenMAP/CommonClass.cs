@@ -287,8 +287,10 @@ namespace BenMAP
         }
 
 
+        public static List<BenMAPPollutantGroup> LstPollutantGroup;
+        public static List<BenMAPPollutant> LstPollutant;
+        public static BenMAPGrid rBenMAPGrid;
 
-        public static List<BenMAPPollutant> LstPollutant; public static BenMAPGrid rBenMAPGrid;
         public static void SaveCSV(DataTable dt, string fileName)
         {
             FileStream fs = new FileStream(fileName, System.IO.FileMode.Create, System.IO.FileAccess.Write);
