@@ -519,7 +519,7 @@ namespace BenMAP.Configuration
     + " a.BaselineFunctionalFormID,e.FunctionalFormText as BaselineFunctionalFormText,Ethnicity,Percentile,Locationtypeid, g.IncidenceDataSetName,i.IncidenceDataSetName as PrevalenceDataSetName,"
     + " h.SetupVariableDataSetName as VariableDatasetName"
     + " from crFunctions a"
-    + " join CRBetas betas on a.CRFunctionID = betas.CRFunctionID"
+    + " join CRFBetas betas on a.CRFunctionID = betas.CRFunctionID"
     + " join DistributionTypes dt on betas.DistributionTypeID = dt.DistributionTypeID"
     + " join CRFunctionDataSets f on a.CRFunctionDatasetID=f.CRFunctionDatasetID"
     + " join EndPointGroups b on a.EndPointGroupID=b.EndPointGroupID"
