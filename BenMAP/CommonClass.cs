@@ -287,7 +287,7 @@ namespace BenMAP
         }
 
 
-        public static List<BenMAPPollutantGroup> LstPollutantGroup;
+        public static BenMAPPollutantGroup PollutantGroup;
         public static List<BenMAPPollutant> LstPollutant;
         public static BenMAPGrid rBenMAPGrid;
 
