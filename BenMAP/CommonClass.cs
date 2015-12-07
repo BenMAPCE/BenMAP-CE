@@ -2145,7 +2145,10 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
                 else
                 {
                     benMAPProject.ManageSetup = ManageSetup;
-                    benMAPProject.MainSetup = MainSetup; benMAPProject.LstPollutant = LstPollutant; benMAPProject.RBenMAPGrid = RBenMAPGrid;
+                    benMAPProject.MainSetup = MainSetup;
+                    benMAPProject.LstPollutant = LstPollutant;
+                    benMAPProject.PollutantGroup = PollutantGroup;
+                    benMAPProject.RBenMAPGrid = RBenMAPGrid;
                     benMAPProject.GBenMAPGrid = GBenMAPGrid; benMAPProject.LstBaseControlGroup = LstBaseControlGroup; benMAPProject.CRThreshold = CRThreshold; benMAPProject.CRLatinHypercubePoints = CRLatinHypercubePoints; benMAPProject.CRRunInPointMode = CRRunInPointMode; benMAPProject.CRSeeds = CRSeeds;
                     benMAPProject.BenMAPPopulation = BenMAPPopulation;
                     benMAPProject.lstPollutantAll = lstPollutantAll;
