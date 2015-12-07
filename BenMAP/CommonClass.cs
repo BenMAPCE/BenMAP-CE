@@ -2367,8 +2367,17 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
                         BaseControlCRSelectFunction.lstCRSelectFunction = BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue.Select(p => p.CRSelectFunction).ToList();
                     }
 
-                    ManageSetup = getBenMAPSetupFromID(BaseControlCRSelectFunction.BaseControlGroup.First().GridType.SetupID); MainSetup = getBenMAPSetupFromID(BaseControlCRSelectFunction.BaseControlGroup.First().GridType.SetupID); LstPollutant = BaseControlCRSelectFunction.BaseControlGroup.Select(p => p.Pollutant).ToList(); RBenMAPGrid = BaseControlCRSelectFunction.RBenMapGrid;
-                    GBenMAPGrid = BaseControlCRSelectFunction.BaseControlGroup.First().GridType; LstBaseControlGroup = BaseControlCRSelectFunction.BaseControlGroup; CRThreshold = BaseControlCRSelectFunction.CRThreshold; CRLatinHypercubePoints = BaseControlCRSelectFunction.CRLatinHypercubePoints; CRRunInPointMode = BaseControlCRSelectFunction.CRRunInPointMode; CRSeeds = BaseControlCRSelectFunction.CRSeeds;
+                    ManageSetup = getBenMAPSetupFromID(BaseControlCRSelectFunction.BaseControlGroup.First().GridType.SetupID);
+                    MainSetup = getBenMAPSetupFromID(BaseControlCRSelectFunction.BaseControlGroup.First().GridType.SetupID);
+                    LstPollutant = BaseControlCRSelectFunction.BaseControlGroup.Select(p => p.Pollutant).ToList();
+                    PollutantGroup = benMAPProject.PollutantGroup != null ? benMAPProject.PollutantGroup : null;
+                    RBenMAPGrid = BaseControlCRSelectFunction.RBenMapGrid;
+                    GBenMAPGrid = BaseControlCRSelectFunction.BaseControlGroup.First().GridType;
+                    LstBaseControlGroup = BaseControlCRSelectFunction.BaseControlGroup;
+                    CRThreshold = BaseControlCRSelectFunction.CRThreshold;
+                    CRLatinHypercubePoints = BaseControlCRSelectFunction.CRLatinHypercubePoints;
+                    CRRunInPointMode = BaseControlCRSelectFunction.CRRunInPointMode;
+                    CRSeeds = BaseControlCRSelectFunction.CRSeeds;
                     BenMAPPopulation = BaseControlCRSelectFunction.BenMAPPopulation;
                 }
                 else if (benMAPProject.BaseControlCRSelectFunctionCalculateValue != null)
@@ -2389,33 +2398,58 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
                         BaseControlCRSelectFunction.lstCRSelectFunction = BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue.Select(p => p.CRSelectFunction).ToList();
                     }
 
-                    ManageSetup = getBenMAPSetupFromID(BaseControlCRSelectFunction.BaseControlGroup.First().GridType.SetupID); MainSetup = getBenMAPSetupFromID(BaseControlCRSelectFunction.BaseControlGroup.First().GridType.SetupID); LstPollutant = BaseControlCRSelectFunction.BaseControlGroup.Select(p => p.Pollutant).ToList();
+                    ManageSetup = getBenMAPSetupFromID(BaseControlCRSelectFunction.BaseControlGroup.First().GridType.SetupID);
+                    MainSetup = getBenMAPSetupFromID(BaseControlCRSelectFunction.BaseControlGroup.First().GridType.SetupID);
+                    LstPollutant = BaseControlCRSelectFunction.BaseControlGroup.Select(p => p.Pollutant).ToList();
+                    PollutantGroup = benMAPProject.PollutantGroup != null ? benMAPProject.PollutantGroup : null;
                     RBenMAPGrid = BaseControlCRSelectFunctionCalculateValue.RBenMapGrid;
-                    GBenMAPGrid = BaseControlCRSelectFunction.BaseControlGroup.First().GridType; LstBaseControlGroup = BaseControlCRSelectFunction.BaseControlGroup; CRThreshold = BaseControlCRSelectFunction.CRThreshold; CRLatinHypercubePoints = BaseControlCRSelectFunction.CRLatinHypercubePoints; CRRunInPointMode = BaseControlCRSelectFunction.CRRunInPointMode; CRSeeds = BaseControlCRSelectFunction.CRSeeds;
+                    GBenMAPGrid = BaseControlCRSelectFunction.BaseControlGroup.First().GridType;
+                    LstBaseControlGroup = BaseControlCRSelectFunction.BaseControlGroup;
+                    CRThreshold = BaseControlCRSelectFunction.CRThreshold;
+                    CRLatinHypercubePoints = BaseControlCRSelectFunction.CRLatinHypercubePoints;
+                    CRRunInPointMode = BaseControlCRSelectFunction.CRRunInPointMode;
+                    CRSeeds = BaseControlCRSelectFunction.CRSeeds;
                     BenMAPPopulation = BaseControlCRSelectFunction.BenMAPPopulation;
                 }
                 else if (benMAPProject.BaseControlCRSelectFunction != null)
                 {
                     BaseControlCRSelectFunction = benMAPProject.BaseControlCRSelectFunction;
-                    ManageSetup = getBenMAPSetupFromID(BaseControlCRSelectFunction.BaseControlGroup.First().GridType.SetupID); MainSetup = getBenMAPSetupFromID(BaseControlCRSelectFunction.BaseControlGroup.First().GridType.SetupID); LstPollutant = BaseControlCRSelectFunction.BaseControlGroup.Select(p => p.Pollutant).ToList(); RBenMAPGrid = BaseControlCRSelectFunction.RBenMapGrid;
-                    GBenMAPGrid = BaseControlCRSelectFunction.BaseControlGroup.First().GridType; LstBaseControlGroup = BaseControlCRSelectFunction.BaseControlGroup; CRThreshold = BaseControlCRSelectFunction.CRThreshold; CRLatinHypercubePoints = BaseControlCRSelectFunction.CRLatinHypercubePoints; CRRunInPointMode = BaseControlCRSelectFunction.CRRunInPointMode; CRSeeds = BaseControlCRSelectFunction.CRSeeds;
+                    ManageSetup = getBenMAPSetupFromID(BaseControlCRSelectFunction.BaseControlGroup.First().GridType.SetupID);
+                    MainSetup = getBenMAPSetupFromID(BaseControlCRSelectFunction.BaseControlGroup.First().GridType.SetupID);
+                    LstPollutant = BaseControlCRSelectFunction.BaseControlGroup.Select(p => p.Pollutant).ToList();
+                    PollutantGroup = benMAPProject.PollutantGroup != null ? benMAPProject.PollutantGroup : null;
+                    RBenMAPGrid = BaseControlCRSelectFunction.RBenMapGrid;
+                    GBenMAPGrid = BaseControlCRSelectFunction.BaseControlGroup.First().GridType;
+                    LstBaseControlGroup = BaseControlCRSelectFunction.BaseControlGroup;
+                    CRThreshold = BaseControlCRSelectFunction.CRThreshold;
+                    CRLatinHypercubePoints = BaseControlCRSelectFunction.CRLatinHypercubePoints;
+                    CRRunInPointMode = BaseControlCRSelectFunction.CRRunInPointMode;
+                    CRSeeds = BaseControlCRSelectFunction.CRSeeds;
                     BenMAPPopulation = BaseControlCRSelectFunction.BenMAPPopulation;
                 }
                 else
                 {
                     ManageSetup = benMAPProject.ManageSetup;
-                    MainSetup = benMAPProject.MainSetup; LstPollutant = benMAPProject.LstPollutant != null ? benMAPProject.LstPollutant : null; RBenMAPGrid = benMAPProject.RBenMAPGrid != null ? benMAPProject.RBenMAPGrid : null;
-                    GBenMAPGrid = benMAPProject.GBenMAPGrid != null ? benMAPProject.GBenMAPGrid : null; if (benMAPProject.LstBaseControlGroup != null)
+                    MainSetup = benMAPProject.MainSetup;
+                    LstPollutant = benMAPProject.LstPollutant != null ? benMAPProject.LstPollutant : null;
+                    PollutantGroup = benMAPProject.PollutantGroup != null ? benMAPProject.PollutantGroup : null;
+                    RBenMAPGrid = benMAPProject.RBenMAPGrid != null ? benMAPProject.RBenMAPGrid : null;
+                    GBenMAPGrid = benMAPProject.GBenMAPGrid != null ? benMAPProject.GBenMAPGrid : null;
+                    if (benMAPProject.LstBaseControlGroup != null)
                     {
                         LstBaseControlGroup = benMAPProject.LstBaseControlGroup;
                     }
-                    CRThreshold = benMAPProject.CRThreshold; CRLatinHypercubePoints = benMAPProject.CRLatinHypercubePoints; CRRunInPointMode = benMAPProject.CRRunInPointMode; CRSeeds = benMAPProject.CRSeeds;
+                    CRThreshold = benMAPProject.CRThreshold;
+                    CRLatinHypercubePoints = benMAPProject.CRLatinHypercubePoints;
+                    CRRunInPointMode = benMAPProject.CRRunInPointMode;
+                    CRSeeds = benMAPProject.CRSeeds;
 
                     BenMAPPopulation = benMAPProject.BenMAPPopulation != null ? benMAPProject.BenMAPPopulation : null;
                     lstPollutantAll = benMAPProject.lstPollutantAll;
                 }
                 IncidencePoolingAndAggregationAdvance = benMAPProject.IncidencePoolingAndAggregationAdvance;
-                BenMAPPopulation = benMAPProject.BenMAPPopulation; CommonClass.lstPollutantAll = Grid.GridCommon.getAllPollutant(CommonClass.MainSetup.SetupID);
+                BenMAPPopulation = benMAPProject.BenMAPPopulation;
+                CommonClass.lstPollutantAll = Grid.GridCommon.getAllPollutant(CommonClass.MainSetup.SetupID);
 
                 if (LstBaseControlGroup != null)
                 {
@@ -2679,6 +2713,8 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
         public CRSelectFunctionCalculateValue IncidencePoolingResult;
         [ProtoMember(18)]
         public ValuationMethodPoolingAndAggregation ValuationMethodPoolingAndAggregation;
+        [ProtoMember(19)]
+        public BenMAPPollutantGroup PollutantGroup;
     }
 
     [Serializable]
