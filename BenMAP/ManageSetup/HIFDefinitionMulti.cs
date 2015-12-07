@@ -376,7 +376,7 @@ namespace BenMAP
             int panelWidthSingle = 275;
             int panelWidthGroup = 121;
             int panelYAxSingle = 37;
-            int panelYAxGroup = 82; 
+            int panelYAxGroup = 86; 
 
             if (singleButton.Checked)
             {
@@ -395,7 +395,7 @@ namespace BenMAP
                 cboModelSpec.Visible = true;
                 pollCtlPanel.Width = panelWidthGroup;
                 pollCtlPanel.Location = new Point(3, panelYAxGroup);
-                betaVarGroup.Location = new Point(6, 231);
+                betaVarGroup.Location = new Point(6, 236);
                 pollCtlPanel.Invalidate();
             }
         }
@@ -936,7 +936,6 @@ namespace BenMAP
             {
                 String pass = "";
                 if (bvFullYear.Checked) pass = bvFullYear.Text;
-                else if (bvGeographic.Checked) pass = bvGeographic.Text;
                 else pass = bvSeasonal.Text;
 
                 EffectCoefficients form = new EffectCoefficients(pass);

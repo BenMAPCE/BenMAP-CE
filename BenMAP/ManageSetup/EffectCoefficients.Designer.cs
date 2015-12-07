@@ -186,6 +186,8 @@
             // 
             // panel2
             // 
+            this.panel2.AutoSize = true;
+            this.panel2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.panel2.Controls.Add(this.txtBetaParameter1);
             this.panel2.Controls.Add(this.lblBetaParameter1);
             this.panel2.Controls.Add(this.txtBetaParameter2);
@@ -193,7 +195,7 @@
             this.panel2.Location = new System.Drawing.Point(0, 92);
             this.panel2.Margin = new System.Windows.Forms.Padding(0);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(394, 46);
+            this.panel2.Size = new System.Drawing.Size(394, 43);
             this.panel2.TabIndex = 51;
             // 
             // txtBetaParameter1
@@ -236,7 +238,7 @@
             // 
             // txtBconstantValue
             // 
-            this.txtBconstantValue.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.txtBconstantValue.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtBconstantValue.Location = new System.Drawing.Point(203, 183);
             this.txtBconstantValue.Name = "txtBconstantValue";
@@ -246,7 +248,7 @@
             // 
             // txtAconstantValue
             // 
-            this.txtAconstantValue.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.txtAconstantValue.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtAconstantValue.Location = new System.Drawing.Point(203, 155);
             this.txtAconstantValue.Name = "txtAconstantValue";
@@ -256,7 +258,7 @@
             // 
             // txtCconstantValue
             // 
-            this.txtCconstantValue.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.txtCconstantValue.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtCconstantValue.Location = new System.Drawing.Point(203, 211);
             this.txtCconstantValue.Name = "txtCconstantValue";
@@ -266,6 +268,8 @@
             // 
             // lblConstantValue
             // 
+            this.lblConstantValue.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lblConstantValue.AutoSize = true;
             this.lblConstantValue.Location = new System.Drawing.Point(201, 139);
             this.lblConstantValue.Name = "lblConstantValue";
@@ -275,6 +279,8 @@
             // 
             // lblConstantDescription
             // 
+            this.lblConstantDescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lblConstantDescription.AutoSize = true;
             this.lblConstantDescription.Location = new System.Drawing.Point(66, 140);
             this.lblConstantDescription.Name = "lblConstantDescription";
@@ -284,7 +290,7 @@
             // 
             // txtAconstantDescription
             // 
-            this.txtAconstantDescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.txtAconstantDescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtAconstantDescription.Location = new System.Drawing.Point(68, 157);
             this.txtAconstantDescription.Name = "txtAconstantDescription";
@@ -293,6 +299,8 @@
             // 
             // lblC
             // 
+            this.lblC.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lblC.AutoSize = true;
             this.lblC.Location = new System.Drawing.Point(46, 216);
             this.lblC.Name = "lblC";
@@ -302,6 +310,8 @@
             // 
             // lblA
             // 
+            this.lblA.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lblA.AutoSize = true;
             this.lblA.Location = new System.Drawing.Point(46, 161);
             this.lblA.Name = "lblA";
@@ -311,7 +321,7 @@
             // 
             // txtCconstantDescription
             // 
-            this.txtCconstantDescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.txtCconstantDescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtCconstantDescription.Location = new System.Drawing.Point(68, 212);
             this.txtCconstantDescription.Name = "txtCconstantDescription";
@@ -320,6 +330,8 @@
             // 
             // lblB
             // 
+            this.lblB.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lblB.AutoSize = true;
             this.lblB.Location = new System.Drawing.Point(46, 189);
             this.lblB.Name = "lblB";
@@ -329,7 +341,7 @@
             // 
             // txtBconstantDescription
             // 
-            this.txtBconstantDescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.txtBconstantDescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtBconstantDescription.Location = new System.Drawing.Point(68, 184);
             this.txtBconstantDescription.Name = "txtBconstantDescription";
@@ -377,6 +389,7 @@
             // 
             // showForSeasonal
             // 
+            this.showForSeasonal.AutoSize = true;
             this.showForSeasonal.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.showForSeasonal.Controls.Add(this.lblEnd);
             this.showForSeasonal.Controls.Add(this.tbEnd);
@@ -452,6 +465,7 @@
             // 
             // editVarBtn
             // 
+            this.editVarBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.editVarBtn.Location = new System.Drawing.Point(110, 99);
             this.editVarBtn.Margin = new System.Windows.Forms.Padding(0);
             this.editVarBtn.Name = "editVarBtn";
@@ -459,6 +473,8 @@
             this.editVarBtn.TabIndex = 50;
             this.editVarBtn.Text = "Edit Variance/ Covariance";
             this.editVarBtn.UseVisualStyleBackColor = true;
+            this.editVarBtn.Click += new System.EventHandler(this.editVarBtn_Click);
+
             // 
             // tbModelSpec
             // 

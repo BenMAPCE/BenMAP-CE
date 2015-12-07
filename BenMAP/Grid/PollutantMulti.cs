@@ -7,11 +7,35 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using ESIL.DBUtility;
+using BenMAP.Grid;
 
-namespace BenMAP.Grid
+namespace BenMAP
 {
-    public partial class PollutantMulti : Form
+    public partial class PollutantMulti : FormBase
     {
+
+        public struct PollInfo
+        {
+            public int groupID;
+            public string groupName;
+            public int pollID;
+            public string pollName;
+            public int setupID;
+            public int obsID;
+        };
+
+        public PollInfo setPollInfo(int pgID, string pgName, int pID, string pName, int sID, int oID)
+        {
+            PollInfo setPoll = new PollInfo();
+            setPoll.groupID = pgID;
+            setPoll.groupName = pgName;
+            setPoll.pollID = pID;
+            setPoll.pollName = pName;
+            setPoll.setupID = sID;
+            setPoll.obsID = oID;
+            return setPoll;
+        }
+
         public PollutantMulti()
         {
             InitializeComponent();
@@ -23,39 +47,42 @@ namespace BenMAP.Grid
             lstSPollutant.Invalidate();
             try
             {
-                if (singleButton.Checked)
-                {
-                    lstPollutant.Visible = true;
-                    lstSPollutant.Items.Clear();
-                    lstSPollutant.Invalidate();
-                    lstSPollutant.Visible = true;
-                    groupTreeView.Visible = false;
-                    selectedTree.Visible = false;
+                FireBirdHelperBase fb = new ESILFireBirdHelper();
+                string commandText = string.Empty;
 
-                    FireBirdHelperBase fb = new ESILFireBirdHelper();
-                    string commandText = string.Empty;
+                commandText = string.Format("select PGName from PollutantGroups where setupid={0} order by PollutantGroupID asc", CommonClass.MainSetup.SetupID);
+                DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
 
-                    commandText = string.Format("select PollutantID,PollutantName,SetupID,ObservationType from Pollutants where setupid={0} order by PollutantName asc", CommonClass.MainSetup.SetupID);
-                    DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
-                    lstPollutant.DataSource = ds.Tables[0];
-                    lstPollutant.DisplayMember = "PollutantName";
-                    if (CommonClass.LstPollutant == null || CommonClass.LstPollutant.Count == 0) { CommonClass.LstPollutant = new List<BenMAPPollutant>(); return; }
-                    int selectedCount = CommonClass.LstPollutant.Count;
-                    string str = string.Empty;
-                    for (int i = 0; i < selectedCount; i++)
-                    {
-                        str = CommonClass.LstPollutant[i].PollutantName;
-                        lstSPollutant.Items.Add(str);
-                    }
-                }
-                else
+                foreach (DataRow dr in ds.Tables[0].Rows)
                 {
-                    groupTreeView.Visible = true;
-                    selectedTree.Visible = true;
-                    lstPollutant.Visible = false;
-                    lstSPollutant.Visible = false;
-                    cbShowDetails.Visible = false;
+                    pollTreeView.Nodes.Add(dr["pgname"].ToString(), dr["pgname"].ToString());
                 }
+
+                commandText = string.Format("select PollutantGroupPollutants.PollutantGroupID, PGName, Pollutants.PollutantID, PollutantName, Pollutants.SetupID, ObservationType from Pollutants inner join PollutantGroupPollutants on Pollutants.PollutantID=PollutantGroupPollutants.PollutantID inner join PollutantGroups on PollutantGroups.PollutantGroupID=PollutantGroupPollutants.PollutantGroupID and PollutantGroups.SetupID={0} order by PollutantGroupPollutants.PollutantGroupID asc", CommonClass.MainSetup.SetupID);
+                ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
+
+                foreach (DataRow dr in ds.Tables[0].Rows)
+                {
+                    TreeNode[] newNode = pollTreeView.Nodes.Find(dr["PGName"].ToString(), false);
+                    if (newNode[0] == null | newNode == null) break;
+                    newNode[0].Nodes.Add(dr["pollutantname"].ToString(), dr["pollutantname"].ToString());
+                    newNode[0].Collapse();
+
+                    newNode = newNode[0].Nodes.Find(dr["pollutantname"].ToString(), false);
+                    newNode[0].Tag = setPollInfo(Convert.ToInt32(dr["pollutantgroupid"]), dr["pgname"].ToString(), Convert.ToInt32(dr["pollutantid"]), dr["pollutantname"].ToString(), Convert.ToInt32(dr["setupid"]), Convert.ToInt32(dr["observationtype"]));
+                } 
+
+                /* from Pollutant.cs to reference for saving groups to global list 
+                lstPollutant.DataSource = ds.Tables[0];
+                lstPollutant.DisplayMember = "PollutantName";
+                if (CommonClass.LstPollutant == null || CommonClass.LstPollutant.Count == 0) { CommonClass.LstPollutant = new List<BenMAPPollutant>(); return; }
+                int selectedCount = CommonClass.LstPollutant.Count;
+                string str = string.Empty; 
+                for (int i = 0; i < selectedCount; i++)
+                {
+                    str = CommonClass.LstPollutant[i].PollutantName;
+                    lstSPollutant.Items.Add(str);
+                }*/
             }
             catch (Exception ex)
             {
@@ -63,7 +90,6 @@ namespace BenMAP.Grid
             }
 
         }
-
 
         private void groupTreeView_ItemDrag(object sender, System.Windows.Forms.ItemDragEventArgs e)
         {
@@ -80,28 +106,26 @@ namespace BenMAP.Grid
             {
                 TreeView send = (TreeView)sender;
                 TreeNode NewNode = (TreeNode)e.Data.GetData("System.Windows.Forms.TreeNode");
-
-                if(!send.Nodes.ContainsKey(NewNode.Text.ToString()))
-               // if (!send.Nodes.Contains(NewNode))
+ 
+                if(!send.Nodes.ContainsKey(NewNode.Name))
                 {
                     send.Nodes.Add((TreeNode)NewNode.Clone());
                 }
                 else
                 {
-                    MessageBox.Show(string.Format("Group: {0} has already been selected.", NewNode.Text));
-                }
+                    MessageBox.Show(string.Format("{0} has already been selected.", NewNode.Text));
+                } 
             }
         }
 
-        // From Pollutant.cs
-        private void showDetails(DataRowView drv)
+        private void showDetails (PollInfo drv) 
         {
             FireBirdHelperBase fb = new ESILFireBirdHelper();
             string commandText = string.Empty;
             try
             {
-                txtPollutantName.Text = drv.Row["PollutantName"].ToString();
-                int obserID = int.Parse(drv.Row["ObservationType"].ToString());
+                txtPollutantName.Text = drv.pollName; 
+                int obserID = drv.obsID;
                 switch (obserID)
                 {
                     case 0:
@@ -109,12 +133,12 @@ namespace BenMAP.Grid
                         tclFixed.Enabled = true;
                         if (cbShowDetails.Checked)
                         {
-                            detailGroup.Height = 240;
-                            this.Height = 611;
+                            detailGroup.Height = 258;
+                            this.Height = 652; 
                         }
                         else
                         {
-                            this.Height = 355;
+                            this.Height = 386;
                         }
                         break;
                     case 1:
@@ -122,15 +146,15 @@ namespace BenMAP.Grid
                         if (cbShowDetails.Checked)
                         {
                             detailGroup.Height = 85;
-                            this.Height = 447;
+                            this.Height = 481; 
                         }
                         else
                         {
-                            this.Height = 355;
+                            this.Height = 386;
                         }
                         break;
                 }
-                commandText = string.Format("select MetricName,MetricID,HourlyMetricGeneration from metrics where pollutantid={0}", drv["PollutantID"]);
+                commandText = string.Format("select MetricName,MetricID,HourlyMetricGeneration from metrics where pollutantid={0}", drv.pollID);
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                 DataTable dtMetric = ds.Tables[0].Clone();
                 dtMetric = ds.Tables[0].Copy();
@@ -143,7 +167,7 @@ namespace BenMAP.Grid
                 commandText = string.Format("select SeasonalMetricName,SeasonalMetricID from SeasonalMetrics where MetricID={0}", drvMetric["metricID"]);
                 ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                 cmbSeasonalMetric.DataSource = ds.Tables[0];
-                cmbSeasonalMetric.DisplayMember = "SeasonalMetricName";
+                cmbSeasonalMetric.DisplayMember = "SeasonalMetricName"; 
             }
             catch (Exception ex)
             {
@@ -154,8 +178,8 @@ namespace BenMAP.Grid
         private void cbShowDetails_CheckedChanged(object sender, EventArgs e)
         {
             if (sender == null) { return; }
-            DataRowView drv = lstPollutant.SelectedItem as DataRowView;
-            if (drv == null) { return; }
+            if (pollTreeView.SelectedNode.Tag == null) return;
+            PollInfo drv = (PollInfo)pollTreeView.SelectedNode.Tag;
             showDetails(drv);
         }
 
@@ -293,6 +317,29 @@ namespace BenMAP.Grid
             }
         }
 
+        private void selectedTree_DoubleClick(object sender, EventArgs e)
+        {
+            try
+            {
+                if (selectTreeView.SelectedNode != null)
+                {
+                    string delPollutant = selectTreeView.SelectedNode.Text;
+                    DialogResult result = MessageBox.Show(string.Format("Delete the selected pollutant \'{0}\'? ", delPollutant), "Confirm Delete", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                    if (result != DialogResult.Yes) { return; }
+
+                    selectTreeView.Nodes.Remove(selectTreeView.SelectedNode);
+                }
+                else
+                {
+                    MessageBox.Show("There is no pollutant to delete.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+            }
+        }
+
         private void btnOK_Click(object sender, EventArgs e)
         {
             try
@@ -336,8 +383,21 @@ namespace BenMAP.Grid
             try
             {
                 if (sender == null) { return; }
-                DataRowView drv = lstPollutant.SelectedItem as DataRowView;
-                if (drv == null) { return; }
+                PollInfo drv = (PollInfo)pollTreeView.SelectedNode.Tag;
+                showDetails(drv);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.Message);
+            }
+        }
+
+        private void pollTreeView_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                if (sender == null) { return; }
+                PollInfo drv = (PollInfo)pollTreeView.SelectedNode.Tag;
                 showDetails(drv);
             }
             catch (Exception ex)
@@ -351,8 +411,7 @@ namespace BenMAP.Grid
             try
             {
                 if (sender == null) { return; }
-                DataRowView drv = lstSPollutant.SelectedItem as DataRowView;
-                if (drv == null) { return; }
+                PollInfo drv = (PollInfo)pollTreeView.SelectedNode.Tag;
                 showDetails(drv);
             }
             catch (Exception ex)
@@ -371,45 +430,5 @@ namespace BenMAP.Grid
             btnDelete_Click(sender, e);
         }
 
-        private void lstPollutant_MouseDown(object sender, MouseEventArgs e)
-        {
-            base.OnMouseDown(e);
-            try
-            {
-                if (sender == null) { return; }
-                DataRowView drv = lstPollutant.Items[lstPollutant.IndexFromPoint(e.X, e.Y)] as DataRowView;
-                if (drv == null) { return; }
-                showDetails(drv);
-                if (lstPollutant.Items.Count == 0)
-                    return;
-                string s = (lstPollutant.Items[lstPollutant.IndexFromPoint(e.X, e.Y)] as DataRowView)["PollutantName"].ToString();
-                DragDropEffects dde1 = DoDragDrop(s,
-                    DragDropEffects.All);
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex.Message);
-            }
-
-        }
-
-        private void lstSPollutant_DragDrop(object sender, DragEventArgs e)
-        {
-            if (e.Data.GetDataPresent(DataFormats.StringFormat))
-            {
-                string str = (string)e.Data.GetData(DataFormats.StringFormat);
-                btnSelect_Click(sender, e);
-            }
-        }
-
-        private void lstSPollutant_DragOver(object sender, DragEventArgs e)
-        {
-            e.Effect = DragDropEffects.All;
-        }
-
-        private void selectedTree_AfterSelect(object sender, TreeViewEventArgs e)
-        {
-
-        }
     }
 }

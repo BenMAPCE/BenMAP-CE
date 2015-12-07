@@ -750,6 +750,12 @@
     <Compile Include="Configuration\PopulationInformation.Designer.cs">
       <DependentUpon>PopulationInformation.cs</DependentUpon>
     </Compile>
+    <Compile Include="ManageSetup\VarianceMulti.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ManageSetup\VarianceMulti.Designer.cs">
+      <DependentUpon>VarianceMulti.cs</DependentUpon>
+    </Compile>
     <Compile Include="SQLStatementsCommonClass.cs" />
     <Compile Include="TipFormGIF.cs">
       <SubType>Form</SubType>
@@ -1349,6 +1355,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ManageSetup\ValuationFunctionDefinition.resx">
       <DependentUpon>ValuationFunctionDefinition.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ManageSetup\VarianceMulti.resx">
+      <DependentUpon>VarianceMulti.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
