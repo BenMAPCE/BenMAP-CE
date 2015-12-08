@@ -373,31 +373,7 @@ namespace BenMAP
 
         private void PollutantPanel_Load(object sender, EventArgs e)
         {
-            int panelWidthSingle = 275;
-            int panelWidthGroup = 121;
-            int panelYAxSingle = 37;
-            int panelYAxGroup = 86; 
 
-            if (singleButton.Checked)
-            {
-                pollutantList.Visible = false;
-                lblModelSpec.Visible = false;
-                cboModelSpec.Visible = false;
-                pollCtlPanel.Width = panelWidthSingle;
-                pollCtlPanel.Location = new Point(3, panelYAxSingle);
-                betaVarGroup.Location = new Point(6, 194);
-                pollCtlPanel.Invalidate();
-            }
-            else
-            {
-                pollutantList.Visible = true;
-                lblModelSpec.Visible = true;
-                cboModelSpec.Visible = true;
-                pollCtlPanel.Width = panelWidthGroup;
-                pollCtlPanel.Location = new Point(3, panelYAxGroup);
-                betaVarGroup.Location = new Point(6, 236);
-                pollCtlPanel.Invalidate();
-            }
         }
         public void BindItems()
         {
@@ -408,12 +384,12 @@ namespace BenMAP
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                 cboEndpointGroup.DataSource = ds.Tables[0];
                 cboEndpointGroup.DisplayMember = "ENDPOINTGROUPNAME";
-                if (cboEndpointGroup.Items.Count > 0)
-                    cboEndpointGroup.SelectedIndex = 0;
-                cboEndpointGroup.DropDownWidth = 250; commandText = "select POLLUTANTNAME from POLLUTANTS where setupID=" + CommonClass.ManageSetup.SetupID;
+                if (cboEndpointGroup.Items.Count > 0) cboEndpointGroup.SelectedIndex = 0;
+                cboEndpointGroup.DropDownWidth = 250;
+                commandText = string.Format("select PGName, PollutantGroupID from PollutantGroups where setupid={0} order by PollutantGroupID asc", CommonClass.MainSetup.SetupID);
                 ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                 cboPollutant.DataSource = ds.Tables[0];
-                cboPollutant.DisplayMember = "POLLUTANTNAME";
+                cboPollutant.DisplayMember = "PGNAME";
                 commandText = "select ETHNICITYNAME from ETHNICITY";
                 ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                 cboEthnicity.DataSource = ds.Tables[0];
@@ -499,11 +475,35 @@ namespace BenMAP
         {
             try
             {
+                // Load Model Specifications based on single or group
                 string str = cboPollutant.Text;
-                string commandText = string.Format("select * from METRICS where POLLUTANTID=(select POLLUTANTID from POLLUTANTS where POLLUTANTNAME='{0}'and setupID={1} )", str, CommonClass.ManageSetup.SetupID);
+                string commandText = string.Format("select count(POLLUTANTID) from POLLUTANTGROUPPOLLUTANTS where POLLUTANTGROUPID in (select POLLUTANTGROUPID from POLLUTANTGROUPS where PGName ='{0}')", str);
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                int count = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
+
+                if (count == 1) { commandText = "select MSDESCRIPTION from MODELSPECIFICATIONS where MSID=1"; }
+                else { commandText = "select MSDESCRIPTION from MODELSPECIFICATIONS where MSID!=1"; }
+
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
-                cboMetric.DataSource = ds.Tables[0];
+                cboModelSpec.DataSource = ds.Tables[0];
+                cboModelSpec.DisplayMember = "MSDESCRIPTION";
+
+                // Load Metrics 
+                commandText = string.Format("select METRICNAME, COUNT(*) as occur from METRICS inner join POLLUTANTS on METRICS.POLLUTANTID = POLLUTANTS.POLLUTANTID inner join POLLUTANTGROUPPOLLUTANTS on POLLUTANTS.POLLUTANTID = POLLUTANTGROUPPOLLUTANTS.POLLUTANTID inner join POLLUTANTGROUPS on POLLUTANTGROUPS.POLLUTANTGROUPID = POLLUTANTGROUPPOLLUTANTS.POLLUTANTGROUPID and PGNAME='{0}' group by METRICNAME order by COUNT(*) desc", str);
+                ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+                DataSet intersect = ds.Copy();
+
+                int i = 0; 
+                foreach (DataRow dr in ds.Tables[0].Rows)
+                {
+                    if (Convert.ToInt32(dr["occur"]) != count)
+                    {
+                        intersect.Tables[0].Rows.RemoveAt(i);
+                        i--;
+                    }
+                    i++; 
+                }
+                cboMetric.DataSource = intersect.Tables[0];
                 cboMetric.DisplayMember = "METRICNAME";
             }
             catch (Exception ex)
@@ -516,17 +516,10 @@ namespace BenMAP
         {
             try
             {
-
-                string str = cboMetric.Text;
-                DataTable dt = (DataTable)cboMetric.DataSource;
-                string metricID = "";
-                foreach (DataRow dr in dt.Rows)
-                {
-                    if (dr["METRICNAME"].ToString() == str)
-                    { metricID = dr["METRICID"].ToString(); }
-                }
-                if (string.IsNullOrEmpty(metricID)) return;
-                string commandText = "select '' as SeasonalMetricName from SeasonalMetrics union select SeasonalMetricName from SeasonalMetrics where MetricID=" + metricID;
+                // Load Seasonal Metric according to selected Metric 
+                string metricSelected = cboMetric.Text; 
+                string groupSelected = cboPollutant.Text;
+                string commandText = string.Format("select SEASONALMETRICNAME from SEASONALMETRICS inner join METRICS on SEASONALMETRICS.METRICID = METRICS.METRICID and METRICNAME='{0}' inner join POLLUTANTS on METRICS.POLLUTANTID = POLLUTANTS.POLLUTANTID inner join POLLUTANTGROUPPOLLUTANTS on POLLUTANTS.POLLUTANTID = POLLUTANTGROUPPOLLUTANTS.POLLUTANTID inner join POLLUTANTGROUPS on POLLUTANTGROUPS.POLLUTANTGROUPID = POLLUTANTGROUPPOLLUTANTS.POLLUTANTGROUPID and PGNAME='{1}'", metricSelected, groupSelected);
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                 cboSeasonalMetric.DataSource = ds.Tables[0];
