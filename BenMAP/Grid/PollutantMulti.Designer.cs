@@ -33,7 +33,6 @@ namespace BenMAP
         {
             this.mainGroup = new System.Windows.Forms.GroupBox();
             this.pollTreeView = new System.Windows.Forms.TreeView();
-            this.lstPollutant = new System.Windows.Forms.ListBox();
             this.selectTreeView = new System.Windows.Forms.TreeView();
             this.pollLabel = new System.Windows.Forms.Label();
             this.dragDropLabel = new System.Windows.Forms.Label();
@@ -41,9 +40,6 @@ namespace BenMAP
             this.cbShowDetails = new System.Windows.Forms.CheckBox();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnOK = new System.Windows.Forms.Button();
-            this.btnSelect = new System.Windows.Forms.Button();
-            this.btnDelete = new System.Windows.Forms.Button();
-            this.lstSPollutant = new System.Windows.Forms.ListBox();
             this.selectedLabel = new System.Windows.Forms.Label();
             this.metLabel = new System.Windows.Forms.Label();
             this.txtPollutantName = new System.Windows.Forms.TextBox();
@@ -84,7 +80,6 @@ namespace BenMAP
             // mainGroup
             // 
             this.mainGroup.Controls.Add(this.pollTreeView);
-            this.mainGroup.Controls.Add(this.lstPollutant);
             this.mainGroup.Controls.Add(this.selectTreeView);
             this.mainGroup.Controls.Add(this.pollLabel);
             this.mainGroup.Controls.Add(this.dragDropLabel);
@@ -92,9 +87,6 @@ namespace BenMAP
             this.mainGroup.Controls.Add(this.cbShowDetails);
             this.mainGroup.Controls.Add(this.btnCancel);
             this.mainGroup.Controls.Add(this.btnOK);
-            this.mainGroup.Controls.Add(this.btnSelect);
-            this.mainGroup.Controls.Add(this.btnDelete);
-            this.mainGroup.Controls.Add(this.lstSPollutant);
             this.mainGroup.Controls.Add(this.selectedLabel);
             this.mainGroup.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.mainGroup.Location = new System.Drawing.Point(12, 13);
@@ -115,20 +107,6 @@ namespace BenMAP
             this.pollTreeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.pollTreeView_SelectedIndexChanged);
             this.pollTreeView.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.pollTreeView_SelectedIndexChanged);
             this.pollTreeView.DragDrop += new System.Windows.Forms.DragEventHandler(this.selectedTree_DragDrop);
-            // 
-            // lstPollutant
-            // 
-            this.lstPollutant.AllowDrop = true;
-            this.lstPollutant.FormattingEnabled = true;
-            this.lstPollutant.ItemHeight = 14;
-            this.lstPollutant.Location = new System.Drawing.Point(23, 45);
-            this.lstPollutant.Name = "lstPollutant";
-            this.lstPollutant.Size = new System.Drawing.Size(210, 200);
-            this.lstPollutant.TabIndex = 2;
-            this.lstPollutant.Visible = false;
-            this.lstPollutant.SelectedIndexChanged += new System.EventHandler(this.lstPollutant_SelectedIndexChanged);
-            this.lstPollutant.DoubleClick += new System.EventHandler(this.lstPollutant_DoubleClick);
-
             // 
             // selectTreeView
             // 
@@ -203,41 +181,6 @@ namespace BenMAP
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
-            // 
-            // btnSelect
-            // 
-            this.btnSelect.Location = new System.Drawing.Point(138, 276);
-            this.btnSelect.Name = "btnSelect";
-            this.btnSelect.Size = new System.Drawing.Size(75, 29);
-            this.btnSelect.TabIndex = 5;
-            this.btnSelect.Text = "Select";
-            this.btnSelect.UseVisualStyleBackColor = true;
-            this.btnSelect.Visible = false;
-            this.btnSelect.Click += new System.EventHandler(this.btnSelect_Click);
-            // 
-            // btnDelete
-            // 
-            this.btnDelete.Location = new System.Drawing.Point(68, 276);
-            this.btnDelete.Name = "btnDelete";
-            this.btnDelete.Size = new System.Drawing.Size(75, 29);
-            this.btnDelete.TabIndex = 4;
-            this.btnDelete.Text = "Delete";
-            this.btnDelete.UseVisualStyleBackColor = true;
-            this.btnDelete.Visible = false;
-            this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
-            // 
-            // lstSPollutant
-            // 
-            this.lstSPollutant.AllowDrop = true;
-            this.lstSPollutant.FormattingEnabled = true;
-            this.lstSPollutant.ItemHeight = 14;
-            this.lstSPollutant.Location = new System.Drawing.Point(250, 45);
-            this.lstSPollutant.Name = "lstSPollutant";
-            this.lstSPollutant.Size = new System.Drawing.Size(210, 200);
-            this.lstSPollutant.TabIndex = 3;
-            this.lstSPollutant.Visible = false;
-            this.lstSPollutant.SelectedIndexChanged += new System.EventHandler(this.lstSPollutant_SelectedIndexChanged);
-            this.lstSPollutant.DoubleClick += new System.EventHandler(this.lstSPollutant_DoubleClick);
             // 
             // selectedLabel
             // 
@@ -590,10 +533,6 @@ namespace BenMAP
         private System.Windows.Forms.CheckBox cbShowDetails;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Button btnOK;
-        private System.Windows.Forms.Button btnSelect;
-        private System.Windows.Forms.Button btnDelete;
-        private System.Windows.Forms.ListBox lstSPollutant;
-        private System.Windows.Forms.ListBox lstPollutant;
         private System.Windows.Forms.Label selectedLabel;
         private System.Windows.Forms.Label metLabel;
         private System.Windows.Forms.TextBox txtPollutantName;
