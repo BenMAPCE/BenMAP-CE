@@ -94,7 +94,12 @@ namespace BenMAP.Grid
                 string commandText = string.Format("select MetricID,MetricName,PollutantID,HourlyMetricGeneration from Metrics where MetricID={0}", MetricID);
                 System.Data.DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
                 DataRow dr = ds.Tables[0].Rows[0];
-                int HourlyMetricGeneration = Convert.ToInt32(dr["HOURLYMETRICGENERATION"]);
+                int HourlyMetricGeneration = 0;
+                if (dr["HOURLYMETRICGENERATION"] != DBNull.Value)
+                {
+                    HourlyMetricGeneration = Convert.ToInt32(dr["HOURLYMETRICGENERATION"]);
+                }
+                
                 switch (HourlyMetricGeneration)
                 {
                     case 0:

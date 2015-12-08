@@ -24,6 +24,8 @@ namespace BenMAP
             this.btnAddSeasonalMetricSeason = new System.Windows.Forms.Button();
             this.lstSeasonalMetricSeasons = new System.Windows.Forms.ListBox();
             this.grpSelectSeasonDetail = new System.Windows.Forms.GroupBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.txtSeasonalMetricSeasonName = new System.Windows.Forms.TextBox();
             this.dtpEndTime = new System.Windows.Forms.DateTimePicker();
             this.dtpStartTime = new System.Windows.Forms.DateTimePicker();
             this.tabMetricFunction = new System.Windows.Forms.TabControl();
@@ -60,9 +62,9 @@ namespace BenMAP
             // 
             // grpManageSeasonalMetrics
             // 
-            this.grpManageSeasonalMetrics.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.grpManageSeasonalMetrics.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.grpManageSeasonalMetrics.Controls.Add(this.txtSeasonMetricName);
             this.grpManageSeasonalMetrics.Controls.Add(this.label5);
             this.grpManageSeasonalMetrics.Controls.Add(this.grpSeasonalMetricSeasons);
@@ -96,8 +98,8 @@ namespace BenMAP
             // 
             // grpSeasonalMetricSeasons
             // 
-            this.grpSeasonalMetricSeasons.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)));
+            this.grpSeasonalMetricSeasons.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.grpSeasonalMetricSeasons.Controls.Add(this.btnDeleteSeasonalMetricSeason);
             this.grpSeasonalMetricSeasons.Controls.Add(this.btnAddSeasonalMetricSeason);
             this.grpSeasonalMetricSeasons.Controls.Add(this.lstSeasonalMetricSeasons);
@@ -130,8 +132,8 @@ namespace BenMAP
             // 
             // lstSeasonalMetricSeasons
             // 
-            this.lstSeasonalMetricSeasons.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)));
+            this.lstSeasonalMetricSeasons.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.lstSeasonalMetricSeasons.FormattingEnabled = true;
             this.lstSeasonalMetricSeasons.ItemHeight = 14;
             this.lstSeasonalMetricSeasons.Location = new System.Drawing.Point(3, 18);
@@ -142,9 +144,11 @@ namespace BenMAP
             // 
             // grpSelectSeasonDetail
             // 
-            this.grpSelectSeasonDetail.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.grpSelectSeasonDetail.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.grpSelectSeasonDetail.Controls.Add(this.label1);
+            this.grpSelectSeasonDetail.Controls.Add(this.txtSeasonalMetricSeasonName);
             this.grpSelectSeasonDetail.Controls.Add(this.dtpEndTime);
             this.grpSelectSeasonDetail.Controls.Add(this.dtpStartTime);
             this.grpSelectSeasonDetail.Controls.Add(this.tabMetricFunction);
@@ -156,6 +160,22 @@ namespace BenMAP
             this.grpSelectSeasonDetail.TabIndex = 12;
             this.grpSelectSeasonDetail.TabStop = false;
             this.grpSelectSeasonDetail.Text = "Selected Season Details";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(231, 29);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(50, 14);
+            this.label1.TabIndex = 32;
+            this.label1.Text = "Season:";
+            // 
+            // txtSeasonalMetricSeasonName
+            // 
+            this.txtSeasonalMetricSeasonName.Location = new System.Drawing.Point(234, 53);
+            this.txtSeasonalMetricSeasonName.Name = "txtSeasonalMetricSeasonName";
+            this.txtSeasonalMetricSeasonName.Size = new System.Drawing.Size(152, 22);
+            this.txtSeasonalMetricSeasonName.TabIndex = 31;
             // 
             // dtpEndTime
             // 
@@ -181,9 +201,9 @@ namespace BenMAP
             // 
             // tabMetricFunction
             // 
-            this.tabMetricFunction.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.tabMetricFunction.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.tabMetricFunction.Controls.Add(this.tbpStatistic);
             this.tabMetricFunction.Controls.Add(this.tbpCustomFunction);
             this.tabMetricFunction.Location = new System.Drawing.Point(12, 93);
@@ -248,8 +268,8 @@ namespace BenMAP
             // 
             // txtFunctionManage
             // 
-            this.txtFunctionManage.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtFunctionManage.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.txtFunctionManage.Location = new System.Drawing.Point(65, 154);
             this.txtFunctionManage.Multiline = true;
             this.txtFunctionManage.Name = "txtFunctionManage";
@@ -258,8 +278,8 @@ namespace BenMAP
             // 
             // lblSeasonalFunction
             // 
-            this.lblSeasonalFunction.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblSeasonalFunction.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lblSeasonalFunction.AutoSize = true;
             this.lblSeasonalFunction.Location = new System.Drawing.Point(3, 157);
             this.lblSeasonalFunction.Name = "lblSeasonalFunction";
@@ -269,9 +289,9 @@ namespace BenMAP
             // 
             // lstVariables
             // 
-            this.lstVariables.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.lstVariables.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lstVariables.FormattingEnabled = true;
             this.lstVariables.ItemHeight = 14;
             this.lstVariables.Items.AddRange(new object[] {
@@ -294,8 +314,8 @@ namespace BenMAP
             // 
             // lstFunctions
             // 
-            this.lstFunctions.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)));
+            this.lstFunctions.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.lstFunctions.FormattingEnabled = true;
             this.lstFunctions.ItemHeight = 14;
             this.lstFunctions.Items.AddRange(new object[] {
@@ -367,8 +387,8 @@ namespace BenMAP
             // 
             // grpSeasonalMetrics
             // 
-            this.grpSeasonalMetrics.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)));
+            this.grpSeasonalMetrics.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.grpSeasonalMetrics.Controls.Add(this.lstSeasonalMetrics);
             this.grpSeasonalMetrics.Controls.Add(this.btnAdd);
             this.grpSeasonalMetrics.Controls.Add(this.btnDelete);
@@ -381,8 +401,8 @@ namespace BenMAP
             // 
             // lstSeasonalMetrics
             // 
-            this.lstSeasonalMetrics.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)));
+            this.lstSeasonalMetrics.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.lstSeasonalMetrics.FormattingEnabled = true;
             this.lstSeasonalMetrics.ItemHeight = 14;
             this.lstSeasonalMetrics.Location = new System.Drawing.Point(3, 18);
@@ -415,8 +435,8 @@ namespace BenMAP
             // 
             // grpCancelOK
             // 
-            this.grpCancelOK.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.grpCancelOK.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.grpCancelOK.Controls.Add(this.btnOK);
             this.grpCancelOK.Controls.Add(this.btnCancel);
             this.grpCancelOK.Location = new System.Drawing.Point(12, 380);
@@ -509,5 +529,7 @@ namespace BenMAP
         private System.Windows.Forms.DateTimePicker dtpStartTime;
         private System.Windows.Forms.Button btnDeleteSeasonalMetricSeason;
         private System.Windows.Forms.Button btnAddSeasonalMetricSeason;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TextBox txtSeasonalMetricSeasonName;
     }
 }
