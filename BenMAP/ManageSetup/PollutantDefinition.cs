@@ -1146,6 +1146,7 @@ namespace BenMAP
         public int SeasonalMetricType;
         public string MetricFunction;
         public int PollutantSeasonID;
+        public string SeasonalMetricSeasonName;
     }
 
 
