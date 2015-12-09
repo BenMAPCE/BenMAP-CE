@@ -78,6 +78,8 @@ namespace BenMAP
                     dtpEndTime.Value = new DateTime(2011, 12, 31);
                     dtpStartTime.Enabled = false;
                     dtpEndTime.Enabled = false;
+                    txtSeasonalMetricSeasonName.Text = String.Empty;
+                    txtSeasonalMetricSeasonName.Enabled = false;
                 }
             }
             catch (Exception ex)
@@ -134,6 +136,8 @@ namespace BenMAP
                     dtpEndTime.Value = new DateTime(2011, 12, 31);
                     dtpStartTime.Enabled = false;
                     dtpEndTime.Enabled = false;
+                    txtSeasonalMetricSeasonName.Text = String.Empty;
+                    txtSeasonalMetricSeasonName.Enabled = false;
                     btnDeleteSeasonalMetricSeason.Enabled = false;
                 }
             }
@@ -264,12 +268,12 @@ namespace BenMAP
                                 obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
                                 if (obj == null)
                                 {
-                                    commandText = string.Format("insert into SeasonalMetricSeasons values ({0},{1},{2},{3},{4},'{5}',{6})", _lstSMetrics[i].Seasons[j].SeasonalMetricSeasonID, _lstSMetrics[i].Seasons[j].SeasonalMetricID, _lstSMetrics[i].Seasons[j].StartDay, _lstSMetrics[i].Seasons[j].EndDay, _lstSMetrics[i].Seasons[j].SeasonalMetricType, _lstSMetrics[i].Seasons[j].MetricFunction, _lstSMetrics[i].Seasons[j].PollutantSeasonID);
+                                    commandText = string.Format("insert into SeasonalMetricSeasons values ({0},{1},{2},{3},{4},'{5}',{6},'{7}')", _lstSMetrics[i].Seasons[j].SeasonalMetricSeasonID, _lstSMetrics[i].Seasons[j].SeasonalMetricID, _lstSMetrics[i].Seasons[j].StartDay, _lstSMetrics[i].Seasons[j].EndDay, _lstSMetrics[i].Seasons[j].SeasonalMetricType, _lstSMetrics[i].Seasons[j].MetricFunction, _lstSMetrics[i].Seasons[j].PollutantSeasonID, _lstSMetrics[i].Seasons[j].SeasonalMetricSeasonName);
                                     fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                                 }
                                 else
                                 {
-                                    commandText = string.Format("update SeasonalMetricSeasons set Startday={0}, Endday={1}, Seasonalmetrictype={2}, MetricFunction = '{3}' where SeasonalMetricSeasonID={4}", _lstSMetrics[i].Seasons[j].StartDay, _lstSMetrics[i].Seasons[j].EndDay, _lstSMetrics[i].Seasons[j].SeasonalMetricType, _lstSMetrics[i].Seasons[j].MetricFunction, _lstSMetrics[i].Seasons[j].SeasonalMetricSeasonID);
+                                    commandText = string.Format("update SeasonalMetricSeasons set Startday={0}, Endday={1}, SeasonalMetricType={2}, MetricFunction = '{3}', SeasonalMetricName='{4}' where SeasonalMetricSeasonID={5}", _lstSMetrics[i].Seasons[j].StartDay, _lstSMetrics[i].Seasons[j].EndDay, _lstSMetrics[i].Seasons[j].SeasonalMetricType, _lstSMetrics[i].Seasons[j].MetricFunction, _lstSMetrics[i].Seasons[j].SeasonalMetricSeasonName, _lstSMetrics[i].Seasons[j].SeasonalMetricSeasonID);
                                     fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                                 }
                             }
@@ -296,6 +300,7 @@ namespace BenMAP
                 ListItem lt = lstSeasonalMetricSeasons.SelectedItem as ListItem;
                 _seasonalMetricSeason = (from p in _lstSMSeasons where p.SeasonalMetricSeasonID.ToString() == lt.ID select p).ToList()[0];
                 setMonthAndDay(_seasonalMetricSeason);
+                txtSeasonalMetricSeasonName.Text = _seasonalMetricSeason.SeasonalMetricSeasonName;
                 switch (_seasonalMetricSeason.SeasonalMetricType)
                 {
                     case 0:
@@ -311,12 +316,14 @@ namespace BenMAP
                 {
                     dtpStartTime.Enabled = true;
                     dtpEndTime.Enabled = true;
+                    txtSeasonalMetricSeasonName.Enabled = true;
                     btnDeleteSeasonalMetricSeason.Enabled = true;
                 }
                 else
                 {
                     dtpStartTime.Enabled = false;
                     dtpEndTime.Enabled = false;
+                    txtSeasonalMetricSeasonName.Enabled = false;
                     btnDeleteSeasonalMetricSeason.Enabled = false;
                 }
             }
@@ -667,12 +674,14 @@ namespace BenMAP
                 {
                     dtpStartTime.Enabled = true;
                     dtpEndTime.Enabled = true;
+                    txtSeasonalMetricSeasonName.Enabled = true;
                 }
                 SeasonalMetricSeason sms = new SeasonalMetricSeason();
                 sms.SeasonalMetricID = Convert.ToInt32(ltSMetric.ID);
                 string commandText = "select max(SeasonalMetricSeasonID) from SeasonalMetricSeasons";
                 newSeasonalMetricSeasonID++;
                 sms.SeasonalMetricSeasonID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + newSeasonalMetricSeasonID;
+                sms.SeasonalMetricSeasonName = txtSeasonalMetricSeasonName.Text.Trim();
                 int i = lstSeasonalMetricSeasons.Items.Count + 1;
                 lstSeasonalMetricSeasons.Items.Add(new ListItem(sms.SeasonalMetricSeasonID.ToString(), "Season " + i));
                 dtpStartTime.Value = endTime.AddDays(1);
@@ -728,6 +737,8 @@ namespace BenMAP
                         dtpEndTime.Value = new DateTime(2011, 12, 31);
                         dtpStartTime.Enabled = false;
                         dtpEndTime.Enabled = false;
+                        txtSeasonalMetricSeasonName.Text = String.Empty;
+                        txtSeasonalMetricSeasonName.Enabled = false;
                         btnDeleteSeasonalMetricSeason.Enabled = false;
                     }
                 }
@@ -791,6 +802,12 @@ namespace BenMAP
             }
             catch
             { }
+        }
+
+        private void txtSeasonalMetricSeasonName_Leave(object sender, EventArgs e)
+        {
+            if (_seasonalMetricSeason == null || lstSeasonalMetricSeasons.Items.Count <= 0) return;
+            _seasonalMetricSeason.SeasonalMetricSeasonName = txtSeasonalMetricSeasonName.Text.Trim();
         }
     }
 }

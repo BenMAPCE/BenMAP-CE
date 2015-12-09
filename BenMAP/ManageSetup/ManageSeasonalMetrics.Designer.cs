@@ -176,6 +176,7 @@ namespace BenMAP
             this.txtSeasonalMetricSeasonName.Name = "txtSeasonalMetricSeasonName";
             this.txtSeasonalMetricSeasonName.Size = new System.Drawing.Size(152, 22);
             this.txtSeasonalMetricSeasonName.TabIndex = 31;
+            this.txtSeasonalMetricSeasonName.Leave += new System.EventHandler(this.txtSeasonalMetricSeasonName_Leave);
             // 
             // dtpEndTime
             // 
