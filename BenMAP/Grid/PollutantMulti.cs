@@ -13,7 +13,12 @@ namespace BenMAP
 {
     public partial class PollutantMulti : FormBase
     {
-
+        public PollutantMulti()
+        {
+            InitializeComponent();
+        }
+        
+        // Used to store pollutant info since TreeView doesn't bind to DataSource 
         public struct PollInfo
         {
             public int groupID;
@@ -36,21 +41,18 @@ namespace BenMAP
             return setPoll;
         }
 
-        public PollutantMulti()
-        {
-            InitializeComponent();
-        }
-
         private void PollutantMulti_Load(object sender, EventArgs e)
         {
             try
             {
                 FireBirdHelperBase fb = new ESILFireBirdHelper();
                 string commandText = string.Empty;
+                TreeNode[] newNode;
 
                 commandText = string.Format("select PGName from PollutantGroups where setupid={0} order by PollutantGroupID asc", CommonClass.MainSetup.SetupID);
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
 
+                // Load pollutant groups as parent nodes for tree
                 foreach (DataRow dr in ds.Tables[0].Rows)
                 {
                     pollTreeView.Nodes.Add(dr["pgname"].ToString(), dr["pgname"].ToString());
@@ -59,10 +61,11 @@ namespace BenMAP
                 commandText = string.Format("select PollutantGroupPollutants.PollutantGroupID, PGName, Pollutants.PollutantID, PollutantName, Pollutants.SetupID, ObservationType from Pollutants inner join PollutantGroupPollutants on Pollutants.PollutantID=PollutantGroupPollutants.PollutantID inner join PollutantGroups on PollutantGroups.PollutantGroupID=PollutantGroupPollutants.PollutantGroupID and PollutantGroups.SetupID={0} order by PollutantGroupPollutants.PollutantGroupID asc", CommonClass.MainSetup.SetupID);
                 ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
 
+                // Add pollutants as child nodes to their groups
                 foreach (DataRow dr in ds.Tables[0].Rows)
                 {
-                    TreeNode[] newNode = pollTreeView.Nodes.Find(dr["PGName"].ToString(), false);
-                    if (newNode[0] == null | newNode == null) break;
+                    newNode = pollTreeView.Nodes.Find(dr["PGName"].ToString(), false);
+                    if (newNode[0] == null || newNode == null) break;
                     newNode[0].Nodes.Add(dr["pollutantname"].ToString(), dr["pollutantname"].ToString());
                     newNode[0].Collapse();
 
@@ -70,23 +73,61 @@ namespace BenMAP
                     newNode[0].Tag = setPollInfo(Convert.ToInt32(dr["pollutantgroupid"]), dr["pgname"].ToString(), Convert.ToInt32(dr["pollutantid"]), dr["pollutantname"].ToString(), Convert.ToInt32(dr["setupid"]), Convert.ToInt32(dr["observationtype"]));
                 } 
 
-                /* from Pollutant.cs to reference for saving groups to global list 
-                lstPollutant.DataSource = ds.Tables[0];
-                lstPollutant.DisplayMember = "PollutantName";
-                if (CommonClass.LstPollutant == null || CommonClass.LstPollutant.Count == 0) { CommonClass.LstPollutant = new List<BenMAPPollutant>(); return; }
-                int selectedCount = CommonClass.LstPollutant.Count;
-                string str = string.Empty; 
-                for (int i = 0; i < selectedCount; i++)
+                // Initialize pollutant objects if not done
+                if (CommonClass.PollutantGroup == null || CommonClass.LstPollutant.Count == 0)
                 {
-                    str = CommonClass.LstPollutant[i].PollutantName;
-                    lstSPollutant.Items.Add(str);
-                }*/
+                    CommonClass.PollutantGroup = new BenMAPPollutantGroup();
+                    CommonClass.LstPollutant = new List<BenMAPPollutant>();
+                    return;
+                }
+
+                // If a pollutant has already been selected, show in TreeView 
+                TreeNode[] selectedNode = pollTreeView.Nodes.Find(CommonClass.PollutantGroup.PollutantGroupName, false);
+
+                if (selectedNode[0] != null || selectedNode != null) 
+                {
+                    selectTreeView.Nodes.Insert(0, (TreeNode)selectedNode[0].Clone());
+                } 
             }
             catch (Exception ex)
             {
                 Logger.LogError(ex.Message);
             }
+        }
 
+        private void saveSelected(string name)
+        {
+            try
+            {
+                TreeNode[] findParent = pollTreeView.Nodes.Find(name, false);
+
+                if (selectTreeView.Nodes.Count == 0 || findParent[0] == null || findParent == null) return;
+
+                PollInfo tag = (PollInfo)findParent[0].Nodes[0].Tag;
+                BenMAPPollutant poll = null;
+
+                CommonClass.PollutantGroup.PollutantGroupID = tag.groupID;
+                CommonClass.PollutantGroup.PollutantGroupName = tag.groupName;
+
+                foreach (TreeNode n in findParent[0].Nodes)
+                {
+                    tag = (PollInfo)n.Tag;
+                    poll = GridCommon.getPollutantFromID(tag.pollID);
+                    CommonClass.LstPollutant.Add(poll);
+                    CommonClass.PollutantGroup.Pollutants.Add(poll);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.Message);
+            }
+        }
+
+        private void deleteSelected()
+        {
+            CommonClass.PollutantGroup.Pollutants.Clear();
+            CommonClass.PollutantGroup = null;
+            CommonClass.LstPollutant.Clear();
         }
 
         private void groupTreeView_ItemDrag(object sender, System.Windows.Forms.ItemDragEventArgs e)
@@ -100,18 +141,26 @@ namespace BenMAP
         }
         private void selectedTree_DragDrop(object sender, System.Windows.Forms.DragEventArgs e)
         {
-            if (e.Data.GetDataPresent("System.Windows.Forms.TreeNode", false))
+            try
             {
-                TreeView send = (TreeView)sender;
-                TreeNode NewNode = (TreeNode)e.Data.GetData("System.Windows.Forms.TreeNode");
-                if(NewNode.Nodes.Count == 0) NewNode = NewNode.Parent;
-
-                if (!send.Nodes.ContainsKey(NewNode.Name))
+                if (e.Data.GetDataPresent("System.Windows.Forms.TreeNode", false))
                 {
-                    if(send.GetNodeCount(false) > 0) send.Nodes.RemoveAt(0);
-                    send.Nodes.Add((TreeNode)NewNode.Clone());
-                } 
-                else { MessageBox.Show(string.Format("{0} has already been selected.", NewNode.Text)); }
+                    TreeView send = (TreeView)sender;
+                    TreeNode NewNode = (TreeNode)e.Data.GetData("System.Windows.Forms.TreeNode");
+                    if (NewNode.Nodes.Count == 0) NewNode = NewNode.Parent;
+
+                    if (!send.Nodes.ContainsKey(NewNode.Name))
+                    {
+                        if (send.GetNodeCount(false) > 0) { selectTreeView.Nodes.Clear(); deleteSelected(); }
+                        send.Nodes.Add((TreeNode)NewNode.Clone());
+                        saveSelected(NewNode.Text);
+                    }
+                    else { MessageBox.Show(string.Format("{0} has already been selected.", NewNode.Text)); }
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.Message);
             }
         }
 
@@ -247,6 +296,7 @@ namespace BenMAP
                     if (result != DialogResult.Yes) { return; }
 
                     selectTreeView.Nodes.Remove(newNode);
+                    deleteSelected();
                 }
                 else
                 {
