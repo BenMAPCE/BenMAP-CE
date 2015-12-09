@@ -114,7 +114,6 @@ namespace BenMAP
                     tag = (PollInfo)n.Tag;
                     poll = GridCommon.getPollutantFromID(tag.pollID);
                     CommonClass.LstPollutant.Add(poll);
-                    CommonClass.PollutantGroup.Pollutants.Add(poll);
                 }
             }
             catch (Exception ex)
@@ -125,7 +124,6 @@ namespace BenMAP
 
         private void deleteSelected()
         {
-            CommonClass.PollutantGroup.Pollutants.Clear();
             CommonClass.PollutantGroup = null;
             CommonClass.LstPollutant.Clear();
         }
