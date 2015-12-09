@@ -19,7 +19,8 @@ namespace BenMAP.Grid
 {
     public class GridCommon
     {
-        public static String Encrypt(String strText, String strEncrKey)
+        // These functions were showing errors but not being used anywhere -- remove?
+        /* public static String Encrypt(String strText, String strEncrKey)
         {
             Byte[] byKey = { };
             Byte[] IV = { 0x12, 0x34, 0x56, 0x78, 0x90, 0xAB, 0xCD, 0xEF };
@@ -36,9 +37,10 @@ namespace BenMAP.Grid
             }
             catch (Exception ex)
             {
-                return ex.Message;
+                Logger.LogError(ex.Message);
             }
-        }
+        } 
+
 
         public static String Decrypt(String strText, String sDecrKey)
         {
@@ -59,7 +61,6 @@ namespace BenMAP.Grid
             }
             catch (Exception ex)
             {
-                return ex.Message;
             }
         }
 
@@ -82,9 +83,10 @@ namespace BenMAP.Grid
             }
             catch (Exception ex)
             {
-                return null;
+                Logger.LogError(ex.Message);
             }
-        }
+        } */
+
         public static Metric getMetricFromID(int MetricID)
         {
             try
@@ -330,8 +332,9 @@ namespace BenMAP.Grid
 
                 return benmappollutant;
             }
-            catch
+            catch (Exception ex)
             {
+                Logger.LogError(ex.Message);
             }
             return null;
         }
@@ -973,7 +976,7 @@ namespace BenMAP.Grid
                                     }
                                     catch (Exception ex)
                                     {
-
+                                        Logger.LogError(ex.Message);
                                     }
 
 
@@ -984,6 +987,7 @@ namespace BenMAP.Grid
                             }
                             catch (Exception ex)
                             {
+                                Logger.LogError(ex.Message);
                             }
 
                             i++;
