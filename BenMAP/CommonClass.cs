@@ -2775,8 +2775,6 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
         public int PollutantGroupID;
         [ProtoMember(2)]
         public string PollutantGroupName;
-        [ProtoMember(3)]
-        public List<BenMAPPollutant> Pollutants = new List<BenMAPPollutant>();
     }
 
     [Serializable]
