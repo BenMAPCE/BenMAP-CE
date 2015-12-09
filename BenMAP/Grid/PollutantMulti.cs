@@ -49,6 +49,8 @@ namespace BenMAP
                 string commandText = string.Empty;
                 TreeNode[] newNode;
 
+                List<int> listA = new List<int>();
+
                 commandText = string.Format("select PGName from PollutantGroups where setupid={0} order by PollutantGroupID asc", CommonClass.MainSetup.SetupID);
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
 
@@ -74,7 +76,7 @@ namespace BenMAP
                 } 
 
                 // Initialize pollutant objects if not done
-                if (CommonClass.PollutantGroup == null || CommonClass.LstPollutant.Count == 0)
+                if (CommonClass.LstPollutant == null || CommonClass.LstPollutant.Count == 0)
                 {
                     CommonClass.PollutantGroup = new BenMAPPollutantGroup();
                     CommonClass.LstPollutant = new List<BenMAPPollutant>();
@@ -86,7 +88,7 @@ namespace BenMAP
 
                 if (selectedNode[0] != null || selectedNode != null) 
                 {
-                    selectTreeView.Nodes.Insert(0, (TreeNode)selectedNode[0].Clone());
+                    selectTreeView.Nodes.Add((TreeNode)selectedNode[0].Clone());
                 } 
             }
             catch (Exception ex)
@@ -106,6 +108,7 @@ namespace BenMAP
                 PollInfo tag = (PollInfo)findParent[0].Nodes[0].Tag;
                 BenMAPPollutant poll = null;
 
+                if (CommonClass.PollutantGroup == null) CommonClass.PollutantGroup = new BenMAPPollutantGroup();
                 CommonClass.PollutantGroup.PollutantGroupID = tag.groupID;
                 CommonClass.PollutantGroup.PollutantGroupName = tag.groupName;
 
@@ -290,6 +293,45 @@ namespace BenMAP
                 if (newNode != null)
                 {
                     if (newNode.Nodes.Count == 0) newNode = newNode.Parent;
+
+                    string delPollutant = string.Empty;
+                    string str = string.Empty;
+                    string baseString = string.Empty;
+                    string contString = string.Empty;
+
+                    if (CommonClass.LstPollutant != null && CommonClass.LstPollutant.Count > 0)
+                    {
+                        foreach (BenMAPPollutant p in CommonClass.LstPollutant)
+                        {
+                            delPollutant = p.PollutantName;
+                            str = string.Format("{0}baseline", delPollutant);
+                            if (CommonClass.LstAsynchronizationStates != null && CommonClass.LstAsynchronizationStates.Contains(str.ToLower()))
+                            {
+                                baseString += delPollutant;
+                                baseString += " ";
+                            }
+                            str = string.Format("{0}control", delPollutant);
+                            if (CommonClass.LstAsynchronizationStates != null && CommonClass.LstAsynchronizationStates.Contains(str.ToLower()))
+                            {
+                                contString += delPollutant;
+                                contString += " ";
+                            }
+                        }
+
+                        if(baseString.Length != 0)
+                        {
+                            MessageBox.Show(string.Format("{0} baseline air quality grid is being created. ", delPollutant), "Please wait", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            return;
+                        }
+
+                        if(contString.Length != 0)
+                        {
+                            MessageBox.Show(string.Format("{0} control air quality grid is being created. ", delPollutant), "Please wait", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            return;
+                        }
+
+                    }
+
                     DialogResult result = MessageBox.Show(string.Format("Delete the selected pollutant(s) \'{0}\'? ", newNode.Text), "Confirm Delete", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                     if (result != DialogResult.Yes) { return; }
 

@@ -1077,7 +1077,7 @@ namespace BenMAP
                         {
                             benMAPPollutantArray = CommonClass.LstPollutant.ToArray();
                         }
-                        // frm = new Pollutant();
+
                         frm = new PollutantMulti();
                         rtn = frm.ShowDialog();
                         if (rtn != DialogResult.OK)
@@ -1126,7 +1126,6 @@ namespace BenMAP
 
                             cbPoolingWindowIncidence.Items.Clear();
                             cbPoolingWindowAPV.Items.Clear();
-                            //ClearMapTableChart();
                             ClearMapTableChart();
 
                             //Update tree node symbols
