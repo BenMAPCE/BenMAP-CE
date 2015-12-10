@@ -505,6 +505,61 @@ namespace BenMAP
                 }
                 cboMetric.DataSource = intersect.Tables[0];
                 cboMetric.DisplayMember = "METRICNAME";
+
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+            }
+        }
+
+        private void cboModelSpec_SelectedValueChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                // Fill Variable List
+                int i = 1;
+                bool isFirstOrder = false;
+                string str = cboPollutant.Text;
+                varList.Invalidate();
+                varList.Items.Clear();
+
+                if (cboModelSpec.Text.Contains("first order")) isFirstOrder = true;
+                List<string> firstOrder = new List<string>();
+                SortedSet<string> foHashSet = new SortedSet<string>();
+
+                ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                string commandText = string.Format("select POLLUTANTNAME from POLLUTANTS inner join POLLUTANTGROUPPOLLUTANTS on POLLUTANTS.POLLUTANTID = POLLUTANTGROUPPOLLUTANTS.POLLUTANTID inner join POLLUTANTGROUPS on POLLUTANTGROUPS.POLLUTANTGROUPID = POLLUTANTGROUPPOLLUTANTS.POLLUTANTGROUPID and PGNAMe='{0}' order by POLLUTANTNAME asc", str);
+                DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+
+                foreach (DataRow dr in ds.Tables[0].Rows)
+                {
+                    varList.Items.Add(string.Format("P{0}", i)).SubItems.Add(dr["POLLUTANTNAME"].ToString());
+                    if (isFirstOrder) firstOrder.Add(dr["POLLUTANTNAME"].ToString());
+                    i++;
+                }
+
+                if (isFirstOrder)
+                {   
+                    // Get all combinations of the pollutants
+                    // Sorted HashSet and item comparison used to avoid duplicates 
+                    foreach (var item1 in firstOrder)
+                    {
+                        foreach (var item2 in firstOrder)
+                        {
+                            if (item1.CompareTo(item2) > 0) { foHashSet.Add(item2 + "*" + item1); }
+                            else { foHashSet.Add(item1 + "*" + item2); }
+                        }
+                    }
+                    foreach (var toAdd in foHashSet)
+                    {
+                        varList.Items.Add(string.Format("P{0}", i)).SubItems.Add(toAdd);
+                        i++;
+                    }
+                }
+
+                varList.Columns[1].Width = -1;
+                if (varList.Columns[1].Width < 83) varList.Columns[1].Width = 83;
             }
             catch (Exception ex)
             {

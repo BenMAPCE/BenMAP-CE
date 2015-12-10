@@ -44,7 +44,7 @@
             this.lblSeasonalMetric = new System.Windows.Forms.Label();
             this.lblMetricStatistic = new System.Windows.Forms.Label();
             this.pollLabel = new System.Windows.Forms.Label();
-            this.pollutantList = new System.Windows.Forms.ListView();
+            this.varList = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.editEffect = new System.Windows.Forms.Button();
@@ -176,7 +176,7 @@
             this.panel4.Controls.Add(this.lblMetricStatistic);
             this.panel4.Controls.Add(this.pollLabel);
             this.panel4.Controls.Add(this.cboPollutant);
-            this.panel4.Controls.Add(this.pollutantList);
+            this.panel4.Controls.Add(this.varList);
             this.panel4.Controls.Add(this.editEffect);
             this.panel4.Controls.Add(this.betaVarGroup);
             this.panel4.Controls.Add(this.lblPollutant);
@@ -258,34 +258,34 @@
             this.pollLabel.TabIndex = 22;
             this.pollLabel.Text = "Pollutant(s):";
             // 
-            // pollutantList
+            // varList
             // 
-            this.pollutantList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.varList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1,
             this.columnHeader2});
-            this.pollutantList.FullRowSelect = true;
-            this.pollutantList.GridLines = true;
-            this.pollutantList.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
-            this.pollutantList.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
+            this.varList.FullRowSelect = true;
+            this.varList.GridLines = true;
+            this.varList.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
+            this.varList.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
             listViewItem1,
             listViewItem2});
-            this.pollutantList.Location = new System.Drawing.Point(128, 97);
-            this.pollutantList.Margin = new System.Windows.Forms.Padding(2);
-            this.pollutantList.Name = "pollutantList";
-            this.pollutantList.Size = new System.Drawing.Size(146, 197);
-            this.pollutantList.TabIndex = 18;
-            this.pollutantList.UseCompatibleStateImageBehavior = false;
-            this.pollutantList.View = System.Windows.Forms.View.Details;
+            this.varList.Location = new System.Drawing.Point(128, 97);
+            this.varList.Margin = new System.Windows.Forms.Padding(2);
+            this.varList.Name = "varList";
+            this.varList.Size = new System.Drawing.Size(146, 197);
+            this.varList.TabIndex = 18;
+            this.varList.UseCompatibleStateImageBehavior = false;
+            this.varList.View = System.Windows.Forms.View.Details;
             // 
             // columnHeader1
             // 
             this.columnHeader1.Text = "Variable";
-            this.columnHeader1.Width = 61;
+            this.columnHeader1.Width = 58;
             // 
             // columnHeader2
             // 
             this.columnHeader2.Text = "Pollutant";
-            this.columnHeader2.Width = 81;
+            this.columnHeader2.Width = 83;
             // 
             // editEffect
             // 
@@ -368,6 +368,7 @@
             this.cboModelSpec.Name = "cboModelSpec";
             this.cboModelSpec.Size = new System.Drawing.Size(266, 22);
             this.cboModelSpec.TabIndex = 20;
+            this.cboModelSpec.SelectedValueChanged += new System.EventHandler(this.cboModelSpec_SelectedValueChanged);
             // 
             // cboEndpoint
             // 
@@ -1258,7 +1259,7 @@
         private System.Windows.Forms.Panel betaVarGroup;
         private System.Windows.Forms.RadioButton bvSeasonal;
         private System.Windows.Forms.RadioButton bvFullYear;
-        private System.Windows.Forms.ListView pollutantList;
+        private System.Windows.Forms.ListView varList;
         private System.Windows.Forms.ColumnHeader columnHeader1;
         private System.Windows.Forms.ColumnHeader columnHeader2;
         private System.Windows.Forms.ComboBox cboModelSpec;
