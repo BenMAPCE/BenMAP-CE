@@ -69,7 +69,7 @@ namespace BenMAP
                 seasonalMetric.Metric = Grid.GridCommon.getMetricFromID(Convert.ToInt32(dr["MetricID"]));
                 seasonalMetric.SeasonalMetricName = dr["SeasonalMetricName"].ToString();
                 seasonalMetric.Seasons = new List<SeasonalMetricSeason>();
-                commandText = string.Format("select -1 as PollutantSeasonID,StartDay,EndDay,SeasonalMetricSeasonID,SeasonalMetricID,SeasonalMetricType,MetricFunction from SeasonalMetricSeasons where SeasonalMetricID={0}", SeasonalMetricID);
+                commandText = string.Format("select -1 as PollutantSeasonID,StartDay,EndDay,SeasonalMetricSeasonID,SeasonalMetricID,SeasonalMetricType,MetricFunction,SeasonalMetricName from SeasonalMetricSeasons where SeasonalMetricID={0}", SeasonalMetricID);
                 ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
                 foreach (DataRow drSeason in ds.Tables[0].Rows)
                 {
@@ -81,7 +81,8 @@ namespace BenMAP
                         SeasonalMetricID = Convert.ToInt32(drSeason["SeasonalMetricID"]),
                         SeasonalMetricSeasonID = Convert.ToInt32(drSeason["SeasonalMetricSeasonID"]),
                         SeasonalMetricType = Convert.ToInt32(drSeason["SeasonalMetricType"]),
-                        MetricFunction = drSeason["MetricFunction"].ToString()
+                        MetricFunction = drSeason["MetricFunction"].ToString(),
+                        SeasonalMetricSeasonName = drSeason["SeasonalMetricName"].ToString()
                     };
                     seasonalMetric.Seasons.Add(season);
                 }
@@ -387,12 +388,12 @@ namespace BenMAP
                                 obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
                                 if (obj == null)
                                 {
-                                    commandText = string.Format("insert into SeasonalMetricSeasons values ({0},{1},{2},{3},{4},'{5}',{6})", _lstAllSeasonalMetric[i].Seasons[j].SeasonalMetricSeasonID, _lstAllSeasonalMetric[i].Seasons[j].SeasonalMetricID, _lstAllSeasonalMetric[i].Seasons[j].StartDay, _lstAllSeasonalMetric[i].Seasons[j].EndDay, _lstAllSeasonalMetric[i].Seasons[j].SeasonalMetricType, _lstAllSeasonalMetric[i].Seasons[j].MetricFunction, _lstAllSeasonalMetric[i].Seasons[j].PollutantSeasonID);
+                                    commandText = string.Format("insert into SeasonalMetricSeasons values ({0},{1},{2},{3},{4},'{5}',{6},'{7}')", _lstAllSeasonalMetric[i].Seasons[j].SeasonalMetricSeasonID, _lstAllSeasonalMetric[i].Seasons[j].SeasonalMetricID, _lstAllSeasonalMetric[i].Seasons[j].StartDay, _lstAllSeasonalMetric[i].Seasons[j].EndDay, _lstAllSeasonalMetric[i].Seasons[j].SeasonalMetricType, _lstAllSeasonalMetric[i].Seasons[j].MetricFunction, _lstAllSeasonalMetric[i].Seasons[j].PollutantSeasonID, _lstAllSeasonalMetric[i].Seasons[j].SeasonalMetricSeasonName);
                                     fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                                 }
                                 else
                                 {
-                                    commandText = string.Format("update SeasonalMetricSeasons set Startday={0}, Endday={1}, Seasonalmetrictype={2}, MetricFunction = '{3}' where SeasonalMetricSeasonID={4}", _lstAllSeasonalMetric[i].Seasons[j].StartDay, _lstAllSeasonalMetric[i].Seasons[j].EndDay, _lstAllSeasonalMetric[i].Seasons[j].SeasonalMetricType, _lstAllSeasonalMetric[i].Seasons[j].MetricFunction, _lstAllSeasonalMetric[i].Seasons[j].SeasonalMetricSeasonID);
+                                    commandText = string.Format("update SeasonalMetricSeasons set Startday={0}, Endday={1}, SeasonalMetricType={2}, MetricFunction = '{3}', SeasonalMetricName='{4}' where SeasonalMetricSeasonID={5}", _lstAllSeasonalMetric[i].Seasons[j].StartDay, _lstAllSeasonalMetric[i].Seasons[j].EndDay, _lstAllSeasonalMetric[i].Seasons[j].SeasonalMetricType, _lstAllSeasonalMetric[i].Seasons[j].MetricFunction, _lstAllSeasonalMetric[i].Seasons[j].SeasonalMetricSeasonName, _lstAllSeasonalMetric[i].Seasons[j].SeasonalMetricSeasonID);
                                     fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                                 }
                             }
