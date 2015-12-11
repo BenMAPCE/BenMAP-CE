@@ -316,14 +316,12 @@ namespace BenMAP
                 {
                     dtpStartTime.Enabled = true;
                     dtpEndTime.Enabled = true;
-                    txtSeasonalMetricSeasonName.Enabled = true;
                     btnDeleteSeasonalMetricSeason.Enabled = true;
                 }
                 else
                 {
                     dtpStartTime.Enabled = false;
                     dtpEndTime.Enabled = false;
-                    txtSeasonalMetricSeasonName.Enabled = false;
                     btnDeleteSeasonalMetricSeason.Enabled = false;
                 }
             }
