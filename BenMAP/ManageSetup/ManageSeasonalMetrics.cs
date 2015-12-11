@@ -273,7 +273,7 @@ namespace BenMAP
                                 }
                                 else
                                 {
-                                    commandText = string.Format("update SeasonalMetricSeasons set Startday={0}, Endday={1}, SeasonalMetricType={2}, MetricFunction = '{3}', SeasonalMetricName='{4}' where SeasonalMetricSeasonID={5}", _lstSMetrics[i].Seasons[j].StartDay, _lstSMetrics[i].Seasons[j].EndDay, _lstSMetrics[i].Seasons[j].SeasonalMetricType, _lstSMetrics[i].Seasons[j].MetricFunction, _lstSMetrics[i].Seasons[j].SeasonalMetricSeasonName, _lstSMetrics[i].Seasons[j].SeasonalMetricSeasonID);
+                                    commandText = string.Format("update SeasonalMetricSeasons set Startday={0}, Endday={1}, SeasonalMetricType={2}, MetricFunction = '{3}', SeasonalMetricSeasonName='{4}' where SeasonalMetricSeasonID={5}", _lstSMetrics[i].Seasons[j].StartDay, _lstSMetrics[i].Seasons[j].EndDay, _lstSMetrics[i].Seasons[j].SeasonalMetricType, _lstSMetrics[i].Seasons[j].MetricFunction, _lstSMetrics[i].Seasons[j].SeasonalMetricSeasonName, _lstSMetrics[i].Seasons[j].SeasonalMetricSeasonID);
                                     fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                                 }
                             }
