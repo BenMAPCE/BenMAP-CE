@@ -327,6 +327,7 @@
             this.bvSeasonal.TabIndex = 1;
             this.bvSeasonal.Text = "Seasonal";
             this.bvSeasonal.UseVisualStyleBackColor = true;
+            this.bvSeasonal.CheckedChanged += new System.EventHandler(this.betaVarGroup_SelectedValueChanged);
             // 
             // bvFullYear
             // 
@@ -340,6 +341,7 @@
             this.bvFullYear.TabStop = true;
             this.bvFullYear.Text = "Full Year";
             this.bvFullYear.UseVisualStyleBackColor = true;
+            this.bvFullYear.CheckedChanged += new System.EventHandler(this.betaVarGroup_SelectedValueChanged);
             // 
             // lblPollutant
             // 

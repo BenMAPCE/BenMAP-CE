@@ -1368,6 +1368,9 @@ namespace BenMAP
                 healthImpact.Incidence = olvColumn30.GetValue(olvFunction.SelectedObject).ToString();
                 healthImpact.Prevalence = olvColumn31.GetValue(olvFunction.SelectedObject).ToString();
                 healthImpact.Variable = olvColumn32.GetValue(olvFunction.SelectedObject).ToString();
+                healthImpact.PollVariables = new List<CRFVariable>();
+                healthImpact.BetaVariation = string.Empty;
+
                 if (olvColumn21.GetValue(olvFunction.SelectedObject).ToString() == "Custom" && Convert.ToInt32(olvColumn33.GetValue(olvFunction.SelectedObject).ToString()) > 0)
                 {
                     if (dicCustomValue.ContainsKey(Convert.ToInt32(olvColumn33.GetValue(olvFunction.SelectedObject).ToString())))
@@ -1394,7 +1397,7 @@ namespace BenMAP
                 else
                     listCustomValue = new List<double>();
                 if (_dt.Rows.Count == 0) { return; }
-                // HealthImpactFunctionOfUser_defined frm = new HealthImpactFunctionOfUser_defined(txtHealthImpactFunction.Text, healthImpact, listCustomValue);
+
                 HIFDefinitionMulti frm = new HIFDefinitionMulti(txtHealthImpactFunction.Text, healthImpact, listCustomValue);
                 DialogResult rth = frm.ShowDialog();
                 if (rth != DialogResult.OK) { return; }

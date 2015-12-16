@@ -235,5 +235,19 @@ namespace BenMAP
             get { return _locationName; }
             set { _locationName = value; }
         }
+
+        private List<CRFVariable> _pollVariables;
+        public List<CRFVariable> PollVariables
+        {
+            get { return _pollVariables; }
+            set { _pollVariables = value; }
+        }
+
+        private string _betaVariation;
+        public string BetaVariation
+        {
+            get { return _betaVariation; }
+            set { _betaVariation = value; }
+        }
     }
 }

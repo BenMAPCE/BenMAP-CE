@@ -40,11 +40,20 @@ namespace BenMAP
             get { return _listCustom; }
             set { _listCustom = value; }
         }
+
+        private List<CRFVariable> _pollVarList;
+        public List<CRFVariable> PollVarList
+        {
+            get { return _pollVarList; }
+            set { _pollVarList = value; }
+        }
+
         public HIFDefinitionMulti()
         {
             InitializeComponent();
             _dataName = string.Empty;
             _healthImpacts = new HealthImpact();
+            _pollVarList = new List<CRFVariable>();
         }
 
         public HIFDefinitionMulti(string dataName, HealthImpact healthImpact, List<double> listValue)
@@ -53,6 +62,8 @@ namespace BenMAP
             _healthImpacts = healthImpact;
             _dataName = dataName;
             _listCustom = listValue;
+            if(healthImpact.PollVariables.Count > 0) _pollVarList = healthImpact.PollVariables;
+            else _pollVarList = new List<CRFVariable>();
         }
 
         private void btnOK_Click(object sender, EventArgs e)
@@ -261,6 +272,7 @@ namespace BenMAP
                 _healthImpacts.Incidence = cboIncidenceDataSet.Text;
                 _healthImpacts.Prevalence = cboPrevalenceDataSet.Text;
                 _healthImpacts.Variable = cboVariableDataSet.Text;
+                _healthImpacts.PollVariables = _pollVarList;
                 _listCustom = list;
                 this.DialogResult = DialogResult.OK;
 
@@ -282,7 +294,6 @@ namespace BenMAP
         {
             try
             {
-                PollutantPanel_Load(sender, e);
 
                 if (_dataName != string.Empty)
                 {
@@ -371,10 +382,6 @@ namespace BenMAP
             }
         }
 
-        private void PollutantPanel_Load(object sender, EventArgs e)
-        {
-
-        }
         public void BindItems()
         {
             try
@@ -521,24 +528,28 @@ namespace BenMAP
                 int i = 1;
                 bool isFirstOrder = false;
                 string str = cboPollutant.Text;
+                string varName = string.Empty;
                 varList.Invalidate();
-                varList.Items.Clear();
+                varList.Items.Clear(); 
+                _pollVarList.Clear();
 
                 if (cboModelSpec.Text.Contains("first order")) isFirstOrder = true;
                 List<string> firstOrder = new List<string>();
                 SortedSet<string> foHashSet = new SortedSet<string>();
 
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
-                string commandText = string.Format("select POLLUTANTNAME from POLLUTANTS inner join POLLUTANTGROUPPOLLUTANTS on POLLUTANTS.POLLUTANTID = POLLUTANTGROUPPOLLUTANTS.POLLUTANTID inner join POLLUTANTGROUPS on POLLUTANTGROUPS.POLLUTANTGROUPID = POLLUTANTGROUPPOLLUTANTS.POLLUTANTGROUPID and PGNAMe='{0}' order by POLLUTANTNAME asc", str);
+                string commandText = string.Format("select POLLUTANTNAME, POLLUTANTS.POLLUTANTID from POLLUTANTS inner join POLLUTANTGROUPPOLLUTANTS on POLLUTANTS.POLLUTANTID = POLLUTANTGROUPPOLLUTANTS.POLLUTANTID inner join POLLUTANTGROUPS on POLLUTANTGROUPS.POLLUTANTGROUPID = POLLUTANTGROUPPOLLUTANTS.POLLUTANTGROUPID and PGNAME='{0}' order by POLLUTANTNAME asc", str);
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
 
                 foreach (DataRow dr in ds.Tables[0].Rows)
                 {
-                    varList.Items.Add(string.Format("P{0}", i)).SubItems.Add(dr["POLLUTANTNAME"].ToString());
+                    varName = string.Format("P{0}", i);
+                    varList.Items.Add(varName).SubItems.Add(dr["POLLUTANTNAME"].ToString());
+                    _pollVarList.Add(new CRFVariable(varName, dr["POLLUTANTNAME"].ToString(), Convert.ToInt32(dr["POLLUTANTID"])));
                     if (isFirstOrder) firstOrder.Add(dr["POLLUTANTNAME"].ToString());
                     i++;
                 }
-
+                 
                 if (isFirstOrder)
                 {   
                     // Get all combinations of the pollutants
@@ -553,7 +564,9 @@ namespace BenMAP
                     }
                     foreach (var toAdd in foHashSet)
                     {
-                        varList.Items.Add(string.Format("P{0}", i)).SubItems.Add(toAdd);
+                        varName = string.Format("P{0}", i);
+                        varList.Items.Add(varName).SubItems.Add(toAdd);
+                        _pollVarList.Add(new CRFVariable(varName, toAdd, -1));
                         i++;
                     }
                 }
@@ -982,14 +995,24 @@ namespace BenMAP
         {
             try
             {
-                String pass = "";
-                if (bvFullYear.Checked) pass = bvFullYear.Text;
-                else pass = bvSeasonal.Text;
+                if (_healthImpacts.BetaVariation == "") betaVarGroup_SelectedValueChanged(sender, e);
 
-                EffectCoefficients form = new EffectCoefficients(pass);
+                EffectCoefficients form = new EffectCoefficients(_healthImpacts.BetaVariation, _pollVarList);
                 DialogResult res = form.ShowDialog();
             }
            
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+            }
+        }
+
+        private void betaVarGroup_SelectedValueChanged(object sender, EventArgs e)
+        {
+            try {
+                if (bvFullYear.Checked) _healthImpacts.BetaVariation = "Full Year";
+                else _healthImpacts.BetaVariation = "Seasonal";
+            }
             catch (Exception ex)
             {
                 Logger.LogError(ex);
