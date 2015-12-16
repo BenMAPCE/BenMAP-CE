@@ -12,7 +12,7 @@ namespace BenMAP
     public partial class EffectCoefficients : FormBase
     {
         private String betaVariation;
-        public EffectCoefficients(String varSelected)
+        public EffectCoefficients(String varSelected, List<CRFVariable> varList)
         {
             InitializeComponent();
             betaVariation = varSelected;
@@ -43,7 +43,7 @@ namespace BenMAP
 
                 if (betaVariation == "Full Year")
                 {
-                    tabPage1.Text = "Full Year";
+                    groupBox1.Text = "Full Year";
                     tbSeasMetric.Text = "None";
                     showForSeasonal.Visible = false;
                     panel2.Visible = true;
@@ -53,7 +53,7 @@ namespace BenMAP
 
                 else if (betaVariation == "Seasonal")
                 {
-                    tabPage1.Text = "Season 1";
+                    groupBox1.Text = "Season 1";
                     tbSeasMetric.Text = "ColdWarm";
                     showForSeasonal.Visible = true;
                     panel2.Visible = false;
@@ -72,10 +72,6 @@ namespace BenMAP
             {
                 Logger.LogError(ex);
             }
-        }
-        private void tabControl1_SelectIndexChanged(object sender, EventArgs e)
-        {
-            tabControl1.SelectedTab.Controls.Add(panel1);
         }
 
         private void btnOK_Click(object sender, EventArgs e)
