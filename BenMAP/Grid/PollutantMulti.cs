@@ -49,9 +49,7 @@ namespace BenMAP
                 string commandText = string.Empty;
                 TreeNode[] newNode;
 
-                List<int> listA = new List<int>();
-
-                commandText = string.Format("select PGName from PollutantGroups where setupid={0} order by PollutantGroupID asc", CommonClass.MainSetup.SetupID);
+                commandText = string.Format("select PGName from PollutantGroups where setupid={0} order by PGName asc", CommonClass.MainSetup.SetupID);
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
 
                 // Load pollutant groups as parent nodes for tree
@@ -60,7 +58,7 @@ namespace BenMAP
                     pollTreeView.Nodes.Add(dr["pgname"].ToString(), dr["pgname"].ToString());
                 }
 
-                commandText = string.Format("select PollutantGroupPollutants.PollutantGroupID, PGName, Pollutants.PollutantID, PollutantName, Pollutants.SetupID, ObservationType from Pollutants inner join PollutantGroupPollutants on Pollutants.PollutantID=PollutantGroupPollutants.PollutantID inner join PollutantGroups on PollutantGroups.PollutantGroupID=PollutantGroupPollutants.PollutantGroupID and PollutantGroups.SetupID={0} order by PollutantGroupPollutants.PollutantGroupID asc", CommonClass.MainSetup.SetupID);
+                commandText = string.Format("select PollutantGroupPollutants.PollutantGroupID, PGName, Pollutants.PollutantID, PollutantName, Pollutants.SetupID, ObservationType from Pollutants inner join PollutantGroupPollutants on Pollutants.PollutantID=PollutantGroupPollutants.PollutantID inner join PollutantGroups on PollutantGroups.PollutantGroupID=PollutantGroupPollutants.PollutantGroupID and PollutantGroups.SetupID={0} order by PollutantName asc", CommonClass.MainSetup.SetupID);
                 ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
 
                 // Add pollutants as child nodes to their groups
