@@ -547,7 +547,7 @@ namespace BenMAP
                     varList.Items.Add(varName).SubItems.Add(dr["POLLUTANTNAME"].ToString());
                     _pollVarList.Add(new CRFVariable(varName, dr["POLLUTANTNAME"].ToString(), Convert.ToInt32(dr["POLLUTANTID"])));
                     if (isFirstOrder) firstOrder.Add(dr["POLLUTANTNAME"].ToString());
-                    i++;
+                    i++; 
                 }
                  
                 if (isFirstOrder)
@@ -572,7 +572,7 @@ namespace BenMAP
                 }
 
                 varList.Columns[1].Width = -1;
-                if (varList.Columns[1].Width < 83) varList.Columns[1].Width = 83;
+                if (varList.Columns[1].Width < 123) varList.Columns[1].Width = 123;
             }
             catch (Exception ex)
             {
@@ -587,7 +587,7 @@ namespace BenMAP
                 // Load Seasonal Metric according to selected Metric 
                 string metricSelected = cboMetric.Text; 
                 string groupSelected = cboPollutant.Text;
-                string commandText = string.Format("select SEASONALMETRICNAME from SEASONALMETRICS inner join METRICS on SEASONALMETRICS.METRICID = METRICS.METRICID and METRICNAME='{0}' inner join POLLUTANTS on METRICS.POLLUTANTID = POLLUTANTS.POLLUTANTID inner join POLLUTANTGROUPPOLLUTANTS on POLLUTANTS.POLLUTANTID = POLLUTANTGROUPPOLLUTANTS.POLLUTANTID inner join POLLUTANTGROUPS on POLLUTANTGROUPS.POLLUTANTGROUPID = POLLUTANTGROUPPOLLUTANTS.POLLUTANTGROUPID and PGNAME='{1}'", metricSelected, groupSelected);
+                string commandText = string.Format("select distinct SEASONALMETRICNAME from SEASONALMETRICS inner join METRICS on SEASONALMETRICS.METRICID = METRICS.METRICID and METRICNAME='{0}' inner join POLLUTANTS on METRICS.POLLUTANTID = POLLUTANTS.POLLUTANTID inner join POLLUTANTGROUPPOLLUTANTS on POLLUTANTS.POLLUTANTID = POLLUTANTGROUPPOLLUTANTS.POLLUTANTID inner join POLLUTANTGROUPS on POLLUTANTGROUPS.POLLUTANTGROUPID = POLLUTANTGROUPPOLLUTANTS.POLLUTANTGROUPID and PGNAME='{1}'", metricSelected, groupSelected);
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                 cboSeasonalMetric.DataSource = ds.Tables[0];
@@ -986,18 +986,16 @@ namespace BenMAP
             }
         }
 
-        private void label1_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void editEffect_Click(object sender, EventArgs e)
         {
             try
             {
+                int selectedVar = 0;
                 if (_healthImpacts.BetaVariation == "") betaVarGroup_SelectedValueChanged(sender, e);
+                if (varList.SelectedItems.Count != 0) selectedVar = varList.SelectedItems[0].Index;
+                DataRowView selectedModel = (DataRowView)cboModelSpec.SelectedItem;
 
-                EffectCoefficients form = new EffectCoefficients(_healthImpacts.BetaVariation, _pollVarList);
+                EffectCoefficients form = new EffectCoefficients(_healthImpacts.BetaVariation, _pollVarList, selectedVar, selectedModel[0].ToString());
                 DialogResult res = form.ShowDialog();
             }
            

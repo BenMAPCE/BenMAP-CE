@@ -35,8 +35,7 @@
             "P2",
             "P2 sub"}, -1);
             this.cboPollutant = new System.Windows.Forms.ComboBox();
-            this.grpMetric = new System.Windows.Forms.GroupBox();
-            this.panel4 = new System.Windows.Forms.Panel();
+            this.grpPollutant = new System.Windows.Forms.GroupBox();
             this.cboMetric = new System.Windows.Forms.ComboBox();
             this.lblMetric = new System.Windows.Forms.Label();
             this.cboSeasonalMetric = new System.Windows.Forms.ComboBox();
@@ -55,6 +54,7 @@
             this.lblPollutant = new System.Windows.Forms.Label();
             this.lblModelSpec = new System.Windows.Forms.Label();
             this.cboModelSpec = new System.Windows.Forms.ComboBox();
+            this.panel4 = new System.Windows.Forms.Panel();
             this.cboEndpoint = new System.Windows.Forms.ComboBox();
             this.cboEndpointGroup = new System.Windows.Forms.ComboBox();
             this.lblEndpoint = new System.Windows.Forms.Label();
@@ -124,8 +124,7 @@
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.grpCancelOK = new System.Windows.Forms.GroupBox();
-            this.grpMetric.SuspendLayout();
-            this.panel4.SuspendLayout();
+            this.grpPollutant.SuspendLayout();
             this.betaVarGroup.SuspendLayout();
             this.grpEndpoint.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -149,44 +148,35 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cboPollutant.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboPollutant.FormattingEnabled = true;
-            this.cboPollutant.Location = new System.Drawing.Point(7, 17);
+            this.cboPollutant.Location = new System.Drawing.Point(7, 29);
             this.cboPollutant.Margin = new System.Windows.Forms.Padding(0);
             this.cboPollutant.Name = "cboPollutant";
-            this.cboPollutant.Size = new System.Drawing.Size(266, 22);
+            this.cboPollutant.Size = new System.Drawing.Size(303, 22);
             this.cboPollutant.TabIndex = 4;
             this.cboPollutant.SelectedValueChanged += new System.EventHandler(this.cboPollutant_SelectedValueChanged);
             // 
-            // grpMetric
+            // grpPollutant
             // 
-            this.grpMetric.Controls.Add(this.panel4);
-            this.grpMetric.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.grpMetric.Location = new System.Drawing.Point(489, 3);
-            this.grpMetric.Name = "grpMetric";
-            this.grpMetric.Size = new System.Drawing.Size(290, 344);
-            this.grpMetric.TabIndex = 2;
-            this.grpMetric.TabStop = false;
-            // 
-            // panel4
-            // 
-            this.panel4.Controls.Add(this.cboMetric);
-            this.panel4.Controls.Add(this.lblMetric);
-            this.panel4.Controls.Add(this.cboSeasonalMetric);
-            this.panel4.Controls.Add(this.cboMetricStatistic);
-            this.panel4.Controls.Add(this.lblSeasonalMetric);
-            this.panel4.Controls.Add(this.lblMetricStatistic);
-            this.panel4.Controls.Add(this.pollLabel);
-            this.panel4.Controls.Add(this.cboPollutant);
-            this.panel4.Controls.Add(this.varList);
-            this.panel4.Controls.Add(this.editEffect);
-            this.panel4.Controls.Add(this.betaVarGroup);
-            this.panel4.Controls.Add(this.lblPollutant);
-            this.panel4.Controls.Add(this.lblModelSpec);
-            this.panel4.Controls.Add(this.cboModelSpec);
-            this.panel4.Location = new System.Drawing.Point(5, 10);
-            this.panel4.Margin = new System.Windows.Forms.Padding(2);
-            this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(280, 328);
-            this.panel4.TabIndex = 16;
+            this.grpPollutant.Controls.Add(this.varList);
+            this.grpPollutant.Controls.Add(this.cboMetric);
+            this.grpPollutant.Controls.Add(this.lblMetric);
+            this.grpPollutant.Controls.Add(this.cboSeasonalMetric);
+            this.grpPollutant.Controls.Add(this.cboMetricStatistic);
+            this.grpPollutant.Controls.Add(this.lblSeasonalMetric);
+            this.grpPollutant.Controls.Add(this.lblMetricStatistic);
+            this.grpPollutant.Controls.Add(this.pollLabel);
+            this.grpPollutant.Controls.Add(this.cboPollutant);
+            this.grpPollutant.Controls.Add(this.editEffect);
+            this.grpPollutant.Controls.Add(this.betaVarGroup);
+            this.grpPollutant.Controls.Add(this.lblPollutant);
+            this.grpPollutant.Controls.Add(this.lblModelSpec);
+            this.grpPollutant.Controls.Add(this.cboModelSpec);
+            this.grpPollutant.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.grpPollutant.Location = new System.Drawing.Point(511, 3);
+            this.grpPollutant.Name = "grpPollutant";
+            this.grpPollutant.Size = new System.Drawing.Size(317, 344);
+            this.grpPollutant.TabIndex = 2;
+            this.grpPollutant.TabStop = false;
             // 
             // cboMetric
             // 
@@ -194,16 +184,17 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cboMetric.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboMetric.FormattingEnabled = true;
-            this.cboMetric.Location = new System.Drawing.Point(8, 114);
+            this.cboMetric.Location = new System.Drawing.Point(8, 126);
             this.cboMetric.Name = "cboMetric";
-            this.cboMetric.Size = new System.Drawing.Size(114, 22);
+            this.cboMetric.Size = new System.Drawing.Size(109, 22);
             this.cboMetric.TabIndex = 26;
             this.cboMetric.SelectedValueChanged += new System.EventHandler(this.cboMetric_SelectedValueChanged);
             // 
             // lblMetric
             // 
             this.lblMetric.AutoSize = true;
-            this.lblMetric.Location = new System.Drawing.Point(7, 97);
+            this.lblMetric.Location = new System.Drawing.Point(7, 109);
+            this.lblMetric.Margin = new System.Windows.Forms.Padding(2);
             this.lblMetric.Name = "lblMetric";
             this.lblMetric.Size = new System.Drawing.Size(44, 14);
             this.lblMetric.TabIndex = 23;
@@ -215,9 +206,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cboSeasonalMetric.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboSeasonalMetric.FormattingEnabled = true;
-            this.cboSeasonalMetric.Location = new System.Drawing.Point(8, 210);
+            this.cboSeasonalMetric.Location = new System.Drawing.Point(8, 222);
             this.cboSeasonalMetric.Name = "cboSeasonalMetric";
-            this.cboSeasonalMetric.Size = new System.Drawing.Size(114, 22);
+            this.cboSeasonalMetric.Size = new System.Drawing.Size(109, 22);
             this.cboSeasonalMetric.TabIndex = 28;
             // 
             // cboMetricStatistic
@@ -226,15 +217,16 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cboMetricStatistic.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboMetricStatistic.FormattingEnabled = true;
-            this.cboMetricStatistic.Location = new System.Drawing.Point(8, 162);
+            this.cboMetricStatistic.Location = new System.Drawing.Point(8, 174);
             this.cboMetricStatistic.Name = "cboMetricStatistic";
-            this.cboMetricStatistic.Size = new System.Drawing.Size(114, 22);
+            this.cboMetricStatistic.Size = new System.Drawing.Size(109, 22);
             this.cboMetricStatistic.TabIndex = 27;
             // 
             // lblSeasonalMetric
             // 
             this.lblSeasonalMetric.AutoSize = true;
-            this.lblSeasonalMetric.Location = new System.Drawing.Point(7, 193);
+            this.lblSeasonalMetric.Location = new System.Drawing.Point(7, 205);
+            this.lblSeasonalMetric.Margin = new System.Windows.Forms.Padding(2);
             this.lblSeasonalMetric.Name = "lblSeasonalMetric";
             this.lblSeasonalMetric.Size = new System.Drawing.Size(98, 14);
             this.lblSeasonalMetric.TabIndex = 25;
@@ -243,7 +235,8 @@
             // lblMetricStatistic
             // 
             this.lblMetricStatistic.AutoSize = true;
-            this.lblMetricStatistic.Location = new System.Drawing.Point(7, 145);
+            this.lblMetricStatistic.Location = new System.Drawing.Point(7, 157);
+            this.lblMetricStatistic.Margin = new System.Windows.Forms.Padding(2);
             this.lblMetricStatistic.Name = "lblMetricStatistic";
             this.lblMetricStatistic.Size = new System.Drawing.Size(94, 14);
             this.lblMetricStatistic.TabIndex = 24;
@@ -252,7 +245,7 @@
             // pollLabel
             // 
             this.pollLabel.AutoSize = true;
-            this.pollLabel.Location = new System.Drawing.Point(6, 1);
+            this.pollLabel.Location = new System.Drawing.Point(6, 13);
             this.pollLabel.Name = "pollLabel";
             this.pollLabel.Size = new System.Drawing.Size(74, 14);
             this.pollLabel.TabIndex = 22;
@@ -260,6 +253,7 @@
             // 
             // varList
             // 
+            this.varList.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.varList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1,
             this.columnHeader2});
@@ -269,10 +263,10 @@
             this.varList.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
             listViewItem1,
             listViewItem2});
-            this.varList.Location = new System.Drawing.Point(128, 97);
+            this.varList.Location = new System.Drawing.Point(125, 109);
             this.varList.Margin = new System.Windows.Forms.Padding(2);
             this.varList.Name = "varList";
-            this.varList.Size = new System.Drawing.Size(146, 197);
+            this.varList.Size = new System.Drawing.Size(185, 197);
             this.varList.TabIndex = 18;
             this.varList.UseCompatibleStateImageBehavior = false;
             this.varList.View = System.Windows.Forms.View.Details;
@@ -285,11 +279,13 @@
             // columnHeader2
             // 
             this.columnHeader2.Text = "Pollutant";
-            this.columnHeader2.Width = 83;
+            this.columnHeader2.Width = 125;
             // 
             // editEffect
             // 
-            this.editEffect.Location = new System.Drawing.Point(71, 302);
+            this.editEffect.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.editEffect.Location = new System.Drawing.Point(75, 313);
             this.editEffect.Name = "editEffect";
             this.editEffect.Size = new System.Drawing.Size(152, 23);
             this.editEffect.TabIndex = 15;
@@ -302,7 +298,7 @@
             this.betaVarGroup.Controls.Add(this.lblBetaVar);
             this.betaVarGroup.Controls.Add(this.bvSeasonal);
             this.betaVarGroup.Controls.Add(this.bvFullYear);
-            this.betaVarGroup.Location = new System.Drawing.Point(3, 241);
+            this.betaVarGroup.Location = new System.Drawing.Point(5, 253);
             this.betaVarGroup.Margin = new System.Windows.Forms.Padding(2);
             this.betaVarGroup.Name = "betaVarGroup";
             this.betaVarGroup.Size = new System.Drawing.Size(101, 53);
@@ -354,7 +350,7 @@
             // lblModelSpec
             // 
             this.lblModelSpec.AutoSize = true;
-            this.lblModelSpec.Location = new System.Drawing.Point(6, 50);
+            this.lblModelSpec.Location = new System.Drawing.Point(6, 62);
             this.lblModelSpec.Name = "lblModelSpec";
             this.lblModelSpec.Size = new System.Drawing.Size(116, 14);
             this.lblModelSpec.TabIndex = 19;
@@ -366,11 +362,18 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cboModelSpec.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboModelSpec.FormattingEnabled = true;
-            this.cboModelSpec.Location = new System.Drawing.Point(7, 67);
+            this.cboModelSpec.Location = new System.Drawing.Point(7, 79);
             this.cboModelSpec.Name = "cboModelSpec";
-            this.cboModelSpec.Size = new System.Drawing.Size(266, 22);
+            this.cboModelSpec.Size = new System.Drawing.Size(303, 22);
             this.cboModelSpec.TabIndex = 20;
             this.cboModelSpec.SelectedValueChanged += new System.EventHandler(this.cboModelSpec_SelectedValueChanged);
+            // 
+            // panel4
+            // 
+            this.panel4.Location = new System.Drawing.Point(0, 0);
+            this.panel4.Name = "panel4";
+            this.panel4.Size = new System.Drawing.Size(200, 100);
+            this.panel4.TabIndex = 0;
             // 
             // cboEndpoint
             // 
@@ -380,7 +383,7 @@
             this.cboEndpoint.FormattingEnabled = true;
             this.cboEndpoint.Location = new System.Drawing.Point(6, 80);
             this.cboEndpoint.Name = "cboEndpoint";
-            this.cboEndpoint.Size = new System.Drawing.Size(191, 22);
+            this.cboEndpoint.Size = new System.Drawing.Size(209, 22);
             this.cboEndpoint.TabIndex = 3;
             // 
             // cboEndpointGroup
@@ -391,7 +394,7 @@
             this.cboEndpointGroup.FormattingEnabled = true;
             this.cboEndpointGroup.Location = new System.Drawing.Point(6, 30);
             this.cboEndpointGroup.Name = "cboEndpointGroup";
-            this.cboEndpointGroup.Size = new System.Drawing.Size(191, 22);
+            this.cboEndpointGroup.Size = new System.Drawing.Size(209, 22);
             this.cboEndpointGroup.TabIndex = 2;
             this.cboEndpointGroup.SelectedValueChanged += new System.EventHandler(this.cboEndpointGroup_SelectedValueChanged_1);
             // 
@@ -422,7 +425,7 @@
             this.grpEndpoint.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpEndpoint.Location = new System.Drawing.Point(0, 0);
             this.grpEndpoint.Name = "grpEndpoint";
-            this.grpEndpoint.Size = new System.Drawing.Size(202, 118);
+            this.grpEndpoint.Size = new System.Drawing.Size(220, 118);
             this.grpEndpoint.TabIndex = 1;
             this.grpEndpoint.TabStop = false;
             // 
@@ -433,7 +436,7 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(3, 3);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(202, 344);
+            this.panel1.Size = new System.Drawing.Size(220, 344);
             this.panel1.TabIndex = 5;
             // 
             // grpParameter1
@@ -444,9 +447,10 @@
             this.grpParameter1.Controls.Add(this.lblPrevalenceDataSet);
             this.grpParameter1.Controls.Add(this.cboIncidenceDataSet);
             this.grpParameter1.Controls.Add(this.lblIncidenceDataSet);
+            this.grpParameter1.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.grpParameter1.Location = new System.Drawing.Point(0, 121);
             this.grpParameter1.Name = "grpParameter1";
-            this.grpParameter1.Size = new System.Drawing.Size(202, 223);
+            this.grpParameter1.Size = new System.Drawing.Size(220, 223);
             this.grpParameter1.TabIndex = 4;
             this.grpParameter1.TabStop = false;
             // 
@@ -458,7 +462,7 @@
             this.cboVariableDataSet.FormattingEnabled = true;
             this.cboVariableDataSet.Location = new System.Drawing.Point(6, 90);
             this.cboVariableDataSet.Name = "cboVariableDataSet";
-            this.cboVariableDataSet.Size = new System.Drawing.Size(190, 22);
+            this.cboVariableDataSet.Size = new System.Drawing.Size(208, 22);
             this.cboVariableDataSet.TabIndex = 17;
             // 
             // lblVariableDataSet
@@ -478,7 +482,7 @@
             this.cboPrevalenceDataSet.FormattingEnabled = true;
             this.cboPrevalenceDataSet.Location = new System.Drawing.Point(6, 139);
             this.cboPrevalenceDataSet.Name = "cboPrevalenceDataSet";
-            this.cboPrevalenceDataSet.Size = new System.Drawing.Size(190, 22);
+            this.cboPrevalenceDataSet.Size = new System.Drawing.Size(208, 22);
             this.cboPrevalenceDataSet.TabIndex = 16;
             // 
             // lblPrevalenceDataSet
@@ -498,7 +502,7 @@
             this.cboIncidenceDataSet.FormattingEnabled = true;
             this.cboIncidenceDataSet.Location = new System.Drawing.Point(6, 37);
             this.cboIncidenceDataSet.Name = "cboIncidenceDataSet";
-            this.cboIncidenceDataSet.Size = new System.Drawing.Size(190, 22);
+            this.cboIncidenceDataSet.Size = new System.Drawing.Size(208, 22);
             this.cboIncidenceDataSet.TabIndex = 15;
             // 
             // lblIncidenceDataSet
@@ -516,7 +520,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtReference.Location = new System.Drawing.Point(11, 316);
             this.txtReference.Name = "txtReference";
-            this.txtReference.Size = new System.Drawing.Size(254, 22);
+            this.txtReference.Size = new System.Drawing.Size(258, 22);
             this.txtReference.TabIndex = 21;
             // 
             // txtOtherPollutant
@@ -525,7 +529,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtOtherPollutant.Location = new System.Drawing.Point(11, 274);
             this.txtOtherPollutant.Name = "txtOtherPollutant";
-            this.txtOtherPollutant.Size = new System.Drawing.Size(254, 22);
+            this.txtOtherPollutant.Size = new System.Drawing.Size(258, 22);
             this.txtOtherPollutant.TabIndex = 18;
             // 
             // lblReference
@@ -619,7 +623,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lstFuncAvailableSetupVariables.FormattingEnabled = true;
             this.lstFuncAvailableSetupVariables.ItemHeight = 14;
-            this.lstFuncAvailableSetupVariables.Location = new System.Drawing.Point(581, 21);
+            this.lstFuncAvailableSetupVariables.Location = new System.Drawing.Point(630, 21);
             this.lstFuncAvailableSetupVariables.Name = "lstFuncAvailableSetupVariables";
             this.lstFuncAvailableSetupVariables.Size = new System.Drawing.Size(187, 102);
             this.lstFuncAvailableSetupVariables.TabIndex = 10;
@@ -631,7 +635,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lstFuncAvailableVariables.FormattingEnabled = true;
             this.lstFuncAvailableVariables.ItemHeight = 14;
-            this.lstFuncAvailableVariables.Location = new System.Drawing.Point(430, 21);
+            this.lstFuncAvailableVariables.Location = new System.Drawing.Point(479, 21);
             this.lstFuncAvailableVariables.Name = "lstFuncAvailableVariables";
             this.lstFuncAvailableVariables.Size = new System.Drawing.Size(145, 102);
             this.lstFuncAvailableVariables.TabIndex = 9;
@@ -645,7 +649,7 @@
             this.txtFunction.Multiline = true;
             this.txtFunction.Name = "txtFunction";
             this.txtFunction.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtFunction.Size = new System.Drawing.Size(762, 64);
+            this.txtFunction.Size = new System.Drawing.Size(811, 64);
             this.txtFunction.TabIndex = 12;
             // 
             // lstCommonUsedFunctions
@@ -659,7 +663,7 @@
             this.lstCommonUsedFunctions.Location = new System.Drawing.Point(6, 21);
             this.lstCommonUsedFunctions.MinimumSize = new System.Drawing.Size(267, 102);
             this.lstCommonUsedFunctions.Name = "lstCommonUsedFunctions";
-            this.lstCommonUsedFunctions.Size = new System.Drawing.Size(267, 102);
+            this.lstCommonUsedFunctions.Size = new System.Drawing.Size(316, 102);
             this.lstCommonUsedFunctions.TabIndex = 8;
             this.lstCommonUsedFunctions.DoubleClick += new System.EventHandler(this.lstFuncAllAvailableFunctions_DoubleClick);
             // 
@@ -669,7 +673,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lstFuncAvailableFunctions.FormattingEnabled = true;
             this.lstFuncAvailableFunctions.ItemHeight = 14;
-            this.lstFuncAvailableFunctions.Location = new System.Drawing.Point(279, 21);
+            this.lstFuncAvailableFunctions.Location = new System.Drawing.Point(328, 21);
             this.lstFuncAvailableFunctions.Name = "lstFuncAvailableFunctions";
             this.lstFuncAvailableFunctions.Size = new System.Drawing.Size(145, 102);
             this.lstFuncAvailableFunctions.TabIndex = 6;
@@ -696,7 +700,7 @@
             // 
             this.lblComposeSetupVariables.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblComposeSetupVariables.AutoSize = true;
-            this.lblComposeSetupVariables.Location = new System.Drawing.Point(580, 3);
+            this.lblComposeSetupVariables.Location = new System.Drawing.Point(629, 3);
             this.lblComposeSetupVariables.Name = "lblComposeSetupVariables";
             this.lblComposeSetupVariables.Size = new System.Drawing.Size(178, 14);
             this.lblComposeSetupVariables.TabIndex = 2;
@@ -757,7 +761,7 @@
             // 
             this.lblComposeVariables.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblComposeVariables.AutoSize = true;
-            this.lblComposeVariables.Location = new System.Drawing.Point(428, 3);
+            this.lblComposeVariables.Location = new System.Drawing.Point(477, 3);
             this.lblComposeVariables.Name = "lblComposeVariables";
             this.lblComposeVariables.Size = new System.Drawing.Size(117, 14);
             this.lblComposeVariables.TabIndex = 1;
@@ -789,7 +793,7 @@
             this.tbpBaselineFunction.Location = new System.Drawing.Point(4, 23);
             this.tbpBaselineFunction.Name = "tbpBaselineFunction";
             this.tbpBaselineFunction.Padding = new System.Windows.Forms.Padding(3);
-            this.tbpBaselineFunction.Size = new System.Drawing.Size(774, 218);
+            this.tbpBaselineFunction.Size = new System.Drawing.Size(823, 218);
             this.tbpBaselineFunction.TabIndex = 1;
             this.tbpBaselineFunction.Text = "Baseline Incidence Function";
             this.tbpBaselineFunction.UseVisualStyleBackColor = true;
@@ -808,7 +812,7 @@
             // 
             this.lbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lbl.AutoSize = true;
-            this.lbl.Location = new System.Drawing.Point(277, 3);
+            this.lbl.Location = new System.Drawing.Point(326, 3);
             this.lbl.Name = "lbl";
             this.lbl.Size = new System.Drawing.Size(64, 14);
             this.lbl.TabIndex = 0;
@@ -820,7 +824,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.nudownEndAge.Location = new System.Drawing.Point(6, 208);
             this.nudownEndAge.Name = "nudownEndAge";
-            this.nudownEndAge.Size = new System.Drawing.Size(117, 22);
+            this.nudownEndAge.Size = new System.Drawing.Size(119, 22);
             this.nudownEndAge.TabIndex = 20;
             this.nudownEndAge.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
@@ -840,7 +844,7 @@
             this.tbpFunction.Location = new System.Drawing.Point(4, 23);
             this.tbpFunction.Name = "tbpFunction";
             this.tbpFunction.Padding = new System.Windows.Forms.Padding(3);
-            this.tbpFunction.Size = new System.Drawing.Size(774, 218);
+            this.tbpFunction.Size = new System.Drawing.Size(823, 218);
             this.tbpFunction.TabIndex = 0;
             this.tbpFunction.Text = "Function";
             this.tbpFunction.UseVisualStyleBackColor = true;
@@ -855,7 +859,7 @@
             this.tabControl1.Location = new System.Drawing.Point(10, 360);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(782, 245);
+            this.tabControl1.Size = new System.Drawing.Size(831, 245);
             this.tabControl1.TabIndex = 26;
             // 
             // lblYear
@@ -881,9 +885,9 @@
             this.panel3.Controls.Add(this.txtLocation);
             this.panel3.Controls.Add(this.txtYear);
             this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel3.Location = new System.Drawing.Point(133, 3);
+            this.panel3.Location = new System.Drawing.Point(135, 3);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(125, 238);
+            this.panel3.Size = new System.Drawing.Size(127, 238);
             this.panel3.TabIndex = 1;
             // 
             // lblQualifier
@@ -910,7 +914,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtQualifier.Location = new System.Drawing.Point(6, 111);
             this.txtQualifier.Name = "txtQualifier";
-            this.txtQualifier.Size = new System.Drawing.Size(116, 22);
+            this.txtQualifier.Size = new System.Drawing.Size(118, 22);
             this.txtQualifier.TabIndex = 17;
             // 
             // txtAnthor
@@ -919,7 +923,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtAnthor.Location = new System.Drawing.Point(6, 16);
             this.txtAnthor.Name = "txtAnthor";
-            this.txtAnthor.Size = new System.Drawing.Size(115, 22);
+            this.txtAnthor.Size = new System.Drawing.Size(117, 22);
             this.txtAnthor.TabIndex = 14;
             // 
             // txtLocation
@@ -928,7 +932,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtLocation.Location = new System.Drawing.Point(6, 159);
             this.txtLocation.Name = "txtLocation";
-            this.txtLocation.Size = new System.Drawing.Size(116, 22);
+            this.txtLocation.Size = new System.Drawing.Size(118, 22);
             this.txtLocation.TabIndex = 16;
             // 
             // txtYear
@@ -937,7 +941,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtYear.Location = new System.Drawing.Point(6, 65);
             this.txtYear.Name = "txtYear";
-            this.txtYear.Size = new System.Drawing.Size(116, 22);
+            this.txtYear.Size = new System.Drawing.Size(118, 22);
             this.txtYear.TabIndex = 15;
             this.txtYear.Text = "0";
             // 
@@ -946,17 +950,17 @@
             this.tableLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel1.ColumnCount = 3;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 26.73522F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 35.60411F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 37.7892F));
-            this.tableLayoutPanel1.Controls.Add(this.grpMetric, 2, 0);
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 27.19615F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.93502F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 38.86883F));
+            this.tableLayoutPanel1.Controls.Add(this.grpPollutant, 2, 0);
             this.tableLayoutPanel1.Controls.Add(this.grpParameter, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.panel1, 0, 0);
             this.tableLayoutPanel1.Location = new System.Drawing.Point(10, 4);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(782, 350);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(831, 350);
             this.tableLayoutPanel1.TabIndex = 27;
             // 
             // grpParameter
@@ -967,9 +971,9 @@
             this.grpParameter.Controls.Add(this.lblReference);
             this.grpParameter.Controls.Add(this.lblOtherPollutant);
             this.grpParameter.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.grpParameter.Location = new System.Drawing.Point(211, 3);
+            this.grpParameter.Location = new System.Drawing.Point(229, 3);
             this.grpParameter.Name = "grpParameter";
-            this.grpParameter.Size = new System.Drawing.Size(272, 344);
+            this.grpParameter.Size = new System.Drawing.Size(276, 344);
             this.grpParameter.TabIndex = 3;
             this.grpParameter.TabStop = false;
             // 
@@ -986,7 +990,7 @@
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
             this.tableLayoutPanel2.RowCount = 1;
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(261, 244);
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(265, 244);
             this.tableLayoutPanel2.TabIndex = 2;
             // 
             // panel2
@@ -1004,7 +1008,7 @@
             this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel2.Location = new System.Drawing.Point(3, 3);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(124, 238);
+            this.panel2.Size = new System.Drawing.Size(126, 238);
             this.panel2.TabIndex = 0;
             // 
             // label9
@@ -1033,7 +1037,7 @@
             this.cboLocationName.FormattingEnabled = true;
             this.cboLocationName.Location = new System.Drawing.Point(5, 159);
             this.cboLocationName.Name = "cboLocationName";
-            this.cboLocationName.Size = new System.Drawing.Size(116, 22);
+            this.cboLocationName.Size = new System.Drawing.Size(118, 22);
             this.cboLocationName.TabIndex = 22;
             // 
             // lblEthnicity
@@ -1069,7 +1073,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.nudownStartAge.Location = new System.Drawing.Point(5, 208);
             this.nudownStartAge.Name = "nudownStartAge";
-            this.nudownStartAge.Size = new System.Drawing.Size(116, 22);
+            this.nudownStartAge.Size = new System.Drawing.Size(118, 22);
             this.nudownStartAge.TabIndex = 19;
             this.nudownStartAge.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
@@ -1081,7 +1085,7 @@
             this.cboRace.FormattingEnabled = true;
             this.cboRace.Location = new System.Drawing.Point(5, 17);
             this.cboRace.Name = "cboRace";
-            this.cboRace.Size = new System.Drawing.Size(116, 22);
+            this.cboRace.Size = new System.Drawing.Size(118, 22);
             this.cboRace.TabIndex = 11;
             // 
             // cboEthnicity
@@ -1092,7 +1096,7 @@
             this.cboEthnicity.FormattingEnabled = true;
             this.cboEthnicity.Location = new System.Drawing.Point(5, 65);
             this.cboEthnicity.Name = "cboEthnicity";
-            this.cboEthnicity.Size = new System.Drawing.Size(116, 22);
+            this.cboEthnicity.Size = new System.Drawing.Size(118, 22);
             this.cboEthnicity.TabIndex = 12;
             // 
             // cboGender
@@ -1103,13 +1107,13 @@
             this.cboGender.FormattingEnabled = true;
             this.cboGender.Location = new System.Drawing.Point(5, 111);
             this.cboGender.Name = "cboGender";
-            this.cboGender.Size = new System.Drawing.Size(116, 22);
+            this.cboGender.Size = new System.Drawing.Size(118, 22);
             this.cboGender.TabIndex = 13;
             // 
             // btnOK
             // 
             this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnOK.Location = new System.Drawing.Point(685, 20);
+            this.btnOK.Location = new System.Drawing.Point(734, 20);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 27);
             this.btnOK.TabIndex = 1;
@@ -1120,7 +1124,7 @@
             // btnCancel
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnCancel.Location = new System.Drawing.Point(604, 20);
+            this.btnCancel.Location = new System.Drawing.Point(653, 20);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 27);
             this.btnCancel.TabIndex = 0;
@@ -1136,7 +1140,7 @@
             this.grpCancelOK.Controls.Add(this.btnCancel);
             this.grpCancelOK.Location = new System.Drawing.Point(10, 600);
             this.grpCancelOK.Name = "grpCancelOK";
-            this.grpCancelOK.Size = new System.Drawing.Size(782, 54);
+            this.grpCancelOK.Size = new System.Drawing.Size(831, 54);
             this.grpCancelOK.TabIndex = 25;
             this.grpCancelOK.TabStop = false;
             // 
@@ -1144,7 +1148,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(803, 658);
+            this.ClientSize = new System.Drawing.Size(852, 658);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.grpCancelOK);
@@ -1152,9 +1156,8 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Health Impact Function Definition";
             this.Load += new System.EventHandler(this.HIFDefinitionMulti_Load);
-            this.grpMetric.ResumeLayout(false);
-            this.panel4.ResumeLayout(false);
-            this.panel4.PerformLayout();
+            this.grpPollutant.ResumeLayout(false);
+            this.grpPollutant.PerformLayout();
             this.betaVarGroup.ResumeLayout(false);
             this.betaVarGroup.PerformLayout();
             this.grpEndpoint.ResumeLayout(false);
@@ -1184,7 +1187,7 @@
 
         #endregion
         private System.Windows.Forms.ComboBox cboPollutant;
-        private System.Windows.Forms.GroupBox grpMetric;
+        private System.Windows.Forms.GroupBox grpPollutant;
         private System.Windows.Forms.Label lblPollutant;
         private System.Windows.Forms.ComboBox cboEndpoint;
         private System.Windows.Forms.ComboBox cboEndpointGroup;
