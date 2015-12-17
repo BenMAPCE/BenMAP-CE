@@ -11,18 +11,11 @@ namespace BenMAP
 {
     public partial class EffectCoefficients : FormBase
     {
-        private int selected;
-        private string betaVariation;
-        private string modelSpec;
-        private List<CRFVariable> effVarList;
-        public EffectCoefficients(string modelSelected, string betaVarSelected, List<CRFVariable> varList, int selectSent)
+        private String betaVariation;
+        public EffectCoefficients(String varSelected, List<CRFVariable> varList)
         {
             InitializeComponent();
-            betaVariation = betaVarSelected;
-            effVarList = new List<CRFVariable>();
-            effVarList.AddRange(varList);
-            selected = selectSent;
-            modelSpec = modelSelected;
+            betaVariation = varSelected;
         }
 
         // Some of these fields will be filled dynamically
@@ -31,11 +24,6 @@ namespace BenMAP
         {
             try
             {
-                CRFVariable selectedVariable = effVarList.ElementAt(selected);
-                txtVariable.Text = selectedVariable.VariableName;
-                txtPollutant.Text = selectedVariable.PollutantName;
-                txtModelSpec.Text = modelSpec;
-
                 cboBetaDistribution.Items.Add("None");
                 cboBetaDistribution.Items.Add("Normal");
                 cboBetaDistribution.Items.Add("Triangular");
@@ -55,24 +43,26 @@ namespace BenMAP
 
                 if (betaVariation == "Full Year")
                 {
-                    txtSeasMetric.Text = "None";
-                    cboSeason.Items.Add("Full Year");
-                    cboSeason.SelectedIndex = 0;
+                    groupBox1.Text = "Full Year";
+                    tbSeasMetric.Text = "None";
                     showForSeasonal.Visible = false;
                     panel2.Visible = true;
                     panel1.Visible = true;
 
                 }
 
-                else // Seasonal
+                else if (betaVariation == "Seasonal")
                 {
-                    txtSeasMetric.Text = "ColdWarm";
-                    // Will be added from database
-                    cboSeason.Items.Add("Season 1");
-                    cboSeason.SelectedIndex = 0;
+                    groupBox1.Text = "Season 1";
+                    tbSeasMetric.Text = "ColdWarm";
                     showForSeasonal.Visible = true;
                     panel2.Visible = false;
                     panel1.Visible = true;
+                }
+
+                else // Geographic
+                {
+                    panel1.Visible = false;
                 }
 
                 cboBetaDistribution.SelectedValueChanged -= cboBetaDistribution_SelectedValueChanged;
@@ -82,26 +72,6 @@ namespace BenMAP
             {
                 Logger.LogError(ex);
             }
-        }
-
-        private void nextBtn_Click(object sender, EventArgs e)
-        {
-            if (selected+1 > effVarList.Count()-1) { selected = 0; }
-            else { selected++; }
-            CRFVariable selectedVariable = effVarList.ElementAt(selected);
-            txtVariable.Text = selectedVariable.VariableName;
-            txtPollutant.Text = selectedVariable.PollutantName;
-            txtModelSpec.Text = modelSpec;
-        }
-
-        private void prevBtn_Click(object sender, EventArgs e)
-        {
-            if (selected-1 < 0) selected = effVarList.Count()-1;
-            else { selected--; }
-            CRFVariable selectedVariable = effVarList.ElementAt(selected);
-            txtVariable.Text = selectedVariable.VariableName;
-            txtPollutant.Text = selectedVariable.PollutantName;
-            txtModelSpec.Text = modelSpec;
         }
 
         private void btnOK_Click(object sender, EventArgs e)

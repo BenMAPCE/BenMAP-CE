@@ -27,7 +27,6 @@ namespace BenMAP
         }
 
         private string _dataName;
-        private string _betaVar;
 
         private HealthImpact _healthImpacts;
         public HealthImpact HealthImpacts
@@ -53,7 +52,6 @@ namespace BenMAP
         {
             InitializeComponent();
             _dataName = string.Empty;
-            _betaVar = string.Empty;
             _healthImpacts = new HealthImpact();
             _pollVarList = new List<CRFVariable>();
         }
@@ -63,7 +61,6 @@ namespace BenMAP
             InitializeComponent();
             _healthImpacts = healthImpact;
             _dataName = dataName;
-            _betaVar = healthImpact.BetaVariation;
             _listCustom = listValue;
             if(healthImpact.PollVariables.Count > 0) _pollVarList = healthImpact.PollVariables;
             else _pollVarList = new List<CRFVariable>();
@@ -276,7 +273,6 @@ namespace BenMAP
                 _healthImpacts.Prevalence = cboPrevalenceDataSet.Text;
                 _healthImpacts.Variable = cboVariableDataSet.Text;
                 _healthImpacts.PollVariables = _pollVarList;
-                _healthImpacts.BetaVariation = _betaVar;
                 _listCustom = list;
                 this.DialogResult = DialogResult.OK;
 
@@ -353,6 +349,7 @@ namespace BenMAP
                     cboPrevalenceDataSet.Text = _healthImpacts.Prevalence;
                     cboVariableDataSet.Text = _healthImpacts.Variable;
                     list = listCustom;
+
                 }
                 else
                 {
@@ -473,7 +470,7 @@ namespace BenMAP
                 cboLocationName.DataSource = ds.Tables[0];
                 cboLocationName.DisplayMember = "LocationTypeName";
                 cboLocationName.SelectedIndex = -1;
-                if(_betaVar == "") _betaVar = "Full Year";
+
             }
             catch (Exception ex)
             {
@@ -994,14 +991,14 @@ namespace BenMAP
             try
             {
                 int selectedVar = 0;
+                if (_healthImpacts.BetaVariation == "") betaVarGroup_SelectedValueChanged(sender, e);
                 if (varList.SelectedItems.Count != 0) selectedVar = varList.SelectedItems[0].Index;
-
                 DataRowView selectedModel = (DataRowView)cboModelSpec.SelectedItem;
 
-                EffectCoefficients form = new EffectCoefficients(selectedModel[0].ToString(), _betaVar, _pollVarList, selectedVar);
+                EffectCoefficients form = new EffectCoefficients(_healthImpacts.BetaVariation, _pollVarList, selectedVar, selectedModel[0].ToString());
                 DialogResult res = form.ShowDialog();
             }
-
+           
             catch (Exception ex)
             {
                 Logger.LogError(ex);
@@ -1011,8 +1008,8 @@ namespace BenMAP
         private void betaVarGroup_SelectedValueChanged(object sender, EventArgs e)
         {
             try {
-                if (bvFullYear.Checked) _betaVar = "Full Year";
-                else _betaVar = "Seasonal";
+                if (bvFullYear.Checked) _healthImpacts.BetaVariation = "Full Year";
+                else _healthImpacts.BetaVariation = "Seasonal";
             }
             catch (Exception ex)
             {
