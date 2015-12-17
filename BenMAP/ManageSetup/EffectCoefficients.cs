@@ -86,7 +86,7 @@ namespace BenMAP
 
         private void nextBtn_Click(object sender, EventArgs e)
         {
-            if (selected+1 > effVarList.Count()-1) { selected = 0; }
+            if (selected + 1 > effVarList.Count() - 1) { selected = 0; }
             else { selected++; }
             CRFVariable selectedVariable = effVarList.ElementAt(selected);
             txtVariable.Text = selectedVariable.VariableName;
@@ -96,7 +96,7 @@ namespace BenMAP
 
         private void prevBtn_Click(object sender, EventArgs e)
         {
-            if (selected-1 < 0) selected = effVarList.Count()-1;
+            if (selected - 1 < 0) selected = effVarList.Count() - 1;
             else { selected--; }
             CRFVariable selectedVariable = effVarList.ElementAt(selected);
             txtVariable.Text = selectedVariable.VariableName;
@@ -157,7 +157,7 @@ namespace BenMAP
                     txtBeta.Text = frm.MeanValue;
                     txtBetaParameter1.Text = frm.Parameter1;
                     txtBetaParameter2.Text = frm.Parameter2;
-                    if (cboBetaDistribution.SelectedItem.ToString() == "Normal" || cboBetaDistribution.SelectedItem.ToString() == "Poisson" 
+                    if (cboBetaDistribution.SelectedItem.ToString() == "Normal" || cboBetaDistribution.SelectedItem.ToString() == "Poisson"
                         || cboBetaDistribution.SelectedItem.ToString() == "Exponential" || cboBetaDistribution.SelectedItem.ToString() == "Geometric")
                     {
                         txtBetaParameter2.Text = healthImpactValues.BetaParameter2;
