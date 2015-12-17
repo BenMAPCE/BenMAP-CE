@@ -11,11 +11,17 @@ namespace BenMAP
 {
     public partial class EffectCoefficients : FormBase
     {
+        private int selected;
         private String betaVariation;
-        public EffectCoefficients(String varSelected, List<CRFVariable> varList)
+        private String modelSpec;
+        private List<CRFVariable> effVarList;
+        public EffectCoefficients(String betaVarSelected, List<CRFVariable> varList, int selectSent, string modelSelected)
         {
             InitializeComponent();
-            betaVariation = varSelected;
+            betaVariation = betaVarSelected;
+            effVarList = varList;
+            selected = selectSent;
+            modelSpec = modelSelected;
         }
 
         // Some of these fields will be filled dynamically
@@ -24,6 +30,11 @@ namespace BenMAP
         {
             try
             {
+                CRFVariable selectedVariable = effVarList.ElementAt(selected);
+                txtVariable.Text = selectedVariable.VariableName;
+                txtPollutant.Text = selectedVariable.PollutantName;
+                txtModelSpec.Text = modelSpec;
+
                 cboBetaDistribution.Items.Add("None");
                 cboBetaDistribution.Items.Add("Normal");
                 cboBetaDistribution.Items.Add("Triangular");
@@ -44,7 +55,7 @@ namespace BenMAP
                 if (betaVariation == "Full Year")
                 {
                     groupBox1.Text = "Full Year";
-                    tbSeasMetric.Text = "None";
+                    txtSeasMetric.Text = "None";
                     showForSeasonal.Visible = false;
                     panel2.Visible = true;
                     panel1.Visible = true;
@@ -54,7 +65,7 @@ namespace BenMAP
                 else if (betaVariation == "Seasonal")
                 {
                     groupBox1.Text = "Season 1";
-                    tbSeasMetric.Text = "ColdWarm";
+                    txtSeasMetric.Text = "ColdWarm";
                     showForSeasonal.Visible = true;
                     panel2.Visible = false;
                     panel1.Visible = true;
