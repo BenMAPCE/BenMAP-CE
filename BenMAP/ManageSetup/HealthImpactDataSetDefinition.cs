@@ -1477,7 +1477,26 @@ namespace BenMAP
                 {
                     commandText = string.Format("select crfunctiondatasetname from crfunctiondatasets where crfunctiondatasetid={0}", _datasetID);
                     txtHealthImpactFunction.Text = Convert.ToString(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
-                    commandText = string.Format("select b.endpointgroupname,c.endpointname,d.pollutantname,e.metricname,f.seasonalmetricname,case when Metricstatistic = 0 then 'None'  when Metricstatistic = 1 then 'Mean' when Metricstatistic = 2 then 'Median' when Metricstatistic = 3 then 'Max' when Metricstatistic = 4 then 'Min' when Metricstatistic = 5 then 'Sum'  END as MetricstatisticName,author,yyear,g.locationtypename,location,otherpollutants,qualifier,reference,race,ethnicity,gender,startage,endage,h.functionalformtext,i.functionalformtext,beta,dt.DistributionName as DistBeta,p1beta,p2beta,a,namea,b,nameb,c,namec,j.incidencedatasetname,k.incidencedatasetname,l.setupvariabledatasetname as variabeldatasetname,a.CRFUNCTIONID from crfunctions a join CRFBetas betas on a.CRFunctionID = betas.CRFunctionID join DistributionTypes dt on betas.DistributionTypeID = dt.DistributionTypeID join endpointgroups b on (a.ENDPOINTGROUPID = b.ENDPOINTGROUPID) join endpoints c on(a.endpointid = c.endpointid) join pollutants d on(a.pollutantid = d.pollutantid)join metrics e on(a.metricid = e.metricid) left join seasonalmetrics f on(a.seasonalmetricid = f.seasonalmetricid) left join locationtype g on(a.locationtypeid = g.locationtypeid) join functionalforms h on(a.functionalformid = h.functionalformid) join baselinefunctionalforms i on(a.baselinefunctionalformid = i.functionalformid) left join incidencedatasets j on(a.incidencedatasetid = j.incidencedatasetid) left join incidencedatasets k on(a.prevalencedatasetid = k.incidencedatasetid) left join setupvariabledatasets l on(a.variabledatasetid = l.setupvariabledatasetid) where CRFUNCTIONDATASETID={0}", _datasetID);
+                    commandText = string.Format("select b.endpointgroupname,c.endpointname,d.pollutantname,e.metricname,f.seasonalmetricname, " +
+                            "case when Metricstatistic = 0 then 'None'  when Metricstatistic = 1 then 'Mean' when Metricstatistic = 2 " +
+                            "then 'Median' when Metricstatistic = 3 then 'Max' when Metricstatistic = 4 then 'Min' when Metricstatistic = 5 " +
+                            "then 'Sum'  END as MetricstatisticName,author,yyear,g.locationtypename,location,otherpollutants,qualifier,reference,race, " +
+                            "ethnicity,gender,startage,endage,h.functionalformtext,i.functionalformtext,beta,dt.DistributionName as DistBeta,p1beta,p2beta, " +
+                            "a,namea,b,nameb,c,namec,j.incidencedatasetname,k.incidencedatasetname,l.setupvariabledatasetname as variabeldatasetname,a.CRFUNCTIONID " +
+                            "from crfunctions a join CRFVARIABLES vars on(a.CRFunctionID = vars.CRFunctionID) " +
+                            "join CRFBetas betas on(vars.CRFVariableID = betas.CRFVARIABLEID) " +
+                            "join DistributionTypes dt on betas.DistributionTypeID = dt.DistributionTypeID " +
+                            "join endpointgroups b on (a.ENDPOINTGROUPID = b.ENDPOINTGROUPID) " +
+                            "join endpoints c on(a.endpointid = c.endpointid) " +
+                            "join pollutants d on(a.pollutantid = d.pollutantid)join metrics e on(a.metricid = e.metricid) " +
+                            "left join seasonalmetrics f on(a.seasonalmetricid = f.seasonalmetricid) " +
+                            "left join locationtype g on(a.locationtypeid = g.locationtypeid) " +
+                            "join functionalforms h on(a.functionalformid = h.functionalformid) " +
+                            "join baselinefunctionalforms i on(a.baselinefunctionalformid = i.functionalformid) " +
+                            "left join incidencedatasets j on(a.incidencedatasetid = j.incidencedatasetid) " +
+                            "left join incidencedatasets k on(a.prevalencedatasetid = k.incidencedatasetid) " +
+                            "left join setupvariabledatasets l on(a.variabledatasetid = l.setupvariabledatasetid) " +
+                            "where CRFUNCTIONDATASETID={0}", _datasetID);
 
                     ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                     olvFunction.DataSource = ds.Tables[0];

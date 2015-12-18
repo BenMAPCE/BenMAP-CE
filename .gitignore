@@ -18,3 +18,10 @@ BenMAP/FireBirdHelper/icudt30.dll
 BenMAP/FireBirdHelper/icuin30.dll
 BenMAP/FireBirdHelper/icuuc30.dll
 BenMAP/FireBirdHelper/intl/fbintl.dll
+.vs/BenMAP/v14/.suo
+BenMAP/packages.config
+Uninstaller/bin/x86/Debug/Uninstaller.dll
+Uninstaller/bin/x86/Debug/Uninstaller.pdb
+Uninstaller/bin/x86/Release/Uninstaller.dll
+UpgradeLog.htm
+UpgradeLog2.htm
