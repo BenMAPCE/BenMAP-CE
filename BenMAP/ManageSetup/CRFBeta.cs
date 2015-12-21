@@ -7,11 +7,28 @@ namespace BenMAP
 {
     public class CRFBeta
     {
+        public CRFBeta()
+        {
+            this._beta = 0;
+            this._aConstantValue = 0;
+            this._bConstantValue = 0;
+            this._cConstantValue = 0;
+            this._p1Beta = 0;
+            this._p2Beta = 0;
+        }
+
         private int _distributionTypeID;
         public int DistributionTypeID
         {
             get { return _distributionTypeID; }
             set { _distributionTypeID = value; }
+        }
+
+        public string _distribution;
+        public string Distribution
+        {
+            get { return _distribution; }
+            set { _distribution = value; }
         }
 
         private int _seasonalMetricSeasonID;
@@ -21,29 +38,29 @@ namespace BenMAP
             set { _seasonalMetricSeasonID = value; }
         }
 
-        private float _beta;
-        public float Beta
+        private double _beta;
+        public double Beta
         {
             get { return _beta; }
             set { _beta = value; }
         }
 
-        private float _p1Beta;
-        public float P1Beta
+        private double _p1Beta;
+        public double P1Beta
         {
             get { return _p1Beta; }
             set { _p1Beta = value; }
         }
 
-        private float _p2Beta;
-        public float P2Beta
+        private double _p2Beta;
+        public double P2Beta
         {
             get { return _p2Beta; }
             set { _p2Beta = value; }
         }
 
-        private float _aConstantValue;
-        public float AConstantValue
+        private double _aConstantValue;
+        public double AConstantValue
         {
             get { return _aConstantValue; }
             set { _aConstantValue = value; }
@@ -56,8 +73,8 @@ namespace BenMAP
             set { _aConstantName = value; }
         }
 
-        private float _bConstantValue;
-        public float BConstantValue
+        private double _bConstantValue;
+        public double BConstantValue
         {
             get { return _bConstantValue; }
             set { _bConstantValue = value; }
@@ -70,8 +87,8 @@ namespace BenMAP
             set { _bConstantName = value; }
         }
 
-        private float _cConstantValue;
-        public float CConstantValue
+        private double _cConstantValue;
+        public double CConstantValue
         {
             get { return _cConstantValue; }
             set { _cConstantValue = value; }

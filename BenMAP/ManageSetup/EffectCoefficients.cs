@@ -12,17 +12,24 @@ namespace BenMAP
     public partial class EffectCoefficients : FormBase
     {
         private int selected;
-        private string betaVariation;
-        private string modelSpec;
-        private List<CRFVariable> effVarList;
-        public EffectCoefficients(string modelSelected, string betaVarSelected, List<CRFVariable> varList, int selectSent)
+        private int selectedSeason;
+        private int saveMessageShown;
+        private int cancelMessageShown;
+
+        private HealthImpact _hif;
+        public HealthImpact HIF
+        {
+            get { return _hif; }
+            set { _hif = value; }
+        }
+
+        public EffectCoefficients(HealthImpact hif, int sel)
         {
             InitializeComponent();
-            betaVariation = betaVarSelected;
-            effVarList = new List<CRFVariable>();
-            effVarList.AddRange(varList);
-            selected = selectSent;
-            modelSpec = modelSelected;
+            _hif = hif.DeepCopy();
+            selected = sel;
+            saveMessageShown = 0;
+            cancelMessageShown = 0;
         }
 
         // Some of these fields will be filled dynamically
@@ -31,10 +38,10 @@ namespace BenMAP
         {
             try
             {
-                CRFVariable selectedVariable = effVarList.ElementAt(selected);
+                CRFVariable selectedVariable = _hif.PollVariables.ElementAt(selected);
                 txtVariable.Text = selectedVariable.VariableName;
                 txtPollutant.Text = selectedVariable.PollutantName;
-                txtModelSpec.Text = modelSpec;
+                txtModelSpec.Text = _hif.ModelSpec;
 
                 cboBetaDistribution.Items.Add("None");
                 cboBetaDistribution.Items.Add("Normal");
@@ -53,11 +60,12 @@ namespace BenMAP
                 cboBetaDistribution.Items.Add("Cauchy");
                 cboBetaDistribution.Items.Add("Custom");
 
-                if (betaVariation == "Full Year")
+                if (_hif.BetaVariation == "Full Year")
                 {
                     txtSeasMetric.Text = "None";
                     cboSeason.Items.Add("Full Year");
                     cboSeason.SelectedIndex = 0;
+                    selectedSeason = cboSeason.SelectedIndex;
                     showForSeasonal.Visible = false;
                     panel2.Visible = true;
                     panel1.Visible = true;
@@ -70,13 +78,18 @@ namespace BenMAP
                     // Will be added from database
                     cboSeason.Items.Add("Season 1");
                     cboSeason.SelectedIndex = 0;
+                    selectedSeason = cboSeason.SelectedIndex;
                     showForSeasonal.Visible = true;
                     panel2.Visible = false;
                     panel1.Visible = true;
                 }
 
+
                 cboBetaDistribution.SelectedValueChanged -= cboBetaDistribution_SelectedValueChanged;
                 cboBetaDistribution.SelectedValueChanged += cboBetaDistribution_SelectedValueChanged;
+
+                cboSeason.SelectedIndexChanged -= cboSeason_SelectedValueChanged;
+                cboSeason.SelectedIndexChanged += cboSeason_SelectedValueChanged;
             }
             catch (Exception ex)
             {
@@ -86,31 +99,139 @@ namespace BenMAP
 
         private void nextBtn_Click(object sender, EventArgs e)
         {
-            if (selected + 1 > effVarList.Count() - 1) { selected = 0; }
+            if(saveMessageShown == 0)
+            {
+                MessageBox.Show("Clicking Previous, Next, or OK will save any changes made to the current variable in the list.");
+                saveMessageShown = 1;
+                return;
+            }
+
+            saveCurrent(cboSeason.SelectedIndex);
+
+            // Set form for next 
+            if (selected + 1 > _hif.PollVariables.Count() - 1) { selected = 0; }
             else { selected++; }
-            CRFVariable selectedVariable = effVarList.ElementAt(selected);
-            txtVariable.Text = selectedVariable.VariableName;
-            txtPollutant.Text = selectedVariable.PollutantName;
-            txtModelSpec.Text = modelSpec;
+
+            loadVariable();
         }
 
         private void prevBtn_Click(object sender, EventArgs e)
         {
-            if (selected - 1 < 0) selected = effVarList.Count() - 1;
+            if (saveMessageShown == 0)
+            {
+                MessageBox.Show("Clicking Previous, Next, or OK will save any changes made to the current variable in the list.");
+                saveMessageShown = 1;
+                return;
+            }
+
+            saveCurrent(cboSeason.SelectedIndex);
+
+            // Set form for previous
+            if (selected - 1 < 0) selected = _hif.PollVariables.Count() - 1;
             else { selected--; }
-            CRFVariable selectedVariable = effVarList.ElementAt(selected);
-            txtVariable.Text = selectedVariable.VariableName;
-            txtPollutant.Text = selectedVariable.PollutantName;
-            txtModelSpec.Text = modelSpec;
+
+            loadVariable();
         }
 
         private void btnOK_Click(object sender, EventArgs e)
         {
+            if (saveMessageShown == 0)
+            {
+                MessageBox.Show("Clicking Previous, Next, or OK will save any changes made to the current variable in the list.");
+                saveMessageShown = 1;
+                return;
+            }
+
+            saveCurrent(cboSeason.SelectedIndex);
             this.DialogResult = DialogResult.OK;
+        }
+
+        private void saveCurrent(int seasonInd)
+        {
+            if (txtBeta.Text == string.Empty)
+            {
+                MessageBox.Show("'Beta' can not be null. Please input a valid value.");
+                return;
+            }
+
+            if(txtAconstantValue.Text == string.Empty)
+            {
+                MessageBox.Show("'A' can not be null. Please input a valid value.");
+                return;
+            }
+
+            if (txtBconstantValue.Text == string.Empty)
+            {
+                MessageBox.Show("'B' can not be null. Please input a valid value.");
+                return;
+            }
+
+            if (txtCconstantValue.Text == string.Empty)
+            {
+                MessageBox.Show("'C' can not be null. Please input a valid value.");
+                return;
+            }
+
+            if (txtBetaParameter1.Visible && txtBetaParameter2.Visible)
+            {
+                if(txtBetaParameter1.Text == string.Empty)
+                {
+                    MessageBox.Show("'Beta Parameter 1' can not be null. Please input a valid value.");
+                    return;
+                }
+
+                if (txtBetaParameter2.Text == string.Empty)
+                {
+                    MessageBox.Show("'Beta Parameter 2' can not be null. Please input a valid value.");
+                    return;
+                }
+
+                _hif.PollVariables.ElementAt(selected).PollBetas[seasonInd].P1Beta = Convert.ToDouble(txtBetaParameter1.Text);
+                _hif.PollVariables.ElementAt(selected).PollBetas[seasonInd].P2Beta = Convert.ToDouble(txtBetaParameter2.Text);
+            }
+
+            _hif.PollVariables.ElementAt(selected).PollBetas[seasonInd].Beta = Convert.ToDouble(txtBeta.Text);
+            _hif.PollVariables.ElementAt(selected).PollBetas[seasonInd].AConstantName = txtAconstantDescription.Text.ToString();
+            _hif.PollVariables.ElementAt(selected).PollBetas[seasonInd].BConstantName = txtBconstantDescription.Text.ToString();
+            _hif.PollVariables.ElementAt(selected).PollBetas[seasonInd].CConstantName = txtCconstantDescription.Text.ToString();
+            _hif.PollVariables.ElementAt(selected).PollBetas[seasonInd].AConstantValue = Convert.ToDouble(txtAconstantValue.Text);
+            _hif.PollVariables.ElementAt(selected).PollBetas[seasonInd].BConstantValue = Convert.ToDouble(txtBconstantValue.Text);
+            _hif.PollVariables.ElementAt(selected).PollBetas[seasonInd].CConstantValue = Convert.ToDouble(txtCconstantValue.Text);
+            _hif.PollVariables.ElementAt(selected).PollBetas[seasonInd].Distribution = cboBetaDistribution.Text.ToString();
+        }
+
+        private void loadVariable()
+        {
+            CRFVariable selectedVariable = _hif.PollVariables.ElementAt(selected);
+            txtVariable.Text = selectedVariable.VariableName;
+            txtPollutant.Text = selectedVariable.PollutantName;
+            txtModelSpec.Text = _hif.ModelSpec;
+            txtAconstantDescription.Text = selectedVariable.PollBetas[selectedSeason].AConstantName;
+            txtBconstantDescription.Text = selectedVariable.PollBetas[selectedSeason].BConstantName;
+            txtCconstantDescription.Text = selectedVariable.PollBetas[selectedSeason].CConstantName;
+            txtAconstantValue.Text = selectedVariable.PollBetas[selectedSeason].AConstantValue.ToString();
+            txtBconstantValue.Text = selectedVariable.PollBetas[selectedSeason].BConstantValue.ToString();
+            txtCconstantValue.Text = selectedVariable.PollBetas[selectedSeason].CConstantValue.ToString();
+            txtBeta.Text = selectedVariable.PollBetas[selectedSeason].Beta.ToString();
+
+            if (txtBetaParameter1.Visible && txtBetaParameter2.Visible)
+            {
+                txtBetaParameter1.Text = selectedVariable.PollBetas[selectedSeason].P1Beta.ToString();
+                txtBetaParameter2.Text = selectedVariable.PollBetas[selectedSeason].P2Beta.ToString();
+            }
+
+                cboSeason.SelectedIndex = 0;
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
         {
+            if(cancelMessageShown == 0)
+            {
+                MessageBox.Show("Pressing cancel will discard the changes on the current variable. Changes made on other variable values will still be saved.");
+                cancelMessageShown = 1;
+                return;
+            }
+           
             this.DialogResult = DialogResult.Cancel;
         }
 
@@ -118,6 +239,14 @@ namespace BenMAP
         {
             VarianceMulti form = new VarianceMulti();
             DialogResult res = form.ShowDialog();
+        }
+
+        private void cboSeason_SelectedValueChanged(object sender, EventArgs e)
+        {
+            saveCurrent(selectedSeason);
+            loadVariable();
+
+            selectedSeason = cboSeason.SelectedIndex;
         }
 
         // From HealthImpactFunctionDefinition.cs 

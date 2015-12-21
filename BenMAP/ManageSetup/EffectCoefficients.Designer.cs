@@ -575,6 +575,7 @@
             this.cboSeason.Name = "cboSeason";
             this.cboSeason.Size = new System.Drawing.Size(131, 22);
             this.cboSeason.TabIndex = 58;
+            //this.cboSeason.SelectedIndexChanged += new System.EventHandler(this.cboSeason_SelectedValueChanged);
             // 
             // EffectCoefficients
             // 

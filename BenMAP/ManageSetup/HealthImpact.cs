@@ -2,11 +2,68 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
 
 namespace BenMAP
 {
     public class HealthImpact
     {
+        public HealthImpact DeepCopy()
+        {
+            HealthImpact newCopy = new HealthImpact();
+            newCopy.AConstantDescription = String.Copy(this.AConstantDescription);
+            newCopy.AConstantValue = String.Copy(this.AConstantValue);
+            newCopy.Author = String.Copy(this.Author);
+            newCopy.BaselineIncidenceFunction = String.Copy(this.BaselineIncidenceFunction);
+            newCopy.BConstantDescription = String.Copy(this.BConstantDescription);
+            newCopy.BConstantValue = String.Copy(this.BConstantValue);
+            newCopy.Beta = String.Copy(this.Beta);
+            newCopy.BetaDistribution = String.Copy(this.BetaDistribution);
+            newCopy.BetaParameter1 = String.Copy(this.BetaParameter1);
+            newCopy.BetaParameter2 = String.Copy(this.BetaParameter2);
+            newCopy.BetaVariation = String.Copy(this.BetaVariation);
+            newCopy.CConstantDescription = String.Copy(this.CConstantDescription);
+            newCopy.CConstantValue = String.Copy(this.CConstantValue);
+            newCopy.EndAge = String.Copy(this.EndAge);
+            newCopy.Endpoint = String.Copy(this.EndpointGroup);
+            newCopy.Endpoint = String.Copy(this.Endpoint);
+            newCopy.Ethnicity = String.Copy(this.Ethnicity);
+            newCopy.Function = String.Copy(this.Function);
+            newCopy.Gender = String.Copy(this.Gender);
+            newCopy.Incidence = String.Copy(this.Incidence);
+            newCopy.Location = String.Copy(this.Location);
+            newCopy.LocationName = String.Copy(this.LocationName);
+            newCopy.Metric = String.Copy(this.Metric);
+            newCopy.MetricStatistis = String.Copy(this.MetricStatistis);
+            newCopy.ModelSpec = String.Copy(this.ModelSpec);
+            newCopy.OtherPollutant = String.Copy(this.OtherPollutant);
+            newCopy.Pollutant = String.Copy(this.Pollutant);
+            newCopy.PollVariables = new List<CRFVariable>();
+            newCopy.PollVariables.AddRange(this.PollVariables);
+            newCopy.Prevalence = String.Copy(this.Prevalence);
+            newCopy.Qualifier = String.Copy(this.Qualifier);
+            newCopy.Race = String.Copy(this.Race);
+            newCopy.Reference = String.Copy(this.Reference);
+            newCopy.SeasonalMetric = String.Copy(this.SeasonalMetric);
+            newCopy.StartAge = String.Copy(this.StartAge);
+            newCopy.Variable = String.Copy(this.Variable);
+            newCopy.Year = String.Copy(this.Year);
+
+            int i = 0;
+            foreach (var pv in newCopy.PollVariables)
+            {
+                if (pv.PollBetas == null)
+                {
+                    pv.PollBetas = new List<CRFBeta>();
+                    if (this.PollVariables[i].PollBetas == null) { pv.PollBetas.Add(new CRFBeta()); }
+                    else { pv.PollBetas.AddRange(this.PollVariables[i].PollBetas); }
+                }
+                i++;
+            }
+
+            return this;
+        }
 
         private string _endpointGroup;
         public string EndpointGroup
@@ -243,6 +300,12 @@ namespace BenMAP
             set { _pollVariables = value; }
         }
 
+        private string _modelSpec;
+        public string ModelSpec
+        {
+            get { return _modelSpec; }
+            set { _modelSpec = value; }
+        }
         private string _betaVariation;
         public string BetaVariation
         {

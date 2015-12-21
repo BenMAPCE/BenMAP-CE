@@ -27,7 +27,6 @@ namespace BenMAP
         }
 
         private string _dataName;
-        private string _betaVar;
 
         private HealthImpact _healthImpacts;
         public HealthImpact HealthImpacts
@@ -42,31 +41,28 @@ namespace BenMAP
             set { _listCustom = value; }
         }
 
-        private List<CRFVariable> _pollVarList;
-        public List<CRFVariable> PollVarList
-        {
-            get { return _pollVarList; }
-            set { _pollVarList = value; }
-        }
-
         public HIFDefinitionMulti()
         {
             InitializeComponent();
             _dataName = string.Empty;
-            _betaVar = string.Empty;
             _healthImpacts = new HealthImpact();
-            _pollVarList = new List<CRFVariable>();
+            if (_healthImpacts.PollVariables == null) _healthImpacts.PollVariables = new List<CRFVariable>();
+            foreach (var poll in _healthImpacts.PollVariables)
+            {
+                if (poll.PollBetas == null)
+                {
+                    poll.PollBetas = new List<CRFBeta>();
+                    poll.PollBetas.Add(new CRFBeta());
+                }
+            }
         }
 
         public HIFDefinitionMulti(string dataName, HealthImpact healthImpact, List<double> listValue)
         {
             InitializeComponent();
-            _healthImpacts = healthImpact;
+            _healthImpacts = healthImpact.DeepCopy();
             _dataName = dataName;
-            _betaVar = healthImpact.BetaVariation;
             _listCustom = listValue;
-            if (healthImpact.PollVariables.Count > 0) _pollVarList = healthImpact.PollVariables;
-            else _pollVarList = new List<CRFVariable>();
         }
 
         private void btnOK_Click(object sender, EventArgs e)
@@ -207,41 +203,12 @@ namespace BenMAP
                     return;
                 }
 
-                /* if (txtBetaParameter1.Text == string.Empty)
-                {
-                    MessageBox.Show("'Beta Parameter 1' can not be null. Please input a valid value.");
-                    return;
-                }
-                if (txtBetaParameter2.Text == string.Empty)
-                {
-                    MessageBox.Show("'Beta Parameter 2' can not be null. Please input a valid value.");
-                    return;
-                }
-                if (txtBeta.Text == string.Empty)
-                {
-                    MessageBox.Show("'Beta' can not be null. Please input a valid value.");
-                    return;
-                }
-                if (txtCconstantValue.Text == string.Empty)
-                {
-                    MessageBox.Show("'C' can not be null. Please input a valid value.");
-                    return;
-                }
-                if (txtBconstantValue.Text == string.Empty)
-                {
-                    MessageBox.Show("'B' can not be null. Please input a valid value.");
-                    return;
-                }*/
                 if (nudownStartAge.Value > nudownEndAge.Value)
                 {
                     MessageBox.Show("The end age must be higher than start age.");
                     return;
                 }
-                /* if (txtAconstantValue.Text == string.Empty)
-                {
-                    MessageBox.Show("'A' can not be null. Please input a valid value.");
-                    return;
-                }*/
+
                 _healthImpacts.EndpointGroup = cboEndpointGroup.Text;
                 _healthImpacts.Endpoint = cboEndpoint.Text;
                 _healthImpacts.Pollutant = cboPollutant.Text;
@@ -262,22 +229,10 @@ namespace BenMAP
                 _healthImpacts.Reference = txtReference.Text;
                 _healthImpacts.Function = txtFunction.Text;
                 _healthImpacts.BaselineIncidenceFunction = txtBaselineIncidenceFunction.Text;
-                /*  _healthImpacts.BetaDistribution = cboBetaDistribution.Text;
-                 _healthImpacts.Beta = txtBeta.Text;
-                 _healthImpacts.BetaParameter1 = txtBetaParameter1.Text;
-                 _healthImpacts.BetaParameter2 = txtBetaParameter2.Text;
-                 _healthImpacts.AConstantDescription = txtAconstantDescription.Text;
-                 _healthImpacts.AConstantValue = txtAconstantValue.Text;
-                 _healthImpacts.BConstantDescription = txtBconstantDescription.Text;
-                 _healthImpacts.BConstantValue = txtBconstantValue.Text;
-                 _healthImpacts.CConstantDescription = txtCconstantDescription.Text;
-                 _healthImpacts.CConstantValue = txtCconstantValue.Text; */
                 _healthImpacts.Incidence = cboIncidenceDataSet.Text;
                 _healthImpacts.Prevalence = cboPrevalenceDataSet.Text;
                 _healthImpacts.Variable = cboVariableDataSet.Text;
-                _healthImpacts.PollVariables = _pollVarList;
-                _healthImpacts.BetaVariation = _betaVar;
-                _listCustom = list;
+                // _listCustom = list;
                 this.DialogResult = DialogResult.OK;
 
             }
@@ -303,22 +258,6 @@ namespace BenMAP
                 {
 
                     BindItems();
-                    /* cboBetaDistribution.Items.Add("None");
-                    cboBetaDistribution.Items.Add("Normal");
-                    cboBetaDistribution.Items.Add("Triangular");
-                    cboBetaDistribution.Items.Add("Poisson");
-                    cboBetaDistribution.Items.Add("Binomial");
-                    cboBetaDistribution.Items.Add("LogNormal");
-                    cboBetaDistribution.Items.Add("Uniform");
-                    cboBetaDistribution.Items.Add("Exponential");
-                    cboBetaDistribution.Items.Add("Geometric");
-                    cboBetaDistribution.Items.Add("Weibull");
-                    cboBetaDistribution.Items.Add("Gamma");
-                    cboBetaDistribution.Items.Add("Logistic");
-                    cboBetaDistribution.Items.Add("Beta");
-                    cboBetaDistribution.Items.Add("Pareto");
-                    cboBetaDistribution.Items.Add("Cauchy");
-                    cboBetaDistribution.Items.Add("Custom"); */
                     cboEndpointGroup.Text = _healthImpacts.EndpointGroup;
                     cboEndpoint.Text = _healthImpacts.Endpoint;
                     cboPollutant.Text = _healthImpacts.Pollutant;
@@ -339,45 +278,16 @@ namespace BenMAP
                     txtReference.Text = _healthImpacts.Reference;
                     txtFunction.Text = _healthImpacts.Function;
                     txtBaselineIncidenceFunction.Text = _healthImpacts.BaselineIncidenceFunction;
-                    /* cboBetaDistribution.Text = _healthImpacts.BetaDistribution;
-                    txtBeta.Text = _healthImpacts.Beta;
-                    txtBetaParameter1.Text = _healthImpacts.BetaParameter1;
-                    txtBetaParameter2.Text = _healthImpacts.BetaParameter2;
-                    txtCconstantValue.Text = _healthImpacts.CConstantValue;
-                    txtCconstantDescription.Text = _healthImpacts.CConstantDescription;
-                    txtBconstantValue.Text = _healthImpacts.BConstantValue;
-                    txtBconstantDescription.Text = _healthImpacts.BConstantDescription;
-                    txtAconstantValue.Text = _healthImpacts.AConstantValue;
-                    txtAconstantDescription.Text = _healthImpacts.AConstantDescription; */
                     cboIncidenceDataSet.Text = _healthImpacts.Incidence;
                     cboPrevalenceDataSet.Text = _healthImpacts.Prevalence;
                     cboVariableDataSet.Text = _healthImpacts.Variable;
-                    list = listCustom;
+                    // list = listCustom;
                 }
                 else
                 {
                     BindItems();
-                    /* cboBetaDistribution.Items.Add("None");
-                    cboBetaDistribution.Items.Add("Normal");
-                    cboBetaDistribution.Items.Add("Triangular");
-                    cboBetaDistribution.Items.Add("Poisson");
-                    cboBetaDistribution.Items.Add("Binomial");
-                    cboBetaDistribution.Items.Add("LogNormal");
-                    cboBetaDistribution.Items.Add("Uniform");
-                    cboBetaDistribution.Items.Add("Exponential");
-                    cboBetaDistribution.Items.Add("Geometric");
-                    cboBetaDistribution.Items.Add("Weibull");
-                    cboBetaDistribution.Items.Add("Gamma");
-                    cboBetaDistribution.Items.Add("Logistic");
-                    cboBetaDistribution.Items.Add("Beta");
-                    cboBetaDistribution.Items.Add("Pareto");
-                    cboBetaDistribution.Items.Add("Cauchy");
-                    cboBetaDistribution.Items.Add("Custom");
-                    cboBetaDistribution.SelectedIndex = 0; */
 
                 }
-                // cboBetaDistribution.SelectedValueChanged -= cboBetaDistribution_SelectedValueChanged;
-                // cboBetaDistribution.SelectedValueChanged += cboBetaDistribution_SelectedValueChanged;
             }
             catch (Exception ex)
             {
@@ -473,7 +383,6 @@ namespace BenMAP
                 cboLocationName.DataSource = ds.Tables[0];
                 cboLocationName.DisplayMember = "LocationTypeName";
                 cboLocationName.SelectedIndex = -1;
-                if (_betaVar == "") _betaVar = "Full Year";
             }
             catch (Exception ex)
             {
@@ -534,7 +443,8 @@ namespace BenMAP
                 string varName = string.Empty;
                 varList.Invalidate();
                 varList.Items.Clear();
-                _pollVarList.Clear();
+                _healthImpacts.PollVariables.Clear();
+                _healthImpacts.PollVariables = new List<CRFVariable>();
 
                 if (cboModelSpec.Text.Contains("first order")) isFirstOrder = true;
                 List<string> firstOrder = new List<string>();
@@ -548,7 +458,7 @@ namespace BenMAP
                 {
                     varName = string.Format("P{0}", i);
                     varList.Items.Add(varName).SubItems.Add(dr["POLLUTANTNAME"].ToString());
-                    _pollVarList.Add(new CRFVariable(varName, dr["POLLUTANTNAME"].ToString(), Convert.ToInt32(dr["POLLUTANTID"])));
+                    _healthImpacts.PollVariables.Add(new CRFVariable(varName, dr["POLLUTANTNAME"].ToString(), Convert.ToInt32(dr["POLLUTANTID"])));
                     if (isFirstOrder) firstOrder.Add(dr["POLLUTANTNAME"].ToString());
                     i++;
                 }
@@ -569,8 +479,17 @@ namespace BenMAP
                     {
                         varName = string.Format("P{0}", i);
                         varList.Items.Add(varName).SubItems.Add(toAdd);
-                        _pollVarList.Add(new CRFVariable(varName, toAdd, -1));
+                        _healthImpacts.PollVariables.Add(new CRFVariable(varName, toAdd, -1));
                         i++;
+                    }
+                }
+
+                foreach (var poll in _healthImpacts.PollVariables)
+                {
+                    if (poll.PollBetas == null)
+                    {
+                        poll.PollBetas = new List<CRFBeta>();
+                        poll.PollBetas.Add(new CRFBeta());
                     }
                 }
 
@@ -911,54 +830,6 @@ namespace BenMAP
             txtBaselineIncidenceFunction.SelectionStart = txtBaselineIncidenceFunction.Text.Length;
         }
 
-        public List<double> list = new List<double>();
-        /* private void cboBetaDistribution_SelectedValueChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                HealthImpact healthImpactValues = new HealthImpact();
-                healthImpactValues.BetaDistribution = cboBetaDistribution.SelectedItem.ToString();
-                healthImpactValues.Beta = txtBeta.Text;
-                healthImpactValues.BetaParameter1 = txtBetaParameter1.Text;
-                healthImpactValues.BetaParameter2 = txtBetaParameter2.Text;
-                if (cboBetaDistribution.SelectedItem == "None") { return; }
-                if (cboBetaDistribution.SelectedItem == "Custom")
-                {
-                    if (list.Count == 0)
-                    {
-                        CustomDistributionEntries frm = new CustomDistributionEntries();
-                        DialogResult rtn = frm.ShowDialog();
-                        if (rtn != DialogResult.OK) { return; }
-                        list = frm.list;
-                    }
-                    else
-                    {
-                        CustomDistributionEntries frmCustom = new CustomDistributionEntries(list);
-                        DialogResult rtnCustom = frmCustom.ShowDialog();
-                        if (rtnCustom != DialogResult.OK) { return; }
-                        list = frmCustom.list;
-                    }
-                }
-                else
-                {
-                    EditDistributionValues frm = new EditDistributionValues(cboBetaDistribution.SelectedItem.ToString(), healthImpactValues);
-                    DialogResult rtn = frm.ShowDialog();
-                    if (rtn != DialogResult.OK) { return; }
-                    txtBeta.Text = frm.MeanValue;
-                    txtBetaParameter1.Text = frm.Parameter1;
-                    txtBetaParameter2.Text = frm.Parameter2;
-                    if (cboBetaDistribution.SelectedItem == "Normal" || cboBetaDistribution.SelectedItem == "Poisson" || cboBetaDistribution.SelectedItem == "Exponential" || cboBetaDistribution.SelectedItem == "Geometric")
-                    {
-                        txtBetaParameter2.Text = healthImpactValues.BetaParameter2;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex);
-            }
-
-        } */
 
         private void cboEndpointGroup_SelectedValueChanged_1(object sender, EventArgs e)
         {
@@ -993,13 +864,32 @@ namespace BenMAP
         {
             try
             {
+                // Set index for list if there is a variable selected or show first variable otherwise
                 int selectedVar = 0;
                 if (varList.SelectedItems.Count != 0) selectedVar = varList.SelectedItems[0].Index;
 
+                // Make sure object is updated
+                if (_healthImpacts.BetaVariation == "") betaVarGroup_SelectedValueChanged(sender, e);
                 DataRowView selectedModel = (DataRowView)cboModelSpec.SelectedItem;
+                _healthImpacts.ModelSpec = selectedModel[0].ToString();
 
-                EffectCoefficients form = new EffectCoefficients(selectedModel[0].ToString(), _betaVar, _pollVarList, selectedVar);
+                // Make copy of HIF to pass to new form
+                HealthImpact hifPass = new HealthImpact();
+                hifPass = HealthImpacts.DeepCopy();
+
+                EffectCoefficients form = new EffectCoefficients(hifPass, selectedVar);
                 DialogResult res = form.ShowDialog();
+
+                if (res != DialogResult.OK) return;
+
+                // If user clicked OK, update object with beta values from Effect Coefficients form
+                int i = 0;
+                foreach (var pv in _healthImpacts.PollVariables)
+                {
+                    if (pv.PollBetas == null) pv.PollBetas = new List<CRFBeta>();
+                    pv.PollBetas.AddRange(form.HIF.PollVariables[i].PollBetas);
+                    i++;
+                }
             }
 
             catch (Exception ex)
@@ -1012,8 +902,10 @@ namespace BenMAP
         {
             try
             {
-                if (bvFullYear.Checked) _betaVar = "Full Year";
-                else _betaVar = "Seasonal";
+                /* Once betas are in database, list of CRFBetas will be updated here
+                   based on the toggle to reflect full year or seasons */
+                if (bvFullYear.Checked) _healthImpacts.BetaVariation = "Full Year";
+                else _healthImpacts.BetaVariation = "Seasonal";
             }
             catch (Exception ex)
             {
