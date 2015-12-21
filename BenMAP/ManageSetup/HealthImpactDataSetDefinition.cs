@@ -1368,8 +1368,18 @@ namespace BenMAP
                 healthImpact.Incidence = olvColumn30.GetValue(olvFunction.SelectedObject).ToString();
                 healthImpact.Prevalence = olvColumn31.GetValue(olvFunction.SelectedObject).ToString();
                 healthImpact.Variable = olvColumn32.GetValue(olvFunction.SelectedObject).ToString();
+
                 healthImpact.PollVariables = new List<CRFVariable>();
                 healthImpact.BetaVariation = string.Empty;
+                healthImpact.ModelSpec = string.Empty;
+                foreach(var poll in healthImpact.PollVariables)
+                {
+                    if(poll.PollBetas == null)
+                    {
+                        poll.PollBetas = new List<CRFBeta>();
+                        poll.PollBetas.Add(new CRFBeta());
+                    }
+                }
 
                 if (olvColumn21.GetValue(olvFunction.SelectedObject).ToString() == "Custom" && Convert.ToInt32(olvColumn33.GetValue(olvFunction.SelectedObject).ToString()) > 0)
                 {
