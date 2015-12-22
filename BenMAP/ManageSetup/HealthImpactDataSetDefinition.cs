@@ -614,11 +614,8 @@ namespace BenMAP
                         dicLocationTypeID.Add(drLocationType["LOWER"].ToString(), drLocationType["LocationTypeID"].ToString());
                     }
 
-                    //for (int i = 0; i < dtForLoading.Rows.Count; i++)
                     for (int i = 0; i < _dt.Rows.Count; i++)
                         {
-
-                        //DataRow dr = dtForLoading.Rows[i];
                         DataRow dr = _dt.Rows[i];
                         commandText = "select endpointGroupID from EndpointGroups where LOWER(EndpointGroupName)='" + dr[0].ToString().ToLower() + "' ";
                         obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
@@ -633,8 +630,6 @@ namespace BenMAP
 
                     }
 
-
-                    //int dgvRowCount = dtForLoading.Rows.Count;
                     int dgvRowCount = _dt.Rows.Count;
                     string undefinePollutant = "";
                     for (int row = 0; row < dgvRowCount; row++)
@@ -644,41 +639,33 @@ namespace BenMAP
                         obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
                         int CRFunctionID = int.Parse(obj.ToString()) + 1;
 
-                        // int EndpointGroupID = dicEndpointGroup[dtForLoading.Rows[row][0].ToString().ToLower()];
                         int EndpointGroupID = dicEndpointGroup[_dt.Rows[row][0].ToString().ToLower()];
 
-                        //commandText = string.Format("select EndpointID from Endpoints where Replace(LOWER(EndpointName),' ','')='{0}' and EndpointGroupID={1}", dtForLoading.Rows[row][1].ToString().ToLower().Replace(" ", ""), dicEndpointGroup[dtForLoading.Rows[row][0].ToString().ToLower()]);
-                        //commandText = string.Format("select EndpointID from Endpoints where Replace(LOWER(EndpointName),' ','')='{0}' and EndpointGroupID={1}", dtForLoading.Rows[row][1].ToString().ToLower().Replace(" ", ""), dicEndpointGroup[dtForLoading.Rows[row][0].ToString().ToLower()]);
                         commandText = string.Format("select EndpointID from Endpoints where Replace(LOWER(EndpointName),' ','')='{0}' and EndpointGroupID={1}", _dt.Rows[row][1].ToString().ToLower().Replace(" ", ""), dicEndpointGroup[_dt.Rows[row][0].ToString().ToLower()]);
                         obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
                         if (obj == null)
                         {
                             commandText = "select max(EndPointID) from EndPoints";
                             obj = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
-                            //commandText = string.Format("insert into Endpoints values ({0},{1},'{2}')", obj, dicEndpointGroup[dtForLoading.Rows[row][0].ToString().ToLower()], dtForLoading.Rows[row][1].ToString());
-                            //commandText = string.Format("insert into Endpoints values ({0},{1},'{2}')", obj, dicEndpointGroup[dtForLoading.Rows[row][0].ToString().ToLower()], dtForLoading.Rows[row][1].ToString());
                             commandText = string.Format("insert into Endpoints values ({0},{1},'{2}')", obj, dicEndpointGroup[_dt.Rows[row][0].ToString().ToLower()], _dt.Rows[row][1].ToString());
                             fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                         }
                         int EndpointID = int.Parse(obj.ToString());
-                        //if (!dicPollutant.ContainsKey(dtForLoading.Rows[row][2].ToString().ToLower()))
+
                         if (!dicPollutant.ContainsKey(_dt.Rows[row][2].ToString().ToLower()))
                         {
-                            //if (!undefinePollutant.Contains(dtForLoading.Rows[row][2].ToString()))
                             if (!undefinePollutant.Contains(_dt.Rows[row][2].ToString()))
                             {
-                                //undefinePollutant += "'" + dtForLoading.Rows[row][2].ToString() + "', ";
                                 undefinePollutant += "'" + _dt.Rows[row][2].ToString() + "', ";
                             }
                             continue;
                         }
-                        //int PollutantID = dicPollutant[dtForLoading.Rows[row][2].ToString().ToLower()];
+
                         int PollutantID = dicPollutant[_dt.Rows[row][2].ToString().ToLower()];
                         int FunctionID = 0;
-                        //if (dicFunction.ContainsKey(dtForLoading.Rows[row][18].ToString()))
+
                         if (dicFunction.ContainsKey(_dt.Rows[row][18].ToString()))
                         {
-                            //FunctionID = dicFunction[dtForLoading.Rows[row][18].ToString()];
                             FunctionID = dicFunction[_dt.Rows[row][18].ToString()];
                         }
                         else
@@ -686,15 +673,13 @@ namespace BenMAP
                             commandText = string.Format("select max(FUNCTIONALFORMID) from FUNCTIONALFORMS");
                             obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
                             FunctionID = int.Parse(obj.ToString()) + 1;
-                            //commandText = string.Format("insert into FUNCTIONALFORMS values ({0},'{1}')", FunctionID, dtForLoading.Rows[row][18].ToString());
                             commandText = string.Format("insert into FUNCTIONALFORMS values ({0},'{1}')", FunctionID, _dt.Rows[row][18].ToString());
                             rth = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                         }
                         int BaselineFunctionID = 0;
-                        //if (dicBaselineFuntion.ContainsKey(dtForLoading.Rows[row][19].ToString().ToLower()))
+
                         if (dicBaselineFuntion.ContainsKey(_dt.Rows[row][19].ToString().ToLower()))
                         {
-                            //BaselineFunctionID = dicBaselineFuntion[dtForLoading.Rows[row][19].ToString().ToLower()];
                             BaselineFunctionID = dicBaselineFuntion[_dt.Rows[row][19].ToString().ToLower()];
                         }
                         else
@@ -702,88 +687,81 @@ namespace BenMAP
                             commandText = string.Format("select max(FUNCTIONALFORMID) from BASELINEFUNCTIONALFORMS");
                             obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
                             BaselineFunctionID = int.Parse(obj.ToString()) + 1;
-                            //commandText = string.Format("insert into BASELINEFUNCTIONALFORMS values ({0},'{1}')", BaselineFunctionID, dtForLoading.Rows[row][19].ToString());
                             commandText = string.Format("insert into BASELINEFUNCTIONALFORMS values ({0},'{1}')", BaselineFunctionID, _dt.Rows[row][19].ToString());
                             rth = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                         }
-                        //commandText = string.Format("select MetricID from Metrics where PollutantID={0} and LOWER(MetricName)='{1}'", dicPollutant[dtForLoading.Rows[row][2].ToString().ToLower()], dtForLoading.Rows[row][3].ToString().ToLower());
+
                         commandText = string.Format("select MetricID from Metrics where PollutantID={0} and LOWER(MetricName)='{1}'", dicPollutant[_dt.Rows[row][2].ToString().ToLower()], _dt.Rows[row][3].ToString().ToLower());
                         obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
                         int MetricID = int.Parse(obj.ToString());
 
                         Dictionary<string, string> dicSeasonalMetric = new Dictionary<string, string>();
-                        //commandText = string.Format("select SeasonalMetricID,LOWER(SeasonalMetricName) from SeasonalMetrics where MetricID={0} and LOWER(SeasonalMetricName)='{1}'", MetricID, dtForLoading.Rows[row][4].ToString().ToLower());
                         commandText = string.Format("select SeasonalMetricID,LOWER(SeasonalMetricName) from SeasonalMetrics where MetricID={0} and LOWER(SeasonalMetricName)='{1}'", MetricID, _dt.Rows[row][4].ToString().ToLower());
                         DataSet dsSeasonMetric = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                         foreach (DataRow drSeasonMetric in dsSeasonMetric.Tables[0].Rows)
                         {
                             dicSeasonalMetric.Add(drSeasonMetric["LOWER"].ToString(), drSeasonMetric["SeasonalMetricID"].ToString());
                         }
+
                         string SeasonalMetricID = string.Empty;
-                        // if (dicSeasonalMetric.Keys.Contains(dtForLoading.Rows[row][4].ToString().ToLower()))
+
                         if (dicSeasonalMetric.Keys.Contains(_dt.Rows[row][4].ToString().ToLower()))
-                            //SeasonalMetricID = dicSeasonalMetric[dtForLoading.Rows[row][4].ToString().ToLower()].ToString();
                             SeasonalMetricID = dicSeasonalMetric[_dt.Rows[row][4].ToString().ToLower()].ToString();
                         else
                             SeasonalMetricID = "NULL";
 
                         string PrevalenceID = string.Empty;
-                        //if (dicPrevalence.Keys.Contains(dtForLoading.Rows[row][31].ToString().ToLower()))
+
                         if (dicPrevalence.Keys.Contains(_dt.Rows[row][31].ToString().ToLower()))
-                            //PrevalenceID = dicPrevalence[dtForLoading.Rows[row][31].ToString().ToLower()].ToString();
                             PrevalenceID = dicPrevalence[_dt.Rows[row][31].ToString().ToLower()].ToString();
                         else
                             PrevalenceID = "NULL";
 
                         string IncidenceID = string.Empty;
-                        //if (dicIncidence.Keys.Contains(dtForLoading.Rows[row][30].ToString().ToLower()))
+
                         if (dicIncidence.Keys.Contains(_dt.Rows[row][30].ToString().ToLower()))
-                            //IncidenceID = dicIncidence[dtForLoading.Rows[row][30].ToString().ToLower()].ToString();
                             IncidenceID = dicIncidence[_dt.Rows[row][30].ToString().ToLower()].ToString();
                         else IncidenceID = "NULL";
 
                         string VariableID = string.Empty;
-                        //if (dicVariable.Keys.Contains(dtForLoading.Rows[row][32].ToString().ToLower()))
+
                         if (dicVariable.Keys.Contains(_dt.Rows[row][32].ToString().ToLower()))
-                            //VariableID = dicVariable[dtForLoading.Rows[row][32].ToString().ToLower()].ToString();
                             VariableID = dicVariable[_dt.Rows[row][32].ToString().ToLower()].ToString();
                         else VariableID = "NULL";
 
                         string LocationtypeID = string.Empty;
-                        //if (dicLocationTypeID.Keys.Contains(dtForLoading.Rows[row][8].ToString().ToLower()))
+
                         if (dicLocationTypeID.Keys.Contains(_dt.Rows[row][8].ToString().ToLower()))
-                            //LocationtypeID = dicLocationTypeID[dtForLoading.Rows[row][8].ToString().ToLower()].ToString();
                             LocationtypeID = dicLocationTypeID[_dt.Rows[row][8].ToString().ToLower()].ToString();
                         else LocationtypeID = "NULL";
 
                         int MetricStatisticID = 0;
 
-                        //if (dtForLoading.Rows[row][5].ToString().Trim() == "None")
                         if (_dt.Rows[row][5].ToString().Trim() == "None")
                         {
                             MetricStatisticID = 0;
                         }
-                        //else if (dtForLoading.Rows[row][5].ToString().Trim() == "Mean")
+
                         else if (_dt.Rows[row][5].ToString().Trim() == "Mean")
                         {
                             MetricStatisticID = 1;
                         }
-                        //else if (dtForLoading.Rows[row][5].ToString().Trim() == "Median")
+
                         else if (_dt.Rows[row][5].ToString().Trim() == "Median")
                         {
                             MetricStatisticID = 2;
                         }
-                        //else if (dtForLoading.Rows[row][5].ToString().Trim() == "Max")
+
                         else if (_dt.Rows[row][5].ToString().Trim() == "Max")
                         {
                             MetricStatisticID = 3;
                         }
-                        //else if (dtForLoading.Rows[row][5].ToString().Trim() == "Min")
+
                         else if (_dt.Rows[row][5].ToString().Trim() == "Min")
                         {
                             MetricStatisticID = 4;
                         }
-                        //else if (dtForLoading.Rows[row][5].ToString().Trim() == "")
+
                         else if (_dt.Rows[row][5].ToString().Trim() == "")
                         {
                             MetricStatisticID = 0;
@@ -795,16 +773,6 @@ namespace BenMAP
                          // 2015 09 29 BENMAP-353                       
                         //_metadataObj = SQLStatementsCommonClass.getMetadata(_datasetID, CommonClass.ManageSetup.SetupID, HEALTHIMPACTDATASETID);
                         
-                        /*commandText = string.Format("insert into CRFunctions values({0},{1},{2},{3},{4},{5},{6},{7},'{8}',{9},'{10}','{11}','{12}','{13}','{14}','{15}'," +
-                                                    "{16},{17},{18},{19},{20},{21},{22},'{23}',{24},{25},{26},'{27}',{28},'{29}',{30},'{31}',{32},'{33}',{34},{35}, {36})",
-                                                    CRFunctionID, crFunctionDataSetID, EndpointGroupID, EndpointID, PollutantID, MetricID, SeasonalMetricID, MetricStatisticID,
-                                                    dtForLoading.Rows[row][6].ToString().Replace("'", "''"), Convert.ToInt16(dtForLoading.Rows[row][7].ToString()), dtForLoading.Rows[row][9].ToString().Replace("'", "''"),
-                                                    dtForLoading.Rows[row][10].ToString().Replace("'", "''"), dtForLoading.Rows[row][11].ToString().Replace("'", "''"), dtForLoading.Rows[row][12].ToString().Replace("'", "''"),
-                                                    dtForLoading.Rows[row][13].ToString().Replace("'", "''"), dtForLoading.Rows[row][15].ToString().Replace("'", "''"), dtForLoading.Rows[row][16], dtForLoading.Rows[row][17], FunctionID,
-                                                    IncidenceID, PrevalenceID, VariableID, dtForLoading.Rows[row][20], dtForLoading.Rows[row][21].ToString().Replace("'", "''"), dtForLoading.Rows[row][22], dtForLoading.Rows[row][23],
-                                                    dtForLoading.Rows[row][24], dtForLoading.Rows[row][25].ToString().Replace("'", "''"), dtForLoading.Rows[row][26], dtForLoading.Rows[row][27].ToString().Replace("'", "''"),
-                                                    dtForLoading.Rows[row][28], dtForLoading.Rows[row][29].ToString().Replace("'", "''"), BaselineFunctionID, dtForLoading.Rows[row][14].ToString().Replace("'", "''"), 0,
-                                                    LocationtypeID, _metadataObj.MetadataEntryId); */
                         commandText = string.Format("insert into CRFunctions values({0},{1},{2},{3},{4},{5},{6},{7},'{8}',{9},'{10}','{11}','{12}','{13}','{14}','{15}'," +
                                                     "{16},{17},{18},{19},{20},{21},{22},'{23}',{24},{25},{26},'{27}',{28},'{29}',{30},'{31}',{32},'{33}',{34},{35}, {36})",
                                                     CRFunctionID, crFunctionDataSetID, EndpointGroupID, EndpointID, PollutantID, MetricID, SeasonalMetricID, MetricStatisticID,
@@ -817,7 +785,7 @@ namespace BenMAP
                                                     LocationtypeID, _metadataObj.MetadataEntryId);
 
                         rth = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
-                        //if (dtForLoading.Rows[row][21].ToString() == "Custom" && dicCustomValue.ContainsKey(Convert.ToInt32(dtForLoading.Rows[row][33].ToString())) && dicCustomValue[Convert.ToInt32(dtForLoading.Rows[row][33].ToString())].Count > 0)
+
                         if (_dt.Rows[row][21].ToString() == "Custom" && dicCustomValue.ContainsKey(Convert.ToInt32(_dt.Rows[row][33].ToString())) && dicCustomValue[Convert.ToInt32(_dt.Rows[row][33].ToString())].Count > 0)
                             {
                             FirebirdSql.Data.FirebirdClient.FbCommand fbCommand = new FirebirdSql.Data.FirebirdClient.FbCommand();
@@ -828,9 +796,9 @@ namespace BenMAP
                             DataColumn dc = new DataColumn();
                             dc.ColumnName = "Value";
                             dtCustomValue.Columns.Add(dc);
-                            //foreach (double value in dicCustomValue[Convert.ToInt32(dtForLoading.Rows[row][33])])
+
                             foreach (double value in dicCustomValue[Convert.ToInt32(_dt.Rows[row][33])])
-                                {
+                            {
                                 DataRow dr = dtCustomValue.NewRow();
                                 dr["Value"] = value;
                                 dtCustomValue.Rows.Add(dr);
@@ -949,11 +917,9 @@ namespace BenMAP
                     {
                         dicLocationTypeID.Add(drLocationType["LOWER"].ToString(), drLocationType["LocationTypeID"].ToString());
                     }
-                    //object obj = null;
-                    //for (int m = 0; m < dtForLoading.Rows.Count; m++)
+
                     for (int m = 0; m < _dt.Rows.Count; m++)
                         {
-                            //DataRow dr = dtForLoading.Rows[m];
                             DataRow dr = _dt.Rows[m];
                             commandText = "select endpointGroupID from EndpointGroups where LOWER(EndpointGroupName)='" + dr[0].ToString().ToLower() + "' ";
                         obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
@@ -967,7 +933,7 @@ namespace BenMAP
                         }
 
                     }
-                    //int dgvRowCount = dtForLoading.Rows.Count;
+
                     int dgvRowCount = _dt.Rows.Count;
                     for (int row = 0; row < dgvRowCount; row++)
                     {
@@ -975,42 +941,35 @@ namespace BenMAP
                         commandText = string.Format("select max(CRFUNCTIONID) from CRFunctions");
                         obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
                         int CRFunctionID = int.Parse(obj.ToString()) + 1;
-                        //int EndpointGroupID = dicEndpointGroup[dtForLoading.Rows[row][0].ToString().ToLower()];
                         int EndpointGroupID = dicEndpointGroup[_dt.Rows[row][0].ToString().ToLower()];
 
-                        //commandText = string.Format("select EndpointID from Endpoints where Replace(LOWER(EndpointName),' ','')='{0}' and EndpointGroupID={1}", dtForLoading.Rows[row][1].ToString().ToLower().Replace(" ", ""), dicEndpointGroup[dtForLoading.Rows[row][0].ToString().ToLower()]);
                         commandText = string.Format("select EndpointID from Endpoints where Replace(LOWER(EndpointName),' ','')='{0}' and EndpointGroupID={1}", _dt.Rows[row][1].ToString().ToLower().Replace(" ", ""), dicEndpointGroup[_dt.Rows[row][0].ToString().ToLower()]);
                         obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
                         if (obj == null)
                         {
                             commandText = "select max(ENDPOINTID) from ENDPOINTS";
                             obj = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
-                            //commandText = string.Format("insert into Endpoints values ({0},{1},'{2}')", obj, dicEndpointGroup[dtForLoading.Rows[row][0].ToString().ToLower()], dtForLoading.Rows[row][1].ToString());
                             commandText = string.Format("insert into Endpoints values ({0},{1},'{2}')", obj, dicEndpointGroup[_dt.Rows[row][0].ToString().ToLower()], _dt.Rows[row][1].ToString());
                             fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                         }
                         int EndpointID = int.Parse(obj.ToString());
-                        //int PollutantID = dicPollutant[dtForLoading.Rows[row][2].ToString().ToLower()];
                         int PollutantID = dicPollutant[_dt.Rows[row][2].ToString().ToLower()];
                         int FunctionID = 0;
-                        //if (dicFunction.ContainsKey(dtForLoading.Rows[row][18].ToString()))
+
                         if (dicFunction.ContainsKey(_dt.Rows[row][18].ToString()))
-                        //{ FunctionID = dicFunction[dtForLoading.Rows[row][18].ToString()]; }
                         { FunctionID = dicFunction[_dt.Rows[row][18].ToString()]; }
                         else
                         {
                             commandText = string.Format("select max(FUNCTIONALFORMID) from FUNCTIONALFORMS");
                             obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
                             FunctionID = int.Parse(obj.ToString()) + 1;
-                            //commandText = string.Format("insert into FUNCTIONALFORMS values ({0},'{1}')", FunctionID, dtForLoading.Rows[row][18].ToString());
                             commandText = string.Format("insert into FUNCTIONALFORMS values ({0},'{1}')", FunctionID, _dt.Rows[row][18].ToString());
                             fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                         }
                         int BaselineFunctionID = 0;
-                        //if (dicBaselineFuntion.ContainsKey(dtForLoading.Rows[row][19].ToString().ToLower()))
+
                         if (dicBaselineFuntion.ContainsKey(_dt.Rows[row][19].ToString().ToLower()))
                             {
-                                //BaselineFunctionID = dicBaselineFuntion[dtForLoading.Rows[row][19].ToString().ToLower()];
                                 BaselineFunctionID = dicBaselineFuntion[_dt.Rows[row][19].ToString().ToLower()];
                             }
                         else
@@ -1018,75 +977,56 @@ namespace BenMAP
                             commandText = string.Format("select max(FUNCTIONALFORMID) from BASELINEFUNCTIONALFORMS");
                             obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
                             BaselineFunctionID = int.Parse(obj.ToString()) + 1;
-                            //commandText = string.Format("insert into BASELINEFUNCTIONALFORMS values ({0},'{1}')", BaselineFunctionID, dtForLoading.Rows[row][19].ToString());
                             commandText = string.Format("insert into BASELINEFUNCTIONALFORMS values ({0},'{1}')", BaselineFunctionID, _dt.Rows[row][19].ToString());
                             fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                         }
-                        //commandText = string.Format("select MetricID from Metrics where PollutantID={0} and LOWER(MetricName)='{1}'", dicPollutant[dtForLoading.Rows[row][2].ToString().ToLower()], dtForLoading.Rows[row][3].ToString().ToLower());
+
                         commandText = string.Format("select MetricID from Metrics where PollutantID={0} and LOWER(MetricName)='{1}'", dicPollutant[_dt.Rows[row][2].ToString().ToLower()], _dt.Rows[row][3].ToString().ToLower());
                         obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
                         int MetricID = int.Parse(obj.ToString());
 
                         Dictionary<string, string> dicSeasonalMetric = new Dictionary<string, string>();
-                        //commandText = string.Format("select SeasonalMetricID,LOWER(SeasonalMetricName) from SeasonalMetrics where MetricID={0} and LOWER(SeasonalMetricName)='{1}'", MetricID, dtForLoading.Rows[row][4].ToString().ToLower());
                         commandText = string.Format("select SeasonalMetricID,LOWER(SeasonalMetricName) from SeasonalMetrics where MetricID={0} and LOWER(SeasonalMetricName)='{1}'", MetricID, _dt.Rows[row][4].ToString().ToLower());
                         DataSet dsSeasonMetric = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                         foreach (DataRow drSeasonMetric in dsSeasonMetric.Tables[0].Rows)
                         {
                             dicSeasonalMetric.Add(drSeasonMetric["LOWER"].ToString(), drSeasonMetric["SeasonalMetricID"].ToString());
                         }
+
                         string SeasonalMetricID = string.Empty;
-                        //if (dicSeasonalMetric.Keys.Contains(dtForLoading.Rows[row][4].ToString().ToLower()))
+
                         if (dicSeasonalMetric.Keys.Contains(_dt.Rows[row][4].ToString().ToLower()))
-                            //SeasonalMetricID = dicSeasonalMetric[dtForLoading.Rows[row][4].ToString().ToLower()].ToString();
                             SeasonalMetricID = dicSeasonalMetric[_dt.Rows[row][4].ToString().ToLower()].ToString();
                         else
                             SeasonalMetricID = "NULL";
 
                         string PrevalenceID = string.Empty;
-                        //if (dicPrevalence.Keys.Contains(dtForLoading.Rows[row][31].ToString().ToLower()))
+
                         if (dicPrevalence.Keys.Contains(_dt.Rows[row][31].ToString().ToLower()))
-                            //PrevalenceID = dicPrevalence[dtForLoading.Rows[row][31].ToString().ToLower()].ToString();
                             PrevalenceID = dicPrevalence[_dt.Rows[row][31].ToString().ToLower()].ToString();
                         else
                             PrevalenceID = "NULL";
 
                         string IncidenceID = string.Empty;
-                        //if (dicIncidence.Keys.Contains(dtForLoading.Rows[row][30].ToString().ToLower()))
+
                         if (dicIncidence.Keys.Contains(_dt.Rows[row][30].ToString().ToLower()))
-                            //IncidenceID = dicIncidence[dtForLoading.Rows[row][30].ToString().ToLower()].ToString();
                             IncidenceID = dicIncidence[_dt.Rows[row][30].ToString().ToLower()].ToString();
                         else IncidenceID = "NULL";
 
                         string VariableID = string.Empty;
-                        //if (dicVariable.Keys.Contains(dtForLoading.Rows[row][32].ToString().ToLower()))
-                        //    VariableID = dicVariable[dtForLoading.Rows[row][32].ToString().ToLower()].ToString();
+
                         if (dicVariable.Keys.Contains(_dt.Rows[row][32].ToString().ToLower()))
                             VariableID = dicVariable[_dt.Rows[row][32].ToString().ToLower()].ToString();
                         else VariableID = "NULL";
 
                         string LocationtypeID = string.Empty;
-                        //if (dicLocationTypeID.Keys.Contains(dtForLoading.Rows[row][8].ToString().ToLower()))
-                        //    LocationtypeID = dicLocationTypeID[dtForLoading.Rows[row][8].ToString().ToLower()].ToString();
+
                         if (dicLocationTypeID.Keys.Contains(_dt.Rows[row][8].ToString().ToLower()))
                             LocationtypeID = dicLocationTypeID[_dt.Rows[row][8].ToString().ToLower()].ToString();
                         else LocationtypeID = "NULL";
 
                         int MetricStatisticID = 0;
-                        /*if (dtForLoading.Rows[row][5].ToString().Trim() == "None")
-                            MetricStatisticID = 0;
-                        else if (dtForLoading.Rows[row][5].ToString().Trim() == "Mean")
-                            MetricStatisticID = 1;
-                        else if (dtForLoading.Rows[row][5].ToString().Trim() == "Median")
-                            MetricStatisticID = 2;
-                        else if (dtForLoading.Rows[row][5].ToString().Trim() == "Max")
-                            MetricStatisticID = 3;
-                        else if (dtForLoading.Rows[row][5].ToString().Trim() == "Min")
-                            MetricStatisticID = 4;
-                        else if (dtForLoading.Rows[row][5].ToString().Trim() == "")
-                            MetricStatisticID = 0;
-                        else
-                            MetricStatisticID = 5; */
+
                         if (_dt.Rows[row][5].ToString().Trim() == "None")
                             MetricStatisticID = 0;
                         else if (_dt.Rows[row][5].ToString().Trim() == "Mean")
@@ -1101,15 +1041,14 @@ namespace BenMAP
                             MetricStatisticID = 0;
                         else
                             MetricStatisticID = 5;
-                        //if (Convert.ToInt16(dtForLoading.Rows[row][33].ToString()) > 0)
+
                         if (Convert.ToInt16(_dt.Rows[row][33].ToString()) > 0)
+                        {
+                            commandText = string.Format("update CRFunctions set CRFunctionDataSetID={0},EndpointGroupID={1},EndpointID={2},PollutantID={3},MetricID={4},SeasonalMetricID={5},METRICSTATISTIC={6},AUTHOR='{7}',YYEAR={8},LOCATION='{9}',OTHERPOLLUTANTS='{10}',QUALIFIER='{11}',REFERENCE='{12}',RACE='{13}',GENDER='{14}',STARTAGE={15},ENDAGE={16},FUNCTIONALFORMID={17},INCIDENCEDATASETID={18},PREVALENCEDATASETID={19},VARIABLEDATASETID={20},BETA={21},DISTBETA='{22}',P1BETA={23},P2BETA={24},A={25},NAMEA='{26}',B={27},NAMEB='{28}',C={29},NAMEC='{30}',BASELINEFUNCTIONALFORMID={31},ETHNICITY='{32}',PERCENTILE={33},LOCATIONTYPEID={34} where CRFunctionID={35}", _datasetID, EndpointGroupID, EndpointID, PollutantID, MetricID, SeasonalMetricID, MetricStatisticID, _dt.Rows[row][6].ToString().Replace("'", "''"), Convert.ToInt16(_dt.Rows[row][7].ToString()), _dt.Rows[row][9].ToString().Replace("'", "''"), _dt.Rows[row][10].ToString().Replace("'", "''"), _dt.Rows[row][11].ToString().Replace("'", "''"), _dt.Rows[row][12].ToString().Replace("'", "''"), _dt.Rows[row][13].ToString().Replace("'", "''"), _dt.Rows[row][15].ToString().Replace("'", "''"), _dt.Rows[row][16], _dt.Rows[row][17], FunctionID, IncidenceID, PrevalenceID, VariableID, _dt.Rows[row][20], _dt.Rows[row][21].ToString().Replace("'", "''"), _dt.Rows[row][22], _dt.Rows[row][23], _dt.Rows[row][24], _dt.Rows[row][25].ToString().Replace("'", "''"), _dt.Rows[row][26], _dt.Rows[row][27].ToString().Replace("'", "''"), _dt.Rows[row][28], _dt.Rows[row][29].ToString().Replace("'", "''"), BaselineFunctionID, _dt.Rows[row][14].ToString().Replace("'", "''"), 0, LocationtypeID, Convert.ToInt32(_dt.Rows[row][33].ToString()));
+                            fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+
+                            if (_dt.Rows[row][21].ToString() == "Custom" && dicCustomValue.ContainsKey(Convert.ToInt32(_dt.Rows[row][33].ToString())) && dicCustomValue[Convert.ToInt32(_dt.Rows[row][33].ToString())].Count > 0)
                             {
-                                //commandText = string.Format("update CRFunctions set CRFunctionDataSetID={0},EndpointGroupID={1},EndpointID={2},PollutantID={3},MetricID={4},SeasonalMetricID={5},METRICSTATISTIC={6},AUTHOR='{7}',YYEAR={8},LOCATION='{9}',OTHERPOLLUTANTS='{10}',QUALIFIER='{11}',REFERENCE='{12}',RACE='{13}',GENDER='{14}',STARTAGE={15},ENDAGE={16},FUNCTIONALFORMID={17},INCIDENCEDATASETID={18},PREVALENCEDATASETID={19},VARIABLEDATASETID={20},BETA={21},DISTBETA='{22}',P1BETA={23},P2BETA={24},A={25},NAMEA='{26}',B={27},NAMEB='{28}',C={29},NAMEC='{30}',BASELINEFUNCTIONALFORMID={31},ETHNICITY='{32}',PERCENTILE={33},LOCATIONTYPEID={34} where CRFunctionID={35}", _datasetID, EndpointGroupID, EndpointID, PollutantID, MetricID, SeasonalMetricID, MetricStatisticID, dtForLoading.Rows[row][6].ToString().Replace("'", "''"), Convert.ToInt16(dtForLoading.Rows[row][7].ToString()), dtForLoading.Rows[row][9].ToString().Replace("'", "''"), dtForLoading.Rows[row][10].ToString().Replace("'", "''"), dtForLoading.Rows[row][11].ToString().Replace("'", "''"), dtForLoading.Rows[row][12].ToString().Replace("'", "''"), dtForLoading.Rows[row][13].ToString().Replace("'", "''"), dtForLoading.Rows[row][15].ToString().Replace("'", "''"), dtForLoading.Rows[row][16], dtForLoading.Rows[row][17], FunctionID, IncidenceID, PrevalenceID, VariableID, dtForLoading.Rows[row][20], dtForLoading.Rows[row][21].ToString().Replace("'", "''"), dtForLoading.Rows[row][22], dtForLoading.Rows[row][23], dtForLoading.Rows[row][24], dtForLoading.Rows[row][25].ToString().Replace("'", "''"), dtForLoading.Rows[row][26], dtForLoading.Rows[row][27].ToString().Replace("'", "''"), dtForLoading.Rows[row][28], dtForLoading.Rows[row][29].ToString().Replace("'", "''"), BaselineFunctionID, dtForLoading.Rows[row][14].ToString().Replace("'", "''"), 0, LocationtypeID, Convert.ToInt32(dtForLoading.Rows[row][33].ToString()));
-                                commandText = string.Format("update CRFunctions set CRFunctionDataSetID={0},EndpointGroupID={1},EndpointID={2},PollutantID={3},MetricID={4},SeasonalMetricID={5},METRICSTATISTIC={6},AUTHOR='{7}',YYEAR={8},LOCATION='{9}',OTHERPOLLUTANTS='{10}',QUALIFIER='{11}',REFERENCE='{12}',RACE='{13}',GENDER='{14}',STARTAGE={15},ENDAGE={16},FUNCTIONALFORMID={17},INCIDENCEDATASETID={18},PREVALENCEDATASETID={19},VARIABLEDATASETID={20},BETA={21},DISTBETA='{22}',P1BETA={23},P2BETA={24},A={25},NAMEA='{26}',B={27},NAMEB='{28}',C={29},NAMEC='{30}',BASELINEFUNCTIONALFORMID={31},ETHNICITY='{32}',PERCENTILE={33},LOCATIONTYPEID={34} where CRFunctionID={35}", _datasetID, EndpointGroupID, EndpointID, PollutantID, MetricID, SeasonalMetricID, MetricStatisticID, _dt.Rows[row][6].ToString().Replace("'", "''"), Convert.ToInt16(_dt.Rows[row][7].ToString()), _dt.Rows[row][9].ToString().Replace("'", "''"), _dt.Rows[row][10].ToString().Replace("'", "''"), _dt.Rows[row][11].ToString().Replace("'", "''"), _dt.Rows[row][12].ToString().Replace("'", "''"), _dt.Rows[row][13].ToString().Replace("'", "''"), _dt.Rows[row][15].ToString().Replace("'", "''"), _dt.Rows[row][16], _dt.Rows[row][17], FunctionID, IncidenceID, PrevalenceID, VariableID, _dt.Rows[row][20], _dt.Rows[row][21].ToString().Replace("'", "''"), _dt.Rows[row][22], _dt.Rows[row][23], _dt.Rows[row][24], _dt.Rows[row][25].ToString().Replace("'", "''"), _dt.Rows[row][26], _dt.Rows[row][27].ToString().Replace("'", "''"), _dt.Rows[row][28], _dt.Rows[row][29].ToString().Replace("'", "''"), BaselineFunctionID, _dt.Rows[row][14].ToString().Replace("'", "''"), 0, LocationtypeID, Convert.ToInt32(_dt.Rows[row][33].ToString()));
-                                fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
-                                //if (dtForLoading.Rows[row][21].ToString() == "Custom" && dicCustomValue.ContainsKey(Convert.ToInt32(dtForLoading.Rows[row][33].ToString())) && dicCustomValue[Convert.ToInt32(dtForLoading.Rows[row][33].ToString())].Count > 0)
-                                if (_dt.Rows[row][21].ToString() == "Custom" && dicCustomValue.ContainsKey(Convert.ToInt32(_dt.Rows[row][33].ToString())) && dicCustomValue[Convert.ToInt32(_dt.Rows[row][33].ToString())].Count > 0)
-                                {
                                 FirebirdSql.Data.FirebirdClient.FbCommand fbCommand = new FirebirdSql.Data.FirebirdClient.FbCommand();
                                 fbCommand.Connection = CommonClass.Connection;
                                 fbCommand.CommandType = CommandType.Text;
@@ -1136,7 +1075,6 @@ namespace BenMAP
                                     {
                                         if (k * 125 + t < rowCount)
                                         {
-                                            //commandText = commandText + string.Format(" insert into CRFUNCTIONCUSTOMENTRIES values ({0},{1});", Convert.ToInt32(dtForLoading.Rows[row][33].ToString()), dtCustomValue.Rows[k * 125 + t][0]);
                                             commandText = commandText + string.Format(" insert into CRFUNCTIONCUSTOMENTRIES values ({0},{1});", Convert.ToInt32(_dt.Rows[row][33].ToString()), dtCustomValue.Rows[k * 125 + t][0]);
                                         }
                                         else
@@ -1148,19 +1086,9 @@ namespace BenMAP
                                 }
                             }
                         }
-                        //else if (Convert.ToInt16(dtForLoading.Rows[row][33].ToString()) < 0)
+
                         else if (Convert.ToInt16(_dt.Rows[row][33].ToString()) < 0)
                         {
-                            /*commandText = string.Format("insert into CRFunctions values({0},{1},{2},{3},{4},{5},{6},{7},'{8}',{9},'{10}','{11}','{12}','{13}','{14}','{15}', " +
-                                                        "{16},{17},{18},{19},{20},{21},{22},'{23}',{24},{25},{26},'{27}',{28},'{29}',{30},'{31}',{32},'{33}',{34},{35}, {36})",
-                                                        CRFunctionID, _datasetID, EndpointGroupID, EndpointID, PollutantID, MetricID, SeasonalMetricID, MetricStatisticID,
-                                                        dtForLoading.Rows[row][6].ToString().Replace("'", "''"), Convert.ToInt16(dtForLoading.Rows[row][7].ToString()), dtForLoading.Rows[row][9].ToString().Replace("'", "''"),
-                                                        dtForLoading.Rows[row][10].ToString().Replace("'", "''"), dtForLoading.Rows[row][11].ToString().Replace("'", "''"), dtForLoading.Rows[row][12].ToString().Replace("'", "''"),
-                                                        dtForLoading.Rows[row][13].ToString().Replace("'", "''"), dtForLoading.Rows[row][15].ToString().Replace("'", "''"), dtForLoading.Rows[row][16], dtForLoading.Rows[row][17],
-                                                        FunctionID, IncidenceID, PrevalenceID, VariableID, dtForLoading.Rows[row][20], dtForLoading.Rows[row][21].ToString().Replace("'", "''"), dtForLoading.Rows[row][22],
-                                                        dtForLoading.Rows[row][23], dtForLoading.Rows[row][24], dtForLoading.Rows[row][25].ToString().Replace("'", "''"), dtForLoading.Rows[row][26], dtForLoading.Rows[row][27].ToString().Replace("'", "''"),
-                                                        dtForLoading.Rows[row][28], dtForLoading.Rows[row][29].ToString().Replace("'", "''"), BaselineFunctionID, dtForLoading.Rows[row][14].ToString().Replace("'", "''"), 0,
-                                                        LocationtypeID, _metadataObj.MetadataEntryId); */
                             commandText = string.Format("insert into CRFunctions(CRFUNCTIONID, CRFUNCTIONDATASETID, ENDPOINTGROUPID, ENDPOINTID, "
                                 + "POLLUTANTID, METRICID, SEASONALMETRICID, METRICSTATISTIC, AUTHOR, YYEAR, LOCATION, OTHERPOLLUTANTS, "
                                 + "QUALIFIER, REFERENCE, RACE, GENDER, STARTAGE, ENDAGE, FUNCTIONALFORMID, INCIDENCEDATASETID, PREVALENCEDATASETID, "
@@ -1178,7 +1106,7 @@ namespace BenMAP
                                                         LocationtypeID );
 
                             fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
-                            //if (dtForLoading.Rows[row][21].ToString() == "Custom" && dicCustomValue.ContainsKey(Convert.ToInt32(dtForLoading.Rows[row][33].ToString())) && dicCustomValue[Convert.ToInt32(dtForLoading.Rows[row][33].ToString())].Count > 0)
+
                             if (_dt.Rows[row][21].ToString() == "Custom" && dicCustomValue.ContainsKey(Convert.ToInt32(_dt.Rows[row][33].ToString())) && dicCustomValue[Convert.ToInt32(_dt.Rows[row][33].ToString())].Count > 0)
                                 {
                                 FirebirdSql.Data.FirebirdClient.FbCommand fbCommand = new FirebirdSql.Data.FirebirdClient.FbCommand();
@@ -1191,7 +1119,7 @@ namespace BenMAP
                                 DataColumn dc = new DataColumn();
                                 dc.ColumnName = "Value";
                                 dtCustomValue.Columns.Add(dc);
-                                //foreach (double value in dicCustomValue[Convert.ToInt32(dtForLoading.Rows[row][33])])
+
                                 foreach (double value in dicCustomValue[Convert.ToInt32(_dt.Rows[row][33])])
                                     {
                                     DataRow dr = dtCustomValue.NewRow();
@@ -1372,6 +1300,7 @@ namespace BenMAP
                 healthImpact.PollVariables = new List<CRFVariable>();
                 healthImpact.BetaVariation = string.Empty;
                 healthImpact.ModelSpec = string.Empty;
+
                 foreach(var poll in healthImpact.PollVariables)
                 {
                     if(poll.PollBetas == null)
@@ -1472,9 +1401,6 @@ namespace BenMAP
             this.DialogResult = DialogResult.Cancel;
         }
 
-        //private void btnOK_Click(object sender, EventArgs e)
-        //{
-        //}
 
         private void HealthImpactDataSetDefinition_Load(object sender, EventArgs e)
         {
@@ -1535,7 +1461,7 @@ namespace BenMAP
                 }
                 else
                 {
-                    commandText = string.Format("select b.endpointgroupname,c.endpointname,d.pollutantname,e.metricname,f.seasonalmetricname,case when Metricstatistic=0 then 'None'  when Metricstatistic=1 then 'Mean' when Metricstatistic=2 then 'Median' when Metricstatistic=3 then 'Max' when Metricstatistic=4 then 'Min' when Metricstatistic=5 then 'Sum'  END as MetricstatisticName,author,yyear,g.locationtypename,location,otherpollutants,qualifier,reference,race,ethnicity,gender,startage,endage,h.functionalformtext,i.functionalformtext,beta,distbeta,p1beta,p2beta,a,namea,b,nameb,c,namec,j.incidencedatasetname,k.incidencedatasetname,l.setupvariabledatasetname as variabeldatasetname,CRFUNCTIONID from crfunctions a join endpointgroups b on (a.ENDPOINTGROUPID=b.ENDPOINTGROUPID) join endpoints c on (a.endpointid=c.endpointid) join pollutants d on (a.pollutantid=d.pollutantid)join metrics e on (a.metricid=e.metricid) left join seasonalmetrics f on (a.seasonalmetricid=f.seasonalmetricid) left join locationtype g on (a.locationtypeid=g.locationtypeid) join functionalforms h on (a.functionalformid=h.functionalformid) join baselinefunctionalforms i on (a.baselinefunctionalformid=i.functionalformid) left join incidencedatasets j on (a.incidencedatasetid=j.incidencedatasetid) left join incidencedatasets k on (a.prevalencedatasetid=k.incidencedatasetid) left join setupvariabledatasets l on (a.variabledatasetid=l.setupvariabledatasetid) where CRFUNCTIONDATASETID=null");
+                    commandText = string.Format("select b.endpointgroupname,c.endpointname,d.pollutantname,e.metricname,f.seasonalmetricname,case when Metricstatistic=0 then 'None'  when Metricstatistic=1 then 'Mean' when Metricstatistic=2 then 'Median' when Metricstatistic=3 then 'Max' when Metricstatistic=4 then 'Min' when Metricstatistic=5 then 'Sum'  END as MetricstatisticName,author,yyear,g.locationtypename,location,otherpollutants,qualifier,reference,race,ethnicity,gender,startage,endage,h.functionalformtext,i.functionalformtext,beta,dt.DISTRIBUTIONNAME as distbeta,p1beta,p2beta,a,namea,b,nameb,c,namec,j.incidencedatasetname,k.incidencedatasetname,l.setupvariabledatasetname as variabeldatasetname,a.CRFUNCTIONID from crfunctions a join CRFVARIABLES vars on(a.CRFunctionID = vars.CRFunctionID) join CRFBetas betas on(vars.CRFVariableID = betas.CRFVARIABLEID) join DistributionTypes dt on betas.DistributionTypeID = dt.DistributionTypeID join endpointgroups b on (a.ENDPOINTGROUPID=b.ENDPOINTGROUPID) join endpoints c on (a.endpointid=c.endpointid) join pollutants d on (a.pollutantid=d.pollutantid)join metrics e on (a.metricid=e.metricid) left join seasonalmetrics f on (a.seasonalmetricid=f.seasonalmetricid) left join locationtype g on (a.locationtypeid=g.locationtypeid) join functionalforms h on (a.functionalformid=h.functionalformid) join baselinefunctionalforms i on (a.baselinefunctionalformid=i.functionalformid) left join incidencedatasets j on (a.incidencedatasetid=j.incidencedatasetid) left join incidencedatasets k on (a.prevalencedatasetid=k.incidencedatasetid) left join setupvariabledatasets l on (a.variabledatasetid=l.setupvariabledatasetid) where CRFUNCTIONDATASETID=null");
                     ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                     olvFunction.DataSource = ds.Tables[0];
                     _dt = ds.Tables[0];

@@ -256,16 +256,6 @@ namespace BenMAP
             this.olvColumn18,
             this.olvColumn19,
             this.olvColumn20,
-            this.olvColumn21,
-            this.olvColumn22,
-            this.olvColumn23,
-            this.olvColumn24,
-            this.olvColumn25,
-            this.olvColumn26,
-            this.olvColumn27,
-            this.olvColumn28,
-            this.olvColumn29,
-            this.olvColumn30,
             this.olvColumn31,
             this.olvColumn32,
             this.olvColumn33});
@@ -420,54 +410,74 @@ namespace BenMAP
             // olvColumn21
             // 
             this.olvColumn21.AspectName = "beta";
+            this.olvColumn21.DisplayIndex = 20;
+            this.olvColumn21.IsVisible = false;
             this.olvColumn21.Text = "Beta";
             // 
             // olvColumn22
             // 
             this.olvColumn22.AspectName = "distbeta";
+            this.olvColumn22.DisplayIndex = 21;
+            this.olvColumn22.IsVisible = false;
             this.olvColumn22.Text = "Beta Distribution";
             this.olvColumn22.Width = 140;
             // 
             // olvColumn23
             // 
             this.olvColumn23.AspectName = "p1beta";
+            this.olvColumn23.DisplayIndex = 22;
+            this.olvColumn23.IsVisible = false;
             this.olvColumn23.Text = "P1Beta";
             this.olvColumn23.Width = 100;
             // 
             // olvColumn24
             // 
             this.olvColumn24.AspectName = "p2beta";
+            this.olvColumn24.DisplayIndex = 23;
+            this.olvColumn24.IsVisible = false;
             this.olvColumn24.Text = "P2Beta";
             this.olvColumn24.Width = 100;
             // 
             // olvColumn25
             // 
             this.olvColumn25.AspectName = "a";
+            this.olvColumn25.DisplayIndex = 24;
+            this.olvColumn25.IsVisible = false;
             this.olvColumn25.Text = "A";
             // 
             // olvColumn26
             // 
             this.olvColumn26.AspectName = "namea";
+            this.olvColumn26.DisplayIndex = 25;
+            this.olvColumn26.IsVisible = false;
             this.olvColumn26.Text = "NameA";
             // 
             // olvColumn27
             // 
             this.olvColumn27.AspectName = "b";
+            this.olvColumn27.DisplayIndex = 26;
+            this.olvColumn27.IsVisible = false;
             this.olvColumn27.Text = "B";
             // 
             // olvColumn28
             // 
             this.olvColumn28.AspectName = "nameb";
+            this.olvColumn28.DisplayIndex = 27;
+            this.olvColumn28.IsVisible = false;
             this.olvColumn28.Text = "NameB";
             // 
             // olvColumn29
             // 
             this.olvColumn29.AspectName = "c";
+            this.olvColumn29.DisplayIndex = 28;
+            this.olvColumn29.IsVisible = false;
             this.olvColumn29.Text = "C";
             // 
             // olvColumn30
             // 
             this.olvColumn30.AspectName = "namec";
+            this.olvColumn30.DisplayIndex = 29;
+            this.olvColumn30.IsVisible = false;
             this.olvColumn30.Text = "NameC";
             // 
             // olvColumn31
