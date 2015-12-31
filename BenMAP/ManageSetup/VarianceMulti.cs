@@ -11,9 +11,11 @@ namespace BenMAP
 {
     public partial class VarianceMulti : FormBase
     {
-        public VarianceMulti()
+        public VarianceMulti(string modelSpec, string poll)
         {
             InitializeComponent();
+            tbModelSpec.Text = modelSpec;
+            tbPollutant.Text = poll;
         }
 
         private void VarianceMulti_Load(object sender, EventArgs e)

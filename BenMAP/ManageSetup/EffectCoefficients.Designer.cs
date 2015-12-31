@@ -457,6 +457,7 @@
             this.editVarBtn.TabIndex = 50;
             this.editVarBtn.Text = "Edit Variance/ Covariance";
             this.editVarBtn.UseVisualStyleBackColor = true;
+            this.editVarBtn.Click += new System.EventHandler(this.editVarBtn_Click);
             // 
             // groupBox1
             // 

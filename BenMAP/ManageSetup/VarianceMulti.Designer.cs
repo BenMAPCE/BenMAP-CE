@@ -34,6 +34,9 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
             this.panel3 = new System.Windows.Forms.Panel();
+            this.listView1 = new System.Windows.Forms.ListView();
+            this.colPollutant = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.colVarCov = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.lblEnd = new System.Windows.Forms.Label();
             this.tbEnd = new System.Windows.Forms.TextBox();
             this.lblStart = new System.Windows.Forms.Label();
@@ -44,14 +47,10 @@
             this.lblPollutant = new System.Windows.Forms.Label();
             this.tbModelSpec = new System.Windows.Forms.TextBox();
             this.lblModSpec = new System.Windows.Forms.Label();
-            this.objectListView1 = new BrightIdeasSoftware.ObjectListView();
-            this.olvColumn3 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvColumn4 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.groupBox2.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.objectListView1)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox2
@@ -59,7 +58,7 @@
             this.groupBox2.Controls.Add(this.btnOK);
             this.groupBox2.Controls.Add(this.btnCancel);
             this.groupBox2.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.groupBox2.Location = new System.Drawing.Point(0, 482);
+            this.groupBox2.Location = new System.Drawing.Point(0, 470);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(357, 61);
             this.groupBox2.TabIndex = 7;
@@ -91,7 +90,7 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(357, 482);
+            this.panel1.Size = new System.Drawing.Size(357, 470);
             this.panel1.TabIndex = 8;
             // 
             // panel2
@@ -100,12 +99,12 @@
             this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel2.Location = new System.Drawing.Point(0, 0);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(357, 482);
+            this.panel2.Size = new System.Drawing.Size(357, 470);
             this.panel2.TabIndex = 9;
             // 
             // panel3
             // 
-            this.panel3.Controls.Add(this.objectListView1);
+            this.panel3.Controls.Add(this.listView1);
             this.panel3.Controls.Add(this.lblEnd);
             this.panel3.Controls.Add(this.tbEnd);
             this.panel3.Controls.Add(this.lblStart);
@@ -119,8 +118,32 @@
             this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel3.Location = new System.Drawing.Point(0, 0);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(357, 482);
+            this.panel3.Size = new System.Drawing.Size(357, 470);
             this.panel3.TabIndex = 9;
+            // 
+            // listView1
+            // 
+            this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.colPollutant,
+            this.colVarCov});
+            this.listView1.GridLines = true;
+            this.listView1.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
+            this.listView1.Location = new System.Drawing.Point(59, 114);
+            this.listView1.Name = "listView1";
+            this.listView1.Size = new System.Drawing.Size(239, 354);
+            this.listView1.TabIndex = 56;
+            this.listView1.UseCompatibleStateImageBehavior = false;
+            this.listView1.View = System.Windows.Forms.View.Details;
+            // 
+            // colPollutant
+            // 
+            this.colPollutant.Text = "Pollutant";
+            this.colPollutant.Width = 117;
+            // 
+            // colVarCov
+            // 
+            this.colVarCov.Text = "VarCov";
+            this.colVarCov.Width = 118;
             // 
             // lblEnd
             // 
@@ -133,8 +156,9 @@
             // 
             // tbEnd
             // 
-            this.tbEnd.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.tbEnd.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbEnd.Enabled = false;
             this.tbEnd.Location = new System.Drawing.Point(273, 82);
             this.tbEnd.Name = "tbEnd";
             this.tbEnd.Size = new System.Drawing.Size(74, 22);
@@ -151,9 +175,10 @@
             // 
             // tbStart
             // 
-            this.tbStart.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.tbStart.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tbStart.BackColor = System.Drawing.SystemColors.Window;
+            this.tbStart.Enabled = false;
             this.tbStart.Location = new System.Drawing.Point(179, 82);
             this.tbStart.Name = "tbStart";
             this.tbStart.ReadOnly = true;
@@ -171,9 +196,10 @@
             // 
             // textBox1
             // 
-            this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBox1.BackColor = System.Drawing.SystemColors.Window;
+            this.textBox1.Enabled = false;
             this.textBox1.Location = new System.Drawing.Point(10, 82);
             this.textBox1.Name = "textBox1";
             this.textBox1.ReadOnly = true;
@@ -182,9 +208,10 @@
             // 
             // tbPollutant
             // 
-            this.tbPollutant.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.tbPollutant.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tbPollutant.BackColor = System.Drawing.SystemColors.Window;
+            this.tbPollutant.Enabled = false;
             this.tbPollutant.Location = new System.Drawing.Point(133, 37);
             this.tbPollutant.MaximumSize = new System.Drawing.Size(282, 22);
             this.tbPollutant.Name = "tbPollutant";
@@ -203,9 +230,10 @@
             // 
             // tbModelSpec
             // 
-            this.tbModelSpec.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.tbModelSpec.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tbModelSpec.BackColor = System.Drawing.SystemColors.Window;
+            this.tbModelSpec.Enabled = false;
             this.tbModelSpec.Location = new System.Drawing.Point(133, 9);
             this.tbModelSpec.MaximumSize = new System.Drawing.Size(282, 22);
             this.tbModelSpec.Name = "tbModelSpec";
@@ -222,86 +250,22 @@
             this.lblModSpec.TabIndex = 33;
             this.lblModSpec.Text = "Model Specification:";
             // 
-            // objectListView1
-            // 
-            this.objectListView1.AllColumns.Add(this.olvColumn3);
-            this.objectListView1.AllColumns.Add(this.olvColumn4);
-            this.objectListView1.AllowColumnReorder = true;
-            this.objectListView1.AllowDrop = true;
-            this.objectListView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.objectListView1.CellEditActivation = BrightIdeasSoftware.ObjectListView.CellEditActivateMode.SingleClick;
-            this.objectListView1.CheckBoxes = true;
-            this.objectListView1.CheckedAspectName = "";
-            this.objectListView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.olvColumn3,
-            this.olvColumn4});
-            this.objectListView1.CopySelectionOnControlC = false;
-            this.objectListView1.Cursor = System.Windows.Forms.Cursors.Default;
-            this.objectListView1.EmptyListMsg = "Pollutant Variance List";
-            this.objectListView1.EmptyListMsgFont = new System.Drawing.Font("Calibri", 14.25F);
-            this.objectListView1.FullRowSelect = true;
-            this.objectListView1.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
-            this.objectListView1.HeaderUsesThemes = false;
-            this.objectListView1.HideSelection = false;
-            this.objectListView1.Location = new System.Drawing.Point(63, 110);
-            this.objectListView1.MultiSelect = false;
-            this.objectListView1.Name = "objectListView1";
-            this.objectListView1.OverlayText.Alignment = System.Drawing.ContentAlignment.BottomLeft;
-            this.objectListView1.OverlayText.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
-            this.objectListView1.OverlayText.BorderWidth = 2F;
-            this.objectListView1.OverlayText.Rotation = -20;
-            this.objectListView1.OverlayText.Text = "";
-            this.objectListView1.OwnerDraw = true;
-            this.objectListView1.SelectColumnsOnRightClickBehaviour = BrightIdeasSoftware.ObjectListView.ColumnSelectBehaviour.Submenu;
-            this.objectListView1.ShowCommandMenuOnRightClick = true;
-            this.objectListView1.ShowGroups = false;
-            this.objectListView1.ShowImagesOnSubItems = true;
-            this.objectListView1.ShowItemCountOnGroups = true;
-            this.objectListView1.ShowItemToolTips = true;
-            this.objectListView1.Size = new System.Drawing.Size(230, 366);
-            this.objectListView1.SpaceBetweenGroups = 20;
-            this.objectListView1.TabIndex = 57;
-            this.objectListView1.UseAlternatingBackColors = true;
-            this.objectListView1.UseCompatibleStateImageBehavior = false;
-            this.objectListView1.UseFiltering = true;
-            this.objectListView1.UseHotItem = true;
-            this.objectListView1.UseHyperlinks = true;
-            this.objectListView1.View = System.Windows.Forms.View.Details;
-            // 
-            // olvColumn3
-            // 
-            this.olvColumn3.AspectName = "RegionName";
-            this.olvColumn3.IsEditable = false;
-            this.olvColumn3.Text = "Pollutant";
-            this.olvColumn3.Width = 114;
-            // 
-            // olvColumn4
-            // 
-            this.olvColumn4.AspectName = "Col";
-            this.olvColumn4.FillsFreeSpace = true;
-            this.olvColumn4.IsEditable = false;
-            this.olvColumn4.Text = "VarCov";
-            this.olvColumn4.Width = 114;
-            // 
             // VarianceMulti
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(357, 543);
+            this.ClientSize = new System.Drawing.Size(357, 531);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.groupBox2);
             this.Name = "VarianceMulti";
-            this.Text = "Variance/ Covariance";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "Variance/ Covariance";
             this.Load += new System.EventHandler(this.VarianceMulti_Load);
             this.groupBox2.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.objectListView1)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -324,8 +288,8 @@
         private System.Windows.Forms.TextBox tbStart;
         private System.Windows.Forms.Label lblSeason;
         private System.Windows.Forms.TextBox textBox1;
-        private BrightIdeasSoftware.ObjectListView objectListView1;
-        private BrightIdeasSoftware.OLVColumn olvColumn3;
-        private BrightIdeasSoftware.OLVColumn olvColumn4;
+        private System.Windows.Forms.ListView listView1;
+        private System.Windows.Forms.ColumnHeader colPollutant;
+        private System.Windows.Forms.ColumnHeader colVarCov;
     }
 }

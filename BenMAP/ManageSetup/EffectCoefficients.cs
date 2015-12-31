@@ -208,7 +208,7 @@ namespace BenMAP
 
         private void editVarBtn_Click(object sender, EventArgs e)
         {
-            VarianceMulti form = new VarianceMulti();
+            VarianceMulti form = new VarianceMulti(txtModelSpec.Text, txtPollutant.Text);
             DialogResult res = form.ShowDialog();
         }
 
