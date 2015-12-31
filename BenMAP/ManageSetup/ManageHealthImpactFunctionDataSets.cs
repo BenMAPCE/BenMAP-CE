@@ -64,7 +64,7 @@ namespace BenMAP
                 { 
                     return;
                 }
-                commandText = string.Format("select * from CRFunctionDataSets where SetupID={0}", CommonClass.ManageSetup.SetupID);
+                commandText = string.Format("select CRfunctionDataSetID,CRfunctionDataSetName from CRFunctionDataSets where SetupID={0}", CommonClass.ManageSetup.SetupID);
                 ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                 lstAvailableDataSets.DataSource = ds.Tables[0];
                 lstAvailableDataSets.DisplayMember = "CRFunctionDataSetName";
@@ -118,17 +118,16 @@ namespace BenMAP
                             "case when Metricstatistic = 0 then 'None'  when Metricstatistic = 1 then 'Mean' when Metricstatistic = 2 " +
                             "then 'Median' when Metricstatistic = 3 then 'Max' when Metricstatistic = 4 then 'Min' when Metricstatistic = 5 " +
                             "then 'Sum'  END as MetricstatisticName,author,yyear,g.locationtypename,location,otherpollutants,qualifier,reference, " +
-                            "race,ethnicity,gender,startage,endage,h.functionalformtext,i.functionalformtext,beta,dt.DISTRIBUTIONNAME as distbeta,p1beta,p2beta,a,namea,b, " +
-                            "nameb,c,namec,j.incidencedatasetname,k.incidencedatasetname,l.setupvariabledatasetname as variabeldatasetname,a.CRFUNCTIONID " +
-                            "from crfunctions a join endpointgroups b on (a.ENDPOINTGROUPID = b.ENDPOINTGROUPID) " +
-                            "join CRFVARIABLES vars on(a.CRFunctionID = vars.CRFunctionID) " +
-                            "join CRFBetas betas on(vars.CRFVariableID = betas.CRFVARIABLEID) " +
-                            "join DistributionTypes dt on betas.DistributionTypeID = dt.DistributionTypeID " +
-                            "join endpoints c on(a.endpointid = c.endpointid) " +
-                            "join pollutants d on(a.pollutantid = d.pollutantid) " +
-                            "join metrics e on(a.metricid = e.metricid) left join seasonalmetrics f on(a.seasonalmetricid = f.seasonalmetricid) " +
+                            "race,ethnicity,gender,startage,endage,h.functionalformtext,i.functionalformtext,j.incidencedatasetname, " +
+                            "k.incidencedatasetname,l.setupvariabledatasetname as variabeldatasetname, m.MSDescription, bv.BetaVariationName, a.CRFUNCTIONID " +
+                            "from crfunctions a left join ModelSpecifications m on (a.MSID = m.MSID) " +
+                            "left join BetaVariations bv on (a.BetaVariationID = bv.BetaVariationID) " +
+                            "left join endpointgroups b on (a.ENDPOINTGROUPID = b.ENDPOINTGROUPID) " +
+                            "left join endpoints c on(a.endpointid = c.endpointid) " +
+                            "left join pollutants d on(a.pollutantid = d.pollutantid) " +
+                            "left join metrics e on(a.metricid = e.metricid) left join seasonalmetrics f on(a.seasonalmetricid = f.seasonalmetricid) " +
                             "left join locationtype g on(a.locationtypeid = g.locationtypeid) join functionalforms h on(a.functionalformid = h.functionalformid) " +
-                            "join baselinefunctionalforms i on(a.baselinefunctionalformid = i.functionalformid) " +
+                            "left join baselinefunctionalforms i on(a.baselinefunctionalformid = i.functionalformid) " +
                             "left join incidencedatasets j on(a.incidencedatasetid = j.incidencedatasetid) " +
                             "left join incidencedatasets k on(a.prevalencedatasetid = k.incidencedatasetid) " +
                             "left join setupvariabledatasets l on(a.variabledatasetid = l.setupvariabledatasetid) " +
@@ -233,13 +232,13 @@ namespace BenMAP
                     string selectEndpoint = cboEndpointGroup.GetItemText(cboEndpointGroup.SelectedItem);
                     if (selectEndpoint == "")
                     {
-                        olvcEndpointGroup.ValuesChosenForFiltering.Clear();
+                        olvColumn0.ValuesChosenForFiltering.Clear();
                         olv.UpdateColumnFiltering();
                     }
                     else
                     {
                         chosenValues.Add(selectEndpoint);
-                        olvcEndpointGroup.ValuesChosenForFiltering = chosenValues;
+                        olvColumn0.ValuesChosenForFiltering = chosenValues;
                         olv.UpdateColumnFiltering();
                     }
                     DataRowView drv = lstAvailableDataSets.SelectedItem as DataRowView;
@@ -250,16 +249,17 @@ namespace BenMAP
                                                     "then 'Median' when Metricstatistic=3 then 'Max' when Metricstatistic=4 then 'Min' " +
                                                     "when Metricstatistic=5 then 'Sum'  " +
                                                     "END as MetricstatisticName,author,yyear,g.locationtypename,location,otherpollutants,qualifier,reference, " +
-                                                    "race,ethnicity,gender,startage,endage,h.functionalformtext,i.functionalformtext,betadt.DistributionName as DistBeta,p1beta,p2beta,a," +
-                                                    "namea,b,nameb,c,namec,j.incidencedatasetname,k.incidencedatasetname,l.setupvariabledatasetname " +
-                                                    "as variabeldatasetname,a.CRFUNCTIONID from crfunctions a join endpointgroups b " +
-                                                    "join CRFBetas betas on(a.CRFunctionID = betas.CRFunctionID) " +
-                                                    "join DistributionTypes dt on betas.DistributionTypeID = dt.DistributionTypeID " +
-                                                    "on (a.ENDPOINTGROUPID=b.ENDPOINTGROUPID) join endpoints c on (a.endpointid=c.endpointid) " +
-                                                    "join pollutants d on (a.pollutantid=d.pollutantid)join metrics e on (a.metricid=e.metricid) " +
+                                                    "race,ethnicity,gender,startage,endage,h.functionalformtext,i.functionalformtext," +
+                                                    "j.incidencedatasetname,k.incidencedatasetname,l.setupvariabledatasetname " +
+                                                    "as variabeldatasetname,m.MSDescription,bv.BetaVariationName,a.CRFUNCTIONID " +
+                                                    "from crfunctions a " +
+                                                    "left join ModelSpecifications m on (a.MSID = m.MSID) " +
+                                                    "left join BetaVariations bv on (a.BetaVariationID = bv.BetaVariationID) left join endpointgroups b  " +
+                                                    "on (a.ENDPOINTGROUPID=b.ENDPOINTGROUPID) left join endpoints c on (a.endpointid=c.endpointid) " +
+                                                    "left join pollutants d on (a.pollutantid=d.pollutantid) left join metrics e on (a.metricid=e.metricid) " +
                                                     "left join seasonalmetrics f on (a.seasonalmetricid=f.seasonalmetricid) left join locationtype g " + 
-                                                    "on (a.locationtypeid=g.locationtypeid) join functionalforms h on (a.functionalformid=h.functionalformid) " +
-                                                    "join baselinefunctionalforms i on (a.baselinefunctionalformid=i.functionalformid) " +
+                                                    "on (a.locationtypeid=g.locationtypeid) left join functionalforms h on (a.functionalformid=h.functionalformid) " +
+                                                    "left join baselinefunctionalforms i on (a.baselinefunctionalformid=i.functionalformid) " +
                                                     "left join incidencedatasets j on (a.incidencedatasetid=j.incidencedatasetid) " +
                                                     "left join incidencedatasets k on (a.prevalencedatasetid=k.incidencedatasetid) " +
                                                     "left join setupvariabledatasets l on (a.variabledatasetid=l.setupvariabledatasetid) " + 
@@ -271,16 +271,16 @@ namespace BenMAP
                                                     "when Metricstatistic=0 then 'None'  when Metricstatistic=1 then 'Mean' when Metricstatistic=2 " +
                                                     "then 'Median' when Metricstatistic=3 then 'Max' when Metricstatistic=4 then 'Min' when Metricstatistic=5 " +
                                                     "then 'Sum'  END as MetricstatisticName,author,yyear,g.locationtypename,location,otherpollutants,qualifier, " +
-                                                    "reference,race,ethnicity,gender,startage,endage,h.functionalformtext,i.functionalformtext,beta,dt.DistributionName as DistBeta,p1beta, " +
-                                                    "p2beta,a,namea,b,nameb,c,namec,j.incidencedatasetname,k.incidencedatasetname,l.setupvariabledatasetname " +
-                                                    "as variabeldatasetname,a.CRFUNCTIONID from crfunctions a join endpointgroups b on  " +
-                                                    "(a.ENDPOINTGROUPID=b.ENDPOINTGROUPID) join endpoints c on (a.endpointid=c.endpointid)  " +
-                                                    "join CRFBetas betas on(a.CRFunctionID = betas.CRFunctionID) " +
-                                                    "join DistributionTypes dt on betas.DistributionTypeID = dt.DistributionTypeID " +
-                                                    "join pollutants d on (a.pollutantid=d.pollutantid)join metrics e on (a.metricid=e.metricid)  " +
+                                                    "reference,race,ethnicity,gender,startage,endage,h.functionalformtext,i.functionalformtext, " +
+                                                    "j.incidencedatasetname,k.incidencedatasetname,l.setupvariabledatasetname " +
+                                                    "as variabeldatasetname,m.MSDescription,bv.BetaVariationName,a.CRFUNCTIONID " +
+                                                    "from crfunctions a left join ModelSpecifications m on (a.MSID = m.MSID) " +
+                                                    "left join BetaVariations bv on (a.BetaVariationID = bv.BetaVariationID) left join endpointgroups b on  " +
+                                                    "(a.ENDPOINTGROUPID=b.ENDPOINTGROUPID) left join endpoints c on (a.endpointid=c.endpointid)  " +
+                                                    "left join pollutants d on (a.pollutantid=d.pollutantid)join metrics e on (a.metricid=e.metricid)  " +
                                                     "left join seasonalmetrics f on (a.seasonalmetricid=f.seasonalmetricid) left join locationtype g  " +
-                                                    "on (a.locationtypeid=g.locationtypeid) join functionalforms h on (a.functionalformid=h.functionalformid)  " +
-                                                    "join baselinefunctionalforms i on (a.baselinefunctionalformid=i.functionalformid)  " +
+                                                    "on (a.locationtypeid=g.locationtypeid) left join functionalforms h on (a.functionalformid=h.functionalformid)  " +
+                                                    "left join baselinefunctionalforms i on (a.baselinefunctionalformid=i.functionalformid)  " +
                                                     "left join incidencedatasets j on (a.incidencedatasetid=j.incidencedatasetid)  " +
                                                     "left join incidencedatasets k on (a.prevalencedatasetid=k.incidencedatasetid)  " +
                                                     "left join setupvariabledatasets l on (a.variabledatasetid=l.setupvariabledatasetid)  " +
@@ -331,13 +331,13 @@ namespace BenMAP
                     string selectPollutant = cboPollutant.GetItemText(cboPollutant.SelectedItem);
                     if (selectPollutant == "")
                     {
-                        olvcPollutant.ValuesChosenForFiltering.Clear();
+                        olvColumn2.ValuesChosenForFiltering.Clear();
                         olv.UpdateColumnFiltering();
                     }
                     else
                     {
                         chosenValues.Add(selectPollutant);
-                        olvcPollutant.ValuesChosenForFiltering = chosenValues;
+                        olvColumn2.ValuesChosenForFiltering = chosenValues;
                         olv.UpdateColumnFiltering();
                     }
                 }

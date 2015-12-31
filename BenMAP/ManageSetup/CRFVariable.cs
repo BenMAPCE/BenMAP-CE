@@ -11,7 +11,7 @@ namespace BenMAP
         {
             this._variableName = varName;
             this._pollutantName = pollName;
-            this.Pollutant1ID = pollID;    
+            this.PollutantID = pollID;    
         }
 
         private int _variableID;
@@ -42,18 +42,11 @@ namespace BenMAP
             set { _pollutantName = value; }
         }
 
-        private int _pollutant1ID;
-        public int Pollutant1ID
+        private int _pollutantID;
+        public int PollutantID
         {
-            get { return _pollutant1ID; }
-            set { _pollutant1ID = value; }
-        }
-
-        private int _pollutant2ID;
-        public int Pollutant2ID
-        {
-            get { return _pollutant2ID; }
-            set { _pollutant2ID = value; }
+            get { return _pollutantID; }
+            set { _pollutantID = value; }
         }
 
         private List<CRFBeta> _pollBetas;

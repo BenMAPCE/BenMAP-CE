@@ -12,19 +12,9 @@ namespace BenMAP
         public HealthImpact DeepCopy()
         {
             HealthImpact newCopy = new HealthImpact();
-            newCopy.AConstantDescription = String.Copy(this.AConstantDescription);
-            newCopy.AConstantValue = String.Copy(this.AConstantValue);
             newCopy.Author = String.Copy(this.Author);
             newCopy.BaselineIncidenceFunction = String.Copy(this.BaselineIncidenceFunction);
-            newCopy.BConstantDescription = String.Copy(this.BConstantDescription);
-            newCopy.BConstantValue = String.Copy(this.BConstantValue);
-            newCopy.Beta = String.Copy(this.Beta);
-            newCopy.BetaDistribution = String.Copy(this.BetaDistribution);
-            newCopy.BetaParameter1 = String.Copy(this.BetaParameter1);
-            newCopy.BetaParameter2 = String.Copy(this.BetaParameter2);
             newCopy.BetaVariation = String.Copy(this.BetaVariation);
-            newCopy.CConstantDescription = String.Copy(this.CConstantDescription);
-            newCopy.CConstantValue = String.Copy(this.CConstantValue);
             newCopy.EndAge = String.Copy(this.EndAge);
             newCopy.Endpoint = String.Copy(this.EndpointGroup);
             newCopy.Endpoint = String.Copy(this.Endpoint);
@@ -306,6 +296,7 @@ namespace BenMAP
             get { return _modelSpec; }
             set { _modelSpec = value; }
         }
+
         private string _betaVariation;
         public string BetaVariation
         {

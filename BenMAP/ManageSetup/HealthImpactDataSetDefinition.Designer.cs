@@ -17,7 +17,7 @@ namespace BenMAP
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.olvColumn32 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvColumn22 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.grpHealthImpactFunction = new System.Windows.Forms.GroupBox();
@@ -57,16 +57,6 @@ namespace BenMAP
             this.olvColumn19 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn20 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn21 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvColumn22 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvColumn23 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvColumn24 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvColumn25 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvColumn26 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvColumn27 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvColumn28 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvColumn29 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvColumn30 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvColumn31 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn33 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.lblHealthImpactFunctionName = new System.Windows.Forms.Label();
             this.txtHealthImpactFunction = new System.Windows.Forms.TextBox();
@@ -74,6 +64,8 @@ namespace BenMAP
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.olvColumn23 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvColumn24 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.statusStrip1.SuspendLayout();
             this.grpHealthImpactFunction.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
@@ -84,11 +76,11 @@ namespace BenMAP
             this.grpCancelOK.SuspendLayout();
             this.SuspendLayout();
             // 
-            // olvColumn32
+            // olvColumn22
             // 
-            this.olvColumn32.AspectName = "variabeldatasetname";
-            this.olvColumn32.Text = "Variable";
-            this.olvColumn32.Width = 100;
+            this.olvColumn22.AspectName = "variabeldatasetname";
+            this.olvColumn22.Text = "Variable";
+            this.olvColumn22.Width = 100;
             // 
             // statusStrip1
             // 
@@ -296,14 +288,6 @@ namespace BenMAP
             this.olvFunction.AllColumns.Add(this.olvColumn22);
             this.olvFunction.AllColumns.Add(this.olvColumn23);
             this.olvFunction.AllColumns.Add(this.olvColumn24);
-            this.olvFunction.AllColumns.Add(this.olvColumn25);
-            this.olvFunction.AllColumns.Add(this.olvColumn26);
-            this.olvFunction.AllColumns.Add(this.olvColumn27);
-            this.olvFunction.AllColumns.Add(this.olvColumn28);
-            this.olvFunction.AllColumns.Add(this.olvColumn29);
-            this.olvFunction.AllColumns.Add(this.olvColumn30);
-            this.olvFunction.AllColumns.Add(this.olvColumn31);
-            this.olvFunction.AllColumns.Add(this.olvColumn32);
             this.olvFunction.AllColumns.Add(this.olvColumn33);
             this.olvFunction.AllowColumnReorder = true;
             this.olvFunction.AllowDrop = true;
@@ -332,9 +316,11 @@ namespace BenMAP
             this.olvColumn17,
             this.olvColumn18,
             this.olvColumn19,
-            this.olvColumn30,
-            this.olvColumn31,
-            this.olvColumn32});
+            this.olvColumn20,
+            this.olvColumn21,
+            this.olvColumn22,
+            this.olvColumn23,
+            this.olvColumn24});
             this.olvFunction.Cursor = System.Windows.Forms.Cursors.Default;
             this.olvFunction.DataSource = null;
             this.olvFunction.EmptyListMsg = "Add rows to the above table to see them here";
@@ -484,88 +470,15 @@ namespace BenMAP
             // 
             // olvColumn20
             // 
-            this.olvColumn20.AspectName = "beta";
-            this.olvColumn20.DisplayIndex = 20;
-            this.olvColumn20.IsVisible = false;
-            this.olvColumn20.Text = "Beta";
+            this.olvColumn20.AspectName = "incidencedatasetname";
+            this.olvColumn20.Text = "Incidence";
+            this.olvColumn20.Width = 100;
             // 
             // olvColumn21
             // 
-            this.olvColumn21.AspectName = "distbeta";
-            this.olvColumn21.DisplayIndex = 21;
-            this.olvColumn21.IsVisible = false;
-            this.olvColumn21.Text = "Beta Distribution";
-            this.olvColumn21.Width = 140;
-            // 
-            // olvColumn22
-            // 
-            this.olvColumn22.AspectName = "p1beta";
-            this.olvColumn22.DisplayIndex = 22;
-            this.olvColumn22.IsVisible = false;
-            this.olvColumn22.Text = "P1Beta";
-            this.olvColumn22.Width = 100;
-            // 
-            // olvColumn23
-            // 
-            this.olvColumn23.AspectName = "p2beta";
-            this.olvColumn23.DisplayIndex = 23;
-            this.olvColumn23.IsVisible = false;
-            this.olvColumn23.Text = "P2Beta";
-            this.olvColumn23.Width = 100;
-            // 
-            // olvColumn24
-            // 
-            this.olvColumn24.AspectName = "a";
-            this.olvColumn24.DisplayIndex = 24;
-            this.olvColumn24.IsVisible = false;
-            this.olvColumn24.Text = "A";
-            // 
-            // olvColumn25
-            // 
-            this.olvColumn25.AspectName = "namea";
-            this.olvColumn25.DisplayIndex = 25;
-            this.olvColumn25.IsVisible = false;
-            this.olvColumn25.Text = "NameA";
-            // 
-            // olvColumn26
-            // 
-            this.olvColumn26.AspectName = "b";
-            this.olvColumn26.DisplayIndex = 26;
-            this.olvColumn26.IsVisible = false;
-            this.olvColumn26.Text = "B";
-            // 
-            // olvColumn27
-            // 
-            this.olvColumn27.AspectName = "nameb";
-            this.olvColumn27.DisplayIndex = 27;
-            this.olvColumn27.IsVisible = false;
-            this.olvColumn27.Text = "NameB";
-            // 
-            // olvColumn28
-            // 
-            this.olvColumn28.AspectName = "c";
-            this.olvColumn28.DisplayIndex = 28;
-            this.olvColumn28.IsVisible = false;
-            this.olvColumn28.Text = "C";
-            // 
-            // olvColumn29
-            // 
-            this.olvColumn29.AspectName = "namec";
-            this.olvColumn29.DisplayIndex = 29;
-            this.olvColumn29.IsVisible = false;
-            this.olvColumn29.Text = "NameC";
-            // 
-            // olvColumn30
-            // 
-            this.olvColumn30.AspectName = "incidencedatasetname";
-            this.olvColumn30.Text = "Incidence";
-            this.olvColumn30.Width = 100;
-            // 
-            // olvColumn31
-            // 
-            this.olvColumn31.AspectName = "incidencedatasetname";
-            this.olvColumn31.Text = "Prevalence";
-            this.olvColumn31.Width = 100;
+            this.olvColumn21.AspectName = "incidencedatasetname";
+            this.olvColumn21.Text = "Prevalence";
+            this.olvColumn21.Width = 100;
             // 
             // olvColumn33
             // 
@@ -626,6 +539,18 @@ namespace BenMAP
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Visible = false;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
+            // 
+            // olvColumn23
+            // 
+            this.olvColumn23.AspectName = "msdescription";
+            this.olvColumn23.Text = "Model Specification";
+            this.olvColumn23.Width = 120;
+            // 
+            // olvColumn24
+            // 
+            this.olvColumn24.AspectName = "betavariationname";
+            this.olvColumn24.Text = "Beta Variation";
+            this.olvColumn24.Width = 90;
             // 
             // HealthImpactDataSetDefinition
             // 
@@ -692,16 +617,6 @@ namespace BenMAP
         private BrightIdeasSoftware.OLVColumn olvColumn20;
         private BrightIdeasSoftware.OLVColumn olvColumn21;
         private BrightIdeasSoftware.OLVColumn olvColumn22;
-        private BrightIdeasSoftware.OLVColumn olvColumn23;
-        private BrightIdeasSoftware.OLVColumn olvColumn24;
-        private BrightIdeasSoftware.OLVColumn olvColumn25;
-        private BrightIdeasSoftware.OLVColumn olvColumn26;
-        private BrightIdeasSoftware.OLVColumn olvColumn27;
-        private BrightIdeasSoftware.OLVColumn olvColumn28;
-        private BrightIdeasSoftware.OLVColumn olvColumn29;
-        private BrightIdeasSoftware.OLVColumn olvColumn30;
-        private BrightIdeasSoftware.OLVColumn olvColumn31;
-        private BrightIdeasSoftware.OLVColumn olvColumn32;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.GroupBox groupBox1;
@@ -715,5 +630,7 @@ namespace BenMAP
         private System.Windows.Forms.Button btnOutPut;
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
+        private BrightIdeasSoftware.OLVColumn olvColumn23;
+        private BrightIdeasSoftware.OLVColumn olvColumn24;
     }
 }

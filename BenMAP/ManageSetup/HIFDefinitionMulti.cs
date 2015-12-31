@@ -34,12 +34,13 @@ namespace BenMAP
             get { return _healthImpacts; }
             set { _healthImpacts = value; }
         }
-        private List<double> _listCustom;
+
+        /* private List<double> _listCustom;
         public List<double> listCustom
         {
             get { return _listCustom; }
             set { _listCustom = value; }
-        }
+        } */
 
         public HIFDefinitionMulti()
         {
@@ -57,12 +58,12 @@ namespace BenMAP
             }
         }
 
-        public HIFDefinitionMulti(string dataName, HealthImpact healthImpact, List<double> listValue)
+        public HIFDefinitionMulti(string dataName, HealthImpact healthImpact)// , List<double> listValue)
         {
             InitializeComponent();
             _healthImpacts = healthImpact.DeepCopy();
             _dataName = dataName;
-            _listCustom = listValue;
+            // _listCustom = listValue;
         }
 
         private void btnOK_Click(object sender, EventArgs e)
@@ -253,10 +254,9 @@ namespace BenMAP
         {
             try
             {
-
+                // Edit existing function
                 if (_dataName != string.Empty)
                 {
-
                     BindItems();
                     cboEndpointGroup.Text = _healthImpacts.EndpointGroup;
                     cboEndpoint.Text = _healthImpacts.Endpoint;
@@ -283,10 +283,10 @@ namespace BenMAP
                     cboVariableDataSet.Text = _healthImpacts.Variable;
                     // list = listCustom;
                 }
-                else
+                // Add new function
+                else 
                 {
                     BindItems();
-
                 }
             }
             catch (Exception ex)
@@ -306,20 +306,24 @@ namespace BenMAP
                 cboEndpointGroup.DisplayMember = "ENDPOINTGROUPNAME";
                 if (cboEndpointGroup.Items.Count > 0) cboEndpointGroup.SelectedIndex = 0;
                 cboEndpointGroup.DropDownWidth = 250;
+
                 commandText = string.Format("select PGName, PollutantGroupID from PollutantGroups where setupid={0} order by PollutantGroupID asc", CommonClass.MainSetup.SetupID);
                 ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                 cboPollutant.DataSource = ds.Tables[0];
                 cboPollutant.DisplayMember = "PGNAME";
+
                 commandText = "select ETHNICITYNAME from ETHNICITY";
                 ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                 cboEthnicity.DataSource = ds.Tables[0];
                 cboEthnicity.DisplayMember = "ETHNICITYNAME";
                 cboEthnicity.SelectedIndex = -1;
+
                 commandText = "select RACENAME from RACES";
                 ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                 cboRace.DataSource = ds.Tables[0];
                 cboRace.DisplayMember = "RACENAME";
                 cboRace.SelectedIndex = -1;
+
                 commandText = "select GENDERNAME from GENDERS";
                 ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                 cboGender.DataSource = ds.Tables[0];
@@ -338,11 +342,13 @@ namespace BenMAP
                 cboIncidenceDataSet.DataSource = ds.Tables[0];
                 cboIncidenceDataSet.DisplayMember = "INCIDENCEDATASETNAME";
                 cboIncidenceDataSet.SelectedIndex = -1;
+
                 commandText = string.Format("select INCIDENCEDATASETNAME from INCIDENCEDATASETS where setupid={0} order by INCIDENCEDATASETNAME asc", CommonClass.ManageSetup.SetupID);
                 ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                 cboPrevalenceDataSet.DataSource = ds.Tables[0];
                 cboPrevalenceDataSet.DisplayMember = "INCIDENCEDATASETNAME";
                 cboPrevalenceDataSet.SelectedIndex = -1;
+
                 commandText = string.Format("select SETUPVARIABLEDATASETNAME from SETUPVARIABLEDATASETS where setupid={0}", CommonClass.ManageSetup.SetupID);
                 ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                 cboVariableDataSet.DataSource = ds.Tables[0];
@@ -359,6 +365,7 @@ namespace BenMAP
                 string[] AvailableVariables = new string[] { "Beta", "DELTAQ", "POP", "Incidence", "Prevalence", "Q0", "Q1", "A", "B", "C" };
                 lstFuncAvailableVariables.Items.AddRange(AvailableVariables);
                 lstFuncAvailableVariables.SelectedIndex = -1;
+
                 commandText = string.Format("select distinct lower(SetupVariableName) as SetupVariableName from SetupVariables where setupvariabledatasetid in (select setupvariabledatasetid from setupvariabledatasets where setupid={0})", CommonClass.ManageSetup.SetupID);
                 ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                 lstFuncAvailableSetupVariables.DataSource = ds.Tables[0];
@@ -370,6 +377,7 @@ namespace BenMAP
                 string[] BaselineAvailableFunctions = new string[] { "ABS(x)", "EXP(x)", "LOG(x)", "POW(x,y)", "SQR(x)", "ACOS(x)", "ASIN(x)", "ATAN(x)", "ATAN2(x,y)", "BIGMUL(x,y)", "CEILING(x)", "COS(x)", "COSH(x)", "DIVREM(x,y,z)", "FLOOR(x)", "IEEEREMAINDER(x,y)", "LOG10(x)", "MAX(x,y)", "MIN(x,y)", "ROUND(x,y)", "SIGN(x)", "SIN(x)", "SINH(x)", "TAN(x)", "TANH(x)", "TRUNCATE(x)" };
                 lstBaselineAvailableFunctions.Items.AddRange(BaselineAvailableFunctions);
                 lstBaselineAvailableFunctions.SelectedIndex = -1;
+
                 commandText = "select FUNCTIONALFORMTEXT from COMMONBLFNFORMS";
                 ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                 lstBaselineCommonUsedFunctions.DataSource = ds.Tables[0];
@@ -378,6 +386,7 @@ namespace BenMAP
                 string[] BaselineAvailableVariables = new string[] { "Beta", "DELTAQ", "POP", "Incidence", "Prevalence", "Q0", "Q1", "A", "B", "C" };
                 lstBaselineAvailableVariables.Items.AddRange(BaselineAvailableVariables);
                 lstBaselineAvailableVariables.SelectedIndex = -1;
+
                 commandText = "select LocationTypeName from LocationType";
                 ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                 cboLocationName.DataSource = ds.Tables[0];

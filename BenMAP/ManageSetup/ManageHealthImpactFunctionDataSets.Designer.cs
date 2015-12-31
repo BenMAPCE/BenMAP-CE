@@ -16,7 +16,7 @@ namespace BenMAP
         
         private void InitializeComponent()
         {
-            this.olvColumn34 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvColumn25 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.grpCancelOK = new System.Windows.Forms.GroupBox();
@@ -27,18 +27,19 @@ namespace BenMAP
             this.grpHealthImpactFunctions = new System.Windows.Forms.GroupBox();
             this.chbGroup = new System.Windows.Forms.CheckBox();
             this.olvData = new BrightIdeasSoftware.DataListView();
-            this.olvcEndpointGroup = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvColumn8 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvcPollutant = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvColumn11 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvColumn12 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvColumn0 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn1 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn2 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn3 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn4 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn5 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn6 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvColumn7 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvColumn8 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvColumn9 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn10 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvColumn11 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvColumn12 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn13 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn14 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn15 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
@@ -51,16 +52,7 @@ namespace BenMAP
             this.olvColumn22 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn23 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn24 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvColumn25 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn26 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvColumn27 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvColumn28 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvColumn29 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvColumn30 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvColumn31 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvColumn32 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvColumn33 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvColumn7 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.txtFilter = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -83,12 +75,12 @@ namespace BenMAP
             this.grpAvailableDataSets.SuspendLayout();
             this.SuspendLayout();
             // 
-            // olvColumn34
+            // olvColumn25
             // 
-            this.olvColumn34.AspectName = "crfunctionid";
-            this.olvColumn34.IsVisible = false;
-            this.olvColumn34.Text = "CRFunctionID";
-            this.olvColumn34.Width = 100;
+            this.olvColumn25.AspectName = "crfunctionid";
+            this.olvColumn25.IsVisible = false;
+            this.olvColumn25.Text = "CRFunctionID";
+            this.olvColumn25.Width = 100;
             // 
             // statusStrip1
             // 
@@ -194,18 +186,19 @@ namespace BenMAP
             // 
             // olvData
             // 
-            this.olvData.AllColumns.Add(this.olvcEndpointGroup);
-            this.olvData.AllColumns.Add(this.olvColumn8);
-            this.olvData.AllColumns.Add(this.olvcPollutant);
-            this.olvData.AllColumns.Add(this.olvColumn11);
-            this.olvData.AllColumns.Add(this.olvColumn12);
+            this.olvData.AllColumns.Add(this.olvColumn0);
             this.olvData.AllColumns.Add(this.olvColumn1);
             this.olvData.AllColumns.Add(this.olvColumn2);
             this.olvData.AllColumns.Add(this.olvColumn3);
             this.olvData.AllColumns.Add(this.olvColumn4);
             this.olvData.AllColumns.Add(this.olvColumn5);
             this.olvData.AllColumns.Add(this.olvColumn6);
+            this.olvData.AllColumns.Add(this.olvColumn7);
+            this.olvData.AllColumns.Add(this.olvColumn8);
+            this.olvData.AllColumns.Add(this.olvColumn9);
             this.olvData.AllColumns.Add(this.olvColumn10);
+            this.olvData.AllColumns.Add(this.olvColumn11);
+            this.olvData.AllColumns.Add(this.olvColumn12);
             this.olvData.AllColumns.Add(this.olvColumn13);
             this.olvData.AllColumns.Add(this.olvColumn14);
             this.olvData.AllColumns.Add(this.olvColumn15);
@@ -220,15 +213,6 @@ namespace BenMAP
             this.olvData.AllColumns.Add(this.olvColumn24);
             this.olvData.AllColumns.Add(this.olvColumn25);
             this.olvData.AllColumns.Add(this.olvColumn26);
-            this.olvData.AllColumns.Add(this.olvColumn27);
-            this.olvData.AllColumns.Add(this.olvColumn28);
-            this.olvData.AllColumns.Add(this.olvColumn29);
-            this.olvData.AllColumns.Add(this.olvColumn30);
-            this.olvData.AllColumns.Add(this.olvColumn31);
-            this.olvData.AllColumns.Add(this.olvColumn32);
-            this.olvData.AllColumns.Add(this.olvColumn33);
-            this.olvData.AllColumns.Add(this.olvColumn34);
-            this.olvData.AllColumns.Add(this.olvColumn7);
             this.olvData.AllowColumnReorder = true;
             this.olvData.AllowDrop = true;
             this.olvData.AlternateRowBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(240)))), ((int)(((byte)(220)))));
@@ -236,18 +220,19 @@ namespace BenMAP
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.olvData.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.olvcEndpointGroup,
-            this.olvColumn8,
-            this.olvcPollutant,
-            this.olvColumn11,
-            this.olvColumn12,
+            this.olvColumn0,
             this.olvColumn1,
             this.olvColumn2,
             this.olvColumn3,
             this.olvColumn4,
             this.olvColumn5,
             this.olvColumn6,
+            this.olvColumn7,
+            this.olvColumn8,
+            this.olvColumn9,
             this.olvColumn10,
+            this.olvColumn11,
+            this.olvColumn12,
             this.olvColumn13,
             this.olvColumn14,
             this.olvColumn15,
@@ -256,9 +241,10 @@ namespace BenMAP
             this.olvColumn18,
             this.olvColumn19,
             this.olvColumn20,
-            this.olvColumn31,
-            this.olvColumn32,
-            this.olvColumn33});
+            this.olvColumn21,
+            this.olvColumn22,
+            this.olvColumn23,
+            this.olvColumn24});
             this.olvData.Cursor = System.Windows.Forms.Cursors.Default;
             this.olvData.DataSource = null;
             this.olvData.EmptyListMsg = "Add rows to the above table to see them here";
@@ -289,221 +275,160 @@ namespace BenMAP
             this.olvData.View = System.Windows.Forms.View.Details;
             this.olvData.SelectedIndexChanged += new System.EventHandler(this.olvData_SelectedIndexChanged);
             // 
-            // olvcEndpointGroup
+            // olvColumn0
             // 
-            this.olvcEndpointGroup.AspectName = "endpointgroupname";
-            this.olvcEndpointGroup.Text = "Endpoint Group";
-            this.olvcEndpointGroup.Width = 120;
-            // 
-            // olvColumn8
-            // 
-            this.olvColumn8.AspectName = "endpointname";
-            this.olvColumn8.Text = "Endpoint";
-            this.olvColumn8.Width = 100;
-            // 
-            // olvcPollutant
-            // 
-            this.olvcPollutant.AspectName = "pollutantname";
-            this.olvcPollutant.Text = "Pollutant";
-            this.olvcPollutant.Width = 100;
-            // 
-            // olvColumn11
-            // 
-            this.olvColumn11.AspectName = "metricname";
-            this.olvColumn11.Text = "Metric";
-            this.olvColumn11.Width = 70;
-            // 
-            // olvColumn12
-            // 
-            this.olvColumn12.AspectName = "seasonalmetricname";
-            this.olvColumn12.Text = "Seasonal Metric";
-            this.olvColumn12.Width = 100;
+            this.olvColumn0.AspectName = "endpointgroupname";
+            this.olvColumn0.Text = "Endpoint Group";
+            this.olvColumn0.Width = 120;
             // 
             // olvColumn1
             // 
-            this.olvColumn1.AspectName = "MetricstatisticName";
-            this.olvColumn1.Text = "Metric Statistic";
-            this.olvColumn1.Width = 120;
+            this.olvColumn1.AspectName = "endpointname";
+            this.olvColumn1.Text = "Endpoint";
+            this.olvColumn1.Width = 100;
             // 
             // olvColumn2
             // 
-            this.olvColumn2.AspectName = "author";
-            this.olvColumn2.Text = "Author";
-            this.olvColumn2.Width = 70;
+            this.olvColumn2.AspectName = "pollutantname";
+            this.olvColumn2.Text = "Pollutant";
+            this.olvColumn2.Width = 100;
             // 
             // olvColumn3
             // 
-            this.olvColumn3.AspectName = "yyear";
-            this.olvColumn3.Text = "Year";
+            this.olvColumn3.AspectName = "metricname";
+            this.olvColumn3.Text = "Metric";
+            this.olvColumn3.Width = 70;
             // 
             // olvColumn4
             // 
-            this.olvColumn4.AspectName = "LOCATIONTYPENAME";
-            this.olvColumn4.Text = "Locationtype Name";
-            this.olvColumn4.Width = 120;
+            this.olvColumn4.AspectName = "seasonalmetricname";
+            this.olvColumn4.Text = "Seasonal Metric";
+            this.olvColumn4.Width = 100;
             // 
             // olvColumn5
             // 
-            this.olvColumn5.AspectName = "location";
-            this.olvColumn5.Text = "Location";
-            this.olvColumn5.Width = 80;
+            this.olvColumn5.AspectName = "MetricstatisticName";
+            this.olvColumn5.Text = "Metric Statistic";
+            this.olvColumn5.Width = 120;
             // 
             // olvColumn6
             // 
-            this.olvColumn6.AspectName = "otherpollutants";
-            this.olvColumn6.Text = "Other Pollutant";
-            this.olvColumn6.Width = 120;
+            this.olvColumn6.AspectName = "author";
+            this.olvColumn6.Text = "Author";
+            this.olvColumn6.Width = 70;
+            // 
+            // olvColumn7
+            // 
+            this.olvColumn7.AspectName = "yyear";
+            this.olvColumn7.Text = "Year";
+            // 
+            // olvColumn8
+            // 
+            this.olvColumn8.AspectName = "LOCATIONTYPENAME";
+            this.olvColumn8.Text = "Locationtype Name";
+            this.olvColumn8.Width = 120;
+            // 
+            // olvColumn9
+            // 
+            this.olvColumn9.AspectName = "location";
+            this.olvColumn9.Text = "Location";
+            this.olvColumn9.Width = 80;
             // 
             // olvColumn10
             // 
-            this.olvColumn10.AspectName = "qualifier";
-            this.olvColumn10.Text = "Qualifier";
-            this.olvColumn10.Width = 100;
+            this.olvColumn10.AspectName = "otherpollutants";
+            this.olvColumn10.Text = "Other Pollutant";
+            this.olvColumn10.Width = 120;
+            // 
+            // olvColumn11
+            // 
+            this.olvColumn11.AspectName = "qualifier";
+            this.olvColumn11.Text = "Qualifier";
+            this.olvColumn11.Width = 100;
+            // 
+            // olvColumn12
+            // 
+            this.olvColumn12.AspectName = "reference";
+            this.olvColumn12.Text = "Reference";
+            this.olvColumn12.Width = 100;
             // 
             // olvColumn13
             // 
-            this.olvColumn13.AspectName = "reference";
-            this.olvColumn13.Text = "Reference";
-            this.olvColumn13.Width = 100;
+            this.olvColumn13.AspectName = "race";
+            this.olvColumn13.Text = "Race";
             // 
             // olvColumn14
             // 
-            this.olvColumn14.AspectName = "race";
-            this.olvColumn14.Text = "Race";
+            this.olvColumn14.AspectName = "ethnicity";
+            this.olvColumn14.Text = "Ethnicity";
+            this.olvColumn14.Width = 80;
             // 
             // olvColumn15
             // 
-            this.olvColumn15.AspectName = "ethnicity";
-            this.olvColumn15.Text = "Ethnicity";
+            this.olvColumn15.AspectName = "gender";
+            this.olvColumn15.Text = "Gender";
             this.olvColumn15.Width = 80;
             // 
             // olvColumn16
             // 
-            this.olvColumn16.AspectName = "gender";
-            this.olvColumn16.Text = "Gender";
-            this.olvColumn16.Width = 80;
+            this.olvColumn16.AspectName = "startage";
+            this.olvColumn16.Text = "Start Age";
+            this.olvColumn16.Width = 100;
             // 
             // olvColumn17
             // 
-            this.olvColumn17.AspectName = "startage";
-            this.olvColumn17.Text = "Start Age";
-            this.olvColumn17.Width = 100;
+            this.olvColumn17.AspectName = "endage";
+            this.olvColumn17.Text = "End Age";
+            this.olvColumn17.Width = 80;
             // 
             // olvColumn18
             // 
-            this.olvColumn18.AspectName = "endage";
-            this.olvColumn18.Text = "End Age";
-            this.olvColumn18.Width = 80;
+            this.olvColumn18.AspectName = "functionalformtext";
+            this.olvColumn18.Text = "Function";
+            this.olvColumn18.Width = 120;
             // 
             // olvColumn19
             // 
-            this.olvColumn19.AspectName = "functionalformtext";
-            this.olvColumn19.Text = "Function";
+            this.olvColumn19.AspectName = "functionalformtext1";
+            this.olvColumn19.Text = "Baseline Function";
             this.olvColumn19.Width = 120;
             // 
             // olvColumn20
             // 
-            this.olvColumn20.AspectName = "functionalformtext1";
-            this.olvColumn20.Text = "Baseline Function";
-            this.olvColumn20.Width = 120;
+            this.olvColumn20.AspectName = "incidencedatasetname";
+            this.olvColumn20.Text = "Incidence";
+            this.olvColumn20.Width = 100;
             // 
             // olvColumn21
             // 
-            this.olvColumn21.AspectName = "beta";
-            this.olvColumn21.DisplayIndex = 20;
-            this.olvColumn21.IsVisible = false;
-            this.olvColumn21.Text = "Beta";
+            this.olvColumn21.AspectName = "incidencedatasetname";
+            this.olvColumn21.Text = "Prevalence";
+            this.olvColumn21.Width = 100;
             // 
             // olvColumn22
             // 
-            this.olvColumn22.AspectName = "distbeta";
-            this.olvColumn22.DisplayIndex = 21;
-            this.olvColumn22.IsVisible = false;
-            this.olvColumn22.Text = "Beta Distribution";
-            this.olvColumn22.Width = 140;
+            this.olvColumn22.AspectName = "variabeldatasetname";
+            this.olvColumn22.Text = "Variable";
+            this.olvColumn22.Width = 100;
             // 
             // olvColumn23
             // 
-            this.olvColumn23.AspectName = "p1beta";
-            this.olvColumn23.DisplayIndex = 22;
-            this.olvColumn23.IsVisible = false;
-            this.olvColumn23.Text = "P1Beta";
-            this.olvColumn23.Width = 100;
+            this.olvColumn23.AspectName = "msdescription";
+            this.olvColumn23.Text = "Model Specification";
+            this.olvColumn23.Width = 120;
             // 
             // olvColumn24
             // 
-            this.olvColumn24.AspectName = "p2beta";
-            this.olvColumn24.DisplayIndex = 23;
-            this.olvColumn24.IsVisible = false;
-            this.olvColumn24.Text = "P2Beta";
-            this.olvColumn24.Width = 100;
-            // 
-            // olvColumn25
-            // 
-            this.olvColumn25.AspectName = "a";
-            this.olvColumn25.DisplayIndex = 24;
-            this.olvColumn25.IsVisible = false;
-            this.olvColumn25.Text = "A";
+            this.olvColumn24.AspectName = "betavariationname";
+            this.olvColumn24.Text = "Beta Variation";
+            this.olvColumn24.Width = 90;
             // 
             // olvColumn26
             // 
-            this.olvColumn26.AspectName = "namea";
-            this.olvColumn26.DisplayIndex = 25;
+            this.olvColumn26.AspectName = "metadataid";
+            this.olvColumn26.DisplayIndex = 33;
             this.olvColumn26.IsVisible = false;
-            this.olvColumn26.Text = "NameA";
-            // 
-            // olvColumn27
-            // 
-            this.olvColumn27.AspectName = "b";
-            this.olvColumn27.DisplayIndex = 26;
-            this.olvColumn27.IsVisible = false;
-            this.olvColumn27.Text = "B";
-            // 
-            // olvColumn28
-            // 
-            this.olvColumn28.AspectName = "nameb";
-            this.olvColumn28.DisplayIndex = 27;
-            this.olvColumn28.IsVisible = false;
-            this.olvColumn28.Text = "NameB";
-            // 
-            // olvColumn29
-            // 
-            this.olvColumn29.AspectName = "c";
-            this.olvColumn29.DisplayIndex = 28;
-            this.olvColumn29.IsVisible = false;
-            this.olvColumn29.Text = "C";
-            // 
-            // olvColumn30
-            // 
-            this.olvColumn30.AspectName = "namec";
-            this.olvColumn30.DisplayIndex = 29;
-            this.olvColumn30.IsVisible = false;
-            this.olvColumn30.Text = "NameC";
-            // 
-            // olvColumn31
-            // 
-            this.olvColumn31.AspectName = "incidencedatasetname";
-            this.olvColumn31.Text = "Incidence";
-            this.olvColumn31.Width = 100;
-            // 
-            // olvColumn32
-            // 
-            this.olvColumn32.AspectName = "incidencedatasetname";
-            this.olvColumn32.Text = "Prevalence";
-            this.olvColumn32.Width = 100;
-            // 
-            // olvColumn33
-            // 
-            this.olvColumn33.AspectName = "variabeldatasetname";
-            this.olvColumn33.Text = "Variable";
-            this.olvColumn33.Width = 100;
-            // 
-            // olvColumn7
-            // 
-            this.olvColumn7.AspectName = "metadataid";
-            this.olvColumn7.DisplayIndex = 33;
-            this.olvColumn7.IsVisible = false;
-            this.olvColumn7.Text = "Metadata ID";
+            this.olvColumn26.Text = "Metadata ID";
             // 
             // groupBox3
             // 
@@ -679,18 +604,19 @@ namespace BenMAP
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.ComboBox cboEndpointGroup;
         private BrightIdeasSoftware.DataListView olvData;
-        private BrightIdeasSoftware.OLVColumn olvcEndpointGroup;
-        private BrightIdeasSoftware.OLVColumn olvColumn8;
-        private BrightIdeasSoftware.OLVColumn olvcPollutant;
-        private BrightIdeasSoftware.OLVColumn olvColumn11;
-        private BrightIdeasSoftware.OLVColumn olvColumn12;
+        private BrightIdeasSoftware.OLVColumn olvColumn0;
         private BrightIdeasSoftware.OLVColumn olvColumn1;
         private BrightIdeasSoftware.OLVColumn olvColumn2;
         private BrightIdeasSoftware.OLVColumn olvColumn3;
         private BrightIdeasSoftware.OLVColumn olvColumn4;
         private BrightIdeasSoftware.OLVColumn olvColumn5;
         private BrightIdeasSoftware.OLVColumn olvColumn6;
+        private BrightIdeasSoftware.OLVColumn olvColumn7;
+        private BrightIdeasSoftware.OLVColumn olvColumn8;
+        private BrightIdeasSoftware.OLVColumn olvColumn9;
         private BrightIdeasSoftware.OLVColumn olvColumn10;
+        private BrightIdeasSoftware.OLVColumn olvColumn11;
+        private BrightIdeasSoftware.OLVColumn olvColumn12;
         private BrightIdeasSoftware.OLVColumn olvColumn13;
         private BrightIdeasSoftware.OLVColumn olvColumn14;
         private BrightIdeasSoftware.OLVColumn olvColumn15;
@@ -701,23 +627,14 @@ namespace BenMAP
         private BrightIdeasSoftware.OLVColumn olvColumn20;
         private BrightIdeasSoftware.OLVColumn olvColumn21;
         private BrightIdeasSoftware.OLVColumn olvColumn22;
-        private BrightIdeasSoftware.OLVColumn olvColumn23;
-        private BrightIdeasSoftware.OLVColumn olvColumn24;
-        private BrightIdeasSoftware.OLVColumn olvColumn25;
-        private BrightIdeasSoftware.OLVColumn olvColumn26;
-        private BrightIdeasSoftware.OLVColumn olvColumn27;
-        private BrightIdeasSoftware.OLVColumn olvColumn28;
-        private BrightIdeasSoftware.OLVColumn olvColumn29;
-        private BrightIdeasSoftware.OLVColumn olvColumn30;
-        private BrightIdeasSoftware.OLVColumn olvColumn31;
-        private BrightIdeasSoftware.OLVColumn olvColumn32;
-        private BrightIdeasSoftware.OLVColumn olvColumn33;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
         private System.Windows.Forms.CheckBox chbGroup;
-        private BrightIdeasSoftware.OLVColumn olvColumn34;
+        private BrightIdeasSoftware.OLVColumn olvColumn25;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         private System.Windows.Forms.Button btnViewMetadata;
-        private BrightIdeasSoftware.OLVColumn olvColumn7;
+        private BrightIdeasSoftware.OLVColumn olvColumn26;
+        private BrightIdeasSoftware.OLVColumn olvColumn23;
+        private BrightIdeasSoftware.OLVColumn olvColumn24;
     }
 }
