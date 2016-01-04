@@ -519,7 +519,8 @@ namespace BenMAP.Configuration
     + " a.BaselineFunctionalFormID,e.FunctionalFormText as BaselineFunctionalFormText,Ethnicity,Percentile,Locationtypeid, g.IncidenceDataSetName,i.IncidenceDataSetName as PrevalenceDataSetName,"
     + " h.SetupVariableDataSetName as VariableDatasetName"
     + " from crFunctions a"
-    + " join CRFBetas betas on a.CRFunctionID = betas.CRFunctionID"
+    + " join CRFVariables vars on a.CRFunctionID = vars.CRFunctionID"
+    + " join CRFBetas betas on vars.CRFVariableID = betas.CRFVariableID"
     + " join DistributionTypes dt on betas.DistributionTypeID = dt.DistributionTypeID"
     + " join CRFunctionDataSets f on a.CRFunctionDatasetID=f.CRFunctionDatasetID"
     + " join EndPointGroups b on a.EndPointGroupID=b.EndPointGroupID"
@@ -4620,7 +4621,7 @@ namespace BenMAP.Configuration
                                 dicBase365[modelResultAttribute.Col + "," + modelResultAttribute.Row].ContainsKey(crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName)
                                 && dicControl365.ContainsKey(modelResultAttribute.Col + "," + modelResultAttribute.Row) &&
                                 dicControl365[modelResultAttribute.Col + "," + modelResultAttribute.Row].ContainsKey(crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName))
-                            {
+                            { 
 
                                 float fPSum = 0, fBaselineSum = 0;
                                 List<float> lstFPSum = new List<float>();
