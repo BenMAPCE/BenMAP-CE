@@ -4841,7 +4841,7 @@ namespace BenMAP
 
                                     CRCalculateValue crv = new CRCalculateValue();
                                     CRSelectFunction crNew = CommonClass.getCRSelectFunctionClone(cr.CRSelectFunction);
-                                    BenMAPLine benMAPLineBase = CommonClass.BaseControlCRSelectFunctionCalculateValue.BaseControlGroup.Where(p => p.Pollutant.PollutantID == crNew.BenMAPHealthImpactFunction.Pollutant.PollutantID).First().Base;
+                                    BenMAPLine benMAPLineBase = CommonClass.BaseControlCRSelectFunctionCalculateValue.BaseControlGroup.Where(p => p.Pollutant.PollutantID == crNew.BenMAPHealthImpactFunction.PollutantGroup.Pollutants.First().PollutantID).First().Base;
                                     Dictionary<string, float> dicBase = new Dictionary<string, float>();
                                     string strMetric = "";
                                     if (cr.CRSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric != null)
@@ -4887,7 +4887,7 @@ namespace BenMAP
 
                                     CRCalculateValue crv = new CRCalculateValue();
                                     CRSelectFunction crNew = CommonClass.getCRSelectFunctionClone(cr.CRSelectFunction);
-                                    BenMAPLine benMAPLineControl = CommonClass.BaseControlCRSelectFunctionCalculateValue.BaseControlGroup.Where(p => p.Pollutant.PollutantID == crNew.BenMAPHealthImpactFunction.Pollutant.PollutantID).First().Control;
+                                    BenMAPLine benMAPLineControl = CommonClass.BaseControlCRSelectFunctionCalculateValue.BaseControlGroup.Where(p => p.Pollutant.PollutantID == crNew.BenMAPHealthImpactFunction.PollutantGroup.Pollutants.First().PollutantID).First().Control;
                                     Dictionary<string, float> dicControl = new Dictionary<string, float>();
                                     string strMetric = "";
                                     if (cr.CRSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric != null)
@@ -7989,7 +7989,7 @@ namespace BenMAP
                     fieldName = crf.BenMAPHealthImpactFunction.EndPoint == null ? "" : crf.BenMAPHealthImpactFunction.EndPoint.Replace(",", " ");
                     break;
                 case "Pollutant":
-                    fieldName = crf.BenMAPHealthImpactFunction.Pollutant.PollutantName;
+                    fieldName = crf.BenMAPHealthImpactFunction.PollutantGroup.PollutantGroupName;
                     break;
                 case "Metric":
                     fieldName = crf.BenMAPHealthImpactFunction.Metric.MetricName;
@@ -8221,7 +8221,7 @@ namespace BenMAP
                     fieldName = allSelectValuationMethod.EndPoint;
                     break;
                 case "Pollutant":
-                    fieldName = allSelectValuationMethod.Pollutant;
+                    fieldName = allSelectValuationMethod.PollutantGroup;
                     break;
                 case "Metric":
                     fieldName = allSelectValuationMethod.Metric;
@@ -8853,7 +8853,7 @@ namespace BenMAP
                                 dicKey = new Dictionary<CRCalculateValue, int>();
                                 CRCalculateValue crv = new CRCalculateValue();
                                 CRSelectFunction crNew = CommonClass.getCRSelectFunctionClone(cr.CRSelectFunction);
-                                BenMAPLine benMAPLineBase = CommonClass.BaseControlCRSelectFunctionCalculateValue.BaseControlGroup.Where(p => p.Pollutant.PollutantID == crNew.BenMAPHealthImpactFunction.Pollutant.PollutantID).First().Base;
+                                BenMAPLine benMAPLineBase = CommonClass.BaseControlCRSelectFunctionCalculateValue.BaseControlGroup.Where(p => p.Pollutant.PollutantID == crNew.BenMAPHealthImpactFunction.PollutantGroup.Pollutants.First().PollutantID).First().Base;
                                 Dictionary<string, float> dicBase = new Dictionary<string, float>();
                                 string strMetric = "";
                                 if (cr.CRSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric != null)
@@ -8899,7 +8899,7 @@ namespace BenMAP
                                 dicKey = new Dictionary<CRCalculateValue, int>();
                                 CRCalculateValue crv = new CRCalculateValue();
                                 CRSelectFunction crNew = CommonClass.getCRSelectFunctionClone(cr.CRSelectFunction);
-                                BenMAPLine benMAPLineControl = CommonClass.BaseControlCRSelectFunctionCalculateValue.BaseControlGroup.Where(p => p.Pollutant.PollutantID == crNew.BenMAPHealthImpactFunction.Pollutant.PollutantID).First().Control;
+                                BenMAPLine benMAPLineControl = CommonClass.BaseControlCRSelectFunctionCalculateValue.BaseControlGroup.Where(p => p.Pollutant.PollutantID == crNew.BenMAPHealthImpactFunction.PollutantGroup.Pollutants.First().PollutantID).First().Control;
                                 Dictionary<string, float> dicControl = new Dictionary<string, float>();
                                 string strMetric = "";
                                 if (cr.CRSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric != null)
@@ -9593,7 +9593,7 @@ namespace BenMAP
                             dicKey = new Dictionary<CRCalculateValue, int>();
                             CRCalculateValue crv = new CRCalculateValue();
                             CRSelectFunction crNew = CommonClass.getCRSelectFunctionClone(cr.CRSelectFunction);
-                            BenMAPLine benMAPLineBase = CommonClass.BaseControlCRSelectFunctionCalculateValue.BaseControlGroup.Where(p => p.Pollutant.PollutantID == crNew.BenMAPHealthImpactFunction.Pollutant.PollutantID).First().Base;
+                            BenMAPLine benMAPLineBase = CommonClass.BaseControlCRSelectFunctionCalculateValue.BaseControlGroup.Where(p => p.Pollutant.PollutantID == crNew.BenMAPHealthImpactFunction.PollutantGroup.Pollutants.First().PollutantID).First().Base;
                             Dictionary<string, float> dicBase = new Dictionary<string, float>();
                             string strMetric = "";
                             if (cr.CRSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric != null)
@@ -9639,7 +9639,7 @@ namespace BenMAP
                             dicKey = new Dictionary<CRCalculateValue, int>();
                             CRCalculateValue crv = new CRCalculateValue();
                             CRSelectFunction crNew = CommonClass.getCRSelectFunctionClone(cr.CRSelectFunction);
-                            BenMAPLine benMAPLineControl = CommonClass.BaseControlCRSelectFunctionCalculateValue.BaseControlGroup.Where(p => p.Pollutant.PollutantID == crNew.BenMAPHealthImpactFunction.Pollutant.PollutantID).First().Control;
+                            BenMAPLine benMAPLineControl = CommonClass.BaseControlCRSelectFunctionCalculateValue.BaseControlGroup.Where(p => p.Pollutant.PollutantID == crNew.BenMAPHealthImpactFunction.PollutantGroup.Pollutants.First().PollutantID).First().Control;
                             Dictionary<string, float> dicControl = new Dictionary<string, float>();
                             string strMetric = "";
                             if (cr.CRSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric != null)
@@ -12006,7 +12006,7 @@ namespace BenMAP
                                 lstCRTable = lstCRTable.OrderBy(p => p.CRSelectFunction.BenMAPHealthImpactFunction.EndPoint).ToList();
                                 break;
                             case "pollutant":
-                                lstCRTable = lstCRTable.OrderBy(p => p.CRSelectFunction.BenMAPHealthImpactFunction.Pollutant.PollutantName).ToList();
+                                lstCRTable = lstCRTable.OrderBy(p => p.CRSelectFunction.BenMAPHealthImpactFunction.PollutantGroup.PollutantGroupName).ToList();
                                 break;
                             case "metric":
                                 lstCRTable = lstCRTable.OrderBy(p => p.CRSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName).ToList();
@@ -12107,7 +12107,7 @@ namespace BenMAP
                                 lstCRTable = lstCRTable.OrderByDescending(p => p.CRSelectFunction.BenMAPHealthImpactFunction.EndPoint).ToList();
                                 break;
                             case "pollutant":
-                                lstCRTable = lstCRTable.OrderByDescending(p => p.CRSelectFunction.BenMAPHealthImpactFunction.Pollutant.PollutantName).ToList();
+                                lstCRTable = lstCRTable.OrderByDescending(p => p.CRSelectFunction.BenMAPHealthImpactFunction.PollutantGroup.PollutantGroupName).ToList();
                                 break;
                             case "metric":
                                 lstCRTable = lstCRTable.OrderByDescending(p => p.CRSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName).ToList();
@@ -12319,7 +12319,7 @@ namespace BenMAP
                                 lstCRTable = lstCRTable.OrderBy(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.EndPoint).ToList();
                                 break;
                             case "pollutant":
-                                lstCRTable = lstCRTable.OrderBy(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Pollutant.PollutantName).ToList();
+                                lstCRTable = lstCRTable.OrderBy(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.PollutantGroup.PollutantGroupName).ToList();
                                 break;
                             case "metric":
                                 lstCRTable = lstCRTable.OrderBy(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName).ToList();
@@ -12420,7 +12420,7 @@ namespace BenMAP
                                 lstCRTable = lstCRTable.OrderByDescending(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.EndPoint).ToList();
                                 break;
                             case "pollutant":
-                                lstCRTable = lstCRTable.OrderByDescending(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Pollutant.PollutantName).ToList();
+                                lstCRTable = lstCRTable.OrderByDescending(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.PollutantGroup.PollutantGroupName).ToList();
                                 break;
                             case "metric":
                                 lstCRTable = lstCRTable.OrderByDescending(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName).ToList();
@@ -12607,7 +12607,7 @@ namespace BenMAP
                                 lstallSelectValuationMethodAndValue = lstallSelectValuationMethodAndValue.OrderBy(p => p.AllSelectValuationMethod.EndPoint).ToList();
                                 break;
                             case "pollutant":
-                                lstallSelectValuationMethodAndValue = lstallSelectValuationMethodAndValue.OrderBy(p => p.AllSelectValuationMethod.Pollutant).ToList();
+                                lstallSelectValuationMethodAndValue = lstallSelectValuationMethodAndValue.OrderBy(p => p.AllSelectValuationMethod.PollutantGroup).ToList();
                                 break;
 
                             case "author":
@@ -12666,7 +12666,7 @@ namespace BenMAP
                                 lstallSelectValuationMethodAndValue = lstallSelectValuationMethodAndValue.OrderByDescending(p => p.AllSelectValuationMethod.EndPoint).ToList();
                                 break;
                             case "pollutant":
-                                lstallSelectValuationMethodAndValue = lstallSelectValuationMethodAndValue.OrderByDescending(p => p.AllSelectValuationMethod.Pollutant).ToList();
+                                lstallSelectValuationMethodAndValue = lstallSelectValuationMethodAndValue.OrderByDescending(p => p.AllSelectValuationMethod.PollutantGroup).ToList();
                                 break;
 
                             case "author":

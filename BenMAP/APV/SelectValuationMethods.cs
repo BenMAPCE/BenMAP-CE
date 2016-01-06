@@ -405,7 +405,7 @@ namespace BenMAP
                                 Ethnicity = allSelectCRFunction.Ethnicity,
                                 Gender = allSelectCRFunction.Gender,
                                 Function = allSelectCRFunction.Function,
-                                Pollutant = allSelectCRFunction.Pollutant,
+                                PollutantGroup = allSelectCRFunction.PollutantGroup,
                                 Metric = allSelectCRFunction.Metric,
                                 SeasonalMetric = allSelectCRFunction.SeasonalMetric,
                                 MetricStatistic = allSelectCRFunction.MetricStatistic,
@@ -1097,7 +1097,7 @@ CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationA
                                 Metric = av5.Metric,
                                 MetricStatistic = av5.MetricStatistic,
                                 OtherPollutants = av5.OtherPollutants,
-                                Pollutant = av5.Pollutant,
+                                PollutantGroup = av5.PollutantGroup,
                                 SeasonalMetric = av5.SeasonalMetric,
 
                             });
@@ -1141,7 +1141,7 @@ CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationA
     Metric = Target.Metric,
     MetricStatistic = Target.MetricStatistic,
     OtherPollutants = Target.OtherPollutants,
-    Pollutant = Target.Pollutant,
+    PollutantGroup = Target.PollutantGroup,
     SeasonalMetric = Target.SeasonalMetric,
 });
                             maxid++;
@@ -1292,7 +1292,7 @@ CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationA
                         Ethnicity = allSelectCRFunction.Ethnicity,
                         Gender = allSelectCRFunction.Gender,
                         Function = allSelectCRFunction.Function,
-                        Pollutant = allSelectCRFunction.Pollutant,
+                        PollutantGroup = allSelectCRFunction.PollutantGroup,
                         Metric = allSelectCRFunction.Metric,
                         SeasonalMetric = allSelectCRFunction.SeasonalMetric,
                         MetricStatistic = allSelectCRFunction.MetricStatistic,
@@ -1365,7 +1365,7 @@ CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationA
                         lstSecond = lstSecond.Where(p => p.CRSelectFunction.BenMAPHealthImpactFunction.Function == lstParent[i - k - 1]).ToList();
                         break;
                     case "pollutant":
-                        lstSecond = lstSecond.Where(p => p.CRSelectFunction.BenMAPHealthImpactFunction.Pollutant.PollutantName == lstParent[i - k - 1]).ToList();
+                        lstSecond = lstSecond.Where(p => p.CRSelectFunction.BenMAPHealthImpactFunction.PollutantGroup.PollutantGroupName == lstParent[i - k - 1]).ToList();
                         break;
                     case "metric":
                         lstSecond = lstSecond.Where(p => p.CRSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName == lstParent[i - k - 1]).ToList();
@@ -1424,7 +1424,7 @@ CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationA
                     lstString = lstCR.Select(p => p.CRSelectFunction.BenMAPHealthImpactFunction.Function).Distinct().ToList();
                     break;
                 case "pollutant":
-                    lstString = lstCR.Select(p => p.CRSelectFunction.BenMAPHealthImpactFunction.Pollutant.PollutantName).Distinct().ToList();
+                    lstString = lstCR.Select(p => p.CRSelectFunction.BenMAPHealthImpactFunction.PollutantGroup.PollutantGroupName).Distinct().ToList();
                     break;
                 case "metric":
                     lstString = lstCR.Select(p => p.CRSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName).Distinct().ToList();
@@ -1476,7 +1476,7 @@ CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationA
                         Ethnicity = lstCR.First().CRSelectFunction.Ethnicity,
                         Gender = lstCR.First().CRSelectFunction.Gender,
                         Function = lstCR.First().CRSelectFunction.BenMAPHealthImpactFunction.Function,
-                        Pollutant = lstCR.First().CRSelectFunction.BenMAPHealthImpactFunction.Pollutant.PollutantName.ToString(),
+                        PollutantGroup = lstCR.First().CRSelectFunction.BenMAPHealthImpactFunction.PollutantGroup.PollutantGroupName.ToString(),
                         Metric = lstCR.First().CRSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName,
                         SeasonalMetric = lstCR.First().CRSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName,
                         MetricStatistic = Enum.GetName(typeof(MetricStatic), lstCR.First().CRSelectFunction.BenMAPHealthImpactFunction.MetricStatistic),
@@ -1638,7 +1638,7 @@ CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationA
                                 Ethnicity = crc.CRSelectFunction.Ethnicity,
                                 Gender = crc.CRSelectFunction.Gender,
                                 Function = crc.CRSelectFunction.BenMAPHealthImpactFunction.Function,
-                                Pollutant = crc.CRSelectFunction.BenMAPHealthImpactFunction.Pollutant.PollutantName,
+                                PollutantGroup = crc.CRSelectFunction.BenMAPHealthImpactFunction.PollutantGroup.PollutantGroupName,
                                 Metric = crc.CRSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName,
                                 SeasonalMetric = crc.CRSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric == null ? "" : crc.CRSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName,
                                 MetricStatistic = Enum.GetName(typeof(MetricStatic), crc.CRSelectFunction.BenMAPHealthImpactFunction.MetricStatistic),

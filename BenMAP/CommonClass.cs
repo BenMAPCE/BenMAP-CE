@@ -219,6 +219,7 @@ namespace BenMAP
                 }
                 _mainSetup = value;
                 CommonClass.lstPollutantAll = Grid.GridCommon.getAllPollutant(CommonClass.MainSetup.SetupID);
+                CommonClass.lstPollutantGroupAll = Grid.GridCommon.getAllPollutantGroups(CommonClass.MainSetup.SetupID);
                 OnFormChangedSetup();
             }
         }
@@ -403,7 +404,7 @@ namespace BenMAP
                                         MetricStatistic = benMAPHealthImpactFunction.MetricStatistic,
                                         OtherPollutants = benMAPHealthImpactFunction.OtherPollutants,
                                         Percentile = benMAPHealthImpactFunction.Percentile,
-                                        Pollutant = benMAPHealthImpactFunction.Pollutant,
+                                        PollutantGroup = benMAPHealthImpactFunction.PollutantGroup,
                                         PrevalenceDataSetID = benMAPHealthImpactFunction.PrevalenceDataSetID,
                                         Qualifier = benMAPHealthImpactFunction.Qualifier,
                                         Race = benMAPHealthImpactFunction.Race,
@@ -1932,6 +1933,9 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
             }
         }
         public static List<BenMAPPollutant> lstPollutantAll;
+
+        public static List<BenMAPPollutantGroup> lstPollutantGroupAll;
+
         public static BaseControlCRSelectFunction BaseControlCRSelectFunction; public static BaseControlCRSelectFunctionCalculateValue BaseControlCRSelectFunctionCalculateValue;
         private static Dictionary<string, int> dicAllRace;
         public static Dictionary<string, int> DicAllRace
@@ -2775,6 +2779,8 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
         public int PollutantGroupID;
         [ProtoMember(2)]
         public string PollutantGroupName;
+        [ProtoMember(3)]
+        public List<BenMAPPollutant> Pollutants;
     }
 
     [Serializable]
@@ -3485,7 +3491,7 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
         [ProtoMember(7)]
         public string EndPoint;
         [ProtoMember(8)]
-        public BenMAPPollutant Pollutant;
+        public BenMAPPollutantGroup PollutantGroup;
         [ProtoMember(9)]
         public Metric Metric;
         [ProtoMember(10)]
@@ -3857,7 +3863,7 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
         [ProtoMember(15)]
         public string Function;
         [ProtoMember(16)]
-        public string Pollutant;
+        public string PollutantGroup;
         [ProtoMember(17)]
         public string Metric;
         [ProtoMember(18)]
@@ -3932,7 +3938,7 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
         [ProtoMember(18)]
         public string Function;
         [ProtoMember(19)]
-        public string Pollutant;
+        public string PollutantGroup;
         [ProtoMember(20)]
         public string Metric;
         [ProtoMember(21)]

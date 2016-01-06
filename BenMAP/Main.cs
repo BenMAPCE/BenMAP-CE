@@ -740,9 +740,9 @@ namespace BenMAP
             {
                 foreach (CRSelectFunction cr in CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction)
                 {
-                    List<BenMAPPollutant> lstpollutant = CommonClass.lstPollutantAll.Where(p => p.PollutantID == cr.BenMAPHealthImpactFunction.Pollutant.PollutantID).ToList();
-                    if (lstpollutant != null && lstpollutant.Count > 0)
-                        cr.BenMAPHealthImpactFunction.Pollutant = lstpollutant.First();
+                    List<BenMAPPollutantGroup> lstPollutantGroup = CommonClass.lstPollutantGroupAll.Where(p => p.PollutantGroupID == cr.BenMAPHealthImpactFunction.PollutantGroup.PollutantGroupID).ToList();
+                    if (lstPollutantGroup != null && lstPollutantGroup.Count > 0)
+                        cr.BenMAPHealthImpactFunction.PollutantGroup = lstPollutantGroup.First();
                 }
             }
         }

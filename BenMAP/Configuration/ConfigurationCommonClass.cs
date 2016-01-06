@@ -513,7 +513,7 @@ namespace BenMAP.Configuration
      //+ " left join IncidenceDataSets i on a.PrevalenceDatasetID=i.IncidenceDatasetID left join SetupVariableDataSets h on a.VariableDatasetID=h.SetupVariableDataSetID"
      //+ " where CRFunctionID={0}", ID);
 
-                string commandText = string.Format("select a.CRFunctionID,a.CRFunctionDatasetID,f.CRFunctionDataSetName,a.EndpointGroupID,b.EndPointGroupName,a.EndpointID,c.EndPointName,PollutantID,"
+                string commandText = string.Format("select a.CRFunctionID,a.CRFunctionDatasetID,f.CRFunctionDataSetName,a.EndpointGroupID,b.EndPointGroupName,a.EndpointID,c.EndPointName,PollutantGroupID,"
     + " MetricID,SeasonalMetricID,MetricStatistic,Author,YYear,Location,OtherPollutants,Qualifier,Reference,Race,Gender,Startage,Endage,a.FunctionalFormid,d.FunctionalFormText,"
     + " a.IncidenceDatasetID,a.PrevalenceDatasetID,a.VariableDatasetID,betas.Beta,dt.DistributionName as DistBeta,betas.P1Beta,betas.P2Beta,betas.A,betas.NameA,betas.B,betas.NameB,betas.C,betas.NameC,"
     + " a.BaselineFunctionalFormID,e.FunctionalFormText as BaselineFunctionalFormText,Ethnicity,Percentile,Locationtypeid, g.IncidenceDataSetName,i.IncidenceDataSetName as PrevalenceDataSetName,"
@@ -577,12 +577,14 @@ namespace BenMAP.Configuration
                 benMapHealthImpactFunction.EndPointGroupID = Convert.ToInt32(dr["EndpointGroupID"]);
                 benMapHealthImpactFunction.EndPoint = dr["EndPointName"].ToString();
                 benMapHealthImpactFunction.EndPointID = Convert.ToInt32(dr["EndPointID"]);
-                benMapHealthImpactFunction.Pollutant = Grid.GridCommon.getPollutantFromID(Convert.ToInt32(dr["PollutantID"]), CommonClass.lstPollutantAll);
-                benMapHealthImpactFunction.Metric = Grid.GridCommon.getMetricFromPollutantAndID(benMapHealthImpactFunction.Pollutant, Convert.ToInt32(dr["MetricID"]));
+                benMapHealthImpactFunction.PollutantGroup = Grid.GridCommon.getPollutantGroupFromID(Convert.ToInt32(dr["PollutantGroupID"]));
+                //use first pollutant in group, this assumes all pollutants in group have the same metrics
+                benMapHealthImpactFunction.Metric = Grid.GridCommon.getMetricFromPollutantAndID(benMapHealthImpactFunction.PollutantGroup.Pollutants.First(), Convert.ToInt32(dr["MetricID"]));
                 benMapHealthImpactFunction.SeasonalMetric = null;
                 if ((dr["SeasonalMetricID"] is DBNull) == false)
                 {
-                    benMapHealthImpactFunction.SeasonalMetric = Grid.GridCommon.getSeasonalMetricFromPollutantAndID(benMapHealthImpactFunction.Pollutant, Convert.ToInt32(dr["SeasonalMetricID"]));
+                    //use first pollutant in group, this assumes all pollutants in group have the same seasonal metrics
+                    benMapHealthImpactFunction.SeasonalMetric = Grid.GridCommon.getSeasonalMetricFromPollutantAndID(benMapHealthImpactFunction.PollutantGroup.Pollutants.First(), Convert.ToInt32(dr["SeasonalMetricID"]));
                 }
                 benMapHealthImpactFunction.MetricStatistic = (MetricStatic)Convert.ToInt32(dr["MetricStatistic"]);
                 benMapHealthImpactFunction.Author = dr["Author"].ToString();
@@ -4414,10 +4416,10 @@ namespace BenMAP.Configuration
                     }
                     else
                     {
-                        if (crSelectFunction.BenMAPHealthImpactFunction.Pollutant.Seasons != null && crSelectFunction.BenMAPHealthImpactFunction.Pollutant.Seasons.Count != 0)
+                        if (crSelectFunction.BenMAPHealthImpactFunction.PollutantGroup.Pollutants.First().Seasons != null && crSelectFunction.BenMAPHealthImpactFunction.PollutantGroup.Pollutants.First().Seasons.Count != 0)
                         {
                             i365 = 0;
-                            foreach (Season season in crSelectFunction.BenMAPHealthImpactFunction.Pollutant.Seasons)
+                            foreach (Season season in crSelectFunction.BenMAPHealthImpactFunction.PollutantGroup.Pollutants.First().Seasons)
                             {
                                 i365 = i365 + season.EndDay - season.StartDay + 1;
                                 if (season.StartDay < iStartDay) iStartDay = season.StartDay;
@@ -4713,9 +4715,9 @@ namespace BenMAP.Configuration
                                     && dicAllMonitorNeighborBase.ContainsKey(modelResultAttribute.Col + "," + modelResultAttribute.Row)
                                     && dicAllMonitorNeighborControl != null && dicAllMonitorNeighborBase.ContainsKey(modelResultAttribute.Col + "," + modelResultAttribute.Row))
                                 {
-                                    i365 = crSelectFunction.BenMAPHealthImpactFunction.Pollutant.Seasons.Count();
+                                    i365 = crSelectFunction.BenMAPHealthImpactFunction.PollutantGroup.Pollutants.First().Seasons.Count();
                                     iStartDay = 0;
-                                    iEndDay = crSelectFunction.BenMAPHealthImpactFunction.Pollutant.Seasons.Count();
+                                    iEndDay = crSelectFunction.BenMAPHealthImpactFunction.PollutantGroup.Pollutants.First().Seasons.Count();
                                     bool is365 = false;
                                     int dayCount = 4;
                                     foreach (MonitorNeighborAttribute mnAttribute in dicAllMonitorNeighborBase[modelResultAttribute.Col + "," + modelResultAttribute.Row])
@@ -4974,7 +4976,7 @@ namespace BenMAP.Configuration
                                     if (dicControl[modelResultAttribute.Col + "," + modelResultAttribute.Row].Values.Keys.Contains(crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName))
                                         controlValue = dicControl[modelResultAttribute.Col + "," + modelResultAttribute.Row].Values[crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName];
                                 }
-                                i365 = crSelectFunction.BenMAPHealthImpactFunction.Pollutant.Seasons.Count();
+                                i365 = crSelectFunction.BenMAPHealthImpactFunction.PollutantGroup.Pollutants.First().Seasons.Count();
                             } //end if (dicBase365.ContainsKey(modelResultAttribute.Col + "," + modelResultAttribute.Row)...
                             #endregion
                         }//end if (crSelectFunction.BenMAPHealthImpactFunction.MetricStatistic != MetricStatic.None)

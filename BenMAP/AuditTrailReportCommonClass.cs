@@ -233,7 +233,7 @@ namespace BenMAP
                         tnCROne.Nodes.Add("Race:" + baseControlCRSelectFunction.lstCRSelectFunction[iCR].Race);
                         tnCROne.Nodes.Add("Ethnicity:" + baseControlCRSelectFunction.lstCRSelectFunction[iCR].Ethnicity);
                         tnCROne.Nodes.Add("Gender:" + baseControlCRSelectFunction.lstCRSelectFunction[iCR].Gender);
-                        tnCROne.Nodes.Add("Pollutant:" + baseControlCRSelectFunction.lstCRSelectFunction[iCR].BenMAPHealthImpactFunction.Pollutant.PollutantName);
+                        tnCROne.Nodes.Add("Pollutant:" + baseControlCRSelectFunction.lstCRSelectFunction[iCR].BenMAPHealthImpactFunction.PollutantGroup.PollutantGroupName);
                         tnCROne.Nodes.Add("Metric:" + baseControlCRSelectFunction.lstCRSelectFunction[iCR].BenMAPHealthImpactFunction.Metric.MetricName);
                         tnCROne.Nodes.Add("Metric statistic:" + Enum.GetName(typeof(MetricStatic), baseControlCRSelectFunction.lstCRSelectFunction[iCR].BenMAPHealthImpactFunction.MetricStatistic));
                         if (baseControlCRSelectFunction.lstCRSelectFunction[iCR].BenMAPHealthImpactFunction.SeasonalMetric != null)
@@ -320,7 +320,7 @@ namespace BenMAP
                     tnCROne.Nodes.Add("Race:" + baseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue[iCR].CRSelectFunction.Race);
                     tnCROne.Nodes.Add("Ethnicity:" + baseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue[iCR].CRSelectFunction.Ethnicity);
                     tnCROne.Nodes.Add("Gender:" + baseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue[iCR].CRSelectFunction.Gender);
-                    tnCROne.Nodes.Add("Pollutant:" + baseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue[iCR].CRSelectFunction.BenMAPHealthImpactFunction.Pollutant.PollutantName);
+                    tnCROne.Nodes.Add("Pollutant:" + baseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue[iCR].CRSelectFunction.BenMAPHealthImpactFunction.PollutantGroup.PollutantGroupName);
                     tnCROne.Nodes.Add("Metric:" + baseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue[iCR].CRSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName);
                     tnCROne.Nodes.Add("Metric statistic:" + Enum.GetName(typeof(MetricStatic), baseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue[iCR].CRSelectFunction.BenMAPHealthImpactFunction.MetricStatistic));
                     if (baseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue[iCR].CRSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric != null)
@@ -552,7 +552,7 @@ namespace BenMAP
                     {
                         TreeNode tnvaluation = new TreeNode();
                         tnvaluation.Text = "Health impact function";
-                        tnvaluation.Nodes.Add("Health impact function dataset:" + asvm.DataSet); tnvaluation.Nodes.Add("Endpoint group:" + asvm.EndPointGroup); tnvaluation.Nodes.Add("Endpoint:" + asvm.EndPoint); tnvaluation.Nodes.Add("Pollutant:" + asvm.Pollutant); tnvaluation.Nodes.Add("Metric:" + asvm.Metric); tnvaluation.Nodes.Add("Metric statistic:" + asvm.MetricStatistic); tnvaluation.Nodes.Add("Author:" + asvm.Author); tnvaluation.Nodes.Add("Year:" + asvm.Year); tnvaluation.Nodes.Add("Location:" + asvm.Location); tnvaluation.Nodes.Add("Other pollutants:" + asvm.OtherPollutants); try
+                        tnvaluation.Nodes.Add("Health impact function dataset:" + asvm.DataSet); tnvaluation.Nodes.Add("Endpoint group:" + asvm.EndPointGroup); tnvaluation.Nodes.Add("Endpoint:" + asvm.EndPoint); tnvaluation.Nodes.Add("Pollutant:" + asvm.PollutantGroup); tnvaluation.Nodes.Add("Metric:" + asvm.Metric); tnvaluation.Nodes.Add("Metric statistic:" + asvm.MetricStatistic); tnvaluation.Nodes.Add("Author:" + asvm.Author); tnvaluation.Nodes.Add("Year:" + asvm.Year); tnvaluation.Nodes.Add("Location:" + asvm.Location); tnvaluation.Nodes.Add("Other pollutants:" + asvm.OtherPollutants); try
                         {
                             tnvaluation.Nodes.Add("Reference:" + asvm.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Reference);
                             if (asvm.StartAge == "-1")
@@ -603,7 +603,7 @@ namespace BenMAP
                         treeNode.Nodes.Add("Health impact function dataset:" + AllSelectCRFunctionList.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.DataSetName);
                         treeNode.Nodes.Add("Endpoint group:" + AllSelectCRFunctionList.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroup);
                         treeNode.Nodes.Add("Endpoint:" + AllSelectCRFunctionList.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.EndPoint);
-                        treeNode.Nodes.Add("Pollutant:" + AllSelectCRFunctionList.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Pollutant.PollutantName);
+                        treeNode.Nodes.Add("Pollutant:" + AllSelectCRFunctionList.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.PollutantGroup.PollutantGroupName);
                         treeNode.Nodes.Add("Metric:" + AllSelectCRFunctionList.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName);
                         treeNode.Nodes.Add("Metric statistic:" + Enum.GetName(typeof(MetricStatic), AllSelectCRFunctionList.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.MetricStatistic));
                         if (AllSelectCRFunctionList.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric != null)

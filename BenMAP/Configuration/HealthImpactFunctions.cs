@@ -1360,7 +1360,7 @@ namespace BenMAP
                         }
                     }
 
-                    var query = from a in CommonClass.LstBaseControlGroup where a.Pollutant.PollutantID == crSelectFunction.BenMAPHealthImpactFunction.Pollutant.PollutantID select a;
+                    var query = from a in CommonClass.LstBaseControlGroup where a.Pollutant.PollutantID == crSelectFunction.BenMAPHealthImpactFunction.PollutantGroup.Pollutants.First().PollutantID select a;
                     if (query == null || query.Count() == 0)
                     {
                         return;

@@ -280,6 +280,30 @@ namespace BenMAP.Grid
             return null;
 
         }
+
+        public static List<BenMAPPollutantGroup> getAllPollutantGroups(int setupID)
+        {
+            try
+            {
+
+                List<BenMAPPollutantGroup> lstBenMAPPollutantGroups = new List<BenMAPPollutantGroup>();
+                ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                string commandText = string.Format("SELECT POLLUTANTGROUPID FROM POLLUTANTGROUPS where SetupID={0}", setupID);
+                System.Data.DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
+                foreach (DataRow dr in ds.Tables[0].Rows)
+                {
+                    BenMAPPollutantGroup pg = getPollutantGroupFromID(Int32.Parse(dr["POLLUTANTGROUPID"].ToString()));
+                    lstBenMAPPollutantGroups.Add(pg);
+                }
+                return lstBenMAPPollutantGroups;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+                return null;
+            }
+        }
+
         public static List<BenMAPPollutant> getAllPollutant(int setupID)
         {
             try
@@ -400,6 +424,56 @@ namespace BenMAP.Grid
                 return null;
             }
         }
+
+        public static BenMAPPollutantGroup getPollutantGroupFromID(int PollutantGroupID)
+        {
+            try
+            {
+
+                BenMAPPollutantGroup benMAPPollutantGroup = new BenMAPPollutantGroup();
+                ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                string commandText = string.Format("select PGName from PollutantGroups where PollutantGroupID ={0}", PollutantGroupID);
+                System.Data.DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
+                DataRow dr = ds.Tables[0].Rows[0];
+                benMAPPollutantGroup.PollutantGroupID = PollutantGroupID;
+                benMAPPollutantGroup.PollutantGroupName = dr["PGName"].ToString();
+                benMAPPollutantGroup.Pollutants = getPollutantGroupPollutants(PollutantGroupID);
+                      
+                return benMAPPollutantGroup;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+                return null;
+            }
+        }
+
+
+        public static List<BenMAPPollutant> getPollutantGroupPollutants(int PollutantGroupID)
+        {
+            try
+            {
+
+                List<BenMAPPollutant> pollutants = new List<BenMAPPollutant>();
+                ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                string commandText = string.Format("select pollutantid from PollutantGroupPollutants where PollutantGroupID ={0}", PollutantGroupID);
+                System.Data.DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
+                foreach (DataRow dr in ds.Tables[0].Rows)
+                {
+                    BenMAPPollutant poll = getPollutantFromID(Int32.Parse(dr["pollutantid"].ToString()));
+                    pollutants.Add(poll);
+                }                          
+
+                return pollutants;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+                return null;
+            }
+        }
+
+
         public static void getPopulationFromIDYear(int PopulationDatSetID, int Year)
         {
 
