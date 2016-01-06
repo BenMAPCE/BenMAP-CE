@@ -346,7 +346,7 @@ namespace BenMAP
             // 
             // chPollutant
             // 
-            this.chPollutant.AspectName = "Pollutant.PollutantName";
+            this.chPollutant.AspectName = "PollutantGroup.PollutantGroupName";
             this.chPollutant.Text = "Pollutant";
             this.chPollutant.Width = 74;
             // 
@@ -763,7 +763,7 @@ namespace BenMAP
             // 
             // olvColumn39
             // 
-            this.olvColumn39.AspectName = "BenMAPHealthImpactFunction.Pollutant.PollutantName";
+            this.olvColumn39.AspectName = "BenMAPHealthImpactFunction.PollutantGroup.PollutantGroupName";
             this.olvColumn39.IsEditable = false;
             this.olvColumn39.Text = "Pollutant";
             this.olvColumn39.Width = 115;
