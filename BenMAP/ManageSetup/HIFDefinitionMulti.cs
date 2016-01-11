@@ -80,7 +80,7 @@ namespace BenMAP
                 {
                     listFunctions.Add(dsFunctions.Tables[0].Rows[i][1].ToString());
                 }
-
+                 
                 commandText = "select * from BASELINEFUNCTIONALFORMS";
                 DataSet dsBaselineFunctions = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                 List<string> listBaselineFunctions = new List<string>();
@@ -282,6 +282,10 @@ namespace BenMAP
                     cboPrevalenceDataSet.Text = _healthImpacts.Prevalence;
                     cboVariableDataSet.Text = _healthImpacts.Variable;
                     // list = listCustom;
+
+                    if (_healthImpacts.BetaVariation == "Seasonal") bvSeasonal.Checked = true;
+                    else bvFullYear.Checked = true;
+                    
                 }
                 // Add new function
                 else 
@@ -913,7 +917,7 @@ namespace BenMAP
             {
                 /* Once betas are in database, list of CRFBetas will be updated here
                    based on the toggle to reflect full year or seasons */
-                if (bvFullYear.Checked) _healthImpacts.BetaVariation = "Full Year";
+                if (bvFullYear.Checked) _healthImpacts.BetaVariation = "Full year";
                 else _healthImpacts.BetaVariation = "Seasonal";
             }
             catch (Exception ex)

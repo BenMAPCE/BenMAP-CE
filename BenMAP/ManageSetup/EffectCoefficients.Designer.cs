@@ -54,6 +54,7 @@
             this.cboBetaDistribution = new System.Windows.Forms.ComboBox();
             this.lblBetaDisribution = new System.Windows.Forms.Label();
             this.lblBeta = new System.Windows.Forms.Label();
+            this.editVarBtn = new System.Windows.Forms.Button();
             this.showForSeasonal = new System.Windows.Forms.Panel();
             this.lblEnd = new System.Windows.Forms.Label();
             this.txtEnd = new System.Windows.Forms.TextBox();
@@ -61,7 +62,6 @@
             this.txtStart = new System.Windows.Forms.TextBox();
             this.lblSeason = new System.Windows.Forms.Label();
             this.txtSeason = new System.Windows.Forms.TextBox();
-            this.editVarBtn = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.lblVariable = new System.Windows.Forms.Label();
             this.lblModSpec = new System.Windows.Forms.Label();
@@ -104,7 +104,7 @@
             // 
             // grpCancelOK
             // 
-            this.grpCancelOK.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+            this.grpCancelOK.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.grpCancelOK.Controls.Add(this.nextBtn);
             this.grpCancelOK.Controls.Add(this.prevBtn);
@@ -158,6 +158,7 @@
             this.panel1.Controls.Add(this.cboBetaDistribution);
             this.panel1.Controls.Add(this.lblBetaDisribution);
             this.panel1.Controls.Add(this.lblBeta);
+            this.panel1.Controls.Add(this.editVarBtn);
             this.panel1.Controls.Add(this.showForSeasonal);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(3, 18);
@@ -181,7 +182,7 @@
             // 
             // txtBetaParameter1
             // 
-            this.txtBetaParameter1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.txtBetaParameter1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtBetaParameter1.Location = new System.Drawing.Point(61, 18);
             this.txtBetaParameter1.Name = "txtBetaParameter1";
@@ -200,7 +201,7 @@
             // 
             // txtBetaParameter2
             // 
-            this.txtBetaParameter2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.txtBetaParameter2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtBetaParameter2.Location = new System.Drawing.Point(211, 17);
             this.txtBetaParameter2.Name = "txtBetaParameter2";
@@ -219,7 +220,7 @@
             // 
             // txtBconstantValue
             // 
-            this.txtBconstantValue.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+            this.txtBconstantValue.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtBconstantValue.Location = new System.Drawing.Point(211, 183);
             this.txtBconstantValue.Name = "txtBconstantValue";
@@ -229,7 +230,7 @@
             // 
             // txtAconstantValue
             // 
-            this.txtAconstantValue.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+            this.txtAconstantValue.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtAconstantValue.Location = new System.Drawing.Point(211, 155);
             this.txtAconstantValue.Name = "txtAconstantValue";
@@ -239,7 +240,7 @@
             // 
             // txtCconstantValue
             // 
-            this.txtCconstantValue.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+            this.txtCconstantValue.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtCconstantValue.Location = new System.Drawing.Point(211, 211);
             this.txtCconstantValue.Name = "txtCconstantValue";
@@ -249,7 +250,7 @@
             // 
             // lblConstantValue
             // 
-            this.lblConstantValue.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+            this.lblConstantValue.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblConstantValue.AutoSize = true;
             this.lblConstantValue.Location = new System.Drawing.Point(209, 139);
@@ -260,7 +261,7 @@
             // 
             // lblConstantDescription
             // 
-            this.lblConstantDescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+            this.lblConstantDescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblConstantDescription.AutoSize = true;
             this.lblConstantDescription.Location = new System.Drawing.Point(59, 140);
@@ -271,7 +272,7 @@
             // 
             // txtAconstantDescription
             // 
-            this.txtAconstantDescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+            this.txtAconstantDescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtAconstantDescription.Location = new System.Drawing.Point(61, 157);
             this.txtAconstantDescription.Name = "txtAconstantDescription";
@@ -280,7 +281,7 @@
             // 
             // lblC
             // 
-            this.lblC.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+            this.lblC.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblC.AutoSize = true;
             this.lblC.Location = new System.Drawing.Point(39, 216);
@@ -291,7 +292,7 @@
             // 
             // lblA
             // 
-            this.lblA.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+            this.lblA.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblA.AutoSize = true;
             this.lblA.Location = new System.Drawing.Point(39, 161);
@@ -302,7 +303,7 @@
             // 
             // txtCconstantDescription
             // 
-            this.txtCconstantDescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+            this.txtCconstantDescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtCconstantDescription.Location = new System.Drawing.Point(61, 212);
             this.txtCconstantDescription.Name = "txtCconstantDescription";
@@ -311,7 +312,7 @@
             // 
             // lblB
             // 
-            this.lblB.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+            this.lblB.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblB.AutoSize = true;
             this.lblB.Location = new System.Drawing.Point(39, 189);
@@ -322,7 +323,7 @@
             // 
             // txtBconstantDescription
             // 
-            this.txtBconstantDescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+            this.txtBconstantDescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtBconstantDescription.Location = new System.Drawing.Point(61, 184);
             this.txtBconstantDescription.Name = "txtBconstantDescription";
@@ -368,6 +369,18 @@
             this.lblBeta.TabIndex = 38;
             this.lblBeta.Text = "Beta:";
             // 
+            // editVarBtn
+            // 
+            this.editVarBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.editVarBtn.Location = new System.Drawing.Point(110, 100);
+            this.editVarBtn.Margin = new System.Windows.Forms.Padding(0);
+            this.editVarBtn.Name = "editVarBtn";
+            this.editVarBtn.Size = new System.Drawing.Size(186, 27);
+            this.editVarBtn.TabIndex = 50;
+            this.editVarBtn.Text = "Edit Variance/ Covariance";
+            this.editVarBtn.UseVisualStyleBackColor = true;
+            this.editVarBtn.Click += new System.EventHandler(this.editVarBtn_Click);
+            // 
             // showForSeasonal
             // 
             this.showForSeasonal.AutoSize = true;
@@ -378,7 +391,6 @@
             this.showForSeasonal.Controls.Add(this.txtStart);
             this.showForSeasonal.Controls.Add(this.lblSeason);
             this.showForSeasonal.Controls.Add(this.txtSeason);
-            this.showForSeasonal.Controls.Add(this.editVarBtn);
             this.showForSeasonal.Dock = System.Windows.Forms.DockStyle.Fill;
             this.showForSeasonal.Location = new System.Drawing.Point(0, 0);
             this.showForSeasonal.Margin = new System.Windows.Forms.Padding(0);
@@ -397,7 +409,7 @@
             // 
             // txtEnd
             // 
-            this.txtEnd.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.txtEnd.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtEnd.Enabled = false;
             this.txtEnd.Location = new System.Drawing.Point(308, 19);
@@ -416,7 +428,7 @@
             // 
             // txtStart
             // 
-            this.txtStart.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.txtStart.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtStart.BackColor = System.Drawing.SystemColors.Window;
             this.txtStart.Enabled = false;
@@ -437,7 +449,7 @@
             // 
             // txtSeason
             // 
-            this.txtSeason.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.txtSeason.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtSeason.BackColor = System.Drawing.SystemColors.Window;
             this.txtSeason.Enabled = false;
@@ -446,18 +458,6 @@
             this.txtSeason.ReadOnly = true;
             this.txtSeason.Size = new System.Drawing.Size(183, 22);
             this.txtSeason.TabIndex = 37;
-            // 
-            // editVarBtn
-            // 
-            this.editVarBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.editVarBtn.Location = new System.Drawing.Point(110, 98);
-            this.editVarBtn.Margin = new System.Windows.Forms.Padding(0);
-            this.editVarBtn.Name = "editVarBtn";
-            this.editVarBtn.Size = new System.Drawing.Size(186, 27);
-            this.editVarBtn.TabIndex = 50;
-            this.editVarBtn.Text = "Edit Variance/ Covariance";
-            this.editVarBtn.UseVisualStyleBackColor = true;
-            this.editVarBtn.Click += new System.EventHandler(this.editVarBtn_Click);
             // 
             // groupBox1
             // 
@@ -488,7 +488,7 @@
             // 
             // txtModelSpec
             // 
-            this.txtModelSpec.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.txtModelSpec.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtModelSpec.BackColor = System.Drawing.SystemColors.Window;
             this.txtModelSpec.Enabled = false;
@@ -510,7 +510,7 @@
             // 
             // txtPollutant
             // 
-            this.txtPollutant.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.txtPollutant.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtPollutant.BackColor = System.Drawing.SystemColors.Window;
             this.txtPollutant.Enabled = false;
@@ -532,7 +532,7 @@
             // 
             // txtSeasMetric
             // 
-            this.txtSeasMetric.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.txtSeasMetric.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtSeasMetric.BackColor = System.Drawing.SystemColors.Window;
             this.txtSeasMetric.Enabled = false;
@@ -545,7 +545,7 @@
             // 
             // txtVariable
             // 
-            this.txtVariable.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.txtVariable.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtVariable.BackColor = System.Drawing.SystemColors.Window;
             this.txtVariable.Enabled = false;
@@ -568,7 +568,7 @@
             // 
             // cboSeason
             // 
-            this.cboSeason.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.cboSeason.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cboSeason.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboSeason.FormattingEnabled = true;
@@ -576,7 +576,6 @@
             this.cboSeason.Name = "cboSeason";
             this.cboSeason.Size = new System.Drawing.Size(131, 22);
             this.cboSeason.TabIndex = 58;
-            //this.cboSeason.SelectedIndexChanged += new System.EventHandler(this.cboSeason_SelectedValueChanged);
             // 
             // EffectCoefficients
             // 

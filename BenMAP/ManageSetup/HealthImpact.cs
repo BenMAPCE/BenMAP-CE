@@ -20,6 +20,7 @@ namespace BenMAP
             newCopy.Endpoint = String.Copy(this.Endpoint);
             newCopy.Ethnicity = String.Copy(this.Ethnicity);
             newCopy.Function = String.Copy(this.Function);
+            newCopy.FunctionID = String.Copy(this.FunctionID);
             newCopy.Gender = String.Copy(this.Gender);
             newCopy.Incidence = String.Copy(this.Incidence);
             newCopy.Location = String.Copy(this.Location);
@@ -53,6 +54,13 @@ namespace BenMAP
             }
 
             return this;
+        }
+
+        private string _functionID;
+        public string FunctionID
+        {
+            get { return _functionID; }
+            set { _functionID = value; }
         }
 
         private string _endpointGroup;
