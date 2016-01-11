@@ -57,15 +57,15 @@ namespace BenMAP
             this.olvColumn19 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn20 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn21 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvColumn33 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvColumn23 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvColumn24 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvColumn25 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.lblHealthImpactFunctionName = new System.Windows.Forms.Label();
             this.txtHealthImpactFunction = new System.Windows.Forms.TextBox();
             this.grpCancelOK = new System.Windows.Forms.GroupBox();
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.olvColumn23 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvColumn24 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.statusStrip1.SuspendLayout();
             this.grpHealthImpactFunction.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
@@ -288,7 +288,7 @@ namespace BenMAP
             this.olvFunction.AllColumns.Add(this.olvColumn22);
             this.olvFunction.AllColumns.Add(this.olvColumn23);
             this.olvFunction.AllColumns.Add(this.olvColumn24);
-            this.olvFunction.AllColumns.Add(this.olvColumn33);
+            this.olvFunction.AllColumns.Add(this.olvColumn25);
             this.olvFunction.AllowColumnReorder = true;
             this.olvFunction.AllowDrop = true;
             this.olvFunction.AlternateRowBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(240)))), ((int)(((byte)(220)))));
@@ -364,7 +364,7 @@ namespace BenMAP
             // 
             // olvcPollutant
             // 
-            this.olvcPollutant.AspectName = "pollutantname";
+            this.olvcPollutant.AspectName = "pgname";
             this.olvcPollutant.Text = "Pollutant";
             this.olvcPollutant.Width = 100;
             // 
@@ -480,13 +480,25 @@ namespace BenMAP
             this.olvColumn21.Text = "Prevalence";
             this.olvColumn21.Width = 100;
             // 
-            // olvColumn33
+            // olvColumn23
             // 
-            this.olvColumn33.AspectName = "crfunctionid";
-            this.olvColumn33.DisplayIndex = 33;
-            this.olvColumn33.IsVisible = false;
-            this.olvColumn33.Text = "CRFuntionID";
-            this.olvColumn33.Width = 100;
+            this.olvColumn23.AspectName = "msdescription";
+            this.olvColumn23.Text = "Model Specification";
+            this.olvColumn23.Width = 120;
+            // 
+            // olvColumn24
+            // 
+            this.olvColumn24.AspectName = "betavariationname";
+            this.olvColumn24.Text = "Beta Variation";
+            this.olvColumn24.Width = 90;
+            // 
+            // olvColumn25
+            // 
+            this.olvColumn25.AspectName = "crfunctionid";
+            this.olvColumn25.DisplayIndex = 33;
+            this.olvColumn25.IsVisible = false;
+            this.olvColumn25.Text = "CRFuntionID";
+            this.olvColumn25.Width = 100;
             // 
             // lblHealthImpactFunctionName
             // 
@@ -539,18 +551,6 @@ namespace BenMAP
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Visible = false;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
-            // 
-            // olvColumn23
-            // 
-            this.olvColumn23.AspectName = "msdescription";
-            this.olvColumn23.Text = "Model Specification";
-            this.olvColumn23.Width = 120;
-            // 
-            // olvColumn24
-            // 
-            this.olvColumn24.AspectName = "betavariationname";
-            this.olvColumn24.Text = "Beta Variation";
-            this.olvColumn24.Width = 90;
             // 
             // HealthImpactDataSetDefinition
             // 
@@ -626,7 +626,7 @@ namespace BenMAP
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
         private System.Windows.Forms.CheckBox chbGroup;
-        private BrightIdeasSoftware.OLVColumn olvColumn33;
+        private BrightIdeasSoftware.OLVColumn olvColumn25;
         private System.Windows.Forms.Button btnOutPut;
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;

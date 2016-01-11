@@ -24,6 +24,7 @@ namespace BenMAP
         private bool _isEdit = false;
         private const int HEALTHIMPACTDATASETID = 6; // BenMAP-322 - hardcoded to health impact dataset type
         List<int> lstdeleteCRFunctionid = new List<int>();
+        // Dictionary<int, List<CRFVariable>> dicVariables = new Dictionary<int, List<CRFVariable>>(); 
 
         public HealthImpactDataSetDefinition()
         {
@@ -97,6 +98,9 @@ namespace BenMAP
                 dr[23] = frm.HealthImpacts.ModelSpec;
                 dr[24] = frm.HealthImpacts.BetaVariation;
                 dr[25] = AddCount;
+
+                // dicVariables.Add(AddCount, frm.HealthImpacts.PollVariables);
+
                 // ToEdit -- Custom - move to new form or remove
                 /* if (frm.HealthImpacts.BetaDistribution == "Custom" && frm.listCustom.Count > 0)
                     dicCustomValue.Add(AddCount, frm.listCustom); */
@@ -832,7 +836,7 @@ namespace BenMAP
                             PollutantID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
                         }
                         else
-                        {
+                        { 
                             if (!undefinePollutant.Contains(_dt.Rows[row][2].ToString()))
                             {
                                 undefinePollutant += "'" + _dt.Rows[row][2].ToString() + "', ";
@@ -1134,11 +1138,11 @@ namespace BenMAP
                     {
                         foreach (Object olv in olvFunction.SelectedObjects)
                         {
-                            if (olvColumn33.GetValue(olv).ToString() == _dt.Rows[i][25].ToString())
+                            if (olvColumn25.GetValue(olv).ToString() == _dt.Rows[i][25].ToString())
                             {
-                                if (dicCustomValue.ContainsKey(Convert.ToInt32(olvColumn33.GetValue(olv).ToString())))
-                                    dicCustomValue.Remove(Convert.ToInt32(olvColumn33.GetValue(olv).ToString()));
-                                lstdeleteCRFunctionid.Add(Convert.ToInt32(olvColumn33.GetValue(olv).ToString()));
+                                if (dicCustomValue.ContainsKey(Convert.ToInt32(olvColumn25.GetValue(olv).ToString())))
+                                    dicCustomValue.Remove(Convert.ToInt32(olvColumn25.GetValue(olv).ToString()));
+                                lstdeleteCRFunctionid.Add(Convert.ToInt32(olvColumn25.GetValue(olv).ToString()));
                                 _dt.Rows.Remove(_dt.Rows[i]);
                             }
                         }
@@ -1183,6 +1187,7 @@ namespace BenMAP
                 healthImpact.Variable = olvColumn22.GetValue(olvFunction.SelectedObject).ToString();
                 healthImpact.ModelSpec = olvColumn23.GetValue(olvFunction.SelectedObject).ToString();
                 healthImpact.BetaVariation = olvColumn24.GetValue(olvFunction.SelectedObject).ToString();
+                healthImpact.FunctionID = olvColumn25.GetValue(olvFunction.SelectedObject).ToString();
 
                 healthImpact.PollVariables = new List<CRFVariable>();
 
@@ -1227,7 +1232,7 @@ namespace BenMAP
                 if (rth != DialogResult.OK) { return; }
                 for (int i = 0; i < _dt.Rows.Count; i++)
                 {
-                    if (_dt.Rows[i][25].ToString() == olvColumn33.GetValue(olvFunction.SelectedObject).ToString())
+                    if (_dt.Rows[i][25].ToString() == olvColumn25.GetValue(olvFunction.SelectedObject).ToString())
                     {
                         _dt.Rows[i][0] = frm.HealthImpacts.EndpointGroup;
                         _dt.Rows[i][1] = frm.HealthImpacts.Endpoint;
@@ -1254,7 +1259,7 @@ namespace BenMAP
                         _dt.Rows[i][22] = frm.HealthImpacts.Variable;
                         _dt.Rows[i][23] = frm.HealthImpacts.ModelSpec;
                         _dt.Rows[i][24] = frm.HealthImpacts.BetaVariation;
-                        _dt.Rows[i][25] = Convert.ToInt32(olvColumn33.GetValue(olvFunction.SelectedObject).ToString());
+                        _dt.Rows[i][25] = Convert.ToInt32(olvColumn25.GetValue(olvFunction.SelectedObject).ToString());
 
                         // ToEdit -- Custom - move to new form or remove
                         /* if (frm.HealthImpacts.BetaDistribution == "Custom" && frm.listCustom.Count > 0)
@@ -1292,7 +1297,7 @@ namespace BenMAP
                 {
                     commandText = string.Format("select crfunctiondatasetname from crfunctiondatasets where crfunctiondatasetid={0}", _datasetID);
                     txtHealthImpactFunction.Text = Convert.ToString(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
-                    commandText = string.Format("select b.endpointgroupname,c.endpointname,d.pollutantname,e.metricname,f.seasonalmetricname, " +
+                    /* commandText = string.Format("select b.endpointgroupname,c.endpointname,d.pgname,e.metricname,f.seasonalmetricname, " +
                             "case when Metricstatistic = 0 then 'None'  when Metricstatistic = 1 then 'Mean' when Metricstatistic = 2 " +
                             "then 'Median' when Metricstatistic = 3 then 'Max' when Metricstatistic = 4 then 'Min' when Metricstatistic = 5 " +
                             "then 'Sum'  END as MetricstatisticName,author,yyear,g.locationtypename,location,otherpollutants,qualifier,reference,race, " +
@@ -1307,6 +1312,25 @@ namespace BenMAP
                             "left join seasonalmetrics f on(a.seasonalmetricid = f.seasonalmetricid) " +
                             "left join locationtype g on(a.locationtypeid = g.locationtypeid) " +
                             "left join functionalforms h on(a.functionalformid = h.functionalformid) " +
+                            "left join baselinefunctionalforms i on(a.baselinefunctionalformid = i.functionalformid) " +
+                            "left join incidencedatasets j on(a.incidencedatasetid = j.incidencedatasetid) " +
+                            "left join incidencedatasets k on(a.prevalencedatasetid = k.incidencedatasetid) " +
+                            "left join setupvariabledatasets l on(a.variabledatasetid = l.setupvariabledatasetid) " +
+                            "where CRFUNCTIONDATASETID={0}", _datasetID); */
+
+                    commandText = string.Format("select b.endpointgroupname,c.endpointname,d.pgname,e.metricname,f.seasonalmetricname, a.metadataid, " +
+                            "case when Metricstatistic = 0 then 'None'  when Metricstatistic = 1 then 'Mean' when Metricstatistic = 2 " +
+                            "then 'Median' when Metricstatistic = 3 then 'Max' when Metricstatistic = 4 then 'Min' when Metricstatistic = 5 " +
+                            "then 'Sum'  END as MetricstatisticName,author,yyear,g.locationtypename,location,otherpollutants,qualifier,reference, " +
+                            "race,ethnicity,gender,startage,endage,h.functionalformtext,i.functionalformtext,j.incidencedatasetname, " +
+                            "k.incidencedatasetname,l.setupvariabledatasetname as variabeldatasetname, m.MSDescription, bv.BetaVariationName, a.CRFUNCTIONID " +
+                            "from crfunctions a join ModelSpecifications m on (a.MSID = m.MSID) " +
+                            "join BetaVariations bv on (a.BetaVariationID = bv.BetaVariationID) " +
+                            "join endpointgroups b on (a.ENDPOINTGROUPID = b.ENDPOINTGROUPID) " +
+                            "join endpoints c on(a.endpointid = c.endpointid) " +
+                            "join pollutantgroups d on(a.POLLUTANTGROUPID = d.POLLUTANTGROUPID) " +
+                            "join metrics e on(a.metricid = e.metricid) left join seasonalmetrics f on(a.seasonalmetricid = f.seasonalmetricid) " +
+                            "left join locationtype g on(a.locationtypeid = g.locationtypeid) join functionalforms h on(a.functionalformid = h.functionalformid) " +
                             "left join baselinefunctionalforms i on(a.baselinefunctionalformid = i.functionalformid) " +
                             "left join incidencedatasets j on(a.incidencedatasetid = j.incidencedatasetid) " +
                             "left join incidencedatasets k on(a.prevalencedatasetid = k.incidencedatasetid) " +

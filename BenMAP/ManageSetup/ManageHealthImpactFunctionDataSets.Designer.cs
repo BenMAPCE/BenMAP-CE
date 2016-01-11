@@ -289,7 +289,7 @@ namespace BenMAP
             // 
             // olvColumn2
             // 
-            this.olvColumn2.AspectName = "pollutantname";
+            this.olvColumn2.AspectName = "pgname";
             this.olvColumn2.Text = "Pollutant";
             this.olvColumn2.Width = 100;
             // 
