@@ -28,14 +28,8 @@ namespace BenMAP
             _hif = hif.DeepCopy();
             selected = sel;
             
-            if (_hif.BetaVariation == "Seasonal")
-            {
-                seasonal = true;
-            }
-            else
-            {
-                seasonal = false;
-            }
+            if (_hif.BetaVariation == "Seasonal") seasonal = true;
+            else seasonal = false;
         }
 
         // Some of these fields will be filled dynamically
@@ -50,22 +44,24 @@ namespace BenMAP
                 txtPollutant.Text = selectedVariable.PollutantName;
                 txtModelSpec.Text = _hif.ModelSpec;
 
-                cboBetaDistribution.Items.Add("None");
+                // cboBetaDistribution.Items.Add("None");
                 cboBetaDistribution.Items.Add("Normal");
-                cboBetaDistribution.Items.Add("Triangular");
+                /* cboBetaDistribution.Items.Add("Triangular");
                 cboBetaDistribution.Items.Add("Poisson");
                 cboBetaDistribution.Items.Add("Binomial");
                 cboBetaDistribution.Items.Add("LogNormal");
                 cboBetaDistribution.Items.Add("Uniform");
                 cboBetaDistribution.Items.Add("Exponential");
                 cboBetaDistribution.Items.Add("Geometric");
-                cboBetaDistribution.Items.Add("Weibull");
+                cboBetaDistribution.Items.Add("Weibull"); 
                 cboBetaDistribution.Items.Add("Gamma");
                 cboBetaDistribution.Items.Add("Logistic");
                 cboBetaDistribution.Items.Add("Beta");
                 cboBetaDistribution.Items.Add("Pareto");
                 cboBetaDistribution.Items.Add("Cauchy");
-                cboBetaDistribution.Items.Add("Custom");
+                cboBetaDistribution.Items.Add("Custom"); */
+
+                cboBetaDistribution.SelectedIndex = 0;
 
                 if (_hif.PollVariables.Count > 1)
                 {
@@ -131,7 +127,7 @@ namespace BenMAP
                     {
                         cboSeason.Items.Add(string.Format("Season {0}", i));
                     }
-
+                     
                     i = 0;
                     foreach (var pv in _hif.PollVariables)
                     {
@@ -150,17 +146,22 @@ namespace BenMAP
                     dr = ds.Tables[0].Rows[0];
 
                     txtBeta.Text = dr["beta"].ToString();
+
                     if (dr["p1beta"].ToString() == string.Empty) txtBetaParameter1.Text = "0";
                     else txtBetaParameter1.Text = dr["p1beta"].ToString();
+
                     if (dr["p2beta"].ToString() == string.Empty) txtBetaParameter2.Text = "0";
                     else txtBetaParameter2.Text = dr["p2beta"].ToString();
+
                     if (dr["a"].ToString() == string.Empty) txtAconstantValue.Text = "0";
                     else txtAconstantValue.Text = dr["a"].ToString();
                     txtAconstantDescription.Text = dr["namea"].ToString();
-                    if (dr["a"].ToString() == string.Empty) txtBconstantValue.Text = "0";
+
+                    if (dr["b"].ToString() == string.Empty) txtBconstantValue.Text = "0";
                     else txtBconstantValue.Text = dr["b"].ToString();
                     txtBconstantDescription.Text = dr["nameb"].ToString();
-                    if (dr["a"].ToString() == string.Empty) txtCconstantValue.Text = "0";
+
+                    if (dr["c"].ToString() == string.Empty) txtCconstantValue.Text = "0";
                     else txtCconstantValue.Text = dr["c"].ToString();
                     txtCconstantDescription.Text = dr["namec"].ToString();
 
@@ -169,6 +170,32 @@ namespace BenMAP
                 else
                 {
                     // TBD
+
+                    commandText = string.Format("select beta, p1beta, p2beta, a, namea, b, nameb, c, namec from crfvariables vars inner join crfbetas betas on betas.crfvariableid=vars.crfvariableid where crfunctionid={0} and vars.pollutant1id={2}", Convert.ToInt32(_hif.FunctionID), _hif.PollVariables.ElementAt(selected).PollutantID);
+                    DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+                    DataRow dr = ds.Tables[0].Rows[0];
+
+                    txtBeta.Text = dr["beta"].ToString();
+
+                    if (dr["p1beta"].ToString() == string.Empty) txtBetaParameter1.Text = "0";
+                    else txtBetaParameter1.Text = dr["p1beta"].ToString();
+
+                    if (dr["p2beta"].ToString() == string.Empty) txtBetaParameter2.Text = "0";
+                    else txtBetaParameter2.Text = dr["p2beta"].ToString();
+
+                    if (dr["a"].ToString() == string.Empty) txtAconstantValue.Text = "0";
+                    else txtAconstantValue.Text = dr["a"].ToString();
+                    txtAconstantDescription.Text = dr["namea"].ToString();
+
+                    if (dr["b"].ToString() == string.Empty) txtBconstantValue.Text = "0";
+                    else txtBconstantValue.Text = dr["b"].ToString();
+                    txtBconstantDescription.Text = dr["nameb"].ToString();
+
+                    if (dr["c"].ToString() == string.Empty) txtCconstantValue.Text = "0";
+                    else txtCconstantValue.Text = dr["c"].ToString();
+                    txtCconstantDescription.Text = dr["namec"].ToString();
+
+                    txtSeasMetric.Text = "None";
                 }
             }
 
@@ -268,6 +295,8 @@ namespace BenMAP
             txtVariable.Text = selectedVariable.VariableName;
             txtPollutant.Text = selectedVariable.PollutantName;
             txtModelSpec.Text = _hif.ModelSpec;
+
+            // Need to fill object in HIF form
             txtAconstantDescription.Text = selectedVariable.PollBetas[selectedSeason].AConstantName;
             txtBconstantDescription.Text = selectedVariable.PollBetas[selectedSeason].BConstantName;
             txtCconstantDescription.Text = selectedVariable.PollBetas[selectedSeason].CConstantName;
@@ -319,17 +348,22 @@ namespace BenMAP
                 dr = ds.Tables[0].Rows[0];
 
                 txtBeta.Text = dr["beta"].ToString();
+
                 if (dr["p1beta"].ToString() == string.Empty) txtBetaParameter1.Text = "0";
                 else txtBetaParameter1.Text = dr["p1beta"].ToString();
+
                 if (dr["p2beta"].ToString() == string.Empty) txtBetaParameter2.Text = "0";
                 else txtBetaParameter2.Text = dr["p2beta"].ToString();
+
                 if (dr["a"].ToString() == string.Empty) txtAconstantValue.Text = "0";
                 else txtAconstantValue.Text = dr["a"].ToString();
                 txtAconstantDescription.Text = dr["namea"].ToString();
-                if (dr["a"].ToString() == string.Empty) txtBconstantValue.Text = "0";
+
+                if (dr["b"].ToString() == string.Empty) txtBconstantValue.Text = "0";
                 else txtBconstantValue.Text = dr["b"].ToString();
                 txtBconstantDescription.Text = dr["nameb"].ToString();
-                if (dr["a"].ToString() == string.Empty) txtCconstantValue.Text = "0";
+
+                if (dr["c"].ToString() == string.Empty) txtCconstantValue.Text = "0";
                 else txtCconstantValue.Text = dr["c"].ToString();
                 txtCconstantDescription.Text = dr["namec"].ToString();
             }

@@ -36,6 +36,9 @@
             "P2 sub"}, -1);
             this.cboPollutant = new System.Windows.Forms.ComboBox();
             this.grpPollutant = new System.Windows.Forms.GroupBox();
+            this.varList = new System.Windows.Forms.ListView();
+            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.cboMetric = new System.Windows.Forms.ComboBox();
             this.lblMetric = new System.Windows.Forms.Label();
             this.cboSeasonalMetric = new System.Windows.Forms.ComboBox();
@@ -43,9 +46,6 @@
             this.lblSeasonalMetric = new System.Windows.Forms.Label();
             this.lblMetricStatistic = new System.Windows.Forms.Label();
             this.pollLabel = new System.Windows.Forms.Label();
-            this.varList = new System.Windows.Forms.ListView();
-            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.editEffect = new System.Windows.Forms.Button();
             this.betaVarGroup = new System.Windows.Forms.Panel();
             this.lblBetaVar = new System.Windows.Forms.Label();
@@ -124,6 +124,7 @@
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.grpCancelOK = new System.Windows.Forms.GroupBox();
+            this.dragDropLabel = new System.Windows.Forms.Label();
             this.grpPollutant.SuspendLayout();
             this.betaVarGroup.SuspendLayout();
             this.grpEndpoint.SuspendLayout();
@@ -177,6 +178,36 @@
             this.grpPollutant.Size = new System.Drawing.Size(317, 344);
             this.grpPollutant.TabIndex = 2;
             this.grpPollutant.TabStop = false;
+            // 
+            // varList
+            // 
+            this.varList.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.varList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader1,
+            this.columnHeader2});
+            this.varList.FullRowSelect = true;
+            this.varList.GridLines = true;
+            this.varList.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
+            this.varList.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
+            listViewItem1,
+            listViewItem2});
+            this.varList.Location = new System.Drawing.Point(125, 109);
+            this.varList.Margin = new System.Windows.Forms.Padding(2);
+            this.varList.Name = "varList";
+            this.varList.Size = new System.Drawing.Size(185, 197);
+            this.varList.TabIndex = 18;
+            this.varList.UseCompatibleStateImageBehavior = false;
+            this.varList.View = System.Windows.Forms.View.Details;
+            // 
+            // columnHeader1
+            // 
+            this.columnHeader1.Text = "Variable";
+            this.columnHeader1.Width = 58;
+            // 
+            // columnHeader2
+            // 
+            this.columnHeader2.Text = "Pollutant";
+            this.columnHeader2.Width = 125;
             // 
             // cboMetric
             // 
@@ -250,36 +281,6 @@
             this.pollLabel.Size = new System.Drawing.Size(74, 14);
             this.pollLabel.TabIndex = 22;
             this.pollLabel.Text = "Pollutant(s):";
-            // 
-            // varList
-            // 
-            this.varList.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.varList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader1,
-            this.columnHeader2});
-            this.varList.FullRowSelect = true;
-            this.varList.GridLines = true;
-            this.varList.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
-            this.varList.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem1,
-            listViewItem2});
-            this.varList.Location = new System.Drawing.Point(125, 109);
-            this.varList.Margin = new System.Windows.Forms.Padding(2);
-            this.varList.Name = "varList";
-            this.varList.Size = new System.Drawing.Size(185, 197);
-            this.varList.TabIndex = 18;
-            this.varList.UseCompatibleStateImageBehavior = false;
-            this.varList.View = System.Windows.Forms.View.Details;
-            // 
-            // columnHeader1
-            // 
-            this.columnHeader1.Text = "Variable";
-            this.columnHeader1.Width = 58;
-            // 
-            // columnHeader2
-            // 
-            this.columnHeader2.Text = "Pollutant";
-            this.columnHeader2.Width = 125;
             // 
             // editEffect
             // 
@@ -1113,6 +1114,7 @@
             // btnOK
             // 
             this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnOK.Enabled = false;
             this.btnOK.Location = new System.Drawing.Point(734, 20);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 27);
@@ -1136,6 +1138,7 @@
             // 
             this.grpCancelOK.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.grpCancelOK.Controls.Add(this.dragDropLabel);
             this.grpCancelOK.Controls.Add(this.btnOK);
             this.grpCancelOK.Controls.Add(this.btnCancel);
             this.grpCancelOK.Location = new System.Drawing.Point(10, 600);
@@ -1143,6 +1146,16 @@
             this.grpCancelOK.Size = new System.Drawing.Size(831, 54);
             this.grpCancelOK.TabIndex = 25;
             this.grpCancelOK.TabStop = false;
+            // 
+            // dragDropLabel
+            // 
+            this.dragDropLabel.AutoSize = true;
+            this.dragDropLabel.ForeColor = System.Drawing.Color.Red;
+            this.dragDropLabel.Location = new System.Drawing.Point(6, 26);
+            this.dragDropLabel.Name = "dragDropLabel";
+            this.dragDropLabel.Size = new System.Drawing.Size(355, 14);
+            this.dragDropLabel.TabIndex = 12;
+            this.dragDropLabel.Text = "Editing disabled for demo. Any changes made will not be saved.";
             // 
             // HIFDefinitionMulti
             // 
@@ -1181,6 +1194,7 @@
             this.panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudownStartAge)).EndInit();
             this.grpCancelOK.ResumeLayout(false);
+            this.grpCancelOK.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -1276,5 +1290,6 @@
         private System.Windows.Forms.ComboBox cboMetricStatistic;
         private System.Windows.Forms.Label lblSeasonalMetric;
         private System.Windows.Forms.Label lblMetricStatistic;
+        private System.Windows.Forms.Label dragDropLabel;
     }
 }

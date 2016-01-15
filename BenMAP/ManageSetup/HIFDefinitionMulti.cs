@@ -9,6 +9,8 @@ using System.Windows.Forms;
 using ESIL.DBUtility;
 using System.Text.RegularExpressions;
 using BenMAP.Tools;
+using System.IO;
+using System.Text;
 
 namespace BenMAP
 {
@@ -318,6 +320,8 @@ namespace BenMAP
 
                 commandText = "select ETHNICITYNAME from ETHNICITY";
                 ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+
+
                 cboEthnicity.DataSource = ds.Tables[0];
                 cboEthnicity.DisplayMember = "ETHNICITYNAME";
                 cboEthnicity.SelectedIndex = -1;
@@ -484,8 +488,11 @@ namespace BenMAP
                     {
                         foreach (var item2 in firstOrder)
                         {
-                            if (item1.CompareTo(item2) > 0) { foHashSet.Add(item2 + "*" + item1); }
-                            else { foHashSet.Add(item1 + "*" + item2); }
+                            if (item1 != item2)
+                            {
+                                if (item1.CompareTo(item2) > 0) { foHashSet.Add(item2 + "*" + item1); }
+                                else { foHashSet.Add(item1 + "*" + item2); }
+                            }
                         }
                     }
                     foreach (var toAdd in foHashSet)
