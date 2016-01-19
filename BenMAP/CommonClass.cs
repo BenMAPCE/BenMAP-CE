@@ -2785,6 +2785,26 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
 
     [Serializable]
     [ProtoContract]
+    public class BetaVariation
+    {
+        [ProtoMember(1)]
+        public int BetaVariationID;
+        [ProtoMember(2)]
+        public string BetaVariationName;       
+    }
+
+    [Serializable]
+    [ProtoContract]
+    public class ModelSpecification
+    {
+        [ProtoMember(1)]
+        public int MSID;
+        [ProtoMember(2)]
+        public string MSDescription;
+    }
+
+    [Serializable]
+    [ProtoContract]
     public class SeasonalMetric
     {
         [ProtoMember(1)]
@@ -3560,6 +3580,10 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
         public string PrevalenceDataSetName;
         [ProtoMember(42)]
         public string VariableDataSetName;
+        [ProtoMember(43)]
+        public ModelSpecification ModelSpecification;
+        [ProtoMember(44)]
+        public BetaVariation BetaVariation;
     }
 
     [Serializable]

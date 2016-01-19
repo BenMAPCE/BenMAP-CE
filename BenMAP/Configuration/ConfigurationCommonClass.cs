@@ -517,7 +517,7 @@ namespace BenMAP.Configuration
     + " MetricID,SeasonalMetricID,MetricStatistic,Author,YYear,Location,OtherPollutants,Qualifier,Reference,Race,Gender,Startage,Endage,a.FunctionalFormid,d.FunctionalFormText,"
     + " a.IncidenceDatasetID,a.PrevalenceDatasetID,a.VariableDatasetID,betas.Beta,dt.DistributionName as DistBeta,betas.P1Beta,betas.P2Beta,betas.A,betas.NameA,betas.B,betas.NameB,betas.C,betas.NameC,"
     + " a.BaselineFunctionalFormID,e.FunctionalFormText as BaselineFunctionalFormText,Ethnicity,Percentile,Locationtypeid, g.IncidenceDataSetName,i.IncidenceDataSetName as PrevalenceDataSetName,"
-    + " h.SetupVariableDataSetName as VariableDatasetName"
+    + " h.SetupVariableDataSetName as VariableDatasetName, a.MSID, a.BetaVariationID"
     + " from crFunctions a"
     + " join CRFVariables vars on a.CRFunctionID = vars.CRFunctionID"
     + " join CRFBetas betas on vars.CRFVariableID = betas.CRFVariableID"
@@ -556,8 +556,14 @@ namespace BenMAP.Configuration
 
                 benMapHealthImpactFunction.Beta = Convert.ToDouble(dr["Beta"]);
                 benMapHealthImpactFunction.BetaDistribution = dr["DistBeta"].ToString();
-                benMapHealthImpactFunction.BetaParameter1 = Convert.ToDouble(dr["P1Beta"]);
-                benMapHealthImpactFunction.BetaParameter2 = Convert.ToDouble(dr["P2Beta"]);
+                if (dr["P1Beta"] != DBNull.Value)
+                { 
+                    benMapHealthImpactFunction.BetaParameter1 = Convert.ToDouble(dr["P1Beta"]);
+                }
+                if (dr["P2Beta"] != DBNull.Value)
+                {
+                    benMapHealthImpactFunction.BetaParameter2 = Convert.ToDouble(dr["P2Beta"]);
+                }
                 if ((dr["A"] is DBNull) == false)
                     benMapHealthImpactFunction.AContantValue = Convert.ToDouble(dr["A"]);
                 if ((dr["NameA"] is DBNull) == false)
@@ -614,6 +620,10 @@ namespace BenMAP.Configuration
                     benMapHealthImpactFunction.Ethnicity = dr["Ethnicity"].ToString();
                 if ((dr["Percentile"] is DBNull) == false)
                     benMapHealthImpactFunction.Percentile = Convert.ToInt32(dr["Percentile"]);
+
+                benMapHealthImpactFunction.ModelSpecification = Grid.GridCommon.getModelSpecificationFromID(Convert.ToInt32(dr["MSID"]));
+                benMapHealthImpactFunction.BetaVariation = Grid.GridCommon.getBetaVariationFromID(Convert.ToInt32(dr["BetaVariationID"]));
+
                 return benMapHealthImpactFunction;
             }
             catch (Exception ex)

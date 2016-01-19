@@ -473,6 +473,48 @@ namespace BenMAP.Grid
             }
         }
 
+        public static ModelSpecification getModelSpecificationFromID(int MSID)
+        {
+            try
+            {
+                ModelSpecification ms = new ModelSpecification();
+                ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                string commandText = string.Format("select msdescription from modelspecifications where MSID ={0}", MSID);
+                System.Data.DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
+                DataRow dr = ds.Tables[0].Rows[0];
+                ms.MSID = MSID;
+                ms.MSDescription = dr["msdescription"].ToString();                
+
+                return ms;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+                return null;
+            }
+        }
+
+        public static BetaVariation getBetaVariationFromID(int betaVariationID)
+        {
+            try
+            {
+                BetaVariation bv = new BetaVariation();
+                ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                string commandText = string.Format("select betavariationname from betavariations where betavariationid ={0}", betaVariationID);
+                System.Data.DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
+                DataRow dr = ds.Tables[0].Rows[0];
+                bv.BetaVariationID = betaVariationID;
+                bv.BetaVariationName = dr["betavariationname"].ToString();
+
+                return bv;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+                return null;
+            }
+        }
+
 
         public static void getPopulationFromIDYear(int PopulationDatSetID, int Year)
         {

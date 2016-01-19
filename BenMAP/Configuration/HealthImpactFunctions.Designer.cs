@@ -109,6 +109,8 @@ namespace BenMAP
             this.btnCancel = new System.Windows.Forms.Button();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.chModelSpecification = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.chBetaVariation = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.groupBox6.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -249,6 +251,8 @@ namespace BenMAP
             this.olvSimple.AllColumns.Add(this.olvColumn32);
             this.olvSimple.AllColumns.Add(this.olvColumn33);
             this.olvSimple.AllColumns.Add(this.olvColumn34);
+            this.olvSimple.AllColumns.Add(this.chModelSpecification);
+            this.olvSimple.AllColumns.Add(this.chBetaVariation);
             this.olvSimple.AllowColumnReorder = true;
             this.olvSimple.AllowDrop = true;
             this.olvSimple.CheckBoxes = true;
@@ -286,7 +290,9 @@ namespace BenMAP
             this.olvColumn31,
             this.olvColumn32,
             this.olvColumn33,
-            this.olvColumn34});
+            this.olvColumn34,
+            this.chModelSpecification,
+            this.chBetaVariation});
             this.olvSimple.Cursor = System.Windows.Forms.Cursors.Default;
             this.olvSimple.Dock = System.Windows.Forms.DockStyle.Fill;
             this.olvSimple.EmptyListMsg = "This list is empty.";
@@ -1051,6 +1057,16 @@ namespace BenMAP
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
             this.toolStripStatusLabel1.Size = new System.Drawing.Size(0, 17);
             // 
+            // chModelSpecification
+            // 
+            this.chModelSpecification.AspectName = "ModelSpecification.MSDescription";
+            this.chModelSpecification.Text = "Model Specification";
+            // 
+            // chBetaVariation
+            // 
+            this.chBetaVariation.AspectName = "BetaVariation.BetaVariationName";
+            this.chBetaVariation.Text = "Beta Variation";
+            // 
             // HealthImpactFunctions
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
@@ -1182,5 +1198,7 @@ namespace BenMAP
         private System.Windows.Forms.ProgressBar pBarCR;
         private System.Windows.Forms.Label lbProgressBar;
         private BrightIdeasSoftware.OLVColumn olvColumn56;
+        private BrightIdeasSoftware.OLVColumn chModelSpecification;
+        private BrightIdeasSoftware.OLVColumn chBetaVariation;
     }
 }
