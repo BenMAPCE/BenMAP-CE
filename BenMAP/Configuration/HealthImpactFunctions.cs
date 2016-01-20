@@ -386,34 +386,49 @@ namespace BenMAP
                     crSelectFunction.StartAge = benMAPHealthImpactFunction.StartAge;
                     crSelectFunction.EndAge = benMAPHealthImpactFunction.EndAge;
                     crSelectFunction.Locations = benMAPHealthImpactFunction.Locations;
-                    if (DicRace.ContainsKey(benMAPHealthImpactFunction.Race))
-                        crSelectFunction.Race = benMAPHealthImpactFunction.Race;
-                    else
+
+                    //race
+                    if (!String.IsNullOrEmpty(benMAPHealthImpactFunction.Race))
                     {
-                        foreach (string s in DicRace.Keys.ToList())
+                        if (DicRace.ContainsKey(benMAPHealthImpactFunction.Race))
+                            crSelectFunction.Race = benMAPHealthImpactFunction.Race;
+                        else
                         {
-                            if (s.ToLower() == benMAPHealthImpactFunction.Race.ToLower())
-                                crSelectFunction.Race = s;
+                            foreach (string s in DicRace.Keys.ToList())
+                            {
+                                if (s.ToLower() == benMAPHealthImpactFunction.Race.ToLower())
+                                    crSelectFunction.Race = s;
+                            }
                         }
                     }
-                    if (DicGender.ContainsKey(benMAPHealthImpactFunction.Gender))
-                        crSelectFunction.Gender = benMAPHealthImpactFunction.Gender;
-                    else
+
+                    //gender
+                    if (!String.IsNullOrEmpty(benMAPHealthImpactFunction.Gender))
                     {
-                        foreach (string s in DicGender.Keys.ToList())
+                        if (DicGender.ContainsKey(benMAPHealthImpactFunction.Gender))
+                            crSelectFunction.Gender = benMAPHealthImpactFunction.Gender;
+                        else
                         {
-                            if (s.ToLower() == benMAPHealthImpactFunction.Gender.ToLower())
-                                crSelectFunction.Gender = s;
+                            foreach (string s in DicGender.Keys.ToList())
+                            {
+                                if (s.ToLower() == benMAPHealthImpactFunction.Gender.ToLower())
+                                    crSelectFunction.Gender = s;
+                            }
                         }
                     }
-                    if (DicEthnicity.ContainsKey(benMAPHealthImpactFunction.Ethnicity))
-                        crSelectFunction.Ethnicity = benMAPHealthImpactFunction.Ethnicity;
-                    else
+
+                    //ethnicity
+                    if (!String.IsNullOrEmpty(benMAPHealthImpactFunction.Ethnicity))
                     {
-                        foreach (string s in DicEthnicity.Keys.ToList())
+                        if (DicEthnicity.ContainsKey(benMAPHealthImpactFunction.Ethnicity))
+                            crSelectFunction.Ethnicity = benMAPHealthImpactFunction.Ethnicity;
+                        else
                         {
-                            if (s.ToLower() == benMAPHealthImpactFunction.Ethnicity.ToLower())
-                                crSelectFunction.Ethnicity = s;
+                            foreach (string s in DicEthnicity.Keys.ToList())
+                            {
+                                if (s.ToLower() == benMAPHealthImpactFunction.Ethnicity.ToLower())
+                                    crSelectFunction.Ethnicity = s;
+                            }
                         }
                     }
 
