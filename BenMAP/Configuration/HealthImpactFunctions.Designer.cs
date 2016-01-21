@@ -58,6 +58,8 @@ namespace BenMAP
             this.olvColumn32 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn33 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn34 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.chModelSpecification = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.chBetaVariation = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.groupBox7 = new System.Windows.Forms.GroupBox();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.cbDataSet = new System.Windows.Forms.ComboBox();
@@ -99,6 +101,8 @@ namespace BenMAP
             this.olvColumn51 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn52 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn54 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.chModelSpecificationSelected = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.chBetaVariationSelected = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.gBCRProgress = new System.Windows.Forms.GroupBox();
             this.lbProgressBar = new System.Windows.Forms.Label();
             this.pBarCR = new System.Windows.Forms.ProgressBar();
@@ -109,8 +113,6 @@ namespace BenMAP
             this.btnCancel = new System.Windows.Forms.Button();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.chModelSpecification = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.chBetaVariation = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.groupBox6.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -528,6 +530,18 @@ namespace BenMAP
             this.olvColumn34.Text = "Variable Dataset Name";
             this.olvColumn34.Width = 140;
             // 
+            // chModelSpecification
+            // 
+            this.chModelSpecification.AspectName = "ModelSpecification.MSDescription";
+            this.chModelSpecification.Text = "Model Specification";
+            this.chModelSpecification.Width = 270;
+            // 
+            // chBetaVariation
+            // 
+            this.chBetaVariation.AspectName = "BetaVariation.BetaVariationName";
+            this.chBetaVariation.Text = "Beta Variation";
+            this.chBetaVariation.Width = 90;
+            // 
             // groupBox7
             // 
             this.groupBox7.Controls.Add(this.groupBox5);
@@ -669,6 +683,8 @@ namespace BenMAP
             this.olvSelected.AllColumns.Add(this.olvColumn51);
             this.olvSelected.AllColumns.Add(this.olvColumn52);
             this.olvSelected.AllColumns.Add(this.olvColumn54);
+            this.olvSelected.AllColumns.Add(this.chModelSpecificationSelected);
+            this.olvSelected.AllColumns.Add(this.chBetaVariationSelected);
             this.olvSelected.AllowColumnReorder = true;
             this.olvSelected.AllowDrop = true;
             this.olvSelected.CellEditActivation = BrightIdeasSoftware.ObjectListView.CellEditActivateMode.SingleClick;
@@ -704,7 +720,9 @@ namespace BenMAP
             this.olvColumn50,
             this.olvColumn51,
             this.olvColumn52,
-            this.olvColumn54});
+            this.olvColumn54,
+            this.chModelSpecificationSelected,
+            this.chBetaVariationSelected});
             this.olvSelected.Cursor = System.Windows.Forms.Cursors.Default;
             this.olvSelected.Dock = System.Windows.Forms.DockStyle.Fill;
             this.olvSelected.EmptyListMsg = "Selected items to be shown here";
@@ -950,6 +968,18 @@ namespace BenMAP
             this.olvColumn54.Text = "Other Pollutants";
             this.olvColumn54.Width = 120;
             // 
+            // chModelSpecificationSelected
+            // 
+            this.chModelSpecificationSelected.AspectName = "BenMAPHealthImpactFunction.ModelSpecification.MSDescription";
+            this.chModelSpecificationSelected.Text = "Model Specification";
+            this.chModelSpecificationSelected.Width = 270;
+            // 
+            // chBetaVariationSelected
+            // 
+            this.chBetaVariationSelected.AspectName = "BenMAPHealthImpactFunction.BetaVariation.BetaVariationName";
+            this.chBetaVariationSelected.Text = "Beta Variation";
+            this.chBetaVariationSelected.Width = 90;
+            // 
             // gBCRProgress
             // 
             this.gBCRProgress.Controls.Add(this.lbProgressBar);
@@ -1056,16 +1086,6 @@ namespace BenMAP
             // 
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
             this.toolStripStatusLabel1.Size = new System.Drawing.Size(0, 17);
-            // 
-            // chModelSpecification
-            // 
-            this.chModelSpecification.AspectName = "ModelSpecification.MSDescription";
-            this.chModelSpecification.Text = "Model Specification";
-            // 
-            // chBetaVariation
-            // 
-            this.chBetaVariation.AspectName = "BetaVariation.BetaVariationName";
-            this.chBetaVariation.Text = "Beta Variation";
             // 
             // HealthImpactFunctions
             // 
@@ -1200,5 +1220,7 @@ namespace BenMAP
         private BrightIdeasSoftware.OLVColumn olvColumn56;
         private BrightIdeasSoftware.OLVColumn chModelSpecification;
         private BrightIdeasSoftware.OLVColumn chBetaVariation;
+        private BrightIdeasSoftware.OLVColumn chModelSpecificationSelected;
+        private BrightIdeasSoftware.OLVColumn chBetaVariationSelected;
     }
 }
