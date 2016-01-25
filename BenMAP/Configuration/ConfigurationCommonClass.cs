@@ -4419,6 +4419,8 @@ namespace BenMAP.Configuration
 
                 double baseValue = 0;
                 double controlValue = 0;
+                double deltaQValue = 0;
+
                 double populationValue = 0;
                 double incidenceValue = 0;
                 double prevalenceValue = 0;
@@ -4427,16 +4429,20 @@ namespace BenMAP.Configuration
                 Dictionary<string, double> dicIncidenceValue = new Dictionary<string, double>();
                 Dictionary<string, double> dicPrevalenceValue = new Dictionary<string, double>();
 
-                double deltaQValue = 0;
+                
                 float i365 = 1;
                 int iStartDay = 365, iEndDay = 0;
+                //set startday, endday vars if no seasonal metric exists and metric statistic (i.e., annual statistic) is set to none for health impact function
                 if (crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric == null && crSelectFunction.BenMAPHealthImpactFunction.MetricStatistic == MetricStatic.None)
                 {
                     i365 = 365;
+                    //get metric/seasonal metrics for pollutant metric that matches the metric specified in the health impact function
                     List<SeasonalMetric> lstseasonalMetric = baseControlGroup.Pollutant.SesonalMetrics.Where(p => p.Metric.MetricID == crSelectFunction.BenMAPHealthImpactFunction.Metric.MetricID).ToList();
                     SeasonalMetric seasonalMetric = null;
+                    //if we have more than one seasonal metric for this metric, then take the last one (JCM 2016-01-25, why not the first one?)
                     if (lstseasonalMetric.Count > 0)
                         seasonalMetric = lstseasonalMetric.Last();
+                    //if we have a seasonal metric
                     if (seasonalMetric != null && seasonalMetric.Seasons.Count > 0)
                     {
                         i365 = 0;
@@ -4447,7 +4453,7 @@ namespace BenMAP.Configuration
                             if (season.EndDay > iEndDay) iEndDay = season.EndDay + 1;
                         }
                     }
-                    else
+                    else //if we don't have a seasonal metric, then check to see if pollutant itself has seasons
                     {
                         if (crSelectFunction.BenMAPHealthImpactFunction.PollutantGroup.Pollutants.First().Seasons != null && crSelectFunction.BenMAPHealthImpactFunction.PollutantGroup.Pollutants.First().Seasons.Count != 0)
                         {
@@ -4462,6 +4468,9 @@ namespace BenMAP.Configuration
                         }
                     }
                 }
+
+
+
                 Dictionary<string, double> dicVariable = null;
                 double d = 0;
                 CRCalculateValue crCalculateValue = new CRCalculateValue();
