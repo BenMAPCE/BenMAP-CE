@@ -4378,9 +4378,16 @@ namespace BenMAP.Configuration
             }
             return dicReturn;
         }
-        public static void CalculateOneCRSelectFunction(string sCRID, List<string> lstAllAgeID, Dictionary<string, double> dicAge, Dictionary<string, Dictionary<string, float>> dicBaseMetricData, Dictionary<string, Dictionary<string, float>> dicControlMetricData,
-        Dictionary<string, Dictionary<string, List<float>>> dicBase365, Dictionary<string, Dictionary<string, List<float>>> dicControl365,
-        Dictionary<string, ModelResultAttribute> dicControl, Dictionary<string, Dictionary<string, double>> DicAllSetupVariableValues, Dictionary<string, float> dicPopulationAllAge, Dictionary<string, double> dicIncidenceRateAttribute, Dictionary<string, double> dicPrevalenceRateAttribute, int incidenceDataSetGridType, int PrevalenceDataSetGridType, Dictionary<string, int> dicRace, Dictionary<string, int> dicEthnicity, Dictionary<string, int> dicGender, double Threshold, int LatinHypercubePoints, bool RunInPointMode, List<GridRelationship> lstGridRelationship, CRSelectFunction crSelectFunction, BaseControlGroup baseControlGroup, List<RegionTypeGrid> lstRegionTypeGrid, BenMAPPopulation benMAPPopulation)
+        public static void CalculateOneCRSelectFunction(string sCRID, List<string> lstAllAgeID, Dictionary<string, double> dicAge, 
+                                        Dictionary<int, Dictionary<string, Dictionary<string, float>>> dicAllMetricDataBase,
+                                        Dictionary<int, Dictionary<string, Dictionary<string, float>>> dicAllMetricDataControl,
+                                        Dictionary<int, Dictionary<string, Dictionary<string, List<float>>>> dicAll365Base,
+                                        Dictionary<int, Dictionary<string, Dictionary<string, List<float>>>> dicAll365Control,
+                                        Dictionary<int, Dictionary<string, ModelResultAttribute>> DicControlAll, 
+                                        Dictionary<string, Dictionary<string, double>> DicAllSetupVariableValues, Dictionary<string, float> dicPopulationAllAge, Dictionary<string, double> dicIncidenceRateAttribute, 
+                                        Dictionary<string, double> dicPrevalenceRateAttribute, int incidenceDataSetGridType, int PrevalenceDataSetGridType, 
+                                        Dictionary<string, int> dicRace, Dictionary<string, int> dicEthnicity, Dictionary<string, int> dicGender, double Threshold, int LatinHypercubePoints, bool RunInPointMode, 
+                                        List<GridRelationship> lstGridRelationship, CRSelectFunction crSelectFunction, List<RegionTypeGrid> lstRegionTypeGrid, BenMAPPopulation benMAPPopulation)
         {
             try
             {
@@ -4393,6 +4400,22 @@ namespace BenMAP.Configuration
                 {
                 }
 
+
+                //dictionaries to hold values for a single pollutant
+                Dictionary<string, Dictionary<string, float>> dicBaseMetricData;
+                Dictionary<string, Dictionary<string, float>> dicControlMetricData;
+                Dictionary<string, Dictionary<string, List<float>>> dicBase365;
+                Dictionary<string, Dictionary<string, List<float>>> dicControl365;
+                Dictionary<string, ModelResultAttribute> dicControl;
+                BaseControlGroup baseControlGroup;
+
+                //to get dictionaries for a single pollutant, for example
+                baseControlGroup = CommonClass.LstBaseControlGroup.First(); 
+                dicBaseMetricData = dicAllMetricDataBase[baseControlGroup.Pollutant.PollutantID];
+                dicControlMetricData = dicAllMetricDataControl[baseControlGroup.Pollutant.PollutantID];
+                dicBase365 = dicAll365Base[baseControlGroup.Pollutant.PollutantID];
+                dicControl365 = dicAll365Control[baseControlGroup.Pollutant.PollutantID];
+                dicControl = DicControlAll[baseControlGroup.Pollutant.PollutantID];
 
                 double baseValue = 0;
                 double controlValue = 0;

@@ -1375,28 +1375,22 @@ namespace BenMAP
                         }
                     }
 
-                    var query = from a in CommonClass.LstBaseControlGroup where a.Pollutant.PollutantID == crSelectFunction.BenMAPHealthImpactFunction.PollutantGroup.Pollutants.First().PollutantID select a;
-                    if (query == null || query.Count() == 0)
-                    {
-                        return;
-                    }
-                    BaseControlGroup baseControlGroup = query.First();
                     AsyncDelegateCalculateOneCRSelectFunction dlgt = new AsyncDelegateCalculateOneCRSelectFunction(Configuration.ConfigurationCommonClass.CalculateOneCRSelectFunction);
                    
                     string iRunCRID = crid.ToString();
                     if (!isBatch)
                     {
-                        IAsyncResult ar = dlgt.BeginInvoke(iRunCRID, lstAllAgeID, dicAge, dicAllMetricDataBase[baseControlGroup.Pollutant.PollutantID], dicAllMetricDataControl[baseControlGroup.Pollutant.PollutantID]
-                            , dicAll365Base[baseControlGroup.Pollutant.PollutantID], dicAll365Control[baseControlGroup.Pollutant.PollutantID], DicControlAll[baseControlGroup.Pollutant.PollutantID],
-                            DicAllSetupVariableValues, dicPopulationAge, dicIncidenceRateAttribute, dicPrevalenceRateAttribute, incidenceDataSetGridType, PrevalenceDataSetGridType, dicRace, dicEthnicity, dicGender, CommonClass.CRThreshold, CommonClass.CRLatinHypercubePoints,
-                            CommonClass.CRRunInPointMode, lstGridRelationshipAll, crSelectFunction, baseControlGroup, null, CommonClass.BenMAPPopulation, new AsyncCallback(outPut), dlgt);
+                        IAsyncResult ar = dlgt.BeginInvoke(iRunCRID, lstAllAgeID, dicAge, dicAllMetricDataBase, dicAllMetricDataControl, dicAll365Base, dicAll365Control, DicControlAll,
+                            DicAllSetupVariableValues, dicPopulationAge, dicIncidenceRateAttribute, dicPrevalenceRateAttribute, incidenceDataSetGridType, PrevalenceDataSetGridType, 
+                            dicRace, dicEthnicity, dicGender, CommonClass.CRThreshold, CommonClass.CRLatinHypercubePoints, CommonClass.CRRunInPointMode, lstGridRelationshipAll, 
+                            crSelectFunction, null, CommonClass.BenMAPPopulation, new AsyncCallback(outPut), dlgt);
                     }
                     else
                     {
-                        Configuration.ConfigurationCommonClass.CalculateOneCRSelectFunction(iRunCRID, lstAllAgeID, dicAge, dicAllMetricDataBase[baseControlGroup.Pollutant.PollutantID], dicAllMetricDataControl[baseControlGroup.Pollutant.PollutantID]
-                            , dicAll365Base[baseControlGroup.Pollutant.PollutantID], dicAll365Control[baseControlGroup.Pollutant.PollutantID], DicControlAll[baseControlGroup.Pollutant.PollutantID],
-                            DicAllSetupVariableValues, dicPopulationAge, dicIncidenceRateAttribute, dicPrevalenceRateAttribute, incidenceDataSetGridType, PrevalenceDataSetGridType, dicRace, dicEthnicity, dicGender, CommonClass.CRThreshold, CommonClass.CRLatinHypercubePoints,
-                            CommonClass.CRRunInPointMode, lstGridRelationshipAll, crSelectFunction, baseControlGroup, null, CommonClass.BenMAPPopulation);
+                        Configuration.ConfigurationCommonClass.CalculateOneCRSelectFunction(iRunCRID, lstAllAgeID, dicAge, dicAllMetricDataBase, dicAllMetricDataControl, dicAll365Base, dicAll365Control, DicControlAll,
+                            DicAllSetupVariableValues, dicPopulationAge, dicIncidenceRateAttribute, dicPrevalenceRateAttribute, incidenceDataSetGridType, PrevalenceDataSetGridType, 
+                            dicRace, dicEthnicity, dicGender, CommonClass.CRThreshold, CommonClass.CRLatinHypercubePoints, CommonClass.CRRunInPointMode, lstGridRelationshipAll, 
+                            crSelectFunction, null, CommonClass.BenMAPPopulation);
                      
                     }
                     crid = crid + 1; ;
@@ -1562,9 +1556,15 @@ namespace BenMAP
 
         }
         public delegate void AsyncDelegateCalculateLstCRSelectFunction(List<CRSelectFunction> lstCRSelectFunction, Dictionary<string, int> dicRace, Dictionary<string, int> dicEthnicity, Dictionary<string, int> dicGender, List<GridRelationship> lstGridRelationshipAll);
-        public delegate void AsyncDelegateCalculateOneCRSelectFunction(string crid, List<string> lstAllAgeID, Dictionary<string, double> dicAge, Dictionary<string, Dictionary<string, float>> dicBaseMetricData, Dictionary<string, Dictionary<string, float>> dicControlMetricData,
-           Dictionary<string, Dictionary<string, List<float>>> dicBase365, Dictionary<string, Dictionary<string, List<float>>> dicControl365,
-           Dictionary<string, ModelResultAttribute> dicControl, Dictionary<string, Dictionary<string, double>> DicAllSetupVariableValues, Dictionary<string, float> dicPopulationAllAge, Dictionary<string, double> dicIncidenceRateAttribute, Dictionary<string, double> dicPrevalenceRateAttribute, int incidenceDataSetGridType, int PrevalenceDataSetGridType, Dictionary<string, int> dicRace, Dictionary<string, int> dicEthnicity, Dictionary<string, int> dicGender, double Threshold, int LatinHypercubePoints, bool RunInPointMode, List<GridRelationship> lstGridRelationship, CRSelectFunction crSelectFunction, BaseControlGroup baseControlGroup, List<RegionTypeGrid> lstRegionTypeGrid, BenMAPPopulation benMAPPopulation);
+        public delegate void AsyncDelegateCalculateOneCRSelectFunction(string crid, List<string> lstAllAgeID, Dictionary<string, double> dicAge, 
+            Dictionary<int, Dictionary<string, Dictionary<string, float>>> dicBaseMetricData,
+            Dictionary<int, Dictionary<string, Dictionary<string, float>>> dicControlMetricData,
+            Dictionary<int, Dictionary<string, Dictionary<string, List<float>>>> dicBase365,
+            Dictionary<int, Dictionary<string, Dictionary<string, List<float>>>> dicControl365,
+            Dictionary<int, Dictionary<string, ModelResultAttribute>> dicControl,
+            Dictionary<string, Dictionary<string, double>> DicAllSetupVariableValues, Dictionary<string, float> dicPopulationAllAge, Dictionary<string, double> dicIncidenceRateAttribute, Dictionary<string, double> dicPrevalenceRateAttribute, 
+            int incidenceDataSetGridType, int PrevalenceDataSetGridType, Dictionary<string, int> dicRace, Dictionary<string, int> dicEthnicity, Dictionary<string, int> dicGender, double Threshold, int LatinHypercubePoints, bool RunInPointMode, 
+            List<GridRelationship> lstGridRelationship, CRSelectFunction crSelectFunction, List<RegionTypeGrid> lstRegionTypeGrid, BenMAPPopulation benMAPPopulation);
 
         private void textBoxFilterSimple_TextChanged(object sender, EventArgs e)
         {
