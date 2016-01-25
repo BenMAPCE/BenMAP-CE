@@ -4437,9 +4437,15 @@ namespace BenMAP.Configuration
                 {
                     i365 = 365;
                     //get metric/seasonal metrics for pollutant metric that matches the metric specified in the health impact function
-                    List<SeasonalMetric> lstseasonalMetric = baseControlGroup.Pollutant.SesonalMetrics.Where(p => p.Metric.MetricID == crSelectFunction.BenMAPHealthImpactFunction.Metric.MetricID).ToList();
+
+                    //List<SeasonalMetric> lstseasonalMetric = baseControlGroup.Pollutant.SesonalMetrics.Where(p => p.Metric.MetricID == crSelectFunction.BenMAPHealthImpactFunction.Metric.MetricID).ToList();
+
+                    //in a multipollutant scenario, we have to match on metric name instead of id since metrics are tied to pollutants (old code which matched on ID is above)
+                    //so here we are looking for pollutant seasonal metrics for metrics that have the same name as the seasonal metric for the health impact function
+                    List<SeasonalMetric> lstseasonalMetric = baseControlGroup.Pollutant.SesonalMetrics.Where(p => String.Equals(p.Metric.MetricName, crSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName, StringComparison.OrdinalIgnoreCase)).ToList();
+
                     SeasonalMetric seasonalMetric = null;
-                    //if we have more than one seasonal metric for this metric, then take the last one (JCM 2016-01-25, why not the first one?)
+                    //if we have seasonal metrics for this metric, then take the last one (JCM 2016-01-25, why not the first one?)
                     if (lstseasonalMetric.Count > 0)
                         seasonalMetric = lstseasonalMetric.Last();
                     //if we have a seasonal metric
