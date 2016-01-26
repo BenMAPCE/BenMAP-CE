@@ -4410,7 +4410,7 @@ namespace BenMAP.Configuration
                 BaseControlGroup baseControlGroup;
 
                 //to get dictionaries for a single pollutant, for example
-                baseControlGroup = CommonClass.LstBaseControlGroup.First(); 
+                baseControlGroup = CommonClass.LstBaseControlGroup.First();
                 dicBaseMetricData = dicAllMetricDataBase[baseControlGroup.Pollutant.PollutantID];
                 dicControlMetricData = dicAllMetricDataControl[baseControlGroup.Pollutant.PollutantID];
                 dicBase365 = dicAll365Base[baseControlGroup.Pollutant.PollutantID];
@@ -4438,6 +4438,8 @@ namespace BenMAP.Configuration
                 {
                     i365 = 365;
                     //get metric/seasonal metrics for pollutant metric that matches the metric specified in the health impact function
+                    //we assume that all pollutants have the same metrics, so we can just get the first basecontrol group
+                    baseControlGroup = CommonClass.LstBaseControlGroup.First();
 
                     //List<SeasonalMetric> lstseasonalMetric = baseControlGroup.Pollutant.SesonalMetrics.Where(p => p.Metric.MetricID == crSelectFunction.BenMAPHealthImpactFunction.Metric.MetricID).ToList();
 
@@ -4482,9 +4484,13 @@ namespace BenMAP.Configuration
                 double d = 0;
                 CRCalculateValue crCalculateValue = new CRCalculateValue();
 
+                //get health impact function strings
                 string strBaseLineFunction = ConfigurationCommonClass.getFunctionStringFromDatabaseFunction(crSelectFunction.BenMAPHealthImpactFunction.BaseLineIncidenceFunction);
                 bool hasPopInstrBaseLineFunction = crSelectFunction.BenMAPHealthImpactFunction.BaseLineIncidenceFunction.Contains("POP");
                 string strPointEstimateFunction = ConfigurationCommonClass.getFunctionStringFromDatabaseFunction(crSelectFunction.BenMAPHealthImpactFunction.Function);
+
+
+                //initialize dictionaries for monitor values
                 Dictionary<string, MonitorValue> dicBaseMonitor = new Dictionary<string, MonitorValue>();
                 Dictionary<string, MonitorValue> dicControlMonitor = new Dictionary<string, MonitorValue>();
                 Dictionary<string, List<MonitorNeighborAttribute>> dicAllMonitorNeighborControl = new Dictionary<string, List<MonitorNeighborAttribute>>();

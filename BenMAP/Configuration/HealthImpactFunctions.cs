@@ -1082,6 +1082,8 @@ namespace BenMAP
                 Dictionary<int, Dictionary<string, Dictionary<string, float>>> dicAllMetricDataControl = new Dictionary<int, Dictionary<string, Dictionary<string, float>>>();
                 Dictionary<int, Dictionary<string, Dictionary<string, List<float>>>> dicAll365Base = new Dictionary<int, Dictionary<string, Dictionary<string, List<float>>>>();
                 Dictionary<int, Dictionary<string, Dictionary<string, List<float>>>> dicAll365Control = new Dictionary<int, Dictionary<string, Dictionary<string, List<float>>>>();
+                //load metric data for each basecontrol group (i.e., pollutant)
+                //note the call to Configuration.ConfigurationCommonClass.getAllMetricDataFromBaseControlGroup
                 foreach (BaseControlGroup baseControlGroup in CommonClass.LstBaseControlGroup)
                 {
                     Dictionary<string, ModelResultAttribute> dicControl = new Dictionary<string, ModelResultAttribute>();
