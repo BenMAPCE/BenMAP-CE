@@ -4433,6 +4433,7 @@ namespace BenMAP.Configuration
                 float i365 = 1;
                 int iStartDay = 365, iEndDay = 0;
                 //set startday, endday vars if no seasonal metric exists and metric statistic (i.e., annual statistic) is set to none for health impact function
+                //this startday, endday will serve as global bounds for the pollutant(s) data
                 if (crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric == null && crSelectFunction.BenMAPHealthImpactFunction.MetricStatistic == MetricStatic.None)
                 {
                     i365 = 365;
