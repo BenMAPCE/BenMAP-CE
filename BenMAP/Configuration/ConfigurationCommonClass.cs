@@ -4489,6 +4489,11 @@ namespace BenMAP.Configuration
                 bool hasPopInstrBaseLineFunction = crSelectFunction.BenMAPHealthImpactFunction.BaseLineIncidenceFunction.Contains("POP");
                 string strPointEstimateFunction = ConfigurationCommonClass.getFunctionStringFromDatabaseFunction(crSelectFunction.BenMAPHealthImpactFunction.Function);
 
+                //set monitor value dictionaries for each pollutant, if we are using monitor data
+                Dictionary<int, Dictionary<string, MonitorValue>> dicBaseMonitorAll = new Dictionary<int, Dictionary<string, MonitorValue>>();
+                Dictionary<int, Dictionary<string, MonitorValue>> dicControlMonitorAll = new Dictionary<int, Dictionary<string, MonitorValue>>();
+                Dictionary<int, Dictionary<string, List<MonitorNeighborAttribute>>> dicAllMonitorNeighborControlAll = new Dictionary<int, Dictionary<string, List<MonitorNeighborAttribute>>>();
+                Dictionary<int, Dictionary<string, List<MonitorNeighborAttribute>>> dicAllMonitorNeighborBaseAll = new Dictionary<int, Dictionary<string, List<MonitorNeighborAttribute>>>();
 
                 //initialize dictionaries for monitor values
                 Dictionary<string, MonitorValue> dicBaseMonitor = new Dictionary<string, MonitorValue>();
@@ -4496,43 +4501,64 @@ namespace BenMAP.Configuration
                 Dictionary<string, List<MonitorNeighborAttribute>> dicAllMonitorNeighborControl = new Dictionary<string, List<MonitorNeighborAttribute>>();
                 Dictionary<string, List<MonitorNeighborAttribute>> dicAllMonitorNeighborBase = new Dictionary<string, List<MonitorNeighborAttribute>>();
 
-
-                if (baseControlGroup.Base is MonitorDataLine && baseControlGroup.Control is MonitorDataLine && crSelectFunction.BenMAPHealthImpactFunction.MetricStatistic == MetricStatic.None)
+                foreach (BaseControlGroup bcg in CommonClass.LstBaseControlGroup)
                 {
-                    if ((baseControlGroup.Base as MonitorDataLine).MonitorValues != null)
+                    //initialize dictionaries for monitor values
+                    dicBaseMonitor = new Dictionary<string, MonitorValue>();
+                    dicControlMonitor = new Dictionary<string, MonitorValue>();
+                    dicAllMonitorNeighborControl = new Dictionary<string, List<MonitorNeighborAttribute>>();
+                    dicAllMonitorNeighborBase = new Dictionary<string, List<MonitorNeighborAttribute>>();
+
+
+                    if (bcg.Base is MonitorDataLine && bcg.Control is MonitorDataLine && crSelectFunction.BenMAPHealthImpactFunction.MetricStatistic == MetricStatic.None)
                     {
-                        foreach (MonitorValue m in (baseControlGroup.Base as MonitorDataLine).MonitorValues)
+                        if ((bcg.Base as MonitorDataLine).MonitorValues != null)
                         {
-                            dicBaseMonitor.Add(m.MonitorName, m);
+                            foreach (MonitorValue m in (bcg.Base as MonitorDataLine).MonitorValues)
+                            {
+                                dicBaseMonitor.Add(m.MonitorName, m);
+                            }
+                        }
+
+
+                        if ((bcg.Control as MonitorDataLine).MonitorValues != null)
+                        {
+                            foreach (MonitorValue m in (bcg.Control as MonitorDataLine).MonitorValues)
+                            {
+                                dicControlMonitor.Add(m.MonitorName, m);
+                            }
+                        }
+
+
+                        if ((bcg.Base as MonitorDataLine).MonitorNeighbors != null)
+                        {
+                            foreach (MonitorNeighborAttribute m in (bcg.Base as MonitorDataLine).MonitorNeighbors)
+                            {
+                                if (!dicAllMonitorNeighborBase.ContainsKey(m.Col + "," + m.Row))
+                                    dicAllMonitorNeighborBase.Add(m.Col + "," + m.Row, new List<MonitorNeighborAttribute>() { m });
+                                else
+                                    dicAllMonitorNeighborBase[m.Col + "," + m.Row].Add(m);
+                            }
+                        }
+
+
+                        if ((bcg.Control as MonitorDataLine).MonitorNeighbors != null)
+                        {
+                            foreach (MonitorNeighborAttribute m in (bcg.Control as MonitorDataLine).MonitorNeighbors)
+                            {
+                                if (!dicAllMonitorNeighborControl.ContainsKey(m.Col + "," + m.Row))
+                                    dicAllMonitorNeighborControl.Add(m.Col + "," + m.Row, new List<MonitorNeighborAttribute>() { m });
+                                else
+                                    dicAllMonitorNeighborControl[m.Col + "," + m.Row].Add(m);
+                            }
                         }
                     }
-                    if ((baseControlGroup.Control as MonitorDataLine).MonitorValues != null)
-                    {
-                        foreach (MonitorValue m in (baseControlGroup.Control as MonitorDataLine).MonitorValues)
-                        {
-                            dicControlMonitor.Add(m.MonitorName, m);
-                        }
-                    }
-                    if ((baseControlGroup.Base as MonitorDataLine).MonitorNeighbors != null)
-                    {
-                        foreach (MonitorNeighborAttribute m in (baseControlGroup.Base as MonitorDataLine).MonitorNeighbors)
-                        {
-                            if (!dicAllMonitorNeighborBase.ContainsKey(m.Col + "," + m.Row))
-                                dicAllMonitorNeighborBase.Add(m.Col + "," + m.Row, new List<MonitorNeighborAttribute>() { m });
-                            else
-                                dicAllMonitorNeighborBase[m.Col + "," + m.Row].Add(m);
-                        }
-                    }
-                    if ((baseControlGroup.Control as MonitorDataLine).MonitorNeighbors != null)
-                    {
-                        foreach (MonitorNeighborAttribute m in (baseControlGroup.Control as MonitorDataLine).MonitorNeighbors)
-                        {
-                            if (!dicAllMonitorNeighborControl.ContainsKey(m.Col + "," + m.Row))
-                                dicAllMonitorNeighborControl.Add(m.Col + "," + m.Row, new List<MonitorNeighborAttribute>() { m });
-                            else
-                                dicAllMonitorNeighborControl[m.Col + "," + m.Row].Add(m);
-                        }
-                    }
+
+                    dicBaseMonitorAll.Add(bcg.Pollutant.PollutantID, dicBaseMonitor);
+                    dicControlMonitorAll.Add(bcg.Pollutant.PollutantID, dicControlMonitor);
+                    dicAllMonitorNeighborControlAll.Add(bcg.Pollutant.PollutantID, dicAllMonitorNeighborControl);
+                    dicAllMonitorNeighborBaseAll.Add(bcg.Pollutant.PollutantID, dicAllMonitorNeighborBase);
+
                 }
 
                 CRSelectFunctionCalculateValue crSelectFunctionCalculateValue = new CRSelectFunctionCalculateValue() { CRSelectFunction = crSelectFunction, CRCalculateValues = new List<CRCalculateValue>() };
