@@ -7,6 +7,7 @@ namespace BenMAP
 {
     public class CRFBeta
     {
+        // New beta without values
         public CRFBeta()
         {
             this._beta = 0;
@@ -15,6 +16,48 @@ namespace BenMAP
             this._cConstantValue = 0;
             this._p1Beta = 0;
             this._p2Beta = 0;
+            this._seasonName = string.Empty;
+            this._startDate = string.Empty;
+            this._endDate = string.Empty;
+            this._seasonName = string.Empty;
+        }
+
+        // Full year
+        public CRFBeta(double beta, double aConst, string aDesc, double bConst, string bDesc, double cConst,
+            string cDesc, double p1, double p2)
+        {
+            this._beta = beta;
+            this._aConstantValue = aConst;
+            this._aConstantName = aDesc;
+            this._bConstantValue = bConst;
+            this._bConstantName = bDesc;
+            this._cConstantValue = cConst;
+            this._cConstantName = cDesc;
+            this._p1Beta = p1;
+            this._p2Beta = p2;
+            this._seasonName = string.Empty;
+            this._startDate = string.Empty;
+            this._endDate = string.Empty;
+            this._seasNumName = string.Empty;
+        }
+
+        // Seasonal
+        public CRFBeta(double beta, double aConst, string aDesc, double bConst, string bDesc, double cConst, 
+            string cDesc, double p1, double p2, string seasName, string startDate, string endDate, string seasNumName)
+        {
+            this._beta = beta;
+            this._aConstantValue = aConst;
+            this._aConstantName = aDesc;
+            this._bConstantValue = bConst;
+            this._bConstantName = bDesc;
+            this._cConstantValue = cConst;
+            this._cConstantName = cDesc;
+            this._p1Beta = p1;
+            this._p2Beta = p2;
+            this._seasonName = seasName;
+            this._startDate = startDate;
+            this._endDate = endDate;
+            this._seasNumName = seasNumName;
         }
 
         private int _distributionTypeID;
@@ -29,13 +72,6 @@ namespace BenMAP
         {
             get { return _distribution; }
             set { _distribution = value; }
-        }
-
-        private int _seasonalMetricSeasonID;
-        public int SeasonalMetricSeasonID
-        {
-            get { return _seasonalMetricSeasonID; }
-            set { _seasonalMetricSeasonID = value; }
         }
 
         private double _beta;
@@ -99,6 +135,34 @@ namespace BenMAP
         {
             get { return _cConstantName; }
             set { _cConstantName = value; }
+        }
+
+        private string _seasNumName;
+        public string SeasNumName
+        {
+            get { return _seasNumName; }
+            set { _seasNumName = value; }
+        }
+
+        private string _seasonName;
+        public string SeasonName
+        {
+            get { return _seasonName; }
+            set { _seasonName = value; }
+        }
+
+        private string _startDate;
+        public string StartDate
+        {
+            get { return _startDate; }
+            set { _startDate = value; }
+        }
+
+        private string _endDate;
+        public string EndDate
+        {
+            get { return _endDate; }
+            set { _endDate = value; }
         }
     }
 }

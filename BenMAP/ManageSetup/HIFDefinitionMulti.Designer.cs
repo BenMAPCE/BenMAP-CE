@@ -28,12 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem(new string[] {
-            "P1",
-            "P1 sub"}, -1);
-            System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem(new string[] {
-            "P2",
-            "P2 sub"}, -1);
             this.cboPollutant = new System.Windows.Forms.ComboBox();
             this.grpPollutant = new System.Windows.Forms.GroupBox();
             this.varList = new System.Windows.Forms.ListView();
@@ -188,9 +182,6 @@
             this.varList.FullRowSelect = true;
             this.varList.GridLines = true;
             this.varList.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
-            this.varList.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem1,
-            listViewItem2});
             this.varList.Location = new System.Drawing.Point(125, 109);
             this.varList.Margin = new System.Windows.Forms.Padding(2);
             this.varList.Name = "varList";
@@ -367,7 +358,7 @@
             this.cboModelSpec.Name = "cboModelSpec";
             this.cboModelSpec.Size = new System.Drawing.Size(303, 22);
             this.cboModelSpec.TabIndex = 20;
-            this.cboModelSpec.SelectedValueChanged += new System.EventHandler(this.cboModelSpec_SelectedValueChanged);
+            this.cboModelSpec.SelectionChangeCommitted += new System.EventHandler(this.cboModelSpec_SelectedValueChanged);
             // 
             // panel4
             // 

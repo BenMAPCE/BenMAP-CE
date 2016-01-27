@@ -7,11 +7,28 @@ namespace BenMAP
 {
     public class CRFVariable
     {
-        public CRFVariable(string varName, string pollName, int pollID)
+        public CRFVariable(string varName, int varID, string pollName, int poll1ID)
+        {
+            this._variableName = varName;
+            this._variableID = varID;
+            this._pollutantName = pollName;
+            this._pollutant1ID = poll1ID;
+        }
+
+        public CRFVariable(string varName, string pollName, int poll1ID)
         {
             this._variableName = varName;
             this._pollutantName = pollName;
-            this.PollutantID = pollID;    
+            this._pollutant1ID = poll1ID;
+        }
+
+        public CRFVariable(string varName, int varID, string pollName, int poll1ID, int poll2ID)
+        {
+            this._variableName = varName;
+            this._variableID = varID;
+            this._pollutantName = pollName;
+            this._pollutant1ID = poll1ID;
+            this._pollutant2ID = poll2ID;
         }
 
         private int _variableID;
@@ -42,11 +59,18 @@ namespace BenMAP
             set { _pollutantName = value; }
         }
 
-        private int _pollutantID;
-        public int PollutantID
+        private int _pollutant1ID;
+        public int Pollutant1ID
         {
-            get { return _pollutantID; }
-            set { _pollutantID = value; }
+            get { return _pollutant1ID; }
+            set { _pollutant1ID = value; }
+        }
+
+        private int _pollutant2ID;
+        public int Pollutant2ID
+        {
+            get { return _pollutant2ID; }
+            set { _pollutant2ID = value; }
         }
 
         private List<CRFBeta> _pollBetas;

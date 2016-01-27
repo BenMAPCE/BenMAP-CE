@@ -321,7 +321,6 @@ namespace BenMAP
                 commandText = "select ETHNICITYNAME from ETHNICITY";
                 ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
 
-
                 cboEthnicity.DataSource = ds.Tables[0];
                 cboEthnicity.DisplayMember = "ETHNICITYNAME";
                 cboEthnicity.SelectedIndex = -1;
@@ -335,7 +334,7 @@ namespace BenMAP
                 commandText = "select GENDERNAME from GENDERS";
                 ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                 cboGender.DataSource = ds.Tables[0];
-                cboGender.DisplayMember = "GENDERNAME";
+                cboGender.DisplayMember = "GENDERNAME"; 
                 cboGender.SelectedIndex = -1;
                 cboMetricStatistic.Items.Add("None");
                 cboMetricStatistic.Items.Add("Mean");
@@ -400,6 +399,116 @@ namespace BenMAP
                 cboLocationName.DataSource = ds.Tables[0];
                 cboLocationName.DisplayMember = "LocationTypeName";
                 cboLocationName.SelectedIndex = -1;
+
+
+                // Set up variable objects 
+                commandText = string.Format("select distinct variablename, crv.crfvariableid, pollutantname, pollutant1id, pollutant2id from crfunctions as crf left join crfvariables as crv on crf.crfunctionid=crv.crfunctionid where crf.crfunctionid={0}", _healthImpacts.FunctionID);
+                ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+
+                foreach(DataRow dr in ds.Tables[0].Rows)
+                {
+                    varList.Items.Add(dr["variablename"].ToString()).SubItems.Add(dr["pollutantname"].ToString());
+                    // interaction
+                    if (dr["pollutantname"].ToString().Contains("*"))
+                    {
+                        _healthImpacts.PollVariables.Add(new CRFVariable(dr["variablename"].ToString(), Convert.ToInt32(dr["crfvariableid"]), dr["pollutantname"].ToString(), Convert.ToInt32(dr["pollutant1id"]), Convert.ToInt32(dr["pollutant2id"])));
+                    }
+                    else
+                    {
+                        _healthImpacts.PollVariables.Add(new CRFVariable(dr["variablename"].ToString(), Convert.ToInt32(dr["crfvariableid"]), dr["pollutantname"].ToString(), Convert.ToInt32(dr["pollutant1id"])));
+                    }
+                }
+
+                varList.Columns[1].Width = -1;
+                if (varList.Columns[1].Width < 123) varList.Columns[1].Width = 123;
+
+                // Set up beta objects
+                int j = 0;
+                int numSeasons = 1;
+                string aDesc, bDesc, cDesc;
+                double a, b, c, p1, p2;
+                foreach (var pv in _healthImpacts.PollVariables)
+                {
+                    commandText = string.Format("select beta, a, namea, b, nameb, c, namec, p1beta, p2beta, seasonalmetricseasonname, startday, endday from crfvariables v left join crfbetas b on b.crfvariableid=v.crfvariableid left join seasonalmetricseasons s on s.seasonalmetricseasonid=b.seasonalmetricseasonid where crfunctionid={0} and pollutantname='{1}' order by startday", _healthImpacts.FunctionID, pv.PollutantName);
+                    ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+                    numSeasons = ds.Tables[0].Rows.Count;
+
+                    if (pv.PollBetas == null) pv.PollBetas = new List<CRFBeta>();
+
+                    if(numSeasons > 1)
+                    {
+                        for(int i = 1; i <= numSeasons; i++)
+                        {
+                            DataRow dr = ds.Tables[0].Rows[i - 1];
+                            string str = string.Format("Season {0}", i);
+
+                            if (dr["p1beta"].ToString() == string.Empty) p1 = 0;
+                            else p1 = Convert.ToDouble(dr["p1beta"]);
+
+                            if (dr["p2beta"].ToString() == string.Empty) p2 = 0;
+                            else p2 = Convert.ToDouble(dr["p2beta"]);
+
+                            if (dr["a"].ToString() == string.Empty) a = 0;
+                            else a = Convert.ToDouble(dr["a"]);
+
+                            if (dr["namea"].ToString() == string.Empty) aDesc = string.Empty;
+                            else aDesc = dr["namea"].ToString();
+
+                            if (dr["b"].ToString() == string.Empty) b = 0;
+                            else b = Convert.ToDouble(dr["b"]);
+
+                            if (dr["nameb"].ToString() == string.Empty) bDesc = string.Empty;
+                            else bDesc = dr["nameb"].ToString();
+
+                            if (dr["c"].ToString() == string.Empty) c = 0;
+                            else c = Convert.ToDouble(dr["c"]);
+
+                            if (dr["namec"].ToString() == string.Empty) cDesc = string.Empty;
+                            else cDesc = dr["namec"].ToString();
+
+
+                            pv.PollBetas.Add(new CRFBeta(Convert.ToDouble(dr["beta"]), a, aDesc, b, bDesc, c, cDesc, p1, p2, dr["seasonalmetricseasonname"].ToString(), dr["startday"].ToString(), dr["endday"].ToString(), str));
+                        }
+                    }
+
+                    else if (numSeasons == 1)
+                    {
+                        DataRow dr = ds.Tables[0].Rows[0];
+
+                        if (dr["p1beta"].ToString() == string.Empty) p1 = 0;
+                        else p1 = Convert.ToDouble(dr["p1beta"]);
+
+                        if (dr["p2beta"].ToString() == string.Empty) p2 = 0;
+                        else p2 = Convert.ToDouble(dr["p2beta"]);
+
+                        if (dr["a"].ToString() == string.Empty) a = 0;
+                        else a = Convert.ToDouble(dr["a"]);
+
+                        if (dr["namea"].ToString() == string.Empty) aDesc = string.Empty;
+                        else aDesc = dr["namea"].ToString();
+
+                        if (dr["b"].ToString() == string.Empty) b = 0;
+                        else b = Convert.ToDouble(dr["b"]);
+
+                        if (dr["nameb"].ToString() == string.Empty) bDesc = string.Empty;
+                        else bDesc = dr["nameb"].ToString();
+
+                        if (dr["c"].ToString() == string.Empty) c = 0;
+                        else c = Convert.ToDouble(dr["c"]);
+
+                        if (dr["namec"].ToString() == string.Empty) cDesc = string.Empty;
+                        else cDesc = dr["namec"].ToString();
+
+                        pv.PollBetas.Add(new CRFBeta(Convert.ToDouble(dr["beta"]), a, aDesc, b, bDesc, c, cDesc, p1, p2));
+                    }
+
+                    else
+                    {
+                        MessageBox.Show("No pollutant/ variable data in the database for this function");
+                        return;
+                    }
+                    j++;
+                }
             }
             catch (Exception ex)
             {
@@ -449,6 +558,7 @@ namespace BenMAP
             }
         }
 
+        // Set up for future editing of health impact functions 
         private void cboModelSpec_SelectedValueChanged(object sender, EventArgs e)
         {
             try
@@ -903,6 +1013,7 @@ namespace BenMAP
                 if (res != DialogResult.OK) return;
 
                 // If user clicked OK, update object with beta values from Effect Coefficients form
+                // OK currently disabled for demonstration purposes 
                 int i = 0;
                 foreach (var pv in _healthImpacts.PollVariables)
                 {
@@ -922,10 +1033,11 @@ namespace BenMAP
         {
             try
             {
-                /* Once betas are in database, list of CRFBetas will be updated here
-                   based on the toggle to reflect full year or seasons */
                 if (bvFullYear.Checked) _healthImpacts.BetaVariation = "Full year";
                 else _healthImpacts.BetaVariation = "Seasonal";
+
+                /* For future edit/ save functionality, lists of CRFBetas will be updated here
+                   based on the toggle to reflect full year or seasons */
             }
             catch (Exception ex)
             {
