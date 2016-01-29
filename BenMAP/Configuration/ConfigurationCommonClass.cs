@@ -6268,7 +6268,25 @@ namespace BenMAP.Configuration
         }
 
 
+        public static double CalculateCRSelectFunctionsOneCelStandardError(Dictionary<int, double> concentrations)
+        {
+            // check that column number of matrix one == row number of column 2
+            // the result will have the same number of rows as the 1st matrix and the same number of oclumns as the 2nd matrix
 
+            /* foreach row of matrix 1(index j)
+            {
+                foreach column of matrix 2(index k)
+                {
+                    for i = 0; i < width
+                    {
+                        // dot += row[i]*col[i]
+                        result[j][k] += row[i] * col[i];
+                    }
+                }
+            }*/
+
+            return 0;
+        }
 
     }
 }
