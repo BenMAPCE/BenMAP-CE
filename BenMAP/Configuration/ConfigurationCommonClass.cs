@@ -4656,19 +4656,13 @@ namespace BenMAP.Configuration
                         #region if (crSelectFunction.BenMAPHealthImpactFunction.MetricStatistic != MetricStatic.None)
                         if (crSelectFunction.BenMAPHealthImpactFunction.MetricStatistic != MetricStatic.None)
                         {
-                            if (dicBaseMetricData.ContainsKey(modelResultAttribute.Col + "," + modelResultAttribute.Row) && dicBaseMetricData[modelResultAttribute.Col + "," + modelResultAttribute.Row].ContainsKey(crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName + ","
-                                + Enum.GetName(typeof(MetricStatic), crSelectFunction.BenMAPHealthImpactFunction.MetricStatistic))
-                                &&
-                                dicControlMetricData.ContainsKey(modelResultAttribute.Col + "," + modelResultAttribute.Row) && dicControlMetricData[modelResultAttribute.Col + "," + modelResultAttribute.Row].ContainsKey(crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName + ","
-                                + Enum.GetName(typeof(MetricStatic), crSelectFunction.BenMAPHealthImpactFunction.MetricStatistic))
-                                )
-                            {
-                                baseValue = dicBaseMetricData[modelResultAttribute.Col + "," + modelResultAttribute.Row][crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName + ","
-                                + Enum.GetName(typeof(MetricStatic), crSelectFunction.BenMAPHealthImpactFunction.MetricStatistic)];
-                                controlValue = dicControlMetricData[modelResultAttribute.Col + "," + modelResultAttribute.Row][crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName + ","
-                                + Enum.GetName(typeof(MetricStatic), crSelectFunction.BenMAPHealthImpactFunction.MetricStatistic)];
-                            }
-                            else
+
+                            string metricKey = crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName + "," 
+                                                + Enum.GetName(typeof(MetricStatic), crSelectFunction.BenMAPHealthImpactFunction.MetricStatistic);
+                            //get metric data for base and control values
+                            //if we don't have metric data, create "blank" result and continue to next model result attribute (i.e. grid cell)
+                            if ((!getMetricData(dicBaseMetricData, modelResultAttribute.Col, modelResultAttribute.Row, metricKey, out baseValue)) ||
+                                    (!getMetricData(dicControlMetricData, modelResultAttribute.Col, modelResultAttribute.Row, metricKey, out controlValue)))
                             {
                                 crCalculateValue = new CRCalculateValue()
                                 {
@@ -4696,6 +4690,8 @@ namespace BenMAP.Configuration
                                 crSelectFunctionCalculateValue.CRCalculateValues.Add(crCalculateValue);
                                 continue;
                             }
+
+
                         }
                         else //else in if (crSelectFunction.BenMAPHealthImpactFunction.MetricStatistic != MetricStatic.None)
                         {
@@ -6266,6 +6262,28 @@ namespace BenMAP.Configuration
             double dResult = lstValuesForStandardDeviation.Sum(v => Math.Pow(v - avg, 2)) / Convert.ToDouble(lstValuesForStandardDeviation.Count() - 1);
             return Convert.ToSingle(dResult);
         }
+
+        public static bool getMetricData(Dictionary<string, Dictionary<string, float>> dicMetricData, int iCol, int iRow, string metricKey, out double value)
+        {
+            string colRowKey = iCol + "," + iRow;
+            value = 0;
+
+            if (!dicMetricData.ContainsKey(colRowKey))
+            {
+                return false;
+            }
+
+            if (!dicMetricData[colRowKey].ContainsKey(metricKey))
+            {
+                return false;
+            }
+
+            value = dicMetricData[colRowKey][metricKey];
+
+            return true;
+        }
+
+        
 
 
 
