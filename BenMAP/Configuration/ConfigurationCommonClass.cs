@@ -4948,20 +4948,29 @@ namespace BenMAP.Configuration
                                                     if (fControl != 0 && fControl < Threshold)
                                                         fControl = Threshold;
                                                     fDelta = fBase - fControl;
-                                                    if (fDelta != 0)
+
+                                                    //if no seasonal metric, i.e. we are using metric name, and delta = 0 then skip to next day
+                                                    if (crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric == null)
                                                     {
-                                                        CRCalculateValue cr = CalculateCRSelectFunctionsOneCel(sCRID, hasPopInstrBaseLineFunction, 1, crSelectFunction, strBaseLineFunction, strPointEstimateFunction, modelResultAttribute.Col, modelResultAttribute.Row, fBase, fControl, dicPopValue, dicIncidenceValue, dicPrevalenceValue, dicVariable, lhsResultArray);
-                                                        fPSum += cr.PointEstimate;
-                                                        fBaselineSum += cr.Baseline;
-                                                        if (lhsResultArray != null)
+                                                        if (fDelta == 0)
                                                         {
-                                                            for (int dlhs = 0; dlhs < lhsResultArray.Count(); dlhs++)
-                                                            {
-                                                                lstFPSum[dlhs] += cr.LstPercentile[dlhs];
-                                                            }
+                                                            continue;
                                                         }
                                                     }
-                                                }
+
+                                                    {
+                                                            CRCalculateValue cr = CalculateCRSelectFunctionsOneCel(sCRID, hasPopInstrBaseLineFunction, 1, crSelectFunction, strBaseLineFunction, strPointEstimateFunction, modelResultAttribute.Col, modelResultAttribute.Row, fBase, fControl, dicPopValue, dicIncidenceValue, dicPrevalenceValue, dicVariable, lhsResultArray);
+                                                            fPSum += cr.PointEstimate;
+                                                            fBaselineSum += cr.Baseline;
+                                                            if (lhsResultArray != null)
+                                                            {
+                                                                for (int dlhs = 0; dlhs < lhsResultArray.Count(); dlhs++)
+                                                                {
+                                                                    lstFPSum[dlhs] += cr.LstPercentile[dlhs];
+                                                                }
+                                                            }
+                                                     }
+                                                 }
 
                                             }
                                         }
