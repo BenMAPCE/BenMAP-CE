@@ -4714,10 +4714,10 @@ namespace BenMAP.Configuration
 
                         #region if we do not have a metric statistic in health impact function
                         //do we have 365 data?
-                        if (dicBase365.ContainsKey(modelResultAttribute.Col + "," + modelResultAttribute.Row) &&
-                                dicBase365[modelResultAttribute.Col + "," + modelResultAttribute.Row].ContainsKey(crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName)
-                                && dicControl365.ContainsKey(modelResultAttribute.Col + "," + modelResultAttribute.Row) &&
-                                dicControl365[modelResultAttribute.Col + "," + modelResultAttribute.Row].ContainsKey(crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName))
+                        if (dicBase365.ContainsKey(colRowKey) &&
+                                dicBase365[colRowKey].ContainsKey(metricKey)
+                                && dicControl365.ContainsKey(colRowKey) &&
+                                dicControl365[colRowKey].ContainsKey(metricKey))
                         {
                             #region if we have 365 data
 
@@ -4730,11 +4730,11 @@ namespace BenMAP.Configuration
                                     lstFPSum.Add(0);
                                 }
                             }
-                            for (int iBase = 0; iBase < dicBase365[modelResultAttribute.Col + "," + modelResultAttribute.Row][crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName].Count; iBase++)
+                            for (int iBase = 0; iBase < dicBase365[colRowKey][metricKey].Count; iBase++)
                             {
                                 double fBase, fControl, fDelta;
-                                fBase = dicBase365[modelResultAttribute.Col + "," + modelResultAttribute.Row][crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName][iBase];
-                                fControl = dicControl365[modelResultAttribute.Col + "," + modelResultAttribute.Row][crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName][iBase];
+                                fBase = dicBase365[colRowKey][metricKey][iBase];
+                                fControl = dicControl365[colRowKey][metricKey][iBase];
                                 if (fBase != float.MinValue && fControl != float.MinValue)
                                 {
                                     if (Threshold != 0 && fBase < Threshold)
@@ -4772,14 +4772,14 @@ namespace BenMAP.Configuration
                             };
                             crCalculateValue.StandardDeviation = lstFPSum.Count() == 0 ? float.NaN : Convert.ToSingle(Math.Sqrt(crCalculateValue.Variance));
                             crCalculateValue.PercentOfBaseline = crCalculateValue.Baseline == 0 ? 0 : Convert.ToSingle(Math.Round((crCalculateValue.Mean / crCalculateValue.Baseline) * 100, 4));
-                            double baseValueForDelta = modelResultAttribute.Values[crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName];
+                            double baseValueForDelta = modelResultAttribute.Values[metricKey];
                             double controlValueForDelta = baseValueForDelta;
 
-                            if (dicControl.Keys.Contains(modelResultAttribute.Col + "," + modelResultAttribute.Row))
+                            if (dicControl.Keys.Contains(colRowKey))
                             {
 
-                                if (dicControl[modelResultAttribute.Col + "," + modelResultAttribute.Row].Values.Keys.Contains(crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName))
-                                    controlValueForDelta = dicControl[modelResultAttribute.Col + "," + modelResultAttribute.Row].Values[crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName];
+                                if (dicControl[colRowKey].Values.Keys.Contains(metricKey))
+                                    controlValueForDelta = dicControl[colRowKey].Values[metricKey];
 
                             }
                             if (Threshold != 0 && baseValueForDelta < Threshold)
@@ -4797,23 +4797,23 @@ namespace BenMAP.Configuration
                         else
                         {
                             #region if we do not have 365 data
-                            if (modelResultAttribute.Values.ContainsKey(crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName))                            
-                                baseValue = modelResultAttribute.Values[crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName];
+                            if (modelResultAttribute.Values.ContainsKey(metricKey))                            
+                                baseValue = modelResultAttribute.Values[metricKey];
 
                             controlValue = baseValue;
 
-                            if (dicControl.Keys.Contains(modelResultAttribute.Col + "," + modelResultAttribute.Row))
+                            if (dicControl.Keys.Contains(colRowKey))
                             {
 
-                                if (dicControl[modelResultAttribute.Col + "," + modelResultAttribute.Row].Values.Keys.Contains(crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName))
-                                    controlValue = dicControl[modelResultAttribute.Col + "," + modelResultAttribute.Row].Values[crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName];
+                                if (dicControl[colRowKey].Values.Keys.Contains(metricKey))
+                                    controlValue = dicControl[colRowKey].Values[metricKey];
 
                             }
                                 
                             //are we using monitor data?
                             if (baseControlGroup.Base is MonitorDataLine && baseControlGroup.Control is MonitorDataLine && baseValue != controlValue && dicAllMonitorNeighborBase != null
-                                && dicAllMonitorNeighborBase.ContainsKey(modelResultAttribute.Col + "," + modelResultAttribute.Row)
-                                && dicAllMonitorNeighborControl != null && dicAllMonitorNeighborBase.ContainsKey(modelResultAttribute.Col + "," + modelResultAttribute.Row))
+                                && dicAllMonitorNeighborBase.ContainsKey(colRowKey)
+                                && dicAllMonitorNeighborControl != null && dicAllMonitorNeighborBase.ContainsKey(colRowKey))
                             {
                                 #region if we are using monitor data
                                 bool is365 = false;
@@ -4828,24 +4828,24 @@ namespace BenMAP.Configuration
                                     dayCount = 4;
                                 }
 
-                                foreach (MonitorNeighborAttribute mnAttribute in dicAllMonitorNeighborBase[modelResultAttribute.Col + "," + modelResultAttribute.Row])
+                                foreach (MonitorNeighborAttribute mnAttribute in dicAllMonitorNeighborBase[colRowKey])
                                 {
-                                    if (dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues365 != null && dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues365.ContainsKey(crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName))
+                                    if (dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues365 != null && dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues365.ContainsKey(metricKey))
                                     {
                                         is365 = true;
-                                        dayCount = dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues365[crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName].Count;
+                                        dayCount = dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues365[metricKey].Count;
                                         break;
                                     }
                                 }
 
                                 if (!is365)
                                 {
-                                    foreach (MonitorNeighborAttribute mnAttribute in dicAllMonitorNeighborControl[modelResultAttribute.Col + "," + modelResultAttribute.Row])
+                                    foreach (MonitorNeighborAttribute mnAttribute in dicAllMonitorNeighborControl[colRowKey])
                                     {
-                                        if (dicControlMonitor[mnAttribute.MonitorName].dicMetricValues365 != null && dicControlMonitor[mnAttribute.MonitorName].dicMetricValues365.ContainsKey(crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName))
+                                        if (dicControlMonitor[mnAttribute.MonitorName].dicMetricValues365 != null && dicControlMonitor[mnAttribute.MonitorName].dicMetricValues365.ContainsKey(metricKey))
                                         {
                                             is365 = true;
-                                            dayCount = dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues365[crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName].Count;
+                                            dayCount = dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues365[metricKey].Count;
                                             break;
                                         }
                                     }
@@ -4857,17 +4857,17 @@ namespace BenMAP.Configuration
                                     #region if is365 = true
                                     List<float> lstdfmBase = new List<float>();
 
-                                    foreach (MonitorNeighborAttribute mnAttribute in dicAllMonitorNeighborBase[modelResultAttribute.Col + "," + modelResultAttribute.Row])
+                                    foreach (MonitorNeighborAttribute mnAttribute in dicAllMonitorNeighborBase[colRowKey])
                                     {
                                         if (lstdfmBase.Count == 0)
                                         {
-                                            if (dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues365 != null && dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues365.ContainsKey(crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName))
+                                            if (dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues365 != null && dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues365.ContainsKey(metricKey))
                                             {
-                                                lstdfmBase = dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues365[crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName].Select(p => p == float.MinValue ? 0 : Convert.ToSingle(p * mnAttribute.Weight)).ToList();    
+                                                lstdfmBase = dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues365[metricKey].Select(p => p == float.MinValue ? 0 : Convert.ToSingle(p * mnAttribute.Weight)).ToList();    
                                             }
                                             else if (dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues != null && dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues.ContainsKey(crSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName))
                                             {
-                                                float value = dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues[crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName] == float.MinValue ? 0 : dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues[crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName] * Convert.ToSingle(mnAttribute.Weight);
+                                                float value = dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues[metricKey] == float.MinValue ? 0 : dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues[metricKey] * Convert.ToSingle(mnAttribute.Weight);
                                                 for (int i = 0; i < dayCount; i++)
                                                 {
                                                     lstdfmBase.Add(value);
@@ -4876,16 +4876,16 @@ namespace BenMAP.Configuration
                                         }
                                         else
                                         {
-                                            if (dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues365 != null && dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues365.ContainsKey(crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName))
+                                            if (dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues365 != null && dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues365.ContainsKey(metricKey))
                                             {
                                                 for (int idfm = 0; idfm < lstdfmBase.Count; idfm++)
                                                 {
-                                                    lstdfmBase[idfm] += dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues365[crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName][idfm] == float.MinValue ? 0 : dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues365[crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName][idfm] * Convert.ToSingle(mnAttribute.Weight);
+                                                    lstdfmBase[idfm] += dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues365[metricKey][idfm] == float.MinValue ? 0 : dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues365[metricKey][idfm] * Convert.ToSingle(mnAttribute.Weight);
                                                 }
                                             }
                                             else if (dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues != null && dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues.ContainsKey(crSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName))
                                             {
-                                                float value = dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues[crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName] == float.MinValue ? 0 : dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues[crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName] * Convert.ToSingle(mnAttribute.Weight);
+                                                float value = dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues[metricKey] == float.MinValue ? 0 : dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues[metricKey] * Convert.ToSingle(mnAttribute.Weight);
                                                 for (int idfm = 0; idfm < lstdfmBase.Count; idfm++)
                                                 {
                                                     lstdfmBase[idfm] += value;
@@ -4897,18 +4897,18 @@ namespace BenMAP.Configuration
                                     List<float> lstdfmControl = new List<float>();
 
 
-                                    foreach (MonitorNeighborAttribute mnAttribute in dicAllMonitorNeighborControl[modelResultAttribute.Col + "," + modelResultAttribute.Row])
+                                    foreach (MonitorNeighborAttribute mnAttribute in dicAllMonitorNeighborControl[colRowKey])
                                     {
                                         if (lstdfmControl.Count == 0)
                                         {
-                                            if (dicControlMonitor[mnAttribute.MonitorName].dicMetricValues365 != null && dicControlMonitor[mnAttribute.MonitorName].dicMetricValues365.ContainsKey(crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName))
+                                            if (dicControlMonitor[mnAttribute.MonitorName].dicMetricValues365 != null && dicControlMonitor[mnAttribute.MonitorName].dicMetricValues365.ContainsKey(metricKey))
                                             {
-                                                lstdfmControl = dicControlMonitor[mnAttribute.MonitorName].dicMetricValues365[crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName].Select(p => p == float.MinValue ? 0 : Convert.ToSingle(p * mnAttribute.Weight)).ToList();
+                                                lstdfmControl = dicControlMonitor[mnAttribute.MonitorName].dicMetricValues365[metricKey].Select(p => p == float.MinValue ? 0 : Convert.ToSingle(p * mnAttribute.Weight)).ToList();
 
                                             }
                                             else if (dicControlMonitor[mnAttribute.MonitorName].dicMetricValues != null && dicControlMonitor[mnAttribute.MonitorName].dicMetricValues.ContainsKey(crSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName))
                                             {
-                                                float value = dicControlMonitor[mnAttribute.MonitorName].dicMetricValues[crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName] == float.MinValue ? 0 : dicControlMonitor[mnAttribute.MonitorName].dicMetricValues[crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName] * Convert.ToSingle(mnAttribute.Weight);
+                                                float value = dicControlMonitor[mnAttribute.MonitorName].dicMetricValues[metricKey] == float.MinValue ? 0 : dicControlMonitor[mnAttribute.MonitorName].dicMetricValues[metricKey] * Convert.ToSingle(mnAttribute.Weight);
                                                 for (int i = 0; i < dayCount; i++)
                                                 {
                                                     lstdfmControl.Add(value);
@@ -4917,17 +4917,17 @@ namespace BenMAP.Configuration
                                         }
                                         else
                                         {
-                                            if (dicControlMonitor[mnAttribute.MonitorName].dicMetricValues365 != null && dicControlMonitor[mnAttribute.MonitorName].dicMetricValues365.ContainsKey(crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName))
+                                            if (dicControlMonitor[mnAttribute.MonitorName].dicMetricValues365 != null && dicControlMonitor[mnAttribute.MonitorName].dicMetricValues365.ContainsKey(metricKey))
                                             {
                                                 for (int idfm = 0; idfm < lstdfmControl.Count; idfm++)
                                                 {
-                                                    lstdfmControl[idfm] += dicControlMonitor[mnAttribute.MonitorName].dicMetricValues365[crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName][idfm] == float.MinValue ? 0 : dicControlMonitor[mnAttribute.MonitorName].dicMetricValues365[crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName][idfm] * Convert.ToSingle(mnAttribute.Weight);
+                                                    lstdfmControl[idfm] += dicControlMonitor[mnAttribute.MonitorName].dicMetricValues365[metricKey][idfm] == float.MinValue ? 0 : dicControlMonitor[mnAttribute.MonitorName].dicMetricValues365[metricKey][idfm] * Convert.ToSingle(mnAttribute.Weight);
 
                                                 }
                                             }
                                             else if (dicControlMonitor[mnAttribute.MonitorName].dicMetricValues != null && dicControlMonitor[mnAttribute.MonitorName].dicMetricValues.ContainsKey(crSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName))
                                             {
-                                                float value = dicControlMonitor[mnAttribute.MonitorName].dicMetricValues[crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName] == float.MinValue ? 0 : dicControlMonitor[mnAttribute.MonitorName].dicMetricValues[crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName] * Convert.ToSingle(mnAttribute.Weight);
+                                                float value = dicControlMonitor[mnAttribute.MonitorName].dicMetricValues[metricKey] == float.MinValue ? 0 : dicControlMonitor[mnAttribute.MonitorName].dicMetricValues[metricKey] * Convert.ToSingle(mnAttribute.Weight);
                                                 for (int idfm = 0; idfm < lstdfmBase.Count; idfm++)
                                                 {
                                                     lstdfmControl[idfm] += value;
@@ -5006,20 +5006,20 @@ namespace BenMAP.Configuration
                                 {
                                     #region if is365 = false
                                     double fBase = 0;
-                                    foreach (MonitorNeighborAttribute mnAttribute in dicAllMonitorNeighborBase[modelResultAttribute.Col + "," + modelResultAttribute.Row])
+                                    foreach (MonitorNeighborAttribute mnAttribute in dicAllMonitorNeighborBase[colRowKey])
                                     {
                                         if (dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues != null && dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues.ContainsKey(crSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName))
                                         {
-                                            fBase += dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues[crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName] == float.MinValue ? 0 : dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues[crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName] * Convert.ToSingle(mnAttribute.Weight);
+                                            fBase += dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues[metricKey] == float.MinValue ? 0 : dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues[metricKey] * Convert.ToSingle(mnAttribute.Weight);
                                         }
                                     }
 
                                     double fControl = 0;
-                                    foreach (MonitorNeighborAttribute mnAttribute in dicAllMonitorNeighborControl[modelResultAttribute.Col + "," + modelResultAttribute.Row])
+                                    foreach (MonitorNeighborAttribute mnAttribute in dicAllMonitorNeighborControl[colRowKey])
                                     {
                                         if (dicControlMonitor[mnAttribute.MonitorName].dicMetricValues != null && dicControlMonitor[mnAttribute.MonitorName].dicMetricValues.ContainsKey(crSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName))
                                         {
-                                            fControl += dicControlMonitor[mnAttribute.MonitorName].dicMetricValues[crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName] == float.MinValue ? 0 : dicControlMonitor[mnAttribute.MonitorName].dicMetricValues[crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName] * Convert.ToSingle(mnAttribute.Weight);
+                                            fControl += dicControlMonitor[mnAttribute.MonitorName].dicMetricValues[metricKey] == float.MinValue ? 0 : dicControlMonitor[mnAttribute.MonitorName].dicMetricValues[metricKey] * Convert.ToSingle(mnAttribute.Weight);
                                         }
                                     }
 
@@ -5073,14 +5073,14 @@ namespace BenMAP.Configuration
 
 
                                 crCalculateValue.PercentOfBaseline = crCalculateValue.Baseline == 0 ? 0 : Convert.ToSingle(Math.Round((crCalculateValue.Mean / crCalculateValue.Baseline) * 100, 4));
-                                double baseValueForDelta = modelResultAttribute.Values[crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName];
+                                double baseValueForDelta = modelResultAttribute.Values[metricKey];
                                 double controlValueForDelta = baseValueForDelta;
                                     
-                                if (dicControl.Keys.Contains(modelResultAttribute.Col + "," + modelResultAttribute.Row))
+                                if (dicControl.Keys.Contains(colRowKey))
                                 {
 
-                                    if (dicControl[modelResultAttribute.Col + "," + modelResultAttribute.Row].Values.Keys.Contains(crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName))
-                                            controlValueForDelta = dicControl[modelResultAttribute.Col + "," + modelResultAttribute.Row].Values[crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName];
+                                    if (dicControl[colRowKey].Values.Keys.Contains(metricKey))
+                                            controlValueForDelta = dicControl[colRowKey].Values[metricKey];
 
                                 }
                                 if (Threshold != 0 && baseValueForDelta < Threshold)
@@ -5100,13 +5100,13 @@ namespace BenMAP.Configuration
 
                             if (crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric != null)
                             {
-                                baseValue = modelResultAttribute.Values[crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName];
+                                baseValue = modelResultAttribute.Values[metricKey];
                                 controlValue = baseValue;
 
-                                if (dicControl.Keys.Contains(modelResultAttribute.Col + "," + modelResultAttribute.Row))
+                                if (dicControl.Keys.Contains(colRowKey))
                                 {
-                                    if (dicControl[modelResultAttribute.Col + "," + modelResultAttribute.Row].Values.Keys.Contains(crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName))
-                                        controlValue = dicControl[modelResultAttribute.Col + "," + modelResultAttribute.Row].Values[crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName];
+                                    if (dicControl[colRowKey].Values.Keys.Contains(metricKey))
+                                        controlValue = dicControl[colRowKey].Values[metricKey];
                                 }
                                 i365 = crSelectFunction.BenMAPHealthImpactFunction.PollutantGroup.Pollutants.First().Seasons.Count();
 
