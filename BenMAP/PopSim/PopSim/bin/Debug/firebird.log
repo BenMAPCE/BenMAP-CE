@@ -1,0 +1,12 @@
+
+RTI-025734	Fri Jan 22 12:52:36 2016
+	ib_util init failed, UDFs can't be used - looks like firebird misconfigured
+	
+	C:\eer\active\Projects\0212979.002.026.001_Benmap\PopSimRevisions\code\BenMAP\PopSim\PopSim\bin\Debug\bin/ib_util.dll library has not been found
+	C:\eer\active\Projects\0212979.002.026.001_Benmap\PopSimRevisions\code\BenMAP\PopSim\PopSim\bin\Debug\ib_util.dll library has not been found
+	ib_util.dll library has not been found
+
+
+RTI-025734	Fri Jan 22 12:52:46 2016
+	Shutting down the server with 1 active connection(s) to 1 database(s), 0 active service(s)
+
