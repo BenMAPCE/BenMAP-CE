@@ -10,6 +10,7 @@ using System.Windows.Forms;
 
 // next namespace includes the background worker object
 using System.ComponentModel;
+using System.Windows.Forms; // for message box function
 
 // this is the module that runs the simulation
 namespace PopSim
@@ -533,7 +534,7 @@ namespace PopSim
                 double m = 0;
                 int j = 1;
     
-                while (j <= 61) {
+                while (j <= 71) {
     
                     if (j == 1) {
                         m = 0.3;
@@ -570,7 +571,7 @@ namespace PopSim
                 m = 0;
                 j = 1;
     
-                while (j <= 61) {
+                while (j <= 71) {
                     m = 1 - System.Math.Exp(-k * j);
 
                     //Write values to table
@@ -754,9 +755,9 @@ namespace PopSim
                 Beta = InputData.getUser_Beta();
             //Otherwise if user did not specify a Beta value, then look up the relevant Beta in the study table
             } else {
-                sqltext = "SELECT Studies.Study, Studies.Aggregation, Studies.Cause, Studies.Beta FROM Studies";
-                sqltext = sqltext + " where Studies.Study = '" + InputData.getUser_Study_Name() + 
-                        "' AND Studies.Aggregation = '" + strApproach + "' AND Studies.Cause = '" + Illness_Type + "'";
+                sqltext = "SELECT Study, Aggregation, Cause, Beta FROM Study_Betas";
+                sqltext = sqltext + " where Study = '" + InputData.getUser_Study_Name() + 
+                        "' AND Aggregation = '" + strApproach + "' AND Cause = '" + Illness_Type + "'";
                 dataCommand.CommandText = sqltext;
                 dataCommand.Transaction = trTR;
                 dataReader = dataCommand.ExecuteReader();
@@ -858,6 +859,7 @@ namespace PopSim
                 dataReader.Close();
                 
                 //If user has specified a threshold value, look up t
+                // 
                 if (InputData.getPM_Choice() == 1) {
     
                     //Look up threshold value and store as variable t
@@ -891,10 +893,10 @@ namespace PopSim
             //Reset counters
             j = 1;
     
-            while (j <= 61) {
+            while (j <= 71) {
 
                 //Reset counters
-                year = 1990;
+                year = 1980;
     
                 while (year <= 2050) {
                     k = year - (j - 1);
@@ -925,7 +927,7 @@ namespace PopSim
                 j = j + 1;
             } // wend 
             //Reset counters
-            year = 1990;
+            year = 1980;
             //If user selected the single lag option, use the single lag type
             if (InputData.getLag_Type() == 0) { // Single Lag Type
                 strLag_Type = "Single";
@@ -947,7 +949,7 @@ namespace PopSim
                 k = 0;
                 cum_impact = 0;
     
-                while (j <= 61){
+                while (j <= 71){
         
                     //Look up year-specific value from lag table
                     dcLag.Parameters[0].Value = j.ToString();
@@ -993,7 +995,7 @@ namespace PopSim
             } // wend Loop
 
             //Reset year counter
-            year = 1990;
+            year = 1980;
 
             while (year <= 2050) {
 
@@ -1066,7 +1068,7 @@ namespace PopSim
                 }
       
             //Reset year counter
-            year = 1990;
+            year = 1980;
 
             while (year <= 2050) {
     
@@ -1157,7 +1159,7 @@ namespace PopSim
                 while (age <= 100) {
            
                     // Reset year counter
-                    year = 1990;
+                    year = 1980;
     
                     while (year <= 2150) {
     
@@ -1217,7 +1219,7 @@ namespace PopSim
             dataCommand.Connection = dbConnection;        
             
             //Set initial values
-            int year = 1990;
+            int year = 1980;
             double pop = 0;
             double rate = 0;
             double migration = 0;
@@ -1262,7 +1264,7 @@ namespace PopSim
             dcMPopCensus.Parameters.Add("Year_Num", FbDbType.VarChar);
             
 
-            //Repeat this loop for years 1990-2050
+            //Repeat this loop for years 1980-2050
             while (year <= maxRunYear)
             {
 
@@ -1273,7 +1275,7 @@ namespace PopSim
                 while (age <= maxRunAge)
                 {
 
-                    if (year == 1990)
+                    if (year == 1980)
                     { //Get the census pop info for that age/year pair
 
                         //Select records from relevant table for that age/year pair
@@ -1290,7 +1292,7 @@ namespace PopSim
                     else if (age == 0)
                     { //Calculate births
                         if (strBirth_Type == "Static")
-                        {//Just pull Census data as for year 1990
+                        {//Just pull Census data as for year 1980
                             //Select records from relevant table for that age/year pair
                             sqltext = "SELECT " + strcensus_table + ".Age, " + strcensus_table + ".Year_Num, "
                                 + strcensus_table + ".Population FROM " + strcensus_table;
@@ -1328,7 +1330,7 @@ namespace PopSim
                                 pop = (double)dataReader[0];
                                 dataReader.Close();
 
-                                if (year <= 2005)
+                                if (year <= 2014)
                                 {//Use separate male/female birth rates
 
                                     //Pull the birth rate for the previous year, for each age
@@ -1349,7 +1351,7 @@ namespace PopSim
 
                                     //Pull the birth rate for the previous year, for each age
                                     sqltext = "SELECT Age, Year_Num, "
-                                        + " Rate FROM RT_BABIES_COMBINED_PST_2005 ";
+                                        + " Rate FROM RT_BABIES_COMBINED_PST_2014 ";
                                     sqltext = sqltext + " where Age = " + age_mother.ToString() + " AND Year_Num = " + (year - 1).ToString();
                                     dataCommand.CommandText = sqltext;
                                     dataCommand.Transaction = trTR;
@@ -1396,11 +1398,11 @@ namespace PopSim
                             k = (double)dataReader[0];
                             dataReader.Close();
 
-                            if ((year > 2005) && (strgenderText == "female"))
+                            if ((year > 2014) && (strgenderText == "female"))
                             {
                                 births = births * (j / (j + k));
                             }
-                            else if ((year > 2005) && (strgenderText == "male"))
+                            else if ((year > 2014) && (strgenderText == "male"))
                             {
                                 births = births * (k / (j + k));
                             }
@@ -1563,12 +1565,12 @@ namespace PopSim
             
             //CALCULATE COHORT LY
             //Set initial values
-            int year = 1990;
+            int year = 1980;
             double pop, rate, m;
             int age;
             string sqltext;
             
-            year = 1990;
+            year = 1980;
             pop = 0;
             rate = 0;
             m = 0;
@@ -1595,7 +1597,7 @@ namespace PopSim
             dcFPLY.Parameters.Add("GENDER", FbDbType.VarChar);
             dcFPLY.Parameters.Add("SCENARIO", FbDbType.VarChar);
 
-            //Repeat this loop for years 1990-2150
+            //Repeat this loop for years 1980-2150
             while (year <= 2150) {
 
                 //Reset age counter to zero for each year loop
@@ -1604,7 +1606,7 @@ namespace PopSim
                 //Repeat this loop for ages 0-100
                 while (age <= 100) {
                
-                    if ((year == 1990) || ((age == 0) &&  (year <= 2050))) {
+                    if ((year == 1980) || ((age == 0) &&  (year <= 2050))) {
                         //Select records from pop table for that age/year pair
                         //sqltext = "SELECT Final_Table_Pop.Age, Final_Table_Pop.Proj_Year, Final_Table_Pop.Pop, Final_Table_Pop.gender, " 
                         //+ " Final_Table_Pop.scenario FROM Final_Table_Pop";
@@ -1675,8 +1677,8 @@ namespace PopSim
             j = 0;
             m = 0;
 
-            //Repeat this loop for years 1990-2150, backwards
-            for (year = 2150; year >= 1990; year--) {
+            //Repeat this loop for years 1980-2150, backwards
+            for (year = 2150; year >= 1980; year--) {
 
                 //Reset age counter to one hundred for each year loop
                 age = 100;
@@ -1728,11 +1730,11 @@ namespace PopSim
 
             //CALCULATE COHORT CLE
             //Set initial values
-            year = 1990;
+            year = 1980;
             j = 0;
             m = 0;
 
-            //Repeat this loop for years 1990-2050
+            //Repeat this loop for years 1980-2050
             while (year <= 2050) {
 
                 //Reset age counter to zero for each year loop
@@ -1783,12 +1785,12 @@ namespace PopSim
 
             //CALCULATE PERIOD LY
             //Set initial values
-            year = 1990;
+            year = 1980;
             pop = 0;
             rate = 0;
             m = 0;
 
-            //Repeat this loop for years 1990-2050
+            //Repeat this loop for years 1980-2050
             while (year <= 2050) {
                 //Reset age counter to zero for each year loop
                 age = 0;
@@ -1873,8 +1875,8 @@ namespace PopSim
             j = 0;
             m = 0;
 
-            //Repeat this loop for years 1990-2150, backwards
-            for (year = 2050; year >= 1990; year--) {
+            //Repeat this loop for years 1980-2150, backwards
+            for (year = 2050; year >= 1980; year--) {
 
                 //Reset age counter to one hundred for each year loop
                 age = 100;
@@ -1933,11 +1935,11 @@ namespace PopSim
 
             //CALCULATE PERIOD CLE
             //Set initial values
-            year = 1990;
+            year = 1980;
             j = 0;
             m = 0;
 
-            //Repeat this loop for years 1990-2050
+            //Repeat this loop for years 1980-2050
             while (year <= 2050) {
 
                 //Reset age counter to zero for each year loop
@@ -2012,7 +2014,7 @@ namespace PopSim
             
 
             //approach = "Disaggregated"
-            //begin_year = 1990
+            //begin_year = 1980
             //end_year = 2020
 
             for (I = 1; I <= 44; I++) {
@@ -2257,14 +2259,14 @@ namespace PopSim
 
             //CALCULATE AVOIDED DEATHS
             //Set initial values
-            int year = 1990;
+            int year = 1980;
             int age;
             j = 0;
             k = 0;
             m = 0;
             p = 0;
 
-            //Repeat this loop for years 1990-2050
+            //Repeat this loop for years 1980-2050
             while (year <= 2050) {
 
                 //Reset age counter to zero for each year loop
@@ -2334,13 +2336,13 @@ namespace PopSim
 
             //CALCULATE LIFE YEARS GAINED
             //Set initial values
-            year = 1990;
+            year = 1980;
             j = 0;
             k = 0;
             m = 0;
             p = 0;
 
-            //Repeat this loop for years 1990-2050
+            //Repeat this loop for years 1980-2050
             while (year <= 2050) {
 
                 //Reset age counter to zero for each year loop
@@ -2412,13 +2414,13 @@ namespace PopSim
 
             //CALCULATE INCREASE IN COHORT CONDITIONAL LIFE EXPECTANCY
             //Set initial values
-            year = 1990;
+            year = 1980;
             j = 0;
             k = 0;
             m = 0;
             p = 0;
 
-            //Repeat this loop for years 1990-2050
+            //Repeat this loop for years 1980-2050
             while (year <= 2050) {
 
                 //Reset age counter to zero for each year loop
@@ -2492,13 +2494,13 @@ namespace PopSim
 
             //CALCULATE INCREASE IN PERIOD CONDITIONAL LIFE EXPECTANCY
             //Set initial values
-            year = 1990;
+            year = 1980;
             j = 0;
             k = 0;
             m = 0;
             p = 0;
 
-            //Repeat this loop for years 1990-2050
+            //Repeat this loop for years 1980-2050
             while (year <= 2050) {
 
                 //Reset age counter to zero for each year loop

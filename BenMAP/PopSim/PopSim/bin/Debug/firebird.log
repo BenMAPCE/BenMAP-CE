@@ -10,3 +10,119 @@ RTI-025734	Fri Jan 22 12:52:36 2016
 RTI-025734	Fri Jan 22 12:52:46 2016
 	Shutting down the server with 1 active connection(s) to 1 database(s), 0 active service(s)
 
+
+RTI-025734	Thu Feb 04 14:32:51 2016
+	ib_util init failed, UDFs can't be used - looks like firebird misconfigured
+	
+	C:\eer\active\Projects\0212979.002.026.001_Benmap\PopSimRevisions\code\BenMAP\PopSim\PopSim\bin\Debug\bin/ib_util.dll library has not been found
+	C:\eer\active\Projects\0212979.002.026.001_Benmap\PopSimRevisions\code\BenMAP\PopSim\PopSim\bin\Debug\ib_util.dll library has not been found
+	ib_util.dll library has not been found
+
+
+RTI-025734	Thu Feb 04 14:33:31 2016
+	Shutting down the server with 1 active connection(s) to 1 database(s), 0 active service(s)
+
+
+RTI-025734	Thu Feb 04 14:46:01 2016
+	ib_util init failed, UDFs can't be used - looks like firebird misconfigured
+	
+	C:\eer\active\Projects\0212979.002.026.001_Benmap\PopSimRevisions\code\BenMAP\PopSim\PopSim\bin\Debug\bin/ib_util.dll library has not been found
+	C:\eer\active\Projects\0212979.002.026.001_Benmap\PopSimRevisions\code\BenMAP\PopSim\PopSim\bin\Debug\ib_util.dll library has not been found
+	ib_util.dll library has not been found
+
+
+RTI-025734	Thu Feb 04 16:17:52 2016
+	Shutting down the server with 3 active connection(s) to 1 database(s), 0 active service(s)
+
+
+RTI-025734	Thu Feb 04 16:18:53 2016
+	ib_util init failed, UDFs can't be used - looks like firebird misconfigured
+	
+	C:\eer\active\Projects\0212979.002.026.001_Benmap\PopSimRevisions\code\BenMAP\PopSim\PopSim\bin\Debug\bin/ib_util.dll library has not been found
+	C:\eer\active\Projects\0212979.002.026.001_Benmap\PopSimRevisions\code\BenMAP\PopSim\PopSim\bin\Debug\ib_util.dll library has not been found
+	ib_util.dll library has not been found
+
+
+RTI-025734	Sat Feb 06 19:28:44 2016
+	ib_util init failed, UDFs can't be used - looks like firebird misconfigured
+	
+	C:\eer\active\Projects\0212979.002.026.001_Benmap\PopSimRevisions\code\BenMAP\PopSim\PopSim\bin\Debug\bin/ib_util.dll library has not been found
+	C:\eer\active\Projects\0212979.002.026.001_Benmap\PopSimRevisions\code\BenMAP\PopSim\PopSim\bin\Debug\ib_util.dll library has not been found
+	ib_util.dll library has not been found
+
+
+RTI-025734	Sat Feb 06 19:35:47 2016
+	ib_util init failed, UDFs can't be used - looks like firebird misconfigured
+	
+	C:\eer\active\Projects\0212979.002.026.001_Benmap\PopSimRevisions\code\BenMAP\PopSim\PopSim\bin\Debug\bin/ib_util.dll library has not been found
+	C:\eer\active\Projects\0212979.002.026.001_Benmap\PopSimRevisions\code\BenMAP\PopSim\PopSim\bin\Debug\ib_util.dll library has not been found
+	ib_util.dll library has not been found
+
+
+RTI-025734	Sat Feb 06 19:36:51 2016
+	ib_util init failed, UDFs can't be used - looks like firebird misconfigured
+	
+	C:\eer\active\Projects\0212979.002.026.001_Benmap\PopSimRevisions\code\BenMAP\PopSim\PopSim\bin\Debug\bin/ib_util.dll library has not been found
+	C:\eer\active\Projects\0212979.002.026.001_Benmap\PopSimRevisions\code\BenMAP\PopSim\PopSim\bin\Debug\ib_util.dll library has not been found
+	ib_util.dll library has not been found
+
+
+RTI-025734	Sat Feb 06 19:37:57 2016
+	ib_util init failed, UDFs can't be used - looks like firebird misconfigured
+	
+	C:\eer\active\Projects\0212979.002.026.001_Benmap\PopSimRevisions\code\BenMAP\PopSim\PopSim\bin\Debug\bin/ib_util.dll library has not been found
+	C:\eer\active\Projects\0212979.002.026.001_Benmap\PopSimRevisions\code\BenMAP\PopSim\PopSim\bin\Debug\ib_util.dll library has not been found
+	ib_util.dll library has not been found
+
+
+RTI-025734	Sat Feb 06 19:39:05 2016
+	ib_util init failed, UDFs can't be used - looks like firebird misconfigured
+	
+	C:\eer\active\Projects\0212979.002.026.001_Benmap\PopSimRevisions\code\BenMAP\PopSim\PopSim\bin\Debug\bin/ib_util.dll library has not been found
+	C:\eer\active\Projects\0212979.002.026.001_Benmap\PopSimRevisions\code\BenMAP\PopSim\PopSim\bin\Debug\ib_util.dll library has not been found
+	ib_util.dll library has not been found
+
+
+RTI-025734	Sat Feb 06 19:46:02 2016
+	ib_util init failed, UDFs can't be used - looks like firebird misconfigured
+	
+	C:\eer\active\Projects\0212979.002.026.001_Benmap\PopSimRevisions\code\BenMAP\PopSim\PopSim\bin\Debug\bin/ib_util.dll library has not been found
+	C:\eer\active\Projects\0212979.002.026.001_Benmap\PopSimRevisions\code\BenMAP\PopSim\PopSim\bin\Debug\ib_util.dll library has not been found
+	ib_util.dll library has not been found
+
+
+RTI-025734	Sat Feb 06 19:48:06 2016
+	ib_util init failed, UDFs can't be used - looks like firebird misconfigured
+	
+	C:\eer\active\Projects\0212979.002.026.001_Benmap\PopSimRevisions\code\BenMAP\PopSim\PopSim\bin\Debug\bin/ib_util.dll library has not been found
+	C:\eer\active\Projects\0212979.002.026.001_Benmap\PopSimRevisions\code\BenMAP\PopSim\PopSim\bin\Debug\ib_util.dll library has not been found
+	ib_util.dll library has not been found
+
+
+RTI-025734	Sat Feb 06 20:03:09 2016
+	ib_util init failed, UDFs can't be used - looks like firebird misconfigured
+	
+	C:\eer\active\Projects\0212979.002.026.001_Benmap\PopSimRevisions\code\BenMAP\PopSim\PopSim\bin\Debug\bin/ib_util.dll library has not been found
+	C:\eer\active\Projects\0212979.002.026.001_Benmap\PopSimRevisions\code\BenMAP\PopSim\PopSim\bin\Debug\ib_util.dll library has not been found
+	ib_util.dll library has not been found
+
+
+RTI-025734	Sat Feb 06 20:54:33 2016
+	ib_util init failed, UDFs can't be used - looks like firebird misconfigured
+	
+	C:\eer\active\Projects\0212979.002.026.001_Benmap\PopSimRevisions\code\BenMAP\PopSim\PopSim\bin\Debug\bin/ib_util.dll library has not been found
+	C:\eer\active\Projects\0212979.002.026.001_Benmap\PopSimRevisions\code\BenMAP\PopSim\PopSim\bin\Debug\ib_util.dll library has not been found
+	ib_util.dll library has not been found
+
+
+RTI-025734	Sat Feb 06 21:53:33 2016
+	ib_util init failed, UDFs can't be used - looks like firebird misconfigured
+	
+	C:\eer\active\Projects\0212979.002.026.001_Benmap\PopSimRevisions\code\BenMAP\PopSim\PopSim\bin\Debug\bin/ib_util.dll library has not been found
+	C:\eer\active\Projects\0212979.002.026.001_Benmap\PopSimRevisions\code\BenMAP\PopSim\PopSim\bin\Debug\ib_util.dll library has not been found
+	ib_util.dll library has not been found
+
+
+RTI-025734	Sat Feb 06 22:28:21 2016
+	Shutting down the server with 4 active connection(s) to 1 database(s), 0 active service(s)
+

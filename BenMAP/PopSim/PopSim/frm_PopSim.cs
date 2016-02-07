@@ -56,11 +56,11 @@ namespace PopSim
         DateTime StartTime;
         DateTime StopTime;
         string fileName;
-                
+
         public frm_PopSim()
         {
             InitializeComponent();
-            
+
             // create link to Firebird database
             dbConnection = getNewConnection();
             dbConnection.Open();
@@ -70,7 +70,7 @@ namespace PopSim
 
         private static FbConnection getNewConnection()
         {
-            
+
             ConnectionStringSettings settings = ConfigurationManager.ConnectionStrings["ConnectionString"];
             string str = settings.ConnectionString;
             //if (!str.Contains(":"))
@@ -85,10 +85,10 @@ namespace PopSim
         private void fillFormWithScenarioData(int Scenario_ID)
         {
             // load form data for scenario from database
-            FbCommand dataCommand = new  FirebirdSql.Data.FirebirdClient.FbCommand();
+            FbCommand dataCommand = new FirebirdSql.Data.FirebirdClient.FbCommand();
             dataCommand.Connection = dbConnection;
             dataCommand.CommandType = CommandType.Text;
-            dataCommand.CommandText = "Select BEGIN_YEAR, END_YEAR, SCENARIO_NAME, DR_APPROACH_ID, " 
+            dataCommand.CommandText = "Select BEGIN_YEAR, END_YEAR, SCENARIO_NAME, DR_APPROACH_ID, "
                 + "BETA_TYPE_ID, PM_THRESHOLD_CHOICE, PS_TRAJECTORY_ID, LAG_TYPE_ID, BIRTHS_DYNAMIC, "
                 + "USER_SPECIFIED_BETA, PM_THRESHOLD_VALUE, BETA_ADJ_FACTOR, "
                 + "LAG_K_SINGLE, LAG_K_MULTIPLE_CARDIO, LAG_K_MULTIPLE_LUNG, LAG_K_MULTIPLE_OTHER, "
@@ -104,11 +104,11 @@ namespace PopSim
             while (dataReader.Read())
             {
                 nudStartYear.Value = decimal.Parse(dataReader[0].ToString());
-                nudEndYear.Value  = decimal.Parse(dataReader[1].ToString());
+                nudEndYear.Value = decimal.Parse(dataReader[1].ToString());
                 txtScenarioName.Text = dataReader[2].ToString();
-               
+
                 // add new boxes - need to check indexes
-               //  USER_SPECIFIED_BETA, PM_THRESHOLD_VALUE, BETA_ADJ_FACTOR, "
+                //  USER_SPECIFIED_BETA, PM_THRESHOLD_VALUE, BETA_ADJ_FACTOR, "
                 txtUserSuppliedBeta.Text = dataReader[9].ToString();
                 txtPMThreshold.Text = dataReader[10].ToString();
                 txtBetaAdj.Text = dataReader[11].ToString();
@@ -122,7 +122,7 @@ namespace PopSim
                 // + "AGE_RANGE_START, AGE_RANGE_END "
                 txtYoungest.Text = dataReader[16].ToString();
                 txtOldest.Text = dataReader[17].ToString();
-               
+
                 // PM_YEAR_1, PM_YEAR_2, PM_YEAR_3, PM_YEAR_4, PM_YEAR_5, 
                 txtPMYear_1.Text = dataReader[19].ToString();
                 txtPMYear_2.Text = dataReader[20].ToString();
@@ -136,7 +136,7 @@ namespace PopSim
                 txtPM_Val_3.Text = dataReader[26].ToString();
                 txtPM_Val_4.Text = dataReader[27].ToString();
                 txtPM_Val_5.Text = dataReader[28].ToString();
-                
+
                 // SUB_POP_START_1, SUB_POP_START_2, SUB_POP_START_3, SUB_POP_START_4, SUB_POP_START_5, 
                 txtSUB_POP_START_1.Text = dataReader[29].ToString();
                 txtSUB_POP_START_2.Text = dataReader[30].ToString();
@@ -171,13 +171,28 @@ namespace PopSim
                 // lag type
                 setRB(gbLagType, (int)dataReader[7]);
                 // dynamic birth type
-                setRB(gbBirthsDynamic, (int)dataReader[8]); 
+                setRB(gbBirthsDynamic, (int)dataReader[8]);
                 // lag function type
-                setRB(gbLagFunction, (int)dataReader[44]); 
-                
+                setRB(gbLagFunction, (int)dataReader[44]);
+
 
                 // load combo boxes
-                string strSQL = "SELECT STUDY_ID, STUDY_NAME, BETA_VALUE FROM LK_STUDY_BETAS ORDER BY STUDY_NAME ";
+                // combo box load varies with aggregation/disaggregation
+                string strSQL = "";
+                if ((int)dataReader[3] > 0)
+                { // disaggregated
+                    strSQL = "SELECT SB.STUDY_ID, SB.STUDY_NAME FROM LK_STUDIES AS SB INNER JOIN "
+                                   + "STUDY_BETAS AS S ON S.STUDY_ID = SB.STUDY_ID WHERE S.AGGREGATION = 'Disaggregated' "
+                                   + "ORDER BY STUDY_NAME ";
+                }
+                else // aggregated
+                {
+                    strSQL = "SELECT SB.STUDY_ID, SB.STUDY_NAME FROM LK_STUDIES AS SB LEFT JOIN "
+                        + "STUDY_BETAS AS S ON S.STUDY_ID = SB.STUDY_ID WHERE S.AGGREGATION = 'Aggregated' or S.AGGREGATION IS NULL "
+                        + "ORDER BY STUDY_NAME ";
+                }
+
+
                 FbCommand cmdStudies = new FbCommand();
                 cmdStudies.Connection = dbConnection;
                 cmdStudies.CommandType = CommandType.Text;
@@ -189,7 +204,8 @@ namespace PopSim
                 cbStudy.DisplayMember = "STUDY_NAME";
                 cbStudy.ValueMember = "STUDY_ID";
                 // preselect study from scenario table
-                cbStudy.SelectedIndex = (int)dataReader[18];
+                cbStudy.SelectedValue = (int)dataReader[18];
+                
 
             }
         }
@@ -211,7 +227,7 @@ namespace PopSim
             strSQL = "UPDATE SCENARIOS SET END_YEAR =" + nudEndYear.Value.ToString() + " WHERE SCENARIO_ID =" + Scenario_ID.ToString();
             cUpdate.CommandText = strSQL;
             cUpdate.ExecuteNonQuery();
-            
+
             // add new boxes - - need to check indexes
             //  USER_SPECIFIED_BETA, PM_THRESHOLD_VALUE, BETA_ADJ_FACTOR, "
             strSQL = "UPDATE SCENARIOS SET USER_SPECIFIED_BETA=" + txtUserSuppliedBeta.Text + " WHERE SCENARIO_ID =" + Scenario_ID.ToString();
@@ -225,7 +241,7 @@ namespace PopSim
             strSQL = "UPDATE SCENARIOS SET BETA_ADJ_FACTOR=" + txtBetaAdj.Text + " WHERE SCENARIO_ID =" + Scenario_ID.ToString();
             cUpdate.CommandText = strSQL;
             cUpdate.ExecuteNonQuery();
-            
+
             // + "LAG_K_SINGLE, LAG_K_MULTIPLE_CARDIO, LAG_K_MULTIPLE_LUNG, LAG_K_MULTIPLE_OTHER "
             strSQL = "UPDATE SCENARIOS SET LAG_K_SINGLE=" + txtLagSingle.Text + " WHERE SCENARIO_ID =" + Scenario_ID.ToString();
             cUpdate.CommandText = strSQL;
@@ -303,7 +319,7 @@ namespace PopSim
             strSQL = "UPDATE SCENARIOS SET SUB_POP_START_5 =" + txtSUB_POP_START_5.Text + " WHERE SCENARIO_ID =" + Scenario_ID.ToString();
             cUpdate.CommandText = strSQL;
             cUpdate.ExecuteNonQuery();
-                        
+
             //SUB_POP_END_1, SUB_POP_END_2, SUB_POP_END_3, SUB_POP_END_4, SUB_POP_END_5,
             strSQL = "UPDATE SCENARIOS SET SUB_POP_END_1 =" + txtSUB_POP_END_1.Text + " WHERE SCENARIO_ID =" + Scenario_ID.ToString();
             cUpdate.CommandText = strSQL;
@@ -353,7 +369,7 @@ namespace PopSim
             strSQL = "UPDATE SCENARIOS SET PM_THRESHOLD_CHOICE = " + getRB(gbPMTresholdType).ToString() + " WHERE SCENARIO_ID =" + Scenario_ID.ToString();
             cUpdate.CommandText = strSQL;
             cUpdate.ExecuteNonQuery();
-           // pm trajectory type
+            // pm trajectory type
             strSQL = "UPDATE SCENARIOS SET PS_TRAJECTORY_ID = " + getRB(gbPMTrajectory).ToString() + " WHERE SCENARIO_ID =" + Scenario_ID.ToString();
             cUpdate.CommandText = strSQL;
             cUpdate.ExecuteNonQuery();
@@ -370,18 +386,18 @@ namespace PopSim
             strSQL = "UPDATE SCENARIOS SET LAG_FUNCT_TYPE_ID= " + getRB(gbLagFunction).ToString() + " WHERE SCENARIO_ID =" + Scenario_ID.ToString();
             cUpdate.CommandText = strSQL;
             cUpdate.ExecuteNonQuery();
-            
 
             // Combo Boxes
-            strSQL = "UPDATE SCENARIOS SET STUDY_ID = " + cbStudy.SelectedIndex.ToString()  + " WHERE SCENARIO_ID =" + Scenario_ID.ToString();
+            strSQL = "UPDATE SCENARIOS SET STUDY_ID = " + cbStudy.SelectedValue.ToString() + " WHERE SCENARIO_ID =" + Scenario_ID.ToString();
             cUpdate.CommandText = strSQL;
             cUpdate.ExecuteNonQuery();
         }
 
         private void setRB(GroupBox gbBox, int iToSet)
         {
-            foreach (Control myControl in gbBox.Controls ){
-                if ((myControl is RadioButton ) && (myControl.TabIndex == iToSet))
+            foreach (Control myControl in gbBox.Controls)
+            {
+                if ((myControl is RadioButton) && (myControl.TabIndex == iToSet))
                 {
                     RadioButton tempBox = (RadioButton)myControl;
                     tempBox.Checked = true;
@@ -395,7 +411,7 @@ namespace PopSim
             // returns tab index of selected radio button in group box, 0 if nothing selected
             foreach (Control myControl in gbBox.Controls)
             {
-                if (myControl is RadioButton) 
+                if (myControl is RadioButton)
                 {
                     RadioButton tempBox = (RadioButton)myControl;
                     if (tempBox.Checked)
@@ -407,7 +423,7 @@ namespace PopSim
             }
             return 0;
         }
-        
+
         private void Form1_Load(object sender, EventArgs e)
         {
 
@@ -432,7 +448,16 @@ namespace PopSim
         private void btnNext_Click(object sender, EventArgs e)
         { // select next page
             currentpage++;
-            if (currentpage == MAXPAGE)
+            pageChange();
+        }
+
+        private void btnBack_Click(object sender, EventArgs e)
+        {
+            currentpage--;
+            pageChange();
+        }
+
+        /*if (currentpage == MAXPAGE)
             {
                 btnNext.Visible = false;
                 btnBack.Visible = true;
@@ -452,21 +477,35 @@ namespace PopSim
                 }
             };
             tabControl1.SelectTab(currentpage);
-        }
+         */
 
-        private void btnBack_Click(object sender, EventArgs e)
+        private void pageChange()   
         {
-            currentpage--;
+            // handle page change on tab or next button
             if (currentpage == 0)
             {
                 btnBack.Visible = false;
                 btnNext.Visible = true;
-            }else if (currentpage < 0)
-                {    // don't go off end of tab control
+            }
+            else if (currentpage < 0)
+            {    // don't go off end of tab control
                 currentpage = 0;
                 btnBack.Visible = false;
                 btnNext.Visible = true;
-            } else {
+            }
+            else if (currentpage == MAXPAGE)
+            {
+                btnNext.Visible = false;
+                btnBack.Visible = true;
+            }
+            else if (currentpage > MAXPAGE)
+            {    // don't go off end of tab control
+                currentpage = MAXPAGE;
+                btnNext.Visible = false;
+                btnBack.Visible = true;
+
+            } else
+            {
                 btnBack.Visible = true;
                 if (currentpage < MAXPAGE - 1)
                 {
@@ -475,6 +514,7 @@ namespace PopSim
             };
             tabControl1.SelectTab(currentpage);
         }
+
 
         private void btnRunModel_Click(object sender, EventArgs e)
         {
@@ -545,7 +585,7 @@ namespace PopSim
             btnOutput.Visible = true;
             progressBar1.Visible = true;
             lblRunStatus.Text = "Model Run Completed";
-            MessageBox.Show("Run finished in " + (StopTime - StartTime).ToString(),"Run Completed");
+            MessageBox.Show("Run finished in " + (StopTime - StartTime).ToString(), "Run Completed");
             progressBar1.Visible = false;
             lblRunStatus.Visible = false;
             lblRunProgress.Visible = false;
@@ -570,51 +610,56 @@ namespace PopSim
 
             outputRoutine.OpenWorkbook(fileName);
             if (outputRoutine.GetWBOpen())
-            {    // output worksheets to workbook
+            {    // output worksheets to workbook - modified to be in inverse order from original to get workbooks in correct output order
                 bwOutput.ReportProgress(0);
                 bwOutput.ReportProgress(0);
 
-                outputRoutine.queryStringToWB("Select * from Report_Input_Summary", "Report_Input_Summary");
-                bwOutput.ReportProgress(10);
-                outputRoutine.queryStringToWB("Select * from Report_Beta_Summary", "Report_Beta_Summary");
-
+            
                 // crosstab queries
+                bwOutput.ReportProgress(10);
+                outputRoutine.queryStringToXTabWB("Select Age, Year_Num, Sum(Increase_Male) as Increase_Female from  "
+                    + " RPT_INC_PRD_COND_LIFE_EXP GROUP BY Age, Year_Num", "Report_Increase_PCLE_Male",
+                    "Age", "Year_Num", "Increase_Female");
+
                 bwOutput.ReportProgress(20);
-                outputRoutine.queryStringToXTabWB("SELECT Age, Year_Num, Sum(Avoided_Deaths) AS Avoided_Deaths "
-                    + " FROM Report_Avoided_Deaths GROUP BY Age, Year_Num ORDER BY Age, Year_Num", "Report_Avoided_Deaths_Xtab",
-                    "Age", "Year_Num", "Avoided_Deaths");
+                outputRoutine.queryStringToXTabWB("Select Age, Year_Num, Sum(Increase_Female) as Increase_Female from  "
+                    + " RPT_INC_PRD_COND_LIFE_EXP GROUP BY Age, Year_Num", "Report_Increase_PCLE_Female",
+                    "Age", "Year_Num", "Increase_Female");
 
                 bwOutput.ReportProgress(30);
-                outputRoutine.queryStringToXTabWB("Select Age, Year_Num, Sum(Life_Years_Gained) as Life_Years_Gained "
-                    + "FROM Report_Life_Years_Gained Group By Age, Year_Num ", "Report_Life_Years_Gained_Xtab",
-                    "Age", "Year_Num", "Life_Years_Gained");
-
+                outputRoutine.queryStringToXTabWB("Select Age, Year_Num, Sum(Increase_Male) as Increase_Male from  "
+                                + " RPT_INC_COHORT_COND_LIFE_EXP GROUP BY Age, Year_Num", "Report_Increase_CCLE_Male",
+                                "Age", "Year_Num", "Increase_Male");
+                
                 bwOutput.ReportProgress(40);
                 outputRoutine.queryStringToXTabWB("Select Age, Year_Num, Sum(Increase_Female) as Increase_Female from  "
                     + " RPT_INC_COHORT_COND_LIFE_EXP GROUP BY Age, Year_Num", "Report_Increase_CCLE_Female",
                     "Age", "Year_Num", "Increase_Female");
 
-                bwOutput.ReportProgress(50);
-                outputRoutine.queryStringToXTabWB("Select Age, Year_Num, Sum(Increase_Male) as Increase_Male from  "
-                                + " RPT_INC_COHORT_COND_LIFE_EXP GROUP BY Age, Year_Num", "Report_Increase_CCLE_Male",
-                                "Age", "Year_Num", "Increase_Male");
-
+                bwOutput.ReportProgress(60);
+                outputRoutine.queryStringToXTabWB("Select Age, Year_Num, Sum(Life_Years_Gained) as Life_Years_Gained "
+                    + "FROM Report_Life_Years_Gained Group By Age, Year_Num ", "Report_Life_Years_Gained_Xtab",
+                    "Age", "Year_Num", "Life_Years_Gained");
+                                
                 bwOutput.ReportProgress(70);
-                outputRoutine.queryStringToXTabWB("Select Age, Year_Num, Sum(Increase_Female) as Increase_Female from  "
-                    + " RPT_INC_COHORT_COND_LIFE_EXP GROUP BY Age, Year_Num", "Report_Increase_PCLE_Female",
-                    "Age", "Year_Num", "Increase_Female");
+                outputRoutine.queryStringToXTabWB("SELECT Age, Year_Num, Sum(Avoided_Deaths) AS Avoided_Deaths "
+                    + " FROM Report_Avoided_Deaths GROUP BY Age, Year_Num ORDER BY Age, Year_Num", "Report_Avoided_Deaths_Xtab",
+                    "Age", "Year_Num", "Avoided_Deaths");
 
+
+
+                bwOutput.ReportProgress(80);
+                outputRoutine.queryStringToWB("Select * from Report_Beta_Summary", "Report_Beta_Summary");
                 bwOutput.ReportProgress(90);
-                outputRoutine.queryStringToXTabWB("Select Age, Year_Num, Sum(Increase_Male) as Increase_Female from  "
-                    + " RPT_INC_COHORT_COND_LIFE_EXP GROUP BY Age, Year_Num", "Report_Increase_PCLE_Male",
-                    "Age", "Year_Num", "Increase_Female");
+                outputRoutine.queryStringToWB("Select * from Report_Input_Summary", "Report_Input_Summary");
+                
 
                 // close workbook
                 outputRoutine.CloseWorkbook(fileName);
                 bwOutput.ReportProgress(100);
                 MessageBox.Show("Files Saved");
-                
-            }                
+
+            }
 
         }
 
@@ -671,6 +716,9 @@ namespace PopSim
                 txtPMThreshold.Visible = false;
                 lblBetaAdjAtThreshold.Visible = false;
                 txtBetaAdj.Visible = false;
+                // set threshold and threshold beta adjustment to zero if no threshold is to be used, this makes the output summary correct
+                txtPMThreshold.Text = "0";  
+                txtBetaAdj.Text = "0";  
 
             }
             else
@@ -690,7 +738,7 @@ namespace PopSim
                 txtPMThreshold.Visible = false;
                 lblBetaAdjAtThreshold.Visible = false;
                 txtBetaAdj.Visible = false;
-
+                
             }
             else
             {
@@ -703,6 +751,26 @@ namespace PopSim
 
         private void rbAggregated_CheckedChanged(object sender, EventArgs e)
         {
+            // restrict study box to aggregated studies
+            // load combo boxes
+            string strSQL = "SELECT SB.STUDY_ID, SB.STUDY_NAME FROM LK_STUDIES AS SB LEFT JOIN "
+                + "STUDY_BETAS AS S ON S.STUDY_ID = SB.STUDY_ID WHERE S.AGGREGATION = 'Aggregated' or S.AGGREGATION IS NULL "
+                + "ORDER BY STUDY_NAME ";
+
+            FbCommand cmdStudies = new FbCommand();
+            cmdStudies.Connection = dbConnection;
+            cmdStudies.CommandType = CommandType.Text;
+            cmdStudies.CommandText = strSQL;
+            FbDataReader drStudies = cmdStudies.ExecuteReader();
+            DataTable dtStudies = new DataTable();
+            dtStudies.Load(drStudies);
+            cbStudy.DataSource = dtStudies;
+            cbStudy.DisplayMember = "STUDY_NAME";
+            cbStudy.ValueMember = "STUDY_ID";
+            // preselect study from scenario table
+            // cbStudy.SelectedIndex = (int)dataReader[18];
+
+
             if (getRB(gbDoseResponse) == 0) // can't have a cause-specific lag for an aggregated response
             {
                 radioButton11.Visible = false;
@@ -713,7 +781,7 @@ namespace PopSim
             {
                 radioButton11.Visible = true;
                 makeLagTypeControlsVisible(getRB(gbLagType));
-                
+
             }
             makeLagTypeControlsVisible(getRB(gbLagType));
         }
@@ -726,10 +794,18 @@ namespace PopSim
         private void makeLagTypeControlsVisible(int iLagType)
         {
             // toggle the boxes based on lag type (single or cause specific)
-            if (iLagType == 0)
+            if (iLagType == 0) // single lag
             {
-                lblSingleLag.Visible = true;
-                txtLagSingle.Visible = true;
+                if (radioButton12.Checked) {
+                    lblSingleLag.Visible = true;
+                    txtLagSingle.Visible = true;
+                }
+                else
+                {
+                    lblSingleLag.Visible = false;
+                    txtLagSingle.Text = "0";
+                    txtLagSingle.Visible = false;
+                }
                 lblCauseSpecificLag.Visible = false;
                 lblCause.Visible = false;
                 lblK.Visible = false;
@@ -740,7 +816,7 @@ namespace PopSim
                 lblOther.Visible = false;
                 txtLagOther.Visible = false;
             }
-            else
+            else // cause specific lag
             {
                 lblSingleLag.Visible = false;
                 txtLagSingle.Visible = false;
@@ -759,7 +835,159 @@ namespace PopSim
         private void rbDisaggregated_CheckedChanged(object sender, EventArgs e)
         {
             makeLagTypeControlsVisible(getRB(gbLagType));
+            // load combo boxes
+            string strSQL = "SELECT SB.STUDY_ID, SB.STUDY_NAME FROM LK_STUDIES AS SB INNER JOIN "
+                + "STUDY_BETAS AS S ON S.STUDY_ID = SB.STUDY_ID WHERE S.AGGREGATION = 'Disaggregated' "
+                + "ORDER BY STUDY_NAME ";
+            FbCommand cmdStudies = new FbCommand();
+            cmdStudies.Connection = dbConnection;
+            cmdStudies.CommandType = CommandType.Text;
+            cmdStudies.CommandText = strSQL;
+            FbDataReader drStudies = cmdStudies.ExecuteReader();
+            DataTable dtStudies = new DataTable();
+            dtStudies.Load(drStudies);
+            cbStudy.DataSource = dtStudies;
+            cbStudy.DisplayMember = "STUDY_NAME";
+            cbStudy.ValueMember = "STUDY_ID";
+            txtUserSuppliedBeta.Text = "0"; // can't have user supplied beta for disaggregated model
         }
-    
+
+        private void txtUserSuppliedBeta_Leave(object sender, EventArgs e)
+        {
+            double dblTemp;
+            const double MIN_BETA = -1.74E-02;
+            const double MAX_BETA = 0.031;
+                    
+            try // is this numeric?
+            {
+                dblTemp = double.Parse( txtUserSuppliedBeta.Text);
+                if (dblTemp < MIN_BETA)
+                {   MessageBox.Show("Beta must be greater than or equal to "+MIN_BETA.ToString(),"Reset value to "+MIN_BETA.ToString());
+                    txtUserSuppliedBeta.Text = MIN_BETA.ToString();
+   
+                }else if (dblTemp > MAX_BETA)
+                {
+                    MessageBox.Show("Beta must be less than or equal to " + MAX_BETA.ToString(), "Reset value to " + MAX_BETA.ToString());
+                    txtUserSuppliedBeta.Text = MAX_BETA.ToString();
+                }
+            }catch {
+                MessageBox.Show("Beta value must be a number");
+                txtUserSuppliedBeta.Focus();    // return to box so user can fix value
+            
+            }
+        }
+
+        private void txtBetaAdj_Leave(object sender, EventArgs e)
+        {
+            double dblTemp;
+            const double MIN_BETA = 0;
+            const double MAX_BETA = 1;
+
+            try // is this numeric?
+            {
+                dblTemp = double.Parse(txtBetaAdj.Text);
+                if (dblTemp < MIN_BETA)
+                {
+                    MessageBox.Show("Beta adjustment must be greater than or equal to " + MIN_BETA.ToString(), "Reset value to " + MIN_BETA.ToString());
+                    txtBetaAdj.Text = MIN_BETA.ToString();
+
+                }
+                else if (dblTemp > MAX_BETA)
+                {
+                    MessageBox.Show("Beta adjustment must be less than or equal to " + MAX_BETA.ToString(), "Reset value to " + MAX_BETA.ToString());
+                    txtBetaAdj.Text = MAX_BETA.ToString();
+                }
+            }
+            catch
+            {
+                MessageBox.Show("Beta adjustment value must be a number");
+                txtBetaAdj.Focus();    // return to box so user can fix value
+
+            }
+
+        }
+
+        private void txtPMThreshold_Leave(object sender, EventArgs e)
+        {
+            double dblTemp;
+            const double MIN_PM = 4;
+
+            try // is this numeric?
+            {
+                dblTemp = double.Parse(txtPMThreshold.Text);
+                if (dblTemp < MIN_PM)
+                {
+                    MessageBox.Show("PM Threshold must be greater than or equal to " + MIN_PM.ToString(), "Reset value to " + MIN_PM.ToString());
+                    txtPMThreshold.Text = MIN_PM.ToString();
+
+                }
+                
+            }
+            catch
+            {
+                MessageBox.Show("PM threshold must be a number");
+                txtBetaAdj.Focus();    // return to box so user can fix value
+
+            }
+
+        }
+
+        private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // update current page counter to match tab clicked by user
+            currentpage = tabControl1.SelectedIndex;
+            // refresh next and back buttons based on current page
+            pageChange();
+        }
+
+        private void tabControl1_DrawItem(object sender, DrawItemEventArgs e)
+        {
+            // from http://arsalantamiz.blogspot.com/2008/07/custom-tab-control-layout.html
+            // translated from VB.Net
+            Graphics g; 
+            String sText;
+            int iX;
+            int iY;
+            SizeF sizeText;
+            TabControl ctlTab;
+
+            ctlTab = (TabControl) sender;
+
+            g = e.Graphics;
+
+            sText = ctlTab.TabPages[e.Index].Text;
+            sizeText = g.MeasureString(sText, ctlTab.Font);
+            iX = e.Bounds.Left + 6;
+            iY =(int) (e.Bounds.Top + (e.Bounds.Height - sizeText.Height) / 2);
+            g.DrawString(sText, ctlTab.Font, Brushes.Black, iX, iY);
+        }
+
+        private void txtUserSuppliedBeta_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lblUserSuppliedBeta_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void radioButton13_CheckedChanged(object sender, EventArgs e)
+        {
+            //HES Default checked
+            makeLagTypeControlsVisible(getRB(gbLagType));            
+        }
+
+        private void radioButton2_CheckedChanged(object sender, EventArgs e)
+        {
+            // user defined lag function checked
+            makeLagTypeControlsVisible(getRB(gbLagType));
+        }
+
+        private void radioButton12_CheckedChanged(object sender, EventArgs e)
+        {
+            // Smooth Lag function checked
+            makeLagTypeControlsVisible(getRB(gbLagType));
+        }
     }
-}
+    }

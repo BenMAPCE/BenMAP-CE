@@ -17,7 +17,7 @@ namespace PopSim
 
         // dates 
         // these should be datetime, but are kept integers as in the original code
-        private int begin_year = 1990; // start of simulation run (Step 1)
+        private int begin_year = 1980; // start of simulation run (Step 1)
         private int end_year = 2020;   // end of simulation run (Step 1)
         private int Age_Range_Start = 0;    // earliest age range affected 
         private int Age_Range_End = 100;      // oldest age range affected
@@ -38,7 +38,7 @@ namespace PopSim
         // step 3
         private int PM_year_1 =1999; // first year PM Step
         private int PM_year_2 = 2000;
-        private int PM_year_3 = 2005;
+        private int PM_year_3 = 2014;
         private int PM_year_4 = 2010;
         private int PM_year_5 = 2020; 
         private double PM_val_1 = 10; // first year PM step value
@@ -293,7 +293,7 @@ namespace PopSim
             FbCommand dataCommand = new  FirebirdSql.Data.FirebirdClient.FbCommand();
             dataCommand.Connection = dbConnection;
             dataCommand.CommandType = CommandType.Text;
-            dataCommand.CommandText = "SELECT STUDY FROM STUDIES WHERE STUDY_ID=" + this.getUser_Study().ToString() ;
+            dataCommand.CommandText = "SELECT STUDY_NAME FROM LK_STUDIES WHERE STUDY_ID=" + this.getUser_Study().ToString() ;
             FbDataReader dataReader;
             dataReader = dataCommand.ExecuteReader();
             dataReader.Read();
