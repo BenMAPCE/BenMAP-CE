@@ -126,6 +126,7 @@ namespace BenMAP
                 DicGender.Add(dr["GenderName"].ToString(), Convert.ToInt32(dr["GenderID"]));
             }
         }
+
         private void cbEndPointGroup_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (isload)
@@ -1021,7 +1022,8 @@ namespace BenMAP
 
                 List<GridRelationship> lstGridRelationshipAll = CommonClass.LstGridRelationshipAll;
                 string str = DateTime.Now.ToString();
-                Dictionary<string, int> dicRace = Configuration.ConfigurationCommonClass.getAllRace(); Dictionary<string, int> dicEthnicity = Configuration.ConfigurationCommonClass.getAllEthnicity(); Dictionary<string, int> dicGender = Configuration.ConfigurationCommonClass.getAllGender(); foreach (CRSelectFunction crSelectFunction in CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction)
+                Dictionary<string, int> dicRace = Configuration.ConfigurationCommonClass.getAllRace(); Dictionary<string, int> dicEthnicity = Configuration.ConfigurationCommonClass.getAllEthnicity(); Dictionary<string, int> dicGender = Configuration.ConfigurationCommonClass.getAllGender();
+                foreach (CRSelectFunction crSelectFunction in CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction)
                 {
                     lstAsyns.Add(crSelectFunction.BenMAPHealthImpactFunction.ID.ToString());
                 }
@@ -1164,6 +1166,7 @@ namespace BenMAP
                 Dictionary<string, string> dicEstimate = new Dictionary<string, string>();
                 Dictionary<string, string> dicBaseLineVariables = new Dictionary<string, string>();
                 Dictionary<string, string> dicEstimateVariables = new Dictionary<string, string>();
+                Dictionary<string, List<string>> dicVariableList = new Dictionary<string, List<string>>();
                 foreach (CRSelectFunction crSelectFunction in CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction)
                 {
                     dicBaseLine.Add(crid.ToString(), Configuration.ConfigurationCommonClass.getFunctionStringFromDatabaseFunction(crSelectFunction.BenMAPHealthImpactFunction.BaseLineIncidenceFunction));
@@ -1262,11 +1265,18 @@ namespace BenMAP
                         }
                     }
 
+                    List<string> addNames = new List<string>();
+                    foreach (CRFVariable v in crSelectFunction.BenMAPHealthImpactFunction.Variables)
+                    {
+                        addNames.Add(v.VariableName.ToLower());
+                    }
+                    dicVariableList.Add(crid.ToString(), addNames);
+
                     crid = crid + 1;
                 }
                 CalculateFunctionString calculateFunctionString = new CalculateFunctionString();
                 calculateFunctionString.CreateAllBaselineEvalObjects(dicBaseLine, dicEstimateVariables);
-                calculateFunctionString.CreateAllPointEstimateEvalObjects(dicEstimate, dicEstimateVariables);
+                calculateFunctionString.CreateAllPointEstimateEvalObjects(dicEstimate, dicEstimateVariables, dicVariableList);
                 crid = 1;
                 foreach (CRSelectFunction crSelectFunction in CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction)
                 {

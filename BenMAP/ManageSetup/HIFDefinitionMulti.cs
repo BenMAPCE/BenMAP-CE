@@ -125,9 +125,18 @@ namespace BenMAP
                 }
                 Dictionary<string, string> dicEstimate = new Dictionary<string, string>();
                 dicEstimate.Add(crid.ToString(), functionText);
+
+                Dictionary<string, List<string>> dicVariableList = new Dictionary<string, List<string>>();
+                List<string> addNames = new List<string>();
+                foreach (CRFVariable v in HealthImpacts.PollVariables)
+                {
+                    addNames.Add(v.VariableName);
+                }
+                dicVariableList.Add(crid.ToString(), addNames);
+
                 CalculateFunctionString calculateFunctionString = new CalculateFunctionString();
-                calculateFunctionString.CreateAllPointEstimateEvalObjects(dicEstimate, dicEstimateVariables);
-                object result = PointEstimateEval.PointEstimateEval(crid.ToString(), functionText, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, dicVariable);
+                calculateFunctionString.CreateAllPointEstimateEvalObjects(dicEstimate, dicEstimateVariables, dicVariableList);
+                object result = new Double(); //  = PointEstimateEval.PointEstimateEval(crid.ToString(), functionText, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, dicVariable);
                 if (Tools.CalculateFunctionString.dicPointEstimateMethodInfo != null) Tools.CalculateFunctionString.dicPointEstimateMethodInfo.Clear();
                 if (!(result is double) || double.IsNaN(Convert.ToDouble(result)) || Convert.ToDouble(result) == -999999999)
                 {
@@ -177,8 +186,9 @@ namespace BenMAP
                 }
                 dicEstimate = new Dictionary<string, string>();
                 dicEstimate.Add(crid.ToString(), functionText);
+
                 calculateFunctionString = new CalculateFunctionString();
-                calculateFunctionString.CreateAllPointEstimateEvalObjects(dicEstimate, dicEstimateVariables);
+                calculateFunctionString.CreateAllPointEstimateEvalObjects(dicEstimate, dicEstimateVariables, dicVariableList);
                 result = PointEstimateEval.PointEstimateEval(crid.ToString(), functionText, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, dicVariable);
                 if (Tools.CalculateFunctionString.dicPointEstimateMethodInfo != null) Tools.CalculateFunctionString.dicPointEstimateMethodInfo.Clear();
                 if (!(result is double) || double.IsNaN(Convert.ToDouble(result)) || Convert.ToDouble(result) == -999999999)
@@ -411,11 +421,11 @@ namespace BenMAP
                     // interaction
                     if (dr["pollutantname"].ToString().Contains("*"))
                     {
-                        _healthImpacts.PollVariables.Add(new CRFVariable(dr["variablename"].ToString(), Convert.ToInt32(dr["crfvariableid"]), dr["pollutantname"].ToString(), Convert.ToInt32(dr["pollutant1id"]), Convert.ToInt32(dr["pollutant2id"])));
+                        _healthImpacts.PollVariables.Add(new CRFVariable(dr["variablename"].ToString(), Convert.ToInt32(dr["crfvariableid"]), Convert.ToInt32(_healthImpacts.FunctionID), dr["pollutantname"].ToString(), Convert.ToInt32(dr["pollutant1id"]), Convert.ToInt32(dr["pollutant2id"])));
                     }
                     else
                     {
-                        _healthImpacts.PollVariables.Add(new CRFVariable(dr["variablename"].ToString(), Convert.ToInt32(dr["crfvariableid"]), dr["pollutantname"].ToString(), Convert.ToInt32(dr["pollutant1id"])));
+                        _healthImpacts.PollVariables.Add(new CRFVariable(dr["variablename"].ToString(), Convert.ToInt32(dr["crfvariableid"]), Convert.ToInt32(_healthImpacts.FunctionID), dr["pollutantname"].ToString(), Convert.ToInt32(dr["pollutant1id"])));
                     }
                 }
 
@@ -429,7 +439,7 @@ namespace BenMAP
                 double a, b, c, p1, p2;
                 foreach (var pv in _healthImpacts.PollVariables)
                 {
-                    commandText = string.Format("select beta, a, namea, b, nameb, c, namec, p1beta, p2beta, seasonalmetricseasonname, startday, endday from crfvariables v left join crfbetas b on b.crfvariableid=v.crfvariableid left join seasonalmetricseasons s on s.seasonalmetricseasonid=b.seasonalmetricseasonid where crfunctionid={0} and pollutantname='{1}' order by startday", _healthImpacts.FunctionID, pv.PollutantName);
+                    commandText = string.Format("select crfbetaid, beta, a, namea, b, nameb, c, namec, p1beta, p2beta, seasonalmetricseasonname, startday, endday from crfvariables v left join crfbetas b on b.crfvariableid=v.crfvariableid left join seasonalmetricseasons s on s.seasonalmetricseasonid=b.seasonalmetricseasonid where crfunctionid={0} and pollutantname='{1}' order by startday", _healthImpacts.FunctionID, pv.PollutantName);
                     ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                     numSeasons = ds.Tables[0].Rows.Count;
 
@@ -467,7 +477,7 @@ namespace BenMAP
                             else cDesc = dr["namec"].ToString();
 
 
-                            pv.PollBetas.Add(new CRFBeta(Convert.ToDouble(dr["beta"]), a, aDesc, b, bDesc, c, cDesc, p1, p2, dr["seasonalmetricseasonname"].ToString(), dr["startday"].ToString(), dr["endday"].ToString(), str));
+                            pv.PollBetas.Add(new CRFBeta(Convert.ToInt32(dr["crfbetaid"]), Convert.ToDouble(dr["beta"]), a, aDesc, b, bDesc, c, cDesc, p1, p2, dr["seasonalmetricseasonname"].ToString(), dr["startday"].ToString(), dr["endday"].ToString(), str));
                         }
                     }
 
@@ -499,7 +509,7 @@ namespace BenMAP
                         if (dr["namec"].ToString() == string.Empty) cDesc = string.Empty;
                         else cDesc = dr["namec"].ToString();
 
-                        pv.PollBetas.Add(new CRFBeta(Convert.ToDouble(dr["beta"]), a, aDesc, b, bDesc, c, cDesc, p1, p2));
+                        pv.PollBetas.Add(new CRFBeta(Convert.ToInt32(dr["crfbetaid"]), Convert.ToDouble(dr["beta"]), a, aDesc, b, bDesc, c, cDesc, p1, p2));
                     }
 
                     else

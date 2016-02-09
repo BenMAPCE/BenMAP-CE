@@ -112,9 +112,18 @@ namespace BenMAP
                 }
                 Dictionary<string, string> dicEstimate = new Dictionary<string, string>();
                 dicEstimate.Add(crid.ToString(), functionText);
+
+                Dictionary<string, List<string>> dicVariableList = new Dictionary<string, List<string>>();
+                List<string> addNames = new List<string>();
+                foreach (CRFVariable v in HealthImpacts.PollVariables)
+                {
+                    addNames.Add(v.VariableName);
+                }
+                dicVariableList.Add(crid.ToString(), addNames);
+
                 CalculateFunctionString calculateFunctionString = new CalculateFunctionString();
-                calculateFunctionString.CreateAllPointEstimateEvalObjects(dicEstimate, dicEstimateVariables);
-                object result = PointEstimateEval.PointEstimateEval(crid.ToString(), functionText, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, dicVariable);
+                calculateFunctionString.CreateAllPointEstimateEvalObjects(dicEstimate, dicEstimateVariables, dicVariableList);
+                object result = new Double(); // PointEstimateEval.PointEstimateEval(crid.ToString(), functionText, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, dicVariable);
                 if (Tools.CalculateFunctionString.dicPointEstimateMethodInfo != null) Tools.CalculateFunctionString.dicPointEstimateMethodInfo.Clear();
                 if (!(result is double) || double.IsNaN(Convert.ToDouble(result)) || Convert.ToDouble(result) == -999999999)
                 {
@@ -165,7 +174,7 @@ namespace BenMAP
                 dicEstimate = new Dictionary<string, string>();
                 dicEstimate.Add(crid.ToString(), functionText);
                 calculateFunctionString = new CalculateFunctionString();
-                calculateFunctionString.CreateAllPointEstimateEvalObjects(dicEstimate, dicEstimateVariables);
+                calculateFunctionString.CreateAllPointEstimateEvalObjects(dicEstimate, dicEstimateVariables, dicVariableList);
                 result = PointEstimateEval.PointEstimateEval(crid.ToString(), functionText, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, dicVariable);
                 if (Tools.CalculateFunctionString.dicPointEstimateMethodInfo != null) Tools.CalculateFunctionString.dicPointEstimateMethodInfo.Clear();
                 if (!(result is double) || double.IsNaN(Convert.ToDouble(result)) || Convert.ToDouble(result) == -999999999)

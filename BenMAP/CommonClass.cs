@@ -3584,6 +3584,8 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
         public ModelSpecification ModelSpecification;
         [ProtoMember(44)]
         public BetaVariation BetaVariation;
+        [ProtoMember(45)]
+        public List<CRFVariable> Variables;
     }
 
     [Serializable]

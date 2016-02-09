@@ -515,6 +515,131 @@ namespace BenMAP.Grid
             }
         }
 
+        public static void getBetaListFromPollutantAndID(List<CRFVariable> varList)
+        {
+            try
+            {
+                int crfunctionid = varList[0].FunctionID;
+
+                int j = 0;
+                int numSeasons = 1;
+                string aDesc, bDesc, cDesc;
+                double a, b, c, p1, p2;
+                foreach (var pv in varList)
+                {
+                    ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                    string commandText = string.Format("select crfbetaid, beta, a, namea, b, nameb, c, namec, p1beta, p2beta, seasonalmetricseasonname, startday, endday from crfvariables v left join crfbetas b on b.crfvariableid=v.crfvariableid left join seasonalmetricseasons s on s.seasonalmetricseasonid=b.seasonalmetricseasonid where crfunctionid={0} and pollutantname='{1}' order by startday", crfunctionid, pv.PollutantName);
+                    System.Data.DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+                    numSeasons = ds.Tables[0].Rows.Count;
+
+                    if (pv.PollBetas == null) pv.PollBetas = new List<CRFBeta>();
+
+                    if (numSeasons > 1)
+                    {
+                        for (int i = 1; i <= numSeasons; i++)
+                        {
+                            DataRow dr = ds.Tables[0].Rows[i - 1];
+                            string str = string.Format("Season {0}", i);
+
+                            if (dr["p1beta"].ToString() == string.Empty) p1 = 0;
+                            else p1 = Convert.ToDouble(dr["p1beta"]);
+
+                            if (dr["p2beta"].ToString() == string.Empty) p2 = 0;
+                            else p2 = Convert.ToDouble(dr["p2beta"]);
+
+                            if (dr["a"].ToString() == string.Empty) a = 0;
+                            else a = Convert.ToDouble(dr["a"]);
+
+                            if (dr["namea"].ToString() == string.Empty) aDesc = string.Empty;
+                            else aDesc = dr["namea"].ToString();
+
+                            if (dr["b"].ToString() == string.Empty) b = 0;
+                            else b = Convert.ToDouble(dr["b"]);
+
+                            if (dr["nameb"].ToString() == string.Empty) bDesc = string.Empty;
+                            else bDesc = dr["nameb"].ToString();
+
+                            if (dr["c"].ToString() == string.Empty) c = 0;
+                            else c = Convert.ToDouble(dr["c"]);
+
+                            if (dr["namec"].ToString() == string.Empty) cDesc = string.Empty;
+                            else cDesc = dr["namec"].ToString();
+
+                            pv.PollBetas.Add(new CRFBeta(Convert.ToInt32(dr["crfbetaid"]), Convert.ToDouble(dr["beta"]), a, aDesc, b, bDesc, c, cDesc, p1, p2, dr["seasonalmetricseasonname"].ToString(), dr["startday"].ToString(), dr["endday"].ToString(), str));
+                        }
+                    }
+                    else 
+                    {
+                        DataRow dr = ds.Tables[0].Rows[0];
+
+                        if (dr["p1beta"].ToString() == string.Empty) p1 = 0;
+                        else p1 = Convert.ToDouble(dr["p1beta"]);
+
+                        if (dr["p2beta"].ToString() == string.Empty) p2 = 0;
+                        else p2 = Convert.ToDouble(dr["p2beta"]);
+
+                        if (dr["a"].ToString() == string.Empty) a = 0;
+                        else a = Convert.ToDouble(dr["a"]);
+
+                        if (dr["namea"].ToString() == string.Empty) aDesc = string.Empty;
+                        else aDesc = dr["namea"].ToString();
+
+                        if (dr["b"].ToString() == string.Empty) b = 0;
+                        else b = Convert.ToDouble(dr["b"]);
+
+                        if (dr["nameb"].ToString() == string.Empty) bDesc = string.Empty;
+                        else bDesc = dr["nameb"].ToString();
+
+                        if (dr["c"].ToString() == string.Empty) c = 0;
+                        else c = Convert.ToDouble(dr["c"]);
+
+                        if (dr["namec"].ToString() == string.Empty) cDesc = string.Empty;
+                        else cDesc = dr["namec"].ToString();
+
+                        pv.PollBetas.Add(new CRFBeta(Convert.ToInt32(dr["crfbetaid"]), Convert.ToDouble(dr["beta"]), a, aDesc, b, bDesc, c, cDesc, p1, p2));
+                    }
+
+                    j++;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+                return;
+            }
+        }
+
+        public static List<CRFVariable> getVariableListFromID(int crfunctionid)
+        {
+            try
+            {
+                List<CRFVariable> varList = new List<CRFVariable>();
+                ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                string commandText = string.Format("select distinct variablename, crv.crfvariableid, pollutantname, pollutant1id, pollutant2id from crfunctions as crf left join crfvariables as crv on crf.crfunctionid=crv.crfunctionid where crf.crfunctionid={0}", crfunctionid);
+                System.Data.DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+
+                foreach (DataRow dr in ds.Tables[0].Rows)
+                {
+                    if (dr["pollutantname"].ToString().Contains("*")) // interaction
+                    {
+                        varList.Add(new CRFVariable(dr["variablename"].ToString(), Convert.ToInt32(dr["crfvariableid"]), crfunctionid, dr["pollutantname"].ToString(), Convert.ToInt32(dr["pollutant1id"]), Convert.ToInt32(dr["pollutant2id"])));
+                    }
+                    else
+                    {
+                        varList.Add(new CRFVariable(dr["variablename"].ToString(), Convert.ToInt32(dr["crfvariableid"]), crfunctionid, dr["pollutantname"].ToString(), Convert.ToInt32(dr["pollutant1id"])));
+                    }
+
+                }
+
+                return varList;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+                return null;
+            }
+        }
 
         public static void getPopulationFromIDYear(int PopulationDatSetID, int Year)
         {

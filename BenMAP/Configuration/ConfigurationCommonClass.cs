@@ -623,6 +623,8 @@ namespace BenMAP.Configuration
 
                 benMapHealthImpactFunction.ModelSpecification = Grid.GridCommon.getModelSpecificationFromID(Convert.ToInt32(dr["MSID"]));
                 benMapHealthImpactFunction.BetaVariation = Grid.GridCommon.getBetaVariationFromID(Convert.ToInt32(dr["BetaVariationID"]));
+                benMapHealthImpactFunction.Variables = Grid.GridCommon.getVariableListFromID(benMapHealthImpactFunction.ID);
+                Grid.GridCommon.getBetaListFromPollutantAndID(benMapHealthImpactFunction.Variables);
 
                 return benMapHealthImpactFunction;
             }
@@ -6273,7 +6275,7 @@ namespace BenMAP.Configuration
             // check that column number of matrix one == row number of column 2
             // the result will have the same number of rows as the 1st matrix and the same number of oclumns as the 2nd matrix
 
-            /* foreach row of matrix 1(index j)
+            /* foreach row of matrix 1(index j) 
             {
                 foreach column of matrix 2(index k)
                 {

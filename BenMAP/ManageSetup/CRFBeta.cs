@@ -7,6 +7,23 @@ namespace BenMAP
 {
     public class CRFBeta
     {
+        private int _betaID;
+        private int _distributionTypeID;
+        public string _distribution;
+        private double _beta;
+        private double _p1Beta;
+        private double _p2Beta;
+        private double _aConstantValue;
+        private string _aConstantName;
+        private double _bConstantValue;
+        private string _bConstantName;
+        private double _cConstantValue;
+        private string _cConstantName;
+        private string _seasNumName;
+        private string _seasonName;
+        private string _startDate;
+        private string _endDate;
+
         // New beta without values
         public CRFBeta()
         {
@@ -23,9 +40,10 @@ namespace BenMAP
         }
 
         // Full year
-        public CRFBeta(double beta, double aConst, string aDesc, double bConst, string bDesc, double cConst,
+        public CRFBeta(int bID, double beta, double aConst, string aDesc, double bConst, string bDesc, double cConst,
             string cDesc, double p1, double p2)
         {
+            this._betaID = bID;
             this._beta = beta;
             this._aConstantValue = aConst;
             this._aConstantName = aDesc;
@@ -42,9 +60,10 @@ namespace BenMAP
         }
 
         // Seasonal
-        public CRFBeta(double beta, double aConst, string aDesc, double bConst, string bDesc, double cConst, 
+        public CRFBeta(int bID, double beta, double aConst, string aDesc, double bConst, string bDesc, double cConst, 
             string cDesc, double p1, double p2, string seasName, string startDate, string endDate, string seasNumName)
         {
+            this._betaID = bID;
             this._beta = beta;
             this._aConstantValue = aConst;
             this._aConstantName = aDesc;
@@ -60,105 +79,96 @@ namespace BenMAP
             this._seasNumName = seasNumName;
         }
 
-        private int _distributionTypeID;
+        public int BetaID
+        {
+            get { return _betaID; }
+            set { _betaID = value; }
+        }
+
         public int DistributionTypeID
         {
             get { return _distributionTypeID; }
             set { _distributionTypeID = value; }
         }
 
-        public string _distribution;
         public string Distribution
         {
             get { return _distribution; }
             set { _distribution = value; }
         }
 
-        private double _beta;
         public double Beta
         {
             get { return _beta; }
             set { _beta = value; }
         }
 
-        private double _p1Beta;
         public double P1Beta
         {
             get { return _p1Beta; }
             set { _p1Beta = value; }
         }
 
-        private double _p2Beta;
         public double P2Beta
         {
             get { return _p2Beta; }
             set { _p2Beta = value; }
         }
 
-        private double _aConstantValue;
         public double AConstantValue
         {
             get { return _aConstantValue; }
             set { _aConstantValue = value; }
         }
 
-        private string _aConstantName;
         public string AConstantName
         {
             get { return _aConstantName; }
             set { _aConstantName = value; }
         }
 
-        private double _bConstantValue;
         public double BConstantValue
         {
             get { return _bConstantValue; }
             set { _bConstantValue = value; }
         }
 
-        private string _bConstantName;
         public string BConstantName
         {
             get { return _bConstantName; }
             set { _bConstantName = value; }
         }
 
-        private double _cConstantValue;
         public double CConstantValue
         {
             get { return _cConstantValue; }
             set { _cConstantValue = value; }
         }
 
-        private string _cConstantName;
         public string CConstantName
         {
             get { return _cConstantName; }
             set { _cConstantName = value; }
         }
 
-        private string _seasNumName;
         public string SeasNumName
         {
             get { return _seasNumName; }
             set { _seasNumName = value; }
         }
 
-        private string _seasonName;
         public string SeasonName
         {
             get { return _seasonName; }
             set { _seasonName = value; }
         }
 
-        private string _startDate;
         public string StartDate
         {
             get { return _startDate; }
             set { _startDate = value; }
         }
 
-        private string _endDate;
         public string EndDate
         {
             get { return _endDate; }

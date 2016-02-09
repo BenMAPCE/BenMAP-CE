@@ -100,7 +100,7 @@ namespace BenMAP.Tools
             {
             }
         }
-        public void CreateAllPointEstimateEvalObjects(Dictionary<string, string> dicFunction, Dictionary<string, string> dicSetupVariables)
+        public void CreateAllPointEstimateEvalObjects(Dictionary<string, string> dicFunction, Dictionary<string, string> dicSetupVariables, Dictionary<string, List<string>> dicVariables)
         {
             try
             {
@@ -121,6 +121,22 @@ namespace BenMAP.Tools
 
                         int icount = dicPointEstimateMethodInfo.Count;
 
+                        StringBuilder addVariables = new StringBuilder();
+
+                        if (dicVariables[k.Key].Count == 1) // single pollutant
+                        {
+                            addVariables.AppendFormat(" double beta = dicBetas[\"{0}\"]; ", dicVariables[k.Key].First());
+                            addVariables.AppendFormat(" double deltaq = dicDeltas[\"{0}\"]; ", dicVariables[k.Key].First());
+                        }
+
+                        else
+                        {
+                            foreach (string varName in dicVariables[k.Key])
+                            {
+                                addVariables.AppendFormat(" double beta_{0} = dicBetas[\"{1}\"]; ", varName, varName);
+                                addVariables.AppendFormat(" double delta_{0} = dicDeltas[\"{1}\"]; ", varName, varName);
+                            }
+                        }
 
                         CSharpCodeProvider csharpCodeProvider = new CSharpCodeProvider();
                         CodeDomProvider provider = CodeDomProvider.CreateProvider("CSharp");
@@ -135,10 +151,12 @@ namespace BenMAP.Tools
                         StringBuilder myCode = new StringBuilder();
                         myCode.Append("using System;");
                         myCode.Append("namespace CoustomEval{");
-                        myCode.Append("class myLibPointEstimate" + k.Key + " { public double myPow(double a) { return Math.Pow(a,2);}  public double myMethod(double a, double b, double c, double beta, double deltaq, double q0, double q1, double incidence, double pop, double prevalence" + strVariables +
-        "){ try{" + k.Value + "} catch (Exception ex) { return -999999999; }}}");
+                        myCode.Append("class myLibPointEstimate" + k.Key + " { public double myPow(double a) { return Math.Pow(a,2);}  public double myMethod(double a, double b, double c, Dictionary<string, double> dicBetas, Dictionary<string,double> dicDeltas, double q0, double q1, double incidence, double pop, double prevalence" + strVariables +
+        "){ try{" + addVariables.ToString() + k.Value + "} catch (Exception ex) { return -999999999; }}}");
                         myCode.Append("}");
-             //           System.Console.WriteLine(myCode.ToString());
+
+                        Console.WriteLine(myCode.ToString());
+
                         CompilerResults cr = csharpCodeProvider.CompileAssemblyFromSource(cp, myCode.ToString());
 
                         Assembly assembly = cr.CompiledAssembly;
