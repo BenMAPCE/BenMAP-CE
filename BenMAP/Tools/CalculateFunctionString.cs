@@ -12,13 +12,13 @@ namespace BenMAP.Tools
     class CalculateFunctionString
     {
         private string _CharpCode = "";
-        public object BaseLineEval(string crid, string cCharpCode, double a, double b, double c, double beta, double deltaq, double q0, double q1, double incidence, double pop, double prevalence, Dictionary<string, double> dicSetupVariables)
+        public object BaseLineEval(string crid, string cCharpCode, double a, double b, double c, Dictionary<string, double> dicBetas, Dictionary<string, double> dicDeltas, double q0, double q1, double incidence, double pop, double prevalence, Dictionary<string, double> dicSetupVariables)
         {
             try
             {
                 MethodInfo mi = null;
                 object tmp = null;
-                List<object> lstParam = new List<object>() { a, b, c, beta, deltaq, q0, q1, incidence, pop, prevalence };
+                List<object> lstParam = new List<object>() { a, b, c, dicBetas, dicDeltas, q0, q1, incidence, pop, prevalence };
                 if (dicSetupVariables != null && dicSetupVariables.Count > 0)
                 {
                     int j = 0;
@@ -49,7 +49,7 @@ namespace BenMAP.Tools
                 return -999999999;
             }
         }
-        public void CreateAllBaselineEvalObjects(Dictionary<string, string> dicFunction, Dictionary<string, string> dicSetupVariables)
+        public void CreateAllBaselineEvalObjects(Dictionary<string, string> dicFunction, Dictionary<string, string> dicSetupVariables, Dictionary<string, List<string>> dicVariables)
         {
             try
             {
@@ -61,39 +61,59 @@ namespace BenMAP.Tools
 
                 foreach (KeyValuePair<string, string> k in dicFunction)
                 {
-                try
-                {
-                    string strVariables = "";
-                    if (dicSetupVariables != null && dicSetupVariables.Count > 0 && dicSetupVariables.ContainsKey(k.Key))
+                    try
                     {
-                        strVariables = ", " + dicSetupVariables[k.Key];
+                        string strVariables = "";
+                        if (dicSetupVariables != null && dicSetupVariables.Count > 0 && dicSetupVariables.ContainsKey(k.Key))
+                        {
+                            strVariables = ", " + dicSetupVariables[k.Key];
+                        }
+
+
+                        StringBuilder addVariables = new StringBuilder();
+
+                        if (dicVariables[k.Key].Count == 1) // single pollutant
+                        {
+                            addVariables.AppendFormat(" double beta = dicBetas[\"{0}\"]; ", dicVariables[k.Key].First());
+                            addVariables.AppendFormat(" double deltaq = dicDeltas[\"{0}\"]; ", dicVariables[k.Key].First());
+                        }
+
+                        else
+                        {
+                            foreach (string varName in dicVariables[k.Key])
+                            {
+                                addVariables.AppendFormat(" double beta_{0} = dicBetas[\"{1}\"]; ", varName, varName);
+                                addVariables.AppendFormat(" double delta_{0} = dicDeltas[\"{1}\"]; ", varName, varName);
+                            }
+                        }
+
+
+                        CSharpCodeProvider csharpCodeProvider = new CSharpCodeProvider();
+                        CodeDomProvider provider = CodeDomProvider.CreateProvider("CSharp");
+
+                        CompilerParameters cp = new CompilerParameters();
+                        cp.ReferencedAssemblies.Add("System.dll");
+                        cp.CompilerOptions = "/t:library";
+                        cp.GenerateInMemory = true;
+                        Random rm = new Random();
+                        cp.OutputAssembly = CommonClass.DataFilePath + "\\Tmp\\" + System.DateTime.Now.Year + System.DateTime.Now.Month + System.DateTime.Now.Day + DateTime.Now.Hour + DateTime.Now.Minute +
+                            DateTime.Now.Second + DateTime.Now.Millisecond + rm.Next(2000) + ".dll";
+                        StringBuilder myCode = new StringBuilder();
+                        myCode.Append("using System;");
+                        myCode.Append("namespace CoustomEval{");
+                        myCode.Append("class myLibBaseLine" + k.Key + " { public double myPow(double a) { return Math.Pow(a,2);} public double myMethod(double a, double b, double c, Dictionary<string, double> dicBetas, Dictionary<string,double> dicDeltas, double q0, double q1, double incidence, double pop, double prevalence" + strVariables +
+        "){ try{" + addVariables.ToString() + k.Value + "} catch (Exception ex) { return -999999999; }}}");
+                        myCode.Append("}");
+                  //      System.Console.WriteLine(myCode.ToString());
+                        CompilerResults cr = provider.CompileAssemblyFromSource(cp, myCode.ToString());
+                        Assembly assembly = cr.CompiledAssembly;
+                        Type[] types = new Type[] { typeof(double), typeof(double), typeof(double), typeof(double), typeof(double), typeof(double), typeof(double), typeof(double), typeof(double), typeof(double) };
+
+                        object tmp = assembly.CreateInstance("CoustomEval.myLibBaseLine" + k.Key);
+                        dicBaselineMethodInfo.Add(k.Key, tmp);
                     }
-                    CSharpCodeProvider csharpCodeProvider = new CSharpCodeProvider();
-                    CodeDomProvider provider = CodeDomProvider.CreateProvider("CSharp");
-
-                    CompilerParameters cp = new CompilerParameters();
-                    cp.ReferencedAssemblies.Add("System.dll");
-                    cp.CompilerOptions = "/t:library";
-                    cp.GenerateInMemory = true;
-                    Random rm = new Random();
-                    cp.OutputAssembly = CommonClass.DataFilePath + "\\Tmp\\" + System.DateTime.Now.Year + System.DateTime.Now.Month + System.DateTime.Now.Day + DateTime.Now.Hour + DateTime.Now.Minute +
-                        DateTime.Now.Second + DateTime.Now.Millisecond + rm.Next(2000) + ".dll";
-                    StringBuilder myCode = new StringBuilder();
-                    myCode.Append("using System;");
-                    myCode.Append("namespace CoustomEval{");
-                    myCode.Append("class myLibBaseLine" + k.Key + " { public double myPow(double a) { return Math.Pow(a,2);} public double myMethod(double a, double b, double c, double beta, double deltaq, double q0, double q1, double incidence, double pop, double prevalence" + strVariables +
-    "){ try{" + k.Value + "} catch (Exception ex) { return -999999999; }}}");
-                    myCode.Append("}");
-              //      System.Console.WriteLine(myCode.ToString());
-                    CompilerResults cr = provider.CompileAssemblyFromSource(cp, myCode.ToString());
-                    Assembly assembly = cr.CompiledAssembly;
-                    Type[] types = new Type[] { typeof(double), typeof(double), typeof(double), typeof(double), typeof(double), typeof(double), typeof(double), typeof(double), typeof(double), typeof(double) };
-
-                    object tmp = assembly.CreateInstance("CoustomEval.myLibBaseLine" + k.Key);
-                    dicBaselineMethodInfo.Add(k.Key, tmp);
-                }
-                catch
-                {}
+                    catch
+                    {}
                 }
             }
             catch (Exception ex)
@@ -174,13 +194,13 @@ namespace BenMAP.Tools
             {
             }
         }
-        public object PointEstimateEval(string crID, string cCharpCode, double a, double b, double c, double beta, double deltaq, double q0, double q1, double incidence, double pop, double prevalence, Dictionary<string, double> dicSetupVariables)
+        public object PointEstimateEval(string crID, string cCharpCode, double a, double b, double c, Dictionary<string, double> dicBetas, Dictionary<string, double> dicDeltas, double q0, double q1, double incidence, double pop, double prevalence, Dictionary<string, double> dicSetupVariables)
         {
             try
             {
                 MethodInfo mi = null;
                 object tmp = null;
-                List<object> lstParam = new List<object>() { a, b, c, beta, deltaq, q0, q1, incidence, pop, prevalence };
+                List<object> lstParam = new List<object>() { a, b, c, dicBetas, dicDeltas, q0, q1, incidence, pop, prevalence };
                 if (dicSetupVariables != null && dicSetupVariables.Count > 0)
                 {
                     int j = 0;

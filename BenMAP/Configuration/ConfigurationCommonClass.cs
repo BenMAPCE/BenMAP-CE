@@ -5247,6 +5247,7 @@ namespace BenMAP.Configuration
         {
             try
             {
+
                 double incidenceValue, prevalenceValue, PopValue;
 
                 CRCalculateValue crCalculateValue = new CRCalculateValue()
@@ -5837,7 +5838,11 @@ namespace BenMAP.Configuration
         {
             try
             {
-                object result = BaseEval.BaseLineEval(crid, FunctionString, A, B, C, Beta, DeltaQ, Q0, Q1, Incidence, POP, Prevalence, dicSetupVariables);
+
+                Dictionary<string, double> dicBetas = new Dictionary<string, double>();
+                Dictionary<string, double> dicDeltas = new Dictionary<string, double>();
+
+                object result = BaseEval.BaseLineEval(crid, FunctionString, A, B, C, dicBetas, dicDeltas, Q0, Q1, Incidence, POP, Prevalence, dicSetupVariables);
                 if (result is double)
                 {
                     if (double.IsNaN(Convert.ToDouble(result))) return 0;
@@ -5845,7 +5850,7 @@ namespace BenMAP.Configuration
                 }
                 else
                 {
-                    result = BaseEval.BaseLineEval(crid, FunctionString, A, B, C, Beta, DeltaQ, Q0, Q1, Incidence, POP, Prevalence, dicSetupVariables);
+                    result = BaseEval.BaseLineEval(crid, FunctionString, A, B, C, dicBetas, dicDeltas, Q0, Q1, Incidence, POP, Prevalence, dicSetupVariables);
                     if (result is double)
                     {
                         if (double.IsNaN(Convert.ToDouble(result))) return 0;
@@ -5866,7 +5871,11 @@ namespace BenMAP.Configuration
         {
             try
             {
-                object result = PointEstimateEval.PointEstimateEval(crid, FunctionString, A, B, C, Beta, DeltaQ, Q0, Q1, Incidence, POP, Prevalence, dicSetupVariables);
+
+                Dictionary<string, double> dicBetas = new Dictionary<string, double>();
+                Dictionary<string, double> dicDeltas = new Dictionary<string, double>();
+
+                object result = PointEstimateEval.PointEstimateEval(crid, FunctionString, A, B, C, dicBetas, dicDeltas, Q0, Q1, Incidence, POP, Prevalence, dicSetupVariables);
                 if (result is double)
                 {
                     if (double.IsNaN(Convert.ToDouble(result))) return 0;
@@ -5874,7 +5883,7 @@ namespace BenMAP.Configuration
                 }
                 else
                 {
-                    result = PointEstimateEval.PointEstimateEval(crid, FunctionString, A, B, C, Beta, DeltaQ, Q0, Q1, Incidence, POP, Prevalence, dicSetupVariables);
+                    result = PointEstimateEval.PointEstimateEval(crid, FunctionString, A, B, C, dicBetas, dicDeltas, Q0, Q1, Incidence, POP, Prevalence, dicSetupVariables);
                     if (result is double)
                     {
                         if (double.IsNaN(Convert.ToDouble(result))) return 0;

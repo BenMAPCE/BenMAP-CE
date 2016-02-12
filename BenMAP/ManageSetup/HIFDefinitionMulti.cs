@@ -136,7 +136,12 @@ namespace BenMAP
 
                 CalculateFunctionString calculateFunctionString = new CalculateFunctionString();
                 calculateFunctionString.CreateAllPointEstimateEvalObjects(dicEstimate, dicEstimateVariables, dicVariableList);
-                object result = new Double(); //  = PointEstimateEval.PointEstimateEval(crid.ToString(), functionText, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, dicVariable);
+                string varName = addNames.First();
+                Dictionary<string, double> dicBetas = new Dictionary<string, double>();
+                dicBetas.Add(varName, 1);
+                Dictionary<string, double> dicDeltas = new Dictionary<string, double>();
+                dicDeltas.Add(varName, 1);
+                object result = PointEstimateEval.PointEstimateEval(crid.ToString(), functionText, 1, 1, 1, dicBetas, dicDeltas, 1, 1, 1, 1, 1, dicVariable);
                 if (Tools.CalculateFunctionString.dicPointEstimateMethodInfo != null) Tools.CalculateFunctionString.dicPointEstimateMethodInfo.Clear();
                 if (!(result is double) || double.IsNaN(Convert.ToDouble(result)) || Convert.ToDouble(result) == -999999999)
                 {
@@ -188,8 +193,8 @@ namespace BenMAP
                 dicEstimate.Add(crid.ToString(), functionText);
 
                 calculateFunctionString = new CalculateFunctionString();
-                calculateFunctionString.CreateAllPointEstimateEvalObjects(dicEstimate, dicEstimateVariables, dicVariableList);
-                result = PointEstimateEval.PointEstimateEval(crid.ToString(), functionText, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, dicVariable);
+                calculateFunctionString.CreateAllBaselineEvalObjects(dicEstimate, dicEstimateVariables, dicVariableList);
+                result = PointEstimateEval.BaseLineEval(crid.ToString(), functionText, 1, 1, 1, dicBetas, dicDeltas, 1, 1, 1, 1, 1, dicVariable);
                 if (Tools.CalculateFunctionString.dicPointEstimateMethodInfo != null) Tools.CalculateFunctionString.dicPointEstimateMethodInfo.Clear();
                 if (!(result is double) || double.IsNaN(Convert.ToDouble(result)) || Convert.ToDouble(result) == -999999999)
                 {

@@ -1275,7 +1275,7 @@ namespace BenMAP
                     crid = crid + 1;
                 }
                 CalculateFunctionString calculateFunctionString = new CalculateFunctionString();
-                calculateFunctionString.CreateAllBaselineEvalObjects(dicBaseLine, dicEstimateVariables);
+                calculateFunctionString.CreateAllBaselineEvalObjects(dicBaseLine, dicEstimateVariables, dicVariableList);
                 calculateFunctionString.CreateAllPointEstimateEvalObjects(dicEstimate, dicEstimateVariables, dicVariableList);
                 crid = 1;
                 foreach (CRSelectFunction crSelectFunction in CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction)
