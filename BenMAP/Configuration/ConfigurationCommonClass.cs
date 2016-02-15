@@ -4707,13 +4707,14 @@ namespace BenMAP.Configuration
                                 Variance = 0
 
                             };
-                            if (lhsResultArray != null)
+
+                            //add 0 percentile for each latin hypercube point (number latin hypercube points = number percentiles = number items in lhsResultArray)
+                            for (int i = 0; i < CommonClass.CRLatinHypercubePoints; i++)
                             {
-                                foreach (double dlhs in lhsResultArray)
-                                {
-                                    crCalculateValue.LstPercentile.Add(0);
-                                }
+                                crCalculateValue.LstPercentile.Add(0);
                             }
+                                
+                            
                             crSelectFunctionCalculateValue.CRCalculateValues.Add(crCalculateValue);
                             continue;
                         }
@@ -5136,12 +5137,11 @@ namespace BenMAP.Configuration
                     //get deltaQ values
                     dicDeltaQValues = getDeltaQValues(dicBaseValues, dicControlValues);
 
-                    //calculate one cell
-                    {
-                        crCalculateValue = CalculateCRSelectFunctionsOneCel(sCRID, hasPopInstrBaseLineFunction, i365, crSelectFunction, strBaseLineFunction, strPointEstimateFunction, modelResultAttribute.Col, modelResultAttribute.Row, baseValue, controlValue, dicPopValue, dicIncidenceValue, dicPrevalenceValue, dicVariable, lhsResultArray);
-
-                        crSelectFunctionCalculateValue.CRCalculateValues.Add(crCalculateValue);
-                    }
+                    //calculate one cell                    
+                    crCalculateValue = CalculateCRSelectFunctionsOneCel(sCRID, hasPopInstrBaseLineFunction, i365, crSelectFunction, strBaseLineFunction, strPointEstimateFunction, modelResultAttribute.Col, modelResultAttribute.Row, baseValue, controlValue, dicPopValue, dicIncidenceValue, dicPrevalenceValue, dicVariable, lhsResultArray);
+                    //add calculated value to list of calculated values
+                    crSelectFunctionCalculateValue.CRCalculateValues.Add(crCalculateValue);
+                    
 
                     dicVariable = null;
                 }
