@@ -4423,6 +4423,11 @@ namespace BenMAP.Configuration
                 double controlValue = 0;
                 double deltaQValue = 0;
 
+                Dictionary<int, double> dicBaseValues = new Dictionary<int, double>();
+                Dictionary<int, double> dicControlValues = new Dictionary<int, double>();
+                Dictionary<int, double> dicDeltaQValues = new Dictionary<int, double>();
+
+
                 double populationValue = 0;
                 double incidenceValue = 0;
                 double prevalenceValue = 0;
@@ -4569,6 +4574,8 @@ namespace BenMAP.Configuration
                 foreach (ModelResultAttribute modelResultAttribute in baseControlGroup.Base.ModelResultAttributes)
                 {
 
+
+                    //get Beta distribution
                     double[] lhsResultArray = null;
                     if (!CommonClass.CRRunInPointMode)
                     {
@@ -4678,10 +4685,10 @@ namespace BenMAP.Configuration
                     if (crSelectFunction.BenMAPHealthImpactFunction.MetricStatistic != MetricStatic.None)
                     {
                         #region if we have a metric statistic in health impact function
-                        //get metric data for base and control values
+                        //get metric data for base and control values for all pollutants
                         //if we don't have metric data, create "blank" result and continue to next model result attribute (i.e. grid cell)
-                        if ((!getMetricData(dicBaseMetricData, colRowKey, metricKey, out baseValue)) ||
-                                (!getMetricData(dicControlMetricData, colRowKey, metricKey, out controlValue)))
+                        if ((!getAllMetricData(dicAllMetricDataBase, colRowKey, metricKey, dicBaseValues)) ||
+                                (!getAllMetricData(dicAllMetricDataControl, colRowKey, metricKey, dicControlValues)))
                         {
                             crCalculateValue = new CRCalculateValue()
                             {
@@ -5118,18 +5125,15 @@ namespace BenMAP.Configuration
                         } 
 
                         #endregion
-                    }                    
-                    
-                        
+                    }
+
+
                     //check base and control values against threshold
-                    if (Threshold != 0 && baseValue < Threshold)
-                        baseValue = Threshold;
+                    CheckValuesAgainstThreshold(dicBaseValues, Threshold);
+                    CheckValuesAgainstThreshold(dicControlValues, Threshold);
 
-                    if (Threshold != 0 && controlValue < Threshold)
-                        controlValue = Threshold;
-
-                    //get delta
-                    deltaQValue = baseValue - controlValue;
+                    //get deltaQ values
+                    dicDeltaQValues = getDeltaQValues(dicBaseValues, dicControlValues);
 
                     //calculate one cell
                     {
@@ -5934,6 +5938,31 @@ namespace BenMAP.Configuration
             return Convert.ToSingle(dResult);
         }
 
+        public static bool getAllMetricData(Dictionary<int, Dictionary<string, Dictionary<string, float>>> dicAllMetricData, string colRowKey, string metricKey, Dictionary<int, double> dicValues)
+        {
+            double value = 0;
+            dicValues = new Dictionary<int, double>();
+
+            //loop over dictionary containing data for all pollutants
+            //the key is the pollutant ID
+            foreach (KeyValuePair<int, Dictionary<string, Dictionary<string, float>>> kvp in dicAllMetricData)
+            {
+                //if we have a value for this pollutant, then add it to our list of values
+                if (getMetricData(kvp.Value, colRowKey, metricKey, out value))
+                {
+                    dicValues.Add(kvp.Key, value);
+                }
+                else
+                {
+                    //if we don't have a value for a pollutant, then clear all values and return
+                    dicValues.Clear();
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
         public static bool getMetricData(Dictionary<string, Dictionary<string, float>> dicMetricData, string colRowKey, string metricKey, out double value)
         {            
             value = 0;
@@ -5953,7 +5982,32 @@ namespace BenMAP.Configuration
             return true;
         }
 
-        
+        public static void CheckValuesAgainstThreshold(Dictionary<int, double> dicValues, double Threshold)
+        {
+
+            for (int i = 0; i < dicValues.Count; i++)
+            {
+                if (Threshold != 0 && dicValues[i] < Threshold)
+                    dicValues[i] = Threshold;
+            }
+
+        }
+
+        public static Dictionary<int,double> getDeltaQValues(Dictionary<int, double> dicBaseValues, Dictionary<int, double> dicControlValues)
+        {
+            Dictionary<int, double> dicDeltaQValues = new Dictionary<int, double>();
+            KeyValuePair<int, double> kvpDeltaQ;
+
+            foreach (KeyValuePair<int, double> kvp in dicBaseValues)
+            {
+                double deltaQ = kvp.Value - dicControlValues[kvp.Key];
+                kvpDeltaQ = new KeyValuePair<int, double>(kvp.Key, deltaQ);
+            }
+
+            return dicDeltaQValues;
+        }
+
+
 
 
         public static double CalculateCRSelectFunctionsOneCelStandardError(Dictionary<int, double> concentrations)
