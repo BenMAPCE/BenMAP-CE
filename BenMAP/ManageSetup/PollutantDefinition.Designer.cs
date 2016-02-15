@@ -77,8 +77,8 @@ namespace BenMAP
             // 
             // groupBox1
             // 
-            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox1.Controls.Add(this.btnCancel);
             this.groupBox1.Controls.Add(this.btnOK);
             this.groupBox1.Location = new System.Drawing.Point(4, 571);
@@ -111,9 +111,9 @@ namespace BenMAP
             // 
             // grpDetail
             // 
-            this.grpDetail.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.grpDetail.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.grpDetail.Controls.Add(this.grpSeasonalMetrics);
             this.grpDetail.Controls.Add(this.grpHourlyMetricGeneration);
             this.grpDetail.Location = new System.Drawing.Point(208, 1);
@@ -125,9 +125,9 @@ namespace BenMAP
             // 
             // grpSeasonalMetrics
             // 
-            this.grpSeasonalMetrics.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.grpSeasonalMetrics.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.grpSeasonalMetrics.Controls.Add(this.btnEdit);
             this.grpSeasonalMetrics.Controls.Add(this.lstSeasonalMetrics);
             this.grpSeasonalMetrics.Location = new System.Drawing.Point(6, 341);
@@ -135,7 +135,7 @@ namespace BenMAP
             this.grpSeasonalMetrics.Size = new System.Drawing.Size(457, 219);
             this.grpSeasonalMetrics.TabIndex = 3;
             this.grpSeasonalMetrics.TabStop = false;
-            this.grpSeasonalMetrics.Text = "Seasonal Metrics";
+            this.grpSeasonalMetrics.Text = "Seasonal Metrics (for Selected Metric)";
             // 
             // btnEdit
             // 
@@ -150,9 +150,9 @@ namespace BenMAP
             // 
             // lstSeasonalMetrics
             // 
-            this.lstSeasonalMetrics.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.lstSeasonalMetrics.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lstSeasonalMetrics.FormattingEnabled = true;
             this.lstSeasonalMetrics.ItemHeight = 14;
             this.lstSeasonalMetrics.Location = new System.Drawing.Point(3, 18);
@@ -163,8 +163,8 @@ namespace BenMAP
             // 
             // grpHourlyMetricGeneration
             // 
-            this.grpHourlyMetricGeneration.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.grpHourlyMetricGeneration.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.grpHourlyMetricGeneration.Controls.Add(this.label1);
             this.grpHourlyMetricGeneration.Controls.Add(this.txtMetricName);
             this.grpHourlyMetricGeneration.Controls.Add(this.lblhourlymetricgeneration);
@@ -432,8 +432,8 @@ namespace BenMAP
             // 
             // txtFunctionManage
             // 
-            this.txtFunctionManage.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtFunctionManage.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.txtFunctionManage.Location = new System.Drawing.Point(69, 173);
             this.txtFunctionManage.Multiline = true;
             this.txtFunctionManage.Name = "txtFunctionManage";
@@ -509,8 +509,8 @@ namespace BenMAP
             // 
             // grpPollutant
             // 
-            this.grpPollutant.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)));
+            this.grpPollutant.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.grpPollutant.Controls.Add(this.grpMetrics);
             this.grpPollutant.Controls.Add(this.cboObservationType);
             this.grpPollutant.Controls.Add(this.lblObservationType);
@@ -525,9 +525,9 @@ namespace BenMAP
             // 
             // grpMetrics
             // 
-            this.grpMetrics.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.grpMetrics.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.grpMetrics.Controls.Add(this.btnAdvancedOptions);
             this.grpMetrics.Controls.Add(this.btnMetricsAdd);
             this.grpMetrics.Controls.Add(this.btnMetricsDelete);
@@ -546,7 +546,7 @@ namespace BenMAP
             this.btnAdvancedOptions.Name = "btnAdvancedOptions";
             this.btnAdvancedOptions.Size = new System.Drawing.Size(174, 27);
             this.btnAdvancedOptions.TabIndex = 3;
-            this.btnAdvancedOptions.Text = "Advanced Pollutant Options";
+            this.btnAdvancedOptions.Text = "Global Pollutant Options";
             this.btnAdvancedOptions.UseVisualStyleBackColor = true;
             this.btnAdvancedOptions.Click += new System.EventHandler(this.btnAdvancedOptions_Click);
             // 
@@ -574,8 +574,8 @@ namespace BenMAP
             // 
             // lstMetrics
             // 
-            this.lstMetrics.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)));
+            this.lstMetrics.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.lstMetrics.FormattingEnabled = true;
             this.lstMetrics.ItemHeight = 14;
             this.lstMetrics.Location = new System.Drawing.Point(6, 18);
