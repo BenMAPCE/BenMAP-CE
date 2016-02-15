@@ -4573,7 +4573,10 @@ namespace BenMAP.Configuration
                 #region foreach (ModelResultAttribute modelResultAttribute in baseControlGroup.Base.ModelResultAttributes)
                 foreach (ModelResultAttribute modelResultAttribute in baseControlGroup.Base.ModelResultAttributes)
                 {
-
+                    //clear base, control, and deltaq values for this grid cell
+                    dicBaseValues.Clear();
+                    dicControlValues.Clear();
+                    dicDeltaQValues.Clear();
 
                     //get Beta distribution
                     double[] lhsResultArray = null;
@@ -4678,8 +4681,6 @@ namespace BenMAP.Configuration
                     {
                         metricKey = metricKey + "," + Enum.GetName(typeof(MetricStatic), crSelectFunction.BenMAPHealthImpactFunction.MetricStatistic);
                     }
-
-
 
                     //do we have a metric statistic?               
                     if (crSelectFunction.BenMAPHealthImpactFunction.MetricStatistic != MetricStatic.None)
@@ -5940,8 +5941,9 @@ namespace BenMAP.Configuration
 
         public static bool getAllMetricData(Dictionary<int, Dictionary<string, Dictionary<string, float>>> dicAllMetricData, string colRowKey, string metricKey, Dictionary<int, double> dicValues)
         {
+            //clear values
             double value = 0;
-            dicValues = new Dictionary<int, double>();
+            dicValues.Clear();
 
             //loop over dictionary containing data for all pollutants
             //the key is the pollutant ID
@@ -5954,7 +5956,7 @@ namespace BenMAP.Configuration
                 }
                 else
                 {
-                    //if we don't have a value for a pollutant, then clear all values and return
+                    //if we don't have a value for a pollutant, then clear any values we have added and return
                     dicValues.Clear();
                     return false;
                 }
@@ -5996,12 +5998,11 @@ namespace BenMAP.Configuration
         public static Dictionary<int,double> getDeltaQValues(Dictionary<int, double> dicBaseValues, Dictionary<int, double> dicControlValues)
         {
             Dictionary<int, double> dicDeltaQValues = new Dictionary<int, double>();
-            KeyValuePair<int, double> kvpDeltaQ;
 
             foreach (KeyValuePair<int, double> kvp in dicBaseValues)
             {
                 double deltaQ = kvp.Value - dicControlValues[kvp.Key];
-                kvpDeltaQ = new KeyValuePair<int, double>(kvp.Key, deltaQ);
+                dicDeltaQValues.Add(kvp.Key, deltaQ);
             }
 
             return dicDeltaQValues;
