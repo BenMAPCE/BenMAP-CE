@@ -12,13 +12,13 @@ namespace BenMAP.Tools
     class CalculateFunctionString
     {
         private string _CharpCode = "";
-        public object BaseLineEval(string crid, string cCharpCode, double a, double b, double c, Dictionary<string, double> dicBetas, Dictionary<string, double> dicDeltas, double q0, double q1, double incidence, double pop, double prevalence, Dictionary<string, double> dicSetupVariables)
+        public object BaseLineEval(string crid, string cCharpCode, double a, double b, double c, Dictionary<string, double> dicBetas, Dictionary<string, double> dicDeltas, Dictionary<string, double> dicQZeros, Dictionary<string, double> dicQOnes, double incidence, double pop, double prevalence, Dictionary<string, double> dicSetupVariables)
         {
             try
             {
                 MethodInfo mi = null;
                 object tmp = null;
-                List<object> lstParam = new List<object>() { a, b, c, dicBetas, dicDeltas, q0, q1, incidence, pop, prevalence };
+                List<object> lstParam = new List<object>() { a, b, c, dicBetas, dicDeltas, dicQZeros, dicQOnes, incidence, pop, prevalence };
                 if (dicSetupVariables != null && dicSetupVariables.Count > 0)
                 {
                     int j = 0;
@@ -76,6 +76,8 @@ namespace BenMAP.Tools
                         {
                             addVariables.AppendFormat(" double beta = dicBetas[\"{0}\"]; ", dicVariables[k.Key].First());
                             addVariables.AppendFormat(" double deltaq = dicDeltas[\"{0}\"]; ", dicVariables[k.Key].First());
+                            addVariables.AppendFormat(" double Q0 = dicQZeros[\"{0}\"]; ", dicVariables[k.Key].First());
+                            addVariables.AppendFormat(" double Q1 = dicQOnes[\"{0}\"]; ", dicVariables[k.Key].First());
                         }
 
                         else
@@ -84,6 +86,8 @@ namespace BenMAP.Tools
                             {
                                 addVariables.AppendFormat(" double beta_{0} = dicBetas[\"{1}\"]; ", varName, varName);
                                 addVariables.AppendFormat(" double delta_{0} = dicDeltas[\"{1}\"]; ", varName, varName);
+                                addVariables.AppendFormat(" double Q0_{0} = dicQZeros[\"{1}\"]; ", varName, varName);
+                                addVariables.AppendFormat(" double Q1_{0} = dicQOnes[\"{1}\"]; ", varName, varName);
                             }
                         }
 
@@ -101,7 +105,7 @@ namespace BenMAP.Tools
                         StringBuilder myCode = new StringBuilder();
                         myCode.Append("using System;");
                         myCode.Append("namespace CoustomEval{");
-                        myCode.Append("class myLibBaseLine" + k.Key + " { public double myPow(double a) { return Math.Pow(a,2);} public double myMethod(double a, double b, double c, Dictionary<string, double> dicBetas, Dictionary<string,double> dicDeltas, double q0, double q1, double incidence, double pop, double prevalence" + strVariables +
+                        myCode.Append("class myLibBaseLine" + k.Key + " { public double myPow(double a) { return Math.Pow(a,2);} public double myMethod(double a, double b, double c, Dictionary<string, double> dicBetas, Dictionary<string,double> dicDeltas, Dictionary<string,double> dicQZeros, Dictionary<string,double> dicQOnes, double incidence, double pop, double prevalence" + strVariables +
         "){ try{" + addVariables.ToString() + k.Value + "} catch (Exception ex) { return -999999999; }}}");
                         myCode.Append("}");
                   //      System.Console.WriteLine(myCode.ToString());
@@ -147,6 +151,8 @@ namespace BenMAP.Tools
                         {
                             addVariables.AppendFormat(" double beta = dicBetas[\"{0}\"]; ", dicVariables[k.Key].First());
                             addVariables.AppendFormat(" double deltaq = dicDeltas[\"{0}\"]; ", dicVariables[k.Key].First());
+                            addVariables.AppendFormat(" double Q0 = dicQZeros[\"{0}\"]; ", dicVariables[k.Key].First());
+                            addVariables.AppendFormat(" double Q1 = dicQOnes[\"{0}\"]; ", dicVariables[k.Key].First());
                         }
 
                         else
@@ -155,6 +161,8 @@ namespace BenMAP.Tools
                             {
                                 addVariables.AppendFormat(" double beta_{0} = dicBetas[\"{1}\"]; ", varName, varName);
                                 addVariables.AppendFormat(" double delta_{0} = dicDeltas[\"{1}\"]; ", varName, varName);
+                                addVariables.AppendFormat(" double Q0_{0} = dicQZeros[\"{1}\"]; ", varName, varName);
+                                addVariables.AppendFormat(" double Q1_{0} = dicQOnes[\"{1}\"]; ", varName, varName);
                             }
                         }
 
@@ -171,7 +179,7 @@ namespace BenMAP.Tools
                         StringBuilder myCode = new StringBuilder();
                         myCode.Append("using System;");
                         myCode.Append("namespace CoustomEval{");
-                        myCode.Append("class myLibPointEstimate" + k.Key + " { public double myPow(double a) { return Math.Pow(a,2);}  public double myMethod(double a, double b, double c, Dictionary<string, double> dicBetas, Dictionary<string,double> dicDeltas, double q0, double q1, double incidence, double pop, double prevalence" + strVariables +
+                        myCode.Append("class myLibPointEstimate" + k.Key + " { public double myPow(double a) { return Math.Pow(a,2);}  public double myMethod(double a, double b, double c, Dictionary<string, double> dicBetas, Dictionary<string,double> dicDeltas, Dictionary<string,double> dicQZeros, Dictionary<string,double> dicQOnes, double incidence, double pop, double prevalence" + strVariables +
         "){ try{" + addVariables.ToString() + k.Value + "} catch (Exception ex) { return -999999999; }}}");
                         myCode.Append("}");
 
@@ -194,13 +202,13 @@ namespace BenMAP.Tools
             {
             }
         }
-        public object PointEstimateEval(string crID, string cCharpCode, double a, double b, double c, Dictionary<string, double> dicBetas, Dictionary<string, double> dicDeltas, double q0, double q1, double incidence, double pop, double prevalence, Dictionary<string, double> dicSetupVariables)
+        public object PointEstimateEval(string crID, string cCharpCode, double a, double b, double c, Dictionary<string, double> dicBetas, Dictionary<string, double> dicDeltas, Dictionary<string, double> dicQZeros, Dictionary<string, double> dicQOnes, double incidence, double pop, double prevalence, Dictionary<string, double> dicSetupVariables)
         {
             try
             {
                 MethodInfo mi = null;
                 object tmp = null;
-                List<object> lstParam = new List<object>() { a, b, c, dicBetas, dicDeltas, q0, q1, incidence, pop, prevalence };
+                List<object> lstParam = new List<object>() { a, b, c, dicBetas, dicDeltas, dicQZeros, dicQOnes, incidence, pop, prevalence };
                 if (dicSetupVariables != null && dicSetupVariables.Count > 0)
                 {
                     int j = 0;
