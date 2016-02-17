@@ -8578,14 +8578,14 @@ namespace BenMAP
                     }
                     if (IncidencelstResult == null)
                     {
-                        BrightIdeasSoftware.OLVColumn olvColumnPointEstimate = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.PointEstimate", AspectToStringFormat = "{0:N4}", Width = "Point Estimate".Length * 8, Text = "Point Estimate", IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnPointEstimate);
-                        BrightIdeasSoftware.OLVColumn olvColumnPopulation = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Population", AspectToStringFormat = "{0:N4}", Text = "Population", Width = "Population".Length * 8, IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnPopulation);
-                        BrightIdeasSoftware.OLVColumn olvColumnDelta = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Delta", AspectToStringFormat = "{0:N4}", Text = "Delta", Width = "Variance".Length * 8, IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnDelta);
-                        BrightIdeasSoftware.OLVColumn olvColumnMean = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Mean", AspectToStringFormat = "{0:N4}", Text = "Mean", Width = "Variance".Length * 8, IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnMean);
-                        BrightIdeasSoftware.OLVColumn olvColumnBaseline = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Baseline", AspectToStringFormat = "{0:N4}", Text = "Baseline", Width = "Baseline2".Length * 8, IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnBaseline);
-                        BrightIdeasSoftware.OLVColumn olvColumnPercentOfBaseline = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.PercentOfBaseline", AspectToStringFormat = "{0:N4}", Width = "Percent Of Baseline".Length * 8, Text = "Percent Of Baseline", IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnPercentOfBaseline);
-                        BrightIdeasSoftware.OLVColumn olvColumnStandardDeviation = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.StandardDeviation", AspectToStringFormat = "{0:N4}", Width = "Standard Deviation".Length * 8, Text = "Standard Deviation", IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnStandardDeviation);
-                        BrightIdeasSoftware.OLVColumn olvColumnVariance = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Variance", Text = "Variance", AspectToStringFormat = "{0:N4}", Width = "Variance".Length * 8, IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnVariance);
+                        OLVResultsShow.Columns.Add(new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.PointEstimate", AspectToStringFormat = "{0:N4}", Width = "Point Estimate".Length * 8, Text = "Point Estimate", IsEditable = false });
+                        OLVResultsShow.Columns.Add(new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Population", AspectToStringFormat = "{0:N4}", Text = "Population", Width = "Population".Length * 8, IsEditable = false });
+                        OLVResultsShow.Columns.Add(new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Delta", AspectToStringFormat = "{0:N4}", Text = "Delta", Width = "Variance".Length * 8, IsEditable = false }); 
+                        OLVResultsShow.Columns.Add(new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Mean", AspectToStringFormat = "{0:N4}", Text = "Mean", Width = "Variance".Length * 8, IsEditable = false }); 
+                        OLVResultsShow.Columns.Add(new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Baseline", AspectToStringFormat = "{0:N4}", Text = "Baseline", Width = "Baseline2".Length * 8, IsEditable = false }); 
+                        OLVResultsShow.Columns.Add(new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.PercentOfBaseline", AspectToStringFormat = "{0:N4}", Width = "Percent Of Baseline".Length * 8, Text = "Percent Of Baseline", IsEditable = false }); 
+                        OLVResultsShow.Columns.Add(new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.StandardDeviation", AspectToStringFormat = "{0:N4}", Width = "Standard Deviation".Length * 8, Text = "Standard Deviation", IsEditable = false }); 
+                        OLVResultsShow.Columns.Add(new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Variance", Text = "Variance", AspectToStringFormat = "{0:N4}", Width = "Variance".Length * 8, IsEditable = false }); 
                     }
                     else
                     {
@@ -8690,14 +8690,14 @@ namespace BenMAP
                         }
                         if (IncidencelstResult == null)
                         {
-                            BrightIdeasSoftware.OLVColumn olvColumnPointEstimate = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.PointEstimate", AspectToStringFormat = "{0:N4}", Width = "PointEstimate".Length * 8, Text = "Point Estimate", IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnPointEstimate);
-                            BrightIdeasSoftware.OLVColumn olvColumnPopulation = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Population", AspectToStringFormat = "{0:N4}", Text = "Population", Width = "Population".Length * 8, IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnPopulation);
-                            BrightIdeasSoftware.OLVColumn olvColumnDelta = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Delta", AspectToStringFormat = "{0:N4}", Text = "Delta", Width = "Variance".Length * 8, IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnDelta);
-                            BrightIdeasSoftware.OLVColumn olvColumnMean = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Mean", AspectToStringFormat = "{0:N4}", Text = "Mean", Width = "Variance".Length * 8, IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnMean);
-                            BrightIdeasSoftware.OLVColumn olvColumnBaseline = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Baseline", AspectToStringFormat = "{0:N4}", Text = "Baseline", Width = "Baseline2".Length * 8, IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnBaseline);
-                            BrightIdeasSoftware.OLVColumn olvColumnPercentOfBaseline = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.PercentOfBaseline", AspectToStringFormat = "{0:N4}", Width = "Percent Of Baseline".Length * 8, Text = "Percent Of Baseline", IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnPercentOfBaseline);
-                            BrightIdeasSoftware.OLVColumn olvColumnStandardDeviation = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.StandardDeviation", AspectToStringFormat = "{0:N4}", Width = "Standard Deviation".Length * 8, Text = "Standard Deviation", IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnStandardDeviation);
-                            BrightIdeasSoftware.OLVColumn olvColumnVariance = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Variance", Text = "Variance", AspectToStringFormat = "{0:N4}", Width = "Variance".Length * 8, IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnVariance);
+                            OLVResultsShow.Columns.Add(new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.PointEstimate", AspectToStringFormat = "{0:N4}", Width = "PointEstimate".Length * 8, Text = "Point Estimate", IsEditable = false });
+                            OLVResultsShow.Columns.Add(new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Population", AspectToStringFormat = "{0:N4}", Text = "Population", Width = "Population".Length * 8, IsEditable = false });
+                            OLVResultsShow.Columns.Add(new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Delta", AspectToStringFormat = "{0:N4}", Text = "Delta", Width = "Variance".Length * 8, IsEditable = false });
+                            OLVResultsShow.Columns.Add(new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Mean", AspectToStringFormat = "{0:N4}", Text = "Mean", Width = "Variance".Length * 8, IsEditable = false });
+                            OLVResultsShow.Columns.Add(new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Baseline", AspectToStringFormat = "{0:N4}", Text = "Baseline", Width = "Baseline2".Length * 8, IsEditable = false });
+                            OLVResultsShow.Columns.Add(new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.PercentOfBaseline", AspectToStringFormat = "{0:N4}", Width = "Percent Of Baseline".Length * 8, Text = "Percent Of Baseline", IsEditable = false });
+                            OLVResultsShow.Columns.Add(new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.StandardDeviation", AspectToStringFormat = "{0:N4}", Width = "Standard Deviation".Length * 8, Text = "Standard Deviation", IsEditable = false });
+                            OLVResultsShow.Columns.Add(new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Variance", Text = "Variance", AspectToStringFormat = "{0:N4}", Width = "Variance".Length * 8, IsEditable = false }); 
                         }
                         else
                         {
@@ -8771,14 +8771,14 @@ namespace BenMAP
                         }
                         if (cflstResult == null)
                         {
-                            BrightIdeasSoftware.OLVColumn olvColumnPointEstimate = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.PointEstimate", AspectToStringFormat = "{0:N4}", Width = "PointEstimate".Length * 8, Text = "Point Estimate", IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnPointEstimate);
-                            BrightIdeasSoftware.OLVColumn olvColumnPopulation = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Population", AspectToStringFormat = "{0:N4}", Text = "Population", Width = "Population".Length * 8, IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnPopulation);
-                            BrightIdeasSoftware.OLVColumn olvColumnDelta = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Delta", AspectToStringFormat = "{0:N4}", Text = "Delta", Width = "Variance".Length * 8, IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnDelta);
-                            BrightIdeasSoftware.OLVColumn olvColumnMean = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Mean", AspectToStringFormat = "{0:N4}", Text = "Mean", Width = "Variance".Length * 8, IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnMean);
-                            BrightIdeasSoftware.OLVColumn olvColumnBaseline = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Baseline", Text = "Baseline", AspectToStringFormat = "{0:N4}", Width = "Baseline2".Length * 8, IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnBaseline);
-                            BrightIdeasSoftware.OLVColumn olvColumnPercentOfBaseline = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.PercentOfBaseline", AspectToStringFormat = "{0:N4}", Width = "Percent Of Baseline".Length * 8, Text = "Percent Of Baseline", IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnPercentOfBaseline);
-                            BrightIdeasSoftware.OLVColumn olvColumnStandardDeviation = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.StandardDeviation", AspectToStringFormat = "{0:N4}", Width = "Standard Deviation".Length * 8, Text = "Standard Deviation", IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnStandardDeviation);
-                            BrightIdeasSoftware.OLVColumn olvColumnVariance = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Variance", AspectToStringFormat = "{0:N4}", Text = "Variance", IsEditable = false, Width = "Variance".Length * 8 }; OLVResultsShow.Columns.Add(olvColumnVariance);
+                            OLVResultsShow.Columns.Add(new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.PointEstimate", AspectToStringFormat = "{0:N4}", Width = "PointEstimate".Length * 8, Text = "Point Estimate", IsEditable = false });
+                            OLVResultsShow.Columns.Add(new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Population", AspectToStringFormat = "{0:N4}", Text = "Population", Width = "Population".Length * 8, IsEditable = false });
+                            OLVResultsShow.Columns.Add(new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Delta", AspectToStringFormat = "{0:N4}", Text = "Delta", Width = "Variance".Length * 8, IsEditable = false });
+                            OLVResultsShow.Columns.Add(new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Mean", AspectToStringFormat = "{0:N4}", Text = "Mean", Width = "Variance".Length * 8, IsEditable = false });
+                            OLVResultsShow.Columns.Add(new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Baseline", Text = "Baseline", AspectToStringFormat = "{0:N4}", Width = "Baseline2".Length * 8, IsEditable = false });
+                            OLVResultsShow.Columns.Add(new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.PercentOfBaseline", AspectToStringFormat = "{0:N4}", Width = "Percent Of Baseline".Length * 8, Text = "Percent Of Baseline", IsEditable = false });
+                            OLVResultsShow.Columns.Add(new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.StandardDeviation", AspectToStringFormat = "{0:N4}", Width = "Standard Deviation".Length * 8, Text = "Standard Deviation", IsEditable = false });
+                            OLVResultsShow.Columns.Add(new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Variance", AspectToStringFormat = "{0:N4}", Text = "Variance", IsEditable = false, Width = "Variance".Length * 8 }); 
                         }
                         else
                         {
@@ -9174,12 +9174,6 @@ namespace BenMAP
                     bindingNavigatorPositionItem.Text = _pageCurrent.ToString();
                     bindingNavigatorCountItem.Text = _pageCount.ToString();
                 }
-
-
-
-
-
-
 
 
                 else if (oTable is BenMAPLine)
