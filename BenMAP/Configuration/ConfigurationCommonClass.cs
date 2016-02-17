@@ -6052,27 +6052,68 @@ namespace BenMAP.Configuration
             return dicVariableName;
         }
 
-
-
-
-        public static double CalculateCRSelectFunctionsOneCelStandardError(Dictionary<int, double> concentrations)
+        static double[,] multiplyMatrices(double[,] matrix1, double[,] matrix2)
         {
-            // check that column number of matrix one == row number of column 2
-            // the result will have the same number of rows as the 1st matrix and the same number of oclumns as the 2nd matrix
+            int m1rows = matrix1.GetLength(0);
+            int m1cols = matrix1.GetLength(1);
+            int m2cols = matrix2.GetLength(1);
+            double[,] result = new double[m1rows, m2cols];
 
-            /* foreach row of matrix 1(index j) 
+            for (int row = 0; row < m1rows; row++)
             {
-                foreach column of matrix 2(index k)
+                for (int col = 0; col < m2cols; col++)
                 {
-                    for i = 0; i < width
+                    for (int i = 0; i < m1cols; i++)
                     {
-                        // dot += row[i]*col[i]
-                        result[j][k] += row[i] * col[i];
+                        result[row, col] += matrix1[row, i] * matrix2[i, col];
                     }
                 }
-            }*/
+            }
 
-            return 0;
+            return result;
+        }
+
+        static double[,] transposeMatrix(double[,] matrix)
+        {
+            int newRowCount = matrix.GetLength(1);
+            int newColCount = matrix.GetLength(0);
+            double[,] result = new double[newRowCount, newColCount];
+
+            for (int row = 0; row < newColCount; row++)
+            {
+                for (int col = 0; col < newRowCount; col++)
+                {
+                    result[col, row] = matrix[row, col];
+                }
+            }
+            return result;
+        }
+
+        public static double CalculateCRSelectFunctionsOneCelStandardError(Dictionary<int, double> mat1, CRSelectFunction hif)
+        {
+            int m1Width = mat1.Count();
+            double[,] m1 = new double[m1Width, 1];
+            double[,] m2 = new double[m1Width, m1Width];
+
+            // set up 2d array of air quality deltas
+            int i = 0;
+            foreach (double d in mat1.Values)
+            {
+                m1[i, 0] = d;
+                i++;
+            }
+
+            // set up var/covar matrix from db
+
+            double[,] result1 = multiplyMatrices(m1, m2);
+            double[,] resultT = transposeMatrix(result1);
+            double[,] resultSE = multiplyMatrices(m1, resultT);
+
+            if (resultSE.GetLength(0) != 1 || resultSE.GetLength(1) != 1) { return -99999; } // log error 
+
+            Console.WriteLine(resultSE[0, 0]);
+
+            return resultSE[0, 0];
         }
 
     }
