@@ -387,12 +387,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_236496B19A5E4EA29D4DBC0E851C695E"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_25E2EB99C0AD4C339AD0277CF1C59FC0"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -609,12 +603,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_49A794054AD548ED98EACB707590539E"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_49EB95C34FCA405E9605CFA075388CE4"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -713,6 +701,12 @@
         {
         "MsmKey" = "8:_5913C76C8367691669171CA442FECFF8"
         "OwnerKey" = "8:_C9017A73E3984A2CA6426B1AABE62A30"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_59696D609B1944D982A3180A37FC91FE"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -2421,12 +2415,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_F917D48A4AA64AB1BDDFEAAFB34B7DAB"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_FAD1633C48C5449F86D6840A534A700D"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -3759,7 +3747,7 @@
             "SourcePath" = "8:..\\Data\\Country Shapefiles\\country_incidence_rates.csv"
             "TargetName" = "8:country_incidence_rates.csv"
             "Tag" = "8:"
-            "Folder" = "8:_EB53394BDA904FFE8F3072F4A4379782"
+            "Folder" = "8:_D1059BC821E341B99B308DFC0A1E7834"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -3871,26 +3859,6 @@
             "TargetName" = "8:libpq.dll"
             "Tag" = "8:"
             "Folder" = "8:_8931897E7FB94C3790AE9E7FB236D7A3"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_236496B19A5E4EA29D4DBC0E851C695E"
-            {
-            "SourcePath" = "8:..\\Data\\Country Shapefiles\\country_iso_list.csv"
-            "TargetName" = "8:country_iso_list.csv"
-            "Tag" = "8:"
-            "Folder" = "8:_CFC83EA26393402992AA74648BF4EBD1"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -4589,26 +4557,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_49A794054AD548ED98EACB707590539E"
-            {
-            "SourcePath" = "8:..\\Data\\Country Shapefiles\\country_iso_list.csv"
-            "TargetName" = "8:country_iso_list.csv"
-            "Tag" = "8:"
-            "Folder" = "8:_EB53394BDA904FFE8F3072F4A4379782"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_49EB95C34FCA405E9605CFA075388CE4"
             {
             "SourcePath" = "8:..\\Plugins\\GDAL\\gdal\\data\\gt_ellips.csv"
@@ -4920,12 +4868,32 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_59696D609B1944D982A3180A37FC91FE"
+            {
+            "SourcePath" = "8:..\\Data\\Country Shapefiles\\country_iso_list.csv"
+            "TargetName" = "8:country_iso_list.csv"
+            "Tag" = "8:"
+            "Folder" = "8:_D1059BC821E341B99B308DFC0A1E7834"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_59818D2E966A4761A9ED056178434166"
             {
             "SourcePath" = "8:..\\Data\\Country Shapefiles\\readme.txt"
             "TargetName" = "8:readme.txt"
             "Tag" = "8:"
-            "Folder" = "8:_EB53394BDA904FFE8F3072F4A4379782"
+            "Folder" = "8:_D1059BC821E341B99B308DFC0A1E7834"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -5225,7 +5193,7 @@
             "SourcePath" = "8:..\\Data\\Country Shapefiles\\BenMAP_countries_v2.zip"
             "TargetName" = "8:BenMAP_countries_v2.zip"
             "Tag" = "8:"
-            "Folder" = "8:_EB53394BDA904FFE8F3072F4A4379782"
+            "Folder" = "8:_D1059BC821E341B99B308DFC0A1E7834"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -9488,26 +9456,6 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F917D48A4AA64AB1BDDFEAAFB34B7DAB"
-            {
-            "SourcePath" = "8:..\\Data\\Country Shapefiles\\country_incidence_rates.csv"
-            "TargetName" = "8:country_incidence_rates.csv"
-            "Tag" = "8:"
-            "Folder" = "8:_CFC83EA26393402992AA74648BF4EBD1"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_FAD1633C48C5449F86D6840A534A700D"
             {
             "SourcePath" = "8:..\\Resources\\DistributionFormula\\Normal PDF.png"
@@ -9799,17 +9747,6 @@
                                                 {
                                                 }
                                             }
-                                            "{9EF0B969-E518-4E46-987F-47570745A589}:_EB53394BDA904FFE8F3072F4A4379782"
-                                            {
-                                            "Name" = "8:Country Shapefiles"
-                                            "AlwaysCreate" = "11:FALSE"
-                                            "Condition" = "8:"
-                                            "Transitive" = "11:FALSE"
-                                            "Property" = "8:_9F80F4E9695846C7AEB2108581B05AB7"
-                                                "Folders"
-                                                {
-                                                }
-                                            }
                                         }
                                     }
                                     "{9EF0B969-E518-4E46-987F-47570745A589}:_DC5C597F00F74FFEB15B8E0B34A61948"
@@ -9876,6 +9813,17 @@
                             "Condition" = "8:"
                             "Transitive" = "11:FALSE"
                             "Property" = "8:_0F28CF3187E34518B2345488317A7FFA"
+                                "Folders"
+                                {
+                                }
+                            }
+                            "{9EF0B969-E518-4E46-987F-47570745A589}:_D1059BC821E341B99B308DFC0A1E7834"
+                            {
+                            "Name" = "8:Country Shapefiles"
+                            "AlwaysCreate" = "11:FALSE"
+                            "Condition" = "8:"
+                            "Transitive" = "11:FALSE"
+                            "Property" = "8:_9F80F4E9695846C7AEB2108581B05AB7"
                                 "Folders"
                                 {
                                 }
@@ -10111,7 +10059,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:BenMAP-CE"
         "ProductCode" = "8:{D565775A-2B13-4F8E-B882-2762B82D8749}"
-        "PackageCode" = "8:{B65307CD-9439-4EE7-B35C-BCDFC3DCDAAD}"
+        "PackageCode" = "8:{B0214397-CDA8-4A11-A4BA-882EF3D988B6}"
         "UpgradeCode" = "8:{10C0CCD0-CE12-43BB-BB3E-44059FCA4ADB}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
