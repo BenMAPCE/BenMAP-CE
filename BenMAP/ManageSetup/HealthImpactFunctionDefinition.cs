@@ -123,9 +123,11 @@ namespace BenMAP
 
                 CalculateFunctionString calculateFunctionString = new CalculateFunctionString();
                 calculateFunctionString.CreateAllPointEstimateEvalObjects(dicEstimate, dicEstimateVariables, dicVariableList);
-                string varName = addNames.First();
                 Dictionary<string, double> dicTest = new Dictionary<string, double>();
-                dicTest.Add(varName, 1);
+                foreach (string varName in addNames)
+                {
+                    dicTest.Add(varName, 1);
+                }
                 object result = PointEstimateEval.PointEstimateEval(crid.ToString(), functionText, 1, 1, 1, dicTest, dicTest, dicTest, dicTest, 1, 1, 1, dicVariable);
                 if (Tools.CalculateFunctionString.dicPointEstimateMethodInfo != null) Tools.CalculateFunctionString.dicPointEstimateMethodInfo.Clear();
                 if (!(result is double) || double.IsNaN(Convert.ToDouble(result)) || Convert.ToDouble(result) == -999999999)

@@ -84,10 +84,10 @@ namespace BenMAP.Tools
                         {
                             foreach (string varName in dicVariables[k.Key])
                             {
-                                addVariables.AppendFormat(" double beta_{0} = dicBetas[\"{1}\"]; ", varName, varName);
-                                addVariables.AppendFormat(" double delta_{0} = dicDeltas[\"{1}\"]; ", varName, varName);
-                                addVariables.AppendFormat(" double Q0_{0} = dicQZeros[\"{1}\"]; ", varName, varName);
-                                addVariables.AppendFormat(" double Q1_{0} = dicQOnes[\"{1}\"]; ", varName, varName);
+                                addVariables.AppendFormat(" double beta_{0} = dicBetas[\"{1}\"]; ", varName.ToLower(), varName);
+                                addVariables.AppendFormat(" double delta_{0} = dicDeltas[\"{1}\"]; ", varName.ToLower(), varName);
+                                addVariables.AppendFormat(" double Q0_{0} = dicQZeros[\"{1}\"]; ", varName.ToLower(), varName);
+                                addVariables.AppendFormat(" double Q1_{0} = dicQOnes[\"{1}\"]; ", varName.ToLower(), varName);
                             }
                         }
 
@@ -104,6 +104,7 @@ namespace BenMAP.Tools
                             DateTime.Now.Second + DateTime.Now.Millisecond + rm.Next(2000) + ".dll";
                         StringBuilder myCode = new StringBuilder();
                         myCode.Append("using System;");
+                        myCode.Append("using System.Collections.Generic;");
                         myCode.Append("namespace CoustomEval{");
                         myCode.Append("class myLibBaseLine" + k.Key + " { public double myPow(double a) { return Math.Pow(a,2);} public double myMethod(double a, double b, double c, Dictionary<string, double> dicBetas, Dictionary<string,double> dicDeltas, Dictionary<string,double> dicQZeros, Dictionary<string,double> dicQOnes, double incidence, double pop, double prevalence" + strVariables +
         "){ try{" + addVariables.ToString() + k.Value + "} catch (Exception ex) { return -999999999; }}}");
@@ -159,10 +160,10 @@ namespace BenMAP.Tools
                         {
                             foreach (string varName in dicVariables[k.Key])
                             {
-                                addVariables.AppendFormat(" double beta_{0} = dicBetas[\"{1}\"]; ", varName, varName);
-                                addVariables.AppendFormat(" double delta_{0} = dicDeltas[\"{1}\"]; ", varName, varName);
-                                addVariables.AppendFormat(" double Q0_{0} = dicQZeros[\"{1}\"]; ", varName, varName);
-                                addVariables.AppendFormat(" double Q1_{0} = dicQOnes[\"{1}\"]; ", varName, varName);
+                                addVariables.AppendFormat(" double beta_{0} = dicBetas[\"{1}\"]; ", varName.ToLower(), varName);
+                                addVariables.AppendFormat(" double delta_{0} = dicDeltas[\"{1}\"]; ", varName.ToLower(), varName);
+                                addVariables.AppendFormat(" double Q0_{0} = dicQZeros[\"{1}\"]; ", varName.ToLower(), varName);
+                                addVariables.AppendFormat(" double Q1_{0} = dicQOnes[\"{1}\"]; ", varName.ToLower(), varName);
                             }
                         }
 
@@ -178,6 +179,7 @@ namespace BenMAP.Tools
                             DateTime.Now.Second + DateTime.Now.Millisecond + rm.Next(2000) + ".dll";
                         StringBuilder myCode = new StringBuilder();
                         myCode.Append("using System;");
+                        myCode.Append("using System.Collections.Generic;");
                         myCode.Append("namespace CoustomEval{");
                         myCode.Append("class myLibPointEstimate" + k.Key + " { public double myPow(double a) { return Math.Pow(a,2);}  public double myMethod(double a, double b, double c, Dictionary<string, double> dicBetas, Dictionary<string,double> dicDeltas, Dictionary<string,double> dicQZeros, Dictionary<string,double> dicQOnes, double incidence, double pop, double prevalence" + strVariables +
         "){ try{" + addVariables.ToString() + k.Value + "} catch (Exception ex) { return -999999999; }}}");
