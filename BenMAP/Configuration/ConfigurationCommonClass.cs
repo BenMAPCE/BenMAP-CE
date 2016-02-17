@@ -4573,7 +4573,10 @@ namespace BenMAP.Configuration
                 #region foreach (ModelResultAttribute modelResultAttribute in baseControlGroup.Base.ModelResultAttributes)
                 foreach (ModelResultAttribute modelResultAttribute in baseControlGroup.Base.ModelResultAttributes)
                 {
-
+                    //clear base, control, and deltaq values for this grid cell
+                    dicBaseValues.Clear();
+                    dicControlValues.Clear();
+                    dicDeltaQValues.Clear();
 
                     //get Beta distribution
                     double[] lhsResultArray = null;
@@ -4679,8 +4682,6 @@ namespace BenMAP.Configuration
                         metricKey = metricKey + "," + Enum.GetName(typeof(MetricStatic), crSelectFunction.BenMAPHealthImpactFunction.MetricStatistic);
                     }
 
-
-
                     //do we have a metric statistic?               
                     if (crSelectFunction.BenMAPHealthImpactFunction.MetricStatistic != MetricStatic.None)
                     {
@@ -4706,13 +4707,14 @@ namespace BenMAP.Configuration
                                 Variance = 0
 
                             };
-                            if (lhsResultArray != null)
+
+                            //add 0 percentile for each latin hypercube point (number latin hypercube points = number percentiles = number items in lhsResultArray)
+                            for (int i = 0; i < CommonClass.CRLatinHypercubePoints; i++)
                             {
-                                foreach (double dlhs in lhsResultArray)
-                                {
-                                    crCalculateValue.LstPercentile.Add(0);
-                                }
+                                crCalculateValue.LstPercentile.Add(0);
                             }
+                                
+                            
                             crSelectFunctionCalculateValue.CRCalculateValues.Add(crCalculateValue);
                             continue;
                         }
@@ -4752,7 +4754,7 @@ namespace BenMAP.Configuration
                                         fControl = Threshold;
                                     fDelta = fBase - fControl;
                                     {
-                                        CRCalculateValue cr = CalculateCRSelectFunctionsOneCel(sCRID, hasPopInstrBaseLineFunction, 1, crSelectFunction, strBaseLineFunction, strPointEstimateFunction, modelResultAttribute.Col, modelResultAttribute.Row, fBase, fControl, dicPopValue, dicIncidenceValue, dicPrevalenceValue, dicVariable, lhsResultArray);
+                                        CRCalculateValue cr = new CRCalculateValue(); // = CalculateCRSelectFunctionsOneCel(sCRID, hasPopInstrBaseLineFunction, 1, crSelectFunction, strBaseLineFunction, strPointEstimateFunction, modelResultAttribute.Col, modelResultAttribute.Row, fBase, fControl, dicPopValue, dicIncidenceValue, dicPrevalenceValue, dicVariable, lhsResultArray);
                                         fPSum += cr.PointEstimate;
                                         fBaselineSum += cr.Baseline;
                                         if (lhsResultArray != null)
@@ -4979,8 +4981,8 @@ namespace BenMAP.Configuration
                                                 }
 
                                                 {
-                                                        CRCalculateValue cr = CalculateCRSelectFunctionsOneCel(sCRID, hasPopInstrBaseLineFunction, 1, crSelectFunction, strBaseLineFunction, strPointEstimateFunction, modelResultAttribute.Col, modelResultAttribute.Row, fBase, fControl, dicPopValue, dicIncidenceValue, dicPrevalenceValue, dicVariable, lhsResultArray);
-                                                        fPSum += cr.PointEstimate;
+                                                    CRCalculateValue cr = new CRCalculateValue(); //= CalculateCRSelectFunctionsOneCel(sCRID, hasPopInstrBaseLineFunction, 1, crSelectFunction, strBaseLineFunction, strPointEstimateFunction, modelResultAttribute.Col, modelResultAttribute.Row, fBase, fControl, dicPopValue, dicIncidenceValue, dicPrevalenceValue, dicVariable, lhsResultArray);
+                                                    fPSum += cr.PointEstimate;
                                                         fBaselineSum += cr.Baseline;
                                                         if (lhsResultArray != null)
                                                         {
@@ -5050,7 +5052,7 @@ namespace BenMAP.Configuration
                                             fControl = Threshold;
                                         fDelta = fBase - fControl;
                                         {
-                                            CRCalculateValue cr = CalculateCRSelectFunctionsOneCel(sCRID, hasPopInstrBaseLineFunction, 1, crSelectFunction, strBaseLineFunction, strPointEstimateFunction, modelResultAttribute.Col, modelResultAttribute.Row, fBase, fControl, dicPopValue, dicIncidenceValue, dicPrevalenceValue, dicVariable, lhsResultArray);
+                                            CRCalculateValue cr = new CRCalculateValue(); //CalculateCRSelectFunctionsOneCel(sCRID, hasPopInstrBaseLineFunction, 1, crSelectFunction, strBaseLineFunction, strPointEstimateFunction, modelResultAttribute.Col, modelResultAttribute.Row, fBase, fControl, dicPopValue, dicIncidenceValue, dicPrevalenceValue, dicVariable, lhsResultArray);
                                             fPSum += cr.PointEstimate * i365;
                                             fBaselineSum += cr.Baseline * i365;
                                             if (lhsResultArray != null)
@@ -5135,12 +5137,11 @@ namespace BenMAP.Configuration
                     //get deltaQ values
                     dicDeltaQValues = getDeltaQValues(dicBaseValues, dicControlValues);
 
-                    //calculate one cell
-                    {
-                        crCalculateValue = CalculateCRSelectFunctionsOneCel(sCRID, hasPopInstrBaseLineFunction, i365, crSelectFunction, strBaseLineFunction, strPointEstimateFunction, modelResultAttribute.Col, modelResultAttribute.Row, baseValue, controlValue, dicPopValue, dicIncidenceValue, dicPrevalenceValue, dicVariable, lhsResultArray);
-
-                        crSelectFunctionCalculateValue.CRCalculateValues.Add(crCalculateValue);
-                    }
+                    //calculate one cell                    
+                    crCalculateValue = CalculateCRSelectFunctionsOneCel(sCRID, hasPopInstrBaseLineFunction, i365, crSelectFunction, strBaseLineFunction, strPointEstimateFunction, modelResultAttribute.Col, modelResultAttribute.Row, dicBaseValues, dicControlValues, dicPopValue, dicIncidenceValue, dicPrevalenceValue, dicVariable, lhsResultArray);
+                    //add calculated value to list of calculated values
+                    crSelectFunctionCalculateValue.CRCalculateValues.Add(crCalculateValue);
+                    
 
                     dicVariable = null;
                 }
@@ -5247,12 +5248,16 @@ namespace BenMAP.Configuration
             }
         }
 
-        public static CRCalculateValue CalculateCRSelectFunctionsOneCel(string iCRID, bool hasPopInstrBaseLineFunction, float i365, CRSelectFunction crSelectFunction, string strBaseLineFunction, string strPointEstimateFunction, int col, int row, double baseValue, double controlValue, Dictionary<string, double> dicPopulationValue, Dictionary<string, double> dicIncidenceValue, Dictionary<string, double> dicPrevalenceValue, Dictionary<string, double> dicSetupVariables, double[] lhsDesignResult)
+        public static CRCalculateValue CalculateCRSelectFunctionsOneCel(string iCRID, bool hasPopInstrBaseLineFunction, float i365, CRSelectFunction crSelectFunction, string strBaseLineFunction, string strPointEstimateFunction, int col, int row, Dictionary<int, double> dicBaseValues, Dictionary<int, double> dicControlValues, Dictionary<string, double> dicPopulationValue, Dictionary<string, double> dicIncidenceValue, Dictionary<string, double> dicPrevalenceValue, Dictionary<string, double> dicSetupVariables, double[] lhsDesignResult)
         {
             try
             {
 
                 double incidenceValue, prevalenceValue, PopValue;
+
+                Dictionary<int, double> dicDeltaQValues = getDeltaQValues(dicBaseValues, dicControlValues);
+
+                Dictionary<int, double> dicBetaValues = getBetaValues(dicDeltaQValues, crSelectFunction.BenMAPHealthImpactFunction);
 
                 CRCalculateValue crCalculateValue = new CRCalculateValue()
                 {
@@ -5260,12 +5265,15 @@ namespace BenMAP.Configuration
                     Row = row,
                     Population = Convert.ToSingle(dicPopulationValue != null ? dicPopulationValue.Sum(p => p.Value) : 0),
                     Incidence = 0,
-                    Delta = Convert.ToSingle(baseValue - controlValue)
-
-
+                    Deltas = dicDeltaQValues
                 };
 
 
+                //convert pollutant id-based dictionaries to variable name dictionaries
+                Dictionary<string, double> dicBaseValuesVarName = getVariableNameDictionaryFromPollutantIDDictionary(dicBaseValues, crSelectFunction.BenMAPHealthImpactFunction);
+                Dictionary<string, double> dicControlValuesVarName = getVariableNameDictionaryFromPollutantIDDictionary(dicControlValues, crSelectFunction.BenMAPHealthImpactFunction);
+                Dictionary<string, double> dicDeltaQValuesVarName = getVariableNameDictionaryFromPollutantIDDictionary(dicDeltaQValues, crSelectFunction.BenMAPHealthImpactFunction);
+                Dictionary<string, double> dicBetaValuesVarName = getVariableNameDictionaryFromPollutantIDDictionary(dicBetaValues, crSelectFunction.BenMAPHealthImpactFunction);
 
 
                 if (dicPopulationValue == null || dicPopulationValue.Count == 0 || dicPopulationValue.Sum(p => p.Value) == 0)
@@ -5280,7 +5288,7 @@ namespace BenMAP.Configuration
                             prevalenceValue = dicPrevalenceValue != null && dicPrevalenceValue.Count > 0 && dicPrevalenceValue.ContainsKey(k.Key) ? dicPrevalenceValue[k.Key] : 0;
                             crCalculateValue.PointEstimate += ConfigurationCommonClass.getValueFromPointEstimateFunctionString(iCRID, strPointEstimateFunction, crSelectFunction.BenMAPHealthImpactFunction.AContantValue,
                                 crSelectFunction.BenMAPHealthImpactFunction.BContantValue, crSelectFunction.BenMAPHealthImpactFunction.CContantValue,
-                                crSelectFunction.BenMAPHealthImpactFunction.Beta, baseValue - controlValue, controlValue, baseValue, incidenceValue, k.Value, prevalenceValue, dicSetupVariables) * i365;
+                                dicBetaValuesVarName, dicDeltaQValuesVarName, dicControlValuesVarName, dicBaseValuesVarName, incidenceValue, k.Value, prevalenceValue, dicSetupVariables) * i365;
                         }
                     }
                     else
@@ -5291,7 +5299,7 @@ namespace BenMAP.Configuration
                             prevalenceValue = dicPrevalenceValue != null && dicPrevalenceValue.Count > 0 && dicPrevalenceValue.ContainsKey(k.Key) ? dicPrevalenceValue[k.Key] : 0;
                             crCalculateValue.PointEstimate = ConfigurationCommonClass.getValueFromPointEstimateFunctionString(iCRID, strPointEstimateFunction, crSelectFunction.BenMAPHealthImpactFunction.AContantValue,
                                 crSelectFunction.BenMAPHealthImpactFunction.BContantValue, crSelectFunction.BenMAPHealthImpactFunction.CContantValue,
-                                crSelectFunction.BenMAPHealthImpactFunction.Beta, baseValue - controlValue, controlValue, baseValue, incidenceValue, k.Value, prevalenceValue, dicSetupVariables) * i365;
+                                dicBetaValuesVarName, dicDeltaQValuesVarName, dicControlValuesVarName, dicBaseValuesVarName, incidenceValue, k.Value, prevalenceValue, dicSetupVariables) * i365;
                         }
                     }
                 }
@@ -5312,7 +5320,7 @@ namespace BenMAP.Configuration
                                 prevalenceValue = dicPrevalenceValue != null && dicPrevalenceValue.Count > 0 && dicPrevalenceValue.ContainsKey(k.Key) ? dicPrevalenceValue[k.Key] : 0;
                                 crCalculateValue.Baseline += ConfigurationCommonClass.getValueFromBaseFunctionString(iCRID, strBaseLineFunction, crSelectFunction.BenMAPHealthImpactFunction.AContantValue,
                                     crSelectFunction.BenMAPHealthImpactFunction.BContantValue, crSelectFunction.BenMAPHealthImpactFunction.CContantValue,
-                                    crSelectFunction.BenMAPHealthImpactFunction.Beta, baseValue - controlValue, controlValue, baseValue, incidenceValue, k.Value, prevalenceValue, dicSetupVariables) * i365;
+                                    dicBetaValuesVarName, dicDeltaQValuesVarName, dicControlValuesVarName, dicBaseValuesVarName, incidenceValue, k.Value, prevalenceValue, dicSetupVariables) * i365;
                             }
                         }
                         else
@@ -5323,7 +5331,7 @@ namespace BenMAP.Configuration
                                 prevalenceValue = dicPrevalenceValue != null && dicPrevalenceValue.Count > 0 && dicPrevalenceValue.ContainsKey(k.Key) ? dicPrevalenceValue[k.Key] : 0;
                                 crCalculateValue.Baseline = ConfigurationCommonClass.getValueFromBaseFunctionString(iCRID, strBaseLineFunction, crSelectFunction.BenMAPHealthImpactFunction.AContantValue,
                                     crSelectFunction.BenMAPHealthImpactFunction.BContantValue, crSelectFunction.BenMAPHealthImpactFunction.CContantValue,
-                                    crSelectFunction.BenMAPHealthImpactFunction.Beta, baseValue - controlValue, controlValue, baseValue, incidenceValue, k.Value, prevalenceValue, dicSetupVariables) * i365;
+                                    dicBetaValuesVarName, dicDeltaQValuesVarName, dicControlValuesVarName, dicBaseValuesVarName, incidenceValue, k.Value, prevalenceValue, dicSetupVariables) * i365;
                             }
                         }
                     }
@@ -5352,7 +5360,7 @@ namespace BenMAP.Configuration
                                 crCalculateValue.LstPercentile[idlhs] += (ConfigurationCommonClass.getValueFromPointEstimateFunctionString(iCRID, strPointEstimateFunction,
                                     crSelectFunction.BenMAPHealthImpactFunction.AContantValue,
                                 crSelectFunction.BenMAPHealthImpactFunction.BContantValue, crSelectFunction.BenMAPHealthImpactFunction.CContantValue,
-                                  dlhs, baseValue - controlValue, controlValue, baseValue, incidenceValue, k.Value, prevalenceValue, dicSetupVariables) * i365);
+                                  dicBetaValuesVarName, dicDeltaQValuesVarName, dicControlValuesVarName, dicBaseValuesVarName, incidenceValue, k.Value, prevalenceValue, dicSetupVariables) * i365);
                             }
 
 
@@ -5838,15 +5846,14 @@ namespace BenMAP.Configuration
 
         }
 
-        public static float getValueFromBaseFunctionString(string crid, string FunctionString, double A, double B, double C, double Beta, double DeltaQ, double Q0, double Q1, double Incidence, double POP, double Prevalence, Dictionary<string, double> dicSetupVariables)
+        public static float getValueFromBaseFunctionString(string crid, string FunctionString, double A, double B, double C, Dictionary<string, double> dicBetas,
+                Dictionary<string, double> dicDeltas, Dictionary<string, double> dicQZeros, Dictionary<string, double> dicQOnes,
+                double Incidence, double POP, double Prevalence, Dictionary<string, double> dicSetupVariables)
         {
             try
-            {
+            {          
 
-                Dictionary<string, double> dicBetas = new Dictionary<string, double>();
-                Dictionary<string, double> dicDeltas = new Dictionary<string, double>();
-
-                object result = BaseEval.BaseLineEval(crid, FunctionString, A, B, C, dicBetas, dicDeltas, Q0, Q1, Incidence, POP, Prevalence, dicSetupVariables);
+                object result = BaseEval.BaseLineEval(crid, FunctionString, A, B, C, dicBetas, dicDeltas, dicQZeros, dicQOnes, Incidence, POP, Prevalence, dicSetupVariables);
                 if (result is double)
                 {
                     if (double.IsNaN(Convert.ToDouble(result))) return 0;
@@ -5854,7 +5861,7 @@ namespace BenMAP.Configuration
                 }
                 else
                 {
-                    result = BaseEval.BaseLineEval(crid, FunctionString, A, B, C, dicBetas, dicDeltas, Q0, Q1, Incidence, POP, Prevalence, dicSetupVariables);
+                    result = BaseEval.BaseLineEval(crid, FunctionString, A, B, C, dicBetas, dicDeltas, dicQZeros, dicQOnes, Incidence, POP, Prevalence, dicSetupVariables);
                     if (result is double)
                     {
                         if (double.IsNaN(Convert.ToDouble(result))) return 0;
@@ -5871,15 +5878,14 @@ namespace BenMAP.Configuration
                 return 0;
             }
         }
-        public static float getValueFromPointEstimateFunctionString(string crid, string FunctionString, double A, double B, double C, double Beta, double DeltaQ, double Q0, double Q1, double Incidence, double POP, double Prevalence, Dictionary<string, double> dicSetupVariables)
+        public static float getValueFromPointEstimateFunctionString(string crid, string FunctionString, double A, double B, double C, Dictionary<string, double> dicBetas, 
+                Dictionary<string, double> dicDeltas, Dictionary<string, double> dicQZeros, Dictionary<string, double> dicQOnes, 
+                double Incidence, double POP, double Prevalence, Dictionary<string, double> dicSetupVariables)
         {
             try
             {
 
-                Dictionary<string, double> dicBetas = new Dictionary<string, double>();
-                Dictionary<string, double> dicDeltas = new Dictionary<string, double>();
-
-                object result = PointEstimateEval.PointEstimateEval(crid, FunctionString, A, B, C, dicBetas, dicDeltas, Q0, Q1, Incidence, POP, Prevalence, dicSetupVariables);
+                object result = PointEstimateEval.PointEstimateEval(crid, FunctionString, A, B, C, dicBetas, dicDeltas, dicQZeros, dicQOnes, Incidence, POP, Prevalence, dicSetupVariables);
                 if (result is double)
                 {
                     if (double.IsNaN(Convert.ToDouble(result))) return 0;
@@ -5887,7 +5893,7 @@ namespace BenMAP.Configuration
                 }
                 else
                 {
-                    result = PointEstimateEval.PointEstimateEval(crid, FunctionString, A, B, C, dicBetas, dicDeltas, Q0, Q1, Incidence, POP, Prevalence, dicSetupVariables);
+                    result = PointEstimateEval.PointEstimateEval(crid, FunctionString, A, B, C, dicBetas, dicDeltas, dicQZeros, dicQOnes, Incidence, POP, Prevalence, dicSetupVariables);
                     if (result is double)
                     {
                         if (double.IsNaN(Convert.ToDouble(result))) return 0;
@@ -5940,8 +5946,9 @@ namespace BenMAP.Configuration
 
         public static bool getAllMetricData(Dictionary<int, Dictionary<string, Dictionary<string, float>>> dicAllMetricData, string colRowKey, string metricKey, Dictionary<int, double> dicValues)
         {
+            //clear values
             double value = 0;
-            dicValues = new Dictionary<int, double>();
+            dicValues.Clear();
 
             //loop over dictionary containing data for all pollutants
             //the key is the pollutant ID
@@ -5954,7 +5961,7 @@ namespace BenMAP.Configuration
                 }
                 else
                 {
-                    //if we don't have a value for a pollutant, then clear all values and return
+                    //if we don't have a value for a pollutant, then clear any values we have added and return
                     dicValues.Clear();
                     return false;
                 }
@@ -5996,79 +6003,76 @@ namespace BenMAP.Configuration
         public static Dictionary<int,double> getDeltaQValues(Dictionary<int, double> dicBaseValues, Dictionary<int, double> dicControlValues)
         {
             Dictionary<int, double> dicDeltaQValues = new Dictionary<int, double>();
-            KeyValuePair<int, double> kvpDeltaQ;
 
             foreach (KeyValuePair<int, double> kvp in dicBaseValues)
             {
                 double deltaQ = kvp.Value - dicControlValues[kvp.Key];
-                kvpDeltaQ = new KeyValuePair<int, double>(kvp.Key, deltaQ);
+                dicDeltaQValues.Add(kvp.Key, deltaQ);
             }
 
             return dicDeltaQValues;
         }
 
-        static double[,] multiplyMatrices(double[,] matrix1, double[,] matrix2)
+        public static Dictionary<int, double> getBetaValues(Dictionary<int, double> dicDeltaQValues, BenMAPHealthImpactFunction hif)
         {
-            int m1rows = matrix1.GetLength(0);
-            int m1cols = matrix1.GetLength(1);
-            int m2cols = matrix2.GetLength(1);
-            double[,] result = new double[m1rows, m2cols];
+            Dictionary<int, double> dicBetaValues = new Dictionary<int, double>();
 
-            for (int row = 0; row < m1rows; row++)
+            foreach (KeyValuePair<int, double> kvp in dicDeltaQValues)
             {
-                for (int col = 0; col < m2cols; col++)
+                dicBetaValues.Add(kvp.Key, hif.Beta);
+            }
+
+            return dicBetaValues;
+        }
+
+        public static Dictionary<string, double> getVariableNameDictionaryFromPollutantIDDictionary(Dictionary<int, double> dicPollutantID, BenMAPHealthImpactFunction hif)
+        {
+            Dictionary<string, double> dicVariableName = new Dictionary<string, double>();
+
+            //loop over pollutant id dictionary
+            foreach (KeyValuePair<int, double> kvp in dicPollutantID)
+            {
+                string varName = String.Empty;
+
+                //find matching variable name for pollutant id in health impact function variable list
+                foreach (CRFVariable variable in hif.Variables)
                 {
-                    for (int i = 0; i < m1cols; i++)
+                    //do pollutant ids match?
+                    if (variable.Pollutant1ID == kvp.Key)
                     {
-                        result[row, col] += matrix1[row, i] * matrix2[i, col];
+                        varName = variable.VariableName;
+                        dicVariableName.Add(varName, kvp.Value);
+                        break;
                     }
                 }
+
+                
             }
 
-            return result;
+            return dicVariableName;
         }
 
-        static double[,] transposeMatrix(double[,] matrix)
-        {
-            int newRowCount = matrix.GetLength(1);
-            int newColCount = matrix.GetLength(0);
-            double[,] result = new double[newRowCount, newColCount];
 
-            for (int row = 0; row < newColCount; row++)
+
+
+        public static double CalculateCRSelectFunctionsOneCelStandardError(Dictionary<int, double> concentrations)
+        {
+            // check that column number of matrix one == row number of column 2
+            // the result will have the same number of rows as the 1st matrix and the same number of oclumns as the 2nd matrix
+
+            /* foreach row of matrix 1(index j) 
             {
-                for (int col = 0; col < newRowCount; col++)
+                foreach column of matrix 2(index k)
                 {
-                    result[col, row] = matrix[row, col];
+                    for i = 0; i < width
+                    {
+                        // dot += row[i]*col[i]
+                        result[j][k] += row[i] * col[i];
+                    }
                 }
-            }
-            return result;
-        }
+            }*/
 
-        public static double CalculateCRSelectFunctionsOneCelStandardError(Dictionary<int, double> mat1, CRSelectFunction hif)
-        {
-            int m1Width = mat1.Count();
-            double[,] m1 = new double[m1Width, 1];
-            double[,] m2 = new double[m1Width, m1Width];
-
-            // set up 2d array of air quality deltas
-            int i = 0;
-            foreach(double d in mat1.Values)
-            {
-                m1[i, 0] = d;
-                i++;
-            }
-
-            // set up var/covar matrix from db
-
-            double[,] result1 = multiplyMatrices(m1, m2);
-            double[,] resultT = transposeMatrix(result1);
-            double[,] resultSE = multiplyMatrices(m1, resultT);
-
-            if (resultSE.GetLength(0) != 1 || resultSE.GetLength(1) != 1) { return -99999; } // log error 
-
-            Console.WriteLine(resultSE[0, 0]);
-
-            return resultSE[0, 0];
+            return 0;
         }
 
     }
