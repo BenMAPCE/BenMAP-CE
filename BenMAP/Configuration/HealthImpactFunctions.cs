@@ -1268,7 +1268,7 @@ namespace BenMAP
                     List<string> addNames = new List<string>();
                     foreach (CRFVariable v in crSelectFunction.BenMAPHealthImpactFunction.Variables)
                     {
-                        addNames.Add(v.VariableName.ToLower());
+                        addNames.Add(v.VariableName);
                     }
                     dicVariableList.Add(crid.ToString(), addNames);
 
