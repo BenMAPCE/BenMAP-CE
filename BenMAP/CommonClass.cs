@@ -3671,7 +3671,8 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
         public List<float> LstPercentile;
         [ProtoMember(13)]
         public Dictionary<int, double> Deltas;
-
+        [ProtoMember(14)]
+        public List<double> DeltaList;
     }
 
     [Serializable]

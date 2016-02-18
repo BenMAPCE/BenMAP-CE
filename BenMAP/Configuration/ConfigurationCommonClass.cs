@@ -5138,7 +5138,7 @@ namespace BenMAP.Configuration
                     dicDeltaQValues = getDeltaQValues(dicBaseValues, dicControlValues);
 
                     //calculate one cell                    
-                    crCalculateValue = CalculateCRSelectFunctionsOneCel(sCRID, hasPopInstrBaseLineFunction, i365, crSelectFunction, strBaseLineFunction, strPointEstimateFunction, modelResultAttribute.Col, modelResultAttribute.Row, dicBaseValues, dicControlValues, dicPopValue, dicIncidenceValue, dicPrevalenceValue, dicVariable, lhsResultArray);
+                   crCalculateValue = CalculateCRSelectFunctionsOneCel(sCRID, hasPopInstrBaseLineFunction, i365, crSelectFunction, strBaseLineFunction, strPointEstimateFunction, modelResultAttribute.Col, modelResultAttribute.Row, dicBaseValues, dicControlValues, dicPopValue, dicIncidenceValue, dicPrevalenceValue, dicVariable, lhsResultArray);
                     //add calculated value to list of calculated values
                     crSelectFunctionCalculateValue.CRCalculateValues.Add(crCalculateValue);
                     
@@ -5268,6 +5268,9 @@ namespace BenMAP.Configuration
                     Deltas = dicDeltaQValues
                 };
 
+                // set up DeltaList with delta values in order by pollutant name alphabetically for displaying results 
+                if (crCalculateValue.DeltaList == null) crCalculateValue.DeltaList = new List<double>();
+                crCalculateValue.DeltaList = getSortedDeltaListFromDictionaryandObject(crSelectFunction.BenMAPHealthImpactFunction, dicDeltaQValues);
 
                 //convert pollutant id-based dictionaries to variable name dictionaries
                 Dictionary<string, double> dicBaseValuesVarName = getVariableNameDictionaryFromPollutantIDDictionary(dicBaseValues, crSelectFunction.BenMAPHealthImpactFunction);
@@ -6050,6 +6053,49 @@ namespace BenMAP.Configuration
             }
 
             return dicVariableName;
+        }
+
+        public static int getPollutantIDFromPollutantNameAndObject(BenMAPHealthImpactFunction hif, string pollName)
+        {
+            int ID = 0;
+
+            foreach (CRFVariable v in hif.Variables)
+            {
+                if (v.PollutantName == pollName) ID = v.Pollutant1ID;
+            }
+
+            return ID;
+        }
+
+        public static string getPollutantNameFromPollutantIDAndObject(BenMAPHealthImpactFunction hif, int pollID)
+        {
+            string name = string.Empty;
+
+            foreach (CRFVariable v in hif.Variables)
+            {
+                if (v.Pollutant1ID == pollID) name = v.PollutantName;
+            }
+
+            return name;
+        }
+
+        public static List<double> getSortedDeltaListFromDictionaryandObject(BenMAPHealthImpactFunction hif, Dictionary<int, double> dicDelta)
+        {
+            SortedList<string, double> sorted = new SortedList<string, double>();
+            List<double> inOrder = new List<double>();
+
+            foreach (KeyValuePair<int,double> p in dicDelta)
+            {
+                string toAdd = getPollutantNameFromPollutantIDAndObject(hif, p.Key);
+                sorted.Add(toAdd, p.Value);
+            }
+
+            foreach (KeyValuePair<string,double> s in sorted)
+            {
+                inOrder.Add(s.Value);
+            }
+
+            return inOrder;
         }
 
         static double[,] multiplyMatrices(double[,] matrix1, double[,] matrix2)
