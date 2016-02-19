@@ -76,8 +76,8 @@ namespace BenMAP.Tools
                         {
                             addVariables.AppendFormat(" double beta = dicBetas[\"{0}\"]; ", dicVariables[k.Key].First());
                             addVariables.AppendFormat(" double deltaq = dicDeltas[\"{0}\"]; ", dicVariables[k.Key].First());
-                            addVariables.AppendFormat(" double Q0 = dicQZeros[\"{0}\"]; ", dicVariables[k.Key].First());
-                            addVariables.AppendFormat(" double Q1 = dicQOnes[\"{0}\"]; ", dicVariables[k.Key].First());
+                            addVariables.AppendFormat(" double q0 = dicQZeros[\"{0}\"]; ", dicVariables[k.Key].First());
+                            addVariables.AppendFormat(" double q1 = dicQOnes[\"{0}\"]; ", dicVariables[k.Key].First());
                         }
 
                         else
@@ -86,8 +86,8 @@ namespace BenMAP.Tools
                             {
                                 addVariables.AppendFormat(" double beta_{0} = dicBetas[\"{1}\"]; ", varName.ToLower(), varName);
                                 addVariables.AppendFormat(" double delta_{0} = dicDeltas[\"{1}\"]; ", varName.ToLower(), varName);
-                                addVariables.AppendFormat(" double Q0_{0} = dicQZeros[\"{1}\"]; ", varName.ToLower(), varName);
-                                addVariables.AppendFormat(" double Q1_{0} = dicQOnes[\"{1}\"]; ", varName.ToLower(), varName);
+                                addVariables.AppendFormat(" double q0_{0} = dicQZeros[\"{1}\"]; ", varName.ToLower(), varName);
+                                addVariables.AppendFormat(" double q1_{0} = dicQOnes[\"{1}\"]; ", varName.ToLower(), varName);
                             }
                         }
 
@@ -152,8 +152,8 @@ namespace BenMAP.Tools
                         {
                             addVariables.AppendFormat(" double beta = dicBetas[\"{0}\"]; ", dicVariables[k.Key].First());
                             addVariables.AppendFormat(" double deltaq = dicDeltas[\"{0}\"]; ", dicVariables[k.Key].First());
-                            addVariables.AppendFormat(" double Q0 = dicQZeros[\"{0}\"]; ", dicVariables[k.Key].First());
-                            addVariables.AppendFormat(" double Q1 = dicQOnes[\"{0}\"]; ", dicVariables[k.Key].First());
+                            addVariables.AppendFormat(" double q0 = dicQZeros[\"{0}\"]; ", dicVariables[k.Key].First());
+                            addVariables.AppendFormat(" double q1 = dicQOnes[\"{0}\"]; ", dicVariables[k.Key].First());
                         }
 
                         else
@@ -162,8 +162,8 @@ namespace BenMAP.Tools
                             {
                                 addVariables.AppendFormat(" double beta_{0} = dicBetas[\"{1}\"]; ", varName.ToLower(), varName);
                                 addVariables.AppendFormat(" double delta_{0} = dicDeltas[\"{1}\"]; ", varName.ToLower(), varName);
-                                addVariables.AppendFormat(" double Q0_{0} = dicQZeros[\"{1}\"]; ", varName.ToLower(), varName);
-                                addVariables.AppendFormat(" double Q1_{0} = dicQOnes[\"{1}\"]; ", varName.ToLower(), varName);
+                                addVariables.AppendFormat(" double q0_{0} = dicQZeros[\"{1}\"]; ", varName.ToLower(), varName);
+                                addVariables.AppendFormat(" double q1_{0} = dicQOnes[\"{1}\"]; ", varName.ToLower(), varName);
                             }
                         }
 
