@@ -4576,22 +4576,7 @@ namespace BenMAP.Configuration
                     //clear base, control, and deltaq values for this grid cell
                     dicBaseValues.Clear();
                     dicControlValues.Clear();
-                    dicDeltaQValues.Clear();
-
-                    //get Beta distribution
-                    double[] lhsResultArray = null;
-                    if (!CommonClass.CRRunInPointMode)
-                    {
-                        int iRandomSeed = Convert.ToInt32(DateTime.Now.Hour + "" + DateTime.Now.Minute + DateTime.Now.Second + DateTime.Now.Millisecond);
-                        if (CommonClass.CRSeeds != null && CommonClass.CRSeeds != -1)
-                            iRandomSeed = Convert.ToInt32(CommonClass.CRSeeds);
-
-                        //lhsResultArray = Configuration.ConfigurationCommonClass.getLHSArrayCRFunctionSeed(CommonClass.CRLatinHypercubePoints, crSelectFunction, iRandomSeed);
-                        //string betas = String.Join(",", lhsResultArray);
-                        lhsResultArray = new double[] { 0.000952070623302594, 0.00210438313847891, 0.00274330081530712, 0.00322388206768484, 0.00362222578583882, 0.00397556823480331, 0.00429312210515043, 0.00459255842643554, 0.00487883373418946, 0.00515806309883299, 0.00543530163423869, 0.00571575251933468, 0.00600086948338013, 0.00630106910383155, 0.00661827327976483, 0.00696570641344888, 0.00736310219575063, 0.00783988157577035, 0.00847429570471552, 0.00963051160274645 };                        
-                    }
-                    
-
+                    dicDeltaQValues.Clear();                
 
                     populationValue = 0;
                     incidenceValue = 0;
@@ -4730,9 +4715,9 @@ namespace BenMAP.Configuration
 
                             float fPSum = 0, fBaselineSum = 0;
                             List<float> lstFPSum = new List<float>();
-                            if (lhsResultArray != null)
+                            if (!CommonClass.CRRunInPointMode)
                             {
-                                foreach (double dlhs in lhsResultArray)
+                                for (int i = 0; i < CommonClass.CRLatinHypercubePoints; i++)
                                 {
                                     lstFPSum.Add(0);
                                 }
@@ -4753,11 +4738,11 @@ namespace BenMAP.Configuration
                                         CRCalculateValue cr = new CRCalculateValue(); // = CalculateCRSelectFunctionsOneCel(sCRID, hasPopInstrBaseLineFunction, 1, crSelectFunction, strBaseLineFunction, strPointEstimateFunction, modelResultAttribute.Col, modelResultAttribute.Row, fBase, fControl, dicPopValue, dicIncidenceValue, dicPrevalenceValue, dicVariable, lhsResultArray);
                                         fPSum += cr.PointEstimate;
                                         fBaselineSum += cr.Baseline;
-                                        if (lhsResultArray != null)
+                                        if (!CommonClass.CRRunInPointMode)
                                         {
-                                            for (int dlhs = 0; dlhs < lhsResultArray.Count(); dlhs++)
+                                            for(int i = 0; i < CommonClass.CRLatinHypercubePoints; i++)
                                             {
-                                                lstFPSum[dlhs] += cr.LstPercentile[dlhs];
+                                                lstFPSum[i] += cr.LstPercentile[i];
                                             }
                                         }
                                     }
@@ -4945,9 +4930,9 @@ namespace BenMAP.Configuration
 
                                     float fPSum = 0, fBaselineSum = 0;
                                     List<float> lstFPSum = new List<float>();
-                                    if (lhsResultArray != null)
+                                    if (!CommonClass.CRRunInPointMode)
                                     {
-                                        for (int dlhs = 0; dlhs < lhsResultArray.Count(); dlhs++)
+                                        for (int i = 0; i < CommonClass.CRLatinHypercubePoints; i++)
                                         {
                                             lstFPSum.Add(0);
                                         }
@@ -4979,16 +4964,16 @@ namespace BenMAP.Configuration
                                                 {
                                                     CRCalculateValue cr = new CRCalculateValue(); //= CalculateCRSelectFunctionsOneCel(sCRID, hasPopInstrBaseLineFunction, 1, crSelectFunction, strBaseLineFunction, strPointEstimateFunction, modelResultAttribute.Col, modelResultAttribute.Row, fBase, fControl, dicPopValue, dicIncidenceValue, dicPrevalenceValue, dicVariable, lhsResultArray);
                                                     fPSum += cr.PointEstimate;
-                                                        fBaselineSum += cr.Baseline;
-                                                        if (lhsResultArray != null)
+                                                    fBaselineSum += cr.Baseline;
+                                                    if (!CommonClass.CRRunInPointMode)
+                                                    {
+                                                        for (int i = 0; i < CommonClass.CRLatinHypercubePoints; i++)
                                                         {
-                                                            for (int dlhs = 0; dlhs < lhsResultArray.Count(); dlhs++)
-                                                            {
-                                                                lstFPSum[dlhs] += cr.LstPercentile[dlhs];
-                                                            }
+                                                            lstFPSum[i] += cr.LstPercentile[i];
                                                         }
                                                     }
                                                 }
+                                             }
 
                                         }
                                     }
@@ -5032,9 +5017,9 @@ namespace BenMAP.Configuration
 
                                     float fPSum = 0, fBaselineSum = 0;
                                     List<float> lstFPSum = new List<float>();
-                                    if (lhsResultArray != null)
+                                    if (!CommonClass.CRRunInPointMode)
                                     {
-                                        for (int dlhs = 0; dlhs < lhsResultArray.Count(); dlhs++)
+                                        for (int i = 0; i < CommonClass.CRLatinHypercubePoints; i++)
                                         {
                                             lstFPSum.Add(0);
                                         }
@@ -5051,11 +5036,11 @@ namespace BenMAP.Configuration
                                             CRCalculateValue cr = new CRCalculateValue(); //CalculateCRSelectFunctionsOneCel(sCRID, hasPopInstrBaseLineFunction, 1, crSelectFunction, strBaseLineFunction, strPointEstimateFunction, modelResultAttribute.Col, modelResultAttribute.Row, fBase, fControl, dicPopValue, dicIncidenceValue, dicPrevalenceValue, dicVariable, lhsResultArray);
                                             fPSum += cr.PointEstimate * i365;
                                             fBaselineSum += cr.Baseline * i365;
-                                            if (lhsResultArray != null)
+                                            if (!CommonClass.CRRunInPointMode)
                                             {
-                                                for (int dlhs = 0; dlhs < lhsResultArray.Count(); dlhs++)
+                                                for (int i = 0; i < CommonClass.CRLatinHypercubePoints; i++)
                                                 {
-                                                    lstFPSum[dlhs] += cr.LstPercentile[dlhs];
+                                                    lstFPSum[i] += cr.LstPercentile[i];
                                                 }
                                             }
                                         }
@@ -5134,7 +5119,7 @@ namespace BenMAP.Configuration
                     dicDeltaQValues = getDeltaQValues(dicBaseValues, dicControlValues);
 
                     //calculate one cell                    
-                   crCalculateValue = CalculateCRSelectFunctionsOneCel(sCRID, hasPopInstrBaseLineFunction, i365, crSelectFunction, strBaseLineFunction, strPointEstimateFunction, modelResultAttribute.Col, modelResultAttribute.Row, dicBaseValues, dicControlValues, dicPopValue, dicIncidenceValue, dicPrevalenceValue, dicVariable, lhsResultArray);
+                   crCalculateValue = CalculateCRSelectFunctionsOneCel(sCRID, hasPopInstrBaseLineFunction, i365, crSelectFunction, strBaseLineFunction, strPointEstimateFunction, modelResultAttribute.Col, modelResultAttribute.Row, dicBaseValues, dicControlValues, dicPopValue, dicIncidenceValue, dicPrevalenceValue, dicVariable);
                     //add calculated value to list of calculated values
                     crSelectFunctionCalculateValue.CRCalculateValues.Add(crCalculateValue);
                     
@@ -5244,7 +5229,7 @@ namespace BenMAP.Configuration
             }
         }
 
-        public static CRCalculateValue CalculateCRSelectFunctionsOneCel(string iCRID, bool hasPopInstrBaseLineFunction, float i365, CRSelectFunction crSelectFunction, string strBaseLineFunction, string strPointEstimateFunction, int col, int row, Dictionary<int, double> dicBaseValues, Dictionary<int, double> dicControlValues, Dictionary<string, double> dicPopulationValue, Dictionary<string, double> dicIncidenceValue, Dictionary<string, double> dicPrevalenceValue, Dictionary<string, double> dicSetupVariables, double[] lhsDesignResult)
+        public static CRCalculateValue CalculateCRSelectFunctionsOneCel(string iCRID, bool hasPopInstrBaseLineFunction, float i365, CRSelectFunction crSelectFunction, string strBaseLineFunction, string strPointEstimateFunction, int col, int row, Dictionary<int, double> dicBaseValues, Dictionary<int, double> dicControlValues, Dictionary<string, double> dicPopulationValue, Dictionary<string, double> dicIncidenceValue, Dictionary<string, double> dicPrevalenceValue, Dictionary<string, double> dicSetupVariables)
         {
             try
             {
@@ -5252,6 +5237,19 @@ namespace BenMAP.Configuration
                 double incidenceValue, prevalenceValue, PopValue;
 
                 Dictionary<int, double> dicDeltaQValues = getDeltaQValues(dicBaseValues, dicControlValues);
+
+                //get Beta distribution
+                double[] lhsResultArray = null;
+                if (!CommonClass.CRRunInPointMode)
+                {
+                    int iRandomSeed = Convert.ToInt32(DateTime.Now.Hour + "" + DateTime.Now.Minute + DateTime.Now.Second + DateTime.Now.Millisecond);
+                    if (CommonClass.CRSeeds != null && CommonClass.CRSeeds != -1)
+                        iRandomSeed = Convert.ToInt32(CommonClass.CRSeeds);
+
+                    //lhsResultArray = Configuration.ConfigurationCommonClass.getLHSArrayCRFunctionSeed(CommonClass.CRLatinHypercubePoints, crSelectFunction, iRandomSeed);
+                    //string betas = String.Join(",", lhsResultArray);
+                    lhsResultArray = new double[] { 0.000952070623302594, 0.00210438313847891, 0.00274330081530712, 0.00322388206768484, 0.00362222578583882, 0.00397556823480331, 0.00429312210515043, 0.00459255842643554, 0.00487883373418946, 0.00515806309883299, 0.00543530163423869, 0.00571575251933468, 0.00600086948338013, 0.00630106910383155, 0.00661827327976483, 0.00696570641344888, 0.00736310219575063, 0.00783988157577035, 0.00847429570471552, 0.00963051160274645 };
+                }               
 
                 Dictionary<int, double> dicBetaValues = getBetaValues(dicDeltaQValues, crSelectFunction.BenMAPHealthImpactFunction);
 
@@ -5340,17 +5338,17 @@ namespace BenMAP.Configuration
                     crCalculateValue.Baseline = crCalculateValue.PointEstimate;
                 }
                 crCalculateValue.LstPercentile = new List<float>();
-                if (lhsDesignResult != null)
+                if (lhsResultArray != null)
                 {
-                    foreach (double dlhs in lhsDesignResult)
+                    foreach (double dlhs in lhsResultArray)
                     {
                         crCalculateValue.LstPercentile.Add(0);
                     }
                     if (crCalculateValue.Population != 0)
                     {
-                        for (int idlhs = 0; idlhs < lhsDesignResult.Count(); idlhs++)
+                        for (int idlhs = 0; idlhs < lhsResultArray.Count(); idlhs++)
                         {
-                            double dlhs = lhsDesignResult[idlhs];
+                            double dlhs = lhsResultArray[idlhs];
 
                             foreach (KeyValuePair<string, double> k in dicPopulationValue)
                             {
