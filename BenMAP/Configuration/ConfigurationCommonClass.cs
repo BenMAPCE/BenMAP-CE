@@ -4586,15 +4586,11 @@ namespace BenMAP.Configuration
                         if (CommonClass.CRSeeds != null && CommonClass.CRSeeds != -1)
                             iRandomSeed = Convert.ToInt32(CommonClass.CRSeeds);
 
-
                         //lhsResultArray = Configuration.ConfigurationCommonClass.getLHSArrayCRFunctionSeed(CommonClass.CRLatinHypercubePoints, crSelectFunction, iRandomSeed);
                         //string betas = String.Join(",", lhsResultArray);
-                        lhsResultArray = new double[] { 0.000952070623302594, 0.00210438313847891, 0.00274330081530712, 0.00322388206768484, 0.00362222578583882, 0.00397556823480331, 0.00429312210515043, 0.00459255842643554, 0.00487883373418946, 0.00515806309883299, 0.00543530163423869, 0.00571575251933468, 0.00600086948338013, 0.00630106910383155, 0.00661827327976483, 0.00696570641344888, 0.00736310219575063, 0.00783988157577035, 0.00847429570471552, 0.00963051160274645 };
-                        crSelectFunction.lstLatinPoints = new List<LatinPoints>();
-                        crSelectFunction.lstLatinPoints.Add(new LatinPoints() { values = lhsResultArray.ToList() });
+                        lhsResultArray = new double[] { 0.000952070623302594, 0.00210438313847891, 0.00274330081530712, 0.00322388206768484, 0.00362222578583882, 0.00397556823480331, 0.00429312210515043, 0.00459255842643554, 0.00487883373418946, 0.00515806309883299, 0.00543530163423869, 0.00571575251933468, 0.00600086948338013, 0.00630106910383155, 0.00661827327976483, 0.00696570641344888, 0.00736310219575063, 0.00783988157577035, 0.00847429570471552, 0.00963051160274645 };                        
                     }
-                    //set CRSelectFunction after setting lstLatinPoints above
-                    crSelectFunctionCalculateValue.CRSelectFunction = crSelectFunction;
+                    
 
 
                     populationValue = 0;
