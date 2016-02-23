@@ -5250,6 +5250,7 @@ namespace BenMAP.Configuration
                 if (!CommonClass.CRRunInPointMode)
                 {
                     //get standard deviation
+                    double standardDeviation = CalculateCRSelectFunctionsOneCelStandardError(crSelectFunction, dicDeltaQValues, 1);
 
                     //get random seed
                     int iRandomSeed = Convert.ToInt32(DateTime.Now.Hour + "" + DateTime.Now.Minute + DateTime.Now.Second + DateTime.Now.Millisecond);
