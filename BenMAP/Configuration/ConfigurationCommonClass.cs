@@ -5238,20 +5238,50 @@ namespace BenMAP.Configuration
 
                 Dictionary<int, double> dicDeltaQValues = getDeltaQValues(dicBaseValues, dicControlValues);
 
-                //get Beta distribution
-                double[] lhsResultArray = null;
+                //create dictionary to hold all percentile betas for each pollutant
+                Dictionary<int, List<double>> dicPollutantBetaValues = new Dictionary<int, List<double>>();
+
+                List<Dictionary<string, double>> lstPercentileBetas = new List<Dictionary<string, double>>();
+                Dictionary<int, double> dicBetaValues = new Dictionary<int, double>();
+                Dictionary<string, double> dicBetaValuesVarName = new Dictionary<string, double>();
+
+                //get Betas
+                double[] lhsResultArray = new double[] { 0.000952070623302594, 0.00210438313847891, 0.00274330081530712, 0.00322388206768484, 0.00362222578583882, 0.00397556823480331, 0.00429312210515043, 0.00459255842643554, 0.00487883373418946, 0.00515806309883299, 0.00543530163423869, 0.00571575251933468, 0.00600086948338013, 0.00630106910383155, 0.00661827327976483, 0.00696570641344888, 0.00736310219575063, 0.00783988157577035, 0.00847429570471552, 0.00963051160274645 };
                 if (!CommonClass.CRRunInPointMode)
                 {
+                    //get standard deviation
+
+                    //get random seed
                     int iRandomSeed = Convert.ToInt32(DateTime.Now.Hour + "" + DateTime.Now.Minute + DateTime.Now.Second + DateTime.Now.Millisecond);
                     if (CommonClass.CRSeeds != null && CommonClass.CRSeeds != -1)
                         iRandomSeed = Convert.ToInt32(CommonClass.CRSeeds);
 
-                    //lhsResultArray = Configuration.ConfigurationCommonClass.getLHSArrayCRFunctionSeed(CommonClass.CRLatinHypercubePoints, crSelectFunction, iRandomSeed);
-                    //string betas = String.Join(",", lhsResultArray);
-                    lhsResultArray = new double[] { 0.000952070623302594, 0.00210438313847891, 0.00274330081530712, 0.00322388206768484, 0.00362222578583882, 0.00397556823480331, 0.00429312210515043, 0.00459255842643554, 0.00487883373418946, 0.00515806309883299, 0.00543530163423869, 0.00571575251933468, 0.00600086948338013, 0.00630106910383155, 0.00661827327976483, 0.00696570641344888, 0.00736310219575063, 0.00783988157577035, 0.00847429570471552, 0.00963051160274645 };
-                }               
+                    //get beta distribution for each pollutant
+                    foreach (KeyValuePair<int, double> kvp in dicDeltaQValues)
+                    {
+                        //get pollutant id
+                        int pollutantID = kvp.Key;
+                        //lhsResultArray = Configuration.ConfigurationCommonClass.getLHSArrayCRFunctionSeed(CommonClass.CRLatinHypercubePoints, crSelectFunction, iRandomSeed);
+                        //string betas = String.Join(",", lhsResultArray);
+                        double [] arrTemp = new double[] { 0.000952070623302594, 0.00210438313847891, 0.00274330081530712, 0.00322388206768484, 0.00362222578583882, 0.00397556823480331, 0.00429312210515043, 0.00459255842643554, 0.00487883373418946, 0.00515806309883299, 0.00543530163423869, 0.00571575251933468, 0.00600086948338013, 0.00630106910383155, 0.00661827327976483, 0.00696570641344888, 0.00736310219575063, 0.00783988157577035, 0.00847429570471552, 0.00963051160274645 };
+                        List<double> lstBetas = new List<double>(arrTemp);
+                        dicPollutantBetaValues.Add(pollutantID, lstBetas);                       
 
-                Dictionary<int, double> dicBetaValues = getBetaValues(dicDeltaQValues, crSelectFunction.BenMAPHealthImpactFunction);
+                    }
+
+                    //now build list of percentiles with dictionaries with containing pollutant betas
+                    for (int iPercentile = 0; iPercentile < CommonClass.CRLatinHypercubePoints; iPercentile++)
+                    {
+                        foreach (KeyValuePair<int, List<double>> kvp in dicPollutantBetaValues)
+                        {
+                            dicBetaValues.Add(kvp.Key, kvp.Value[iPercentile]);
+                        }
+
+                    }
+
+
+
+                }                               
 
                 CRCalculateValue crCalculateValue = new CRCalculateValue()
                 {
@@ -5269,8 +5299,7 @@ namespace BenMAP.Configuration
                 //convert pollutant id-based dictionaries to variable name dictionaries
                 Dictionary<string, double> dicBaseValuesVarName = getVariableNameDictionaryFromPollutantIDDictionary(dicBaseValues, crSelectFunction.BenMAPHealthImpactFunction);
                 Dictionary<string, double> dicControlValuesVarName = getVariableNameDictionaryFromPollutantIDDictionary(dicControlValues, crSelectFunction.BenMAPHealthImpactFunction);
-                Dictionary<string, double> dicDeltaQValuesVarName = getVariableNameDictionaryFromPollutantIDDictionary(dicDeltaQValues, crSelectFunction.BenMAPHealthImpactFunction);
-                Dictionary<string, double> dicBetaValuesVarName = getVariableNameDictionaryFromPollutantIDDictionary(dicBetaValues, crSelectFunction.BenMAPHealthImpactFunction);
+                Dictionary<string, double> dicDeltaQValuesVarName = getVariableNameDictionaryFromPollutantIDDictionary(dicDeltaQValues, crSelectFunction.BenMAPHealthImpactFunction);           
 
 
                 if (dicPopulationValue == null || dicPopulationValue.Count == 0 || dicPopulationValue.Sum(p => p.Value) == 0)
