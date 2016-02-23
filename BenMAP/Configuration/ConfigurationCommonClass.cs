@@ -5246,7 +5246,6 @@ namespace BenMAP.Configuration
                 Dictionary<string, double> dicBetaValuesVarName = new Dictionary<string, double>();
 
                 //get Betas
-                double[] lhsResultArray = new double[] { 0.000952070623302594, 0.00210438313847891, 0.00274330081530712, 0.00322388206768484, 0.00362222578583882, 0.00397556823480331, 0.00429312210515043, 0.00459255842643554, 0.00487883373418946, 0.00515806309883299, 0.00543530163423869, 0.00571575251933468, 0.00600086948338013, 0.00630106910383155, 0.00661827327976483, 0.00696570641344888, 0.00736310219575063, 0.00783988157577035, 0.00847429570471552, 0.00963051160274645 };
                 if (!CommonClass.CRRunInPointMode)
                 {
                     //get standard deviation
@@ -5262,10 +5261,9 @@ namespace BenMAP.Configuration
                     {
                         //get pollutant id
                         int pollutantID = kvp.Key;
-                        //lhsResultArray = Configuration.ConfigurationCommonClass.getLHSArrayCRFunctionSeed(CommonClass.CRLatinHypercubePoints, crSelectFunction, iRandomSeed);
-                        //string betas = String.Join(",", lhsResultArray);
-                        double [] arrTemp = new double[] { 0.000952070623302594, 0.00210438313847891, 0.00274330081530712, 0.00322388206768484, 0.00362222578583882, 0.00397556823480331, 0.00429312210515043, 0.00459255842643554, 0.00487883373418946, 0.00515806309883299, 0.00543530163423869, 0.00571575251933468, 0.00600086948338013, 0.00630106910383155, 0.00661827327976483, 0.00696570641344888, 0.00736310219575063, 0.00783988157577035, 0.00847429570471552, 0.00963051160274645 };
-                        List<double> lstBetas = new List<double>(arrTemp);
+                        //arrBetas = Configuration.ConfigurationCommonClass.getLHSArrayCRFunctionSeed(CommonClass.CRLatinHypercubePoints, crSelectFunction, iRandomSeed);                        
+                        double[] arrBetas = new double[] { 0.000952070623302594, 0.00210438313847891, 0.00274330081530712, 0.00322388206768484, 0.00362222578583882, 0.00397556823480331, 0.00429312210515043, 0.00459255842643554, 0.00487883373418946, 0.00515806309883299, 0.00543530163423869, 0.00571575251933468, 0.00600086948338013, 0.00630106910383155, 0.00661827327976483, 0.00696570641344888, 0.00736310219575063, 0.00783988157577035, 0.00847429570471552, 0.00963051160274645 };
+                        List<double> lstBetas = new List<double>(arrBetas);
                         dicPollutantBetaValues.Add(pollutantID, lstBetas);                       
 
                     }
@@ -5273,11 +5271,18 @@ namespace BenMAP.Configuration
                     //now build list of percentiles with dictionaries with containing pollutant betas
                     for (int iPercentile = 0; iPercentile < CommonClass.CRLatinHypercubePoints; iPercentile++)
                     {
+                        //loop over beta values for each pollutant
                         foreach (KeyValuePair<int, List<double>> kvp in dicPollutantBetaValues)
                         {
+                            //add pollutant id and beta value for that pollutant at the specified percentile
                             dicBetaValues.Add(kvp.Key, kvp.Value[iPercentile]);
                         }
 
+                        //convert from pollutant id-based dictionary to variable name-based dictionary
+                        dicBetaValuesVarName = getVariableNameDictionaryFromPollutantIDDictionary(dicBetaValues, crSelectFunction.BenMAPHealthImpactFunction);
+
+                        //add to list
+                        lstPercentileBetas.Add(dicBetaValuesVarName);
                     }
 
 
@@ -5367,27 +5372,33 @@ namespace BenMAP.Configuration
                 {
                     crCalculateValue.Baseline = crCalculateValue.PointEstimate;
                 }
+
+
                 crCalculateValue.LstPercentile = new List<float>();
-                if (lhsResultArray != null)
+
+                if (lstPercentileBetas.Count > 0)
                 {
-                    foreach (double dlhs in lhsResultArray)
+
+                    for (int i = 0; i < CommonClass.CRLatinHypercubePoints; i++)
                     {
                         crCalculateValue.LstPercentile.Add(0);
                     }
+
                     if (crCalculateValue.Population != 0)
                     {
-                        for (int idlhs = 0; idlhs < lhsResultArray.Count(); idlhs++)
+                        for (int iPercentile = 0; iPercentile < CommonClass.CRLatinHypercubePoints; iPercentile++)
                         {
-                            double dlhs = lhsResultArray[idlhs];
+                            //get betas for each pollutant at this percentile
+                            Dictionary <string, double> dicBetas = lstPercentileBetas[iPercentile];
 
                             foreach (KeyValuePair<string, double> k in dicPopulationValue)
                             {
                                 incidenceValue = dicIncidenceValue != null && dicIncidenceValue.Count > 0 && dicIncidenceValue.ContainsKey(k.Key) ? dicIncidenceValue[k.Key] : 0;
                                 prevalenceValue = dicPrevalenceValue != null && dicPrevalenceValue.Count > 0 && dicPrevalenceValue.ContainsKey(k.Key) ? dicPrevalenceValue[k.Key] : 0;
-                                crCalculateValue.LstPercentile[idlhs] += (ConfigurationCommonClass.getValueFromPointEstimateFunctionString(iCRID, strPointEstimateFunction,
+                                crCalculateValue.LstPercentile[iPercentile] += (ConfigurationCommonClass.getValueFromPointEstimateFunctionString(iCRID, strPointEstimateFunction,
                                     crSelectFunction.BenMAPHealthImpactFunction.AContantValue,
                                 crSelectFunction.BenMAPHealthImpactFunction.BContantValue, crSelectFunction.BenMAPHealthImpactFunction.CContantValue,
-                                  dicBetaValuesVarName, dicDeltaQValuesVarName, dicControlValuesVarName, dicBaseValuesVarName, incidenceValue, k.Value, prevalenceValue, dicSetupVariables) * i365);
+                                  dicBetas, dicDeltaQValuesVarName, dicControlValuesVarName, dicBaseValuesVarName, incidenceValue, k.Value, prevalenceValue, dicSetupVariables) * i365);
                             }
 
 
