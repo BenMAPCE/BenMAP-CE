@@ -616,7 +616,7 @@ namespace BenMAP.Grid
             {
                 List<CRFVariable> varList = new List<CRFVariable>();
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
-                string commandText = string.Format("select distinct variablename, crv.crfvariableid, pollutantname, pollutant1id, pollutant2id from crfunctions as crf left join crfvariables as crv on crf.crfunctionid=crv.crfunctionid where crf.crfunctionid={0}", crfunctionid);
+                string commandText = string.Format("select distinct variablename, crv.crfvariableid, pollutantname, pollutant1id, pollutant2id from crfunctions as crf left join crfvariables as crv on crf.crfunctionid=crv.crfunctionid where crf.crfunctionid={0} order by variablename", crfunctionid);
                 System.Data.DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
 
                 foreach (DataRow dr in ds.Tables[0].Rows)

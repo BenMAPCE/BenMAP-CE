@@ -503,15 +503,15 @@ namespace BenMAP.Configuration
         {
             try
             {
-     //           string commandText = string.Format("select CRFunctionID,a.CRFunctionDatasetID,f.CRFunctionDataSetName,a.EndpointGroupID,b.EndPointGroupName,a.EndpointID,c.EndPointName,PollutantID,"
-     //+ " MetricID,SeasonalMetricID,MetricStatistic,Author,YYear,Location,OtherPollutants,Qualifier,Reference,Race,Gender,Startage,Endage,a.FunctionalFormid,d.FunctionalFormText,"
-     //+ " a.IncidenceDatasetID,a.PrevalenceDatasetID,a.VariableDatasetID,Beta,DistBeta,P1Beta,P2Beta,A,NameA,B,NameB,C,NameC,a.BaselineFunctionalFormID,"
-     //+ " e.FunctionalFormText as BaselineFunctionalFormText,Ethnicity,Percentile,Locationtypeid, g.IncidenceDataSetName,i.IncidenceDataSetName as PrevalenceDataSetName,"
-     //+ " h.SetupVariableDataSetName as VariableDatasetName from crFunctions a join CRFunctionDataSets f on a.CRFunctionDatasetID=f.CRFunctionDatasetID"
-     //+ " join EndPointGroups b on a.EndPointGroupID=b.EndPointGroupID join EndPoints c on a.EndPointID=c.EndPointID join FunctionalForms d on a.FunctionalFormid=d.FunctionalFormID"
-     //+ " left join BaselineFunctionalForms e on a.BaselineFunctionalFormID=e.FunctionalFormID left join IncidenceDataSets g on a.IncidenceDatasetID=g.IncidenceDatasetID"
-     //+ " left join IncidenceDataSets i on a.PrevalenceDatasetID=i.IncidenceDatasetID left join SetupVariableDataSets h on a.VariableDatasetID=h.SetupVariableDataSetID"
-     //+ " where CRFunctionID={0}", ID);
+                //           string commandText = string.Format("select CRFunctionID,a.CRFunctionDatasetID,f.CRFunctionDataSetName,a.EndpointGroupID,b.EndPointGroupName,a.EndpointID,c.EndPointName,PollutantID,"
+                //+ " MetricID,SeasonalMetricID,MetricStatistic,Author,YYear,Location,OtherPollutants,Qualifier,Reference,Race,Gender,Startage,Endage,a.FunctionalFormid,d.FunctionalFormText,"
+                //+ " a.IncidenceDatasetID,a.PrevalenceDatasetID,a.VariableDatasetID,Beta,DistBeta,P1Beta,P2Beta,A,NameA,B,NameB,C,NameC,a.BaselineFunctionalFormID,"
+                //+ " e.FunctionalFormText as BaselineFunctionalFormText,Ethnicity,Percentile,Locationtypeid, g.IncidenceDataSetName,i.IncidenceDataSetName as PrevalenceDataSetName,"
+                //+ " h.SetupVariableDataSetName as VariableDatasetName from crFunctions a join CRFunctionDataSets f on a.CRFunctionDatasetID=f.CRFunctionDatasetID"
+                //+ " join EndPointGroups b on a.EndPointGroupID=b.EndPointGroupID join EndPoints c on a.EndPointID=c.EndPointID join FunctionalForms d on a.FunctionalFormid=d.FunctionalFormID"
+                //+ " left join BaselineFunctionalForms e on a.BaselineFunctionalFormID=e.FunctionalFormID left join IncidenceDataSets g on a.IncidenceDatasetID=g.IncidenceDatasetID"
+                //+ " left join IncidenceDataSets i on a.PrevalenceDatasetID=i.IncidenceDatasetID left join SetupVariableDataSets h on a.VariableDatasetID=h.SetupVariableDataSetID"
+                //+ " where CRFunctionID={0}", ID);
 
                 string commandText = string.Format("select a.CRFunctionID,a.CRFunctionDatasetID,f.CRFunctionDataSetName,a.EndpointGroupID,b.EndPointGroupName,a.EndpointID,c.EndPointName,PollutantGroupID,"
     + " MetricID,SeasonalMetricID,MetricStatistic,Author,YYear,Location,OtherPollutants,Qualifier,Reference,Race,Gender,Startage,Endage,a.FunctionalFormid,d.FunctionalFormText,"
@@ -557,7 +557,7 @@ namespace BenMAP.Configuration
                 benMapHealthImpactFunction.Beta = Convert.ToDouble(dr["Beta"]);
                 benMapHealthImpactFunction.BetaDistribution = dr["DistBeta"].ToString();
                 if (dr["P1Beta"] != DBNull.Value)
-                { 
+                {
                     benMapHealthImpactFunction.BetaParameter1 = Convert.ToDouble(dr["P1Beta"]);
                 }
                 if (dr["P2Beta"] != DBNull.Value)
@@ -1139,11 +1139,11 @@ namespace BenMAP.Configuration
 
 
                             lstResult.Add(new PopulationAttribute()
-{
-    Col = gra.bigGridRowCol.Col,
-    Row = gra.bigGridRowCol.Row,
-    Value = 0
-});
+                            {
+                                Col = gra.bigGridRowCol.Col,
+                                Row = gra.bigGridRowCol.Row,
+                                Value = 0
+                            });
                             foreach (RowCol rc in gra.smallGridRowCol)
                             {
                                 if (diclstPopulationAttribute.Keys.Contains(rc.Col + "," + rc.Row))
@@ -1839,7 +1839,7 @@ namespace BenMAP.Configuration
 
             }
         }
-        public static void creatPercentageToDatabase(int big, int small,String popRasterLoc)
+        public static void creatPercentageToDatabase(int big, int small, String popRasterLoc)
         {
             GridDefinition grd = new GridDefinition();
             Dictionary<string, List<GridRelationshipAttributePercentage>> dicAllGridPercentage = grd.getRelationshipFromBenMAPGridPercentage(big, small, popRasterLoc);
@@ -3983,11 +3983,11 @@ namespace BenMAP.Configuration
                 foreach (DataRow dr in dsIncidence.Tables[0].Rows)
                 {
                     lstIncidenceRateAttribute.Add(new IncidenceRateAttribute()
- {
-     Col = Convert.ToInt32(dr["CColumn"]),
-     Row = Convert.ToInt32(dr["Row"]),
-     Value = Convert.ToSingle(dr["VValue"])
- });
+                    {
+                        Col = Convert.ToInt32(dr["CColumn"]),
+                        Row = Convert.ToInt32(dr["Row"]),
+                        Value = Convert.ToSingle(dr["VValue"])
+                    });
 
                 }
 
@@ -4103,11 +4103,11 @@ namespace BenMAP.Configuration
                 foreach (DataRow dr in dsIncidence.Tables[0].Rows)
                 {
                     lstIncidenceRateAttribute.Add(new IncidenceRateAttribute()
- {
-     Col = Convert.ToInt32(dr["CColumn"]),
-     Row = Convert.ToInt32(dr["Row"]),
-     Value = Convert.ToSingle(dr["VValue"])
- });
+                    {
+                        Col = Convert.ToInt32(dr["CColumn"]),
+                        Row = Convert.ToInt32(dr["Row"]),
+                        Value = Convert.ToSingle(dr["VValue"])
+                    });
 
                 }
                 return lstIncidenceRateAttribute;
@@ -4380,15 +4380,15 @@ namespace BenMAP.Configuration
             }
             return dicReturn;
         }
-        public static void CalculateOneCRSelectFunction(string sCRID, List<string> lstAllAgeID, Dictionary<string, double> dicAge, 
+        public static void CalculateOneCRSelectFunction(string sCRID, List<string> lstAllAgeID, Dictionary<string, double> dicAge,
                                         Dictionary<int, Dictionary<string, Dictionary<string, float>>> dicAllMetricDataBase,
                                         Dictionary<int, Dictionary<string, Dictionary<string, float>>> dicAllMetricDataControl,
                                         Dictionary<int, Dictionary<string, Dictionary<string, List<float>>>> dicAll365Base,
                                         Dictionary<int, Dictionary<string, Dictionary<string, List<float>>>> dicAll365Control,
-                                        Dictionary<int, Dictionary<string, ModelResultAttribute>> DicControlAll, 
-                                        Dictionary<string, Dictionary<string, double>> DicAllSetupVariableValues, Dictionary<string, float> dicPopulationAllAge, Dictionary<string, double> dicIncidenceRateAttribute, 
-                                        Dictionary<string, double> dicPrevalenceRateAttribute, int incidenceDataSetGridType, int PrevalenceDataSetGridType, 
-                                        Dictionary<string, int> dicRace, Dictionary<string, int> dicEthnicity, Dictionary<string, int> dicGender, double Threshold, int LatinHypercubePoints, bool RunInPointMode, 
+                                        Dictionary<int, Dictionary<string, ModelResultAttribute>> DicControlAll,
+                                        Dictionary<string, Dictionary<string, double>> DicAllSetupVariableValues, Dictionary<string, float> dicPopulationAllAge, Dictionary<string, double> dicIncidenceRateAttribute,
+                                        Dictionary<string, double> dicPrevalenceRateAttribute, int incidenceDataSetGridType, int PrevalenceDataSetGridType,
+                                        Dictionary<string, int> dicRace, Dictionary<string, int> dicEthnicity, Dictionary<string, int> dicGender, double Threshold, int LatinHypercubePoints, bool RunInPointMode,
                                         List<GridRelationship> lstGridRelationship, CRSelectFunction crSelectFunction, List<RegionTypeGrid> lstRegionTypeGrid, BenMAPPopulation benMAPPopulation)
         {
             try
@@ -4436,7 +4436,7 @@ namespace BenMAP.Configuration
                 Dictionary<string, double> dicIncidenceValue = new Dictionary<string, double>();
                 Dictionary<string, double> dicPrevalenceValue = new Dictionary<string, double>();
 
-                
+
                 float i365 = 1;
                 int iStartDay = 365, iEndDay = 0;
                 //set startday, endday vars if no seasonal metric exists and metric statistic (i.e., annual statistic) is set to none for health impact function
@@ -4713,8 +4713,8 @@ namespace BenMAP.Configuration
                             {
                                 crCalculateValue.LstPercentile.Add(0);
                             }
-                                
-                            
+
+
                             crSelectFunctionCalculateValue.CRCalculateValues.Add(crCalculateValue);
                             continue;
                         }
@@ -4808,7 +4808,7 @@ namespace BenMAP.Configuration
                         else
                         {
                             #region if we do not have 365 data
-                            if (modelResultAttribute.Values.ContainsKey(metricKey))                            
+                            if (modelResultAttribute.Values.ContainsKey(metricKey))
                                 baseValue = modelResultAttribute.Values[metricKey];
 
                             controlValue = baseValue;
@@ -4820,7 +4820,7 @@ namespace BenMAP.Configuration
                                     controlValue = dicControl[colRowKey].Values[metricKey];
 
                             }
-                                
+
                             //are we using monitor data?
                             if (baseControlGroup.Base is MonitorDataLine && baseControlGroup.Control is MonitorDataLine && baseValue != controlValue && dicAllMonitorNeighborBase != null
                                 && dicAllMonitorNeighborBase.ContainsKey(colRowKey)
@@ -4835,7 +4835,7 @@ namespace BenMAP.Configuration
                                 {
                                     i365 = crSelectFunction.BenMAPHealthImpactFunction.PollutantGroup.Pollutants.First().Seasons.Count();
                                     iStartDay = 0;
-                                    iEndDay = crSelectFunction.BenMAPHealthImpactFunction.PollutantGroup.Pollutants.First().Seasons.Count();                                   
+                                    iEndDay = crSelectFunction.BenMAPHealthImpactFunction.PollutantGroup.Pollutants.First().Seasons.Count();
                                     dayCount = 4;
                                 }
 
@@ -4874,7 +4874,7 @@ namespace BenMAP.Configuration
                                         {
                                             if (dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues365 != null && dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues365.ContainsKey(metricKey))
                                             {
-                                                lstdfmBase = dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues365[metricKey].Select(p => p == float.MinValue ? 0 : Convert.ToSingle(p * mnAttribute.Weight)).ToList();    
+                                                lstdfmBase = dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues365[metricKey].Select(p => p == float.MinValue ? 0 : Convert.ToSingle(p * mnAttribute.Weight)).ToList();
                                             }
                                             else if (dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues != null && dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues.ContainsKey(crSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName))
                                             {
@@ -4983,16 +4983,16 @@ namespace BenMAP.Configuration
                                                 {
                                                     CRCalculateValue cr = new CRCalculateValue(); //= CalculateCRSelectFunctionsOneCel(sCRID, hasPopInstrBaseLineFunction, 1, crSelectFunction, strBaseLineFunction, strPointEstimateFunction, modelResultAttribute.Col, modelResultAttribute.Row, fBase, fControl, dicPopValue, dicIncidenceValue, dicPrevalenceValue, dicVariable, lhsResultArray);
                                                     fPSum += cr.PointEstimate;
-                                                        fBaselineSum += cr.Baseline;
-                                                        if (lhsResultArray != null)
+                                                    fBaselineSum += cr.Baseline;
+                                                    if (lhsResultArray != null)
+                                                    {
+                                                        for (int dlhs = 0; dlhs < lhsResultArray.Count(); dlhs++)
                                                         {
-                                                            for (int dlhs = 0; dlhs < lhsResultArray.Count(); dlhs++)
-                                                            {
-                                                                lstFPSum[dlhs] += cr.LstPercentile[dlhs];
-                                                            }
+                                                            lstFPSum[dlhs] += cr.LstPercentile[dlhs];
                                                         }
                                                     }
                                                 }
+                                            }
 
                                         }
                                     }
@@ -5075,7 +5075,7 @@ namespace BenMAP.Configuration
                                         Population = Convert.ToSingle(populationValue),
                                         Mean = lstFPSum.Count() == 0 ? float.NaN : getMean(lstFPSum),
                                         Variance = lstFPSum.Count() == 0 ? float.NaN : getVariance(lstFPSum, fPSum),
-                                        Baseline = fBaselineSum,                                           
+                                        Baseline = fBaselineSum,
                                     };
                                     crCalculateValue.StandardDeviation = lstFPSum.Count() == 0 ? float.NaN : Convert.ToSingle(Math.Sqrt(crCalculateValue.Variance));
 
@@ -5086,12 +5086,12 @@ namespace BenMAP.Configuration
                                 crCalculateValue.PercentOfBaseline = crCalculateValue.Baseline == 0 ? 0 : Convert.ToSingle(Math.Round((crCalculateValue.Mean / crCalculateValue.Baseline) * 100, 4));
                                 double baseValueForDelta = modelResultAttribute.Values[metricKey];
                                 double controlValueForDelta = baseValueForDelta;
-                                    
+
                                 if (dicControl.Keys.Contains(colRowKey))
                                 {
 
                                     if (dicControl[colRowKey].Values.Keys.Contains(metricKey))
-                                            controlValueForDelta = dicControl[colRowKey].Values[metricKey];
+                                        controlValueForDelta = dicControl[colRowKey].Values[metricKey];
 
                                 }
                                 if (Threshold != 0 && baseValueForDelta < Threshold)
@@ -5105,7 +5105,7 @@ namespace BenMAP.Configuration
                                 continue;
 
 
-                            #endregion
+                                #endregion
                             }
 
 
@@ -5124,7 +5124,7 @@ namespace BenMAP.Configuration
                             }
 
                             #endregion
-                        } 
+                        }
 
                         #endregion
                     }
@@ -5138,10 +5138,10 @@ namespace BenMAP.Configuration
                     dicDeltaQValues = getDeltaQValues(dicBaseValues, dicControlValues);
 
                     //calculate one cell                    
-                   crCalculateValue = CalculateCRSelectFunctionsOneCel(sCRID, hasPopInstrBaseLineFunction, i365, crSelectFunction, strBaseLineFunction, strPointEstimateFunction, modelResultAttribute.Col, modelResultAttribute.Row, dicBaseValues, dicControlValues, dicPopValue, dicIncidenceValue, dicPrevalenceValue, dicVariable, lhsResultArray);
+                    crCalculateValue = CalculateCRSelectFunctionsOneCel(sCRID, hasPopInstrBaseLineFunction, i365, crSelectFunction, strBaseLineFunction, strPointEstimateFunction, modelResultAttribute.Col, modelResultAttribute.Row, dicBaseValues, dicControlValues, dicPopValue, dicIncidenceValue, dicPrevalenceValue, dicVariable, lhsResultArray);
                     //add calculated value to list of calculated values
                     crSelectFunctionCalculateValue.CRCalculateValues.Add(crCalculateValue);
-                    
+
 
                     dicVariable = null;
                 }
@@ -5745,11 +5745,11 @@ namespace BenMAP.Configuration
                                                         else
                                                         {
                                                             setupVariableJoinAllValuesReturn.lstValues.Add(new SetupVariableValues()
-                                                                {
-                                                                    Col = gra.bigGridRowCol.Col,
-                                                                    Row = gra.bigGridRowCol.Row,
-                                                                    Value = d
-                                                                });
+                                                            {
+                                                                Col = gra.bigGridRowCol.Col,
+                                                                Row = gra.bigGridRowCol.Row,
+                                                                Value = d
+                                                            });
                                                         }
                                                     }
 
@@ -5854,7 +5854,7 @@ namespace BenMAP.Configuration
                 double Incidence, double POP, double Prevalence, Dictionary<string, double> dicSetupVariables)
         {
             try
-            {          
+            {
 
                 object result = BaseEval.BaseLineEval(crid, FunctionString, A, B, C, dicBetas, dicDeltas, dicQZeros, dicQOnes, Incidence, POP, Prevalence, dicSetupVariables);
                 if (result is double)
@@ -5881,8 +5881,8 @@ namespace BenMAP.Configuration
                 return 0;
             }
         }
-        public static float getValueFromPointEstimateFunctionString(string crid, string FunctionString, double A, double B, double C, Dictionary<string, double> dicBetas, 
-                Dictionary<string, double> dicDeltas, Dictionary<string, double> dicQZeros, Dictionary<string, double> dicQOnes, 
+        public static float getValueFromPointEstimateFunctionString(string crid, string FunctionString, double A, double B, double C, Dictionary<string, double> dicBetas,
+                Dictionary<string, double> dicDeltas, Dictionary<string, double> dicQZeros, Dictionary<string, double> dicQOnes,
                 double Incidence, double POP, double Prevalence, Dictionary<string, double> dicSetupVariables)
         {
             try
@@ -5974,7 +5974,7 @@ namespace BenMAP.Configuration
         }
 
         public static bool getMetricData(Dictionary<string, Dictionary<string, float>> dicMetricData, string colRowKey, string metricKey, out double value)
-        {            
+        {
             value = 0;
 
             if (!dicMetricData.ContainsKey(colRowKey))
@@ -6003,7 +6003,7 @@ namespace BenMAP.Configuration
 
         }
 
-        public static Dictionary<int,double> getDeltaQValues(Dictionary<int, double> dicBaseValues, Dictionary<int, double> dicControlValues)
+        public static Dictionary<int, double> getDeltaQValues(Dictionary<int, double> dicBaseValues, Dictionary<int, double> dicControlValues)
         {
             Dictionary<int, double> dicDeltaQValues = new Dictionary<int, double>();
 
@@ -6049,7 +6049,7 @@ namespace BenMAP.Configuration
                     }
                 }
 
-                
+
             }
 
             return dicVariableName;
@@ -6084,13 +6084,13 @@ namespace BenMAP.Configuration
             SortedList<string, double> sorted = new SortedList<string, double>();
             List<double> inOrder = new List<double>();
 
-            foreach (KeyValuePair<int,double> p in dicDelta)
+            foreach (KeyValuePair<int, double> p in dicDelta)
             {
                 string toAdd = getPollutantNameFromPollutantIDAndObject(hif, p.Key);
                 sorted.Add(toAdd, p.Value);
             }
 
-            foreach (KeyValuePair<string,double> s in sorted)
+            foreach (KeyValuePair<string, double> s in sorted)
             {
                 inOrder.Add(s.Value);
             }
@@ -6098,7 +6098,7 @@ namespace BenMAP.Configuration
             return inOrder;
         }
 
-        static double[,] multiplyMatrices(double[,] matrix1, double[,] matrix2)
+        public static double[,] multiplyMatrices(double[,] matrix1, double[,] matrix2)
         {
             int m1rows = matrix1.GetLength(0);
             int m1cols = matrix1.GetLength(1);
@@ -6119,7 +6119,7 @@ namespace BenMAP.Configuration
             return result;
         }
 
-        static double[,] transposeMatrix(double[,] matrix)
+        public static double[,] transposeMatrix(double[,] matrix)
         {
             int newRowCount = matrix.GetLength(1);
             int newColCount = matrix.GetLength(0);
@@ -6132,35 +6132,65 @@ namespace BenMAP.Configuration
                     result[col, row] = matrix[row, col];
                 }
             }
+
             return result;
         }
 
-        public static double CalculateCRSelectFunctionsOneCelStandardError(Dictionary<int, double> mat1, CRSelectFunction hif)
+        public static double CalculateCRSelectFunctionsOneCelStandardError(CRSelectFunction hif, Dictionary<int, double> mat1, int seasNum)
         {
-            int m1Width = mat1.Count();
-            double[,] m1 = new double[m1Width, 1];
-            double[,] m2 = new double[m1Width, m1Width];
-
-            // set up 2d array of air quality deltas
-            int i = 0;
-            foreach (double d in mat1.Values)
+            try
             {
-                m1[i, 0] = d;
-                i++;
+                int m1Width = mat1.Count();
+                double[,] m1 = new double[m1Width, 1];
+                double[,] m2 = new double[m1Width, m1Width];
+
+                // set up 2d array of air quality deltas
+                int i = 0;
+                foreach (double d in mat1.Values)
+                {
+                    m1[i, 0] = d;
+                    i++;
+                }
+
+                // set up var/covar matrix from db
+                System.Data.DataSet ds = null;
+                string commandText = string.Empty;
+                ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+
+                // since beta seasons are added in order, we can use seasNum to index and find betaIDs for the query
+                string varName = string.Empty;
+                List<int> betaIDs = new List<int>();
+                foreach (CRFVariable v in hif.BenMAPHealthImpactFunction.Variables) { betaIDs.Add(v.PollBetas[seasNum].BetaID); }
+
+                for (int row = 0; row < m1Width; row++)
+                {
+                    varName = hif.BenMAPHealthImpactFunction.Variables[row].VariableName;
+                    commandText = string.Format("select varcov from CRFVARIABLES as crv join CRFBETAS as crb on crb.crfvariableid=crv.crfvariableid join CRFVARCOV as crvc on crvc.crfbetaID1=crb.crfbetaid or crvc.crfbetaID2=crb.crfbetaid where((crfbetaid2={0} and variablename!='{1}') or(crfbetaid1={0} and crfbetaid2={0)) order by crv.crfvariableid", betaIDs[row], varName);
+                    ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+
+                    for (int col = 0; col < m1Width; col++)
+                    {
+                        foreach (DataRow dr in ds.Tables[0].Rows)
+                        {
+                            m2[row, col] = Convert.ToDouble(dr["varcov"]);
+                        }
+                    }
+                }
+
+                // standard error calculations
+                double[,] result1 = multiplyMatrices(m1, m2);
+                double[,] resultT = transposeMatrix(result1);
+                double[,] resultSE = multiplyMatrices(m1, resultT);
+
+                if (resultSE.GetLength(0) != 1 || resultSE.GetLength(1) != 1) { throw new Exception("Standard Error not correctly calculated"); } 
+
+                return resultSE[0, 0];
             }
-
-            // set up var/covar matrix from db
-
-            double[,] result1 = multiplyMatrices(m1, m2);
-            double[,] resultT = transposeMatrix(result1);
-            double[,] resultSE = multiplyMatrices(m1, resultT);
-
-            if (resultSE.GetLength(0) != 1 || resultSE.GetLength(1) != 1) { return -99999; } // log error 
-
-            Console.WriteLine(resultSE[0, 0]);
-
-            return resultSE[0, 0];
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+                return -99999;
+            }
         }
-
     }
 }
