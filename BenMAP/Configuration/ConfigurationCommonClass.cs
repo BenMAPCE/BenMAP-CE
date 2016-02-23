@@ -5271,6 +5271,10 @@ namespace BenMAP.Configuration
                     //now build list of percentiles with dictionaries with containing pollutant betas
                     for (int iPercentile = 0; iPercentile < CommonClass.CRLatinHypercubePoints; iPercentile++)
                     {
+
+                        dicBetaValues = new Dictionary<int, double>();
+                        dicBetaValuesVarName = new Dictionary<string, double>();
+
                         //loop over beta values for each pollutant
                         foreach (KeyValuePair<int, List<double>> kvp in dicPollutantBetaValues)
                         {
