@@ -5234,6 +5234,8 @@ namespace BenMAP.Configuration
             try
             {
 
+                int season = 1;
+
                 double incidenceValue, prevalenceValue, PopValue;
 
                 Dictionary<int, double> dicDeltaQValues = getDeltaQValues(dicBaseValues, dicControlValues);
@@ -5249,7 +5251,7 @@ namespace BenMAP.Configuration
                 if (!CommonClass.CRRunInPointMode)
                 {
                     //get standard deviation
-                    double standardDeviation = CalculateCRSelectFunctionsOneCelStandardError(crSelectFunction, dicDeltaQValues, 1);
+                    double standardDeviation = CalculateCRSelectFunctionsOneCelStandardError(crSelectFunction, dicDeltaQValues, season);
 
                     //get random seed
                     int iRandomSeed = Convert.ToInt32(DateTime.Now.Hour + "" + DateTime.Now.Minute + DateTime.Now.Second + DateTime.Now.Millisecond);
@@ -5289,9 +5291,11 @@ namespace BenMAP.Configuration
                         lstPercentileBetas.Add(dicBetaValuesVarName);
                     }
 
+                }
 
-
-                }                               
+                //get "baseline" betas for each pollutant;  these are the values specified in the "Beta" fields for each pollutant in the health impact function definition
+                dicBetaValues = getBetaValues(crSelectFunction.BenMAPHealthImpactFunction, season);
+                dicBetaValuesVarName = getVariableNameDictionaryFromPollutantIDDictionary(dicBetaValues, crSelectFunction.BenMAPHealthImpactFunction);
 
                 CRCalculateValue crCalculateValue = new CRCalculateValue()
                 {
@@ -6055,13 +6059,19 @@ namespace BenMAP.Configuration
             return dicDeltaQValues;
         }
 
-        public static Dictionary<int, double> getBetaValues(Dictionary<int, double> dicDeltaQValues, BenMAPHealthImpactFunction hif)
+        public static Dictionary<int, double> getBetaValues(BenMAPHealthImpactFunction hif, int season)
         {
             Dictionary<int, double> dicBetaValues = new Dictionary<int, double>();
+            int pollutantID;
+            double beta;
 
-            foreach (KeyValuePair<int, double> kvp in dicDeltaQValues)
+            int betaIndex = season - 1;
+
+            foreach (CRFVariable variable in hif.Variables)
             {
-                dicBetaValues.Add(kvp.Key, hif.Beta);
+                pollutantID = variable.Pollutant1ID;
+                beta = variable.PollBetas[betaIndex].Beta;
+                dicBetaValues.Add(pollutantID, beta);
             }
 
             return dicBetaValues;
