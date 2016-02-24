@@ -6105,8 +6105,11 @@ namespace BenMAP.Configuration
 
             foreach (CRFVariable v in hif.Variables)
             {
-                if (v.PollutantName == pollName) ID = v.Pollutant1ID;
-                break;
+                if (String.Equals(v.PollutantName, pollName ,StringComparison.OrdinalIgnoreCase))
+                {
+                    ID = v.Pollutant1ID;
+                    break;
+                }
             }
 
             return ID;
@@ -6118,8 +6121,11 @@ namespace BenMAP.Configuration
 
             foreach (CRFVariable v in hif.Variables)
             {
-                if (v.Pollutant1ID == pollID) name = v.PollutantName;
-                break;
+                if (v.Pollutant1ID == pollID)
+                {
+                    name = v.PollutantName;
+                    break;
+                }
             }
 
             return name;
