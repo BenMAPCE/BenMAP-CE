@@ -6183,20 +6183,20 @@ namespace BenMAP.Configuration
             return result;
         }
 
-        public static double CalculateCRSelectFunctionsOneCelStandardError(CRSelectFunction hif, Dictionary<int, double> mat1, int seasNum)
-        {
+        public static double CalculateCRSelectFunctionsOneCelStandardError(CRSelectFunction hif, Dictionary<int, double> dicAQDeltas, int seasNum)
+         {
             try
             {
-                int m1Width = mat1.Count();
-                double[,] m1 = new double[m1Width, 1];
+                int m1Width = dicAQDeltas.Count();
+                double[,] m1 = new double[1, m1Width];
                 double[,] m2 = new double[m1Width, m1Width];
 
-                // set up 2d array of air quality deltas
-                int i = 0;
-                foreach (double d in mat1.Values)
+                Dictionary<string, double> dicDeltasWithVar = getVariableNameDictionaryFromPollutantIDDictionary(dicAQDeltas, hif.BenMAPHealthImpactFunction);
+                
+                for(int i = 1; i <= m1Width; i++)
                 {
-                    m1[i, 0] = d;
-                    i++;
+                    string key = string.Format("P{0}", i);
+                    m1[0, i-1] = dicDeltasWithVar[key];
                 }
 
                 // set up var/covar matrix from db
@@ -6207,20 +6207,19 @@ namespace BenMAP.Configuration
                 // since beta seasons are added in order, we can use seasNum to index and find betaIDs for the query
                 string varName = string.Empty;
                 List<int> betaIDs = new List<int>();
-                foreach (CRFVariable v in hif.BenMAPHealthImpactFunction.Variables) { betaIDs.Add(v.PollBetas[seasNum].BetaID); }
+                foreach (CRFVariable v in hif.BenMAPHealthImpactFunction.Variables) { betaIDs.Add(v.PollBetas[seasNum-1].BetaID); }
 
                 for (int row = 0; row < m1Width; row++)
                 {
-                    varName = hif.BenMAPHealthImpactFunction.Variables[row].VariableName;
-                    commandText = string.Format("select varcov from CRFVARIABLES as crv join CRFBETAS as crb on crb.crfvariableid=crv.crfvariableid join CRFVARCOV as crvc on crvc.crfbetaID1=crb.crfbetaid or crvc.crfbetaID2=crb.crfbetaid where((crfbetaid2={0} and variablename!='{1}') or(crfbetaid1={0} and crfbetaid2={0)) order by crv.crfvariableid", betaIDs[row], varName);
+                    varName = string.Format("P{0}", row+1); // hif.BenMAPHealthImpactFunction.Variables[row].VariableName;
+                    commandText = string.Format("select varcov from CRFVARIABLES as crv join CRFBETAS as crb on crb.crfvariableid=crv.crfvariableid join CRFVARCOV as crvc on crvc.crfbetaID1=crb.crfbetaid or crvc.crfbetaID2=crb.crfbetaid where((crfbetaid2={0} and variablename!='{1}') or (crfbetaid1={0} and crfbetaid2={0})) order by crv.crfvariableid", betaIDs[row], varName);
                     ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
 
-                    for (int col = 0; col < m1Width; col++)
+                    int col = 0;
+                    foreach (DataRow dr in ds.Tables[0].Rows)
                     {
-                        foreach (DataRow dr in ds.Tables[0].Rows)
-                        {
-                            m2[row, col] = Convert.ToDouble(dr["varcov"]);
-                        }
+                        m2[row, col] = Convert.ToDouble(dr["varcov"]);
+                        col++;
                     }
                 }
 
@@ -6229,9 +6228,10 @@ namespace BenMAP.Configuration
                 double[,] resultT = transposeMatrix(result1);
                 double[,] resultSE = multiplyMatrices(m1, resultT);
 
-                if (resultSE.GetLength(0) != 1 || resultSE.GetLength(1) != 1) { throw new Exception("Standard Error not correctly calculated"); } 
+                if (resultSE.GetLength(0) != 1 || resultSE.GetLength(1) != 1) { throw new Exception("Standard Error not correctly calculated"); }
+                double SE = Math.Sqrt(resultSE[0, 0]);
 
-                return resultSE[0, 0];
+                return SE;
             }
             catch (Exception ex)
             {
