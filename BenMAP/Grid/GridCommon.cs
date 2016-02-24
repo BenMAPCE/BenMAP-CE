@@ -515,20 +515,44 @@ namespace BenMAP.Grid
             }
         }
 
+        public static string getBetaDistributionFromID(int distributionTypeID)
+        {
+            try
+            {
+                string betaDistribution;
+                ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                string commandText = string.Format("select distributionname from distributiontypes where distributiontypeid ={0}", distributionTypeID);
+                System.Data.DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
+                DataRow dr = ds.Tables[0].Rows[0];
+                
+                betaDistribution = dr["distributionname"].ToString();
+
+                return betaDistribution;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+                return null;
+            }
+        }
+
         public static void getBetaListFromPollutantAndID(List<CRFVariable> varList)
         {
             try
             {
                 int crfunctionid = varList[0].FunctionID;
+                CRFBeta crfBeta;
 
                 int j = 0;
                 int numSeasons = 1;
                 string aDesc, bDesc, cDesc;
                 double a, b, c, p1, p2;
+                int distTypeId;
+
                 foreach (var pv in varList)
                 {
                     ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
-                    string commandText = string.Format("select crfbetaid, beta, a, namea, b, nameb, c, namec, p1beta, p2beta, seasonalmetricseasonname, startday, endday from crfvariables v left join crfbetas b on b.crfvariableid=v.crfvariableid left join seasonalmetricseasons s on s.seasonalmetricseasonid=b.seasonalmetricseasonid where crfunctionid={0} and pollutantname='{1}' order by startday", crfunctionid, pv.PollutantName);
+                    string commandText = string.Format("select crfbetaid, distributiontypeid, beta, a, namea, b, nameb, c, namec, p1beta, p2beta, seasonalmetricseasonname, startday, endday from crfvariables v left join crfbetas b on b.crfvariableid=v.crfvariableid left join seasonalmetricseasons s on s.seasonalmetricseasonid=b.seasonalmetricseasonid where crfunctionid={0} and pollutantname='{1}' order by startday", crfunctionid, pv.PollutantName);
                     System.Data.DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                     numSeasons = ds.Tables[0].Rows.Count;
 
@@ -540,6 +564,9 @@ namespace BenMAP.Grid
                         {
                             DataRow dr = ds.Tables[0].Rows[i - 1];
                             string str = string.Format("Season {0}", i);
+
+                            if (dr["distributiontypeid"].ToString() == string.Empty) distTypeId = 0;
+                            else distTypeId = Convert.ToInt32(dr["distributiontypeid"]);
 
                             if (dr["p1beta"].ToString() == string.Empty) p1 = 0;
                             else p1 = Convert.ToDouble(dr["p1beta"]);
@@ -565,12 +592,19 @@ namespace BenMAP.Grid
                             if (dr["namec"].ToString() == string.Empty) cDesc = string.Empty;
                             else cDesc = dr["namec"].ToString();
 
-                            pv.PollBetas.Add(new CRFBeta(Convert.ToInt32(dr["crfbetaid"]), Convert.ToDouble(dr["beta"]), a, aDesc, b, bDesc, c, cDesc, p1, p2, dr["seasonalmetricseasonname"].ToString(), dr["startday"].ToString(), dr["endday"].ToString(), str));
+                            crfBeta = new CRFBeta(Convert.ToInt32(dr["crfbetaid"]), Convert.ToDouble(dr["beta"]), a, aDesc, b, bDesc, c, cDesc, p1, p2, dr["seasonalmetricseasonname"].ToString(), dr["startday"].ToString(), dr["endday"].ToString(), str);
+                            crfBeta.DistributionTypeID = distTypeId;
+                            crfBeta.Distribution = getBetaDistributionFromID(distTypeId);
+
+                            pv.PollBetas.Add(crfBeta);
                         }
                     }
                     else 
                     {
                         DataRow dr = ds.Tables[0].Rows[0];
+
+                        if (dr["distributiontypeid"].ToString() == string.Empty) distTypeId = 0;
+                        else distTypeId = Convert.ToInt32(dr["distributiontypeid"]);
 
                         if (dr["p1beta"].ToString() == string.Empty) p1 = 0;
                         else p1 = Convert.ToDouble(dr["p1beta"]);
@@ -596,7 +630,11 @@ namespace BenMAP.Grid
                         if (dr["namec"].ToString() == string.Empty) cDesc = string.Empty;
                         else cDesc = dr["namec"].ToString();
 
-                        pv.PollBetas.Add(new CRFBeta(Convert.ToInt32(dr["crfbetaid"]), Convert.ToDouble(dr["beta"]), a, aDesc, b, bDesc, c, cDesc, p1, p2));
+                        crfBeta = new CRFBeta(Convert.ToInt32(dr["crfbetaid"]), Convert.ToDouble(dr["beta"]), a, aDesc, b, bDesc, c, cDesc, p1, p2);
+                        crfBeta.DistributionTypeID = distTypeId;
+                        crfBeta.Distribution = getBetaDistributionFromID(distTypeId);
+
+                        pv.PollBetas.Add(crfBeta);
                     }
 
                     j++;

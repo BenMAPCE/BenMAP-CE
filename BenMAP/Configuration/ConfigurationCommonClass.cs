@@ -716,7 +716,7 @@ namespace BenMAP.Configuration
             return mlngResults;
         }
 
-        public static double[] getLHSArrayCRFunctionSeed(int LatinHypercubePoints, CRSelectFunction crSelectFunction, int Seed, int pollutantID, int betaIndex)
+        public static double[] getLHSArrayCRFunctionSeed(int LatinHypercubePoints, CRSelectFunction crSelectFunction, int Seed, int pollutantID, int betaIndex, double standardDeviation)
         {
             try
             {
@@ -744,7 +744,7 @@ namespace BenMAP.Configuration
                         break;
                     case "Normal":
                         Meta.Numerics.Statistics.Distributions.Distribution Normal_distribution =
-    new Meta.Numerics.Statistics.Distributions.NormalDistribution(crfBeta.Beta, crfBeta.P1Beta);
+    new Meta.Numerics.Statistics.Distributions.NormalDistribution(crfBeta.Beta, standardDeviation); //crfBeta.P1Beta;
                         sample = CreateSample(Normal_distribution, 1000000, Seed);
                         break;
                     case "Triangular":
@@ -5260,7 +5260,7 @@ namespace BenMAP.Configuration
                     {
                         //get pollutant id
                         int pollutantID = kvp.Key;
-                        double[] arrBetas = Configuration.ConfigurationCommonClass.getLHSArrayCRFunctionSeed(CommonClass.CRLatinHypercubePoints, crSelectFunction, iRandomSeed, pollutantID, betaIndex);                        
+                        double[] arrBetas = Configuration.ConfigurationCommonClass.getLHSArrayCRFunctionSeed(CommonClass.CRLatinHypercubePoints, crSelectFunction, iRandomSeed, pollutantID, betaIndex, standardDeviation);                        
                         //arrBetas = new double[] { 0.000952070623302594, 0.00210438313847891, 0.00274330081530712, 0.00322388206768484, 0.00362222578583882, 0.00397556823480331, 0.00429312210515043, 0.00459255842643554, 0.00487883373418946, 0.00515806309883299, 0.00543530163423869, 0.00571575251933468, 0.00600086948338013, 0.00630106910383155, 0.00661827327976483, 0.00696570641344888, 0.00736310219575063, 0.00783988157577035, 0.00847429570471552, 0.00963051160274645 };
                         List<double> lstBetas = new List<double>(arrBetas);
                         dicPollutantBetaValues.Add(pollutantID, lstBetas);                       
@@ -6198,7 +6198,7 @@ namespace BenMAP.Configuration
             return result;
         }
 
-        public static double CalculateCRSelectFunctionsOneCelStandardError(CRSelectFunction hif, Dictionary<int, double> dicAQDeltas, int seasNum)
+        public static double CalculateCRSelectFunctionsOneCelStandardError(CRSelectFunction hif, Dictionary<int, double> dicAQDeltas, int betaIndex)
          {
             try
             {
@@ -6222,7 +6222,7 @@ namespace BenMAP.Configuration
                 // since beta seasons are added in order, we can use seasNum to index and find betaIDs for the query
                 string varName = string.Empty;
                 List<int> betaIDs = new List<int>();
-                foreach (CRFVariable v in hif.BenMAPHealthImpactFunction.Variables) { betaIDs.Add(v.PollBetas[seasNum-1].BetaID); }
+                foreach (CRFVariable v in hif.BenMAPHealthImpactFunction.Variables) { betaIDs.Add(v.PollBetas[betaIndex].BetaID); }
 
                 for (int row = 0; row < m1Width; row++)
                 {
