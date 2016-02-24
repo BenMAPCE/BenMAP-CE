@@ -5234,7 +5234,7 @@ namespace BenMAP.Configuration
             try
             {
 
-                int season = 1;
+                int betaIndex = 0;
 
                 double incidenceValue, prevalenceValue, PopValue;
 
@@ -5251,7 +5251,7 @@ namespace BenMAP.Configuration
                 if (!CommonClass.CRRunInPointMode)
                 {
                     //get standard deviation
-                    double standardDeviation = CalculateCRSelectFunctionsOneCelStandardError(crSelectFunction, dicDeltaQValues, season);
+                    double standardDeviation = CalculateCRSelectFunctionsOneCelStandardError(crSelectFunction, dicDeltaQValues, betaIndex);
 
                     //get random seed
                     int iRandomSeed = Convert.ToInt32(DateTime.Now.Hour + "" + DateTime.Now.Minute + DateTime.Now.Second + DateTime.Now.Millisecond);
@@ -5294,7 +5294,7 @@ namespace BenMAP.Configuration
                 }
 
                 //get "baseline" betas for each pollutant;  these are the values specified in the "Beta" fields for each pollutant in the health impact function definition
-                dicBetaValues = getBetaValues(crSelectFunction.BenMAPHealthImpactFunction, season);
+                dicBetaValues = getBetaValues(crSelectFunction.BenMAPHealthImpactFunction, betaIndex);
                 dicBetaValuesVarName = getVariableNameDictionaryFromPollutantIDDictionary(dicBetaValues, crSelectFunction.BenMAPHealthImpactFunction);
 
                 CRCalculateValue crCalculateValue = new CRCalculateValue()
@@ -6059,13 +6059,11 @@ namespace BenMAP.Configuration
             return dicDeltaQValues;
         }
 
-        public static Dictionary<int, double> getBetaValues(BenMAPHealthImpactFunction hif, int season)
+        public static Dictionary<int, double> getBetaValues(BenMAPHealthImpactFunction hif, int betaIndex)
         {
             Dictionary<int, double> dicBetaValues = new Dictionary<int, double>();
             int pollutantID;
             double beta;
-
-            int betaIndex = season - 1;
 
             foreach (CRFVariable variable in hif.Variables)
             {
