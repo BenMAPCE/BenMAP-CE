@@ -716,10 +716,15 @@ namespace BenMAP.Configuration
             return mlngResults;
         }
 
-        public static double[] getLHSArrayCRFunctionSeed(int LatinHypercubePoints, CRSelectFunction crSelectFunction, int Seed)
+        public static double[] getLHSArrayCRFunctionSeed(int LatinHypercubePoints, CRSelectFunction crSelectFunction, int Seed, int pollutantID, int betaIndex)
         {
             try
             {
+
+                //get beta for pollutant and index
+                CRFVariable crfVariable = getVariableFromPollutantID(crSelectFunction.BenMAPHealthImpactFunction, pollutantID);
+                CRFBeta crfBeta = crfVariable.PollBetas[betaIndex];
+
                 List<int> lstInt = new List<int>();
                 for (int i = 0; i < LatinHypercubePoints; i++)
                 {
@@ -727,92 +732,85 @@ namespace BenMAP.Configuration
                 }
                 double[] lhsResultArray = new double[LatinHypercubePoints];
                 Meta.Numerics.Statistics.Sample sample = null;
-                switch (crSelectFunction.BenMAPHealthImpactFunction.BetaDistribution)
+                switch (crfBeta.Distribution)
                 {
                     case "None":
                         for (int i = 0; i < LatinHypercubePoints; i++)
                         {
-                            lhsResultArray[i] = crSelectFunction.BenMAPHealthImpactFunction.Beta;
+                            lhsResultArray[i] = crfBeta.Beta;
 
                         }
                         return lhsResultArray;
                         break;
                     case "Normal":
-
                         Meta.Numerics.Statistics.Distributions.Distribution Normal_distribution =
-    new Meta.Numerics.Statistics.Distributions.NormalDistribution(crSelectFunction.BenMAPHealthImpactFunction.Beta, crSelectFunction.BenMAPHealthImpactFunction.BetaParameter1);
+    new Meta.Numerics.Statistics.Distributions.NormalDistribution(crfBeta.Beta, crfBeta.P1Beta);
                         sample = CreateSample(Normal_distribution, 1000000, Seed);
                         break;
                     case "Triangular":
                         Meta.Numerics.Statistics.Distributions.Distribution Triangular_distribution =
-    new Meta.Numerics.Statistics.Distributions.TriangularDistribution(crSelectFunction.BenMAPHealthImpactFunction.BetaParameter1, crSelectFunction.BenMAPHealthImpactFunction.BetaParameter2, crSelectFunction.BenMAPHealthImpactFunction.Beta);
+    new Meta.Numerics.Statistics.Distributions.TriangularDistribution(crfBeta.P1Beta, crfBeta.P2Beta, crfBeta.Beta);
                         sample = CreateSample(Triangular_distribution, 1000000, Seed);
                         break;
                     case "Poisson":
                         Meta.Numerics.Statistics.Distributions.PoissonDistribution Poisson_distribution =
-    new Meta.Numerics.Statistics.Distributions.PoissonDistribution(crSelectFunction.BenMAPHealthImpactFunction.BetaParameter1);
+    new Meta.Numerics.Statistics.Distributions.PoissonDistribution(crfBeta.P1Beta);
                         sample = CreateSample(Poisson_distribution, 1000000, Seed);
                         break;
                     case "Binomial":
                         Meta.Numerics.Statistics.Distributions.BinomialDistribution Binomial_distribution =
-    new Meta.Numerics.Statistics.Distributions.BinomialDistribution(crSelectFunction.BenMAPHealthImpactFunction.BetaParameter1, Convert.ToInt32(crSelectFunction.BenMAPHealthImpactFunction.BetaParameter2));
+    new Meta.Numerics.Statistics.Distributions.BinomialDistribution(crfBeta.P1Beta, Convert.ToInt32(crfBeta.P2Beta));
                         sample = CreateSample(Binomial_distribution, 1000000, Seed);
                         break;
                     case "LogNormal":
                         Meta.Numerics.Statistics.Distributions.LognormalDistribution Lognormal_distribution =
-    new Meta.Numerics.Statistics.Distributions.LognormalDistribution(crSelectFunction.BenMAPHealthImpactFunction.BetaParameter1, crSelectFunction.BenMAPHealthImpactFunction.BetaParameter2);
+    new Meta.Numerics.Statistics.Distributions.LognormalDistribution(crfBeta.P1Beta, crfBeta.P2Beta);
                         sample = CreateSample(Lognormal_distribution, 1000000, Seed);
                         break;
                     case "Uniform":
-                        Interval interval = Interval.FromEndpoints(crSelectFunction.BenMAPHealthImpactFunction.BetaParameter1,
-    crSelectFunction.BenMAPHealthImpactFunction.BetaParameter2);
-
+                        Interval interval = Interval.FromEndpoints(crfBeta.P1Beta,crfBeta.P2Beta);
                         Meta.Numerics.Statistics.Distributions.UniformDistribution Uniform_distribution =
                             new Meta.Numerics.Statistics.Distributions.UniformDistribution(interval); sample = CreateSample(Uniform_distribution, 1000000, Seed);
                         break;
                     case "Exponential":
                         Meta.Numerics.Statistics.Distributions.ExponentialDistribution Exponential_distribution =
-    new Meta.Numerics.Statistics.Distributions.ExponentialDistribution(crSelectFunction.BenMAPHealthImpactFunction.BetaParameter1);
+    new Meta.Numerics.Statistics.Distributions.ExponentialDistribution(crfBeta.P1Beta);
                         sample = CreateSample(Exponential_distribution, 1000000, Seed);
                         break;
                     case "Geometric":
                         Meta.Numerics.Statistics.Distributions.ExponentialDistribution Geometric_distribution =
-    new Meta.Numerics.Statistics.Distributions.ExponentialDistribution(crSelectFunction.BenMAPHealthImpactFunction.BetaParameter1);
+    new Meta.Numerics.Statistics.Distributions.ExponentialDistribution(crfBeta.P1Beta);
                         sample = CreateSample(Geometric_distribution, 1000000, Seed);
                         break;
                     case "Weibull":
                         Meta.Numerics.Statistics.Distributions.WeibullDistribution Weibull_distribution =
-    new Meta.Numerics.Statistics.Distributions.WeibullDistribution(crSelectFunction.BenMAPHealthImpactFunction.BetaParameter1, crSelectFunction.BenMAPHealthImpactFunction.BetaParameter2);
+    new Meta.Numerics.Statistics.Distributions.WeibullDistribution(crfBeta.P1Beta, crfBeta.P2Beta);
                         sample = CreateSample(Weibull_distribution, 1000000, Seed);
                         break;
                     case "Gamma":
                         Meta.Numerics.Statistics.Distributions.GammaDistribution Gamma_distribution =
-    new Meta.Numerics.Statistics.Distributions.GammaDistribution(crSelectFunction.BenMAPHealthImpactFunction.BetaParameter1, crSelectFunction.BenMAPHealthImpactFunction.BetaParameter2);
+    new Meta.Numerics.Statistics.Distributions.GammaDistribution(crfBeta.P1Beta, crfBeta.P2Beta);
                         sample = CreateSample(Gamma_distribution, 1000000, Seed);
                         break;
                     case "Logistic":
-                        Meta.Numerics.Statistics.Distributions.Distribution logistic_distribution = new Meta.Numerics.Statistics.Distributions.LogisticDistribution(crSelectFunction.BenMAPHealthImpactFunction.BetaParameter1, crSelectFunction.BenMAPHealthImpactFunction.BetaParameter2);
+                        Meta.Numerics.Statistics.Distributions.Distribution logistic_distribution = new Meta.Numerics.Statistics.Distributions.LogisticDistribution(crfBeta.P1Beta, crfBeta.P2Beta);
                         sample = CreateSample(logistic_distribution, 1000000, Seed);
 
                         break;
                     case "Beta":
-
                         Meta.Numerics.Statistics.Distributions.BetaDistribution Beta_distribution =
-                            new Meta.Numerics.Statistics.Distributions.BetaDistribution(crSelectFunction.BenMAPHealthImpactFunction.BetaParameter1, crSelectFunction.BenMAPHealthImpactFunction.BetaParameter2);
+                            new Meta.Numerics.Statistics.Distributions.BetaDistribution(crfBeta.P1Beta, crfBeta.P2Beta);
                         sample = CreateSample(Beta_distribution, 1000000, Seed);
                         break;
                     case "Pareto":
                         Meta.Numerics.Statistics.Distributions.ParetoDistribution Pareto_distribution =
-    new Meta.Numerics.Statistics.Distributions.ParetoDistribution(crSelectFunction.BenMAPHealthImpactFunction.BetaParameter1, crSelectFunction.BenMAPHealthImpactFunction.BetaParameter2);
+    new Meta.Numerics.Statistics.Distributions.ParetoDistribution(crfBeta.P1Beta, crfBeta.P2Beta);
                         sample = CreateSample(Pareto_distribution, 1000000, Seed);
                         break;
                     case "Cauchy":
                         Meta.Numerics.Statistics.Distributions.CauchyDistribution Cauchy_distribution =
-    new Meta.Numerics.Statistics.Distributions.CauchyDistribution(crSelectFunction.BenMAPHealthImpactFunction.BetaParameter1, crSelectFunction.BenMAPHealthImpactFunction.BetaParameter2);
+    new Meta.Numerics.Statistics.Distributions.CauchyDistribution(crfBeta.P1Beta, crfBeta.P2Beta);
                         sample = CreateSample(Cauchy_distribution, 1000000, Seed);
-
-
-
                         break;
                     case "Custom":
                         string commandText = string.Format("select   VValue  from CRFunctionCustomEntries where CRFunctionID={0} order by vvalue", crSelectFunction.BenMAPHealthImpactFunction.ID);
@@ -832,7 +830,6 @@ namespace BenMAP.Configuration
                         }
                         return lhsResultArray;
                         break;
-
 
                 }
                 List<double> lstlogistic = sample.ToList();
@@ -5263,8 +5260,8 @@ namespace BenMAP.Configuration
                     {
                         //get pollutant id
                         int pollutantID = kvp.Key;
-                        //arrBetas = Configuration.ConfigurationCommonClass.getLHSArrayCRFunctionSeed(CommonClass.CRLatinHypercubePoints, crSelectFunction, iRandomSeed);                        
-                        double[] arrBetas = new double[] { 0.000952070623302594, 0.00210438313847891, 0.00274330081530712, 0.00322388206768484, 0.00362222578583882, 0.00397556823480331, 0.00429312210515043, 0.00459255842643554, 0.00487883373418946, 0.00515806309883299, 0.00543530163423869, 0.00571575251933468, 0.00600086948338013, 0.00630106910383155, 0.00661827327976483, 0.00696570641344888, 0.00736310219575063, 0.00783988157577035, 0.00847429570471552, 0.00963051160274645 };
+                        double[] arrBetas = Configuration.ConfigurationCommonClass.getLHSArrayCRFunctionSeed(CommonClass.CRLatinHypercubePoints, crSelectFunction, iRandomSeed, pollutantID, betaIndex);                        
+                        //arrBetas = new double[] { 0.000952070623302594, 0.00210438313847891, 0.00274330081530712, 0.00322388206768484, 0.00362222578583882, 0.00397556823480331, 0.00429312210515043, 0.00459255842643554, 0.00487883373418946, 0.00515806309883299, 0.00543530163423869, 0.00571575251933468, 0.00600086948338013, 0.00630106910383155, 0.00661827327976483, 0.00696570641344888, 0.00736310219575063, 0.00783988157577035, 0.00847429570471552, 0.00963051160274645 };
                         List<double> lstBetas = new List<double>(arrBetas);
                         dicPollutantBetaValues.Add(pollutantID, lstBetas);                       
 
@@ -6109,6 +6106,7 @@ namespace BenMAP.Configuration
             foreach (CRFVariable v in hif.Variables)
             {
                 if (v.PollutantName == pollName) ID = v.Pollutant1ID;
+                break;
             }
 
             return ID;
@@ -6121,9 +6119,26 @@ namespace BenMAP.Configuration
             foreach (CRFVariable v in hif.Variables)
             {
                 if (v.Pollutant1ID == pollID) name = v.PollutantName;
+                break;
             }
 
             return name;
+        }
+
+        public static CRFVariable getVariableFromPollutantID(BenMAPHealthImpactFunction hif, int pollutantID)
+        {
+            CRFVariable crfVariable = null;
+
+            foreach (CRFVariable v in hif.Variables)
+            {
+                if (v.Pollutant1ID == pollutantID)
+                {
+                    crfVariable = v;
+                    break;
+                }
+            }
+
+            return crfVariable;
         }
 
         public static List<double> getSortedDeltaListFromDictionaryandObject(BenMAPHealthImpactFunction hif, Dictionary<int, double> dicDelta)
