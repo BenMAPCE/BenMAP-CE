@@ -351,7 +351,7 @@ namespace BenMAP
 
         private void editVarBtn_Click(object sender, EventArgs e)
         {
-            VarianceMulti form = new VarianceMulti(txtModelSpec.Text, txtPollutant.Text);
+            VarianceMulti form = new VarianceMulti(_hif, _hif.PollVariables[selected], selectedSeason);
             DialogResult res = form.ShowDialog();
         }
 
