@@ -732,39 +732,39 @@ namespace BenMAP.Configuration
                 }
                 double[] lhsResultArray = new double[LatinHypercubePoints];
                 Meta.Numerics.Statistics.Sample sample = null;
-                switch (crSelectFunction.BenMAPHealthImpactFunction.BetaDistribution)
+                switch (crfBeta.Distribution)
                 {
                     case "None":
                         for (int i = 0; i < LatinHypercubePoints; i++)
                         {
-                            lhsResultArray[i] = crSelectFunction.BenMAPHealthImpactFunction.Beta;
+                            lhsResultArray[i] = crfBeta.Beta;
 
                         }
                         return lhsResultArray;
                         break;
                     case "Normal":
                         Meta.Numerics.Statistics.Distributions.Distribution Normal_distribution =
-    new Meta.Numerics.Statistics.Distributions.NormalDistribution(crSelectFunction.BenMAPHealthImpactFunction.Beta, crSelectFunction.BenMAPHealthImpactFunction.BetaParameter1);
+    new Meta.Numerics.Statistics.Distributions.NormalDistribution(crfBeta.Beta, standardDeviation); // crfBeta.P1Beta);
                         sample = CreateSample(Normal_distribution, 1000000, Seed);
                         break;
                     case "Triangular":
                         Meta.Numerics.Statistics.Distributions.Distribution Triangular_distribution =
-    new Meta.Numerics.Statistics.Distributions.TriangularDistribution(crSelectFunction.BenMAPHealthImpactFunction.BetaParameter1, crSelectFunction.BenMAPHealthImpactFunction.BetaParameter2, crSelectFunction.BenMAPHealthImpactFunction.Beta);
+    new Meta.Numerics.Statistics.Distributions.TriangularDistribution(crfBeta.P1Beta, crfBeta.P2Beta, crfBeta.Beta);
                         sample = CreateSample(Triangular_distribution, 1000000, Seed);
                         break;
                     case "Poisson":
                         Meta.Numerics.Statistics.Distributions.PoissonDistribution Poisson_distribution =
-    new Meta.Numerics.Statistics.Distributions.PoissonDistribution(crSelectFunction.BenMAPHealthImpactFunction.BetaParameter1);
+    new Meta.Numerics.Statistics.Distributions.PoissonDistribution(crfBeta.P1Beta);
                         sample = CreateSample(Poisson_distribution, 1000000, Seed);
                         break;
                     case "Binomial":
                         Meta.Numerics.Statistics.Distributions.BinomialDistribution Binomial_distribution =
-    new Meta.Numerics.Statistics.Distributions.BinomialDistribution(crSelectFunction.BenMAPHealthImpactFunction.BetaParameter1, Convert.ToInt32(crSelectFunction.BenMAPHealthImpactFunction.BetaParameter2));
+    new Meta.Numerics.Statistics.Distributions.BinomialDistribution(crfBeta.P1Beta, Convert.ToInt32(crfBeta.P2Beta));
                         sample = CreateSample(Binomial_distribution, 1000000, Seed);
                         break;
                     case "LogNormal":
                         Meta.Numerics.Statistics.Distributions.LognormalDistribution Lognormal_distribution =
-    new Meta.Numerics.Statistics.Distributions.LognormalDistribution(crSelectFunction.BenMAPHealthImpactFunction.BetaParameter1, crSelectFunction.BenMAPHealthImpactFunction.BetaParameter2);
+    new Meta.Numerics.Statistics.Distributions.LognormalDistribution(crfBeta.P1Beta, crfBeta.P2Beta);
                         sample = CreateSample(Lognormal_distribution, 1000000, Seed);
                         break;
                     case "Uniform":
@@ -774,22 +774,22 @@ namespace BenMAP.Configuration
                         break;
                     case "Exponential":
                         Meta.Numerics.Statistics.Distributions.ExponentialDistribution Exponential_distribution =
-    new Meta.Numerics.Statistics.Distributions.ExponentialDistribution(crSelectFunction.BenMAPHealthImpactFunction.BetaParameter1);
+    new Meta.Numerics.Statistics.Distributions.ExponentialDistribution(crfBeta.P1Beta);
                         sample = CreateSample(Exponential_distribution, 1000000, Seed);
                         break;
                     case "Geometric":
                         Meta.Numerics.Statistics.Distributions.ExponentialDistribution Geometric_distribution =
-    new Meta.Numerics.Statistics.Distributions.ExponentialDistribution(crSelectFunction.BenMAPHealthImpactFunction.BetaParameter1);
+    new Meta.Numerics.Statistics.Distributions.ExponentialDistribution(crfBeta.P1Beta);
                         sample = CreateSample(Geometric_distribution, 1000000, Seed);
                         break;
                     case "Weibull":
                         Meta.Numerics.Statistics.Distributions.WeibullDistribution Weibull_distribution =
-    new Meta.Numerics.Statistics.Distributions.WeibullDistribution(crSelectFunction.BenMAPHealthImpactFunction.BetaParameter1, crSelectFunction.BenMAPHealthImpactFunction.BetaParameter2);
+    new Meta.Numerics.Statistics.Distributions.WeibullDistribution(crfBeta.P1Beta, crfBeta.P2Beta);
                         sample = CreateSample(Weibull_distribution, 1000000, Seed);
                         break;
                     case "Gamma":
                         Meta.Numerics.Statistics.Distributions.GammaDistribution Gamma_distribution =
-    new Meta.Numerics.Statistics.Distributions.GammaDistribution(crSelectFunction.BenMAPHealthImpactFunction.BetaParameter1, crSelectFunction.BenMAPHealthImpactFunction.BetaParameter2);
+    new Meta.Numerics.Statistics.Distributions.GammaDistribution(crfBeta.P1Beta, crfBeta.P2Beta);
                         sample = CreateSample(Gamma_distribution, 1000000, Seed);
                         break;
                     case "Logistic":
@@ -799,17 +799,17 @@ namespace BenMAP.Configuration
                         break;
                     case "Beta":
                         Meta.Numerics.Statistics.Distributions.BetaDistribution Beta_distribution =
-                            new Meta.Numerics.Statistics.Distributions.BetaDistribution(crSelectFunction.BenMAPHealthImpactFunction.BetaParameter1, crSelectFunction.BenMAPHealthImpactFunction.BetaParameter2);
+                            new Meta.Numerics.Statistics.Distributions.BetaDistribution(crfBeta.P1Beta, crfBeta.P2Beta);
                         sample = CreateSample(Beta_distribution, 1000000, Seed);
                         break;
                     case "Pareto":
                         Meta.Numerics.Statistics.Distributions.ParetoDistribution Pareto_distribution =
-    new Meta.Numerics.Statistics.Distributions.ParetoDistribution(crSelectFunction.BenMAPHealthImpactFunction.BetaParameter1, crSelectFunction.BenMAPHealthImpactFunction.BetaParameter2);
+    new Meta.Numerics.Statistics.Distributions.ParetoDistribution(crfBeta.P1Beta, crfBeta.P2Beta);
                         sample = CreateSample(Pareto_distribution, 1000000, Seed);
                         break;
                     case "Cauchy":
                         Meta.Numerics.Statistics.Distributions.CauchyDistribution Cauchy_distribution =
-    new Meta.Numerics.Statistics.Distributions.CauchyDistribution(crSelectFunction.BenMAPHealthImpactFunction.BetaParameter1, crSelectFunction.BenMAPHealthImpactFunction.BetaParameter2);
+    new Meta.Numerics.Statistics.Distributions.CauchyDistribution(crfBeta.P1Beta, crfBeta.P2Beta);
                         sample = CreateSample(Cauchy_distribution, 1000000, Seed);
                         break;
                     case "Custom":
