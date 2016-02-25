@@ -6185,7 +6185,7 @@ namespace BenMAP.Configuration
             return result;
         }
 
-        public static double CalculateCRSelectFunctionsOneCelStandardError(CRSelectFunction hif, Dictionary<int, double> dicAQDeltas, int seasNum)
+        public static double CalculateCRSelectFunctionsOneCelStandardError(CRSelectFunction hif, Dictionary<int, double> dicAQDeltas, int betaInd)
          {
             try
             {
@@ -6206,10 +6206,10 @@ namespace BenMAP.Configuration
                 string commandText = string.Empty;
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
 
-                // since beta seasons are added in order, we can use seasNum to index and find betaIDs for the query
+                // since beta seasons are added in order, we can use betaInd to index and find betaIDs for the query
                 string varName = string.Empty;
                 List<int> betaIDs = new List<int>();
-                foreach (CRFVariable v in hif.BenMAPHealthImpactFunction.Variables) { betaIDs.Add(v.PollBetas[seasNum-1].BetaID); }
+                foreach (CRFVariable v in hif.BenMAPHealthImpactFunction.Variables) { betaIDs.Add(v.PollBetas[betaInd].BetaID); }
 
                 for (int row = 0; row < m1Width; row++)
                 {
