@@ -4567,6 +4567,9 @@ namespace BenMAP.Configuration
 
                 CRSelectFunctionCalculateValue crSelectFunctionCalculateValue = new CRSelectFunctionCalculateValue() { CRSelectFunction = crSelectFunction, CRCalculateValues = new List<CRCalculateValue>() };
 
+                // get number of beta variations (use first variable)
+                int numBetaVariations = crSelectFunction.BenMAPHealthImpactFunction.Variables.First().PollBetas.Count();
+
                 #region foreach (ModelResultAttribute modelResultAttribute in baseControlGroup.Base.ModelResultAttributes)
                 foreach (ModelResultAttribute modelResultAttribute in baseControlGroup.Base.ModelResultAttributes)
                 {
@@ -5115,10 +5118,14 @@ namespace BenMAP.Configuration
                     //get deltaQ values
                     dicDeltaQValues = getDeltaQValues(dicBaseValues, dicControlValues);
 
-                    //calculate one cell                    
-                   crCalculateValue = CalculateCRSelectFunctionsOneCel(sCRID, hasPopInstrBaseLineFunction, i365, crSelectFunction, strBaseLineFunction, strPointEstimateFunction, modelResultAttribute.Col, modelResultAttribute.Row, dicBaseValues, dicControlValues, dicPopValue, dicIncidenceValue, dicPrevalenceValue, dicVariable);
-                    //add calculated value to list of calculated values
-                    crSelectFunctionCalculateValue.CRCalculateValues.Add(crCalculateValue);
+                    //for each beta variation
+                    for (int betaIndex = 0; betaIndex < numBetaVariations; betaIndex++)
+                    {
+                        //calculate one cell                    
+                        crCalculateValue = CalculateCRSelectFunctionsOneCel(sCRID, hasPopInstrBaseLineFunction, i365, crSelectFunction, strBaseLineFunction, strPointEstimateFunction, modelResultAttribute.Col, modelResultAttribute.Row, dicBaseValues, dicControlValues, dicPopValue, dicIncidenceValue, dicPrevalenceValue, dicVariable, betaIndex);
+                        //add calculated value to list of calculated values
+                        crSelectFunctionCalculateValue.CRCalculateValues.Add(crCalculateValue);
+                    }
 
 
                     dicVariable = null;
@@ -5226,12 +5233,10 @@ namespace BenMAP.Configuration
             }
         }
 
-        public static CRCalculateValue CalculateCRSelectFunctionsOneCel(string iCRID, bool hasPopInstrBaseLineFunction, float i365, CRSelectFunction crSelectFunction, string strBaseLineFunction, string strPointEstimateFunction, int col, int row, Dictionary<int, double> dicBaseValues, Dictionary<int, double> dicControlValues, Dictionary<string, double> dicPopulationValue, Dictionary<string, double> dicIncidenceValue, Dictionary<string, double> dicPrevalenceValue, Dictionary<string, double> dicSetupVariables)
+        public static CRCalculateValue CalculateCRSelectFunctionsOneCel(string iCRID, bool hasPopInstrBaseLineFunction, float i365, CRSelectFunction crSelectFunction, string strBaseLineFunction, string strPointEstimateFunction, int col, int row, Dictionary<int, double> dicBaseValues, Dictionary<int, double> dicControlValues, Dictionary<string, double> dicPopulationValue, Dictionary<string, double> dicIncidenceValue, Dictionary<string, double> dicPrevalenceValue, Dictionary<string, double> dicSetupVariables, int betaIndex)
         {
             try
             {
-
-                int betaIndex = 0;
 
                 double incidenceValue, prevalenceValue, PopValue;
 
