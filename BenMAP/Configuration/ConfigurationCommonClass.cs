@@ -4568,7 +4568,7 @@ namespace BenMAP.Configuration
                 CRSelectFunctionCalculateValue crSelectFunctionCalculateValue = new CRSelectFunctionCalculateValue() { CRSelectFunction = crSelectFunction, CRCalculateValues = new List<CRCalculateValue>() };
 
                 // get number of beta variations (use first variable)
-                List<CRFBeta> lstBetaVariations = crSelectFunction.BenMAPHealthImpactFunction.Variables.First().PollBetas.OrderBy(beta => Convert.ToInt32(beta.StartDate)).ToList();
+                List<CRFBeta> lstBetas = crSelectFunction.BenMAPHealthImpactFunction.Variables.First().PollBetas.OrderBy(beta => Convert.ToInt32(beta.StartDate)).ToList();
 
                 #region foreach (ModelResultAttribute modelResultAttribute in baseControlGroup.Base.ModelResultAttributes)
                 foreach (ModelResultAttribute modelResultAttribute in baseControlGroup.Base.ModelResultAttributes)
@@ -4673,7 +4673,7 @@ namespace BenMAP.Configuration
                                 (!getAllMetricData(dicAllMetricDataControl, colRowKey, metricKey, dicControlValues)))
                         {
                             //for each beta variation
-                            for (int betaIndex = 0; betaIndex < lstBetaVariations.Count; betaIndex++)
+                            for (int betaIndex = 0; betaIndex < lstBetas.Count; betaIndex++)
                             {
                                 //add a result of 0 "zero"
                                 crCalculateValue = new CRCalculateValue()
@@ -4698,6 +4698,11 @@ namespace BenMAP.Configuration
                                 {
                                     crCalculateValue.LstPercentile.Add(0);
                                 }
+                                
+                                //set beta variation fields
+                                crCalculateValue.BetaVariationName = crSelectFunction.BenMAPHealthImpactFunction.BetaVariation.BetaVariationName;
+                                crCalculateValue.BetaName = lstBetas[betaIndex].SeasonName;
+
 
                                 crSelectFunctionCalculateValue.CRCalculateValues.Add(crCalculateValue);
                             }
@@ -5125,10 +5130,15 @@ namespace BenMAP.Configuration
                     dicDeltaQValues = getDeltaQValues(dicBaseValues, dicControlValues);
 
                     //for each beta variation
-                    for (int betaIndex = 0; betaIndex < lstBetaVariations.Count; betaIndex++)
+                    for (int betaIndex = 0; betaIndex < lstBetas.Count; betaIndex++)
                     {
                         //calculate one cell                    
                         crCalculateValue = CalculateCRSelectFunctionsOneCel(sCRID, hasPopInstrBaseLineFunction, i365, crSelectFunction, strBaseLineFunction, strPointEstimateFunction, modelResultAttribute.Col, modelResultAttribute.Row, dicBaseValues, dicControlValues, dicPopValue, dicIncidenceValue, dicPrevalenceValue, dicVariable, betaIndex);
+
+                        //set beta variation fields
+                        crCalculateValue.BetaVariationName = crSelectFunction.BenMAPHealthImpactFunction.BetaVariation.BetaVariationName;
+                        crCalculateValue.BetaName = lstBetas[betaIndex].SeasonName;
+
                         //add calculated value to list of calculated values
                         crSelectFunctionCalculateValue.CRCalculateValues.Add(crCalculateValue);
                     }
