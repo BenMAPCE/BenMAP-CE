@@ -3674,9 +3674,9 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
         [ProtoMember(14)]
         public List<double> DeltaList;
         [ProtoMember(15)]
-        public string BetaVariation;
+        public string BetaVariationType;
         [ProtoMember(16)]
-        public string Season;
+        public string BetaVariationName;
     }
 
     [Serializable]
