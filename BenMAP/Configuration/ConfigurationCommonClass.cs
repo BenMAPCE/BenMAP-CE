@@ -4703,7 +4703,6 @@ namespace BenMAP.Configuration
                                 crCalculateValue.BetaVariationName = crSelectFunction.BenMAPHealthImpactFunction.BetaVariation.BetaVariationName;
                                 crCalculateValue.BetaName = lstBetas[betaIndex].SeasonName;
 
-
                                 crSelectFunctionCalculateValue.CRCalculateValues.Add(crCalculateValue);
                             }
 
@@ -4724,74 +4723,95 @@ namespace BenMAP.Configuration
                         {
                             #region if we have 365 data
 
-                            float fPSum = 0, fBaselineSum = 0;
-                            List<float> lstFPSum = new List<float>();
-                            if (!CommonClass.CRRunInPointMode)
+                            //for each beta variation
+                            for (int betaIndex = 0; betaIndex < lstBetas.Count; betaIndex++)
                             {
-                                for (int i = 0; i < CommonClass.CRLatinHypercubePoints; i++)
+
+                                float fPSum = 0, fBaselineSum = 0;
+                                List<float> lstFPSum = new List<float>();
+                                //initialize percentile list
+                                if (!CommonClass.CRRunInPointMode)
                                 {
-                                    lstFPSum.Add(0);
-                                }
-                            }
-                            for (int iBase = 0; iBase < dicBase365[colRowKey][metricKey].Count; iBase++)
-                            {
-                                double fBase, fControl, fDelta;
-                                fBase = dicBase365[colRowKey][metricKey][iBase];
-                                fControl = dicControl365[colRowKey][metricKey][iBase];
-                                if (fBase != float.MinValue && fControl != float.MinValue)
-                                {
-                                    if (Threshold != 0 && fBase < Threshold)
-                                        fBase = Threshold;
-                                    if (fControl != 0 && fControl < Threshold)
-                                        fControl = Threshold;
-                                    fDelta = fBase - fControl;
+                                    for (int i = 0; i < CommonClass.CRLatinHypercubePoints; i++)
                                     {
-                                        CRCalculateValue cr = new CRCalculateValue(); // = CalculateCRSelectFunctionsOneCel(sCRID, hasPopInstrBaseLineFunction, 1, crSelectFunction, strBaseLineFunction, strPointEstimateFunction, modelResultAttribute.Col, modelResultAttribute.Row, fBase, fControl, dicPopValue, dicIncidenceValue, dicPrevalenceValue, dicVariable, lhsResultArray);
-                                        fPSum += cr.PointEstimate;
-                                        fBaselineSum += cr.Baseline;
-                                        if (!CommonClass.CRRunInPointMode)
-                                        {
-                                            for(int i = 0; i < CommonClass.CRLatinHypercubePoints; i++)
-                                            {
-                                                lstFPSum[i] += cr.LstPercentile[i];
-                                            }
-                                        }
+                                        lstFPSum.Add(0);
                                     }
                                 }
 
+                                //loop over each day of the year for this row/col and metric
+                                for (int iBase = 0; iBase < dicBase365[colRowKey][metricKey].Count; iBase++)
+                                {
+                                    double fBase, fControl, fDelta;
+                                    fBase = dicBase365[colRowKey][metricKey][iBase];
+                                    fControl = dicControl365[colRowKey][metricKey][iBase];
+                                    if (fBase != float.MinValue && fControl != float.MinValue)
+                                    {
+                                        if (Threshold != 0 && fBase < Threshold)
+                                            fBase = Threshold;
+                                        if (fControl != 0 && fControl < Threshold)
+                                            fControl = Threshold;
+                                        fDelta = fBase - fControl;
+                                        {
+                                            CRCalculateValue cr = new CRCalculateValue(); // = CalculateCRSelectFunctionsOneCel(sCRID, hasPopInstrBaseLineFunction, 1, crSelectFunction, strBaseLineFunction, strPointEstimateFunction, modelResultAttribute.Col, modelResultAttribute.Row, fBase, fControl, dicPopValue, dicIncidenceValue, dicPrevalenceValue, dicVariable, betaIndex);
+                                            fPSum += cr.PointEstimate;
+                                            fBaselineSum += cr.Baseline;
+                                            if (!CommonClass.CRRunInPointMode)
+                                            {
+                                                for (int i = 0; i < CommonClass.CRLatinHypercubePoints; i++)
+                                                {
+                                                    lstFPSum[i] += cr.LstPercentile[i];
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                }
+
+                                //build result value object
+                                crCalculateValue = new CRCalculateValue()
+                                {
+                                    Col = modelResultAttribute.Col,
+                                    Row = modelResultAttribute.Row,
+                                    Delta = 0,
+                                    Incidence = Convert.ToSingle(incidenceValue),
+                                    PointEstimate = fPSum,
+                                    LstPercentile = lstFPSum,
+                                    Population = Convert.ToSingle(populationValue),
+                                    Mean = lstFPSum.Count() == 0 ? float.NaN : getMean(lstFPSum),
+                                    Variance = lstFPSum.Count() == 0 ? float.NaN : getVariance(lstFPSum, fPSum),
+                                    Baseline = fBaselineSum,
+                                };
+
+                                crCalculateValue.StandardDeviation = lstFPSum.Count() == 0 ? float.NaN : Convert.ToSingle(Math.Sqrt(crCalculateValue.Variance));
+                                crCalculateValue.PercentOfBaseline = crCalculateValue.Baseline == 0 ? 0 : Convert.ToSingle(Math.Round((crCalculateValue.Mean / crCalculateValue.Baseline) * 100, 4));
+
+                                //calculate delta
+                                double baseValueForDelta = modelResultAttribute.Values[metricKey];
+                                double controlValueForDelta = baseValueForDelta;
+                                if (dicControl.Keys.Contains(colRowKey))
+                                {
+                                    if (dicControl[colRowKey].Values.Keys.Contains(metricKey))
+                                        controlValueForDelta = dicControl[colRowKey].Values[metricKey];
+                                }
+
+                                if (Threshold != 0 && baseValueForDelta < Threshold)
+                                    baseValueForDelta = Threshold;
+
+                                if (Threshold != 0 && controlValueForDelta < Threshold)
+                                    controlValueForDelta = Threshold;
+
+                                //set delta
+                                crCalculateValue.Delta = Convert.ToSingle(baseValueForDelta - controlValueForDelta);
+
+                                //set beta variation fields
+                                crCalculateValue.BetaVariationName = crSelectFunction.BenMAPHealthImpactFunction.BetaVariation.BetaVariationName;
+                                crCalculateValue.BetaName = lstBetas[betaIndex].SeasonName;
+
+                                crSelectFunctionCalculateValue.CRCalculateValues.Add(crCalculateValue);
+
                             }
-                            crCalculateValue = new CRCalculateValue()
-                            {
-                                Col = modelResultAttribute.Col,
-                                Row = modelResultAttribute.Row,
-                                Delta = 0,
-                                Incidence = Convert.ToSingle(incidenceValue),
-                                PointEstimate = fPSum,
-                                LstPercentile = lstFPSum,
-                                Population = Convert.ToSingle(populationValue),
-                                Mean = lstFPSum.Count() == 0 ? float.NaN : getMean(lstFPSum),
-                                Variance = lstFPSum.Count() == 0 ? float.NaN : getVariance(lstFPSum, fPSum),
-                                Baseline = fBaselineSum,
-                            };
-                            crCalculateValue.StandardDeviation = lstFPSum.Count() == 0 ? float.NaN : Convert.ToSingle(Math.Sqrt(crCalculateValue.Variance));
-                            crCalculateValue.PercentOfBaseline = crCalculateValue.Baseline == 0 ? 0 : Convert.ToSingle(Math.Round((crCalculateValue.Mean / crCalculateValue.Baseline) * 100, 4));
-                            double baseValueForDelta = modelResultAttribute.Values[metricKey];
-                            double controlValueForDelta = baseValueForDelta;
 
-                            if (dicControl.Keys.Contains(colRowKey))
-                            {
-
-                                if (dicControl[colRowKey].Values.Keys.Contains(metricKey))
-                                    controlValueForDelta = dicControl[colRowKey].Values[metricKey];
-
-                            }
-                            if (Threshold != 0 && baseValueForDelta < Threshold)
-                                baseValueForDelta = Threshold;
-
-                            if (Threshold != 0 && controlValueForDelta < Threshold)
-                                controlValueForDelta = Threshold;
-                            crCalculateValue.Delta = Convert.ToSingle(baseValueForDelta - controlValueForDelta);
-                            crSelectFunctionCalculateValue.CRCalculateValues.Add(crCalculateValue);
+                            //skip to next modelresultattribute (i.e. grid cell)
                             continue;
 
                             #endregion
