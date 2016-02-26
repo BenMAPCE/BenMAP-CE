@@ -4672,31 +4672,37 @@ namespace BenMAP.Configuration
                         if ((!getAllMetricData(dicAllMetricDataBase, colRowKey, metricKey, dicBaseValues)) ||
                                 (!getAllMetricData(dicAllMetricDataControl, colRowKey, metricKey, dicControlValues)))
                         {
-                            crCalculateValue = new CRCalculateValue()
+                            //for each beta variation
+                            for (int betaIndex = 0; betaIndex < numBetaVariations; betaIndex++)
                             {
-                                Baseline = 0,
-                                Col = modelResultAttribute.Col,
-                                Row = modelResultAttribute.Row,
-                                Delta = 0,
-                                Incidence = Convert.ToSingle(incidenceValue),
-                                Population = Convert.ToSingle(populationValue),
-                                LstPercentile = new List<float>(),
-                                Mean = 0,
-                                PercentOfBaseline = 0,
-                                PointEstimate = 0,
-                                StandardDeviation = 0,
-                                Variance = 0
+                                //add a result of 0 "zero"
+                                crCalculateValue = new CRCalculateValue()
+                                {
+                                    Baseline = 0,
+                                    Col = modelResultAttribute.Col,
+                                    Row = modelResultAttribute.Row,
+                                    Delta = 0,
+                                    Incidence = Convert.ToSingle(incidenceValue),
+                                    Population = Convert.ToSingle(populationValue),
+                                    LstPercentile = new List<float>(),
+                                    Mean = 0,
+                                    PercentOfBaseline = 0,
+                                    PointEstimate = 0,
+                                    StandardDeviation = 0,
+                                    Variance = 0
 
-                            };
+                                };
 
-                            //add 0 percentile for each latin hypercube point (number latin hypercube points = number percentiles = number items in lhsResultArray)
-                            for (int i = 0; i < CommonClass.CRLatinHypercubePoints; i++)
-                            {
-                                crCalculateValue.LstPercentile.Add(0);
+                                //add 0 percentile for each latin hypercube point (number latin hypercube points = number percentiles = number items in lhsResultArray)
+                                for (int i = 0; i < CommonClass.CRLatinHypercubePoints; i++)
+                                {
+                                    crCalculateValue.LstPercentile.Add(0);
+                                }
+
+                                crSelectFunctionCalculateValue.CRCalculateValues.Add(crCalculateValue);
                             }
 
-
-                            crSelectFunctionCalculateValue.CRCalculateValues.Add(crCalculateValue);
+                            //skip to next modelResultAttribute (i.e. grid cell)
                             continue;
                         }
                         #endregion
