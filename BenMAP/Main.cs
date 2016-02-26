@@ -798,6 +798,18 @@ namespace BenMAP
             DialogResult rtn = frm.ShowDialog();
         }
 
+        private void onlineDatabaseExportToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OnlineDatabaseExport frm = new OnlineDatabaseExport();
+            DialogResult rtn = frm.ShowDialog();
+        }
+
+        private void onlineDatabaseImportToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OnlineDatabaseImport frm = new OnlineDatabaseImport();
+            DialogResult rtn = frm.ShowDialog();
+        }
+
         private void Main_FormClosing(object sender, FormClosingEventArgs e)
         {
 

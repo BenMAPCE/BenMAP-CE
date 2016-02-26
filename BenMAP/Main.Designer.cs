@@ -1,3 +1,6 @@
+using System.Reflection;
+using System.Windows.Forms;
+
 namespace BenMAP
 {
     partial class Main
@@ -47,6 +50,8 @@ namespace BenMAP
             this.modelFileConcatenatorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.databaseExportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.databaseImportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.onlineDatabaseExportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.onlineDatabaseImportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportAirQualityGridToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.gbdRollbackToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.gISMappingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -88,13 +93,13 @@ namespace BenMAP
             // newToolStripMenuItem
             // 
             this.newToolStripMenuItem.Name = "newToolStripMenuItem";
-            this.newToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
+            this.newToolStripMenuItem.Size = new System.Drawing.Size(114, 24);
             this.newToolStripMenuItem.Text = "&New";
             // 
             // openToolStripMenuItem
             // 
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(114, 24);
             this.openToolStripMenuItem.Text = "&Open";
             // 
             // toolStripSeparator1
@@ -114,7 +119,7 @@ namespace BenMAP
             this.pnlMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlMain.Location = new System.Drawing.Point(0, 25);
             this.pnlMain.Name = "pnlMain";
-            this.pnlMain.Size = new System.Drawing.Size(939, 645);
+            this.pnlMain.Size = new System.Drawing.Size(1252, 835);
             this.pnlMain.TabIndex = 9;
             // 
             // ToolStripFile
@@ -131,7 +136,7 @@ namespace BenMAP
             this.btnHelp});
             this.ToolStripFile.Location = new System.Drawing.Point(0, 0);
             this.ToolStripFile.Name = "ToolStripFile";
-            this.ToolStripFile.Size = new System.Drawing.Size(939, 25);
+            this.ToolStripFile.Size = new System.Drawing.Size(1252, 30);
             this.ToolStripFile.TabIndex = 4;
             this.ToolStripFile.Text = "toolStrip1";
             // 
@@ -282,6 +287,8 @@ namespace BenMAP
             this.modelFileConcatenatorToolStripMenuItem,
             this.databaseExportToolStripMenuItem,
             this.databaseImportToolStripMenuItem,
+            this.onlineDatabaseExportToolStripMenuItem,
+            this.onlineDatabaseImportToolStripMenuItem,
             this.exportAirQualityGridToolStripMenuItem,
             this.gbdRollbackToolStripMenuItem,
             this.gISMappingToolStripMenuItem,
@@ -290,8 +297,19 @@ namespace BenMAP
             this.mnuTools.Image = ((System.Drawing.Image)(resources.GetObject("mnuTools.Image")));
             this.mnuTools.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.mnuTools.Name = "mnuTools";
-            this.mnuTools.Size = new System.Drawing.Size(53, 22);
+            this.mnuTools.Size = new System.Drawing.Size(62, 27);
             this.mnuTools.Text = "Tools";
+            //test for new
+            if (true)
+            {
+                //this.mnuTools.BackColor = System.Drawing.Color.PowderBlue;
+                this.mnuTools.ToolTipText = "There are new health impact functions available online";
+                string path = Application.StartupPath + "\\Tools\\alertSmall.png";
+                this.mnuTools.Image = System.Drawing.Bitmap.FromFile(path);
+                this.mnuTools.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.ImageAndText;
+                this.mnuTools.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
+                this.mnuTools.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            }
             // 
             // airQualityGridAggregationToolStripMenuItem
             // 
@@ -321,6 +339,31 @@ namespace BenMAP
             this.databaseImportToolStripMenuItem.Size = new System.Drawing.Size(268, 22);
             this.databaseImportToolStripMenuItem.Text = "Database Import";
             this.databaseImportToolStripMenuItem.Click += new System.EventHandler(this.databaseImportToolStripMenuItem_Click);
+            // 
+            // onlineDatabaseExportToolStripMenuItem
+            // 
+            this.onlineDatabaseExportToolStripMenuItem.Name = "onlineDatabaseExportToolStripMenuItem";
+            this.onlineDatabaseExportToolStripMenuItem.Size = new System.Drawing.Size(321, 28);
+            this.onlineDatabaseExportToolStripMenuItem.Text = "Online Database Export";
+            this.onlineDatabaseExportToolStripMenuItem.Click += new System.EventHandler(this.onlineDatabaseExportToolStripMenuItem_Click);
+            // 
+            // onlineDatabaseImportToolStripMenuItem
+            // 
+            this.onlineDatabaseImportToolStripMenuItem.Name = "onlineDatabaseImportToolStripMenuItem";
+            this.onlineDatabaseImportToolStripMenuItem.Size = new System.Drawing.Size(321, 28);
+            this.onlineDatabaseImportToolStripMenuItem.Text = "Online Database Import";
+            //test for new
+            if (true)
+            {
+                //this.mnuTools.BackColor = System.Drawing.Color.PowderBlue;
+                this.onlineDatabaseImportToolStripMenuItem.ToolTipText = "There are new health impact functions available online";
+                string path = Application.StartupPath + "\\Tools\\alertSmall.png";
+                this.onlineDatabaseImportToolStripMenuItem.Image = System.Drawing.Bitmap.FromFile(path);
+                this.onlineDatabaseImportToolStripMenuItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.ImageAndText;
+                this.onlineDatabaseImportToolStripMenuItem.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
+                this.onlineDatabaseImportToolStripMenuItem.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            }
+            this.onlineDatabaseImportToolStripMenuItem.Click += new System.EventHandler(this.onlineDatabaseImportToolStripMenuItem_Click);
             // 
             // exportAirQualityGridToolStripMenuItem
             // 
@@ -508,6 +551,8 @@ namespace BenMAP
         private System.Windows.Forms.ToolStripMenuItem modelFileConcatenatorToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem databaseExportToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem databaseImportToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem onlineDatabaseExportToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem onlineDatabaseImportToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exportAirQualityGridToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem gISMappingToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem neighborFileCreatorToolStripMenuItem;
