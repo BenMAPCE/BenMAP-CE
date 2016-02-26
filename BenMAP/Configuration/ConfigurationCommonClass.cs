@@ -4568,7 +4568,7 @@ namespace BenMAP.Configuration
                 CRSelectFunctionCalculateValue crSelectFunctionCalculateValue = new CRSelectFunctionCalculateValue() { CRSelectFunction = crSelectFunction, CRCalculateValues = new List<CRCalculateValue>() };
 
                 // get number of beta variations (use first variable)
-                int numBetaVariations = crSelectFunction.BenMAPHealthImpactFunction.Variables.First().PollBetas.Count();
+                List<CRFBeta> lstBetaVariations = crSelectFunction.BenMAPHealthImpactFunction.Variables.First().PollBetas.OrderBy(beta => Convert.ToInt32(beta.StartDate)).ToList();
 
                 #region foreach (ModelResultAttribute modelResultAttribute in baseControlGroup.Base.ModelResultAttributes)
                 foreach (ModelResultAttribute modelResultAttribute in baseControlGroup.Base.ModelResultAttributes)
@@ -4673,7 +4673,7 @@ namespace BenMAP.Configuration
                                 (!getAllMetricData(dicAllMetricDataControl, colRowKey, metricKey, dicControlValues)))
                         {
                             //for each beta variation
-                            for (int betaIndex = 0; betaIndex < numBetaVariations; betaIndex++)
+                            for (int betaIndex = 0; betaIndex < lstBetaVariations.Count; betaIndex++)
                             {
                                 //add a result of 0 "zero"
                                 crCalculateValue = new CRCalculateValue()
@@ -5125,7 +5125,7 @@ namespace BenMAP.Configuration
                     dicDeltaQValues = getDeltaQValues(dicBaseValues, dicControlValues);
 
                     //for each beta variation
-                    for (int betaIndex = 0; betaIndex < numBetaVariations; betaIndex++)
+                    for (int betaIndex = 0; betaIndex < lstBetaVariations.Count; betaIndex++)
                     {
                         //calculate one cell                    
                         crCalculateValue = CalculateCRSelectFunctionsOneCel(sCRID, hasPopInstrBaseLineFunction, i365, crSelectFunction, strBaseLineFunction, strPointEstimateFunction, modelResultAttribute.Col, modelResultAttribute.Row, dicBaseValues, dicControlValues, dicPopValue, dicIncidenceValue, dicPrevalenceValue, dicVariable, betaIndex);
