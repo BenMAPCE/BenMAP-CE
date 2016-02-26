@@ -8578,6 +8578,11 @@ namespace BenMAP
                     }
                     if (IncidencelstResult == null)
                     {
+                        if (lstAllSelectCRFuntion.First().CRSelectFunctionCalculateValue.CRCalculateValues.First().BetaVariationType != null)
+                        {
+                            string bvType = lstAllSelectCRFuntion.First().CRSelectFunctionCalculateValue.CRCalculateValues.First().BetaVariationType;
+                            OLVResultsShow.Columns.Add(new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.BetaVariationName", AspectToStringFormat = "{0:N4}", Text = bvType, Width = bvType.Length * 8, IsEditable = false });
+                        }
                         OLVResultsShow.Columns.Add(new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.PointEstimate", AspectToStringFormat = "{0:N4}", Width = "Point Estimate".Length * 8, Text = "Point Estimate", IsEditable = false });
                         OLVResultsShow.Columns.Add(new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Population", AspectToStringFormat = "{0:N4}", Text = "Population", Width = "Population".Length * 8, IsEditable = false });
 
@@ -8707,6 +8712,11 @@ namespace BenMAP
                         }
                         if (IncidencelstResult == null)
                         {
+                            if (lstCRTable.First().CRCalculateValues.First().BetaVariationType != null)
+                            {
+                                string bvType = lstCRTable.First().CRCalculateValues.First().BetaVariationType;
+                                OLVResultsShow.Columns.Add(new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.BetaVariationName", AspectToStringFormat = "{0:N4}", Text = bvType, Width = bvType.Length * 8, IsEditable = false });
+                            }
                             OLVResultsShow.Columns.Add(new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.PointEstimate", AspectToStringFormat = "{0:N4}", Width = "PointEstimate".Length * 8, Text = "Point Estimate", IsEditable = false });
                             OLVResultsShow.Columns.Add(new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Population", AspectToStringFormat = "{0:N4}", Text = "Population", Width = "Population".Length * 8, IsEditable = false });
 
@@ -8805,6 +8815,11 @@ namespace BenMAP
                         }
                         if (cflstResult == null)
                         {
+                            if (lstCRTable.First().CRCalculateValues.First().BetaVariationType != null)
+                            {
+                                string bvType = lstCRTable.First().CRCalculateValues.First().BetaVariationType;
+                                OLVResultsShow.Columns.Add(new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.BetaVariationName", AspectToStringFormat = "{0:N4}", Text = bvType, Width = bvType.Length * 8, IsEditable = false });
+                            }
                             OLVResultsShow.Columns.Add(new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.PointEstimate", AspectToStringFormat = "{0:N4}", Width = "PointEstimate".Length * 8, Text = "Point Estimate", IsEditable = false });
                             OLVResultsShow.Columns.Add(new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Population", AspectToStringFormat = "{0:N4}", Text = "Population", Width = "Population".Length * 8, IsEditable = false });
 
@@ -9271,6 +9286,7 @@ namespace BenMAP
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex);
             }
         }
 
@@ -9562,6 +9578,7 @@ namespace BenMAP
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex);
             }
         }
 
@@ -9901,8 +9918,9 @@ namespace BenMAP
                     _currentRow = _pageSize * (_pageCurrent - 1);
                     UpdateTableResult(_tableObject);
                 }
-                catch
+                catch (Exception ex)
                 {
+                    Logger.LogError(ex);
                 }
             }
         }
@@ -10150,7 +10168,7 @@ namespace BenMAP
                 txtExistingConfiguration.Text = openfile.FileName;
             }
             catch (Exception ex)
-            { }
+            { Logger.LogError(ex); }
         }
         private void btShowAudit_Click(object sender, EventArgs e)
         {
@@ -10809,8 +10827,8 @@ namespace BenMAP
                 }
                 btnApply_Click(sender, e);
             }
-            catch
-            { }
+            catch (Exception ex)
+            { Logger.LogError(ex); }
         }
 
         private void TimedFilter(ObjectListView olv, string txt)
@@ -10945,6 +10963,7 @@ namespace BenMAP
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex);
             }
         }
         private void cbPoolingWindowAPV_SelectedIndexChanged(object sender, EventArgs e)
@@ -11029,8 +11048,9 @@ namespace BenMAP
                         if (allSelectValuationMethodAndValue != null && allSelectValuationMethodAndValue.lstAPVValueAttributes != null && allSelectValuationMethodAndValue.lstAPVValueAttributes.Count() > 0)
                             dicAPVPoolingAndAggregationUnPooled.Add(avm, vb.IncidencePoolingAndAggregation.PoolingName);
                     }
-                    catch
+                    catch (Exception ex)
                     {
+                        Logger.LogError(ex);
                     }
 
                 }
@@ -11100,6 +11120,7 @@ namespace BenMAP
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex);
             }
 
         }
@@ -11858,7 +11879,6 @@ namespace BenMAP
             catch(Exception E)
             {
                 Console.WriteLine("Error setting up grids: " + e.ToString());
-                
             }
         }
         private void btAPVSelectAttribute_Click(object sender, EventArgs e)
