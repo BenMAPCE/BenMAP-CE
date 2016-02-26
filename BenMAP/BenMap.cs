@@ -8578,10 +8578,10 @@ namespace BenMAP
                     }
                     if (IncidencelstResult == null)
                     {
-                        if (lstAllSelectCRFuntion.First().CRSelectFunctionCalculateValue.CRCalculateValues.First().BetaVariationType != null)
+                        if (lstAllSelectCRFuntion.First().CRSelectFunctionCalculateValue.CRCalculateValues.First().BetaVariationName != null)
                         {
-                            string bvType = lstAllSelectCRFuntion.First().CRSelectFunctionCalculateValue.CRCalculateValues.First().BetaVariationType;
-                            OLVResultsShow.Columns.Add(new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.BetaVariationName", AspectToStringFormat = "{0:N4}", Text = bvType, Width = bvType.Length * 8, IsEditable = false });
+                            string bvType = lstAllSelectCRFuntion.First().CRSelectFunctionCalculateValue.CRCalculateValues.First().BetaVariationName;
+                            OLVResultsShow.Columns.Add(new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.BetaName", AspectToStringFormat = "{0:N4}", Text = bvType, Width = bvType.Length * 8, IsEditable = false });
                         }
                         OLVResultsShow.Columns.Add(new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.PointEstimate", AspectToStringFormat = "{0:N4}", Width = "Point Estimate".Length * 8, Text = "Point Estimate", IsEditable = false });
                         OLVResultsShow.Columns.Add(new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Population", AspectToStringFormat = "{0:N4}", Text = "Population", Width = "Population".Length * 8, IsEditable = false });
@@ -8712,10 +8712,10 @@ namespace BenMAP
                         }
                         if (IncidencelstResult == null)
                         {
-                            if (lstCRTable.First().CRCalculateValues.First().BetaVariationType != null)
+                            if (lstCRTable.First().CRCalculateValues.First().BetaVariationName != null)
                             {
-                                string bvType = lstCRTable.First().CRCalculateValues.First().BetaVariationType;
-                                OLVResultsShow.Columns.Add(new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.BetaVariationName", AspectToStringFormat = "{0:N4}", Text = bvType, Width = bvType.Length * 8, IsEditable = false });
+                                string bvType = lstCRTable.First().CRCalculateValues.First().BetaVariationName;
+                                OLVResultsShow.Columns.Add(new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.BetaName", AspectToStringFormat = "{0:N4}", Text = bvType, Width = bvType.Length * 8, IsEditable = false });
                             }
                             OLVResultsShow.Columns.Add(new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.PointEstimate", AspectToStringFormat = "{0:N4}", Width = "PointEstimate".Length * 8, Text = "Point Estimate", IsEditable = false });
                             OLVResultsShow.Columns.Add(new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Population", AspectToStringFormat = "{0:N4}", Text = "Population", Width = "Population".Length * 8, IsEditable = false });
@@ -8815,10 +8815,10 @@ namespace BenMAP
                         }
                         if (cflstResult == null)
                         {
-                            if (lstCRTable.First().CRCalculateValues.First().BetaVariationType != null)
+                            if (lstCRTable.First().CRCalculateValues.First().BetaVariationName != null)
                             {
-                                string bvType = lstCRTable.First().CRCalculateValues.First().BetaVariationType;
-                                OLVResultsShow.Columns.Add(new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.BetaVariationName", AspectToStringFormat = "{0:N4}", Text = bvType, Width = bvType.Length * 8, IsEditable = false });
+                                string bvType = lstCRTable.First().CRCalculateValues.First().BetaVariationName;
+                                OLVResultsShow.Columns.Add(new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.BetaName", AspectToStringFormat = "{0:N4}", Text = bvType, Width = bvType.Length * 8, IsEditable = false });
                             }
                             OLVResultsShow.Columns.Add(new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.PointEstimate", AspectToStringFormat = "{0:N4}", Width = "PointEstimate".Length * 8, Text = "Point Estimate", IsEditable = false });
                             OLVResultsShow.Columns.Add(new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Population", AspectToStringFormat = "{0:N4}", Text = "Population", Width = "Population".Length * 8, IsEditable = false });
