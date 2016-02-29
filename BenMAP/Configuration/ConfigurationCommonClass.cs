@@ -4780,7 +4780,7 @@ namespace BenMAP.Configuration
                                 {
                                     Col = modelResultAttribute.Col,
                                     Row = modelResultAttribute.Row,
-                                    Delta = 0,
+                                    Deltas = getDeltaQValuesZeros(),
                                     Incidence = Convert.ToSingle(incidenceValue),
                                     PointEstimate = fPSum,
                                     LstPercentile = lstFPSum,
@@ -4794,22 +4794,20 @@ namespace BenMAP.Configuration
                                 crCalculateValue.PercentOfBaseline = crCalculateValue.Baseline == 0 ? 0 : Convert.ToSingle(Math.Round((crCalculateValue.Mean / crCalculateValue.Baseline) * 100, 4));
 
                                 //calculate delta
-                                double baseValueForDelta = modelResultAttribute.Values[metricKey];
-                                double controlValueForDelta = baseValueForDelta;
-                                if (dicControl.Keys.Contains(colRowKey))
-                                {
-                                    if (dicControl[colRowKey].Values.Keys.Contains(metricKey))
-                                        controlValueForDelta = dicControl[colRowKey].Values[metricKey];
-                                }
+                                Dictionary<int, double> baseValuesForDelta = getBaseValuesFromModelResultAttributes(colRowKey, metricKey);
+                                Dictionary<int, double> controlValuesForDelta = new Dictionary<int, double>(baseValuesForDelta);
+                                
+                                //if (dicControl.Keys.Contains(colRowKey))
+                                //{
+                                //    if (dicControl[colRowKey].Values.Keys.Contains(metricKey))
+                                //        controlValueForDelta = dicControl[colRowKey].Values[metricKey];
+                                //}
 
-                                if (Threshold != 0 && baseValueForDelta < Threshold)
-                                    baseValueForDelta = Threshold;
-
-                                if (Threshold != 0 && controlValueForDelta < Threshold)
-                                    controlValueForDelta = Threshold;
+                                CheckValuesAgainstThreshold(baseValuesForDelta, Threshold);
+                                CheckValuesAgainstThreshold(controlValuesForDelta, Threshold);
 
                                 //set delta
-                                crCalculateValue.Delta = Convert.ToSingle(baseValueForDelta - controlValueForDelta);
+                                crCalculateValue.Deltas = getDeltaQValues(baseValuesForDelta, controlValuesForDelta);
 
                                 //set beta variation fields
                                 crCalculateValue.BetaVariationName = crSelectFunction.BenMAPHealthImpactFunction.BetaVariation.BetaVariationName;
@@ -6149,6 +6147,34 @@ namespace BenMAP.Configuration
             {
                 double value = kvp.Value[iDay];
                 dicValues.Add(kvp.Key, value);
+            }
+
+            return dicValues;
+        }
+
+        public static Dictionary<int, double> getBaseValuesFromModelResultAttributes(string colRowKey, string metricKey)
+        {
+            Dictionary<int, double> dicValues = new Dictionary<int, double>();
+
+            string[] colRow = colRowKey.Split(',');
+
+            int col = Int32.Parse(colRow[0]);
+            int row = Int32.Parse(colRow[1]);
+
+            foreach (BaseControlGroup bcg in CommonClass.LstBaseControlGroup)
+            {
+                foreach (ModelResultAttribute modelResultAttribute in bcg.Base.ModelResultAttributes)
+                {
+                    if ((modelResultAttribute.Col == col) && (modelResultAttribute.Row == row))
+                    {
+                        int pollutantID = bcg.Pollutant.PollutantID;
+                        double value = modelResultAttribute.Values[metricKey];
+
+                        dicValues.Add(pollutantID, value);
+                        break;
+
+                    }
+                }
             }
 
             return dicValues;
