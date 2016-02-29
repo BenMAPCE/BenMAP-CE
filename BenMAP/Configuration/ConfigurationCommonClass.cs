@@ -4681,7 +4681,7 @@ namespace BenMAP.Configuration
                                     Baseline = 0,
                                     Col = modelResultAttribute.Col,
                                     Row = modelResultAttribute.Row,
-                                    Delta = 0,
+                                    Deltas = getDeltaQValuesZeros(),
                                     Incidence = Convert.ToSingle(incidenceValue),
                                     Population = Convert.ToSingle(populationValue),
                                     LstPercentile = new List<float>(),
@@ -6107,6 +6107,18 @@ namespace BenMAP.Configuration
             {
                 double deltaQ = kvp.Value - dicControlValues[kvp.Key];
                 dicDeltaQValues.Add(kvp.Key, deltaQ);
+            }
+
+            return dicDeltaQValues;
+        }
+
+        public static Dictionary<int, double> getDeltaQValuesZeros()
+        {
+            Dictionary<int, double> dicDeltaQValues = new Dictionary<int, double>();
+
+            foreach (BenMAPPollutant pollutant in CommonClass.LstPollutant)
+            {
+                dicDeltaQValues.Add(pollutant.PollutantID, 0);
             }
 
             return dicDeltaQValues;
