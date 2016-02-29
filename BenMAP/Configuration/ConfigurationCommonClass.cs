@@ -4422,6 +4422,8 @@ namespace BenMAP.Configuration
 
                 Dictionary<int, double> dicBaseValues = new Dictionary<int, double>();
                 Dictionary<int, double> dicControlValues = new Dictionary<int, double>();
+                Dictionary<int, List<float>> dicBase365Values = new Dictionary<int, List<float>>();
+                Dictionary<int, List<float>> dicControl365Values = new Dictionary<int, List<float>>();
                 Dictionary<int, double> dicDeltaQValues = new Dictionary<int, double>();
 
 
@@ -4576,7 +4578,9 @@ namespace BenMAP.Configuration
                     //clear base, control, and deltaq values for this grid cell
                     dicBaseValues.Clear();
                     dicControlValues.Clear();
-                    dicDeltaQValues.Clear();                
+                    dicBase365Values.Clear();
+                    dicControl365Values.Clear();
+                    dicDeltaQValues.Clear();                   
 
                     populationValue = 0;
                     incidenceValue = 0;
@@ -4716,11 +4720,9 @@ namespace BenMAP.Configuration
 
                         #region if we do not have a metric statistic in health impact function
                         //do we have 365 data?
-                        if (dicBase365.ContainsKey(colRowKey) &&
-                                dicBase365[colRowKey].ContainsKey(metricKey)
-                                && dicControl365.ContainsKey(colRowKey) &&
-                                dicControl365[colRowKey].ContainsKey(metricKey))
-                        {
+                       if (getAll365Data(dicAll365Base, colRowKey, metricKey, dicBase365Values) &&
+                                getAll365Data(dicAll365Control, colRowKey, metricKey, dicControl365Values))                       
+                       {
                             #region if we have 365 data
 
                             //for each beta variation
@@ -4738,21 +4740,27 @@ namespace BenMAP.Configuration
                                     }
                                 }
 
-                                //loop over each day of the year for this row/col and metric
-                                for (int iBase = 0; iBase < dicBase365[colRowKey][metricKey].Count; iBase++)
+                                //loop over each day of the year for this row/col and metric                                
+                                for (int iDay = 0; iDay < dicBase365Values.First().Value.Count; iDay++)
                                 {
-                                    double fBase, fControl, fDelta;
-                                    fBase = dicBase365[colRowKey][metricKey][iBase];
-                                    fControl = dicControl365[colRowKey][metricKey][iBase];
-                                    if (fBase != float.MinValue && fControl != float.MinValue)
+
+                                    Dictionary<int, double> fdicBaseValues = new Dictionary<int, double>();
+                                    Dictionary<int, double> fdicControlValues = new Dictionary<int, double>();                                    
+                                    Dictionary<int, double> fdicDeltaQValues = new Dictionary<int, double>();
+
+                                    //double fBase, fControl, fDelta;
+                                    fdicBaseValues = getValuesFrom365Values(dicBase365Values, iDay);
+                                    fdicControlValues = getValuesFrom365Values(dicControl365Values, iDay);
+                                    if ((!CheckValuesAgainstMinimum(fdicBaseValues)) && (!CheckValuesAgainstMinimum(fdicControlValues)))
                                     {
-                                        if (Threshold != 0 && fBase < Threshold)
-                                            fBase = Threshold;
-                                        if (fControl != 0 && fControl < Threshold)
-                                            fControl = Threshold;
-                                        fDelta = fBase - fControl;
+                                        CheckValuesAgainstThreshold(fdicBaseValues, Threshold);
+                                        CheckValuesAgainstThreshold(fdicControlValues, Threshold);
+
+                                        //get deltaQ values
+                                        fdicDeltaQValues = getDeltaQValues(fdicBaseValues, fdicControlValues);
+
                                         {
-                                            CRCalculateValue cr = new CRCalculateValue(); // = CalculateCRSelectFunctionsOneCel(sCRID, hasPopInstrBaseLineFunction, 1, crSelectFunction, strBaseLineFunction, strPointEstimateFunction, modelResultAttribute.Col, modelResultAttribute.Row, fBase, fControl, dicPopValue, dicIncidenceValue, dicPrevalenceValue, dicVariable, betaIndex);
+                                            CRCalculateValue cr = CalculateCRSelectFunctionsOneCel(sCRID, hasPopInstrBaseLineFunction, 1, crSelectFunction, strBaseLineFunction, strPointEstimateFunction, modelResultAttribute.Col, modelResultAttribute.Row, fdicBaseValues, fdicControlValues, dicPopValue, dicIncidenceValue, dicPrevalenceValue, dicVariable, betaIndex);
                                             fPSum += cr.PointEstimate;
                                             fBaselineSum += cr.Baseline;
                                             if (!CommonClass.CRRunInPointMode)
@@ -6069,6 +6077,32 @@ namespace BenMAP.Configuration
             return true;
         }
 
+        public static bool getAll365Data(Dictionary<int, Dictionary<string, Dictionary<string, List<float>>>> dicAll365Data, string colRowKey, string metricKey, Dictionary<int, List<float>> dicValues)
+        {
+            //clear values
+            List<float> values = new List<float>();
+            dicValues.Clear();
+
+            //loop over dictionary containing data for all pollutants
+            //the key is the pollutant ID
+            foreach (KeyValuePair<int, Dictionary<string, Dictionary<string, List<float>>>> kvp in dicAll365Data)
+            {
+                //if we have a value for this pollutant, then add it to our list of values
+                if (get365Data(kvp.Value, colRowKey, metricKey, values))
+                {
+                    dicValues.Add(kvp.Key, values);
+                }
+                else
+                {
+                    //if we don't have a value for a pollutant, then clear any values we have added and return
+                    dicValues.Clear();
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
         public static bool getMetricData(Dictionary<string, Dictionary<string, float>> dicMetricData, string colRowKey, string metricKey, out double value)
         {
             value = 0;
@@ -6088,15 +6122,62 @@ namespace BenMAP.Configuration
             return true;
         }
 
+        public static bool get365Data(Dictionary<string, Dictionary<string, List<float>>> dic365Data, string colRowKey, string metricKey, List<float> values)
+        {
+            values.Clear();
+
+            if (!dic365Data.ContainsKey(colRowKey))
+            {
+                return false;
+            }
+
+            if (!dic365Data[colRowKey].ContainsKey(metricKey))
+            {
+                return false;
+            }
+
+            values = dic365Data[colRowKey][metricKey];
+
+            return true;
+        }
+
+        public static Dictionary<int, double> getValuesFrom365Values(Dictionary<int, List<float>> dic365Values, int iDay)
+        {
+            Dictionary<int, double> dicValues = new Dictionary<int, double>();
+
+            foreach (KeyValuePair<int, List<float>> kvp in dic365Values)
+            {
+                double value = kvp.Value[iDay];
+                dicValues.Add(kvp.Key, value);
+            }
+
+            return dicValues;
+        }
+
         public static void CheckValuesAgainstThreshold(Dictionary<int, double> dicValues, double Threshold)
         {
 
-            for (int i = 0; i < dicValues.Count; i++)
+            foreach (KeyValuePair<int, double> kvp in dicValues)
             {
-                if (Threshold != 0 && dicValues[i] < Threshold)
-                    dicValues[i] = Threshold;
+                if (Threshold != 0 && kvp.Value < Threshold)
+                {
+                    dicValues[kvp.Key] = Threshold;
+                }
             }
 
+        }
+
+        public static bool CheckValuesAgainstMinimum(Dictionary<int, double> dicValues)
+        {
+            foreach (KeyValuePair<int, double> kvp in dicValues)
+            {
+                if (kvp.Value == double.MinValue)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         public static Dictionary<int, double> getDeltaQValues(Dictionary<int, double> dicBaseValues, Dictionary<int, double> dicControlValues)
