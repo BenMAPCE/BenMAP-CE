@@ -8488,14 +8488,6 @@ namespace BenMAP
         private void chkSumAcrossYear_CheckedChanged(object sender, EventArgs e)
         {
             isSumChecked = chkSumAcrossYear.Checked;
-
-            if (OLVResultsShow.GetItemCount() != 0)
-            {
-                foreach (var row in OLVResultsShow.Items)
-                {
-                    // OLVResultsShow.Objects.
-                }
-            }
         }
 
         private void InitTableResult(object oTable)
