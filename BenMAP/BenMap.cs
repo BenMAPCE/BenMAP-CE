@@ -8483,11 +8483,17 @@ namespace BenMAP
                 qalylstHealth.Add(new FieldCheck() { FieldName = "Version", isChecked = true });
             }
         }
+
+        private bool isSumChecked = false;
+        private void chkSumAcrossYear_CheckedChanged(object sender, EventArgs e)
+        {
+            isSumChecked = chkSumAcrossYear.Checked;
+        }
+
         private void InitTableResult(object oTable)
         {
             try
             {
-
                 numericUpDownResult.ValueChanged -= numericUpDownResult_ValueChanged;
                 numericUpDownResult.Value = 4;
                 numericUpDownResult.ValueChanged += numericUpDownResult_ValueChanged;
@@ -8648,6 +8654,8 @@ namespace BenMAP
                     Dictionary<KeyValuePair<CRCalculateValue, int>, AllSelectCRFunction> dicAPV = new Dictionary<KeyValuePair<CRCalculateValue, int>, AllSelectCRFunction>(); int iLstCRTable = 0;
                     Dictionary<CRCalculateValue, int> dicKey = new Dictionary<CRCalculateValue, int>();
 
+                    Dictionary<KeyValuePair<CRCalculateValue, int>, AllSelectCRFunction> dicAPV_Sum = new Dictionary<KeyValuePair<CRCalculateValue, int>, AllSelectCRFunction>();
+
                     foreach (AllSelectCRFunction cr in lstAllSelectCRFuntion)
                     {
                         foreach (CRCalculateValue crv in cr.CRSelectFunctionCalculateValue.CRCalculateValues)
@@ -8655,18 +8663,61 @@ namespace BenMAP
                             dicKey = null;
                             dicKey = new Dictionary<CRCalculateValue, int>();
                             dicKey.Add(crv, iLstCRTable);
+
                             dicAPV.Add(dicKey.ToList()[0], cr);
+                            dicAPV_Sum.Add(ConfigurationCommonClass.getKeyValuePairDeepCopy(dicKey.ToList()[0]), cr);
                         }
                         iLstCRTable++;
                     }
-                    _tableObject = lstAllSelectCRFuntion;
-                    OLVResultsShow.SetObjects(dicAPV.ToList().GetRange(0, dicAPV.Count > 50 ? 50 : dicAPV.Count));
-                    _pageSize = 50;
-                    _currentRow = 0;
-                    _pageCount = dicAPV.Count / 50 + 1; _pageCurrent = 1;
-                    bindingNavigatorPositionItem.Text = _pageCurrent.ToString();
-                    bindingNavigatorCountItem.Text = _pageCount.ToString();
+
+                    if (isSumChecked)
+                    {
+                        int ind = 0, j;
+                        List<int> indexForSum = new List<int>();
+
+                        foreach (KeyValuePair<KeyValuePair<CRCalculateValue, int>, AllSelectCRFunction> kvp in dicAPV_Sum)
+                        {
+                            CRCalculateValue cv = kvp.Key.Key;
+                            if (cv.BetaName == "cold" && ind != 0) { indexForSum.Add(ind); }
+
+                            ind++;
+                        }
+
+                        foreach (int indForSum in indexForSum)
+                        {
+                            dicAPV_Sum.Keys.First().Key.PointEstimate += dicAPV_Sum.Keys.ElementAt(indForSum).Key.PointEstimate;
+
+                            j = 0;
+                            foreach (float p in dicAPV_Sum.Keys.ElementAt(indForSum).Key.LstPercentile)
+                            {
+                                dicAPV_Sum.Keys.First().Key.LstPercentile[j] += p;
+                                j++;
+                            }
+
+                            dicAPV_Sum.Remove(dicAPV_Sum.Keys.ElementAt(indForSum));
+                        }
+
+                        _tableObject = lstAllSelectCRFuntion;
+                        OLVResultsShow.SetObjects(dicAPV_Sum.ToList().GetRange(0, dicAPV_Sum.Count > 50 ? 50 : dicAPV_Sum.Count));
+                        _pageSize = 50;
+                        _currentRow = 0;
+                        _pageCount = dicAPV_Sum.Count / 50 + 1; _pageCurrent = 1;
+                        bindingNavigatorPositionItem.Text = _pageCurrent.ToString();
+                        bindingNavigatorCountItem.Text = _pageCount.ToString();
+                    }
+
+                    else
+                    {
+                        _tableObject = lstAllSelectCRFuntion;
+                        OLVResultsShow.SetObjects(dicAPV.ToList().GetRange(0, dicAPV.Count > 50 ? 50 : dicAPV.Count));
+                        _pageSize = 50;
+                        _currentRow = 0;
+                        _pageCount = dicAPV.Count / 50 + 1; _pageCurrent = 1;
+                        bindingNavigatorPositionItem.Text = _pageCurrent.ToString();
+                        bindingNavigatorCountItem.Text = _pageCount.ToString();
+                    }
                 }
+
                 if (oTable is List<CRSelectFunctionCalculateValue> || oTable is CRSelectFunctionCalculateValue)
                 {
 
@@ -9004,6 +9055,9 @@ namespace BenMAP
                             }
                         }
                     }
+
+                    Dictionary<KeyValuePair<CRCalculateValue, int>, CRSelectFunction> dicAPV_Sum = new Dictionary<KeyValuePair<CRCalculateValue, int>, CRSelectFunction>();
+
                     foreach (CRSelectFunctionCalculateValue cr in lstCRTable)
                     {
                         foreach (CRCalculateValue crv in cr.CRCalculateValues)
@@ -9011,17 +9065,59 @@ namespace BenMAP
                             dicKey = null;
                             dicKey = new Dictionary<CRCalculateValue, int>();
                             dicKey.Add(crv, iLstCRTable);
+
                             dicAPV.Add(dicKey.ToList()[0], cr.CRSelectFunction);
+                            dicAPV_Sum.Add(ConfigurationCommonClass.getKeyValuePairDeepCopy(dicKey.ToList()[0]), cr.CRSelectFunction);
                         }
                         iLstCRTable++;
                     }
-                    _tableObject = lstCRTable;
-                    OLVResultsShow.SetObjects(dicAPV.ToList().GetRange(0, dicAPV.Count > 50 ? 50 : dicAPV.Count));
-                    _pageSize = 50;
-                    _currentRow = 0;
-                    _pageCount = dicAPV.Count / 50 + 1; _pageCurrent = 1;
-                    bindingNavigatorPositionItem.Text = _pageCurrent.ToString();
-                    bindingNavigatorCountItem.Text = _pageCount.ToString();
+
+                    if (isSumChecked)
+                    {
+                        int ind = 0, j;
+                        List<int> indexForSum = new List<int>();
+
+                        foreach(KeyValuePair<KeyValuePair<CRCalculateValue, int>, CRSelectFunction> kvp in dicAPV_Sum)
+                        {
+                            CRCalculateValue cv = kvp.Key.Key;
+                            if(cv.BetaName == "cold" && ind != 0) { indexForSum.Add(ind); }
+
+                            ind++;
+                        }
+
+                        foreach(int indForSum in indexForSum)
+                        {
+                            dicAPV_Sum.Keys.First().Key.PointEstimate += dicAPV_Sum.Keys.ElementAt(indForSum).Key.PointEstimate;
+
+                            j = 0;
+                            foreach(float p in dicAPV_Sum.Keys.ElementAt(indForSum).Key.LstPercentile)
+                            {
+                                dicAPV_Sum.Keys.First().Key.LstPercentile[j] += p;
+                                j++;
+                            }
+
+                            dicAPV_Sum.Remove(dicAPV_Sum.Keys.ElementAt(indForSum));
+                        }
+
+                        _tableObject = lstCRTable;
+                        OLVResultsShow.SetObjects(dicAPV_Sum.ToList().GetRange(0, dicAPV_Sum.Count > 50 ? 50 : dicAPV_Sum.Count));
+                        _pageSize = 50;
+                        _currentRow = 0;
+                        _pageCount = dicAPV_Sum.Count / 50 + 1; _pageCurrent = 1;
+                        bindingNavigatorPositionItem.Text = _pageCurrent.ToString();
+                        bindingNavigatorCountItem.Text = _pageCount.ToString();
+                    }
+
+                    else
+                    {
+                        _tableObject = lstCRTable;
+                        OLVResultsShow.SetObjects(dicAPV.ToList().GetRange(0, dicAPV.Count > 50 ? 50 : dicAPV.Count));
+                        _pageSize = 50;
+                        _currentRow = 0;
+                        _pageCount = dicAPV.Count / 50 + 1; _pageCurrent = 1;
+                        bindingNavigatorPositionItem.Text = _pageCurrent.ToString();
+                        bindingNavigatorCountItem.Text = _pageCount.ToString();
+                    }
                 }
 
 
@@ -14136,10 +14232,5 @@ namespace BenMAP
 
         }
 
-        
-      
-      
-      
-        
     }
 }

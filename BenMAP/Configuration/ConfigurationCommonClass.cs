@@ -6473,5 +6473,33 @@ namespace BenMAP.Configuration
                 return -99999;
             }
         }
+
+        public static KeyValuePair<CRCalculateValue, int> getKeyValuePairDeepCopy(KeyValuePair<CRCalculateValue, int> kvp)
+        {
+            KeyValuePair<CRCalculateValue, int> deepCopy = new KeyValuePair<CRCalculateValue, int>();
+            CRCalculateValue cv = new CRCalculateValue();
+
+            cv.Baseline = kvp.Key.Baseline;
+            cv.BetaName = String.Copy(kvp.Key.BetaName);
+            cv.BetaVariationName = String.Copy(kvp.Key.BetaVariationName);
+            cv.Col = kvp.Key.Col;
+            cv.Delta = kvp.Key.Delta;
+            cv.DeltaList = new List<double>();
+            cv.DeltaList.AddRange(kvp.Key.DeltaList);
+            cv.Incidence = kvp.Key.Incidence;
+            cv.LstPercentile = new List<float>();
+            cv.LstPercentile.AddRange(kvp.Key.LstPercentile);
+            cv.Mean = kvp.Key.Mean;
+            cv.PercentOfBaseline = kvp.Key.PercentOfBaseline;
+            cv.PointEstimate = kvp.Key.PointEstimate;
+            cv.Population = kvp.Key.Population;
+            cv.Row = kvp.Key.Row;
+            cv.StandardDeviation = kvp.Key.StandardDeviation;
+            cv.Variance = kvp.Key.StandardDeviation;
+
+            deepCopy = new KeyValuePair<CRCalculateValue, int>(cv, kvp.Value);
+
+            return deepCopy;
+        }
     }
 }
