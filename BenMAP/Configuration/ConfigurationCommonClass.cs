@@ -6076,14 +6076,14 @@ namespace BenMAP.Configuration
 
         public static bool getAll365Data(Dictionary<int, Dictionary<string, Dictionary<string, List<float>>>> dicAll365Data, string colRowKey, string metricKey, Dictionary<int, List<float>> dicValues)
         {
-            //clear values
-            List<float> values = new List<float>();
+            //clear values            
             dicValues.Clear();
 
             //loop over dictionary containing data for all pollutants
             //the key is the pollutant ID
             foreach (KeyValuePair<int, Dictionary<string, Dictionary<string, List<float>>>> kvp in dicAll365Data)
             {
+                List<float> values = new List<float>();
                 //if we have a value for this pollutant, then add it to our list of values
                 if (get365Data(kvp.Value, colRowKey, metricKey, values))
                 {
@@ -6133,7 +6133,7 @@ namespace BenMAP.Configuration
                 return false;
             }
 
-            values = dic365Data[colRowKey][metricKey];
+            values.AddRange(dic365Data[colRowKey][metricKey]);
 
             return true;
         }
