@@ -695,6 +695,7 @@ namespace BenMAP
             this.chkSumAcrossYear.TabIndex = 17;
             this.chkSumAcrossYear.Text = "Sum values across the year";
             this.chkSumAcrossYear.UseVisualStyleBackColor = true;
+            this.chkSumAcrossYear.CheckedChanged += new System.EventHandler(this.chkSumAcrossYear_CheckedChanged);
             // 
             // btSelectAttribute
             // 
