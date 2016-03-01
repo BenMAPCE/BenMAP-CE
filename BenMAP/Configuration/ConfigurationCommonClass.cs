@@ -6210,7 +6210,6 @@ namespace BenMAP.Configuration
 
                         dicValues.Add(pollutantID, value);
                         break;
-
                     }
                 }
             }
@@ -6235,7 +6234,7 @@ namespace BenMAP.Configuration
         {
             foreach (KeyValuePair<int, double> kvp in dicValues)
             {
-                if (kvp.Value == double.MinValue)
+                if (kvp.Value == float.MinValue) //use float min.  preserved from SCUT code
                 {
                     return true;
                 }
