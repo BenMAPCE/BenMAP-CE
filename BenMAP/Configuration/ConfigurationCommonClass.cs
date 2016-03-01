@@ -4836,9 +4836,13 @@ namespace BenMAP.Configuration
                             }                            
 
                             //are we using monitor data?
-                            if (baseControlGroup.Base is MonitorDataLine && baseControlGroup.Control is MonitorDataLine && baseValue != controlValue && dicAllMonitorNeighborBase != null
+                            if (baseControlGroup.Base is MonitorDataLine 
+                                && baseControlGroup.Control is MonitorDataLine 
+                                && (!baseValuesEqualControlValues(dicBaseValues, dicControlValues)) 
+                                && dicAllMonitorNeighborBase != null
                                 && dicAllMonitorNeighborBase.ContainsKey(colRowKey)
-                                && dicAllMonitorNeighborControl != null && dicAllMonitorNeighborBase.ContainsKey(colRowKey))
+                                && dicAllMonitorNeighborControl != null 
+                                && dicAllMonitorNeighborBase.ContainsKey(colRowKey))
                             {
                                 #region if we are using monitor data
                                 bool is365 = false;
@@ -6263,6 +6267,19 @@ namespace BenMAP.Configuration
             }
 
             return dicDeltaQValues;
+        }
+
+        public static bool baseValuesEqualControlValues(Dictionary<int, double> dicBaseValues, Dictionary<int, double> dicControlValues)
+        {          
+            foreach (KeyValuePair<int, double> kvp in dicBaseValues)
+            {
+                if (kvp.Value != dicControlValues[kvp.Key])
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         public static Dictionary<int, double> getBetaValues(BenMAPHealthImpactFunction hif, int betaIndex)
