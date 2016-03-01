@@ -4795,13 +4795,12 @@ namespace BenMAP.Configuration
 
                                 //calculate delta
                                 Dictionary<int, double> baseValuesForDelta = getBaseValuesFromModelResultAttributes(colRowKey, metricKey);
-                                Dictionary<int, double> controlValuesForDelta = new Dictionary<int, double>(baseValuesForDelta);
-                                
-                                //if (dicControl.Keys.Contains(colRowKey))
-                                //{
-                                //    if (dicControl[colRowKey].Values.Keys.Contains(metricKey))
-                                //        controlValueForDelta = dicControl[colRowKey].Values[metricKey];
-                                //}
+
+                                Dictionary<int, double> controlValuesForDelta = new Dictionary<int, double>();
+                                if (!getControlValues(DicControlAll, colRowKey, metricKey, controlValuesForDelta))
+                                {                                 
+                                    controlValuesForDelta = new Dictionary<int, double>(baseValuesForDelta);
+                                }
 
                                 CheckValuesAgainstThreshold(baseValuesForDelta, Threshold);
                                 CheckValuesAgainstThreshold(controlValuesForDelta, Threshold);
@@ -6150,6 +6149,45 @@ namespace BenMAP.Configuration
             }
 
             return dicValues;
+        }
+
+        public static bool getControlValues(Dictionary<int, Dictionary<string, ModelResultAttribute>> DicControlAll, string colRowKey, string metricKey, Dictionary<int, double> dicValues)
+        {
+            dicValues.Clear();
+
+            foreach (KeyValuePair<int, Dictionary<string, ModelResultAttribute>> kvp in DicControlAll)
+            {
+                int pollutantID = kvp.Key;
+                double value = 0;
+
+                Dictionary<string, ModelResultAttribute> dicControl = kvp.Value;
+
+                if (dicControl.Keys.Contains(colRowKey))
+                {
+                    if (dicControl[colRowKey].Values.Keys.Contains(metricKey))
+                    {
+                        value = dicControl[colRowKey].Values[metricKey];
+
+                        dicValues.Add(pollutantID, value);
+                    }
+                    else
+                    {
+                        //if we don't have metric key then clear any values added and return
+                        dicValues.Clear();
+                        return false;
+
+                    }
+                }
+                else
+                {
+                    //if we don't have colRow key then clear any values added and return
+                    dicValues.Clear();
+                    return false;
+
+                }
+            }          
+
+            return true;
         }
 
         public static Dictionary<int, double> getBaseValuesFromModelResultAttributes(string colRowKey, string metricKey)
