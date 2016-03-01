@@ -4780,7 +4780,7 @@ namespace BenMAP.Configuration
                                 {
                                     Col = modelResultAttribute.Col,
                                     Row = modelResultAttribute.Row,
-                                    Deltas = getDeltaQValuesZeros(),
+                                    Deltas = getDeltaQValuesZeros(),                                    
                                     Incidence = Convert.ToSingle(incidenceValue),
                                     PointEstimate = fPSum,
                                     LstPercentile = lstFPSum,
@@ -4805,8 +4805,9 @@ namespace BenMAP.Configuration
                                 CheckValuesAgainstThreshold(baseValuesForDelta, Threshold);
                                 CheckValuesAgainstThreshold(controlValuesForDelta, Threshold);
 
-                                //set delta
+                                //set deltas
                                 crCalculateValue.Deltas = getDeltaQValues(baseValuesForDelta, controlValuesForDelta);
+                                crCalculateValue.DeltaList = getSortedDeltaListFromDictionaryandObject(crSelectFunction.BenMAPHealthImpactFunction, crCalculateValue.Deltas);
 
                                 //set beta variation fields
                                 crCalculateValue.BetaVariationName = crSelectFunction.BenMAPHealthImpactFunction.BetaVariation.BetaVariationName;
