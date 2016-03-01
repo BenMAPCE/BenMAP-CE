@@ -4826,18 +4826,14 @@ namespace BenMAP.Configuration
                         else
                         {
                             #region if we do not have 365 data
-                            if (modelResultAttribute.Values.ContainsKey(metricKey))
-                                baseValue = modelResultAttribute.Values[metricKey];
 
-                            controlValue = baseValue;
+                            dicBaseValues = getBaseValuesFromModelResultAttributes(colRowKey, metricKey);                          
 
-                            if (dicControl.Keys.Contains(colRowKey))
+                            dicControlValues = new Dictionary<int, double>();
+                            if (!getControlValues(DicControlAll, colRowKey, metricKey, dicControlValues))
                             {
-
-                                if (dicControl[colRowKey].Values.Keys.Contains(metricKey))
-                                    controlValue = dicControl[colRowKey].Values[metricKey];
-
-                            }
+                                dicControlValues = new Dictionary<int, double>(dicBaseValues);
+                            }                            
 
                             //are we using monitor data?
                             if (baseControlGroup.Base is MonitorDataLine && baseControlGroup.Control is MonitorDataLine && baseValue != controlValue && dicAllMonitorNeighborBase != null
@@ -5144,14 +5140,14 @@ namespace BenMAP.Configuration
 
                             if (crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric != null)
                             {
-                                baseValue = modelResultAttribute.Values[metricKey];
-                                controlValue = baseValue;
+                                dicBaseValues = getBaseValuesFromModelResultAttributes(colRowKey, metricKey);
 
-                                if (dicControl.Keys.Contains(colRowKey))
+                                dicControlValues = new Dictionary<int, double>();
+                                if (!getControlValues(DicControlAll, colRowKey, metricKey, dicControlValues))
                                 {
-                                    if (dicControl[colRowKey].Values.Keys.Contains(metricKey))
-                                        controlValue = dicControl[colRowKey].Values[metricKey];
+                                    dicControlValues = new Dictionary<int, double>(dicBaseValues);
                                 }
+
                                 i365 = crSelectFunction.BenMAPHealthImpactFunction.PollutantGroup.Pollutants.First().Seasons.Count();
 
                             }
