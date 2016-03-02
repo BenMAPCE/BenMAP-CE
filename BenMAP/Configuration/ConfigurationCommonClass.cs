@@ -4409,7 +4409,7 @@ namespace BenMAP.Configuration
                 BaseControlGroup baseControlGroup;
 
                 //to get dictionaries for a single pollutant, for example
-                baseControlGroup = CommonClass.LstBaseControlGroup.First();
+                baseControlGroup = CommonClass.LstBaseControlGroup.First(); //Where(bcg => bcg.Pollutant.PollutantID == 4)
                 dicBaseMetricData = dicAllMetricDataBase[baseControlGroup.Pollutant.PollutantID];
                 dicControlMetricData = dicAllMetricDataControl[baseControlGroup.Pollutant.PollutantID];
                 dicBase365 = dicAll365Base[baseControlGroup.Pollutant.PollutantID];
@@ -4857,11 +4857,13 @@ namespace BenMAP.Configuration
                                     dayCount = 4;
                                 }
 
-
+                                //loop over monitor neighbors for this colRow
                                 foreach (MonitorNeighborAttribute mnAttribute in dicAllMonitorNeighborBase[colRowKey])
                                 {
+                                    //does this monitor have 365 metric values for this metric key?
                                     if (dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues365 != null && dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues365.ContainsKey(metricKey))
                                     {
+                                        //set flag and dayCount to number values for metric key
                                         is365 = true;
                                         dayCount = dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues365[metricKey].Count;
                                         break;
@@ -4891,14 +4893,18 @@ namespace BenMAP.Configuration
                                         #region if is365 = true
                                         List<float> lstdfmBase = new List<float>();
 
+                                        //loop over monitor neighbors for this colRow
                                         foreach (MonitorNeighborAttribute mnAttribute in dicAllMonitorNeighborBase[colRowKey])
                                         {
                                             if (lstdfmBase.Count == 0)
                                             {
+                                                //does this monitor have 365 metric values for this metric key?
                                                 if (dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues365 != null && dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues365.ContainsKey(metricKey))
                                                 {
+                                                    //get metric values for this metric key after multiplying them by monitor neighbor weight
                                                     lstdfmBase = dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues365[metricKey].Select(p => p == float.MinValue ? 0 : Convert.ToSingle(p * mnAttribute.Weight)).ToList();
                                                 }
+                                                //does this monitor have metric values for HIF metric name?
                                                 else if (dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues != null && dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues.ContainsKey(crSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName))
                                                 {
                                                     float value = dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues[metricKey] == float.MinValue ? 0 : dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues[metricKey] * Convert.ToSingle(mnAttribute.Weight);
