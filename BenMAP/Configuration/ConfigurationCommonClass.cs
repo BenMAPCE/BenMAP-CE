@@ -4840,9 +4840,9 @@ namespace BenMAP.Configuration
                                 && baseControlGroup.Control is MonitorDataLine 
                                 && (!baseValuesEqualControlValues(dicBaseValues, dicControlValues)) 
                                 && dicAllMonitorNeighborBase != null
-                                && dicAllMonitorNeighborBase.ContainsKey(colRowKey)
+                                && dicAllMonitorNeighborBase.ContainsKey(colRowKey)  //do we have monitor neighbor data for this colRowKey?
                                 && dicAllMonitorNeighborControl != null 
-                                && dicAllMonitorNeighborBase.ContainsKey(colRowKey))
+                                && dicAllMonitorNeighborControl.ContainsKey(colRowKey))
                             {
                                 #region if we are using monitor data
                                 bool is365 = false;
@@ -4856,6 +4856,7 @@ namespace BenMAP.Configuration
                                     iEndDay = crSelectFunction.BenMAPHealthImpactFunction.PollutantGroup.Pollutants.First().Seasons.Count();
                                     dayCount = 4;
                                 }
+
 
                                 foreach (MonitorNeighborAttribute mnAttribute in dicAllMonitorNeighborBase[colRowKey])
                                 {
