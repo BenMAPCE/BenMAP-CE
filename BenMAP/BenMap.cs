@@ -8837,7 +8837,7 @@ namespace BenMAP
                         iLstCRTable++;
                     }
 
-                    if (isSumChecked)
+                    if (isSumChecked && dicAPV.Keys.First().Key.BetaVariationName.ToLower() == "seasonal")
                     {
                         int ind = 0, j;
                         List<int> indexForSum = new List<int>();
@@ -8845,7 +8845,7 @@ namespace BenMAP
                         foreach (KeyValuePair<KeyValuePair<CRCalculateValue, int>, AllSelectCRFunction> kvp in dicAPV_Sum)
                         {
                             CRCalculateValue cv = kvp.Key.Key;
-                            if (cv.BetaName == "cold" && ind != 0) { indexForSum.Add(ind); }
+                            if (cv.BetaName.ToLower() == "cold" && ind != 0) { indexForSum.Add(ind); }
 
                             ind++;
                         }
@@ -9239,7 +9239,7 @@ namespace BenMAP
                         iLstCRTable++;
                     }
 
-                    if (isSumChecked)
+                    if (isSumChecked && dicAPV.Keys.First().Key.BetaVariationName.ToLower() == "seasonal")
                     {
                         int ind = 0, j;
                         List<int> indexForSum = new List<int>();
@@ -9247,7 +9247,7 @@ namespace BenMAP
                         foreach(KeyValuePair<KeyValuePair<CRCalculateValue, int>, CRSelectFunction> kvp in dicAPV_Sum)
                         {
                             CRCalculateValue cv = kvp.Key.Key;
-                            if(cv.BetaName == "cold" && ind != 0) { indexForSum.Add(ind); }
+                            if(cv.BetaName.ToLower() == "cold" && ind != 0) { indexForSum.Add(ind); }
 
                             ind++;
                         }
