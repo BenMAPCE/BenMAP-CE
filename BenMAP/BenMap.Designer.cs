@@ -506,7 +506,7 @@ namespace BenMAP
             // 
             // olvColumn39
             // 
-            this.olvColumn39.AspectName = "CRSelectFunction.BenMAPHealthImpactFunction.Pollutant.PollutantName";
+            this.olvColumn39.AspectName = "CRSelectFunction.BenMAPHealthImpactFunction.PollutantGroup.PollutantGroupName";
             this.olvColumn39.IsEditable = false;
             this.olvColumn39.Text = "Pollutant";
             this.olvColumn39.Width = 110;

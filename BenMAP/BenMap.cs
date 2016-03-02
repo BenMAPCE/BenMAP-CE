@@ -4405,7 +4405,23 @@ namespace BenMAP
                         {
                             dt.Columns.Add("Point Estimate", typeof(double));
                             dt.Columns.Add("Population", typeof(double));
-                            dt.Columns.Add("Delta", typeof(double));
+
+                            // set up delta columns dynamically for multipollutant
+                            if (lstAllSelectCRFuntion.First().CRSelectFunctionCalculateValue.CRCalculateValues.First().DeltaList != null)
+                            {
+                                int dCount = lstAllSelectCRFuntion.First().CRSelectFunctionCalculateValue.CRCalculateValues.First().DeltaList.Count();
+
+                                for (int j = 0; j < dCount; j++)
+                                {
+                                    string pollName = lstAllSelectCRFuntion.First().CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Variables[j].PollutantName;
+                                    dt.Columns.Add("Delta_" + pollName, typeof(double));
+                                }
+                            }
+                            else
+                            {
+                                dt.Columns.Add("Delta", typeof(double));
+                            }
+
                             dt.Columns.Add("Mean", typeof(double));
                             dt.Columns.Add("Baseline", typeof(double));
                             dt.Columns.Add("Percent Of Baseline", typeof(double));
@@ -4459,7 +4475,24 @@ namespace BenMAP
                                 }
                                 if (dt.Columns.Contains("Point Estimate")) dr["Point Estimate"] = crcv.PointEstimate;
                                 if (dt.Columns.Contains("Population")) dr["Population"] = crcv.Population;
-                                if (dt.Columns.Contains("Delta")) dr["Delta"] = crcv.Delta;
+
+                                if (crcv.DeltaList != null)
+                                {
+                                    string pollName, tempKey;
+                                    int dCount = crcv.DeltaList.Count();
+                                    for (int j = 0; j < dCount; j++)
+                                    {
+                                        pollName = cr.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Variables[j].PollutantName;
+                                        tempKey = "Delta_" + pollName;
+
+                                        if(dt.Columns.Contains(tempKey)) dr[tempKey] = crcv.DeltaList[j];
+                                    }
+                                }
+                                else
+                                {
+                                    if (dt.Columns.Contains("Delta")) dr["Delta"] = crcv.Delta;
+                                }
+
                                 if (dt.Columns.Contains("Mean")) dr["Mean"] = crcv.Mean;
                                 if (dt.Columns.Contains("Baseline")) dr["Baseline"] = crcv.Baseline;
                                 if (dt.Columns.Contains("Percent Of Baseline")) dr["Percent Of Baseline"] = crcv.PercentOfBaseline;
@@ -4489,7 +4522,23 @@ namespace BenMAP
                         dt.Columns.Add("Row", typeof(int));
                         dt.Columns.Add("Point Estimate", typeof(double));
                         dt.Columns.Add("Population", typeof(double));
-                        dt.Columns.Add("Delta", typeof(double));
+
+                        // set up delta columns dynamically for multipollutant
+                        if (crTable.CRCalculateValues.First().DeltaList != null)
+                        {
+                            int dCount = crTable.CRCalculateValues.First().DeltaList.Count();
+
+                            for (int j = 0; j < dCount; j++)
+                            {
+                                string pollName = crTable.CRSelectFunction.BenMAPHealthImpactFunction.Variables[j].PollutantName;
+                                dt.Columns.Add("Delta_" + pollName, typeof(double));
+                            }
+                        }
+                        else
+                        {
+                            dt.Columns.Add("Delta", typeof(double));
+                        }
+
                         dt.Columns.Add("Mean", typeof(double));
                         dt.Columns.Add("Baseline", typeof(double));
                         dt.Columns.Add("Percent Of Baseline", typeof(double));
@@ -4510,7 +4559,24 @@ namespace BenMAP
                             dr["Row"] = crcv.Row;
                             dr["Point Estimate"] = crcv.PointEstimate;
                             dr["Population"] = crcv.Population;
-                            dr["Delta"] = crcv.Delta;
+
+                            if (crcv.DeltaList != null)
+                            {
+                                string pollName, tempKey;
+                                int dCount = crcv.DeltaList.Count();
+                                for (int j = 0; j < dCount; j++)
+                                {
+                                    pollName = crTable.CRSelectFunction.BenMAPHealthImpactFunction.Variables[j].PollutantName;
+                                    tempKey = "Delta_" + pollName;
+
+                                    if (dt.Columns.Contains(tempKey)) dr[tempKey] = crcv.DeltaList[j];
+                                }
+                            }
+                            else
+                            {
+                                if (dt.Columns.Contains("Delta")) dr["Delta"] = crcv.Delta;
+                            }
+
                             dr["Mean"] = crcv.Mean;
                             dr["Baseline"] = crcv.Baseline;
                             dr["Percent Of Baseline"] = crcv.PercentOfBaseline;
@@ -4566,6 +4632,23 @@ namespace BenMAP
                             dt.Columns.Add("Point Estimate", typeof(double));
                             dt.Columns.Add("Population", typeof(double));
                             dt.Columns.Add("Delta", typeof(double));
+
+                            // set up delta columns dynamically for multipollutant
+                            if (dicAPV.First().Key.Key.DeltaList != null)
+                            {
+                                int dCount = dicAPV.First().Key.Key.DeltaList.Count();
+
+                                for (int j = 0; j < dCount; j++)
+                                {
+                                    string pollName = dicAPV.First().Value.BenMAPHealthImpactFunction.Variables[j].PollutantName;
+                                    dt.Columns.Add("Delta_" + pollName, typeof(double));
+                                }
+                            }
+                            else
+                            {
+                                dt.Columns.Add("Delta", typeof(double));
+                            }
+
                             dt.Columns.Add("Mean", typeof(double));
                             dt.Columns.Add("Baseline", typeof(double));
                             dt.Columns.Add("Percent Of Baseline", typeof(double));
@@ -4634,6 +4717,24 @@ namespace BenMAP
                                 dr["Point Estimate"] = crcv.PointEstimate;
                                 dr["Population"] = crcv.Population;
                                 dr["Delta"] = crcv.Delta;
+
+                                if (crcv.DeltaList != null)
+                                {
+                                    string pollName, tempKey;
+                                    int dCount = crcv.DeltaList.Count();
+                                    for (int j = 0; j < dCount; j++)
+                                    {
+                                        pollName = k.Value.BenMAPHealthImpactFunction.Variables[j].PollutantName;
+                                        tempKey = "Delta_" + pollName;
+
+                                        if (dt.Columns.Contains(tempKey)) dr[tempKey] = crcv.DeltaList[j];
+                                    }
+                                }
+                                else
+                                {
+                                    if (dt.Columns.Contains("Delta")) dr["Delta"] = crcv.Delta;
+                                }
+
                                 dr["Mean"] = crcv.Mean;
                                 dr["Baseline"] = crcv.Baseline;
                                 dr["Percent of Baseline"] = crcv.PercentOfBaseline;
@@ -4708,7 +4809,23 @@ namespace BenMAP
 
                                 dt.Columns.Add("Point Estimate", typeof(double));
                                 dt.Columns.Add("Population", typeof(double));
-                                dt.Columns.Add("Delta", typeof(double));
+
+                                // set up delta columns dynamically for multipollutant
+                                if (lstCRTable.First().CRCalculateValues.First().DeltaList != null)
+                                {
+                                    int dCount = lstCRTable.First().CRCalculateValues.First().DeltaList.Count();
+
+                                    for (int j = 0; j < dCount; j++)
+                                    {
+                                        string pollName = lstCRTable.First().CRSelectFunction.BenMAPHealthImpactFunction.Variables[j].PollutantName;
+                                        dt.Columns.Add("Delta_" + pollName, typeof(double));
+                                    }
+                                }
+                                else
+                                {
+                                    dt.Columns.Add("Delta", typeof(double));
+                                }
+
                                 dt.Columns.Add("Mean", typeof(double));
                                 dt.Columns.Add("Baseline", typeof(double));
                                 dt.Columns.Add("Percent of Baseline", typeof(double));
@@ -4775,7 +4892,23 @@ namespace BenMAP
 
                                 dt.Columns.Add("Point Estimate", typeof(double));
                                 dt.Columns.Add("Population", typeof(double));
-                                dt.Columns.Add("Delta", typeof(double));
+
+                                // set up delta columns dynamically for multipollutant
+                                if (lstCRTable.First().CRCalculateValues.First().DeltaList != null)
+                                {
+                                    int dCount = lstCRTable.First().CRCalculateValues.First().DeltaList.Count();
+
+                                    for (int j = 0; j < dCount; j++)
+                                    {
+                                        string pollName = lstCRTable.First().CRSelectFunction.BenMAPHealthImpactFunction.Variables[j].PollutantName;
+                                        dt.Columns.Add("Delta_" + pollName, typeof(double));
+                                    }
+                                }
+                                else
+                                {
+                                    dt.Columns.Add("Delta", typeof(double));
+                                }
+
                                 dt.Columns.Add("Mean", typeof(double));
                                 dt.Columns.Add("Baseline", typeof(double));
                                 dt.Columns.Add("Percent of Baseline", typeof(double));
@@ -4976,7 +5109,24 @@ namespace BenMAP
 
                                     dr["Point Estimate"] = k.Key.Key.PointEstimate;
                                     dr["Population"] = k.Key.Key.Population;
-                                    dr["Delta"] = k.Key.Key.Delta;
+
+                                    // set delta values dynamically
+                                    if (lstCRTable.First().CRCalculateValues.First().DeltaList != null)
+                                    {
+                                        string pollName, tempKey;
+                                        int dCount = lstCRTable.First().CRCalculateValues.First().DeltaList.Count();
+                                        for (int j = 0; j < dCount; j++)
+                                        {
+                                            pollName = lstCRTable.First().CRSelectFunction.BenMAPHealthImpactFunction.Variables[j].PollutantName;
+                                            tempKey = "Delta_" + pollName;
+                                            dr[tempKey] = k.Key.Key.DeltaList[j];
+                                        }
+                                    }
+                                    else
+                                    {
+                                        dr["Delta"] = k.Key.Key.Delta;
+                                    }
+
                                     dr["Mean"] = k.Key.Key.Mean;
                                     dr["Baseline"] = k.Key.Key.Baseline;
                                     dr["Percent Of Baseline"] = k.Key.Key.PercentOfBaseline;
@@ -5042,7 +5192,24 @@ namespace BenMAP
 
                                     dr["Point Estimate"] = k.Key.Key.PointEstimate;
                                     dr["Population"] = k.Key.Key.Population;
-                                    dr["Delta"] = k.Key.Key.Delta;
+
+                                    // set delta values dynamically
+                                    if (lstCRTable.First().CRCalculateValues.First().DeltaList != null)
+                                    {
+                                        string pollName, tempKey;
+                                        int dCount = lstCRTable.First().CRCalculateValues.First().DeltaList.Count();
+                                        for (int j = 0; j < dCount; j++)
+                                        {
+                                            pollName = lstCRTable.First().CRSelectFunction.BenMAPHealthImpactFunction.Variables[j].PollutantName;
+                                            tempKey = "Delta_" + pollName;
+                                            dr[tempKey] = k.Key.Key.DeltaList[j];
+                                        }
+                                    }
+                                    else
+                                    {
+                                        dr["Delta"] = k.Key.Key.Delta;
+                                    }
+
                                     dr["Mean"] = k.Key.Key.Mean;
                                     dr["Baseline"] = k.Key.Key.Baseline;
                                     dr["Percent Of Baseline"] = k.Key.Key.PercentOfBaseline;
@@ -8601,7 +8768,7 @@ namespace BenMAP
                                 string pollName = lstAllSelectCRFuntion.First().CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Variables[j].PollutantName;
                                 int pollID = ConfigurationCommonClass.getPollutantIDFromPollutantNameAndObject(lstAllSelectCRFuntion.First().CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction, pollName);
                                 
-                                OLVResultsShow.Columns.Add(new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Deltas[" + j + "]", AspectToStringFormat = "{0:N4}", Text = "Delta_" + pollName, Width = ("Delta_" + pollName).Length * 8, IsEditable = false });
+                                OLVResultsShow.Columns.Add(new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.DeltaList[" + j + "]", AspectToStringFormat = "{0:N4}", Text = "Delta_" + pollName, Width = ("Delta_" + pollName).Length * 8, IsEditable = false });
                             }
                         }
                         else
@@ -8670,7 +8837,7 @@ namespace BenMAP
                         iLstCRTable++;
                     }
 
-                    if (isSumChecked)
+                    if (isSumChecked && dicAPV.Keys.First().Key.BetaVariationName.ToLower() == "seasonal")
                     {
                         int ind = 0, j;
                         List<int> indexForSum = new List<int>();
@@ -8678,7 +8845,7 @@ namespace BenMAP
                         foreach (KeyValuePair<KeyValuePair<CRCalculateValue, int>, AllSelectCRFunction> kvp in dicAPV_Sum)
                         {
                             CRCalculateValue cv = kvp.Key.Key;
-                            if (cv.BetaName == "cold" && ind != 0) { indexForSum.Add(ind); }
+                            if (cv.BetaName.ToLower() == "cold" && ind != 0) { indexForSum.Add(ind); }
 
                             ind++;
                         }
@@ -8780,7 +8947,7 @@ namespace BenMAP
                                     string pollName = lstCRTable.First().CRSelectFunction.BenMAPHealthImpactFunction.Variables[j].PollutantName;
                                     int pollID = ConfigurationCommonClass.getPollutantIDFromPollutantNameAndObject(lstCRTable.First().CRSelectFunction.BenMAPHealthImpactFunction, pollName);
 
-                                    OLVResultsShow.Columns.Add(new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Deltas[" + j + "]", AspectToStringFormat = "{0:N4}", Text = "Delta_" + pollName, Width = ("Delta_" + pollName).Length * 8, IsEditable = false });
+                                    OLVResultsShow.Columns.Add(new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.DeltaList[" + j + "]", AspectToStringFormat = "{0:N4}", Text = "Delta_" + pollName, Width = ("Delta_" + pollName).Length * 8, IsEditable = false });
                                 }
                             }
                             else
@@ -9072,7 +9239,7 @@ namespace BenMAP
                         iLstCRTable++;
                     }
 
-                    if (isSumChecked)
+                    if (isSumChecked && dicAPV.Keys.First().Key.BetaVariationName.ToLower() == "seasonal")
                     {
                         int ind = 0, j;
                         List<int> indexForSum = new List<int>();
@@ -9080,7 +9247,7 @@ namespace BenMAP
                         foreach(KeyValuePair<KeyValuePair<CRCalculateValue, int>, CRSelectFunction> kvp in dicAPV_Sum)
                         {
                             CRCalculateValue cv = kvp.Key.Key;
-                            if(cv.BetaName == "cold" && ind != 0) { indexForSum.Add(ind); }
+                            if(cv.BetaName.ToLower() == "cold" && ind != 0) { indexForSum.Add(ind); }
 
                             ind++;
                         }
