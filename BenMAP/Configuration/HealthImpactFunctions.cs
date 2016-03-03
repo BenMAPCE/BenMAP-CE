@@ -1303,6 +1303,13 @@ namespace BenMAP
                             }
 
                             dicIncidenceRateAttribute = Configuration.ConfigurationCommonClass.getIncidenceDataSetFromCRSelectFuntionDicAllAge(dicAge, dicPopulationAge, dicPopulation12, crSelectFunction, false, dicRace, dicEthnicity, dicGender, CommonClass.GBenMAPGrid.GridDefinitionID, gridRelationShipIncidence);
+/*                            bool debug = true;
+                            if(debug){
+                                foreach (String key in dicIncidenceRateAttribute.Keys)
+                                {
+                                    Console.WriteLine(key + " " + dicIncidenceRateAttribute[key]);
+                                }
+                            }*/
                             dicAllIncidence.Add(crSelectFunction.IncidenceDataSetID + "," + crSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID + "," + crSelectFunction.BenMAPHealthImpactFunction.EndPointID + "," + crSelectFunction.StartAge + "," + crSelectFunction.EndAge, dicIncidenceRateAttribute);
                         }
                     }
@@ -1380,6 +1387,7 @@ namespace BenMAP
                         crSelectFunction.lstLatinPoints.Add(new LatinPoints() { values = lhsResultArray.ToList() });
                     }
                     string iRunCRID = crid.ToString();
+                    // if not batch perform asynch call 
                     if (!isBatch)
                     {
                         IAsyncResult ar = dlgt.BeginInvoke(iRunCRID, lstAllAgeID, dicAge, dicAllMetricDataBase[baseControlGroup.Pollutant.PollutantID], dicAllMetricDataControl[baseControlGroup.Pollutant.PollutantID]

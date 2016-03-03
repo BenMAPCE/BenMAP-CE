@@ -3693,7 +3693,7 @@ namespace BenMAP.Configuration
   " END as weight,b.StartAge as sourceStartAge,b.EndAge as SourceEndAge" +
   "  from ( select distinct startage,endage from Incidencerates  where IncidenceDataSetID=" + iid + ")a,ageranges b" +
   " where b.EndAge>=a.StartAge and b.StartAge<=a.EndAge and b.PopulationConfigurationID={4}", straStartAgeOri, straEndAgeOri, strbStartAgeOri, strbEndAgeOri, CommonClass.BenMAPPopulation.PopulationConfiguration);
-
+                // this is performing a mapping from incidence age bins to population age bins -AS
                 string strInc = string.Format("select  a.CColumn,a.Row,sum(a.VValue*d.Weight) as VValue,d.AgeRangeID  from IncidenceEntries a,IncidenceRates b,IncidenceDatasets c ,(" + strAgeID +
                      ") d where   b.StartAge=d.StartAge and b.EndAge=d.EndAge and " +
              " a.IncidenceRateID=b.IncidenceRateID and b.IncidenceDatasetID=c.IncidenceDatasetID and b.EndPointGroupID=" + crSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID + strRace + " and (b.EndPointID=" + crSelectFunction.BenMAPHealthImpactFunction.EndPointID + "  or b.EndPointID=99 or b.EndPointID=100 or b.EndPointID=102)" + " and b.Prevalence='" + strbPrevalence + "' " +
@@ -3709,6 +3709,7 @@ namespace BenMAP.Configuration
                     }
                 }
                 dsInc.Dispose();
+                // if these grids are equal return the mapping otherwise calculate percentages based on crosswalks
                 if (iPopulationDataSetGridID == CommonClass.GBenMAPGrid.GridDefinitionID) return dicInc;
                 Dictionary<string, Dictionary<string, double>> dicPercentageForAggregationInc = new Dictionary<string, Dictionary<string, double>>();
                 try
@@ -4462,8 +4463,11 @@ namespace BenMAP.Configuration
                 }
                 foreach (ModelResultAttribute modelResultAttribute in baseControlGroup.Base.ModelResultAttributes)
                 {
-
-
+                    bool debug = false;
+                    if (modelResultAttribute.Col == 29 && modelResultAttribute.Row == 702)
+                    {
+                        debug = true;
+                    }
 
 
 
@@ -4491,6 +4495,7 @@ namespace BenMAP.Configuration
                             if (dicIncidenceRateAttribute.Keys.Contains((Convert.ToInt32(modelResultAttribute.Col) * 10000 + Convert.ToInt32(modelResultAttribute.Row)).ToString() + "," + s))
                             {
                                 dicIncidenceValue.Add(s, dicIncidenceRateAttribute[(Convert.ToInt32(modelResultAttribute.Col) * 10000 + Convert.ToInt32(modelResultAttribute.Row)).ToString() + "," + s]);
+
                             }
                         }
                     }
@@ -5478,8 +5483,7 @@ namespace BenMAP.Configuration
 
 
                 };
-
-
+                Console.WriteLine("processing column : " + col + " row : " + row);
 
 
                 if (dicPopulationValue == null || dicPopulationValue.Count == 0 || dicPopulationValue.Sum(p => p.Value) == 0)
@@ -5490,7 +5494,7 @@ namespace BenMAP.Configuration
                     {
                         foreach (KeyValuePair<string, double> k in dicPopulationValue)
                         {
-                            incidenceValue = dicIncidenceValue != null && dicIncidenceValue.Count > 0 && dicIncidenceValue.ContainsKey(k.Key) ? dicIncidenceValue[k.Key] : 0;
+                            incidenceValue = dicIncidenceValue != null && dicIncidenceValue.Count > 0 && dicIncidenceValue.ContainsKey(k.Key) ? dicIncidenceValue[k.Key] : 0;                        
                             prevalenceValue = dicPrevalenceValue != null && dicPrevalenceValue.Count > 0 && dicPrevalenceValue.ContainsKey(k.Key) ? dicPrevalenceValue[k.Key] : 0;
                             crCalculateValue.PointEstimate += ConfigurationCommonClass.getValueFromPointEstimateFunctionString(iCRID, strPointEstimateFunction, crSelectFunction.BenMAPHealthImpactFunction.AContantValue,
                                 crSelectFunction.BenMAPHealthImpactFunction.BContantValue, crSelectFunction.BenMAPHealthImpactFunction.CContantValue,
