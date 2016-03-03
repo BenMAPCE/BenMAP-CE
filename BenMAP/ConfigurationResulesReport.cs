@@ -61,6 +61,9 @@ namespace BenMAP
                     lstHealth.Add(new FieldCheck() { FieldName = "NameB", isChecked = false });
                     lstHealth.Add(new FieldCheck() { FieldName = "C", isChecked = false });
                     lstHealth.Add(new FieldCheck() { FieldName = "NameC", isChecked = false });
+                    lstHealth.Add(new FieldCheck() { FieldName = "Beta Variation", isChecked = false });
+                    lstHealth.Add(new FieldCheck() { FieldName = "Model Specification", isChecked = false });
+
                     if (isPooledIncidence)
                     {
                         lstHealth.Add(new FieldCheck() { FieldName = "Version", isChecked = false });

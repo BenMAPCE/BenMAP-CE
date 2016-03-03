@@ -723,6 +723,8 @@ namespace BenMAP
                                         benMAP.cflstHealth.Add(new FieldCheck() { FieldName = "NameB", isChecked = false });
                                         benMAP.cflstHealth.Add(new FieldCheck() { FieldName = "C", isChecked = false });
                                         benMAP.cflstHealth.Add(new FieldCheck() { FieldName = "NameC", isChecked = false });
+                                        benMAP.cflstHealth.Add(new FieldCheck() { FieldName = "Beta Variation", isChecked = false });
+                                        benMAP.cflstHealth.Add(new FieldCheck() { FieldName = "Model Specification", isChecked = false });
 
                                     }
                                     if (strTemp.Contains("dataset"))
@@ -852,6 +854,14 @@ namespace BenMAP
                                     if (strTemp.Contains("namec"))
                                     {
                                         benMAP.cflstHealth.Where(p => p.FieldName == "NameC").First().isChecked = true;
+                                    }
+                                    if (strTemp.Contains("betavariation"))
+                                    {
+                                        benMAP.cflstHealth.Where(p => p.FieldName == "Beta Variation").First().isChecked = true;
+                                    }
+                                    if (strTemp.Contains("modelspecification"))
+                                    {
+                                        benMAP.cflstHealth.Where(p => p.FieldName == "Model Specification").First().isChecked = true;
                                     }
                                 }
                                 if (batchReportCFGR.ResultFields != null && batchReportCFGR.ResultFields.Trim() != "")

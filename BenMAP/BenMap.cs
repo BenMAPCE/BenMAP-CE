@@ -8101,7 +8101,12 @@ namespace BenMAP
                 case "C Description":
                     fieldName = "BenMAPHealthImpactFunction.CContantDescription";
                     break;
-
+                case "Beta Variation":
+                    fieldName = "BenMAPHealthImpactFunction.BetaVariation.BetaVariationName";
+                    break;
+                case "Model Specification":
+                    fieldName = "BenMAPHealthImpactFunction.ModelSpecification.MSDescription";
+                    break;
 
             }
             return fieldName;
@@ -8238,6 +8243,12 @@ namespace BenMAP
                     break;
                 case "C Description":
                     fieldName = crf.BenMAPHealthImpactFunction.CContantDescription;
+                    break;
+                case "Beta Variation":
+                    fieldName = crf.BenMAPHealthImpactFunction.BetaVariation.BetaVariationName;
+                    break;
+                case "Model Specification":
+                    fieldName = crf.BenMAPHealthImpactFunction.ModelSpecification.MSDescription;
                     break;
 
 
@@ -8600,6 +8611,8 @@ namespace BenMAP
                 cflstHealth.Add(new FieldCheck() { FieldName = "B Description", isChecked = false });
                 cflstHealth.Add(new FieldCheck() { FieldName = "C", isChecked = false });
                 cflstHealth.Add(new FieldCheck() { FieldName = "C Description", isChecked = false });
+                cflstHealth.Add(new FieldCheck() { FieldName = "Beta Variation", isChecked = false });
+                cflstHealth.Add(new FieldCheck() { FieldName = "Model Specification", isChecked = false });
             }
             if (apvlstHealth == null)
             {
