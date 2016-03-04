@@ -1428,7 +1428,8 @@ namespace PopSim
                     { //Use pop/migration/death rate from previous age/year pair to calculate current age/year pop
 
                         //Select records from final population table for the previous age/year pair
-                        dcFPop.Parameters[0].Value = age;
+                        // 2016 03 04 - modified age parameter to use previous year - BENMAP-379
+                        dcFPop.Parameters[0].Value = (age - 1);
                         dcFPop.Parameters[1].Value = (year - 1).ToString();
                         dcFPop.Parameters[2].Value = strgenderText;
                         dcFPop.Parameters[3].Value = strscenarioText;
@@ -1516,7 +1517,8 @@ namespace PopSim
                             + age.ToString() + " , " + year.ToString() + " , " + pop.ToString()
                             + " , '" + strgenderText + "' , '" + strscenarioText + "' ) ";
                     dataCommand.CommandText = sqltext;
-                    dataCommand.Transaction = trTR;
+                    // 2016 03 04 - removed transaction because age zero was not getting committed BENMAP-379
+                    //dataCommand.Transaction = trTR;
                     dataCommand.ExecuteNonQuery();
 
                     //CALCULATE TOTAL DEATHS
