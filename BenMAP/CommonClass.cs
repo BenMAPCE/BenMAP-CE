@@ -4328,6 +4328,12 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
 
     }
 
+    public class MonitorDataHelper
+    {
+        public BaseControlGroup BaseControlGroup;
+        public bool Is365;
+        public int DayCount;
+    }
 
     public class RegexUtilities
     {
@@ -4381,8 +4387,13 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
                 invalid = true;
             }
             return match.Groups[1].Value + domainName;
-        }
+        }        
+
+        
+
     }
+
+
 
 
 
