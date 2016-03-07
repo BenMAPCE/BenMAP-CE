@@ -4881,8 +4881,11 @@ namespace BenMAP.Configuration
                                         #region if is365 = true         
                                         
                                         //get 365 monitor values by pollutant                               
-                                        get365ValuesFromMonitorDataHelpers(lstMonitorDataHelpers, dicBase365Values, dicControl365Values);                                     
+                                        get365ValuesFromMonitorDataHelpers(lstMonitorDataHelpers, dicBase365Values, dicControl365Values);
 
+                                        //get 365 values for base control groups using model data                                 
+                                        get365ValuesFromModelValues(dicBaseValues, dicBase365Values);
+                                        get365ValuesFromModelValues(dicControlValues, dicControl365Values);
 
                                         float fPSum = 0, fBaselineSum = 0;
                                         List<float> lstFPSum = new List<float>();
@@ -6619,6 +6622,29 @@ namespace BenMAP.Configuration
             {
                 dicBase365Values.Add(mdh.BaseControlGroup.Pollutant.PollutantID, mdh.BaseValues);
                 dicControl365Values.Add(mdh.BaseControlGroup.Pollutant.PollutantID, mdh.ControlValues);
+            }
+
+        }
+
+        public static void get365ValuesFromModelValues(Dictionary<int, double> dicModelValues, Dictionary<int, List<float>> dic365Values)
+        {
+            foreach (KeyValuePair<int, double> kvp in dicModelValues)
+            {
+                //if we don't have 365 values for this pollutant id
+                if (!dic365Values.ContainsKey(kvp.Key))
+                {
+                    //then add it, using the single model value for each index in dic365values
+                    List<float> values = new List<float>();
+                    for(int i=0; i < dic365Values.Count; i++)
+                    {
+                        values.Add(Convert.ToSingle(kvp.Value));
+                    }
+
+                    //add pollutant id and list of model values
+                    dic365Values.Add(kvp.Key, values);
+
+                }
+
             }
 
         }
