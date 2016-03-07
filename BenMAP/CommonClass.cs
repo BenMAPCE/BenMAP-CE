@@ -4333,6 +4333,8 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
         public BaseControlGroup BaseControlGroup;
         public bool Is365;
         public int DayCount;
+        public List<float> BaseValues;
+        public List<float> ControlValues;
     }
 
     public class RegexUtilities

@@ -4835,15 +4835,12 @@ namespace BenMAP.Configuration
                                 dicControlValues = new Dictionary<int, double>(dicBaseValues);
                             }
 
-                            //are we using monitor data?
-                            bool usingMonitorData = false;
+                            //get any monitor data
                             List<MonitorDataHelper> lstMonitorDataHelpers = getMonitorDataHelpers(dicBaseMonitorAll, dicControlMonitorAll,
                                                                                                   dicAllMonitorNeighborBaseAll, dicAllMonitorNeighborControlAll,
                                                                                                   dicBaseValues, dicControlValues, colRowKey, metricKey);
-                            
-
-
-                            if (usingMonitorData)
+                            //are we using monitor data?
+                            if (lstMonitorDataHelpers.Count > 0)
                             {
                                 #region if we are using monitor data
                                 bool is365 = false;
@@ -4858,29 +4855,19 @@ namespace BenMAP.Configuration
                                     dayCount = 4;
                                 }
 
-                                //loop over monitor neighbors for this colRow
-                                foreach (MonitorNeighborAttribute mnAttribute in dicAllMonitorNeighborBase[colRowKey])
+                                //adjust is365 flag and day counts based on monitor data
+                                foreach (MonitorDataHelper mdh in lstMonitorDataHelpers)
                                 {
-                                    //does this monitor have 365 metric values for this metric key?
-                                    if (dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues365 != null && dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues365.ContainsKey(metricKey))
+                                    //if one of the base control groups uses 365 monitor data, then set 365 flag to true
+                                    if ((is365 == false) && (mdh.Is365 == true))
                                     {
-                                        //set flag and dayCount to number values for metric key
                                         is365 = true;
-                                        dayCount = dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues365[metricKey].Count;
-                                        break;
                                     }
-                                }
 
-                                if (!is365)
-                                {
-                                    foreach (MonitorNeighborAttribute mnAttribute in dicAllMonitorNeighborControl[colRowKey])
+                                    //use smallest day count
+                                    if (dayCount > mdh.DayCount)
                                     {
-                                        if (dicControlMonitor[mnAttribute.MonitorName].dicMetricValues365 != null && dicControlMonitor[mnAttribute.MonitorName].dicMetricValues365.ContainsKey(metricKey))
-                                        {
-                                            is365 = true;
-                                            dayCount = dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues365[metricKey].Count;
-                                            break;
-                                        }
+                                        dayCount = mdh.DayCount;
                                     }
                                 }
 
@@ -6548,7 +6535,7 @@ namespace BenMAP.Configuration
                     bool is365 = false;
                     int dayCount = 365;
 
-                    //loop over monitor neighbors for this colRow
+                    //loop over monitor neighbors for this colRow to see if any of the monitors provide 365 data
                     foreach (MonitorNeighborAttribute mnAttribute in dicAllMonitorNeighborBaseAll[bcg.Pollutant.PollutantID][colRowKey])
                     {
                         //does this monitor have 365 metric values for this metric key?
@@ -6574,10 +6561,106 @@ namespace BenMAP.Configuration
                         }
                     }
 
+
+                    List<float> lstdfmBase = new List<float>();
+                    List<float> lstdfmControl = new List<float>();
+
+                    //do one (or more) of the monitors provide 365 data?
+                    if (is365)
+                    {
+                        //get monitor values                       
+
+                        //loop over monitor neighbors for this colRow
+                        foreach (MonitorNeighborAttribute mnAttribute in dicAllMonitorNeighborBaseAll[bcg.Pollutant.PollutantID][colRowKey])
+                        {
+                            if (lstdfmBase.Count == 0)
+                            {
+                                //does this monitor have 365 metric values for this metric key?
+                                if (dicBaseMonitorAll[bcg.Pollutant.PollutantID][mnAttribute.MonitorName].dicMetricValues365 != null && dicBaseMonitorAll[bcg.Pollutant.PollutantID][mnAttribute.MonitorName].dicMetricValues365.ContainsKey(metricKey))
+                                {
+                                    //get metric values for this metric key after multiplying them by monitor neighbor weight
+                                    lstdfmBase = dicBaseMonitorAll[bcg.Pollutant.PollutantID][mnAttribute.MonitorName].dicMetricValues365[metricKey].Select(p => p == float.MinValue ? 0 : Convert.ToSingle(p * mnAttribute.Weight)).ToList();
+                                }
+                                //does this monitor have metric values for HIF metric name?
+                                else if (dicBaseMonitorAll[bcg.Pollutant.PollutantID][mnAttribute.MonitorName].dicMetricValues != null && dicBaseMonitorAll[bcg.Pollutant.PollutantID][mnAttribute.MonitorName].dicMetricValues.ContainsKey(metricKey))
+                                {
+                                    float value = dicBaseMonitorAll[bcg.Pollutant.PollutantID][mnAttribute.MonitorName].dicMetricValues[metricKey] == float.MinValue ? 0 : dicBaseMonitorAll[bcg.Pollutant.PollutantID][mnAttribute.MonitorName].dicMetricValues[metricKey] * Convert.ToSingle(mnAttribute.Weight);
+                                    for (int i = 0; i < dayCount; i++)
+                                    {
+                                        lstdfmBase.Add(value);
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                if (dicBaseMonitorAll[bcg.Pollutant.PollutantID][mnAttribute.MonitorName].dicMetricValues365 != null && dicBaseMonitorAll[bcg.Pollutant.PollutantID][mnAttribute.MonitorName].dicMetricValues365.ContainsKey(metricKey))
+                                {
+                                    for (int idfm = 0; idfm < lstdfmBase.Count; idfm++)
+                                    {
+                                        lstdfmBase[idfm] += dicBaseMonitorAll[bcg.Pollutant.PollutantID][mnAttribute.MonitorName].dicMetricValues365[metricKey][idfm] == float.MinValue ? 0 : dicBaseMonitorAll[bcg.Pollutant.PollutantID][mnAttribute.MonitorName].dicMetricValues365[metricKey][idfm] * Convert.ToSingle(mnAttribute.Weight);
+                                    }
+                                }
+                                else if (dicBaseMonitorAll[bcg.Pollutant.PollutantID][mnAttribute.MonitorName].dicMetricValues != null && dicBaseMonitorAll[bcg.Pollutant.PollutantID][mnAttribute.MonitorName].dicMetricValues.ContainsKey(metricKey))
+                                {
+                                    float value = dicBaseMonitorAll[bcg.Pollutant.PollutantID][mnAttribute.MonitorName].dicMetricValues[metricKey] == float.MinValue ? 0 : dicBaseMonitorAll[bcg.Pollutant.PollutantID][mnAttribute.MonitorName].dicMetricValues[metricKey] * Convert.ToSingle(mnAttribute.Weight);
+                                    for (int idfm = 0; idfm < lstdfmBase.Count; idfm++)
+                                    {
+                                        lstdfmBase[idfm] += value;
+                                    }
+                                }
+                            }
+                        }
+
+                        
+
+
+                        foreach (MonitorNeighborAttribute mnAttribute in dicAllMonitorNeighborControlAll[bcg.Pollutant.PollutantID][colRowKey])
+                        {
+                            if (lstdfmControl.Count == 0)
+                            {
+                                if (dicControlMonitorAll[bcg.Pollutant.PollutantID][mnAttribute.MonitorName].dicMetricValues365 != null && dicControlMonitorAll[bcg.Pollutant.PollutantID][mnAttribute.MonitorName].dicMetricValues365.ContainsKey(metricKey))
+                                {
+                                    lstdfmControl = dicControlMonitorAll[bcg.Pollutant.PollutantID][mnAttribute.MonitorName].dicMetricValues365[metricKey].Select(p => p == float.MinValue ? 0 : Convert.ToSingle(p * mnAttribute.Weight)).ToList();
+
+                                }
+                                else if (dicControlMonitorAll[bcg.Pollutant.PollutantID][mnAttribute.MonitorName].dicMetricValues != null && dicControlMonitorAll[bcg.Pollutant.PollutantID][mnAttribute.MonitorName].dicMetricValues.ContainsKey(metricKey))
+                                {
+                                    float value = dicControlMonitorAll[bcg.Pollutant.PollutantID][mnAttribute.MonitorName].dicMetricValues[metricKey] == float.MinValue ? 0 : dicControlMonitorAll[bcg.Pollutant.PollutantID][mnAttribute.MonitorName].dicMetricValues[metricKey] * Convert.ToSingle(mnAttribute.Weight);
+                                    for (int i = 0; i < dayCount; i++)
+                                    {
+                                        lstdfmControl.Add(value);
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                if (dicControlMonitorAll[bcg.Pollutant.PollutantID][mnAttribute.MonitorName].dicMetricValues365 != null && dicControlMonitorAll[bcg.Pollutant.PollutantID][mnAttribute.MonitorName].dicMetricValues365.ContainsKey(metricKey))
+                                {
+                                    for (int idfm = 0; idfm < lstdfmControl.Count; idfm++)
+                                    {
+                                        lstdfmControl[idfm] += dicControlMonitorAll[bcg.Pollutant.PollutantID][mnAttribute.MonitorName].dicMetricValues365[metricKey][idfm] == float.MinValue ? 0 : dicControlMonitorAll[bcg.Pollutant.PollutantID][mnAttribute.MonitorName].dicMetricValues365[metricKey][idfm] * Convert.ToSingle(mnAttribute.Weight);
+
+                                    }
+                                }
+                                else if (dicControlMonitorAll[bcg.Pollutant.PollutantID][mnAttribute.MonitorName].dicMetricValues != null && dicControlMonitorAll[bcg.Pollutant.PollutantID][mnAttribute.MonitorName].dicMetricValues.ContainsKey(metricKey))
+                                {
+                                    float value = dicControlMonitorAll[bcg.Pollutant.PollutantID][mnAttribute.MonitorName].dicMetricValues[metricKey] == float.MinValue ? 0 : dicControlMonitorAll[bcg.Pollutant.PollutantID][mnAttribute.MonitorName].dicMetricValues[metricKey] * Convert.ToSingle(mnAttribute.Weight);
+                                    for (int idfm = 0; idfm < lstdfmBase.Count; idfm++)
+                                    {
+                                        lstdfmControl[idfm] += value;
+                                    }
+                                }
+                            }
+                        }
+
+                    }
+
                     MonitorDataHelper mdh = new MonitorDataHelper();
                     mdh.BaseControlGroup = bcg;
                     mdh.Is365 = is365;
                     mdh.DayCount = dayCount;
+                    mdh.BaseValues = lstdfmBase;
+                    mdh.ControlValues = lstdfmControl;
 
                     lstMonitorDataHelpers.Add(mdh);
                 }
@@ -6590,5 +6673,6 @@ namespace BenMAP.Configuration
 
 
         
+
     }
 }
