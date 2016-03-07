@@ -4878,91 +4878,11 @@ namespace BenMAP.Configuration
                                     //is 365?                                
                                     if (is365)
                                     {
-                                        #region if is365 = true
-                                        List<float> lstdfmBase = new List<float>();
+                                        #region if is365 = true         
+                                        
+                                        //get 365 monitor values by pollutant                               
+                                        get365ValuesFromMonitorDataHelpers(lstMonitorDataHelpers, dicBase365Values, dicControl365Values);                                     
 
-                                        //loop over monitor neighbors for this colRow
-                                        foreach (MonitorNeighborAttribute mnAttribute in dicAllMonitorNeighborBase[colRowKey])
-                                        {
-                                            if (lstdfmBase.Count == 0)
-                                            {
-                                                //does this monitor have 365 metric values for this metric key?
-                                                if (dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues365 != null && dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues365.ContainsKey(metricKey))
-                                                {
-                                                    //get metric values for this metric key after multiplying them by monitor neighbor weight
-                                                    lstdfmBase = dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues365[metricKey].Select(p => p == float.MinValue ? 0 : Convert.ToSingle(p * mnAttribute.Weight)).ToList();
-                                                }
-                                                //does this monitor have metric values for HIF metric name?
-                                                else if (dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues != null && dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues.ContainsKey(crSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName))
-                                                {
-                                                    float value = dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues[metricKey] == float.MinValue ? 0 : dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues[metricKey] * Convert.ToSingle(mnAttribute.Weight);
-                                                    for (int i = 0; i < dayCount; i++)
-                                                    {
-                                                        lstdfmBase.Add(value);
-                                                    }
-                                                }
-                                            }
-                                            else
-                                            {
-                                                if (dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues365 != null && dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues365.ContainsKey(metricKey))
-                                                {
-                                                    for (int idfm = 0; idfm < lstdfmBase.Count; idfm++)
-                                                    {
-                                                        lstdfmBase[idfm] += dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues365[metricKey][idfm] == float.MinValue ? 0 : dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues365[metricKey][idfm] * Convert.ToSingle(mnAttribute.Weight);
-                                                    }
-                                                }
-                                                else if (dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues != null && dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues.ContainsKey(crSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName))
-                                                {
-                                                    float value = dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues[metricKey] == float.MinValue ? 0 : dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues[metricKey] * Convert.ToSingle(mnAttribute.Weight);
-                                                    for (int idfm = 0; idfm < lstdfmBase.Count; idfm++)
-                                                    {
-                                                        lstdfmBase[idfm] += value;
-                                                    }
-                                                }
-                                            }
-                                        }
-
-                                        List<float> lstdfmControl = new List<float>();
-
-
-                                        foreach (MonitorNeighborAttribute mnAttribute in dicAllMonitorNeighborControl[colRowKey])
-                                        {
-                                            if (lstdfmControl.Count == 0)
-                                            {
-                                                if (dicControlMonitor[mnAttribute.MonitorName].dicMetricValues365 != null && dicControlMonitor[mnAttribute.MonitorName].dicMetricValues365.ContainsKey(metricKey))
-                                                {
-                                                    lstdfmControl = dicControlMonitor[mnAttribute.MonitorName].dicMetricValues365[metricKey].Select(p => p == float.MinValue ? 0 : Convert.ToSingle(p * mnAttribute.Weight)).ToList();
-
-                                                }
-                                                else if (dicControlMonitor[mnAttribute.MonitorName].dicMetricValues != null && dicControlMonitor[mnAttribute.MonitorName].dicMetricValues.ContainsKey(crSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName))
-                                                {
-                                                    float value = dicControlMonitor[mnAttribute.MonitorName].dicMetricValues[metricKey] == float.MinValue ? 0 : dicControlMonitor[mnAttribute.MonitorName].dicMetricValues[metricKey] * Convert.ToSingle(mnAttribute.Weight);
-                                                    for (int i = 0; i < dayCount; i++)
-                                                    {
-                                                        lstdfmControl.Add(value);
-                                                    }
-                                                }
-                                            }
-                                            else
-                                            {
-                                                if (dicControlMonitor[mnAttribute.MonitorName].dicMetricValues365 != null && dicControlMonitor[mnAttribute.MonitorName].dicMetricValues365.ContainsKey(metricKey))
-                                                {
-                                                    for (int idfm = 0; idfm < lstdfmControl.Count; idfm++)
-                                                    {
-                                                        lstdfmControl[idfm] += dicControlMonitor[mnAttribute.MonitorName].dicMetricValues365[metricKey][idfm] == float.MinValue ? 0 : dicControlMonitor[mnAttribute.MonitorName].dicMetricValues365[metricKey][idfm] * Convert.ToSingle(mnAttribute.Weight);
-
-                                                    }
-                                                }
-                                                else if (dicControlMonitor[mnAttribute.MonitorName].dicMetricValues != null && dicControlMonitor[mnAttribute.MonitorName].dicMetricValues.ContainsKey(crSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName))
-                                                {
-                                                    float value = dicControlMonitor[mnAttribute.MonitorName].dicMetricValues[metricKey] == float.MinValue ? 0 : dicControlMonitor[mnAttribute.MonitorName].dicMetricValues[metricKey] * Convert.ToSingle(mnAttribute.Weight);
-                                                    for (int idfm = 0; idfm < lstdfmBase.Count; idfm++)
-                                                    {
-                                                        lstdfmControl[idfm] += value;
-                                                    }
-                                                }
-                                            }
-                                        }
 
                                         float fPSum = 0, fBaselineSum = 0;
                                         List<float> lstFPSum = new List<float>();
@@ -4973,51 +4893,55 @@ namespace BenMAP.Configuration
                                                 lstFPSum.Add(0);
                                             }
                                         }
-                                        if (lstdfmBase.Count > 0 && lstdfmControl.Count > 0)
+                                        
+                                        for (int iDay = iStartDay; iDay < iEndDay; iDay++)
                                         {
-                                            for (int iBase = iStartDay; iBase < iEndDay; iBase++)
+                                            Dictionary<int, double> fdicBaseValues = new Dictionary<int, double>();
+                                            Dictionary<int, double> fdicControlValues = new Dictionary<int, double>();
+                                            Dictionary<int, double> fdicDeltaQValues = new Dictionary<int, double>();
+
+                                            //double fBase, fControl, fDelta;
+                                            fdicBaseValues = getValuesFrom365Values(dicBase365Values, iDay);
+                                            fdicControlValues = getValuesFrom365Values(dicControl365Values, iDay);
+
+                                            if ((!CheckValuesAgainstZero(fdicBaseValues)) && (!CheckValuesAgainstZero(fdicControlValues)))                                              
                                             {
-                                                double fBase, fControl, fDelta;
-                                                fBase = lstdfmBase[iBase];
-                                                fControl = lstdfmControl[iBase];
-                                                if (fBase != 0 && fControl != 0)
+                                                CheckValuesAgainstThreshold(fdicBaseValues, Threshold);
+                                                CheckValuesAgainstThreshold(fdicControlValues, Threshold);
+
+                                                //get deltaQ values
+                                                fdicDeltaQValues = getDeltaQValues(fdicBaseValues, fdicControlValues);
+
+                                                //if no seasonal metric, i.e. we are using metric name, and delta = 0 then skip to next day
+                                                if (crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric == null)
                                                 {
-                                                    if (Threshold != 0 && fBase < Threshold)
-                                                        fBase = Threshold;
-                                                    if (fControl != 0 && fControl < Threshold)
-                                                        fControl = Threshold;
-                                                    fDelta = fBase - fControl;
-
-                                                    //if no seasonal metric, i.e. we are using metric name, and delta = 0 then skip to next day
-                                                    if (crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric == null)
+                                                    if (CheckValuesAgainstZero(fdicDeltaQValues))
                                                     {
-                                                        if (fDelta == 0)
-                                                        {
-                                                            continue;
-                                                        }
-                                                    }
-
-                                                    {
-                                                        CRCalculateValue cr = new CRCalculateValue(); //= CalculateCRSelectFunctionsOneCel(sCRID, hasPopInstrBaseLineFunction, 1, crSelectFunction, strBaseLineFunction, strPointEstimateFunction, modelResultAttribute.Col, modelResultAttribute.Row, fBase, fControl, dicPopValue, dicIncidenceValue, dicPrevalenceValue, dicVariable, betaIndex);
-                                                        fPSum += cr.PointEstimate;
-                                                        fBaselineSum += cr.Baseline;
-                                                        if (!CommonClass.CRRunInPointMode)
-                                                        {
-                                                            for (int i = 0; i < CommonClass.CRLatinHypercubePoints; i++)
-                                                            {
-                                                                lstFPSum[i] += cr.LstPercentile[i];
-                                                            }
-                                                        }
+                                                        continue;
                                                     }
                                                 }
 
+                                                {
+                                                    CRCalculateValue cr = CalculateCRSelectFunctionsOneCel(sCRID, hasPopInstrBaseLineFunction, 1, crSelectFunction, strBaseLineFunction, strPointEstimateFunction, modelResultAttribute.Col, modelResultAttribute.Row, fdicBaseValues, fdicControlValues, dicPopValue, dicIncidenceValue, dicPrevalenceValue, dicVariable, betaIndex);
+                                                    fPSum += cr.PointEstimate;
+                                                    fBaselineSum += cr.Baseline;
+                                                    if (!CommonClass.CRRunInPointMode)
+                                                    {
+                                                        for (int i = 0; i < CommonClass.CRLatinHypercubePoints; i++)
+                                                        {
+                                                            lstFPSum[i] += cr.LstPercentile[i];
+                                                        }
+                                                    }
+                                                }
                                             }
-                                        }
+                                        }                                       
+
+
                                         crCalculateValue = new CRCalculateValue()
                                         {
                                             Col = modelResultAttribute.Col,
                                             Row = modelResultAttribute.Row,
-                                            Delta = 0,
+                                            Deltas = getDeltaQValuesZeros(),
                                             Incidence = Convert.ToSingle(incidenceValue),
                                             PointEstimate = fPSum,
                                             LstPercentile = lstFPSum,
@@ -5103,23 +5027,20 @@ namespace BenMAP.Configuration
                                     crCalculateValue.PercentOfBaseline = crCalculateValue.Baseline == 0 ? 0 : Convert.ToSingle(Math.Round((crCalculateValue.Mean / crCalculateValue.Baseline) * 100, 4));
 
                                     //calculate Delta
-                                    double baseValueForDelta = modelResultAttribute.Values[metricKey];
-                                    double controlValueForDelta = baseValueForDelta;
+                                    Dictionary<int, double> baseValuesForDelta = getBaseValuesFromModelResultAttributes(colRowKey, metricKey);
 
-                                    if (dicControl.Keys.Contains(colRowKey))
+                                    Dictionary<int, double> controlValuesForDelta = new Dictionary<int, double>();
+                                    if (!getControlValues(DicControlAll, colRowKey, metricKey, controlValuesForDelta))
                                     {
-                                        if (dicControl[colRowKey].Values.Keys.Contains(metricKey))
-                                            controlValueForDelta = dicControl[colRowKey].Values[metricKey];
+                                        controlValuesForDelta = new Dictionary<int, double>(baseValuesForDelta);
                                     }
 
-                                    if (Threshold != 0 && baseValueForDelta < Threshold)
-                                        baseValueForDelta = Threshold;
+                                    CheckValuesAgainstThreshold(baseValuesForDelta, Threshold);
+                                    CheckValuesAgainstThreshold(controlValuesForDelta, Threshold);
 
-                                    if (Threshold != 0 && controlValueForDelta < Threshold)
-                                        controlValueForDelta = Threshold;
-
-                                    //set delta
-                                    crCalculateValue.Delta = Convert.ToSingle(baseValueForDelta - controlValueForDelta);
+                                    //set deltas
+                                    crCalculateValue.Deltas = getDeltaQValues(baseValuesForDelta, controlValuesForDelta);
+                                    crCalculateValue.DeltaList = getSortedDeltaListFromDictionaryandObject(crSelectFunction.BenMAPHealthImpactFunction, crCalculateValue.Deltas);
 
                                     //set beta variation fields
                                     crCalculateValue.BetaVariationName = crSelectFunction.BenMAPHealthImpactFunction.BetaVariation.BetaVariationName;
@@ -6239,6 +6160,19 @@ namespace BenMAP.Configuration
             return false;
         }
 
+        public static bool CheckValuesAgainstZero(Dictionary<int, double> dicValues)
+        {
+            foreach (KeyValuePair<int, double> kvp in dicValues)
+            {
+                if (kvp.Value == 0) //is zero
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         public static Dictionary<int, double> getDeltaQValues(Dictionary<int, double> dicBaseValues, Dictionary<int, double> dicControlValues)
         {
             Dictionary<int, double> dicDeltaQValues = new Dictionary<int, double>();
@@ -6672,7 +6606,22 @@ namespace BenMAP.Configuration
         }
 
 
-        
+
+
+        public static void get365ValuesFromMonitorDataHelpers(List<MonitorDataHelper> lstMonitorDataHelpers,
+                                                            Dictionary<int, List<float>> dicBase365Values,
+                                                            Dictionary<int, List<float>> dicControl365Values)
+        {
+            dicBase365Values.Clear();
+            dicControl365Values.Clear();
+
+            foreach (MonitorDataHelper mdh in lstMonitorDataHelpers)
+            {
+                dicBase365Values.Add(mdh.BaseControlGroup.Pollutant.PollutantID, mdh.BaseValues);
+                dicControl365Values.Add(mdh.BaseControlGroup.Pollutant.PollutantID, mdh.ControlValues);
+            }
+
+        }
 
     }
 }
