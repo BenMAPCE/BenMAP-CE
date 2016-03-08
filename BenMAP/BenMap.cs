@@ -8773,9 +8773,9 @@ namespace BenMAP
                         OLVResultsShow.Columns.Add(new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Population", AspectToStringFormat = "{0:N4}", Text = "Population", Width = "Population".Length * 8, IsEditable = false });
 
                         // set up delta columns dynamically for multipollutant 
-                        if (lstAllSelectCRFuntion.First().CRSelectFunctionCalculateValue.CRCalculateValues.First().Deltas != null)
+                        if (lstAllSelectCRFuntion.First().CRSelectFunctionCalculateValue.CRCalculateValues.First().DeltaList != null)
                         {
-                            int dCount = lstAllSelectCRFuntion.First().CRSelectFunctionCalculateValue.CRCalculateValues.First().Deltas.Count();
+                            int dCount = lstAllSelectCRFuntion.First().CRSelectFunctionCalculateValue.CRCalculateValues.First().DeltaList.Count();
                             for (int j = 0; j < dCount; j++)
                             {
                                 string pollName = lstAllSelectCRFuntion.First().CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Variables[j].PollutantName;
@@ -8952,9 +8952,9 @@ namespace BenMAP
                             OLVResultsShow.Columns.Add(new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Population", AspectToStringFormat = "{0:N4}", Text = "Population", Width = "Population".Length * 8, IsEditable = false });
 
                             // set up delta columns dynamically for multipollutant 
-                            if (lstCRTable.First().CRCalculateValues.First().Deltas != null)
+                            if (lstCRTable.First().CRCalculateValues.First().DeltaList != null)
                             {
-                                int dCount = lstCRTable.First().CRCalculateValues.First().Deltas.Count();
+                                int dCount = lstCRTable.First().CRCalculateValues.First().DeltaList.Count();
                                 for (int j = 0; j < dCount; j++)
                                 {
                                     string pollName = lstCRTable.First().CRSelectFunction.BenMAPHealthImpactFunction.Variables[j].PollutantName;
@@ -9055,9 +9055,9 @@ namespace BenMAP
                             OLVResultsShow.Columns.Add(new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Population", AspectToStringFormat = "{0:N4}", Text = "Population", Width = "Population".Length * 8, IsEditable = false });
 
                             // set up delta columns dynamically for multipollutant 
-                            if (lstCRTable.First().CRCalculateValues.First().Deltas != null)
+                            if (lstCRTable.First().CRCalculateValues.First().DeltaList != null)
                             {
-                                int dCount = lstCRTable.First().CRCalculateValues.First().Deltas.Count();
+                                int dCount = lstCRTable.First().CRCalculateValues.First().DeltaList.Count();
                                 for (int j = 0; j < dCount; j++)
                                 {
                                     string pollName = lstCRTable.First().CRSelectFunction.BenMAPHealthImpactFunction.Variables[j].PollutantName;
@@ -9085,7 +9085,29 @@ namespace BenMAP
                                 if (fieldCheck.isChecked && fieldCheck.FieldName != cflstResult.Last().FieldName && fieldCheck.FieldName != "Population Weighted Delta"
                                     && fieldCheck.FieldName != "Population Weighted Base" && fieldCheck.FieldName != "Population Weighted Control")
                                 {
-                                    BrightIdeasSoftware.OLVColumn olvColumnID = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key." + getFieldNameFromlstHealth(fieldCheck.FieldName), AspectToStringFormat = "{0:N4}", Text = fieldCheck.FieldName, Width = (fieldCheck.FieldName.Length + 2) * 8, IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnID);
+                                    if (fieldCheck.FieldName == "Delta")
+                                    {
+                                        // set up delta columns dynamically for multipollutant 
+                                        if (lstCRTable.First().CRCalculateValues.First().Deltas != null)
+                                        {
+                                            int dCount = lstCRTable.First().CRCalculateValues.First().Deltas.Count();
+                                            for (int j = 0; j < dCount; j++)
+                                            {
+                                                string pollName = lstCRTable.First().CRSelectFunction.BenMAPHealthImpactFunction.Variables[j].PollutantName;
+
+                                                OLVResultsShow.Columns.Add(new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.DeltaList[" + j + "]", AspectToStringFormat = "{0:N4}", Text = "Delta_" + pollName, Width = ("Delta_" + pollName).Length * 8, IsEditable = false });
+                                            }
+                                        }
+                                        else
+                                        {
+                                            OLVResultsShow.Columns.Add(new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Delta", AspectToStringFormat = "{0:N4}", Text = "Delta", Width = "Variance".Length * 8, IsEditable = false });
+                                        }
+                                    }
+                                    else
+                                    {
+                                        BrightIdeasSoftware.OLVColumn olvColumnID = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key." + getFieldNameFromlstHealth(fieldCheck.FieldName), AspectToStringFormat = "{0:N4}", Text = fieldCheck.FieldName, Width = (fieldCheck.FieldName.Length + 2) * 8, IsEditable = false };
+                                        OLVResultsShow.Columns.Add(olvColumnID);
+                                    }
                                 }
                             }
                         }
@@ -9117,31 +9139,48 @@ namespace BenMAP
                     }
                     Dictionary<KeyValuePair<CRCalculateValue, int>, CRSelectFunction> dicAPV = new Dictionary<KeyValuePair<CRCalculateValue, int>, CRSelectFunction>(); int iLstCRTable = 0;
                     Dictionary<CRCalculateValue, int> dicKey = new Dictionary<CRCalculateValue, int>();
+
                     if (cflstResult != null && cflstResult.Where(p => p.FieldName == "Population Weighted Delta").Count() == 1 && this.tabCtlReport.TabPages[tabCtlReport.SelectedIndex].Tag.ToString() != "incidence")
                     {
                         if (cflstResult.Where(p => p.FieldName == "Population Weighted Delta").First().isChecked == true)
                         {
-                            foreach (CRSelectFunctionCalculateValue cr in lstCRTable)
+                            int ind;
+
+                            for (ind = 0; ind < lstCRTable.First().CRCalculateValues.First().DeltaList.Count; ind++)
                             {
-                                dicKey = null;
-                                dicKey = new Dictionary<CRCalculateValue, int>();
-                                CRCalculateValue crv = new CRCalculateValue();
-                                crv.PointEstimate = cr.CRCalculateValues.Sum(p => p.Population * p.Delta) / cr.CRCalculateValues.Sum(p => p.Population);
-                                if (cr.CRCalculateValues.First().LstPercentile != null && cr.CRCalculateValues.First().LstPercentile.Count > 0)
+                                foreach (CRSelectFunctionCalculateValue cr in lstCRTable)
                                 {
-                                    crv.LstPercentile = new List<float>();
-                                    foreach (float f in cr.CRCalculateValues.First().LstPercentile)
+                                    dicKey = null;
+                                    dicKey = new Dictionary<CRCalculateValue, int>();
+                                    CRCalculateValue crv = new CRCalculateValue();
+                                    crv.PointEstimate = cr.CRCalculateValues.Sum(p => p.Population *  (float)p.DeltaList[ind]) / cr.CRCalculateValues.Sum(p => p.Population);
+
+                                    if (cr.CRCalculateValues.First().DeltaList != null && cr.CRCalculateValues.First().DeltaList.Count > 0)
                                     {
-                                        crv.LstPercentile.Add(0);
+                                        crv.DeltaList = new List<double>();
+                                        foreach (double d in cr.CRCalculateValues.First().DeltaList)
+                                        {
+                                            crv.DeltaList.Add(0);
+                                        }
                                     }
+
+                                    if (cr.CRCalculateValues.First().LstPercentile != null && cr.CRCalculateValues.First().LstPercentile.Count > 0)
+                                    {
+                                        crv.LstPercentile = new List<float>();
+                                        foreach (float f in cr.CRCalculateValues.First().LstPercentile)
+                                        {
+                                            crv.LstPercentile.Add(0);
+                                        }
+                                    }
+                                    dicKey.Add(crv, iLstCRTable);
+                                    CRSelectFunction crNew = CommonClass.getCRSelectFunctionClone(cr.CRSelectFunction);
+                                    crNew.BenMAPHealthImpactFunction.EndPoint = "Population Weighted Delta_" + cr.CRSelectFunction.BenMAPHealthImpactFunction.Variables[ind].PollutantName;
+                                    dicAPV.Add(dicKey.ToList()[0], crNew);
+                                    iLstCRTable++;
                                 }
-                                dicKey.Add(crv, iLstCRTable);
-                                CRSelectFunction crNew = CommonClass.getCRSelectFunctionClone(cr.CRSelectFunction);
-                                crNew.BenMAPHealthImpactFunction.EndPoint = "Population Weighted Delta";
-                                dicAPV.Add(dicKey.ToList()[0], crNew);
-                                iLstCRTable++;
                             }
                         }
+
                         if (cflstResult.Where(p => p.FieldName == "Population Weighted Base").First().isChecked == true)
                         {
                             foreach (CRSelectFunctionCalculateValue cr in lstCRTable)
