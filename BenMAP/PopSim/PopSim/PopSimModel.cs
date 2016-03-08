@@ -6,7 +6,6 @@ using System.Linq;
 using System.Text;
 using System.Data;
 using FirebirdSql.Data.FirebirdClient;
-using System.Windows.Forms;
 
 // next namespace includes the background worker object
 using System.ComponentModel;

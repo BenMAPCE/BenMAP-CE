@@ -1478,7 +1478,6 @@
             this.btnOutput.TabIndex = 4;
             this.btnOutput.Text = "Output Results";
             this.btnOutput.UseVisualStyleBackColor = true;
-            this.btnOutput.Visible = false;
             this.btnOutput.Click += new System.EventHandler(this.btnOutput_Click);
             // 
             // btnRunModel
