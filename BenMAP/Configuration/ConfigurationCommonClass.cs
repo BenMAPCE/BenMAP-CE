@@ -4960,23 +4960,17 @@ namespace BenMAP.Configuration
                                     else
                                     {
                                         #region if is365 = false
-                                        double fBase = 0;
-                                        foreach (MonitorNeighborAttribute mnAttribute in dicAllMonitorNeighborBase[colRowKey])
-                                        {
-                                            if (dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues != null && dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues.ContainsKey(crSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName))
-                                            {
-                                                fBase += dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues[metricKey] == float.MinValue ? 0 : dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues[metricKey] * Convert.ToSingle(mnAttribute.Weight);
-                                            }
-                                        }
 
-                                        double fControl = 0;
-                                        foreach (MonitorNeighborAttribute mnAttribute in dicAllMonitorNeighborControl[colRowKey])
-                                        {
-                                            if (dicControlMonitor[mnAttribute.MonitorName].dicMetricValues != null && dicControlMonitor[mnAttribute.MonitorName].dicMetricValues.ContainsKey(crSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName))
-                                            {
-                                                fControl += dicControlMonitor[mnAttribute.MonitorName].dicMetricValues[metricKey] == float.MinValue ? 0 : dicControlMonitor[mnAttribute.MonitorName].dicMetricValues[metricKey] * Convert.ToSingle(mnAttribute.Weight);
-                                            }
-                                        }
+                                        Dictionary<int, double> fdicBaseValues = new Dictionary<int, double>();
+                                        Dictionary<int, double> fdicControlValues = new Dictionary<int, double>();
+                                        Dictionary<int, double> fdicDeltaQValues = new Dictionary<int, double>();
+
+                                        //get monitor values by pollutant                               
+                                        getValuesFromMonitorDataHelpers(lstMonitorDataHelpers, fdicBaseValues, fdicControlValues);
+
+                                        //get values for base control groups using model data                                 
+                                        getValuesFromModelValues(dicBaseValues, fdicBaseValues);
+                                        getValuesFromModelValues(dicControlValues, fdicControlValues);
 
                                         float fPSum = 0, fBaselineSum = 0;
                                         List<float> lstFPSum = new List<float>();
@@ -4987,16 +4981,17 @@ namespace BenMAP.Configuration
                                                 lstFPSum.Add(0);
                                             }
                                         }
-                                        double fDelta;
-                                        if (fBase != 0 && fControl != 0)
+
+                                        if ((!CheckValuesAgainstZero(fdicBaseValues)) && (!CheckValuesAgainstZero(fdicControlValues)))
                                         {
-                                            if (Threshold != 0 && fBase < Threshold)
-                                                fBase = Threshold;
-                                            if (fControl != 0 && fControl < Threshold)
-                                                fControl = Threshold;
-                                            fDelta = fBase - fControl;
+                                            CheckValuesAgainstThreshold(fdicBaseValues, Threshold);
+                                            CheckValuesAgainstThreshold(fdicControlValues, Threshold);
+
+                                            //get deltaQ values
+                                            fdicDeltaQValues = getDeltaQValues(fdicBaseValues, fdicControlValues);
+
                                             {
-                                                CRCalculateValue cr = new CRCalculateValue(); //CalculateCRSelectFunctionsOneCel(sCRID, hasPopInstrBaseLineFunction, 1, crSelectFunction, strBaseLineFunction, strPointEstimateFunction, modelResultAttribute.Col, modelResultAttribute.Row, fBase, fControl, dicPopValue, dicIncidenceValue, dicPrevalenceValue, dicVariable, betaIndex);
+                                                CRCalculateValue cr = CalculateCRSelectFunctionsOneCel(sCRID, hasPopInstrBaseLineFunction, 1, crSelectFunction, strBaseLineFunction, strPointEstimateFunction, modelResultAttribute.Col, modelResultAttribute.Row, fdicBaseValues, fdicControlValues, dicPopValue, dicIncidenceValue, dicPrevalenceValue, dicVariable, betaIndex);
                                                 fPSum += cr.PointEstimate * i365;
                                                 fBaselineSum += cr.Baseline * i365;
                                                 if (!CommonClass.CRRunInPointMode)
@@ -5012,7 +5007,7 @@ namespace BenMAP.Configuration
                                         {
                                             Col = modelResultAttribute.Col,
                                             Row = modelResultAttribute.Row,
-                                            Delta = 0,
+                                            Deltas = getDeltaQValuesZeros(),
                                             Incidence = Convert.ToSingle(incidenceValue),
                                             PointEstimate = fPSum,
                                             LstPercentile = lstFPSum,
@@ -6502,6 +6497,9 @@ namespace BenMAP.Configuration
                     List<float> lstdfmBase = new List<float>();
                     List<float> lstdfmControl = new List<float>();
 
+                    double fBase = 0;
+                    double fControl = 0;
+
                     //do one (or more) of the monitors provide 365 data?
                     if (is365)
                     {
@@ -6591,6 +6589,25 @@ namespace BenMAP.Configuration
                         }
 
                     }
+                    else //none of the monitors have 365 data
+                    {                        
+                        foreach (MonitorNeighborAttribute mnAttribute in dicAllMonitorNeighborBaseAll[bcg.Pollutant.PollutantID][colRowKey])
+                        {
+                            if (dicBaseMonitorAll[bcg.Pollutant.PollutantID][mnAttribute.MonitorName].dicMetricValues != null && dicBaseMonitorAll[bcg.Pollutant.PollutantID][mnAttribute.MonitorName].dicMetricValues.ContainsKey(metricKey))
+                            {
+                                fBase += dicBaseMonitorAll[bcg.Pollutant.PollutantID][mnAttribute.MonitorName].dicMetricValues[metricKey] == float.MinValue ? 0 : dicBaseMonitorAll[bcg.Pollutant.PollutantID][mnAttribute.MonitorName].dicMetricValues[metricKey] * Convert.ToSingle(mnAttribute.Weight);
+                            }
+                        }
+
+                        
+                        foreach (MonitorNeighborAttribute mnAttribute in dicAllMonitorNeighborControlAll[bcg.Pollutant.PollutantID][colRowKey])
+                        {
+                            if (dicControlMonitorAll[bcg.Pollutant.PollutantID][mnAttribute.MonitorName].dicMetricValues != null && dicControlMonitorAll[bcg.Pollutant.PollutantID][mnAttribute.MonitorName].dicMetricValues.ContainsKey(metricKey))
+                            {
+                                fControl += dicControlMonitorAll[bcg.Pollutant.PollutantID][mnAttribute.MonitorName].dicMetricValues[metricKey] == float.MinValue ? 0 : dicControlMonitorAll[bcg.Pollutant.PollutantID][mnAttribute.MonitorName].dicMetricValues[metricKey] * Convert.ToSingle(mnAttribute.Weight);
+                            }
+                        }
+                    }
 
                     MonitorDataHelper mdh = new MonitorDataHelper();
                     mdh.BaseControlGroup = bcg;
@@ -6598,6 +6615,8 @@ namespace BenMAP.Configuration
                     mdh.DayCount = dayCount;
                     mdh.Base365Values = lstdfmBase;
                     mdh.Control365Values = lstdfmControl;
+                    mdh.BaseValue = fBase;
+                    mdh.ControlValue = fControl;
 
                     lstMonitorDataHelpers.Add(mdh);
                 }
@@ -6608,6 +6627,20 @@ namespace BenMAP.Configuration
 
         }
 
+        public static void getValuesFromMonitorDataHelpers(List<MonitorDataHelper> lstMonitorDataHelpers,
+                                                            Dictionary<int, double> dicBaseValues,
+                                                            Dictionary<int, double> dicControlValues)
+        {
+            dicBaseValues.Clear();
+            dicControlValues.Clear();
+
+            foreach (MonitorDataHelper mdh in lstMonitorDataHelpers)
+            {
+                dicBaseValues.Add(mdh.BaseControlGroup.Pollutant.PollutantID, mdh.BaseValue);
+                dicControlValues.Add(mdh.BaseControlGroup.Pollutant.PollutantID, mdh.ControlValue);
+            }
+
+        }
 
 
 
@@ -6642,6 +6675,22 @@ namespace BenMAP.Configuration
 
                     //add pollutant id and list of model values
                     dic365Values.Add(kvp.Key, values);
+
+                }
+
+            }
+
+        }
+
+        public static void getValuesFromModelValues(Dictionary<int, double> dicModelValues, Dictionary<int, double> dicValues)
+        {
+            foreach (KeyValuePair<int, double> kvp in dicModelValues)
+            {
+                //if we don't have value for this pollutant id
+                if (!dicValues.ContainsKey(kvp.Key))
+                {
+                    //add pollutant id and model value
+                    dicValues.Add(kvp.Key, kvp.Value);
 
                 }
 
