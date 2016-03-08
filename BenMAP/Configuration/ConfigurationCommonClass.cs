@@ -6518,7 +6518,7 @@ namespace BenMAP.Configuration
                                     //get metric values for this metric key after multiplying them by monitor neighbor weight
                                     lstdfmBase = dicBaseMonitorAll[bcg.Pollutant.PollutantID][mnAttribute.MonitorName].dicMetricValues365[metricKey].Select(p => p == float.MinValue ? 0 : Convert.ToSingle(p * mnAttribute.Weight)).ToList();
                                 }
-                                //does this monitor have metric values for HIF metric name?
+                                //does this monitor have metric values for metric key?
                                 else if (dicBaseMonitorAll[bcg.Pollutant.PollutantID][mnAttribute.MonitorName].dicMetricValues != null && dicBaseMonitorAll[bcg.Pollutant.PollutantID][mnAttribute.MonitorName].dicMetricValues.ContainsKey(metricKey))
                                 {
                                     float value = dicBaseMonitorAll[bcg.Pollutant.PollutantID][mnAttribute.MonitorName].dicMetricValues[metricKey] == float.MinValue ? 0 : dicBaseMonitorAll[bcg.Pollutant.PollutantID][mnAttribute.MonitorName].dicMetricValues[metricKey] * Convert.ToSingle(mnAttribute.Weight);
@@ -6596,8 +6596,8 @@ namespace BenMAP.Configuration
                     mdh.BaseControlGroup = bcg;
                     mdh.Is365 = is365;
                     mdh.DayCount = dayCount;
-                    mdh.BaseValues = lstdfmBase;
-                    mdh.ControlValues = lstdfmControl;
+                    mdh.Base365Values = lstdfmBase;
+                    mdh.Control365Values = lstdfmControl;
 
                     lstMonitorDataHelpers.Add(mdh);
                 }
@@ -6620,8 +6620,8 @@ namespace BenMAP.Configuration
 
             foreach (MonitorDataHelper mdh in lstMonitorDataHelpers)
             {
-                dicBase365Values.Add(mdh.BaseControlGroup.Pollutant.PollutantID, mdh.BaseValues);
-                dicControl365Values.Add(mdh.BaseControlGroup.Pollutant.PollutantID, mdh.ControlValues);
+                dicBase365Values.Add(mdh.BaseControlGroup.Pollutant.PollutantID, mdh.Base365Values);
+                dicControl365Values.Add(mdh.BaseControlGroup.Pollutant.PollutantID, mdh.Control365Values);
             }
 
         }
