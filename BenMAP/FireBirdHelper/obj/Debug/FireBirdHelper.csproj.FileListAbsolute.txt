@@ -1,6 +1,0 @@
-C:\eer\active\Projects\0212979.002.026.001_Benmap\git\benmap-ce\BenMAP\FireBirdHelper\bin\Debug\FireBirdHelper.dll
-C:\eer\active\Projects\0212979.002.026.001_Benmap\git\benmap-ce\BenMAP\FireBirdHelper\bin\Debug\FireBirdHelper.pdb
-C:\eer\active\Projects\0212979.002.026.001_Benmap\git\benmap-ce\BenMAP\FireBirdHelper\bin\Debug\FirebirdSql.Data.FirebirdClient.dll
-C:\eer\active\Projects\0212979.002.026.001_Benmap\git\benmap-ce\BenMAP\FireBirdHelper\obj\Debug\FireBirdHelper.csprojResolveAssemblyReference.cache
-C:\eer\active\Projects\0212979.002.026.001_Benmap\git\benmap-ce\BenMAP\FireBirdHelper\obj\Debug\FireBirdHelper.dll
-C:\eer\active\Projects\0212979.002.026.001_Benmap\git\benmap-ce\BenMAP\FireBirdHelper\obj\Debug\FireBirdHelper.pdb
