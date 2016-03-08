@@ -6662,13 +6662,13 @@ namespace BenMAP.Configuration
         public static void get365ValuesFromModelValues(Dictionary<int, double> dicModelValues, Dictionary<int, List<float>> dic365Values)
         {
             foreach (KeyValuePair<int, double> kvp in dicModelValues)
-            {
+            {          
                 //if we don't have 365 values for this pollutant id
                 if (!dic365Values.ContainsKey(kvp.Key))
                 {
-                    //then add it, using the single model value for each index in dic365values
                     List<float> values = new List<float>();
-                    for(int i=0; i < dic365Values.Count; i++)
+                    //then add it, using the single model value for each index in dic365values list<float>               
+                    for (int i=0; i < dic365Values.First().Value.Count; i++)
                     {
                         values.Add(Convert.ToSingle(kvp.Value));
                     }
