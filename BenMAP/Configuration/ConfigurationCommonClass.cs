@@ -2247,7 +2247,7 @@ namespace BenMAP.Configuration
                         {
                             diclstPopulationAttribute[fbDataReader["CColumn"].ToString() + "," + fbDataReader["Row"].ToString()] += Convert.ToSingle(d);
                         }
-                    }
+                    }// end while
                     fbDataReader.Dispose();
                     foreach (KeyValuePair<string, float> k in diclstPopulationAttribute)
                     {
@@ -2256,7 +2256,7 @@ namespace BenMAP.Configuration
                     }
                     dicPop12 = dicPopulationAttribute;
                     diclstPopulationAttribute = null;
-                }
+                }// end 1==1
                 else
                 {
 
@@ -2270,7 +2270,7 @@ namespace BenMAP.Configuration
 
                     }
                     dicPop12 = dicPopulationAttribute;
-                }
+                }// 
                 if (benMAPPopulation.GridType.GridDefinitionID == CommonClass.GBenMAPGrid.GridDefinitionID || ((benMAPPopulation.GridType.GridDefinitionID == 27 && CommonClass.GBenMAPGrid.GridDefinitionID == 28) || (benMAPPopulation.GridType.GridDefinitionID == 28 && CommonClass.GBenMAPGrid.GridDefinitionID == 27)))
                 { }
                 else
@@ -2331,8 +2331,9 @@ namespace BenMAP.Configuration
                     }
                     catch
                     { }
-                }
-                if (benMAPPopulation.GridType.GridDefinitionID == GridDefinitionID || ((benMAPPopulation.GridType.GridDefinitionID == 28 || benMAPPopulation.GridType.GridDefinitionID == 27) && (GridDefinitionID == 27 || GridDefinitionID == 28)))
+                }// maybe force return these  values before calculating the percentage? if 
+                //if (benMAPPopulation.GridType.GridDefinitionID == GridDefinitionID || ((benMAPPopulation.GridType.GridDefinitionID == 28 || benMAPPopulation.GridType.GridDefinitionID == 27) && (GridDefinitionID == 27 || GridDefinitionID == 28)))
+                if(true)
                 {
                     return dicPopulationAttribute;
                 }
@@ -2419,9 +2420,9 @@ namespace BenMAP.Configuration
                                 }
                             }
                         }
-                    }
+                    }// end else
                     dicPopulationAttribute = dicPopulationAttributeReturn.Where(p => p.Value != 0).ToDictionary(p => p.Key, p => p.Value);
-                }
+                }// end dumb else
 
 
                 diclstPopulationAttribute = null;
@@ -2433,7 +2434,7 @@ namespace BenMAP.Configuration
                 return null;
             }
         }
-
+        // what is going on here???????????????????????
         public static void getIncidenceLevelFromDatabase()
         {
             try
@@ -3737,10 +3738,11 @@ namespace BenMAP.Configuration
                             dicPercentageForAggregationInc.Add(dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString(), new Dictionary<string, double>());
                             dicPercentageForAggregationInc[dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString()].Add(dr["targetcolumn"].ToString() + "," + dr["targetrow"].ToString(), Convert.ToDouble(dr["Percentage"]));
                         }
-
+                        
                     }
 
                     Dictionary<string, double> dicReturn = new Dictionary<string, double>();
+                    Console.WriteLine("grid,incidence,percentage,product");
                     foreach (KeyValuePair<string, float> k in dicPopulationAge)
                     {
                         string[] s = k.Key.Split(new char[] { ',' });
@@ -3753,9 +3755,20 @@ namespace BenMAP.Configuration
                                 double dsin = Convert.ToInt32(sin[0]) * 10000 + Convert.ToInt32(sin[1]);
                                 if (!dicInc.ContainsKey(dsin + "," + s[2])) continue;
                                 if (dicReturn.ContainsKey((Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])).ToString() + "," + s[2]))
+                                {
                                     dicReturn[(Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])).ToString() + "," + s[2]] += dicInc[dsin + "," + s[2]] * kin.Value;
+                                }
                                 else
+                                {
                                     dicReturn.Add((Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])).ToString() + "," + s[2], dicInc[dsin + "," + s[2]] * kin.Value);
+                                }
+                                bool debug = true;
+                                String key = (Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])).ToString()+","+s[2];
+                                
+                                if (debug && key.Equals("3120097,8"))
+                                {
+                                    Console.WriteLine(key + ","+dicInc[dsin + "," + s[2]] +","+kin.Value +","+dicInc[dsin + "," + s[2]] * kin.Value);
+                                }
                             }
                         }
 
@@ -4464,7 +4477,7 @@ namespace BenMAP.Configuration
                 foreach (ModelResultAttribute modelResultAttribute in baseControlGroup.Base.ModelResultAttributes)
                 {
                     bool debug = false;
-                    if (modelResultAttribute.Col == 29 && modelResultAttribute.Row == 702)
+                    if (modelResultAttribute.Col == 312 && modelResultAttribute.Row == 97)
                     {
                         debug = true;
                     }
@@ -4482,6 +4495,7 @@ namespace BenMAP.Configuration
                             if (dicPopulationAllAge.Keys.Contains(modelResultAttribute.Col + "," + modelResultAttribute.Row + "," + s.Key))
                                 populationValue += dicPopulationAllAge[modelResultAttribute.Col + "," + modelResultAttribute.Row + "," + s.Key] * s.Value;
                         }
+                        
                     }
                     if (populationValue == 0)
                         continue;
