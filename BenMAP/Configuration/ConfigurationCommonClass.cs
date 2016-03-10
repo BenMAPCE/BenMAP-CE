@@ -686,13 +686,15 @@ namespace BenMAP.Configuration
         {
             try
             {
-                List<int> lstInt = new List<int>();
-                for (int i = 0; i < LatinHypercubePoints; i++)
-                {
-                    lstInt.Add(Convert.ToInt16(Convert.ToDouble(i + 1) * 100.00 / Convert.ToDouble(LatinHypercubePoints) - (100.00 / (2 * Convert.ToDouble(LatinHypercubePoints)))));
-                }
+            //    List<int> lstInt = new List<int>();
+            //    for (int i = 0; i < LatinHypercubePoints; i++)
+            //    {
+            //        lstInt.Add(Convert.ToInt16(Convert.ToDouble(i + 1) * 100.00 / Convert.ToDouble(LatinHypercubePoints) - (100.00 / (2 * Convert.ToDouble(LatinHypercubePoints)))));
+            //    }
                 double[] lhsResultArray = new double[LatinHypercubePoints];
                 Meta.Numerics.Statistics.Sample sample = null;
+                // distribution switch statement
+                System.Console.WriteLine("Distribution " + crSelectFunction.BenMAPHealthImpactFunction.BetaDistribution);
                 switch (crSelectFunction.BenMAPHealthImpactFunction.BetaDistribution)
                 {
                     case "None":
@@ -792,6 +794,7 @@ namespace BenMAP.Configuration
 
                         }
                         lstCustom.Sort();
+                        //calculate percentile range
                         for (int i = 0; i < LatinHypercubePoints; i++)
                         {
                             lhsResultArray[i] = lstCustom.GetRange(i * (lstCustom.Count / LatinHypercubePoints), (lstCustom.Count / LatinHypercubePoints)).Median();
@@ -4377,14 +4380,16 @@ namespace BenMAP.Configuration
                 catch
                 {
                 }
-
-
+               //debug file
+                   System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:\Users\Public\output"+".txt", true);
+                   file.Write("Column,Row,Type,a,b,c,beta,delta,control,baseline,incidence,population,prevelance,result\n");
+                   file.Flush();
                 double baseValue = 0;
                 double controlValue = 0;
                 double populationValue = 0;
                 double incidenceValue = 0;
                 double prevalenceValue = 0;
-
+                
                 Dictionary<string, double> dicPopValue = new Dictionary<string, double>();
                 Dictionary<string, double> dicIncidenceValue = new Dictionary<string, double>();
                 Dictionary<string, double> dicPrevalenceValue = new Dictionary<string, double>();
@@ -4626,7 +4631,7 @@ namespace BenMAP.Configuration
                                             fControl = Threshold;
                                         fDelta = fBase - fControl;
                                         {
-                                            CRCalculateValue cr = CalculateCRSelectFunctionsOneCel(sCRID, hasPopInstrBaseLineFunction, 1, crSelectFunction, strBaseLineFunction, strPointEstimateFunction, modelResultAttribute.Col, modelResultAttribute.Row, fBase, fControl, dicPopValue, dicIncidenceValue, dicPrevalenceValue, dicVariable, lhsResultArray);
+                                            CRCalculateValue cr = CalculateCRSelectFunctionsOneCel(sCRID, hasPopInstrBaseLineFunction, 1, crSelectFunction, strBaseLineFunction, strPointEstimateFunction, modelResultAttribute.Col, modelResultAttribute.Row, fBase, fControl, dicPopValue, dicIncidenceValue, dicPrevalenceValue, dicVariable, lhsResultArray, file);
                                             fPSum += cr.PointEstimate;
                                             fBaselineSum += cr.Baseline;
                                             if (lhsResultArray != null)
@@ -4830,7 +4835,7 @@ namespace BenMAP.Configuration
                                                     fControl = Threshold;
                                                 fDelta = fBase - fControl;
                                                 {
-                                                    CRCalculateValue cr = CalculateCRSelectFunctionsOneCel(sCRID, hasPopInstrBaseLineFunction, 1, crSelectFunction, strBaseLineFunction, strPointEstimateFunction, modelResultAttribute.Col, modelResultAttribute.Row, fBase, fControl, dicPopValue, dicIncidenceValue, dicPrevalenceValue, dicVariable, lhsResultArray);
+                                                    CRCalculateValue cr = CalculateCRSelectFunctionsOneCel(sCRID, hasPopInstrBaseLineFunction, 1, crSelectFunction, strBaseLineFunction, strPointEstimateFunction, modelResultAttribute.Col, modelResultAttribute.Row, fBase, fControl, dicPopValue, dicIncidenceValue, dicPrevalenceValue, dicVariable, lhsResultArray, file);
                                                     fPSum += cr.PointEstimate;
                                                     fBaselineSum += cr.Baseline;
                                                     if (lhsResultArray != null)
@@ -4899,7 +4904,7 @@ namespace BenMAP.Configuration
                                                fControl = Threshold;
                                            fDelta = fBase - fControl;
                                            {
-                                               CRCalculateValue cr = CalculateCRSelectFunctionsOneCel(sCRID, hasPopInstrBaseLineFunction, 1, crSelectFunction, strBaseLineFunction, strPointEstimateFunction, modelResultAttribute.Col, modelResultAttribute.Row, fBase, fControl, dicPopValue, dicIncidenceValue, dicPrevalenceValue, dicVariable, lhsResultArray);
+                                               CRCalculateValue cr = CalculateCRSelectFunctionsOneCel(sCRID, hasPopInstrBaseLineFunction, 1, crSelectFunction, strBaseLineFunction, strPointEstimateFunction, modelResultAttribute.Col, modelResultAttribute.Row, fBase, fControl, dicPopValue, dicIncidenceValue, dicPrevalenceValue, dicVariable, lhsResultArray,file);
                                                fPSum += cr.PointEstimate * i365;
                                                fBaselineSum += cr.Baseline * i365;
                                                if (lhsResultArray != null)
@@ -5038,7 +5043,7 @@ namespace BenMAP.Configuration
                                             fControl = Threshold;
                                         fDelta = fBase - fControl;
                                         {
-                                            CRCalculateValue cr = CalculateCRSelectFunctionsOneCel(sCRID, hasPopInstrBaseLineFunction, 1, crSelectFunction, strBaseLineFunction, strPointEstimateFunction, modelResultAttribute.Col, modelResultAttribute.Row, fBase, fControl, dicPopValue, dicIncidenceValue, dicPrevalenceValue, dicVariable, lhsResultArray);
+                                            CRCalculateValue cr = CalculateCRSelectFunctionsOneCel(sCRID, hasPopInstrBaseLineFunction, 1, crSelectFunction, strBaseLineFunction, strPointEstimateFunction, modelResultAttribute.Col, modelResultAttribute.Row, fBase, fControl, dicPopValue, dicIncidenceValue, dicPrevalenceValue, dicVariable, lhsResultArray,file);
                                             fPSum += cr.PointEstimate;
                                             fBaselineSum += cr.Baseline;
                                             if (lhsResultArray != null)
@@ -5238,7 +5243,7 @@ namespace BenMAP.Configuration
                                                 fDelta = fBase - fControl;
                                                 if (fDelta != 0)
                                                 {
-                                                    CRCalculateValue cr = CalculateCRSelectFunctionsOneCel(sCRID, hasPopInstrBaseLineFunction, 1, crSelectFunction, strBaseLineFunction, strPointEstimateFunction, modelResultAttribute.Col, modelResultAttribute.Row, fBase, fControl, dicPopValue, dicIncidenceValue, dicPrevalenceValue, dicVariable, lhsResultArray);
+                                                    CRCalculateValue cr = CalculateCRSelectFunctionsOneCel(sCRID, hasPopInstrBaseLineFunction, 1, crSelectFunction, strBaseLineFunction, strPointEstimateFunction, modelResultAttribute.Col, modelResultAttribute.Row, fBase, fControl, dicPopValue, dicIncidenceValue, dicPrevalenceValue, dicVariable, lhsResultArray,file);
                                                     fPSum += cr.PointEstimate;
                                                     fBaselineSum += cr.Baseline;
                                                     if (lhsResultArray != null)
@@ -5306,7 +5311,7 @@ namespace BenMAP.Configuration
                                                fControl = Threshold;
                                            fDelta = fBase - fControl;
                                            {
-                                               CRCalculateValue cr = CalculateCRSelectFunctionsOneCel(sCRID, hasPopInstrBaseLineFunction, 1, crSelectFunction, strBaseLineFunction, strPointEstimateFunction, modelResultAttribute.Col, modelResultAttribute.Row, fBase, fControl, dicPopValue, dicIncidenceValue, dicPrevalenceValue, dicVariable, lhsResultArray);
+                                               CRCalculateValue cr = CalculateCRSelectFunctionsOneCel(sCRID, hasPopInstrBaseLineFunction, 1, crSelectFunction, strBaseLineFunction, strPointEstimateFunction, modelResultAttribute.Col, modelResultAttribute.Row, fBase, fControl, dicPopValue, dicIncidenceValue, dicPrevalenceValue, dicVariable, lhsResultArray,file);
                                                fPSum += cr.PointEstimate * i365;
                                                fBaselineSum += cr.Baseline * i365;
                                                if (lhsResultArray != null)
@@ -5373,7 +5378,7 @@ namespace BenMAP.Configuration
 
 
                     {
-                        crCalculateValue = CalculateCRSelectFunctionsOneCel(sCRID, hasPopInstrBaseLineFunction, i365, crSelectFunction, strBaseLineFunction, strPointEstimateFunction, modelResultAttribute.Col, modelResultAttribute.Row, baseValue, controlValue, dicPopValue, dicIncidenceValue, dicPrevalenceValue, dicVariable, lhsResultArray);
+                        crCalculateValue = CalculateCRSelectFunctionsOneCel(sCRID, hasPopInstrBaseLineFunction, i365, crSelectFunction, strBaseLineFunction, strPointEstimateFunction, modelResultAttribute.Col, modelResultAttribute.Row, baseValue, controlValue, dicPopValue, dicIncidenceValue, dicPrevalenceValue, dicVariable, lhsResultArray,file);
 
                         crSelectFunctionCalculateValue.CRCalculateValues.Add(crCalculateValue);
                     }
@@ -5481,7 +5486,7 @@ namespace BenMAP.Configuration
             }
         }
 
-        public static CRCalculateValue CalculateCRSelectFunctionsOneCel(string iCRID, bool hasPopInstrBaseLineFunction, float i365, CRSelectFunction crSelectFunction, string strBaseLineFunction, string strPointEstimateFunction, int col, int row, double baseValue, double controlValue, Dictionary<string, double> dicPopulationValue, Dictionary<string, double> dicIncidenceValue, Dictionary<string, double> dicPrevalenceValue, Dictionary<string, double> dicSetupVariables, double[] lhsDesignResult)
+        public static CRCalculateValue CalculateCRSelectFunctionsOneCel(string iCRID, bool hasPopInstrBaseLineFunction, float i365, CRSelectFunction crSelectFunction, string strBaseLineFunction, string strPointEstimateFunction, int col, int row, double baseValue, double controlValue, Dictionary<string, double> dicPopulationValue, Dictionary<string, double> dicIncidenceValue, Dictionary<string, double> dicPrevalenceValue, Dictionary<string, double> dicSetupVariables, double[] lhsDesignResult, System.IO.StreamWriter file)
         {
             try
             {
@@ -5501,7 +5506,11 @@ namespace BenMAP.Configuration
 
 
                 if (dicPopulationValue == null || dicPopulationValue.Count == 0 || dicPopulationValue.Sum(p => p.Value) == 0)
+                {
                     crCalculateValue.PointEstimate = 0;
+                    if(CommonClass.getDebugValue())
+                    file.Write(crCalculateValue.Col + "," + crCalculateValue.Row + ",");
+                }
                 else
                 {
                     if (strPointEstimateFunction.ToLower().Contains("pop"))
@@ -5510,9 +5519,11 @@ namespace BenMAP.Configuration
                         {
                             incidenceValue = dicIncidenceValue != null && dicIncidenceValue.Count > 0 && dicIncidenceValue.ContainsKey(k.Key) ? dicIncidenceValue[k.Key] : 0;                        
                             prevalenceValue = dicPrevalenceValue != null && dicPrevalenceValue.Count > 0 && dicPrevalenceValue.ContainsKey(k.Key) ? dicPrevalenceValue[k.Key] : 0;
+                            if(CommonClass.getDebugValue())
+                                file.Write(crCalculateValue.Col + ","  + crCalculateValue.Row + ",");
                             crCalculateValue.PointEstimate += ConfigurationCommonClass.getValueFromPointEstimateFunctionString(iCRID, strPointEstimateFunction, crSelectFunction.BenMAPHealthImpactFunction.AContantValue,
                                 crSelectFunction.BenMAPHealthImpactFunction.BContantValue, crSelectFunction.BenMAPHealthImpactFunction.CContantValue,
-                                crSelectFunction.BenMAPHealthImpactFunction.Beta, baseValue - controlValue, controlValue, baseValue, incidenceValue, k.Value, prevalenceValue, dicSetupVariables) * i365;
+                                crSelectFunction.BenMAPHealthImpactFunction.Beta, baseValue - controlValue, controlValue, baseValue, incidenceValue, k.Value, prevalenceValue, dicSetupVariables,file) * i365;
                         }
                     }
                     else
@@ -5521,9 +5532,11 @@ namespace BenMAP.Configuration
                         {
                             incidenceValue = dicIncidenceValue != null && dicIncidenceValue.Count > 0 && dicIncidenceValue.ContainsKey(k.Key) ? dicIncidenceValue[k.Key] : 0;
                             prevalenceValue = dicPrevalenceValue != null && dicPrevalenceValue.Count > 0 && dicPrevalenceValue.ContainsKey(k.Key) ? dicPrevalenceValue[k.Key] : 0;
+                            if(CommonClass.getDebugValue())
+                                file.Write(crCalculateValue.Col + ","+ crCalculateValue.Row + ",");
                             crCalculateValue.PointEstimate = ConfigurationCommonClass.getValueFromPointEstimateFunctionString(iCRID, strPointEstimateFunction, crSelectFunction.BenMAPHealthImpactFunction.AContantValue,
                                 crSelectFunction.BenMAPHealthImpactFunction.BContantValue, crSelectFunction.BenMAPHealthImpactFunction.CContantValue,
-                                crSelectFunction.BenMAPHealthImpactFunction.Beta, baseValue - controlValue, controlValue, baseValue, incidenceValue, k.Value, prevalenceValue, dicSetupVariables) * i365;
+                                crSelectFunction.BenMAPHealthImpactFunction.Beta, baseValue - controlValue, controlValue, baseValue, incidenceValue, k.Value, prevalenceValue, dicSetupVariables,file) * i365;
                         }
                     }
                 }
@@ -5532,7 +5545,8 @@ namespace BenMAP.Configuration
                     if (hasPopInstrBaseLineFunction && crCalculateValue.Population == 0)
                     {
                         crCalculateValue.Baseline = 0;
-
+                        if(CommonClass.getDebugValue())
+                            file.Write(crCalculateValue.Col + "," + "Row:" + crCalculateValue.Row + ",");
                     }
                     else
                     {
@@ -5542,9 +5556,11 @@ namespace BenMAP.Configuration
                             {
                                 incidenceValue = dicIncidenceValue != null && dicIncidenceValue.Count > 0 && dicIncidenceValue.ContainsKey(k.Key) ? dicIncidenceValue[k.Key] : 0;
                                 prevalenceValue = dicPrevalenceValue != null && dicPrevalenceValue.Count > 0 && dicPrevalenceValue.ContainsKey(k.Key) ? dicPrevalenceValue[k.Key] : 0;
+                                if(CommonClass.getDebugValue())
+                                    file.Write(crCalculateValue.Col + "," + crCalculateValue.Row + ",");
                                 crCalculateValue.Baseline += ConfigurationCommonClass.getValueFromBaseFunctionString(iCRID, strBaseLineFunction, crSelectFunction.BenMAPHealthImpactFunction.AContantValue,
                                     crSelectFunction.BenMAPHealthImpactFunction.BContantValue, crSelectFunction.BenMAPHealthImpactFunction.CContantValue,
-                                    crSelectFunction.BenMAPHealthImpactFunction.Beta, baseValue - controlValue, controlValue, baseValue, incidenceValue, k.Value, prevalenceValue, dicSetupVariables) * i365;
+                                    crSelectFunction.BenMAPHealthImpactFunction.Beta, baseValue - controlValue, controlValue, baseValue, incidenceValue, k.Value, prevalenceValue, dicSetupVariables,file) * i365;
                             }
                         }
                         else
@@ -5553,9 +5569,11 @@ namespace BenMAP.Configuration
                             {
                                 incidenceValue = dicIncidenceValue != null && dicIncidenceValue.Count > 0 && dicIncidenceValue.ContainsKey(k.Key) ? dicIncidenceValue[k.Key] : 0;
                                 prevalenceValue = dicPrevalenceValue != null && dicPrevalenceValue.Count > 0 && dicPrevalenceValue.ContainsKey(k.Key) ? dicPrevalenceValue[k.Key] : 0;
+                                if(CommonClass.getDebugValue())
+                                    file.Write( + crCalculateValue.Col + ","+ crCalculateValue.Row + ",");
                                 crCalculateValue.Baseline = ConfigurationCommonClass.getValueFromBaseFunctionString(iCRID, strBaseLineFunction, crSelectFunction.BenMAPHealthImpactFunction.AContantValue,
                                     crSelectFunction.BenMAPHealthImpactFunction.BContantValue, crSelectFunction.BenMAPHealthImpactFunction.CContantValue,
-                                    crSelectFunction.BenMAPHealthImpactFunction.Beta, baseValue - controlValue, controlValue, baseValue, incidenceValue, k.Value, prevalenceValue, dicSetupVariables) * i365;
+                                    crSelectFunction.BenMAPHealthImpactFunction.Beta, baseValue - controlValue, controlValue, baseValue, incidenceValue, k.Value, prevalenceValue, dicSetupVariables,file) * i365;
                             }
                         }
                     }
@@ -5563,6 +5581,8 @@ namespace BenMAP.Configuration
                 else
                 {
                     crCalculateValue.Baseline = crCalculateValue.PointEstimate;
+                    if(CommonClass.getDebugValue())
+                        System.Console.Write( crCalculateValue.Col + ","  + crCalculateValue.Row + ",");
                 }
                 crCalculateValue.LstPercentile = new List<float>();
                 if (lhsDesignResult != null)
@@ -5581,10 +5601,12 @@ namespace BenMAP.Configuration
                             {
                                 incidenceValue = dicIncidenceValue != null && dicIncidenceValue.Count > 0 && dicIncidenceValue.ContainsKey(k.Key) ? dicIncidenceValue[k.Key] : 0;
                                 prevalenceValue = dicPrevalenceValue != null && dicPrevalenceValue.Count > 0 && dicPrevalenceValue.ContainsKey(k.Key) ? dicPrevalenceValue[k.Key] : 0;
+                                if(CommonClass.getDebugValue())
+                                    file.Write( crCalculateValue.Col + "," + crCalculateValue.Row + ",");
                                 crCalculateValue.LstPercentile[idlhs] += (ConfigurationCommonClass.getValueFromPointEstimateFunctionString(iCRID, strPointEstimateFunction,
                                     crSelectFunction.BenMAPHealthImpactFunction.AContantValue,
                                 crSelectFunction.BenMAPHealthImpactFunction.BContantValue, crSelectFunction.BenMAPHealthImpactFunction.CContantValue,
-                                  dlhs, baseValue - controlValue, controlValue, baseValue, incidenceValue, k.Value, prevalenceValue, dicSetupVariables) * i365);
+                                  dlhs, baseValue - controlValue, controlValue, baseValue, incidenceValue, k.Value, prevalenceValue, dicSetupVariables,file) * i365);
                             }
 
 
@@ -6070,11 +6092,11 @@ namespace BenMAP.Configuration
 
         }
 
-        public static float getValueFromBaseFunctionString(string crid, string FunctionString, double A, double B, double C, double Beta, double DeltaQ, double Q0, double Q1, double Incidence, double POP, double Prevalence, Dictionary<string, double> dicSetupVariables)
+        public static float getValueFromBaseFunctionString(string crid, string FunctionString, double A, double B, double C, double Beta, double DeltaQ, double Q0, double Q1, double Incidence, double POP, double Prevalence, Dictionary<string, double> dicSetupVariables, System.IO.StreamWriter file)
         {
             try
             {
-                object result = BaseEval.BaseLineEval(crid, FunctionString, A, B, C, Beta, DeltaQ, Q0, Q1, Incidence, POP, Prevalence, dicSetupVariables);
+                object result = BaseEval.BaseLineEval(crid, FunctionString, A, B, C, Beta, DeltaQ, Q0, Q1, Incidence, POP, Prevalence, dicSetupVariables,file);
                 if (result is double)
                 {
                     if (double.IsNaN(Convert.ToDouble(result))) return 0;
@@ -6082,7 +6104,7 @@ namespace BenMAP.Configuration
                 }
                 else
                 {
-                    result = BaseEval.BaseLineEval(crid, FunctionString, A, B, C, Beta, DeltaQ, Q0, Q1, Incidence, POP, Prevalence, dicSetupVariables);
+                    result = BaseEval.BaseLineEval(crid, FunctionString, A, B, C, Beta, DeltaQ, Q0, Q1, Incidence, POP, Prevalence, dicSetupVariables,file);
                     if (result is double)
                     {
                         if (double.IsNaN(Convert.ToDouble(result))) return 0;
@@ -6099,19 +6121,20 @@ namespace BenMAP.Configuration
                 return 0;
             }
         }
-        public static float getValueFromPointEstimateFunctionString(string crid, string FunctionString, double A, double B, double C, double Beta, double DeltaQ, double Q0, double Q1, double Incidence, double POP, double Prevalence, Dictionary<string, double> dicSetupVariables)
+        public static float getValueFromPointEstimateFunctionString(string crid, string FunctionString, double A, double B, double C, double Beta, double DeltaQ, double Q0, double Q1, double Incidence, double POP, double Prevalence, Dictionary<string, double> dicSetupVariables,System.IO.StreamWriter file)
         {
             try
             {
-                object result = PointEstimateEval.PointEstimateEval(crid, FunctionString, A, B, C, Beta, DeltaQ, Q0, Q1, Incidence, POP, Prevalence, dicSetupVariables);
+                object result = PointEstimateEval.PointEstimateEval(crid, FunctionString, A, B, C, Beta, DeltaQ, Q0, Q1, Incidence, POP, Prevalence, dicSetupVariables,file);
                 if (result is double)
                 {
                     if (double.IsNaN(Convert.ToDouble(result))) return 0;
                     return Convert.ToSingle(Convert.ToDouble(result));
                 }
                 else
-                {
-                    result = PointEstimateEval.PointEstimateEval(crid, FunctionString, A, B, C, Beta, DeltaQ, Q0, Q1, Incidence, POP, Prevalence, dicSetupVariables);
+                {   //whats the point of this code??????
+                    //if we already know its not a double why recalculate  - Adam S.
+                    result = PointEstimateEval.PointEstimateEval(crid, FunctionString, A, B, C, Beta, DeltaQ, Q0, Q1, Incidence, POP, Prevalence, dicSetupVariables,file);
                     if (result is double)
                     {
                         if (double.IsNaN(Convert.ToDouble(result))) return 0;
@@ -6162,7 +6185,43 @@ namespace BenMAP.Configuration
             return Convert.ToSingle(dResult);
         }
 
+        public static void dumpSetupVariableJoinAllValueToDebugFile(ref List<SetupVariableJoinAllValues> lstSetupVariable)
+        {   // dump information about the current lstVariables to a debugging file
+            // this can be used to find out what veriables are being used in the HealthImpactFunctions run and what grid definitions they use
+            // output file name is HARDCODED!
+            System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:\Users\Public\outputfunctionlist" + ".txt", true);
+            file.Write("Variable_Name:\tVariable_Grid_Type:\tCell_Count\tCell_Col\tCell_Row\tCell_Value\n");
+            // write out variables to file
+            foreach (SetupVariableJoinAllValues sv in lstSetupVariable)
+            {
+                int gridCount=0;
+                // ignore error if there is no grid
+                try
+                {
 
+                    gridCount = sv.lstValues.Count();
+                }
+                catch { }
+
+                if (gridCount > 0)
+                {
+                    foreach (SetupVariableValues cell in sv.lstValues)
+                    {
+                        file.Write("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\n", sv.SetupVariableName.ToString(), sv.SetupVariableGridType.ToString(), gridCount,
+                                cell.Col.ToString(),cell.Row.ToString(),cell.Value.ToString());                    
+                    }
+                    
+                }
+                else
+                {
+                    file.Write("{0}\t{1}\t{2}\n", sv.SetupVariableName.ToString(), sv.SetupVariableGridType.ToString(), gridCount);
+                    
+                }
+                file.Flush();
+            }
+
+            file.Close();
+        }
 
 
     }

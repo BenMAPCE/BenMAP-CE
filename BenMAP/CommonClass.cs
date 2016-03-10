@@ -605,6 +605,11 @@ namespace BenMAP
                 }
             }
         }
+        //debug variable
+        public static Boolean getDebugValue()
+        {
+            return false;
+        }
         public static GridRelationship getRelationshipFromBenMAPGrid(int big, int small)
         {
             try
