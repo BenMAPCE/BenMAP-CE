@@ -739,6 +739,14 @@
     <Compile Include="TipFormGIF.Designer.cs">
       <DependentUpon>TipFormGIF.cs</DependentUpon>
     </Compile>
+    <Compile Include="Tools\Crosstab.cs" />
+    <Compile Include="Tools\FirebirdOutput.cs" />
+    <Compile Include="Tools\frm_PopSim.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Tools\frm_PopSim.Designer.cs">
+      <DependentUpon>frm_PopSim.cs</DependentUpon>
+    </Compile>
     <Compile Include="Tools\GBDRollback.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -841,6 +849,8 @@
     <Compile Include="Tools\ModelFileConcatenator.Designer.cs">
       <DependentUpon>ModelFileConcatenator.cs</DependentUpon>
     </Compile>
+    <Compile Include="Tools\PopSimInputData.cs" />
+    <Compile Include="Tools\PopSimModel.cs" />
     <Compile Include="Tools\ValidateDatabaseImport.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1362,6 +1372,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Tools\ExportAirQualitySurface.resx">
       <DependentUpon>ExportAirQualitySurface.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tools\frm_PopSim.resx">
+      <DependentUpon>frm_PopSim.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Tools\GBDRollback.resx">
       <DependentUpon>GBDRollback.cs</DependentUpon>

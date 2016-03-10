@@ -865,6 +865,11 @@ namespace BenMAP
             DialogResult rtn = frm.ShowDialog();
         }
 
+        private void PopSIMtoolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            PopSim.frm_PopSim frm = new PopSim.frm_PopSim();
+            DialogResult rtn = frm.ShowDialog();
+        }
         private void errorReportingToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ErrorReporting frm = new ErrorReporting();

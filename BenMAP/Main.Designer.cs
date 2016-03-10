@@ -51,6 +51,7 @@ namespace BenMAP
             this.gbdRollbackToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.gISMappingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.neighborFileCreatorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.PopSIMtoolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.btnMATs = new System.Windows.Forms.ToolStripDropDownButton();
             this.ozoneAnalysisToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -286,6 +287,7 @@ namespace BenMAP
             this.gbdRollbackToolStripMenuItem,
             this.gISMappingToolStripMenuItem,
             this.neighborFileCreatorToolStripMenuItem,
+            this.PopSIMtoolStripMenuItem,
             this.optionsToolStripMenuItem});
             this.mnuTools.Image = ((System.Drawing.Image)(resources.GetObject("mnuTools.Image")));
             this.mnuTools.ImageTransparentColor = System.Drawing.Color.Magenta;
@@ -329,6 +331,10 @@ namespace BenMAP
             this.exportAirQualityGridToolStripMenuItem.Text = "Export Air Quality Surface";
             this.exportAirQualityGridToolStripMenuItem.Click += new System.EventHandler(this.exportAirQualityGridToolStripMenuItem_Click);
             // 
+            // gISMappingToolStripMenuItem
+            // 
+            this.gISMappingToolStripMenuItem.Name = "gISMappingToolStripMenuItem";
+            // 
             // gbdRollbackToolStripMenuItem
             // 
             this.gbdRollbackToolStripMenuItem.Name = "gbdRollbackToolStripMenuItem";
@@ -350,6 +356,17 @@ namespace BenMAP
             this.neighborFileCreatorToolStripMenuItem.Size = new System.Drawing.Size(268, 22);
             this.neighborFileCreatorToolStripMenuItem.Text = "Neighbor File Creator";
             this.neighborFileCreatorToolStripMenuItem.Click += new System.EventHandler(this.neighborFileCreatorToolStripMenuItem_Click);
+            // 
+            // PopSIMtoolStripMenuItem
+            // 
+            this.PopSIMtoolStripMenuItem.Name = "PopSIMtoolStripMenuItem";
+            this.PopSIMtoolStripMenuItem.Size = new System.Drawing.Size(268, 22);
+            this.PopSIMtoolStripMenuItem.Text = "PopSim";
+            this.PopSIMtoolStripMenuItem.Click += new System.EventHandler(this.PopSIMtoolStripMenuItem_Click);
+            // 
+            // optionsToolStripMenuItem
+            // 
+            this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
             // 
             // optionsToolStripMenuItem
             // 
@@ -426,6 +443,10 @@ namespace BenMAP
             this.mnuAbout.Size = new System.Drawing.Size(301, 22);
             this.mnuAbout.Text = "About";
             this.mnuAbout.Click += new System.EventHandler(this.mnuAbout_Click);
+            // 
+            // statusStrip1
+            // 
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             // 
             // errorReportingToolStripMenuItem
             // 
@@ -518,6 +539,7 @@ namespace BenMAP
         private System.Windows.Forms.ToolStripStatusLabel lblStatus;
         private System.Windows.Forms.ToolStripButton mnuModifySetup;
         private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem PopSIMtoolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem errorReportingToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem gbdRollbackToolStripMenuItem;
     }

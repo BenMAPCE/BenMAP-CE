@@ -1,10 +1,15 @@
 ﻿using System;
+using System.Configuration;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Data;
 using FirebirdSql.Data.FirebirdClient;
+
+// next namespace includes the background worker object
+using System.ComponentModel;
+using System.Windows.Forms; // for message box function
 
 // this is the module that runs the simulation
 namespace PopSim
@@ -17,12 +22,11 @@ namespace PopSim
         private double k;
         private double m;
         private double p;
-        private double q;
         private double t;
        
         private string Illness_Type;
         private string Illness_Type_Specific;
-        private int IllnessCount;
+        //private int IllnessCount;
         private int GenderCount;
         private string gender;
         private string source;
@@ -41,43 +45,60 @@ namespace PopSim
         private string strbirth_table;
         private string strinfant_migration_table;
         private string strgenderText;
-            
-
-
-
+        private BackgroundWorker psWorker;
+        
 
         PopSimInputData InputData = new PopSimInputData();
         // setup database - this probably should be moved to a class to minimize connection counts
         private FirebirdSql.Data.FirebirdClient.FbConnection dbConnection;
 
-        public PopSimModel()    // class constructor
+        public PopSimModel(BackgroundWorker worker, DoWorkEventArgs e)    // class constructor
         {
+            psWorker = worker;
             // open database
             // create link to Firebird database
-            dbConnection = new FbConnection();
-            string conStr = Properties.Settings.Default.PopSimConnectionString;
-            // temporarly hard code password and file location
-            conStr = "Database=C:\\eer\\active\\Projects\\0212979.002.026.001_Benmap\\popsimgui\\BenMAP\\PopSim\\PopSim\\bin\\Debug\\POPSIMDB.FDB;USER=SYSDBA;PASSWORD=masterkey";
-            // conStr = "Database=|DataDirectory|\\POPSIMDB.FDB;USER=SYSDBA;PASSWORD=masterkey";
-            dbConnection.ConnectionString = conStr;
+            dbConnection = getNewConnection();
             dbConnection.Open();
-            
+            InputData.getDataFromScenario(1);   // only one scenario currently permitted
+        }
+
+        private static FbConnection getNewConnection()
+        {
+
+            ConnectionStringSettings settings = ConfigurationManager.ConnectionStrings["PopSimConnectionString"];
+            string str = settings.ConnectionString;
+            //if (!str.Contains(":"))
+            //    str = str.Substring(0, str.IndexOf("initial catalog=")) + "initial catalog=" + Application.StartupPath + @"\" + str.Substring(str.IndexOf("initial catalog=") + 16);
+            str = str.Replace("##USERDATA##", Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData));
+
+            FbConnection connection = new FirebirdSql.Data.FirebirdClient.FbConnection(str);
+
+            return connection;
         }
 
 
         public void runPopSim()
         {
+            string[] CurrentStatus = new string[1];
             Debug.Print("run started");
             setupInternalVariables();
+            
             // STEP 1: DELETE RECORDS
             delete_Records();
+            //psE.Result
+            CurrentStatus[0] = "Calculating Annual PM Values";
+            psWorker.ReportProgress(10, CurrentStatus);
             
             // STEP 2: CALCULATE ANNUAL PM VALUES
             run_Annual_PM_Values();
-            
+            CurrentStatus[0] = "Calculating Lag";
+            psWorker.ReportProgress(20, CurrentStatus);
+
             //STEP 3: CALCULATE LAG
             //If user selected the single lag option, then calculate the lag only for the single lag option
-            if (strLag_Type == "Single") {
+            // if (strLag_Type == "Single")
+            if ( InputData.getLag_Type() == 0) {
+                strLag_Type = "Single";
                 strLag_Type_Specific = "Single";
                 run_Lag_Calcs();
             //Otherwise, calculate the lag for all the multiple causes
@@ -99,14 +120,21 @@ namespace PopSim
 
             End If
             */
+            CurrentStatus[0] = "Calculating Threshold";
+            psWorker.ReportProgress(30,CurrentStatus);
             
             //STEP 4: CALCULATE THRESHOLD
             //Only run threshold calcs if user specified a threshold value
             if (InputData.getPM_Choice() == 1) { 
                 run_threshold_calcs();
             }
+            CurrentStatus[0] = "Calculating Age-Specific Adjustment Factors";
+            psWorker.ReportProgress(40, CurrentStatus);
+
             //STEP 5: CALCULATE AGE-SPECIFIC ADJUSTMENT FACTORS
             run_age_specific_adjustment_factors();
+            CurrentStatus[0] = "Calculating Illness Factors";
+            psWorker.ReportProgress(50, CurrentStatus);
 
             //STEP 6: RUN ILLNESS CALCULATIONS
             // all the references should be replaced with the study id to clean up
@@ -213,10 +241,14 @@ namespace PopSim
                 Illness_Type_Specific = "All Other Causes-3";
                 run_illness_calcs();
             } // endif
+            CurrentStatus[0] = "Calculating Death Probabilities";
+            psWorker.ReportProgress(60, CurrentStatus);
 
             // STEP 7: CALCULATE THE PROBABILITY OF DEATH
             run_calculate_pdeath();
-            // STOPPED HERE
+            CurrentStatus[0] = "Calculating Regulatory Population, Number of Deaths, and Life Expectancy";
+            psWorker.ReportProgress(70,CurrentStatus);
+
             //STEP 8: CALCULATE REGULATORY POPULATION, NUMBER OF DEATHS, AND LIFE EXPECTANCY
             strscenarioText = "Regulatory";
 
@@ -238,16 +270,25 @@ namespace PopSim
                     strinfant_migration_table = "Infant_Migration_Male";
                     strgenderText = "male";
                 } // End If
-                // next two routines have problems 
                 run_calculate_pop_and_death();
-                // run_calculate_life_expectancy();
+                // next routine has minor numerical problems and needs review
+                run_calculate_life_expectancy();
             } // Next GenderCount
-        
+            CurrentStatus[0] = "Generating Input Summary";
+            psWorker.ReportProgress(90, CurrentStatus);
+            //STEP 9: GENERATE SUMMARY OF INPUTS
+            run_summarize_results();
+
+            CurrentStatus[0] = "PopSim Model Run Finished";
+            psWorker.ReportProgress(100, CurrentStatus);
+          
+
         } // end run Pop Sim
         public void setupInternalVariables()
         {
             // setup up internal variables. This was done on in the Global code module of the original Access database program
-            if (InputData.getPM_Choice() == 0) {
+            if (InputData.getPM_Choice() == 0)
+            {
                 strMethod = "Linear";
             }else{
                 strMethod = "Step";
@@ -283,22 +324,24 @@ namespace PopSim
                 strBeta_Type = "User-Entered Beta";
             }
 
-/*    
-
-run_regulatory
-
-wasRun = True
-Command120.Visible = True
-Command121.Visible = True
-*/
         }
         private void delete_Records(){
 
-            FbCommand dataCommand = new  FirebirdSql.Data.FirebirdClient.FbCommand();
-            dataCommand.Connection = dbConnection;
-            dataCommand.CommandType = CommandType.Text;
-            // empty previous run's results
             
+            FbTransaction trDR = dbConnection.BeginTransaction();
+            FbCommand dataCommand = new  FirebirdSql.Data.FirebirdClient.FbCommand();
+
+            dataCommand.Connection = dbConnection;
+            dataCommand.CommandType = CommandType.StoredProcedure;
+            dataCommand.CommandText = "RESET_RUN_DATA";
+            dataCommand.Transaction = trDR;
+            dataCommand.ExecuteNonQuery();
+            trDR.Commit();
+            
+            
+            //dataCommand.CommandType = CommandType.Text;
+            // empty previous run's results
+#if false           
             //Delete all baseline records from PM_Changes table
             dataCommand.CommandText  = "DELETE FROM PM_Changes";
             dataCommand.ExecuteNonQuery();
@@ -394,15 +437,18 @@ Command121.Visible = True
             //Delete all records from "Report_Increase_Period_Conditional_Life_Expectancy"
             dataCommand.CommandText  = "DELETE FROM RPT_Inc_Prd_Cond_Life_Exp";
             dataCommand.ExecuteNonQuery();
+#endif
         }
 
         private void run_Annual_PM_Values()
         {
+            FbTransaction trTR = dbConnection.BeginTransaction();
 
             // create a data command to use throughout procedure
             FbCommand dataCommand = new  FirebirdSql.Data.FirebirdClient.FbCommand();
             dataCommand.Connection = dbConnection;
             dataCommand.CommandType = CommandType.Text;
+            dataCommand.Transaction = trTR;
             
            
             //Populate table with annual PM values either linearly or step-wise
@@ -413,7 +459,7 @@ Command121.Visible = True
             double PM_val = 0;
 
             //Step interpolation between PM years
-            if (strMethod == "Step"){    
+            if (InputData.getPM_Trajectory() ==1) { // strMethod == "Step")
                 while (PM_year <=  InputData.getEnd_Year()) {
                     // set PM value for year step
                     if (PM_year == InputData.getPM_year_1()){
@@ -469,13 +515,17 @@ Command121.Visible = True
                     PM_year = PM_year + 1;
                 } // wend
             }
-
+            trTR.Commit();
         }
         public void run_Lag_Calcs()
         {
+            FbTransaction trTR = dbConnection.BeginTransaction();
+
+
             // create a data command to use throughout procedure
             FbCommand dataCommand = new  FirebirdSql.Data.FirebirdClient.FbCommand();
             dataCommand.Connection = dbConnection;
+            dataCommand.Transaction = trTR;
             dataCommand.CommandType = CommandType.Text;
             
             if ((strLag_Function_Type == "HES_Default") || (strLag_Function_Type == "User-defined")) {
@@ -483,7 +533,7 @@ Command121.Visible = True
                 double m = 0;
                 int j = 1;
     
-                while (j <= 61) {
+                while (j <= 71) {
     
                     if (j == 1) {
                         m = 0.3;
@@ -497,7 +547,8 @@ Command121.Visible = True
     
                     // Write values to table
                     string strSQL = "INSERT INTO Lag(Year_after_PM_Change, Perc_Impacts, Type) Values(" +  j.ToString()  + ", "  + m.ToString() + " , '" + strLag_Type_Specific + "' ) ";
-                    dataCommand.CommandText = strSQL;          
+                    dataCommand.CommandText = strSQL;
+                    dataCommand.Transaction = trTR;
                     dataCommand.ExecuteNonQuery();
 
     
@@ -519,12 +570,13 @@ Command121.Visible = True
                 m = 0;
                 j = 1;
     
-                while (j <= 61) {
+                while (j <= 71) {
                     m = 1 - System.Math.Exp(-k * j);
 
                     //Write values to table
                     string strSQL = "INSERT INTO Lag(Year_after_PM_Change, Perc_Impacts, Type) Values(" +  j.ToString()  + ", "  + m.ToString() + " , '" + strLag_Type_Specific + "' ) ";
-                    dataCommand.CommandText = strSQL;          
+                    dataCommand.CommandText = strSQL;
+                    dataCommand.Transaction = trTR;
                     dataCommand.ExecuteNonQuery();
                     
                     j = j + 1;
@@ -532,21 +584,23 @@ Command121.Visible = True
                 } //wend 
     
             } // endif
+            trTR.Commit();
+
         } // end run lag calcs
 
         private void run_threshold_calcs()
         {
-            // THIS ROUTINE ONLY APPEARS TO WORK WITH VERY CAREFUL MATCHING OF THE PM LEVELS
-            // FREQUENTLY CRASHES WITH NO DATA IN EITHER THE SORTED_PM_TABLE
-            
-           //'Set variables to beginning values
-            int year = InputData.getBegin_Year();
+            FbTransaction trTR = dbConnection.BeginTransaction();
+
+            //'Set variables to beginning values
+            int year;
             double PM_val = 0;
             t = 0;
             j = 0;
             k = 0;
             m = 0;
-            
+
+            year = InputData.getBegin_Year();
             while (year <= InputData.getEnd_Year()){
 
                 // Calculate threshold value
@@ -559,6 +613,7 @@ Command121.Visible = True
                 dataCommand.Connection = dbConnection;
                 dataCommand.CommandType = CommandType.Text;
                 dataCommand.CommandText = sqltext;
+                dataCommand.Transaction = trTR;
 
                 FbDataReader dataReader;
                 dataReader = dataCommand.ExecuteReader();
@@ -573,6 +628,7 @@ Command121.Visible = True
                     sqltext = "SELECT Sorted_PM_Conc.PM_Conc, Sorted_PM_Conc.Perc1, Sorted_PM_Conc.Perc2 FROM Sorted_PM_Conc";
                     sqltext = sqltext + " where Sorted_PM_Conc.PM_Conc = " + System.Math.Round((double)InputData.getPM_Threshold(), 1);
                     dataCommand.CommandText = sqltext;
+                    dataCommand.Transaction = trTR;
                     dataReader = dataCommand.ExecuteReader();
                     dataReader.Read();
                     j = (double) dataReader[1];
@@ -582,6 +638,7 @@ Command121.Visible = True
                     sqltext = "SELECT Sorted_PM_Conc.PM_Conc, Sorted_PM_Conc.Perc1, Sorted_PM_Conc.Perc2 FROM Sorted_PM_Conc";
                     sqltext = sqltext + " where Sorted_PM_Conc.PM_Conc = " + System.Math.Round(((double)InputData.getPM_Threshold() - PM_val), 1);
                     dataCommand.CommandText = sqltext;
+                    dataCommand.Transaction = trTR;
                     dataReader = dataCommand.ExecuteReader();
                     dataReader.Read();                  
                     k = (double) dataReader[2];
@@ -591,8 +648,9 @@ Command121.Visible = True
         
                     // Find adjusted threshold value in sorted PM Concentration table
                     sqltext = "SELECT Sorted_PM_Conc.PM_Conc, Sorted_PM_Conc.Perc1, Sorted_PM_Conc.Perc2 FROM Sorted_PM_Conc";
-                    sqltext = sqltext + " where Sorted_PM_Conc.PM_Conc = " + System.Math.Round((double)InputData.getPM_Threshold() - PM_val, 1);
+                    sqltext = sqltext + " where Sorted_PM_Conc.PM_Conc = " + System.Math.Round(((double)InputData.getPM_Threshold() - PM_val), 1);
                     dataCommand.CommandText = sqltext;
+                    dataCommand.Transaction = trTR;
                     dataReader = dataCommand.ExecuteReader();
                     dataReader.Read();
                     j = (double)dataReader[1];
@@ -602,6 +660,7 @@ Command121.Visible = True
                     sqltext = "SELECT Sorted_PM_Conc.PM_Conc, Sorted_PM_Conc.Perc1, Sorted_PM_Conc.Perc2 FROM Sorted_PM_Conc";
                     sqltext = sqltext + " where Sorted_PM_Conc.PM_Conc = " + System.Math.Round((double)InputData.getPM_Threshold(), 1);
                     dataCommand.CommandText = sqltext;
+                    dataCommand.Transaction = trTR;
                     dataReader = dataCommand.ExecuteReader();
                     dataReader.Read();
                     k = (double) dataReader[2]; 
@@ -616,18 +675,24 @@ Command121.Visible = True
                 //Write values to Thresholds table
                 sqltext = "INSERT INTO Thresholds(Year_Num, Threshold) VALUES( " + year.ToString() + " , " + t.ToString() + " )";
                 dataCommand.CommandText = sqltext;
+                dataCommand.Transaction = trTR;
                 dataCommand.ExecuteNonQuery();
                 
                 // Proceed to next year
                 year = year + 1;
             } // wend 
+            trTR.Commit();
+
         } // end run thresholds
         private void run_age_specific_adjustment_factors()
         {
+            FbTransaction trTR = dbConnection.BeginTransaction();
+
             int maxRunAge = 100; // 100 is max
             int age = 0;
             FbCommand dataCommand = new  FirebirdSql.Data.FirebirdClient.FbCommand();
             dataCommand.Connection = dbConnection;
+            dataCommand.Transaction = trTR;
 
             // Repeat this loop for ages 0-100
             while (age <= maxRunAge){
@@ -663,15 +728,19 @@ Command121.Visible = True
             dataCommand.CommandType = CommandType.Text;
             string sqltext = "INSERT INTO ASAF (Age, ASAF) Values( " +  age.ToString() + " , " + (j * k).ToString() + " )";
             dataCommand.CommandText = sqltext;
+            dataCommand.Transaction = trTR;
             dataCommand.ExecuteNonQuery();
 
             // Proceed to next age
             age = age + 1;
 
             } // wend 
+            trTR.Commit();
         } //  end run age specific adjustment factors
     
         private void run_illness_calcs(){
+            FbTransaction trTR = dbConnection.BeginTransaction();
+
             double Beta, PM_val, PM_Impact, cum_impact;
             string sqltext;
             int year, age;
@@ -685,10 +754,11 @@ Command121.Visible = True
                 Beta = InputData.getUser_Beta();
             //Otherwise if user did not specify a Beta value, then look up the relevant Beta in the study table
             } else {
-                sqltext = "SELECT Studies.Study, Studies.Aggregation, Studies.Cause, Studies.Beta FROM Studies";
-                sqltext = sqltext + " where Studies.Study = '" + InputData.getUser_Study_Name() + 
-                        "' AND Studies.Aggregation = '" + strApproach + "' AND Studies.Cause = '" + Illness_Type + "'";
+                sqltext = "SELECT Study, Aggregation, Cause, Beta FROM Study_Betas";
+                sqltext = sqltext + " where Study = '" + InputData.getUser_Study_Name() + 
+                        "' AND Aggregation = '" + strApproach + "' AND Cause = '" + Illness_Type + "'";
                 dataCommand.CommandText = sqltext;
+                dataCommand.Transaction = trTR;
                 dataReader = dataCommand.ExecuteReader();
                 dataReader.Read();
                 Beta = (double)dataReader[3];
@@ -698,6 +768,7 @@ Command121.Visible = True
             //Write illness type and beta value to beta summary table
             sqltext = "INSERT INTO Report_Beta_Summary (Illness_Type, Beta_Value) VALUES('" + Illness_Type + "', " + Beta.ToString() + " ) ";
             dataCommand.CommandText = sqltext;
+            dataCommand.Transaction = trTR;
             dataCommand.ExecuteNonQuery();
                 
             //Apply adjustment factor if user input a threshold and beta adjustment
@@ -708,20 +779,86 @@ Command121.Visible = True
             //Set variables to beginning values
             year = InputData.getBegin_Year();
             PM_val = 0;
-    
+
+            // stored procedure to get pm change
+            FbCommand dcPM_Changes = new FirebirdSql.Data.FirebirdClient.FbCommand();
+            dcPM_Changes.CommandText = "GET_PM_CHANGES";
+            dcPM_Changes.CommandType = CommandType.StoredProcedure;
+            dcPM_Changes.Transaction = trTR;
+            dcPM_Changes.Connection = dbConnection;
+            dcPM_Changes.Parameters.Add("YEAR_NUM", FbDbType.VarChar);
+
+            // stored procedure to get MHAF_Calc
+            FbCommand dcMHAF_Calc = new FirebirdSql.Data.FirebirdClient.FbCommand();
+            dcMHAF_Calc.CommandText = "GET_MHAF_Calc";
+            dcMHAF_Calc.CommandType = CommandType.StoredProcedure;
+            dcMHAF_Calc.Transaction = trTR;
+            dcMHAF_Calc.Connection = dbConnection;
+            dcMHAF_Calc.Parameters.Add("YEAR_NUM", FbDbType.VarChar);
+            dcMHAF_Calc.Parameters.Add("Type", FbDbType.VarChar);
+
+            // stored procedure to get lag value
+            FbCommand dcLag = new FirebirdSql.Data.FirebirdClient.FbCommand();
+            dcLag.CommandText = "GET_LAG";
+            dcLag.CommandType = CommandType.StoredProcedure;
+            dcLag.Transaction = trTR;
+            dcLag.Connection = dbConnection;
+            dcLag.Parameters.Add("Year_after_PM_Change", FbDbType.VarChar);
+            dcLag.Parameters.Add("Lag_Type", FbDbType.VarChar);
+
+            // stored procedure to get impact vector
+            FbCommand dcImpact = new FirebirdSql.Data.FirebirdClient.FbCommand();
+            dcImpact.CommandText = "GET_IMPACT_VECTOR";
+            dcImpact.CommandType = CommandType.StoredProcedure;
+            dcImpact.Transaction = trTR;
+            dcImpact.Connection = dbConnection;
+            dcImpact.Parameters.Add("Year_Num", FbDbType.VarChar);
+            dcImpact.Parameters.Add("Year_after_PM_Change", FbDbType.VarChar);
+            dcImpact.Parameters.Add("Lag_Type", FbDbType.VarChar);
+
+            // stored procedure to get impact vector lag
+            FbCommand dcImpact_Lag = new FirebirdSql.Data.FirebirdClient.FbCommand();
+            dcImpact_Lag.CommandText = "GET_IMPACT_VECTOR_LAG";
+            dcImpact_Lag.CommandType = CommandType.StoredProcedure;
+            dcImpact_Lag.Transaction = trTR;
+            dcImpact_Lag.Connection = dbConnection;
+            dcImpact_Lag.Parameters.Add("Year_Num", FbDbType.VarChar);
+            dcImpact_Lag.Parameters.Add("Lag_Type", FbDbType.VarChar);
+
+            // stored procedure to get ASAF
+            FbCommand dcASAF = new FirebirdSql.Data.FirebirdClient.FbCommand();
+            dcASAF.CommandText = "GET_ASAF";
+            dcASAF.CommandType = CommandType.StoredProcedure;
+            dcASAF.Transaction = trTR;
+            dcASAF.Connection = dbConnection;
+            dcASAF.Parameters.Add("AGE", FbDbType.Integer);
+
+            // stored procedure to get hazard adj
+            FbCommand dcHaz_Adj = new FirebirdSql.Data.FirebirdClient.FbCommand();
+            dcHaz_Adj.CommandText = "GET_HAZARDS_ADJ";
+            dcHaz_Adj.CommandType = CommandType.StoredProcedure;
+            dcHaz_Adj.Transaction = trTR;
+            dcHaz_Adj.Connection = dbConnection;
+            dcHaz_Adj.Parameters.Add("AGE", FbDbType.Integer);
+            dcHaz_Adj.Parameters.Add("Year_Num", FbDbType.VarChar);
+            dcHaz_Adj.Parameters.Add("ADJ_TYPE", FbDbType.VarChar);
+            
             while (year <= InputData.getEnd_Year()) {
 
                 //Look up year-specific PM value from PM_Changes table
-                sqltext = "SELECT PM_Changes.Year_Num, PM_Changes.PM_Change FROM PM_Changes";
-                sqltext = sqltext + " where PM_Changes.Year_Num = " + year.ToString();
-                dataCommand.CommandText = sqltext;
-                dataReader = dataCommand.ExecuteReader();
+                //sqltext = "SELECT PM_Changes.Year_Num, PM_Changes.PM_Change FROM PM_Changes";
+                //sqltext = sqltext + " where PM_Changes.Year_Num = " + year.ToString();
+
+                dcPM_Changes.Parameters[0].Value = year.ToString();
+                
+                dataReader = dcPM_Changes.ExecuteReader();
                 dataReader.Read();
                 
-                PM_val = (double)dataReader[1];
+                PM_val = (double)dataReader[0];
                 dataReader.Close();
                 
                 //If user has specified a threshold value, look up t
+                // 
                 if (InputData.getPM_Choice() == 1) {
     
                     //Look up threshold value and store as variable t
@@ -755,10 +892,10 @@ Command121.Visible = True
             //Reset counters
             j = 1;
     
-            while (j <= 61) {
+            while (j <= 71) {
 
                 //Reset counters
-                year = 1990;
+                year = 1980;
     
                 while (year <= 2050) {
                     k = year - (j - 1);
@@ -766,12 +903,16 @@ Command121.Visible = True
                         PM_Impact = 0;
                     } else {
                         //Look up year-specific value from MHAF_Calcs table
-                        sqltext = "SELECT MHAF_Calcs.Year_Num, MHAF_Calcs.PM_Impact, MHAF_Calcs.Type FROM MHAF_Calcs";
-                        sqltext = sqltext + " where MHAF_Calcs.Year_Num = " + k.ToString() + " AND MHAF_Calcs.Type = '" + Illness_Type + "' ";
-                        dataCommand.CommandText = sqltext;
-                        dataReader = dataCommand.ExecuteReader();
+                        dcMHAF_Calc.Parameters[0].Value = k.ToString();
+                        dcMHAF_Calc.Parameters[1].Value = Illness_Type;
+
+                        //sqltext = "SELECT MHAF_Calcs.Year_Num, MHAF_Calcs.PM_Impact, MHAF_Calcs.Type FROM MHAF_Calcs";
+                        //sqltext = sqltext + " where MHAF_Calcs.Year_Num = " + k.ToString() + " AND MHAF_Calcs.Type = '" + Illness_Type + "' ";
+                        //dataCommand.CommandText = sqltext;
+                        //dataReader = dataCommand.ExecuteReader();
+                        dataReader = dcMHAF_Calc.ExecuteReader();
                         dataReader.Read();
-                        PM_Impact = (double)dataReader[1];
+                        PM_Impact = (double)dataReader[0];
                         dataReader.Close();
                     } 
         
@@ -785,7 +926,7 @@ Command121.Visible = True
                 j = j + 1;
             } // wend 
             //Reset counters
-            year = 1990;
+            year = 1980;
             //If user selected the single lag option, use the single lag type
             if (InputData.getLag_Type() == 0) { // Single Lag Type
                 strLag_Type = "Single";
@@ -807,25 +948,32 @@ Command121.Visible = True
                 k = 0;
                 cum_impact = 0;
     
-                while (j <= 61){
+                while (j <= 71){
         
                     //Look up year-specific value from lag table
-                    sqltext = "SELECT lag.Year_after_PM_Change, lag.Perc_Impacts, lag.Type FROM lag";
-                    sqltext = sqltext + " where lag.Year_after_PM_Change = " + j.ToString() + " AND lag.Type = '" + strLag_Type + "'";
-                    dataCommand.CommandText = sqltext;
-                    dataReader = dataCommand.ExecuteReader();
+                    dcLag.Parameters[0].Value = j.ToString();
+                    dcLag.Parameters[1].Value = strLag_Type;
+                    dataReader = dcLag.ExecuteReader();
+                    //sqltext = "SELECT lag.Year_after_PM_Change, lag.Perc_Impacts, lag.Type FROM lag";
+                    //sqltext = sqltext + " where lag.Year_after_PM_Change = " + j.ToString() + " AND lag.Type = '" + strLag_Type + "'";
+                    //dataCommand.CommandText = sqltext;
+                    //dataReader = dataCommand.ExecuteReader();
                     dataReader.Read();
-                    k = (double)dataReader[1];
+                    k = (double)dataReader[0];
                     dataReader.Close();
 
                     //Look up year-specific value from PM_Impact_Vectors table
-                    sqltext = "SELECT PM_Impact_Vectors.Year_Num, PM_Impact_Vectors.Year_after_PM_Change, PM_Impact_Vectors.PM_Impact, PM_Impact_Vectors.Type FROM PM_Impact_Vectors";
-                    sqltext = sqltext + " where (PM_Impact_Vectors.Year_Num = " + year.ToString() + " AND PM_Impact_Vectors.Year_after_PM_Change = " 
-                            + j.ToString() + " AND PM_Impact_Vectors.Type = '" + Illness_Type + "')";
-                    dataCommand.CommandText = sqltext;
-                    dataReader = dataCommand.ExecuteReader();
+                    dcImpact.Parameters[0].Value = year.ToString();
+                    dcImpact.Parameters[1].Value = j.ToString();
+                    dcImpact.Parameters[2].Value = Illness_Type;
+
+                    //sqltext = "SELECT PM_Impact_Vectors.Year_Num, PM_Impact_Vectors.Year_after_PM_Change, PM_Impact_Vectors.PM_Impact, PM_Impact_Vectors.Type FROM PM_Impact_Vectors";
+                    //sqltext = sqltext + " where (PM_Impact_Vectors.Year_Num = " + year.ToString() + " AND PM_Impact_Vectors.Year_after_PM_Change = " 
+                    //        + j.ToString() + " AND PM_Impact_Vectors.Type = '" + Illness_Type + "')";
+                    //dataCommand.CommandText = sqltext;
+                    dataReader = dcImpact.ExecuteReader();
                     dataReader.Read();
-                    PM_Impact = (double)dataReader[2];
+                    PM_Impact = (double)dataReader[0];
                     dataReader.Close();
                     
                     cum_impact = cum_impact + (k * PM_Impact);
@@ -846,7 +994,7 @@ Command121.Visible = True
             } // wend Loop
 
             //Reset year counter
-            year = 1990;
+            year = 1980;
 
             while (year <= 2050) {
 
@@ -863,13 +1011,16 @@ Command121.Visible = True
 
 
                 //Look up year-specific value from PM_Impact_Vectors_lag table
-                sqltext = "SELECT PM_Impact_Vectors_lag.Year_Num, PM_Impact_Vectors_lag.PM_Impact, PM_Impact_Vectors_lag.Type FROM PM_Impact_Vectors_lag";
-                sqltext = sqltext + " where PM_Impact_Vectors_lag.Year_Num = " + year + " AND PM_Impact_Vectors_lag.Type = '" + Illness_Type + "' ";
-                dataCommand.CommandText = sqltext;
-                dataReader = dataCommand.ExecuteReader();
+                dcImpact_Lag.Parameters[0].Value = year;
+                dcImpact_Lag.Parameters[1].Value = Illness_Type;
+                dataReader = dcImpact_Lag.ExecuteReader();
+                //sqltext = "SELECT PM_Impact_Vectors_lag.Year_Num, PM_Impact_Vectors_lag.PM_Impact, PM_Impact_Vectors_lag.Type FROM PM_Impact_Vectors_lag";
+                //sqltext = sqltext + " where PM_Impact_Vectors_lag.Year_Num = " + year + " AND PM_Impact_Vectors_lag.Type = '" + Illness_Type + "' ";
+                //dataCommand.CommandText = sqltext;
+                //dataReader = dataCommand.ExecuteReader();
                 dataReader.Read();
                 // double check the index here 
-                k = (double)dataReader[1];
+                k = (double)dataReader[0];
                 dataReader.Close();
     
                 //Reset age counter
@@ -878,12 +1029,14 @@ Command121.Visible = True
                 while (age <= 100) {
        
                     //Look up age-specific value from ASAF table
-                    sqltext = "SELECT ASAF.Age, ASAF.ASAF FROM ASAF";
-                    sqltext = sqltext + " where ASAF.Age = " + age.ToString();
-                    dataCommand.CommandText = sqltext;
-                    dataReader = dataCommand.ExecuteReader();
+                    dcASAF.Parameters[0].Value = age;
+                    //sqltext = "SELECT ASAF.Age, ASAF.ASAF FROM ASAF";
+                    //sqltext = sqltext + " where ASAF.Age = " + age.ToString();
+                    //dataCommand.CommandText = sqltext;
+                    //dataReader = dataCommand.ExecuteReader();
+                    dataReader = dcASAF.ExecuteReader();
                     dataReader.Read();
-                    j = (double)dataReader[1];
+                    j = (double)dataReader[0];
                     dataReader.Close();
         
                     //Write values to Hazards table
@@ -914,7 +1067,7 @@ Command121.Visible = True
                 }
       
             //Reset year counter
-            year = 1990;
+            year = 1980;
 
             while (year <= 2050) {
     
@@ -933,14 +1086,17 @@ Command121.Visible = True
                     dataReader.Close();
                     
                     //Look up age/year-specific value from hazards table
-                    sqltext = "SELECT Hazards_Adj.Age, Hazards_Adj.Year_Num, Hazards_Adj.Type, Hazards_Adj.Hazards_Adj FROM Hazards_Adj";
-                    sqltext = sqltext + " where Hazards_Adj.Age = " + age.ToString() + " AND Hazards_Adj.Year_Num = " 
-                        + year.ToString() + " AND Hazards_Adj.Type = '" + Illness_Type + "'";
-                    dataCommand.CommandText = sqltext;
-                    dataReader = dataCommand.ExecuteReader();
+                    dcHaz_Adj.Parameters[0].Value = age;
+                    dcHaz_Adj.Parameters[1].Value = year.ToString();
+                    dcHaz_Adj.Parameters[2].Value = Illness_Type;
+                    //sqltext = "SELECT Hazards_Adj.Age, Hazards_Adj.Year_Num, Hazards_Adj.Type, Hazards_Adj.Hazards_Adj FROM Hazards_Adj";
+                    //sqltext = sqltext + " where Hazards_Adj.Age = " + age.ToString() + " AND Hazards_Adj.Year_Num = " 
+                    //    + year.ToString() + " AND Hazards_Adj.Type = '" + Illness_Type + "'";
+                   // dataCommand.CommandText = sqltext;
+                    //dataReader = dataCommand.ExecuteReader();
+                    dataReader = dcHaz_Adj.ExecuteReader();
                     dataReader.Read();
-                    // double check the index here 
-                    k = (double)dataReader[3];
+                     k = (double)dataReader[0];
                     dataReader.Close();
            
                     //Write values to Disease Rates Combined table
@@ -960,17 +1116,33 @@ Command121.Visible = True
             } //wend 
     
         } // Next GenderCount
+        trTR.Commit();
 
         } // end run illness calcs
         private void run_calculate_pdeath()
         {
+            FbTransaction trTR = dbConnection.BeginTransaction();
+
             // CALCULATE P(DEATH) BY SUMMING PREVIOUS PIECES
             FbCommand dataCommand = new  FirebirdSql.Data.FirebirdClient.FbCommand();
             FbDataReader dataReader;
-            dataCommand.Connection = dbConnection;        
+            dataCommand.Connection = dbConnection;
+            dataCommand.Transaction = trTR;
+            
             int age, year;
             string sqltext;
 
+            // stored procedure for getting Disease Rates Combined
+            FbCommand dcDRC = new FirebirdSql.Data.FirebirdClient.FbCommand();
+            dcDRC.CommandText = "GET_DISEASE_RATES_COMBINED";
+            dcDRC.CommandType = CommandType.StoredProcedure;
+            dcDRC.Transaction = trTR;
+            dcDRC.Connection = dbConnection;
+            dcDRC.Parameters.Add("AGE", FbDbType.Integer);
+            dcDRC.Parameters.Add("Year_Num", FbDbType.VarChar);
+            dcDRC.Parameters.Add("GENDER", FbDbType.VarChar);
+
+            
             for (GenderCount = 1; GenderCount <=2; GenderCount++){
                 if (GenderCount == 1) {
                     destination = "Probability_of_Death_RF";
@@ -986,31 +1158,44 @@ Command121.Visible = True
                 while (age <= 100) {
            
                     // Reset year counter
-                    year = 1990;
+                    year = 1980;
     
                     while (year <= 2150) {
     
                         if (year <= 2050) {
         
                             //Look up year-specific value from Disease Rates Combined table
-                            sqltext = "SELECT Disease_Rates_Combined.Age, Disease_Rates_Combined.Year_Num, Disease_Rates_Combined.Gender, "
-                                + " Sum(Disease_Rates_Combined.Rate) AS SumOfRate FROM Disease_Rates_Combined";
-                            sqltext = sqltext + " GROUP BY Disease_Rates_Combined.Age, Disease_Rates_Combined.Year_Num, Disease_Rates_Combined.Gender";
-                            sqltext = sqltext + " HAVING (((Disease_Rates_Combined.Age) = " + age.ToString() + " ) AND ((Disease_Rates_Combined.Year_Num) = " 
-                                + year.ToString() + " ) AND ((Disease_Rates_Combined.Gender) = '" + gender + "' ))";
-                            dataCommand.CommandText = sqltext;
-                            dataReader = dataCommand.ExecuteReader();
+                            dcDRC.Parameters[0].Value = age;
+                            dcDRC.Parameters[1].Value = year.ToString();
+                            dcDRC.Parameters[2].Value = gender;
+                            //sqltext = "SELECT Disease_Rates_Combined.Age, Disease_Rates_Combined.Year_Num, Disease_Rates_Combined.Gender, "
+                            //    + " Sum(Disease_Rates_Combined.Rate) AS SumOfRate FROM Disease_Rates_Combined";
+                            //sqltext = sqltext + " GROUP BY Disease_Rates_Combined.Age, Disease_Rates_Combined.Year_Num, Disease_Rates_Combined.Gender";
+                            //sqltext = sqltext + " HAVING (((Disease_Rates_Combined.Age) = " + age.ToString() + " ) AND ((Disease_Rates_Combined.Year_Num) = " 
+                            //    + year.ToString() + " ) AND ((Disease_Rates_Combined.Gender) = '" + gender + "' ))";
+                            //dataCommand.CommandText = sqltext;
+                            //dataReader = dataCommand.ExecuteReader();
+                            dataReader = dcDRC.ExecuteReader();
                             dataReader.Read();
-                            k = (double)dataReader[3];
+                            k = (double)dataReader[0];
                             dataReader.Close();
-                            
                         } // End If
         
                         //Write values to destination table
-                        sqltext = "INSERT INTO " + destination + " (Age, Year_Num, Rate) VALUES( " + age.ToString() + " , "
-                               + year.ToString() + " , " + k + " )";
-                        dataCommand.CommandText = sqltext;
-                        dataCommand.ExecuteNonQuery();
+                        if (GenderCount == 1) // female
+                        {
+                            sqltext = "INSERT INTO Probability_of_Death_RF  (Age, Year_Num, Rate) VALUES( " + age.ToString() + " , "
+                                   + year.ToString() + " , " + k + " )";
+                            dataCommand.CommandText = sqltext;
+                            dataCommand.ExecuteNonQuery();
+                        }
+                        else // male
+                        {
+                            sqltext = "INSERT INTO Probability_of_Death_RM (Age, Year_Num, Rate) VALUES( " + age.ToString() + " , "
+                                   + year.ToString() + " , " + k + " )";
+                            dataCommand.CommandText = sqltext;
+                            dataCommand.ExecuteNonQuery();
+                        } // End If
                         
                         // Proceed to next year
                         year = year + 1;
@@ -1018,19 +1203,22 @@ Command121.Visible = True
         
                     //Proceed to next age
                     age = age + 1;
-        
+
                 } // wend Loop
     
             } //Next GenderCount
-
+            trTR.Commit();
+            
         } // end run calculate pdeath
         private void run_calculate_pop_and_death(){
+            FbTransaction trTR = dbConnection.BeginTransaction();
+
             FbCommand dataCommand = new  FirebirdSql.Data.FirebirdClient.FbCommand();
             FbDataReader dataReader;
             dataCommand.Connection = dbConnection;        
             
             //Set initial values
-            int year = 1990;
+            int year = 1980;
             double pop = 0;
             double rate = 0;
             double migration = 0;
@@ -1041,11 +1229,41 @@ Command121.Visible = True
             int maxRunAge = 100; //100 is max
             int maxRunYear = 2050; //2050 is max
             int age;
-            double age_mother;
+            int age_mother;
             string sqltext;
 
 
-            //Repeat this loop for years 1990-2050
+            // stored procedure for getting Final Population
+            FbCommand dcFPop = new FirebirdSql.Data.FirebirdClient.FbCommand();
+            dcFPop.CommandText = "GET_FINAL_POP";
+            dcFPop.CommandType = CommandType.StoredProcedure;
+            dcFPop.Transaction = trTR;
+            dcFPop.Connection = dbConnection;
+            dcFPop.Parameters.Add("AGE", FbDbType.Integer);
+            dcFPop.Parameters.Add("Year_Num", FbDbType.VarChar);
+            dcFPop.Parameters.Add("GENDER", FbDbType.VarChar);
+            dcFPop.Parameters.Add("SCENARIO", FbDbType.VarChar);
+
+            // stored procedure for getting F census population
+            FbCommand dcFPopCensus = new FirebirdSql.Data.FirebirdClient.FbCommand();
+            dcFPopCensus.CommandText = "GET_POP_F_CENSUS";
+            dcFPopCensus.CommandType = CommandType.StoredProcedure;
+            dcFPopCensus.Transaction = trTR;
+            dcFPopCensus.Connection = dbConnection;
+            dcFPopCensus.Parameters.Add("AGE", FbDbType.Integer);
+            dcFPopCensus.Parameters.Add("Year_Num", FbDbType.VarChar);
+
+            // stored procedure for getting M census population
+            FbCommand dcMPopCensus = new FirebirdSql.Data.FirebirdClient.FbCommand();
+            dcMPopCensus.CommandText = "GET_POP_M_CENSUS";
+            dcMPopCensus.CommandType = CommandType.StoredProcedure;
+            dcMPopCensus.Transaction = trTR;
+            dcMPopCensus.Connection = dbConnection;
+            dcMPopCensus.Parameters.Add("AGE", FbDbType.Integer);
+            dcMPopCensus.Parameters.Add("Year_Num", FbDbType.VarChar);
+            
+
+            //Repeat this loop for years 1980-2050
             while (year <= maxRunYear)
             {
 
@@ -1056,7 +1274,7 @@ Command121.Visible = True
                 while (age <= maxRunAge)
                 {
 
-                    if (year == 1990)
+                    if (year == 1980)
                     { //Get the census pop info for that age/year pair
 
                         //Select records from relevant table for that age/year pair
@@ -1064,6 +1282,7 @@ Command121.Visible = True
                             strcensus_table + ".Population FROM " + strcensus_table;
                         sqltext = sqltext + " where Age = " + age.ToString() + " AND Year_Num = " + year.ToString();
                         dataCommand.CommandText = sqltext;
+                        dataCommand.Transaction = trTR;
                         dataReader = dataCommand.ExecuteReader();
                         dataReader.Read();
                         pop = (double)dataReader[2];
@@ -1072,12 +1291,13 @@ Command121.Visible = True
                     else if (age == 0)
                     { //Calculate births
                         if (strBirth_Type == "Static")
-                        {//Just pull Census data as for year 1990
+                        {//Just pull Census data as for year 1980
                             //Select records from relevant table for that age/year pair
                             sqltext = "SELECT " + strcensus_table + ".Age, " + strcensus_table + ".Year_Num, "
                                 + strcensus_table + ".Population FROM " + strcensus_table;
                             sqltext = sqltext + " where Age = " + age.ToString() + " AND Year_Num = " + year.ToString();
                             dataCommand.CommandText = sqltext;
+                            dataCommand.Transaction = trTR;
                             dataReader = dataCommand.ExecuteReader();
                             dataReader.Read();
                             pop = (double)dataReader[2];
@@ -1091,21 +1311,25 @@ Command121.Visible = True
                             //Loop through all women of childbearing age
                             while (age_mother <= 49)
                             {
-
                                 //Pull mother//s calculated pop value for the previous year, for each age
-                                sqltext = "SELECT Final_Table_Pop.Age, Final_Table_Pop.Proj_Year, Final_Table_Pop.Pop, "
-                                    + " Final_Table_Pop.Gender, Final_Table_Pop.Scenario FROM Final_Table_Pop";
-                                sqltext = sqltext + " where ((Age = (" + age_mother.ToString() + ")) AND (proj_Year = "
-                                    + (year-1).ToString() + " ) AND (Gender = 'Female') AND (Scenario = '" + strscenarioText + "'))";
-                                dataCommand.CommandText = sqltext;
-                                dataReader = dataCommand.ExecuteReader();
+                                //Look up year-specific value from Disease Rates Combined table
+                                dcFPop.Parameters[0].Value = age_mother;
+                                dcFPop.Parameters[1].Value = (year-1).ToString();
+                                dcFPop.Parameters[2].Value = "female";
+                                dcFPop.Parameters[3].Value = strscenarioText;
+
+                                //sqltext = "SELECT Final_Table_Pop.Age, Final_Table_Pop.Proj_Year, Final_Table_Pop.Pop, "
+                                //    + " Final_Table_Pop.Gender, Final_Table_Pop.Scenario FROM Final_Table_Pop";
+                                //sqltext = sqltext + " where ((Age = (" + age_mother.ToString() + ")) AND (proj_Year = "
+                                //    + (year-1).ToString() + " ) AND (Gender = 'female') AND (Scenario = '" + strscenarioText + "'))";
+                                //dataCommand.CommandText = sqltext;
+                                //dataReader = dataCommand.ExecuteReader();
+                                dataReader = dcFPop.ExecuteReader();
                                 dataReader.Read();
-                                // ERROR - THERE ARE NO DATA TO READ FOR 12 year old females in 1990 Regulatory - 
-                                // either an insertion error or incorrect closing brace
-                                pop = (double)dataReader[2];
+                                pop = (double)dataReader[0];
                                 dataReader.Close();
 
-                                if (year <= 2005)
+                                if (year <= 2014)
                                 {//Use separate male/female birth rates
 
                                     //Pull the birth rate for the previous year, for each age
@@ -1114,6 +1338,7 @@ Command121.Visible = True
                                     sqltext = sqltext + " where Age = " + (age_mother).ToString() + " AND Year_Num = "
                                         + (year - 1).ToString();
                                     dataCommand.CommandText = sqltext;
+                                    dataCommand.Transaction = trTR;
                                     dataReader = dataCommand.ExecuteReader();
                                     dataReader.Read();
                                     rate = (double)dataReader[2];
@@ -1124,10 +1349,11 @@ Command121.Visible = True
                                 { //Use combined birth rates
 
                                     //Pull the birth rate for the previous year, for each age
-                                    sqltext = "SELECT Rate_of_Babies_Combined_Post_2005.Age, Rate_of_Babies_Combined_Post_2005.Year_Num, "
-                                        + " Rate_of_Babies_Combined_Post_2005.Rate FROM Rate_of_Babies_Combined_Post_2005";
+                                    sqltext = "SELECT Age, Year_Num, "
+                                        + " Rate FROM RT_BABIES_COMBINED_PST_2014 ";
                                     sqltext = sqltext + " where Age = " + age_mother.ToString() + " AND Year_Num = " + (year - 1).ToString();
                                     dataCommand.CommandText = sqltext;
+                                    dataCommand.Transaction = trTR;
                                     dataReader = dataCommand.ExecuteReader();
                                     dataReader.Read();
                                     rate = (double)dataReader[2];
@@ -1143,30 +1369,39 @@ Command121.Visible = True
                             } // wend Loop
 
                             //Pull the F census data for that age/year
-                            sqltext = "SELECT Population_F_Table_Census.Age, Population_F_Table_Census.Year_Num, "
-                                + " Population_F_Table_Census.Population FROM Population_F_Table_Census";
-                            sqltext = sqltext + " where Age = " + age.ToString() + " AND Year_Num = " + year.ToString();
-                            dataCommand.CommandText = sqltext;
-                            dataReader = dataCommand.ExecuteReader();
+                            // STOPPED HERE
+                            //sqltext = "SELECT Population_F_Table_Census.Age, Population_F_Table_Census.Year_Num, "
+                            //    + " Population_F_Table_Census.Population FROM Population_F_Table_Census";
+                            //sqltext = sqltext + " where Age = " + age.ToString() + " AND Year_Num = " + year.ToString();
+                            //dataCommand.CommandText = sqltext;
+                            //dataCommand.Transaction = trTR;
+                            //dataReader = dataCommand.ExecuteReader();
+                            dcFPopCensus.Parameters[0].Value = age;
+                            dcFPopCensus.Parameters[1].Value = year.ToString();
+                            dataReader = dcFPopCensus.ExecuteReader();
                             dataReader.Read();
-                            j = (double)dataReader[2];
+                            j = (double)dataReader[0];
                             dataReader.Close();
 
                             //Pull the M census data for that age/year
-                            sqltext = "SELECT Population_M_Table_Census.Age, Population_M_Table_Census.Year_Num, "
-                                + " Population_M_Table_Census.Population FROM Population_M_Table_Census";
-                            sqltext = sqltext + " where Age = " + age.ToString() + " AND Year_Num = " + year.ToString();
-                            dataCommand.CommandText = sqltext;
-                            dataReader = dataCommand.ExecuteReader();
+                            //sqltext = "SELECT Population_M_Table_Census.Age, Population_M_Table_Census.Year_Num, "
+                            //    + " Population_M_Table_Census.Population FROM Population_M_Table_Census";
+                            //sqltext = sqltext + " where Age = " + age.ToString() + " AND Year_Num = " + year.ToString();
+                            //dataCommand.CommandText = sqltext;
+                            //dataCommand.Transaction = trTR;
+                            //dataReader = dataCommand.ExecuteReader();
+                            dcMPopCensus.Parameters[0].Value = age;
+                            dcMPopCensus.Parameters[1].Value = year.ToString();
+                            dataReader = dcFPopCensus.ExecuteReader();
                             dataReader.Read();
-                            j = (double)dataReader[2];
+                            k = (double)dataReader[0];
                             dataReader.Close();
 
-                            if ((year > 2005) && (strgenderText == "female"))
+                            if ((year > 2014) && (strgenderText == "female"))
                             {
                                 births = births * (j / (j + k));
                             }
-                            else if ((year > 2005) && (strgenderText == "male"))
+                            else if ((year > 2014) && (strgenderText == "male"))
                             {
                                 births = births * (k / (j + k));
                             }
@@ -1176,6 +1411,7 @@ Command121.Visible = True
                                     + ".Pop FROM " + strinfant_migration_table;
                             sqltext = sqltext + " where Year_Num = " + (year - 1).ToString();
                             dataCommand.CommandText = sqltext;
+                            dataCommand.Transaction = trTR;
                             dataReader = dataCommand.ExecuteReader();
                             dataReader.Read();
                             m = (double)dataReader[1];
@@ -1191,23 +1427,34 @@ Command121.Visible = True
                     { //Use pop/migration/death rate from previous age/year pair to calculate current age/year pop
 
                         //Select records from final population table for the previous age/year pair
-                        sqltext = "SELECT Final_Table_Pop.Age, Final_Table_Pop.Proj_Year, Final_Table_Pop.Pop, "
-                            + " Final_Table_Pop.Gender, Final_Table_Pop.Scenario FROM Final_Table_Pop";
-                        sqltext = sqltext + " where ((Age = (" + age.ToString() + " - 1)) AND (proj_Year = ("
-                            + year.ToString() + " - 1)) AND (Gender = '" + strgenderText + "') AND (Scenario = '" + strscenarioText + "'))";
-                        dataCommand.CommandText = sqltext;
-                        dataReader = dataCommand.ExecuteReader();
+                        // 2016 03 04 - modified age parameter to use previous year - BENMAP-379
+                        dcFPop.Parameters[0].Value = (age - 1);
+                        dcFPop.Parameters[1].Value = (year - 1).ToString();
+                        dcFPop.Parameters[2].Value = strgenderText;
+                        dcFPop.Parameters[3].Value = strscenarioText;
+                        dataReader = dcFPop.ExecuteReader();
                         dataReader.Read();
-                        pop = (double)dataReader[2];
+                        pop = (double)dataReader[0];
                         dataReader.Close();
+
+                        //sqltext = "SELECT Final_Table_Pop.Age, Final_Table_Pop.Proj_Year, Final_Table_Pop.Pop, "
+                        //    + " Final_Table_Pop.Gender, Final_Table_Pop.Scenario FROM Final_Table_Pop";
+                        //sqltext = sqltext + " where ((Age = (" + age.ToString() + " - 1)) AND (proj_Year = ("
+                        //    + year.ToString() + " - 1)) AND (Gender = '" + strgenderText + "') AND (Scenario = '" + strscenarioText + "'))";
+                        //dataCommand.CommandText = sqltext;
+                        //dataReader = dataCommand.ExecuteReader();
+                        //dataReader.Read();
+                        //pop = (double)dataReader[2];
+                        //dataReader.Close();
 
 
 
                         //Select records from death rate table for the previous age/year pair
                         sqltext = "SELECT " + strmortal_table + ".Age, " + strmortal_table + ".Year_Num, " + strmortal_table
                             + ".Rate FROM " + strmortal_table;
-                        sqltext = sqltext + " where Age = " + (age - 1).ToString() + "AND Year_Num = " + (year - 1).ToString();
+                        sqltext = sqltext + " where Age = " + (age - 1).ToString() + " AND Year_Num = " + (year - 1).ToString();
                         dataCommand.CommandText = sqltext;
+                        dataCommand.Transaction = trTR;
                         dataReader = dataCommand.ExecuteReader();
                         dataReader.Read();
                         rate = (double)dataReader[2];
@@ -1219,6 +1466,7 @@ Command121.Visible = True
                             + strmigration_table + ".Migration FROM " + strmigration_table;
                         sqltext = sqltext + " where Age = " + (age - 1).ToString() + " AND Year_Num = " + (year - 1).ToString();
                         dataCommand.CommandText = sqltext;
+                        dataCommand.Transaction = trTR;
                         dataReader = dataCommand.ExecuteReader();
                         dataReader.Read();
                         migration = (double)dataReader[2];
@@ -1232,23 +1480,32 @@ Command121.Visible = True
                             //Select records from death rate table for the same age/previous year pair
                             sqltext = "SELECT " + strmortal_table + ".Age, " + strmortal_table + ".Year_Num, "
                                 + strmortal_table + ".Rate FROM " + strmortal_table;
-                            sqltext = sqltext + " where Age = " + (age - 0).ToString() + "AND Year_Num = " + (year - 1).ToString();
+                            sqltext = sqltext + " where Age = " + (age - 0).ToString() + " AND Year_Num = " + (year - 1).ToString();
                             dataCommand.CommandText = sqltext;
+                            dataCommand.Transaction = trTR;
                             dataReader = dataCommand.ExecuteReader();
                             dataReader.Read();
                             rate = (double)dataReader[2];
                             dataReader.Close();
 
                             //Select records from final population table for the same age/previous year pair
-                            sqltext = "SELECT Final_Table_Pop.Age, Final_Table_Pop.proj_Year, Final_Table_Pop.Pop, "
-                                + "Final_Table_Pop.Gender, Final_Table_Pop.Scenario FROM Final_Table_Pop";
-                            sqltext = sqltext + " where ((Age = (" + age.ToString() + " - 0)) AND (proj_Year = ("
-                                + year.ToString() + " - 1)) AND (Gender = '" + strgenderText + "') AND (Scenario = '" + strscenarioText + "'))";
-                            dataCommand.CommandText = sqltext;
-                            dataReader = dataCommand.ExecuteReader();
+                            dcFPop.Parameters[0].Value = age;
+                            dcFPop.Parameters[1].Value = (year - 1).ToString();
+                            dcFPop.Parameters[2].Value = strgenderText;
+                            dcFPop.Parameters[3].Value = strscenarioText;
+                            dataReader = dcFPop.ExecuteReader();
                             dataReader.Read();
-                            pop = pop + (double)dataReader[2] * (1 - rate);
+                            pop = (double)dataReader[0];
                             dataReader.Close();
+                            //sqltext = "SELECT Final_Table_Pop.Age, Final_Table_Pop.proj_Year, Final_Table_Pop.Pop, "
+                            //    + "Final_Table_Pop.Gender, Final_Table_Pop.Scenario FROM Final_Table_Pop";
+                            //sqltext = sqltext + " where ((Age = (" + age.ToString() + " - 0)) AND (proj_Year = ("
+                            //    + year.ToString() + " - 1)) AND (Gender = '" + strgenderText + "') AND (Scenario = '" + strscenarioText + "'))";
+                            //dataCommand.CommandText = sqltext;
+                            //dataReader = dataCommand.ExecuteReader();
+                            //dataReader.Read();
+                            //pop = pop + (double)dataReader[2] * (1 - rate);
+                            //dataReader.Close();
 
                         } //End If
 
@@ -1259,14 +1516,17 @@ Command121.Visible = True
                             + age.ToString() + " , " + year.ToString() + " , " + pop.ToString()
                             + " , '" + strgenderText + "' , '" + strscenarioText + "' ) ";
                     dataCommand.CommandText = sqltext;
+                    // 2016 03 04 - removed transaction because age zero was not getting committed BENMAP-379
+                    //dataCommand.Transaction = trTR;
                     dataCommand.ExecuteNonQuery();
 
                     //CALCULATE TOTAL DEATHS
                     //Select records from death rate table for the same age/same year pair
                     sqltext = "SELECT " + strmortal_table + ".Age, " + strmortal_table + ".Year_Num, " + strmortal_table
                         + ".Rate FROM " + strmortal_table;
-                    sqltext = sqltext + " where Age = " + (age - 0).ToString() + "AND Year_Num = " + (year - 0).ToString();
+                    sqltext = sqltext + " where Age = " + (age - 0).ToString() + " AND Year_Num = " + (year - 0).ToString();
                     dataCommand.CommandText = sqltext;
+                    dataCommand.Transaction = trTR;
                     dataReader = dataCommand.ExecuteReader();
                     dataReader.Read();
                     rate = (double)dataReader[2];
@@ -1279,6 +1539,7 @@ Command121.Visible = True
                         + age.ToString() + " , " + year.ToString() + " , " + deaths.ToString()
                         + " , '" + strgenderText + "' , '" + strscenarioText + "' ) ";
                     dataCommand.CommandText = sqltext;
+                    dataCommand.Transaction = trTR;
                     dataCommand.ExecuteNonQuery();
 
                     //Proceed to next age group in given year
@@ -1289,24 +1550,55 @@ Command121.Visible = True
                 //Proceed to next year
                 year = year + 1;
             } // wend loop
+
+            trTR.Commit();
+
 		} // end run calculate pop and death
         private void run_calculate_life_expectancy()
         {
+            FbTransaction trTR = dbConnection.BeginTransaction();
+
             FbCommand dataCommand = new  FirebirdSql.Data.FirebirdClient.FbCommand();
             FbDataReader dataReader;
-            dataCommand.Connection = dbConnection;        
+            dataCommand.Connection = dbConnection;
+            dataCommand.Transaction = trTR;
             
             
             //CALCULATE COHORT LY
             //Set initial values
-            int year = 1990;
-            double pop = 0;
-            double rate = 0;
-            double m = 0;
+            int year = 1980;
+            double pop, rate, m;
             int age;
             string sqltext;
             
-            //Repeat this loop for years 1990-2150
+            year = 1980;
+            pop = 0;
+            rate = 0;
+            m = 0;
+
+            // stored procedure for getting Final Population
+            FbCommand dcFPop = new FirebirdSql.Data.FirebirdClient.FbCommand();
+            dcFPop.CommandText = "GET_FINAL_POP";
+            dcFPop.CommandType = CommandType.StoredProcedure;
+            dcFPop.Transaction = trTR;
+            dcFPop.Connection = dbConnection;
+            dcFPop.Parameters.Add("AGE", FbDbType.Integer);
+            dcFPop.Parameters.Add("Year_Num", FbDbType.VarChar);
+            dcFPop.Parameters.Add("GENDER", FbDbType.VarChar);
+            dcFPop.Parameters.Add("SCENARIO", FbDbType.VarChar);
+
+            // stored procedure for getting Final Period LY
+            FbCommand dcFPLY = new FirebirdSql.Data.FirebirdClient.FbCommand();
+            dcFPLY.CommandText = "GET_FINAL_PERIOD_LY";
+            dcFPLY.CommandType = CommandType.StoredProcedure;
+            dcFPLY.Transaction = trTR;
+            dcFPLY.Connection = dbConnection;
+            dcFPLY.Parameters.Add("AGE", FbDbType.Integer);
+            dcFPLY.Parameters.Add("Year_Num", FbDbType.VarChar);
+            dcFPLY.Parameters.Add("GENDER", FbDbType.VarChar);
+            dcFPLY.Parameters.Add("SCENARIO", FbDbType.VarChar);
+
+            //Repeat this loop for years 1980-2150
             while (year <= 2150) {
 
                 //Reset age counter to zero for each year loop
@@ -1315,16 +1607,21 @@ Command121.Visible = True
                 //Repeat this loop for ages 0-100
                 while (age <= 100) {
                
-                    if ((year == 1990) || ((age == 0) &&  (year <= 2050))) {
+                    if ((year == 1980) || ((age == 0) &&  (year <= 2050))) {
                         //Select records from pop table for that age/year pair
-                        sqltext = "SELECT Final_Table_Pop.Age, Final_Table_Pop.Proj_Year, Final_Table_Pop.Pop, Final_Table_Pop.gender, " 
-                        + " Final_Table_Pop.scenario FROM Final_Table_Pop";
-                        sqltext = sqltext + " where ((Age = (" + age.ToString() + " - 0)) AND (proj_Year = (" 
-                            + year.ToString() + " - 0)) AND (Gender = '" + strgenderText + "') AND (Scenario = '" + strscenarioText + "'))";
-                        dataCommand.CommandText = sqltext;
-                        dataReader = dataCommand.ExecuteReader();
+                        //sqltext = "SELECT Final_Table_Pop.Age, Final_Table_Pop.Proj_Year, Final_Table_Pop.Pop, Final_Table_Pop.gender, " 
+                        //+ " Final_Table_Pop.scenario FROM Final_Table_Pop";
+                        //sqltext = sqltext + " where ((Age = (" + age.ToString() + " - 0)) AND (proj_Year = (" 
+                        //    + year.ToString() + " - 0)) AND (Gender = '" + strgenderText + "') AND (Scenario = '" + strscenarioText + "'))";
+                        //dataCommand.CommandText = sqltext;
+                        //dataReader = dataCommand.ExecuteReader();
+                        dcFPop.Parameters[0].Value = age;
+                        dcFPop.Parameters[1].Value = year.ToString();
+                        dcFPop.Parameters[2].Value = strgenderText;
+                        dcFPop.Parameters[3].Value = strscenarioText;
+                        dataReader = dcFPop.ExecuteReader();
                         dataReader.Read();
-                        pop = (double)dataReader[2];
+                        pop = (double)dataReader[0];
                         dataReader.Close();
                         m = pop;
             
@@ -1346,20 +1643,21 @@ Command121.Visible = True
                         //Select records from death rate table for the previous age/year pair
                         sqltext = "SELECT " + strmortal_table + ".Age, " + strmortal_table + ".Year_Num, " + strmortal_table 
                             + ".Rate FROM " + strmortal_table;
-                        sqltext = sqltext + " where Age = " + (age - 1).ToString() + "AND Year = " + (year - 1).ToString();
+                        sqltext = sqltext + " where Age = " + (age - 1).ToString() + " AND Year_Num = " + (year - 1).ToString();
+                        dataCommand.CommandText = sqltext;
                         dataReader = dataCommand.ExecuteReader();
                         dataReader.Read();
                         rate  = (double)dataReader[2];
                         dataReader.Close();
 
-                        m = pop * (1 - rate);
+                        m = pop * (1.0 - rate);
             
                     } //End If
 
                     //Write value in LY table
                     sqltext = "INSERT INTO Final_Table_Cohort_LY (Age, Proj_Year, Val, Gender, Scenario) VALUES( " 
                         + age.ToString() + " , " + year.ToString() + " , " + m.ToString() + " , '" + strgenderText 
-                        + "' as Gender, '" + strscenarioText + "' )";
+                        + "' , '" + strscenarioText + "' )";
                     dataCommand.CommandText = sqltext;
                     dataCommand.ExecuteNonQuery();
         
@@ -1372,7 +1670,7 @@ Command121.Visible = True
                 year = year + 1;
     
             } // wend Loop
-
+            Debug.Print("End Cohort_LY loop");
 
             //CALCULATE COHORT ELY
             //Set initial values
@@ -1380,8 +1678,8 @@ Command121.Visible = True
             j = 0;
             m = 0;
 
-            //Repeat this loop for years 1990-2150, backwards
-            for (year = 2150; year >= 1990; year--) {
+            //Repeat this loop for years 1980-2150, backwards
+            for (year = 2150; year >= 1980; year--) {
 
                 //Reset age counter to one hundred for each year loop
                 age = 100;
@@ -1398,6 +1696,7 @@ Command121.Visible = True
                             + "Final_Table_Cohort_ELY.Gender, Final_Table_Cohort_ELY.Scenario FROM Final_Table_Cohort_ELY";
                         sqltext = sqltext + " where ((Age = (" + age.ToString() + " + 1)) AND (proj_Year = (" 
                             + year.ToString() + " + 1)) AND (Gender = '" + strgenderText + "') AND (Scenario = '" + strscenarioText + "'))";
+                        dataCommand.CommandText = sqltext;
                         dataReader = dataCommand.ExecuteReader();
                         dataReader.Read();
                         m = (double)dataReader[2];
@@ -1410,6 +1709,7 @@ Command121.Visible = True
                         + "Final_Table_Cohort_LY.Gender, Final_Table_Cohort_LY.Scenario FROM Final_Table_Cohort_LY";
                     sqltext = sqltext + " where ((Age = (" + age.ToString() + " + 0)) AND (proj_Year = (" 
                         + year.ToString() + " + 0)) AND (Gender = '"  + strgenderText + "') AND (Scenario = '" + strscenarioText + "'))";
+                    dataCommand.CommandText = sqltext;
                     dataReader = dataCommand.ExecuteReader();
                     dataReader.Read();
                     j = (double)dataReader[2];
@@ -1417,8 +1717,8 @@ Command121.Visible = True
 
                     //Write value in ELY table
                     sqltext = "INSERT INTO Final_Table_Cohort_ELY (Age, Proj_Year, Val, Gender, Scenario) VALUES( " 
-                        + age.ToString() + " , " + year.ToString() + " AS , " + (j + m).ToString() 
-                        + " AS Val, '" + strgenderText + "' as Gender, '" + strscenarioText + "' )";
+                        + age.ToString() + " , " + year.ToString() + " , " + (j + m).ToString() 
+                        + " , '" + strgenderText + "' , '" + strscenarioText + "' )";
                     dataCommand.CommandText = sqltext;
                     dataCommand.ExecuteNonQuery();
         
@@ -1427,15 +1727,15 @@ Command121.Visible = True
     
             //Proceed to next year
             } // Next year
-
+            Debug.Print("End Cohort_ELY loop");
 
             //CALCULATE COHORT CLE
             //Set initial values
-            year = 1990;
+            year = 1980;
             j = 0;
             m = 0;
 
-            //Repeat this loop for years 1990-2050
+            //Repeat this loop for years 1980-2050
             while (year <= 2050) {
 
                 //Reset age counter to zero for each year loop
@@ -1449,6 +1749,7 @@ Command121.Visible = True
                     + "Final_Table_Cohort_LY.Gender, Final_Table_Cohort_LY.Scenario FROM Final_Table_Cohort_LY";
                     sqltext = sqltext + " where ((Age = (" + age.ToString() + " - 0)) AND (proj_Year = (" 
                         + year.ToString() + " - 0)) AND (Gender = '" + strgenderText + "') AND (Scenario = '" + strscenarioText + "'))";
+                    dataCommand.CommandText = sqltext;
                     dataReader = dataCommand.ExecuteReader();
                     dataReader.Read();
                     j = (double)dataReader[2];
@@ -1459,6 +1760,7 @@ Command121.Visible = True
                         + "Final_Table_Cohort_ELY.Gender, Final_Table_Cohort_ELY.Scenario FROM Final_Table_Cohort_ELY";
                     sqltext = sqltext + " where ((Age = (" + age.ToString() + " - 0)) AND (proj_Year = (" + year.ToString()
                         + " - 0)) AND (Gender = '" + strgenderText + "') AND (Scenario = '" +  strscenarioText + "'))";
+                    dataCommand.CommandText = sqltext;
                     dataReader = dataCommand.ExecuteReader();
                     dataReader.Read();
                     m = (double)dataReader[2];
@@ -1484,12 +1786,12 @@ Command121.Visible = True
 
             //CALCULATE PERIOD LY
             //Set initial values
-            year = 1990;
+            year = 1980;
             pop = 0;
             rate = 0;
             m = 0;
 
-            //Repeat this loop for years 1990-2050
+            //Repeat this loop for years 1980-2050
             while (year <= 2050) {
                 //Reset age counter to zero for each year loop
                 age = 0;
@@ -1500,32 +1802,47 @@ Command121.Visible = True
                     if (age == 0) {
         
                         //Select records from pop table for that age/year pair
-                        sqltext = "SELECT Final_Table_Pop.Age, Final_Table_Pop.Proj_Year, Final_Table_Pop.Pop, Final_Table_Pop.gender,"
-                            + "Final_Table_Pop.scenario FROM Final_Table_Pop";
-                        sqltext = sqltext + " where ((Age = (" + age.ToString() + " - 0)) AND (proj_Year = (" 
-                            + year.ToString()  + " - 0)) AND (Gender = '" + strgenderText + "') AND (Scenario = '" + strscenarioText + "'))";
-                        dataReader = dataCommand.ExecuteReader();
+                        // STOPPED HERE 
+                        //sqltext = "SELECT Final_Table_Pop.Age, Final_Table_Pop.Proj_Year, Final_Table_Pop.Pop, Final_Table_Pop.gender,"
+                        //    + "Final_Table_Pop.scenario FROM Final_Table_Pop";
+                        //sqltext = sqltext + " where ((Age = (" + age.ToString() + " - 0)) AND (proj_Year = (" 
+                        //    + year.ToString()  + " - 0)) AND (Gender = '" + strgenderText + "') AND (Scenario = '" + strscenarioText + "'))";
+                        //dataCommand.CommandText = sqltext;
+                        //dataReader = dataCommand.ExecuteReader();
+                        dcFPop.Parameters[0].Value = age;
+                        dcFPop.Parameters[1].Value = year.ToString();
+                        dcFPop.Parameters[2].Value = strgenderText;
+                        dcFPop.Parameters[3].Value = strscenarioText;
+                        dataReader = dcFPop.ExecuteReader();
                         dataReader.Read();
-                        pop = (double)dataReader[2];
+                        pop = (double)dataReader[0];
                         dataReader.Close();
                    
                         m = pop;
             
                     } else {
-        
+                        // STOPPED HERE
                         //Select records from period LY table for the previous age/same year pair
-                        sqltext = "SELECT Final_Table_Period_LY.Age, Final_Table_Period_LY.Proj_Year, Final_Table_Period_LY.Val, " 
-                            + "Final_Table_Period_LY.Gender, Final_Table_Period_LY.Scenario FROM Final_Table_Period_LY";
-                        sqltext = sqltext + " where ((Age = (" + age.ToString() + " - 1)) AND (proj_Year = (" 
-                            + year.ToString() + " - 0)) AND (Gender = '"  + strgenderText + "') AND (Scenario = '" + strscenarioText + "'))";
-                        dataReader = dataCommand.ExecuteReader();
+
+                        //sqltext = "SELECT Final_Table_Period_LY.Age, Final_Table_Period_LY.Proj_Year, Final_Table_Period_LY.Val, " 
+                        //    + "Final_Table_Period_LY.Gender, Final_Table_Period_LY.Scenario FROM Final_Table_Period_LY";
+                        //sqltext = sqltext + " where ((Age = (" + age.ToString() + " - 1)) AND (proj_Year = (" 
+                        //    + year.ToString() + " - 0)) AND (Gender = '"  + strgenderText + "') AND (Scenario = '" + strscenarioText + "'))";
+                        //dataCommand.CommandText = sqltext;
+                        //dataReader = dataCommand.ExecuteReader();
+                        dcFPLY.Parameters[0].Value = age - 1;
+                        dcFPLY.Parameters[1].Value = year.ToString();
+                        dcFPLY.Parameters[2].Value = strgenderText;
+                        dcFPLY.Parameters[3].Value = strscenarioText;
+                        dataReader = dcFPLY.ExecuteReader();
                         dataReader.Read();
-                        pop = (double)dataReader[2];
+                        pop = (double)dataReader[0];
                         dataReader.Close();
                    
                         //Select records from death rate table for the previous age/same year pair
-                        sqltext = "SELECT " + strmortal_table + ".Age, " + strmortal_table + ".Year, " + strmortal_table + ".Rate FROM " + strmortal_table;
-                        sqltext = sqltext + " where Age = " + (age - 1).ToString() + "AND Year = " + (year - 0).ToString();
+                        sqltext = "SELECT " + strmortal_table + ".Age, " + strmortal_table + ".Year_Num, " + strmortal_table + ".Rate FROM " + strmortal_table;
+                        sqltext = sqltext + " where Age = " + (age - 1).ToString() + " AND Year_Num = " + (year - 0).ToString();
+                        dataCommand.CommandText = sqltext;
                         dataReader = dataCommand.ExecuteReader();
                         dataReader.Read();
                         rate = (double)dataReader[2];
@@ -1537,8 +1854,8 @@ Command121.Visible = True
 
                     //Write value in LY table
                     sqltext = "INSERT INTO Final_Table_Period_LY (Age, Proj_Year, Val, Gender, Scenario) VALUES(" 
-                        + age.ToString() + " AS Age, " + year.ToString() + " AS Proj_Year, " + m.ToString() + " AS Val, '" 
-                        + strgenderText + "' as Gender, '" + strscenarioText + "') ";
+                        + age.ToString() + " , " + year.ToString() + " , " + m.ToString() + " , '" 
+                        + strgenderText + "' , '" + strscenarioText + "') ";
                     dataCommand.CommandText = sqltext;
                     dataCommand.ExecuteNonQuery();
         
@@ -1559,8 +1876,8 @@ Command121.Visible = True
             j = 0;
             m = 0;
 
-            //Repeat this loop for years 1990-2150, backwards
-            for (year = 2050; year >= 1990; year--) {
+            //Repeat this loop for years 1980-2150, backwards
+            for (year = 2050; year >= 1980; year--) {
 
                 //Reset age counter to one hundred for each year loop
                 age = 100;
@@ -1579,6 +1896,8 @@ Command121.Visible = True
                             + "Final_Table_Period_ELY.Gender, Final_Table_Period_ELY.Scenario FROM Final_Table_Period_ELY";
                         sqltext = sqltext + " where ((Age = (" + age.ToString() + " + 1)) AND (proj_Year = (" 
                             + year.ToString() + " + 0)) AND (Gender = '" + strgenderText + "') AND (Scenario = '" + strscenarioText + "'))";
+
+                        dataCommand.CommandText = sqltext;
                         dataReader = dataCommand.ExecuteReader();
                         dataReader.Read();
                         m = (double)dataReader[2];
@@ -1586,19 +1905,25 @@ Command121.Visible = True
                     } // End If
 
                     //Select records from LY table for the same age/year pair
-                    sqltext = "SELECT Final_Table_Period_LY.Age, Final_Table_Period_LY.Proj_Year, Final_Table_Period_LY.Val, "
-                        + "Final_Table_Period_LY.Gender, Final_Table_Period_LY.Scenario FROM Final_Table_Period_LY";
-                    sqltext = sqltext + " where ((Age = (" + age.ToString() + " + 0)) AND (proj_Year = (" + year.ToString() 
-                        + " + 0)) AND (Gender = '" + strgenderText + "') AND (Scenario = '" + strscenarioText + "'))";
-                    dataReader = dataCommand.ExecuteReader();
+                    //sqltext = "SELECT Final_Table_Period_LY.Age, Final_Table_Period_LY.Proj_Year, Final_Table_Period_LY.Val, "
+                    //    + "Final_Table_Period_LY.Gender, Final_Table_Period_LY.Scenario FROM Final_Table_Period_LY";
+                    //sqltext = sqltext + " where ((Age = (" + age.ToString() + " + 0)) AND (proj_Year = (" + year.ToString() 
+                    //    + " + 0)) AND (Gender = '" + strgenderText + "') AND (Scenario = '" + strscenarioText + "'))";
+                    //dataCommand.CommandText = sqltext;
+                    //dataReader = dataCommand.ExecuteReader();
+                    dcFPLY.Parameters[0].Value = age;
+                    dcFPLY.Parameters[1].Value = year.ToString();
+                    dcFPLY.Parameters[2].Value = strgenderText;
+                    dcFPLY.Parameters[3].Value = strscenarioText;
+                    dataReader = dcFPLY.ExecuteReader();
                     dataReader.Read();
-                    j = (double)dataReader[2];
+                    j = (double)dataReader[0];
                     dataReader.Close();
                     
                     //Write value in ELY table
                     sqltext = "INSERT INTO Final_Table_Period_ELY (Age, Proj_Year, Val, Gender, Scenario) VALUES(" 
-                        + age.ToString() + " , " + year.ToString() + " , " + (j + m).ToString() + " AS Val, '" 
-                        + strgenderText + "' as Gender, '" + strscenarioText + "' )";
+                        + age.ToString() + " , " + year.ToString() + " , " + (j + m).ToString() + " , '" 
+                        + strgenderText + "' , '" + strscenarioText + "' )";
                     dataCommand.CommandText = sqltext;
                     dataCommand.ExecuteNonQuery();
         
@@ -1611,11 +1936,11 @@ Command121.Visible = True
 
             //CALCULATE PERIOD CLE
             //Set initial values
-            year = 1990;
+            year = 1980;
             j = 0;
             m = 0;
 
-            //Repeat this loop for years 1990-2050
+            //Repeat this loop for years 1980-2050
             while (year <= 2050) {
 
                 //Reset age counter to zero for each year loop
@@ -1625,13 +1950,19 @@ Command121.Visible = True
                 while (age <= 100) {
         
                     //Select records from period LY table for the same age/year pair
-                    sqltext = "SELECT Final_Table_Period_LY.Age, Final_Table_Period_LY.Proj_Year, Final_Table_Period_LY.Val, "
-                        + "Final_Table_Period_LY.Gender, Final_Table_Period_LY.Scenario FROM Final_Table_Period_LY";
-                    sqltext = sqltext + " where ((Age = (" + age.ToString() + " - 0)) AND (proj_Year = (" + year.ToString() 
-                        + " - 0)) AND (Gender = '" + strgenderText + "') AND (Scenario = '" + strscenarioText + "'))";
-                    dataReader = dataCommand.ExecuteReader();
+                    //sqltext = "SELECT Final_Table_Period_LY.Age, Final_Table_Period_LY.Proj_Year, Final_Table_Period_LY.Val, "
+                    //    + "Final_Table_Period_LY.Gender, Final_Table_Period_LY.Scenario FROM Final_Table_Period_LY";
+                    //sqltext = sqltext + " where ((Age = (" + age.ToString() + " - 0)) AND (proj_Year = (" + year.ToString() 
+                    //    + " - 0)) AND (Gender = '" + strgenderText + "') AND (Scenario = '" + strscenarioText + "'))";
+                    //dataCommand.CommandText = sqltext;
+                    //dataReader = dataCommand.ExecuteReader();
+                    dcFPLY.Parameters[0].Value = age;
+                    dcFPLY.Parameters[1].Value = year.ToString();
+                    dcFPLY.Parameters[2].Value = strgenderText;
+                    dcFPLY.Parameters[3].Value = strscenarioText;
+                    dataReader = dcFPLY.ExecuteReader();
                     dataReader.Read();
-                    j = (double)dataReader[2];
+                    j = (double)dataReader[0];
                     dataReader.Close();
                     
                     //Select records from period ELY table for the same age/year pair
@@ -1639,6 +1970,7 @@ Command121.Visible = True
                         + "Final_Table_Period_ELY.Gender, Final_Table_Period_ELY.Scenario FROM Final_Table_Period_ELY";
                     sqltext = sqltext + " where ((Age = (" + age.ToString() + " - 0)) AND (proj_Year = (" + year.ToString() 
                         + " - 0)) AND (Gender = '" + strgenderText + "') AND (Scenario = '" + strscenarioText + "'))";
+                    dataCommand.CommandText = sqltext;
                     dataReader = dataCommand.ExecuteReader();
                     dataReader.Read();
                     m = (double)dataReader[2];
@@ -1647,7 +1979,7 @@ Command121.Visible = True
                     //Write value in CLE table
                     sqltext = "INSERT INTO Final_Table_Period_CLE (Age, Proj_Year, Val, Gender, Scenario) VALUES(" 
                         + age.ToString() + " , " + year.ToString() + " , " + (m / j).ToString() + " , '" + strgenderText 
-                        + "' as Gender, '" + strscenarioText + "' )";
+                        + "' , '" + strscenarioText + "' )";
                     dataCommand.CommandText = sqltext;
                     dataCommand.ExecuteNonQuery();
         
@@ -1660,7 +1992,588 @@ Command121.Visible = True
                 year = year + 1;
     
                 } //wend Loop
+            trTR.Commit();
+
         } // end run calculate life expectancy
+        private void run_summarize_results()
+        {
+        
+          FbTransaction trTR = dbConnection.BeginTransaction();
+
+            //CREATE INPUTS REPORT
+            //create loop for all variables
+
+            string tempValue = "";
+            string tempCategory= "";
+            string sqltext;
+            int I;
+
+            FbCommand dataCommand = new  FirebirdSql.Data.FirebirdClient.FbCommand();
+            FbDataReader dataReader;
+            dataCommand.Connection = dbConnection;
+            dataCommand.Transaction = trTR;
+            
+
+            //approach = "Disaggregated"
+            //begin_year = 1980
+            //end_year = 2020
+
+            for (I = 1; I <= 44; I++) {
+
+                switch(I) {
+                    case 1:
+                        tempValue = InputData.getBegin_Year().ToString();
+                        tempCategory = "Begin Year";
+                        break;
+                    case 2:
+                        tempValue = InputData.getEnd_Year().ToString();
+                        tempCategory = "End Year";
+                        break;
+                    case 3:
+                        if (InputData.getApproach() == 0)
+                        {
+                            tempValue = "Aggregated";
+                        }
+                        else
+                        {
+                            tempValue = "Disaggregated";
+                        }
+                        tempCategory = "Dose-Response Technique";
+                        break;
+                    case 4:
+                        if (InputData.getBeta_Type() == 0)
+                        {
+                            tempValue = "Study beta";
+                        }
+                        else
+                        {
+                            tempValue = "User-defined beta";
+                        }
+                        tempCategory = "Beta Type";
+                        break;
+                    case 5:
+                        tempValue = InputData.getUser_Study_Name();
+                        tempCategory = "Study";
+                        break;
+                    case 6:
+                        tempValue = InputData.getUser_Beta().ToString();
+                        tempCategory = "User Beta";
+                        break;
+                    case 7:
+                        tempValue = InputData.getPM_year_1().ToString();
+                        tempCategory = "PM Change: Year 1";
+                        break;
+                    case 8:
+                        tempValue = InputData.getPM_year_2().ToString();
+                        tempCategory = "PM Change: Year 2";
+                        break;
+                    case 9:
+                        tempValue = InputData.getPM_year_3().ToString();
+                        tempCategory = "PM Change: Year 3";
+                        break;
+                    case 10:
+                        tempValue = InputData.getPM_year_4().ToString();
+                        tempCategory = "PM Change: Year 4";
+                        break;
+                    case 11:
+                        tempValue = InputData.getPM_year_5().ToString();
+                        tempCategory = "PM Change: Year 5";
+                        break;
+                    case 12:
+                        tempValue = InputData.getPM_val_1().ToString();
+                        tempCategory = "PM Change: Value 1";
+                        break;
+                    case 13:
+                        tempValue = InputData.getPM_val_2().ToString();
+                        tempCategory = "PM Change: Value 2";
+                        break;
+                    case 14:
+                        tempValue = InputData.getPM_val_3().ToString();
+                        tempCategory = "PM Change: Value 3";
+                        break;
+                    case 15:
+                        tempValue = InputData.getPM_val_4().ToString();
+                        tempCategory = "PM Change: Value 4";
+                        break;
+                    case 16:
+                        tempValue = InputData.getPM_val_5().ToString();
+                        tempCategory = "PM Change: Value 5";
+                        break;
+                    case 17:
+                        if (InputData.getPM_Trajectory() == 0)
+                        {
+                            tempValue = "Linear";
+                        }
+                        else
+                        {
+                            tempValue = "Step";
+                        }
+                        tempCategory = "PM Trajectory";
+                        break;
+                    case 18:
+                        if (InputData.getPM_Choice() == 0)
+                        {
+                            tempValue = "No PM Threshold";
+                        }
+                        else
+                        {
+                            tempValue = "PM Threshold";
+                        }
+                        tempCategory = "PM Threshold";
+                        break;
+                    case 19:
+                        tempValue = InputData.getPM_Threshold().ToString();
+                        tempCategory = "PM Threshold";
+                        break;
+                    case 20:
+                        tempValue = InputData.getBeta_adj_factor().ToString();
+                        tempCategory = "Beta Adjustment Factor";
+                        break;
+                    case 21:
+                        tempValue = InputData.getAge_Range_Start().ToString();
+                        tempCategory = "Age Range Affected: Start Age";
+                        break;
+                    case 22:
+                        tempValue = InputData.getAge_Range_End().ToString();
+                        tempCategory = "Age Range Affected: End Age";
+                        break;
+                    case 23:
+                        tempValue = InputData.getSub_Pop_Start_1().ToString();
+                        tempCategory = "Age-Specific Adjustment: Start Age 1";
+                        break;
+                    case 24:
+                        tempValue = InputData.getSub_Pop_Start_2().ToString();
+                        tempCategory = "Age-Specific Adjustment: Start Age 2";
+                        break;
+                    case 25:
+                        tempValue = InputData.getSub_Pop_Start_3().ToString();
+                        tempCategory = "Age-Specific Adjustment: Start Age 3";
+                        break;
+                    case 26:
+                        tempValue = InputData.getSub_Pop_Start_4().ToString();
+                        tempCategory = "Age-Specific Adjustment: Start Age 4";
+                        break;
+                    case 27:
+                        tempValue = InputData.getSub_Pop_Start_5().ToString();
+                        tempCategory = "Age-Specific Adjustment: Start Age 5";
+                        break;
+                    case 28:
+                        tempValue = InputData.getSub_Pop_End_1().ToString();
+                        tempCategory = "Age-Specific Adjustment: End Age 1";
+                        break;
+                    case 29:
+                        tempValue = InputData.getSub_Pop_End_2().ToString();
+                        tempCategory = "Age-Specific Adjustment: End Age 2";
+                        break;
+                    case 30:
+                        tempValue = InputData.getSub_Pop_End_3().ToString();
+                        tempCategory = "Age-Specific Adjustment: End Age 3";
+                        break;
+                    case 31:
+                        tempValue = InputData.getSub_Pop_End_4().ToString();
+                        tempCategory = "Age-Specific Adjustment: End Age 4";
+                        break;
+                    case 32:
+                        tempValue = InputData.getSub_Pop_End_5().ToString();
+                        tempCategory = "Age-Specific Adjustment: End Age 5";
+                        break;
+                    case 33:
+                        tempValue = InputData.getSub_Pop_Adjustment_1().ToString();
+                        tempCategory = "Age-Specific Adjustment: Factor 1";
+                        break;
+                    case 34:
+                        tempValue = InputData.getSub_Pop_Adjustment_2().ToString();
+                        tempCategory = "Age-Specific Adjustment: Factor 2";
+                        break;
+                    case 35:
+                        tempValue = InputData.getSub_Pop_Adjustment_3().ToString();
+                        tempCategory = "Age-Specific Adjustment: Factor 3";
+                        break;
+                    case 36:
+                        tempValue = InputData.getSub_Pop_Adjustment_4().ToString();
+                        tempCategory = "Age-Specific Adjustment: Factor 4";
+                        break;
+                    case 37:
+                        tempValue = InputData.getSub_Pop_Adjustment_5().ToString();
+                        tempCategory = "Age-Specific Adjustment: Factor 5";
+                        break;
+                    case 38:
+                        if (InputData.getLag_Type() == 0)
+                        {
+                            tempValue = "Single Lag";
+                        }
+                        else
+                        {
+                            tempValue = "Cause-Specific Lag";
+                        }
+                        tempCategory = "Lag Type";
+                        break;
+                    case 39:
+                        if (InputData.getLag_Function_Type() == 0) 
+                        { 
+                            tempValue = "HES_Default";
+                        }else if (InputData.getLag_Function_Type() == 1)
+                        {
+                            tempValue= "Smooth";
+                        } else 
+                        {
+                            tempValue = "User-defined";
+                        }
+                        tempCategory = "Lag Function Type";
+                        break;
+                    case 40:
+                        tempValue = InputData.getLag_k_single().ToString();
+                        tempCategory = "Single-lag k";
+                        break;
+                    case 41:
+                        tempValue = InputData.getLag_k_multiple_cardio().ToString();
+                        tempCategory = "Cause-specific lag cardio-k";
+                        break;
+                    case 42:
+                        tempValue = InputData.getLag_k_multiple_lung().ToString();
+                        tempCategory = "Cause-specific lag lung-k";
+                        break;
+                    case 43:
+                        tempValue = InputData.getLag_k_multiple_other().ToString();
+                        tempCategory = "Cause-specific lag all other-k";
+                        break;
+                    case 44:
+                        if(InputData.getBirth_Type() == 0) {
+                            tempValue = "Dynamic";
+                        } else {
+                            tempValue = "Static";
+                        }
+                        tempCategory = "Birth Type";
+                        break;
+                    default:
+                        tempValue = "Unknown";
+                        tempCategory = "Unknown";
+                        break;
+                } //End Select
+    
+                sqltext = "UPDATE Report_Input_Summary SET Report_Input_Summary.User_Selection = '" + tempValue + "' WHERE ((category='" + tempCategory + "'))";
+                dataCommand.CommandText = sqltext;
+                dataCommand.ExecuteNonQuery();
+        
+            } // Next I
+
+
+            //CALCULATE AVOIDED DEATHS
+            //Set initial values
+            int year = 1980;
+            int age;
+            j = 0;
+            k = 0;
+            m = 0;
+            p = 0;
+
+            //Repeat this loop for years 1980-2050
+            while (year <= 2050) {
+
+                //Reset age counter to zero for each year loop
+                age = 0;
+    
+                //Repeat this loop for ages 0-100
+                while (age <= 100) {
+               
+                    //Select BASELINE FEMALE deaths from the final deaths table
+                    sqltext = "SELECT Final_Table_Deaths.Age, Final_Table_Deaths.Proj_Year, Final_Table_Deaths.Deaths, " 
+                        + " Final_Table_Deaths.Gender, Final_Table_Deaths.Scenario FROM Final_Table_Deaths";
+                    sqltext = sqltext + " where ((Age = (" + age.ToString() + " - 0)) AND (proj_Year = (" + year.ToString() 
+                        + " - 0)) AND (Gender = 'female') AND (Scenario = 'Baseline'))";
+                    dataCommand.CommandText = sqltext;
+                    dataReader = dataCommand.ExecuteReader();
+                    dataReader.Read();
+                    j = (double)dataReader[2];
+                    dataReader.Close();
+                    
+                    //Select REGULATORY FEMALE deaths from the final deaths table
+                    sqltext = "SELECT Final_Table_Deaths.Age, Final_Table_Deaths.Proj_Year, Final_Table_Deaths.Deaths, "
+                        + " Final_Table_Deaths.Gender, Final_Table_Deaths.Scenario FROM Final_Table_Deaths";
+                    sqltext = sqltext + " where ((Age = (" + age.ToString() + " - 0)) AND (proj_Year = (" + year.ToString() + " - 0)) AND (Gender = 'female') AND (Scenario = 'Regulatory'))";
+                    dataCommand.CommandText = sqltext;
+                    dataReader = dataCommand.ExecuteReader();
+                    dataReader.Read();
+                    k = (double)dataReader[2];
+                    dataReader.Close();
+        
+                    //Select BASELINE MALE deaths from the final deaths table
+                    sqltext = "SELECT Final_Table_Deaths.Age, Final_Table_Deaths.Proj_Year, Final_Table_Deaths.Deaths, "
+                        + " Final_Table_Deaths.Gender, Final_Table_Deaths.Scenario FROM Final_Table_Deaths";
+                    sqltext = sqltext + " where ((Age = (" + age.ToString() + " - 0)) AND (proj_Year = (" + year.ToString() + " - 0)) AND (Gender = 'male') AND (Scenario = 'Baseline'))";
+                    dataCommand.CommandText = sqltext;
+                    dataReader = dataCommand.ExecuteReader();
+                    dataReader.Read();
+                    m = (double)dataReader[2];
+                    dataReader.Close();
+                    
+                    //Select REGULATORY MALE deaths from the final deaths table
+                    sqltext = "SELECT Final_Table_Deaths.Age, Final_Table_Deaths.Proj_Year, Final_Table_Deaths.Deaths, " 
+                        + " Final_Table_Deaths.Gender, Final_Table_Deaths.Scenario FROM Final_Table_Deaths";
+                    sqltext = sqltext + " where ((Age = (" + age.ToString() + " - 0)) AND (proj_Year = (" + year.ToString() + " - 0)) AND (Gender = 'male') AND (Scenario = 'Regulatory'))";
+                    dataCommand.CommandText = sqltext;
+                    dataReader = dataCommand.ExecuteReader();
+                    dataReader.Read();
+                    p = (double)dataReader[2];
+                    dataReader.Close();
+                    
+                    //Write value into report table
+                    sqltext = "INSERT INTO Report_Avoided_Deaths (Age, Year_Num, Avoided_Deaths) VALUES( " + age.ToString() 
+                        + " , " + year.ToString() + " , " + System.Math.Round(((j - k) + (m - p)), 0).ToString() + " )";
+                    dataCommand.CommandText = sqltext;
+                    dataCommand.ExecuteNonQuery();
+        
+        
+                    //Proceed to next age group in given year
+                    age = age + 1;
+    
+                } // for age Loop
+    
+                //Proceed to next year
+                year = year + 1;
+    
+            } // for year Loop
+
+
+            //CALCULATE LIFE YEARS GAINED
+            //Set initial values
+            year = 1980;
+            j = 0;
+            k = 0;
+            m = 0;
+            p = 0;
+
+            //Repeat this loop for years 1980-2050
+            while (year <= 2050) {
+
+                //Reset age counter to zero for each year loop
+                age = 0;
+    
+                //Repeat this loop for ages 0-100
+                while (age <= 100) {
+               
+                    //Select REGULATORY FEMALE pop from the final pop table
+                    sqltext = "SELECT Final_Table_Pop.Age, Final_Table_Pop.Proj_Year, Final_Table_Pop.Pop, Final_Table_Pop.Gender, "
+                        + " Final_Table_Pop.Scenario FROM Final_Table_Pop";
+                    sqltext = sqltext + " where ((Age = (" + age.ToString() + " - 0)) AND (proj_Year = (" + year.ToString() 
+                        + " - 0)) AND (Gender = 'female') AND (Scenario = 'Regulatory'))";
+                    dataCommand.CommandText = sqltext;
+                    dataReader = dataCommand.ExecuteReader();
+                    dataReader.Read();
+                    j = (double)dataReader[2];
+                    dataReader.Close();
+                    
+                    //Select BASELINE FEMALE pop from the final pop table
+                    sqltext = "SELECT Final_Table_Pop.Age, Final_Table_Pop.Proj_Year, Final_Table_Pop.Pop, Final_Table_Pop.Gender, "
+                        + " Final_Table_Pop.Scenario FROM Final_Table_Pop";
+                    sqltext = sqltext + " where ((Age = (" + age.ToString() + " - 0)) AND (proj_Year = (" 
+                        + year.ToString() + " - 0)) AND (Gender = 'female') AND (Scenario = 'Baseline'))";
+                    dataCommand.CommandText = sqltext;
+                    dataReader = dataCommand.ExecuteReader();
+                    dataReader.Read();
+                    k = (double)dataReader[2];
+                    dataReader.Close();
+                                        
+                    //Select REGULATORY MALE pop from the final pop table
+                    sqltext = "SELECT Final_Table_Pop.Age, Final_Table_Pop.Proj_Year, Final_Table_Pop.Pop, Final_Table_Pop.Gender, " 
+                        + "Final_Table_Pop.Scenario FROM Final_Table_Pop";
+                    sqltext = sqltext + " where ((Age = (" + age.ToString() + " - 0)) AND (proj_Year = (" 
+                        + year.ToString() + " - 0)) AND (Gender = 'male') AND (Scenario = 'Regulatory'))";
+                    dataCommand.CommandText = sqltext;
+                    dataReader = dataCommand.ExecuteReader();
+                    dataReader.Read();
+                    m = (double)dataReader[2];
+                    dataReader.Close();
+                    
+                    //Select BASELINE MALE pop from the final pop table
+                    sqltext = "SELECT Final_Table_Pop.Age, Final_Table_Pop.Proj_Year, Final_Table_Pop.Pop, Final_Table_Pop.Gender, "
+                        + " Final_Table_Pop.Scenario FROM Final_Table_Pop";
+                    sqltext = sqltext + " where ((Age = (" + age.ToString() + " - 0)) AND (proj_Year = (" 
+                        + year.ToString() + " - 0)) AND (Gender = 'male') AND (Scenario = 'Baseline'))";
+                    dataCommand.CommandText = sqltext;
+                    dataReader = dataCommand.ExecuteReader();
+                    dataReader.Read();
+                    p = (double)dataReader[2];
+                    dataReader.Close();
+                    
+                    //Write value into report table
+                    sqltext = "INSERT INTO Report_Life_Years_Gained (Age, Year_Num, Life_Years_Gained) VALUES( " 
+                        + age.ToString() + " , " + year.ToString() + " , " + System.Math.Round(((j - k) + (m - p)), 0).ToString() + " )";
+                    dataCommand.CommandText = sqltext;
+                    dataCommand.ExecuteNonQuery();
+        
+                    //Proceed to next age group in given year
+                    age = age + 1;
+    
+                } // age Loop
+    
+                //Proceed to next year
+                year = year + 1;
+    
+            } // year Loop
+
+
+            //CALCULATE INCREASE IN COHORT CONDITIONAL LIFE EXPECTANCY
+            //Set initial values
+            year = 1980;
+            j = 0;
+            k = 0;
+            m = 0;
+            p = 0;
+
+            //Repeat this loop for years 1980-2050
+            while (year <= 2050) {
+
+                //Reset age counter to zero for each year loop
+                age = 0;
+    
+                //Repeat this loop for ages 0-100
+                while (age <= 100) {
+               
+                    //Select REGULATORY FEMALE CLE
+                    sqltext = "SELECT Final_Table_Cohort_CLE.Age, Final_Table_Cohort_CLE.Proj_Year, Final_Table_Cohort_CLE.Val, "
+                        + " Final_Table_Cohort_CLE.Gender, Final_Table_Cohort_CLE.Scenario FROM Final_Table_Cohort_CLE";
+                    sqltext = sqltext + " where ((Age = (" + age.ToString() + " - 0)) AND (proj_Year = (" 
+                        + year.ToString() + " - 0)) AND (Gender = 'female') AND (Scenario = 'Regulatory'))";
+                    dataCommand.CommandText = sqltext;
+                    dataReader = dataCommand.ExecuteReader();
+                    dataReader.Read();
+                    j = (double)dataReader[2];
+                    dataReader.Close();
+                    
+                    //Select BASELINE FEMALE CLE
+                    sqltext = "SELECT Final_Table_Cohort_CLE.Age, Final_Table_Cohort_CLE.Proj_Year, Final_Table_Cohort_CLE.Val, "
+                        + " Final_Table_Cohort_CLE.Gender, Final_Table_Cohort_CLE.Scenario FROM Final_Table_Cohort_CLE";
+                    sqltext = sqltext + " where ((Age = (" + age.ToString() + " - 0)) AND (proj_Year = (" + year.ToString() 
+                        + " - 0)) AND (Gender = 'female') AND (Scenario = 'Baseline'))";
+                    dataCommand.CommandText = sqltext;
+                    dataReader = dataCommand.ExecuteReader();
+                    dataReader.Read();
+                    k = (double)dataReader[2];
+                    dataReader.Close();
+                    
+                    //Select REGULATORY MALE CLE
+                    sqltext = "SELECT Final_Table_Cohort_CLE.Age, Final_Table_Cohort_CLE.Proj_Year, Final_Table_Cohort_CLE.Val, "
+                        + " Final_Table_Cohort_CLE.Gender, Final_Table_Cohort_CLE.Scenario FROM Final_Table_Cohort_CLE";
+                    sqltext = sqltext + " where ((Age = (" + age.ToString() + " - 0)) AND (proj_Year = (" + year.ToString() 
+                        + " - 0)) AND (Gender = 'male') AND (Scenario = 'Regulatory'))";
+                    dataCommand.CommandText = sqltext;
+                    dataReader = dataCommand.ExecuteReader();
+                    dataReader.Read();
+                    m = (double)dataReader[2];
+                    dataReader.Close();
+                    
+                    //Select BASELINE MALE CLE
+                    sqltext = "SELECT Final_Table_Cohort_CLE.Age, Final_Table_Cohort_CLE.Proj_Year, Final_Table_Cohort_CLE.Val, "
+                        + " Final_Table_Cohort_CLE.Gender, Final_Table_Cohort_CLE.Scenario FROM Final_Table_Cohort_CLE";
+                    sqltext = sqltext + " where ((Age = (" + age.ToString() + " - 0)) AND (proj_Year = (" + year.ToString() 
+                        + " - 0)) AND (Gender = 'male') AND (Scenario = 'Baseline'))";
+                    dataCommand.CommandText = sqltext;
+                    dataReader = dataCommand.ExecuteReader();
+                    dataReader.Read();
+                    p = (double)dataReader[2];
+                    dataReader.Close();
+                    
+
+                    //Write value into report table
+                    sqltext  = "INSERT INTO RPT_INC_Cohort_Cond_Life_Exp (Age, Year_Num, Increase_Female, Increase_Male) VALUES( " 
+                        + age.ToString() + " , " + year.ToString() + " , " + System.Math.Round((j - k), 2).ToString() + " , " 
+                        + System.Math.Round((m - p), 2) + " )";
+                    dataCommand.CommandText = sqltext;
+                    dataCommand.ExecuteNonQuery();
+        
+                    //Proceed to next age group in given year
+                    age = age + 1;
+    
+                } // ageLoop
+    
+                //Proceed to next year
+                year = year + 1;
+    
+        } // year Loop
+
+
+            //CALCULATE INCREASE IN PERIOD CONDITIONAL LIFE EXPECTANCY
+            //Set initial values
+            year = 1980;
+            j = 0;
+            k = 0;
+            m = 0;
+            p = 0;
+
+            //Repeat this loop for years 1980-2050
+            while (year <= 2050) {
+
+                //Reset age counter to zero for each year loop
+                age = 0;
+    
+                //Repeat this loop for ages 0-100
+                while (age <= 100){
+               
+                    //Select REGULATORY FEMALE CLE
+                    sqltext = "SELECT Final_Table_Period_CLE.Age, Final_Table_Period_CLE.Proj_Year, Final_Table_Period_CLE.Val, "
+                        + " Final_Table_Period_CLE.Gender, Final_Table_Period_CLE.Scenario FROM Final_Table_Period_CLE";
+                    sqltext = sqltext + " where ((Age = (" + age.ToString() + " - 0)) AND (proj_Year = (" + year.ToString() 
+                        + " - 0)) AND (Gender = 'female') AND (Scenario = 'Regulatory'))";
+                    dataCommand.CommandText = sqltext;
+                    dataReader = dataCommand.ExecuteReader();
+                    dataReader.Read();
+                    j = (double)dataReader[2];
+                    dataReader.Close();
+                    
+                    //Select BASELINE FEMALE CLE
+                    sqltext = "SELECT Final_Table_Period_CLE.Age, Final_Table_Period_CLE.Proj_Year, Final_Table_Period_CLE.Val, "
+                        + " Final_Table_Period_CLE.Gender, Final_Table_Period_CLE.Scenario FROM Final_Table_Period_CLE";
+                    sqltext = sqltext + " where ((Age = (" + age.ToString() + " - 0)) AND (proj_Year = (" + year.ToString() 
+                        + " - 0)) AND (Gender = 'female') AND (Scenario = 'Baseline'))";
+                    dataCommand.CommandText = sqltext;
+                    dataReader = dataCommand.ExecuteReader();
+                    dataReader.Read();
+                    k = (double)dataReader[2];
+                    dataReader.Close();
+                    
+                    //Select REGULATORY MALE CLE
+                    sqltext = "SELECT Final_Table_Period_CLE.Age, Final_Table_Period_CLE.Proj_Year, Final_Table_Period_CLE.Val, "
+                        + " Final_Table_Period_CLE.Gender, Final_Table_Period_CLE.Scenario FROM Final_Table_Period_CLE";
+                    sqltext = sqltext + " where ((Age = (" + age.ToString() + " - 0)) AND (proj_Year = (" + year.ToString() 
+                        + " - 0)) AND (Gender = 'male') AND (Scenario = 'Regulatory'))";
+                    dataCommand.CommandText = sqltext;
+                    dataReader = dataCommand.ExecuteReader();
+                    dataReader.Read();
+                    m = (double)dataReader[2];
+                    dataReader.Close();
+                    
+
+                    //Select BASELINE MALE CLE
+                    sqltext = "SELECT Final_Table_Period_CLE.Age, Final_Table_Period_CLE.Proj_Year, Final_Table_Period_CLE.Val, "
+                        + " Final_Table_Period_CLE.Gender, Final_Table_Period_CLE.Scenario FROM Final_Table_Period_CLE";
+                    sqltext = sqltext + " where ((Age = (" + age.ToString() + " - 0)) AND (proj_Year = (" + year.ToString() 
+                        + " - 0)) AND (Gender = 'male') AND (Scenario = 'Baseline'))";
+                    dataCommand.CommandText = sqltext;
+                    dataReader = dataCommand.ExecuteReader();
+                    dataReader.Read();
+                    p = (double)dataReader[2];
+                    dataReader.Close();
+                    
+                    //Write value into report table
+                    sqltext = "INSERT INTO RPT_Inc_PRD_Cond_Life_Exp (Age, Year_Num, Increase_Female, Increase_Male) VALUES( " 
+                        + age + " , " + year + " , " + System.Math.Round((j - k), 2) + " , " 
+                        + System.Math.Round((m - p), 2) + " )";
+                    dataCommand.CommandText = sqltext;
+                    dataCommand.ExecuteNonQuery();
+        
+                    //Proceed to next age group in given year
+                    age = age + 1;
+    
+                } //wend Loop
+    
+                //Proceed to next year
+                year = year + 1;
+    
+        } // wend Loop
+        trTR.Commit();
+
+        } // end run summarize results
 
     } // end popsim model
 } // end namespace
