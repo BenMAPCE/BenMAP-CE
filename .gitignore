@@ -33,3 +33,5 @@ Uninstaller/bin/
 *.htm
 *.cd
 BenMAP/Resources/
+/BenMAP/obj/Debug/*.cache
+/BenMAP/obj/Debug/BenMAP.csproj.FileListAbsolute.txt
