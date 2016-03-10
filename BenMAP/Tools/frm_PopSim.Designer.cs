@@ -231,11 +231,11 @@
             this.label9.AutoSize = true;
             this.label9.Font = new System.Drawing.Font("Calibri", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label9.ForeColor = System.Drawing.SystemColors.Desktop;
-            this.label9.Location = new System.Drawing.Point(11, 207);
+            this.label9.Location = new System.Drawing.Point(24, 201);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(388, 23);
+            this.label9.Size = new System.Drawing.Size(359, 23);
             this.label9.TabIndex = 3;
-            this.label9.Text = "This is a beta version that only includes U.S. Data.";
+            this.label9.Text = "Note that this version only includes U.S. Data.";
             // 
             // label6
             // 
@@ -261,12 +261,12 @@
             // 
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Tahoma", 18F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(102, 16);
+            this.label4.Location = new System.Drawing.Point(141, 21);
             this.label4.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(187, 29);
+            this.label4.Size = new System.Drawing.Size(104, 29);
             this.label4.TabIndex = 0;
-            this.label4.Text = "PopSim (Beta)";
+            this.label4.Text = "PopSim";
             // 
             // tabStep1
             // 
@@ -1608,7 +1608,7 @@
             this.Controls.Add(this.tableLayoutPanel1);
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "frm_PopSim";
-            this.Text = "PopSim (Beta)";
+            this.Text = "PopSim";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.tabControl1.ResumeLayout(false);
             this.tabIntro.ResumeLayout(false);
