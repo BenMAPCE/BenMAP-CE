@@ -447,6 +447,8 @@ namespace BenMAP
             // statusStrip1
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.errorReportingToolStripMenuItem});
+            
             // 
             // errorReportingToolStripMenuItem
             // 

@@ -33,12 +33,10 @@ namespace PopSim
 
         private static FbConnection getNewConnection()
         {
-            //Set the following under the ConnectionString tree in app.config for this next line to work
-            // THIS LOCATION WILL NEED TO BE MOVED IN PRODUCTION !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            // <add name="PopSIMConnectionString" connectionString="pooling=True;min pool size=5;max pool size=20;connection timeout=15;connection lifetime=15;initial catalog=C:\Program Files\BenMAP-CE\Database\POPSIMDB.fdb;user id=SYSDBA;password=masterkey;character set=NONE;client library=GDS32.DLL;server type=Default" />
+            //defined in app.config
             ConnectionStringSettings settings = ConfigurationManager.ConnectionStrings["PopSimConnectionString"];
             string str = settings.ConnectionString;
-            str = str.Replace("##USERDATA##", Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData));
+            str = str.Replace("##USERDATA##", Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData));
 
             FbConnection connection = new FirebirdSql.Data.FirebirdClient.FbConnection(str);
 
