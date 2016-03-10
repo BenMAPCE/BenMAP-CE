@@ -203,7 +203,7 @@ namespace BenMAP.Tools
                     {
                         file.Write(i.ToString() + ",");
                     }
-                   // System.Console.Write(",");
+                   
                     file.Write(result+"\n");
                 }
                 

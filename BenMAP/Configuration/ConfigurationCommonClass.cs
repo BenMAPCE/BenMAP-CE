@@ -20,6 +20,8 @@ namespace BenMAP.Configuration
 {
     public class ConfigurationCommonClass
     {
+        public static int sourceGridRow = 312;
+        public static int sourceGridCol = 97;
         public static void ClearCRSelectFunctionCalculateValueLHS(ref CRSelectFunctionCalculateValue cRSelectFunctionCalculateValue)
         {
 
@@ -2334,9 +2336,9 @@ namespace BenMAP.Configuration
                     }
                     catch
                     { }
-                }// maybe force return these  values before calculating the percentage? if 
-                //if (benMAPPopulation.GridType.GridDefinitionID == GridDefinitionID || ((benMAPPopulation.GridType.GridDefinitionID == 28 || benMAPPopulation.GridType.GridDefinitionID == 27) && (GridDefinitionID == 27 || GridDefinitionID == 28)))
-                if(true)
+                }
+                if (benMAPPopulation.GridType.GridDefinitionID == GridDefinitionID || ((benMAPPopulation.GridType.GridDefinitionID == 28 || benMAPPopulation.GridType.GridDefinitionID == 27) && (GridDefinitionID == 27 || GridDefinitionID == 28)))
+               
                 {
                     return dicPopulationAttribute;
                 }
@@ -5502,7 +5504,7 @@ namespace BenMAP.Configuration
 
 
                 };
-                Console.WriteLine("processing column : " + col + " row : " + row);
+                //Console.WriteLine("processing column : " + col + " row : " + row);
 
 
                 if (dicPopulationValue == null || dicPopulationValue.Count == 0 || dicPopulationValue.Sum(p => p.Value) == 0)
