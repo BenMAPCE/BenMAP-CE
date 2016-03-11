@@ -1084,6 +1084,10 @@ namespace BenMAP
                 Dictionary<int, Dictionary<string, Dictionary<string, float>>> dicAllMetricDataControl = new Dictionary<int, Dictionary<string, Dictionary<string, float>>>();
                 Dictionary<int, Dictionary<string, Dictionary<string, List<float>>>> dicAll365Base = new Dictionary<int, Dictionary<string, Dictionary<string, List<float>>>>();
                 Dictionary<int, Dictionary<string, Dictionary<string, List<float>>>> dicAll365Control = new Dictionary<int, Dictionary<string, Dictionary<string, List<float>>>>();
+
+                //create interaction surfaces
+                CreateInteractionSurfaces();
+
                 //load metric data for each basecontrol group (i.e., pollutant)
                 //note the call to Configuration.ConfigurationCommonClass.getAllMetricDataFromBaseControlGroup
                 foreach (BaseControlGroup baseControlGroup in CommonClass.LstBaseControlGroup)
@@ -1857,6 +1861,56 @@ namespace BenMAP
             }
 
         }
+
+        private void CreateInteractionSurfaces()
+        {
+
+            //create interaction data if needed
+            int interactionPollutantID = 0;
+            List<BaseControlGroup> lstBaseControlGroupsInteractions = new List<BaseControlGroup>();
+            foreach (CRSelectFunction crSelectFunction in CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction)
+            {
+
+                foreach (CRFVariable variable in crSelectFunction.BenMAPHealthImpactFunction.Variables)
+                {
+                    if (variable.Pollutant2ID > 0) //if we have a second pollutant, then this is an interaction
+                    {
+                        int pollutantID1 = variable.Pollutant1ID;
+                        int pollutantID2 = variable.Pollutant2ID;
+                        interactionPollutantID--; //create a negative pollutantID for interaction
+
+                        //get base control groups
+                        BaseControlGroup bcg1 = CommonClass.LstBaseControlGroup.Where(bcg => bcg.Pollutant.PollutantID == pollutantID1).First();
+                        BaseControlGroup bcg2 = CommonClass.LstBaseControlGroup.Where(bcg => bcg.Pollutant.PollutantID == pollutantID2).First();
+
+                        BaseControlGroup bcgInteraction = new BaseControlGroup();
+                        bcgInteraction.GridType = new BenMAPGrid();
+                        bcgInteraction.GridType.Columns = bcg1.GridType.Columns;
+                        bcgInteraction.GridType.GridDefinitionID = bcg1.GridType.GridDefinitionID;
+                        bcgInteraction.GridType.GridDefinitionName = bcg1.GridType.GridDefinitionName;
+                        bcgInteraction.GridType.RRows = bcg1.GridType.RRows;
+                        bcgInteraction.GridType.SetupID = bcg1.GridType.SetupID;
+                        bcgInteraction.GridType.SetupName = bcg1.GridType.SetupName;
+                        bcgInteraction.GridType.TType = bcg1.GridType.TType;
+                        bcgInteraction.Pollutant = new BenMAPPollutant();
+                        bcgInteraction.Pollutant.PollutantID = interactionPollutantID;
+                        bcgInteraction.Pollutant.PollutantName = bcg1.Pollutant.PollutantName + "*" + bcg2.Pollutant.PollutantName;
+
+                        lstBaseControlGroupsInteractions.Add(bcgInteraction);
+
+                    }
+
+                }
+
+            }
+
+            foreach (BaseControlGroup bcg in lstBaseControlGroupsInteractions)
+            {
+                CommonClass.LstBaseControlGroup.Add(bcg);
+            }
+
+        }
+
     }
 
     public class HealthImapctDropSink : SimpleDropSink
@@ -1903,6 +1957,7 @@ namespace BenMAP
             if (!args.Handled)
                 this.RearrangeModels(args);
         }
+
 
         public virtual void RearrangeModels(ModelDropEventArgs args)
         {
