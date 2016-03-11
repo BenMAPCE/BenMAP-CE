@@ -444,18 +444,19 @@ namespace BenMAP
             this.mnuAbout.Text = "About";
             this.mnuAbout.Click += new System.EventHandler(this.mnuAbout_Click);
             // 
-            // statusStrip1
-            // 
-            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.errorReportingToolStripMenuItem});
-            
-            // 
             // errorReportingToolStripMenuItem
             // 
             this.errorReportingToolStripMenuItem.Name = "errorReportingToolStripMenuItem";
             this.errorReportingToolStripMenuItem.Size = new System.Drawing.Size(301, 22);
             this.errorReportingToolStripMenuItem.Text = "Provide Feedback";
             this.errorReportingToolStripMenuItem.Click += new System.EventHandler(this.errorReportingToolStripMenuItem_Click);
+            // 
+            // statusStrip1
+            // 
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            lblStatus});
+            
+            
             // 
             // statusStrip1
             // 
