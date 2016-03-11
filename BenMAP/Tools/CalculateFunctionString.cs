@@ -202,7 +202,7 @@ namespace BenMAP.Tools
                 if (CommonClass.getDebugValue()&& CommonClass.debugGridCell)
                 {
                    // file.Write("PointEstimateValue,");
-                    Logger.debuggingOut.Append("PointEstimateValue");
+                    Logger.debuggingOut.Append("PointEstimateValue,");
                     foreach (object i in lstParam)
                     {
                         Logger.debuggingOut.Append(i.ToString() + ",");

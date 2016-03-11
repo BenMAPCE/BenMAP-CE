@@ -8,7 +8,7 @@ using System.Text;
 
 namespace BenMAP
 {
-    public class Logger
+    public static class Logger
     {
         public  enum Level : int {Error=1, DEBUG=2 } ;
         public static StringBuilder debuggingOut = new StringBuilder();

@@ -4385,12 +4385,13 @@ namespace BenMAP.Configuration
                 {
                 }
                //debug file
-                if(CommonClass.getDebugValue())
-                   Logger.debuggingOut.Append("Column,Row,Type,a,b,c,beta,delta,control,baseline,incidence,population,prevelance,result\n");
+                if (CommonClass.getDebugValue())
+                {
+                   
+                    Logger.debuggingOut.Append("Column,Row,Type,a,b,c,beta,delta,control,baseline,incidence,population,prevelance,result\n");
+                }
                    System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:\Users\Public\output"+".txt", true);
-                    
-                   file.Write("Column,Row,Type,a,b,c,beta,delta,control,baseline,incidence,population,prevelance,result\n");
-                   file.Flush();
+
                 double baseValue = 0;
                 double controlValue = 0;
                 double populationValue = 0;
@@ -5515,7 +5516,7 @@ namespace BenMAP.Configuration
                 if (dicPopulationValue == null || dicPopulationValue.Count == 0 || dicPopulationValue.Sum(p => p.Value) == 0)
                 {
                     crCalculateValue.PointEstimate = 0;
-                    if (CommonClass.getDebugValue() && (CommonClass.debugGridCell = (CommonClass.debugRow == col && CommonClass.debugCol == col)))
+                    if (CommonClass.getDebugValue() && (CommonClass.debugGridCell = (CommonClass.debugRow == row && CommonClass.debugCol == col)))
                         Logger.debuggingOut.Append(crCalculateValue.Col + "," + crCalculateValue.Row + ",");
                     //file.Write(crCalculateValue.Col + "," + crCalculateValue.Row + ",");
                 }
@@ -5527,7 +5528,7 @@ namespace BenMAP.Configuration
                         {
                             incidenceValue = dicIncidenceValue != null && dicIncidenceValue.Count > 0 && dicIncidenceValue.ContainsKey(k.Key) ? dicIncidenceValue[k.Key] : 0;                        
                             prevalenceValue = dicPrevalenceValue != null && dicPrevalenceValue.Count > 0 && dicPrevalenceValue.ContainsKey(k.Key) ? dicPrevalenceValue[k.Key] : 0;
-                            if (CommonClass.getDebugValue() && (CommonClass.debugGridCell = (CommonClass.debugRow == col && CommonClass.debugCol == col)))
+                            if (CommonClass.getDebugValue() && (CommonClass.debugGridCell = (CommonClass.debugRow == row && CommonClass.debugCol == col)))
                                 Logger.debuggingOut.Append(crCalculateValue.Col + "," + crCalculateValue.Row + ",");
                             crCalculateValue.PointEstimate += ConfigurationCommonClass.getValueFromPointEstimateFunctionString(iCRID, strPointEstimateFunction, crSelectFunction.BenMAPHealthImpactFunction.AContantValue,
                                 crSelectFunction.BenMAPHealthImpactFunction.BContantValue, crSelectFunction.BenMAPHealthImpactFunction.CContantValue,
@@ -5540,7 +5541,7 @@ namespace BenMAP.Configuration
                         {
                             incidenceValue = dicIncidenceValue != null && dicIncidenceValue.Count > 0 && dicIncidenceValue.ContainsKey(k.Key) ? dicIncidenceValue[k.Key] : 0;
                             prevalenceValue = dicPrevalenceValue != null && dicPrevalenceValue.Count > 0 && dicPrevalenceValue.ContainsKey(k.Key) ? dicPrevalenceValue[k.Key] : 0;
-                            if (CommonClass.getDebugValue() && (CommonClass.debugGridCell=(CommonClass.debugRow == col && CommonClass.debugCol == col)))
+                            if (CommonClass.getDebugValue() && (CommonClass.debugGridCell=(CommonClass.debugRow == row && CommonClass.debugCol == col)))
                                 Logger.debuggingOut.Append(crCalculateValue.Col + "," + crCalculateValue.Row + ",");
                             crCalculateValue.PointEstimate = ConfigurationCommonClass.getValueFromPointEstimateFunctionString(iCRID, strPointEstimateFunction, crSelectFunction.BenMAPHealthImpactFunction.AContantValue,
                                 crSelectFunction.BenMAPHealthImpactFunction.BContantValue, crSelectFunction.BenMAPHealthImpactFunction.CContantValue,
@@ -5553,7 +5554,7 @@ namespace BenMAP.Configuration
                     if (hasPopInstrBaseLineFunction && crCalculateValue.Population == 0)
                     {
                         crCalculateValue.Baseline = 0;
-                        if (CommonClass.getDebugValue() && (CommonClass.debugGridCell = (CommonClass.debugRow == col && CommonClass.debugCol == col)))
+                        if (CommonClass.getDebugValue() && (CommonClass.debugGridCell = (CommonClass.debugRow == row && CommonClass.debugCol == col)))
                             Logger.debuggingOut.Append(crCalculateValue.Col + "," + crCalculateValue.Row + ",");
                            // file.Write(crCalculateValue.Col + "," + "Row:" + crCalculateValue.Row + ",");
                     }
@@ -5565,7 +5566,7 @@ namespace BenMAP.Configuration
                             {
                                 incidenceValue = dicIncidenceValue != null && dicIncidenceValue.Count > 0 && dicIncidenceValue.ContainsKey(k.Key) ? dicIncidenceValue[k.Key] : 0;
                                 prevalenceValue = dicPrevalenceValue != null && dicPrevalenceValue.Count > 0 && dicPrevalenceValue.ContainsKey(k.Key) ? dicPrevalenceValue[k.Key] : 0;
-                                if (CommonClass.getDebugValue() && (CommonClass.debugGridCell = (CommonClass.debugRow == col && CommonClass.debugCol == col)))
+                                if (CommonClass.getDebugValue() && (CommonClass.debugGridCell = (CommonClass.debugRow == row && CommonClass.debugCol == col)))
                                     Logger.debuggingOut.Append(crCalculateValue.Col + "," + crCalculateValue.Row + ",");
                                 crCalculateValue.Baseline += ConfigurationCommonClass.getValueFromBaseFunctionString(iCRID, strBaseLineFunction, crSelectFunction.BenMAPHealthImpactFunction.AContantValue,
                                     crSelectFunction.BenMAPHealthImpactFunction.BContantValue, crSelectFunction.BenMAPHealthImpactFunction.CContantValue,
@@ -5578,7 +5579,7 @@ namespace BenMAP.Configuration
                             {
                                 incidenceValue = dicIncidenceValue != null && dicIncidenceValue.Count > 0 && dicIncidenceValue.ContainsKey(k.Key) ? dicIncidenceValue[k.Key] : 0;
                                 prevalenceValue = dicPrevalenceValue != null && dicPrevalenceValue.Count > 0 && dicPrevalenceValue.ContainsKey(k.Key) ? dicPrevalenceValue[k.Key] : 0;
-                                if (CommonClass.getDebugValue() && (CommonClass.debugGridCell = (CommonClass.debugRow == col && CommonClass.debugCol == col)))
+                                if (CommonClass.getDebugValue() && (CommonClass.debugGridCell = (CommonClass.debugRow == row && CommonClass.debugCol == col)))
                                     Logger.debuggingOut.Append(crCalculateValue.Col + "," + crCalculateValue.Row + ",");
                                 crCalculateValue.Baseline = ConfigurationCommonClass.getValueFromBaseFunctionString(iCRID, strBaseLineFunction, crSelectFunction.BenMAPHealthImpactFunction.AContantValue,
                                     crSelectFunction.BenMAPHealthImpactFunction.BContantValue, crSelectFunction.BenMAPHealthImpactFunction.CContantValue,
@@ -5590,7 +5591,7 @@ namespace BenMAP.Configuration
                 else
                 {
                     crCalculateValue.Baseline = crCalculateValue.PointEstimate;
-                    if (CommonClass.getDebugValue() && (CommonClass.debugGridCell = (CommonClass.debugRow == col && CommonClass.debugCol == col)))
+                    if (CommonClass.getDebugValue() && (CommonClass.debugGridCell = (CommonClass.debugRow == row && CommonClass.debugCol == col)))
                         Logger.debuggingOut.Append(crCalculateValue.Col + "," + crCalculateValue.Row + ",");
                 }
                 crCalculateValue.LstPercentile = new List<float>();
@@ -5610,7 +5611,7 @@ namespace BenMAP.Configuration
                             {
                                 incidenceValue = dicIncidenceValue != null && dicIncidenceValue.Count > 0 && dicIncidenceValue.ContainsKey(k.Key) ? dicIncidenceValue[k.Key] : 0;
                                 prevalenceValue = dicPrevalenceValue != null && dicPrevalenceValue.Count > 0 && dicPrevalenceValue.ContainsKey(k.Key) ? dicPrevalenceValue[k.Key] : 0;
-                                if (CommonClass.getDebugValue() && (CommonClass.debugGridCell = (CommonClass.debugRow == col && CommonClass.debugCol == col)))
+                                if (CommonClass.getDebugValue() && (CommonClass.debugGridCell = (CommonClass.debugRow == row && CommonClass.debugCol == col)))
                                     Logger.debuggingOut.Append(crCalculateValue.Col + "," + crCalculateValue.Row + ",");
                                 crCalculateValue.LstPercentile[idlhs] += (ConfigurationCommonClass.getValueFromPointEstimateFunctionString(iCRID, strPointEstimateFunction,
                                     crSelectFunction.BenMAPHealthImpactFunction.AContantValue,
@@ -5622,11 +5623,13 @@ namespace BenMAP.Configuration
                         }
                     }
                 }
-
+                
                 crCalculateValue.Mean = getMean(crCalculateValue.LstPercentile);
                 crCalculateValue.Variance = crCalculateValue.LstPercentile.Count() == 0 ? float.NaN : getVariance(crCalculateValue.LstPercentile, crCalculateValue.PointEstimate);
                 crCalculateValue.StandardDeviation = crCalculateValue.LstPercentile.Count() == 0 ? float.NaN : Convert.ToSingle(Math.Sqrt(crCalculateValue.Variance));
 
+                if (CommonClass.getDebugValue() && (CommonClass.debugGridCell = (CommonClass.debugRow == row && CommonClass.debugCol == col)))
+                    Logger.Log(Logger.Level.DEBUG, null, null, "Debugging Grid Cell Row " + CommonClass.debugRow + ", Grid Cell Column " + CommonClass.debugCol);
 
                 if (crCalculateValue.Baseline == 0)
                     crCalculateValue.PercentOfBaseline = 0;
