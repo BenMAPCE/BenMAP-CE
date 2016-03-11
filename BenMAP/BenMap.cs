@@ -9137,6 +9137,7 @@ namespace BenMAP
                             }
                         }
                     }
+
                     Dictionary<KeyValuePair<CRCalculateValue, int>, CRSelectFunction> dicAPV = new Dictionary<KeyValuePair<CRCalculateValue, int>, CRSelectFunction>(); int iLstCRTable = 0;
                     Dictionary<CRCalculateValue, int> dicKey = new Dictionary<CRCalculateValue, int>();
 
@@ -9144,9 +9145,7 @@ namespace BenMAP
                     {
                         if (cflstResult.Where(p => p.FieldName == "Population Weighted Delta").First().isChecked == true)
                         {
-                            int ind;
-
-                            for (ind = 0; ind < lstCRTable.First().CRCalculateValues.First().DeltaList.Count; ind++)
+                            for (int ind = 0; ind < lstCRTable.First().CRCalculateValues.First().DeltaList.Count; ind++)
                             {
                                 foreach (CRSelectFunctionCalculateValue cr in lstCRTable)
                                 {
@@ -9183,94 +9182,129 @@ namespace BenMAP
 
                         if (cflstResult.Where(p => p.FieldName == "Population Weighted Base").First().isChecked == true)
                         {
-                            foreach (CRSelectFunctionCalculateValue cr in lstCRTable)
+                            for (int ind = 0; ind < lstCRTable.First().CRCalculateValues.First().DeltaList.Count; ind++)
                             {
-                                dicKey = null;
-                                dicKey = new Dictionary<CRCalculateValue, int>();
-                                CRCalculateValue crv = new CRCalculateValue();
-                                CRSelectFunction crNew = CommonClass.getCRSelectFunctionClone(cr.CRSelectFunction);
-                                BenMAPLine benMAPLineBase = CommonClass.BaseControlCRSelectFunctionCalculateValue.BaseControlGroup.Where(p => p.Pollutant.PollutantID == crNew.BenMAPHealthImpactFunction.PollutantGroup.Pollutants.First().PollutantID).First().Base;
-                                Dictionary<string, float> dicBase = new Dictionary<string, float>();
-                                string strMetric = "";
-                                if (cr.CRSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric != null)
+                                foreach (CRSelectFunctionCalculateValue cr in lstCRTable)
                                 {
-                                    strMetric = cr.CRSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName;
-                                }
-                                else
-                                    strMetric = cr.CRSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName;
-                                foreach (ModelResultAttribute mr in benMAPLineBase.ModelResultAttributes)
-                                {
-                                    dicBase.Add(mr.Col + "," + mr.Row, mr.Values[strMetric]);
+                                    dicKey = null;
+                                    dicKey = new Dictionary<CRCalculateValue, int>();
+                                    CRCalculateValue crv = new CRCalculateValue();
+                                    CRSelectFunction crNew = CommonClass.getCRSelectFunctionClone(cr.CRSelectFunction);
+                                    BenMAPLine benMAPLineBase = CommonClass.BaseControlCRSelectFunctionCalculateValue.BaseControlGroup.Where(p => p.Pollutant.PollutantID == cr.CRSelectFunction.BenMAPHealthImpactFunction.Variables[ind].Pollutant1ID).First().Base;
+                                    Dictionary<string, float> dicBase = new Dictionary<string, float>();
+                                    string strMetric = "";
 
-                                }
-                                float dPointEstimate = 0;
-                                foreach (CRCalculateValue crvForEstimate in cr.CRCalculateValues)
-                                {
-                                    if (dicBase.ContainsKey(crvForEstimate.Col + "," + crvForEstimate.Row))
+                                    if (cr.CRSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric != null)
                                     {
-                                        dPointEstimate = dPointEstimate + dicBase[crvForEstimate.Col + "," + crvForEstimate.Row] * crvForEstimate.Population;
+                                        strMetric = cr.CRSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName;
                                     }
-                                }
-                                crv.PointEstimate = dPointEstimate / cr.CRCalculateValues.Sum(p => p.Population);
-                                if (cr.CRCalculateValues.First().LstPercentile != null && cr.CRCalculateValues.First().LstPercentile.Count > 0)
-                                {
-                                    crv.LstPercentile = new List<float>();
-                                    foreach (float f in cr.CRCalculateValues.First().LstPercentile)
-                                    {
-                                        crv.LstPercentile.Add(0);
-                                    }
-                                }
-                                dicKey.Add(crv, iLstCRTable);
+                                    else
+                                        strMetric = cr.CRSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName;
 
-                                crNew.BenMAPHealthImpactFunction.EndPoint = "Population Weighted Base";
-                                dicAPV.Add(dicKey.ToList()[0], crNew);
-                                iLstCRTable++;
+                                    foreach (ModelResultAttribute mr in benMAPLineBase.ModelResultAttributes)
+                                    {
+                                        dicBase.Add(mr.Col + "," + mr.Row, mr.Values[strMetric]);
+                                    }
+
+                                    float dPointEstimate = 0;
+                                    foreach (CRCalculateValue crvForEstimate in cr.CRCalculateValues)
+                                    {
+                                        if (dicBase.ContainsKey(crvForEstimate.Col + "," + crvForEstimate.Row))
+                                        {
+                                            dPointEstimate += dicBase[crvForEstimate.Col + "," + crvForEstimate.Row] * crvForEstimate.Population;
+                                        }
+                                    }
+
+                                    crv.PointEstimate = dPointEstimate / cr.CRCalculateValues.Sum(p => p.Population);
+
+                                    if (cr.CRCalculateValues.First().DeltaList != null && cr.CRCalculateValues.First().DeltaList.Count > 0)
+                                    {
+                                        crv.DeltaList = new List<double>();
+                                        foreach (double d in cr.CRCalculateValues.First().DeltaList)
+                                        {
+                                            crv.DeltaList.Add(0);
+                                        }
+                                    }
+
+                                    if (cr.CRCalculateValues.First().LstPercentile != null && cr.CRCalculateValues.First().LstPercentile.Count > 0)
+                                    {
+                                        crv.LstPercentile = new List<float>();
+                                        foreach (float f in cr.CRCalculateValues.First().LstPercentile)
+                                        {
+                                            crv.LstPercentile.Add(0);
+                                        }
+                                    }
+                                    dicKey.Add(crv, iLstCRTable);
+
+                                    crNew.BenMAPHealthImpactFunction.EndPoint = "Population Weighted Base_" + cr.CRSelectFunction.BenMAPHealthImpactFunction.Variables[ind].PollutantName;
+                                    dicAPV.Add(dicKey.ToList()[0], crNew);
+                                    iLstCRTable++;
+                                }
                             }
+                           
                         }
+
                         if (cflstResult.Where(p => p.FieldName == "Population Weighted Control").First().isChecked == true)
                         {
-                            foreach (CRSelectFunctionCalculateValue cr in lstCRTable)
+                            for (int ind = 0; ind < lstCRTable.First().CRCalculateValues.First().DeltaList.Count; ind++)
                             {
-                                dicKey = null;
-                                dicKey = new Dictionary<CRCalculateValue, int>();
-                                CRCalculateValue crv = new CRCalculateValue();
-                                CRSelectFunction crNew = CommonClass.getCRSelectFunctionClone(cr.CRSelectFunction);
-                                BenMAPLine benMAPLineControl = CommonClass.BaseControlCRSelectFunctionCalculateValue.BaseControlGroup.Where(p => p.Pollutant.PollutantID == crNew.BenMAPHealthImpactFunction.PollutantGroup.Pollutants.First().PollutantID).First().Control;
-                                Dictionary<string, float> dicControl = new Dictionary<string, float>();
-                                string strMetric = "";
-                                if (cr.CRSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric != null)
+                                foreach (CRSelectFunctionCalculateValue cr in lstCRTable)
                                 {
-                                    strMetric = cr.CRSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName;
-                                }
-                                else
-                                    strMetric = cr.CRSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName;
-                                foreach (ModelResultAttribute mr in benMAPLineControl.ModelResultAttributes)
-                                {
-                                    dicControl.Add(mr.Col + "," + mr.Row, mr.Values[strMetric]);
+                                    dicKey = null;
+                                    dicKey = new Dictionary<CRCalculateValue, int>();
+                                    CRCalculateValue crv = new CRCalculateValue();
+                                    CRSelectFunction crNew = CommonClass.getCRSelectFunctionClone(cr.CRSelectFunction);
+                                    BenMAPLine benMAPLineControl = CommonClass.BaseControlCRSelectFunctionCalculateValue.BaseControlGroup.Where(p => p.Pollutant.PollutantID == cr.CRSelectFunction.BenMAPHealthImpactFunction.Variables[ind].Pollutant1ID).First().Control;
+                                    Dictionary<string, float> dicControl = new Dictionary<string, float>();
+                                    string strMetric = "";
 
-                                }
-                                float dPointEstimate = 0;
-                                foreach (CRCalculateValue crvForEstimate in cr.CRCalculateValues)
-                                {
-                                    if (dicControl.ContainsKey(crvForEstimate.Col + "," + crvForEstimate.Row))
+                                    if (cr.CRSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric != null)
                                     {
-                                        dPointEstimate = dPointEstimate + dicControl[crvForEstimate.Col + "," + crvForEstimate.Row] * crvForEstimate.Population;
+                                        strMetric = cr.CRSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName;
                                     }
-                                }
-                                crv.PointEstimate = dPointEstimate / cr.CRCalculateValues.Sum(p => p.Population);
-                                if (cr.CRCalculateValues.First().LstPercentile != null && cr.CRCalculateValues.First().LstPercentile.Count > 0)
-                                {
-                                    crv.LstPercentile = new List<float>();
-                                    foreach (float f in cr.CRCalculateValues.First().LstPercentile)
-                                    {
-                                        crv.LstPercentile.Add(0);
-                                    }
-                                }
-                                dicKey.Add(crv, iLstCRTable);
+                                    else
+                                        strMetric = cr.CRSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName;
 
-                                crNew.BenMAPHealthImpactFunction.EndPoint = "Population Weighted Control";
-                                dicAPV.Add(dicKey.ToList()[0], crNew);
-                                iLstCRTable++;
+                                    foreach (ModelResultAttribute mr in benMAPLineControl.ModelResultAttributes)
+                                    {
+                                        dicControl.Add(mr.Col + "," + mr.Row, mr.Values[strMetric]);
+
+                                    }
+
+                                    float dPointEstimate = 0;
+                                    foreach (CRCalculateValue crvForEstimate in cr.CRCalculateValues)
+                                    {
+                                        if (dicControl.ContainsKey(crvForEstimate.Col + "," + crvForEstimate.Row))
+                                        {
+                                            dPointEstimate += dicControl[crvForEstimate.Col + "," + crvForEstimate.Row] * crvForEstimate.Population;
+                                        }
+                                    }
+
+                                    crv.PointEstimate = dPointEstimate / cr.CRCalculateValues.Sum(p => p.Population);
+
+                                    if (cr.CRCalculateValues.First().DeltaList != null && cr.CRCalculateValues.First().DeltaList.Count > 0)
+                                    {
+                                        crv.DeltaList = new List<double>();
+                                        foreach (double d in cr.CRCalculateValues.First().DeltaList)
+                                        {
+                                            crv.DeltaList.Add(0);
+                                        }
+                                    }
+
+                                    if (cr.CRCalculateValues.First().LstPercentile != null && cr.CRCalculateValues.First().LstPercentile.Count > 0)
+                                    {
+                                        crv.LstPercentile = new List<float>();
+                                        foreach (float f in cr.CRCalculateValues.First().LstPercentile)
+                                        {
+                                            crv.LstPercentile.Add(0);
+                                        }
+                                    }
+                                    dicKey.Add(crv, iLstCRTable);
+
+                                    crNew.BenMAPHealthImpactFunction.EndPoint = "Population Weighted Control_" + cr.CRSelectFunction.BenMAPHealthImpactFunction.Variables[ind].PollutantName;
+                                    dicAPV.Add(dicKey.ToList()[0], crNew);
+                                    iLstCRTable++;
+                                }
                             }
                         }
                     }
@@ -11992,7 +12026,8 @@ namespace BenMAP
                             Dictionary<string, double> dicAll = new Dictionary<string, double>();
                             foreach (CRCalculateValue crcv in crSelectFunctionCalculateValue.CRCalculateValues)
                             {
-                                dicAll.Add(crcv.Col + "," + crcv.Row, crcv.PointEstimate);
+                                if (!dicAll.ContainsKey(crcv.Col + "," + crcv.Row))
+                                    dicAll.Add(crcv.Col + "," + crcv.Row, crcv.PointEstimate);
                             }
                             foreach (DataRow dr in dt.Rows)
                             {
