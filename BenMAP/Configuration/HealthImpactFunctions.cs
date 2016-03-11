@@ -1864,111 +1864,159 @@ namespace BenMAP
 
         private void CreateInteractionSurfaces()
         {
-
-            //create interaction data if needed
-            int interactionPollutantID = 0;
-            List<BaseControlGroup> lstBaseControlGroupsInteractions = new List<BaseControlGroup>();
-            foreach (CRSelectFunction crSelectFunction in CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction)
-            {
-
-                foreach (CRFVariable variable in crSelectFunction.BenMAPHealthImpactFunction.Variables)
+            try
+            { 
+                //create interaction data if needed
+                int interactionPollutantID = 0;
+                List<BaseControlGroup> lstBaseControlGroupsInteractions = new List<BaseControlGroup>();
+                foreach (CRSelectFunction crSelectFunction in CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction)
                 {
-                    if (variable.Pollutant2ID > 0) //if we have a second pollutant, then this is an interaction
+                    foreach (CRFVariable variable in crSelectFunction.BenMAPHealthImpactFunction.Variables)
                     {
-                        int pollutantID1 = variable.Pollutant1ID;
-                        int pollutantID2 = variable.Pollutant2ID;
-                        interactionPollutantID--; //create a negative pollutantID for interaction
-
-                        //get base control groups
-                        BaseControlGroup bcg1 = CommonClass.LstBaseControlGroup.Where(bcg => bcg.Pollutant.PollutantID == pollutantID1).First();
-                        BaseControlGroup bcg2 = CommonClass.LstBaseControlGroup.Where(bcg => bcg.Pollutant.PollutantID == pollutantID2).First();
-
-                        BaseControlGroup bcgInteraction = new BaseControlGroup();
-                        //set up grid type
-                        bcgInteraction.GridType = new BenMAPGrid();
-                        bcgInteraction.GridType.Columns = bcg1.GridType.Columns;
-                        bcgInteraction.GridType.GridDefinitionID = bcg1.GridType.GridDefinitionID;
-                        bcgInteraction.GridType.GridDefinitionName = bcg1.GridType.GridDefinitionName;
-                        bcgInteraction.GridType.RRows = bcg1.GridType.RRows;
-                        bcgInteraction.GridType.SetupID = bcg1.GridType.SetupID;
-                        bcgInteraction.GridType.SetupName = bcg1.GridType.SetupName;
-                        bcgInteraction.GridType.TType = bcg1.GridType.TType;
-                        //set up pollutant
-                        bcgInteraction.Pollutant = new BenMAPPollutant();    
-                                            
-                        foreach (Metric m in bcg1.Pollutant.Metrics)
+                        if (variable.Pollutant2ID > 0) //if we have a second pollutant, then this is an interaction
                         {
-                            Metric newMetric = new Metric();
-                            newMetric.HourlyMetricGeneration = m.HourlyMetricGeneration;
-                            newMetric.MetricID = m.MetricID;
-                            newMetric.MetricName = m.MetricName;
-                            newMetric.PollutantID = interactionPollutantID;
+                            int pollutantID1 = variable.Pollutant1ID;
+                            int pollutantID2 = variable.Pollutant2ID;
+                            interactionPollutantID--; //create a negative pollutantID for interaction
 
-                            bcgInteraction.Pollutant.Metrics.Add(newMetric);
-                        }
+                            //get base control groups
+                            BaseControlGroup bcg1 = CommonClass.LstBaseControlGroup.Where(bcg => bcg.Pollutant.PollutantID == pollutantID1).First();
+                            BaseControlGroup bcg2 = CommonClass.LstBaseControlGroup.Where(bcg => bcg.Pollutant.PollutantID == pollutantID2).First();
 
-                        bcgInteraction.Pollutant.Observationtype = bcg1.Pollutant.Observationtype;
-                        bcgInteraction.Pollutant.PollutantID = interactionPollutantID;
-                        bcgInteraction.Pollutant.PollutantName = bcg1.Pollutant.PollutantName + "*" + bcg2.Pollutant.PollutantName;
+                            BaseControlGroup bcgInteraction = ObjectCopier.Clone<BaseControlGroup>(bcg1);
 
-                        foreach (Season s in bcg1.Pollutant.Seasons)
-                        {
-                            Season newSeason = new Season();
-                            newSeason.EndDay = s.EndDay;
-                            newSeason.EndHour = s.EndHour;
-                            newSeason.Numbins = s.Numbins;
-                            newSeason.PollutantID = interactionPollutantID;
-                            newSeason.PollutantSeasonID = s.PollutantSeasonID;
-                            newSeason.StartDay = s.StartDay;
-                            newSeason.StartHour = s.StartHour;
-
-                            bcgInteraction.Pollutant.Seasons.Add(newSeason);
-                        }
-
-                        foreach (SeasonalMetric sm in bcg1.Pollutant.SesonalMetrics)
-                        {
-                            SeasonalMetric newSeasonalMetric = new SeasonalMetric();
-                            newSeasonalMetric.Metric = new Metric();
-                            newSeasonalMetric.Metric.HourlyMetricGeneration = sm.Metric.HourlyMetricGeneration;
-                            newSeasonalMetric.Metric.MetricID = sm.Metric.MetricID;
-                            newSeasonalMetric.Metric.MetricName = sm.Metric.MetricName;
-                            newSeasonalMetric.Metric.PollutantID = interactionPollutantID;
-                            newSeasonalMetric.SeasonalMetricID = sm.SeasonalMetricID;
-                            newSeasonalMetric.SeasonalMetricName = sm.SeasonalMetricName;
-                            foreach (Season s in sm.Seasons)
+                            if (bcgInteraction.Pollutant.Metrics != null)
                             {
-                                Season newSeason = new Season();
-                                newSeason.EndDay = s.EndDay;
-                                newSeason.EndHour = s.EndHour;
-                                newSeason.Numbins = s.Numbins;
-                                newSeason.PollutantID = interactionPollutantID;
-                                newSeason.PollutantSeasonID = s.PollutantSeasonID;
-                                newSeason.StartDay = s.StartDay;
-                                newSeason.StartHour = s.StartHour;
-
-                                newSeasonalMetric.Seasons.Add(newSeason);
+                                foreach (Metric m in bcgInteraction.Pollutant.Metrics)
+                                {
+                                    m.PollutantID = interactionPollutantID;
+                                }
                             }
 
-                            bcgInteraction.Pollutant.SesonalMetrics.Add(newSeasonalMetric);
+                            bcgInteraction.Pollutant.PollutantID = interactionPollutantID;
+                            bcgInteraction.Pollutant.PollutantName = bcg1.Pollutant.PollutantName + "*" + bcg2.Pollutant.PollutantName;
+
+                            if (bcgInteraction.Pollutant.Seasons != null)
+                            {
+                                foreach (Season s in bcgInteraction.Pollutant.Seasons)
+                                {
+                                    s.PollutantID = interactionPollutantID;
+                                }
+                            }
+
+                            if (bcgInteraction.Pollutant.SesonalMetrics != null)
+                            {
+                                foreach (SeasonalMetric sm in bcgInteraction.Pollutant.SesonalMetrics)
+                                {
+                                    sm.Metric.PollutantID = interactionPollutantID;
+
+                                    if (sm.Seasons != null)
+                                    {
+                                        foreach (Season s in sm.Seasons)
+                                        {
+                                            s.PollutantID = interactionPollutantID;
+                                        }
+                                    }
+                                }
+                            }
+
+                            #region dead code
+                            //BaseControlGroup bcgInteraction = new BaseControlGroup();
+                            ////set up grid type
+                            //bcgInteraction.GridType = new BenMAPGrid();
+                            //bcgInteraction.GridType.Columns = bcg1.GridType.Columns;
+                            //bcgInteraction.GridType.GridDefinitionID = bcg1.GridType.GridDefinitionID;
+                            //bcgInteraction.GridType.GridDefinitionName = bcg1.GridType.GridDefinitionName;
+                            //bcgInteraction.GridType.RRows = bcg1.GridType.RRows;
+                            //bcgInteraction.GridType.SetupID = bcg1.GridType.SetupID;
+                            //bcgInteraction.GridType.SetupName = bcg1.GridType.SetupName;
+                            //bcgInteraction.GridType.TType = bcg1.GridType.TType;
+                            ////set up pollutant
+                            //bcgInteraction.Pollutant = new BenMAPPollutant();
+
+                            //foreach (Metric m in bcg1.Pollutant.Metrics)
+                            //{
+                            //    Metric newMetric = new Metric();
+                            //    newMetric.HourlyMetricGeneration = m.HourlyMetricGeneration;
+                            //    newMetric.MetricID = m.MetricID;
+                            //    newMetric.MetricName = m.MetricName;
+                            //    newMetric.PollutantID = interactionPollutantID;
+
+                            //    bcgInteraction.Pollutant.Metrics.Add(newMetric);
+                            //}
+
+                            //bcgInteraction.Pollutant.Observationtype = bcg1.Pollutant.Observationtype;
+                            //bcgInteraction.Pollutant.PollutantID = interactionPollutantID;
+                            //bcgInteraction.Pollutant.PollutantName = bcg1.Pollutant.PollutantName + "*" + bcg2.Pollutant.PollutantName;
+
+                            //foreach (Season s in bcg1.Pollutant.Seasons)
+                            //{
+                            //    Season newSeason = new Season();
+                            //    newSeason.EndDay = s.EndDay;
+                            //    newSeason.EndHour = s.EndHour;
+                            //    newSeason.Numbins = s.Numbins;
+                            //    newSeason.PollutantID = interactionPollutantID;
+                            //    newSeason.PollutantSeasonID = s.PollutantSeasonID;
+                            //    newSeason.StartDay = s.StartDay;
+                            //    newSeason.StartHour = s.StartHour;
+
+                            //    bcgInteraction.Pollutant.Seasons.Add(newSeason);
+                            //}
+
+                            //foreach (SeasonalMetric sm in bcg1.Pollutant.SesonalMetrics)
+                            //{
+                            //    SeasonalMetric newSeasonalMetric = new SeasonalMetric();
+                            //    newSeasonalMetric.Metric = new Metric();
+                            //    newSeasonalMetric.Metric.HourlyMetricGeneration = sm.Metric.HourlyMetricGeneration;
+                            //    newSeasonalMetric.Metric.MetricID = sm.Metric.MetricID;
+                            //    newSeasonalMetric.Metric.MetricName = sm.Metric.MetricName;
+                            //    newSeasonalMetric.Metric.PollutantID = interactionPollutantID;
+                            //    newSeasonalMetric.SeasonalMetricID = sm.SeasonalMetricID;
+                            //    newSeasonalMetric.SeasonalMetricName = sm.SeasonalMetricName;
+                            //    foreach (Season s in sm.Seasons)
+                            //    {
+                            //        Season newSeason = new Season();
+                            //        newSeason.EndDay = s.EndDay;
+                            //        newSeason.EndHour = s.EndHour;
+                            //        newSeason.Numbins = s.Numbins;
+                            //        newSeason.PollutantID = interactionPollutantID;
+                            //        newSeason.PollutantSeasonID = s.PollutantSeasonID;
+                            //        newSeason.StartDay = s.StartDay;
+                            //        newSeason.StartHour = s.StartHour;
+
+                            //        newSeasonalMetric.Seasons.Add(newSeason);
+                            //    }
+
+                            //    bcgInteraction.Pollutant.SesonalMetrics.Add(newSeasonalMetric);
+                            //}           
+                            #endregion
+
+                            lstBaseControlGroupsInteractions.Add(bcgInteraction);
+
                         }
-
-
-                        lstBaseControlGroupsInteractions.Add(bcgInteraction);
 
                     }
 
                 }
 
-            }
+                foreach (BaseControlGroup bcg in lstBaseControlGroupsInteractions)
+                {
+                    CommonClass.LstBaseControlGroup.Add(bcg);
+                }
 
-            foreach (BaseControlGroup bcg in lstBaseControlGroupsInteractions)
+            }
+            catch (Exception ex)
             {
-                CommonClass.LstBaseControlGroup.Add(bcg);
+
+
+
             }
 
         }
 
     }
+
+
 
     public class HealthImapctDropSink : SimpleDropSink
     {
