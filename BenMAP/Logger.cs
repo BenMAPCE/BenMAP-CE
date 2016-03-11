@@ -10,6 +10,15 @@ namespace BenMAP
 {
     public class Logger
     {
+        public  enum Level : int {Error=1, DEBUG=2 } ;
+        public static StringBuilder debuggingOut = new StringBuilder();
+        /*
+         * the default location the log files are written to if Logger is instantiated with this field null
+         **/
+        private static string defaultLoggingPath = CommonClass.DataFilePath;
+        private static string debugFile = "\\debug_log.log";
+        private static string errorFile = "\\err_log.log";
+        private static StreamWriter debugWriter;
         private static string CRLF = "\r\n";
         public static void LogError(Exception ex)
         {
@@ -67,7 +76,7 @@ namespace BenMAP
 
 
 
-                logPath = AppDomain.CurrentDomain.BaseDirectory + "\\err_log.log";
+                logPath = AppDomain.CurrentDomain.BaseDirectory + errorFile;
                 logPath = logPath.Replace("\\\\", "\\");
                 return logPath;
             }
@@ -116,6 +125,32 @@ namespace BenMAP
                 Debug.WriteLine(errMsg);
                 Console.WriteLine(errMsg);
             }
+        }
+        public static void Log(Level level,string path, Exception e,  string msg)
+        {
+            try
+            {
+                if (path == null)
+                    path = defaultLoggingPath;
+
+                debugWriter = new StreamWriter(path+debugFile, true);
+                if (level == Level.DEBUG)
+                {
+                    Debug.WriteLine(msg);
+                    debugWriter.WriteLine(debuggingOut);
+                    debugWriter.Flush();
+                    debugWriter.Close();
+                }
+                if (level == Level.Error)
+                {
+                    LogError(e, msg);
+                }
+            }
+            catch (Exception ex)
+            {
+                LogError(ex);
+            }
+
         }
     }
 }

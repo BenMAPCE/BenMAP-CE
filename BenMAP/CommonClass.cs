@@ -48,6 +48,10 @@ namespace BenMAP
             }
             
         }
+        // values used to specify a grid cell to print debugging output for
+        public static int debugRow = 312;
+        public static int debugCol = 97;
+        public static bool debugGridCell=false;
         public static void DeleteShapeFileName(string FileName)
         {
             if (!File.Exists(FileName)) return;
@@ -605,11 +609,16 @@ namespace BenMAP
                 }
             }
         }
-        //debug variable
-        public static Boolean getDebugValue()
+        public static bool Debug = false;
+
+       public static Boolean getDebugValue()
         {
-            return false;
-        }
+            #if DEBUG
+                return true;
+            #endif
+            return Debug;
+       }
+    
         public static GridRelationship getRelationshipFromBenMAPGrid(int big, int small)
         {
             try
@@ -1215,7 +1224,7 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
         }
 
 
-        public static bool Debug=false;
+        
         public static Dictionary<String, Dictionary<int, double>> otherXrefCache = new Dictionary<string, Dictionary<int, double>>();
         public static List<GridRelationshipAttributePercentage> IntersectionPercentagePopulation(IFeatureSet self, IFeatureSet other, FieldJoinType joinType, String popRasterLoc)
         {

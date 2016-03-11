@@ -35,15 +35,18 @@ namespace BenMAP.Tools
 
                 object result = mi.Invoke(tmp, lstParam.ToArray());
                 // debug code
-                if (CommonClass.getDebugValue())
+                if (CommonClass.getDebugValue() && CommonClass.debugGridCell)
                 {
-                    file.Write("Baseline,");
+                    Logger.debuggingOut.Append("Baseline,");
+                    //file.Write("Baseline,");
                     foreach (object i in lstParam)
                     {
                         file.Write(i.ToString() + ",");
+                        Logger.debuggingOut.Append(i.ToString() + ",");
                     }
                     //System.Console.Write(",");
-                    file.Write(result+"\n");
+                    //file.Write(result+"\n");
+                    Logger.debuggingOut.Append(result + "\n");
                 }
                 return result;
 
@@ -196,15 +199,17 @@ namespace BenMAP.Tools
                 mi = type.GetMethod("myMethod");
 
                 object result = mi.Invoke(tmp, lstParam.ToArray());
-                if (CommonClass.getDebugValue())
+                if (CommonClass.getDebugValue()&& CommonClass.debugGridCell)
                 {
-                    file.Write("PointEstimateValue,");
+                   // file.Write("PointEstimateValue,");
+                    Logger.debuggingOut.Append("PointEstimateValue");
                     foreach (object i in lstParam)
                     {
-                        file.Write(i.ToString() + ",");
+                        Logger.debuggingOut.Append(i.ToString() + ",");
+                        //file.Write(i.ToString() + ",");
                     }
-                   
-                    file.Write(result+"\n");
+                    Logger.debuggingOut.Append(result+"\n");
+                    //file.Write(result+"\n");
                 }
                 
                 return result;

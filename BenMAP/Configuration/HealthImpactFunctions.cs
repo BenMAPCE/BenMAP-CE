@@ -1409,7 +1409,7 @@ namespace BenMAP
                 {
                     afterOutput();
                 }
-
+                Logger.Log(Logger.Level.DEBUG, null, null, "Debugging Grid Cell Row " + CommonClass.debugRow + ", Grid Cell Column " + CommonClass.debugCol);
             }
             catch (Exception ex)
             {
