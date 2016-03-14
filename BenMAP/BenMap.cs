@@ -11976,100 +11976,101 @@ namespace BenMAP
                                 }
                             }
 
-                            //MapPolygonLayer CRResultMapPolyLayer = (MapPolygonLayer)mainMap.Layers.Add(shapeFileName);
-                            MapPolygonLayer CRResultMapPolyLayer = (MapPolygonLayer)HIFResultsMapGroup.Layers.Add(shapeFileName);
+                            // get beta variation count (such as number of seasons) and create layer for each
+                            int bvCount = crSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Variables.First().PollBetas.Count();
 
-                            DataTable dt = CRResultMapPolyLayer.DataSet.DataTable;
-                            //string author = lstCRSelectFunctionCalculateValue.First().CRSelectFunction.BenMAPHealthImpactFunction.Author;
-                            //if (author.IndexOf(" ") != -1)
-                            //{
-                            //    author = author.Substring(0, author.IndexOf(" "));
-                            //}
-                            //CRResultMapPolyLayer.LegendText = author;
-                            //CRResultMapPolyLayer.Name = author;
-                            int j = 0;
-                            int iCol = 0;
-                            int iRow = 0;
-                            List<string> lstRemoveName = new List<string>();
-                            while (j < dt.Columns.Count)
+                            for (int ind = 0; ind < bvCount; ind++)
                             {
-                                if (dt.Columns[j].ColumnName.ToLower() == "col") iCol = j;
-                                if (dt.Columns[j].ColumnName.ToLower() == "row") iRow = j;
+                                MapPolygonLayer CRResultMapPolyLayer = (MapPolygonLayer)HIFResultsMapGroup.Layers.Add(shapeFileName);
 
-                                j++;
-                            }
-                            j = 0;
-
-                            while (j < dt.Columns.Count)
-                            {
-                                if (dt.Columns[j].ColumnName.ToLower() == "col" || dt.Columns[j].ColumnName.ToLower() == "row")
-                                { }
-                                else
-                                    lstRemoveName.Add(dt.Columns[j].ColumnName);
-
-                                j++;
-                            }
-                            foreach (string s in lstRemoveName)
-                            {
-                                dt.Columns.Remove(s);
-                            }
-                            dt.Columns.Add("Incidence", typeof(double));
-                            j = 0;
-                            while (j < dt.Columns.Count)
-                            {
-                                if (dt.Columns[j].ColumnName.ToLower() == "col") iCol = j;
-                                if (dt.Columns[j].ColumnName.ToLower() == "row") iRow = j;
-
-                                j++;
-                            }
-                            j = 0;
-                            Dictionary<string, double> dicAll = new Dictionary<string, double>();
-                            foreach (CRCalculateValue crcv in crSelectFunctionCalculateValue.CRCalculateValues)
-                            {
-                                if (!dicAll.ContainsKey(crcv.Col + "," + crcv.Row))
-                                    dicAll.Add(crcv.Col + "," + crcv.Row, crcv.PointEstimate);
-                            }
-                            foreach (DataRow dr in dt.Rows)
-                            {
-                                try
+                                DataTable dt = CRResultMapPolyLayer.DataSet.DataTable;
+                                int j = 0;
+                                int iCol = 0;
+                                int iRow = 0;
+                                List<string> lstRemoveName = new List<string>();
+                                while (j < dt.Columns.Count)
                                 {
-                                    if (dicAll.ContainsKey(dr[iCol] + "," + dr[iRow]))
-                                        dr["Incidence"] = dicAll[dr[iCol] + "," + dr[iRow]];
+                                    if (dt.Columns[j].ColumnName.ToLower() == "col") iCol = j;
+                                    if (dt.Columns[j].ColumnName.ToLower() == "row") iRow = j;
+
+                                    j++;
+                                }
+                                j = 0;
+
+                                while (j < dt.Columns.Count)
+                                {
+                                    if (dt.Columns[j].ColumnName.ToLower() == "col" || dt.Columns[j].ColumnName.ToLower() == "row")
+                                    { }
                                     else
-                                        dr["Incidence"] = 0;
+                                        lstRemoveName.Add(dt.Columns[j].ColumnName);
+
+                                    j++;
                                 }
-                                catch (Exception ex)
+                                foreach (string s in lstRemoveName)
                                 {
+                                    dt.Columns.Remove(s);
                                 }
+                                // Set layer name with beta name to differentiate 
+                                string layerName = "Incidence" + " (" + crSelectFunctionCalculateValue.CRCalculateValues[ind].BetaName + ")";
+                                dt.Columns.Add(layerName, typeof(double));
+                                j = 0;
+                                while (j < dt.Columns.Count)
+                                {
+                                    if (dt.Columns[j].ColumnName.ToLower() == "col") iCol = j;
+                                    if (dt.Columns[j].ColumnName.ToLower() == "row") iRow = j;
+
+                                    j++;
+                                }
+                                j = 0;
+                                CRCalculateValue crcv;
+                                Dictionary<string, double> dicAll = new Dictionary<string, double>();
+                                // Load values into dictionary according to beta variation offset 
+                                // Ex. if current ind is 0 (first season) then first season values will be at index 0, 3, 6 & so on
+                                for (j = ind; j < crSelectFunctionCalculateValue.CRCalculateValues.Count(); j += bvCount)
+                                {
+                                    crcv = crSelectFunctionCalculateValue.CRCalculateValues[j];
+                                    if (!dicAll.ContainsKey(crcv.Col + "," + crcv.Row))
+                                        dicAll.Add(crcv.Col + "," + crcv.Row, crcv.PointEstimate);
+                                }
+
+                                foreach (DataRow dr in dt.Rows)
+                                {
+                                    try
+                                    {
+                                        if (dicAll.ContainsKey(dr[iCol] + "," + dr[iRow]))
+                                            dr[layerName] = dicAll[dr[iCol] + "," + dr[iRow]];
+                                        else
+                                            dr[layerName] = 0; 
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                    }
+                                }
+                                if (File.Exists(CommonClass.DataFilePath + @"\Tmp\CRTemp.shp")) CommonClass.DeleteShapeFileName(CommonClass.DataFilePath + @"\Tmp\CRTemp.shp");
+                                CRResultMapPolyLayer.DataSet.SaveAs(CommonClass.DataFilePath + @"\Tmp\CRTemp.shp", true);
+
+                                MapPolygonLayer polLayer = CRResultMapPolyLayer;
+                                polLayer.LegendText = author;
+                                polLayer.Name = polLayer.LegendText;
+                                string strValueField = polLayer.DataSet.DataTable.Columns[polLayer.DataSet.DataTable.Columns.Count - 1].ColumnName;
+                                _columnName = strValueField;
+                                polLayer.Symbology = CreateResultPolyScheme(ref polLayer, 6, "R"); //-MCB added
+
+                                double dMinValue = 0.0;
+                                double dMaxValue = 0.0;
+                                dMinValue = crSelectFunctionCalculateValue.CRCalculateValues.Min(a => a.PointEstimate);
+                                dMaxValue = crSelectFunctionCalculateValue.CRCalculateValues.Max(a => a.PointEstimate);
+
+                                _dMinValue = dMinValue;
+                                _dMaxValue = dMaxValue;
+                                _CurrentIMapLayer = polLayer;
+                                string pollutantUnit = string.Empty;
+                                _columnName = strValueField;
+                                _CurrentMapTitle = CommonClass.MainSetup.SetupName + " Setup: " + "Health Impacts- " + CRResultMapPolyLayer.LegendText;  //-MCB draft until better title
+
+                                RenderMainMap(true, "H");   //"R"
+                                addRegionLayerGroupToMainMap();
                             }
-                            if (File.Exists(CommonClass.DataFilePath + @"\Tmp\CRTemp.shp")) CommonClass.DeleteShapeFileName(CommonClass.DataFilePath + @"\Tmp\CRTemp.shp");
-                            CRResultMapPolyLayer.DataSet.SaveAs(CommonClass.DataFilePath + @"\Tmp\CRTemp.shp", true);
-                            //mainMap.Layers.Clear();
-
-                            //CRResultMapPolyLayer = (MapPolygonLayer)mainMap.Layers.Add(CommonClass.DataFilePath + @"\Tmp\CRTemp.shp");
-                            
-                            MapPolygonLayer polLayer = CRResultMapPolyLayer;
-                            polLayer.LegendText = author;
-                            polLayer.Name = polLayer.LegendText;
-                            string strValueField = polLayer.DataSet.DataTable.Columns[polLayer.DataSet.DataTable.Columns.Count - 1].ColumnName;
-                            _columnName = strValueField;
-                            polLayer.Symbology = CreateResultPolyScheme(ref polLayer, 6, "R"); //-MCB added
-
-                            double dMinValue = 0.0;
-                            double dMaxValue = 0.0;
-                            dMinValue = crSelectFunctionCalculateValue.CRCalculateValues.Min(a => a.PointEstimate);
-                            dMaxValue = crSelectFunctionCalculateValue.CRCalculateValues.Max(a => a.PointEstimate);
-
-                            _dMinValue = dMinValue;
-                            _dMaxValue = dMaxValue;
-                            //_currentLayerIndex = mainMap.Layers.Count - 1;
-                            _CurrentIMapLayer = polLayer;
-                            string pollutantUnit = string.Empty;
-                            _columnName = strValueField;
-                            _CurrentMapTitle = CommonClass.MainSetup.SetupName + " Setup: " +  "Health Impacts- " + CRResultMapPolyLayer.LegendText ;  //-MCB draft until better title
-                            
-                            RenderMainMap(true, "H");   //"R"
-                            addRegionLayerGroupToMainMap();
                         }
                     }
                     i++;
