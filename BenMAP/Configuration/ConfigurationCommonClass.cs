@@ -6188,9 +6188,9 @@ namespace BenMAP.Configuration
         {
             Dictionary<int, double> dicDeltaQValues = new Dictionary<int, double>();
 
-            foreach (BenMAPPollutant pollutant in CommonClass.LstPollutant)
+            foreach (BaseControlGroup bcg in CommonClass.LstBaseControlGroup)
             {
-                dicDeltaQValues.Add(pollutant.PollutantID, 0);
+                dicDeltaQValues.Add(bcg.Pollutant.PollutantID, 0);
             }
 
             return dicDeltaQValues;
@@ -6217,7 +6217,7 @@ namespace BenMAP.Configuration
 
             foreach (CRFVariable variable in hif.Variables)
             {
-                pollutantID = variable.Pollutant1ID;
+                pollutantID = CommonClass.dicPollutantIDVariableID.FirstOrDefault(x => x.Value == variable.VariableID).Key;
                 beta = variable.PollBetas[betaIndex].Beta;
                 dicBetaValues.Add(pollutantID, beta);
             }
@@ -6234,18 +6234,20 @@ namespace BenMAP.Configuration
             {
                 string varName = String.Empty;
 
+                //get variableid from pollutantid - variableid dictionary
+                int variableID = CommonClass.dicPollutantIDVariableID[kvp.Key];
+
                 //find matching variable name for pollutant id in health impact function variable list
                 foreach (CRFVariable variable in hif.Variables)
-                {
-                    //do pollutant ids match?
-                    if (variable.Pollutant1ID == kvp.Key)
+                {              
+                    //do variable ids match?
+                    if (variable.VariableID == variableID)
                     {
                         varName = variable.VariableName;
                         dicVariableName.Add(varName, kvp.Value);
                         break;
                     }
                 }
-
 
             }
 
@@ -6259,8 +6261,10 @@ namespace BenMAP.Configuration
             foreach (CRFVariable v in hif.Variables)
             {
                 if (String.Equals(v.PollutantName, pollName ,StringComparison.OrdinalIgnoreCase))
-                {
-                    ID = v.Pollutant1ID;
+                {                    
+                    int pollutantID = CommonClass.dicPollutantIDVariableID.FirstOrDefault(x => x.Value == v.VariableID).Key;
+
+                    ID = pollutantID;
                     break;
                 }
             }
@@ -6272,9 +6276,11 @@ namespace BenMAP.Configuration
         {
             string name = string.Empty;
 
+            int variableID = CommonClass.dicPollutantIDVariableID[pollID];
+
             foreach (CRFVariable v in hif.Variables)
             {
-                if (v.Pollutant1ID == pollID)
+                if (v.VariableID == variableID)
                 {
                     name = v.PollutantName;
                     break;

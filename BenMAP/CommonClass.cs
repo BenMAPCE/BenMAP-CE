@@ -522,6 +522,9 @@ namespace BenMAP
             fs.Dispose();
         }
 
+        //dicPollutantIDVariableID maps the pollutantID (key) with the variableid (value); necessary for multipollutant interaction surfaces
+        public static Dictionary<int, int> dicPollutantIDVariableID; 
+
         public static BenMAPGrid GBenMAPGrid; public static List<BaseControlGroup> LstBaseControlGroup; public static double CRThreshold = 0; public static int CRLatinHypercubePoints = 20; public static bool CRRunInPointMode = false; public static int CRSeeds = 1; public static BenMAPPopulation BenMAPPopulation;
         public static List<GridRelationship> LstCurrentGridRelationship; public static string CurrentStat;
         public static List<string> LstAsynchronizationStates;
