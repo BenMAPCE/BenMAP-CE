@@ -12,7 +12,7 @@ namespace BenMAP.Tools
     class CalculateFunctionString
     {
         private string _CharpCode = "";
-        public object BaseLineEval(string crid, string cCharpCode, double a, double b, double c, double beta, double deltaq, double q0, double q1, double incidence, double pop, double prevalence, Dictionary<string, double> dicSetupVariables, System.IO.StreamWriter file)
+        public object BaseLineEval(string crid, string cCharpCode, double a, double b, double c, double beta, double deltaq, double q0, double q1, double incidence, double pop, double prevalence, Dictionary<string, double> dicSetupVariables)
         {
             try
             {
@@ -38,14 +38,14 @@ namespace BenMAP.Tools
                 if (CommonClass.getDebugValue() && CommonClass.debugGridCell)
                 {
                     Logger.debuggingOut.Append("Baseline,");
-                    //file.Write("Baseline,");
+                    
                     foreach (object i in lstParam)
                     {
-                        file.Write(i.ToString() + ",");
+                        
                         Logger.debuggingOut.Append(i.ToString() + ",");
                     }
                     //System.Console.Write(",");
-                    //file.Write(result+"\n");
+                    
                     Logger.debuggingOut.Append(result + "\n");
                 }
                 return result;
@@ -175,7 +175,7 @@ namespace BenMAP.Tools
             {
             }
         }
-        public object PointEstimateEval(string crID, string cCharpCode, double a, double b, double c, double beta, double deltaq, double q0, double q1, double incidence, double pop, double prevalence, Dictionary<string, double> dicSetupVariables, System.IO.StreamWriter file)
+        public object PointEstimateEval(string crID, string cCharpCode, double a, double b, double c, double beta, double deltaq, double q0, double q1, double incidence, double pop, double prevalence, Dictionary<string, double> dicSetupVariables)
         {
             try
             {
@@ -201,15 +201,15 @@ namespace BenMAP.Tools
                 object result = mi.Invoke(tmp, lstParam.ToArray());
                 if (CommonClass.getDebugValue()&& CommonClass.debugGridCell)
                 {
-                   // file.Write("PointEstimateValue,");
+                   
                     Logger.debuggingOut.Append("PointEstimateValue,");
                     foreach (object i in lstParam)
                     {
                         Logger.debuggingOut.Append(i.ToString() + ",");
-                        //file.Write(i.ToString() + ",");
+                        
                     }
                     Logger.debuggingOut.Append(result+"\n");
-                    //file.Write(result+"\n");
+                    
                 }
                 
                 return result;

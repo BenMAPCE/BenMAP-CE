@@ -114,9 +114,8 @@ namespace BenMAP
                 dicEstimate.Add(crid.ToString(), functionText);
                 CalculateFunctionString calculateFunctionString = new CalculateFunctionString();
                 calculateFunctionString.CreateAllPointEstimateEvalObjects(dicEstimate, dicEstimateVariables);
-                //debug code
-                System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:\Users\Public\output.txt");
-                object result = PointEstimateEval.PointEstimateEval(crid.ToString(), functionText, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, dicVariable,file);
+                
+                object result = PointEstimateEval.PointEstimateEval(crid.ToString(), functionText, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, dicVariable);
                 if (Tools.CalculateFunctionString.dicPointEstimateMethodInfo != null) Tools.CalculateFunctionString.dicPointEstimateMethodInfo.Clear();
                 if (!(result is double) || double.IsNaN(Convert.ToDouble(result)) || Convert.ToDouble(result) == -999999999)
                 {
@@ -168,7 +167,7 @@ namespace BenMAP
                 dicEstimate.Add(crid.ToString(), functionText);
                 calculateFunctionString = new CalculateFunctionString();
                 calculateFunctionString.CreateAllPointEstimateEvalObjects(dicEstimate, dicEstimateVariables);
-                result = PointEstimateEval.PointEstimateEval(crid.ToString(), functionText, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, dicVariable,file);
+                result = PointEstimateEval.PointEstimateEval(crid.ToString(), functionText, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, dicVariable);
                 if (Tools.CalculateFunctionString.dicPointEstimateMethodInfo != null) Tools.CalculateFunctionString.dicPointEstimateMethodInfo.Clear();
                 if (!(result is double) || double.IsNaN(Convert.ToDouble(result)) || Convert.ToDouble(result) == -999999999)
                 {
