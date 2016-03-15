@@ -6294,9 +6294,11 @@ namespace BenMAP.Configuration
         {
             CRFVariable crfVariable = null;
 
+            int variableID = CommonClass.dicPollutantIDVariableID[pollutantID];
+
             foreach (CRFVariable v in hif.Variables)
             {
-                if (v.Pollutant1ID == pollutantID)
+                if (v.VariableID == variableID)
                 {
                     crfVariable = v;
                     break;
