@@ -648,7 +648,7 @@
             this.tabStep4.Padding = new System.Windows.Forms.Padding(2);
             this.tabStep4.Size = new System.Drawing.Size(404, 421);
             this.tabStep4.TabIndex = 3;
-            this.tabStep4.Text = "PM Changes";
+            this.tabStep4.Text = "PM changes";
             this.tabStep4.UseVisualStyleBackColor = true;
             // 
             // txtPM_Val_5
@@ -849,7 +849,7 @@
             this.tabPage1.Padding = new System.Windows.Forms.Padding(2);
             this.tabPage1.Size = new System.Drawing.Size(404, 421);
             this.tabPage1.TabIndex = 4;
-            this.tabPage1.Text = "Ages Affected";
+            this.tabPage1.Text = "Ages affected";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
             // txtSUB_POP_ADJUSTMENT_5
@@ -1159,7 +1159,7 @@
             this.tabStep6.Padding = new System.Windows.Forms.Padding(2);
             this.tabStep6.Size = new System.Drawing.Size(404, 421);
             this.tabStep6.TabIndex = 5;
-            this.tabStep6.Text = "Lag Type";
+            this.tabStep6.Text = "Lag type";
             this.tabStep6.UseVisualStyleBackColor = true;
             // 
             // gbLagFunction
@@ -1462,7 +1462,6 @@
             this.label39.Size = new System.Drawing.Size(100, 19);
             this.label39.TabIndex = 5;
             this.label39.Text = "8) Run model";
-            this.label39.Click += new System.EventHandler(this.label39_Click);
             // 
             // btnOutput
             // 
