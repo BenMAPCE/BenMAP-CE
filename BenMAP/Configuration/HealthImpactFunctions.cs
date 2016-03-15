@@ -1886,8 +1886,10 @@ namespace BenMAP
                             BaseControlGroup bcg1 = CommonClass.LstBaseControlGroup.Where(bcg => bcg.Pollutant.PollutantID == pollutantID1).First();
                             BaseControlGroup bcg2 = CommonClass.LstBaseControlGroup.Where(bcg => bcg.Pollutant.PollutantID == pollutantID2).First();
 
+                            //copy bcg1
                             BaseControlGroup bcgInteraction = ObjectCopier.Clone<BaseControlGroup>(bcg1);
-
+                            
+                            //modify for interaction pollutant
                             if (bcgInteraction.Pollutant.Metrics != null)
                             {
                                 foreach (Metric m in bcgInteraction.Pollutant.Metrics)
@@ -1923,6 +1925,11 @@ namespace BenMAP
                                 }
                             }
 
+                            //calculate interaction values
+                            CalculateInteractionValues(bcgInteraction.Base, bcg1.Base, bcg2.Base);
+                            CalculateInteractionValues(bcgInteraction.Control, bcg1.Control, bcg2.Control);
+
+
                             //add to pollutantid-variableid  map
                             CommonClass.dicPollutantIDVariableID.Add(interactionPollutantID, variable.VariableID);
 
@@ -1951,6 +1958,58 @@ namespace BenMAP
 
 
 
+            }
+
+        }
+
+        private void CalculateInteractionValues(BenMAPLine bmlInteraction, BenMAPLine bmlOne, BenMAPLine bmlTwo)
+        {
+            //calculate interaction values
+            //model attributes
+            for(int indexAttribute = 0; indexAttribute < bmlInteraction.ModelAttributes.Count; indexAttribute++)
+            {
+                ModelAttribute ma = bmlInteraction.ModelAttributes[indexAttribute];
+                ma.Values.Clear();
+                //loop over values, multiplying to get interaction value
+                for(int indexValue = 0; indexValue < bmlOne.ModelAttributes[indexAttribute].Values.Count; indexValue++)
+                {
+                    float valueOne = bmlOne.ModelAttributes[indexAttribute].Values[indexValue];
+                    float valueTwo = bmlTwo.ModelAttributes[indexAttribute].Values[indexValue];
+
+                    float valueInteraction = float.MinValue;
+                    //float.MinValue is used to indicate a missing value
+                    if ((valueOne != float.MinValue) && (valueTwo != float.MinValue))
+                    {
+                        valueInteraction = valueOne * valueTwo;
+                    }
+
+                    ma.Values.Add(valueInteraction);                    
+                }
+            }
+
+            //model result attributes
+            for (int indexAttribute = 0; indexAttribute < bmlInteraction.ModelResultAttributes.Count; indexAttribute++)
+            {
+                ModelResultAttribute mra = bmlInteraction.ModelResultAttributes[indexAttribute];
+                mra.Values.Clear();
+                //loop over values, multiplying to get interaction value            
+                //ModelResultAttributes values are dictionary of metricKey, value    
+                foreach (KeyValuePair<string, float> kvp in bmlOne.ModelResultAttributes[indexAttribute].Values) //values are dictioanry of metricKey, value
+                {
+                    string metricKey = kvp.Key;                    
+                    
+                    float valueOne = kvp.Value;
+                    float valueTwo = bmlTwo.ModelResultAttributes[indexAttribute].Values[metricKey];
+
+                    float valueInteraction = float.MinValue;
+                    //float.MinValue is used to indicate a missing value
+                    if ((valueOne != float.MinValue) && (valueTwo != float.MinValue))
+                    {
+                        valueInteraction = valueOne * valueTwo;
+                    }
+
+                    mra.Values.Add(metricKey, valueInteraction);
+                }
             }
 
         }
