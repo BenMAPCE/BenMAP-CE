@@ -233,9 +233,9 @@
             this.label9.ForeColor = System.Drawing.SystemColors.Desktop;
             this.label9.Location = new System.Drawing.Point(24, 201);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(359, 23);
+            this.label9.Size = new System.Drawing.Size(357, 23);
             this.label9.TabIndex = 3;
-            this.label9.Text = "Note that this version only includes U.S. Data.";
+            this.label9.Text = "Note that this version only includes U.S. data.";
             // 
             // label6
             // 
@@ -302,9 +302,9 @@
             this.label8.Location = new System.Drawing.Point(4, 16);
             this.label8.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(200, 19);
+            this.label8.Size = new System.Drawing.Size(196, 19);
             this.label8.TabIndex = 5;
-            this.label8.Text = "Step1: Enter Scenario Name";
+            this.label8.Text = "Step1: Enter scenario name";
             // 
             // label3
             // 
@@ -313,9 +313,9 @@
             this.label3.Location = new System.Drawing.Point(27, 105);
             this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(68, 19);
+            this.label3.Size = new System.Drawing.Size(69, 19);
             this.label3.TabIndex = 4;
-            this.label3.Text = "End Year";
+            this.label3.Text = "End year";
             // 
             // nudEndYear
             // 
@@ -348,9 +348,9 @@
             this.label2.Location = new System.Drawing.Point(23, 78);
             this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(76, 19);
+            this.label2.Size = new System.Drawing.Size(77, 19);
             this.label2.TabIndex = 2;
-            this.label2.Text = "Start Year";
+            this.label2.Text = "Start year";
             // 
             // nudStartYear
             // 
@@ -464,7 +464,7 @@
             this.gbPMTresholdType.Size = new System.Drawing.Size(187, 76);
             this.gbPMTresholdType.TabIndex = 7;
             this.gbPMTresholdType.TabStop = false;
-            this.gbPMTresholdType.Text = "PM threshold for Beta?";
+            this.gbPMTresholdType.Text = "PM threshold for beta?";
             // 
             // radioButton5
             // 
@@ -509,9 +509,9 @@
             this.lblUserSuppliedBeta.Location = new System.Drawing.Point(9, 217);
             this.lblUserSuppliedBeta.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblUserSuppliedBeta.Name = "lblUserSuppliedBeta";
-            this.lblUserSuppliedBeta.Size = new System.Drawing.Size(297, 18);
+            this.lblUserSuppliedBeta.Size = new System.Drawing.Size(295, 18);
             this.lblUserSuppliedBeta.TabIndex = 5;
-            this.lblUserSuppliedBeta.Text = "Enter User-supplied Beta (from -0.017 to 0.031)";
+            this.lblUserSuppliedBeta.Text = "Enter user-supplied beta (from -0.017 to 0.031)";
             // 
             // lblStudyBeta
             // 
@@ -522,7 +522,7 @@
             this.lblStudyBeta.Name = "lblStudyBeta";
             this.lblStudyBeta.Size = new System.Drawing.Size(173, 18);
             this.lblStudyBeta.TabIndex = 4;
-            this.lblStudyBeta.Text = "Study to use for Beta value";
+            this.lblStudyBeta.Text = "Study to use for beta value";
             // 
             // cbStudy
             // 
@@ -557,7 +557,7 @@
             this.radioButton3.Size = new System.Drawing.Size(168, 22);
             this.radioButton3.TabIndex = 1;
             this.radioButton3.TabStop = true;
-            this.radioButton3.Text = "Input Beta on this form";
+            this.radioButton3.Text = "Input beta on this form";
             this.radioButton3.UseVisualStyleBackColor = true;
             this.radioButton3.CheckedChanged += new System.EventHandler(this.radioButton3_CheckedChanged);
             // 
@@ -568,10 +568,10 @@
             this.radioButton1.Location = new System.Drawing.Point(16, 18);
             this.radioButton1.Margin = new System.Windows.Forms.Padding(2);
             this.radioButton1.Name = "radioButton1";
-            this.radioButton1.Size = new System.Drawing.Size(125, 22);
+            this.radioButton1.Size = new System.Drawing.Size(124, 22);
             this.radioButton1.TabIndex = 0;
             this.radioButton1.TabStop = true;
-            this.radioButton1.Text = "Beta from Study";
+            this.radioButton1.Text = "Beta from study";
             this.radioButton1.UseVisualStyleBackColor = true;
             this.radioButton1.CheckedChanged += new System.EventHandler(this.radioButton1_CheckedChanged);
             // 
@@ -584,7 +584,7 @@
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(361, 18);
             this.label7.TabIndex = 1;
-            this.label7.Text = "Step 3: Choose dose-response technique and Beta source";
+            this.label7.Text = "Step 3: Choose dose-response technique and beta source";
             // 
             // gbDoseResponse
             // 
@@ -598,7 +598,7 @@
             this.gbDoseResponse.Size = new System.Drawing.Size(203, 81);
             this.gbDoseResponse.TabIndex = 0;
             this.gbDoseResponse.TabStop = false;
-            this.gbDoseResponse.Text = "Dose-Response Technique";
+            this.gbDoseResponse.Text = "Dose-response technique";
             // 
             // rbDisaggregated
             // 
@@ -681,7 +681,7 @@
             this.gbPMTrajectory.Size = new System.Drawing.Size(150, 81);
             this.gbPMTrajectory.TabIndex = 12;
             this.gbPMTrajectory.TabStop = false;
-            this.gbPMTrajectory.Text = "PM Trajectory";
+            this.gbPMTrajectory.Text = "PM trajectory";
             // 
             // radioButton7
             // 
@@ -904,9 +904,9 @@
             this.label30.Location = new System.Drawing.Point(258, 139);
             this.label30.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label30.Name = "label30";
-            this.label30.Size = new System.Drawing.Size(98, 14);
+            this.label30.Size = new System.Drawing.Size(96, 14);
             this.label30.TabIndex = 23;
-            this.label30.Text = "Adjustment Factor";
+            this.label30.Text = "Adjustment factor";
             // 
             // txtSUB_POP_END_5
             // 
@@ -1082,9 +1082,9 @@
             this.label22.Location = new System.Drawing.Point(16, 106);
             this.label22.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label22.Name = "label22";
-            this.label22.Size = new System.Drawing.Size(229, 19);
+            this.label22.Size = new System.Drawing.Size(223, 19);
             this.label22.TabIndex = 5;
-            this.label22.Text = "Age-Specific Adjustment Factors";
+            this.label22.Text = "Age-specific adjustment factors";
             // 
             // txtOldest
             // 
@@ -1173,7 +1173,7 @@
             this.gbLagFunction.Size = new System.Drawing.Size(150, 100);
             this.gbLagFunction.TabIndex = 13;
             this.gbLagFunction.TabStop = false;
-            this.gbLagFunction.Text = "Lag Function Type";
+            this.gbLagFunction.Text = "Lag function type";
             // 
             // radioButton13
             // 
@@ -1336,7 +1336,7 @@
             this.gbLagType.Size = new System.Drawing.Size(173, 81);
             this.gbLagType.TabIndex = 1;
             this.gbLagType.TabStop = false;
-            this.gbLagType.Text = "Lag Type";
+            this.gbLagType.Text = "Lag type";
             // 
             // radioButton11
             // 
@@ -1370,9 +1370,9 @@
             this.label31.Location = new System.Drawing.Point(4, 11);
             this.label31.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label31.Name = "label31";
-            this.label31.Size = new System.Drawing.Size(173, 19);
+            this.label31.Size = new System.Drawing.Size(171, 19);
             this.label31.TabIndex = 0;
-            this.label31.Text = "Step 6: Specify Lag Type";
+            this.label31.Text = "Step 6: Specify Lag type";
             // 
             // tabStep7
             // 
@@ -1509,7 +1509,7 @@
             this.lblRunProgress.Name = "lblRunProgress";
             this.lblRunProgress.Size = new System.Drawing.Size(98, 19);
             this.lblRunProgress.TabIndex = 1;
-            this.lblRunProgress.Text = "Run Progress";
+            this.lblRunProgress.Text = "Run progress";
             this.lblRunProgress.Visible = false;
             // 
             // progressBar1

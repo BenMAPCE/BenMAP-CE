@@ -69,7 +69,7 @@ namespace PopSim
             string str = settings.ConnectionString;
             //if (!str.Contains(":"))
             //    str = str.Substring(0, str.IndexOf("initial catalog=")) + "initial catalog=" + Application.StartupPath + @"\" + str.Substring(str.IndexOf("initial catalog=") + 16);
-            str = str.Replace("##USERDATA##", Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData));
+            str = str.Replace("##USERDATA##", Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData));
 
             FbConnection connection = new FirebirdSql.Data.FirebirdClient.FbConnection(str);
 
