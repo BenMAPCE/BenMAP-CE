@@ -69,7 +69,7 @@ namespace PopSim
             string str = settings.ConnectionString;
             //if (!str.Contains(":"))
             //    str = str.Substring(0, str.IndexOf("initial catalog=")) + "initial catalog=" + Application.StartupPath + @"\" + str.Substring(str.IndexOf("initial catalog=") + 16);
-            str = str.Replace("##USERDATA##", Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData));
+            str = str.Replace("##USERDATA##", Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData));
 
             FbConnection connection = new FirebirdSql.Data.FirebirdClient.FbConnection(str);
 
@@ -80,18 +80,18 @@ namespace PopSim
         public void runPopSim()
         {
             string[] CurrentStatus = new string[1];
-            Debug.Print("run started");
+            Debug.Print("Run started");
             setupInternalVariables();
             
             // STEP 1: DELETE RECORDS
             delete_Records();
             //psE.Result
-            CurrentStatus[0] = "Calculating Annual PM Values";
+            CurrentStatus[0] = "Calculating annual PM values";
             psWorker.ReportProgress(10, CurrentStatus);
             
             // STEP 2: CALCULATE ANNUAL PM VALUES
             run_Annual_PM_Values();
-            CurrentStatus[0] = "Calculating Lag";
+            CurrentStatus[0] = "Calculating lag";
             psWorker.ReportProgress(20, CurrentStatus);
 
             //STEP 3: CALCULATE LAG
@@ -120,7 +120,7 @@ namespace PopSim
 
             End If
             */
-            CurrentStatus[0] = "Calculating Threshold";
+            CurrentStatus[0] = "Calculating threshold";
             psWorker.ReportProgress(30,CurrentStatus);
             
             //STEP 4: CALCULATE THRESHOLD
@@ -128,12 +128,12 @@ namespace PopSim
             if (InputData.getPM_Choice() == 1) { 
                 run_threshold_calcs();
             }
-            CurrentStatus[0] = "Calculating Age-Specific Adjustment Factors";
+            CurrentStatus[0] = "Calculating age-apecific adjustment factors";
             psWorker.ReportProgress(40, CurrentStatus);
 
             //STEP 5: CALCULATE AGE-SPECIFIC ADJUSTMENT FACTORS
             run_age_specific_adjustment_factors();
-            CurrentStatus[0] = "Calculating Illness Factors";
+            CurrentStatus[0] = "Calculating illness factors";
             psWorker.ReportProgress(50, CurrentStatus);
 
             //STEP 6: RUN ILLNESS CALCULATIONS
@@ -241,12 +241,12 @@ namespace PopSim
                 Illness_Type_Specific = "All Other Causes-3";
                 run_illness_calcs();
             } // endif
-            CurrentStatus[0] = "Calculating Death Probabilities";
+            CurrentStatus[0] = "Calculating death probabilities";
             psWorker.ReportProgress(60, CurrentStatus);
 
             // STEP 7: CALCULATE THE PROBABILITY OF DEATH
             run_calculate_pdeath();
-            CurrentStatus[0] = "Calculating Regulatory Population, Number of Deaths, and Life Expectancy";
+            CurrentStatus[0] = "Calculating regulatory population, deaths, and life expectancy";
             psWorker.ReportProgress(70,CurrentStatus);
 
             //STEP 8: CALCULATE REGULATORY POPULATION, NUMBER OF DEATHS, AND LIFE EXPECTANCY
@@ -274,12 +274,12 @@ namespace PopSim
                 // next routine has minor numerical problems and needs review
                 run_calculate_life_expectancy();
             } // Next GenderCount
-            CurrentStatus[0] = "Generating Input Summary";
+            CurrentStatus[0] = "Generating input summary";
             psWorker.ReportProgress(90, CurrentStatus);
             //STEP 9: GENERATE SUMMARY OF INPUTS
             run_summarize_results();
 
-            CurrentStatus[0] = "PopSim Model Run Finished";
+            CurrentStatus[0] = "PopSim model run finished";
             psWorker.ReportProgress(100, CurrentStatus);
           
 

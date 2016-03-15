@@ -5714,6 +5714,8 @@ namespace BenMAP
                 System.IO.Directory.CreateDirectory(CommonClass.ResultFilePath + @"\Result\APVR");
             if (!Directory.Exists(CommonClass.ResultFilePath + @"\Result\AQG"))
                 System.IO.Directory.CreateDirectory(CommonClass.ResultFilePath + @"\Result\AQG");
+            if (!Directory.Exists(CommonClass.ResultFilePath + @"\Result\PopSim"))
+                System.IO.Directory.CreateDirectory(CommonClass.ResultFilePath + @"\Result\PopSim");
             if (!Directory.Exists(CommonClass.DataFilePath + @"\Tmp"))
                 System.IO.Directory.CreateDirectory(CommonClass.DataFilePath + @"\Tmp");
 

@@ -445,7 +445,7 @@ namespace PopSim
             btnBack.Visible = false;
             btnNext.Visible = false;
             progressBar1.Visible = true;
-            lblRunStatus.Text = "PopSIM Model Started";
+            lblRunStatus.Text = "PopSim model started";
             lblRunProgress.Visible = true;
             lblRunStatus.Visible = true;
 
@@ -456,14 +456,18 @@ namespace PopSim
         private void btnOutput_Click(object sender, EventArgs e)
         {
             // BENMAP-380 convert from Excel to CSV output
-            fileName = "PopsimResults";
+            fileName = "PopSimResults";
 
             // open file
             // get user location for file save
             SaveFileDialog myDialog = new SaveFileDialog();
         
-            // make the default save location "My Documents" - this is one of the few locations that is writable for all users
-            myDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            // set the default save location
+            //myDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            String initDir;
+            initDir = BenMAP.CommonClass.ResultFilePath + @"\Result\PopSim";
+            myDialog.InitialDirectory = initDir;
+
             myDialog.FileName = fileName;
             myDialog.OverwritePrompt = true;
 
@@ -488,11 +492,6 @@ namespace PopSim
             MessageBox.Show("Help not implemented in this version");
         }
 
-        private void label39_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
             StartTime = DateTime.Now;
@@ -506,8 +505,8 @@ namespace PopSim
             StopTime = DateTime.Now;
             btnOutput.Visible = true;
             progressBar1.Visible = true;
-            lblRunStatus.Text = "Model Run Completed";
-            MessageBox.Show("Run finished in " + (StopTime - StartTime).ToString(), "Run Completed");
+            lblRunStatus.Text = "Model run completed";
+            MessageBox.Show("Run finished in " + (StopTime - StartTime).ToString(), "Run completed");
             progressBar1.Visible = false;
             lblRunStatus.Visible = false;
             lblRunProgress.Visible = false;

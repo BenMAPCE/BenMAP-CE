@@ -24,7 +24,7 @@ public class FirebirdOutput
 
         ConnectionStringSettings settings = ConfigurationManager.ConnectionStrings["PopSimConnectionString"];
         string str = settings.ConnectionString;
-        str = str.Replace("##USERDATA##", Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData));
+        str = str.Replace("##USERDATA##", Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData));
 
         FbConnection connection = new FirebirdSql.Data.FirebirdClient.FbConnection(str);
 
