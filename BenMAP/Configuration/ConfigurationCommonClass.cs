@@ -4667,6 +4667,14 @@ namespace BenMAP.Configuration
                         metricKey = metricKey + "," + Enum.GetName(typeof(MetricStatic), crSelectFunction.BenMAPHealthImpactFunction.MetricStatistic);
                     }
 
+                    //get metric key dictionary
+                    Dictionary<int, string> dicMetricKeys = new Dictionary<int, string>();
+                    foreach(CRFVariable variable in crSelectFunction.BenMAPHealthImpactFunction.Variables)
+                    {
+                        int pollutantID = CommonClass.dicPollutantIDVariableID.FirstOrDefault(x => x.Value == variable.VariableID).Key;
+                        dicMetricKeys.Add(pollutantID, metricKey);
+                    }
+
                     //do we have a metric statistic?               
                     if (crSelectFunction.BenMAPHealthImpactFunction.MetricStatistic != MetricStatic.None)
                     {
