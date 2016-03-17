@@ -1899,7 +1899,7 @@ namespace BenMAP
                             }
 
                             bcgInteraction.Pollutant.PollutantID = interactionPollutantID;
-                            bcgInteraction.Pollutant.PollutantName = bcg1.Pollutant.PollutantName + "*" + bcg2.Pollutant.PollutantName;
+                            bcgInteraction.Pollutant.PollutantName = variable.PollutantName;
 
                             if (bcgInteraction.Pollutant.Seasons != null)
                             {
@@ -1994,12 +1994,10 @@ namespace BenMAP
                 mra.Values.Clear();
                 //loop over values, multiplying to get interaction value            
                 //ModelResultAttributes values are dictionary of metricKey, value    
-                foreach (KeyValuePair<string, float> kvp in bmlOne.ModelResultAttributes[indexAttribute].Values) //values are dictioanry of metricKey, value
+                for (int indexValue = 0; indexValue < bmlOne.ModelResultAttributes[indexAttribute].Values.Count; indexValue++)
                 {
-                    string metricKey = kvp.Key;                    
-                    
-                    float valueOne = kvp.Value;
-                    float valueTwo = bmlTwo.ModelResultAttributes[indexAttribute].Values[metricKey];
+                    float valueOne = bmlOne.ModelResultAttributes[indexAttribute].Values.ElementAt(indexValue).Value;
+                    float valueTwo = bmlTwo.ModelResultAttributes[indexAttribute].Values.ElementAt(indexValue).Value;
 
                     float valueInteraction = float.MinValue;
                     //float.MinValue is used to indicate a missing value
@@ -2007,6 +2005,8 @@ namespace BenMAP
                     {
                         valueInteraction = valueOne * valueTwo;
                     }
+
+                    string metricKey = bmlOne.ModelResultAttributes[indexAttribute].Values.ElementAt(indexValue).Key;
 
                     mra.Values.Add(metricKey, valueInteraction);
                 }
