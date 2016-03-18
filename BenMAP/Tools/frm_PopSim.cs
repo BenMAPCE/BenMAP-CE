@@ -465,7 +465,7 @@ namespace PopSim
             // set the default save location
             //myDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             String initDir;
-            initDir = BenMAP.CommonClass.ResultFilePath + @"\Result\PopSim";
+            initDir = BenMAP.CommonClass.ResultFilePath + @"\PopSim";
             myDialog.InitialDirectory = initDir;
 
             myDialog.FileName = fileName;
