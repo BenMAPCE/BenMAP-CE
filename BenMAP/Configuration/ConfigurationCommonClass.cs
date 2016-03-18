@@ -4650,22 +4650,8 @@ namespace BenMAP.Configuration
                     //build colrow key
                     string colRowKey = modelResultAttribute.Col + "," + modelResultAttribute.Row;
 
-                    //build metric key
-                    string metricKey = String.Empty;
-                    //use seasonal metric name or metric name ?
-                    if (crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric != null)
-                    {
-                        metricKey = crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName;
-                    }
-                    else
-                    {
-                        metricKey = crSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName;
-                    }
-                    //add metric statistic name ?
-                    if (crSelectFunction.BenMAPHealthImpactFunction.MetricStatistic != MetricStatic.None)
-                    {
-                        metricKey = metricKey + "," + Enum.GetName(typeof(MetricStatic), crSelectFunction.BenMAPHealthImpactFunction.MetricStatistic);
-                    }
+                    //get metric key dictionary
+                    Dictionary<int, string> dicMetricKeys = getMetricKeys(crSelectFunction);                    
 
                     //do we have a metric statistic?               
                     if (crSelectFunction.BenMAPHealthImpactFunction.MetricStatistic != MetricStatic.None)
@@ -4673,8 +4659,8 @@ namespace BenMAP.Configuration
                         #region if we have a metric statistic in health impact function
                         //get metric data for base and control values for all pollutants
                         //if we don't have metric data, create "blank" result and continue to next model result attribute (i.e. grid cell)
-                        if ((!getAllMetricData(dicAllMetricDataBase, colRowKey, metricKey, dicBaseValues)) ||
-                                (!getAllMetricData(dicAllMetricDataControl, colRowKey, metricKey, dicControlValues)))
+                        if ((!getAllMetricData(dicAllMetricDataBase, colRowKey, dicMetricKeys, dicBaseValues)) ||
+                                (!getAllMetricData(dicAllMetricDataControl, colRowKey, dicMetricKeys, dicControlValues)))
                         {
                             //for each beta variation
                             for (int betaIndex = 0; betaIndex < lstBetas.Count; betaIndex++)
@@ -4720,8 +4706,8 @@ namespace BenMAP.Configuration
 
                         #region if we do not have a metric statistic in health impact function
                         //do we have 365 data?
-                       if (getAll365Data(dicAll365Base, colRowKey, metricKey, dicBase365Values) &&
-                                getAll365Data(dicAll365Control, colRowKey, metricKey, dicControl365Values))                       
+                       if (getAll365Data(dicAll365Base, colRowKey, dicMetricKeys, dicBase365Values) &&
+                                getAll365Data(dicAll365Control, colRowKey, dicMetricKeys, dicControl365Values))                       
                        {
                             #region if we have 365 data
 
@@ -4794,10 +4780,10 @@ namespace BenMAP.Configuration
                                 crCalculateValue.PercentOfBaseline = crCalculateValue.Baseline == 0 ? 0 : Convert.ToSingle(Math.Round((crCalculateValue.Mean / crCalculateValue.Baseline) * 100, 4));
 
                                 //calculate delta
-                                Dictionary<int, double> baseValuesForDelta = getBaseValuesFromModelResultAttributes(colRowKey, metricKey);
+                                Dictionary<int, double> baseValuesForDelta = getBaseValuesFromModelResultAttributes(colRowKey, dicMetricKeys);
 
                                 Dictionary<int, double> controlValuesForDelta = new Dictionary<int, double>();
-                                if (!getControlValues(DicControlAll, colRowKey, metricKey, controlValuesForDelta))
+                                if (!getControlValues(DicControlAll, colRowKey, dicMetricKeys, controlValuesForDelta))
                                 {                                 
                                     controlValuesForDelta = new Dictionary<int, double>(baseValuesForDelta);
                                 }
@@ -4827,10 +4813,10 @@ namespace BenMAP.Configuration
                         {
                             #region if we do not have 365 data
 
-                            dicBaseValues = getBaseValuesFromModelResultAttributes(colRowKey, metricKey);                          
+                            dicBaseValues = getBaseValuesFromModelResultAttributes(colRowKey, dicMetricKeys);                          
 
                             dicControlValues = new Dictionary<int, double>();
-                            if (!getControlValues(DicControlAll, colRowKey, metricKey, dicControlValues))
+                            if (!getControlValues(DicControlAll, colRowKey, dicMetricKeys, dicControlValues))
                             {
                                 dicControlValues = new Dictionary<int, double>(dicBaseValues);
                             }
@@ -4838,7 +4824,7 @@ namespace BenMAP.Configuration
                             //get any monitor data
                             List<MonitorDataHelper> lstMonitorDataHelpers = getMonitorDataHelpers(dicBaseMonitorAll, dicControlMonitorAll,
                                                                                                   dicAllMonitorNeighborBaseAll, dicAllMonitorNeighborControlAll,
-                                                                                                  dicBaseValues, dicControlValues, colRowKey, metricKey);
+                                                                                                  dicBaseValues, dicControlValues, colRowKey, dicMetricKeys);
                             //are we using monitor data?
                             if (lstMonitorDataHelpers.Count > 0)
                             {
@@ -5025,10 +5011,10 @@ namespace BenMAP.Configuration
                                     crCalculateValue.PercentOfBaseline = crCalculateValue.Baseline == 0 ? 0 : Convert.ToSingle(Math.Round((crCalculateValue.Mean / crCalculateValue.Baseline) * 100, 4));
 
                                     //calculate Delta
-                                    Dictionary<int, double> baseValuesForDelta = getBaseValuesFromModelResultAttributes(colRowKey, metricKey);
+                                    Dictionary<int, double> baseValuesForDelta = getBaseValuesFromModelResultAttributes(colRowKey, dicMetricKeys);
 
                                     Dictionary<int, double> controlValuesForDelta = new Dictionary<int, double>();
-                                    if (!getControlValues(DicControlAll, colRowKey, metricKey, controlValuesForDelta))
+                                    if (!getControlValues(DicControlAll, colRowKey, dicMetricKeys, controlValuesForDelta))
                                     {
                                         controlValuesForDelta = new Dictionary<int, double>(baseValuesForDelta);
                                     }
@@ -5058,10 +5044,10 @@ namespace BenMAP.Configuration
 
                             if (crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric != null)
                             {
-                                dicBaseValues = getBaseValuesFromModelResultAttributes(colRowKey, metricKey);
+                                dicBaseValues = getBaseValuesFromModelResultAttributes(colRowKey, dicMetricKeys);
 
                                 dicControlValues = new Dictionary<int, double>();
-                                if (!getControlValues(DicControlAll, colRowKey, metricKey, dicControlValues))
+                                if (!getControlValues(DicControlAll, colRowKey, dicMetricKeys, dicControlValues))
                                 {
                                     dicControlValues = new Dictionary<int, double>(dicBaseValues);
                                 }
@@ -5963,7 +5949,7 @@ namespace BenMAP.Configuration
             return Convert.ToSingle(dResult);
         }
 
-        public static bool getAllMetricData(Dictionary<int, Dictionary<string, Dictionary<string, float>>> dicAllMetricData, string colRowKey, string metricKey, Dictionary<int, double> dicValues)
+        public static bool getAllMetricData(Dictionary<int, Dictionary<string, Dictionary<string, float>>> dicAllMetricData, string colRowKey, Dictionary<int, string> dicMetricKeys, Dictionary<int, double> dicValues)
         {
             //clear values
             double value = 0;
@@ -5973,6 +5959,8 @@ namespace BenMAP.Configuration
             //the key is the pollutant ID
             foreach (KeyValuePair<int, Dictionary<string, Dictionary<string, float>>> kvp in dicAllMetricData)
             {
+                string metricKey = dicMetricKeys[kvp.Key];
+
                 //if we have a value for this pollutant, then add it to our list of values
                 if (getMetricData(kvp.Value, colRowKey, metricKey, out value))
                 {
@@ -5989,7 +5977,7 @@ namespace BenMAP.Configuration
             return true;
         }
 
-        public static bool getAll365Data(Dictionary<int, Dictionary<string, Dictionary<string, List<float>>>> dicAll365Data, string colRowKey, string metricKey, Dictionary<int, List<float>> dicValues)
+        public static bool getAll365Data(Dictionary<int, Dictionary<string, Dictionary<string, List<float>>>> dicAll365Data, string colRowKey, Dictionary<int, string> dicMetricKeys, Dictionary<int, List<float>> dicValues)
         {
             //clear values            
             dicValues.Clear();
@@ -5998,6 +5986,8 @@ namespace BenMAP.Configuration
             //the key is the pollutant ID
             foreach (KeyValuePair<int, Dictionary<string, Dictionary<string, List<float>>>> kvp in dicAll365Data)
             {
+                string metricKey = dicMetricKeys[kvp.Key];
+
                 List<float> values = new List<float>();
                 //if we have a value for this pollutant, then add it to our list of values
                 if (get365Data(kvp.Value, colRowKey, metricKey, values))
@@ -6066,14 +6056,17 @@ namespace BenMAP.Configuration
             return dicValues;
         }
 
-        public static bool getControlValues(Dictionary<int, Dictionary<string, ModelResultAttribute>> DicControlAll, string colRowKey, string metricKey, Dictionary<int, double> dicValues)
+        public static bool getControlValues(Dictionary<int, Dictionary<string, ModelResultAttribute>> DicControlAll, string colRowKey, Dictionary<int, string> dicMetricKeys, Dictionary<int, double> dicValues)
         {
             dicValues.Clear();
 
             foreach (KeyValuePair<int, Dictionary<string, ModelResultAttribute>> kvp in DicControlAll)
             {
                 int pollutantID = kvp.Key;
-                double value = 0;
+
+                string metricKey = dicMetricKeys[pollutantID];
+
+                double value = 0;                
 
                 Dictionary<string, ModelResultAttribute> dicControl = kvp.Value;
 
@@ -6105,7 +6098,7 @@ namespace BenMAP.Configuration
             return true;
         }
 
-        public static Dictionary<int, double> getBaseValuesFromModelResultAttributes(string colRowKey, string metricKey)
+        public static Dictionary<int, double> getBaseValuesFromModelResultAttributes(string colRowKey, Dictionary<int, string> dicMetricKeys)
         {
             Dictionary<int, double> dicValues = new Dictionary<int, double>();
 
@@ -6121,6 +6114,9 @@ namespace BenMAP.Configuration
                     if ((modelResultAttribute.Col == col) && (modelResultAttribute.Row == row))
                     {
                         int pollutantID = bcg.Pollutant.PollutantID;
+
+                        string metricKey = dicMetricKeys[pollutantID];
+
                         double value = modelResultAttribute.Values[metricKey];
 
                         dicValues.Add(pollutantID, value);
@@ -6457,12 +6453,14 @@ namespace BenMAP.Configuration
                                                                 Dictionary<int, Dictionary<string, List<MonitorNeighborAttribute>>> dicAllMonitorNeighborControlAll,
                                                                 Dictionary<int, double> dicBaseValues, 
                                                                 Dictionary<int, double> dicControlValues,           
-                                                                string colRowKey, string metricKey)
+                                                                string colRowKey, Dictionary<int, string> dicMetricKeys)
         {
             List<MonitorDataHelper> lstMonitorDataHelpers = new List<MonitorDataHelper>();
             //loop over base control groups to see if any use monitor data
             foreach (BaseControlGroup bcg in CommonClass.LstBaseControlGroup)
             {
+                string metricKey = dicMetricKeys[bcg.Pollutant.PollutantID];
+
                 if (bcg.Base is MonitorDataLine
                     && bcg.Control is MonitorDataLine
                     && (!baseValuesEqualControlValues(dicBaseValues, dicControlValues))
@@ -6703,6 +6701,46 @@ namespace BenMAP.Configuration
                 }
 
             }
+
+        }
+
+        public static Dictionary<int, string> getMetricKeys(CRSelectFunction crSelectFunction)
+        {
+            Dictionary<int, string> dicMetricKeys = new Dictionary<int, string>();           
+
+            foreach (CRFVariable variable in crSelectFunction.BenMAPHealthImpactFunction.Variables)
+            {
+
+                //build metric key
+                string metricKey = String.Empty;
+                //use seasonal metric name or metric name ?
+                if (crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric != null)
+                {
+                    metricKey = crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName;
+                }
+                else
+                {
+                    if (variable.Pollutant2ID > 0) //if we have 2nd pollutant, then this is interaction
+                    {
+                        metricKey = CommonClass.dicInteractionVariableMetricNames[variable.VariableID];
+                    }
+                    else
+                    {
+                        metricKey = crSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName;
+                    }                    
+                }
+
+                //add metric statistic name ?
+                if (crSelectFunction.BenMAPHealthImpactFunction.MetricStatistic != MetricStatic.None)
+                {
+                    metricKey = metricKey + "," + Enum.GetName(typeof(MetricStatic), crSelectFunction.BenMAPHealthImpactFunction.MetricStatistic);
+                }
+
+                int pollutantID = CommonClass.dicPollutantIDVariableID.FirstOrDefault(x => x.Value == variable.VariableID).Key;
+                dicMetricKeys.Add(pollutantID, metricKey);
+            }
+
+            return dicMetricKeys;
 
         }
 
