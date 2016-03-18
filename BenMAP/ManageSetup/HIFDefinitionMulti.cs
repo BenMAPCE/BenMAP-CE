@@ -230,7 +230,6 @@ namespace BenMAP
                 _healthImpacts.EndpointGroup = cboEndpointGroup.Text;
                 _healthImpacts.Endpoint = cboEndpoint.Text;
                 _healthImpacts.Pollutant = cboPollutant.Text;
-                _healthImpacts.Metric = cboMetric.Text;
                 _healthImpacts.MetricStatistis = cboMetricStatistic.Text;
                 _healthImpacts.SeasonalMetric = cboSeasonalMetric.Text;
                 _healthImpacts.Race = cboRace.Text;
@@ -278,9 +277,9 @@ namespace BenMAP
                     cboEndpointGroup.Text = _healthImpacts.EndpointGroup;
                     cboEndpoint.Text = _healthImpacts.Endpoint;
                     cboPollutant.Text = _healthImpacts.Pollutant;
-                    cboMetric.Text = _healthImpacts.Metric;
                     cboMetricStatistic.Text = _healthImpacts.MetricStatistis;
-                    cboSeasonalMetric.Text = _healthImpacts.SeasonalMetric;
+                    if (_healthImpacts.SeasonalMetric == string.Empty) cboSeasonalMetric.SelectedIndex = -1;
+                    else cboSeasonalMetric.Text = _healthImpacts.SeasonalMetric;
                     cboRace.Text = _healthImpacts.Race;
                     cboEthnicity.Text = _healthImpacts.Ethnicity;
                     cboGender.Text = _healthImpacts.Gender;
@@ -359,6 +358,13 @@ namespace BenMAP
                 cboMetricStatistic.Items.Add("Sum");
                 cboMetricStatistic.SelectedIndex = 0;
 
+                string groupSelected = cboPollutant.Text;
+                commandText = string.Format("select distinct SEASONALMETRICNAME from SEASONALMETRICS inner join METRICS on SEASONALMETRICS.METRICID = METRICS.METRICID inner join POLLUTANTS on METRICS.POLLUTANTID = POLLUTANTS.POLLUTANTID inner join POLLUTANTGROUPPOLLUTANTS on POLLUTANTS.POLLUTANTID = POLLUTANTGROUPPOLLUTANTS.POLLUTANTID inner join POLLUTANTGROUPS on POLLUTANTGROUPS.POLLUTANTGROUPID = POLLUTANTGROUPPOLLUTANTS.POLLUTANTGROUPID and PGNAME='{0}'", groupSelected);
+                ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+                cboSeasonalMetric.DataSource = ds.Tables[0];
+                cboSeasonalMetric.DisplayMember = "SeasonalMetricName";
+                cboSeasonalMetric.SelectedIndex = -1;
+
                 commandText = string.Format("select INCIDENCEDATASETNAME from INCIDENCEDATASETS where setupid={0} order by INCIDENCEDATASETNAME asc", CommonClass.ManageSetup.SetupID);
                 ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                 cboIncidenceDataSet.DataSource = ds.Tables[0];
@@ -416,8 +422,9 @@ namespace BenMAP
                 cboLocationName.SelectedIndex = -1;
 
 
-                // Set up variable objects 
-                commandText = string.Format("select distinct variablename, crv.crfvariableid, pollutantname, pollutant1id, pollutant2id from crfunctions as crf left join crfvariables as crv on crf.crfunctionid=crv.crfunctionid where crf.crfunctionid={0}", _healthImpacts.FunctionID);
+                // Set up variable objects -- order by char_length and variable name to avoid 1, 10, 2 ordering
+                // * add metric name to query
+                commandText = string.Format("select distinct variablename, crv.crfvariableid, pollutantname, pollutant1id, pollutant2id from crfunctions as crf left join crfvariables as crv on crf.crfunctionid=crv.crfunctionid where crf.crfunctionid={0} order by char_length(variablename), variablename", _healthImpacts.FunctionID);
                 ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
 
                 foreach(DataRow dr in ds.Tables[0].Rows)
@@ -426,11 +433,13 @@ namespace BenMAP
                     // interaction
                     if (dr["pollutantname"].ToString().Contains("*"))
                     {
+                        // * include metric name and adjust constructor
                         _healthImpacts.PollVariables.Add(new CRFVariable(dr["variablename"].ToString(), Convert.ToInt32(dr["crfvariableid"]), Convert.ToInt32(_healthImpacts.FunctionID), dr["pollutantname"].ToString(), Convert.ToInt32(dr["pollutant1id"]), Convert.ToInt32(dr["pollutant2id"])));
                     }
                     else
                     {
                         _healthImpacts.PollVariables.Add(new CRFVariable(dr["variablename"].ToString(), Convert.ToInt32(dr["crfvariableid"]), Convert.ToInt32(_healthImpacts.FunctionID), dr["pollutantname"].ToString(), Convert.ToInt32(dr["pollutant1id"])));
+                        // * _healthImpacts.PollVariables.Add(new CRFVariable(dr["variablename"].ToString(), Convert.ToInt32(dr["crfvariableid"]), Convert.ToInt32(_healthImpacts.FunctionID), dr["pollutantname"].ToString(), Convert.ToInt32(dr["pollutant1id"]), dr["metricname"].ToString()));
                     }
                 }
 
@@ -549,7 +558,7 @@ namespace BenMAP
                 cboModelSpec.DisplayMember = "MSDESCRIPTION";
 
                 // Load Metrics 
-                commandText = string.Format("select METRICNAME, COUNT(*) as occur from METRICS inner join POLLUTANTS on METRICS.POLLUTANTID = POLLUTANTS.POLLUTANTID inner join POLLUTANTGROUPPOLLUTANTS on POLLUTANTS.POLLUTANTID = POLLUTANTGROUPPOLLUTANTS.POLLUTANTID inner join POLLUTANTGROUPS on POLLUTANTGROUPS.POLLUTANTGROUPID = POLLUTANTGROUPPOLLUTANTS.POLLUTANTGROUPID and PGNAME='{0}' group by METRICNAME order by COUNT(*) desc", str);
+                /* commandText = string.Format("select METRICNAME, COUNT(*) as occur from METRICS inner join POLLUTANTS on METRICS.POLLUTANTID = POLLUTANTS.POLLUTANTID inner join POLLUTANTGROUPPOLLUTANTS on POLLUTANTS.POLLUTANTID = POLLUTANTGROUPPOLLUTANTS.POLLUTANTID inner join POLLUTANTGROUPS on POLLUTANTGROUPS.POLLUTANTGROUPID = POLLUTANTGROUPPOLLUTANTS.POLLUTANTGROUPID and PGNAME='{0}' group by METRICNAME order by COUNT(*) desc", str);
                 ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                 DataSet intersect = ds.Copy();
 
@@ -564,7 +573,7 @@ namespace BenMAP
                     i++;
                 }
                 cboMetric.DataSource = intersect.Tables[0];
-                cboMetric.DisplayMember = "METRICNAME";
+                cboMetric.DisplayMember = "METRICNAME"; */
 
             }
             catch (Exception ex)
@@ -640,25 +649,6 @@ namespace BenMAP
 
                 varList.Columns[1].Width = -1;
                 if (varList.Columns[1].Width < 123) varList.Columns[1].Width = 123;
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex);
-            }
-        }
-
-        private void cboMetric_SelectedValueChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                // Load Seasonal Metric according to selected Metric 
-                string metricSelected = cboMetric.Text;
-                string groupSelected = cboPollutant.Text;
-                string commandText = string.Format("select distinct SEASONALMETRICNAME from SEASONALMETRICS inner join METRICS on SEASONALMETRICS.METRICID = METRICS.METRICID and METRICNAME='{0}' inner join POLLUTANTS on METRICS.POLLUTANTID = POLLUTANTS.POLLUTANTID inner join POLLUTANTGROUPPOLLUTANTS on POLLUTANTS.POLLUTANTID = POLLUTANTGROUPPOLLUTANTS.POLLUTANTID inner join POLLUTANTGROUPS on POLLUTANTGROUPS.POLLUTANTGROUPID = POLLUTANTGROUPPOLLUTANTS.POLLUTANTGROUPID and PGNAME='{1}'", metricSelected, groupSelected);
-                ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
-                DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
-                cboSeasonalMetric.DataSource = ds.Tables[0];
-                cboSeasonalMetric.DisplayMember = "SeasonalMetricName";
             }
             catch (Exception ex)
             {

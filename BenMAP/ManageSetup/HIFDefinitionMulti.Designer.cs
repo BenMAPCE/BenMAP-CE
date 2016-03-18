@@ -33,8 +33,6 @@
             this.varList = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.cboMetric = new System.Windows.Forms.ComboBox();
-            this.lblMetric = new System.Windows.Forms.Label();
             this.cboSeasonalMetric = new System.Windows.Forms.ComboBox();
             this.cboMetricStatistic = new System.Windows.Forms.ComboBox();
             this.lblSeasonalMetric = new System.Windows.Forms.Label();
@@ -119,6 +117,7 @@
             this.btnCancel = new System.Windows.Forms.Button();
             this.grpCancelOK = new System.Windows.Forms.GroupBox();
             this.dragDropLabel = new System.Windows.Forms.Label();
+            this.bvGeographic = new System.Windows.Forms.RadioButton();
             this.grpPollutant.SuspendLayout();
             this.betaVarGroup.SuspendLayout();
             this.grpEndpoint.SuspendLayout();
@@ -153,8 +152,6 @@
             // grpPollutant
             // 
             this.grpPollutant.Controls.Add(this.varList);
-            this.grpPollutant.Controls.Add(this.cboMetric);
-            this.grpPollutant.Controls.Add(this.lblMetric);
             this.grpPollutant.Controls.Add(this.cboSeasonalMetric);
             this.grpPollutant.Controls.Add(this.cboMetricStatistic);
             this.grpPollutant.Controls.Add(this.lblSeasonalMetric);
@@ -200,35 +197,13 @@
             this.columnHeader2.Text = "Pollutant";
             this.columnHeader2.Width = 125;
             // 
-            // cboMetric
-            // 
-            this.cboMetric.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.cboMetric.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboMetric.FormattingEnabled = true;
-            this.cboMetric.Location = new System.Drawing.Point(8, 126);
-            this.cboMetric.Name = "cboMetric";
-            this.cboMetric.Size = new System.Drawing.Size(109, 22);
-            this.cboMetric.TabIndex = 26;
-            this.cboMetric.SelectedValueChanged += new System.EventHandler(this.cboMetric_SelectedValueChanged);
-            // 
-            // lblMetric
-            // 
-            this.lblMetric.AutoSize = true;
-            this.lblMetric.Location = new System.Drawing.Point(7, 109);
-            this.lblMetric.Margin = new System.Windows.Forms.Padding(2);
-            this.lblMetric.Name = "lblMetric";
-            this.lblMetric.Size = new System.Drawing.Size(44, 14);
-            this.lblMetric.TabIndex = 23;
-            this.lblMetric.Text = "Metric:";
-            // 
             // cboSeasonalMetric
             // 
             this.cboSeasonalMetric.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cboSeasonalMetric.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboSeasonalMetric.FormattingEnabled = true;
-            this.cboSeasonalMetric.Location = new System.Drawing.Point(8, 222);
+            this.cboSeasonalMetric.Location = new System.Drawing.Point(7, 173);
             this.cboSeasonalMetric.Name = "cboSeasonalMetric";
             this.cboSeasonalMetric.Size = new System.Drawing.Size(109, 22);
             this.cboSeasonalMetric.TabIndex = 28;
@@ -239,7 +214,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cboMetricStatistic.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboMetricStatistic.FormattingEnabled = true;
-            this.cboMetricStatistic.Location = new System.Drawing.Point(8, 174);
+            this.cboMetricStatistic.Location = new System.Drawing.Point(7, 124);
             this.cboMetricStatistic.Name = "cboMetricStatistic";
             this.cboMetricStatistic.Size = new System.Drawing.Size(109, 22);
             this.cboMetricStatistic.TabIndex = 27;
@@ -247,7 +222,7 @@
             // lblSeasonalMetric
             // 
             this.lblSeasonalMetric.AutoSize = true;
-            this.lblSeasonalMetric.Location = new System.Drawing.Point(7, 205);
+            this.lblSeasonalMetric.Location = new System.Drawing.Point(6, 156);
             this.lblSeasonalMetric.Margin = new System.Windows.Forms.Padding(2);
             this.lblSeasonalMetric.Name = "lblSeasonalMetric";
             this.lblSeasonalMetric.Size = new System.Drawing.Size(98, 14);
@@ -257,7 +232,7 @@
             // lblMetricStatistic
             // 
             this.lblMetricStatistic.AutoSize = true;
-            this.lblMetricStatistic.Location = new System.Drawing.Point(7, 157);
+            this.lblMetricStatistic.Location = new System.Drawing.Point(6, 107);
             this.lblMetricStatistic.Margin = new System.Windows.Forms.Padding(2);
             this.lblMetricStatistic.Name = "lblMetricStatistic";
             this.lblMetricStatistic.Size = new System.Drawing.Size(94, 14);
@@ -287,19 +262,20 @@
             // 
             // betaVarGroup
             // 
+            this.betaVarGroup.Controls.Add(this.bvGeographic);
             this.betaVarGroup.Controls.Add(this.lblBetaVar);
             this.betaVarGroup.Controls.Add(this.bvSeasonal);
             this.betaVarGroup.Controls.Add(this.bvFullYear);
-            this.betaVarGroup.Location = new System.Drawing.Point(5, 253);
+            this.betaVarGroup.Location = new System.Drawing.Point(5, 202);
             this.betaVarGroup.Margin = new System.Windows.Forms.Padding(2);
             this.betaVarGroup.Name = "betaVarGroup";
-            this.betaVarGroup.Size = new System.Drawing.Size(101, 53);
+            this.betaVarGroup.Size = new System.Drawing.Size(101, 91);
             this.betaVarGroup.TabIndex = 17;
             // 
             // lblBetaVar
             // 
             this.lblBetaVar.AutoSize = true;
-            this.lblBetaVar.Location = new System.Drawing.Point(3, 3);
+            this.lblBetaVar.Location = new System.Drawing.Point(6, 2);
             this.lblBetaVar.Name = "lblBetaVar";
             this.lblBetaVar.Size = new System.Drawing.Size(87, 14);
             this.lblBetaVar.TabIndex = 16;
@@ -308,7 +284,7 @@
             // bvSeasonal
             // 
             this.bvSeasonal.AutoSize = true;
-            this.bvSeasonal.Location = new System.Drawing.Point(5, 32);
+            this.bvSeasonal.Location = new System.Drawing.Point(8, 38);
             this.bvSeasonal.Margin = new System.Windows.Forms.Padding(2);
             this.bvSeasonal.Name = "bvSeasonal";
             this.bvSeasonal.Size = new System.Drawing.Size(76, 18);
@@ -321,7 +297,7 @@
             // 
             this.bvFullYear.AutoSize = true;
             this.bvFullYear.Checked = true;
-            this.bvFullYear.Location = new System.Drawing.Point(5, 16);
+            this.bvFullYear.Location = new System.Drawing.Point(8, 19);
             this.bvFullYear.Margin = new System.Windows.Forms.Padding(2);
             this.bvFullYear.Name = "bvFullYear";
             this.bvFullYear.Size = new System.Drawing.Size(72, 18);
@@ -342,7 +318,7 @@
             // lblModelSpec
             // 
             this.lblModelSpec.AutoSize = true;
-            this.lblModelSpec.Location = new System.Drawing.Point(6, 62);
+            this.lblModelSpec.Location = new System.Drawing.Point(6, 61);
             this.lblModelSpec.Name = "lblModelSpec";
             this.lblModelSpec.Size = new System.Drawing.Size(116, 14);
             this.lblModelSpec.TabIndex = 19;
@@ -354,7 +330,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cboModelSpec.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboModelSpec.FormattingEnabled = true;
-            this.cboModelSpec.Location = new System.Drawing.Point(7, 79);
+            this.cboModelSpec.Location = new System.Drawing.Point(7, 78);
             this.cboModelSpec.Name = "cboModelSpec";
             this.cboModelSpec.Size = new System.Drawing.Size(303, 22);
             this.cboModelSpec.TabIndex = 20;
@@ -1148,6 +1124,18 @@
             this.dragDropLabel.TabIndex = 12;
             this.dragDropLabel.Text = "Editing disabled for demo. Any changes made will not be saved.";
             // 
+            // bvGeographic
+            // 
+            this.bvGeographic.AutoSize = true;
+            this.bvGeographic.Enabled = false;
+            this.bvGeographic.Location = new System.Drawing.Point(8, 57);
+            this.bvGeographic.Margin = new System.Windows.Forms.Padding(2);
+            this.bvGeographic.Name = "bvGeographic";
+            this.bvGeographic.Size = new System.Drawing.Size(87, 18);
+            this.bvGeographic.TabIndex = 17;
+            this.bvGeographic.Text = "Geographic";
+            this.bvGeographic.UseVisualStyleBackColor = true;
+            // 
             // HIFDefinitionMulti
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
@@ -1275,12 +1263,11 @@
         private System.Windows.Forms.ComboBox cboModelSpec;
         private System.Windows.Forms.Label lblModelSpec;
         private System.Windows.Forms.Label pollLabel;
-        private System.Windows.Forms.ComboBox cboMetric;
-        private System.Windows.Forms.Label lblMetric;
         private System.Windows.Forms.ComboBox cboSeasonalMetric;
         private System.Windows.Forms.ComboBox cboMetricStatistic;
         private System.Windows.Forms.Label lblSeasonalMetric;
         private System.Windows.Forms.Label lblMetricStatistic;
         private System.Windows.Forms.Label dragDropLabel;
+        private System.Windows.Forms.RadioButton bvGeographic;
     }
 }

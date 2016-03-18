@@ -33,8 +33,21 @@
             this.grpCancelOK = new System.Windows.Forms.GroupBox();
             this.nextBtn = new System.Windows.Forms.Button();
             this.prevBtn = new System.Windows.Forms.Button();
+            this.lblVariable = new System.Windows.Forms.Label();
+            this.lblModSpec = new System.Windows.Forms.Label();
+            this.txtModelSpec = new System.Windows.Forms.TextBox();
+            this.lblPollutant = new System.Windows.Forms.Label();
+            this.txtPollutant = new System.Windows.Forms.TextBox();
+            this.lblSeasMetric = new System.Windows.Forms.Label();
+            this.txtSeasMetric = new System.Windows.Forms.TextBox();
+            this.txtVariable = new System.Windows.Forms.TextBox();
+            this.lblSeas = new System.Windows.Forms.Label();
+            this.cboSeason = new System.Windows.Forms.ComboBox();
+            this.cboMetric = new System.Windows.Forms.ComboBox();
+            this.lblMetric = new System.Windows.Forms.Label();
+            this.panel4 = new System.Windows.Forms.Panel();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.panel2 = new System.Windows.Forms.Panel();
+            this.hideForMulti = new System.Windows.Forms.Panel();
             this.txtBetaParameter1 = new System.Windows.Forms.TextBox();
             this.lblBetaParameter1 = new System.Windows.Forms.Label();
             this.txtBetaParameter2 = new System.Windows.Forms.TextBox();
@@ -62,22 +75,13 @@
             this.txtStart = new System.Windows.Forms.TextBox();
             this.lblSeason = new System.Windows.Forms.Label();
             this.txtSeason = new System.Windows.Forms.TextBox();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.lblVariable = new System.Windows.Forms.Label();
-            this.lblModSpec = new System.Windows.Forms.Label();
-            this.txtModelSpec = new System.Windows.Forms.TextBox();
-            this.lblPollutant = new System.Windows.Forms.Label();
-            this.txtPollutant = new System.Windows.Forms.TextBox();
-            this.lblSeasMetric = new System.Windows.Forms.Label();
-            this.txtSeasMetric = new System.Windows.Forms.TextBox();
-            this.txtVariable = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.cboSeason = new System.Windows.Forms.ComboBox();
+            this.showForSeasonal2 = new System.Windows.Forms.Panel();
             this.grpCancelOK.SuspendLayout();
+            this.panel4.SuspendLayout();
             this.panel1.SuspendLayout();
-            this.panel2.SuspendLayout();
+            this.hideForMulti.SuspendLayout();
             this.showForSeasonal.SuspendLayout();
-            this.groupBox1.SuspendLayout();
+            this.showForSeasonal2.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnOK
@@ -111,7 +115,7 @@
             this.grpCancelOK.Controls.Add(this.prevBtn);
             this.grpCancelOK.Controls.Add(this.btnOK);
             this.grpCancelOK.Controls.Add(this.btnCancel);
-            this.grpCancelOK.Location = new System.Drawing.Point(0, 390);
+            this.grpCancelOK.Location = new System.Drawing.Point(0, 411);
             this.grpCancelOK.Name = "grpCancelOK";
             this.grpCancelOK.Size = new System.Drawing.Size(425, 55);
             this.grpCancelOK.TabIndex = 26;
@@ -139,11 +143,149 @@
             this.prevBtn.UseVisualStyleBackColor = true;
             this.prevBtn.Click += new System.EventHandler(this.prevBtn_Click);
             // 
+            // lblVariable
+            // 
+            this.lblVariable.AutoSize = true;
+            this.lblVariable.Location = new System.Drawing.Point(8, 14);
+            this.lblVariable.Name = "lblVariable";
+            this.lblVariable.Size = new System.Drawing.Size(56, 14);
+            this.lblVariable.TabIndex = 55;
+            this.lblVariable.Text = "Variable:";
+            // 
+            // lblModSpec
+            // 
+            this.lblModSpec.AutoSize = true;
+            this.lblModSpec.Location = new System.Drawing.Point(8, 42);
+            this.lblModSpec.Name = "lblModSpec";
+            this.lblModSpec.Size = new System.Drawing.Size(116, 14);
+            this.lblModSpec.TabIndex = 50;
+            this.lblModSpec.Text = "Model Specification:";
+            // 
+            // txtModelSpec
+            // 
+            this.txtModelSpec.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtModelSpec.BackColor = System.Drawing.SystemColors.Window;
+            this.txtModelSpec.Enabled = false;
+            this.txtModelSpec.Location = new System.Drawing.Point(131, 38);
+            this.txtModelSpec.MaximumSize = new System.Drawing.Size(282, 22);
+            this.txtModelSpec.Name = "txtModelSpec";
+            this.txtModelSpec.ReadOnly = true;
+            this.txtModelSpec.Size = new System.Drawing.Size(282, 22);
+            this.txtModelSpec.TabIndex = 49;
+            // 
+            // lblPollutant
+            // 
+            this.lblPollutant.AutoSize = true;
+            this.lblPollutant.Location = new System.Drawing.Point(129, 14);
+            this.lblPollutant.Name = "lblPollutant";
+            this.lblPollutant.Size = new System.Drawing.Size(60, 14);
+            this.lblPollutant.TabIndex = 52;
+            this.lblPollutant.Text = "Pollutant:";
+            // 
+            // txtPollutant
+            // 
+            this.txtPollutant.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtPollutant.BackColor = System.Drawing.SystemColors.Window;
+            this.txtPollutant.Enabled = false;
+            this.txtPollutant.Location = new System.Drawing.Point(195, 10);
+            this.txtPollutant.MaximumSize = new System.Drawing.Size(282, 22);
+            this.txtPollutant.Name = "txtPollutant";
+            this.txtPollutant.ReadOnly = true;
+            this.txtPollutant.Size = new System.Drawing.Size(218, 22);
+            this.txtPollutant.TabIndex = 51;
+            // 
+            // lblSeasMetric
+            // 
+            this.lblSeasMetric.AutoSize = true;
+            this.lblSeasMetric.Location = new System.Drawing.Point(8, 98);
+            this.lblSeasMetric.Name = "lblSeasMetric";
+            this.lblSeasMetric.Size = new System.Drawing.Size(98, 14);
+            this.lblSeasMetric.TabIndex = 54;
+            this.lblSeasMetric.Text = "Seasonal Metric:";
+            // 
+            // txtSeasMetric
+            // 
+            this.txtSeasMetric.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtSeasMetric.BackColor = System.Drawing.SystemColors.Window;
+            this.txtSeasMetric.Enabled = false;
+            this.txtSeasMetric.Location = new System.Drawing.Point(131, 94);
+            this.txtSeasMetric.MaximumSize = new System.Drawing.Size(282, 22);
+            this.txtSeasMetric.Name = "txtSeasMetric";
+            this.txtSeasMetric.ReadOnly = true;
+            this.txtSeasMetric.Size = new System.Drawing.Size(282, 22);
+            this.txtSeasMetric.TabIndex = 53;
+            // 
+            // txtVariable
+            // 
+            this.txtVariable.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtVariable.BackColor = System.Drawing.SystemColors.Window;
+            this.txtVariable.Enabled = false;
+            this.txtVariable.Location = new System.Drawing.Point(70, 10);
+            this.txtVariable.MaximumSize = new System.Drawing.Size(282, 22);
+            this.txtVariable.Name = "txtVariable";
+            this.txtVariable.ReadOnly = true;
+            this.txtVariable.Size = new System.Drawing.Size(37, 22);
+            this.txtVariable.TabIndex = 56;
+            this.txtVariable.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // lblSeas
+            // 
+            this.lblSeas.AutoSize = true;
+            this.lblSeas.Location = new System.Drawing.Point(119, 13);
+            this.lblSeas.Name = "lblSeas";
+            this.lblSeas.Size = new System.Drawing.Size(50, 14);
+            this.lblSeas.TabIndex = 57;
+            this.lblSeas.Text = "Season:";
+            // 
+            // cboSeason
+            // 
+            this.cboSeason.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboSeason.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboSeason.FormattingEnabled = true;
+            this.cboSeason.Location = new System.Drawing.Point(174, 9);
+            this.cboSeason.Name = "cboSeason";
+            this.cboSeason.Size = new System.Drawing.Size(107, 22);
+            this.cboSeason.TabIndex = 58;
+            // 
+            // cboMetric
+            // 
+            this.cboMetric.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboMetric.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboMetric.FormattingEnabled = true;
+            this.cboMetric.Location = new System.Drawing.Point(131, 66);
+            this.cboMetric.Name = "cboMetric";
+            this.cboMetric.Size = new System.Drawing.Size(282, 22);
+            this.cboMetric.TabIndex = 59;
+            // 
+            // lblMetric
+            // 
+            this.lblMetric.AutoSize = true;
+            this.lblMetric.Location = new System.Drawing.Point(8, 70);
+            this.lblMetric.Name = "lblMetric";
+            this.lblMetric.Size = new System.Drawing.Size(44, 14);
+            this.lblMetric.TabIndex = 60;
+            this.lblMetric.Text = "Metric:";
+            // 
+            // panel4
+            // 
+            this.panel4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel4.Controls.Add(this.panel1);
+            this.panel4.Location = new System.Drawing.Point(11, 167);
+            this.panel4.Name = "panel4";
+            this.panel4.Size = new System.Drawing.Size(402, 242);
+            this.panel4.TabIndex = 50;
+            // 
             // panel1
             // 
             this.panel1.AutoSize = true;
             this.panel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.panel1.Controls.Add(this.panel2);
+            this.panel1.Controls.Add(this.hideForMulti);
             this.panel1.Controls.Add(this.txtBconstantValue);
             this.panel1.Controls.Add(this.txtAconstantValue);
             this.panel1.Controls.Add(this.txtCconstantValue);
@@ -162,24 +304,24 @@
             this.panel1.Controls.Add(this.editVarBtn);
             this.panel1.Controls.Add(this.showForSeasonal);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel1.Location = new System.Drawing.Point(3, 18);
+            this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(409, 242);
-            this.panel1.TabIndex = 1;
+            this.panel1.Size = new System.Drawing.Size(400, 240);
+            this.panel1.TabIndex = 2;
             // 
-            // panel2
+            // hideForMulti
             // 
-            this.panel2.AutoSize = true;
-            this.panel2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.panel2.Controls.Add(this.txtBetaParameter1);
-            this.panel2.Controls.Add(this.lblBetaParameter1);
-            this.panel2.Controls.Add(this.txtBetaParameter2);
-            this.panel2.Controls.Add(this.lblBetaParameter2);
-            this.panel2.Location = new System.Drawing.Point(0, 93);
-            this.panel2.Margin = new System.Windows.Forms.Padding(0);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(409, 43);
-            this.panel2.TabIndex = 51;
+            this.hideForMulti.AutoSize = true;
+            this.hideForMulti.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.hideForMulti.Controls.Add(this.txtBetaParameter1);
+            this.hideForMulti.Controls.Add(this.lblBetaParameter1);
+            this.hideForMulti.Controls.Add(this.txtBetaParameter2);
+            this.hideForMulti.Controls.Add(this.lblBetaParameter2);
+            this.hideForMulti.Location = new System.Drawing.Point(0, 93);
+            this.hideForMulti.Margin = new System.Windows.Forms.Padding(0);
+            this.hideForMulti.Name = "hideForMulti";
+            this.hideForMulti.Size = new System.Drawing.Size(409, 43);
+            this.hideForMulti.TabIndex = 51;
             // 
             // txtBetaParameter1
             // 
@@ -187,7 +329,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtBetaParameter1.Location = new System.Drawing.Point(61, 18);
             this.txtBetaParameter1.Name = "txtBetaParameter1";
-            this.txtBetaParameter1.Size = new System.Drawing.Size(138, 22);
+            this.txtBetaParameter1.Size = new System.Drawing.Size(129, 22);
             this.txtBetaParameter1.TabIndex = 32;
             this.txtBetaParameter1.Text = "0";
             // 
@@ -206,7 +348,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtBetaParameter2.Location = new System.Drawing.Point(211, 17);
             this.txtBetaParameter2.Name = "txtBetaParameter2";
-            this.txtBetaParameter2.Size = new System.Drawing.Size(138, 22);
+            this.txtBetaParameter2.Size = new System.Drawing.Size(129, 22);
             this.txtBetaParameter2.TabIndex = 44;
             this.txtBetaParameter2.Text = "0";
             // 
@@ -223,9 +365,9 @@
             // 
             this.txtBconstantValue.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtBconstantValue.Location = new System.Drawing.Point(211, 183);
+            this.txtBconstantValue.Location = new System.Drawing.Point(211, 181);
             this.txtBconstantValue.Name = "txtBconstantValue";
-            this.txtBconstantValue.Size = new System.Drawing.Size(138, 22);
+            this.txtBconstantValue.Size = new System.Drawing.Size(129, 22);
             this.txtBconstantValue.TabIndex = 42;
             this.txtBconstantValue.Text = "0";
             // 
@@ -233,9 +375,9 @@
             // 
             this.txtAconstantValue.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtAconstantValue.Location = new System.Drawing.Point(211, 155);
+            this.txtAconstantValue.Location = new System.Drawing.Point(211, 153);
             this.txtAconstantValue.Name = "txtAconstantValue";
-            this.txtAconstantValue.Size = new System.Drawing.Size(138, 22);
+            this.txtAconstantValue.Size = new System.Drawing.Size(129, 22);
             this.txtAconstantValue.TabIndex = 40;
             this.txtAconstantValue.Text = "0";
             // 
@@ -243,9 +385,9 @@
             // 
             this.txtCconstantValue.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtCconstantValue.Location = new System.Drawing.Point(211, 211);
+            this.txtCconstantValue.Location = new System.Drawing.Point(211, 209);
             this.txtCconstantValue.Name = "txtCconstantValue";
-            this.txtCconstantValue.Size = new System.Drawing.Size(138, 22);
+            this.txtCconstantValue.Size = new System.Drawing.Size(129, 22);
             this.txtCconstantValue.TabIndex = 45;
             this.txtCconstantValue.Text = "0";
             // 
@@ -254,7 +396,7 @@
             this.lblConstantValue.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblConstantValue.AutoSize = true;
-            this.lblConstantValue.Location = new System.Drawing.Point(209, 139);
+            this.lblConstantValue.Location = new System.Drawing.Point(209, 137);
             this.lblConstantValue.Name = "lblConstantValue";
             this.lblConstantValue.Size = new System.Drawing.Size(92, 14);
             this.lblConstantValue.TabIndex = 39;
@@ -265,7 +407,7 @@
             this.lblConstantDescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblConstantDescription.AutoSize = true;
-            this.lblConstantDescription.Location = new System.Drawing.Point(59, 140);
+            this.lblConstantDescription.Location = new System.Drawing.Point(59, 138);
             this.lblConstantDescription.Name = "lblConstantDescription";
             this.lblConstantDescription.Size = new System.Drawing.Size(123, 14);
             this.lblConstantDescription.TabIndex = 25;
@@ -275,9 +417,9 @@
             // 
             this.txtAconstantDescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtAconstantDescription.Location = new System.Drawing.Point(61, 157);
+            this.txtAconstantDescription.Location = new System.Drawing.Point(61, 155);
             this.txtAconstantDescription.Name = "txtAconstantDescription";
-            this.txtAconstantDescription.Size = new System.Drawing.Size(138, 22);
+            this.txtAconstantDescription.Size = new System.Drawing.Size(129, 22);
             this.txtAconstantDescription.TabIndex = 27;
             // 
             // lblC
@@ -285,7 +427,7 @@
             this.lblC.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblC.AutoSize = true;
-            this.lblC.Location = new System.Drawing.Point(39, 216);
+            this.lblC.Location = new System.Drawing.Point(39, 214);
             this.lblC.Name = "lblC";
             this.lblC.Size = new System.Drawing.Size(16, 14);
             this.lblC.TabIndex = 35;
@@ -296,7 +438,7 @@
             this.lblA.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblA.AutoSize = true;
-            this.lblA.Location = new System.Drawing.Point(39, 161);
+            this.lblA.Location = new System.Drawing.Point(39, 159);
             this.lblA.Name = "lblA";
             this.lblA.Size = new System.Drawing.Size(17, 14);
             this.lblA.TabIndex = 33;
@@ -306,9 +448,9 @@
             // 
             this.txtCconstantDescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtCconstantDescription.Location = new System.Drawing.Point(61, 212);
+            this.txtCconstantDescription.Location = new System.Drawing.Point(61, 210);
             this.txtCconstantDescription.Name = "txtCconstantDescription";
-            this.txtCconstantDescription.Size = new System.Drawing.Size(138, 22);
+            this.txtCconstantDescription.Size = new System.Drawing.Size(129, 22);
             this.txtCconstantDescription.TabIndex = 31;
             // 
             // lblB
@@ -316,7 +458,7 @@
             this.lblB.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblB.AutoSize = true;
-            this.lblB.Location = new System.Drawing.Point(39, 189);
+            this.lblB.Location = new System.Drawing.Point(39, 187);
             this.lblB.Name = "lblB";
             this.lblB.Size = new System.Drawing.Size(17, 14);
             this.lblB.TabIndex = 34;
@@ -326,17 +468,17 @@
             // 
             this.txtBconstantDescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtBconstantDescription.Location = new System.Drawing.Point(61, 184);
+            this.txtBconstantDescription.Location = new System.Drawing.Point(61, 182);
             this.txtBconstantDescription.Name = "txtBconstantDescription";
-            this.txtBconstantDescription.Size = new System.Drawing.Size(138, 22);
+            this.txtBconstantDescription.Size = new System.Drawing.Size(129, 22);
             this.txtBconstantDescription.TabIndex = 30;
             // 
             // txtBeta
             // 
             this.txtBeta.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtBeta.Location = new System.Drawing.Point(211, 64);
+            this.txtBeta.Location = new System.Drawing.Point(211, 63);
             this.txtBeta.Name = "txtBeta";
-            this.txtBeta.Size = new System.Drawing.Size(138, 22);
+            this.txtBeta.Size = new System.Drawing.Size(129, 22);
             this.txtBeta.TabIndex = 43;
             this.txtBeta.Text = "0";
             // 
@@ -345,16 +487,16 @@
             this.cboBetaDistribution.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.cboBetaDistribution.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboBetaDistribution.FormattingEnabled = true;
-            this.cboBetaDistribution.Location = new System.Drawing.Point(61, 66);
+            this.cboBetaDistribution.Location = new System.Drawing.Point(61, 65);
             this.cboBetaDistribution.Name = "cboBetaDistribution";
-            this.cboBetaDistribution.Size = new System.Drawing.Size(138, 22);
+            this.cboBetaDistribution.Size = new System.Drawing.Size(129, 22);
             this.cboBetaDistribution.TabIndex = 29;
             // 
             // lblBetaDisribution
             // 
             this.lblBetaDisribution.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.lblBetaDisribution.AutoSize = true;
-            this.lblBetaDisribution.Location = new System.Drawing.Point(57, 50);
+            this.lblBetaDisribution.Location = new System.Drawing.Point(57, 49);
             this.lblBetaDisribution.Name = "lblBetaDisribution";
             this.lblBetaDisribution.Size = new System.Drawing.Size(103, 14);
             this.lblBetaDisribution.TabIndex = 26;
@@ -364,7 +506,7 @@
             // 
             this.lblBeta.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.lblBeta.AutoSize = true;
-            this.lblBeta.Location = new System.Drawing.Point(209, 49);
+            this.lblBeta.Location = new System.Drawing.Point(209, 48);
             this.lblBeta.Name = "lblBeta";
             this.lblBeta.Size = new System.Drawing.Size(35, 14);
             this.lblBeta.TabIndex = 38;
@@ -373,10 +515,10 @@
             // editVarBtn
             // 
             this.editVarBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.editVarBtn.Location = new System.Drawing.Point(110, 100);
+            this.editVarBtn.Location = new System.Drawing.Point(110, 99);
             this.editVarBtn.Margin = new System.Windows.Forms.Padding(0);
             this.editVarBtn.Name = "editVarBtn";
-            this.editVarBtn.Size = new System.Drawing.Size(186, 27);
+            this.editVarBtn.Size = new System.Drawing.Size(177, 27);
             this.editVarBtn.TabIndex = 50;
             this.editVarBtn.Text = "Edit Variance/ Covariance";
             this.editVarBtn.UseVisualStyleBackColor = true;
@@ -396,7 +538,7 @@
             this.showForSeasonal.Location = new System.Drawing.Point(0, 0);
             this.showForSeasonal.Margin = new System.Windows.Forms.Padding(0);
             this.showForSeasonal.Name = "showForSeasonal";
-            this.showForSeasonal.Size = new System.Drawing.Size(409, 242);
+            this.showForSeasonal.Size = new System.Drawing.Size(400, 240);
             this.showForSeasonal.TabIndex = 51;
             // 
             // lblEnd
@@ -415,7 +557,7 @@
             this.txtEnd.Enabled = false;
             this.txtEnd.Location = new System.Drawing.Point(308, 19);
             this.txtEnd.Name = "txtEnd";
-            this.txtEnd.Size = new System.Drawing.Size(85, 22);
+            this.txtEnd.Size = new System.Drawing.Size(76, 22);
             this.txtEnd.TabIndex = 49;
             // 
             // lblStart
@@ -436,7 +578,7 @@
             this.txtStart.Location = new System.Drawing.Point(211, 19);
             this.txtStart.Name = "txtStart";
             this.txtStart.ReadOnly = true;
-            this.txtStart.Size = new System.Drawing.Size(85, 22);
+            this.txtStart.Size = new System.Drawing.Size(76, 22);
             this.txtStart.TabIndex = 47;
             // 
             // lblSeason
@@ -457,126 +599,18 @@
             this.txtSeason.Location = new System.Drawing.Point(16, 19);
             this.txtSeason.Name = "txtSeason";
             this.txtSeason.ReadOnly = true;
-            this.txtSeason.Size = new System.Drawing.Size(183, 22);
+            this.txtSeason.Size = new System.Drawing.Size(174, 22);
             this.txtSeason.TabIndex = 37;
             // 
-            // groupBox1
+            // showForSeasonal2
             // 
-            this.groupBox1.Controls.Add(this.panel1);
-            this.groupBox1.Location = new System.Drawing.Point(5, 122);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(415, 263);
-            this.groupBox1.TabIndex = 34;
-            this.groupBox1.TabStop = false;
-            // 
-            // lblVariable
-            // 
-            this.lblVariable.AutoSize = true;
-            this.lblVariable.Location = new System.Drawing.Point(10, 14);
-            this.lblVariable.Name = "lblVariable";
-            this.lblVariable.Size = new System.Drawing.Size(56, 14);
-            this.lblVariable.TabIndex = 55;
-            this.lblVariable.Text = "Variable:";
-            // 
-            // lblModSpec
-            // 
-            this.lblModSpec.AutoSize = true;
-            this.lblModSpec.Location = new System.Drawing.Point(10, 42);
-            this.lblModSpec.Name = "lblModSpec";
-            this.lblModSpec.Size = new System.Drawing.Size(116, 14);
-            this.lblModSpec.TabIndex = 50;
-            this.lblModSpec.Text = "Model Specification:";
-            // 
-            // txtModelSpec
-            // 
-            this.txtModelSpec.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtModelSpec.BackColor = System.Drawing.SystemColors.Window;
-            this.txtModelSpec.Enabled = false;
-            this.txtModelSpec.Location = new System.Drawing.Point(133, 38);
-            this.txtModelSpec.MaximumSize = new System.Drawing.Size(282, 22);
-            this.txtModelSpec.Name = "txtModelSpec";
-            this.txtModelSpec.ReadOnly = true;
-            this.txtModelSpec.Size = new System.Drawing.Size(282, 22);
-            this.txtModelSpec.TabIndex = 49;
-            // 
-            // lblPollutant
-            // 
-            this.lblPollutant.AutoSize = true;
-            this.lblPollutant.Location = new System.Drawing.Point(131, 14);
-            this.lblPollutant.Name = "lblPollutant";
-            this.lblPollutant.Size = new System.Drawing.Size(60, 14);
-            this.lblPollutant.TabIndex = 52;
-            this.lblPollutant.Text = "Pollutant:";
-            // 
-            // txtPollutant
-            // 
-            this.txtPollutant.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtPollutant.BackColor = System.Drawing.SystemColors.Window;
-            this.txtPollutant.Enabled = false;
-            this.txtPollutant.Location = new System.Drawing.Point(197, 10);
-            this.txtPollutant.MaximumSize = new System.Drawing.Size(282, 22);
-            this.txtPollutant.Name = "txtPollutant";
-            this.txtPollutant.ReadOnly = true;
-            this.txtPollutant.Size = new System.Drawing.Size(218, 22);
-            this.txtPollutant.TabIndex = 51;
-            // 
-            // lblSeasMetric
-            // 
-            this.lblSeasMetric.AutoSize = true;
-            this.lblSeasMetric.Location = new System.Drawing.Point(10, 70);
-            this.lblSeasMetric.Name = "lblSeasMetric";
-            this.lblSeasMetric.Size = new System.Drawing.Size(98, 14);
-            this.lblSeasMetric.TabIndex = 54;
-            this.lblSeasMetric.Text = "Seasonal Metric:";
-            // 
-            // txtSeasMetric
-            // 
-            this.txtSeasMetric.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtSeasMetric.BackColor = System.Drawing.SystemColors.Window;
-            this.txtSeasMetric.Enabled = false;
-            this.txtSeasMetric.Location = new System.Drawing.Point(133, 66);
-            this.txtSeasMetric.MaximumSize = new System.Drawing.Size(282, 22);
-            this.txtSeasMetric.Name = "txtSeasMetric";
-            this.txtSeasMetric.ReadOnly = true;
-            this.txtSeasMetric.Size = new System.Drawing.Size(282, 22);
-            this.txtSeasMetric.TabIndex = 53;
-            // 
-            // txtVariable
-            // 
-            this.txtVariable.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtVariable.BackColor = System.Drawing.SystemColors.Window;
-            this.txtVariable.Enabled = false;
-            this.txtVariable.Location = new System.Drawing.Point(71, 10);
-            this.txtVariable.MaximumSize = new System.Drawing.Size(282, 22);
-            this.txtVariable.Name = "txtVariable";
-            this.txtVariable.ReadOnly = true;
-            this.txtVariable.Size = new System.Drawing.Size(37, 22);
-            this.txtVariable.TabIndex = 56;
-            this.txtVariable.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(121, 98);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(50, 14);
-            this.label1.TabIndex = 57;
-            this.label1.Text = "Season:";
-            // 
-            // cboSeason
-            // 
-            this.cboSeason.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.cboSeason.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboSeason.FormattingEnabled = true;
-            this.cboSeason.Location = new System.Drawing.Point(177, 94);
-            this.cboSeason.Name = "cboSeason";
-            this.cboSeason.Size = new System.Drawing.Size(131, 22);
-            this.cboSeason.TabIndex = 58;
+            this.showForSeasonal2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.showForSeasonal2.Controls.Add(this.cboSeason);
+            this.showForSeasonal2.Controls.Add(this.lblSeas);
+            this.showForSeasonal2.Location = new System.Drawing.Point(11, 127);
+            this.showForSeasonal2.Name = "showForSeasonal2";
+            this.showForSeasonal2.Size = new System.Drawing.Size(402, 42);
+            this.showForSeasonal2.TabIndex = 61;
             // 
             // EffectCoefficients
             // 
@@ -584,9 +618,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.ClientSize = new System.Drawing.Size(425, 445);
-            this.Controls.Add(this.cboSeason);
-            this.Controls.Add(this.label1);
+            this.ClientSize = new System.Drawing.Size(425, 466);
+            this.Controls.Add(this.lblMetric);
             this.Controls.Add(this.txtVariable);
             this.Controls.Add(this.txtSeasMetric);
             this.Controls.Add(this.lblSeasMetric);
@@ -595,9 +628,10 @@
             this.Controls.Add(this.txtModelSpec);
             this.Controls.Add(this.lblModSpec);
             this.Controls.Add(this.lblVariable);
-            this.Controls.Add(this.groupBox1);
+            this.Controls.Add(this.panel4);
             this.Controls.Add(this.grpCancelOK);
-            this.MaximumSize = new System.Drawing.Size(441, 483);
+            this.Controls.Add(this.cboMetric);
+            this.Controls.Add(this.showForSeasonal2);
             this.MinimumSize = new System.Drawing.Size(441, 483);
             this.Name = "EffectCoefficients";
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
@@ -605,14 +639,16 @@
             this.Text = "Effect Coefficients";
             this.Load += new System.EventHandler(this.EffectCoefficients_Load);
             this.grpCancelOK.ResumeLayout(false);
+            this.panel4.ResumeLayout(false);
+            this.panel4.PerformLayout();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
-            this.panel2.ResumeLayout(false);
-            this.panel2.PerformLayout();
+            this.hideForMulti.ResumeLayout(false);
+            this.hideForMulti.PerformLayout();
             this.showForSeasonal.ResumeLayout(false);
             this.showForSeasonal.PerformLayout();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
+            this.showForSeasonal2.ResumeLayout(false);
+            this.showForSeasonal2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -625,8 +661,21 @@
         private System.Windows.Forms.GroupBox grpCancelOK;
         private System.Windows.Forms.Button nextBtn;
         private System.Windows.Forms.Button prevBtn;
+        private System.Windows.Forms.Label lblVariable;
+        private System.Windows.Forms.Label lblModSpec;
+        private System.Windows.Forms.TextBox txtModelSpec;
+        private System.Windows.Forms.Label lblPollutant;
+        private System.Windows.Forms.TextBox txtPollutant;
+        private System.Windows.Forms.Label lblSeasMetric;
+        private System.Windows.Forms.TextBox txtSeasMetric;
+        private System.Windows.Forms.TextBox txtVariable;
+        private System.Windows.Forms.Label lblSeas;
+        private System.Windows.Forms.ComboBox cboSeason;
+        private System.Windows.Forms.ComboBox cboMetric;
+        private System.Windows.Forms.Label lblMetric;
+        private System.Windows.Forms.Panel panel4;
         private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.Panel hideForMulti;
         private System.Windows.Forms.TextBox txtBetaParameter1;
         private System.Windows.Forms.Label lblBetaParameter1;
         private System.Windows.Forms.TextBox txtBetaParameter2;
@@ -646,6 +695,7 @@
         private System.Windows.Forms.ComboBox cboBetaDistribution;
         private System.Windows.Forms.Label lblBetaDisribution;
         private System.Windows.Forms.Label lblBeta;
+        private System.Windows.Forms.Button editVarBtn;
         private System.Windows.Forms.Panel showForSeasonal;
         private System.Windows.Forms.Label lblEnd;
         private System.Windows.Forms.TextBox txtEnd;
@@ -653,17 +703,6 @@
         private System.Windows.Forms.TextBox txtStart;
         private System.Windows.Forms.Label lblSeason;
         private System.Windows.Forms.TextBox txtSeason;
-        private System.Windows.Forms.Button editVarBtn;
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.Label lblVariable;
-        private System.Windows.Forms.Label lblModSpec;
-        private System.Windows.Forms.TextBox txtModelSpec;
-        private System.Windows.Forms.Label lblPollutant;
-        private System.Windows.Forms.TextBox txtPollutant;
-        private System.Windows.Forms.Label lblSeasMetric;
-        private System.Windows.Forms.TextBox txtSeasMetric;
-        private System.Windows.Forms.TextBox txtVariable;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.ComboBox cboSeason;
+        private System.Windows.Forms.Panel showForSeasonal2;
     }
 }

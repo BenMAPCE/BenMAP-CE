@@ -37,7 +37,7 @@ namespace BenMAP
         {
             // Load variance data from db by crfbetaid
             ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
-            string commandText = string.Format("select pollutantname, varcov from crfvariables as crv left join crfbetas as crb on crb.crfvariableid = crv.crfvariableid left join crfvarcov as crvc on crvc.crfbetaID1 = crb.crfbetaid or crvc.crfbetaid2 = crb.crfbetaid where((crfbetaid2={0} and variablename!='{1}') or(crfbetaid1={0} and crfbetaid2={0})) order by variablename", Pollutant.PollBetas[betaIndex].BetaID, Pollutant.VariableName);
+            string commandText = string.Format("select pollutantname, varcov from crfvariables as crv left join crfbetas as crb on crb.crfvariableid = crv.crfvariableid left join crfvarcov as crvc on crvc.crfbetaID1 = crb.crfbetaid or crvc.crfbetaid2 = crb.crfbetaid where((crfbetaid2={0} and variablename!='{1}') or(crfbetaid1={0} and crfbetaid2={0})) order by char_length(variablename), variablename", Pollutant.PollBetas[betaIndex].BetaID, Pollutant.VariableName);
             DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
 
             olvVariance.DataSource = ds.Tables[0];

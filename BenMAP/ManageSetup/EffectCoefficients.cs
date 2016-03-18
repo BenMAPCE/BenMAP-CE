@@ -41,6 +41,7 @@ namespace BenMAP
                 txtVariable.Text = selectedVariable.VariableName;
                 txtPollutant.Text = selectedVariable.PollutantName;
                 txtModelSpec.Text = _hif.ModelSpec;
+                txtSeasMetric.Text = _hif.SeasonalMetric;
 
                 // cboBetaDistribution.Items.Add("None");
                 cboBetaDistribution.Items.Add("Normal");
@@ -64,24 +65,24 @@ namespace BenMAP
 
                 if (_hif.PollVariables.Count > 1)
                 {
-                    panel2.Visible = false;
+                    hideForMulti.Visible = false;
                     editVarBtn.Visible = true;
                     prevBtn.Visible = true;
                     nextBtn.Visible = true;
-                     
-                    if (seasonal) showForSeasonal.Visible = true;
-                    else showForSeasonal.Visible = false;
+
+                    if (seasonal) { showForSeasonal.Visible = true; showForSeasonal2.Visible = true; }
+                    else { showForSeasonal.Visible = false; showForSeasonal2.Visible = false; }
                 }
 
                 else if (_hif.PollVariables.Count == 1)
                 {
-                    panel2.Visible = true;
+                    hideForMulti.Visible = true;
                     editVarBtn.Visible = false;
                     prevBtn.Visible = false;
                     nextBtn.Visible = false;
 
-                    if (seasonal) showForSeasonal.Visible = true;
-                    else showForSeasonal.Visible = false;
+                    if (seasonal) { showForSeasonal.Visible = true; showForSeasonal2.Visible = true; }
+                    else { showForSeasonal.Visible = false; showForSeasonal2.Visible = false; }
                 }
 
                 else
@@ -99,6 +100,7 @@ namespace BenMAP
                 }
 
                 loadVariable();
+                loadMetrics();
 
                 cboBetaDistribution.SelectedValueChanged -= cboBetaDistribution_SelectedValueChanged;
                 cboBetaDistribution.SelectedValueChanged += cboBetaDistribution_SelectedValueChanged;
@@ -113,110 +115,6 @@ namespace BenMAP
             }
         }
 
-
-        // Used to load items from database - now done in HIFDefinitionMulti.cs where all obejcts set up during load 
-        // Will leave for now in case changes are needed
-        /* public void BindItems()
-        {
-            try
-            {
-                string commandText = string.Empty;
-                ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
-
-                if (seasonal)
-                {
-                    int i, numSeasons;
-                    commandText = string.Format("select seasonalmetricseasonname, startday, endday, seasonalmetricseasonid from seasonalmetricseasons as sms inner join seasonalmetrics as sm on sm.seasonalmetricid=sms.seasonalmetricid inner join crfunctions c on c.metricid=sm.metricid and c.seasonalmetricid=sm.seasonalmetricid and c.seasonalmetricid=sm.seasonalmetricid and crfunctionid={0} order by startday asc", Convert.ToInt32(_hif.FunctionID));
-                    DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
-                    DataRow dr = ds.Tables[0].Rows[0];
-                    numSeasons = ds.Tables[0].Rows.Count;
-
-                    txtSeason.Text = dr["seasonalmetricseasonname"].ToString();
-                    txtStart.Text = dr["startday"].ToString();
-                    txtEnd.Text = dr["endday"].ToString();
-
-                    for (i = 1; i <= numSeasons; i++)
-                    {
-                        cboSeason.Items.Add(string.Format("Season {0}", i));
-                    }
-                     
-                    i = 0;
-                    foreach (var pv in _hif.PollVariables)
-                    {
-                        while (pv.PollBetas.Count != numSeasons)
-                        {
-                            _hif.PollVariables[i].PollBetas.Add(new CRFBeta());
-                        }
-                        i++;
-                    }
-
-                    selectedSeason = 0;
-                    cboSeason.SelectedIndex = 0;
-
-                    commandText = string.Format("select beta, p1beta, p2beta, a, namea, b, nameb, c, namec from crfvariables vars inner join crfbetas betas on betas.crfvariableid=vars.crfvariableid where crfunctionid={0} and seasonalmetricseasonid={1} and vars.pollutant1id={2}", Convert.ToInt32(_hif.FunctionID), Convert.ToInt32(dr["seasonalmetricseasonid"].ToString()), _hif.PollVariables.ElementAt(selected).Pollutant1ID);
-                    ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
-                    dr = ds.Tables[0].Rows[0];
-                     
-                    txtBeta.Text = dr["beta"].ToString();
-
-                    if (dr["p1beta"].ToString() == string.Empty) txtBetaParameter1.Text = "0";
-                    else txtBetaParameter1.Text = dr["p1beta"].ToString();
-
-                    if (dr["p2beta"].ToString() == string.Empty) txtBetaParameter2.Text = "0";
-                    else txtBetaParameter2.Text = dr["p2beta"].ToString();
-
-                    if (dr["a"].ToString() == string.Empty) txtAconstantValue.Text = "0";
-                    else txtAconstantValue.Text = dr["a"].ToString();
-                    txtAconstantDescription.Text = dr["namea"].ToString();
-
-                    if (dr["b"].ToString() == string.Empty) txtBconstantValue.Text = "0";
-                    else txtBconstantValue.Text = dr["b"].ToString();
-                    txtBconstantDescription.Text = dr["nameb"].ToString();
-
-                    if (dr["c"].ToString() == string.Empty) txtCconstantValue.Text = "0";
-                    else txtCconstantValue.Text = dr["c"].ToString();
-                    txtCconstantDescription.Text = dr["namec"].ToString();
-
-                    txtSeasMetric.Text = _hif.SeasonalMetric;
-                }
-                else
-                {
-                    // TBD
-
-                    commandText = string.Format("select beta, p1beta, p2beta, a, namea, b, nameb, c, namec from crfvariables vars inner join crfbetas betas on betas.crfvariableid=vars.crfvariableid where crfunctionid={0} and vars.pollutant1id={2}", Convert.ToInt32(_hif.FunctionID), _hif.PollVariables.ElementAt(selected).Pollutant1ID);
-                    DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
-                    DataRow dr = ds.Tables[0].Rows[0];
-
-                    txtBeta.Text = dr["beta"].ToString();
-
-                    if (dr["p1beta"].ToString() == string.Empty) txtBetaParameter1.Text = "0";
-                    else txtBetaParameter1.Text = dr["p1beta"].ToString();
-
-                    if (dr["p2beta"].ToString() == string.Empty) txtBetaParameter2.Text = "0";
-                    else txtBetaParameter2.Text = dr["p2beta"].ToString();
-
-                    if (dr["a"].ToString() == string.Empty) txtAconstantValue.Text = "0";
-                    else txtAconstantValue.Text = dr["a"].ToString();
-                    txtAconstantDescription.Text = dr["namea"].ToString();
-
-                    if (dr["b"].ToString() == string.Empty) txtBconstantValue.Text = "0";
-                    else txtBconstantValue.Text = dr["b"].ToString();
-                    txtBconstantDescription.Text = dr["nameb"].ToString();
-
-                    if (dr["c"].ToString() == string.Empty) txtCconstantValue.Text = "0";
-                    else txtCconstantValue.Text = dr["c"].ToString();
-                    txtCconstantDescription.Text = dr["namec"].ToString();
-
-                    txtSeasMetric.Text = "None";
-                }
-            }
-
-            catch (Exception ex)
-            {
-                Logger.LogError(ex);
-            }
-        } */
-
         private void nextBtn_Click(object sender, EventArgs e)
         {
             saveCurrent(cboSeason.SelectedIndex);
@@ -227,6 +125,7 @@ namespace BenMAP
 
             selectedSeason = 0;
             loadVariable();
+            loadMetrics();
             cboSeason.SelectedIndex = 0;
         }
 
@@ -240,6 +139,7 @@ namespace BenMAP
 
             selectedSeason = 0;
             loadVariable();
+            loadMetrics();
             cboSeason.SelectedIndex = 0;
         }
 
@@ -341,10 +241,41 @@ namespace BenMAP
             }
         }
 
+        private void loadMetrics()
+        {
+            try
+            {
+                CRFVariable selectedVariable = _hif.PollVariables.ElementAt(selected);
+
+                if(selectedVariable.PollutantName.Contains("*"))
+                {
+                    cboMetric.DataSource = null;
+                    cboMetric.Items.Clear();
+                    cboMetric.Enabled = false;
+                }
+                else
+                {
+                    cboMetric.Enabled = true;
+                    string commandText = string.Format("select METRICNAME from METRICS where METRICS.POLLUTANTID={0}", selectedVariable.Pollutant1ID);
+                    ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                    DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+                    cboMetric.DataSource = ds.Tables[0];
+                    cboMetric.DisplayMember = "METRICNAME";
+                    cboMetric.Text = selectedVariable.Metric;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+            }
+        }
+
         private void btnCancel_Click(object sender, EventArgs e)
         {
-            DialogResult warn = MessageBox.Show("Pressing cancel will discard the changes on the current variable. Changes made on other variable values will still be saved.","Warning",MessageBoxButtons.OKCancel);
-            if (warn == DialogResult.Cancel) return;
+            // Warning to be used once editing is enabled
+            /* DialogResult warn = MessageBox.Show("Pressing cancel will discard the changes on the current variable. Changes made on other variable values will still be saved.","Warning",MessageBoxButtons.OKCancel);
+            if (warn == DialogResult.Cancel) return; */
 
             this.DialogResult = DialogResult.Cancel;
         }
