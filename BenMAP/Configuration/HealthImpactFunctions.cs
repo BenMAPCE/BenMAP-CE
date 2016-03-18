@@ -1926,8 +1926,8 @@ namespace BenMAP
                             }
 
                             //calculate interaction values
-                            CalculateInteractionValues(bcgInteraction.Base, bcg1.Base, bcg2.Base);
-                            CalculateInteractionValues(bcgInteraction.Control, bcg1.Control, bcg2.Control);
+                            CalculateInteractionValues(variable.VariableID, bcgInteraction.Base, bcg1.Base, bcg2.Base);
+                            CalculateInteractionValues(variable.VariableID, bcgInteraction.Control, bcg1.Control, bcg2.Control);
 
 
                             //add to pollutantid-variableid  map
@@ -1962,13 +1962,26 @@ namespace BenMAP
 
         }
 
-        private void CalculateInteractionValues(BenMAPLine bmlInteraction, BenMAPLine bmlOne, BenMAPLine bmlTwo)
+        private void CalculateInteractionValues(int variableID, BenMAPLine bmlInteraction, BenMAPLine bmlOne, BenMAPLine bmlTwo)
         {
+            List<string> lstSeasonalMetrics = new List<string>();
+
+            //initialize interaction variable names map
+            CommonClass.dicInteractionVariableMetricNames = new Dictionary<int, string>();
+
             //calculate interaction values
             //model attributes
-            for(int indexAttribute = 0; indexAttribute < bmlInteraction.ModelAttributes.Count; indexAttribute++)
+            for (int indexAttribute = 0; indexAttribute < bmlInteraction.ModelAttributes.Count; indexAttribute++)
             {
                 ModelAttribute ma = bmlInteraction.ModelAttributes[indexAttribute];
+
+                //if this is seasonal metric, then add name to list
+                if (ma.SeasonalMetric != null)
+                {
+                    lstSeasonalMetrics.Add(ma.SeasonalMetric.SeasonalMetricName);
+                }
+
+
                 ma.Values.Clear();
                 //loop over values, multiplying to get interaction value
                 for(int indexValue = 0; indexValue < bmlOne.ModelAttributes[indexAttribute].Values.Count; indexValue++)
@@ -2006,9 +2019,19 @@ namespace BenMAP
                         valueInteraction = valueOne * valueTwo;
                     }
 
+                    //for interaction metric key, use the metric key of the first pollutant since
+                    //the interaction base control group was copied (then modified) from first pollutant 
                     string metricKey = bmlOne.ModelResultAttributes[indexAttribute].Values.ElementAt(indexValue).Key;
+                    //if this is not a seasonal metric, then add to interaction metric names list
+                    if (!lstSeasonalMetrics.Contains(metricKey))
+                    {
+                        CommonClass.dicInteractionVariableMetricNames.Add(variableID, metricKey);
 
-                    mra.Values.Add(metricKey, valueInteraction);
+                    }
+                    
+                    //add interaction model result attribute
+                    mra.Values.Add(metricKey, valueInteraction);                   
+
                 }
             }
 

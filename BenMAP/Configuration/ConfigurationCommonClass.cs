@@ -6720,7 +6720,14 @@ namespace BenMAP.Configuration
                 }
                 else
                 {
-                    metricKey = crSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName;
+                    if (variable.Pollutant2ID > 0) //if we have 2nd pollutant, then this is interaction
+                    {
+                        metricKey = CommonClass.dicInteractionVariableMetricNames[variable.VariableID];
+                    }
+                    else
+                    {
+                        metricKey = crSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName;
+                    }                    
                 }
 
                 //add metric statistic name ?
