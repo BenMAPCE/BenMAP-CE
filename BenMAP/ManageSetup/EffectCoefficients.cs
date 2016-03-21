@@ -261,7 +261,7 @@ namespace BenMAP
                     DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                     cboMetric.DataSource = ds.Tables[0];
                     cboMetric.DisplayMember = "METRICNAME";
-                    cboMetric.Text = selectedVariable.Metric;
+                    cboMetric.Text = selectedVariable.Metric.MetricName;
                 }
 
             }

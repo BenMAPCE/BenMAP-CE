@@ -14,8 +14,7 @@ namespace BenMAP
         private string _pollutantName;
         private int _pollutant1ID;
         private int _pollutant2ID;
-        private string _metric;
-        private int _metricID;
+        private Metric _metric;
         private List<CRFBeta> _pollBetas;
 
         // Constructor for new/ edited functions
@@ -76,17 +75,11 @@ namespace BenMAP
             set { _functionID = value; }
         }
 
-        public string Metric
+        public Metric Metric
         {
             get { return _metric; }
             set { _metric = value; }
-        }
-
-        public int MetricID
-        {
-            get { return _metricID; }
-            set { _metricID = value; }
-        }
+        }      
 
         public string VariableName
         {
