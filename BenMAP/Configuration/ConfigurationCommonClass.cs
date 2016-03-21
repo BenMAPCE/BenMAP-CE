@@ -623,7 +623,7 @@ namespace BenMAP.Configuration
 
                 benMapHealthImpactFunction.ModelSpecification = Grid.GridCommon.getModelSpecificationFromID(Convert.ToInt32(dr["MSID"]));
                 benMapHealthImpactFunction.BetaVariation = Grid.GridCommon.getBetaVariationFromID(Convert.ToInt32(dr["BetaVariationID"]));
-                benMapHealthImpactFunction.Variables = Grid.GridCommon.getVariableListFromID(benMapHealthImpactFunction.ID);
+                benMapHealthImpactFunction.Variables = Grid.GridCommon.getVariableListFromID(benMapHealthImpactFunction);
                 Grid.GridCommon.getBetaListFromPollutantAndID(benMapHealthImpactFunction.Variables);
 
                 return benMapHealthImpactFunction;
@@ -6726,7 +6726,7 @@ namespace BenMAP.Configuration
                     }
                     else
                     {
-                        metricKey = crSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName;
+                        metricKey = variable.Metric.MetricName;
                     }                    
                 }
 
