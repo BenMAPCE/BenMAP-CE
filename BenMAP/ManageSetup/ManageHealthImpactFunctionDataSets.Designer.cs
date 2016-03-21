@@ -30,7 +30,6 @@ namespace BenMAP
             this.olvColumn0 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn1 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn2 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvColumn3 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn4 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn5 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn6 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
@@ -189,7 +188,6 @@ namespace BenMAP
             this.olvData.AllColumns.Add(this.olvColumn0);
             this.olvData.AllColumns.Add(this.olvColumn1);
             this.olvData.AllColumns.Add(this.olvColumn2);
-            this.olvData.AllColumns.Add(this.olvColumn3);
             this.olvData.AllColumns.Add(this.olvColumn4);
             this.olvData.AllColumns.Add(this.olvColumn5);
             this.olvData.AllColumns.Add(this.olvColumn6);
@@ -223,7 +221,6 @@ namespace BenMAP
             this.olvColumn0,
             this.olvColumn1,
             this.olvColumn2,
-            this.olvColumn3,
             this.olvColumn4,
             this.olvColumn5,
             this.olvColumn6,
@@ -292,12 +289,6 @@ namespace BenMAP
             this.olvColumn2.AspectName = "pgname";
             this.olvColumn2.Text = "Pollutant";
             this.olvColumn2.Width = 100;
-            // 
-            // olvColumn3
-            // 
-            this.olvColumn3.AspectName = "metricname";
-            this.olvColumn3.Text = "Metric";
-            this.olvColumn3.Width = 70;
             // 
             // olvColumn4
             // 
@@ -607,7 +598,6 @@ namespace BenMAP
         private BrightIdeasSoftware.OLVColumn olvColumn0;
         private BrightIdeasSoftware.OLVColumn olvColumn1;
         private BrightIdeasSoftware.OLVColumn olvColumn2;
-        private BrightIdeasSoftware.OLVColumn olvColumn3;
         private BrightIdeasSoftware.OLVColumn olvColumn4;
         private BrightIdeasSoftware.OLVColumn olvColumn5;
         private BrightIdeasSoftware.OLVColumn olvColumn6;
