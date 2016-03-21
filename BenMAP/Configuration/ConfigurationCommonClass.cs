@@ -4409,12 +4409,7 @@ namespace BenMAP.Configuration
                 BaseControlGroup baseControlGroup;
 
                 //to get dictionaries for a single pollutant, for example
-                baseControlGroup = CommonClass.LstBaseControlGroup.Where(bcg => bcg.Pollutant.PollutantID == 4).First(); //Where(bcg => bcg.Pollutant.PollutantID == 4)
-                dicBaseMetricData = dicAllMetricDataBase[baseControlGroup.Pollutant.PollutantID];
-                dicControlMetricData = dicAllMetricDataControl[baseControlGroup.Pollutant.PollutantID];
-                dicBase365 = dicAll365Base[baseControlGroup.Pollutant.PollutantID];
-                dicControl365 = dicAll365Control[baseControlGroup.Pollutant.PollutantID];
-                dicControl = DicControlAll[baseControlGroup.Pollutant.PollutantID];
+                baseControlGroup = CommonClass.LstBaseControlGroup.First();                
 
                 double baseValue = 0;
                 double controlValue = 0;
@@ -4425,7 +4420,6 @@ namespace BenMAP.Configuration
                 Dictionary<int, List<float>> dicBase365Values = new Dictionary<int, List<float>>();
                 Dictionary<int, List<float>> dicControl365Values = new Dictionary<int, List<float>>();
                 Dictionary<int, double> dicDeltaQValues = new Dictionary<int, double>();
-
 
                 double populationValue = 0;
                 double incidenceValue = 0;
