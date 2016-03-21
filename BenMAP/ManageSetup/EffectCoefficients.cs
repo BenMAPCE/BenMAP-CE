@@ -42,6 +42,7 @@ namespace BenMAP
                 txtPollutant.Text = selectedVariable.PollutantName;
                 txtModelSpec.Text = _hif.ModelSpec;
                 txtSeasMetric.Text = _hif.SeasonalMetric;
+                cboMetric.Text = selectedVariable.Metric.MetricName;
 
                 // cboBetaDistribution.Items.Add("None");
                 cboBetaDistribution.Items.Add("Normal");
