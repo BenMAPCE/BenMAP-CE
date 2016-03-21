@@ -109,10 +109,10 @@ namespace BenMAP
             // 
             // pictureBox2
             // 
-            this.pictureBox2.Location = new System.Drawing.Point(41, 87);
+            this.pictureBox2.Location = new System.Drawing.Point(41, 75);
             this.pictureBox2.Name = "pictureBox2";
             this.pictureBox2.Size = new System.Drawing.Size(429, 238);
-            this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
             this.pictureBox2.TabIndex = 12;
             this.pictureBox2.TabStop = false;
             // 
@@ -168,12 +168,12 @@ namespace BenMAP
             // 
             // lblPDF
             // 
-            this.lblPDF.AutoSize = true;
+            this.lblPDF.Dock = System.Windows.Forms.DockStyle.Top;
             this.lblPDF.Font = new System.Drawing.Font("Calibri", 20F);
-            this.lblPDF.Location = new System.Drawing.Point(156, 26);
+            this.lblPDF.Location = new System.Drawing.Point(3, 18);
             this.lblPDF.Name = "lblPDF";
             this.lblPDF.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.lblPDF.Size = new System.Drawing.Size(199, 33);
+            this.lblPDF.Size = new System.Drawing.Size(505, 33);
             this.lblPDF.TabIndex = 0;
             this.lblPDF.Text = "Exponential PDF:";
             this.lblPDF.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
