@@ -423,7 +423,8 @@ namespace BenMAP
 
 
                 // Set up variable objects -- order by char_length and variable name to avoid 1, 10, 2 ordering
-                commandText = string.Format("select distinct variablename, crv.crfvariableid, pollutantname, pollutant1id, pollutant2id, metricname, m.metricid, hourlymetricgeneration from crfunctions as crf left join crfvariables as crv on crf.crfunctionid=crv.crfunctionid join metrics as m on m.pollutantid = crv.pollutant1id and crv.metricid = m.metricid where crf.crfunctionid={0} order by char_length(variablename), variablename", _healthImpacts.FunctionID);
+                commandText = string.Format("select distinct variablename, crv.crfvariableid, pollutantname, pollutant1id, pollutant2id, metricname, m.metricid, hourlymetricgeneration from crfunctions as crf left join crfvariables as crv on crf.crfunctionid = crv.crfunctionid join metrics as m on m.pollutantid = crv.pollutant1id where crf.crfunctionid = {0} and m.metricid in (select metricid from crfvariables as crv2 where crv.crfunctionid = crv2.crfunctionid)",_healthImpacts.FunctionID);
+
                 ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
 
                 foreach(DataRow dr in ds.Tables[0].Rows)
