@@ -6726,7 +6726,7 @@ namespace BenMAP.Configuration
                     }
                     else
                     {
-                        metricKey = crSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName;
+                        metricKey = variable.Metric.MetricName;
                     }                    
                 }
 
