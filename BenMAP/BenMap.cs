@@ -10645,7 +10645,8 @@ namespace BenMAP
 
                     barChart.FillColor = OxyColors.RoyalBlue;
                     barChart.Background = OxyColor.FromRgb(255, 255, 255);
-                    //barChart.TrackerFormatString
+                    barChart.TrackerFormatString = "{0}\n. {1}:\n  {2:0.00000}";
+
 
                     int i = 0;
                     while (i < 1)
@@ -10692,13 +10693,14 @@ namespace BenMAP
                     catAxis.TickStyle = OxyPlot.Axes.TickStyle.Crossing;
                     catAxis.Position = OxyPlot.Axes.AxisPosition.Bottom;
                     catAxis.MinimumRange = 5;
-                    // catAxis.DataMaximum.Equals(5);
+                    catAxis.IsPanEnabled = true;
 
                     yAxis.Title = strchartY;
                     yAxis.TitleFontWeight = 700;
                     yAxis.TitleFontSize = 14;
                     yAxis.AxisTitleDistance = 15;
                     yAxis.Minimum = 0;
+                    yAxis.AbsoluteMinimum = 0;
                     yAxis.MinimumPadding = 2;
                     yAxis.MaximumPadding = 0.1; 
                     yAxis.TickStyle = OxyPlot.Axes.TickStyle.Crossing;
@@ -13761,11 +13763,20 @@ namespace BenMAP
         {
             try
             {
+                bool selectOrDeselect;
+
+                if (olvRegions.CheckedItems.Count != olvRegions.Items.Count)
+                    selectOrDeselect = true;
+                else
+                    selectOrDeselect = false;
+
                 for (int j = 0; j < olvRegions.Items.Count; j++)
                 {
                     OLVListItem olvi = olvRegions.Items[j] as OLVListItem;
-                    olvi.Checked = true;
-                }
+                    // olvi.Checked = true;
+                    olvi.Checked = selectOrDeselect;
+                } 
+
                 btnApply_Click(null, null);
             }
             catch
