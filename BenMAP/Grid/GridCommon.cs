@@ -648,26 +648,32 @@ namespace BenMAP.Grid
             }
         }
 
-        public static List<CRFVariable> getVariableListFromID(int crfunctionid)
+        public static List<CRFVariable> getVariableListFromID(BenMAPHealthImpactFunction hif)
         {
             try
             {
+                int crfunctionid = hif.ID;
+
                 List<CRFVariable> varList = new List<CRFVariable>();
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
-                string commandText = string.Format("select distinct variablename, crv.crfvariableid, pollutantname, pollutant1id, pollutant2id from crfunctions as crf left join crfvariables as crv on crf.crfunctionid=crv.crfunctionid where crf.crfunctionid={0} order by variablename", crfunctionid);
+                string commandText = string.Format("select distinct variablename, crv.crfvariableid, pollutantname, pollutant1id, pollutant2id, metricid from crfunctions as crf left join crfvariables as crv on crf.crfunctionid=crv.crfunctionid where crf.crfunctionid={0} order by variablename", crfunctionid);
                 System.Data.DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
 
                 foreach (DataRow dr in ds.Tables[0].Rows)
                 {
+                    CRFVariable variable;
                     if (dr["pollutantname"].ToString().Contains("*")) // interaction
                     {
-                        varList.Add(new CRFVariable(dr["variablename"].ToString(), Convert.ToInt32(dr["crfvariableid"]), crfunctionid, dr["pollutantname"].ToString(), Convert.ToInt32(dr["pollutant1id"]), Convert.ToInt32(dr["pollutant2id"])));
+                        variable = new CRFVariable(dr["variablename"].ToString(), Convert.ToInt32(dr["crfvariableid"]), crfunctionid, dr["pollutantname"].ToString(), Convert.ToInt32(dr["pollutant1id"]), Convert.ToInt32(dr["pollutant2id"]));
+                        variable.Metric = null;                        
                     }
                     else
                     {
-                        varList.Add(new CRFVariable(dr["variablename"].ToString(), Convert.ToInt32(dr["crfvariableid"]), crfunctionid, dr["pollutantname"].ToString(), Convert.ToInt32(dr["pollutant1id"])));
+                        variable = new CRFVariable(dr["variablename"].ToString(), Convert.ToInt32(dr["crfvariableid"]), crfunctionid, dr["pollutantname"].ToString(), Convert.ToInt32(dr["pollutant1id"]));
+                        BenMAPPollutant pollutant = hif.PollutantGroup.Pollutants.Where(p => p.PollutantID == Convert.ToInt32(dr["pollutant1id"])).First();       
+                        variable.Metric = Grid.GridCommon.getMetricFromPollutantAndID(pollutant, Convert.ToInt32(dr["metricid"]));
                     }
-
+                    varList.Add(variable);
                 }
 
                 return varList;
