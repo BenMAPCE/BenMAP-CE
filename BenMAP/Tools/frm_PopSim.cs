@@ -598,6 +598,8 @@ namespace PopSim
                 lblStudyBeta.Visible = true;
                 txtUserSuppliedBeta.Visible = false;
                 lblUserSuppliedBeta.Visible = false;
+                // BENMAP-343 - set user beta to zero if study selected
+                txtUserSuppliedBeta.Text = "0";
             }
             else
             {
@@ -729,7 +731,12 @@ namespace PopSim
                 txtLagLung.Visible = false;
                 lblOther.Visible = false;
                 txtLagOther.Visible = false;
+                //BENMAP-343 - zero out the cardio lung and other when single lag checked
+                txtLagCardio.Text = "0";
+                txtLagLung.Text = "0";
+                txtLagOther.Text = "0";
             }
+
             else // cause specific lag
             {
                 lblSingleLag.Visible = false;
