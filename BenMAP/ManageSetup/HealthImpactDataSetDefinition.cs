@@ -1165,7 +1165,7 @@ namespace BenMAP
                 healthImpact.EndpointGroup = olvcEndpointGroup.GetValue(olvFunction.SelectedObject).ToString();
                 healthImpact.Endpoint = olvcEndpoint.GetValue(olvFunction.SelectedObject).ToString();
                 healthImpact.Pollutant = olvcPollutant.GetValue(olvFunction.SelectedObject).ToString();
-                healthImpact.Metric = olvColumn3.GetValue(olvFunction.SelectedObject).ToString();
+                healthImpact.Metric = "";
                 healthImpact.SeasonalMetric = olvColumn4.GetValue(olvFunction.SelectedObject).ToString();
                 healthImpact.MetricStatistis = olvColumn5.GetValue(olvFunction.SelectedObject).ToString().TrimEnd();
                 healthImpact.Author = olvColumn6.GetValue(olvFunction.SelectedObject).ToString();
@@ -1237,7 +1237,6 @@ namespace BenMAP
                         _dt.Rows[i][0] = frm.HealthImpacts.EndpointGroup;
                         _dt.Rows[i][1] = frm.HealthImpacts.Endpoint;
                         _dt.Rows[i][2] = frm.HealthImpacts.Pollutant;
-                        _dt.Rows[i][3] = frm.HealthImpacts.Metric;
                         _dt.Rows[i][4] = frm.HealthImpacts.SeasonalMetric;
                         _dt.Rows[i][5] = frm.HealthImpacts.MetricStatistis;
                         _dt.Rows[i][6] = frm.HealthImpacts.Author;
@@ -1297,28 +1296,8 @@ namespace BenMAP
                 {
                     commandText = string.Format("select crfunctiondatasetname from crfunctiondatasets where crfunctiondatasetid={0}", _datasetID);
                     txtHealthImpactFunction.Text = Convert.ToString(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
-                    /* commandText = string.Format("select b.endpointgroupname,c.endpointname,d.pgname,e.metricname,f.seasonalmetricname, " +
-                            "case when Metricstatistic = 0 then 'None'  when Metricstatistic = 1 then 'Mean' when Metricstatistic = 2 " +
-                            "then 'Median' when Metricstatistic = 3 then 'Max' when Metricstatistic = 4 then 'Min' when Metricstatistic = 5 " +
-                            "then 'Sum'  END as MetricstatisticName,author,yyear,g.locationtypename,location,otherpollutants,qualifier,reference,race, " +
-                            "ethnicity,gender,startage,endage,h.functionalformtext,i.functionalformtext,j.incidencedatasetname,k.incidencedatasetname, " +
-                            "l.setupvariabledatasetname as variabeldatasetname, " +
-                            "m.MSDescription,bv.BetaVariationName,a.CRFUNCTIONID " +
-                            "from crfunctions a left join ModelSpecifications m on (a.MSID = m.MSID) " +
-                            "left join BetaVariations bv on (a.BetaVariationID = bv.BetaVariationID) " +
-                            "left join endpointgroups b on (a.ENDPOINTGROUPID = b.ENDPOINTGROUPID) " +
-                            "left join endpoints c on(a.endpointid = c.endpointid) " +
-                            "left join pollutants d on(a.pollutantid = d.pollutantid)join metrics e on(a.metricid = e.metricid) " +
-                            "left join seasonalmetrics f on(a.seasonalmetricid = f.seasonalmetricid) " +
-                            "left join locationtype g on(a.locationtypeid = g.locationtypeid) " +
-                            "left join functionalforms h on(a.functionalformid = h.functionalformid) " +
-                            "left join baselinefunctionalforms i on(a.baselinefunctionalformid = i.functionalformid) " +
-                            "left join incidencedatasets j on(a.incidencedatasetid = j.incidencedatasetid) " +
-                            "left join incidencedatasets k on(a.prevalencedatasetid = k.incidencedatasetid) " +
-                            "left join setupvariabledatasets l on(a.variabledatasetid = l.setupvariabledatasetid) " +
-                            "where CRFUNCTIONDATASETID={0}", _datasetID); */
 
-                    commandText = string.Format("select b.endpointgroupname,c.endpointname,d.pgname,e.metricname,f.seasonalmetricname, a.metadataid, " +
+                    commandText = string.Format("select b.endpointgroupname,c.endpointname,d.pgname,f.seasonalmetricname, a.metadataid, " +
                             "case when Metricstatistic = 0 then 'None'  when Metricstatistic = 1 then 'Mean' when Metricstatistic = 2 " +
                             "then 'Median' when Metricstatistic = 3 then 'Max' when Metricstatistic = 4 then 'Min' when Metricstatistic = 5 " +
                             "then 'Sum'  END as MetricstatisticName,author,yyear,g.locationtypename,location,otherpollutants,qualifier,reference, " +
@@ -1329,7 +1308,7 @@ namespace BenMAP
                             "join endpointgroups b on (a.ENDPOINTGROUPID = b.ENDPOINTGROUPID) " +
                             "join endpoints c on(a.endpointid = c.endpointid) " +
                             "join pollutantgroups d on(a.POLLUTANTGROUPID = d.POLLUTANTGROUPID) " +
-                            "join metrics e on(a.metricid = e.metricid) left join seasonalmetrics f on(a.seasonalmetricid = f.seasonalmetricid) " +
+                            "left join seasonalmetrics f on(a.seasonalmetricid = f.seasonalmetricid) " +
                             "left join locationtype g on(a.locationtypeid = g.locationtypeid) join functionalforms h on(a.functionalformid = h.functionalformid) " +
                             "left join baselinefunctionalforms i on(a.baselinefunctionalformid = i.functionalformid) " +
                             "left join incidencedatasets j on(a.incidencedatasetid = j.incidencedatasetid) " +

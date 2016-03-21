@@ -38,7 +38,6 @@ namespace BenMAP
             this.olvcEndpointGroup = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvcEndpoint = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvcPollutant = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvColumn3 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn4 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn5 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn6 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
@@ -266,7 +265,6 @@ namespace BenMAP
             this.olvFunction.AllColumns.Add(this.olvcEndpointGroup);
             this.olvFunction.AllColumns.Add(this.olvcEndpoint);
             this.olvFunction.AllColumns.Add(this.olvcPollutant);
-            this.olvFunction.AllColumns.Add(this.olvColumn3);
             this.olvFunction.AllColumns.Add(this.olvColumn4);
             this.olvFunction.AllColumns.Add(this.olvColumn5);
             this.olvFunction.AllColumns.Add(this.olvColumn6);
@@ -299,7 +297,6 @@ namespace BenMAP
             this.olvcEndpointGroup,
             this.olvcEndpoint,
             this.olvcPollutant,
-            this.olvColumn3,
             this.olvColumn4,
             this.olvColumn5,
             this.olvColumn6,
@@ -367,12 +364,6 @@ namespace BenMAP
             this.olvcPollutant.AspectName = "pgname";
             this.olvcPollutant.Text = "Pollutant";
             this.olvcPollutant.Width = 100;
-            // 
-            // olvColumn3
-            // 
-            this.olvColumn3.AspectName = "metricname";
-            this.olvColumn3.Text = "Metric";
-            this.olvColumn3.Width = 70;
             // 
             // olvColumn4
             // 
@@ -597,7 +588,6 @@ namespace BenMAP
         private BrightIdeasSoftware.OLVColumn olvcEndpointGroup;
         private BrightIdeasSoftware.OLVColumn olvcEndpoint;
         private BrightIdeasSoftware.OLVColumn olvcPollutant;
-        private BrightIdeasSoftware.OLVColumn olvColumn3;
         private BrightIdeasSoftware.OLVColumn olvColumn4;
         private BrightIdeasSoftware.OLVColumn olvColumn5;
         private BrightIdeasSoftware.OLVColumn olvColumn6;

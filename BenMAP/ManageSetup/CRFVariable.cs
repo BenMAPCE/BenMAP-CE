@@ -42,25 +42,17 @@ namespace BenMAP
             this._pollutantName = pollName;
             this._pollutant1ID = poll1ID;
             this._pollutant2ID = poll2ID;
+            this._metric = null;
         }
 
-        public CRFVariable(string varName, int varID, int funID, string pollName, int poll1ID, string metric, int metricID)
+        public CRFVariable(string varName, int varID, int funID, string pollName, int poll1ID, Metric metric)
         {
             this._variableName = varName;
             this._variableID = varID;
             this._functionID = funID;
             this._pollutantName = pollName;
             this._pollutant1ID = poll1ID;
-        }
-
-        public CRFVariable(string varName, int varID, int funID, string pollName, int poll1ID, int poll2ID, string metric, int metricID)
-        {
-            this._variableName = varName;
-            this._variableID = varID;
-            this._functionID = funID;
-            this._pollutantName = pollName;
-            this._pollutant1ID = poll1ID;
-            this._pollutant2ID = poll2ID;
+            this._metric = metric;
         }
 
         public int VariableID

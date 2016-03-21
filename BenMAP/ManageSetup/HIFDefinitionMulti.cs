@@ -423,23 +423,27 @@ namespace BenMAP
 
 
                 // Set up variable objects -- order by char_length and variable name to avoid 1, 10, 2 ordering
-                // * add metric name to query
-                commandText = string.Format("select distinct variablename, crv.crfvariableid, pollutantname, pollutant1id, pollutant2id from crfunctions as crf left join crfvariables as crv on crf.crfunctionid=crv.crfunctionid where crf.crfunctionid={0} order by char_length(variablename), variablename", _healthImpacts.FunctionID);
+                commandText = string.Format("select distinct variablename, crv.crfvariableid, pollutantname, pollutant1id, pollutant2id, metricname, m.metricid, hourlymetricgeneration from crfunctions as crf left join crfvariables as crv on crf.crfunctionid=crv.crfunctionid join metrics as m on m.pollutantid = crv.pollutant1id and crv.metricid = m.metricid where crf.crfunctionid={0} order by char_length(variablename), variablename", _healthImpacts.FunctionID);
                 ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
 
                 foreach(DataRow dr in ds.Tables[0].Rows)
                 {
                     varList.Items.Add(dr["variablename"].ToString()).SubItems.Add(dr["pollutantname"].ToString());
+
                     // interaction
                     if (dr["pollutantname"].ToString().Contains("*"))
                     {
-                        // * include metric name and adjust constructor
                         _healthImpacts.PollVariables.Add(new CRFVariable(dr["variablename"].ToString(), Convert.ToInt32(dr["crfvariableid"]), Convert.ToInt32(_healthImpacts.FunctionID), dr["pollutantname"].ToString(), Convert.ToInt32(dr["pollutant1id"]), Convert.ToInt32(dr["pollutant2id"])));
                     }
                     else
                     {
-                        _healthImpacts.PollVariables.Add(new CRFVariable(dr["variablename"].ToString(), Convert.ToInt32(dr["crfvariableid"]), Convert.ToInt32(_healthImpacts.FunctionID), dr["pollutantname"].ToString(), Convert.ToInt32(dr["pollutant1id"])));
-                        // * _healthImpacts.PollVariables.Add(new CRFVariable(dr["variablename"].ToString(), Convert.ToInt32(dr["crfvariableid"]), Convert.ToInt32(_healthImpacts.FunctionID), dr["pollutantname"].ToString(), Convert.ToInt32(dr["pollutant1id"]), dr["metricname"].ToString()));
+                        Metric newMetric = new Metric();
+                        newMetric.MetricID = Convert.ToInt32(dr["metricid"]);
+                        newMetric.MetricName = dr["metricname"].ToString();
+                        newMetric.PollutantID = Convert.ToInt32(dr["pollutant1id"]);
+                        newMetric.HourlyMetricGeneration = Convert.ToInt32(dr["hourlymetricgeneration"]);
+
+                        _healthImpacts.PollVariables.Add(new CRFVariable(dr["variablename"].ToString(), Convert.ToInt32(dr["crfvariableid"]), Convert.ToInt32(_healthImpacts.FunctionID), dr["pollutantname"].ToString(), Convert.ToInt32(dr["pollutant1id"]), newMetric));
                     }
                 }
 
