@@ -555,13 +555,6 @@ namespace BenMAP
                         }
 
                     }
-
-
-
-
-
-
-
                 }
                 return CommonClass.lstGridRelationshipAll;
             }

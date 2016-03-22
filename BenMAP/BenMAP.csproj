@@ -177,6 +177,14 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Dll\ObjectListView\ObjectListView.dll</HintPath>
     </Reference>
+    <Reference Include="OxyPlot, Version=1.0.0.0, Culture=neutral, PublicKeyToken=638079a8f0bd61e9, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Dll\OxyPlot.dll</HintPath>
+    </Reference>
+    <Reference Include="OxyPlot.WindowsForms, Version=1.0.0.0, Culture=neutral, PublicKeyToken=245eacd6b5d2d338, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Dll\OxyPlot.WindowsForms.dll</HintPath>
+    </Reference>
     <Reference Include="protobuf-net">
       <HintPath>Dll\protobuf-net.dll</HintPath>
     </Reference>
@@ -208,9 +216,6 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
-    <Reference Include="ZedGraph">
-      <HintPath>Dll\ZedGraph\ZedGraph.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="APV\Aggregation.cs">
@@ -958,6 +963,7 @@
     <None Include="Data\Shapefiles\United States\Nation_epa2.prj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="packages.config" />
     <None Include="Plugins\GDAL\gdal\data\compdcs.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

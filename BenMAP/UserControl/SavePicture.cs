@@ -6,7 +6,7 @@ using System.Resources;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
-using ZedGraph;
+
 
 namespace WinControls
 {
@@ -21,7 +21,9 @@ namespace WinControls
 
         private bool _isShowPointValues = false;
         private bool _isShowCursorValues = false;
-        private string _pointValueFormat = PointPair.DefaultFormat;
+    
+     // requires zedgraph: this variable is also unused...? -AS 
+    //    private string _pointValueFormat = PointPair.DefaultFormat;
 
         private bool _isShowContextMenu = true;
 
