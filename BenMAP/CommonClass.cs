@@ -526,7 +526,7 @@ namespace BenMAP
         public static Dictionary<int, int> dicPollutantIDVariableID;
 
         //dicInteractionVariableMetricNames maps the variableid (key) with the metric name (value) for the interaction variable; necessary for multipollutant interaction surfaces
-        public static Dictionary<int, string> dicInteractionVariableMetricNames;
+        public static Dictionary<int, string> dicInteractionVariableMetricNames = null;
 
         public static BenMAPGrid GBenMAPGrid; public static List<BaseControlGroup> LstBaseControlGroup; public static double CRThreshold = 0; public static int CRLatinHypercubePoints = 20; public static bool CRRunInPointMode = false; public static int CRSeeds = 1; public static BenMAPPopulation BenMAPPopulation;
         public static List<GridRelationship> LstCurrentGridRelationship; public static string CurrentStat;

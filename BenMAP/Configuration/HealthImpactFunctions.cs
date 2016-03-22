@@ -1868,6 +1868,8 @@ namespace BenMAP
             {
                 //set up variableID - pollutantID map
                 CommonClass.dicPollutantIDVariableID = new Dictionary<int, int>();
+                //initialize interaction variable names map
+                CommonClass.dicInteractionVariableMetricNames = new Dictionary<int, string>();
 
                 //create interaction data if needed
                 int interactionPollutantID = 0;
@@ -1966,9 +1968,6 @@ namespace BenMAP
         {
             List<string> lstSeasonalMetrics = new List<string>();
 
-            //initialize interaction variable names map
-            CommonClass.dicInteractionVariableMetricNames = new Dictionary<int, string>();
-
             //calculate interaction values
             //model attributes
             for (int indexAttribute = 0; indexAttribute < bmlInteraction.ModelAttributes.Count; indexAttribute++)
@@ -2025,7 +2024,11 @@ namespace BenMAP
                     //if this is not a seasonal metric, then add to interaction metric names list
                     if (!lstSeasonalMetrics.Contains(metricKey))
                     {
-                        CommonClass.dicInteractionVariableMetricNames.Add(variableID, metricKey);
+                        //if we haven't already added this variable, then add
+                        if (!CommonClass.dicInteractionVariableMetricNames.ContainsKey(variableID))
+                        {
+                            CommonClass.dicInteractionVariableMetricNames.Add(variableID, metricKey);
+                        }
 
                     }
                     
