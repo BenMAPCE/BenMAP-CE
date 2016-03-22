@@ -178,12 +178,12 @@
       <HintPath>Dll\ObjectListView\ObjectListView.dll</HintPath>
     </Reference>
     <Reference Include="OxyPlot, Version=1.0.0.0, Culture=neutral, PublicKeyToken=638079a8f0bd61e9, processorArchitecture=MSIL">
-      <HintPath>..\packages\OxyPlot.Core.1.0.0-unstable1870\lib\net40\OxyPlot.dll</HintPath>
-      <Private>True</Private>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Dll\OxyPlot.dll</HintPath>
     </Reference>
     <Reference Include="OxyPlot.WindowsForms, Version=1.0.0.0, Culture=neutral, PublicKeyToken=245eacd6b5d2d338, processorArchitecture=MSIL">
-      <HintPath>..\packages\OxyPlot.WindowsForms.1.0.0-unstable1870\lib\net40\OxyPlot.WindowsForms.dll</HintPath>
-      <Private>True</Private>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Dll\OxyPlot.WindowsForms.dll</HintPath>
     </Reference>
     <Reference Include="protobuf-net">
       <HintPath>Dll\protobuf-net.dll</HintPath>
