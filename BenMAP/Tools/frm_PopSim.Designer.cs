@@ -933,9 +933,9 @@
             this.label29.Location = new System.Drawing.Point(34, 247);
             this.label29.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label29.Name = "label29";
-            this.label29.Size = new System.Drawing.Size(60, 19);
+            this.label29.Size = new System.Drawing.Size(63, 19);
             this.label29.TabIndex = 20;
-            this.label29.Text = "range 5";
+            this.label29.Text = "Range 5";
             // 
             // txtSUB_POP_END_4
             // 
@@ -962,9 +962,9 @@
             this.label28.Location = new System.Drawing.Point(34, 224);
             this.label28.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label28.Name = "label28";
-            this.label28.Size = new System.Drawing.Size(60, 19);
+            this.label28.Size = new System.Drawing.Size(63, 19);
             this.label28.TabIndex = 17;
-            this.label28.Text = "range 4";
+            this.label28.Text = "Range 4";
             // 
             // txtSUB_POP_END_3
             // 
@@ -991,9 +991,9 @@
             this.label27.Location = new System.Drawing.Point(34, 202);
             this.label27.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label27.Name = "label27";
-            this.label27.Size = new System.Drawing.Size(60, 19);
+            this.label27.Size = new System.Drawing.Size(63, 19);
             this.label27.TabIndex = 14;
-            this.label27.Text = "range 3";
+            this.label27.Text = "Range 3";
             // 
             // txtSUB_POP_END_2
             // 
@@ -1020,9 +1020,9 @@
             this.label26.Location = new System.Drawing.Point(34, 179);
             this.label26.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label26.Name = "label26";
-            this.label26.Size = new System.Drawing.Size(60, 19);
+            this.label26.Size = new System.Drawing.Size(63, 19);
             this.label26.TabIndex = 11;
-            this.label26.Text = "range 2";
+            this.label26.Text = "Range 2";
             // 
             // txtSUB_POP_END_1
             // 
@@ -1071,9 +1071,9 @@
             this.label23.Location = new System.Drawing.Point(34, 156);
             this.label23.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label23.Name = "label23";
-            this.label23.Size = new System.Drawing.Size(60, 19);
+            this.label23.Size = new System.Drawing.Size(63, 19);
             this.label23.TabIndex = 6;
-            this.label23.Text = "range 1";
+            this.label23.Text = "Range 1";
             // 
             // label22
             // 
@@ -1180,10 +1180,10 @@
             this.radioButton13.AutoSize = true;
             this.radioButton13.Location = new System.Drawing.Point(33, 27);
             this.radioButton13.Name = "radioButton13";
-            this.radioButton13.Size = new System.Drawing.Size(107, 23);
+            this.radioButton13.Size = new System.Drawing.Size(106, 23);
             this.radioButton13.TabIndex = 0;
             this.radioButton13.TabStop = true;
-            this.radioButton13.Text = "HES Default";
+            this.radioButton13.Text = "HES default";
             this.radioButton13.UseVisualStyleBackColor = true;
             this.radioButton13.CheckedChanged += new System.EventHandler(this.radioButton13_CheckedChanged);
             // 
@@ -1204,10 +1204,10 @@
             this.radioButton2.AutoSize = true;
             this.radioButton2.Location = new System.Drawing.Point(33, 73);
             this.radioButton2.Name = "radioButton2";
-            this.radioButton2.Size = new System.Drawing.Size(114, 23);
+            this.radioButton2.Size = new System.Drawing.Size(113, 23);
             this.radioButton2.TabIndex = 2;
             this.radioButton2.TabStop = true;
-            this.radioButton2.Text = "User Defined";
+            this.radioButton2.Text = "User defined";
             this.radioButton2.UseVisualStyleBackColor = true;
             this.radioButton2.CheckedChanged += new System.EventHandler(this.radioButton2_CheckedChanged);
             // 
@@ -1227,9 +1227,9 @@
             this.lblOther.Location = new System.Drawing.Point(224, 187);
             this.lblOther.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblOther.Name = "lblOther";
-            this.lblOther.Size = new System.Drawing.Size(47, 19);
+            this.lblOther.Size = new System.Drawing.Size(49, 19);
             this.lblOther.TabIndex = 11;
-            this.lblOther.Text = "other";
+            this.lblOther.Text = "Other";
             // 
             // txtLagLung
             // 
@@ -1247,9 +1247,9 @@
             this.lblLung.Location = new System.Drawing.Point(233, 164);
             this.lblLung.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblLung.Name = "lblLung";
-            this.lblLung.Size = new System.Drawing.Size(39, 19);
+            this.lblLung.Size = new System.Drawing.Size(42, 19);
             this.lblLung.TabIndex = 9;
-            this.lblLung.Text = "lung";
+            this.lblLung.Text = "Lung";
             // 
             // txtLagCardio
             // 
@@ -1267,9 +1267,9 @@
             this.lblCardio.Location = new System.Drawing.Point(224, 139);
             this.lblCardio.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblCardio.Name = "lblCardio";
-            this.lblCardio.Size = new System.Drawing.Size(52, 19);
+            this.lblCardio.Size = new System.Drawing.Size(53, 19);
             this.lblCardio.TabIndex = 7;
-            this.lblCardio.Text = "cardio";
+            this.lblCardio.Text = "Cardio";
             // 
             // lblK
             // 
@@ -1370,9 +1370,9 @@
             this.label31.Location = new System.Drawing.Point(4, 11);
             this.label31.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label31.Name = "label31";
-            this.label31.Size = new System.Drawing.Size(171, 19);
+            this.label31.Size = new System.Drawing.Size(168, 19);
             this.label31.TabIndex = 0;
-            this.label31.Text = "Step 6: Specify Lag type";
+            this.label31.Text = "Step 6: Specify lag type";
             // 
             // tabStep7
             // 
@@ -1459,9 +1459,9 @@
             this.label39.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label39.Location = new System.Drawing.Point(16, 17);
             this.label39.Name = "label39";
-            this.label39.Size = new System.Drawing.Size(100, 19);
+            this.label39.Size = new System.Drawing.Size(134, 19);
             this.label39.TabIndex = 5;
-            this.label39.Text = "8) Run model";
+            this.label39.Text = "Step 8: Run model";
             // 
             // btnOutput
             // 

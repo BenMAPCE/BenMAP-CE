@@ -1489,23 +1489,23 @@ namespace PopSim
                             dataReader.Close();
 
                             //Select records from final population table for the same age/previous year pair
-                            dcFPop.Parameters[0].Value = age;
-                            dcFPop.Parameters[1].Value = (year - 1).ToString();
-                            dcFPop.Parameters[2].Value = strgenderText;
-                            dcFPop.Parameters[3].Value = strscenarioText;
-                            dataReader = dcFPop.ExecuteReader();
-                            dataReader.Read();
-                            pop = (double)dataReader[0];
-                            dataReader.Close();
-                            //sqltext = "SELECT Final_Table_Pop.Age, Final_Table_Pop.proj_Year, Final_Table_Pop.Pop, "
-                            //    + "Final_Table_Pop.Gender, Final_Table_Pop.Scenario FROM Final_Table_Pop";
-                            //sqltext = sqltext + " where ((Age = (" + age.ToString() + " - 0)) AND (proj_Year = ("
-                            //    + year.ToString() + " - 1)) AND (Gender = '" + strgenderText + "') AND (Scenario = '" + strscenarioText + "'))";
-                            //dataCommand.CommandText = sqltext;
-                            //dataReader = dataCommand.ExecuteReader();
+                            //dcFPop.Parameters[0].Value = age;
+                            //dcFPop.Parameters[1].Value = (year - 1).ToString();
+                            //dcFPop.Parameters[2].Value = strgenderText;
+                            //dcFPop.Parameters[3].Value = strscenarioText;
+                            //dataReader = dcFPop.ExecuteReader();
                             //dataReader.Read();
-                            //pop = pop + (double)dataReader[2] * (1 - rate);
+                            //pop = (double)dataReader[0];
                             //dataReader.Close();
+                            sqltext = "SELECT Final_Table_Pop.Age, Final_Table_Pop.proj_Year, Final_Table_Pop.Pop, "
+                                     + "Final_Table_Pop.Gender, Final_Table_Pop.Scenario FROM Final_Table_Pop";
+                            sqltext = sqltext + " where ((Age = (" + age.ToString() + " - 0)) AND (proj_Year = ("
+                                + year.ToString() + " - 1)) AND (Gender = '" + strgenderText + "') AND (Scenario = '" + strscenarioText + "'))";
+                            dataCommand.CommandText = sqltext;
+                            dataReader = dataCommand.ExecuteReader();
+                            dataReader.Read();
+                            pop = pop + (double)dataReader[2] * (1 - rate);
+                            dataReader.Close();
 
                         } //End If
 
