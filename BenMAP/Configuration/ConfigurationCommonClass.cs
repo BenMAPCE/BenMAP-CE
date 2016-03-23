@@ -590,7 +590,8 @@ namespace BenMAP.Configuration
                 if ((dr["SeasonalMetricID"] is DBNull) == false)
                 {
                     //use first pollutant in group, this assumes all pollutants in group have the same seasonal metrics
-                    benMapHealthImpactFunction.SeasonalMetric = Grid.GridCommon.getSeasonalMetricFromPollutantAndID(benMapHealthImpactFunction.PollutantGroup.Pollutants.First(), Convert.ToInt32(dr["SeasonalMetricID"]));
+                    string seasonalMetricName = Grid.GridCommon.getSeasonalMetricNameFromID(Convert.ToInt32(dr["SeasonalMetricID"]));
+                    benMapHealthImpactFunction.SeasonalMetric = Grid.GridCommon.getSeasonalMetricFromPollutantAndName(benMapHealthImpactFunction.PollutantGroup.Pollutants.First(), seasonalMetricName);
                 }
                 benMapHealthImpactFunction.MetricStatistic = (MetricStatic)Convert.ToInt32(dr["MetricStatistic"]);
                 benMapHealthImpactFunction.Author = dr["Author"].ToString();
