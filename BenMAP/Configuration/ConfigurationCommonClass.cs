@@ -4444,8 +4444,12 @@ namespace BenMAP.Configuration
                     //List<SeasonalMetric> lstseasonalMetric = baseControlGroup.Pollutant.SesonalMetrics.Where(p => p.Metric.MetricID == crSelectFunction.BenMAPHealthImpactFunction.Metric.MetricID).ToList();
 
                     //in a multipollutant scenario, we have to match on metric name instead of id since metrics are tied to pollutants (old code which matched on ID is above)
-                    //so here we are looking for pollutant seasonal metrics for metrics that have the same name as the seasonal metric for the health impact function
-                    List<SeasonalMetric> lstseasonalMetric = baseControlGroup.Pollutant.SesonalMetrics.Where(p => String.Equals(p.Metric.MetricName, crSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName, StringComparison.OrdinalIgnoreCase)).ToList();
+                    //so here we are looking for pollutant seasonal metrics for metrics that have the same name as the metric for that pollutant in the health impact function
+                    //get the HIF variable for this pollutant
+                    int variableID = CommonClass.dicPollutantIDVariableID[baseControlGroup.Pollutant.PollutantID];
+                    CRFVariable variable = crSelectFunction.BenMAPHealthImpactFunction.Variables.Where(v => v.VariableID == variableID).First();
+                    //now get the seasonal metrics for this pollutant which have the same metric as that selected for this variable in the Health Impact function
+                    List<SeasonalMetric> lstseasonalMetric = baseControlGroup.Pollutant.SesonalMetrics.Where(p => String.Equals(p.Metric.MetricName, variable.Metric.MetricName, StringComparison.OrdinalIgnoreCase)).ToList();
 
                     SeasonalMetric seasonalMetric = null;
                     //if we have seasonal metrics for this metric, then take the last one (JCM 2016-01-25, why not the first one?)
@@ -4464,10 +4468,10 @@ namespace BenMAP.Configuration
                     }
                     else //if we don't have a seasonal metric, then check to see if pollutant itself has seasons
                     {
-                        if (crSelectFunction.BenMAPHealthImpactFunction.PollutantGroup.Pollutants.First().Seasons != null && crSelectFunction.BenMAPHealthImpactFunction.PollutantGroup.Pollutants.First().Seasons.Count != 0)
+                        if (baseControlGroup.Pollutant.Seasons != null && baseControlGroup.Pollutant.Seasons.Count != 0)
                         {
                             i365 = 0;
-                            foreach (Season season in crSelectFunction.BenMAPHealthImpactFunction.PollutantGroup.Pollutants.First().Seasons)
+                            foreach (Season season in baseControlGroup.Pollutant.Seasons)
                             {
                                 i365 = i365 + season.EndDay - season.StartDay + 1;
                                 if (season.StartDay < iStartDay) iStartDay = season.StartDay;
