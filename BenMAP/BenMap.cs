@@ -13773,9 +13773,11 @@ namespace BenMAP
                 for (int j = 0; j < olvRegions.Items.Count; j++)
                 {
                     OLVListItem olvi = olvRegions.Items[j] as OLVListItem;
-                    // olvi.Checked = true;
                     olvi.Checked = selectOrDeselect;
-                } 
+                }
+
+                if (selectOrDeselect == true) btnSelectAll.Text = "Deselect All";
+                else { btnSelectAll.Text = "Select All"; }
 
                 btnApply_Click(null, null);
             }
