@@ -270,12 +270,14 @@ namespace BenMAP.Grid
             }
             return null;
         }
-        public static SeasonalMetric getSeasonalMetricFromPollutantAndID(BenMAPPollutant benMAPPollutant, int seasonalMetricID)
+        public static SeasonalMetric getSeasonalMetricFromPollutantAndName(BenMAPPollutant benMAPPollutant, string seasonalMetricName)
         {
             foreach (SeasonalMetric seasonalMetric in benMAPPollutant.SesonalMetrics)
             {
-                if (seasonalMetric.SeasonalMetricID == seasonalMetricID)
+                if (String.Equals(seasonalMetric.SeasonalMetricName, seasonalMetricName, StringComparison.OrdinalIgnoreCase))
+                { 
                     return seasonalMetric;
+                }
             }
             return null;
 
@@ -465,6 +467,27 @@ namespace BenMAP.Grid
                 }                          
 
                 return pollutants;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+                return null;
+            }
+        }
+        
+
+        public static string getSeasonalMetricNameFromID(int seasonalMetricID)
+        {
+            try
+            {
+                string seasonalMetricName = String.Empty;
+                ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                string commandText = string.Format("SELECT SEASONALMETRICID, METRICID, SEASONALMETRICNAME FROM SEASONALMETRICS where seasonalmetricid = {0}", seasonalMetricID);
+                System.Data.DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
+                DataRow dr = ds.Tables[0].Rows[0];
+                seasonalMetricName = dr["SEASONALMETRICNAME"].ToString();
+
+                return seasonalMetricName;
             }
             catch (Exception ex)
             {
