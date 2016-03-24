@@ -965,6 +965,10 @@
     <None Include="Data\Shapefiles\United States\CMAQ_12km_Nation.prj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Data\Shapefiles\United States\CMAQ_12km_Nation_C298_R85_WGS1984.dbf" />
+    <None Include="Data\Shapefiles\United States\CMAQ_12km_Nation_C298_R85_WGS1984.prj" />
+    <None Include="Data\Shapefiles\United States\CMAQ_12km_Nation_C298_R85_WGS1984.shp" />
+    <None Include="Data\Shapefiles\United States\CMAQ_12km_Nation_C298_R85_WGS1984.shx" />
     <None Include="Data\Shapefiles\United States\CMAQ_12km_Nation_Clipped.prj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
