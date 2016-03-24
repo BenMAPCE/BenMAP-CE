@@ -2,20 +2,43 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using ProtoBuf;
 
 namespace BenMAP
 {
+    [Serializable]
+    [ProtoContract]
     public class CRFVariable
     {
-
+        [ProtoMember(1)]
         private int _variableID;
+        [ProtoMember(2)]
         private int _functionID;
+        [ProtoMember(3)]
         private string _variableName;
+        [ProtoMember(4)]
         private string _pollutantName;
+        [ProtoMember(5)]
         private int _pollutant1ID;
+        [ProtoMember(6)]
         private int _pollutant2ID;
+        [ProtoMember(7)]
         private Metric _metric;
+        [ProtoMember(8)]
         private List<CRFBeta> _pollBetas;
+
+        // parameterless constructor for serializer 
+        public CRFVariable()
+        {
+            this._variableName = "";
+            this._variableID = 0;
+            this._functionID = 0;
+            this._pollutantName = "";
+            this._pollutant1ID = 0;
+            this._pollutant2ID = 0;
+            this._metric = null;
+            this._pollBetas = new List<CRFBeta>();
+        }
 
         // Constructor for new/ edited functions
         public CRFVariable(string varName, string pollName, int poll1ID)

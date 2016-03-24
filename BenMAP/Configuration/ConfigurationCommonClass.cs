@@ -39,6 +39,7 @@ namespace BenMAP.Configuration
                 {
                     try
                     {
+                        if (baseControlCRSelectFunctionCalculateValue.RBenMapGrid == null) baseControlCRSelectFunctionCalculateValue.RBenMapGrid = baseControlCRSelectFunctionCalculateValue.BaseControlGroup[0].GridType;
                         baseControlCRSelectFunctionCalculateValue.Version = "BenMAP-CE " + Assembly.GetExecutingAssembly().GetName().Version.ToString().Substring(0, Assembly.GetExecutingAssembly().GetName().Version.ToString().Count() - 2);
                         Serializer.Serialize<BaseControlCRSelectFunctionCalculateValue>(fs, baseControlCRSelectFunctionCalculateValue);
 

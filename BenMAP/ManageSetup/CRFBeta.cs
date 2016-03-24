@@ -1,27 +1,45 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using ProtoBuf;
 
 namespace BenMAP
 {
+    [Serializable]
+    [ProtoContract]
     public class CRFBeta
     {
+        [ProtoMember(1)]
         private int _betaID;
+        [ProtoMember(2)]
         private int _distributionTypeID;
+        [ProtoMember(3)]
         public string _distribution;
+        [ProtoMember(4)]
         private double _beta;
+        [ProtoMember(5)]
         private double _p1Beta;
+        [ProtoMember(6)]
         private double _p2Beta;
+        [ProtoMember(7)]
         private double _aConstantValue;
+        [ProtoMember(8)]
         private string _aConstantName;
+        [ProtoMember(9)]
         private double _bConstantValue;
+        [ProtoMember(10)]
         private string _bConstantName;
+        [ProtoMember(11)]
         private double _cConstantValue;
+        [ProtoMember(12)]
         private string _cConstantName;
+        [ProtoMember(13)]
         private string _seasNumName;
+        [ProtoMember(14)]
         private string _seasonName;
+        [ProtoMember(15)]
         private string _startDate;
+        [ProtoMember(16)]
         private string _endDate;
 
         // New beta without values
