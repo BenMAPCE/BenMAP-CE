@@ -100,6 +100,9 @@
     <PlatformTarget>x64</PlatformTarget>
     <OutputPath>bin\x64\Release\</OutputPath>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>BenMAP.Program</StartupObject>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="DocumentFormat.OpenXml">
       <HintPath>Dll\DocumentFormat.OpenXml.dll</HintPath>
@@ -426,10 +429,6 @@
     <Compile Include="DataSource\FilterMonitorsOzone.Designer.cs">
       <DependentUpon>FilterMonitorsOzone.cs</DependentUpon>
     </Compile>
-    <Compile Include="FireBirdHelper\ESILFireBirdHelper.cs" />
-    <Compile Include="FireBirdHelper\FireBirdHelperBase.cs" />
-    <Compile Include="FireBirdHelper\IFireBirdHelper.cs" />
-    <Compile Include="FireBirdHelper\Properties\AssemblyInfo.cs" />
     <Compile Include="FormBase.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -752,6 +751,7 @@
     <Compile Include="Configuration\PopulationInformation.Designer.cs">
       <DependentUpon>PopulationInformation.cs</DependentUpon>
     </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SQLStatementsCommonClass.cs" />
     <Compile Include="TipFormGIF.cs">
       <SubType>Form</SubType>
@@ -1041,10 +1041,6 @@
     <None Include="Dll\DotSpatial\Windows Extensions\Taudem5Exe\runtaudem.bat" />
     <None Include="Dll\FirebirdDB\x64\intl\fbintl.conf" />
     <None Include="Dll\FirebirdDB\x86\intl\fbintl.conf" />
-    <None Include="FireBirdHelper\bin\x86\Debug\intl\fbintl.conf" />
-    <None Include="FireBirdHelper\intl\fbintl.conf" />
-    <None Include="FireBirdHelper\obj\Release\DesignTimeResolveAssemblyReferencesInput.cache" />
-    <None Include="FireBirdHelper\obj\x86\Debug\DesignTimeResolveAssemblyReferencesInput.cache" />
     <None Include="Plugins\GDAL\gdal\data\compdcs.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -1716,10 +1712,6 @@
     <Folder Include="bin\x64\" />
     <Folder Include="bin\x86\" />
     <Folder Include="BuildScript\" />
-    <Folder Include="FireBirdHelper\bin\Release\" />
-    <Folder Include="FireBirdHelper\obj\Debug\TempPE\" />
-    <Folder Include="FireBirdHelper\obj\Release\TempPE\" />
-    <Folder Include="FireBirdHelper\obj\x86\Debug\TempPE\" />
     <Folder Include="obj\Release\" />
     <Folder Include="obj\x86\" />
     <Folder Include="Pollutant\" />
@@ -2088,24 +2080,6 @@
     <Content Include="ErrorReporting\BenMAPJiraConnector.dll" />
     <Content Include="ErrorReporting\BenMAPJiraConnector.txt" />
     <Content Include="ErrorReporting\ThisIsWhereTwoErrorReportingFilesShouldGo.txt" />
-    <Content Include="FireBirdHelper\bin\Debug\FirebirdSql.Data.FirebirdClient.dll" />
-    <Content Include="FireBirdHelper\bin\x86\Debug\fbembed.dll" />
-    <Content Include="FireBirdHelper\bin\x86\Debug\FireBirdHelper.dll" />
-    <Content Include="FireBirdHelper\bin\x86\Debug\FireBirdHelper.pdb" />
-    <Content Include="FireBirdHelper\bin\x86\Debug\FirebirdSql.Data.FirebirdClient.dll" />
-    <Content Include="FireBirdHelper\bin\x86\Debug\icudt30.dll" />
-    <Content Include="FireBirdHelper\bin\x86\Debug\icuin30.dll" />
-    <Content Include="FireBirdHelper\bin\x86\Debug\icuuc30.dll" />
-    <Content Include="FireBirdHelper\bin\x86\Debug\intl\fbintl.dll" />
-    <Content Include="FireBirdHelper\fbembed.dll" />
-    <Content Include="FireBirdHelper\FireBirdHelper.csproj" />
-    <Content Include="FireBirdHelper\icudt30.dll" />
-    <Content Include="FireBirdHelper\icuin30.dll" />
-    <Content Include="FireBirdHelper\icuuc30.dll" />
-    <Content Include="FireBirdHelper\intl\fbintl.dll" />
-    <Content Include="FireBirdHelper\obj\x86\Debug\FireBirdHelper.csproj.FileListAbsolute.txt" />
-    <Content Include="FireBirdHelper\obj\x86\Debug\FireBirdHelper.dll" />
-    <Content Include="FireBirdHelper\obj\x86\Debug\FireBirdHelper.pdb" />
     <Content Include="GDAL-EXE\gdal19.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
