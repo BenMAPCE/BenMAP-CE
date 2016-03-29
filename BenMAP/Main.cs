@@ -87,7 +87,8 @@ namespace BenMAP
                 {
                     isOK = false;
                    
-                    MessageBox.Show(ex.StackTrace);
+                    //MessageBox.Show(ex.StackTrace);
+                    MessageBox.Show("Unable to load database at "+CommonClass.Connection.ConnectionString+".");//\nReason: "+ex.ToString());
                     return isOK;
                 }
                 
@@ -794,6 +795,18 @@ namespace BenMAP
         private void databaseImportToolStripMenuItem_Click(object sender, EventArgs e)
         {
             DatabaseImport frm = new DatabaseImport();
+            DialogResult rtn = frm.ShowDialog();
+        }
+
+        private void onlineDatabaseExportToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OnlineDatabaseExport frm = new OnlineDatabaseExport();
+            DialogResult rtn = frm.ShowDialog();
+        }
+
+        private void onlineDatabaseImportToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OnlineDatabaseImport frm = new OnlineDatabaseImport();
             DialogResult rtn = frm.ShowDialog();
         }
 
