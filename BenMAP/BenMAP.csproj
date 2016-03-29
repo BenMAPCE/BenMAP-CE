@@ -173,6 +173,10 @@
     </Reference>
     <Reference Include="Microsoft.ReportViewer.Common, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
     <Reference Include="Microsoft.ReportViewer.WinForms, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Newtonsoft.Json, Version=3.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Dll\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="ObjectListView, Version=2.5.0.28548, Culture=neutral, PublicKeyToken=b1c5bf581481bcd4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Dll\ObjectListView\ObjectListView.dll</HintPath>
@@ -194,6 +198,18 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Data.Linq" />
     <Reference Include="System.Management" />
+    <Reference Include="System.Net.Http, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Dll\System.Net.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http.Formatting, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Dll\System.Net.Http.Formatting.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http.WebRequest, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Dll\System.Net.Http.WebRequest.dll</HintPath>
+    </Reference>
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceProcess" />
     <Reference Include="System.Web.Extensions" />
@@ -410,6 +426,10 @@
     <Compile Include="DataSource\FilterMonitorsOzone.Designer.cs">
       <DependentUpon>FilterMonitorsOzone.cs</DependentUpon>
     </Compile>
+    <Compile Include="FireBirdHelper\ESILFireBirdHelper.cs" />
+    <Compile Include="FireBirdHelper\FireBirdHelperBase.cs" />
+    <Compile Include="FireBirdHelper\IFireBirdHelper.cs" />
+    <Compile Include="FireBirdHelper\Properties\AssemblyInfo.cs" />
     <Compile Include="FormBase.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -739,6 +759,7 @@
     <Compile Include="TipFormGIF.Designer.cs">
       <DependentUpon>TipFormGIF.cs</DependentUpon>
     </Compile>
+    <Compile Include="Tools\fbFile.cs" />
     <Compile Include="Tools\GBDRollback.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -763,6 +784,18 @@
     </Compile>
     <Compile Include="Tools\Metadata.cs" />
     <Compile Include="Tools\MetadataClassObj.cs" />
+    <Compile Include="Tools\OnlineDatabaseExport.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Tools\OnlineDatabaseExport.Designer.cs">
+      <DependentUpon>OnlineDatabaseExport.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Tools\OnlineDatabaseImport.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Tools\OnlineDatabaseImport.Designer.cs">
+      <DependentUpon>OnlineDatabaseImport.cs</DependentUpon>
+    </Compile>
     <Compile Include="Tools\Options.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -770,7 +803,6 @@
       <DependentUpon>Options.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Help\ReleaseNotes.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -903,6 +935,8 @@
       <DependentUpon>QALYResulesReport.cs</DependentUpon>
     </Compile>
     <Compile Include="Jira\NewIssue.cs" />
+    <Content Include="Setup\Setup.vdproj" />
+    <Content Include="Tools\alertSmall.png" />
     <None Include="Data\BenMAP-CE Release Notes.rtf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -948,6 +982,69 @@
     <None Include="Data\Shapefiles\United States\Nation_epa2.prj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Dll\DotSpatial\Application Extensions\DotSpatial.Plugins.ExtensionManager.dll.config" />
+    <None Include="Dll\DotSpatial\DemoMap.exe.config" />
+    <None Include="Dll\DotSpatial\DotSpatial.Controls.dll.config" />
+    <None Include="Dll\DotSpatial\DotSpatial.Data.dll.config" />
+    <None Include="Dll\DotSpatial\DotSpatial.Serialization.dll.config" />
+    <None Include="Dll\DotSpatial\MapLayouts\LetterPortraitCONUSAGeo.mwl" />
+    <None Include="Dll\DotSpatial\MapLayouts\LetterPortraitDefault1.mwl" />
+    <None Include="Dll\DotSpatial\MapLayouts\LetterPortraitTitleBottom.mwl" />
+    <None Include="Dll\DotSpatial\Plugins\SpatiaLite\DotSpatial.Plugins.SpatiaLite.dll.config" />
+    <None Include="Dll\DotSpatial\Windows Extensions\DotSpatial.Plugins.MenuBar.dll.config" />
+    <None Include="Dll\DotSpatial\Windows Extensions\DotSpatial.Plugins.WebMap.dll.config" />
+    <None Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\data\compdcs.csv" />
+    <None Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\data\coordinate_axis.csv" />
+    <None Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\data\cubewerx_extra.wkt" />
+    <None Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\data\datum_shift.csv" />
+    <None Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\data\ecw_cs.wkt" />
+    <None Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\data\ellipsoid.csv" />
+    <None Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\data\epsg.wkt" />
+    <None Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\data\esri_extra.wkt" />
+    <None Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\data\esri_StatePlane_extra.wkt" />
+    <None Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\data\esri_Wisconsin_extra.wkt" />
+    <None Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\data\gcs.csv" />
+    <None Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\data\gcs.override.csv" />
+    <None Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\data\gdal_datum.csv" />
+    <None Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\data\geoccs.csv" />
+    <None Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\data\gt_datum.csv" />
+    <None Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\data\gt_ellips.csv" />
+    <None Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\data\header.dxf" />
+    <None Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\data\nitf_spec.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\data\pcs.csv" />
+    <None Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\data\pcs.override.csv" />
+    <None Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\data\prime_meridian.csv" />
+    <None Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\data\projop_wparm.csv" />
+    <None Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\data\s57agencies.csv" />
+    <None Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\data\s57attributes.csv" />
+    <None Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\data\s57attributes_aml.csv" />
+    <None Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\data\s57attributes_iw.csv" />
+    <None Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\data\s57expectedinput.csv" />
+    <None Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\data\s57objectclasses.csv" />
+    <None Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\data\s57objectclasses_aml.csv" />
+    <None Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\data\s57objectclasses_iw.csv" />
+    <None Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\data\seed_2d.dgn" />
+    <None Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\data\seed_3d.dgn" />
+    <None Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\data\stateplane.csv" />
+    <None Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\data\trailer.dxf" />
+    <None Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\data\unit_of_measure.csv" />
+    <None Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\data\vertcs.csv" />
+    <None Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\data\vertcs.override.csv" />
+    <None Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\share\esri.extra" />
+    <None Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\share\ntf_r93.gsb" />
+    <None Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\share\ntv1_can.dat" />
+    <None Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\share\nzgd2kgrid0005.gsb" />
+    <None Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\share\other.extra" />
+    <None Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\share\proj_def.dat" />
+    <None Include="Dll\DotSpatial\Windows Extensions\Taudem5Exe\runtaudem.bat" />
+    <None Include="Dll\FirebirdDB\x64\intl\fbintl.conf" />
+    <None Include="Dll\FirebirdDB\x86\intl\fbintl.conf" />
+    <None Include="FireBirdHelper\bin\x86\Debug\intl\fbintl.conf" />
+    <None Include="FireBirdHelper\intl\fbintl.conf" />
+    <None Include="FireBirdHelper\obj\Release\DesignTimeResolveAssemblyReferencesInput.cache" />
+    <None Include="FireBirdHelper\obj\x86\Debug\DesignTimeResolveAssemblyReferencesInput.cache" />
     <None Include="Plugins\GDAL\gdal\data\compdcs.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -1375,6 +1472,12 @@
     <EmbeddedResource Include="Tools\ModelFileConcatenator.resx">
       <DependentUpon>ModelFileConcatenator.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Tools\OnlineDatabaseExport.resx">
+      <DependentUpon>OnlineDatabaseExport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tools\OnlineDatabaseImport.resx">
+      <DependentUpon>OnlineDatabaseImport.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Tools\Options.resx">
       <DependentUpon>Options.cs</DependentUpon>
     </EmbeddedResource>
@@ -1608,9 +1711,21 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="bin\Debug\" />
+    <Folder Include="bin\Release\" />
+    <Folder Include="bin\x64\" />
+    <Folder Include="bin\x86\" />
     <Folder Include="BuildScript\" />
+    <Folder Include="FireBirdHelper\bin\Release\" />
+    <Folder Include="FireBirdHelper\obj\Debug\TempPE\" />
+    <Folder Include="FireBirdHelper\obj\Release\TempPE\" />
+    <Folder Include="FireBirdHelper\obj\x86\Debug\TempPE\" />
+    <Folder Include="obj\Release\" />
+    <Folder Include="obj\x86\" />
     <Folder Include="Pollutant\" />
     <Folder Include="Report\" />
+    <Folder Include="Setup\Debug\" />
+    <Folder Include="Setup\Release\" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0">
@@ -1649,6 +1764,7 @@
     <Content Include="Configs\ReportParams.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="DataBase\ThisFolderIsWhereDBShouldBePutForInstaller.txt" />
     <Content Include="Data\PopulationRaster\PopUS_90mX10_int16uWz4.tif">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -1670,6 +1786,326 @@
     <Content Include="Data\Shapefiles\United States\State_epa2.shp.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Dll\DataWorker.dll" />
+    <Content Include="Dll\DocumentFormat.OpenXml.dll" />
+    <Content Include="Dll\DotSpatial\Application Extensions\DotSpatial.Plugins.ExtensionManager.dll" />
+    <Content Include="Dll\DotSpatial\Application Extensions\NuGet.Core.dll" />
+    <Content Include="Dll\DotSpatial\cs\DotSpatial.Projections.Forms.resources.dll" />
+    <Content Include="Dll\DotSpatial\cs\DotSpatial.Symbology.Forms.resources.dll" />
+    <Content Include="Dll\DotSpatial\DemoMap.exe" />
+    <Content Include="Dll\DotSpatial\de\DotSpatial.Projections.Forms.resources.dll" />
+    <Content Include="Dll\DotSpatial\DotSpatial.Analysis.dll" />
+    <Content Include="Dll\DotSpatial\DotSpatial.Analysis.xml" />
+    <Content Include="Dll\DotSpatial\DotSpatial.Compatibility.dll" />
+    <Content Include="Dll\DotSpatial\DotSpatial.Compatibility.xml" />
+    <Content Include="Dll\DotSpatial\DotSpatial.Controls.dll" />
+    <Content Include="Dll\DotSpatial\DotSpatial.Controls.xml" />
+    <Content Include="Dll\DotSpatial\DotSpatial.Data.dll" />
+    <Content Include="Dll\DotSpatial\DotSpatial.Data.Forms.dll" />
+    <Content Include="Dll\DotSpatial\DotSpatial.Data.Forms.xml" />
+    <Content Include="Dll\DotSpatial\DotSpatial.Data.xml" />
+    <Content Include="Dll\DotSpatial\DotSpatial.Extensions.dll" />
+    <Content Include="Dll\DotSpatial\DotSpatial.Extensions.xml" />
+    <Content Include="Dll\DotSpatial\DotSpatial.Modeling.Forms.dll" />
+    <Content Include="Dll\DotSpatial\DotSpatial.Modeling.Forms.xml" />
+    <Content Include="Dll\DotSpatial\DotSpatial.Mono.dll" />
+    <Content Include="Dll\DotSpatial\DotSpatial.Mono.XML" />
+    <Content Include="Dll\DotSpatial\DotSpatial.Positioning.Design.dll" />
+    <Content Include="Dll\DotSpatial\DotSpatial.Positioning.Design.xml" />
+    <Content Include="Dll\DotSpatial\DotSpatial.Positioning.dll" />
+    <Content Include="Dll\DotSpatial\DotSpatial.Positioning.Forms.dll" />
+    <Content Include="Dll\DotSpatial\DotSpatial.Positioning.Forms.xml" />
+    <Content Include="Dll\DotSpatial\DotSpatial.Positioning.xml" />
+    <Content Include="Dll\DotSpatial\DotSpatial.Projections.dll" />
+    <Content Include="Dll\DotSpatial\DotSpatial.Projections.Forms.dll" />
+    <Content Include="Dll\DotSpatial\DotSpatial.Projections.Forms.xml" />
+    <Content Include="Dll\DotSpatial\DotSpatial.Projections.xml" />
+    <Content Include="Dll\DotSpatial\DotSpatial.Serialization.dll" />
+    <Content Include="Dll\DotSpatial\DotSpatial.Serialization.xml" />
+    <Content Include="Dll\DotSpatial\DotSpatial.Symbology.dll" />
+    <Content Include="Dll\DotSpatial\DotSpatial.Symbology.Forms.dll" />
+    <Content Include="Dll\DotSpatial\DotSpatial.Symbology.Forms.xml" />
+    <Content Include="Dll\DotSpatial\DotSpatial.Symbology.xml" />
+    <Content Include="Dll\DotSpatial\DotSpatial.Topology.dll" />
+    <Content Include="Dll\DotSpatial\DotSpatial.Topology.xml" />
+    <Content Include="Dll\DotSpatial\el\DotSpatial.Projections.Forms.resources.dll" />
+    <Content Include="Dll\DotSpatial\en-US\DotSpatial.Symbology.Forms.resources.dll" />
+    <Content Include="Dll\DotSpatial\ja-JP\DotSpatial.Projections.Forms.resources.dll" />
+    <Content Include="Dll\DotSpatial\lt\DotSpatial.Projections.Forms.resources.dll" />
+    <Content Include="Dll\DotSpatial\MCBtemp\DotSpatial.Analysis.dll" />
+    <Content Include="Dll\DotSpatial\MCBtemp\DotSpatial.Analysis.xml" />
+    <Content Include="Dll\DotSpatial\MCBtemp\DotSpatial.Compatibility.dll" />
+    <Content Include="Dll\DotSpatial\MCBtemp\DotSpatial.Compatibility.xml" />
+    <Content Include="Dll\DotSpatial\MCBtemp\DotSpatial.Controls.dll" />
+    <Content Include="Dll\DotSpatial\MCBtemp\DotSpatial.Controls.xml" />
+    <Content Include="Dll\DotSpatial\MCBtemp\DotSpatial.Data.dll" />
+    <Content Include="Dll\DotSpatial\MCBtemp\DotSpatial.Data.Forms.dll" />
+    <Content Include="Dll\DotSpatial\MCBtemp\DotSpatial.Data.Forms.xml" />
+    <Content Include="Dll\DotSpatial\MCBtemp\DotSpatial.Data.xml" />
+    <Content Include="Dll\DotSpatial\MCBtemp\DotSpatial.Extensions.dll" />
+    <Content Include="Dll\DotSpatial\MCBtemp\DotSpatial.Extensions.xml" />
+    <Content Include="Dll\DotSpatial\MCBtemp\DotSpatial.Modeling.Forms.dll" />
+    <Content Include="Dll\DotSpatial\MCBtemp\DotSpatial.Modeling.Forms.xml" />
+    <Content Include="Dll\DotSpatial\MCBtemp\DotSpatial.Projections.dll" />
+    <Content Include="Dll\DotSpatial\MCBtemp\DotSpatial.Projections.Forms.dll" />
+    <Content Include="Dll\DotSpatial\MCBtemp\DotSpatial.Projections.Forms.xml" />
+    <Content Include="Dll\DotSpatial\MCBtemp\DotSpatial.Projections.xml" />
+    <Content Include="Dll\DotSpatial\MCBtemp\DotSpatial.Serialization.dll" />
+    <Content Include="Dll\DotSpatial\MCBtemp\DotSpatial.Serialization.xml" />
+    <Content Include="Dll\DotSpatial\MCBtemp\DotSpatial.Symbology.dll" />
+    <Content Include="Dll\DotSpatial\MCBtemp\DotSpatial.Symbology.Forms.dll" />
+    <Content Include="Dll\DotSpatial\MCBtemp\DotSpatial.Symbology.Forms.xml" />
+    <Content Include="Dll\DotSpatial\MCBtemp\DotSpatial.Symbology.xml" />
+    <Content Include="Dll\DotSpatial\MCBtemp\DotSpatial.Topology.dll" />
+    <Content Include="Dll\DotSpatial\MCBtemp\DotSpatial.Topology.xml" />
+    <Content Include="Dll\DotSpatial\MCBtemp\Ionic.Zip.dll" />
+    <Content Include="Dll\DotSpatial\Mono Extensions\DotSpatial.Plugins.MonoHeaderControl.dll" />
+    <Content Include="Dll\DotSpatial\Mono Extensions\DotSpatial.Plugins.SimpleDocking.dll" />
+    <Content Include="Dll\DotSpatial\nl\DotSpatial.Projections.Forms.resources.dll" />
+    <Content Include="Dll\DotSpatial\Plugins\Contourer\DotSpatial.Plugins.Contourer.dll" />
+    <Content Include="Dll\DotSpatial\Plugins\Contourer\GeoAPI.dll" />
+    <Content Include="Dll\DotSpatial\Plugins\Contourer\NetTopologySuite.dll" />
+    <Content Include="Dll\DotSpatial\Plugins\Contourer\PowerCollections.dll" />
+    <Content Include="Dll\DotSpatial\Plugins\Contourer\TomControls.dll" />
+    <Content Include="Dll\DotSpatial\Plugins\DotSpatial.Examples.DemoCustomLayer.dll" />
+    <Content Include="Dll\DotSpatial\Plugins\DotSpatial.Plugins.About.dll" />
+    <Content Include="Dll\DotSpatial\Plugins\DotSpatial.Plugins.FindFeature.dll" />
+    <Content Include="Dll\DotSpatial\Plugins\DotSpatial.Plugins.Help.dll" />
+    <Content Include="Dll\DotSpatial\Plugins\DotSpatial.Plugins.Measure.dll" />
+    <Content Include="Dll\DotSpatial\Plugins\DotSpatial.Plugins.SimpleLegend.dll" />
+    <Content Include="Dll\DotSpatial\Plugins\DotSpatial.Plugins.TableEditor.dll" />
+    <Content Include="Dll\DotSpatial\Plugins\DotSpatial.Plugins.ToolManager.dll" />
+    <Content Include="Dll\DotSpatial\Plugins\DotSpatial.Tools.dll" />
+    <Content Include="Dll\DotSpatial\Plugins\DotSpatial.Tools.xml" />
+    <Content Include="Dll\DotSpatial\Plugins\SpatiaLite\DotSpatial.Plugins.SpatiaLite.dll" />
+    <Content Include="Dll\DotSpatial\Plugins\SpatiaLite\System.Data.SQLite.dll" />
+    <Content Include="Dll\DotSpatial\Plugins\SpatiaLite\System.Data.SQLite.Linq.dll" />
+    <Content Include="Dll\DotSpatial\Plugins\SpatiaLite\System.Data.SQLite.xml" />
+    <Content Include="Dll\DotSpatial\Plugins\SpatiaLite\x64\SQLite.Interop.dll" />
+    <Content Include="Dll\DotSpatial\Plugins\SpatiaLite\x86\SQLite.Interop.dll" />
+    <Content Include="Dll\DotSpatial\Plugins\zh-CN\DotSpatial.Plugins.Measure.resources.dll" />
+    <Content Include="Dll\DotSpatial\Plugins\zh-CN\DotSpatial.Tools.resources.dll" />
+    <Content Include="Dll\DotSpatial\pt\DotSpatial.Projections.Forms.resources.dll" />
+    <Content Include="Dll\DotSpatial\ro\DotSpatial.Projections.Forms.resources.dll" />
+    <Content Include="Dll\DotSpatial\th\DotSpatial.Projections.Forms.resources.dll" />
+    <Content Include="Dll\DotSpatial\vi-VN\DotSpatial.Projections.Forms.resources.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\BruTile.Desktop.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\BruTile.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\DemoPlugin.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\DotSpatial.Extensions.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\DotSpatial.Extensions.xml" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\DotSpatial.Plugins.ClickOnceUpdater.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\DotSpatial.Plugins.LiDAR.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\DotSpatial.Plugins.MapWindowProjectFileCompatibility.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\DotSpatial.Plugins.MenuBar.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\DotSpatial.Plugins.ShapeEditor.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\DotSpatial.Plugins.SimpleHeaderControl.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\DotSpatial.Plugins.TabbedDocking.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\DotSpatial.Plugins.Taudem.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\DotSpatial.Plugins.Taudem.Port.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\DotSpatial.Plugins.WebMap.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\DotSpatial.Plugins.WFSClient.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\DotSpatial.Data.Rasters.GdalExtension.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdalconst_csharp.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\data\gdalicon.png" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\data\GDALLogoBW.svg" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\data\GDALLogoColor.svg" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\data\GDALLogoGS.svg" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\data\nitf_spec.xml" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\data\pci_datum.txt" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\data\pci_ellips.txt" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\share\nad.lst" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\x64\freexl.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\x64\gdal19.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\x64\gdalconst_wrap.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\x64\gdal_wrap.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\x64\geos_c.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\x64\iconv.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\x64\libcurl.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\x64\libeay32.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\x64\libexpat.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\x64\libmysql.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\x64\libpq.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\x64\msvcp100.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\x64\msvcr100.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\x64\ogr_wrap.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\x64\openjpeg.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\x64\osr_wrap.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\x64\plugins\cfitsio.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\x64\plugins\gdal_BAG.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\x64\plugins\gdal_ECW_JP2ECW.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\x64\plugins\gdal_FITS.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\x64\plugins\gdal_GMT.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\x64\plugins\gdal_HDF5.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\x64\plugins\gdal_HDF5Image.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\x64\plugins\gdal_MrSID.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\x64\plugins\gdal_netCDF.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\x64\plugins\hdf5dll.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\x64\plugins\libecwj2.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\x64\plugins\lti_dsdk.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\x64\plugins\netcdf.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\x64\proj.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\x64\spatialite.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\x64\ssleay32.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\x64\xerces-c_2_8.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\x64\zlib1.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\x86\freexl.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\x86\gdal19.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\x86\gdalconst_wrap.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\x86\gdal_wrap.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\x86\geos_c.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\x86\iconv.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\x86\libcurl.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\x86\libeay32.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\x86\libexpat.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\x86\libmysql.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\x86\libpq.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\x86\msvcp100.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\x86\msvcr100.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\x86\ogr_wrap.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\x86\openjpeg.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\x86\osr_wrap.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\x86\plugins\cfitsio.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\x86\plugins\gdal_BAG.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\x86\plugins\gdal_ECW_JP2ECW.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\x86\plugins\gdal_FITS.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\x86\plugins\gdal_GMT.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\x86\plugins\gdal_HDF5.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\x86\plugins\gdal_HDF5Image.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\x86\plugins\gdal_MrSID.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\x86\plugins\gdal_netCDF.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\x86\plugins\hdf5dll.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\x86\plugins\libecwj2.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\x86\plugins\lti_dsdk.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\x86\plugins\netcdf.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\x86\proj.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\x86\spatialite.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\x86\ssleay32.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\x86\xerces-c_2_8.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal\x86\zlib1.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\gdal_csharp.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\ogr_csharp.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\GDAL\osr_csharp.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\Ionic.Zip.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\Ionic.Zip.xml" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\laszip.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\liblas.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\pdal.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\pdal_swig_cpp.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\pdal_swig_cs.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\Renci.Data.Interop.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\ScriptRunner\cs\DotSpatial.Plugins.ScriptRunner.resources.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\ScriptRunner\de\DotSpatial.Plugins.ScriptRunner.resources.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\ScriptRunner\DotSpatial.Plugins.ScriptRunner.CSharpCodeCompletion.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\ScriptRunner\DotSpatial.Plugins.ScriptRunner.CSharpCodeCompletion.XML" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\ScriptRunner\DotSpatial.Plugins.ScriptRunner.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\ScriptRunner\el\DotSpatial.Plugins.ScriptRunner.resources.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\ScriptRunner\ICSharpCode.NRefactory.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\ScriptRunner\ICSharpCode.SharpDevelop.Dom.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\ScriptRunner\ICSharpCode.TextEditor.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\ScriptRunner\ja-JP\DotSpatial.Plugins.ScriptRunner.resources.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\ScriptRunner\lt\DotSpatial.Plugins.ScriptRunner.resources.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\ScriptRunner\MapWinUtility.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\ScriptRunner\MapWinUtility.xml" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\ScriptRunner\Mono.Cecil.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\ScriptRunner\nl\DotSpatial.Plugins.ScriptRunner.resources.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\ScriptRunner\ro\DotSpatial.Plugins.ScriptRunner.resources.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\ScriptRunner\th\DotSpatial.Plugins.ScriptRunner.resources.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\ScriptRunner\vi-VN\DotSpatial.Plugins.ScriptRunner.resources.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\Taudem5Exe\AreaD8.exe" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\Taudem5Exe\AreaDinf.exe" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\Taudem5Exe\D8FlowDir.exe" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\Taudem5Exe\D8FlowPathExtremeUp.exe" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\Taudem5Exe\D8HDistToStrm.exe" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\Taudem5Exe\DinfAvalanche.exe" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\Taudem5Exe\DinfConcLimAccum.exe" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\Taudem5Exe\DinfDecayAccum.exe" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\Taudem5Exe\DinfDistDown.exe" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\Taudem5Exe\DinfDistUp.exe" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\Taudem5Exe\DinfFlowDir.exe" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\Taudem5Exe\DinfRevAccum.exe" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\Taudem5Exe\DinfTransLimAccum.exe" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\Taudem5Exe\DinfUpDependence.exe" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\Taudem5Exe\DropAnalysis.exe" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\Taudem5Exe\GageWatershed.exe" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\Taudem5Exe\GridNet.exe" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\Taudem5Exe\LengthArea.exe" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\Taudem5Exe\MoveOutletsToStreams.exe" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\Taudem5Exe\mpich2.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\Taudem5Exe\mpich2mpe.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\Taudem5Exe\mpich2mpi.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\Taudem5Exe\mpich2mt.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\Taudem5Exe\mpich2mtp.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\Taudem5Exe\mpich2nemesis.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\Taudem5Exe\mpich2nemesisp.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\Taudem5Exe\mpich2p.dll" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\Taudem5Exe\PeukerDouglas.exe" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\Taudem5Exe\PitRemove.exe" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\Taudem5Exe\SlopeArea.exe" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\Taudem5Exe\SlopeAreaRatio.exe" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\Taudem5Exe\SlopeAveDown.exe" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\Taudem5Exe\StreamNet.exe" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\Taudem5Exe\Threshold.exe" />
+    <Content Include="Dll\DotSpatial\Windows Extensions\zh-CN\DotSpatial.Plugins.ShapeEditor.resources.dll" />
+    <Content Include="Dll\DotSpatial\zh-CN\DotSpatial.Controls.resources.dll" />
+    <Content Include="Dll\DotSpatial\zh-CN\DotSpatial.Data.Forms.resources.dll" />
+    <Content Include="Dll\DotSpatial\zh-CN\DotSpatial.Modeling.Forms.resources.dll" />
+    <Content Include="Dll\DotSpatial\zh-CN\DotSpatial.Projections.Forms.resources.dll" />
+    <Content Include="Dll\DotSpatial\zh-CN\DotSpatial.Symbology.Forms.resources.dll" />
+    <Content Include="Dll\DotSpatial\zh-MO\DotSpatial.Modeling.Forms.resources.dll" />
+    <Content Include="Dll\DraggableTabControl.dll" />
+    <Content Include="Dll\Excel.dll" />
+    <Content Include="Dll\FirebirdDB\FirebirdSql.Data.FirebirdClient.dll" />
+    <Content Include="Dll\FirebirdDB\x64\fbembed.dll" />
+    <Content Include="Dll\FirebirdDB\x64\icudt30.dll" />
+    <Content Include="Dll\FirebirdDB\x64\icuin30.dll" />
+    <Content Include="Dll\FirebirdDB\x64\icuuc30.dll" />
+    <Content Include="Dll\FirebirdDB\x64\intl\fbintl.dll" />
+    <Content Include="Dll\FirebirdDB\x86\fbembed.dll" />
+    <Content Include="Dll\FirebirdDB\x86\icudt30.dll" />
+    <Content Include="Dll\FirebirdDB\x86\icuin30.dll" />
+    <Content Include="Dll\FirebirdDB\x86\icuuc30.dll" />
+    <Content Include="Dll\FirebirdDB\x86\intl\fbintl.dll" />
+    <Content Include="Dll\ICSharpCode.SharpZipLib.dll" />
+    <Content Include="Dll\LumenWorks.Framework.IO.dll" />
+    <Content Include="Dll\Meta.Numerics.dll" />
+    <Content Include="Dll\Microsoft.Office.Interop.Excel.dll" />
+    <Content Include="Dll\Newtonsoft.Json.dll" />
+    <Content Include="Dll\ObjectListView\ListViewPrinter.dll" />
+    <Content Include="Dll\ObjectListView\ObjectListView.dll" />
+    <Content Include="Dll\ObjectListView\SparkleLibrary.dll" />
+    <Content Include="Dll\protobuf-net.dll" />
+    <Content Include="Dll\RestSharp.104.4.0\LICENSE.txt" />
+    <Content Include="Dll\RestSharp.104.4.0\net4\RestSharp.dll" />
+    <Content Include="Dll\RestSharp.104.4.0\net4\RestSharp.xml" />
+    <Content Include="Dll\RestSharp.104.4.0\readme.txt" />
+    <Content Include="Dll\RichTextBoxPrintCtrl.dll" />
+    <Content Include="Dll\System.Net.Http.dll" />
+    <Content Include="Dll\System.Net.Http.Formatting.dll" />
+    <Content Include="Dll\System.Net.Http.WebRequest.dll" />
+    <Content Include="Dll\Troschuetz.Random.dll" />
+    <Content Include="Dll\ZedGraph\ZedGraph.dll" />
+    <Content Include="ErrorReporting\BenMAPJiraConnector.dll" />
+    <Content Include="ErrorReporting\BenMAPJiraConnector.txt" />
+    <Content Include="ErrorReporting\ThisIsWhereTwoErrorReportingFilesShouldGo.txt" />
+    <Content Include="FireBirdHelper\bin\Debug\FirebirdSql.Data.FirebirdClient.dll" />
+    <Content Include="FireBirdHelper\bin\x86\Debug\fbembed.dll" />
+    <Content Include="FireBirdHelper\bin\x86\Debug\FireBirdHelper.dll" />
+    <Content Include="FireBirdHelper\bin\x86\Debug\FireBirdHelper.pdb" />
+    <Content Include="FireBirdHelper\bin\x86\Debug\FirebirdSql.Data.FirebirdClient.dll" />
+    <Content Include="FireBirdHelper\bin\x86\Debug\icudt30.dll" />
+    <Content Include="FireBirdHelper\bin\x86\Debug\icuin30.dll" />
+    <Content Include="FireBirdHelper\bin\x86\Debug\icuuc30.dll" />
+    <Content Include="FireBirdHelper\bin\x86\Debug\intl\fbintl.dll" />
+    <Content Include="FireBirdHelper\fbembed.dll" />
+    <Content Include="FireBirdHelper\FireBirdHelper.csproj" />
+    <Content Include="FireBirdHelper\icudt30.dll" />
+    <Content Include="FireBirdHelper\icuin30.dll" />
+    <Content Include="FireBirdHelper\icuuc30.dll" />
+    <Content Include="FireBirdHelper\intl\fbintl.dll" />
+    <Content Include="FireBirdHelper\obj\x86\Debug\FireBirdHelper.csproj.FileListAbsolute.txt" />
+    <Content Include="FireBirdHelper\obj\x86\Debug\FireBirdHelper.dll" />
+    <Content Include="FireBirdHelper\obj\x86\Debug\FireBirdHelper.pdb" />
     <Content Include="GDAL-EXE\gdal19.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
