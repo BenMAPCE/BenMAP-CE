@@ -302,16 +302,14 @@ namespace BenMAP
             this.mnuTools.Size = new System.Drawing.Size(62, 27);
             this.mnuTools.Text = "Tools";
             //test for new
-            if (true)
-            {
+          
                 //this.mnuTools.BackColor = System.Drawing.Color.PowderBlue;
-                this.mnuTools.ToolTipText = "There are new health impact functions available online";
-                //string path = Application.StartupPath + "\\Tools\\alertSmall.png";
-                this.mnuTools.Image = Properties.Resources.onlineAlert_Image;//System.Drawing.Bitmap.FromFile(path);
-                this.mnuTools.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.ImageAndText;
-                this.mnuTools.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
-                this.mnuTools.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            }
+            this.mnuTools.ToolTipText = "There are new health impact functions available online";
+            this.mnuTools.Image = Properties.Resources.onlineAlert_Image;
+            this.mnuTools.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.ImageAndText;
+            this.mnuTools.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.mnuTools.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            
             // 
             // airQualityGridAggregationToolStripMenuItem
             // 
@@ -355,16 +353,13 @@ namespace BenMAP
             this.onlineDatabaseImportToolStripMenuItem.Size = new System.Drawing.Size(321, 28);
             this.onlineDatabaseImportToolStripMenuItem.Text = "Online Database Import";
             //test for new
-            if (true)
-            {
-                //this.mnuTools.BackColor = System.Drawing.Color.PowderBlue;
-                this.onlineDatabaseImportToolStripMenuItem.ToolTipText = "There are new health impact functions available online";
-                //string path = Application.StartupPath + "\\Tools\\alertSmall.png";
-                this.onlineDatabaseImportToolStripMenuItem.Image = Properties.Resources.onlineAlert_Image; //System.Drawing.Bitmap.FromFile(path);
-                this.onlineDatabaseImportToolStripMenuItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.ImageAndText;
-                this.onlineDatabaseImportToolStripMenuItem.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
-                this.onlineDatabaseImportToolStripMenuItem.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            }
+            //this.mnuTools.BackColor = System.Drawing.Color.PowderBlue;
+            this.onlineDatabaseImportToolStripMenuItem.ToolTipText = "There are new health impact functions available online";
+            this.onlineDatabaseImportToolStripMenuItem.Image = Properties.Resources.onlineAlert_Image;
+            this.onlineDatabaseImportToolStripMenuItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.ImageAndText;
+            this.onlineDatabaseImportToolStripMenuItem.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.onlineDatabaseImportToolStripMenuItem.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            
             this.onlineDatabaseImportToolStripMenuItem.Click += new System.EventHandler(this.onlineDatabaseImportToolStripMenuItem_Click);
             // 
             // exportAirQualityGridToolStripMenuItem
