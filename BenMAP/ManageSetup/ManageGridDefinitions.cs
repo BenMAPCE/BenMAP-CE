@@ -354,6 +354,7 @@ namespace BenMAP
                     if (count > 0)
                     {
                         cboProjections.Enabled = false;
+                        chkShowAll.Enabled = false;
                     }
                 }
 
