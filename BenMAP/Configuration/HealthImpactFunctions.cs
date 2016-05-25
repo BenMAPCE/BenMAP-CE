@@ -1111,14 +1111,14 @@ namespace BenMAP
                         string[] strAgeArray = dicAllRaceEthnicityGenderAge[crSelectFunction.Race + "," + crSelectFunction.Ethnicity + "," + crSelectFunction.Gender].Split(new char[] { ',' });
                         if (Convert.ToInt32(strAgeArray[0]) > crSelectFunction.StartAge)
                         {
-                            dicAllRaceEthnicityGenderAge[crSelectFunction.Race + "," + crSelectFunction.Ethnicity + "," + crSelectFunction.Gender] =
-                                crSelectFunction.StartAge + "," + strAgeArray[1];
+                            strAgeArray[0] = crSelectFunction.StartAge.ToString();
                         }
                         if (Convert.ToInt32(strAgeArray[1]) < crSelectFunction.EndAge)
                         {
-                            dicAllRaceEthnicityGenderAge[crSelectFunction.Race + "," + crSelectFunction.Ethnicity + "," + crSelectFunction.Gender] =
-                                 strAgeArray[0] + "," + crSelectFunction.EndAge;
+                            strAgeArray[1] = crSelectFunction.EndAge.ToString();
                         }
+
+                        dicAllRaceEthnicityGenderAge[crSelectFunction.Race + "," + crSelectFunction.Ethnicity + "," + crSelectFunction.Gender] = strAgeArray[0] + "," + strAgeArray[1];
 
 
                     }
