@@ -521,6 +521,9 @@ namespace BenMAP
         public static BenMAPGrid GBenMAPGrid; public static List<BaseControlGroup> LstBaseControlGroup; public static double CRThreshold = 0; public static int CRLatinHypercubePoints = 20; public static bool CRRunInPointMode = false; public static int CRSeeds = 1; public static BenMAPPopulation BenMAPPopulation;
         public static List<GridRelationship> LstCurrentGridRelationship; public static string CurrentStat;
         public static List<string> LstAsynchronizationStates;
+
+        public static Dictionary<string, Dictionary<string, float>> DicPopulationAgeInCache = new Dictionary<string, Dictionary<string, float>>();
+
         private static List<GridRelationship> lstGridRelationshipAll;
         private static bool isAddPercentage = false;
 
