@@ -1103,7 +1103,9 @@ namespace BenMAP
                 this.lbProgressBar.Text = sProgressBar;
                 this.pBarCR.Value++;
                 lbProgressBar.Refresh();
-                Dictionary<string, string> dicAllRaceEthnicityGenderAge = new Dictionary<string, string>();
+
+                //loop over health impact functions to find all race/gender/ethnicity groups and age ranges for which we need populations
+                Dictionary<string, string> dicAllRaceEthnicityGenderAge = new Dictionary<string, string>();                
                 foreach (CRSelectFunction crSelectFunction in CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction)
                 {
                     if (dicAllRaceEthnicityGenderAge.ContainsKey(crSelectFunction.Race + "," + crSelectFunction.Ethnicity + "," + crSelectFunction.Gender))
@@ -1125,6 +1127,8 @@ namespace BenMAP
                     else
                         dicAllRaceEthnicityGenderAge.Add(crSelectFunction.Race + "," + crSelectFunction.Ethnicity + "," + crSelectFunction.Gender, crSelectFunction.StartAge + "," + crSelectFunction.EndAge);
                 }
+
+                //for each grid cell, get population for each race/gender/ethnicity group and age range specified above
                 dicALlPopulationAge = new Dictionary<string, Dictionary<string, float>>();
                 foreach (KeyValuePair<string, string> kAge in dicAllRaceEthnicityGenderAge)
                 {
