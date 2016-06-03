@@ -1151,7 +1151,8 @@ namespace BenMAP
 
                         //this.lbProgressBar.Text = String.Format("Loading Cached Population data for Race = {0}, Ethnicity = {1}, Gender = {2}, Start Age = {3}, End Age = {4}",
                         //                                        skAgeArrayRaceGenderEthnicity[0], skAgeArrayRaceGenderEthnicity[1], skAgeArrayRaceGenderEthnicity[2],
-                        //                                        skAgeArray[0], skAgeArray[1]);                            
+                        //                                        skAgeArray[0], skAgeArray[1]);
+                        this.lbProgressBar.Text = "Loading Cached Population data.";
                     }
                     else 
                     {
