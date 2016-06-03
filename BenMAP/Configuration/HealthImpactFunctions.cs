@@ -1132,7 +1132,10 @@ namespace BenMAP
                 dicALlPopulationAge = new Dictionary<string, Dictionary<string, float>>();
                 foreach (KeyValuePair<string, string> kAge in dicAllRaceEthnicityGenderAge)
                 {
-                    //build cache key. key is race,gender,ethnicity,start age,end age,CommonClass.GBenMAPGrid.GridDefinitionID,CommonClass.BenMAPPopulation.GridType.GridDefinitionID
+                    string[] skAgeArray = kAge.Value.Split(new char[] { ',' });
+                    string[] skAgeArrayRaceGenderEthnicity = kAge.Key.Split(new char[] { ',' });
+
+                    //build cache key. key is race,ethnicity,gender,start age,end age,CommonClass.GBenMAPGrid.GridDefinitionID,CommonClass.BenMAPPopulation.GridType.GridDefinitionID
                     string cacheKey = String.Format("{0},{1},{2},{3}", 
                                                     kAge.Key, kAge.Value, 
                                                     CommonClass.GBenMAPGrid.GridDefinitionID.ToString(), 
@@ -1145,12 +1148,13 @@ namespace BenMAP
                     {
                         //if in cache, retrieve a copy
                         dicPopulationAgeIn = new Dictionary<string, float>(CommonClass.DicPopulationAgeInCache[cacheKey]);
+                        this.lbProgressBar.Text = String.Format("Loading Cached Population data for Race = {0}, Ethnicity = {1}, Gender = {2}, Start Age = {3}, End Age = {4}",
+                                                                skAgeArrayRaceGenderEthnicity[0], skAgeArrayRaceGenderEthnicity[1], skAgeArrayRaceGenderEthnicity[2],
+                                                                skAgeArray[0], skAgeArray[1]);                            
                     }
                     else 
                     {
-                        //if not in cache, retreive population
-                        string[] skAgeArray = kAge.Value.Split(new char[] { ',' });
-                        string[] skAgeArrayRaceGenderEthnicity = kAge.Key.Split(new char[] { ',' });                        
+                        //if not in cache, retreive population                                          
 
                         CRSelectFunction crSelectFunction = CommonClass.getCRSelectFunctionClone(CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction.First());
                         crSelectFunction.StartAge = Convert.ToInt32(skAgeArray[0]);
