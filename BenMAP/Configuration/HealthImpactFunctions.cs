@@ -1103,7 +1103,9 @@ namespace BenMAP
                 this.lbProgressBar.Text = sProgressBar;
                 this.pBarCR.Value++;
                 lbProgressBar.Refresh();
-                Dictionary<string, string> dicAllRaceEthnicityGenderAge = new Dictionary<string, string>();
+
+                //loop over health impact functions to find all race/gender/ethnicity groups and age ranges for which we need populations
+                Dictionary<string, string> dicAllRaceEthnicityGenderAge = new Dictionary<string, string>();                
                 foreach (CRSelectFunction crSelectFunction in CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction)
                 {
                     if (dicAllRaceEthnicityGenderAge.ContainsKey(crSelectFunction.Race + "," + crSelectFunction.Ethnicity + "," + crSelectFunction.Gender))
@@ -1125,20 +1127,55 @@ namespace BenMAP
                     else
                         dicAllRaceEthnicityGenderAge.Add(crSelectFunction.Race + "," + crSelectFunction.Ethnicity + "," + crSelectFunction.Gender, crSelectFunction.StartAge + "," + crSelectFunction.EndAge);
                 }
+
+                //for each grid cell, get population for each race/gender/ethnicity group and age range specified above
                 dicALlPopulationAge = new Dictionary<string, Dictionary<string, float>>();
                 foreach (KeyValuePair<string, string> kAge in dicAllRaceEthnicityGenderAge)
                 {
                     string[] skAgeArray = kAge.Value.Split(new char[] { ',' });
                     string[] skAgeArrayRaceGenderEthnicity = kAge.Key.Split(new char[] { ',' });
-                    Dictionary<string, float> dicPopulationAgeIn = new Dictionary<string, float>();
-                    CRSelectFunction crSelectFunction = CommonClass.getCRSelectFunctionClone(CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction.First());
-                    crSelectFunction.StartAge = Convert.ToInt32(skAgeArray[0]);
-                    crSelectFunction.EndAge = Convert.ToInt32(skAgeArray[1]);
-                    crSelectFunction.Race = skAgeArrayRaceGenderEthnicity[0];
-                    crSelectFunction.Ethnicity = skAgeArrayRaceGenderEthnicity[1];
-                    crSelectFunction.Gender = skAgeArrayRaceGenderEthnicity[2];
-                    Configuration.ConfigurationCommonClass.getPopulationDataSetFromCRSelectFunction(ref dicPopulationAgeIn, ref dicPopulation12, crSelectFunction, CommonClass.BenMAPPopulation, dicRace, dicEthnicity,
-                            dicGender, CommonClass.GBenMAPGrid.GridDefinitionID, gridPopulation);
+
+                    //build cache key. key is race,ethnicity,gender,start age,end age,CommonClass.GBenMAPGrid.GridDefinitionID,CommonClass.BenMAPPopulation.GridType.GridDefinitionID
+                    string cacheKey = String.Format("{0},{1},{2},{3}", 
+                                                    kAge.Key, kAge.Value, 
+                                                    CommonClass.GBenMAPGrid.GridDefinitionID.ToString(), 
+                                                    CommonClass.BenMAPPopulation.GridType.GridDefinitionID.ToString());
+
+                    //check cache
+                    Dictionary<string, float> dicPopulationAgeIn;
+
+                    if (CommonClass.DicPopulationAgeInCache.Keys.Contains(cacheKey))
+                    {
+                        //if in cache, retrieve a copy
+                        dicPopulationAgeIn = new Dictionary<string, float>(CommonClass.DicPopulationAgeInCache[cacheKey]);
+
+                        //this.lbProgressBar.Text = String.Format("Loading Cached Population data for Race = {0}, Ethnicity = {1}, Gender = {2}, Start Age = {3}, End Age = {4}",
+                        //                                        skAgeArrayRaceGenderEthnicity[0], skAgeArrayRaceGenderEthnicity[1], skAgeArrayRaceGenderEthnicity[2],
+                        //                                        skAgeArray[0], skAgeArray[1]);
+                        this.lbProgressBar.Text = "Loading Cached Population data.";
+                    }
+                    else 
+                    {
+                        //if not in cache, retreive population                                          
+
+                        CRSelectFunction crSelectFunction = CommonClass.getCRSelectFunctionClone(CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction.First());
+                        crSelectFunction.StartAge = Convert.ToInt32(skAgeArray[0]);
+                        crSelectFunction.EndAge = Convert.ToInt32(skAgeArray[1]);
+                        crSelectFunction.Race = skAgeArrayRaceGenderEthnicity[0];
+                        crSelectFunction.Ethnicity = skAgeArrayRaceGenderEthnicity[1];
+                        crSelectFunction.Gender = skAgeArrayRaceGenderEthnicity[2];
+
+                        //build population
+                        dicPopulationAgeIn = new Dictionary<string, float>();
+                        Configuration.ConfigurationCommonClass.getPopulationDataSetFromCRSelectFunction(ref dicPopulationAgeIn, ref dicPopulation12, crSelectFunction, CommonClass.BenMAPPopulation, dicRace, dicEthnicity,
+                                dicGender, CommonClass.GBenMAPGrid.GridDefinitionID, gridPopulation);
+
+                        //add copy of dicPopulationAgeIn to cache
+                        CommonClass.DicPopulationAgeInCache.Add(cacheKey, new Dictionary<string, float>(dicPopulationAgeIn));
+
+                    }
+
+                    //set dicPopulationAgeIn
                     dicALlPopulationAge.Add(kAge.Key, dicPopulationAgeIn);
 
                 }
