@@ -24,9 +24,10 @@ namespace BenMAP.Configuration
         {
 
         }
-        public static void UpdateCRSelectFunctionCalculateValueLHS(ref CRSelectFunctionCalculateValue cRSelectFunctionCalculateValue)
-        {
-        }
+        // DEADCODE - no references to this exist
+        //public static void UpdateCRSelectFunctionCalculateValueLHS(ref CRSelectFunctionCalculateValue cRSelectFunctionCalculateValue)
+        //{
+        //}
 
         public static void SaveCRFRFile(BaseControlCRSelectFunctionCalculateValue baseControlCRSelectFunctionCalculateValue, string strCRFPath)
         {
@@ -600,30 +601,6 @@ namespace BenMAP.Configuration
             }
 
         }
-        public static double[] getLHSArray(int LatinHypercubePoints)
-        {
-            try
-            {
-                double[,] lhsResult = null;
-                double[] lhsResultArray = null;
-
-                lhsResult = ESIL.Kriging.LHSDesign.LhsDesign(1, LatinHypercubePoints);
-                lhsResultArray = new double[LatinHypercubePoints];
-                int ilhsResult = 0;
-                while (ilhsResult < LatinHypercubePoints)
-                {
-                    lhsResultArray[ilhsResult] = lhsResult[0, ilhsResult] + 0.5; ilhsResult++;
-                }
-
-                var q = lhsResultArray.OrderBy(s => s);
-                lhsResultArray = q.ToArray();
-                return lhsResultArray;
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
-        }
         public static double Normal(double x, double miu, double sigma)
         {
             return 1.0 / (x * Math.Sqrt(2 * Math.PI) * sigma) * Math.Exp(-1 * (Math.Log(x) - miu) * (Math.Log(x) - miu) / (2 * sigma * sigma));
@@ -1144,10 +1121,14 @@ namespace BenMAP.Configuration
             ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
             int benMAPPopulationDataSetID = benMAPPopulation.DataSetID;
             string commandText = string.Format("select  min( Yyear) from t_PopulationDataSetIDYear where PopulationDataSetID={0} ", benMAPPopulation.DataSetID); int commonYear = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, System.Data.CommandType.Text, commandText));
+            // HARDCODDED SetupID = 1, handles population Year differently for US and non US setups
             if (CommonClass.MainSetup.SetupID != 1) commonYear = benMAPPopulation.Year;
             commandText = "";
             string strwhere = "";
+            // HARDCODED SetupID = 1, US
             if (CommonClass.MainSetup.SetupID == 1)
+                // HARDCODED AgeRangeID != 42 (ages 0 to 99)
+                // this appears to be an attempt to exclude the 0 to 99 age range from use in the US, but allow it in China and new setups
                 strwhere = "where AGERANGEID!=42";
             else
                 strwhere = " where 1=1 ";
@@ -1196,12 +1177,17 @@ namespace BenMAP.Configuration
                     }
 
                     if (commandText != "") commandText = commandText + " union ";
+                    // HARDCODED - GridDefinitionID==1, SetupID==1 (US)
                     if (benMAPPopulation.GridType.GridDefinitionID == 1 && CommonClass.MainSetup.SetupID == 1 && commonYear != benMAPPopulation.Year)
                     {
+                        // HARDCODED - where PopulationDatasetID=2 - no such population dataset exists in current DB, lowest current ID is 30
+                        // DEADCODE - SQL result for commontext must be empty, as no PopulationEntries have PopulationDataSetID = 2
                         commandText += string.Format("select   a.CColumn,a.Row,sum(a.vvalue*b.vvalue)*" + dDiv + " as VValue   from PopulationEntries a,(select CColumn,Row,VValue,AgerangeID,RaceID,EthnicityID,GenderID from PopulationEntries where PopulationDatasetID=2 and YYear=" + benMAPPopulation.Year + ") b " +
                             "  where a.CColumn=b.CColumn and a.Row=b.Row and a.AgerangeID=b.AgerangeID and a.RaceID=b.RaceID and a.EthnicityID=b.EthnicityID and a.GenderID=b.GenderID and  a.PopulationDatasetID={0} and a.YYear={1}", benMAPPopulation.DataSetID, commonYear);
 
                     }
+                    // HARDCODED - SetupID == , PopulationDataSetID=4 - no such population dataset exists in current DB, lowest current ID is 30
+                    // DEADCODE - if statement can never execute as no Population.DataSetID = 4 exists
                     else if (CommonClass.MainSetup.SetupID == 1 && CommonClass.BenMAPPopulation.DataSetID == 4 && commonYear != benMAPPopulation.Year)
                     {
                         commandText += string.Format("select   a.CColumn,a.Row,sum(a.vvalue*b.vvalue*c.percentage)*" + dDiv + " as VValue   from PopulationEntries a,(select CColumn,Row,VValue,AgerangeID,RaceID,EthnicityID,GenderID from PopulationEntries where PopulationDatasetID=2 and YYear=" + benMAPPopulation.Year + ") b ," +
@@ -1215,43 +1201,59 @@ namespace BenMAP.Configuration
                     }
                     else
                     {
+                        // this looks like the only piece of the if statement that can work with the current database
                         commandText += string.Format("select   a.CColumn,a.Row,sum(a.vvalue)*" + dDiv + " as VValue   from PopulationEntries a  where   a.PopulationDatasetID={0} and a.YYear={1}", benMAPPopulation.DataSetID, commonYear);
                     }
                     commandText = string.Format(commandText + " and a.AgerangeID={0}", Convert.ToInt32(dr["AgerangeID"]));
+                    // **************************************************************************************************************
+                    // The following additions to the SQL statement append "" to the selected race, gender, ethnicity iff ALL is not selected
+                    // **************************************************************************************************************
+                    // HARDCODED = Race = ALL (lc)
                     if (!string.IsNullOrEmpty(crSelectFunction.Race) && crSelectFunction.Race.ToLower() != "all")
                     {
                         if (dicRace[crSelectFunction.Race] != null)
                         {
+                            // HARDCODED - RaceID = 6, empty string 
                             commandText = string.Format(commandText + " and (a.RaceID={0} or a.RaceID=6)", dicRace[crSelectFunction.Race]);
                         }
                     }
+                    // HARDCODED = Ethnicity = ALL (lc)
                     if (!string.IsNullOrEmpty(crSelectFunction.Ethnicity) && crSelectFunction.Ethnicity.ToLower() != "all")
                     {
                         if (dicEthnicity[crSelectFunction.Ethnicity] != null)
                         {
+                            // HARDCODED - ethnicityID = 4, empty string
                             commandText = string.Format(commandText + " and (a.EthnicityID={0} or a.EthnicityID=4)", dicEthnicity[crSelectFunction.Ethnicity]);
 
                         }
                     }
+                    // HARDCODED = gender  = ALL (lc)
                     if (!string.IsNullOrEmpty(crSelectFunction.Gender) && crSelectFunction.Gender.ToLower() != "all")
                     {
                         if (dicGender[crSelectFunction.Gender] != null)
                         {
+                            //HARDCODED GenderID = 4 
                             commandText = string.Format(commandText + " and (a.GenderID={0} or a.GenderID=4)", dicGender[crSelectFunction.Gender]);
                         }
                     }
                     commandText = commandText + " group by a.CColumn,a.Row";
                 }
+                // **************************************************************************************************************
+                    
             }
             if (commandText != "" && strsumage != "") commandText = commandText + " union ";
             if (strsumage != "")
             {
+                // HARDCODED - GridDefinitionID == 1, SetupID== 1 (US) 
+                // DEADCODE - minimum grid definition id is 4, this if statement will never execute
                 if (benMAPPopulation.GridType.GridDefinitionID == 1 && CommonClass.MainSetup.SetupID == 1 && commonYear != benMAPPopulation.Year)
                 {
                     commandText += string.Format("select   a.CColumn,a.Row,sum(a.vvalue*b.VValue) as VValue   from PopulationEntries a,(select CColumn,Row,VValue,AgerangeID,RaceID,EthnicityID,GenderID from PopulationEntries where PopulationDatasetID=2 and YYear=" + benMAPPopulation.Year + ") b " +
                         "  where a.CColumn=b.CColumn and a.Row=b.Row and a.AgerangeID=b.AgerangeID and a.RaceID=b.RaceID and a.EthnicityID=b.EthnicityID and a.GenderID=b.GenderID and  a.PopulationDatasetID={0} and a.YYear={1}", benMAPPopulation.DataSetID, commonYear);
 
                 }
+                // HARDCODED - SetupID == 1 (US), PopulationDataSetID == 4
+                // DEADCODE - lowest  dataset ID is 30 , this statement can't execute
                 else if (CommonClass.MainSetup.SetupID == 1 && CommonClass.BenMAPPopulation.DataSetID == 4 && commonYear != benMAPPopulation.Year)
                 {
                     commandText += string.Format("select   a.CColumn,a.Row,sum(a.vvalue*b.VValue*c.percentage) as VValue   from PopulationEntries a,(select CColumn,Row,VValue,AgerangeID,RaceID,EthnicityID,GenderID from PopulationEntries where PopulationDatasetID=2 and YYear=" + benMAPPopulation.Year + ") b ," +
@@ -1261,12 +1263,16 @@ namespace BenMAP.Configuration
 
 
                 }
+                // this appears to be the only part of the if else statement that can execute with the current database
                 else
                 {
                     commandText += string.Format("select   a.CColumn,a.Row,sum(a.vvalue) as VValue   from PopulationEntries a  where   a.PopulationDatasetID={0} and a.YYear={1}", benMAPPopulation.DataSetID, commonYear);
                 }
                 commandText = string.Format(commandText + " and a.AgerangeID in ({0}) ", strsumage);
-
+                // **************************************************************************************************************
+                // The following additions to the SQL statement append the code for "" to the selected race, gender, ethnicity 
+                // **************************************************************************************************************
+                // HARDCODED RaceID = 6 (empty string)
                 if (!string.IsNullOrEmpty(crSelectFunction.Race))
                 {
                     if (dicRace[crSelectFunction.Race].ToString() != "")
@@ -1274,6 +1280,7 @@ namespace BenMAP.Configuration
                         commandText = string.Format(commandText + " and (a.RaceID={0} or a.RaceID=6)", dicRace[crSelectFunction.Race]);
                     }
                 }
+                // HARDCODED EthnicityID = 4 (empty string)
                 if (!string.IsNullOrEmpty(crSelectFunction.Ethnicity))
                 {
                     if (dicEthnicity[crSelectFunction.Ethnicity].ToString() != "")
@@ -1282,6 +1289,7 @@ namespace BenMAP.Configuration
 
                     }
                 }
+                // HARDCODED GenderID = 4, (empty string)
                 if (!string.IsNullOrEmpty(crSelectFunction.Gender))
                 {
                     if (dicGender[crSelectFunction.Gender].ToString() != "")
@@ -1290,6 +1298,8 @@ namespace BenMAP.Configuration
                     }
                 }
                 commandText = commandText + " group by a.CColumn,a.Row";
+                // **************************************************************************************************************
+               
             }
             if (commandText != "")
             {
@@ -2433,1179 +2443,1184 @@ namespace BenMAP.Configuration
                 return null;
             }
         }
-
-        public static void getIncidenceLevelFromDatabase()
-        {
-            try
-            {
-                string commandTextLevel = "select * from t_poplevel";
-
-                Dictionary<string, float> dicReturn = new Dictionary<string, float>();
-                Dictionary<RowCol, double> dicPop = new Dictionary<RowCol, double>();
-
-
-                dicPop.Add(new RowCol() { Row = 0, Col = 0 }, 0.0136931743472815);
-                dicPop.Add(new RowCol() { Row = 1, Col = 4 }, 0.0544440671801567);
-                dicPop.Add(new RowCol() { Row = 5, Col = 9 }, 0.0730041638016701);
-                dicPop.Add(new RowCol() { Row = 10, Col = 14 }, 0.072923868894577);
-                dicPop.Add(new RowCol() { Row = 15, Col = 19 }, 0.0718525871634483);
-                dicPop.Add(new RowCol() { Row = 20, Col = 24 }, 0.0673884674906731);
-                dicPop.Add(new RowCol() { Row = 25, Col = 29 }, 0.068867988884449);
-                dicPop.Add(new RowCol() { Row = 30, Col = 34 }, 0.0728825107216835);
-                dicPop.Add(new RowCol() { Row = 35, Col = 39 }, 0.0806736126542091);
-                dicPop.Add(new RowCol() { Row = 40, Col = 44 }, 0.0797196552157402);
-                dicPop.Add(new RowCol() { Row = 45, Col = 49 }, 0.0713507384061813);
-                dicPop.Add(new RowCol() { Row = 50, Col = 54 }, 0.0624626986682415);
-                dicPop.Add(new RowCol() { Row = 55, Col = 59 }, 0.0478613935410976);
-                dicPop.Add(new RowCol() { Row = 60, Col = 64 }, 0.0384204462170601);
-                dicPop.Add(new RowCol() { Row = 65, Col = 69 }, 0.0339006930589676);
-                dicPop.Add(new RowCol() { Row = 70, Col = 74 }, 0.0314938016235828);
-                dicPop.Add(new RowCol() { Row = 75, Col = 79 }, 0.0263733938336372);
-                dicPop.Add(new RowCol() { Row = 80, Col = 84 }, 0.0175950452685356);
-                dicPop.Add(new RowCol() { Row = 85, Col = 99 }, 0.0150916986167431);
-                string commandText = "select distinct StartAge,EndAge from IncidenceRates";
-                ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
-                try
-                {
-                    fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandTextLevel);
-
-                }
-                catch
-                {
-                    commandTextLevel = "create table t_poplevel (   AgeRangeID SMALLINT,   StartAge SMALLINT,   EndAge   SMALLINT,   VValue   FLOAT)";
-                    fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandTextLevel);
-                    int i = 1;
-                    foreach (KeyValuePair<RowCol, double> k in dicPop)
-                    {
-                        commandTextLevel = "insert into t_poplevel values(" + i + "," + k.Key.Row + "," + k.Key.Col + "," + k.Value + ")";
-                        fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandTextLevel);
-                        i++;
-                    }
-
-                    DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
-                    foreach (DataRow dr in ds.Tables[0].Rows)
-                    {
-                        int iStartAge = Convert.ToInt32(dr["StartAge"]);
-                        int iEndAge = Convert.ToInt32(dr["EndAge"]);
-                        List<KeyValuePair<RowCol, double>> lstPopDR = dicPop.Where(p => p.Key.Col <= iEndAge && p.Key.Row >= iStartAge).ToList();
-                        double dpop = 0;
-                        foreach (KeyValuePair<RowCol, double> k in lstPopDR)
-                        {
-                            if (k.Key.Row >= iStartAge && k.Key.Col <= iEndAge)
-                            {
-                                dpop += k.Value;
-                            }
-                            else if (k.Key.Row >= iStartAge && k.Key.Col >= iEndAge)
-                            {
-                                dpop += (iEndAge - k.Key.Row + 1) * k.Value / (k.Key.Col - k.Key.Row + 1);
-                            }
-                            else if (k.Key.Row <= iStartAge && k.Key.Col <= iEndAge)
-                            {
-                                dpop += (k.Key.Col - iStartAge + 1) * k.Value / (k.Key.Col - k.Key.Row + 1);
-                            }
-                            else if (k.Key.Row <= iStartAge && k.Key.Col >= iEndAge)
-                            {
-                                dpop += (iEndAge - iStartAge + 1) * k.Value / (k.Key.Col - k.Key.Row + 1);
-                            }
-                        }
-                        fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, "insert into t_poplevel values(-1," + iStartAge + "," + iEndAge + "," + dpop + ")");
-                        dicReturn.Add(iStartAge + "," + iEndAge, Convert.ToSingle(dpop));
-                    }
-                }
-
-            }
-            catch
-            {
-            }
-        }
-        public static float getPopLevelFromCR(CRSelectFunction crSelectFunction)
-        {
-            Dictionary<RowCol, double> dicPop = new Dictionary<RowCol, double>();
-
-
-            dicPop.Add(new RowCol() { Row = 0, Col = 0 }, 0.0136931743472815);
-            dicPop.Add(new RowCol() { Row = 1, Col = 4 }, 0.0544440671801567);
-            dicPop.Add(new RowCol() { Row = 5, Col = 9 }, 0.0730041638016701);
-            dicPop.Add(new RowCol() { Row = 10, Col = 14 }, 0.072923868894577);
-            dicPop.Add(new RowCol() { Row = 15, Col = 19 }, 0.0718525871634483);
-            dicPop.Add(new RowCol() { Row = 20, Col = 24 }, 0.0673884674906731);
-            dicPop.Add(new RowCol() { Row = 25, Col = 29 }, 0.068867988884449);
-            dicPop.Add(new RowCol() { Row = 30, Col = 34 }, 0.0728825107216835);
-            dicPop.Add(new RowCol() { Row = 35, Col = 39 }, 0.0806736126542091);
-            dicPop.Add(new RowCol() { Row = 40, Col = 44 }, 0.0797196552157402);
-            dicPop.Add(new RowCol() { Row = 45, Col = 49 }, 0.0713507384061813);
-            dicPop.Add(new RowCol() { Row = 50, Col = 54 }, 0.0624626986682415);
-            dicPop.Add(new RowCol() { Row = 55, Col = 59 }, 0.0478613935410976);
-            dicPop.Add(new RowCol() { Row = 60, Col = 64 }, 0.0384204462170601);
-            dicPop.Add(new RowCol() { Row = 65, Col = 69 }, 0.0339006930589676);
-            dicPop.Add(new RowCol() { Row = 70, Col = 74 }, 0.0314938016235828);
-            dicPop.Add(new RowCol() { Row = 75, Col = 79 }, 0.0263733938336372);
-            dicPop.Add(new RowCol() { Row = 80, Col = 84 }, 0.0175950452685356);
-            dicPop.Add(new RowCol() { Row = 85, Col = 99 }, 0.0150916986167431);
-
-            int iStartAge = crSelectFunction.StartAge;
-            if (iStartAge == -1) iStartAge = 0;
-            int iEndAge = crSelectFunction.EndAge;
-            if (iEndAge == -1) iEndAge = 99;
-            List<KeyValuePair<RowCol, double>> lstPopDR = dicPop.Where(p => p.Key.Col <= iEndAge && p.Key.Row >= iStartAge).ToList();
-            double dpop = 0;
-            foreach (KeyValuePair<RowCol, double> k in lstPopDR)
-            {
-                if (k.Key.Row >= iStartAge && k.Key.Col <= iEndAge)
-                {
-                    dpop += k.Value;
-                }
-                else if (k.Key.Row >= iStartAge && k.Key.Col >= iEndAge)
-                {
-                    dpop += (iEndAge - k.Key.Row + 1) * k.Value / (k.Key.Col - k.Key.Row + 1);
-                }
-                else if (k.Key.Row <= iStartAge && k.Key.Col <= iEndAge)
-                {
-                    dpop += (k.Key.Col - iStartAge + 1) * k.Value / (k.Key.Col - k.Key.Row + 1);
-                }
-                else if (k.Key.Row <= iStartAge && k.Key.Col >= iEndAge)
-                {
-                    dpop += (iEndAge - iStartAge + 1) * k.Value / (k.Key.Col - k.Key.Row + 1);
-                }
-            }
-            return Convert.ToSingle(dpop);
-        }
-        public static Dictionary<int, double> getIncidenceDataSetFromCRSelectFuntionDicold(Dictionary<int, double> dicPopulation, Dictionary<string, double> dicPopulationAge, Dictionary<int, double> dicPopulation12, CRSelectFunction crSelectFunction, bool bPrevalence, Dictionary<string, int> dicRace, Dictionary<string, int> dicEthnicity, Dictionary<string, int> dicGender, int GridDefinitionID, GridRelationship gridRelationShipPopulation)
-        {
-            try
-            {
-
-                Dictionary<int, double> dicIncidenceRateAttribute = new Dictionary<int, double>();
-                ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
-                DataSet dsIncidence = null;
-                DataSet dsPrevalence = null;
-                string strbPrevalence = "F";
-                int iid = crSelectFunction.IncidenceDataSetID;
-                if (bPrevalence)
-                {
-                    strbPrevalence = "T";
-                    iid = crSelectFunction.PrevalenceDataSetID;
-                }
-                string commandText = "";
-
-                int iPopulationDataSetID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, string.Format("select PopulationDataSetID from PopulationDataSets where SetupID={0} and GridDefinitionID= (select GridDefinitionID from IncidenceDataSets where IncidenceDataSetID={1} )", CommonClass.MainSetup.SetupID, iid)));
-                int iPopulationDataSetGridID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, string.Format("select GridDefinitionID from IncidenceDataSets where IncidenceDataSetID={1} ", CommonClass.MainSetup.SetupID, iid)));
-
-                BenMAPPopulation benMAPPopulation = new BenMAPPopulation() { DataSetID = iPopulationDataSetID, GridType = new BenMAPGrid() { GridDefinitionID = iPopulationDataSetGridID }, Year = CommonClass.BenMAPPopulation.Year };
-                commandText = string.Format("select  min( Yyear) from t_PopulationDataSetIDYear where PopulationDataSetID={0} ", iPopulationDataSetID); int commonYear = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, System.Data.CommandType.Text, commandText));
-                string populationCommandText = getPopulationComandTextFromCRSelectFunction(crSelectFunction, benMAPPopulation, dicRace, dicEthnicity, dicGender);
-                commandText = "";
-
-                string commandTextAge = string.Format("select  distinct b.StartAge,b.EndAge    from IncidenceEntries a,IncidenceRates b,IncidenceDatasets c where " +
-   " a.IncidenceRateID=b.IncidenceRateID and b.IncidenceDatasetID=c.IncidenceDatasetID and b.EndPointGroupID=" + crSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID + " and b.Prevalence='" + strbPrevalence + "' " +
-
-  " and c.IncidenceDatasetID={0}  ", iid);
-                if (crSelectFunction.StartAge != -1)
-                {
-                    commandTextAge = string.Format(commandTextAge + " and b.EndAge>={0} ", crSelectFunction.StartAge);
-                }
-                if (crSelectFunction.EndAge != -1)
-                {
-
-                    commandTextAge = string.Format(commandTextAge + " and b.StartAge<={0} ", crSelectFunction.EndAge);
-                }
-
-                DataSet dsAge = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandTextAge);
-                foreach (DataRow dr in dsAge.Tables[0].Rows)
-                {
-                    if (commandText != "") commandText = commandText + " union ";
-                    if ((crSelectFunction.StartAge < Convert.ToInt32(dr["StartAge"]) || crSelectFunction.StartAge == -1) && (crSelectFunction.EndAge > Convert.ToInt32(dr["EndAge"]) || crSelectFunction.EndAge == -1))
-                    {
-                        CRSelectFunction cr = new CRSelectFunction() { StartAge = Convert.ToInt32(dr["StartAge"]), EndAge = Convert.ToInt32(dr["EndAge"]), Ethnicity = crSelectFunction.Ethnicity, Gender = crSelectFunction.Gender, Race = crSelectFunction.Race };
-                        if (CommonClass.MainSetup.SetupID == 1 && CommonClass.BenMAPPopulation.DataSetID == 4)
-                        {
-                            populationCommandText = getPopulationComandTextFromCRSelectFunction(cr, CommonClass.BenMAPPopulation, dicRace, dicEthnicity, dicGender);
-                            commandText = commandText + string.Format("select  e.SourceColumn as CColumn,e.SourceRow as Row,a.VValue*d.VValue*e.Percentage as VValue  from IncidenceEntries a,IncidenceRates b,IncidenceDatasets c,(" + populationCommandText + ") d ," +
-                                " (select sourcecolumn, sourcerow, targetcolumn, targetrow,Percentage from GridDefinitionPercentageEntries where percentageid=77 and normalizationstate in (0,1)) e" +
-                                " where  a.CColumn=e.TargetColumn and a.Row=e.TargetRow and  d.CColumn= e.SourceColumn and d.Row= e.SourceRow and " +
-       " a.IncidenceRateID=b.IncidenceRateID and b.IncidenceDatasetID=c.IncidenceDatasetID and b.EndPointGroupID=" + crSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID + " and (b.EndPointID=" + crSelectFunction.BenMAPHealthImpactFunction.EndPointID + "  or b.EndPointID=99 or b.EndPointID=100)" + " and b.Prevalence='" + strbPrevalence + "' " +
-       "  and c.IncidenceDatasetID={0} and b.StartAge={1} and b.EndAge={2} ", iid, Convert.ToInt32(dr["StartAge"]), Convert.ToInt32(dr["EndAge"]));
-
-                        }
-                        else
-                        {
-                            populationCommandText = getPopulationComandTextFromCRSelectFunction(cr, benMAPPopulation, dicRace, dicEthnicity, dicGender);
-                            commandText = commandText + string.Format("select  a.IncidenceRateID,a.CColumn,a.Row,a.VValue*d.VValue as VValue  from IncidenceEntries a,IncidenceRates b,IncidenceDatasets c,(" + populationCommandText + ") d  where  d.CColumn=a.CColumn and a.Row=d.Row and " +
-       " a.IncidenceRateID=b.IncidenceRateID and b.IncidenceDatasetID=c.IncidenceDatasetID and b.EndPointGroupID=" + crSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID + " and (b.EndPointID=" + crSelectFunction.BenMAPHealthImpactFunction.EndPointID + "  or b.EndPointID=99 or b.EndPointID=100)" + " and b.Prevalence='" + strbPrevalence + "' " +
-       "  and c.IncidenceDatasetID={0} and b.StartAge={1} and b.EndAge={2} ", iid, Convert.ToInt32(dr["StartAge"]), Convert.ToInt32(dr["EndAge"]));
-                        }
-                    }
-                    else if (crSelectFunction.StartAge >= Convert.ToInt32(dr["StartAge"]) && crSelectFunction.EndAge <= Convert.ToInt32(dr["EndAge"]))
-                    {
-                        CRSelectFunction cr = new CRSelectFunction() { StartAge = crSelectFunction.StartAge, EndAge = crSelectFunction.EndAge, Ethnicity = crSelectFunction.Ethnicity, Gender = crSelectFunction.Gender, Race = crSelectFunction.Race };
-                        if (CommonClass.MainSetup.SetupID == 1 && CommonClass.BenMAPPopulation.DataSetID == 4)
-                        {
-                            populationCommandText = getPopulationComandTextFromCRSelectFunction(cr, CommonClass.BenMAPPopulation, dicRace, dicEthnicity, dicGender);
-                            commandText = commandText + string.Format("select  e.SourceColumn as CColumn,e.SourceRow as Row,a.VValue*d.VValue*e.Percentage as VValue  from IncidenceEntries a,IncidenceRates b,IncidenceDatasets c,(" + populationCommandText + ") d ," +
-                                " (select sourcecolumn, sourcerow, targetcolumn, targetrow,Percentage from GridDefinitionPercentageEntries where percentageid=77 and normalizationstate in (0,1)) e" +
-                                " where  a.CColumn=e.TargetColumn and a.Row=e.TargetRow and  d.CColumn= e.SourceColumn and d.Row= e.SourceRow and " +
-       " a.IncidenceRateID=b.IncidenceRateID and b.IncidenceDatasetID=c.IncidenceDatasetID and b.EndPointGroupID=" + crSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID + " and (b.EndPointID=" + crSelectFunction.BenMAPHealthImpactFunction.EndPointID + "  or b.EndPointID=99 or b.EndPointID=100)" + " and b.Prevalence='" + strbPrevalence + "' " +
-       "  and c.IncidenceDatasetID={0} and b.StartAge={1} and b.EndAge={2} ", iid, Convert.ToInt32(dr["StartAge"]), Convert.ToInt32(dr["EndAge"]));
-
-                        }
-                        else
-                        {
-                            populationCommandText = getPopulationComandTextFromCRSelectFunction(cr, benMAPPopulation, dicRace, dicEthnicity, dicGender);
-                            commandText = commandText + string.Format("select  a.IncidenceRateID,a.CColumn,a.Row,a.VValue*d.VValue as VValue  from IncidenceEntries a,IncidenceRates b,IncidenceDatasets c,(" + populationCommandText + ") d  where  d.CColumn=a.CColumn and a.Row=d.Row and " +
-        " a.IncidenceRateID=b.IncidenceRateID and b.IncidenceDatasetID=c.IncidenceDatasetID and b.EndPointGroupID=" + crSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID + " and (b.EndPointID=" + crSelectFunction.BenMAPHealthImpactFunction.EndPointID + "  or b.EndPointID=99 or b.EndPointID=100)" + " and b.Prevalence='" + strbPrevalence + "' " +
-        "  and c.IncidenceDatasetID={0} and b.StartAge={1} and b.EndAge={2} ", iid, Convert.ToInt32(dr["StartAge"]), Convert.ToInt32(dr["EndAge"]));
-                        }
-                    }
-                    else if (crSelectFunction.StartAge >= Convert.ToInt32(dr["StartAge"]) && (crSelectFunction.EndAge > Convert.ToInt32(dr["EndAge"]) || crSelectFunction.EndAge == -1))
-                    {
-                        CRSelectFunction cr = new CRSelectFunction() { StartAge = crSelectFunction.StartAge, EndAge = Convert.ToInt32(dr["EndAge"]), Ethnicity = crSelectFunction.Ethnicity, Gender = crSelectFunction.Gender, Race = crSelectFunction.Race };
-                        if (CommonClass.MainSetup.SetupID == 1 && CommonClass.BenMAPPopulation.DataSetID == 4)
-                        {
-                            populationCommandText = getPopulationComandTextFromCRSelectFunction(cr, CommonClass.BenMAPPopulation, dicRace, dicEthnicity, dicGender);
-                            commandText = commandText + string.Format("select  e.SourceColumn as CColumn,e.SourceRow as Row,a.VValue*d.VValue*e.Percentage as VValue  from IncidenceEntries a,IncidenceRates b,IncidenceDatasets c,(" + populationCommandText + ") d ," +
-                                " (select sourcecolumn, sourcerow, targetcolumn, targetrow,Percentage from GridDefinitionPercentageEntries where percentageid=77 and normalizationstate in (0,1)) e" +
-                                " where  a.CColumn=e.TargetColumn and a.Row=e.TargetRow and  d.CColumn= e.SourceColumn and d.Row= e.SourceRow and " +
-       " a.IncidenceRateID=b.IncidenceRateID and b.IncidenceDatasetID=c.IncidenceDatasetID and b.EndPointGroupID=" + crSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID + " and (b.EndPointID=" + crSelectFunction.BenMAPHealthImpactFunction.EndPointID + "  or b.EndPointID=99 or b.EndPointID=100)" + " and b.Prevalence='" + strbPrevalence + "' " +
-       "  and c.IncidenceDatasetID={0} and b.StartAge={1} and b.EndAge={2} ", iid, Convert.ToInt32(dr["StartAge"]), Convert.ToInt32(dr["EndAge"]));
-
-                        }
-                        else
-                        {
-                            populationCommandText = getPopulationComandTextFromCRSelectFunction(cr, benMAPPopulation, dicRace, dicEthnicity, dicGender);
-                            commandText = commandText + string.Format("select  a.IncidenceRateID,a.CColumn,a.Row,a.VValue*d.VValue as VValue  from IncidenceEntries a,IncidenceRates b,IncidenceDatasets c,(" + populationCommandText + ") d  where  d.CColumn=a.CColumn and a.Row=d.Row and " +
-       " a.IncidenceRateID=b.IncidenceRateID and b.IncidenceDatasetID=c.IncidenceDatasetID and b.EndPointGroupID=" + crSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID + " and (b.EndPointID=" + crSelectFunction.BenMAPHealthImpactFunction.EndPointID + "  or b.EndPointID=99 or b.EndPointID=100)" + " and b.Prevalence='" + strbPrevalence + "' " +
-       "  and c.IncidenceDatasetID={0} and b.StartAge={1} and b.EndAge={2} ", iid, Convert.ToInt32(dr["StartAge"]), Convert.ToInt32(dr["EndAge"]));
-                        }
-                    }
-                    else if ((crSelectFunction.StartAge < Convert.ToInt32(dr["StartAge"]) || crSelectFunction.StartAge == -1) && crSelectFunction.EndAge <= Convert.ToInt32(dr["EndAge"]))
-                    {
-                        CRSelectFunction cr = new CRSelectFunction() { StartAge = Convert.ToInt32(dr["StartAge"]), EndAge = crSelectFunction.EndAge, Ethnicity = crSelectFunction.Ethnicity, Gender = crSelectFunction.Gender, Race = crSelectFunction.Race };
-                        if (CommonClass.MainSetup.SetupID == 1 && CommonClass.BenMAPPopulation.DataSetID == 4)
-                        {
-                            populationCommandText = getPopulationComandTextFromCRSelectFunction(cr, CommonClass.BenMAPPopulation, dicRace, dicEthnicity, dicGender);
-                            commandText = commandText + string.Format("select  e.SourceColumn as CColumn,e.SourceRow as Row,a.VValue*d.VValue*e.Percentage as VValue  from IncidenceEntries a,IncidenceRates b,IncidenceDatasets c,(" + populationCommandText + ") d ," +
-                                " (select sourcecolumn, sourcerow, targetcolumn, targetrow,Percentage from GridDefinitionPercentageEntries where percentageid=77 and normalizationstate in (0,1)) e" +
-                                " where  a.CColumn=e.TargetColumn and a.Row=e.TargetRow and  d.CColumn= e.SourceColumn and d.Row= e.SourceRow and " +
-       " a.IncidenceRateID=b.IncidenceRateID and b.IncidenceDatasetID=c.IncidenceDatasetID and b.EndPointGroupID=" + crSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID + " and (b.EndPointID=" + crSelectFunction.BenMAPHealthImpactFunction.EndPointID + "  or b.EndPointID=99 or b.EndPointID=100)" + " and b.Prevalence='" + strbPrevalence + "' " +
-       "  and c.IncidenceDatasetID={0} and b.StartAge={1} and b.EndAge={2} ", iid, Convert.ToInt32(dr["StartAge"]), Convert.ToInt32(dr["EndAge"]));
-
-                        }
-                        else
-                        {
-                            populationCommandText = getPopulationComandTextFromCRSelectFunction(cr, benMAPPopulation, dicRace, dicEthnicity, dicGender);
-                            commandText = commandText + string.Format("select  a.IncidenceRateID,a.CColumn,a.Row,a.VValue*d.VValue as VValue  from IncidenceEntries a,IncidenceRates b,IncidenceDatasets c,(" + populationCommandText + ") d  where  d.CColumn=a.CColumn and a.Row=d.Row and " +
-       " a.IncidenceRateID=b.IncidenceRateID and b.IncidenceDatasetID=c.IncidenceDatasetID and b.EndPointGroupID=" + crSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID + " and (b.EndPointID=" + crSelectFunction.BenMAPHealthImpactFunction.EndPointID + "  or b.EndPointID=99 or b.EndPointID=100)" + " and b.Prevalence='" + strbPrevalence + "' " +
-       "  and c.IncidenceDatasetID={0} and b.StartAge={1} and b.EndAge={2} ", iid, Convert.ToInt32(dr["StartAge"]), Convert.ToInt32(dr["EndAge"]));
-                        }
-                    }
-                    if (!string.IsNullOrEmpty(crSelectFunction.Race))
-                    {
-                        if (dicRace.Keys.Contains(crSelectFunction.Race))
-                        {
-                            commandText = string.Format(commandText + " and (b.RaceID={0} or b.RaceID=6)", dicRace[crSelectFunction.Race]);
-                        }
-                    }
-                    if (!string.IsNullOrEmpty(crSelectFunction.Ethnicity))
-                    {
-                        if (dicEthnicity.Keys.Contains(crSelectFunction.Ethnicity))
-                        {
-                            commandText = string.Format(commandText + " and (b.EthnicityID={0} or b.EthnicityID=4)", dicEthnicity[crSelectFunction.Ethnicity]);
-
-                        }
-                    }
-                    if (!string.IsNullOrEmpty(crSelectFunction.Gender))
-                    {
-                        if (dicGender.Keys.Contains(crSelectFunction.Gender))
-                        {
-                            commandText = string.Format(commandText + " and (b.GenderID={0} or b.GenderID=4)", dicGender[crSelectFunction.Gender]);
-                        }
-                    }
-                }
-
-
-
-
-
-
-                if (CommonClass.MainSetup.SetupID == 1 && CommonClass.BenMAPPopulation.DataSetID == 4)
-                {
-                    populationCommandText = getPopulationComandTextFromCRSelectFunction(crSelectFunction, CommonClass.BenMAPPopulation, dicRace, dicEthnicity, dicGender);
-                }
-                else
-                {
-                    populationCommandText = getPopulationComandTextFromCRSelectFunction(crSelectFunction, benMAPPopulation, dicRace, dicEthnicity, dicGender);
-                }
-                commandText = "select a.CColumn,a.Row,sum(a.VValue/b.VValue)  as VValue from ( " + commandText + " ) a,(" + populationCommandText + ") b where a.CColumn=b.CColumn and a.Row=b.Row group by a.CColumn,a.Row";
-                Dictionary<string, double> dicPercentage = new Dictionary<string, double>();
-                Dictionary<string, Dictionary<string, double>> dicRelationShip = new Dictionary<string, Dictionary<string, double>>();
-                if ((CommonClass.BenMAPPopulation.GridType.GridDefinitionID == 28 || CommonClass.BenMAPPopulation.GridType.GridDefinitionID == 27) && CommonClass.MainSetup.SetupID == 1)
-                {
-                    string str = "select sourcecolumn, sourcerow, targetcolumn, targetrow, percentage, normalizationstate from griddefinitionpercentageentries where percentageid=77 and normalizationstate in (0,1)";
-                    DataSet dsPercentage = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, str);
-
-                    foreach (DataRow dr in dsPercentage.Tables[0].Rows)
-                    {
-                        if (dicRelationShip.ContainsKey(dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString()))
-                        {
-                            if (!dicRelationShip[dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString()].ContainsKey(dr["targetcolumn"].ToString() + "," + dr["targetrow"].ToString()))
-                                dicRelationShip[dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString()].Add((Convert.ToInt32(dr["targetcolumn"]) * 10000 + Convert.ToInt32(dr["targetrow"].ToString())).ToString(), Convert.ToDouble(dr["Percentage"]));
-                        }
-                        else
-                        {
-                            dicRelationShip.Add(dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString(), new Dictionary<string, double>());
-                            dicRelationShip[dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString()].Add((Convert.ToInt32(dr["targetcolumn"]) * 10000 + Convert.ToInt32(dr["targetrow"].ToString())).ToString(), Convert.ToDouble(dr["Percentage"]));
-                        }
-
-                    }
-                    foreach (DataRow dr in dsPercentage.Tables[0].Rows)
-                    {
-                        dicPercentage.Add(dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString() + "," + dr["targetcolumn"].ToString() + "," + dr["targetrow"].ToString(), Convert.ToDouble(dr["percentage"]));
-                    }
-                    dsPercentage.Dispose();
-                }
-                if (dsAge != null)
-                    dsAge.Dispose();
-                if (dsIncidence != null)
-                    dsIncidence.Dispose();
-                if (dsPrevalence != null)
-                    dsPrevalence.Dispose();
-                if (CommonClass.MainSetup.SetupID == 1 && CommonClass.BenMAPPopulation.DataSetID == 4 && commonYear != benMAPPopulation.Year && dicPopulationAge != null && dicPopulationAge.Count > 0)
-                {
-                    string strEndAgeOri = " CASE" +
-                       " WHEN (b.EndAge> " + crSelectFunction.EndAge + ") THEN " + crSelectFunction.EndAge + " ELSE b.EndAge END ";
-                    string strStartAgeOri = " CASE" +
-                        " WHEN (b.StartAge< " + crSelectFunction.StartAge + ") THEN " + crSelectFunction.StartAge + " ELSE b.StartAge END ";
-                    string strAgeID = string.Format(" select a.startAge,a.EndAge,b.AgeRangeid, " +
-  " CASE" +
-  " WHEN (b.startAge>=a.StartAge and b.EndAge<=a.EndAge) THEN 1" +
-  " WHEN (b.startAge<a.StartAge and b.EndAge<=a.EndAge) THEN  Cast(({1}-a.StartAge+1) as float)/({1}-{0}+1)" + " WHEN (b.startAge<a.StartAge and b.EndAge>a.EndAge) THEN Cast(({1}-{0}+1) as float)/({1}-{0}+1)" +
-  "  WHEN (b.startAge>=a.StartAge and b.EndAge>a.EndAge) THEN Cast((a.EndAge-{0}+1) as float)/({1}-{0}+1)" +
-  " ELSE 1" +
-  " END as weight,b.StartAge as sourceStartAge,b.EndAge as SourceEndAge" +
-  "  from ( select distinct startage,endage from Incidencerates )a,ageranges b" +
-  " where b.EndAge>=a.StartAge and b.StartAge<=a.EndAge", strStartAgeOri, strEndAgeOri);
-
-
-
-                    string strInc = string.Format("select  a.CColumn,a.Row,sum(a.VValue*d.Weight) as VValue,d.AgeRangeID  from IncidenceEntries a,IncidenceRates b,IncidenceDatasets c ,(" + strAgeID +
-                       ") d where   b.StartAge=d.StartAge and b.EndAge=d.EndAge and " +
-               " a.IncidenceRateID=b.IncidenceRateID and b.IncidenceDatasetID=c.IncidenceDatasetID and b.EndPointGroupID=" + crSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID + " and b.RaceID=6 and (b.EndPointID=" + crSelectFunction.BenMAPHealthImpactFunction.EndPointID + "  or b.EndPointID=99 or b.EndPointID=100)" + " and b.Prevalence='" + strbPrevalence + "' " +
-               "  and c.IncidenceDatasetID={0} and b.StartAge<={2} and b.EndAge>={1} group by a.CColumn,a.Row ,d.AgeRangeID", iid, crSelectFunction.StartAge, crSelectFunction.EndAge);
-                    DataSet dsInc = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, strInc);
-
-                    Dictionary<string, double> dicInc = new Dictionary<string, double>();
-                    foreach (DataRow dr in dsInc.Tables[0].Rows)
-                    {
-                        if (!dicInc.ContainsKey((Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])).ToString() + "," + dr["AgeRangeID"]))
-                        {
-                            dicInc.Add((Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])).ToString() + "," + dr["AgeRangeID"].ToString(), Convert.ToDouble(dr["VValue"]));
-                        }
-                    }
-                    dsInc.Dispose();
-                    Dictionary<int, double> dicPopInc = new Dictionary<int, double>();
-
-                    foreach (KeyValuePair<string, double> k in dicPopulationAge)
-                    {
-                        string[] s = k.Key.Split(new char[] { ',' });
-                        double dp = 0;
-
-                        if (dicRelationShip.ContainsKey(s[0] + "," + s[1]))
-                        {
-                            foreach (KeyValuePair<string, double> kin in dicRelationShip[s[0] + "," + s[1]])
-                            {
-                                dp += dicInc[kin.Key + "," + s[2]] * kin.Value;
-                            }
-                        }
-
-
-                        if (dicPopInc.ContainsKey(Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])) && dicPopulation12.ContainsKey(Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])))
-                        {
-
-                            dicPopInc[Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])] += dp * Convert.ToDouble(k.Value) / dicPopulation12[Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])];
-
-                        }
-                        else
-                        {
-                            dicPopInc.Add(Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1]), dp * Convert.ToDouble(k.Value) / dicPopulation12[Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])]);
-                        }
-
-                    }
-                    dicIncidenceRateAttribute = dicPopInc;
-                }
-                else
-                {
-                    string strPopInc = getPopulationComandTextFromCRSelectFunctionForInc(crSelectFunction, CommonClass.BenMAPPopulation, dicRace, dicEthnicity, dicGender);
-
-                    string strAgeID = " select a.startAge,a.EndAge,b.AgeRangeid, " +
- " CASE" +
- " WHEN (b.startAge>=a.StartAge and b.EndAge<=a.EndAge) THEN 1" +
- " WHEN (b.startAge<a.StartAge and b.EndAge<=a.EndAge) THEN Cast((b.EndAge-a.StartAge+1) as float)/(b.EndAge-b.StartAge+1)" +
- " WHEN (b.startAge<a.StartAge and b.EndAge>a.EndAge) THEN Cast((b.EndAge-b.StartAge+1) as float)/(b.EndAge-b.StartAge+1)" +
- "  WHEN (b.startAge>=a.StartAge and b.EndAge>a.EndAge) THEN Cast((a.EndAge-b.StartAge+1) as float)/(b.EndAge-b.StartAge+1)" +
- " ELSE 1" +
- " END as weight,b.StartAge as sourceStartAge,b.EndAge as SourceEndAge" +
- "  from ( select distinct startage,endage from Incidencerates )a,ageranges b" +
- " where b.EndAge>=a.StartAge and b.StartAge<=a.EndAge";
-                    string strInc = string.Format("select  a.CColumn,a.Row,sum(a.VValue*d.weight) as VValue,d.AgeRangeID  from IncidenceEntries a,IncidenceRates b,IncidenceDatasets c ,(" + strAgeID +
-     ") d where   b.StartAge=d.StartAge and b.EndAge=d.EndAge and " +
-" a.IncidenceRateID=b.IncidenceRateID and b.IncidenceDatasetID=c.IncidenceDatasetID and b.EndPointGroupID=" + crSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID + " and (b.EndPointID=" + crSelectFunction.BenMAPHealthImpactFunction.EndPointID + "  or b.EndPointID=99 or b.EndPointID=100)" + " and b.Prevalence='" + strbPrevalence + "' " +
-"  and c.IncidenceDatasetID={0} and b.StartAge<={2} and b.EndAge>={1} group by a.CColumn,a.Row,d.AgeRangeID", iid, crSelectFunction.StartAge, crSelectFunction.EndAge);
-
-                    string strTemp = "select a.CColumn,a.Row,sum(a.VValue*b.VValue) as VValue from (" + strPopInc + ") a,(" + strInc + ") b  ," +
-                         "(select sourcecolumn, sourcerow, targetcolumn, targetrow, percentage, normalizationstate from griddefinitionpercentageentries where percentageid=77 and normalizationstate in (0,1)) c" +
-                         " where a.CColumn= c.sourcecolumn and a.Row=c.targetcolumn and b.CColumn=c.targetcolumn and b.Row=c.targetrow and a.agerangeid=b.agerangeid group by a.ccolumn,a.row";
-                    DataSet dsInc = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, strInc);
-                    DataSet dsPopInc = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, strPopInc);
-                    Dictionary<string, double> dicInc = new Dictionary<string, double>();
-                    foreach (DataRow dr in dsInc.Tables[0].Rows)
-                    {
-                        if (!dicInc.ContainsKey((Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])).ToString() + "," + dr["AgeRangeID"]))
-                        {
-                            dicInc.Add((Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])).ToString() + "," + dr["AgeRangeID"].ToString(), Convert.ToDouble(dr["VValue"]));
-                        }
-                    }
-
-                    double dp = 0;
-                    Dictionary<int, double> dicPopInc = new Dictionary<int, double>();
-                    foreach (DataRow dr in dsPopInc.Tables[0].Rows)
-                    {
-                        dp = 0;
-                        if (CommonClass.MainSetup.SetupID == 1 && CommonClass.BenMAPPopulation.DataSetID == 4)
-                        {
-                            if (dicRelationShip.ContainsKey(dr["CColumn"].ToString() + "," + dr["Row"]))
-                            {
-                                foreach (KeyValuePair<string, double> k in dicRelationShip[dr["CColumn"].ToString() + "," + dr["Row"]])
-                                {
-                                    dp += dicInc[k.Key + "," + dr["AgeRangeID"]] * k.Value;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            dp = dicInc[Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"]) + "," + dr["AgeRangeID"]];
-                        }
-
-                        if (dicPopInc.ContainsKey(Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])) && dicPopulation.ContainsKey(Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])))
-                        {
-                            if (CommonClass.BenMAPPopulation.GridType.GridDefinitionID == 27 || CommonClass.BenMAPPopulation.GridType.GridDefinitionID == 28)
-                            {
-                                if (dicPopulation12.ContainsKey(Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])) && dicPopInc.ContainsKey(Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])) && dicPopulation12[Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])] != 0)
-                                    dicPopInc[Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])] += dp * Convert.ToDouble(dr["VValue"]) / dicPopulation12[Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])];
-                            }
-                            else if (dicPopInc.ContainsKey(Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])))
-                                dicPopInc[Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])] += dp * Convert.ToDouble(dr["VValue"]) / dicPopulation[Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])];
-
-                        }
-                        else
-                        {
-                            if (CommonClass.BenMAPPopulation.GridType.GridDefinitionID == 27 || CommonClass.BenMAPPopulation.GridType.GridDefinitionID == 28)
-                            {
-                                if (dicPopulation12.ContainsKey(Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])) && !dicPopInc.ContainsKey(Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])) && dicPopulation12[Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])] != 0)
-                                    dicPopInc.Add(Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"]), dp * Convert.ToDouble(dr["VValue"]) / dicPopulation12[Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])]);
-                            }
-                            else if (dicPopulation.ContainsKey(Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])) && !dicPopInc.ContainsKey(Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])))
-                                dicPopInc.Add(Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"]), dp * Convert.ToDouble(dr["VValue"]) / dicPopulation[Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])]);
-                        }
-                        if (dicPopInc.ContainsKey(Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])) && double.IsNaN(dicPopInc[Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])]))
-                        {
-                        }
-                    }
-                    dicIncidenceRateAttribute = dicPopInc;
-                }
-
-
-
-
-
-
-                if (!bPrevalence)
-                    commandText = string.Format("select GriddefinitionID from IncidenceDatasets where IncidenceDatasetID={0}", crSelectFunction.IncidenceDataSetID);
-                else
-                    commandText = string.Format("select GriddefinitionID from IncidenceDatasets where IncidenceDatasetID={0}", crSelectFunction.PrevalenceDataSetID);
-                int incidenceDataSetGridType = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
-                if (CommonClass.MainSetup.SetupID == 1 && CommonClass.BenMAPPopulation.DataSetID == 4)
-                {
-                    incidenceDataSetGridType = CommonClass.BenMAPPopulation.GridType.GridDefinitionID;
-                    foreach (GridRelationship gRelationship in CommonClass.LstGridRelationshipAll)
-                    {
-                        if ((gRelationship.bigGridID == incidenceDataSetGridType && gRelationship.smallGridID == CommonClass.GBenMAPGrid.GridDefinitionID) || (gRelationship.smallGridID == incidenceDataSetGridType && gRelationship.bigGridID == CommonClass.GBenMAPGrid.GridDefinitionID))
-                        {
-                            gridRelationShipPopulation = gRelationship;
-                        }
-                    }
-                }
-                Dictionary<int, double> dicResult = new Dictionary<int, double>();
-                double IncidenceValue = 0;
-                if (incidenceDataSetGridType == GridDefinitionID)
-                {
-                    dicResult = dicIncidenceRateAttribute;
-                }
-                else if (CommonClass.MainSetup.SetupID == 1 && CommonClass.BenMAPPopulation.DataSetID == 4 && (CommonClass.GBenMAPGrid.GridDefinitionID == CommonClass.BenMAPPopulation.GridType.GridDefinitionID || (CommonClass.GBenMAPGrid.GridDefinitionID == 27 && CommonClass.BenMAPPopulation.GridType.GridDefinitionID == 28) || (CommonClass.GBenMAPGrid.GridDefinitionID == 28 && CommonClass.BenMAPPopulation.GridType.GridDefinitionID == 27)))
-                {
-                    dicResult = dicIncidenceRateAttribute;
-                }
-                else
-                {
-                    dicRelationShip = APVX.APVCommonClass.getRelationFromDicRelationShipAll(gridRelationShipPopulation);
-                    if (incidenceDataSetGridType == gridRelationShipPopulation.bigGridID)
-                    {
-                        if (dicRelationShip != null && dicRelationShip.Count > 0)
-                        {
-                            foreach (KeyValuePair<string, Dictionary<string, double>> k in dicRelationShip)
-                            {
-                                string[] s = k.Key.Split(new char[] { ',' });
-                                if (dicIncidenceRateAttribute.Keys.Contains(Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])))
-                                {
-                                    foreach (KeyValuePair<string, double> rc in k.Value)
-                                    {
-                                        string[] sin = rc.Key.Split(new char[] { ',' });
-                                        if (!dicResult.Keys.Contains(Convert.ToInt32(sin[0]) * 10000 + Convert.ToInt32(sin[1])))
-                                        {
-
-                                            dicResult.Add(Convert.ToInt32(sin[0]) * 10000 + Convert.ToInt32(sin[1]), dicIncidenceRateAttribute[Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])] * rc.Value);
-
-                                        }
-                                        else
-                                        {
-
-                                            dicResult[Convert.ToInt32(sin[0]) * 10000 + Convert.ToInt32(sin[1])] += dicIncidenceRateAttribute[Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])] * rc.Value;
-
-                                        }
-                                    }
-
-                                }
-                            }
-                        }
-                        else
-                        {
-                            foreach (GridRelationshipAttribute gra in gridRelationShipPopulation.lstGridRelationshipAttribute)
-                            {
-                                if (dicIncidenceRateAttribute.Keys.Contains(Convert.ToInt32(gra.bigGridRowCol.Col) * 10000 + Convert.ToInt32(gra.bigGridRowCol.Row)))
-                                {
-                                    foreach (RowCol rc in gra.smallGridRowCol)
-                                    {
-                                        if (!dicResult.Keys.Contains(Convert.ToInt32(rc.Col) * 10000 + Convert.ToInt32(rc.Row)))
-                                        {
-                                            if (!dicPercentage.ContainsKey(rc.Col + "," + rc.Row + "," + gra.bigGridRowCol.Col + "," + gra.bigGridRowCol.Row))
-                                                dicResult.Add(Convert.ToInt32(rc.Col) * 10000 + Convert.ToInt32(rc.Row), dicIncidenceRateAttribute[Convert.ToInt32(gra.bigGridRowCol.Col) * 10000 + Convert.ToInt32(gra.bigGridRowCol.Row)]);
-                                            else
-                                            {
-                                                dicResult.Add(Convert.ToInt32(rc.Col) * 10000 + Convert.ToInt32(rc.Row), dicIncidenceRateAttribute[Convert.ToInt32(gra.bigGridRowCol.Col) * 10000 + Convert.ToInt32(gra.bigGridRowCol.Row)] * dicPercentage[rc.Col + "," + rc.Row + "," + gra.bigGridRowCol.Col + "," + gra.bigGridRowCol.Row]);
-                                            }
-                                        }
-                                        else
-                                        {
-                                            if (dicPercentage.ContainsKey(rc.Col + "," + rc.Row + "," + gra.bigGridRowCol.Col + "," + gra.bigGridRowCol.Row))
-                                                dicResult[Convert.ToInt32(rc.Col) * 10000 + Convert.ToInt32(rc.Row)] += dicIncidenceRateAttribute[Convert.ToInt32(gra.bigGridRowCol.Col) * 10000 + Convert.ToInt32(gra.bigGridRowCol.Row)] * dicPercentage[rc.Col + "," + rc.Row + "," + gra.bigGridRowCol.Col + "," + gra.bigGridRowCol.Row];
-
-                                        }
-                                    }
-
-                                }
-
-
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (dicRelationShip != null && dicRelationShip.Count > 0)
-                        {
-                            foreach (KeyValuePair<string, Dictionary<string, double>> k in dicRelationShip)
-                            {
-                                string[] s = k.Key.Split(new char[] { ',' });
-                                double d = 0;
-                                if (k.Value != null && k.Value.Count > 0)
-                                {
-                                    foreach (KeyValuePair<string, double> rc in k.Value)
-                                    {
-                                        string[] sin = rc.Key.Split(new char[] { ',' });
-                                        if (dicIncidenceRateAttribute.Keys.Contains(Convert.ToInt32(sin[0]) * 10000 + Convert.ToInt32(sin[1])) && !double.IsNaN(dicIncidenceRateAttribute[Convert.ToInt32(sin[0]) * 10000 + Convert.ToInt32(sin[1])]))
-                                        {
-                                            d = (d + dicIncidenceRateAttribute[Convert.ToInt32(sin[0]) * 10000 + Convert.ToInt32(sin[1])]);
-                                        }
-                                    }
-                                    d = d / k.Value.Count;
-                                    if (!dicResult.Keys.Contains(Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])))
-                                        dicResult.Add(Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1]), d);
-
-                                }
-                            }
-                        }
-                        else
-                        {
-                            foreach (GridRelationshipAttribute gra in gridRelationShipPopulation.lstGridRelationshipAttribute)
-                            {
-                                if (gra.bigGridRowCol.Col == 75 && gra.bigGridRowCol.Row == 19)
-                                {
-                                }
-                                double d = 0;
-                                foreach (RowCol rc in gra.smallGridRowCol)
-                                {
-                                    if (dicIncidenceRateAttribute.Keys.Contains(Convert.ToInt32(rc.Col) * 10000 + Convert.ToInt32(rc.Row)) && !double.IsNaN(dicIncidenceRateAttribute[Convert.ToInt32(rc.Col) * 10000 + Convert.ToInt32(rc.Row)]))
-                                    {
-                                        d = (d + dicIncidenceRateAttribute[Convert.ToInt32(rc.Col) * 10000 + Convert.ToInt32(rc.Row)]);
-                                    }
-
-                                }
-                                d = d / gra.smallGridRowCol.Count;
-                                if (!dicResult.Keys.Contains(Convert.ToInt32(gra.bigGridRowCol.Col) * 10000 + Convert.ToInt32(gra.bigGridRowCol.Row)))
-                                    dicResult.Add(Convert.ToInt32(gra.bigGridRowCol.Col) * 10000 + Convert.ToInt32(gra.bigGridRowCol.Row), d);
-
-
-
-                            }
-                        }
-                    }
-
-                }
-                if (dsIncidence != null)
-                    dsIncidence.Dispose();
-                return dicResult;
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
-
-        }
-
-        public static Dictionary<int, double> getIncidenceDataSetFromCRSelectFuntionDic(Dictionary<int, double> dicPopulation, Dictionary<string, double> dicPopulationAge, Dictionary<int, double> dicPopulation12, CRSelectFunction crSelectFunction, bool bPrevalence, Dictionary<string, int> dicRace, Dictionary<string, int> dicEthnicity, Dictionary<string, int> dicGender, int GridDefinitionID, GridRelationship gridRelationShipPopulation)
-        {
-            try
-            {
-
-                Dictionary<int, double> dicIncidenceRateAttribute = new Dictionary<int, double>();
-                ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
-                DataSet dsIncidence = null;
-                DataSet dsPrevalence = null;
-                string strbPrevalence = "F";
-                int iid = crSelectFunction.IncidenceDataSetID;
-                if (bPrevalence)
-                {
-                    strbPrevalence = "T";
-                    iid = crSelectFunction.PrevalenceDataSetID;
-                }
-                string commandText = "";
-
-                int iPopulationDataSetID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, string.Format("select PopulationDataSetID from PopulationDataSets where SetupID={0} and GridDefinitionID= (select GridDefinitionID from IncidenceDataSets where IncidenceDataSetID={1} )", CommonClass.MainSetup.SetupID, iid)));
-                int iPopulationDataSetGridID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, string.Format("select GridDefinitionID from IncidenceDataSets where IncidenceDataSetID={1} ", CommonClass.MainSetup.SetupID, iid)));
-
-                BenMAPPopulation benMAPPopulation = new BenMAPPopulation() { DataSetID = iPopulationDataSetID, GridType = new BenMAPGrid() { GridDefinitionID = iPopulationDataSetGridID }, Year = CommonClass.BenMAPPopulation.Year };
-                commandText = string.Format("select  min( Yyear) from t_PopulationDataSetIDYear where PopulationDataSetID={0} ", iPopulationDataSetID); int commonYear = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, System.Data.CommandType.Text, commandText));
-                string populationCommandText = getPopulationComandTextFromCRSelectFunction(crSelectFunction, benMAPPopulation, dicRace, dicEthnicity, dicGender);
-                commandText = "";
-                string strRace = "";
-                if (CommonClass.MainSetup.SetupID == 1) strRace = " and b.RaceID=6";
-                string strbEndAgeOri = " CASE" +
-                       " WHEN (b.EndAge> " + crSelectFunction.EndAge + ") THEN " + crSelectFunction.EndAge + " ELSE b.EndAge END ";
-                string strbStartAgeOri = " CASE" +
-                    " WHEN (b.StartAge< " + crSelectFunction.StartAge + ") THEN " + crSelectFunction.StartAge + " ELSE b.StartAge END ";
-                string straEndAgeOri = " CASE" +
-                      " WHEN (a.EndAge> " + crSelectFunction.EndAge + ") THEN " + crSelectFunction.EndAge + " ELSE a.EndAge END ";
-                string straStartAgeOri = " CASE" +
-                    " WHEN (a.StartAge< " + crSelectFunction.StartAge + ") THEN " + crSelectFunction.StartAge + " ELSE a.StartAge END ";
-                string strAgeID = string.Format(" select a.startAge,a.EndAge,b.AgeRangeid, " +
-  " CASE" +
-  " WHEN (b.startAge>=a.StartAge and b.EndAge<=a.EndAge) THEN 1" +
-  " WHEN (b.startAge<a.StartAge and b.EndAge<=a.EndAge) THEN  Cast(({3}-{0}+1) as float)/({3}-{2}+1)" + " WHEN (b.startAge<a.StartAge and b.EndAge>a.EndAge) THEN Cast(({1}-{0}+1) as float)/({3}-{2}+1)" +
-  "  WHEN (b.startAge>=a.StartAge and b.EndAge>a.EndAge) THEN Cast(({1}-{2}+1) as float)/({3}-{2}+1)" +
-  " ELSE 1" +
-  " END as weight,b.StartAge as sourceStartAge,b.EndAge as SourceEndAge" +
-  "  from ( select distinct startage,endage from Incidencerates  where IncidenceDataSetID=" + iid + ")a,ageranges b" +
-  " where b.EndAge>=a.StartAge and b.StartAge<=a.EndAge", straStartAgeOri, straEndAgeOri, strbStartAgeOri, strbEndAgeOri);
-
-                string strInc = string.Format("select  a.CColumn,a.Row,sum(a.VValue*d.Weight) as VValue,d.AgeRangeID  from IncidenceEntries a,IncidenceRates b,IncidenceDatasets c ,(" + strAgeID +
-                     ") d where   b.StartAge=d.StartAge and b.EndAge=d.EndAge and " +
-             " a.IncidenceRateID=b.IncidenceRateID and b.IncidenceDatasetID=c.IncidenceDatasetID and b.EndPointGroupID=" + crSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID + strRace + " and (b.EndPointID=" + crSelectFunction.BenMAPHealthImpactFunction.EndPointID + "  or b.EndPointID=99 or b.EndPointID=100)" + " and b.Prevalence='" + strbPrevalence + "' " +
-             "  and c.IncidenceDatasetID={0} and b.StartAge<={2} and b.EndAge>={1} group by a.CColumn,a.Row ,d.AgeRangeID", iid, crSelectFunction.StartAge, crSelectFunction.EndAge);
-                Dictionary<string, double> dicPercentage = new Dictionary<string, double>();
-                Dictionary<string, Dictionary<string, double>> dicRelationShip = new Dictionary<string, Dictionary<string, double>>();
-                if ((CommonClass.BenMAPPopulation.GridType.GridDefinitionID == 28 || CommonClass.BenMAPPopulation.GridType.GridDefinitionID == 27) && CommonClass.MainSetup.SetupID == 1)
-                {
-                    string str = "select sourcecolumn, sourcerow, targetcolumn, targetrow, percentage, normalizationstate from griddefinitionpercentageentries where percentageid=77 and normalizationstate in (0,1)";
-                    DataSet dsPercentage = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, str);
-
-                    foreach (DataRow dr in dsPercentage.Tables[0].Rows)
-                    {
-                        if (dicRelationShip.ContainsKey(dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString()))
-                        {
-                            if (!dicRelationShip[dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString()].ContainsKey(dr["targetcolumn"].ToString() + "," + dr["targetrow"].ToString()))
-                                dicRelationShip[dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString()].Add((Convert.ToInt32(dr["targetcolumn"]) * 10000 + Convert.ToInt32(dr["targetrow"].ToString())).ToString(), Convert.ToDouble(dr["Percentage"]));
-                        }
-                        else
-                        {
-                            dicRelationShip.Add(dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString(), new Dictionary<string, double>());
-                            dicRelationShip[dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString()].Add((Convert.ToInt32(dr["targetcolumn"]) * 10000 + Convert.ToInt32(dr["targetrow"].ToString())).ToString(), Convert.ToDouble(dr["Percentage"]));
-                        }
-
-                    }
-                    foreach (DataRow dr in dsPercentage.Tables[0].Rows)
-                    {
-                        dicPercentage.Add(dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString() + "," + dr["targetcolumn"].ToString() + "," + dr["targetrow"].ToString(), Convert.ToDouble(dr["percentage"]));
-                    }
-                    dsPercentage.Dispose();
-                }
-
-                if (dsIncidence != null)
-                    dsIncidence.Dispose();
-                if (dsPrevalence != null)
-                    dsPrevalence.Dispose();
-                if (CommonClass.MainSetup.SetupID == 1 && CommonClass.BenMAPPopulation.DataSetID == 4 && dicPopulationAge != null && dicPopulationAge.Count > 0)
-                {
-
-                    DataSet dsInc = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, strInc);
-
-                    Dictionary<string, double> dicInc = new Dictionary<string, double>();
-                    foreach (DataRow dr in dsInc.Tables[0].Rows)
-                    {
-                        if (!dicInc.ContainsKey((Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])).ToString() + "," + dr["AgeRangeID"]))
-                        {
-                            dicInc.Add((Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])).ToString() + "," + dr["AgeRangeID"].ToString(), Convert.ToDouble(dr["VValue"]));
-                        }
-                    }
-                    dsInc.Dispose();
-                    if (CommonClass.GBenMAPGrid.GridDefinitionID == 27 || CommonClass.GBenMAPGrid.GridDefinitionID == 28)
-                    {
-                        Dictionary<int, double> dicPopInc = new Dictionary<int, double>();
-
-                        foreach (KeyValuePair<string, double> k in dicPopulationAge)
-                        {
-                            string[] s = k.Key.Split(new char[] { ',' });
-                            double dp = 0;
-
-                            if (dicRelationShip.ContainsKey(s[0] + "," + s[1]))
-                            {
-                                foreach (KeyValuePair<string, double> kin in dicRelationShip[s[0] + "," + s[1]])
-                                {
-                                    dp += dicInc[kin.Key + "," + s[2]] * kin.Value;
-                                }
-                            }
-
-
-                            if (dicPopInc.ContainsKey(Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])) && dicPopulation12.ContainsKey(Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])))
-                            {
-
-                                dicPopInc[Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])] += dp * Convert.ToDouble(k.Value) / dicPopulation12[Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])];
-
-                            }
-                            else
-                            {
-                                dicPopInc.Add(Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1]), dp * Convert.ToDouble(k.Value) / dicPopulation12[Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])]);
-                            }
-
-                        }
-                        dicIncidenceRateAttribute = dicPopInc;
-                    }
-                    else
-                    {
-                        string str = "select sourcecolumn, sourcerow, targetcolumn, targetrow, percentage, normalizationstate from griddefinitionpercentageentries where percentageid=( select percentageid from  griddefinitionpercentages where sourcegriddefinitionid =27 and  targetgriddefinitionid = " + CommonClass.GBenMAPGrid.GridDefinitionID + " ) and normalizationstate in (0,1)";
-                        DataSet dsPercentage = null;
-                        Dictionary<string, Dictionary<string, double>> dicRelationShipForAggregation = new Dictionary<string, Dictionary<string, double>>();
-                        try
-                        {
-                            dsPercentage = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, str);
-
-                            foreach (DataRow dr in dsPercentage.Tables[0].Rows)
-                            {
-                                if (dicRelationShipForAggregation.ContainsKey(dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString()))
-                                {
-                                    if (!dicRelationShipForAggregation[dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString()].ContainsKey(dr["targetcolumn"].ToString() + "," + dr["targetrow"].ToString()))
-                                        dicRelationShipForAggregation[dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString()].Add(dr["targetcolumn"].ToString() + "," + dr["targetrow"].ToString(), Convert.ToDouble(dr["Percentage"]));
-                                }
-                                else
-                                {
-                                    dicRelationShipForAggregation.Add(dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString(), new Dictionary<string, double>());
-                                    dicRelationShipForAggregation[dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString()].Add(dr["targetcolumn"].ToString() + "," + dr["targetrow"].ToString(), Convert.ToDouble(dr["Percentage"]));
-                                }
-
-                            }
-
-                            dsPercentage.Dispose();
-
-
-
-
-                            int iPercentageID = 0; Dictionary<string, Dictionary<string, double>> dicPercentageForAggregationInc = new Dictionary<string, Dictionary<string, double>>();
-                            try
-                            {
-                                iPercentageID = Convert.ToInt16(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, "select percentageid from  griddefinitionpercentages where sourcegriddefinitionid =" + CommonClass.GBenMAPGrid.GridDefinitionID + " and  targetgriddefinitionid = " + iPopulationDataSetGridID));
-                                str = "select sourcecolumn, sourcerow, targetcolumn, targetrow, percentage, normalizationstate from griddefinitionpercentageentries where percentageid=( " + iPercentageID + " ) and normalizationstate in (0,1)";
-                                dsPercentage = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, str);
-                                foreach (DataRow dr in dsPercentage.Tables[0].Rows)
-                                {
-                                    if (dicPercentageForAggregationInc.ContainsKey(dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString()))
-                                    {
-                                        if (!dicPercentageForAggregationInc[dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString()].ContainsKey(dr["targetcolumn"].ToString() + "," + dr["targetrow"].ToString()))
-                                            dicPercentageForAggregationInc[dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString()].Add(dr["targetcolumn"].ToString() + "," + dr["targetrow"].ToString(), Convert.ToDouble(dr["Percentage"]));
-                                    }
-                                    else
-                                    {
-                                        dicPercentageForAggregationInc.Add(dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString(), new Dictionary<string, double>());
-                                        dicPercentageForAggregationInc[dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString()].Add(dr["targetcolumn"].ToString() + "," + dr["targetrow"].ToString(), Convert.ToDouble(dr["Percentage"]));
-                                    }
-
-                                }
-
-
-                                dsPercentage.Dispose();
-                                Dictionary<int, double> dicPopInc = new Dictionary<int, double>();
-
-                                foreach (KeyValuePair<string, double> k in dicPopulationAge)
-                                {
-                                    string[] s = k.Key.Split(new char[] { ',' });
-                                    double dp = 0;
-                                    if (s[0] == "36" && s[1] == "60")
-                                    {
-
-                                    }
-                                    if (dicPercentageForAggregationInc.ContainsKey(s[0] + "," + s[1]))
-                                    {
-                                        foreach (KeyValuePair<string, double> kin in dicPercentageForAggregationInc[s[0] + "," + s[1]])
-                                        {
-                                            string[] sin = kin.Key.Split(new char[] { ',' });
-                                            double dsin = Convert.ToInt32(sin[0]) * 10000 + Convert.ToInt32(sin[1]);
-                                            if (dicInc.ContainsKey(dsin + "," + s[2]))
-                                                dp += dicInc[dsin + "," + s[2]] * kin.Value;
-                                        }
-                                        dp = dp / dicPercentageForAggregationInc[s[0] + "," + s[1]].Sum(p => p.Value);
-                                    }
-
-
-                                    if (dicPopInc.ContainsKey(Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])) && dicPopulation.ContainsKey(Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])))
-                                    {
-
-                                        dicPopInc[Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])] += dp * Convert.ToDouble(k.Value) / dicPopulation[Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])];
-
-                                    }
-                                    else if (dicPopulation.ContainsKey(Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])))
-                                    {
-                                        dicPopInc.Add(Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1]), dp * Convert.ToDouble(k.Value) / dicPopulation[Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])]);
-                                    }
-
-                                }
-                                dicIncidenceRateAttribute = dicPopInc;
-                                return dicIncidenceRateAttribute;
-
-                            }
-                            catch
-                            {
-                                try
-                                {
-                                    iPercentageID = Convert.ToInt16(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, "select percentageid from  griddefinitionpercentages where sourcegriddefinitionid =" + CommonClass.GBenMAPGrid.GridDefinitionID + " and  targetgriddefinitionid = " + iPopulationDataSetGridID));
-                                    dsPercentage = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, str);
-                                    foreach (DataRow dr in dsPercentage.Tables[0].Rows)
-                                    {
-                                        if (dicPercentageForAggregationInc.ContainsKey(dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString()))
-                                        {
-                                            if (!dicPercentageForAggregationInc[dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString()].ContainsKey(dr["targetcolumn"].ToString() + "," + dr["targetrow"].ToString()))
-                                                dicPercentageForAggregationInc[dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString()].Add(dr["targetcolumn"].ToString() + "," + dr["targetrow"].ToString(), Convert.ToDouble(dr["Percentage"]));
-                                        }
-                                        else
-                                        {
-                                            dicPercentageForAggregationInc.Add(dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString(), new Dictionary<string, double>());
-                                            dicPercentageForAggregationInc[dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString()].Add(dr["targetcolumn"].ToString() + "," + dr["targetrow"].ToString(), Convert.ToDouble(dr["Percentage"]));
-                                        }
-
-                                    }
-
-
-                                    dsPercentage.Dispose();
-                                    Dictionary<int, double> dicPopInc = new Dictionary<int, double>();
-
-                                    foreach (KeyValuePair<string, double> k in dicPopulationAge)
-                                    {
-                                        string[] s = k.Key.Split(new char[] { ',' });
-                                        double dp = 0, dsum = 0;
-
-                                        if (dicPercentageForAggregationInc.ContainsKey(s[0] + "," + s[1]))
-                                        {
-                                            foreach (KeyValuePair<string, double> kin in dicPercentageForAggregationInc[s[0] + "," + s[1]])
-                                            {
-
-                                                string[] sin = kin.Key.Split(new char[] { ',' });
-                                                double dsin = Convert.ToInt32(sin[0]) * 10000 + Convert.ToInt32(sin[1]);
-                                                if (dicInc.ContainsKey(dsin + "," + s[2]))
-                                                    dp += dicInc[dsin + "," + s[2]] * kin.Value;
-                                                dsum += kin.Value;
-                                            }
-                                            dp = dp / dsum;
-                                        }
-
-
-                                        if (dicPopInc.ContainsKey(Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])) && dicPopulation.ContainsKey(Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])))
-                                        {
-
-                                            dicPopInc[Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])] += dp * Convert.ToDouble(k.Value) / dicPopulation[Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])];
-
-                                        }
-                                        else if (dicPopulation.ContainsKey(Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])))
-                                        {
-                                            dicPopInc.Add(Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1]), dp * Convert.ToDouble(k.Value) / dicPopulation[Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])]);
-                                        }
-
-                                    }
-                                    dicIncidenceRateAttribute = dicPopInc;
-                                    return dicIncidenceRateAttribute;
-
-                                }
-                                catch
-                                {
-                                }
-
-                            }
-
-
-
-                        }
-                        catch (Exception ex)
-                        {
-                        }
-                    }
-                }
-                else
-                {
-                    string strPopInc = getPopulationComandTextFromCRSelectFunctionForInc(crSelectFunction, CommonClass.BenMAPPopulation, dicRace, dicEthnicity, dicGender);
-
-
-                    string strTemp = "select a.CColumn,a.Row,sum(a.VValue*b.VValue) as VValue from (" + strPopInc + ") a,(" + strInc + ") b  ," +
-                         "(select sourcecolumn, sourcerow, targetcolumn, targetrow, percentage, normalizationstate from griddefinitionpercentageentries where percentageid=77 and normalizationstate in (0,1)) c" +
-                         " where a.CColumn= c.sourcecolumn and a.Row=c.targetcolumn and b.CColumn=c.targetcolumn and b.Row=c.targetrow and a.agerangeid=b.agerangeid group by a.ccolumn,a.row";
-                    DataSet dsInc = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, strInc);
-                    DataSet dsPopInc = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, strPopInc);
-                    Dictionary<string, double> dicInc = new Dictionary<string, double>();
-                    foreach (DataRow dr in dsInc.Tables[0].Rows)
-                    {
-                        if (!dicInc.ContainsKey((Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])).ToString() + "," + dr["AgeRangeID"]))
-                        {
-                            dicInc.Add((Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])).ToString() + "," + dr["AgeRangeID"].ToString(), Convert.ToDouble(dr["VValue"]));
-                        }
-                    }
-
-
-                    double dp = 0;
-                    Dictionary<int, double> dicPopInc = new Dictionary<int, double>();
-                    foreach (DataRow dr in dsPopInc.Tables[0].Rows)
-                    {
-                        dp = 0;
-                        if (CommonClass.MainSetup.SetupID == 1 && CommonClass.BenMAPPopulation.DataSetID == 4)
-                        {
-                            if (dicRelationShip.ContainsKey(dr["CColumn"].ToString() + "," + dr["Row"]))
-                            {
-                                foreach (KeyValuePair<string, double> k in dicRelationShip[dr["CColumn"].ToString() + "," + dr["Row"]])
-                                {
-                                    dp += dicInc[k.Key + "," + dr["AgeRangeID"]] * k.Value;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            if (dicInc.ContainsKey(Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"]) + "," + dr["AgeRangeID"]))
-                                dp = dicInc[Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"]) + "," + dr["AgeRangeID"]];
-                        }
-
-
-                        if (dicPopInc.ContainsKey(Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])) && dicPopulation12.ContainsKey(Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])))
-                        {
-                            dicPopInc[Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])] += dp * Convert.ToDouble(dr["VValue"]) / dicPopulation12[Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])];
-
-                        }
-                        else
-                        {
-
-                            if (dicPopulation12.ContainsKey(Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])) && !dicPopInc.ContainsKey(Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])) && dicPopulation12[Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])] != 0)
-                                dicPopInc.Add(Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"]), dp * Convert.ToDouble(dr["VValue"]) / dicPopulation12[Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])]);
-                        }
-                        if (dicPopInc.ContainsKey(Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])) && double.IsNaN(dicPopInc[Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])]))
-                        {
-                        }
-
-                    }
-                    dicIncidenceRateAttribute = dicPopInc;
-                }
-
-
-
-                if (!bPrevalence)
-                    commandText = string.Format("select GriddefinitionID from IncidenceDatasets where IncidenceDatasetID={0}", crSelectFunction.IncidenceDataSetID);
-                else
-                    commandText = string.Format("select GriddefinitionID from IncidenceDatasets where IncidenceDatasetID={0}", crSelectFunction.PrevalenceDataSetID);
-                int incidenceDataSetGridType = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
-                if (CommonClass.MainSetup.SetupID == 1 && CommonClass.BenMAPPopulation.DataSetID == 4)
-                {
-                    incidenceDataSetGridType = CommonClass.BenMAPPopulation.GridType.GridDefinitionID;
-                    gridRelationShipPopulation = null;
-                    foreach (GridRelationship gRelationship in CommonClass.LstGridRelationshipAll)
-                    {
-                        if ((gRelationship.bigGridID == incidenceDataSetGridType && gRelationship.smallGridID == CommonClass.GBenMAPGrid.GridDefinitionID) || (gRelationship.smallGridID == incidenceDataSetGridType && gRelationship.bigGridID == CommonClass.GBenMAPGrid.GridDefinitionID))
-                        {
-                            gridRelationShipPopulation = gRelationship;
-                        }
-                    }
-                    if (gridRelationShipPopulation == null)
-                    {
-                        gridRelationShipPopulation = new GridRelationship()
-                        {
-                            bigGridID = incidenceDataSetGridType == 1 ? 1 : CommonClass.GBenMAPGrid.GridDefinitionID,
-                            smallGridID = incidenceDataSetGridType == 1 ? CommonClass.GBenMAPGrid.GridDefinitionID : incidenceDataSetGridType
-                        };
-                    }
-                }
-                Dictionary<int, double> dicResult = new Dictionary<int, double>();
-                double IncidenceValue = 0;
-                if (incidenceDataSetGridType == GridDefinitionID)
-                {
-                    dicResult = dicIncidenceRateAttribute;
-                }
-                else if (CommonClass.MainSetup.SetupID == 1 && CommonClass.BenMAPPopulation.DataSetID == 4 && (CommonClass.GBenMAPGrid.GridDefinitionID == CommonClass.BenMAPPopulation.GridType.GridDefinitionID || (CommonClass.GBenMAPGrid.GridDefinitionID == 27 && CommonClass.BenMAPPopulation.GridType.GridDefinitionID == 28) || (CommonClass.GBenMAPGrid.GridDefinitionID == 28 && CommonClass.BenMAPPopulation.GridType.GridDefinitionID == 27)))
-                {
-                    dicResult = dicIncidenceRateAttribute;
-                }
-                else
-                {
-                    dicRelationShip = APVX.APVCommonClass.getRelationFromDicRelationShipAll(gridRelationShipPopulation);
-                    if (incidenceDataSetGridType == gridRelationShipPopulation.bigGridID)
-                    {
-                        if (dicRelationShip != null && dicRelationShip.Count > 0)
-                        {
-                            foreach (KeyValuePair<string, Dictionary<string, double>> k in dicRelationShip)
-                            {
-                                string[] s = k.Key.Split(new char[] { ',' });
-                                if (dicIncidenceRateAttribute.Keys.Contains(Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])))
-                                {
-                                    foreach (KeyValuePair<string, double> rc in k.Value)
-                                    {
-                                        string[] sin = rc.Key.Split(new char[] { ',' });
-                                        if (!dicResult.Keys.Contains(Convert.ToInt32(sin[0]) * 10000 + Convert.ToInt32(sin[1])))
-                                        {
-
-                                            dicResult.Add(Convert.ToInt32(sin[0]) * 10000 + Convert.ToInt32(sin[1]), dicIncidenceRateAttribute[Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])] * rc.Value);
-
-                                        }
-                                        else
-                                        {
-
-                                            dicResult[Convert.ToInt32(sin[0]) * 10000 + Convert.ToInt32(sin[1])] += dicIncidenceRateAttribute[Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])] * rc.Value;
-
-                                        }
-                                    }
-
-                                }
-                            }
-                        }
-                        else
-                        {
-                            foreach (GridRelationshipAttribute gra in gridRelationShipPopulation.lstGridRelationshipAttribute)
-                            {
-                                if (dicIncidenceRateAttribute.Keys.Contains(Convert.ToInt32(gra.bigGridRowCol.Col) * 10000 + Convert.ToInt32(gra.bigGridRowCol.Row)))
-                                {
-                                    foreach (RowCol rc in gra.smallGridRowCol)
-                                    {
-                                        if (!dicResult.Keys.Contains(Convert.ToInt32(rc.Col) * 10000 + Convert.ToInt32(rc.Row)))
-                                        {
-                                            if (!dicPercentage.ContainsKey(rc.Col + "," + rc.Row + "," + gra.bigGridRowCol.Col + "," + gra.bigGridRowCol.Row))
-                                                dicResult.Add(Convert.ToInt32(rc.Col) * 10000 + Convert.ToInt32(rc.Row), dicIncidenceRateAttribute[Convert.ToInt32(gra.bigGridRowCol.Col) * 10000 + Convert.ToInt32(gra.bigGridRowCol.Row)]);
-                                            else
-                                            {
-                                                dicResult.Add(Convert.ToInt32(rc.Col) * 10000 + Convert.ToInt32(rc.Row), dicIncidenceRateAttribute[Convert.ToInt32(gra.bigGridRowCol.Col) * 10000 + Convert.ToInt32(gra.bigGridRowCol.Row)] * dicPercentage[rc.Col + "," + rc.Row + "," + gra.bigGridRowCol.Col + "," + gra.bigGridRowCol.Row]);
-                                            }
-                                        }
-                                        else
-                                        {
-                                            if (dicPercentage.ContainsKey(rc.Col + "," + rc.Row + "," + gra.bigGridRowCol.Col + "," + gra.bigGridRowCol.Row))
-                                                dicResult[Convert.ToInt32(rc.Col) * 10000 + Convert.ToInt32(rc.Row)] += dicIncidenceRateAttribute[Convert.ToInt32(gra.bigGridRowCol.Col) * 10000 + Convert.ToInt32(gra.bigGridRowCol.Row)] * dicPercentage[rc.Col + "," + rc.Row + "," + gra.bigGridRowCol.Col + "," + gra.bigGridRowCol.Row];
-
-                                        }
-                                    }
-
-                                }
-
-
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (dicRelationShip != null && dicRelationShip.Count > 0)
-                        {
-                            foreach (KeyValuePair<string, Dictionary<string, double>> k in dicRelationShip)
-                            {
-                                if (k.Key == "36,60")
-                                {
-
-                                }
-                                string[] s = k.Key.Split(new char[] { ',' });
-                                double d = 0;
-                                double dISum = 0;
-                                if (k.Value != null && k.Value.Count > 0)
-                                {
-                                    foreach (KeyValuePair<string, double> rc in k.Value)
-                                    {
-                                        string[] sin = rc.Key.Split(new char[] { ',' });
-                                        if (dicIncidenceRateAttribute.Keys.Contains(Convert.ToInt32(sin[0]) * 10000 + Convert.ToInt32(sin[1])) && !double.IsNaN(dicIncidenceRateAttribute[Convert.ToInt32(sin[0]) * 10000 + Convert.ToInt32(sin[1])]))
-                                        {
-                                            try
-                                            {
-
-                                                d = (d + dicIncidenceRateAttribute[Convert.ToInt32(sin[0]) * 10000 + Convert.ToInt32(sin[1])] * rc.Value);
-                                                dISum += rc.Value;
-                                            }
-                                            catch
-                                            {
-                                            }
-                                        }
-                                    }
-                                    if (dicPopulation.ContainsKey(Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])))
-                                    {
-                                        d = d / dISum; if (!dicResult.Keys.Contains(Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])))
-                                            dicResult.Add(Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1]), d);
-                                    }
-
-                                }
-                            }
-                        }
-                        else
-                        {
-                            foreach (GridRelationshipAttribute gra in gridRelationShipPopulation.lstGridRelationshipAttribute)
-                            {
-                                if (gra.bigGridRowCol.Col == 75 && gra.bigGridRowCol.Row == 19)
-                                {
-                                }
-                                double d = 0;
-                                foreach (RowCol rc in gra.smallGridRowCol)
-                                {
-                                    if (dicIncidenceRateAttribute.Keys.Contains(Convert.ToInt32(rc.Col) * 10000 + Convert.ToInt32(rc.Row)) && !double.IsNaN(dicIncidenceRateAttribute[Convert.ToInt32(rc.Col) * 10000 + Convert.ToInt32(rc.Row)]))
-                                    {
-                                        d = (d + dicIncidenceRateAttribute[Convert.ToInt32(rc.Col) * 10000 + Convert.ToInt32(rc.Row)]);
-                                    }
-
-                                }
-                                d = d / gra.smallGridRowCol.Count;
-                                if (!dicResult.Keys.Contains(Convert.ToInt32(gra.bigGridRowCol.Col) * 10000 + Convert.ToInt32(gra.bigGridRowCol.Row)))
-                                    dicResult.Add(Convert.ToInt32(gra.bigGridRowCol.Col) * 10000 + Convert.ToInt32(gra.bigGridRowCol.Row), d);
-
-
-
-                            }
-                        }
-                    }
-
-                }
-                if (dsIncidence != null)
-                    dsIncidence.Dispose();
-                return dicResult;
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
-
-        }
+// DEADCODE - no call reference exists
+        //public static void getIncidenceLevelFromDatabase()
+        //{ 
+        //    try
+        //    {
+        //        string commandTextLevel = "select * from t_poplevel";
+
+        //        Dictionary<string, float> dicReturn = new Dictionary<string, float>();
+        //        Dictionary<RowCol, double> dicPop = new Dictionary<RowCol, double>();
+
+
+        //        dicPop.Add(new RowCol() { Row = 0, Col = 0 }, 0.0136931743472815);
+        //        dicPop.Add(new RowCol() { Row = 1, Col = 4 }, 0.0544440671801567);
+        //        dicPop.Add(new RowCol() { Row = 5, Col = 9 }, 0.0730041638016701);
+        //        dicPop.Add(new RowCol() { Row = 10, Col = 14 }, 0.072923868894577);
+        //        dicPop.Add(new RowCol() { Row = 15, Col = 19 }, 0.0718525871634483);
+        //        dicPop.Add(new RowCol() { Row = 20, Col = 24 }, 0.0673884674906731);
+        //        dicPop.Add(new RowCol() { Row = 25, Col = 29 }, 0.068867988884449);
+        //        dicPop.Add(new RowCol() { Row = 30, Col = 34 }, 0.0728825107216835);
+        //        dicPop.Add(new RowCol() { Row = 35, Col = 39 }, 0.0806736126542091);
+        //        dicPop.Add(new RowCol() { Row = 40, Col = 44 }, 0.0797196552157402);
+        //        dicPop.Add(new RowCol() { Row = 45, Col = 49 }, 0.0713507384061813);
+        //        dicPop.Add(new RowCol() { Row = 50, Col = 54 }, 0.0624626986682415);
+        //        dicPop.Add(new RowCol() { Row = 55, Col = 59 }, 0.0478613935410976);
+        //        dicPop.Add(new RowCol() { Row = 60, Col = 64 }, 0.0384204462170601);
+        //        dicPop.Add(new RowCol() { Row = 65, Col = 69 }, 0.0339006930589676);
+        //        dicPop.Add(new RowCol() { Row = 70, Col = 74 }, 0.0314938016235828);
+        //        dicPop.Add(new RowCol() { Row = 75, Col = 79 }, 0.0263733938336372);
+        //        dicPop.Add(new RowCol() { Row = 80, Col = 84 }, 0.0175950452685356);
+        //        dicPop.Add(new RowCol() { Row = 85, Col = 99 }, 0.0150916986167431);
+        //        string commandText = "select distinct StartAge,EndAge from IncidenceRates";
+        //        ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+        //        try
+        //        {
+        //            fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandTextLevel);
+
+        //        }
+        //        catch
+        //        {
+        //            commandTextLevel = "create table t_poplevel (   AgeRangeID SMALLINT,   StartAge SMALLINT,   EndAge   SMALLINT,   VValue   FLOAT)";
+        //            fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandTextLevel);
+        //            int i = 1;
+        //            foreach (KeyValuePair<RowCol, double> k in dicPop)
+        //            {
+        //                commandTextLevel = "insert into t_poplevel values(" + i + "," + k.Key.Row + "," + k.Key.Col + "," + k.Value + ")";
+        //                fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandTextLevel);
+        //                i++;
+        //            }
+
+        //            DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
+        //            foreach (DataRow dr in ds.Tables[0].Rows)
+        //            {
+        //                int iStartAge = Convert.ToInt32(dr["StartAge"]);
+        //                int iEndAge = Convert.ToInt32(dr["EndAge"]);
+        //                List<KeyValuePair<RowCol, double>> lstPopDR = dicPop.Where(p => p.Key.Col <= iEndAge && p.Key.Row >= iStartAge).ToList();
+        //                double dpop = 0;
+        //                foreach (KeyValuePair<RowCol, double> k in lstPopDR)
+        //                {
+        //                    if (k.Key.Row >= iStartAge && k.Key.Col <= iEndAge)
+        //                    {
+        //                        dpop += k.Value;
+        //                    }
+        //                    else if (k.Key.Row >= iStartAge && k.Key.Col >= iEndAge)
+        //                    {
+        //                        dpop += (iEndAge - k.Key.Row + 1) * k.Value / (k.Key.Col - k.Key.Row + 1);
+        //                    }
+        //                    else if (k.Key.Row <= iStartAge && k.Key.Col <= iEndAge)
+        //                    {
+        //                        dpop += (k.Key.Col - iStartAge + 1) * k.Value / (k.Key.Col - k.Key.Row + 1);
+        //                    }
+        //                    else if (k.Key.Row <= iStartAge && k.Key.Col >= iEndAge)
+        //                    {
+        //                        dpop += (iEndAge - iStartAge + 1) * k.Value / (k.Key.Col - k.Key.Row + 1);
+        //                    }
+        //                }
+        //                fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, "insert into t_poplevel values(-1," + iStartAge + "," + iEndAge + "," + dpop + ")");
+        //                dicReturn.Add(iStartAge + "," + iEndAge, Convert.ToSingle(dpop));
+        //            }
+        //        }
+
+        //    }
+        //    catch
+        //    {
+        //    }
+        //}
+// DEADCODE - no call references exist
+        //public static float getPopLevelFromCR(CRSelectFunction crSelectFunction)
+        //{
+        //    Dictionary<RowCol, double> dicPop = new Dictionary<RowCol, double>();
+
+
+        //    dicPop.Add(new RowCol() { Row = 0, Col = 0 }, 0.0136931743472815);
+        //    dicPop.Add(new RowCol() { Row = 1, Col = 4 }, 0.0544440671801567);
+        //    dicPop.Add(new RowCol() { Row = 5, Col = 9 }, 0.0730041638016701);
+        //    dicPop.Add(new RowCol() { Row = 10, Col = 14 }, 0.072923868894577);
+        //    dicPop.Add(new RowCol() { Row = 15, Col = 19 }, 0.0718525871634483);
+        //    dicPop.Add(new RowCol() { Row = 20, Col = 24 }, 0.0673884674906731);
+        //    dicPop.Add(new RowCol() { Row = 25, Col = 29 }, 0.068867988884449);
+        //    dicPop.Add(new RowCol() { Row = 30, Col = 34 }, 0.0728825107216835);
+        //    dicPop.Add(new RowCol() { Row = 35, Col = 39 }, 0.0806736126542091);
+        //    dicPop.Add(new RowCol() { Row = 40, Col = 44 }, 0.0797196552157402);
+        //    dicPop.Add(new RowCol() { Row = 45, Col = 49 }, 0.0713507384061813);
+        //    dicPop.Add(new RowCol() { Row = 50, Col = 54 }, 0.0624626986682415);
+        //    dicPop.Add(new RowCol() { Row = 55, Col = 59 }, 0.0478613935410976);
+        //    dicPop.Add(new RowCol() { Row = 60, Col = 64 }, 0.0384204462170601);
+        //    dicPop.Add(new RowCol() { Row = 65, Col = 69 }, 0.0339006930589676);
+        //    dicPop.Add(new RowCol() { Row = 70, Col = 74 }, 0.0314938016235828);
+        //    dicPop.Add(new RowCol() { Row = 75, Col = 79 }, 0.0263733938336372);
+        //    dicPop.Add(new RowCol() { Row = 80, Col = 84 }, 0.0175950452685356);
+        //    dicPop.Add(new RowCol() { Row = 85, Col = 99 }, 0.0150916986167431);
+
+        //    int iStartAge = crSelectFunction.StartAge;
+        //    if (iStartAge == -1) iStartAge = 0;
+        //    int iEndAge = crSelectFunction.EndAge;
+        //    if (iEndAge == -1) iEndAge = 99;
+        //    List<KeyValuePair<RowCol, double>> lstPopDR = dicPop.Where(p => p.Key.Col <= iEndAge && p.Key.Row >= iStartAge).ToList();
+        //    double dpop = 0;
+        //    foreach (KeyValuePair<RowCol, double> k in lstPopDR)
+        //    {
+        //        if (k.Key.Row >= iStartAge && k.Key.Col <= iEndAge)
+        //        {
+        //            dpop += k.Value;
+        //        }
+        //        else if (k.Key.Row >= iStartAge && k.Key.Col >= iEndAge)
+        //        {
+        //            dpop += (iEndAge - k.Key.Row + 1) * k.Value / (k.Key.Col - k.Key.Row + 1);
+        //        }
+        //        else if (k.Key.Row <= iStartAge && k.Key.Col <= iEndAge)
+        //        {
+        //            dpop += (k.Key.Col - iStartAge + 1) * k.Value / (k.Key.Col - k.Key.Row + 1);
+        //        }
+        //        else if (k.Key.Row <= iStartAge && k.Key.Col >= iEndAge)
+        //        {
+        //            dpop += (iEndAge - iStartAge + 1) * k.Value / (k.Key.Col - k.Key.Row + 1);
+        //        }
+        //    }
+        //    return Convert.ToSingle(dpop);
+        //}
+// DEADCODE - no calling reference exists
+//        public static Dictionary<int, double> getIncidenceDataSetFromCRSelectFuntionDicold(Dictionary<int, double> dicPopulation, Dictionary<string, double> dicPopulationAge, Dictionary<int, double> dicPopulation12, CRSelectFunction crSelectFunction, bool bPrevalence, Dictionary<string, int> dicRace, Dictionary<string, int> dicEthnicity, Dictionary<string, int> dicGender, int GridDefinitionID, GridRelationship gridRelationShipPopulation)
+//        {
+//            try
+//            {
+
+//                Dictionary<int, double> dicIncidenceRateAttribute = new Dictionary<int, double>();
+//                ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+//                DataSet dsIncidence = null;
+//                DataSet dsPrevalence = null;
+//                string strbPrevalence = "F";
+//                int iid = crSelectFunction.IncidenceDataSetID;
+//                if (bPrevalence)
+//                {
+//                    strbPrevalence = "T";
+//                    iid = crSelectFunction.PrevalenceDataSetID;
+//                }
+//                string commandText = "";
+
+//                int iPopulationDataSetID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, string.Format("select PopulationDataSetID from PopulationDataSets where SetupID={0} and GridDefinitionID= (select GridDefinitionID from IncidenceDataSets where IncidenceDataSetID={1} )", CommonClass.MainSetup.SetupID, iid)));
+//                int iPopulationDataSetGridID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, string.Format("select GridDefinitionID from IncidenceDataSets where IncidenceDataSetID={1} ", CommonClass.MainSetup.SetupID, iid)));
+
+//                BenMAPPopulation benMAPPopulation = new BenMAPPopulation() { DataSetID = iPopulationDataSetID, GridType = new BenMAPGrid() { GridDefinitionID = iPopulationDataSetGridID }, Year = CommonClass.BenMAPPopulation.Year };
+//                commandText = string.Format("select  min( Yyear) from t_PopulationDataSetIDYear where PopulationDataSetID={0} ", iPopulationDataSetID); int commonYear = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, System.Data.CommandType.Text, commandText));
+//                string populationCommandText = getPopulationComandTextFromCRSelectFunction(crSelectFunction, benMAPPopulation, dicRace, dicEthnicity, dicGender);
+//                commandText = "";
+
+//                string commandTextAge = string.Format("select  distinct b.StartAge,b.EndAge    from IncidenceEntries a,IncidenceRates b,IncidenceDatasets c where " +
+//   " a.IncidenceRateID=b.IncidenceRateID and b.IncidenceDatasetID=c.IncidenceDatasetID and b.EndPointGroupID=" + crSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID + " and b.Prevalence='" + strbPrevalence + "' " +
+
+//  " and c.IncidenceDatasetID={0}  ", iid);
+//                if (crSelectFunction.StartAge != -1)
+//                {
+//                    commandTextAge = string.Format(commandTextAge + " and b.EndAge>={0} ", crSelectFunction.StartAge);
+//                }
+//                if (crSelectFunction.EndAge != -1)
+//                {
+
+//                    commandTextAge = string.Format(commandTextAge + " and b.StartAge<={0} ", crSelectFunction.EndAge);
+//                }
+
+//                DataSet dsAge = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandTextAge);
+//                foreach (DataRow dr in dsAge.Tables[0].Rows)
+//                {
+//                    if (commandText != "") commandText = commandText + " union ";
+//                    if ((crSelectFunction.StartAge < Convert.ToInt32(dr["StartAge"]) || crSelectFunction.StartAge == -1) && (crSelectFunction.EndAge > Convert.ToInt32(dr["EndAge"]) || crSelectFunction.EndAge == -1))
+//                    {
+//                        CRSelectFunction cr = new CRSelectFunction() { StartAge = Convert.ToInt32(dr["StartAge"]), EndAge = Convert.ToInt32(dr["EndAge"]), Ethnicity = crSelectFunction.Ethnicity, Gender = crSelectFunction.Gender, Race = crSelectFunction.Race };
+//                        if (CommonClass.MainSetup.SetupID == 1 && CommonClass.BenMAPPopulation.DataSetID == 4)
+//                        {
+//                            populationCommandText = getPopulationComandTextFromCRSelectFunction(cr, CommonClass.BenMAPPopulation, dicRace, dicEthnicity, dicGender);
+//                            commandText = commandText + string.Format("select  e.SourceColumn as CColumn,e.SourceRow as Row,a.VValue*d.VValue*e.Percentage as VValue  from IncidenceEntries a,IncidenceRates b,IncidenceDatasets c,(" + populationCommandText + ") d ," +
+//                                " (select sourcecolumn, sourcerow, targetcolumn, targetrow,Percentage from GridDefinitionPercentageEntries where percentageid=77 and normalizationstate in (0,1)) e" +
+//                                " where  a.CColumn=e.TargetColumn and a.Row=e.TargetRow and  d.CColumn= e.SourceColumn and d.Row= e.SourceRow and " +
+//       " a.IncidenceRateID=b.IncidenceRateID and b.IncidenceDatasetID=c.IncidenceDatasetID and b.EndPointGroupID=" + crSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID + " and (b.EndPointID=" + crSelectFunction.BenMAPHealthImpactFunction.EndPointID + "  or b.EndPointID=99 or b.EndPointID=100)" + " and b.Prevalence='" + strbPrevalence + "' " +
+//       "  and c.IncidenceDatasetID={0} and b.StartAge={1} and b.EndAge={2} ", iid, Convert.ToInt32(dr["StartAge"]), Convert.ToInt32(dr["EndAge"]));
+
+//                        }
+//                        else
+//                        {
+//                            populationCommandText = getPopulationComandTextFromCRSelectFunction(cr, benMAPPopulation, dicRace, dicEthnicity, dicGender);
+//                            commandText = commandText + string.Format("select  a.IncidenceRateID,a.CColumn,a.Row,a.VValue*d.VValue as VValue  from IncidenceEntries a,IncidenceRates b,IncidenceDatasets c,(" + populationCommandText + ") d  where  d.CColumn=a.CColumn and a.Row=d.Row and " +
+//       " a.IncidenceRateID=b.IncidenceRateID and b.IncidenceDatasetID=c.IncidenceDatasetID and b.EndPointGroupID=" + crSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID + " and (b.EndPointID=" + crSelectFunction.BenMAPHealthImpactFunction.EndPointID + "  or b.EndPointID=99 or b.EndPointID=100)" + " and b.Prevalence='" + strbPrevalence + "' " +
+//       "  and c.IncidenceDatasetID={0} and b.StartAge={1} and b.EndAge={2} ", iid, Convert.ToInt32(dr["StartAge"]), Convert.ToInt32(dr["EndAge"]));
+//                        }
+//                    }
+//                    else if (crSelectFunction.StartAge >= Convert.ToInt32(dr["StartAge"]) && crSelectFunction.EndAge <= Convert.ToInt32(dr["EndAge"]))
+//                    {
+//                        CRSelectFunction cr = new CRSelectFunction() { StartAge = crSelectFunction.StartAge, EndAge = crSelectFunction.EndAge, Ethnicity = crSelectFunction.Ethnicity, Gender = crSelectFunction.Gender, Race = crSelectFunction.Race };
+//                        if (CommonClass.MainSetup.SetupID == 1 && CommonClass.BenMAPPopulation.DataSetID == 4)
+//                        {
+//                            populationCommandText = getPopulationComandTextFromCRSelectFunction(cr, CommonClass.BenMAPPopulation, dicRace, dicEthnicity, dicGender);
+//                            commandText = commandText + string.Format("select  e.SourceColumn as CColumn,e.SourceRow as Row,a.VValue*d.VValue*e.Percentage as VValue  from IncidenceEntries a,IncidenceRates b,IncidenceDatasets c,(" + populationCommandText + ") d ," +
+//                                " (select sourcecolumn, sourcerow, targetcolumn, targetrow,Percentage from GridDefinitionPercentageEntries where percentageid=77 and normalizationstate in (0,1)) e" +
+//                                " where  a.CColumn=e.TargetColumn and a.Row=e.TargetRow and  d.CColumn= e.SourceColumn and d.Row= e.SourceRow and " +
+//       " a.IncidenceRateID=b.IncidenceRateID and b.IncidenceDatasetID=c.IncidenceDatasetID and b.EndPointGroupID=" + crSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID + " and (b.EndPointID=" + crSelectFunction.BenMAPHealthImpactFunction.EndPointID + "  or b.EndPointID=99 or b.EndPointID=100)" + " and b.Prevalence='" + strbPrevalence + "' " +
+//       "  and c.IncidenceDatasetID={0} and b.StartAge={1} and b.EndAge={2} ", iid, Convert.ToInt32(dr["StartAge"]), Convert.ToInt32(dr["EndAge"]));
+
+//                        }
+//                        else
+//                        {
+//                            populationCommandText = getPopulationComandTextFromCRSelectFunction(cr, benMAPPopulation, dicRace, dicEthnicity, dicGender);
+//                            commandText = commandText + string.Format("select  a.IncidenceRateID,a.CColumn,a.Row,a.VValue*d.VValue as VValue  from IncidenceEntries a,IncidenceRates b,IncidenceDatasets c,(" + populationCommandText + ") d  where  d.CColumn=a.CColumn and a.Row=d.Row and " +
+//        " a.IncidenceRateID=b.IncidenceRateID and b.IncidenceDatasetID=c.IncidenceDatasetID and b.EndPointGroupID=" + crSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID + " and (b.EndPointID=" + crSelectFunction.BenMAPHealthImpactFunction.EndPointID + "  or b.EndPointID=99 or b.EndPointID=100)" + " and b.Prevalence='" + strbPrevalence + "' " +
+//        "  and c.IncidenceDatasetID={0} and b.StartAge={1} and b.EndAge={2} ", iid, Convert.ToInt32(dr["StartAge"]), Convert.ToInt32(dr["EndAge"]));
+//                        }
+//                    }
+//                    else if (crSelectFunction.StartAge >= Convert.ToInt32(dr["StartAge"]) && (crSelectFunction.EndAge > Convert.ToInt32(dr["EndAge"]) || crSelectFunction.EndAge == -1))
+//                    {
+//                        CRSelectFunction cr = new CRSelectFunction() { StartAge = crSelectFunction.StartAge, EndAge = Convert.ToInt32(dr["EndAge"]), Ethnicity = crSelectFunction.Ethnicity, Gender = crSelectFunction.Gender, Race = crSelectFunction.Race };
+//                        if (CommonClass.MainSetup.SetupID == 1 && CommonClass.BenMAPPopulation.DataSetID == 4)
+//                        {
+//                            populationCommandText = getPopulationComandTextFromCRSelectFunction(cr, CommonClass.BenMAPPopulation, dicRace, dicEthnicity, dicGender);
+//                            commandText = commandText + string.Format("select  e.SourceColumn as CColumn,e.SourceRow as Row,a.VValue*d.VValue*e.Percentage as VValue  from IncidenceEntries a,IncidenceRates b,IncidenceDatasets c,(" + populationCommandText + ") d ," +
+//                                " (select sourcecolumn, sourcerow, targetcolumn, targetrow,Percentage from GridDefinitionPercentageEntries where percentageid=77 and normalizationstate in (0,1)) e" +
+//                                " where  a.CColumn=e.TargetColumn and a.Row=e.TargetRow and  d.CColumn= e.SourceColumn and d.Row= e.SourceRow and " +
+//       " a.IncidenceRateID=b.IncidenceRateID and b.IncidenceDatasetID=c.IncidenceDatasetID and b.EndPointGroupID=" + crSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID + " and (b.EndPointID=" + crSelectFunction.BenMAPHealthImpactFunction.EndPointID + "  or b.EndPointID=99 or b.EndPointID=100)" + " and b.Prevalence='" + strbPrevalence + "' " +
+//       "  and c.IncidenceDatasetID={0} and b.StartAge={1} and b.EndAge={2} ", iid, Convert.ToInt32(dr["StartAge"]), Convert.ToInt32(dr["EndAge"]));
+
+//                        }
+//                        else
+//                        {
+//                            populationCommandText = getPopulationComandTextFromCRSelectFunction(cr, benMAPPopulation, dicRace, dicEthnicity, dicGender);
+//                            commandText = commandText + string.Format("select  a.IncidenceRateID,a.CColumn,a.Row,a.VValue*d.VValue as VValue  from IncidenceEntries a,IncidenceRates b,IncidenceDatasets c,(" + populationCommandText + ") d  where  d.CColumn=a.CColumn and a.Row=d.Row and " +
+//       " a.IncidenceRateID=b.IncidenceRateID and b.IncidenceDatasetID=c.IncidenceDatasetID and b.EndPointGroupID=" + crSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID + " and (b.EndPointID=" + crSelectFunction.BenMAPHealthImpactFunction.EndPointID + "  or b.EndPointID=99 or b.EndPointID=100)" + " and b.Prevalence='" + strbPrevalence + "' " +
+//       "  and c.IncidenceDatasetID={0} and b.StartAge={1} and b.EndAge={2} ", iid, Convert.ToInt32(dr["StartAge"]), Convert.ToInt32(dr["EndAge"]));
+//                        }
+//                    }
+//                    else if ((crSelectFunction.StartAge < Convert.ToInt32(dr["StartAge"]) || crSelectFunction.StartAge == -1) && crSelectFunction.EndAge <= Convert.ToInt32(dr["EndAge"]))
+//                    {
+//                        CRSelectFunction cr = new CRSelectFunction() { StartAge = Convert.ToInt32(dr["StartAge"]), EndAge = crSelectFunction.EndAge, Ethnicity = crSelectFunction.Ethnicity, Gender = crSelectFunction.Gender, Race = crSelectFunction.Race };
+//                        if (CommonClass.MainSetup.SetupID == 1 && CommonClass.BenMAPPopulation.DataSetID == 4)
+//                        {
+//                            populationCommandText = getPopulationComandTextFromCRSelectFunction(cr, CommonClass.BenMAPPopulation, dicRace, dicEthnicity, dicGender);
+//                            commandText = commandText + string.Format("select  e.SourceColumn as CColumn,e.SourceRow as Row,a.VValue*d.VValue*e.Percentage as VValue  from IncidenceEntries a,IncidenceRates b,IncidenceDatasets c,(" + populationCommandText + ") d ," +
+//                                " (select sourcecolumn, sourcerow, targetcolumn, targetrow,Percentage from GridDefinitionPercentageEntries where percentageid=77 and normalizationstate in (0,1)) e" +
+//                                " where  a.CColumn=e.TargetColumn and a.Row=e.TargetRow and  d.CColumn= e.SourceColumn and d.Row= e.SourceRow and " +
+//       " a.IncidenceRateID=b.IncidenceRateID and b.IncidenceDatasetID=c.IncidenceDatasetID and b.EndPointGroupID=" + crSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID + " and (b.EndPointID=" + crSelectFunction.BenMAPHealthImpactFunction.EndPointID + "  or b.EndPointID=99 or b.EndPointID=100)" + " and b.Prevalence='" + strbPrevalence + "' " +
+//       "  and c.IncidenceDatasetID={0} and b.StartAge={1} and b.EndAge={2} ", iid, Convert.ToInt32(dr["StartAge"]), Convert.ToInt32(dr["EndAge"]));
+
+//                        }
+//                        else
+//                        {
+//                            populationCommandText = getPopulationComandTextFromCRSelectFunction(cr, benMAPPopulation, dicRace, dicEthnicity, dicGender);
+//                            commandText = commandText + string.Format("select  a.IncidenceRateID,a.CColumn,a.Row,a.VValue*d.VValue as VValue  from IncidenceEntries a,IncidenceRates b,IncidenceDatasets c,(" + populationCommandText + ") d  where  d.CColumn=a.CColumn and a.Row=d.Row and " +
+//       " a.IncidenceRateID=b.IncidenceRateID and b.IncidenceDatasetID=c.IncidenceDatasetID and b.EndPointGroupID=" + crSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID + " and (b.EndPointID=" + crSelectFunction.BenMAPHealthImpactFunction.EndPointID + "  or b.EndPointID=99 or b.EndPointID=100)" + " and b.Prevalence='" + strbPrevalence + "' " +
+//       "  and c.IncidenceDatasetID={0} and b.StartAge={1} and b.EndAge={2} ", iid, Convert.ToInt32(dr["StartAge"]), Convert.ToInt32(dr["EndAge"]));
+//                        }
+//                    }
+//                    if (!string.IsNullOrEmpty(crSelectFunction.Race))
+//                    {
+//                        if (dicRace.Keys.Contains(crSelectFunction.Race))
+//                        {
+//                            commandText = string.Format(commandText + " and (b.RaceID={0} or b.RaceID=6)", dicRace[crSelectFunction.Race]);
+//                        }
+//                    }
+//                    if (!string.IsNullOrEmpty(crSelectFunction.Ethnicity))
+//                    {
+//                        if (dicEthnicity.Keys.Contains(crSelectFunction.Ethnicity))
+//                        {
+//                            commandText = string.Format(commandText + " and (b.EthnicityID={0} or b.EthnicityID=4)", dicEthnicity[crSelectFunction.Ethnicity]);
+
+//                        }
+//                    }
+//                    if (!string.IsNullOrEmpty(crSelectFunction.Gender))
+//                    {
+//                        if (dicGender.Keys.Contains(crSelectFunction.Gender))
+//                        {
+//                            commandText = string.Format(commandText + " and (b.GenderID={0} or b.GenderID=4)", dicGender[crSelectFunction.Gender]);
+//                        }
+//                    }
+//                }
+
+
+
+
+
+
+//                if (CommonClass.MainSetup.SetupID == 1 && CommonClass.BenMAPPopulation.DataSetID == 4)
+//                {
+//                    populationCommandText = getPopulationComandTextFromCRSelectFunction(crSelectFunction, CommonClass.BenMAPPopulation, dicRace, dicEthnicity, dicGender);
+//                }
+//                else
+//                {
+//                    populationCommandText = getPopulationComandTextFromCRSelectFunction(crSelectFunction, benMAPPopulation, dicRace, dicEthnicity, dicGender);
+//                }
+//                commandText = "select a.CColumn,a.Row,sum(a.VValue/b.VValue)  as VValue from ( " + commandText + " ) a,(" + populationCommandText + ") b where a.CColumn=b.CColumn and a.Row=b.Row group by a.CColumn,a.Row";
+//                Dictionary<string, double> dicPercentage = new Dictionary<string, double>();
+//                Dictionary<string, Dictionary<string, double>> dicRelationShip = new Dictionary<string, Dictionary<string, double>>();
+//                if ((CommonClass.BenMAPPopulation.GridType.GridDefinitionID == 28 || CommonClass.BenMAPPopulation.GridType.GridDefinitionID == 27) && CommonClass.MainSetup.SetupID == 1)
+//                {
+//                    string str = "select sourcecolumn, sourcerow, targetcolumn, targetrow, percentage, normalizationstate from griddefinitionpercentageentries where percentageid=77 and normalizationstate in (0,1)";
+//                    DataSet dsPercentage = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, str);
+
+//                    foreach (DataRow dr in dsPercentage.Tables[0].Rows)
+//                    {
+//                        if (dicRelationShip.ContainsKey(dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString()))
+//                        {
+//                            if (!dicRelationShip[dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString()].ContainsKey(dr["targetcolumn"].ToString() + "," + dr["targetrow"].ToString()))
+//                                dicRelationShip[dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString()].Add((Convert.ToInt32(dr["targetcolumn"]) * 10000 + Convert.ToInt32(dr["targetrow"].ToString())).ToString(), Convert.ToDouble(dr["Percentage"]));
+//                        }
+//                        else
+//                        {
+//                            dicRelationShip.Add(dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString(), new Dictionary<string, double>());
+//                            dicRelationShip[dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString()].Add((Convert.ToInt32(dr["targetcolumn"]) * 10000 + Convert.ToInt32(dr["targetrow"].ToString())).ToString(), Convert.ToDouble(dr["Percentage"]));
+//                        }
+
+//                    }
+//                    foreach (DataRow dr in dsPercentage.Tables[0].Rows)
+//                    {
+//                        dicPercentage.Add(dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString() + "," + dr["targetcolumn"].ToString() + "," + dr["targetrow"].ToString(), Convert.ToDouble(dr["percentage"]));
+//                    }
+//                    dsPercentage.Dispose();
+//                }
+//                if (dsAge != null)
+//                    dsAge.Dispose();
+//                if (dsIncidence != null)
+//                    dsIncidence.Dispose();
+//                if (dsPrevalence != null)
+//                    dsPrevalence.Dispose();
+//                if (CommonClass.MainSetup.SetupID == 1 && CommonClass.BenMAPPopulation.DataSetID == 4 && commonYear != benMAPPopulation.Year && dicPopulationAge != null && dicPopulationAge.Count > 0)
+//                {
+//                    string strEndAgeOri = " CASE" +
+//                       " WHEN (b.EndAge> " + crSelectFunction.EndAge + ") THEN " + crSelectFunction.EndAge + " ELSE b.EndAge END ";
+//                    string strStartAgeOri = " CASE" +
+//                        " WHEN (b.StartAge< " + crSelectFunction.StartAge + ") THEN " + crSelectFunction.StartAge + " ELSE b.StartAge END ";
+//                    string strAgeID = string.Format(" select a.startAge,a.EndAge,b.AgeRangeid, " +
+//  " CASE" +
+//  " WHEN (b.startAge>=a.StartAge and b.EndAge<=a.EndAge) THEN 1" +
+//  " WHEN (b.startAge<a.StartAge and b.EndAge<=a.EndAge) THEN  Cast(({1}-a.StartAge+1) as float)/({1}-{0}+1)" + " WHEN (b.startAge<a.StartAge and b.EndAge>a.EndAge) THEN Cast(({1}-{0}+1) as float)/({1}-{0}+1)" +
+//  "  WHEN (b.startAge>=a.StartAge and b.EndAge>a.EndAge) THEN Cast((a.EndAge-{0}+1) as float)/({1}-{0}+1)" +
+//  " ELSE 1" +
+//  " END as weight,b.StartAge as sourceStartAge,b.EndAge as SourceEndAge" +
+//  "  from ( select distinct startage,endage from Incidencerates )a,ageranges b" +
+//  " where b.EndAge>=a.StartAge and b.StartAge<=a.EndAge", strStartAgeOri, strEndAgeOri);
+
+
+
+//                    string strInc = string.Format("select  a.CColumn,a.Row,sum(a.VValue*d.Weight) as VValue,d.AgeRangeID  from IncidenceEntries a,IncidenceRates b,IncidenceDatasets c ,(" + strAgeID +
+//                       ") d where   b.StartAge=d.StartAge and b.EndAge=d.EndAge and " +
+//               " a.IncidenceRateID=b.IncidenceRateID and b.IncidenceDatasetID=c.IncidenceDatasetID and b.EndPointGroupID=" + crSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID + " and b.RaceID=6 and (b.EndPointID=" + crSelectFunction.BenMAPHealthImpactFunction.EndPointID + "  or b.EndPointID=99 or b.EndPointID=100)" + " and b.Prevalence='" + strbPrevalence + "' " +
+//               "  and c.IncidenceDatasetID={0} and b.StartAge<={2} and b.EndAge>={1} group by a.CColumn,a.Row ,d.AgeRangeID", iid, crSelectFunction.StartAge, crSelectFunction.EndAge);
+//                    DataSet dsInc = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, strInc);
+
+//                    Dictionary<string, double> dicInc = new Dictionary<string, double>();
+//                    foreach (DataRow dr in dsInc.Tables[0].Rows)
+//                    {
+//                        if (!dicInc.ContainsKey((Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])).ToString() + "," + dr["AgeRangeID"]))
+//                        {
+//                            dicInc.Add((Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])).ToString() + "," + dr["AgeRangeID"].ToString(), Convert.ToDouble(dr["VValue"]));
+//                        }
+//                    }
+//                    dsInc.Dispose();
+//                    Dictionary<int, double> dicPopInc = new Dictionary<int, double>();
+
+//                    foreach (KeyValuePair<string, double> k in dicPopulationAge)
+//                    {
+//                        string[] s = k.Key.Split(new char[] { ',' });
+//                        double dp = 0;
+
+//                        if (dicRelationShip.ContainsKey(s[0] + "," + s[1]))
+//                        {
+//                            foreach (KeyValuePair<string, double> kin in dicRelationShip[s[0] + "," + s[1]])
+//                            {
+//                                dp += dicInc[kin.Key + "," + s[2]] * kin.Value;
+//                            }
+//                        }
+
+
+//                        if (dicPopInc.ContainsKey(Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])) && dicPopulation12.ContainsKey(Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])))
+//                        {
+
+//                            dicPopInc[Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])] += dp * Convert.ToDouble(k.Value) / dicPopulation12[Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])];
+
+//                        }
+//                        else
+//                        {
+//                            dicPopInc.Add(Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1]), dp * Convert.ToDouble(k.Value) / dicPopulation12[Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])]);
+//                        }
+
+//                    }
+//                    dicIncidenceRateAttribute = dicPopInc;
+//                }
+//                else
+//                {
+//                    string strPopInc = getPopulationComandTextFromCRSelectFunctionForInc(crSelectFunction, CommonClass.BenMAPPopulation, dicRace, dicEthnicity, dicGender);
+
+//                    string strAgeID = " select a.startAge,a.EndAge,b.AgeRangeid, " +
+// " CASE" +
+// " WHEN (b.startAge>=a.StartAge and b.EndAge<=a.EndAge) THEN 1" +
+// " WHEN (b.startAge<a.StartAge and b.EndAge<=a.EndAge) THEN Cast((b.EndAge-a.StartAge+1) as float)/(b.EndAge-b.StartAge+1)" +
+// " WHEN (b.startAge<a.StartAge and b.EndAge>a.EndAge) THEN Cast((b.EndAge-b.StartAge+1) as float)/(b.EndAge-b.StartAge+1)" +
+// "  WHEN (b.startAge>=a.StartAge and b.EndAge>a.EndAge) THEN Cast((a.EndAge-b.StartAge+1) as float)/(b.EndAge-b.StartAge+1)" +
+// " ELSE 1" +
+// " END as weight,b.StartAge as sourceStartAge,b.EndAge as SourceEndAge" +
+// "  from ( select distinct startage,endage from Incidencerates )a,ageranges b" +
+// " where b.EndAge>=a.StartAge and b.StartAge<=a.EndAge";
+//                    string strInc = string.Format("select  a.CColumn,a.Row,sum(a.VValue*d.weight) as VValue,d.AgeRangeID  from IncidenceEntries a,IncidenceRates b,IncidenceDatasets c ,(" + strAgeID +
+//     ") d where   b.StartAge=d.StartAge and b.EndAge=d.EndAge and " +
+//" a.IncidenceRateID=b.IncidenceRateID and b.IncidenceDatasetID=c.IncidenceDatasetID and b.EndPointGroupID=" + crSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID + " and (b.EndPointID=" + crSelectFunction.BenMAPHealthImpactFunction.EndPointID + "  or b.EndPointID=99 or b.EndPointID=100)" + " and b.Prevalence='" + strbPrevalence + "' " +
+//"  and c.IncidenceDatasetID={0} and b.StartAge<={2} and b.EndAge>={1} group by a.CColumn,a.Row,d.AgeRangeID", iid, crSelectFunction.StartAge, crSelectFunction.EndAge);
+
+//                    string strTemp = "select a.CColumn,a.Row,sum(a.VValue*b.VValue) as VValue from (" + strPopInc + ") a,(" + strInc + ") b  ," +
+//                         "(select sourcecolumn, sourcerow, targetcolumn, targetrow, percentage, normalizationstate from griddefinitionpercentageentries where percentageid=77 and normalizationstate in (0,1)) c" +
+//                         " where a.CColumn= c.sourcecolumn and a.Row=c.targetcolumn and b.CColumn=c.targetcolumn and b.Row=c.targetrow and a.agerangeid=b.agerangeid group by a.ccolumn,a.row";
+//                    DataSet dsInc = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, strInc);
+//                    DataSet dsPopInc = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, strPopInc);
+//                    Dictionary<string, double> dicInc = new Dictionary<string, double>();
+//                    foreach (DataRow dr in dsInc.Tables[0].Rows)
+//                    {
+//                        if (!dicInc.ContainsKey((Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])).ToString() + "," + dr["AgeRangeID"]))
+//                        {
+//                            dicInc.Add((Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])).ToString() + "," + dr["AgeRangeID"].ToString(), Convert.ToDouble(dr["VValue"]));
+//                        }
+//                    }
+
+//                    double dp = 0;
+//                    Dictionary<int, double> dicPopInc = new Dictionary<int, double>();
+//                    foreach (DataRow dr in dsPopInc.Tables[0].Rows)
+//                    {
+//                        dp = 0;
+//                        if (CommonClass.MainSetup.SetupID == 1 && CommonClass.BenMAPPopulation.DataSetID == 4)
+//                        {
+//                            if (dicRelationShip.ContainsKey(dr["CColumn"].ToString() + "," + dr["Row"]))
+//                            {
+//                                foreach (KeyValuePair<string, double> k in dicRelationShip[dr["CColumn"].ToString() + "," + dr["Row"]])
+//                                {
+//                                    dp += dicInc[k.Key + "," + dr["AgeRangeID"]] * k.Value;
+//                                }
+//                            }
+//                        }
+//                        else
+//                        {
+//                            dp = dicInc[Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"]) + "," + dr["AgeRangeID"]];
+//                        }
+
+//                        if (dicPopInc.ContainsKey(Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])) && dicPopulation.ContainsKey(Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])))
+//                        {
+//                            if (CommonClass.BenMAPPopulation.GridType.GridDefinitionID == 27 || CommonClass.BenMAPPopulation.GridType.GridDefinitionID == 28)
+//                            {
+//                                if (dicPopulation12.ContainsKey(Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])) && dicPopInc.ContainsKey(Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])) && dicPopulation12[Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])] != 0)
+//                                    dicPopInc[Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])] += dp * Convert.ToDouble(dr["VValue"]) / dicPopulation12[Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])];
+//                            }
+//                            else if (dicPopInc.ContainsKey(Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])))
+//                                dicPopInc[Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])] += dp * Convert.ToDouble(dr["VValue"]) / dicPopulation[Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])];
+
+//                        }
+//                        else
+//                        {
+//                            if (CommonClass.BenMAPPopulation.GridType.GridDefinitionID == 27 || CommonClass.BenMAPPopulation.GridType.GridDefinitionID == 28)
+//                            {
+//                                if (dicPopulation12.ContainsKey(Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])) && !dicPopInc.ContainsKey(Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])) && dicPopulation12[Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])] != 0)
+//                                    dicPopInc.Add(Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"]), dp * Convert.ToDouble(dr["VValue"]) / dicPopulation12[Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])]);
+//                            }
+//                            else if (dicPopulation.ContainsKey(Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])) && !dicPopInc.ContainsKey(Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])))
+//                                dicPopInc.Add(Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"]), dp * Convert.ToDouble(dr["VValue"]) / dicPopulation[Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])]);
+//                        }
+//                        if (dicPopInc.ContainsKey(Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])) && double.IsNaN(dicPopInc[Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])]))
+//                        {
+//                        }
+//                    }
+//                    dicIncidenceRateAttribute = dicPopInc;
+//                }
+
+
+
+
+
+
+//                if (!bPrevalence)
+//                    commandText = string.Format("select GriddefinitionID from IncidenceDatasets where IncidenceDatasetID={0}", crSelectFunction.IncidenceDataSetID);
+//                else
+//                    commandText = string.Format("select GriddefinitionID from IncidenceDatasets where IncidenceDatasetID={0}", crSelectFunction.PrevalenceDataSetID);
+//                int incidenceDataSetGridType = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
+//                if (CommonClass.MainSetup.SetupID == 1 && CommonClass.BenMAPPopulation.DataSetID == 4)
+//                {
+//                    incidenceDataSetGridType = CommonClass.BenMAPPopulation.GridType.GridDefinitionID;
+//                    foreach (GridRelationship gRelationship in CommonClass.LstGridRelationshipAll)
+//                    {
+//                        if ((gRelationship.bigGridID == incidenceDataSetGridType && gRelationship.smallGridID == CommonClass.GBenMAPGrid.GridDefinitionID) || (gRelationship.smallGridID == incidenceDataSetGridType && gRelationship.bigGridID == CommonClass.GBenMAPGrid.GridDefinitionID))
+//                        {
+//                            gridRelationShipPopulation = gRelationship;
+//                        }
+//                    }
+//                }
+//                Dictionary<int, double> dicResult = new Dictionary<int, double>();
+//                double IncidenceValue = 0;
+//                if (incidenceDataSetGridType == GridDefinitionID)
+//                {
+//                    dicResult = dicIncidenceRateAttribute;
+//                }
+//                else if (CommonClass.MainSetup.SetupID == 1 && CommonClass.BenMAPPopulation.DataSetID == 4 && (CommonClass.GBenMAPGrid.GridDefinitionID == CommonClass.BenMAPPopulation.GridType.GridDefinitionID || (CommonClass.GBenMAPGrid.GridDefinitionID == 27 && CommonClass.BenMAPPopulation.GridType.GridDefinitionID == 28) || (CommonClass.GBenMAPGrid.GridDefinitionID == 28 && CommonClass.BenMAPPopulation.GridType.GridDefinitionID == 27)))
+//                {
+//                    dicResult = dicIncidenceRateAttribute;
+//                }
+//                else
+//                {
+//                    dicRelationShip = APVX.APVCommonClass.getRelationFromDicRelationShipAll(gridRelationShipPopulation);
+//                    if (incidenceDataSetGridType == gridRelationShipPopulation.bigGridID)
+//                    {
+//                        if (dicRelationShip != null && dicRelationShip.Count > 0)
+//                        {
+//                            foreach (KeyValuePair<string, Dictionary<string, double>> k in dicRelationShip)
+//                            {
+//                                string[] s = k.Key.Split(new char[] { ',' });
+//                                if (dicIncidenceRateAttribute.Keys.Contains(Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])))
+//                                {
+//                                    foreach (KeyValuePair<string, double> rc in k.Value)
+//                                    {
+//                                        string[] sin = rc.Key.Split(new char[] { ',' });
+//                                        if (!dicResult.Keys.Contains(Convert.ToInt32(sin[0]) * 10000 + Convert.ToInt32(sin[1])))
+//                                        {
+
+//                                            dicResult.Add(Convert.ToInt32(sin[0]) * 10000 + Convert.ToInt32(sin[1]), dicIncidenceRateAttribute[Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])] * rc.Value);
+
+//                                        }
+//                                        else
+//                                        {
+
+//                                            dicResult[Convert.ToInt32(sin[0]) * 10000 + Convert.ToInt32(sin[1])] += dicIncidenceRateAttribute[Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])] * rc.Value;
+
+//                                        }
+//                                    }
+
+//                                }
+//                            }
+//                        }
+//                        else
+//                        {
+//                            foreach (GridRelationshipAttribute gra in gridRelationShipPopulation.lstGridRelationshipAttribute)
+//                            {
+//                                if (dicIncidenceRateAttribute.Keys.Contains(Convert.ToInt32(gra.bigGridRowCol.Col) * 10000 + Convert.ToInt32(gra.bigGridRowCol.Row)))
+//                                {
+//                                    foreach (RowCol rc in gra.smallGridRowCol)
+//                                    {
+//                                        if (!dicResult.Keys.Contains(Convert.ToInt32(rc.Col) * 10000 + Convert.ToInt32(rc.Row)))
+//                                        {
+//                                            if (!dicPercentage.ContainsKey(rc.Col + "," + rc.Row + "," + gra.bigGridRowCol.Col + "," + gra.bigGridRowCol.Row))
+//                                                dicResult.Add(Convert.ToInt32(rc.Col) * 10000 + Convert.ToInt32(rc.Row), dicIncidenceRateAttribute[Convert.ToInt32(gra.bigGridRowCol.Col) * 10000 + Convert.ToInt32(gra.bigGridRowCol.Row)]);
+//                                            else
+//                                            {
+//                                                dicResult.Add(Convert.ToInt32(rc.Col) * 10000 + Convert.ToInt32(rc.Row), dicIncidenceRateAttribute[Convert.ToInt32(gra.bigGridRowCol.Col) * 10000 + Convert.ToInt32(gra.bigGridRowCol.Row)] * dicPercentage[rc.Col + "," + rc.Row + "," + gra.bigGridRowCol.Col + "," + gra.bigGridRowCol.Row]);
+//                                            }
+//                                        }
+//                                        else
+//                                        {
+//                                            if (dicPercentage.ContainsKey(rc.Col + "," + rc.Row + "," + gra.bigGridRowCol.Col + "," + gra.bigGridRowCol.Row))
+//                                                dicResult[Convert.ToInt32(rc.Col) * 10000 + Convert.ToInt32(rc.Row)] += dicIncidenceRateAttribute[Convert.ToInt32(gra.bigGridRowCol.Col) * 10000 + Convert.ToInt32(gra.bigGridRowCol.Row)] * dicPercentage[rc.Col + "," + rc.Row + "," + gra.bigGridRowCol.Col + "," + gra.bigGridRowCol.Row];
+
+//                                        }
+//                                    }
+
+//                                }
+
+
+//                            }
+//                        }
+//                    }
+//                    else
+//                    {
+//                        if (dicRelationShip != null && dicRelationShip.Count > 0)
+//                        {
+//                            foreach (KeyValuePair<string, Dictionary<string, double>> k in dicRelationShip)
+//                            {
+//                                string[] s = k.Key.Split(new char[] { ',' });
+//                                double d = 0;
+//                                if (k.Value != null && k.Value.Count > 0)
+//                                {
+//                                    foreach (KeyValuePair<string, double> rc in k.Value)
+//                                    {
+//                                        string[] sin = rc.Key.Split(new char[] { ',' });
+//                                        if (dicIncidenceRateAttribute.Keys.Contains(Convert.ToInt32(sin[0]) * 10000 + Convert.ToInt32(sin[1])) && !double.IsNaN(dicIncidenceRateAttribute[Convert.ToInt32(sin[0]) * 10000 + Convert.ToInt32(sin[1])]))
+//                                        {
+//                                            d = (d + dicIncidenceRateAttribute[Convert.ToInt32(sin[0]) * 10000 + Convert.ToInt32(sin[1])]);
+//                                        }
+//                                    }
+//                                    d = d / k.Value.Count;
+//                                    if (!dicResult.Keys.Contains(Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])))
+//                                        dicResult.Add(Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1]), d);
+
+//                                }
+//                            }
+//                        }
+//                        else
+//                        {
+//                            foreach (GridRelationshipAttribute gra in gridRelationShipPopulation.lstGridRelationshipAttribute)
+//                            {
+//                                if (gra.bigGridRowCol.Col == 75 && gra.bigGridRowCol.Row == 19)
+//                                {
+//                                }
+//                                double d = 0;
+//                                foreach (RowCol rc in gra.smallGridRowCol)
+//                                {
+//                                    if (dicIncidenceRateAttribute.Keys.Contains(Convert.ToInt32(rc.Col) * 10000 + Convert.ToInt32(rc.Row)) && !double.IsNaN(dicIncidenceRateAttribute[Convert.ToInt32(rc.Col) * 10000 + Convert.ToInt32(rc.Row)]))
+//                                    {
+//                                        d = (d + dicIncidenceRateAttribute[Convert.ToInt32(rc.Col) * 10000 + Convert.ToInt32(rc.Row)]);
+//                                    }
+
+//                                }
+//                                d = d / gra.smallGridRowCol.Count;
+//                                if (!dicResult.Keys.Contains(Convert.ToInt32(gra.bigGridRowCol.Col) * 10000 + Convert.ToInt32(gra.bigGridRowCol.Row)))
+//                                    dicResult.Add(Convert.ToInt32(gra.bigGridRowCol.Col) * 10000 + Convert.ToInt32(gra.bigGridRowCol.Row), d);
+
+
+
+//                            }
+//                        }
+//                    }
+
+//                }
+//                if (dsIncidence != null)
+//                    dsIncidence.Dispose();
+//                return dicResult;
+//            }
+//            catch (Exception ex)
+//            {
+//                return null;
+//            }
+
+//        }
+// DEADCODE - no reference to this exists
+  //      public static Dictionary<int, double> getIncidenceDataSetFromCRSelectFuntionDic(Dictionary<int, double> dicPopulation, Dictionary<string, double> dicPopulationAge, Dictionary<int, double> dicPopulation12, CRSelectFunction crSelectFunction, bool bPrevalence, Dictionary<string, int> dicRace, Dictionary<string, int> dicEthnicity, Dictionary<string, int> dicGender, int GridDefinitionID, GridRelationship gridRelationShipPopulation)
+  //      {
+  //          try
+  //          {
+
+  //              Dictionary<int, double> dicIncidenceRateAttribute = new Dictionary<int, double>();
+  //              ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+  //              DataSet dsIncidence = null;
+  //              DataSet dsPrevalence = null;
+  //              string strbPrevalence = "F";
+  //              int iid = crSelectFunction.IncidenceDataSetID;
+  //              if (bPrevalence)
+  //              {
+  //                  strbPrevalence = "T";
+  //                  iid = crSelectFunction.PrevalenceDataSetID;
+  //              }
+  //              string commandText = "";
+
+  //              int iPopulationDataSetID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, string.Format("select PopulationDataSetID from PopulationDataSets where SetupID={0} and GridDefinitionID= (select GridDefinitionID from IncidenceDataSets where IncidenceDataSetID={1} )", CommonClass.MainSetup.SetupID, iid)));
+  //              int iPopulationDataSetGridID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, string.Format("select GridDefinitionID from IncidenceDataSets where IncidenceDataSetID={1} ", CommonClass.MainSetup.SetupID, iid)));
+
+  //              BenMAPPopulation benMAPPopulation = new BenMAPPopulation() { DataSetID = iPopulationDataSetID, GridType = new BenMAPGrid() { GridDefinitionID = iPopulationDataSetGridID }, Year = CommonClass.BenMAPPopulation.Year };
+  //              commandText = string.Format("select  min( Yyear) from t_PopulationDataSetIDYear where PopulationDataSetID={0} ", iPopulationDataSetID); int commonYear = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, System.Data.CommandType.Text, commandText));
+  //              string populationCommandText = getPopulationComandTextFromCRSelectFunction(crSelectFunction, benMAPPopulation, dicRace, dicEthnicity, dicGender);
+  //              commandText = "";
+  //              string strRace = "";
+  //              if (CommonClass.MainSetup.SetupID == 1) strRace = " and b.RaceID=6";
+  //              string strbEndAgeOri = " CASE" +
+  //                     " WHEN (b.EndAge> " + crSelectFunction.EndAge + ") THEN " + crSelectFunction.EndAge + " ELSE b.EndAge END ";
+  //              string strbStartAgeOri = " CASE" +
+  //                  " WHEN (b.StartAge< " + crSelectFunction.StartAge + ") THEN " + crSelectFunction.StartAge + " ELSE b.StartAge END ";
+  //              string straEndAgeOri = " CASE" +
+  //                    " WHEN (a.EndAge> " + crSelectFunction.EndAge + ") THEN " + crSelectFunction.EndAge + " ELSE a.EndAge END ";
+  //              string straStartAgeOri = " CASE" +
+  //                  " WHEN (a.StartAge< " + crSelectFunction.StartAge + ") THEN " + crSelectFunction.StartAge + " ELSE a.StartAge END ";
+  //              string strAgeID = string.Format(" select a.startAge,a.EndAge,b.AgeRangeid, " +
+  //" CASE" +
+  //" WHEN (b.startAge>=a.StartAge and b.EndAge<=a.EndAge) THEN 1" +
+  //" WHEN (b.startAge<a.StartAge and b.EndAge<=a.EndAge) THEN  Cast(({3}-{0}+1) as float)/({3}-{2}+1)" + " WHEN (b.startAge<a.StartAge and b.EndAge>a.EndAge) THEN Cast(({1}-{0}+1) as float)/({3}-{2}+1)" +
+  //"  WHEN (b.startAge>=a.StartAge and b.EndAge>a.EndAge) THEN Cast(({1}-{2}+1) as float)/({3}-{2}+1)" +
+  //" ELSE 1" +
+  //" END as weight,b.StartAge as sourceStartAge,b.EndAge as SourceEndAge" +
+  //"  from ( select distinct startage,endage from Incidencerates  where IncidenceDataSetID=" + iid + ")a,ageranges b" +
+  //" where b.EndAge>=a.StartAge and b.StartAge<=a.EndAge", straStartAgeOri, straEndAgeOri, strbStartAgeOri, strbEndAgeOri);
+
+  //              string strInc = string.Format("select  a.CColumn,a.Row,sum(a.VValue*d.Weight) as VValue,d.AgeRangeID  from IncidenceEntries a,IncidenceRates b,IncidenceDatasets c ,(" + strAgeID +
+  //                   ") d where   b.StartAge=d.StartAge and b.EndAge=d.EndAge and " +
+  //           " a.IncidenceRateID=b.IncidenceRateID and b.IncidenceDatasetID=c.IncidenceDatasetID and b.EndPointGroupID=" + crSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID + strRace + " and (b.EndPointID=" + crSelectFunction.BenMAPHealthImpactFunction.EndPointID + "  or b.EndPointID=99 or b.EndPointID=100)" + " and b.Prevalence='" + strbPrevalence + "' " +
+  //           "  and c.IncidenceDatasetID={0} and b.StartAge<={2} and b.EndAge>={1} group by a.CColumn,a.Row ,d.AgeRangeID", iid, crSelectFunction.StartAge, crSelectFunction.EndAge);
+  //              Dictionary<string, double> dicPercentage = new Dictionary<string, double>();
+  //              Dictionary<string, Dictionary<string, double>> dicRelationShip = new Dictionary<string, Dictionary<string, double>>();
+  //              if ((CommonClass.BenMAPPopulation.GridType.GridDefinitionID == 28 || CommonClass.BenMAPPopulation.GridType.GridDefinitionID == 27) && CommonClass.MainSetup.SetupID == 1)
+  //              {
+  //                  string str = "select sourcecolumn, sourcerow, targetcolumn, targetrow, percentage, normalizationstate from griddefinitionpercentageentries where percentageid=77 and normalizationstate in (0,1)";
+  //                  DataSet dsPercentage = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, str);
+
+  //                  foreach (DataRow dr in dsPercentage.Tables[0].Rows)
+  //                  {
+  //                      if (dicRelationShip.ContainsKey(dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString()))
+  //                      {
+  //                          if (!dicRelationShip[dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString()].ContainsKey(dr["targetcolumn"].ToString() + "," + dr["targetrow"].ToString()))
+  //                              dicRelationShip[dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString()].Add((Convert.ToInt32(dr["targetcolumn"]) * 10000 + Convert.ToInt32(dr["targetrow"].ToString())).ToString(), Convert.ToDouble(dr["Percentage"]));
+  //                      }
+  //                      else
+  //                      {
+  //                          dicRelationShip.Add(dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString(), new Dictionary<string, double>());
+  //                          dicRelationShip[dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString()].Add((Convert.ToInt32(dr["targetcolumn"]) * 10000 + Convert.ToInt32(dr["targetrow"].ToString())).ToString(), Convert.ToDouble(dr["Percentage"]));
+  //                      }
+
+  //                  }
+  //                  foreach (DataRow dr in dsPercentage.Tables[0].Rows)
+  //                  {
+  //                      dicPercentage.Add(dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString() + "," + dr["targetcolumn"].ToString() + "," + dr["targetrow"].ToString(), Convert.ToDouble(dr["percentage"]));
+  //                  }
+  //                  dsPercentage.Dispose();
+  //              }
+
+  //              if (dsIncidence != null)
+  //                  dsIncidence.Dispose();
+  //              if (dsPrevalence != null)
+  //                  dsPrevalence.Dispose();
+  //              if (CommonClass.MainSetup.SetupID == 1 && CommonClass.BenMAPPopulation.DataSetID == 4 && dicPopulationAge != null && dicPopulationAge.Count > 0)
+  //              {
+
+  //                  DataSet dsInc = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, strInc);
+
+  //                  Dictionary<string, double> dicInc = new Dictionary<string, double>();
+  //                  foreach (DataRow dr in dsInc.Tables[0].Rows)
+  //                  {
+  //                      if (!dicInc.ContainsKey((Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])).ToString() + "," + dr["AgeRangeID"]))
+  //                      {
+  //                          dicInc.Add((Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])).ToString() + "," + dr["AgeRangeID"].ToString(), Convert.ToDouble(dr["VValue"]));
+  //                      }
+  //                  }
+  //                  dsInc.Dispose();
+  //                  if (CommonClass.GBenMAPGrid.GridDefinitionID == 27 || CommonClass.GBenMAPGrid.GridDefinitionID == 28)
+  //                  {
+  //                      Dictionary<int, double> dicPopInc = new Dictionary<int, double>();
+
+  //                      foreach (KeyValuePair<string, double> k in dicPopulationAge)
+  //                      {
+  //                          string[] s = k.Key.Split(new char[] { ',' });
+  //                          double dp = 0;
+
+  //                          if (dicRelationShip.ContainsKey(s[0] + "," + s[1]))
+  //                          {
+  //                              foreach (KeyValuePair<string, double> kin in dicRelationShip[s[0] + "," + s[1]])
+  //                              {
+  //                                  dp += dicInc[kin.Key + "," + s[2]] * kin.Value;
+  //                              }
+  //                          }
+
+
+  //                          if (dicPopInc.ContainsKey(Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])) && dicPopulation12.ContainsKey(Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])))
+  //                          {
+
+  //                              dicPopInc[Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])] += dp * Convert.ToDouble(k.Value) / dicPopulation12[Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])];
+
+  //                          }
+  //                          else
+  //                          {
+  //                              dicPopInc.Add(Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1]), dp * Convert.ToDouble(k.Value) / dicPopulation12[Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])]);
+  //                          }
+
+  //                      }
+  //                      dicIncidenceRateAttribute = dicPopInc;
+  //                  }
+  //                  else
+  //                  {
+  //                      string str = "select sourcecolumn, sourcerow, targetcolumn, targetrow, percentage, normalizationstate from griddefinitionpercentageentries where percentageid=( select percentageid from  griddefinitionpercentages where sourcegriddefinitionid =27 and  targetgriddefinitionid = " + CommonClass.GBenMAPGrid.GridDefinitionID + " ) and normalizationstate in (0,1)";
+  //                      DataSet dsPercentage = null;
+  //                      Dictionary<string, Dictionary<string, double>> dicRelationShipForAggregation = new Dictionary<string, Dictionary<string, double>>();
+  //                      try
+  //                      {
+  //                          dsPercentage = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, str);
+
+  //                          foreach (DataRow dr in dsPercentage.Tables[0].Rows)
+  //                          {
+  //                              if (dicRelationShipForAggregation.ContainsKey(dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString()))
+  //                              {
+  //                                  if (!dicRelationShipForAggregation[dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString()].ContainsKey(dr["targetcolumn"].ToString() + "," + dr["targetrow"].ToString()))
+  //                                      dicRelationShipForAggregation[dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString()].Add(dr["targetcolumn"].ToString() + "," + dr["targetrow"].ToString(), Convert.ToDouble(dr["Percentage"]));
+  //                              }
+  //                              else
+  //                              {
+  //                                  dicRelationShipForAggregation.Add(dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString(), new Dictionary<string, double>());
+  //                                  dicRelationShipForAggregation[dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString()].Add(dr["targetcolumn"].ToString() + "," + dr["targetrow"].ToString(), Convert.ToDouble(dr["Percentage"]));
+  //                              }
+
+  //                          }
+
+  //                          dsPercentage.Dispose();
+
+
+
+
+  //                          int iPercentageID = 0; Dictionary<string, Dictionary<string, double>> dicPercentageForAggregationInc = new Dictionary<string, Dictionary<string, double>>();
+  //                          try
+  //                          {
+  //                              iPercentageID = Convert.ToInt16(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, "select percentageid from  griddefinitionpercentages where sourcegriddefinitionid =" + CommonClass.GBenMAPGrid.GridDefinitionID + " and  targetgriddefinitionid = " + iPopulationDataSetGridID));
+  //                              str = "select sourcecolumn, sourcerow, targetcolumn, targetrow, percentage, normalizationstate from griddefinitionpercentageentries where percentageid=( " + iPercentageID + " ) and normalizationstate in (0,1)";
+  //                              dsPercentage = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, str);
+  //                              foreach (DataRow dr in dsPercentage.Tables[0].Rows)
+  //                              {
+  //                                  if (dicPercentageForAggregationInc.ContainsKey(dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString()))
+  //                                  {
+  //                                      if (!dicPercentageForAggregationInc[dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString()].ContainsKey(dr["targetcolumn"].ToString() + "," + dr["targetrow"].ToString()))
+  //                                          dicPercentageForAggregationInc[dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString()].Add(dr["targetcolumn"].ToString() + "," + dr["targetrow"].ToString(), Convert.ToDouble(dr["Percentage"]));
+  //                                  }
+  //                                  else
+  //                                  {
+  //                                      dicPercentageForAggregationInc.Add(dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString(), new Dictionary<string, double>());
+  //                                      dicPercentageForAggregationInc[dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString()].Add(dr["targetcolumn"].ToString() + "," + dr["targetrow"].ToString(), Convert.ToDouble(dr["Percentage"]));
+  //                                  }
+
+  //                              }
+
+
+  //                              dsPercentage.Dispose();
+  //                              Dictionary<int, double> dicPopInc = new Dictionary<int, double>();
+
+  //                              foreach (KeyValuePair<string, double> k in dicPopulationAge)
+  //                              {
+  //                                  string[] s = k.Key.Split(new char[] { ',' });
+  //                                  double dp = 0;
+  //                                  if (s[0] == "36" && s[1] == "60")
+  //                                  {
+
+  //                                  }
+  //                                  if (dicPercentageForAggregationInc.ContainsKey(s[0] + "," + s[1]))
+  //                                  {
+  //                                      foreach (KeyValuePair<string, double> kin in dicPercentageForAggregationInc[s[0] + "," + s[1]])
+  //                                      {
+  //                                          string[] sin = kin.Key.Split(new char[] { ',' });
+  //                                          double dsin = Convert.ToInt32(sin[0]) * 10000 + Convert.ToInt32(sin[1]);
+  //                                          if (dicInc.ContainsKey(dsin + "," + s[2]))
+  //                                              dp += dicInc[dsin + "," + s[2]] * kin.Value;
+  //                                      }
+  //                                      dp = dp / dicPercentageForAggregationInc[s[0] + "," + s[1]].Sum(p => p.Value);
+  //                                  }
+
+
+  //                                  if (dicPopInc.ContainsKey(Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])) && dicPopulation.ContainsKey(Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])))
+  //                                  {
+
+  //                                      dicPopInc[Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])] += dp * Convert.ToDouble(k.Value) / dicPopulation[Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])];
+
+  //                                  }
+  //                                  else if (dicPopulation.ContainsKey(Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])))
+  //                                  {
+  //                                      dicPopInc.Add(Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1]), dp * Convert.ToDouble(k.Value) / dicPopulation[Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])]);
+  //                                  }
+
+  //                              }
+  //                              dicIncidenceRateAttribute = dicPopInc;
+  //                              return dicIncidenceRateAttribute;
+
+  //                          }
+  //                          catch
+  //                          {
+  //                              try
+  //                              {
+  //                                  iPercentageID = Convert.ToInt16(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, "select percentageid from  griddefinitionpercentages where sourcegriddefinitionid =" + CommonClass.GBenMAPGrid.GridDefinitionID + " and  targetgriddefinitionid = " + iPopulationDataSetGridID));
+  //                                  dsPercentage = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, str);
+  //                                  foreach (DataRow dr in dsPercentage.Tables[0].Rows)
+  //                                  {
+  //                                      if (dicPercentageForAggregationInc.ContainsKey(dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString()))
+  //                                      {
+  //                                          if (!dicPercentageForAggregationInc[dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString()].ContainsKey(dr["targetcolumn"].ToString() + "," + dr["targetrow"].ToString()))
+  //                                              dicPercentageForAggregationInc[dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString()].Add(dr["targetcolumn"].ToString() + "," + dr["targetrow"].ToString(), Convert.ToDouble(dr["Percentage"]));
+  //                                      }
+  //                                      else
+  //                                      {
+  //                                          dicPercentageForAggregationInc.Add(dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString(), new Dictionary<string, double>());
+  //                                          dicPercentageForAggregationInc[dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString()].Add(dr["targetcolumn"].ToString() + "," + dr["targetrow"].ToString(), Convert.ToDouble(dr["Percentage"]));
+  //                                      }
+
+  //                                  }
+
+
+  //                                  dsPercentage.Dispose();
+  //                                  Dictionary<int, double> dicPopInc = new Dictionary<int, double>();
+
+  //                                  foreach (KeyValuePair<string, double> k in dicPopulationAge)
+  //                                  {
+  //                                      string[] s = k.Key.Split(new char[] { ',' });
+  //                                      double dp = 0, dsum = 0;
+
+  //                                      if (dicPercentageForAggregationInc.ContainsKey(s[0] + "," + s[1]))
+  //                                      {
+  //                                          foreach (KeyValuePair<string, double> kin in dicPercentageForAggregationInc[s[0] + "," + s[1]])
+  //                                          {
+
+  //                                              string[] sin = kin.Key.Split(new char[] { ',' });
+  //                                              double dsin = Convert.ToInt32(sin[0]) * 10000 + Convert.ToInt32(sin[1]);
+  //                                              if (dicInc.ContainsKey(dsin + "," + s[2]))
+  //                                                  dp += dicInc[dsin + "," + s[2]] * kin.Value;
+  //                                              dsum += kin.Value;
+  //                                          }
+  //                                          dp = dp / dsum;
+  //                                      }
+
+
+  //                                      if (dicPopInc.ContainsKey(Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])) && dicPopulation.ContainsKey(Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])))
+  //                                      {
+
+  //                                          dicPopInc[Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])] += dp * Convert.ToDouble(k.Value) / dicPopulation[Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])];
+
+  //                                      }
+  //                                      else if (dicPopulation.ContainsKey(Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])))
+  //                                      {
+  //                                          dicPopInc.Add(Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1]), dp * Convert.ToDouble(k.Value) / dicPopulation[Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])]);
+  //                                      }
+
+  //                                  }
+  //                                  dicIncidenceRateAttribute = dicPopInc;
+  //                                  return dicIncidenceRateAttribute;
+
+  //                              }
+  //                              catch
+  //                              {
+  //                              }
+
+  //                          }
+
+
+
+  //                      }
+  //                      catch (Exception ex)
+  //                      {
+  //                      }
+  //                  }
+  //              }
+  //              else
+  //              {
+  //                  string strPopInc = getPopulationComandTextFromCRSelectFunctionForInc(crSelectFunction, CommonClass.BenMAPPopulation, dicRace, dicEthnicity, dicGender);
+
+
+  //                  string strTemp = "select a.CColumn,a.Row,sum(a.VValue*b.VValue) as VValue from (" + strPopInc + ") a,(" + strInc + ") b  ," +
+  //                       "(select sourcecolumn, sourcerow, targetcolumn, targetrow, percentage, normalizationstate from griddefinitionpercentageentries where percentageid=77 and normalizationstate in (0,1)) c" +
+  //                       " where a.CColumn= c.sourcecolumn and a.Row=c.targetcolumn and b.CColumn=c.targetcolumn and b.Row=c.targetrow and a.agerangeid=b.agerangeid group by a.ccolumn,a.row";
+  //                  DataSet dsInc = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, strInc);
+  //                  DataSet dsPopInc = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, strPopInc);
+  //                  Dictionary<string, double> dicInc = new Dictionary<string, double>();
+  //                  foreach (DataRow dr in dsInc.Tables[0].Rows)
+  //                  {
+  //                      if (!dicInc.ContainsKey((Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])).ToString() + "," + dr["AgeRangeID"]))
+  //                      {
+  //                          dicInc.Add((Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])).ToString() + "," + dr["AgeRangeID"].ToString(), Convert.ToDouble(dr["VValue"]));
+  //                      }
+  //                  }
+
+
+  //                  double dp = 0;
+  //                  Dictionary<int, double> dicPopInc = new Dictionary<int, double>();
+  //                  foreach (DataRow dr in dsPopInc.Tables[0].Rows)
+  //                  {
+  //                      dp = 0;
+  //                      if (CommonClass.MainSetup.SetupID == 1 && CommonClass.BenMAPPopulation.DataSetID == 4)
+  //                      {
+  //                          if (dicRelationShip.ContainsKey(dr["CColumn"].ToString() + "," + dr["Row"]))
+  //                          {
+  //                              foreach (KeyValuePair<string, double> k in dicRelationShip[dr["CColumn"].ToString() + "," + dr["Row"]])
+  //                              {
+  //                                  dp += dicInc[k.Key + "," + dr["AgeRangeID"]] * k.Value;
+  //                              }
+  //                          }
+  //                      }
+  //                      else
+  //                      {
+  //                          if (dicInc.ContainsKey(Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"]) + "," + dr["AgeRangeID"]))
+  //                              dp = dicInc[Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"]) + "," + dr["AgeRangeID"]];
+  //                      }
+
+
+  //                      if (dicPopInc.ContainsKey(Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])) && dicPopulation12.ContainsKey(Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])))
+  //                      {
+  //                          dicPopInc[Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])] += dp * Convert.ToDouble(dr["VValue"]) / dicPopulation12[Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])];
+
+  //                      }
+  //                      else
+  //                      {
+
+  //                          if (dicPopulation12.ContainsKey(Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])) && !dicPopInc.ContainsKey(Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])) && dicPopulation12[Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])] != 0)
+  //                              dicPopInc.Add(Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"]), dp * Convert.ToDouble(dr["VValue"]) / dicPopulation12[Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])]);
+  //                      }
+  //                      if (dicPopInc.ContainsKey(Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])) && double.IsNaN(dicPopInc[Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])]))
+  //                      {
+  //                      }
+
+  //                  }
+  //                  dicIncidenceRateAttribute = dicPopInc;
+  //              }
+
+
+
+  //              if (!bPrevalence)
+  //                  commandText = string.Format("select GriddefinitionID from IncidenceDatasets where IncidenceDatasetID={0}", crSelectFunction.IncidenceDataSetID);
+  //              else
+  //                  commandText = string.Format("select GriddefinitionID from IncidenceDatasets where IncidenceDatasetID={0}", crSelectFunction.PrevalenceDataSetID);
+  //              int incidenceDataSetGridType = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
+  //              if (CommonClass.MainSetup.SetupID == 1 && CommonClass.BenMAPPopulation.DataSetID == 4)
+  //              {
+  //                  incidenceDataSetGridType = CommonClass.BenMAPPopulation.GridType.GridDefinitionID;
+  //                  gridRelationShipPopulation = null;
+  //                  foreach (GridRelationship gRelationship in CommonClass.LstGridRelationshipAll)
+  //                  {
+  //                      if ((gRelationship.bigGridID == incidenceDataSetGridType && gRelationship.smallGridID == CommonClass.GBenMAPGrid.GridDefinitionID) || (gRelationship.smallGridID == incidenceDataSetGridType && gRelationship.bigGridID == CommonClass.GBenMAPGrid.GridDefinitionID))
+  //                      {
+  //                          gridRelationShipPopulation = gRelationship;
+  //                      }
+  //                  }
+  //                  if (gridRelationShipPopulation == null)
+  //                  {
+  //                      gridRelationShipPopulation = new GridRelationship()
+  //                      {
+  //                          bigGridID = incidenceDataSetGridType == 1 ? 1 : CommonClass.GBenMAPGrid.GridDefinitionID,
+  //                          smallGridID = incidenceDataSetGridType == 1 ? CommonClass.GBenMAPGrid.GridDefinitionID : incidenceDataSetGridType
+  //                      };
+  //                  }
+  //              }
+  //              Dictionary<int, double> dicResult = new Dictionary<int, double>();
+  //              double IncidenceValue = 0;
+  //              if (incidenceDataSetGridType == GridDefinitionID)
+  //              {
+  //                  dicResult = dicIncidenceRateAttribute;
+  //              }
+  //              else if (CommonClass.MainSetup.SetupID == 1 && CommonClass.BenMAPPopulation.DataSetID == 4 && (CommonClass.GBenMAPGrid.GridDefinitionID == CommonClass.BenMAPPopulation.GridType.GridDefinitionID || (CommonClass.GBenMAPGrid.GridDefinitionID == 27 && CommonClass.BenMAPPopulation.GridType.GridDefinitionID == 28) || (CommonClass.GBenMAPGrid.GridDefinitionID == 28 && CommonClass.BenMAPPopulation.GridType.GridDefinitionID == 27)))
+  //              {
+  //                  dicResult = dicIncidenceRateAttribute;
+  //              }
+  //              else
+  //              {
+  //                  dicRelationShip = APVX.APVCommonClass.getRelationFromDicRelationShipAll(gridRelationShipPopulation);
+  //                  if (incidenceDataSetGridType == gridRelationShipPopulation.bigGridID)
+  //                  {
+  //                      if (dicRelationShip != null && dicRelationShip.Count > 0)
+  //                      {
+  //                          foreach (KeyValuePair<string, Dictionary<string, double>> k in dicRelationShip)
+  //                          {
+  //                              string[] s = k.Key.Split(new char[] { ',' });
+  //                              if (dicIncidenceRateAttribute.Keys.Contains(Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])))
+  //                              {
+  //                                  foreach (KeyValuePair<string, double> rc in k.Value)
+  //                                  {
+  //                                      string[] sin = rc.Key.Split(new char[] { ',' });
+  //                                      if (!dicResult.Keys.Contains(Convert.ToInt32(sin[0]) * 10000 + Convert.ToInt32(sin[1])))
+  //                                      {
+
+  //                                          dicResult.Add(Convert.ToInt32(sin[0]) * 10000 + Convert.ToInt32(sin[1]), dicIncidenceRateAttribute[Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])] * rc.Value);
+
+  //                                      }
+  //                                      else
+  //                                      {
+
+  //                                          dicResult[Convert.ToInt32(sin[0]) * 10000 + Convert.ToInt32(sin[1])] += dicIncidenceRateAttribute[Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])] * rc.Value;
+
+  //                                      }
+  //                                  }
+
+  //                              }
+  //                          }
+  //                      }
+  //                      else
+  //                      {
+  //                          foreach (GridRelationshipAttribute gra in gridRelationShipPopulation.lstGridRelationshipAttribute)
+  //                          {
+  //                              if (dicIncidenceRateAttribute.Keys.Contains(Convert.ToInt32(gra.bigGridRowCol.Col) * 10000 + Convert.ToInt32(gra.bigGridRowCol.Row)))
+  //                              {
+  //                                  foreach (RowCol rc in gra.smallGridRowCol)
+  //                                  {
+  //                                      if (!dicResult.Keys.Contains(Convert.ToInt32(rc.Col) * 10000 + Convert.ToInt32(rc.Row)))
+  //                                      {
+  //                                          if (!dicPercentage.ContainsKey(rc.Col + "," + rc.Row + "," + gra.bigGridRowCol.Col + "," + gra.bigGridRowCol.Row))
+  //                                              dicResult.Add(Convert.ToInt32(rc.Col) * 10000 + Convert.ToInt32(rc.Row), dicIncidenceRateAttribute[Convert.ToInt32(gra.bigGridRowCol.Col) * 10000 + Convert.ToInt32(gra.bigGridRowCol.Row)]);
+  //                                          else
+  //                                          {
+  //                                              dicResult.Add(Convert.ToInt32(rc.Col) * 10000 + Convert.ToInt32(rc.Row), dicIncidenceRateAttribute[Convert.ToInt32(gra.bigGridRowCol.Col) * 10000 + Convert.ToInt32(gra.bigGridRowCol.Row)] * dicPercentage[rc.Col + "," + rc.Row + "," + gra.bigGridRowCol.Col + "," + gra.bigGridRowCol.Row]);
+  //                                          }
+  //                                      }
+  //                                      else
+  //                                      {
+  //                                          if (dicPercentage.ContainsKey(rc.Col + "," + rc.Row + "," + gra.bigGridRowCol.Col + "," + gra.bigGridRowCol.Row))
+  //                                              dicResult[Convert.ToInt32(rc.Col) * 10000 + Convert.ToInt32(rc.Row)] += dicIncidenceRateAttribute[Convert.ToInt32(gra.bigGridRowCol.Col) * 10000 + Convert.ToInt32(gra.bigGridRowCol.Row)] * dicPercentage[rc.Col + "," + rc.Row + "," + gra.bigGridRowCol.Col + "," + gra.bigGridRowCol.Row];
+
+  //                                      }
+  //                                  }
+
+  //                              }
+
+
+  //                          }
+  //                      }
+  //                  }
+  //                  else
+  //                  {
+  //                      if (dicRelationShip != null && dicRelationShip.Count > 0)
+  //                      {
+  //                          foreach (KeyValuePair<string, Dictionary<string, double>> k in dicRelationShip)
+  //                          {
+  //                              if (k.Key == "36,60")
+  //                              {
+
+  //                              }
+  //                              string[] s = k.Key.Split(new char[] { ',' });
+  //                              double d = 0;
+  //                              double dISum = 0;
+  //                              if (k.Value != null && k.Value.Count > 0)
+  //                              {
+  //                                  foreach (KeyValuePair<string, double> rc in k.Value)
+  //                                  {
+  //                                      string[] sin = rc.Key.Split(new char[] { ',' });
+  //                                      if (dicIncidenceRateAttribute.Keys.Contains(Convert.ToInt32(sin[0]) * 10000 + Convert.ToInt32(sin[1])) && !double.IsNaN(dicIncidenceRateAttribute[Convert.ToInt32(sin[0]) * 10000 + Convert.ToInt32(sin[1])]))
+  //                                      {
+  //                                          try
+  //                                          {
+
+  //                                              d = (d + dicIncidenceRateAttribute[Convert.ToInt32(sin[0]) * 10000 + Convert.ToInt32(sin[1])] * rc.Value);
+  //                                              dISum += rc.Value;
+  //                                          }
+  //                                          catch
+  //                                          {
+  //                                          }
+  //                                      }
+  //                                  }
+  //                                  if (dicPopulation.ContainsKey(Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])))
+  //                                  {
+  //                                      d = d / dISum; if (!dicResult.Keys.Contains(Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])))
+  //                                          dicResult.Add(Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1]), d);
+  //                                  }
+
+  //                              }
+  //                          }
+  //                      }
+  //                      else
+  //                      {
+  //                          foreach (GridRelationshipAttribute gra in gridRelationShipPopulation.lstGridRelationshipAttribute)
+  //                          {
+  //                              if (gra.bigGridRowCol.Col == 75 && gra.bigGridRowCol.Row == 19)
+  //                              {
+  //                              }
+  //                              double d = 0;
+  //                              foreach (RowCol rc in gra.smallGridRowCol)
+  //                              {
+  //                                  if (dicIncidenceRateAttribute.Keys.Contains(Convert.ToInt32(rc.Col) * 10000 + Convert.ToInt32(rc.Row)) && !double.IsNaN(dicIncidenceRateAttribute[Convert.ToInt32(rc.Col) * 10000 + Convert.ToInt32(rc.Row)]))
+  //                                  {
+  //                                      d = (d + dicIncidenceRateAttribute[Convert.ToInt32(rc.Col) * 10000 + Convert.ToInt32(rc.Row)]);
+  //                                  }
+
+  //                              }
+  //                              d = d / gra.smallGridRowCol.Count;
+  //                              if (!dicResult.Keys.Contains(Convert.ToInt32(gra.bigGridRowCol.Col) * 10000 + Convert.ToInt32(gra.bigGridRowCol.Row)))
+  //                                  dicResult.Add(Convert.ToInt32(gra.bigGridRowCol.Col) * 10000 + Convert.ToInt32(gra.bigGridRowCol.Row), d);
+
+
+
+  //                          }
+  //                      }
+  //                  }
+
+  //              }
+  //              if (dsIncidence != null)
+  //                  dsIncidence.Dispose();
+  //              return dicResult;
+  //          }
+  //          catch (Exception ex)
+  //          {
+  //              return null;
+  //          }
+
+  //      }
+        ///<summary>returns a dictionary containing the age bins and their start and end ages</summary> 
         public static Dictionary<string, double> getDicAge(CRSelectFunction crSelectFunction)
         {
             ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
 
             string strwhere = "";
+            // HARDCODED - SetupID=1, AgeRangeID = 42, 0 to 99
+            // don't use age 0 to 99 for US Setup (SetupID = 1)
             if (CommonClass.MainSetup.SetupID == 1)
                 strwhere = "where AGERANGEID!=42";
             else
@@ -3654,7 +3669,7 @@ namespace BenMAP.Configuration
             return dicAge;
         }
         public static Dictionary<string, double> getIncidenceDataSetFromCRSelectFuntionDicAllAge(Dictionary<string, double> dicAge, Dictionary<string, float> dicPopulationAge, Dictionary<int, float> dicPopulation12, CRSelectFunction crSelectFunction, bool bPrevalence, Dictionary<string, int> dicRace, Dictionary<string, int> dicEthnicity, Dictionary<string, int> dicGender, int GridDefinitionID, GridRelationship gridRelationShipPopulation)
-        {
+        { // STOPPED HERE
             try
             {
 
@@ -3773,321 +3788,325 @@ namespace BenMAP.Configuration
             }
 
         }
-        public static Dictionary<string, double> getIncidenceDataSetFromCRSelectFuntionDicAllAgeOld(Dictionary<int, float> dicPopulation, Dictionary<string, float> dicPopulationAge, Dictionary<int, float> dicPopulation12, CRSelectFunction crSelectFunction, bool bPrevalence, Dictionary<string, int> dicRace, Dictionary<string, int> dicEthnicity, Dictionary<string, int> dicGender, int GridDefinitionID, GridRelationship gridRelationShipPopulation)
-        {
-            try
-            {
+        // DEADCODE  - no reference to this code exists
+  //      public static Dictionary<string, double> getIncidenceDataSetFromCRSelectFuntionDicAllAgeOld(Dictionary<int, float> dicPopulation, Dictionary<string, float> dicPopulationAge, Dictionary<int, float> dicPopulation12, CRSelectFunction crSelectFunction, bool bPrevalence, Dictionary<string, int> dicRace, Dictionary<string, int> dicEthnicity, Dictionary<string, int> dicGender, int GridDefinitionID, GridRelationship gridRelationShipPopulation)
+  //      {
+  //          try
+  //          {
 
-                Dictionary<int, double> dicIncidenceRateAttribute = new Dictionary<int, double>();
-                ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
-                string strbPrevalence = "F";
-                int iid = crSelectFunction.IncidenceDataSetID;
-                if (bPrevalence)
-                {
-                    strbPrevalence = "T";
-                    iid = crSelectFunction.PrevalenceDataSetID;
-                }
-                string commandText = "";
+  //              Dictionary<int, double> dicIncidenceRateAttribute = new Dictionary<int, double>();
+  //              ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+  //              string strbPrevalence = "F";
+  //              int iid = crSelectFunction.IncidenceDataSetID;
+  //              if (bPrevalence)
+  //              {
+  //                  strbPrevalence = "T";
+  //                  iid = crSelectFunction.PrevalenceDataSetID;
+  //              }
+  //              string commandText = "";
 
-                int iPopulationDataSetID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, string.Format("select PopulationDataSetID from PopulationDataSets where SetupID={0} and GridDefinitionID= (select GridDefinitionID from IncidenceDataSets where IncidenceDataSetID={1} )", CommonClass.MainSetup.SetupID, iid)));
-                int iPopulationDataSetGridID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, string.Format("select GridDefinitionID from IncidenceDataSets where IncidenceDataSetID={1} ", CommonClass.MainSetup.SetupID, iid)));
+  //              int iPopulationDataSetID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, string.Format("select PopulationDataSetID from PopulationDataSets where SetupID={0} and GridDefinitionID= (select GridDefinitionID from IncidenceDataSets where IncidenceDataSetID={1} )", CommonClass.MainSetup.SetupID, iid)));
+  //              int iPopulationDataSetGridID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, string.Format("select GridDefinitionID from IncidenceDataSets where IncidenceDataSetID={1} ", CommonClass.MainSetup.SetupID, iid)));
 
-                BenMAPPopulation benMAPPopulation = new BenMAPPopulation() { DataSetID = iPopulationDataSetID, GridType = new BenMAPGrid() { GridDefinitionID = iPopulationDataSetGridID }, Year = CommonClass.BenMAPPopulation.Year };
-                commandText = string.Format("select  min( Yyear) from t_PopulationDataSetIDYear where PopulationDataSetID={0} ", iPopulationDataSetID); int commonYear = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, System.Data.CommandType.Text, commandText));
-                string populationCommandText = getPopulationComandTextFromCRSelectFunction(crSelectFunction, benMAPPopulation, dicRace, dicEthnicity, dicGender);
-                commandText = "";
-                string strRace = "";
-                if (CommonClass.MainSetup.SetupID == 1) strRace = " and (b.RaceID=6 or b.RaceID=5)";
-                string strbEndAgeOri = " CASE" +
-                       " WHEN (b.EndAge> " + crSelectFunction.EndAge + ") THEN " + crSelectFunction.EndAge + " ELSE b.EndAge END ";
-                string strbStartAgeOri = " CASE" +
-                    " WHEN (b.StartAge< " + crSelectFunction.StartAge + ") THEN " + crSelectFunction.StartAge + " ELSE b.StartAge END ";
-                string straEndAgeOri = " CASE" +
-                      " WHEN (a.EndAge> " + crSelectFunction.EndAge + ") THEN " + crSelectFunction.EndAge + " ELSE a.EndAge END ";
-                string straStartAgeOri = " CASE" +
-                    " WHEN (a.StartAge< " + crSelectFunction.StartAge + ") THEN " + crSelectFunction.StartAge + " ELSE a.StartAge END ";
-                string strAgeID = string.Format(" select a.startAge,a.EndAge,b.AgeRangeid, " +
-  " CASE" +
-  " WHEN (b.startAge>=a.StartAge and b.EndAge<=a.EndAge) THEN 1" +
-  " WHEN (b.startAge<a.StartAge and b.EndAge<=a.EndAge) THEN  Cast(({3}-{0}+1) as float)/({3}-{2}+1)" + " WHEN (b.startAge<a.StartAge and b.EndAge>a.EndAge) THEN Cast(({1}-{0}+1) as float)/({3}-{2}+1)" +
-  "  WHEN (b.startAge>=a.StartAge and b.EndAge>a.EndAge) THEN Cast(({1}-{2}+1) as float)/({3}-{2}+1)" +
-  " ELSE 1" +
-  " END as weight,b.StartAge as sourceStartAge,b.EndAge as SourceEndAge" +
-  "  from ( select distinct startage,endage from Incidencerates  where IncidenceDataSetID=" + iid + ")a,ageranges b" +
-  " where b.EndAge>=a.StartAge and b.StartAge<=a.EndAge", straStartAgeOri, straEndAgeOri, strbStartAgeOri, strbEndAgeOri);
+  //              BenMAPPopulation benMAPPopulation = new BenMAPPopulation() { DataSetID = iPopulationDataSetID, GridType = new BenMAPGrid() { GridDefinitionID = iPopulationDataSetGridID }, Year = CommonClass.BenMAPPopulation.Year };
+  //              commandText = string.Format("select  min( Yyear) from t_PopulationDataSetIDYear where PopulationDataSetID={0} ", iPopulationDataSetID); int commonYear = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, System.Data.CommandType.Text, commandText));
+  //              string populationCommandText = getPopulationComandTextFromCRSelectFunction(crSelectFunction, benMAPPopulation, dicRace, dicEthnicity, dicGender);
+  //              commandText = "";
+  //              string strRace = "";
+  //              if (CommonClass.MainSetup.SetupID == 1) strRace = " and (b.RaceID=6 or b.RaceID=5)";
+  //              string strbEndAgeOri = " CASE" +
+  //                     " WHEN (b.EndAge> " + crSelectFunction.EndAge + ") THEN " + crSelectFunction.EndAge + " ELSE b.EndAge END ";
+  //              string strbStartAgeOri = " CASE" +
+  //                  " WHEN (b.StartAge< " + crSelectFunction.StartAge + ") THEN " + crSelectFunction.StartAge + " ELSE b.StartAge END ";
+  //              string straEndAgeOri = " CASE" +
+  //                    " WHEN (a.EndAge> " + crSelectFunction.EndAge + ") THEN " + crSelectFunction.EndAge + " ELSE a.EndAge END ";
+  //              string straStartAgeOri = " CASE" +
+  //                  " WHEN (a.StartAge< " + crSelectFunction.StartAge + ") THEN " + crSelectFunction.StartAge + " ELSE a.StartAge END ";
+  //              string strAgeID = string.Format(" select a.startAge,a.EndAge,b.AgeRangeid, " +
+  //" CASE" +
+  //" WHEN (b.startAge>=a.StartAge and b.EndAge<=a.EndAge) THEN 1" +
+  //" WHEN (b.startAge<a.StartAge and b.EndAge<=a.EndAge) THEN  Cast(({3}-{0}+1) as float)/({3}-{2}+1)" + " WHEN (b.startAge<a.StartAge and b.EndAge>a.EndAge) THEN Cast(({1}-{0}+1) as float)/({3}-{2}+1)" +
+  //"  WHEN (b.startAge>=a.StartAge and b.EndAge>a.EndAge) THEN Cast(({1}-{2}+1) as float)/({3}-{2}+1)" +
+  //" ELSE 1" +
+  //" END as weight,b.StartAge as sourceStartAge,b.EndAge as SourceEndAge" +
+  //"  from ( select distinct startage,endage from Incidencerates  where IncidenceDataSetID=" + iid + ")a,ageranges b" +
+  //" where b.EndAge>=a.StartAge and b.StartAge<=a.EndAge", straStartAgeOri, straEndAgeOri, strbStartAgeOri, strbEndAgeOri);
 
-                string strInc = string.Format("select  a.CColumn,a.Row,sum(a.VValue*d.Weight) as VValue,d.AgeRangeID  from IncidenceEntries a,IncidenceRates b,IncidenceDatasets c ,(" + strAgeID +
-                     ") d where   b.StartAge=d.StartAge and b.EndAge=d.EndAge and " +
-             " a.IncidenceRateID=b.IncidenceRateID and b.IncidenceDatasetID=c.IncidenceDatasetID and b.EndPointGroupID=" + crSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID + strRace + " and (b.EndPointID=" + crSelectFunction.BenMAPHealthImpactFunction.EndPointID + "  or b.EndPointID=99 or b.EndPointID=100 or b.EndPointID=102)" + " and b.Prevalence='" + strbPrevalence + "' " +
-             "  and c.IncidenceDatasetID={0} and b.StartAge<={2} and b.EndAge>={1} group by a.CColumn,a.Row ,d.AgeRangeID", iid, crSelectFunction.StartAge, crSelectFunction.EndAge);
-                DataSet dsInc = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, strInc);
+  //              string strInc = string.Format("select  a.CColumn,a.Row,sum(a.VValue*d.Weight) as VValue,d.AgeRangeID  from IncidenceEntries a,IncidenceRates b,IncidenceDatasets c ,(" + strAgeID +
+  //                   ") d where   b.StartAge=d.StartAge and b.EndAge=d.EndAge and " +
+  //           " a.IncidenceRateID=b.IncidenceRateID and b.IncidenceDatasetID=c.IncidenceDatasetID and b.EndPointGroupID=" + crSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID + strRace + " and (b.EndPointID=" + crSelectFunction.BenMAPHealthImpactFunction.EndPointID + "  or b.EndPointID=99 or b.EndPointID=100 or b.EndPointID=102)" + " and b.Prevalence='" + strbPrevalence + "' " +
+  //           "  and c.IncidenceDatasetID={0} and b.StartAge<={2} and b.EndAge>={1} group by a.CColumn,a.Row ,d.AgeRangeID", iid, crSelectFunction.StartAge, crSelectFunction.EndAge);
+  //              DataSet dsInc = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, strInc);
 
-                Dictionary<string, double> dicInc = new Dictionary<string, double>();
-                foreach (DataRow dr in dsInc.Tables[0].Rows)
-                {
-                    if (!dicInc.ContainsKey((Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])).ToString() + "," + dr["AgeRangeID"]))
-                    {
-                        dicInc.Add((Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])).ToString() + "," + dr["AgeRangeID"].ToString(), Convert.ToDouble(dr["VValue"]));
-                    }
-                }
-                dsInc.Dispose();
-                if (iPopulationDataSetGridID == CommonClass.GBenMAPGrid.GridDefinitionID) return dicInc;
-                Dictionary<string, Dictionary<string, double>> dicPercentageForAggregationInc = new Dictionary<string, Dictionary<string, double>>();
-                try
-                {
+  //              Dictionary<string, double> dicInc = new Dictionary<string, double>();
+  //              foreach (DataRow dr in dsInc.Tables[0].Rows)
+  //              {
+  //                  if (!dicInc.ContainsKey((Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])).ToString() + "," + dr["AgeRangeID"]))
+  //                  {
+  //                      dicInc.Add((Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])).ToString() + "," + dr["AgeRangeID"].ToString(), Convert.ToDouble(dr["VValue"]));
+  //                  }
+  //              }
+  //              dsInc.Dispose();
+  //              if (iPopulationDataSetGridID == CommonClass.GBenMAPGrid.GridDefinitionID) return dicInc;
+  //              Dictionary<string, Dictionary<string, double>> dicPercentageForAggregationInc = new Dictionary<string, Dictionary<string, double>>();
+  //              try
+  //              {
 
-                    string str = "select sourcecolumn, sourcerow, targetcolumn, targetrow, percentage, normalizationstate from griddefinitionpercentageentries where percentageid=( select percentageid from  griddefinitionpercentages where sourcegriddefinitionid =" + (CommonClass.GBenMAPGrid.GridDefinitionID == 28 ? 27 : CommonClass.GBenMAPGrid.GridDefinitionID) + " and  targetgriddefinitionid = " + iPopulationDataSetGridID + " ) and normalizationstate in (0,1)";
+  //                  string str = "select sourcecolumn, sourcerow, targetcolumn, targetrow, percentage, normalizationstate from griddefinitionpercentageentries where percentageid=( select percentageid from  griddefinitionpercentages where sourcegriddefinitionid =" + (CommonClass.GBenMAPGrid.GridDefinitionID == 28 ? 27 : CommonClass.GBenMAPGrid.GridDefinitionID) + " and  targetgriddefinitionid = " + iPopulationDataSetGridID + " ) and normalizationstate in (0,1)";
 
-                    DataSet dsPercentage = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, str);
-                    if (dsPercentage.Tables[0].Rows.Count == 0)
-                    {
-                        creatPercentageToDatabase(iPopulationDataSetGridID, CommonClass.GBenMAPGrid.GridDefinitionID, null);
-                        int iPercentageID = Convert.ToInt16(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, "select percentageid from  griddefinitionpercentages where sourcegriddefinitionid =" + CommonClass.GBenMAPGrid.GridDefinitionID + " and  targetgriddefinitionid = " + iPopulationDataSetGridID));
-                        str = "select sourcecolumn, sourcerow, targetcolumn, targetrow, percentage, normalizationstate from griddefinitionpercentageentries where percentageid=( select percentageid from  griddefinitionpercentages where sourcegriddefinitionid =" + (CommonClass.GBenMAPGrid.GridDefinitionID == 28 ? 27 : CommonClass.GBenMAPGrid.GridDefinitionID) + " and  targetgriddefinitionid = " + iPopulationDataSetGridID + " ) and normalizationstate in (0,1)";
-                        dsPercentage = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, str);
-                    }
-                    foreach (DataRow dr in dsPercentage.Tables[0].Rows)
-                    {
-                        if (dicPercentageForAggregationInc.ContainsKey(dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString()))
-                        {
-                            if (!dicPercentageForAggregationInc[dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString()].ContainsKey(dr["targetcolumn"].ToString() + "," + dr["targetrow"].ToString()))
-                                dicPercentageForAggregationInc[dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString()].Add(dr["targetcolumn"].ToString() + "," + dr["targetrow"].ToString(), Convert.ToDouble(dr["Percentage"]));
-                        }
-                        else
-                        {
-                            dicPercentageForAggregationInc.Add(dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString(), new Dictionary<string, double>());
-                            dicPercentageForAggregationInc[dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString()].Add(dr["targetcolumn"].ToString() + "," + dr["targetrow"].ToString(), Convert.ToDouble(dr["Percentage"]));
-                        }
+  //                  DataSet dsPercentage = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, str);
+  //                  if (dsPercentage.Tables[0].Rows.Count == 0)
+  //                  {
+  //                      creatPercentageToDatabase(iPopulationDataSetGridID, CommonClass.GBenMAPGrid.GridDefinitionID, null);
+  //                      int iPercentageID = Convert.ToInt16(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, "select percentageid from  griddefinitionpercentages where sourcegriddefinitionid =" + CommonClass.GBenMAPGrid.GridDefinitionID + " and  targetgriddefinitionid = " + iPopulationDataSetGridID));
+  //                      str = "select sourcecolumn, sourcerow, targetcolumn, targetrow, percentage, normalizationstate from griddefinitionpercentageentries where percentageid=( select percentageid from  griddefinitionpercentages where sourcegriddefinitionid =" + (CommonClass.GBenMAPGrid.GridDefinitionID == 28 ? 27 : CommonClass.GBenMAPGrid.GridDefinitionID) + " and  targetgriddefinitionid = " + iPopulationDataSetGridID + " ) and normalizationstate in (0,1)";
+  //                      dsPercentage = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, str);
+  //                  }
+  //                  foreach (DataRow dr in dsPercentage.Tables[0].Rows)
+  //                  {
+  //                      if (dicPercentageForAggregationInc.ContainsKey(dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString()))
+  //                      {
+  //                          if (!dicPercentageForAggregationInc[dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString()].ContainsKey(dr["targetcolumn"].ToString() + "," + dr["targetrow"].ToString()))
+  //                              dicPercentageForAggregationInc[dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString()].Add(dr["targetcolumn"].ToString() + "," + dr["targetrow"].ToString(), Convert.ToDouble(dr["Percentage"]));
+  //                      }
+  //                      else
+  //                      {
+  //                          dicPercentageForAggregationInc.Add(dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString(), new Dictionary<string, double>());
+  //                          dicPercentageForAggregationInc[dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString()].Add(dr["targetcolumn"].ToString() + "," + dr["targetrow"].ToString(), Convert.ToDouble(dr["Percentage"]));
+  //                      }
 
-                    }
+  //                  }
 
-                    Dictionary<string, double> dicReturn = new Dictionary<string, double>();
-                    foreach (KeyValuePair<string, float> k in dicPopulationAge)
-                    {
-                        string[] s = k.Key.Split(new char[] { ',' });
-                        if (dicPercentageForAggregationInc.ContainsKey(s[0] + "," + s[1]))
-                        {
-                            foreach (KeyValuePair<string, double> kin in dicPercentageForAggregationInc[s[0] + "," + s[1]])
-                            {
-                                string[] sin = kin.Key.Split(new char[] { ',' });
-                                double dsin = Convert.ToInt32(sin[0]) * 10000 + Convert.ToInt32(sin[1]);
-                                if (!dicInc.ContainsKey(dsin + "," + s[2])) continue;
-                                if (dicReturn.ContainsKey((Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])).ToString() + "," + s[2]))
-                                    dicReturn[(Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])).ToString() + "," + s[2]] += dicInc[dsin + "," + s[2]] * kin.Value;
-                                else
-                                    dicReturn.Add((Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])).ToString() + "," + s[2], dicInc[dsin + "," + s[2]] * kin.Value);
-                            }
-                        }
+  //                  Dictionary<string, double> dicReturn = new Dictionary<string, double>();
+  //                  foreach (KeyValuePair<string, float> k in dicPopulationAge)
+  //                  {
+  //                      string[] s = k.Key.Split(new char[] { ',' });
+  //                      if (dicPercentageForAggregationInc.ContainsKey(s[0] + "," + s[1]))
+  //                      {
+  //                          foreach (KeyValuePair<string, double> kin in dicPercentageForAggregationInc[s[0] + "," + s[1]])
+  //                          {
+  //                              string[] sin = kin.Key.Split(new char[] { ',' });
+  //                              double dsin = Convert.ToInt32(sin[0]) * 10000 + Convert.ToInt32(sin[1]);
+  //                              if (!dicInc.ContainsKey(dsin + "," + s[2])) continue;
+  //                              if (dicReturn.ContainsKey((Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])).ToString() + "," + s[2]))
+  //                                  dicReturn[(Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])).ToString() + "," + s[2]] += dicInc[dsin + "," + s[2]] * kin.Value;
+  //                              else
+  //                                  dicReturn.Add((Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])).ToString() + "," + s[2], dicInc[dsin + "," + s[2]] * kin.Value);
+  //                          }
+  //                      }
 
-                    }
-                    return dicReturn;
+  //                  }
+  //                  return dicReturn;
 
-                }
-                catch (Exception ex)
-                {
-                    return null;
-                }
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
+  //              }
+  //              catch (Exception ex)
+  //              {
+  //                  return null;
+  //              }
+  //          }
+  //          catch (Exception ex)
+  //          {
+  //              return null;
+  //          }
 
-        }
+  //      }
 
-        public static List<IncidenceRateAttribute> getIncidenceDataSetFromCRSelectFuntion(CRSelectFunction crSelectFunction, bool bPrevalence, Dictionary<string, int> dicRace, Dictionary<string, int> dicEthnicity, Dictionary<string, int> dicGender, int GridDefinitionID, GridRelationship gridRelationShipPopulation)
-        {
-            try
-            {
+        // DEADCODE
+ //       public static List<IncidenceRateAttribute> getIncidenceDataSetFromCRSelectFuntion(CRSelectFunction crSelectFunction, bool bPrevalence, Dictionary<string, int> dicRace, Dictionary<string, int> dicEthnicity, Dictionary<string, int> dicGender, int GridDefinitionID, GridRelationship gridRelationShipPopulation)
+ //       {
+ //           try
+ //           {
 
-                List<IncidenceRateAttribute> lstIncidenceRateAttribute = new List<IncidenceRateAttribute>();
-                ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
-                DataSet dsIncidence = null;
-                DataSet dsPrevalence = null;
-                string strbPrevalence = "F";
-                int iid = crSelectFunction.IncidenceDataSetID;
-                if (bPrevalence)
-                {
-                    strbPrevalence = "T";
-                    iid = crSelectFunction.PrevalenceDataSetID;
-                }
+ //               List<IncidenceRateAttribute> lstIncidenceRateAttribute = new List<IncidenceRateAttribute>();
+ //               ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+ //               DataSet dsIncidence = null;
+ //               DataSet dsPrevalence = null;
+ //               string strbPrevalence = "F";
+ //               int iid = crSelectFunction.IncidenceDataSetID;
+ //               if (bPrevalence)
+ //               {
+ //                   strbPrevalence = "T";
+ //                   iid = crSelectFunction.PrevalenceDataSetID;
+ //               }
 
-                string commandText = string.Format("select distinct a.IncidenceRateID,a.CColumn,a.Row,a.VValue,b.StartAge,b.EndAge,b.RaceID,b.EthnicityID,b.GenderID from IncidenceEntries a,IncidenceRates b,IncidenceDatasets c where" +
-      " a.IncidenceRateID=b.IncidenceRateID and b.IncidenceDatasetID=c.IncidenceDatasetID and b.EndPointGroupID=" + crSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID + " and (b.EndPointID=" + crSelectFunction.BenMAPHealthImpactFunction.EndPointID + "  or b.EndPointID=99 or b.EndPointID=100) and b.Prevalence='" + strbPrevalence + "' " +
-      " and c.IncidenceDatasetID={0} ", iid); if (crSelectFunction.StartAge != -1)
-                {
-                    commandText = string.Format(commandText + " and b.EndAge>={0} ", crSelectFunction.StartAge);
-                }
-                if (crSelectFunction.EndAge != -1)
-                {
-                    commandText = string.Format(commandText + " and b.StartAge<={0} ", crSelectFunction.EndAge);
-                }
-                if (!string.IsNullOrEmpty(crSelectFunction.Race))
-                {
-                    if (dicRace[crSelectFunction.Race] != null)
-                    {
-                        commandText = string.Format(commandText + " and (b.RaceID={0} or b.RaceID=6)", dicRace[crSelectFunction.Race]);
-                    }
-                }
-                if (!string.IsNullOrEmpty(crSelectFunction.Ethnicity))
-                {
-                    if (dicEthnicity[crSelectFunction.Ethnicity] != null)
-                    {
-                        commandText = string.Format(commandText + " and (b.EthnicityID={0} or b.EthnicityID=4)", dicEthnicity[crSelectFunction.Ethnicity]);
+ //               string commandText = string.Format("select distinct a.IncidenceRateID,a.CColumn,a.Row,a.VValue,b.StartAge,b.EndAge,b.RaceID,b.EthnicityID,b.GenderID from IncidenceEntries a,IncidenceRates b,IncidenceDatasets c where" +
+ //     " a.IncidenceRateID=b.IncidenceRateID and b.IncidenceDatasetID=c.IncidenceDatasetID and b.EndPointGroupID=" + crSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID + " and (b.EndPointID=" + crSelectFunction.BenMAPHealthImpactFunction.EndPointID + "  or b.EndPointID=99 or b.EndPointID=100) and b.Prevalence='" + strbPrevalence + "' " +
+ //     " and c.IncidenceDatasetID={0} ", iid); if (crSelectFunction.StartAge != -1)
+ //               {
+ //                   commandText = string.Format(commandText + " and b.EndAge>={0} ", crSelectFunction.StartAge);
+ //               }
+ //               if (crSelectFunction.EndAge != -1)
+ //               {
+ //                   commandText = string.Format(commandText + " and b.StartAge<={0} ", crSelectFunction.EndAge);
+ //               }
+ //               if (!string.IsNullOrEmpty(crSelectFunction.Race))
+ //               {
+ //                   if (dicRace[crSelectFunction.Race] != null)
+ //                   {
+ //                       commandText = string.Format(commandText + " and (b.RaceID={0} or b.RaceID=6)", dicRace[crSelectFunction.Race]);
+ //                   }
+ //               }
+ //               if (!string.IsNullOrEmpty(crSelectFunction.Ethnicity))
+ //               {
+ //                   if (dicEthnicity[crSelectFunction.Ethnicity] != null)
+ //                   {
+ //                       commandText = string.Format(commandText + " and (b.EthnicityID={0} or b.EthnicityID=4)", dicEthnicity[crSelectFunction.Ethnicity]);
 
-                    }
-                }
-                if (!string.IsNullOrEmpty(crSelectFunction.Gender))
-                {
-                    if (dicGender[crSelectFunction.Gender] != null)
-                    {
-                        commandText = string.Format(commandText + " and (b.GenderID={0} or b.GenderID=4)", dicGender[crSelectFunction.Gender]);
-                    }
-                }
-                commandText = "select a.CColumn,a.Row,sum(a.VValue) as VValue from ( " + commandText + " ) a group by a.CColumn,a.Row";
-                dsIncidence = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
-                foreach (DataRow dr in dsIncidence.Tables[0].Rows)
-                {
-                    lstIncidenceRateAttribute.Add(new IncidenceRateAttribute()
- {
-     Col = Convert.ToInt32(dr["CColumn"]),
-     Row = Convert.ToInt32(dr["Row"]),
-     Value = Convert.ToSingle(dr["VValue"])
- });
+ //                   }
+ //               }
+ //               if (!string.IsNullOrEmpty(crSelectFunction.Gender))
+ //               {
+ //                   if (dicGender[crSelectFunction.Gender] != null)
+ //                   {
+ //                       commandText = string.Format(commandText + " and (b.GenderID={0} or b.GenderID=4)", dicGender[crSelectFunction.Gender]);
+ //                   }
+ //               }
+ //               commandText = "select a.CColumn,a.Row,sum(a.VValue) as VValue from ( " + commandText + " ) a group by a.CColumn,a.Row";
+ //               dsIncidence = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
+ //               foreach (DataRow dr in dsIncidence.Tables[0].Rows)
+ //               {
+ //                   lstIncidenceRateAttribute.Add(new IncidenceRateAttribute()
+ //{
+ //    Col = Convert.ToInt32(dr["CColumn"]),
+ //    Row = Convert.ToInt32(dr["Row"]),
+ //    Value = Convert.ToSingle(dr["VValue"])
+ //});
 
-                }
+ //               }
 
-                if (!bPrevalence)
-                    commandText = string.Format("select GriddefinitionID from IncidenceDatasets where IncidenceDatasetID={0}", crSelectFunction.IncidenceDataSetID);
-                else
-                    commandText = string.Format("select GriddefinitionID from IncidenceDatasets where IncidenceDatasetID={0}", crSelectFunction.PrevalenceDataSetID);
-                int incidenceDataSetGridType = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
-                List<IncidenceRateAttribute> lstResult = new List<IncidenceRateAttribute>();
-                float IncidenceValue = 0;
-                if (incidenceDataSetGridType == GridDefinitionID)
-                {
-                    lstResult = lstIncidenceRateAttribute;
-                }
-                else
-                {
-                    if (incidenceDataSetGridType == gridRelationShipPopulation.bigGridID)
-                    {
-                        foreach (GridRelationshipAttribute gra in gridRelationShipPopulation.lstGridRelationshipAttribute)
-                        {
-                            var queryPopulation = from a in lstIncidenceRateAttribute where gra.bigGridRowCol.Col == a.Col && gra.bigGridRowCol.Row == a.Row select new { Values = lstIncidenceRateAttribute.Average(c => c.Value) };
+ //               if (!bPrevalence)
+ //                   commandText = string.Format("select GriddefinitionID from IncidenceDatasets where IncidenceDatasetID={0}", crSelectFunction.IncidenceDataSetID);
+ //               else
+ //                   commandText = string.Format("select GriddefinitionID from IncidenceDatasets where IncidenceDatasetID={0}", crSelectFunction.PrevalenceDataSetID);
+ //               int incidenceDataSetGridType = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
+ //               List<IncidenceRateAttribute> lstResult = new List<IncidenceRateAttribute>();
+ //               float IncidenceValue = 0;
+ //               if (incidenceDataSetGridType == GridDefinitionID)
+ //               {
+ //                   lstResult = lstIncidenceRateAttribute;
+ //               }
+ //               else
+ //               {
+ //                   if (incidenceDataSetGridType == gridRelationShipPopulation.bigGridID)
+ //                   {
+ //                       foreach (GridRelationshipAttribute gra in gridRelationShipPopulation.lstGridRelationshipAttribute)
+ //                       {
+ //                           var queryPopulation = from a in lstIncidenceRateAttribute where gra.bigGridRowCol.Col == a.Col && gra.bigGridRowCol.Row == a.Row select new { Values = lstIncidenceRateAttribute.Average(c => c.Value) };
 
-                            if (queryPopulation != null && queryPopulation.Count() > 0 && gra.smallGridRowCol.Count > 0)
-                            {
-                                IncidenceValue = queryPopulation.First().Values;
-                                foreach (RowCol rc in gra.smallGridRowCol)
-                                {
-                                    lstResult.Add(new IncidenceRateAttribute()
-                                    {
-                                        Col = rc.Col,
-                                        Row = rc.Row,
-                                        Value = IncidenceValue
-                                    });
-                                }
-                            }
+ //                           if (queryPopulation != null && queryPopulation.Count() > 0 && gra.smallGridRowCol.Count > 0)
+ //                           {
+ //                               IncidenceValue = queryPopulation.First().Values;
+ //                               foreach (RowCol rc in gra.smallGridRowCol)
+ //                               {
+ //                                   lstResult.Add(new IncidenceRateAttribute()
+ //                                   {
+ //                                       Col = rc.Col,
+ //                                       Row = rc.Row,
+ //                                       Value = IncidenceValue
+ //                                   });
+ //                               }
+ //                           }
 
-                        }
-                    }
-                    else
-                    {
-                        foreach (GridRelationshipAttribute gra in gridRelationShipPopulation.lstGridRelationshipAttribute)
-                        {
-                            var queryPopulation = from a in lstIncidenceRateAttribute where gra.smallGridRowCol.Contains(new RowCol() { Row = a.Row, Col = a.Col }, new RowColComparer()) select new { Values = lstIncidenceRateAttribute.Average(c => c.Value) };
+ //                       }
+ //                   }
+ //                   else
+ //                   {
+ //                       foreach (GridRelationshipAttribute gra in gridRelationShipPopulation.lstGridRelationshipAttribute)
+ //                       {
+ //                           var queryPopulation = from a in lstIncidenceRateAttribute where gra.smallGridRowCol.Contains(new RowCol() { Row = a.Row, Col = a.Col }, new RowColComparer()) select new { Values = lstIncidenceRateAttribute.Average(c => c.Value) };
 
-                            if (queryPopulation != null && queryPopulation.Count() > 0)
-                            {
-                                IncidenceValue = queryPopulation.First().Values;
-                                lstResult.Add(new IncidenceRateAttribute()
-                                {
-                                    Col = gra.bigGridRowCol.Col,
-                                    Row = gra.bigGridRowCol.Row,
-                                    Value = IncidenceValue
-                                });
-                            }
+ //                           if (queryPopulation != null && queryPopulation.Count() > 0)
+ //                           {
+ //                               IncidenceValue = queryPopulation.First().Values;
+ //                               lstResult.Add(new IncidenceRateAttribute()
+ //                               {
+ //                                   Col = gra.bigGridRowCol.Col,
+ //                                   Row = gra.bigGridRowCol.Row,
+ //                                   Value = IncidenceValue
+ //                               });
+ //                           }
 
 
-                        }
-                    }
+ //                       }
+ //                   }
 
-                }
-                return lstResult;
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
+ //               }
+ //               return lstResult;
+ //           }
+ //           catch (Exception ex)
+ //           {
+ //               return null;
+ //           }
 
-        }
-        public static List<IncidenceRateAttribute> getIncidenceDataSetFromCRSelectFuntion(CRSelectFunction crSelectFunction, bool bPrevalence, Dictionary<string, int> dicRace, Dictionary<string, int> dicEthnicity, Dictionary<string, int> dicGender)
-        {
-            try
-            {
-                List<IncidenceRateAttribute> lstIncidenceRateAttribute = new List<IncidenceRateAttribute>();
-                ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
-                DataSet dsIncidence = null;
-                DataSet dsPrevalence = null;
-                string strbPrevalence = "F";
-                if (bPrevalence) strbPrevalence = "T";
-                string commandText = string.Format("select distinct a.IncidenceRateID,a.CColumn,a.Row,a.VValue,b.StartAge,b.EndAge,b.RaceID,b.EthnicityID,b.GenderID from IncidenceEntries a,IncidenceRates b,IncidenceDatasets c where" +
-      " a.IncidenceRateID=b.IncidenceRateID and b.IncidenceDatasetID=c.IncidenceDatasetID and b.EndPointGroupID=" + crSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID + " and (b.EndPointID=" + crSelectFunction.BenMAPHealthImpactFunction.EndPointID + "  or b.EndPointID=99 or b.EndPointID=100) and b.Prevalence='" + strbPrevalence + "' " +
-      " and c.IncidenceDatasetID={0} ", crSelectFunction.IncidenceDataSetID); if (crSelectFunction.StartAge != -1)
-                {
-                    commandText = string.Format(commandText + " and b.EndAge>={0} ", crSelectFunction.StartAge);
-                }
-                if (crSelectFunction.EndAge != -1)
-                {
-                    commandText = string.Format(commandText + " and b.StartAge<={0} ", crSelectFunction.EndAge);
-                }
-                if (!string.IsNullOrEmpty(crSelectFunction.Race))
-                {
-                    if (dicRace[crSelectFunction.Race] != null)
-                    {
-                        commandText = string.Format(commandText + " and (b.RaceID={0} or b.RaceID=6)", dicRace[crSelectFunction.Race]);
-                    }
-                }
-                if (!string.IsNullOrEmpty(crSelectFunction.Ethnicity))
-                {
-                    if (dicEthnicity[crSelectFunction.Ethnicity] != null)
-                    {
-                        commandText = string.Format(commandText + " and (b.EthnicityID={0} or b.EthnicityID=4)", dicEthnicity[crSelectFunction.Ethnicity]);
+ //       }
+        // DEADCODE
+ //       public static List<IncidenceRateAttribute> getIncidenceDataSetFromCRSelectFuntion(CRSelectFunction crSelectFunction, bool bPrevalence, Dictionary<string, int> dicRace, Dictionary<string, int> dicEthnicity, Dictionary<string, int> dicGender)
+ //       {
+ //           try
+ //           {
+ //               List<IncidenceRateAttribute> lstIncidenceRateAttribute = new List<IncidenceRateAttribute>();
+ //               ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+ //               DataSet dsIncidence = null;
+ //               DataSet dsPrevalence = null;
+ //               string strbPrevalence = "F";
+ //               if (bPrevalence) strbPrevalence = "T";
+ //               string commandText = string.Format("select distinct a.IncidenceRateID,a.CColumn,a.Row,a.VValue,b.StartAge,b.EndAge,b.RaceID,b.EthnicityID,b.GenderID from IncidenceEntries a,IncidenceRates b,IncidenceDatasets c where" +
+ //     " a.IncidenceRateID=b.IncidenceRateID and b.IncidenceDatasetID=c.IncidenceDatasetID and b.EndPointGroupID=" + crSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID + " and (b.EndPointID=" + crSelectFunction.BenMAPHealthImpactFunction.EndPointID + "  or b.EndPointID=99 or b.EndPointID=100) and b.Prevalence='" + strbPrevalence + "' " +
+ //     " and c.IncidenceDatasetID={0} ", crSelectFunction.IncidenceDataSetID); if (crSelectFunction.StartAge != -1)
+ //               {
+ //                   commandText = string.Format(commandText + " and b.EndAge>={0} ", crSelectFunction.StartAge);
+ //               }
+ //               if (crSelectFunction.EndAge != -1)
+ //               {
+ //                   commandText = string.Format(commandText + " and b.StartAge<={0} ", crSelectFunction.EndAge);
+ //               }
+ //               if (!string.IsNullOrEmpty(crSelectFunction.Race))
+ //               {
+ //                   if (dicRace[crSelectFunction.Race] != null)
+ //                   {
+ //                       commandText = string.Format(commandText + " and (b.RaceID={0} or b.RaceID=6)", dicRace[crSelectFunction.Race]);
+ //                   }
+ //               }
+ //               if (!string.IsNullOrEmpty(crSelectFunction.Ethnicity))
+ //               {
+ //                   if (dicEthnicity[crSelectFunction.Ethnicity] != null)
+ //                   {
+ //                       commandText = string.Format(commandText + " and (b.EthnicityID={0} or b.EthnicityID=4)", dicEthnicity[crSelectFunction.Ethnicity]);
 
-                    }
-                }
-                if (!string.IsNullOrEmpty(crSelectFunction.Gender))
-                {
-                    if (dicGender[crSelectFunction.Gender] != null)
-                    {
-                        commandText = string.Format(commandText + " and (b.GenderID={0} or b.GenderID=4)", dicGender[crSelectFunction.Gender]);
-                    }
-                }
-                commandText = "select a.CColumn,a.Row,sum(a.VValue) as VValue from ( " + commandText + " ) a group by a.CColumn,a.Row";
-                dsIncidence = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
-                foreach (DataRow dr in dsIncidence.Tables[0].Rows)
-                {
-                    lstIncidenceRateAttribute.Add(new IncidenceRateAttribute()
- {
-     Col = Convert.ToInt32(dr["CColumn"]),
-     Row = Convert.ToInt32(dr["Row"]),
-     Value = Convert.ToSingle(dr["VValue"])
- });
+ //                   }
+ //               }
+ //               if (!string.IsNullOrEmpty(crSelectFunction.Gender))
+ //               {
+ //                   if (dicGender[crSelectFunction.Gender] != null)
+ //                   {
+ //                       commandText = string.Format(commandText + " and (b.GenderID={0} or b.GenderID=4)", dicGender[crSelectFunction.Gender]);
+ //                   }
+ //               }
+ //               commandText = "select a.CColumn,a.Row,sum(a.VValue) as VValue from ( " + commandText + " ) a group by a.CColumn,a.Row";
+ //               dsIncidence = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
+ //               foreach (DataRow dr in dsIncidence.Tables[0].Rows)
+ //               {
+ //                   lstIncidenceRateAttribute.Add(new IncidenceRateAttribute()
+ //{
+ //    Col = Convert.ToInt32(dr["CColumn"]),
+ //    Row = Convert.ToInt32(dr["Row"]),
+ //    Value = Convert.ToSingle(dr["VValue"])
+ //});
 
-                }
-                return lstIncidenceRateAttribute;
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
+ //               }
+ //               return lstIncidenceRateAttribute;
+ //           }
+ //           catch (Exception ex)
+ //           {
+ //               return null;
+ //           }
 
-        }
-        public static List<RegionTypeGrid> InitRegionTypeGrid(BenMAPGrid benMAPGrid)
-        {
-            return null;
-        }
+ //       }
+        // DEADCODE
+        //public static List<RegionTypeGrid> InitRegionTypeGrid(BenMAPGrid benMAPGrid)
+        //{
+        //    return null;
+        //}
         public static List<string> getAllSystemVariableNameList()
         {
             try
@@ -4109,59 +4128,32 @@ namespace BenMAP.Configuration
             }
 
         }
-        public static BenMAPPopulation getBenMapPopulationFromDataSetIDAndYear(int DataSetID, int Year)
-        {
-            try
-            {
-                BenMAPPopulation benMAPPopulation = new BenMAPPopulation() { DataSetID = DataSetID, Year = Year };
-                string commandText = string.Format("select PopulationDatasetID,SetupID,PopulationDatasetName,PopulationConfigurationID,GridDefinitionID from   PopulationDatasets where PopulationDatasetID={0}", DataSetID);
+        // DEADCODE
+        //public static BenMAPPopulation getBenMapPopulationFromDataSetIDAndYear(int DataSetID, int Year)
+        //{
+        //    try
+        //    {
+        //        BenMAPPopulation benMAPPopulation = new BenMAPPopulation() { DataSetID = DataSetID, Year = Year };
+        //        string commandText = string.Format("select PopulationDatasetID,SetupID,PopulationDatasetName,PopulationConfigurationID,GridDefinitionID from   PopulationDatasets where PopulationDatasetID={0}", DataSetID);
 
 
 
-                ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
-                DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
-                DataRow dr = ds.Tables[0].Rows[0];
-                benMAPPopulation.GridType = Grid.GridCommon.getBenMAPGridFromID(Convert.ToInt32(dr["GridDefinitionID"]));
-                benMAPPopulation.PopulationConfiguration = Convert.ToInt32(dr["PopulationConfigurationID"]);
-                benMAPPopulation.DataSetName = dr["PopulationDatasetName"].ToString();
+        //        ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+        //        DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
+        //        DataRow dr = ds.Tables[0].Rows[0];
+        //        benMAPPopulation.GridType = Grid.GridCommon.getBenMAPGridFromID(Convert.ToInt32(dr["GridDefinitionID"]));
+        //        benMAPPopulation.PopulationConfiguration = Convert.ToInt32(dr["PopulationConfigurationID"]);
+        //        benMAPPopulation.DataSetName = dr["PopulationDatasetName"].ToString();
 
 
-                ds.Dispose();
-                return benMAPPopulation;
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
-        }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        //        ds.Dispose();
+        //        return benMAPPopulation;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return null;
+        //    }
+        //}
 
 
         private static List<string> lstSystemVariableName;
@@ -4176,22 +4168,23 @@ namespace BenMAP.Configuration
                 return lstSystemVariableName;
             }
         }
-        public static Dictionary<string, float> getMetricValueFromDic(List<MetricValueAttributes> lstMetricValueAttributes)
-        {
-            try
-            {
-                Dictionary<string, float> dicReturn = new Dictionary<string, float>();
-                foreach (MetricValueAttributes mv in lstMetricValueAttributes)
-                {
-                    dicReturn.Add(mv.MetricName, mv.MetricValue);
-                }
-                return dicReturn;
-            }
-            catch
-            {
-                return new Dictionary<string, float>();
-            }
-        }
+        // DEADCODE 
+        //public static Dictionary<string, float> getMetricValueFromDic(List<MetricValueAttributes> lstMetricValueAttributes)
+        //{
+        //    try
+        //    {
+        //        Dictionary<string, float> dicReturn = new Dictionary<string, float>();
+        //        foreach (MetricValueAttributes mv in lstMetricValueAttributes)
+        //        {
+        //            dicReturn.Add(mv.MetricName, mv.MetricValue);
+        //        }
+        //        return dicReturn;
+        //    }
+        //    catch
+        //    {
+        //        return new Dictionary<string, float>();
+        //    }
+        //}
         public static Dictionary<string, Dictionary<string, float>> getAllMetricDataFromBaseControlGroup(BaseControlGroup baseControlGroup, bool isBase, ref Dictionary<string, Dictionary<string, List<float>>> dicAll365)
         {
             Dictionary<string, Dictionary<string, float>> dicReturn = new Dictionary<string, Dictionary<string, float>>();
@@ -5377,90 +5370,90 @@ namespace BenMAP.Configuration
         {
 
         }
+        // DEADCODE 
+        //public static Dictionary<string, double> getDicSetupVariableColRow(int Col, int Row, List<SetupVariableJoinAllValues> lstVariableJoin, int GridDefinitionID, List<GridRelationship> lstGridRelationship)
+        //{
+        //    try
+        //    {
+        //        Dictionary<string, double> dicResult = new Dictionary<string, double>();
+        //        foreach (SetupVariableJoinAllValues setupVariableJoinAllValue in lstVariableJoin)
+        //        {
+        //            if (setupVariableJoinAllValue.SetupVariableGridType == GridDefinitionID)
+        //            {
+        //                var queryVariable = from a in setupVariableJoinAllValue.lstValues where a.Col == Col && a.Row == Row select a;
+        //                double values = 0;
+        //                foreach (SetupVariableValues iRateAttributes in queryVariable)
+        //                {
+        //                    values += iRateAttributes.Value;
 
-        public static Dictionary<string, double> getDicSetupVariableColRow(int Col, int Row, List<SetupVariableJoinAllValues> lstVariableJoin, int GridDefinitionID, List<GridRelationship> lstGridRelationship)
-        {
-            try
-            {
-                Dictionary<string, double> dicResult = new Dictionary<string, double>();
-                foreach (SetupVariableJoinAllValues setupVariableJoinAllValue in lstVariableJoin)
-                {
-                    if (setupVariableJoinAllValue.SetupVariableGridType == GridDefinitionID)
-                    {
-                        var queryVariable = from a in setupVariableJoinAllValue.lstValues where a.Col == Col && a.Row == Row select a;
-                        double values = 0;
-                        foreach (SetupVariableValues iRateAttributes in queryVariable)
-                        {
-                            values += iRateAttributes.Value;
+        //                }
+        //                if (queryVariable.Count() > 0) values = values / Convert.ToDouble(queryVariable.Count());
+        //                dicResult.Add(setupVariableJoinAllValue.SetupVariableName, values);
+        //            }
+        //            else
+        //            {
+        //                RowCol rowCol = new RowCol() { Col = Col, Row = Row };
+        //                List<RowCol> lstRowCol;
+        //                GridRelationship gridRelationShipVariable = new GridRelationship();
+        //                foreach (GridRelationship gRelationship in lstGridRelationship)
+        //                {
+        //                    if (gRelationship.bigGridID == setupVariableJoinAllValue.SetupVariableGridType || gRelationship.smallGridID == setupVariableJoinAllValue.SetupVariableGridType)
+        //                    {
+        //                        gridRelationShipVariable = gRelationship;
+        //                    }
+        //                }
+        //                if (setupVariableJoinAllValue.SetupVariableGridType == gridRelationShipVariable.bigGridID)
+        //                {
 
-                        }
-                        if (queryVariable.Count() > 0) values = values / Convert.ToDouble(queryVariable.Count());
-                        dicResult.Add(setupVariableJoinAllValue.SetupVariableName, values);
-                    }
-                    else
-                    {
-                        RowCol rowCol = new RowCol() { Col = Col, Row = Row };
-                        List<RowCol> lstRowCol;
-                        GridRelationship gridRelationShipVariable = new GridRelationship();
-                        foreach (GridRelationship gRelationship in lstGridRelationship)
-                        {
-                            if (gRelationship.bigGridID == setupVariableJoinAllValue.SetupVariableGridType || gRelationship.smallGridID == setupVariableJoinAllValue.SetupVariableGridType)
-                            {
-                                gridRelationShipVariable = gRelationship;
-                            }
-                        }
-                        if (setupVariableJoinAllValue.SetupVariableGridType == gridRelationShipVariable.bigGridID)
-                        {
+        //                    var queryrowCol = from a in gridRelationShipVariable.lstGridRelationshipAttribute where a.smallGridRowCol.Contains(rowCol, new RowColComparer()) select new RowCol() { Col = a.bigGridRowCol.Col, Row = a.bigGridRowCol.Row };
+        //                    lstRowCol = queryrowCol.ToList();
+        //                    var queryVariable = from a in setupVariableJoinAllValue.lstValues where lstRowCol.Contains(new RowCol() { Col = a.Col, Row = a.Row }, new RowColComparer()) select a;
+        //                    double values = 0;
+        //                    foreach (SetupVariableValues iAttributes in queryVariable)
+        //                    {
+        //                        values += iAttributes.Value;
 
-                            var queryrowCol = from a in gridRelationShipVariable.lstGridRelationshipAttribute where a.smallGridRowCol.Contains(rowCol, new RowColComparer()) select new RowCol() { Col = a.bigGridRowCol.Col, Row = a.bigGridRowCol.Row };
-                            lstRowCol = queryrowCol.ToList();
-                            var queryVariable = from a in setupVariableJoinAllValue.lstValues where lstRowCol.Contains(new RowCol() { Col = a.Col, Row = a.Row }, new RowColComparer()) select a;
-                            double values = 0;
-                            foreach (SetupVariableValues iAttributes in queryVariable)
-                            {
-                                values += iAttributes.Value;
+        //                    }
+        //                    if (queryVariable.Count() > 0) values = values / Convert.ToDouble(queryVariable.Count());
+        //                    dicResult.Add(setupVariableJoinAllValue.SetupVariableName, values);
 
-                            }
-                            if (queryVariable.Count() > 0) values = values / Convert.ToDouble(queryVariable.Count());
-                            dicResult.Add(setupVariableJoinAllValue.SetupVariableName, values);
+        //                }
+        //                else
+        //                {
+        //                    var queryrowCol = from a in gridRelationShipVariable.lstGridRelationshipAttribute where a.bigGridRowCol.Col == rowCol.Col && a.bigGridRowCol.Row == rowCol.Row select a;
+        //                    if (queryrowCol != null)
+        //                    {
+        //                        lstRowCol = queryrowCol.First().smallGridRowCol;
+        //                        List<SetupVariableValues> lstQueryVariable = new List<SetupVariableValues>();
+        //                        foreach (RowCol rc in lstRowCol)
+        //                        {
+        //                            var queryVariable = from a in setupVariableJoinAllValue.lstValues where a.Col == rc.Col && a.Row == rc.Row select a;
+        //                            IEnumerable<SetupVariableValues> iqueryIncidence = queryVariable.ToList();
+        //                            lstQueryVariable.AddRange(iqueryIncidence);
 
-                        }
-                        else
-                        {
-                            var queryrowCol = from a in gridRelationShipVariable.lstGridRelationshipAttribute where a.bigGridRowCol.Col == rowCol.Col && a.bigGridRowCol.Row == rowCol.Row select a;
-                            if (queryrowCol != null)
-                            {
-                                lstRowCol = queryrowCol.First().smallGridRowCol;
-                                List<SetupVariableValues> lstQueryVariable = new List<SetupVariableValues>();
-                                foreach (RowCol rc in lstRowCol)
-                                {
-                                    var queryVariable = from a in setupVariableJoinAllValue.lstValues where a.Col == rc.Col && a.Row == rc.Row select a;
-                                    IEnumerable<SetupVariableValues> iqueryIncidence = queryVariable.ToList();
-                                    lstQueryVariable.AddRange(iqueryIncidence);
+        //                        }
+        //                        double values = 0;
 
-                                }
-                                double values = 0;
+        //                        foreach (SetupVariableValues iRateAttributes in lstQueryVariable)
+        //                        {
+        //                            values += iRateAttributes.Value;
 
-                                foreach (SetupVariableValues iRateAttributes in lstQueryVariable)
-                                {
-                                    values += iRateAttributes.Value;
+        //                        }
+        //                        if (lstQueryVariable.Count() > 0) values = values / Convert.ToDouble(lstQueryVariable.Count());
+        //                        dicResult.Add(setupVariableJoinAllValue.SetupVariableName, values);
+        //                    }
+        //                }
+        //            }
 
-                                }
-                                if (lstQueryVariable.Count() > 0) values = values / Convert.ToDouble(lstQueryVariable.Count());
-                                dicResult.Add(setupVariableJoinAllValue.SetupVariableName, values);
-                            }
-                        }
-                    }
+        //        }
 
-                }
-
-                return dicResult;
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
-        }
+        //        return dicResult;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return null;
+        //    }
+        //}
 
         public static CRCalculateValue CalculateCRSelectFunctionsOneCel(string iCRID, bool hasPopInstrBaseLineFunction, float i365, CRSelectFunction crSelectFunction, string strBaseLineFunction, string strPointEstimateFunction, int col, int row, double baseValue, double controlValue, Dictionary<string, double> dicPopulationValue, Dictionary<string, double> dicIncidenceValue, Dictionary<string, double> dicPrevalenceValue, Dictionary<string, double> dicSetupVariables, double[] lhsDesignResult)
         {
@@ -5979,55 +5972,55 @@ namespace BenMAP.Configuration
             {
             }
         }
+        // DEADCODE
+        //public static DataTable csvToDataTable(string file, bool isRowOneHeader)
+        //{
 
-        public static DataTable csvToDataTable(string file, bool isRowOneHeader)
-        {
+        //    DataTable csvDataTable = new DataTable();
 
-            DataTable csvDataTable = new DataTable();
+        //    String[] csvData = File.ReadAllLines(file);
 
-            String[] csvData = File.ReadAllLines(file);
+        //    if (csvData.Length == 0)
+        //    {
+        //        throw new Exception("CSV File Appears to be Empty");
+        //    }
 
-            if (csvData.Length == 0)
-            {
-                throw new Exception("CSV File Appears to be Empty");
-            }
+        //    String[] headings = csvData[0].Split(',');
+        //    int index = 0;
+        //    if (isRowOneHeader)
+        //    {
+        //        index = 1;
+        //        for (int i = 0; i < headings.Length; i++)
+        //        {
+        //            headings[i] = headings[i].Replace(" ", "_");
 
-            String[] headings = csvData[0].Split(',');
-            int index = 0;
-            if (isRowOneHeader)
-            {
-                index = 1;
-                for (int i = 0; i < headings.Length; i++)
-                {
-                    headings[i] = headings[i].Replace(" ", "_");
+        //            csvDataTable.Columns.Add(headings[i], typeof(string));
+        //        }
+        //    }
+        //    else
+        //    {
+        //        for (int i = 0; i < headings.Length; i++)
+        //        {
+        //            csvDataTable.Columns.Add("col" + (i + 1).ToString(), typeof(string));
+        //        }
+        //    }
 
-                    csvDataTable.Columns.Add(headings[i], typeof(string));
-                }
-            }
-            else
-            {
-                for (int i = 0; i < headings.Length; i++)
-                {
-                    csvDataTable.Columns.Add("col" + (i + 1).ToString(), typeof(string));
-                }
-            }
+        //    for (int i = index; i < csvData.Length; i++)
+        //    {
+        //        DataRow row = csvDataTable.NewRow();
 
-            for (int i = index; i < csvData.Length; i++)
-            {
-                DataRow row = csvDataTable.NewRow();
+        //        for (int j = 0; j < headings.Length; j++)
+        //        {
+        //            row[j] = csvData[i].Split(',')[j];
+        //        }
 
-                for (int j = 0; j < headings.Length; j++)
-                {
-                    row[j] = csvData[i].Split(',')[j];
-                }
-
-                csvDataTable.Rows.Add(row);
-            }
+        //        csvDataTable.Rows.Add(row);
+        //    }
 
 
-            return csvDataTable;
+        //    return csvDataTable;
 
-        }
+        //}
 
         private static Tools.CalculateFunctionString _baseeval;
         internal static Tools.CalculateFunctionString BaseEval
