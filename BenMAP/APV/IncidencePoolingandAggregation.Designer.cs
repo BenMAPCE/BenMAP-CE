@@ -896,7 +896,7 @@ namespace BenMAP
             this.treeListView.ShowGroups = false;
             this.treeListView.ShowImagesOnSubItems = true;
             this.treeListView.ShowItemToolTips = true;
-            this.treeListView.Size = new System.Drawing.Size(284, 191);
+            this.treeListView.Size = new System.Drawing.Size(284, 192);
             this.treeListView.SmallImageList = this.imageList1;
             this.treeListView.TabIndex = 15;
             this.treeListView.UseCompatibleStateImageBehavior = false;
@@ -910,6 +910,7 @@ namespace BenMAP
             this.treeListView.Freezing += new System.EventHandler<BrightIdeasSoftware.FreezeEventArgs>(this.treeListView_Freezing);
             this.treeListView.FormatRow += new System.EventHandler<BrightIdeasSoftware.FormatRowEventArgs>(this.treeListView_FormatRow);
             this.treeListView.ColumnReordered += new System.Windows.Forms.ColumnReorderedEventHandler(this.treeListView_ColumnReordered);
+            this.treeListView.SelectedIndexChanged += new System.EventHandler(this.treeListView_SelectedIndexChanged);
             this.treeListView.DoubleClick += new System.EventHandler(this.treeListView_DoubleClick);
             this.treeListView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treeListView_KeyDown);
             // 
@@ -918,7 +919,7 @@ namespace BenMAP
             this.treeColumnName.AspectName = "Name";
             this.treeColumnName.IsEditable = false;
             this.treeColumnName.IsTileViewColumn = true;
-            this.treeColumnName.Text = "Tree Nodes";
+            this.treeColumnName.Text = "Studies, By Endpoint";
             this.treeColumnName.UseInitialLetterForGroup = true;
             this.treeColumnName.Width = 180;
             this.treeColumnName.WordWrap = true;
