@@ -293,6 +293,7 @@ namespace BenMAP
             this.olvAvailable.UseHyperlinks = true;
             this.olvAvailable.UseOverlays = false;
             this.olvAvailable.View = System.Windows.Forms.View.Details;
+            this.olvAvailable.SelectedIndexChanged += new System.EventHandler(this.olvAvailable_SelectedIndexChanged);
             // 
             // olvColumn2
             // 
@@ -896,7 +897,7 @@ namespace BenMAP
             this.treeListView.ShowGroups = false;
             this.treeListView.ShowImagesOnSubItems = true;
             this.treeListView.ShowItemToolTips = true;
-            this.treeListView.Size = new System.Drawing.Size(284, 192);
+            this.treeListView.Size = new System.Drawing.Size(284, 193);
             this.treeListView.SmallImageList = this.imageList1;
             this.treeListView.TabIndex = 15;
             this.treeListView.UseCompatibleStateImageBehavior = false;

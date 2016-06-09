@@ -814,7 +814,7 @@ namespace BenMAP
             {
                 case 0:
                     listview.View = View.Tile;
-
+                    listview.ShowHeaderInAllViews = false;
                     break;
                 case 1:
                     listview.View = View.Details;
@@ -2759,6 +2759,11 @@ namespace BenMAP
         }
 
         private void treeListView_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void olvAvailable_SelectedIndexChanged(object sender, EventArgs e)
         {
 
         }
