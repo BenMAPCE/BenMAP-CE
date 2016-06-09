@@ -89,7 +89,7 @@ namespace BenMAP
                     this.olvAvailable.ItemRenderer = incidenceBusinessCardRenderer; this.olvTile.ItemRenderer = new Tools.IncidenceBusinessCardRenderer();
                     this.olvTile.OwnerDraw = true;
                     olvAvailable.OwnerDraw = true;
-                    cbView.SelectedIndex = 0;
+                    cbView.SelectedIndex = 1;
                     this.olvAvailable.DropSink = new IncidenceDropSink(true, this);
                     this.treeListView.DropSink = new IncidenceDropSink(true, this);
                     if (CommonClass.lstIncidencePoolingAndAggregation != null &&
@@ -2758,8 +2758,10 @@ namespace BenMAP
 
         }
 
+        private void treeListView_SelectedIndexChanged(object sender, EventArgs e)
+        {
 
-
+        }
     }
 
     public class IncidenceDropSink : SimpleDropSink
