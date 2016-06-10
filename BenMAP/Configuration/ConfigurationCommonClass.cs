@@ -3669,12 +3669,13 @@ namespace BenMAP.Configuration
             return dicAge;
         }
         public static Dictionary<string, double> getIncidenceDataSetFromCRSelectFuntionDicAllAge(Dictionary<string, double> dicAge, Dictionary<string, float> dicPopulationAge, Dictionary<int, float> dicPopulation12, CRSelectFunction crSelectFunction, bool bPrevalence, Dictionary<string, int> dicRace, Dictionary<string, int> dicEthnicity, Dictionary<string, int> dicGender, int GridDefinitionID, GridRelationship gridRelationShipPopulation)
-        { // STOPPED HERE
+        { 
             try
             {
 
                 Dictionary<int, double> dicIncidenceRateAttribute = new Dictionary<int, double>();
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                // choose incidence or prevalence data set
                 string strbPrevalence = "F";
                 int iid = crSelectFunction.IncidenceDataSetID;
                 if (bPrevalence)
@@ -3688,8 +3689,13 @@ namespace BenMAP.Configuration
 
                 commandText = string.Format("select  min( Yyear) from t_PopulationDataSetIDYear where PopulationDataSetID={0} ", CommonClass.BenMAPPopulation.DataSetID); int commonYear = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, System.Data.CommandType.Text, commandText));
                 commandText = "";
+                // HARDCODED - use Empty string for race
                 string strRace = "";
+                
+                // HARDCODED, SetupID = 1 (US) then check for race 5 (ALL) or 6 (Empty string)
+                // always include Race ALL or empty for US setup ONLY
                 if (CommonClass.MainSetup.SetupID == 1) strRace = " and (b.RaceID=6 or b.RaceID=5)";
+                // add filters to restrict age ranges
                 string strbEndAgeOri = " CASE" +
                        " WHEN (b.EndAge> " + crSelectFunction.EndAge + ") THEN " + crSelectFunction.EndAge + " ELSE b.EndAge END ";
                 string strbStartAgeOri = " CASE" +
@@ -3698,6 +3704,7 @@ namespace BenMAP.Configuration
                       " WHEN (a.EndAge> " + crSelectFunction.EndAge + ") THEN " + crSelectFunction.EndAge + " ELSE a.EndAge END ";
                 string straStartAgeOri = " CASE" +
                     " WHEN (a.StartAge< " + crSelectFunction.StartAge + ") THEN " + crSelectFunction.StartAge + " ELSE a.StartAge END ";
+                // ratio the overlap of the age range as a weight
                 string strAgeID = string.Format(" select a.startAge,a.EndAge,b.AgeRangeid, " +
   " CASE" +
   " WHEN (b.startAge>=a.StartAge and b.EndAge<=a.EndAge) THEN 1" +
@@ -3708,7 +3715,7 @@ namespace BenMAP.Configuration
   " END as weight,b.StartAge as sourceStartAge,b.EndAge as SourceEndAge" +
   "  from ( select distinct startage,endage from Incidencerates  where IncidenceDataSetID=" + iid + ")a,ageranges b" +
   " where b.EndAge>=a.StartAge and b.StartAge<=a.EndAge and b.PopulationConfigurationID={4}", straStartAgeOri, straEndAgeOri, strbStartAgeOri, strbEndAgeOri, CommonClass.BenMAPPopulation.PopulationConfiguration);
-
+                // HARDCODED - b.EndPointID=99 (Empty String in Endpoint GroupID 4, "Asthma Exacerbation") or b.EndPointID=100 (Empty String in Endpoint Group 6, "Chronic Bronchitis") or b.EndPointID=102 (Empty String in Endpoint Group 14, "Upper Respiratory Symptoms")
                 string strInc = string.Format("select  a.CColumn,a.Row,sum(a.VValue*d.Weight) as VValue,d.AgeRangeID  from IncidenceEntries a,IncidenceRates b,IncidenceDatasets c ,(" + strAgeID +
                      ") d where   b.StartAge=d.StartAge and b.EndAge=d.EndAge and " +
              " a.IncidenceRateID=b.IncidenceRateID and b.IncidenceDatasetID=c.IncidenceDatasetID and b.EndPointGroupID=" + crSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID + strRace + " and (b.EndPointID=" + crSelectFunction.BenMAPHealthImpactFunction.EndPointID + "  or b.EndPointID=99 or b.EndPointID=100 or b.EndPointID=102)" + " and b.Prevalence='" + strbPrevalence + "' " +
@@ -3717,7 +3724,7 @@ namespace BenMAP.Configuration
 
                 Dictionary<string, double> dicInc = new Dictionary<string, double>();
                 foreach (DataRow dr in dsInc.Tables[0].Rows)
-                {
+                {   // HARDCODED - add 10000 to row to convert row column to a single number for hash
                     if (!dicInc.ContainsKey((Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])).ToString() + "," + dr["AgeRangeID"]))
                     {
                         dicInc.Add((Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])).ToString() + "," + dr["AgeRangeID"].ToString(), Convert.ToDouble(dr["VValue"]));
@@ -3727,12 +3734,14 @@ namespace BenMAP.Configuration
                 if (iPopulationDataSetGridID == CommonClass.GBenMAPGrid.GridDefinitionID) return dicInc;
                 Dictionary<string, Dictionary<string, double>> dicPercentageForAggregationInc = new Dictionary<string, Dictionary<string, double>>();
                 try
-                {
+                {           
+                    // HARDCODED - requires normalization state to be in 0, 1 
+                    // HARDCODED - source grid definition ID in 27 (CMAQ 12km Nation - Clipped) or 28 (CMAQ 12km Nation ???
 
                     string str = "select sourcecolumn, sourcerow, targetcolumn, targetrow, percentage, normalizationstate from griddefinitionpercentageentries where percentageid=( select percentageid from  griddefinitionpercentages where sourcegriddefinitionid =" + (CommonClass.GBenMAPGrid.GridDefinitionID == 28 ? 27 : CommonClass.GBenMAPGrid.GridDefinitionID) + " and  targetgriddefinitionid = " + iPopulationDataSetGridID + " ) and normalizationstate in (0,1)";
 
                     DataSet dsPercentage = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, str);
-                    if (dsPercentage.Tables[0].Rows.Count == 0)
+                    if (dsPercentage.Tables[0].Rows.Count == 0) // no crosswalk rows found - need to generate them 
                     {
                         creatPercentageToDatabase(iPopulationDataSetGridID, CommonClass.GBenMAPGrid.GridDefinitionID, null);
                         int iPercentageID = Convert.ToInt16(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, "select percentageid from  griddefinitionpercentages where sourcegriddefinitionid =" + CommonClass.GBenMAPGrid.GridDefinitionID + " and  targetgriddefinitionid = " + iPopulationDataSetGridID));
