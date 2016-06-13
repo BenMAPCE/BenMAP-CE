@@ -1116,356 +1116,358 @@ namespace BenMAP.Configuration
                 return null;
             }
         }
-        public static string getPopulationComandTextFromCRSelectFunction(CRSelectFunction crSelectFunction, BenMAPPopulation benMAPPopulation, Dictionary<string, int> dicRace, Dictionary<string, int> dicEthnicity, Dictionary<string, int> dicGender)
-        {
-            ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
-            int benMAPPopulationDataSetID = benMAPPopulation.DataSetID;
-            string commandText = string.Format("select  min( Yyear) from t_PopulationDataSetIDYear where PopulationDataSetID={0} ", benMAPPopulation.DataSetID); int commonYear = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, System.Data.CommandType.Text, commandText));
-            // HARDCODDED SetupID = 1, handles population Year differently for US and non US setups
-            if (CommonClass.MainSetup.SetupID != 1) commonYear = benMAPPopulation.Year;
-            commandText = "";
-            string strwhere = "";
-            // HARDCODED SetupID = 1, US
-            if (CommonClass.MainSetup.SetupID == 1)
-                // HARDCODED AgeRangeID != 42 (ages 0 to 99)
-                // this appears to be an attempt to exclude the 0 to 99 age range from use in the US, but allow it in China and new setups
-                strwhere = "where AGERANGEID!=42";
-            else
-                strwhere = " where 1=1 ";
-            string ageCommandText = string.Format("select * from Ageranges b   " + strwhere);
-            if (crSelectFunction.StartAge != -1)
-            {
-                ageCommandText = string.Format(ageCommandText + " and b.EndAge>={0} ", crSelectFunction.StartAge);
-            }
-            if (crSelectFunction.EndAge != -1)
-            {
-                ageCommandText = string.Format(ageCommandText + " and b.StartAge<={0} ", crSelectFunction.EndAge);
-            }
-            DataSet dsage = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, ageCommandText);
-            string strsumage = "";
-            string strsumageGrowth = "";
-            foreach (DataRow dr in dsage.Tables[0].Rows)
-            {
-                if (strsumageGrowth == "")
-                    strsumageGrowth = dr["AgerangeID"].ToString();
-                else
-                    strsumageGrowth = strsumageGrowth + "," + dr["AgerangeID"].ToString();
-                if ((Convert.ToInt32(dr["StartAge"]) >= crSelectFunction.StartAge || crSelectFunction.StartAge == -1) && (Convert.ToInt32(dr["EndAge"]) <= crSelectFunction.EndAge || crSelectFunction.EndAge == -1))
-                {
-                    if (strsumage == "")
-                        strsumage = dr["AgerangeID"].ToString();
-                    else
-                        strsumage = strsumage + "," + dr["AgerangeID"].ToString();
-                }
-                else
-                {
-                    double dDiv = 1;
-                    if (Convert.ToInt32(dr["StartAge"]) < crSelectFunction.StartAge)
-                    {
-                        dDiv = Convert.ToDouble(Convert.ToInt32(dr["EndAge"]) - crSelectFunction.StartAge + 1) / Convert.ToDouble(Convert.ToInt32(dr["EndAge"]) - Convert.ToInt32(dr["StartAge"]) + 1);
-                        if (Convert.ToInt32(dr["EndAge"]) > crSelectFunction.EndAge)
-                        {
-                            dDiv = Convert.ToDouble(crSelectFunction.EndAge - crSelectFunction.StartAge + 1) / Convert.ToDouble(Convert.ToInt32(dr["EndAge"]) - Convert.ToInt32(dr["StartAge"]) + 1);
+        // DEADCODE - no calling reference
+        //public static string getPopulationComandTextFromCRSelectFunction(CRSelectFunction crSelectFunction, BenMAPPopulation benMAPPopulation, Dictionary<string, int> dicRace, Dictionary<string, int> dicEthnicity, Dictionary<string, int> dicGender)
+        //{
+        //    ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+        //    int benMAPPopulationDataSetID = benMAPPopulation.DataSetID;
+        //    string commandText = string.Format("select  min( Yyear) from t_PopulationDataSetIDYear where PopulationDataSetID={0} ", benMAPPopulation.DataSetID); int commonYear = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, System.Data.CommandType.Text, commandText));
+        //    // HARDCODDED SetupID = 1, handles population Year differently for US and non US setups
+        //    if (CommonClass.MainSetup.SetupID != 1) commonYear = benMAPPopulation.Year;
+        //    commandText = "";
+        //    string strwhere = "";
+        //    // HARDCODED SetupID = 1, US
+        //    if (CommonClass.MainSetup.SetupID == 1)
+        //        // HARDCODED AgeRangeID != 42 (ages 0 to 99)
+        //        // this appears to be an attempt to exclude the 0 to 99 age range from use in the US, but allow it in China and new setups
+        //        strwhere = "where AGERANGEID!=42";
+        //    else
+        //        strwhere = " where 1=1 ";
+        //    string ageCommandText = string.Format("select * from Ageranges b   " + strwhere);
+        //    if (crSelectFunction.StartAge != -1)
+        //    {
+        //        ageCommandText = string.Format(ageCommandText + " and b.EndAge>={0} ", crSelectFunction.StartAge);
+        //    }
+        //    if (crSelectFunction.EndAge != -1)
+        //    {
+        //        ageCommandText = string.Format(ageCommandText + " and b.StartAge<={0} ", crSelectFunction.EndAge);
+        //    }
+        //    DataSet dsage = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, ageCommandText);
+        //    string strsumage = "";
+        //    string strsumageGrowth = "";
+        //    foreach (DataRow dr in dsage.Tables[0].Rows)
+        //    {
+        //        if (strsumageGrowth == "")
+        //            strsumageGrowth = dr["AgerangeID"].ToString();
+        //        else
+        //            strsumageGrowth = strsumageGrowth + "," + dr["AgerangeID"].ToString();
+        //        if ((Convert.ToInt32(dr["StartAge"]) >= crSelectFunction.StartAge || crSelectFunction.StartAge == -1) && (Convert.ToInt32(dr["EndAge"]) <= crSelectFunction.EndAge || crSelectFunction.EndAge == -1))
+        //        {
+        //            if (strsumage == "")
+        //                strsumage = dr["AgerangeID"].ToString();
+        //            else
+        //                strsumage = strsumage + "," + dr["AgerangeID"].ToString();
+        //        }
+        //        else
+        //        {
+        //            double dDiv = 1;
+        //            if (Convert.ToInt32(dr["StartAge"]) < crSelectFunction.StartAge)
+        //            {
+        //                dDiv = Convert.ToDouble(Convert.ToInt32(dr["EndAge"]) - crSelectFunction.StartAge + 1) / Convert.ToDouble(Convert.ToInt32(dr["EndAge"]) - Convert.ToInt32(dr["StartAge"]) + 1);
+        //                if (Convert.ToInt32(dr["EndAge"]) > crSelectFunction.EndAge)
+        //                {
+        //                    dDiv = Convert.ToDouble(crSelectFunction.EndAge - crSelectFunction.StartAge + 1) / Convert.ToDouble(Convert.ToInt32(dr["EndAge"]) - Convert.ToInt32(dr["StartAge"]) + 1);
 
-                        }
-                    }
-                    else if (Convert.ToInt32(dr["EndAge"]) > crSelectFunction.EndAge)
-                    {
-                        dDiv = Convert.ToDouble(crSelectFunction.EndAge - Convert.ToInt32(dr["StartAge"]) + 1) / Convert.ToDouble(Convert.ToInt32(dr["EndAge"]) - Convert.ToInt32(dr["StartAge"]) + 1);
-
-
-                    }
-
-                    if (commandText != "") commandText = commandText + " union ";
-                    // HARDCODED - GridDefinitionID==1, SetupID==1 (US)
-                    if (benMAPPopulation.GridType.GridDefinitionID == 1 && CommonClass.MainSetup.SetupID == 1 && commonYear != benMAPPopulation.Year)
-                    {
-                        // HARDCODED - where PopulationDatasetID=2 - no such population dataset exists in current DB, lowest current ID is 30
-                        // DEADCODE - SQL result for commontext must be empty, as no PopulationEntries have PopulationDataSetID = 2
-                        commandText += string.Format("select   a.CColumn,a.Row,sum(a.vvalue*b.vvalue)*" + dDiv + " as VValue   from PopulationEntries a,(select CColumn,Row,VValue,AgerangeID,RaceID,EthnicityID,GenderID from PopulationEntries where PopulationDatasetID=2 and YYear=" + benMAPPopulation.Year + ") b " +
-                            "  where a.CColumn=b.CColumn and a.Row=b.Row and a.AgerangeID=b.AgerangeID and a.RaceID=b.RaceID and a.EthnicityID=b.EthnicityID and a.GenderID=b.GenderID and  a.PopulationDatasetID={0} and a.YYear={1}", benMAPPopulation.DataSetID, commonYear);
-
-                    }
-                    // HARDCODED - SetupID == , PopulationDataSetID=4 - no such population dataset exists in current DB, lowest current ID is 30
-                    // DEADCODE - if statement can never execute as no Population.DataSetID = 4 exists
-                    else if (CommonClass.MainSetup.SetupID == 1 && CommonClass.BenMAPPopulation.DataSetID == 4 && commonYear != benMAPPopulation.Year)
-                    {
-                        commandText += string.Format("select   a.CColumn,a.Row,sum(a.vvalue*b.vvalue*c.percentage)*" + dDiv + " as VValue   from PopulationEntries a,(select CColumn,Row,VValue,AgerangeID,RaceID,EthnicityID,GenderID from PopulationEntries where PopulationDatasetID=2 and YYear=" + benMAPPopulation.Year + ") b ," +
-                                  " (select sourcecolumn, sourcerow, targetcolumn, targetrow, percentage, normalizationstate from griddefinitionpercentageentries where percentageid=22 and normalizationstate in (0,1)) c " +
-                                  "  where a.CColumn=c.sourcecolumn and a.Row=c.sourcerow  and b.CColumn= c.TargetColumn and b.Row= c.TargetRow and a.AgerangeID=b.AgerangeID and a.RaceID=b.RaceID and a.EthnicityID=b.EthnicityID and a.GenderID=b.GenderID and  a.PopulationDatasetID={0} and a.YYear={1}", benMAPPopulation.DataSetID, commonYear);
+        //                }
+        //            }
+        //            else if (Convert.ToInt32(dr["EndAge"]) > crSelectFunction.EndAge)
+        //            {
+        //                dDiv = Convert.ToDouble(crSelectFunction.EndAge - Convert.ToInt32(dr["StartAge"]) + 1) / Convert.ToDouble(Convert.ToInt32(dr["EndAge"]) - Convert.ToInt32(dr["StartAge"]) + 1);
 
 
+        //            }
+
+        //            if (commandText != "") commandText = commandText + " union ";
+        //            // HARDCODED - GridDefinitionID==1, SetupID==1 (US)
+        //            if (benMAPPopulation.GridType.GridDefinitionID == 1 && CommonClass.MainSetup.SetupID == 1 && commonYear != benMAPPopulation.Year)
+        //            {
+        //                // HARDCODED - where PopulationDatasetID=2 - no such population dataset exists in current DB, lowest current ID is 30
+        //                // DEADCODE - SQL result for commontext must be empty, as no PopulationEntries have PopulationDataSetID = 2
+        //                commandText += string.Format("select   a.CColumn,a.Row,sum(a.vvalue*b.vvalue)*" + dDiv + " as VValue   from PopulationEntries a,(select CColumn,Row,VValue,AgerangeID,RaceID,EthnicityID,GenderID from PopulationEntries where PopulationDatasetID=2 and YYear=" + benMAPPopulation.Year + ") b " +
+        //                    "  where a.CColumn=b.CColumn and a.Row=b.Row and a.AgerangeID=b.AgerangeID and a.RaceID=b.RaceID and a.EthnicityID=b.EthnicityID and a.GenderID=b.GenderID and  a.PopulationDatasetID={0} and a.YYear={1}", benMAPPopulation.DataSetID, commonYear);
+
+        //            }
+        //            // HARDCODED - SetupID == , PopulationDataSetID=4 - no such population dataset exists in current DB, lowest current ID is 30
+        //            // DEADCODE - if statement can never execute as no Population.DataSetID = 4 exists
+        //            else if (CommonClass.MainSetup.SetupID == 1 && CommonClass.BenMAPPopulation.DataSetID == 4 && commonYear != benMAPPopulation.Year)
+        //            {
+        //                commandText += string.Format("select   a.CColumn,a.Row,sum(a.vvalue*b.vvalue*c.percentage)*" + dDiv + " as VValue   from PopulationEntries a,(select CColumn,Row,VValue,AgerangeID,RaceID,EthnicityID,GenderID from PopulationEntries where PopulationDatasetID=2 and YYear=" + benMAPPopulation.Year + ") b ," +
+        //                          " (select sourcecolumn, sourcerow, targetcolumn, targetrow, percentage, normalizationstate from griddefinitionpercentageentries where percentageid=22 and normalizationstate in (0,1)) c " +
+        //                          "  where a.CColumn=c.sourcecolumn and a.Row=c.sourcerow  and b.CColumn= c.TargetColumn and b.Row= c.TargetRow and a.AgerangeID=b.AgerangeID and a.RaceID=b.RaceID and a.EthnicityID=b.EthnicityID and a.GenderID=b.GenderID and  a.PopulationDatasetID={0} and a.YYear={1}", benMAPPopulation.DataSetID, commonYear);
 
 
 
-                    }
-                    else
-                    {
-                        // this looks like the only piece of the if statement that can work with the current database
-                        commandText += string.Format("select   a.CColumn,a.Row,sum(a.vvalue)*" + dDiv + " as VValue   from PopulationEntries a  where   a.PopulationDatasetID={0} and a.YYear={1}", benMAPPopulation.DataSetID, commonYear);
-                    }
-                    commandText = string.Format(commandText + " and a.AgerangeID={0}", Convert.ToInt32(dr["AgerangeID"]));
-                    // **************************************************************************************************************
-                    // The following additions to the SQL statement append "" to the selected race, gender, ethnicity iff ALL is not selected
-                    // **************************************************************************************************************
-                    // HARDCODED = Race = ALL (lc)
-                    if (!string.IsNullOrEmpty(crSelectFunction.Race) && crSelectFunction.Race.ToLower() != "all")
-                    {
-                        if (dicRace[crSelectFunction.Race] != null)
-                        {
-                            // HARDCODED - RaceID = 6, empty string 
-                            commandText = string.Format(commandText + " and (a.RaceID={0} or a.RaceID=6)", dicRace[crSelectFunction.Race]);
-                        }
-                    }
-                    // HARDCODED = Ethnicity = ALL (lc)
-                    if (!string.IsNullOrEmpty(crSelectFunction.Ethnicity) && crSelectFunction.Ethnicity.ToLower() != "all")
-                    {
-                        if (dicEthnicity[crSelectFunction.Ethnicity] != null)
-                        {
-                            // HARDCODED - ethnicityID = 4, empty string
-                            commandText = string.Format(commandText + " and (a.EthnicityID={0} or a.EthnicityID=4)", dicEthnicity[crSelectFunction.Ethnicity]);
 
-                        }
-                    }
-                    // HARDCODED = gender  = ALL (lc)
-                    if (!string.IsNullOrEmpty(crSelectFunction.Gender) && crSelectFunction.Gender.ToLower() != "all")
-                    {
-                        if (dicGender[crSelectFunction.Gender] != null)
-                        {
-                            //HARDCODED GenderID = 4 
-                            commandText = string.Format(commandText + " and (a.GenderID={0} or a.GenderID=4)", dicGender[crSelectFunction.Gender]);
-                        }
-                    }
-                    commandText = commandText + " group by a.CColumn,a.Row";
-                }
-                // **************************************************************************************************************
+
+        //            }
+        //            else
+        //            {
+        //                // this looks like the only piece of the if statement that can work with the current database
+        //                commandText += string.Format("select   a.CColumn,a.Row,sum(a.vvalue)*" + dDiv + " as VValue   from PopulationEntries a  where   a.PopulationDatasetID={0} and a.YYear={1}", benMAPPopulation.DataSetID, commonYear);
+        //            }
+        //            commandText = string.Format(commandText + " and a.AgerangeID={0}", Convert.ToInt32(dr["AgerangeID"]));
+        //            // **************************************************************************************************************
+        //            // The following additions to the SQL statement append "" to the selected race, gender, ethnicity iff ALL is not selected
+        //            // **************************************************************************************************************
+        //            // HARDCODED = Race = ALL (lc)
+        //            if (!string.IsNullOrEmpty(crSelectFunction.Race) && crSelectFunction.Race.ToLower() != "all")
+        //            {
+        //                if (dicRace[crSelectFunction.Race] != null)
+        //                {
+        //                    // HARDCODED - RaceID = 6, empty string 
+        //                    commandText = string.Format(commandText + " and (a.RaceID={0} or a.RaceID=6)", dicRace[crSelectFunction.Race]);
+        //                }
+        //            }
+        //            // HARDCODED = Ethnicity = ALL (lc)
+        //            if (!string.IsNullOrEmpty(crSelectFunction.Ethnicity) && crSelectFunction.Ethnicity.ToLower() != "all")
+        //            {
+        //                if (dicEthnicity[crSelectFunction.Ethnicity] != null)
+        //                {
+        //                    // HARDCODED - ethnicityID = 4, empty string
+        //                    commandText = string.Format(commandText + " and (a.EthnicityID={0} or a.EthnicityID=4)", dicEthnicity[crSelectFunction.Ethnicity]);
+
+        //                }
+        //            }
+        //            // HARDCODED = gender  = ALL (lc)
+        //            if (!string.IsNullOrEmpty(crSelectFunction.Gender) && crSelectFunction.Gender.ToLower() != "all")
+        //            {
+        //                if (dicGender[crSelectFunction.Gender] != null)
+        //                {
+        //                    //HARDCODED GenderID = 4 
+        //                    commandText = string.Format(commandText + " and (a.GenderID={0} or a.GenderID=4)", dicGender[crSelectFunction.Gender]);
+        //                }
+        //            }
+        //            commandText = commandText + " group by a.CColumn,a.Row";
+        //        }
+        //        // **************************************************************************************************************
                     
-            }
-            if (commandText != "" && strsumage != "") commandText = commandText + " union ";
-            if (strsumage != "")
-            {
-                // HARDCODED - GridDefinitionID == 1, SetupID== 1 (US) 
-                // DEADCODE - minimum grid definition id is 4, this if statement will never execute
-                if (benMAPPopulation.GridType.GridDefinitionID == 1 && CommonClass.MainSetup.SetupID == 1 && commonYear != benMAPPopulation.Year)
-                {
-                    commandText += string.Format("select   a.CColumn,a.Row,sum(a.vvalue*b.VValue) as VValue   from PopulationEntries a,(select CColumn,Row,VValue,AgerangeID,RaceID,EthnicityID,GenderID from PopulationEntries where PopulationDatasetID=2 and YYear=" + benMAPPopulation.Year + ") b " +
-                        "  where a.CColumn=b.CColumn and a.Row=b.Row and a.AgerangeID=b.AgerangeID and a.RaceID=b.RaceID and a.EthnicityID=b.EthnicityID and a.GenderID=b.GenderID and  a.PopulationDatasetID={0} and a.YYear={1}", benMAPPopulation.DataSetID, commonYear);
+        //    }
+        //    if (commandText != "" && strsumage != "") commandText = commandText + " union ";
+        //    if (strsumage != "")
+        //    {
+        //        // HARDCODED - GridDefinitionID == 1, SetupID== 1 (US) 
+        //        // DEADCODE - minimum grid definition id is 4, this if statement will never execute
+        //        if (benMAPPopulation.GridType.GridDefinitionID == 1 && CommonClass.MainSetup.SetupID == 1 && commonYear != benMAPPopulation.Year)
+        //        {
+        //            commandText += string.Format("select   a.CColumn,a.Row,sum(a.vvalue*b.VValue) as VValue   from PopulationEntries a,(select CColumn,Row,VValue,AgerangeID,RaceID,EthnicityID,GenderID from PopulationEntries where PopulationDatasetID=2 and YYear=" + benMAPPopulation.Year + ") b " +
+        //                "  where a.CColumn=b.CColumn and a.Row=b.Row and a.AgerangeID=b.AgerangeID and a.RaceID=b.RaceID and a.EthnicityID=b.EthnicityID and a.GenderID=b.GenderID and  a.PopulationDatasetID={0} and a.YYear={1}", benMAPPopulation.DataSetID, commonYear);
 
-                }
-                // HARDCODED - SetupID == 1 (US), PopulationDataSetID == 4
-                // DEADCODE - lowest  dataset ID is 30 , this statement can't execute
-                else if (CommonClass.MainSetup.SetupID == 1 && CommonClass.BenMAPPopulation.DataSetID == 4 && commonYear != benMAPPopulation.Year)
-                {
-                    commandText += string.Format("select   a.CColumn,a.Row,sum(a.vvalue*b.VValue*c.percentage) as VValue   from PopulationEntries a,(select CColumn,Row,VValue,AgerangeID,RaceID,EthnicityID,GenderID from PopulationEntries where PopulationDatasetID=2 and YYear=" + benMAPPopulation.Year + ") b ," +
-                       " (select sourcecolumn, sourcerow, targetcolumn, targetrow, percentage, normalizationstate from griddefinitionpercentageentries where percentageid=22 and normalizationstate in (0,1)) c " +
-                               "  where a.CColumn=c.sourcecolumn and a.Row=c.sourcerow  and b.CColumn= c.TargetColumn and b.Row= c.TargetRow and a.AgerangeID=b.AgerangeID and a.RaceID=b.RaceID and a.EthnicityID=b.EthnicityID and a.GenderID=b.GenderID and  a.PopulationDatasetID={0} and a.YYear={1}", benMAPPopulation.DataSetID, commonYear);
+        //        }
+        //        // HARDCODED - SetupID == 1 (US), PopulationDataSetID == 4
+        //        // DEADCODE - lowest  dataset ID is 30 , this statement can't execute
+        //        else if (CommonClass.MainSetup.SetupID == 1 && CommonClass.BenMAPPopulation.DataSetID == 4 && commonYear != benMAPPopulation.Year)
+        //        {
+        //            commandText += string.Format("select   a.CColumn,a.Row,sum(a.vvalue*b.VValue*c.percentage) as VValue   from PopulationEntries a,(select CColumn,Row,VValue,AgerangeID,RaceID,EthnicityID,GenderID from PopulationEntries where PopulationDatasetID=2 and YYear=" + benMAPPopulation.Year + ") b ," +
+        //               " (select sourcecolumn, sourcerow, targetcolumn, targetrow, percentage, normalizationstate from griddefinitionpercentageentries where percentageid=22 and normalizationstate in (0,1)) c " +
+        //                       "  where a.CColumn=c.sourcecolumn and a.Row=c.sourcerow  and b.CColumn= c.TargetColumn and b.Row= c.TargetRow and a.AgerangeID=b.AgerangeID and a.RaceID=b.RaceID and a.EthnicityID=b.EthnicityID and a.GenderID=b.GenderID and  a.PopulationDatasetID={0} and a.YYear={1}", benMAPPopulation.DataSetID, commonYear);
 
 
 
-                }
-                // this appears to be the only part of the if else statement that can execute with the current database
-                else
-                {
-                    commandText += string.Format("select   a.CColumn,a.Row,sum(a.vvalue) as VValue   from PopulationEntries a  where   a.PopulationDatasetID={0} and a.YYear={1}", benMAPPopulation.DataSetID, commonYear);
-                }
-                commandText = string.Format(commandText + " and a.AgerangeID in ({0}) ", strsumage);
-                // **************************************************************************************************************
-                // The following additions to the SQL statement append the code for "" to the selected race, gender, ethnicity 
-                // **************************************************************************************************************
-                // HARDCODED RaceID = 6 (empty string)
-                if (!string.IsNullOrEmpty(crSelectFunction.Race))
-                {
-                    if (dicRace[crSelectFunction.Race].ToString() != "")
-                    {
-                        commandText = string.Format(commandText + " and (a.RaceID={0} or a.RaceID=6)", dicRace[crSelectFunction.Race]);
-                    }
-                }
-                // HARDCODED EthnicityID = 4 (empty string)
-                if (!string.IsNullOrEmpty(crSelectFunction.Ethnicity))
-                {
-                    if (dicEthnicity[crSelectFunction.Ethnicity].ToString() != "")
-                    {
-                        commandText = string.Format(commandText + " and (a.EthnicityID={0} or a.EthnicityID=4)", dicEthnicity[crSelectFunction.Ethnicity]);
+        //        }
+        //        // this appears to be the only part of the if else statement that can execute with the current database
+        //        else
+        //        {
+        //            commandText += string.Format("select   a.CColumn,a.Row,sum(a.vvalue) as VValue   from PopulationEntries a  where   a.PopulationDatasetID={0} and a.YYear={1}", benMAPPopulation.DataSetID, commonYear);
+        //        }
+        //        commandText = string.Format(commandText + " and a.AgerangeID in ({0}) ", strsumage);
+        //        // **************************************************************************************************************
+        //        // The following additions to the SQL statement append the code for "" to the selected race, gender, ethnicity 
+        //        // **************************************************************************************************************
+        //        // HARDCODED RaceID = 6 (empty string)
+        //        if (!string.IsNullOrEmpty(crSelectFunction.Race))
+        //        {
+        //            if (dicRace[crSelectFunction.Race].ToString() != "")
+        //            {
+        //                commandText = string.Format(commandText + " and (a.RaceID={0} or a.RaceID=6)", dicRace[crSelectFunction.Race]);
+        //            }
+        //        }
+        //        // HARDCODED EthnicityID = 4 (empty string)
+        //        if (!string.IsNullOrEmpty(crSelectFunction.Ethnicity))
+        //        {
+        //            if (dicEthnicity[crSelectFunction.Ethnicity].ToString() != "")
+        //            {
+        //                commandText = string.Format(commandText + " and (a.EthnicityID={0} or a.EthnicityID=4)", dicEthnicity[crSelectFunction.Ethnicity]);
 
-                    }
-                }
-                // HARDCODED GenderID = 4, (empty string)
-                if (!string.IsNullOrEmpty(crSelectFunction.Gender))
-                {
-                    if (dicGender[crSelectFunction.Gender].ToString() != "")
-                    {
-                        commandText = string.Format(commandText + " and (a.GenderID={0} or a.GenderID=4)", dicGender[crSelectFunction.Gender]);
-                    }
-                }
-                commandText = commandText + " group by a.CColumn,a.Row";
-                // **************************************************************************************************************
+        //            }
+        //        }
+        //        // HARDCODED GenderID = 4, (empty string)
+        //        if (!string.IsNullOrEmpty(crSelectFunction.Gender))
+        //        {
+        //            if (dicGender[crSelectFunction.Gender].ToString() != "")
+        //            {
+        //                commandText = string.Format(commandText + " and (a.GenderID={0} or a.GenderID=4)", dicGender[crSelectFunction.Gender]);
+        //            }
+        //        }
+        //        commandText = commandText + " group by a.CColumn,a.Row";
+        //        // **************************************************************************************************************
                
-            }
-            if (commandText != "")
-            {
-                commandText = "select   a.CColumn,a.Row,sum(a.vvalue) as VValue  from ( " + commandText + " ) a group by a.CColumn,a.Row";
-            }
-            return commandText;
-        }
+        //    }
+        //    if (commandText != "")
+        //    {
+        //        commandText = "select   a.CColumn,a.Row,sum(a.vvalue) as VValue  from ( " + commandText + " ) a group by a.CColumn,a.Row";
+        //    }
+        //    return commandText;
+        //}
 
-        public static string getPopulationComandTextFromCRSelectFunctionForInc(CRSelectFunction crSelectFunction, BenMAPPopulation benMAPPopulation, Dictionary<string, int> dicRace, Dictionary<string, int> dicEthnicity, Dictionary<string, int> dicGender)
-        {
-            ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
-            int benMAPPopulationDataSetID = benMAPPopulation.DataSetID;
-            string commandText = string.Format("select  min( Yyear) from t_PopulationDataSetIDYear where PopulationDataSetID={0} ", benMAPPopulation.DataSetID); int commonYear = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, System.Data.CommandType.Text, commandText));
-            if (CommonClass.MainSetup.SetupID != 1) commonYear = benMAPPopulation.Year;
-            commandText = "";
-            string strwhere = "";
-            if (CommonClass.MainSetup.SetupID == 1)
-                strwhere = "where AGERANGEID!=42";
-            else
-                strwhere = " where 1=1 ";
-            string ageCommandText = string.Format("select * from Ageranges b   " + strwhere);
-            if (crSelectFunction.StartAge != -1)
-            {
-                ageCommandText = string.Format(ageCommandText + " and b.EndAge>={0} ", crSelectFunction.StartAge);
-            }
-            if (crSelectFunction.EndAge != -1)
-            {
-                ageCommandText = string.Format(ageCommandText + " and b.StartAge<={0} ", crSelectFunction.EndAge);
-            }
-            DataSet dsage = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, ageCommandText);
-            string strsumage = "";
-            string strsumageGrowth = "";
-            foreach (DataRow dr in dsage.Tables[0].Rows)
-            {
-                if (strsumageGrowth == "")
-                    strsumageGrowth = dr["AgerangeID"].ToString();
-                else
-                    strsumageGrowth = strsumageGrowth + "," + dr["AgerangeID"].ToString();
-                if ((Convert.ToInt32(dr["StartAge"]) >= crSelectFunction.StartAge || crSelectFunction.StartAge == -1) && (Convert.ToInt32(dr["EndAge"]) <= crSelectFunction.EndAge || crSelectFunction.EndAge == -1))
-                {
-                    if (strsumage == "")
-                        strsumage = dr["AgerangeID"].ToString();
-                    else
-                        strsumage = strsumage + "," + dr["AgerangeID"].ToString();
-                }
-                else
-                {
-                    double dDiv = 1;
-                    if (Convert.ToInt32(dr["StartAge"]) < crSelectFunction.StartAge)
-                    {
-                        dDiv = Convert.ToDouble(Convert.ToInt32(dr["EndAge"]) - crSelectFunction.StartAge + 1) / Convert.ToDouble(Convert.ToInt32(dr["EndAge"]) - Convert.ToInt32(dr["StartAge"]) + 1);
-                        if (Convert.ToInt32(dr["EndAge"]) > crSelectFunction.EndAge)
-                        {
-                            dDiv = Convert.ToDouble(crSelectFunction.EndAge - crSelectFunction.StartAge + 1) / Convert.ToDouble(Convert.ToInt32(dr["EndAge"]) - Convert.ToInt32(dr["StartAge"]) + 1);
+        // DEADCODE - no calling reference
+ //       public static string getPopulationComandTextFromCRSelectFunctionForInc(CRSelectFunction crSelectFunction, BenMAPPopulation benMAPPopulation, Dictionary<string, int> dicRace, Dictionary<string, int> dicEthnicity, Dictionary<string, int> dicGender)
+ //       {
+ //           ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+ //           int benMAPPopulationDataSetID = benMAPPopulation.DataSetID;
+ //           string commandText = string.Format("select  min( Yyear) from t_PopulationDataSetIDYear where PopulationDataSetID={0} ", benMAPPopulation.DataSetID); int commonYear = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, System.Data.CommandType.Text, commandText));
+ //           if (CommonClass.MainSetup.SetupID != 1) commonYear = benMAPPopulation.Year;
+ //           commandText = "";
+ //           string strwhere = "";
+ //           if (CommonClass.MainSetup.SetupID == 1)
+ //               strwhere = "where AGERANGEID!=42";
+ //           else
+ //               strwhere = " where 1=1 ";
+ //           string ageCommandText = string.Format("select * from Ageranges b   " + strwhere);
+ //           if (crSelectFunction.StartAge != -1)
+ //           {
+ //               ageCommandText = string.Format(ageCommandText + " and b.EndAge>={0} ", crSelectFunction.StartAge);
+ //           }
+ //           if (crSelectFunction.EndAge != -1)
+ //           {
+ //               ageCommandText = string.Format(ageCommandText + " and b.StartAge<={0} ", crSelectFunction.EndAge);
+ //           }
+ //           DataSet dsage = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, ageCommandText);
+ //           string strsumage = "";
+ //           string strsumageGrowth = "";
+ //           foreach (DataRow dr in dsage.Tables[0].Rows)
+ //           {
+ //               if (strsumageGrowth == "")
+ //                   strsumageGrowth = dr["AgerangeID"].ToString();
+ //               else
+ //                   strsumageGrowth = strsumageGrowth + "," + dr["AgerangeID"].ToString();
+ //               if ((Convert.ToInt32(dr["StartAge"]) >= crSelectFunction.StartAge || crSelectFunction.StartAge == -1) && (Convert.ToInt32(dr["EndAge"]) <= crSelectFunction.EndAge || crSelectFunction.EndAge == -1))
+ //               {
+ //                   if (strsumage == "")
+ //                       strsumage = dr["AgerangeID"].ToString();
+ //                   else
+ //                       strsumage = strsumage + "," + dr["AgerangeID"].ToString();
+ //               }
+ //               else
+ //               {
+ //                   double dDiv = 1;
+ //                   if (Convert.ToInt32(dr["StartAge"]) < crSelectFunction.StartAge)
+ //                   {
+ //                       dDiv = Convert.ToDouble(Convert.ToInt32(dr["EndAge"]) - crSelectFunction.StartAge + 1) / Convert.ToDouble(Convert.ToInt32(dr["EndAge"]) - Convert.ToInt32(dr["StartAge"]) + 1);
+ //                       if (Convert.ToInt32(dr["EndAge"]) > crSelectFunction.EndAge)
+ //                       {
+ //                           dDiv = Convert.ToDouble(crSelectFunction.EndAge - crSelectFunction.StartAge + 1) / Convert.ToDouble(Convert.ToInt32(dr["EndAge"]) - Convert.ToInt32(dr["StartAge"]) + 1);
 
-                        }
-                    }
-                    else if (Convert.ToInt32(dr["EndAge"]) > crSelectFunction.EndAge)
-                    {
-                        dDiv = Convert.ToDouble(crSelectFunction.EndAge - Convert.ToInt32(dr["StartAge"]) + 1) / Convert.ToDouble(Convert.ToInt32(dr["EndAge"]) - Convert.ToInt32(dr["StartAge"]) + 1);
-
-
-                    }
-
-                    if (commandText != "") commandText = commandText + " union ";
-                    if (benMAPPopulation.GridType.GridDefinitionID == 1 && CommonClass.MainSetup.SetupID == 1 && commonYear != benMAPPopulation.Year)
-                    {
-                        commandText += string.Format("select   a.CColumn,a.Row,a.AgeRangeID,sum(a.vvalue*b.vvalue)*" + dDiv + " as VValue   from PopulationEntries a,(select CColumn,Row,VValue,AgerangeID,RaceID,EthnicityID,GenderID from PopulationEntries where PopulationDatasetID=2 and YYear=" + benMAPPopulation.Year + ") b " +
-                            "  where a.CColumn=b.CColumn and a.Row=b.Row and a.AgerangeID=b.AgerangeID and a.RaceID=b.RaceID and a.EthnicityID=b.EthnicityID and a.GenderID=b.GenderID and  a.PopulationDatasetID={0} and a.YYear={1}", benMAPPopulation.DataSetID, commonYear);
-
-                    }
-                    else if (CommonClass.MainSetup.SetupID == 1 && CommonClass.BenMAPPopulation.DataSetID == 4 && commonYear != benMAPPopulation.Year)
-                    {
-                        commandText += string.Format("select   a.CColumn,a.Row,a.AgeRangeID,sum(a.vvalue*b.vvalue*c.VValue)*" + dDiv + " as VValue   from PopulationEntries a, PopulationEntries  b ," +
-                                  " PopulationGrowthWeights   c   where PopulationDatasetID=2 and YYear=" + CommonClass.BenMAPPopulation.Year + " and a.RaceID=c.RaceID and  a.EthnicityID=c.EthnicityID and a.CColumn= c.TargetColumn  " +
- " and a.Row=c.Targetrow  and b.CColumn= c.SourceColumn and b.Row= c.SourceRow and a.AgerangeID=b.AgerangeID and a.RaceID=b.RaceID and a.EthnicityID=b.EthnicityID and a.GenderID=b.GenderID and  a.PopulationDatasetID={0} and a.YYear={1}", benMAPPopulation.DataSetID, commonYear);
+ //                       }
+ //                   }
+ //                   else if (Convert.ToInt32(dr["EndAge"]) > crSelectFunction.EndAge)
+ //                   {
+ //                       dDiv = Convert.ToDouble(crSelectFunction.EndAge - Convert.ToInt32(dr["StartAge"]) + 1) / Convert.ToDouble(Convert.ToInt32(dr["EndAge"]) - Convert.ToInt32(dr["StartAge"]) + 1);
 
 
+ //                   }
 
+ //                   if (commandText != "") commandText = commandText + " union ";
+ //                   if (benMAPPopulation.GridType.GridDefinitionID == 1 && CommonClass.MainSetup.SetupID == 1 && commonYear != benMAPPopulation.Year)
+ //                   {
+ //                       commandText += string.Format("select   a.CColumn,a.Row,a.AgeRangeID,sum(a.vvalue*b.vvalue)*" + dDiv + " as VValue   from PopulationEntries a,(select CColumn,Row,VValue,AgerangeID,RaceID,EthnicityID,GenderID from PopulationEntries where PopulationDatasetID=2 and YYear=" + benMAPPopulation.Year + ") b " +
+ //                           "  where a.CColumn=b.CColumn and a.Row=b.Row and a.AgerangeID=b.AgerangeID and a.RaceID=b.RaceID and a.EthnicityID=b.EthnicityID and a.GenderID=b.GenderID and  a.PopulationDatasetID={0} and a.YYear={1}", benMAPPopulation.DataSetID, commonYear);
 
-
-                    }
-                    else
-                    {
-                        commandText += string.Format("select   a.CColumn,a.Row,a.AgeRangeID,sum(a.vvalue)*" + dDiv + " as VValue   from PopulationEntries a  where   a.PopulationDatasetID={0} and a.YYear={1}", benMAPPopulation.DataSetID, commonYear);
-                    }
-                    commandText = string.Format(commandText + " and a.AgerangeID={0}", Convert.ToInt32(dr["AgerangeID"]));
-                    if (!string.IsNullOrEmpty(crSelectFunction.Race) && crSelectFunction.Race.ToLower() != "all")
-                    {
-                        if (dicRace[crSelectFunction.Race] != null)
-                        {
-                            commandText = string.Format(commandText + " and (a.RaceID={0} or a.RaceID=6)", dicRace[crSelectFunction.Race]);
-                        }
-                    }
-                    if (!string.IsNullOrEmpty(crSelectFunction.Ethnicity) && crSelectFunction.Ethnicity.ToLower() != "all")
-                    {
-                        if (dicEthnicity[crSelectFunction.Ethnicity] != null)
-                        {
-                            commandText = string.Format(commandText + " and (a.EthnicityID={0} or a.EthnicityID=4)", dicEthnicity[crSelectFunction.Ethnicity]);
-
-                        }
-                    }
-                    if (!string.IsNullOrEmpty(crSelectFunction.Gender) && crSelectFunction.Gender.ToLower() != "all")
-                    {
-                        if (dicGender[crSelectFunction.Gender] != null)
-                        {
-                            commandText = string.Format(commandText + " and (a.GenderID={0} or a.GenderID=4)", dicGender[crSelectFunction.Gender]);
-                        }
-                    }
-                    commandText = commandText + " group by a.CColumn,a.Row,a.AgeRangeID";
-                }
-            }
-            if (commandText != "" && strsumage != "") commandText = commandText + " union ";
-            if (strsumage != "")
-            {
-                if (benMAPPopulation.GridType.GridDefinitionID == 1 && CommonClass.MainSetup.SetupID == 1 && commonYear != benMAPPopulation.Year)
-                {
-                    commandText += string.Format("select   a.CColumn,a.Row,a.AgeRangeID,sum(a.vvalue*b.VValue) as VValue   from PopulationEntries a,(select CColumn,Row,VValue,AgerangeID,RaceID,EthnicityID,GenderID from PopulationEntries where PopulationDatasetID=2 and YYear=" + benMAPPopulation.Year + ") b " +
-                        "  where a.CColumn=b.CColumn and a.Row=b.Row and a.AgerangeID=b.AgerangeID and a.RaceID=b.RaceID and a.EthnicityID=b.EthnicityID and a.GenderID=b.GenderID and  a.PopulationDatasetID={0} and a.YYear={1}", benMAPPopulation.DataSetID, commonYear);
-
-                }
-                else if (CommonClass.MainSetup.SetupID == 1 && CommonClass.BenMAPPopulation.DataSetID == 4 && commonYear != benMAPPopulation.Year)
-                {
-                    commandText += string.Format("select   a.CColumn,a.Row,a.AgeRangeID,sum(a.vvalue*b.vvalue*c.VValue) as VValue   from PopulationEntries a, PopulationEntries  b ," +
-                                   " PopulationGrowthWeights   c   where PopulationDatasetID=2 and YYear=" + CommonClass.BenMAPPopulation.Year + " and a.RaceID=c.RaceID and  a.EthnicityID=c.EthnicityID and a.CColumn= c.TargetColumn  " +
-  " and a.Row=c.Targetrow  and b.CColumn= c.SourceColumn and b.Row= c.SourceRow and a.AgerangeID=b.AgerangeID and a.RaceID=b.RaceID and a.EthnicityID=b.EthnicityID and a.GenderID=b.GenderID and  a.PopulationDatasetID={0} and a.YYear={1}", benMAPPopulation.DataSetID, commonYear);
+ //                   }
+ //                   else if (CommonClass.MainSetup.SetupID == 1 && CommonClass.BenMAPPopulation.DataSetID == 4 && commonYear != benMAPPopulation.Year)
+ //                   {
+ //                       commandText += string.Format("select   a.CColumn,a.Row,a.AgeRangeID,sum(a.vvalue*b.vvalue*c.VValue)*" + dDiv + " as VValue   from PopulationEntries a, PopulationEntries  b ," +
+ //                                 " PopulationGrowthWeights   c   where PopulationDatasetID=2 and YYear=" + CommonClass.BenMAPPopulation.Year + " and a.RaceID=c.RaceID and  a.EthnicityID=c.EthnicityID and a.CColumn= c.TargetColumn  " +
+ //" and a.Row=c.Targetrow  and b.CColumn= c.SourceColumn and b.Row= c.SourceRow and a.AgerangeID=b.AgerangeID and a.RaceID=b.RaceID and a.EthnicityID=b.EthnicityID and a.GenderID=b.GenderID and  a.PopulationDatasetID={0} and a.YYear={1}", benMAPPopulation.DataSetID, commonYear);
 
 
 
-                }
-                else
-                {
-                    commandText += string.Format("select   a.CColumn,a.Row,a.AgeRangeID,sum(a.vvalue) as VValue   from PopulationEntries a  where   a.PopulationDatasetID={0} and a.YYear={1}", benMAPPopulation.DataSetID, commonYear);
-                }
-                commandText = string.Format(commandText + " and a.AgerangeID in ({0}) ", strsumage);
 
-                if (!string.IsNullOrEmpty(crSelectFunction.Race))
-                {
-                    if (dicRace[crSelectFunction.Race].ToString() != "")
-                    {
-                        commandText = string.Format(commandText + " and (a.RaceID={0} or a.RaceID=6)", dicRace[crSelectFunction.Race]);
-                    }
-                }
-                if (!string.IsNullOrEmpty(crSelectFunction.Ethnicity))
-                {
-                    if (dicEthnicity[crSelectFunction.Ethnicity].ToString() != "")
-                    {
-                        commandText = string.Format(commandText + " and (a.EthnicityID={0} or a.EthnicityID=4)", dicEthnicity[crSelectFunction.Ethnicity]);
 
-                    }
-                }
-                if (!string.IsNullOrEmpty(crSelectFunction.Gender))
-                {
-                    if (dicGender[crSelectFunction.Gender].ToString() != "")
-                    {
-                        commandText = string.Format(commandText + " and (a.GenderID={0} or a.GenderID=4)", dicGender[crSelectFunction.Gender]);
-                    }
-                }
-                commandText = commandText + " group by a.CColumn,a.Row,a.AgeRangeID";
-            }
-            if (commandText != "")
-            {
-                commandText = "select   a.CColumn,a.Row,a.AgeRangeID,sum(a.vvalue) as VValue  from ( " + commandText + " ) a group by a.CColumn,a.Row,a.AgeRangeID";
-            }
-            return commandText;
-        }
+ //                   }
+ //                   else
+ //                   {
+ //                       commandText += string.Format("select   a.CColumn,a.Row,a.AgeRangeID,sum(a.vvalue)*" + dDiv + " as VValue   from PopulationEntries a  where   a.PopulationDatasetID={0} and a.YYear={1}", benMAPPopulation.DataSetID, commonYear);
+ //                   }
+ //                   commandText = string.Format(commandText + " and a.AgerangeID={0}", Convert.ToInt32(dr["AgerangeID"]));
+ //                   if (!string.IsNullOrEmpty(crSelectFunction.Race) && crSelectFunction.Race.ToLower() != "all")
+ //                   {
+ //                       if (dicRace[crSelectFunction.Race] != null)
+ //                       {
+ //                           commandText = string.Format(commandText + " and (a.RaceID={0} or a.RaceID=6)", dicRace[crSelectFunction.Race]);
+ //                       }
+ //                   }
+ //                   if (!string.IsNullOrEmpty(crSelectFunction.Ethnicity) && crSelectFunction.Ethnicity.ToLower() != "all")
+ //                   {
+ //                       if (dicEthnicity[crSelectFunction.Ethnicity] != null)
+ //                       {
+ //                           commandText = string.Format(commandText + " and (a.EthnicityID={0} or a.EthnicityID=4)", dicEthnicity[crSelectFunction.Ethnicity]);
+
+ //                       }
+ //                   }
+ //                   if (!string.IsNullOrEmpty(crSelectFunction.Gender) && crSelectFunction.Gender.ToLower() != "all")
+ //                   {
+ //                       if (dicGender[crSelectFunction.Gender] != null)
+ //                       {
+ //                           commandText = string.Format(commandText + " and (a.GenderID={0} or a.GenderID=4)", dicGender[crSelectFunction.Gender]);
+ //                       }
+ //                   }
+ //                   commandText = commandText + " group by a.CColumn,a.Row,a.AgeRangeID";
+ //               }
+ //           }
+ //           if (commandText != "" && strsumage != "") commandText = commandText + " union ";
+ //           if (strsumage != "")
+ //           {
+ //               if (benMAPPopulation.GridType.GridDefinitionID == 1 && CommonClass.MainSetup.SetupID == 1 && commonYear != benMAPPopulation.Year)
+ //               {
+ //                   commandText += string.Format("select   a.CColumn,a.Row,a.AgeRangeID,sum(a.vvalue*b.VValue) as VValue   from PopulationEntries a,(select CColumn,Row,VValue,AgerangeID,RaceID,EthnicityID,GenderID from PopulationEntries where PopulationDatasetID=2 and YYear=" + benMAPPopulation.Year + ") b " +
+ //                       "  where a.CColumn=b.CColumn and a.Row=b.Row and a.AgerangeID=b.AgerangeID and a.RaceID=b.RaceID and a.EthnicityID=b.EthnicityID and a.GenderID=b.GenderID and  a.PopulationDatasetID={0} and a.YYear={1}", benMAPPopulation.DataSetID, commonYear);
+
+ //               }
+ //               else if (CommonClass.MainSetup.SetupID == 1 && CommonClass.BenMAPPopulation.DataSetID == 4 && commonYear != benMAPPopulation.Year)
+ //               {
+ //                   commandText += string.Format("select   a.CColumn,a.Row,a.AgeRangeID,sum(a.vvalue*b.vvalue*c.VValue) as VValue   from PopulationEntries a, PopulationEntries  b ," +
+ //                                  " PopulationGrowthWeights   c   where PopulationDatasetID=2 and YYear=" + CommonClass.BenMAPPopulation.Year + " and a.RaceID=c.RaceID and  a.EthnicityID=c.EthnicityID and a.CColumn= c.TargetColumn  " +
+ // " and a.Row=c.Targetrow  and b.CColumn= c.SourceColumn and b.Row= c.SourceRow and a.AgerangeID=b.AgerangeID and a.RaceID=b.RaceID and a.EthnicityID=b.EthnicityID and a.GenderID=b.GenderID and  a.PopulationDatasetID={0} and a.YYear={1}", benMAPPopulation.DataSetID, commonYear);
+
+
+
+ //               }
+ //               else
+ //               {
+ //                   commandText += string.Format("select   a.CColumn,a.Row,a.AgeRangeID,sum(a.vvalue) as VValue   from PopulationEntries a  where   a.PopulationDatasetID={0} and a.YYear={1}", benMAPPopulation.DataSetID, commonYear);
+ //               }
+ //               commandText = string.Format(commandText + " and a.AgerangeID in ({0}) ", strsumage);
+
+ //               if (!string.IsNullOrEmpty(crSelectFunction.Race))
+ //               {
+ //                   if (dicRace[crSelectFunction.Race].ToString() != "")
+ //                   {
+ //                       commandText = string.Format(commandText + " and (a.RaceID={0} or a.RaceID=6)", dicRace[crSelectFunction.Race]);
+ //                   }
+ //               }
+ //               if (!string.IsNullOrEmpty(crSelectFunction.Ethnicity))
+ //               {
+ //                   if (dicEthnicity[crSelectFunction.Ethnicity].ToString() != "")
+ //                   {
+ //                       commandText = string.Format(commandText + " and (a.EthnicityID={0} or a.EthnicityID=4)", dicEthnicity[crSelectFunction.Ethnicity]);
+
+ //                   }
+ //               }
+ //               if (!string.IsNullOrEmpty(crSelectFunction.Gender))
+ //               {
+ //                   if (dicGender[crSelectFunction.Gender].ToString() != "")
+ //                   {
+ //                       commandText = string.Format(commandText + " and (a.GenderID={0} or a.GenderID=4)", dicGender[crSelectFunction.Gender]);
+ //                   }
+ //               }
+ //               commandText = commandText + " group by a.CColumn,a.Row,a.AgeRangeID";
+ //           }
+ //           if (commandText != "")
+ //           {
+ //               commandText = "select   a.CColumn,a.Row,a.AgeRangeID,sum(a.vvalue) as VValue  from ( " + commandText + " ) a group by a.CColumn,a.Row,a.AgeRangeID";
+ //           }
+ //           return commandText;
+ //       }
 
         public static string getPopulationComandTextFrom12kmToCounty(CRSelectFunction crSelectFunction, BenMAPPopulation benMAPPopulation, Dictionary<string, int> dicRace, Dictionary<string, int> dicEthnicity, Dictionary<string, int> dicGender)
         {
@@ -1888,6 +1890,19 @@ namespace BenMAP.Configuration
             }
             return null;
         }
+        /// <summary>
+        /// returns a population dictionary for the CR (Health Effects) Function
+        /// </summary>
+        /// <param name="diclstPopulationAttributeAge"></param>
+        /// <param name="dicPop12"></param>
+        /// <param name="crSelectFunction"></param>
+        /// <param name="benMAPPopulation"></param>
+        /// <param name="dicRace"></param>
+        /// <param name="dicEthnicity"></param>
+        /// <param name="dicGender"></param>
+        /// <param name="GridDefinitionID"></param>
+        /// <param name="gridRelationShipPopulation"></param>
+        /// <returns></returns>
         public static Dictionary<int, float> getPopulationDataSetFromCRSelectFunction(ref Dictionary<string, float> diclstPopulationAttributeAge, ref Dictionary<int, float> dicPop12, CRSelectFunction crSelectFunction, BenMAPPopulation benMAPPopulation, Dictionary<string, int> dicRace, Dictionary<string, int> dicEthnicity, Dictionary<string, int> dicGender, int GridDefinitionID, GridRelationship gridRelationShipPopulation)
         {
             try
@@ -1899,14 +1914,23 @@ namespace BenMAP.Configuration
                 Dictionary<string, Dictionary<string, double>> dicPopweightfromPercentage = new Dictionary<string, Dictionary<string, double>>();
 
                 string commandText = string.Format("select  min( Yyear) from t_PopulationDataSetIDYear where PopulationDataSetID={0} ", benMAPPopulation.DataSetID); int commonYear = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, System.Data.CommandType.Text, commandText));
+                // HARDCODED SetupID != 1 (US)
+                // sets the common year to the population year except for Setup 1 (US)
                 if (CommonClass.MainSetup.SetupID != 1) commonYear = benMAPPopulation.Year;
                 commandText = "";
-                string strwhere = "";
-                if (CommonClass.MainSetup.SetupID == 1)
-                    strwhere = "where AGERANGEID!=42";
-                else
-                    strwhere = " where 1=1 ";
-                string ageCommandText = string.Format("select b.* from PopulationConfigurations a, Ageranges b   where a.PopulationConfigurationID=b.PopulationConfigurationID and a.PopulationConfigurationID=(select PopulationConfigurationID from PopulationDatasets where PopulationDataSetID=" + benMAPPopulation.DataSetID + ")"); DataSet dsage = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, ageCommandText);
+                // STOPPED HERE 
+                // DEADCODE - strwhere was never used
+                // perhaps this code should have been used to exclude the 0 to 99 age range in the US setup - it isn't used anywhere
+                // string strwhere = "";
+                // HARDCODED SetupID = 1 (US) and AgeRangeID != 42 (0 to 99) 
+                // exclude age range 0 to 99 from US setup (ONLY)
+                //if (CommonClass.MainSetup.SetupID == 1)
+                //    strwhere = "where AGERANGEID!=42";
+                //else
+                //    strwhere = " where 1=1 ";
+                string ageCommandText = string.Format("select b.* from PopulationConfigurations a, Ageranges b   where a.PopulationConfigurationID=b.PopulationConfigurationID and a.PopulationConfigurationID=(select PopulationConfigurationID from PopulationDatasets where PopulationDataSetID=" + benMAPPopulation.DataSetID + ")"); 
+                DataSet dsage = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, ageCommandText);
+                // next part of string appears to handle population growth ???
                 string strsumage = "";
                 string strsumageGrowth = "";
                 foreach (DataRow dr in dsage.Tables[0].Rows)
@@ -1942,7 +1966,8 @@ namespace BenMAP.Configuration
                         }
 
                         if (commandText != "") commandText = commandText + " union ";
-
+                        // HARDCODED  - setupID = 1 (US) GridDefinitionID = 1 (no longer exists!)
+                        // DEADCODE - next if sttement can never be executed because no GridDefinitionID=1 exists in the BenMap-CE database
                         if (benMAPPopulation.GridType.GridDefinitionID == 1 && CommonClass.MainSetup.SetupID == 1 && commonYear != benMAPPopulation.Year)
                         {
                             commandText += string.Format("select   a.CColumn,a.Row,sum(a.vvalue*b.vvalue)*" + dDiv + " as VValue   from PopulationEntries a,(select CColumn,Row,VValue,AgerangeID,RaceID,EthnicityID,GenderID from PopulationEntries where PopulationDatasetID=2 and YYear=" + benMAPPopulation.Year + ") b " +
@@ -1950,6 +1975,7 @@ namespace BenMAP.Configuration
 
 
                         }
+                        // HARDCODED - SetupID= 1 (US) and GridDefinitioID in 27, 28 (CMAQ 12km and clipped)
                         else if ((benMAPPopulation.GridType.GridDefinitionID == 28 || benMAPPopulation.GridType.GridDefinitionID == 27) && CommonClass.MainSetup.SetupID == 1 && commonYear != benMAPPopulation.Year)
                         {
 
@@ -1957,15 +1983,19 @@ namespace BenMAP.Configuration
                                 " PopulationGrowthWeights c   where  b.PopulationDatasetID=2 and b.YYear={2} and a.RaceID=c.RaceID and  a.EthnicityID=c.EthnicityID and a.CColumn= c.TargetColumn  " +
  " and a.Row=c.Targetrow  and b.CColumn= c.SourceColumn and b.Row= c.SourceRow and a.AgerangeID=b.AgerangeID and a.RaceID=b.RaceID and a.EthnicityID=b.EthnicityID and a.GenderID=b.GenderID and  a.PopulationDatasetID={0} and a.YYear={1}", benMAPPopulation.DataSetID, commonYear, CommonClass.BenMAPPopulation.Year);
                         }
+                        // this case will run for all non US and US not using CMAQ grid definition
                         else
                         {
                             commandText += string.Format("select   a.CColumn,a.Row,sum(a.vvalue)*" + dDiv + " as VValue   from PopulationEntries a  where   a.PopulationDatasetID={0} and YYear={1}", benMAPPopulation.DataSetID, commonYear);
                         }
+                        // add filter for age range id
                         commandText = string.Format(commandText + " and a.AgerangeID={0}", Convert.ToInt32(dr["AgerangeID"]));
+                        // add filter for 
                         if (!string.IsNullOrEmpty(crSelectFunction.Race) && crSelectFunction.Race.ToLower() != "all")
                         {
-                            if (dicRace.ContainsKey(crSelectFunction.Race))
-                            {
+                            if (dicRace.ContainsKey(crSelectFunction.Race)) 
+                            { // HARDCODED - raceID=6 (empty string)
+                              // note that raceID=5 (ALL) is not included here
                                 commandText = string.Format(commandText + " and (a.RaceID={0} or a.RaceID=6)", dicRace[crSelectFunction.Race]);
                             }
                         }

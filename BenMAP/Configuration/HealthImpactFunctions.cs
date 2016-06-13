@@ -900,6 +900,10 @@ namespace BenMAP
         public string _filePath = "";
         DateTime dtRunStart;
 
+        /// <summary>
+        /// return a dictionary containing the variables and their variable data set names for the currently selected setup
+        /// </summary>
+        /// <returns></returns>
         static Dictionary<string, List<string>> getDicVariableNameList()
         {
             Dictionary<string, List<string>> dicVariable = new Dictionary<string, List<string>>();
@@ -1103,6 +1107,7 @@ namespace BenMAP
                 this.lbProgressBar.Text = sProgressBar;
                 this.pBarCR.Value++;
                 lbProgressBar.Refresh();
+                // create a dictionary with the race,ethnicity,gender as key and an array containing the start and end ages as the value
                 Dictionary<string, string> dicAllRaceEthnicityGenderAge = new Dictionary<string, string>();
                 foreach (CRSelectFunction crSelectFunction in CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction)
                 {
@@ -1125,6 +1130,8 @@ namespace BenMAP
                     else
                         dicAllRaceEthnicityGenderAge.Add(crSelectFunction.Race + "," + crSelectFunction.Ethnicity + "," + crSelectFunction.Gender, crSelectFunction.StartAge + "," + crSelectFunction.EndAge);
                 }
+                // STOPPED HERE
+                // create a dictionary with keys of race+ethnicity+gender and a dictionary of population dictionaries for the start and end ages 
                 dicALlPopulationAge = new Dictionary<string, Dictionary<string, float>>();
                 foreach (KeyValuePair<string, string> kAge in dicAllRaceEthnicityGenderAge)
                 {
@@ -1406,6 +1413,11 @@ namespace BenMAP
             }
             catch (Exception ex)
             {
+                // 2016 06 10 - added logging and message box to show stack trace if error occurs, otherwise there is no way to know that it's failed.
+                // log stack trace for debug use
+                Logger.LogError(ex);
+                // show message to user, as well
+                MessageBox.Show(ex.StackTrace);
                 btAddCRFunctions.Enabled = true;
                 btAdvanced.Enabled = true;
                 btDelSelectMethod.Enabled = true;
@@ -1815,7 +1827,7 @@ namespace BenMAP
             }
         }
 
-        // STOPPED HERE
+
         private void btAdvanced_Click(object sender, EventArgs e)
         {
             Form frm = new LatinHypercubePoints();
