@@ -447,12 +447,6 @@
     <Compile Include="Help\ErrorReporting.Designer.cs">
       <DependentUpon>ErrorReporting.cs</DependentUpon>
     </Compile>
-    <Compile Include="HomePage.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="HomePage.Designer.cs">
-      <DependentUpon>HomePage.cs</DependentUpon>
-    </Compile>
     <Compile Include="Jira\ProjectComponent.cs" />
     <Compile Include="Jira\JiraClient.cs" />
     <Compile Include="Kriging\CellStrMatch.cs" />
@@ -1304,9 +1298,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Help\ReleaseNotes.resx">
       <DependentUpon>ReleaseNotes.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="HomePage.resx">
-      <DependentUpon>HomePage.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="LoadAirQualityData.resx">
       <DependentUpon>LoadAirQualityData.cs</DependentUpon>

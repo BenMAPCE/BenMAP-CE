@@ -458,15 +458,15 @@ namespace BenMAP
 
         }
 
-
-        public bool isInlstBenMAPHealthImpactFunctionSelected(BenMAPHealthImpactFunction benMAPHealthImpactFunction)
-        {
-            foreach (CRSelectFunction b in lstCRSelectFunction)
-            {
-                if (b.BenMAPHealthImpactFunction.ID == benMAPHealthImpactFunction.ID) return true;
-            }
-            return false;
-        }
+        // DEADCODE - no calling reference
+        //public bool isInlstBenMAPHealthImpactFunctionSelected(BenMAPHealthImpactFunction benMAPHealthImpactFunction)
+        //{
+        //    foreach (CRSelectFunction b in lstCRSelectFunction)
+        //    {
+        //        if (b.BenMAPHealthImpactFunction.ID == benMAPHealthImpactFunction.ID) return true;
+        //    }
+        //    return false;
+        //}
 
         private void olvSelected_CellEditStarting(object sender, CellEditEventArgs e)
         {
@@ -900,6 +900,10 @@ namespace BenMAP
         public string _filePath = "";
         DateTime dtRunStart;
 
+        /// <summary>
+        /// return a dictionary containing the variables and their variable data set names for the currently selected setup
+        /// </summary>
+        /// <returns></returns>
         static Dictionary<string, List<string>> getDicVariableNameList()
         {
             Dictionary<string, List<string>> dicVariable = new Dictionary<string, List<string>>();
@@ -1127,8 +1131,8 @@ namespace BenMAP
                     else
                         dicAllRaceEthnicityGenderAge.Add(crSelectFunction.Race + "," + crSelectFunction.Ethnicity + "," + crSelectFunction.Gender, crSelectFunction.StartAge + "," + crSelectFunction.EndAge);
                 }
-
-                //for each grid cell, get population for each race/gender/ethnicity group and age range specified above
+                // STOPPED HERE
+                // create a dictionary with keys of race+ethnicity+gender and a dictionary of population dictionaries for the start and end ages 
                 dicALlPopulationAge = new Dictionary<string, Dictionary<string, float>>();
                 foreach (KeyValuePair<string, string> kAge in dicAllRaceEthnicityGenderAge)
                 {
@@ -1443,6 +1447,11 @@ namespace BenMAP
             }
             catch (Exception ex)
             {
+                // 2016 06 10 - added logging and message box to show stack trace if error occurs, otherwise there is no way to know that it's failed.
+                // log stack trace for debug use
+                Logger.LogError(ex);
+                // show message to user, as well
+                MessageBox.Show(ex.StackTrace);
                 btAddCRFunctions.Enabled = true;
                 btAdvanced.Enabled = true;
                 btDelSelectMethod.Enabled = true;
@@ -1670,24 +1679,25 @@ namespace BenMAP
             }
         }
 
-        public void WaitShow(string msg)
-        {
-            try
-            {
-                if (sFlog == true)
-                {
-                    sFlog = false;
-                    waitMess.Msg = msg;
-                    System.Threading.Thread upgradeThread = null;
-                    upgradeThread = new System.Threading.Thread(new System.Threading.ThreadStart(ShowWaitMess));
-                    upgradeThread.Start();
-                }
-            }
-            catch (System.Threading.ThreadAbortException Err)
-            {
-                MessageBox.Show(Err.Message);
-            }
-        }
+        // DEADCODE - no calling reference
+        //public void WaitShow(string msg)
+        //{
+        //    try
+        //    {
+        //        if (sFlog == true)
+        //        {
+        //            sFlog = false;
+        //            waitMess.Msg = msg;
+        //            System.Threading.Thread upgradeThread = null;
+        //            upgradeThread = new System.Threading.Thread(new System.Threading.ThreadStart(ShowWaitMess));
+        //            upgradeThread.Start();
+        //        }
+        //    }
+        //    catch (System.Threading.ThreadAbortException Err)
+        //    {
+        //        MessageBox.Show(Err.Message);
+        //    }
+        //}
         private delegate void CloseFormDelegate();
         private delegate void ChangeDelegate(string msg);
         public void WaitClose()
@@ -1697,36 +1707,37 @@ namespace BenMAP
             else
                 DoCloseJob();
         }
-
-        public void WaitChangeMsg(string msg)
-        {
-            try
-            {
-                if (waitMess.InvokeRequired)
-                    waitMess.Invoke(new ChangeDelegate(DoChange), msg);
-            }
-            catch (System.Threading.ThreadAbortException Err)
-            {
-                MessageBox.Show(Err.Message);
-            }
-        }
-        private void DoChange(string msg)
-        {
-            try
-            {
-                if (!waitMess.IsDisposed)
-                {
-                    if (waitMess.Created)
-                    {
-                        waitMess.Msg = msg;
-                    }
-                }
-            }
-            catch (System.Threading.ThreadAbortException Err)
-            {
-                MessageBox.Show(Err.Message);
-            }
-        }
+        // DEADCODE - no calling references
+        //public void WaitChangeMsg(string msg)
+        //{
+        //    try
+        //    {
+        //        if (waitMess.InvokeRequired)
+        //            waitMess.Invoke(new ChangeDelegate(DoChange), msg);
+        //    }
+        //    catch (System.Threading.ThreadAbortException Err)
+        //    {
+        //        MessageBox.Show(Err.Message);
+        //    }
+        //}
+        // DEADCODE
+        //private void DoChange(string msg)
+        //{
+        //    try
+        //    {
+        //        if (!waitMess.IsDisposed)
+        //        {
+        //            if (waitMess.Created)
+        //            {
+        //                waitMess.Msg = msg;
+        //            }
+        //        }
+        //    }
+        //    catch (System.Threading.ThreadAbortException Err)
+        //    {
+        //        MessageBox.Show(Err.Message);
+        //    }
+        //}
         private void DoCloseJob()
         {
             try
@@ -1827,12 +1838,13 @@ namespace BenMAP
             }
 
         }
-
+        // EMPTY FUNCTION - this function contain no code and does nothing.
         private void olvSimple_IsHyperlink(object sender, IsHyperlinkEventArgs e)
         {
 
         }
 
+        // DEADCODE - this callback no longer supplies any functionality.
         private void olvSimple_CellClick(object sender, CellClickEventArgs e)
         {
             base.OnClick(e);
@@ -1841,11 +1853,14 @@ namespace BenMAP
                 switch (e.Column.Text)
                 {
                     case "DataSet":
-                        Help.ShowHelp(this, Application.StartupPath + @"\Data\QuickStartGuide.chm", "select_health_impact_function.htm");
+                        // HARDCODED - help file location and page to open
+                        // DEADCODE - commented this out as there is no help file and this is the only active place where it could be called
+                        //Help.ShowHelp(this, Application.StartupPath + @"\Data\QuickStartGuide.chm", "select_health_impact_function.htm");
                         break;
                 }
             }
         }
+
 
         private void btAdvanced_Click(object sender, EventArgs e)
         {
