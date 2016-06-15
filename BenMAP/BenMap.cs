@@ -8779,7 +8779,7 @@ namespace BenMAP
                             for (int j = 0; j < dCount; j++)
                             {
                                 string pollName = lstAllSelectCRFuntion.First().CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Variables[j].PollutantName;
-                                int pollID = ConfigurationCommonClass.getPollutantIDFromPollutantNameAndObject(lstAllSelectCRFuntion.First().CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction, pollName);
+                                int pollID = ConfigurationCommonClass.getPollutantIDFromPollutantNameAndObject(lstAllSelectCRFuntion.First().CRSelectFunctionCalculateValue.CRSelectFunction, pollName);
                                 
                                 OLVResultsShow.Columns.Add(new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.DeltaList[" + j + "]", AspectToStringFormat = "{0:N4}", Text = "Delta_" + pollName, Width = ("Delta_" + pollName).Length * 8, IsEditable = false });
                             }
@@ -8958,7 +8958,7 @@ namespace BenMAP
                                 for (int j = 0; j < dCount; j++)
                                 {
                                     string pollName = lstCRTable.First().CRSelectFunction.BenMAPHealthImpactFunction.Variables[j].PollutantName;
-                                    int pollID = ConfigurationCommonClass.getPollutantIDFromPollutantNameAndObject(lstCRTable.First().CRSelectFunction.BenMAPHealthImpactFunction, pollName);
+                                    int pollID = ConfigurationCommonClass.getPollutantIDFromPollutantNameAndObject(lstCRTable.First().CRSelectFunction, pollName);
 
                                     OLVResultsShow.Columns.Add(new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.DeltaList[" + j + "]", AspectToStringFormat = "{0:N4}", Text = "Delta_" + pollName, Width = ("Delta_" + pollName).Length * 8, IsEditable = false });
                                 }
@@ -9061,7 +9061,7 @@ namespace BenMAP
                                 for (int j = 0; j < dCount; j++)
                                 {
                                     string pollName = lstCRTable.First().CRSelectFunction.BenMAPHealthImpactFunction.Variables[j].PollutantName;
-                                    int pollID = ConfigurationCommonClass.getPollutantIDFromPollutantNameAndObject(lstCRTable.First().CRSelectFunction.BenMAPHealthImpactFunction, pollName);
+                                    int pollID = ConfigurationCommonClass.getPollutantIDFromPollutantNameAndObject(lstCRTable.First().CRSelectFunction, pollName);
 
                                     OLVResultsShow.Columns.Add(new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.DeltaList[" + j + "]", AspectToStringFormat = "{0:N4}", Text = "Delta_" + pollName, Width = ("Delta_" + pollName).Length * 8, IsEditable = false });
                                 }

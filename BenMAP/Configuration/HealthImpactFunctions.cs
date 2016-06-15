@@ -1867,7 +1867,7 @@ namespace BenMAP
             try
             {
                 //set up variableID - pollutantID map
-                CommonClass.dicPollutantIDVariableID = new Dictionary<int, int>();
+                CommonClass.dicPollutantIDVariableIDAll = new Dictionary<int, Dictionary<int, int>>();
                 //initialize interaction variable names map
                 CommonClass.dicInteractionVariableMetricNames = new Dictionary<int, string>();
 
@@ -1876,6 +1876,9 @@ namespace BenMAP
                 List<BaseControlGroup> lstBaseControlGroupsInteractions = new List<BaseControlGroup>();
                 foreach (CRSelectFunction crSelectFunction in CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction)
                 {
+
+                    Dictionary<int, int> dicPollutantIDVariableID = new Dictionary<int, int>();
+
                     foreach (CRFVariable variable in crSelectFunction.BenMAPHealthImpactFunction.Variables)
                     {
                         if (variable.Pollutant2ID > 0) //if we have a second pollutant, then this is an interaction
@@ -1933,7 +1936,7 @@ namespace BenMAP
 
 
                             //add to pollutantid-variableid  map
-                            CommonClass.dicPollutantIDVariableID.Add(interactionPollutantID, variable.VariableID);
+                            dicPollutantIDVariableID.Add(interactionPollutantID, variable.VariableID);
 
 
                             lstBaseControlGroupsInteractions.Add(bcgInteraction);
@@ -1942,10 +1945,13 @@ namespace BenMAP
                         else
                         {
                             //this is not interaction but we still need to add to pollutantid-variableid  map
-                            CommonClass.dicPollutantIDVariableID.Add(variable.Pollutant1ID, variable.VariableID);
+                            dicPollutantIDVariableID.Add(variable.Pollutant1ID, variable.VariableID);
                         }
 
                     }
+
+                    //add pollutantid/variableid map to global dicionary with HIF run id (CRID) as the key
+                    CommonClass.dicPollutantIDVariableIDAll.Add(crSelectFunction.CRID, dicPollutantIDVariableID);
 
                 }
 

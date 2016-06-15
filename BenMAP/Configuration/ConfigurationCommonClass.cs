@@ -724,7 +724,7 @@ namespace BenMAP.Configuration
             {
 
                 //get beta for pollutant and index
-                CRFVariable crfVariable = getVariableFromPollutantID(crSelectFunction.BenMAPHealthImpactFunction, pollutantID);
+                CRFVariable crfVariable = getVariableFromPollutantID(crSelectFunction, pollutantID);
                 CRFBeta crfBeta = crfVariable.PollBetas[betaIndex];
 
                 List<int> lstInt = new List<int>();
@@ -4448,7 +4448,7 @@ namespace BenMAP.Configuration
                     //in a multipollutant scenario, we have to match on metric name instead of id since metrics are tied to pollutants (old code which matched on ID is above)
                     //so here we are looking for pollutant seasonal metrics for metrics that have the same name as the metric for that pollutant in the health impact function
                     //get the HIF variable for this pollutant
-                    int variableID = CommonClass.dicPollutantIDVariableID[baseControlGroup.Pollutant.PollutantID];
+                    int variableID = CommonClass.dicPollutantIDVariableIDAll[crSelectFunction.CRID][baseControlGroup.Pollutant.PollutantID];
                     CRFVariable variable = crSelectFunction.BenMAPHealthImpactFunction.Variables.Where(v => v.VariableID == variableID).First();
                     //now get the seasonal metrics for this pollutant which have the same metric as that selected for this variable in the Health Impact function
                     List<SeasonalMetric> lstseasonalMetric = baseControlGroup.Pollutant.SesonalMetrics.Where(p => String.Equals(p.Metric.MetricName, variable.Metric.MetricName, StringComparison.OrdinalIgnoreCase)).ToList();
@@ -4793,7 +4793,7 @@ namespace BenMAP.Configuration
 
                                 //set deltas
                                 crCalculateValue.Deltas = getDeltaQValues(baseValuesForDelta, controlValuesForDelta);
-                                crCalculateValue.DeltaList = getSortedDeltaListFromDictionaryandObject(crSelectFunction.BenMAPHealthImpactFunction, crCalculateValue.Deltas);
+                                crCalculateValue.DeltaList = getSortedDeltaListFromDictionaryandObject(crSelectFunction, crCalculateValue.Deltas);
 
                                 //set beta variation fields
                                 crCalculateValue.BetaVariationName = crSelectFunction.BenMAPHealthImpactFunction.BetaVariation.BetaVariationName;
@@ -5024,7 +5024,7 @@ namespace BenMAP.Configuration
 
                                     //set deltas
                                     crCalculateValue.Deltas = getDeltaQValues(baseValuesForDelta, controlValuesForDelta);
-                                    crCalculateValue.DeltaList = getSortedDeltaListFromDictionaryandObject(crSelectFunction.BenMAPHealthImpactFunction, crCalculateValue.Deltas);
+                                    crCalculateValue.DeltaList = getSortedDeltaListFromDictionaryandObject(crSelectFunction, crCalculateValue.Deltas);
 
                                     //set beta variation fields
                                     crCalculateValue.BetaVariationName = crSelectFunction.BenMAPHealthImpactFunction.BetaVariation.BetaVariationName;
@@ -5244,7 +5244,7 @@ namespace BenMAP.Configuration
                         }
 
                         //convert from pollutant id-based dictionary to variable name-based dictionary
-                        dicBetaValuesVarName = getVariableNameDictionaryFromPollutantIDDictionary(dicBetaValues, crSelectFunction.BenMAPHealthImpactFunction);
+                        dicBetaValuesVarName = getVariableNameDictionaryFromPollutantIDDictionary(dicBetaValues, crSelectFunction);
 
                         //add to list
                         lstPercentileBetas.Add(dicBetaValuesVarName);
@@ -5253,8 +5253,8 @@ namespace BenMAP.Configuration
                 }
 
                 //get "baseline" betas for each pollutant;  these are the values specified in the "Beta" fields for each pollutant in the health impact function definition
-                dicBetaValues = getBetaValues(crSelectFunction.BenMAPHealthImpactFunction, betaIndex);
-                dicBetaValuesVarName = getVariableNameDictionaryFromPollutantIDDictionary(dicBetaValues, crSelectFunction.BenMAPHealthImpactFunction);
+                dicBetaValues = getBetaValues(crSelectFunction, betaIndex);
+                dicBetaValuesVarName = getVariableNameDictionaryFromPollutantIDDictionary(dicBetaValues, crSelectFunction);
 
                 CRCalculateValue crCalculateValue = new CRCalculateValue()
                 {
@@ -5267,12 +5267,12 @@ namespace BenMAP.Configuration
 
                 // set up DeltaList with delta values in order by pollutant name alphabetically for displaying results 
                 if (crCalculateValue.DeltaList == null) crCalculateValue.DeltaList = new List<double>();
-                crCalculateValue.DeltaList = getSortedDeltaListFromDictionaryandObject(crSelectFunction.BenMAPHealthImpactFunction, dicDeltaQValues);
+                crCalculateValue.DeltaList = getSortedDeltaListFromDictionaryandObject(crSelectFunction, dicDeltaQValues);
 
                 //convert pollutant id-based dictionaries to variable name dictionaries
-                Dictionary<string, double> dicBaseValuesVarName = getVariableNameDictionaryFromPollutantIDDictionary(dicBaseValues, crSelectFunction.BenMAPHealthImpactFunction);
-                Dictionary<string, double> dicControlValuesVarName = getVariableNameDictionaryFromPollutantIDDictionary(dicControlValues, crSelectFunction.BenMAPHealthImpactFunction);
-                Dictionary<string, double> dicDeltaQValuesVarName = getVariableNameDictionaryFromPollutantIDDictionary(dicDeltaQValues, crSelectFunction.BenMAPHealthImpactFunction);           
+                Dictionary<string, double> dicBaseValuesVarName = getVariableNameDictionaryFromPollutantIDDictionary(dicBaseValues, crSelectFunction);
+                Dictionary<string, double> dicControlValuesVarName = getVariableNameDictionaryFromPollutantIDDictionary(dicControlValues, crSelectFunction);
+                Dictionary<string, double> dicDeltaQValuesVarName = getVariableNameDictionaryFromPollutantIDDictionary(dicDeltaQValues, crSelectFunction);           
 
 
                 if (dicPopulationValue == null || dicPopulationValue.Count == 0 || dicPopulationValue.Sum(p => p.Value) == 0)
@@ -6205,15 +6205,17 @@ namespace BenMAP.Configuration
             return true;
         }
 
-        public static Dictionary<int, double> getBetaValues(BenMAPHealthImpactFunction hif, int betaIndex)
+        public static Dictionary<int, double> getBetaValues(CRSelectFunction crSelectFunction, int betaIndex)
         {
+
+            BenMAPHealthImpactFunction hif = crSelectFunction.BenMAPHealthImpactFunction;
             Dictionary<int, double> dicBetaValues = new Dictionary<int, double>();
             int pollutantID;
             double beta;
 
             foreach (CRFVariable variable in hif.Variables)
             {
-                pollutantID = CommonClass.dicPollutantIDVariableID.FirstOrDefault(x => x.Value == variable.VariableID).Key;
+                pollutantID = CommonClass.dicPollutantIDVariableIDAll[crSelectFunction.CRID].FirstOrDefault(x => x.Value == variable.VariableID).Key;
                 beta = variable.PollBetas[betaIndex].Beta;
                 dicBetaValues.Add(pollutantID, beta);
             }
@@ -6221,9 +6223,10 @@ namespace BenMAP.Configuration
             return dicBetaValues;
         }
 
-        public static Dictionary<string, double> getVariableNameDictionaryFromPollutantIDDictionary(Dictionary<int, double> dicPollutantID, BenMAPHealthImpactFunction hif)
+        public static Dictionary<string, double> getVariableNameDictionaryFromPollutantIDDictionary(Dictionary<int, double> dicPollutantID, CRSelectFunction crSelectFunction)
         {
             Dictionary<string, double> dicVariableName = new Dictionary<string, double>();
+            BenMAPHealthImpactFunction hif = crSelectFunction.BenMAPHealthImpactFunction;
 
             //loop over pollutant id dictionary
             foreach (KeyValuePair<int, double> kvp in dicPollutantID)
@@ -6231,7 +6234,7 @@ namespace BenMAP.Configuration
                 string varName = String.Empty;
 
                 //get variableid from pollutantid - variableid dictionary
-                int variableID = CommonClass.dicPollutantIDVariableID[kvp.Key];
+                int variableID = CommonClass.dicPollutantIDVariableIDAll[crSelectFunction.CRID][kvp.Key];
 
                 //find matching variable name for pollutant id in health impact function variable list
                 foreach (CRFVariable variable in hif.Variables)
@@ -6250,15 +6253,16 @@ namespace BenMAP.Configuration
             return dicVariableName;
         }
 
-        public static int getPollutantIDFromPollutantNameAndObject(BenMAPHealthImpactFunction hif, string pollName)
+        public static int getPollutantIDFromPollutantNameAndObject(CRSelectFunction crSelectFunction, string pollName)
         {
             int ID = 0;
+            BenMAPHealthImpactFunction hif = crSelectFunction.BenMAPHealthImpactFunction;
 
             foreach (CRFVariable v in hif.Variables)
             {
                 if (String.Equals(v.PollutantName, pollName ,StringComparison.OrdinalIgnoreCase))
                 {                    
-                    int pollutantID = CommonClass.dicPollutantIDVariableID.FirstOrDefault(x => x.Value == v.VariableID).Key;
+                    int pollutantID = CommonClass.dicPollutantIDVariableIDAll[crSelectFunction.CRID].FirstOrDefault(x => x.Value == v.VariableID).Key;
 
                     ID = pollutantID;
                     break;
@@ -6268,11 +6272,12 @@ namespace BenMAP.Configuration
             return ID;
         }
 
-        public static string getPollutantNameFromPollutantIDAndObject(BenMAPHealthImpactFunction hif, int pollID)
+        public static string getPollutantNameFromPollutantIDAndObject(CRSelectFunction crSelectFunction, int pollID)
         {
             string name = string.Empty;
+            BenMAPHealthImpactFunction hif = crSelectFunction.BenMAPHealthImpactFunction;
 
-            int variableID = CommonClass.dicPollutantIDVariableID[pollID];
+            int variableID = CommonClass.dicPollutantIDVariableIDAll[crSelectFunction.CRID][pollID];
 
             foreach (CRFVariable v in hif.Variables)
             {
@@ -6286,11 +6291,12 @@ namespace BenMAP.Configuration
             return name;
         }
 
-        public static CRFVariable getVariableFromPollutantID(BenMAPHealthImpactFunction hif, int pollutantID)
+        public static CRFVariable getVariableFromPollutantID(CRSelectFunction crSelectFunction, int pollutantID)
         {
             CRFVariable crfVariable = null;
+            BenMAPHealthImpactFunction hif = crSelectFunction.BenMAPHealthImpactFunction;
 
-            int variableID = CommonClass.dicPollutantIDVariableID[pollutantID];
+            int variableID = CommonClass.dicPollutantIDVariableIDAll[crSelectFunction.CRID][pollutantID];
 
             foreach (CRFVariable v in hif.Variables)
             {
@@ -6304,14 +6310,14 @@ namespace BenMAP.Configuration
             return crfVariable;
         }
 
-        public static List<double> getSortedDeltaListFromDictionaryandObject(BenMAPHealthImpactFunction hif, Dictionary<int, double> dicDelta)
+        public static List<double> getSortedDeltaListFromDictionaryandObject(CRSelectFunction crSelectFunction, Dictionary<int, double> dicDelta)
         {
             SortedList<string, double> sorted = new SortedList<string, double>();
             List<double> inOrder = new List<double>();
 
             foreach (KeyValuePair<int, double> p in dicDelta)
             {
-                string toAdd = getPollutantNameFromPollutantIDAndObject(hif, p.Key);
+                string toAdd = getPollutantNameFromPollutantIDAndObject(crSelectFunction, p.Key);
                 sorted.Add(toAdd, p.Value);
             }
 
@@ -6361,7 +6367,7 @@ namespace BenMAP.Configuration
             return result;
         }
 
-        public static double CalculateCRSelectFunctionsOneCelStandardError(CRSelectFunction hif, Dictionary<int, double> dicAQDeltas, int betaIndex)
+        public static double CalculateCRSelectFunctionsOneCelStandardError(CRSelectFunction crSelectFunction, Dictionary<int, double> dicAQDeltas, int betaIndex)
          {
             try
             {
@@ -6369,7 +6375,7 @@ namespace BenMAP.Configuration
                 double[,] m1 = new double[1, m1Width];
                 double[,] m2 = new double[m1Width, m1Width];
 
-                Dictionary<string, double> dicDeltasWithVar = getVariableNameDictionaryFromPollutantIDDictionary(dicAQDeltas, hif.BenMAPHealthImpactFunction);
+                Dictionary<string, double> dicDeltasWithVar = getVariableNameDictionaryFromPollutantIDDictionary(dicAQDeltas, crSelectFunction);
                 
                 for(int i = 1; i <= m1Width; i++)
                 {
@@ -6386,7 +6392,7 @@ namespace BenMAP.Configuration
                 string varName = string.Empty;
                 List<int> betaIDs = new List<int>();
 
-                foreach (CRFVariable v in hif.BenMAPHealthImpactFunction.Variables) { betaIDs.Add(v.PollBetas[betaIndex].BetaID); }
+                foreach (CRFVariable v in crSelectFunction.BenMAPHealthImpactFunction.Variables) { betaIDs.Add(v.PollBetas[betaIndex].BetaID); }
 
                 for (int row = 0; row < m1Width; row++)
                 {
@@ -6736,7 +6742,7 @@ namespace BenMAP.Configuration
                     metricKey = metricKey + "," + Enum.GetName(typeof(MetricStatic), crSelectFunction.BenMAPHealthImpactFunction.MetricStatistic);
                 }
 
-                int pollutantID = CommonClass.dicPollutantIDVariableID.FirstOrDefault(x => x.Value == variable.VariableID).Key;
+                int pollutantID = CommonClass.dicPollutantIDVariableIDAll[crSelectFunction.CRID].FirstOrDefault(x => x.Value == variable.VariableID).Key;
                 dicMetricKeys.Add(pollutantID, metricKey);
             }
 

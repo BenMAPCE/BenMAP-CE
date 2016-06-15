@@ -522,8 +522,10 @@ namespace BenMAP
             fs.Dispose();
         }
 
-        //dicPollutantIDVariableID maps the pollutantID (key) with the variableid (value); necessary for multipollutant interaction surfaces
-        public static Dictionary<int, int> dicPollutantIDVariableID;
+        //dicPollutantIDVariableIDAll contains dictionaries
+        //which map the pollutantID (key) with the variableid (value); necessary for multipollutant interaction surfaces
+        //the key for dicPollutantIDVariableIDAll is the CRID which on the selected HIF's (CRSelectFunction) objects
+        public static Dictionary<int, Dictionary<int, int>> dicPollutantIDVariableIDAll;
 
         //dicInteractionVariableMetricNames maps the variableid (key) with the metric name (value) for the interaction variable; necessary for multipollutant interaction surfaces
         public static Dictionary<int, string> dicInteractionVariableMetricNames = null;
