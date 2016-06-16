@@ -20,6 +20,8 @@ namespace BenMAP.Configuration
 {
     public class ConfigurationCommonClass
     {
+        private static Object calcOneLock = new Object();
+
         public static void ClearCRSelectFunctionCalculateValueLHS(ref CRSelectFunctionCalculateValue cRSelectFunctionCalculateValue)
         {
 
@@ -4390,585 +4392,357 @@ namespace BenMAP.Configuration
                                         Dictionary<string, int> dicRace, Dictionary<string, int> dicEthnicity, Dictionary<string, int> dicGender, double Threshold, int LatinHypercubePoints, bool RunInPointMode,
                                         List<GridRelationship> lstGridRelationship, CRSelectFunction crSelectFunction, List<RegionTypeGrid> lstRegionTypeGrid, BenMAPPopulation benMAPPopulation)
         {
-            try
+
+            lock (calcOneLock)
             {
                 try
                 {
-                    if (benMAPPopulation.GridType.GridDefinitionID != CommonClass.GBenMAPGrid.GridDefinitionID)
-                        lstGridRelationship.Where(p => (p.bigGridID == benMAPPopulation.GridType.GridDefinitionID && p.smallGridID == CommonClass.GBenMAPGrid.GridDefinitionID) || (p.smallGridID == benMAPPopulation.GridType.GridDefinitionID && p.bigGridID == CommonClass.GBenMAPGrid.GridDefinitionID)).First();
-                }
-                catch
-                {
-                }
+                    try
+                    {
+                        if (benMAPPopulation.GridType.GridDefinitionID != CommonClass.GBenMAPGrid.GridDefinitionID)
+                            lstGridRelationship.Where(p => (p.bigGridID == benMAPPopulation.GridType.GridDefinitionID && p.smallGridID == CommonClass.GBenMAPGrid.GridDefinitionID) || (p.smallGridID == benMAPPopulation.GridType.GridDefinitionID && p.bigGridID == CommonClass.GBenMAPGrid.GridDefinitionID)).First();
+                    }
+                    catch
+                    {
+                    }
 
 
-                //dictionaries to hold values for a single pollutant
-                Dictionary<string, Dictionary<string, float>> dicBaseMetricData;
-                Dictionary<string, Dictionary<string, float>> dicControlMetricData;
-                Dictionary<string, Dictionary<string, List<float>>> dicBase365;
-                Dictionary<string, Dictionary<string, List<float>>> dicControl365;
-                Dictionary<string, ModelResultAttribute> dicControl;
-                BaseControlGroup baseControlGroup;
+                    //dictionaries to hold values for a single pollutant
+                    Dictionary<string, Dictionary<string, float>> dicBaseMetricData;
+                    Dictionary<string, Dictionary<string, float>> dicControlMetricData;
+                    Dictionary<string, Dictionary<string, List<float>>> dicBase365;
+                    Dictionary<string, Dictionary<string, List<float>>> dicControl365;
+                    Dictionary<string, ModelResultAttribute> dicControl;
+                    BaseControlGroup baseControlGroup;
 
-                //to get dictionaries for a single pollutant, for example
-                baseControlGroup = CommonClass.LstBaseControlGroup.First();                
-
-                double baseValue = 0;
-                double controlValue = 0;
-                double deltaQValue = 0;
-
-                Dictionary<int, double> dicBaseValues = new Dictionary<int, double>();
-                Dictionary<int, double> dicControlValues = new Dictionary<int, double>();
-                Dictionary<int, List<float>> dicBase365Values = new Dictionary<int, List<float>>();
-                Dictionary<int, List<float>> dicControl365Values = new Dictionary<int, List<float>>();
-                Dictionary<int, double> dicDeltaQValues = new Dictionary<int, double>();
-
-                double populationValue = 0;
-                double incidenceValue = 0;
-                double prevalenceValue = 0;
-
-                Dictionary<string, double> dicPopValue = new Dictionary<string, double>();
-                Dictionary<string, double> dicIncidenceValue = new Dictionary<string, double>();
-                Dictionary<string, double> dicPrevalenceValue = new Dictionary<string, double>();
-
-
-                float i365 = 1;
-                int iStartDay = 365, iEndDay = 0;
-                //set startday, endday vars if no seasonal metric exists and metric statistic (i.e., annual statistic) is set to none for health impact function
-                //this startday, endday will serve as global bounds for the pollutant(s) data
-                if (crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric == null && crSelectFunction.BenMAPHealthImpactFunction.MetricStatistic == MetricStatic.None)
-                {
-                    i365 = 365;
-                    //get metric/seasonal metrics for pollutant metric that matches the metric specified in the health impact function
-                    //we assume that all pollutants have the same metrics, so we can just get the first basecontrol group
+                    //to get dictionaries for a single pollutant, for example
                     baseControlGroup = CommonClass.LstBaseControlGroup.First();
 
-                    //List<SeasonalMetric> lstseasonalMetric = baseControlGroup.Pollutant.SesonalMetrics.Where(p => p.Metric.MetricID == crSelectFunction.BenMAPHealthImpactFunction.Metric.MetricID).ToList();
+                    double baseValue = 0;
+                    double controlValue = 0;
+                    double deltaQValue = 0;
 
-                    //in a multipollutant scenario, we have to match on metric name instead of id since metrics are tied to pollutants (old code which matched on ID is above)
-                    //so here we are looking for pollutant seasonal metrics for metrics that have the same name as the metric for that pollutant in the health impact function
-                    //get the HIF variable for this pollutant
-                    int variableID = CommonClass.dicPollutantIDVariableIDAll[crSelectFunction.CRID][baseControlGroup.Pollutant.PollutantID];
-                    CRFVariable variable = crSelectFunction.BenMAPHealthImpactFunction.Variables.Where(v => v.VariableID == variableID).First();
-                    //now get the seasonal metrics for this pollutant which have the same metric as that selected for this variable in the Health Impact function
-                    List<SeasonalMetric> lstseasonalMetric = baseControlGroup.Pollutant.SesonalMetrics.Where(p => String.Equals(p.Metric.MetricName, variable.Metric.MetricName, StringComparison.OrdinalIgnoreCase)).ToList();
+                    Dictionary<int, double> dicBaseValues = new Dictionary<int, double>();
+                    Dictionary<int, double> dicControlValues = new Dictionary<int, double>();
+                    Dictionary<int, List<float>> dicBase365Values = new Dictionary<int, List<float>>();
+                    Dictionary<int, List<float>> dicControl365Values = new Dictionary<int, List<float>>();
+                    Dictionary<int, double> dicDeltaQValues = new Dictionary<int, double>();
 
-                    SeasonalMetric seasonalMetric = null;
-                    //if we have seasonal metrics for this metric, then take the last one (JCM 2016-01-25, why not the first one?)
-                    if (lstseasonalMetric.Count > 0)
-                        seasonalMetric = lstseasonalMetric.Last();
-                    //if we have a seasonal metric
-                    if (seasonalMetric != null && seasonalMetric.Seasons.Count > 0)
+                    double populationValue = 0;
+                    double incidenceValue = 0;
+                    double prevalenceValue = 0;
+
+                    Dictionary<string, double> dicPopValue = new Dictionary<string, double>();
+                    Dictionary<string, double> dicIncidenceValue = new Dictionary<string, double>();
+                    Dictionary<string, double> dicPrevalenceValue = new Dictionary<string, double>();
+
+
+                    float i365 = 1;
+                    int iStartDay = 365, iEndDay = 0;
+                    //set startday, endday vars if no seasonal metric exists and metric statistic (i.e., annual statistic) is set to none for health impact function
+                    //this startday, endday will serve as global bounds for the pollutant(s) data
+                    if (crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric == null && crSelectFunction.BenMAPHealthImpactFunction.MetricStatistic == MetricStatic.None)
                     {
-                        i365 = 0;
-                        foreach (Season season in seasonalMetric.Seasons)
-                        {
-                            i365 = i365 + season.EndDay - season.StartDay + 1;
-                            if (season.StartDay < iStartDay) iStartDay = season.StartDay;
-                            if (season.EndDay > iEndDay) iEndDay = season.EndDay + 1;
-                        }
-                    }
-                    else //if we don't have a seasonal metric, then check to see if pollutant itself has seasons
-                    {
-                        if (baseControlGroup.Pollutant.Seasons != null && baseControlGroup.Pollutant.Seasons.Count != 0)
+                        i365 = 365;
+                        //get metric/seasonal metrics for pollutant metric that matches the metric specified in the health impact function
+                        //we assume that all pollutants have the same metrics, so we can just get the first basecontrol group
+                        baseControlGroup = CommonClass.LstBaseControlGroup.First();
+
+                        //List<SeasonalMetric> lstseasonalMetric = baseControlGroup.Pollutant.SesonalMetrics.Where(p => p.Metric.MetricID == crSelectFunction.BenMAPHealthImpactFunction.Metric.MetricID).ToList();
+
+                        //in a multipollutant scenario, we have to match on metric name instead of id since metrics are tied to pollutants (old code which matched on ID is above)
+                        //so here we are looking for pollutant seasonal metrics for metrics that have the same name as the metric for that pollutant in the health impact function
+                        //get the HIF variable for this pollutant
+                        int variableID = CommonClass.dicPollutantIDVariableIDAll[crSelectFunction.CRID][baseControlGroup.Pollutant.PollutantID];
+                        CRFVariable variable = crSelectFunction.BenMAPHealthImpactFunction.Variables.Where(v => v.VariableID == variableID).First();
+                        //now get the seasonal metrics for this pollutant which have the same metric as that selected for this variable in the Health Impact function
+                        List<SeasonalMetric> lstseasonalMetric = baseControlGroup.Pollutant.SesonalMetrics.Where(p => String.Equals(p.Metric.MetricName, variable.Metric.MetricName, StringComparison.OrdinalIgnoreCase)).ToList();
+
+                        SeasonalMetric seasonalMetric = null;
+                        //if we have seasonal metrics for this metric, then take the last one (JCM 2016-01-25, why not the first one?)
+                        if (lstseasonalMetric.Count > 0)
+                            seasonalMetric = lstseasonalMetric.Last();
+                        //if we have a seasonal metric
+                        if (seasonalMetric != null && seasonalMetric.Seasons.Count > 0)
                         {
                             i365 = 0;
-                            foreach (Season season in baseControlGroup.Pollutant.Seasons)
+                            foreach (Season season in seasonalMetric.Seasons)
                             {
                                 i365 = i365 + season.EndDay - season.StartDay + 1;
                                 if (season.StartDay < iStartDay) iStartDay = season.StartDay;
                                 if (season.EndDay > iEndDay) iEndDay = season.EndDay + 1;
                             }
-
                         }
-                    }
-                }
-
-
-
-                Dictionary<string, double> dicVariable = null;
-                double d = 0;
-                CRCalculateValue crCalculateValue = new CRCalculateValue();
-
-                //get health impact function strings
-                string strBaseLineFunction = ConfigurationCommonClass.getFunctionStringFromDatabaseFunction(crSelectFunction.BenMAPHealthImpactFunction.BaseLineIncidenceFunction);
-                bool hasPopInstrBaseLineFunction = crSelectFunction.BenMAPHealthImpactFunction.BaseLineIncidenceFunction.Contains("POP");
-                string strPointEstimateFunction = ConfigurationCommonClass.getFunctionStringFromDatabaseFunction(crSelectFunction.BenMAPHealthImpactFunction.Function);
-
-                //set monitor value dictionaries for each pollutant, if we are using monitor data
-                Dictionary<int, Dictionary<string, MonitorValue>> dicBaseMonitorAll = new Dictionary<int, Dictionary<string, MonitorValue>>();
-                Dictionary<int, Dictionary<string, MonitorValue>> dicControlMonitorAll = new Dictionary<int, Dictionary<string, MonitorValue>>();
-                Dictionary<int, Dictionary<string, List<MonitorNeighborAttribute>>> dicAllMonitorNeighborControlAll = new Dictionary<int, Dictionary<string, List<MonitorNeighborAttribute>>>();
-                Dictionary<int, Dictionary<string, List<MonitorNeighborAttribute>>> dicAllMonitorNeighborBaseAll = new Dictionary<int, Dictionary<string, List<MonitorNeighborAttribute>>>();
-
-                //initialize dictionaries for monitor values
-                Dictionary<string, MonitorValue> dicBaseMonitor = new Dictionary<string, MonitorValue>();
-                Dictionary<string, MonitorValue> dicControlMonitor = new Dictionary<string, MonitorValue>();
-                Dictionary<string, List<MonitorNeighborAttribute>> dicAllMonitorNeighborControl = new Dictionary<string, List<MonitorNeighborAttribute>>();
-                Dictionary<string, List<MonitorNeighborAttribute>> dicAllMonitorNeighborBase = new Dictionary<string, List<MonitorNeighborAttribute>>();
-
-                foreach (BaseControlGroup bcg in CommonClass.LstBaseControlGroup)
-                {
-                    //initialize dictionaries for monitor values
-                    dicBaseMonitor = new Dictionary<string, MonitorValue>();
-                    dicControlMonitor = new Dictionary<string, MonitorValue>();
-                    dicAllMonitorNeighborControl = new Dictionary<string, List<MonitorNeighborAttribute>>();
-                    dicAllMonitorNeighborBase = new Dictionary<string, List<MonitorNeighborAttribute>>();
-
-
-                    if (bcg.Base is MonitorDataLine && bcg.Control is MonitorDataLine && crSelectFunction.BenMAPHealthImpactFunction.MetricStatistic == MetricStatic.None)
-                    {
-                        if ((bcg.Base as MonitorDataLine).MonitorValues != null)
+                        else //if we don't have a seasonal metric, then check to see if pollutant itself has seasons
                         {
-                            foreach (MonitorValue m in (bcg.Base as MonitorDataLine).MonitorValues)
+                            if (baseControlGroup.Pollutant.Seasons != null && baseControlGroup.Pollutant.Seasons.Count != 0)
                             {
-                                dicBaseMonitor.Add(m.MonitorName, m);
-                            }
-                        }
-
-
-                        if ((bcg.Control as MonitorDataLine).MonitorValues != null)
-                        {
-                            foreach (MonitorValue m in (bcg.Control as MonitorDataLine).MonitorValues)
-                            {
-                                dicControlMonitor.Add(m.MonitorName, m);
-                            }
-                        }
-
-
-                        if ((bcg.Base as MonitorDataLine).MonitorNeighbors != null)
-                        {
-                            foreach (MonitorNeighborAttribute m in (bcg.Base as MonitorDataLine).MonitorNeighbors)
-                            {
-                                if (!dicAllMonitorNeighborBase.ContainsKey(m.Col + "," + m.Row))
-                                    dicAllMonitorNeighborBase.Add(m.Col + "," + m.Row, new List<MonitorNeighborAttribute>() { m });
-                                else
-                                    dicAllMonitorNeighborBase[m.Col + "," + m.Row].Add(m);
-                            }
-                        }
-
-
-                        if ((bcg.Control as MonitorDataLine).MonitorNeighbors != null)
-                        {
-                            foreach (MonitorNeighborAttribute m in (bcg.Control as MonitorDataLine).MonitorNeighbors)
-                            {
-                                if (!dicAllMonitorNeighborControl.ContainsKey(m.Col + "," + m.Row))
-                                    dicAllMonitorNeighborControl.Add(m.Col + "," + m.Row, new List<MonitorNeighborAttribute>() { m });
-                                else
-                                    dicAllMonitorNeighborControl[m.Col + "," + m.Row].Add(m);
-                            }
-                        }
-                    }
-
-                    dicBaseMonitorAll.Add(bcg.Pollutant.PollutantID, dicBaseMonitor);
-                    dicControlMonitorAll.Add(bcg.Pollutant.PollutantID, dicControlMonitor);
-                    dicAllMonitorNeighborControlAll.Add(bcg.Pollutant.PollutantID, dicAllMonitorNeighborControl);
-                    dicAllMonitorNeighborBaseAll.Add(bcg.Pollutant.PollutantID, dicAllMonitorNeighborBase);
-
-                }
-
-                CRSelectFunctionCalculateValue crSelectFunctionCalculateValue = new CRSelectFunctionCalculateValue() { CRSelectFunction = crSelectFunction, CRCalculateValues = new List<CRCalculateValue>() };
-
-                // get number of beta variations (use first variable)
-                List<CRFBeta> lstBetas = crSelectFunction.BenMAPHealthImpactFunction.Variables.First().PollBetas.OrderBy(beta => Convert.ToInt32(beta.StartDate)).ToList();
-
-                #region foreach (ModelResultAttribute modelResultAttribute in baseControlGroup.Base.ModelResultAttributes)
-                foreach (ModelResultAttribute modelResultAttribute in baseControlGroup.Base.ModelResultAttributes)
-                {
-                    //clear base, control, and deltaq values for this grid cell
-                    dicBaseValues.Clear();
-                    dicControlValues.Clear();
-                    dicBase365Values.Clear();
-                    dicControl365Values.Clear();
-                    dicDeltaQValues.Clear();                   
-
-                    populationValue = 0;
-                    incidenceValue = 0;
-                    prevalenceValue = 0;
-
-                    if (dicPopulationAllAge != null)
-                    {
-                        foreach (KeyValuePair<string, double> s in dicAge)
-                        {
-                            if (dicPopulationAllAge.Keys.Contains(modelResultAttribute.Col + "," + modelResultAttribute.Row + "," + s.Key))
-                                populationValue += dicPopulationAllAge[modelResultAttribute.Col + "," + modelResultAttribute.Row + "," + s.Key] * s.Value;
-                        }
-                    }
-                    if (populationValue == 0)
-                        continue;
-                    dicIncidenceValue = null; dicPrevalenceValue = null; dicPopValue = null; dicIncidenceValue = new Dictionary<string, double>();
-                    dicPrevalenceValue = new Dictionary<string, double>();
-                    dicPopValue = new Dictionary<string, double>();
-                    if (dicIncidenceRateAttribute != null)
-                    {
-                        foreach (string s in lstAllAgeID)
-                        {
-                            if (dicIncidenceRateAttribute.Keys.Contains((Convert.ToInt32(modelResultAttribute.Col) * 10000 + Convert.ToInt32(modelResultAttribute.Row)).ToString() + "," + s))
-                            {
-                                dicIncidenceValue.Add(s, dicIncidenceRateAttribute[(Convert.ToInt32(modelResultAttribute.Col) * 10000 + Convert.ToInt32(modelResultAttribute.Row)).ToString() + "," + s]);
-                            }
-                        }
-                    }
-                    if (dicPrevalenceRateAttribute != null)
-                    {
-                        foreach (string s in lstAllAgeID)
-                        {
-                            if (dicPrevalenceRateAttribute.Keys.Contains((Convert.ToInt32(modelResultAttribute.Col) * 10000 + Convert.ToInt32(modelResultAttribute.Row)).ToString() + "," + s))
-                            {
-                                dicPrevalenceValue.Add(s, dicPrevalenceRateAttribute[(Convert.ToInt32(modelResultAttribute.Col) * 10000 + Convert.ToInt32(modelResultAttribute.Row)).ToString() + "," + s]);
-                            }
-                        }
-
-                    }
-                    if (dicPopulationAllAge != null)
-                    {
-                        foreach (string s in lstAllAgeID)
-                        {
-                            if (!dicAge.ContainsKey(s)) continue;
-                            if (dicPopulationAllAge.Keys.Contains(modelResultAttribute.Col + "," + modelResultAttribute.Row + "," + s))
-                            {
-                                dicPopValue.Add(s, dicPopulationAllAge[modelResultAttribute.Col + "," + modelResultAttribute.Row + "," + s] * dicAge[s]);
-                            }
-                        }
-                    }
-                    if (DicAllSetupVariableValues != null && DicAllSetupVariableValues.Count > 0)
-                    {
-                        dicVariable = new Dictionary<string, double>();
-                        d = 0;
-                        foreach (KeyValuePair<string, Dictionary<string, double>> k in DicAllSetupVariableValues)
-                        {
-                            d = 0;
-                            if (k.Value.Keys.Contains(modelResultAttribute.Col + "," + modelResultAttribute.Row))
-                                d = k.Value[modelResultAttribute.Col + "," + modelResultAttribute.Row];
-
-
-                            dicVariable.Add(k.Key, d);
-
-                        }
-                    }
-
-                    //build colrow key
-                    string colRowKey = modelResultAttribute.Col + "," + modelResultAttribute.Row;
-
-                    //get metric key dictionary
-                    Dictionary<int, string> dicMetricKeys = getMetricKeys(crSelectFunction);                    
-
-                    //do we have a metric statistic?               
-                    if (crSelectFunction.BenMAPHealthImpactFunction.MetricStatistic != MetricStatic.None)
-                    {
-                        #region if we have a metric statistic in health impact function
-                        //get metric data for base and control values for all pollutants
-                        //if we don't have metric data, create "blank" result and continue to next model result attribute (i.e. grid cell)
-                        if ((!getAllMetricData(dicAllMetricDataBase, colRowKey, dicMetricKeys, dicBaseValues)) ||
-                                (!getAllMetricData(dicAllMetricDataControl, colRowKey, dicMetricKeys, dicControlValues)))
-                        {
-                            //for each beta variation
-                            for (int betaIndex = 0; betaIndex < lstBetas.Count; betaIndex++)
-                            {
-                                //add a result of 0 "zero"
-                                crCalculateValue = new CRCalculateValue()
+                                i365 = 0;
+                                foreach (Season season in baseControlGroup.Pollutant.Seasons)
                                 {
-                                    Baseline = 0,
-                                    Col = modelResultAttribute.Col,
-                                    Row = modelResultAttribute.Row,
-                                    Deltas = getDeltaQValuesZeros(),
-                                    Incidence = Convert.ToSingle(incidenceValue),
-                                    Population = Convert.ToSingle(populationValue),
-                                    LstPercentile = new List<float>(),
-                                    Mean = 0,
-                                    PercentOfBaseline = 0,
-                                    PointEstimate = 0,
-                                    StandardDeviation = 0,
-                                    Variance = 0
-
-                                };
-
-                                //add 0 percentile for each latin hypercube point (number latin hypercube points = number percentiles = number items in lhsResultArray)
-                                for (int i = 0; i < CommonClass.CRLatinHypercubePoints; i++)
-                                {
-                                    crCalculateValue.LstPercentile.Add(0);
+                                    i365 = i365 + season.EndDay - season.StartDay + 1;
+                                    if (season.StartDay < iStartDay) iStartDay = season.StartDay;
+                                    if (season.EndDay > iEndDay) iEndDay = season.EndDay + 1;
                                 }
-                                
-                                //set beta variation fields
-                                crCalculateValue.BetaVariationName = crSelectFunction.BenMAPHealthImpactFunction.BetaVariation.BetaVariationName;
-                                crCalculateValue.BetaName = lstBetas[betaIndex].SeasonName;
 
-                                crSelectFunctionCalculateValue.CRCalculateValues.Add(crCalculateValue);
+                            }
+                        }
+                    }
+
+
+
+                    Dictionary<string, double> dicVariable = null;
+                    double d = 0;
+                    CRCalculateValue crCalculateValue = new CRCalculateValue();
+
+                    //get health impact function strings
+                    string strBaseLineFunction = ConfigurationCommonClass.getFunctionStringFromDatabaseFunction(crSelectFunction.BenMAPHealthImpactFunction.BaseLineIncidenceFunction);
+                    bool hasPopInstrBaseLineFunction = crSelectFunction.BenMAPHealthImpactFunction.BaseLineIncidenceFunction.Contains("POP");
+                    string strPointEstimateFunction = ConfigurationCommonClass.getFunctionStringFromDatabaseFunction(crSelectFunction.BenMAPHealthImpactFunction.Function);
+
+                    //set monitor value dictionaries for each pollutant, if we are using monitor data
+                    Dictionary<int, Dictionary<string, MonitorValue>> dicBaseMonitorAll = new Dictionary<int, Dictionary<string, MonitorValue>>();
+                    Dictionary<int, Dictionary<string, MonitorValue>> dicControlMonitorAll = new Dictionary<int, Dictionary<string, MonitorValue>>();
+                    Dictionary<int, Dictionary<string, List<MonitorNeighborAttribute>>> dicAllMonitorNeighborControlAll = new Dictionary<int, Dictionary<string, List<MonitorNeighborAttribute>>>();
+                    Dictionary<int, Dictionary<string, List<MonitorNeighborAttribute>>> dicAllMonitorNeighborBaseAll = new Dictionary<int, Dictionary<string, List<MonitorNeighborAttribute>>>();
+
+                    //initialize dictionaries for monitor values
+                    Dictionary<string, MonitorValue> dicBaseMonitor = new Dictionary<string, MonitorValue>();
+                    Dictionary<string, MonitorValue> dicControlMonitor = new Dictionary<string, MonitorValue>();
+                    Dictionary<string, List<MonitorNeighborAttribute>> dicAllMonitorNeighborControl = new Dictionary<string, List<MonitorNeighborAttribute>>();
+                    Dictionary<string, List<MonitorNeighborAttribute>> dicAllMonitorNeighborBase = new Dictionary<string, List<MonitorNeighborAttribute>>();
+
+                    foreach (BaseControlGroup bcg in CommonClass.LstBaseControlGroup)
+                    {
+                        //initialize dictionaries for monitor values
+                        dicBaseMonitor = new Dictionary<string, MonitorValue>();
+                        dicControlMonitor = new Dictionary<string, MonitorValue>();
+                        dicAllMonitorNeighborControl = new Dictionary<string, List<MonitorNeighborAttribute>>();
+                        dicAllMonitorNeighborBase = new Dictionary<string, List<MonitorNeighborAttribute>>();
+
+
+                        if (bcg.Base is MonitorDataLine && bcg.Control is MonitorDataLine && crSelectFunction.BenMAPHealthImpactFunction.MetricStatistic == MetricStatic.None)
+                        {
+                            if ((bcg.Base as MonitorDataLine).MonitorValues != null)
+                            {
+                                foreach (MonitorValue m in (bcg.Base as MonitorDataLine).MonitorValues)
+                                {
+                                    dicBaseMonitor.Add(m.MonitorName, m);
+                                }
                             }
 
-                            //skip to next modelResultAttribute (i.e. grid cell)
-                            continue;
-                        }
-                        #endregion
-                    }
-                    else
-                    {
 
-                        #region if we do not have a metric statistic in health impact function
-                        //do we have 365 data?
-                       if (getAll365Data(dicAll365Base, colRowKey, dicMetricKeys, dicBase365Values) &&
-                                getAll365Data(dicAll365Control, colRowKey, dicMetricKeys, dicControl365Values))                       
-                       {
-                            #region if we have 365 data
-
-                            //for each beta variation
-                            for (int betaIndex = 0; betaIndex < lstBetas.Count; betaIndex++)
+                            if ((bcg.Control as MonitorDataLine).MonitorValues != null)
                             {
-
-                                float fPSum = 0, fBaselineSum = 0;
-                                List<float> lstFPSum = new List<float>();
-                                //initialize percentile list
-                                if (!CommonClass.CRRunInPointMode)
+                                foreach (MonitorValue m in (bcg.Control as MonitorDataLine).MonitorValues)
                                 {
+                                    dicControlMonitor.Add(m.MonitorName, m);
+                                }
+                            }
+
+
+                            if ((bcg.Base as MonitorDataLine).MonitorNeighbors != null)
+                            {
+                                foreach (MonitorNeighborAttribute m in (bcg.Base as MonitorDataLine).MonitorNeighbors)
+                                {
+                                    if (!dicAllMonitorNeighborBase.ContainsKey(m.Col + "," + m.Row))
+                                        dicAllMonitorNeighborBase.Add(m.Col + "," + m.Row, new List<MonitorNeighborAttribute>() { m });
+                                    else
+                                        dicAllMonitorNeighborBase[m.Col + "," + m.Row].Add(m);
+                                }
+                            }
+
+
+                            if ((bcg.Control as MonitorDataLine).MonitorNeighbors != null)
+                            {
+                                foreach (MonitorNeighborAttribute m in (bcg.Control as MonitorDataLine).MonitorNeighbors)
+                                {
+                                    if (!dicAllMonitorNeighborControl.ContainsKey(m.Col + "," + m.Row))
+                                        dicAllMonitorNeighborControl.Add(m.Col + "," + m.Row, new List<MonitorNeighborAttribute>() { m });
+                                    else
+                                        dicAllMonitorNeighborControl[m.Col + "," + m.Row].Add(m);
+                                }
+                            }
+                        }
+
+                        dicBaseMonitorAll.Add(bcg.Pollutant.PollutantID, dicBaseMonitor);
+                        dicControlMonitorAll.Add(bcg.Pollutant.PollutantID, dicControlMonitor);
+                        dicAllMonitorNeighborControlAll.Add(bcg.Pollutant.PollutantID, dicAllMonitorNeighborControl);
+                        dicAllMonitorNeighborBaseAll.Add(bcg.Pollutant.PollutantID, dicAllMonitorNeighborBase);
+
+                    }
+
+                    CRSelectFunctionCalculateValue crSelectFunctionCalculateValue = new CRSelectFunctionCalculateValue() { CRSelectFunction = crSelectFunction, CRCalculateValues = new List<CRCalculateValue>() };
+
+                    // get number of beta variations (use first variable)
+                    List<CRFBeta> lstBetas = crSelectFunction.BenMAPHealthImpactFunction.Variables.First().PollBetas.OrderBy(beta => Convert.ToInt32(beta.StartDate)).ToList();
+
+                    #region foreach (ModelResultAttribute modelResultAttribute in baseControlGroup.Base.ModelResultAttributes)
+                    foreach (ModelResultAttribute modelResultAttribute in baseControlGroup.Base.ModelResultAttributes)
+                    {
+                        //clear base, control, and deltaq values for this grid cell
+                        dicBaseValues.Clear();
+                        dicControlValues.Clear();
+                        dicBase365Values.Clear();
+                        dicControl365Values.Clear();
+                        dicDeltaQValues.Clear();
+
+                        populationValue = 0;
+                        incidenceValue = 0;
+                        prevalenceValue = 0;
+
+                        if (dicPopulationAllAge != null)
+                        {
+                            foreach (KeyValuePair<string, double> s in dicAge)
+                            {
+                                if (dicPopulationAllAge.Keys.Contains(modelResultAttribute.Col + "," + modelResultAttribute.Row + "," + s.Key))
+                                    populationValue += dicPopulationAllAge[modelResultAttribute.Col + "," + modelResultAttribute.Row + "," + s.Key] * s.Value;
+                            }
+                        }
+                        if (populationValue == 0)
+                            continue;
+                        dicIncidenceValue = null; dicPrevalenceValue = null; dicPopValue = null; dicIncidenceValue = new Dictionary<string, double>();
+                        dicPrevalenceValue = new Dictionary<string, double>();
+                        dicPopValue = new Dictionary<string, double>();
+                        if (dicIncidenceRateAttribute != null)
+                        {
+                            foreach (string s in lstAllAgeID)
+                            {
+                                if (dicIncidenceRateAttribute.Keys.Contains((Convert.ToInt32(modelResultAttribute.Col) * 10000 + Convert.ToInt32(modelResultAttribute.Row)).ToString() + "," + s))
+                                {
+                                    dicIncidenceValue.Add(s, dicIncidenceRateAttribute[(Convert.ToInt32(modelResultAttribute.Col) * 10000 + Convert.ToInt32(modelResultAttribute.Row)).ToString() + "," + s]);
+                                }
+                            }
+                        }
+                        if (dicPrevalenceRateAttribute != null)
+                        {
+                            foreach (string s in lstAllAgeID)
+                            {
+                                if (dicPrevalenceRateAttribute.Keys.Contains((Convert.ToInt32(modelResultAttribute.Col) * 10000 + Convert.ToInt32(modelResultAttribute.Row)).ToString() + "," + s))
+                                {
+                                    dicPrevalenceValue.Add(s, dicPrevalenceRateAttribute[(Convert.ToInt32(modelResultAttribute.Col) * 10000 + Convert.ToInt32(modelResultAttribute.Row)).ToString() + "," + s]);
+                                }
+                            }
+
+                        }
+                        if (dicPopulationAllAge != null)
+                        {
+                            foreach (string s in lstAllAgeID)
+                            {
+                                if (!dicAge.ContainsKey(s)) continue;
+                                if (dicPopulationAllAge.Keys.Contains(modelResultAttribute.Col + "," + modelResultAttribute.Row + "," + s))
+                                {
+                                    dicPopValue.Add(s, dicPopulationAllAge[modelResultAttribute.Col + "," + modelResultAttribute.Row + "," + s] * dicAge[s]);
+                                }
+                            }
+                        }
+                        if (DicAllSetupVariableValues != null && DicAllSetupVariableValues.Count > 0)
+                        {
+                            dicVariable = new Dictionary<string, double>();
+                            d = 0;
+                            foreach (KeyValuePair<string, Dictionary<string, double>> k in DicAllSetupVariableValues)
+                            {
+                                d = 0;
+                                if (k.Value.Keys.Contains(modelResultAttribute.Col + "," + modelResultAttribute.Row))
+                                    d = k.Value[modelResultAttribute.Col + "," + modelResultAttribute.Row];
+
+
+                                dicVariable.Add(k.Key, d);
+
+                            }
+                        }
+
+                        //build colrow key
+                        string colRowKey = modelResultAttribute.Col + "," + modelResultAttribute.Row;
+
+                        //get metric key dictionary
+                        Dictionary<int, string> dicMetricKeys = getMetricKeys(crSelectFunction);
+
+                        //do we have a metric statistic?               
+                        if (crSelectFunction.BenMAPHealthImpactFunction.MetricStatistic != MetricStatic.None)
+                        {
+                            #region if we have a metric statistic in health impact function
+                            //get metric data for base and control values for all pollutants
+                            //if we don't have metric data, create "blank" result and continue to next model result attribute (i.e. grid cell)
+                            if ((!getAllMetricData(dicAllMetricDataBase, colRowKey, dicMetricKeys, dicBaseValues)) ||
+                                    (!getAllMetricData(dicAllMetricDataControl, colRowKey, dicMetricKeys, dicControlValues)))
+                            {
+                                //for each beta variation
+                                for (int betaIndex = 0; betaIndex < lstBetas.Count; betaIndex++)
+                                {
+                                    //add a result of 0 "zero"
+                                    crCalculateValue = new CRCalculateValue()
+                                    {
+                                        Baseline = 0,
+                                        Col = modelResultAttribute.Col,
+                                        Row = modelResultAttribute.Row,
+                                        Deltas = getDeltaQValuesZeros(),
+                                        Incidence = Convert.ToSingle(incidenceValue),
+                                        Population = Convert.ToSingle(populationValue),
+                                        LstPercentile = new List<float>(),
+                                        Mean = 0,
+                                        PercentOfBaseline = 0,
+                                        PointEstimate = 0,
+                                        StandardDeviation = 0,
+                                        Variance = 0
+
+                                    };
+
+                                    //add 0 percentile for each latin hypercube point (number latin hypercube points = number percentiles = number items in lhsResultArray)
                                     for (int i = 0; i < CommonClass.CRLatinHypercubePoints; i++)
                                     {
-                                        lstFPSum.Add(0);
-                                    }
-                                }
-
-                                //loop over each day of the year for this row/col and metric                                
-                                for (int iDay = 0; iDay < dicBase365Values.First().Value.Count; iDay++)
-                                {
-
-                                    Dictionary<int, double> fdicBaseValues = new Dictionary<int, double>();
-                                    Dictionary<int, double> fdicControlValues = new Dictionary<int, double>();                                    
-                                    Dictionary<int, double> fdicDeltaQValues = new Dictionary<int, double>();
-
-                                    //double fBase, fControl, fDelta;
-                                    fdicBaseValues = getValuesFrom365Values(dicBase365Values, iDay);
-                                    fdicControlValues = getValuesFrom365Values(dicControl365Values, iDay);
-                                    if ((!CheckValuesAgainstMinimum(fdicBaseValues)) && (!CheckValuesAgainstMinimum(fdicControlValues)))
-                                    {
-                                        CheckValuesAgainstThreshold(fdicBaseValues, Threshold);
-                                        CheckValuesAgainstThreshold(fdicControlValues, Threshold);
-
-                                        //get deltaQ values
-                                        fdicDeltaQValues = getDeltaQValues(fdicBaseValues, fdicControlValues);
-
-                                        {
-                                            CRCalculateValue cr = CalculateCRSelectFunctionsOneCel(sCRID, hasPopInstrBaseLineFunction, 1, crSelectFunction, strBaseLineFunction, strPointEstimateFunction, modelResultAttribute.Col, modelResultAttribute.Row, fdicBaseValues, fdicControlValues, dicPopValue, dicIncidenceValue, dicPrevalenceValue, dicVariable, betaIndex);
-                                            fPSum += cr.PointEstimate;
-                                            fBaselineSum += cr.Baseline;
-                                            if (!CommonClass.CRRunInPointMode)
-                                            {
-                                                for (int i = 0; i < CommonClass.CRLatinHypercubePoints; i++)
-                                                {
-                                                    lstFPSum[i] += cr.LstPercentile[i];
-                                                }
-                                            }
-                                        }
+                                        crCalculateValue.LstPercentile.Add(0);
                                     }
 
+                                    //set beta variation fields
+                                    crCalculateValue.BetaVariationName = crSelectFunction.BenMAPHealthImpactFunction.BetaVariation.BetaVariationName;
+                                    crCalculateValue.BetaName = lstBetas[betaIndex].SeasonName;
+
+                                    crSelectFunctionCalculateValue.CRCalculateValues.Add(crCalculateValue);
                                 }
 
-                                //build result value object
-                                crCalculateValue = new CRCalculateValue()
-                                {
-                                    Col = modelResultAttribute.Col,
-                                    Row = modelResultAttribute.Row,
-                                    Deltas = getDeltaQValuesZeros(),                                    
-                                    Incidence = Convert.ToSingle(incidenceValue),
-                                    PointEstimate = fPSum,
-                                    LstPercentile = lstFPSum,
-                                    Population = Convert.ToSingle(populationValue),
-                                    Mean = lstFPSum.Count() == 0 ? float.NaN : getMean(lstFPSum),
-                                    Variance = lstFPSum.Count() == 0 ? float.NaN : getVariance(lstFPSum, fPSum),
-                                    Baseline = fBaselineSum,
-                                };
-
-                                crCalculateValue.StandardDeviation = lstFPSum.Count() == 0 ? float.NaN : Convert.ToSingle(Math.Sqrt(crCalculateValue.Variance));
-                                crCalculateValue.PercentOfBaseline = crCalculateValue.Baseline == 0 ? 0 : Convert.ToSingle(Math.Round((crCalculateValue.Mean / crCalculateValue.Baseline) * 100, 4));
-
-                                //calculate delta
-                                Dictionary<int, double> baseValuesForDelta = getBaseValuesFromModelResultAttributes(colRowKey, dicMetricKeys);
-
-                                Dictionary<int, double> controlValuesForDelta = new Dictionary<int, double>();
-                                if (!getControlValues(DicControlAll, colRowKey, dicMetricKeys, controlValuesForDelta))
-                                {                                 
-                                    controlValuesForDelta = new Dictionary<int, double>(baseValuesForDelta);
-                                }
-
-                                CheckValuesAgainstThreshold(baseValuesForDelta, Threshold);
-                                CheckValuesAgainstThreshold(controlValuesForDelta, Threshold);
-
-                                //set deltas
-                                crCalculateValue.Deltas = getDeltaQValues(baseValuesForDelta, controlValuesForDelta);
-                                crCalculateValue.DeltaList = getSortedDeltaListFromDictionaryandObject(crSelectFunction, crCalculateValue.Deltas);
-
-                                //set beta variation fields
-                                crCalculateValue.BetaVariationName = crSelectFunction.BenMAPHealthImpactFunction.BetaVariation.BetaVariationName;
-                                crCalculateValue.BetaName = lstBetas[betaIndex].SeasonName;
-
-                                crSelectFunctionCalculateValue.CRCalculateValues.Add(crCalculateValue);
-
+                                //skip to next modelResultAttribute (i.e. grid cell)
+                                continue;
                             }
-
-                            //skip to next modelresultattribute (i.e. grid cell)
-                            continue;
-
                             #endregion
-
                         }
                         else
                         {
-                            #region if we do not have 365 data
 
-                            dicBaseValues = getBaseValuesFromModelResultAttributes(colRowKey, dicMetricKeys);                          
-
-                            dicControlValues = new Dictionary<int, double>();
-                            if (!getControlValues(DicControlAll, colRowKey, dicMetricKeys, dicControlValues))
+                            #region if we do not have a metric statistic in health impact function
+                            //do we have 365 data?
+                            if (getAll365Data(dicAll365Base, colRowKey, dicMetricKeys, dicBase365Values) &&
+                                     getAll365Data(dicAll365Control, colRowKey, dicMetricKeys, dicControl365Values))
                             {
-                                dicControlValues = new Dictionary<int, double>(dicBaseValues);
-                            }
-
-                            //get any monitor data
-                            List<MonitorDataHelper> lstMonitorDataHelpers = getMonitorDataHelpers(dicBaseMonitorAll, dicControlMonitorAll,
-                                                                                                  dicAllMonitorNeighborBaseAll, dicAllMonitorNeighborControlAll,
-                                                                                                  dicBaseValues, dicControlValues, colRowKey, dicMetricKeys);
-                            //are we using monitor data?
-                            if (lstMonitorDataHelpers.Count > 0)
-                            {
-                                #region if we are using monitor data
-                                bool is365 = false;
-                                int dayCount = 365;
-
-                                //adjust day counts if using seasonal metric
-                                if (crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric != null)
-                                {
-                                    i365 = crSelectFunction.BenMAPHealthImpactFunction.PollutantGroup.Pollutants.First().Seasons.Count();
-                                    iStartDay = 0;
-                                    iEndDay = crSelectFunction.BenMAPHealthImpactFunction.PollutantGroup.Pollutants.First().Seasons.Count();
-                                    dayCount = 4;
-                                }
-
-                                //adjust is365 flag and day counts based on monitor data
-                                foreach (MonitorDataHelper mdh in lstMonitorDataHelpers)
-                                {
-                                    //if one of the base control groups uses 365 monitor data, then set 365 flag to true
-                                    if ((is365 == false) && (mdh.Is365 == true))
-                                    {
-                                        is365 = true;
-                                    }
-
-                                    //use smallest day count
-                                    if (dayCount > mdh.DayCount)
-                                    {
-                                        dayCount = mdh.DayCount;
-                                    }
-                                }
+                                #region if we have 365 data
 
                                 //for each beta variation
                                 for (int betaIndex = 0; betaIndex < lstBetas.Count; betaIndex++)
                                 {
 
-                                    //is 365?                                
-                                    if (is365)
+                                    float fPSum = 0, fBaselineSum = 0;
+                                    List<float> lstFPSum = new List<float>();
+                                    //initialize percentile list
+                                    if (!CommonClass.CRRunInPointMode)
                                     {
-                                        #region if is365 = true         
-                                        
-                                        //get 365 monitor values by pollutant                               
-                                        get365ValuesFromMonitorDataHelpers(lstMonitorDataHelpers, dicBase365Values, dicControl365Values);
-
-                                        //get 365 values for base control groups using model data                                 
-                                        get365ValuesFromModelValues(dicBaseValues, dicBase365Values);
-                                        get365ValuesFromModelValues(dicControlValues, dicControl365Values);
-
-                                        float fPSum = 0, fBaselineSum = 0;
-                                        List<float> lstFPSum = new List<float>();
-                                        if (!CommonClass.CRRunInPointMode)
+                                        for (int i = 0; i < CommonClass.CRLatinHypercubePoints; i++)
                                         {
-                                            for (int i = 0; i < CommonClass.CRLatinHypercubePoints; i++)
-                                            {
-                                                lstFPSum.Add(0);
-                                            }
+                                            lstFPSum.Add(0);
                                         }
-                                        
-                                        for (int iDay = iStartDay; iDay < iEndDay; iDay++)
-                                        {
-                                            Dictionary<int, double> fdicBaseValues = new Dictionary<int, double>();
-                                            Dictionary<int, double> fdicControlValues = new Dictionary<int, double>();
-                                            Dictionary<int, double> fdicDeltaQValues = new Dictionary<int, double>();
-
-                                            //double fBase, fControl, fDelta;
-                                            fdicBaseValues = getValuesFrom365Values(dicBase365Values, iDay);
-                                            fdicControlValues = getValuesFrom365Values(dicControl365Values, iDay);
-
-                                            if ((!CheckValuesAgainstZero(fdicBaseValues)) && (!CheckValuesAgainstZero(fdicControlValues)))                                              
-                                            {
-                                                CheckValuesAgainstThreshold(fdicBaseValues, Threshold);
-                                                CheckValuesAgainstThreshold(fdicControlValues, Threshold);
-
-                                                //get deltaQ values
-                                                fdicDeltaQValues = getDeltaQValues(fdicBaseValues, fdicControlValues);
-
-                                                //if no seasonal metric, i.e. we are using metric name, and delta = 0 then skip to next day
-                                                if (crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric == null)
-                                                {
-                                                    if (CheckValuesAgainstZero(fdicDeltaQValues))
-                                                    {
-                                                        continue;
-                                                    }
-                                                }
-
-                                                {
-                                                    CRCalculateValue cr = CalculateCRSelectFunctionsOneCel(sCRID, hasPopInstrBaseLineFunction, 1, crSelectFunction, strBaseLineFunction, strPointEstimateFunction, modelResultAttribute.Col, modelResultAttribute.Row, fdicBaseValues, fdicControlValues, dicPopValue, dicIncidenceValue, dicPrevalenceValue, dicVariable, betaIndex);
-                                                    fPSum += cr.PointEstimate;
-                                                    fBaselineSum += cr.Baseline;
-                                                    if (!CommonClass.CRRunInPointMode)
-                                                    {
-                                                        for (int i = 0; i < CommonClass.CRLatinHypercubePoints; i++)
-                                                        {
-                                                            lstFPSum[i] += cr.LstPercentile[i];
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }                                       
-
-
-                                        crCalculateValue = new CRCalculateValue()
-                                        {
-                                            Col = modelResultAttribute.Col,
-                                            Row = modelResultAttribute.Row,
-                                            Deltas = getDeltaQValuesZeros(),
-                                            Incidence = Convert.ToSingle(incidenceValue),
-                                            PointEstimate = fPSum,
-                                            LstPercentile = lstFPSum,
-                                            Population = Convert.ToSingle(populationValue),
-                                            Mean = lstFPSum.Count() == 0 ? float.NaN : getMean(lstFPSum),
-                                            Variance = lstFPSum.Count() == 0 ? float.NaN : getVariance(lstFPSum, fPSum),
-                                            Baseline = fBaselineSum,
-                                        };
-                                        crCalculateValue.StandardDeviation = lstFPSum.Count() == 0 ? float.NaN : Convert.ToSingle(Math.Sqrt(crCalculateValue.Variance));
-                                        #endregion
-
                                     }
-                                    else
+
+                                    //loop over each day of the year for this row/col and metric                                
+                                    for (int iDay = 0; iDay < dicBase365Values.First().Value.Count; iDay++)
                                     {
-                                        #region if is365 = false
 
                                         Dictionary<int, double> fdicBaseValues = new Dictionary<int, double>();
                                         Dictionary<int, double> fdicControlValues = new Dictionary<int, double>();
                                         Dictionary<int, double> fdicDeltaQValues = new Dictionary<int, double>();
 
-                                        //get monitor values by pollutant                               
-                                        getValuesFromMonitorDataHelpers(lstMonitorDataHelpers, fdicBaseValues, fdicControlValues);
-
-                                        //get values for base control groups using model data                                 
-                                        getValuesFromModelValues(dicBaseValues, fdicBaseValues);
-                                        getValuesFromModelValues(dicControlValues, fdicControlValues);
-
-                                        float fPSum = 0, fBaselineSum = 0;
-                                        List<float> lstFPSum = new List<float>();
-                                        if (!CommonClass.CRRunInPointMode)
-                                        {
-                                            for (int i = 0; i < CommonClass.CRLatinHypercubePoints; i++)
-                                            {
-                                                lstFPSum.Add(0);
-                                            }
-                                        }
-
-                                        if ((!CheckValuesAgainstZero(fdicBaseValues)) && (!CheckValuesAgainstZero(fdicControlValues)))
+                                        //double fBase, fControl, fDelta;
+                                        fdicBaseValues = getValuesFrom365Values(dicBase365Values, iDay);
+                                        fdicControlValues = getValuesFrom365Values(dicControl365Values, iDay);
+                                        if ((!CheckValuesAgainstMinimum(fdicBaseValues)) && (!CheckValuesAgainstMinimum(fdicControlValues)))
                                         {
                                             CheckValuesAgainstThreshold(fdicBaseValues, Threshold);
                                             CheckValuesAgainstThreshold(fdicControlValues, Threshold);
@@ -4978,8 +4752,8 @@ namespace BenMAP.Configuration
 
                                             {
                                                 CRCalculateValue cr = CalculateCRSelectFunctionsOneCel(sCRID, hasPopInstrBaseLineFunction, 1, crSelectFunction, strBaseLineFunction, strPointEstimateFunction, modelResultAttribute.Col, modelResultAttribute.Row, fdicBaseValues, fdicControlValues, dicPopValue, dicIncidenceValue, dicPrevalenceValue, dicVariable, betaIndex);
-                                                fPSum += cr.PointEstimate * i365;
-                                                fBaselineSum += cr.Baseline * i365;
+                                                fPSum += cr.PointEstimate;
+                                                fBaselineSum += cr.Baseline;
                                                 if (!CommonClass.CRRunInPointMode)
                                                 {
                                                     for (int i = 0; i < CommonClass.CRLatinHypercubePoints; i++)
@@ -4989,28 +4763,28 @@ namespace BenMAP.Configuration
                                                 }
                                             }
                                         }
-                                        crCalculateValue = new CRCalculateValue()
-                                        {
-                                            Col = modelResultAttribute.Col,
-                                            Row = modelResultAttribute.Row,
-                                            Deltas = getDeltaQValuesZeros(),
-                                            Incidence = Convert.ToSingle(incidenceValue),
-                                            PointEstimate = fPSum,
-                                            LstPercentile = lstFPSum,
-                                            Population = Convert.ToSingle(populationValue),
-                                            Mean = lstFPSum.Count() == 0 ? float.NaN : getMean(lstFPSum),
-                                            Variance = lstFPSum.Count() == 0 ? float.NaN : getVariance(lstFPSum, fPSum),
-                                            Baseline = fBaselineSum,
-                                        };
-                                        crCalculateValue.StandardDeviation = lstFPSum.Count() == 0 ? float.NaN : Convert.ToSingle(Math.Sqrt(crCalculateValue.Variance));
 
-                                        #endregion
                                     }
 
+                                    //build result value object
+                                    crCalculateValue = new CRCalculateValue()
+                                    {
+                                        Col = modelResultAttribute.Col,
+                                        Row = modelResultAttribute.Row,
+                                        Deltas = getDeltaQValuesZeros(),
+                                        Incidence = Convert.ToSingle(incidenceValue),
+                                        PointEstimate = fPSum,
+                                        LstPercentile = lstFPSum,
+                                        Population = Convert.ToSingle(populationValue),
+                                        Mean = lstFPSum.Count() == 0 ? float.NaN : getMean(lstFPSum),
+                                        Variance = lstFPSum.Count() == 0 ? float.NaN : getVariance(lstFPSum, fPSum),
+                                        Baseline = fBaselineSum,
+                                    };
 
+                                    crCalculateValue.StandardDeviation = lstFPSum.Count() == 0 ? float.NaN : Convert.ToSingle(Math.Sqrt(crCalculateValue.Variance));
                                     crCalculateValue.PercentOfBaseline = crCalculateValue.Baseline == 0 ? 0 : Convert.ToSingle(Math.Round((crCalculateValue.Mean / crCalculateValue.Baseline) * 100, 4));
 
-                                    //calculate Delta
+                                    //calculate delta
                                     Dictionary<int, double> baseValuesForDelta = getBaseValuesFromModelResultAttributes(colRowKey, dicMetricKeys);
 
                                     Dictionary<int, double> controlValuesForDelta = new Dictionary<int, double>();
@@ -5030,20 +4804,20 @@ namespace BenMAP.Configuration
                                     crCalculateValue.BetaVariationName = crSelectFunction.BenMAPHealthImpactFunction.BetaVariation.BetaVariationName;
                                     crCalculateValue.BetaName = lstBetas[betaIndex].SeasonName;
 
-                                    //add calculated value to list of calculated values
                                     crSelectFunctionCalculateValue.CRCalculateValues.Add(crCalculateValue);
+
                                 }
 
-                                //skip to next modelResultAttribute (i.e., grid cell)
+                                //skip to next modelresultattribute (i.e. grid cell)
                                 continue;
 
-
                                 #endregion
+
                             }
-
-
-                            if (crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric != null)
+                            else
                             {
+                                #region if we do not have 365 data
+
                                 dicBaseValues = getBaseValuesFromModelResultAttributes(colRowKey, dicMetricKeys);
 
                                 dicControlValues = new Dictionary<int, double>();
@@ -5052,53 +4826,285 @@ namespace BenMAP.Configuration
                                     dicControlValues = new Dictionary<int, double>(dicBaseValues);
                                 }
 
-                                i365 = crSelectFunction.BenMAPHealthImpactFunction.PollutantGroup.Pollutants.First().Seasons.Count();
+                                //get any monitor data
+                                List<MonitorDataHelper> lstMonitorDataHelpers = getMonitorDataHelpers(dicBaseMonitorAll, dicControlMonitorAll,
+                                                                                                      dicAllMonitorNeighborBaseAll, dicAllMonitorNeighborControlAll,
+                                                                                                      dicBaseValues, dicControlValues, colRowKey, dicMetricKeys);
+                                //are we using monitor data?
+                                if (lstMonitorDataHelpers.Count > 0)
+                                {
+                                    #region if we are using monitor data
+                                    bool is365 = false;
+                                    int dayCount = 365;
 
+                                    //adjust day counts if using seasonal metric
+                                    if (crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric != null)
+                                    {
+                                        i365 = crSelectFunction.BenMAPHealthImpactFunction.PollutantGroup.Pollutants.First().Seasons.Count();
+                                        iStartDay = 0;
+                                        iEndDay = crSelectFunction.BenMAPHealthImpactFunction.PollutantGroup.Pollutants.First().Seasons.Count();
+                                        dayCount = 4;
+                                    }
+
+                                    //adjust is365 flag and day counts based on monitor data
+                                    foreach (MonitorDataHelper mdh in lstMonitorDataHelpers)
+                                    {
+                                        //if one of the base control groups uses 365 monitor data, then set 365 flag to true
+                                        if ((is365 == false) && (mdh.Is365 == true))
+                                        {
+                                            is365 = true;
+                                        }
+
+                                        //use smallest day count
+                                        if (dayCount > mdh.DayCount)
+                                        {
+                                            dayCount = mdh.DayCount;
+                                        }
+                                    }
+
+                                    //for each beta variation
+                                    for (int betaIndex = 0; betaIndex < lstBetas.Count; betaIndex++)
+                                    {
+
+                                        //is 365?                                
+                                        if (is365)
+                                        {
+                                            #region if is365 = true         
+
+                                            //get 365 monitor values by pollutant                               
+                                            get365ValuesFromMonitorDataHelpers(lstMonitorDataHelpers, dicBase365Values, dicControl365Values);
+
+                                            //get 365 values for base control groups using model data                                 
+                                            get365ValuesFromModelValues(dicBaseValues, dicBase365Values);
+                                            get365ValuesFromModelValues(dicControlValues, dicControl365Values);
+
+                                            float fPSum = 0, fBaselineSum = 0;
+                                            List<float> lstFPSum = new List<float>();
+                                            if (!CommonClass.CRRunInPointMode)
+                                            {
+                                                for (int i = 0; i < CommonClass.CRLatinHypercubePoints; i++)
+                                                {
+                                                    lstFPSum.Add(0);
+                                                }
+                                            }
+
+                                            for (int iDay = iStartDay; iDay < iEndDay; iDay++)
+                                            {
+                                                Dictionary<int, double> fdicBaseValues = new Dictionary<int, double>();
+                                                Dictionary<int, double> fdicControlValues = new Dictionary<int, double>();
+                                                Dictionary<int, double> fdicDeltaQValues = new Dictionary<int, double>();
+
+                                                //double fBase, fControl, fDelta;
+                                                fdicBaseValues = getValuesFrom365Values(dicBase365Values, iDay);
+                                                fdicControlValues = getValuesFrom365Values(dicControl365Values, iDay);
+
+                                                if ((!CheckValuesAgainstZero(fdicBaseValues)) && (!CheckValuesAgainstZero(fdicControlValues)))
+                                                {
+                                                    CheckValuesAgainstThreshold(fdicBaseValues, Threshold);
+                                                    CheckValuesAgainstThreshold(fdicControlValues, Threshold);
+
+                                                    //get deltaQ values
+                                                    fdicDeltaQValues = getDeltaQValues(fdicBaseValues, fdicControlValues);
+
+                                                    //if no seasonal metric, i.e. we are using metric name, and delta = 0 then skip to next day
+                                                    if (crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric == null)
+                                                    {
+                                                        if (CheckValuesAgainstZero(fdicDeltaQValues))
+                                                        {
+                                                            continue;
+                                                        }
+                                                    }
+
+                                                    {
+                                                        CRCalculateValue cr = CalculateCRSelectFunctionsOneCel(sCRID, hasPopInstrBaseLineFunction, 1, crSelectFunction, strBaseLineFunction, strPointEstimateFunction, modelResultAttribute.Col, modelResultAttribute.Row, fdicBaseValues, fdicControlValues, dicPopValue, dicIncidenceValue, dicPrevalenceValue, dicVariable, betaIndex);
+                                                        fPSum += cr.PointEstimate;
+                                                        fBaselineSum += cr.Baseline;
+                                                        if (!CommonClass.CRRunInPointMode)
+                                                        {
+                                                            for (int i = 0; i < CommonClass.CRLatinHypercubePoints; i++)
+                                                            {
+                                                                lstFPSum[i] += cr.LstPercentile[i];
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+
+
+                                            crCalculateValue = new CRCalculateValue()
+                                            {
+                                                Col = modelResultAttribute.Col,
+                                                Row = modelResultAttribute.Row,
+                                                Deltas = getDeltaQValuesZeros(),
+                                                Incidence = Convert.ToSingle(incidenceValue),
+                                                PointEstimate = fPSum,
+                                                LstPercentile = lstFPSum,
+                                                Population = Convert.ToSingle(populationValue),
+                                                Mean = lstFPSum.Count() == 0 ? float.NaN : getMean(lstFPSum),
+                                                Variance = lstFPSum.Count() == 0 ? float.NaN : getVariance(lstFPSum, fPSum),
+                                                Baseline = fBaselineSum,
+                                            };
+                                            crCalculateValue.StandardDeviation = lstFPSum.Count() == 0 ? float.NaN : Convert.ToSingle(Math.Sqrt(crCalculateValue.Variance));
+                                            #endregion
+
+                                        }
+                                        else
+                                        {
+                                            #region if is365 = false
+
+                                            Dictionary<int, double> fdicBaseValues = new Dictionary<int, double>();
+                                            Dictionary<int, double> fdicControlValues = new Dictionary<int, double>();
+                                            Dictionary<int, double> fdicDeltaQValues = new Dictionary<int, double>();
+
+                                            //get monitor values by pollutant                               
+                                            getValuesFromMonitorDataHelpers(lstMonitorDataHelpers, fdicBaseValues, fdicControlValues);
+
+                                            //get values for base control groups using model data                                 
+                                            getValuesFromModelValues(dicBaseValues, fdicBaseValues);
+                                            getValuesFromModelValues(dicControlValues, fdicControlValues);
+
+                                            float fPSum = 0, fBaselineSum = 0;
+                                            List<float> lstFPSum = new List<float>();
+                                            if (!CommonClass.CRRunInPointMode)
+                                            {
+                                                for (int i = 0; i < CommonClass.CRLatinHypercubePoints; i++)
+                                                {
+                                                    lstFPSum.Add(0);
+                                                }
+                                            }
+
+                                            if ((!CheckValuesAgainstZero(fdicBaseValues)) && (!CheckValuesAgainstZero(fdicControlValues)))
+                                            {
+                                                CheckValuesAgainstThreshold(fdicBaseValues, Threshold);
+                                                CheckValuesAgainstThreshold(fdicControlValues, Threshold);
+
+                                                //get deltaQ values
+                                                fdicDeltaQValues = getDeltaQValues(fdicBaseValues, fdicControlValues);
+
+                                                {
+                                                    CRCalculateValue cr = CalculateCRSelectFunctionsOneCel(sCRID, hasPopInstrBaseLineFunction, 1, crSelectFunction, strBaseLineFunction, strPointEstimateFunction, modelResultAttribute.Col, modelResultAttribute.Row, fdicBaseValues, fdicControlValues, dicPopValue, dicIncidenceValue, dicPrevalenceValue, dicVariable, betaIndex);
+                                                    fPSum += cr.PointEstimate * i365;
+                                                    fBaselineSum += cr.Baseline * i365;
+                                                    if (!CommonClass.CRRunInPointMode)
+                                                    {
+                                                        for (int i = 0; i < CommonClass.CRLatinHypercubePoints; i++)
+                                                        {
+                                                            lstFPSum[i] += cr.LstPercentile[i];
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            crCalculateValue = new CRCalculateValue()
+                                            {
+                                                Col = modelResultAttribute.Col,
+                                                Row = modelResultAttribute.Row,
+                                                Deltas = getDeltaQValuesZeros(),
+                                                Incidence = Convert.ToSingle(incidenceValue),
+                                                PointEstimate = fPSum,
+                                                LstPercentile = lstFPSum,
+                                                Population = Convert.ToSingle(populationValue),
+                                                Mean = lstFPSum.Count() == 0 ? float.NaN : getMean(lstFPSum),
+                                                Variance = lstFPSum.Count() == 0 ? float.NaN : getVariance(lstFPSum, fPSum),
+                                                Baseline = fBaselineSum,
+                                            };
+                                            crCalculateValue.StandardDeviation = lstFPSum.Count() == 0 ? float.NaN : Convert.ToSingle(Math.Sqrt(crCalculateValue.Variance));
+
+                                            #endregion
+                                        }
+
+
+                                        crCalculateValue.PercentOfBaseline = crCalculateValue.Baseline == 0 ? 0 : Convert.ToSingle(Math.Round((crCalculateValue.Mean / crCalculateValue.Baseline) * 100, 4));
+
+                                        //calculate Delta
+                                        Dictionary<int, double> baseValuesForDelta = getBaseValuesFromModelResultAttributes(colRowKey, dicMetricKeys);
+
+                                        Dictionary<int, double> controlValuesForDelta = new Dictionary<int, double>();
+                                        if (!getControlValues(DicControlAll, colRowKey, dicMetricKeys, controlValuesForDelta))
+                                        {
+                                            controlValuesForDelta = new Dictionary<int, double>(baseValuesForDelta);
+                                        }
+
+                                        CheckValuesAgainstThreshold(baseValuesForDelta, Threshold);
+                                        CheckValuesAgainstThreshold(controlValuesForDelta, Threshold);
+
+                                        //set deltas
+                                        crCalculateValue.Deltas = getDeltaQValues(baseValuesForDelta, controlValuesForDelta);
+                                        crCalculateValue.DeltaList = getSortedDeltaListFromDictionaryandObject(crSelectFunction, crCalculateValue.Deltas);
+
+                                        //set beta variation fields
+                                        crCalculateValue.BetaVariationName = crSelectFunction.BenMAPHealthImpactFunction.BetaVariation.BetaVariationName;
+                                        crCalculateValue.BetaName = lstBetas[betaIndex].SeasonName;
+
+                                        //add calculated value to list of calculated values
+                                        crSelectFunctionCalculateValue.CRCalculateValues.Add(crCalculateValue);
+                                    }
+
+                                    //skip to next modelResultAttribute (i.e., grid cell)
+                                    continue;
+
+
+                                    #endregion
+                                }
+
+
+                                if (crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric != null)
+                                {
+                                    dicBaseValues = getBaseValuesFromModelResultAttributes(colRowKey, dicMetricKeys);
+
+                                    dicControlValues = new Dictionary<int, double>();
+                                    if (!getControlValues(DicControlAll, colRowKey, dicMetricKeys, dicControlValues))
+                                    {
+                                        dicControlValues = new Dictionary<int, double>(dicBaseValues);
+                                    }
+
+                                    i365 = crSelectFunction.BenMAPHealthImpactFunction.PollutantGroup.Pollutants.First().Seasons.Count();
+
+                                }
+
+                                #endregion
                             }
 
                             #endregion
                         }
 
-                        #endregion
+
+                        //check base and control values against threshold
+                        CheckValuesAgainstThreshold(dicBaseValues, Threshold);
+                        CheckValuesAgainstThreshold(dicControlValues, Threshold);
+
+                        //get deltaQ values
+                        dicDeltaQValues = getDeltaQValues(dicBaseValues, dicControlValues);
+
+                        //for each beta variation
+                        for (int betaIndex = 0; betaIndex < lstBetas.Count; betaIndex++)
+                        {
+                            //calculate one cell                    
+                            crCalculateValue = CalculateCRSelectFunctionsOneCel(sCRID, hasPopInstrBaseLineFunction, i365, crSelectFunction, strBaseLineFunction, strPointEstimateFunction, modelResultAttribute.Col, modelResultAttribute.Row, dicBaseValues, dicControlValues, dicPopValue, dicIncidenceValue, dicPrevalenceValue, dicVariable, betaIndex);
+
+                            //set beta variation fields
+                            crCalculateValue.BetaVariationName = crSelectFunction.BenMAPHealthImpactFunction.BetaVariation.BetaVariationName;
+                            crCalculateValue.BetaName = lstBetas[betaIndex].SeasonName;
+
+                            //add calculated value to list of calculated values
+                            crSelectFunctionCalculateValue.CRCalculateValues.Add(crCalculateValue);
+                        }
+
+
+                        dicVariable = null;
                     }
+                    #endregion //end foreach (ModelResultAttribute modelResultAttribute in baseControlGroup.Base.ModelResultAttributes)
 
-
-                    //check base and control values against threshold
-                    CheckValuesAgainstThreshold(dicBaseValues, Threshold);
-                    CheckValuesAgainstThreshold(dicControlValues, Threshold);
-
-                    //get deltaQ values
-                    dicDeltaQValues = getDeltaQValues(dicBaseValues, dicControlValues);
-
-                    //for each beta variation
-                    for (int betaIndex = 0; betaIndex < lstBetas.Count; betaIndex++)
-                    {
-                        //calculate one cell                    
-                        crCalculateValue = CalculateCRSelectFunctionsOneCel(sCRID, hasPopInstrBaseLineFunction, i365, crSelectFunction, strBaseLineFunction, strPointEstimateFunction, modelResultAttribute.Col, modelResultAttribute.Row, dicBaseValues, dicControlValues, dicPopValue, dicIncidenceValue, dicPrevalenceValue, dicVariable, betaIndex);
-
-                        //set beta variation fields
-                        crCalculateValue.BetaVariationName = crSelectFunction.BenMAPHealthImpactFunction.BetaVariation.BetaVariationName;
-                        crCalculateValue.BetaName = lstBetas[betaIndex].SeasonName;
-
-                        //add calculated value to list of calculated values
-                        crSelectFunctionCalculateValue.CRCalculateValues.Add(crCalculateValue);
-                    }
-
-
+                    CommonClass.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue.Add(crSelectFunctionCalculateValue);
+                    DicAllSetupVariableValues = null;
+                    dicControl = null;
                     dicVariable = null;
+                    GC.Collect();
                 }
-                #endregion //end foreach (ModelResultAttribute modelResultAttribute in baseControlGroup.Base.ModelResultAttributes)
-
-                CommonClass.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue.Add(crSelectFunctionCalculateValue);
-                DicAllSetupVariableValues = null;
-                dicControl = null;
-                dicVariable = null;
-                GC.Collect();
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex);
-                return;
+                catch (Exception ex)
+                {
+                    Logger.LogError(ex);
+                    return;
+                }
             }
         }
         public static void getCalculateValueFromResultCopy(ref CRSelectFunctionCalculateValue crSelectFunctionCalculateValue)
