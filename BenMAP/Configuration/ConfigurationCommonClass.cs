@@ -5959,18 +5959,26 @@ namespace BenMAP.Configuration
             //the key is the pollutant ID
             foreach (KeyValuePair<int, Dictionary<string, Dictionary<string, float>>> kvp in dicAllMetricData)
             {
-                string metricKey = dicMetricKeys[kvp.Key];
+                string metricKey;
 
-                //if we have a value for this pollutant, then add it to our list of values
-                if (getMetricData(kvp.Value, colRowKey, metricKey, out value))
+                //check that dicMetricKeys also has pollutantID key
+                if (dicMetricKeys.Keys.Contains(kvp.Key))
                 {
-                    dicValues.Add(kvp.Key, value);
-                }
-                else
-                {
-                    //if we don't have a value for a pollutant, then clear any values we have added and return
-                    dicValues.Clear();
-                    return false;
+                    //get metric key
+                    metricKey = dicMetricKeys[kvp.Key];
+
+                    //if we have a value for this pollutant, then add it to our list of values
+                    if (getMetricData(kvp.Value, colRowKey, metricKey, out value))
+                    {
+                        dicValues.Add(kvp.Key, value);
+                    }
+                    else
+                    {
+                        //if we don't have a value for a pollutant, then clear any values we have added and return
+                        dicValues.Clear();
+                        return false;
+                    }
+
                 }
             }
 
@@ -5986,19 +5994,27 @@ namespace BenMAP.Configuration
             //the key is the pollutant ID
             foreach (KeyValuePair<int, Dictionary<string, Dictionary<string, List<float>>>> kvp in dicAll365Data)
             {
-                string metricKey = dicMetricKeys[kvp.Key];
+                string metricKey;
 
-                List<float> values = new List<float>();
-                //if we have a value for this pollutant, then add it to our list of values
-                if (get365Data(kvp.Value, colRowKey, metricKey, values))
+                //check that dicMetricKeys also has pollutantID key
+                if (dicMetricKeys.Keys.Contains(kvp.Key))
                 {
-                    dicValues.Add(kvp.Key, values);
-                }
-                else
-                {
-                    //if we don't have a value for a pollutant, then clear any values we have added and return
-                    dicValues.Clear();
-                    return false;
+                    //get metric key
+                    metricKey = dicMetricKeys[kvp.Key];
+
+                    List<float> values = new List<float>();
+                    //if we have a value for this pollutant, then add it to our list of values
+                    if (get365Data(kvp.Value, colRowKey, metricKey, values))
+                    {
+                        dicValues.Add(kvp.Key, values);
+                    }
+                    else
+                    {
+                        //if we don't have a value for a pollutant, then clear any values we have added and return
+                        dicValues.Clear();
+                        return false;
+                    }
+
                 }
             }
 
@@ -6064,33 +6080,37 @@ namespace BenMAP.Configuration
             {
                 int pollutantID = kvp.Key;
 
-                string metricKey = dicMetricKeys[pollutantID];
-
-                double value = 0;                
-
-                Dictionary<string, ModelResultAttribute> dicControl = kvp.Value;
-
-                if (dicControl.Keys.Contains(colRowKey))
+                if (dicMetricKeys.Keys.Contains(pollutantID))
                 {
-                    if (dicControl[colRowKey].Values.Keys.Contains(metricKey))
-                    {
-                        value = dicControl[colRowKey].Values[metricKey];
+                    string metricKey = dicMetricKeys[pollutantID];
 
-                        dicValues.Add(pollutantID, value);
+                    double value = 0;
+
+                    Dictionary<string, ModelResultAttribute> dicControl = kvp.Value;
+
+                    if (dicControl.Keys.Contains(colRowKey))
+                    {
+                        if (dicControl[colRowKey].Values.Keys.Contains(metricKey))
+                        {
+                            value = dicControl[colRowKey].Values[metricKey];
+
+                            dicValues.Add(pollutantID, value);
+                        }
+                        else
+                        {
+                            //if we don't have metric key then clear any values added and return
+                            dicValues.Clear();
+                            return false;
+
+                        }
                     }
                     else
                     {
-                        //if we don't have metric key then clear any values added and return
+                        //if we don't have colRow key then clear any values added and return
                         dicValues.Clear();
                         return false;
 
                     }
-                }
-                else
-                {
-                    //if we don't have colRow key then clear any values added and return
-                    dicValues.Clear();
-                    return false;
 
                 }
             }          
@@ -6115,11 +6135,15 @@ namespace BenMAP.Configuration
                     {
                         int pollutantID = bcg.Pollutant.PollutantID;
 
-                        string metricKey = dicMetricKeys[pollutantID];
+                        if (dicMetricKeys.Keys.Contains(pollutantID))
+                        {
+                            string metricKey = dicMetricKeys[pollutantID];
 
-                        double value = modelResultAttribute.Values[metricKey];
+                            double value = modelResultAttribute.Values[metricKey];
 
-                        dicValues.Add(pollutantID, value);
+                            dicValues.Add(pollutantID, value);
+                        }
+
                         break;
                     }
                 }
@@ -6465,6 +6489,13 @@ namespace BenMAP.Configuration
             //loop over base control groups to see if any use monitor data
             foreach (BaseControlGroup bcg in CommonClass.LstBaseControlGroup)
             {
+                //if dicMetricKeys DOES NOT contain this pollutantID key, then 
+                //continue to next basecontrol group
+                if (!dicMetricKeys.Keys.Contains(bcg.Pollutant.PollutantID))
+                {
+                    continue;
+                }
+
                 string metricKey = dicMetricKeys[bcg.Pollutant.PollutantID];
 
                 if (bcg.Base is MonitorDataLine
