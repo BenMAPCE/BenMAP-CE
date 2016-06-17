@@ -3715,7 +3715,7 @@ namespace BenMAP.Configuration
                 }
                 string commandText = "";
 
-                int iPopulationDataSetGridID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, string.Format("select GridDefinitionID from IncidenceDataSets where IncidenceDataSetID={1} ", CommonClass.MainSetup.SetupID, iid)));
+                int iIncidenceDataSetGridID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, string.Format("select GridDefinitionID from IncidenceDataSets where IncidenceDataSetID={1} ", CommonClass.MainSetup.SetupID, iid)));
 
                 commandText = string.Format("select  min( Yyear) from t_PopulationDataSetIDYear where PopulationDataSetID={0} ", CommonClass.BenMAPPopulation.DataSetID); int commonYear = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, System.Data.CommandType.Text, commandText));
                 commandText = "";
@@ -3754,28 +3754,28 @@ namespace BenMAP.Configuration
 
                 Dictionary<string, double> dicInc = new Dictionary<string, double>();
                 foreach (DataRow dr in dsInc.Tables[0].Rows)
-                {   // HARDCODED - add 10000 to row to convert row column to a single number for hash
+                {   // HARDCODED - multiply column by 10000 and add row to convert row column to a single number for hash
                     if (!dicInc.ContainsKey((Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])).ToString() + "," + dr["AgeRangeID"]))
                     {
                         dicInc.Add((Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])).ToString() + "," + dr["AgeRangeID"].ToString(), Convert.ToDouble(dr["VValue"]));
                     }
                 }
                 dsInc.Dispose();
-                if (iPopulationDataSetGridID == CommonClass.GBenMAPGrid.GridDefinitionID) return dicInc;
+                if (iIncidenceDataSetGridID == CommonClass.GBenMAPGrid.GridDefinitionID) return dicInc;
                 Dictionary<string, Dictionary<string, double>> dicPercentageForAggregationInc = new Dictionary<string, Dictionary<string, double>>();
                 try
                 {           
                     // HARDCODED - requires normalization state to be in 0, 1 
                     // HARDCODED - source grid definition ID in 27 (CMAQ 12km Nation - Clipped) or 28 (CMAQ 12km Nation ???
 
-                    string str = "select sourcecolumn, sourcerow, targetcolumn, targetrow, percentage, normalizationstate from griddefinitionpercentageentries where percentageid=( select percentageid from  griddefinitionpercentages where sourcegriddefinitionid =" + (CommonClass.GBenMAPGrid.GridDefinitionID == 28 ? 27 : CommonClass.GBenMAPGrid.GridDefinitionID) + " and  targetgriddefinitionid = " + iPopulationDataSetGridID + " ) and normalizationstate in (0,1)";
+                    string str = "select sourcecolumn, sourcerow, targetcolumn, targetrow, percentage, normalizationstate from griddefinitionpercentageentries where percentageid=( select percentageid from  griddefinitionpercentages where sourcegriddefinitionid =" + (CommonClass.GBenMAPGrid.GridDefinitionID == 28 ? 27 : CommonClass.GBenMAPGrid.GridDefinitionID) + " and  targetgriddefinitionid = " + iIncidenceDataSetGridID + " ) and normalizationstate in (0,1)";
 
                     DataSet dsPercentage = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, str);
                     if (dsPercentage.Tables[0].Rows.Count == 0) // no crosswalk rows found - need to generate them 
                     {
-                        creatPercentageToDatabase(iPopulationDataSetGridID, CommonClass.GBenMAPGrid.GridDefinitionID, null);
-                        int iPercentageID = Convert.ToInt16(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, "select percentageid from  griddefinitionpercentages where sourcegriddefinitionid =" + CommonClass.GBenMAPGrid.GridDefinitionID + " and  targetgriddefinitionid = " + iPopulationDataSetGridID));
-                        str = "select sourcecolumn, sourcerow, targetcolumn, targetrow, percentage, normalizationstate from griddefinitionpercentageentries where percentageid=( select percentageid from  griddefinitionpercentages where sourcegriddefinitionid =" + (CommonClass.GBenMAPGrid.GridDefinitionID == 28 ? 27 : CommonClass.GBenMAPGrid.GridDefinitionID) + " and  targetgriddefinitionid = " + iPopulationDataSetGridID + " ) and normalizationstate in (0,1)";
+                        creatPercentageToDatabase(iIncidenceDataSetGridID, CommonClass.GBenMAPGrid.GridDefinitionID, null);
+                        int iPercentageID = Convert.ToInt16(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, "select percentageid from  griddefinitionpercentages where sourcegriddefinitionid =" + CommonClass.GBenMAPGrid.GridDefinitionID + " and  targetgriddefinitionid = " + iIncidenceDataSetGridID));
+                        str = "select sourcecolumn, sourcerow, targetcolumn, targetrow, percentage, normalizationstate from griddefinitionpercentageentries where percentageid=( select percentageid from  griddefinitionpercentages where sourcegriddefinitionid =" + (CommonClass.GBenMAPGrid.GridDefinitionID == 28 ? 27 : CommonClass.GBenMAPGrid.GridDefinitionID) + " and  targetgriddefinitionid = " + iIncidenceDataSetGridID + " ) and normalizationstate in (0,1)";
                         dsPercentage = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, str);
                     }
                     foreach (DataRow dr in dsPercentage.Tables[0].Rows)
