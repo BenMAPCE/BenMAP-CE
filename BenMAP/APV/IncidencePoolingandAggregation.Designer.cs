@@ -1382,7 +1382,6 @@ namespace BenMAP
             this.ResumeLayout(false);
 
         }
-
         
         private System.Windows.Forms.ImageList imageList1;
         private System.Windows.Forms.SplitContainer splitContainer1;

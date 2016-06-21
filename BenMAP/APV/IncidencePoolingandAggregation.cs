@@ -1766,6 +1766,10 @@ namespace BenMAP
             return btp;
 
         }
+        private void olvTile_FormatCell(object sender, FormatCellEventArgs e)
+        {
+        }
+
         private void btChangeName_Click(object sender, EventArgs e)
         {
             try
@@ -2789,7 +2793,7 @@ namespace BenMAP
             switch (this.cbSortBy.Text)
             {
                 case "Endpoint":
-                   this.olvAvailable.Sort(new OLVColumn("ignored", "olvColumn2"), SortOrder.Ascending);
+                   this.olvAvailable.Sort(this.olvColumn2, SortOrder.Ascending);
                     break;
                 case "Endpoint Group":
                     this.olvAvailable.Sort(new OLVColumn("ignored", "olvcEndPointGroup"), SortOrder.Ascending);
@@ -2804,7 +2808,7 @@ namespace BenMAP
                     this.olvAvailable.Sort (new OLVColumn("ignored", "olvColumn9"), SortOrder.Ascending);
                     break;
                 case "Authur":
-                    this.olvAvailable.Sort (new OLVColumn("ignored", "olvColumn36"), SortOrder.Ascending);
+                    this.olvAvailable.Sort (this.olvColumn36, SortOrder.Ascending);
                     break;
             }
 
