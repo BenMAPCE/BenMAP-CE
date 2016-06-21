@@ -814,10 +814,14 @@ namespace BenMAP
             {
                 case 0:
                     listview.View = View.Tile;
+                    this.cbSortBy.Visible = true;
+                    this.groupBox4.Visible = true;
                     listview.ShowHeaderInAllViews = false;
                     break;
                 case 1:
                     listview.View = View.Details;
+                    this.cbSortBy.Visible = false;
+                    this.groupBox4.Visible = false;
                     break;
             }
         }
@@ -1000,7 +1004,14 @@ namespace BenMAP
                 }
 
                 if (e.Value != null)
+                {
                     cb.SelectedText = e.Value.ToString();
+                    cb.Text = e.Value.ToString();
+                }
+                else
+                {
+
+                }
                 cb.SelectedIndexChanged += new EventHandler(cbPoolingMethod_SelectedIndexChanged);
                 cb.Tag = e.RowObject; e.Control = cb;
             }
@@ -2767,6 +2778,45 @@ namespace BenMAP
         {
 
         }
+
+        private void groupBox4_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void cbSortBy_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            switch (this.cbSortBy.Text)
+            {
+                case "Endpoint":
+                   this.olvAvailable.Sort(new OLVColumn("ignored", "olvColumn2"), SortOrder.Ascending);
+                    break;
+                case "Endpoint Group":
+                    this.olvAvailable.Sort(new OLVColumn("ignored", "olvcEndPointGroup"), SortOrder.Ascending);
+                    break;
+                case "Dataset Name":
+                    this.olvAvailable.Sort (new OLVColumn("ignored", "olvcDataSet"), SortOrder.Ascending);
+                    break;
+                case "Start Age":
+                    this.olvAvailable.Sort (new OLVColumn("ignored", "olvColumn8"), SortOrder.Ascending);
+                    break;
+                case "End Age":
+                    this.olvAvailable.Sort (new OLVColumn("ignored", "olvColumn9"), SortOrder.Ascending);
+                    break;
+                case "Authur":
+                    this.olvAvailable.Sort (new OLVColumn("ignored", "olvColumn36"), SortOrder.Ascending);
+                    break;
+            }
+
+
+        }
+
+        private void olvTile_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+
     }
 
     public class IncidenceDropSink : SimpleDropSink

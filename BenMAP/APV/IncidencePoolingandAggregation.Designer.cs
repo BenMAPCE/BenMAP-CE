@@ -57,15 +57,18 @@ namespace BenMAP
             this.olvColumn52 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn4 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.groupBox8 = new System.Windows.Forms.GroupBox();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.cbSortBy = new System.Windows.Forms.ComboBox();
             this.btnShowChanges = new System.Windows.Forms.Button();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.cbDataSet = new System.Windows.Forms.ComboBox();
             this.btTileSet = new System.Windows.Forms.Button();
             this.cbGroups = new System.Windows.Forms.CheckBox();
             this.label6 = new System.Windows.Forms.Label();
-            this.btAddCRFunctions = new System.Windows.Forms.Button();
             this.cbView = new System.Windows.Forms.ComboBox();
             this.groupBox9 = new System.Windows.Forms.GroupBox();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.textBoxFilterSimple = new System.Windows.Forms.TextBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.cbEndPointGroup = new System.Windows.Forms.ComboBox();
@@ -127,8 +130,10 @@ namespace BenMAP
             this.groupBox10.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.olvAvailable)).BeginInit();
             this.groupBox8.SuspendLayout();
+            this.groupBox4.SuspendLayout();
             this.groupBox5.SuspendLayout();
             this.groupBox9.SuspendLayout();
+            this.groupBox1.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox7.SuspendLayout();
             this.grpSelectPoolingMethods.SuspendLayout();
@@ -559,12 +564,12 @@ namespace BenMAP
             // 
             // groupBox8
             // 
+            this.groupBox8.Controls.Add(this.groupBox4);
             this.groupBox8.Controls.Add(this.btnShowChanges);
             this.groupBox8.Controls.Add(this.groupBox5);
             this.groupBox8.Controls.Add(this.btTileSet);
             this.groupBox8.Controls.Add(this.cbGroups);
             this.groupBox8.Controls.Add(this.label6);
-            this.groupBox8.Controls.Add(this.btAddCRFunctions);
             this.groupBox8.Controls.Add(this.cbView);
             this.groupBox8.Controls.Add(this.groupBox9);
             this.groupBox8.Controls.Add(this.groupBox3);
@@ -574,6 +579,35 @@ namespace BenMAP
             this.groupBox8.Size = new System.Drawing.Size(952, 69);
             this.groupBox8.TabIndex = 39;
             this.groupBox8.TabStop = false;
+            // 
+            // groupBox4
+            // 
+            this.groupBox4.Controls.Add(this.cbSortBy);
+            this.groupBox4.Location = new System.Drawing.Point(416, 11);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(108, 50);
+            this.groupBox4.TabIndex = 35;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = "Sort By";
+            this.groupBox4.Enter += new System.EventHandler(this.groupBox4_Enter);
+            // 
+            // cbSortBy
+            // 
+            this.cbSortBy.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cbSortBy.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbSortBy.FormattingEnabled = true;
+            this.cbSortBy.Items.AddRange(new object[] {
+            "Endpoint",
+            "Endpoint Group",
+            "Dataset Name",
+            "Start Age",
+            "End Age",
+            "Authur"});
+            this.cbSortBy.Location = new System.Drawing.Point(3, 18);
+            this.cbSortBy.Name = "cbSortBy";
+            this.cbSortBy.Size = new System.Drawing.Size(102, 22);
+            this.cbSortBy.TabIndex = 22;
+            this.cbSortBy.SelectedIndexChanged += new System.EventHandler(this.cbSortBy_SelectedIndexChanged);
             // 
             // btnShowChanges
             // 
@@ -593,7 +627,7 @@ namespace BenMAP
             this.groupBox5.Controls.Add(this.cbDataSet);
             this.groupBox5.Location = new System.Drawing.Point(3, 11);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(172, 50);
+            this.groupBox5.Size = new System.Drawing.Size(168, 50);
             this.groupBox5.TabIndex = 35;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Filter Dataset";
@@ -605,14 +639,14 @@ namespace BenMAP
             this.cbDataSet.FormattingEnabled = true;
             this.cbDataSet.Location = new System.Drawing.Point(3, 18);
             this.cbDataSet.Name = "cbDataSet";
-            this.cbDataSet.Size = new System.Drawing.Size(166, 22);
+            this.cbDataSet.Size = new System.Drawing.Size(162, 22);
             this.cbDataSet.TabIndex = 21;
             this.cbDataSet.SelectedIndexChanged += new System.EventHandler(this.cbDataSet_SelectedIndexChanged);
             // 
             // btTileSet
             // 
             this.btTileSet.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btTileSet.Location = new System.Drawing.Point(623, 23);
+            this.btTileSet.Location = new System.Drawing.Point(707, 23);
             this.btTileSet.Name = "btTileSet";
             this.btTileSet.Size = new System.Drawing.Size(120, 30);
             this.btTileSet.TabIndex = 38;
@@ -622,7 +656,7 @@ namespace BenMAP
             // 
             // cbGroups
             // 
-            this.cbGroups.Location = new System.Drawing.Point(446, 26);
+            this.cbGroups.Location = new System.Drawing.Point(530, 26);
             this.cbGroups.Name = "cbGroups";
             this.cbGroups.Size = new System.Drawing.Size(70, 26);
             this.cbGroups.TabIndex = 31;
@@ -633,22 +667,11 @@ namespace BenMAP
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(513, 31);
+            this.label6.Location = new System.Drawing.Point(599, 31);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(37, 14);
             this.label6.TabIndex = 36;
             this.label6.Text = "View:";
-            // 
-            // btAddCRFunctions
-            // 
-            this.btAddCRFunctions.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btAddCRFunctions.Location = new System.Drawing.Point(745, 23);
-            this.btAddCRFunctions.Name = "btAddCRFunctions";
-            this.btAddCRFunctions.Size = new System.Drawing.Size(86, 30);
-            this.btAddCRFunctions.TabIndex = 32;
-            this.btAddCRFunctions.Text = "Add Selected";
-            this.btAddCRFunctions.UseVisualStyleBackColor = true;
-            this.btAddCRFunctions.Click += new System.EventHandler(this.btAddCRFunctions_Click);
             // 
             // cbView
             // 
@@ -657,7 +680,7 @@ namespace BenMAP
             this.cbView.Items.AddRange(new object[] {
             "Tile",
             "Details"});
-            this.cbView.Location = new System.Drawing.Point(552, 27);
+            this.cbView.Location = new System.Drawing.Point(636, 27);
             this.cbView.Name = "cbView";
             this.cbView.Size = new System.Drawing.Size(65, 22);
             this.cbView.TabIndex = 37;
@@ -665,13 +688,34 @@ namespace BenMAP
             // 
             // groupBox9
             // 
+            this.groupBox9.Controls.Add(this.groupBox1);
             this.groupBox9.Controls.Add(this.textBoxFilterSimple);
-            this.groupBox9.Location = new System.Drawing.Point(340, 11);
+            this.groupBox9.Location = new System.Drawing.Point(309, 11);
             this.groupBox9.Name = "groupBox9";
             this.groupBox9.Size = new System.Drawing.Size(104, 50);
             this.groupBox9.TabIndex = 33;
             this.groupBox9.TabStop = false;
             this.groupBox9.Text = "Filter";
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.comboBox1);
+            this.groupBox1.Location = new System.Drawing.Point(107, 0);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(82, 50);
+            this.groupBox1.TabIndex = 35;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Filter Endpoint Group";
+            // 
+            // comboBox1
+            // 
+            this.comboBox1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Location = new System.Drawing.Point(3, 18);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(76, 22);
+            this.comboBox1.TabIndex = 22;
             // 
             // textBoxFilterSimple
             // 
@@ -685,9 +729,9 @@ namespace BenMAP
             // groupBox3
             // 
             this.groupBox3.Controls.Add(this.cbEndPointGroup);
-            this.groupBox3.Location = new System.Drawing.Point(177, 11);
+            this.groupBox3.Location = new System.Drawing.Point(174, 11);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(160, 50);
+            this.groupBox3.Size = new System.Drawing.Size(132, 50);
             this.groupBox3.TabIndex = 34;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Filter Endpoint Group";
@@ -699,7 +743,7 @@ namespace BenMAP
             this.cbEndPointGroup.FormattingEnabled = true;
             this.cbEndPointGroup.Location = new System.Drawing.Point(3, 18);
             this.cbEndPointGroup.Name = "cbEndPointGroup";
-            this.cbEndPointGroup.Size = new System.Drawing.Size(154, 22);
+            this.cbEndPointGroup.Size = new System.Drawing.Size(126, 22);
             this.cbEndPointGroup.TabIndex = 22;
             this.cbEndPointGroup.SelectedIndexChanged += new System.EventHandler(this.cbEndPointGroup_SelectedIndexChanged);
             // 
@@ -897,7 +941,7 @@ namespace BenMAP
             this.treeListView.ShowGroups = false;
             this.treeListView.ShowImagesOnSubItems = true;
             this.treeListView.ShowItemToolTips = true;
-            this.treeListView.Size = new System.Drawing.Size(284, 193);
+            this.treeListView.Size = new System.Drawing.Size(284, 197);
             this.treeListView.SmallImageList = this.imageList1;
             this.treeListView.TabIndex = 15;
             this.treeListView.UseCompatibleStateImageBehavior = false;
@@ -928,7 +972,12 @@ namespace BenMAP
             // olvColumn1
             // 
             this.olvColumn1.AspectName = "PoolingMethod";
-            this.olvColumn1.HeaderForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
+            this.olvTile.HeaderUsesThemes = false;
+            BrightIdeasSoftware.HeaderFormatStyle olvHdrStylePooling = new BrightIdeasSoftware.HeaderFormatStyle();
+            olvHdrStylePooling.Normal.BackColor = System.Drawing.Color.Yellow;
+            olvHdrStylePooling.Normal.ForeColor = System.Drawing.Color.Tomato;
+            olvColumn1.HeaderFormatStyle = olvHdrStylePooling;
+            //this.olvColumn1.HeaderForeColor = System.Drawing.Color.AliceBlue;
             this.olvColumn1.Text = "Pooling Method";
             this.olvColumn1.Width = 150;
             // 
@@ -1101,6 +1150,8 @@ namespace BenMAP
             this.olvTile.UseHyperlinks = true;
             this.olvTile.UseOverlays = false;
             this.olvTile.View = System.Windows.Forms.View.Tile;
+            this.olvTile.FormatCell += new System.EventHandler<BrightIdeasSoftware.FormatCellEventArgs>(this.olvTile_FormatCell);
+            this.olvTile.SelectedIndexChanged += new System.EventHandler(this.olvTile_SelectedIndexChanged);
             // 
             // btDelSelectMethod
             // 
@@ -1306,9 +1357,11 @@ namespace BenMAP
             ((System.ComponentModel.ISupportInitialize)(this.olvAvailable)).EndInit();
             this.groupBox8.ResumeLayout(false);
             this.groupBox8.PerformLayout();
+            this.groupBox4.ResumeLayout(false);
             this.groupBox5.ResumeLayout(false);
             this.groupBox9.ResumeLayout(false);
             this.groupBox9.PerformLayout();
+            this.groupBox1.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
             this.groupBox7.ResumeLayout(false);
             this.grpSelectPoolingMethods.ResumeLayout(false);
@@ -1371,7 +1424,6 @@ namespace BenMAP
         private System.Windows.Forms.Button btTileSet;
         private System.Windows.Forms.CheckBox cbGroups;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.Button btAddCRFunctions;
         private System.Windows.Forms.ComboBox cbView;
         private System.Windows.Forms.GroupBox groupBox9;
         private System.Windows.Forms.TextBox textBoxFilterSimple;
@@ -1432,5 +1484,9 @@ namespace BenMAP
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Button btShowDetail;
         private BrightIdeasSoftware.OLVColumn olvColumn4;
+        private System.Windows.Forms.GroupBox groupBox4;
+        private System.Windows.Forms.ComboBox cbSortBy;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.ComboBox comboBox1;
     }
 }
