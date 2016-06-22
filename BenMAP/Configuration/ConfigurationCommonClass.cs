@@ -3721,10 +3721,76 @@ namespace BenMAP.Configuration
                 commandText = "";
                 // HARDCODED - use Empty string for race
                 string strRace = "";
-                
+                string strEthnicity = "";
+                string strGender = "";
+
                 // HARDCODED, SetupID = 1 (US) then check for race 5 (ALL) or 6 (Empty string)
                 // always include Race ALL or empty for US setup ONLY
-                if (CommonClass.MainSetup.SetupID == 1) strRace = " and (b.RaceID=6 or b.RaceID=5)";
+                
+                //if (CommonClass.MainSetup.SetupID == 1) strRace = " and (b.RaceID=6 or b.RaceID=5)";
+
+
+                // add filter for race
+                strRace = " and (b.RaceID=6)";
+                if (!string.IsNullOrEmpty(crSelectFunction.Race))
+                {
+                    if (dicRace.ContainsKey(crSelectFunction.Race))
+                    {
+                        int raceID = dicRace[crSelectFunction.Race];
+
+                        string raceSQL = String.Format("SELECT count(*) FROM INCIDENCERATES where incidencedatasetid = {0} and raceid = {1}", iid, raceID);
+                        int raceCount = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, raceSQL));
+                        if (raceCount > 0)
+                        {
+                            //if incidence exists, then use it
+                            strRace = string.Format(" and (b.RaceID={0})", raceID);
+                        }
+                    }
+                }
+
+                //add filter for ethnicity
+                strEthnicity = " and (b.EthnicityID=4)";
+                if (!string.IsNullOrEmpty(crSelectFunction.Ethnicity))
+                {
+                    if (dicEthnicity.ContainsKey(crSelectFunction.Ethnicity))
+                    {
+                        int ethnicityID = dicEthnicity[crSelectFunction.Ethnicity];
+
+                        //if incidence exists, then use it
+                        string ethnicitySQL = String.Format("SELECT count(*) FROM INCIDENCERATES where incidencedatasetid = {0} and ethnicityid = {1}", iid, ethnicityID);
+                        int ethnicityCount = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, ethnicitySQL));
+                        if (ethnicityCount > 0)
+                        {
+                            strEthnicity = string.Format(" and (b.EthnicityID={0})", ethnicityID);
+                        }
+                    }
+                }
+
+                //add filter for gender
+                strGender = " and (b.GenderID=4)";
+                if (!string.IsNullOrEmpty(crSelectFunction.Gender))
+                {
+                    if (dicGender.ContainsKey(crSelectFunction.Gender))
+                    {
+                        int genderID = dicGender[crSelectFunction.Gender];
+
+                        //if incidence exists, then use it
+                        string genderSQL = String.Format("SELECT count(*) FROM INCIDENCERATES where incidencedatasetid = {0} and genderid = {1}", iid, genderID);
+                        int genderCount = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, genderSQL));
+                        if (genderCount > 0)
+                        {
+                            strGender = string.Format(" and (b.GenderID={0})", genderID);
+                        }
+                    }
+                }
+
+
+
+
+
+
+
+
                 // add filters to restrict age ranges
                 string strbEndAgeOri = " CASE" +
                        " WHEN (b.EndAge> " + crSelectFunction.EndAge + ") THEN " + crSelectFunction.EndAge + " ELSE b.EndAge END ";
@@ -3748,7 +3814,7 @@ namespace BenMAP.Configuration
                 // HARDCODED - b.EndPointID=99 (Empty String in Endpoint GroupID 4, "Asthma Exacerbation") or b.EndPointID=100 (Empty String in Endpoint Group 6, "Chronic Bronchitis") or b.EndPointID=102 (Empty String in Endpoint Group 14, "Upper Respiratory Symptoms")
                 string strInc = string.Format("select  a.CColumn,a.Row,sum(a.VValue*d.Weight) as VValue,d.AgeRangeID  from IncidenceEntries a,IncidenceRates b,IncidenceDatasets c ,(" + strAgeID +
                      ") d where   b.StartAge=d.StartAge and b.EndAge=d.EndAge and " +
-             " a.IncidenceRateID=b.IncidenceRateID and b.IncidenceDatasetID=c.IncidenceDatasetID and b.EndPointGroupID=" + crSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID + strRace + " and (b.EndPointID=" + crSelectFunction.BenMAPHealthImpactFunction.EndPointID + "  or b.EndPointID=99 or b.EndPointID=100 or b.EndPointID=102)" + " and b.Prevalence='" + strbPrevalence + "' " +
+             " a.IncidenceRateID=b.IncidenceRateID and b.IncidenceDatasetID=c.IncidenceDatasetID and b.EndPointGroupID=" + crSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID + strRace + strEthnicity + strGender + " and (b.EndPointID=" + crSelectFunction.BenMAPHealthImpactFunction.EndPointID + "  or b.EndPointID=99 or b.EndPointID=100 or b.EndPointID=102)" + " and b.Prevalence='" + strbPrevalence + "' " +
              "  and c.IncidenceDatasetID={0} and b.StartAge<={2} and b.EndAge>={1} group by a.CColumn,a.Row ,d.AgeRangeID", iid, crSelectFunction.StartAge, crSelectFunction.EndAge);
                 DataSet dsInc = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, strInc);
 
