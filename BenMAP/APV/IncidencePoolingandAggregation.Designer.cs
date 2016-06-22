@@ -18,6 +18,9 @@ namespace BenMAP
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(IncidencePoolingandAggregation));
+            BrightIdeasSoftware.HeaderStateStyle headerStateStyle1 = new BrightIdeasSoftware.HeaderStateStyle();
+            BrightIdeasSoftware.HeaderStateStyle headerStateStyle2 = new BrightIdeasSoftware.HeaderStateStyle();
+            BrightIdeasSoftware.HeaderStateStyle headerStateStyle3 = new BrightIdeasSoftware.HeaderStateStyle();
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.miniToolStrip = new System.Windows.Forms.StatusStrip();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
@@ -85,6 +88,7 @@ namespace BenMAP
             this.treeListView = new BrightIdeasSoftware.TreeListView();
             this.treeColumnName = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn1 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvHdrStylePooling = new BrightIdeasSoftware.HeaderFormatStyle();
             this.olvColumn31 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn30 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn6 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
@@ -941,7 +945,7 @@ namespace BenMAP
             this.treeListView.ShowGroups = false;
             this.treeListView.ShowImagesOnSubItems = true;
             this.treeListView.ShowItemToolTips = true;
-            this.treeListView.Size = new System.Drawing.Size(284, 197);
+            this.treeListView.Size = new System.Drawing.Size(284, 199);
             this.treeListView.SmallImageList = this.imageList1;
             this.treeListView.TabIndex = 15;
             this.treeListView.UseCompatibleStateImageBehavior = false;
@@ -972,14 +976,18 @@ namespace BenMAP
             // olvColumn1
             // 
             this.olvColumn1.AspectName = "PoolingMethod";
-            this.olvTile.HeaderUsesThemes = false;
-            BrightIdeasSoftware.HeaderFormatStyle olvHdrStylePooling = new BrightIdeasSoftware.HeaderFormatStyle();
-            olvHdrStylePooling.Normal.BackColor = System.Drawing.Color.Yellow;
-            olvHdrStylePooling.Normal.ForeColor = System.Drawing.Color.Tomato;
-            olvColumn1.HeaderFormatStyle = olvHdrStylePooling;
-            //this.olvColumn1.HeaderForeColor = System.Drawing.Color.AliceBlue;
+            this.olvColumn1.HeaderForeColor = System.Drawing.Color.Tomato;
+            this.olvColumn1.HeaderFormatStyle = this.olvHdrStylePooling;
             this.olvColumn1.Text = "Pooling Method";
             this.olvColumn1.Width = 150;
+            // 
+            // olvHdrStylePooling
+            // 
+            this.olvHdrStylePooling.Hot = headerStateStyle1;
+            headerStateStyle2.BackColor = System.Drawing.Color.Yellow;
+            headerStateStyle2.ForeColor = System.Drawing.Color.Tomato;
+            this.olvHdrStylePooling.Normal = headerStateStyle2;
+            this.olvHdrStylePooling.Pressed = headerStateStyle3;
             // 
             // olvColumn31
             // 
@@ -1487,5 +1495,6 @@ namespace BenMAP
         private System.Windows.Forms.ComboBox cbSortBy;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.ComboBox comboBox1;
+        private BrightIdeasSoftware.HeaderFormatStyle olvHdrStylePooling;
     }
 }

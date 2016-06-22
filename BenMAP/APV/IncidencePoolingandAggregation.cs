@@ -1571,12 +1571,14 @@ namespace BenMAP
                 if (dr == System.Windows.Forms.DialogResult.Cancel)
                     return;
                 int count = 0;
+                cbSortBy.Items.Clear();
                 for (int i = 0; i < this.olvAvailable.AllColumns.Count; i++)
                 {
                     if ((this.olvAvailable.AllColumns[i] as BrightIdeasSoftware.OLVColumn).IsTileViewColumn)
                     {
                         count++;
                         (this.olvAvailable.AllColumns[i] as BrightIdeasSoftware.OLVColumn).IsVisible = true;
+                        cbSortBy.Items.Add(this.olvAvailable.AllColumns[i].Text);
                     }
                     else
                     {
@@ -2790,13 +2792,16 @@ namespace BenMAP
 
         private void cbSortBy_SelectedIndexChanged(object sender, EventArgs e)
         {
-            switch (this.cbSortBy.Text)
+            OLVColumn olvc = olvAvailable.GetColumn(cbSortBy.Text);
+            olvAvailable.Sort(olvc, SortOrder.Ascending);
+
+/*            switch (this.cbSortBy.Text)
             {
                 case "Endpoint":
                    this.olvAvailable.Sort(this.olvColumn2, SortOrder.Ascending);
                     break;
                 case "Endpoint Group":
-                    this.olvAvailable.Sort(new OLVColumn("ignored", "olvcEndPointGroup"), SortOrder.Ascending);
+                    this.olvAvailable.Sort(olvAvailable.GetColumn("olvcEndPointGroup"), SortOrder.Ascending);
                     break;
                 case "Dataset Name":
                     this.olvAvailable.Sort (new OLVColumn("ignored", "olvcDataSet"), SortOrder.Ascending);
@@ -2811,7 +2816,7 @@ namespace BenMAP
                     this.olvAvailable.Sort (this.olvColumn36, SortOrder.Ascending);
                     break;
             }
-
+*/
 
         }
 
