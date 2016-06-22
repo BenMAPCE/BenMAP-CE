@@ -606,7 +606,7 @@ namespace BenMAP
             "Dataset Name",
             "Start Age",
             "End Age",
-            "Authur"});
+            "Author"});
             this.cbSortBy.Location = new System.Drawing.Point(3, 18);
             this.cbSortBy.Name = "cbSortBy";
             this.cbSortBy.Size = new System.Drawing.Size(102, 22);
@@ -945,7 +945,7 @@ namespace BenMAP
             this.treeListView.ShowGroups = false;
             this.treeListView.ShowImagesOnSubItems = true;
             this.treeListView.ShowItemToolTips = true;
-            this.treeListView.Size = new System.Drawing.Size(284, 199);
+            this.treeListView.Size = new System.Drawing.Size(284, 200);
             this.treeListView.SmallImageList = this.imageList1;
             this.treeListView.TabIndex = 15;
             this.treeListView.UseCompatibleStateImageBehavior = false;
