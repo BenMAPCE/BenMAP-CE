@@ -2770,6 +2770,19 @@ namespace BenMAP
             }
         }
 
+        private void treeListView_FormatCell(object sender, FormatCellEventArgs e)
+        {
+            if (e.ColumnIndex == 1 && (string)e.CellValue != "")
+            {
+                CellBorderDecoration cbd = new CellBorderDecoration();
+                cbd.BorderPen = new Pen(Color.Black);
+                cbd.FillBrush = null;
+                cbd.BoundsPadding = new Size(0, -1);
+                cbd.CornerRounding = 0.0f;
+                e.SubItem.Decorations.Add(cbd); 
+            }
+        }
+
         private void treeListView_Freezing(object sender, FreezeEventArgs e)
         {
 
@@ -2794,30 +2807,6 @@ namespace BenMAP
         {
             OLVColumn olvc = olvAvailable.GetColumn(cbSortBy.Text);
             olvAvailable.Sort(olvc, SortOrder.Ascending);
-
-/*            switch (this.cbSortBy.Text)
-            {
-                case "Endpoint":
-                   this.olvAvailable.Sort(this.olvColumn2, SortOrder.Ascending);
-                    break;
-                case "Endpoint Group":
-                    this.olvAvailable.Sort(olvAvailable.GetColumn("olvcEndPointGroup"), SortOrder.Ascending);
-                    break;
-                case "Dataset Name":
-                    this.olvAvailable.Sort (new OLVColumn("ignored", "olvcDataSet"), SortOrder.Ascending);
-                    break;
-                case "Start Age":
-                    this.olvAvailable.Sort (new OLVColumn("ignored", "olvColumn8"), SortOrder.Ascending);
-                    break;
-                case "End Age":
-                    this.olvAvailable.Sort (new OLVColumn("ignored", "olvColumn9"), SortOrder.Ascending);
-                    break;
-                case "Authur":
-                    this.olvAvailable.Sort (this.olvColumn36, SortOrder.Ascending);
-                    break;
-            }
-*/
-
         }
 
         private void olvTile_SelectedIndexChanged(object sender, EventArgs e)
