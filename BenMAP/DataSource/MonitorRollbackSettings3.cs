@@ -177,7 +177,7 @@ namespace BenMAP
                         ShapeFile = _monitorRollbackLine.ShapeFile
                     };
                     sfd.Title = "Save the baseline Grid.";
-                    sfd.Filter = "AGQ files (*.aqgx)|*.aqgx";
+                    sfd.Filter = "AQGX files (*.aqgx)|*.aqgx";
                     sfd.RestoreDirectory = true;
                     sfd.InitialDirectory = CommonClass.ResultFilePath + @"\Result\AQG";
                     if (sfd.ShowDialog() != DialogResult.OK)
@@ -185,7 +185,7 @@ namespace BenMAP
                 }
                 SaveFileDialog sfd2 = new SaveFileDialog();
                 sfd2.Title = "Save the rolled back Grid.";
-                sfd2.Filter = "AGQ files (*.aqgx)|*.aqgx";
+                sfd2.Filter = "AQGX files (*.aqgx)|*.aqgx";
                 sfd2.RestoreDirectory = true;
                 sfd2.InitialDirectory = CommonClass.ResultFilePath + @"\Result\AQG";
                 if (sfd2.ShowDialog() != DialogResult.OK)

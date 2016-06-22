@@ -217,7 +217,7 @@ namespace BenMAP
                         break;
                 }
                 SaveFileDialog sfd = new SaveFileDialog();
-                sfd.Filter = "AQG files (*.aqgx)|*.aqgx";
+                sfd.Filter = "AQGX files (*.aqgx)|*.aqgx";
                 sfd.FilterIndex = 2;
                 sfd.RestoreDirectory = true;
                 sfd.InitialDirectory = CommonClass.ResultFilePath + @"\Result\AQG";
