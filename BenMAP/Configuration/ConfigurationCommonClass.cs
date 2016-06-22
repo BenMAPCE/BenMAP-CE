@@ -3724,12 +3724,6 @@ namespace BenMAP.Configuration
                 string strEthnicity = "";
                 string strGender = "";
 
-                // HARDCODED, SetupID = 1 (US) then check for race 5 (ALL) or 6 (Empty string)
-                // always include Race ALL or empty for US setup ONLY
-                
-                //if (CommonClass.MainSetup.SetupID == 1) strRace = " and (b.RaceID=6 or b.RaceID=5)";
-
-
                 // add filter for race
                 strRace = " and (b.RaceID=6)";
                 if (!string.IsNullOrEmpty(crSelectFunction.Race))
