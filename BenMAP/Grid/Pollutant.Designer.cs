@@ -16,18 +16,6 @@ namespace BenMAP
         
         private void InitializeComponent()
         {
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.label13 = new System.Windows.Forms.Label();
-            this.label12 = new System.Windows.Forms.Label();
-            this.cbShowDetails = new System.Windows.Forms.CheckBox();
-            this.btnCancel = new System.Windows.Forms.Button();
-            this.btnOK = new System.Windows.Forms.Button();
-            this.btnSelect = new System.Windows.Forms.Button();
-            this.btnDelete = new System.Windows.Forms.Button();
-            this.lstSPollutant = new System.Windows.Forms.ListBox();
-            this.lstPollutant = new System.Windows.Forms.ListBox();
-            this.label19 = new System.Windows.Forms.Label();
-            this.label18 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.cmbMetric = new System.Windows.Forms.ComboBox();
             this.txtObservationType = new System.Windows.Forms.TextBox();
@@ -56,118 +44,29 @@ namespace BenMAP
             this.tabCustom = new System.Windows.Forms.TabPage();
             this.txtFunction = new System.Windows.Forms.TextBox();
             this.label14 = new System.Windows.Forms.Label();
-            this.groupBox3.SuspendLayout();
+            this.label18 = new System.Windows.Forms.Label();
+            this.label19 = new System.Windows.Forms.Label();
+            this.lstPollutant = new System.Windows.Forms.ListBox();
+            this.lstSPollutant = new System.Windows.Forms.ListBox();
+            this.btnDelete = new System.Windows.Forms.Button();
+            this.btnSelect = new System.Windows.Forms.Button();
+            this.btnOK = new System.Windows.Forms.Button();
+            this.btnCancel = new System.Windows.Forms.Button();
+            this.cbShowDetails = new System.Windows.Forms.CheckBox();
+            this.btnRemoveAll = new System.Windows.Forms.Button();
+            this.btnAddAll = new System.Windows.Forms.Button();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.groupBox2.SuspendLayout();
             this.tclFixed.SuspendLayout();
             this.tabFixed.SuspendLayout();
             this.tabMoving.SuspendLayout();
             this.tabCustom.SuspendLayout();
+            this.groupBox3.SuspendLayout();
             this.SuspendLayout();
-                                                this.groupBox3.Controls.Add(this.label13);
-            this.groupBox3.Controls.Add(this.label12);
-            this.groupBox3.Controls.Add(this.cbShowDetails);
-            this.groupBox3.Controls.Add(this.btnCancel);
-            this.groupBox3.Controls.Add(this.btnOK);
-            this.groupBox3.Controls.Add(this.btnSelect);
-            this.groupBox3.Controls.Add(this.btnDelete);
-            this.groupBox3.Controls.Add(this.lstSPollutant);
-            this.groupBox3.Controls.Add(this.lstPollutant);
-            this.groupBox3.Controls.Add(this.label19);
-            this.groupBox3.Controls.Add(this.label18);
-            this.groupBox3.Location = new System.Drawing.Point(12, 12);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(426, 233);
-            this.groupBox3.TabIndex = 10;
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Main";
-                                                this.label13.AutoSize = true;
-            this.label13.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
-            this.label13.Location = new System.Drawing.Point(31, 165);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(134, 14);
-            this.label13.TabIndex = 11;
-            this.label13.Text = "Drag and drop to select";
-                                                this.label12.AutoSize = true;
-            this.label12.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
-            this.label12.Location = new System.Drawing.Point(215, 164);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(128, 14);
-            this.label12.TabIndex = 10;
-            this.label12.Text = "Double-click to delete";
-                                                this.cbShowDetails.AutoSize = true;
-            this.cbShowDetails.Location = new System.Drawing.Point(30, 199);
-            this.cbShowDetails.Name = "cbShowDetails";
-            this.cbShowDetails.Size = new System.Drawing.Size(126, 16);
-            this.cbShowDetails.TabIndex = 6;
-            this.cbShowDetails.Text = "Pollutant Details";
-            this.cbShowDetails.UseVisualStyleBackColor = true;
-            this.cbShowDetails.CheckedChanged += new System.EventHandler(this.cbShowDetails_CheckedChanged);
-                                                this.btnCancel.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.btnCancel.Location = new System.Drawing.Point(221, 194);
-            this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(75, 27);
-            this.btnCancel.TabIndex = 9;
-            this.btnCancel.Text = "Cancel";
-            this.btnCancel.UseVisualStyleBackColor = true;
-            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
-                                                this.btnOK.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.btnOK.Location = new System.Drawing.Point(306, 194);
-            this.btnOK.Name = "btnOK";
-            this.btnOK.Size = new System.Drawing.Size(75, 27);
-            this.btnOK.TabIndex = 8;
-            this.btnOK.Text = "OK";
-            this.btnOK.UseVisualStyleBackColor = true;
-            this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
-                                                this.btnSelect.Location = new System.Drawing.Point(134, 190);
-            this.btnSelect.Name = "btnSelect";
-            this.btnSelect.Size = new System.Drawing.Size(75, 27);
-            this.btnSelect.TabIndex = 5;
-            this.btnSelect.Text = "Select";
-            this.btnSelect.UseVisualStyleBackColor = true;
-            this.btnSelect.Visible = false;
-            this.btnSelect.Click += new System.EventHandler(this.btnSelect_Click);
-                                                this.btnDelete.Location = new System.Drawing.Point(64, 194);
-            this.btnDelete.Name = "btnDelete";
-            this.btnDelete.Size = new System.Drawing.Size(75, 27);
-            this.btnDelete.TabIndex = 4;
-            this.btnDelete.Text = "Delete";
-            this.btnDelete.UseVisualStyleBackColor = true;
-            this.btnDelete.Visible = false;
-            this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
-                                                this.lstSPollutant.AllowDrop = true;
-            this.lstSPollutant.FormattingEnabled = true;
-            this.lstSPollutant.ItemHeight = 14;
-            this.lstSPollutant.Location = new System.Drawing.Point(212, 42);
-            this.lstSPollutant.Name = "lstSPollutant";
-            this.lstSPollutant.Size = new System.Drawing.Size(180, 116);
-            this.lstSPollutant.TabIndex = 3;
-            this.lstSPollutant.SelectedIndexChanged += new System.EventHandler(this.lstSPollutant_SelectedIndexChanged);
-            this.lstSPollutant.DragDrop += new System.Windows.Forms.DragEventHandler(this.lstSPollutant_DragDrop);
-            this.lstSPollutant.DragOver += new System.Windows.Forms.DragEventHandler(this.lstSPollutant_DragOver);
-            this.lstSPollutant.DoubleClick += new System.EventHandler(this.lstSPollutant_DoubleClick);
-                                                this.lstPollutant.AllowDrop = true;
-            this.lstPollutant.FormattingEnabled = true;
-            this.lstPollutant.ItemHeight = 14;
-            this.lstPollutant.Location = new System.Drawing.Point(29, 42);
-            this.lstPollutant.Name = "lstPollutant";
-            this.lstPollutant.Size = new System.Drawing.Size(160, 116);
-            this.lstPollutant.TabIndex = 2;
-            this.lstPollutant.SelectedIndexChanged += new System.EventHandler(this.lstPollutant_SelectedIndexChanged);
-            this.lstPollutant.DoubleClick += new System.EventHandler(this.lstPollutant_DoubleClick);
-            this.lstPollutant.MouseDown += new System.Windows.Forms.MouseEventHandler(this.lstPollutant_MouseDown);
-                                                this.label19.AutoSize = true;
-            this.label19.Location = new System.Drawing.Point(209, 24);
-            this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(116, 14);
-            this.label19.TabIndex = 1;
-            this.label19.Text = "Selected Pollutants:";
-                                                this.label18.AutoSize = true;
-            this.label18.Location = new System.Drawing.Point(27, 24);
-            this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(66, 14);
-            this.label18.TabIndex = 0;
-            this.label18.Text = "Pollutants:";
-                                                this.groupBox2.Controls.Add(this.cmbMetric);
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.cmbMetric);
             this.groupBox2.Controls.Add(this.txtObservationType);
             this.groupBox2.Controls.Add(this.label3);
             this.groupBox2.Controls.Add(this.txtPollutantName);
@@ -177,13 +76,16 @@ namespace BenMAP
             this.groupBox2.Controls.Add(this.label8);
             this.groupBox2.Controls.Add(this.label4);
             this.groupBox2.Controls.Add(this.tclFixed);
-            this.groupBox2.Location = new System.Drawing.Point(12, 259);
+            this.groupBox2.Location = new System.Drawing.Point(0, 208);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(426, 240);
+            this.groupBox2.Size = new System.Drawing.Size(454, 240);
             this.groupBox2.TabIndex = 7;
             this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Details";
-                                                this.cmbMetric.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.groupBox2.Enter += new System.EventHandler(this.groupBox2_Enter);
+            // 
+            // cmbMetric
+            // 
+            this.cmbMetric.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbMetric.FormattingEnabled = true;
             this.cmbMetric.Items.AddRange(new object[] {
             "D24HourMean"});
@@ -192,35 +94,53 @@ namespace BenMAP
             this.cmbMetric.Size = new System.Drawing.Size(114, 22);
             this.cmbMetric.TabIndex = 5;
             this.cmbMetric.SelectedIndexChanged += new System.EventHandler(this.cmbMetric_SelectedIndexChanged);
-                                                this.txtObservationType.Location = new System.Drawing.Point(299, 20);
+            // 
+            // txtObservationType
+            // 
+            this.txtObservationType.Location = new System.Drawing.Point(299, 20);
             this.txtObservationType.Name = "txtObservationType";
             this.txtObservationType.ReadOnly = true;
             this.txtObservationType.Size = new System.Drawing.Size(112, 22);
             this.txtObservationType.TabIndex = 5;
-                                                this.label3.AutoSize = true;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(12, 55);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(44, 14);
             this.label3.TabIndex = 4;
             this.label3.Text = "Metric:";
-                                                this.txtPollutantName.Location = new System.Drawing.Point(75, 20);
+            // 
+            // txtPollutantName
+            // 
+            this.txtPollutantName.Location = new System.Drawing.Point(75, 20);
             this.txtPollutantName.Name = "txtPollutantName";
             this.txtPollutantName.ReadOnly = true;
             this.txtPollutantName.Size = new System.Drawing.Size(114, 22);
             this.txtPollutantName.TabIndex = 1;
-                                                this.label2.AutoSize = true;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(198, 24);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(102, 14);
             this.label2.TabIndex = 2;
             this.label2.Text = "Observation Type:";
-                                                this.label1.AutoSize = true;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(12, 24);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(60, 14);
             this.label1.TabIndex = 0;
             this.label1.Text = "Pollutant:";
-                                                this.cmbSeasonalMetric.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            // 
+            // cmbSeasonalMetric
+            // 
+            this.cmbSeasonalMetric.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbSeasonalMetric.FormattingEnabled = true;
             this.cmbSeasonalMetric.Items.AddRange(new object[] {
             "QuarterlyMean",
@@ -229,27 +149,39 @@ namespace BenMAP
             this.cmbSeasonalMetric.Name = "cmbSeasonalMetric";
             this.cmbSeasonalMetric.Size = new System.Drawing.Size(112, 22);
             this.cmbSeasonalMetric.TabIndex = 3;
-                                                this.label8.AutoSize = true;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
             this.label8.Location = new System.Drawing.Point(198, 55);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(98, 14);
             this.label8.TabIndex = 2;
             this.label8.Text = "Seasonal Metric:";
-                                                this.label4.AutoSize = true;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(5, 86);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(79, 14);
             this.label4.TabIndex = 0;
             this.label4.Text = "Hourly Metric";
-                                                this.tclFixed.Controls.Add(this.tabFixed);
+            // 
+            // tclFixed
+            // 
+            this.tclFixed.Controls.Add(this.tabFixed);
             this.tclFixed.Controls.Add(this.tabMoving);
             this.tclFixed.Controls.Add(this.tabCustom);
             this.tclFixed.Location = new System.Drawing.Point(7, 104);
             this.tclFixed.Name = "tclFixed";
             this.tclFixed.SelectedIndex = 0;
-            this.tclFixed.Size = new System.Drawing.Size(404, 130);
+            this.tclFixed.Size = new System.Drawing.Size(440, 130);
             this.tclFixed.TabIndex = 1;
-                                                this.tabFixed.Controls.Add(this.cmbStatistic);
+            // 
+            // tabFixed
+            // 
+            this.tabFixed.Controls.Add(this.cmbStatistic);
             this.tabFixed.Controls.Add(this.label7);
             this.tabFixed.Controls.Add(this.txtEndHour);
             this.tabFixed.Controls.Add(this.txtStartHour);
@@ -258,11 +190,14 @@ namespace BenMAP
             this.tabFixed.Location = new System.Drawing.Point(4, 23);
             this.tabFixed.Name = "tabFixed";
             this.tabFixed.Padding = new System.Windows.Forms.Padding(3);
-            this.tabFixed.Size = new System.Drawing.Size(396, 103);
+            this.tabFixed.Size = new System.Drawing.Size(432, 103);
             this.tabFixed.TabIndex = 0;
             this.tabFixed.Text = "Fixed Window";
             this.tabFixed.UseVisualStyleBackColor = true;
-                                                this.cmbStatistic.FormattingEnabled = true;
+            // 
+            // cmbStatistic
+            // 
+            this.cmbStatistic.FormattingEnabled = true;
             this.cmbStatistic.Items.AddRange(new object[] {
             "Mean",
             "Median",
@@ -274,37 +209,55 @@ namespace BenMAP
             this.cmbStatistic.Size = new System.Drawing.Size(100, 22);
             this.cmbStatistic.TabIndex = 5;
             this.cmbStatistic.Text = "Mean";
-                                                this.label7.AutoSize = true;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
             this.label7.Location = new System.Drawing.Point(6, 73);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(52, 14);
             this.label7.TabIndex = 4;
             this.label7.Text = "Statistic:";
-                                                this.txtEndHour.Location = new System.Drawing.Point(78, 37);
+            // 
+            // txtEndHour
+            // 
+            this.txtEndHour.Location = new System.Drawing.Point(78, 37);
             this.txtEndHour.Name = "txtEndHour";
             this.txtEndHour.ReadOnly = true;
             this.txtEndHour.Size = new System.Drawing.Size(100, 22);
             this.txtEndHour.TabIndex = 3;
             this.txtEndHour.Text = "23";
-                                                this.txtStartHour.Location = new System.Drawing.Point(78, 5);
+            // 
+            // txtStartHour
+            // 
+            this.txtStartHour.Location = new System.Drawing.Point(78, 5);
             this.txtStartHour.Name = "txtStartHour";
             this.txtStartHour.ReadOnly = true;
             this.txtStartHour.Size = new System.Drawing.Size(100, 22);
             this.txtStartHour.TabIndex = 1;
             this.txtStartHour.Text = "0";
-                                                this.label6.AutoSize = true;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
             this.label6.Location = new System.Drawing.Point(6, 41);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(59, 14);
             this.label6.TabIndex = 2;
             this.label6.Text = "End Hour:";
-                                                this.label5.AutoSize = true;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
             this.label5.Location = new System.Drawing.Point(6, 8);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(64, 14);
             this.label5.TabIndex = 0;
             this.label5.Text = "Start Hour:";
-                                                this.tabMoving.Controls.Add(this.cmbDaily);
+            // 
+            // tabMoving
+            // 
+            this.tabMoving.Controls.Add(this.cmbDaily);
             this.tabMoving.Controls.Add(this.cmbWStatistic);
             this.tabMoving.Controls.Add(this.txtMovingWindowSize);
             this.tabMoving.Controls.Add(this.label11);
@@ -313,11 +266,14 @@ namespace BenMAP
             this.tabMoving.Location = new System.Drawing.Point(4, 23);
             this.tabMoving.Name = "tabMoving";
             this.tabMoving.Padding = new System.Windows.Forms.Padding(3);
-            this.tabMoving.Size = new System.Drawing.Size(396, 103);
+            this.tabMoving.Size = new System.Drawing.Size(432, 103);
             this.tabMoving.TabIndex = 1;
             this.tabMoving.Text = "Moving Window";
             this.tabMoving.UseVisualStyleBackColor = true;
-                                                this.cmbDaily.FormattingEnabled = true;
+            // 
+            // cmbDaily
+            // 
+            this.cmbDaily.FormattingEnabled = true;
             this.cmbDaily.Items.AddRange(new object[] {
             "Mean",
             "Median",
@@ -329,7 +285,10 @@ namespace BenMAP
             this.cmbDaily.Size = new System.Drawing.Size(121, 22);
             this.cmbDaily.TabIndex = 5;
             this.cmbDaily.Text = "Mean";
-                                                this.cmbWStatistic.FormattingEnabled = true;
+            // 
+            // cmbWStatistic
+            // 
+            this.cmbWStatistic.FormattingEnabled = true;
             this.cmbWStatistic.Items.AddRange(new object[] {
             "Mean",
             "Median",
@@ -341,54 +300,216 @@ namespace BenMAP
             this.cmbWStatistic.Size = new System.Drawing.Size(121, 22);
             this.cmbWStatistic.TabIndex = 4;
             this.cmbWStatistic.Text = "Mean";
-                                                this.txtMovingWindowSize.Location = new System.Drawing.Point(127, 7);
+            // 
+            // txtMovingWindowSize
+            // 
+            this.txtMovingWindowSize.Location = new System.Drawing.Point(127, 7);
             this.txtMovingWindowSize.Name = "txtMovingWindowSize";
             this.txtMovingWindowSize.ReadOnly = true;
             this.txtMovingWindowSize.Size = new System.Drawing.Size(121, 22);
             this.txtMovingWindowSize.TabIndex = 3;
             this.txtMovingWindowSize.Text = "1";
-                                                this.label11.AutoSize = true;
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
             this.label11.Location = new System.Drawing.Point(10, 70);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(83, 14);
             this.label11.TabIndex = 2;
             this.label11.Text = "Daily Statistic:";
-                                                this.label10.AutoSize = true;
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
             this.label10.Location = new System.Drawing.Point(10, 41);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(100, 14);
             this.label10.TabIndex = 1;
             this.label10.Text = "Window Statistic:";
-                                                this.label9.AutoSize = true;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
             this.label9.Location = new System.Drawing.Point(13, 10);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(80, 14);
             this.label9.TabIndex = 0;
             this.label9.Text = "Window Size:";
-                                                this.tabCustom.Controls.Add(this.txtFunction);
+            // 
+            // tabCustom
+            // 
+            this.tabCustom.Controls.Add(this.txtFunction);
             this.tabCustom.Controls.Add(this.label14);
             this.tabCustom.Location = new System.Drawing.Point(4, 23);
             this.tabCustom.Name = "tabCustom";
-            this.tabCustom.Size = new System.Drawing.Size(396, 103);
+            this.tabCustom.Size = new System.Drawing.Size(432, 103);
             this.tabCustom.TabIndex = 2;
             this.tabCustom.Text = "Custom";
             this.tabCustom.UseVisualStyleBackColor = true;
-                                                this.txtFunction.Location = new System.Drawing.Point(78, 58);
+            // 
+            // txtFunction
+            // 
+            this.txtFunction.Location = new System.Drawing.Point(78, 58);
             this.txtFunction.Multiline = true;
             this.txtFunction.Name = "txtFunction";
             this.txtFunction.Size = new System.Drawing.Size(294, 20);
             this.txtFunction.TabIndex = 5;
-                                                this.label14.AutoSize = true;
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
             this.label14.Location = new System.Drawing.Point(19, 58);
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(56, 14);
             this.label14.TabIndex = 4;
             this.label14.Text = "Function:";
-                                                this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
+            // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Location = new System.Drawing.Point(10, 18);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(66, 14);
+            this.label18.TabIndex = 0;
+            this.label18.Text = "Pollutants:";
+            // 
+            // label19
+            // 
+            this.label19.AutoSize = true;
+            this.label19.Location = new System.Drawing.Point(279, 18);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(116, 14);
+            this.label19.TabIndex = 1;
+            this.label19.Text = "Selected Pollutants:";
+            // 
+            // lstPollutant
+            // 
+            this.lstPollutant.AllowDrop = true;
+            this.lstPollutant.FormattingEnabled = true;
+            this.lstPollutant.ItemHeight = 14;
+            this.lstPollutant.Location = new System.Drawing.Point(10, 36);
+            this.lstPollutant.Name = "lstPollutant";
+            this.lstPollutant.Size = new System.Drawing.Size(160, 144);
+            this.lstPollutant.TabIndex = 2;
+            this.lstPollutant.SelectedIndexChanged += new System.EventHandler(this.lstPollutant_SelectedIndexChanged);
+            this.lstPollutant.DoubleClick += new System.EventHandler(this.lstPollutant_DoubleClick);
+            this.lstPollutant.MouseDown += new System.Windows.Forms.MouseEventHandler(this.lstPollutant_MouseDown);
+            // 
+            // lstSPollutant
+            // 
+            this.lstSPollutant.AllowDrop = true;
+            this.lstSPollutant.FormattingEnabled = true;
+            this.lstSPollutant.ItemHeight = 14;
+            this.lstSPollutant.Location = new System.Drawing.Point(282, 36);
+            this.lstSPollutant.Name = "lstSPollutant";
+            this.lstSPollutant.Size = new System.Drawing.Size(160, 144);
+            this.lstSPollutant.TabIndex = 3;
+            this.lstSPollutant.SelectedIndexChanged += new System.EventHandler(this.lstSPollutant_SelectedIndexChanged);
+            this.lstSPollutant.DragDrop += new System.Windows.Forms.DragEventHandler(this.lstSPollutant_DragDrop);
+            this.lstSPollutant.DragOver += new System.Windows.Forms.DragEventHandler(this.lstSPollutant_DragOver);
+            this.lstSPollutant.DoubleClick += new System.EventHandler(this.lstSPollutant_DoubleClick);
+            // 
+            // btnDelete
+            // 
+            this.btnDelete.Location = new System.Drawing.Point(176, 69);
+            this.btnDelete.Name = "btnDelete";
+            this.btnDelete.Size = new System.Drawing.Size(100, 27);
+            this.btnDelete.TabIndex = 4;
+            this.btnDelete.Text = "< Remove";
+            this.btnDelete.UseVisualStyleBackColor = true;
+            this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
+            // 
+            // btnSelect
+            // 
+            this.btnSelect.Location = new System.Drawing.Point(176, 36);
+            this.btnSelect.Name = "btnSelect";
+            this.btnSelect.Size = new System.Drawing.Size(100, 27);
+            this.btnSelect.TabIndex = 5;
+            this.btnSelect.Text = "Add >";
+            this.btnSelect.UseVisualStyleBackColor = true;
+            this.btnSelect.Click += new System.EventHandler(this.btnSelect_Click);
+            // 
+            // btnOK
+            // 
+            this.btnOK.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.btnOK.Location = new System.Drawing.Point(365, 186);
+            this.btnOK.Name = "btnOK";
+            this.btnOK.Size = new System.Drawing.Size(78, 27);
+            this.btnOK.TabIndex = 8;
+            this.btnOK.Text = "OK";
+            this.btnOK.UseVisualStyleBackColor = true;
+            this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
+            // 
+            // btnCancel
+            // 
+            this.btnCancel.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.btnCancel.Location = new System.Drawing.Point(281, 186);
+            this.btnCancel.Name = "btnCancel";
+            this.btnCancel.Size = new System.Drawing.Size(78, 27);
+            this.btnCancel.TabIndex = 9;
+            this.btnCancel.Text = "Cancel";
+            this.btnCancel.UseVisualStyleBackColor = true;
+            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
+            // 
+            // cbShowDetails
+            // 
+            this.cbShowDetails.AutoSize = true;
+            this.cbShowDetails.Location = new System.Drawing.Point(10, 193);
+            this.cbShowDetails.Name = "cbShowDetails";
+            this.cbShowDetails.Size = new System.Drawing.Size(119, 18);
+            this.cbShowDetails.TabIndex = 6;
+            this.cbShowDetails.Text = "Pollutant Details";
+            this.cbShowDetails.UseVisualStyleBackColor = true;
+            this.cbShowDetails.CheckedChanged += new System.EventHandler(this.cbShowDetails_CheckedChanged);
+            // 
+            // btnRemoveAll
+            // 
+            this.btnRemoveAll.Location = new System.Drawing.Point(176, 153);
+            this.btnRemoveAll.Name = "btnRemoveAll";
+            this.btnRemoveAll.Size = new System.Drawing.Size(100, 27);
+            this.btnRemoveAll.TabIndex = 10;
+            this.btnRemoveAll.Text = "<< Remove All";
+            this.btnRemoveAll.UseVisualStyleBackColor = true;
+            this.btnRemoveAll.Click += new System.EventHandler(this.btnRemoveAll_Click);
+            // 
+            // btnAddAll
+            // 
+            this.btnAddAll.Location = new System.Drawing.Point(176, 120);
+            this.btnAddAll.Name = "btnAddAll";
+            this.btnAddAll.Size = new System.Drawing.Size(100, 27);
+            this.btnAddAll.TabIndex = 11;
+            this.btnAddAll.Text = "Add All >>";
+            this.btnAddAll.UseVisualStyleBackColor = true;
+            this.btnAddAll.Click += new System.EventHandler(this.btnAddAll_Click);
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.btnAddAll);
+            this.groupBox3.Controls.Add(this.btnRemoveAll);
+            this.groupBox3.Controls.Add(this.cbShowDetails);
+            this.groupBox3.Controls.Add(this.btnCancel);
+            this.groupBox3.Controls.Add(this.btnOK);
+            this.groupBox3.Controls.Add(this.btnSelect);
+            this.groupBox3.Controls.Add(this.btnDelete);
+            this.groupBox3.Controls.Add(this.lstSPollutant);
+            this.groupBox3.Controls.Add(this.lstPollutant);
+            this.groupBox3.Controls.Add(this.label19);
+            this.groupBox3.Controls.Add(this.label18);
+            this.groupBox3.Location = new System.Drawing.Point(0, -8);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(454, 230);
+            this.groupBox3.TabIndex = 10;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Enter += new System.EventHandler(this.groupBox3_Enter);
+            // 
+            // Pollutant
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(459, 256);
-            this.Controls.Add(this.groupBox3);
+            this.ClientSize = new System.Drawing.Size(454, 561);
             this.Controls.Add(this.groupBox2);
+            this.Controls.Add(this.groupBox3);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.Name = "Pollutant";
@@ -396,8 +517,6 @@ namespace BenMAP
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Pollutant Definition";
             this.Load += new System.EventHandler(this.Pollutant_Load);
-            this.groupBox3.ResumeLayout(false);
-            this.groupBox3.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.tclFixed.ResumeLayout(false);
@@ -407,6 +526,8 @@ namespace BenMAP
             this.tabMoving.PerformLayout();
             this.tabCustom.ResumeLayout(false);
             this.tabCustom.PerformLayout();
+            this.groupBox3.ResumeLayout(false);
+            this.groupBox3.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -419,8 +540,6 @@ namespace BenMAP
         private System.Windows.Forms.ComboBox cmbMetric;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Button btnOK;
-        private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.ComboBox cmbSeasonalMetric;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.TabControl tclFixed;
@@ -441,16 +560,18 @@ namespace BenMAP
         private System.Windows.Forms.TabPage tabCustom;
         private System.Windows.Forms.TextBox txtFunction;
         private System.Windows.Forms.Label label14;
-        private System.Windows.Forms.GroupBox groupBox3;
-        private System.Windows.Forms.Button btnDelete;
-        private System.Windows.Forms.ListBox lstSPollutant;
-        private System.Windows.Forms.ListBox lstPollutant;
-        private System.Windows.Forms.Label label19;
-        private System.Windows.Forms.Label label18;
         private System.Windows.Forms.TextBox txtObservationType;
+        private System.Windows.Forms.Label label18;
+        private System.Windows.Forms.Label label19;
+        private System.Windows.Forms.ListBox lstPollutant;
+        private System.Windows.Forms.ListBox lstSPollutant;
+        private System.Windows.Forms.Button btnDelete;
         private System.Windows.Forms.Button btnSelect;
+        private System.Windows.Forms.Button btnOK;
+        private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.CheckBox cbShowDetails;
-        private System.Windows.Forms.Label label13;
-        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.Button btnRemoveAll;
+        private System.Windows.Forms.Button btnAddAll;
+        private System.Windows.Forms.GroupBox groupBox3;
     }
 }
