@@ -18,9 +18,9 @@ namespace BenMAP
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(IncidencePoolingandAggregation));
-            BrightIdeasSoftware.HeaderStateStyle headerStateStyle1 = new BrightIdeasSoftware.HeaderStateStyle();
-            BrightIdeasSoftware.HeaderStateStyle headerStateStyle2 = new BrightIdeasSoftware.HeaderStateStyle();
-            BrightIdeasSoftware.HeaderStateStyle headerStateStyle3 = new BrightIdeasSoftware.HeaderStateStyle();
+            BrightIdeasSoftware.HeaderStateStyle headerStateStyle4 = new BrightIdeasSoftware.HeaderStateStyle();
+            BrightIdeasSoftware.HeaderStateStyle headerStateStyle5 = new BrightIdeasSoftware.HeaderStateStyle();
+            BrightIdeasSoftware.HeaderStateStyle headerStateStyle6 = new BrightIdeasSoftware.HeaderStateStyle();
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.miniToolStrip = new System.Windows.Forms.StatusStrip();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
@@ -197,8 +197,8 @@ namespace BenMAP
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.groupBox7);
-            this.splitContainer1.Size = new System.Drawing.Size(958, 662);
-            this.splitContainer1.SplitterDistance = 326;
+            this.splitContainer1.Size = new System.Drawing.Size(958, 724);
+            this.splitContainer1.SplitterDistance = 354;
             this.splitContainer1.TabIndex = 3;
             // 
             // grpAvailabelIncidenceResults
@@ -209,7 +209,7 @@ namespace BenMAP
             this.grpAvailabelIncidenceResults.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpAvailabelIncidenceResults.Location = new System.Drawing.Point(0, 0);
             this.grpAvailabelIncidenceResults.Name = "grpAvailabelIncidenceResults";
-            this.grpAvailabelIncidenceResults.Size = new System.Drawing.Size(958, 326);
+            this.grpAvailabelIncidenceResults.Size = new System.Drawing.Size(958, 354);
             this.grpAvailabelIncidenceResults.TabIndex = 0;
             this.grpAvailabelIncidenceResults.TabStop = false;
             this.grpAvailabelIncidenceResults.Text = "Available Incidence Results";
@@ -220,7 +220,7 @@ namespace BenMAP
             this.groupBox10.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox10.Location = new System.Drawing.Point(3, 87);
             this.groupBox10.Name = "groupBox10";
-            this.groupBox10.Size = new System.Drawing.Size(952, 236);
+            this.groupBox10.Size = new System.Drawing.Size(952, 264);
             this.groupBox10.TabIndex = 40;
             this.groupBox10.TabStop = false;
             // 
@@ -261,6 +261,7 @@ namespace BenMAP
             this.olvAvailable.AlternateRowBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(240)))), ((int)(((byte)(220)))));
             this.olvAvailable.BackColor = System.Drawing.Color.White;
             this.olvAvailable.CellEditActivation = BrightIdeasSoftware.ObjectListView.CellEditActivateMode.SingleClick;
+            this.olvAvailable.CheckBoxes = true;
             this.olvAvailable.CheckedAspectName = "";
             this.olvAvailable.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.olvColumn2,
@@ -291,7 +292,7 @@ namespace BenMAP
             this.olvAvailable.ShowImagesOnSubItems = true;
             this.olvAvailable.ShowItemCountOnGroups = true;
             this.olvAvailable.ShowItemToolTips = true;
-            this.olvAvailable.Size = new System.Drawing.Size(946, 215);
+            this.olvAvailable.Size = new System.Drawing.Size(946, 243);
             this.olvAvailable.SmallImageList = this.imageList1;
             this.olvAvailable.SpaceBetweenGroups = 20;
             this.olvAvailable.TabIndex = 0;
@@ -757,7 +758,7 @@ namespace BenMAP
             this.groupBox7.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox7.Location = new System.Drawing.Point(0, 0);
             this.groupBox7.Name = "groupBox7";
-            this.groupBox7.Size = new System.Drawing.Size(958, 332);
+            this.groupBox7.Size = new System.Drawing.Size(958, 366);
             this.groupBox7.TabIndex = 2;
             this.groupBox7.TabStop = false;
             // 
@@ -768,7 +769,7 @@ namespace BenMAP
             this.grpSelectPoolingMethods.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpSelectPoolingMethods.Location = new System.Drawing.Point(3, 18);
             this.grpSelectPoolingMethods.Name = "grpSelectPoolingMethods";
-            this.grpSelectPoolingMethods.Size = new System.Drawing.Size(952, 311);
+            this.grpSelectPoolingMethods.Size = new System.Drawing.Size(952, 345);
             this.grpSelectPoolingMethods.TabIndex = 7;
             this.grpSelectPoolingMethods.TabStop = false;
             this.grpSelectPoolingMethods.Text = "Select Pooling Methods";
@@ -787,14 +788,14 @@ namespace BenMAP
             this.groupBox6.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox6.Location = new System.Drawing.Point(3, 67);
             this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Size = new System.Drawing.Size(946, 241);
+            this.groupBox6.Size = new System.Drawing.Size(946, 275);
             this.groupBox6.TabIndex = 3;
             this.groupBox6.TabStop = false;
             // 
             // btShowDetail
             // 
             this.btShowDetail.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btShowDetail.Location = new System.Drawing.Point(576, 210);
+            this.btShowDetail.Location = new System.Drawing.Point(576, 248);
             this.btShowDetail.Name = "btShowDetail";
             this.btShowDetail.Size = new System.Drawing.Size(108, 27);
             this.btShowDetail.TabIndex = 15;
@@ -806,7 +807,7 @@ namespace BenMAP
             // 
             this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(116, 216);
+            this.label4.Location = new System.Drawing.Point(116, 254);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(225, 14);
             this.label4.TabIndex = 12;
@@ -816,7 +817,7 @@ namespace BenMAP
             // btBrowseCR
             // 
             this.btBrowseCR.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btBrowseCR.Location = new System.Drawing.Point(519, 210);
+            this.btBrowseCR.Location = new System.Drawing.Point(519, 248);
             this.btBrowseCR.Name = "btBrowseCR";
             this.btBrowseCR.Size = new System.Drawing.Size(75, 27);
             this.btBrowseCR.TabIndex = 14;
@@ -827,7 +828,7 @@ namespace BenMAP
             // txtOpenExistingCFGR
             // 
             this.txtOpenExistingCFGR.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.txtOpenExistingCFGR.Location = new System.Drawing.Point(283, 213);
+            this.txtOpenExistingCFGR.Location = new System.Drawing.Point(283, 250);
             this.txtOpenExistingCFGR.Name = "txtOpenExistingCFGR";
             this.txtOpenExistingCFGR.ReadOnly = true;
             this.txtOpenExistingCFGR.Size = new System.Drawing.Size(222, 22);
@@ -851,7 +852,7 @@ namespace BenMAP
             this.splitContainerTile.Panel2.Controls.Add(this.btOLVTileSet);
             this.splitContainerTile.Panel2.Controls.Add(this.olvTile);
             this.splitContainerTile.Panel2MinSize = 0;
-            this.splitContainerTile.Size = new System.Drawing.Size(952, 198);
+            this.splitContainerTile.Size = new System.Drawing.Size(952, 228);
             this.splitContainerTile.SplitterDistance = 298;
             this.splitContainerTile.TabIndex = 11;
             // 
@@ -862,7 +863,7 @@ namespace BenMAP
             this.tabControlSelected.Location = new System.Drawing.Point(0, 0);
             this.tabControlSelected.Name = "tabControlSelected";
             this.tabControlSelected.SelectedIndex = 0;
-            this.tabControlSelected.Size = new System.Drawing.Size(298, 198);
+            this.tabControlSelected.Size = new System.Drawing.Size(298, 228);
             this.tabControlSelected.TabIndex = 3;
             this.tabControlSelected.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.tabControlSelected_DrawItem);
             this.tabControlSelected.SelectedIndexChanged += new System.EventHandler(this.tabControlSelected_SelectedIndexChanged);
@@ -875,7 +876,7 @@ namespace BenMAP
             this.PoolingWindow0.Location = new System.Drawing.Point(4, 23);
             this.PoolingWindow0.Name = "PoolingWindow0";
             this.PoolingWindow0.Padding = new System.Windows.Forms.Padding(3);
-            this.PoolingWindow0.Size = new System.Drawing.Size(290, 171);
+            this.PoolingWindow0.Size = new System.Drawing.Size(290, 201);
             this.PoolingWindow0.TabIndex = 0;
             this.PoolingWindow0.Text = "PoolingWindow0";
             this.PoolingWindow0.UseVisualStyleBackColor = true;
@@ -937,7 +938,7 @@ namespace BenMAP
             this.treeListView.HideSelection = false;
             this.treeListView.IsSimpleDragSource = true;
             this.treeListView.IsSimpleDropSink = true;
-            this.treeListView.Location = new System.Drawing.Point(3, 3);
+            this.treeListView.Location = new System.Drawing.Point(3, 11);
             this.treeListView.Name = "treeListView";
             this.treeListView.OwnerDraw = true;
             this.treeListView.SelectColumnsOnRightClickBehaviour = BrightIdeasSoftware.ObjectListView.ColumnSelectBehaviour.Submenu;
@@ -945,7 +946,7 @@ namespace BenMAP
             this.treeListView.ShowGroups = false;
             this.treeListView.ShowImagesOnSubItems = true;
             this.treeListView.ShowItemToolTips = true;
-            this.treeListView.Size = new System.Drawing.Size(284, 202);
+            this.treeListView.Size = new System.Drawing.Size(284, 229);
             this.treeListView.SmallImageList = this.imageList1;
             this.treeListView.TabIndex = 15;
             this.treeListView.UseCellFormatEvents = true;
@@ -985,11 +986,11 @@ namespace BenMAP
             // 
             // olvHdrStylePooling
             // 
-            this.olvHdrStylePooling.Hot = headerStateStyle1;
-            headerStateStyle2.BackColor = System.Drawing.Color.Yellow;
-            headerStateStyle2.ForeColor = System.Drawing.Color.Tomato;
-            this.olvHdrStylePooling.Normal = headerStateStyle2;
-            this.olvHdrStylePooling.Pressed = headerStateStyle3;
+            this.olvHdrStylePooling.Hot = headerStateStyle4;
+            headerStateStyle5.BackColor = System.Drawing.Color.Yellow;
+            headerStateStyle5.ForeColor = System.Drawing.Color.Tomato;
+            this.olvHdrStylePooling.Normal = headerStateStyle5;
+            this.olvHdrStylePooling.Pressed = headerStateStyle6;
             // 
             // olvColumn31
             // 
@@ -1110,7 +1111,7 @@ namespace BenMAP
             // 
             // btOLVTileSet
             // 
-            this.btOLVTileSet.Location = new System.Drawing.Point(4, 3);
+            this.btOLVTileSet.Location = new System.Drawing.Point(4, 11);
             this.btOLVTileSet.Name = "btOLVTileSet";
             this.btOLVTileSet.Size = new System.Drawing.Size(115, 23);
             this.btOLVTileSet.TabIndex = 13;
@@ -1136,7 +1137,7 @@ namespace BenMAP
             this.olvTile.HideSelection = false;
             this.olvTile.IsSimpleDragSource = true;
             this.olvTile.IsSimpleDropSink = true;
-            this.olvTile.Location = new System.Drawing.Point(3, 26);
+            this.olvTile.Location = new System.Drawing.Point(3, 34);
             this.olvTile.Name = "olvTile";
             this.olvTile.OverlayText.Alignment = System.Drawing.ContentAlignment.BottomLeft;
             this.olvTile.OverlayText.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
@@ -1149,7 +1150,7 @@ namespace BenMAP
             this.olvTile.ShowImagesOnSubItems = true;
             this.olvTile.ShowItemCountOnGroups = true;
             this.olvTile.ShowItemToolTips = true;
-            this.olvTile.Size = new System.Drawing.Size(647, 172);
+            this.olvTile.Size = new System.Drawing.Size(647, 198);
             this.olvTile.SmallImageList = this.imageList1;
             this.olvTile.SpaceBetweenGroups = 20;
             this.olvTile.TabIndex = 1;
@@ -1166,7 +1167,7 @@ namespace BenMAP
             // btDelSelectMethod
             // 
             this.btDelSelectMethod.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btDelSelectMethod.Location = new System.Drawing.Point(0, 210);
+            this.btDelSelectMethod.Location = new System.Drawing.Point(0, 248);
             this.btDelSelectMethod.Name = "btDelSelectMethod";
             this.btDelSelectMethod.Size = new System.Drawing.Size(113, 27);
             this.btDelSelectMethod.TabIndex = 10;
@@ -1177,7 +1178,7 @@ namespace BenMAP
             // btnNext
             // 
             this.btnNext.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnNext.Location = new System.Drawing.Point(865, 210);
+            this.btnNext.Location = new System.Drawing.Point(865, 248);
             this.btnNext.Name = "btnNext";
             this.btnNext.Size = new System.Drawing.Size(75, 27);
             this.btnNext.TabIndex = 2;
@@ -1188,7 +1189,7 @@ namespace BenMAP
             // btnAdvanced
             // 
             this.btnAdvanced.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnAdvanced.Location = new System.Drawing.Point(694, 210);
+            this.btnAdvanced.Location = new System.Drawing.Point(694, 248);
             this.btnAdvanced.Name = "btnAdvanced";
             this.btnAdvanced.Size = new System.Drawing.Size(84, 27);
             this.btnAdvanced.TabIndex = 0;
@@ -1199,7 +1200,7 @@ namespace BenMAP
             // btnCancel
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnCancel.Location = new System.Drawing.Point(784, 210);
+            this.btnCancel.Location = new System.Drawing.Point(784, 248);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 27);
             this.btnCancel.TabIndex = 1;
@@ -1226,6 +1227,7 @@ namespace BenMAP
             this.groupBox2.Size = new System.Drawing.Size(946, 49);
             this.groupBox2.TabIndex = 2;
             this.groupBox2.TabStop = false;
+            this.groupBox2.Enter += new System.EventHandler(this.groupBox2_Enter);
             // 
             // lblPoolingWinNum
             // 
@@ -1351,7 +1353,7 @@ namespace BenMAP
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(958, 662);
+            this.ClientSize = new System.Drawing.Size(958, 724);
             this.Controls.Add(this.splitContainer1);
             this.Name = "IncidencePoolingandAggregation";
             this.ShowInTaskbar = false;

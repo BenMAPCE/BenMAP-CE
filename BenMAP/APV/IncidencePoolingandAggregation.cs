@@ -2814,7 +2814,10 @@ namespace BenMAP
 
         }
 
+        private void groupBox2_Enter(object sender, EventArgs e)
+        {
 
+        }
     }
 
     public class IncidenceDropSink : SimpleDropSink
