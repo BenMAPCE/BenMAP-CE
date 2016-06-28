@@ -18,14 +18,19 @@ namespace BenMAP
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(IncidencePoolingandAggregation));
-            BrightIdeasSoftware.HeaderStateStyle headerStateStyle4 = new BrightIdeasSoftware.HeaderStateStyle();
-            BrightIdeasSoftware.HeaderStateStyle headerStateStyle5 = new BrightIdeasSoftware.HeaderStateStyle();
-            BrightIdeasSoftware.HeaderStateStyle headerStateStyle6 = new BrightIdeasSoftware.HeaderStateStyle();
+            BrightIdeasSoftware.HeaderStateStyle headerStateStyle1 = new BrightIdeasSoftware.HeaderStateStyle();
+            BrightIdeasSoftware.HeaderStateStyle headerStateStyle2 = new BrightIdeasSoftware.HeaderStateStyle();
+            BrightIdeasSoftware.HeaderStateStyle headerStateStyle3 = new BrightIdeasSoftware.HeaderStateStyle();
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.miniToolStrip = new System.Windows.Forms.StatusStrip();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.btChangeName = new System.Windows.Forms.Button();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.groupBox11 = new System.Windows.Forms.GroupBox();
+            this.btRemoveAllStudy = new System.Windows.Forms.Button();
+            this.btAddStudy = new System.Windows.Forms.Button();
+            this.btRemoveStudy = new System.Windows.Forms.Button();
+            this.btAddAllStudy = new System.Windows.Forms.Button();
             this.grpAvailabelIncidenceResults = new System.Windows.Forms.GroupBox();
             this.groupBox10 = new System.Windows.Forms.GroupBox();
             this.olvAvailable = new BrightIdeasSoftware.ObjectListView();
@@ -130,6 +135,7 @@ namespace BenMAP
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
+            this.groupBox11.SuspendLayout();
             this.grpAvailabelIncidenceResults.SuspendLayout();
             this.groupBox10.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.olvAvailable)).BeginInit();
@@ -192,6 +198,7 @@ namespace BenMAP
             // 
             // splitContainer1.Panel1
             // 
+            this.splitContainer1.Panel1.Controls.Add(this.groupBox11);
             this.splitContainer1.Panel1.Controls.Add(this.grpAvailabelIncidenceResults);
             // 
             // splitContainer1.Panel2
@@ -200,6 +207,58 @@ namespace BenMAP
             this.splitContainer1.Size = new System.Drawing.Size(958, 724);
             this.splitContainer1.SplitterDistance = 354;
             this.splitContainer1.TabIndex = 3;
+            // 
+            // groupBox11
+            // 
+            this.groupBox11.Controls.Add(this.btRemoveAllStudy);
+            this.groupBox11.Controls.Add(this.btAddStudy);
+            this.groupBox11.Controls.Add(this.btRemoveStudy);
+            this.groupBox11.Controls.Add(this.btAddAllStudy);
+            this.groupBox11.Location = new System.Drawing.Point(6, 312);
+            this.groupBox11.Name = "groupBox11";
+            this.groupBox11.Size = new System.Drawing.Size(946, 38);
+            this.groupBox11.TabIndex = 27;
+            this.groupBox11.TabStop = false;
+            // 
+            // btRemoveAllStudy
+            // 
+            this.btRemoveAllStudy.Location = new System.Drawing.Point(374, 9);
+            this.btRemoveAllStudy.Name = "btRemoveAllStudy";
+            this.btRemoveAllStudy.Size = new System.Drawing.Size(146, 27);
+            this.btRemoveAllStudy.TabIndex = 26;
+            this.btRemoveAllStudy.Text = "Remove All Studies";
+            this.btRemoveAllStudy.UseVisualStyleBackColor = true;
+            this.btRemoveAllStudy.Click += new System.EventHandler(this.button4_Click);
+            // 
+            // btAddStudy
+            // 
+            this.btAddStudy.Location = new System.Drawing.Point(11, 9);
+            this.btAddStudy.Name = "btAddStudy";
+            this.btAddStudy.Size = new System.Drawing.Size(95, 27);
+            this.btAddStudy.TabIndex = 23;
+            this.btAddStudy.Text = "Add Study";
+            this.btAddStudy.UseVisualStyleBackColor = true;
+            this.btAddStudy.Click += new System.EventHandler(this.btAddStudy_Click);
+            // 
+            // btRemoveStudy
+            // 
+            this.btRemoveStudy.Location = new System.Drawing.Point(112, 9);
+            this.btRemoveStudy.Name = "btRemoveStudy";
+            this.btRemoveStudy.Size = new System.Drawing.Size(95, 27);
+            this.btRemoveStudy.TabIndex = 24;
+            this.btRemoveStudy.Text = "Remove Study";
+            this.btRemoveStudy.UseVisualStyleBackColor = true;
+            this.btRemoveStudy.Click += new System.EventHandler(this.btRemoveStudy_Click);
+            // 
+            // btAddAllStudy
+            // 
+            this.btAddAllStudy.Location = new System.Drawing.Point(222, 9);
+            this.btAddAllStudy.Name = "btAddAllStudy";
+            this.btAddAllStudy.Size = new System.Drawing.Size(146, 27);
+            this.btAddAllStudy.TabIndex = 25;
+            this.btAddAllStudy.Text = "Add All Studies";
+            this.btAddAllStudy.UseVisualStyleBackColor = true;
+            this.btAddAllStudy.Click += new System.EventHandler(this.button3_Click);
             // 
             // grpAvailabelIncidenceResults
             // 
@@ -261,7 +320,6 @@ namespace BenMAP
             this.olvAvailable.AlternateRowBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(240)))), ((int)(((byte)(220)))));
             this.olvAvailable.BackColor = System.Drawing.Color.White;
             this.olvAvailable.CellEditActivation = BrightIdeasSoftware.ObjectListView.CellEditActivateMode.SingleClick;
-            this.olvAvailable.CheckBoxes = true;
             this.olvAvailable.CheckedAspectName = "";
             this.olvAvailable.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.olvColumn2,
@@ -909,7 +967,6 @@ namespace BenMAP
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.treeListView.CellEditActivation = BrightIdeasSoftware.ObjectListView.CellEditActivateMode.SingleClick;
-            this.treeListView.CheckBoxes = false;
             this.treeListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.treeColumnName,
             this.olvColumn1,
@@ -946,7 +1003,7 @@ namespace BenMAP
             this.treeListView.ShowGroups = false;
             this.treeListView.ShowImagesOnSubItems = true;
             this.treeListView.ShowItemToolTips = true;
-            this.treeListView.Size = new System.Drawing.Size(284, 229);
+            this.treeListView.Size = new System.Drawing.Size(284, 232);
             this.treeListView.SmallImageList = this.imageList1;
             this.treeListView.TabIndex = 15;
             this.treeListView.UseCellFormatEvents = true;
@@ -986,11 +1043,11 @@ namespace BenMAP
             // 
             // olvHdrStylePooling
             // 
-            this.olvHdrStylePooling.Hot = headerStateStyle4;
-            headerStateStyle5.BackColor = System.Drawing.Color.Yellow;
-            headerStateStyle5.ForeColor = System.Drawing.Color.Tomato;
-            this.olvHdrStylePooling.Normal = headerStateStyle5;
-            this.olvHdrStylePooling.Pressed = headerStateStyle6;
+            this.olvHdrStylePooling.Hot = headerStateStyle1;
+            headerStateStyle2.BackColor = System.Drawing.Color.Yellow;
+            headerStateStyle2.ForeColor = System.Drawing.Color.Tomato;
+            this.olvHdrStylePooling.Normal = headerStateStyle2;
+            this.olvHdrStylePooling.Pressed = headerStateStyle3;
             // 
             // olvColumn31
             // 
@@ -1364,6 +1421,7 @@ namespace BenMAP
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
+            this.groupBox11.ResumeLayout(false);
             this.grpAvailabelIncidenceResults.ResumeLayout(false);
             this.groupBox10.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.olvAvailable)).EndInit();
@@ -1500,5 +1558,10 @@ namespace BenMAP
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.ComboBox comboBox1;
         private BrightIdeasSoftware.HeaderFormatStyle olvHdrStylePooling;
+        private System.Windows.Forms.Button btAddAllStudy;
+        private System.Windows.Forms.Button btRemoveStudy;
+        private System.Windows.Forms.Button btAddStudy;
+        private System.Windows.Forms.Button btRemoveAllStudy;
+        private System.Windows.Forms.GroupBox groupBox11;
     }
 }

@@ -798,6 +798,7 @@ namespace BenMAP
         {
             if (comboBox.SelectedIndex == 0)
             {
+                listview.CheckBoxes = false;
                 if (listview.VirtualMode)
                 {
                     MessageBox.Show("Sorry, Virtual lists can't use Tile view under Microsoft framework.", "Object List View Demo", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -808,11 +809,14 @@ namespace BenMAP
                     MessageBox.Show("Tile view can't have checkboxes under Microsoft framework., so CheckBoxes have been turned off.", "Object List View Demo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     listview.CheckBoxes = false;
                 }
+
             }
+
 
             switch (comboBox.SelectedIndex)
             {
                 case 0:
+                    //listview.CheckBoxes = false;
                     listview.View = View.Tile;
                     this.cbSortBy.Visible = true;
                     this.groupBox4.Visible = true;
@@ -820,6 +824,7 @@ namespace BenMAP
                     break;
                 case 1:
                     listview.View = View.Details;
+                    listview.CheckBoxes = true;
                     this.cbSortBy.Visible = false;
                     this.groupBox4.Visible = false;
                     break;
@@ -2817,6 +2822,95 @@ namespace BenMAP
         private void groupBox2_Enter(object sender, EventArgs e)
         {
 
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btRemoveStudy_Click(object sender, EventArgs e)
+        {
+            if (btShowDetail.Text == "Detailed View")
+            {
+                MessageBox.Show("Please change to detailed view first.");
+                return;
+
+            }
+            IncidencePoolingAndAggregation ip = CommonClass.lstIncidencePoolingAndAggregation.Where(p => p.PoolingName == tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text).First();
+            _operationStatus = 3; if (_dicPoolingWindowOperation.ContainsKey(ip.PoolingName))
+            {
+                _dicPoolingWindowOperation[ip.PoolingName] = 3;
+            }
+            else
+            {
+                _dicPoolingWindowOperation.Add(ip.PoolingName, 3);
+            }
+
+            foreach (AllSelectCRFunction cr in treeListView.SelectedObjects)
+            {
+                if (cr.NodeType == 100)
+                {
+                    ip.lstAllSelectCRFuntion.Remove(cr);
+                    dicTabCR[tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text].Remove(cr.CRSelectFunctionCalculateValue);
+
+                }
+
+            }
+            List<AllSelectCRFunction> lstRemove = new List<AllSelectCRFunction>();
+            foreach (AllSelectCRFunction allSelectCRFunction in ip.lstAllSelectCRFuntion)
+            {
+                List<AllSelectCRFunction> lstTmp = new List<AllSelectCRFunction>();
+                APVX.APVCommonClass.getAllChildCR(allSelectCRFunction, ip.lstAllSelectCRFuntion, ref lstTmp);
+                if (lstTmp.Where(p => p.NodeType == 100).Count() == 0)
+                    lstRemove.Add(allSelectCRFunction);
+                if (lstTmp.Where(p => p.NodeType == 100).Count() == 1)
+                {
+                    lstRemove.Add(allSelectCRFunction);
+                    lstTmp.First().PID = allSelectCRFunction.PID;
+                    var query = ip.lstAllSelectCRFuntion.Where(p => p.ID == allSelectCRFunction.PID).ToList();
+                    while (query.Count > 0)
+                    {
+                        APVX.APVCommonClass.getAllChildCR(query.First(), ip.lstAllSelectCRFuntion, ref lstTmp);
+                        if (lstTmp.Where(p => p.NodeType == 100).Count() == 1)
+                        {
+                            lstRemove.Add(query.First());
+                            lstTmp.First().PID = query.First().PID;
+                        }
+                        else
+                            break;
+                    }
+                }
+
+            }
+            lstRemove = lstRemove.Where(p => p.NodeType != 100).ToList();
+            foreach (AllSelectCRFunction allSelectCRFunction in lstRemove)
+            {
+                ip.lstAllSelectCRFuntion.Remove(allSelectCRFunction);
+            }
+
+
+
+
+            initTreeView(ip);
+            if (dicTabCR[tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text] == null) dicTabCR[tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text] = new List<CRSelectFunctionCalculateValue>();
+            if (dicTabCR[tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text] != null && dicTabCR[tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text].Count > 0)
+                incidenceBusinessCardRenderer.lstExists = dicTabCR[tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text].Select(p => p.CRSelectFunction.CRID).ToList();
+            else
+                incidenceBusinessCardRenderer.lstExists = new List<int>();
+            olvAvailable.Refresh();
+
+        
+    }
+
+        private void btAddStudy_Click(object sender, EventArgs e)
+        {
+            btAddCRFunctions_Click(null,null);
         }
     }
 
