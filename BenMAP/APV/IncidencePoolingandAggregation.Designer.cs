@@ -228,7 +228,7 @@ namespace BenMAP
             this.btRemoveAllStudy.TabIndex = 26;
             this.btRemoveAllStudy.Text = "Remove All Studies";
             this.btRemoveAllStudy.UseVisualStyleBackColor = true;
-            this.btRemoveAllStudy.Click += new System.EventHandler(this.button4_Click);
+            this.btRemoveAllStudy.Click += new System.EventHandler(this.btRemoveAllStudy_Click);
             // 
             // btAddStudy
             // 
@@ -258,7 +258,7 @@ namespace BenMAP
             this.btAddAllStudy.TabIndex = 25;
             this.btAddAllStudy.Text = "Add All Studies";
             this.btAddAllStudy.UseVisualStyleBackColor = true;
-            this.btAddAllStudy.Click += new System.EventHandler(this.button3_Click);
+            this.btAddAllStudy.Click += new System.EventHandler(this.btAddAllStudy_Click);
             // 
             // grpAvailabelIncidenceResults
             // 
@@ -967,6 +967,7 @@ namespace BenMAP
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.treeListView.CellEditActivation = BrightIdeasSoftware.ObjectListView.CellEditActivateMode.SingleClick;
+            this.treeListView.CheckBoxes = false;
             this.treeListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.treeColumnName,
             this.olvColumn1,
@@ -1003,7 +1004,7 @@ namespace BenMAP
             this.treeListView.ShowGroups = false;
             this.treeListView.ShowImagesOnSubItems = true;
             this.treeListView.ShowItemToolTips = true;
-            this.treeListView.Size = new System.Drawing.Size(284, 232);
+            this.treeListView.Size = new System.Drawing.Size(284, 234);
             this.treeListView.SmallImageList = this.imageList1;
             this.treeListView.TabIndex = 15;
             this.treeListView.UseCellFormatEvents = true;
