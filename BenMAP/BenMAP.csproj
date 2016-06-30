@@ -1251,6 +1251,9 @@
     <EmbeddedResource Include="Configuration\SelectAirQualityGrid.resx">
       <DependentUpon>SelectAirQualityGrid.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="DataConversion\DataConversionInstructions.resx">
+      <DependentUpon>DataConversionInstructions.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="DataConversion\DataConversionTool.resx">
       <DependentUpon>DataConversionTool.cs</DependentUpon>
     </EmbeddedResource>

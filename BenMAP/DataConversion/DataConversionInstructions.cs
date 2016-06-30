@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 namespace BenMAP.DataConversion
 {
-    public partial class DataConversionInstructions : Form
+    public partial class DataConversionInstructions : FormBase
     {
         public DataConversionInstructions()
         {

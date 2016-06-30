@@ -178,7 +178,7 @@
             this.MaximizeBox = false;
             this.Name = "DataConversionTool";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "BenMAP-CE Data Conversion Tool";
+            this.Text = "Monitor Data Conversion Tool";
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);

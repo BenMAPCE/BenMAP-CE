@@ -7,10 +7,13 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.IO;
+using ESIL.DBUtility;
+using BenMAP;
+using BenMAP.DataConversion;
 
 namespace DataConversion
 {
-    public partial class DataConversionTool : Form
+    public partial class DataConversionTool : FormBase
     {
         public DataConversionTool()
         {
@@ -28,11 +31,15 @@ namespace DataConversion
 
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
             {
-                // Check for correct columns -- or do this after clicking convert
-
                 txtFilePathInput.Text = openFileDialog1.FileName;
-            }
 
+                if (!validateInputColumns())
+                {
+                    MessageBox.Show("Invalid column names in the input file. Please click\n" +
+                        "the [?] button above for instructions on format.");
+                    txtFilePathInput.Clear();
+                }
+            }
         }
 
         private void btnBrowseOutput_Click(object sender, EventArgs e)
@@ -48,12 +55,72 @@ namespace DataConversion
             {
                 txtFilePathOutput.Text = saveFileDialog1.FileName;
             }
-
         }
 
-        private void btnClose_Click(object sender, EventArgs e)
+        private List<String> getColumnNamesFromFile()
         {
-            Close();
+            List<String> resultList = new List<String>();
+
+            String inputPath = txtFilePathInput.Text.Trim();
+            if (!File.Exists(inputPath))
+            {
+                return resultList; // empty list if file isn't there
+            }
+
+            using (StreamReader sr = new StreamReader(inputPath))
+            {
+                String line = sr.ReadLine();
+                String[] fields = line.Split(',');
+
+                foreach(String s in fields)
+                {
+                    resultList.Add(s);
+                }
+            }
+
+            return resultList;
+        }
+
+        private List<String> getColumnNamesFromDB()
+        {
+            FireBirdHelperBase fb = new ESILFireBirdHelper();
+            String commandText = "select COLUMNNAME from DATASETDEFINITION where DATASETTYPENAME='Monitor'";
+            DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
+
+            List<String> colNames = new List<String>();
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+                colNames.Add(dr["COLUMNNAME"].ToString());
+            }
+
+            // Column names from DB will represent the converted columns
+            // We need to check the input columns to make sure it will convert correctly
+            if(colNames.Count() == 8)
+            {
+                colNames.RemoveAt(7); // remove Values
+                colNames.Add("Date");
+                colNames.Add("Value");
+            }
+
+            return colNames;
+        }
+
+        private Boolean validateInputColumns()
+        {
+            Boolean result = true;
+            List<String> colsFromDB = getColumnNamesFromDB();
+            List<String> colsFromFile = getColumnNamesFromFile();
+
+            if (colsFromDB.Count() != colsFromFile.Count) return false;
+
+            int i = 0;
+            foreach(String s in colsFromDB)
+            {
+                if (!s.Equals(colsFromFile[i])) result = false;
+                i++;
+            }
+
+            return result;
         }
 
         private void btnConvert_Click(object sender, EventArgs e)
@@ -216,13 +283,12 @@ namespace DataConversion
                 txtStatus.AppendText(Environment.NewLine);
                 txtStatus.AppendText("Conversion Failed! Line " + lineNum.ToString());
             }
-
-            
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            
+            DataConversionInstructions form = new DataConversionInstructions();
+            form.ShowDialog();
         }
     }
 }
