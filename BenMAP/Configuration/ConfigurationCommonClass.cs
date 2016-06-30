@@ -2069,8 +2069,10 @@ namespace BenMAP.Configuration
                 int RaceID = -1;
                 int EthnicityID = -1;
                 int GenderID = -1;
-                if (1 == 1)
-                {
+
+
+                //if (1 == 1)
+                //{
                     Year = CommonClass.BenMAPPopulation.Year;
 
                     if (!string.IsNullOrEmpty(crSelectFunction.Race))
@@ -2296,21 +2298,28 @@ namespace BenMAP.Configuration
                     }
                     dicPop12 = dicPopulationAttribute;
                     diclstPopulationAttribute = null;
-                }
-                else
-                {
-
-                    FbDataReader fbDataReader2 = fb.ExecuteReader(CommonClass.Connection, CommandType.Text, commandText);
-
-                    while (fbDataReader2.Read())
-                    {
-                        diclstPopulationAttribute.Add(fbDataReader2["CColumn"].ToString() + "," + fbDataReader2["Row"], Convert.ToSingle(fbDataReader2["VValue"]));
-                        dicPopulationAttribute.Add(Convert.ToInt32(fbDataReader2["CColumn"]) * 10000 + Convert.ToInt32(fbDataReader2["Row"]), Convert.ToSingle(fbDataReader2["VValue"]));
 
 
-                    }
-                    dicPop12 = dicPopulationAttribute;
-                }
+                //}
+
+                //DEAD CODE JCM 
+                //else
+                //{
+
+                //    FbDataReader fbDataReader2 = fb.ExecuteReader(CommonClass.Connection, CommandType.Text, commandText);
+
+                //    while (fbDataReader2.Read())
+                //    {
+                //        diclstPopulationAttribute.Add(fbDataReader2["CColumn"].ToString() + "," + fbDataReader2["Row"], Convert.ToSingle(fbDataReader2["VValue"]));
+                //        dicPopulationAttribute.Add(Convert.ToInt32(fbDataReader2["CColumn"]) * 10000 + Convert.ToInt32(fbDataReader2["Row"]), Convert.ToSingle(fbDataReader2["VValue"]));
+
+
+                //    }
+                //    dicPop12 = dicPopulationAttribute;
+                //}
+
+
+
                 if (benMAPPopulation.GridType.GridDefinitionID == CommonClass.GBenMAPGrid.GridDefinitionID || ((benMAPPopulation.GridType.GridDefinitionID == 27 && CommonClass.GBenMAPGrid.GridDefinitionID == 28) || (benMAPPopulation.GridType.GridDefinitionID == 28 && CommonClass.GBenMAPGrid.GridDefinitionID == 27)))
                 { }
                 else
