@@ -2071,8 +2071,8 @@ namespace BenMAP.Configuration
                 int GenderID = -1;
 
 
-                //if (1 == 1)
-                //{
+                if (1 == 1)
+                {
                     Year = CommonClass.BenMAPPopulation.Year;
 
                     if (!string.IsNullOrEmpty(crSelectFunction.Race))
@@ -2300,27 +2300,25 @@ namespace BenMAP.Configuration
                     diclstPopulationAttribute = null;
 
 
-                //}
+            }                
+            else
+            {
 
-                //DEAD CODE JCM 
-                //else
-                //{
+                FbDataReader fbDataReader2 = fb.ExecuteReader(CommonClass.Connection, CommandType.Text, commandText);
 
-                //    FbDataReader fbDataReader2 = fb.ExecuteReader(CommonClass.Connection, CommandType.Text, commandText);
-
-                //    while (fbDataReader2.Read())
-                //    {
-                //        diclstPopulationAttribute.Add(fbDataReader2["CColumn"].ToString() + "," + fbDataReader2["Row"], Convert.ToSingle(fbDataReader2["VValue"]));
-                //        dicPopulationAttribute.Add(Convert.ToInt32(fbDataReader2["CColumn"]) * 10000 + Convert.ToInt32(fbDataReader2["Row"]), Convert.ToSingle(fbDataReader2["VValue"]));
+                while (fbDataReader2.Read())
+                {
+                    diclstPopulationAttribute.Add(fbDataReader2["CColumn"].ToString() + "," + fbDataReader2["Row"], Convert.ToSingle(fbDataReader2["VValue"]));
+                    dicPopulationAttribute.Add(Convert.ToInt32(fbDataReader2["CColumn"]) * 10000 + Convert.ToInt32(fbDataReader2["Row"]), Convert.ToSingle(fbDataReader2["VValue"]));
 
 
-                //    }
-                //    dicPop12 = dicPopulationAttribute;
-                //}
+                }
+                dicPop12 = dicPopulationAttribute;
+            }
 
 
 
-                if (benMAPPopulation.GridType.GridDefinitionID == CommonClass.GBenMAPGrid.GridDefinitionID || ((benMAPPopulation.GridType.GridDefinitionID == 27 && CommonClass.GBenMAPGrid.GridDefinitionID == 28) || (benMAPPopulation.GridType.GridDefinitionID == 28 && CommonClass.GBenMAPGrid.GridDefinitionID == 27)))
+            if (benMAPPopulation.GridType.GridDefinitionID == CommonClass.GBenMAPGrid.GridDefinitionID || ((benMAPPopulation.GridType.GridDefinitionID == 27 && CommonClass.GBenMAPGrid.GridDefinitionID == 28) || (benMAPPopulation.GridType.GridDefinitionID == 28 && CommonClass.GBenMAPGrid.GridDefinitionID == 27)))
                 { }
                 else
                 {
