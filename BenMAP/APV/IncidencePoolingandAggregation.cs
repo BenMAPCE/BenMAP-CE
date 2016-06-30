@@ -816,7 +816,6 @@ namespace BenMAP
             switch (comboBox.SelectedIndex)
             {
                 case 0:
-                    //listview.CheckBoxes = false;
                     listview.View = View.Tile;
                     this.cbSortBy.Visible = true;
                     this.groupBox4.Visible = true;
@@ -824,7 +823,8 @@ namespace BenMAP
                     break;
                 case 1:
                     listview.View = View.Details;
-                    listview.CheckBoxes = true;
+                    listview.Refresh();
+                    //listview.CheckBoxes = true;
                     this.cbSortBy.Visible = false;
                     this.groupBox4.Visible = false;
                     break;

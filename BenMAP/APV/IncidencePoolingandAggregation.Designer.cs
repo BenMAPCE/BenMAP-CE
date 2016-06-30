@@ -1004,7 +1004,7 @@ namespace BenMAP
             this.treeListView.ShowGroups = false;
             this.treeListView.ShowImagesOnSubItems = true;
             this.treeListView.ShowItemToolTips = true;
-            this.treeListView.Size = new System.Drawing.Size(284, 234);
+            this.treeListView.Size = new System.Drawing.Size(284, 235);
             this.treeListView.SmallImageList = this.imageList1;
             this.treeListView.TabIndex = 15;
             this.treeListView.UseCellFormatEvents = true;
@@ -1231,6 +1231,7 @@ namespace BenMAP
             this.btDelSelectMethod.TabIndex = 10;
             this.btDelSelectMethod.Text = "Delete Selected";
             this.btDelSelectMethod.UseVisualStyleBackColor = true;
+            this.btDelSelectMethod.Visible = false;
             this.btDelSelectMethod.Click += new System.EventHandler(this.btDelSelectMethod_Click);
             // 
             // btnNext
