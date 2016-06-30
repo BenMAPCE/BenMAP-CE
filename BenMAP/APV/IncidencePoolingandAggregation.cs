@@ -824,7 +824,7 @@ namespace BenMAP
                 case 1:
                     listview.View = View.Details;
                     listview.Refresh();
-                    //listview.CheckBoxes = true;
+                    listview.CheckBoxes = true;
                     this.cbSortBy.Visible = false;
                     this.groupBox4.Visible = false;
                     break;
