@@ -13,6 +13,7 @@ using System.Xml;
 using System.Configuration;
 using System.Diagnostics;
 using System.Reflection;
+using DataConversion;
 
 namespace BenMAP
 {
@@ -896,5 +897,10 @@ namespace BenMAP
 
         }
 
+        private void monitorDataConversionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DataConversionTool frm = new DataConversionTool();
+            frm.ShowDialog();
+        }
     }
 }

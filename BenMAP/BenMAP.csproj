@@ -346,6 +346,18 @@
     <Compile Include="Configuration\SelectAirQualityGrid.Designer.cs">
       <DependentUpon>SelectAirQualityGrid.cs</DependentUpon>
     </Compile>
+    <Compile Include="DataConversion\DataConversionInstructions.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DataConversion\DataConversionInstructions.Designer.cs">
+      <DependentUpon>DataConversionInstructions.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DataConversion\DataConversionTool.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DataConversion\DataConversionTool.designer.cs">
+      <DependentUpon>DataConversionTool.cs</DependentUpon>
+    </Compile>
     <Compile Include="DataSource\AdvancedOptions.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1238,6 +1250,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Configuration\SelectAirQualityGrid.resx">
       <DependentUpon>SelectAirQualityGrid.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DataConversion\DataConversionInstructions.resx">
+      <DependentUpon>DataConversionInstructions.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DataConversion\DataConversionTool.resx">
+      <DependentUpon>DataConversionTool.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="DataSource\AdvancedOptions.resx">
       <DependentUpon>AdvancedOptions.cs</DependentUpon>
