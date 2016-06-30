@@ -314,7 +314,7 @@ namespace BenMAP
                 btnRegionDelete.Tag = regionnumber.ToString();
                 btnRegionDelete.Size = new Size(20, 20);
                 btnRegionDelete.Padding = new Padding(0);
-                btnRegionDelete.Location = new Point(155, 5);
+                btnRegionDelete.Location = new Point(157, 5);
                 btnRegionDelete.Text = "X";
                 btnRegionDelete.FlatStyle = FlatStyle.Flat;
                 btnRegionDelete.Font = new Font(btnRegionDelete.Font.Name, btnRegionDelete.Font.Size, FontStyle.Bold);
