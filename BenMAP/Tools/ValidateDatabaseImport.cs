@@ -328,7 +328,6 @@ namespace BenMAP
             txtReportOutput.Text += "Error/Warnings\tRow\tColumn Name\tError/Warning Message\r\n";
             for (int i = 0; i < _colNames.Count; i++)
             {
-                //if (!_dicTableDef.ContainsKey(_colNames[i].ToString()))
                 if(!_hashTableDef.ContainsValue(_colNames[i].ToString()))
                 {
                     txtReportOutput.Text += string.Format("Error\t\t{0}\t is not a valid column name for dataset {1}\r\n", _colNames[i].ToString(), _datasetname);
@@ -462,7 +461,6 @@ namespace BenMAP
                    {
                        pbarValidation.PerformStep();
                         lblProgress.Text = Convert.ToString((int)((double)pbarValidation.Value / pbarValidation.Maximum * 100)) + "%";
-                        //txtReportOutput.Refresh();
                         lblProgress.Refresh();
                    }
                 }
@@ -525,7 +523,6 @@ namespace BenMAP
             bool required = Convert.ToBoolean(Convert.ToInt32(_hashTableDef[columnName + "##REQUIRED"].ToString()));//Get required value (true (1) or false (0))
             string checkType = _hashTableDef[columnName + "##CHECKTYPE"].ToString();//Get check type - error, warning, or none (empty string or null)
             // removed $ and %, as these are used in the valuation functions (and several others, as well)
-            //Regex regx = new Regex(@"^[^~!@#%`^]+$");
             Regex regx = new Regex(@"^[^~!@#`^]+");
             double tempVal;
             int outVal = -1;
@@ -656,7 +653,6 @@ namespace BenMAP
                 bPassed = false;
                 MessageBox.Show(ex.Message);
             }
-            //txtReportOutput.Refresh();
             return bPassed;
         }
 
