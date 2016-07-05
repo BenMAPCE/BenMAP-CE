@@ -822,7 +822,7 @@ namespace BenMAP
                     listview.ShowHeaderInAllViews = false;
                     break;
                 case 1:
-                    listview.View = View.Details;
+                    listview.View = (View)View.Details;
                     listview.Refresh();
                     listview.CheckBoxes = true;
                     this.cbSortBy.Visible = false;
@@ -2973,7 +2973,7 @@ namespace BenMAP
                     else if (addType == 1)
                     {
                         
-                        foreach (CRSelectFunctionCalculateValue cr in olvAvailable.Objects)
+                        foreach (CRSelectFunctionCalculateValue cr in olvAvailable.FilteredObjects)
                         {
                             lstAvailable.Add(cr);
                             if (!lstAvalilableEndPointGroup.Contains(cr.CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroup))
@@ -3288,6 +3288,16 @@ namespace BenMAP
         private void btRemoveAllStudy_Click(object sender, EventArgs e)
         {
             removeSelectedOrAllStudies(1);
+        }
+
+        private void splitContainer1_Panel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void groupBox11_Enter(object sender, EventArgs e)
+        {
+
         }
     }
 
