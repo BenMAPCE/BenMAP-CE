@@ -117,4 +117,14 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="textBox2.Text" xml:space="preserve">
+    <value>Monitor Name,Monitor Description,Latitude,Longitude,Metric,Seasonal Metric,Statistic,Values
+123456789101112,"'MethodCode=123','LandUse=RESIDENTIAL','LocationSetting=SUBURBAN','ProbeLocation=.','MonitorObjective=.','POC=1','PollutantID=88101'",35.994034,-78.898621,,,,"12.34567890,3.799999952,13.01499939,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,."</value>
+  </data>
+  <data name="textBox1.Text" xml:space="preserve">
+    <value>Monitor Name,Monitor Description,Latitude,Longitude,Metric,Seasonal Metric,Statistic,Date,Value
+123456789101112,"'MethodCode=123','LandUse=RESIDENTIAL','LocationSetting=SUBURBAN','ProbeLocation=.','MonitorObjective=.','POC=1','PollutantID=88101'",35.994034,-78.898621,,,,1/1/2016,12.34567890
+123456789101112,"'MethodCode=123','LandUse=RESIDENTIAL','LocationSetting=SUBURBAN','ProbeLocation=.','MonitorObjective=.','POC=1','PollutantID=88101'",35.994034,-78.898621,,,,1/2/2016,3.799999952
+123456789101112,"'MethodCode=123','LandUse=RESIDENTIAL','LocationSetting=SUBURBAN','ProbeLocation=.','MonitorObjective=.','POC=1','PollutantID=88101'",35.994034,-78.898621,,,,1/3/2016,13.01499939</value>
+  </data>
 </root>

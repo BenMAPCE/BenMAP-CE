@@ -53,9 +53,9 @@
             this.groupBox1.Controls.Add(this.btnBrowseInput);
             this.groupBox1.Controls.Add(this.txtFilePathInput);
             this.groupBox1.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox1.Location = new System.Drawing.Point(12, 43);
+            this.groupBox1.Location = new System.Drawing.Point(12, 46);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(536, 68);
+            this.groupBox1.Size = new System.Drawing.Size(536, 73);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Source Data";
@@ -64,9 +64,9 @@
             // btnBrowseInput
             // 
             this.btnBrowseInput.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnBrowseInput.Location = new System.Drawing.Point(450, 25);
+            this.btnBrowseInput.Location = new System.Drawing.Point(450, 27);
             this.btnBrowseInput.Name = "btnBrowseInput";
-            this.btnBrowseInput.Size = new System.Drawing.Size(75, 23);
+            this.btnBrowseInput.Size = new System.Drawing.Size(75, 25);
             this.btnBrowseInput.TabIndex = 10;
             this.btnBrowseInput.Text = "Browse...";
             this.btnBrowseInput.UseVisualStyleBackColor = true;
@@ -76,7 +76,7 @@
             // 
             this.txtFilePathInput.BackColor = System.Drawing.SystemColors.Window;
             this.txtFilePathInput.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtFilePathInput.Location = new System.Drawing.Point(15, 26);
+            this.txtFilePathInput.Location = new System.Drawing.Point(15, 28);
             this.txtFilePathInput.MaxLength = 15;
             this.txtFilePathInput.Name = "txtFilePathInput";
             this.txtFilePathInput.ReadOnly = true;
@@ -87,9 +87,9 @@
             // btnConvert
             // 
             this.btnConvert.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnConvert.Location = new System.Drawing.Point(234, 205);
+            this.btnConvert.Location = new System.Drawing.Point(234, 221);
             this.btnConvert.Name = "btnConvert";
-            this.btnConvert.Size = new System.Drawing.Size(93, 23);
+            this.btnConvert.Size = new System.Drawing.Size(93, 25);
             this.btnConvert.TabIndex = 9;
             this.btnConvert.Text = "Convert";
             this.btnConvert.UseVisualStyleBackColor = true;
@@ -100,9 +100,9 @@
             this.groupBox2.Controls.Add(this.btnBrowseOutput);
             this.groupBox2.Controls.Add(this.txtFilePathOutput);
             this.groupBox2.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox2.Location = new System.Drawing.Point(12, 124);
+            this.groupBox2.Location = new System.Drawing.Point(12, 134);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(536, 68);
+            this.groupBox2.Size = new System.Drawing.Size(536, 73);
             this.groupBox2.TabIndex = 11;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Converted Data";
@@ -111,9 +111,9 @@
             // btnBrowseOutput
             // 
             this.btnBrowseOutput.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnBrowseOutput.Location = new System.Drawing.Point(450, 26);
+            this.btnBrowseOutput.Location = new System.Drawing.Point(450, 28);
             this.btnBrowseOutput.Name = "btnBrowseOutput";
-            this.btnBrowseOutput.Size = new System.Drawing.Size(75, 23);
+            this.btnBrowseOutput.Size = new System.Drawing.Size(75, 25);
             this.btnBrowseOutput.TabIndex = 10;
             this.btnBrowseOutput.Text = "Browse...";
             this.btnBrowseOutput.UseVisualStyleBackColor = true;
@@ -123,7 +123,7 @@
             // 
             this.txtFilePathOutput.BackColor = System.Drawing.SystemColors.Window;
             this.txtFilePathOutput.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtFilePathOutput.Location = new System.Drawing.Point(15, 26);
+            this.txtFilePathOutput.Location = new System.Drawing.Point(15, 28);
             this.txtFilePathOutput.MaxLength = 15;
             this.txtFilePathOutput.Name = "txtFilePathOutput";
             this.txtFilePathOutput.ReadOnly = true;
@@ -134,17 +134,17 @@
             // txtStatus
             // 
             this.txtStatus.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtStatus.Location = new System.Drawing.Point(12, 250);
+            this.txtStatus.Location = new System.Drawing.Point(12, 269);
             this.txtStatus.Multiline = true;
             this.txtStatus.Name = "txtStatus";
-            this.txtStatus.Size = new System.Drawing.Size(536, 102);
+            this.txtStatus.Size = new System.Drawing.Size(536, 110);
             this.txtStatus.TabIndex = 13;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(91, 12);
+            this.label1.Location = new System.Drawing.Point(91, 13);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(354, 14);
             this.label1.TabIndex = 14;
@@ -153,9 +153,9 @@
             // button1
             // 
             this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button1.Location = new System.Drawing.Point(449, 9);
+            this.button1.Location = new System.Drawing.Point(449, 10);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(21, 21);
+            this.button1.Size = new System.Drawing.Size(21, 23);
             this.button1.TabIndex = 15;
             this.button1.Text = "?";
             this.button1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -165,9 +165,9 @@
             // 
             // DataConversionTool
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(560, 376);
+            this.ClientSize = new System.Drawing.Size(560, 405);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.txtStatus);
@@ -176,6 +176,8 @@
             this.Controls.Add(this.groupBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
+            this.MaximumSize = new System.Drawing.Size(576, 443);
+            this.MinimumSize = new System.Drawing.Size(576, 443);
             this.Name = "DataConversionTool";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Monitor Data Conversion Tool";
