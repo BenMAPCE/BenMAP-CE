@@ -2069,6 +2069,8 @@ namespace BenMAP.Configuration
                 int RaceID = -1;
                 int EthnicityID = -1;
                 int GenderID = -1;
+
+
                 if (1 == 1)
                 {
                     Year = CommonClass.BenMAPPopulation.Year;
@@ -2296,22 +2298,27 @@ namespace BenMAP.Configuration
                     }
                     dicPop12 = dicPopulationAttribute;
                     diclstPopulationAttribute = null;
-                }
-                else
+
+
+            }                
+            else
+            {
+
+                FbDataReader fbDataReader2 = fb.ExecuteReader(CommonClass.Connection, CommandType.Text, commandText);
+
+                while (fbDataReader2.Read())
                 {
-
-                    FbDataReader fbDataReader2 = fb.ExecuteReader(CommonClass.Connection, CommandType.Text, commandText);
-
-                    while (fbDataReader2.Read())
-                    {
-                        diclstPopulationAttribute.Add(fbDataReader2["CColumn"].ToString() + "," + fbDataReader2["Row"], Convert.ToSingle(fbDataReader2["VValue"]));
-                        dicPopulationAttribute.Add(Convert.ToInt32(fbDataReader2["CColumn"]) * 10000 + Convert.ToInt32(fbDataReader2["Row"]), Convert.ToSingle(fbDataReader2["VValue"]));
+                    diclstPopulationAttribute.Add(fbDataReader2["CColumn"].ToString() + "," + fbDataReader2["Row"], Convert.ToSingle(fbDataReader2["VValue"]));
+                    dicPopulationAttribute.Add(Convert.ToInt32(fbDataReader2["CColumn"]) * 10000 + Convert.ToInt32(fbDataReader2["Row"]), Convert.ToSingle(fbDataReader2["VValue"]));
 
 
-                    }
-                    dicPop12 = dicPopulationAttribute;
                 }
-                if (benMAPPopulation.GridType.GridDefinitionID == CommonClass.GBenMAPGrid.GridDefinitionID || ((benMAPPopulation.GridType.GridDefinitionID == 27 && CommonClass.GBenMAPGrid.GridDefinitionID == 28) || (benMAPPopulation.GridType.GridDefinitionID == 28 && CommonClass.GBenMAPGrid.GridDefinitionID == 27)))
+                dicPop12 = dicPopulationAttribute;
+            }
+
+
+
+            if (benMAPPopulation.GridType.GridDefinitionID == CommonClass.GBenMAPGrid.GridDefinitionID || ((benMAPPopulation.GridType.GridDefinitionID == 27 && CommonClass.GBenMAPGrid.GridDefinitionID == 28) || (benMAPPopulation.GridType.GridDefinitionID == 28 && CommonClass.GBenMAPGrid.GridDefinitionID == 27)))
                 { }
                 else
                 {
@@ -3715,16 +3722,76 @@ namespace BenMAP.Configuration
                 }
                 string commandText = "";
 
-                int iPopulationDataSetGridID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, string.Format("select GridDefinitionID from IncidenceDataSets where IncidenceDataSetID={1} ", CommonClass.MainSetup.SetupID, iid)));
+                int iIncidenceDataSetGridID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, string.Format("select GridDefinitionID from IncidenceDataSets where IncidenceDataSetID={1} ", CommonClass.MainSetup.SetupID, iid)));
 
                 commandText = string.Format("select  min( Yyear) from t_PopulationDataSetIDYear where PopulationDataSetID={0} ", CommonClass.BenMAPPopulation.DataSetID); int commonYear = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, System.Data.CommandType.Text, commandText));
                 commandText = "";
                 // HARDCODED - use Empty string for race
                 string strRace = "";
-                
-                // HARDCODED, SetupID = 1 (US) then check for race 5 (ALL) or 6 (Empty string)
-                // always include Race ALL or empty for US setup ONLY
-                if (CommonClass.MainSetup.SetupID == 1) strRace = " and (b.RaceID=6 or b.RaceID=5)";
+                string strEthnicity = "";
+                string strGender = "";                
+
+                // add filter for race
+                //strRace = " and (b.RaceID=6)";
+                if (!string.IsNullOrEmpty(crSelectFunction.Race) && (crSelectFunction.Race.ToLower() != "all"))
+                {
+                    if (dicRace.ContainsKey(crSelectFunction.Race))
+                    {
+                        int raceID = dicRace[crSelectFunction.Race];
+
+                        //string raceSQL = String.Format("SELECT count(*) FROM INCIDENCERATES where incidencedatasetid = {0} and raceid = {1}", iid, raceID);
+                        //int raceCount = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, raceSQL));
+                        //if (raceCount > 0)
+                        //{
+                            //if incidence exists, then use it
+                            strRace = string.Format(" and (b.RaceID={0})", raceID);
+                        //}
+                    }
+                }
+
+                //add filter for ethnicity
+                //strEthnicity = " and (b.EthnicityID=4)";
+                if (!string.IsNullOrEmpty(crSelectFunction.Ethnicity) && (crSelectFunction.Ethnicity.ToLower() != "all"))
+                {
+                    if (dicEthnicity.ContainsKey(crSelectFunction.Ethnicity))
+                    {
+                        int ethnicityID = dicEthnicity[crSelectFunction.Ethnicity];
+
+                        //if incidence exists, then use it
+                        //string ethnicitySQL = String.Format("SELECT count(*) FROM INCIDENCERATES where incidencedatasetid = {0} and ethnicityid = {1}", iid, ethnicityID);
+                        //int ethnicityCount = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, ethnicitySQL));
+                        //if (ethnicityCount > 0)
+                        //{
+                            strEthnicity = string.Format(" and (b.EthnicityID={0})", ethnicityID);
+                        //}
+                    }
+                }
+
+                //add filter for gender
+                //strGender = " and (b.GenderID=4)";
+                if (!string.IsNullOrEmpty(crSelectFunction.Gender) && (crSelectFunction.Gender.ToLower() != "all"))
+                {
+                    if (dicGender.ContainsKey(crSelectFunction.Gender))
+                    {
+                        int genderID = dicGender[crSelectFunction.Gender];
+
+                        //if incidence exists, then use it
+                        //string genderSQL = String.Format("SELECT count(*) FROM INCIDENCERATES where incidencedatasetid = {0} and genderid = {1}", iid, genderID);
+                        //int genderCount = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, genderSQL));
+                        //if (genderCount > 0)
+                        //{
+                            strGender = string.Format(" and (b.GenderID={0})", genderID);
+                        //}
+                    }
+                }
+
+
+
+
+
+
+
+
                 // add filters to restrict age ranges
                 string strbEndAgeOri = " CASE" +
                        " WHEN (b.EndAge> " + crSelectFunction.EndAge + ") THEN " + crSelectFunction.EndAge + " ELSE b.EndAge END ";
@@ -3746,36 +3813,36 @@ namespace BenMAP.Configuration
   "  from ( select distinct startage,endage from Incidencerates  where IncidenceDataSetID=" + iid + ")a,ageranges b" +
   " where b.EndAge>=a.StartAge and b.StartAge<=a.EndAge and b.PopulationConfigurationID={4}", straStartAgeOri, straEndAgeOri, strbStartAgeOri, strbEndAgeOri, CommonClass.BenMAPPopulation.PopulationConfiguration);
                 // HARDCODED - b.EndPointID=99 (Empty String in Endpoint GroupID 4, "Asthma Exacerbation") or b.EndPointID=100 (Empty String in Endpoint Group 6, "Chronic Bronchitis") or b.EndPointID=102 (Empty String in Endpoint Group 14, "Upper Respiratory Symptoms")
-                string strInc = string.Format("select  a.CColumn,a.Row,sum(a.VValue*d.Weight) as VValue,d.AgeRangeID  from IncidenceEntries a,IncidenceRates b,IncidenceDatasets c ,(" + strAgeID +
+                string strInc = string.Format("select  a.CColumn,a.Row,avg(a.VValue*d.Weight) as VValue,d.AgeRangeID  from IncidenceEntries a,IncidenceRates b,IncidenceDatasets c ,(" + strAgeID +
                      ") d where   b.StartAge=d.StartAge and b.EndAge=d.EndAge and " +
-             " a.IncidenceRateID=b.IncidenceRateID and b.IncidenceDatasetID=c.IncidenceDatasetID and b.EndPointGroupID=" + crSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID + strRace + " and (b.EndPointID=" + crSelectFunction.BenMAPHealthImpactFunction.EndPointID + "  or b.EndPointID=99 or b.EndPointID=100 or b.EndPointID=102)" + " and b.Prevalence='" + strbPrevalence + "' " +
+             " a.IncidenceRateID=b.IncidenceRateID and b.IncidenceDatasetID=c.IncidenceDatasetID and b.EndPointGroupID=" + crSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID + strRace + strEthnicity + strGender + " and (b.EndPointID=" + crSelectFunction.BenMAPHealthImpactFunction.EndPointID + "  or b.EndPointID=99 or b.EndPointID=100 or b.EndPointID=102)" + " and b.Prevalence='" + strbPrevalence + "' " +
              "  and c.IncidenceDatasetID={0} and b.StartAge<={2} and b.EndAge>={1} group by a.CColumn,a.Row ,d.AgeRangeID", iid, crSelectFunction.StartAge, crSelectFunction.EndAge);
                 DataSet dsInc = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, strInc);
 
                 Dictionary<string, double> dicInc = new Dictionary<string, double>();
                 foreach (DataRow dr in dsInc.Tables[0].Rows)
-                {   // HARDCODED - add 10000 to row to convert row column to a single number for hash
+                {   // HARDCODED - multiply column by 10000 and add row to convert row column to a single number for hash
                     if (!dicInc.ContainsKey((Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])).ToString() + "," + dr["AgeRangeID"]))
                     {
                         dicInc.Add((Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])).ToString() + "," + dr["AgeRangeID"].ToString(), Convert.ToDouble(dr["VValue"]));
                     }
                 }
                 dsInc.Dispose();
-                if (iPopulationDataSetGridID == CommonClass.GBenMAPGrid.GridDefinitionID) return dicInc;
+                if (iIncidenceDataSetGridID == CommonClass.GBenMAPGrid.GridDefinitionID) return dicInc;
                 Dictionary<string, Dictionary<string, double>> dicPercentageForAggregationInc = new Dictionary<string, Dictionary<string, double>>();
                 try
                 {           
                     // HARDCODED - requires normalization state to be in 0, 1 
                     // HARDCODED - source grid definition ID in 27 (CMAQ 12km Nation - Clipped) or 28 (CMAQ 12km Nation ???
 
-                    string str = "select sourcecolumn, sourcerow, targetcolumn, targetrow, percentage, normalizationstate from griddefinitionpercentageentries where percentageid=( select percentageid from  griddefinitionpercentages where sourcegriddefinitionid =" + (CommonClass.GBenMAPGrid.GridDefinitionID == 28 ? 27 : CommonClass.GBenMAPGrid.GridDefinitionID) + " and  targetgriddefinitionid = " + iPopulationDataSetGridID + " ) and normalizationstate in (0,1)";
+                    string str = "select sourcecolumn, sourcerow, targetcolumn, targetrow, percentage, normalizationstate from griddefinitionpercentageentries where percentageid=( select percentageid from  griddefinitionpercentages where sourcegriddefinitionid =" + (CommonClass.GBenMAPGrid.GridDefinitionID == 28 ? 27 : CommonClass.GBenMAPGrid.GridDefinitionID) + " and  targetgriddefinitionid = " + iIncidenceDataSetGridID + " ) and normalizationstate in (0,1)";
 
                     DataSet dsPercentage = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, str);
                     if (dsPercentage.Tables[0].Rows.Count == 0) // no crosswalk rows found - need to generate them 
                     {
-                        creatPercentageToDatabase(iPopulationDataSetGridID, CommonClass.GBenMAPGrid.GridDefinitionID, null);
-                        int iPercentageID = Convert.ToInt16(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, "select percentageid from  griddefinitionpercentages where sourcegriddefinitionid =" + CommonClass.GBenMAPGrid.GridDefinitionID + " and  targetgriddefinitionid = " + iPopulationDataSetGridID));
-                        str = "select sourcecolumn, sourcerow, targetcolumn, targetrow, percentage, normalizationstate from griddefinitionpercentageentries where percentageid=( select percentageid from  griddefinitionpercentages where sourcegriddefinitionid =" + (CommonClass.GBenMAPGrid.GridDefinitionID == 28 ? 27 : CommonClass.GBenMAPGrid.GridDefinitionID) + " and  targetgriddefinitionid = " + iPopulationDataSetGridID + " ) and normalizationstate in (0,1)";
+                        creatPercentageToDatabase(iIncidenceDataSetGridID, CommonClass.GBenMAPGrid.GridDefinitionID, null);
+                        int iPercentageID = Convert.ToInt16(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, "select percentageid from  griddefinitionpercentages where sourcegriddefinitionid =" + CommonClass.GBenMAPGrid.GridDefinitionID + " and  targetgriddefinitionid = " + iIncidenceDataSetGridID));
+                        str = "select sourcecolumn, sourcerow, targetcolumn, targetrow, percentage, normalizationstate from griddefinitionpercentageentries where percentageid=( select percentageid from  griddefinitionpercentages where sourcegriddefinitionid =" + (CommonClass.GBenMAPGrid.GridDefinitionID == 28 ? 27 : CommonClass.GBenMAPGrid.GridDefinitionID) + " and  targetgriddefinitionid = " + iIncidenceDataSetGridID + " ) and normalizationstate in (0,1)";
                         dsPercentage = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, str);
                     }
                     foreach (DataRow dr in dsPercentage.Tables[0].Rows)
