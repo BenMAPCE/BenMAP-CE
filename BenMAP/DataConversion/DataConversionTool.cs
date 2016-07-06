@@ -290,5 +290,10 @@ namespace DataConversion
             DataConversionInstructions form = new DataConversionInstructions();
             form.ShowDialog();
         }
+
+        private void btnOK_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
     }
 }

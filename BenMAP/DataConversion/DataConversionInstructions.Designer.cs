@@ -34,6 +34,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.textBox1 = new System.Windows.Forms.TextBox();
+            this.btnOK = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -56,9 +57,9 @@
             this.label2.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.Location = new System.Drawing.Point(7, 149);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(258, 15);
+            this.label2.Size = new System.Drawing.Size(281, 15);
             this.label2.TabIndex = 3;
-            this.label2.Text = "Output File - Header/ Column Naming Format";
+            this.label2.Text = "Converted File - Columns and Sample Data Format";
             // 
             // label1
             // 
@@ -66,9 +67,9 @@
             this.label1.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.Location = new System.Drawing.Point(7, 19);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(341, 15);
+            this.label1.Size = new System.Drawing.Size(260, 15);
             this.label1.TabIndex = 2;
-            this.label1.Text = "Input File - Header/ Column Naming Format and Sample Data";
+            this.label1.Text = "Source File - Columns and Sample Data Format";
             this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
             // textBox2
@@ -80,7 +81,7 @@
             this.textBox2.ReadOnly = true;
             this.textBox2.ScrollBars = System.Windows.Forms.ScrollBars.Horizontal;
             this.textBox2.Size = new System.Drawing.Size(571, 56);
-            this.textBox2.TabIndex = 1;
+            this.textBox2.TabIndex = 2;
             this.textBox2.Text = resources.GetString("textBox2.Text");
             this.textBox2.WordWrap = false;
             // 
@@ -93,19 +94,30 @@
             this.textBox1.ReadOnly = true;
             this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Horizontal;
             this.textBox1.Size = new System.Drawing.Size(571, 84);
-            this.textBox1.TabIndex = 0;
+            this.textBox1.TabIndex = 1;
             this.textBox1.Text = resources.GetString("textBox1.Text");
             this.textBox1.WordWrap = false;
+            // 
+            // btnOK
+            // 
+            this.btnOK.Location = new System.Drawing.Point(524, 275);
+            this.btnOK.Name = "btnOK";
+            this.btnOK.Size = new System.Drawing.Size(66, 27);
+            this.btnOK.TabIndex = 0;
+            this.btnOK.Text = "OK";
+            this.btnOK.UseVisualStyleBackColor = true;
+            this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
             // 
             // DataConversionInstructions
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(608, 273);
+            this.ClientSize = new System.Drawing.Size(606, 313);
+            this.Controls.Add(this.btnOK);
             this.Controls.Add(this.groupBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.MaximumSize = new System.Drawing.Size(624, 311);
-            this.MinimumSize = new System.Drawing.Size(624, 311);
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "DataConversionInstructions";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Monitor Data Conversion Tool - Formatting";
@@ -122,5 +134,6 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.Button btnOK;
     }
 }

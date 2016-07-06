@@ -44,6 +44,7 @@
             this.toolTip3 = new System.Windows.Forms.ToolTip(this.components);
             this.toolTip4 = new System.Windows.Forms.ToolTip(this.components);
             this.toolTip5 = new System.Windows.Forms.ToolTip(this.components);
+            this.btnOK = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -56,7 +57,7 @@
             this.groupBox1.Location = new System.Drawing.Point(12, 46);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(536, 73);
-            this.groupBox1.TabIndex = 0;
+            this.groupBox1.TabIndex = 8;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Source Data";
             this.toolTip2.SetToolTip(this.groupBox1, "File to convert ");
@@ -67,7 +68,7 @@
             this.btnBrowseInput.Location = new System.Drawing.Point(450, 27);
             this.btnBrowseInput.Name = "btnBrowseInput";
             this.btnBrowseInput.Size = new System.Drawing.Size(75, 25);
-            this.btnBrowseInput.TabIndex = 10;
+            this.btnBrowseInput.TabIndex = 0;
             this.btnBrowseInput.Text = "Browse...";
             this.btnBrowseInput.UseVisualStyleBackColor = true;
             this.btnBrowseInput.Click += new System.EventHandler(this.btnBrowseInput_Click);
@@ -81,7 +82,7 @@
             this.txtFilePathInput.Name = "txtFilePathInput";
             this.txtFilePathInput.ReadOnly = true;
             this.txtFilePathInput.Size = new System.Drawing.Size(427, 22);
-            this.txtFilePathInput.TabIndex = 9;
+            this.txtFilePathInput.TabIndex = 1;
             this.toolTip4.SetToolTip(this.txtFilePathInput, "File to convert ");
             // 
             // btnConvert
@@ -90,7 +91,7 @@
             this.btnConvert.Location = new System.Drawing.Point(234, 221);
             this.btnConvert.Name = "btnConvert";
             this.btnConvert.Size = new System.Drawing.Size(93, 25);
-            this.btnConvert.TabIndex = 9;
+            this.btnConvert.TabIndex = 4;
             this.btnConvert.Text = "Convert";
             this.btnConvert.UseVisualStyleBackColor = true;
             this.btnConvert.Click += new System.EventHandler(this.btnConvert_Click);
@@ -103,7 +104,7 @@
             this.groupBox2.Location = new System.Drawing.Point(12, 134);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(536, 73);
-            this.groupBox2.TabIndex = 11;
+            this.groupBox2.TabIndex = 9;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Converted Data";
             this.toolTip1.SetToolTip(this.groupBox2, "Location/ name for converted data CSV");
@@ -114,7 +115,7 @@
             this.btnBrowseOutput.Location = new System.Drawing.Point(450, 28);
             this.btnBrowseOutput.Name = "btnBrowseOutput";
             this.btnBrowseOutput.Size = new System.Drawing.Size(75, 25);
-            this.btnBrowseOutput.TabIndex = 10;
+            this.btnBrowseOutput.TabIndex = 2;
             this.btnBrowseOutput.Text = "Browse...";
             this.btnBrowseOutput.UseVisualStyleBackColor = true;
             this.btnBrowseOutput.Click += new System.EventHandler(this.btnBrowseOutput_Click);
@@ -128,7 +129,7 @@
             this.txtFilePathOutput.Name = "txtFilePathOutput";
             this.txtFilePathOutput.ReadOnly = true;
             this.txtFilePathOutput.Size = new System.Drawing.Size(427, 22);
-            this.txtFilePathOutput.TabIndex = 9;
+            this.txtFilePathOutput.TabIndex = 3;
             this.toolTip5.SetToolTip(this.txtFilePathOutput, "Location/ name for converted data CSV");
             // 
             // txtStatus
@@ -138,7 +139,7 @@
             this.txtStatus.Multiline = true;
             this.txtStatus.Name = "txtStatus";
             this.txtStatus.Size = new System.Drawing.Size(536, 110);
-            this.txtStatus.TabIndex = 13;
+            this.txtStatus.TabIndex = 5;
             // 
             // label1
             // 
@@ -156,18 +157,29 @@
             this.button1.Location = new System.Drawing.Point(449, 10);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(21, 23);
-            this.button1.TabIndex = 15;
+            this.button1.TabIndex = 7;
             this.button1.Text = "?";
             this.button1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.toolTip3.SetToolTip(this.button1, "Click for more information on using the tool.");
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
+            // btnOK
+            // 
+            this.btnOK.Location = new System.Drawing.Point(471, 395);
+            this.btnOK.Name = "btnOK";
+            this.btnOK.Size = new System.Drawing.Size(66, 27);
+            this.btnOK.TabIndex = 6;
+            this.btnOK.Text = "OK";
+            this.btnOK.UseVisualStyleBackColor = true;
+            this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
+            // 
             // DataConversionTool
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(560, 405);
+            this.ClientSize = new System.Drawing.Size(563, 436);
+            this.Controls.Add(this.btnOK);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.txtStatus);
@@ -176,8 +188,7 @@
             this.Controls.Add(this.groupBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(576, 443);
-            this.MinimumSize = new System.Drawing.Size(576, 443);
+            this.MinimizeBox = false;
             this.Name = "DataConversionTool";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Monitor Data Conversion Tool";
@@ -207,6 +218,7 @@
         private System.Windows.Forms.ToolTip toolTip3;
         private System.Windows.Forms.ToolTip toolTip4;
         private System.Windows.Forms.ToolTip toolTip5;
+        private System.Windows.Forms.Button btnOK;
     }
 }
 
