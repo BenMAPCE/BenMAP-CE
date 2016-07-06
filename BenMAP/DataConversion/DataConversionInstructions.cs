@@ -13,7 +13,7 @@ namespace BenMAP.DataConversion
     {
         public DataConversionInstructions()
         {
-            InitializeComponent();
+            InitializeComponent(); 
         }
     }
 }

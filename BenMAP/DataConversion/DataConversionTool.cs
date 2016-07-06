@@ -87,7 +87,7 @@ namespace DataConversion
             String commandText = "select COLUMNNAME from DATASETDEFINITION where DATASETTYPENAME='Monitor'";
             DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
 
-            List<String> colNames = new List<String>();
+            List<String> colNames = new List<String>(); 
             foreach (DataRow dr in ds.Tables[0].Rows)
             {
                 colNames.Add(dr["COLUMNNAME"].ToString());
