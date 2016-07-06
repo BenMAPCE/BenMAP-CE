@@ -813,22 +813,30 @@ namespace BenMAP
             }
 
 
-            switch (comboBox.SelectedIndex)
-            {
-                case 0:
-                    listview.View = View.Tile;
-                    this.cbSortBy.Visible = true;
-                    this.groupBox4.Visible = true;
-                    listview.ShowHeaderInAllViews = false;
-                    break;
-                case 1:
-                    listview.View = (View)View.Details;
-                    listview.Refresh();
-                    listview.CheckBoxes = true;
-                    this.cbSortBy.Visible = false;
-                    this.groupBox4.Visible = false;
-                    break;
-            }
+            
+            
+                switch (comboBox.SelectedIndex)
+                {
+                    case 0:
+                        listview.View = View.Tile;
+                        this.cbSortBy.Visible = true;
+                        this.groupBox4.Visible = true;
+                        listview.ShowHeaderInAllViews = false;
+                        break;
+                    case 1:
+                        listview.View = (View)View.Details;
+                        listview.Refresh();
+                        try
+                        {
+                            listview.CheckBoxes = true;
+                        }
+                        catch { }
+                        this.cbSortBy.Visible = false;
+                        this.groupBox4.Visible = false;
+                        break;
+                }
+            
+
         }
 
         private void textBoxFilterSimple_TextChanged(object sender, EventArgs e)
