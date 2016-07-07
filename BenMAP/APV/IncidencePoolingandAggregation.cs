@@ -824,7 +824,7 @@ namespace BenMAP
                         listview.ShowHeaderInAllViews = false;
                         break;
                     case 1:
-                        listview.View = (View)View.Details;
+                        listview.View = View.Details;
                         listview.Refresh();
                         try
                         {
@@ -2848,85 +2848,91 @@ namespace BenMAP
                 }
         private void removeSelectedOrAllStudies(int removeType)
         {
-            if (btShowDetail.Text == "Detailed View")
+            try
             {
-                MessageBox.Show("Please change to detailed view first.");
-                return;
-
-            }
-            IncidencePoolingAndAggregation ip = CommonClass.lstIncidencePoolingAndAggregation.Where(p => p.PoolingName == tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text).First();
-            _operationStatus = 3; if (_dicPoolingWindowOperation.ContainsKey(ip.PoolingName))
-            {
-                _dicPoolingWindowOperation[ip.PoolingName] = 3;
-            }
-            else
-            {
-                _dicPoolingWindowOperation.Add(ip.PoolingName, 3);
-            }
-
-            if (removeType == 0)
-            {
-                foreach (AllSelectCRFunction cr in treeListView.SelectedObjects)
+                if (btShowDetail.Text == "Detailed View")
                 {
-                    if (cr.NodeType == 100)
-                    {
-                        ip.lstAllSelectCRFuntion.Remove(cr);
-                        dicTabCR[tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text].Remove(cr.CRSelectFunctionCalculateValue);
-
-                    }
+                    MessageBox.Show("Please change to detailed view first.");
+                    return;
 
                 }
-            }
-            else if (removeType == 1)
-            {
-                ip.lstAllSelectCRFuntion.Clear();
-            }
-
-            List<AllSelectCRFunction> lstRemove = new List<AllSelectCRFunction>();
-            foreach (AllSelectCRFunction allSelectCRFunction in ip.lstAllSelectCRFuntion)
-            {
-                List<AllSelectCRFunction> lstTmp = new List<AllSelectCRFunction>();
-                APVX.APVCommonClass.getAllChildCR(allSelectCRFunction, ip.lstAllSelectCRFuntion, ref lstTmp);
-                if (lstTmp.Where(p => p.NodeType == 100).Count() == 0)
-                    lstRemove.Add(allSelectCRFunction);
-                if (lstTmp.Where(p => p.NodeType == 100).Count() == 1)
+                IncidencePoolingAndAggregation ip = CommonClass.lstIncidencePoolingAndAggregation.Where(p => p.PoolingName == tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text).First();
+                _operationStatus = 3; if (_dicPoolingWindowOperation.ContainsKey(ip.PoolingName))
                 {
-                    lstRemove.Add(allSelectCRFunction);
-                    lstTmp.First().PID = allSelectCRFunction.PID;
-                    var query = ip.lstAllSelectCRFuntion.Where(p => p.ID == allSelectCRFunction.PID).ToList();
-                    while (query.Count > 0)
+                    _dicPoolingWindowOperation[ip.PoolingName] = 3;
+                }
+                else
+                {
+                    _dicPoolingWindowOperation.Add(ip.PoolingName, 3);
+                }
+
+                if (removeType == 0)
+                {
+                    foreach (AllSelectCRFunction cr in treeListView.SelectedObjects)
                     {
-                        APVX.APVCommonClass.getAllChildCR(query.First(), ip.lstAllSelectCRFuntion, ref lstTmp);
-                        if (lstTmp.Where(p => p.NodeType == 100).Count() == 1)
+                        if (cr.NodeType == 100)
                         {
-                            lstRemove.Add(query.First());
-                            lstTmp.First().PID = query.First().PID;
+                            ip.lstAllSelectCRFuntion.Remove(cr);
+                            dicTabCR[tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text].Remove(cr.CRSelectFunctionCalculateValue);
+
                         }
-                        else
-                            break;
+
                     }
                 }
+                else if (removeType == 1)
+                {
+                    ip.lstAllSelectCRFuntion.Clear();
+                }
+
+                List<AllSelectCRFunction> lstRemove = new List<AllSelectCRFunction>();
+                foreach (AllSelectCRFunction allSelectCRFunction in ip.lstAllSelectCRFuntion)
+                {
+                    List<AllSelectCRFunction> lstTmp = new List<AllSelectCRFunction>();
+                    APVX.APVCommonClass.getAllChildCR(allSelectCRFunction, ip.lstAllSelectCRFuntion, ref lstTmp);
+                    if (lstTmp.Where(p => p.NodeType == 100).Count() == 0)
+                        lstRemove.Add(allSelectCRFunction);
+                    if (lstTmp.Where(p => p.NodeType == 100).Count() == 1)
+                    {
+                        lstRemove.Add(allSelectCRFunction);
+                        lstTmp.First().PID = allSelectCRFunction.PID;
+                        var query = ip.lstAllSelectCRFuntion.Where(p => p.ID == allSelectCRFunction.PID).ToList();
+                        while (query.Count > 0)
+                        {
+                            APVX.APVCommonClass.getAllChildCR(query.First(), ip.lstAllSelectCRFuntion, ref lstTmp);
+                            if (lstTmp.Where(p => p.NodeType == 100).Count() == 1)
+                            {
+                                lstRemove.Add(query.First());
+                                lstTmp.First().PID = query.First().PID;
+                            }
+                            else
+                                break;
+                        }
+                    }
+
+                }
+                lstRemove = lstRemove.Where(p => p.NodeType != 100).ToList();
+                foreach (AllSelectCRFunction allSelectCRFunction in lstRemove)
+                {
+                    ip.lstAllSelectCRFuntion.Remove(allSelectCRFunction);
+                }
+
+
+
+
+                initTreeView(ip);
+                if (dicTabCR[tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text] == null) dicTabCR[tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text] = new List<CRSelectFunctionCalculateValue>();
+                if (dicTabCR[tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text] != null && dicTabCR[tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text].Count > 0)
+                    incidenceBusinessCardRenderer.lstExists = dicTabCR[tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text].Select(p => p.CRSelectFunction.CRID).ToList();
+                else
+                    incidenceBusinessCardRenderer.lstExists = new List<int>();
+                olvAvailable.Refresh();
 
             }
-            lstRemove = lstRemove.Where(p => p.NodeType != 100).ToList();
-            foreach (AllSelectCRFunction allSelectCRFunction in lstRemove)
+            catch (Exception ex)
             {
-                ip.lstAllSelectCRFuntion.Remove(allSelectCRFunction);
+                Logger.LogError(ex);
             }
-
-
-
-
-            initTreeView(ip);
-            if (dicTabCR[tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text] == null) dicTabCR[tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text] = new List<CRSelectFunctionCalculateValue>();
-            if (dicTabCR[tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text] != null && dicTabCR[tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text].Count > 0)
-                incidenceBusinessCardRenderer.lstExists = dicTabCR[tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text].Select(p => p.CRSelectFunction.CRID).ToList();
-            else
-                incidenceBusinessCardRenderer.lstExists = new List<int>();
-            olvAvailable.Refresh();
-
-        
-    }
+        }
 
         private void btAddStudy_Click(object sender, EventArgs e)
         {
@@ -2990,7 +2996,7 @@ namespace BenMAP
                             }
                         }
                         if (dicTabCR[tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text] == null) dicTabCR[tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text] = new List<CRSelectFunctionCalculateValue>();
-                        dicTabCR[tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text].Clear();
+                        //dicTabCR[tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text].Clear();
                         dicTabCR[tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text].AddRange(lstAvailable);
 
                     }
@@ -3051,13 +3057,16 @@ namespace BenMAP
                         incidenceBusinessCardRenderer.lstExists = new List<int>();
                     olvAvailable.Refresh();
                     initTreeView(ip);
-                    for (int i = 0; i < olvAvailable.Items.Count; i++)
+                    foreach (OLVListItem olvi in olvAvailable.Items)
                     {
-                        olvAvailable.Items[i].Checked = false;
+                        olvi.Checked = false;
                     }
+
                 }
-                catch
-                { }
+                catch (Exception ex)
+                     {
+                        Logger.LogError(ex); 
+                     }
                 return;
                 try
                 {
