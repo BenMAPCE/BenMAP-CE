@@ -2967,6 +2967,19 @@ namespace BenMAP
                                 lstAvalilableEndPointGroup.Add(cr.CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroup);
                             }
                         }
+                    }
+                    else if (addType == 1)
+                    {
+                        foreach (CRSelectFunctionCalculateValue cr in olvAvailable.FilteredObjects)
+                        {
+                            lstAvailable.Add(cr);
+                            if (!lstAvalilableEndPointGroup.Contains(cr.CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroup))
+                            {
+                                lstAvalilableEndPointGroup.Add(cr.CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroup);
+                            }
+                        }
+                    }
+
                         if (dicTabCR[tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text] == null) dicTabCR[tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text] = new List<CRSelectFunctionCalculateValue>();
                         if (ip.lstAllSelectCRFuntion != null && ip.lstAllSelectCRFuntion.Count > 0)
                         {
@@ -2983,23 +2996,6 @@ namespace BenMAP
                         }
 
                         dicTabCR[tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text].AddRange(lstAvailable);
-                    }
-                    else if (addType == 1)
-                    {
-                        
-                        foreach (CRSelectFunctionCalculateValue cr in olvAvailable.FilteredObjects)
-                        {
-                            lstAvailable.Add(cr);
-                            if (!lstAvalilableEndPointGroup.Contains(cr.CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroup))
-                            {
-                                lstAvalilableEndPointGroup.Add(cr.CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroup);
-                            }
-                        }
-                        if (dicTabCR[tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text] == null) dicTabCR[tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text] = new List<CRSelectFunctionCalculateValue>();
-                        //dicTabCR[tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text].Clear();
-                        dicTabCR[tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text].AddRange(lstAvailable);
-
-                    }
 
                     List<BrightIdeasSoftware.OLVColumn> lstOLVColumns = new List<OLVColumn>();
                     foreach (BrightIdeasSoftware.OLVColumn olvc2 in this.treeListView.Columns)
