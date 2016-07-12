@@ -458,16 +458,7 @@ namespace BenMAP
 
         }
 
-        // DEADCODE - no calling reference
-        //public bool isInlstBenMAPHealthImpactFunctionSelected(BenMAPHealthImpactFunction benMAPHealthImpactFunction)
-        //{
-        //    foreach (CRSelectFunction b in lstCRSelectFunction)
-        //    {
-        //        if (b.BenMAPHealthImpactFunction.ID == benMAPHealthImpactFunction.ID) return true;
-        //    }
-        //    return false;
-        //}
-
+        
         private void olvSelected_CellEditStarting(object sender, CellEditEventArgs e)
         {
             base.OnClick(e);
@@ -1679,25 +1670,6 @@ namespace BenMAP
             }
         }
 
-        // DEADCODE - no calling reference
-        //public void WaitShow(string msg)
-        //{
-        //    try
-        //    {
-        //        if (sFlog == true)
-        //        {
-        //            sFlog = false;
-        //            waitMess.Msg = msg;
-        //            System.Threading.Thread upgradeThread = null;
-        //            upgradeThread = new System.Threading.Thread(new System.Threading.ThreadStart(ShowWaitMess));
-        //            upgradeThread.Start();
-        //        }
-        //    }
-        //    catch (System.Threading.ThreadAbortException Err)
-        //    {
-        //        MessageBox.Show(Err.Message);
-        //    }
-        //}
         private delegate void CloseFormDelegate();
         private delegate void ChangeDelegate(string msg);
         public void WaitClose()
@@ -1707,37 +1679,7 @@ namespace BenMAP
             else
                 DoCloseJob();
         }
-        // DEADCODE - no calling references
-        //public void WaitChangeMsg(string msg)
-        //{
-        //    try
-        //    {
-        //        if (waitMess.InvokeRequired)
-        //            waitMess.Invoke(new ChangeDelegate(DoChange), msg);
-        //    }
-        //    catch (System.Threading.ThreadAbortException Err)
-        //    {
-        //        MessageBox.Show(Err.Message);
-        //    }
-        //}
-        // DEADCODE
-        //private void DoChange(string msg)
-        //{
-        //    try
-        //    {
-        //        if (!waitMess.IsDisposed)
-        //        {
-        //            if (waitMess.Created)
-        //            {
-        //                waitMess.Msg = msg;
-        //            }
-        //        }
-        //    }
-        //    catch (System.Threading.ThreadAbortException Err)
-        //    {
-        //        MessageBox.Show(Err.Message);
-        //    }
-        //}
+   
         private void DoCloseJob()
         {
             try

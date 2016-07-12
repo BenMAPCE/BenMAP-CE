@@ -1216,6 +1216,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="APV\SelectValuationMethods.resx">
       <DependentUpon>SelectValuationMethods.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="APV\SelectValuationWeight.resx">
       <DependentUpon>SelectValuationWeight.cs</DependentUpon>
@@ -1818,7 +1819,9 @@
     <Content Include="Dll\DotSpatial\DotSpatial.Compatibility.dll" />
     <Content Include="Dll\DotSpatial\DotSpatial.Compatibility.xml" />
     <Content Include="Dll\DotSpatial\DotSpatial.Controls.dll" />
-    <Content Include="Dll\DotSpatial\DotSpatial.Controls.xml" />
+    <Content Include="Dll\DotSpatial\DotSpatial.Controls.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Dll\DotSpatial\DotSpatial.Data.dll" />
     <Content Include="Dll\DotSpatial\DotSpatial.Data.Forms.dll" />
     <Content Include="Dll\DotSpatial\DotSpatial.Data.Forms.xml" />
@@ -1856,7 +1859,9 @@
     <Content Include="Dll\DotSpatial\MCBtemp\DotSpatial.Compatibility.dll" />
     <Content Include="Dll\DotSpatial\MCBtemp\DotSpatial.Compatibility.xml" />
     <Content Include="Dll\DotSpatial\MCBtemp\DotSpatial.Controls.dll" />
-    <Content Include="Dll\DotSpatial\MCBtemp\DotSpatial.Controls.xml" />
+    <Content Include="Dll\DotSpatial\MCBtemp\DotSpatial.Controls.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Dll\DotSpatial\MCBtemp\DotSpatial.Data.dll" />
     <Content Include="Dll\DotSpatial\MCBtemp\DotSpatial.Data.Forms.dll" />
     <Content Include="Dll\DotSpatial\MCBtemp\DotSpatial.Data.Forms.xml" />
