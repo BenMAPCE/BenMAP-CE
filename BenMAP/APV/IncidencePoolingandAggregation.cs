@@ -450,10 +450,12 @@ namespace BenMAP
             {
                 if (CommonClass.IncidencePoolingAndAggregationAdvance == null) CommonClass.IncidencePoolingAndAggregationAdvance = new IncidencePoolingAndAggregationAdvance();
                 APVConfigurationAdvancedSettings frm = new APVConfigurationAdvancedSettings();
+                frm.AdvanceOptionType(1);
                 frm.IncidencePoolingAndAggregationAdvance = CommonClass.IncidencePoolingAndAggregationAdvance; DialogResult rtn = frm.ShowDialog();
                 if (rtn != DialogResult.OK) { return; }
 
                 CommonClass.IncidencePoolingAndAggregationAdvance = frm.IncidencePoolingAndAggregationAdvance;
+
             }
             catch (Exception ex)
             {
