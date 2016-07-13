@@ -413,5 +413,35 @@ namespace BenMAP
         {
 
         }
+        public void AdvanceOptionType(int optionType)
+        {
+            if (optionType == 1)
+            {
+                if (this.tab.TabPages.Contains(tbpAggreationAndPooling))
+                {
+                    this.tab.TabPages.Remove(this.tbpCurrencyAndIncome);
+                }
+                else
+                {
+                    this.tab.TabPages.Add(this.tbpAggreationAndPooling);
+                    this.tab.TabPages.Remove(this.tbpCurrencyAndIncome);
+                }
+
+                this.Text = "Advanced Pooling Settings:";
+            }
+            else
+            {
+                if (this.tab.TabPages.Contains(tbpCurrencyAndIncome))
+                {
+                    this.tab.TabPages.Remove(this.tbpAggreationAndPooling);
+                }
+                else
+                {
+                    this.tab.TabPages.Remove(this.tbpAggreationAndPooling);
+                    this.tab.TabPages.Add(this.tbpCurrencyAndIncome);
+                }
+                this.Text = "Advanced Valuation Settings:";
+            }
+        }
     }
 }
