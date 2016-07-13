@@ -95,8 +95,7 @@ namespace BenMAP
                     cbView.SelectedIndex = 1;
                     this.olvAvailable.DropSink = new IncidenceDropSink(true, this);
                     this.treeListView.DropSink = new IncidenceDropSink(true, this);
-                    if (CommonClass.lstIncidencePoolingAndAggregation != null &&
-    CommonClass.lstIncidencePoolingAndAggregation.Count > 0)
+                    if (CommonClass.lstIncidencePoolingAndAggregation != null && CommonClass.lstIncidencePoolingAndAggregation.Count > 0)
                     {
                         lstIncidencePoolingAndAggregationOld = new List<IncidencePoolingAndAggregation>();
                         foreach (IncidencePoolingAndAggregation ip in CommonClass.lstIncidencePoolingAndAggregation)
@@ -170,6 +169,7 @@ namespace BenMAP
 
                         foreach (IncidencePoolingAndAggregation ip in CommonClass.lstIncidencePoolingAndAggregation)
                         {
+                            int widthWeight = 0;
                             if (!istabControlSelectedContainText(ip.PoolingName))
                             {
                                 tabControlSelected.TabPages.Add(ip.PoolingName);
@@ -179,6 +179,17 @@ namespace BenMAP
                                 dicTabCR.Add(ip.PoolingName, ip.lstAllSelectCRFuntion.Where(p => p.CRSelectFunctionCalculateValue != null && p.CRID < 9999).Select(a => a.CRSelectFunctionCalculateValue).ToList());
                             else
                                 dicTabCR.Add(ip.PoolingName, null);
+
+                            if (ip.lstAllSelectCRFuntion.Select(p => p.PoolingMethod).Contains("User Defined Weights"))
+                            {
+                                widthWeight = 60;
+                            }
+                            OLVColumn weightColumn = treeListView.AllColumns[2];
+                            if (weightColumn.Width != widthWeight)
+                            {
+                                weightColumn.Width = widthWeight;
+                                treeListView.RebuildColumns();
+                            }
 
                         }
                         if (CommonClass.ValuationMethodPoolingAndAggregation != null && CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase != null
@@ -641,6 +652,7 @@ namespace BenMAP
                     {
                         updateTreeColumns(ref ipTmp.lstColumns);
                     }
+                    /* This is obsolete now that user defined weights are set in this screen
                     if (ipTmp.lstAllSelectCRFuntion.Select(p => p.PoolingMethod).Contains("User Defined Weights"))
                     {
                         SelectSubjectiveWeight frmAPV = new SelectSubjectiveWeight(ipTmp);
@@ -648,6 +660,7 @@ namespace BenMAP
                         if (rtnAPV != DialogResult.OK) { return; }
                         ipTmp.Weights = frmAPV.dicAllWeight.Values.ToList();
                     }
+                    */
                 }
                 if (txtOpenExistingCFGR.Text != "")
                 {
@@ -711,17 +724,18 @@ namespace BenMAP
                 return;
 
                 List<CRSelectFunctionCalculateValue> lstSelected = treeListView.Objects as List<CRSelectFunctionCalculateValue>;
-
+                /* This is obsolete now that user defined weights are set in this screen
                 foreach (IncidencePoolingAndAggregation ip in CommonClass.lstIncidencePoolingAndAggregation)
                 {
-                    if (ip.lstAllSelectCRFuntion.Select(p => p.PoolingMethod).Contains("User Defined Weights"))
-                    {
-                        SelectSubjectiveWeight frmAPV = new SelectSubjectiveWeight(ip);
-                        DialogResult rtnAPV = frmAPV.ShowDialog();
-                        if (rtnAPV != DialogResult.OK) { return; }
-                        CommonClass.lstIncidencePoolingAndAggregation.First().Weights = frmAPV.dicAllWeight.Values.ToList();
-                    }
+                if (ip.lstAllSelectCRFuntion.Select(p => p.PoolingMethod).Contains("User Defined Weights"))
+                {
+                    SelectSubjectiveWeight frmAPV = new SelectSubjectiveWeight(ip);
+                    DialogResult rtnAPV = frmAPV.ShowDialog();
+                    if (rtnAPV != DialogResult.OK) { return; }
+                    CommonClass.lstIncidencePoolingAndAggregation.First().Weights = frmAPV.dicAllWeight.Values.ToList();
                 }
+                }
+                */
                 CommonClass.lstIncidencePoolingAndAggregation.First().ConfigurationResultsFilePath = ""; CommonClass.ValuationMethodPoolingAndAggregation = null;
                 SelectValuationMethods frm2 = new SelectValuationMethods();
                 DialogResult rtn2 = frm2.ShowDialog();
@@ -1098,7 +1112,8 @@ namespace BenMAP
         }
         private void getAllChildMethodNotNone(AllSelectCRFunction allSelectCRFunction, List<AllSelectCRFunction> lstAll, ref List<AllSelectCRFunction> lstReturn)
         {
-            List<AllSelectCRFunction> lstOne = lstAll.Where(p => p.PID == allSelectCRFunction.ID).ToList(); lstReturn.AddRange(lstOne.Where(p => p.PoolingMethod != "None" || p.NodeType == 100).ToList());
+            List<AllSelectCRFunction> lstOne = lstAll.Where(p => p.PID == allSelectCRFunction.ID).ToList();
+            lstReturn.AddRange(lstOne.Where(p => p.PoolingMethod != "None" || p.NodeType == 100).ToList());
             foreach (AllSelectCRFunction asvm in lstOne.Where(p => p.PoolingMethod == "None").ToList())
             {
                 getAllChildMethodNotNone(asvm, lstAll, ref lstReturn);
@@ -1150,12 +1165,13 @@ namespace BenMAP
             }
             int iTop = Convert.ToInt32(treeListView.TopItemIndex.ToString());
 
-
             double d = 0;
+            int widthWeight = 0;
             foreach (AllSelectCRFunction allSelectCRFunction in ip.lstAllSelectCRFuntion)
             {
                 if (allSelectCRFunction.PoolingMethod == "User Defined Weights")
                 {
+                    widthWeight = 60;
                     List<AllSelectCRFunction> lst = new List<AllSelectCRFunction>();
                     getAllChildMethodNotNone(allSelectCRFunction, ip.lstAllSelectCRFuntion, ref lst);
                     d = 0;
@@ -1169,9 +1185,30 @@ namespace BenMAP
                     }
                 }
                 else if (allSelectCRFunction.PoolingMethod == "None")
+                {
                     allSelectCRFunction.Weight = 0;
-            }
+                }
+                else //Reset to 0
+                {
+                    List<AllSelectCRFunction> lst = new List<AllSelectCRFunction>();
+                    getAllChildMethodNotNone(allSelectCRFunction, ip.lstAllSelectCRFuntion, ref lst);
+                    d = 0;
+                    if (lst.Count > 0)
+                    {
+                        for (int i = 0; i < lst.Count; i++)
+                        {
+                            lst[i].Weight = d;
+                        }
+                    }
+                }
 
+            }
+            OLVColumn weightColumn = treeListView.AllColumns[2];
+            if(weightColumn.Width != widthWeight)
+            {
+                weightColumn.Width = widthWeight;
+                treeListView.RebuildColumns();
+            }
 
 
             if (btShowDetail.Text == "Detailed View")
@@ -2911,7 +2948,7 @@ namespace BenMAP
                 cbd.CornerRounding = 0.0f;
                 e.SubItem.Decorations.Add(cbd);
 
-                Image imgDD = Image.FromFile(Application.StartupPath + @"\Resources\dropdown_hint.png");
+                Image imgDD = global::BenMAP.Properties.Resources.dropdown_hint;
                 e.SubItem.Decorations.Add(new ImageDecoration(imgDD, ContentAlignment.MiddleRight));
 
             }

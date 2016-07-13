@@ -1010,7 +1010,7 @@ namespace BenMAP
             this.treeListView.ShowGroups = false;
             this.treeListView.ShowImagesOnSubItems = true;
             this.treeListView.ShowItemToolTips = true;
-            this.treeListView.Size = new System.Drawing.Size(304, 227);
+            this.treeListView.Size = new System.Drawing.Size(304, 206);
             this.treeListView.SmallImageList = this.imageList1;
             this.treeListView.TabIndex = 15;
             this.treeListView.UseCellFormatEvents = true;
@@ -1062,6 +1062,7 @@ namespace BenMAP
             this.olvColumnWeight.AspectToStringFormat = "{0:0.##;0.##;\'\'}";
             this.olvColumnWeight.HeaderTextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.olvColumnWeight.Text = "Weight";
+            this.olvColumnWeight.Width = 0;
             // 
             // olvColumn31
             // 
