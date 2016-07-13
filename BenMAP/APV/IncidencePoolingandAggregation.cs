@@ -169,7 +169,7 @@ namespace BenMAP
 
                         foreach (IncidencePoolingAndAggregation ip in CommonClass.lstIncidencePoolingAndAggregation)
                         {
-                            int widthWeight = 0;
+                            //int widthWeight = 0;
                             if (!istabControlSelectedContainText(ip.PoolingName))
                             {
                                 tabControlSelected.TabPages.Add(ip.PoolingName);
@@ -180,16 +180,16 @@ namespace BenMAP
                             else
                                 dicTabCR.Add(ip.PoolingName, null);
 
-                            if (ip.lstAllSelectCRFuntion.Select(p => p.PoolingMethod).Contains("User Defined Weights"))
-                            {
-                                widthWeight = 60;
-                            }
-                            OLVColumn weightColumn = treeListView.AllColumns[2];
-                            if (weightColumn.Width != widthWeight)
-                            {
-                                weightColumn.Width = widthWeight;
-                                treeListView.RebuildColumns();
-                            }
+                            //if (ip.lstAllSelectCRFuntion.Select(p => p.PoolingMethod).Contains("User Defined Weights"))
+                            //{
+                            //    widthWeight = 60;
+                            //}
+                            //OLVColumn weightColumn = treeListView.AllColumns[2];
+                            //if (weightColumn.Width != widthWeight)
+                            //{
+                            //    weightColumn.Width = widthWeight;
+                            //    treeListView.RebuildColumns();
+                            //}
 
                         }
                         if (CommonClass.ValuationMethodPoolingAndAggregation != null && CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase != null
@@ -1001,6 +1001,13 @@ namespace BenMAP
 
                 ((ComboBox)e.Control).SelectedIndexChanged -= new EventHandler(cbPoolingMethod_SelectedIndexChanged);
 
+                ((TreeListView)sender).RefreshItem(e.ListViewItem);
+                ((ComboBox)e.Control).Dispose();
+                e.Cancel = true;
+            }
+            else if (e.Column.Text == "Weight")
+            {
+                ((TextBox)e.Control).TextChanged -= new EventHandler(txt_TextChanged);
                 ((TreeListView)sender).RefreshItem(e.ListViewItem);
                 ((ComboBox)e.Control).Dispose();
                 e.Cancel = true;
@@ -1864,6 +1871,7 @@ namespace BenMAP
             {
                 if (tabControlSelected.SelectedIndex == -1) return;
                 IncidencePoolingAndAggregation ip = CommonClass.lstIncidencePoolingAndAggregation.Where(p => p.PoolingName == tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text).First();
+
                 if (tabControlSelected.SelectedIndex > -1)
                 {
                     tbPoolingName.Text = tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text;
@@ -1871,6 +1879,18 @@ namespace BenMAP
                     initTreeView(ip);
                     treeListView.Dock = DockStyle.Fill;
                     treeListView.TabIndex = tabControlSelected.SelectedIndex;
+                    int widthWeight = 0;
+                    if (ip.lstAllSelectCRFuntion.Select(p => p.PoolingMethod).Contains("User Defined Weights"))
+                    {
+                        widthWeight = 60;
+                    }
+                    OLVColumn weightColumn = treeListView.AllColumns[2];
+                    if (weightColumn.Width != widthWeight)
+                    {
+                        weightColumn.Width = widthWeight;
+                        //treeListView.RebuildColumns();
+                    }
+
                     treeListView.Refresh();
                     tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Controls.Add(treeListView);
 

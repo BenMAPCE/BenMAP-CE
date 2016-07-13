@@ -197,13 +197,19 @@ namespace BenMAP
 
             cboInflationDataset.DataSource = dsGrid.Tables[0];
             cboInflationDataset.DisplayMember = "InflationDataSetName";
-            cboInflationDataset.SelectedIndex = 0;
+            if(cboInflationDataset.Items.Count > 0)
+            {
+                cboInflationDataset.SelectedIndex = 0;
+            }
             isloadInflation = true;
             commandText = string.Format("select * from IncomeGrowthAdjDataSets where SetupID={0}", CommonClass.MainSetup.SetupID);
             dsGrid = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
             cboIncomeGrowthDataset.DataSource = dsGrid.Tables[0];
             cboIncomeGrowthDataset.DisplayMember = "IncomeGrowthAdjDatasetName";
-            cboIncomeGrowthDataset.SelectedIndex = 0;
+            if (cboIncomeGrowthDataset.Items.Count > 0)
+            {
+                cboIncomeGrowthDataset.SelectedIndex = 0;
+            }
             isloadIncomeGrowth = true;
         }
         public void BindingGridType()
