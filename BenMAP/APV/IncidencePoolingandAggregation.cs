@@ -3509,6 +3509,12 @@ namespace BenMAP
         {
 
         }
+
+        private void olvAvailable_Click(object sender, EventArgs e)
+        {
+            foreach (OLVListItem olvi in olvAvailable.SelectedItems)
+                olvi.Checked = !olvi.Checked;
+        }
     }
 
     public class IncidenceDropSink : SimpleDropSink
