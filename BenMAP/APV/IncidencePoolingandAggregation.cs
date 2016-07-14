@@ -1011,7 +1011,7 @@ namespace BenMAP
             {
                 ((TextBox)e.Control).TextChanged -= new EventHandler(txt_TextChanged);
                 ((TreeListView)sender).RefreshItem(e.ListViewItem);
-                ((ComboBox)e.Control).Dispose();
+                ((TextBox)e.Control).Dispose();
                 e.Cancel = true;
             }
         }
@@ -1054,34 +1054,31 @@ namespace BenMAP
                     cb.SelectedText = e.Value.ToString();
                     cb.Text = e.Value.ToString();
                 }
-                else
-                {
 
-                }
                 cb.SelectedIndexChanged += new EventHandler(cbPoolingMethod_SelectedIndexChanged);
                 cb.Tag = e.RowObject;
                 e.Control = cb;
             }
             else if(e.Column.Text == "Weight")
             {
-                TextBox txt = new TextBox();
-                txt.Bounds = e.CellBounds;
-                txt.Font = ((ObjectListView)sender).Font;
-
-                if (e.Value != null && asvm.PoolingMethod != "None")
+                if(asvm.PoolingMethod == "None")
                 {
-                    List<AllSelectCRFunction> lstParent = new List<AllSelectCRFunction>();
-                    getParent(asvm, lstParent);
-                    if (lstParent.Where(p => p.PoolingMethod == "User Defined Weights").Count() > 0)
+                    e.Cancel = true;
+                    return;
+                }
+                List<AllSelectCRFunction> lstParent = new List<AllSelectCRFunction>();
+                getParentNotNone(asvm, lstParent);
+                if (lstParent.Where(p => p.PoolingMethod == "User Defined Weights").Count() > 0)
+                {
+                    TextBox txt = new TextBox();
+                    txt.Bounds = e.CellBounds;
+                    txt.Font = ((ObjectListView)sender).Font;
+                    txt.TextChanged += new EventHandler(txt_TextChanged);
+                    txt.Tag = e.RowObject;
+                    e.Control = txt;
+                    if (e.Value != null )//&& asvm.PoolingMethod != "None")
                     {
                         txt.Text = e.Value.ToString();
-                        txt.TextChanged += new EventHandler(txt_TextChanged);
-                        txt.Tag = e.RowObject;
-                        e.Control = txt;
-                    }
-                    else
-                    {
-                        e.Cancel = true;
                     }
                 }
                 else
@@ -1116,6 +1113,21 @@ namespace BenMAP
             {
                 lstReturn.Add(query.First());
                // getParent(query.First(), lstReturn);
+            }
+
+        }
+
+        private void getParentNotNone(AllSelectCRFunction allSelectCRFunction, List<AllSelectCRFunction> lstReturn)
+        {
+            IncidencePoolingAndAggregation ip = CommonClass.lstIncidencePoolingAndAggregation.Where(p => p.PoolingName == tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text).First();
+            var query = ip.lstAllSelectCRFuntion.Where(p => p.ID == allSelectCRFunction.PID);
+            if (query != null && query.Count() > 0)
+            {
+                lstReturn.Add(query.First());
+                if(query.First().PoolingMethod == "None")
+                {
+                    getParent(query.First(), lstReturn);
+                }
             }
 
         }
@@ -1714,7 +1726,7 @@ namespace BenMAP
             if (lstString == null)
             {
                 lstString = new List<string>();
-                for (int i = 3; i < treeListView.Columns.Count; i++) //TODO:Changed 2 to 3
+                for (int i = 3; i < treeListView.Columns.Count; i++) 
                 {
                     OLVColumn olvc = treeListView.Columns[i] as OLVColumn;
                     lstString.Add(olvc.Text);
@@ -1732,7 +1744,7 @@ namespace BenMAP
                 foreach (OLVColumn olvc in treeListView.Columns)
                 {
                     if (olvc.Text == lstString[i])
-                        olvc.DisplayIndex = i + 3; //TODO:Chanded 2 to 3
+                        olvc.DisplayIndex = i + 3; 
                 }
             }
         }
@@ -2977,8 +2989,12 @@ namespace BenMAP
             else if (e.Column.Text == "Weight")
             {
                 AllSelectCRFunction avsm = (AllSelectCRFunction) e.Item.RowObject;
+                if(avsm.PoolingMethod == "None")
+                {
+                    return;
+                }
                 List<AllSelectCRFunction> lstParent = new List<AllSelectCRFunction>();
-                getParent(avsm, lstParent);
+                getParentNotNone(avsm, lstParent);
                 if (lstParent.Where(p => p.PoolingMethod == "User Defined Weights").Count() > 0)
                 {
                     CellBorderDecoration cbd = new CellBorderDecoration();
@@ -3074,6 +3090,16 @@ namespace BenMAP
 
                         }
 
+                    }
+                    foreach (AllSelectCRFunction cr in ip.lstAllSelectCRFuntion)
+                    {
+                        if(cr.PoolingMethod == "User Defined Weights")
+                        {
+                            cr.PoolingMethod = "None";
+                        } else if (cr.Weight != 0)
+                        {
+                            cr.Weight = 0;
+                        }
                     }
                 }
                 else if (removeType == 1)
