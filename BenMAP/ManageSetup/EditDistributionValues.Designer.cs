@@ -20,6 +20,7 @@ namespace BenMAP
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
+            this.btnRefresh = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.lblNotesContext = new System.Windows.Forms.Label();
@@ -83,11 +84,23 @@ namespace BenMAP
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
+            // btnRefresh
+            // 
+            this.btnRefresh.BackgroundImage = global::BenMAP.Properties.Resources.refreshTheme;
+            this.btnRefresh.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.btnRefresh.Location = new System.Drawing.Point(407, 331);
+            this.btnRefresh.Name = "btnRefresh";
+            this.btnRefresh.Size = new System.Drawing.Size(27, 27);
+            this.btnRefresh.TabIndex = 13;
+            this.btnRefresh.UseVisualStyleBackColor = true;
+            this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
+            // 
             // groupBox1
             // 
             this.groupBox1.AutoSize = true;
             this.groupBox1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.groupBox1.BackColor = System.Drawing.SystemColors.Control;
+            this.groupBox1.Controls.Add(this.btnRefresh);
             this.groupBox1.Controls.Add(this.plot1);
             this.groupBox1.Controls.Add(this.pictureBox2);
             this.groupBox1.Controls.Add(this.lblNotesContext);
@@ -188,7 +201,6 @@ namespace BenMAP
             this.lblParameter2.TabIndex = 4;
             this.lblParameter2.Text = "label5:";
             this.lblParameter2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.lblParameter2.Click += new System.EventHandler(this.lblParameter2_Click);
             // 
             // lblNotes
             // 
@@ -220,7 +232,6 @@ namespace BenMAP
             this.lblMeanValue.TabIndex = 2;
             this.lblMeanValue.Text = "Mean Value:";
             this.lblMeanValue.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.lblMeanValue.Click += new System.EventHandler(this.lblMeanValue_Click);
             // 
             // EditDistributionValues
             // 
@@ -267,5 +278,6 @@ namespace BenMAP
         private System.Windows.Forms.Label lblNotesContext;
         private System.Windows.Forms.PictureBox pictureBox2;
         private OxyPlot.WindowsForms.PlotView plot1;
+        private System.Windows.Forms.Button btnRefresh;
     }
 }

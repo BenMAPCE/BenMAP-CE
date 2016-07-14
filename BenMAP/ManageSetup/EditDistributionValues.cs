@@ -173,7 +173,6 @@ namespace BenMAP
                         Slope = 0,
                         StrokeThickness = 1.3,
                         Intercept = tri.Points.ElementAt(1).Y,
-                        // Color = OxyColors.CornflowerBlue,
                         Color = OxyColors.DarkSlateGray
                     };
 
@@ -208,12 +207,14 @@ namespace BenMAP
                     pictureBox1.Image = Poisson;
                     Poisson = Image.FromFile(Application.StartupPath + @"\Resources\DistributionFormula\360px-Poisson_pmf_svg.png");
                     pictureBox2.Image = Poisson;
+                    btnRefresh.Visible = false;
 
                     plot1.Visible = false;
                 }
 
                 if (_distributionName == "Binomial")
                 {
+                    btnRefresh.Visible = false;
                     lblPDF.Text = _distributionName + " Distribution";
                     lblNotesContext.Text = "The Binomial distribution has two parameters, n and p.";
                     lblParameter1.Text = "n:";
@@ -230,6 +231,7 @@ namespace BenMAP
 
                 if (_distributionName == "LogNormal")
                 {
+                    btnRefresh.Visible = false;
                     lblPDF.Text = _distributionName + " Distribution";
                     lblNotesContext.Text = "The LogNormal distribution has two parameters-the mean of \nthe corresponding Normal distribution, mu, and the standard \ndeviation of the corresponding Normal distribution,sigma.\nNote that the given PDF is for the corresponding Normal.";
                     lblParameter1.Text = "mu:";
@@ -246,6 +248,7 @@ namespace BenMAP
 
                 if (_distributionName == "Uniform")
                 {
+                    btnRefresh.Visible = false;
                     lblPDF.Text = _distributionName + " Distribution";
                     lblNotesContext.Text = "The Uniform distribution has two parameters, A and B, \nWhich define the interval on which the distribution is \ndefined.";
                     lblParameter1.Text = "A:";
@@ -262,6 +265,7 @@ namespace BenMAP
 
                 if (_distributionName == "Exponential")
                 {
+                    btnRefresh.Visible = false;
                     lblPDF.Text = _distributionName + " Distribution";
                     lblNotesContext.Text = "The Exponential distribution has one parameter, mu.";
                     lblParameter1.Text = "mu:";
@@ -278,6 +282,7 @@ namespace BenMAP
 
                 if (_distributionName == "Geometric")
                 {
+                    btnRefresh.Visible = false;
                     lblPDF.Text = "   " + _distributionName + " Distribution";
                     lblNotesContext.Text = "The Geometric distribution has one parameter, p.";
                     lblParameter1.Text = "p:";
@@ -294,6 +299,7 @@ namespace BenMAP
 
                 if (_distributionName == "Weibull")
                 {
+                    btnRefresh.Visible = false;
                     lblPDF.Text = _distributionName + " Distribution";
                     lblNotesContext.Text = "The Weibull distribution has two parameters, alpha and beta.";
                     lblParameter1.Text = "alpha:";
@@ -310,6 +316,7 @@ namespace BenMAP
 
                 if (_distributionName == "Gamma")
                 {
+                    btnRefresh.Visible = false;
                     lblPDF.Text = _distributionName + " Distribution";
                     lblNotesContext.Text = "The Gamma distribution has two parameters, a and b.";
                     lblParameter1.Text = "a:";
@@ -326,6 +333,7 @@ namespace BenMAP
 
                 if (_distributionName == "Logistic")
                 {
+                    btnRefresh.Visible = false;
                     lblPDF.Text = _distributionName + " Distribution";
                     lblNotesContext.Text = "The Logistic distribution has two parameters, m and b.";
                     lblParameter1.Text = "m:";
@@ -342,6 +350,7 @@ namespace BenMAP
 
                 if (_distributionName == "Beta")
                 {
+                    btnRefresh.Visible = false;
                     lblPDF.Text = _distributionName + " Distribution";
                     lblNotesContext.Text = "The Logistic distribution has two parameters, a and b.";
                     lblParameter1.Text = "a:";
@@ -358,6 +367,7 @@ namespace BenMAP
 
                 if (_distributionName == "Pareto")
                 {
+                    btnRefresh.Visible = false;
                     lblPDF.Text = _distributionName + " Distribution";
                     lblNotesContext.Text = "The Pareto distribution has two parameters, a and b.";
                     lblParameter1.Text = "a:";
@@ -374,6 +384,7 @@ namespace BenMAP
 
                 if (_distributionName == "Cauchy")
                 {
+                    btnRefresh.Visible = false;
                     lblPDF.Text = _distributionName + " Distribution";
                     lblNotesContext.Text = "The Cauchy distribution has two parameters, b and m.";
                     lblParameter1.Text = "b:";
@@ -393,6 +404,168 @@ namespace BenMAP
                 Logger.LogError(ex);
             }
 
+        }
+
+        private void btnRefresh_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                double mean, param1, param2 = 0;
+
+                if(Double.TryParse(txtMeanValue.Text, out mean) == false)
+                {
+                    mean = 0;
+                }
+                if(Double.TryParse(txtParameter1.Text, out param1) == false)
+                {
+                    param1 = 0;
+                }
+                if(Double.TryParse(txtParameter2.Text, out param2) == false)
+                {
+                    param2 = 0;
+                }
+
+                distModel.Series.RemoveAt(0);
+                distModel.Axes.RemoveAt(1);
+                distModel.Axes.RemoveAt(0);
+                distModel = new PlotModel();
+
+                distModel.PlotAreaBackground = OxyColors.White;
+                distModel.Padding = new OxyThickness(9);
+                distModel.TitleFontSize = 20;
+                distModel.TitleFont = "Calibri";
+                distModel.TitlePadding = 10;
+
+                var xAxis = new OxyPlot.Axes.LinearAxis()
+                {
+                    Position = OxyPlot.Axes.AxisPosition.Bottom,
+                    TickStyle = OxyPlot.Axes.TickStyle.Crossing,
+                    MajorGridlineStyle = LineStyle.Solid,
+                    MinorGridlineStyle = LineStyle.Dot,
+                    AxisTitleDistance = 10,
+                    TitleFontSize = 14,
+                };
+
+                var yAxis = new OxyPlot.Axes.LinearAxis()
+                {
+                    Position = OxyPlot.Axes.AxisPosition.Left,
+                    TickStyle = OxyPlot.Axes.TickStyle.Crossing,
+                    MajorGridlineStyle = LineStyle.Solid,
+                    MinorGridlineStyle = LineStyle.Dot,
+                    AxisTitleDistance = 12,
+                    TitleFontSize = 14,
+                };
+
+                if (_distributionName == "Normal")
+                {
+                    double x0 = mean - (param1 * 4);
+                    double x1 = mean + (param1 * 4);
+
+                    distModel.Title = _distributionName + " Distribution";
+
+                    xAxis.MinimumPadding = 0;
+                    xAxis.MaximumPadding = 0;
+                    xAxis.Title = "Mean";
+                    distModel.Axes.Add(xAxis);
+
+                    yAxis.MinimumPadding = 0.1;
+                    yAxis.MaximumPadding = 0.1;
+                    yAxis.Title = "Standard Deviation";
+                    distModel.Axes.Add(yAxis);
+
+                    LineSeries norm = (CreateNormalSeries(x0, x1, mean, (param1 * param1)));
+                    distModel.Series.Add(norm);
+                    this.plot1.Model = distModel;
+                }
+                if (_distributionName == "Triangular")
+                {
+
+                    distModel.Title = _distributionName + " Distribution";
+
+                    xAxis.MinimumPadding = 0.2;
+                    xAxis.MaximumPadding = 0.2;
+                    xAxis.Title = "x";
+                    distModel.Axes.Add(xAxis);
+
+                    yAxis.MinimumPadding = 0;
+                    yAxis.MaximumPadding = 0.25;
+                    yAxis.Title = "P(x)";
+                    distModel.Axes.Add(yAxis);
+
+                    double mostLikely = CreateTriangularSeries(param1, param2, mean);
+                    LineSeries tri = new LineSeries() { Color = OxyColors.MidnightBlue, StrokeThickness = 3 };
+
+                    tri.Points.Add(new DataPoint(param1, 0));
+                    tri.Points.Add(new DataPoint(mostLikely, (2.0 / Math.Abs(param2 - param1))));
+                    tri.Points.Add(new DataPoint(param2, 0));
+
+                    var pt1 = new PointAnnotation()
+                    {
+                        X = tri.Points.ElementAt(0).X,
+                        Y = (tri.Points.ElementAt(1).Y / 2),
+                        Text = String.Format("a = {0:0.0000}", tri.Points.ElementAt(0).X),
+                        TextHorizontalAlignment = OxyPlot.HorizontalAlignment.Center,
+                        TextColor = OxyColors.DarkSlateBlue,
+                        FontSize = 13,
+                        FontWeight = FontWeights.Bold,
+                        Fill = OxyColors.Transparent,
+                    };
+
+                    var pt2 = new PointAnnotation()
+                    {
+                        X = (tri.Points.ElementAt(1).X + tri.Points.ElementAt(2).X) / 2,
+                        Y = tri.Points.ElementAt(1).Y,
+                        Text = String.Format("c = {0:0.0000}", tri.Points.ElementAt(1).X),
+                        TextHorizontalAlignment = OxyPlot.HorizontalAlignment.Left,
+                        TextVerticalAlignment = OxyPlot.VerticalAlignment.Top,
+                        TextColor = OxyColors.DarkSlateBlue,
+                        FontSize = 13,
+                        FontWeight = FontWeights.Bold,
+                        Fill = OxyColors.Transparent,
+                    };
+
+                    var pt3 = new PointAnnotation()
+                    {
+                        X = tri.Points.ElementAt(2).X,
+                        Y = (tri.Points.ElementAt(1).Y / 2),
+                        Text = String.Format("b = {0:0.0000}", tri.Points.ElementAt(2).X),
+                        TextHorizontalAlignment = OxyPlot.HorizontalAlignment.Center,
+                        TextColor = OxyColors.DarkSlateBlue,
+                        FontSize = 13,
+                        FontWeight = FontWeights.Bold,
+                        Fill = OxyColors.Transparent,
+                    };
+                    var lineAnn = new LineAnnotation()
+                    {
+                        Slope = 0,
+                        StrokeThickness = 1.3,
+                        Intercept = tri.Points.ElementAt(1).Y,
+                        Color = OxyColors.DarkSlateGray
+                    };
+
+                    var txtAnn = new TextAnnotation()
+                    {
+                        Stroke = OxyColors.Transparent,
+                        FontSize = 13,
+                        Text = "2 / (b - a)",
+                        TextPosition = new DataPoint(((tri.Points.ElementAt(1).X + tri.Points.ElementAt(0).X) / 2), tri.Points.ElementAt(1).Y),
+                        TextColor = OxyColors.Gray,
+                        FontWeight = FontWeights.Bold,
+                    };
+
+                    distModel.Series.Add(tri);
+                    distModel.Annotations.Add(pt1);
+                    distModel.Annotations.Add(pt2);
+                    distModel.Annotations.Add(pt3);
+                    distModel.Annotations.Add(lineAnn);
+                    distModel.Annotations.Add(txtAnn);
+                    this.plot1.Model = distModel;
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+            }
         }
 
         private static LineSeries CreateNormalSeries(double x0, double x1, double mean, double variance, int n = 500000)
@@ -446,11 +619,6 @@ namespace BenMAP
 
         public Image image { get; set; }
 
-        private void lblMeanValue_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void btnCancel_Click(object sender, EventArgs e)
         {
             this.Close();
@@ -462,11 +630,6 @@ namespace BenMAP
             _parameter1 = txtParameter1.Text;
             _parameter2 = txtParameter2.Text;
             this.DialogResult = DialogResult.OK;
-        }
-
-        private void lblParameter2_Click(object sender, EventArgs e)
-        {
-
         }
     }
 }
