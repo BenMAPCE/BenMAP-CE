@@ -4575,7 +4575,13 @@ namespace BenMAP.Configuration
                     CRSelectFunctionCalculateValue crSelectFunctionCalculateValue = new CRSelectFunctionCalculateValue() { CRSelectFunction = crSelectFunction, CRCalculateValues = new List<CRCalculateValue>() };
 
                     // get number of beta variations (use first variable)
-                    List<CRFBeta> lstBetas = crSelectFunction.BenMAPHealthImpactFunction.Variables.First().PollBetas.OrderBy(beta => Convert.ToInt32(beta.StartDate)).ToList();
+                    List<CRFBeta> lstBetas = new List<CRFBeta>();
+                    if (crSelectFunction.BenMAPHealthImpactFunction.Variables.Count() == 1 && crSelectFunction.BenMAPHealthImpactFunction.Variables.First().PollBetas.Count() == 1)
+                        lstBetas.Add(crSelectFunction.BenMAPHealthImpactFunction.Variables.First().PollBetas.First());
+                    else
+                        lstBetas = crSelectFunction.BenMAPHealthImpactFunction.Variables.First().PollBetas.OrderBy(beta => Convert.ToInt32(beta.StartDate)).ToList();
+
+                    // List<CRFBeta> lstBetas = crSelectFunction.BenMAPHealthImpactFunction.Variables.First().PollBetas.OrderBy(beta => Convert.ToInt32(beta.StartDate)).ToList();
 
                     #region foreach (ModelResultAttribute modelResultAttribute in baseControlGroup.Base.ModelResultAttributes)
                     foreach (ModelResultAttribute modelResultAttribute in baseControlGroup.Base.ModelResultAttributes)
@@ -5228,6 +5234,13 @@ namespace BenMAP.Configuration
                     {
                         //get pollutant id
                         int pollutantID = kvp.Key;
+
+                        // Check for old single pollutant set up -- otherwise 0 will be passed as 
+                        // standard deviation which throws exception leading to no result shown
+                        if (standardDeviation == 0 && crSelectFunction.BenMAPHealthImpactFunction.Variables.Count == 1 
+                            && crSelectFunction.BenMAPHealthImpactFunction.Variables.First().PollBetas.Count() == 1)
+                            standardDeviation = crSelectFunction.BenMAPHealthImpactFunction.BetaParameter1;
+
                         double[] arrBetas = Configuration.ConfigurationCommonClass.getLHSArrayCRFunctionSeed(CommonClass.CRLatinHypercubePoints, crSelectFunction, iRandomSeed, pollutantID, betaIndex, standardDeviation);                        
                         //arrBetas = new double[] { 0.000952070623302594, 0.00210438313847891, 0.00274330081530712, 0.00322388206768484, 0.00362222578583882, 0.00397556823480331, 0.00429312210515043, 0.00459255842643554, 0.00487883373418946, 0.00515806309883299, 0.00543530163423869, 0.00571575251933468, 0.00600086948338013, 0.00630106910383155, 0.00661827327976483, 0.00696570641344888, 0.00736310219575063, 0.00783988157577035, 0.00847429570471552, 0.00963051160274645 };
                         List<double> lstBetas = new List<double>(arrBetas);
