@@ -83,6 +83,7 @@ namespace BenMAP
             this.groupBox7 = new System.Windows.Forms.GroupBox();
             this.grpSelectPoolingMethods = new System.Windows.Forms.GroupBox();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.btPoolingPreview = new System.Windows.Forms.Button();
             this.btShowDetail = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
             this.btBrowseCR = new System.Windows.Forms.Button();
@@ -839,6 +840,7 @@ namespace BenMAP
             // 
             // groupBox6
             // 
+            this.groupBox6.Controls.Add(this.btPoolingPreview);
             this.groupBox6.Controls.Add(this.btShowDetail);
             this.groupBox6.Controls.Add(this.label4);
             this.groupBox6.Controls.Add(this.btBrowseCR);
@@ -854,6 +856,18 @@ namespace BenMAP
             this.groupBox6.Size = new System.Drawing.Size(1010, 246);
             this.groupBox6.TabIndex = 3;
             this.groupBox6.TabStop = false;
+            // 
+            // btPoolingPreview
+            // 
+            this.btPoolingPreview.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btPoolingPreview.Location = new System.Drawing.Point(559, 219);
+            this.btPoolingPreview.Name = "btPoolingPreview";
+            this.btPoolingPreview.Size = new System.Drawing.Size(75, 27);
+            this.btPoolingPreview.TabIndex = 16;
+            this.btPoolingPreview.Text = "Preview";
+            this.btPoolingPreview.UseVisualStyleBackColor = true;
+            this.btPoolingPreview.Visible = false;
+            this.btPoolingPreview.Click += new System.EventHandler(this.btPoolingPreview_Click);
             // 
             // btShowDetail
             // 
@@ -1011,7 +1025,7 @@ namespace BenMAP
             this.treeListView.ShowGroups = false;
             this.treeListView.ShowImagesOnSubItems = true;
             this.treeListView.ShowItemToolTips = true;
-            this.treeListView.Size = new System.Drawing.Size(304, 207);
+            this.treeListView.Size = new System.Drawing.Size(304, 209);
             this.treeListView.SmallImageList = this.imageList1;
             this.treeListView.TabIndex = 15;
             this.treeListView.UseCellFormatEvents = true;
@@ -1582,5 +1596,6 @@ namespace BenMAP
         private System.Windows.Forms.Button btRemoveAllStudy;
         private System.Windows.Forms.GroupBox groupBox11;
         private BrightIdeasSoftware.OLVColumn olvColumnWeight;
+        private System.Windows.Forms.Button btPoolingPreview;
     }
 }
