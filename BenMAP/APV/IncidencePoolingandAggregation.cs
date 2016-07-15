@@ -3079,6 +3079,7 @@ namespace BenMAP
                 else if (removeType == 1)
                 {
                     ip.lstAllSelectCRFuntion.Clear();
+                    dicTabCR[tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text].Clear();
                 }
 
                 List<AllSelectCRFunction> lstRemove = new List<AllSelectCRFunction>();
