@@ -65,6 +65,7 @@ namespace BenMAP
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.olvCol_BetaDist = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.statusStrip1.SuspendLayout();
             this.grpHealthImpactFunction.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
@@ -281,6 +282,7 @@ namespace BenMAP
             this.olvFunction.AllColumns.Add(this.olvColumn17);
             this.olvFunction.AllColumns.Add(this.olvColumn18);
             this.olvFunction.AllColumns.Add(this.olvColumn19);
+            this.olvFunction.AllColumns.Add(this.olvCol_BetaDist);
             this.olvFunction.AllColumns.Add(this.olvColumn20);
             this.olvFunction.AllColumns.Add(this.olvColumn21);
             this.olvFunction.AllColumns.Add(this.olvColumn22);
@@ -313,6 +315,7 @@ namespace BenMAP
             this.olvColumn17,
             this.olvColumn18,
             this.olvColumn19,
+            this.olvCol_BetaDist,
             this.olvColumn20,
             this.olvColumn21,
             this.olvColumn22,
@@ -543,6 +546,12 @@ namespace BenMAP
             this.btnCancel.Visible = false;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
+            // olvCol_BetaDist
+            // 
+            this.olvCol_BetaDist.AspectName = "distbeta";
+            this.olvCol_BetaDist.Text = "Beta Distribution";
+            this.olvCol_BetaDist.Width = 140;
+            // 
             // HealthImpactDataSetDefinition
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
@@ -622,5 +631,6 @@ namespace BenMAP
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         private BrightIdeasSoftware.OLVColumn olvColumn23;
         private BrightIdeasSoftware.OLVColumn olvColumn24;
+        private BrightIdeasSoftware.OLVColumn olvCol_BetaDist;
     }
 }

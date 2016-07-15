@@ -1302,9 +1302,12 @@ namespace BenMAP
                             "then 'Median' when Metricstatistic = 3 then 'Max' when Metricstatistic = 4 then 'Min' when Metricstatistic = 5 " +
                             "then 'Sum'  END as MetricstatisticName,author,yyear,g.locationtypename,location,otherpollutants,qualifier,reference, " +
                             "race,ethnicity,gender,startage,endage,h.functionalformtext,i.functionalformtext,j.incidencedatasetname, " +
-                            "k.incidencedatasetname,l.setupvariabledatasetname as variabeldatasetname, m.MSDescription, bv.BetaVariationName, a.CRFUNCTIONID " +
+                            "k.incidencedatasetname,l.setupvariabledatasetname as variabeldatasetname, m.MSDescription, bv.BetaVariationName, dt.DISTRIBUTIONNAME as distbeta,a.CRFUNCTIONID " +
                             "from crfunctions a join ModelSpecifications m on (a.MSID = m.MSID) " +
                             "join BetaVariations bv on (a.BetaVariationID = bv.BetaVariationID) " +
+                            "join CRFVARIABLES vars on(a.CRFunctionID = vars.CRFunctionID) " +
+                            "join CRFBetas betas on(vars.CRFVariableID = betas.CRFVARIABLEID) " +
+                            "join DistributionTypes dt on betas.DistributionTypeID = dt.DistributionTypeID " +
                             "join endpointgroups b on (a.ENDPOINTGROUPID = b.ENDPOINTGROUPID) " +
                             "join endpoints c on(a.endpointid = c.endpointid) " +
                             "join pollutantgroups d on(a.POLLUTANTGROUPID = d.POLLUTANTGROUPID) " +
