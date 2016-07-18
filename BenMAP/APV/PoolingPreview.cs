@@ -29,7 +29,7 @@ namespace BenMAP
             InitializeComponent();
             this.toolTip.Active = true;
             toolTip.AutoPopDelay = 5000;
-            toolTip.InitialDelay = 1000;
+            toolTip.InitialDelay = 500;
             toolTip.ReshowDelay = 500;
         }
 
@@ -76,7 +76,10 @@ namespace BenMAP
                 // Render parent/endpoint node and method if applicable
                 node = new Node(treeEntry.ID.ToString() + treeEntry.Name);
                 node.LabelText = treeEntry.Name;
-                node.Attr.Shape = Shape.Ellipse;
+                node.Attr.Shape = Shape.Box;
+                node.Attr.XRadius = 20;
+                node.Attr.YRadius = 20;
+                node.Attr.LabelMargin = 10;
                 graph.AddNode(node);
             }
 
@@ -85,8 +88,12 @@ namespace BenMAP
                 Node nodeMethod = new Node(treeEntry.ID.ToString() + treeEntry.PoolingMethod);
                 nodeMethod.LabelText = treeEntry.PoolingMethod;
                 nodeMethod.Attr.Shape = Shape.Diamond;
+                nodeMethod.Attr.LabelMargin = 10;
                 graph.AddNode(nodeMethod);
-                graph.AddEdge(nodeMethod.Id, node.Id);
+
+                Edge edgeMethod = new Edge(nodeMethod, node, ConnectionToGraph.Connected);
+                edgeMethod.Attr.ArrowheadAtTarget = ArrowStyle.None;
+                edgeMethod.Attr.ArrowheadAtSource = ArrowStyle.None;
                 nodeConnect = nodeMethod;
             }
             else
@@ -109,18 +116,20 @@ namespace BenMAP
                     nodeChild.LabelText = treeEntryChild.Name;
                 }
                 nodeChild.Attr.Shape = Shape.Box;
-                nodeChild.Attr.LabelMargin = 5;
+                nodeChild.Attr.XRadius = 0;
+                nodeChild.Attr.YRadius = 0;
+                nodeChild.Attr.LabelMargin = 10;
                 nodeChild.UserData = String.Format("{0}\n{1}\n{2}\nAge: {3}-{4}\nRace: {5}\nEthnicity: {6}\nGender: {7}\nYear: {8}", treeEntryChild.Author, treeEntryChild.EndPoint, treeEntryChild.DataSet, 
                     treeEntryChild.StartAge, treeEntryChild.EndAge, treeEntryChild.Race, 
                     treeEntryChild.Ethnicity, treeEntryChild.Gender, treeEntryChild.Year);
                 graph.AddNode(nodeChild);
+
+                Edge edgeChild = new Edge(nodeChild, nodeConnect, ConnectionToGraph.Connected);
+                edgeChild.Attr.ArrowheadAtTarget = ArrowStyle.None;
+                edgeChild.Attr.ArrowheadAtSource = ArrowStyle.None;
                 if (treeEntryChild.Weight != 0)
                 {
-                    graph.AddEdge(nodeChild.Id, treeEntryChild.Weight.ToString(), nodeConnect.Id);
-                }
-                else
-                {
-                    graph.AddEdge(nodeChild.Id, nodeConnect.Id);
+                    edgeChild.LabelText = String.Format("{0:0.00}", treeEntryChild.Weight);
                 }
 
                 CreatePoolingPreviewGraph(graph, ip, nodeChild, treeEntryChild);

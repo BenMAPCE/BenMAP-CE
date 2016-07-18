@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             Microsoft.Msagl.Core.Geometry.Curves.PlaneTransformation planeTransformation1 = new Microsoft.Msagl.Core.Geometry.Curves.PlaneTransformation();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PoolingPreview));
             this.gViewer = new Microsoft.Msagl.GraphViewerGdi.GViewer();
             this.panel1 = new System.Windows.Forms.Panel();
             this.btClose = new System.Windows.Forms.Button();
@@ -51,7 +52,7 @@
             this.gViewer.ForwardEnabled = false;
             this.gViewer.Graph = null;
             this.gViewer.InsertingEdge = false;
-            this.gViewer.LayoutAlgorithmSettingsButtonVisible = true;
+            this.gViewer.LayoutAlgorithmSettingsButtonVisible = false;
             this.gViewer.LayoutEditingEnabled = false;
             this.gViewer.Location = new System.Drawing.Point(0, 0);
             this.gViewer.LooseOffsetForRouting = 0.25D;
@@ -109,7 +110,9 @@
             this.ClientSize = new System.Drawing.Size(1056, 558);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.gViewer);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "PoolingPreview";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Pooling Preview";
             this.Load += new System.EventHandler(this.PoolingPreview_Load);
             this.panel1.ResumeLayout(false);

@@ -3560,8 +3560,8 @@ namespace BenMAP
             PoolingPreview frm = new PoolingPreview();
             frm.Width = this.Width;
             frm.Height = this.Height;
-            frm.Left = this.Left;
-            frm.Top = this.Top;
+            //frm.Left = this.Left;
+            //frm.Top = this.Top;
             DialogResult rtn = frm.ShowDialog();
         }
     }
