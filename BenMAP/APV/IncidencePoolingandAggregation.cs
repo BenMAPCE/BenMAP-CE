@@ -3549,7 +3549,19 @@ namespace BenMAP
 
         private void btPoolingPreview_Click(object sender, EventArgs e)
         {
+            foreach (IncidencePoolingAndAggregation ip in CommonClass.lstIncidencePoolingAndAggregation)
+            {
+                if (ip.lstAllSelectCRFuntion == null || ip.lstAllSelectCRFuntion.Count == 0)
+                {
+                    MessageBox.Show("Please set up all pooling windows first.");
+                    return;
+                }
+            }
             PoolingPreview frm = new PoolingPreview();
+            frm.Width = this.Width;
+            frm.Height = this.Height;
+            frm.Left = this.Left;
+            frm.Top = this.Top;
             DialogResult rtn = frm.ShowDialog();
         }
     }

@@ -27,7 +27,7 @@ BenMAP/DataBase/BenMAP50_GBD.exe
 *.exe
 Uninstaller/bin/
 *.user
-*.resx
+#*.resx
 *.csv
 *.config
 *.htm
