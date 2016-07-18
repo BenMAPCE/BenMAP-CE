@@ -23,204 +23,110 @@ namespace BenMAP
 {
     public partial class PoolingPreview : Form
     {
+        readonly ToolTip toolTip = new ToolTip();
         public PoolingPreview()
         {
             InitializeComponent();
+            this.toolTip.Active = true;
+            toolTip.AutoPopDelay = 5000;
+            toolTip.InitialDelay = 1000;
+            toolTip.ReshowDelay = 500;
         }
 
         private void PoolingPreview_Load(object sender, EventArgs e)
         {
-            CreateGraph();
-        }
-
-        void CreateGraph()
-        {
+            gViewer.ObjectUnderMouseCursorChanged += new EventHandler<ObjectUnderMouseCursorChangedEventArgs>(gViewer_ObjectUnderMouseCursorChanged);
 
             Graph graph = new Graph();
+            graph.LayoutAlgorithmSettings.EdgeRoutingSettings.EdgeRoutingMode = EdgeRoutingMode.StraightLine;
+            graph.Directed = false;
+            graph.Attr.LayerDirection = LayerDirection.LR;
+            graph.Attr.AspectRatio = 0.5;
+            gViewer.BackColor = System.Drawing.Color.White;
 
             foreach (IncidencePoolingAndAggregation ip in CommonClass.lstIncidencePoolingAndAggregation)
             {
-                Node nodeEnd = new Node(ip.lstAllSelectCRFuntion[0].EndPointGroup);
-                nodeEnd.Attr.Shape = Shape.Ellipse;
-                graph.AddNode(nodeEnd);
 
-                Node nodeMethod = new Node(ip.lstAllSelectCRFuntion[0].ID.ToString() + ip.lstAllSelectCRFuntion[0].PoolingMethod);
-                nodeMethod.LabelText = ip.lstAllSelectCRFuntion[0].PoolingMethod;
+                // Populate weights for random and fixed effects
+                List<AllSelectCRFunction> lstCR = new List<AllSelectCRFunction>();
+                if (ip.lstAllSelectCRFuntion.First().PoolingMethod == "None")
+                {
+                    APVX.APVCommonClass.getAllChildCRNotNoneForPooling(ip.lstAllSelectCRFuntion.First(), ip.lstAllSelectCRFuntion, ref lstCR);
+                }
+                lstCR.Insert(0, ip.lstAllSelectCRFuntion.First());
+                if (lstCR.Count == 1 && ip.lstAllSelectCRFuntion.First().CRID < 9999 && ip.lstAllSelectCRFuntion.First().CRID > 0) { }
+                else
+                {
+                    APVX.APVCommonClass.getPoolingMethodCRFromAllSelectCRFunction(true, ref ip.lstAllSelectCRFuntion, ref ip.lstAllSelectCRFuntion, ip.lstAllSelectCRFuntion.Where(pa => pa.NodeType != 100).Max(pa => pa.NodeType), ip.lstColumns);
+                }
+
+                CreatePoolingPreviewGraph(graph, ip, null, ip.lstAllSelectCRFuntion[0]);
+            }
+
+
+            gViewer.Graph = graph;
+        }
+
+        void CreatePoolingPreviewGraph(Graph graph, IncidencePoolingAndAggregation ip, Node node, AllSelectCRFunction treeEntry)
+        {
+            Node nodeConnect;
+            if(node == null)
+            {
+                // This is the first call into this recursive function.
+                // Render parent/endpoint node and method if applicable
+                node = new Node(treeEntry.ID.ToString() + treeEntry.Name);
+                node.LabelText = treeEntry.Name;
+                node.Attr.Shape = Shape.Ellipse;
+                graph.AddNode(node);
+            }
+
+            if (treeEntry.PoolingMethod != "None" && treeEntry.PoolingMethod != "")
+            {
+                Node nodeMethod = new Node(treeEntry.ID.ToString() + treeEntry.PoolingMethod);
+                nodeMethod.LabelText = treeEntry.PoolingMethod;
                 nodeMethod.Attr.Shape = Shape.Diamond;
                 graph.AddNode(nodeMethod);
-                graph.AddEdge(nodeMethod.Id, nodeEnd.Id);
-
-                List<AllSelectCRFunction> lst = new List<AllSelectCRFunction>();
-                getAllChildMethodNotNone(ip.lstAllSelectCRFuntion[0], ip.lstAllSelectCRFuntion, ref lst);
-                foreach (AllSelectCRFunction s in lst) {
-                    Node nodeStudy = new Node(s.ID.ToString());
-                    nodeStudy.LabelText = s.Author;
-                    nodeStudy.Attr.Shape = Shape.Box;
-                    graph.AddNode(nodeStudy);
-                    if (s.Weight != 0)
-                    {
-                        graph.AddEdge(nodeStudy.Id, s.Weight.ToString(), nodeMethod.Id);
-                    }
-                    else
-                    {
-                        graph.AddEdge(nodeStudy.Id, nodeMethod.Id);
-                    }
-
-                }
+                graph.AddEdge(nodeMethod.Id, node.Id);
+                nodeConnect = nodeMethod;
             }
-            graph.LayoutAlgorithmSettings.EdgeRoutingSettings.EdgeRoutingMode = EdgeRoutingMode.Rectilinear;
-            graph.Directed = false;
-            graph.Attr.LayerDirection = LayerDirection.LR;
-            gViewer.BackColor = System.Drawing.Color.White;
-            gViewer.Graph = graph;
+            else
+            {
+                nodeConnect = node;
+            }
 
-            //            Graph graph = new Graph("graph");
-            //            //graph.LayoutAlgorithmSettings=new MdsLayoutSettings();
-            //            gViewer.BackColor = System.Drawing.Color.FromArgb(10, System.Drawing.Color.Red);
-            //
-            //            /*
-            //              4->5
-            //5->7
-            //7->8
-            //8->22
-            //22->24
-            //*/
-            //
-            //            //int wm = 80;
-            //            graph.AddEdge("1", "2");
-            //            graph.AddEdge("1", "3");
-            //            var e = graph.AddEdge("4", "5");
-            //            //e.Attr.Weight *= wm;
-            //            e.Attr.Color = Color.Red;
-            //            e.Attr.LineWidth *= 2;
-            //
-            //            e = graph.AddEdge("4", "6");
-            //            e.LabelText = "Changing label";
-            //            this.labelToChange = e.Label;
-            //            e=graph.AddEdge("7", "8");
-            //            //e.Attr.Weight *= wm;
-            //            e.Attr.LineWidth *= 2;
-            //            e.Attr.Color = Color.Red;
-            //            
-            //            graph.AddEdge("7", "9");
-            //            e=graph.AddEdge("5", "7");
-            //            //e.Attr.Weight *= wm;
-            //            e.Attr.Color = Color.Red;
-            //            e.Attr.LineWidth *= 2;
-            //            
-            //            graph.AddEdge("2", "7");
-            //            graph.AddEdge("10", "11");
-            //            graph.AddEdge("10", "12");
-            //            graph.AddEdge("2", "10");
-            //            graph.AddEdge("8", "10");
-            //            graph.AddEdge("5", "10");
-            //            graph.AddEdge("13", "14");
-            //            graph.AddEdge("13", "15");
-            //            graph.AddEdge("8", "13");
-            //            graph.AddEdge("2", "13");
-            //            graph.AddEdge("5", "13");
-            //            graph.AddEdge("16", "17");
-            //            graph.AddEdge("16", "18");
-            //            graph.AddEdge("19", "20");
-            //            graph.AddEdge("19", "21");
-            //            graph.AddEdge("17", "19");
-            //            graph.AddEdge("2", "19");
-            //            graph.AddEdge("22", "23");
-            //            
-            //            e=graph.AddEdge("22", "24");
-            //            //e.Attr.Weight *= wm;
-            //            e.Attr.Color = Color.Red;
-            //            e.Attr.LineWidth *= 2;
-            //
-            //            e = graph.AddEdge("8", "22");
-            //            //e.Attr.Weight *= wm;
-            //            e.Attr.Color = Color.Red;
-            //            e.Attr.LineWidth *= 2;
-            //            
-            //            graph.AddEdge("20", "22");
-            //            graph.AddEdge("25", "26");
-            //            graph.AddEdge("25", "27");
-            //            graph.AddEdge("20", "25");
-            //            graph.AddEdge("28", "29");
-            //            graph.AddEdge("28", "30");
-            //            graph.AddEdge("31", "32");
-            //            graph.AddEdge("31", "33");
-            //            graph.AddEdge("5", "31");
-            //            graph.AddEdge("8", "31");
-            //            graph.AddEdge("2", "31");
-            //            graph.AddEdge("20", "31");
-            //            graph.AddEdge("17", "31");
-            //            graph.AddEdge("29", "31");
-            //            graph.AddEdge("34", "35");
-            //            graph.AddEdge("34", "36");
-            //            graph.AddEdge("20", "34");
-            //            graph.AddEdge("29", "34");
-            //            graph.AddEdge("5", "34");
-            //            graph.AddEdge("2", "34");
-            //            graph.AddEdge("8", "34");
-            //            graph.AddEdge("17", "34");
-            //            graph.AddEdge("37", "38");
-            //            graph.AddEdge("37", "39");
-            //            graph.AddEdge("29", "37");
-            //            graph.AddEdge("5", "37");
-            //            graph.AddEdge("20", "37");
-            //            graph.AddEdge("8", "37");
-            //            graph.AddEdge("2", "37");
-            //            graph.AddEdge("40", "41");
-            //            graph.AddEdge("40", "42");
-            //            graph.AddEdge("17", "40");
-            //            graph.AddEdge("2", "40");
-            //            graph.AddEdge("8", "40");
-            //            graph.AddEdge("5", "40");
-            //            graph.AddEdge("20", "40");
-            //            graph.AddEdge("29", "40");
-            //            graph.AddEdge("43", "44");
-            //            graph.AddEdge("43", "45");
-            //            graph.AddEdge("8", "43");
-            //            graph.AddEdge("2", "43");
-            //            graph.AddEdge("20", "43");
-            //            graph.AddEdge("17", "43");
-            //            graph.AddEdge("5", "43");
-            //            graph.AddEdge("29", "43");
-            //            graph.AddEdge("46", "47");
-            //            graph.AddEdge("46", "48");
-            //            graph.AddEdge("29", "46");
-            //            graph.AddEdge("5", "46");
-            //            graph.AddEdge("17", "46");
-            //            graph.AddEdge("49", "50");
-            //            graph.AddEdge("49", "51");
-            //            graph.AddEdge("5", "49");
-            //            graph.AddEdge("2", "49");
-            //            graph.AddEdge("52", "53");
-            //            graph.AddEdge("52", "54");
-            //            graph.AddEdge("17", "52");
-            //            graph.AddEdge("20", "52");
-            //            graph.AddEdge("2", "52");
-            //            graph.AddEdge("50", "52");
-            //            graph.AddEdge("55", "56");
-            //            graph.AddEdge("55", "57");
-            //            graph.AddEdge("58", "59");
-            //            graph.AddEdge("58", "60");
-            //            graph.AddEdge("20", "58");
-            //            graph.AddEdge("29", "58");
-            //            graph.AddEdge("5", "58");
-            //            graph.AddEdge("47", "58");
-            //
-            //            //ChangeNodeSizes(graph);
-            //
-            //            //var sls = graph.LayoutAlgorithmSettings as SugiyamaLayoutSettings;
-            //            //if (sls != null)
-            //            //{
-            //            //    sls.GridSizeByX = 30;
-            //            //    // sls.GridSizeByY = 0;
-            //            //}
-            //            var subgraph = new Subgraph("subgraph label");
-            //            graph.RootSubgraph.AddSubgraph(subgraph);
-            //            subgraph.AddNode(graph.FindNode("47"));
-            //            subgraph.AddNode(graph.FindNode("58"));
-            //            //layout the graph and draw it
-            //            gViewer.Graph = graph;
-           // this.propertyGrid1.SelectedObject = graph;
+            List<AllSelectCRFunction> lst = new List<AllSelectCRFunction>();
+            getAllChildMethodNotNone(treeEntry, ip.lstAllSelectCRFuntion, ref lst);
+            foreach (AllSelectCRFunction treeEntryChild in lst)
+            {
+                Node nodeChild = new Node(treeEntryChild.ID.ToString());
+
+                if (treeEntryChild.PoolingMethod != "None" && treeEntryChild.PoolingMethod != "")
+                {
+                    nodeChild.LabelText = treeEntryChild.Name + " (Pooled)";
+                }
+                else
+                {
+                    nodeChild.LabelText = treeEntryChild.Name;
+                }
+                nodeChild.Attr.Shape = Shape.Box;
+                nodeChild.Attr.LabelMargin = 5;
+                nodeChild.UserData = String.Format("{0}\n{1}\n{2}\nAge: {3}-{4}\nRace: {5}\nEthnicity: {6}\nGender: {7}\nYear: {8}", treeEntryChild.Author, treeEntryChild.EndPoint, treeEntryChild.DataSet, 
+                    treeEntryChild.StartAge, treeEntryChild.EndAge, treeEntryChild.Race, 
+                    treeEntryChild.Ethnicity, treeEntryChild.Gender, treeEntryChild.Year);
+                graph.AddNode(nodeChild);
+                if (treeEntryChild.Weight != 0)
+                {
+                    graph.AddEdge(nodeChild.Id, treeEntryChild.Weight.ToString(), nodeConnect.Id);
+                }
+                else
+                {
+                    graph.AddEdge(nodeChild.Id, nodeConnect.Id);
+                }
+
+                CreatePoolingPreviewGraph(graph, ip, nodeChild, treeEntryChild);
+            }
+
+
         }
 
         private void getAllChildMethodNotNone(AllSelectCRFunction allSelectCRFunction, List<AllSelectCRFunction> lstAll, ref List<AllSelectCRFunction> lstReturn)
@@ -232,6 +138,62 @@ namespace BenMAP
                 getAllChildMethodNotNone(asvm, lstAll, ref lstReturn);
 
             }
+        }
+
+        object selectedObjectAttr;
+        object selectedObject;
+        void gViewer_ObjectUnderMouseCursorChanged(object sender, ObjectUnderMouseCursorChangedEventArgs e)
+        {
+            try
+            {
+                selectedObject = e.OldObject != null ? e.OldObject.DrawingObject : null;
+
+                if (selectedObject != null)
+                {
+                    if (selectedObject is Edge)
+                        (selectedObject as Edge).Attr = selectedObjectAttr as EdgeAttr;
+                    else if (selectedObject is Node)
+                        (selectedObject as Node).Attr = selectedObjectAttr as NodeAttr;
+
+                    selectedObject = null;
+                }
+
+                if (gViewer.SelectedObject == null)
+                {
+                    this.gViewer.SetToolTip(toolTip, "");
+
+                }
+                else
+                {
+                    selectedObject = gViewer.SelectedObject;
+                    Edge edge = selectedObject as Edge;
+                    if (edge != null)
+                    {
+                        selectedObjectAttr = edge.Attr.Clone();
+                    }
+                    else if (selectedObject is Node)
+                    {
+                        Node node = (Node)selectedObject;
+                        selectedObjectAttr = (gViewer.SelectedObject as Node).Attr.Clone();
+
+                        if (node.UserData != null)
+                        {
+                            (selectedObject as Node).Attr.Color = Microsoft.Msagl.Drawing.Color.Blue;
+                            this.gViewer.SetToolTip(toolTip, (String)((Node)selectedObject).UserData);
+                        }
+
+                    }
+                }
+                gViewer.Invalidate();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+            }
+        }
+        private void btClose_Click(object sender, EventArgs e)
+        {
+            this.DialogResult = DialogResult.Cancel;
         }
     }
 }
