@@ -36,7 +36,6 @@ namespace BenMAP
         {
             try
             {
-                // BindItems();
                 CRFVariable selectedVariable = _hif.PollVariables.ElementAt(selected);
                 txtVariable.Text = selectedVariable.VariableName;
                 txtPollutant.Text = selectedVariable.PollutantName;
@@ -44,22 +43,31 @@ namespace BenMAP
                 txtSeasMetric.Text = _hif.SeasonalMetric;
                 cboMetric.Text = selectedVariable.Metric.MetricName;
 
-                // cboBetaDistribution.Items.Add("None");
-                cboBetaDistribution.Items.Add("Normal");
-                /* cboBetaDistribution.Items.Add("Triangular");
-                cboBetaDistribution.Items.Add("Poisson");
-                cboBetaDistribution.Items.Add("Binomial");
-                cboBetaDistribution.Items.Add("LogNormal");
-                cboBetaDistribution.Items.Add("Uniform");
-                cboBetaDistribution.Items.Add("Exponential");
-                cboBetaDistribution.Items.Add("Geometric");
-                cboBetaDistribution.Items.Add("Weibull"); 
-                cboBetaDistribution.Items.Add("Gamma");
-                cboBetaDistribution.Items.Add("Logistic");
-                cboBetaDistribution.Items.Add("Beta");
-                cboBetaDistribution.Items.Add("Pareto");
-                cboBetaDistribution.Items.Add("Cauchy");
-                cboBetaDistribution.Items.Add("Custom"); */
+                // multipollutant locked to normal per epa's request
+                string dataset = Configuration.ConfigurationCommonClass.getDatasetNameFromFunctionID(Convert.ToInt32(_hif.FunctionID));
+                if(dataset.ToLower().Contains("multi"))
+                {
+                    cboBetaDistribution.Items.Add("Normal");
+                }
+                else
+                {
+                    cboBetaDistribution.Items.Add("None");
+                    cboBetaDistribution.Items.Add("Normal");
+                    cboBetaDistribution.Items.Add("Triangular");
+                    cboBetaDistribution.Items.Add("Poisson");
+                    cboBetaDistribution.Items.Add("Binomial");
+                    cboBetaDistribution.Items.Add("LogNormal");
+                    cboBetaDistribution.Items.Add("Uniform");
+                    cboBetaDistribution.Items.Add("Exponential");
+                    cboBetaDistribution.Items.Add("Geometric");
+                    cboBetaDistribution.Items.Add("Weibull"); 
+                    cboBetaDistribution.Items.Add("Gamma");
+                    cboBetaDistribution.Items.Add("Logistic");
+                    cboBetaDistribution.Items.Add("Beta");
+                    cboBetaDistribution.Items.Add("Pareto");
+                    cboBetaDistribution.Items.Add("Cauchy");
+                    cboBetaDistribution.Items.Add("Custom");
+                }
 
                 cboBetaDistribution.SelectedIndex = 0;
                 selectedSeason = 0;
@@ -104,6 +112,7 @@ namespace BenMAP
                 loadMetrics();
 
                 cboBetaDistribution.SelectedValueChanged -= cboBetaDistribution_SelectedValueChanged;
+                cboBetaDistribution.SelectedItem = _hif.BetaDistribution;
                 cboBetaDistribution.SelectedValueChanged += cboBetaDistribution_SelectedValueChanged;
 
                 cboSeason.SelectionChangeCommitted -= cboSeason_SelectedValueChanged;
@@ -229,6 +238,7 @@ namespace BenMAP
                 txtBconstantValue.Text = selectedVariable.PollBetas[selectedSeason].BConstantValue.ToString();
                 txtCconstantValue.Text = selectedVariable.PollBetas[selectedSeason].CConstantValue.ToString();
                 txtBeta.Text = selectedVariable.PollBetas[selectedSeason].Beta.ToString();
+                cboBetaDistribution.Text = selectedVariable.PollBetas[selectedSeason].Distribution.ToString();
 
                 if (txtBetaParameter1.Visible && txtBetaParameter2.Visible)
                 {

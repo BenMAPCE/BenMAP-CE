@@ -4170,7 +4170,22 @@ namespace BenMAP.Configuration
             }
         }
 
+        public static string getDatasetNameFromFunctionID(int functionID)
+        {
+            try
+            {
+                string commandText = string.Format("select crfunctiondatasetname from CRFUNCTIONDATASETS as crfd join CRFUNCTIONS crf on crfd.CRFUNCTIONDATASETID=crf.CRFUNCTIONDATASETID and crf.CRFUNCTIONID={0}", functionID);
+                ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                string datasetName = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText).ToString();
 
+                return datasetName;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+                return null;
+            }
+        }
 
 
 

@@ -1188,6 +1188,7 @@ namespace BenMAP
                 healthImpact.ModelSpec = olvColumn23.GetValue(olvFunction.SelectedObject).ToString();
                 healthImpact.BetaVariation = olvColumn24.GetValue(olvFunction.SelectedObject).ToString();
                 healthImpact.FunctionID = olvColumn25.GetValue(olvFunction.SelectedObject).ToString();
+                healthImpact.BetaDistribution = olvCol_BetaDist.GetValue(olvFunction.SelectedObject).ToString();
 
                 healthImpact.PollVariables = new List<CRFVariable>();
 
