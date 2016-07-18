@@ -1120,6 +1120,10 @@ namespace BenMAP
         private void getParentNotNone(AllSelectCRFunction allSelectCRFunction, List<AllSelectCRFunction> lstReturn)
         {
             IncidencePoolingAndAggregation ip = CommonClass.lstIncidencePoolingAndAggregation.Where(p => p.PoolingName == tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text).First();
+            if(ip.lstAllSelectCRFuntion == null)
+            {
+                return;
+            }
             var query = ip.lstAllSelectCRFuntion.Where(p => p.ID == allSelectCRFunction.PID);
             if (query != null && query.Count() > 0)
             {
