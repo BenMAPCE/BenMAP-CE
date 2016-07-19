@@ -35,36 +35,45 @@ namespace BenMAP
 
         private void PoolingPreview_Load(object sender, EventArgs e)
         {
-            gViewer.ObjectUnderMouseCursorChanged += new EventHandler<ObjectUnderMouseCursorChangedEventArgs>(gViewer_ObjectUnderMouseCursorChanged);
-
-            Graph graph = new Graph();
-            graph.LayoutAlgorithmSettings.EdgeRoutingSettings.EdgeRoutingMode = EdgeRoutingMode.StraightLine;
-            graph.Directed = false;
-            graph.Attr.LayerDirection = LayerDirection.LR;
-            graph.Attr.AspectRatio = 0.5;
-            gViewer.BackColor = System.Drawing.Color.White;
-
-            foreach (IncidencePoolingAndAggregation ip in CommonClass.lstIncidencePoolingAndAggregation)
+            try
             {
+                gViewer.ObjectUnderMouseCursorChanged += new EventHandler<ObjectUnderMouseCursorChangedEventArgs>(gViewer_ObjectUnderMouseCursorChanged);
 
-                // Populate weights for random and fixed effects
-                List<AllSelectCRFunction> lstCR = new List<AllSelectCRFunction>();
-                if (ip.lstAllSelectCRFuntion.First().PoolingMethod == "None")
+                Graph graph = new Graph();
+                graph.LayoutAlgorithmSettings.EdgeRoutingSettings.EdgeRoutingMode = EdgeRoutingMode.StraightLine;
+                graph.Directed = false;
+                graph.Attr.LayerDirection = LayerDirection.LR;
+                graph.Attr.AspectRatio = 0.5;
+                gViewer.BackColor = System.Drawing.Color.White;
+
+                foreach (IncidencePoolingAndAggregation ip in CommonClass.lstIncidencePoolingAndAggregation)
                 {
-                    APVX.APVCommonClass.getAllChildCRNotNoneForPooling(ip.lstAllSelectCRFuntion.First(), ip.lstAllSelectCRFuntion, ref lstCR);
-                }
-                lstCR.Insert(0, ip.lstAllSelectCRFuntion.First());
-                if (lstCR.Count == 1 && ip.lstAllSelectCRFuntion.First().CRID < 9999 && ip.lstAllSelectCRFuntion.First().CRID > 0) { }
-                else
-                {
-                    APVX.APVCommonClass.getPoolingMethodCRFromAllSelectCRFunction(true, ref ip.lstAllSelectCRFuntion, ref ip.lstAllSelectCRFuntion, ip.lstAllSelectCRFuntion.Where(pa => pa.NodeType != 100).Max(pa => pa.NodeType), ip.lstColumns);
+
+                    // Populate weights for random and fixed effects
+                    List<AllSelectCRFunction> lstCR = new List<AllSelectCRFunction>();
+                    if (ip.lstAllSelectCRFuntion.First().PoolingMethod == "None")
+                    {
+                        APVX.APVCommonClass.getAllChildCRNotNoneForPooling(ip.lstAllSelectCRFuntion.First(), ip.lstAllSelectCRFuntion, ref lstCR);
+                    }
+                    lstCR.Insert(0, ip.lstAllSelectCRFuntion.First());
+                    if (lstCR.Count == 1 && ip.lstAllSelectCRFuntion.First().CRID < 9999 && ip.lstAllSelectCRFuntion.First().CRID > 0) { }
+                    else
+                    {
+                        APVX.APVCommonClass.getPoolingMethodCRFromAllSelectCRFunction(true, ref ip.lstAllSelectCRFuntion, ref ip.lstAllSelectCRFuntion, ip.lstAllSelectCRFuntion.Where(pa => pa.NodeType != 100).Max(pa => pa.NodeType), ip.lstColumns);
+                    }
+
+                    CreatePoolingPreviewGraph(graph, ip, null, ip.lstAllSelectCRFuntion[0]);
                 }
 
-                CreatePoolingPreviewGraph(graph, ip, null, ip.lstAllSelectCRFuntion[0]);
+
+                gViewer.Graph = graph;
             }
-
-
-            gViewer.Graph = graph;
+            catch (Exception ex)
+            {
+                MessageBox.Show(this, "The pooling preview window cannot be displayed due to an internal error.", "Pooling Preview Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                Logger.LogError(ex);
+                this.DialogResult = DialogResult.Cancel;
+            }
         }
 
         void CreatePoolingPreviewGraph(Graph graph, IncidencePoolingAndAggregation ip, Node node, AllSelectCRFunction treeEntry)
@@ -75,17 +84,48 @@ namespace BenMAP
                 // This is the first call into this recursive function.
                 // Render parent/endpoint node and method if applicable
                 node = new Node(treeEntry.ID.ToString() + treeEntry.Name);
-                node.LabelText = treeEntry.Name;
+                if (ip.lstAllSelectCRFuntion.Count == 1)
+                {
+                    node.LabelText = treeEntry.EndPointGroup;
+                }
+                else
+                {
+                    node.LabelText = treeEntry.Name;
+                }
+
                 node.Attr.Shape = Shape.Box;
                 node.Attr.XRadius = 20;
                 node.Attr.YRadius = 20;
                 node.Attr.LabelMargin = 10;
+                node.Attr.Padding = 200;
                 graph.AddNode(node);
             }
 
+            if(ip.lstAllSelectCRFuntion.Count == 1)
+            {
+                //This is a single study, no pooling scenario. Just render the study and connect to the endpoint
+                Node nodeChild = new Node(treeEntry.ID.ToString());
+                nodeChild.LabelText = treeEntry.Author;
+
+                nodeChild.Attr.Shape = Shape.Box;
+                nodeChild.Attr.XRadius = 0;
+                nodeChild.Attr.YRadius = 0;
+                nodeChild.Attr.LabelMargin = 10;
+                nodeChild.UserData = String.Format("{0}\n{1}\n{2}\nAge: {3}-{4}\nRace: {5}\nEthnicity: {6}\nGender: {7}\nYear: {8}", treeEntry.Author, treeEntry.EndPoint, treeEntry.DataSet,
+                    treeEntry.StartAge, treeEntry.EndAge, treeEntry.Race,
+                    treeEntry.Ethnicity, treeEntry.Gender, treeEntry.Year);
+                graph.AddNode(nodeChild);
+
+                Edge edgeChild = new Edge(nodeChild, node, ConnectionToGraph.Connected);
+                edgeChild.Attr.ArrowheadAtTarget = ArrowStyle.None;
+                edgeChild.Attr.ArrowheadAtSource = ArrowStyle.None;
+                return;
+            }
+
+            // Add a method node if needed
             if (treeEntry.PoolingMethod != "None" && treeEntry.PoolingMethod != "")
             {
-                Node nodeMethod = new Node(treeEntry.ID.ToString() + treeEntry.PoolingMethod);
+                Node nodeMethod = new Node(treeEntry.ID.ToString() + treeEntry.PoolingMethod + treeEntry.Author);
                 nodeMethod.LabelText = treeEntry.PoolingMethod;
                 nodeMethod.Attr.Shape = Shape.Diamond;
                 nodeMethod.Attr.LabelMargin = 10;
@@ -101,6 +141,7 @@ namespace BenMAP
                 nodeConnect = node;
             }
 
+            // Render the children and then make a recursive call to see if any of them are also parents
             List<AllSelectCRFunction> lst = new List<AllSelectCRFunction>();
             getAllChildMethodNotNone(treeEntry, ip.lstAllSelectCRFuntion, ref lst);
             foreach (AllSelectCRFunction treeEntryChild in lst)
