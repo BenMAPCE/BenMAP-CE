@@ -4590,13 +4590,18 @@ namespace BenMAP.Configuration
                     CRSelectFunctionCalculateValue crSelectFunctionCalculateValue = new CRSelectFunctionCalculateValue() { CRSelectFunction = crSelectFunction, CRCalculateValues = new List<CRCalculateValue>() };
 
                     // get number of beta variations (use first variable)
-                    List<CRFBeta> lstBetas = new List<CRFBeta>();
-                    if (crSelectFunction.BenMAPHealthImpactFunction.Variables.Count() == 1 && crSelectFunction.BenMAPHealthImpactFunction.Variables.First().PollBetas.Count() == 1)
-                        lstBetas.Add(crSelectFunction.BenMAPHealthImpactFunction.Variables.First().PollBetas.First());
-                    else
-                        lstBetas = crSelectFunction.BenMAPHealthImpactFunction.Variables.First().PollBetas.OrderBy(beta => Convert.ToInt32(beta.StartDate)).ToList();
+                    //first ensure all betas have an integer start date
+                    foreach (CRFBeta beta in crSelectFunction.BenMAPHealthImpactFunction.Variables.First().PollBetas)
+                    {
+                        int iTest = 0;
+                        if (!Int32.TryParse(beta.StartDate, out iTest))
+                        {
+                            beta.StartDate = "0";
+                        }                   
+                    }                    
 
-                    // List<CRFBeta> lstBetas = crSelectFunction.BenMAPHealthImpactFunction.Variables.First().PollBetas.OrderBy(beta => Convert.ToInt32(beta.StartDate)).ToList();
+                    //sort betas by start date
+                    List<CRFBeta> lstBetas = crSelectFunction.BenMAPHealthImpactFunction.Variables.First().PollBetas.OrderBy(beta => Convert.ToInt32(beta.StartDate)).ToList();
 
                     #region foreach (ModelResultAttribute modelResultAttribute in baseControlGroup.Base.ModelResultAttributes)
                     foreach (ModelResultAttribute modelResultAttribute in baseControlGroup.Base.ModelResultAttributes)
