@@ -47,15 +47,6 @@ namespace BenMAP
             this.olvColumn41 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn42 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn43 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvColumn44 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvColumn45 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvColumn46 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvColumn47 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvColumn48 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvColumn49 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvColumn50 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvColumn51 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvColumn52 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.chkSumAcrossYear = new System.Windows.Forms.CheckBox();
             this.btSelectAttribute = new System.Windows.Forms.Button();
             this.btShowCRResult = new System.Windows.Forms.Button();
@@ -405,15 +396,6 @@ namespace BenMAP
             this.olvCRFunctionResult.AllColumns.Add(this.olvColumn41);
             this.olvCRFunctionResult.AllColumns.Add(this.olvColumn42);
             this.olvCRFunctionResult.AllColumns.Add(this.olvColumn43);
-            this.olvCRFunctionResult.AllColumns.Add(this.olvColumn44);
-            this.olvCRFunctionResult.AllColumns.Add(this.olvColumn45);
-            this.olvCRFunctionResult.AllColumns.Add(this.olvColumn46);
-            this.olvCRFunctionResult.AllColumns.Add(this.olvColumn47);
-            this.olvCRFunctionResult.AllColumns.Add(this.olvColumn48);
-            this.olvCRFunctionResult.AllColumns.Add(this.olvColumn49);
-            this.olvCRFunctionResult.AllColumns.Add(this.olvColumn50);
-            this.olvCRFunctionResult.AllColumns.Add(this.olvColumn51);
-            this.olvCRFunctionResult.AllColumns.Add(this.olvColumn52);
             this.olvCRFunctionResult.AllowColumnReorder = true;
             this.olvCRFunctionResult.AllowDrop = true;
             this.olvCRFunctionResult.AlternateRowBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(240)))), ((int)(((byte)(220)))));
@@ -438,16 +420,7 @@ namespace BenMAP
             this.olvColumn40,
             this.olvColumn41,
             this.olvColumn42,
-            this.olvColumn43,
-            this.olvColumn44,
-            this.olvColumn45,
-            this.olvColumn46,
-            this.olvColumn47,
-            this.olvColumn48,
-            this.olvColumn49,
-            this.olvColumn50,
-            this.olvColumn51,
-            this.olvColumn52});
+            this.olvColumn43});
             this.olvCRFunctionResult.CopySelectionOnControlC = false;
             this.olvCRFunctionResult.Cursor = System.Windows.Forms.Cursors.Default;
             this.olvCRFunctionResult.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -623,68 +596,6 @@ namespace BenMAP
             this.olvColumn43.IsEditable = false;
             this.olvColumn43.Text = "Beta Distribution";
             this.olvColumn43.Width = 110;
-            // 
-            // olvColumn44
-            // 
-            this.olvColumn44.AspectName = "CRSelectFunction.BenMAPHealthImpactFunction.Beta";
-            this.olvColumn44.IsEditable = false;
-            this.olvColumn44.Text = "Beta";
-            // 
-            // olvColumn45
-            // 
-            this.olvColumn45.AspectName = "CRSelectFunction.BenMAPHealthImpactFunction.BetaParameter1";
-            this.olvColumn45.IsEditable = false;
-            this.olvColumn45.Text = "Beta Parameter 1";
-            this.olvColumn45.Width = 110;
-            // 
-            // olvColumn46
-            // 
-            this.olvColumn46.AspectName = "CRSelectFunction.BenMAPHealthImpactFunction.BetaParameter2";
-            this.olvColumn46.IsEditable = false;
-            this.olvColumn46.Text = "Beta Parameter 2";
-            this.olvColumn46.Width = 110;
-            // 
-            // olvColumn47
-            // 
-            this.olvColumn47.AspectName = "CRSelectFunction.BenMAPHealthImpactFunction.AContantDescription";
-            this.olvColumn47.IsEditable = false;
-            this.olvColumn47.Text = "A Description";
-            this.olvColumn47.Width = 140;
-            // 
-            // olvColumn48
-            // 
-            this.olvColumn48.AspectName = "CRSelectFunction.BenMAPHealthImpactFunction.AContantValue";
-            this.olvColumn48.IsEditable = false;
-            this.olvColumn48.Text = "A";
-            this.olvColumn48.Width = 110;
-            // 
-            // olvColumn49
-            // 
-            this.olvColumn49.AspectName = "CRSelectFunction.BenMAPHealthImpactFunction.BContantDescription";
-            this.olvColumn49.IsEditable = false;
-            this.olvColumn49.Text = "B Description";
-            this.olvColumn49.Width = 140;
-            // 
-            // olvColumn50
-            // 
-            this.olvColumn50.AspectName = "CRSelectFunction.BenMAPHealthImpactFunction.BContantValue";
-            this.olvColumn50.IsEditable = false;
-            this.olvColumn50.Text = "B";
-            this.olvColumn50.Width = 110;
-            // 
-            // olvColumn51
-            // 
-            this.olvColumn51.AspectName = "CRSelectFunction.BenMAPHealthImpactFunction.CContantDescription";
-            this.olvColumn51.IsEditable = false;
-            this.olvColumn51.Text = "C Description";
-            this.olvColumn51.Width = 140;
-            // 
-            // olvColumn52
-            // 
-            this.olvColumn52.AspectName = "CRSelectFunction.BenMAPHealthImpactFunction.CContantValue";
-            this.olvColumn52.IsEditable = false;
-            this.olvColumn52.Text = "C";
-            this.olvColumn52.Width = 110;
             // 
             // chkSumAcrossYear
             // 
@@ -3082,15 +2993,6 @@ namespace BenMAP
         private BrightIdeasSoftware.OLVColumn olvColumn41;
         private BrightIdeasSoftware.OLVColumn olvColumn42;
         private BrightIdeasSoftware.OLVColumn olvColumn43;
-        private BrightIdeasSoftware.OLVColumn olvColumn44;
-        private BrightIdeasSoftware.OLVColumn olvColumn45;
-        private BrightIdeasSoftware.OLVColumn olvColumn46;
-        private BrightIdeasSoftware.OLVColumn olvColumn47;
-        private BrightIdeasSoftware.OLVColumn olvColumn48;
-        private BrightIdeasSoftware.OLVColumn olvColumn49;
-        private BrightIdeasSoftware.OLVColumn olvColumn50;
-        private BrightIdeasSoftware.OLVColumn olvColumn51;
-        private BrightIdeasSoftware.OLVColumn olvColumn52;
         private BrightIdeasSoftware.ObjectListView tlvAPVResult;
         private BrightIdeasSoftware.OLVColumn olvColumn1;
         private BrightIdeasSoftware.OLVColumn olvColumn3;

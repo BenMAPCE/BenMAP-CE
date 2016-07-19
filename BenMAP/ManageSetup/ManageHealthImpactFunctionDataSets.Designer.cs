@@ -46,6 +46,7 @@ namespace BenMAP
             this.olvColumn17 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn18 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn19 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvCol_BetaDist = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn20 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn21 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn22 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
@@ -204,6 +205,7 @@ namespace BenMAP
             this.olvData.AllColumns.Add(this.olvColumn17);
             this.olvData.AllColumns.Add(this.olvColumn18);
             this.olvData.AllColumns.Add(this.olvColumn19);
+            this.olvData.AllColumns.Add(this.olvCol_BetaDist);
             this.olvData.AllColumns.Add(this.olvColumn20);
             this.olvData.AllColumns.Add(this.olvColumn21);
             this.olvData.AllColumns.Add(this.olvColumn22);
@@ -237,6 +239,7 @@ namespace BenMAP
             this.olvColumn17,
             this.olvColumn18,
             this.olvColumn19,
+            this.olvCol_BetaDist,
             this.olvColumn20,
             this.olvColumn21,
             this.olvColumn22,
@@ -383,6 +386,12 @@ namespace BenMAP
             this.olvColumn19.AspectName = "functionalformtext1";
             this.olvColumn19.Text = "Baseline Function";
             this.olvColumn19.Width = 120;
+            // 
+            // olvCol_BetaDist
+            // 
+            this.olvCol_BetaDist.AspectName = "distbeta";
+            this.olvCol_BetaDist.Text = "Beta Distribution";
+            this.olvCol_BetaDist.Width = 140;
             // 
             // olvColumn20
             // 
@@ -626,5 +635,6 @@ namespace BenMAP
         private BrightIdeasSoftware.OLVColumn olvColumn26;
         private BrightIdeasSoftware.OLVColumn olvColumn23;
         private BrightIdeasSoftware.OLVColumn olvColumn24;
+        private BrightIdeasSoftware.OLVColumn olvCol_BetaDist;
     }
 }
