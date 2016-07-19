@@ -965,7 +965,6 @@
       <DependentUpon>QALYResulesReport.cs</DependentUpon>
     </Compile>
     <Compile Include="Jira\NewIssue.cs" />
-    <Content Include="Resources\dropdown_hint.png" />
     <Content Include="Setup\Setup.vdproj" />
     <!--<Content Include="Tools\alertSmall.png" /> -->
     <None Include="Data\BenMAP-CE Release Notes.rtf">

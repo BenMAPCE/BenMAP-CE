@@ -61,8 +61,9 @@ namespace BenMAP
                     {
                         APVX.APVCommonClass.getPoolingMethodCRFromAllSelectCRFunction(true, ref ip.lstAllSelectCRFuntion, ref ip.lstAllSelectCRFuntion, ip.lstAllSelectCRFuntion.Where(pa => pa.NodeType != 100).Max(pa => pa.NodeType), ip.lstColumns);
                     }
-
+                    //Subgraph subgraph = new Subgraph(ip.PoolingName);
                     CreatePoolingPreviewGraph(graph, ip, null, ip.lstAllSelectCRFuntion[0]);
+                    //graph.RootSubgraph.AddSubgraph(subgraph);
                 }
 
 
@@ -83,7 +84,7 @@ namespace BenMAP
             {
                 // This is the first call into this recursive function.
                 // Render parent/endpoint node and method if applicable
-                node = new Node(treeEntry.ID.ToString() + treeEntry.Name);
+                node = new Node(Guid.NewGuid() + treeEntry.Name);
                 if (ip.lstAllSelectCRFuntion.Count == 1)
                 {
                     node.LabelText = treeEntry.EndPointGroup;
@@ -104,7 +105,7 @@ namespace BenMAP
             if(ip.lstAllSelectCRFuntion.Count == 1)
             {
                 //This is a single study, no pooling scenario. Just render the study and connect to the endpoint
-                Node nodeChild = new Node(treeEntry.ID.ToString());
+                Node nodeChild = new Node(Guid.NewGuid() + treeEntry.ID.ToString());
                 nodeChild.LabelText = treeEntry.Author;
 
                 nodeChild.Attr.Shape = Shape.Box;
@@ -125,7 +126,7 @@ namespace BenMAP
             // Add a method node if needed
             if (treeEntry.PoolingMethod != "None" && treeEntry.PoolingMethod != "")
             {
-                Node nodeMethod = new Node(treeEntry.ID.ToString() + treeEntry.PoolingMethod + treeEntry.Author);
+                Node nodeMethod = new Node(Guid.NewGuid() + treeEntry.PoolingMethod + treeEntry.Author);
                 nodeMethod.LabelText = treeEntry.PoolingMethod;
                 nodeMethod.Attr.Shape = Shape.Diamond;
                 nodeMethod.Attr.LabelMargin = 10;
@@ -146,7 +147,7 @@ namespace BenMAP
             getAllChildMethodNotNone(treeEntry, ip.lstAllSelectCRFuntion, ref lst);
             foreach (AllSelectCRFunction treeEntryChild in lst)
             {
-                Node nodeChild = new Node(treeEntryChild.ID.ToString());
+                Node nodeChild = new Node(Guid.NewGuid() + treeEntryChild.ID.ToString());
 
                 if (treeEntryChild.PoolingMethod != "None" && treeEntryChild.PoolingMethod != "")
                 {

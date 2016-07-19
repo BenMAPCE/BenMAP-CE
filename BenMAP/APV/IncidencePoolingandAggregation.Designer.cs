@@ -866,6 +866,7 @@ namespace BenMAP
             this.btPoolingPreview.TabIndex = 16;
             this.btPoolingPreview.Text = "Preview";
             this.btPoolingPreview.UseVisualStyleBackColor = true;
+            this.btPoolingPreview.Visible = false;
             this.btPoolingPreview.Click += new System.EventHandler(this.btPoolingPreview_Click);
             // 
             // btShowDetail
@@ -1024,7 +1025,7 @@ namespace BenMAP
             this.treeListView.ShowGroups = false;
             this.treeListView.ShowImagesOnSubItems = true;
             this.treeListView.ShowItemToolTips = true;
-            this.treeListView.Size = new System.Drawing.Size(304, 210);
+            this.treeListView.Size = new System.Drawing.Size(304, 211);
             this.treeListView.SmallImageList = this.imageList1;
             this.treeListView.TabIndex = 15;
             this.treeListView.UseCellFormatEvents = true;
