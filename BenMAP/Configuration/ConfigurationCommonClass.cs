@@ -5255,12 +5255,6 @@ namespace BenMAP.Configuration
                         //get pollutant id
                         int pollutantID = kvp.Key;
 
-                        // Check for old single pollutant set up -- otherwise 0 will be passed as 
-                        // standard deviation which throws exception leading to no result shown
-                        if (standardDeviation == 0 && crSelectFunction.BenMAPHealthImpactFunction.Variables.Count == 1 
-                            && crSelectFunction.BenMAPHealthImpactFunction.Variables.First().PollBetas.Count() == 1)
-                            standardDeviation = crSelectFunction.BenMAPHealthImpactFunction.BetaParameter1;
-
                         double[] arrBetas = Configuration.ConfigurationCommonClass.getLHSArrayCRFunctionSeed(CommonClass.CRLatinHypercubePoints, crSelectFunction, iRandomSeed, pollutantID, betaIndex, standardDeviation);                        
                         //arrBetas = new double[] { 0.000952070623302594, 0.00210438313847891, 0.00274330081530712, 0.00322388206768484, 0.00362222578583882, 0.00397556823480331, 0.00429312210515043, 0.00459255842643554, 0.00487883373418946, 0.00515806309883299, 0.00543530163423869, 0.00571575251933468, 0.00600086948338013, 0.00630106910383155, 0.00661827327976483, 0.00696570641344888, 0.00736310219575063, 0.00783988157577035, 0.00847429570471552, 0.00963051160274645 };
                         List<double> lstBetas = new List<double>(arrBetas);
@@ -6439,11 +6433,11 @@ namespace BenMAP.Configuration
                 double[,] m2 = new double[m1Width, m1Width];
 
                 Dictionary<string, double> dicDeltasWithVar = getVariableNameDictionaryFromPollutantIDDictionary(dicAQDeltas, crSelectFunction);
-                
-                for(int i = 1; i <= m1Width; i++)
+
+                for (int i = 1; i <= m1Width; i++)
                 {
                     string key = string.Format("P{0}", i);
-                    m1[0, i-1] = dicDeltasWithVar[key];
+                    m1[0, i - 1] = dicDeltasWithVar[key];
                 }
 
                 // set up var/covar matrix from db
@@ -6459,7 +6453,7 @@ namespace BenMAP.Configuration
 
                 for (int row = 0; row < m1Width; row++)
                 {
-                    varName = string.Format("P{0}", row+1); // hif.BenMAPHealthImpactFunction.Variables[row].VariableName;
+                    varName = string.Format("P{0}", row + 1); // hif.BenMAPHealthImpactFunction.Variables[row].VariableName;
                     commandText = string.Format("select varcov from CRFVARIABLES as crv join CRFBETAS as crb on crb.crfvariableid=crv.crfvariableid join CRFVARCOV as crvc on crvc.crfbetaID1=crb.crfbetaid or crvc.crfbetaID2=crb.crfbetaid where((crfbetaid2={0} and variablename!='{1}') or (crfbetaid1={0} and crfbetaid2={0})) order by crv.crfvariableid", betaIDs[row], varName);
                     ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
 
@@ -6472,12 +6466,23 @@ namespace BenMAP.Configuration
                 }
 
                 // standard error calculations
-                double[,] result1 = multiplyMatrices(m1, m2);
-                double[,] resultT = transposeMatrix(result1);
-                double[,] resultSE = multiplyMatrices(m1, resultT);
+                double SE = 0;
 
-                if (resultSE.GetLength(0) != 1 || resultSE.GetLength(1) != 1) { throw new Exception("Standard Error not correctly calculated"); }
-                double SE = Math.Sqrt(resultSE[0, 0]);
+                //if we have varcovars, then use matrix math to get SE
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+
+                    double[,] result1 = multiplyMatrices(m1, m2);
+                    double[,] resultT = transposeMatrix(result1);
+                    double[,] resultSE = multiplyMatrices(m1, resultT);
+
+                    if (resultSE.GetLength(0) != 1 || resultSE.GetLength(1) != 1) { throw new Exception("Standard Error not correctly calculated"); }
+                    SE = Math.Sqrt(resultSE[0, 0]);
+                }               
+                else //if we do not have varcovars, then use the p1beta field on the beta object
+                {
+                    SE = crSelectFunction.BenMAPHealthImpactFunction.Variables.First().PollBetas[betaIndex].P1Beta;
+                }
 
                 return SE;
             }
