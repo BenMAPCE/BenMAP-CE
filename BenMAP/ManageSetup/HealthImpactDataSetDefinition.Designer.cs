@@ -17,7 +17,7 @@ namespace BenMAP
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.olvColumn22 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvcVariableDataset = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.grpHealthImpactFunction = new System.Windows.Forms.GroupBox();
@@ -38,34 +38,33 @@ namespace BenMAP
             this.olvcEndpointGroup = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvcEndpoint = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvcPollutant = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvColumn4 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvColumn5 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvColumn6 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvColumn7 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvColumn8 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvColumn9 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvColumn10 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvColumn11 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvColumn12 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvColumn13 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvColumn14 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvColumn15 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvColumn16 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvColumn17 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvColumn18 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvColumn19 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvColumn20 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvColumn21 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvColumn23 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvColumn24 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvColumn25 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvcSeasonalMetric = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvcMetricStat = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvcAuthor = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvcYear = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvcLocationType = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvcLocation = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvcOtherPolls = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvcQualifer = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvcReference = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvcRace = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvcEthnicity = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvcGender = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvcStartAge = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvcEndAge = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvcFunction = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvcBaseline = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvcIncidence = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvcPrevalence = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvcModelSpec = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvcBetaVariation = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvcCRFunction = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.lblHealthImpactFunctionName = new System.Windows.Forms.Label();
             this.txtHealthImpactFunction = new System.Windows.Forms.TextBox();
             this.grpCancelOK = new System.Windows.Forms.GroupBox();
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.olvCol_BetaDist = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.statusStrip1.SuspendLayout();
             this.grpHealthImpactFunction.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
@@ -76,11 +75,11 @@ namespace BenMAP
             this.grpCancelOK.SuspendLayout();
             this.SuspendLayout();
             // 
-            // olvColumn22
+            // olvcVariableDataset
             // 
-            this.olvColumn22.AspectName = "variabeldatasetname";
-            this.olvColumn22.Text = "Variable";
-            this.olvColumn22.Width = 100;
+            this.olvcVariableDataset.AspectName = "variabeldatasetname";
+            this.olvcVariableDataset.Text = "Variable";
+            this.olvcVariableDataset.Width = 100;
             // 
             // statusStrip1
             // 
@@ -266,29 +265,28 @@ namespace BenMAP
             this.olvFunction.AllColumns.Add(this.olvcEndpointGroup);
             this.olvFunction.AllColumns.Add(this.olvcEndpoint);
             this.olvFunction.AllColumns.Add(this.olvcPollutant);
-            this.olvFunction.AllColumns.Add(this.olvColumn4);
-            this.olvFunction.AllColumns.Add(this.olvColumn5);
-            this.olvFunction.AllColumns.Add(this.olvColumn6);
-            this.olvFunction.AllColumns.Add(this.olvColumn7);
-            this.olvFunction.AllColumns.Add(this.olvColumn8);
-            this.olvFunction.AllColumns.Add(this.olvColumn9);
-            this.olvFunction.AllColumns.Add(this.olvColumn10);
-            this.olvFunction.AllColumns.Add(this.olvColumn11);
-            this.olvFunction.AllColumns.Add(this.olvColumn12);
-            this.olvFunction.AllColumns.Add(this.olvColumn13);
-            this.olvFunction.AllColumns.Add(this.olvColumn14);
-            this.olvFunction.AllColumns.Add(this.olvColumn15);
-            this.olvFunction.AllColumns.Add(this.olvColumn16);
-            this.olvFunction.AllColumns.Add(this.olvColumn17);
-            this.olvFunction.AllColumns.Add(this.olvColumn18);
-            this.olvFunction.AllColumns.Add(this.olvColumn19);
-            this.olvFunction.AllColumns.Add(this.olvCol_BetaDist);
-            this.olvFunction.AllColumns.Add(this.olvColumn20);
-            this.olvFunction.AllColumns.Add(this.olvColumn21);
-            this.olvFunction.AllColumns.Add(this.olvColumn22);
-            this.olvFunction.AllColumns.Add(this.olvColumn23);
-            this.olvFunction.AllColumns.Add(this.olvColumn24);
-            this.olvFunction.AllColumns.Add(this.olvColumn25);
+            this.olvFunction.AllColumns.Add(this.olvcSeasonalMetric);
+            this.olvFunction.AllColumns.Add(this.olvcMetricStat);
+            this.olvFunction.AllColumns.Add(this.olvcAuthor);
+            this.olvFunction.AllColumns.Add(this.olvcYear);
+            this.olvFunction.AllColumns.Add(this.olvcLocationType);
+            this.olvFunction.AllColumns.Add(this.olvcLocation);
+            this.olvFunction.AllColumns.Add(this.olvcOtherPolls);
+            this.olvFunction.AllColumns.Add(this.olvcQualifer);
+            this.olvFunction.AllColumns.Add(this.olvcReference);
+            this.olvFunction.AllColumns.Add(this.olvcRace);
+            this.olvFunction.AllColumns.Add(this.olvcEthnicity);
+            this.olvFunction.AllColumns.Add(this.olvcGender);
+            this.olvFunction.AllColumns.Add(this.olvcStartAge);
+            this.olvFunction.AllColumns.Add(this.olvcEndAge);
+            this.olvFunction.AllColumns.Add(this.olvcFunction);
+            this.olvFunction.AllColumns.Add(this.olvcBaseline);
+            this.olvFunction.AllColumns.Add(this.olvcIncidence);
+            this.olvFunction.AllColumns.Add(this.olvcPrevalence);
+            this.olvFunction.AllColumns.Add(this.olvcVariableDataset);
+            this.olvFunction.AllColumns.Add(this.olvcModelSpec);
+            this.olvFunction.AllColumns.Add(this.olvcBetaVariation);
+            this.olvFunction.AllColumns.Add(this.olvcCRFunction);
             this.olvFunction.AllowColumnReorder = true;
             this.olvFunction.AllowDrop = true;
             this.olvFunction.AlternateRowBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(240)))), ((int)(((byte)(220)))));
@@ -299,28 +297,27 @@ namespace BenMAP
             this.olvcEndpointGroup,
             this.olvcEndpoint,
             this.olvcPollutant,
-            this.olvColumn4,
-            this.olvColumn5,
-            this.olvColumn6,
-            this.olvColumn7,
-            this.olvColumn8,
-            this.olvColumn9,
-            this.olvColumn10,
-            this.olvColumn11,
-            this.olvColumn12,
-            this.olvColumn13,
-            this.olvColumn14,
-            this.olvColumn15,
-            this.olvColumn16,
-            this.olvColumn17,
-            this.olvColumn18,
-            this.olvColumn19,
-            this.olvCol_BetaDist,
-            this.olvColumn20,
-            this.olvColumn21,
-            this.olvColumn22,
-            this.olvColumn23,
-            this.olvColumn24});
+            this.olvcSeasonalMetric,
+            this.olvcMetricStat,
+            this.olvcAuthor,
+            this.olvcYear,
+            this.olvcLocationType,
+            this.olvcLocation,
+            this.olvcOtherPolls,
+            this.olvcQualifer,
+            this.olvcReference,
+            this.olvcRace,
+            this.olvcEthnicity,
+            this.olvcGender,
+            this.olvcStartAge,
+            this.olvcEndAge,
+            this.olvcFunction,
+            this.olvcBaseline,
+            this.olvcIncidence,
+            this.olvcPrevalence,
+            this.olvcVariableDataset,
+            this.olvcModelSpec,
+            this.olvcBetaVariation});
             this.olvFunction.Cursor = System.Windows.Forms.Cursors.Default;
             this.olvFunction.DataSource = null;
             this.olvFunction.EmptyListMsg = "Add rows to the above table to see them here";
@@ -368,131 +365,131 @@ namespace BenMAP
             this.olvcPollutant.Text = "Pollutant";
             this.olvcPollutant.Width = 100;
             // 
-            // olvColumn4
+            // olvcSeasonalMetric
             // 
-            this.olvColumn4.AspectName = "seasonalmetricname";
-            this.olvColumn4.Text = "Season Metric";
-            this.olvColumn4.Width = 100;
+            this.olvcSeasonalMetric.AspectName = "seasonalmetricname";
+            this.olvcSeasonalMetric.Text = "Season Metric";
+            this.olvcSeasonalMetric.Width = 100;
             // 
-            // olvColumn5
+            // olvcMetricStat
             // 
-            this.olvColumn5.AspectName = "MetricstatisticName";
-            this.olvColumn5.Text = "Metric Statistic";
-            this.olvColumn5.Width = 120;
+            this.olvcMetricStat.AspectName = "MetricstatisticName";
+            this.olvcMetricStat.Text = "Metric Statistic";
+            this.olvcMetricStat.Width = 120;
             // 
-            // olvColumn6
+            // olvcAuthor
             // 
-            this.olvColumn6.AspectName = "author";
-            this.olvColumn6.Text = "Author";
-            this.olvColumn6.Width = 70;
+            this.olvcAuthor.AspectName = "author";
+            this.olvcAuthor.Text = "Author";
+            this.olvcAuthor.Width = 70;
             // 
-            // olvColumn7
+            // olvcYear
             // 
-            this.olvColumn7.AspectName = "yyear";
-            this.olvColumn7.Text = "Year";
+            this.olvcYear.AspectName = "yyear";
+            this.olvcYear.Text = "Year";
             // 
-            // olvColumn8
+            // olvcLocationType
             // 
-            this.olvColumn8.AspectName = "LOCATIONTYPENAME";
-            this.olvColumn8.Text = "Locationtype Name";
-            this.olvColumn8.Width = 120;
+            this.olvcLocationType.AspectName = "LOCATIONTYPENAME";
+            this.olvcLocationType.Text = "Locationtype Name";
+            this.olvcLocationType.Width = 120;
             // 
-            // olvColumn9
+            // olvcLocation
             // 
-            this.olvColumn9.AspectName = "location";
-            this.olvColumn9.Text = "Location";
-            this.olvColumn9.Width = 80;
+            this.olvcLocation.AspectName = "location";
+            this.olvcLocation.Text = "Location";
+            this.olvcLocation.Width = 80;
             // 
-            // olvColumn10
+            // olvcOtherPolls
             // 
-            this.olvColumn10.AspectName = "otherpollutants";
-            this.olvColumn10.Text = "Other Pollutant";
-            this.olvColumn10.Width = 120;
+            this.olvcOtherPolls.AspectName = "otherpollutants";
+            this.olvcOtherPolls.Text = "Other Pollutant";
+            this.olvcOtherPolls.Width = 120;
             // 
-            // olvColumn11
+            // olvcQualifer
             // 
-            this.olvColumn11.AspectName = "qualifier";
-            this.olvColumn11.Text = "Qualifier";
-            this.olvColumn11.Width = 100;
+            this.olvcQualifer.AspectName = "qualifier";
+            this.olvcQualifer.Text = "Qualifier";
+            this.olvcQualifer.Width = 100;
             // 
-            // olvColumn12
+            // olvcReference
             // 
-            this.olvColumn12.AspectName = "reference";
-            this.olvColumn12.Text = "Reference";
-            this.olvColumn12.Width = 100;
+            this.olvcReference.AspectName = "reference";
+            this.olvcReference.Text = "Reference";
+            this.olvcReference.Width = 100;
             // 
-            // olvColumn13
+            // olvcRace
             // 
-            this.olvColumn13.AspectName = "race";
-            this.olvColumn13.Text = "Race";
+            this.olvcRace.AspectName = "race";
+            this.olvcRace.Text = "Race";
             // 
-            // olvColumn14
+            // olvcEthnicity
             // 
-            this.olvColumn14.AspectName = "ethnicity";
-            this.olvColumn14.Text = "Ethnicity";
-            this.olvColumn14.Width = 80;
+            this.olvcEthnicity.AspectName = "ethnicity";
+            this.olvcEthnicity.Text = "Ethnicity";
+            this.olvcEthnicity.Width = 80;
             // 
-            // olvColumn15
+            // olvcGender
             // 
-            this.olvColumn15.AspectName = "gender";
-            this.olvColumn15.Text = "Gender";
-            this.olvColumn15.Width = 80;
+            this.olvcGender.AspectName = "gender";
+            this.olvcGender.Text = "Gender";
+            this.olvcGender.Width = 80;
             // 
-            // olvColumn16
+            // olvcStartAge
             // 
-            this.olvColumn16.AspectName = "startage";
-            this.olvColumn16.Text = "Start Age";
-            this.olvColumn16.Width = 100;
+            this.olvcStartAge.AspectName = "startage";
+            this.olvcStartAge.Text = "Start Age";
+            this.olvcStartAge.Width = 100;
             // 
-            // olvColumn17
+            // olvcEndAge
             // 
-            this.olvColumn17.AspectName = "endage";
-            this.olvColumn17.Text = "End Age";
-            this.olvColumn17.Width = 80;
+            this.olvcEndAge.AspectName = "endage";
+            this.olvcEndAge.Text = "End Age";
+            this.olvcEndAge.Width = 80;
             // 
-            // olvColumn18
+            // olvcFunction
             // 
-            this.olvColumn18.AspectName = "functionalformtext";
-            this.olvColumn18.Text = "Function";
-            this.olvColumn18.Width = 120;
+            this.olvcFunction.AspectName = "functionalformtext";
+            this.olvcFunction.Text = "Function";
+            this.olvcFunction.Width = 120;
             // 
-            // olvColumn19
+            // olvcBaseline
             // 
-            this.olvColumn19.AspectName = "functionalformtext1";
-            this.olvColumn19.Text = "Baseline Function";
-            this.olvColumn19.Width = 120;
+            this.olvcBaseline.AspectName = "functionalformtext1";
+            this.olvcBaseline.Text = "Baseline Function";
+            this.olvcBaseline.Width = 120;
             // 
-            // olvColumn20
+            // olvcIncidence
             // 
-            this.olvColumn20.AspectName = "incidencedatasetname";
-            this.olvColumn20.Text = "Incidence";
-            this.olvColumn20.Width = 100;
+            this.olvcIncidence.AspectName = "incidencedatasetname";
+            this.olvcIncidence.Text = "Incidence";
+            this.olvcIncidence.Width = 100;
             // 
-            // olvColumn21
+            // olvcPrevalence
             // 
-            this.olvColumn21.AspectName = "incidencedatasetname";
-            this.olvColumn21.Text = "Prevalence";
-            this.olvColumn21.Width = 100;
+            this.olvcPrevalence.AspectName = "incidencedatasetname";
+            this.olvcPrevalence.Text = "Prevalence";
+            this.olvcPrevalence.Width = 100;
             // 
-            // olvColumn23
+            // olvcModelSpec
             // 
-            this.olvColumn23.AspectName = "msdescription";
-            this.olvColumn23.Text = "Model Specification";
-            this.olvColumn23.Width = 120;
+            this.olvcModelSpec.AspectName = "msdescription";
+            this.olvcModelSpec.Text = "Model Specification";
+            this.olvcModelSpec.Width = 120;
             // 
-            // olvColumn24
+            // olvcBetaVariation
             // 
-            this.olvColumn24.AspectName = "betavariationname";
-            this.olvColumn24.Text = "Beta Variation";
-            this.olvColumn24.Width = 90;
+            this.olvcBetaVariation.AspectName = "betavariationname";
+            this.olvcBetaVariation.Text = "Beta Variation";
+            this.olvcBetaVariation.Width = 90;
             // 
-            // olvColumn25
+            // olvcCRFunction
             // 
-            this.olvColumn25.AspectName = "crfunctionid";
-            this.olvColumn25.DisplayIndex = 33;
-            this.olvColumn25.IsVisible = false;
-            this.olvColumn25.Text = "CRFuntionID";
-            this.olvColumn25.Width = 100;
+            this.olvcCRFunction.AspectName = "crfunctionid";
+            this.olvcCRFunction.DisplayIndex = 33;
+            this.olvcCRFunction.IsVisible = false;
+            this.olvcCRFunction.Text = "CRFuntionID";
+            this.olvcCRFunction.Width = 100;
             // 
             // lblHealthImpactFunctionName
             // 
@@ -546,12 +543,6 @@ namespace BenMAP
             this.btnCancel.Visible = false;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
-            // olvCol_BetaDist
-            // 
-            this.olvCol_BetaDist.AspectName = "distbeta";
-            this.olvCol_BetaDist.Text = "Beta Distribution";
-            this.olvCol_BetaDist.Width = 140;
-            // 
             // HealthImpactDataSetDefinition
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
@@ -597,25 +588,25 @@ namespace BenMAP
         private BrightIdeasSoftware.OLVColumn olvcEndpointGroup;
         private BrightIdeasSoftware.OLVColumn olvcEndpoint;
         private BrightIdeasSoftware.OLVColumn olvcPollutant;
-        private BrightIdeasSoftware.OLVColumn olvColumn4;
-        private BrightIdeasSoftware.OLVColumn olvColumn5;
-        private BrightIdeasSoftware.OLVColumn olvColumn6;
-        private BrightIdeasSoftware.OLVColumn olvColumn7;
-        private BrightIdeasSoftware.OLVColumn olvColumn8;
-        private BrightIdeasSoftware.OLVColumn olvColumn9;
-        private BrightIdeasSoftware.OLVColumn olvColumn10;
-        private BrightIdeasSoftware.OLVColumn olvColumn11;
-        private BrightIdeasSoftware.OLVColumn olvColumn12;
-        private BrightIdeasSoftware.OLVColumn olvColumn13;
-        private BrightIdeasSoftware.OLVColumn olvColumn14;
-        private BrightIdeasSoftware.OLVColumn olvColumn15;
-        private BrightIdeasSoftware.OLVColumn olvColumn16;
-        private BrightIdeasSoftware.OLVColumn olvColumn17;
-        private BrightIdeasSoftware.OLVColumn olvColumn18;
-        private BrightIdeasSoftware.OLVColumn olvColumn19;
-        private BrightIdeasSoftware.OLVColumn olvColumn20;
-        private BrightIdeasSoftware.OLVColumn olvColumn21;
-        private BrightIdeasSoftware.OLVColumn olvColumn22;
+        private BrightIdeasSoftware.OLVColumn olvcSeasonalMetric;
+        private BrightIdeasSoftware.OLVColumn olvcMetricStat;
+        private BrightIdeasSoftware.OLVColumn olvcAuthor;
+        private BrightIdeasSoftware.OLVColumn olvcYear;
+        private BrightIdeasSoftware.OLVColumn olvcLocationType;
+        private BrightIdeasSoftware.OLVColumn olvcLocation;
+        private BrightIdeasSoftware.OLVColumn olvcOtherPolls;
+        private BrightIdeasSoftware.OLVColumn olvcQualifer;
+        private BrightIdeasSoftware.OLVColumn olvcReference;
+        private BrightIdeasSoftware.OLVColumn olvcRace;
+        private BrightIdeasSoftware.OLVColumn olvcEthnicity;
+        private BrightIdeasSoftware.OLVColumn olvcGender;
+        private BrightIdeasSoftware.OLVColumn olvcStartAge;
+        private BrightIdeasSoftware.OLVColumn olvcEndAge;
+        private BrightIdeasSoftware.OLVColumn olvcFunction;
+        private BrightIdeasSoftware.OLVColumn olvcBaseline;
+        private BrightIdeasSoftware.OLVColumn olvcIncidence;
+        private BrightIdeasSoftware.OLVColumn olvcPrevalence;
+        private BrightIdeasSoftware.OLVColumn olvcVariableDataset;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.GroupBox groupBox1;
@@ -625,12 +616,11 @@ namespace BenMAP
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
         private System.Windows.Forms.CheckBox chbGroup;
-        private BrightIdeasSoftware.OLVColumn olvColumn25;
+        private BrightIdeasSoftware.OLVColumn olvcCRFunction;
         private System.Windows.Forms.Button btnOutPut;
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
-        private BrightIdeasSoftware.OLVColumn olvColumn23;
-        private BrightIdeasSoftware.OLVColumn olvColumn24;
-        private BrightIdeasSoftware.OLVColumn olvCol_BetaDist;
+        private BrightIdeasSoftware.OLVColumn olvcModelSpec;
+        private BrightIdeasSoftware.OLVColumn olvcBetaVariation;
     }
 }
