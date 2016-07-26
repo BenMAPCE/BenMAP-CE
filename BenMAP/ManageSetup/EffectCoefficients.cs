@@ -27,6 +27,7 @@ namespace BenMAP
             InitializeComponent();
             _hif = hif.DeepCopy();
             selected = sel;
+            selectedSeason = 0;
             
             if (_hif.BetaVariation == "Seasonal") seasonal = true;
             else seasonal = false;
@@ -41,13 +42,20 @@ namespace BenMAP
                 txtPollutant.Text = selectedVariable.PollutantName;
                 txtModelSpec.Text = _hif.ModelSpec;
                 txtSeasMetric.Text = _hif.SeasonalMetric;
-                cboMetric.Text = selectedVariable.Metric.MetricName;
+                if(selectedVariable.Metric != null)
+                    cboMetric.Text = selectedVariable.Metric.MetricName;
+                else
+                {
+                    //TODO
+                }
 
                 // multipollutant locked to normal per epa's request
                 string dataset = Configuration.ConfigurationCommonClass.getDatasetNameFromFunctionID(Convert.ToInt32(_hif.FunctionID));
-                if(dataset.ToLower().Contains("multi"))
+                if(dataset != null && dataset.ToLower().Contains("multi"))
                 {
                     cboBetaDistribution.Items.Add("Normal");
+                    cboBetaDistribution.SelectedText = "Normal";
+                    // Check this 
                 }
                 else
                 {
@@ -67,6 +75,8 @@ namespace BenMAP
                     cboBetaDistribution.Items.Add("Pareto");
                     cboBetaDistribution.Items.Add("Cauchy");
                     cboBetaDistribution.Items.Add("Custom");
+                    cboBetaDistribution.SelectedItem = selectedVariable.PollBetas[selectedSeason].Distribution;
+                    // Check this 
                 }
 
                 cboBetaDistribution.SelectedIndex = 0;
@@ -352,6 +362,102 @@ namespace BenMAP
             {
                 Logger.LogError(ex);
             }
+        }
+
+        private void txtBeta_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            int keyValue = (int)e.KeyChar;
+            if ((keyValue >= 48 && keyValue <= 57) || keyValue == 8 || keyValue == 46 || keyValue == 45)
+            {
+                if (e.KeyChar == 45 && (((TextBox)sender).SelectionStart == 0 && ((TextBox)sender).Text.IndexOf("-") >= 0))
+                    e.Handled = true;
+                if (e.KeyChar == 46 && ((TextBox)sender).Text.IndexOf(".") == 0)
+                    e.Handled = true;
+                else
+                    e.Handled = false;
+            }
+            else
+                e.Handled = true;
+        }
+
+        private void txtBetaParameter1_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            int keyValue = (int)e.KeyChar;
+            if ((keyValue >= 48 && keyValue <= 57) || keyValue == 8 || keyValue == 46 || keyValue == 45)
+            {
+                if (e.KeyChar == 45 && (((TextBox)sender).SelectionStart == 0 && ((TextBox)sender).Text.IndexOf("-") >= 0))
+                    e.Handled = true;
+                if (e.KeyChar == 46 && ((TextBox)sender).Text.IndexOf(".") == 0)
+                    e.Handled = true;
+                else
+                    e.Handled = false;
+            }
+            else
+                e.Handled = true;
+        }
+
+        private void txtBetaParameter2_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            int keyValue = (int)e.KeyChar;
+            if ((keyValue >= 48 && keyValue <= 57) || keyValue == 8 || keyValue == 46 || keyValue == 45)
+            {
+                if (e.KeyChar == 45 && (((TextBox)sender).SelectionStart == 0 && ((TextBox)sender).Text.IndexOf("-") >= 0))
+                    e.Handled = true;
+                if (e.KeyChar == 46 && ((TextBox)sender).Text.IndexOf(".") == 0)
+                    e.Handled = true;
+                else
+                    e.Handled = false;
+            }
+            else
+                e.Handled = true;
+        }
+
+        private void txtAconstantValue_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            int keyValue = (int)e.KeyChar;
+            if ((keyValue >= 48 && keyValue <= 57) || keyValue == 8 || keyValue == 46 || keyValue == 45)
+            {
+                if (e.KeyChar == 45 && (((TextBox)sender).SelectionStart == 0 && ((TextBox)sender).Text.IndexOf("-") >= 0))
+                    e.Handled = true;
+                if (e.KeyChar == 46 && ((TextBox)sender).Text.IndexOf(".") == 0)
+                    e.Handled = true;
+                else
+                    e.Handled = false;
+            }
+            else
+                e.Handled = true;
+        }
+
+        private void txtBconstantValue_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            int keyValue = (int)e.KeyChar;
+            if ((keyValue >= 48 && keyValue <= 57) || keyValue == 8 || keyValue == 46 || keyValue == 45)
+            {
+                if (e.KeyChar == 45 && (((TextBox)sender).SelectionStart == 0 && ((TextBox)sender).Text.IndexOf("-") >= 0))
+                    e.Handled = true;
+                if (e.KeyChar == 46 && ((TextBox)sender).Text.IndexOf(".") == 0)
+                    e.Handled = true;
+                else
+                    e.Handled = false;
+            }
+            else
+                e.Handled = true;
+        }
+
+        private void txtCconstantValue_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            int keyValue = (int)e.KeyChar;
+            if ((keyValue >= 48 && keyValue <= 57) || keyValue == 8 || keyValue == 46 || keyValue == 45)
+            {
+                if (e.KeyChar == 45 && (((TextBox)sender).SelectionStart == 0 && ((TextBox)sender).Text.IndexOf("-") >= 0))
+                    e.Handled = true;
+                if (e.KeyChar == 46 && ((TextBox)sender).Text.IndexOf(".") == 0)
+                    e.Handled = true;
+                else
+                    e.Handled = false;
+            }
+            else
+                e.Handled = true;
         }
     }
 }

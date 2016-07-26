@@ -725,7 +725,7 @@ namespace BenMAP
                         }
                         // 2015 09 29 BENMAP-353                        
                         //_metadataObj = SQLStatementsCommonClass.getMetadata(_datasetID, CommonClass.ManageSetup.SetupID, HEALTHIMPACTDATASETID);
-
+                        // ToEdit -- PollutantID -- is this group id or no and remove one -- remove metric ID
                         commandText = string.Format("insert into CRFunctions values({0},{1},{2},{3},{4},{5},{6},{7},'{8}',{9},'{10}','{11}','{12}','{13}','{14}','{15}'," +
                             "{16},{17},{18},{19},{20},{21},{22},'{23}',{24},{25},{26},{27},{28},{29})",
                             CRFunctionID, crFunctionDataSetID, EndpointGroupID, EndpointID, PollutantID, MetricID, SeasonalMetricID, MetricStatisticID,
@@ -1343,6 +1343,7 @@ namespace BenMAP
                 }
                 else
                 {
+                    // ToEdit: MetricID use ??
                     commandText = string.Format("select b.endpointgroupname,c.endpointname,d.pollutantname,e.metricname,f.seasonalmetricname,case when Metricstatistic=0 then 'None'  when Metricstatistic=1 then 'Mean' when Metricstatistic=2 then 'Median' when Metricstatistic=3 then 'Max' when Metricstatistic=4 then 'Min' when Metricstatistic=5 then 'Sum'  END as MetricstatisticName,author,yyear,g.locationtypename,location,otherpollutants,qualifier,reference,race,ethnicity,gender,startage,endage,h.functionalformtext,i.functionalformtext,j.incidencedatasetname,k.incidencedatasetname,l.setupvariabledatasetname as variabeldatasetname,m.MSDescription,bv.BetaVariationName,a.CRFUNCTIONID from crfunctions a join CRFVARIABLES vars on(a.CRFunctionID = vars.CRFunctionID) join ModelSpecifications m on (a.MSID = m.MSID) join BetaVariations bv on (a.BetaVariationID = bv.BetaVariationID) left join endpointgroups b on (a.ENDPOINTGROUPID=b.ENDPOINTGROUPID) left join endpoints c on (a.endpointid=c.endpointid) left join pollutants d on (a.pollutantid=d.pollutantid) left join metrics e on (a.metricid=e.metricid) left join seasonalmetrics f on (a.seasonalmetricid=f.seasonalmetricid) left join locationtype g on (a.locationtypeid=g.locationtypeid) left join functionalforms h on (a.functionalformid=h.functionalformid) left join baselinefunctionalforms i on (a.baselinefunctionalformid=i.functionalformid) left join incidencedatasets j on (a.incidencedatasetid=j.incidencedatasetid) left join incidencedatasets k on (a.prevalencedatasetid=k.incidencedatasetid) left join setupvariabledatasets l on (a.variabledatasetid=l.setupvariabledatasetid) where CRFUNCTIONDATASETID=null");
                     ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                     olvFunction.DataSource = ds.Tables[0];

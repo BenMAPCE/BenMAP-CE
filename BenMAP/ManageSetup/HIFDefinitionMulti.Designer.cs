@@ -40,6 +40,7 @@
             this.pollLabel = new System.Windows.Forms.Label();
             this.editEffect = new System.Windows.Forms.Button();
             this.betaVarGroup = new System.Windows.Forms.Panel();
+            this.bvGeographic = new System.Windows.Forms.RadioButton();
             this.lblBetaVar = new System.Windows.Forms.Label();
             this.bvSeasonal = new System.Windows.Forms.RadioButton();
             this.bvFullYear = new System.Windows.Forms.RadioButton();
@@ -116,8 +117,6 @@
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.grpCancelOK = new System.Windows.Forms.GroupBox();
-            this.dragDropLabel = new System.Windows.Forms.Label();
-            this.bvGeographic = new System.Windows.Forms.RadioButton();
             this.grpPollutant.SuspendLayout();
             this.betaVarGroup.SuspendLayout();
             this.grpEndpoint.SuspendLayout();
@@ -147,7 +146,7 @@
             this.cboPollutant.Name = "cboPollutant";
             this.cboPollutant.Size = new System.Drawing.Size(303, 22);
             this.cboPollutant.TabIndex = 4;
-            this.cboPollutant.SelectedValueChanged += new System.EventHandler(this.cboPollutant_SelectedValueChanged);
+            this.cboPollutant.SelectionChangeCommitted += new System.EventHandler(this.cboPollutant_SelectedValueChanged);
             // 
             // grpPollutant
             // 
@@ -207,6 +206,7 @@
             this.cboSeasonalMetric.Name = "cboSeasonalMetric";
             this.cboSeasonalMetric.Size = new System.Drawing.Size(109, 22);
             this.cboSeasonalMetric.TabIndex = 28;
+            this.cboSeasonalMetric.SelectionChangeCommitted += new System.EventHandler(this.cboSeasonalMetric_SelectedIndexChanged);
             // 
             // cboMetricStatistic
             // 
@@ -272,6 +272,18 @@
             this.betaVarGroup.Size = new System.Drawing.Size(101, 91);
             this.betaVarGroup.TabIndex = 17;
             // 
+            // bvGeographic
+            // 
+            this.bvGeographic.AutoSize = true;
+            this.bvGeographic.Enabled = false;
+            this.bvGeographic.Location = new System.Drawing.Point(8, 57);
+            this.bvGeographic.Margin = new System.Windows.Forms.Padding(2);
+            this.bvGeographic.Name = "bvGeographic";
+            this.bvGeographic.Size = new System.Drawing.Size(87, 18);
+            this.bvGeographic.TabIndex = 17;
+            this.bvGeographic.Text = "Geographic";
+            this.bvGeographic.UseVisualStyleBackColor = true;
+            // 
             // lblBetaVar
             // 
             this.lblBetaVar.AutoSize = true;
@@ -284,6 +296,7 @@
             // bvSeasonal
             // 
             this.bvSeasonal.AutoSize = true;
+            this.bvSeasonal.Enabled = false;
             this.bvSeasonal.Location = new System.Drawing.Point(8, 38);
             this.bvSeasonal.Margin = new System.Windows.Forms.Padding(2);
             this.bvSeasonal.Name = "bvSeasonal";
@@ -291,12 +304,12 @@
             this.bvSeasonal.TabIndex = 1;
             this.bvSeasonal.Text = "Seasonal";
             this.bvSeasonal.UseVisualStyleBackColor = true;
-            this.bvSeasonal.CheckedChanged += new System.EventHandler(this.betaVarGroup_SelectedValueChanged);
             // 
             // bvFullYear
             // 
             this.bvFullYear.AutoSize = true;
             this.bvFullYear.Checked = true;
+            this.bvFullYear.Enabled = false;
             this.bvFullYear.Location = new System.Drawing.Point(8, 19);
             this.bvFullYear.Margin = new System.Windows.Forms.Padding(2);
             this.bvFullYear.Name = "bvFullYear";
@@ -305,7 +318,6 @@
             this.bvFullYear.TabStop = true;
             this.bvFullYear.Text = "Full Year";
             this.bvFullYear.UseVisualStyleBackColor = true;
-            this.bvFullYear.CheckedChanged += new System.EventHandler(this.betaVarGroup_SelectedValueChanged);
             // 
             // lblPollutant
             // 
@@ -912,6 +924,7 @@
             this.txtYear.Size = new System.Drawing.Size(118, 22);
             this.txtYear.TabIndex = 15;
             this.txtYear.Text = "0";
+            this.txtYear.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtYear_KeyPress);
             // 
             // tableLayoutPanel1
             // 
@@ -1081,7 +1094,6 @@
             // btnOK
             // 
             this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnOK.Enabled = false;
             this.btnOK.Location = new System.Drawing.Point(734, 20);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 27);
@@ -1105,7 +1117,6 @@
             // 
             this.grpCancelOK.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.grpCancelOK.Controls.Add(this.dragDropLabel);
             this.grpCancelOK.Controls.Add(this.btnOK);
             this.grpCancelOK.Controls.Add(this.btnCancel);
             this.grpCancelOK.Location = new System.Drawing.Point(10, 600);
@@ -1113,28 +1124,6 @@
             this.grpCancelOK.Size = new System.Drawing.Size(831, 54);
             this.grpCancelOK.TabIndex = 25;
             this.grpCancelOK.TabStop = false;
-            // 
-            // dragDropLabel
-            // 
-            this.dragDropLabel.AutoSize = true;
-            this.dragDropLabel.ForeColor = System.Drawing.Color.Red;
-            this.dragDropLabel.Location = new System.Drawing.Point(6, 26);
-            this.dragDropLabel.Name = "dragDropLabel";
-            this.dragDropLabel.Size = new System.Drawing.Size(355, 14);
-            this.dragDropLabel.TabIndex = 12;
-            this.dragDropLabel.Text = "Editing disabled for demo. Any changes made will not be saved.";
-            // 
-            // bvGeographic
-            // 
-            this.bvGeographic.AutoSize = true;
-            this.bvGeographic.Enabled = false;
-            this.bvGeographic.Location = new System.Drawing.Point(8, 57);
-            this.bvGeographic.Margin = new System.Windows.Forms.Padding(2);
-            this.bvGeographic.Name = "bvGeographic";
-            this.bvGeographic.Size = new System.Drawing.Size(87, 18);
-            this.bvGeographic.TabIndex = 17;
-            this.bvGeographic.Text = "Geographic";
-            this.bvGeographic.UseVisualStyleBackColor = true;
             // 
             // HIFDefinitionMulti
             // 
@@ -1173,7 +1162,6 @@
             this.panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudownStartAge)).EndInit();
             this.grpCancelOK.ResumeLayout(false);
-            this.grpCancelOK.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -1267,7 +1255,6 @@
         private System.Windows.Forms.ComboBox cboMetricStatistic;
         private System.Windows.Forms.Label lblSeasonalMetric;
         private System.Windows.Forms.Label lblMetricStatistic;
-        private System.Windows.Forms.Label dragDropLabel;
         private System.Windows.Forms.RadioButton bvGeographic;
     }
 }

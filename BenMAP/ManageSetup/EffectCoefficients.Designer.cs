@@ -332,6 +332,7 @@
             this.txtBetaParameter1.Size = new System.Drawing.Size(129, 22);
             this.txtBetaParameter1.TabIndex = 32;
             this.txtBetaParameter1.Text = "0";
+            this.txtBetaParameter1.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtBetaParameter1_KeyPress);
             // 
             // lblBetaParameter1
             // 
@@ -351,6 +352,7 @@
             this.txtBetaParameter2.Size = new System.Drawing.Size(129, 22);
             this.txtBetaParameter2.TabIndex = 44;
             this.txtBetaParameter2.Text = "0";
+            this.txtBetaParameter2.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtBetaParameter2_KeyPress);
             // 
             // lblBetaParameter2
             // 
@@ -370,6 +372,7 @@
             this.txtBconstantValue.Size = new System.Drawing.Size(129, 22);
             this.txtBconstantValue.TabIndex = 42;
             this.txtBconstantValue.Text = "0";
+            this.txtBconstantValue.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtBconstantValue_KeyPress);
             // 
             // txtAconstantValue
             // 
@@ -380,6 +383,7 @@
             this.txtAconstantValue.Size = new System.Drawing.Size(129, 22);
             this.txtAconstantValue.TabIndex = 40;
             this.txtAconstantValue.Text = "0";
+            this.txtAconstantValue.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtAconstantValue_KeyPress);
             // 
             // txtCconstantValue
             // 
@@ -390,6 +394,7 @@
             this.txtCconstantValue.Size = new System.Drawing.Size(129, 22);
             this.txtCconstantValue.TabIndex = 45;
             this.txtCconstantValue.Text = "0";
+            this.txtCconstantValue.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtCconstantValue_KeyPress);
             // 
             // lblConstantValue
             // 
@@ -481,6 +486,7 @@
             this.txtBeta.Size = new System.Drawing.Size(129, 22);
             this.txtBeta.TabIndex = 43;
             this.txtBeta.Text = "0";
+            this.txtBeta.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtBeta_KeyPress);
             // 
             // cboBetaDistribution
             // 

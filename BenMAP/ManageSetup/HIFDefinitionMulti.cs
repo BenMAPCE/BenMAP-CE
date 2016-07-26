@@ -307,6 +307,7 @@ namespace BenMAP
                 else 
                 {
                     BindItems();
+                    cboPollutant.SelectedIndex = -1;
                 }
             }
             catch (Exception ex)
@@ -331,6 +332,22 @@ namespace BenMAP
                 ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                 cboPollutant.DataSource = ds.Tables[0];
                 cboPollutant.DisplayMember = "PGNAME";
+
+                // Load Model Specifications based on single or group
+                string str = _healthImpacts.Pollutant;
+                commandText = string.Format("select count(POLLUTANTID) from POLLUTANTGROUPPOLLUTANTS where POLLUTANTGROUPID in (select POLLUTANTGROUPID from POLLUTANTGROUPS where PGName ='{0}')", str);
+                fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                int count = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
+
+                if (count == 1) { commandText = "select MSDESCRIPTION from MODELSPECIFICATIONS where MSID=1"; }
+                else { commandText = "select MSDESCRIPTION from MODELSPECIFICATIONS where MSID!=1"; }
+
+                ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+                foreach(DataRow dr in ds.Tables[0].Rows)
+                {
+                    cboModelSpec.Items.Add(dr["MSDESCRIPTION"]);
+                } 
+                cboModelSpec.SelectedItem = _healthImpacts.ModelSpec;
 
                 commandText = "select ETHNICITYNAME from ETHNICITY";
                 ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
@@ -361,7 +378,11 @@ namespace BenMAP
                 string groupSelected = cboPollutant.Text;
                 commandText = string.Format("select distinct SEASONALMETRICNAME from SEASONALMETRICS inner join METRICS on SEASONALMETRICS.METRICID = METRICS.METRICID inner join POLLUTANTS on METRICS.POLLUTANTID = POLLUTANTS.POLLUTANTID inner join POLLUTANTGROUPPOLLUTANTS on POLLUTANTS.POLLUTANTID = POLLUTANTGROUPPOLLUTANTS.POLLUTANTID inner join POLLUTANTGROUPS on POLLUTANTGROUPS.POLLUTANTGROUPID = POLLUTANTGROUPPOLLUTANTS.POLLUTANTGROUPID and PGNAME='{0}'", groupSelected);
                 ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
-                cboSeasonalMetric.DataSource = ds.Tables[0];
+                cboSeasonalMetric.Items.Add("None");
+                foreach(DataRow dr in ds.Tables[0].Rows)
+                {
+                    cboSeasonalMetric.Items.Add(dr["SeasonalMetricName"]);
+                }
                 cboSeasonalMetric.DisplayMember = "SeasonalMetricName";
                 cboSeasonalMetric.SelectedIndex = -1;
 
@@ -423,7 +444,7 @@ namespace BenMAP
 
 
                 // Set up variable objects -- order by char_length and variable name to avoid 1, 10, 2 ordering
-                commandText = string.Format("select distinct variablename, crv.crfvariableid, pollutantname, pollutant1id, pollutant2id, metricname, m.metricid, hourlymetricgeneration from crfunctions as crf left join crfvariables as crv on crf.crfunctionid = crv.crfunctionid join metrics as m on m.pollutantid = crv.pollutant1id where crf.crfunctionid = {0} and m.metricid in (select metricid from crfvariables as crv2 where crv.crfunctionid = crv2.crfunctionid)",_healthImpacts.FunctionID);
+                commandText = string.Format("select distinct variablename, crv.crfvariableid, pollutantname, pollutant1id, pollutant2id, metricname, m.metricid, hourlymetricgeneration from crfunctions as crf left join crfvariables as crv on crf.crfunctionid = crv.crfunctionid join metrics as m on m.pollutantid = crv.pollutant1id where crf.crfunctionid = {0} and m.metricid in (select metricid from crfvariables as crv2 where crv.crfunctionid = crv2.crfunctionid) order by char_length(variablename), variablename", _healthImpacts.FunctionID);
 
                 ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
 
@@ -469,7 +490,7 @@ namespace BenMAP
                         for(int i = 1; i <= numSeasons; i++)
                         {
                             DataRow dr = ds.Tables[0].Rows[i - 1];
-                            string str = string.Format("Season {0}", i);
+                            str = string.Format("Season {0}", i);
 
                             if (dr["p1beta"].ToString() == string.Empty) p1 = 0;
                             else p1 = Convert.ToDouble(dr["p1beta"]);
@@ -562,24 +583,10 @@ namespace BenMAP
                 cboModelSpec.DataSource = ds.Tables[0];
                 cboModelSpec.DisplayMember = "MSDESCRIPTION";
 
-                // Load Metrics 
-                /* commandText = string.Format("select METRICNAME, COUNT(*) as occur from METRICS inner join POLLUTANTS on METRICS.POLLUTANTID = POLLUTANTS.POLLUTANTID inner join POLLUTANTGROUPPOLLUTANTS on POLLUTANTS.POLLUTANTID = POLLUTANTGROUPPOLLUTANTS.POLLUTANTID inner join POLLUTANTGROUPS on POLLUTANTGROUPS.POLLUTANTGROUPID = POLLUTANTGROUPPOLLUTANTS.POLLUTANTGROUPID and PGNAME='{0}' group by METRICNAME order by COUNT(*) desc", str);
-                ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
-                DataSet intersect = ds.Copy();
+                _healthImpacts.Pollutant = cboPollutant.Text;
 
-                int i = 0;
-                foreach (DataRow dr in ds.Tables[0].Rows)
-                {
-                    if (Convert.ToInt32(dr["occur"]) != count)
-                    {
-                        intersect.Tables[0].Rows.RemoveAt(i);
-                        i--;
-                    }
-                    i++;
-                }
-                cboMetric.DataSource = intersect.Tables[0];
-                cboMetric.DisplayMember = "METRICNAME"; */
-
+                refreshVariableList();
+                updateBetas_EditOrNew();
             }
             catch (Exception ex)
             {
@@ -589,6 +596,11 @@ namespace BenMAP
 
         // Set up for future editing of health impact functions 
         private void cboModelSpec_SelectedValueChanged(object sender, EventArgs e)
+        {
+            refreshVariableList();
+        }
+
+        private void refreshVariableList()
         {
             try
             {
@@ -664,118 +676,6 @@ namespace BenMAP
         private void btnCancel_Click(object sender, EventArgs e)
         {
             this.DialogResult = DialogResult.Cancel;
-        }
-
-        private void txtYear_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            int keyValue = (int)e.KeyChar;
-            if ((keyValue >= 48 && keyValue <= 57) || keyValue == 8 || keyValue == 46 || keyValue == 45)
-            {
-                if (e.KeyChar == 45 && (((TextBox)sender).SelectionStart == 0 && ((TextBox)sender).Text.IndexOf("-") >= 0))
-                    e.Handled = true;
-                if (e.KeyChar == 46 && ((TextBox)sender).Text.IndexOf(".") == 0)
-                    e.Handled = true;
-                else
-                    e.Handled = false;
-            }
-            else
-                e.Handled = true;
-        }
-
-        private void txtBeta_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            int keyValue = (int)e.KeyChar;
-            if ((keyValue >= 48 && keyValue <= 57) || keyValue == 8 || keyValue == 46 || keyValue == 45)
-            {
-                if (e.KeyChar == 45 && (((TextBox)sender).SelectionStart == 0 && ((TextBox)sender).Text.IndexOf("-") >= 0))
-                    e.Handled = true;
-                if (e.KeyChar == 46 && ((TextBox)sender).Text.IndexOf(".") == 0)
-                    e.Handled = true;
-                else
-                    e.Handled = false;
-            }
-            else
-                e.Handled = true;
-        }
-
-        private void txtBetaParameter1_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            int keyValue = (int)e.KeyChar;
-            if ((keyValue >= 48 && keyValue <= 57) || keyValue == 8 || keyValue == 46 || keyValue == 45)
-            {
-                if (e.KeyChar == 45 && (((TextBox)sender).SelectionStart == 0 && ((TextBox)sender).Text.IndexOf("-") >= 0))
-                    e.Handled = true;
-                if (e.KeyChar == 46 && ((TextBox)sender).Text.IndexOf(".") == 0)
-                    e.Handled = true;
-                else
-                    e.Handled = false;
-            }
-            else
-                e.Handled = true;
-        }
-
-        private void txtBetaParameter2_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            int keyValue = (int)e.KeyChar;
-            if ((keyValue >= 48 && keyValue <= 57) || keyValue == 8 || keyValue == 46 || keyValue == 45)
-            {
-                if (e.KeyChar == 45 && (((TextBox)sender).SelectionStart == 0 && ((TextBox)sender).Text.IndexOf("-") >= 0))
-                    e.Handled = true;
-                if (e.KeyChar == 46 && ((TextBox)sender).Text.IndexOf(".") == 0)
-                    e.Handled = true;
-                else
-                    e.Handled = false;
-            }
-            else
-                e.Handled = true;
-        }
-
-        private void txtAconstantValue_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            int keyValue = (int)e.KeyChar;
-            if ((keyValue >= 48 && keyValue <= 57) || keyValue == 8 || keyValue == 46 || keyValue == 45)
-            {
-                if (e.KeyChar == 45 && (((TextBox)sender).SelectionStart == 0 && ((TextBox)sender).Text.IndexOf("-") >= 0))
-                    e.Handled = true;
-                if (e.KeyChar == 46 && ((TextBox)sender).Text.IndexOf(".") == 0)
-                    e.Handled = true;
-                else
-                    e.Handled = false;
-            }
-            else
-                e.Handled = true;
-        }
-
-        private void txtBconstantValue_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            int keyValue = (int)e.KeyChar;
-            if ((keyValue >= 48 && keyValue <= 57) || keyValue == 8 || keyValue == 46 || keyValue == 45)
-            {
-                if (e.KeyChar == 45 && (((TextBox)sender).SelectionStart == 0 && ((TextBox)sender).Text.IndexOf("-") >= 0))
-                    e.Handled = true;
-                if (e.KeyChar == 46 && ((TextBox)sender).Text.IndexOf(".") == 0)
-                    e.Handled = true;
-                else
-                    e.Handled = false;
-            }
-            else
-                e.Handled = true;
-        }
-
-        private void txtCconstantValue_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            int keyValue = (int)e.KeyChar;
-            if ((keyValue >= 48 && keyValue <= 57) || keyValue == 8 || keyValue == 46 || keyValue == 45)
-            {
-                if (e.KeyChar == 45 && (((TextBox)sender).SelectionStart == 0 && ((TextBox)sender).Text.IndexOf("-") >= 0))
-                    e.Handled = true;
-                if (e.KeyChar == 46 && ((TextBox)sender).Text.IndexOf(".") == 0)
-                    e.Handled = true;
-                else
-                    e.Handled = false;
-            }
-            else
-                e.Handled = true;
         }
 
         private void lstFuncAvailableCompiledFunctions_DoubleClick(object sender, EventArgs e)
@@ -970,6 +870,22 @@ namespace BenMAP
             txtBaselineIncidenceFunction.SelectionStart = txtBaselineIncidenceFunction.Text.Length;
         }
 
+        private void txtYear_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            int keyValue = (int)e.KeyChar;
+            if ((keyValue >= 48 && keyValue <= 57) || keyValue == 8 || keyValue == 46 || keyValue == 45)
+            {
+                if (e.KeyChar == 45 && (((TextBox)sender).SelectionStart == 0 && ((TextBox)sender).Text.IndexOf("-") >= 0))
+                    e.Handled = true;
+                if (e.KeyChar == 46 && ((TextBox)sender).Text.IndexOf(".") == 0)
+                    e.Handled = true;
+                else
+                    e.Handled = false;
+            }
+            else
+                e.Handled = true;
+        }
+
 
         private void cboEndpointGroup_SelectedValueChanged_1(object sender, EventArgs e)
         {
@@ -1004,14 +920,17 @@ namespace BenMAP
         {
             try
             {
+                if (varList.Items.Count == 0)
+                {
+                    MessageBox.Show("You must select Pollutant(s) and Model Specification before you can view Effect Coefficients.");
+                    return;
+                }
+
                 // Set index for list if there is a variable selected or show first variable otherwise
                 int selectedVar = 0;
                 if (varList.SelectedItems.Count != 0) selectedVar = varList.SelectedItems[0].Index;
 
-                // Make sure object is updated
-                if (_healthImpacts.BetaVariation == "") betaVarGroup_SelectedValueChanged(sender, e);
-                DataRowView selectedModel = (DataRowView)cboModelSpec.SelectedItem;
-                _healthImpacts.ModelSpec = selectedModel[0].ToString();
+                updateObjectFromForm();
 
                 // Make copy of HIF to pass to new form
                 HealthImpact hifPass = new HealthImpact();
@@ -1039,15 +958,86 @@ namespace BenMAP
             }
         }
 
-        private void betaVarGroup_SelectedValueChanged(object sender, EventArgs e)
+        // Updates fields needed for Effect Coefficients from form
+        private void updateObjectFromForm()
+        {
+            if (cboPollutant.SelectedItem != null)
+                _healthImpacts.Pollutant = cboPollutant.SelectedItem.ToString();
+            if (cboModelSpec.SelectedItem != null)
+                _healthImpacts.ModelSpec = cboModelSpec.GetItemText(this.cboModelSpec.SelectedItem);
+            if (cboMetricStatistic.SelectedItem != null)
+                _healthImpacts.MetricStatistis = cboMetricStatistic.SelectedItem.ToString();
+            if (cboSeasonalMetric.SelectedItem != null)
+                _healthImpacts.SeasonalMetric = cboSeasonalMetric.SelectedItem.ToString();
+            if (_healthImpacts.BetaVariation == "") cboSeasonalMetric_SelectedIndexChanged(null, null);
+        }
+
+        // Used to toggle Beta Variation
+        private void cboSeasonalMetric_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cboSeasonalMetric.SelectedItem.ToString().Equals("None"))
+            {
+                bvFullYear.Checked = true;
+                _healthImpacts.BetaVariation = "Full year";
+                _healthImpacts.SeasonalMetric = cboSeasonalMetric.Text;
+            }
+            else
+            {
+                bvSeasonal.Checked = true;
+                _healthImpacts.BetaVariation = "Seasonal";
+                _healthImpacts.SeasonalMetric = cboSeasonalMetric.Text;
+            }
+
+            updateBetas_EditOrNew();
+        }
+
+        // Set up beta objects for editing or new functions
+        // Set up with 0's for beta and constants 
+        // If seasonal, the season name, start day, and end day will be defined in the database
+        private void updateBetas_EditOrNew()
         {
             try
             {
-                if (bvFullYear.Checked) _healthImpacts.BetaVariation = "Full year";
-                else _healthImpacts.BetaVariation = "Seasonal";
+                if (_healthImpacts.Pollutant == string.Empty || _healthImpacts.Pollutant == null || varList.Items.Count == 0) return;
 
-                /* For future edit/ save functionality, lists of CRFBetas will be updated here
-                   based on the toggle to reflect full year or seasons */
+                ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+
+                if (bvSeasonal.Checked && _healthImpacts.SeasonalMetric != null)
+                {
+                    // CRFBeta temp = new CRFBeta();
+                    foreach (CRFVariable pv in _healthImpacts.PollVariables)
+                    {
+                        int i = 1;
+                        pv.PollBetas.Clear();
+
+                        pv.Metric = new Metric();
+
+                        string commandText = string.Format("select distinct startday, endday, seasonalmetricseasonname from crfvariables v left join crfbetas b on b.crfvariableid=v.crfvariableid left join seasonalmetricseasons s on s.seasonalmetricseasonid=b.seasonalmetricseasonid join seasonalmetrics sm on sm.SEASONALMETRICID = s.SEASONALMETRICID where seasonalmetricname='{0}' and pollutantname='{1}' order by startday", _healthImpacts.SeasonalMetric, pv.PollutantName);
+                        DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+
+                        foreach (DataRow dr in ds.Tables[0].Rows)
+                        {
+                            CRFBeta temp = new CRFBeta();
+                            temp.StartDate = dr["startday"].ToString();
+                            temp.EndDate = dr["endday"].ToString();
+                            temp.SeasonName = dr["seasonalmetricseasonname"].ToString();
+                            temp.SeasNumName = string.Format("Season {0}", i);
+                            pv.PollBetas.Add(temp);
+
+                            i++;
+                        }
+                    }
+
+                }
+                else
+                {
+                    // Set up one beta per variable with blank slate 
+                    foreach (CRFVariable pv in _healthImpacts.PollVariables)
+                    {
+                        pv.PollBetas.Clear();
+                        pv.PollBetas.Add(new CRFBeta());
+                    }
+                }
             }
             catch (Exception ex)
             {
