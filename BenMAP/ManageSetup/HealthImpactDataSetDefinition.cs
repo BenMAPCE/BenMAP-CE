@@ -946,7 +946,7 @@ namespace BenMAP
 
                         if (Convert.ToInt16(_dt.Rows[row][25].ToString()) > 0) // CRFunctionID
                         {
-                            commandText = string.Format("update CRFunctions set CRFunctionDataSetID={0},EndpointGroupID={1},EndpointID={2},PollutantID={3},MetricID={4},SeasonalMetricID={5},METRICSTATISTIC={6},AUTHOR='{7}',YYEAR={8},LOCATION='{9}',OTHERPOLLUTANTS='{10}',QUALIFIER='{11}',REFERENCE='{12}',RACE='{13}',GENDER='{14}',STARTAGE={15},ENDAGE={16},FUNCTIONALFORMID={17},INCIDENCEDATASETID={18},PREVALENCEDATASETID={19},VARIABLEDATASETID={20},BASELINEFUNCTIONALFORMID={21},ETHNICITY='{22}',PERCENTILE={23},LOCATIONTYPEID={24},MSID={25},BETAVARIATIONID={26},POLLUTANTGROUPID={27} where CRFunctionID={28}", _datasetID, EndpointGroupID, EndpointID, PollutantID, MetricID, SeasonalMetricID, MetricStatisticID, _dt.Rows[row][6].ToString().Replace("'", "''"), Convert.ToInt16(_dt.Rows[row][7].ToString()), _dt.Rows[row][9].ToString().Replace("'", "''"), _dt.Rows[row][10].ToString().Replace("'", "''"), _dt.Rows[row][11].ToString().Replace("'", "''"), _dt.Rows[row][12].ToString().Replace("'", "''"), _dt.Rows[row][13].ToString().Replace("'", "''"), _dt.Rows[row][15].ToString().Replace("'", "''"), _dt.Rows[row][16], _dt.Rows[row][17], FunctionID, IncidenceID, PrevalenceID, VariableID, BaselineFunctionID, _dt.Rows[row][14].ToString().Replace("'", "''"), 0, LocationtypeID, ModelSpecID, BetaVarID, PollutantGroupID, Convert.ToInt32(_dt.Rows[row][25].ToString()));
+                            commandText = string.Format("update CRFunctions set CRFunctionDataSetID={0},EndpointGroupID={1},EndpointID={2},SeasonalMetricID={3},METRICSTATISTIC={4},AUTHOR='{5}',YYEAR={6},LOCATION='{7}',OTHERPOLLUTANTS='{8}',QUALIFIER='{9}',REFERENCE='{10}',RACE='{11}',GENDER='{12}',STARTAGE={13},ENDAGE={14},FUNCTIONALFORMID={15},INCIDENCEDATASETID={16},PREVALENCEDATASETID={17},VARIABLEDATASETID={18},BASELINEFUNCTIONALFORMID={19},ETHNICITY='{20}',PERCENTILE={21},LOCATIONTYPEID={22},MSID={23},BETAVARIATIONID={24},POLLUTANTGROUPID={25} where CRFunctionID={26}", _datasetID, EndpointGroupID, EndpointID, SeasonalMetricID, MetricStatisticID, _dt.Rows[row][6].ToString().Replace("'", "''"), Convert.ToInt16(_dt.Rows[row][7].ToString()), _dt.Rows[row][9].ToString().Replace("'", "''"), _dt.Rows[row][10].ToString().Replace("'", "''"), _dt.Rows[row][11].ToString().Replace("'", "''"), _dt.Rows[row][12].ToString().Replace("'", "''"), _dt.Rows[row][13].ToString().Replace("'", "''"), _dt.Rows[row][15].ToString().Replace("'", "''"), _dt.Rows[row][16], _dt.Rows[row][17], FunctionID, IncidenceID, PrevalenceID, VariableID, BaselineFunctionID, _dt.Rows[row][14].ToString().Replace("'", "''"), 0, LocationtypeID, ModelSpecID, BetaVarID, PollutantGroupID, Convert.ToInt32(_dt.Rows[row][25].ToString()));
                             fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
 
                             // ToEdit -- Custom - move to new form or remove
@@ -1138,11 +1138,11 @@ namespace BenMAP
                     {
                         foreach (Object olv in olvFunction.SelectedObjects)
                         {
-                            if (olvColumn25.GetValue(olv).ToString() == _dt.Rows[i][25].ToString())
+                            if (olvcCRFunction.GetValue(olv).ToString() == _dt.Rows[i][25].ToString())
                             {
-                                if (dicCustomValue.ContainsKey(Convert.ToInt32(olvColumn25.GetValue(olv).ToString())))
-                                    dicCustomValue.Remove(Convert.ToInt32(olvColumn25.GetValue(olv).ToString()));
-                                lstdeleteCRFunctionid.Add(Convert.ToInt32(olvColumn25.GetValue(olv).ToString()));
+                                if (dicCustomValue.ContainsKey(Convert.ToInt32(olvcCRFunction.GetValue(olv).ToString())))
+                                    dicCustomValue.Remove(Convert.ToInt32(olvcCRFunction.GetValue(olv).ToString()));
+                                lstdeleteCRFunctionid.Add(Convert.ToInt32(olvcCRFunction.GetValue(olv).ToString()));
                                 _dt.Rows.Remove(_dt.Rows[i]);
                             }
                         }
@@ -1166,29 +1166,28 @@ namespace BenMAP
                 healthImpact.Endpoint = olvcEndpoint.GetValue(olvFunction.SelectedObject).ToString();
                 healthImpact.Pollutant = olvcPollutant.GetValue(olvFunction.SelectedObject).ToString();
                 healthImpact.Metric = "";
-                healthImpact.SeasonalMetric = olvColumn4.GetValue(olvFunction.SelectedObject).ToString();
-                healthImpact.MetricStatistis = olvColumn5.GetValue(olvFunction.SelectedObject).ToString().TrimEnd();
-                healthImpact.Author = olvColumn6.GetValue(olvFunction.SelectedObject).ToString();
-                healthImpact.Year = olvColumn7.GetValue(olvFunction.SelectedObject).ToString();
-                healthImpact.LocationName = olvColumn8.GetValue(olvFunction.SelectedObject).ToString();
-                healthImpact.Location = olvColumn9.GetValue(olvFunction.SelectedObject).ToString();
-                healthImpact.OtherPollutant = olvColumn10.GetValue(olvFunction.SelectedObject).ToString();
-                healthImpact.Qualifier = olvColumn11.GetValue(olvFunction.SelectedObject).ToString();
-                healthImpact.Reference = olvColumn12.GetValue(olvFunction.SelectedObject).ToString();
-                healthImpact.Race = olvColumn13.GetValue(olvFunction.SelectedObject).ToString();
-                healthImpact.Ethnicity = olvColumn14.GetValue(olvFunction.SelectedObject).ToString();
-                healthImpact.Gender = olvColumn15.GetValue(olvFunction.SelectedObject).ToString();
-                healthImpact.StartAge = olvColumn16.GetValue(olvFunction.SelectedObject).ToString();
-                healthImpact.EndAge = olvColumn17.GetValue(olvFunction.SelectedObject).ToString();
-                healthImpact.Function = olvColumn18.GetValue(olvFunction.SelectedObject).ToString();
-                healthImpact.BaselineIncidenceFunction = olvColumn19.GetValue(olvFunction.SelectedObject).ToString();
-                healthImpact.Incidence = olvColumn20.GetValue(olvFunction.SelectedObject).ToString();
-                healthImpact.Prevalence = olvColumn21.GetValue(olvFunction.SelectedObject).ToString();
-                healthImpact.Variable = olvColumn22.GetValue(olvFunction.SelectedObject).ToString();
-                healthImpact.ModelSpec = olvColumn23.GetValue(olvFunction.SelectedObject).ToString();
-                healthImpact.BetaVariation = olvColumn24.GetValue(olvFunction.SelectedObject).ToString();
-                healthImpact.FunctionID = olvColumn25.GetValue(olvFunction.SelectedObject).ToString();
-                healthImpact.BetaDistribution = olvCol_BetaDist.GetValue(olvFunction.SelectedObject).ToString();
+                healthImpact.SeasonalMetric = olvcSeasonalMetric.GetValue(olvFunction.SelectedObject).ToString();
+                healthImpact.MetricStatistis = olvcMetricStat.GetValue(olvFunction.SelectedObject).ToString().TrimEnd();
+                healthImpact.Author = olvcAuthor.GetValue(olvFunction.SelectedObject).ToString();
+                healthImpact.Year = olvcYear.GetValue(olvFunction.SelectedObject).ToString();
+                healthImpact.LocationName = olvcLocationType.GetValue(olvFunction.SelectedObject).ToString();
+                healthImpact.Location = olvcLocation.GetValue(olvFunction.SelectedObject).ToString();
+                healthImpact.OtherPollutant = olvcOtherPolls.GetValue(olvFunction.SelectedObject).ToString();
+                healthImpact.Qualifier = olvcQualifer.GetValue(olvFunction.SelectedObject).ToString();
+                healthImpact.Reference = olvcReference.GetValue(olvFunction.SelectedObject).ToString();
+                healthImpact.Race = olvcRace.GetValue(olvFunction.SelectedObject).ToString();
+                healthImpact.Ethnicity = olvcEthnicity.GetValue(olvFunction.SelectedObject).ToString();
+                healthImpact.Gender = olvcGender.GetValue(olvFunction.SelectedObject).ToString();
+                healthImpact.StartAge = olvcStartAge.GetValue(olvFunction.SelectedObject).ToString();
+                healthImpact.EndAge = olvcEndAge.GetValue(olvFunction.SelectedObject).ToString();
+                healthImpact.Function = olvcFunction.GetValue(olvFunction.SelectedObject).ToString();
+                healthImpact.BaselineIncidenceFunction = olvcBaseline.GetValue(olvFunction.SelectedObject).ToString();
+                healthImpact.Incidence = olvcIncidence.GetValue(olvFunction.SelectedObject).ToString();
+                healthImpact.Prevalence = olvcPrevalence.GetValue(olvFunction.SelectedObject).ToString();
+                healthImpact.Variable = olvcVariableDataset.GetValue(olvFunction.SelectedObject).ToString();
+                healthImpact.ModelSpec = olvcModelSpec.GetValue(olvFunction.SelectedObject).ToString();
+                healthImpact.BetaVariation = olvcBetaVariation.GetValue(olvFunction.SelectedObject).ToString();
+                healthImpact.FunctionID = olvcCRFunction.GetValue(olvFunction.SelectedObject).ToString();
 
                 healthImpact.PollVariables = new List<CRFVariable>();
 
@@ -1233,7 +1232,7 @@ namespace BenMAP
                 if (rth != DialogResult.OK) { return; }
                 for (int i = 0; i < _dt.Rows.Count; i++)
                 {
-                    if (_dt.Rows[i][25].ToString() == olvColumn25.GetValue(olvFunction.SelectedObject).ToString())
+                    if (_dt.Rows[i][25].ToString() == olvcCRFunction.GetValue(olvFunction.SelectedObject).ToString())
                     {
                         _dt.Rows[i][0] = frm.HealthImpacts.EndpointGroup;
                         _dt.Rows[i][1] = frm.HealthImpacts.Endpoint;
@@ -1259,7 +1258,7 @@ namespace BenMAP
                         _dt.Rows[i][22] = frm.HealthImpacts.Variable;
                         _dt.Rows[i][23] = frm.HealthImpacts.ModelSpec;
                         _dt.Rows[i][24] = frm.HealthImpacts.BetaVariation;
-                        _dt.Rows[i][25] = Convert.ToInt32(olvColumn25.GetValue(olvFunction.SelectedObject).ToString());
+                        _dt.Rows[i][25] = Convert.ToInt32(olvcCRFunction.GetValue(olvFunction.SelectedObject).ToString());
 
                         // ToEdit -- Custom - move to new form or remove
                         /* if (frm.HealthImpacts.BetaDistribution == "Custom" && frm.listCustom.Count > 0)
@@ -1303,12 +1302,9 @@ namespace BenMAP
                             "then 'Median' when Metricstatistic = 3 then 'Max' when Metricstatistic = 4 then 'Min' when Metricstatistic = 5 " +
                             "then 'Sum'  END as MetricstatisticName,author,yyear,g.locationtypename,location,otherpollutants,qualifier,reference, " +
                             "race,ethnicity,gender,startage,endage,h.functionalformtext,i.functionalformtext,j.incidencedatasetname, " +
-                            "k.incidencedatasetname,l.setupvariabledatasetname as variabeldatasetname, m.MSDescription, bv.BetaVariationName, dt.DISTRIBUTIONNAME as distbeta,a.CRFUNCTIONID " +
+                            "k.incidencedatasetname,l.setupvariabledatasetname as variabeldatasetname, m.MSDescription, bv.BetaVariationName,a.CRFUNCTIONID " +
                             "from crfunctions a join ModelSpecifications m on (a.MSID = m.MSID) " +
                             "join BetaVariations bv on (a.BetaVariationID = bv.BetaVariationID) " +
-                            "join CRFVARIABLES vars on(a.CRFunctionID = vars.CRFunctionID) " +
-                            "join CRFBetas betas on(vars.CRFVariableID = betas.CRFVARIABLEID) " +
-                            "join DistributionTypes dt on betas.DistributionTypeID = dt.DistributionTypeID " +
                             "join endpointgroups b on (a.ENDPOINTGROUPID = b.ENDPOINTGROUPID) " +
                             "join endpoints c on(a.endpointid = c.endpointid) " +
                             "join pollutantgroups d on(a.POLLUTANTGROUPID = d.POLLUTANTGROUPID) " +
@@ -1537,7 +1533,6 @@ namespace BenMAP
                 dtOut.Columns.Add("Endpoint Group", typeof(string));
                 dtOut.Columns.Add("Endpoint", typeof(string));
                 dtOut.Columns.Add("Pollutant", typeof(string));
-                dtOut.Columns.Add("Metric", typeof(string));
                 dtOut.Columns.Add("Seasonal Metric", typeof(string));
                 dtOut.Columns.Add("Metric Statistic", typeof(string));
                 dtOut.Columns.Add("Study Author", typeof(string));
@@ -1554,16 +1549,6 @@ namespace BenMAP
                 dtOut.Columns.Add("End Age", typeof(int));
                 dtOut.Columns.Add("Function", typeof(string));
                 dtOut.Columns.Add("Baseline Function", typeof(string));
-                dtOut.Columns.Add("Beta", typeof(double));
-                dtOut.Columns.Add("Distribution Beta", typeof(string));
-                dtOut.Columns.Add("Parameter 1 Beta", typeof(double));
-                dtOut.Columns.Add("Parameter 2 Beta", typeof(double));
-                dtOut.Columns.Add("A", typeof(double));
-                dtOut.Columns.Add("Name A", typeof(string));
-                dtOut.Columns.Add("B", typeof(double));
-                dtOut.Columns.Add("Name B", typeof(string));
-                dtOut.Columns.Add("C", typeof(double));
-                dtOut.Columns.Add("Name C", typeof(string));
                 dtOut.Columns.Add("Incidence DataSet", typeof(string));
                 dtOut.Columns.Add("Prevalence DataSet", typeof(string));
                 dtOut.Columns.Add("Variable DataSet", typeof(string));
@@ -1574,7 +1559,6 @@ namespace BenMAP
                 Dictionary<int, string> dicEndPoint = OutputCommonClass.getAllEndPoint();
                 Dictionary<int, string> dicFunction = OutputCommonClass.getAllFunctions();
                 Dictionary<int, string> dicPollutant = OutputCommonClass.getAllPollutants();
-                Dictionary<int, string> dicMetric = OutputCommonClass.getMetric();
                 Dictionary<int, string> dicSeasonalMetric = OutputCommonClass.getSeasonalMetric();
                 Dictionary<int, string> dicIncidence = OutputCommonClass.getAllIncidenceDataset();
                 Dictionary<int, string> dicPrevalence = OutputCommonClass.getAllPrevalence();
@@ -1584,7 +1568,7 @@ namespace BenMAP
                 commandText = "select count(*) from CRFunctions";
                 int count = (int)fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
                 if (count < outputRowsNumber) { outputRowsNumber = count; }
-                commandText = string.Format("select first {0} Endpointgroupid,Endpointid,Pollutantid,Metricid, Seasonalmetricid,Metricstatistic, Author, Yyear, Location, Otherpollutants, Qualifier, Reference,Race, Gender, Startage, Endage, Functionalformid,Incidencedatasetid,Prevalencedatasetid,Variabledatasetid,Beta,Distbeta,P1Beta,P2Beta,A,Namea,B,Nameb, C,Namec,Baselinefunctionalformid, Ethnicity,Locationtypeid from CRFunctions where crfunctiondatasetid in (select crfunctiondatasetid from crFunctionDatasets where setupid=1)", outputRowsNumber);
+                commandText = string.Format("select first {0} Endpointgroupid,Endpointid,Pollutantid,Seasonalmetricid,Metricstatistic, Author, Yyear, Location, Otherpollutants, Qualifier, Reference,Race, Gender, Startage, Endage, Functionalformid,Incidencedatasetid,Prevalencedatasetid,Variabledatasetid,Baselinefunctionalformid, Ethnicity,Locationtypeid from CRFunctions where crfunctiondatasetid in (select crfunctiondatasetid from crFunctionDatasets where setupid=1)", outputRowsNumber);
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
                 foreach (DataRow dr in ds.Tables[0].Rows)
                 {
@@ -1592,7 +1576,6 @@ namespace BenMAP
                     newdr["Endpoint Group"] = OutputCommonClass.getStringFromID(Convert.ToInt32(dr["Endpointgroupid"]), dicEndPointGroup);
                     newdr["Endpoint"] = OutputCommonClass.getStringFromID(Convert.ToInt32(dr["Endpointid"]), dicEndPoint);
                     newdr["Pollutant"] = OutputCommonClass.getStringFromID(Convert.ToInt32(dr["Pollutantid"]), dicPollutant);
-                    newdr["Metric"] = OutputCommonClass.getStringFromID(Convert.ToInt32(dr["Metricid"]), dicMetric);
                     if (DBNull.Value.Equals(dr["Seasonalmetricid"]))
                     {
                         newdr["Seasonal Metric"] = string.Empty;
@@ -1622,16 +1605,6 @@ namespace BenMAP
                     newdr["End Age"] = Convert.ToInt32(dr["EndAge"]);
                     newdr["Function"] = OutputCommonClass.getStringFromID(Convert.ToInt32(dr["Functionalformid"]), dicFunction);
                     newdr["Baseline Function"] = OutputCommonClass.getStringFromID(Convert.ToInt32(dr["Baselinefunctionalformid"]), dicBaselineFunction);
-                    newdr["Beta"] = Convert.ToDouble(dr["Beta"]);
-                    newdr["Distribution Beta"] = dr["Distbeta"].ToString();
-                    newdr["Parameter 1 Beta"] = Convert.ToDouble(dr["P1Beta"]);
-                    newdr["Parameter 2 Beta"] = Convert.ToDouble(dr["P2Beta"]);
-                    newdr["A"] = Convert.ToDouble(dr["A"]);
-                    newdr["Name A"] = dr["Namea"].ToString();
-                    newdr["B"] = Convert.ToDouble(dr["B"]);
-                    newdr["Name B"] = dr["Nameb"].ToString();
-                    newdr["C"] = Convert.ToDouble(dr["C"]);
-                    newdr["Name C"] = dr["Namec"].ToString();
                     if (DBNull.Value.Equals(dr["Incidencedatasetid"]))
                     {
                         newdr["Incidence DataSet"] = string.Empty;
