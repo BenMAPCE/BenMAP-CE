@@ -53,59 +53,60 @@ namespace BenMAP.Configuration
                         fs.Dispose();
                     }
                 }
+                // DEADCODE BENMAP-570 commented out code after return function as it can never be called
                 return;
-                BaseControlCRSelectFunctionCalculateValue copy = new BaseControlCRSelectFunctionCalculateValue();
-                copy.BaseControlGroup = new List<BaseControlGroup>();
-                foreach (BaseControlGroup bcg in baseControlCRSelectFunctionCalculateValue.BaseControlGroup)
-                {
-                    BaseControlGroup bcgcopy = new BaseControlGroup();
-                    bcgcopy.GridType = bcg.GridType;
-                    bcgcopy.Pollutant = bcg.Pollutant;
-                    bcgcopy.DeltaQ = bcg.DeltaQ;
-                    bcgcopy.Base = DataSourceCommonClass.getBenMapLineCopyOnlyResultCopy(bcg.Base);
-                    bcgcopy.Control = DataSourceCommonClass.getBenMapLineCopyOnlyResultCopy(bcg.Control);
-                    copy.BaseControlGroup.Add(bcgcopy);
-                }
-                copy.BenMAPPopulation = baseControlCRSelectFunctionCalculateValue.BenMAPPopulation;
-                copy.CRLatinHypercubePoints = baseControlCRSelectFunctionCalculateValue.CRLatinHypercubePoints;
-                copy.CRRunInPointMode = baseControlCRSelectFunctionCalculateValue.CRRunInPointMode;
-                copy.CRThreshold = baseControlCRSelectFunctionCalculateValue.CRThreshold;
-                copy.RBenMapGrid = baseControlCRSelectFunctionCalculateValue.RBenMapGrid;
+            //    BaseControlCRSelectFunctionCalculateValue copy = new BaseControlCRSelectFunctionCalculateValue();
+            //    copy.BaseControlGroup = new List<BaseControlGroup>();
+            //    foreach (BaseControlGroup bcg in baseControlCRSelectFunctionCalculateValue.BaseControlGroup)
+            //    {
+            //        BaseControlGroup bcgcopy = new BaseControlGroup();
+            //        bcgcopy.GridType = bcg.GridType;
+            //        bcgcopy.Pollutant = bcg.Pollutant;
+            //        bcgcopy.DeltaQ = bcg.DeltaQ;
+            //        bcgcopy.Base = DataSourceCommonClass.getBenMapLineCopyOnlyResultCopy(bcg.Base);
+            //        bcgcopy.Control = DataSourceCommonClass.getBenMapLineCopyOnlyResultCopy(bcg.Control);
+            //        copy.BaseControlGroup.Add(bcgcopy);
+            //    }
+            //    copy.BenMAPPopulation = baseControlCRSelectFunctionCalculateValue.BenMAPPopulation;
+            //    copy.CRLatinHypercubePoints = baseControlCRSelectFunctionCalculateValue.CRLatinHypercubePoints;
+            //    copy.CRRunInPointMode = baseControlCRSelectFunctionCalculateValue.CRRunInPointMode;
+            //    copy.CRThreshold = baseControlCRSelectFunctionCalculateValue.CRThreshold;
+            //    copy.RBenMapGrid = baseControlCRSelectFunctionCalculateValue.RBenMapGrid;
 
-                copy.lstCRSelectFunctionCalculateValue = new List<CRSelectFunctionCalculateValue>();
-                List<float> lstd = new List<float>();
-                foreach (CRSelectFunctionCalculateValue crr in baseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue)
-                {
-                    CRSelectFunctionCalculateValue crrcopy = new CRSelectFunctionCalculateValue();
-                    crrcopy.CRSelectFunction = crr.CRSelectFunction;
-                    copy.lstCRSelectFunctionCalculateValue.Add(crrcopy);
-                }
+            //    copy.lstCRSelectFunctionCalculateValue = new List<CRSelectFunctionCalculateValue>();
+            //    List<float> lstd = new List<float>();
+            //    foreach (CRSelectFunctionCalculateValue crr in baseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue)
+            //    {
+            //        CRSelectFunctionCalculateValue crrcopy = new CRSelectFunctionCalculateValue();
+            //        crrcopy.CRSelectFunction = crr.CRSelectFunction;
+            //        copy.lstCRSelectFunctionCalculateValue.Add(crrcopy);
+            //    }
 
-                GC.Collect();
-                if (File.Exists(strCRFPath))
-                    File.Delete(strCRFPath);
-
-
-
-                using (FileStream fs = new FileStream(strCRFPath, FileMode.OpenOrCreate))
-                {
-                    BinaryFormatter formatter = new BinaryFormatter();
-                    try
-                    {
-                        formatter.Serialize(fs, copy);
-                    }
-                    catch (Exception ex)
-                    {
-                    }
-                    fs.Close();
-                    fs.Dispose();
-                    copy = null;
-                    formatter = null;
-                    GC.Collect();
-                }
+            //    GC.Collect();
+            //    if (File.Exists(strCRFPath))
+            //        File.Delete(strCRFPath);
 
 
-                GC.Collect();
+
+            //    using (FileStream fs = new FileStream(strCRFPath, FileMode.OpenOrCreate))
+            //    {
+            //        BinaryFormatter formatter = new BinaryFormatter();
+            //        try
+            //        {
+            //            formatter.Serialize(fs, copy);
+            //        }
+            //        catch (Exception ex)
+            //        {
+            //        }
+            //        fs.Close();
+            //        fs.Dispose();
+            //        copy = null;
+            //        formatter = null;
+            //        GC.Collect();
+            //    }
+
+
+            //    GC.Collect();
 
             }
             catch (Exception ex)
