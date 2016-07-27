@@ -27,6 +27,37 @@ namespace BenMAP
         [ProtoMember(8)]
         private List<CRFBeta> _pollBetas;
 
+        public CRFVariable DeepCopy()
+        {
+            CRFVariable newVar = new CRFVariable();
+
+            newVar.FunctionID = Convert.ToInt32(String.Copy(this.FunctionID.ToString()));
+            if(this.Metric != null)
+            {
+                newVar.Metric = new Metric();
+                newVar.Metric.HourlyMetricGeneration = Convert.ToInt32(String.Copy(this.Metric.HourlyMetricGeneration.ToString()));
+                newVar.Metric.MetricID = Convert.ToInt32(String.Copy(this.Metric.MetricID.ToString()));
+                if (this.Metric.MetricName != null)
+                    newVar.Metric.MetricName = String.Copy(this.Metric.MetricName);
+                newVar.Metric.PollutantID = Convert.ToInt32(String.Copy(this.Metric.PollutantID.ToString()));
+            }
+            newVar.Pollutant1ID = Convert.ToInt32(String.Copy(this.Pollutant1ID.ToString()));
+            newVar.Pollutant2ID = Convert.ToInt32(String.Copy(this.Pollutant2ID.ToString()));
+            if(this.PollutantName != null)
+                newVar.PollutantName = String.Copy(this.PollutantName);
+            newVar.VariableID = Convert.ToInt32(String.Copy(this.VariableID.ToString()));
+            if(this.VariableName != null)
+                newVar.VariableName = String.Copy(this.VariableName);
+            
+            foreach (CRFBeta b in this.PollBetas)
+            {
+                CRFBeta toAdd = b.DeepCopy();
+                newVar.PollBetas.Add(toAdd);
+            }
+
+            return newVar;
+        }
+
         // parameterless constructor for serializer 
         public CRFVariable()
         {

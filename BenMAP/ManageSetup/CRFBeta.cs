@@ -41,6 +41,45 @@ namespace BenMAP
         private string _startDate;
         [ProtoMember(16)]
         private string _endDate;
+        [ProtoMember(17)]
+        private List<double> _customList;
+
+        public CRFBeta DeepCopy()
+        {
+            CRFBeta newBeta = new CRFBeta();
+            if(this.AConstantName != null)
+                newBeta.AConstantName = String.Copy(this.AConstantName);
+            newBeta.AConstantValue = Convert.ToDouble(String.Copy(this.AConstantValue.ToString()));
+            if(this.BConstantName != null)
+                newBeta.BConstantName = String.Copy(this.BConstantName);
+            newBeta.BConstantValue = Convert.ToDouble(String.Copy(this.BConstantValue.ToString()));
+            newBeta.Beta = Convert.ToDouble(String.Copy(this.Beta.ToString()));
+            newBeta.BetaID = Convert.ToInt32(String.Copy(this.BetaID.ToString()));
+            if(this.CConstantName != null)
+                newBeta.CConstantName = String.Copy(this.CConstantName);
+            newBeta.CConstantValue = Convert.ToDouble(String.Copy(this.CConstantValue.ToString()));
+            if(this.Distribution != null)
+                newBeta.Distribution = String.Copy(this.Distribution);
+            newBeta.DistributionTypeID = Convert.ToInt32(String.Copy(this.DistributionTypeID.ToString()));
+            if(this.EndDate != null)
+                newBeta.EndDate = String.Copy(this.EndDate);
+            newBeta.P1Beta = Convert.ToDouble(String.Copy(this.P1Beta.ToString()));
+            newBeta.P2Beta = Convert.ToDouble(String.Copy(this.P2Beta.ToString()));
+            if(this.SeasNumName != null)
+                newBeta.SeasNumName = String.Copy(this.SeasNumName);
+            if(this.SeasonName != null)
+                newBeta.SeasonName = String.Copy(this.SeasonName);
+            if(this.StartDate != null)
+                newBeta.StartDate = String.Copy(this.StartDate);
+
+            foreach (double d in this.CustomList)
+            {
+                double newVal = Convert.ToDouble(String.Copy(d.ToString()));
+                newBeta.CustomList.Add(newVal);
+            }
+
+            return newBeta;
+        }
 
         // New beta without values
         public CRFBeta()
@@ -55,6 +94,7 @@ namespace BenMAP
             this._startDate = string.Empty;
             this._endDate = string.Empty;
             this._seasonName = string.Empty;
+            this._customList = new List<double>();
         }
 
         // Full year
@@ -75,6 +115,7 @@ namespace BenMAP
             this._startDate = string.Empty;
             this._endDate = string.Empty;
             this._seasNumName = string.Empty;
+            this._customList = new List<double>();
         }
 
         // Seasonal
@@ -95,6 +136,7 @@ namespace BenMAP
             this._startDate = startDate;
             this._endDate = endDate;
             this._seasNumName = seasNumName;
+            this._customList = new List<double>();
         }
 
         public int BetaID
@@ -191,6 +233,12 @@ namespace BenMAP
         {
             get { return _endDate; }
             set { _endDate = value; }
+        }
+
+        public List<double> CustomList
+        {
+            get { return _customList; }
+            set { _customList = value; }
         }
     }
 }

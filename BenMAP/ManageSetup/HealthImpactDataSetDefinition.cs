@@ -25,12 +25,17 @@ namespace BenMAP
         private const int HEALTHIMPACTDATASETID = 6; // BenMAP-322 - hardcoded to health impact dataset type
         List<int> lstdeleteCRFunctionid = new List<int>();
         // Dictionary<int, List<CRFVariable>> dicVariables = new Dictionary<int, List<CRFVariable>>(); 
+        private List<CRFVariable> varList = new List<CRFVariable>();
 
         public HealthImpactDataSetDefinition()
         {
             InitializeComponent();
             getcrFunctionDatasetID();
             _datasetID = -1;
+
+            // Initialize beta lists
+            foreach (CRFVariable v in varList)
+                v.PollBetas = new List<CRFBeta>();
         }
 
         /// <summary>
@@ -44,6 +49,10 @@ namespace BenMAP
             crFunctionDataSetID = dataSetID;//when doing an edit I need to have the current funciton dataset ID
             _isEdit = isEdit;
             txtHealthImpactFunction.Enabled = false;
+
+            // Initialize beta lists
+            foreach (CRFVariable v in varList)
+                v.PollBetas = new List<CRFBeta>();
         }
         
         private void getcrFunctionDatasetID()
@@ -98,6 +107,14 @@ namespace BenMAP
                 dr[23] = frm.HealthImpacts.ModelSpec;
                 dr[24] = frm.HealthImpacts.BetaVariation;
                 dr[25] = AddCount;
+
+                int i = 0;
+                varList.AddRange(frm.HealthImpacts.PollVariables);
+                foreach(CRFVariable v in varList)
+                {
+                    v.PollBetas.AddRange(frm.HealthImpacts.PollVariables[i].PollBetas);
+                    i++;
+                }
 
                 // dicVariables.Add(AddCount, frm.HealthImpacts.PollVariables);
 
@@ -540,6 +557,7 @@ namespace BenMAP
 
                 }
 
+                // new dataset
                 #region if the _datasetID compairs to a -1
                 if (_datasetID == -1)
                 {
@@ -949,6 +967,21 @@ namespace BenMAP
                             commandText = string.Format("update CRFunctions set CRFunctionDataSetID={0},EndpointGroupID={1},EndpointID={2},SeasonalMetricID={3},METRICSTATISTIC={4},AUTHOR='{5}',YYEAR={6},LOCATION='{7}',OTHERPOLLUTANTS='{8}',QUALIFIER='{9}',REFERENCE='{10}',RACE='{11}',GENDER='{12}',STARTAGE={13},ENDAGE={14},FUNCTIONALFORMID={15},INCIDENCEDATASETID={16},PREVALENCEDATASETID={17},VARIABLEDATASETID={18},BASELINEFUNCTIONALFORMID={19},ETHNICITY='{20}',PERCENTILE={21},LOCATIONTYPEID={22},MSID={23},BETAVARIATIONID={24},POLLUTANTGROUPID={25} where CRFunctionID={26}", _datasetID, EndpointGroupID, EndpointID, SeasonalMetricID, MetricStatisticID, _dt.Rows[row][6].ToString().Replace("'", "''"), Convert.ToInt16(_dt.Rows[row][7].ToString()), _dt.Rows[row][9].ToString().Replace("'", "''"), _dt.Rows[row][10].ToString().Replace("'", "''"), _dt.Rows[row][11].ToString().Replace("'", "''"), _dt.Rows[row][12].ToString().Replace("'", "''"), _dt.Rows[row][13].ToString().Replace("'", "''"), _dt.Rows[row][15].ToString().Replace("'", "''"), _dt.Rows[row][16], _dt.Rows[row][17], FunctionID, IncidenceID, PrevalenceID, VariableID, BaselineFunctionID, _dt.Rows[row][14].ToString().Replace("'", "''"), 0, LocationtypeID, ModelSpecID, BetaVarID, PollutantGroupID, Convert.ToInt32(_dt.Rows[row][25].ToString()));
                             fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
 
+                            // Update CRFVariables table
+                            foreach (CRFVariable v in varList)
+                            {
+                                commandText = string.Format("update CRFVariables set variablename='{0}',pollutantname='{1}',metricid={2} where crfvariableid={3} and crfunctionid={4}", v.VariableName, v.PollutantName, v.Metric.MetricID, v.VariableID, v.FunctionID);
+                                fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+
+                                // Update CRFBetas table
+                                foreach (CRFBeta b in v.PollBetas)
+                                {
+                                    // Add distribution type 
+                                    commandText = string.Format("update CRFBetas set beta={0},p1beta={1},p2beta={2},a={3},namea='{4}',b={5},nameb='{6}',c={7},namec='{8}' where crfbetaid={9} and crfvariableid={10}", b.Beta, b.P1Beta, b.P2Beta, b.AConstantValue, b.AConstantName, b.BConstantValue, b.BConstantName, b.CConstantValue, b.CConstantName, b.BetaID, v.VariableID);
+                                    fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                                }
+                            }
+
                             // ToEdit -- Custom - move to new form or remove
                             /*if (_dt.Rows[row][21].ToString() == "Custom" && dicCustomValue.ContainsKey(Convert.ToInt32(_dt.Rows[row][25].ToString())) && dicCustomValue[Convert.ToInt32(_dt.Rows[row][25].ToString())].Count > 0)
                             {
@@ -990,6 +1023,7 @@ namespace BenMAP
                             }*/
                         }
 
+                        // new function
                         else if (Convert.ToInt16(_dt.Rows[row][25].ToString()) < 0)
                         {
                             commandText = string.Format("insert into CRFunctions(CRFUNCTIONID, CRFUNCTIONDATASETID, ENDPOINTGROUPID, ENDPOINTID, "
@@ -1237,7 +1271,7 @@ namespace BenMAP
                         _dt.Rows[i][0] = frm.HealthImpacts.EndpointGroup;
                         _dt.Rows[i][1] = frm.HealthImpacts.Endpoint;
                         _dt.Rows[i][2] = frm.HealthImpacts.Pollutant;
-                        _dt.Rows[i][4] = frm.HealthImpacts.SeasonalMetric;
+                        _dt.Rows[i][3] = frm.HealthImpacts.SeasonalMetric;
                         _dt.Rows[i][5] = frm.HealthImpacts.MetricStatistis;
                         _dt.Rows[i][6] = frm.HealthImpacts.Author;
                         _dt.Rows[i][7] = frm.HealthImpacts.Year;
@@ -1259,6 +1293,14 @@ namespace BenMAP
                         _dt.Rows[i][23] = frm.HealthImpacts.ModelSpec;
                         _dt.Rows[i][24] = frm.HealthImpacts.BetaVariation;
                         _dt.Rows[i][25] = Convert.ToInt32(olvcCRFunction.GetValue(olvFunction.SelectedObject).ToString());
+
+                        i = 0;
+                        varList.AddRange(frm.HealthImpacts.PollVariables);
+                        foreach (CRFVariable v in varList)
+                        {
+                            v.PollBetas.AddRange(frm.HealthImpacts.PollVariables[i].PollBetas);
+                            i++;
+                        }
 
                         // ToEdit -- Custom - move to new form or remove
                         /* if (frm.HealthImpacts.BetaDistribution == "Custom" && frm.listCustom.Count > 0)

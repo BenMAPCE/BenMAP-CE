@@ -55,7 +55,6 @@ namespace BenMAP
                 {
                     cboBetaDistribution.Items.Add("Normal");
                     cboBetaDistribution.SelectedText = "Normal";
-                    // Check this 
                 }
                 else
                 {
@@ -76,7 +75,6 @@ namespace BenMAP
                     cboBetaDistribution.Items.Add("Cauchy");
                     cboBetaDistribution.Items.Add("Custom");
                     cboBetaDistribution.SelectedItem = selectedVariable.PollBetas[selectedSeason].Distribution;
-                    // Check this 
                 }
 
                 cboBetaDistribution.SelectedIndex = 0;
@@ -112,6 +110,7 @@ namespace BenMAP
 
                 if (seasonal)
                 {
+                    cboSeason.Items.Clear();
                     foreach (var pb in selectedVariable.PollBetas)
                     {
                         cboSeason.Items.Add(pb.SeasNumName);
@@ -121,9 +120,7 @@ namespace BenMAP
                 loadVariable();
                 loadMetrics();
 
-                cboBetaDistribution.SelectedValueChanged -= cboBetaDistribution_SelectedValueChanged;
-                cboBetaDistribution.SelectedItem = _hif.BetaDistribution;
-                cboBetaDistribution.SelectedValueChanged += cboBetaDistribution_SelectedValueChanged;
+                cboBetaDistribution.SelectedIndex = cboBetaDistribution.FindString(selectedVariable.PollBetas[selectedSeason].Distribution);
 
                 cboSeason.SelectionChangeCommitted -= cboSeason_SelectedValueChanged;
                 cboSeason.SelectionChangeCommitted += cboSeason_SelectedValueChanged;
@@ -165,62 +162,69 @@ namespace BenMAP
 
         private void btnOK_Click(object sender, EventArgs e)
         {
-            saveCurrent(cboSeason.SelectedIndex);
+            saveCurrent(selectedSeason);
             this.DialogResult = DialogResult.OK;
         }
 
         private void saveCurrent(int seasonInd)
         {
-            if (txtBeta.Text == string.Empty)
+            try
             {
-                MessageBox.Show("'Beta' can not be null. Please input a valid value.");
-                return;
-            }
-
-            if(txtAconstantValue.Text == string.Empty)
-            {
-                MessageBox.Show("'A' can not be null. Please input a valid value.");
-                return;
-            }
-
-            if (txtBconstantValue.Text == string.Empty)
-            {
-                MessageBox.Show("'B' can not be null. Please input a valid value.");
-                return;
-            }
-
-            if (txtCconstantValue.Text == string.Empty)
-            {
-                MessageBox.Show("'C' can not be null. Please input a valid value.");
-                return;
-            }
-
-            if (txtBetaParameter1.Visible && txtBetaParameter2.Visible)
-            {
-                if(txtBetaParameter1.Text == string.Empty)
+                if (txtBeta.Text == string.Empty)
                 {
-                    MessageBox.Show("'Beta Parameter 1' can not be null. Please input a valid value.");
+                    MessageBox.Show("'Beta' can not be null. Please input a valid value.");
                     return;
                 }
 
-                if (txtBetaParameter2.Text == string.Empty)
+                if (txtAconstantValue.Text == string.Empty)
                 {
-                    MessageBox.Show("'Beta Parameter 2' can not be null. Please input a valid value.");
+                    MessageBox.Show("'A' can not be null. Please input a valid value.");
                     return;
                 }
 
-                _hif.PollVariables.ElementAt(selected).PollBetas[seasonInd].P1Beta = Convert.ToDouble(txtBetaParameter1.Text);
-                _hif.PollVariables.ElementAt(selected).PollBetas[seasonInd].P2Beta = Convert.ToDouble(txtBetaParameter2.Text);
-            }
+                if (txtBconstantValue.Text == string.Empty)
+                {
+                    MessageBox.Show("'B' can not be null. Please input a valid value.");
+                    return;
+                }
 
-            _hif.PollVariables.ElementAt(selected).PollBetas[seasonInd].Beta = Convert.ToDouble(txtBeta.Text);
-            _hif.PollVariables.ElementAt(selected).PollBetas[seasonInd].AConstantName = txtAconstantDescription.Text.ToString();
-            _hif.PollVariables.ElementAt(selected).PollBetas[seasonInd].BConstantName = txtBconstantDescription.Text.ToString();
-            _hif.PollVariables.ElementAt(selected).PollBetas[seasonInd].CConstantName = txtCconstantDescription.Text.ToString();
-            _hif.PollVariables.ElementAt(selected).PollBetas[seasonInd].AConstantValue = Convert.ToDouble(txtAconstantValue.Text);
-            _hif.PollVariables.ElementAt(selected).PollBetas[seasonInd].BConstantValue = Convert.ToDouble(txtBconstantValue.Text);
-            _hif.PollVariables.ElementAt(selected).PollBetas[seasonInd].CConstantValue = Convert.ToDouble(txtCconstantValue.Text);
-            _hif.PollVariables.ElementAt(selected).PollBetas[seasonInd].Distribution = cboBetaDistribution.Text.ToString();
+                if (txtCconstantValue.Text == string.Empty)
+                {
+                    MessageBox.Show("'C' can not be null. Please input a valid value.");
+                    return;
+                }
+
+                if (txtBetaParameter1.Visible && txtBetaParameter2.Visible)
+                {
+                    if (txtBetaParameter1.Text == string.Empty)
+                    {
+                        MessageBox.Show("'Beta Parameter 1' can not be null. Please input a valid value.");
+                        return;
+                    }
+
+                    if (txtBetaParameter2.Text == string.Empty)
+                    {
+                        MessageBox.Show("'Beta Parameter 2' can not be null. Please input a valid value.");
+                        return;
+                    }
+
+                    _hif.PollVariables.ElementAt(selected).PollBetas[seasonInd].P1Beta = Convert.ToDouble(txtBetaParameter1.Text);
+                    _hif.PollVariables.ElementAt(selected).PollBetas[seasonInd].P2Beta = Convert.ToDouble(txtBetaParameter2.Text);
+                }
+
+                _hif.PollVariables.ElementAt(selected).PollBetas[seasonInd].Beta = Convert.ToDouble(txtBeta.Text);
+                _hif.PollVariables.ElementAt(selected).PollBetas[seasonInd].AConstantName = txtAconstantDescription.Text.ToString();
+                _hif.PollVariables.ElementAt(selected).PollBetas[seasonInd].BConstantName = txtBconstantDescription.Text.ToString();
+                _hif.PollVariables.ElementAt(selected).PollBetas[seasonInd].CConstantName = txtCconstantDescription.Text.ToString();
+                _hif.PollVariables.ElementAt(selected).PollBetas[seasonInd].AConstantValue = Convert.ToDouble(txtAconstantValue.Text);
+                _hif.PollVariables.ElementAt(selected).PollBetas[seasonInd].BConstantValue = Convert.ToDouble(txtBconstantValue.Text);
+                _hif.PollVariables.ElementAt(selected).PollBetas[seasonInd].CConstantValue = Convert.ToDouble(txtCconstantValue.Text);
+                _hif.PollVariables.ElementAt(selected).PollBetas[seasonInd].Distribution = cboBetaDistribution.Text.ToString();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+            }
         }
 
         private void loadVariable()
@@ -234,7 +238,7 @@ namespace BenMAP
 
                 if (seasonal)
                 {
-                    cboSeason.SelectedIndex = selectedSeason;
+                    cboSeason.SelectedItem = cboSeason.Items[selectedSeason];
 
                     txtSeason.Text = selectedVariable.PollBetas[selectedSeason].SeasonName;
                     txtStart.Text = selectedVariable.PollBetas[selectedSeason].StartDate;
@@ -248,7 +252,9 @@ namespace BenMAP
                 txtBconstantValue.Text = selectedVariable.PollBetas[selectedSeason].BConstantValue.ToString();
                 txtCconstantValue.Text = selectedVariable.PollBetas[selectedSeason].CConstantValue.ToString();
                 txtBeta.Text = selectedVariable.PollBetas[selectedSeason].Beta.ToString();
-                cboBetaDistribution.Text = selectedVariable.PollBetas[selectedSeason].Distribution.ToString();
+                // cboBetaDistribution.Text = selectedVariable.PollBetas[selectedSeason].Distribution.ToString();
+                // cboBetaDistribution.SelectedItem = selectedVariable.PollBetas[selectedSeason].Distribution.ToString();
+                cboBetaDistribution.SelectedIndex = cboBetaDistribution.FindString(selectedVariable.PollBetas[selectedSeason].Distribution);
 
                 if (txtBetaParameter1.Visible && txtBetaParameter2.Visible)
                 {
@@ -328,6 +334,7 @@ namespace BenMAP
                 if (cboBetaDistribution.SelectedItem.ToString() == "None") { return; }
                 if (cboBetaDistribution.SelectedItem.ToString() == "Custom")
                 {
+                    list = _hif.PollVariables[selected].PollBetas[selectedSeason].CustomList;
                     if (list.Count == 0)
                     {
                         CustomDistributionEntries frm = new CustomDistributionEntries();

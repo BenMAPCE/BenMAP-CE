@@ -67,8 +67,8 @@ namespace BenMAP
             if (this.Pollutant == null) newCopy.Pollutant = "";
             else newCopy.Pollutant = String.Copy(this.Pollutant);
 
-            newCopy.PollVariables = new List<CRFVariable>();
-            newCopy.PollVariables.AddRange(this.PollVariables);
+            /* newCopy.PollVariables = new List<CRFVariable>();
+            newCopy.PollVariables.AddRange(this.PollVariables); */
 
             if (this.Prevalence == null) newCopy.Prevalence = "";
             else newCopy.Prevalence = String.Copy(this.Prevalence);
@@ -94,7 +94,14 @@ namespace BenMAP
             if (this.Year == null) newCopy.Year = "";
             else newCopy.Year = String.Copy(this.Year);
 
-            int i = 0;
+            newCopy.PollVariables = new List<CRFVariable>();
+            foreach (CRFVariable pv in this.PollVariables)
+            {
+                CRFVariable newVar = pv.DeepCopy();
+                newCopy.PollVariables.Add(newVar);
+            }
+
+            /* int i = 0;
             foreach (var pv in newCopy.PollVariables)
             {
                 if (pv.PollBetas == null)
@@ -104,9 +111,9 @@ namespace BenMAP
                     else { pv.PollBetas.AddRange(this.PollVariables[i].PollBetas); }
                 }
                 i++;
-            }
+            } */
 
-            return this;
+            return newCopy;
         }
 
         private string _functionID;

@@ -87,7 +87,6 @@
             // btnOK
             // 
             this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnOK.Enabled = false;
             this.btnOK.Location = new System.Drawing.Point(216, 21);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 27);
@@ -497,6 +496,7 @@
             this.cboBetaDistribution.Name = "cboBetaDistribution";
             this.cboBetaDistribution.Size = new System.Drawing.Size(129, 22);
             this.cboBetaDistribution.TabIndex = 29;
+            this.cboBetaDistribution.SelectionChangeCommitted += new System.EventHandler(this.cboBetaDistribution_SelectedValueChanged);
             // 
             // lblBetaDisribution
             // 

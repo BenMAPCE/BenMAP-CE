@@ -250,6 +250,7 @@ namespace BenMAP
                 _healthImpacts.Prevalence = cboPrevalenceDataSet.Text;
                 _healthImpacts.Variable = cboVariableDataSet.Text;
                 // _listCustom = list;
+
                 this.DialogResult = DialogResult.OK;
 
             }
@@ -479,7 +480,7 @@ namespace BenMAP
                 double a, b, c, p1, p2;
                 foreach (var pv in _healthImpacts.PollVariables)
                 {
-                    commandText = string.Format("select crfbetaid, beta, a, namea, b, nameb, c, namec, p1beta, p2beta, seasonalmetricseasonname, startday, endday from crfvariables v left join crfbetas b on b.crfvariableid=v.crfvariableid left join seasonalmetricseasons s on s.seasonalmetricseasonid=b.seasonalmetricseasonid where crfunctionid={0} and pollutantname='{1}' order by startday", _healthImpacts.FunctionID, pv.PollutantName);
+                    commandText = string.Format("select crfbetaid, beta, a, namea, b, nameb, c, namec, p1beta, p2beta, seasonalmetricseasonname, startday, endday, distributionname from crfvariables v left join crfbetas b on b.crfvariableid=v.crfvariableid join distributiontypes dt on b.distributiontypeid=dt.distributiontypeid left join seasonalmetricseasons s on s.seasonalmetricseasonid=b.seasonalmetricseasonid where crfunctionid={0} and pollutantname='{1}' order by startday", _healthImpacts.FunctionID, pv.PollutantName);
                     ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                     numSeasons = ds.Tables[0].Rows.Count;
 
@@ -492,64 +493,76 @@ namespace BenMAP
                             DataRow dr = ds.Tables[0].Rows[i - 1];
                             str = string.Format("Season {0}", i);
 
-                            if (dr["p1beta"].ToString() == string.Empty) p1 = 0;
-                            else p1 = Convert.ToDouble(dr["p1beta"]);
+                            CRFBeta newBeta = new CRFBeta();
+                            newBeta.SeasNumName = str;
+                            newBeta.BetaID = Convert.ToInt32(dr["crfbetaid"]);
+                            newBeta.Beta = Convert.ToDouble(dr["beta"]);
+                            newBeta.SeasonName = dr["seasonalmetricseasonname"].ToString();
+                            newBeta.StartDate = dr["startday"].ToString();
+                            newBeta.EndDate = dr["endday"].ToString();
+                            newBeta.Distribution = dr["distributionname"].ToString();                            
 
-                            if (dr["p2beta"].ToString() == string.Empty) p2 = 0;
-                            else p2 = Convert.ToDouble(dr["p2beta"]);
+                            if (dr["p1beta"].ToString() != string.Empty)
+                                newBeta.P1Beta = Convert.ToDouble(dr["p1beta"]);
 
-                            if (dr["a"].ToString() == string.Empty) a = 0;
-                            else a = Convert.ToDouble(dr["a"]);
+                            if (dr["p2beta"].ToString() != string.Empty) 
+                                newBeta.P2Beta = Convert.ToDouble(dr["p2beta"]);
 
-                            if (dr["namea"].ToString() == string.Empty) aDesc = string.Empty;
-                            else aDesc = dr["namea"].ToString();
+                            if (dr["a"].ToString() != string.Empty) 
+                                newBeta.AConstantValue = Convert.ToDouble(dr["a"]);
 
-                            if (dr["b"].ToString() == string.Empty) b = 0;
-                            else b = Convert.ToDouble(dr["b"]);
+                            if (dr["namea"].ToString() != string.Empty) 
+                                newBeta.AConstantName = dr["namea"].ToString();
 
-                            if (dr["nameb"].ToString() == string.Empty) bDesc = string.Empty;
-                            else bDesc = dr["nameb"].ToString();
+                            if (dr["b"].ToString() != string.Empty) 
+                                newBeta.BConstantValue = Convert.ToDouble(dr["b"]);
 
-                            if (dr["c"].ToString() == string.Empty) c = 0;
-                            else c = Convert.ToDouble(dr["c"]);
+                            if (dr["nameb"].ToString() != string.Empty) 
+                                newBeta.BConstantName = dr["nameb"].ToString();
 
-                            if (dr["namec"].ToString() == string.Empty) cDesc = string.Empty;
-                            else cDesc = dr["namec"].ToString();
+                            if (dr["c"].ToString() != string.Empty) 
+                                newBeta.CConstantValue = Convert.ToDouble(dr["c"]);
 
+                            if (dr["namec"].ToString() == string.Empty) 
+                                newBeta.CConstantName = dr["namec"].ToString();
 
-                            pv.PollBetas.Add(new CRFBeta(Convert.ToInt32(dr["crfbetaid"]), Convert.ToDouble(dr["beta"]), a, aDesc, b, bDesc, c, cDesc, p1, p2, dr["seasonalmetricseasonname"].ToString(), dr["startday"].ToString(), dr["endday"].ToString(), str));
+                            pv.PollBetas.Add(newBeta);
                         }
                     }
 
                     else if (numSeasons == 1)
                     {
                         DataRow dr = ds.Tables[0].Rows[0];
+                        CRFBeta newBeta = new CRFBeta();
+                        newBeta.BetaID = Convert.ToInt32(dr["crfbetaid"]);
+                        newBeta.Beta = Convert.ToDouble(dr["beta"]);
+                        newBeta.Distribution = dr["distributionname"].ToString();
 
-                        if (dr["p1beta"].ToString() == string.Empty) p1 = 0;
-                        else p1 = Convert.ToDouble(dr["p1beta"]);
+                        if (dr["p1beta"].ToString() != string.Empty)
+                            newBeta.P1Beta = Convert.ToDouble(dr["p1beta"]);
 
-                        if (dr["p2beta"].ToString() == string.Empty) p2 = 0;
-                        else p2 = Convert.ToDouble(dr["p2beta"]);
+                        if (dr["p2beta"].ToString() != string.Empty)
+                            newBeta.P2Beta = Convert.ToDouble(dr["p2beta"]);
 
-                        if (dr["a"].ToString() == string.Empty) a = 0;
-                        else a = Convert.ToDouble(dr["a"]);
+                        if (dr["a"].ToString() != string.Empty)
+                            newBeta.AConstantValue = Convert.ToDouble(dr["a"]);
 
-                        if (dr["namea"].ToString() == string.Empty) aDesc = string.Empty;
-                        else aDesc = dr["namea"].ToString();
+                        if (dr["namea"].ToString() != string.Empty)
+                            newBeta.AConstantName = dr["namea"].ToString();
 
-                        if (dr["b"].ToString() == string.Empty) b = 0;
-                        else b = Convert.ToDouble(dr["b"]);
+                        if (dr["b"].ToString() != string.Empty)
+                            newBeta.BConstantValue = Convert.ToDouble(dr["b"]);
 
-                        if (dr["nameb"].ToString() == string.Empty) bDesc = string.Empty;
-                        else bDesc = dr["nameb"].ToString();
+                        if (dr["nameb"].ToString() != string.Empty)
+                            newBeta.BConstantName = dr["nameb"].ToString();
 
-                        if (dr["c"].ToString() == string.Empty) c = 0;
-                        else c = Convert.ToDouble(dr["c"]);
+                        if (dr["c"].ToString() != string.Empty)
+                            newBeta.CConstantValue = Convert.ToDouble(dr["c"]);
 
-                        if (dr["namec"].ToString() == string.Empty) cDesc = string.Empty;
-                        else cDesc = dr["namec"].ToString();
+                        if (dr["namec"].ToString() == string.Empty)
+                            newBeta.CConstantName = dr["namec"].ToString();
 
-                        pv.PollBetas.Add(new CRFBeta(Convert.ToInt32(dr["crfbetaid"]), Convert.ToDouble(dr["beta"]), a, aDesc, b, bDesc, c, cDesc, p1, p2));
+                        pv.PollBetas.Add(newBeta);
                     }
 
                     else
@@ -558,6 +571,22 @@ namespace BenMAP
                         return;
                     }
                     j++;
+                }
+
+                // ToEdit -- Custom set up for now until database changes can occur
+                if (_healthImpacts.PollVariables.Count() == 1 && _healthImpacts.PollVariables.First().PollBetas.Count == 1
+                    && _healthImpacts.PollVariables.First().PollBetas.First().Distribution == "Custom")
+                {
+                    CRFBeta temp = _healthImpacts.PollVariables.First().PollBetas.First();
+                    fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                    ds = new DataSet();
+                    commandText = string.Format("select Vvalue from CRFUNCTIONCUSTOMENTRIES where CRFUNCTIONID={0}", _healthImpacts.FunctionID);
+                    ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+
+                    foreach(DataRow d in ds.Tables[0].Rows)
+                    {
+                        temp.CustomList.Add(Convert.ToDouble(d["Vvalue"]));
+                    }
                 }
             }
             catch (Exception ex)
@@ -942,12 +971,15 @@ namespace BenMAP
                 if (res != DialogResult.OK) return;
 
                 // If user clicked OK, update object with beta values from Effect Coefficients form
-                // OK currently disabled for demonstration purposes 
                 int i = 0;
-                foreach (var pv in _healthImpacts.PollVariables)
+                foreach (CRFVariable pv in _healthImpacts.PollVariables)
                 {
                     if (pv.PollBetas == null) pv.PollBetas = new List<CRFBeta>();
-                    pv.PollBetas.AddRange(form.HIF.PollVariables[i].PollBetas);
+                    else { pv.PollBetas.Clear(); pv.PollBetas = new List<CRFBeta>(); }
+
+                    if(form.HIF.PollVariables[i].PollBetas.Count() > 0)
+                        pv.PollBetas.AddRange(form.HIF.PollVariables[i].PollBetas);
+
                     i++;
                 }
             }
@@ -991,7 +1023,7 @@ namespace BenMAP
             updateBetas_EditOrNew();
         }
 
-        // Set up beta objects for editing or new functions
+        // Set up beta objects for editing or creating new functions
         // Set up with 0's for beta and constants 
         // If seasonal, the season name, start day, and end day will be defined in the database
         private void updateBetas_EditOrNew()

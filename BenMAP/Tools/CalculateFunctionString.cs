@@ -195,13 +195,15 @@ namespace BenMAP.Tools
                         object tmp = assembly.CreateInstance("CoustomEval.myLibPointEstimate" + k.Key);
                         dicPointEstimateMethodInfo.Add(k.Key, tmp);
                     }
-                    catch
+                    catch (Exception ex)
                     {
+                        Logger.LogError(ex);
                     }
                 }
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex);
             }
         }
         public object PointEstimateEval(string crID, string cCharpCode, double a, double b, double c, Dictionary<string, double> dicBetas, Dictionary<string, double> dicDeltas, Dictionary<string, double> dicQZeros, Dictionary<string, double> dicQOnes, double incidence, double pop, double prevalence, Dictionary<string, double> dicSetupVariables)
