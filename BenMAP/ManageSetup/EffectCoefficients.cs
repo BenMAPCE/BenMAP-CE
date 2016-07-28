@@ -50,7 +50,11 @@ namespace BenMAP
                 }
 
                 // multipollutant locked to normal per epa's request
-                string dataset = Configuration.ConfigurationCommonClass.getDatasetNameFromFunctionID(Convert.ToInt32(_hif.FunctionID));
+                // check that function ID is there first (not there for new functions)
+                string dataset = null;
+                if (_hif.FunctionID != string.Empty || _hif.FunctionID.Length > 0)
+                    dataset = Configuration.ConfigurationCommonClass.getDatasetNameFromFunctionID(Convert.ToInt32(_hif.FunctionID));
+
                 if(dataset != null && dataset.ToLower().Contains("multi"))
                 {
                     cboBetaDistribution.Items.Add("Normal");
@@ -220,6 +224,9 @@ namespace BenMAP
                 _hif.PollVariables.ElementAt(selected).PollBetas[seasonInd].BConstantValue = Convert.ToDouble(txtBconstantValue.Text);
                 _hif.PollVariables.ElementAt(selected).PollBetas[seasonInd].CConstantValue = Convert.ToDouble(txtCconstantValue.Text);
                 _hif.PollVariables.ElementAt(selected).PollBetas[seasonInd].Distribution = cboBetaDistribution.Text.ToString();
+
+                // Save metrics
+                saveMetrics();
             }
             catch (Exception ex)
             {
@@ -252,8 +259,6 @@ namespace BenMAP
                 txtBconstantValue.Text = selectedVariable.PollBetas[selectedSeason].BConstantValue.ToString();
                 txtCconstantValue.Text = selectedVariable.PollBetas[selectedSeason].CConstantValue.ToString();
                 txtBeta.Text = selectedVariable.PollBetas[selectedSeason].Beta.ToString();
-                // cboBetaDistribution.Text = selectedVariable.PollBetas[selectedSeason].Distribution.ToString();
-                // cboBetaDistribution.SelectedItem = selectedVariable.PollBetas[selectedSeason].Distribution.ToString();
                 cboBetaDistribution.SelectedIndex = cboBetaDistribution.FindString(selectedVariable.PollBetas[selectedSeason].Distribution);
 
                 if (txtBetaParameter1.Visible && txtBetaParameter2.Visible)
@@ -291,6 +296,30 @@ namespace BenMAP
                     cboMetric.Text = selectedVariable.Metric.MetricName;
                 }
 
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+            }
+        }
+
+        // Saves the metric object for the current beta object 
+        private void saveMetrics()
+        {
+            try
+            {
+                CRFVariable selectedVariable = _hif.PollVariables.ElementAt(selected);
+
+                if (selectedVariable.PollutantName.Contains("*")) return;
+
+                string commandText = string.Format("select metricid, hourlymetricgeneration from metrics where pollutantid = {0} and metricname = '{1}'", selectedVariable.Pollutant1ID ,cboMetric.Text);
+                ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+                selectedVariable.Metric = new Metric();
+                selectedVariable.Metric.MetricName = cboMetric.Text;
+                selectedVariable.Metric.PollutantID = selectedVariable.Pollutant1ID;
+                selectedVariable.Metric.MetricID = Convert.ToInt32(ds.Tables[0].Rows[0]["metricid"]);
+                selectedVariable.Metric.HourlyMetricGeneration = Convert.ToInt32(ds.Tables[0].Rows[0]["hourlymetricgeneration"]);
             }
             catch (Exception ex)
             {
@@ -341,6 +370,11 @@ namespace BenMAP
                         DialogResult rtn = frm.ShowDialog();
                         if (rtn != DialogResult.OK) { return; }
                         list = frm.list;
+                        _hif.PollVariables[selected].PollBetas[selectedSeason].CustomList = frm.list;
+                        txtBeta.Text = frm.Mean.ToString();
+                        _hif.PollVariables[selected].PollBetas[selectedSeason].Beta = frm.Mean;
+                        txtBetaParameter1.Text = frm.StandardDeviation.ToString();
+                        _hif.PollVariables[selected].PollBetas[selectedSeason].P1Beta = frm.StandardDeviation;
                     }
                     else
                     {
@@ -348,6 +382,11 @@ namespace BenMAP
                         DialogResult rtnCustom = frmCustom.ShowDialog();
                         if (rtnCustom != DialogResult.OK) { return; }
                         list = frmCustom.list;
+                        _hif.PollVariables[selected].PollBetas[selectedSeason].CustomList = frmCustom.list;
+                        txtBeta.Text = frmCustom.Mean.ToString();
+                        _hif.PollVariables[selected].PollBetas[selectedSeason].Beta = frmCustom.Mean;
+                        txtBetaParameter1.Text = frmCustom.StandardDeviation.ToString();
+                        _hif.PollVariables[selected].PollBetas[selectedSeason].P1Beta = frmCustom.StandardDeviation;
                     }
                 }
                 else

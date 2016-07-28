@@ -55,8 +55,8 @@ namespace BenMAP
             if (this.Metric == null) newCopy.Metric = "";
             else newCopy.Metric = String.Copy(this.Metric);
 
-            if (this.MetricStatistis == null) newCopy.MetricStatistis = "";
-            else newCopy.MetricStatistis = String.Copy(this.MetricStatistis);
+            if (this.MetricStatistic == null) newCopy.MetricStatistic = "";
+            else newCopy.MetricStatistic = String.Copy(this.MetricStatistic);
 
             if (this.ModelSpec == null) newCopy.ModelSpec = "";
             else newCopy.ModelSpec = String.Copy(this.ModelSpec);
@@ -152,7 +152,7 @@ namespace BenMAP
         }
 
         private string _metricStatistic;
-        public string MetricStatistis
+        public string MetricStatistic
         {
             get { return _metricStatistic; }
             set { _metricStatistic = value; }

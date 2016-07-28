@@ -119,9 +119,12 @@ namespace BenMAP
                             "then 'Median' when Metricstatistic = 3 then 'Max' when Metricstatistic = 4 then 'Min' when Metricstatistic = 5 " +
                             "then 'Sum'  END as MetricstatisticName,author,yyear,g.locationtypename,location,otherpollutants,qualifier,reference, " +
                             "race,ethnicity,gender,startage,endage,h.functionalformtext,i.functionalformtext,j.incidencedatasetname, " +
-                            "k.incidencedatasetname,l.setupvariabledatasetname as variabeldatasetname, m.MSDescription, bv.BetaVariationName, a.CRFUNCTIONID " +
-                            "from crfunctions a join ModelSpecifications m on (a.MSID = m.MSID) " +
-                            "join BetaVariations bv on (a.BetaVariationID = bv.BetaVariationID) " +
+                            "k.incidencedatasetname,l.setupvariabledatasetname as variabeldatasetname, " +
+                            "case when msid = NULL then '' when msid = 1 then 'Single Pollutant' when msid = 2 then 'Pollutants in joint effect; no interactions' " +
+                            "when msid = 3 then 'Pollutants in joint effect; first order interactions' END as MSDescription, " +
+                            "case when betavariationid = NULL then '' when betavariationid = 1 then 'Full year' when betavariationid = 2" +
+                            "then 'Seasonal' END as BetaVariationName, " +
+                            "a.CRFUNCTIONID from crfunctions a " +
                             "join endpointgroups b on (a.ENDPOINTGROUPID = b.ENDPOINTGROUPID) " +
                             "join endpoints c on(a.endpointid = c.endpointid) " +
                             "join pollutantgroups d on(a.POLLUTANTGROUPID = d.POLLUTANTGROUPID) " +
@@ -249,9 +252,12 @@ namespace BenMAP
                                                     "then 'Median' when Metricstatistic = 3 then 'Max' when Metricstatistic = 4 then 'Min' when Metricstatistic = 5 " +
                                                     "then 'Sum'  END as MetricstatisticName,author,yyear,g.locationtypename,location,otherpollutants,qualifier,reference, " +
                                                     "race,ethnicity,gender,startage,endage,h.functionalformtext,i.functionalformtext,j.incidencedatasetname, " +
-                                                    "k.incidencedatasetname,l.setupvariabledatasetname as variabeldatasetname, m.MSDescription, bv.BetaVariationName, a.CRFUNCTIONID " +
-                                                    "from crfunctions a join ModelSpecifications m on (a.MSID = m.MSID) " +
-                                                    "join BetaVariations bv on (a.BetaVariationID = bv.BetaVariationID) " +
+                                                    "k.incidencedatasetname,l.setupvariabledatasetname as variabeldatasetname, " +
+                                                    "case when msid = NULL then '' when msid = 1 then 'Single Pollutant' when msid = 2 then 'Pollutants in joint effect; no interactions' " +
+                                                    "when msid = 3 then 'Pollutants in joint effect; first order interactions' END as MSDescription, " +
+                                                    "case when betavariationid = NULL then '' when betavariationid = 1 then 'Full year' when betavariationid = 2" +
+                                                    "then 'Seasonal' END as BetaVariationName, " +
+                                                    "a.CRFUNCTIONID from crfunctions a " +
                                                     "join endpointgroups b on (a.ENDPOINTGROUPID = b.ENDPOINTGROUPID) " +
                                                     "join endpoints c on(a.endpointid = c.endpointid) " +
                                                     "join pollutantgroups d on(a.POLLUTANTGROUPID = d.POLLUTANTGROUPID) " +
@@ -270,9 +276,12 @@ namespace BenMAP
                                                 "then 'Median' when Metricstatistic = 3 then 'Max' when Metricstatistic = 4 then 'Min' when Metricstatistic = 5 " +
                                                 "then 'Sum'  END as MetricstatisticName,author,yyear,g.locationtypename,location,otherpollutants,qualifier,reference, " +
                                                 "race,ethnicity,gender,startage,endage,h.functionalformtext,i.functionalformtext,j.incidencedatasetname, " +
-                                                "k.incidencedatasetname,l.setupvariabledatasetname as variabeldatasetname, m.MSDescription, bv.BetaVariationName a.CRFUNCTIONID " +
-                                                "from crfunctions a join ModelSpecifications m on (a.MSID = m.MSID) " +
-                                                "join BetaVariations bv on (a.BetaVariationID = bv.BetaVariationID) " +
+                                                "k.incidencedatasetname,l.setupvariabledatasetname as variabeldatasetname, " +
+                                                "case when msid = NULL then '' when msid = 1 then 'Single Pollutant' when msid = 2 then 'Pollutants in joint effect; no interactions' " +
+                                                "when msid = 3 then 'Pollutants in joint effect; first order interactions' END as MSDescription, " +
+                                                "case when betavariationid = NULL then '' when betavariationid = 1 then 'Full year' when betavariationid = 2" +
+                                                "then 'Seasonal' END as BetaVariationName, " +
+                                                "a.CRFUNCTIONID from crfunctions a " +
                                                 "join endpointgroups b on (a.ENDPOINTGROUPID = b.ENDPOINTGROUPID) " +
                                                 "join endpoints c on(a.endpointid = c.endpointid) " +
                                                 "join pollutantgroups d on(a.POLLUTANTGROUPID = d.POLLUTANTGROUPID) " +
@@ -284,7 +293,7 @@ namespace BenMAP
                                                 "left join setupvariabledatasets l on(a.variabledatasetid = l.setupvariabledatasetid) " +
                                                 "where CRFUNCTIONDATASETID={0} and b.endpointgroupname='{1}'", drv["CRFunctionDataSetID"], cboEndpointGroup.Text);
                     }
-                    ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+                      ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                     olvData.DataSource = ds.Tables[0];
                     string pollutant = cboPollutant.Text;
                     cboPollutant.Items.Clear();

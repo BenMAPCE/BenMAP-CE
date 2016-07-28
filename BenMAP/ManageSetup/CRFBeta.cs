@@ -38,10 +38,12 @@ namespace BenMAP
         [ProtoMember(14)]
         private string _seasonName;
         [ProtoMember(15)]
-        private string _startDate;
+        private int _seasonalMetricSeasonID;
         [ProtoMember(16)]
-        private string _endDate;
+        private string _startDate;
         [ProtoMember(17)]
+        private string _endDate;
+        [ProtoMember(18)]
         private List<double> _customList;
 
         public CRFBeta DeepCopy()
@@ -221,6 +223,12 @@ namespace BenMAP
         {
             get { return _seasonName; }
             set { _seasonName = value; }
+        }
+
+        public int SeasonalMetricSeasonID
+        {
+            get { return _seasonalMetricSeasonID; }
+            set { _seasonalMetricSeasonID = value; }
         }
 
         public string StartDate

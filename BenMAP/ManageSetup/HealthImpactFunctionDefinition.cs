@@ -246,7 +246,7 @@ namespace BenMAP
                 _healthImpacts.Endpoint = cboEndpoint.Text;
                 _healthImpacts.Pollutant = cboPollutant.Text;
                 _healthImpacts.Metric = cboMetric.Text;
-                _healthImpacts.MetricStatistis = cboMetricStatistic.Text;
+                _healthImpacts.MetricStatistic = cboMetricStatistic.Text;
                 _healthImpacts.SeasonalMetric = cboSeasonalMetric.Text;
                 _healthImpacts.Race = cboRace.Text;
                 _healthImpacts.Ethnicity = cboEthnicity.Text;
@@ -321,7 +321,7 @@ namespace BenMAP
                     cboEndpoint.Text = _healthImpacts.Endpoint;
                     cboPollutant.Text = _healthImpacts.Pollutant;
                     cboMetric.Text = _healthImpacts.Metric;
-                    cboMetricStatistic.Text = _healthImpacts.MetricStatistis;
+                    cboMetricStatistic.Text = _healthImpacts.MetricStatistic;
                     cboSeasonalMetric.Text = _healthImpacts.SeasonalMetric;
                     cboRace.Text = _healthImpacts.Race;
                     cboEthnicity.Text = _healthImpacts.Ethnicity;

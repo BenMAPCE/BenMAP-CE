@@ -72,6 +72,12 @@ namespace BenMAP
         {
             try
             {
+                if(cboPollutant.Text == string.Empty)
+                {
+                    MessageBox.Show("Please choose pollutant(s).");
+                    return;
+                }
+
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 DataSet dsFunctions = new DataSet();
                 string commandText = "select * from FUNCTIONALFORMS";
@@ -230,7 +236,7 @@ namespace BenMAP
                 _healthImpacts.EndpointGroup = cboEndpointGroup.Text;
                 _healthImpacts.Endpoint = cboEndpoint.Text;
                 _healthImpacts.Pollutant = cboPollutant.Text;
-                _healthImpacts.MetricStatistis = cboMetricStatistic.Text;
+                _healthImpacts.MetricStatistic = cboMetricStatistic.Text;
                 _healthImpacts.SeasonalMetric = cboSeasonalMetric.Text;
                 _healthImpacts.Race = cboRace.Text;
                 _healthImpacts.Ethnicity = cboEthnicity.Text;
@@ -278,9 +284,11 @@ namespace BenMAP
                     cboEndpointGroup.Text = _healthImpacts.EndpointGroup;
                     cboEndpoint.Text = _healthImpacts.Endpoint;
                     cboPollutant.Text = _healthImpacts.Pollutant;
-                    cboMetricStatistic.Text = _healthImpacts.MetricStatistis;
-                    if (_healthImpacts.SeasonalMetric == string.Empty) cboSeasonalMetric.SelectedIndex = -1;
-                    else cboSeasonalMetric.Text = _healthImpacts.SeasonalMetric;
+                    cboMetricStatistic.Text = _healthImpacts.MetricStatistic;
+                    if (_healthImpacts.SeasonalMetric == string.Empty) 
+                        cboSeasonalMetric.SelectedIndex = cboSeasonalMetric.FindString("None");
+                    else
+                        cboSeasonalMetric.Text = _healthImpacts.SeasonalMetric;
                     cboRace.Text = _healthImpacts.Race;
                     cboEthnicity.Text = _healthImpacts.Ethnicity;
                     cboGender.Text = _healthImpacts.Gender;
@@ -443,6 +451,8 @@ namespace BenMAP
                 cboLocationName.DisplayMember = "LocationTypeName";
                 cboLocationName.SelectedIndex = -1;
 
+                // New function won't have the rest of this, so return
+                if (_healthImpacts.FunctionID == null || _healthImpacts.FunctionID.Length == 0) return;
 
                 // Set up variable objects -- order by char_length and variable name to avoid 1, 10, 2 ordering
                 commandText = string.Format("select distinct variablename, crv.crfvariableid, pollutantname, pollutant1id, pollutant2id, metricname, m.metricid, hourlymetricgeneration from crfunctions as crf left join crfvariables as crv on crf.crfunctionid = crv.crfunctionid join metrics as m on m.pollutantid = crv.pollutant1id where crf.crfunctionid = {0} and m.metricid in (select metricid from crfvariables as crv2 where crv.crfunctionid = crv2.crfunctionid) order by char_length(variablename), variablename", _healthImpacts.FunctionID);
@@ -970,18 +980,8 @@ namespace BenMAP
 
                 if (res != DialogResult.OK) return;
 
-                // If user clicked OK, update object with beta values from Effect Coefficients form
-                int i = 0;
-                foreach (CRFVariable pv in _healthImpacts.PollVariables)
-                {
-                    if (pv.PollBetas == null) pv.PollBetas = new List<CRFBeta>();
-                    else { pv.PollBetas.Clear(); pv.PollBetas = new List<CRFBeta>(); }
-
-                    if(form.HIF.PollVariables[i].PollBetas.Count() > 0)
-                        pv.PollBetas.AddRange(form.HIF.PollVariables[i].PollBetas);
-
-                    i++;
-                }
+                // If user clicked OK, update HIF to include variable and beta changes
+                _healthImpacts = form.HIF.DeepCopy();
             }
 
             catch (Exception ex)
@@ -998,7 +998,7 @@ namespace BenMAP
             if (cboModelSpec.SelectedItem != null)
                 _healthImpacts.ModelSpec = cboModelSpec.GetItemText(this.cboModelSpec.SelectedItem);
             if (cboMetricStatistic.SelectedItem != null)
-                _healthImpacts.MetricStatistis = cboMetricStatistic.SelectedItem.ToString();
+                _healthImpacts.MetricStatistic = cboMetricStatistic.SelectedItem.ToString();
             if (cboSeasonalMetric.SelectedItem != null)
                 _healthImpacts.SeasonalMetric = cboSeasonalMetric.SelectedItem.ToString();
             if (_healthImpacts.BetaVariation == "") cboSeasonalMetric_SelectedIndexChanged(null, null);
