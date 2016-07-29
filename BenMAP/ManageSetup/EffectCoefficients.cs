@@ -226,7 +226,8 @@ namespace BenMAP
                 _hif.PollVariables.ElementAt(selected).PollBetas[seasonInd].Distribution = cboBetaDistribution.Text.ToString();
 
                 // Save metrics
-                saveMetrics();
+                saveMetric();
+                saveDistribution();
             }
             catch (Exception ex)
             {
@@ -304,7 +305,7 @@ namespace BenMAP
         }
 
         // Saves the metric object for the current beta object 
-        private void saveMetrics()
+        private void saveMetric()
         {
             try
             {
@@ -320,6 +321,25 @@ namespace BenMAP
                 selectedVariable.Metric.PollutantID = selectedVariable.Pollutant1ID;
                 selectedVariable.Metric.MetricID = Convert.ToInt32(ds.Tables[0].Rows[0]["metricid"]);
                 selectedVariable.Metric.HourlyMetricGeneration = Convert.ToInt32(ds.Tables[0].Rows[0]["hourlymetricgeneration"]);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+            }
+        }
+
+        private void saveDistribution()
+        {
+            try
+            {
+                CRFVariable selectedVariable = _hif.PollVariables.ElementAt(selected);
+                selectedVariable.PollBetas[selectedSeason].Distribution = cboBetaDistribution.Text;
+
+                string commandText = string.Format("select distributiontypeid from DISTRIBUTIONTYPES where distributionname = '{0}'", cboBetaDistribution.Text);
+                ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                object res = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+                if (res != null)
+                    selectedVariable.PollBetas[selectedSeason].DistributionTypeID = Convert.ToInt32(res);
             }
             catch (Exception ex)
             {
