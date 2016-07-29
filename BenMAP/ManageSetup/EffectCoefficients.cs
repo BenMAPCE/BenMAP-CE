@@ -44,10 +44,15 @@ namespace BenMAP
                 cboMetric.Text = selectedVariable.Metric.MetricName;
 
                 // multipollutant locked to normal per epa's request
-                string dataset = Configuration.ConfigurationCommonClass.getDatasetNameFromFunctionID(Convert.ToInt32(_hif.FunctionID));
-                if(dataset.ToLower().Contains("multi"))
+                // check that function ID is there first (not there for new functions)
+                string dataset = null;
+                if (_hif.FunctionID != string.Empty || _hif.FunctionID.Length > 0)
+                    dataset = Configuration.ConfigurationCommonClass.getDatasetNameFromFunctionID(Convert.ToInt32(_hif.FunctionID));
+
+                if (_hif.PollVariables.Count() > 1 || (dataset != null && dataset.ToLower().Contains("multi")))
                 {
                     cboBetaDistribution.Items.Add("Normal");
+                    cboBetaDistribution.SelectedText = "Normal";
                 }
                 else
                 {
@@ -60,7 +65,7 @@ namespace BenMAP
                     cboBetaDistribution.Items.Add("Uniform");
                     cboBetaDistribution.Items.Add("Exponential");
                     cboBetaDistribution.Items.Add("Geometric");
-                    cboBetaDistribution.Items.Add("Weibull"); 
+                    cboBetaDistribution.Items.Add("Weibull");
                     cboBetaDistribution.Items.Add("Gamma");
                     cboBetaDistribution.Items.Add("Logistic");
                     cboBetaDistribution.Items.Add("Beta");
@@ -111,9 +116,7 @@ namespace BenMAP
                 loadVariable();
                 loadMetrics();
 
-                cboBetaDistribution.SelectedValueChanged -= cboBetaDistribution_SelectedValueChanged;
-                cboBetaDistribution.SelectedItem = _hif.BetaDistribution;
-                cboBetaDistribution.SelectedValueChanged += cboBetaDistribution_SelectedValueChanged;
+                cboBetaDistribution.SelectedIndex = cboBetaDistribution.FindString(selectedVariable.PollBetas[selectedSeason].Distribution);
 
                 cboSeason.SelectionChangeCommitted -= cboSeason_SelectedValueChanged;
                 cboSeason.SelectionChangeCommitted += cboSeason_SelectedValueChanged;
@@ -238,7 +241,7 @@ namespace BenMAP
                 txtBconstantValue.Text = selectedVariable.PollBetas[selectedSeason].BConstantValue.ToString();
                 txtCconstantValue.Text = selectedVariable.PollBetas[selectedSeason].CConstantValue.ToString();
                 txtBeta.Text = selectedVariable.PollBetas[selectedSeason].Beta.ToString();
-                cboBetaDistribution.Text = selectedVariable.PollBetas[selectedSeason].Distribution.ToString();
+                cboBetaDistribution.SelectedIndex = cboBetaDistribution.FindString(selectedVariable.PollBetas[selectedSeason].Distribution);
 
                 if (txtBetaParameter1.Visible && txtBetaParameter2.Visible)
                 {
