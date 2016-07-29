@@ -207,6 +207,7 @@ namespace BenMAP
         private void btnAdvanced_Click(object sender, EventArgs e)
         {
             APVConfigurationAdvancedSettings frm = new APVConfigurationAdvancedSettings();
+            frm.AdvanceOptionType(2);
             frm.IncidencePoolingAndAggregationAdvance = CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance;
             DialogResult rtn = frm.ShowDialog();
             if (rtn != DialogResult.OK) { return; }

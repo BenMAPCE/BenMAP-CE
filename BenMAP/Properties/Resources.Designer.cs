@@ -101,7 +101,7 @@ namespace BenMAP.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to March 29, 2016.
+        ///   Looks up a localized string similar to July 12, 2016.
         /// </summary>
         internal static string BuildDate {
             get {
@@ -125,6 +125,16 @@ namespace BenMAP.Properties {
         internal static System.Drawing.Bitmap cuahsi_logo1 {
             get {
                 object obj = ResourceManager.GetObject("cuahsi_logo1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap dropdown_hint {
+            get {
+                object obj = ResourceManager.GetObject("dropdown_hint", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
