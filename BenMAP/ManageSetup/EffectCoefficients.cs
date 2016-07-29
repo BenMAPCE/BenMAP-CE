@@ -44,10 +44,15 @@ namespace BenMAP
                 cboMetric.Text = selectedVariable.Metric.MetricName;
 
                 // multipollutant locked to normal per epa's request
-                string dataset = Configuration.ConfigurationCommonClass.getDatasetNameFromFunctionID(Convert.ToInt32(_hif.FunctionID));
-                if(dataset.ToLower().Contains("multi"))
+                // check that function ID is there first (not there for new functions)
+                string dataset = null;
+                if (_hif.FunctionID != string.Empty || _hif.FunctionID.Length > 0)
+                    dataset = Configuration.ConfigurationCommonClass.getDatasetNameFromFunctionID(Convert.ToInt32(_hif.FunctionID));
+
+                if (_hif.PollVariables.Count() > 1 || (dataset != null && dataset.ToLower().Contains("multi")))
                 {
                     cboBetaDistribution.Items.Add("Normal");
+                    cboBetaDistribution.SelectedText = "Normal";
                 }
                 else
                 {
@@ -60,7 +65,7 @@ namespace BenMAP
                     cboBetaDistribution.Items.Add("Uniform");
                     cboBetaDistribution.Items.Add("Exponential");
                     cboBetaDistribution.Items.Add("Geometric");
-                    cboBetaDistribution.Items.Add("Weibull"); 
+                    cboBetaDistribution.Items.Add("Weibull");
                     cboBetaDistribution.Items.Add("Gamma");
                     cboBetaDistribution.Items.Add("Logistic");
                     cboBetaDistribution.Items.Add("Beta");
