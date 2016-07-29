@@ -491,6 +491,7 @@
             this.cboBetaDistribution.Name = "cboBetaDistribution";
             this.cboBetaDistribution.Size = new System.Drawing.Size(129, 22);
             this.cboBetaDistribution.TabIndex = 29;
+            this.cboBetaDistribution.SelectionChangeCommitted += new System.EventHandler(this.cboBetaDistribution_SelectedValueChanged);
             // 
             // lblBetaDisribution
             // 

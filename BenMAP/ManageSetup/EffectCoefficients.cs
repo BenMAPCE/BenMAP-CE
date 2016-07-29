@@ -111,9 +111,11 @@ namespace BenMAP
                 loadVariable();
                 loadMetrics();
 
-                cboBetaDistribution.SelectedValueChanged -= cboBetaDistribution_SelectedValueChanged;
-                cboBetaDistribution.SelectedItem = _hif.BetaDistribution;
-                cboBetaDistribution.SelectedValueChanged += cboBetaDistribution_SelectedValueChanged;
+                // cboBetaDistribution.SelectedValueChanged -= cboBetaDistribution_SelectedValueChanged;
+                // cboBetaDistribution.SelectedItem = _hif.BetaDistribution;
+                // cboBetaDistribution.Text = selectedVariable.PollBetas[selectedSeason].Distribution;
+                cboBetaDistribution.SelectedItem = cboBetaDistribution.Items[cboBetaDistribution.FindString(selectedVariable.PollBetas[selectedSeason].Distribution)];
+                // cboBetaDistribution.SelectedValueChanged += cboBetaDistribution_SelectedValueChanged;
 
                 cboSeason.SelectionChangeCommitted -= cboSeason_SelectedValueChanged;
                 cboSeason.SelectionChangeCommitted += cboSeason_SelectedValueChanged;
