@@ -55,11 +55,11 @@ namespace BenMAP
                         if (cbShowDetails.Checked)
                         {
                             groupBox2.Height = 240;
-                            this.Height = 542;
+                            this.Height = 486;
                         }
                         else
                         {
-                            this.Height = 288;
+                            this.Height = 250;
                         }
                         break;
                     case 1:
@@ -67,11 +67,11 @@ namespace BenMAP
                         if (cbShowDetails.Checked)
                         {
                             groupBox2.Height = 85;
-                            this.Height = 382;
+                            this.Height = 331;
                         }
                         else
                         {
-                            this.Height = 288;
+                            this.Height = 250;
                         }
                         break;
                 }
@@ -350,6 +350,89 @@ namespace BenMAP
             DataRowView drv = lstPollutant.SelectedItem as DataRowView;
             if (drv == null) { return; }
             showDetails(drv);
+        }
+
+        private void groupBox3_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnAddAll_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                BenMAPPollutant p;
+                foreach(DataRowView drv in lstPollutant.Items)
+                {
+                    if (!lstSPollutant.Items.Contains(lstPollutant.GetItemText(drv)))
+                    {
+                        lstSPollutant.Items.Add(lstPollutant.GetItemText(drv));
+                        p = GridCommon.getPollutantFromID(int.Parse(drv["PollutantID"].ToString()));
+                        CommonClass.LstPollutant.Add(p);
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.Message);
+            }
+        }
+
+        private void btnRemoveAll_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                DialogResult result = MessageBox.Show("Remove all pollutants?", "Confirm Remove", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                if (result != DialogResult.Yes) { return; }
+                int itemCount = lstSPollutant.Items.Count;
+
+                for (int j = itemCount - 1; j > -1; j--)
+                {
+                    String delPollutant = (String)lstSPollutant.Items[j];
+                    string str = string.Empty;
+                    bool canRemove = true;
+                    if (CommonClass.LstPollutant != null && CommonClass.LstPollutant.Count > 0)
+                    {
+                        str = string.Format("{0}baseline", delPollutant);
+                        if (CommonClass.LstAsynchronizationStates != null && CommonClass.LstAsynchronizationStates.Contains(str.ToLower()))
+                        {
+                            MessageBox.Show(string.Format("{0} baseline air quality grid is being created and cannot be removed at this time.", delPollutant), "Please wait", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            canRemove = false;
+                        }
+                        str = string.Format("{0}control", delPollutant);
+                        if (CommonClass.LstAsynchronizationStates != null && CommonClass.LstAsynchronizationStates.Contains(str.ToLower()))
+                        {
+                            MessageBox.Show(string.Format("{0} control air quality grid is being created and cannot be removed at this time.", delPollutant), "Please wait", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            canRemove = false;
+                        }
+                    }
+
+                    if (canRemove)
+                    {
+                        lstSPollutant.Items.Remove(delPollutant);
+                        int pCount = CommonClass.LstPollutant.Count;
+                        BenMAPPollutant p;
+                        for (int i = pCount - 1; i > -1; i--)
+                        {
+                            p = CommonClass.LstPollutant[i];
+                            if (p == null || p.PollutantName != delPollutant) { continue; }
+                            CommonClass.LstPollutant.Remove(p);
+                        }
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.Message);
+            }
+
+        }
+
+        private void groupBox2_Enter(object sender, EventArgs e)
+        {
+
         }
     }
 }

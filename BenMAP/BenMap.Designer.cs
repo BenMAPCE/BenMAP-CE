@@ -2574,7 +2574,7 @@ namespace BenMAP
             this.btnTableOutput.Name = "btnTableOutput";
             this.btnTableOutput.Size = new System.Drawing.Size(75, 27);
             this.btnTableOutput.TabIndex = 1;
-            this.btnTableOutput.Text = "Output";
+            this.btnTableOutput.Text = "Export...";
             this.btnTableOutput.UseVisualStyleBackColor = true;
             this.btnTableOutput.Click += new System.EventHandler(this.btnTableOutput_Click);
             // 
@@ -2882,7 +2882,7 @@ namespace BenMAP
             this.btnAuditTrailOutput.Name = "btnAuditTrailOutput";
             this.btnAuditTrailOutput.Size = new System.Drawing.Size(75, 27);
             this.btnAuditTrailOutput.TabIndex = 1;
-            this.btnAuditTrailOutput.Text = "Output";
+            this.btnAuditTrailOutput.Text = "Export...";
             this.btnAuditTrailOutput.UseVisualStyleBackColor = true;
             this.btnAuditTrailOutput.Click += new System.EventHandler(this.btnAuditTrailOutput_Click);
             // 
