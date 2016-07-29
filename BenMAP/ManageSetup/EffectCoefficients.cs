@@ -111,11 +111,7 @@ namespace BenMAP
                 loadVariable();
                 loadMetrics();
 
-                // cboBetaDistribution.SelectedValueChanged -= cboBetaDistribution_SelectedValueChanged;
-                // cboBetaDistribution.SelectedItem = _hif.BetaDistribution;
-                // cboBetaDistribution.Text = selectedVariable.PollBetas[selectedSeason].Distribution;
-                cboBetaDistribution.SelectedItem = cboBetaDistribution.Items[cboBetaDistribution.FindString(selectedVariable.PollBetas[selectedSeason].Distribution)];
-                // cboBetaDistribution.SelectedValueChanged += cboBetaDistribution_SelectedValueChanged;
+                cboBetaDistribution.SelectedIndex = cboBetaDistribution.FindString(selectedVariable.PollBetas[selectedSeason].Distribution);
 
                 cboSeason.SelectionChangeCommitted -= cboSeason_SelectedValueChanged;
                 cboSeason.SelectionChangeCommitted += cboSeason_SelectedValueChanged;
@@ -240,7 +236,7 @@ namespace BenMAP
                 txtBconstantValue.Text = selectedVariable.PollBetas[selectedSeason].BConstantValue.ToString();
                 txtCconstantValue.Text = selectedVariable.PollBetas[selectedSeason].CConstantValue.ToString();
                 txtBeta.Text = selectedVariable.PollBetas[selectedSeason].Beta.ToString();
-                cboBetaDistribution.Text = selectedVariable.PollBetas[selectedSeason].Distribution.ToString();
+                cboBetaDistribution.SelectedIndex = cboBetaDistribution.FindString(selectedVariable.PollBetas[selectedSeason].Distribution);
 
                 if (txtBetaParameter1.Visible && txtBetaParameter2.Visible)
                 {
