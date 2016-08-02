@@ -153,12 +153,15 @@
             // 
             // button1
             // 
+            this.button1.BackgroundImage = global::BenMAP.Properties.Resources.help_16x16;
+            this.button1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button1.Location = new System.Drawing.Point(449, 10);
+            this.button1.ForeColor = System.Drawing.SystemColors.Control;
+            this.button1.Location = new System.Drawing.Point(448, 9);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(21, 23);
+            this.button1.Size = new System.Drawing.Size(25, 25);
             this.button1.TabIndex = 7;
-            this.button1.Text = "?";
             this.button1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.toolTip3.SetToolTip(this.button1, "Click for more information on using the tool.");
             this.button1.UseVisualStyleBackColor = true;
