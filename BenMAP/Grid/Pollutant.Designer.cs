@@ -379,9 +379,9 @@ namespace BenMAP
             this.label19.AutoSize = true;
             this.label19.Location = new System.Drawing.Point(279, 18);
             this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(116, 14);
+            this.label19.Size = new System.Drawing.Size(110, 14);
             this.label19.TabIndex = 1;
-            this.label19.Text = "Selected Pollutants:";
+            this.label19.Text = "Selected Pollutant:";
             // 
             // lstPollutant
             // 
@@ -471,6 +471,7 @@ namespace BenMAP
             this.btnRemoveAll.TabIndex = 10;
             this.btnRemoveAll.Text = "<< Remove All";
             this.btnRemoveAll.UseVisualStyleBackColor = true;
+            this.btnRemoveAll.Visible = false;
             this.btnRemoveAll.Click += new System.EventHandler(this.btnRemoveAll_Click);
             // 
             // btnAddAll
@@ -481,6 +482,7 @@ namespace BenMAP
             this.btnAddAll.TabIndex = 11;
             this.btnAddAll.Text = "Add All >>";
             this.btnAddAll.UseVisualStyleBackColor = true;
+            this.btnAddAll.Visible = false;
             this.btnAddAll.Click += new System.EventHandler(this.btnAddAll_Click);
             // 
             // groupBox3
