@@ -4275,8 +4275,11 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
         SetupvariableDatasets = 7,
         InflationDatasets = 8,
         ValuationfunctionDatasets = 9,
-        IncomegrowthadjDatasets = 10,
+        IncomegrowthadjDatasets = 10
+         /*,
+          * BENMAP-520 - BRDX (database export)
         QalyDatasets = 11
+          */
     }
 
     [Serializable]
