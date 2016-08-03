@@ -19,7 +19,7 @@ namespace BenMAP
 {
     public partial class GridDefinition : FormBase
     {
-
+        private static int REGULAR_GRID = 0;
         private enum RowColFieldsValidationCode { BOTH_EXIST = 0, BOTH_MISSING = 1, COL_MISSING = 2, ROW_MISSING = 3, DUPLICATE_PAIR = 4, INCORRECT_FORMAT = 5, UNSPECIFIED_ERROR = 6};
 
         public GridDefinition()
@@ -775,9 +775,12 @@ namespace BenMAP
                 else
                 {
                     //ensure shapefile is correctly formatted.
-                    if (ValidateColumnsRows(_shapeFilePath,false) != RowColFieldsValidationCode.BOTH_EXIST)
+                    if(_gridType != REGULAR_GRID)
                     {
-                        return;
+                        if (ValidateColumnsRows(_shapeFilePath, false) != RowColFieldsValidationCode.BOTH_EXIST)
+                        {
+                            return;
+                        }
                     }
 
 
@@ -867,6 +870,10 @@ namespace BenMAP
                                 {
                                     fs.SaveAs(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.ManageSetup.SetupName + "\\" + txtGridID.Text + ".shp", true);
                                     _filePath = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.ManageSetup.SetupName + "\\" + txtGridID.Text + ".shp";
+                                }
+                                catch (Exception ex)
+                                {
+                                    Logger.LogError(ex);
                                 }
                                 finally
                                 {
@@ -986,7 +993,10 @@ namespace BenMAP
 
         private void saveMetadata()
         {
-
+            if (_metadataObj == null)
+            {
+                GetMetadata();
+            }
             _metadataObj.DatasetTypeId = SQLStatementsCommonClass.getDatasetID("GridDefinition");
 
             if(!SQLStatementsCommonClass.insertMetadata(_metadataObj))

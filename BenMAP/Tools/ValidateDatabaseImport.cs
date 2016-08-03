@@ -452,8 +452,16 @@ namespace BenMAP
                                 }
                                 else if(checkType == string.Empty && !required)//if check type is an empty string and it is not a required field it is a warning.
                                 {
-                                    txtReportOutput.Text += string.Format("Warning\t {0}\t {1} \t {2}\r\n", _tbl.Rows.IndexOf(dr)+1, dc.ColumnName, errMsg);
-                                    warnings++;
+                                   if(errMsg.Contains("not a valid"))
+                                   {
+                                       txtReportOutput.Text += string.Format("Error\t {0}\t {1} \t {2}\r\n", _tbl.Rows.IndexOf(dr) + 1, dc.ColumnName, errMsg);
+                                       errors++;
+                                   }
+                                   else
+                                   {
+                                       txtReportOutput.Text += string.Format("Warning\t {0}\t {1} \t {2}\r\n", _tbl.Rows.IndexOf(dr) + 1, dc.ColumnName, errMsg);
+                                       warnings++;
+                                   }
                                 }
                                 txtReportOutput.Refresh();
                                 numChecked++;
