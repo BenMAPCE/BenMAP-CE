@@ -326,54 +326,45 @@ namespace BenMAP
 
         }
 
-        private void writeOneTable(BinaryWriter writer, string commandText, List<string> lstType)
+        private void writeOneTable(BinaryWriter writer, string commandText) 
         {
+            // BF-520 modified to use actual data type of reader field instead of parameter containing delimited string of field data types
             try
             {
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 FirebirdSql.Data.FirebirdClient.FbDataReader fbDataReader = fb.ExecuteReader(CommonClass.Connection, CommandType.Text, commandText);
                 if (!fbDataReader.HasRows) return;
                 while (fbDataReader.Read())
-                {
+                {       
                     for (int i = 0; i < fbDataReader.FieldCount; i++)
-                    {
-                        switch (lstType[i])
+                    {   // determine data type of datareader field and output accordingly 
+                       if (fbDataReader.GetFieldType(i) == typeof(Int32))
                         {
-                            case "int":
                                 if (!Convert.IsDBNull(fbDataReader[i])) { writer.Write(Convert.ToInt32(fbDataReader[i])); }
                                 else writer.Write(Convert.ToInt32(-1));
-                                break;
-
-                            case "single":
+                        }else if (fbDataReader.GetFieldType(i) == typeof(Int64)) // BF-520 modify to output int64
+                        {
+                                if (!Convert.IsDBNull(fbDataReader[i])) { writer.Write(Convert.ToInt64(fbDataReader[i])); }
+                                else writer.Write(Convert.ToInt64(-1));
+                        }else if (fbDataReader.GetFieldType(i) == typeof(Single))
+                       {
                                 if (!Convert.IsDBNull(fbDataReader[i])) { writer.Write(Convert.ToSingle(fbDataReader[i])); }
                                 else writer.Write(Convert.ToSingle(-1));
-                                break;
-
-                            case "double":
+                        }else if (fbDataReader.GetFieldType(i) == typeof(double))
+                        {
                                 if (!Convert.IsDBNull(fbDataReader[i])) { writer.Write(Convert.ToDouble(fbDataReader[i])); }
                                 writer.Write(Convert.ToDouble(-1));
-                                break;
-
-                            case "string":
+                        }else if (fbDataReader.GetFieldType(i) == typeof(string))
+                       {
                                 writer.Write(Convert.ToString(fbDataReader[i]));
-                                break;
-
-                            case "byte[]":
+                        }else if (fbDataReader.GetFieldType(i) == typeof(byte))
+                        {
                                 byte[] buffer = (byte[])fbDataReader[i];
                                 writer.Write(buffer.Length);
                                 writer.Write(buffer);
-                                break;
-
-                            case "char":
+                        }else if (fbDataReader.GetFieldType(i) == typeof(char))
+                        {
                                 writer.Write(Convert.ToChar(fbDataReader[i]));
-                                break;
-
-                            case "double2string":
-                                if (!Convert.IsDBNull(fbDataReader[i]))
-                                {
-                                    writer.Write(Convert.ToString(Convert.ToDouble(fbDataReader[i])));
-                                }
-                                break;
                         }
                     }
                     pBarExport.PerformStep();
@@ -423,8 +414,7 @@ namespace BenMAP
                 writer.Write("setups");
                 writer.Write(drsetupscount);
                 commandText = "select setupid,setupName from setups";
-                List<string> lstType = new List<string>() { "int", "string" };
-                writeOneTable(writer, commandText, lstType);
+                writeOneTable(writer, commandText);
             }
             catch (Exception ex)
             {
@@ -435,6 +425,8 @@ namespace BenMAP
 
         private void WriteGriddefinition(BinaryWriter writer, string setupid)
         {
+            // REMOVE ME - temporarly comment out for testing - remove next line for production code
+            return;
             try
             {
                 pBarExport.Value = 0;
@@ -450,8 +442,7 @@ namespace BenMAP
                 writer.Write("griddefinitions");
                 writer.Write(drgriddefinitionscount);
                 commandText = string.Format("select GriddefinitionID,SetupID,GriddefinitionName,Columns,Rrows,Ttype,Defaulttype from griddefinitions where {0}", setupid);
-                List<string> lstType = new List<string>() { "int", "int", "string", "int", "int", "int", "int" };
-                writeOneTable(writer, commandText, lstType);
+                writeOneTable(writer, commandText);
 
                 pBarExport.Value = 0;
                 lbProcess.Text = "Exporting shapefiles...";
@@ -533,8 +524,7 @@ namespace BenMAP
                 writer.Write(drGriddefinitionPercentagescount);
                 commandText = string.Format("select PercentageID,SourceGriddefinitionID,TargetGriddefinitionID from GriddefinitionPercentages where SourceGriddefinitionID in (select GriddefinitionID from griddefinitions where {0}) and TargetGriddefinitionID in (select GriddefinitionID from griddefinitions where {0})", setupid);
                 System.Data.DataSet dsGriddefinitionPercentages = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
-                lstType = new List<string>() { "int", "int", "int", "int"};
-                writeOneTable(writer, commandText, lstType);
+                writeOneTable(writer, commandText);
 
                 pBarExport.Value = 0;
                 lbProcess.Text = "Exporting grid definition percentage entries...";
@@ -548,8 +538,7 @@ namespace BenMAP
                 writer.Write("GriddefinitionPercentageEntries");
                 writer.Write(drGriddefinitionPercentageEntriescount);
                 commandText = string.Format("select PercentageID,SourceColumn,SourceRow,TargetColumn,TargetRow,Percentage,NormalizationState from GriddefinitionPercentageEntries where PercentageID in (select PercentageID from GriddefinitionPercentages where (SourceGriddefinitionID in (select GriddefinitionID from griddefinitions where {0})) and (TargetGriddefinitionID in (select GriddefinitionID from griddefinitions where {0})))", setupid);
-                lstType = new List<string>() { "int", "int", "int", "int", "int", "double2string", "int" };
-                writeOneTable(writer, commandText, lstType);
+                writeOneTable(writer, commandText);
 
                 lbProcess.Refresh();
                 this.Refresh();
@@ -563,6 +552,9 @@ namespace BenMAP
 
         private void WritePollutant(BinaryWriter writer, string setupid)
         {
+            // REMOVE ME - temporarly comment out for testing - remove next line for production code
+            return;
+            
             try
             {
                 pBarExport.Value = 0;
@@ -578,8 +570,7 @@ namespace BenMAP
                 writer.Write("pollutants");
                 writer.Write(drpollutantscount);
                 commandText = string.Format("select PollutantName,PollutantID,SetupID,ObservationType from pollutants where {0}", setupid);
-                List<string> lstType = new List<string>() { "string", "int", "int", "int" };
-                writeOneTable(writer, commandText, lstType);
+                writeOneTable(writer, commandText);
 
                 commandText = string.Format("select count(*) from PollutantSeasons where PollutantID in (select PollutantID from pollutants where {0})", setupid);
                 Int32 drPollutantSeasonscount = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
@@ -593,8 +584,7 @@ namespace BenMAP
                     writer.Write("PollutantSeasons");
                     writer.Write(drPollutantSeasonscount);
                     commandText = string.Format("select PollutantSeasonID,PollutantID,StartDay,EndDay,StartHour,EndHour,Numbins from PollutantSeasons where PollutantID in (select PollutantID from pollutants where {0})", setupid);
-                    lstType = new List<string>() { "int", "int", "int", "int", "int", "int", "int" };
-                    writeOneTable(writer, commandText, lstType);
+                    writeOneTable(writer, commandText);
                 }
 
                 pBarExport.Value = 0;
@@ -609,8 +599,7 @@ namespace BenMAP
                 writer.Write("Metrics");
                 writer.Write(drMetricscount);
                 commandText = string.Format("select MetricID,PollutantID,MetricName,HourlyMetricGeneration from Metrics where PollutantID in (select PollutantID from pollutants where {0})", setupid);
-                lstType = new List<string>() { "int", "int", "string", "int" };
-                writeOneTable(writer, commandText, lstType);
+                writeOneTable(writer, commandText);
 
                 commandText = string.Format("select count(*) from fixedwindowMetrics where Metricid in (select Metricid from Metrics where PollutantID in (select PollutantID from pollutants where {0}))", setupid);
                 Int32 drFixedWindowMetricscount = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
@@ -624,8 +613,7 @@ namespace BenMAP
                     writer.Write("FixedWindowMetrics");
                     writer.Write(drFixedWindowMetricscount);
                     commandText = string.Format("select MetricID,Starthour,Endhour,Statistic from fixedwindowMetrics where Metricid in (select Metricid from Metrics where PollutantID in (select PollutantID from pollutants where {0}))", setupid);
-                    lstType = new List<string>() { "int", "int", "int", "int" };
-                    writeOneTable(writer, commandText, lstType);
+                    writeOneTable(writer, commandText);
                 }
 
                 commandText = string.Format("select count(*) from MovingWindowMetrics where Metricid in (select Metricid from Metrics where PollutantID in (select PollutantID from pollutants where {0}))", setupid);
@@ -640,8 +628,7 @@ namespace BenMAP
                     writer.Write("MovingWindowMetrics");
                     writer.Write(drMovingWindowMetricscount);
                     commandText = string.Format("select MetricID,Windowsize,Windowstatistic,Dailystatistic from MovingWindowMetrics where Metricid in (select Metricid from Metrics where PollutantID in (select PollutantID from pollutants where {0}))", setupid);
-                    lstType = new List<string>() { "int", "int", "int", "int" };
-                    writeOneTable(writer, commandText, lstType);
+                    writeOneTable(writer, commandText);
                 }
 
                 commandText = string.Format("select count(*) from CustomMetrics where Metricid in (select Metricid from Metrics where PollutantID in (select PollutantID from pollutants where {0}))", setupid);
@@ -656,8 +643,7 @@ namespace BenMAP
                     writer.Write("CustomMetrics");
                     writer.Write(drCustomMetricscount);
                     commandText = string.Format("select MetricID,MetricFunction from CustomMetrics where Metricid in (select Metricid from Metrics where PollutantID in (select PollutantID from pollutants where {0}))", setupid);
-                    lstType = new List<string>() { "int", "string" };
-                    writeOneTable(writer, commandText, lstType);
+                    writeOneTable(writer, commandText);
                 }
 
                 pBarExport.Value = 0;
@@ -672,8 +658,7 @@ namespace BenMAP
                 writer.Write("SeasonalMetrics");
                 writer.Write(drSeasonalMetricscount);
                 commandText = string.Format("select SeasonalMetricID,MetricID,SeasonalMetricName from SeasonalMetrics where MetricID in (select MetricID from Metrics where PollutantID in (select PollutantID from pollutants where {0}))", setupid);
-                lstType = new List<string>() { "int", "int", "string" };
-                writeOneTable(writer, commandText, lstType);
+                writeOneTable(writer, commandText);
 
                 pBarExport.Value = 0;
                 lbProcess.Text = "Exporting seasonal metric seasons...";
@@ -687,8 +672,7 @@ namespace BenMAP
                 writer.Write("SeasonalMetricSeasons");
                 writer.Write(drSeasonalMetricSeasonscount);
                 commandText = string.Format("select SeasonalMetricseasonID,SeasonalMetricID,StartDay,EndDay,SeasonalMetricType,MetricFunction,PollutantseasonID from SeasonalMetricSeasons where SeasonalMetricID in(select SeasonalMetricID from SeasonalMetrics where MetricID in (select MetricID from Metrics where PollutantID in (select PollutantID from pollutants where {0})))", setupid);
-                lstType = new List<string>() { "int", "int", "int", "int", "int", "string", "int" };
-                writeOneTable(writer, commandText, lstType);
+                writeOneTable(writer, commandText);
             }
             catch (Exception ex)
             {
@@ -699,6 +683,9 @@ namespace BenMAP
 
         private void WriteMonitor(BinaryWriter writer, string setupid)
         {
+            // REMOVE ME - temporarly comment out for testing - remove next line for production code
+            return;
+            
             try
             {
                 pBarExport.Value = 0;
@@ -714,8 +701,7 @@ namespace BenMAP
                 writer.Write("MonitorDataSets");
                 writer.Write(drMonitorDataSetscount);
                 commandText = string.Format("select MonitorDatasetID,SetupID,MonitorDatasetName from MonitorDataSets where {0}", setupid);
-                List<string> lstType = new List<string>() { "int", "int", "string" };
-                writeOneTable(writer, commandText, lstType);
+                writeOneTable(writer, commandText);
 
                 string pollutant = string.Format("pollutantid in (select distinct pollutantid from monitors where monitordatasetid in (select monitordatasetid from monitordatasets where {0}))", setupid);
                 WritePollutant(writer, pollutant);
@@ -732,8 +718,7 @@ namespace BenMAP
                 writer.Write("Monitors");
                 writer.Write(drMonitorscount);
                 commandText = string.Format("select MonitorID,MonitorDatasetID,PollutantID,Latitude,Longitude,MonitorName,MonitorDescription from Monitors where MonitorDatasetID in (select MonitorDatasetID from MonitorDataSets where {0})", setupid);
-                lstType = new List<string>() { "int", "int", "int", "single", "single", "string", "string" };
-                writeOneTable(writer, commandText, lstType);
+                writeOneTable(writer, commandText);
 
                 pBarExport.Value = 0;
                 lbProcess.Text = "Exporting monitor entries...";
@@ -747,8 +732,7 @@ namespace BenMAP
                 writer.Write("MonitorEntries");
                 writer.Write(dsMonitorEntriescount);
                 commandText = string.Format("select MonitorEntryID,MonitorID,Vvalues,MetricID,SeasonalMetricID,Yyear,Statistic from MonitorEntries where MonitorID in (select MonitorID from Monitors where MonitorDatasetID in (select MonitorDatasetID from MonitorDataSets where {0}))", setupid);
-                lstType = new List<string>() { "int", "int", "byte[]", "int", "int", "int", "string" };
-                writeOneTable(writer, commandText, lstType);
+                writeOneTable(writer, commandText);
 
                 this.Refresh();
             }
@@ -761,6 +745,9 @@ namespace BenMAP
 
         private void WriteIncidence(BinaryWriter writer, string setupid)
         {
+            // REMOVE ME - temporarly comment out for testing - remove next line for production code
+            return;
+            
             try
             {
                 pBarExport.Value = 0;
@@ -776,8 +763,7 @@ namespace BenMAP
                 writer.Write("IncidenceGriddefinitions");
                 writer.Write(drgriddefinitionscount);
                 commandText = string.Format("select GriddefinitionID,SetupID,GriddefinitionName,Columns,Rrows,Ttype,Defaulttype from griddefinitions where griddefinitionID in (select distinct griddefinitionID from IncidenceDatasets where {0})", setupid);
-                List<string> lstType = new List<string>() { "int", "int", "string", "int", "int", "int", "int" };
-                writeOneTable(writer, commandText, lstType);
+                writeOneTable(writer, commandText);
 
                 pBarExport.Value = 0;
                 lbProcess.Text = "Exporting related shapefiles...";
@@ -856,8 +842,7 @@ namespace BenMAP
                 writer.Write("IncidenceDatasets");
                 writer.Write(count);
                 commandText = string.Format("select IncidenceDatasetID,SetupID,IncidenceDatasetName,GridDefinitionID from IncidenceDatasets where {0}", setupid);
-                lstType = new List<string>() { "int", "int", "string", "int" };
-                writeOneTable(writer, commandText, lstType);
+                writeOneTable(writer, commandText);
 
                 pBarExport.Value = 0;
                 lbProcess.Text = "Exporting related endpointgroups...";
@@ -870,8 +855,7 @@ namespace BenMAP
                 writer.Write("EndpointGroups");
                 writer.Write(count);
                 commandText = string.Format("select EndPointGroupID,EndPointGroupName from EndpointGroups where EndPointGroupID in (select distinct EndPointgroupID from IncidenceRates where IncidenceDatasetID in (select IncidenceDatasetID from IncidenceDatasets where {0}))", setupid);
-                lstType = new List<string>() { "int", "string" };
-                writeOneTable(writer, commandText, lstType);
+                writeOneTable(writer, commandText);
 
                 pBarExport.Value = 0;
                 lbProcess.Text = "Exporting related endpoints...";
@@ -884,8 +868,7 @@ namespace BenMAP
                 writer.Write("EndPoints");
                 writer.Write(count);
                 commandText = string.Format("select EndPointID,EndPointGroupID,EndPointName from EndPoints where EndPointID in (select distinct EndPointID from IncidenceRates where IncidenceDatasetID in (select IncidenceDatasetID from IncidenceDatasets where {0}))", setupid);
-                lstType = new List<string>() { "int", "int", "string" };
-                writeOneTable(writer, commandText, lstType);
+                writeOneTable(writer, commandText);
 
                 pBarExport.Value = 0;
                 lbProcess.Text = "Exporting related race...";
@@ -898,8 +881,7 @@ namespace BenMAP
                 writer.Write("Race");
                 writer.Write(count);
                 commandText = string.Format("select RaceID,RaceName from Races where RaceID in (select distinct RaceID from IncidenceRates where IncidenceDatasetID in (select IncidenceDatasetID from IncidenceDatasets where {0}))", setupid);
-                lstType = new List<string>() { "int", "string" };
-                writeOneTable(writer, commandText, lstType);
+                writeOneTable(writer, commandText);
 
                 pBarExport.Value = 0;
                 lbProcess.Text = "Exporting related gender...";
@@ -912,8 +894,7 @@ namespace BenMAP
                 writer.Write("Gender");
                 writer.Write(count);
                 commandText = string.Format("select GenderID,GenderName from Genders where GenderID in (select distinct GenderID from IncidenceRates where IncidenceDatasetID in (select IncidenceDatasetID from IncidenceDatasets where {0}))", setupid);
-                lstType = new List<string>() { "int", "string" };
-                writeOneTable(writer, commandText, lstType);
+                writeOneTable(writer, commandText);
 
                 pBarExport.Value = 0;
                 lbProcess.Text = "Exporting related ethnicity...";
@@ -926,8 +907,7 @@ namespace BenMAP
                 writer.Write("Ethnicity");
                 writer.Write(count);
                 commandText = string.Format("select EthnicityID,EthnicityName from Ethnicity where EthnicityID in (select distinct EthnicityID from IncidenceRates where IncidenceDatasetID in (select IncidenceDatasetID from IncidenceDatasets where {0}))", setupid);
-                lstType = new List<string>() { "int", "string" };
-                writeOneTable(writer, commandText, lstType);
+                writeOneTable(writer, commandText);
 
                 pBarExport.Value = 0;
                 lbProcess.Text = "Exporting incidence rates...";
@@ -940,8 +920,7 @@ namespace BenMAP
                 writer.Write("IncidenceRates");
                 writer.Write(count);
                 commandText = string.Format("select IncidenceRateID,IncidenceDatasetID,GriddefinitionID,EndPointGroupID,EndPointID,RaceID,GenderID,StartAge,EndAge,Prevalence,EthnicityID from IncidenceRates where IncidenceDatasetID in (select IncidenceDatasetID from IncidenceDatasets where {0})", setupid);
-                lstType = new List<string>() { "int", "int", "int", "int", "int", "int", "int", "int", "int", "char", "int" };
-                writeOneTable(writer, commandText, lstType);
+                writeOneTable(writer, commandText);
 
                 pBarExport.Value = 0;
                 lbProcess.Text = "Exporting incidence entries...";
@@ -954,8 +933,7 @@ namespace BenMAP
                 writer.Write("IncidenceEntries");
                 writer.Write(count);
                 commandText = string.Format("select IncidenceRateID,Ccolumn,Row,Vvalue from Incidenceentries where IncidenceRateID in (select IncidenceRateID  from IncidenceRates where IncidenceDatasetID in (select IncidenceDatasetID from IncidenceDatasets where {0}))", setupid);
-                lstType = new List<string>() { "int", "int", "int", "single" };
-                writeOneTable(writer, commandText, lstType);
+                writeOneTable(writer, commandText);
             }
             catch (Exception ex)
             {
@@ -966,6 +944,9 @@ namespace BenMAP
 
         private void WritePopulation(BinaryWriter writer, string setupid)
         {
+            // REMOVE ME - temporarly comment out for testing - remove next line for production code
+            return;
+            
             try
             {
                 pBarExport.Value = 0;
@@ -981,8 +962,7 @@ namespace BenMAP
                 writer.Write("PopulationGriddefinitions");
                 writer.Write(drgriddefinitionscount);
                 commandText = string.Format("select GriddefinitionID,SetupID,GriddefinitionName,Columns,Rrows,Ttype,Defaulttype from griddefinitions where griddefinitionID in (select distinct griddefinitionID from PopulationDatasets where {0})", setupid);
-                List<string> lstType = new List<string>() { "int", "int", "string", "int", "int", "int", "int" };
-                writeOneTable(writer, commandText, lstType);
+                writeOneTable(writer, commandText);
 
                 pBarExport.Value = 0;
                 lbProcess.Text = "Exporting related shapefiles...";
@@ -1062,8 +1042,7 @@ namespace BenMAP
                 writer.Write("PopulationConfigurations");
                 writer.Write(dsPopulationConfigurationscount);
                 commandText = string.Format("select PopulationConfigurationID,PopulationConfigurationName from PopulationConfigurations where PopulationConfigurationID in (select PopulationConfigurationID from PopulationDatasets where {0})", setupid);
-                lstType = new List<string>() { "int", "string" };
-                writeOneTable(writer, commandText, lstType);
+                writeOneTable(writer, commandText);
 
                 pBarExport.Value = 0;
                 lbProcess.Text = "Exporting popconfig ethnicity map...";
@@ -1077,12 +1056,10 @@ namespace BenMAP
                     writer.Write("PopConfigEthnicityMap");
                     writer.Write(PopconfigethnicityMapcount);
                     commandText = string.Format("select EthnicityID,EthnicityName from Ethnicity where EthnicityID in (select EthnicityID from PopConfigEthnicityMap where PopulationConfigurationID in (select PopulationConfigurationID from PopulationDatasets where {0}))", setupid);
-                    lstType = new List<string>() { "int", "string" };
-                    writeOneTable(writer, commandText, lstType);
+                    writeOneTable(writer, commandText);
 
                     commandText = string.Format("select PopulationConfigurationID,EthnicityID from PopConfigEthnicityMap where PopulationConfigurationID in (select PopulationConfigurationID from PopulationDatasets where {0})", setupid);
-                    lstType = new List<string>() { "int", "int" };
-                    writeOneTable(writer, commandText, lstType);
+                    writeOneTable(writer, commandText);
                 }
 
                 pBarExport.Value = 0;
@@ -1097,12 +1074,10 @@ namespace BenMAP
                     writer.Write("PopConfigGenderMap");
                     writer.Write(PopConfigGenderMapcount);
                     commandText = string.Format("select GenderID,GenderName from Genders where GenderID in (select GenderID from PopConfigGenderMap where PopulationConfigurationID in (select PopulationConfigurationID from PopulationDatasets where {0}))", setupid);
-                    lstType = new List<string>() { "int", "string" };
-                    writeOneTable(writer, commandText, lstType);
+                    writeOneTable(writer, commandText);
 
                     commandText = string.Format("select PopulationConfigurationID,GenderID from PopConfigGenderMap where PopulationConfigurationID in (select PopulationConfigurationID from PopulationDatasets where {0})", setupid);
-                    lstType = new List<string>() { "int", "int" };
-                    writeOneTable(writer, commandText, lstType);
+                    writeOneTable(writer, commandText);
                 }
 
                 pBarExport.Value = 0;
@@ -1117,12 +1092,10 @@ namespace BenMAP
                     writer.Write("PopConfigRaceMap");
                     writer.Write(PopConfigRaceMapcount);
                     commandText = string.Format("select RaceID,RaceName from Races where raceid in (select RaceID from PopConfigRaceMap where PopulationConfigurationID in (select PopulationConfigurationID from PopulationDatasets where {0}))", setupid);
-                    lstType = new List<string>() { "int", "string" };
-                    writeOneTable(writer, commandText, lstType);
+                    writeOneTable(writer, commandText);
 
                     commandText = string.Format("select PopulationConfigurationID,RaceID from PopConfigRaceMap where PopulationConfigurationID in (select PopulationConfigurationID from PopulationDatasets where {0})", setupid);
-                    lstType = new List<string>() { "int", "int" };
-                    writeOneTable(writer, commandText, lstType);
+                    writeOneTable(writer, commandText);
                 }
 
                 pBarExport.Value = 0;
@@ -1136,8 +1109,7 @@ namespace BenMAP
                 writer.Write("AgeRanges");
                 writer.Write(dsAgeRangescount);
                 commandText = string.Format("select AgeRangeID,PopulationConfigurationID,AgeRangeName,StartAge,EndAge from AgeRanges where PopulationConfigurationID in (select PopulationConfigurationID from PopulationDatasets where {0})", setupid);
-                lstType = new List<string>() { "int", "int", "string", "int", "int" };
-                writeOneTable(writer, commandText, lstType);
+                writeOneTable(writer, commandText);
 
                 pBarExport.Value = 0;
                 lbProcess.Text = "Exporting population datasets...";
@@ -1151,8 +1123,7 @@ namespace BenMAP
                 writer.Write("PopulationDatasets");
                 writer.Write(dsPopulationDatasetscount);
                 commandText = string.Format("select PopulationDatasetID,SetupID,PopulationDatasetName,PopulationConfigurationID,GriddefinitionID,ApplyGrowth from PopulationDatasets where {0}", setupid);
-                lstType = new List<string>() { "int", "int", "string", "int", "int", "int" };
-                writeOneTable(writer, commandText, lstType);
+                writeOneTable(writer, commandText);
 
                 pBarExport.Value = 0;
                 lbProcess.Text = "Exporting population entries...";
@@ -1167,8 +1138,7 @@ namespace BenMAP
                     writer.Write("PopulationEntries");
                     writer.Write(dsPopulationEntriescount);
                     commandText = string.Format("select PopulationDatasetID,RaceID,GenderID,AgerangeID,Ccolumn,Row,Yyear,Vvalue,EthnicityID from PopulationEntries where PopulationDatasetID in (select PopulationDatasetID from PopulationDatasets where {0})", setupid);
-                    lstType = new List<string>() { "int", "int", "int", "int", "int", "int", "int", "single", "int" };
-                    writeOneTable(writer, commandText, lstType);
+                    writeOneTable(writer, commandText);
                     lbProcess.Refresh();
                     this.Refresh();
                 }
@@ -1185,8 +1155,7 @@ namespace BenMAP
                 writer.Write("PopulationGrowthWeights");
                 writer.Write(dsPopulationGrowthWeightscount);
                 commandText = string.Format("select PopulationDatasetID,Yyear,SourceColumn,SourceRow,TargetColumn,TargetRow,RaceID,EthnicityID,Vvalue from PopulationGrowthWeights where PopulationDatasetID in (select PopulationDatasetID from PopulationDatasets where {0})", setupid);
-                lstType = new List<string>() { "int", "int", "int", "int", "int", "int", "int", "int", "single" };
-                writeOneTable(writer, commandText, lstType);
+                writeOneTable(writer, commandText);
             }
             catch (Exception ex)
             {
@@ -1211,8 +1180,7 @@ namespace BenMAP
                 writer.Write("CrFunctionDatasets");
                 writer.Write(count);
                 commandText = string.Format("select CrfunctionDatasetID,SetupID,CrfunctionDatasetName,Readonly from CrFunctionDatasets where {0}", setupid);
-                List<string> lstType = new List<string>() { "int", "int", "string", "char" };
-                writeOneTable(writer, commandText, lstType);
+                writeOneTable(writer, commandText);
 
                 string pollutant = string.Format("pollutantid in (select distinct pollutantid from crfunctions where CrfunctionDatasetID in (select CrfunctionDatasetID from CrFunctionDatasets where {0}))", setupid);
                 WritePollutant(writer, pollutant);
@@ -1228,8 +1196,7 @@ namespace BenMAP
                 writer.Write("FunctionalForms");
                 writer.Write(count);
                 commandText = string.Format("select FunctionalFormID,FunctionalFormText from FunctionalForms where FunctionalFormID in (select FunctionalFormID from Crfunctions where CrfunctionDatasetID in (select CrfunctionDatasetID from CrFunctionDatasets where {0}))", setupid);
-                lstType = new List<string>() { "int", "string" };
-                writeOneTable(writer, commandText, lstType);
+                writeOneTable(writer, commandText);
 
                 pBarExport.Value = 0;
                 lbProcess.Text = "Exporting baseline functional forms...";
@@ -1243,8 +1210,7 @@ namespace BenMAP
                     writer.Write("BaselineFunctionalForms");
                     writer.Write(count);
                     commandText = string.Format("select FunctionalFormID,FunctionalFormText from BaselineFunctionalForms where FunctionalFormID in (select BaselineFunctionalFormID from Crfunctions where CrfunctionDatasetID in (select CrfunctionDatasetID from CrFunctionDatasets where {0}))", setupid);
-                    lstType = new List<string>() { "int", "string" };
-                    writeOneTable(writer, commandText, lstType);
+                    writeOneTable(writer, commandText);
                 }
 
                 pBarExport.Value = 0;
@@ -1258,8 +1224,7 @@ namespace BenMAP
                 writer.Write("EndpointGroups");
                 writer.Write(count);
                 commandText = string.Format("select EndPointGroupID,EndPointGroupName from EndpointGroups where EndPointGroupID in (select EndPointgroupID from Crfunctions where CrfunctionDatasetID in (select CrfunctionDatasetID from CrFunctionDatasets where {0}))", setupid);
-                lstType = new List<string>() { "int", "string" };
-                writeOneTable(writer, commandText, lstType);
+                writeOneTable(writer, commandText);
 
                 pBarExport.Value = 0;
                 lbProcess.Text = "Exporting endpoints...";
@@ -1272,8 +1237,7 @@ namespace BenMAP
                 writer.Write("EndPoints");
                 writer.Write(count);
                 commandText = string.Format("select EndPointID,EndPointGroupID,EndPointName from EndPoints where EndPointID in (select distinct EndPointID from Crfunctions where CrfunctionDatasetID in (select CrfunctionDatasetID from CrFunctionDatasets where {0}))", setupid);
-                lstType = new List<string>() { "int", "int", "string" };
-                writeOneTable(writer, commandText, lstType);
+                writeOneTable(writer, commandText);
 
                 pBarExport.Value = 0;
                 lbProcess.Text = "Exporting locationtype...";
@@ -1287,8 +1251,7 @@ namespace BenMAP
                     writer.Write("LocationType");
                     writer.Write(count);
                     commandText = string.Format("select SetupID,LocationTypeID,LocationTypeName from EndPoints where LocationTypeID in (select LocationTypeID from Crfunctions where CrfunctionDatasetID in (select CrfunctionDatasetID from CrFunctionDatasets where {0}))", setupid);
-                    lstType = new List<string>() { "int", "int", "string" };
-                    writeOneTable(writer, commandText, lstType);
+                    writeOneTable(writer, commandText);
                 }
 
                 pBarExport.Value = 0;
@@ -1301,9 +1264,10 @@ namespace BenMAP
                 pBarExport.Maximum = count;
                 writer.Write("Crfunctions");
                 writer.Write(count);
-                commandText = string.Format("select CrfunctionID,CrfunctionDatasetID,FunctionalFormID,MetricID,SeasonalMetricID,IncidenceDatasetID,PrevalenceDatasetID,VariableDatasetID,LocationTypeID,BaselineFunctionalFormID,EndPointgroupID,EndPointID,PollutantID,Metricstatistic,Author,Yyear,Location,OtherPollutants,Qualifier,Reference,Race,Gender,Startage,EndAge,Beta,DistBeta,P1beta,P2beta,A,NameA,B,NameB,C,NameC,Ethnicity,Percentile from Crfunctions where CrfunctionDatasetID in (select CrfunctionDatasetID from CrFunctionDatasets where {0})", setupid);
-                lstType = new List<string>() { "int", "int", "int", "int", "int", "int", "int", "int", "int", "int", "int", "int", "int", "int", "string", "int", "string", "string", "string", "string", "string", "string", "int", "int", "string", "string", "string", "string", "string", "string", "string", "string", "string", "string", "string", "int" };
-                writeOneTable(writer, commandText, lstType);
+                // BF520 - write BRDX files - modify for new CRFunctions table structure in MP version
+                // commandText = string.Format("select CrfunctionID,CrfunctionDatasetID,FunctionalFormID,MetricID,SeasonalMetricID,IncidenceDatasetID,PrevalenceDatasetID,VariableDatasetID,LocationTypeID,BaselineFunctionalFormID,EndPointgroupID,EndPointID,PollutantID,Metricstatistic,Author,Yyear,Location,OtherPollutants,Qualifier,Reference,Race,Gender,Startage,EndAge,Beta,DistBeta,P1beta,P2beta,A,NameA,B,NameB,C,NameC,Ethnicity,Percentile from Crfunctions where CrfunctionDatasetID in (select CrfunctionDatasetID from CrFunctionDatasets where {0})", setupid);
+                commandText = string.Format("select CrfunctionID,CrfunctionDatasetID,FunctionalFormID, SeasonalMetricID, IncidenceDatasetID,PrevalenceDatasetID,VariableDatasetID,LocationTypeID,BaselineFunctionalFormID, EndPointgroupID,EndPointID, Metricstatistic,Author,Yyear,Location, OtherPollutants,Qualifier,Reference,Race,Gender,Startage, Ethnicity,Percentile, METADATAID, POLLUTANTGROUPID, MSID, BETAVARIATIONID from Crfunctions where CrfunctionDatasetID in (select CrfunctionDatasetID from CrFunctionDatasets where {0})", setupid);
+                writeOneTable(writer, commandText);
 
                 pBarExport.Value = 0;
                 lbProcess.Text = "Exporting HIF custom entries...";
@@ -1316,8 +1280,13 @@ namespace BenMAP
                 writer.Write("CrFunctionCustomEntries");
                 writer.Write(count);
                 commandText = string.Format("select CrFunctionID,Vvalue from CrFunctionCustomEntries where CrfunctionID in (select CrfunctionID from Crfunctions where CrfunctionDatasetID in (select CrfunctionDatasetID from CrFunctionDatasets where {0}))", setupid);
-                lstType = new List<string>() { "int", "single" };
-                writeOneTable(writer, commandText, lstType);
+                writeOneTable(writer, commandText);
+                // need to add export CRFUNCTIONPOLLUTANTS
+                // need to add export CRFVariables
+                // need to add crfvarcovar
+                // need to add effect groups???
+                // need to add CRFBETAS
+
             }
             catch (Exception ex)
             {
@@ -1328,6 +1297,9 @@ namespace BenMAP
 
         private void WriteVariable(BinaryWriter writer, string setupid)
         {
+            // REMOVE ME - temporarly comment out for testing - remove next line for production code
+            return;
+            
             try
             {
                 pBarExport.Value = 0;
@@ -1343,8 +1315,7 @@ namespace BenMAP
                 writer.Write("SetupVariableDatasets");
                 writer.Write(dsSetupVariableDatasetscount);
                 commandText = string.Format("select SetupVariableDatasetID,SetupID,SetupVariableDatasetName from SetupVariableDatasets where {0}", setupid);
-                List<string> lstType = new List<string>() { "int", "int", "string" };
-                writeOneTable(writer, commandText, lstType);
+                writeOneTable(writer, commandText);
 
                 string griddefinition = string.Format("griddefinitionid in (select griddefinitionid from setupvariables where setupvariabledatasetid in (select setupvariabledatasetid from SetupVariableDatasets where {0}))", setupid);
                 WriteGriddefinition(writer, griddefinition);
@@ -1361,8 +1332,7 @@ namespace BenMAP
                 writer.Write("SetupVariables");
                 writer.Write(dsSetupVariablescount);
                 commandText = string.Format("select SetupVariableID,SetupVariableDatasetID,SetupVariableName,GriddefinitionID from SetupVariables where SetupVariableDatasetID in (select SetupVariableDatasetID from SetupVariableDatasets where {0})", setupid);
-                lstType = new List<string>() { "int", "int", "string", "int" };
-                writeOneTable(writer, commandText, lstType);
+                writeOneTable(writer, commandText);
 
                 pBarExport.Value = 0;
                 lbProcess.Text = "Exporting setup geographic variables...";
@@ -1377,8 +1347,7 @@ namespace BenMAP
                     writer.Write("SetupGeographicVariables");
                     writer.Write(dsSetupGeographicvariablescount);
                     commandText = string.Format("select SetupVariableID,Ccolumn,Row,Vvalue from SetupGeographicVariables where SetupVariableID in(select SetupVariableID from SetupVariables where SetupVariableDatasetID in (select SetupVariableDatasetID from SetupVariableDatasets where {0}))", setupid);
-                    lstType = new List<string>() { "int", "int", "int", "single" };
-                    writeOneTable(writer, commandText, lstType);
+                    writeOneTable(writer, commandText);
                 }
 
                 pBarExport.Value = 0;
@@ -1393,8 +1362,7 @@ namespace BenMAP
                 writer.Write("SetupGlobalVariables");
                 writer.Write(dsSetupGlobalVariablescount);
                 commandText = string.Format("select SetupVariableID,Vvalue from SetupGlobalVariables where SetupVariableID in(select SetupVariableID from SetupVariables where SetupVariableDatasetID in (select SetupVariableDatasetID from SetupVariableDatasets where {0}))", setupid);
-                lstType = new List<string>() { "int", "single" };
-                writeOneTable(writer, commandText, lstType);
+                writeOneTable(writer, commandText);
             }
             catch (Exception ex)
             {
@@ -1420,8 +1388,7 @@ namespace BenMAP
                 writer.Write("InflationDatasets");
                 writer.Write(dsInflationDatasetscount);
                 commandText = string.Format("select InflationDatasetID,SetupID,InflationDatasetName from InflationDatasets where {0}", setupid);
-                List<string> lstType = new List<string>() { "int", "int", "string" };
-                writeOneTable(writer, commandText, lstType);
+                writeOneTable(writer, commandText);
 
                 pBarExport.Value = 0;
                 lbProcess.Text = "Exporting inflation entries...";
@@ -1435,8 +1402,7 @@ namespace BenMAP
                 writer.Write("InflationEntries");
                 writer.Write(dsInflationEntriescount);
                 commandText = string.Format("select InflationDatasetID,Yyear,AllGoodsIndex,MedicalCostIndex,WageIndex from InflationEntries where InflationDatasetID in (select InflationDatasetID from InflationDatasets where {0})", setupid);
-                lstType = new List<string>() { "int", "int", "single", "single", "single" };
-                writeOneTable(writer, commandText, lstType);
+                writeOneTable(writer, commandText);
             }
             catch (Exception ex)
             {
@@ -1462,8 +1428,7 @@ namespace BenMAP
                 writer.Write("ValuationFunctionDatasets");
                 writer.Write(dsValuationFunctionDatasetscount);
                 commandText = string.Format("select ValuationFunctionDatasetID,SetupID,ValuationFunctionDatasetName,Readonly from ValuationFunctionDatasets where {0}", setupid);
-                List<string> lstType = new List<string>() { "int", "int", "string", "char" };
-                writeOneTable(writer, commandText, lstType);
+                writeOneTable(writer, commandText);
 
                 pBarExport.Value = 0;
                 lbProcess.Text = "Exporting valuation functional forms...";
@@ -1477,8 +1442,7 @@ namespace BenMAP
                 writer.Write("ValuationFunctionalForms");
                 writer.Write(dsValuationFunctionalFormscount);
                 commandText = string.Format("select FunctionalFormID,FunctionalFormText from ValuationFunctionalForms where FunctionalFormID in (select FunctionalFormID from ValuationFunctions where ValuationFunctionDatasetID in (select ValuationFunctionDatasetID from ValuationFunctionDatasets where {0}))", setupid);
-                lstType = new List<string>() { "int", "string" };
-                writeOneTable(writer, commandText, lstType);
+                writeOneTable(writer, commandText);
 
                 pBarExport.Value = 0;
                 lbProcess.Text = "Exporting endpointgroups...";
@@ -1492,8 +1456,7 @@ namespace BenMAP
                 writer.Write("EndpointGroups");
                 writer.Write(dsEndpointGroupscount);
                 commandText = string.Format("select EndPointGroupID,EndPointGroupName from EndpointGroups where EndPointGroupID in (select EndPointgroupID from ValuationFunctions where ValuationFunctionDatasetID in (select ValuationFunctionDatasetID from ValuationFunctionDatasets where {0}))", setupid);
-                lstType = new List<string>() { "int", "string" };
-                writeOneTable(writer, commandText, lstType);
+                writeOneTable(writer, commandText);
 
                 pBarExport.Value = 0;
                 lbProcess.Text = "Exporting endpoints...";
@@ -1507,8 +1470,7 @@ namespace BenMAP
                 writer.Write("EndPoints");
                 writer.Write(dsEndPointscount);
                 commandText = string.Format("select EndPointID,EndPointGroupID,EndPointName from EndPoints where EndPointGroupID in (select EndPointgroupID from ValuationFunctions where ValuationFunctionDatasetID in (select ValuationFunctionDatasetID from ValuationFunctionDatasets where {0}))", setupid);
-                lstType = new List<string>() { "int", "int", "string" };
-                writeOneTable(writer, commandText, lstType);
+                writeOneTable(writer, commandText);
 
                 pBarExport.Value = 0;
                 lbProcess.Text = "Exporting valuation functions...";
@@ -1522,8 +1484,7 @@ namespace BenMAP
                 writer.Write("ValuationFunctions");
                 writer.Write(dsValuationFunctionscount);
                 commandText = string.Format("select ValuationFunctionID,ValuationFunctionDatasetID,FunctionalFormID,EndPointGroupID,EndPointID,Qualifier,Reference,StartAge,EndAge,NameA,DistA,NameB,NameC,NameD,A,P1A,P2A,B,C,D from ValuationFunctions where ValuationFunctionDatasetID in (select ValuationFunctionDatasetID from ValuationFunctionDatasets where {0})", setupid);
-                lstType = new List<string>() { "int", "int", "int", "int", "int", "string", "string", "int", "int", "string", "string", "string", "string", "string", "string", "string", "string", "string", "string", "string" };
-                writeOneTable(writer, commandText, lstType);
+                writeOneTable(writer, commandText);
 
                 pBarExport.Value = 0;
                 lbProcess.Text = "Exporting valuation function customentries...";
@@ -1537,8 +1498,7 @@ namespace BenMAP
                 writer.Write("ValuationFunctionCustomEntries");
                 writer.Write(dsValuationFunctionCustomEntriescount);
                 commandText = string.Format("select ValuationFunctionID,Vvalue from ValuationFunctionCustomEntries where ValuationFunctionID in (select ValuationFunctionID from ValuationFunctions where ValuationFunctionDatasetID in (select ValuationFunctionDatasetID from ValuationFunctionDatasets where {0}))", setupid);
-                lstType = new List<string>() { "int", "single" };
-                writeOneTable(writer, commandText, lstType);
+                writeOneTable(writer, commandText);
             }
             catch (Exception ex)
             {
@@ -1564,8 +1524,7 @@ namespace BenMAP
                 writer.Write("IncomeGrowthAdjDatasets");
                 writer.Write(dsIncomeGrowthAdjDatasetscount);
                 commandText = string.Format("select IncomeGrowthAdjDatasetID,SetupID,IncomeGrowthAdjDatasetName from IncomeGrowthAdjDatasets where {0}", setupid);
-                List<string> lstType = new List<string>() { "int", "int", "string" };
-                writeOneTable(writer, commandText, lstType);
+                writeOneTable(writer, commandText);
 
                 pBarExport.Value = 0;
                 lbProcess.Text = "Exporting incomegrowthadj factors...";
@@ -1579,8 +1538,7 @@ namespace BenMAP
                 writer.Write("IncomeGrowthAdjFactors");
                 writer.Write(dsIncomeGrowthAdjFactorscount);
                 commandText = string.Format("select IncomeGrowthAdjDatasetID,Distribution,P1,P2,Yyear,Mean,EndPointGroups from IncomeGrowthAdjFactors where IncomeGrowthAdjDatasetID in (select IncomeGrowthAdjDatasetID from IncomeGrowthAdjDatasets where {0})", setupid);
-                lstType = new List<string>() { "int", "string", "single", "single", "int", "single", "string" };
-                writeOneTable(writer, commandText, lstType);
+                writeOneTable(writer, commandText);
             }
             catch (Exception ex)
             {
