@@ -41,8 +41,20 @@ namespace BenMAP.Configuration
                 {
                     try
                     {
-                        if (baseControlCRSelectFunctionCalculateValue.RBenMapGrid == null) baseControlCRSelectFunctionCalculateValue.RBenMapGrid = baseControlCRSelectFunctionCalculateValue.BaseControlGroup[0].GridType;
+                        if (baseControlCRSelectFunctionCalculateValue.RBenMapGrid == null)
+                        {
+                            baseControlCRSelectFunctionCalculateValue.RBenMapGrid = baseControlCRSelectFunctionCalculateValue.BaseControlGroup[0].GridType;
+                        }
+
+                        //add version
                         baseControlCRSelectFunctionCalculateValue.Version = "BenMAP-CE " + Assembly.GetExecutingAssembly().GetName().Version.ToString().Substring(0, Assembly.GetExecutingAssembly().GetName().Version.ToString().Count() - 2);
+
+                        //add pollutant-var dictionary
+                        if (CommonClass.dicPollutantIDVariableIDAll != null)
+                        {
+                            baseControlCRSelectFunctionCalculateValue.dicPollutantIDVariableIDAll = new Dictionary<int, Dictionary<int, int>>(CommonClass.dicPollutantIDVariableIDAll);
+                        }
+
                         Serializer.Serialize<BaseControlCRSelectFunctionCalculateValue>(fs, baseControlCRSelectFunctionCalculateValue);
 
                         fs.Dispose();
@@ -152,6 +164,13 @@ namespace BenMAP.Configuration
                         }
                         bcg.Pollutant = pollutant;
                     }
+
+
+                    //set pollutant-var dictionary in CommonClass
+                    if (baseControlCRSelectFunctionCalculateValue.dicPollutantIDVariableIDAll != null)
+                    { 
+                        CommonClass.dicPollutantIDVariableIDAll = new Dictionary<int, Dictionary<int, int>>(baseControlCRSelectFunctionCalculateValue.dicPollutantIDVariableIDAll);
+                    }   
 
                     BenMAPPopulation population = getPopulationFromName(baseControlCRSelectFunctionCalculateValue.BenMAPPopulation.DataSetName, benMAPSetup.SetupID, baseControlCRSelectFunctionCalculateValue.BenMAPPopulation.Year);
                     if (population == null)
