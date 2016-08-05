@@ -172,6 +172,10 @@ namespace BenMAP.Configuration
                         }
                     }
 
+                    //remove all interaction pollutants.  they will be generated dynamically on HIF run.
+                    //we remove them here so the interaction pollutants are not displayed in tree nodes
+                    baseControlCRSelectFunctionCalculateValue.BaseControlGroup.RemoveAll(bcg => bcg.Pollutant.PollutantID < 0);
+
 
                     //set pollutant-var dictionary in CommonClass
                     if (baseControlCRSelectFunctionCalculateValue.dicPollutantIDVariableIDAll != null)
