@@ -290,13 +290,20 @@ namespace BenMAP.APVX
                 foreach (BaseControlGroup bcg in valuationMethodPoolingAndAggregation.BaseControlCRSelectFunctionCalculateValue.BaseControlGroup)
                 {
                     bcg.GridType = benMAPGrid;
-                    BenMAPPollutant pollutant = Grid.GridCommon.getPollutantFromName(bcg.Pollutant.PollutantName, benMAPSetup.SetupID);
-                    if (pollutant == null)
+
+                    //only attempt to retrieve pollutants which are not interactions (which have negative (-) pollutantid's)
+                    //interaction pollutants do not exist in the database but are created dynamically
+                    //when a health impact function is run
+                    if (bcg.Pollutant.PollutantID > 0) 
                     {
-                        err = "The pollutant name \"" + bcg.Pollutant.PollutantName + "\" can't be found in the setup \"" + benMAPSetup.SetupName + "\".";
-                        return null;
+                        BenMAPPollutant pollutant = Grid.GridCommon.getPollutantFromName(bcg.Pollutant.PollutantName, benMAPSetup.SetupID);
+                        if (pollutant == null)
+                        {
+                            err = "The pollutant name \"" + bcg.Pollutant.PollutantName + "\" can't be found in the setup \"" + benMAPSetup.SetupName + "\".";
+                            return null;
+                        }
+                        bcg.Pollutant = pollutant;
                     }
-                    bcg.Pollutant = pollutant;
                 }
 
                 BenMAPPopulation population = Configuration.ConfigurationCommonClass.getPopulationFromName(valuationMethodPoolingAndAggregation.BaseControlCRSelectFunctionCalculateValue.BenMAPPopulation.DataSetName, benMAPSetup.SetupID, valuationMethodPoolingAndAggregation.BaseControlCRSelectFunctionCalculateValue.BenMAPPopulation.Year);
