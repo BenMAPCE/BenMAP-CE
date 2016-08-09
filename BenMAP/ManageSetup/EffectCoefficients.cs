@@ -29,7 +29,7 @@ namespace BenMAP
             selected = sel;
             selectedSeason = 0;
             
-            if (_hif.BetaVariation == "Seasonal") seasonal = true;
+            if (_hif.BetaVariation.Trim() == "Seasonal") seasonal = true;
             else seasonal = false;
         }
  
@@ -77,7 +77,12 @@ namespace BenMAP
                     cboBetaDistribution.Items.Add("Beta");
                     cboBetaDistribution.Items.Add("Pareto");
                     cboBetaDistribution.Items.Add("Cauchy");
-                    cboBetaDistribution.Items.Add("Custom");
+                    cboBetaDistribution.Items.Add("Custom"); 
+                    /* ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                    string commandText = "select DISTRIBUTIONNAME from DISTRIBUTIONTYPES order by DISTRIBUTIONNAME";
+                    DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+                    cboBetaDistribution.DataSource = ds.Tables[0];
+                    cboBetaDistribution.DisplayMember = "DISTRIBUTIONNAME"; */
                     cboBetaDistribution.SelectedItem = selectedVariable.PollBetas[selectedSeason].Distribution;
                 }
 
@@ -125,6 +130,7 @@ namespace BenMAP
                 loadMetrics();
 
                 cboBetaDistribution.SelectedIndex = cboBetaDistribution.FindString(selectedVariable.PollBetas[selectedSeason].Distribution);
+                // cboBetaDistribution.Text = selectedVariable.PollBetas[selectedSeason].Distribution;
 
                 cboSeason.SelectionChangeCommitted -= cboSeason_SelectedValueChanged;
                 cboSeason.SelectionChangeCommitted += cboSeason_SelectedValueChanged;
@@ -168,6 +174,7 @@ namespace BenMAP
         {
             saveCurrent(selectedSeason);
             this.DialogResult = DialogResult.OK;
+            cboSeason.Items.Clear();
         }
 
         private void saveCurrent(int seasonInd)
@@ -339,7 +346,9 @@ namespace BenMAP
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 object res = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
                 if (res != null)
+                {
                     selectedVariable.PollBetas[selectedSeason].DistributionTypeID = Convert.ToInt32(res);
+                }
             }
             catch (Exception ex)
             {
@@ -380,8 +389,8 @@ namespace BenMAP
                 healthImpactValues.Beta = txtBeta.Text;
                 healthImpactValues.BetaParameter1 = txtBetaParameter1.Text;
                 healthImpactValues.BetaParameter2 = txtBetaParameter2.Text;
-                if (cboBetaDistribution.SelectedItem.ToString() == "None") { return; }
-                if (cboBetaDistribution.SelectedItem.ToString() == "Custom")
+                if (cboBetaDistribution.SelectedItem.ToString().Trim() == "None") { return; }
+                if (cboBetaDistribution.SelectedItem.ToString().Trim() == "Custom")
                 {
                     list = _hif.PollVariables[selected].PollBetas[selectedSeason].CustomList;
                     if (list.Count == 0)
