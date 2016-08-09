@@ -1254,6 +1254,10 @@ namespace BenMAP
                     writeOneTable(writer, commandText);
                 }
 
+                // need to add pollutant groups
+                // STOPPED HERE
+
+
                 pBarExport.Value = 0;
                 lbProcess.Text = "Exporting functions...";
                 lbProcess.Refresh();
@@ -1268,25 +1272,84 @@ namespace BenMAP
                 // commandText = string.Format("select CrfunctionID,CrfunctionDatasetID,FunctionalFormID,MetricID,SeasonalMetricID,IncidenceDatasetID,PrevalenceDatasetID,VariableDatasetID,LocationTypeID,BaselineFunctionalFormID,EndPointgroupID,EndPointID,PollutantID,Metricstatistic,Author,Yyear,Location,OtherPollutants,Qualifier,Reference,Race,Gender,Startage,EndAge,Beta,DistBeta,P1beta,P2beta,A,NameA,B,NameB,C,NameC,Ethnicity,Percentile from Crfunctions where CrfunctionDatasetID in (select CrfunctionDatasetID from CrFunctionDatasets where {0})", setupid);
                 commandText = string.Format("select CrfunctionID,CrfunctionDatasetID,FunctionalFormID, SeasonalMetricID, IncidenceDatasetID,PrevalenceDatasetID,VariableDatasetID,LocationTypeID,BaselineFunctionalFormID, EndPointgroupID,EndPointID, Metricstatistic,Author,Yyear,Location, OtherPollutants,Qualifier,Reference,Race,Gender,Startage, Ethnicity,Percentile, METADATAID, POLLUTANTGROUPID, MSID, BETAVARIATIONID from Crfunctions where CrfunctionDatasetID in (select CrfunctionDatasetID from CrFunctionDatasets where {0})", setupid);
                 writeOneTable(writer, commandText);
+// REMOVE ME - remove this comment out after testing
+                //pBarExport.Value = 0;
+                //lbProcess.Text = "Exporting HIF custom entries...";
+                //lbProcess.Refresh();
+                //this.Refresh();
+                //commandText = string.Format("select count(*) from CrFunctionCustomEntries where CrfunctionID in (select CrfunctionID from Crfunctions where CrfunctionDatasetID in (select CrfunctionDatasetID from CrFunctionDatasets where {0}))", setupid);
+                //count = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
+                //if (count == 0) { pBarExport.Value = pBarExport.Maximum; lbProcess.Refresh(); this.Refresh(); return; }
+                //pBarExport.Maximum = count;
+                //writer.Write("CrFunctionCustomEntries");
+                //writer.Write(count);
+                //commandText = string.Format("select CrFunctionID,Vvalue from CrFunctionCustomEntries where CrfunctionID in (select CrfunctionID from Crfunctions where CrfunctionDatasetID in (select CrfunctionDatasetID from CrFunctionDatasets where {0}))", setupid);
+                //writeOneTable(writer, commandText);
 
+                // BF-520 - add export CRFVariables
                 pBarExport.Value = 0;
-                lbProcess.Text = "Exporting HIF custom entries...";
+                lbProcess.Text = "Exporting HIF variables ...";
                 lbProcess.Refresh();
                 this.Refresh();
-                commandText = string.Format("select count(*) from CrFunctionCustomEntries where CrfunctionID in (select CrfunctionID from Crfunctions where CrfunctionDatasetID in (select CrfunctionDatasetID from CrFunctionDatasets where {0}))", setupid);
+                commandText = string.Format("select count(*) from CRFVariables where CrfunctionID in (select CrfunctionID from Crfunctions where CrfunctionDatasetID in (select CrfunctionDatasetID from CrFunctionDatasets where {0}))", setupid);
                 count = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
                 if (count == 0) { pBarExport.Value = pBarExport.Maximum; lbProcess.Refresh(); this.Refresh(); return; }
                 pBarExport.Maximum = count;
-                writer.Write("CrFunctionCustomEntries");
+                writer.Write("CRFVariables");
                 writer.Write(count);
-                commandText = string.Format("select CrFunctionID,Vvalue from CrFunctionCustomEntries where CrfunctionID in (select CrfunctionID from Crfunctions where CrfunctionDatasetID in (select CrfunctionDatasetID from CrFunctionDatasets where {0}))", setupid);
-                writeOneTable(writer, commandText);
-                // need to add export CRFUNCTIONPOLLUTANTS
-                // need to add export CRFVariables
-                // need to add crfvarcovar
-                // need to add effect groups???
-                // need to add CRFBETAS
+                commandText = string.Format("select CRFVARIABLEID, CRFUNCTIONID, VARIABLENAME, POLLUTANTNAME, POLLUTANT1ID, POLLUTANT2ID, METRICID from CRFVariables where CrfunctionID in (select CrfunctionID from Crfunctions where CrfunctionDatasetID in (select CrfunctionDatasetID from CrFunctionDatasets where {0}))", setupid);
 
+                writeOneTable(writer, commandText);
+
+                // BF-520 add CRFBetas
+                pBarExport.Value = 0;
+                lbProcess.Text = "Exporting HIF betas ...";
+                lbProcess.Refresh();
+                this.Refresh();
+                commandText = string.Format("select count(*) from CRFBetas where CRfVariableID in (select CRFVariableID from crfVariables where CrfunctionID in (select CrfunctionID from Crfunctions where CrfunctionDatasetID in (select CrfunctionDatasetID from CrFunctionDatasets where {0})))", setupid);
+                count = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
+                if (count == 0) { pBarExport.Value = pBarExport.Maximum; lbProcess.Refresh(); this.Refresh(); return; }
+                pBarExport.Maximum = count;
+                writer.Write("CRFVariables");
+                writer.Write(count);
+
+                commandText = string.Format("SELECT CRFBETAID, CRFVARIABLEID, DISTRIBUTIONTYPEID, SEASONALMETRICSEASONID, BETA, P1BETA, P2BETA, A, NAMEA, B, NAMEB, C, NAMEC FROM CRFBETAS WHERE CRfVariableID in (select CRFVariableID from crfVariables where CrfunctionID in (select CrfunctionID from Crfunctions where CrfunctionDatasetID in (select CrfunctionDatasetID from CrFunctionDatasets where {0})))", setupid);
+                writeOneTable(writer, commandText);
+
+
+                // BF 520 add crfvarcovar
+                pBarExport.Value = 0;
+                lbProcess.Text = "Exporting HIF var/cov ...";
+                lbProcess.Refresh();
+                this.Refresh();
+                commandText = string.Format(" SELECT COUNT(*) FROM CRFVARCOV WHERE CRFBETAID1 IN "
+                            + "( SELECT CRFBETAID FROM CRFBETAS WHERE CRfVariableID in (select CRFVariableID from crfVariables "
+                            + " where CrfunctionID in (select CrfunctionID from Crfunctions where CrfunctionDatasetID in "
+                            + "(select CrfunctionDatasetID from CrFunctionDatasets where setupid =1)))) "
+                            + "OR CRFBETAID2 IN ( SELECT CRFBETAID FROM CRFBETAS WHERE CRfVariableID in "
+                            + "(select CRFVariableID from crfVariables where CrfunctionID in (select CrfunctionID from Crfunctions "
+                            + "where CrfunctionDatasetID in (select CrfunctionDatasetID from CrFunctionDatasets where {0}))))", setupid);
+
+                count = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
+                if (count == 0) { pBarExport.Value = pBarExport.Maximum; lbProcess.Refresh(); this.Refresh(); return; }
+                pBarExport.Maximum = count;
+                writer.Write("CRFVarCov");
+                writer.Write(count);
+
+                commandText = string.Format(" SELECT CRFVARCOVID, CRFBETAID1, CRFBETAID2, VARCOV "
+                            + "FROM CRFVARCOV WHERE CRFBETAID1 IN " 
+                            + "( SELECT CRFBETAID FROM CRFBETAS WHERE CRfVariableID in (select CRFVariableID from crfVariables "
+                            + " where CrfunctionID in (select CrfunctionID from Crfunctions where CrfunctionDatasetID in "
+                            + "(select CrfunctionDatasetID from CrFunctionDatasets where setupid =1)))) "
+                            + "OR CRFBETAID2 IN ( SELECT CRFBETAID FROM CRFBETAS WHERE CRfVariableID in "
+                            + "(select CRFVariableID from crfVariables where CrfunctionID in (select CrfunctionID from Crfunctions "
+                            + "where CrfunctionDatasetID in (select CrfunctionDatasetID from CrFunctionDatasets where {0}))))", setupid);
+                writeOneTable(writer, commandText);
+                                
+                
+                // BF-520 - need to add export CRFUNCTIONPOLLUTANTS
+                
+                
             }
             catch (Exception ex)
             {
@@ -1373,6 +1436,9 @@ namespace BenMAP
 
         private void WriteInflation(BinaryWriter writer, string setupid)
         {
+            // REMOVE ME - temporarly comment out for testing - remove next line for production code
+            return;
+            
             try
             {
                 pBarExport.Value = 0;
@@ -1413,6 +1479,9 @@ namespace BenMAP
 
         private void WriteValuation(BinaryWriter writer, string setupid)
         {
+            // REMOVE ME - temporarly comment out for testing - remove next line for production code
+            return;
+            
             try
             {
                 pBarExport.Value = 0;
@@ -1509,6 +1578,9 @@ namespace BenMAP
 
         private void WriteIncomeGrowth(BinaryWriter writer, string setupid)
         {
+            // REMOVE ME - temporarly comment out for testing - remove next line for production code
+            return;
+            
             try
             {
                 pBarExport.Value = 0;
