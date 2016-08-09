@@ -25,7 +25,11 @@ namespace BenMAP
         private const int HEALTHIMPACTDATASETID = 6; // BenMAP-322 - hardcoded to health impact dataset type
         List<int> lstdeleteCRFunctionid = new List<int>();
         // Dictionary<int, List<CRFVariable>> dicVariables = new Dictionary<int, List<CRFVariable>>(); 
+        // CRFunctionId, List of CRFVariables for that function
         private Dictionary<int, List<CRFVariable>> variableLists;
+        // Used to flag when variables have been changed/ 
+        // inserts should be made instead of update
+        private List<int> toInsert; 
 
         public HealthImpactDataSetDefinition()
         {
@@ -35,6 +39,7 @@ namespace BenMAP
 
             variableLists = new Dictionary<int, List<CRFVariable>>();
             // initialize variable and beta lists??
+            toInsert = new List<int>();
         }
 
         /// <summary>
@@ -51,6 +56,7 @@ namespace BenMAP
 
             variableLists = new Dictionary<int, List<CRFVariable>>();
             // initialize variable and beta lists??
+            toInsert = new List<int>();
         }
 
         private void getcrFunctionDatasetID()
@@ -426,7 +432,7 @@ namespace BenMAP
         {   //for this block only - replacing _dt with dtForLoading.  this is so that only new files that get loaded will/should get assoceated with the new metadata id.
             if (_dt.Rows.Count < 1)
             {
-                MessageBox.Show("No dataset was selected for import or created.  Please select a dataset to import or 'Add' information to careate a data set.");
+                MessageBox.Show("No dataset was selected for import or created.  Please select a dataset to import or 'Add' information to create a data set.");
                 btnBrowse.Focus();
                 return;
             }
@@ -740,56 +746,98 @@ namespace BenMAP
                         {
                             MetricStatisticID = 5;
                         }
-                        // 2015 09 29 BENMAP-353                        
-                        //_metadataObj = SQLStatementsCommonClass.getMetadata(_datasetID, CommonClass.ManageSetup.SetupID, HEALTHIMPACTDATASETID);
-                        // ToEdit -- PollutantID -- is this group id or no and remove one -- remove metric ID
-                        commandText = string.Format("insert into CRFunctions values({0},{1},{2},{3},{4},{5},{6},{7},'{8}',{9},'{10}','{11}','{12}','{13}','{14}','{15}'," +
-                            "{16},{17},{18},{19},{20},{21},{22},'{23}',{24},{25},{26},{27})",
+
+                        commandText = string.Format("insert into CRFunctions(CRFUNCTIONID, CRFUNCTIONDATASETID, ENDPOINTGROUPID, ENDPOINTID, "
+                            + "SEASONALMETRICID, METRICSTATISTIC, AUTHOR, YYEAR, LOCATION, OTHERPOLLUTANTS, "
+                            + "QUALIFIER, REFERENCE, RACE, GENDER, STARTAGE, ENDAGE, FUNCTIONALFORMID, INCIDENCEDATASETID, PREVALENCEDATASETID, "
+                            + "VARIABLEDATASETID, BASELINEFUNCTIONALFORMID, ETHNICITY, PERCENTILE, LOCATIONTYPEID, POLLUTANTGROUPID, MSID, BETAVARIATIONID) "
+                            + " values({0},{1},{2},{3},{4},{5},'{6}',{7},'{8}','{9}','{10}','{11}','{12}','{13}', " +
+                            "{14},{15},{16},{17},{18},{19},{20},'{21}',{22},{23},{24},{25},{26})",
                             CRFunctionID, crFunctionDataSetID, EndpointGroupID, EndpointID, SeasonalMetricID, MetricStatisticID,
                             _dt.Rows[row][6].ToString().Replace("'", "''"), Convert.ToInt16(_dt.Rows[row][7].ToString()), _dt.Rows[row][9].ToString().Replace("'", "''"),
                             _dt.Rows[row][10].ToString().Replace("'", "''"), _dt.Rows[row][11].ToString().Replace("'", "''"), _dt.Rows[row][12].ToString().Replace("'", "''"),
-                            _dt.Rows[row][13].ToString().Replace("'", "''"), _dt.Rows[row][15].ToString().Replace("'", "''"), _dt.Rows[row][16], _dt.Rows[row][17], FunctionID,
-                            IncidenceID, PrevalenceID, VariableID, BaselineFunctionID, _dt.Rows[row][14].ToString().Replace("'", "''"), 0,
-                            LocationtypeID, _metadataObj.MetadataEntryId, PollutantID, ModelSpecID, BetaVarID);
+                            _dt.Rows[row][13].ToString().Replace("'", "''"), _dt.Rows[row][15].ToString().Replace("'", "''"), _dt.Rows[row][16], _dt.Rows[row][17],
+                            FunctionID, IncidenceID, PrevalenceID, VariableID, BaselineFunctionID, _dt.Rows[row][14].ToString().Replace("'", "''"), 0,
+                            LocationtypeID, PollutantGroupID, ModelSpecID, BetaVarID);
 
                         rth = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
 
-                        // ToEdit -- Custom - move to new form or remove
-                        /*if (_dt.Rows[row][21].ToString() == "Custom" && dicCustomValue.ContainsKey(Convert.ToInt32(_dt.Rows[row][25].ToString())) && dicCustomValue[Convert.ToInt32(_dt.Rows[row][25].ToString())].Count > 0)
-                            {
-                            FirebirdSql.Data.FirebirdClient.FbCommand fbCommand = new FirebirdSql.Data.FirebirdClient.FbCommand();
-                            fbCommand.Connection = CommonClass.Connection;
-                            fbCommand.CommandType = CommandType.Text;
-                            fbCommand.Connection.Open();
-                            DataTable dtCustomValue = new DataTable();
-                            DataColumn dc = new DataColumn();
-                            dc.ColumnName = "Value";
-                            dtCustomValue.Columns.Add(dc);
 
-                            foreach (double value in dicCustomValue[Convert.ToInt32(_dt.Rows[row][25])])
+                        List<CRFVariable> varList = new List<CRFVariable>();
+                        if (variableLists.TryGetValue(Convert.ToInt16(_dt.Rows[row][25]), out varList))
+                        {
+
+                            // Insert into CRFVariables table
+                            foreach (CRFVariable v in varList)
                             {
-                                DataRow dr = dtCustomValue.NewRow();
-                                dr["Value"] = value;
-                                dtCustomValue.Rows.Add(dr);
-                            }
-                            int rowCount = dtCustomValue.Rows.Count;
-                            for (int j = 0; j < (rowCount / 125) + 1; j++)
-                            {
-                                commandText = "execute block as declare CRFUNCTIONID int;" + " BEGIN ";
-                                for (int k = 0; k < 125; k++)
+                                // Get new CRFVariableID
+                                commandText = string.Format("select max(CRFVARIABLEID) from CRFVariables");
+                                obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+                                int CRFVariableID = int.Parse(obj.ToString()) + 1;
+
+                                if (v.Metric.MetricName != null)
                                 {
-                                    if (j * 125 + k < rowCount)
-                                    {
-                                        commandText = commandText + string.Format(" insert into CRFUNCTIONCUSTOMENTRIES values ({0},{1});", CRFunctionID, dtCustomValue.Rows[j * 125 + k][0]);
-                                    }
-                                    else
-                                        continue;
+                                    commandText = string.Format("insert into CRFVariables(CRFUNCTIONID,CRFVARIABLEID,VARIABLENAME,POLLUTANTNAME,POLLUTANT1ID,POLLUTANT2ID,METRICID) values ({0},{1},'{2}','{3}',{4},{5},{6})", CRFunctionID, CRFVariableID, v.VariableName, v.PollutantName, v.Pollutant1ID, v.Pollutant2ID, v.Metric.MetricID);
+                                    fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                                 }
-                                commandText = commandText + "END";
-                                fbCommand.CommandText = commandText;
-                                fbCommand.ExecuteNonQuery();
+                                else
+                                {
+                                    commandText = string.Format("insert into CRFVariables(CRFUNCTIONID,CRFVARIABLEID,VARIABLENAME,POLLUTANTNAME,POLLUTANT1ID,POLLUTANT2ID) values ({0},{1},'{2}','{3}',{4},{5})", CRFunctionID, CRFVariableID, v.VariableName, v.PollutantName, v.Pollutant1ID, v.Pollutant2ID);
+                                    fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                                }
+
+                                //Insert into CRFBetas table
+                                foreach (CRFBeta b in v.PollBetas)
+                                {
+                                    // Get new CRFBetaID
+                                    commandText = string.Format("select max(CRFBETAID) from CRFBetas");
+                                    obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+                                    int CRFBetaID = int.Parse(obj.ToString()) + 1;
+
+                                    commandText = string.Format("insert into CRFBetas(crfbetaid, crfvariableid, distributiontypeid, seasonalmetricseasonid, beta, p1beta, p2beta, a, namea, b, nameb, c, namec) values ({0},{1},{2},{3},{4},{5},{6},{7},'{8}',{9},'{10}',{11},'{12}')", CRFBetaID, CRFVariableID, b.DistributionTypeID, b.SeasonalMetricSeasonID, b.Beta, b.P1Beta, b.P2Beta, b.AConstantValue, b.AConstantName, b.BConstantValue, b.BConstantName, b.CConstantValue, b.CConstantName);
+                                    fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+
+                                    // Check for custom distribution
+                                    if (b.Distribution == "Custom" && b.CustomList.Count() > 0)
+                                    {
+                                        FirebirdSql.Data.FirebirdClient.FbCommand fbCommand = new FirebirdSql.Data.FirebirdClient.FbCommand();
+                                        fbCommand.Connection = CommonClass.Connection;
+                                        fbCommand.CommandType = CommandType.Text;
+                                        fbCommand.Connection.Open();
+                                        commandText = "delete from crfunctioncustomentries where crfunctionid =" + CRFunctionID.ToString();
+                                        fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                                        DataTable dtCustomValue = new DataTable();
+                                        DataColumn dc = new DataColumn();
+                                        dc.ColumnName = "Value";
+                                        dtCustomValue.Columns.Add(dc);
+
+                                        foreach (double value in b.CustomList)
+                                        {
+                                            DataRow dr = dtCustomValue.NewRow();
+                                            dr["Value"] = value;
+                                            dtCustomValue.Rows.Add(dr);
+                                        }
+                                        int rowCount = dtCustomValue.Rows.Count;
+                                        for (int k = 0; k < (rowCount / 125) + 1; k++)
+                                        {
+                                            commandText = "execute block as declare CRFUNCTIONID int;" + " BEGIN ";
+                                            for (int t = 0; t < 125; t++)
+                                            {
+                                                if (k * 125 + t < rowCount)
+                                                {
+                                                    commandText = commandText + string.Format(" insert into CRFUNCTIONCUSTOMENTRIES values ({0},{1});", CRFunctionID, dtCustomValue.Rows[k * 125 + t][0]);
+                                                }
+                                                else
+                                                    continue;
+                                            }
+                                            commandText = commandText + "END";
+                                            fbCommand.CommandText = commandText;
+                                            fbCommand.ExecuteNonQuery();
+                                        }
+                                    }
+                                }
                             }
-                        } */
+                        }
                     }
                     if (undefinePollutant.Length > 2)
                     {
@@ -814,6 +862,25 @@ namespace BenMAP
                     if (deleteCRFunctions.Length > 1)
                     {
                         deleteCRFunctions = "(" + deleteCRFunctions.Substring(0, deleteCRFunctions.Length - 1) + ")";
+
+                        // Delete values from VarCov table
+                        commandText = string.Format("delete from crfvarcov where crfbetaid1 in "
+                            + "(select crfbetaid from crfbetas where crfvariableid in "
+                            + "(select crfvariableid from crfvariables where crfunctionid in {0})) "
+                            + "or crfbetaid2 in (select crfbetaid from crfbetas where crfvariableid in ("
+                            + "select crfvariableid from crfvariables where crfunctionid in {0}))", deleteCRFunctions);
+                        fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+
+                        // Delete values from CRFBetas table
+                        commandText = string.Format("delete from crfbetas where crfvariableid in "
+                            + "(select crfvariableid from crfvariables where crfunctionid in {0})", deleteCRFunctions);
+                        fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+
+                        // Delete values from CRFVariables table
+                        commandText = string.Format("delete from crfvariables where crfunctionid in {0}", deleteCRFunctions);
+                        fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+
+                        // Delete function from CRFunctions table 
                         commandText = string.Format("delete from CRFunctions where crfunctionid in {0}", deleteCRFunctions);
                         fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                     }
@@ -892,20 +959,23 @@ namespace BenMAP
                         commandText = string.Format("select first 1 metricid from metrics join pollutantgrouppollutants p on pollutantgroupid={0} or p.pollutantid={1} and metrics.pollutantid=p.pollutantid and lower(metricname)='{2}'", PollutantGroupID, PollutantID, _dt.Rows[row][3].ToString().ToLower());
                         int MetricID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
 
-                        Dictionary<string, string> dicSeasonalMetric = new Dictionary<string, string>();
-                        commandText = string.Format("select SeasonalMetricID,LOWER(SeasonalMetricName) from SeasonalMetrics where MetricID={0} and LOWER(SeasonalMetricName)='{1}'", MetricID, _dt.Rows[row][4].ToString().ToLower());
-                        DataSet dsSeasonMetric = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
-                        foreach (DataRow drSeasonMetric in dsSeasonMetric.Tables[0].Rows)
+                        // Get SeasonalMetricID using SeasonalMetricName and ID from first pollutant 
+                        string SeasonalMetricID = "";
+                        List<CRFVariable> varList = new List<CRFVariable>();
+                        if (variableLists.TryGetValue(Convert.ToInt16(_dt.Rows[row][25]), out varList) && _dt.Rows[row][3].ToString() != string.Empty)
                         {
-                            dicSeasonalMetric.Add(drSeasonMetric["LOWER"].ToString(), drSeasonMetric["SeasonalMetricID"].ToString());
+                            commandText = string.Format("select sm.seasonalmetricid from seasonalmetrics sm left join metrics m on m.metricid = sm.metricid left join pollutants p on p.pollutantid = m.pollutantid where sm.seasonalmetricname = '{0}' and p.pollutantid = {1}", _dt.Rows[row][3].ToString(), varList.First().Pollutant1ID);
+                            fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                            object res = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+                            if (res != null)
+                            {
+                                SeasonalMetricID = Convert.ToInt32(res).ToString();
+                            }
                         }
-
-                        string SeasonalMetricID = string.Empty;
-
-                        if (dicSeasonalMetric.Keys.Contains(_dt.Rows[row][4].ToString().ToLower()))
-                            SeasonalMetricID = dicSeasonalMetric[_dt.Rows[row][4].ToString().ToLower()].ToString();
                         else
+                        {
                             SeasonalMetricID = "NULL";
+                        }
 
                         string PrevalenceID = string.Empty;
 
@@ -961,71 +1031,129 @@ namespace BenMAP
                         else
                             MetricStatisticID = 5;
 
-
-                        if (Convert.ToInt16(_dt.Rows[row][25].ToString()) > 0) // CRFunctionID
+                        if (Convert.ToInt16(_dt.Rows[row][25]) > 0) // CRFunctionID
                         {
-                            commandText = string.Format("update CRFunctions set CRFunctionDataSetID={0},EndpointGroupID={1},EndpointID={2},SeasonalMetricID={3},METRICSTATISTIC={4},AUTHOR='{5}',YYEAR={6},LOCATION='{7}',OTHERPOLLUTANTS='{8}',QUALIFIER='{9}',REFERENCE='{10}',RACE='{11}',GENDER='{12}',STARTAGE={13},ENDAGE={14},FUNCTIONALFORMID={15},INCIDENCEDATASETID={16},PREVALENCEDATASETID={17},VARIABLEDATASETID={18},BASELINEFUNCTIONALFORMID={19},ETHNICITY='{20}',PERCENTILE={21},LOCATIONTYPEID={22},MSID={23},BETAVARIATIONID={24},POLLUTANTGROUPID={25} where CRFunctionID={26}", _datasetID, EndpointGroupID, EndpointID, SeasonalMetricID, MetricStatisticID, _dt.Rows[row][6].ToString().Replace("'", "''"), Convert.ToInt16(_dt.Rows[row][7].ToString()), _dt.Rows[row][9].ToString().Replace("'", "''"), _dt.Rows[row][10].ToString().Replace("'", "''"), _dt.Rows[row][11].ToString().Replace("'", "''"), _dt.Rows[row][12].ToString().Replace("'", "''"), _dt.Rows[row][13].ToString().Replace("'", "''"), _dt.Rows[row][15].ToString().Replace("'", "''"), _dt.Rows[row][16], _dt.Rows[row][17], FunctionID, IncidenceID, PrevalenceID, VariableID, BaselineFunctionID, _dt.Rows[row][14].ToString().Replace("'", "''"), 0, LocationtypeID, ModelSpecID, BetaVarID, PollutantGroupID, Convert.ToInt32(_dt.Rows[row][25].ToString()));
+                            CRFunctionID = Convert.ToInt16(_dt.Rows[row][25]);
+
+                            commandText = string.Format("update CRFunctions set CRFunctionDataSetID={0},EndpointGroupID={1},EndpointID={2},SeasonalMetricID={3},METRICSTATISTIC={4},AUTHOR='{5}',YYEAR={6},LOCATION='{7}',OTHERPOLLUTANTS='{8}',QUALIFIER='{9}',REFERENCE='{10}',RACE='{11}',GENDER='{12}',STARTAGE={13},ENDAGE={14},FUNCTIONALFORMID={15},INCIDENCEDATASETID={16},PREVALENCEDATASETID={17},VARIABLEDATASETID={18},BASELINEFUNCTIONALFORMID={19},ETHNICITY='{20}',PERCENTILE={21},LOCATIONTYPEID={22},MSID={23},BETAVARIATIONID={24},POLLUTANTGROUPID={25} where CRFunctionID={26}", _datasetID, EndpointGroupID, EndpointID, SeasonalMetricID, MetricStatisticID, _dt.Rows[row][6].ToString().Replace("'", "''"), Convert.ToInt16(_dt.Rows[row][7].ToString()), _dt.Rows[row][9].ToString().Replace("'", "''"), _dt.Rows[row][10].ToString().Replace("'", "''"), _dt.Rows[row][11].ToString().Replace("'", "''"), _dt.Rows[row][12].ToString().Replace("'", "''"), _dt.Rows[row][13].ToString().Replace("'", "''"), _dt.Rows[row][15].ToString().Replace("'", "''"), _dt.Rows[row][16], _dt.Rows[row][17], FunctionID, IncidenceID, PrevalenceID, VariableID, BaselineFunctionID, _dt.Rows[row][14].ToString().Replace("'", "''"), 0, LocationtypeID, ModelSpecID, BetaVarID, PollutantGroupID, CRFunctionID);
                             fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
 
 
-                            List<CRFVariable> varList = new List<CRFVariable>();
-                            if (variableLists.TryGetValue(Convert.ToInt16(_dt.Rows[row][25]), out varList))
+                            varList = new List<CRFVariable>();
+                            if (variableLists.TryGetValue(CRFunctionID, out varList))
                             {
-                                // Update CRFVariables table
-                                foreach (CRFVariable v in varList)
+                                // Delete existing data and insert new
+                                if(toInsert.Contains(CRFunctionID))
                                 {
-                                    commandText = string.Format("update CRFVariables set variablename='{0}',pollutantname='{1}',metricid={2} where crfvariableid={3} and crfunctionid={4}", v.VariableName, v.PollutantName, v.Metric.MetricID, v.VariableID, v.FunctionID);
+                                    // --- Deleting ---
+                                    // Delete values from VarCov table
+                                    commandText = string.Format("delete from crfvarcov where crfbetaid1 in "
+                                        + "(select crfbetaid from crfbetas where crfvariableid in "
+                                        + "(select crfvariableid from crfvariables where crfunctionid = {0})) "
+                                        + "or crfbetaid2 in (select crfbetaid from crfbetas where crfvariableid in ("
+                                        + "select crfvariableid from crfvariables where crfunctionid = {0}))", CRFunctionID);
                                     fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
 
-                                    // Update CRFBetas table
-                                    foreach (CRFBeta b in v.PollBetas)
+                                    // Delete values from CRFBetas table
+                                    commandText = string.Format("delete from crfbetas where crfvariableid in "
+                                        + "(select crfvariableid from crfvariables where crfunctionid = {0})", CRFunctionID);
+                                    fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+
+                                    // Delete values from CRFVariables table
+                                    commandText = string.Format("delete from crfvariables where crfunctionid = {0}", CRFunctionID);
+                                    fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+
+                                    // --- Inserting ---
+                                    // Insert into CRFVariables table
+                                    foreach (CRFVariable v in varList)
                                     {
-                                        // Add distribution type 
-                                        commandText = string.Format("update CRFBetas set beta={0},p1beta={1},p2beta={2},a={3},namea='{4}',b={5},nameb='{6}',c={7},namec='{8}' where crfbetaid={9} and crfvariableid={10}", b.Beta, b.P1Beta, b.P2Beta, b.AConstantValue, b.AConstantName, b.BConstantValue, b.BConstantName, b.CConstantValue, b.CConstantName, b.BetaID, v.VariableID);
+                                        // Get new CRFVariableID
+                                        commandText = string.Format("select max(CRFVARIABLEID) from CRFVariables");
+                                        obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+                                        int CRFVariableID = int.Parse(obj.ToString()) + 1;
+
+                                        if (v.Metric.MetricName != null)
+                                        {
+                                            commandText = string.Format("insert into CRFVariables(CRFUNCTIONID,CRFVARIABLEID,VARIABLENAME,POLLUTANTNAME,POLLUTANT1ID,POLLUTANT2ID,METRICID) values ({0},{1},'{2}','{3}',{4},{5},{6})", CRFunctionID, CRFVariableID, v.VariableName, v.PollutantName, v.Pollutant1ID, v.Pollutant2ID, v.Metric.MetricID);
+                                            fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                                        }
+                                        else
+                                        {
+                                            commandText = string.Format("insert into CRFVariables(CRFUNCTIONID,CRFVARIABLEID,VARIABLENAME,POLLUTANTNAME,POLLUTANT1ID,POLLUTANT2ID) values ({0},{1},'{2}','{3}',{4},{5})", CRFunctionID, CRFVariableID, v.VariableName, v.PollutantName, v.Pollutant1ID, v.Pollutant2ID);
+                                            fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                                        }
+
+                                        //Insert into CRFBetas table
+                                        foreach (CRFBeta b in v.PollBetas)
+                                        {
+                                            // Get new CRFBetaID
+                                            commandText = string.Format("select max(CRFBETAID) from CRFBetas");
+                                            obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+                                            int CRFBetaID = int.Parse(obj.ToString()) + 1;
+
+                                            commandText = string.Format("insert into CRFBetas(crfbetaid, crfvariableid, distributiontypeid, seasonalmetricseasonid, beta, p1beta, p2beta, a, namea, b, nameb, c, namec) values ({0},{1},{2},{3},{4},{5},{6},{7},'{8}',{9},'{10}',{11},'{12}')", CRFBetaID, CRFVariableID, b.DistributionTypeID, b.SeasonalMetricSeasonID, b.Beta, b.P1Beta, b.P2Beta, b.AConstantValue, b.AConstantName, b.BConstantValue, b.BConstantName, b.CConstantValue, b.CConstantName);
+                                            fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+
+                                            // Check for custom distribution
+                                            if (b.Distribution == "Custom" && b.CustomList.Count() > 0)
+                                            {
+                                                FirebirdSql.Data.FirebirdClient.FbCommand fbCommand = new FirebirdSql.Data.FirebirdClient.FbCommand();
+                                                fbCommand.Connection = CommonClass.Connection;
+                                                fbCommand.CommandType = CommandType.Text;
+                                                fbCommand.Connection.Open();
+                                                commandText = "delete from crfunctioncustomentries where crfunctionid =" + CRFunctionID.ToString();
+                                                fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                                                DataTable dtCustomValue = new DataTable();
+                                                DataColumn dc = new DataColumn();
+                                                dc.ColumnName = "Value";
+                                                dtCustomValue.Columns.Add(dc);
+
+                                                foreach (double value in b.CustomList)
+                                                {
+                                                    DataRow dr = dtCustomValue.NewRow();
+                                                    dr["Value"] = value;
+                                                    dtCustomValue.Rows.Add(dr);
+                                                }
+                                                int rowCount = dtCustomValue.Rows.Count;
+                                                for (int k = 0; k < (rowCount / 125) + 1; k++)
+                                                {
+                                                    commandText = "execute block as declare CRFUNCTIONID int;" + " BEGIN ";
+                                                    for (int t = 0; t < 125; t++)
+                                                    {
+                                                        if (k * 125 + t < rowCount)
+                                                        {
+                                                            commandText = commandText + string.Format(" insert into CRFUNCTIONCUSTOMENTRIES values ({0},{1});", CRFunctionID, dtCustomValue.Rows[k * 125 + t][0]);
+                                                        }
+                                                        else
+                                                            continue;
+                                                    }
+                                                    commandText = commandText + "END";
+                                                    fbCommand.CommandText = commandText;
+                                                    fbCommand.ExecuteNonQuery();
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+
+                                // Can be updated instead of wiped
+                                else
+                                {
+                                    // Update CRFVariables table
+                                    foreach (CRFVariable v in varList)
+                                    {
+                                        commandText = string.Format("update CRFVariables set variablename='{0}',pollutantname='{1}',metricid={2} where crfvariableid={3} and crfunctionid={4}", v.VariableName, v.PollutantName, v.Metric.MetricID, v.VariableID, v.FunctionID);
                                         fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+
+                                        // Update CRFBetas table
+                                        foreach (CRFBeta b in v.PollBetas)
+                                        {
+                                            commandText = string.Format("update CRFBetas set beta={0},p1beta={1},p2beta={2},a={3},namea='{4}',b={5},nameb='{6}',c={7},namec='{8}',distributiontypeid={9},seasonalmetricseasonid={10} where crfbetaid={11} and crfvariableid={12}", b.Beta, b.P1Beta, b.P2Beta, b.AConstantValue, b.AConstantName, b.BConstantValue, b.BConstantName, b.CConstantValue, b.CConstantName, b.DistributionTypeID,b.SeasonalMetricSeasonID, b.BetaID, v.VariableID);
+                                            fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                                        }
                                     }
                                 }
                             }
-
-                            // ToEdit -- Custom - move to new form or remove
-                            /*if (_dt.Rows[row][21].ToString() == "Custom" && dicCustomValue.ContainsKey(Convert.ToInt32(_dt.Rows[row][25].ToString())) && dicCustomValue[Convert.ToInt32(_dt.Rows[row][25].ToString())].Count > 0)
-                            {
-                                FirebirdSql.Data.FirebirdClient.FbCommand fbCommand = new FirebirdSql.Data.FirebirdClient.FbCommand();
-                                fbCommand.Connection = CommonClass.Connection;
-                                fbCommand.CommandType = CommandType.Text;
-                                fbCommand.Connection.Open();
-
-                                commandText = "delete from crfunctioncustomentries where crfunctionid =" + _dt.Rows[row][25].ToString();
-                                fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
-                                DataTable dtCustomValue = new DataTable();
-                                DataColumn dc = new DataColumn();
-                                dc.ColumnName = "Value";
-                                dtCustomValue.Columns.Add(dc);
-
-                                foreach (double value in dicCustomValue[Convert.ToInt32(_dt.Rows[row][25])])
-                                    {
-                                    DataRow dr = dtCustomValue.NewRow();
-                                    dr["Value"] = value;
-                                    dtCustomValue.Rows.Add(dr);
-                                }
-                                int rowCount = dtCustomValue.Rows.Count;
-                                for (int k = 0; k < (rowCount / 125) + 1; k++)
-                                {
-                                    commandText = "execute block as declare CRFUNCTIONID int;" + " BEGIN ";
-                                    for (int t = 0; t < 125; t++)
-                                    {
-                                        if (k * 125 + t < rowCount)
-                                        {
-                                            commandText = commandText + string.Format(" insert into CRFUNCTIONCUSTOMENTRIES values ({0},{1});", Convert.ToInt32(_dt.Rows[row][25].ToString()), dtCustomValue.Rows[k * 125 + t][0]);
-                                        }
-                                        else
-                                            continue;
-                                    }
-                                    commandText = commandText + "END";
-                                    fbCommand.CommandText = commandText;
-                                    fbCommand.ExecuteNonQuery();
-                                }
-                            }*/
                         }
 
                         // new function
@@ -1048,7 +1176,7 @@ namespace BenMAP
 
                             fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
 
-                            List<CRFVariable> varList = new List<CRFVariable>();
+                            varList = new List<CRFVariable>();
                             if (variableLists.TryGetValue(Convert.ToInt16(_dt.Rows[row][25]), out varList))
                             {
 
@@ -1060,7 +1188,7 @@ namespace BenMAP
                                     obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
                                     int CRFVariableID = int.Parse(obj.ToString()) + 1;
 
-                                    if(v.Metric != null)
+                                    if(v.Metric != null && v.Metric.MetricName != null)
                                     {
                                         commandText = string.Format("insert into CRFVariables(CRFUNCTIONID,CRFVARIABLEID,VARIABLENAME,POLLUTANTNAME,POLLUTANT1ID,POLLUTANT2ID,METRICID) values ({0},{1},'{2}','{3}',{4},{5},{6})", CRFunctionID, CRFVariableID, v.VariableName, v.PollutantName, v.Pollutant1ID, v.Pollutant2ID, v.Metric.MetricID);
                                         fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
@@ -1123,46 +1251,7 @@ namespace BenMAP
                                     } 
                                 }
                             }
-
-                                // ToEdit -- Custom - move to new form or remove
-                                /*if (_dt.Rows[row][21].ToString() == "Custom" && dicCustomValue.ContainsKey(Convert.ToInt32(_dt.Rows[row][25].ToString())) && dicCustomValue[Convert.ToInt32(_dt.Rows[row][25].ToString())].Count > 0)
-                                    {
-                                    FirebirdSql.Data.FirebirdClient.FbCommand fbCommand = new FirebirdSql.Data.FirebirdClient.FbCommand();
-                                    fbCommand.Connection = CommonClass.Connection;
-                                    fbCommand.CommandType = CommandType.Text;
-                                    fbCommand.Connection.Open();
-                                    commandText = "delete from crfunctioncustomentries where crfunctionid =" + CRFunctionID.ToString();
-                                    fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
-                                    DataTable dtCustomValue = new DataTable();
-                                    DataColumn dc = new DataColumn();
-                                    dc.ColumnName = "Value";
-                                    dtCustomValue.Columns.Add(dc);
-
-                                    foreach (double value in dicCustomValue[Convert.ToInt32(_dt.Rows[row][25])])
-                                        {
-                                        DataRow dr = dtCustomValue.NewRow();
-                                        dr["Value"] = value;
-                                        dtCustomValue.Rows.Add(dr);
-                                    }
-                                    int rowCount = dtCustomValue.Rows.Count;
-                                    for (int k = 0; k < (rowCount / 125) + 1; k++)
-                                    {
-                                        commandText = "execute block as declare CRFUNCTIONID int;" + " BEGIN ";
-                                        for (int t = 0; t < 125; t++)
-                                        {
-                                            if (k * 125 + t < rowCount)
-                                            {
-                                                commandText = commandText + string.Format(" insert into CRFUNCTIONCUSTOMENTRIES values ({0},{1});", CRFunctionID, dtCustomValue.Rows[k * 125 + t][0]);
-                                            }
-                                            else
-                                                continue;
-                                        }
-                                        commandText = commandText + "END";
-                                        fbCommand.CommandText = commandText;
-                                        fbCommand.ExecuteNonQuery();
-                                    }
-                                }*/
-                            }
+                        }
                     }
                 } 
                 #endregion
@@ -1316,32 +1405,7 @@ namespace BenMAP
                         poll.PollBetas.Add(new CRFBeta());
                     }
                 }
-                // ToEdit -- Custom - move to new form or remove
-                /* if (olvColumn21.GetValue(olvFunction.SelectedObject).ToString() == "Custom" && Convert.ToInt32(olvColumn33.GetValue(olvFunction.SelectedObject).ToString()) > 0)
-                {
-                    if (dicCustomValue.ContainsKey(Convert.ToInt32(olvColumn33.GetValue(olvFunction.SelectedObject).ToString())))
-                        listCustomValue = dicCustomValue[Convert.ToInt32(olvColumn33.GetValue(olvFunction.SelectedObject).ToString())];
-                    else
-                    {
-                        ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
-                        DataSet ds = new DataSet();
-                        string commandText = string.Format("select Vvalue from CRFUNCTIONCUSTOMENTRIES where CRFUNCTIONID={0}", Convert.ToInt32(olvColumn33.GetValue(olvFunction.SelectedObject).ToString()));
-                        ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
-                        List<double> listCustom = new List<double>();
-                        for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
-                        {
-                            listCustom.Add(Convert.ToDouble(ds.Tables[0].Rows[i][0]));
-                        }
-                        listCustomValue = listCustom;
-                    }
-                }
-                else if (olvColumn21.GetValue(olvFunction.SelectedObject).ToString() == "Custom" && Convert.ToInt32(olvColumn33.GetValue(olvFunction.SelectedObject).ToString()) < 0)
-                {
-                    if (dicCustomValue.ContainsKey(Convert.ToInt32(olvColumn33.GetValue(olvFunction.SelectedObject).ToString())))
-                        listCustomValue = dicCustomValue[Convert.ToInt32(olvColumn33.GetValue(olvFunction.SelectedObject).ToString())];
-                }
-                else
-                    listCustomValue = new List<double>(); */
+
                 if (_dt.Rows.Count == 0) { return; }
 
                 HIFDefinitionMulti frm = new HIFDefinitionMulti(txtHealthImpactFunction.Text, healthImpact);//, listCustomValue);
@@ -1377,24 +1441,18 @@ namespace BenMAP
                         _dt.Rows[i][24] = frm.HealthImpacts.BetaVariation;
                         _dt.Rows[i][25] = Convert.ToInt32(olvcCRFunction.GetValue(olvFunction.SelectedObject).ToString());
 
-                        variableLists.Add(Convert.ToInt32(olvcCRFunction.GetValue(olvFunction.SelectedObject).ToString()), frm.HealthImpacts.PollVariables);
+                        variableLists.Add(Convert.ToInt32(healthImpact.FunctionID), frm.HealthImpacts.PollVariables);
 
-                        /* i = 0;
-                        varList.AddRange(frm.HealthImpacts.PollVariables);
-                        foreach (CRFVariable v in varList)
+                        // Check if Pollutant, Model Spec, Seasonal Metric, or Beta Variation have changed
+                        // If so, variables and betas will need to be deleted and new values inserted
+                        if(healthImpact.Pollutant.Trim() != frm.HealthImpacts.Pollutant.Trim() || 
+                            healthImpact.ModelSpec.Trim() != frm.HealthImpacts.ModelSpec.Trim() ||
+                            healthImpact.SeasonalMetric.Trim() != frm.HealthImpacts.SeasonalMetric.Trim() ||
+                            healthImpact.BetaVariation.Trim() != frm.HealthImpacts.BetaVariation.Trim())
                         {
-                            v.PollBetas.AddRange(frm.HealthImpacts.PollVariables[i].PollBetas);
-                            i++;
-                        } */
 
-
-                        // ToEdit -- Custom - move to new form or remove
-                        /* if (frm.HealthImpacts.BetaDistribution == "Custom" && frm.listCustom.Count > 0)
-                        {
-                            if (dicCustomValue.ContainsKey(Convert.ToInt32(olvColumn33.GetValue(olvFunction.SelectedObject).ToString())))
-                                dicCustomValue.Remove(Convert.ToInt32(olvColumn33.GetValue(olvFunction.SelectedObject).ToString()));
-                            dicCustomValue.Add(Convert.ToInt32(olvColumn33.GetValue(olvFunction.SelectedObject).ToString()), frm.listCustom);
-                        } */
+                            toInsert.Add(Convert.ToInt32(healthImpact.FunctionID));
+                        }
                     }
                 }
                 olvFunction.DataSource = _dt;
@@ -1474,8 +1532,29 @@ namespace BenMAP
                 }
                 else
                 {
-                    // ToEdit: MetricID use ??
-                    commandText = string.Format("select b.endpointgroupname,c.endpointname,d.pollutantname,e.metricname,f.seasonalmetricname,case when Metricstatistic=0 then 'None'  when Metricstatistic=1 then 'Mean' when Metricstatistic=2 then 'Median' when Metricstatistic=3 then 'Max' when Metricstatistic=4 then 'Min' when Metricstatistic=5 then 'Sum'  END as MetricstatisticName,author,yyear,g.locationtypename,location,otherpollutants,qualifier,reference,race,ethnicity,gender,startage,endage,h.functionalformtext,i.functionalformtext,j.incidencedatasetname,k.incidencedatasetname,l.setupvariabledatasetname as variabeldatasetname,m.MSDescription,bv.BetaVariationName,a.CRFUNCTIONID from crfunctions a join CRFVARIABLES vars on(a.CRFunctionID = vars.CRFunctionID) join ModelSpecifications m on (a.MSID = m.MSID) join BetaVariations bv on (a.BetaVariationID = bv.BetaVariationID) left join endpointgroups b on (a.ENDPOINTGROUPID=b.ENDPOINTGROUPID) left join endpoints c on (a.endpointid=c.endpointid) left join pollutants d on (a.pollutantid=d.pollutantid) left join metrics e on (a.metricid=e.metricid) left join seasonalmetrics f on (a.seasonalmetricid=f.seasonalmetricid) left join locationtype g on (a.locationtypeid=g.locationtypeid) left join functionalforms h on (a.functionalformid=h.functionalformid) left join baselinefunctionalforms i on (a.baselinefunctionalformid=i.functionalformid) left join incidencedatasets j on (a.incidencedatasetid=j.incidencedatasetid) left join incidencedatasets k on (a.prevalencedatasetid=k.incidencedatasetid) left join setupvariabledatasets l on (a.variabledatasetid=l.setupvariabledatasetid) where CRFUNCTIONDATASETID=null");
+                    // commandText = string.Format("select b.endpointgroupname,c.endpointname,d.pollutantname,e.metricname,f.seasonalmetricname,case when Metricstatistic=0 then 'None'  when Metricstatistic=1 then 'Mean' when Metricstatistic=2 then 'Median' when Metricstatistic=3 then 'Max' when Metricstatistic=4 then 'Min' when Metricstatistic=5 then 'Sum'  END as MetricstatisticName,author,yyear,g.locationtypename,location,otherpollutants,qualifier,reference,race,ethnicity,gender,startage,endage,h.functionalformtext,i.functionalformtext,j.incidencedatasetname,k.incidencedatasetname,l.setupvariabledatasetname as variabeldatasetname,m.MSDescription,bv.BetaVariationName,a.CRFUNCTIONID from crfunctions a join CRFVARIABLES vars on(a.CRFunctionID = vars.CRFunctionID) join ModelSpecifications m on (a.MSID = m.MSID) join BetaVariations bv on (a.BetaVariationID = bv.BetaVariationID) left join endpointgroups b on (a.ENDPOINTGROUPID=b.ENDPOINTGROUPID) left join endpoints c on (a.endpointid=c.endpointid) left join pollutants d on (a.pollutantid=d.pollutantid) left join metrics e on (a.metricid=e.metricid) left join seasonalmetrics f on (a.seasonalmetricid=f.seasonalmetricid) left join locationtype g on (a.locationtypeid=g.locationtypeid) left join functionalforms h on (a.functionalformid=h.functionalformid) left join baselinefunctionalforms i on (a.baselinefunctionalformid=i.functionalformid) left join incidencedatasets j on (a.incidencedatasetid=j.incidencedatasetid) left join incidencedatasets k on (a.prevalencedatasetid=k.incidencedatasetid) left join setupvariabledatasets l on (a.variabledatasetid=l.setupvariabledatasetid) where CRFUNCTIONDATASETID=null");
+                    commandText = string.Format("select b.endpointgroupname,c.endpointname,d.pgname,f.seasonalmetricname, a.metadataid, " +
+                        "case when Metricstatistic = 0 then 'None'  when Metricstatistic = 1 then 'Mean' when Metricstatistic = 2 " +
+                        "then 'Median' when Metricstatistic = 3 then 'Max' when Metricstatistic = 4 then 'Min' when Metricstatistic = 5 " +
+                        "then 'Sum'  END as MetricstatisticName,author,yyear,g.locationtypename,location,otherpollutants,qualifier,reference, " +
+                        "race,ethnicity,gender,startage,endage,h.functionalformtext,i.functionalformtext,j.incidencedatasetname, " +
+                        "k.incidencedatasetname,l.setupvariabledatasetname as variabeldatasetname, " +
+                        "case when msid = NULL then '' when msid = 1 then 'Single Pollutant' when msid = 2 then 'Pollutants in joint effect; no interactions' " +
+                        "when msid = 3 then 'Pollutants in joint effect; first order interactions' END as MSDescription, " +
+                        "case when betavariationid = NULL then '' when betavariationid = 1 then 'Full year' when betavariationid = 2" +
+                        "then 'Seasonal' END as BetaVariationName, " +
+                        "a.CRFUNCTIONID from crfunctions a " +
+                        "join endpointgroups b on (a.ENDPOINTGROUPID = b.ENDPOINTGROUPID) " +
+                        "join endpoints c on(a.endpointid = c.endpointid) " +
+                        "join pollutantgroups d on(a.POLLUTANTGROUPID = d.POLLUTANTGROUPID) " +
+                        "left join seasonalmetrics f on(a.seasonalmetricid = f.seasonalmetricid) " +
+                        "left join locationtype g on(a.locationtypeid = g.locationtypeid) join functionalforms h on(a.functionalformid = h.functionalformid) " +
+                        "left join baselinefunctionalforms i on(a.baselinefunctionalformid = i.functionalformid) " +
+                        "left join incidencedatasets j on(a.incidencedatasetid = j.incidencedatasetid) " +
+                        "left join incidencedatasets k on(a.prevalencedatasetid = k.incidencedatasetid) " +
+                        "left join setupvariabledatasets l on(a.variabledatasetid = l.setupvariabledatasetid) " +
+                        "where CRFUNCTIONDATASETID=null");
+
                     ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                     olvFunction.DataSource = ds.Tables[0];
                     _dt = ds.Tables[0];

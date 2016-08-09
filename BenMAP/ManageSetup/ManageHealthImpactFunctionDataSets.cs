@@ -176,6 +176,35 @@ namespace BenMAP
                 {
                     commandText = string.Format("SELECT CRFUNCTIONDATASETID FROM CRFUNCTIONDATASETS WHERE SETUPID = {0} AND CRFunctionDataSetName = '{1}'", CommonClass.ManageSetup.SetupID, lstAvailableDataSets.Text);
                     crFunctionDatasetId = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text,commandText));
+
+                    // Delete values from VarCov table
+                    commandText = string.Format("delete from crfvarcov "
+                        + "where crfbetaid1 in ("
+                            + "select crfbetaid from crfbetas where crfvariableid in ("
+                            + "select crfvariableid from crfvariables where crfunctionid in ("
+                            + "select crfunctionid from crfunctions where crfunctiondatasetid = {0})))"
+                        + " or crfbetaid2 in ("
+                            + "select crfbetaid from crfbetas where crfvariableid in ("
+                            + "select crfvariableid from crfvariables where crfunctionid in ("
+                            + "select crfunctionid from crfunctions where crfunctiondatasetid = {0})))", crFunctionDatasetId);
+                    fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+
+                    // Delete values from CRFBetas table
+                    commandText = string.Format("delete from crfbetas where crfvariableid in ("
+                        + "select crfvariableid from crfvariables where crfunctionid in ("
+                        + "select crfunctionid from crfunctions where crfunctiondatasetid = {0}))", crFunctionDatasetId);
+                    fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+
+                    // Delete values from CRFVariables table
+                    commandText = string.Format("delete from crfvariables where crfunctionid in ("
+                        + "select crfunctionid from crfunctions where crfunctiondatasetid = {0})", crFunctionDatasetId);
+                    fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+
+                    // Delete functions from CRFunctions table 
+                    commandText = string.Format("delete from crfunctions where crfunctiondatasetid = {0}", crFunctionDatasetId);
+                    fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+
+                    // Delete dataset from CRFunctionDataSets
                     commandText = string.Format("delete from CRFunctionDataSets where CRFunctionDataSetName='{0}' and setupid={1}", lstAvailableDataSets.Text, CommonClass.ManageSetup.SetupID);
                     int i = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                     commandText = "select DATASETTYPEID FROM DATASETTYPES WHERE DATASETTYPENAME = 'Healthfunctions'";
