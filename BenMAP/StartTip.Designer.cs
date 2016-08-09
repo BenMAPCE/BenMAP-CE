@@ -16,6 +16,7 @@ namespace BenMAP
         
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(StartTip));
             this.chkCloseTip = new System.Windows.Forms.CheckBox();
             this.btnOK = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
@@ -86,7 +87,7 @@ namespace BenMAP
             this.label1.Size = new System.Drawing.Size(527, 60);
             this.label1.TabIndex = 6;
             this.label1.Text = "BenMAP-CE uses a series of \"stoplights\" that change colors as you complete each s" +
-                "tage of the program:";
+    "tage of the program:";
             // 
             // pictureBox1
             // 
@@ -305,7 +306,7 @@ namespace BenMAP
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImage = global::BenMAP.Properties.Resources.Welcome;
-            this.ClientSize = new System.Drawing.Size(798, 390);
+            this.ClientSize = new System.Drawing.Size(798, 399);
             this.ControlBox = false;
             this.Controls.Add(this.chkCloseTip);
             this.Controls.Add(this.btnOK);
@@ -318,6 +319,8 @@ namespace BenMAP
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button4);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.ImeMode = System.Windows.Forms.ImeMode.Off;
             this.MaximizeBox = false;
             this.MinimumSize = new System.Drawing.Size(800, 401);
             this.Name = "StartTip";

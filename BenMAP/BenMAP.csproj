@@ -1195,12 +1195,14 @@
     <None Include="Resources\Welcome1.png" />
     <EmbeddedResource Include="APV\Aggregation.resx">
       <DependentUpon>Aggregation.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="APV\APVConfigurationAdvancedSettings.resx">
       <DependentUpon>APVConfigurationAdvancedSettings.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="APV\ChangedCRFunctions.resx">
       <DependentUpon>ChangedCRFunctions.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="APV\IncidencePoolingandAggregation.resx">
       <DependentUpon>IncidencePoolingandAggregation.cs</DependentUpon>
