@@ -20,6 +20,16 @@ namespace BenMAP.Configuration
 {
     public class ConfigurationCommonClass
     {
+
+        public enum incidenceAveraging  // incidence averaging choices
+        {
+            averageAll = 0, // use the average incidence rate across all races/ethnicities/genders
+            averageFiltered = 1, // filter the incidence rate to match the one(s) selected on the health impact form (HealthImpactFunctions.cs)
+        }
+
+        // global variable to hold user selection of averaging type
+        public static incidenceAveraging indidenceAvgSelected = incidenceAveraging.averageAll;
+        
         public static void ClearCRSelectFunctionCalculateValueLHS(ref CRSelectFunctionCalculateValue cRSelectFunctionCalculateValue)
         {
 
@@ -2202,58 +2212,67 @@ namespace BenMAP.Configuration
 
                 // add filter for race
                 //strRace = " and (b.RaceID=6)";
-                if (!string.IsNullOrEmpty(crSelectFunction.Race) && (crSelectFunction.Race.ToLower() != "all"))
+                // BF-531 - check to see if user wants to use average or filtered incidence rates
+                if (ConfigurationCommonClass.indidenceAvgSelected != incidenceAveraging.averageAll)
                 {
-                    if (dicRace.ContainsKey(crSelectFunction.Race))
+                    if (!string.IsNullOrEmpty(crSelectFunction.Race) && (crSelectFunction.Race.ToLower() != "all"))
                     {
-                        int raceID = dicRace[crSelectFunction.Race];
+                        if (dicRace.ContainsKey(crSelectFunction.Race))
+                        {
+                            int raceID = dicRace[crSelectFunction.Race];
 
-                        //string raceSQL = String.Format("SELECT count(*) FROM INCIDENCERATES where incidencedatasetid = {0} and raceid = {1}", iid, raceID);
-                        //int raceCount = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, raceSQL));
-                        //if (raceCount > 0)
-                        //{
+                            //string raceSQL = String.Format("SELECT count(*) FROM INCIDENCERATES where incidencedatasetid = {0} and raceid = {1}", iid, raceID);
+                            //int raceCount = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, raceSQL));
+                            //if (raceCount > 0)
+                            //{
                             //if incidence exists, then use it
                             strRace = string.Format(" and (b.RaceID={0})", raceID);
-                        //}
+                            //}
+                        }
                     }
                 }
-
                 //add filter for ethnicity
                 //strEthnicity = " and (b.EthnicityID=4)";
-                if (!string.IsNullOrEmpty(crSelectFunction.Ethnicity) && (crSelectFunction.Ethnicity.ToLower() != "all"))
+                // BF-531 - check to see if user wants to use average or filtered incidence rates
+                if (ConfigurationCommonClass.indidenceAvgSelected != incidenceAveraging.averageAll)
                 {
-                    if (dicEthnicity.ContainsKey(crSelectFunction.Ethnicity))
+                    if (!string.IsNullOrEmpty(crSelectFunction.Ethnicity) && (crSelectFunction.Ethnicity.ToLower() != "all"))
                     {
-                        int ethnicityID = dicEthnicity[crSelectFunction.Ethnicity];
+                        if (dicEthnicity.ContainsKey(crSelectFunction.Ethnicity))
+                        {
+                            int ethnicityID = dicEthnicity[crSelectFunction.Ethnicity];
 
-                        //if incidence exists, then use it
-                        //string ethnicitySQL = String.Format("SELECT count(*) FROM INCIDENCERATES where incidencedatasetid = {0} and ethnicityid = {1}", iid, ethnicityID);
-                        //int ethnicityCount = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, ethnicitySQL));
-                        //if (ethnicityCount > 0)
-                        //{
+                            //if incidence exists, then use it
+                            //string ethnicitySQL = String.Format("SELECT count(*) FROM INCIDENCERATES where incidencedatasetid = {0} and ethnicityid = {1}", iid, ethnicityID);
+                            //int ethnicityCount = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, ethnicitySQL));
+                            //if (ethnicityCount > 0)
+                            //{
                             strEthnicity = string.Format(" and (b.EthnicityID={0})", ethnicityID);
-                        //}
+                            //}
+                        }
                     }
                 }
-
                 //add filter for gender
                 //strGender = " and (b.GenderID=4)";
-                if (!string.IsNullOrEmpty(crSelectFunction.Gender) && (crSelectFunction.Gender.ToLower() != "all"))
+                // BF-531 - check to see if user wants to use average or filtered incidence rates
+                if (ConfigurationCommonClass.indidenceAvgSelected != incidenceAveraging.averageAll)
                 {
-                    if (dicGender.ContainsKey(crSelectFunction.Gender))
+                    if (!string.IsNullOrEmpty(crSelectFunction.Gender) && (crSelectFunction.Gender.ToLower() != "all"))
                     {
-                        int genderID = dicGender[crSelectFunction.Gender];
+                        if (dicGender.ContainsKey(crSelectFunction.Gender))
+                        {
+                            int genderID = dicGender[crSelectFunction.Gender];
 
-                        //if incidence exists, then use it
-                        //string genderSQL = String.Format("SELECT count(*) FROM INCIDENCERATES where incidencedatasetid = {0} and genderid = {1}", iid, genderID);
-                        //int genderCount = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, genderSQL));
-                        //if (genderCount > 0)
-                        //{
+                            //if incidence exists, then use it
+                            //string genderSQL = String.Format("SELECT count(*) FROM INCIDENCERATES where incidencedatasetid = {0} and genderid = {1}", iid, genderID);
+                            //int genderCount = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, genderSQL));
+                            //if (genderCount > 0)
+                            //{
                             strGender = string.Format(" and (b.GenderID={0})", genderID);
-                        //}
+                            //}
+                        }
                     }
                 }
-
 
 
 
@@ -2385,8 +2404,8 @@ namespace BenMAP.Configuration
             }
 
         }
-      
 
+        
         private static List<string> lstSystemVariableName;
         public static List<string> LstSystemVariableName
         {
