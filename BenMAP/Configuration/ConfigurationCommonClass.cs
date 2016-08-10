@@ -2210,11 +2210,11 @@ namespace BenMAP.Configuration
                 string strEthnicity = "";
                 string strGender = "";                
 
-                // add filter for race
-                //strRace = " and (b.RaceID=6)";
                 // BF-531 - check to see if user wants to use average or filtered incidence rates
                 if (ConfigurationCommonClass.indidenceAvgSelected != incidenceAveraging.averageAll)
                 {
+                    // add filter for race
+                    //strRace = " and (b.RaceID=6)";
                     if (!string.IsNullOrEmpty(crSelectFunction.Race) && (crSelectFunction.Race.ToLower() != "all"))
                     {
                         if (dicRace.ContainsKey(crSelectFunction.Race))
@@ -2230,12 +2230,8 @@ namespace BenMAP.Configuration
                             //}
                         }
                     }
-                }
-                //add filter for ethnicity
-                //strEthnicity = " and (b.EthnicityID=4)";
-                // BF-531 - check to see if user wants to use average or filtered incidence rates
-                if (ConfigurationCommonClass.indidenceAvgSelected != incidenceAveraging.averageAll)
-                {
+                    //add filter for ethnicity
+                    //strEthnicity = " and (b.EthnicityID=4)";
                     if (!string.IsNullOrEmpty(crSelectFunction.Ethnicity) && (crSelectFunction.Ethnicity.ToLower() != "all"))
                     {
                         if (dicEthnicity.ContainsKey(crSelectFunction.Ethnicity))
@@ -2251,12 +2247,9 @@ namespace BenMAP.Configuration
                             //}
                         }
                     }
-                }
-                //add filter for gender
-                //strGender = " and (b.GenderID=4)";
-                // BF-531 - check to see if user wants to use average or filtered incidence rates
-                if (ConfigurationCommonClass.indidenceAvgSelected != incidenceAveraging.averageAll)
-                {
+                
+                    //add filter for gender
+                    //strGender = " and (b.GenderID=4)";
                     if (!string.IsNullOrEmpty(crSelectFunction.Gender) && (crSelectFunction.Gender.ToLower() != "all"))
                     {
                         if (dicGender.ContainsKey(crSelectFunction.Gender))

@@ -19,6 +19,9 @@ namespace BenMAP
             this.txtThreshold = new System.Windows.Forms.TextBox();
             this.lblThreshold = new System.Windows.Forms.Label();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.grpIncidenceAvg = new System.Windows.Forms.GroupBox();
+            this.rbFiltered = new System.Windows.Forms.RadioButton();
+            this.rbAvg = new System.Windows.Forms.RadioButton();
             this.txtRandomSeed = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.chbRunInPointMode = new System.Windows.Forms.CheckBox();
@@ -27,24 +30,37 @@ namespace BenMAP
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
+            this.lblAvgWarning = new System.Windows.Forms.Label();
             this.groupBox3.SuspendLayout();
+            this.grpIncidenceAvg.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
-                                                this.txtThreshold.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtThreshold.Location = new System.Drawing.Point(165, 115);
+            // 
+            // txtThreshold
+            // 
+            this.txtThreshold.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtThreshold.Location = new System.Drawing.Point(334, 115);
             this.txtThreshold.Name = "txtThreshold";
             this.txtThreshold.Size = new System.Drawing.Size(98, 22);
             this.txtThreshold.TabIndex = 10;
             this.txtThreshold.TextChanged += new System.EventHandler(this.txtThreshold_TextChanged);
-                                                this.lblThreshold.AutoSize = true;
+            // 
+            // lblThreshold
+            // 
+            this.lblThreshold.AutoSize = true;
             this.lblThreshold.Location = new System.Drawing.Point(12, 119);
             this.lblThreshold.Name = "lblThreshold";
             this.lblThreshold.Size = new System.Drawing.Size(122, 14);
             this.lblThreshold.TabIndex = 9;
             this.lblThreshold.Text = "Air quality threshold:";
-                                                this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox3.Controls.Add(this.lblAvgWarning);
+            this.groupBox3.Controls.Add(this.grpIncidenceAvg);
             this.groupBox3.Controls.Add(this.txtRandomSeed);
             this.groupBox3.Controls.Add(this.label6);
             this.groupBox3.Controls.Add(this.txtThreshold);
@@ -54,36 +70,85 @@ namespace BenMAP
             this.groupBox3.Controls.Add(this.cboLatinHypercubePoints);
             this.groupBox3.Location = new System.Drawing.Point(11, 3);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(281, 158);
+            this.groupBox3.Size = new System.Drawing.Size(450, 310);
             this.groupBox3.TabIndex = 7;
             this.groupBox3.TabStop = false;
-                                                this.txtRandomSeed.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtRandomSeed.Location = new System.Drawing.Point(165, 87);
+            // 
+            // grpIncidenceAvg
+            // 
+            this.grpIncidenceAvg.Controls.Add(this.rbFiltered);
+            this.grpIncidenceAvg.Controls.Add(this.rbAvg);
+            this.grpIncidenceAvg.Location = new System.Drawing.Point(15, 143);
+            this.grpIncidenceAvg.Name = "grpIncidenceAvg";
+            this.grpIncidenceAvg.Size = new System.Drawing.Size(429, 76);
+            this.grpIncidenceAvg.TabIndex = 15;
+            this.grpIncidenceAvg.TabStop = false;
+            this.grpIncidenceAvg.Text = "Incidence averaging";
+            // 
+            // rbFiltered
+            // 
+            this.rbFiltered.AutoSize = true;
+            this.rbFiltered.Location = new System.Drawing.Point(6, 45);
+            this.rbFiltered.Name = "rbFiltered";
+            this.rbFiltered.Size = new System.Drawing.Size(420, 18);
+            this.rbFiltered.TabIndex = 1;
+            this.rbFiltered.TabStop = true;
+            this.rbFiltered.Text = "Use only matching rates (by race/gender/ethnicity in Health Effects form)";
+            this.rbFiltered.UseVisualStyleBackColor = true;
+            this.rbFiltered.CheckedChanged += new System.EventHandler(this.rbFiltered_CheckedChanged);
+            // 
+            // rbAvg
+            // 
+            this.rbAvg.Location = new System.Drawing.Point(6, 21);
+            this.rbAvg.Name = "rbAvg";
+            this.rbAvg.Size = new System.Drawing.Size(304, 18);
+            this.rbAvg.TabIndex = 0;
+            this.rbAvg.TabStop = true;
+            this.rbAvg.Text = "Use average rates (all race/gender/ethnicities)";
+            this.rbAvg.UseVisualStyleBackColor = true;
+            this.rbAvg.CheckedChanged += new System.EventHandler(this.rbAvg_CheckedChanged);
+            // 
+            // txtRandomSeed
+            // 
+            this.txtRandomSeed.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtRandomSeed.Location = new System.Drawing.Point(334, 87);
             this.txtRandomSeed.Name = "txtRandomSeed";
             this.txtRandomSeed.Size = new System.Drawing.Size(98, 22);
             this.txtRandomSeed.TabIndex = 14;
             this.txtRandomSeed.Text = "1";
-                                                this.label6.AutoSize = true;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
             this.label6.Location = new System.Drawing.Point(12, 91);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(85, 14);
             this.label6.TabIndex = 13;
             this.label6.Text = "Random Seed:";
-                                                this.chbRunInPointMode.AutoSize = true;
+            // 
+            // chbRunInPointMode
+            // 
+            this.chbRunInPointMode.AutoSize = true;
             this.chbRunInPointMode.Location = new System.Drawing.Point(14, 23);
             this.chbRunInPointMode.Name = "chbRunInPointMode";
-            this.chbRunInPointMode.Size = new System.Drawing.Size(126, 16);
+            this.chbRunInPointMode.Size = new System.Drawing.Size(126, 18);
             this.chbRunInPointMode.TabIndex = 0;
             this.chbRunInPointMode.Text = "Run In Point Mode";
             this.chbRunInPointMode.UseVisualStyleBackColor = true;
             this.chbRunInPointMode.CheckedChanged += new System.EventHandler(this.chbRunInPointMode_CheckedChanged);
-                                                this.lblLatinHypercubePoints.AutoSize = true;
+            // 
+            // lblLatinHypercubePoints
+            // 
+            this.lblLatinHypercubePoints.AutoSize = true;
             this.lblLatinHypercubePoints.Location = new System.Drawing.Point(12, 63);
             this.lblLatinHypercubePoints.Name = "lblLatinHypercubePoints";
             this.lblLatinHypercubePoints.Size = new System.Drawing.Size(70, 14);
             this.lblLatinHypercubePoints.TabIndex = 1;
             this.lblLatinHypercubePoints.Text = "Percentiles:";
-                                                this.cboLatinHypercubePoints.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            // 
+            // cboLatinHypercubePoints
+            // 
+            this.cboLatinHypercubePoints.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cboLatinHypercubePoints.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboLatinHypercubePoints.FormattingEnabled = true;
             this.cboLatinHypercubePoints.Items.AddRange(new object[] {
@@ -91,38 +156,62 @@ namespace BenMAP
             "20",
             "50",
             "100"});
-            this.cboLatinHypercubePoints.Location = new System.Drawing.Point(165, 59);
+            this.cboLatinHypercubePoints.Location = new System.Drawing.Point(334, 59);
             this.cboLatinHypercubePoints.Name = "cboLatinHypercubePoints";
             this.cboLatinHypercubePoints.Size = new System.Drawing.Size(98, 22);
             this.cboLatinHypercubePoints.TabIndex = 2;
-                                                this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox2.Controls.Add(this.btnOK);
             this.groupBox2.Controls.Add(this.btnCancel);
-            this.groupBox2.Location = new System.Drawing.Point(11, 167);
+            this.groupBox2.Location = new System.Drawing.Point(11, 319);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(281, 54);
+            this.groupBox2.Size = new System.Drawing.Size(450, 54);
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
-                                                this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnOK.Location = new System.Drawing.Point(198, 18);
+            // 
+            // btnOK
+            // 
+            this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnOK.Location = new System.Drawing.Point(367, 18);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(65, 25);
             this.btnOK.TabIndex = 1;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
-                                                this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnCancel.Location = new System.Drawing.Point(127, 18);
+            // 
+            // btnCancel
+            // 
+            this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnCancel.Location = new System.Drawing.Point(296, 18);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(65, 25);
             this.btnCancel.TabIndex = 0;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
-                                                this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
+            // 
+            // lblAvgWarning
+            // 
+            this.lblAvgWarning.Font = new System.Drawing.Font("Calibri", 9F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblAvgWarning.Location = new System.Drawing.Point(12, 222);
+            this.lblAvgWarning.Name = "lblAvgWarning";
+            this.lblAvgWarning.Size = new System.Drawing.Size(429, 54);
+            this.lblAvgWarning.TabIndex = 16;
+            this.lblAvgWarning.Text = "If matching rates are selected, groups without incidence data will  have point es" +
+    "timates = 0 ";
+            this.lblAvgWarning.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.lblAvgWarning.UseWaitCursor = true;
+            // 
+            // LatinHypercubePoints
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(304, 233);
+            this.ClientSize = new System.Drawing.Size(473, 385);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -134,6 +223,8 @@ namespace BenMAP
             this.Load += new System.EventHandler(this.LatinHypercubePoints_Load);
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
+            this.grpIncidenceAvg.ResumeLayout(false);
+            this.grpIncidenceAvg.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.ResumeLayout(false);
 
@@ -151,5 +242,9 @@ namespace BenMAP
         private System.Windows.Forms.TextBox txtThreshold;
         private System.Windows.Forms.TextBox txtRandomSeed;
         private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.GroupBox grpIncidenceAvg;
+        private System.Windows.Forms.RadioButton rbFiltered;
+        private System.Windows.Forms.RadioButton rbAvg;
+        private System.Windows.Forms.Label lblAvgWarning;
     }
 }
