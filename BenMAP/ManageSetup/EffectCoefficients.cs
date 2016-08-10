@@ -367,8 +367,15 @@ namespace BenMAP
 
         private void editVarBtn_Click(object sender, EventArgs e)
         {
-            VarianceMulti form = new VarianceMulti(_hif, _hif.PollVariables[selected], selectedSeason);
+            CRFBeta temp = new CRFBeta();
+            temp = _hif.PollVariables[selected].PollBetas[selectedSeason].DeepCopy();
+
+            VarianceMulti form = new VarianceMulti(_hif.ModelSpec, _hif.PollVariables[selected].PollutantName, temp);
             DialogResult res = form.ShowDialog();
+            if(res == DialogResult.OK)
+            {
+                _hif.PollVariables[selected].PollBetas[selectedSeason] = form.Beta.DeepCopy();
+            }
         }
 
         private void cboSeason_SelectedValueChanged(object sender, EventArgs e)

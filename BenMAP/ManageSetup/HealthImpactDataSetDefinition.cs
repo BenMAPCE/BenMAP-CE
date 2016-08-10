@@ -659,7 +659,7 @@ namespace BenMAP
                         commandText = string.Format("select first 1 metricid from metrics join pollutantgrouppollutants p on pollutantgroupid={0} or p.pollutantid={1} and metrics.pollutantid=p.pollutantid and lower(metricname)='{2}'", PollutantGroupID, PollutantID, _dt.Rows[row][3].ToString().ToLower());
                         int MetricID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
 
-                        Dictionary<string, string> dicSeasonalMetric = new Dictionary<string, string>();
+                        /* Dictionary<string, string> dicSeasonalMetric = new Dictionary<string, string>();
                         commandText = string.Format("select SeasonalMetricID,LOWER(SeasonalMetricName) from SeasonalMetrics where MetricID={0} and LOWER(SeasonalMetricName)='{1}'", MetricID, _dt.Rows[row][4].ToString().ToLower());
                         DataSet dsSeasonMetric = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                         foreach (DataRow drSeasonMetric in dsSeasonMetric.Tables[0].Rows)
@@ -669,10 +669,28 @@ namespace BenMAP
 
                         string SeasonalMetricID = string.Empty;
 
-                        if (dicSeasonalMetric.Keys.Contains(_dt.Rows[row][4].ToString().ToLower()))
-                            SeasonalMetricID = dicSeasonalMetric[_dt.Rows[row][4].ToString().ToLower()].ToString();
+                        if (dicSeasonalMetric.Keys.Contains(_dt.Rows[row][3].ToString().ToLower()))
+                            SeasonalMetricID = dicSeasonalMetric[_dt.Rows[row][3].ToString().ToLower()].ToString();
                         else
+                            SeasonalMetricID = "NULL"; */
+
+                        // Get SeasonalMetricID using SeasonalMetricName and ID from first pollutant 
+                        string SeasonalMetricID = "";
+                        List<CRFVariable> varList = new List<CRFVariable>();
+                        if (variableLists.TryGetValue(Convert.ToInt16(_dt.Rows[row][25]), out varList) && _dt.Rows[row][3].ToString() != string.Empty)
+                        {
+                            commandText = string.Format("select sm.seasonalmetricid from seasonalmetrics sm left join metrics m on m.metricid = sm.metricid left join pollutants p on p.pollutantid = m.pollutantid where sm.seasonalmetricname = '{0}' and p.pollutantid = {1}", _dt.Rows[row][3].ToString(), varList.First().Pollutant1ID);
+                            fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                            object res = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+                            if (res != null)
+                            {
+                                SeasonalMetricID = Convert.ToInt32(res).ToString();
+                            }
+                        }
+                        else
+                        {
                             SeasonalMetricID = "NULL";
+                        }
 
                         string PrevalenceID = string.Empty;
 
@@ -747,6 +765,8 @@ namespace BenMAP
                             MetricStatisticID = 5;
                         }
 
+                        // Adding new function to new dataset
+
                         commandText = string.Format("insert into CRFunctions(CRFUNCTIONID, CRFUNCTIONDATASETID, ENDPOINTGROUPID, ENDPOINTID, "
                             + "SEASONALMETRICID, METRICSTATISTIC, AUTHOR, YYEAR, LOCATION, OTHERPOLLUTANTS, "
                             + "QUALIFIER, REFERENCE, RACE, GENDER, STARTAGE, ENDAGE, FUNCTIONALFORMID, INCIDENCEDATASETID, PREVALENCEDATASETID, "
@@ -763,7 +783,7 @@ namespace BenMAP
                         rth = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
 
 
-                        List<CRFVariable> varList = new List<CRFVariable>();
+                        varList = new List<CRFVariable>();
                         if (variableLists.TryGetValue(Convert.ToInt16(_dt.Rows[row][25]), out varList))
                         {
 
@@ -793,6 +813,7 @@ namespace BenMAP
                                     commandText = string.Format("select max(CRFBETAID) from CRFBetas");
                                     obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
                                     int CRFBetaID = int.Parse(obj.ToString()) + 1;
+                                    b.BetaID = CRFBetaID;
 
                                     commandText = string.Format("insert into CRFBetas(crfbetaid, crfvariableid, distributiontypeid, seasonalmetricseasonid, beta, p1beta, p2beta, a, namea, b, nameb, c, namec) values ({0},{1},{2},{3},{4},{5},{6},{7},'{8}',{9},'{10}',{11},'{12}')", CRFBetaID, CRFVariableID, b.DistributionTypeID, b.SeasonalMetricSeasonID, b.Beta, b.P1Beta, b.P2Beta, b.AConstantValue, b.AConstantName, b.BConstantValue, b.BConstantName, b.CConstantValue, b.CConstantName);
                                     fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
@@ -837,6 +858,42 @@ namespace BenMAP
                                     }
                                 }
                             }
+
+                            // Insert into CRFVarCov table
+                            // Have to do this after all betas have been set up so that they have ID's
+                            int i = 0;
+                            int CRFVarCovID = 0;
+                            foreach (CRFVariable v in varList)
+                            {
+                                i = 0;
+                                foreach (CRFBeta b in v.PollBetas)
+                                {
+                                    foreach (CRFVarCov cov in b.VarCovar)
+                                    {
+                                        // Get new CRFVarCovID
+                                        commandText = string.Format("select max(CRFVARCOVID) from CRFVarCov");
+                                        obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+                                        CRFVarCovID = int.Parse(obj.ToString()) + 1;
+
+                                        // Get beta ID's 
+                                        if (cov.BetaID1 == 0 && cov.BetaID2 == 0)
+                                        {
+                                            cov.BetaID1 = b.BetaID;
+                                            foreach (CRFVariable cv in varList)
+                                            {
+                                                if (cv.PollutantName == cov.InteractionPollutant)
+                                                {
+                                                    cov.BetaID2 = cv.PollBetas[i].BetaID;
+                                                }
+                                            }
+                                        }
+
+                                        commandText = string.Format("insert into CRFVARCOV (crfvarcovid, crfbetaid1, crfbetaid2, varcov) values ({0},{1},{2},{3})", CRFVarCovID, cov.BetaID1, cov.BetaID2, cov.VarCov);
+                                        fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                                    }
+                                    i++;
+                                }
+                            }
                         }
                     }
                     if (undefinePollutant.Length > 2)
@@ -846,9 +903,8 @@ namespace BenMAP
                     }
                 } 
 
+                // Editing existing function
 
-                #endregion
-                #region Else it has a value (doing an edit)
                 else
                 {
                     commandText = string.Format("update CRFunctionDataSets set CRFunctionDataSetName='{0}' where CRFunctionDataSetID={1}", txtHealthImpactFunction.Text.Replace("'", "''"), _datasetID);
@@ -1090,6 +1146,7 @@ namespace BenMAP
                                             commandText = string.Format("select max(CRFBETAID) from CRFBetas");
                                             obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
                                             int CRFBetaID = int.Parse(obj.ToString()) + 1;
+                                            b.BetaID = CRFBetaID;
 
                                             commandText = string.Format("insert into CRFBetas(crfbetaid, crfvariableid, distributiontypeid, seasonalmetricseasonid, beta, p1beta, p2beta, a, namea, b, nameb, c, namec) values ({0},{1},{2},{3},{4},{5},{6},{7},'{8}',{9},'{10}',{11},'{12}')", CRFBetaID, CRFVariableID, b.DistributionTypeID, b.SeasonalMetricSeasonID, b.Beta, b.P1Beta, b.P2Beta, b.AConstantValue, b.AConstantName, b.BConstantValue, b.BConstantName, b.CConstantValue, b.CConstantName);
                                             fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
@@ -1134,9 +1191,39 @@ namespace BenMAP
                                             }
                                         }
                                     }
+                                    // Insert into CRFVarCov table
+                                    // Have to do this after all betas have been set up so that they have ID's
+                                    int i = 0;
+                                    foreach (CRFVariable v in varList)
+                                    {
+                                        i = 0;
+                                        foreach (CRFBeta b in v.PollBetas)
+                                        {
+                                            foreach (CRFVarCov cov in b.VarCovar)
+                                            {
+                                                foreach (CRFVariable cv in varList)
+                                                {
+                                                    // Get new CRFVarCovID
+                                                    commandText = string.Format("select max(CRFVARCOVID) from CRFVarCov");
+                                                    obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+                                                    int CRFVarCovID = int.Parse(obj.ToString()) + 1;
+
+                                                    if (cov.BetaID1 == 0 && cov.BetaID2 == 0)
+                                                    {
+                                                        cov.BetaID1 = b.BetaID;
+                                                        cov.BetaID2 = cv.PollBetas[i].BetaID;
+                                                    }
+
+                                                    commandText = string.Format("insert into CRFVARCOV (crfvarcovid, crfbetaid1, crfbetaid2, varcov) values ({0},{1},{2},{3})", CRFVarCovID, cov.BetaID1, cov.BetaID2, cov.VarCov);
+                                                    fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                                                }
+                                            }
+                                            i++;
+                                        }
+                                    }
                                 }
 
-                                // Can be updated instead of wiped
+                                // Can be updated instead of wiped out
                                 else
                                 {
                                     // Update CRFVariables table
@@ -1150,14 +1237,20 @@ namespace BenMAP
                                         {
                                             commandText = string.Format("update CRFBetas set beta={0},p1beta={1},p2beta={2},a={3},namea='{4}',b={5},nameb='{6}',c={7},namec='{8}',distributiontypeid={9},seasonalmetricseasonid={10} where crfbetaid={11} and crfvariableid={12}", b.Beta, b.P1Beta, b.P2Beta, b.AConstantValue, b.AConstantName, b.BConstantValue, b.BConstantName, b.CConstantValue, b.CConstantName, b.DistributionTypeID,b.SeasonalMetricSeasonID, b.BetaID, v.VariableID);
                                             fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+
+                                            // Update CRFVarCov table
+                                            foreach (CRFVarCov cov in b.VarCovar)
+                                            {
+                                                commandText = string.Format("update CRFVarCov set crfbetaid1={0}, crfbetaid2={1}, varcov={2} where crfvarcovid={3} and crfbetaid1={4}", cov.BetaID1, cov.BetaID2, cov.VarCov, cov.VarCovID, b.BetaID);
+                                                fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                                            }
                                         }
                                     }
                                 }
                             }
                         }
 
-                        // new function
-
+                        // Adding new function to existing dataset
 
                         else if (Convert.ToInt16(_dt.Rows[row][25].ToString()) < 0)
                         {
@@ -1206,6 +1299,7 @@ namespace BenMAP
                                         commandText = string.Format("select max(CRFBETAID) from CRFBetas");
                                         obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
                                         int CRFBetaID = int.Parse(obj.ToString()) + 1;
+                                        b.BetaID = CRFBetaID;
 
                                         commandText = string.Format("insert into CRFBetas(crfbetaid, crfvariableid, distributiontypeid, seasonalmetricseasonid, beta, p1beta, p2beta, a, namea, b, nameb, c, namec) values ({0},{1},{2},{3},{4},{5},{6},{7},'{8}',{9},'{10}',{11},'{12}')", CRFBetaID, CRFVariableID, b.DistributionTypeID, b.SeasonalMetricSeasonID, b.Beta, b.P1Beta, b.P2Beta, b.AConstantValue, b.AConstantName, b.BConstantValue, b.BConstantName, b.CConstantValue, b.CConstantName);
                                         fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
@@ -1249,6 +1343,37 @@ namespace BenMAP
                                             }
                                         }
                                     } 
+                                }
+
+                                // Insert into CRFVarCov table
+                                // Have to do this after all betas have been set up so that they have ID's
+                                int i = 0;
+                                foreach (CRFVariable v in varList)
+                                {
+                                    i = 0;
+                                    foreach (CRFBeta b in v.PollBetas)
+                                    {
+                                        foreach (CRFVarCov cov in b.VarCovar)
+                                        {
+                                            foreach (CRFVariable cv in varList)
+                                            {
+                                                // Get new CRFVarCovID
+                                                commandText = string.Format("select max(CRFVARCOVID) from CRFVarCov");
+                                                obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+                                                int CRFVarCovID = int.Parse(obj.ToString()) + 1;
+
+                                                if(cov.BetaID1 == 0 && cov.BetaID2 == 0)
+                                                {
+                                                    cov.BetaID1 = b.BetaID;
+                                                    cov.BetaID2 = cv.PollBetas[i].BetaID;
+                                                }
+
+                                                commandText = string.Format("insert into CRFVARCOV (crfvarcovid, crfbetaid1, crfbetaid2, varcov) values ({0},{1},{2},{3})", CRFVarCovID, cov.BetaID1, cov.BetaID2, cov.VarCov);
+                                                fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                                            }
+                                        }
+                                        i++;
+                                    }
                                 }
                             }
                         }

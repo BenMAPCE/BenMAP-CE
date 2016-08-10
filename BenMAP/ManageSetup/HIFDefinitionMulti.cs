@@ -258,6 +258,16 @@ namespace BenMAP
                 _healthImpacts.Incidence = cboIncidenceDataSet.Text;
                 _healthImpacts.Prevalence = cboPrevalenceDataSet.Text;
                 _healthImpacts.Variable = cboVariableDataSet.Text;
+                _healthImpacts.ModelSpec = cboModelSpec.Text.Trim();
+
+                if (_healthImpacts.ModelSpec.Equals("None"))
+                {
+                    _healthImpacts.BetaVariation = "Full year";
+                }
+                else
+                {
+                    _healthImpacts.BetaVariation = "Seasonal";
+                }
 
                 this.DialogResult = DialogResult.OK;
 
@@ -288,14 +298,17 @@ namespace BenMAP
                     cboPollutant.Text = _healthImpacts.Pollutant;
                     cboMetricStatistic.Text = _healthImpacts.MetricStatistic;
                     updateSeasonalMetrics();
+
                     if (_healthImpacts.SeasonalMetric == string.Empty) 
                         cboSeasonalMetric.SelectedIndex = cboSeasonalMetric.FindString("None");
                     else
-                        cboSeasonalMetric.Text = _healthImpacts.SeasonalMetric;
+                        cboSeasonalMetric.Text = _healthImpacts.SeasonalMetric.Trim();
+
                     if (_healthImpacts.ModelSpec == string.Empty)
                         cboModelSpec.SelectedIndex = 0;
                     else
                         cboModelSpec.Text = _healthImpacts.ModelSpec.Trim();
+
                     cboRace.Text = _healthImpacts.Race;
                     cboEthnicity.Text = _healthImpacts.Ethnicity;
                     cboGender.Text = _healthImpacts.Gender;
@@ -479,22 +492,50 @@ namespace BenMAP
                 varList.Columns[1].Width = -1;
                 if (varList.Columns[1].Width < 123) varList.Columns[1].Width = 123;
 
-                // Set up beta objects
+                // Set up beta objects -- also sets up variance/ covariance
+                loadBetaObjects();
+
+                // ToEdit -- Custom set up for now until database changes can occur
+                if (_healthImpacts.PollVariables.Count() == 1 && _healthImpacts.PollVariables.First().PollBetas.Count == 1
+                    && _healthImpacts.PollVariables.First().PollBetas.First().Distribution.Trim() == "Custom")
+                {
+                    CRFBeta temp = _healthImpacts.PollVariables.First().PollBetas.First();
+                    fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                    ds = new DataSet();
+                    commandText = string.Format("select Vvalue from CRFUNCTIONCUSTOMENTRIES where CRFUNCTIONID={0}", _healthImpacts.FunctionID);
+                    ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+
+                    foreach(DataRow d in ds.Tables[0].Rows)
+                    {
+                        temp.CustomList.Add(Convert.ToDouble(d["Vvalue"]));
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+            }
+        }
+
+        private void loadBetaObjects()
+        {
+            try
+            {
                 int j = 0;
                 int numSeasons = 1;
-                string aDesc, bDesc, cDesc;
-                double a, b, c, p1, p2;
+                string str = "";
+                ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 foreach (var pv in _healthImpacts.PollVariables)
                 {
-                    commandText = string.Format("select crfbetaid, beta, a, namea, b, nameb, c, namec, p1beta, p2beta, seasonalmetricseasonname, startday, endday, s.seasonalmetricseasonid, distributionname from crfvariables v left join crfbetas b on b.crfvariableid=v.crfvariableid left join distributiontypes dt on b.distributiontypeid=dt.distributiontypeid left join seasonalmetricseasons s on s.seasonalmetricseasonid=b.seasonalmetricseasonid where crfunctionid={0} and pollutantname='{1}' order by startday", _healthImpacts.FunctionID, pv.PollutantName);
-                    ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+                    string commandText = string.Format("select crfbetaid, beta, a, namea, b, nameb, c, namec, p1beta, p2beta, seasonalmetricseasonname, startday, endday, s.seasonalmetricseasonid, distributionname from crfvariables v left join crfbetas b on b.crfvariableid=v.crfvariableid left join distributiontypes dt on b.distributiontypeid=dt.distributiontypeid left join seasonalmetricseasons s on s.seasonalmetricseasonid=b.seasonalmetricseasonid where crfunctionid={0} and pollutantname='{1}' order by startday", _healthImpacts.FunctionID, pv.PollutantName);
+                    DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                     numSeasons = ds.Tables[0].Rows.Count;
 
                     if (pv.PollBetas == null) pv.PollBetas = new List<CRFBeta>();
 
-                    if(numSeasons > 1)
+                    if (numSeasons > 1)
                     {
-                        for(int i = 1; i <= numSeasons; i++)
+                        for (int i = 1; i <= numSeasons; i++)
                         {
                             DataRow dr = ds.Tables[0].Rows[i - 1];
                             str = string.Format("Season {0}", i);
@@ -509,36 +550,31 @@ namespace BenMAP
                             newBeta.Distribution = dr["distributionname"].ToString();
                             newBeta.SeasonalMetricSeasonID = Convert.ToInt32(dr["seasonalmetricseasonid"]);
 
-                            // Separate query used to get seasonalmetricseasonid
-                            /*commandText = string.Format("select first 1 s.seasonalmetricseasonid from crfvariables v left join crfbetas b on b.crfvariableid=v.crfvariableid left join seasonalmetricseasons s on s.seasonalmetricseasonid=b.seasonalmetricseasonid join seasonalmetrics sm on sm.seasonalmetricid = s.seasonalmetricid where seasonalmetricname='{0}' and pollutantname='{1}' and startday={2} and seasonalmetricseasonname='{3}' order by startday", _healthImpacts.SeasonalMetric, pv.PollutantName, newBeta.StartDate, newBeta.SeasonName);
-                            object res = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
-                            if (res != null)
-                            {
-                                newBeta.SeasonalMetricSeasonID = Convert.ToInt32(res);
-                            }*/
+                            // Set up variance/ covariance
+                            loadCovarianceObjects(newBeta, pv.VariableName);
 
                             if (dr["p1beta"].ToString() != string.Empty)
                                 newBeta.P1Beta = Convert.ToDouble(dr["p1beta"]);
 
-                            if (dr["p2beta"].ToString() != string.Empty) 
+                            if (dr["p2beta"].ToString() != string.Empty)
                                 newBeta.P2Beta = Convert.ToDouble(dr["p2beta"]);
 
-                            if (dr["a"].ToString() != string.Empty) 
+                            if (dr["a"].ToString() != string.Empty)
                                 newBeta.AConstantValue = Convert.ToDouble(dr["a"]);
 
-                            if (dr["namea"].ToString() != string.Empty) 
+                            if (dr["namea"].ToString() != string.Empty)
                                 newBeta.AConstantName = dr["namea"].ToString();
 
-                            if (dr["b"].ToString() != string.Empty) 
+                            if (dr["b"].ToString() != string.Empty)
                                 newBeta.BConstantValue = Convert.ToDouble(dr["b"]);
 
-                            if (dr["nameb"].ToString() != string.Empty) 
+                            if (dr["nameb"].ToString() != string.Empty)
                                 newBeta.BConstantName = dr["nameb"].ToString();
 
-                            if (dr["c"].ToString() != string.Empty) 
+                            if (dr["c"].ToString() != string.Empty)
                                 newBeta.CConstantValue = Convert.ToDouble(dr["c"]);
 
-                            if (dr["namec"].ToString() == string.Empty) 
+                            if (dr["namec"].ToString() == string.Empty)
                                 newBeta.CConstantName = dr["namec"].ToString();
 
                             pv.PollBetas.Add(newBeta);
@@ -552,6 +588,9 @@ namespace BenMAP
                         newBeta.BetaID = Convert.ToInt32(dr["crfbetaid"]);
                         newBeta.Beta = Convert.ToDouble(dr["beta"]);
                         newBeta.Distribution = dr["distributionname"].ToString();
+
+                        // Set up variance/ covariance
+                        loadCovarianceObjects(newBeta, pv.VariableName);
 
                         if (dr["p1beta"].ToString() != string.Empty)
                             newBeta.P1Beta = Convert.ToDouble(dr["p1beta"]);
@@ -587,21 +626,33 @@ namespace BenMAP
                     }
                     j++;
                 }
+            }
+            
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+            }
+        }
 
-                // ToEdit -- Custom set up for now until database changes can occur
-                if (_healthImpacts.PollVariables.Count() == 1 && _healthImpacts.PollVariables.First().PollBetas.Count == 1
-                    && _healthImpacts.PollVariables.First().PollBetas.First().Distribution.Trim() == "Custom")
+        private void loadCovarianceObjects(CRFBeta beta, string varName)
+        {
+            try
+            {
+                ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                string commandText = string.Format("select pollutantname, varcov, crfbetaid1, crfbetaid2, crfvarcovid from crfvariables as crv left join crfbetas as crb on crb.crfvariableid = crv.crfvariableid left join crfvarcov as crvc on crvc.crfbetaID1 = crb.crfbetaid or crvc.crfbetaid2 = crb.crfbetaid where((crfbetaid2={0} and variablename!='{1}') or(crfbetaid1={0} and crfbetaid2={0})) order by char_length(variablename), variablename", beta.BetaID, varName);
+                DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+
+                if (beta.VarCovar == null) { beta.VarCovar = new List<CRFVarCov>(); }
+
+                foreach (DataRow dr in ds.Tables[0].Rows)
                 {
-                    CRFBeta temp = _healthImpacts.PollVariables.First().PollBetas.First();
-                    fb = new ESIL.DBUtility.ESILFireBirdHelper();
-                    ds = new DataSet();
-                    commandText = string.Format("select Vvalue from CRFUNCTIONCUSTOMENTRIES where CRFUNCTIONID={0}", _healthImpacts.FunctionID);
-                    ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
-
-                    foreach(DataRow d in ds.Tables[0].Rows)
-                    {
-                        temp.CustomList.Add(Convert.ToDouble(d["Vvalue"]));
-                    }
+                    CRFVarCov temp = new CRFVarCov();
+                    temp.InteractionPollutant = dr["pollutantname"].ToString();
+                    temp.VarCov = Convert.ToDouble(dr["varcov"]);
+                    temp.BetaID1 = Convert.ToInt32(dr["crfbetaid1"]);
+                    temp.BetaID2 = Convert.ToInt32(dr["crfbetaid2"]);
+                    temp.VarCovID = Convert.ToInt32(dr["crfvarcovid"]);
+                    beta.VarCovar.Add(temp);
                 }
             }
             catch (Exception ex)
@@ -718,7 +769,7 @@ namespace BenMAP
                     if (isFirstOrder) firstOrder.Add(dr["POLLUTANTNAME"].ToString());
                     i++;
                 }
-
+ 
                 if (isFirstOrder)
                 {
                     // Get all combinations of the pollutants
@@ -738,7 +789,24 @@ namespace BenMAP
                     {
                         varName = string.Format("P{0}", i);
                         varList.Items.Add(varName).SubItems.Add(toAdd);
-                        _healthImpacts.PollVariables.Add(new CRFVariable(varName, toAdd, -1));
+                        CRFVariable temp = new CRFVariable();
+                        temp.VariableName = varName;
+                        temp.PollutantName = toAdd;
+
+                        string[] split = toAdd.Split('*');
+                        foreach (CRFVariable v in _healthImpacts.PollVariables)
+                        {
+                            if (v.PollutantName == split[0])
+                            {
+                                temp.Pollutant1ID = v.Pollutant1ID;
+                            }
+                            else if (v.PollutantName == split[1])
+                            {
+                                temp.Pollutant2ID = v.Pollutant1ID;
+                            }
+                        }
+
+                        _healthImpacts.PollVariables.Add(temp);
                         i++;
                     }
                 }
@@ -754,6 +822,8 @@ namespace BenMAP
 
                 varList.Columns[1].Width = -1;
                 if (varList.Columns[1].Width < 123) varList.Columns[1].Width = 123;
+
+                setUpCovariance();
             }
             catch (Exception ex)
             {
@@ -1131,6 +1201,7 @@ namespace BenMAP
                             i++;
                         }
                     }
+                    setUpCovariance();
                 }
                 else
                 {
@@ -1140,11 +1211,45 @@ namespace BenMAP
                         pv.PollBetas.Clear();
                         pv.PollBetas.Add(new CRFBeta());
                     }
+
+                    // Set up variance/ covariance
+                    setUpCovariance();
                 }
             }
             catch (Exception ex)
             {
                 Logger.LogError(ex);
+            }
+        }
+
+        private void setUpCovariance()
+        {
+            int i = 0;
+            foreach (CRFVariable v in _healthImpacts.PollVariables)
+            {
+                i = 0;
+                foreach (CRFBeta b in v.PollBetas)
+                {
+                    if (b.VarCovar == null)
+                    {
+                        b.VarCovar = new List<CRFVarCov>();
+                    }
+
+                    // CRFVarCov temp = new CRFVarCov();
+
+                    foreach (CRFVariable cv in _healthImpacts.PollVariables)
+                    {
+                        CRFVarCov temp = new CRFVarCov();
+                        temp.VarCov = 0.00000;
+                        temp.InteractionPollutant = cv.PollutantName;
+                        temp.BetaID1 = b.BetaID;
+                        temp.BetaID2 = cv.PollBetas[i].BetaID;
+                       b.VarCovar.Add(temp);
+                    }
+
+                    // b.VarCovar.Add(temp);
+                    i++;
+                }
             }
         }
     }
