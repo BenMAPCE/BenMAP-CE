@@ -425,8 +425,7 @@ namespace BenMAP
 
         private void WriteGriddefinition(BinaryWriter writer, string setupid)
         {
-            // REMOVE ME - temporarly comment out for testing - remove next line for production code
-            return;
+            
             try
             {
                 pBarExport.Value = 0;
@@ -552,8 +551,6 @@ namespace BenMAP
 
         private void WritePollutant(BinaryWriter writer, string setupid)
         {
-            // REMOVE ME - temporarly comment out for testing - remove next line for production code
-            return;
             
             try
             {
@@ -673,6 +670,34 @@ namespace BenMAP
                 writer.Write(drSeasonalMetricSeasonscount);
                 commandText = string.Format("select SeasonalMetricseasonID,SeasonalMetricID,StartDay,EndDay,SeasonalMetricType,MetricFunction,PollutantseasonID from SeasonalMetricSeasons where SeasonalMetricID in(select SeasonalMetricID from SeasonalMetrics where MetricID in (select MetricID from Metrics where PollutantID in (select PollutantID from pollutants where {0})))", setupid);
                 writeOneTable(writer, commandText);
+
+                // BF-520 - add write pollutant groups
+                lbProcess.Text = "Exporting pollutant groups...";
+                lbProcess.Refresh();
+                this.Refresh();
+                commandText = string.Format("select count(*) from PollutantGroups where {0}", setupid);
+                Int32 drSeasonalPollutantGroupscount = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
+                if (drSeasonalPollutantGroupscount == 0) { pBarExport.Value = pBarExport.Maximum; lbProcess.Refresh(); this.Refresh(); return; }
+                pBarExport.Maximum = drSeasonalPollutantGroupscount;
+                writer.Write("PollutantGroups");
+                writer.Write(drSeasonalPollutantGroupscount);
+                commandText = string.Format("select POLLUTANTGROUPID, SETUPID, PGNAME, PGDESCRIPTION FROM POLLUTANTGROUPS where {0}", setupid);
+                writeOneTable(writer, commandText);
+
+                // BF-520 - add write pollutant group pollutants
+                lbProcess.Text = "Exporting pollutant group pollutants...";
+                lbProcess.Refresh();
+                this.Refresh();
+                commandText = string.Format("select count(*) from PollutantGroupPollutants where PollutantGroupID in (select PollutantGroupID from PollutantGroups where {0})", setupid);
+                Int32 drSeasonalPollutantGroupPollutantscount = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
+                if (drSeasonalPollutantGroupPollutantscount == 0) { pBarExport.Value = pBarExport.Maximum; lbProcess.Refresh(); this.Refresh(); return; }
+                pBarExport.Maximum = drSeasonalPollutantGroupPollutantscount;
+                writer.Write("PollutantGroupPollutants");
+                writer.Write(drSeasonalPollutantGroupPollutantscount);
+                commandText = string.Format("select POLLUTANTGROUPID, POLLUTANTID FROM POLLUTANTGROUPPOLLUTANTS where POLLUTANTGROUPID IN (SELECT POLLUTANTGROUPID FROM POLLUTANTGROUPS WHERE {0})", setupid);
+                writeOneTable(writer, commandText);
+                
+
             }
             catch (Exception ex)
             {
@@ -683,8 +708,6 @@ namespace BenMAP
 
         private void WriteMonitor(BinaryWriter writer, string setupid)
         {
-            // REMOVE ME - temporarly comment out for testing - remove next line for production code
-            return;
             
             try
             {
@@ -745,8 +768,6 @@ namespace BenMAP
 
         private void WriteIncidence(BinaryWriter writer, string setupid)
         {
-            // REMOVE ME - temporarly comment out for testing - remove next line for production code
-            return;
             
             try
             {
@@ -944,9 +965,7 @@ namespace BenMAP
 
         private void WritePopulation(BinaryWriter writer, string setupid)
         {
-            // REMOVE ME - temporarly comment out for testing - remove next line for production code
-            return;
-            
+                     
             try
             {
                 pBarExport.Value = 0;
@@ -1254,10 +1273,6 @@ namespace BenMAP
                     writeOneTable(writer, commandText);
                 }
 
-                // need to add pollutant groups
-                // STOPPED HERE
-
-
                 pBarExport.Value = 0;
                 lbProcess.Text = "Exporting functions...";
                 lbProcess.Refresh();
@@ -1269,22 +1284,20 @@ namespace BenMAP
                 writer.Write("Crfunctions");
                 writer.Write(count);
                 // BF520 - write BRDX files - modify for new CRFunctions table structure in MP version
-                // commandText = string.Format("select CrfunctionID,CrfunctionDatasetID,FunctionalFormID,MetricID,SeasonalMetricID,IncidenceDatasetID,PrevalenceDatasetID,VariableDatasetID,LocationTypeID,BaselineFunctionalFormID,EndPointgroupID,EndPointID,PollutantID,Metricstatistic,Author,Yyear,Location,OtherPollutants,Qualifier,Reference,Race,Gender,Startage,EndAge,Beta,DistBeta,P1beta,P2beta,A,NameA,B,NameB,C,NameC,Ethnicity,Percentile from Crfunctions where CrfunctionDatasetID in (select CrfunctionDatasetID from CrFunctionDatasets where {0})", setupid);
                 commandText = string.Format("select CrfunctionID,CrfunctionDatasetID,FunctionalFormID, SeasonalMetricID, IncidenceDatasetID,PrevalenceDatasetID,VariableDatasetID,LocationTypeID,BaselineFunctionalFormID, EndPointgroupID,EndPointID, Metricstatistic,Author,Yyear,Location, OtherPollutants,Qualifier,Reference,Race,Gender,Startage, Ethnicity,Percentile, METADATAID, POLLUTANTGROUPID, MSID, BETAVARIATIONID from Crfunctions where CrfunctionDatasetID in (select CrfunctionDatasetID from CrFunctionDatasets where {0})", setupid);
                 writeOneTable(writer, commandText);
-// REMOVE ME - remove this comment out after testing
-                //pBarExport.Value = 0;
-                //lbProcess.Text = "Exporting HIF custom entries...";
-                //lbProcess.Refresh();
-                //this.Refresh();
-                //commandText = string.Format("select count(*) from CrFunctionCustomEntries where CrfunctionID in (select CrfunctionID from Crfunctions where CrfunctionDatasetID in (select CrfunctionDatasetID from CrFunctionDatasets where {0}))", setupid);
-                //count = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
-                //if (count == 0) { pBarExport.Value = pBarExport.Maximum; lbProcess.Refresh(); this.Refresh(); return; }
-                //pBarExport.Maximum = count;
-                //writer.Write("CrFunctionCustomEntries");
-                //writer.Write(count);
-                //commandText = string.Format("select CrFunctionID,Vvalue from CrFunctionCustomEntries where CrfunctionID in (select CrfunctionID from Crfunctions where CrfunctionDatasetID in (select CrfunctionDatasetID from CrFunctionDatasets where {0}))", setupid);
-                //writeOneTable(writer, commandText);
+                pBarExport.Value = 0;
+                lbProcess.Text = "Exporting HIF custom entries...";
+                lbProcess.Refresh();
+                this.Refresh();
+                commandText = string.Format("select count(*) from CrFunctionCustomEntries where CrfunctionID in (select CrfunctionID from Crfunctions where CrfunctionDatasetID in (select CrfunctionDatasetID from CrFunctionDatasets where {0}))", setupid);
+                count = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
+                if (count == 0) { pBarExport.Value = pBarExport.Maximum; lbProcess.Refresh(); this.Refresh(); return; }
+                pBarExport.Maximum = count;
+                writer.Write("CrFunctionCustomEntries");
+                writer.Write(count);
+                commandText = string.Format("select CrFunctionID,Vvalue from CrFunctionCustomEntries where CrfunctionID in (select CrfunctionID from Crfunctions where CrfunctionDatasetID in (select CrfunctionDatasetID from CrFunctionDatasets where {0}))", setupid);
+                writeOneTable(writer, commandText);
 
                 // BF-520 - add export CRFVariables
                 pBarExport.Value = 0;
@@ -1345,10 +1358,7 @@ namespace BenMAP
                             + "(select CRFVariableID from crfVariables where CrfunctionID in (select CrfunctionID from Crfunctions "
                             + "where CrfunctionDatasetID in (select CrfunctionDatasetID from CrFunctionDatasets where {0}))))", setupid);
                 writeOneTable(writer, commandText);
-                                
-                
-                // BF-520 - need to add export CRFUNCTIONPOLLUTANTS
-                
+                                               
                 
             }
             catch (Exception ex)
@@ -1360,8 +1370,6 @@ namespace BenMAP
 
         private void WriteVariable(BinaryWriter writer, string setupid)
         {
-            // REMOVE ME - temporarly comment out for testing - remove next line for production code
-            return;
             
             try
             {
@@ -1436,9 +1444,7 @@ namespace BenMAP
 
         private void WriteInflation(BinaryWriter writer, string setupid)
         {
-            // REMOVE ME - temporarly comment out for testing - remove next line for production code
-            return;
-            
+           
             try
             {
                 pBarExport.Value = 0;
@@ -1479,8 +1485,6 @@ namespace BenMAP
 
         private void WriteValuation(BinaryWriter writer, string setupid)
         {
-            // REMOVE ME - temporarly comment out for testing - remove next line for production code
-            return;
             
             try
             {
@@ -1578,9 +1582,7 @@ namespace BenMAP
 
         private void WriteIncomeGrowth(BinaryWriter writer, string setupid)
         {
-            // REMOVE ME - temporarly comment out for testing - remove next line for production code
-            return;
-            
+           
             try
             {
                 pBarExport.Value = 0;
