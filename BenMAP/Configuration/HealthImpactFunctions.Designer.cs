@@ -32,7 +32,6 @@ namespace BenMAP
             this.chAuthor = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.chStartAge = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.chEndAge = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvColumn22 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.chSeasonalMetric = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.chMetricStatistic = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.chLocations = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
@@ -80,7 +79,6 @@ namespace BenMAP
             this.olvColumn38 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn40 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn42 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvColumn43 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn54 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.chModelSpecificationSelected = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.chBetaVariationSelected = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
@@ -207,7 +205,6 @@ namespace BenMAP
             this.olvSimple.AllColumns.Add(this.chStartAge);
             this.olvSimple.AllColumns.Add(this.chEndAge);
             this.olvSimple.AllColumns.Add(this.olvColumn55);
-            this.olvSimple.AllColumns.Add(this.olvColumn22);
             this.olvSimple.AllColumns.Add(this.chSeasonalMetric);
             this.olvSimple.AllColumns.Add(this.chMetricStatistic);
             this.olvSimple.AllColumns.Add(this.chLocations);
@@ -238,7 +235,6 @@ namespace BenMAP
             this.chAuthor,
             this.chStartAge,
             this.chEndAge,
-            this.olvColumn22,
             this.chSeasonalMetric,
             this.chMetricStatistic,
             this.chLocations,
@@ -334,12 +330,6 @@ namespace BenMAP
             // 
             this.chEndAge.AspectName = "EndAge";
             this.chEndAge.Text = "End Age";
-            // 
-            // olvColumn22
-            // 
-            this.olvColumn22.AspectName = "BetaDistribution";
-            this.olvColumn22.Text = "Beta Distribution";
-            this.olvColumn22.Width = 155;
             // 
             // chSeasonalMetric
             // 
@@ -572,7 +562,6 @@ namespace BenMAP
             this.olvSelected.AllColumns.Add(this.olvColumn38);
             this.olvSelected.AllColumns.Add(this.olvColumn40);
             this.olvSelected.AllColumns.Add(this.olvColumn42);
-            this.olvSelected.AllColumns.Add(this.olvColumn43);
             this.olvSelected.AllColumns.Add(this.olvColumn54);
             this.olvSelected.AllColumns.Add(this.chModelSpecificationSelected);
             this.olvSelected.AllColumns.Add(this.chBetaVariationSelected);
@@ -601,7 +590,6 @@ namespace BenMAP
             this.olvColumn38,
             this.olvColumn40,
             this.olvColumn42,
-            this.olvColumn43,
             this.olvColumn54,
             this.chModelSpecificationSelected,
             this.chBetaVariationSelected});
@@ -773,13 +761,6 @@ namespace BenMAP
             this.olvColumn42.IsEditable = false;
             this.olvColumn42.Text = "Baseline Incidence Function";
             this.olvColumn42.Width = 180;
-            // 
-            // olvColumn43
-            // 
-            this.olvColumn43.AspectName = "BenMAPHealthImpactFunction.BetaDistribution";
-            this.olvColumn43.IsEditable = false;
-            this.olvColumn43.Text = "Beta Distribution";
-            this.olvColumn43.Width = 140;
             // 
             // olvColumn54
             // 
@@ -994,7 +975,6 @@ namespace BenMAP
         private BrightIdeasSoftware.OLVColumn olvColumn19;
         private BrightIdeasSoftware.OLVColumn olvColumn20;
         private BrightIdeasSoftware.OLVColumn olvColumn21;
-        private BrightIdeasSoftware.OLVColumn olvColumn22;
         private BrightIdeasSoftware.OLVColumn olvColumn32;
         private BrightIdeasSoftware.OLVColumn olvColumn33;
         private BrightIdeasSoftware.OLVColumn olvColumn34;
@@ -1006,7 +986,6 @@ namespace BenMAP
         private BrightIdeasSoftware.OLVColumn olvColumn40;
         private BrightIdeasSoftware.OLVColumn olvColumn41;
         private BrightIdeasSoftware.OLVColumn olvColumn42;
-        private BrightIdeasSoftware.OLVColumn olvColumn43;
         private System.Windows.Forms.Button btDelSelectMethod;
         private BrightIdeasSoftware.OLVColumn olvColumn53;
         private BrightIdeasSoftware.OLVColumn olvColumn54;
