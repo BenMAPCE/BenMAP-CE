@@ -41,8 +41,20 @@ namespace BenMAP.Configuration
                 {
                     try
                     {
-                        if (baseControlCRSelectFunctionCalculateValue.RBenMapGrid == null) baseControlCRSelectFunctionCalculateValue.RBenMapGrid = baseControlCRSelectFunctionCalculateValue.BaseControlGroup[0].GridType;
+                        if (baseControlCRSelectFunctionCalculateValue.RBenMapGrid == null)
+                        {
+                            baseControlCRSelectFunctionCalculateValue.RBenMapGrid = baseControlCRSelectFunctionCalculateValue.BaseControlGroup[0].GridType;
+                        }
+
+                        //add version
                         baseControlCRSelectFunctionCalculateValue.Version = "BenMAP-CE " + Assembly.GetExecutingAssembly().GetName().Version.ToString().Substring(0, Assembly.GetExecutingAssembly().GetName().Version.ToString().Count() - 2);
+
+                        //add pollutant-var dictionary
+                        if (CommonClass.dicPollutantIDVariableIDAll != null)
+                        {
+                            baseControlCRSelectFunctionCalculateValue.dicPollutantIDVariableIDAll = new Dictionary<int, Dictionary<int, int>>(CommonClass.dicPollutantIDVariableIDAll);
+                        }
+
                         Serializer.Serialize<BaseControlCRSelectFunctionCalculateValue>(fs, baseControlCRSelectFunctionCalculateValue);
 
                         fs.Dispose();
@@ -53,59 +65,60 @@ namespace BenMAP.Configuration
                         fs.Dispose();
                     }
                 }
+                // DEADCODE BENMAP-570 commented out code after return function as it can never be called
                 return;
-                BaseControlCRSelectFunctionCalculateValue copy = new BaseControlCRSelectFunctionCalculateValue();
-                copy.BaseControlGroup = new List<BaseControlGroup>();
-                foreach (BaseControlGroup bcg in baseControlCRSelectFunctionCalculateValue.BaseControlGroup)
-                {
-                    BaseControlGroup bcgcopy = new BaseControlGroup();
-                    bcgcopy.GridType = bcg.GridType;
-                    bcgcopy.Pollutant = bcg.Pollutant;
-                    bcgcopy.DeltaQ = bcg.DeltaQ;
-                    bcgcopy.Base = DataSourceCommonClass.getBenMapLineCopyOnlyResultCopy(bcg.Base);
-                    bcgcopy.Control = DataSourceCommonClass.getBenMapLineCopyOnlyResultCopy(bcg.Control);
-                    copy.BaseControlGroup.Add(bcgcopy);
-                }
-                copy.BenMAPPopulation = baseControlCRSelectFunctionCalculateValue.BenMAPPopulation;
-                copy.CRLatinHypercubePoints = baseControlCRSelectFunctionCalculateValue.CRLatinHypercubePoints;
-                copy.CRRunInPointMode = baseControlCRSelectFunctionCalculateValue.CRRunInPointMode;
-                copy.CRThreshold = baseControlCRSelectFunctionCalculateValue.CRThreshold;
-                copy.RBenMapGrid = baseControlCRSelectFunctionCalculateValue.RBenMapGrid;
+            //    BaseControlCRSelectFunctionCalculateValue copy = new BaseControlCRSelectFunctionCalculateValue();
+            //    copy.BaseControlGroup = new List<BaseControlGroup>();
+            //    foreach (BaseControlGroup bcg in baseControlCRSelectFunctionCalculateValue.BaseControlGroup)
+            //    {
+            //        BaseControlGroup bcgcopy = new BaseControlGroup();
+            //        bcgcopy.GridType = bcg.GridType;
+            //        bcgcopy.Pollutant = bcg.Pollutant;
+            //        bcgcopy.DeltaQ = bcg.DeltaQ;
+            //        bcgcopy.Base = DataSourceCommonClass.getBenMapLineCopyOnlyResultCopy(bcg.Base);
+            //        bcgcopy.Control = DataSourceCommonClass.getBenMapLineCopyOnlyResultCopy(bcg.Control);
+            //        copy.BaseControlGroup.Add(bcgcopy);
+            //    }
+            //    copy.BenMAPPopulation = baseControlCRSelectFunctionCalculateValue.BenMAPPopulation;
+            //    copy.CRLatinHypercubePoints = baseControlCRSelectFunctionCalculateValue.CRLatinHypercubePoints;
+            //    copy.CRRunInPointMode = baseControlCRSelectFunctionCalculateValue.CRRunInPointMode;
+            //    copy.CRThreshold = baseControlCRSelectFunctionCalculateValue.CRThreshold;
+            //    copy.RBenMapGrid = baseControlCRSelectFunctionCalculateValue.RBenMapGrid;
 
-                copy.lstCRSelectFunctionCalculateValue = new List<CRSelectFunctionCalculateValue>();
-                List<float> lstd = new List<float>();
-                foreach (CRSelectFunctionCalculateValue crr in baseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue)
-                {
-                    CRSelectFunctionCalculateValue crrcopy = new CRSelectFunctionCalculateValue();
-                    crrcopy.CRSelectFunction = crr.CRSelectFunction;
-                    copy.lstCRSelectFunctionCalculateValue.Add(crrcopy);
-                }
+            //    copy.lstCRSelectFunctionCalculateValue = new List<CRSelectFunctionCalculateValue>();
+            //    List<float> lstd = new List<float>();
+            //    foreach (CRSelectFunctionCalculateValue crr in baseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue)
+            //    {
+            //        CRSelectFunctionCalculateValue crrcopy = new CRSelectFunctionCalculateValue();
+            //        crrcopy.CRSelectFunction = crr.CRSelectFunction;
+            //        copy.lstCRSelectFunctionCalculateValue.Add(crrcopy);
+            //    }
 
-                GC.Collect();
-                if (File.Exists(strCRFPath))
-                    File.Delete(strCRFPath);
-
-
-
-                using (FileStream fs = new FileStream(strCRFPath, FileMode.OpenOrCreate))
-                {
-                    BinaryFormatter formatter = new BinaryFormatter();
-                    try
-                    {
-                        formatter.Serialize(fs, copy);
-                    }
-                    catch (Exception ex)
-                    {
-                    }
-                    fs.Close();
-                    fs.Dispose();
-                    copy = null;
-                    formatter = null;
-                    GC.Collect();
-                }
+            //    GC.Collect();
+            //    if (File.Exists(strCRFPath))
+            //        File.Delete(strCRFPath);
 
 
-                GC.Collect();
+
+            //    using (FileStream fs = new FileStream(strCRFPath, FileMode.OpenOrCreate))
+            //    {
+            //        BinaryFormatter formatter = new BinaryFormatter();
+            //        try
+            //        {
+            //            formatter.Serialize(fs, copy);
+            //        }
+            //        catch (Exception ex)
+            //        {
+            //        }
+            //        fs.Close();
+            //        fs.Dispose();
+            //        copy = null;
+            //        formatter = null;
+            //        GC.Collect();
+            //    }
+
+
+            //    GC.Collect();
 
             }
             catch (Exception ex)
@@ -143,14 +156,32 @@ namespace BenMAP.Configuration
                     foreach (BaseControlGroup bcg in baseControlCRSelectFunctionCalculateValue.BaseControlGroup)
                     {
                         bcg.GridType = benMAPGrid;
-                        BenMAPPollutant pollutant = Grid.GridCommon.getPollutantFromName(bcg.Pollutant.PollutantName, benMAPSetup.SetupID);
-                        if (pollutant == null)
+
+                        //only attempt to retrieve pollutants which are not interactions (which have negative (-) pollutantid's)
+                        //interaction pollutants do not exist in the database but are created dynamically
+                        //when a health impact function is run
+                        if (bcg.Pollutant.PollutantID > 0)
                         {
-                            err = "The pollutant name \"" + bcg.Pollutant.PollutantName + "\" can't be found in the setup \"" + benMAPSetup.SetupName + "\".";
-                            return null;
+                            BenMAPPollutant pollutant = Grid.GridCommon.getPollutantFromName(bcg.Pollutant.PollutantName, benMAPSetup.SetupID);
+                            if (pollutant == null)
+                            {
+                                err = "The pollutant name \"" + bcg.Pollutant.PollutantName + "\" can't be found in the setup \"" + benMAPSetup.SetupName + "\".";
+                                return null;
+                            }
+                            bcg.Pollutant = pollutant;
                         }
-                        bcg.Pollutant = pollutant;
                     }
+
+                    //remove all interaction pollutants.  they will be generated dynamically on HIF run.
+                    //we remove them here so the interaction pollutants are not displayed in tree nodes
+                    baseControlCRSelectFunctionCalculateValue.BaseControlGroup.RemoveAll(bcg => bcg.Pollutant.PollutantID < 0);
+
+
+                    //set pollutant-var dictionary in CommonClass
+                    if (baseControlCRSelectFunctionCalculateValue.dicPollutantIDVariableIDAll != null)
+                    { 
+                        CommonClass.dicPollutantIDVariableIDAll = new Dictionary<int, Dictionary<int, int>>(baseControlCRSelectFunctionCalculateValue.dicPollutantIDVariableIDAll);
+                    }   
 
                     BenMAPPopulation population = getPopulationFromName(baseControlCRSelectFunctionCalculateValue.BenMAPPopulation.DataSetName, benMAPSetup.SetupID, baseControlCRSelectFunctionCalculateValue.BenMAPPopulation.Year);
                     if (population == null)
@@ -335,13 +366,20 @@ namespace BenMAP.Configuration
                     foreach (BaseControlGroup bcg in baseControlCRSelectFunction.BaseControlGroup)
                     {
                         bcg.GridType = benMAPGrid;
-                        BenMAPPollutant pollutant = Grid.GridCommon.getPollutantFromName(bcg.Pollutant.PollutantName, benMAPSetup.SetupID);
-                        if (pollutant == null)
+
+                        //only attempt to retrieve pollutants which are not interactions (which have negative (-) pollutantid's)
+                        //interaction pollutants do not exist in the database but are created dynamically
+                        //when a health impact function is run
+                        if (bcg.Pollutant.PollutantID > 0)
                         {
-                            err = "The pollutant name \"" + bcg.Pollutant.PollutantName + "\" can't be found in the setup \"" + benMAPSetup.SetupName + "\".";
-                            return null;
+                            BenMAPPollutant pollutant = Grid.GridCommon.getPollutantFromName(bcg.Pollutant.PollutantName, benMAPSetup.SetupID);
+                            if (pollutant == null)
+                            {
+                                err = "The pollutant name \"" + bcg.Pollutant.PollutantName + "\" can't be found in the setup \"" + benMAPSetup.SetupName + "\".";
+                                return null;
+                            }
+                            bcg.Pollutant = pollutant;
                         }
-                        bcg.Pollutant = pollutant;
                     }
 
                     BenMAPPopulation population = getPopulationFromName(baseControlCRSelectFunction.BenMAPPopulation.DataSetName, benMAPSetup.SetupID, baseControlCRSelectFunction.BenMAPPopulation.Year);

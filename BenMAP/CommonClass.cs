@@ -3780,6 +3780,14 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
         public DateTime CreateTime;
         [ProtoMember(11)]
         public string Version;
+        //dicPollutantIDVariableIDAll contains dictionaries
+        //which map the pollutantID (key) with the variableid (value); necessary for multipollutant interaction surfaces
+        //the key for dicPollutantIDVariableIDAll is the CRID which on the selected HIF's (CRSelectFunction) objects
+        //we add it to this class (BaseControlCRSelectFunctionCalculateValue) because it is this class
+        //which is serialized in the ConfigurationCommonClass.SaveCRFRFile.
+        //we need the pollutant-var dictionaries on deserialization
+        [ProtoMember(12)]
+        public Dictionary<int, Dictionary<int, int>> dicPollutantIDVariableIDAll;
     }
 
 
