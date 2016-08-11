@@ -588,7 +588,7 @@ namespace BenMAP.Configuration
                 benMapHealthImpactFunction.EndPointID = Convert.ToInt32(dr["EndPointID"]);
                 benMapHealthImpactFunction.PollutantGroup = Grid.GridCommon.getPollutantGroupFromID(Convert.ToInt32(dr["PollutantGroupID"]));
                 //use first pollutant in group, this assumes all pollutants in group have the same metrics
-                benMapHealthImpactFunction.Metric = Grid.GridCommon.getMetricFromPollutantAndID(benMapHealthImpactFunction.PollutantGroup.Pollutants.First(), Convert.ToInt32(dr["MetricID"]));
+                // benMapHealthImpactFunction.Metric = Grid.GridCommon.getMetricFromPollutantAndID(benMapHealthImpactFunction.PollutantGroup.Pollutants.First(), Convert.ToInt32(dr["MetricID"]));
                 benMapHealthImpactFunction.SeasonalMetric = null;
                 if ((dr["SeasonalMetricID"] is DBNull) == false)
                 {

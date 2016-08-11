@@ -217,7 +217,7 @@ namespace BenMAP
                         commandText = string.Format("insert into BaselineFunctionalForms values ({0},'{1}')", BaselienFunctionID, txtBaselineIncidenceFunction.Text);
                         int rtn = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                     }
-                }
+                } 
 
                 bool ok = false;
                 ok = IsValidDate(txtYear.Text);
@@ -527,7 +527,7 @@ namespace BenMAP
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 foreach (var pv in _healthImpacts.PollVariables)
                 {
-                    string commandText = string.Format("select crfbetaid, beta, a, namea, b, nameb, c, namec, p1beta, p2beta, seasonalmetricseasonname, startday, endday, s.seasonalmetricseasonid, distributionname from crfvariables v left join crfbetas b on b.crfvariableid=v.crfvariableid left join distributiontypes dt on b.distributiontypeid=dt.distributiontypeid left join seasonalmetricseasons s on s.seasonalmetricseasonid=b.seasonalmetricseasonid where crfunctionid={0} and pollutantname='{1}' order by startday", _healthImpacts.FunctionID, pv.PollutantName);
+                    string commandText = string.Format("select crfbetaid, beta, a, namea, b, nameb, c, namec, p1beta, p2beta, seasonalmetricseasonname, startday, endday, s.seasonalmetricseasonid, distributionname, dt.distributiontypeid from crfvariables v left join crfbetas b on b.crfvariableid=v.crfvariableid left join distributiontypes dt on b.distributiontypeid=dt.distributiontypeid left join seasonalmetricseasons s on s.seasonalmetricseasonid=b.seasonalmetricseasonid where crfunctionid={0} and pollutantname='{1}' order by startday", _healthImpacts.FunctionID, pv.PollutantName);
                     DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                     numSeasons = ds.Tables[0].Rows.Count;
 
@@ -549,6 +549,7 @@ namespace BenMAP
                             newBeta.EndDate = dr["endday"].ToString();
                             newBeta.Distribution = dr["distributionname"].ToString();
                             newBeta.SeasonalMetricSeasonID = Convert.ToInt32(dr["seasonalmetricseasonid"]);
+                            newBeta.DistributionTypeID = Convert.ToInt32(dr["distributiontypeid"]);
 
                             // Set up variance/ covariance
                             loadCovarianceObjects(newBeta, pv.VariableName);
@@ -588,6 +589,7 @@ namespace BenMAP
                         newBeta.BetaID = Convert.ToInt32(dr["crfbetaid"]);
                         newBeta.Beta = Convert.ToDouble(dr["beta"]);
                         newBeta.Distribution = dr["distributionname"].ToString();
+                        newBeta.DistributionTypeID = Convert.ToInt32(dr["distributiontypeid"]);
 
                         // Set up variance/ covariance
                         loadCovarianceObjects(newBeta, pv.VariableName);
