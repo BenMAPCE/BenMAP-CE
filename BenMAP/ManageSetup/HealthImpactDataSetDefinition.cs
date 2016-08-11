@@ -534,7 +534,7 @@ namespace BenMAP
                 foreach (DataRow drMS in dsMS.Tables[0].Rows)
                 {
                     if (!dicMSID.ContainsKey(drMS["LOWER"].ToString()))
-                        dicMSID.Add(drMS["LOWER"].ToString(), drMS["MSID"].ToString());
+                        dicMSID.Add(drMS["LOWER"].ToString().Trim(), drMS["MSID"].ToString());
                 }
 
                 Dictionary<string, string> dicBetaVarID = new Dictionary<string, string>();
@@ -719,7 +719,7 @@ namespace BenMAP
 
                         string ModelSpecID = string.Empty;
 
-                        if (dicMSID.Keys.Contains(_dt.Rows[row][23].ToString().ToLower()))
+                        if (dicMSID.Keys.Contains(_dt.Rows[row][23].ToString().ToLower().Trim()))
                             ModelSpecID = dicMSID[_dt.Rows[row][23].ToString().ToLower()].ToString();
                         else ModelSpecID = "NULL";
 
@@ -1060,7 +1060,7 @@ namespace BenMAP
 
                         string ModelSpecID = string.Empty;
 
-                        if (dicMSID.Keys.Contains(_dt.Rows[row][23].ToString().ToLower()))
+                        if (dicMSID.Keys.Contains(_dt.Rows[row][23].ToString().ToLower().Trim()))
                             ModelSpecID = dicMSID[_dt.Rows[row][23].ToString().ToLower()].ToString();
                         else ModelSpecID = "NULL";
 
