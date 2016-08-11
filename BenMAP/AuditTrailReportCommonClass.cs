@@ -165,6 +165,66 @@ namespace BenMAP
                 return null;
             }
         }
+
+        public static TreeNode getTreeNodeFromCRFVariable(CRFVariable var)
+        {
+            TreeNode treeNode = new TreeNode();
+            treeNode.Text = "Variable:" + var.VariableName;
+            try
+            {
+                treeNode.Nodes.Add("Pollutant Name:" + var.PollutantName);
+                if (var.Metric != null)
+                {
+                    treeNode.Nodes.Add("Metric Name:" + var.Metric.MetricName);
+                    treeNode.Nodes.Add("Hourly Metric Generation:" + var.Metric.HourlyMetricGeneration);
+                }
+
+                foreach (CRFBeta b in var.PollBetas)
+                {
+                    treeNode.Nodes.Add(getTreeNodeFromCRFBeta(b));
+                }
+
+                return treeNode;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+                return null;
+            }
+        }
+
+        public static TreeNode getTreeNodeFromCRFBeta(CRFBeta beta)
+        {
+            TreeNode treeNode = new TreeNode();
+            treeNode.Text = "CRFBeta:" + beta.SeasNumName;
+            try
+            {
+                if(beta.SeasonName != string.Empty)
+                {
+                    treeNode.Nodes.Add("Season:" + beta.SeasonName);
+                    treeNode.Nodes.Add("Start day:" + beta.StartDate);
+                    treeNode.Nodes.Add("End day:" + beta.EndDate);
+                }
+                treeNode.Nodes.Add("Beta:" + beta.Beta);
+                treeNode.Nodes.Add("Beta Distribution:" + beta.Distribution);
+                treeNode.Nodes.Add("P1Beta:" + beta.P1Beta);
+                treeNode.Nodes.Add("P2Beta:" + beta.P2Beta);
+                treeNode.Nodes.Add("A:" + beta.AConstantValue);
+                treeNode.Nodes.Add("NameA:" + beta.AConstantName);
+                treeNode.Nodes.Add("B:" + beta.BConstantValue);
+                treeNode.Nodes.Add("NameB:" + beta.BConstantName);
+                treeNode.Nodes.Add("C:" + beta.CConstantValue);
+                treeNode.Nodes.Add("NameC:" + beta.CConstantName);
+
+                return treeNode;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+                return null;
+            }
+        }
+
         public static TreeNode getTreeNodeFromBaseControlGroup(BaseControlGroup baseControlGroup)
         {
             TreeNode treeNode = new TreeNode();
@@ -182,8 +242,9 @@ namespace BenMAP
 
                 return treeNode;
             }
-            catch
+            catch (Exception ex)
             {
+                Logger.LogError(ex);
                 return null;
             }
         }
@@ -234,7 +295,6 @@ namespace BenMAP
                         tnCROne.Nodes.Add("Ethnicity:" + baseControlCRSelectFunction.lstCRSelectFunction[iCR].Ethnicity);
                         tnCROne.Nodes.Add("Gender:" + baseControlCRSelectFunction.lstCRSelectFunction[iCR].Gender);
                         tnCROne.Nodes.Add("Pollutant:" + baseControlCRSelectFunction.lstCRSelectFunction[iCR].BenMAPHealthImpactFunction.PollutantGroup.PollutantGroupName);
-                        tnCROne.Nodes.Add("Metric:" + baseControlCRSelectFunction.lstCRSelectFunction[iCR].BenMAPHealthImpactFunction.Metric.MetricName);
                         tnCROne.Nodes.Add("Metric statistic:" + Enum.GetName(typeof(MetricStatic), baseControlCRSelectFunction.lstCRSelectFunction[iCR].BenMAPHealthImpactFunction.MetricStatistic));
                         if (baseControlCRSelectFunction.lstCRSelectFunction[iCR].BenMAPHealthImpactFunction.SeasonalMetric != null)
                             tnCROne.Nodes.Add("Seasonal metric:" + baseControlCRSelectFunction.lstCRSelectFunction[iCR].BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName);
@@ -252,26 +312,25 @@ namespace BenMAP
                         tnCROne.Nodes.Add("Incidence dataset:" + baseControlCRSelectFunction.lstCRSelectFunction[iCR].IncidenceDataSetName);
                         tnCROne.Nodes.Add("Prevalence dataset:" + baseControlCRSelectFunction.lstCRSelectFunction[iCR].PrevalenceDataSetName);
                         tnCROne.Nodes.Add("Variable dataset:" + baseControlCRSelectFunction.lstCRSelectFunction[iCR].VariableDataSetName);
-                        tnCROne.Nodes.Add("Beta:" + baseControlCRSelectFunction.lstCRSelectFunction[iCR].BenMAPHealthImpactFunction.Beta);
-                        tnCROne.Nodes.Add("Beta distribution:" + baseControlCRSelectFunction.lstCRSelectFunction[iCR].BenMAPHealthImpactFunction.BetaDistribution);
-                        tnCROne.Nodes.Add("P1Beta:" + baseControlCRSelectFunction.lstCRSelectFunction[iCR].BenMAPHealthImpactFunction.BetaParameter1);
-                        tnCROne.Nodes.Add("P2Beta:" + baseControlCRSelectFunction.lstCRSelectFunction[iCR].BenMAPHealthImpactFunction.BetaParameter2);
-                        tnCROne.Nodes.Add("A:" + baseControlCRSelectFunction.lstCRSelectFunction[iCR].BenMAPHealthImpactFunction.AContantValue);
 
-                        tnCROne.Nodes.Add("NameA:" + baseControlCRSelectFunction.lstCRSelectFunction[iCR].BenMAPHealthImpactFunction.AContantDescription);
-                        tnCROne.Nodes.Add("B:" + baseControlCRSelectFunction.lstCRSelectFunction[iCR].BenMAPHealthImpactFunction.BContantValue);
-                        tnCROne.Nodes.Add("NameB:" + baseControlCRSelectFunction.lstCRSelectFunction[iCR].BenMAPHealthImpactFunction.BContantDescription);
-                        tnCROne.Nodes.Add("C:" + baseControlCRSelectFunction.lstCRSelectFunction[iCR].BenMAPHealthImpactFunction.CContantValue);
-                        tnCROne.Nodes.Add("NameC:" + baseControlCRSelectFunction.lstCRSelectFunction[iCR].BenMAPHealthImpactFunction.CContantDescription);
                         tnCROne.Nodes.Add("Percentile:" + baseControlCRSelectFunction.lstCRSelectFunction[iCR].BenMAPHealthImpactFunction.Percentile);
+                        tnCROne.Nodes.Add("Percentile:" + baseControlCRSelectFunction.lstCRSelectFunction[iCR].BenMAPHealthImpactFunction.Percentile);
+                        tnCROne.Nodes.Add("Model Specification:" + baseControlCRSelectFunction.lstCRSelectFunction[iCR].BenMAPHealthImpactFunction.ModelSpecification.MSDescription);
+                        tnCROne.Nodes.Add("Beta Variation:" + baseControlCRSelectFunction.lstCRSelectFunction[iCR].BenMAPHealthImpactFunction.BetaVariation.BetaVariationName);
                         tnCR.Nodes.Add(tnCROne);
+
+                        foreach(CRFVariable v in baseControlCRSelectFunction.lstCRSelectFunction[iCR].BenMAPHealthImpactFunction.Variables)
+                        {
+                            tnCR.Nodes.Add(getTreeNodeFromCRFVariable(v));
+                        }
                     }
                 }
                 treeNode.Nodes.Add(tnCR);
                 return treeNode;
             }
-            catch
+            catch (Exception ex)
             {
+                Logger.LogError(ex);
                 return null;
             }
         }
@@ -321,7 +380,7 @@ namespace BenMAP
                     tnCROne.Nodes.Add("Ethnicity:" + baseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue[iCR].CRSelectFunction.Ethnicity);
                     tnCROne.Nodes.Add("Gender:" + baseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue[iCR].CRSelectFunction.Gender);
                     tnCROne.Nodes.Add("Pollutant:" + baseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue[iCR].CRSelectFunction.BenMAPHealthImpactFunction.PollutantGroup.PollutantGroupName);
-                    tnCROne.Nodes.Add("Metric:" + baseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue[iCR].CRSelectFunction.BenMAPHealthImpactFunction.Variables[iCR].Metric.MetricName);
+
                     tnCROne.Nodes.Add("Metric statistic:" + Enum.GetName(typeof(MetricStatic), baseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue[iCR].CRSelectFunction.BenMAPHealthImpactFunction.MetricStatistic));
                     if (baseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue[iCR].CRSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric != null)
                         tnCROne.Nodes.Add("Seasonal metric:" + baseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue[iCR].CRSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName);
@@ -338,19 +397,15 @@ namespace BenMAP
                     tnCROne.Nodes.Add("Incidence dataset:" + baseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue[iCR].CRSelectFunction.IncidenceDataSetName);
                     tnCROne.Nodes.Add("Prevalence dataset:" + baseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue[iCR].CRSelectFunction.PrevalenceDataSetName);
                     tnCROne.Nodes.Add("Variable dataset:" + baseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue[iCR].CRSelectFunction.VariableDataSetName);
-                    tnCROne.Nodes.Add("Beta:" + baseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue[iCR].CRSelectFunction.BenMAPHealthImpactFunction.Beta);
-                    tnCROne.Nodes.Add("Beta distribution:" + baseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue[iCR].CRSelectFunction.BenMAPHealthImpactFunction.BetaDistribution);
-                    tnCROne.Nodes.Add("P1Beta:" + baseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue[iCR].CRSelectFunction.BenMAPHealthImpactFunction.BetaParameter1);
-                    tnCROne.Nodes.Add("P2Beta:" + baseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue[iCR].CRSelectFunction.BenMAPHealthImpactFunction.BetaParameter2);
-                    tnCROne.Nodes.Add("A:" + baseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue[iCR].CRSelectFunction.BenMAPHealthImpactFunction.AContantValue);
-
-                    tnCROne.Nodes.Add("NameA:" + baseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue[iCR].CRSelectFunction.BenMAPHealthImpactFunction.AContantDescription);
-                    tnCROne.Nodes.Add("B:" + baseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue[iCR].CRSelectFunction.BenMAPHealthImpactFunction.BContantValue);
-                    tnCROne.Nodes.Add("NameB:" + baseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue[iCR].CRSelectFunction.BenMAPHealthImpactFunction.BContantDescription);
-                    tnCROne.Nodes.Add("C:" + baseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue[iCR].CRSelectFunction.BenMAPHealthImpactFunction.CContantValue);
-                    tnCROne.Nodes.Add("NameC:" + baseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue[iCR].CRSelectFunction.BenMAPHealthImpactFunction.CContantDescription);
                     tnCROne.Nodes.Add("Percentile:" + baseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue[iCR].CRSelectFunction.BenMAPHealthImpactFunction.Percentile);
+                    tnCROne.Nodes.Add("Model Specification:" + baseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue[iCR].CRSelectFunction.BenMAPHealthImpactFunction.ModelSpecification.MSDescription);
+                    tnCROne.Nodes.Add("Beta Variation:" + baseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue[iCR].CRSelectFunction.BenMAPHealthImpactFunction.BetaVariation.BetaVariationName);
                     tnCR.Nodes.Add(tnCROne);
+
+                    foreach (CRFVariable v in baseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue[iCR].CRSelectFunction.BenMAPHealthImpactFunction.Variables)
+                    {
+                        tnCR.Nodes.Add(getTreeNodeFromCRFVariable(v));
+                    }
                 }
                 treeNode.Nodes.Add(tnCR);
                 if (baseControlCRSelectFunctionCalculateValue.lstLog != null && baseControlCRSelectFunctionCalculateValue.lstLog.Count > 0)
@@ -365,8 +420,9 @@ namespace BenMAP
                 }
                 return treeNode;
             }
-            catch
+            catch (Exception ex)
             {
+                Logger.LogError(ex);
                 return null;
             }
         }
@@ -389,8 +445,9 @@ namespace BenMAP
                 }
                 return treeNode;
             }
-            catch
+            catch (Exception ex)
             {
+                Logger.LogError(ex);
                 return null;
             }
         }
@@ -481,8 +538,9 @@ namespace BenMAP
 
                 return treeNode;
             }
-            catch
+            catch (Exception ex)
             {
+                Logger.LogError(ex);
                 return null;
             }
         }
@@ -564,23 +622,16 @@ namespace BenMAP
                             else
                                 tnvaluation.Nodes.Add("End age:" + asvm.EndAge);
                             tnvaluation.Nodes.Add("Baseline functional form:" + asvm.OtherPollutants); tnvaluation.Nodes.Add("Incidence dataset:" + asvm.CRSelectFunctionCalculateValue.CRSelectFunction.IncidenceDataSetName);
-                            tnvaluation.Nodes.Add("Beta:" + asvm.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Beta);
-                            tnvaluation.Nodes.Add("Beta distribution:" + asvm.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.BetaDistribution);
-                            tnvaluation.Nodes.Add("P1Beta:" + asvm.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.BetaParameter1);
-                            tnvaluation.Nodes.Add("P2Beta:" + asvm.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.BetaParameter2);
-                            tnvaluation.Nodes.Add("A:" + asvm.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.AContantValue);
-
-                            tnvaluation.Nodes.Add("NameA:" + asvm.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.AContantDescription);
-                            tnvaluation.Nodes.Add("B:" + asvm.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.BContantValue);
-                            tnvaluation.Nodes.Add("NameB:" + asvm.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.BContantDescription);
-                            tnvaluation.Nodes.Add("C:" + asvm.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.CContantValue);
-                            tnvaluation.Nodes.Add("NameC:" + asvm.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.CContantDescription);
                             tnvaluation.Nodes.Add("Percentile:" + asvm.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Percentile);
                         }
                         catch (Exception ex)
                         { }
                         tnvaluation.Nodes.Add("Weight:" + asvm.Weight);
                         treeNode.Nodes.Add(tnvaluation);
+                        foreach (CRFVariable v in asvm.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Variables)
+                        {
+                            treeNode.Nodes.Add(getTreeNodeFromCRFVariable(v));
+                        }
                     }
                     else
                     {
@@ -604,7 +655,6 @@ namespace BenMAP
                         treeNode.Nodes.Add("Endpoint group:" + AllSelectCRFunctionList.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroup);
                         treeNode.Nodes.Add("Endpoint:" + AllSelectCRFunctionList.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.EndPoint);
                         treeNode.Nodes.Add("Pollutant:" + AllSelectCRFunctionList.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.PollutantGroup.PollutantGroupName);
-                        treeNode.Nodes.Add("Metric:" + AllSelectCRFunctionList.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName);
                         treeNode.Nodes.Add("Metric statistic:" + Enum.GetName(typeof(MetricStatic), AllSelectCRFunctionList.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.MetricStatistic));
                         if (AllSelectCRFunctionList.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric != null)
                             treeNode.Nodes.Add("Seasonal metric:" + AllSelectCRFunctionList.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName);
@@ -627,22 +677,18 @@ namespace BenMAP
                             treeNode.Nodes.Add("End age:" + AllSelectCRFunctionList.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.EndAge);
                         treeNode.Nodes.Add("Baseline functional form:" + AllSelectCRFunctionList.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.BaseLineIncidenceFunction);
                         treeNode.Nodes.Add("Incidence dataset:" + AllSelectCRFunctionList.CRSelectFunctionCalculateValue.CRSelectFunction.IncidenceDataSetName);
-                        treeNode.Nodes.Add("Beta:" + AllSelectCRFunctionList.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Beta);
-                        treeNode.Nodes.Add("Beta distribution:" + AllSelectCRFunctionList.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.BetaDistribution);
-                        treeNode.Nodes.Add("P1Beta:" + AllSelectCRFunctionList.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.BetaParameter1);
-                        treeNode.Nodes.Add("P2Beta:" + AllSelectCRFunctionList.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.BetaParameter2);
-                        treeNode.Nodes.Add("A:" + AllSelectCRFunctionList.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.AContantValue);
-
-                        treeNode.Nodes.Add("NameA:" + AllSelectCRFunctionList.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.AContantDescription);
-                        treeNode.Nodes.Add("B:" + AllSelectCRFunctionList.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.BContantValue);
-                        treeNode.Nodes.Add("NameB:" + AllSelectCRFunctionList.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.BContantDescription);
-                        treeNode.Nodes.Add("C:" + AllSelectCRFunctionList.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.CContantValue);
-                        treeNode.Nodes.Add("NameC:" + AllSelectCRFunctionList.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.CContantDescription);
                         treeNode.Nodes.Add("Percentile:" + AllSelectCRFunctionList.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Percentile);
                         treeNode.Nodes.Add("Weight:" + AllSelectCRFunctionList.Weight);
+
+                        foreach (CRFVariable v in AllSelectCRFunctionList.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Variables)
+                        {
+                            treeNode.Nodes.Add(getTreeNodeFromCRFVariable(v));
+                        }
                     }
-                    catch
-                    { }
+                    catch (Exception ex)
+                    {
+                        Logger.LogError(ex);
+                    }
 
                 }
                 else
@@ -685,8 +731,9 @@ namespace BenMAP
 
                 return treeNode;
             }
-            catch
+            catch (Exception ex)
             {
+                Logger.LogError(ex);
                 return null;
             }
         }
@@ -719,8 +766,9 @@ namespace BenMAP
                 }
                 return treeNode;
             }
-            catch
+            catch (Exception ex)
             {
+                Logger.LogError(ex);
                 return null;
             }
         }
