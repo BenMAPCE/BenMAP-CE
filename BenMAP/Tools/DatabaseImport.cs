@@ -363,6 +363,12 @@ namespace BenMAP
                 Dictionary<int, int> dicpollutantseasonid = new Dictionary<int, int>();
                 Dictionary<int, int> dicMetricID = new Dictionary<int, int>();
                 Dictionary<int, int> dicSeasonalMetricID = new Dictionary<int, int>();
+                // BF-520 - add pollutant groups and pollutant group pollutants
+                Dictionary<int, int> dicpollutantgroupid = new Dictionary<int, int>();
+                Dictionary<int, int> dicpollutantgrouppollutantid = new Dictionary<int, int>();
+                
+
+
                 for (int i = 0; i < tableCount; i++)
                 {
                     string pollutantName = reader.ReadString();
@@ -620,6 +626,46 @@ namespace BenMAP
                 {
                     reader.BaseStream.Position = reader.BaseStream.Position - nextTable.Length - 1;
                 }
+                // STOPPED HERE
+                // BF-520 load pollutant groups
+                pBarImport.Value = 0;
+                lbProcess.Text = "Importing pollutant groups...";
+                lbProcess.Refresh();
+                this.Refresh();
+
+                if (reader.BaseStream.Position >= reader.BaseStream.Length) { pBarImport.Value = pBarImport.Maximum; lbProcess.Refresh(); this.Refresh(); return; }
+                nextTable = reader.ReadString();
+                int changePollutantGroupID = 0;
+                if (nextTable == "PollutantGroups")
+                {
+                    int PollutantGroupscount = reader.ReadInt32();
+                    pBarImport.Maximum = PollutantGroupscount;
+                    string commandText = "select max(PollutantGroupID) from PollutantGroups";
+                    object obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
+                    if (!Convert.IsDBNull(obj))
+                    {
+                        changePollutantGroupID = Convert.ToInt16(obj);
+                    }
+                    for (int i = 0; i < PollutantGroupscount; i++)
+                    {
+                        reader.BaseStream.Position = reader.BaseStream.Position + sizeof(Int32);
+                        int PollutantGroupID = reader.ReadInt32();
+                        int SetupID = reader.ReadInt32();
+                        string PGName = reader.ReadString();
+                        string PGDesc = reader.ReadString();
+                        commandText = string.Format("insert into PollutantGroups(PollutantGroupID, SETUPID, PGNAME, PGDESCRIPTION) values({0},{1},'{2}','{3}')", 
+                            ++changePollutantGroupID, dicpollutantgroupid.ContainsKey(PollutantGroupID) ? dicpollutantgroupid[PollutantGroupID] : PollutantGroupID, 
+                            Convert.ToInt16(SetupID), PGName, PGDesc);                             
+                        fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                        pBarImport.PerformStep();
+                    }
+                }
+                else
+                {
+                    reader.BaseStream.Position = reader.BaseStream.Position - nextTable.Length - 1;
+                }
+                
+                // BF-520 load pollutant group pollutants
 
             }
             catch (Exception ex)
