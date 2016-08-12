@@ -572,6 +572,13 @@ namespace BenMAP
             rollback.Year = YEAR;
             rollback.Color = GetNextColor();
 
+            switch (cboFunction.SelectedIndex)
+            {
+                case 0: //Krewski
+                    rollback.Function = GBDRollbackItem.RollbackFunction.Krewski;                    
+                    break;
+            }
+
 
             //remove rollback if it already exists
             rollbacks.RemoveAll(x => x.Name.Equals(rollback.Name, StringComparison.OrdinalIgnoreCase));
@@ -600,6 +607,7 @@ namespace BenMAP
             dgvRollbacks.Rows[i].Cells["colTotalCountries"].Value = rollback.Countries.Count().ToString();
             dgvRollbacks.Rows[i].Cells["colTotalPopulation"].Value = GetRollbackTotalPopulation(rollback).ToString("#,###");
             dgvRollbacks.Rows[i].Cells["colRollbackType"].Value = GetRollbackTypeSummary(rollback);
+            dgvRollbacks.Rows[i].Cells["colFunction"].Value = rollback.Function.ToString();
             dgvRollbacks.Rows[i].Cells["colExecute"].Value = true;
             ToggleExecuteScenariosButton();
 
@@ -797,7 +805,8 @@ namespace BenMAP
             txtIncrement.Text = item.Increment.ToString();
             txtIncrementBackground.Text = item.Background.ToString();
             cboStandard.SelectedIndex = (int)item.StandardId;
-           
+            cboFunction.SelectedIndex = (int)item.Function;
+
         }
 
         private void SetActivePanel(int index)
