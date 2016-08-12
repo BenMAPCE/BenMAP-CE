@@ -19,6 +19,7 @@ namespace BenMAP
             this.txtThreshold = new System.Windows.Forms.TextBox();
             this.lblThreshold = new System.Windows.Forms.Label();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.lblAvgWarning = new System.Windows.Forms.Label();
             this.grpIncidenceAvg = new System.Windows.Forms.GroupBox();
             this.rbFiltered = new System.Windows.Forms.RadioButton();
             this.rbAvg = new System.Windows.Forms.RadioButton();
@@ -30,7 +31,6 @@ namespace BenMAP
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
-            this.lblAvgWarning = new System.Windows.Forms.Label();
             this.groupBox3.SuspendLayout();
             this.grpIncidenceAvg.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -39,7 +39,7 @@ namespace BenMAP
             // txtThreshold
             // 
             this.txtThreshold.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtThreshold.Location = new System.Drawing.Point(334, 115);
+            this.txtThreshold.Location = new System.Drawing.Point(750, 115);
             this.txtThreshold.Name = "txtThreshold";
             this.txtThreshold.Size = new System.Drawing.Size(98, 22);
             this.txtThreshold.TabIndex = 10;
@@ -70,48 +70,65 @@ namespace BenMAP
             this.groupBox3.Controls.Add(this.cboLatinHypercubePoints);
             this.groupBox3.Location = new System.Drawing.Point(11, 3);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(450, 310);
+            this.groupBox3.Size = new System.Drawing.Size(866, 310);
             this.groupBox3.TabIndex = 7;
             this.groupBox3.TabStop = false;
+            // 
+            // lblAvgWarning
+            // 
+            this.lblAvgWarning.Font = new System.Drawing.Font("Calibri", 9F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblAvgWarning.Location = new System.Drawing.Point(12, 222);
+            this.lblAvgWarning.Name = "lblAvgWarning";
+            this.lblAvgWarning.Size = new System.Drawing.Size(948, 54);
+            this.lblAvgWarning.TabIndex = 16;
+            this.lblAvgWarning.Text = "Warning: If you select option 2, and have not imported rates that match each subg" +
+    "roup, the program will return point estimates of zero.";
+            this.lblAvgWarning.UseWaitCursor = true;
             // 
             // grpIncidenceAvg
             // 
             this.grpIncidenceAvg.Controls.Add(this.rbFiltered);
             this.grpIncidenceAvg.Controls.Add(this.rbAvg);
+            this.grpIncidenceAvg.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.grpIncidenceAvg.Location = new System.Drawing.Point(15, 143);
             this.grpIncidenceAvg.Name = "grpIncidenceAvg";
-            this.grpIncidenceAvg.Size = new System.Drawing.Size(429, 76);
+            this.grpIncidenceAvg.Size = new System.Drawing.Size(850, 76);
             this.grpIncidenceAvg.TabIndex = 15;
             this.grpIncidenceAvg.TabStop = false;
-            this.grpIncidenceAvg.Text = "Incidence averaging";
+            this.grpIncidenceAvg.Text = "If you are estimating impacts for specific population subgroups (e.g. race/ethnic" +
+    "ity/sex), do you want BenMAP-CE to:";
             // 
             // rbFiltered
             // 
             this.rbFiltered.AutoSize = true;
+            this.rbFiltered.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.rbFiltered.Location = new System.Drawing.Point(6, 45);
             this.rbFiltered.Name = "rbFiltered";
-            this.rbFiltered.Size = new System.Drawing.Size(420, 18);
+            this.rbFiltered.Size = new System.Drawing.Size(604, 18);
             this.rbFiltered.TabIndex = 1;
             this.rbFiltered.TabStop = true;
-            this.rbFiltered.Text = "Use only matching rates (by race/gender/ethnicity in Health Effects form)";
+            this.rbFiltered.Text = "2) Use rates that match each race/ethnicity/sex? (only select if you have importe" +
+    "d rates for each subgroup)";
             this.rbFiltered.UseVisualStyleBackColor = true;
             this.rbFiltered.CheckedChanged += new System.EventHandler(this.rbFiltered_CheckedChanged);
             // 
             // rbAvg
             // 
+            this.rbAvg.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.rbAvg.Location = new System.Drawing.Point(6, 21);
             this.rbAvg.Name = "rbAvg";
-            this.rbAvg.Size = new System.Drawing.Size(304, 18);
+            this.rbAvg.Size = new System.Drawing.Size(849, 18);
             this.rbAvg.TabIndex = 0;
             this.rbAvg.TabStop = true;
-            this.rbAvg.Text = "Use average rates (all race/gender/ethnicities)";
+            this.rbAvg.Text = "1)  Use the default U.S. rates, which are not stratified by race/ethnicity/sex? (" +
+    "BenMAP-CE will calculate an average rate and assign it to each subgroup)";
             this.rbAvg.UseVisualStyleBackColor = true;
             this.rbAvg.CheckedChanged += new System.EventHandler(this.rbAvg_CheckedChanged);
             // 
             // txtRandomSeed
             // 
             this.txtRandomSeed.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtRandomSeed.Location = new System.Drawing.Point(334, 87);
+            this.txtRandomSeed.Location = new System.Drawing.Point(750, 87);
             this.txtRandomSeed.Name = "txtRandomSeed";
             this.txtRandomSeed.Size = new System.Drawing.Size(98, 22);
             this.txtRandomSeed.TabIndex = 14;
@@ -156,7 +173,7 @@ namespace BenMAP
             "20",
             "50",
             "100"});
-            this.cboLatinHypercubePoints.Location = new System.Drawing.Point(334, 59);
+            this.cboLatinHypercubePoints.Location = new System.Drawing.Point(750, 59);
             this.cboLatinHypercubePoints.Name = "cboLatinHypercubePoints";
             this.cboLatinHypercubePoints.Size = new System.Drawing.Size(98, 22);
             this.cboLatinHypercubePoints.TabIndex = 2;
@@ -169,14 +186,14 @@ namespace BenMAP
             this.groupBox2.Controls.Add(this.btnCancel);
             this.groupBox2.Location = new System.Drawing.Point(11, 319);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(450, 54);
+            this.groupBox2.Size = new System.Drawing.Size(866, 54);
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             // 
             // btnOK
             // 
             this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnOK.Location = new System.Drawing.Point(367, 18);
+            this.btnOK.Location = new System.Drawing.Point(783, 18);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(65, 25);
             this.btnOK.TabIndex = 1;
@@ -187,7 +204,7 @@ namespace BenMAP
             // btnCancel
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnCancel.Location = new System.Drawing.Point(296, 18);
+            this.btnCancel.Location = new System.Drawing.Point(712, 18);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(65, 25);
             this.btnCancel.TabIndex = 0;
@@ -195,23 +212,11 @@ namespace BenMAP
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
-            // lblAvgWarning
-            // 
-            this.lblAvgWarning.Font = new System.Drawing.Font("Calibri", 9F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblAvgWarning.Location = new System.Drawing.Point(12, 222);
-            this.lblAvgWarning.Name = "lblAvgWarning";
-            this.lblAvgWarning.Size = new System.Drawing.Size(429, 54);
-            this.lblAvgWarning.TabIndex = 16;
-            this.lblAvgWarning.Text = "If matching rates are selected, groups without incidence data will  have point es" +
-    "timates = 0 ";
-            this.lblAvgWarning.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.lblAvgWarning.UseWaitCursor = true;
-            // 
             // LatinHypercubePoints
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(473, 385);
+            this.ClientSize = new System.Drawing.Size(889, 385);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
