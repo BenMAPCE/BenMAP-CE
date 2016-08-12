@@ -111,6 +111,7 @@ namespace BenMAP
             SetActiveOptionsPanel(0);
             rbRegions.Checked = true;
             cboExportFormat.SelectedIndex = 0;
+            cboFunction.SelectedIndex = 0;
 
             txtFilePath.Text = CommonClass.ResultFilePath + @"\GBD";
 
