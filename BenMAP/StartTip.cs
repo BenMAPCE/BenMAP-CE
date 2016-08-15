@@ -18,7 +18,7 @@ namespace BenMAP
         {
             InitializeComponent();
             SetStyle(ControlStyles.SupportsTransparentBackColor, true);
-            this.Text = "BenMAP-CE " + Assembly.GetExecutingAssembly().GetName().Version.ToString().Substring(0, Assembly.GetExecutingAssembly().GetName().Version.ToString().Count() - 4);
+            this.Text = "BenMAP-CE " + Assembly.GetExecutingAssembly().GetName().Version.ToString().Substring(0, Assembly.GetExecutingAssembly().GetName().Version.ToString().Count() - 4) + " Welcome";
             btn_Click(button1, null);
         }
 

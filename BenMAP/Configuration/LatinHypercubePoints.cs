@@ -62,6 +62,15 @@ namespace BenMAP
                     this.chbRunInPointMode.Checked = false;
                     txtRandomSeed.Enabled = true;
                 }
+                // set check boxes for incidence averaging from global variable
+                switch (Configuration.ConfigurationCommonClass.indidenceAvgSelected) {
+                    case Configuration.ConfigurationCommonClass.incidenceAveraging.averageAll:
+                        rbAvg.Checked = true;
+                        break;
+                    case Configuration.ConfigurationCommonClass.incidenceAveraging.averageFiltered:
+                        rbFiltered.Checked = true;
+                        break;
+                }
             }
             catch (Exception ex)
             {
@@ -136,6 +145,18 @@ namespace BenMAP
             {
                 e.Handled = true;
             }
+        }
+
+        private void rbFiltered_CheckedChanged(object sender, EventArgs e)
+        {
+            if (rbFiltered.Checked) Configuration.ConfigurationCommonClass.indidenceAvgSelected = Configuration.ConfigurationCommonClass.incidenceAveraging.averageFiltered;
+            else Configuration.ConfigurationCommonClass.indidenceAvgSelected = Configuration.ConfigurationCommonClass.incidenceAveraging.averageAll;
+        }
+
+        private void rbAvg_CheckedChanged(object sender, EventArgs e)
+        {
+            if (rbFiltered.Checked) Configuration.ConfigurationCommonClass.indidenceAvgSelected = Configuration.ConfigurationCommonClass.incidenceAveraging.averageFiltered;
+            else Configuration.ConfigurationCommonClass.indidenceAvgSelected = Configuration.ConfigurationCommonClass.incidenceAveraging.averageAll;
         }
     }
 }

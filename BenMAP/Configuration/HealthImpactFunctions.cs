@@ -1122,7 +1122,7 @@ namespace BenMAP
                     else
                         dicAllRaceEthnicityGenderAge.Add(crSelectFunction.Race + "," + crSelectFunction.Ethnicity + "," + crSelectFunction.Gender, crSelectFunction.StartAge + "," + crSelectFunction.EndAge);
                 }
-                // STOPPED HERE
+                
                 // create a dictionary with keys of race+ethnicity+gender and a dictionary of population dictionaries for the start and end ages 
                 dicALlPopulationAge = new Dictionary<string, Dictionary<string, float>>();
                 foreach (KeyValuePair<string, string> kAge in dicAllRaceEthnicityGenderAge)
