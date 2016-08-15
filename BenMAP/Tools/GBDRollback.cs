@@ -2081,7 +2081,7 @@ namespace BenMAP
             using (StreamWriter sw = new StreamWriter(filePath))
             {
                 List<object> listOutputLine = null;
-                string outputLine = "Pollutant,Background Concentration,Rollback Type,Population Affected,Avoided Deaths (Total)," +
+                string outputLine = "Pollutant,Background Concentration,Rollback Type,Function,Population Affected,Avoided Deaths (Total)," +
                     "95% CI,% of Baseline Mortality,Deaths per 100000,Avoided Deaths (% Population)," +
                     "2010 Air Quality Levels Min,2010 Air Quality Levels Median,2010 Air Quality Levels Max," +
                     "Policy Scenario Min,Policy Scenario Median,Policy Scenario Max,Air Quality Change (Population Weighted)";
@@ -2095,7 +2095,8 @@ namespace BenMAP
                     listOutputLine[0] = "PM2.5";
                     listOutputLine[1] = GetBackgroundConcentrationText(rollback); 
                     listOutputLine.Insert(2, GetRollbackTypeText(rollback));
-                    
+                    listOutputLine.Insert(3, rollback.Function.ToString());
+
                     //write output line
                     outputLine = string.Join(",", listOutputLine);
                     sw.WriteLine(outputLine);
