@@ -1021,6 +1021,15 @@ namespace BenMAP
                 GBDRollbackKrewskiFunction func = new GBDRollbackKrewskiFunction();
                 GBDRollbackKrewskiResult result;
                 result = func.GBD_math(concDelta, population, incrate, beta, se);
+
+                //switch (rollback.Function)
+                //{
+                //    case GBDRollbackItem.RollbackFunction.Krewski:
+                //        break;
+                    
+                //}
+
+
                 //add results to dtConcCountry
                 dtConcCountry.Columns.Add("KREWSKI", dtConcCountry.Columns["CONCENTRATION"].DataType, result.Krewski.ToString());
                 dtConcCountry.Columns.Add("KREWSKI_2_5", dtConcCountry.Columns["CONCENTRATION"].DataType, result.Krewski2_5.ToString());
@@ -1637,7 +1646,14 @@ namespace BenMAP
             //xlSheet.Range["B8"].Value = summary;
             UpdateCellSharedString(worksheetPart.Worksheet, summary, "B", 8);
 
+            //add function cells
+            UpdateCellSharedString(worksheetPart.Worksheet, "Function", "A", 9);
+            string function = rollback.Function.ToString();
+            UpdateCellSharedString(worksheetPart.Worksheet, function, "B", 9);
+
             ////xlSheet.Range["A9"].Value = "Regions and Countries";
+            UpdateCellSharedString(worksheetPart.Worksheet, "Regions and Countries", "A", 10);
+
             uint rowOffset = 0;
             uint nextRow = 0;
 
@@ -1653,7 +1669,7 @@ namespace BenMAP
                 if (!region.Equals(dr["REGIONNAME"].ToString(), StringComparison.OrdinalIgnoreCase))
                 {
                     region = dr["REGIONNAME"].ToString();
-                    nextRow = 9 + rowOffset;
+                    nextRow = 10 + rowOffset;
                     //xlSheet.Range["B" + nextRow.ToString()].Value = region;
                     UpdateCellSharedString(worksheetPart.Worksheet, region, "B", nextRow);
                     //xlSheet.Range["B" + nextRow.ToString()].Font.Italic = true;
@@ -1664,7 +1680,7 @@ namespace BenMAP
 
                 //write country
                 country = dr["COUNTRYNAME"].ToString();
-                nextRow = 9 + rowOffset;
+                nextRow = 10 + rowOffset;
                 //xlSheet.Range["B" + nextRow.ToString()].Value = country;
                 UpdateCellSharedString(worksheetPart.Worksheet, country, "B", nextRow);
                 GetCell(worksheetPart.Worksheet, "B", nextRow).StyleIndex = styleIndexNoFillIndentWithBorders;
