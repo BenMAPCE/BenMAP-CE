@@ -1001,9 +1001,9 @@ namespace BenMAP
                     dtConcEntireRollback.Columns.Add("CONCENTRATION_FINAL", dtConcCountry.Columns["CONCENTRATION"].DataType);
                     dtConcEntireRollback.Columns.Add("CONCENTRATION_DELTA", dtConcCountry.Columns["CONCENTRATION"].DataType);
                     dtConcEntireRollback.Columns.Add("AIR_QUALITY_DELTA", dtConcCountry.Columns["CONCENTRATION"].DataType);
-                    dtConcEntireRollback.Columns.Add("FUNC_RESULT", dtConcCountry.Columns["CONCENTRATION"].DataType);
-                    dtConcEntireRollback.Columns.Add("FUNC_RESULT_2_5", dtConcCountry.Columns["CONCENTRATION"].DataType);
-                    dtConcEntireRollback.Columns.Add("FUNC_RESULT_97_5", dtConcCountry.Columns["CONCENTRATION"].DataType);
+                    dtConcEntireRollback.Columns.Add("RESULT", dtConcCountry.Columns["CONCENTRATION"].DataType);
+                    dtConcEntireRollback.Columns.Add("RESULT_2_5", dtConcCountry.Columns["CONCENTRATION"].DataType);
+                    dtConcEntireRollback.Columns.Add("RESULT_97_5", dtConcCountry.Columns["CONCENTRATION"].DataType);
                     dtConcEntireRollback.Columns.Add("INCIDENCE_RATE", dtConcCountry.Columns["CONCENTRATION"].DataType);
                     dtConcEntireRollback.Columns.Add("BASELINE_MORTALITY", dtConcCountry.Columns["CONCENTRATION"].DataType);
                 }
@@ -1031,9 +1031,9 @@ namespace BenMAP
 
 
                 //add results to dtConcCountry
-                dtConcCountry.Columns.Add("FUNC_RESULT", dtConcCountry.Columns["CONCENTRATION"].DataType, result.Krewski.ToString());
-                dtConcCountry.Columns.Add("FUNC_RESULT_2_5", dtConcCountry.Columns["CONCENTRATION"].DataType, result.Krewski2_5.ToString());
-                dtConcCountry.Columns.Add("FUNC_RESULT_97_5", dtConcCountry.Columns["CONCENTRATION"].DataType, result.Krewski97_5.ToString());
+                dtConcCountry.Columns.Add("RESULT", dtConcCountry.Columns["CONCENTRATION"].DataType, result.Krewski.ToString());
+                dtConcCountry.Columns.Add("RESULT_2_5", dtConcCountry.Columns["CONCENTRATION"].DataType, result.Krewski2_5.ToString());
+                dtConcCountry.Columns.Add("RESULT_97_5", dtConcCountry.Columns["CONCENTRATION"].DataType, result.Krewski97_5.ToString());
                 dtConcCountry.Columns.Add("INCIDENCE_RATE", dtConcCountry.Columns["CONCENTRATION"].DataType, incrate.ToString());
                 dtConcCountry.Columns.Add("BASELINE_MORTALITY", dtConcCountry.Columns["CONCENTRATION"].DataType, "INCIDENCE_RATE * POPESTIMATE" );
 
@@ -2208,17 +2208,17 @@ namespace BenMAP
             baselineMortality = Double.Parse(result.ToString());
 
             System.Data.DataTable dtKrewski = dtConcEntireRollback.DefaultView.ToTable(true, "REGIONID", "REGIONNAME", "COUNTRYID", "COUNTRYNAME",
-                                                                                            "FUNC_RESULT", "FUNC_RESULT_2_5", "FUNC_RESULT_97_5");
+                                                                                            "RESULT", "RESULT_2_5", "RESULT_97_5");
             dtKrewski.DefaultView.Sort = "REGIONNAME, COUNTRYNAME";
 
             //avoided deaths
-            result = dtKrewski.Compute("SUM(FUNC_RESULT)", filter);
+            result = dtKrewski.Compute("SUM(RESULT)", filter);
             avoidedDeaths = Double.Parse(result.ToString());
             
             //confidence interval
-            result = dtKrewski.Compute("SUM(FUNC_RESULT_2_5)", filter);
+            result = dtKrewski.Compute("SUM(RESULT_2_5)", filter);
             result_2_5 = Double.Parse(result.ToString());
-            result = dtKrewski.Compute("SUM(FUNC_RESULT_97_5)", filter);
+            result = dtKrewski.Compute("SUM(RESULT_97_5)", filter);
             result_97_5 = Double.Parse(result.ToString());
             confidenceInterval = FormatDoubleStringTwoSignificantFigures(format, result_2_5.ToString()) + " - " + FormatDoubleStringTwoSignificantFigures(format, result_97_5.ToString());
 
