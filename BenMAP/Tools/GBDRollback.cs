@@ -480,18 +480,18 @@ namespace BenMAP
                         txtPercentage.Focus();
                         return;                        
                     }
-                     if (d > 100)
-                        {
-                            MessageBox.Show("Percentage can not be > 100");
-                            txtPercentageBackground.Focus();
-                            return;
-                        }
-                        if (d < 0)
-                        {
-                            MessageBox.Show("Percentage can not be < 0");
-                            txtPercentageBackground.Focus();
-                            return;
-                        }
+                    if (d > 100)
+                    {
+                        MessageBox.Show("Percentage can not be > 100");
+                        txtPercentageBackground.Focus();
+                        return;
+                    }
+                    //if (d < 0)
+                    //{
+                    //    MessageBox.Show("Percentage can not be < 0");
+                    //    txtPercentageBackground.Focus();
+                    //    return;
+                    //}
                     if (!String.IsNullOrEmpty(txtPercentageBackground.Text))
                     {
                         if (!Double.TryParse(txtPercentageBackground.Text, out d))
