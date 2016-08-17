@@ -2,18 +2,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using ESIL.DBUtility;
 using System.Data;
-using DotSpatial.Controls;
 using System.Windows.Forms;
 using DotSpatial.Data;
 using System.Security.Cryptography;
 using System.IO;
 using System.Drawing;
 using System.Runtime.Serialization.Json;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Configuration;
 using FirebirdSql.Data.FirebirdClient;
+using GeoAPI.Geometries;
 
 namespace BenMAP.Grid
 {
@@ -559,14 +557,14 @@ namespace BenMAP.Grid
             return lstGridRelationship;
 
         }
-        public static Region getRegionFromBaseGeometry(DotSpatial.Topology.IBasicGeometry iBaseGeometry)
+        public static Region getRegionFromBaseGeometry(IGeometry iBaseGeometry)
         {
             Region region;
 
             System.Drawing.Drawing2D.GraphicsPath gPath = new System.Drawing.Drawing2D.GraphicsPath();
             int i = 0;
-            PointF[] pointF = new PointF[iBaseGeometry.Coordinates.Count];
-            while (i < iBaseGeometry.Coordinates.Count - 1)
+            PointF[] pointF = new PointF[iBaseGeometry.Coordinates.Length];
+            while (i < iBaseGeometry.Coordinates.Length - 1)
             {
                 pointF[i] = new PointF(Convert.ToSingle(iBaseGeometry.Coordinates[i].X), Convert.ToSingle(iBaseGeometry.Coordinates[i].Y));
                 i++;
@@ -888,8 +886,8 @@ namespace BenMAP.Grid
                                 DotSpatial.Data.IFeature pl = regionFeatureSet.GetFeature(i);
 
 
-                                Rectangle rect = new Rectangle(Convert.ToInt32(pl.Envelope.X), Convert.ToInt32(pl.Envelope.Y - pl.Envelope.Height), Convert.ToInt32(pl.Envelope.Width), Convert.ToInt32(pl.Envelope.Height));
-                                List<int> lstFids = gridFeatureSet.SelectIndices(regionFeatureSet.GetFeature(i).Envelope.ToExtent());
+                                Rectangle rect = new Rectangle(Convert.ToInt32(pl.Geometry.Coordinate.X), Convert.ToInt32(pl.Geometry.Coordinate.Y - pl.Geometry.EnvelopeInternal.Height), Convert.ToInt32(pl.Geometry.EnvelopeInternal.Width), Convert.ToInt32(pl.Geometry.EnvelopeInternal.Height));
+                                List<int> lstFids = gridFeatureSet.SelectIndices(regionFeatureSet.GetFeature(i).Geometry.EnvelopeInternal.ToExtent());
 
 
                                 RowCol bigGridRowCol = new RowCol()
@@ -900,16 +898,16 @@ namespace BenMAP.Grid
                                 GridRelationshipAttribute gridRelationshipAttribute = new GridRelationshipAttribute();
                                 gridRelationshipAttribute.bigGridRowCol = bigGridRowCol;
                                 gridRelationshipAttribute.smallGridRowCol = new List<RowCol>();
-                                Region rpl = getRegionFromBaseGeometry(pl.BasicGeometry);
+                                Region rpl = getRegionFromBaseGeometry(pl.Geometry);
                                 foreach (int ilstFids in lstFids)
                                 {
                                     try
                                     {
                                         IFeature iFeature = gridFeatureSet.GetFeature(ilstFids);
-                                        Rectangle rect1 = new Rectangle(Convert.ToInt32(pl.Envelope.X * 10.0000), Convert.ToInt32(pl.Envelope.Y * 10.0000 - pl.Envelope.Height * 10.0000), Convert.ToInt32(pl.Envelope.Width * 10.0000), Convert.ToInt32(pl.Envelope.Height * 10.0000));
+                                        Rectangle rect1 = new Rectangle(Convert.ToInt32(pl.Geometry.Coordinate.X * 10.0000), Convert.ToInt32(pl.Geometry.Coordinate.Y * 10.0000 - pl.Geometry.EnvelopeInternal.Height * 10.0000), Convert.ToInt32(pl.Geometry.EnvelopeInternal.Width * 10.0000), Convert.ToInt32(pl.Geometry.EnvelopeInternal.Height * 10.0000));
 
-                                        Rectangle rect2 = new Rectangle(Convert.ToInt32(iFeature.Envelope.X * 10.0000), Convert.ToInt32(iFeature.Envelope.Y * 10.0000 - iFeature.Envelope.Height * 10.0000), Convert.ToInt32(iFeature.Envelope.Width * 10.0000), Convert.ToInt32(iFeature.Envelope.Height * 10.0000));
-                                        Rectangle rect3 = new Rectangle(Convert.ToInt32(pl.Envelope.X * 10.0000), Convert.ToInt32(pl.Envelope.Y * 10.0000 - pl.Envelope.Height * 10.0000), Convert.ToInt32(pl.Envelope.Width * 10.0000), Convert.ToInt32(pl.Envelope.Height * 10.0000));
+                                        Rectangle rect2 = new Rectangle(Convert.ToInt32(iFeature.Geometry.Coordinate.X * 10.0000), Convert.ToInt32(iFeature.Geometry.Coordinate.Y * 10.0000 - iFeature.Geometry.EnvelopeInternal.Height * 10.0000), Convert.ToInt32(iFeature.Geometry.EnvelopeInternal.Width * 10.0000), Convert.ToInt32(iFeature.Geometry.EnvelopeInternal.Height * 10.0000));
+                                        Rectangle rect3 = new Rectangle(Convert.ToInt32(pl.Geometry.Coordinate.X * 10.0000), Convert.ToInt32(pl.Geometry.Coordinate.Y * 10.0000 - pl.Geometry.EnvelopeInternal.Height * 10.0000), Convert.ToInt32(pl.Geometry.EnvelopeInternal.Width * 10.0000), Convert.ToInt32(pl.Geometry.EnvelopeInternal.Height * 10.0000));
                                         if (!rect3.IntersectsWith(rect2))
                                         {
                                             continue;
@@ -919,20 +917,20 @@ namespace BenMAP.Grid
 
                                         try
                                         {
-                                            Feature iFeatureCenter = new Feature();
-                                            DotSpatial.Topology.Geometry g = new DotSpatial.Topology.Point(iFeature.Envelope.ToExtent().Center.X, iFeature.Envelope.ToExtent().Center.Y);
-                                            iFeatureCenter.BasicGeometry = g;
-                                            List<int> lstFidsin = regionFeatureSet.SelectIndices(iFeatureCenter.Envelope.ToExtent());
+
+                                            var g = new NetTopologySuite.Geometries.Point(iFeature.Geometry.EnvelopeInternal.ToExtent().Center.X, iFeature.Geometry.EnvelopeInternal.ToExtent().Center.Y);
+                                            Feature iFeatureCenter = new Feature(g);
+                                            List<int> lstFidsin = regionFeatureSet.SelectIndices(iFeatureCenter.Geometry.EnvelopeInternal.ToExtent());
                                             if (lstFidsin != null && lstFidsin.Count > 0 && lstFidsin.Contains(i))
                                             {
                                                 if (gridFeatureSet.ShapeIndices.Count < 5000 && regionFeatureSet.ShapeIndices.Count < 5000)
                                                 {
 
-                                                    DotSpatial.Topology.IGeometry geo = pl.BasicGeometry as DotSpatial.Topology.IGeometry;
-                                                    DotSpatial.Topology.IGeometry gResult = geo.Intersection(iFeature.BasicGeometry as DotSpatial.Topology.IGeometry);
+                                                    var geo = pl.Geometry;
+                                                    var gResult = geo.Intersection(iFeature.Geometry);
                                                     if (gResult == null) continue;
                                                     double d = gResult.Area;
-                                                    if (d >= Math.Min(iFeature.Area(), pl.Area()) * 0.500000)
+                                                    if (d >= Math.Min(iFeature.Geometry.Area, pl.Geometry.Area) * 0.500000)
                                                     {
                                                         gridRelationshipAttribute.smallGridRowCol.Add(new RowCol()
                                                         {

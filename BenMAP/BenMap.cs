@@ -27,11 +27,15 @@ using System.Configuration;
 using ProtoBuf;
 using System.Collections;
 using OxyPlot.Axes;
+using System.ComponentModel.Composition;
 
 namespace BenMAP
 {
     public partial class BenMAP : FormBase
     {
+        [Export("Shell", typeof(ContainerControl))]
+        private static ContainerControl Shell = new Form(); // Dummy form to hold default appmanager controls
+
         BenMAPGrid chartGrid;
         BenMAPGrid ChartGrid
         {
@@ -96,21 +100,8 @@ namespace BenMAP
 
                 mainMap.LayerAdded += new EventHandler<LayerEventArgs>(mainMap_LayerAdded);
                 mainMap.Layers.LayerVisibleChanged += new EventHandler(mainMap_LayerVisibleChanged);
-                //this.appManager1 = new DotSpatial.Controls.AppManager();
-                //appManager1.Directories.Clear();
-                //appManager1.Directories.Add(@"Plugins\GDAL");
+                
                 appManager1.LoadExtensions();
-                //Console.WriteLine("MCB-test");
-                //foreach (DotSpatial.Extensions.IExtension iext in appManager1.Extensions)
-                //{
-                //    Console.WriteLine(iext.Name);
-                //}
-           
-                //MCB- right place for this???
-              //AttributeDataExplorerPlugin AttEx = new AttributeDataExplorerPlugin();
-              // AttEx.Activate();
-              //  AttEx.IsActive = true;
-
             }
             catch (Exception ex)
             {
@@ -2966,6 +2957,8 @@ namespace BenMAP
             { 
                 //Create the simple pattern with opacity
                 SimplePattern sp = new SimplePattern(colorBlend.ColorArray[catNum]);
+                sp.Outline = new LineSymbolizer(Color.Transparent, 0); // Outline is nessasary
+
                 //SimplePattern sp = new SimplePattern(Color.Purple);
                 sp.Opacity = 0.8F;  //80% opaque = 20% transparent
                 PolygonSymbolizer poly = new PolygonSymbolizer(colorBlend.ColorArray[catNum], Color.Transparent, 0);
@@ -6590,9 +6583,8 @@ namespace BenMAP
                     }
                     foreach (DataRow dr in fsRegion.DataTable.Rows)
                     {
-                        Feature f = new Feature();
-                        f.BasicGeometry = new DotSpatial.Topology.Point(fsRegion.GetFeature(i).Envelope.ToExtent().Center.X, fsRegion.GetFeature(i).Envelope.ToExtent().Center.Y);
-                        fsReturn.AddFeature(f);
+                        var geom = new NetTopologySuite.Geometries.Point(fsRegion.GetFeature(i).Geometry.EnvelopeInternal.ToExtent().Center.X, fsRegion.GetFeature(i).Geometry.EnvelopeInternal.ToExtent().Center.Y);
+                        fsReturn.AddFeature(geom);
                         fsReturn.DataTable.Rows[i]["Col"] = dr["Col"];
                         fsReturn.DataTable.Rows[i]["Row"] = dr["Row"];
                         fsReturn.DataTable.Rows[i]["ThemeValue"] = 0;
@@ -6636,9 +6628,8 @@ namespace BenMAP
                     }
                     foreach (DataRow dr in fsRegion.DataTable.Rows)
                     {
-                        Feature f = new Feature();
-                        f.BasicGeometry = new DotSpatial.Topology.Point(fsRegion.GetFeature(i).Envelope.ToExtent().Center.X, fsRegion.GetFeature(i).Envelope.ToExtent().Center.Y);
-                        fsReturn.AddFeature(f);
+                        var geom = new NetTopologySuite.Geometries.Point(fsRegion.GetFeature(i).Geometry.EnvelopeInternal.ToExtent().Center.X, fsRegion.GetFeature(i).Geometry.EnvelopeInternal.ToExtent().Center.Y);
+                        fsReturn.AddFeature(geom);
                         fsReturn.DataTable.Rows[i]["Col"] = dr["Col"];
                         fsReturn.DataTable.Rows[i]["Row"] = dr["Row"];
                         fsReturn.DataTable.Rows[i]["ThemeValue"] = 0;
@@ -6682,9 +6673,8 @@ namespace BenMAP
                     }
                     foreach (DataRow dr in fsRegion.DataTable.Rows)
                     {
-                        Feature f = new Feature();
-                        f.BasicGeometry = new DotSpatial.Topology.Point(fsRegion.GetFeature(i).Envelope.ToExtent().Center.X, fsRegion.GetFeature(i).Envelope.ToExtent().Center.Y);
-                        fsReturn.AddFeature(f);
+                        var geom = new NetTopologySuite.Geometries.Point(fsRegion.GetFeature(i).Geometry.EnvelopeInternal.ToExtent().Center.X, fsRegion.GetFeature(i).Geometry.EnvelopeInternal.ToExtent().Center.Y);
+                        fsReturn.AddFeature(geom);
                         fsReturn.DataTable.Rows[i]["Col"] = dr["Col"];
                         fsReturn.DataTable.Rows[i]["Row"] = dr["Row"];
                         fsReturn.DataTable.Rows[i]["ThemeValue"] = 0;
@@ -6710,9 +6700,8 @@ namespace BenMAP
                     i = 0;
                     foreach (DataRow dr in fsRegion.DataTable.Rows)
                     {
-                        Feature f = new Feature();
-                        f.BasicGeometry = new DotSpatial.Topology.Point(fsRegion.GetFeature(i).Envelope.ToExtent().Center.X, fsRegion.GetFeature(i).Envelope.ToExtent().Center.Y);
-                        fsReturn.AddFeature(f);
+                        var geom = new NetTopologySuite.Geometries.Point(fsRegion.GetFeature(i).Geometry.EnvelopeInternal.ToExtent().Center.X, fsRegion.GetFeature(i).Geometry.EnvelopeInternal.ToExtent().Center.Y);
+                        fsReturn.AddFeature(geom);
                         fsReturn.DataTable.Rows[i]["Col"] = dr["Col"];
                         fsReturn.DataTable.Rows[i]["Row"] = dr["Row"];
                         try
@@ -6733,9 +6722,8 @@ namespace BenMAP
                 i = 0;
                 foreach (DataRow dr in fsRegion.DataTable.Rows)
                 {
-                    Feature f = new Feature();
-                    f.BasicGeometry = new DotSpatial.Topology.Point(fsRegion.GetFeature(i).Envelope.ToExtent().Center.X, fsRegion.GetFeature(i).Envelope.ToExtent().Center.Y);
-                    fsReturn.AddFeature(f);
+                    var geom = new NetTopologySuite.Geometries.Point(fsRegion.GetFeature(i).Geometry.EnvelopeInternal.ToExtent().Center.X, fsRegion.GetFeature(i).Geometry.EnvelopeInternal.ToExtent().Center.Y);
+                    fsReturn.AddFeature(geom);
                     fsReturn.DataTable.Rows[i]["Col"] = dr["Col"];
                     fsReturn.DataTable.Rows[i]["Row"] = dr["Row"];
                     if (gRegionGridRelationship.bigGridID == CommonClass.RBenMAPGrid.GridDefinitionID)
@@ -13142,7 +13130,7 @@ namespace BenMAP
             if (mgName == null || mgName =="") return null;   //confirm map group name is valid
 
             bool mgFound = false;
-            MapGroup NewMapGroup = new MapGroup();
+            MapGroup NewMapGroup = null;
             MapGroup ParentMapGroup = null;
             string parentText;
             
@@ -13197,7 +13185,10 @@ namespace BenMAP
 
             if (!mgFound)  //New map group not found already, so add it
             {
+                NewMapGroup = new MapGroup();
+                NewMapGroup.Layers = new MapLayerCollection(mainMap.MapFrame, NewMapGroup, null);  // This is neccessary for manually created groups
                 NewMapGroup.LegendText = mgName;
+                
                 if (parentMGText == "Map Layers")  //add map group at top level
                 {
                     mainMap.Layers.Add(NewMapGroup);

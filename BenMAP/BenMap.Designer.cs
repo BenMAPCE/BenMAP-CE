@@ -837,7 +837,7 @@ namespace BenMAP
             this.appManager1.Legend = null;
             this.appManager1.Map = null;
             this.appManager1.ProgressHandler = null;
-            this.appManager1.ShowExtensionsDialog = DotSpatial.Controls.ShowExtensionsDialog.Default;
+            this.appManager1.ShowExtensionsDialogMode = DotSpatial.Controls.ShowExtensionsDialogMode.Default;
             // 
             // olvColumn7
             // 

@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>DotSpatial.Mono</name>
+    </assembly>
+    <members>
+        <member name="T:DotSpatial.Mono.Mono">
+            <summary>
+            This class contains methods for Mono.
+            </summary>
+        </member>
+        <member name="M:DotSpatial.Mono.Mono.IsRunningOnMono">
+            <summary>
+            Checks whether DotSpatial is running on Mono.
+            </summary>
+            <returns>True, if DotSpatial is running on Mono.</returns>
+        </member>
+    </members>
+</doc>
