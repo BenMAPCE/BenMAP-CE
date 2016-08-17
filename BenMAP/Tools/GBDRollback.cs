@@ -1058,7 +1058,7 @@ namespace BenMAP
                     DoIncrementalRollback(rollback.Increment, rollback.Background);
                     break;
                 case GBDRollbackItem.RollbackType.Standard:
-                    DoRollbackToStandard(rollback.Standard);
+                    DoRollbackToStandard(rollback.Standard, chkNegativeRollbackToStandard.Checked);
                     break;            
             }
         
@@ -1102,13 +1102,22 @@ namespace BenMAP
 
         }
 
-        private void DoRollbackToStandard(double standard)
+        private void DoRollbackToStandard(double standard, bool isNegativeRollback)
         {
             //rollback to standard
             dtConcCountry.Columns.Add("CONCENTRATION_ADJ", dtConcCountry.Columns["CONCENTRATION"].DataType, standard.ToString());
 
-            //get final, keep original values if <= standard.
-            dtConcCountry.Columns.Add("CONCENTRATION_FINAL", dtConcCountry.Columns["CONCENTRATION"].DataType, "IIF(CONCENTRATION <= " + standard + ", CONCENTRATION, CONCENTRATION_ADJ)");
+            if (isNegativeRollback)
+            {
+                //get final, keep original values if >= standard.
+                dtConcCountry.Columns.Add("CONCENTRATION_FINAL", dtConcCountry.Columns["CONCENTRATION"].DataType, "IIF(CONCENTRATION >= " + standard + ", CONCENTRATION, CONCENTRATION_ADJ)");
+
+            }
+            else
+            {
+                //get final, keep original values if <= standard.
+                dtConcCountry.Columns.Add("CONCENTRATION_FINAL", dtConcCountry.Columns["CONCENTRATION"].DataType, "IIF(CONCENTRATION <= " + standard + ", CONCENTRATION, CONCENTRATION_ADJ)");                
+            }
 
             //get delta (orig. conc - rolled back conc.)
             dtConcCountry.Columns.Add("CONCENTRATION_DELTA", dtConcCountry.Columns["CONCENTRATION"].DataType, "CONCENTRATION - CONCENTRATION_FINAL");
