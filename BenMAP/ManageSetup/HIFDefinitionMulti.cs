@@ -72,6 +72,13 @@ namespace BenMAP
         {
             try
             {
+                // Warning for editing a health impact function
+                DialogResult dr = MessageBox.Show("Are you sure you would like to save these changes?", "", MessageBoxButtons.YesNo);
+                if(dr == DialogResult.No)
+                {
+                    return;
+                }
+
                 if(cboPollutant.Text == string.Empty)
                 {
                     MessageBox.Show("Please choose pollutant(s).");
