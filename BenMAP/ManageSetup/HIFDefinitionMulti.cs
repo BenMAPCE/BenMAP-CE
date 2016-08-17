@@ -37,13 +37,6 @@ namespace BenMAP
             set { _healthImpacts = value; }
         }
 
-        /* private List<double> _listCustom;
-        public List<double> listCustom
-        {
-            get { return _listCustom; }
-            set { _listCustom = value; }
-        } */
-
         public HIFDefinitionMulti()
         {
             InitializeComponent();
@@ -65,7 +58,6 @@ namespace BenMAP
             InitializeComponent();
             _healthImpacts = healthImpact.DeepCopy();
             _dataName = dataName;
-            // _listCustom = listValue;
         }
 
         private void btnOK_Click(object sender, EventArgs e)
@@ -333,7 +325,6 @@ namespace BenMAP
                     cboIncidenceDataSet.Text = _healthImpacts.Incidence;
                     cboPrevalenceDataSet.Text = _healthImpacts.Prevalence;
                     cboVariableDataSet.Text = _healthImpacts.Variable;
-                    // list = listCustom;
 
                     if (_healthImpacts.BetaVariation == "Seasonal") bvSeasonal.Checked = true;
                     else bvFullYear.Checked = true;
@@ -1197,7 +1188,6 @@ namespace BenMAP
 
                 if (bvSeasonal.Checked && _healthImpacts.SeasonalMetric != null)
                 {
-                    // CRFBeta temp = new CRFBeta();
                     foreach (CRFVariable pv in _healthImpacts.PollVariables)
                     {
                         int i = 1;
@@ -1269,8 +1259,6 @@ namespace BenMAP
                         b.VarCovar = new List<CRFVarCov>();
                     }
 
-                    // CRFVarCov temp = new CRFVarCov();
-
                     foreach (CRFVariable cv in _healthImpacts.PollVariables)
                     {
                         CRFVarCov temp = new CRFVarCov();
@@ -1281,7 +1269,6 @@ namespace BenMAP
                        b.VarCovar.Add(temp);
                     }
 
-                    // b.VarCovar.Add(temp);
                     i++;
                 }
             }
