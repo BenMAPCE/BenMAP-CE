@@ -40,8 +40,8 @@ namespace BenMAP
         {
 
             ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
-            char micrograms = '\u00B5';
-            char super3 = '\u00B3';
+            char MICROGRAMS = '\u00B5';
+            char SUPER_3 = '\u00B3';
             
             string commandText =
                 "SELECT a.STD_ID, a.POLLUTANT, a.UNITS, a.EXPOSURE_DURATION, a.SAMP_PRD_DAYS, a.STD_GROUP, a.CONC_LIMIT, " +
@@ -58,7 +58,7 @@ namespace BenMAP
                     foreach (DataRow dr in ds.Tables[0].Rows)
                     {
                         string val = dr["STANDARD_NAME"].ToString();
-                        dr["STANDARD_NAME"] = val + " (" + dr["CONC_LIMIT"].ToString() + micrograms.ToString() + "g/m" + super3.ToString() + ")";
+                        dr["STANDARD_NAME"] = val + " (" + dr["CONC_LIMIT"].ToString() + MICROGRAMS.ToString() + "g/m" + SUPER_3.ToString() + ")";
                     }
                 }
             }

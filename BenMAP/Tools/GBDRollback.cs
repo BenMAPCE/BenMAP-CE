@@ -42,6 +42,9 @@ namespace BenMAP
         private const string FORMAT_DECIMAL_0_PLACES = "N0";
         private const string FORMAT_DECIMAL_0_PLACES_CSV = "F0";
 
+        private const char MICROGRAMS = '\u00B5';
+        private const char SUPER_3 = '\u00B3';
+
         private System.Data.DataTable dtConcCountry = null;
         private System.Data.DataTable dtConcEntireRollback = null;
 
@@ -96,11 +99,9 @@ namespace BenMAP
             
 
             //parameter options in gbParameterSelection
-            char micrograms = '\u00B5';
-            char super3 = '\u00B3';
-            lblIncrement.Text = "Increment (" + micrograms.ToString() + "g/m" + super3.ToString() + "):";
+            lblIncrement.Text = "Increment (" + MICROGRAMS.ToString() + "g/m" + SUPER_3.ToString() + "):";
 
-            lblIncrementBackground.Text = "Background (" + micrograms.ToString() + "g/m" + super3.ToString() + "):";
+            lblIncrementBackground.Text = "Background (" + MICROGRAMS.ToString() + "g/m" + SUPER_3.ToString() + "):";
             lblPercentageBackground.Text = lblIncrementBackground.Text;
 
             gbOptionsPercentage.Location = new System.Drawing.Point(gbOptionsIncremental.Location.X, gbOptionsIncremental.Location.Y);
@@ -681,37 +682,7 @@ namespace BenMAP
 
 
 
-        }
-
-        private string GetRollbackTypeSummary(GBDRollbackItem rollback)
-        {
-            string summary = String.Empty;
-            char micrograms = '\u00B5';
-            char super3 = '\u00B3';
-
-            switch (rollback.Type)
-            {
-                case GBDRollbackItem.RollbackType.Percentage: //percentage
-                    summary = rollback.Percentage.ToString() + "% Rollback";
-                    break;
-                case GBDRollbackItem.RollbackType.Incremental: //incremental
-                    summary = rollback.Increment.ToString() + micrograms.ToString() + "g/m" + super3.ToString() + " Rollback";
-                    break;
-                case GBDRollbackItem.RollbackType.Standard:
-                    if (rollback.IsNegativeRollbackToStandard)
-                    {
-                        summary = "Negative Rollback to " + rollback.StandardName + " Standard";
-                    }
-                    else
-                    {
-                        summary = "Rollback to " + rollback.StandardName + " Standard";
-                    }
-                    break;
-            }
-
-
-            return summary;
-        }
+        }        
 
         private void ClearFields() 
         {
@@ -1535,31 +1506,34 @@ namespace BenMAP
 
         private string GetBackgroundConcentrationText(GBDRollbackItem rollback)
         {
-            char micrograms = '\u00B5';
-            char super3 = '\u00B3';
-            return rollback.Background.ToString() + " " + micrograms.ToString() + "g/m" + super3.ToString();        
+            return rollback.Background.ToString() + " " + MICROGRAMS.ToString() + "g/m" + SUPER_3.ToString();
         }
-
-        private string GetRollbackTypeText(GBDRollbackItem rollback)
+       
+        private string GetRollbackTypeSummary(GBDRollbackItem rollback)
         {
-            char micrograms = '\u00B5';
-            char super3 = '\u00B3';
             string summary = String.Empty;
+
             switch (rollback.Type)
             {
                 case GBDRollbackItem.RollbackType.Percentage: //percentage
                     summary = rollback.Percentage.ToString() + "% Rollback";
                     break;
                 case GBDRollbackItem.RollbackType.Incremental: //incremental
-                    summary = rollback.Increment.ToString() + micrograms.ToString() + "g/m" + super3.ToString() + " Rollback";
+                    summary = rollback.Increment.ToString() + MICROGRAMS.ToString() + "g/m" + SUPER_3.ToString() + " Rollback";
                     break;
                 case GBDRollbackItem.RollbackType.Standard:
-                    summary = "Rollback to " + rollback.StandardName + " Standard";
+                    if (rollback.IsNegativeRollbackToStandard)
+                    {
+                        summary = "Negative Rollback to " + rollback.StandardName + " Standard";
+                    }
+                    else
+                    {
+                        summary = "Rollback to " + rollback.StandardName + " Standard";
+                    }
                     break;
             }
 
             return summary;
-
         }
 
         private void SaveRollbackReport(GBDRollbackItem rollback)
@@ -1615,28 +1589,12 @@ namespace BenMAP
             UpdateCellSharedString(worksheetPart.Worksheet, "PM 2.5", "B", 6);
 
             ////xlSheet.Range["A7"].Value = "Background Concentration";
-            char micrograms = '\u00B5';
-            char super3 = '\u00B3';
-            //xlSheet.Range["B7"].Value = rollback.Background.ToString() + " " + micrograms.ToString() + "g/m" + super3.ToString();
-            string backgroundConc = rollback.Background.ToString() + " " + micrograms.ToString() + "g/m" + super3.ToString();
-            UpdateCellSharedString(worksheetPart.Worksheet, backgroundConc, "B", 7);
+            //xlSheet.Range["B7"].Value = rollback.Background.ToString() + " " + MICROGRAMS.ToString() + "g/m" + SUPER_3.ToString();
+            UpdateCellSharedString(worksheetPart.Worksheet, GetBackgroundConcentrationText(rollback), "B", 7);
 
-            ////xlSheet.Range["A8"].Value = "Rollback Type";
-            string summary = String.Empty;
-            switch (rollback.Type)
-            {
-                case GBDRollbackItem.RollbackType.Percentage: //percentage
-                    summary = rollback.Percentage.ToString() + "% Rollback";
-                    break;
-                case GBDRollbackItem.RollbackType.Incremental: //incremental
-                    summary = rollback.Increment.ToString() + micrograms.ToString() + "g/m" + super3.ToString() + " Rollback";
-                    break;
-                case GBDRollbackItem.RollbackType.Standard:
-                    summary = "Rollback to " + rollback.StandardName + " Standard";
-                    break;
-            }
+            ////xlSheet.Range["A8"].Value = "Rollback Type";       
             //xlSheet.Range["B8"].Value = summary;
-            UpdateCellSharedString(worksheetPart.Worksheet, summary, "B", 8);
+            UpdateCellSharedString(worksheetPart.Worksheet, GetRollbackTypeSummary(rollback), "B", 8);
 
             ////xlSheet.Range["A9"].Value = "Regions and Countries";
             uint rowOffset = 0;
@@ -2079,7 +2037,7 @@ namespace BenMAP
                     //remove name and is region columns 
                     listOutputLine[0] = "PM2.5";
                     listOutputLine[1] = GetBackgroundConcentrationText(rollback); 
-                    listOutputLine.Insert(2, GetRollbackTypeText(rollback));
+                    listOutputLine.Insert(2, GetRollbackTypeSummary(rollback));
                     
                     //write output line
                     outputLine = string.Join(",", listOutputLine);
