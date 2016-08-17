@@ -27,6 +27,37 @@ namespace BenMAP
         [ProtoMember(8)]
         private List<CRFBeta> _pollBetas;
 
+        public CRFVariable DeepCopy()
+        {
+            CRFVariable newVar = new CRFVariable();
+
+            newVar.FunctionID = Convert.ToInt32(String.Copy(this.FunctionID.ToString()));
+            if(this.Metric != null)
+            {
+                newVar.Metric = new Metric();
+                newVar.Metric.HourlyMetricGeneration = Convert.ToInt32(String.Copy(this.Metric.HourlyMetricGeneration.ToString()));
+                newVar.Metric.MetricID = Convert.ToInt32(String.Copy(this.Metric.MetricID.ToString()));
+                if (this.Metric.MetricName != null)
+                    newVar.Metric.MetricName = String.Copy(this.Metric.MetricName);
+                newVar.Metric.PollutantID = Convert.ToInt32(String.Copy(this.Metric.PollutantID.ToString()));
+            }
+            newVar.Pollutant1ID = Convert.ToInt32(String.Copy(this.Pollutant1ID.ToString()));
+            newVar.Pollutant2ID = Convert.ToInt32(String.Copy(this.Pollutant2ID.ToString()));
+            if(this.PollutantName != null)
+                newVar.PollutantName = String.Copy(this.PollutantName);
+            newVar.VariableID = Convert.ToInt32(String.Copy(this.VariableID.ToString()));
+            if(this.VariableName != null)
+                newVar.VariableName = String.Copy(this.VariableName);
+            
+            foreach (CRFBeta b in this.PollBetas)
+            {
+                CRFBeta toAdd = b.DeepCopy();
+                newVar.PollBetas.Add(toAdd);
+            }
+
+            return newVar;
+        }
+
         // parameterless constructor for serializer 
         public CRFVariable()
         {
@@ -38,14 +69,6 @@ namespace BenMAP
             this._pollutant2ID = 0;
             this._metric = null;
             this._pollBetas = new List<CRFBeta>();
-        }
-
-        // Constructor for new/ edited functions
-        public CRFVariable(string varName, string pollName, int poll1ID)
-        {
-            this._variableName = varName;
-            this._pollutantName = pollName;
-            this._pollutant1ID = poll1ID;
         }
 
         public CRFVariable(string varName, int varID, int funID, string pollName, int poll1ID)
@@ -66,16 +89,6 @@ namespace BenMAP
             this._pollutant1ID = poll1ID;
             this._pollutant2ID = poll2ID;
             this._metric = null;
-        }
-
-        public CRFVariable(string varName, int varID, int funID, string pollName, int poll1ID, Metric metric)
-        {
-            this._variableName = varName;
-            this._variableID = varID;
-            this._functionID = funID;
-            this._pollutantName = pollName;
-            this._pollutant1ID = poll1ID;
-            this._metric = metric;
         }
 
         public int VariableID

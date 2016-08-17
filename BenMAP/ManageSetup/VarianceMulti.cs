@@ -11,36 +11,37 @@ namespace BenMAP
 {
     public partial class VarianceMulti : FormBase
     {
-        private int betaIndex;
+        /* private int betaIndex;
         private CRFVariable _poll;
 
         public CRFVariable Pollutant
         {
             get { return _poll; }
             set { _poll = value;  }
+        } */
+        private CRFBeta beta;
+
+        public CRFBeta Beta
+        {
+            get { return beta; }
+            set { beta = value; }
         }
 
-        public VarianceMulti(HealthImpact hif, CRFVariable var, int betaInd)
+        public VarianceMulti(string modelSpec, string pollName, CRFBeta b)
         {
             InitializeComponent();
-            tbModelSpec.Text = hif.ModelSpec;
-            tbPollutant.Text = var.PollutantName;
-            tbSeason.Text = var.PollBetas[betaInd].SeasonName;
-            tbStart.Text = var.PollBetas[betaInd].StartDate;
-            tbEnd.Text = var.PollBetas[betaInd].EndDate;
+            beta = b;
 
-            _poll = var;
-            betaIndex = betaInd;
+            tbModelSpec.Text = modelSpec;
+            tbPollutant.Text = pollName;
+            tbSeason.Text = beta.SeasonName;
+            tbStart.Text = beta.StartDate;
+            tbEnd.Text = beta.EndDate;
         }
 
         private void VarianceMulti_Load(object sender, EventArgs e)
         {
-            // Load variance data from db by crfbetaid
-            ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
-            string commandText = string.Format("select pollutantname, varcov from crfvariables as crv left join crfbetas as crb on crb.crfvariableid = crv.crfvariableid left join crfvarcov as crvc on crvc.crfbetaID1 = crb.crfbetaid or crvc.crfbetaid2 = crb.crfbetaid where((crfbetaid2={0} and variablename!='{1}') or(crfbetaid1={0} and crfbetaid2={0})) order by char_length(variablename), variablename", Pollutant.PollBetas[betaIndex].BetaID, Pollutant.VariableName);
-            DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
-
-            olvVariance.DataSource = ds.Tables[0];
+            olvVariance.SetObjects(beta.VarCovar);
         }
 
         private void btnOK_Click(object sender, EventArgs e)

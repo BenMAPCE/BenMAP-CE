@@ -424,6 +424,7 @@ namespace BenMAP.Configuration
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex);
             }
             return baseControlCRSelectFunction;
         }
@@ -445,6 +446,7 @@ namespace BenMAP.Configuration
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex);
                 return null;
             }
         }
@@ -465,6 +467,7 @@ namespace BenMAP.Configuration
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex);
                 return null;
             }
         }
@@ -486,6 +489,7 @@ namespace BenMAP.Configuration
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex);
                 return null;
             }
         }
@@ -508,6 +512,7 @@ namespace BenMAP.Configuration
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex);
                 return null;
             }
 
@@ -531,6 +536,7 @@ namespace BenMAP.Configuration
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex);
                 return null;
             }
 
@@ -544,34 +550,21 @@ namespace BenMAP.Configuration
         {
             try
             {
-                //           string commandText = string.Format("select CRFunctionID,a.CRFunctionDatasetID,f.CRFunctionDataSetName,a.EndpointGroupID,b.EndPointGroupName,a.EndpointID,c.EndPointName,PollutantID,"
-                //+ " MetricID,SeasonalMetricID,MetricStatistic,Author,YYear,Location,OtherPollutants,Qualifier,Reference,Race,Gender,Startage,Endage,a.FunctionalFormid,d.FunctionalFormText,"
-                //+ " a.IncidenceDatasetID,a.PrevalenceDatasetID,a.VariableDatasetID,Beta,DistBeta,P1Beta,P2Beta,A,NameA,B,NameB,C,NameC,a.BaselineFunctionalFormID,"
-                //+ " e.FunctionalFormText as BaselineFunctionalFormText,Ethnicity,Percentile,Locationtypeid, g.IncidenceDataSetName,i.IncidenceDataSetName as PrevalenceDataSetName,"
-                //+ " h.SetupVariableDataSetName as VariableDatasetName from crFunctions a join CRFunctionDataSets f on a.CRFunctionDatasetID=f.CRFunctionDatasetID"
-                //+ " join EndPointGroups b on a.EndPointGroupID=b.EndPointGroupID join EndPoints c on a.EndPointID=c.EndPointID join FunctionalForms d on a.FunctionalFormid=d.FunctionalFormID"
-                //+ " left join BaselineFunctionalForms e on a.BaselineFunctionalFormID=e.FunctionalFormID left join IncidenceDataSets g on a.IncidenceDatasetID=g.IncidenceDatasetID"
-                //+ " left join IncidenceDataSets i on a.PrevalenceDatasetID=i.IncidenceDatasetID left join SetupVariableDataSets h on a.VariableDatasetID=h.SetupVariableDataSetID"
-                //+ " where CRFunctionID={0}", ID);
-
-                string commandText = string.Format("select a.CRFunctionID,a.CRFunctionDatasetID,f.CRFunctionDataSetName,a.EndpointGroupID,b.EndPointGroupName,a.EndpointID,c.EndPointName,PollutantGroupID,"
-    + " MetricID,SeasonalMetricID,MetricStatistic,Author,YYear,Location,OtherPollutants,Qualifier,Reference,Race,Gender,Startage,Endage,a.FunctionalFormid,d.FunctionalFormText,"
-    + " a.IncidenceDatasetID,a.PrevalenceDatasetID,a.VariableDatasetID,betas.Beta,dt.DistributionName as DistBeta,betas.P1Beta,betas.P2Beta,betas.A,betas.NameA,betas.B,betas.NameB,betas.C,betas.NameC,"
-    + " a.BaselineFunctionalFormID,e.FunctionalFormText as BaselineFunctionalFormText,Ethnicity,Percentile,Locationtypeid, g.IncidenceDataSetName,i.IncidenceDataSetName as PrevalenceDataSetName,"
-    + " h.SetupVariableDataSetName as VariableDatasetName, a.MSID, a.BetaVariationID"
-    + " from crFunctions a"
-    + " join CRFVariables vars on a.CRFunctionID = vars.CRFunctionID"
-    + " join CRFBetas betas on vars.CRFVariableID = betas.CRFVariableID"
-    + " join DistributionTypes dt on betas.DistributionTypeID = dt.DistributionTypeID"
-    + " join CRFunctionDataSets f on a.CRFunctionDatasetID=f.CRFunctionDatasetID"
-    + " join EndPointGroups b on a.EndPointGroupID=b.EndPointGroupID"
-    + " join EndPoints c on a.EndPointID=c.EndPointID"
-    + " join FunctionalForms d on a.FunctionalFormid=d.FunctionalFormID"
-    + " left join BaselineFunctionalForms e on a.BaselineFunctionalFormID=e.FunctionalFormID"
-    + " left join IncidenceDataSets g on a.IncidenceDatasetID=g.IncidenceDatasetID"
-    + " left join IncidenceDataSets i on a.PrevalenceDatasetID=i.IncidenceDatasetID"
-    + " left join SetupVariableDataSets h on a.VariableDatasetID=h.SetupVariableDataSetID"
-    + " where a.CRFunctionID={0}", ID);
+                string commandText = string.Format("select a.CRFunctionID,a.CRFunctionDatasetID,f.CRFunctionDataSetName,a.EndpointGroupID,b.EndPointGroupName,"
+                + " a.EndpointID,c.EndPointName,PollutantGroupID,SeasonalMetricID,MetricStatistic,Author,YYear,Location,OtherPollutants,Qualifier,Reference,"
+                + " a.IncidenceDatasetID,a.PrevalenceDatasetID,a.VariableDatasetID,a.BaselineFunctionalFormID,e.FunctionalFormText as BaselineFunctionalFormText,"
+                + " Race,Gender,Startage,Endage,a.FunctionalFormid,d.FunctionalFormText,Ethnicity,Percentile,Locationtypeid, g.IncidenceDataSetName,"
+                + " i.IncidenceDataSetName as PrevalenceDataSetName,h.SetupVariableDataSetName as VariableDatasetName, a.MSID, a.BetaVariationID"
+                + " from crFunctions a"
+                + " join CRFunctionDataSets f on a.CRFunctionDatasetID=f.CRFunctionDatasetID"
+                + " join EndPointGroups b on a.EndPointGroupID=b.EndPointGroupID"
+                + " join EndPoints c on a.EndPointID=c.EndPointID"
+                + " join FunctionalForms d on a.FunctionalFormid=d.FunctionalFormID"
+                + " left join BaselineFunctionalForms e on a.BaselineFunctionalFormID=e.FunctionalFormID"
+                + " left join IncidenceDataSets g on a.IncidenceDatasetID=g.IncidenceDatasetID"
+                + " left join IncidenceDataSets i on a.PrevalenceDatasetID=i.IncidenceDatasetID"
+                + " left join SetupVariableDataSets h on a.VariableDatasetID=h.SetupVariableDataSetID"
+                + " where a.CRFunctionID={0}", ID);
 
                 BenMAPHealthImpactFunction benMapHealthImpactFunction = new BenMAPHealthImpactFunction();
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
@@ -594,39 +587,12 @@ namespace BenMAP.Configuration
                 benMapHealthImpactFunction.DataSetID = Convert.ToInt32(dr["CRFunctionDatasetID"]);
                 benMapHealthImpactFunction.DataSetName = dr["CRFunctionDataSetName"].ToString();
 
-
-                benMapHealthImpactFunction.Beta = Convert.ToDouble(dr["Beta"]);
-                benMapHealthImpactFunction.BetaDistribution = dr["DistBeta"].ToString();
-                if (dr["P1Beta"] != DBNull.Value)
-                {
-                    benMapHealthImpactFunction.BetaParameter1 = Convert.ToDouble(dr["P1Beta"]);
-                }
-                if (dr["P2Beta"] != DBNull.Value)
-                {
-                    benMapHealthImpactFunction.BetaParameter2 = Convert.ToDouble(dr["P2Beta"]);
-                }
-                if ((dr["A"] is DBNull) == false)
-                    benMapHealthImpactFunction.AContantValue = Convert.ToDouble(dr["A"]);
-                if ((dr["NameA"] is DBNull) == false)
-                    benMapHealthImpactFunction.AContantDescription = dr["NameA"].ToString();
-                if ((dr["B"] is DBNull) == false)
-                    benMapHealthImpactFunction.BContantValue = Convert.ToDouble(dr["B"]);
-                if ((dr["NameB"] is DBNull) == false)
-                    benMapHealthImpactFunction.BContantDescription = dr["NameB"].ToString();
-                if ((dr["C"] is DBNull) == false)
-                    benMapHealthImpactFunction.CContantValue = Convert.ToDouble(dr["C"]);
-                if ((dr["NameC"] is DBNull) == false)
-                    benMapHealthImpactFunction.CContantDescription = dr["NameC"].ToString();
-
-
                 benMapHealthImpactFunction.ID = Convert.ToInt32(dr["CRFunctionID"]);
                 benMapHealthImpactFunction.EndPointGroup = dr["EndPointGroupName"].ToString();
                 benMapHealthImpactFunction.EndPointGroupID = Convert.ToInt32(dr["EndpointGroupID"]);
                 benMapHealthImpactFunction.EndPoint = dr["EndPointName"].ToString();
                 benMapHealthImpactFunction.EndPointID = Convert.ToInt32(dr["EndPointID"]);
                 benMapHealthImpactFunction.PollutantGroup = Grid.GridCommon.getPollutantGroupFromID(Convert.ToInt32(dr["PollutantGroupID"]));
-                //use first pollutant in group, this assumes all pollutants in group have the same metrics
-                benMapHealthImpactFunction.Metric = Grid.GridCommon.getMetricFromPollutantAndID(benMapHealthImpactFunction.PollutantGroup.Pollutants.First(), Convert.ToInt32(dr["MetricID"]));
                 benMapHealthImpactFunction.SeasonalMetric = null;
                 if ((dr["SeasonalMetricID"] is DBNull) == false)
                 {
@@ -672,6 +638,7 @@ namespace BenMAP.Configuration
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex);
                 return null;
             }
 
@@ -697,6 +664,7 @@ namespace BenMAP.Configuration
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex);
                 return null;
             }
         }
@@ -786,7 +754,7 @@ namespace BenMAP.Configuration
                         break;
                     case "Normal":
                         Meta.Numerics.Statistics.Distributions.Distribution Normal_distribution =
-    new Meta.Numerics.Statistics.Distributions.NormalDistribution(crfBeta.Beta, standardDeviation); // crfBeta.P1Beta);
+    new Meta.Numerics.Statistics.Distributions.NormalDistribution(crfBeta.Beta, standardDeviation);
                         sample = CreateSample(Normal_distribution, 1000000, Seed);
                         break;
                     case "Triangular":
@@ -885,8 +853,9 @@ namespace BenMAP.Configuration
 
 
             }
-            catch
+            catch (Exception ex)
             {
+                Logger.LogError(ex);
                 return null;
             }
         }
@@ -978,6 +947,7 @@ namespace BenMAP.Configuration
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex);
                 return 0;
             }
         }
@@ -1033,6 +1003,7 @@ namespace BenMAP.Configuration
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex);
                 return 0;
             }
         }
@@ -1091,6 +1062,7 @@ namespace BenMAP.Configuration
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex);
                 return 0;
             }
 
@@ -1207,8 +1179,9 @@ namespace BenMAP.Configuration
                 return dicPopulation;
 
             }
-            catch
+            catch (Exception ex)
             {
+                Logger.LogError(ex);
                 return null;
             }
         }
@@ -1543,6 +1516,7 @@ namespace BenMAP.Configuration
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex);
                 fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, "CREATE TABLE POP12kmToCounty (RACEID  SMALLINT NOT NULL,GENDERID  SMALLINT NOT NULL," +
  "  AGERANGEID           SMALLINT NOT NULL,  CCOLUMN              INTEGER NOT NULL," +
  "  ROW                  INTEGER NOT NULL,  VVALUE               FLOAT NOT NULL," +
@@ -1946,8 +1920,9 @@ namespace BenMAP.Configuration
                 }
                 return lstAgeID;
             }
-            catch
+            catch (Exception ex)
             {
+                Logger.LogError(ex);
             }
             return null;
         }
@@ -2503,6 +2478,7 @@ namespace BenMAP.Configuration
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex);
                 return null;
             }
         }
@@ -2587,8 +2563,9 @@ namespace BenMAP.Configuration
                 }
 
             }
-            catch
+            catch (Exception ex)
             {
+                Logger.LogError(ex);
             }
         }
         public static float getPopLevelFromCR(CRSelectFunction crSelectFunction)
@@ -3138,6 +3115,7 @@ namespace BenMAP.Configuration
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex);
                 return null;
             }
 
@@ -3433,6 +3411,7 @@ namespace BenMAP.Configuration
                         }
                         catch (Exception ex)
                         {
+                            Logger.LogError(ex);
                         }
                     }
                 }
@@ -3670,6 +3649,7 @@ namespace BenMAP.Configuration
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex);
                 return null;
             }
 
@@ -3842,6 +3822,7 @@ namespace BenMAP.Configuration
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex);
                 return null;
             }
 
@@ -3963,6 +3944,7 @@ namespace BenMAP.Configuration
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex);
                 return null;
             }
 
@@ -4091,6 +4073,7 @@ namespace BenMAP.Configuration
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex);
                 return null;
             }
 
@@ -4153,6 +4136,7 @@ namespace BenMAP.Configuration
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex);
                 return null;
             }
 
@@ -4178,6 +4162,7 @@ namespace BenMAP.Configuration
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex);
                 return null;
             }
 
@@ -4204,6 +4189,7 @@ namespace BenMAP.Configuration
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex);
                 return null;
             }
         }
@@ -4431,6 +4417,7 @@ namespace BenMAP.Configuration
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex);
             }
             return dicReturn;
         }
@@ -4455,8 +4442,9 @@ namespace BenMAP.Configuration
                         if (benMAPPopulation.GridType.GridDefinitionID != CommonClass.GBenMAPGrid.GridDefinitionID)
                             lstGridRelationship.Where(p => (p.bigGridID == benMAPPopulation.GridType.GridDefinitionID && p.smallGridID == CommonClass.GBenMAPGrid.GridDefinitionID) || (p.smallGridID == benMAPPopulation.GridType.GridDefinitionID && p.bigGridID == CommonClass.GBenMAPGrid.GridDefinitionID)).First();
                     }
-                    catch
+                    catch (Exception ex)
                     {
+                        Logger.LogError(ex);
                     }
 
 
@@ -5256,6 +5244,7 @@ namespace BenMAP.Configuration
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex);
                 return null;
             }
         }
@@ -5457,6 +5446,7 @@ namespace BenMAP.Configuration
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex);
                 return null;
             }
         }
@@ -5518,6 +5508,7 @@ namespace BenMAP.Configuration
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex);
                 return null;
             }
         }
@@ -5847,6 +5838,7 @@ namespace BenMAP.Configuration
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex);
             }
         }
 
@@ -5951,6 +5943,7 @@ namespace BenMAP.Configuration
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex);
                 return 0;
             }
         }
@@ -5984,6 +5977,7 @@ namespace BenMAP.Configuration
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex);
                 return 0;
 
             }

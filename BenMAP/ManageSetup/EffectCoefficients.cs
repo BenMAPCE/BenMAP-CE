@@ -27,6 +27,7 @@ namespace BenMAP
             InitializeComponent();
             _hif = hif.DeepCopy();
             selected = sel;
+            selectedSeason = 0;
             
             if (_hif.BetaVariation == "Seasonal") seasonal = true;
             else seasonal = false;
@@ -41,7 +42,8 @@ namespace BenMAP
                 txtPollutant.Text = selectedVariable.PollutantName;
                 txtModelSpec.Text = _hif.ModelSpec;
                 txtSeasMetric.Text = _hif.SeasonalMetric;
-                cboMetric.Text = selectedVariable.Metric.MetricName;
+                if(selectedVariable.Metric.MetricName != null)
+                    cboMetric.Text = selectedVariable.Metric.MetricName;
 
                 // multipollutant locked to normal per epa's request
                 // check that function ID is there first (not there for new functions)
@@ -49,29 +51,20 @@ namespace BenMAP
                 if (_hif.FunctionID != string.Empty || _hif.FunctionID.Length > 0)
                     dataset = Configuration.ConfigurationCommonClass.getDatasetNameFromFunctionID(Convert.ToInt32(_hif.FunctionID));
 
-                if (_hif.PollVariables.Count() > 1 || (dataset != null && dataset.ToLower().Contains("multi")))
+                if(dataset != null && dataset.ToLower().Contains("multi"))
                 {
                     cboBetaDistribution.Items.Add("Normal");
                     cboBetaDistribution.SelectedText = "Normal";
                 }
                 else
                 {
-                    cboBetaDistribution.Items.Add("None");
-                    cboBetaDistribution.Items.Add("Normal");
-                    cboBetaDistribution.Items.Add("Triangular");
-                    cboBetaDistribution.Items.Add("Poisson");
-                    cboBetaDistribution.Items.Add("Binomial");
-                    cboBetaDistribution.Items.Add("LogNormal");
-                    cboBetaDistribution.Items.Add("Uniform");
-                    cboBetaDistribution.Items.Add("Exponential");
-                    cboBetaDistribution.Items.Add("Geometric");
-                    cboBetaDistribution.Items.Add("Weibull");
-                    cboBetaDistribution.Items.Add("Gamma");
-                    cboBetaDistribution.Items.Add("Logistic");
-                    cboBetaDistribution.Items.Add("Beta");
-                    cboBetaDistribution.Items.Add("Pareto");
-                    cboBetaDistribution.Items.Add("Cauchy");
-                    cboBetaDistribution.Items.Add("Custom");
+                    ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                    string commandText = "select DISTRIBUTIONNAME from DISTRIBUTIONTYPES order by DISTRIBUTIONNAME";
+                    DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+                    foreach (DataRow dr in ds.Tables[0].Rows)
+                    {
+                        cboBetaDistribution.Items.Add(dr["distributionname"].ToString());
+                    }
                 }
 
                 cboBetaDistribution.SelectedIndex = 0;
@@ -107,6 +100,7 @@ namespace BenMAP
 
                 if (seasonal)
                 {
+                    cboSeason.Items.Clear();
                     foreach (var pb in selectedVariable.PollBetas)
                     {
                         cboSeason.Items.Add(pb.SeasNumName);
@@ -116,7 +110,14 @@ namespace BenMAP
                 loadVariable();
                 loadMetrics();
 
-                cboBetaDistribution.SelectedIndex = cboBetaDistribution.FindString(selectedVariable.PollBetas[selectedSeason].Distribution);
+                if(selectedVariable.PollBetas[selectedSeason].Distribution == string.Empty || selectedVariable.PollBetas[selectedSeason].Distribution == "None")
+                {
+                    cboBetaDistribution.SelectedIndex = cboBetaDistribution.FindString("None");
+                }
+                else
+                {
+                    cboBetaDistribution.SelectedIndex = cboBetaDistribution.FindString(selectedVariable.PollBetas[selectedSeason].Distribution);
+                }
 
                 cboSeason.SelectionChangeCommitted -= cboSeason_SelectedValueChanged;
                 cboSeason.SelectionChangeCommitted += cboSeason_SelectedValueChanged;
@@ -158,62 +159,74 @@ namespace BenMAP
 
         private void btnOK_Click(object sender, EventArgs e)
         {
-            saveCurrent(cboSeason.SelectedIndex);
+            saveCurrent(selectedSeason);
             this.DialogResult = DialogResult.OK;
+            cboSeason.Items.Clear();
         }
 
         private void saveCurrent(int seasonInd)
         {
-            if (txtBeta.Text == string.Empty)
+            try
             {
-                MessageBox.Show("'Beta' can not be null. Please input a valid value.");
-                return;
-            }
-
-            if(txtAconstantValue.Text == string.Empty)
-            {
-                MessageBox.Show("'A' can not be null. Please input a valid value.");
-                return;
-            }
-
-            if (txtBconstantValue.Text == string.Empty)
-            {
-                MessageBox.Show("'B' can not be null. Please input a valid value.");
-                return;
-            }
-
-            if (txtCconstantValue.Text == string.Empty)
-            {
-                MessageBox.Show("'C' can not be null. Please input a valid value.");
-                return;
-            }
-
-            if (txtBetaParameter1.Visible && txtBetaParameter2.Visible)
-            {
-                if(txtBetaParameter1.Text == string.Empty)
+                if (txtBeta.Text == string.Empty)
                 {
-                    MessageBox.Show("'Beta Parameter 1' can not be null. Please input a valid value.");
+                    MessageBox.Show("'Beta' can not be null. Please input a valid value.");
                     return;
                 }
 
-                if (txtBetaParameter2.Text == string.Empty)
+                if (txtAconstantValue.Text == string.Empty)
                 {
-                    MessageBox.Show("'Beta Parameter 2' can not be null. Please input a valid value.");
+                    MessageBox.Show("'A' can not be null. Please input a valid value.");
                     return;
                 }
 
-                _hif.PollVariables.ElementAt(selected).PollBetas[seasonInd].P1Beta = Convert.ToDouble(txtBetaParameter1.Text);
-                _hif.PollVariables.ElementAt(selected).PollBetas[seasonInd].P2Beta = Convert.ToDouble(txtBetaParameter2.Text);
-            }
+                if (txtBconstantValue.Text == string.Empty)
+                {
+                    MessageBox.Show("'B' can not be null. Please input a valid value.");
+                    return;
+                }
 
-            _hif.PollVariables.ElementAt(selected).PollBetas[seasonInd].Beta = Convert.ToDouble(txtBeta.Text);
-            _hif.PollVariables.ElementAt(selected).PollBetas[seasonInd].AConstantName = txtAconstantDescription.Text.ToString();
-            _hif.PollVariables.ElementAt(selected).PollBetas[seasonInd].BConstantName = txtBconstantDescription.Text.ToString();
-            _hif.PollVariables.ElementAt(selected).PollBetas[seasonInd].CConstantName = txtCconstantDescription.Text.ToString();
-            _hif.PollVariables.ElementAt(selected).PollBetas[seasonInd].AConstantValue = Convert.ToDouble(txtAconstantValue.Text);
-            _hif.PollVariables.ElementAt(selected).PollBetas[seasonInd].BConstantValue = Convert.ToDouble(txtBconstantValue.Text);
-            _hif.PollVariables.ElementAt(selected).PollBetas[seasonInd].CConstantValue = Convert.ToDouble(txtCconstantValue.Text);
-            _hif.PollVariables.ElementAt(selected).PollBetas[seasonInd].Distribution = cboBetaDistribution.Text.ToString();
+                if (txtCconstantValue.Text == string.Empty)
+                {
+                    MessageBox.Show("'C' can not be null. Please input a valid value.");
+                    return;
+                }
+
+                if (txtBetaParameter1.Visible && txtBetaParameter2.Visible)
+                {
+                    if (txtBetaParameter1.Text == string.Empty)
+                    {
+                        MessageBox.Show("'Beta Parameter 1' can not be null. Please input a valid value.");
+                        return;
+                    }
+
+                    if (txtBetaParameter2.Text == string.Empty)
+                    {
+                        MessageBox.Show("'Beta Parameter 2' can not be null. Please input a valid value.");
+                        return;
+                    }
+
+                    _hif.PollVariables.ElementAt(selected).PollBetas[seasonInd].P1Beta = Convert.ToDouble(txtBetaParameter1.Text);
+                    _hif.PollVariables.ElementAt(selected).PollBetas[seasonInd].P2Beta = Convert.ToDouble(txtBetaParameter2.Text);
+                }
+
+                _hif.PollVariables.ElementAt(selected).PollBetas[seasonInd].Beta = Convert.ToDouble(txtBeta.Text);
+                _hif.PollVariables.ElementAt(selected).PollBetas[seasonInd].AConstantName = txtAconstantDescription.Text.ToString();
+                _hif.PollVariables.ElementAt(selected).PollBetas[seasonInd].BConstantName = txtBconstantDescription.Text.ToString();
+                _hif.PollVariables.ElementAt(selected).PollBetas[seasonInd].CConstantName = txtCconstantDescription.Text.ToString();
+                _hif.PollVariables.ElementAt(selected).PollBetas[seasonInd].AConstantValue = Convert.ToDouble(txtAconstantValue.Text);
+                _hif.PollVariables.ElementAt(selected).PollBetas[seasonInd].BConstantValue = Convert.ToDouble(txtBconstantValue.Text);
+                _hif.PollVariables.ElementAt(selected).PollBetas[seasonInd].CConstantValue = Convert.ToDouble(txtCconstantValue.Text);
+                _hif.PollVariables.ElementAt(selected).PollBetas[seasonInd].Distribution = cboBetaDistribution.Text.ToString();
+
+                // Save metrics
+                saveMetric();
+                saveDistribution();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+            }
         }
 
         private void loadVariable()
@@ -227,7 +240,7 @@ namespace BenMAP
 
                 if (seasonal)
                 {
-                    cboSeason.SelectedIndex = selectedSeason;
+                    cboSeason.SelectedItem = cboSeason.Items[selectedSeason];
 
                     txtSeason.Text = selectedVariable.PollBetas[selectedSeason].SeasonName;
                     txtStart.Text = selectedVariable.PollBetas[selectedSeason].StartDate;
@@ -285,19 +298,67 @@ namespace BenMAP
             }
         }
 
+        // Saves the metric object for the current beta object 
+        private void saveMetric()
+        {
+            try
+            {
+                CRFVariable selectedVariable = _hif.PollVariables.ElementAt(selected);
+
+                if (selectedVariable.PollutantName.Contains("*")) return;
+
+                string commandText = string.Format("select metricid, hourlymetricgeneration from metrics where pollutantid = {0} and metricname = '{1}'", selectedVariable.Pollutant1ID ,cboMetric.Text);
+                ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+                selectedVariable.Metric = new Metric();
+                selectedVariable.Metric.MetricName = cboMetric.Text;
+                selectedVariable.Metric.PollutantID = selectedVariable.Pollutant1ID;
+                selectedVariable.Metric.MetricID = Convert.ToInt32(ds.Tables[0].Rows[0]["metricid"]);
+                selectedVariable.Metric.HourlyMetricGeneration = Convert.ToInt32(ds.Tables[0].Rows[0]["hourlymetricgeneration"]);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+            }
+        }
+
+        private void saveDistribution()
+        {
+            try
+            {
+                CRFVariable selectedVariable = _hif.PollVariables.ElementAt(selected);
+                selectedVariable.PollBetas[selectedSeason].Distribution = cboBetaDistribution.Text;
+
+                string commandText = string.Format("select distributiontypeid from DISTRIBUTIONTYPES where distributionname = '{0}'", cboBetaDistribution.Text);
+                ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                object res = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+                if (res != null)
+                {
+                    selectedVariable.PollBetas[selectedSeason].DistributionTypeID = Convert.ToInt32(res);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+            }
+        }
+
         private void btnCancel_Click(object sender, EventArgs e)
         {
-            // Warning to be used once editing is enabled
-            /* DialogResult warn = MessageBox.Show("Pressing cancel will discard the changes on the current variable. Changes made on other variable values will still be saved.","Warning",MessageBoxButtons.OKCancel);
-            if (warn == DialogResult.Cancel) return; */
-
             this.DialogResult = DialogResult.Cancel;
         }
 
         private void editVarBtn_Click(object sender, EventArgs e)
         {
-            VarianceMulti form = new VarianceMulti(_hif, _hif.PollVariables[selected], selectedSeason);
+            CRFBeta temp = new CRFBeta();
+            temp = _hif.PollVariables[selected].PollBetas[selectedSeason].DeepCopy();
+
+            VarianceMulti form = new VarianceMulti(_hif.ModelSpec, _hif.PollVariables[selected].PollutantName, temp);
             DialogResult res = form.ShowDialog();
+            if(res == DialogResult.OK)
+            {
+                _hif.PollVariables[selected].PollBetas[selectedSeason] = form.Beta.DeepCopy();
+            }
         }
 
         private void cboSeason_SelectedValueChanged(object sender, EventArgs e)
@@ -307,7 +368,7 @@ namespace BenMAP
             loadVariable();
         }
 
-        // From HealthImpactFunctionDefinition.cs 
+        // Adapted from HealthImpactFunctionDefinition.cs 
         public List<double> list = new List<double>();
         private void cboBetaDistribution_SelectedValueChanged(object sender, EventArgs e)
         {
@@ -318,15 +379,21 @@ namespace BenMAP
                 healthImpactValues.Beta = txtBeta.Text;
                 healthImpactValues.BetaParameter1 = txtBetaParameter1.Text;
                 healthImpactValues.BetaParameter2 = txtBetaParameter2.Text;
-                if (cboBetaDistribution.SelectedItem.ToString() == "None") { return; }
-                if (cboBetaDistribution.SelectedItem.ToString() == "Custom")
+                if (cboBetaDistribution.SelectedItem.ToString().Trim() == "None") { return; }
+                if (cboBetaDistribution.SelectedItem.ToString().Trim() == "Custom")
                 {
+                    list = _hif.PollVariables[selected].PollBetas[selectedSeason].CustomList;
                     if (list.Count == 0)
                     {
                         CustomDistributionEntries frm = new CustomDistributionEntries();
                         DialogResult rtn = frm.ShowDialog();
                         if (rtn != DialogResult.OK) { return; }
                         list = frm.list;
+                        _hif.PollVariables[selected].PollBetas[selectedSeason].CustomList = frm.list;
+                        txtBeta.Text = frm.Mean.ToString();
+                        _hif.PollVariables[selected].PollBetas[selectedSeason].Beta = frm.Mean;
+                        txtBetaParameter1.Text = frm.StandardDeviation.ToString();
+                        _hif.PollVariables[selected].PollBetas[selectedSeason].P1Beta = frm.StandardDeviation;
                     }
                     else
                     {
@@ -334,6 +401,11 @@ namespace BenMAP
                         DialogResult rtnCustom = frmCustom.ShowDialog();
                         if (rtnCustom != DialogResult.OK) { return; }
                         list = frmCustom.list;
+                        _hif.PollVariables[selected].PollBetas[selectedSeason].CustomList = frmCustom.list;
+                        txtBeta.Text = frmCustom.Mean.ToString();
+                        _hif.PollVariables[selected].PollBetas[selectedSeason].Beta = frmCustom.Mean;
+                        txtBetaParameter1.Text = frmCustom.StandardDeviation.ToString();
+                        _hif.PollVariables[selected].PollBetas[selectedSeason].P1Beta = frmCustom.StandardDeviation;
                     }
                 }
                 else
@@ -349,12 +421,115 @@ namespace BenMAP
                     {
                         txtBetaParameter2.Text = healthImpactValues.BetaParameter2;
                     }
+
+                    // Beta distribution is the same for each beta associated with that variable
+                    CRFVariable selectedVar = _hif.PollVariables[selected];
+                    foreach (CRFBeta b in selectedVar.PollBetas)
+                    {
+                        b.Distribution = cboBetaDistribution.SelectedItem.ToString();
+                    }
                 }
             }
             catch (Exception ex)
             {
                 Logger.LogError(ex);
             }
+        }
+
+        private void txtBeta_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            int keyValue = (int)e.KeyChar;
+            if ((keyValue >= 48 && keyValue <= 57) || keyValue == 8 || keyValue == 46 || keyValue == 45)
+            {
+                if (e.KeyChar == 45 && (((TextBox)sender).SelectionStart == 0 && ((TextBox)sender).Text.IndexOf("-") >= 0))
+                    e.Handled = true;
+                if (e.KeyChar == 46 && ((TextBox)sender).Text.IndexOf(".") == 0)
+                    e.Handled = true;
+                else
+                    e.Handled = false;
+            }
+            else
+                e.Handled = true;
+        }
+
+        private void txtBetaParameter1_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            int keyValue = (int)e.KeyChar;
+            if ((keyValue >= 48 && keyValue <= 57) || keyValue == 8 || keyValue == 46 || keyValue == 45)
+            {
+                if (e.KeyChar == 45 && (((TextBox)sender).SelectionStart == 0 && ((TextBox)sender).Text.IndexOf("-") >= 0))
+                    e.Handled = true;
+                if (e.KeyChar == 46 && ((TextBox)sender).Text.IndexOf(".") == 0)
+                    e.Handled = true;
+                else
+                    e.Handled = false;
+            }
+            else
+                e.Handled = true;
+        }
+
+        private void txtBetaParameter2_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            int keyValue = (int)e.KeyChar;
+            if ((keyValue >= 48 && keyValue <= 57) || keyValue == 8 || keyValue == 46 || keyValue == 45)
+            {
+                if (e.KeyChar == 45 && (((TextBox)sender).SelectionStart == 0 && ((TextBox)sender).Text.IndexOf("-") >= 0))
+                    e.Handled = true;
+                if (e.KeyChar == 46 && ((TextBox)sender).Text.IndexOf(".") == 0)
+                    e.Handled = true;
+                else
+                    e.Handled = false;
+            }
+            else
+                e.Handled = true;
+        }
+
+        private void txtAconstantValue_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            int keyValue = (int)e.KeyChar;
+            if ((keyValue >= 48 && keyValue <= 57) || keyValue == 8 || keyValue == 46 || keyValue == 45)
+            {
+                if (e.KeyChar == 45 && (((TextBox)sender).SelectionStart == 0 && ((TextBox)sender).Text.IndexOf("-") >= 0))
+                    e.Handled = true;
+                if (e.KeyChar == 46 && ((TextBox)sender).Text.IndexOf(".") == 0)
+                    e.Handled = true;
+                else
+                    e.Handled = false;
+            }
+            else
+                e.Handled = true;
+        }
+
+        private void txtBconstantValue_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            int keyValue = (int)e.KeyChar;
+            if ((keyValue >= 48 && keyValue <= 57) || keyValue == 8 || keyValue == 46 || keyValue == 45)
+            {
+                if (e.KeyChar == 45 && (((TextBox)sender).SelectionStart == 0 && ((TextBox)sender).Text.IndexOf("-") >= 0))
+                    e.Handled = true;
+                if (e.KeyChar == 46 && ((TextBox)sender).Text.IndexOf(".") == 0)
+                    e.Handled = true;
+                else
+                    e.Handled = false;
+            }
+            else
+                e.Handled = true;
+        }
+
+        private void txtCconstantValue_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            int keyValue = (int)e.KeyChar;
+            if ((keyValue >= 48 && keyValue <= 57) || keyValue == 8 || keyValue == 46 || keyValue == 45)
+            {
+                if (e.KeyChar == 45 && (((TextBox)sender).SelectionStart == 0 && ((TextBox)sender).Text.IndexOf("-") >= 0))
+                    e.Handled = true;
+                if (e.KeyChar == 46 && ((TextBox)sender).Text.IndexOf(".") == 0)
+                    e.Handled = true;
+                else
+                    e.Handled = false;
+            }
+            else
+                e.Handled = true;
         }
     }
 }

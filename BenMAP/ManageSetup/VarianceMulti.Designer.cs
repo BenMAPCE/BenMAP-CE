@@ -238,6 +238,9 @@
             this.olvVariance.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.olvVariance.CellEditActivation = BrightIdeasSoftware.ObjectListView.CellEditActivateMode.SingleClick;
+            this.olvVariance.CellEditEnterChangesRows = true;
+            this.olvVariance.CellEditTabChangesRows = true;
             this.olvVariance.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.olvPollutant,
             this.olvVarCov});
@@ -272,17 +275,16 @@
             // 
             // olvPollutant
             // 
-            this.olvPollutant.AspectName = "pollutantname";
+            this.olvPollutant.AspectName = "InteractionPollutant";
             this.olvPollutant.IsEditable = false;
             this.olvPollutant.Text = "Pollutant";
             this.olvPollutant.Width = 119;
             // 
             // olvVarCov
             // 
-            this.olvVarCov.AspectName = "varcov";
+            this.olvVarCov.AspectName = "VarCov";
             this.olvVarCov.AspectToStringFormat = "{0:0.##E+00}";
             this.olvVarCov.FillsFreeSpace = true;
-            this.olvVarCov.IsEditable = false;
             this.olvVarCov.Text = "VarCov";
             this.olvVarCov.Width = 118;
             // 

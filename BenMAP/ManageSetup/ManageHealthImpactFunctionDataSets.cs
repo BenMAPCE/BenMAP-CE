@@ -119,9 +119,10 @@ namespace BenMAP
                             "then 'Median' when Metricstatistic = 3 then 'Max' when Metricstatistic = 4 then 'Min' when Metricstatistic = 5 " +
                             "then 'Sum'  END as MetricstatisticName,author,yyear,g.locationtypename,location,otherpollutants,qualifier,reference, " +
                             "race,ethnicity,gender,startage,endage,h.functionalformtext,i.functionalformtext,j.incidencedatasetname, " +
-                            "k.incidencedatasetname,l.setupvariabledatasetname as variabeldatasetname, m.MSDescription, bv.BetaVariationName, a.CRFUNCTIONID " +
-                            "from crfunctions a join ModelSpecifications m on (a.MSID = m.MSID) " +
-                            "join BetaVariations bv on (a.BetaVariationID = bv.BetaVariationID) " +
+                            "k.incidencedatasetname,l.setupvariabledatasetname as variabeldatasetname, ms.msdescription, bv.betavariationname, " +
+                            "a.CRFUNCTIONID from crfunctions a " +
+                            "join modelspecifications ms on (a.msid = ms.msid) " +
+                            "join betavariations bv on (a.betavariationid = bv.betavariationid) " +
                             "join endpointgroups b on (a.ENDPOINTGROUPID = b.ENDPOINTGROUPID) " +
                             "join endpoints c on(a.endpointid = c.endpointid) " +
                             "join pollutantgroups d on(a.POLLUTANTGROUPID = d.POLLUTANTGROUPID) " +
@@ -173,6 +174,35 @@ namespace BenMAP
                 {
                     commandText = string.Format("SELECT CRFUNCTIONDATASETID FROM CRFUNCTIONDATASETS WHERE SETUPID = {0} AND CRFunctionDataSetName = '{1}'", CommonClass.ManageSetup.SetupID, lstAvailableDataSets.Text);
                     crFunctionDatasetId = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text,commandText));
+
+                    // Delete values from VarCov table
+                    commandText = string.Format("delete from crfvarcov "
+                        + "where crfbetaid1 in ("
+                            + "select crfbetaid from crfbetas where crfvariableid in ("
+                            + "select crfvariableid from crfvariables where crfunctionid in ("
+                            + "select crfunctionid from crfunctions where crfunctiondatasetid = {0})))"
+                        + " or crfbetaid2 in ("
+                            + "select crfbetaid from crfbetas where crfvariableid in ("
+                            + "select crfvariableid from crfvariables where crfunctionid in ("
+                            + "select crfunctionid from crfunctions where crfunctiondatasetid = {0})))", crFunctionDatasetId);
+                    fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+
+                    // Delete values from CRFBetas table
+                    commandText = string.Format("delete from crfbetas where crfvariableid in ("
+                        + "select crfvariableid from crfvariables where crfunctionid in ("
+                        + "select crfunctionid from crfunctions where crfunctiondatasetid = {0}))", crFunctionDatasetId);
+                    fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+
+                    // Delete values from CRFVariables table
+                    commandText = string.Format("delete from crfvariables where crfunctionid in ("
+                        + "select crfunctionid from crfunctions where crfunctiondatasetid = {0})", crFunctionDatasetId);
+                    fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+
+                    // Delete functions from CRFunctions table 
+                    commandText = string.Format("delete from crfunctions where crfunctiondatasetid = {0}", crFunctionDatasetId);
+                    fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+
+                    // Delete dataset from CRFunctionDataSets
                     commandText = string.Format("delete from CRFunctionDataSets where CRFunctionDataSetName='{0}' and setupid={1}", lstAvailableDataSets.Text, CommonClass.ManageSetup.SetupID);
                     int i = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                     commandText = "select DATASETTYPEID FROM DATASETTYPES WHERE DATASETTYPENAME = 'Healthfunctions'";
@@ -249,9 +279,10 @@ namespace BenMAP
                                                     "then 'Median' when Metricstatistic = 3 then 'Max' when Metricstatistic = 4 then 'Min' when Metricstatistic = 5 " +
                                                     "then 'Sum'  END as MetricstatisticName,author,yyear,g.locationtypename,location,otherpollutants,qualifier,reference, " +
                                                     "race,ethnicity,gender,startage,endage,h.functionalformtext,i.functionalformtext,j.incidencedatasetname, " +
-                                                    "k.incidencedatasetname,l.setupvariabledatasetname as variabeldatasetname, m.MSDescription, bv.BetaVariationName, a.CRFUNCTIONID " +
-                                                    "from crfunctions a join ModelSpecifications m on (a.MSID = m.MSID) " +
-                                                    "join BetaVariations bv on (a.BetaVariationID = bv.BetaVariationID) " +
+                                                    "k.incidencedatasetname,l.setupvariabledatasetname as variabeldatasetname, ms.msdescription, bv.betavariationname, " +
+                                                    "a.CRFUNCTIONID from crfunctions a " +
+                                                    "join modelspecifications ms on (a.msid = ms.msid) " +
+                                                    "join betavariations bv on (a.betavariationid = bv.betavariationid) " +
                                                     "join endpointgroups b on (a.ENDPOINTGROUPID = b.ENDPOINTGROUPID) " +
                                                     "join endpoints c on(a.endpointid = c.endpointid) " +
                                                     "join pollutantgroups d on(a.POLLUTANTGROUPID = d.POLLUTANTGROUPID) " +
@@ -270,9 +301,10 @@ namespace BenMAP
                                                 "then 'Median' when Metricstatistic = 3 then 'Max' when Metricstatistic = 4 then 'Min' when Metricstatistic = 5 " +
                                                 "then 'Sum'  END as MetricstatisticName,author,yyear,g.locationtypename,location,otherpollutants,qualifier,reference, " +
                                                 "race,ethnicity,gender,startage,endage,h.functionalformtext,i.functionalformtext,j.incidencedatasetname, " +
-                                                "k.incidencedatasetname,l.setupvariabledatasetname as variabeldatasetname, m.MSDescription, bv.BetaVariationName a.CRFUNCTIONID " +
-                                                "from crfunctions a join ModelSpecifications m on (a.MSID = m.MSID) " +
-                                                "join BetaVariations bv on (a.BetaVariationID = bv.BetaVariationID) " +
+                                                "k.incidencedatasetname,l.setupvariabledatasetname as variabeldatasetname, ms.description, bv.betavariationname, " +
+                                                "a.CRFUNCTIONID from crfunctions a " +
+                                                "join modelspecifications ms on (a.msid = ms.msid) " +
+                                                "join betavariations bv on (a.betavariationid = bv.betavariationid) " +
                                                 "join endpointgroups b on (a.ENDPOINTGROUPID = b.ENDPOINTGROUPID) " +
                                                 "join endpoints c on(a.endpointid = c.endpointid) " +
                                                 "join pollutantgroups d on(a.POLLUTANTGROUPID = d.POLLUTANTGROUPID) " +
@@ -284,7 +316,7 @@ namespace BenMAP
                                                 "left join setupvariabledatasets l on(a.variabledatasetid = l.setupvariabledatasetid) " +
                                                 "where CRFUNCTIONDATASETID={0} and b.endpointgroupname='{1}'", drv["CRFunctionDataSetID"], cboEndpointGroup.Text);
                     }
-                    ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+                      ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                     olvData.DataSource = ds.Tables[0];
                     string pollutant = cboPollutant.Text;
                     cboPollutant.Items.Clear();

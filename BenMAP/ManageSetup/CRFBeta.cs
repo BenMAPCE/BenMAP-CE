@@ -38,9 +38,65 @@ namespace BenMAP
         [ProtoMember(14)]
         private string _seasonName;
         [ProtoMember(15)]
-        private string _startDate;
+        private int _seasonalMetricSeasonID;
         [ProtoMember(16)]
+        private string _startDate;
+        [ProtoMember(17)]
         private string _endDate;
+        [ProtoMember(18)]
+        private List<double> _customList;
+        [ProtoMember(19)]
+        private List<CRFVarCov> _varCovar;
+
+        public CRFBeta DeepCopy()
+        {
+            CRFBeta newBeta = new CRFBeta();
+            if(this.AConstantName != null)
+                newBeta.AConstantName = String.Copy(this.AConstantName);
+            newBeta.AConstantValue = Convert.ToDouble(String.Copy(this.AConstantValue.ToString()));
+            if(this.BConstantName != null)
+                newBeta.BConstantName = String.Copy(this.BConstantName);
+            newBeta.BConstantValue = Convert.ToDouble(String.Copy(this.BConstantValue.ToString()));
+            newBeta.Beta = Convert.ToDouble(String.Copy(this.Beta.ToString()));
+            newBeta.BetaID = Convert.ToInt32(String.Copy(this.BetaID.ToString()));
+            if(this.CConstantName != null)
+                newBeta.CConstantName = String.Copy(this.CConstantName);
+            newBeta.CConstantValue = Convert.ToDouble(String.Copy(this.CConstantValue.ToString()));
+            if(this.Distribution != null)
+                newBeta.Distribution = String.Copy(this.Distribution);
+            newBeta.DistributionTypeID = Convert.ToInt32(String.Copy(this.DistributionTypeID.ToString()));
+            if(this.EndDate != null)
+                newBeta.EndDate = String.Copy(this.EndDate);
+            newBeta.P1Beta = Convert.ToDouble(String.Copy(this.P1Beta.ToString()));
+            newBeta.P2Beta = Convert.ToDouble(String.Copy(this.P2Beta.ToString()));
+            if(this.SeasNumName != null)
+                newBeta.SeasNumName = String.Copy(this.SeasNumName);
+            if(this.SeasonName != null)
+                newBeta.SeasonName = String.Copy(this.SeasonName);
+            if(this.StartDate != null)
+                newBeta.StartDate = String.Copy(this.StartDate);
+            newBeta.SeasonalMetricSeasonID = Convert.ToInt32(String.Copy(this.SeasonalMetricSeasonID.ToString()));
+
+            foreach (double d in this.CustomList)
+            {
+                double newVal = Convert.ToDouble(String.Copy(d.ToString()));
+                newBeta.CustomList.Add(newVal);
+            }
+
+            foreach (var v in this.VarCovar)
+            {
+                CRFVarCov temp = new CRFVarCov();
+                temp.InteractionPollutant = String.Copy(v.InteractionPollutant);
+                string tempVarCov = String.Copy(v.VarCov.ToString());
+                temp.VarCov = Double.Parse(tempVarCov);
+                temp.BetaID1 = Convert.ToInt32(String.Copy(v.BetaID1.ToString()));
+                temp.BetaID2 = Convert.ToInt32(String.Copy(v.BetaID2.ToString()));
+                temp.VarCovID = Convert.ToInt32(String.Copy(v.VarCovID.ToString()));
+                newBeta.VarCovar.Add(temp);
+            }
+
+            return newBeta;
+        }
 
         // New beta without values
         public CRFBeta()
@@ -55,6 +111,8 @@ namespace BenMAP
             this._startDate = string.Empty;
             this._endDate = string.Empty;
             this._seasonName = string.Empty;
+            this._customList = new List<double>();
+            this._varCovar = new List<CRFVarCov>();
         }
 
         // Full year
@@ -75,6 +133,8 @@ namespace BenMAP
             this._startDate = string.Empty;
             this._endDate = string.Empty;
             this._seasNumName = string.Empty;
+            this._customList = new List<double>();
+            this._varCovar = new List<CRFVarCov>();
         }
 
         // Seasonal
@@ -95,6 +155,8 @@ namespace BenMAP
             this._startDate = startDate;
             this._endDate = endDate;
             this._seasNumName = seasNumName;
+            this._customList = new List<double>();
+            this._varCovar = new List<CRFVarCov>();
         }
 
         public int BetaID
@@ -181,6 +243,12 @@ namespace BenMAP
             set { _seasonName = value; }
         }
 
+        public int SeasonalMetricSeasonID
+        {
+            get { return _seasonalMetricSeasonID; }
+            set { _seasonalMetricSeasonID = value; }
+        }
+
         public string StartDate
         {
             get { return _startDate; }
@@ -191,6 +259,18 @@ namespace BenMAP
         {
             get { return _endDate; }
             set { _endDate = value; }
+        }
+
+        public List<double> CustomList
+        {
+            get { return _customList; }
+            set { _customList = value; }
+        }
+
+        public List<CRFVarCov> VarCovar
+        {
+            get { return _varCovar; }
+            set { _varCovar = value; }
         }
     }
 }

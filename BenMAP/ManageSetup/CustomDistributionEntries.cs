@@ -41,11 +41,25 @@ namespace BenMAP
         }
 
         private List<double> _list;
+        private double _mean;
+        private double _sd;
 
         public List<double> list
         {
             get { return _list; }
             set { _list = value; }
+        }
+
+        public double Mean
+        {
+            get { return _mean; }
+            set { _mean = value; }
+        }
+
+        public double StandardDeviation
+        {
+            get { return _sd; }
+            set { _sd = value; }
         }
 
         private void btnLoadFromTextFile_Click(object sender, EventArgs e)
@@ -82,8 +96,11 @@ namespace BenMAP
                     }
                     lstCurrentEntries.Items.Add(dt.Rows[i][0]);
                 }
-                txtCurrentMean.Text = GetMeanDistribution(lstlst).ToString();
-                txtCurrentStandard.Text = (getStandardDeviation(lstlst, Convert.ToDouble(txtCurrentMean.Text))).ToString();
+
+                _mean = GetMeanDistribution(lstlst);
+                txtCurrentMean.Text = _mean.ToString();
+                _sd = getStandardDeviation(lstlst, Convert.ToDouble(txtCurrentMean.Text));
+                txtCurrentStandard.Text = _sd.ToString();
             }
             catch (Exception ex)
             {

@@ -12,36 +12,96 @@ namespace BenMAP
         public HealthImpact DeepCopy()
         {
             HealthImpact newCopy = new HealthImpact();
-            newCopy.Author = String.Copy(this.Author);
-            newCopy.BaselineIncidenceFunction = String.Copy(this.BaselineIncidenceFunction);
-            newCopy.BetaVariation = String.Copy(this.BetaVariation);
-            newCopy.EndAge = String.Copy(this.EndAge);
-            newCopy.Endpoint = String.Copy(this.EndpointGroup);
-            newCopy.Endpoint = String.Copy(this.Endpoint);
-            newCopy.Ethnicity = String.Copy(this.Ethnicity);
-            newCopy.Function = String.Copy(this.Function);
-            newCopy.FunctionID = String.Copy(this.FunctionID);
-            newCopy.Gender = String.Copy(this.Gender);
-            newCopy.Incidence = String.Copy(this.Incidence);
-            newCopy.Location = String.Copy(this.Location);
-            newCopy.LocationName = String.Copy(this.LocationName);
-            newCopy.Metric = String.Copy(this.Metric);
-            newCopy.MetricStatistis = String.Copy(this.MetricStatistis);
-            newCopy.ModelSpec = String.Copy(this.ModelSpec);
-            newCopy.OtherPollutant = String.Copy(this.OtherPollutant);
-            newCopy.Pollutant = String.Copy(this.Pollutant);
-            newCopy.PollVariables = new List<CRFVariable>();
-            newCopy.PollVariables.AddRange(this.PollVariables);
-            newCopy.Prevalence = String.Copy(this.Prevalence);
-            newCopy.Qualifier = String.Copy(this.Qualifier);
-            newCopy.Race = String.Copy(this.Race);
-            newCopy.Reference = String.Copy(this.Reference);
-            newCopy.SeasonalMetric = String.Copy(this.SeasonalMetric);
-            newCopy.StartAge = String.Copy(this.StartAge);
-            newCopy.Variable = String.Copy(this.Variable);
-            newCopy.Year = String.Copy(this.Year);
 
-            int i = 0;
+            if (this.Author == null) newCopy.Author = "";
+            else newCopy.Author = String.Copy(this.Author);
+
+            if (this.BaselineIncidenceFunction == null) newCopy.BaselineIncidenceFunction = "";
+            else newCopy.BaselineIncidenceFunction = String.Copy(this.BaselineIncidenceFunction);
+
+            if (this.BetaVariation == null) newCopy.BetaVariation = "";
+            else newCopy.BetaVariation = String.Copy(this.BetaVariation);
+
+            if (this.EndAge == null) newCopy.EndAge = "";
+            else newCopy.EndAge = String.Copy(this.EndAge);
+
+            if (this.Endpoint == null) newCopy.Endpoint = "";
+            else newCopy.Endpoint = String.Copy(this.EndpointGroup);
+
+            if (this.EndpointGroup == null) newCopy.EndpointGroup = "";
+            else newCopy.EndpointGroup = String.Copy(this.EndpointGroup);
+
+            if (this.Ethnicity == null) newCopy.Ethnicity = "";
+            else newCopy.Ethnicity = String.Copy(this.Ethnicity);
+
+            if (this.Function == null) newCopy.Function = "";
+            else newCopy.Function = String.Copy(this.Function);
+
+            if (this.FunctionID == null) newCopy.FunctionID = "";
+            else newCopy.FunctionID = String.Copy(this.FunctionID);
+
+            if (this.Gender == null) newCopy.Gender = "";
+            else newCopy.Gender = String.Copy(this.Gender);
+
+            if (this.Incidence == null) newCopy.Incidence = "";
+            else newCopy.Incidence = String.Copy(this.Incidence);
+
+            if (this.Location == null) newCopy.Location = "";
+            else newCopy.Location = String.Copy(this.Location);
+
+            if (this.LocationName == null) newCopy.LocationName = "";
+            else newCopy.LocationName = String.Copy(this.LocationName);
+
+            if (this.Metric == null) newCopy.Metric = "";
+            else newCopy.Metric = String.Copy(this.Metric);
+
+            if (this.MetricStatistic == null) newCopy.MetricStatistic = "";
+            else newCopy.MetricStatistic = String.Copy(this.MetricStatistic);
+
+            if (this.ModelSpec == null) newCopy.ModelSpec = "";
+            else newCopy.ModelSpec = String.Copy(this.ModelSpec);
+
+            if (this.OtherPollutant == null) newCopy.OtherPollutant = "";
+            else newCopy.OtherPollutant = String.Copy(this.OtherPollutant);
+
+            if (this.Pollutant == null) newCopy.Pollutant = "";
+            else newCopy.Pollutant = String.Copy(this.Pollutant);
+
+            /* newCopy.PollVariables = new List<CRFVariable>();
+            newCopy.PollVariables.AddRange(this.PollVariables); */
+
+            if (this.Prevalence == null) newCopy.Prevalence = "";
+            else newCopy.Prevalence = String.Copy(this.Prevalence);
+
+            if (this.Qualifier == null) newCopy.Qualifier = "";
+            else newCopy.Qualifier = String.Copy(this.Qualifier);
+
+            if (this.Race == null) newCopy.Race = "";
+            else newCopy.Race = String.Copy(this.Race);
+
+            if (this.Reference == null) newCopy.Reference = "";
+            else newCopy.Reference = String.Copy(this.Reference);
+
+            if (this.SeasonalMetric == null) newCopy.SeasonalMetric = "";
+            else newCopy.SeasonalMetric = String.Copy(this.SeasonalMetric);
+
+            if (this.StartAge == null) newCopy.StartAge = "";
+            else newCopy.StartAge = String.Copy(this.StartAge);
+
+            if (this.Variable == null) newCopy.Variable = "";
+            else newCopy.Variable = String.Copy(this.Variable);
+
+            if (this.Year == null) newCopy.Year = "";
+            else newCopy.Year = String.Copy(this.Year);
+
+            newCopy.PollVariables = new List<CRFVariable>();
+            foreach (CRFVariable pv in this.PollVariables)
+            {
+                CRFVariable newVar = pv.DeepCopy();
+                newCopy.PollVariables.Add(newVar);
+            }
+
+            /* int i = 0;
             foreach (var pv in newCopy.PollVariables)
             {
                 if (pv.PollBetas == null)
@@ -51,9 +111,9 @@ namespace BenMAP
                     else { pv.PollBetas.AddRange(this.PollVariables[i].PollBetas); }
                 }
                 i++;
-            }
+            } */
 
-            return this;
+            return newCopy;
         }
 
         private string _functionID;
@@ -92,7 +152,7 @@ namespace BenMAP
         }
 
         private string _metricStatistic;
-        public string MetricStatistis
+        public string MetricStatistic
         {
             get { return _metricStatistic; }
             set { _metricStatistic = value; }
@@ -310,6 +370,13 @@ namespace BenMAP
         {
             get { return _betaVariation; }
             set { _betaVariation = value; }
+        }
+
+        private int _seasonalMetricID;
+        public int SeasonalMetricID
+        {
+            get { return _seasonalMetricID; }
+            set { _seasonalMetricID = value; }
         }
     }
 }
