@@ -11,6 +11,8 @@ namespace BenMAP
     {
         public enum RollbackType { Percentage, Incremental, Standard }
 
+        public enum RollbackFunction { Krewski }
+
         private string name;
         private string description;
         Dictionary<string,string> countries;
@@ -24,6 +26,7 @@ namespace BenMAP
         private Color color;
         private int year;
         private List<IPolygonCategory> ipcList=new List<IPolygonCategory>();
+        private RollbackFunction function;
 
         public void addIPC(IPolygonCategory ipc)
         {
@@ -106,6 +109,12 @@ namespace BenMAP
         {
             get { return year; }
             set { year = value; }
+        }
+
+        public RollbackFunction Function
+        {
+            get { return function; }
+            set { function = value; }
         }
 
 

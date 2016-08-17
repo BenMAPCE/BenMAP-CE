@@ -111,6 +111,7 @@ namespace BenMAP
             SetActiveOptionsPanel(0);
             rbRegions.Checked = true;
             cboExportFormat.SelectedIndex = 0;
+            cboFunction.SelectedIndex = 0;
 
             txtFilePath.Text = CommonClass.ResultFilePath + @"\GBD";
 
@@ -571,6 +572,13 @@ namespace BenMAP
             rollback.Year = YEAR;
             rollback.Color = GetNextColor();
 
+            switch (cboFunction.SelectedIndex)
+            {
+                case 0: //Krewski
+                    rollback.Function = GBDRollbackItem.RollbackFunction.Krewski;                    
+                    break;
+            }
+
 
             //remove rollback if it already exists
             rollbacks.RemoveAll(x => x.Name.Equals(rollback.Name, StringComparison.OrdinalIgnoreCase));
@@ -599,6 +607,7 @@ namespace BenMAP
             dgvRollbacks.Rows[i].Cells["colTotalCountries"].Value = rollback.Countries.Count().ToString();
             dgvRollbacks.Rows[i].Cells["colTotalPopulation"].Value = GetRollbackTotalPopulation(rollback).ToString("#,###");
             dgvRollbacks.Rows[i].Cells["colRollbackType"].Value = GetRollbackTypeSummary(rollback);
+            dgvRollbacks.Rows[i].Cells["colFunction"].Value = rollback.Function.ToString();
             dgvRollbacks.Rows[i].Cells["colExecute"].Value = true;
             ToggleExecuteScenariosButton();
 
@@ -796,7 +805,8 @@ namespace BenMAP
             txtIncrement.Text = item.Increment.ToString();
             txtIncrementBackground.Text = item.Background.ToString();
             cboStandard.SelectedIndex = (int)item.StandardId;
-           
+            cboFunction.SelectedIndex = (int)item.Function;
+
         }
 
         private void SetActivePanel(int index)
@@ -991,9 +1001,9 @@ namespace BenMAP
                     dtConcEntireRollback.Columns.Add("CONCENTRATION_FINAL", dtConcCountry.Columns["CONCENTRATION"].DataType);
                     dtConcEntireRollback.Columns.Add("CONCENTRATION_DELTA", dtConcCountry.Columns["CONCENTRATION"].DataType);
                     dtConcEntireRollback.Columns.Add("AIR_QUALITY_DELTA", dtConcCountry.Columns["CONCENTRATION"].DataType);
-                    dtConcEntireRollback.Columns.Add("KREWSKI", dtConcCountry.Columns["CONCENTRATION"].DataType);
-                    dtConcEntireRollback.Columns.Add("KREWSKI_2_5", dtConcCountry.Columns["CONCENTRATION"].DataType);
-                    dtConcEntireRollback.Columns.Add("KREWSKI_97_5", dtConcCountry.Columns["CONCENTRATION"].DataType);
+                    dtConcEntireRollback.Columns.Add("RESULT", dtConcCountry.Columns["CONCENTRATION"].DataType);
+                    dtConcEntireRollback.Columns.Add("RESULT_2_5", dtConcCountry.Columns["CONCENTRATION"].DataType);
+                    dtConcEntireRollback.Columns.Add("RESULT_97_5", dtConcCountry.Columns["CONCENTRATION"].DataType);
                     dtConcEntireRollback.Columns.Add("INCIDENCE_RATE", dtConcCountry.Columns["CONCENTRATION"].DataType);
                     dtConcEntireRollback.Columns.Add("BASELINE_MORTALITY", dtConcCountry.Columns["CONCENTRATION"].DataType);
                 }
@@ -1011,10 +1021,19 @@ namespace BenMAP
                 GBDRollbackKrewskiFunction func = new GBDRollbackKrewskiFunction();
                 GBDRollbackKrewskiResult result;
                 result = func.GBD_math(concDelta, population, incrate, beta, se);
+
+                //switch (rollback.Function)
+                //{
+                //    case GBDRollbackItem.RollbackFunction.Krewski:
+                //        break;
+                    
+                //}
+
+
                 //add results to dtConcCountry
-                dtConcCountry.Columns.Add("KREWSKI", dtConcCountry.Columns["CONCENTRATION"].DataType, result.Krewski.ToString());
-                dtConcCountry.Columns.Add("KREWSKI_2_5", dtConcCountry.Columns["CONCENTRATION"].DataType, result.Krewski2_5.ToString());
-                dtConcCountry.Columns.Add("KREWSKI_97_5", dtConcCountry.Columns["CONCENTRATION"].DataType, result.Krewski97_5.ToString());
+                dtConcCountry.Columns.Add("RESULT", dtConcCountry.Columns["CONCENTRATION"].DataType, result.Krewski.ToString());
+                dtConcCountry.Columns.Add("RESULT_2_5", dtConcCountry.Columns["CONCENTRATION"].DataType, result.Krewski2_5.ToString());
+                dtConcCountry.Columns.Add("RESULT_97_5", dtConcCountry.Columns["CONCENTRATION"].DataType, result.Krewski97_5.ToString());
                 dtConcCountry.Columns.Add("INCIDENCE_RATE", dtConcCountry.Columns["CONCENTRATION"].DataType, incrate.ToString());
                 dtConcCountry.Columns.Add("BASELINE_MORTALITY", dtConcCountry.Columns["CONCENTRATION"].DataType, "INCIDENCE_RATE * POPESTIMATE" );
 
@@ -1627,7 +1646,14 @@ namespace BenMAP
             //xlSheet.Range["B8"].Value = summary;
             UpdateCellSharedString(worksheetPart.Worksheet, summary, "B", 8);
 
+            //add function cells
+            UpdateCellSharedString(worksheetPart.Worksheet, "Function", "A", 9);
+            string function = rollback.Function.ToString();
+            UpdateCellSharedString(worksheetPart.Worksheet, function, "B", 9);
+
             ////xlSheet.Range["A9"].Value = "Regions and Countries";
+            UpdateCellSharedString(worksheetPart.Worksheet, "Regions and Countries", "A", 10);
+
             uint rowOffset = 0;
             uint nextRow = 0;
 
@@ -1643,7 +1669,7 @@ namespace BenMAP
                 if (!region.Equals(dr["REGIONNAME"].ToString(), StringComparison.OrdinalIgnoreCase))
                 {
                     region = dr["REGIONNAME"].ToString();
-                    nextRow = 9 + rowOffset;
+                    nextRow = 10 + rowOffset;
                     //xlSheet.Range["B" + nextRow.ToString()].Value = region;
                     UpdateCellSharedString(worksheetPart.Worksheet, region, "B", nextRow);
                     //xlSheet.Range["B" + nextRow.ToString()].Font.Italic = true;
@@ -1654,7 +1680,7 @@ namespace BenMAP
 
                 //write country
                 country = dr["COUNTRYNAME"].ToString();
-                nextRow = 9 + rowOffset;
+                nextRow = 10 + rowOffset;
                 //xlSheet.Range["B" + nextRow.ToString()].Value = country;
                 UpdateCellSharedString(worksheetPart.Worksheet, country, "B", nextRow);
                 GetCell(worksheetPart.Worksheet, "B", nextRow).StyleIndex = styleIndexNoFillIndentWithBorders;
@@ -2055,7 +2081,7 @@ namespace BenMAP
             using (StreamWriter sw = new StreamWriter(filePath))
             {
                 List<object> listOutputLine = null;
-                string outputLine = "Pollutant,Background Concentration,Rollback Type,Population Affected,Avoided Deaths (Total)," +
+                string outputLine = "Pollutant,Background Concentration,Rollback Type,Function,Population Affected,Avoided Deaths (Total)," +
                     "95% CI,% of Baseline Mortality,Deaths per 100000,Avoided Deaths (% Population)," +
                     "2010 Air Quality Levels Min,2010 Air Quality Levels Median,2010 Air Quality Levels Max," +
                     "Policy Scenario Min,Policy Scenario Median,Policy Scenario Max,Air Quality Change (Population Weighted)";
@@ -2069,7 +2095,8 @@ namespace BenMAP
                     listOutputLine[0] = "PM2.5";
                     listOutputLine[1] = GetBackgroundConcentrationText(rollback); 
                     listOutputLine.Insert(2, GetRollbackTypeText(rollback));
-                    
+                    listOutputLine.Insert(3, rollback.Function.ToString());
+
                     //write output line
                     outputLine = string.Join(",", listOutputLine);
                     sw.WriteLine(outputLine);
@@ -2140,8 +2167,8 @@ namespace BenMAP
         {
             double popAffected;
             double avoidedDeaths;
-            double krewski_2_5;
-            double krewski_97_5;
+            double result_2_5;
+            double result_97_5;
             string confidenceInterval;
             double baselineMortality;
             double percentBaselineMortality;
@@ -2182,19 +2209,19 @@ namespace BenMAP
             baselineMortality = Double.Parse(result.ToString());
 
             System.Data.DataTable dtKrewski = dtConcEntireRollback.DefaultView.ToTable(true, "REGIONID", "REGIONNAME", "COUNTRYID", "COUNTRYNAME",
-                                                                                            "KREWSKI", "KREWSKI_2_5", "KREWSKI_97_5");
+                                                                                            "RESULT", "RESULT_2_5", "RESULT_97_5");
             dtKrewski.DefaultView.Sort = "REGIONNAME, COUNTRYNAME";
 
             //avoided deaths
-            result = dtKrewski.Compute("SUM(KREWSKI)", filter);
+            result = dtKrewski.Compute("SUM(RESULT)", filter);
             avoidedDeaths = Double.Parse(result.ToString());
             
             //confidence interval
-            result = dtKrewski.Compute("SUM(KREWSKI_2_5)", filter);
-            krewski_2_5 = Double.Parse(result.ToString());
-            result = dtKrewski.Compute("SUM(KREWSKI_97_5)", filter);
-            krewski_97_5 = Double.Parse(result.ToString());
-            confidenceInterval = FormatDoubleStringTwoSignificantFigures(format, krewski_2_5.ToString()) + " - " + FormatDoubleStringTwoSignificantFigures(format, krewski_97_5.ToString());
+            result = dtKrewski.Compute("SUM(RESULT_2_5)", filter);
+            result_2_5 = Double.Parse(result.ToString());
+            result = dtKrewski.Compute("SUM(RESULT_97_5)", filter);
+            result_97_5 = Double.Parse(result.ToString());
+            confidenceInterval = FormatDoubleStringTwoSignificantFigures(format, result_2_5.ToString()) + " - " + FormatDoubleStringTwoSignificantFigures(format, result_97_5.ToString());
 
             //percent baseline mortality
             percentBaselineMortality = (avoidedDeaths / baselineMortality) * 100;
