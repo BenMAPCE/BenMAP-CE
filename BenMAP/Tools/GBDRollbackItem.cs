@@ -20,6 +20,7 @@ namespace BenMAP
         private string standardName;
         private int standardId;
         private double standard;
+        private bool isNegativeRollbackToStandard;
         private double background;
         private Color color;
         private int year;
@@ -88,6 +89,12 @@ namespace BenMAP
         {
             get { return standardName; }
             set { standardName = value; }
+        }
+
+        public bool IsNegativeRollbackToStandard
+        {
+            get { return isNegativeRollbackToStandard; }
+            set { isNegativeRollbackToStandard = value; }
         }
 
         public double Background

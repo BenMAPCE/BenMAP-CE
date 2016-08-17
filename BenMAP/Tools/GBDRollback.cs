@@ -486,12 +486,6 @@ namespace BenMAP
                         txtPercentageBackground.Focus();
                         return;
                     }
-                    //if (d < 0)
-                    //{
-                    //    MessageBox.Show("Percentage can not be < 0");
-                    //    txtPercentageBackground.Focus();
-                    //    return;
-                    //}
                     if (!String.IsNullOrEmpty(txtPercentageBackground.Text))
                     {
                         if (!Double.TryParse(txtPercentageBackground.Text, out d))
@@ -566,6 +560,7 @@ namespace BenMAP
                     rollback.StandardName = cboStandard.GetItemText(cboStandard.SelectedItem);
                     rollback.StandardId = (int)cboStandard.SelectedValue;
                     rollback.Standard = GBDRollbackDataSource.GetStandardValue(rollback.StandardId);
+                    rollback.IsNegativeRollbackToStandard = chkNegativeRollbackToStandard.Checked;
                     break;
             }
             rollback.Year = YEAR;
@@ -703,7 +698,14 @@ namespace BenMAP
                     summary = rollback.Increment.ToString() + micrograms.ToString() + "g/m" + super3.ToString() + " Rollback";
                     break;
                 case GBDRollbackItem.RollbackType.Standard:
-                    summary = "Rollback to " + rollback.StandardName + " Standard";
+                    if (rollback.IsNegativeRollbackToStandard)
+                    {
+                        summary = "Negative Rollback to " + rollback.StandardName + " Standard";
+                    }
+                    else
+                    {
+                        summary = "Rollback to " + rollback.StandardName + " Standard";
+                    }
                     break;
             }
 
@@ -1058,7 +1060,7 @@ namespace BenMAP
                     DoIncrementalRollback(rollback.Increment, rollback.Background);
                     break;
                 case GBDRollbackItem.RollbackType.Standard:
-                    DoRollbackToStandard(rollback.Standard, chkNegativeRollbackToStandard.Checked);
+                    DoRollbackToStandard(rollback.Standard, rollback.IsNegativeRollbackToStandard);
                     break;            
             }
         
