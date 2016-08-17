@@ -111,21 +111,8 @@ namespace BenMAP
                 dr[24] = frm.HealthImpacts.BetaVariation;
                 dr[25] = AddCount;
 
-
                 variableLists.Add(AddCount, frm.HealthImpacts.PollVariables);
-                /* int i = 0;
-                varList.AddRange(frm.HealthImpacts.PollVariables);
-                foreach(CRFVariable v in varList)
-                {
-                    v.PollBetas.AddRange(frm.HealthImpacts.PollVariables[i].PollBetas);
-                    i++;
-                } */
 
-                // dicVariables.Add(AddCount, frm.HealthImpacts.PollVariables);
-
-                // ToEdit -- Custom - move to new form or remove
-                /* if (frm.HealthImpacts.BetaDistribution == "Custom" && frm.listCustom.Count > 0)
-                    dicCustomValue.Add(AddCount, frm.listCustom); */
                 _dt.Rows.Add(dr);
                 olvFunction.DataSource = _dt;
             }
@@ -659,21 +646,6 @@ namespace BenMAP
                         commandText = string.Format("select first 1 metricid from metrics join pollutantgrouppollutants p on pollutantgroupid={0} or p.pollutantid={1} and metrics.pollutantid=p.pollutantid and lower(metricname)='{2}'", PollutantGroupID, PollutantID, _dt.Rows[row][3].ToString().ToLower());
                         int MetricID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
 
-                        /* Dictionary<string, string> dicSeasonalMetric = new Dictionary<string, string>();
-                        commandText = string.Format("select SeasonalMetricID,LOWER(SeasonalMetricName) from SeasonalMetrics where MetricID={0} and LOWER(SeasonalMetricName)='{1}'", MetricID, _dt.Rows[row][4].ToString().ToLower());
-                        DataSet dsSeasonMetric = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
-                        foreach (DataRow drSeasonMetric in dsSeasonMetric.Tables[0].Rows)
-                        {
-                            dicSeasonalMetric.Add(drSeasonMetric["LOWER"].ToString(), drSeasonMetric["SeasonalMetricID"].ToString());
-                        }
-
-                        string SeasonalMetricID = string.Empty;
-
-                        if (dicSeasonalMetric.Keys.Contains(_dt.Rows[row][3].ToString().ToLower()))
-                            SeasonalMetricID = dicSeasonalMetric[_dt.Rows[row][3].ToString().ToLower()].ToString();
-                        else
-                            SeasonalMetricID = "NULL"; */
-
                         // Get SeasonalMetricID using SeasonalMetricName and ID from first pollutant 
                         string SeasonalMetricID = "";
                         List<CRFVariable> varList = new List<CRFVariable>();
@@ -1060,7 +1032,7 @@ namespace BenMAP
 
                         string ModelSpecID = string.Empty;
 
-                        if (dicMSID.Keys.Contains(_dt.Rows[row][23].ToString().ToLower().Trim()))
+                        if (dicMSID.Keys.Contains(_dt.Rows[row][23].ToString().ToLower()))
                             ModelSpecID = dicMSID[_dt.Rows[row][23].ToString().ToLower()].ToString();
                         else ModelSpecID = "NULL";
 
@@ -1570,10 +1542,10 @@ namespace BenMAP
 
                         // Check if Pollutant, Model Spec, Seasonal Metric, or Beta Variation have changed
                         // If so, variables and betas will need to be deleted and new values inserted
-                        if(healthImpact.Pollutant.Trim() != frm.HealthImpacts.Pollutant.Trim() || 
-                            healthImpact.ModelSpec.Trim() != frm.HealthImpacts.ModelSpec.Trim() ||
-                            healthImpact.SeasonalMetric.Trim() != frm.HealthImpacts.SeasonalMetric.Trim() ||
-                            healthImpact.BetaVariation.Trim() != frm.HealthImpacts.BetaVariation.Trim())
+                        if(healthImpact.Pollutant != frm.HealthImpacts.Pollutant || 
+                            healthImpact.ModelSpec != frm.HealthImpacts.ModelSpec ||
+                            healthImpact.SeasonalMetric != frm.HealthImpacts.SeasonalMetric ||
+                            healthImpact.BetaVariation != frm.HealthImpacts.BetaVariation)
                         {
 
                             toInsert.Add(Convert.ToInt32(healthImpact.FunctionID));
@@ -1613,12 +1585,10 @@ namespace BenMAP
                             "then 'Median' when Metricstatistic = 3 then 'Max' when Metricstatistic = 4 then 'Min' when Metricstatistic = 5 " +
                             "then 'Sum'  END as MetricstatisticName,author,yyear,g.locationtypename,location,otherpollutants,qualifier,reference, " +
                             "race,ethnicity,gender,startage,endage,h.functionalformtext,i.functionalformtext,j.incidencedatasetname, " +
-                            "k.incidencedatasetname,l.setupvariabledatasetname as variabeldatasetname, " +
-                            "case when msid = NULL then '' when msid = 1 then 'Single Pollutant' when msid = 2 then 'Pollutants in joint effect; no interactions' " +
-                            "when msid = 3 then 'Pollutants in joint effect; first order interactions' END as MSDescription, " +
-                            "case when betavariationid = NULL then '' when betavariationid = 1 then 'Full year' when betavariationid = 2" +
-                            "then 'Seasonal' END as BetaVariationName, " +
+                            "k.incidencedatasetname,l.setupvariabledatasetname as variabeldatasetname, ms.msdescription, bv.betavariationname, " +
                             "a.CRFUNCTIONID from crfunctions a " +
+                            "join modelspecifications ms on (a.msid = ms.msid) " +
+                            "join betavariations bv on (a.betavariationid = bv.betavariationid) " +
                             "join endpointgroups b on (a.ENDPOINTGROUPID = b.ENDPOINTGROUPID) " +
                             "join endpoints c on(a.endpointid = c.endpointid) " +
                             "join pollutantgroups d on(a.POLLUTANTGROUPID = d.POLLUTANTGROUPID) " +
@@ -1657,18 +1627,15 @@ namespace BenMAP
                 }
                 else
                 {
-                    // commandText = string.Format("select b.endpointgroupname,c.endpointname,d.pollutantname,e.metricname,f.seasonalmetricname,case when Metricstatistic=0 then 'None'  when Metricstatistic=1 then 'Mean' when Metricstatistic=2 then 'Median' when Metricstatistic=3 then 'Max' when Metricstatistic=4 then 'Min' when Metricstatistic=5 then 'Sum'  END as MetricstatisticName,author,yyear,g.locationtypename,location,otherpollutants,qualifier,reference,race,ethnicity,gender,startage,endage,h.functionalformtext,i.functionalformtext,j.incidencedatasetname,k.incidencedatasetname,l.setupvariabledatasetname as variabeldatasetname,m.MSDescription,bv.BetaVariationName,a.CRFUNCTIONID from crfunctions a join CRFVARIABLES vars on(a.CRFunctionID = vars.CRFunctionID) join ModelSpecifications m on (a.MSID = m.MSID) join BetaVariations bv on (a.BetaVariationID = bv.BetaVariationID) left join endpointgroups b on (a.ENDPOINTGROUPID=b.ENDPOINTGROUPID) left join endpoints c on (a.endpointid=c.endpointid) left join pollutants d on (a.pollutantid=d.pollutantid) left join metrics e on (a.metricid=e.metricid) left join seasonalmetrics f on (a.seasonalmetricid=f.seasonalmetricid) left join locationtype g on (a.locationtypeid=g.locationtypeid) left join functionalforms h on (a.functionalformid=h.functionalformid) left join baselinefunctionalforms i on (a.baselinefunctionalformid=i.functionalformid) left join incidencedatasets j on (a.incidencedatasetid=j.incidencedatasetid) left join incidencedatasets k on (a.prevalencedatasetid=k.incidencedatasetid) left join setupvariabledatasets l on (a.variabledatasetid=l.setupvariabledatasetid) where CRFUNCTIONDATASETID=null");
                     commandText = string.Format("select b.endpointgroupname,c.endpointname,d.pgname,f.seasonalmetricname, a.metadataid, " +
                         "case when Metricstatistic = 0 then 'None'  when Metricstatistic = 1 then 'Mean' when Metricstatistic = 2 " +
                         "then 'Median' when Metricstatistic = 3 then 'Max' when Metricstatistic = 4 then 'Min' when Metricstatistic = 5 " +
                         "then 'Sum'  END as MetricstatisticName,author,yyear,g.locationtypename,location,otherpollutants,qualifier,reference, " +
                         "race,ethnicity,gender,startage,endage,h.functionalformtext,i.functionalformtext,j.incidencedatasetname, " +
-                        "k.incidencedatasetname,l.setupvariabledatasetname as variabeldatasetname, " +
-                        "case when msid = NULL then '' when msid = 1 then 'Single Pollutant' when msid = 2 then 'Pollutants in joint effect; no interactions' " +
-                        "when msid = 3 then 'Pollutants in joint effect; first order interactions' END as MSDescription, " +
-                        "case when betavariationid = NULL then '' when betavariationid = 1 then 'Full year' when betavariationid = 2" +
-                        "then 'Seasonal' END as BetaVariationName, " +
+                        "k.incidencedatasetname,l.setupvariabledatasetname as variabeldatasetname, ms.msdescription, bv.betavariationname, " +
                         "a.CRFUNCTIONID from crfunctions a " +
+                        "join modelspecifications ms on (a.msid = ms.msid) " +
+                        "join betavariations bv on (a.betavariationid = bv.betavariationid) " +
                         "join endpointgroups b on (a.ENDPOINTGROUPID = b.ENDPOINTGROUPID) " +
                         "join endpoints c on(a.endpointid = c.endpointid) " +
                         "join pollutantgroups d on(a.POLLUTANTGROUPID = d.POLLUTANTGROUPID) " +

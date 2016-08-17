@@ -258,9 +258,9 @@ namespace BenMAP
                 _healthImpacts.Incidence = cboIncidenceDataSet.Text;
                 _healthImpacts.Prevalence = cboPrevalenceDataSet.Text;
                 _healthImpacts.Variable = cboVariableDataSet.Text;
-                _healthImpacts.ModelSpec = cboModelSpec.Text.Trim();
+                _healthImpacts.ModelSpec = cboModelSpec.Text;
 
-                if (_healthImpacts.ModelSpec.Equals("None"))
+                if (cboSeasonalMetric.Text.Contains("None"))
                 {
                     _healthImpacts.BetaVariation = "Full year";
                 }
@@ -302,12 +302,12 @@ namespace BenMAP
                     if (_healthImpacts.SeasonalMetric == string.Empty) 
                         cboSeasonalMetric.SelectedIndex = cboSeasonalMetric.FindString("None");
                     else
-                        cboSeasonalMetric.Text = _healthImpacts.SeasonalMetric.Trim();
+                        cboSeasonalMetric.Text = _healthImpacts.SeasonalMetric;
 
                     if (_healthImpacts.ModelSpec == string.Empty)
                         cboModelSpec.SelectedIndex = 0;
                     else
-                        cboModelSpec.Text = _healthImpacts.ModelSpec.Trim();
+                        cboModelSpec.Text = _healthImpacts.ModelSpec;
 
                     cboRace.Text = _healthImpacts.Race;
                     cboEthnicity.Text = _healthImpacts.Ethnicity;
@@ -328,7 +328,7 @@ namespace BenMAP
                     cboVariableDataSet.Text = _healthImpacts.Variable;
                     // list = listCustom;
 
-                    if (_healthImpacts.BetaVariation.Trim() == "Seasonal") bvSeasonal.Checked = true;
+                    if (_healthImpacts.BetaVariation == "Seasonal") bvSeasonal.Checked = true;
                     else bvFullYear.Checked = true;
                     
                 }
@@ -472,20 +472,28 @@ namespace BenMAP
                 {
                     varList.Items.Add(dr["variablename"].ToString()).SubItems.Add(dr["pollutantname"].ToString());
 
+                    CRFVariable newVar = new CRFVariable();
+                    newVar.VariableName = dr["variablename"].ToString();
+                    newVar.VariableID = Convert.ToInt32(dr["crfvariableid"]);
+                    newVar.FunctionID = Convert.ToInt32(_healthImpacts.FunctionID);
+                    newVar.PollutantName = dr["pollutantname"].ToString();
+                    newVar.Pollutant1ID = Convert.ToInt32(dr["pollutant1id"]);
+                    newVar.Metric = new Metric();
+
                     // interaction
                     if (dr["pollutantname"].ToString().Contains("*") || dr["metricid"] == DBNull.Value)
                     {
-                        _healthImpacts.PollVariables.Add(new CRFVariable(dr["variablename"].ToString(), Convert.ToInt32(dr["crfvariableid"]), Convert.ToInt32(_healthImpacts.FunctionID), dr["pollutantname"].ToString(), Convert.ToInt32(dr["pollutant1id"]), Convert.ToInt32(dr["pollutant2id"])));
+                        newVar.Pollutant2ID = Convert.ToInt32(dr["pollutant2id"]);
+                        _healthImpacts.PollVariables.Add(newVar);
                     }
                     else
                     {
-                        Metric newMetric = new Metric();
-                        newMetric.MetricID = Convert.ToInt32(dr["metricid"]);
-                        newMetric.MetricName = dr["metricname"].ToString();
-                        newMetric.PollutantID = Convert.ToInt32(dr["pollutant1id"]);
-                        newMetric.HourlyMetricGeneration = Convert.ToInt32(dr["hourlymetricgeneration"]);
+                        newVar.Metric.MetricID = Convert.ToInt32(dr["metricid"]);
+                        newVar.Metric.MetricName = dr["metricname"].ToString();
+                        newVar.Metric.PollutantID = Convert.ToInt32(dr["pollutant1id"]);
+                        newVar.Metric.HourlyMetricGeneration = Convert.ToInt32(dr["hourlymetricgeneration"]);
 
-                        _healthImpacts.PollVariables.Add(new CRFVariable(dr["variablename"].ToString(), Convert.ToInt32(dr["crfvariableid"]), Convert.ToInt32(_healthImpacts.FunctionID), dr["pollutantname"].ToString(), Convert.ToInt32(dr["pollutant1id"]), newMetric));
+                        _healthImpacts.PollVariables.Add(newVar);
                     }
                 }
 
@@ -767,7 +775,14 @@ namespace BenMAP
                 {
                     varName = string.Format("P{0}", i);
                     varList.Items.Add(varName).SubItems.Add(dr["POLLUTANTNAME"].ToString());
-                    _healthImpacts.PollVariables.Add(new CRFVariable(varName, dr["POLLUTANTNAME"].ToString(), Convert.ToInt32(dr["POLLUTANTID"])));
+
+                    CRFVariable newVar = new CRFVariable();
+                    newVar.VariableName = varName;
+                    newVar.PollutantName = dr["POLLUTANTNAME"].ToString();
+                    newVar.Pollutant1ID = Convert.ToInt32(dr["POLLUTANTID"]);
+                    newVar.Metric = new Metric();
+                    _healthImpacts.PollVariables.Add(newVar);
+
                     if (isFirstOrder) firstOrder.Add(dr["POLLUTANTNAME"].ToString());
                     i++;
                 }
@@ -794,6 +809,7 @@ namespace BenMAP
                         CRFVariable temp = new CRFVariable();
                         temp.VariableName = varName;
                         temp.PollutantName = toAdd;
+                        temp.Metric = new Metric();
 
                         string[] split = toAdd.Split('*');
                         foreach (CRFVariable v in _healthImpacts.PollVariables)
@@ -825,7 +841,10 @@ namespace BenMAP
                 varList.Columns[1].Width = -1;
                 if (varList.Columns[1].Width < 123) varList.Columns[1].Width = 123;
 
-                setUpCovariance();
+                if (_healthImpacts.PollVariables.Count > 1)
+                {
+                    setUpCovariance();
+                }
             }
             catch (Exception ex)
             {
@@ -1203,7 +1222,10 @@ namespace BenMAP
                             i++;
                         }
                     }
-                    setUpCovariance();
+                    if (_healthImpacts.PollVariables.Count > 1)
+                    {
+                        setUpCovariance();
+                    } 
                 }
                 else
                 {
@@ -1215,7 +1237,10 @@ namespace BenMAP
                     }
 
                     // Set up variance/ covariance
-                    setUpCovariance();
+                    if (_healthImpacts.PollVariables.Count > 1)
+                    {
+                        setUpCovariance();
+                    }
                 }
             }
             catch (Exception ex)
