@@ -386,6 +386,7 @@ namespace BenMAP.Configuration
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex);
             }
             return baseControlCRSelectFunction;
         }
@@ -407,6 +408,7 @@ namespace BenMAP.Configuration
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex);
                 return null;
             }
         }
@@ -427,6 +429,7 @@ namespace BenMAP.Configuration
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex);
                 return null;
             }
         }
@@ -448,6 +451,7 @@ namespace BenMAP.Configuration
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex);
                 return null;
             }
         }
@@ -470,6 +474,7 @@ namespace BenMAP.Configuration
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex);
                 return null;
             }
 
@@ -493,6 +498,7 @@ namespace BenMAP.Configuration
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex);
                 return null;
             }
 
@@ -620,6 +626,7 @@ namespace BenMAP.Configuration
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex);
                 return null;
             }
         }
@@ -902,6 +909,7 @@ namespace BenMAP.Configuration
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex);
                 return 0;
             }
         }
@@ -957,6 +965,7 @@ namespace BenMAP.Configuration
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex);
                 return 0;
             }
         }
@@ -1015,6 +1024,7 @@ namespace BenMAP.Configuration
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex);
                 return 0;
             }
 
@@ -1131,8 +1141,9 @@ namespace BenMAP.Configuration
                 return dicPopulation;
 
             }
-            catch
+            catch (Exception ex)
             {
+                Logger.LogError(ex);
                 return null;
             }
         }
@@ -1467,6 +1478,7 @@ namespace BenMAP.Configuration
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex);
                 fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, "CREATE TABLE POP12kmToCounty (RACEID  SMALLINT NOT NULL,GENDERID  SMALLINT NOT NULL," +
  "  AGERANGEID           SMALLINT NOT NULL,  CCOLUMN              INTEGER NOT NULL," +
  "  ROW                  INTEGER NOT NULL,  VVALUE               FLOAT NOT NULL," +
@@ -1870,8 +1882,9 @@ namespace BenMAP.Configuration
                 }
                 return lstAgeID;
             }
-            catch
+            catch (Exception ex)
             {
+                Logger.LogError(ex);
             }
             return null;
         }
@@ -2427,6 +2440,7 @@ namespace BenMAP.Configuration
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex);
                 return null;
             }
         }
@@ -2511,8 +2525,9 @@ namespace BenMAP.Configuration
                 }
 
             }
-            catch
+            catch (Exception ex)
             {
+                Logger.LogError(ex);
             }
         }
         public static float getPopLevelFromCR(CRSelectFunction crSelectFunction)
@@ -3062,6 +3077,7 @@ namespace BenMAP.Configuration
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex);
                 return null;
             }
 
@@ -3357,6 +3373,7 @@ namespace BenMAP.Configuration
                         }
                         catch (Exception ex)
                         {
+                            Logger.LogError(ex);
                         }
                     }
                 }
@@ -3594,6 +3611,7 @@ namespace BenMAP.Configuration
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex);
                 return null;
             }
 
@@ -3766,6 +3784,7 @@ namespace BenMAP.Configuration
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex);
                 return null;
             }
 
@@ -3887,6 +3906,7 @@ namespace BenMAP.Configuration
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex);
                 return null;
             }
 
@@ -4015,6 +4035,7 @@ namespace BenMAP.Configuration
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex);
                 return null;
             }
 
@@ -4077,6 +4098,7 @@ namespace BenMAP.Configuration
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex);
                 return null;
             }
 
@@ -4102,6 +4124,7 @@ namespace BenMAP.Configuration
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex);
                 return null;
             }
 
@@ -4128,6 +4151,7 @@ namespace BenMAP.Configuration
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex);
                 return null;
             }
         }
@@ -4355,6 +4379,7 @@ namespace BenMAP.Configuration
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex);
             }
             return dicReturn;
         }
@@ -4379,8 +4404,9 @@ namespace BenMAP.Configuration
                         if (benMAPPopulation.GridType.GridDefinitionID != CommonClass.GBenMAPGrid.GridDefinitionID)
                             lstGridRelationship.Where(p => (p.bigGridID == benMAPPopulation.GridType.GridDefinitionID && p.smallGridID == CommonClass.GBenMAPGrid.GridDefinitionID) || (p.smallGridID == benMAPPopulation.GridType.GridDefinitionID && p.bigGridID == CommonClass.GBenMAPGrid.GridDefinitionID)).First();
                     }
-                    catch
+                    catch (Exception ex)
                     {
+                        Logger.LogError(ex);
                     }
 
 
@@ -5180,6 +5206,7 @@ namespace BenMAP.Configuration
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex);
                 return null;
             }
         }
@@ -5381,6 +5408,7 @@ namespace BenMAP.Configuration
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex);
                 return null;
             }
         }
@@ -5442,6 +5470,7 @@ namespace BenMAP.Configuration
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex);
                 return null;
             }
         }
@@ -5771,6 +5800,7 @@ namespace BenMAP.Configuration
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex);
             }
         }
 
@@ -5875,6 +5905,7 @@ namespace BenMAP.Configuration
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex);
                 return 0;
             }
         }
@@ -5908,6 +5939,7 @@ namespace BenMAP.Configuration
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex);
                 return 0;
 
             }
