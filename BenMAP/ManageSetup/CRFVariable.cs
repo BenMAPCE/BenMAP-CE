@@ -71,14 +71,6 @@ namespace BenMAP
             this._pollBetas = new List<CRFBeta>();
         }
 
-        // Constructor for new/ edited functions
-        public CRFVariable(string varName, string pollName, int poll1ID)
-        {
-            this._variableName = varName;
-            this._pollutantName = pollName;
-            this._pollutant1ID = poll1ID;
-        }
-
         public CRFVariable(string varName, int varID, int funID, string pollName, int poll1ID)
         {
             this._variableName = varName;
@@ -97,16 +89,6 @@ namespace BenMAP
             this._pollutant1ID = poll1ID;
             this._pollutant2ID = poll2ID;
             this._metric = null;
-        }
-
-        public CRFVariable(string varName, int varID, int funID, string pollName, int poll1ID, Metric metric)
-        {
-            this._variableName = varName;
-            this._variableID = varID;
-            this._functionID = funID;
-            this._pollutantName = pollName;
-            this._pollutant1ID = poll1ID;
-            this._metric = metric;
         }
 
         public int VariableID

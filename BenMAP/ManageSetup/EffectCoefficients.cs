@@ -29,7 +29,7 @@ namespace BenMAP
             selected = sel;
             selectedSeason = 0;
             
-            if (_hif.BetaVariation.Trim() == "Seasonal") seasonal = true;
+            if (_hif.BetaVariation == "Seasonal") seasonal = true;
             else seasonal = false;
         }
  
@@ -42,12 +42,8 @@ namespace BenMAP
                 txtPollutant.Text = selectedVariable.PollutantName;
                 txtModelSpec.Text = _hif.ModelSpec;
                 txtSeasMetric.Text = _hif.SeasonalMetric;
-                if(selectedVariable.Metric != null)
+                if(selectedVariable.Metric.MetricName != null)
                     cboMetric.Text = selectedVariable.Metric.MetricName;
-                else
-                {
-                    //TODO
-                }
 
                 // multipollutant locked to normal per epa's request
                 // check that function ID is there first (not there for new functions)
@@ -62,28 +58,13 @@ namespace BenMAP
                 }
                 else
                 {
-                    cboBetaDistribution.Items.Add("None");
-                    cboBetaDistribution.Items.Add("Normal");
-                    cboBetaDistribution.Items.Add("Triangular");
-                    cboBetaDistribution.Items.Add("Poisson");
-                    cboBetaDistribution.Items.Add("Binomial");
-                    cboBetaDistribution.Items.Add("LogNormal");
-                    cboBetaDistribution.Items.Add("Uniform");
-                    cboBetaDistribution.Items.Add("Exponential");
-                    cboBetaDistribution.Items.Add("Geometric");
-                    cboBetaDistribution.Items.Add("Weibull"); 
-                    cboBetaDistribution.Items.Add("Gamma");
-                    cboBetaDistribution.Items.Add("Logistic");
-                    cboBetaDistribution.Items.Add("Beta");
-                    cboBetaDistribution.Items.Add("Pareto");
-                    cboBetaDistribution.Items.Add("Cauchy");
-                    cboBetaDistribution.Items.Add("Custom"); 
-                    /* ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                    ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                     string commandText = "select DISTRIBUTIONNAME from DISTRIBUTIONTYPES order by DISTRIBUTIONNAME";
                     DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
-                    cboBetaDistribution.DataSource = ds.Tables[0];
-                    cboBetaDistribution.DisplayMember = "DISTRIBUTIONNAME"; */
-                    cboBetaDistribution.SelectedItem = selectedVariable.PollBetas[selectedSeason].Distribution;
+                    foreach (DataRow dr in ds.Tables[0].Rows)
+                    {
+                        cboBetaDistribution.Items.Add(dr["distributionname"].ToString());
+                    }
                 }
 
                 cboBetaDistribution.SelectedIndex = 0;
@@ -129,8 +110,14 @@ namespace BenMAP
                 loadVariable();
                 loadMetrics();
 
-                cboBetaDistribution.SelectedIndex = cboBetaDistribution.FindString(selectedVariable.PollBetas[selectedSeason].Distribution);
-                // cboBetaDistribution.Text = selectedVariable.PollBetas[selectedSeason].Distribution;
+                if(selectedVariable.PollBetas[selectedSeason].Distribution == string.Empty || selectedVariable.PollBetas[selectedSeason].Distribution == "None")
+                {
+                    cboBetaDistribution.SelectedIndex = cboBetaDistribution.FindString("None");
+                }
+                else
+                {
+                    cboBetaDistribution.SelectedIndex = cboBetaDistribution.FindString(selectedVariable.PollBetas[selectedSeason].Distribution);
+                }
 
                 cboSeason.SelectionChangeCommitted -= cboSeason_SelectedValueChanged;
                 cboSeason.SelectionChangeCommitted += cboSeason_SelectedValueChanged;
@@ -358,10 +345,6 @@ namespace BenMAP
 
         private void btnCancel_Click(object sender, EventArgs e)
         {
-            // Warning to be used once editing is enabled
-            /* DialogResult warn = MessageBox.Show("Pressing cancel will discard the changes on the current variable. Changes made on other variable values will still be saved.","Warning",MessageBoxButtons.OKCancel);
-            if (warn == DialogResult.Cancel) return; */
-
             this.DialogResult = DialogResult.Cancel;
         }
 
@@ -385,7 +368,7 @@ namespace BenMAP
             loadVariable();
         }
 
-        // From HealthImpactFunctionDefinition.cs 
+        // Adapted from HealthImpactFunctionDefinition.cs 
         public List<double> list = new List<double>();
         private void cboBetaDistribution_SelectedValueChanged(object sender, EventArgs e)
         {
@@ -437,6 +420,13 @@ namespace BenMAP
                         || cboBetaDistribution.SelectedItem.ToString() == "Exponential" || cboBetaDistribution.SelectedItem.ToString() == "Geometric")
                     {
                         txtBetaParameter2.Text = healthImpactValues.BetaParameter2;
+                    }
+
+                    // Beta distribution is the same for each beta associated with that variable
+                    CRFVariable selectedVar = _hif.PollVariables[selected];
+                    foreach (CRFBeta b in selectedVar.PollBetas)
+                    {
+                        b.Distribution = cboBetaDistribution.SelectedItem.ToString();
                     }
                 }
             }
