@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GBDRollback));
             this.gbCountrySelection = new System.Windows.Forms.GroupBox();
             this.listCountries = new System.Windows.Forms.CheckedListBox();
@@ -90,6 +90,7 @@
             this.lblPercentageBackground = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.gbOptionsStandard = new System.Windows.Forms.GroupBox();
+            this.chkNegativeRollbackToStandard = new System.Windows.Forms.CheckBox();
             this.cboStandard = new System.Windows.Forms.ComboBox();
             this.label9 = new System.Windows.Forms.Label();
             this.gbName = new System.Windows.Forms.GroupBox();
@@ -294,14 +295,14 @@
             this.colTotalPopulation,
             this.colRollbackType,
             this.colExecute});
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvRollbacks.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvRollbacks.DefaultCellStyle = dataGridViewCellStyle1;
             this.dgvRollbacks.Location = new System.Drawing.Point(17, 55);
             this.dgvRollbacks.MultiSelect = false;
             this.dgvRollbacks.Name = "dgvRollbacks";
@@ -755,6 +756,7 @@
             // 
             // gbOptionsStandard
             // 
+            this.gbOptionsStandard.Controls.Add(this.chkNegativeRollbackToStandard);
             this.gbOptionsStandard.Controls.Add(this.cboStandard);
             this.gbOptionsStandard.Controls.Add(this.label9);
             this.gbOptionsStandard.Location = new System.Drawing.Point(929, 669);
@@ -763,6 +765,17 @@
             this.gbOptionsStandard.TabIndex = 8;
             this.gbOptionsStandard.TabStop = false;
             this.gbOptionsStandard.Text = "Options";
+            // 
+            // chkNegativeRollbackToStandard
+            // 
+            this.chkNegativeRollbackToStandard.AutoSize = true;
+            this.chkNegativeRollbackToStandard.Location = new System.Drawing.Point(13, 47);
+            this.chkNegativeRollbackToStandard.Name = "chkNegativeRollbackToStandard";
+            this.chkNegativeRollbackToStandard.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.chkNegativeRollbackToStandard.Size = new System.Drawing.Size(181, 17);
+            this.chkNegativeRollbackToStandard.TabIndex = 2;
+            this.chkNegativeRollbackToStandard.Text = "Negative Rollback to a Standard";
+            this.chkNegativeRollbackToStandard.UseVisualStyleBackColor = true;
             // 
             // cboStandard
             // 
@@ -830,7 +843,7 @@
             this.label8.TabIndex = 2;
             this.label8.Text = "Scenario Name:";
             this.toolTip1.SetToolTip(this.label8, "The name of the scenario will also be used in the rollback report filename.  It i" +
-                    "s limited to 15 characters.");
+        "s limited to 15 characters.");
             // 
             // btnNext
             // 
@@ -958,5 +971,6 @@
         private System.Windows.Forms.CheckedListBox listCountries;
         private System.Windows.Forms.ComboBox cboExportFormat;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.CheckBox chkNegativeRollbackToStandard;
     }
 }
