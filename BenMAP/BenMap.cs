@@ -2942,7 +2942,7 @@ namespace BenMAP
             }
             PolygonScheme myScheme1 = new PolygonScheme();
             myScheme1.EditorSettings.ClassificationType = ClassificationType.Quantities;
-            myScheme1.EditorSettings.IntervalMethod = IntervalMethod.NaturalBreaks;
+            myScheme1.EditorSettings.IntervalMethod = IntervalMethod.EqualInterval; // In DS<2.0 NaturalBreaks was in fact EqualInterval.
             myScheme1.EditorSettings.IntervalSnapMethod = IntervalSnapMethod.SignificantFigures;
             myScheme1.EditorSettings.IntervalRoundingDigits = 3; //number of significant figures (or decimal places if using rounding)
             myScheme1.EditorSettings.NumBreaks = CategoryNumber;
@@ -3020,7 +3020,7 @@ namespace BenMAP
             
             PolygonScheme myScheme1 = new PolygonScheme();
             myScheme1.EditorSettings.ClassificationType = ClassificationType.Quantities;
-            myScheme1.EditorSettings.IntervalMethod = IntervalMethod.NaturalBreaks;
+            myScheme1.EditorSettings.IntervalMethod = IntervalMethod.EqualInterval; // In DS<2.0 NaturalBreaks was in fact EqualInterval.
             myScheme1.EditorSettings.IntervalSnapMethod = IntervalSnapMethod.SignificantFigures;
             myScheme1.EditorSettings.IntervalRoundingDigits = 3; //number of significant figures (or decimal places if using rounding)
             myScheme1.EditorSettings.NumBreaks = CategoryNumber;
