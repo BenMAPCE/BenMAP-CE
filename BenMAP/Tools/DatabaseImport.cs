@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using FirebirdSql.Data.FirebirdClient;
 
 namespace BenMAP
 {
@@ -345,6 +346,10 @@ namespace BenMAP
             }
         }
 
+        /// <summary>
+        /// Reads pollutants from BDBX file
+        /// </summary>
+        /// <param name="reader">points to BDBX file</param>
         private void ReadPollutant(BinaryReader reader)
         {
             try
@@ -367,20 +372,71 @@ namespace BenMAP
                 Dictionary<int, int> dicpollutantgroupid = new Dictionary<int, int>();
                 Dictionary<int, int> dicpollutantgrouppollutantid = new Dictionary<int, int>();
                 
-
-
                 for (int i = 0; i < tableCount; i++)
                 {
                     string pollutantName = reader.ReadString();
                     PollutantID = reader.ReadInt32();
                     int oldSetupid = reader.ReadInt32();
+                    // do we currently have a pollutant with the same name in this setup?
                     string commandText = string.Format("select PollutantID from pollutants where setupid={0} and PollutantName='{1}'", importsetupID == -1 ? lstSetupID[oldSetupid] : importsetupID, pollutantName);
                     object obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
-                    if (obj != null)
+                    if (obj != null)    // if we have a pollutant, then remove it and its dependent objects before reloading the data to prevent conflicts
                     {
                         existPollutantID = Convert.ToInt16(obj);
+                        // BF520 - need to remove the CRFunctions and their children before deleting the linked pollutants
+                        // remove pollutant groups and pollutant group pollutants linked to this pollutant
+                        // *** Catch 22 - you can't delete a pollutant group until you delete its pollutant group pollutants, 
+                        // *** but once you've deleted the pollutant group pollutants, there's no longer 
+                        // *** any record of the pollutant you can use to find the pollutant group to delete
+                        // *** that's why you need to make a list of the pollutant group ids and then use this list to remove the related object rows
+                        string strGroupList = string.Format("select g.pollutantgroupid from pollutantgroups g inner join pollutantgrouppollutants p " 
+                            + "on  g.pollutantgroupid = p.pollutantgroupid where p.pollutantid={0}", existPollutantID);
+                        FbDataReader fbDataReader = fb.ExecuteReader(CommonClass.Connection, CommandType.Text, strGroupList);
+                        while (fbDataReader.Read())
+                        {
+                            // remove the existing CRVARCOV
+                            string strDelete = string.Format("DELETE from CRFVARCOV A WHERE A.CRFBETAID1 IN ("
+                                    +"SELECT B.CRFBETAID FROM CRFBETAS B WHERE B.CRFVARIABLEID IN ( "
+                                    +"SELECT V.CRFVARIABLEID FROM CRFVARIABLES V WHERE V.POLLUTANT1ID IN "
+                                    +"(SELECT POLLUTANTID FROM POLLUTANTGROUPPOLLUTANTS PGP WHERE PGP.POLLUTANTGROUPID = {0})"
+                                    +"OR V.POLLUTANT2ID IN (SELECT POLLUTANTID FROM POLLUTANTGROUPPOLLUTANTS PGP WHERE PGP.POLLUTANTGROUPID = {0})))"
+                                    +"OR A.CRFBETAID2 IN (SELECT B.CRFBETAID FROM CRFBETAS B WHERE B.CRFVARIABLEID IN ("
+                                    +"SELECT V.CRFVARIABLEID FROM CRFVARIABLES V WHERE V.POLLUTANT1ID IN "
+                                    + "(SELECT POLLUTANTID FROM POLLUTANTGROUPPOLLUTANTS PGP WHERE PGP.POLLUTANTGROUPID = {0}) "
+                                    + "OR V.POLLUTANT2ID IN (SELECT POLLUTANTID FROM POLLUTANTGROUPPOLLUTANTS PGP WHERE PGP.POLLUTANTGROUPID = {0})))",fbDataReader[0]);
+                            fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, strDelete);
+                            
+                            // remove the existing CRFBETAS 
+                            strDelete = string.Format("DELETE FROM CRFBETAS B WHERE B.CRFVARIABLEID IN ("
+                                + "SELECT V.CRFVARIABLEID FROM CRFVARIABLES V WHERE V.POLLUTANT1ID IN "
+                                + "(SELECT POLLUTANTID FROM POLLUTANTGROUPPOLLUTANTS PGP WHERE PGP.POLLUTANTGROUPID = {0}) "
+                                + "OR V.POLLUTANT2ID IN (SELECT POLLUTANTID FROM POLLUTANTGROUPPOLLUTANTS PGP WHERE PGP.POLLUTANTGROUPID = {0}))", fbDataReader[0]);
+                            fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, strDelete);
+                            
+                            // remove the existing CRVariables
+                            strDelete = string.Format("DELETE  FROM CRFVARIABLES V WHERE V.POLLUTANT1ID IN "
+                                + "(SELECT POLLUTANTID FROM POLLUTANTGROUPPOLLUTANTS PGP WHERE PGP.POLLUTANTGROUPID = {0}) "
+                                + "OR V.POLLUTANT2ID IN (SELECT POLLUTANTID FROM POLLUTANTGROUPPOLLUTANTS PGP WHERE PGP.POLLUTANTGROUPID ={0}4)",fbDataReader[0]);
+                            fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, strDelete);
+
+                            // delete the pollutant group pollutants 
+                            strDelete = string.Format("delete from pollutantgrouppollutants where pollutantgroupid={0}", fbDataReader[0]);
+                            fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, strDelete);
+                            
+                            // delete the pollutant groups 
+                            strDelete = string.Format("delete from pollutantgrouppollutants where pollutantgroupid={0}", fbDataReader[0]);
+                            fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, strDelete);
+                            
+                            // delete the pollutants
+                            strDelete = string.Format("delete from pollutantgrouppollutants where pollutantgroupid={0}", fbDataReader[0]);
+                            fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, strDelete);
+                            
+                        }
+                        
+                        // remove the existing linked pollutant seasons - will be reloaded in later step
                         commandText = string.Format("delete from PollutantSeasons where PollutantID in ({0})", existPollutantID);
                         fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                        // remove the existing linked metrics - will be reloaded in later step
                         commandText = string.Format("delete from Metrics where PollutantID in ({0})", existPollutantID);
                         fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                         commandText = string.Format("delete from pollutants where PollutantID in ({0})", existPollutantID);
@@ -626,7 +682,6 @@ namespace BenMAP
                 {
                     reader.BaseStream.Position = reader.BaseStream.Position - nextTable.Length - 1;
                 }
-                // STOPPED HERE
                 // BF-520 load pollutant groups
                 pBarImport.Value = 0;
                 lbProcess.Text = "Importing pollutant groups...";
@@ -648,14 +703,14 @@ namespace BenMAP
                     }
                     for (int i = 0; i < PollutantGroupscount; i++)
                     {
-                        reader.BaseStream.Position = reader.BaseStream.Position + sizeof(Int32);
+                        //reader.BaseStream.Position = reader.BaseStream.Position + sizeof(Int32);
                         int PollutantGroupID = reader.ReadInt32();
                         int SetupID = reader.ReadInt32();
                         string PGName = reader.ReadString();
                         string PGDesc = reader.ReadString();
                         commandText = string.Format("insert into PollutantGroups(PollutantGroupID, SETUPID, PGNAME, PGDESCRIPTION) values({0},{1},'{2}','{3}')", 
-                            ++changePollutantGroupID, dicpollutantgroupid.ContainsKey(PollutantGroupID) ? dicpollutantgroupid[PollutantGroupID] : PollutantGroupID, 
-                            Convert.ToInt16(SetupID), PGName, PGDesc);                             
+                            dicpollutantgroupid.ContainsKey(PollutantGroupID) ? dicpollutantgroupid[PollutantGroupID] : ++changePollutantGroupID, 
+                            Convert.ToInt32(SetupID), PGName, PGDesc);                             
                         fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                         pBarImport.PerformStep();
                     }
@@ -666,6 +721,46 @@ namespace BenMAP
                 }
                 
                 // BF-520 load pollutant group pollutants
+                pBarImport.Value = 0;
+                lbProcess.Text = "Importing pollutant group pollutants";
+                lbProcess.Refresh();
+                this.Refresh();
+
+                if (reader.BaseStream.Position >= reader.BaseStream.Length) { pBarImport.Value = pBarImport.Maximum; lbProcess.Refresh(); this.Refresh(); return; }
+                nextTable = reader.ReadString();
+                if (nextTable == "PollutantGroupPollutants")
+                {
+                    int PollutantGroupPollutantscount = reader.ReadInt32();
+                    pBarImport.Maximum = PollutantGroupPollutantscount;
+                    
+                    for (int i = 0; i < PollutantGroupPollutantscount; i++)
+                    {
+                        //reader.BaseStream.Position = reader.BaseStream.Position + sizeof(Int32);
+                        string PollutantGroupName = reader.ReadString();
+                        string PollutantName = reader.ReadString();
+                        // get pollutant group id for pollutant group - note this will fail if pollutant group wasn't added in previous step.
+                        string commandText = string.Format("Select PollutantGroupID from POLLUTANTGROUPS PG "
+                            + "where PG.PGNAME ='{0}' and PG.SETUPID = {1}", PollutantGroupName, importsetupID);
+                        int PollutantGroupID = Convert.ToInt16(fb.ExecuteScalar(CommonClass.Connection,CommandType.Text, commandText));
+                        
+                        // get pollutant id for pollutant - note this will fail if pollutant wasn't added in previous step.
+                        commandText = string.Format("Select PollutantID from POLLUTANTS P "
+                            + "where P.POLLUTANTNAME ='{0}' and P.SETUPID = {1}", PollutantName, importsetupID);
+                        PollutantID = Convert.ToInt16(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
+                        
+                        // add new entry to table
+                        commandText = string.Format("insert into PollutantGroupPollutants(PollutantGroupID, PollutantID) values({0},{1})",
+                            PollutantGroupID, PollutantID);
+                        fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                         
+                        pBarImport.PerformStep();
+                    }
+                }
+                else
+                {
+                    reader.BaseStream.Position = reader.BaseStream.Position - nextTable.Length - 1;
+                }
+                
 
             }
             catch (Exception ex)

@@ -338,15 +338,22 @@ namespace BenMAP
                 {       
                     for (int i = 0; i < fbDataReader.FieldCount; i++)
                     {   // determine data type of datareader field and output accordingly 
-                       if (fbDataReader.GetFieldType(i) == typeof(Int32))
+                       if (fbDataReader.GetFieldType(i) == typeof(int))
                         {
                                 if (!Convert.IsDBNull(fbDataReader[i])) { writer.Write(Convert.ToInt32(fbDataReader[i])); }
                                 else writer.Write(Convert.ToInt32(-1));
-                        }else if (fbDataReader.GetFieldType(i) == typeof(Int64)) // BF-520 modify to output int64
+                        }else if (fbDataReader.GetFieldType(i) == typeof(long)) // BF-520 modify to output int32
                         {
-                                if (!Convert.IsDBNull(fbDataReader[i])) { writer.Write(Convert.ToInt64(fbDataReader[i])); }
-                                else writer.Write(Convert.ToInt64(-1));
-                        }else if (fbDataReader.GetFieldType(i) == typeof(Single))
+                                if (!Convert.IsDBNull(fbDataReader[i])) { writer.Write(Convert.ToInt32(fbDataReader[i])); }
+                                else writer.Write(Convert.ToInt32(-1));
+                            
+                        }else if (fbDataReader.GetFieldType(i) == typeof(Int16)) // BF-520 modify to output int64 -- write Int16 as Int32
+                        {
+                                if (!Convert.IsDBNull(fbDataReader[i])) { writer.Write(Convert.ToInt32(fbDataReader[i])); }
+                                else writer.Write(Convert.ToInt32(-1));
+                            
+                        }
+                       else if (fbDataReader.GetFieldType(i) == typeof(Single))
                        {
                                 if (!Convert.IsDBNull(fbDataReader[i])) { writer.Write(Convert.ToSingle(fbDataReader[i])); }
                                 else writer.Write(Convert.ToSingle(-1));
@@ -362,10 +369,15 @@ namespace BenMAP
                                 byte[] buffer = (byte[])fbDataReader[i];
                                 writer.Write(buffer.Length);
                                 writer.Write(buffer);
-                        }else if (fbDataReader.GetFieldType(i) == typeof(char))
-                        {
-                                writer.Write(Convert.ToChar(fbDataReader[i]));
                         }
+                       else if (fbDataReader.GetFieldType(i) == typeof(char))
+                       {
+                           writer.Write(Convert.ToChar(fbDataReader[i]));
+                       }
+                       else
+                       { 
+                          writer.Write(Convert.ToString("Error"));
+                       }
                     }
                     pBarExport.PerformStep();
                 }
@@ -694,11 +706,12 @@ namespace BenMAP
                 pBarExport.Maximum = drSeasonalPollutantGroupPollutantscount;
                 writer.Write("PollutantGroupPollutants");
                 writer.Write(drSeasonalPollutantGroupPollutantscount);
-                commandText = string.Format("select POLLUTANTGROUPID, POLLUTANTID FROM POLLUTANTGROUPPOLLUTANTS where POLLUTANTGROUPID IN (SELECT POLLUTANTGROUPID FROM POLLUTANTGROUPS WHERE {0})", setupid);
+                // write out pollutant group name and pollutant name instead of groupid - this needed because the import routine may not have matching IDs (but should have matching names)
+                commandText = string.Format("select PG.PGNAME, P.POLLUTANTNAME FROM POLLUTANTGROUPPOLLUTANTS PGP "
+                        + "INNER JOIN POLLUTANTGROUPS PG ON PG.POLLUTANTGROUPID = PGP.POLLUTANTGROUPID INNER JOIN POLLUTANTS P "
+                        + "ON PGP.POLLUTANTID = P.POLLUTANTID where PG.{0}", setupid);
                 writeOneTable(writer, commandText);
-                
-
-            }
+             }
             catch (Exception ex)
             {
                 errorOccur = true;
