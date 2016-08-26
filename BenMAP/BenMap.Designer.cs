@@ -175,7 +175,6 @@ namespace BenMAP
             this.rbAuditCurrent = new System.Windows.Forms.RadioButton();
             this.tabCtlMain = new System.Windows.Forms.TabControl();
             this.tabGIS = new System.Windows.Forms.TabPage();
-            this.picGIS = new System.Windows.Forms.PictureBox();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.panel3 = new System.Windows.Forms.Panel();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
@@ -194,12 +193,14 @@ namespace BenMAP
             this.tsbChangeCone = new System.Windows.Forms.ToolStripButton();
             this.tsbAddLayer = new System.Windows.Forms.ToolStripButton();
             this.tsbAttributes = new System.Windows.Forms.ToolStripButton();
+            this.tsbSelectByLocation = new System.Windows.Forms.ToolStripButton();
             this.legend1 = new DotSpatial.Controls.Legend();
             this.cboRegion = new System.Windows.Forms.ComboBox();
             this.tabMapLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.tbMapTitle = new System.Windows.Forms.TextBox();
             this.dgvAttributeTable = new System.Windows.Forms.DataGridView();
             this.mainMap = new DotSpatial.Controls.Map();
+            this.picGIS = new System.Windows.Forms.PictureBox();
             this.tabData = new System.Windows.Forms.TabPage();
             this.spTable = new System.Windows.Forms.SplitContainer();
             this.OLVResultsShow = new BrightIdeasSoftware.ObjectListView();
@@ -273,7 +274,6 @@ namespace BenMAP
             this.tabAuditTrialReport.SuspendLayout();
             this.tabCtlMain.SuspendLayout();
             this.tabGIS.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.picGIS)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
             this.splitContainer2.Panel1.SuspendLayout();
             this.splitContainer2.Panel2.SuspendLayout();
@@ -282,6 +282,7 @@ namespace BenMAP
             this.toolStrip1.SuspendLayout();
             this.tabMapLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvAttributeTable)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picGIS)).BeginInit();
             this.tabData.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.spTable)).BeginInit();
             this.spTable.Panel1.SuspendLayout();
@@ -830,14 +831,12 @@ namespace BenMAP
             // 
             // appManager1
             // 
-            this.appManager1.CompositionContainer = null;
             this.appManager1.Directories = ((System.Collections.Generic.List<string>)(resources.GetObject("appManager1.Directories")));
             this.appManager1.DockManager = null;
             this.appManager1.HeaderControl = null;
             this.appManager1.Legend = null;
             this.appManager1.Map = null;
             this.appManager1.ProgressHandler = null;
-            this.appManager1.ShowExtensionsDialogMode = DotSpatial.Controls.ShowExtensionsDialogMode.Default;
             // 
             // olvColumn7
             // 
@@ -1945,8 +1944,8 @@ namespace BenMAP
             // tabGIS
             // 
             this.tabGIS.BackColor = System.Drawing.Color.Silver;
-            this.tabGIS.Controls.Add(this.picGIS);
             this.tabGIS.Controls.Add(this.splitContainer2);
+            this.tabGIS.Controls.Add(this.picGIS);
             this.tabGIS.ImageIndex = 29;
             this.tabGIS.Location = new System.Drawing.Point(4, 23);
             this.tabGIS.Name = "tabGIS";
@@ -1955,22 +1954,6 @@ namespace BenMAP
             this.tabGIS.TabIndex = 0;
             this.tabGIS.Tag = "GIS map to be created here";
             this.tabGIS.Text = "GIS Map";
-            // 
-            // picGIS
-            // 
-            this.picGIS.BackColor = System.Drawing.Color.White;
-            this.picGIS.BackgroundImage = global::BenMAP.Properties.Resources.GISMapBG;
-            this.picGIS.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.picGIS.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.picGIS.Location = new System.Drawing.Point(3, 3);
-            this.picGIS.Margin = new System.Windows.Forms.Padding(0);
-            this.picGIS.Name = "picGIS";
-            this.picGIS.Size = new System.Drawing.Size(693, 458);
-            this.picGIS.TabIndex = 8;
-            this.picGIS.TabStop = false;
-            this.picGIS.DragDrop += new System.Windows.Forms.DragEventHandler(this.mainMap_DragDrop);
-            this.picGIS.DragEnter += new System.Windows.Forms.DragEventHandler(this.picGIS_DragEnter);
-            this.picGIS.DragLeave += new System.EventHandler(this.mainMap_DragLeave);
             // 
             // splitContainer2
             // 
@@ -2032,7 +2015,8 @@ namespace BenMAP
             this.tsbChangeProjection,
             this.tsbChangeCone,
             this.tsbAddLayer,
-            this.tsbAttributes});
+            this.tsbAttributes,
+            this.tsbSelectByLocation});
             this.toolStrip1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.VerticalStackWithOverflow;
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Margin = new System.Windows.Forms.Padding(5, 5, 1, 0);
@@ -2043,7 +2027,6 @@ namespace BenMAP
             this.toolStrip1.Size = new System.Drawing.Size(50, 456);
             this.toolStrip1.Stretch = true;
             this.toolStrip1.TabIndex = 5;
-            this.toolStrip1.Text = "toolStrip1";
             this.toolStrip1.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.toolStrip1_ItemClicked);
             // 
             // btnZoomIn
@@ -2213,6 +2196,16 @@ namespace BenMAP
             this.tsbAttributes.Text = "Attribute Table";
             this.tsbAttributes.Click += new System.EventHandler(this.btnShowHideAttributeTable_Click);
             // 
+            // tsbSelectByLocation
+            // 
+            this.tsbSelectByLocation.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbSelectByLocation.Image = ((System.Drawing.Image)(resources.GetObject("tsbSelectByLocation.Image")));
+            this.tsbSelectByLocation.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbSelectByLocation.Name = "tsbSelectByLocation";
+            this.tsbSelectByLocation.Size = new System.Drawing.Size(49, 20);
+            this.tsbSelectByLocation.Text = "Select By Location";
+            this.tsbSelectByLocation.Click += new System.EventHandler(this.tsbSelectByLocation_Click);
+            // 
             // legend1
             // 
             this.legend1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -2358,9 +2351,26 @@ namespace BenMAP
             this.mainMap.Size = new System.Drawing.Size(416, 421);
             this.mainMap.TabIndex = 0;
             this.mainMap.Tag = "GIS map will be created here.";
+            this.mainMap.ZoomOutFartherThanMaxExtent = false;
             this.mainMap.DragDrop += new System.Windows.Forms.DragEventHandler(this.mainMap_DragDrop);
             this.mainMap.DragEnter += new System.Windows.Forms.DragEventHandler(this.mainMap_DragEnter);
             this.mainMap.DragLeave += new System.EventHandler(this.mainMap_DragLeave);
+            // 
+            // picGIS
+            // 
+            this.picGIS.BackColor = System.Drawing.Color.White;
+            this.picGIS.BackgroundImage = global::BenMAP.Properties.Resources.GISMapBG;
+            this.picGIS.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.picGIS.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.picGIS.Location = new System.Drawing.Point(3, 3);
+            this.picGIS.Margin = new System.Windows.Forms.Padding(0);
+            this.picGIS.Name = "picGIS";
+            this.picGIS.Size = new System.Drawing.Size(693, 458);
+            this.picGIS.TabIndex = 8;
+            this.picGIS.TabStop = false;
+            this.picGIS.DragDrop += new System.Windows.Forms.DragEventHandler(this.mainMap_DragDrop);
+            this.picGIS.DragEnter += new System.Windows.Forms.DragEventHandler(this.picGIS_DragEnter);
+            this.picGIS.DragLeave += new System.EventHandler(this.mainMap_DragLeave);
             // 
             // tabData
             // 
@@ -2982,7 +2992,6 @@ namespace BenMAP
             this.tabAuditTrialReport.PerformLayout();
             this.tabCtlMain.ResumeLayout(false);
             this.tabGIS.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.picGIS)).EndInit();
             this.splitContainer2.Panel1.ResumeLayout(false);
             this.splitContainer2.Panel2.ResumeLayout(false);
             this.splitContainer2.Panel2.PerformLayout();
@@ -2995,6 +3004,7 @@ namespace BenMAP
             this.tabMapLayoutPanel1.ResumeLayout(false);
             this.tabMapLayoutPanel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvAttributeTable)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picGIS)).EndInit();
             this.tabData.ResumeLayout(false);
             this.spTable.Panel1.ResumeLayout(false);
             this.spTable.Panel2.ResumeLayout(false);
@@ -3238,5 +3248,6 @@ namespace BenMAP
         private System.Windows.Forms.TextBox textBoxFilterSimple;
         private BrightIdeasSoftware.TreeListView treeListView;
         private BrightIdeasSoftware.OLVColumn treeColumnName;
+        private System.Windows.Forms.ToolStripButton tsbSelectByLocation;
     }
 }

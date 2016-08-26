@@ -28,6 +28,7 @@ using ProtoBuf;
 using System.Collections;
 using OxyPlot.Axes;
 using System.ComponentModel.Composition;
+using BenMAP.SelectByLocation;
 
 namespace BenMAP
 {
@@ -14109,10 +14110,21 @@ namespace BenMAP
 
         }
 
-        
-      
-      
-      
-        
+        private bool _SelectByLocationDialogShown;
+        private void tsbSelectByLocation_Click(object sender, EventArgs e)
+        {
+            if (_SelectByLocationDialogShown) return;
+
+            _SelectByLocationDialogShown = true;
+            var sb = new SelectByLocationDialog(mainMap);
+            sb.Closed += SbOnClosed;
+            sb.Show(this);
+        }
+
+        private void SbOnClosed(object sender, EventArgs eventArgs)
+        {
+            _SelectByLocationDialogShown = false;
+            ((Form)sender).Closed -= SbOnClosed;
+        }
     }
 }
