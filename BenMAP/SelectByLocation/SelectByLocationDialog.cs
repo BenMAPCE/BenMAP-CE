@@ -6,6 +6,8 @@ using System.Windows.Forms;
 using DotSpatial.Controls;
 using GeoAPI.Geometries;
 
+// This form is used to select by location
+// MM/DPA 8/26/2016
 namespace BenMAP.SelectByLocation
 {
     public partial class SelectByLocationDialog : Form
