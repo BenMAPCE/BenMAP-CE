@@ -6130,6 +6130,7 @@ namespace BenMAP
             }
         }
         private bool isLoad = false;
+
         private System.Data.DataSet BindGridtype()
         {
             try
@@ -6160,6 +6161,7 @@ namespace BenMAP
                 return null;
             }
         }
+
         private void tsbSavePic_Click(object sender, EventArgs e)
         {
             try
@@ -6382,6 +6384,9 @@ namespace BenMAP
         private void saveFileDialog1_Disposed(object sender, EventArgs e)
         {
         }
+
+#region Map toolbar functions
+        //dpa moved all these map toolbar functions into a single region block
         private void tsbChangeProjection_Click(object sender, EventArgs e)
         {
             try
@@ -6473,6 +6478,7 @@ namespace BenMAP
             {
             }
         }
+
         private void tsbChangeCone_Click(object sender, EventArgs e)
         {
             if (mainMap.GetAllLayers().Count < 2)
@@ -6481,28 +6487,74 @@ namespace BenMAP
 
         private void btnZoomIn_Click(object sender, EventArgs e)
         {
+            //dpa - change the map mode to zoom in 
+            //this button toggles map mode, hence changing the "checked" state.
             mainMap.FunctionMode = FunctionMode.ZoomIn;
+            btnSelect.Checked = false;
+            btnIdentify.Checked = false;
+            btnZoomIn.Checked = true;
+            btnZoomOut.Checked = false;
+            btnPan.Checked = false;
+
         }
 
         private void btnZoomOut_Click(object sender, EventArgs e)
         {
+            //dpa - change the map mode to zoom out
+            //this button toggles map mode, hence changing the "checked" state.
             mainMap.FunctionMode = FunctionMode.ZoomOut;
+            btnSelect.Checked = false;
+            btnIdentify.Checked = false;
+            btnZoomIn.Checked = false;
+            btnZoomOut.Checked = true;
+            btnPan.Checked = false;
+
         }
 
+        private void btnIdentify_Click(object sender, EventArgs e)
+        {
+            //dpa - change function mode to identify
+            //this button toggles map mode, hence changing the "checked" state.
+            mainMap.FunctionMode = FunctionMode.Info;
+            btnSelect.Checked = false;
+            btnIdentify.Checked = true;
+            btnZoomIn.Checked = false;
+            btnZoomOut.Checked = false;
+            btnPan.Checked = false;
+
+        }
+        
+        private void btnSelect_Click(object sender, EventArgs e)
+        {
+            //dpa - change map cursor mode to selection
+            //this button toggles map mode, hence changing the "checked" state.
+            mainMap.FunctionMode = FunctionMode.Select;
+            btnSelect.Checked = true;
+            btnIdentify.Checked = false;
+            btnZoomIn.Checked = false;
+            btnZoomOut.Checked = false;
+            btnPan.Checked = false;
+        }
+        
         private void btnPan_Click(object sender, EventArgs e)
         {
+            //dpa - change the map mode to pan
+            //this button toggles map mode, hence changing the "checked" state.
             mainMap.FunctionMode = FunctionMode.Pan;
+            btnSelect.Checked = false;
+            btnIdentify.Checked = false;
+            btnZoomIn.Checked = false;
+            btnZoomOut.Checked = false;
+            btnPan.Checked = true;
         }
 
         private void btnFullExtent_Click(object sender, EventArgs e)
         {
+            //dpa - zoom to the map full extent
             mainMap.ZoomToMaxExtent();
             mainMap.FunctionMode = FunctionMode.None;
         }
-        private void btnIdentify_Click(object sender, EventArgs e)
-        {
-            mainMap.FunctionMode = FunctionMode.Info;
-        }
+        
         private void btnLayerSet_Click(object sender, EventArgs e)
         {
             if (isLegendHide)
@@ -6525,6 +6577,27 @@ namespace BenMAP
                 mainMap.ViewExtents = _SavedExtent;
             }
         }
+
+        private void tsbSelectByLocation_Click(object sender, EventArgs e)
+        {
+            //dpa - show the select by location dialog box.
+            if (_SelectByLocationDialogShown) return;
+
+            _SelectByLocationDialogShown = true;
+            var sb = new SelectByLocationDialog(mainMap);
+            sb.Closed += SbOnClosed;
+            sb.Show(this);
+        }
+
+        private void btnClearSelection_Click(object sender, EventArgs e)
+        {
+            //dpa - clear selected features from the map.
+            mainMap.ClearSelection();
+        }
+
+        
+#endregion
+
         private FeatureSet getThemeFeatureSet(int iValue, ref double MinValue, ref double MaxValue)
         {
             try
@@ -13767,6 +13840,8 @@ namespace BenMAP
             return Color.FromArgb(rand.Next(255), rand.Next(255), rand.Next(255));
         }
 
+
+
         private void btnSelectAll_Click(object sender, EventArgs e)
         {
             try
@@ -14100,10 +14175,7 @@ namespace BenMAP
             //}
         }
 
-        private void toolStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
-        {
 
-        }
 
         private void OLVResultsShow_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -14111,15 +14183,8 @@ namespace BenMAP
         }
 
         private bool _SelectByLocationDialogShown;
-        private void tsbSelectByLocation_Click(object sender, EventArgs e)
-        {
-            if (_SelectByLocationDialogShown) return;
 
-            _SelectByLocationDialogShown = true;
-            var sb = new SelectByLocationDialog(mainMap);
-            sb.Closed += SbOnClosed;
-            sb.Show(this);
-        }
+
 
         private void SbOnClosed(object sender, EventArgs eventArgs)
         {

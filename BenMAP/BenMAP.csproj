@@ -974,6 +974,16 @@
       <DependentUpon>QALYResulesReport.cs</DependentUpon>
     </Compile>
     <Compile Include="Jira\NewIssue.cs" />
+    <None Include="Resources\zoom_out.png" />
+    <None Include="Resources\zoom_in.png" />
+    <None Include="Resources\pan.png" />
+    <None Include="Resources\zoom_extent.png" />
+    <None Include="Resources\info.ico" />
+    <None Include="Resources\save1.ico" />
+    <None Include="Resources\layer_add.ico" />
+    <None Include="Resources\attributes_display.ico" />
+    <None Include="Resources\select_by_location.ico" />
+    <None Include="Resources\clear_selection.ico" />
     <Content Include="Setup\Setup.vdproj" />
     <!--<Content Include="Tools\alertSmall.png" /> -->
     <None Include="Data\BenMAP-CE Release Notes.rtf">
