@@ -2943,6 +2943,7 @@ namespace BenMAP
             }
             PolygonScheme myScheme1 = new PolygonScheme();
             myScheme1.EditorSettings.ClassificationType = ClassificationType.Quantities;
+            
             myScheme1.EditorSettings.IntervalMethod = IntervalMethod.NaturalBreaks;
             myScheme1.EditorSettings.IntervalSnapMethod = IntervalSnapMethod.SignificantFigures;
             myScheme1.EditorSettings.IntervalRoundingDigits = 3; //number of significant figures (or decimal places if using rounding)
@@ -2959,30 +2960,11 @@ namespace BenMAP
                 //Create the simple pattern with opacity
                 SimplePattern sp = new SimplePattern(colorBlend.ColorArray[catNum]);
                 sp.Outline = new LineSymbolizer(Color.Transparent, 0); // Outline is nessasary
-
-                //SimplePattern sp = new SimplePattern(Color.Purple);
                 sp.Opacity = 0.8F;  //80% opaque = 20% transparent
-                PolygonSymbolizer poly = new PolygonSymbolizer(colorBlend.ColorArray[catNum], Color.Transparent, 0);
-                //PolygonSymbolizer poly = new PolygonSymbolizer(Color.Red, Color.Transparent, 0);
-                poly.Patterns.Clear();
-                poly.Patterns.Add(sp);
+
+                var poly = new PolygonSymbolizer(new List<IPattern> { sp });
 
                 myScheme1.Categories[catNum].Symbolizer = poly;
-                //myScheme1.Categories[catNum].SetColor(colorBlend.ColorArray[catNum]);
-
-                //make a copy of the category and add it to the color ramp:  -MCB - needed to get the property editor to work correctly
-                PolygonCategory tempCat = new PolygonCategory();
-                tempCat = (PolygonCategory)myScheme1.Categories[catNum].Clone();
-                myScheme1.AddCategory(tempCat);
-
-                //alternate method ignoring transparency of inside color  
-                //myScheme1.Categories[catNum].Symbolizer.SetOutline(Color.Transparent, 0); //make the outlines invisble
-                //myScheme1.Categories[catNum].SetColor(colorBlend.ColorArray[catNum]);
-            }
-
-            for (int catNum = 0; catNum < (CategoryNumber); catNum++)
-            {
-                myScheme1.RemoveCategory(myScheme1.Categories[0]);
             }
 
             myScheme1.AppearsInLegend = false; //if true then legend text displayed
