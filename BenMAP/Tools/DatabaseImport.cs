@@ -419,17 +419,23 @@ namespace BenMAP
                                 + "OR V.POLLUTANT2ID IN (SELECT POLLUTANTID FROM POLLUTANTGROUPPOLLUTANTS PGP WHERE PGP.POLLUTANTGROUPID ={0}4)",fbDataReader[0]);
                             fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, strDelete);
 
+                            // STOPPED HERE
+                            // remove the existing CRFunctions
+                            strDelete = string.Format("DELETE  FROM CRFUNCTIONS V WHERE V.POLLUTANTGROUPID = {0} ", fbDataReader[0]);
+                            fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, strDelete);
+
                             // delete the pollutant group pollutants 
                             strDelete = string.Format("delete from pollutantgrouppollutants where pollutantgroupid={0}", fbDataReader[0]);
                             fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, strDelete);
                             
                             // delete the pollutant groups 
-                            strDelete = string.Format("delete from pollutantgrouppollutants where pollutantgroupid={0}", fbDataReader[0]);
+                            strDelete = string.Format("delete from pollutantgroups where pollutantgroupid={0}", fbDataReader[0]);
                             fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, strDelete);
                             
+                            // STOPPED HERE
                             // delete the pollutants
-                            strDelete = string.Format("delete from pollutantgrouppollutants where pollutantgroupid={0}", fbDataReader[0]);
-                            fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, strDelete);
+                            //strDelete = string.Format("delete from pollutantsgrouppollutants where pollutantgroupid={0}", fbDataReader[0]);
+                            //fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, strDelete);
                             
                         }
                         
