@@ -419,7 +419,6 @@ namespace BenMAP
                                 + "OR V.POLLUTANT2ID IN (SELECT POLLUTANTID FROM POLLUTANTGROUPPOLLUTANTS PGP WHERE PGP.POLLUTANTGROUPID ={0}4)",fbDataReader[0]);
                             fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, strDelete);
 
-                            // STOPPED HERE
                             // remove the existing CRFunctions
                             strDelete = string.Format("DELETE  FROM CRFUNCTIONS V WHERE V.POLLUTANTGROUPID = {0} ", fbDataReader[0]);
                             fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, strDelete);
@@ -431,11 +430,6 @@ namespace BenMAP
                             // delete the pollutant groups 
                             strDelete = string.Format("delete from pollutantgroups where pollutantgroupid={0}", fbDataReader[0]);
                             fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, strDelete);
-                            
-                            // STOPPED HERE
-                            // delete the pollutants
-                            //strDelete = string.Format("delete from pollutantsgrouppollutants where pollutantgroupid={0}", fbDataReader[0]);
-                            //fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, strDelete);
                             
                         }
                         
@@ -2982,6 +2976,7 @@ namespace BenMAP
                 nextTable = reader.ReadString();
                 if (nextTable == "Crfunctions")
                 {
+
                     int Crfunctionscount = reader.ReadInt32();
                     pBarImport.Maximum = Crfunctionscount;
                     int maxCrfunctionID = 0;
@@ -3005,7 +3000,51 @@ namespace BenMAP
                         int EndPointgroupID = reader.ReadInt32();
                         int EndPointID = reader.ReadInt32();
                         int Pollutantid = reader.ReadInt32();
-                        commandText = string.Format("insert into Crfunctions(CrfunctionID,CrfunctionDatasetID,FunctionalFormID,MetricID,SeasonalMetricID,IncidenceDatasetID,PrevalenceDatasetID,VariableDatasetID,LocationTypeID,BaselineFunctionalFormID,EndPointgroupID,EndPointID,PollutantID,Metricstatistic,Author,Yyear,Location,OtherPollutants,Qualifier,Reference,Race,Gender,Startage,EndAge,Beta,DistBeta,P1beta,P2beta,A,NameA,B,NameB,C,NameC,Ethnicity,Percentile) values({0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},'{14}',{15},'{16}','{17}','{18}','{19}','{20}','{21}',{22},{23},{24},'{25}',{26},{27},{28},'{29}',{30},'{31}',{32},'{33}','{34}',{35})", maxCrfunctionID, dicCrfunctionDatasetID[CrfunctionDatasetID], dicFunctionalFormID[FunctionalFormID], dicMetricID.ContainsKey(MetricID) ? dicMetricID[MetricID] : MetricID, SeasonalMetricID == -1 ? "NULL" : (dicSeasonalMetricID.ContainsKey(SeasonalMetricID) ? dicSeasonalMetricID[SeasonalMetricID].ToString() : SeasonalMetricID.ToString()), IncidenceDatasetID == -1 ? "NULL" : IncidenceDatasetID.ToString(), PrevalenceDatasetID == -1 ? "NULL" : PrevalenceDatasetID.ToString(), VariableDatasetID == -1 ? "NULL" : VariableDatasetID.ToString(), LocationTypeID == -1 ? "NULL" : (dicLocationTypeID[LocationTypeID].ToString()), dicBaselineFunctionalFormID[BaselineFunctionalFormID], dicEndPointGroupID[EndPointgroupID], dicEndPointID[EndPointID], dicpollutantid.ContainsKey(Pollutantid) ? dicpollutantid[Pollutantid] : Pollutantid, reader.ReadInt32(), reader.ReadString().Replace("'", "''''"), reader.ReadInt32(), reader.ReadString().Replace("'", "''''"), reader.ReadString(), reader.ReadString().Replace("'", "''''"), reader.ReadString().Replace("'", "''''"), reader.ReadString(), reader.ReadString(), reader.ReadInt32(), reader.ReadInt32(), Convert.ToDouble(reader.ReadString()), reader.ReadString(), Convert.ToDouble(reader.ReadString()), Convert.ToDouble(reader.ReadString()), Convert.ToDouble(reader.ReadString()), reader.ReadString(), Convert.ToDouble(reader.ReadString()), reader.ReadString(), Convert.ToDouble(reader.ReadString()), reader.ReadString(), reader.ReadString(), reader.ReadInt32());
+                        // STOPPED HERE
+                        // BF520 - write BRDX files - modify for new CRFunctions table structure in MP version
+                        //commandText = string.Format("insert into Crfunctions(CrfunctionID,CrfunctionDatasetID,FunctionalFormID,MetricID,SeasonalMetricID,IncidenceDatasetID,PrevalenceDatasetID,VariableDatasetID,LocationTypeID,BaselineFunctionalFormID,EndPointgroupID,EndPointID,PollutantID,Metricstatistic,Author,Yyear,Location,OtherPollutants,Qualifier,Reference,Race,Gender,Startage,EndAge,Beta,DistBeta,P1beta,P2beta,A,NameA,B,NameB,C,NameC,Ethnicity,Percentile) values({0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},'{14}',{15},'{16}','{17}','{18}','{19}','{20}','{21}',{22},{23},{24},'{25}',{26},{27},{28},'{29}',{30},'{31}',{32},'{33}','{34}',{35})", maxCrfunctionID, dicCrfunctionDatasetID[CrfunctionDatasetID], dicFunctionalFormID[FunctionalFormID], dicMetricID.ContainsKey(MetricID) ? dicMetricID[MetricID] : MetricID, SeasonalMetricID == -1 ? "NULL" : (dicSeasonalMetricID.ContainsKey(SeasonalMetricID) ? dicSeasonalMetricID[SeasonalMetricID].ToString() : SeasonalMetricID.ToString()), IncidenceDatasetID == -1 ? "NULL" : IncidenceDatasetID.ToString(), PrevalenceDatasetID == -1 ? "NULL" : PrevalenceDatasetID.ToString(), VariableDatasetID == -1 ? "NULL" : VariableDatasetID.ToString(), LocationTypeID == -1 ? "NULL" : (dicLocationTypeID[LocationTypeID].ToString()), dicBaselineFunctionalFormID[BaselineFunctionalFormID], dicEndPointGroupID[EndPointgroupID], dicEndPointID[EndPointID], dicpollutantid.ContainsKey(Pollutantid) ? dicpollutantid[Pollutantid] : Pollutantid, reader.ReadInt32(), reader.ReadString().Replace("'", "''''"), reader.ReadInt32(), reader.ReadString().Replace("'", "''''"), reader.ReadString(), reader.ReadString().Replace("'", "''''"), reader.ReadString().Replace("'", "''''"), reader.ReadString(), reader.ReadString(), reader.ReadInt32(), reader.ReadInt32(), Convert.ToDouble(reader.ReadString()), reader.ReadString(), Convert.ToDouble(reader.ReadString()), Convert.ToDouble(reader.ReadString()), Convert.ToDouble(reader.ReadString()), reader.ReadString(), Convert.ToDouble(reader.ReadString()), reader.ReadString(), Convert.ToDouble(reader.ReadString()), reader.ReadString(), reader.ReadString(), reader.ReadInt32());
+                        // written with
+                        // commandText = string.Format("select CrfunctionID,CrfunctionDatasetID,FunctionalFormID, 
+                        // SeasonalMetricID, IncidenceDatasetID,PrevalenceDatasetID,VariableDatasetID,LocationTypeID,BaselineFunctionalFormID, EndPointgroupID,EndPointID, Metricstatistic,Author,Yyear,Location, OtherPollutants,Qualifier,Reference,Race,Gender,Startage, Ethnicity,Percentile, METADATAID, POLLUTANTGROUPID, MSID, BETAVARIATIONID from Crfunctions where CrfunctionDatasetID in (select CrfunctionDatasetID from CrFunctionDatasets where {0})", setupid);
+                        commandText = string.Format("insert into Crfunctions(CrfunctionID,CrfunctionDatasetID,FunctionalFormID, "
+                            + "MetricID,SeasonalMetricID,IncidenceDatasetID,PrevalenceDatasetID,VariableDatasetID, "
+                            + "LocationTypeID,BaselineFunctionalFormID,EndPointgroupID,EndPointID,PollutantID,Metricstatistic, "
+                            + "Author,Yyear,Location,OtherPollutants,Qualifier,Reference,Race,Gender,Startage,EndAge,Beta, "
+                            + "DistBeta,P1beta,P2beta,A,NameA,B,NameB,C,NameC,Ethnicity,Percentile) " 
+                            + "values({0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},'{14}',{15}, "
+                            + "'{16}','{17}','{18}','{19}','{20}','{21}',{22},{23},{24},'{25}',{26},{27},{28},'{29}'"
+                            + ",{30},'{31}',{32},'{33}','{34}',{35})", 
+                            maxCrfunctionID, dicCrfunctionDatasetID[CrfunctionDatasetID], dicFunctionalFormID[FunctionalFormID], 
+                            dicMetricID.ContainsKey(MetricID) ? dicMetricID[MetricID] : MetricID, SeasonalMetricID == -1 ? "NULL" : (dicSeasonalMetricID.ContainsKey(SeasonalMetricID) ? dicSeasonalMetricID[SeasonalMetricID].ToString() : SeasonalMetricID.ToString()), 
+                            IncidenceDatasetID == -1 ? "NULL" : IncidenceDatasetID.ToString(), PrevalenceDatasetID == -1 ? "NULL" : PrevalenceDatasetID.ToString(), VariableDatasetID == -1 ? "NULL" : VariableDatasetID.ToString(), 
+                            LocationTypeID == -1 ? "NULL" : (dicLocationTypeID[LocationTypeID].ToString()), 
+                            dicBaselineFunctionalFormID[BaselineFunctionalFormID], 
+                            dicEndPointGroupID[EndPointgroupID], 
+                            dicEndPointID[EndPointID], 
+                            dicpollutantid.ContainsKey(Pollutantid) ? dicpollutantid[Pollutantid] : Pollutantid, 
+                            reader.ReadInt32(), 
+                            reader.ReadString().Replace("'", "''''"), 
+                            reader.ReadInt32(), 
+                            reader.ReadString().Replace("'", "''''"), 
+                            reader.ReadString(), 
+                            reader.ReadString().Replace("'", "''''"), 
+                            reader.ReadString().Replace("'", "''''"), 
+                            reader.ReadString(), 
+                            reader.ReadString(), 
+                            reader.ReadInt32(), 
+                            reader.ReadInt32(), 
+                            Convert.ToDouble(reader.ReadString()), 
+                            reader.ReadString(), 
+                            Convert.ToDouble(reader.ReadString()), 
+                            Convert.ToDouble(reader.ReadString()), 
+                            Convert.ToDouble(reader.ReadString()), 
+                            reader.ReadString(), 
+                            Convert.ToDouble(reader.ReadString()), 
+                            reader.ReadString(), 
+                            Convert.ToDouble(reader.ReadString()), 
+                            reader.ReadString(), 
+                            reader.ReadString(),
+                            reader.ReadInt32());
                         fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                         pBarImport.PerformStep();
                     }

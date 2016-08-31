@@ -560,8 +560,12 @@ namespace BenMAP
                 throw new Exception(ex.ToString());
             }
         }
-
-        private void WritePollutant(BinaryWriter writer, string setupid)
+        /// <summary>
+        /// Write pollutants to BDBX file
+        /// </summary>
+        /// <param name="writer">binary file stream opened for BDBX file</param>
+        /// <param name="pollutantfilter">string that contains a filter that selects the appropriate rows from the pollutants and related tables</param>
+        private void WritePollutant(BinaryWriter writer, string pollutantfilter)
         {
             
             try
@@ -571,17 +575,17 @@ namespace BenMAP
                 lbProcess.Refresh();
                 this.Refresh();
 
-                string commandText = string.Format("select count(*) from pollutants where {0}", setupid);
+                string commandText = string.Format("select count(*) from pollutants where {0}", pollutantfilter);
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 Int32 drpollutantscount = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
                 if (drpollutantscount == 0) { pBarExport.Value = pBarExport.Maximum; lbProcess.Refresh(); this.Refresh(); return; }
                 pBarExport.Maximum = drpollutantscount;
                 writer.Write("pollutants");
                 writer.Write(drpollutantscount);
-                commandText = string.Format("select PollutantName,PollutantID,SetupID,ObservationType from pollutants where {0}", setupid);
+                commandText = string.Format("select PollutantName,PollutantID,SetupID,ObservationType from pollutants where {0}", pollutantfilter);
                 writeOneTable(writer, commandText);
 
-                commandText = string.Format("select count(*) from PollutantSeasons where PollutantID in (select PollutantID from pollutants where {0})", setupid);
+                commandText = string.Format("select count(*) from PollutantSeasons where PollutantID in (select PollutantID from pollutants where {0})", pollutantfilter);
                 Int32 drPollutantSeasonscount = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
                 if (drPollutantSeasonscount > 0)
                 {
@@ -592,7 +596,7 @@ namespace BenMAP
                     pBarExport.Maximum = drPollutantSeasonscount;
                     writer.Write("PollutantSeasons");
                     writer.Write(drPollutantSeasonscount);
-                    commandText = string.Format("select PollutantSeasonID,PollutantID,StartDay,EndDay,StartHour,EndHour,Numbins from PollutantSeasons where PollutantID in (select PollutantID from pollutants where {0})", setupid);
+                    commandText = string.Format("select PollutantSeasonID,PollutantID,StartDay,EndDay,StartHour,EndHour,Numbins from PollutantSeasons where PollutantID in (select PollutantID from pollutants where {0})", pollutantfilter);
                     writeOneTable(writer, commandText);
                 }
 
@@ -601,16 +605,16 @@ namespace BenMAP
                 lbProcess.Refresh();
                 this.Refresh();
 
-                commandText = string.Format("select count(*) from Metrics where PollutantID in (select PollutantID from pollutants where {0})", setupid);
+                commandText = string.Format("select count(*) from Metrics where PollutantID in (select PollutantID from pollutants where {0})", pollutantfilter);
                 Int32 drMetricscount = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
                 if (drMetricscount == 0) { pBarExport.Value = pBarExport.Maximum; lbProcess.Refresh(); this.Refresh(); return; }
                 pBarExport.Maximum = drMetricscount;
                 writer.Write("Metrics");
                 writer.Write(drMetricscount);
-                commandText = string.Format("select MetricID,PollutantID,MetricName,HourlyMetricGeneration from Metrics where PollutantID in (select PollutantID from pollutants where {0})", setupid);
+                commandText = string.Format("select MetricID,PollutantID,MetricName,HourlyMetricGeneration from Metrics where PollutantID in (select PollutantID from pollutants where {0})", pollutantfilter);
                 writeOneTable(writer, commandText);
 
-                commandText = string.Format("select count(*) from fixedwindowMetrics where Metricid in (select Metricid from Metrics where PollutantID in (select PollutantID from pollutants where {0}))", setupid);
+                commandText = string.Format("select count(*) from fixedwindowMetrics where Metricid in (select Metricid from Metrics where PollutantID in (select PollutantID from pollutants where {0}))", pollutantfilter);
                 Int32 drFixedWindowMetricscount = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
                 if (drFixedWindowMetricscount > 0)
                 {
@@ -621,11 +625,11 @@ namespace BenMAP
                     pBarExport.Maximum = drFixedWindowMetricscount;
                     writer.Write("FixedWindowMetrics");
                     writer.Write(drFixedWindowMetricscount);
-                    commandText = string.Format("select MetricID,Starthour,Endhour,Statistic from fixedwindowMetrics where Metricid in (select Metricid from Metrics where PollutantID in (select PollutantID from pollutants where {0}))", setupid);
+                    commandText = string.Format("select MetricID,Starthour,Endhour,Statistic from fixedwindowMetrics where Metricid in (select Metricid from Metrics where PollutantID in (select PollutantID from pollutants where {0}))", pollutantfilter);
                     writeOneTable(writer, commandText);
                 }
 
-                commandText = string.Format("select count(*) from MovingWindowMetrics where Metricid in (select Metricid from Metrics where PollutantID in (select PollutantID from pollutants where {0}))", setupid);
+                commandText = string.Format("select count(*) from MovingWindowMetrics where Metricid in (select Metricid from Metrics where PollutantID in (select PollutantID from pollutants where {0}))", pollutantfilter);
                 Int32 drMovingWindowMetricscount = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
                 if (drMovingWindowMetricscount > 0)
                 {
@@ -636,11 +640,11 @@ namespace BenMAP
                     pBarExport.Maximum = drMovingWindowMetricscount;
                     writer.Write("MovingWindowMetrics");
                     writer.Write(drMovingWindowMetricscount);
-                    commandText = string.Format("select MetricID,Windowsize,Windowstatistic,Dailystatistic from MovingWindowMetrics where Metricid in (select Metricid from Metrics where PollutantID in (select PollutantID from pollutants where {0}))", setupid);
+                    commandText = string.Format("select MetricID,Windowsize,Windowstatistic,Dailystatistic from MovingWindowMetrics where Metricid in (select Metricid from Metrics where PollutantID in (select PollutantID from pollutants where {0}))", pollutantfilter);
                     writeOneTable(writer, commandText);
                 }
 
-                commandText = string.Format("select count(*) from CustomMetrics where Metricid in (select Metricid from Metrics where PollutantID in (select PollutantID from pollutants where {0}))", setupid);
+                commandText = string.Format("select count(*) from CustomMetrics where Metricid in (select Metricid from Metrics where PollutantID in (select PollutantID from pollutants where {0}))", pollutantfilter);
                 Int32 drCustomMetricscount = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
                 if (drCustomMetricscount > 0)
                 {
@@ -651,7 +655,7 @@ namespace BenMAP
                     pBarExport.Maximum = drCustomMetricscount;
                     writer.Write("CustomMetrics");
                     writer.Write(drCustomMetricscount);
-                    commandText = string.Format("select MetricID,MetricFunction from CustomMetrics where Metricid in (select Metricid from Metrics where PollutantID in (select PollutantID from pollutants where {0}))", setupid);
+                    commandText = string.Format("select MetricID,MetricFunction from CustomMetrics where Metricid in (select Metricid from Metrics where PollutantID in (select PollutantID from pollutants where {0}))", pollutantfilter);
                     writeOneTable(writer, commandText);
                 }
 
@@ -660,13 +664,13 @@ namespace BenMAP
                 lbProcess.Refresh();
                 this.Refresh();
 
-                commandText = string.Format("select count(*) from SeasonalMetrics where MetricID in (select MetricID from Metrics where PollutantID in (select PollutantID from pollutants where {0}))", setupid);
+                commandText = string.Format("select count(*) from SeasonalMetrics where MetricID in (select MetricID from Metrics where PollutantID in (select PollutantID from pollutants where {0}))", pollutantfilter);
                 Int32 drSeasonalMetricscount = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
                 if (drSeasonalMetricscount == 0) { pBarExport.Value = pBarExport.Maximum; lbProcess.Refresh(); this.Refresh(); return; }
                 pBarExport.Maximum = drSeasonalMetricscount;
                 writer.Write("SeasonalMetrics");
                 writer.Write(drSeasonalMetricscount);
-                commandText = string.Format("select SeasonalMetricID,MetricID,SeasonalMetricName from SeasonalMetrics where MetricID in (select MetricID from Metrics where PollutantID in (select PollutantID from pollutants where {0}))", setupid);
+                commandText = string.Format("select SeasonalMetricID,MetricID,SeasonalMetricName from SeasonalMetrics where MetricID in (select MetricID from Metrics where PollutantID in (select PollutantID from pollutants where {0}))", pollutantfilter);
                 writeOneTable(writer, commandText);
 
                 pBarExport.Value = 0;
@@ -674,42 +678,50 @@ namespace BenMAP
                 lbProcess.Refresh();
                 this.Refresh();
 
-                commandText = string.Format("select count(*) from SeasonalMetricSeasons where SeasonalMetricID in(select SeasonalMetricID from SeasonalMetrics where MetricID in (select MetricID from Metrics where PollutantID in (select PollutantID from pollutants where {0})))", setupid);
+                commandText = string.Format("select count(*) from SeasonalMetricSeasons where SeasonalMetricID in(select SeasonalMetricID from SeasonalMetrics where MetricID in (select MetricID from Metrics where PollutantID in (select PollutantID from pollutants where {0})))", pollutantfilter);
                 Int32 drSeasonalMetricSeasonscount = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
                 if (drSeasonalMetricSeasonscount == 0) { pBarExport.Value = pBarExport.Maximum; lbProcess.Refresh(); this.Refresh(); return; }
                 pBarExport.Maximum = drSeasonalMetricSeasonscount;
                 writer.Write("SeasonalMetricSeasons");
                 writer.Write(drSeasonalMetricSeasonscount);
-                commandText = string.Format("select SeasonalMetricseasonID,SeasonalMetricID,StartDay,EndDay,SeasonalMetricType,MetricFunction,PollutantseasonID from SeasonalMetricSeasons where SeasonalMetricID in(select SeasonalMetricID from SeasonalMetrics where MetricID in (select MetricID from Metrics where PollutantID in (select PollutantID from pollutants where {0})))", setupid);
+                commandText = string.Format("select SeasonalMetricseasonID,SeasonalMetricID,StartDay,EndDay,SeasonalMetricType,MetricFunction,PollutantseasonID from SeasonalMetricSeasons where SeasonalMetricID in(select SeasonalMetricID from SeasonalMetrics where MetricID in (select MetricID from Metrics where PollutantID in (select PollutantID from pollutants where {0})))", pollutantfilter);
                 writeOneTable(writer, commandText);
 
                 // BF-520 - add write pollutant groups
                 lbProcess.Text = "Exporting pollutant groups...";
                 lbProcess.Refresh();
                 this.Refresh();
-                commandText = string.Format("select count(*) from PollutantGroups where {0}", setupid);
+                //commandText = string.Format("select count(*) from PollutantGroups where {0}", setupid);
+                commandText = string.Format("select COUNT(DISTINCT Pollutantgroupid) from POLLUTANTGROUPPOLLUTANTS  where {0}", pollutantfilter);
+
                 Int32 drSeasonalPollutantGroupscount = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
                 if (drSeasonalPollutantGroupscount == 0) { pBarExport.Value = pBarExport.Maximum; lbProcess.Refresh(); this.Refresh(); return; }
                 pBarExport.Maximum = drSeasonalPollutantGroupscount;
                 writer.Write("PollutantGroups");
                 writer.Write(drSeasonalPollutantGroupscount);
-                commandText = string.Format("select POLLUTANTGROUPID, SETUPID, PGNAME, PGDESCRIPTION FROM POLLUTANTGROUPS where {0}", setupid);
+                //commandText = string.Format("select POLLUTANTGROUPID, SETUPID, PGNAME, PGDESCRIPTION FROM POLLUTANTGROUPS where {0}", setupid);
+                commandText = string.Format("select DISTINCT POLLUTANTGROUPID, SETUPID, PGNAME, PGDESCRIPTION FROM POLLUTANTGROUPS where  POLLUTANTGROUPID IN (SELECT POLLUTANTGROUPID FROM POLLUTANTGROUPPOLLUTANTS WHERE {0})", pollutantfilter);
                 writeOneTable(writer, commandText);
 
                 // BF-520 - add write pollutant group pollutants
                 lbProcess.Text = "Exporting pollutant group pollutants...";
                 lbProcess.Refresh();
                 this.Refresh();
-                commandText = string.Format("select count(*) from PollutantGroupPollutants where PollutantGroupID in (select PollutantGroupID from PollutantGroups where {0})", setupid);
+                //commandText = string.Format("select count(*) from PollutantGroupPollutants where PollutantGroupID in (select PollutantGroupID from PollutantGroups where {0})", setupid);
+                commandText = string.Format("select count(*) from PollutantGroupPollutants where PollutantGroupID in (select PollutantGroupID from PollutantGroups where {0})", pollutantfilter);
                 Int32 drSeasonalPollutantGroupPollutantscount = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
                 if (drSeasonalPollutantGroupPollutantscount == 0) { pBarExport.Value = pBarExport.Maximum; lbProcess.Refresh(); this.Refresh(); return; }
                 pBarExport.Maximum = drSeasonalPollutantGroupPollutantscount;
                 writer.Write("PollutantGroupPollutants");
                 writer.Write(drSeasonalPollutantGroupPollutantscount);
                 // write out pollutant group name and pollutant name instead of groupid - this needed because the import routine may not have matching IDs (but should have matching names)
-                commandText = string.Format("select PG.PGNAME, P.POLLUTANTNAME FROM POLLUTANTGROUPPOLLUTANTS PGP "
+                //commandText = string.Format("select PG.PGNAME, P.POLLUTANTNAME FROM POLLUTANTGROUPPOLLUTANTS PGP "
+                //        + "INNER JOIN POLLUTANTGROUPS PG ON PG.POLLUTANTGROUPID = PGP.POLLUTANTGROUPID INNER JOIN POLLUTANTS P "
+                //        + "ON PGP.POLLUTANTID = P.POLLUTANTID where PG.{0}", setupid);
+                commandText = string.Format("select distinct PG.PGNAME, P.POLLUTANTNAME FROM POLLUTANTGROUPPOLLUTANTS PGP "
                         + "INNER JOIN POLLUTANTGROUPS PG ON PG.POLLUTANTGROUPID = PGP.POLLUTANTGROUPID INNER JOIN POLLUTANTS P "
-                        + "ON PGP.POLLUTANTID = P.POLLUTANTID where PG.{0}", setupid);
+                        + "ON PGP.POLLUTANTID = P.POLLUTANTID where PGP.PollutantGroupID in (select PollutantGroupID " 
+                        + " from PollutantGroupPollutants where {0})", pollutantfilter);
                 writeOneTable(writer, commandText);
              }
             catch (Exception ex)
@@ -1214,7 +1226,14 @@ namespace BenMAP
                 commandText = string.Format("select CrfunctionDatasetID,SetupID,CrfunctionDatasetName,Readonly from CrFunctionDatasets where {0}", setupid);
                 writeOneTable(writer, commandText);
 
-                string pollutant = string.Format("pollutantid in (select distinct pollutantid from crfunctions where CrfunctionDatasetID in (select CrfunctionDatasetID from CrFunctionDatasets where {0}))", setupid);
+                // write all the pollutants used in this function set to the file - the "setupid" is actually not a setupid but is the filter to get the pollutant list.
+                //string pollutant = string.Format("pollutantid in (select distinct pollutantid from crfunctions where CrfunctionDatasetID in (select CrfunctionDatasetID from CrFunctionDatasets where {0}))", setupid);
+                string pollutant = string.Format(" POLLUTANTID IN (select PGP.POLLUTANTID FROM POLLUTANTGROUPPOLLUTANTS PGP "
+                    + "INNER JOIN POLLUTANTGROUPS PG ON PGP.POLLUTANTGROUPID = PG.POLLUTANTGROUPID "
+                    + "WHERE PG.POLLUTANTGROUPID IN (SELECT POLLUTANTGROUPID FROM CRFUNCTIONDATASETS DS "
+                    + "INNER JOIN CRFUNCTIONS F ON DS.CRFUNCTIONDATASETID = DS.CRFUNCTIONDATASETID where {0}))", setupid);
+               
+                
                 WritePollutant(writer, pollutant);
 
                 pBarExport.Value = 0;
