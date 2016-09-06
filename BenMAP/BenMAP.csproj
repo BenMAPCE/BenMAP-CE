@@ -779,22 +779,25 @@
     <Compile Include="Tools\frm_PopSim.Designer.cs">
       <DependentUpon>frm_PopSim.cs</DependentUpon>
     </Compile>
-    <Compile Include="Tools\GBDRollback.cs">
+    <Compile Include="Tools\GBDRollback\GBDBetaCoefficients.cs" />
+    <Compile Include="Tools\GBDRollback\GBDEndpoint.cs" />
+    <Compile Include="Tools\GBDRollback\GBDHealthImpactFunction.cs" />
+    <Compile Include="Tools\GBDRollback\GBDRollback.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Tools\GBDRollback.Designer.cs">
+    <Compile Include="Tools\GBDRollback\GBDRollback.Designer.cs">
       <DependentUpon>GBDRollback.cs</DependentUpon>
     </Compile>
-    <Compile Include="Tools\GBDRollbackCountriesPopulations.cs">
+    <Compile Include="Tools\GBDRollback\GBDRollbackCountriesPopulations.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Tools\GBDRollbackCountriesPopulations.Designer.cs">
+    <Compile Include="Tools\GBDRollback\GBDRollbackCountriesPopulations.Designer.cs">
       <DependentUpon>GBDRollbackCountriesPopulations.cs</DependentUpon>
     </Compile>
-    <Compile Include="Tools\GBDRollbackDataSource.cs" />
-    <Compile Include="Tools\GBDRollbackKrewskiFunction.cs" />
-    <Compile Include="Tools\GBDRollbackItem.cs" />
-    <Compile Include="Tools\GBDRollbackKrewskiResult.cs" />
+    <Compile Include="Tools\GBDRollback\GBDRollbackDataSource.cs" />
+    <Compile Include="Tools\GBDRollback\GBDRollbackKrewskiFunction.cs" />
+    <Compile Include="Tools\GBDRollback\GBDRollbackItem.cs" />
+    <Compile Include="Tools\GBDRollback\GBDRollbackKrewskiResult.cs" />
     <Compile Include="Tools\InputBox.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1486,10 +1489,10 @@
     <EmbeddedResource Include="Tools\frm_PopSim.resx">
       <DependentUpon>frm_PopSim.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Tools\GBDRollback.resx">
+    <EmbeddedResource Include="Tools\GBDRollback\GBDRollback.resx">
       <DependentUpon>GBDRollback.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Tools\GBDRollbackCountriesPopulations.resx">
+    <EmbeddedResource Include="Tools\GBDRollback\GBDRollbackCountriesPopulations.resx">
       <DependentUpon>GBDRollbackCountriesPopulations.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Tools\InputBox.resx">

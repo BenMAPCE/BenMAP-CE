@@ -960,6 +960,10 @@ namespace BenMAP
             //for each country in rollback...
             foreach (string countryid in rollback.Countries.Keys)
             {
+                // get genders and age ranges 
+                // for each 
+
+
                 //get data
                 //country incidencerate
                 double incrate = GBDRollbackDataSource.GetIncidenceRate(countryid);
