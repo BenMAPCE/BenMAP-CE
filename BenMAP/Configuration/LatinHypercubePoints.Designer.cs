@@ -77,9 +77,9 @@ namespace BenMAP
             // lblAvgWarning
             // 
             this.lblAvgWarning.Font = new System.Drawing.Font("Calibri", 9F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblAvgWarning.Location = new System.Drawing.Point(12, 222);
+            this.lblAvgWarning.Location = new System.Drawing.Point(12, 253);
             this.lblAvgWarning.Name = "lblAvgWarning";
-            this.lblAvgWarning.Size = new System.Drawing.Size(948, 54);
+            this.lblAvgWarning.Size = new System.Drawing.Size(854, 54);
             this.lblAvgWarning.TabIndex = 16;
             this.lblAvgWarning.Text = "Warning: If you select option 2, and have not imported rates that match each subg" +
     "roup, the program will return point estimates of zero.";
@@ -92,7 +92,7 @@ namespace BenMAP
             this.grpIncidenceAvg.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.grpIncidenceAvg.Location = new System.Drawing.Point(15, 143);
             this.grpIncidenceAvg.Name = "grpIncidenceAvg";
-            this.grpIncidenceAvg.Size = new System.Drawing.Size(850, 76);
+            this.grpIncidenceAvg.Size = new System.Drawing.Size(850, 100);
             this.grpIncidenceAvg.TabIndex = 15;
             this.grpIncidenceAvg.TabStop = false;
             this.grpIncidenceAvg.Text = "If you are estimating impacts for specific population subgroups (e.g. race/ethnic" +
@@ -102,26 +102,28 @@ namespace BenMAP
             // 
             this.rbFiltered.AutoSize = true;
             this.rbFiltered.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.rbFiltered.Location = new System.Drawing.Point(6, 45);
+            this.rbFiltered.Location = new System.Drawing.Point(2, 68);
             this.rbFiltered.Name = "rbFiltered";
-            this.rbFiltered.Size = new System.Drawing.Size(604, 18);
+            this.rbFiltered.Size = new System.Drawing.Size(831, 18);
             this.rbFiltered.TabIndex = 1;
             this.rbFiltered.TabStop = true;
-            this.rbFiltered.Text = "2) Use rates that match each race/ethnicity/sex? (only select if you have importe" +
-    "d rates for each subgroup)";
+            this.rbFiltered.Text = "2) Use incidence rates that exactly match each gender/race/ethnicity population s" +
+    "ubgroup. (You must import stratified rates for use with this option).\r\n";
             this.rbFiltered.UseVisualStyleBackColor = true;
             this.rbFiltered.CheckedChanged += new System.EventHandler(this.rbFiltered_CheckedChanged);
             // 
             // rbAvg
             // 
             this.rbAvg.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.rbAvg.Location = new System.Drawing.Point(6, 21);
+            this.rbAvg.Location = new System.Drawing.Point(2, 14);
             this.rbAvg.Name = "rbAvg";
-            this.rbAvg.Size = new System.Drawing.Size(849, 18);
+            this.rbAvg.Size = new System.Drawing.Size(849, 48);
             this.rbAvg.TabIndex = 0;
             this.rbAvg.TabStop = true;
-            this.rbAvg.Text = "1)  Use the default U.S. rates, which are not stratified by race/ethnicity/sex? (" +
-    "BenMAP-CE will calculate an average rate and assign it to each subgroup)";
+            this.rbAvg.Text = "\r\n1)  Use incidence rates averaged across gender/race/ethnicity (default).  Use t" +
+    "his option with preloaded incidence rates in BenMAP-CE, \r\nas they are not strati" +
+    "fied by gender, race, or ethnicity.";
+            this.rbAvg.TextAlign = System.Drawing.ContentAlignment.TopLeft;
             this.rbAvg.UseVisualStyleBackColor = true;
             this.rbAvg.CheckedChanged += new System.EventHandler(this.rbAvg_CheckedChanged);
             // 
