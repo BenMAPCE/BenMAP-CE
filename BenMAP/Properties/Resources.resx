@@ -121,8 +121,8 @@
   <data name="StartTip2_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\btn2_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="magnifier_zoom_out" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\magnifier_zoom_out.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="zoom_in" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\zoom_in.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="save_as" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\save_as.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -130,14 +130,20 @@
   <data name="spLoadProject" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\spLoadProject.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="cuahsi_logo1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\cuahsi_logo1.GIF;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="chart4" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\chart4.gif;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="onlineAlert.Image" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\alertSmall.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="StartPage2" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\page2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="StartTip3_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\btn3_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="StartTip1_2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\btn1_2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="StartTip2_3" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\btn2_3.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="StartTip4_2" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\btn4_2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -151,11 +157,14 @@
   <data name="SPEXit" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\SPEXit.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="StartTip2_3" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\btn2_3.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="BenMAPStartPage" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\BenMAPStartPage.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="refreshTheme" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\refreshTheme.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="pan" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\pan.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="BuildDate" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\BuildDate.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
   <data name="spLoadCFG" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\spLoadCFG.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -166,11 +175,20 @@
   <data name="StartTip3_2" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\btn3_2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="save1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\save1.ico;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="BenMAP CE Start" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\BenMAP CE Start.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="magnifier_zoom_in" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\magnifier_zoom_in.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="pictureBox2.Image" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\pictureBox2.Image.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="pictureBox3.Image" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\pictureBox3.Image.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="pan_2" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\pan_2.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -181,23 +199,26 @@
   <data name="spCreateProject" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\spCreateProject.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="tableView1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\tableView1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Welcome" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Welcome.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="spLoadAPV" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\spLoadAPV.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="magnifier_zoom_out" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\magnifier_zoom_out.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="String" xml:space="preserve">
     <value>ManageSetup</value>
   </data>
-  <data name="BenMAPStartPage" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\BenMAPStartPage.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="point" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\point.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="StartPage3" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\page3.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="select_by_location" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\select_by_location.ico;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="StartTip3_3" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\btn3_3.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="StartTip4_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\btn4_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="cuahsi_logo1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\cuahsi_logo1.GIF;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="add" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\add.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -211,70 +232,82 @@
   <data name="tableView_Bar" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\tableView_Bar.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="chart4" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\chart4.gif;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="info" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\info.ico;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="zoom_out" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\zoom_out.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="StartPage4" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\page4.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="StartPage3" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\page3.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="layer_add" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\layer_add.ico;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="BenMap-about" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\BenMap-about.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="spUserGuide" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\spUserGuide.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="pictureBox1.Image" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\pictureBox1.Image.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="magnifier_zoom_in" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\magnifier_zoom_in.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="StartTip2_2" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\btn2_2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="StartTip4_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\btn4_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="select" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\select.ico;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="StartTip4_3" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\btn4_3.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="help_16x16" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\help_16x16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="pictureBox1.Image" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\pictureBox1.Image.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="GISMapBG" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\GISMapBG.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="dropdown_hint" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\dropdown_hint.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="point" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\point.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="spUserGuide" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\spUserGuide.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="legend" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\legend.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="StartTip2_2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\btn2_2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="SPLoadCFGR" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\SPLoadCFGR.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="tableView1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\tableView1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="zoom_extent" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\zoom_extent.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="refreshTheme" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\refreshTheme.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="loading3" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\loading3.gif;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="StartTip3_3" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\btn3_3.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="StartTip3_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\btn3_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="StartTip1_2" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\btn1_2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="GISMapBG" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\GISMapBG.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="attributes_display" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\attributes_display.ico;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="legend" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\legend.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="spLoadAPV" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\spLoadAPV.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="SPLoadCFGR" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\SPLoadCFGR.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="help_16x16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\help_16x16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Welcome" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Welcome.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="globe_7" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\globe_7.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="pictureBox3.Image" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\pictureBox3.Image.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="onlineAlert.Image" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\alertSmall.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="BuildDate" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\BuildDate.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
-  </data>
-  <data name="dropdown_hint" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\dropdown_hint.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="clear_selection" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\clear_selection.ico;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

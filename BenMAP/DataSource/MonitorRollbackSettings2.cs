@@ -10,6 +10,7 @@ using BenMAP.DataSource;
 using DotSpatial.Controls;
 using DotSpatial.Data;
 using DotSpatial.Symbology;
+using GeoAPI.Geometries;
 
 namespace BenMAP
 {
@@ -79,8 +80,7 @@ namespace BenMAP
                 lstMonitorValues = DataSourceCommonClass.GetMonitorData(_monitorRollbackLine.GridType, _monitorRollbackLine.Pollutant, _monitorRollbackLine);
                 IFeatureSet fsPoints = new FeatureSet();
                 MonitorValue mv = null;
-                Feature feature = null;
-                List<DotSpatial.Topology.Coordinate> lstCoordinate = new List<DotSpatial.Topology.Coordinate>();
+                List<Coordinate> lstCoordinate = new List<Coordinate>();
                 List<double> fsInter = new List<double>();
                 if (lstMonitorValues != null && lstMonitorValues.Count > 0)
                 {
@@ -88,13 +88,12 @@ namespace BenMAP
                     PolygonCategory pcin = new PolygonCategory();
                     pcin.Symbolizer.SetFillColor(Color.Red);
                     myScheme.Categories.Add(pcin);
-                    DotSpatial.Topology.Point point;
+                    NetTopologySuite.Geometries.Point point;
                     for (int i = 0; i < lstMonitorValues.Count; i++)
                     {
                         mv = lstMonitorValues[i];
-                        point = new DotSpatial.Topology.Point(mv.Longitude, mv.Latitude);
-                        feature = new Feature(point);
-                        fsPoints.AddFeature(feature);
+                        point = new NetTopologySuite.Geometries.Point(mv.Longitude, mv.Latitude);
+                        fsPoints.AddFeature(point);
                     }
                     MapPointLayer mpl = new MapPointLayer(fsPoints);
                     mpl.Symbolizer = new PointSymbolizer();
@@ -652,7 +651,7 @@ namespace BenMAP
                 Rectangle rtol = new Rectangle(e.X - 8, e.Y - 8, 16, 16);
                 Rectangle rstr = new Rectangle(e.X - 1, e.Y - 1, 2, 2);
                 Extent tolerant = mainMap.PixelToProj(rtol);
-                Extent strict = (new DotSpatial.Topology.Point(mainMap.PixelToProj(new Point(e.X, e.Y)))).Envelope.ToExtent();
+                Extent strict = (new NetTopologySuite.Geometries.Point(mainMap.PixelToProj(new Point(e.X, e.Y)))).Envelope.EnvelopeInternal.ToExtent();
                 List<int> result = (mainMap.Layers[0] as IFeatureLayer).DataSet.SelectIndices(strict);
                 IFeature fSelect = null;
                 if (result.Count > 0)
@@ -660,10 +659,10 @@ namespace BenMAP
                     foreach (int iSelect in result)
                     {
                         IFeature fSelectTemp = (mainMap.Layers[0] as IFeatureLayer).DataSet.GetFeature(iSelect);
-                        if (fSelectTemp.BasicGeometry is DotSpatial.Topology.Polygon)
+                        if (fSelectTemp.Geometry is NetTopologySuite.Geometries.Polygon)
                         {
 
-                            if ((fSelectTemp.BasicGeometry as DotSpatial.Topology.Polygon).Contains(new DotSpatial.Topology.Point(mainMap.PixelToProj(new Point(e.X, e.Y)))))
+                            if ((fSelectTemp.Geometry as NetTopologySuite.Geometries.Polygon).Contains(new NetTopologySuite.Geometries.Point(mainMap.PixelToProj(new Point(e.X, e.Y)))))
                             {
                                 fSelect = fSelectTemp;
                                 break;
@@ -671,7 +670,7 @@ namespace BenMAP
                         }
                         else
                         {
-                            if ((fSelectTemp.BasicGeometry as DotSpatial.Topology.MultiPolygon).Contains(new DotSpatial.Topology.Point(mainMap.PixelToProj(new Point(e.X, e.Y)))))
+                            if ((fSelectTemp.Geometry as NetTopologySuite.Geometries.MultiPolygon).Contains(new NetTopologySuite.Geometries.Point(mainMap.PixelToProj(new Point(e.X, e.Y)))))
                             {
                                 fSelect = fSelectTemp;
                                 break;

@@ -4,31 +4,6 @@
         <name>DotSpatial.Serialization</name>
     </assembly>
     <members>
-        <member name="T:DotSpatial.Serialization.AssemblyMissingException">
-            <summary>
-            This exception will occur if an assembly referenced by a saved map layer could not be found.
-            </summary>
-        </member>
-        <member name="M:DotSpatial.Serialization.AssemblyMissingException.#ctor(System.String)">
-            <summary>
-            Initializes a new instance of the AssemblyMissingException.
-            </summary>
-            <param name="message">The string message to show as the error.</param>
-        </member>
-        <member name="M:DotSpatial.Serialization.AssemblyMissingException.#ctor(System.String,System.Exception)">
-            <summary>
-            Initializes a new instance of the AssemblyMissingException.
-            </summary>
-            <param name="message">The string message to show as the error.</param>
-            <param name="innerException">The inner exception to send as part of this exception.</param>
-        </member>
-        <member name="M:DotSpatial.Serialization.AssemblyMissingException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
-            <summary>
-            Initializes a new instance of the AssemblyMissingException.
-            </summary>
-            <param name="info">The SerializationInfo that holds the information about the serialized object about the exception being thrown.</param>
-            <param name="context">The StreamingContext that contains contextual information about the source or destination.</param>
-        </member>
         <member name="T:DotSpatial.Serialization.BaseCollection`1">
             <summary>
             BaseCollection
@@ -37,6 +12,11 @@
         <member name="F:DotSpatial.Serialization.BaseCollection`1._innerList">
             <summary>
             Private storage for the inner list.
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Serialization.BaseCollection`1.InnerList">
+            <summary>
+            Gets or sets the inner list of T that actually controls the content for this BaseCollection.
             </summary>
         </member>
         <member name="M:DotSpatial.Serialization.BaseCollection`1.Add(`0)">
@@ -59,6 +39,18 @@
             <param name="array">The array to copy to</param>
             <param name="arrayIndex">The zero based integer array index to start copying to</param>
         </member>
+        <member name="P:DotSpatial.Serialization.BaseCollection`1.IsReadOnly">
+            <summary>
+            False
+            </summary>
+        </member>
+        <member name="M:DotSpatial.Serialization.BaseCollection`1.Move(`0,System.Int32)">
+            <summary>
+            Moves the given item to the new position.
+            </summary>
+            <param name="item">Item that gets moved.</param>
+            <param name="newPosition">Position the item is moved to.</param>
+        </member>
         <member name="M:DotSpatial.Serialization.BaseCollection`1.Remove(`0)">
             <summary>
             Removes the specified item from the collection
@@ -75,6 +67,11 @@
         <member name="M:DotSpatial.Serialization.BaseCollection`1.Clear">
             <summary>
             Clears the list
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Serialization.BaseCollection`1.Count">
+            <summary>
+            Returns the count of the inner list
             </summary>
         </member>
         <member name="M:DotSpatial.Serialization.BaseCollection`1.OnInnerListSet">
@@ -132,6 +129,13 @@
             </summary>
             <param name="item"></param>
         </member>
+        <member name="M:DotSpatial.Serialization.BaseCollection`1.OnMoved(`0,System.Int32)">
+            <summary>
+            Occurs whenever a layer is moved.
+            </summary>
+            <param name="item">Layer that is moved.</param>
+            <param name="newPosition">Position the layer is moved to.</param>
+        </member>
         <member name="M:DotSpatial.Serialization.BaseCollection`1.OnIncludeComplete(`0)">
             <summary>
             Occurs after the item has been included either by set, insert, or addition.
@@ -160,26 +164,6 @@
             </summary>
             <param name="item">The item to be removed</param>
         </member>
-        <member name="M:DotSpatial.Serialization.BaseCollection`1.#ctor">
-            <summary>
-            Creates a new instance of BaseCollection
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Serialization.BaseCollection`1.InnerList">
-            <summary>
-            Gets or sets the inner list of T that actually controls the content for this BaseCollection.
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Serialization.BaseCollection`1.IsReadOnly">
-            <summary>
-            False
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Serialization.BaseCollection`1.Count">
-            <summary>
-            Returns the count of the inner list
-            </summary>
-        </member>
         <member name="T:DotSpatial.Serialization.BaseCollection`1.BaseCollectionEnumerator`1">
             <summary>
             Defines a new kind of enumerator designed to make the CollectionBase cooperate with strong type collections
@@ -191,6 +175,11 @@
             Creates the new enumerator
             </summary>
             <param name="innerEnumerator">A non type specific enumerator</param>
+        </member>
+        <member name="P:DotSpatial.Serialization.BaseCollection`1.BaseCollectionEnumerator`1.Current">
+            <summary>
+            The current item
+            </summary>
         </member>
         <member name="M:DotSpatial.Serialization.BaseCollection`1.BaseCollectionEnumerator`1.Dispose">
             <summary>
@@ -208,9 +197,9 @@
             resets the enumerator
             </summary>
         </member>
-        <member name="P:DotSpatial.Serialization.BaseCollection`1.BaseCollectionEnumerator`1.Current">
+        <member name="M:DotSpatial.Serialization.BaseCollection`1.#ctor">
             <summary>
-            The current item
+            Creates a new instance of BaseCollection
             </summary>
         </member>
         <member name="T:DotSpatial.Serialization.BaseList`1">
@@ -232,6 +221,13 @@
             <param name="index">The zero based integer index describing the target index for the item.</param>
             <param name="item">The implementation of T to insert into this index.</param>
             <exception cref="T:DotSpatial.Serialization.ReadOnlyException">If ReadOnly is true, then this method will cause an exception</exception>
+        </member>
+        <member name="P:DotSpatial.Serialization.BaseList`1.Item(System.Int32)">
+            <summary>
+            Gets or sets the value of type T at the specified index
+            </summary>
+            <param name="index">The zero-base integer index marking the position of the item</param>
+            <returns>The item</returns>
         </member>
         <member name="M:DotSpatial.Serialization.BaseList`1.OnInsert(System.Int32,`0)">
             <summary>
@@ -259,19 +255,12 @@
             </summary>
             <param name="index">The zero based integer index</param>
         </member>
-        <member name="P:DotSpatial.Serialization.BaseList`1.Item(System.Int32)">
-            <summary>
-            Gets or sets the value of type T at the specified index
-            </summary>
-            <param name="index">The zero-base integer index marking the position of the item</param>
-            <returns>The item</returns>
-        </member>
-        <member name="T:DotSpatial.CloneableEM">
+        <member name="T:DotSpatial.Serialization.CloneableEM">
             <summary>
             CloneableEM
             </summary>
         </member>
-        <member name="M:DotSpatial.CloneableEM.Copy``1(``0)">
+        <member name="M:DotSpatial.Serialization.CloneableEM.Copy``1(``0)">
             <summary>
             The type parameter T is optional, so the intended use would be like:
             ObjectType copy = myObject.Copy();
@@ -280,38 +269,82 @@
             <param name="original">The original object</param>
             <returns>A new object of the same type as the type being copied.</returns>
         </member>
-        <member name="T:DotSpatial.SerializeExtent">
+        <member name="T:DotSpatial.Serialization.MovedTypes">
+            <summary>
+            This contains a list of types that were moved from one assembly to another when DotSpatial.Topology was replaced by NetTopologySuite/GeoAPI.
+            This is used to make sure that the old dspx files that contain types from DotSpatial.Topology can be loaded using NetTopologySuite.
+            </summary>
+        </member>
+        <member name="F:DotSpatial.Serialization.MovedTypes.Types">
+            <summary>
+            This contains all types that were moved when DotSpatial.Topology was replaced by NetTopologySuite/GeoAPI.
+            </summary>
+        </member>
+        <member name="M:DotSpatial.Serialization.MovedTypes.#ctor">
+            <summary>
+            List with TypeMoveDefinitions of Namespaces/Apis that were moved.
+            </summary>
+        </member>
+        <member name="T:DotSpatial.Serialization.TypeMoveDefintion">
+            <summary>
+            Class that defines a move from an old namespace to a new namespace.
+            </summary>
+        </member>
+        <member name="M:DotSpatial.Serialization.TypeMoveDefintion.#ctor(System.String,System.String,System.String,System.String)">
+            <summary>
+            Creates a new TypeMoveDefinition.
+            </summary>
+            <param name="from">Old namespace that should be replaced.</param>
+            <param name="to">Namespace that should replace the old namespace.</param>
+            <param name="fromApi">Name of the Api that should be replaced.</param>
+            <param name="toApi">Name of the Api that replaces the old Api name.</param>
+        </member>
+        <member name="M:DotSpatial.Serialization.TypeMoveDefintion.MoveType(System.String)">
+            <summary>
+            Changes the old string to the new type.
+            </summary>
+            <param name="oldString"></param>
+            <returns>String with new type.</returns>
+        </member>
+        <member name="M:DotSpatial.Serialization.TypeMoveDefintion.IsApplicable(System.String)">
+            <summary>
+            Checks if the old string contains the from value of this definition to find out whether we have to apply this move. 
+            </summary>
+            <param name="oldString">String with the old definition.</param>
+            <returns>True, if this move should be done.</returns>
+        </member>
+        <member name="T:DotSpatial.Serialization.SerializeExtent">
             <summary>
             Extent works like an envelope but is faster acting, has a minimum memory profile, only works in 2D and has no events.
             </summary>
         </member>
-        <member name="F:DotSpatial.SerializeExtent.XMax">
+        <member name="F:DotSpatial.Serialization.SerializeExtent.XMax">
             <summary>
             Max X
             </summary>
         </member>
-        <member name="F:DotSpatial.SerializeExtent.XMin">
+        <member name="F:DotSpatial.Serialization.SerializeExtent.XMin">
             <summary>
             Min X
             </summary>
         </member>
-        <member name="F:DotSpatial.SerializeExtent.YMax">
+        <member name="F:DotSpatial.Serialization.SerializeExtent.YMax">
             <summary>
             Max Y
             </summary>
         </member>
-        <member name="F:DotSpatial.SerializeExtent.YMin">
+        <member name="F:DotSpatial.Serialization.SerializeExtent.YMin">
             <summary>
             Min Y
             </summary>
         </member>
-        <member name="M:DotSpatial.SerializeExtent.#ctor">
+        <member name="M:DotSpatial.Serialization.SerializeExtent.#ctor">
             <summary>
             Creates a new instance of Extent.  This introduces no error checking and assumes
             that the user knows what they are doing when working with this.
             </summary>
         </member>
-        <member name="M:DotSpatial.SerializeExtent.#ctor(System.Double,System.Double,System.Double,System.Double)">
+        <member name="M:DotSpatial.Serialization.SerializeExtent.#ctor(System.Double,System.Double,System.Double,System.Double)">
             <summary>
             Creates a new extent from the specified ordinates
             </summary>
@@ -320,7 +353,7 @@
             <param name="xMax"></param>
             <param name="yMax"></param>
         </member>
-        <member name="M:DotSpatial.SerializeExtent.#ctor(System.Double[],System.Int32)">
+        <member name="M:DotSpatial.Serialization.SerializeExtent.#ctor(System.Double[],System.Int32)">
             <summary>
             Given a long array of doubles, this builds an extent from a small part of that
             xmin, ymin, xmax, ymax
@@ -328,19 +361,19 @@
             <param name="values"></param>
             <param name="offset"></param>
         </member>
-        <member name="M:DotSpatial.SerializeExtent.#ctor(System.Double[])">
+        <member name="M:DotSpatial.Serialization.SerializeExtent.#ctor(System.Double[])">
             <summary>
             XMin, YMin, XMax, YMax order
             </summary>
             <param name="values"></param>
         </member>
-        <member name="M:DotSpatial.SerializeExtent.Clone">
+        <member name="M:DotSpatial.Serialization.SerializeExtent.Clone">
             <summary>
             Produces a clone, rather than using this same object.
             </summary>
             <returns></returns>
         </member>
-        <member name="M:DotSpatial.SerializeExtent.IsEmpty">
+        <member name="M:DotSpatial.Serialization.SerializeExtent.IsEmpty">
             <summary>
             If this is undefined, it will have a min that is larger than the max.
             </summary>
@@ -381,12 +414,6 @@
             </summary>
             <param name="qualifiedName">The string qualified name.</param>
         </member>
-        <member name="M:DotSpatial.Serialization.QualifiedTypeName.ToString">
-            <summary>
-            Returns the full qualified type name as "TypeName, Assembly, Version=x, Culture=x, PublicKeyToken=x".
-            </summary>
-            <returns>The string expression with the full type name.</returns>
-        </member>
         <member name="P:DotSpatial.Serialization.QualifiedTypeName.EnclosedName">
             <summary>
             Gets or sets the name for the enclosed type.
@@ -417,6 +444,12 @@
             Gets or sets the public key token for the strong name of the assembly.
             </summary>
         </member>
+        <member name="M:DotSpatial.Serialization.QualifiedTypeName.ToString">
+            <summary>
+            Returns the full qualified type name as "TypeName, Assembly, Version=x, Culture=x, PublicKeyToken=x".
+            </summary>
+            <returns>The string expression with the full type name.</returns>
+        </member>
         <member name="T:DotSpatial.Serialization.ReadOnlyException">
             <summary>
             ReadOnlyException
@@ -429,9 +462,9 @@
         </member>
         <member name="M:DotSpatial.Serialization.ReadOnlyException.#ctor(System.String)">
             <summary>
-            Obsolete
+            Creates a new ReadOnlyException with the given message.
             </summary>
-            <param name="message"></param>
+            <param name="message">Message, the ReadOnlyException should show.</param>
         </member>
         <member name="T:DotSpatial.Serialization.ReflectionHelper">
             <summary>
@@ -487,6 +520,16 @@
             </summary>
             <param name="forType">The type associated with this SerializationMap.</param>
         </member>
+        <member name="P:DotSpatial.Serialization.SerializationMap.ForType">
+            <summary>
+            The type that this serialization map instance is associated with.
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Serialization.SerializationMap.Members">
+            <summary>
+            The members that participate in serialization.
+            </summary>
+        </member>
         <member name="M:DotSpatial.Serialization.SerializationMap.FromType(System.Type)">
             <summary>
             This overload is used for objects that are marked with the <see cref="T:DotSpatial.Serialization.SerializeAttribute"/>.
@@ -503,16 +546,6 @@
             <param name="name">The name to remove</param>
             <returns>The Serialization Map Entry created by the serialize method</returns>
         </member>
-        <member name="P:DotSpatial.Serialization.SerializationMap.ForType">
-            <summary>
-            The type that this serialization map instance is associated with.
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Serialization.SerializationMap.Members">
-            <summary>
-            The members that participate in serialization.
-            </summary>
-        </member>
         <member name="T:DotSpatial.Serialization.SerializationMapEntry">
             <summary>
             Contains the information needed to serialize a single property or field.
@@ -524,6 +557,16 @@
             </summary>
             <param name="memberInfo">Info about the field or property to serialize.</param>
             <param name="attribute">Details about how to serialize this member.</param>
+        </member>
+        <member name="P:DotSpatial.Serialization.SerializationMapEntry.Member">
+            <summary>
+            The <see cref="T:System.Reflection.FieldInfo"/> or <see cref="T:System.Reflection.PropertyInfo"/> instance for the associated member.
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Serialization.SerializationMapEntry.Attribute">
+            <summary>
+            The attribute that contains more details about how to serialize this member.
+            </summary>
         </member>
         <member name="M:DotSpatial.Serialization.SerializationMapEntry.AsConstructorArgument(System.Int32)">
             <summary>
@@ -549,16 +592,6 @@
             Returns a numeric hash code austensibly uniquishly controlled by the member and attribute hash code.
             </summary>
             <returns></returns>
-        </member>
-        <member name="P:DotSpatial.Serialization.SerializationMapEntry.Member">
-            <summary>
-            The <see cref="T:System.Reflection.FieldInfo"/> or <see cref="T:System.Reflection.PropertyInfo"/> instance for the associated member.
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Serialization.SerializationMapEntry.Attribute">
-            <summary>
-            The attribute that contains more details about how to serialize this member.
-            </summary>
         </member>
         <member name="T:DotSpatial.Serialization.SerializeAttribute">
             <summary>
@@ -607,7 +640,7 @@
             reference may need to be updated with local assembly information.
             </summary>
             <param name="invalidTypeName">The invalidated type name, usually because the version is out of date.</param>
-            <returns>A string represnting the same type, but with a modern assmebly.</returns>
+            <returns>A string representing the same type, but with a modern assembly.</returns>
         </member>
         <member name="M:DotSpatial.Serialization.TypeNameManager.UpdateAssembly(System.String)">
             <summary>
