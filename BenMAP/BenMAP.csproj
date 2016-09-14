@@ -956,6 +956,9 @@
       <DependentUpon>QALYResulesReport.cs</DependentUpon>
     </Compile>
     <Compile Include="Jira\NewIssue.cs" />
+    <None Include="Resources\GBD_Increment.png" />
+    <None Include="Resources\GBD_Percentage.png" />
+    <None Include="Resources\GBD_Standard.png" />
     <Content Include="Setup\Setup.vdproj" />
     <!--<Content Include="Tools\alertSmall.png" /> -->
     <None Include="Data\BenMAP-CE Release Notes.rtf">

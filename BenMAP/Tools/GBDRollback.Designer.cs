@@ -600,7 +600,7 @@
             this.cboFunction.FormattingEnabled = true;
             this.cboFunction.Items.AddRange(new object[] {
             "Krewski"});
-            this.cboFunction.Location = new System.Drawing.Point(98, 287);
+            this.cboFunction.Location = new System.Drawing.Point(98, 334);
             this.cboFunction.Name = "cboFunction";
             this.cboFunction.Size = new System.Drawing.Size(175, 21);
             this.cboFunction.TabIndex = 11;
@@ -608,7 +608,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(14, 287);
+            this.label2.Location = new System.Drawing.Point(14, 337);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(51, 13);
             this.label2.TabIndex = 10;
@@ -616,12 +616,12 @@
             // 
             // pb_incremental
             // 
-            this.pb_incremental.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("pb_incremental.BackgroundImage")));
+            this.pb_incremental.BackgroundImage = global::BenMAP.Properties.Resources.GBD_Increment;
             this.pb_incremental.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.pb_incremental.InitialImage = null;
             this.pb_incremental.Location = new System.Drawing.Point(15, 150);
             this.pb_incremental.Name = "pb_incremental";
-            this.pb_incremental.Size = new System.Drawing.Size(253, 119);
+            this.pb_incremental.Size = new System.Drawing.Size(253, 171);
             this.pb_incremental.TabIndex = 7;
             this.pb_incremental.TabStop = false;
             this.pb_incremental.Visible = false;
@@ -718,24 +718,24 @@
             // 
             // pb_standard
             // 
-            this.pb_standard.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("pb_standard.BackgroundImage")));
+            this.pb_standard.BackgroundImage = global::BenMAP.Properties.Resources.GBD_Standard;
             this.pb_standard.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.pb_standard.InitialImage = null;
             this.pb_standard.Location = new System.Drawing.Point(15, 150);
             this.pb_standard.Name = "pb_standard";
-            this.pb_standard.Size = new System.Drawing.Size(253, 119);
+            this.pb_standard.Size = new System.Drawing.Size(253, 171);
             this.pb_standard.TabIndex = 9;
             this.pb_standard.TabStop = false;
             this.pb_standard.Visible = false;
             // 
             // pb_percent
             // 
-            this.pb_percent.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("pb_percent.BackgroundImage")));
+            this.pb_percent.BackgroundImage = global::BenMAP.Properties.Resources.GBD_Percentage;
             this.pb_percent.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.pb_percent.InitialImage = null;
             this.pb_percent.Location = new System.Drawing.Point(15, 150);
             this.pb_percent.Name = "pb_percent";
-            this.pb_percent.Size = new System.Drawing.Size(253, 119);
+            this.pb_percent.Size = new System.Drawing.Size(253, 171);
             this.pb_percent.TabIndex = 8;
             this.pb_percent.TabStop = false;
             // 
@@ -893,7 +893,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.ClientSize = new System.Drawing.Size(1567, 749);
+            this.ClientSize = new System.Drawing.Size(1601, 749);
             this.Controls.Add(this.gbName);
             this.Controls.Add(this.gbOptionsStandard);
             this.Controls.Add(this.gbOptionsPercentage);
