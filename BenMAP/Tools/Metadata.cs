@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using DotSpatial.Data;
 using DotSpatial.Projections;
-using DotSpatial.Topology;
 
 namespace BenMAP
 {

@@ -1,18 +1,16 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using DotSpatial.Controls;
 using DotSpatial.Data;
-using FirebirdSql.Data.FirebirdClient;
 using System.IO;
 using ESIL.DBUtility;
-using DotSpatial.Topology;
 using DotSpatial.Projections;
+using GeoAPI.Geometries;
+using NetTopologySuite.Geometries;
 
 
 namespace BenMAP
@@ -1129,7 +1127,6 @@ namespace BenMAP
                 {
                     for (int j = 0; j < Rows; j++)
                     {
-                        Feature f = new Feature();
                         List<Coordinate> lstCoordinate = new List<Coordinate>();
                         Coordinate coordinate = new Coordinate();
                         coordinate.X = MinLongitude + i * (1.0000 / Convert.ToDouble(ColsPerLongitude));
@@ -1158,10 +1155,8 @@ namespace BenMAP
                         lstCoordinate.Add(coordinate);
 
 
-
-                        DotSpatial.Topology.Polygon p = new DotSpatial.Topology.Polygon(lstCoordinate.ToArray());
-                        f.BasicGeometry = p;
-                        fs.AddFeature(f);
+                        var p = new Polygon(new LinearRing(lstCoordinate.ToArray()));
+                        fs.AddFeature(p);
                         fs.DataTable.Rows[i * Rows + j]["Col"] = i + 1;
                         fs.DataTable.Rows[i * Rows + j]["Row"] = j + 1;
 

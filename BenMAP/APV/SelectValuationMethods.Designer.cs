@@ -370,7 +370,7 @@ namespace BenMAP
                                                 this.treeColumnName.AspectName = "Name";
             this.treeColumnName.IsEditable = false;
             this.treeColumnName.IsTileViewColumn = true;
-            this.treeColumnName.Text = "Tree node";
+            this.treeColumnName.Text = "Studies, By Endpoint";
             this.treeColumnName.UseInitialLetterForGroup = true;
             this.treeColumnName.Width = 180;
             this.treeColumnName.WordWrap = true;

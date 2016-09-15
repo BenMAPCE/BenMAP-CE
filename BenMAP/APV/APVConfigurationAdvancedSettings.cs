@@ -197,13 +197,19 @@ namespace BenMAP
 
             cboInflationDataset.DataSource = dsGrid.Tables[0];
             cboInflationDataset.DisplayMember = "InflationDataSetName";
-            cboInflationDataset.SelectedIndex = 0;
+            if(cboInflationDataset.Items.Count > 0)
+            {
+                cboInflationDataset.SelectedIndex = 0;
+            }
             isloadInflation = true;
             commandText = string.Format("select * from IncomeGrowthAdjDataSets where SetupID={0}", CommonClass.MainSetup.SetupID);
             dsGrid = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
             cboIncomeGrowthDataset.DataSource = dsGrid.Tables[0];
             cboIncomeGrowthDataset.DisplayMember = "IncomeGrowthAdjDatasetName";
-            cboIncomeGrowthDataset.SelectedIndex = 0;
+            if (cboIncomeGrowthDataset.Items.Count > 0)
+            {
+                cboIncomeGrowthDataset.SelectedIndex = 0;
+            }
             isloadIncomeGrowth = true;
         }
         public void BindingGridType()
@@ -406,6 +412,36 @@ namespace BenMAP
         private void cboIncomeGrowthYear_SelectedIndexChanged(object sender, EventArgs e)
         {
 
+        }
+        public void AdvanceOptionType(int optionType)
+        {
+            if (optionType == 1)
+            {
+                if (this.tab.TabPages.Contains(tbpAggreationAndPooling))
+                {
+                    this.tab.TabPages.Remove(this.tbpCurrencyAndIncome);
+                }
+                else
+                {
+                    this.tab.TabPages.Add(this.tbpAggreationAndPooling);
+                    this.tab.TabPages.Remove(this.tbpCurrencyAndIncome);
+                }
+
+                this.Text = "Advanced Pooling Settings:";
+            }
+            else
+            {
+                if (this.tab.TabPages.Contains(tbpCurrencyAndIncome))
+                {
+                    this.tab.TabPages.Remove(this.tbpAggreationAndPooling);
+                }
+                else
+                {
+                    this.tab.TabPages.Remove(this.tbpAggreationAndPooling);
+                    this.tab.TabPages.Add(this.tbpCurrencyAndIncome);
+                }
+                this.Text = "Advanced Valuation Settings:";
+            }
         }
     }
 }

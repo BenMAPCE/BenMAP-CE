@@ -50,7 +50,7 @@
             <summary>
             A static function to compute the buffer and return the result to the Execute function.
             </summary>
-            <param name="input">The feature set that will be buffered.</param>
+            <param name="inputFeatures">The feature set that will be buffered.</param>
             <param name="bufferDistance">The distance of the buffer.</param>
             <param name="outputFeatures">The resulting feature set that will show the buffer.</param>
             <param name="cancelProgressHandler">Optional parameter to report progress and cancel if needed.</param>
@@ -89,6 +89,7 @@
             </summary>
             <param name="ConstrainingFeatures">Random points will be generated inside all features in this feature set.</param>
             <param name="NumberOfPoints">The number of points to be randomly generated.</param>
+            <param name="fsOut">FeatureSet, the points should be added to.</param>
             <param name="cancelProgressHandler">Optional parameter to report progress and cancel entire process if needed.</param>
             <returns>A point feature set with the randomly created features.</returns>
         </member>
@@ -218,6 +219,11 @@
             Initializes a new instance of the FileLogger class which is an implementation of ILogger designed to save content to a file.
             </summary>
         </member>
+        <member name="P:DotSpatial.Analysis.FileLogger.DebugFile">
+            <summary>
+            Gets or sets the string file to append debug messages to.
+            </summary>
+        </member>
         <member name="M:DotSpatial.Analysis.FileLogger.Exception(System.Exception)">
             <summary>
             An exception was thrown, so this will post the stack trace and message to debug.
@@ -268,11 +274,6 @@
             <param name="result">The System.Windows.Forms.DialogResult describing if the value was cancelled.</param>
             <param name="value">The string containing the value entered.</param>
         </member>
-        <member name="P:DotSpatial.Analysis.FileLogger.DebugFile">
-            <summary>
-            Gets or sets the string file to append debug messages to.
-            </summary>
-        </member>
         <member name="P:DotSpatial.Analysis.FileLogger.Description">
             <summary>
             Gets a description of this logger.
@@ -293,6 +294,17 @@
             Initializes a new instance of the RasterBin class.
             </summary>
         </member>
+        <member name="P:DotSpatial.Analysis.RasterBin.BaseValue">
+            <summary>
+            Gets or sets the "origin" of the bins.  Bins may occur above or below this,
+            in increments of "BinSize".  The default is 0.
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Analysis.RasterBin.BinSize">
+            <summary>
+            Gets or sets the double value separating the bins for the raster.  The default is 10.
+            </summary>
+        </member>
         <member name="M:DotSpatial.Analysis.RasterBin.BinRaster(DotSpatial.Data.IRaster,System.String,DotSpatial.Data.ICancelProgressHandler)">
             <summary>
             This uses the BaseValue and BinSize properties in order to categorize the values
@@ -304,17 +316,6 @@
             <param name="destName">The output filename.</param>
             <param name="progressHandler">The progress handler for messages.</param>
             <returns>The IRaster of binned values from the original source.</returns>
-        </member>
-        <member name="P:DotSpatial.Analysis.RasterBin.BaseValue">
-            <summary>
-            Gets or sets the "origin" of the bins.  Bins may occur above or below this,
-            in increments of "BinSize".  The default is 0.
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Analysis.RasterBin.BinSize">
-            <summary>
-            Gets or sets the double value separating the bins for the raster.  The default is 10.
-            </summary>
         </member>
         <member name="T:DotSpatial.Analysis.ResampleCells">
             <summary>
@@ -351,16 +352,15 @@
             A class for supporting methods to calculate the slope.
             </summary>
         </member>
-        <member name="M:DotSpatial.Analysis.Slope.GetSlope(DotSpatial.Data.IRaster,System.Double,System.Boolean,DotSpatial.Data.IRaster@,DotSpatial.Data.ICancelProgressHandler)">
+        <member name="M:DotSpatial.Analysis.Slope.GetSlope(DotSpatial.Data.IRaster,System.Double,System.Boolean,DotSpatial.Data.ICancelProgressHandler)">
             <summary>
             Executes the slope generation raster.
             </summary>
             <param name="raster">The input altitude raster.</param>
             <param name="inZFactor">The double precision multiplicative scaling factor for elevation values.</param>
             <param name="slopeInPercent">A boolean parameter that clarifies the nature of the slope values.  If this is true, the values represent percent slope.</param>
-            <param name="result">The output slope raster.</param>
             <param name="cancelProgressHandler">The progress handler.</param>
-            <returns>A boolean value, true if the process was successful.</returns>
+            <returns>The output slope raster, or null if the process was unsuccessful.</returns>
         </member>
         <member name="T:DotSpatial.Analysis.VectorToRaster">
             <summary>
@@ -464,7 +464,7 @@
             Cropping will ensure that the original featureset extent plus a small extra buffer amount
             is the outer extent of the polygons.  Errors seem to occur if the exact extent is used.</param>
         </member>
-        <member name="M:DotSpatial.Analysis.Voronoi.HandleBoundaries(DotSpatial.Topology.Voronoi.VoronoiGraph,DotSpatial.Topology.IEnvelope)">
+        <member name="M:DotSpatial.Analysis.Voronoi.HandleBoundaries(DotSpatial.NTSExtension.Voronoi.VoronoiGraph,GeoAPI.Geometries.Envelope)">
             <summary>
             The original algorithm simply allows edges that have one defined point and
             another "NAN" point.  Simply excluding the not a number coordinates fails

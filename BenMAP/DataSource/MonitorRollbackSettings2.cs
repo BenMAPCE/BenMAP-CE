@@ -10,6 +10,7 @@ using BenMAP.DataSource;
 using DotSpatial.Controls;
 using DotSpatial.Data;
 using DotSpatial.Symbology;
+using GeoAPI.Geometries;
 
 namespace BenMAP
 {
@@ -79,8 +80,7 @@ namespace BenMAP
                 lstMonitorValues = DataSourceCommonClass.GetMonitorData(_monitorRollbackLine.GridType, _monitorRollbackLine.Pollutant, _monitorRollbackLine);
                 IFeatureSet fsPoints = new FeatureSet();
                 MonitorValue mv = null;
-                Feature feature = null;
-                List<DotSpatial.Topology.Coordinate> lstCoordinate = new List<DotSpatial.Topology.Coordinate>();
+                List<Coordinate> lstCoordinate = new List<Coordinate>();
                 List<double> fsInter = new List<double>();
                 if (lstMonitorValues != null && lstMonitorValues.Count > 0)
                 {
@@ -88,13 +88,12 @@ namespace BenMAP
                     PolygonCategory pcin = new PolygonCategory();
                     pcin.Symbolizer.SetFillColor(Color.Red);
                     myScheme.Categories.Add(pcin);
-                    DotSpatial.Topology.Point point;
+                    NetTopologySuite.Geometries.Point point;
                     for (int i = 0; i < lstMonitorValues.Count; i++)
                     {
                         mv = lstMonitorValues[i];
-                        point = new DotSpatial.Topology.Point(mv.Longitude, mv.Latitude);
-                        feature = new Feature(point);
-                        fsPoints.AddFeature(feature);
+                        point = new NetTopologySuite.Geometries.Point(mv.Longitude, mv.Latitude);
+                        fsPoints.AddFeature(point);
                     }
                     MapPointLayer mpl = new MapPointLayer(fsPoints);
                     mpl.Symbolizer = new PointSymbolizer();
@@ -102,6 +101,14 @@ namespace BenMAP
                     mpl.Symbolizer.SetOutline(Color.Black, 1);
                     mainMap.Layers.Add(mpl);
                 }
+
+                //Create Add Region button in flow layout container
+                Button btnRegionAdd = new Button();
+                btnRegionAdd.Size = new Size(90, 27);
+                btnRegionAdd.Tag = "Add Region";
+                btnRegionAdd.Text = "Add Region";
+                btnRegionAdd.Click += new System.EventHandler(this.btnAddRegion_Click);
+                this.flowLayoutPanel1.Controls.Add(btnRegionAdd);
             }
             catch (Exception ex)
             {
@@ -281,35 +288,74 @@ namespace BenMAP
                 int i = GetPercentageControlCount(flowLayoutPanel1);
                 int j = GetIncrementalControlCount(flowLayoutPanel1);
                 int k = GetToStandardControlCount(flowLayoutPanel1);
+                int rollbackControlTop = 0;
+                int addRegionButtonTop = 0;
+                if (i + j + k != 0)
+                {
+                    rollbackControlTop = i * 101 + j * 101 + k * 370 + (i + j + k - 1) * 1;
+                }
+                while (dicRegion.ContainsValue(regionnumber))
+                {
+                    regionnumber++;
+                }
+
+                //Create Region Selector Radio Button
+                RadioButton rbRegion = new RadioButton();
+                rbRegion.AutoSize = true;
+                rbRegion.AutoCheck = false;
+                rbRegion.Tag = regionnumber.ToString();
+                rbRegion.Size = new Size(35, 23);
+                rbRegion.Location = new Point(5, 8);
+                rbRegion.Click += new System.EventHandler(this.RegionSelect_Click);
+
+                //Create Delete Region Button
+                Button btnRegionDelete = new Button();
+                btnRegionDelete.Tag = regionnumber.ToString();
+                btnRegionDelete.Size = new Size(20, 20);
+                btnRegionDelete.Padding = new Padding(0);
+                btnRegionDelete.Location = new Point(157, 5);
+                btnRegionDelete.Text = "X";
+                btnRegionDelete.FlatStyle = FlatStyle.Flat;
+                btnRegionDelete.Font = new Font(btnRegionDelete.Font.Name, btnRegionDelete.Font.Size, FontStyle.Bold);
+                btnRegionDelete.Click += new System.EventHandler(this.btnRegionDelete_Click);
+
+                //Create Region Label
+                Label lblRegion = new Label();
+                lblRegion.Text = "Region" + " " + regionnumber.ToString();
+                lblRegion.Location = new Point(60, 8);
+                lblRegion.Tag = regionnumber.ToString();
+                lblRegion.Size = new Size(90, 15);
+                lblRegion.Click += new System.EventHandler(this.RegionSelect_Click);
+
+                //Create Region Color Tile
+                Button btnRegionColor = new Button();
+                btnRegionColor.Size = new Size(35, 23);
+                btnRegionColor.Location = new Point(23, 3);
+                btnRegionColor.Text = "";
+                btnRegionColor.Tag = regionnumber.ToString();
+                btnRegionDelete.FlatStyle = FlatStyle.Flat;
+                Random randomPc = new Random();
+                btnRegionColor.BackColor = Color.FromArgb(randomPc.Next(255), randomPc.Next(255), randomPc.Next(255));
+                btnRegionColor.Click += new System.EventHandler(this.RegionSelect_Click);
+
+                Regex reg = new Regex(@"\D");
+                string s = reg.Replace(lblRegion.Text, "");
+                int regionIDInt = int.Parse(s);
+
                 switch (name)
                 {
                     case "Percentage":
                         PercentageControl pc = new PercentageControl();
-                        if (i == 0 && j == 0 && k == 0)
-                        { pc.Location = new Point(0, 0); }
-                        else
-                        {
-                            pc.Location = new Point(0, i * 101 + j * 101 + k * 370 + (i + j + k - 1) * 1);
-                        }
-                        Label lablePc = new Label();
-                        pc.Controls.Add(lablePc);
-                        while (dicRegion.ContainsValue(regionnumber))
-                        {
-                            regionnumber++;
-                        }
-                        lablePc.Text = "Region" + " " + regionnumber.ToString();
-                        lablePc.Location = new Point(40, 3);
-                        Button buttonPc = new Button();
-                        pc.Controls.Add(buttonPc);
-                        buttonPc.Size = new Size(35, 23);
-                        buttonPc.Location = new Point(0, 0);
-                        buttonPc.Text = "";
-                        Random randomPc = new Random();
-                        buttonPc.BackColor = Color.FromArgb(randomPc.Next(255), randomPc.Next(255), randomPc.Next(255));
-                        Regex reg = new Regex(@"\D"); string s = reg.Replace(lablePc.Text, ""); int regionIDInt = int.Parse(s);
+                        pc.Location = new Point(0, rollbackControlTop);
+                        pc.Controls.Add(rbRegion);
+                        pc.Controls.Add(btnRegionColor);
+                        pc.Controls.Add(lblRegion);
+                        pc.Controls.Add(btnRegionDelete);
                         pc.RegionID = regionIDInt;
+
                         PercentageRollback pr = new PercentageRollback();
-                        pr.DrawingColor = buttonPc.BackColor.R + "," + buttonPc.BackColor.G + "," + buttonPc.BackColor.B;
+                        pr.RegionID = regionIDInt;
+                        pr.DrawingColor = btnRegionColor.BackColor.R + "," + btnRegionColor.BackColor.G + "," + btnRegionColor.BackColor.B;
                         pr.RegionID = regionIDInt;
                         pr.SelectRegions = new List<RowCol>();
                         pr.RollbackType = RollbackType.percentage;
@@ -317,92 +363,153 @@ namespace BenMAP
                         _currentBenMAPRollback = pr;
                         pc._PercentageRollback = pr;
                         this.flowLayoutPanel1.Controls.Add(pc);
-                        dicRegion.Add(lablePc.Text, regionIDInt);
+
+                        // Automatically select the newly added region
+                        rbRegion.PerformClick();
+
+                        dicRegion.Add(lblRegion.Text, regionIDInt);
                         break;
                     case "Incremental":
                         IncrementalControl ic = new IncrementalControl();
-                        if (i == 0 && j == 0 && k == 0)
-                        { ic.Location = new Point(0, 0); }
-                        else
-                        {
-                            ic.Location = new Point(0, i * 101 + j * 101 + k * 370 + (i + j + k - 1) * 1);
-                        }
-                        Label lableIc = new Label();
-                        ic.Controls.Add(lableIc);
-                        while (dicRegion.ContainsValue(regionnumber))
-                        {
-                            regionnumber++;
-                        }
-                        lableIc.Text = "Region" + " " + regionnumber.ToString();
-                        lableIc.Location = new Point(40, 3);
-                        Button buttonIc = new Button();
-                        ic.Controls.Add(buttonIc);
-                        buttonIc.Size = new Size(35, 23);
-                        buttonIc.Location = new Point(0, 0);
-                        buttonIc.Text = "";
-                        Random randomIc = new Random();
-                        buttonIc.BackColor = Color.FromArgb(randomIc.Next(255), randomIc.Next(255), randomIc.Next(255));
-                        ic.Name = lableIc.Text;
-                        reg = new Regex(@"\D"); s = reg.Replace(lableIc.Text, ""); regionIDInt = int.Parse(s);
+                        ic.Location = new Point(0, rollbackControlTop);
+                        ic.Controls.Add(rbRegion);
+                        ic.Controls.Add(btnRegionColor);
+                        ic.Controls.Add(lblRegion);              
+                        ic.Controls.Add(btnRegionDelete);
+
+                        //ic.Name = lblRegion.Text;
                         ic.RegionID = regionIDInt;
 
                         IncrementalRollback ir = new IncrementalRollback();
-                        ir.DrawingColor = buttonIc.BackColor.R + "," + buttonIc.BackColor.G + "," + buttonIc.BackColor.B; ir.RegionID = regionIDInt;
+                        ir.RegionID = regionIDInt;
+                        ir.DrawingColor = btnRegionColor.BackColor.R + "," + btnRegionColor.BackColor.G + "," + btnRegionColor.BackColor.B;
                         ir.SelectRegions = new List<RowCol>();
                         ir.RollbackType = RollbackType.incremental;
                         _monitorRollbackLine.BenMAPRollbacks.Add(ir);
                         _currentBenMAPRollback = ir;
                         ic._IncrementalRollback = ir;
                         this.flowLayoutPanel1.Controls.Add(ic);
-                        dicRegion.Add(lableIc.Text, regionIDInt);
+
+                        // Automatically select the newly added region
+                        rbRegion.PerformClick();
+
+                        dicRegion.Add(lblRegion.Text, regionIDInt);
                         break;
                     case "ToStandard":
                         ToStandardControl sc = new ToStandardControl(_monitorRollbackLine.Pollutant);
-
-                        if (i == 0 && j == 0 && k == 0)
-                        { sc.Location = new Point(0, 0); }
-                        else
-                        {
-                            sc.Location = new Point(0, i * 101 + j * 101 + k * 370 + (i + j + k - 1) * 1);
-                        }
-                        Label lableSc = new Label();
-                        sc.Controls.Add(lableSc);
-                        while (dicRegion.ContainsValue(regionnumber))
-                        {
-                            regionnumber++;
-                        }
-                        lableSc.Text = "Region" + " " + regionnumber.ToString();
-                        lableSc.Location = new Point(40, 3);
-                        Button buttonSc = new Button();
-                        sc.Controls.Add(buttonSc);
-                        buttonSc.Size = new Size(35, 23);
-                        buttonSc.Location = new Point(0, 0);
-                        buttonSc.Text = "";
-                        Random randomSc = new Random();
-                        buttonSc.BackColor = Color.FromArgb(randomSc.Next(255), randomSc.Next(255), randomSc.Next(255));
-
-                        reg = new Regex(@"\D"); s = reg.Replace(lableSc.Text, ""); regionIDInt = int.Parse(s);
+                        sc.Location = new Point(0, rollbackControlTop);
+                        sc.Controls.Add(rbRegion);
+                        sc.Controls.Add(btnRegionColor);
+                        sc.Controls.Add(lblRegion);
+                        sc.Controls.Add(btnRegionDelete);
+                        sc.RegionID = regionIDInt;
 
                         StandardRollback sr = new StandardRollback();
-                        sr.DrawingColor = buttonSc.BackColor.R + "," + buttonSc.BackColor.G + "," + buttonSc.BackColor.B; sr.RegionID = regionIDInt;
+                        sr.RegionID = regionIDInt;
+                        sr.DrawingColor = btnRegionColor.BackColor.R + "," + btnRegionColor.BackColor.G + "," + btnRegionColor.BackColor.B; 
                         sr.SelectRegions = new List<RowCol>();
                         sr.RollbackType = RollbackType.standard;
                         _monitorRollbackLine.BenMAPRollbacks.Add(sr);
                         _currentBenMAPRollback = sr;
                         sc._StandardRollback = sr;
                         this.flowLayoutPanel1.Controls.Add(sc);
-                        dicRegion.Add(lableSc.Text, regionIDInt);
+
+                        // Automatically select the newly added region
+                        rbRegion.PerformClick();
+
+                        dicRegion.Add(lblRegion.Text, regionIDInt);
                         break;
                     default:
                         break;
                 }
 
-                int flpCtlInx = this.flowLayoutPanel1.Controls.Count - 1;
-                if (this.flowLayoutPanel1.Controls[flpCtlInx].Controls[1].GetType().Name == "Label")
+                //Move Region Button to bottom
+                this.flowLayoutPanel1.Controls.SetChildIndex((Control)sender, this.flowLayoutPanel1.Controls.Count);
+
+                //Enable buttons if regions exist
+                btnNext.Enabled = true;
+                btnSelectAll.Enabled = true;
+                btnDeleteAll.Enabled = true;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+            }
+        }
+
+        private void RegionSelect_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string selectedRegionTag = (string)((Control)sender).Tag;
+
+                // Update UI selection
+                foreach (Control c in flowLayoutPanel1.Controls)
                 {
-                    cboDeleteRegion.Items.Add(this.flowLayoutPanel1.Controls[flpCtlInx].Controls[1].Text);
+                    if (c.GetType() == typeof(Button))
+                    {
+                        //skip the Add Region button
+                    } else if (c.Controls[1].Tag.Equals(selectedRegionTag) )
+                    {
+                        ((RadioButton)c.Controls[1]).Checked = true;
+                        c.BackColor = Color.White;
+                    } else {
+                        ((RadioButton)c.Controls[1]).Checked = false;
+                        c.BackColor = Color.Transparent;
+                    }
                 }
-                cboDeleteRegion.SelectedIndex = cboDeleteRegion.Items.Count - 1;
+
+                // Update backend selection
+                int regionIDInt = int.Parse(selectedRegionTag);
+
+                foreach (BenMAPRollback rollback in _monitorRollbackLine.BenMAPRollbacks)
+                {
+                    if (regionIDInt == rollback.RegionID)
+                    {
+                        _currentBenMAPRollback = rollback;
+                        break;
+                    }
+                }
+                ColorMap();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+            }
+        }
+
+        private void btnRegionDelete_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string selectedRegionTag = (string)((Control)sender).Tag;
+
+                for (int i = 0; i < this.flowLayoutPanel1.Controls.Count; i++)
+                {
+                    if(flowLayoutPanel1.Controls[i].GetType().Equals(typeof(Button)))
+                    {
+                        //Skip the Add Region button
+                    }
+                    else if (flowLayoutPanel1.Controls[i].Controls[1].Tag.Equals(selectedRegionTag) )
+                    {
+                        if (_monitorRollbackLine.BenMAPRollbacks.Count == 1)
+                        {
+                            _monitorRollbackLine.BenMAPRollbacks[0].DrawingColor = "255,255,255";
+                        }
+                        dicRegion.Remove(flowLayoutPanel1.Controls[i].Controls[3].Text);
+                        flowLayoutPanel1.Controls.RemoveAt(i);
+                        _monitorRollbackLine.BenMAPRollbacks.RemoveAt(i);
+                        ColorMap();
+                        //Disable buttons if all regions are gone
+                        if(flowLayoutPanel1.Controls.Count == 1)
+                        {
+                            btnNext.Enabled = false;
+                            btnSelectAll.Enabled = false;
+                            btnDeleteAll.Enabled = false;
+                        }
+                        return;
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -447,80 +554,6 @@ namespace BenMAP
                 }
             }
             return ToStandardControlCount;
-        }
-
-        private void btnDeleteRegion_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                for (int i = 0; i < this.flowLayoutPanel1.Controls.Count; i++)
-                {
-                    if (flowLayoutPanel1.Controls[i].Controls.Count != 0)
-                    {
-                        if (flowLayoutPanel1.Controls[i].Controls[1].Text == cboDeleteRegion.Text)
-                        {
-                            if (_monitorRollbackLine.BenMAPRollbacks.Count == 1)
-                            {
-                                _monitorRollbackLine.BenMAPRollbacks[0].DrawingColor = "255,255,255";
-                                ColorMap();
-                                flowLayoutPanel1.Controls.RemoveAt(i);
-                                dicRegion.Remove(cboDeleteRegion.Text);
-                                cboDeleteRegion.Items.Remove(cboDeleteRegion.SelectedItem);
-                                cboDeleteRegion.SelectedIndex = -1;
-                                _monitorRollbackLine.BenMAPRollbacks.RemoveAt(i);
-                                return;
-                            }
-                            flowLayoutPanel1.Controls.RemoveAt(i); dicRegion.Remove(cboDeleteRegion.Text);
-                            cboDeleteRegion.Items.Remove(cboDeleteRegion.SelectedItem);
-                            cboDeleteRegion.SelectedIndex = cboDeleteRegion.Items.Count - 1;
-                            _monitorRollbackLine.BenMAPRollbacks.RemoveAt(i);
-                            ColorMap();
-                            return;
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex);
-            }
-        }
-
-        private void cboActiveCtl_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                OnSelectedIndexChanged += new EventHandler(cboActiveCtl_SelectedIndexChanged);
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex);
-            }
-        }
-
-        private void cboDeleteRegion_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            Regex reg = new Regex(@"\D"); string s = reg.Replace(cboDeleteRegion.SelectedItem.ToString(), ""); int regionIDInt = int.Parse(s);
-
-            foreach (BenMAPRollback rollback in _monitorRollbackLine.BenMAPRollbacks)
-            {
-                if (regionIDInt == rollback.RegionID)
-                {
-                    _currentBenMAPRollback = rollback;
-                }
-            }
-            ColorMap();
-        }
-
-        public event EventHandler OnSelectedIndexChanged
-        {
-            add
-            {
-                cboDeleteRegion.SelectedIndexChanged += value;
-            }
-            remove
-            {
-            }
         }
 
         private void mainMap_SelectionChanged(object sender, EventArgs e)
@@ -590,7 +623,6 @@ namespace BenMAP
                     }
                 }
 
-
                 if (myScheme.Categories.Count > 0)
                 {
                     if (iRegionColor != dicMyColorIndex.Count)
@@ -619,7 +651,7 @@ namespace BenMAP
                 Rectangle rtol = new Rectangle(e.X - 8, e.Y - 8, 16, 16);
                 Rectangle rstr = new Rectangle(e.X - 1, e.Y - 1, 2, 2);
                 Extent tolerant = mainMap.PixelToProj(rtol);
-                Extent strict = (new DotSpatial.Topology.Point(mainMap.PixelToProj(new Point(e.X, e.Y)))).Envelope.ToExtent();
+                Extent strict = (new NetTopologySuite.Geometries.Point(mainMap.PixelToProj(new Point(e.X, e.Y)))).Envelope.EnvelopeInternal.ToExtent();
                 List<int> result = (mainMap.Layers[0] as IFeatureLayer).DataSet.SelectIndices(strict);
                 IFeature fSelect = null;
                 if (result.Count > 0)
@@ -627,10 +659,10 @@ namespace BenMAP
                     foreach (int iSelect in result)
                     {
                         IFeature fSelectTemp = (mainMap.Layers[0] as IFeatureLayer).DataSet.GetFeature(iSelect);
-                        if (fSelectTemp.BasicGeometry is DotSpatial.Topology.Polygon)
+                        if (fSelectTemp.Geometry is NetTopologySuite.Geometries.Polygon)
                         {
 
-                            if ((fSelectTemp.BasicGeometry as DotSpatial.Topology.Polygon).Contains(new DotSpatial.Topology.Point(mainMap.PixelToProj(new Point(e.X, e.Y)))))
+                            if ((fSelectTemp.Geometry as NetTopologySuite.Geometries.Polygon).Contains(new NetTopologySuite.Geometries.Point(mainMap.PixelToProj(new Point(e.X, e.Y)))))
                             {
                                 fSelect = fSelectTemp;
                                 break;
@@ -638,7 +670,7 @@ namespace BenMAP
                         }
                         else
                         {
-                            if ((fSelectTemp.BasicGeometry as DotSpatial.Topology.MultiPolygon).Contains(new DotSpatial.Topology.Point(mainMap.PixelToProj(new Point(e.X, e.Y)))))
+                            if ((fSelectTemp.Geometry as NetTopologySuite.Geometries.MultiPolygon).Contains(new NetTopologySuite.Geometries.Point(mainMap.PixelToProj(new Point(e.X, e.Y)))))
                             {
                                 fSelect = fSelectTemp;
                                 break;
@@ -800,6 +832,11 @@ namespace BenMAP
         {
             click = true;
             mainMap.FunctionMode = FunctionMode.None;
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
