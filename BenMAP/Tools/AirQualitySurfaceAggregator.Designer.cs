@@ -24,51 +24,75 @@ namespace BenMAP
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnOK = new System.Windows.Forms.Button();
             this.SuspendLayout();
-                                                this.btnBrowse.Location = new System.Drawing.Point(225, 26);
+            // 
+            // btnBrowse
+            // 
+            this.btnBrowse.Location = new System.Drawing.Point(225, 26);
             this.btnBrowse.Name = "btnBrowse";
             this.btnBrowse.Size = new System.Drawing.Size(75, 27);
             this.btnBrowse.TabIndex = 0;
             this.btnBrowse.Text = "Browse";
             this.btnBrowse.UseVisualStyleBackColor = true;
             this.btnBrowse.Click += new System.EventHandler(this.btnBrowse_Click);
-                                                this.label1.AutoSize = true;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(12, 10);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(110, 14);
             this.label1.TabIndex = 1;
             this.label1.Text = "Air Quality Surface:";
-                                                this.cboAggregationSurface.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            // 
+            // cboAggregationSurface
+            // 
+            this.cboAggregationSurface.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboAggregationSurface.FormattingEnabled = true;
             this.cboAggregationSurface.Location = new System.Drawing.Point(14, 82);
             this.cboAggregationSurface.Name = "cboAggregationSurface";
             this.cboAggregationSurface.Size = new System.Drawing.Size(286, 22);
             this.cboAggregationSurface.TabIndex = 2;
-                                                this.txtAirQualitySurface.Location = new System.Drawing.Point(12, 28);
+            // 
+            // txtAirQualitySurface
+            // 
+            this.txtAirQualitySurface.Location = new System.Drawing.Point(12, 28);
             this.txtAirQualitySurface.Name = "txtAirQualitySurface";
             this.txtAirQualitySurface.ReadOnly = true;
             this.txtAirQualitySurface.Size = new System.Drawing.Size(207, 22);
             this.txtAirQualitySurface.TabIndex = 3;
-                                                this.label2.AutoSize = true;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(12, 64);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(117, 14);
             this.label2.TabIndex = 4;
             this.label2.Text = "Aggregation Surface:";
-                                                this.btnCancel.Location = new System.Drawing.Point(144, 112);
+            // 
+            // btnCancel
+            // 
+            this.btnCancel.Location = new System.Drawing.Point(144, 112);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 27);
             this.btnCancel.TabIndex = 5;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
-                                                this.btnOK.Location = new System.Drawing.Point(225, 112);
+            // 
+            // btnOK
+            // 
+            this.btnOK.Location = new System.Drawing.Point(225, 112);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 27);
             this.btnOK.TabIndex = 6;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
-                                                this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
+            // 
+            // AirQualitySurfaceAggregation
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(312, 152);
             this.Controls.Add(this.btnOK);
@@ -82,7 +106,7 @@ namespace BenMAP
             this.MaximizeBox = false;
             this.Name = "AirQualitySurfaceAggregation";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Air Quality Surface Aggregator";
+            this.Text = "Aggregate Air Quality Surface";
             this.Load += new System.EventHandler(this.AirQualitySurfaceAggregator_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
