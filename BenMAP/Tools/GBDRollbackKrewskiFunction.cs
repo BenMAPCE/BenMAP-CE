@@ -23,11 +23,7 @@ namespace BenMAP
 
                 double ConcIn = concDelta[idx];
                 double PopIn = population[idx];
-                //double IncrateIn = Convert.ToDouble(incrate[idx]);
-                if (ConcIn < 0.0)
-                {
-                    ConcIn = 0.0;
-                }
+                
                 double krewski = (1 - (1 / Math.Exp(beta * ConcIn))) * PopIn * incrate;
                 double krewski_2_5pct = (1 - (1 / Math.Exp(qnorm5(.025, beta, se, true, false) * ConcIn))) * PopIn * incrate;
                 double krewski_97_5pct = (1 - (1 / Math.Exp(qnorm5(.975, beta, se, true, false) * ConcIn))) * PopIn * incrate;

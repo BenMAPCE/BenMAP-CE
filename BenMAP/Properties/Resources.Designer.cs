@@ -111,7 +111,7 @@ namespace BenMAP.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to August 26, 2016.
+        ///   Looks up a localized string similar to August 30, 2016.
         /// </summary>
         internal static string BuildDate {
             get {
@@ -165,6 +165,36 @@ namespace BenMAP.Properties {
         internal static System.Drawing.Bitmap folder_add {
             get {
                 object obj = ResourceManager.GetObject("folder_add", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap GBD_Increment {
+            get {
+                object obj = ResourceManager.GetObject("GBD_Increment", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap GBD_Percentage {
+            get {
+                object obj = ResourceManager.GetObject("GBD_Percentage", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap GBD_Standard {
+            get {
+                object obj = ResourceManager.GetObject("GBD_Standard", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

@@ -974,6 +974,9 @@
       <DependentUpon>QALYResulesReport.cs</DependentUpon>
     </Compile>
     <Compile Include="Jira\NewIssue.cs" />
+    <None Include="Resources\GBD_Increment.png" />
+    <None Include="Resources\GBD_Percentage.png" />
+    <None Include="Resources\GBD_Standard.png" />
     <None Include="Resources\zoom_out.png" />
     <None Include="Resources\zoom_in.png" />
     <None Include="Resources\pan.png" />
@@ -1036,12 +1039,14 @@
     <None Include="Resources\Welcome1.png" />
     <EmbeddedResource Include="APV\Aggregation.resx">
       <DependentUpon>Aggregation.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="APV\APVConfigurationAdvancedSettings.resx">
       <DependentUpon>APVConfigurationAdvancedSettings.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="APV\ChangedCRFunctions.resx">
       <DependentUpon>ChangedCRFunctions.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="APV\IncidencePoolingandAggregation.resx">
       <DependentUpon>IncidencePoolingandAggregation.cs</DependentUpon>
