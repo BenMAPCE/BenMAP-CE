@@ -366,6 +366,13 @@
     <Compile Include="DataConversion\DataConversionTool.designer.cs">
       <DependentUpon>DataConversionTool.cs</DependentUpon>
     </Compile>
+    <Compile Include="DataLayerExport\DataLayerExportDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DataLayerExport\DataLayerExportDialog.Designer.cs">
+      <DependentUpon>DataLayerExportDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DataLayerExport\DataLayerExporter.cs" />
     <Compile Include="DataSource\AdvancedOptions.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1106,6 +1113,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="DataConversion\DataConversionTool.resx">
       <DependentUpon>DataConversionTool.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DataLayerExport\DataLayerExportDialog.resx">
+      <DependentUpon>DataLayerExportDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="DataSource\AdvancedOptions.resx">
       <DependentUpon>AdvancedOptions.cs</DependentUpon>
