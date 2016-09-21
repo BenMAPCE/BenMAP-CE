@@ -4300,6 +4300,7 @@ namespace BenMAP
         public string _outputFileName;
         public void btnTableOutput_Click(object sender, EventArgs e)
         {
+            //This exports the full table as CSV... Shapefile save button on map should use similar approach to export data into shapefile columns
             if (_tableObject != null)
             {
                 bool isBatch = false;
