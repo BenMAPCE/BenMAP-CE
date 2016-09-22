@@ -22,6 +22,8 @@ namespace BenMAP.DataLayerExport
         private const string RESULTS_GRID_ROW = "Row";
         private const string LAYER_GRID_COLUMN = "COL";
         private const string LAYER_GRID_ROW = "ROW";
+        private const string RESULTS_GROUP = "Results";
+
 
         private readonly Map _map;
         private readonly IWin32Window _windowOwner;
@@ -200,8 +202,9 @@ namespace BenMAP.DataLayerExport
             }
 
             var layers = _map.GetAllLayers().OfType<IMapPolygonLayer>()
-                // These two columns must be in feature set
-                .Where(_ => _.DataSet.GetColumn(LAYER_GRID_COLUMN) != null &&
+                .Where(_ =>
+                            HasParentGroup(_, RESULTS_GROUP) &&
+                            _.DataSet.GetColumn(LAYER_GRID_COLUMN) != null &&
                             _.DataSet.GetColumn(LAYER_GRID_ROW) != null);
 
             using (var window = new DataLayerExportDialog(this, layers, _oblw.Columns, layer))
@@ -215,6 +218,18 @@ namespace BenMAP.DataLayerExport
         #endregion
 
         #region Private methods
+
+        private static bool HasParentGroup(ILegendItem item, string groupName)
+        {
+            while (true)
+            {
+                var parent = item.GetParentItem();
+                if (parent == null) return false;
+                if (parent is MapGroup && parent.LegendText == groupName)
+                    return true;
+                item = parent;
+            }
+        }
 
         private void ReportProgress(double percentage, string message)
         {
