@@ -60,6 +60,12 @@ namespace BenMAP
                     strCRPath = txtExistingConfiguration.Text;
                     string err = "";
                     BaseControlCRSelectFunction baseControlCRSelectFunction = Configuration.ConfigurationCommonClass.loadCFGFile(txtExistingConfiguration.Text, ref err);
+                    if (baseControlCRSelectFunction == null)
+                    {
+                        MessageBox.Show(err);
+                        this.DialogResult = System.Windows.Forms.DialogResult.None;
+                        return;
+                    }
                     BenMAPSetup benMAPSetup = null;
                     benMAPSetup = CommonClass.getBenMAPSetupFromName(baseControlCRSelectFunction.BaseControlGroup[0].GridType.SetupName);
                     if (CommonClass.MainSetup.SetupName != benMAPSetup.SetupName)
@@ -166,6 +172,12 @@ namespace BenMAP
             if (txtOpenExistingCFGR.Text == "") return;
             string err = "";
             BaseControlCRSelectFunctionCalculateValue baseControlCRSelectFunctionCalculateValue = Configuration.ConfigurationCommonClass.LoadCFGRFile(txtOpenExistingCFGR.Text, ref err);
+            if (baseControlCRSelectFunctionCalculateValue == null)
+            {
+                MessageBox.Show(err);
+                this.DialogResult = System.Windows.Forms.DialogResult.None;
+                return;
+            }
             BenMAPSetup benMAPSetup = null;
             benMAPSetup = CommonClass.getBenMAPSetupFromName(baseControlCRSelectFunctionCalculateValue.BaseControlGroup[0].GridType.SetupName);
             if (CommonClass.MainSetup.SetupName != benMAPSetup.SetupName)

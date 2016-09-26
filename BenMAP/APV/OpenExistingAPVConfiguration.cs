@@ -67,6 +67,12 @@ namespace BenMAP
             strAPVPath = txtAPV.Text;
             string err = "";
             ValuationMethodPoolingAndAggregation valuationMethodPoolingAndAggregation = APVX.APVCommonClass.loadAPVRFile(txtAPV.Text, ref err);
+            if (valuationMethodPoolingAndAggregation == null)
+            {
+                MessageBox.Show(err);
+                this.DialogResult = System.Windows.Forms.DialogResult.None;
+                return;
+            }
             BenMAPSetup benMAPSetup = null;
             benMAPSetup = CommonClass.getBenMAPSetupFromName(valuationMethodPoolingAndAggregation.BaseControlCRSelectFunctionCalculateValue.BaseControlGroup[0].GridType.SetupName);
             if (CommonClass.MainSetup.SetupName != benMAPSetup.SetupName)
@@ -134,6 +140,12 @@ namespace BenMAP
                 }
                 string err = "";
                 ValuationMethodPoolingAndAggregation valuationMethodPoolingAndAggregation = APVX.APVCommonClass.loadAPVRFile(txtAPVR.Text, ref err);
+                if (valuationMethodPoolingAndAggregation == null)
+                {
+                    MessageBox.Show(err);
+                    this.DialogResult = System.Windows.Forms.DialogResult.None;
+                    return;
+                }
                 BenMAPSetup benMAPSetup = null;
                 benMAPSetup = CommonClass.getBenMAPSetupFromName(valuationMethodPoolingAndAggregation.BaseControlCRSelectFunctionCalculateValue.BaseControlGroup[0].GridType.SetupName);
                 if (CommonClass.MainSetup.SetupName != benMAPSetup.SetupName)
