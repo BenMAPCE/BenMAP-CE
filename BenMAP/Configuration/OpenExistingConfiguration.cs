@@ -58,14 +58,28 @@ namespace BenMAP
                 else if (txtExistingConfiguration.Text.Substring(txtExistingConfiguration.Text.Length - 5, 5) == "cfgrx")
                 {
                     strCRPath = txtExistingConfiguration.Text;
-
+                    string err = "";
+                    BaseControlCRSelectFunction baseControlCRSelectFunction = Configuration.ConfigurationCommonClass.loadCFGFile(txtExistingConfiguration.Text, ref err);
+                    BenMAPSetup benMAPSetup = null;
+                    benMAPSetup = CommonClass.getBenMAPSetupFromName(baseControlCRSelectFunction.BaseControlGroup[0].GridType.SetupName);
+                    if (CommonClass.MainSetup.SetupName != benMAPSetup.SetupName)
+                    {
+                        DialogResult dialogResult = MessageBox.Show("Setup Name in selected configuratin file is different from current set up. Do you want to continue?", "warning", MessageBoxButtons.YesNo);
+                        if (dialogResult == DialogResult.Yes)
+                        {
+                        }
+                        else if (dialogResult == DialogResult.No)
+                        {
+                            this.DialogResult = System.Windows.Forms.DialogResult.None;
+                            return;
+                        }
+                    }
 
                     this.DialogResult = System.Windows.Forms.DialogResult.OK;
                 }
                 else
                 {
                     strCRPath = "";
-                    CommonClass.ClearAllObject();
                     string err = "";
                     BaseControlCRSelectFunction baseControlCRSelectFunction = Configuration.ConfigurationCommonClass.loadCFGFile(txtExistingConfiguration.Text, ref err);
                     if (baseControlCRSelectFunction == null)
@@ -73,8 +87,31 @@ namespace BenMAP
                         MessageBox.Show(err);
                         return;
                     }
+                    BenMAPSetup benMAPSetup = null;
+                    benMAPSetup = CommonClass.getBenMAPSetupFromName(baseControlCRSelectFunction.BaseControlGroup[0].GridType.SetupName);
+                    if (CommonClass.MainSetup.SetupName != benMAPSetup.SetupName)
+                    {
+                        DialogResult dialogResult = MessageBox.Show("Setup Name in selected configuratin file is different from current set up. Do you want to continue?", "warning", MessageBoxButtons.YesNo);
+                        if (dialogResult == DialogResult.Yes)
+                        {
+                        }
+                        else if (dialogResult == DialogResult.No)
+                        {
+                            this.DialogResult = System.Windows.Forms.DialogResult.None;
+                            return;
+                        }
+                    }
+                    CommonClass.ClearAllObject();
                     CommonClass.BaseControlCRSelectFunction = baseControlCRSelectFunction;
                     this.DialogResult = System.Windows.Forms.DialogResult.OK;
+
+                    if (baseControlCRSelectFunction == null)
+                    {
+                        MessageBox.Show(err);
+                        return;
+                    }
+
+
                 }
                 if (CommonClass.LstUpdateCRFunction != null)
                 {
@@ -127,7 +164,24 @@ namespace BenMAP
             strCRPath = txtOpenExistingCFGR.Text;
             GC.Collect();
             if (txtOpenExistingCFGR.Text == "") return;
+            string err = "";
+            BaseControlCRSelectFunctionCalculateValue baseControlCRSelectFunctionCalculateValue = Configuration.ConfigurationCommonClass.LoadCFGRFile(txtOpenExistingCFGR.Text, ref err);
+            BenMAPSetup benMAPSetup = null;
+            benMAPSetup = CommonClass.getBenMAPSetupFromName(baseControlCRSelectFunctionCalculateValue.BaseControlGroup[0].GridType.SetupName);
+            if (CommonClass.MainSetup.SetupName != benMAPSetup.SetupName)
+                {
+                    DialogResult dialogResult = MessageBox.Show("Setup Name in selected configuratin file is different from current set up. Do you want to continue?", "warning", MessageBoxButtons.YesNo);
+                    if (dialogResult == DialogResult.Yes)
+                    {
+                    }
+                    else if (dialogResult == DialogResult.No)
+                    {
+                        this.DialogResult = System.Windows.Forms.DialogResult.None;
+                    }
+                }
             this.DialogResult = System.Windows.Forms.DialogResult.OK;
+
+
         }
     }
 }

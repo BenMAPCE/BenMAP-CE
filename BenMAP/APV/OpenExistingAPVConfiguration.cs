@@ -65,6 +65,24 @@ namespace BenMAP
             strAPVPath = "";
             strCRPath = "";
             strAPVPath = txtAPV.Text;
+            string err = "";
+            ValuationMethodPoolingAndAggregation valuationMethodPoolingAndAggregation = APVX.APVCommonClass.loadAPVRFile(txtAPV.Text, ref err);
+            BenMAPSetup benMAPSetup = null;
+            benMAPSetup = CommonClass.getBenMAPSetupFromName(valuationMethodPoolingAndAggregation.BaseControlCRSelectFunctionCalculateValue.BaseControlGroup[0].GridType.SetupName);
+            if (CommonClass.MainSetup.SetupName != benMAPSetup.SetupName)
+            {
+                DialogResult dialogResult = MessageBox.Show("Setup Name in selected configuratin file is different from current set up. Do you want to continue?", "warning", MessageBoxButtons.YesNo);
+                if (dialogResult == DialogResult.Yes)
+                {
+                }
+                else if (dialogResult == DialogResult.No)
+                {
+                    this.DialogResult = System.Windows.Forms.DialogResult.None;
+                    return;
+                }
+
+            }
+
             CommonClass.BaseControlCRSelectFunctionCalculateValue = null;
 
             if (CommonClass.LstUpdateCRFunction != null)
@@ -114,6 +132,22 @@ namespace BenMAP
                     MessageBox.Show("Select (*.apvrx) file first.");
                     return;
                 }
+                string err = "";
+                ValuationMethodPoolingAndAggregation valuationMethodPoolingAndAggregation = APVX.APVCommonClass.loadAPVRFile(txtAPVR.Text, ref err);
+                BenMAPSetup benMAPSetup = null;
+                benMAPSetup = CommonClass.getBenMAPSetupFromName(valuationMethodPoolingAndAggregation.BaseControlCRSelectFunctionCalculateValue.BaseControlGroup[0].GridType.SetupName);
+                if (CommonClass.MainSetup.SetupName != benMAPSetup.SetupName)
+                {
+                    DialogResult dialogResult = MessageBox.Show("Setup Name in selected configuratin file is different from current set up. Do you want to continue?", "warning", MessageBoxButtons.YesNo);
+                    if (dialogResult == DialogResult.Yes)
+                    {
+                    }
+                    else if (dialogResult == DialogResult.No)
+                    {
+                        this.DialogResult = System.Windows.Forms.DialogResult.None;
+                        return;
+                    }
+                }
                 strAPVPath = "";
                 strCRPath = "";
                 strAPVPath = txtAPVR.Text;
@@ -131,6 +165,7 @@ namespace BenMAP
                 CommonClass.LstDelCRFunction = new List<CRSelectFunction>();
                 GC.Collect();
                 this.DialogResult = System.Windows.Forms.DialogResult.OK;
+
             }
             catch (Exception ex)
             {
