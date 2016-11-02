@@ -52,16 +52,16 @@
         </member>
         <member name="M:DotSpatial.Data.Forms.DataManagerExt.OpenVector(DotSpatial.Data.IDataManager)">
             <summary>
-            This opens a file, but populates the dialog filter with only raster formats.
+            This opens a file, but populates the dialog filter with only vector formats.
             </summary>
-            <returns>An IFeatureSet with the data from the file specified in a dialog</returns>
+            <returns>An IFeatureSet with the data from the file specified in a dialog, or null if nothing load.</returns>
         </member>
         <member name="M:DotSpatial.Data.Forms.DataManagerExt.OpenVectors(DotSpatial.Data.IDataManager)">
             <summary>
-            This uses an open dialog filter with only raster extensions but where multi-select is
-            enabled, hence allowing multiple rasters to be returned in this list.
+            This uses an open dialog filter with only vector extensions but where multi-select is
+            enabled, hence allowing multiple vectors to be returned in this list.
             </summary>
-            <returns>The list or rasters</returns>
+            <returns>The enumerable or vectors.</returns>
         </member>
         <member name="M:DotSpatial.Data.Forms.DataManagerExt.OpenImage(DotSpatial.Data.IDataManager)">
             <summary>
@@ -86,7 +86,7 @@
             This launches an open file dialog that allows loading of several files at once
             and returns the datasets in a list.
             </summary>
-            <returns>A list of all the files that were opened</returns>
+            <returns>An enumerable of all the files that were opened.</returns>
         </member>
         <member name="M:DotSpatial.Data.Forms.DataManagerExt.OpenRaster(DotSpatial.Data.IDataManager)">
             <summary>
@@ -99,7 +99,7 @@
             This uses an open dialog filter with only raster extensions but where multi-select is
             enabled, hence allowing multiple rasters to be returned in this list.
             </summary>
-            <returns>The list or rasters</returns>
+            <returns>An enumerable or rasters.</returns>
         </member>
         <member name="T:DotSpatial.Data.Forms.DialogImages">
             <summary>
@@ -132,19 +132,6 @@
             Creates a new instance of a directory item based on the specified path.
             </summary>
             <param name="path"></param>
-        </member>
-        <member name="M:DotSpatial.Data.Forms.DirectoryItem.Draw(System.Windows.Forms.PaintEventArgs)">
-            <summary>
-            This method instructs this item to draw itself onto the specified graphics surface.
-            </summary>
-            <param name="e">A PaintEventArgs that contains the Graphics object needed for drawing.</param>
-        </member>
-        <member name="M:DotSpatial.Data.Forms.DirectoryItem.OnDraw(System.Windows.Forms.PaintEventArgs)">
-            <summary>
-            This supplies the basic drawing for this one element where the graphics object has been transformed
-            based on the position of this item.
-            </summary>
-            <param name="e">A PaintEventArgs that contains the Graphics object needed for drawing.</param>
         </member>
         <member name="P:DotSpatial.Data.Forms.DirectoryItem.BackColor">
             <summary>
@@ -232,150 +219,22 @@
             Gets or sets the height of this control
             </summary>
         </member>
+        <member name="M:DotSpatial.Data.Forms.DirectoryItem.Draw(System.Windows.Forms.PaintEventArgs)">
+            <summary>
+            This method instructs this item to draw itself onto the specified graphics surface.
+            </summary>
+            <param name="e">A PaintEventArgs that contains the Graphics object needed for drawing.</param>
+        </member>
+        <member name="M:DotSpatial.Data.Forms.DirectoryItem.OnDraw(System.Windows.Forms.PaintEventArgs)">
+            <summary>
+            This supplies the basic drawing for this one element where the graphics object has been transformed
+            based on the position of this item.
+            </summary>
+            <param name="e">A PaintEventArgs that contains the Graphics object needed for drawing.</param>
+        </member>
         <member name="T:DotSpatial.Data.Forms.DirectoryView">
             <summary>
             DirectoryView
-            </summary>
-        </member>
-        <member name="T:DotSpatial.Data.Forms.ScrollingControl">
-            <summary>
-            ScrollingControl that provides autoscroll and custom draw that won't crash mono
-            </summary>
-        </member>
-        <member name="M:DotSpatial.Data.Forms.ScrollingControl.#ctor">
-            <summary>
-            Creates a new instance of ScrollingControl
-            </summary>
-        </member>
-        <member name="M:DotSpatial.Data.Forms.ScrollingControl.OnVerticalScroll(System.Object,System.Windows.Forms.ScrollEventArgs)">
-            <summary>
-            Occurs when scrolling vertically
-            </summary>
-            <param name="sender"></param>
-            <param name="e"></param>
-        </member>
-        <member name="M:DotSpatial.Data.Forms.ScrollingControl.OnHorizontalScroll(System.Object,System.Windows.Forms.ScrollEventArgs)">
-            <summary>
-            Occurs when scrolling horizontally
-            </summary>
-            <param name="sender"></param>
-            <param name="e"></param>
-        </member>
-        <member name="M:DotSpatial.Data.Forms.ScrollingControl.ClientToDocument(System.Drawing.Rectangle)">
-            <summary>
-            Gets a rectangle in document coordinates for hte specified rectangle in client coordinates
-            </summary>
-            <param name="rect"></param>
-            <returns></returns>
-        </member>
-        <member name="M:DotSpatial.Data.Forms.ScrollingControl.DocumentToClient(System.Drawing.Rectangle)">
-            <summary>
-            Translates a rectangle from document coordinates to coordinates relative to the client control
-            </summary>
-            <param name="rect"></param>
-            <returns></returns>
-        </member>
-        <member name="M:DotSpatial.Data.Forms.ScrollingControl.ResetScroll">
-            <summary>
-            Recalculates the size and visibility of the scroll bars based on the current document.
-            </summary>
-        </member>
-        <member name="M:DotSpatial.Data.Forms.ScrollingControl.OnPaintBackground(System.Windows.Forms.PaintEventArgs)">
-            <summary>
-            Prevent flicker by preventing this
-            </summary>
-            <param name="pevent"></param>
-        </member>
-        <member name="M:DotSpatial.Data.Forms.ScrollingControl.OnPaint(System.Windows.Forms.PaintEventArgs)">
-            <summary>
-            On Paint only paints the specified clip rectangle, but paints
-            it from the page buffer.
-            </summary>
-            <param name="e"></param>
-        </member>
-        <member name="M:DotSpatial.Data.Forms.ScrollingControl.OnDrawBackground(System.Windows.Forms.PaintEventArgs)">
-            <summary>
-            Occurs during custom drawing when erasing things
-            </summary>
-            <param name="e"></param>
-        </member>
-        <member name="M:DotSpatial.Data.Forms.ScrollingControl.OnDraw(System.Windows.Forms.PaintEventArgs)">
-            <summary>
-            Occurs during custom drawing
-            </summary>
-            <param name="e"></param>
-        </member>
-        <member name="M:DotSpatial.Data.Forms.ScrollingControl.Dispose(System.Boolean)">
-            <summary>
-            Disposes the unmanaged memory objects and optionally disposes
-            the managed memory objects
-            </summary>
-            <param name="disposing"></param>
-        </member>
-        <member name="M:DotSpatial.Data.Forms.ScrollingControl.OnInitialize(System.Windows.Forms.PaintEventArgs)">
-            <summary>
-            Fires the Initialized event
-            </summary>
-            <param name="e"></param>
-        </member>
-        <member name="M:DotSpatial.Data.Forms.ScrollingControl.OnResize(System.EventArgs)">
-             <summary>
-            
-             </summary>
-             <param name="e"></param>
-        </member>
-        <member name="E:DotSpatial.Data.Forms.ScrollingControl.Initialized">
-            <summary>
-            Occurs after the base drawing content has been rendered to the page.
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Data.Forms.ScrollingControl.BackColor">
-            <summary>
-            Gets or sets the background color to use for this control
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Data.Forms.ScrollingControl.BackgroundImage">
-             <summary>
-            
-             </summary>
-        </member>
-        <member name="P:DotSpatial.Data.Forms.ScrollingControl.ControlRectangle">
-            <summary>
-            Gets the rectangular region of the control in page coordinates.
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Data.Forms.ScrollingControl.DocumentRectangle">
-            <summary>
-            Gets or sets the rectangle for the entire content, whether on the page buffer or not.  X and Y for this
-            are always 0.
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Data.Forms.ScrollingControl.IsInitialized">
-            <summary>
-            Gets or sets whether or not the page for this control has been drawn.
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Data.Forms.ScrollingControl.HorizontalScrollEnabled">
-            <summary>
-            Gets or sets a boolean indicating whether or not horizontal scrolling is enabled
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Data.Forms.ScrollingControl.Page">
-            <summary>
-            Gets or sets the page image being used as a buffer.  This is useful
-            for content changes that need to be made rapidly.  First refresh
-            a small region of this page, and then invalidate the client rectangle.
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Data.Forms.ScrollingControl.ResetOnResize">
-            <summary>
-            Gets or sets a boolean that indicates whether or not the scrolling
-            should be reset on every resize or not.
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Data.Forms.ScrollingControl.VerticalScrollEnabled">
-            <summary>
-            Gets or sets a boolean indicating whether the vertical scroll should be permitted
             </summary>
         </member>
         <member name="F:DotSpatial.Data.Forms.DirectoryView._directory">
@@ -388,11 +247,32 @@
             Creates a new instance of DirectoryView
             </summary>
         </member>
+        <member name="P:DotSpatial.Data.Forms.DirectoryView.SelectedItem">
+            <summary>
+            Gets or sets the selected item.  In cases of a multiple select, this is the
+            last member added to the selection.
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Data.Forms.DirectoryView.Directory">
+            <summary>
+            Gets or sets the string path that should be itemized in the view.
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Data.Forms.DirectoryView.Items">
+            <summary>
+            Gets or sets the collection of DirectoryItems to draw in this control
+            </summary>
+        </member>
         <member name="M:DotSpatial.Data.Forms.DirectoryView.OnInitialize(System.Windows.Forms.PaintEventArgs)">
             <summary>
             Draws
             </summary>
             <param name="e"></param>
+        </member>
+        <member name="P:DotSpatial.Data.Forms.DirectoryView.Font">
+            <summary>
+            Gets or sets the Font to be used for all of the items in this view.
+            </summary>
         </member>
         <member name="M:DotSpatial.Data.Forms.DirectoryView.OnMouseDown(System.Windows.Forms.MouseEventArgs)">
             <summary>
@@ -422,68 +302,47 @@
             Systematically clears any currently selected items.
             </summary>
         </member>
-        <member name="P:DotSpatial.Data.Forms.DirectoryView.SelectedItem">
-            <summary>
-            Gets or sets the selected item.  In cases of a multiple select, this is the
-            last member added to the selection.
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Data.Forms.DirectoryView.Directory">
-            <summary>
-            Gets or sets the string path that should be itemized in the view.
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Data.Forms.DirectoryView.Items">
-            <summary>
-            Gets or sets the collection of DirectoryItems to draw in this control
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Data.Forms.DirectoryView.Font">
-            <summary>
-            Gets or sets the Font to be used for all of the items in this view.
-            </summary>
-        </member>
-        <member name="T:DotSpatial.Modeling.Forms.ExtentDialog">
+        <member name="T:DotSpatial.Data.Forms.ExtentDialog">
             <summary>
             A Dialog that allows users to enter an X, Y, Z or M extent.
             </summary>
         </member>
-        <member name="M:DotSpatial.Modeling.Forms.ExtentDialog.#ctor">
+        <member name="M:DotSpatial.Data.Forms.ExtentDialog.#ctor">
             <summary>
             Initializes a new instance of the ExtentDialog class.
             </summary>
         </member>
-        <member name="M:DotSpatial.Modeling.Forms.ExtentDialog.Clear">
+        <member name="P:DotSpatial.Data.Forms.ExtentDialog.Extent">
+            <summary>
+            Gets or sets the extent specified by this form.
+            </summary>
+        </member>
+        <member name="M:DotSpatial.Data.Forms.ExtentDialog.Clear">
             <summary>
             Resets all the values to 0.
             </summary>
         </member>
-        <member name="M:DotSpatial.Modeling.Forms.ExtentDialog.OnClosing(System.ComponentModel.CancelEventArgs)">
+        <member name="M:DotSpatial.Data.Forms.ExtentDialog.OnClosing(System.ComponentModel.CancelEventArgs)">
             <summary>
             Prevents closing as "OK" if there are invalid double values.
             </summary>
             <param name="e">CancelEventArgs that allow canceling close.</param>
         </member>
-        <member name="F:DotSpatial.Modeling.Forms.ExtentDialog.components">
+        <member name="F:DotSpatial.Data.Forms.ExtentDialog.components">
             <summary>
             Required designer variable.
             </summary>
         </member>
-        <member name="M:DotSpatial.Modeling.Forms.ExtentDialog.Dispose(System.Boolean)">
+        <member name="M:DotSpatial.Data.Forms.ExtentDialog.Dispose(System.Boolean)">
             <summary>
             Clean up any resources being used.
             </summary>
             <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         </member>
-        <member name="M:DotSpatial.Modeling.Forms.ExtentDialog.InitializeComponent">
+        <member name="M:DotSpatial.Data.Forms.ExtentDialog.InitializeComponent">
             <summary>
             Required method for Designer support - do not modify
             the contents of this method with the code editor.
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Modeling.Forms.ExtentDialog.Extent">
-            <summary>
-            Gets or sets the extent specified by this form.
             </summary>
         </member>
         <member name="T:DotSpatial.Data.Forms.FeatureSetExt">
@@ -559,6 +418,19 @@
             intercept the different log levels.
             </summary>
         </member>
+        <member name="P:DotSpatial.Data.Forms.ILogger.Description">
+            <summary>
+            Gets a string description for this logger.
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Data.Forms.ILogger.Key">
+            <summary>
+            Gets or Sets an integer key to keep track of this logger.
+            When you add this logger to a LogManager, it will attempt to keep track of the
+            logger by using the key it was given.  If that key is already in use, this
+            will be set to the next available integer.
+            </summary>
+        </member>
         <member name="M:DotSpatial.Data.Forms.ILogger.Exception(System.Exception)">
             <summary>
             The Complete exception is passed here.  To get the stack
@@ -605,19 +477,6 @@
             <param name="messageText">The string message that appeared on the InputBox</param>
             <param name="result">The ystem.Windows.Forms.DialogResult describing if the value was cancelled </param>
             <param name="value">The string containing the value entered.</param>
-        </member>
-        <member name="P:DotSpatial.Data.Forms.ILogger.Description">
-            <summary>
-            Gets a string description for this logger.
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Data.Forms.ILogger.Key">
-            <summary>
-            Gets or Sets an integer key to keep track of this logger.
-            When you add this logger to a LogManager, it will attempt to keep track of the
-            logger by using the key it was given.  If that key is already in use, this
-            will be set to the next available integer.
-            </summary>
         </member>
         <member name="T:DotSpatial.Data.Forms.ILogManager">
             <summary>
@@ -999,12 +858,6 @@
             <param name="validation">A DotSpatial.Data.ValidationType enumeration specifying acceptable validation to return OK.</param>
             <param name="icon">Specifies an icon to appear on this messagebox.</param>
         </member>
-        <member name="M:DotSpatial.Data.Forms.InputBox.Dispose(System.Boolean)">
-            <summary>
-            Clean up any resources being used.
-            </summary>
-            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        </member>
         <member name="P:DotSpatial.Data.Forms.InputBox.Result">
             <summary>
             The string result that was entered for this text box.
@@ -1014,6 +867,12 @@
             <summary>
             Gets or sets the type of validation to force on the value before the OK option is permitted.
             </summary>
+        </member>
+        <member name="M:DotSpatial.Data.Forms.InputBox.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         </member>
         <member name="T:DotSpatial.Data.Forms.ItemType">
             <summary>
@@ -1077,6 +936,11 @@
             <summary>
             Creates a new instance of the LogManager.
             </summary>
+        </member>
+        <member name="P:DotSpatial.Data.Forms.LogManager.Components1">
+             <summary>
+            
+             </summary>
         </member>
         <member name="M:DotSpatial.Data.Forms.LogManager.AddLogger(DotSpatial.Data.Forms.ILogger)">
             <summary>
@@ -1377,20 +1241,15 @@
             <param name="result">The string result that was typed into the dialog.</param>
             <returns>A DialogResult showing the outcome.</returns>
         </member>
+        <member name="P:DotSpatial.Data.Forms.LogManager.Directories">
+            <summary>
+            Gets or sets the list of string directories that may contain dlls with ILogManagers
+            </summary>
+        </member>
         <member name="M:DotSpatial.Data.Forms.LogManager.InitializeComponent">
             <summary>
             Required method for Designer support - do not modify
             the contents of this method with the code editor.
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Data.Forms.LogManager.Components1">
-             <summary>
-            
-             </summary>
-        </member>
-        <member name="P:DotSpatial.Data.Forms.LogManager.Directories">
-            <summary>
-            Gets or sets the list of string directories that may contain dlls with ILogManagers
             </summary>
         </member>
         <member name="T:DotSpatial.Data.Forms.NavigateEventArgs">
@@ -1451,6 +1310,147 @@
             <summary>
             Displays a dialog, allowing the users to open a raster.
             </summary>
+        </member>
+        <member name="T:DotSpatial.Data.Forms.ScrollingControl">
+            <summary>
+            ScrollingControl that provides autoscroll and custom draw that won't crash mono
+            </summary>
+        </member>
+        <member name="E:DotSpatial.Data.Forms.ScrollingControl.Initialized">
+            <summary>
+            Occurs after the base drawing content has been rendered to the page.
+            </summary>
+        </member>
+        <member name="M:DotSpatial.Data.Forms.ScrollingControl.#ctor">
+            <summary>
+            Creates a new instance of ScrollingControl
+            </summary>
+        </member>
+        <member name="M:DotSpatial.Data.Forms.ScrollingControl.OnVerticalScroll(System.Object,System.Windows.Forms.ScrollEventArgs)">
+            <summary>
+            Occurs when scrolling vertically
+            </summary>
+            <param name="sender"></param>
+            <param name="e"></param>
+        </member>
+        <member name="M:DotSpatial.Data.Forms.ScrollingControl.OnHorizontalScroll(System.Object,System.Windows.Forms.ScrollEventArgs)">
+            <summary>
+            Occurs when scrolling horizontally
+            </summary>
+            <param name="sender"></param>
+            <param name="e"></param>
+        </member>
+        <member name="M:DotSpatial.Data.Forms.ScrollingControl.ClientToDocument(System.Drawing.Rectangle)">
+            <summary>
+            Gets a rectangle in document coordinates for hte specified rectangle in client coordinates
+            </summary>
+            <param name="rect"></param>
+            <returns></returns>
+        </member>
+        <member name="M:DotSpatial.Data.Forms.ScrollingControl.DocumentToClient(System.Drawing.Rectangle)">
+            <summary>
+            Translates a rectangle from document coordinates to coordinates relative to the client control
+            </summary>
+            <param name="rect"></param>
+            <returns></returns>
+        </member>
+        <member name="M:DotSpatial.Data.Forms.ScrollingControl.ResetScroll">
+            <summary>
+            Recalculates the size and visibility of the scroll bars based on the current document.
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Data.Forms.ScrollingControl.BackColor">
+            <summary>
+            Gets or sets the background color to use for this control
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Data.Forms.ScrollingControl.BackgroundImage">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="P:DotSpatial.Data.Forms.ScrollingControl.ControlRectangle">
+            <summary>
+            Gets the rectangular region of the control in page coordinates.
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Data.Forms.ScrollingControl.DocumentRectangle">
+            <summary>
+            Gets or sets the rectangle for the entire content, whether on the page buffer or not.  X and Y for this
+            are always 0.
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Data.Forms.ScrollingControl.IsInitialized">
+            <summary>
+            Gets or sets whether or not the page for this control has been drawn.
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Data.Forms.ScrollingControl.HorizontalScrollEnabled">
+            <summary>
+            Gets or sets a boolean indicating whether or not horizontal scrolling is enabled
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Data.Forms.ScrollingControl.Page">
+            <summary>
+            Gets or sets the page image being used as a buffer.  This is useful
+            for content changes that need to be made rapidly.  First refresh
+            a small region of this page, and then invalidate the client rectangle.
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Data.Forms.ScrollingControl.ResetOnResize">
+            <summary>
+            Gets or sets a boolean that indicates whether or not the scrolling
+            should be reset on every resize or not.
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Data.Forms.ScrollingControl.VerticalScrollEnabled">
+            <summary>
+            Gets or sets a boolean indicating whether the vertical scroll should be permitted
+            </summary>
+        </member>
+        <member name="M:DotSpatial.Data.Forms.ScrollingControl.OnPaintBackground(System.Windows.Forms.PaintEventArgs)">
+            <summary>
+            Prevent flicker by preventing this
+            </summary>
+            <param name="pevent"></param>
+        </member>
+        <member name="M:DotSpatial.Data.Forms.ScrollingControl.OnPaint(System.Windows.Forms.PaintEventArgs)">
+            <summary>
+            On Paint only paints the specified clip rectangle, but paints
+            it from the page buffer.
+            </summary>
+            <param name="e"></param>
+        </member>
+        <member name="M:DotSpatial.Data.Forms.ScrollingControl.OnDrawBackground(System.Windows.Forms.PaintEventArgs)">
+            <summary>
+            Occurs during custom drawing when erasing things
+            </summary>
+            <param name="e"></param>
+        </member>
+        <member name="M:DotSpatial.Data.Forms.ScrollingControl.OnDraw(System.Windows.Forms.PaintEventArgs)">
+            <summary>
+            Occurs during custom drawing
+            </summary>
+            <param name="e"></param>
+        </member>
+        <member name="M:DotSpatial.Data.Forms.ScrollingControl.Dispose(System.Boolean)">
+            <summary>
+            Disposes the unmanaged memory objects and optionally disposes
+            the managed memory objects
+            </summary>
+            <param name="disposing"></param>
+        </member>
+        <member name="M:DotSpatial.Data.Forms.ScrollingControl.OnInitialize(System.Windows.Forms.PaintEventArgs)">
+            <summary>
+            Fires the Initialized event
+            </summary>
+            <param name="e"></param>
+        </member>
+        <member name="M:DotSpatial.Data.Forms.ScrollingControl.OnResize(System.EventArgs)">
+             <summary>
+            
+             </summary>
+             <param name="e"></param>
         </member>
         <member name="T:DotSpatial.Data.Forms.SelectEventArgs">
             <summary>
@@ -1530,11 +1530,6 @@
             Resets the progress meter to the 0 value.  This sets the status message to "Ready.".
             </summary>
         </member>
-        <member name="M:DotSpatial.Data.Forms.TimedProgressMeter.SendProgress">
-            <summary>
-            Sends a progress message to the IProgressHandler interface with the current message and progres
-            </summary>
-        </member>
         <member name="P:DotSpatial.Data.Forms.TimedProgressMeter.Key">
             <summary>
             Gets or sets the string that does not include any mention of progress percentage, but specifies what is occuring.
@@ -1590,6 +1585,11 @@
         <member name="P:DotSpatial.Data.Forms.TimedProgressMeter.ProgressHandler">
             <summary>
             Gets or sets the progress handler for this meter
+            </summary>
+        </member>
+        <member name="M:DotSpatial.Data.Forms.TimedProgressMeter.SendProgress">
+            <summary>
+            Sends a progress message to the IProgressHandler interface with the current message and progres
             </summary>
         </member>
         <member name="T:DotSpatial.Data.Forms.TryXmlDocument">

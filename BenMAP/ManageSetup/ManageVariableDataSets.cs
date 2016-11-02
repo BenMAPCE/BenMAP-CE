@@ -11,7 +11,7 @@ namespace BenMAP
 {
     public partial class ManageVariableDataSets : FormBase
     {
-        bool bEdit = false;//Edit flag
+        //bool bEdit = false;//Edit flag
         int _datasetID;
         private bool bIsLocked = false;
 

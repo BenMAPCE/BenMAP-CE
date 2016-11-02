@@ -22,51 +22,8 @@
                 rarely created at run-time.</para>
             </remarks>
         </member>
-        <member name="T:DotSpatial.Positioning.Design.PositioningNumericObjectConverter">
-            <summary>
-            An abstract class that is inherited by several other classes to handle type conversions.
-            </summary>
-        </member>
-        <member name="T:DotSpatial.Positioning.Design.PositioningObjectConverter">
-            <summary>
-            A base Expandable object converter
-            </summary>
-        </member>
-        <member name="M:DotSpatial.Positioning.Design.PositioningObjectConverter.CanConvertFrom(System.ComponentModel.ITypeDescriptorContext,System.Type)">
+        <member name="P:DotSpatial.Positioning.Design.AngleConverter.HandledTypeName">
             <inheritdocs/>
-        </member>
-        <member name="M:DotSpatial.Positioning.Design.PositioningObjectConverter.ConvertFrom(System.ComponentModel.ITypeDescriptorContext,System.Globalization.CultureInfo,System.Object)">
-            <inheritdocs/>
-        </member>
-        <member name="M:DotSpatial.Positioning.Design.PositioningObjectConverter.CanConvertTo(System.ComponentModel.ITypeDescriptorContext,System.Type)">
-            <inheritdocs/>
-        </member>
-        <member name="M:DotSpatial.Positioning.Design.PositioningObjectConverter.ConvertTo(System.ComponentModel.ITypeDescriptorContext,System.Globalization.CultureInfo,System.Object,System.Type)">
-            <inheritdocs/>
-        </member>
-        <member name="P:DotSpatial.Positioning.Design.PositioningObjectConverter.HandledTypeName">
-            <summary>
-            Indicates the name of the type handled by this type converter.
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Positioning.Design.PositioningObjectConverter.HandledAssemblyName">
-            <summary>
-            Indicates the full nume of the assembly housing objects handled by this type converter.
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Positioning.Design.PositioningObjectConverter.HandledAssemblyVersion">
-            <summary>
-            Gets the hard coded assembly version of the library that this designer handles.
-            </summary>
-        </member>
-        <member name="M:DotSpatial.Positioning.Design.PositioningNumericObjectConverter.CanConvertFrom(System.ComponentModel.ITypeDescriptorContext,System.Type)">
-            <inheritdoc/>
-        </member>
-        <member name="M:DotSpatial.Positioning.Design.PositioningNumericObjectConverter.ConvertFrom(System.ComponentModel.ITypeDescriptorContext,System.Globalization.CultureInfo,System.Object)">
-            <inheritdoc/>
-        </member>
-        <member name="M:DotSpatial.Positioning.Design.PositioningNumericObjectConverter.CanConvertTo(System.ComponentModel.ITypeDescriptorContext,System.Type)">
-            <inheritdoc/>
         </member>
         <member name="M:DotSpatial.Positioning.Design.AngleConverter.ConvertTo(System.ComponentModel.ITypeDescriptorContext,System.Globalization.CultureInfo,System.Object,System.Type)">
             <inheritdocs/>
@@ -80,13 +37,13 @@
         <member name="M:DotSpatial.Positioning.Design.AngleConverter.GetStandardValuesExclusive(System.ComponentModel.ITypeDescriptorContext)">
             <inheritdocs/>
         </member>
-        <member name="P:DotSpatial.Positioning.Design.AngleConverter.HandledTypeName">
-            <inheritdocs/>
-        </member>
         <member name="T:DotSpatial.Positioning.Design.AreaConverter">
             <summary>
             Provides functionality to convert string values to and from Area objects at design time.
             </summary>
+        </member>
+        <member name="P:DotSpatial.Positioning.Design.AreaConverter.HandledTypeName">
+            <inheritdocs/>
         </member>
         <member name="M:DotSpatial.Positioning.Design.AreaConverter.ConvertTo(System.ComponentModel.ITypeDescriptorContext,System.Globalization.CultureInfo,System.Object,System.Type)">
             <inheritdocs/>
@@ -98,9 +55,6 @@
             <inheritdocs/>
         </member>
         <member name="M:DotSpatial.Positioning.Design.AreaConverter.GetStandardValuesExclusive(System.ComponentModel.ITypeDescriptorContext)">
-            <inheritdocs/>
-        </member>
-        <member name="P:DotSpatial.Positioning.Design.AreaConverter.HandledTypeName">
             <inheritdocs/>
         </member>
         <member name="T:DotSpatial.Positioning.Design.AzimuthConverter">
@@ -121,6 +75,9 @@
                 rarely created at run-time.</para>
             </remarks>
         </member>
+        <member name="P:DotSpatial.Positioning.Design.AzimuthConverter.HandledTypeName">
+            <inheritdocs/>
+        </member>
         <member name="M:DotSpatial.Positioning.Design.AzimuthConverter.ConvertTo(System.ComponentModel.ITypeDescriptorContext,System.Globalization.CultureInfo,System.Object,System.Type)">
             <inheritdocs/>
         </member>
@@ -131,9 +88,6 @@
             <inheritdocs/>
         </member>
         <member name="M:DotSpatial.Positioning.Design.AzimuthConverter.GetStandardValuesExclusive(System.ComponentModel.ITypeDescriptorContext)">
-            <inheritdocs/>
-        </member>
-        <member name="P:DotSpatial.Positioning.Design.AzimuthConverter.HandledTypeName">
             <inheritdocs/>
         </member>
         <member name="T:DotSpatial.Positioning.Design.CartesianPointConverter">
@@ -153,6 +107,9 @@
                 rarely created at run-time.</para>
             </remarks>
         </member>
+        <member name="P:DotSpatial.Positioning.Design.CartesianPointConverter.HandledTypeName">
+            <inheritdocs/>
+        </member>
         <member name="M:DotSpatial.Positioning.Design.CartesianPointConverter.ConvertTo(System.ComponentModel.ITypeDescriptorContext,System.Globalization.CultureInfo,System.Object,System.Type)">
             <inheritdocs/>
         </member>
@@ -165,23 +122,12 @@
         <member name="M:DotSpatial.Positioning.Design.CartesianPointConverter.GetStandardValuesExclusive(System.ComponentModel.ITypeDescriptorContext)">
             <inheritdocs/>
         </member>
-        <member name="P:DotSpatial.Positioning.Design.CartesianPointConverter.HandledTypeName">
-            <inheritdocs/>
-        </member>
         <member name="T:DotSpatial.Positioning.Design.DilutionOfPrecisionConverter">
             <summary>
             Provides functionality to convert string values to and from DilutionOfPrecision objects at design time.
             </summary>
         </member>
-        <member name="T:DotSpatial.Positioning.Design.PositioningFormsNumericObjectConverter">
-            <summary>
-            The PositioningFormsNumericObjectConverter handles the object conversion but is tailored to work with the DotSpatial.Positioning.Forms class.
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Positioning.Design.PositioningFormsNumericObjectConverter.HandledAssemblyVersion">
-            <inheritdocs/>
-        </member>
-        <member name="P:DotSpatial.Positioning.Design.PositioningFormsNumericObjectConverter.HandledAssemblyName">
+        <member name="P:DotSpatial.Positioning.Design.DilutionOfPrecisionConverter.HandledTypeName">
             <inheritdocs/>
         </member>
         <member name="M:DotSpatial.Positioning.Design.DilutionOfPrecisionConverter.ConvertTo(System.ComponentModel.ITypeDescriptorContext,System.Globalization.CultureInfo,System.Object,System.Type)">
@@ -194,9 +140,6 @@
             <inheritdocs/>
         </member>
         <member name="M:DotSpatial.Positioning.Design.DilutionOfPrecisionConverter.GetStandardValuesExclusive(System.ComponentModel.ITypeDescriptorContext)">
-            <inheritdocs/>
-        </member>
-        <member name="P:DotSpatial.Positioning.Design.DilutionOfPrecisionConverter.HandledTypeName">
             <inheritdocs/>
         </member>
         <member name="T:DotSpatial.Positioning.Design.DistanceConverter">
@@ -216,6 +159,9 @@
                 rarely created at run-time.</para>
             </remarks>
         </member>
+        <member name="P:DotSpatial.Positioning.Design.DistanceConverter.HandledTypeName">
+            <inheritdocs/>
+        </member>
         <member name="M:DotSpatial.Positioning.Design.DistanceConverter.ConvertTo(System.ComponentModel.ITypeDescriptorContext,System.Globalization.CultureInfo,System.Object,System.Type)">
             <inheritdocs/>
         </member>
@@ -226,9 +172,6 @@
             <inheritdocs/>
         </member>
         <member name="M:DotSpatial.Positioning.Design.DistanceConverter.GetStandardValuesExclusive(System.ComponentModel.ITypeDescriptorContext)">
-            <inheritdocs/>
-        </member>
-        <member name="P:DotSpatial.Positioning.Design.DistanceConverter.HandledTypeName">
             <inheritdocs/>
         </member>
         <member name="T:DotSpatial.Positioning.Design.ElevationConverter">
@@ -249,6 +192,9 @@
                 rarely created at run-time.</para>
             </remarks>
         </member>
+        <member name="P:DotSpatial.Positioning.Design.ElevationConverter.HandledTypeName">
+            <inheritdocs/>
+        </member>
         <member name="M:DotSpatial.Positioning.Design.ElevationConverter.ConvertTo(System.ComponentModel.ITypeDescriptorContext,System.Globalization.CultureInfo,System.Object,System.Type)">
             <inheritdocs/>
         </member>
@@ -261,7 +207,50 @@
         <member name="M:DotSpatial.Positioning.Design.ElevationConverter.GetStandardValuesExclusive(System.ComponentModel.ITypeDescriptorContext)">
             <inheritdocs/>
         </member>
-        <member name="P:DotSpatial.Positioning.Design.ElevationConverter.HandledTypeName">
+        <member name="T:DotSpatial.Positioning.Design.PositioningNumericObjectConverter">
+            <summary>
+            An abstract class that is inherited by several other classes to handle type conversions.
+            </summary>
+        </member>
+        <member name="M:DotSpatial.Positioning.Design.PositioningNumericObjectConverter.CanConvertFrom(System.ComponentModel.ITypeDescriptorContext,System.Type)">
+            <inheritdoc/>
+        </member>
+        <member name="M:DotSpatial.Positioning.Design.PositioningNumericObjectConverter.ConvertFrom(System.ComponentModel.ITypeDescriptorContext,System.Globalization.CultureInfo,System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:DotSpatial.Positioning.Design.PositioningNumericObjectConverter.CanConvertTo(System.ComponentModel.ITypeDescriptorContext,System.Type)">
+            <inheritdoc/>
+        </member>
+        <member name="T:DotSpatial.Positioning.Design.PositioningObjectConverter">
+            <summary>
+            A base Expandable object converter
+            </summary>
+        </member>
+        <member name="M:DotSpatial.Positioning.Design.PositioningObjectConverter.CanConvertFrom(System.ComponentModel.ITypeDescriptorContext,System.Type)">
+            <inheritdocs/>
+        </member>
+        <member name="P:DotSpatial.Positioning.Design.PositioningObjectConverter.HandledTypeName">
+            <summary>
+            Indicates the name of the type handled by this type converter.
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Positioning.Design.PositioningObjectConverter.HandledAssemblyName">
+            <summary>
+            Indicates the full nume of the assembly housing objects handled by this type converter.
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Positioning.Design.PositioningObjectConverter.HandledAssemblyVersion">
+            <summary>
+            Gets the hard coded assembly version of the library that this designer handles.
+            </summary>
+        </member>
+        <member name="M:DotSpatial.Positioning.Design.PositioningObjectConverter.ConvertFrom(System.ComponentModel.ITypeDescriptorContext,System.Globalization.CultureInfo,System.Object)">
+            <inheritdocs/>
+        </member>
+        <member name="M:DotSpatial.Positioning.Design.PositioningObjectConverter.CanConvertTo(System.ComponentModel.ITypeDescriptorContext,System.Type)">
+            <inheritdocs/>
+        </member>
+        <member name="M:DotSpatial.Positioning.Design.PositioningObjectConverter.ConvertTo(System.ComponentModel.ITypeDescriptorContext,System.Globalization.CultureInfo,System.Object,System.Type)">
             <inheritdocs/>
         </member>
         <member name="T:DotSpatial.Positioning.Design.GeographicRectangleConverter">
@@ -282,6 +271,9 @@
                 rarely created at run-time.</para>
             </remarks>
         </member>
+        <member name="P:DotSpatial.Positioning.Design.GeographicRectangleConverter.HandledTypeName">
+            <inheritdocs/>
+        </member>
         <member name="M:DotSpatial.Positioning.Design.GeographicRectangleConverter.ConvertTo(System.ComponentModel.ITypeDescriptorContext,System.Globalization.CultureInfo,System.Object,System.Type)">
             <inheritdocs/>
         </member>
@@ -292,9 +284,6 @@
             <inheritdocs/>
         </member>
         <member name="M:DotSpatial.Positioning.Design.GeographicRectangleConverter.GetStandardValuesExclusive(System.ComponentModel.ITypeDescriptorContext)">
-            <inheritdocs/>
-        </member>
-        <member name="P:DotSpatial.Positioning.Design.GeographicRectangleConverter.HandledTypeName">
             <inheritdocs/>
         </member>
         <member name="T:DotSpatial.Positioning.Design.GeographicSizeConverter">
@@ -315,6 +304,9 @@
                 rarely created at run-time.</para>
             </remarks>
         </member>
+        <member name="P:DotSpatial.Positioning.Design.GeographicSizeConverter.HandledTypeName">
+            <inheritdocs/>
+        </member>
         <member name="M:DotSpatial.Positioning.Design.GeographicSizeConverter.ConvertTo(System.ComponentModel.ITypeDescriptorContext,System.Globalization.CultureInfo,System.Object,System.Type)">
             <inheritdocs/>
         </member>
@@ -327,7 +319,15 @@
         <member name="M:DotSpatial.Positioning.Design.GeographicSizeConverter.GetStandardValuesExclusive(System.ComponentModel.ITypeDescriptorContext)">
             <inheritdocs/>
         </member>
-        <member name="P:DotSpatial.Positioning.Design.GeographicSizeConverter.HandledTypeName">
+        <member name="T:DotSpatial.Positioning.Design.PositioningFormsNumericObjectConverter">
+            <summary>
+            The PositioningFormsNumericObjectConverter handles the object conversion but is tailored to work with the DotSpatial.Positioning.Forms class.
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Positioning.Design.PositioningFormsNumericObjectConverter.HandledAssemblyVersion">
+            <inheritdocs/>
+        </member>
+        <member name="P:DotSpatial.Positioning.Design.PositioningFormsNumericObjectConverter.HandledAssemblyName">
             <inheritdocs/>
         </member>
         <member name="T:DotSpatial.Positioning.Design.LatitudeConverter">
@@ -347,6 +347,9 @@
                 rarely created at run-time.</para>
             </remarks>
         </member>
+        <member name="P:DotSpatial.Positioning.Design.LatitudeConverter.HandledTypeName">
+            <inheritdocs/>
+        </member>
         <member name="M:DotSpatial.Positioning.Design.LatitudeConverter.ConvertTo(System.ComponentModel.ITypeDescriptorContext,System.Globalization.CultureInfo,System.Object,System.Type)">
             <inheritdocs/>
         </member>
@@ -357,9 +360,6 @@
             <inheritdocs/>
         </member>
         <member name="M:DotSpatial.Positioning.Design.LatitudeConverter.GetStandardValuesExclusive(System.ComponentModel.ITypeDescriptorContext)">
-            <inheritdocs/>
-        </member>
-        <member name="P:DotSpatial.Positioning.Design.LatitudeConverter.HandledTypeName">
             <inheritdocs/>
         </member>
         <member name="T:DotSpatial.Positioning.Design.LongitudeConverter">
@@ -379,6 +379,9 @@
                 rarely created at run-time.</para>
             </remarks>
         </member>
+        <member name="P:DotSpatial.Positioning.Design.LongitudeConverter.HandledTypeName">
+            <inheritdocs/>
+        </member>
         <member name="M:DotSpatial.Positioning.Design.LongitudeConverter.ConvertTo(System.ComponentModel.ITypeDescriptorContext,System.Globalization.CultureInfo,System.Object,System.Type)">
             <inheritdocs/>
         </member>
@@ -389,9 +392,6 @@
             <inheritdocs/>
         </member>
         <member name="M:DotSpatial.Positioning.Design.LongitudeConverter.GetStandardValuesExclusive(System.ComponentModel.ITypeDescriptorContext)">
-            <inheritdocs/>
-        </member>
-        <member name="P:DotSpatial.Positioning.Design.LongitudeConverter.HandledTypeName">
             <inheritdocs/>
         </member>
         <member name="T:DotSpatial.Positioning.Design.PercentConverter">
@@ -412,6 +412,9 @@
                 rarely created at run-time.</para>
             </remarks>
         </member>
+        <member name="P:DotSpatial.Positioning.Design.PercentConverter.HandledTypeName">
+            <inheritdocs/>
+        </member>
         <member name="M:DotSpatial.Positioning.Design.PercentConverter.ConvertTo(System.ComponentModel.ITypeDescriptorContext,System.Globalization.CultureInfo,System.Object,System.Type)">
             <inheritdocs/>
         </member>
@@ -422,9 +425,6 @@
             <inheritdocs/>
         </member>
         <member name="M:DotSpatial.Positioning.Design.PercentConverter.GetStandardValuesExclusive(System.ComponentModel.ITypeDescriptorContext)">
-            <inheritdocs/>
-        </member>
-        <member name="P:DotSpatial.Positioning.Design.PercentConverter.HandledTypeName">
             <inheritdocs/>
         </member>
         <member name="T:DotSpatial.Positioning.Design.PointDConverter">
@@ -444,6 +444,9 @@
                 rarely created at run-time.</para>
             </remarks>
         </member>
+        <member name="P:DotSpatial.Positioning.Design.PointDConverter.HandledTypeName">
+            <inheritdocs/>
+        </member>
         <member name="M:DotSpatial.Positioning.Design.PointDConverter.ConvertTo(System.ComponentModel.ITypeDescriptorContext,System.Globalization.CultureInfo,System.Object,System.Type)">
             <inheritdocs/>
         </member>
@@ -454,9 +457,6 @@
             <inheritdocs/>
         </member>
         <member name="M:DotSpatial.Positioning.Design.PointDConverter.GetStandardValuesExclusive(System.ComponentModel.ITypeDescriptorContext)">
-            <inheritdocs/>
-        </member>
-        <member name="P:DotSpatial.Positioning.Design.PointDConverter.HandledTypeName">
             <inheritdocs/>
         </member>
         <member name="T:DotSpatial.Positioning.Design.PositionConverter">
@@ -477,6 +477,9 @@
                 rarely created at run-time.</para>
             </remarks>
         </member>
+        <member name="P:DotSpatial.Positioning.Design.PositionConverter.HandledTypeName">
+            <inheritdocs/>
+        </member>
         <member name="M:DotSpatial.Positioning.Design.PositionConverter.ConvertTo(System.ComponentModel.ITypeDescriptorContext,System.Globalization.CultureInfo,System.Object,System.Type)">
             <inheritdocs/>
         </member>
@@ -489,13 +492,13 @@
         <member name="M:DotSpatial.Positioning.Design.PositionConverter.GetStandardValuesExclusive(System.ComponentModel.ITypeDescriptorContext)">
             <inheritdocs/>
         </member>
-        <member name="P:DotSpatial.Positioning.Design.PositionConverter.HandledTypeName">
-            <inheritdocs/>
-        </member>
         <member name="T:DotSpatial.Positioning.Design.RadianConverter">
             <summary>
             Type converter for angles in radians
             </summary>
+        </member>
+        <member name="P:DotSpatial.Positioning.Design.RadianConverter.HandledTypeName">
+            <inheritdoc/>
         </member>
         <member name="M:DotSpatial.Positioning.Design.RadianConverter.ConvertTo(System.ComponentModel.ITypeDescriptorContext,System.Globalization.CultureInfo,System.Object,System.Type)">
             <inheritdoc/>
@@ -507,9 +510,6 @@
             <inheritdoc/>
         </member>
         <member name="M:DotSpatial.Positioning.Design.RadianConverter.GetStandardValuesExclusive(System.ComponentModel.ITypeDescriptorContext)">
-            <inheritdoc/>
-        </member>
-        <member name="P:DotSpatial.Positioning.Design.RadianConverter.HandledTypeName">
             <inheritdoc/>
         </member>
         <member name="T:DotSpatial.Positioning.Design.RectangleDConverter">
@@ -529,6 +529,9 @@
                 rarely created at run-time.</para>
             </remarks>
         </member>
+        <member name="P:DotSpatial.Positioning.Design.RectangleDConverter.HandledTypeName">
+            <inheritdocs/>
+        </member>
         <member name="M:DotSpatial.Positioning.Design.RectangleDConverter.ConvertTo(System.ComponentModel.ITypeDescriptorContext,System.Globalization.CultureInfo,System.Object,System.Type)">
             <inheritdocs/>
         </member>
@@ -541,13 +544,13 @@
         <member name="M:DotSpatial.Positioning.Design.RectangleDConverter.GetStandardValuesExclusive(System.ComponentModel.ITypeDescriptorContext)">
             <inheritdocs/>
         </member>
-        <member name="P:DotSpatial.Positioning.Design.RectangleDConverter.HandledTypeName">
-            <inheritdocs/>
-        </member>
         <member name="T:DotSpatial.Positioning.Design.SignalToNoiseRatioConverter">
             <summary>
             Provides functionality to convert string values to and from SignalToNoiseRatio objects at design time.
             </summary>
+        </member>
+        <member name="P:DotSpatial.Positioning.Design.SignalToNoiseRatioConverter.HandledTypeName">
+            <inheritdocs/>
         </member>
         <member name="M:DotSpatial.Positioning.Design.SignalToNoiseRatioConverter.ConvertTo(System.ComponentModel.ITypeDescriptorContext,System.Globalization.CultureInfo,System.Object,System.Type)">
             <inheritdocs/>
@@ -559,9 +562,6 @@
             <inheritdocs/>
         </member>
         <member name="M:DotSpatial.Positioning.Design.SignalToNoiseRatioConverter.GetStandardValuesExclusive(System.ComponentModel.ITypeDescriptorContext)">
-            <inheritdocs/>
-        </member>
-        <member name="P:DotSpatial.Positioning.Design.SignalToNoiseRatioConverter.HandledTypeName">
             <inheritdocs/>
         </member>
         <member name="T:DotSpatial.Positioning.Design.SizeDConverter">
@@ -581,6 +581,9 @@
                 rarely created at run-time.</para>
             </remarks>
         </member>
+        <member name="P:DotSpatial.Positioning.Design.SizeDConverter.HandledTypeName">
+            <inheritdocs/>
+        </member>
         <member name="M:DotSpatial.Positioning.Design.SizeDConverter.ConvertTo(System.ComponentModel.ITypeDescriptorContext,System.Globalization.CultureInfo,System.Object,System.Type)">
             <inheritdocs/>
         </member>
@@ -591,9 +594,6 @@
             <inheritdocs/>
         </member>
         <member name="M:DotSpatial.Positioning.Design.SizeDConverter.GetStandardValuesExclusive(System.ComponentModel.ITypeDescriptorContext)">
-            <inheritdocs/>
-        </member>
-        <member name="P:DotSpatial.Positioning.Design.SizeDConverter.HandledTypeName">
             <inheritdocs/>
         </member>
         <member name="T:DotSpatial.Positioning.Design.SpeedConverter">
@@ -613,10 +613,10 @@
                 rarely created at run-time.</para>
             </remarks>
         </member>
-        <member name="M:DotSpatial.Positioning.Design.SpeedConverter.ConvertTo(System.ComponentModel.ITypeDescriptorContext,System.Globalization.CultureInfo,System.Object,System.Type)">
+        <member name="P:DotSpatial.Positioning.Design.SpeedConverter.HandledTypeName">
             <inheritdocs/>
         </member>
-        <member name="P:DotSpatial.Positioning.Design.SpeedConverter.HandledTypeName">
+        <member name="M:DotSpatial.Positioning.Design.SpeedConverter.ConvertTo(System.ComponentModel.ITypeDescriptorContext,System.Globalization.CultureInfo,System.Object,System.Type)">
             <inheritdocs/>
         </member>
     </members>

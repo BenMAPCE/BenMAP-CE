@@ -7,11 +7,11 @@
 using System;
 using System.Collections.Generic;
 using DotSpatial.Data;
-using DotSpatial.Topology;
 using DotSpatial.Analysis;
 using BenMAP;
 using System.IO;
 using System.Diagnostics;
+using DotSpatial.NTSExtension;
 
 namespace benmap
 {
@@ -31,10 +31,10 @@ namespace benmap
             double rasterMinXCenter = inputRaster.Xllcenter;
 
             // Does the poly sit to the left of the raster or does the raster start before the left edge of the poly
-            if (polygon.Envelope.Minimum.X < rasterMinXCenter)
+            if (polygon.Geometry.EnvelopeInternal.Minimum.X < rasterMinXCenter)
                 return rasterMinXCenter;
             else
-                return FirstColumnToProcess(polygon.Envelope.Minimum.X, rasterMinXCenter, inputRaster.CellWidth);
+                return FirstColumnToProcess(polygon.Geometry.EnvelopeInternal.Minimum.X, rasterMinXCenter, inputRaster.CellWidth);
         }
 
         /// <summary>
@@ -51,10 +51,10 @@ namespace benmap
             double rasterMinXCenter = inputRaster.Xllcenter;
 
             // Does the poly sit to the left of the raster or does the raster start before the left edge of the poly
-            if (polygon.Envelope.Minimum.X < rasterMinXCenter)
+            if (polygon.Geometry.EnvelopeInternal.Minimum.X < rasterMinXCenter)
                 return 0;
             else
-                return ColumnIndexToProcess(polygon.Envelope.Minimum.X, rasterMinXCenter, inputRaster.CellWidth);
+                return ColumnIndexToProcess(polygon.Geometry.EnvelopeInternal.Minimum.X, rasterMinXCenter, inputRaster.CellWidth);
         }
 
         /// <summary>
@@ -70,10 +70,10 @@ namespace benmap
             double rasterMaxXCenter = inputRaster.Extent.MaxX - inputRaster.CellWidth / 2;
 
             // Does the poly sit to the right of the raster or does the raster end after the right edge of the poly
-            if (polygon.Envelope.Right() > rasterMaxXCenter)
+            if (polygon.Geometry.EnvelopeInternal.Right() > rasterMaxXCenter)
                 return inputRaster.NumColumns - 1;
             else
-                return ColumnIndexToProcess(polygon.Envelope.Right(), rasterMaxXCenter, inputRaster.CellWidth);
+                return ColumnIndexToProcess(polygon.Geometry.EnvelopeInternal.Right(), rasterMaxXCenter, inputRaster.CellWidth);
         }
 
         /// <summary>

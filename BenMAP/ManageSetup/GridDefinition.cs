@@ -1,25 +1,23 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using DotSpatial.Controls;
 using DotSpatial.Data;
-using FirebirdSql.Data.FirebirdClient;
 using System.IO;
 using ESIL.DBUtility;
-using DotSpatial.Topology;
 using DotSpatial.Projections;
+using GeoAPI.Geometries;
+using NetTopologySuite.Geometries;
 
 
 namespace BenMAP
 {
     public partial class GridDefinition : FormBase
     {
-
+        private static int REGULAR_GRID = 0;
         private enum RowColFieldsValidationCode { BOTH_EXIST = 0, BOTH_MISSING = 1, COL_MISSING = 2, ROW_MISSING = 3, DUPLICATE_PAIR = 4, INCORRECT_FORMAT = 5, UNSPECIFIED_ERROR = 6};
 
         public GridDefinition()
@@ -775,9 +773,12 @@ namespace BenMAP
                 else
                 {
                     //ensure shapefile is correctly formatted.
-                    if (ValidateColumnsRows(_shapeFilePath,false) != RowColFieldsValidationCode.BOTH_EXIST)
+                    if(_gridType != REGULAR_GRID)
                     {
-                        return;
+                        if (ValidateColumnsRows(_shapeFilePath, false) != RowColFieldsValidationCode.BOTH_EXIST)
+                        {
+                            return;
+                        }
                     }
 
 
@@ -867,6 +868,10 @@ namespace BenMAP
                                 {
                                     fs.SaveAs(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.ManageSetup.SetupName + "\\" + txtGridID.Text + ".shp", true);
                                     _filePath = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.ManageSetup.SetupName + "\\" + txtGridID.Text + ".shp";
+                                }
+                                catch (Exception ex)
+                                {
+                                    Logger.LogError(ex);
                                 }
                                 finally
                                 {
@@ -986,7 +991,10 @@ namespace BenMAP
 
         private void saveMetadata()
         {
-
+            if (_metadataObj == null)
+            {
+                GetMetadata();
+            }
             _metadataObj.DatasetTypeId = SQLStatementsCommonClass.getDatasetID("GridDefinition");
 
             if(!SQLStatementsCommonClass.insertMetadata(_metadataObj))
@@ -1119,7 +1127,6 @@ namespace BenMAP
                 {
                     for (int j = 0; j < Rows; j++)
                     {
-                        Feature f = new Feature();
                         List<Coordinate> lstCoordinate = new List<Coordinate>();
                         Coordinate coordinate = new Coordinate();
                         coordinate.X = MinLongitude + i * (1.0000 / Convert.ToDouble(ColsPerLongitude));
@@ -1148,10 +1155,8 @@ namespace BenMAP
                         lstCoordinate.Add(coordinate);
 
 
-
-                        DotSpatial.Topology.Polygon p = new DotSpatial.Topology.Polygon(lstCoordinate.ToArray());
-                        f.BasicGeometry = p;
-                        fs.AddFeature(f);
+                        var p = new Polygon(new LinearRing(lstCoordinate.ToArray()));
+                        fs.AddFeature(p);
                         fs.DataTable.Rows[i * Rows + j]["Col"] = i + 1;
                         fs.DataTable.Rows[i * Rows + j]["Row"] = j + 1;
 

@@ -23,47 +23,65 @@ namespace BenMAP.DataSource
             this.lblIncrement = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
-                                                this.groupBox1.Controls.Add(this.txtBackground);
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.txtBackground);
             this.groupBox1.Controls.Add(this.txtIncrement);
             this.groupBox1.Controls.Add(this.lblBackground);
             this.groupBox1.Controls.Add(this.lblIncrement);
-            this.groupBox1.Location = new System.Drawing.Point(3, 24);
+            this.groupBox1.Location = new System.Drawing.Point(3, 26);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(175, 77);
+            this.groupBox1.Size = new System.Drawing.Size(175, 83);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Rollback Parameters";
-                                                this.txtBackground.Location = new System.Drawing.Point(83, 52);
+            // 
+            // txtBackground
+            // 
+            this.txtBackground.Location = new System.Drawing.Point(83, 56);
             this.txtBackground.Name = "txtBackground";
-            this.txtBackground.Size = new System.Drawing.Size(82, 21);
+            this.txtBackground.Size = new System.Drawing.Size(82, 20);
             this.txtBackground.TabIndex = 3;
             this.txtBackground.Text = "0.00";
             this.txtBackground.TextChanged += new System.EventHandler(this.txtBackground_TextChanged);
             this.txtBackground.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtBackground_KeyPress);
-                                                this.txtIncrement.Location = new System.Drawing.Point(83, 22);
+            // 
+            // txtIncrement
+            // 
+            this.txtIncrement.Location = new System.Drawing.Point(83, 24);
             this.txtIncrement.Name = "txtIncrement";
-            this.txtIncrement.Size = new System.Drawing.Size(82, 21);
+            this.txtIncrement.Size = new System.Drawing.Size(82, 20);
             this.txtIncrement.TabIndex = 2;
             this.txtIncrement.Text = "0.00";
             this.txtIncrement.TextChanged += new System.EventHandler(this.txtIncrement_TextChanged);
             this.txtIncrement.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtIncrement_KeyPress);
-                                                this.lblBackground.AutoSize = true;
-            this.lblBackground.Location = new System.Drawing.Point(6, 55);
+            // 
+            // lblBackground
+            // 
+            this.lblBackground.AutoSize = true;
+            this.lblBackground.Location = new System.Drawing.Point(6, 60);
             this.lblBackground.Name = "lblBackground";
-            this.lblBackground.Size = new System.Drawing.Size(71, 12);
+            this.lblBackground.Size = new System.Drawing.Size(68, 13);
             this.lblBackground.TabIndex = 1;
             this.lblBackground.Text = "Background:";
-                                                this.lblIncrement.AutoSize = true;
-            this.lblIncrement.Location = new System.Drawing.Point(6, 25);
+            // 
+            // lblIncrement
+            // 
+            this.lblIncrement.AutoSize = true;
+            this.lblIncrement.Location = new System.Drawing.Point(6, 27);
             this.lblIncrement.Name = "lblIncrement";
-            this.lblIncrement.Size = new System.Drawing.Size(65, 12);
+            this.lblIncrement.Size = new System.Drawing.Size(57, 13);
             this.lblIncrement.TabIndex = 0;
             this.lblIncrement.Text = "Increment:";
-                                                this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
+            // 
+            // IncrementalControl
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.groupBox1);
             this.Name = "IncrementalControl";
-            this.Size = new System.Drawing.Size(181, 101);
+            this.Size = new System.Drawing.Size(181, 111);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.ResumeLayout(false);

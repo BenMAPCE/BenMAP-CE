@@ -204,6 +204,18 @@ namespace BenMAP
                 treeNode.Nodes.Add("Population Dataset:" + baseControlCRSelectFunction.BenMAPPopulation.DataSetName + "-" + baseControlCRSelectFunction.BenMAPPopulation.GridType.GridDefinitionName);
                 treeNode.Nodes.Add("Year:" + baseControlCRSelectFunction.BenMAPPopulation.Year);
                 treeNode.Nodes.Add("Threshold:" + baseControlCRSelectFunction.CRThreshold);
+
+                String incidenceTxt = "";
+                if (Configuration.ConfigurationCommonClass.indidenceAvgSelected == Configuration.ConfigurationCommonClass.incidenceAveraging.averageAll)
+                {
+                    incidenceTxt = "All";
+                }
+                else
+                {
+                    incidenceTxt = "Filtered";
+                }
+                treeNode.Nodes.Add("Incidence averaging:" + incidenceTxt);
+
                 foreach (BaseControlGroup bcg in baseControlCRSelectFunction.BaseControlGroup)
                 {
                     TreeNode tn = getTreeNodeFromBaseControlGroup(bcg);
@@ -292,6 +304,18 @@ namespace BenMAP
                 treeNode.Nodes.Add("Population Dataset:" + baseControlCRSelectFunctionCalculateValue.BenMAPPopulation.DataSetName + "-" + baseControlCRSelectFunctionCalculateValue.BenMAPPopulation.GridType.GridDefinitionName);
                 treeNode.Nodes.Add("Year:" + baseControlCRSelectFunctionCalculateValue.BenMAPPopulation.Year);
                 treeNode.Nodes.Add("Threshold:" + baseControlCRSelectFunctionCalculateValue.CRThreshold);
+
+                String incidenceTxt = "";
+                if (Configuration.ConfigurationCommonClass.indidenceAvgSelected == Configuration.ConfigurationCommonClass.incidenceAveraging.averageAll)
+                {
+                    incidenceTxt = "All";
+                }
+                else
+                {
+                    incidenceTxt = "Filtered";
+                }
+                treeNode.Nodes.Add("Incidence averaging:" + incidenceTxt);
+
                 foreach (BaseControlGroup bcg in baseControlCRSelectFunctionCalculateValue.BaseControlGroup)
                 {
                     TreeNode tn = getTreeNodeFromBaseControlGroup(bcg);

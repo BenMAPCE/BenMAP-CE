@@ -13,6 +13,7 @@ using System.Xml;
 using System.Configuration;
 using System.Diagnostics;
 using System.Reflection;
+using DataConversion;
 
 namespace BenMAP
 {
@@ -87,7 +88,8 @@ namespace BenMAP
                 {
                     isOK = false;
                    
-                    MessageBox.Show(ex.StackTrace);
+                    //MessageBox.Show(ex.StackTrace);
+                    MessageBox.Show("Unable to load database at "+CommonClass.Connection.ConnectionString+".");//\nReason: "+ex.ToString());
                     return isOK;
                 }
                 
@@ -797,6 +799,18 @@ namespace BenMAP
             DialogResult rtn = frm.ShowDialog();
         }
 
+        private void onlineDatabaseExportToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OnlineDatabaseExport frm = new OnlineDatabaseExport();
+            DialogResult rtn = frm.ShowDialog();
+        }
+
+        private void onlineDatabaseImportToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OnlineDatabaseImport frm = new OnlineDatabaseImport();
+            DialogResult rtn = frm.ShowDialog();
+        }
+
         private void Main_FormClosing(object sender, FormClosingEventArgs e)
         {
 
@@ -865,6 +879,11 @@ namespace BenMAP
             DialogResult rtn = frm.ShowDialog();
         }
 
+        private void PopSIMtoolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            PopSim.frm_PopSim frm = new PopSim.frm_PopSim();
+            DialogResult rtn = frm.ShowDialog();
+        }
         private void errorReportingToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ErrorReporting frm = new ErrorReporting();
@@ -878,5 +897,10 @@ namespace BenMAP
 
         }
 
+        private void monitorDataConversionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DataConversionTool frm = new DataConversionTool();
+            frm.ShowDialog();
+        }
     }
 }

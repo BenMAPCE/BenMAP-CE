@@ -1,0 +1,1965 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>DotSpatial.NTSExtension</name>
+    </assembly>
+    <members>
+        <member name="T:DotSpatial.NTSExtension.Angle">
+            <summary>
+            A geometric angle mesured in degrees or radians
+            the angle will wrap around, so setting larger values will
+            result in an appropriate angle.
+            </summary>
+        </member>
+        <member name="F:DotSpatial.NTSExtension.Angle.PI">
+            <summary>
+            The value of 3.14159 or whatever from Math.PI
+            </summary>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Angle.#ctor(System.Double)">
+            <summary>
+            Creates a new instance of an angle with the radians specified
+            </summary>
+            <param name="radians">The angle in radians</param>
+        </member>
+        <member name="P:DotSpatial.NTSExtension.Angle.Degrees">
+            <summary>
+            Gets or sets the angle in degrees, ranging from -360 to 360
+            </summary>
+        </member>
+        <member name="P:DotSpatial.NTSExtension.Angle.DegreesPos">
+            <summary>
+            Gets or sets the angle in degrees ranging from 0 to 360
+            </summary>
+        </member>
+        <member name="P:DotSpatial.NTSExtension.Angle.Radians">
+            <summary>
+            Only allows values from -2PI to 2PI.
+            </summary>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Angle.Copy">
+            <summary>
+            Returns a new instance of the Angle class with the same angle as this object.
+            </summary>
+            <returns>Angle which has the same values</returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Angle.Equals(System.Object)">
+            <summary>
+            False for anything that is not an angle.
+            Tests two angles to see if they have the same value.
+            </summary>
+            <param name="obj">An object to test.</param>
+            <returns>Boolean, true if the angles have the same value.</returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Angle.GetHashCode">
+            <summary>
+            Gets a hash code
+            </summary>
+            <returns>Int hash code</returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Angle.op_Explicit(System.Double)~DotSpatial.NTSExtension.Angle">
+            <summary>
+            Returns a new angle object with an angle of Value in radians
+            </summary>
+            <param name="value">The double value indicating the angle</param>
+            <returns>An Angle structure with the specified value</returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Angle.op_Explicit(DotSpatial.NTSExtension.Angle)~System.Double">
+            <summary>
+            Returns a double specifying the radian value of the angle
+            </summary>
+            <param name="value">The angle structure to determine the angle of</param>
+            <returns>A Double with the angle in radians</returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Angle.op_Equality(DotSpatial.NTSExtension.Angle,DotSpatial.NTSExtension.Angle)">
+            <summary>
+            Returns true if the two angles are equal to each other.
+            </summary>
+            <param name="a">An angle to compare</param>
+            <param name="b">A second angle.</param>
+            <returns>Boolean, true if they are equal.</returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Angle.op_Inequality(DotSpatial.NTSExtension.Angle,DotSpatial.NTSExtension.Angle)">
+            <summary>
+            Returns true if the two angles are equal to each other.
+            </summary>
+            <param name="a">An angle to compare</param>
+            <param name="b">A second angle.</param>
+            <returns>Boolean, true if they are equal.</returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Angle.op_Addition(DotSpatial.NTSExtension.Angle,DotSpatial.NTSExtension.Angle)">
+            <summary>
+            Returns the sum of the two angles, cycling if greater than 2 pi.
+            </summary>
+            <param name="a">An angle to add</param>
+            <param name="b">A second angle to add</param>
+            <returns>A new Angle structure equal to the sum of the two angles</returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Angle.op_Subtraction(DotSpatial.NTSExtension.Angle,DotSpatial.NTSExtension.Angle)">
+            <summary>
+            Returns the difference of two angles.
+            </summary>
+            <param name="a">An angle to subtract from</param>
+            <param name="b">The angle to subtract</param>
+            <returns>A new angle structure with a sum equal to the two angles</returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Angle.op_Division(DotSpatial.NTSExtension.Angle,DotSpatial.NTSExtension.Angle)">
+            <summary>
+            Divides angle A by angle B
+            </summary>
+            <param name="a">An angle to divide</param>
+            <param name="b">An angle to divide into A</param>
+            <returns>A new angle with the quotient of the division</returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Angle.op_Multiply(DotSpatial.NTSExtension.Angle,DotSpatial.NTSExtension.Angle)">
+            <summary>
+            Multiplies angle A by Angle B.
+            </summary>
+            <param name="a">An angle to multiply</param>
+            <param name="b">A second angle to multiply.</param>
+            <returns>A new angle with the product of the two angles.</returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Angle.Cos(DotSpatial.NTSExtension.Angle)">
+            <summary>
+            Returns the mathematical Cos of the angle specified
+            </summary>
+            <param name="value">The Angle to find the cosign of</param>
+            <returns>Double, the cosign of the angle specified</returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Angle.Sin(DotSpatial.NTSExtension.Angle)">
+            <summary>
+            Returns the mathematical Sin of the angle specified
+            </summary>
+            <param name="value">The Angle to find the Sin of</param>
+            <returns>Double, the Sin of the Angle</returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Angle.Tan(DotSpatial.NTSExtension.Angle)">
+            <summary>
+            Returns the mathematical Tan of the angle specified
+            </summary>
+            <param name="value">The Angle to find the Tan of</param>
+            <returns>Double, the Tan of the Angle</returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Angle.ATan(System.Double)">
+            <summary>
+            Returns the mathematical ATan of the value specified
+            </summary>
+            <param name="value">The Double to find the ATan of</param>
+            <returns>Angle, the ATan of the Value specified</returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Angle.ACos(System.Double)">
+            <summary>
+            Returns the mathematical ACos of the value specified
+            </summary>
+            <param name="value">The Double to find the ACos of</param>
+            <returns>Angle, the ACos of the Value specified</returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Angle.ASin(System.Double)">
+            <summary>
+            Returns the mathematical ASin of the value specified
+            </summary>
+            <param name="value">The Double to find the ASin of</param>
+            <returns>Angle, the ASin of the Value specified</returns>
+        </member>
+        <member name="T:DotSpatial.NTSExtension.ClassNotSupportedException">
+            <summary>
+            A ClassNotSupportedException Class
+            </summary>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.ClassNotSupportedException.#ctor(System.String)">
+            <summary>
+            Creates a new instance of ClassNotSupportedException
+            </summary>
+        </member>
+        <member name="T:DotSpatial.NTSExtension.CoordinateF">
+            <summary>
+            A lightweight class used to store coordinates
+            on the 2-dimensional Cartesian plane.
+            It is distinct from <c>Point</c>, which is a subclass of <c>Geometry</c>.
+            Unlike objects of type <c>Point</c> (which contain additional
+            information such as an envelope, a precision model, and spatial reference
+            system information), a <c>Coordinate</c> only contains ordinate values
+            and accessor methods.
+            <c>Coordinate</c>s are two-dimensional points, with an additional
+            z-ordinate. NTS does not support any operations on the z-ordinate except
+            the basic accessor functions. Constructed coordinates will have a
+            z-ordinate of <c>NaN</c>.  The standard comparison functions will ignore
+            the z-ordinate.
+            </summary>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.CoordinateF.#ctor(DotSpatial.NTSExtension.FloatVector3)">
+            <summary>
+            Creates a CoordinateF by using the X, Y and Z terms of a FloatVector
+            </summary>
+            <param name="floatVector"></param>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.CoordinateF.#ctor(System.Single,System.Single,System.Single,System.Single)">
+            <summary>
+            Constructs a <c>Coordinate</c> at (x, y, z).
+            </summary>
+            <param name="x">X value.</param>
+            <param name="y">Y value.</param>
+            <param name="z">Z value.</param>
+            <param name="m">Measure value.</param>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.CoordinateF.#ctor(System.Single,System.Single,System.Single)">
+            <summary>
+            Constructs a <c>Coordinate</c> at (x, y, z).
+            </summary>
+            <param name="x">X value.</param>
+            <param name="y">Y value.</param>
+            <param name="z">Z value.</param>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.CoordinateF.#ctor(GeoAPI.Geometries.Coordinate)">
+            <summary>
+            Creates a Coordinate from any ICoordinate Interface
+            </summary>
+            <param name="coordinate">The Vector.IPoint interface to construct a coordinate from</param>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.CoordinateF.#ctor">
+            <summary>
+             Constructs a <c>Coordinate</c> at (0, 0, NaN).
+            </summary>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.CoordinateF.#ctor(System.Single,System.Single)">
+            <summary>
+            Constructs a <c>Coordinate</c> at (x, y, NaN).
+            </summary>
+            <param name="x">X value.</param>
+            <param name="y">Y value.</param>
+        </member>
+        <member name="P:DotSpatial.NTSExtension.CoordinateF.CoordinateValue">
+            <summary>
+            Gets/Sets <c>Coordinate</c>s (x, y, z) values.
+            </summary>
+        </member>
+        <member name="P:DotSpatial.NTSExtension.CoordinateF.M">
+            <summary>
+            A Measure coordinate
+            </summary>
+        </member>
+        <member name="P:DotSpatial.NTSExtension.CoordinateF.NumOrdinates">
+            <summary>
+             For now this is 3D
+            </summary>
+        </member>
+        <member name="P:DotSpatial.NTSExtension.CoordinateF.Values">
+            <summary>
+            Gets or sets the values of this CoordinateF using an array of double values
+            </summary>
+        </member>
+        <member name="P:DotSpatial.NTSExtension.CoordinateF.X">
+            <summary>
+            Direct access to the coordinate works as a float.  If you only have the interface,
+            it must involve conversions to and from a float.  This may cause errors if the
+            value being set is outside the range of the float values.
+            </summary>
+        </member>
+        <member name="P:DotSpatial.NTSExtension.CoordinateF.Y">
+            <summary>
+            Direct access to the Y coordinate as a float
+            </summary>
+        </member>
+        <member name="P:DotSpatial.NTSExtension.CoordinateF.Z">
+            <summary>
+            Z coordinate.
+            </summary>
+        </member>
+        <member name="P:DotSpatial.NTSExtension.CoordinateF.Item(System.Int32)">
+            <summary>
+            Gets or sets the double value corresponding to the specific ordinate
+            </summary>
+            <param name="index"></param>
+            <returns></returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.CoordinateF.op_Addition(DotSpatial.NTSExtension.CoordinateF,GeoAPI.Geometries.Coordinate)">
+            <summary>
+            Overloaded + operator.
+            </summary>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.CoordinateF.op_Addition(DotSpatial.NTSExtension.CoordinateF,System.Single)">
+            <summary>
+            Overloaded + operator.
+            </summary>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.CoordinateF.op_Addition(System.Single,DotSpatial.NTSExtension.CoordinateF)">
+            <summary>
+            Overloaded + operator.
+            </summary>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.CoordinateF.op_Division(DotSpatial.NTSExtension.CoordinateF,GeoAPI.Geometries.Coordinate)">
+            <summary>
+            Overloaded / operator.
+            </summary>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.CoordinateF.op_Division(DotSpatial.NTSExtension.CoordinateF,System.Single)">
+            <summary>
+            Overloaded / operator.
+            </summary>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.CoordinateF.op_Division(System.Single,DotSpatial.NTSExtension.CoordinateF)">
+            <summary>
+            Overloaded / operator.
+            </summary>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.CoordinateF.op_Equality(DotSpatial.NTSExtension.CoordinateF,GeoAPI.Geometries.Coordinate)">
+             <summary>
+            
+             </summary>
+             <param name="obj1"></param>
+             <param name="obj2"></param>
+             <returns></returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.CoordinateF.op_Inequality(DotSpatial.NTSExtension.CoordinateF,GeoAPI.Geometries.Coordinate)">
+             <summary>
+            
+             </summary>
+             <param name="obj1"></param>
+             <param name="obj2"></param>
+             <returns></returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.CoordinateF.op_Multiply(DotSpatial.NTSExtension.CoordinateF,GeoAPI.Geometries.Coordinate)">
+            <summary>
+            Overloaded * operator.
+            </summary>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.CoordinateF.op_Multiply(DotSpatial.NTSExtension.CoordinateF,System.Single)">
+            <summary>
+            Overloaded * operator.
+            </summary>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.CoordinateF.op_Multiply(System.Single,DotSpatial.NTSExtension.CoordinateF)">
+            <summary>
+            Overloaded * operator.
+            </summary>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.CoordinateF.op_Subtraction(DotSpatial.NTSExtension.CoordinateF,GeoAPI.Geometries.Coordinate)">
+            <summary>
+            Overloaded - operator.
+            </summary>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.CoordinateF.op_Subtraction(DotSpatial.NTSExtension.CoordinateF,System.Single)">
+            <summary>
+            Overloaded - operator.
+            </summary>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.CoordinateF.op_Subtraction(System.Single,DotSpatial.NTSExtension.CoordinateF)">
+            <summary>
+            Overloaded - operator.
+            </summary>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.CoordinateF.Clone">
+            <summary>
+            Create a new object as copy of this instance.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.CoordinateF.CompareTo(System.Object)">
+            <summary>
+            Compares this object with the specified object for order.
+            Since Coordinates are 2.5D, this routine ignores the z value when making the comparison.
+            Returns
+               -1 : this.x lowerthan other.x || ((this.x == other.x) AND (this.y lowerthan other.y))
+               0  : this.x == other.x AND this.y = other.y
+               1  : this.x greaterthan other.x || ((this.x == other.x) AND (this.y greaterthan other.y))
+            </summary>
+            <param name="other"><c>Coordinate</c> with which this <c>Coordinate</c> is being compared.</param>
+            <returns>
+            A negative integer, zero, or a positive integer as this <c>Coordinate</c>
+                    is less than, equal to, or greater than the specified <c>Coordinate</c>.
+            </returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.CoordinateF.Copy">
+            <summary>
+            Creates a new ICoordinate copy of this instance
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.CoordinateF.Distance(GeoAPI.Geometries.Coordinate)">
+            <summary>
+            Returns Euclidean 2D distance from ICoordinate p.
+            </summary>
+            <param name="coordinate"><i>ICoordinate</i> with which to do the distance comparison.</param>
+            <returns>Double, the distance between the two locations.</returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.CoordinateF.Equals(System.Object)">
+            <summary>
+            Returns <c>true</c> if <c>other</c> has the same values for the x and y ordinates.
+            Since Coordinates are 2.5D, this routine ignores the z value when making the comparison.
+            </summary>
+            <param name="other"><c>Coordinate</c> with which to do the comparison.</param>
+            <returns><c>true</c> if <c>other</c> is a <c>Coordinate</c> with the same values for the x and y ordinates.</returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.CoordinateF.Equals2D(DotSpatial.NTSExtension.CoordinateF)">
+             <summary>
+             Returns whether the planar projections of the two <i>Coordinate</i>s are equal.
+            </summary>
+             <param name="coordinate"><i>ICoordinate</i> with which to do the 2D comparison.</param>
+             <returns>
+             <c>true</c> if the x- and y-coordinates are equal;
+             the Z coordinates do not have to be equal.
+             </returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.CoordinateF.Equals3D(DotSpatial.NTSExtension.CoordinateF)">
+            <summary>
+            Returns true if other has the same values for x, y and z.
+            </summary>
+            <param name="other"><i>ICoordinate</i> with which to do the 3D comparison.</param>
+            <returns><c>true</c> if <c>other</c> is a <c>ICoordinate</c> with the same values for x, y and z.</returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.CoordinateF.GetHashCode(System.Double)">
+            <summary>
+            Return HashCode.
+            </summary>
+            <param name="x">Value from HashCode computation.</param>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.CoordinateF.GetHashCode">
+            <summary>
+            Return HashCode.
+            </summary>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.CoordinateF.HyperDistance(GeoAPI.Geometries.Coordinate)">
+            <summary>
+            Returns the distance that is appropriate for N dimensions.  In otherwords, if this point is
+            three dimensional, then all three dimensions will be used for calculating the distance.
+            </summary>
+            <param name="coordinate">The coordinate to compare to this coordinate</param>
+            <returns>A double valued distance measure that is invariant to the number of coordinates</returns>
+            <exception cref="T:DotSpatial.NTSExtension.CoordinateMismatchException">The number of dimensions does not match between the points.</exception>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.CoordinateF.ToArray">
+            <summary>
+            Gets an array of double values for each of the ordinates
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.CoordinateF.ToString">
+            <summary>
+            Returns a <c>string</c> of the form <I>(x, y, z)</I> .
+            </summary>
+            <returns><c>string</c> of the form <I>(x, y, z)</I></returns>
+        </member>
+        <member name="T:DotSpatial.NTSExtension.CoordinateMismatchException">
+            <summary>
+            CoordinateMismatchException
+            </summary>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.CoordinateMismatchException.#ctor">
+            <summary>
+            Creates a new instance of CoordinateMismatchException
+            </summary>
+        </member>
+        <member name="T:DotSpatial.NTSExtension.EnumerableExt">
+            <summary>
+            EnumerableEM
+            </summary>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.EnumerableExt.CloneList``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            cycles through any strong typed collection where the type implements ICLoneable
+            and clones each member, inserting that member into the new list.
+            </summary>
+            <typeparam name="T">The type of the values in the list.</typeparam>
+            <param name="original">The original enumerable collection of type T.</param>
+            <returns>A deep copy of the list.</returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.EnumerableExt.SafeCastTo``1(System.Object)">
+            <summary>
+            A Generic Safe Casting method that should simply exist as part of the core framework
+            </summary>
+            <typeparam name="T">The type of the member to attempt to cast to.</typeparam>
+            <param name="obj">The original object to attempt to System.Convert.</param>
+            <returns>An output variable of type T.</returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.EnumerableExt.CastToPointArray(System.Collections.Generic.IEnumerable{GeoAPI.Geometries.Coordinate})">
+            <summary>
+            Converts an array of coordinates into points.
+            Eventually I hope to reduce the amount of "casting" necessary, in order
+            to allow as much as possible to occur via an interface.
+            </summary>
+            <param name="rawPoints"></param>
+            <returns></returns>
+        </member>
+        <member name="T:DotSpatial.NTSExtension.EnvelopeExt">
+            <summary>
+            This contains extension methods for GeoApi.Geometries.Envelope.
+            </summary>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.EnvelopeExt.InitZ(GeoAPI.Geometries.Envelope,System.Double,System.Double)">
+            <summary>
+            Initializes the envelopes Minimum.Z with the smaller of the two given z values and the Maximum.Z with the bigger of the two given z values. 
+            </summary>
+            <param name="envelope">Envelope, whos Minimum and Maximum.Z should be initialized.</param>
+            <param name="z1">First z value.</param>
+            <param name="z2">Second z value.</param>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.EnvelopeExt.InitM(GeoAPI.Geometries.Envelope,System.Double,System.Double)">
+            <summary>
+            Initializes the envelopes Minimum.M with the smaller of the two given m values and the Maximum.M with the bigger of the two given m values. 
+            </summary>
+            <param name="envelope">Envelope, whos Minimum and Maximum.M should be initialized.</param>
+            <param name="m1">First m value.</param>
+            <param name="m2">Second m value.</param>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.EnvelopeExt.HasM(GeoAPI.Geometries.Envelope)">
+            <summary>
+            Checks whether the given Envelope has M values.
+            </summary>
+            <param name="envelope">Envelope that gets checked.</param>
+            <returns>False if either envelope.Minimum.M or envelope.Maximum.M is not a number or Minimum.M is bigger than Maximum.M. </returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.EnvelopeExt.HasZ(GeoAPI.Geometries.Envelope)">
+            <summary>
+            Checks whether the given Envelope has Z values.
+            </summary>
+            <param name="envelope">Envelope that gets checked.</param>
+            <returns>False if either envelope.Minimum.Z or envelope.Maximum.Z is not a number or Minimum.Z is bigger than Maximum.Z. </returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.EnvelopeExt.Bottom(GeoAPI.Geometries.Envelope)">
+            <summary>
+            Gets the minY, which is Y - Height.
+            </summary>
+            <param name="self">The <c>IEnvelope</c> that this calculation is for.</param>
+            <returns></returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.EnvelopeExt.Center(GeoAPI.Geometries.Envelope)">
+            <summary>
+            Gets the coordinate defining the center of this envelope
+            in all of the dimensions of this envelope.
+            </summary>
+            <param name="self">The <c>IEnvelope</c> to find the center for</param>
+            <returns>An ICoordinate</returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.EnvelopeExt.Right(GeoAPI.Geometries.Envelope)">
+            <summary>
+            Gets the right value, which is X + Width.
+            </summary>
+            <param name="self">The <c>IEnvelope</c> that this calculation is for.</param>
+            <returns></returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.EnvelopeExt.ToLinearRing(GeoAPI.Geometries.Envelope)">
+            <summary>
+            Converts this envelope into a linear ring.
+            </summary>
+            <param name="self">The IEnvelope to use with this method</param>
+            <returns>A Linear ring describing the border of this envelope.</returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.EnvelopeExt.ToPolygon(GeoAPI.Geometries.Envelope)">
+            <summary>
+            Technically an Evelope object is not actually a geometry.
+            This creates a polygon from the extents.
+            </summary>
+            <param name="self">The IEnvelope to use with this method</param>
+            <returns>A Polygon, which technically qualifies as an IGeometry</returns>
+        </member>
+        <member name="T:DotSpatial.NTSExtension.FloatVector3">
+            <summary>
+            A float based 3 dimensional vector class, implementing all interesting features of vectors.
+            </summary>
+        </member>
+        <member name="F:DotSpatial.NTSExtension.FloatVector3.X">
+            <summary>
+            X
+            </summary>
+        </member>
+        <member name="F:DotSpatial.NTSExtension.FloatVector3.Y">
+            <summary>
+            Y
+            </summary>
+        </member>
+        <member name="F:DotSpatial.NTSExtension.FloatVector3.Z">
+            <summary>
+            Z
+            </summary>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.FloatVector3.#ctor(DotSpatial.NTSExtension.CoordinateF)">
+            <summary>
+            Copies the X, Y and Z values from the CoordinateF without doing a conversion.
+            </summary>
+            <param name="coord">X, Y Z</param>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.FloatVector3.#ctor(System.Single,System.Single,System.Single)">
+            <summary>
+            Creates a new FloatVector3 with the specified values
+            </summary>
+            <param name="xValue">X</param>
+            <param name="yValue">Y</param>
+            <param name="zValue">Z</param>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.FloatVector3.#ctor(GeoAPI.Geometries.Coordinate)">
+            <summary>
+            Uses the X, Y and Z values from the coordinate to create a new FloatVector3
+            </summary>
+            <param name="coord">The coordinate to obtain X, Y and Z values from</param>
+        </member>
+        <member name="P:DotSpatial.NTSExtension.FloatVector3.Length">
+            <summary>
+            Gets the length of the vector
+            </summary>
+        </member>
+        <member name="P:DotSpatial.NTSExtension.FloatVector3.LengthSq">
+            <summary>
+            Gets the square of length of this vector
+            </summary>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.FloatVector3.op_Addition(DotSpatial.NTSExtension.FloatVector3,DotSpatial.NTSExtension.FloatVector3)">
+            <summary>
+            Adds the vectors lhs and V using vector addition, which adds the corresponding components
+            </summary>
+            <param name="lhs">One vector to be added</param>
+            <param name="rhs">A second vector to be added</param>
+            <returns>The sum of the vectors</returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.FloatVector3.op_Division(DotSpatial.NTSExtension.FloatVector3,DotSpatial.NTSExtension.FloatVector3)">
+            <summary>
+            Divides the components of vector lhs by the respective components
+            ov vector V and returns the resulting vector.
+            </summary>
+            <param name="lhs">FloatVector3 Dividend (Numbers to be divided)</param>
+            <param name="rhs">FloatVector3 Divisor (Numbers to divide by)</param>
+            <returns>A FloatVector3 quotient of lhs and V</returns>
+            <remarks>To prevent divide by 0, if a 0 is in V, it will return 0 in the result</remarks>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.FloatVector3.op_Division(DotSpatial.NTSExtension.FloatVector3,System.Single)">
+            <summary>
+            Multiplies each component of vector lhs by the Scalar value
+            </summary>
+            <param name="lhs">A vector representing the vector to be multiplied</param>
+            <param name="scalar">Double, the scalar value to mulitiply the vector components by</param>
+            <returns>A FloatVector3 representing the vector product of vector lhs and the Scalar</returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.FloatVector3.op_Equality(DotSpatial.NTSExtension.FloatVector3,DotSpatial.NTSExtension.FloatVector3)">
+            <summary>
+            Tests two float vectors for equality.
+            </summary>
+            <param name="lhs">The left hand side FloatVector3 to test.</param>
+            <param name="rhs">The right hand side FloatVector3 to test.</param>
+            <returns>Returns true if X, Y and Z are all equal.</returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.FloatVector3.op_ExclusiveOr(DotSpatial.NTSExtension.FloatVector3,DotSpatial.NTSExtension.FloatVector3)">
+            <summary>
+            Returns the Cross Product of two vectors lhs and rhs
+            </summary>
+            <param name="lhs">Vector, the first input vector</param>
+            <param name="rhs">Vector, the second input vector</param>
+            <returns>A FloatVector3 containing the cross product of lhs and V</returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.FloatVector3.op_Inequality(DotSpatial.NTSExtension.FloatVector3,DotSpatial.NTSExtension.FloatVector3)">
+            <summary>
+            Tests two float vectors for inequality.
+            </summary>
+            <param name="lhs">The left hand side FloatVector3 to test.</param>
+            <param name="rhs">The right hand side FloatVector3 to test.</param>
+            <returns>Returns true if any of X, Y and Z are unequal.</returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.FloatVector3.op_Multiply(DotSpatial.NTSExtension.FloatVector3,DotSpatial.NTSExtension.FloatVector3)">
+            <summary>
+            Returns the Inner Product also known as the dot product of two vectors, lhs and V
+            </summary>
+            <param name="lhs">The input vector</param>
+            <param name="rhs">The vector to take the inner product against lhs</param>
+            <returns>a Double containing the dot product of lhs and V</returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.FloatVector3.op_Multiply(System.Single,DotSpatial.NTSExtension.FloatVector3)">
+            <summary>
+            Multiplies the vectors lhs and V using vector multiplication,
+            which adds the corresponding components
+            </summary>
+            <param name="scalar">A scalar to multpy to the vector</param>
+            <param name="rhs">A vector to be multiplied</param>
+            <returns>The scalar product for the vectors</returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.FloatVector3.op_Multiply(DotSpatial.NTSExtension.FloatVector3,System.Single)">
+            <summary>
+            Multiplies each component of vector lhs by the Scalar value
+            </summary>
+            <param name="lhs">A vector representing the vector to be multiplied</param>
+            <param name="scalar">Double, the scalar value to mulitiply the vector components by</param>
+            <returns>A FloatVector3 representing the vector product of vector lhs and the Scalar</returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.FloatVector3.op_Subtraction(DotSpatial.NTSExtension.FloatVector3,DotSpatial.NTSExtension.FloatVector3)">
+            <summary>
+            Subtracts FloatVector3 V from FloatVector3 lhs
+            </summary>
+            <param name="lhs">A FloatVector3 to subtract from</param>
+            <param name="rhs">A FloatVector3 to subtract</param>
+            <returns>The FloatVector3 difference lhs - V</returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.FloatVector3.Add(DotSpatial.NTSExtension.FloatVector3,DotSpatial.NTSExtension.FloatVector3)">
+            <summary>
+            Adds all the scalar members of the the two vectors
+            </summary>
+            <param name="lhs">Left hand side</param>
+            <param name="rhs">Right hand side</param>
+            <returns></returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.FloatVector3.Add(DotSpatial.NTSExtension.FloatVector3)">
+            <summary>
+            Adds the specified v
+            </summary>
+            <param name="vector">A FloatVector3 to add to this vector</param>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.FloatVector3.CrossProduct(DotSpatial.NTSExtension.FloatVector3,DotSpatial.NTSExtension.FloatVector3)">
+            <summary>
+            Returns the Cross Product of two vectors lhs and V
+            </summary>
+            <param name="lhs">Vector, the first input vector</param>
+            <param name="rhs">Vector, the second input vector</param>
+            <returns>A FloatVector3 containing the cross product of lhs and V</returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.FloatVector3.Dot(DotSpatial.NTSExtension.FloatVector3,DotSpatial.NTSExtension.FloatVector3)">
+            <summary>
+            Multiplies all the scalar members of the the two vectors
+            </summary>
+            <param name="lhs">Left hand side</param>
+            <param name="rhs">Right hand side</param>
+            <returns></returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.FloatVector3.Equals(System.Object)">
+            <summary>
+            tests to see if the specified object has the same X, Y and Z values
+            </summary>
+            <param name="obj"></param>
+            <returns></returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.FloatVector3.GetHashCode">
+            <summary>
+            Not sure what I should be doing here since Int can't really contain this much info very well
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.FloatVector3.Multiply(DotSpatial.NTSExtension.FloatVector3,System.Single)">
+            <summary>
+            Multiplies the source vector by a scalar.
+            </summary>
+            <param name="source"></param>
+            <param name="scalar"></param>
+            <returns></returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.FloatVector3.Multiply(System.Single)">
+            <summary>
+            Multiplies this vector by a scalar value.
+            </summary>
+            <param name="scalar">The scalar to multiply by</param>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.FloatVector3.Normalize">
+            <summary>
+             Normalizes the vectors
+            </summary>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.FloatVector3.Subtract(DotSpatial.NTSExtension.FloatVector3,DotSpatial.NTSExtension.FloatVector3)">
+            <summary>
+            Subtracts all the scalar members of the the two vectors
+            </summary>
+            <param name="lhs">Left hand side</param>
+            <param name="rhs">Right hand side</param>
+            <returns></returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.FloatVector3.Subtract(DotSpatial.NTSExtension.FloatVector3)">
+            <summary>
+            Subtracts the specified value
+            </summary>
+            <param name="vector">A FloatVector3</param>
+        </member>
+        <member name="T:DotSpatial.NTSExtension.GeometryExt">
+            <summary>
+            Contains extension methods for GeoAPI.Geometries.IGeometry.
+            </summary>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.GeometryExt.Rotate(GeoAPI.Geometries.IGeometry,GeoAPI.Geometries.Coordinate,System.Double)">
+            <summary>
+            Rotates the geometry by the given radian angle around the origin.
+            </summary>
+            <param name="self"/>
+            <param name="origin">Coordinate the geometry gets rotated around.</param>
+            <param name="radAngle">Rotation angle in radian.</param>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.GeometryExt.RotateCoordinateRad(GeoAPI.Geometries.Coordinate,System.Double@,System.Double@,System.Double)">
+            <summary>
+            Rotates the given coordinate by the given radian angle around the origin.
+            </summary>
+            <param name="origin">Coordinate the geometry gets rotated around.</param>
+            <param name="coordX">X-value of the coordinate that gets rotated.</param>
+            <param name="coordY">Y-value of the coordinate that gets rotated.</param>
+            <param name="radAngle">Rotation angle in radian.</param>
+        </member>
+        <member name="T:DotSpatial.NTSExtension.IMatrix">
+            <summary>
+            IMatrix
+            </summary>
+        </member>
+        <member name="P:DotSpatial.NTSExtension.IMatrix.NumColumns">
+            <summary>
+            Gets the number of columns
+            </summary>
+        </member>
+        <member name="P:DotSpatial.NTSExtension.IMatrix.NumRows">
+            <summary>
+            Gets the number of rows
+            </summary>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.IMatrix.Multiply(DotSpatial.NTSExtension.IMatrix)">
+            <summary>
+            Performs the matrix multiplication against the specified matrix
+            </summary>
+            <param name="matrix"></param>
+            <returns></returns>
+        </member>
+        <member name="T:DotSpatial.NTSExtension.IMatrix4">
+            <summary>
+            Operations on 3D vectors can be carried out using a 4D Matrix.  This interface
+            provides access to methods that are specific to 3D vector opperations.
+            </summary>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.IMatrix4.RotateX(System.Double)">
+            <summary>
+            Multiplies the current matrix by a rotation matrix corresponding
+            to the specified angle to create rotation in the Z direction.
+            </summary>
+            <param name="degrees">The angle to rotate in degrees.</param>
+            <returns></returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.IMatrix4.RotateY(System.Double)">
+            <summary>
+            Rotates the current matrix around the Y axis by multiplying the
+            current matrix by a rotation matrix.
+            </summary>
+            <param name="degrees"></param>
+            <returns></returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.IMatrix4.RotateZ(System.Double)">
+            <summary>
+            Specifies amount to rotate
+            </summary>
+            <param name="degrees"></param>
+            <returns></returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.IMatrix4.Translate(System.Double,System.Double,System.Double)">
+            <summary>
+            Translates the matrix by the specified amount in each of the directions
+            by multiplying by a translation matrix created from the specified values.
+            </summary>
+            <param name="x">The translation in the X coordinate</param>
+            <param name="y">The translation in the Y coordinate</param>
+            <param name="z">The translation in the Z coordinate</param>
+            <returns></returns>
+        </member>
+        <member name="T:DotSpatial.NTSExtension.IMatrixD">
+            <summary>
+            IMatrix4
+            </summary>
+        </member>
+        <member name="P:DotSpatial.NTSExtension.IMatrixD.Values">
+            <summary>
+            Gets or sets the values for this matrix of double precision coordinates
+            </summary>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.IMatrixD.Multiply(System.Double)">
+            <summary>
+            Multiplies every value in the specified n x m matrix by the specified double inScalar.
+            </summary>
+            <param name="inScalar">The double precision floating point to multiply all the members against</param>
+            <returns>A new n x m matrix</returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.IMatrixD.Multiply(DotSpatial.NTSExtension.IMatrixD)">
+            <summary>
+            This replaces the underlying general multiplication with a more specific type.
+            </summary>
+            <param name="matrix"></param>
+            <returns></returns>
+        </member>
+        <member name="T:DotSpatial.NTSExtension.IRectangle">
+            <summary>
+            An IRectangle is not as specific to being a geometry, and can apply to anything as long as it is willing
+            to support a double valued height, width, X and Y value.
+            </summary>
+        </member>
+        <member name="P:DotSpatial.NTSExtension.IRectangle.Height">
+            <summary>
+            Gets or sets the difference between the maximum and minimum y values.
+            Setting this will change only the minimum Y value, leaving the Top alone
+            </summary>
+            <returns>max y - min y, or 0 if this is a null <c>Envelope</c>.</returns>
+        </member>
+        <member name="P:DotSpatial.NTSExtension.IRectangle.Width">
+            <summary>
+            Gets or Sets the difference between the maximum and minimum x values.
+            Setting this will change only the Maximum X value, and leave the minimum X alone
+            </summary>
+            <returns>max x - min x, or 0 if this is a null <c>Envelope</c>.</returns>
+        </member>
+        <member name="P:DotSpatial.NTSExtension.IRectangle.X">
+            <summary>
+            In the precedent set by controls, envelopes support an X value and a width.
+            The X value represents the Minimum.X coordinate for this envelope.
+            </summary>
+        </member>
+        <member name="P:DotSpatial.NTSExtension.IRectangle.Y">
+            <summary>
+            In the precedent set by controls, envelopes support a Y value and a height.
+            the Y value represents the Top of the envelope, (Maximum.Y) and the Height
+            represents the span between Maximum and Minimum Y.
+            </summary>
+        </member>
+        <member name="T:DotSpatial.NTSExtension.LineStringExt">
+            <summary>
+            Contains extension methodes for GeoAPI.Geomtetries.ILineString.
+            </summary>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.LineStringExt.RadAngle(GeoAPI.Geometries.ILineString)">
+            <summary>
+            Gets the value of the angle between the StartPoint and the EndPoint in Radian.
+            </summary>
+            <param name="self">The ILineString, whose angle is returned.</param>
+            <remarks>added by JLeiss</remarks>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.LineStringExt.ClosestPoint(GeoAPI.Geometries.ILineString,GeoAPI.Geometries.Coordinate)">
+            <summary>
+            Given the specified test point, this checks each segment, and will
+            return the closest point on the specified segment.
+            </summary>
+            <param name="self">The ILineString, whose point is returned.</param>
+            <param name="testPoint">The point to test.</param>
+        </member>
+        <member name="T:DotSpatial.NTSExtension.Matrix4">
+            <summary>
+            Matrix4
+            </summary>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Matrix4.#ctor">
+            <summary>
+            Creates a new instance of Matrix4 that is an identity matrix
+            </summary>
+        </member>
+        <member name="P:DotSpatial.NTSExtension.Matrix4.Identity">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Matrix4.RotateX(System.Double)">
+            <summary>
+            Rotates this matrix by the specified angle in degrees about the X axis.
+            </summary>
+            <param name="degrees">Specified the angle in degrees to rotate counter clockwise about the positive axis</param>
+            <returns></returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Matrix4.RotateY(System.Double)">
+            <summary>
+            Rotates this matrix by the specified angle in degrees about the Y axis.
+            </summary>
+            <param name="degrees"></param>
+            <returns></returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Matrix4.RotateZ(System.Double)">
+            <summary>
+            Rotates this matrix by the specified angle in degrees about the Z axis.
+            </summary>
+            <param name="degrees"></param>
+            <returns></returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Matrix4.RotationX(System.Double)">
+            <summary>
+            Creates a 4 x 4 matrix that can be used to rotate a 3D vector about the X axis.
+            </summary>
+            <param name="degrees">The counter-clockwise angle of rotation when looking at the origin from the positive axis</param>
+            <returns>A 4x4 rotation matrix</returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Matrix4.RotationY(System.Double)">
+            <summary>
+            Creates a 4 x 4 matrix that can be used to rotate a 3D vector about the Y axis.
+            </summary>
+            <param name="degrees">The counter-clockwise angle of rotation when looking at the origin from the positive axis</param>
+            <returns>A 4x4 rotation matrix</returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Matrix4.RotationZ(System.Double)">
+            <summary>
+            Creates a 4 x 4 matrix that can be used to rotate a 3D vector about the Z axis.
+            </summary>
+            <param name="degrees">The counter-clockwise angle of rotation when looking at the origin from the positive axis</param>
+            <returns>A 4x4 rotation matrix</returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Matrix4.Translate(System.Double,System.Double,System.Double)">
+            <summary>
+            Translates the matrix by the specified amount in each of the directions
+            by multiplying by a translation matrix created from the specified values.
+            </summary>
+            <param name="x">The translation in the X coordinate</param>
+            <param name="y">The translation in the Y coordinate</param>
+            <param name="z">The translation in the Z coordinate</param>
+            <returns></returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Matrix4.Translation(System.Double,System.Double,System.Double)">
+            <summary>
+            Creates a 4 x 4 matrix where all the values represent an identity matrix except
+            that the bottom row has been set to be the translation values.  The result is
+            that if a 3D vector is transformed by this matrix, the last row will
+            control the translation terms.
+            </summary>
+            <param name="x">The translation in the x direction</param>
+            <param name="y">The translation in the y direction</param>
+            <param name="z">The translation in the z direction</param>
+            <returns>The translation matrix</returns>
+        </member>
+        <member name="T:DotSpatial.NTSExtension.MatrixD">
+            <summary>
+            A 4 x 4 matrix is required for transformations in 3 dimensions
+            </summary>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.MatrixD.#ctor(System.Int32)">
+            <summary>
+            Creates a new squre identity matrix of the specified size
+            </summary>
+            <param name="m">The size of the matrix to create</param>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.MatrixD.#ctor(System.Int32,System.Int32)">
+            <summary>
+            Creates a new instance of Matrix with m rows and n columns
+            </summary>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.MatrixD.#ctor(System.Double[0:,0:])">
+            <summary>
+            Creates a matrix using the specified values.
+            </summary>
+            <param name="values"></param>
+        </member>
+        <member name="P:DotSpatial.NTSExtension.MatrixD.M">
+            <summary>
+            Gets the number of rows
+            </summary>
+        </member>
+        <member name="P:DotSpatial.NTSExtension.MatrixD.N">
+            <summary>
+            Gets the number of columns
+            </summary>
+        </member>
+        <member name="P:DotSpatial.NTSExtension.MatrixD.NumColumns">
+            <summary>
+            Gets the number of columns
+            </summary>
+        </member>
+        <member name="P:DotSpatial.NTSExtension.MatrixD.NumRows">
+            <summary>
+            Gets the number of rows
+            </summary>
+        </member>
+        <member name="P:DotSpatial.NTSExtension.MatrixD.Values">
+            <summary>
+            Gets or sets the values for this matrix
+            </summary>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.MatrixD.Multiply(DotSpatial.NTSExtension.IMatrixD)">
+            <summary>
+            Matrix multiplication only works if the number of columns of the first matrix is the same
+            as the number of rows of the second matrix.  The first matrix is this object, so this
+            will only work if inMatrix has the same number of rows as this matrix has columns.
+            </summary>
+            <param name="inMatrix">The IMatrix to multiply against this matrix</param>
+            <returns></returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.MatrixD.Multiply(System.Double)">
+            <summary>
+            Multiplies this matrix by the specified scalar value.
+            </summary>
+            <param name="inScalar"></param>
+            <returns></returns>
+        </member>
+        <member name="T:DotSpatial.NTSExtension.TopologyText">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:DotSpatial.NTSExtension.TopologyText.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:DotSpatial.NTSExtension.TopologyText.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:DotSpatial.NTSExtension.TopologyText.ArgumentCannotBeNegative_S">
+            <summary>
+              Looks up a localized string similar to The argument %S cannot be negative..
+            </summary>
+        </member>
+        <member name="P:DotSpatial.NTSExtension.TopologyText.ArgumentCouldNotBeCast_S1_S2">
+            <summary>
+              Looks up a localized string similar to The argument %S1 could not be successfully cast into %S2..
+            </summary>
+        </member>
+        <member name="P:DotSpatial.NTSExtension.TopologyText.ArgumentOutOfRangeException_S">
+            <summary>
+              Looks up a localized string similar to The argument %S was outside the range of accepted values..
+            </summary>
+        </member>
+        <member name="P:DotSpatial.NTSExtension.TopologyText.CharBuffer_IndexToBig">
+            <summary>
+              Looks up a localized string similar to Tail index greater than capacity.
+            </summary>
+        </member>
+        <member name="P:DotSpatial.NTSExtension.TopologyText.ClassNotSupportedException_S">
+            <summary>
+              Looks up a localized string similar to The class %S is not supported..
+            </summary>
+        </member>
+        <member name="P:DotSpatial.NTSExtension.TopologyText.CoordinateMismatchException">
+            <summary>
+              Looks up a localized string similar to The number of ordinates did not match between the dimensions, so the hyperdistance cannot be accurately calculated..
+            </summary>
+        </member>
+        <member name="P:DotSpatial.NTSExtension.TopologyText.DuplicateEdgeException">
+            <summary>
+              Looks up a localized string similar to The same directed edge appeared more than once..
+            </summary>
+        </member>
+        <member name="P:DotSpatial.NTSExtension.TopologyText.FastNodingValidator_FoundNonNodedIntersection">
+            <summary>
+              Looks up a localized string similar to found non-noded intersection between {0} and {1} .
+            </summary>
+        </member>
+        <member name="P:DotSpatial.NTSExtension.TopologyText.FastNodingValidator_NoIntersectionFound">
+            <summary>
+              Looks up a localized string similar to no intersections found.
+            </summary>
+        </member>
+        <member name="P:DotSpatial.NTSExtension.TopologyText.GeometryCollectionNotSupportedException">
+            <summary>
+              Looks up a localized string similar to Geometry collections are not supported for this method..
+            </summary>
+        </member>
+        <member name="P:DotSpatial.NTSExtension.TopologyText.InsufficientDimensions">
+            <summary>
+              Looks up a localized string similar to The number of dimensions in at least one argument is insufficient for this calculation..
+            </summary>
+        </member>
+        <member name="P:DotSpatial.NTSExtension.TopologyText.InsufficientDimensions_S">
+            <summary>
+              Looks up a localized string similar to The number of dimensions in %S is insufficient for this calculation..
+            </summary>
+        </member>
+        <member name="P:DotSpatial.NTSExtension.TopologyText.InvalidOctantException_S">
+            <summary>
+              Looks up a localized string similar to An invalid octant was specified: %S.
+            </summary>
+        </member>
+        <member name="P:DotSpatial.NTSExtension.TopologyText.KeyDuplicateException">
+            <summary>
+              Looks up a localized string similar to The specified key already exists in the tree..
+            </summary>
+        </member>
+        <member name="P:DotSpatial.NTSExtension.TopologyText.KeyMissingException">
+            <summary>
+              Looks up a localized string similar to The specified key could not be found in the tree..
+            </summary>
+        </member>
+        <member name="P:DotSpatial.NTSExtension.TopologyText.KeySizeException">
+            <summary>
+              Looks up a localized string similar to The size of the key did not match the size of the tree..
+            </summary>
+        </member>
+        <member name="P:DotSpatial.NTSExtension.TopologyText.NodedSegmentString_UnsupportedSettingLinesegments">
+            <summary>
+              Looks up a localized string similar to Setting line segments in a ISegmentString not supported..
+            </summary>
+        </member>
+        <member name="P:DotSpatial.NTSExtension.TopologyText.NodedSegmentString_WrongParameterSize">
+            <summary>
+              Looks up a localized string similar to Parameter must be greater than or equal to 0 and less than TotalItemCount..
+            </summary>
+        </member>
+        <member name="P:DotSpatial.NTSExtension.TopologyText.NodingValidator_FoundEndPointInteriorPointIntersection">
+            <summary>
+              Looks up a localized string similar to found endpoint/interior point intersection at index {0} :pt {1}.
+            </summary>
+        </member>
+        <member name="P:DotSpatial.NTSExtension.TopologyText.NodingValidator_FoundNonNodedCollapse">
+            <summary>
+              Looks up a localized string similar to found non-noded collapse at: {0}, {1} {2}.
+            </summary>
+        </member>
+        <member name="P:DotSpatial.NTSExtension.TopologyText.NodingValidator_FoundNonNodedIntersection">
+            <summary>
+              Looks up a localized string similar to found non-noded intersection at {0}-{1} and {2}-{3}.
+            </summary>
+        </member>
+        <member name="P:DotSpatial.NTSExtension.TopologyText.NullEdgeException">
+            <summary>
+              Looks up a localized string similar to Found null Directed Edge in ring.
+            </summary>
+        </member>
+        <member name="P:DotSpatial.NTSExtension.TopologyText.PolygonException_HoleElementNull">
+            <summary>
+              Looks up a localized string similar to Holes must not contain null elements.
+            </summary>
+        </member>
+        <member name="P:DotSpatial.NTSExtension.TopologyText.PolygonException_ShellEmptyButHolesNot">
+            <summary>
+              Looks up a localized string similar to Shell is empty but holes are not.
+            </summary>
+        </member>
+        <member name="P:DotSpatial.NTSExtension.TopologyText.ReadOnlyException">
+            <summary>
+              Looks up a localized string similar to The ICollection is read-only..
+            </summary>
+        </member>
+        <member name="P:DotSpatial.NTSExtension.TopologyText.ShellHoleIdentityException">
+            <summary>
+              Looks up a localized string similar to Points in shell and hole appear to be equal.
+            </summary>
+        </member>
+        <member name="P:DotSpatial.NTSExtension.TopologyText.ShouldNeverReachHereException">
+            <summary>
+              Looks up a localized string similar to The code execution should never have reached this location..
+            </summary>
+        </member>
+        <member name="P:DotSpatial.NTSExtension.TopologyText.SideLocationConflict">
+            <summary>
+              Looks up a localized string similar to Side location conflict at.
+            </summary>
+        </member>
+        <member name="P:DotSpatial.NTSExtension.TopologyText.SingleNullSide">
+            <summary>
+              Looks up a localized string similar to Found single null side at.
+            </summary>
+        </member>
+        <member name="P:DotSpatial.NTSExtension.TopologyText.TopologyException_Depth">
+            <summary>
+              Looks up a localized string similar to Assigned depths do not match.
+            </summary>
+        </member>
+        <member name="P:DotSpatial.NTSExtension.TopologyText.TwoHorizontalEdgesException">
+            <summary>
+              Looks up a localized string similar to Found two horizontal edges incident on node..
+            </summary>
+        </member>
+        <member name="P:DotSpatial.NTSExtension.TopologyText.UnsupportedGeometryException">
+            <summary>
+              Looks up a localized string similar to Unsupported Geometry classes should be caught in the GeometryEditorOperation..
+            </summary>
+        </member>
+        <member name="P:DotSpatial.NTSExtension.TopologyText.WktWriter_NegativeTabCount">
+            <summary>
+              Looks up a localized string similar to Tab count must be positive.
+            </summary>
+        </member>
+        <member name="P:DotSpatial.NTSExtension.TopologyText.WktWriter_WrongOutputDimension">
+            <summary>
+              Looks up a localized string similar to Output dimension must be in the range [2, 3].
+            </summary>
+        </member>
+        <member name="T:DotSpatial.NTSExtension.Vector">
+            <summary>
+            Contains a magnitude and direction
+            Supports more fundamental calculations than LineSegment, rather than topological functions
+            </summary>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Vector.#ctor">
+            <summary>
+            Creates a new empty vector
+            </summary>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Vector.#ctor(GeoAPI.Geometries.Coordinate)">
+            <summary>
+            Creates a new instance of a vector where the X, Y and Z terms are the same as the
+            specified coordinate.
+            </summary>
+            <param name="coord">The ICoordinate to use</param>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Vector.#ctor(NetTopologySuite.Geometries.LineSegment)">
+            <summary>
+            Creates a new vector from a line segment, assuming that the direction is from the start point to the end point
+            </summary>
+            <param name="inLineSegment">A Topology.LineSegment object to turn into a vector</param>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Vector.#ctor(GeoAPI.Geometries.Coordinate,GeoAPI.Geometries.Coordinate)">
+            <summary>
+            Creates a vector that points from the start coordinate to the end coordinate and
+            uses the distance between the two coordinates to form its length.
+            </summary>
+            <param name="startCoord">The start coordinate</param>
+            <param name="endCoord">The end coordinate for the vector</param>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Vector.#ctor(System.Double,System.Double,System.Double,System.Double,System.Double,System.Double)">
+            <summary>
+            Creates a mathematical vector from X1, Y1 to X2, Y2
+            </summary>
+            <param name="x1">Double, The X coordinate of the start point for the vector</param>
+            <param name="y1">Double, The Y coordinate of the start point for the vector </param>
+            <param name="z1">Double, the Z coordinate of the start point for the vector</param>
+            <param name="x2">Double, The X coordinate of the end point for the vector</param>
+            <param name="y2">Double, The Y coordinate of the end point for the vector</param>
+            <param name="z2">Double, the Z coordinate of the end point for the vector</param>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Vector.#ctor(System.Double,System.Double,System.Double)">
+            <summary>
+            Creates a mathemtacal vector from the origin to the x, y, z coordinates
+            </summary>
+            <param name="x">Double, the X coordinate from the origin</param>
+            <param name="y">Double, the Y coordinate from the origin</param>
+            <param name="z">Double, the Z coordinate from the origin</param>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Vector.#ctor(System.Double,DotSpatial.NTSExtension.Angle,DotSpatial.NTSExtension.Angle)">
+            <summary>
+            Creates a mathematical vector from the origin with the new magnitude and directions specified
+            </summary>
+            <param name="newMagnitude">Double, the length of the vector</param>
+            <param name="theta">The angle in the x-y plane</param>
+            <param name="phi">The angle in the z direction</param>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Vector.#ctor(System.Double,DotSpatial.NTSExtension.Angle)">
+            <summary>
+            Creates a mathematical vector in the X-Y plane with angle Theta
+            </summary>
+            <param name="newMagnitude">Double, The magnitude of the vector</param>
+            <param name="theta">Angle, The direction measured counterclockwise from Positive X Axis </param>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Vector.#ctor(DotSpatial.NTSExtension.Vector)">
+            <summary>
+            Creates a new vector from a vector that can be longer or shorter than 3 ordinates.
+            If an X, Y or Z value is not specified, it will become 0.  Values greater than
+            the Z ordinate are lost.
+            </summary>
+            <param name="vect"></param>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Vector.#ctor(DotSpatial.NTSExtension.IMatrixD)">
+            <summary>
+            Creates a new vector based on the first three values on the first row of the
+            matrix.  This is useful for working with the result of a transformation matrix.
+            </summary>
+            <param name="mat">An IMatrixD that should represent the vector</param>
+        </member>
+        <member name="P:DotSpatial.NTSExtension.Vector.Length">
+            <summary>
+            The Euclidean distance from the origin to the tip of the 3 dimensional vector
+            Setting the magntiude won't change the direction.
+            </summary>
+        </member>
+        <member name="P:DotSpatial.NTSExtension.Vector.Length2D">
+            <summary>
+            Returns the magnitude of the projection of the vector onto the base.X-Y plane
+            Setting this magnitude will not affect Z, which should be adjusted separately
+            </summary>
+        </member>
+        <member name="P:DotSpatial.NTSExtension.Vector.Phi">
+            <summary>
+            Obtains the angle above the X-Y plane.  Positive towards positive Z.
+            Values are in radians from -Pi/2 to Pi/2
+            Setting this value when no magnitude exists results in a unit vector with angle phi in the X direction.
+            </summary>
+        </member>
+        <member name="P:DotSpatial.NTSExtension.Vector.Theta">
+            <summary>
+            Represents the angle in the X-Y plane.  0 along the positive X axis, and increasing counterclockwise
+            Values are in Radians.  Setting this value when no X-Y magnitude exists results in a unit vector
+            between X and Y, but does not affect Z, so you may have something other than a unit vector in 3-D.
+            Set theta before phi in order to obtain a unit vector in 3-D space.
+            </summary>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Vector.op_Addition(DotSpatial.NTSExtension.Vector,DotSpatial.NTSExtension.Vector)">
+            <summary>
+            Adds the vectors U and V using vector addition, which adds the corresponding components
+            </summary>
+            <param name="u">One vector to be added</param>
+            <param name="v">A second vector to be added</param>
+            <returns>The sum of the vectors</returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Vector.op_Equality(DotSpatial.NTSExtension.Vector,DotSpatial.NTSExtension.Vector)">
+            <summary>
+            Tests equality of the X, Y, and Z members.
+            </summary>
+            <param name="u">The left hand side vector to test for equality.</param>
+            <param name="v">The right hand side vector to test for equality.</param>
+            <returns>Returns true if X, Y and Z are equal.</returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Vector.op_ExclusiveOr(DotSpatial.NTSExtension.Vector,DotSpatial.NTSExtension.Vector)">
+            <summary>
+            Returns the Cross Product of two vectors U and V
+            </summary>
+            <param name="u">Vector, the first input vector</param>
+            <param name="v">Vector, the second input vector</param>
+            <returns>A Vector containing the cross product of U and V</returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Vector.op_Inequality(DotSpatial.NTSExtension.Vector,DotSpatial.NTSExtension.Vector)">
+            <summary>
+            Tests inequality of the X, Y and Z members.
+            </summary>
+            <param name="u">The left hand side vector to test inequality for.</param>
+            <param name="v">The right hand side vector to test inequality for</param>
+            <returns>Returns true if X, Y and Z are equal</returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Vector.op_Multiply(DotSpatial.NTSExtension.Vector,DotSpatial.NTSExtension.Vector)">
+            <summary>
+            Returns the Inner Product also known as the dot product of two vectors, U and V
+            </summary>
+            <param name="u">The input vector</param>
+            <param name="v">The vector to take the inner product against U</param>
+            <returns>a Double containing the dot product of U and V</returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Vector.op_Multiply(System.Double,DotSpatial.NTSExtension.Vector)">
+            <summary>
+            Multiplies the vectors U and V using vector multiplication,
+            which adds the corresponding components
+            </summary>
+            <param name="scalar">A scalar to multpy to the vector</param>
+            <param name="v">A vector to be multiplied</param>
+            <returns>The scalar product for the vectors</returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Vector.op_Multiply(DotSpatial.NTSExtension.Vector,System.Double)">
+            <summary>
+            Multiplies each component of vector U by the Scalar value
+            </summary>
+            <param name="u">A vector representing the vector to be multiplied</param>
+            <param name="scalar">Double, the scalar value to mulitiply the vector components by</param>
+            <returns>A Vector representing the vector product of vector U and the Scalar</returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Vector.op_Subtraction(DotSpatial.NTSExtension.Vector,DotSpatial.NTSExtension.Vector)">
+            <summary>
+            Subtracts Vector V from Vector U
+            </summary>
+            <param name="u">A Vector to subtract from</param>
+            <param name="v">A Vector to subtract</param>
+            <returns>The Vector difference U - V</returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Vector.Add(DotSpatial.NTSExtension.Vector,DotSpatial.NTSExtension.Vector)">
+            <summary>
+            Adds the vectors U and V using vector addition, which adds the corresponding components
+            </summary>
+            <param name="u">One vector to be added</param>
+            <param name="v">A second vector to be added</param>
+            <returns></returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Vector.Add(DotSpatial.NTSExtension.Vector)">
+            <summary>
+            Adds each of the elements of V to the elements of this vector
+            </summary>
+            <param name="v">Vector, the vector to add to this vector</param>
+            <returns>A vector result from the addition</returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Vector.Cross(DotSpatial.NTSExtension.Vector)">
+            <summary>
+            Returns the cross product of this vector with the specified vector V
+            </summary>
+            <param name="v">The vector to perform a cross product against</param>
+            <returns>A vector result from the inner product</returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Vector.CrossProduct(DotSpatial.NTSExtension.Vector,DotSpatial.NTSExtension.Vector)">
+            <summary>
+            Returns the Cross Product of two vectors U and V
+            </summary>
+            <param name="u">Vector, the first input vector</param>
+            <param name="v">Vector, the second input vector</param>
+            <returns>A Vector containing the cross product of U and V</returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Vector.Divide(DotSpatial.NTSExtension.Vector,System.Double)">
+            <summary>
+            Multiplies each component of vector U by the Scalar value
+            </summary>
+            <param name="u">A vector representing the vector to be multiplied</param>
+            <param name="scalar">Double, the scalar value to mulitiply the vector components by</param>
+            <returns>A Vector representing the vector product of vector U and the Scalar</returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Vector.Dot(DotSpatial.NTSExtension.Vector)">
+            <summary>
+            Returns the dot product of this vector with V2
+            </summary>
+            <param name="v">The vector to perform an inner product against</param>
+            <returns>A Double result from the inner product</returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Vector.DotProduct(DotSpatial.NTSExtension.Vector,DotSpatial.NTSExtension.Vector)">
+            <summary>
+            Returns the Inner Product also known as the dot product of two vectors, U and V
+            </summary>
+            <param name="u">The input vector</param>
+            <param name="v">The vector to take the inner product against U</param>
+            <returns>a Double containing the dot product of U and V</returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Vector.Equals(DotSpatial.NTSExtension.Vector)">
+            <summary>
+            Override  for definition of equality for vectors
+            </summary>
+            <param name="v">A vector to compare with</param>
+            <returns>true if the X, Y, and Z coordinates are all equal</returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Vector.Equals(System.Object)">
+            <summary>
+            Checks first to make sure that both objects are vectors.  If they are,
+            then it checks to determine whether or not the X, Y and Z values are equal.
+            </summary>
+            <param name="vect">The object to test against</param>
+            <returns></returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Vector.GetHashCode">
+            <summary>
+            Returns the hash code.. or something
+            </summary>
+            <returns>A hash code I guess</returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Vector.Intersects(DotSpatial.NTSExtension.Vector)">
+            <summary>
+            Compares the values of each element, and if all the elements are equal, returns true.
+            </summary>
+            <param name="v">The vector to compare against this vector.</param>
+            <returns>Boolean, true if all the elements have the same value.</returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Vector.Multiply(DotSpatial.NTSExtension.Vector,System.Double)">
+            <summary>
+            Multiplies each component of vector U by the Scalar value
+            </summary>
+            <param name="u">A vector representing the vector to be multiplied</param>
+            <param name="scalar">Double, the scalar value to mulitiply the vector components by</param>
+            <returns>A Vector representing the vector product of vector U and the Scalar</returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Vector.Multiply(System.Double)">
+            <summary>
+            Returns the scalar product of this vector against a scalar
+            </summary>
+            <param name="scalar">Double, a value to multiply against all the members of this vector</param>
+            <returns>A vector multiplied by the scalar</returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Vector.Norm2(DotSpatial.NTSExtension.Vector)">
+            <summary>
+            Non-static version of taking the square distance for a vector
+            </summary>
+            <param name="u">The vector to find the square of the distance of</param>
+            <returns>Double, the square of the distance</returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Vector.Norm2">
+            <summary>
+            Returns the square of the distance of the vector without taking the square root
+            This is the same as doting the vector with itself
+            </summary>
+            <returns>Double, the square of the distance between the vectors</returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Vector.Normalize">
+            <summary>
+            Normalizes the vector.
+            </summary>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Vector.RotateX(System.Double)">
+            <summary>
+            Rotates the vector about the X axis as though the tail of the vector were at the origin
+            </summary>
+            <param name="degrees">The angle in degrees to rotate counter-clockwise when looking at the origin from the positive axis.</param>
+            <returns>A new Vector that has been rotated</returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Vector.RotateY(System.Double)">
+            <summary>
+            Rotates the vector about the Y axis as though the tail of the vector were at the origin
+            </summary>
+            <param name="degrees">The angle in degrees to rotate counter-clockwise when looking at the origin from the positive axis.</param>
+            <returns>A new Vector that has been rotated</returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Vector.RotateZ(System.Double)">
+            <summary>
+            Rotates the vector about the Z axis as though the tail of the vector were at the origin
+            </summary>
+            <param name="degrees">The angle in degrees to rotate counter-clockwise when looking at the origin from the positive axis.</param>
+            <returns>A new Vector that has been rotated</returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Vector.Subtract(DotSpatial.NTSExtension.Vector,DotSpatial.NTSExtension.Vector)">
+            <summary>
+            Subtracts Vector V from Vector U
+            </summary>
+            <param name="u">A Vector to subtract from</param>
+            <param name="v">A Vector to subtract</param>
+            <returns>The Vector difference U - V</returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Vector.Subtract(DotSpatial.NTSExtension.Vector)">
+            <summary>
+            Subtracts each element of V from each element of this vector
+            </summary>
+            <param name="v">Vector, the vector to subtract from this vector</param>
+            <returns>A vector result from the subtraction</returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Vector.ToCoordinate">
+            <summary>
+            Returns an ICoordinate from this vector, where the X, Y and Z value match the values in this vector
+            </summary>
+            <returns>an ICoordinate, where the X, Y and Z value match the values in this vector</returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Vector.ToLineSegment">
+            <summary>
+            Returns a new segment from this vector, where the StartPoint is 0, 0, 0
+            and the End Point is the tip of this vector
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Vector.ToMatrix">
+            <summary>
+            Rotations and transformations work by applying matrix mathematics,
+            so this creates a 1 x 4 version of this vector.  The 4th value
+            is always 1, and allows for the translation terms to work.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Vector.ToPoint">
+            <summary>
+            Assuming the vector starts at the origin of 0, 0, 0, this function returns
+            a Point representing the tip of the vector.
+            </summary>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Vector.TransformCoordinate(DotSpatial.NTSExtension.IMatrix4)">
+            <summary>
+            Transforms a point that has 3 dimensions by multiplying it by the
+            specified 3 x 3 matrix in the upper left, but treats the
+            bottom row as supplying the translation coordinates.
+            </summary>
+            <param name="transformMatrix"></param>
+            <returns></returns>
+        </member>
+        <member name="T:DotSpatial.NTSExtension.Voronoi.Fortune">
+            <summary>
+             Contains static methods and parameters that organize the major elements of
+             applying the Fortune linesweep methods
+            </summary>
+        </member>
+        <member name="F:DotSpatial.NTSExtension.Voronoi.Fortune.VVInfinite">
+            <summary>
+            Represents an infinite vector location
+            </summary>
+        </member>
+        <member name="F:DotSpatial.NTSExtension.Voronoi.Fortune.VVUnkown">
+            <summary>
+             The default definition of a coordinate that uses double.NaN to clarify
+             that no value has yet been assigned to this vector.
+            </summary>
+        </member>
+        <member name="F:DotSpatial.NTSExtension.Voronoi.Fortune.DoCleanup">
+            <summary>
+            Boolean, true if the cleanup method should be called.  This is unnecessary, for
+            the mapwindow implementation and will in fact cause the implementation to break
+            because infinities and other bad values start showing up.
+            </summary>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Voronoi.Fortune.ComputeVoronoiGraph(System.Double[],System.Double,System.Boolean)">
+            <summary>
+            Calculates the voronoi graph, but specifies a tolerance below which values should be considered equal.
+            </summary>
+            <param name="vertices">The original points to use during the calculation</param>
+            <param name="tolerance">A double value that controls the test for equality</param>
+            <param name="cleanup">This for Ben's code and should be passed as true if cleanup should be done.</param>
+            <returns>A VoronoiGraph structure containing the output geometries</returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Voronoi.Fortune.ComputeVoronoiGraph(System.Double[])">
+            <summary>
+            Calculates a list of edges and junction vertices by using the specified points.
+            This defaults to not using any tolerance for determining if points are equal,
+            and will not use the cleanup algorithm, which breaks the HandleBoundaries
+            method in the Voronoi class.
+            </summary>
+            <param name="vertices">The original points to use during the calculation</param>
+            <returns>A VoronoiGraph structure containing the output geometries</returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Voronoi.Fortune.FilterVg(DotSpatial.NTSExtension.Voronoi.VoronoiGraph,System.Double)">
+            <summary>
+            Applies an optional cleanup method needed by Benjamine Ditter for
+            laser data calculations.  This is not used by the MapWindow calculations
+            </summary>
+            <param name="vg">The output voronoi graph created in the Compute Voronoi Graph section</param>
+            <param name="minLeftRightDist">A minimum left to right distance</param>
+            <returns>The Voronoi Graph after it has been filtered.</returns>
+        </member>
+        <member name="T:DotSpatial.NTSExtension.Voronoi.HashSet`1">
+            <summary>
+            The HashSet is a dictionary that provides the optimized
+            </summary>
+        </member>
+        <member name="P:DotSpatial.NTSExtension.Voronoi.HashSet`1.Count">
+            <summary>
+            Gets the integer count of members in this set
+            </summary>
+        </member>
+        <member name="P:DotSpatial.NTSExtension.Voronoi.HashSet`1.IsReadOnly">
+            <summary>
+            These sets can be modified
+            </summary>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Voronoi.HashSet`1.Add(`0)">
+            <summary>
+             Adds the specified object to the hash set collection
+            </summary>
+            <param name="item">The object to add</param>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Voronoi.HashSet`1.Clear">
+            <summary>
+            Clears the entire set
+            </summary>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Voronoi.HashSet`1.Contains(`0)">
+            <summary>
+            Gets a boolean indicating if the specified item is in the set
+            </summary>
+            <param name="item"></param>
+            <returns></returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Voronoi.HashSet`1.CopyTo(`0[],System.Int32)">
+            <summary>
+            Copies the members of this hash set to the specified array, starting at the specified index
+            </summary>
+            <param name="array"></param>
+            <param name="index"></param>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Voronoi.HashSet`1.GetEnumerator">
+            <summary>
+            Gets the enumerator of the items in the set
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Voronoi.HashSet`1.Remove(`0)">
+            <summary>
+            Removes the specified item
+            </summary>
+            <param name="item"></param>
+            <returns></returns>
+        </member>
+        <member name="T:DotSpatial.NTSExtension.Voronoi.MathTools">
+            <summary>
+            Contains several helpful tools that allow the voronoi polygon creation to work
+            </summary>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Voronoi.MathTools.Ccw(System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Boolean)">
+             <summary>
+            
+             </summary>
+             <param name="p0X"></param>
+             <param name="p0Y"></param>
+             <param name="p1X"></param>
+             <param name="p1Y"></param>
+             <param name="p2X"></param>
+             <param name="p2Y"></param>
+             <param name="plusOneOnZeroDegrees"></param>
+             <returns></returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Voronoi.MathTools.Dist(System.Double,System.Double,System.Double,System.Double)">
+            <summary>
+            Calculates the euclidean distance
+            </summary>
+            <param name="x1"></param>
+            <param name="y1"></param>
+            <param name="x2"></param>
+            <param name="y2"></param>
+            <returns></returns>
+        </member>
+        <member name="T:DotSpatial.NTSExtension.Voronoi.Vector2">
+            <summary>
+            A vector class, implementing all interesting features of vectors
+            </summary>
+        </member>
+        <member name="F:DotSpatial.NTSExtension.Voronoi.Vector2.Tolerance">
+            <summary>
+            This double controls the test for equality so that values that
+            are smaller than this value will be considered equal.
+            </summary>
+        </member>
+        <member name="F:DotSpatial.NTSExtension.Voronoi.Vector2.X">
+            <summary>
+            The x coordinate
+            </summary>
+        </member>
+        <member name="F:DotSpatial.NTSExtension.Voronoi.Vector2.Y">
+            <summary>
+            The y coordinate
+            </summary>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Voronoi.Vector2.#ctor(System.Double[],System.Int32)">
+            <summary>
+            Creates a vector by reading a long array of vertices and assigning the vector based on that
+            </summary>
+            <param name="xyvertices"></param>
+            <param name="offset"></param>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Voronoi.Vector2.#ctor(System.Double[])">
+            <summary>
+            Build a new vector
+            </summary>
+            <param name="x">The elements of the vector</param>
+        </member>
+        <member name="P:DotSpatial.NTSExtension.Voronoi.Vector2.SquaredLength">
+            <summary>
+            Gets the dot product of this vector with itself
+            </summary>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Voronoi.Vector2.op_Addition(DotSpatial.NTSExtension.Voronoi.Vector2,DotSpatial.NTSExtension.Voronoi.Vector2)">
+            <summary>
+            Calculates the vector sum of these two vectors
+            </summary>
+            <param name="a">One vector to add</param>
+            <param name="b">The second vector to add</param>
+            <returns>The vector sum of the specified vectors</returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Voronoi.Vector2.op_Equality(DotSpatial.NTSExtension.Voronoi.Vector2,DotSpatial.NTSExtension.Voronoi.Vector2)">
+            <summary>
+            Overrides equality to use the tolerant equality
+            </summary>
+            <param name="a"></param>
+            <param name="b"></param>
+            <returns></returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Voronoi.Vector2.op_Inequality(DotSpatial.NTSExtension.Voronoi.Vector2,DotSpatial.NTSExtension.Voronoi.Vector2)">
+            <summary>
+            Overrides equality to use the tolerant equality test
+            </summary>
+            <param name="a"></param>
+            <param name="b"></param>
+            <returns></returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Voronoi.Vector2.op_Multiply(DotSpatial.NTSExtension.Voronoi.Vector2,DotSpatial.NTSExtension.Voronoi.Vector2)">
+            <summary>
+            Get the scalar product of two vectors
+            </summary>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Voronoi.Vector2.op_Multiply(DotSpatial.NTSExtension.Voronoi.Vector2,System.Double)">
+            <summary>
+            Multiplies the vector by a scalar
+            </summary>
+            <param name="a">The vector to modify</param>
+            <param name="scale">The double scale to multiply</param>
+            <returns>A new Vector2</returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Voronoi.Vector2.op_Multiply(System.Double,DotSpatial.NTSExtension.Voronoi.Vector2)">
+            <summary>
+            Multiplies the vector by a scalar.
+            </summary>
+            <param name="scale">The double scale to multiply.</param>
+            <param name="a">The vector to modify.</param>
+            <returns>A new Vector2.</returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Voronoi.Vector2.op_Subtraction(DotSpatial.NTSExtension.Voronoi.Vector2,DotSpatial.NTSExtension.Voronoi.Vector2)">
+            <summary>
+            Calculates the vector sum of these two vectors
+            </summary>
+            <param name="a">One vector to add</param>
+            <param name="b">The second vector to add</param>
+            <returns>The vector sum of the specified vectors</returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Voronoi.Vector2.ContainsNan">
+            <summary>
+            True if any of the double values is not a number
+            </summary>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Voronoi.Vector2.Distance(DotSpatial.NTSExtension.Voronoi.Vector2)">
+            <summary>
+            Calculates the euclidean distance from this cell to another
+            </summary>
+            <returns>Vector2 stuff</returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Voronoi.Vector2.Equals(System.Object)">
+            <summary>
+            Compares this vector with another one
+            </summary>
+            <param name="obj"></param>
+            <returns></returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Voronoi.Vector2.GetHashCode">
+            <summary>
+            Retrieves a hashcode that is dependent on the elements
+            </summary>
+            <returns>The hashcode</returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Voronoi.Vector2.ToCoordinate">
+            <summary>
+            Transforms the vector into a coordinate with an x and y value
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Voronoi.Vector2.ToString">
+            <summary>
+            Convert the vector into a reconstructable string representation
+            </summary>
+            <returns>A string from which the vector can be rebuilt</returns>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Voronoi.VNode.ProcessDataEvent(DotSpatial.NTSExtension.Voronoi.VDataEvent,DotSpatial.NTSExtension.Voronoi.VNode,DotSpatial.NTSExtension.Voronoi.VoronoiGraph,System.Double,DotSpatial.NTSExtension.Voronoi.VDataNode[]@)">
+            <summary>
+            Will return the new root (unchanged except in start-up)
+            </summary>
+        </member>
+        <member name="T:DotSpatial.NTSExtension.Voronoi.VoronoiEdge">
+            <summary>
+            The Voronoi Edge represents a bisector between two of the original datapoints.  The
+            LeftData and RightData represent those original points.  VVertexA and VVertexB represent
+            the endpoints of the segment created using those original points.
+            </summary>
+        </member>
+        <member name="F:DotSpatial.NTSExtension.Voronoi.VoronoiEdge.LeftData">
+            <summary>
+            The other original point in the dataset
+            </summary>
+        </member>
+        <member name="F:DotSpatial.NTSExtension.Voronoi.VoronoiEdge.RightData">
+            <summary>
+             One of the original points in the dataset
+            </summary>
+        </member>
+        <member name="F:DotSpatial.NTSExtension.Voronoi.VoronoiEdge.VVertexA">
+            <summary>
+             One of the endpoints for the segment that defines this edge
+            </summary>
+        </member>
+        <member name="F:DotSpatial.NTSExtension.Voronoi.VoronoiEdge.VVertexB">
+            <summary>
+            THe other endpoint for the segment that defines this edge
+            </summary>
+        </member>
+        <member name="F:DotSpatial.NTSExtension.Voronoi.VoronoiEdge.Done">
+            <summary>
+            An internal boolean for tracking some cleanup operations
+            </summary>
+        </member>
+        <member name="P:DotSpatial.NTSExtension.Voronoi.VoronoiEdge.DirectionVector">
+            <summary>
+            Calculates a vector direction that indicates the direction of this
+            knwon
+            </summary>
+        </member>
+        <member name="P:DotSpatial.NTSExtension.Voronoi.VoronoiEdge.FixedPoint">
+            <summary>
+            In the case where the line is infinite, this will return the
+            center between the left and right data points.
+            </summary>
+        </member>
+        <member name="P:DotSpatial.NTSExtension.Voronoi.VoronoiEdge.IsInfinite">
+            <summary>
+            Boolean, true if both the VertexA and VertexB are infinite vectors
+            </summary>
+        </member>
+        <member name="P:DotSpatial.NTSExtension.Voronoi.VoronoiEdge.IsPartlyInfinite">
+            <summary>
+            Indicates that one of the voronoi vertices for this edge is known, but no
+            intersection is found to bound the other edge, and it should extend to the
+            bounding box.
+            </summary>
+        </member>
+        <member name="P:DotSpatial.NTSExtension.Voronoi.VoronoiEdge.Length">
+            <summary>
+            Calculates the length of this edge
+            </summary>
+        </member>
+        <member name="M:DotSpatial.NTSExtension.Voronoi.VoronoiEdge.AddVertex(DotSpatial.NTSExtension.Voronoi.Vector2)">
+            <summary>
+             Adds VertexA and VertexB sequentially, so that if VertexA is defined,
+             then VertexB will become the specified vertex.
+            </summary>
+            <param name="v"></param>
+            <exception cref="T:System.Exception"></exception>
+        </member>
+        <member name="T:DotSpatial.NTSExtension.Voronoi.VoronoiGraph">
+            <summary>
+            Voronoi Graph
+            </summary>
+        </member>
+        <member name="F:DotSpatial.NTSExtension.Voronoi.VoronoiGraph.Edges">
+            <summary>
+            The collection of VoronoiEdges.  The Left and Right points are from the
+            original set of points that are bisected by the edge.  The A and B
+            Vectors are the endpoints of the edge itself.
+            </summary>
+        </member>
+        <member name="F:DotSpatial.NTSExtension.Voronoi.VoronoiGraph.Vertices">
+            <summary>
+            The vertices that join the voronoi polygon edges (not the original points)
+            </summary>
+        </member>
+    </members>
+</doc>

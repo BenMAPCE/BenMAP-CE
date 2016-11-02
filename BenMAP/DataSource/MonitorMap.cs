@@ -1,18 +1,13 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using DotSpatial.Symbology;
 using DotSpatial.Controls;
 using DotSpatial.Projections;
 using System.IO;
-using DotSpatial.Topology;
 using DotSpatial.Data;
-using System.Threading;
+using GeoAPI.Geometries;
 
 namespace BenMAP
 {
@@ -83,10 +78,6 @@ namespace BenMAP
                 for (int i = 0; i < tmps.Length; i++)
                 { fsPoints.DataTable.Columns.Add(tmps[i]); }
                 MonitorValue mv = null;
-                Feature feature = null;
-                List<Coordinate> lstCoordinate = new List<Coordinate>();
-                List<double> fsInter = new List<double>();
-
 
                 //configure map
                 mainMap.Projection = DotSpatial.Projections.KnownCoordinateSystems.Geographic.World.WGS1984;
@@ -111,13 +102,11 @@ namespace BenMAP
                     PolygonCategory pcin = new PolygonCategory();
                     pcin.Symbolizer.SetFillColor(Color.Red);
                     myScheme.Categories.Add(pcin);
-                    DotSpatial.Topology.Point point;
                     for (int i = 0; i < LstMonitorPoints.Count; i++)
                     {
                         mv = LstMonitorPoints[i];
-                        point = new DotSpatial.Topology.Point(mv.Longitude, mv.Latitude);
-                        feature = new Feature(point);
-                        fsPoints.AddFeature(feature);
+                        var point = new NetTopologySuite.Geometries.Point(mv.Longitude, mv.Latitude);
+                        fsPoints.AddFeature(point);
                         fsPoints.DataTable.Rows[i]["Name"] = mv.MonitorName;
                         fsPoints.DataTable.Rows[i]["Latitude"] = mv.Latitude;
                         fsPoints.DataTable.Rows[i]["Longitude"] = mv.Longitude;

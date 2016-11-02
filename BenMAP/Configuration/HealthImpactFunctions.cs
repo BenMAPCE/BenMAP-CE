@@ -458,16 +458,7 @@ namespace BenMAP
 
         }
 
-
-        public bool isInlstBenMAPHealthImpactFunctionSelected(BenMAPHealthImpactFunction benMAPHealthImpactFunction)
-        {
-            foreach (CRSelectFunction b in lstCRSelectFunction)
-            {
-                if (b.BenMAPHealthImpactFunction.ID == benMAPHealthImpactFunction.ID) return true;
-            }
-            return false;
-        }
-
+        
         private void olvSelected_CellEditStarting(object sender, CellEditEventArgs e)
         {
             base.OnClick(e);
@@ -900,6 +891,10 @@ namespace BenMAP
         public string _filePath = "";
         DateTime dtRunStart;
 
+        /// <summary>
+        /// return a dictionary containing the variables and their variable data set names for the currently selected setup
+        /// </summary>
+        /// <returns></returns>
         static Dictionary<string, List<string>> getDicVariableNameList()
         {
             Dictionary<string, List<string>> dicVariable = new Dictionary<string, List<string>>();
@@ -1103,7 +1098,9 @@ namespace BenMAP
                 this.lbProgressBar.Text = sProgressBar;
                 this.pBarCR.Value++;
                 lbProgressBar.Refresh();
-                Dictionary<string, string> dicAllRaceEthnicityGenderAge = new Dictionary<string, string>();
+
+                //loop over health impact functions to find all race/gender/ethnicity groups and age ranges for which we need populations
+                Dictionary<string, string> dicAllRaceEthnicityGenderAge = new Dictionary<string, string>();                
                 foreach (CRSelectFunction crSelectFunction in CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction)
                 {
                     if (dicAllRaceEthnicityGenderAge.ContainsKey(crSelectFunction.Race + "," + crSelectFunction.Ethnicity + "," + crSelectFunction.Gender))
@@ -1111,34 +1108,69 @@ namespace BenMAP
                         string[] strAgeArray = dicAllRaceEthnicityGenderAge[crSelectFunction.Race + "," + crSelectFunction.Ethnicity + "," + crSelectFunction.Gender].Split(new char[] { ',' });
                         if (Convert.ToInt32(strAgeArray[0]) > crSelectFunction.StartAge)
                         {
-                            dicAllRaceEthnicityGenderAge[crSelectFunction.Race + "," + crSelectFunction.Ethnicity + "," + crSelectFunction.Gender] =
-                                crSelectFunction.StartAge + "," + strAgeArray[1];
+                            strAgeArray[0] = crSelectFunction.StartAge.ToString();
                         }
                         if (Convert.ToInt32(strAgeArray[1]) < crSelectFunction.EndAge)
                         {
-                            dicAllRaceEthnicityGenderAge[crSelectFunction.Race + "," + crSelectFunction.Ethnicity + "," + crSelectFunction.Gender] =
-                                 strAgeArray[0] + "," + crSelectFunction.EndAge;
+                            strAgeArray[1] = crSelectFunction.EndAge.ToString();
                         }
+
+                        dicAllRaceEthnicityGenderAge[crSelectFunction.Race + "," + crSelectFunction.Ethnicity + "," + crSelectFunction.Gender] = strAgeArray[0] + "," + strAgeArray[1];
 
 
                     }
                     else
                         dicAllRaceEthnicityGenderAge.Add(crSelectFunction.Race + "," + crSelectFunction.Ethnicity + "," + crSelectFunction.Gender, crSelectFunction.StartAge + "," + crSelectFunction.EndAge);
                 }
+                
+                // create a dictionary with keys of race+ethnicity+gender and a dictionary of population dictionaries for the start and end ages 
                 dicALlPopulationAge = new Dictionary<string, Dictionary<string, float>>();
                 foreach (KeyValuePair<string, string> kAge in dicAllRaceEthnicityGenderAge)
                 {
                     string[] skAgeArray = kAge.Value.Split(new char[] { ',' });
                     string[] skAgeArrayRaceGenderEthnicity = kAge.Key.Split(new char[] { ',' });
-                    Dictionary<string, float> dicPopulationAgeIn = new Dictionary<string, float>();
-                    CRSelectFunction crSelectFunction = CommonClass.getCRSelectFunctionClone(CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction.First());
-                    crSelectFunction.StartAge = Convert.ToInt32(skAgeArray[0]);
-                    crSelectFunction.EndAge = Convert.ToInt32(skAgeArray[1]);
-                    crSelectFunction.Race = skAgeArrayRaceGenderEthnicity[0];
-                    crSelectFunction.Ethnicity = skAgeArrayRaceGenderEthnicity[1];
-                    crSelectFunction.Gender = skAgeArrayRaceGenderEthnicity[2];
-                    Configuration.ConfigurationCommonClass.getPopulationDataSetFromCRSelectFunction(ref dicPopulationAgeIn, ref dicPopulation12, crSelectFunction, CommonClass.BenMAPPopulation, dicRace, dicEthnicity,
-                            dicGender, CommonClass.GBenMAPGrid.GridDefinitionID, gridPopulation);
+
+                    //build cache key. key is race,ethnicity,gender,start age,end age,CommonClass.GBenMAPGrid.GridDefinitionID,CommonClass.BenMAPPopulation.GridType.GridDefinitionID
+                    string cacheKey = String.Format("{0},{1},{2},{3}", 
+                                                    kAge.Key, kAge.Value, 
+                                                    CommonClass.GBenMAPGrid.GridDefinitionID.ToString(), 
+                                                    CommonClass.BenMAPPopulation.GridType.GridDefinitionID.ToString());
+
+                    //check cache
+                    Dictionary<string, float> dicPopulationAgeIn;
+
+                    if (CommonClass.DicPopulationAgeInCache.Keys.Contains(cacheKey))
+                    {
+                        //if in cache, retrieve a copy
+                        dicPopulationAgeIn = new Dictionary<string, float>(CommonClass.DicPopulationAgeInCache[cacheKey]);
+
+                        //this.lbProgressBar.Text = String.Format("Loading Cached Population data for Race = {0}, Ethnicity = {1}, Gender = {2}, Start Age = {3}, End Age = {4}",
+                        //                                        skAgeArrayRaceGenderEthnicity[0], skAgeArrayRaceGenderEthnicity[1], skAgeArrayRaceGenderEthnicity[2],
+                        //                                        skAgeArray[0], skAgeArray[1]);
+                        this.lbProgressBar.Text = "Loading Cached Population data.";
+                    }
+                    else 
+                    {
+                        //if not in cache, retreive population                                          
+
+                        CRSelectFunction crSelectFunction = CommonClass.getCRSelectFunctionClone(CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction.First());
+                        crSelectFunction.StartAge = Convert.ToInt32(skAgeArray[0]);
+                        crSelectFunction.EndAge = Convert.ToInt32(skAgeArray[1]);
+                        crSelectFunction.Race = skAgeArrayRaceGenderEthnicity[0];
+                        crSelectFunction.Ethnicity = skAgeArrayRaceGenderEthnicity[1];
+                        crSelectFunction.Gender = skAgeArrayRaceGenderEthnicity[2];
+
+                        //build population
+                        dicPopulationAgeIn = new Dictionary<string, float>();
+                        Configuration.ConfigurationCommonClass.getPopulationDataSetFromCRSelectFunction(ref dicPopulationAgeIn, ref dicPopulation12, crSelectFunction, CommonClass.BenMAPPopulation, dicRace, dicEthnicity,
+                                dicGender, CommonClass.GBenMAPGrid.GridDefinitionID, gridPopulation);
+
+                        //add copy of dicPopulationAgeIn to cache
+                        CommonClass.DicPopulationAgeInCache.Add(cacheKey, new Dictionary<string, float>(dicPopulationAgeIn));
+
+                    }
+
+                    //set dicPopulationAgeIn
                     dicALlPopulationAge.Add(kAge.Key, dicPopulationAgeIn);
 
                 }
@@ -1413,6 +1445,11 @@ namespace BenMAP
             }
             catch (Exception ex)
             {
+                // 2016 06 10 - added logging and message box to show stack trace if error occurs, otherwise there is no way to know that it's failed.
+                // log stack trace for debug use
+                Logger.LogError(ex);
+                // show message to user, as well
+                MessageBox.Show(ex.StackTrace);
                 btAddCRFunctions.Enabled = true;
                 btAdvanced.Enabled = true;
                 btDelSelectMethod.Enabled = true;
@@ -1641,24 +1678,6 @@ namespace BenMAP
             }
         }
 
-        public void WaitShow(string msg)
-        {
-            try
-            {
-                if (sFlog == true)
-                {
-                    sFlog = false;
-                    waitMess.Msg = msg;
-                    System.Threading.Thread upgradeThread = null;
-                    upgradeThread = new System.Threading.Thread(new System.Threading.ThreadStart(ShowWaitMess));
-                    upgradeThread.Start();
-                }
-            }
-            catch (System.Threading.ThreadAbortException Err)
-            {
-                MessageBox.Show(Err.Message);
-            }
-        }
         private delegate void CloseFormDelegate();
         private delegate void ChangeDelegate(string msg);
         public void WaitClose()
@@ -1668,36 +1687,7 @@ namespace BenMAP
             else
                 DoCloseJob();
         }
-
-        public void WaitChangeMsg(string msg)
-        {
-            try
-            {
-                if (waitMess.InvokeRequired)
-                    waitMess.Invoke(new ChangeDelegate(DoChange), msg);
-            }
-            catch (System.Threading.ThreadAbortException Err)
-            {
-                MessageBox.Show(Err.Message);
-            }
-        }
-        private void DoChange(string msg)
-        {
-            try
-            {
-                if (!waitMess.IsDisposed)
-                {
-                    if (waitMess.Created)
-                    {
-                        waitMess.Msg = msg;
-                    }
-                }
-            }
-            catch (System.Threading.ThreadAbortException Err)
-            {
-                MessageBox.Show(Err.Message);
-            }
-        }
+   
         private void DoCloseJob()
         {
             try
@@ -1798,12 +1788,13 @@ namespace BenMAP
             }
 
         }
-
+        // EMPTY FUNCTION - this function contain no code and does nothing.
         private void olvSimple_IsHyperlink(object sender, IsHyperlinkEventArgs e)
         {
 
         }
 
+        // DEADCODE - this callback no longer supplies any functionality.
         private void olvSimple_CellClick(object sender, CellClickEventArgs e)
         {
             base.OnClick(e);
@@ -1812,11 +1803,14 @@ namespace BenMAP
                 switch (e.Column.Text)
                 {
                     case "DataSet":
-                        Help.ShowHelp(this, Application.StartupPath + @"\Data\QuickStartGuide.chm", "select_health_impact_function.htm");
+                        // HARDCODED - help file location and page to open
+                        // DEADCODE - commented this out as there is no help file and this is the only active place where it could be called
+                        //Help.ShowHelp(this, Application.StartupPath + @"\Data\QuickStartGuide.chm", "select_health_impact_function.htm");
                         break;
                 }
             }
         }
+
 
         private void btAdvanced_Click(object sender, EventArgs e)
         {

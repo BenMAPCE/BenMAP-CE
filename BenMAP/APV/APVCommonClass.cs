@@ -3751,7 +3751,7 @@ namespace BenMAP.APVX
 
 
 
-
+        // Distributions
         public static double[] getLHSArrayValuationFunctionSeed(int LatinHypercubePoints, BenMAPValuationFunction benMAPValuationFunction, int Seed)
         {
             try
@@ -4270,6 +4270,7 @@ benMAPValuationFunction.P2A);
             return dicRelationShip;
         }
         public static Dictionary<string, Dictionary<string, Dictionary<string, double>>> DicRelationShipAll = new Dictionary<string, Dictionary<string, Dictionary<string, double>>>();
+
         public static CRSelectFunctionCalculateValue ApplyAggregationCRSelectFunctionCalculateValue(CRSelectFunctionCalculateValue crSelectFunctionCalculateValueFrom, int GridFrom, int GridTo)
         {
             CRSelectFunctionCalculateValue crOut = new CRSelectFunctionCalculateValue();
@@ -4286,12 +4287,12 @@ benMAPValuationFunction.P2A);
                         gridRelationship = CommonClass.LstGridRelationshipAll.Where(p => p.bigGridID == GridTo && p.smallGridID == GridFrom).First();
                     }
 
-
-
                 }
-                catch
+                catch (Exception ex)
                 {
+                    Debug.WriteLine(ex.ToString());
                 }
+
                 if (gridRelationship == null)
                 {
                     Configuration.ConfigurationCommonClass.creatPercentageToDatabase(GridTo, GridFrom,null);
@@ -4321,7 +4322,7 @@ benMAPValuationFunction.P2A);
                     iCount = 1;
 
                 }
-                if (iCount != 0)
+                if (iCount != 0)       
                 {
                     Dictionary<string, Dictionary<string, double>> dicRelationShip = new Dictionary<string, Dictionary<string, double>>();
                     if (DicRelationShipAll.ContainsKey(GridFrom + "," + GridTo))
@@ -4422,7 +4423,7 @@ benMAPValuationFunction.P2A);
                         dicAggregation.Clear();
                         dicAggregation = null;
                     }
-                    else
+                    else       
                     {
                         Dictionary<string, CRCalculateValue> dicCRCalculateValue = new Dictionary<string, CRCalculateValue>();
                         CRCalculateValue anewfirst = new CRCalculateValue();
@@ -4500,7 +4501,7 @@ benMAPValuationFunction.P2A);
                     }
 
                 }
-                else
+                else    
                 {
                     Dictionary<string, CRCalculateValue> dicCRCalculateValue = new Dictionary<string, CRCalculateValue>();
                     List<string> lstSmallColRow = new List<string>();
@@ -4610,9 +4611,9 @@ benMAPValuationFunction.P2A);
                 }
 
             }
-            catch
+            catch (Exception ex)
             {
-                return null;
+                Debug.WriteLine(ex.ToString());
             }
             return crOut;
         }

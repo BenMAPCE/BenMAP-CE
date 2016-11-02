@@ -832,19 +832,37 @@ namespace BenMAP
                 if (cboBetaDistribution.SelectedItem == "None") { return; }
                 if (cboBetaDistribution.SelectedItem == "Custom")
                 {
+                    // New list 
                     if (list.Count == 0)
                     {
                         CustomDistributionEntries frm = new CustomDistributionEntries();
                         DialogResult rtn = frm.ShowDialog();
                         if (rtn != DialogResult.OK) { return; }
                         list = frm.list;
+                        txtBeta.Text = frm.MeanValue;
+                        txtBetaParameter1.Text = frm.Parameter1;
                     }
-                    else
+                    // List defined but not in standard deviation not added to db yet
+                    // This is done by checking if beta parameter 1 is set to 0 AND the whole list is 0
+                    // If this were the case there would be no deviation and that could be the SD value
+                    else if ((healthImpactValues.BetaParameter1.Equals("0")) && !list.All(c => c == 0.0))
                     {
                         CustomDistributionEntries frmCustom = new CustomDistributionEntries(list);
                         DialogResult rtnCustom = frmCustom.ShowDialog();
                         if (rtnCustom != DialogResult.OK) { return; }
                         list = frmCustom.list;
+                        txtBeta.Text = frmCustom.MeanValue;
+                        txtBetaParameter1.Text = frmCustom.Parameter1;
+                    }
+                    // Mean and standard deviation already in database
+                    else
+                    {
+                        CustomDistributionEntries frmCustom = new CustomDistributionEntries(list, healthImpactValues.Beta, healthImpactValues.BetaParameter1);
+                        DialogResult rtnCustom = frmCustom.ShowDialog();
+                        if (rtnCustom != DialogResult.OK) { return; }
+                        list = frmCustom.list;
+                        txtBeta.Text = frmCustom.MeanValue;
+                        txtBetaParameter1.Text = frmCustom.Parameter1;
                     }
                 }
                 else

@@ -8,13 +8,15 @@ using System.Runtime.Serialization.Json;
 using System.Windows.Forms;
 using System.Diagnostics;
 using DotSpatial.Data;
-using DotSpatial.Topology;
-using DotSpatial.Topology.Voronoi;
+using DotSpatial.NTSExtension.Voronoi;
 using FirebirdSql.Data.FirebirdClient;
 using ProtoBuf;
 
 using LumenWorks.Framework.IO.Csv;
 using System.Reflection;
+using DotSpatial.NTSExtension;
+using GeoAPI.Geometries;
+using NetTopologySuite.Geometries;
 
 namespace BenMAP
 {
@@ -1971,7 +1973,7 @@ namespace BenMAP
             }
         }
 
-        public static double getDistanceFrom2Point(DotSpatial.Topology.Point start, DotSpatial.Topology.Point end)
+        public static double getDistanceFrom2Point(Point start, Point end)
         {
             return 2 * Math.Asin(Math.Sqrt(Math.Pow((Math.Sin((start.Y / 180 * Math.PI - end.Y / 180 * Math.PI) / 2)), 2) +
 Math.Cos(start.Y / 180 * Math.PI) * Math.Cos(end.Y / 180 * Math.PI) * Math.Pow(Math.Sin((start.X / 180 * Math.PI - end.X / 180 * Math.PI) / 2), 2))) * 6371.000;
@@ -1983,7 +1985,7 @@ Math.Cos(start.Y / 180 * Math.PI) * Math.Cos(end.Y / 180 * Math.PI) * Math.Pow(M
 Math.Cos(Y0 / 180 * Math.PI) * Math.Cos(Y1 / 180 * Math.PI) * Math.Pow(Math.Sin((X0 / 180 * Math.PI - X1 / 180 * Math.PI) / 2), 2))) * 6371.000);
         }
 
-        public static double getDistanceFromExtent(DotSpatial.Topology.Coordinate coordinate, DotSpatial.Topology.IEnvelope env, DotSpatial.Topology.Point end)
+        public static double getDistanceFromExtent(Coordinate coordinate, IEnvelope env, Point end)
         {
             double d = Math.Sqrt((coordinate.X - end.X) * (coordinate.X - end.X) + (coordinate.Y - end.Y) * (coordinate.Y - end.Y)) * 111.0000; if (d < env.Height / 2.00 && d < env.Width / 2.00)
             {
@@ -2008,7 +2010,7 @@ Math.Cos(Y0 / 180 * Math.PI) * Math.Cos(Y1 / 180 * Math.PI) * Math.Pow(Math.Sin(
                     continue;
                 }
 
-                boundSegments.Add(new LineString(new List<Coordinate> { edge.VVertexA.ToCoordinate(), edge.VVertexB.ToCoordinate() }));
+                boundSegments.Add(new LineString(new[] { edge.VVertexA.ToCoordinate(), edge.VVertexB.ToCoordinate() }));
             }
 
             IEnvelope env = bounds;
@@ -2028,7 +2030,7 @@ Math.Cos(Y0 / 180 * Math.PI) * Math.Cos(Y1 / 180 * Math.PI) * Math.Pow(Math.Sin(
                 double sx = -dy / l;
                 double sy = dx / l;
 
-                Coordinate center = bounds.Center();
+                var center = new Coordinate(bounds.Centre);
                 if ((start.X > center.X && start.Y > center.Y) || (start.X < center.X && start.Y < center.Y))
                 {
                     sx = dy / l;
@@ -2042,19 +2044,19 @@ Math.Cos(Y0 / 180 * Math.PI) * Math.Cos(Y1 / 180 * Math.PI) * Math.Pow(Math.Sin(
                 {
                     end = new Coordinate(start.X - (sx * len), start.Y - (sy * len));
                 }
-
+                
                 if (edge.VVertexA.ContainsNan())
                 {
-                    edge.VVertexA = new Vector2(end.ToArray());
+                    edge.VVertexA = new Vector2(end.X, end.Y);
                 }
                 else
                 {
-                    edge.VVertexB = new Vector2(end.ToArray());
+                    edge.VVertexB = new Vector2(end.X, end.Y);
                 }
             }
         }
 
-        public static void VoronoiPolygons(IFeatureSet points, ref List<Polygon> result, IEnvelope envBounds)
+        public static void VoronoiPolygons(IFeatureSet points, ref List<Polygon> result, Envelope envBounds)
         {
             result = new List<Polygon>();
             double[] vertices = points.Vertex;
@@ -2063,7 +2065,7 @@ Math.Cos(Y0 / 180 * Math.PI) * Math.Cos(Y1 / 180 * Math.PI) * Math.Pow(Math.Sin(
             Extent ext = points.Extent;
             ext.ExpandBy(ext.Width / 100, ext.Height / 100);
             IEnvelope env = ext.ToEnvelope();
-            IPolygon bounds = envBounds.ToPolygon();
+            var bounds = envBounds.ToPolygon();
 
             HandleBoundaries(gp, env);
             VoronoiEdge firstEdge = null;
@@ -2150,7 +2152,8 @@ Math.Cos(Y0 / 180 * Math.PI) * Math.Cos(Y1 / 180 * Math.PI) * Math.Pow(Math.Sin(
                 }
                 if (coords.Count <= 2) { continue; }
 
-                Polygon pg = new Polygon(coords);
+                var lr = new LinearRing(coords.ToArray());
+                Polygon pg = new Polygon(lr);
                 try
                 {
                     IGeometry g = pg.Intersection(bounds);
@@ -2183,7 +2186,6 @@ Math.Cos(Y0 / 180 * Math.PI) * Math.Cos(Y1 / 180 * Math.PI) * Math.Pow(Math.Sin(
             Extent ext = new Extent(XMin, YMin, XMax, YMax);
             ext.ExpandBy(ext.Width / 100, ext.Height / 100);
             IEnvelope env = ext.ToEnvelope();
-            IPolygon bounds = env.ToPolygon();
 
             HandleBoundaries(gp, env);
             VoronoiEdge firstEdge = null;
@@ -2270,8 +2272,8 @@ Math.Cos(Y0 / 180 * Math.PI) * Math.Cos(Y1 / 180 * Math.PI) * Math.Pow(Math.Sin(
                 }
                 if (coords.Count <= 2) { continue; }
 
-
-                result.Add(new Polygon(coords));
+                var lr = new LinearRing(coords.ToArray());
+                result.Add(new Polygon(lr));
 
             }
 
@@ -2934,7 +2936,7 @@ iPOC == 5 || iPOC == 6 || iPOC == 7 || iPOC == 8 || iPOC == 9))
                         if (monitorValue.dicMetricValues == null || monitorValue.dicMetricValues.Count == 0) continue; if (!dicMonitorValues.ContainsKey(monitorValue.Longitude + "," + monitorValue.Latitude))
                         {
                             dicMonitorValues.Add(monitorValue.Longitude + "," + monitorValue.Latitude, monitorValue);
-                            fsPoints.AddFeature(new DotSpatial.Topology.Point(monitorValue.Longitude, monitorValue.Latitude));
+                            fsPoints.AddFeature(new Point(monitorValue.Longitude, monitorValue.Latitude));
                             lstCoordinate.Add(new Coordinate(monitorValue.Longitude, monitorValue.Latitude));
                             fsInter.Add(monitorValue.Longitude);
                             fsInter.Add(monitorValue.Latitude);
@@ -2960,7 +2962,7 @@ iPOC == 5 || iPOC == 6 || iPOC == 7 || iPOC == 8 || iPOC == 9))
                     int idicMonitorValues = dicMonitorValues.Count;
                     if (idicMonitorValues > 100) idicMonitorValues = 100;
                     Polygon fOnlyPoint = null; IFeatureSet fsVoronoi = new FeatureSet();
-                    DotSpatial.Topology.Coordinate coordinate = new DotSpatial.Topology.Coordinate();
+                    var coordinate = new Coordinate();
                     List<Polygon> lstPolygon = new List<Polygon>();
                     List<float> lstDouble = new List<float>();
                     List<double> fsout = new List<double>(); ;
@@ -2974,13 +2976,13 @@ iPOC == 5 || iPOC == 6 || iPOC == 7 || iPOC == 8 || iPOC == 9))
                     monitorDataLine.MonitorNeighbors = new List<MonitorNeighborAttribute>();
                     while (i < fs.DataTable.Rows.Count)
                     {
-                        if (fs.GetFeature(i).BasicGeometry.GeometryType == "Polygon")
+                        if (fs.GetFeature(i).Geometry.GeometryType == "Polygon")
                         {
-                            coordinate = new Coordinate((fs.GetFeature(i).BasicGeometry as Polygon).Centroid.X, (fs.GetFeature(i).BasicGeometry as Polygon).Centroid.Y);
+                            coordinate = new Coordinate((fs.GetFeature(i).Geometry as Polygon).Centroid.X, (fs.GetFeature(i).Geometry as Polygon).Centroid.Y);
                         }
                         else
                         {
-                            coordinate = new Coordinate((fs.GetFeature(i).BasicGeometry as MultiPolygon).Centroid.X, (fs.GetFeature(i).BasicGeometry as MultiPolygon).Centroid.Y);
+                            coordinate = new Coordinate((fs.GetFeature(i).Geometry as MultiPolygon).Centroid.X, (fs.GetFeature(i).Geometry as MultiPolygon).Centroid.Y);
                         }
                         switch (monitorDataLine.InterpolationMethod)
                         {
@@ -3012,7 +3014,7 @@ iPOC == 5 || iPOC == 6 || iPOC == 7 || iPOC == 8 || iPOC == 9))
                                 }
                                 break;
                             case InterpolationMethodEnum.FixedRadius:
-                                DotSpatial.Topology.Point tPoint = new DotSpatial.Topology.Point(coordinate);
+                                var tPoint = new NetTopologySuite.Geometries.Point(coordinate);
                                 DicMonitorDistance = new Dictionary<MonitorValue, float>();
 
                                 foreach (MonitorValue monitorValue in lstMonitorValues)

@@ -117,6 +117,11 @@
             Gets the Assembly Qualified FullName.
             </summary>
         </member>
+        <member name="P:DotSpatial.Extensions.IExtension.Priority">
+            <summary>
+            Specifies the activation priority order
+            </summary>
+        </member>
         <member name="T:DotSpatial.Extensions.IExtensionExtensionMethods">
             <summary>
             Extension methods for IExtension
@@ -129,15 +134,12 @@
             <param name="extension">The extension.</param>
             <returns></returns>
         </member>
-        <member name="T:DotSpatial.Extensions.IOpenProjectFileProvider">
-             <summary>
-            
-             </summary>
-        </member>
-        <member name="T:DotSpatial.Extensions.IProjectFileProvider">
-             <summary>
-            
-             </summary>
+        <member name="M:DotSpatial.Extensions.IOpenProjectFileProvider.Open(System.String)">
+            <summary>
+            Opens the specified file name.
+            </summary>
+            <param name="fileName">Name of the file.</param>
+            <returns></returns>
         </member>
         <member name="P:DotSpatial.Extensions.IProjectFileProvider.FileTypeDescription">
             <summary>
@@ -148,13 +150,6 @@
             <summary>
             Gets the extension, which by convention will be lower case.
             </summary>
-        </member>
-        <member name="M:DotSpatial.Extensions.IOpenProjectFileProvider.Open(System.String)">
-            <summary>
-            Opens the specified file name.
-            </summary>
-            <param name="fileName">Name of the file.</param>
-            <returns></returns>
         </member>
         <member name="T:DotSpatial.Extensions.ISampleProject">
             <summary>
@@ -176,11 +171,6 @@
             Gets the description of the project
             </summary>
         </member>
-        <member name="T:DotSpatial.Extensions.ISaveProjectFileProvider">
-             <summary>
-            
-             </summary>
-        </member>
         <member name="M:DotSpatial.Extensions.ISaveProjectFileProvider.Save(System.String,System.String)">
             <summary>
             Saves the specified file.
@@ -193,14 +183,14 @@
             Extensions of this type are activiated before other extensions and may be used to help satisfy required imports.
             </summary>
         </member>
-        <member name="M:DotSpatial.Extensions.ISatisfyImportsExtension.Activate">
-            <summary>
-            Activates this extension
-            </summary>
-        </member>
         <member name="P:DotSpatial.Extensions.ISatisfyImportsExtension.Priority">
             <summary>
             Specifies the activation priority order
+            </summary>
+        </member>
+        <member name="M:DotSpatial.Extensions.ISatisfyImportsExtension.Activate">
+            <summary>
+            Activates this extension
             </summary>
         </member>
         <member name="T:DotSpatial.Extensions.SplashScreens.ISplashScreenManager">
@@ -234,11 +224,6 @@
         <member name="F:DotSpatial.Extensions.SplashScreens.SplashScreenCommand.SetDisplayText">
             <summary>
             Displays a string on the splash screen.
-            </summary>
-        </member>
-        <member name="T:DotSpatial.Extensions.SplashScreens.SplashScreenHelper">
-            <summary>
-            TODO: Update summary.
             </summary>
         </member>
         <member name="M:DotSpatial.Extensions.SplashScreens.SplashScreenHelper.GetSplashScreenManager">

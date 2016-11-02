@@ -280,12 +280,20 @@ namespace BenMAP
             txtReportOutput.Text += "\r\n\r\n\r\nSummary\r\n";
             if(errors > 0)
             {
-                txtReportOutput.Text += "-----\r\nValidation failed!\r\n";
+                txtReportOutput.Text += string.Format("-----\r\nValidation failed with {0} error(s).\r\n", errors);
+            }
+            else
+            {
+                txtReportOutput.Text += string.Format("-----\r\nValidation passed with {0} warning(s).\r\n", warnings);
             }
             txtReportOutput.Text += string.Format("{0} errors\r\n{1} warnings\r\n", errors,warnings);
             txtReportOutput.Refresh();
             SaveValidateResults();
-            btnLoad.Enabled = bPassed;
+
+            // Allow load if there aren't errors
+            if (errors > 0) btnLoad.Enabled = false;
+            else btnLoad.Enabled = true;
+
             if(!bPassed)
             {
                 lblPassedFailed.BackColor = Color.Red;
@@ -328,7 +336,6 @@ namespace BenMAP
             txtReportOutput.Text += "Error/Warnings\tRow\tColumn Name\tError/Warning Message\r\n";
             for (int i = 0; i < _colNames.Count; i++)
             {
-                //if (!_dicTableDef.ContainsKey(_colNames[i].ToString()))
                 if(!_hashTableDef.ContainsValue(_colNames[i].ToString()))
                 {
                     txtReportOutput.Text += string.Format("Error\t\t{0}\t is not a valid column name for dataset {1}\r\n", _colNames[i].ToString(), _datasetname);
@@ -416,28 +423,45 @@ namespace BenMAP
                             {
                                 if (checkType.ToLower() == "error")//if check type is "Error" and Verify Data Row Values fail - it's an error.
                                 {
-                                    txtReportOutput.Text += string.Format("Error\t {0}\t {1} \t {2}\r\n", _tbl.Rows.IndexOf(dr), dc.ColumnName, errMsg);
+                                    txtReportOutput.Text += string.Format("Error\t {0}\t {1} \t {2}\r\n", _tbl.Rows.IndexOf(dr)+1, dc.ColumnName, errMsg);
                                     errors++;
                                 }
                                 else if (checkType.ToLower() == "warning" && !required)//if a check type is a warning and it is not a required field it is a warning.
                                 {
-                                    txtReportOutput.Text += string.Format("Warning\t {0}\t {1} \t {2}\r\n", _tbl.Rows.IndexOf(dr), dc.ColumnName, errMsg);
+                                    txtReportOutput.Text += string.Format("Warning\t {0}\t {1} \t {2}\r\n", _tbl.Rows.IndexOf(dr)+1, dc.ColumnName, errMsg);
                                     warnings++;
                                 }
                                 else if (checkType.ToLower() == "warning" && required)//if a check type is a warning and it is a required field it is a error.
                                 {
-                                    txtReportOutput.Text += string.Format("Error\t {0}\t {1} \t {2}\r\n", _tbl.Rows.IndexOf(dr), dc.ColumnName, errMsg);
-                                    errors++;
+                                   // Shows warning if value is outside of range but shows error if it's an invalid type
+                                   if (errMsg.Contains("within"))
+                                   {
+                                       txtReportOutput.Text += string.Format("Warning\t {0}\t {1} \t {2}\r\n", _tbl.Rows.IndexOf(dr)+1, dc.ColumnName, errMsg);
+                                       warnings++;
+                                   }
+                                   else
+                                   {
+                                       txtReportOutput.Text += string.Format("Error\t {0}\t {1} \t {2}\r\n", _tbl.Rows.IndexOf(dr)+1, dc.ColumnName, errMsg);
+                                       errors++;
+                                   }
                                 }
                                 else if (checkType == string.Empty && required)//if check type is an empty string and it is a required field it is a error.
                                 {
-                                    txtReportOutput.Text += string.Format("Error\t {0}\t {1} \t {2}\r\n", _tbl.Rows.IndexOf(dr), dc.ColumnName, errMsg);
+                                    txtReportOutput.Text += string.Format("Error\t {0}\t {1} \t {2}\r\n", _tbl.Rows.IndexOf(dr)+1, dc.ColumnName, errMsg);
                                     errors++;
                                 }
                                 else if(checkType == string.Empty && !required)//if check type is an empty string and it is not a required field it is a warning.
                                 {
-                                    txtReportOutput.Text += string.Format("Warning\t {0}\t {1} \t {2}\r\n", _tbl.Rows.IndexOf(dr), dc.ColumnName, errMsg);
-                                    warnings++;
+                                   if(errMsg.Contains("not a valid"))
+                                   {
+                                       txtReportOutput.Text += string.Format("Error\t {0}\t {1} \t {2}\r\n", _tbl.Rows.IndexOf(dr) + 1, dc.ColumnName, errMsg);
+                                       errors++;
+                                   }
+                                   else
+                                   {
+                                       txtReportOutput.Text += string.Format("Warning\t {0}\t {1} \t {2}\r\n", _tbl.Rows.IndexOf(dr) + 1, dc.ColumnName, errMsg);
+                                       warnings++;
+                                   }
                                 }
                                 txtReportOutput.Refresh();
                                 numChecked++;
@@ -462,7 +486,6 @@ namespace BenMAP
                    {
                        pbarValidation.PerformStep();
                         lblProgress.Text = Convert.ToString((int)((double)pbarValidation.Value / pbarValidation.Maximum * 100)) + "%";
-                        //txtReportOutput.Refresh();
                         lblProgress.Refresh();
                    }
                 }
@@ -525,7 +548,6 @@ namespace BenMAP
             bool required = Convert.ToBoolean(Convert.ToInt32(_hashTableDef[columnName + "##REQUIRED"].ToString()));//Get required value (true (1) or false (0))
             string checkType = _hashTableDef[columnName + "##CHECKTYPE"].ToString();//Get check type - error, warning, or none (empty string or null)
             // removed $ and %, as these are used in the valuation functions (and several others, as well)
-            //Regex regx = new Regex(@"^[^~!@#%`^]+$");
             Regex regx = new Regex(@"^[^~!@#`^]+");
             double tempVal;
             int outVal = -1;
@@ -622,11 +644,10 @@ namespace BenMAP
                             }
                         }
                         else
-                        {   //If it is required and the val is empty it is an invalid float.  This is actully caught at line 418
-                            //this should handle the case where a value is not required and is empty - then there is no issue
-                            //if it is not required and a value exists, then it is not a float and is an issue
-                            //if it failed to tryparse then chances are it is not a valid float.
-                            if (!required && !string.IsNullOrEmpty(valToVerify))
+                        {   
+                            // If it doesn't pass TryParse and is not empty then it isn't a valid float
+                            // Empty cases cause earlier 
+                            if (!string.IsNullOrEmpty(valToVerify))
                             {
                                 errMsg = string.Format("Value '{0}' is not a valid float.", valToVerify);
                                 bPassed = false;
@@ -656,7 +677,6 @@ namespace BenMAP
                 bPassed = false;
                 MessageBox.Show(ex.Message);
             }
-            //txtReportOutput.Refresh();
             return bPassed;
         }
 

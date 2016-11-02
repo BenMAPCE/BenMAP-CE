@@ -8,18 +8,30 @@ namespace BenMAP
 {
     public partial class CustomDistributionEntries : FormBase
     {
+        private bool valuesPassed;
         List<double> listDistribution = new List<double>();
 
         public CustomDistributionEntries()
         {
             InitializeComponent();
             listDistribution = null;
+            valuesPassed = false;
         }
 
         public CustomDistributionEntries(List<double> listValue)
         {
             InitializeComponent();
             listDistribution = listValue;
+            valuesPassed = false;
+        }
+
+        public CustomDistributionEntries(List<double> listValue, string avg, string standDev)
+        {
+            InitializeComponent();
+            listDistribution = listValue;
+            MeanValue = avg;
+            Parameter1 = standDev;
+            valuesPassed = true;
         }
 
         List<double> lstlst = new List<double>();
@@ -33,8 +45,20 @@ namespace BenMAP
                     lstCurrentEntries.Items.Add(item);
                     lstlst.Add(Convert.ToDouble(item));
                 }
-                txtCurrentMean.Text = GetMeanDistribution(lstlst).ToString();
-                txtCurrentStandard.Text = (getStandardDeviation(lstlst, Convert.ToDouble(txtCurrentMean.Text))).ToString();
+
+                // Used so that SD and mean aren't calculated each time if already known
+                if(valuesPassed)
+                {
+                    txtCurrentMean.Text = MeanValue;
+                    txtCurrentStandard.Text = Parameter1;
+                }
+                else
+                {
+                    MeanValue = GetMeanDistribution(lstlst).ToString();
+                    txtCurrentMean.Text = MeanValue;
+                    Parameter1 = (getStandardDeviation(lstlst, Convert.ToDouble(txtCurrentMean.Text))).ToString();
+                    txtCurrentStandard.Text = Parameter1;
+                }
             }
             else
             { return; }
@@ -82,8 +106,11 @@ namespace BenMAP
                     }
                     lstCurrentEntries.Items.Add(dt.Rows[i][0]);
                 }
-                txtCurrentMean.Text = GetMeanDistribution(lstlst).ToString();
-                txtCurrentStandard.Text = (getStandardDeviation(lstlst, Convert.ToDouble(txtCurrentMean.Text))).ToString();
+
+                MeanValue = GetMeanDistribution(lstlst).ToString();
+                txtCurrentMean.Text = MeanValue;
+                Parameter1 = (getStandardDeviation(lstlst, Convert.ToDouble(txtCurrentMean.Text))).ToString();
+                txtCurrentStandard.Text = Parameter1;
             }
             catch (Exception ex)
             {
@@ -117,6 +144,20 @@ namespace BenMAP
         {
             this.DialogResult = DialogResult.OK;
             _list = lstlst;
+        }
+
+        private string _meanValue;
+        public string MeanValue
+        {
+            get { return _meanValue; }
+            set { _meanValue = value; }
+        }
+
+        private string _parameter1;
+        public string Parameter1
+        {
+            get { return _parameter1; }
+            set { _parameter1 = value; }
         }
     }
 }

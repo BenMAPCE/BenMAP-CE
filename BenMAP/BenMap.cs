@@ -19,16 +19,24 @@ using DotSpatial.Projections;
 //using DotSpatial.Plugins; //MCB - needed?
 //using DotSpatial.Plugins.TableEditor;  // MCB-?
 //using DotSpatial.Plugins.AttributeDataExplorer;  //MCB- needed?
-using ZedGraph;
+// using ZedGraph; // ZED
+using OxyPlot;
+using OxyPlot.Series;
 using ESIL.DBUtility;
 using System.Configuration;
 using ProtoBuf;
 using System.Collections;
+using OxyPlot.Axes;
+using System.ComponentModel.Composition;
+using BenMAP.SelectByLocation;
 
 namespace BenMAP
 {
     public partial class BenMAP : FormBase
     {
+        [Export("Shell", typeof(ContainerControl))]
+        private static ContainerControl Shell = new Form(); // Dummy form to hold default appmanager controls
+
         BenMAPGrid chartGrid;
         BenMAPGrid ChartGrid
         {
@@ -84,7 +92,7 @@ namespace BenMAP
                 Control.CheckForIllegalCrossThreadCalls = false;
                 _homePageName = homePageName;
                 splitContainer1.Visible = false;
-                zedGraphCtl.Visible = false;
+                oxyPlotView.Visible = false;
                 this.tabCtlReport.DrawMode = System.Windows.Forms.TabDrawMode.OwnerDrawFixed;
                 this.tabCtlReport.DrawItem += new DrawItemEventHandler(DrawTabControlItems);
 
@@ -93,21 +101,8 @@ namespace BenMAP
 
                 mainMap.LayerAdded += new EventHandler<LayerEventArgs>(mainMap_LayerAdded);
                 mainMap.Layers.LayerVisibleChanged += new EventHandler(mainMap_LayerVisibleChanged);
-                //this.appManager1 = new DotSpatial.Controls.AppManager();
-                //appManager1.Directories.Clear();
-                //appManager1.Directories.Add(@"Plugins\GDAL");
+                
                 appManager1.LoadExtensions();
-                //Console.WriteLine("MCB-test");
-                //foreach (DotSpatial.Extensions.IExtension iext in appManager1.Extensions)
-                //{
-                //    Console.WriteLine(iext.Name);
-                //}
-           
-                //MCB- right place for this???
-              //AttributeDataExplorerPlugin AttEx = new AttributeDataExplorerPlugin();
-              // AttEx.Activate();
-              //  AttEx.IsActive = true;
-
             }
             catch (Exception ex)
             {
@@ -2948,6 +2943,7 @@ namespace BenMAP
             }
             PolygonScheme myScheme1 = new PolygonScheme();
             myScheme1.EditorSettings.ClassificationType = ClassificationType.Quantities;
+            
             myScheme1.EditorSettings.IntervalMethod = IntervalMethod.NaturalBreaks;
             myScheme1.EditorSettings.IntervalSnapMethod = IntervalSnapMethod.SignificantFigures;
             myScheme1.EditorSettings.IntervalRoundingDigits = 3; //number of significant figures (or decimal places if using rounding)
@@ -2963,29 +2959,12 @@ namespace BenMAP
             { 
                 //Create the simple pattern with opacity
                 SimplePattern sp = new SimplePattern(colorBlend.ColorArray[catNum]);
-                //SimplePattern sp = new SimplePattern(Color.Purple);
+                sp.Outline = new LineSymbolizer(Color.Transparent, 0); // Outline is nessasary
                 sp.Opacity = 0.8F;  //80% opaque = 20% transparent
-                PolygonSymbolizer poly = new PolygonSymbolizer(colorBlend.ColorArray[catNum], Color.Transparent, 0);
-                //PolygonSymbolizer poly = new PolygonSymbolizer(Color.Red, Color.Transparent, 0);
-                poly.Patterns.Clear();
-                poly.Patterns.Add(sp);
+
+                var poly = new PolygonSymbolizer(new List<IPattern> { sp });
 
                 myScheme1.Categories[catNum].Symbolizer = poly;
-                //myScheme1.Categories[catNum].SetColor(colorBlend.ColorArray[catNum]);
-
-                //make a copy of the category and add it to the color ramp:  -MCB - needed to get the property editor to work correctly
-                PolygonCategory tempCat = new PolygonCategory();
-                tempCat = (PolygonCategory)myScheme1.Categories[catNum].Clone();
-                myScheme1.AddCategory(tempCat);
-
-                //alternate method ignoring transparency of inside color  
-                //myScheme1.Categories[catNum].Symbolizer.SetOutline(Color.Transparent, 0); //make the outlines invisble
-                //myScheme1.Categories[catNum].SetColor(colorBlend.ColorArray[catNum]);
-            }
-
-            for (int catNum = 0; catNum < (CategoryNumber); catNum++)
-            {
-                myScheme1.RemoveCategory(myScheme1.Categories[0]);
             }
 
             myScheme1.AppearsInLegend = false; //if true then legend text displayed
@@ -3184,6 +3163,8 @@ namespace BenMAP
                 Logger.LogError(ex);
             }
         }
+
+        // Large amount commented out that might could be removed
         private void RenderMainMap(bool isCone, string isBase)
         {
             //double min = _dMinValue;
@@ -4075,29 +4056,24 @@ namespace BenMAP
         {
         }
 
-
-
-
-
         private void ShowTable(string file)
         {
-
             _reportTableFileName = file;
             tabCtlMain.SelectTab(tabData);
         }
 
-
         private void ShowChart(string resultFile)
         {
-            zedGraphCtl.Visible = true;
+            /* zedGraphCtl.Visible = true;
             ZedGraphResult(zedGraphCtl, resultFile);
             zedGraphCtl.AxisChange();
             zedGraphCtl.Refresh();
-            tabCtlMain.SelectTab(tabChart);
+            tabCtlMain.SelectTab(tabChart); */
         }
 
-        private void ZedGraphResult(ZedGraphControl zgc, string file)
-        {
+        // ZED
+        /* private void ZedGraphResult(ZedGraphControl zgc, string file)
+        { 
             try
             {
                 System.Data.DataTable dt = DataSourceCommonClass.getDataSetFromCSV(file).Tables[0]; System.Data.DataSet dsOut = new System.Data.DataSet();
@@ -4179,7 +4155,8 @@ namespace BenMAP
                         j++;
                     }
 
-                    BarItem myCurve = myPane.AddBar(strValuationsNow[i], list, colorArray[i]);
+                    OxyPlot.ColumnSeries
+                    OxyPlot.Series.BarItem myCurve = myPane.AddBar(strValuationsNow[i], list, colorArray[i]);
 
                     i++;
                 }
@@ -4201,8 +4178,8 @@ namespace BenMAP
             catch (Exception err)
             {
                 Logger.LogError(err);
-            }
-        }
+            } 
+        } */
 
         private Dictionary<string, double> addRegionValue(DataTable dt)
         {
@@ -4216,8 +4193,9 @@ namespace BenMAP
             return DicRegionValue;
         }
 
-        private void ZedGraphDemo(ZedGraphControl zgc)
-        {
+        // ZED 
+        /* private void ZedGraphDemo(ZedGraphControl zgc)
+        { 
             GraphPane myPane = zgc.GraphPane;
             string[] str = { "North", "South", "West", "East", "Central" };
 
@@ -4242,26 +4220,26 @@ namespace BenMAP
                 list3.Add(x, y3);
             }
 
-            BarItem myCurve = myPane.AddBar("curve 1", list, Color.Blue);
-            BarItem myCurve2 = myPane.AddBar("curve 2", list2, Color.Red);
-            BarItem myCurve3 = myPane.AddBar("curve 3", list3, Color.Green);
+            OxyPlot.Series.BarItem myCurve = myPane.AddBar("curve 1", list, Color.Blue);
+            OxyPlot.Series.BarItem myCurve2 = myPane.AddBar("curve 2", list2, Color.Red);
+            OxyPlot.Series.BarItem myCurve3 = myPane.AddBar("curve 3", list3, Color.Green);
 
             myPane.Chart.Fill = new Fill(Color.White,
     Color.FromArgb(255, 255, 166), 45.0F);
 
             myPane.XAxis.Scale.TextLabels = str;
             myPane.XAxis.Type = AxisType.Text;
-            BarItem.CreateBarLabels(myPane, false, "f0");
+            OxyPlot.Series.BarItem.CreateBarLabels(myPane, false, "f0");
             zgc.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
 
             zgc.AxisChange();
-            zgc.Refresh();
+            zgc.Refresh(); 
 
-        }
+        } */ 
 
         private void ShowCumulative()
         {
-            zedGraphCtl.Visible = false;
+            oxyPlotView.Visible = false;
             System.Drawing.Image backImg = System.Drawing.Image.FromFile(Application.StartupPath + @"\Data\Image\Cumulative Distributions.JPG");
             pnlChart.BackgroundImage = backImg;
             tabCtlMain.SelectTab(tabChart);
@@ -4269,20 +4247,11 @@ namespace BenMAP
 
         private void ShowBoxPlot()
         {
-            zedGraphCtl.Visible = false;
+            oxyPlotView.Visible = false;
             System.Drawing.Image backImg = System.Drawing.Image.FromFile(Application.StartupPath + @"\Data\Image\BoxPlot.jpg");
             pnlChart.BackgroundImage = backImg;
             tabCtlMain.SelectTab(tabChart);
         }
-
-
-
-
-
-
-
-
-
 
         private bool ExportDataset2CSV(System.Data.DataSet ds, string fileName)
         {
@@ -4317,7 +4286,6 @@ namespace BenMAP
                 return false;
             }
         }
-
 
         private void btnExit_Click(object sender, EventArgs e)
         {
@@ -5714,6 +5682,8 @@ namespace BenMAP
                 System.IO.Directory.CreateDirectory(CommonClass.ResultFilePath + @"\Result\APVR");
             if (!Directory.Exists(CommonClass.ResultFilePath + @"\Result\AQG"))
                 System.IO.Directory.CreateDirectory(CommonClass.ResultFilePath + @"\Result\AQG");
+            if (!Directory.Exists(CommonClass.ResultFilePath + @"\PopSim"))
+                System.IO.Directory.CreateDirectory(CommonClass.ResultFilePath + @"\PopSim");
             if (!Directory.Exists(CommonClass.DataFilePath + @"\Tmp"))
                 System.IO.Directory.CreateDirectory(CommonClass.DataFilePath + @"\Tmp");
 
@@ -6142,6 +6112,7 @@ namespace BenMAP
             }
         }
         private bool isLoad = false;
+
         private System.Data.DataSet BindGridtype()
         {
             try
@@ -6172,6 +6143,7 @@ namespace BenMAP
                 return null;
             }
         }
+
         private void tsbSavePic_Click(object sender, EventArgs e)
         {
             try
@@ -6394,6 +6366,9 @@ namespace BenMAP
         private void saveFileDialog1_Disposed(object sender, EventArgs e)
         {
         }
+
+#region Map toolbar functions
+        //dpa moved all these map toolbar functions into a single region block
         private void tsbChangeProjection_Click(object sender, EventArgs e)
         {
             try
@@ -6485,6 +6460,7 @@ namespace BenMAP
             {
             }
         }
+
         private void tsbChangeCone_Click(object sender, EventArgs e)
         {
             if (mainMap.GetAllLayers().Count < 2)
@@ -6493,28 +6469,73 @@ namespace BenMAP
 
         private void btnZoomIn_Click(object sender, EventArgs e)
         {
+            //dpa - change the map mode to zoom in 
+            //this button toggles map mode, hence changing the "checked" state.
             mainMap.FunctionMode = FunctionMode.ZoomIn;
+            btnSelect.Checked = false;
+            btnIdentify.Checked = false;
+            btnZoomIn.Checked = true;
+            btnZoomOut.Checked = false;
+            btnPan.Checked = false;
+
         }
 
         private void btnZoomOut_Click(object sender, EventArgs e)
         {
+            //dpa - change the map mode to zoom out
+            //this button toggles map mode, hence changing the "checked" state.
             mainMap.FunctionMode = FunctionMode.ZoomOut;
+            btnSelect.Checked = false;
+            btnIdentify.Checked = false;
+            btnZoomIn.Checked = false;
+            btnZoomOut.Checked = true;
+            btnPan.Checked = false;
+
         }
 
+        private void btnIdentify_Click(object sender, EventArgs e)
+        {
+            //dpa - change function mode to identify
+            //this button toggles map mode, hence changing the "checked" state.
+            mainMap.FunctionMode = FunctionMode.Info;
+            btnSelect.Checked = false;
+            btnIdentify.Checked = true;
+            btnZoomIn.Checked = false;
+            btnZoomOut.Checked = false;
+            btnPan.Checked = false;
+        }
+        
+        private void btnSelect_Click(object sender, EventArgs e)
+        {
+            //dpa - change map cursor mode to selection
+            //this button toggles map mode, hence changing the "checked" state.
+            mainMap.FunctionMode = FunctionMode.Select;
+            btnSelect.Checked = true;
+            btnIdentify.Checked = false;
+            btnZoomIn.Checked = false;
+            btnZoomOut.Checked = false;
+            btnPan.Checked = false;
+        }
+        
         private void btnPan_Click(object sender, EventArgs e)
         {
+            //dpa - change the map mode to pan
+            //this button toggles map mode, hence changing the "checked" state.
             mainMap.FunctionMode = FunctionMode.Pan;
+            btnSelect.Checked = false;
+            btnIdentify.Checked = false;
+            btnZoomIn.Checked = false;
+            btnZoomOut.Checked = false;
+            btnPan.Checked = true;
         }
 
         private void btnFullExtent_Click(object sender, EventArgs e)
         {
+            //dpa - zoom to the map full extent
             mainMap.ZoomToMaxExtent();
             mainMap.FunctionMode = FunctionMode.None;
         }
-        private void btnIdentify_Click(object sender, EventArgs e)
-        {
-            mainMap.FunctionMode = FunctionMode.Info;
-        }
+        
         private void btnLayerSet_Click(object sender, EventArgs e)
         {
             if (isLegendHide)
@@ -6537,6 +6558,27 @@ namespace BenMAP
                 mainMap.ViewExtents = _SavedExtent;
             }
         }
+
+        private void tsbSelectByLocation_Click(object sender, EventArgs e)
+        {
+            //dpa - show the select by location dialog box.
+            if (_SelectByLocationDialogShown) return;
+
+            _SelectByLocationDialogShown = true;
+            var sb = new SelectByLocationDialog(mainMap);
+            sb.Closed += SbOnClosed;
+            sb.Show(this);
+        }
+
+        private void btnClearSelection_Click(object sender, EventArgs e)
+        {
+            //dpa - clear selected features from the map.
+            mainMap.ClearSelection();
+        }
+
+        
+#endregion
+
         private FeatureSet getThemeFeatureSet(int iValue, ref double MinValue, ref double MaxValue)
         {
             try
@@ -6596,9 +6638,8 @@ namespace BenMAP
                     }
                     foreach (DataRow dr in fsRegion.DataTable.Rows)
                     {
-                        Feature f = new Feature();
-                        f.BasicGeometry = new DotSpatial.Topology.Point(fsRegion.GetFeature(i).Envelope.ToExtent().Center.X, fsRegion.GetFeature(i).Envelope.ToExtent().Center.Y);
-                        fsReturn.AddFeature(f);
+                        var geom = new NetTopologySuite.Geometries.Point(fsRegion.GetFeature(i).Geometry.EnvelopeInternal.ToExtent().Center.X, fsRegion.GetFeature(i).Geometry.EnvelopeInternal.ToExtent().Center.Y);
+                        fsReturn.AddFeature(geom);
                         fsReturn.DataTable.Rows[i]["Col"] = dr["Col"];
                         fsReturn.DataTable.Rows[i]["Row"] = dr["Row"];
                         fsReturn.DataTable.Rows[i]["ThemeValue"] = 0;
@@ -6642,9 +6683,8 @@ namespace BenMAP
                     }
                     foreach (DataRow dr in fsRegion.DataTable.Rows)
                     {
-                        Feature f = new Feature();
-                        f.BasicGeometry = new DotSpatial.Topology.Point(fsRegion.GetFeature(i).Envelope.ToExtent().Center.X, fsRegion.GetFeature(i).Envelope.ToExtent().Center.Y);
-                        fsReturn.AddFeature(f);
+                        var geom = new NetTopologySuite.Geometries.Point(fsRegion.GetFeature(i).Geometry.EnvelopeInternal.ToExtent().Center.X, fsRegion.GetFeature(i).Geometry.EnvelopeInternal.ToExtent().Center.Y);
+                        fsReturn.AddFeature(geom);
                         fsReturn.DataTable.Rows[i]["Col"] = dr["Col"];
                         fsReturn.DataTable.Rows[i]["Row"] = dr["Row"];
                         fsReturn.DataTable.Rows[i]["ThemeValue"] = 0;
@@ -6688,9 +6728,8 @@ namespace BenMAP
                     }
                     foreach (DataRow dr in fsRegion.DataTable.Rows)
                     {
-                        Feature f = new Feature();
-                        f.BasicGeometry = new DotSpatial.Topology.Point(fsRegion.GetFeature(i).Envelope.ToExtent().Center.X, fsRegion.GetFeature(i).Envelope.ToExtent().Center.Y);
-                        fsReturn.AddFeature(f);
+                        var geom = new NetTopologySuite.Geometries.Point(fsRegion.GetFeature(i).Geometry.EnvelopeInternal.ToExtent().Center.X, fsRegion.GetFeature(i).Geometry.EnvelopeInternal.ToExtent().Center.Y);
+                        fsReturn.AddFeature(geom);
                         fsReturn.DataTable.Rows[i]["Col"] = dr["Col"];
                         fsReturn.DataTable.Rows[i]["Row"] = dr["Row"];
                         fsReturn.DataTable.Rows[i]["ThemeValue"] = 0;
@@ -6716,9 +6755,8 @@ namespace BenMAP
                     i = 0;
                     foreach (DataRow dr in fsRegion.DataTable.Rows)
                     {
-                        Feature f = new Feature();
-                        f.BasicGeometry = new DotSpatial.Topology.Point(fsRegion.GetFeature(i).Envelope.ToExtent().Center.X, fsRegion.GetFeature(i).Envelope.ToExtent().Center.Y);
-                        fsReturn.AddFeature(f);
+                        var geom = new NetTopologySuite.Geometries.Point(fsRegion.GetFeature(i).Geometry.EnvelopeInternal.ToExtent().Center.X, fsRegion.GetFeature(i).Geometry.EnvelopeInternal.ToExtent().Center.Y);
+                        fsReturn.AddFeature(geom);
                         fsReturn.DataTable.Rows[i]["Col"] = dr["Col"];
                         fsReturn.DataTable.Rows[i]["Row"] = dr["Row"];
                         try
@@ -6739,9 +6777,8 @@ namespace BenMAP
                 i = 0;
                 foreach (DataRow dr in fsRegion.DataTable.Rows)
                 {
-                    Feature f = new Feature();
-                    f.BasicGeometry = new DotSpatial.Topology.Point(fsRegion.GetFeature(i).Envelope.ToExtent().Center.X, fsRegion.GetFeature(i).Envelope.ToExtent().Center.Y);
-                    fsReturn.AddFeature(f);
+                    var geom = new NetTopologySuite.Geometries.Point(fsRegion.GetFeature(i).Geometry.EnvelopeInternal.ToExtent().Center.X, fsRegion.GetFeature(i).Geometry.EnvelopeInternal.ToExtent().Center.Y);
+                    fsReturn.AddFeature(geom);
                     fsReturn.DataTable.Rows[i]["Col"] = dr["Col"];
                     fsReturn.DataTable.Rows[i]["Row"] = dr["Row"];
                     if (gRegionGridRelationship.bigGridID == CommonClass.RBenMAPGrid.GridDefinitionID)
@@ -7116,7 +7153,7 @@ namespace BenMAP
 
             OLVResultsShow.SetObjects(null);
             _tableObject = null;
-            zedGraphCtl.Visible = false;
+            oxyPlotView.Visible = false;
             btnApply.Visible = false;
             olvRegions.Visible = false;
             cbGraph.Visible = false;
@@ -9232,7 +9269,7 @@ namespace BenMAP
         {
             try
             {
-                zedGraphCtl.Visible = true;
+                oxyPlotView.Visible = true;
                 olvRegions.Visible = true;
                 cbGraph.Visible = true;
                 btnApply.Visible = true;
@@ -9246,7 +9283,8 @@ namespace BenMAP
                 List<RowCol> lstRowCol = null;
                 int iRowCount = 0;
                 double d = 0;
-                GraphPane myPane = this.zedGraphCtl.GraphPane;
+                // GraphPane myPane = this.oxyPlotView.GraphPane;
+                PlotModel myPane = new PlotModel();
                 DataRowView drGrid = cboRegion.SelectedItem as DataRowView;
                 bool showOriginalGrid;
                 if (tabCtlReport.SelectedTab == tabPoolingIncidence || tabCtlReport.SelectedTab == tabAPVResultGISShow)
@@ -9257,7 +9295,6 @@ namespace BenMAP
                 {
                     if (CommonClass.RBenMAPGrid == null)
                     {
-
                         CommonClass.RBenMAPGrid = Grid.GridCommon.getBenMAPGridFromID(Convert.ToInt32(drGrid["GridDefinitionID"]));
                     }
                     if (GridID != CommonClass.RBenMAPGrid.GridDefinitionID)
@@ -10643,49 +10680,91 @@ namespace BenMAP
         }
         private void btnApply_Click(object sender, EventArgs e)
         {
-            try
             {
-                GraphPane myPane = this.zedGraphCtl.GraphPane;
-                List<string> lstPane = new List<string>();
-                myPane.CurveList.Clear();
-                int i = 0;
-                Color[] colorArray = new Color[] { Color.Blue, Color.Red, Color.Green };
-                while (i < 1)
+                try
                 {
-                    PointPairList list = new PointPairList();
-                    int j = 0;
-                    foreach (ChartResult cr in olvRegions.CheckedObjects)
+                    PlotModel plotModel = new PlotModel();
+                    ColumnSeries barChart = new ColumnSeries();
+                    CategoryAxis catAxis = new CategoryAxis();
+                    LinearAxis yAxis = new LinearAxis();
+
+                    barChart.FillColor = OxyColors.RoyalBlue;
+                    barChart.Background = OxyColor.FromRgb(255, 255, 255);
+                    barChart.TrackerFormatString = "{0}\n. {1}:\n  {2:0.00000}";
+
+
+                    int i = 0;
+                    while (i < 1)
                     {
-                        list.Add(new PointPair(Convert.ToInt32(j), cr.RegionValue));
-                        lstPane.Add(cr.RegionName);
-                        j++;
+                        int j = 0;
+                        int count = olvRegions.CheckedObjects.Count;
+                        int maxDisplay = 8;
+                        
+                        if(count <= maxDisplay) {
+                            foreach (ChartResult cr in olvRegions.CheckedObjects)
+                            {
+                                barChart.Items.Add(new ColumnItem(cr.RegionValue, -1));
+                                catAxis.Labels.Add(cr.RegionName);
+                            }
+                            i++;
+                        }
+                        else
+                        {
+                            int findLast = 0;
+                            int skip = count / maxDisplay;
+                            catAxis.MajorGridlineThickness = 0.2;
+                            catAxis.MajorTickSize = 2;
+                            string label = "";
+                            foreach (ChartResult cr in olvRegions.CheckedObjects)
+                            {
+                                barChart.Items.Add(new ColumnItem(cr.RegionValue, -1));
+
+                                if (j == 0 || findLast == count) { label = cr.RegionName; }
+                                else { label = ""; }
+                                catAxis.Labels.Add(label);
+
+                                if (j == skip) { j = 0; }
+                                else { j++; }
+                                findLast++;
+                            }
+                            i++;
+                        }
                     }
-                    BarItem myCurve = myPane.AddBar("Result", list, colorArray[i]);
+ 
+                    catAxis.Title = strchartX;
+                    catAxis.TitleFontWeight = 700;
+                    catAxis.TitleFontSize = 14;
+                    catAxis.Angle = -30;
+                    catAxis.TickStyle = OxyPlot.Axes.TickStyle.Crossing;
+                    catAxis.Position = OxyPlot.Axes.AxisPosition.Bottom;
+                    catAxis.MinimumRange = 5;
+                    catAxis.IsPanEnabled = true;
 
-                    i++;
+                    yAxis.Title = strchartY;
+                    yAxis.TitleFontWeight = 700;
+                    yAxis.TitleFontSize = 14;
+                    yAxis.AxisTitleDistance = 15;
+                    yAxis.Minimum = 0;
+                    yAxis.AbsoluteMinimum = 0;
+                    yAxis.MinimumPadding = 2;
+                    yAxis.MaximumPadding = 0.1; 
+                    yAxis.TickStyle = OxyPlot.Axes.TickStyle.Crossing;
+                    yAxis.Position = OxyPlot.Axes.AxisPosition.Left;
+                    yAxis.StringFormat = String.Format("#,##0.#####");
+
+                    plotModel.Title = strchartTitle;
+                    plotModel.TitleFont = "Helvetica";
+                    plotModel.Padding = new OxyThickness(15);
+                    plotModel.Axes.Add(catAxis);
+                    plotModel.Axes.Add(yAxis);
+                    plotModel.Series.Add(barChart);
+                    this.oxyPlotView.Model = plotModel;
+                    this.splitContainer4.Panel2.Refresh();
                 }
-                myPane.Chart.Fill = new Fill(Color.White,
-                 Color.FromArgb(255, 255, 166), 45.0F);
-
-
-                myPane.XAxis.Scale.TextLabels = lstPane.ToArray(); myPane.XAxis.Type = AxisType.Text;
-                myPane.XAxis.Scale.FontSpec.Angle = 65;
-                myPane.XAxis.Scale.FontSpec.IsBold = true;
-                myPane.XAxis.Scale.FontSpec.Size = 12;
-                zedGraphCtl.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
-                myPane.IsFontsScaled = false; myPane.YAxis.Scale.MinAuto = true; myPane.YAxis.Scale.MaxAuto = true;
-                myPane.XAxis.Scale.MinAuto = true;
-                myPane.XAxis.Scale.MaxAuto = true;
-                myPane.Title.Text = strchartTitle;
-                myPane.XAxis.Title.Text = strchartX;
-                myPane.YAxis.Title.Text = strchartY;
-                myPane.YAxis.Scale.Format = "#,##0.####";
-                zedGraphCtl.AxisChange();
-                zedGraphCtl.Refresh();
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex.Message);
+                catch (Exception ex)
+                {
+                    Logger.LogError(ex.Message);
+                }
             }
         }
 
@@ -11423,6 +11502,7 @@ namespace BenMAP
                 else sw.WriteLine(node.Text);
             }
         }
+
         private void btShowCRResult_Click(object sender, EventArgs e)
         {
             try
@@ -13105,7 +13185,7 @@ namespace BenMAP
             if (mgName == null || mgName =="") return null;   //confirm map group name is valid
 
             bool mgFound = false;
-            MapGroup NewMapGroup = new MapGroup();
+            MapGroup NewMapGroup = null;
             MapGroup ParentMapGroup = null;
             string parentText;
             
@@ -13160,7 +13240,10 @@ namespace BenMAP
 
             if (!mgFound)  //New map group not found already, so add it
             {
+                NewMapGroup = new MapGroup();
+                NewMapGroup.Layers = new MapLayerCollection(mainMap.MapFrame, NewMapGroup, null);  // This is neccessary for manually created groups
                 NewMapGroup.LegendText = mgName;
+                
                 if (parentMGText == "Map Layers")  //add map group at top level
                 {
                     mainMap.Layers.Add(NewMapGroup);
@@ -13625,7 +13708,7 @@ namespace BenMAP
         {
             try
             {
-                zedGraphCtl.GraphPane = new GraphPane(new Rectangle(0, 0, zedGraphCtl.Width, zedGraphCtl.Height), "", "", "");
+               //  zedGraphCtl2.GraphPane = new GraphPane(new Rectangle(0, 0, zedGraphCtl2.Width, zedGraphCtl2.Height), "", "", "");
                 switch (cbGraph.Text)
                 {
                     case "Bar Graph":
@@ -13651,10 +13734,10 @@ namespace BenMAP
         }
 
         private void ShowCDFgraph()
-        {
+        {/* 
             try
             {
-                GraphPane myPane = zedGraphCtl.GraphPane;
+                GraphPane myPane = zedGraphCtl2.GraphPane;
                 switch (iCDF)
                 {
                     case 0:
@@ -13725,11 +13808,11 @@ namespace BenMAP
                 myPane.Title.Text = strCDFTitle;
                 myPane.XAxis.Title.Text = strCDFX;
                 myPane.YAxis.Title.Text = strCDFY;
-                zedGraphCtl.AxisChange();
-                zedGraphCtl.Refresh();
+                zedGraphCtl2.AxisChange();
+                zedGraphCtl2.Refresh();
             }
             catch
-            { }
+            { } */
         }
 
         public System.Drawing.Color GetRandomColor()
@@ -13738,15 +13821,28 @@ namespace BenMAP
             return Color.FromArgb(rand.Next(255), rand.Next(255), rand.Next(255));
         }
 
+
+
         private void btnSelectAll_Click(object sender, EventArgs e)
         {
             try
             {
+                bool selectOrDeselect;
+
+                if (olvRegions.CheckedItems.Count != olvRegions.Items.Count)
+                    selectOrDeselect = true;
+                else
+                    selectOrDeselect = false;
+
                 for (int j = 0; j < olvRegions.Items.Count; j++)
                 {
                     OLVListItem olvi = olvRegions.Items[j] as OLVListItem;
-                    olvi.Checked = true;
+                    olvi.Checked = selectOrDeselect;
                 }
+
+                if (selectOrDeselect == true) btnSelectAll.Text = "Deselect All";
+                else { btnSelectAll.Text = "Select All"; }
+
                 btnApply_Click(null, null);
             }
             catch
@@ -13825,7 +13921,7 @@ namespace BenMAP
                     _colorArray = _red_blue_Array;
                     break;
                 case "blue_red":
-                    _colorArray = (System.Drawing.Color[])_red_blue_Array.Reverse();
+                    // _colorArray = (System.Drawing.Color[])_red_blue_Array.Reverse();
                     break;
                 case "red_black":
                     _colorArray = _red_black_Array;
@@ -14060,20 +14156,21 @@ namespace BenMAP
             //}
         }
 
-        private void toolStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
-        {
 
-        }
 
         private void OLVResultsShow_SelectedIndexChanged(object sender, EventArgs e)
         {
 
         }
 
-        
-      
-      
-      
-        
+        private bool _SelectByLocationDialogShown;
+
+
+
+        private void SbOnClosed(object sender, EventArgs eventArgs)
+        {
+            _SelectByLocationDialogShown = false;
+            ((Form)sender).Closed -= SbOnClosed;
+        }
     }
 }

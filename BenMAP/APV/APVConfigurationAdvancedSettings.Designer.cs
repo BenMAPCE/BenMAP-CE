@@ -100,10 +100,10 @@ namespace BenMAP
             this.groupBox1.TabStop = false;
             // 
             // tab
-            // 
+            //
             this.tab.Controls.Add(this.tbpAggreationAndPooling);
             this.tab.Controls.Add(this.tbpCurrencyAndIncome);
-            this.tab.Location = new System.Drawing.Point(15, 12);
+            this.tab.Location = new System.Drawing.Point(15, 13);
             this.tab.Name = "tab";
             this.tab.SelectedIndex = 0;
             this.tab.Size = new System.Drawing.Size(412, 457);
@@ -447,8 +447,6 @@ namespace BenMAP
             this.ResumeLayout(false);
 
         }
-
-        
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.TabControl tab;
         private System.Windows.Forms.TabPage tbpAggreationAndPooling;

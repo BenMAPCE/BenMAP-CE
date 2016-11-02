@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Windows.Forms;
 using DotSpatial.Data;
-using DotSpatial.Topology;
-using DotSpatial.Topology.Voronoi;
+using DotSpatial.NTSExtension.Voronoi;
+using GeoAPI.Geometries;
+using NetTopologySuite.Geometries;
 using FirebirdSql.Data.FirebirdClient;
 
 namespace BenMAP.DataSource
@@ -761,11 +761,11 @@ namespace BenMAP.DataSource
                 foreach (MonitorValue mv in lstMonitorValues)
                 {
                     p = new Point(mv.Longitude, mv.Latitude);
-                    foreach (Feature fl in fs.Features)
+                    foreach (var fl in fs.Features)
                     {
-                        if (fl.Envelope.Contains(mv.Longitude, mv.Latitude))
+                        if (fl.Geometry.EnvelopeInternal.Contains(mv.Longitude, mv.Latitude))
                         {
-                            if (fl.Contains(p))
+                            if (fl.Geometry.Contains(p))
                             {
                                 col = Convert.ToInt32(fl.DataRow[iCol]);
                                 row = Convert.ToInt32(fl.DataRow[iRow]);
@@ -792,7 +792,7 @@ namespace BenMAP.DataSource
             try
             {
                 bool breturn = false;
-                if (x >= env.Minimum.X && x <= env.Maximum.X && y >= env.Minimum.Y && y <= env.Maximum.Y)
+                if (x >= env.MinX && x <= env.MaxX && y >= env.MinY && y <= env.MaxY)
                 {
                     breturn = true;
                 }
@@ -875,7 +875,7 @@ namespace BenMAP.DataSource
                         if (monitorValue.dicMetricValues == null || monitorValue.dicMetricValues.Count == 0) continue; if (!dicMonitorValues.ContainsKey(monitorValue.Longitude + "," + monitorValue.Latitude))
                         {
                             dicMonitorValues.Add(monitorValue.Longitude + "," + monitorValue.Latitude, monitorValue);
-                            fsPoints.AddFeature(new DotSpatial.Topology.Point(monitorValue.Longitude, monitorValue.Latitude));
+                            fsPoints.AddFeature(new Point(monitorValue.Longitude, monitorValue.Latitude));
                             lstCoordinate.Add(new Coordinate(monitorValue.Longitude, monitorValue.Latitude));
                             fsInter.Add(monitorValue.Longitude);
                             fsInter.Add(monitorValue.Latitude);
@@ -901,7 +901,7 @@ namespace BenMAP.DataSource
                     int idicMonitorValues = dicMonitorValues.Count;
                     if (idicMonitorValues > 100) idicMonitorValues = 100;
                     Polygon fOnlyPoint = null; IFeatureSet fsVoronoi = new FeatureSet();
-                    DotSpatial.Topology.Coordinate coordinate = new DotSpatial.Topology.Coordinate();
+                    var coordinate = new Coordinate();
                     List<Polygon> lstPolygon = new List<Polygon>();
                     List<float> lstDouble = new List<float>();
                     List<double> fsout = new List<double>(); ;
@@ -915,13 +915,13 @@ namespace BenMAP.DataSource
                     monitorDataLine.MonitorNeighbors = new List<MonitorNeighborAttribute>();
                     while (i < fs.DataTable.Rows.Count)
                     {
-                        if (fs.GetFeature(i).BasicGeometry.GeometryType == "Polygon")
+                        if (fs.GetFeature(i).Geometry.GeometryType == "Polygon")
                         {
-                            coordinate = new Coordinate((fs.GetFeature(i).BasicGeometry as Polygon).Centroid.X, (fs.GetFeature(i).BasicGeometry as Polygon).Centroid.Y);
+                            coordinate = new Coordinate((fs.GetFeature(i).Geometry as Polygon).Centroid.X, (fs.GetFeature(i).Geometry as Polygon).Centroid.Y);
                         }
                         else
                         {
-                            coordinate = new Coordinate((fs.GetFeature(i).BasicGeometry as MultiPolygon).Centroid.X, (fs.GetFeature(i).BasicGeometry as MultiPolygon).Centroid.Y);
+                            coordinate = new Coordinate((fs.GetFeature(i).Geometry as MultiPolygon).Centroid.X, (fs.GetFeature(i).Geometry as MultiPolygon).Centroid.Y);
                         }
                         switch (monitorDataLine.InterpolationMethod)
                         {
@@ -953,7 +953,7 @@ namespace BenMAP.DataSource
                                 }
                                 break;
                             case InterpolationMethodEnum.FixedRadius:
-                                DotSpatial.Topology.Point tPoint = new DotSpatial.Topology.Point(coordinate);
+                                Point tPoint = new Point(coordinate);
                                 DicMonitorDistance = new Dictionary<MonitorValue, float>();
 
                                 foreach (MonitorValue monitorValue in lstMonitorValues)
@@ -1713,7 +1713,7 @@ namespace BenMAP.DataSource
             }
         }
 
-        public static double GetDistanceFrom2Point(DotSpatial.Topology.Point start, DotSpatial.Topology.Point end)
+        public static double GetDistanceFrom2Point(Point start, Point end)
         {
             return 2 * Math.Asin(Math.Sqrt(Math.Pow((Math.Sin((start.Y / 180 * Math.PI - end.Y / 180 * Math.PI) / 2)), 2) +
              Math.Cos(start.Y / 180 * Math.PI) * Math.Cos(end.Y / 180 * Math.PI) * Math.Pow(Math.Sin((start.X / 180 * Math.PI - end.X / 180 * Math.PI) / 2), 2))) * 6371.000;
@@ -1725,7 +1725,7 @@ namespace BenMAP.DataSource
              Math.Cos(Y0 / 180 * Math.PI) * Math.Cos(Y1 / 180 * Math.PI) * Math.Pow(Math.Sin((X0 / 180 * Math.PI - X1 / 180 * Math.PI) / 2), 2))) * 6371.000);
         }
 
-        public static double GetDistanceFromExtent(DotSpatial.Topology.Coordinate coordinate, DotSpatial.Topology.IEnvelope env, DotSpatial.Topology.Point end)
+        public static double GetDistanceFromExtent(Coordinate coordinate, IEnvelope env, Point end)
         {
             double d = Math.Sqrt((coordinate.X - end.X) * (coordinate.X - end.X) + (coordinate.Y - end.Y) * (coordinate.Y - end.Y)) * 111.0000; if (d < env.Height / 2.00 && d < env.Width / 2.00)
             {

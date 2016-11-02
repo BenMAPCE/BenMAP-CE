@@ -9,14 +9,14 @@
             AuthorityCodeHandler
             </summary>
         </member>
-        <member name="F:DotSpatial.Projections.AuthorityCodes.AuthorityCodeHandler.Instance">
-            <summary>
-            The one and only <see cref="T:DotSpatial.Projections.AuthorityCodes.AuthorityCodeHandler"/>
-            </summary>
-        </member>
         <member name="M:DotSpatial.Projections.AuthorityCodes.AuthorityCodeHandler.#ctor">
             <summary>
             Creates an instance of this class
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Projections.AuthorityCodes.AuthorityCodeHandler.Instance">
+            <summary>
+            The one and only <see cref="T:DotSpatial.Projections.AuthorityCodes.AuthorityCodeHandler"/>
             </summary>
         </member>
         <member name="M:DotSpatial.Projections.AuthorityCodes.AuthorityCodeHandler.Add(System.String,System.Int32,System.String)">
@@ -55,13 +55,6 @@
             <param name="proj4String">the proj4 definition string</param>
             <param name="replace">a value indicating if a previously defined projection should be replaced or not.</param>
         </member>
-        <member name="P:DotSpatial.Projections.AuthorityCodes.AuthorityCodeHandler.Item(System.String)">
-            <summary>
-            Gets the
-            </summary>
-            <param name="authorityCodeOrName"></param>
-            <returns></returns>
-        </member>
         <member name="T:DotSpatial.Projections.AuxiliarySphereType">
             <summary>
             AuxiliarySphereTypes
@@ -97,210 +90,12 @@
             Handles the specific case of dat files like the ntv1 file format.
             </summary>
         </member>
-        <member name="T:DotSpatial.Projections.NadTable">
-            <summary>
-            NadRecord is a single entry from an lla file
-            </summary>
-        </member>
-        <member name="F:DotSpatial.Projections.NadTable.DEG_TO_RAD">
-            <summary>
-            Converts degree values into radians
-            </summary>
-        </member>
-        <member name="F:DotSpatial.Projections.NadTable.USecToRad">
-            <summary>
-            I think this converts micro-seconds of arc to radians
-            </summary>
-        </member>
-        <member name="F:DotSpatial.Projections.NadTable._cellSize">
-            <summary>
-            The delta lambda and delta phi for a single cell
-            </summary>
-        </member>
-        <member name="F:DotSpatial.Projections.NadTable._cvs">
-            <summary>
-            The set of conversion matrix coefficients for lambda
-            </summary>
-        </member>
-        <member name="F:DotSpatial.Projections.NadTable._lowerLeft">
-            <summary>
-            The lower left coordinate
-            </summary>
-        </member>
-        <member name="F:DotSpatial.Projections.NadTable._name">
-            <summary>
-            The character based id for this record
-            </summary>
-        </member>
-        <member name="F:DotSpatial.Projections.NadTable._numLambdas">
-            <summary>
-            The total count of coordinates in the lambda direction
-            </summary>
-        </member>
-        <member name="F:DotSpatial.Projections.NadTable._numPhis">
-            <summary>
-            The total count of coordinates in the phi direction
-            </summary>
-        </member>
-        <member name="M:DotSpatial.Projections.NadTable.#ctor">
-            <summary>
-            Creates a blank nad Table
-            </summary>
-        </member>
-        <member name="M:DotSpatial.Projections.NadTable.#ctor(System.String)">
-            <summary>
-            This initializes a new table with the assumption that the offset is 0
-            </summary>
-            <param name="resourceLocation">The resource location</param>
-        </member>
-        <member name="M:DotSpatial.Projections.NadTable.#ctor(System.String,System.Boolean)">
-            <summary>
-            This initializes a new table with the assumption that the offset is 0
-            </summary>
-            <param name="resourceLocation">The resource location</param>
-            <param name="embedded">Indicates if grid file is in embedded resource or external file</param>
-        </member>
-        <member name="M:DotSpatial.Projections.NadTable.#ctor(System.String,System.Int64)">
-            <summary>
-            This initializes a new table with the assumption that the offset needs to be specified
-            because in gsb files, more than one table is listed, and this is a subtable.
-            </summary>
-            <param name="resourceLocation">The resource location</param>
-            <param name="offset">The offset marking the start of the header in the file</param>
-        </member>
-        <member name="M:DotSpatial.Projections.NadTable.#ctor(System.String,System.Int64,System.Boolean)">
-            <summary>
-            This initializes a new table with the assumption that the offset needs to be specified
-            because in gsb files, more than one table is listed, and this is a subtable. This also allows
-            specifying if the grid file is included as an embedded resource.
-            </summary>
-            <param name="location">The resource (or file) location</param>
-            <param name="offset">The offset marking the start of the header in the file</param>
-            <param name="embedded">Indicates if embedded resource or external file</param>
-        </member>
-        <member name="M:DotSpatial.Projections.NadTable.ReadHeader">
-            <summary>
-            Given the resource setup, this causes the file to read the
-            </summary>
-        </member>
-        <member name="M:DotSpatial.Projections.NadTable.FillData">
-             <summary>
-            
-             </summary>
-        </member>
-        <member name="M:DotSpatial.Projections.NadTable.FromSourceName(System.String)">
-            <summary>
-            This method parses the extension of a resource location or
-            path and creates the new NadTable type.
-            </summary>
-            <param name="resourceLocation"></param>
-            <returns></returns>
-        </member>
-        <member name="M:DotSpatial.Projections.NadTable.FromSourceName(System.String,System.Boolean)">
-            <summary>
-            This method parses the extension of a resource location or
-            path and creates the new NadTable type.
-            </summary>
-            <param name="location"></param>
-            <param name="embedded"></param>
-            <returns></returns>
-        </member>
-        <member name="M:DotSpatial.Projections.NadTable.ReadDouble(System.IO.BinaryReader)">
-            <summary>
-            Reads a double in BigEndian format (consistent with ntv1 and ntv2 formats.)
-            </summary>
-            <param name="br">The binary reader</param>
-            <returns>The double value parsed from the binary in big endian byte order.</returns>
-        </member>
-        <member name="M:DotSpatial.Projections.NadTable.GetDouble(System.Byte[],System.Int32)">
-            <summary>
-            Gets the double value from the specified position in the byte array
-            Using BigEndian format.
-            </summary>
-            <param name="array"></param>
-            <param name="offset"></param>
-            <returns></returns>
-        </member>
-        <member name="M:DotSpatial.Projections.NadTable.GetStream">
-            <summary>
-            Get the stream to the grid
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="P:DotSpatial.Projections.NadTable.Name">
-            <summary>
-            Gets or sets the string name for this record
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Projections.NadTable.LowerLeft">
-            <summary>
-            Gets or sets the lower left corner in radians
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Projections.NadTable.CellSize">
-            <summary>
-            Gets or sets the angular cell size in radians
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Projections.NadTable.NumPhis">
-            <summary>
-            Gets or sets the integer count of phi coefficients
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Projections.NadTable.NumLambdas">
-            <summary>
-            Gets or sets the integer count of lambda coefficients
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Projections.NadTable.SubGrids">
-            <summary>
-            These represent smaller, higher resolution subgrids that should fall within the extents
-            of the larger grid.  If this list exists, and there is a fit here, it should be used
-            in preference to the low-resolution main grid.
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Projections.NadTable.Cvs">
-            <summary>
-            Gets or sets the array of lambda coefficients organized
-            in a spatial Table (phi major)
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Projections.NadTable.Filled">
-            <summary>
-            Gets or sets a boolean indicating whether or not the values have been filled.
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Projections.NadTable.ManifestResourceString">
-            <summary>
-            Gets or sets the location this table should look for source data.
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Projections.NadTable.DataOffset">
-            <summary>
-            Gets or sets the long integer data offset where the stream should skip to to begin reading data
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Projections.NadTable.Format">
-            <summary>
-            Gets or sets the format being used.
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Projections.NadTable.FileIsEmbedded">
-            <summary>
-            True if grid file is an embedded resource
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Projections.NadTable.GridFilePath">
-            <summary>
-            If FileIsEmbedded is false, this contains the full path to the grid file
-            </summary>
-        </member>
         <member name="M:DotSpatial.Projections.DatNadTable.#ctor(System.String)">
             <summary>
             Creates a new instance of GsbNadTable
             </summary>
         </member>
-        <member name="M:DotSpatial.Projections.DatNadTable.#ctor(System.String,System.Boolean)">
+        <member name="M:DotSpatial.Projections.DatNadTable.#ctor(System.String,System.Boolean,System.Boolean)">
             <summary>
             Creates a new instance of GsbNadTable
             </summary>
@@ -316,22 +111,6 @@
             IDatumTransform
             </summary>
         </member>
-        <member name="T:DotSpatial.Projections.IDatumTransform">
-            <summary>
-            IDatumTransform
-            </summary>
-        </member>
-        <member name="M:DotSpatial.Projections.IDatumTransform.Transform(DotSpatial.Projections.ProjectionInfo,DotSpatial.Projections.ProjectionInfo,System.Double[],System.Double[],System.Int32,System.Int32)">
-            <summary>
-            Transform function
-            </summary>
-            <param name="source"></param>
-            <param name="dest"></param>
-            <param name="xy"></param>
-            <param name="z"></param>
-            <param name="startIndex"></param>
-            <param name="numPoints"></param>
-        </member>
         <member name="F:DotSpatial.Projections.DatumTransform.SecToRad">
             <summary>Arc-seconds to radians conversion factor</summary>
         </member>
@@ -340,6 +119,21 @@
             
              </summary>
              <param name="aiDatumTransformStage"></param>
+        </member>
+        <member name="P:DotSpatial.Projections.DatumTransform.NumStages">
+            <summary>
+            Returns the number of datum transform stages for this datum transform
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Projections.DatumTransform.FromID">
+            <summary>
+            source datum
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Projections.DatumTransform.ToID">
+            <summary>
+            destination datum
+            </summary>
         </member>
         <member name="M:DotSpatial.Projections.DatumTransform.Transform(DotSpatial.Projections.ProjectionInfo,DotSpatial.Projections.ProjectionInfo,System.Double[],System.Double[],System.Int32,System.Int32)">
             <summary>
@@ -369,21 +163,6 @@
              <param name="startIndex"></param>
              <param name="numPoints"></param>
         </member>
-        <member name="P:DotSpatial.Projections.DatumTransform.NumStages">
-            <summary>
-            Returns the number of datum transform stages for this datum transform
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Projections.DatumTransform.FromID">
-            <summary>
-            source datum
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Projections.DatumTransform.ToID">
-            <summary>
-            destination datum
-            </summary>
-        </member>
         <member name="T:DotSpatial.Projections.TransformMethod">
             <summary>
             Datum Transform Type: GridShift, Param3, or Param7
@@ -401,81 +180,6 @@
         <member name="T:DotSpatial.Projections.DatumTransformStage">
             <summary>
             DatumTransfromStage implementation
-            </summary>
-        </member>
-        <member name="T:DotSpatial.Projections.IDatumTransformStage">
-            <summary>
-            DatumTransformStage interface
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Projections.IDatumTransformStage.FromDatum">
-            <summary>
-            String identifier of the datum from which the transform proceeds
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Projections.IDatumTransformStage.ToDatum">
-            <summary>
-            String identifier of the datum to which the transform proceeds
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Projections.IDatumTransformStage.Method">
-            <summary>
-            Transform method; one of: GeoCentric, Coordinate_Frame, Position_Vector, NADCON, HARN, NTv2
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Projections.IDatumTransformStage.DeltaX">
-            <summary>
-            Detla X of geocentric origin, in meters
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Projections.IDatumTransformStage.DeltaY">
-            <summary>
-            Delta Y of geocentric origin, in meters
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Projections.IDatumTransformStage.DeltaZ">
-            <summary>
-            Delta Z of geocentric origin, in meters
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Projections.IDatumTransformStage.RotateX">
-            <summary>
-            Rotation about the geocentric X-axis, in arc-seconds
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Projections.IDatumTransformStage.RotateY">
-            <summary>
-            Rotation about the geocentric Y-axis, in arc-seconds
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Projections.IDatumTransformStage.RotateZ">
-            <summary>
-            Rotation about the geocentric Z-axis, in arc-seconds
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Projections.IDatumTransformStage.DeltaScale">
-            <summary>
-            Delta scale in parts-per-million. Actaul scale is 1+DS/1000000.
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Projections.IDatumTransformStage.GridShiftTable">
-            <summary>
-            If Method is one of: NADCON, HARN, or NTv2, this field contains the name of the grid shift table
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Projections.IDatumTransformStage.ApplyTableInverse">
-            <summary>
-            True if the table must be used in the direction opposite that specified by the From/To Datum properties
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Projections.IDatumTransformStage.FromSpheroid">
-            <summary>
-            Spheriod on which the From datum is based
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Projections.IDatumTransformStage.ToSpheroid">
-            <summary>
-            Spheriod on which the To datum is based
             </summary>
         </member>
         <member name="F:DotSpatial.Projections.DatumTransformStage.ApplyTableInv">
@@ -616,6 +320,13 @@
             Spheroid of destination datum
             </summary>
         </member>
+        <member name="M:DotSpatial.Projections.DeflateStreamReader.DecodeEmbeddedResource(System.String)">
+            <summary>
+            Decodedes embedded resource and returns it as Stream
+            </summary>
+            <param name="resourceName">Resource name</param>
+            <returns>Stream</returns>
+        </member>
         <member name="T:DotSpatial.Projections.GridShiftTableFormat">
             <summary>
             GridShiftTableFormats
@@ -652,7 +363,7 @@
             Creates a new instance of GsbNadTable
             </summary>
         </member>
-        <member name="M:DotSpatial.Projections.GsbNadTable.#ctor(System.String,System.Int64,System.Boolean)">
+        <member name="M:DotSpatial.Projections.GsbNadTable.#ctor(System.String,System.Int64,System.Boolean,System.Boolean)">
             <summary>
             Creates a new instance of GsbNadTable
             </summary>
@@ -677,6 +388,110 @@
             <param name="offset"></param>
             <returns></returns>
         </member>
+        <member name="P:DotSpatial.Projections.ICoordinateSystemCategoryHolder.Names">
+            <summary>
+            Gets an array of all the names of the coordinate system categories
+            in this collection of systems.
+            </summary>
+        </member>
+        <member name="M:DotSpatial.Projections.ICoordinateSystemCategoryHolder.GetCategory(System.String)">
+            <summary>
+            Given the string name, this will return the specified coordinate category
+            </summary>
+            <param name="name">Category name</param>
+            <returns>Coordinate system category</returns>
+        </member>
+        <member name="T:DotSpatial.Projections.IDatumTransform">
+            <summary>
+            IDatumTransform
+            </summary>
+        </member>
+        <member name="M:DotSpatial.Projections.IDatumTransform.Transform(DotSpatial.Projections.ProjectionInfo,DotSpatial.Projections.ProjectionInfo,System.Double[],System.Double[],System.Int32,System.Int32)">
+            <summary>
+            Transform function
+            </summary>
+            <param name="source"></param>
+            <param name="dest"></param>
+            <param name="xy"></param>
+            <param name="z"></param>
+            <param name="startIndex"></param>
+            <param name="numPoints"></param>
+        </member>
+        <member name="T:DotSpatial.Projections.IDatumTransformStage">
+            <summary>
+            DatumTransformStage interface
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Projections.IDatumTransformStage.FromDatum">
+            <summary>
+            String identifier of the datum from which the transform proceeds
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Projections.IDatumTransformStage.ToDatum">
+            <summary>
+            String identifier of the datum to which the transform proceeds
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Projections.IDatumTransformStage.Method">
+            <summary>
+            Transform method; one of: GeoCentric, Coordinate_Frame, Position_Vector, NADCON, HARN, NTv2
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Projections.IDatumTransformStage.DeltaX">
+            <summary>
+            Detla X of geocentric origin, in meters
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Projections.IDatumTransformStage.DeltaY">
+            <summary>
+            Delta Y of geocentric origin, in meters
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Projections.IDatumTransformStage.DeltaZ">
+            <summary>
+            Delta Z of geocentric origin, in meters
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Projections.IDatumTransformStage.RotateX">
+            <summary>
+            Rotation about the geocentric X-axis, in arc-seconds
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Projections.IDatumTransformStage.RotateY">
+            <summary>
+            Rotation about the geocentric Y-axis, in arc-seconds
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Projections.IDatumTransformStage.RotateZ">
+            <summary>
+            Rotation about the geocentric Z-axis, in arc-seconds
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Projections.IDatumTransformStage.DeltaScale">
+            <summary>
+            Delta scale in parts-per-million. Actaul scale is 1+DS/1000000.
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Projections.IDatumTransformStage.GridShiftTable">
+            <summary>
+            If Method is one of: NADCON, HARN, or NTv2, this field contains the name of the grid shift table
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Projections.IDatumTransformStage.ApplyTableInverse">
+            <summary>
+            True if the table must be used in the direction opposite that specified by the From/To Datum properties
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Projections.IDatumTransformStage.FromSpheroid">
+            <summary>
+            Spheriod on which the From datum is based
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Projections.IDatumTransformStage.ToSpheroid">
+            <summary>
+            Spheriod on which the To datum is based
+            </summary>
+        </member>
         <member name="T:DotSpatial.Projections.LasLosNadTable">
             <summary>
             Overrides the NadTable methods in the context of an las/los file pair.
@@ -688,12 +503,13 @@
             </summary>
             <param name="resourceLocation">The Manifest Assembly resource location</param>
         </member>
-        <member name="M:DotSpatial.Projections.LasLosNadTable.#ctor(System.String,System.Boolean)">
+        <member name="M:DotSpatial.Projections.LasLosNadTable.#ctor(System.String,System.Boolean,System.Boolean)">
             <summary>
             An LasLosNadTable constructor
             </summary>
             <param name="location">The resource location or grid file path</param>
             <param name="embedded">Indicates if grid is an embedded resource</param>
+            <param name="requiresDecompression"></param>
         </member>
         <member name="M:DotSpatial.Projections.LasLosNadTable.ReadHeader">
             <inheritdoc></inheritdoc>
@@ -718,12 +534,13 @@
             </summary>
             <param name="resourceLocation">The Manifest Assembly resource location</param>
         </member>
-        <member name="M:DotSpatial.Projections.LlaNadTable.#ctor(System.String,System.Boolean)">
+        <member name="M:DotSpatial.Projections.LlaNadTable.#ctor(System.String,System.Boolean,System.Boolean)">
             <summary>
             An LlaNadTable constructor
             </summary>
             <param name="location">The Manifest Assembly resource location or file path</param>
             <param name="embedded">Indicates if grid file is embedded resource or external file</param>
+            <param name="requiresDecompression"></param>
         </member>
         <member name="M:DotSpatial.Projections.LlaNadTable.ReadHeader">
             <inheritdoc></inheritdoc>
@@ -749,6 +566,13 @@
             <summary>
             IDescriptor
             </summary>
+        </member>
+        <member name="M:DotSpatial.Projections.IProjDescriptor.CopyProperties(System.Object)">
+            <summary>
+            This copies the public descriptor properties from the specified object to
+            this object.
+            </summary>
+            <param name="other">An object that has properties that match the public properties on this object.</param>
         </member>
         <member name="T:DotSpatial.Projections.IProjMatchable">
             <summary>
@@ -780,13 +604,6 @@
             </summary>
             <param name="generator">An existing random number generator so that the random seed can be controlled</param>
         </member>
-        <member name="M:DotSpatial.Projections.IProjDescriptor.CopyProperties(System.Object)">
-            <summary>
-            This copies the public descriptor properties from the specified object to
-            this object.
-            </summary>
-            <param name="other">An object that has properties that match the public properties on this object.</param>
-        </member>
         <member name="T:DotSpatial.Projections.ProjMatchableEM">
             <summary>
             MatchableEM
@@ -807,13 +624,69 @@
             Unit
             </summary>
         </member>
-        <member name="T:DotSpatial.Projections.ProjDescriptor">
+        <member name="M:DotSpatial.Projections.AngularUnit.#ctor">
             <summary>
-            Descriptors are simple classes that are used for storing symbology or other basic characteristics.
-            They are presumed to be made up of value types and other descriptors, and are expected to be serializable.
-            This being said, some basic capabilities are supported for randomizing, copying and comparing the
-            properties of descriptors.
+            Creates a new instance of Unit
             </summary>
+        </member>
+        <member name="P:DotSpatial.Projections.AngularUnit.Name">
+            <summary>
+            Gets or sets the name of this
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Projections.AngularUnit.Radians">
+            <summary>
+            Gets or sets the constant to multiply against this unit to get radians.
+            </summary>
+        </member>
+        <member name="M:DotSpatial.Projections.AngularUnit.ToEsriString">
+            <summary>
+            Generates the Esri string from the values in this class
+            </summary>
+            <returns>The resulting esri string</returns>
+        </member>
+        <member name="M:DotSpatial.Projections.AngularUnit.ParseEsriString(System.String)">
+            <summary>
+            Reads an esri string to determine the angular unit
+            </summary>
+            <param name="esriString">The esri string to read</param>
+        </member>
+        <member name="T:DotSpatial.Projections.CoordinateSystemCategory">
+            <summary>
+            CoordinateSystem
+            </summary>
+        </member>
+        <member name="M:DotSpatial.Projections.CoordinateSystemCategory.#ctor">
+            <summary>
+            Creates a new instance of CoordinateSystem
+            </summary>
+        </member>
+        <member name="M:DotSpatial.Projections.CoordinateSystemCategory.GetProjection(System.String)">
+            <summary>
+            Retrieves the specified projection given the specified name.
+            </summary>
+            <param name="name">The string name of the projection to obtain information for</param>
+            <returns></returns>
+        </member>
+        <member name="P:DotSpatial.Projections.CoordinateSystemCategory.Names">
+            <summary>
+            Gets the list of names of all the members on this object
+            </summary>
+        </member>
+        <member name="M:DotSpatial.Projections.CoordinateSystemCategory.ToArray">
+            <summary>
+            Obtains all the members of this category, building a single
+            array of the projection info classes.  This returns the
+            original classes, not a copy.
+            </summary>
+            <returns>The array of projection info classes</returns>
+        </member>
+        <member name="M:DotSpatial.Projections.CoordinateSystemCategory.AsEnumerable">
+            <summary>
+            Obtains all the members of this category. This returns the
+            original classes, not a copy.
+            </summary>
+            <returns>The enumerable of projection info classes with field names</returns>
         </member>
         <member name="T:DotSpatial.Projections.ProjCopyBase">
             <summary>
@@ -844,6 +717,137 @@
             This occurs during the Copy method and is overridable by sub-classes
             </summary>
             <param name="copy">The duplicate descriptor</param>
+        </member>
+        <member name="T:DotSpatial.Projections.Datum">
+            <summary>
+            Datum
+            </summary>
+        </member>
+        <member name="M:DotSpatial.Projections.Datum.#ctor">
+            <summary>
+            Creates a new instance of Datum
+            </summary>
+        </member>
+        <member name="M:DotSpatial.Projections.Datum.#ctor(System.String)">
+            <summary>
+            uses a string name of a standard datum to create a new instance of the Datum class
+            </summary>
+            <param name="standardDatum">The string name of the datum to use</param>
+        </member>
+        <member name="M:DotSpatial.Projections.Datum.#ctor(DotSpatial.Projections.Proj4Datum)">
+            <summary>
+            Uses a Proj4Datums enumeration in order to specify a known datum to
+            define the spheroid and to WGS calculation method and parameters
+            </summary>
+            <param name="standardDatum">The Proj4Datums enumeration specifying the known datum</param>
+        </member>
+        <member name="M:DotSpatial.Projections.Datum.ToProj4String">
+            <summary>
+            Returns a representaion of this object as a Proj4 string.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:DotSpatial.Projections.Datum.Matches(DotSpatial.Projections.Datum)">
+            <summary>
+            Compares two datums to see if they are actually describing the same thing and
+            therefore don't need to be transformed.
+            </summary>
+            <param name="otherDatum">The other datum to compare against</param>
+            <returns>The boolean result of the operation.</returns>
+        </member>
+        <member name="P:DotSpatial.Projections.Datum.Name">
+            <summary>
+            Gets or sets the name of the datum defining the spherical characteristics of the model of the earth
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Projections.Datum.Spheroid">
+            <summary>
+            The spheroid of the earth, defining the maximal radius and the flattening factor
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Projections.Datum.ToWGS84">
+            <summary>
+            Gets or sets the set of double parameters, (this can either be 3 or 7 parameters)
+            used to transform this
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Projections.Datum.DatumType">
+            <summary>
+            Gets or sets the datum type, which clarifies how to perform transforms to WGS84
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Projections.Datum.Description">
+            <summary>
+            Gets or sets an english description for this datum
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Projections.Datum.NadGrids">
+            <summary>
+            Gets or sets the array of string nadGrid
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Projections.Datum.Proj4DatumName">
+            <summary>
+            Lookups the proj4 datum based on the stored name.
+            </summary>
+        </member>
+        <member name="M:DotSpatial.Projections.Datum.ToEsriString">
+            <summary>
+            Creates an esri well known text string for the datum part of the string
+            </summary>
+            <returns>The datum portion of the esri well known text</returns>
+        </member>
+        <member name="M:DotSpatial.Projections.Datum.ParseEsriString(System.String)">
+            <summary>
+            Parses the datum from the esri string
+            </summary>
+            <param name="esriString">The string to parse values from</param>
+        </member>
+        <member name="M:DotSpatial.Projections.Datum.InitializeToWgs84(System.String[])">
+            <summary>
+            Initializes to WGS84.
+            </summary>
+            <param name="values">The values.</param>
+            <exception cref="T:System.ArgumentNullException">Throws if <paramref name="values"/> is null</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">Throws if <paramref name="values"/> has length not 3 or 7.</exception>
+        </member>
+        <member name="T:DotSpatial.Projections.DatumType">
+            <summary>
+            DatumTypes
+            </summary>
+        </member>
+        <member name="F:DotSpatial.Projections.DatumType.Unknown">
+            <summary>
+            The datum type is not with a well defined ellips or grid-shift
+            </summary>
+        </member>
+        <member name="F:DotSpatial.Projections.DatumType.Param3">
+            <summary>
+            The datum transform to WGS84 can be defined using 3 double parameters
+            </summary>
+        </member>
+        <member name="F:DotSpatial.Projections.DatumType.Param7">
+            <summary>
+            The datum transform to WGS84 can be defined using 7 double parameters
+            </summary>
+        </member>
+        <member name="F:DotSpatial.Projections.DatumType.GridShift">
+            <summary>
+            The transform requires a special nad gridshift
+            </summary>
+        </member>
+        <member name="F:DotSpatial.Projections.DatumType.WGS84">
+            <summary>
+            The datum is already the WGS84 datum
+            </summary>
+        </member>
+        <member name="T:DotSpatial.Projections.ProjDescriptor">
+            <summary>
+            Descriptors are simple classes that are used for storing symbology or other basic characteristics.
+            They are presumed to be made up of value types and other descriptors, and are expected to be serializable.
+            This being said, some basic capabilities are supported for randomizing, copying and comparing the
+            properties of descriptors.
+            </summary>
         </member>
         <member name="M:DotSpatial.Projections.ProjDescriptor.#ctor">
             <summary>
@@ -905,204 +909,9 @@
             </summary>
             <param name="generator">The random number generator to be used during randomization</param>
         </member>
-        <member name="T:DotSpatial.Projections.IEsriString">
-            <summary>
-            EsriString
-            </summary>
-        </member>
-        <member name="M:DotSpatial.Projections.IEsriString.ToEsriString">
-            <summary>
-            Writes the value in the format that it would appear in within a prj file
-            </summary>
-            <returns>The a nested portion of the total esri string.</returns>
-        </member>
-        <member name="M:DotSpatial.Projections.IEsriString.ParseEsriString(System.String)">
-            <summary>
-            This reads the string and attempts to parse the relavent values.
-            </summary>
-            <param name="esriString">The string to read</param>
-        </member>
-        <member name="M:DotSpatial.Projections.AngularUnit.#ctor">
-            <summary>
-            Creates a new instance of Unit
-            </summary>
-        </member>
-        <member name="M:DotSpatial.Projections.AngularUnit.ToEsriString">
-            <summary>
-            Generates the Esri string from the values in this class
-            </summary>
-            <returns>The resulting esri string</returns>
-        </member>
-        <member name="M:DotSpatial.Projections.AngularUnit.ParseEsriString(System.String)">
-            <summary>
-            Reads an esri string to determine the angular unit
-            </summary>
-            <param name="esriString">The esri string to read</param>
-        </member>
-        <member name="P:DotSpatial.Projections.AngularUnit.Name">
-            <summary>
-            Gets or sets the name of this
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Projections.AngularUnit.Radians">
-            <summary>
-            Gets or sets the constant to multiply against this unit to get radians.
-            </summary>
-        </member>
-        <member name="T:DotSpatial.Projections.CoordinateSystemCategory">
-            <summary>
-            CoordinateSystem
-            </summary>
-        </member>
-        <member name="M:DotSpatial.Projections.CoordinateSystemCategory.#ctor">
-            <summary>
-            Creates a new instance of CoordinateSystem
-            </summary>
-        </member>
-        <member name="M:DotSpatial.Projections.CoordinateSystemCategory.GetProjection(System.String)">
-            <summary>
-            Retrieves the specified projection given the specified name.
-            </summary>
-            <param name="name">The string name of the projection to obtain information for</param>
-            <returns></returns>
-        </member>
-        <member name="M:DotSpatial.Projections.CoordinateSystemCategory.ToArray">
-            <summary>
-            Obtains all the members of this category, building a single
-            array of the projection info classes.  This returns the
-            original classes, not a copy.
-            </summary>
-            <returns>The array of projection info classes</returns>
-        </member>
-        <member name="P:DotSpatial.Projections.CoordinateSystemCategory.Names">
-            <summary>
-            Gets the list of names of all the members on this object
-            </summary>
-        </member>
-        <member name="T:DotSpatial.Projections.Datum">
-            <summary>
-            Datum
-            </summary>
-        </member>
-        <member name="M:DotSpatial.Projections.Datum.#ctor">
-            <summary>
-            Creates a new instance of Datum
-            </summary>
-        </member>
-        <member name="M:DotSpatial.Projections.Datum.#ctor(System.String)">
-            <summary>
-            uses a string name of a standard datum to create a new instance of the Datum class
-            </summary>
-            <param name="standardDatum">The string name of the datum to use</param>
-        </member>
-        <member name="M:DotSpatial.Projections.Datum.#ctor(DotSpatial.Projections.Proj4Datum)">
-            <summary>
-            Uses a Proj4Datums enumeration in order to specify a known datum to
-            define the spheroid and to WGS calculation method and parameters
-            </summary>
-            <param name="standardDatum">The Proj4Datums enumeration specifying the known datum</param>
-        </member>
-        <member name="M:DotSpatial.Projections.Datum.ToProj4String">
-            <summary>
-            Returns a representaion of this object as a Proj4 string.
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:DotSpatial.Projections.Datum.Matches(DotSpatial.Projections.Datum)">
-            <summary>
-            Compares two datums to see if they are actually describing the same thing and
-            therefore don't need to be transformed.
-            </summary>
-            <param name="otherDatum">The other datum to compare against</param>
-            <returns>The boolean result of the operation.</returns>
-        </member>
-        <member name="M:DotSpatial.Projections.Datum.ToEsriString">
-            <summary>
-            Creates an esri well known text string for the datum part of the string
-            </summary>
-            <returns>The datum portion of the esri well known text</returns>
-        </member>
-        <member name="M:DotSpatial.Projections.Datum.ParseEsriString(System.String)">
-            <summary>
-            parses the datum from the esri string
-            </summary>
-            <param name="esriString">The string to parse values from</param>
-        </member>
-        <member name="M:DotSpatial.Projections.Datum.InitializeToWgs84(System.String[])">
-            <summary>
-            Initializes to WGS84.
-            </summary>
-            <param name="values">The values.</param>
-        </member>
-        <member name="P:DotSpatial.Projections.Datum.Name">
-            <summary>
-            Gets or sets the name of the datum defining the spherical characteristics of the model of the earth
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Projections.Datum.Spheroid">
-            <summary>
-            The spheroid of the earth, defining the maximal radius and the flattening factor
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Projections.Datum.ToWGS84">
-            <summary>
-            Gets or sets the set of double parameters, (this can either be 3 or 7 parameters)
-            used to transform this
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Projections.Datum.DatumType">
-            <summary>
-            Gets or sets the datum type, which clarifies how to perform transforms to WGS84
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Projections.Datum.Description">
-            <summary>
-            Gets or sets an english description for this datum
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Projections.Datum.NadGrids">
-            <summary>
-            Gets or sets the array of string nadGrid
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Projections.Datum.Proj4DatumName">
-            <summary>
-            Lookups the proj4 datum based on the stored name.
-            </summary>
-        </member>
-        <member name="T:DotSpatial.Projections.DatumType">
-            <summary>
-            DatumTypes
-            </summary>
-        </member>
-        <member name="F:DotSpatial.Projections.DatumType.Unknown">
-            <summary>
-            The datum type is not with a well defined ellips or grid-shift
-            </summary>
-        </member>
-        <member name="F:DotSpatial.Projections.DatumType.Param3">
-            <summary>
-            The datum transform to WGS84 can be defined using 3 double parameters
-            </summary>
-        </member>
-        <member name="F:DotSpatial.Projections.DatumType.Param7">
-            <summary>
-            The datum transform to WGS84 can be defined using 7 double parameters
-            </summary>
-        </member>
-        <member name="F:DotSpatial.Projections.DatumType.GridShift">
-            <summary>
-            The transform requires a special nad gridshift
-            </summary>
-        </member>
-        <member name="F:DotSpatial.Projections.DatumType.WGS84">
-            <summary>
-            The datum is already the WGS84 datum
-            </summary>
-        </member>
         <member name="T:DotSpatial.Projections.GeocentricGeodetic">
             <summary>
-            Wenzel, H.-G.(1985): Hochauflцsende Kugelfunktionsmodelle fьr
+            Wenzel, H.-G.(1985): Hochauflösende Kugelfunktionsmodelle für
             das Gravitationspotential der Erde. Wiss. Arb. Univ. Hannover
             Nr. 137, p. 130-131.
             </summary>
@@ -1270,24 +1079,6 @@
             Creates a new instance of GeographicInfo
             </summary>
         </member>
-        <member name="M:DotSpatial.Projections.GeographicInfo.ToEsriString">
-            <summary>
-            Generates an esri string from the information in this geographic info class, including the name, datum, meridian, and unit.
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:DotSpatial.Projections.GeographicInfo.ParseEsriString(System.String)">
-            <summary>
-            Reads an esri string in order to parse the datum, meridian and unit as well as the name.
-            </summary>
-            <param name="esriString">The string to parse</param>
-        </member>
-        <member name="M:DotSpatial.Projections.GeographicInfo.ToProj4String">
-            <summary>
-            Returns a representaion of this object as a Proj4 string.
-            </summary>
-            <returns></returns>
-        </member>
         <member name="P:DotSpatial.Projections.GeographicInfo.Datum">
             <summary>
             Gets or sets the datum
@@ -1310,6 +1101,24 @@
             Gets or sets the units
             </summary>
         </member>
+        <member name="M:DotSpatial.Projections.GeographicInfo.ToEsriString">
+            <summary>
+            Generates an esri string from the information in this geographic info class, including the name, datum, meridian, and unit.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:DotSpatial.Projections.GeographicInfo.ParseEsriString(System.String)">
+            <summary>
+            Reads an esri string in order to parse the datum, meridian and unit as well as the name.
+            </summary>
+            <param name="esriString">The string to parse</param>
+        </member>
+        <member name="M:DotSpatial.Projections.GeographicInfo.ToProj4String">
+            <summary>
+            Returns a representaion of this object as a Proj4 string.
+            </summary>
+            <returns></returns>
+        </member>
         <member name="T:DotSpatial.Projections.GeographicSystems">
             <summary>
             GeographicSystems
@@ -1328,22 +1137,12 @@
             in this collection of systems.
             </summary>
         </member>
-        <member name="T:DotSpatial.Projections.GridShift">
-            <summary>
-            GridShift
-            </summary>
-        </member>
         <member name="M:DotSpatial.Projections.GridShift.Apply(System.String[],System.Boolean,System.Double[],System.Int32,System.Int64)">
             <summary>
             Applies either a forward or backward gridshift based on the specified name
             </summary>
-            <param name="names"></param>
-            <param name="inverse"></param>
-            <param name="xy"></param>
-            <param name="startIndex"></param>
-            <param name="numPoints"></param>
         </member>
-        <member name="M:DotSpatial.Projections.GridShift.NadInterpolate(DotSpatial.Projections.PhiLam,DotSpatial.Projections.NadTable)">
+        <member name="M:DotSpatial.Projections.GridShift.NadInterpolate(DotSpatial.Projections.Nad.PhiLam,DotSpatial.Projections.Nad.NadTable)">
              <summary>
             
              </summary>
@@ -1351,7 +1150,7 @@
              <param name="ct"></param>
              <returns></returns>
         </member>
-        <member name="M:DotSpatial.Projections.GridShift.GetValue(System.Int32,System.Int32,DotSpatial.Projections.NadTable)">
+        <member name="M:DotSpatial.Projections.GridShift.GetValue(System.Int32,System.Int32,DotSpatial.Projections.Nad.NadTable)">
             <summary>
             Checks the edges to make sure that we are not attempting to interpolate
             from cells that don't exist.
@@ -1372,6 +1171,23 @@
             </summary>
             <param name="gridsFolder"></param>
             <param name="recursive"></param>
+        </member>
+        <member name="T:DotSpatial.Projections.IEsriString">
+            <summary>
+            EsriString
+            </summary>
+        </member>
+        <member name="M:DotSpatial.Projections.IEsriString.ToEsriString">
+            <summary>
+            Writes the value in the format that it would appear in within a prj file
+            </summary>
+            <returns>The a nested portion of the total esri string.</returns>
+        </member>
+        <member name="M:DotSpatial.Projections.IEsriString.ParseEsriString(System.String)">
+            <summary>
+            This reads the string and attempts to parse the relavent values.
+            </summary>
+            <param name="esriString">The string to read</param>
         </member>
         <member name="T:DotSpatial.Projections.IProjectionCategory">
             <summary>
@@ -1453,6 +1269,16 @@
             Creates a new instance of Unit
             </summary>
         </member>
+        <member name="P:DotSpatial.Projections.LinearUnit.Name">
+            <summary>
+            Gets or sets the name of this
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Projections.LinearUnit.Meters">
+            <summary>
+            Gets or sets the constant to multiply with maps distances to get the distances in meters
+            </summary>
+        </member>
         <member name="M:DotSpatial.Projections.LinearUnit.ToEsriString">
             <summary>
             Generates the part of the Esri well known text for this linear unit
@@ -1472,16 +1298,6 @@
             sure if the numeric code is used outside of GDAL internal references.
             </summary>
             <param name="uomCode"></param>
-        </member>
-        <member name="P:DotSpatial.Projections.LinearUnit.Name">
-            <summary>
-            Gets or sets the name of this
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Projections.LinearUnit.Meters">
-            <summary>
-            Gets or sets the constant to multiply with maps distances to get the distances in meters
-            </summary>
         </member>
         <member name="T:DotSpatial.Projections.Meridian">
             <summary>
@@ -1514,6 +1330,12 @@
             </summary>
             <param name="standardMeridianName">The string name of the meridian to use</param>
         </member>
+        <member name="P:DotSpatial.Projections.Meridian.Code">
+            <summary>
+            Gets or sets the code.  Setting this will not impact the longitude or name.
+            In order to read a standard code (8901-8913) use the ReadCode method.
+            </summary>
+        </member>
         <member name="M:DotSpatial.Projections.Meridian.ReadCode(System.Int32)">
             <summary>
             Reads the integer code (possibly only an internal GDAL code) for the Meridian.
@@ -1527,30 +1349,6 @@
             Changes the longitude to correspond with the specified standard meridian
             </summary>
             <param name="standardMeridian"></param>
-        </member>
-        <member name="M:DotSpatial.Projections.Meridian.ToEsriString">
-            <summary>
-            Writes the longitude and prime meridian content to the esri string
-            </summary>
-            <returns>A string that is formatted for an esri prj file</returns>
-        </member>
-        <member name="M:DotSpatial.Projections.Meridian.ParseEsriString(System.String)">
-            <summary>
-            Reads content from an esri string, learning information about the prime meridian
-            </summary>
-            <param name="esriString"></param>
-        </member>
-        <member name="M:DotSpatial.Projections.Meridian.ToProj4String">
-            <summary>
-            Returns a representaion of this object as a Proj4 string.
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="P:DotSpatial.Projections.Meridian.Code">
-            <summary>
-            Gets or sets the code.  Setting this will not impact the longitude or name.
-            In order to read a standard code (8901-8913) use the ReadCode method.
-            </summary>
         </member>
         <member name="P:DotSpatial.Projections.Meridian.Name">
             <summary>
@@ -1569,6 +1367,24 @@
             <value>
             Alternate prime meridian (typically a city name).
             </value>
+        </member>
+        <member name="M:DotSpatial.Projections.Meridian.ToEsriString">
+            <summary>
+            Writes the longitude and prime meridian content to the esri string
+            </summary>
+            <returns>A string that is formatted for an esri prj file</returns>
+        </member>
+        <member name="M:DotSpatial.Projections.Meridian.ParseEsriString(System.String)">
+            <summary>
+            Reads content from an esri string, learning information about the prime meridian
+            </summary>
+            <param name="esriString"></param>
+        </member>
+        <member name="M:DotSpatial.Projections.Meridian.ToProj4String">
+            <summary>
+            Returns a representaion of this object as a Proj4 string.
+            </summary>
+            <returns></returns>
         </member>
         <member name="T:DotSpatial.Projections.MeridionalDistance">
             <summary>
@@ -1603,44 +1419,225 @@
             <param name="en"></param>
             <returns></returns>
         </member>
-        <member name="T:DotSpatial.Projections.NadTables">
+        <member name="T:DotSpatial.Projections.Nad.NadTable">
             <summary>
-            NadTables
+            NadRecord is a single entry from an lla file
             </summary>
         </member>
-        <member name="M:DotSpatial.Projections.NadTables.#ctor">
+        <member name="F:DotSpatial.Projections.Nad.NadTable.DEG_TO_RAD">
+            <summary>
+            Converts degree values into radians
+            </summary>
+        </member>
+        <member name="F:DotSpatial.Projections.Nad.NadTable.USecToRad">
+            <summary>
+            I think this converts micro-seconds of arc to radians
+            </summary>
+        </member>
+        <member name="F:DotSpatial.Projections.Nad.NadTable._cellSize">
+            <summary>
+            The delta lambda and delta phi for a single cell
+            </summary>
+        </member>
+        <member name="F:DotSpatial.Projections.Nad.NadTable._cvs">
+            <summary>
+            The set of conversion matrix coefficients for lambda
+            </summary>
+        </member>
+        <member name="F:DotSpatial.Projections.Nad.NadTable._lowerLeft">
+            <summary>
+            The lower left coordinate
+            </summary>
+        </member>
+        <member name="F:DotSpatial.Projections.Nad.NadTable._name">
+            <summary>
+            The character based id for this record
+            </summary>
+        </member>
+        <member name="F:DotSpatial.Projections.Nad.NadTable._numLambdas">
+            <summary>
+            The total count of coordinates in the lambda direction
+            </summary>
+        </member>
+        <member name="F:DotSpatial.Projections.Nad.NadTable._numPhis">
+            <summary>
+            The total count of coordinates in the phi direction
+            </summary>
+        </member>
+        <member name="M:DotSpatial.Projections.Nad.NadTable.#ctor">
+            <summary>
+            Creates a blank nad Table
+            </summary>
+        </member>
+        <member name="M:DotSpatial.Projections.Nad.NadTable.#ctor(System.String)">
+            <summary>
+            This initializes a new table with the assumption that the offset is 0
+            </summary>
+            <param name="resourceLocation">The resource location</param>
+        </member>
+        <member name="M:DotSpatial.Projections.Nad.NadTable.#ctor(System.String,System.Boolean)">
+            <summary>
+            This initializes a new table with the assumption that the offset is 0
+            </summary>
+            <param name="resourceLocation">The resource location</param>
+            <param name="embedded">Indicates if grid file is in embedded resource or external file</param>
+        </member>
+        <member name="M:DotSpatial.Projections.Nad.NadTable.#ctor(System.String,System.Int64)">
+            <summary>
+            This initializes a new table with the assumption that the offset needs to be specified
+            because in gsb files, more than one table is listed, and this is a subtable.
+            </summary>
+            <param name="resourceLocation">The resource location</param>
+            <param name="offset">The offset marking the start of the header in the file</param>
+        </member>
+        <member name="M:DotSpatial.Projections.Nad.NadTable.#ctor(System.String,System.Int64,System.Boolean,System.Boolean)">
+            <summary>
+            This initializes a new table with the assumption that the offset needs to be specified
+            because in gsb files, more than one table is listed, and this is a subtable. This also allows
+            specifying if the grid file is included as an embedded resource.
+            </summary>
+            <param name="location">The resource (or file) location</param>
+            <param name="offset">The offset marking the start of the header in the file</param>
+            <param name="embedded">Indicates if embedded resource or external file</param>
+            <param name="requiresDecompression">Indicates if embedded resource requires decompression</param>
+        </member>
+        <member name="M:DotSpatial.Projections.Nad.NadTable.ReadHeader">
+            <summary>
+            Given the resource setup, this causes the file to read the
+            </summary>
+        </member>
+        <member name="M:DotSpatial.Projections.Nad.NadTable.FillData">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="M:DotSpatial.Projections.Nad.NadTable.FromSourceName(System.String,System.Boolean,System.Boolean)">
+            <summary>
+            This method parses the extension of a resource location or
+            path and creates the new NadTable type.
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Projections.Nad.NadTable.Name">
+            <summary>
+            Gets or sets the string name for this record
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Projections.Nad.NadTable.LowerLeft">
+            <summary>
+            Gets or sets the lower left corner in radians
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Projections.Nad.NadTable.CellSize">
+            <summary>
+            Gets or sets the angular cell size in radians
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Projections.Nad.NadTable.NumPhis">
+            <summary>
+            Gets or sets the integer count of phi coefficients
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Projections.Nad.NadTable.NumLambdas">
+            <summary>
+            Gets or sets the integer count of lambda coefficients
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Projections.Nad.NadTable.SubGrids">
+            <summary>
+            These represent smaller, higher resolution subgrids that should fall within the extents
+            of the larger grid.  If this list exists, and there is a fit here, it should be used
+            in preference to the low-resolution main grid.
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Projections.Nad.NadTable.Cvs">
+            <summary>
+            Gets or sets the array of lambda coefficients organized
+            in a spatial Table (phi major)
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Projections.Nad.NadTable.Filled">
+            <summary>
+            Gets or sets a boolean indicating whether or not the values have been filled.
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Projections.Nad.NadTable.ManifestResourceString">
+            <summary>
+            Gets or sets the location this table should look for source data.
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Projections.Nad.NadTable.DataOffset">
+            <summary>
+            Gets or sets the long integer data offset where the stream should skip to to begin reading data
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Projections.Nad.NadTable.Format">
+            <summary>
+            Gets or sets the format being used.
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Projections.Nad.NadTable.FileIsEmbedded">
+            <summary>
+            True if grid file is an embedded resource
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Projections.Nad.NadTable.GridFilePath">
+            <summary>
+            If FileIsEmbedded is false, this contains the full path to the grid file
+            </summary>
+        </member>
+        <member name="M:DotSpatial.Projections.Nad.NadTable.ReadDouble(System.IO.BinaryReader)">
+            <summary>
+            Reads a double in BigEndian format (consistent with ntv1 and ntv2 formats.)
+            </summary>
+            <param name="br">The binary reader</param>
+            <returns>The double value parsed from the binary in big endian byte order.</returns>
+        </member>
+        <member name="M:DotSpatial.Projections.Nad.NadTable.GetDouble(System.Byte[],System.Int32)">
+            <summary>
+            Gets the double value from the specified position in the byte array
+            Using BigEndian format.
+            </summary>
+            <param name="array"></param>
+            <param name="offset"></param>
+            <returns></returns>
+        </member>
+        <member name="M:DotSpatial.Projections.Nad.NadTable.GetStream">
+            <summary>
+            Get the stream to the grid
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:DotSpatial.Projections.Nad.NadTables.#ctor">
             <summary>
             Creates a new instance of NadTables
             </summary>
         </member>
-        <member name="M:DotSpatial.Projections.NadTables.InitializeExternalGrids">
+        <member name="M:DotSpatial.Projections.Nad.NadTables.InitializeExternalGrids">
             <summary>
             Load grids from the default GeogTransformsGrids subfolder
             </summary>
         </member>
-        <member name="M:DotSpatial.Projections.NadTables.InitializeExternalGrids(System.String,System.Boolean)">
+        <member name="M:DotSpatial.Projections.Nad.NadTables.InitializeExternalGrids(System.String,System.Boolean)">
             <summary>
             Load grids from the specified folder
             </summary>
-            <param name="strGridsFolder"></param>
-            <param name="recursive"></param>
         </member>
-        <member name="P:DotSpatial.Projections.NadTables.Tables">
+        <member name="P:DotSpatial.Projections.Nad.NadTables.Tables">
             <summary>
             Gets an array of the lla tables that have been added as a resource
             </summary>
         </member>
-        <member name="T:DotSpatial.Projections.PhiLam">
+        <member name="T:DotSpatial.Projections.Nad.PhiLam">
             <summary>
             PhiLam has two double values and is used like a coordinate.
             </summary>
         </member>
-        <member name="F:DotSpatial.Projections.PhiLam.Lambda">
+        <member name="F:DotSpatial.Projections.Nad.PhiLam.Lambda">
             <summary>
             Geodetic Lambda coordinate (longitude)
             </summary>
         </member>
-        <member name="F:DotSpatial.Projections.PhiLam.Phi">
+        <member name="F:DotSpatial.Projections.Nad.PhiLam.Phi">
             <summary>
             Geodetic Phi coordinate (latitude)
             </summary>
@@ -2223,7 +2220,7 @@
         </member>
         <member name="F:DotSpatial.Projections.ProjectedCategories.SpheroidBased.Lambert2Wide">
             <summary>
-            Lambert 2 (Йtendu)
+            Lambert 2 (Étendu)
             </summary>
         </member>
         <member name="M:DotSpatial.Projections.ProjectedCategories.SpheroidBased.#ctor">
@@ -2435,17 +2432,17 @@
             </summary>
             <param name="message"></param>
         </member>
+        <member name="P:DotSpatial.Projections.ProjectionException.ErrorCode">
+            <summary>
+            Gets the error code that was used when this exception was created
+            </summary>
+        </member>
         <member name="M:DotSpatial.Projections.ProjectionException.GetMessage(System.Int32)">
             <summary>
             Returns a string message given the correct numeric code.
             </summary>
             <param name="projectionCode"></param>
             <returns></returns>
-        </member>
-        <member name="P:DotSpatial.Projections.ProjectionException.ErrorCode">
-            <summary>
-            Gets the error code that was used when this exception was created
-            </summary>
         </member>
         <member name="T:DotSpatial.Projections.ProjectionInfo">
             <summary>
@@ -2454,138 +2451,17 @@
         </member>
         <member name="M:DotSpatial.Projections.ProjectionInfo.#ctor">
             <summary>
-              Initializes a new instance of the <see cref="T:DotSpatial.Projections.ProjectionInfo"/> class.
+              Initializes a new instance of the <see cref = "T:DotSpatial.Projections.ProjectionInfo" /> class.
             </summary>
-        </member>
-        <member name="M:DotSpatial.Projections.ProjectionInfo.ToEsriString">
-            <summary>
-            Expresses the entire projection as the Esri well known text format that can be found in .prj files
-            </summary>
-            <returns>
-            The generated string
-            </returns>
-        </member>
-        <member name="M:DotSpatial.Projections.ProjectionInfo.FromEpsgCode(System.Int32)">
-            <summary>
-            Using the specified code, this will attempt to look up the related reference information
-              from the appropriate pcs code.
-            </summary>
-            <param name="epsgCode">
-            The epsg Code.
-            </param>
-        </member>
-        <member name="M:DotSpatial.Projections.ProjectionInfo.FromEsriString(System.String)">
-            <summary>
-            Parses the entire projection from an Esri string.  In some cases, this will have
-              default projection information since only geographic information is obtained.
-            </summary>
-            <param name="esriString">
-            The Esri string to parse
-            </param>
-        </member>
-        <member name="M:DotSpatial.Projections.ProjectionInfo.FromProj4String(System.String)">
-            <summary>
-            Creates a new projection and automatically reads in the proj4 string
-            </summary>
-            <param name="proj4String">
-            The proj4String to read in while defining the projection
-            </param>
-        </member>
-        <member name="M:DotSpatial.Projections.ProjectionInfo.Open(System.String)">
-            <summary>
-            Open a given prj fileName
-            </summary>
-            <param name="prjFilename">
-            </param>
-        </member>
-        <member name="M:DotSpatial.Projections.ProjectionInfo.Equals(DotSpatial.Projections.ProjectionInfo)">
-            <summary>
-            Gets a boolean that is true if the Esri WKT string created by the projections matches.
-              There are multiple ways to write the same projection, but the output Esri WKT string
-              should be a good indicator of whether or not they are the same.
-            </summary>
-            <param name="other">
-            The other projection to compare with.
-            </param>
-            <returns>
-            Boolean, true if the projections are the same.
-            </returns>
-        </member>
-        <member name="M:DotSpatial.Projections.ProjectionInfo.GetUnitText(System.Double)">
-            <summary>
-            If this is a geographic coordinate system, this will show decimal degrees.  Otherwise,
-              this will show the linear unit units.
-            </summary>
-            <param name="quantity">
-            The quantity.
-            </param>
-            <returns>
-            The get unit text.
-            </returns>
-        </member>
-        <member name="M:DotSpatial.Projections.ProjectionInfo.SaveAs(System.String)">
-            <summary>
-            Exports this projection info by saving it to a *.prj file.
-            </summary>
-            <param name="prjFilename">
-            The prj file to save to
-            </param>
-        </member>
-        <member name="M:DotSpatial.Projections.ProjectionInfo.ToProj4String">
-            <summary>
-            Returns a representaion of this object as a Proj4 string.
-            </summary>
-            <returns>
-            The to proj 4 string.
-            </returns>
-        </member>
-        <member name="M:DotSpatial.Projections.ProjectionInfo.ToString">
-            <summary>
-            This overrides ToString to get the Esri name of the projection.
-            </summary>
-            <returns>
-            The to string.
-            </returns>
-        </member>
-        <member name="M:DotSpatial.Projections.ProjectionInfo.ReadAuthorityCode(System.String,System.Int32)">
-            <summary>
-            Reads the authority code.
-            </summary>
-            <param name="authority">
-            The authority.
-            </param>
-            <param name="epsgCode">
-            The code.
-            </param>
-        </member>
-        <member name="M:DotSpatial.Projections.ProjectionInfo.ParseProj4String(System.String)">
-            <summary>
-            Attempts to parse known parameters from the set of proj4 parameters
-            </summary>
-            <param name="proj4String">
-            </param>
-        </member>
-        <member name="M:DotSpatial.Projections.ProjectionInfo.TryParseEsriString(System.String)">
-            <summary>
-            This will try to read the string, but if the validation fails, then it will return false,
-              rather than throwing an exception.
-            </summary>
-            <param name="esriString">
-            The string to test and define this projection if possible.
-            </param>
-            <returns>
-            Boolean, true if at least the GEOGCS tag was found.
-            </returns>
-        </member>
-        <member name="M:DotSpatial.Projections.ProjectionInfo.ParseEsriString(System.String)">
-            <summary>
-            Re-sets the parameters of this projection info by parsing the esri projection string
-            </summary>
-            <param name="esriString">The projection information string in Esri WKT format</param>
         </member>
         <member name="P:DotSpatial.Projections.ProjectionInfo.Authority">
             <summary>
               Gets or sets the athority, for example EPSG
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Projections.ProjectionInfo.AuthorityCode">
+            <summary>
+            Gets or sets the athority code.
             </summary>
         </member>
         <member name="P:DotSpatial.Projections.ProjectionInfo.AuxiliarySphereType">
@@ -2596,11 +2472,6 @@
         <member name="P:DotSpatial.Projections.ProjectionInfo.CentralMeridian">
             <summary>
               The horizontal 0 point in geographic terms
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Projections.ProjectionInfo.EpsgCode">
-            <summary>
-              Gets or sets the Reference Code
             </summary>
         </member>
         <member name="P:DotSpatial.Projections.ProjectionInfo.FalseEasting">
@@ -2885,6 +2756,129 @@
             <param name="value">
             </param>
         </member>
+        <member name="M:DotSpatial.Projections.ProjectionInfo.ToEsriString">
+            <summary>
+            Expresses the entire projection as the Esri well known text format that can be found in .prj files
+            </summary>
+            <returns>
+            The generated string
+            </returns>
+        </member>
+        <member name="M:DotSpatial.Projections.ProjectionInfo.FromEpsgCode(System.Int32)">
+            <summary>
+            Using the specified code, this will attempt to look up the related reference information
+              from the appropriate pcs code.
+            </summary>
+            <param name="epsgCode">
+            The epsg Code.
+            </param>
+            <exception cref="T:System.ArgumentOutOfRangeException">Throws when there is no projection for given epsg code</exception>
+        </member>
+        <member name="M:DotSpatial.Projections.ProjectionInfo.FromAuthorityCode(System.String,System.Int32)">
+            <summary>
+            Using the specified code, this will attempt to look up the related reference information from the appropriate authority code.
+            </summary>
+            <param name="authority"> The authority. </param>
+            <param name="code">  The code. </param>
+            <returns>ProjectionInfo</returns>
+            <exception cref="T:System.ArgumentOutOfRangeException">Throws when there is no projection for given authority and code</exception>
+        </member>
+        <member name="M:DotSpatial.Projections.ProjectionInfo.FromEsriString(System.String)">
+            <summary>
+            Parses the entire projection from an Esri string.  In some cases, this will have
+              default projection information since only geographic information is obtained.
+            </summary>
+            <param name="esriString">
+            The Esri string to parse
+            </param>
+        </member>
+        <member name="M:DotSpatial.Projections.ProjectionInfo.FromProj4String(System.String)">
+            <summary>
+            Creates a new projection and automatically reads in the proj4 string
+            </summary>
+            <param name="proj4String">
+            The proj4String to read in while defining the projection
+            </param>
+        </member>
+        <member name="M:DotSpatial.Projections.ProjectionInfo.Open(System.String)">
+            <summary>
+            Open a given prj fileName
+            </summary>
+            <param name="prjFilename">
+            </param>
+        </member>
+        <member name="M:DotSpatial.Projections.ProjectionInfo.Equals(DotSpatial.Projections.ProjectionInfo)">
+            <summary>
+            Gets a boolean that is true if the Esri WKT string created by the projections matches.
+              There are multiple ways to write the same projection, but the output Esri WKT string
+              should be a good indicator of whether or not they are the same.
+            </summary>
+            <param name="other">
+            The other projection to compare with.
+            </param>
+            <returns>
+            Boolean, true if the projections are the same.
+            </returns>
+        </member>
+        <member name="M:DotSpatial.Projections.ProjectionInfo.GetUnitText(System.Double)">
+            <summary>
+            If this is a geographic coordinate system, this will show decimal degrees.  Otherwise,
+              this will show the linear unit units.
+            </summary>
+            <param name="quantity">
+            The quantity.
+            </param>
+            <returns>
+            The get unit text.
+            </returns>
+        </member>
+        <member name="M:DotSpatial.Projections.ProjectionInfo.SaveAs(System.String)">
+            <summary>
+            Exports this projection info by saving it to a *.prj file.
+            </summary>
+            <param name="prjFilename">
+            The prj file to save to
+            </param>
+        </member>
+        <member name="M:DotSpatial.Projections.ProjectionInfo.ToProj4String">
+            <summary>
+            Returns a representaion of this object as a Proj4 string.
+            </summary>
+            <returns>
+            The to proj 4 string.
+            </returns>
+        </member>
+        <member name="M:DotSpatial.Projections.ProjectionInfo.ToString">
+            <summary>
+            This overrides ToString to get the Esri name of the projection.
+            </summary>
+            <returns>
+            The to string.
+            </returns>
+        </member>
+        <member name="M:DotSpatial.Projections.ProjectionInfo.ParseProj4String(System.String)">
+            <summary>
+            Attempts to parse known parameters from the set of proj4 parameters
+            </summary>
+        </member>
+        <member name="M:DotSpatial.Projections.ProjectionInfo.TryParseEsriString(System.String)">
+            <summary>
+            This will try to read the string, but if the validation fails, then it will return false,
+              rather than throwing an exception.
+            </summary>
+            <param name="esriString">
+            The string to test and define this projection if possible.
+            </param>
+            <returns>
+            Boolean, true if at least the GEOGCS tag was found.
+            </returns>
+        </member>
+        <member name="M:DotSpatial.Projections.ProjectionInfo.ParseEsriString(System.String)">
+            <summary>
+            Re-sets the parameters of this projection info by parsing the esri projection string
+            </summary>
+            <param name="esriString">The projection information string in Esri WKT format</param>
+        </member>
         <member name="T:DotSpatial.Projections.InvalidEsriFormatException">
             <summary>
             Validation exception for Esri string.
@@ -2915,6 +2909,11 @@
             <summary>
               Overrides the current thread's CurrentUICulture property for all
               resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Projections.ProjectionMessages.AuthorityCodeNotFound">
+            <summary>
+              Looks up a localized string similar to Authority Code not found..
             </summary>
         </member>
         <member name="P:DotSpatial.Projections.ProjectionMessages.DuplicateTableName">
@@ -2959,7 +2958,7 @@
         </member>
         <member name="P:DotSpatial.Projections.ProjectionMessages.Err16_ImproperDMS">
             <summary>
-              Looks up a localized string similar to The Degree Minute Second value is formed imporperly.
+              Looks up a localized string similar to The Degree Minute Second value is formed improperly.
             </summary>
         </member>
         <member name="P:DotSpatial.Projections.ProjectionMessages.Err17_NonConvergentRMeridDist">
@@ -3124,7 +3123,7 @@
         </member>
         <member name="P:DotSpatial.Projections.ProjectionMessages.Err46_UknownPMID">
             <summary>
-              Looks up a localized string similar to Uknown prime meridian conversion ID.
+              Looks up a localized string similar to Unknown prime meridian conversion ID.
             </summary>
         </member>
         <member name="P:DotSpatial.Projections.ProjectionMessages.Err5_UknownProjection">
@@ -3159,7 +3158,7 @@
         </member>
         <member name="P:DotSpatial.Projections.ProjectionMessages.InverseShiftFailed">
             <summary>
-              Looks up a localized string similar to Inverse grid shift iteration faield, presumably at grid edge.  Using first approximation..
+              Looks up a localized string similar to Inverse grid shift iteration failed, presumably at grid edge. Using first approximation..
             </summary>
         </member>
         <member name="P:DotSpatial.Projections.ProjectionMessages.InvShiftConvergeFailed">
@@ -3277,6 +3276,14 @@
             </summary>
             <param name="proj4Ellips"></param>
         </member>
+        <member name="P:DotSpatial.Projections.Spheroid.Code">
+            <summary>
+            Gets or sets the two character Synthetic Environment Data
+            Representation and Interchange Specification (SEDRIS) code
+            eg. AA represents Airy 1830.  Setting this will not modify the values,
+            To read a SEDRIS Code use the constructor or AssignKnownEllipsoid overload.
+            </summary>
+        </member>
         <member name="M:DotSpatial.Projections.Spheroid.ReadSedrisCode(System.String)">
             <summary>
             Assigns a known projection that is defined by a two character SEDRIS code,
@@ -3330,34 +3337,6 @@
             </summary>
             <returns>Boolean, true if the spheroid is oblate (or flattened)</returns>
         </member>
-        <member name="M:DotSpatial.Projections.Spheroid.ToEsriString">
-            <summary>
-            Converts the spheroid parameters into a valid esri expression that uses the semi-major axis
-            and the reciprocal flattening factor
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:DotSpatial.Projections.Spheroid.ParseEsriString(System.String)">
-            <summary>
-            Reads the Esri string to define the spheroid, which controls how flattened the earth's radius is
-            </summary>
-            <param name="esriString"></param>
-        </member>
-        <member name="P:DotSpatial.Projections.Spheroid.Code">
-            <summary>
-            Gets or sets the two character Synthetic Environment Data
-            Representation and Interchange Specification (SEDRIS) code
-            eg. AA represents Airy 1830.  Setting this will not modify the values,
-            To read a SEDRIS Code use the constructor or AssignKnownEllipsoid overload.
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Projections.Spheroid.Proj4Names">
-            <summary>
-            Each of the enumerated known ellipsoids is encoded by an ellps parameter specified by
-            the corresponding string value.  Ellipsoids that are not found here or are specified
-            as "Custom" in the enuemration will be replaced with an 'a' and a 'b' parameter instead.
-            </summary>
-        </member>
         <member name="P:DotSpatial.Projections.Spheroid.InverseFlattening">
             <summary>
             Sets the value by using the current semi-major axis (Equatorial Radius) in order to
@@ -3389,337 +3368,22 @@
             
              </summary>
         </member>
+        <member name="M:DotSpatial.Projections.Spheroid.ToEsriString">
+            <summary>
+            Converts the spheroid parameters into a valid esri expression that uses the semi-major axis
+            and the reciprocal flattening factor
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:DotSpatial.Projections.Spheroid.ParseEsriString(System.String)">
+            <summary>
+            Reads the Esri string to define the spheroid, which controls how flattened the earth's radius is
+            </summary>
+            <param name="esriString"></param>
+        </member>
         <member name="T:DotSpatial.Projections.Transforms.Aitoff">
             <summary>
             Aitoff
-            </summary>
-        </member>
-        <member name="T:DotSpatial.Projections.Transforms.Transform">
-            <summary>
-            TransverseMercator is a class allowing the transverse mercator transform as transcribed
-            from the 4.6 version of the Proj4 library (pj_tmerc.c)
-            </summary>
-        </member>
-        <member name="T:DotSpatial.Projections.Transforms.ITransform">
-            <summary>
-            ITransform
-            </summary>
-        </member>
-        <member name="M:DotSpatial.Projections.Transforms.ITransform.Init(DotSpatial.Projections.ProjectionInfo)">
-            <summary>
-            Initializes the parameters from the projection info
-            </summary>
-            <param name="proj">The projection information used to control this transform</param>
-        </member>
-        <member name="M:DotSpatial.Projections.Transforms.ITransform.Forward(System.Double[],System.Int32,System.Int32)">
-            <summary>
-            Transforms all the coordinates by cycling through them in a loop,
-            transforming each one.  Only the 0 and 1 values of each coordinate will be
-            transformed, higher dimensional values will be copied.
-            </summary>
-        </member>
-        <member name="M:DotSpatial.Projections.Transforms.ITransform.Inverse(System.Double[],System.Int32,System.Int32)">
-            <summary>
-            Transforms all the coordinates by cycling through them in a loop,
-            transforming each one.  Only the 0 and 1 values of each coordinate will be
-            transformed, higher dimensional values will be copied.
-            </summary>
-        </member>
-        <member name="M:DotSpatial.Projections.Transforms.ITransform.Special(System.Double[],DotSpatial.Projections.ProjectionInfo,DotSpatial.Projections.Transforms.Factors)">
-            <summary>
-            Special factor calculations for a factors calculation
-            </summary>
-            <param name="lp"></param>
-            <param name="p"></param>
-            <param name="fac"></param>
-        </member>
-        <member name="P:DotSpatial.Projections.Transforms.ITransform.Name">
-            <summary>
-            Gets or sets the string name of this projection.  This should uniquely define the projection,
-            and controls what appears in the .prj files.  This name is required.
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Projections.Transforms.ITransform.Proj4Name">
-            <summary>
-            Gets or sets the string name of this projection as it is known to proj4, or should appear
-            in a proj4 string.  This name is required to read and write to proj4 strings.
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Projections.Transforms.ITransform.Proj4Aliases">
-            <summary>
-            This is the list of alternate names to check besides the Proj4Name.  This will not be used
-            for writing Proj4 strings, but may be helpful for reading them.
-            </summary>
-        </member>
-        <member name="F:DotSpatial.Projections.Transforms.Transform.HALF_PI">
-            <summary>
-            Pi/2
-            </summary>
-        </member>
-        <member name="F:DotSpatial.Projections.Transforms.Transform.FORT_PI">
-            <summary>
-            Math.Pi / 4
-            </summary>
-        </member>
-        <member name="F:DotSpatial.Projections.Transforms.Transform.TWO_PI">
-            <summary>
-            2 * Math.Pi
-            </summary>
-        </member>
-        <member name="F:DotSpatial.Projections.Transforms.Transform.EPS10">
-            <summary>
-            1E-10
-            </summary>
-        </member>
-        <member name="F:DotSpatial.Projections.Transforms.Transform.IS_ANAL_HK">
-            <summary>
-            Analytic Hk
-            </summary>
-        </member>
-        <member name="F:DotSpatial.Projections.Transforms.Transform.IS_ANAL_CONV">
-            <summary>
-            Analytic Conv
-            </summary>
-        </member>
-        <member name="F:DotSpatial.Projections.Transforms.Transform.IS_ANAL_XL_YL">
-            <summary>
-            Analytic Xl Yl
-            </summary>
-        </member>
-        <member name="F:DotSpatial.Projections.Transforms.Transform.IS_ANAL_XP_YP">
-            <summary>
-            Analytic Xp Yp
-            </summary>
-        </member>
-        <member name="F:DotSpatial.Projections.Transforms.Transform.RAD_TO_DEG">
-            <summary>
-            Radians to Degrees
-            </summary>
-        </member>
-        <member name="F:DotSpatial.Projections.Transforms.Transform.DEG_TO_RAD">
-            <summary>
-            Degrees to Radians
-            </summary>
-        </member>
-        <member name="F:DotSpatial.Projections.Transforms.Transform.LAMBDA">
-            <summary>
-            The integer index representing lambda values in arrays representing geodetic coordinates
-            </summary>
-        </member>
-        <member name="F:DotSpatial.Projections.Transforms.Transform.PHI">
-            <summary>
-            The integer index representing phi values in arrays representing geodetic coordinates
-            </summary>
-        </member>
-        <member name="F:DotSpatial.Projections.Transforms.Transform.X">
-            <summary>
-            The integer index representing X values in arrays representing linear coordinates
-            </summary>
-        </member>
-        <member name="F:DotSpatial.Projections.Transforms.Transform.Y">
-            <summary>
-            The integer index representing Y values in arrays representing linear coordinates
-            </summary>
-        </member>
-        <member name="F:DotSpatial.Projections.Transforms.Transform.R">
-            <summary>
-            The integer index representing real values in arrays representing complex numbers
-            </summary>
-        </member>
-        <member name="F:DotSpatial.Projections.Transforms.Transform.I">
-            <summary>
-            The integer index representing immaginary values in arrays representing complex numbers
-            </summary>
-        </member>
-        <member name="M:DotSpatial.Projections.Transforms.Transform.Init(DotSpatial.Projections.ProjectionInfo)">
-            <summary>
-            Initializes the parameters from the projection info
-            </summary>
-            <param name="projectionInfo">The projection information used to control this transform</param>
-        </member>
-        <member name="M:DotSpatial.Projections.Transforms.Transform.Forward(System.Double[],System.Int32,System.Int32)">
-            <summary>
-            Transforms all the coordinates by cycling through them in a loop,
-            transforming each one.  Only the 0 and 1 values of each coordinate will be
-            transformed, higher dimensional values will be copied.
-            </summary>
-        </member>
-        <member name="M:DotSpatial.Projections.Transforms.Transform.Inverse(System.Double[],System.Int32,System.Int32)">
-            <summary>
-            Transforms all the coordinates by cycling through them in a loop,
-            transforming each one.  Only the 0 and 1 values of each coordinate will be
-            transformed, higher dimensional values will be copied.
-            </summary>
-        </member>
-        <member name="M:DotSpatial.Projections.Transforms.Transform.Special(System.Double[],DotSpatial.Projections.ProjectionInfo,DotSpatial.Projections.Transforms.Factors)">
-            <summary>
-            Special factor calculations for a factors calculation
-            </summary>
-            <param name="lp">lambda-phi</param>
-            <param name="p">The projection</param>
-            <param name="fac">The Factors</param>
-        </member>
-        <member name="M:DotSpatial.Projections.Transforms.Transform.FromKnownTransform(DotSpatial.Projections.Transforms.KnownTransform)">
-            <summary>
-            Uses an enumeration to generate a new instance of a known transform class
-            </summary>
-            <param name="value">The member of the KnownTransforms to instantiate</param>
-            <returns>A new ITransform interface representing the specific transform</returns>
-        </member>
-        <member name="M:DotSpatial.Projections.Transforms.Transform.OnSpecial(System.Double[],DotSpatial.Projections.ProjectionInfo,DotSpatial.Projections.Transforms.Factors)">
-            <summary>
-            Allows for some custom code during a process method
-            </summary>
-            <param name="lp">lambda-phi</param>
-            <param name="p">The projection coordinate system information</param>
-            <param name="fac">The Factors</param>
-        </member>
-        <member name="M:DotSpatial.Projections.Transforms.Transform.OnInit(DotSpatial.Projections.ProjectionInfo)">
-            <summary>
-            Initializes the transform using the parameters from the specified coordinate system information
-            </summary>
-            <param name="projInfo">A ProjectionInfo class contains all the standard and custom parameters needed to initialize this transform</param>
-        </member>
-        <member name="M:DotSpatial.Projections.Transforms.Transform.OnForward(System.Double[],System.Double[],System.Int32,System.Int32)">
-            <summary>
-            Transforms cartesian x, y to geodetic lambda, phi
-            </summary>
-            <param name="lp">in -> the lambda, phi coordinates</param>
-            <param name="xy">out -> the cartesian x, y</param>
-            <param name="startIndex">The zero based starting point index.  If this is 1, for instance, reading will skip the x and y of the first point and start at the second point.</param>
-            <param name="numPoints">The integer count of the pairs of xy values to consider.</param>
-        </member>
-        <member name="M:DotSpatial.Projections.Transforms.Transform.OnInverse(System.Double[],System.Double[],System.Int32,System.Int32)">
-            <summary>
-            The inverse transform from linear units to geodetic units
-            </summary>
-            <param name="xy">The double values for the input x and y values stored in an array</param>
-            <param name="lp">The double values for the output lambda and phi values stored in an array</param>
-            <param name="startIndex">The zero based starting point index.  If this is 1, for instance, reading will skip the x and y of the first point and start at the second point.</param>
-            <param name="numPoints">The integer count of the pairs of xy values to consider</param>
-        </member>
-        <member name="M:DotSpatial.Projections.Transforms.Transform.Clone">
-             <summary>
-            
-             </summary>
-             <returns></returns>
-        </member>
-        <member name="P:DotSpatial.Projections.Transforms.Transform.A">
-            <summary>
-            The major axis
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Projections.Transforms.Transform.Ra">
-            <summary>
-            1/a
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Projections.Transforms.Transform.OneEs">
-            <summary>
-            1 - e^2;
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Projections.Transforms.Transform.ROneEs">
-            <summary>
-            1/OneEs
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Projections.Transforms.Transform.E">
-            <summary>
-            Eccentricity
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Projections.Transforms.Transform.IsElliptical">
-            <summary>
-            True if the spheroid is flattened
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Projections.Transforms.Transform.Es">
-            <summary>
-            Eccentricity Squared
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Projections.Transforms.Transform.Phi0">
-            <summary>
-            Central Latitude
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Projections.Transforms.Transform.Lam0">
-            <summary>
-            Central Longitude
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Projections.Transforms.Transform.X0">
-            <summary>
-            False Easting
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Projections.Transforms.Transform.Y0">
-            <summary>
-            False Northing
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Projections.Transforms.Transform.K0">
-            <summary>
-            Scaling Factor
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Projections.Transforms.Transform.ToMeter">
-            <summary>
-            Scaling to meter
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Projections.Transforms.Transform.FromMeter">
-            <summary>
-            Scaling from meter
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Projections.Transforms.Transform.B">
-            <summary>
-            The B parameter, which should be consisten with the semi-minor axis
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Projections.Transforms.Transform.Name">
-            <summary>
-            Gets or sets the string name of this projection as it appears in .prj files and
-            Esri wkt.  This can also be several names separated by a semicolon.
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Projections.Transforms.Transform.Proj4Name">
-            <summary>
-            Gets or sets the string name of this projection as it should appear in proj4 strings.
-            This can also be several names deliminated by a semicolon.
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Projections.Transforms.Transform.Proj4Aliases">
-            <summary>
-            Gets or sets a list of optional aliases that can be used in the place of the Proj4Name.
-            This will only be used during reading, and will not be used during writing.
-            </summary>
-        </member>
-        <member name="T:DotSpatial.Projections.Transforms.Transform.Modes">
-            <summary>
-            For transforms that distinguish between polar, oblique and equitorial modes
-            </summary>
-        </member>
-        <member name="F:DotSpatial.Projections.Transforms.Transform.Modes.NorthPole">
-            <summary>
-            North Pole
-            </summary>
-        </member>
-        <member name="F:DotSpatial.Projections.Transforms.Transform.Modes.SouthPole">
-            <summary>
-            South Pole
-            </summary>
-        </member>
-        <member name="F:DotSpatial.Projections.Transforms.Transform.Modes.Equitorial">
-            <summary>
-            Equitorial
-            </summary>
-        </member>
-        <member name="F:DotSpatial.Projections.Transforms.Transform.Modes.Oblique">
-            <summary>
-            Oblique
             </summary>
         </member>
         <member name="M:DotSpatial.Projections.Transforms.Aitoff.#ctor">
@@ -3733,6 +3397,11 @@
         <member name="T:DotSpatial.Projections.Transforms.AlbersConicEqualArea">
             <summary>
             AlbersConicEqualArea
+            </summary>
+        </member>
+        <member name="M:DotSpatial.Projections.Transforms.AlbersConicEqualArea.#ctor">
+            <summary>
+            Creates a new instance of AlbersConicEqualArea
             </summary>
         </member>
         <member name="T:DotSpatial.Projections.Transforms.AlbersEqualArea">
@@ -3772,11 +3441,6 @@
             Gets or sets the Phi2 parameter
             </summary>
         </member>
-        <member name="M:DotSpatial.Projections.Transforms.AlbersConicEqualArea.#ctor">
-            <summary>
-            Creates a new instance of AlbersConicEqualArea
-            </summary>
-        </member>
         <member name="T:DotSpatial.Projections.Transforms.AnalyticModes">
             <summary>
             AnalyticCodes
@@ -3806,58 +3470,6 @@
             <summary>
             AzimuthalEquidistant
             </summary>
-        </member>
-        <member name="T:DotSpatial.Projections.Transforms.EllipticalTransform">
-            <summary>
-            Elliptical Transform supports a built in framework for assuming a
-            separate function occurs if the spheroid is elliptical
-            </summary>
-        </member>
-        <member name="M:DotSpatial.Projections.Transforms.EllipticalTransform.OnForward(System.Double[],System.Double[],System.Int32,System.Int32)">
-            <inheritdoc />
-        </member>
-        <member name="M:DotSpatial.Projections.Transforms.EllipticalTransform.EllipticalForward(System.Double[],System.Double[],System.Int32,System.Int32)">
-            <summary>
-            Calculates the forward transformation from geodetic lambda and phi coordinates to
-            linear xy coordinates for projections that have elliptical earth models.
-            </summary>
-            <param name="lp">The input interleaved lambda-phi coordinates where lambda is longitude in radians and phi is latitude in radians.</param>
-            <param name="xy">The resulting interleaved x-y coordinates</param>
-            <param name="startIndex">The zero based integer start index in terms of coordinate pairs</param>
-            <param name="numPoints">The integer number of xy pairs to evaluate.</param>
-        </member>
-        <member name="M:DotSpatial.Projections.Transforms.EllipticalTransform.SphericalForward(System.Double[],System.Double[],System.Int32,System.Int32)">
-            <summary>
-            Calculates the forward transformation from geodetic lambda and phi coordinates to
-            linear xy coordinates for projections that have spherical earth models.
-            </summary>
-            <param name="lp">The input interleaved lambda-phi coordinates where lambda is longitude in radians and phi is latitude in radians.</param>
-            <param name="xy">The resulting interleaved x-y coordinates</param>
-            <param name="startIndex">The zero based integer start index in terms of coordinate pairs</param>
-            <param name="numPoints">The integer number of xy pairs to evaluate.</param>
-        </member>
-        <member name="M:DotSpatial.Projections.Transforms.EllipticalTransform.OnInverse(System.Double[],System.Double[],System.Int32,System.Int32)">
-            <inheritdoc />
-        </member>
-        <member name="M:DotSpatial.Projections.Transforms.EllipticalTransform.EllipticalInverse(System.Double[],System.Double[],System.Int32,System.Int32)">
-            <summary>
-            Calculates the inverse transformation from linear xy coordinates to geodetic lambda and phi coordinates
-            for projections that have elliptical earth models.
-            </summary>
-            <param name="xy">The input interleaved x-y coordinates</param>
-            <param name="lp">The output interleaved lambda-phi coordinates where lambda is longitude in radians and phi is latitude in radians.</param>
-            <param name="startIndex">The zero based integer start index in terms of coordinate pairs</param>
-            <param name="numPoints">The integer number of xy pairs to evaluate.</param>
-        </member>
-        <member name="M:DotSpatial.Projections.Transforms.EllipticalTransform.SphericalInverse(System.Double[],System.Double[],System.Int32,System.Int32)">
-            <summary>
-            Calculates the inverse transformation from linear xy coordinates to geodetic lambda and phi coordinates
-            for projections that have spherical earth models.
-            </summary>
-            <param name="xy">The input interleaved x-y coordinates</param>
-            <param name="lp">The output interleaved lambda-phi coordinates where lambda is longitude in radians and phi is latitude in radians.</param>
-            <param name="startIndex">The zero based integer start index in terms of coordinate pairs</param>
-            <param name="numPoints">The integer number of xy pairs to evaluate.</param>
         </member>
         <member name="M:DotSpatial.Projections.Transforms.AzimuthalEquidistant.#ctor">
             <summary>
@@ -4009,60 +3621,6 @@
             <summary>
             Gauss Kruger is basically transverse mercator
             </summary>
-        </member>
-        <member name="T:DotSpatial.Projections.Transforms.TransverseMercator">
-            <summary>
-            TransverseMercator
-            </summary>
-        </member>
-        <member name="M:DotSpatial.Projections.Transforms.TransverseMercator.#ctor">
-            <summary>
-            Creates a new instance of TransverseMercator
-            </summary>
-        </member>
-        <member name="M:DotSpatial.Projections.Transforms.TransverseMercator.OnInit(DotSpatial.Projections.ProjectionInfo)">
-            <summary>
-            Initializes the transform using the parameters from the specified coordinate system information
-            </summary>
-            <param name="projInfo">A ProjectionInfo class contains all the standard and custom parameters needed to initialize this transform</param>
-        </member>
-        <member name="M:DotSpatial.Projections.Transforms.TransverseMercator.SphericalForward(System.Double[],System.Double[],System.Int32,System.Int32)">
-            <summary>
-            The forward transform in the special case where there is no flattening of the spherical model of the earth.
-            </summary>
-            <param name="lp">The input lambda and phi geodetic values organized in an array</param>
-            <param name="xy">The output x and y values organized in an array</param>
-            <param name="startIndex">The zero based integer start index</param>
-            <param name="numPoints">The integer count of the number of xy pairs in the lp and xy arrays</param>
-        </member>
-        <member name="M:DotSpatial.Projections.Transforms.TransverseMercator.EllipticalForward(System.Double[],System.Double[],System.Int32,System.Int32)">
-            <summary>
-            The forward transform where the spheroidal model of the earth has a flattening factor,
-            matching more closely with the oblique spheroid of the actual earth
-            </summary>
-            <param name="lp">The double values for geodetic lambda and phi organized into a one dimensional array</param>
-            <param name="xy">The double values for linear x and y organized into a one dimensional array</param>
-            <param name="startIndex">The zero based integer start index</param>
-            <param name="numPoints">The integer count of the number of xy pairs in the lp and xy arrays</param>
-        </member>
-        <member name="M:DotSpatial.Projections.Transforms.TransverseMercator.SphericalInverse(System.Double[],System.Double[],System.Int32,System.Int32)">
-            <summary>
-            Performs the inverse transform from a single coordinate of linear units to the same coordinate in geodetic lambda and
-            phi units in the special case where the shape of the earth is being approximated as a perfect sphere.
-            </summary>
-            <param name="xy">The double linear input x and y values organized into a 1 dimensional array</param>
-            <param name="lp">The double geodetic output lambda and phi values organized into a 1 dimensional array</param>
-            <param name="startIndex">The zero based integer start index</param>
-            <param name="numPoints">The integer count of the number of xy pairs in the lp and xy arrays</param>
-        </member>
-        <member name="M:DotSpatial.Projections.Transforms.TransverseMercator.EllipticalInverse(System.Double[],System.Double[],System.Int32,System.Int32)">
-            <summary>
-            Performs the inverse transfrom from a single coordinate of linear units to the same coordinate in geodetic units
-            </summary>
-            <param name="xy">The double linear input x and y values organized into a 1 dimensional array</param>
-            <param name="lp">The double geodetic output lambda and phi values organized into a 1 dimensional array</param>
-            <param name="startIndex">The zero based integer start index</param>
-            <param name="numPoints">The integer count of the number of xy pairs in the lp and xy arrays</param>
         </member>
         <member name="M:DotSpatial.Projections.Transforms.GaussKruger.#ctor">
             <summary>
@@ -4254,49 +3812,6 @@
             Eckert6
             </summary>
         </member>
-        <member name="T:DotSpatial.Projections.Transforms.Sinusoidal">
-            <summary>
-            Sinusoidal
-            </summary>
-        </member>
-        <member name="M:DotSpatial.Projections.Transforms.Sinusoidal.#ctor">
-            <summary>
-            Creates a new instance of Sinusoidal
-            </summary>
-        </member>
-        <member name="M:DotSpatial.Projections.Transforms.Sinusoidal.SphericalForward(System.Double[],System.Double[],System.Int32,System.Int32)">
-            <inheritdoc />
-        </member>
-        <member name="M:DotSpatial.Projections.Transforms.Sinusoidal.SphericalInverse(System.Double[],System.Double[],System.Int32,System.Int32)">
-            <inheritdoc />
-        </member>
-        <member name="M:DotSpatial.Projections.Transforms.Sinusoidal.EllipticalForward(System.Double[],System.Double[],System.Int32,System.Int32)">
-            <inheritdoc />
-        </member>
-        <member name="M:DotSpatial.Projections.Transforms.Sinusoidal.EllipticalInverse(System.Double[],System.Double[],System.Int32,System.Int32)">
-            <inheritdoc />
-        </member>
-        <member name="M:DotSpatial.Projections.Transforms.Sinusoidal.Setup">
-            <summary>
-            Handles the original configuration of sinusoidal transforms
-            </summary>
-        </member>
-        <member name="M:DotSpatial.Projections.Transforms.Sinusoidal.OnInit(DotSpatial.Projections.ProjectionInfo)">
-            <summary>
-            Initializes the transform using the parameters from the specified coordinate system information
-            </summary>
-            <param name="projInfo">A ProjectionInfo class contains all the standard and custom parameters needed to initialize this transform</param>
-        </member>
-        <member name="P:DotSpatial.Projections.Transforms.Sinusoidal.M">
-            <summary>
-            Gets or sets the double M value
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Projections.Transforms.Sinusoidal.N">
-            <summary>
-            Gets or sets the N value
-            </summary>
-        </member>
         <member name="M:DotSpatial.Projections.Transforms.Eckert6.#ctor">
             <summary>
             Creates a new instance of Eckert6
@@ -4307,6 +3822,58 @@
             Initializes the transform using the parameters from the specified coordinate system information
             </summary>
             <param name="projInfo">A ProjectionInfo class contains all the standard and custom parameters needed to initialize this transform</param>
+        </member>
+        <member name="T:DotSpatial.Projections.Transforms.EllipticalTransform">
+            <summary>
+            Elliptical Transform supports a built in framework for assuming a
+            separate function occurs if the spheroid is elliptical
+            </summary>
+        </member>
+        <member name="M:DotSpatial.Projections.Transforms.EllipticalTransform.OnForward(System.Double[],System.Double[],System.Int32,System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:DotSpatial.Projections.Transforms.EllipticalTransform.EllipticalForward(System.Double[],System.Double[],System.Int32,System.Int32)">
+            <summary>
+            Calculates the forward transformation from geodetic lambda and phi coordinates to
+            linear xy coordinates for projections that have elliptical earth models.
+            </summary>
+            <param name="lp">The input interleaved lambda-phi coordinates where lambda is longitude in radians and phi is latitude in radians.</param>
+            <param name="xy">The resulting interleaved x-y coordinates</param>
+            <param name="startIndex">The zero based integer start index in terms of coordinate pairs</param>
+            <param name="numPoints">The integer number of xy pairs to evaluate.</param>
+        </member>
+        <member name="M:DotSpatial.Projections.Transforms.EllipticalTransform.SphericalForward(System.Double[],System.Double[],System.Int32,System.Int32)">
+            <summary>
+            Calculates the forward transformation from geodetic lambda and phi coordinates to
+            linear xy coordinates for projections that have spherical earth models.
+            </summary>
+            <param name="lp">The input interleaved lambda-phi coordinates where lambda is longitude in radians and phi is latitude in radians.</param>
+            <param name="xy">The resulting interleaved x-y coordinates</param>
+            <param name="startIndex">The zero based integer start index in terms of coordinate pairs</param>
+            <param name="numPoints">The integer number of xy pairs to evaluate.</param>
+        </member>
+        <member name="M:DotSpatial.Projections.Transforms.EllipticalTransform.OnInverse(System.Double[],System.Double[],System.Int32,System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:DotSpatial.Projections.Transforms.EllipticalTransform.EllipticalInverse(System.Double[],System.Double[],System.Int32,System.Int32)">
+            <summary>
+            Calculates the inverse transformation from linear xy coordinates to geodetic lambda and phi coordinates
+            for projections that have elliptical earth models.
+            </summary>
+            <param name="xy">The input interleaved x-y coordinates</param>
+            <param name="lp">The output interleaved lambda-phi coordinates where lambda is longitude in radians and phi is latitude in radians.</param>
+            <param name="startIndex">The zero based integer start index in terms of coordinate pairs</param>
+            <param name="numPoints">The integer number of xy pairs to evaluate.</param>
+        </member>
+        <member name="M:DotSpatial.Projections.Transforms.EllipticalTransform.SphericalInverse(System.Double[],System.Double[],System.Int32,System.Int32)">
+            <summary>
+            Calculates the inverse transformation from linear xy coordinates to geodetic lambda and phi coordinates
+            for projections that have spherical earth models.
+            </summary>
+            <param name="xy">The input interleaved x-y coordinates</param>
+            <param name="lp">The output interleaved lambda-phi coordinates where lambda is longitude in radians and phi is latitude in radians.</param>
+            <param name="startIndex">The zero based integer start index in terms of coordinate pairs</param>
+            <param name="numPoints">The integer number of xy pairs to evaluate.</param>
         </member>
         <member name="T:DotSpatial.Projections.Transforms.EquidistantConic">
             <summary>
@@ -4431,36 +3998,6 @@
             <summary>
             Foucaut is a tweaked version of QuarticAuthalic that uses tan mode.
             </summary>
-        </member>
-        <member name="T:DotSpatial.Projections.Transforms.QuarticAuthalic">
-            <summary>
-            QuarticAuthalic
-            </summary>
-        </member>
-        <member name="M:DotSpatial.Projections.Transforms.QuarticAuthalic.#ctor">
-            <summary>
-            Creates a new instance of QuarticAuthalic
-            </summary>
-        </member>
-        <member name="M:DotSpatial.Projections.Transforms.QuarticAuthalic.OnForward(System.Double[],System.Double[],System.Int32,System.Int32)">
-            <inheritdoc />
-        </member>
-        <member name="M:DotSpatial.Projections.Transforms.QuarticAuthalic.OnInverse(System.Double[],System.Double[],System.Int32,System.Int32)">
-            <inheritdoc />
-        </member>
-        <member name="M:DotSpatial.Projections.Transforms.QuarticAuthalic.OnInit(DotSpatial.Projections.ProjectionInfo)">
-            <summary>
-            Initializes the transform using the parameters from the specified coordinate system information
-            </summary>
-            <param name="projInfo">A ProjectionInfo class contains all the standard and custom parameters needed to initialize this transform</param>
-        </member>
-        <member name="M:DotSpatial.Projections.Transforms.QuarticAuthalic.Setup(System.Double,System.Double,System.Boolean)">
-            <summary>
-            Setup
-            </summary>
-            <param name="p"></param>
-            <param name="q"></param>
-            <param name="mode"></param>
         </member>
         <member name="M:DotSpatial.Projections.Transforms.Foucaut.#ctor">
             <summary>
@@ -4619,28 +4156,6 @@
             parameter is ignored as I don't know how to send it into Proj4.
             </summary>
         </member>
-        <member name="T:DotSpatial.Projections.Transforms.ObliqueMercator">
-            <summary>
-            OrthogonalMercator
-            </summary>
-        </member>
-        <member name="M:DotSpatial.Projections.Transforms.ObliqueMercator.#ctor">
-            <summary>
-            Creates a new instance of OrthogonalMercator
-            </summary>
-        </member>
-        <member name="M:DotSpatial.Projections.Transforms.ObliqueMercator.OnForward(System.Double[],System.Double[],System.Int32,System.Int32)">
-            <inheritdoc />
-        </member>
-        <member name="M:DotSpatial.Projections.Transforms.ObliqueMercator.OnInverse(System.Double[],System.Double[],System.Int32,System.Int32)">
-            <inheritdoc />
-        </member>
-        <member name="M:DotSpatial.Projections.Transforms.ObliqueMercator.OnInit(DotSpatial.Projections.ProjectionInfo)">
-            <summary>
-            Initializes the transform using the parameters from the specified coordinate system information
-            </summary>
-            <param name="projInfo">A ProjectionInfo class contains all the standard and custom parameters needed to initialize this transform</param>
-        </member>
         <member name="M:DotSpatial.Projections.Transforms.HotineObliqueMercatorAzimuthCenter.#ctor">
             <summary>
             Creates a new instance of HotineObliqueMercatorAzimuthalCenter
@@ -4657,6 +4172,57 @@
             Initializes the transform using the parameters from the specified coordinate system information
             </summary>
             <param name="projInfo">A ProjectionInfo class contains all the standard and custom parameters needed to initialize this transform</param>
+        </member>
+        <member name="T:DotSpatial.Projections.Transforms.ITransform">
+            <summary>
+            ITransform
+            </summary>
+        </member>
+        <member name="M:DotSpatial.Projections.Transforms.ITransform.Init(DotSpatial.Projections.ProjectionInfo)">
+            <summary>
+            Initializes the parameters from the projection info
+            </summary>
+            <param name="proj">The projection information used to control this transform</param>
+        </member>
+        <member name="M:DotSpatial.Projections.Transforms.ITransform.Forward(System.Double[],System.Int32,System.Int32)">
+            <summary>
+            Transforms all the coordinates by cycling through them in a loop,
+            transforming each one.  Only the 0 and 1 values of each coordinate will be
+            transformed, higher dimensional values will be copied.
+            </summary>
+        </member>
+        <member name="M:DotSpatial.Projections.Transforms.ITransform.Inverse(System.Double[],System.Int32,System.Int32)">
+            <summary>
+            Transforms all the coordinates by cycling through them in a loop,
+            transforming each one.  Only the 0 and 1 values of each coordinate will be
+            transformed, higher dimensional values will be copied.
+            </summary>
+        </member>
+        <member name="M:DotSpatial.Projections.Transforms.ITransform.Special(System.Double[],DotSpatial.Projections.ProjectionInfo,DotSpatial.Projections.Transforms.Factors)">
+            <summary>
+            Special factor calculations for a factors calculation
+            </summary>
+            <param name="lp"></param>
+            <param name="p"></param>
+            <param name="fac"></param>
+        </member>
+        <member name="P:DotSpatial.Projections.Transforms.ITransform.Name">
+            <summary>
+            Gets or sets the string name of this projection.  This should uniquely define the projection,
+            and controls what appears in the .prj files.  This name is required.
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Projections.Transforms.ITransform.Proj4Name">
+            <summary>
+            Gets or sets the string name of this projection as it is known to proj4, or should appear
+            in a proj4 string.  This name is required to read and write to proj4 strings.
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Projections.Transforms.ITransform.Proj4Aliases">
+            <summary>
+            This is the list of alternate names to check besides the Proj4Name.  This will not be used
+            for writing Proj4 strings, but may be helpful for reading them.
+            </summary>
         </member>
         <member name="T:DotSpatial.Projections.Transforms.Kavraisky5">
             <summary>
@@ -5224,6 +4790,21 @@
             Creates a new instance of Mollweide
             </summary>
         </member>
+        <member name="P:DotSpatial.Projections.Transforms.Mollweide.Cx">
+            <summary>
+            Gets or sets the x coefficient
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Projections.Transforms.Mollweide.Cy">
+            <summary>
+            Gets or sets the y coefficient value
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Projections.Transforms.Mollweide.Cp">
+            <summary>
+            Gets or sets the P coefficient
+            </summary>
+        </member>
         <member name="M:DotSpatial.Projections.Transforms.Mollweide.OnForward(System.Double[],System.Double[],System.Int32,System.Int32)">
             <inheritdoc />
         </member>
@@ -5241,21 +4822,6 @@
             Finalizes the setup based on the provided P paraemter
             </summary>
             <param name="p"></param>
-        </member>
-        <member name="P:DotSpatial.Projections.Transforms.Mollweide.Cx">
-            <summary>
-            Gets or sets the x coefficient
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Projections.Transforms.Mollweide.Cy">
-            <summary>
-            Gets or sets the y coefficient value
-            </summary>
-        </member>
-        <member name="P:DotSpatial.Projections.Transforms.Mollweide.Cp">
-            <summary>
-            Gets or sets the P coefficient
-            </summary>
         </member>
         <member name="T:DotSpatial.Projections.Transforms.NewZealandMapGrid">
             <summary>
@@ -5296,6 +4862,28 @@
             <inheritdoc />
         </member>
         <member name="M:DotSpatial.Projections.Transforms.ObliqueCylindricalEqualArea.OnInit(DotSpatial.Projections.ProjectionInfo)">
+            <summary>
+            Initializes the transform using the parameters from the specified coordinate system information
+            </summary>
+            <param name="projInfo">A ProjectionInfo class contains all the standard and custom parameters needed to initialize this transform</param>
+        </member>
+        <member name="T:DotSpatial.Projections.Transforms.ObliqueMercator">
+            <summary>
+            OrthogonalMercator
+            </summary>
+        </member>
+        <member name="M:DotSpatial.Projections.Transforms.ObliqueMercator.#ctor">
+            <summary>
+            Creates a new instance of OrthogonalMercator
+            </summary>
+        </member>
+        <member name="M:DotSpatial.Projections.Transforms.ObliqueMercator.OnForward(System.Double[],System.Double[],System.Int32,System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:DotSpatial.Projections.Transforms.ObliqueMercator.OnInverse(System.Double[],System.Double[],System.Int32,System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:DotSpatial.Projections.Transforms.ObliqueMercator.OnInit(DotSpatial.Projections.ProjectionInfo)">
             <summary>
             Initializes the transform using the parameters from the specified coordinate system information
             </summary>
@@ -5541,6 +5129,36 @@
         <member name="M:DotSpatial.Projections.Transforms.PutinsP1.OnInverse(System.Double[],System.Double[],System.Int32,System.Int32)">
             <inheritdoc />
         </member>
+        <member name="T:DotSpatial.Projections.Transforms.QuarticAuthalic">
+            <summary>
+            QuarticAuthalic
+            </summary>
+        </member>
+        <member name="M:DotSpatial.Projections.Transforms.QuarticAuthalic.#ctor">
+            <summary>
+            Creates a new instance of QuarticAuthalic
+            </summary>
+        </member>
+        <member name="M:DotSpatial.Projections.Transforms.QuarticAuthalic.OnForward(System.Double[],System.Double[],System.Int32,System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:DotSpatial.Projections.Transforms.QuarticAuthalic.OnInverse(System.Double[],System.Double[],System.Int32,System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:DotSpatial.Projections.Transforms.QuarticAuthalic.OnInit(DotSpatial.Projections.ProjectionInfo)">
+            <summary>
+            Initializes the transform using the parameters from the specified coordinate system information
+            </summary>
+            <param name="projInfo">A ProjectionInfo class contains all the standard and custom parameters needed to initialize this transform</param>
+        </member>
+        <member name="M:DotSpatial.Projections.Transforms.QuarticAuthalic.Setup(System.Double,System.Double,System.Boolean)">
+            <summary>
+            Setup
+            </summary>
+            <param name="p"></param>
+            <param name="q"></param>
+            <param name="mode"></param>
+        </member>
         <member name="T:DotSpatial.Projections.Transforms.Robinson">
             <summary>
             Robinson
@@ -5556,6 +5174,49 @@
         </member>
         <member name="M:DotSpatial.Projections.Transforms.Robinson.OnInverse(System.Double[],System.Double[],System.Int32,System.Int32)">
             <inheritdoc />
+        </member>
+        <member name="T:DotSpatial.Projections.Transforms.Sinusoidal">
+            <summary>
+            Sinusoidal
+            </summary>
+        </member>
+        <member name="M:DotSpatial.Projections.Transforms.Sinusoidal.#ctor">
+            <summary>
+            Creates a new instance of Sinusoidal
+            </summary>
+        </member>
+        <member name="M:DotSpatial.Projections.Transforms.Sinusoidal.SphericalForward(System.Double[],System.Double[],System.Int32,System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:DotSpatial.Projections.Transforms.Sinusoidal.SphericalInverse(System.Double[],System.Double[],System.Int32,System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:DotSpatial.Projections.Transforms.Sinusoidal.EllipticalForward(System.Double[],System.Double[],System.Int32,System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:DotSpatial.Projections.Transforms.Sinusoidal.EllipticalInverse(System.Double[],System.Double[],System.Int32,System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:DotSpatial.Projections.Transforms.Sinusoidal.Setup">
+            <summary>
+            Handles the original configuration of sinusoidal transforms
+            </summary>
+        </member>
+        <member name="M:DotSpatial.Projections.Transforms.Sinusoidal.OnInit(DotSpatial.Projections.ProjectionInfo)">
+            <summary>
+            Initializes the transform using the parameters from the specified coordinate system information
+            </summary>
+            <param name="projInfo">A ProjectionInfo class contains all the standard and custom parameters needed to initialize this transform</param>
+        </member>
+        <member name="P:DotSpatial.Projections.Transforms.Sinusoidal.M">
+            <summary>
+            Gets or sets the double M value
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Projections.Transforms.Sinusoidal.N">
+            <summary>
+            Gets or sets the N value
+            </summary>
         </member>
         <member name="T:DotSpatial.Projections.Transforms.Stereographic">
             <summary>
@@ -5617,6 +5278,283 @@
         <member name="M:DotSpatial.Projections.Transforms.SwissObliqueMercator.OnInverse(System.Double[],System.Double[],System.Int32,System.Int32)">
             <inheritdoc />
         </member>
+        <member name="T:DotSpatial.Projections.Transforms.Transform">
+            <summary>
+            TransverseMercator is a class allowing the transverse mercator transform as transcribed
+            from the 4.6 version of the Proj4 library (pj_tmerc.c)
+            </summary>
+        </member>
+        <member name="F:DotSpatial.Projections.Transforms.Transform.HALF_PI">
+            <summary>
+            Pi/2
+            </summary>
+        </member>
+        <member name="F:DotSpatial.Projections.Transforms.Transform.FORT_PI">
+            <summary>
+            Math.Pi / 4
+            </summary>
+        </member>
+        <member name="F:DotSpatial.Projections.Transforms.Transform.TWO_PI">
+            <summary>
+            2 * Math.Pi
+            </summary>
+        </member>
+        <member name="F:DotSpatial.Projections.Transforms.Transform.EPS10">
+            <summary>
+            1E-10
+            </summary>
+        </member>
+        <member name="F:DotSpatial.Projections.Transforms.Transform.IS_ANAL_HK">
+            <summary>
+            Analytic Hk
+            </summary>
+        </member>
+        <member name="F:DotSpatial.Projections.Transforms.Transform.IS_ANAL_CONV">
+            <summary>
+            Analytic Conv
+            </summary>
+        </member>
+        <member name="F:DotSpatial.Projections.Transforms.Transform.IS_ANAL_XL_YL">
+            <summary>
+            Analytic Xl Yl
+            </summary>
+        </member>
+        <member name="F:DotSpatial.Projections.Transforms.Transform.IS_ANAL_XP_YP">
+            <summary>
+            Analytic Xp Yp
+            </summary>
+        </member>
+        <member name="F:DotSpatial.Projections.Transforms.Transform.RAD_TO_DEG">
+            <summary>
+            Radians to Degrees
+            </summary>
+        </member>
+        <member name="F:DotSpatial.Projections.Transforms.Transform.DEG_TO_RAD">
+            <summary>
+            Degrees to Radians
+            </summary>
+        </member>
+        <member name="F:DotSpatial.Projections.Transforms.Transform.LAMBDA">
+            <summary>
+            The integer index representing lambda values in arrays representing geodetic coordinates
+            </summary>
+        </member>
+        <member name="F:DotSpatial.Projections.Transforms.Transform.PHI">
+            <summary>
+            The integer index representing phi values in arrays representing geodetic coordinates
+            </summary>
+        </member>
+        <member name="F:DotSpatial.Projections.Transforms.Transform.X">
+            <summary>
+            The integer index representing X values in arrays representing linear coordinates
+            </summary>
+        </member>
+        <member name="F:DotSpatial.Projections.Transforms.Transform.Y">
+            <summary>
+            The integer index representing Y values in arrays representing linear coordinates
+            </summary>
+        </member>
+        <member name="F:DotSpatial.Projections.Transforms.Transform.R">
+            <summary>
+            The integer index representing real values in arrays representing complex numbers
+            </summary>
+        </member>
+        <member name="F:DotSpatial.Projections.Transforms.Transform.I">
+            <summary>
+            The integer index representing immaginary values in arrays representing complex numbers
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Projections.Transforms.Transform.A">
+            <summary>
+            The major axis
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Projections.Transforms.Transform.Ra">
+            <summary>
+            1/a
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Projections.Transforms.Transform.OneEs">
+            <summary>
+            1 - e^2;
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Projections.Transforms.Transform.ROneEs">
+            <summary>
+            1/OneEs
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Projections.Transforms.Transform.E">
+            <summary>
+            Eccentricity
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Projections.Transforms.Transform.IsElliptical">
+            <summary>
+            True if the spheroid is flattened
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Projections.Transforms.Transform.Es">
+            <summary>
+            Eccentricity Squared
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Projections.Transforms.Transform.Phi0">
+            <summary>
+            Central Latitude
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Projections.Transforms.Transform.Lam0">
+            <summary>
+            Central Longitude
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Projections.Transforms.Transform.X0">
+            <summary>
+            False Easting
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Projections.Transforms.Transform.Y0">
+            <summary>
+            False Northing
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Projections.Transforms.Transform.K0">
+            <summary>
+            Scaling Factor
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Projections.Transforms.Transform.ToMeter">
+            <summary>
+            Scaling to meter
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Projections.Transforms.Transform.FromMeter">
+            <summary>
+            Scaling from meter
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Projections.Transforms.Transform.B">
+            <summary>
+            The B parameter, which should be consisten with the semi-minor axis
+            </summary>
+        </member>
+        <member name="T:DotSpatial.Projections.Transforms.Transform.Modes">
+            <summary>
+            For transforms that distinguish between polar, oblique and equitorial modes
+            </summary>
+        </member>
+        <member name="F:DotSpatial.Projections.Transforms.Transform.Modes.NorthPole">
+            <summary>
+            North Pole
+            </summary>
+        </member>
+        <member name="F:DotSpatial.Projections.Transforms.Transform.Modes.SouthPole">
+            <summary>
+            South Pole
+            </summary>
+        </member>
+        <member name="F:DotSpatial.Projections.Transforms.Transform.Modes.Equitorial">
+            <summary>
+            Equitorial
+            </summary>
+        </member>
+        <member name="F:DotSpatial.Projections.Transforms.Transform.Modes.Oblique">
+            <summary>
+            Oblique
+            </summary>
+        </member>
+        <member name="M:DotSpatial.Projections.Transforms.Transform.Init(DotSpatial.Projections.ProjectionInfo)">
+            <summary>
+            Initializes the parameters from the projection info
+            </summary>
+            <param name="projectionInfo">The projection information used to control this transform</param>
+        </member>
+        <member name="M:DotSpatial.Projections.Transforms.Transform.Forward(System.Double[],System.Int32,System.Int32)">
+            <summary>
+            Transforms all the coordinates by cycling through them in a loop,
+            transforming each one.  Only the 0 and 1 values of each coordinate will be
+            transformed, higher dimensional values will be copied.
+            </summary>
+        </member>
+        <member name="M:DotSpatial.Projections.Transforms.Transform.Inverse(System.Double[],System.Int32,System.Int32)">
+            <summary>
+            Transforms all the coordinates by cycling through them in a loop,
+            transforming each one.  Only the 0 and 1 values of each coordinate will be
+            transformed, higher dimensional values will be copied.
+            </summary>
+        </member>
+        <member name="M:DotSpatial.Projections.Transforms.Transform.Special(System.Double[],DotSpatial.Projections.ProjectionInfo,DotSpatial.Projections.Transforms.Factors)">
+            <summary>
+            Special factor calculations for a factors calculation
+            </summary>
+            <param name="lp">lambda-phi</param>
+            <param name="p">The projection</param>
+            <param name="fac">The Factors</param>
+        </member>
+        <member name="M:DotSpatial.Projections.Transforms.Transform.FromKnownTransform(DotSpatial.Projections.Transforms.KnownTransform)">
+            <summary>
+            Uses an enumeration to generate a new instance of a known transform class
+            </summary>
+            <param name="value">The member of the KnownTransforms to instantiate</param>
+            <returns>A new ITransform interface representing the specific transform</returns>
+        </member>
+        <member name="M:DotSpatial.Projections.Transforms.Transform.OnSpecial(System.Double[],DotSpatial.Projections.ProjectionInfo,DotSpatial.Projections.Transforms.Factors)">
+            <summary>
+            Allows for some custom code during a process method
+            </summary>
+            <param name="lp">lambda-phi</param>
+            <param name="p">The projection coordinate system information</param>
+            <param name="fac">The Factors</param>
+        </member>
+        <member name="P:DotSpatial.Projections.Transforms.Transform.Name">
+            <summary>
+            Gets or sets the string name of this projection as it appears in .prj files and
+            Esri wkt.  This can also be several names separated by a semicolon.
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Projections.Transforms.Transform.Proj4Name">
+            <summary>
+            Gets or sets the string name of this projection as it should appear in proj4 strings.
+            This can also be several names deliminated by a semicolon.
+            </summary>
+        </member>
+        <member name="P:DotSpatial.Projections.Transforms.Transform.Proj4Aliases">
+            <summary>
+            Gets or sets a list of optional aliases that can be used in the place of the Proj4Name.
+            This will only be used during reading, and will not be used during writing.
+            </summary>
+        </member>
+        <member name="M:DotSpatial.Projections.Transforms.Transform.OnInit(DotSpatial.Projections.ProjectionInfo)">
+            <summary>
+            Initializes the transform using the parameters from the specified coordinate system information
+            </summary>
+            <param name="projInfo">A ProjectionInfo class contains all the standard and custom parameters needed to initialize this transform</param>
+        </member>
+        <member name="M:DotSpatial.Projections.Transforms.Transform.OnForward(System.Double[],System.Double[],System.Int32,System.Int32)">
+            <summary>
+            Transforms cartesian x, y to geodetic lambda, phi
+            </summary>
+            <param name="lp">in -> the lambda, phi coordinates</param>
+            <param name="xy">out -> the cartesian x, y</param>
+            <param name="startIndex">The zero based starting point index.  If this is 1, for instance, reading will skip the x and y of the first point and start at the second point.</param>
+            <param name="numPoints">The integer count of the pairs of xy values to consider.</param>
+        </member>
+        <member name="M:DotSpatial.Projections.Transforms.Transform.OnInverse(System.Double[],System.Double[],System.Int32,System.Int32)">
+            <summary>
+            The inverse transform from linear units to geodetic units
+            </summary>
+            <param name="xy">The double values for the input x and y values stored in an array</param>
+            <param name="lp">The double values for the output lambda and phi values stored in an array</param>
+            <param name="startIndex">The zero based starting point index.  If this is 1, for instance, reading will skip the x and y of the first point and start at the second point.</param>
+            <param name="numPoints">The integer count of the pairs of xy values to consider</param>
+        </member>
+        <member name="M:DotSpatial.Projections.Transforms.Transform.Clone">
+             <summary>
+            
+             </summary>
+             <returns></returns>
+        </member>
         <member name="T:DotSpatial.Projections.Transforms.TransformManager">
             <summary>
             TransformManager
@@ -5650,6 +5588,60 @@
             <summary>
             Gets the default instance of the transform manager
             </summary>
+        </member>
+        <member name="T:DotSpatial.Projections.Transforms.TransverseMercator">
+            <summary>
+            TransverseMercator
+            </summary>
+        </member>
+        <member name="M:DotSpatial.Projections.Transforms.TransverseMercator.#ctor">
+            <summary>
+            Creates a new instance of TransverseMercator
+            </summary>
+        </member>
+        <member name="M:DotSpatial.Projections.Transforms.TransverseMercator.OnInit(DotSpatial.Projections.ProjectionInfo)">
+            <summary>
+            Initializes the transform using the parameters from the specified coordinate system information
+            </summary>
+            <param name="projInfo">A ProjectionInfo class contains all the standard and custom parameters needed to initialize this transform</param>
+        </member>
+        <member name="M:DotSpatial.Projections.Transforms.TransverseMercator.SphericalForward(System.Double[],System.Double[],System.Int32,System.Int32)">
+            <summary>
+            The forward transform in the special case where there is no flattening of the spherical model of the earth.
+            </summary>
+            <param name="lp">The input lambda and phi geodetic values organized in an array</param>
+            <param name="xy">The output x and y values organized in an array</param>
+            <param name="startIndex">The zero based integer start index</param>
+            <param name="numPoints">The integer count of the number of xy pairs in the lp and xy arrays</param>
+        </member>
+        <member name="M:DotSpatial.Projections.Transforms.TransverseMercator.EllipticalForward(System.Double[],System.Double[],System.Int32,System.Int32)">
+            <summary>
+            The forward transform where the spheroidal model of the earth has a flattening factor,
+            matching more closely with the oblique spheroid of the actual earth
+            </summary>
+            <param name="lp">The double values for geodetic lambda and phi organized into a one dimensional array</param>
+            <param name="xy">The double values for linear x and y organized into a one dimensional array</param>
+            <param name="startIndex">The zero based integer start index</param>
+            <param name="numPoints">The integer count of the number of xy pairs in the lp and xy arrays</param>
+        </member>
+        <member name="M:DotSpatial.Projections.Transforms.TransverseMercator.SphericalInverse(System.Double[],System.Double[],System.Int32,System.Int32)">
+            <summary>
+            Performs the inverse transform from a single coordinate of linear units to the same coordinate in geodetic lambda and
+            phi units in the special case where the shape of the earth is being approximated as a perfect sphere.
+            </summary>
+            <param name="xy">The double linear input x and y values organized into a 1 dimensional array</param>
+            <param name="lp">The double geodetic output lambda and phi values organized into a 1 dimensional array</param>
+            <param name="startIndex">The zero based integer start index</param>
+            <param name="numPoints">The integer count of the number of xy pairs in the lp and xy arrays</param>
+        </member>
+        <member name="M:DotSpatial.Projections.Transforms.TransverseMercator.EllipticalInverse(System.Double[],System.Double[],System.Int32,System.Int32)">
+            <summary>
+            Performs the inverse transfrom from a single coordinate of linear units to the same coordinate in geodetic units
+            </summary>
+            <param name="xy">The double linear input x and y values organized into a 1 dimensional array</param>
+            <param name="lp">The double geodetic output lambda and phi values organized into a 1 dimensional array</param>
+            <param name="startIndex">The zero based integer start index</param>
+            <param name="numPoints">The integer count of the number of xy pairs in the lp and xy arrays</param>
         </member>
         <member name="T:DotSpatial.Projections.Transforms.TwoPointEquidistant">
             <summary>
@@ -5832,47 +5824,15 @@
             </summary>
             <param name="projInfo">A ProjectionInfo class contains all the standard and custom parameters needed to initialize this transform</param>
         </member>
-        <member name="T:DotSpatial.Projections.Reflection.ProjFieldInfoEM">
-            <summary>
-            FieldInfo
-            </summary>
-        </member>
-        <member name="M:DotSpatial.Projections.Reflection.ProjFieldInfoEM.GetFirst(System.Collections.Generic.IEnumerable{System.Reflection.FieldInfo},System.String)">
-             <summary>
-            
-             </summary>
-             <param name="self"></param>
-             <param name="name"></param>
-             <returns></returns>
-        </member>
-        <member name="M:DotSpatial.Projections.Reflection.ProjFieldInfoEM.Contains(System.Collections.Generic.IEnumerable{System.Reflection.FieldInfo},System.String)">
-            <summary>
-            Determines whether there is a member with the specified name
-            </summary>
-            <param name="self"></param>
-            <param name="name"></param>
-            <returns></returns>
-        </member>
-        <member name="T:DotSpatial.Projections.Reflection.ProjPropertyInfoEm">
-            <summary>
-            PropertyInfoEM
-            </summary>
-        </member>
-        <member name="M:DotSpatial.Projections.Reflection.ProjPropertyInfoEm.GetFirst(System.Collections.Generic.IEnumerable{System.Reflection.PropertyInfo},System.String)">
+        <member name="M:DotSpatial.Projections.Reflection.MemberInfoExtensions.GetFirst``1(System.Collections.Generic.IEnumerable{``0},System.String)">
             <summary>
             Gets the first member in the enumerable collection of property info with the specified name.
             </summary>
-            <param name="self"></param>
-            <param name="name"></param>
-            <returns></returns>
         </member>
-        <member name="M:DotSpatial.Projections.Reflection.ProjPropertyInfoEm.Contains(System.Collections.Generic.IEnumerable{System.Reflection.PropertyInfo},System.String)">
+        <member name="M:DotSpatial.Projections.Reflection.MemberInfoExtensions.Contains(System.Collections.Generic.IEnumerable{System.Reflection.MemberInfo},System.String)">
             <summary>
             Determines whether there is a member with the specified name
             </summary>
-            <param name="self"></param>
-            <param name="name"></param>
-            <returns></returns>
         </member>
         <member name="T:DotSpatial.Projections.ProjShallowCopy">
             <summary>
