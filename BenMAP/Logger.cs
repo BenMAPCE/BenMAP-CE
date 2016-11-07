@@ -22,18 +22,6 @@ namespace BenMAP
         private static StreamWriter debugWriter;
         private static string CRLF = "\r\n";
 
-        public Boolean WriteToConsole 
-        { 
-            get { return outputToConsole; }
-            set { outputToConsole = value; }
-        }
-
-        public String DebugFile
-        {
-            get { return debugFile; }
-            set { debugFile = value; }
-        }
-
         public static void LogError(Exception ex)
         {
             try
