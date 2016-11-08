@@ -16,20 +16,19 @@ namespace BenMAP
          * the default location the log files are written to if Logger is instantiated with this field null
          **/
         private static string defaultLoggingPath = CommonClass.DataFilePath;
-        private static Boolean outputToConsole = false;
+        private static Boolean outputToConsole = true;
         private static string debugFile = "\\debug.csv";
-        private static string errorFile = "\\error.log";
-        private static StreamWriter debugWriter;
+        private static string logFile = "\\BenMAP.log";
         private static string CRLF = "\r\n";
 
-        public static void LogError(Exception ex)
+        public static void LogError( Exception ex)
         {
             try
             {
                 string place = ex.StackTrace.ToString();
                 int pos = place.LastIndexOf("\n");
-                string msg = CRLF + DateTime.Now.ToString() + CRLF + ex.Message + CRLF + place.Substring(pos + 1);
-                AppendErr(GetLogPath(ex), msg);
+                string msg = CRLF +"[ERROR "+ DateTime.Now.ToString() + "]: " + ex.Message + CRLF + place.Substring(pos + 1);
+                Append(GetLogPath(ex), msg);
             }
             catch (Exception myEx)
             {
@@ -46,7 +45,7 @@ namespace BenMAP
                 int pos = place.LastIndexOf("\n");
 
                 string myMsg = CRLF + DateTime.Now.ToString() + CRLF + ex.Message + CRLF + msg + CRLF + place.Substring(pos + 1);
-                AppendErr(GetLogPath(ex), myMsg);
+                Append(GetLogPath(ex), myMsg);
             }
             catch (Exception myEx)
             {
@@ -60,7 +59,7 @@ namespace BenMAP
             try
             {
                 string myMsg = CRLF + DateTime.Now.ToString() + CRLF + msg;
-                AppendErr(GetLogPath(null), myMsg);
+                Append(GetLogPath(null), myMsg);
             }
             catch (Exception myEx)
             {
@@ -78,7 +77,7 @@ namespace BenMAP
 
 
 
-                logPath = AppDomain.CurrentDomain.BaseDirectory + errorFile;
+                logPath = AppDomain.CurrentDomain.BaseDirectory + logFile;
                 logPath = logPath.Replace("\\\\", "\\");
                 return logPath;
             }
@@ -111,15 +110,14 @@ namespace BenMAP
             }
         }
 
-        private static void AppendErr(string path, string msg)
+        private static void Append(string path, string msg)
         {
             try
             {
                 StreamWriter writer = new StreamWriter(path, true);
                 writer.WriteLine(msg);
                 writer.Close();
-                Debug.WriteLine(msg);
-                Console.WriteLine(msg);
+                
             }
             catch (Exception myEx)
             {
@@ -132,27 +130,37 @@ namespace BenMAP
         {
             try
             {
+                string newMsg = "";
                 if (path == null)
                     path = defaultLoggingPath;
 
-                debugWriter = new StreamWriter(path+debugFile, true);
+                if (level == Level.INFO)
+                {
+                    newMsg = "[INFO " + DateTime.Now.ToString() + "]: " + msg;
+                    Append(path+logFile, newMsg);
+
+                }
                 if (level == Level.DEBUG)
                 {
-                    if (outputToConsole)
-                        Debug.WriteLine(msg);
-                    
-                    debugWriter.WriteLine(debuggingOut);
-                    debugWriter.Flush();
-                    debugWriter.Close();
+                    newMsg = "[DEBUG " + DateTime.Now.ToString() + "]: " + msg;
+                    Append(path + logFile, newMsg);
+                    Append(path + debugFile, debuggingOut.ToString());           
                 }
                 if (level == Level.Error)
                 {
-                    LogError(e, msg);
+                    string place = e.StackTrace.ToString();
+                    int pos = place.LastIndexOf("\n");
+                    newMsg = CRLF + "[ERROR " + DateTime.Now.ToString() + "]: " + e.Message + CRLF + place.Substring(pos + 1);
+                    Append(path+logFile, newMsg);
+                }
+                if (outputToConsole)
+                {
+                    Console.WriteLine(newMsg);
                 }
             }
             catch (Exception ex)
             {
-                LogError(ex);
+                LogError(ex,ex.Message);
             }
 
         }

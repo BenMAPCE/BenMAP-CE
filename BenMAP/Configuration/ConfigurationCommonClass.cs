@@ -2588,8 +2588,7 @@ namespace BenMAP.Configuration
                 }
                //debug file
                 if (CommonClass.getDebugValue())
-                {
-                   
+                {               
                     Logger.debuggingOut.Append("Column,Row,AGERANGEID,Type,a,b,c,beta,delta,control,baseline,incidence,population,prevelance,result\n");
                 }
                    
@@ -3629,7 +3628,6 @@ namespace BenMAP.Configuration
 
                 };
                 //Console.WriteLine("processing column : " + col + " row : " + row);
-                
 
                 if (dicPopulationValue == null || dicPopulationValue.Count == 0 || dicPopulationValue.Sum(p => p.Value) == 0)
                 {
@@ -3637,6 +3635,7 @@ namespace BenMAP.Configuration
                     ////if (CommonClass.getDebugValue() && (CommonClass.debugGridCell = (CommonClass.debugRow == row && CommonClass.debugCol == col)))
                     ////    Logger.debuggingOut.Append(crCalculateValue.Col + "," + crCalculateValue.Row + ",");
                     ////file.Write(crCalculateValue.Col + "," + crCalculateValue.Row + ",");
+                    
                 }
                 else
                 {
