@@ -3634,9 +3634,9 @@ namespace BenMAP.Configuration
                 if (dicPopulationValue == null || dicPopulationValue.Count == 0 || dicPopulationValue.Sum(p => p.Value) == 0)
                 {
                     crCalculateValue.PointEstimate = 0;
-                    if (CommonClass.getDebugValue() && (CommonClass.debugGridCell = (CommonClass.debugRow == row && CommonClass.debugCol == col)))
-                        Logger.debuggingOut.Append(crCalculateValue.Col + "," + crCalculateValue.Row + ",");
-                    //file.Write(crCalculateValue.Col + "," + crCalculateValue.Row + ",");
+                    ////if (CommonClass.getDebugValue() && (CommonClass.debugGridCell = (CommonClass.debugRow == row && CommonClass.debugCol == col)))
+                    ////    Logger.debuggingOut.Append(crCalculateValue.Col + "," + crCalculateValue.Row + ",");
+                    ////file.Write(crCalculateValue.Col + "," + crCalculateValue.Row + ",");
                 }
                 else
                 {
@@ -3674,7 +3674,7 @@ namespace BenMAP.Configuration
                         crCalculateValue.Baseline = 0;
                         if (CommonClass.getDebugValue() && (CommonClass.debugGridCell = (CommonClass.debugRow == row && CommonClass.debugCol == col)))
                             Logger.debuggingOut.Append(crCalculateValue.Col + "," + crCalculateValue.Row + ",");
-                           // file.Write(crCalculateValue.Col + "," + "Row:" + crCalculateValue.Row + ",");
+
                     }
                     else
                     {
@@ -3709,8 +3709,8 @@ namespace BenMAP.Configuration
                 else
                 {
                     crCalculateValue.Baseline = crCalculateValue.PointEstimate;
-                    if (CommonClass.getDebugValue() && (CommonClass.debugGridCell = (CommonClass.debugRow == row && CommonClass.debugCol == col)))
-                        Logger.debuggingOut.Append(crCalculateValue.Col + "," + crCalculateValue.Row + ",");
+                    //if (CommonClass.getDebugValue() && (CommonClass.debugGridCell = (CommonClass.debugRow == row && CommonClass.debugCol == col)))
+                    //    Logger.debuggingOut.Append(crCalculateValue.Col + "," + crCalculateValue.Row + ",");
                 }
                 crCalculateValue.LstPercentile = new List<float>();
                 if (lhsDesignResult != null)
@@ -3736,8 +3736,6 @@ namespace BenMAP.Configuration
                                 crSelectFunction.BenMAPHealthImpactFunction.BContantValue, crSelectFunction.BenMAPHealthImpactFunction.CContantValue,
                                   dlhs, baseValue - controlValue, controlValue, baseValue, incidenceValue, k.Value, prevalenceValue, dicSetupVariables) * i365);
                             }
-
-
                         }
                     }
                 }

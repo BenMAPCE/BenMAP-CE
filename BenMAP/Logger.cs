@@ -17,7 +17,7 @@ namespace BenMAP
          **/
         private static string defaultLoggingPath = CommonClass.DataFilePath;
         private static Boolean outputToConsole = false;
-        private static string debugFile = "\\debug.log";
+        private static string debugFile = "\\debug.csv";
         private static string errorFile = "\\error.log";
         private static StreamWriter debugWriter;
         private static string CRLF = "\r\n";

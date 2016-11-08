@@ -48,9 +48,9 @@ namespace BenMAP
         }
         // values used to specify a grid cell to print debugging output for
         
-        public static int debugRow = 97;
-        public static int debugCol = 312;
-        public static bool debugGridCell=false;
+        public static int debugRow = 2;
+        public static int debugCol = 1;
+        public static bool debugGridCell=true;
         public static void DeleteShapeFileName(string FileName)
         {
             if (!File.Exists(FileName)) return;
@@ -604,7 +604,7 @@ namespace BenMAP
                 }
             }
         }
-        public static bool Debug = false;
+       public static bool Debug = false;
 
        public static Boolean getDebugValue()
         {
