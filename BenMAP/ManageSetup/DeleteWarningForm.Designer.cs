@@ -20,7 +20,6 @@ namespace BenMAP
             this.btnContinue = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.lblMessage = new System.Windows.Forms.Label();
-            this.btnNo = new System.Windows.Forms.Button();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.SuspendLayout();
@@ -30,7 +29,7 @@ namespace BenMAP
             this.btnContinue.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnContinue.AutoSize = true;
             this.btnContinue.Font = new System.Drawing.Font("Calibri", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnContinue.Location = new System.Drawing.Point(215, 476);
+            this.btnContinue.Location = new System.Drawing.Point(297, 476);
             this.btnContinue.Name = "btnContinue";
             this.btnContinue.Size = new System.Drawing.Size(206, 27);
             this.btnContinue.TabIndex = 1;
@@ -67,19 +66,6 @@ namespace BenMAP
     "ets will also be permanently removed as well:";
             this.lblMessage.Click += new System.EventHandler(this.lblMessage_Click);
             // 
-            // btnNo
-            // 
-            this.btnNo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnNo.AutoSize = true;
-            this.btnNo.Font = new System.Drawing.Font("Calibri", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnNo.Location = new System.Drawing.Point(429, 476);
-            this.btnNo.Name = "btnNo";
-            this.btnNo.Size = new System.Drawing.Size(75, 27);
-            this.btnNo.TabIndex = 2;
-            this.btnNo.Text = "No";
-            this.btnNo.UseVisualStyleBackColor = true;
-            this.btnNo.Click += new System.EventHandler(this.btnNo_Click);
-            // 
             // richTextBox1
             // 
             this.richTextBox1.Location = new System.Drawing.Point(49, 58);
@@ -113,7 +99,6 @@ namespace BenMAP
             this.Controls.Add(this.richTextBox1);
             this.Controls.Add(this.lblMessage);
             this.Controls.Add(this.btnCancel);
-            this.Controls.Add(this.btnNo);
             this.Controls.Add(this.btnContinue);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -127,7 +112,6 @@ namespace BenMAP
 
 
         private System.Windows.Forms.Button btnContinue;
-        private System.Windows.Forms.Button btnNo;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Label lblMessage;
         private System.Windows.Forms.RichTextBox richTextBox1;

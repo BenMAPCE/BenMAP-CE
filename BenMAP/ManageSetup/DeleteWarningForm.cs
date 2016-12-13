@@ -24,12 +24,9 @@ namespace BenMAP
                     btnContinue.Visible = false;
                     break;
                 case 1:
-                    btnNo.Visible = false;
-                    break;
-                case 2:
                     btnCancel.Visible = false;
                     break;
-                case 3:
+                case 2:
                     break;
             }
         }
@@ -142,30 +139,16 @@ namespace BenMAP
         {
             get
             {
-                _btnSecondText = btnNo.Text;
+                _btnSecondText = btnCancel.Text;
                 return _btnSecondText;
             }
             set
             {
                 _btnSecondText = value;
-                btnNo.Text = _btnSecondText;
+                btnCancel.Text = _btnSecondText;
             }
         }
 
-        private string _btnThirdText;
-        public string BTNThirdText
-        {
-            get
-            {
-                _btnThirdText = btnCancel.Text;
-                return _btnThirdText;
-            }
-            set
-            {
-                _btnThirdText = value;
-                btnCancel.Text = _btnThirdText;
-            }
-        }
 
         private void btnContinue_Click(object sender, EventArgs e)
         {
