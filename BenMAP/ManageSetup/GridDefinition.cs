@@ -39,6 +39,7 @@ namespace BenMAP
         public string _gridIDName = "";
         public string _shapeFileName = "";
         public string _shapeFilePath = "";
+        private int _geoAreaID;
 
         private string _isForceValidate = string.Empty;
         private string _iniPath = string.Empty;
@@ -79,6 +80,14 @@ namespace BenMAP
                         cboGridType.SelectedIndex = 0;
                         lblShapeFileName.Text = obj.ToString();
                     }
+                    //Check to see if a geographic area exists for this grid definition
+                    commandText = string.Format("select GEOGRAPHICAREAID from GEOGRAPHICAREAS WHERE GEOGRAPHICAREANAME = '{0}'", _gridIDName);
+                    _geoAreaID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
+                    if(_geoAreaID > 0)
+                    {
+                        chkBoxUseAsGeographicArea.Checked = true;
+                    }
+
                 }
                 else
                 {
@@ -611,20 +620,44 @@ namespace BenMAP
                         return;
                     }
                 }
-                if (IsEditor)
+                if (IsEditor) // Editing an existing grid definition
                 {
 
                     commandText = string.Format("select Ttype from GridDefinitions where GridDefinitionID=" + _gridID + "");
                     int type = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
 
+                    // If this grid definition is used as a geographic area, make sure the name stays in sync
+                    if(chkBoxUseAsGeographicArea.Checked)
+                    {
+                        if(_geoAreaID == 0) // The option was just enabled
+                        {
+                            commandText = string.Format("select coalesce(max(GEOGRAPHICAREAID),0) from GEOGRAPHICAREAS");
+                            _geoAreaID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText)) + 1;
+                            commandText = string.Format("INSERT INTO GEOGRAPHICAREAS (GeographicAreaID, GeographicAreaName, GridDefinitionID, EntireGridDefinition)  VALUES({0},'{1}',{2},'Y')", _geoAreaID, txtGridID.Text, _gridID);
+                            fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                        }
+                        else // The option was already enabled. Make sure the name is in sync.
+                        {
+                            commandText = string.Format("UPDATE GEOGRAPHICAREAS SET GeographicAreaName = '{0}' WHERE GEOGRAPHICAREAID = {1}", txtGridID.Text, _geoAreaID);
+                            fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                        }
+                    }
+                    else // The option may have been disabled. Clean up.
+                    {
+                        commandText = string.Format("DELETE FROM GEOGRAPHICAREAS WHERE GEOGRAPHICAREAID = {0}", _geoAreaID);
+                        fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                    }
+
+
                     switch (_gridType)
                     {
                         case 1:
-                            if (_shapeFilePath == string.Empty)
+                            if (_shapeFilePath == string.Empty) // The user may have just updated the name
                             {
-                                commandText = string.Format("Update GridDefinitions set GridDefinitionName='{0}'WHERE GridDefinitionID={1}", txtGridID.Text, _gridID);
+                                commandText = string.Format("Update GridDefinitions set GridDefinitionName='{0}' WHERE GridDefinitionID={1}", txtGridID.Text, _gridID);
                                 fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
-                                this.DialogResult = DialogResult.OK; return;
+                                this.DialogResult = DialogResult.OK;
+                                return;
                             }
                             if (type == 1)
                             {
@@ -770,7 +803,7 @@ namespace BenMAP
                     }
                 }
 
-                else
+                else // NEW GRID DEFINITION
                 {
                     //ensure shapefile is correctly formatted.
                     if(_gridType != REGULAR_GRID)
@@ -838,7 +871,7 @@ namespace BenMAP
                                 }
                                 fs.SaveAs(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.ManageSetup.SetupName + "\\" + _shapeFileName + ".shp", true);
                                 _filePath = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.ManageSetup.SetupName + "\\" + _shapeFileName + ".shp";
-                                
+
                                 //update metadata, we have to do this here in case the file is renamed above
                                 _metadataObj.FileName = _shapeFileName;
                                 _metadataObj.DatasetId = _gridID; //ensure datasetid of metadata obj is griddefinitionid
@@ -846,6 +879,14 @@ namespace BenMAP
                             finally
                             {
                                 fs.Close();
+                            }
+                            //If this new grid definition is to be used as a geographic area, add the necessary records
+                            if (chkBoxUseAsGeographicArea.Checked)
+                            {
+                                commandText = string.Format("select coalesce(max(GEOGRAPHICAREAID),0) from GEOGRAPHICAREAS");
+                                _geoAreaID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText)) + 1;
+                                commandText = string.Format("INSERT INTO GEOGRAPHICAREAS (GeographicAreaID, GeographicAreaName, GridDefinitionID, EntireGridDefinition)  VALUES({0},'{1}',{2},'Y')", _geoAreaID, txtGridID.Text, _gridID);
+                                fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                             }
                             break;
                         case 0:
@@ -1326,5 +1367,9 @@ namespace BenMAP
 
         }
 
+        private void chkBoxCreatePercentage_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }

@@ -21,12 +21,12 @@ namespace BenMAP
             this.grpPictureView = new System.Windows.Forms.GroupBox();
             this.mainMap = new DotSpatial.Controls.Map();
             this.grpGridDefinition = new System.Windows.Forms.GroupBox();
+            this.chkBoxUseAsGeographicArea = new System.Windows.Forms.CheckBox();
             this.btn_browsePopRaster = new System.Windows.Forms.Button();
             this.txtb_popGridLoc = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.btnViewMetadata = new System.Windows.Forms.Button();
             this.picCRHelp = new System.Windows.Forms.PictureBox();
-            this.label3 = new System.Windows.Forms.Label();
             this.chkBoxCreatePercentage = new System.Windows.Forms.CheckBox();
             this.cboGridType = new System.Windows.Forms.ComboBox();
             this.lblGridType = new System.Windows.Forms.Label();
@@ -77,9 +77,9 @@ namespace BenMAP
             // 
             // grpPictureView
             // 
-            this.grpPictureView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.grpPictureView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.grpPictureView.Controls.Add(this.mainMap);
             this.grpPictureView.Location = new System.Drawing.Point(363, 14);
             this.grpPictureView.Name = "grpPictureView";
@@ -109,18 +109,19 @@ namespace BenMAP
             this.mainMap.SelectionEnabled = true;
             this.mainMap.Size = new System.Drawing.Size(420, 460);
             this.mainMap.TabIndex = 8;
+            this.mainMap.ZoomOutFartherThanMaxExtent = false;
             // 
             // grpGridDefinition
             // 
-            this.grpGridDefinition.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)));
+            this.grpGridDefinition.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.grpGridDefinition.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.grpGridDefinition.Controls.Add(this.chkBoxUseAsGeographicArea);
             this.grpGridDefinition.Controls.Add(this.btn_browsePopRaster);
             this.grpGridDefinition.Controls.Add(this.txtb_popGridLoc);
             this.grpGridDefinition.Controls.Add(this.label4);
             this.grpGridDefinition.Controls.Add(this.btnViewMetadata);
             this.grpGridDefinition.Controls.Add(this.picCRHelp);
-            this.grpGridDefinition.Controls.Add(this.label3);
             this.grpGridDefinition.Controls.Add(this.chkBoxCreatePercentage);
             this.grpGridDefinition.Controls.Add(this.cboGridType);
             this.grpGridDefinition.Controls.Add(this.lblGridType);
@@ -135,6 +136,19 @@ namespace BenMAP
             this.grpGridDefinition.TabStop = false;
             this.grpGridDefinition.Text = "Grid Definition";
             // 
+            // chkBoxUseAsGeographicArea
+            // 
+            this.chkBoxUseAsGeographicArea.AutoSize = true;
+            this.chkBoxUseAsGeographicArea.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.chkBoxUseAsGeographicArea.Location = new System.Drawing.Point(9, 443);
+            this.chkBoxUseAsGeographicArea.Name = "chkBoxUseAsGeographicArea";
+            this.chkBoxUseAsGeographicArea.Size = new System.Drawing.Size(295, 32);
+            this.chkBoxUseAsGeographicArea.TabIndex = 12;
+            this.chkBoxUseAsGeographicArea.Text = "Use this grid definition as a geographic area that \r\ncan be assigned to health im" +
+    "pact functions";
+            this.chkBoxUseAsGeographicArea.UseVisualStyleBackColor = true;
+            this.chkBoxUseAsGeographicArea.CheckedChanged += new System.EventHandler(this.chkBoxCreatePercentage_CheckedChanged);
+            // 
             // btn_browsePopRaster
             // 
             this.btn_browsePopRaster.Location = new System.Drawing.Point(266, 114);
@@ -143,8 +157,8 @@ namespace BenMAP
             this.btn_browsePopRaster.TabIndex = 11;
             this.btn_browsePopRaster.Text = "Browse . .";
             this.btn_browsePopRaster.UseVisualStyleBackColor = true;
-            this.btn_browsePopRaster.Click += new System.EventHandler(this.btn_browsePopRaster_Click);
             this.btn_browsePopRaster.Visible = false;
+            this.btn_browsePopRaster.Click += new System.EventHandler(this.btn_browsePopRaster_Click);
             // 
             // txtb_popGridLoc
             // 
@@ -190,27 +204,18 @@ namespace BenMAP
             this.picCRHelp.Click += new System.EventHandler(this.picCRHelp_Click);
             this.picCRHelp.MouseHover += new System.EventHandler(this.picCRHelp_MouseHover);
             // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(21)))), ((int)(((byte)(21)))));
-            this.label3.Location = new System.Drawing.Point(23, 442);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(287, 28);
-            this.label3.TabIndex = 6;
-            this.label3.Text = "Selecting this option will substantially increase the\r\ntime required to import th" +
-                "e shapefile.";
-            // 
             // chkBoxCreatePercentage
             // 
             this.chkBoxCreatePercentage.AutoSize = true;
+            this.chkBoxCreatePercentage.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
             this.chkBoxCreatePercentage.Location = new System.Drawing.Point(9, 407);
             this.chkBoxCreatePercentage.Name = "chkBoxCreatePercentage";
             this.chkBoxCreatePercentage.Size = new System.Drawing.Size(296, 32);
             this.chkBoxCreatePercentage.TabIndex = 5;
             this.chkBoxCreatePercentage.Text = "Create crosswalk between this grid definition and\r\nall other grid definitions in " +
-                "this setup.";
+    "this setup.";
             this.chkBoxCreatePercentage.UseVisualStyleBackColor = true;
+            this.chkBoxCreatePercentage.CheckedChanged += new System.EventHandler(this.chkBoxCreatePercentage_CheckedChanged);
             // 
             // cboGridType
             // 
@@ -517,8 +522,8 @@ namespace BenMAP
             // 
             // grpCancelOK
             // 
-            this.grpCancelOK.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.grpCancelOK.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.grpCancelOK.Controls.Add(this.lblprogress);
             this.grpCancelOK.Controls.Add(this.progressBar1);
             this.grpCancelOK.Controls.Add(this.btnCancel);
@@ -542,8 +547,8 @@ namespace BenMAP
             // 
             // progressBar1
             // 
-            this.progressBar1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.progressBar1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.progressBar1.Location = new System.Drawing.Point(146, 26);
             this.progressBar1.Name = "progressBar1";
             this.progressBar1.Size = new System.Drawing.Size(460, 10);
@@ -643,7 +648,6 @@ namespace BenMAP
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ProgressBar progressBar1;
         private System.Windows.Forms.Label lblprogress;
-        private System.Windows.Forms.Label label3;
         private System.Windows.Forms.CheckBox chkBoxCreatePercentage;
         private System.Windows.Forms.PictureBox picCRHelp;
         private System.Windows.Forms.ToolTip toolTip1;
@@ -651,5 +655,6 @@ namespace BenMAP
         private System.Windows.Forms.Button btn_browsePopRaster;
         private System.Windows.Forms.TextBox txtb_popGridLoc;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.CheckBox chkBoxUseAsGeographicArea;
     }
 }
