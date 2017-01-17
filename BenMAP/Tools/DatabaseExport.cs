@@ -151,8 +151,6 @@ namespace BenMAP
                     {
                         // These are not yet supported.  Inform the user and return.
                         case "Pollutant":
-                        case "Health Impact Functions":
-                        case "Variable Datasets":
                         case "Inflation Datasets":
                         case "Valuation Functions":
                         case "Income Growth Adjustments":
@@ -167,9 +165,11 @@ The following types are currently supported:
 
                         // These are supported. Just continue on.
                         case "Grid Definitions":
+                        case "Health Impact Functions":
                         case "Incidence/Prevalence Datasets":
                         case "Monitor Datasets":
                         case "Population Datasets":
+                        case "Variable Datasets":
                             break;
 
                         // The user managed to select something we can't handle here.  This shouldn't happen.
@@ -272,9 +272,13 @@ The following types are currently supported:
                     break;
                 case "Health Impact Functions":
                     _setupid_name = "setupid=" + Convert.ToString(_setupid) + " and " + "CrFunctionDatasetName=" + "'" + _Name + "'";
+                    msg = "The health impact function dataset file has been exported successfully.";
+                    writeCRFunctionFile(_setupid_name, fb, targetPath);
                     break;
                 case "Variable Datasets":
                     _setupid_name = "setupid=" + Convert.ToString(_setupid) + " and " + "SetupvariableDatasetName=" + "'" + _Name + "'";
+                    msg = "The variable dataset file has been exported successfully.";
+                    writeVariableFile(_setupid_name, fb, targetPath);
                     break;
                 case "Inflation Datasets":
                     _setupid_name = "setupid=" + Convert.ToString(_setupid) + " and " + "InflationDatasetName=" + "'" + _Name + "'";
@@ -1768,7 +1772,7 @@ The following types are currently supported:
             }
         }
 
-        private void writeIncidenceFile(string setupid, ESIL.DBUtility.FireBirdHelperBase fb, string fileName)
+        private void writeIncidenceFile(string sqlWhereClause, ESIL.DBUtility.FireBirdHelperBase fb, string fileName)
         {
             try
             {
@@ -1777,7 +1781,7 @@ The following types are currently supported:
                 this.Refresh();
 
                 string commandText = string.Empty;
-                commandText = string.Format("select count(*) from IncidenceEntries where IncidenceRateID in (select IncidenceRateID  from IncidenceRates where IncidenceDatasetID in (select IncidenceDatasetID from IncidenceDatasets where {0}))", setupid);
+                commandText = string.Format("select count(*) from IncidenceEntries where IncidenceRateID in (select IncidenceRateID  from IncidenceRates where IncidenceDatasetID in (select IncidenceDatasetID from IncidenceDatasets where {0}))", sqlWhereClause);
                 Int32 count = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
                 pBarExport.Maximum = count;
                 lbProcess.Refresh();
@@ -1811,7 +1815,7 @@ The following types are currently supported:
                     join RACES e on a.RACEID = e.RACEID
                     join GENDERS f on a.GENDERID = f.GENDERID
                     join ETHNICITY g on a.ETHNICITYID = g.ETHNICITYID
-                    where a.IncidenceDatasetID in (select IncidenceDatasetID from IncidenceDatasets where {0})", setupid);
+                    where a.IncidenceDatasetID in (select IncidenceDatasetID from IncidenceDatasets where {0})", sqlWhereClause);
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
 
                 lbProcess.Text = "Exporting File...";
@@ -1843,7 +1847,7 @@ The following types are currently supported:
             }
         }
 
-        private void writePopulationFile(string setupid, ESIL.DBUtility.FireBirdHelperBase fb, string fileName)
+        private void writePopulationFile(string sqlWhereClause, ESIL.DBUtility.FireBirdHelperBase fb, string fileName)
         {
             try
             {
@@ -1855,7 +1859,7 @@ The following types are currently supported:
                 commandText = string.Format(@"select count(*)
                     from POPULATIONDATASETS a
                     join POPULATIONENTRIES b on a.POPULATIONDATASETID = b.POPULATIONDATASETID
-                    where ({0})", setupid);
+                    where ({0})", sqlWhereClause);
                 Int32 count = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
                 pBarExport.Maximum = count;
                 lbProcess.Refresh();
@@ -1884,7 +1888,7 @@ The following types are currently supported:
                 join GENDERS d on b.GENDERID = d.GENDERID
                 join AGERANGES e on b.AGERANGEID = e.AGERANGEID
                 join ETHNICITY f on b.ETHNICITYID = f.ETHNICITYID
-                where {0}", setupid);
+                where {0}", sqlWhereClause);
 
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
 
@@ -1921,7 +1925,7 @@ The following types are currently supported:
             return Path.Combine(fDir, String.Concat(fName, suffix, fExt));
         }
 
-        private int writeMonitorFile(string setupid, ESIL.DBUtility.FireBirdHelperBase fb, string fileName)
+        private int writeMonitorFile(string sqlWhereClause, ESIL.DBUtility.FireBirdHelperBase fb, string fileName)
         {
             try
             {
@@ -1937,7 +1941,7 @@ The following types are currently supported:
                 join POLLUTANTS c on a.pollutantid = c.pollutantid
                 where a.MonitorID in (select MonitorID from Monitors where MonitorDatasetID in (select MonitorDatasetID from MonitorDataSets where {0}))
                 group by 1, 2, 3
-                order by 2, 3", setupid);
+                order by 2, 3", sqlWhereClause);
 
                 FirebirdSql.Data.FirebirdClient.FbDataReader fbGroupDataReader = fb.ExecuteReader(CommonClass.Connection, CommandType.Text, commandText);
                 while (fbGroupDataReader.Read())
@@ -1974,7 +1978,7 @@ The following types are currently supported:
                     left join SEASONALMETRICS d on b.SeasonalMetricID = d.SeasonalMetricID
                     where a.MonitorID in (select MonitorID from Monitors where MonitorDatasetID in (select MonitorDatasetID from MonitorDataSets where {0}))
                     and a.pollutantid = {1} 
-                    and b.yyear = {2}", setupid, Convert.ToInt32(fbGroupDataReader["pollutantid"]), Convert.ToInt32(fbGroupDataReader["yyear"]));
+                    and b.yyear = {2}", sqlWhereClause, Convert.ToInt32(fbGroupDataReader["pollutantid"]), Convert.ToInt32(fbGroupDataReader["yyear"]));
 
                     FirebirdSql.Data.FirebirdClient.FbDataReader fbDataReader = fb.ExecuteReader(CommonClass.Connection, CommandType.Text, commandText);
                     Byte[] blob = null;
@@ -2014,7 +2018,7 @@ The following types are currently supported:
             }
         }
 
-        private void writeCRFunctionFile(string setupid, ESIL.DBUtility.FireBirdHelperBase fb, string fileName)
+        private void writeCRFunctionFile(string sqlWhereClause, ESIL.DBUtility.FireBirdHelperBase fb, string fileName)
         {
             try
             {
@@ -2023,7 +2027,8 @@ The following types are currently supported:
                 this.Refresh();
 
                 string commandText = string.Empty;
-                commandText = string.Format("select count(*) from CrFunctionDatasets where { 0}", setupid);
+                //TODO: Fix this.  The count should be fore detail records
+                commandText = string.Format("select count(*) from CrFunctionDatasets where {0}", sqlWhereClause);
                 Int32 count = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
                 pBarExport.Maximum = count;
                 lbProcess.Refresh();
@@ -2066,25 +2071,29 @@ The following types are currently supported:
                 dtOut.Columns.Add("Prevalence DataSet", typeof(string));
                 dtOut.Columns.Add("Variable DataSet", typeof(string));
 
+                commandText = string.Format(@"
+select b.ENDPOINTGROUPNAME,c.ENDPOINTNAME,d.POLLUTANTNAME
+, e.METRICNAME, f.SEASONALMETRICNAME, Metricstatistic, Author, Yyear, Location
+, Otherpollutants, Qualifier, Reference,Race, Gender, Startage, Endage
+, g.FUNCTIONALFORMTEXT FUNCTIONALFORM,h_i.INCIDENCEDATASETNAME INCIDENCEDATASET, h_p.INCIDENCEDATASETNAME PREVALENCEDATASET,i.SETUPVARIABLEDATASETNAME
+, Beta,Distbeta,P1Beta,P2Beta,A,Namea,B,Nameb, C,Namec
+, j.FUNCTIONALFORMTEXT BASELINEFUNCTIONALFORM, Ethnicity,l.LOCATIONTYPENAME 
+from CRFunctions a
+join ENDPOINTGROUPS b on a.ENDPOINTGROUPID = b.ENDPOINTGROUPID
+join ENDPOINTS c on a.ENDPOINTID = c.ENDPOINTID
+join POLLUTANTS d on a.POLLUTANTID = d.POLLUTANTID
+join METRICS e on a.METRICID = e.METRICID
+left join SEASONALMETRICS f on a.SEASONALMETRICID = f.SEASONALMETRICID
+join FUNCTIONALFORMS g on a.FUNCTIONALFORMID = g.FUNCTIONALFORMID
+left join INCIDENCEDATASETS h_i on a.INCIDENCEDATASETID = h_i.INCIDENCEDATASETID
+left join INCIDENCEDATASETS h_p on a.PREVALENCEDATASETID = h_p.INCIDENCEDATASETID
+left join SETUPVARIABLEDATASETS i on a.VARIABLEDATASETID = i.SETUPVARIABLEDATASETID
+join BASELINEFUNCTIONALFORMS j on a.BASELINEFUNCTIONALFORMID = j.FUNCTIONALFORMID
+left join LOCATIONTYPE l on a.LOCATIONTYPEID = l.LOCATIONTYPEID
+where crfunctiondatasetid in (select crfunctiondatasetid from crFunctionDatasets where {0})", sqlWhereClause);
+                // setupid=1 and CrFunctionDatasetName='EPA Standard Health Functions
+                //crfunctiondatasetid in (select crfunctiondatasetid from crFunctionDatasets where setupid=1 and crfunctiondatasetname = 'Expert PM25 Functions'
 
-                //TODO: Add in the query and update the fields in the loop
-
-
-                commandText = string.Format(@"select c.RACENAME
-                    , d.GENDERNAME
-                    , e.AGERANGENAME
-                    , f.ETHNICITYNAME
-                    , b.CCOLUMN
-                    , b.ROW
-                    , b.YYEAR
-                    , b.VVALUE
-                from POPULATIONDATASETS a
-                join POPULATIONENTRIES b on a.POPULATIONDATASETID = b.POPULATIONDATASETID
-                join RACES c on b.raceid = c.RACEID
-                join GENDERS d on b.GENDERID = d.GENDERID
-                join AGERANGES e on b.AGERANGEID = e.AGERANGEID
-                join ETHNICITY f on b.ETHNICITYID = f.ETHNICITYID
-                where {0}", setupid);
 
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
 
@@ -2094,14 +2103,39 @@ The following types are currently supported:
                 foreach (DataRow dr in ds.Tables[0].Rows)
                 {
                     DataRow newdr = dtOut.NewRow();
-                    newdr["Race"] = dr["RACENAME"];
-                    newdr["Gender"] = dr["GENDERNAME"];
-                    newdr["AgeRange"] = dr["AGERANGENAME"];
-                    newdr["Ethnicity"] = dr["ETHNICITYNAME"];
-                    newdr["Row"] = Convert.ToInt32(dr["ROW"]);
-                    newdr["Column"] = Convert.ToInt32(dr["CCOLUMN"]);
-                    newdr["Year"] = Convert.ToInt32(dr["YYEAR"]);
-                    newdr["Population"] = Convert.ToDouble(dr["VVALUE"]);
+                    newdr["Endpoint Group"] = dr["ENDPOINTGROUPNAME"];
+                    newdr["Endpoint"] = dr["ENDPOINTNAME"];
+                    newdr["Pollutant"] = dr["POLLUTANTNAME"];
+                    newdr["Metric"] = dr["METRICNAME"];
+                    newdr["Seasonal Metric"] = dr["SEASONALMETRICNAME"];
+                    newdr["Metric Statistic"] = OutputCommonClass.getMetricStastic(Convert.ToInt32(dr["Metricstatistic"]));
+                    newdr["Study Author"] = dr["Author"];
+                    newdr["Study Year"] = dr["Yyear"];
+                    newdr["Study Location Type"] = dr["LOCATIONTYPENAME"];
+                    newdr["Study Location"] = dr["Location"];
+                    newdr["Other Pollutants"] = dr["Otherpollutants"];
+                    newdr["Qualifier"] = dr["Qualifier"];
+                    newdr["Reference"] = dr["Reference"];
+                    newdr["Race"] = dr["Race"];
+                    newdr["Ethnicity"] = dr["Ethnicity"];
+                    newdr["Gender"] = dr["Gender"];
+                    newdr["Start Age"] = dr["Startage"];
+                    newdr["End Age"] = dr["Endage"];
+                    newdr["Function"] = dr["FUNCTIONALFORM"];
+                    newdr["Baseline Function"] = dr["BASELINEFUNCTIONALFORM"];
+                    newdr["Beta"] = dr["Beta"];
+                    newdr["Distribution Beta"] = dr["Distbeta"];
+                    newdr["Parameter 1 Beta"] = dr["P1Beta"];
+                    newdr["Parameter 2 Beta"] = dr["P2Beta"];
+                    newdr["A"] = dr["A"];
+                    newdr["Name A"] = dr["Namea"];
+                    newdr["B"] = dr["B"];
+                    newdr["Name B"] = dr["Nameb"];
+                    newdr["C"] = dr["C"];
+                    newdr["Name C"] = dr["Namec"];
+                    newdr["Incidence DataSet"] = dr["INCIDENCEDATASET"];
+                    newdr["Prevalence DataSet"] = dr["PREVALENCEDATASET"];
+                    newdr["Variable DataSet"] = dr["SETUPVARIABLEDATASETNAME"];
                     dtOut.Rows.Add(newdr);
                 }
 
@@ -2113,6 +2147,60 @@ The following types are currently supported:
                 Logger.LogError(ex.Message);
             }
         }
+
+        private void writeVariableFile(string sqlWhereClause, ESIL.DBUtility.FireBirdHelperBase fb, string fileName)
+        {
+            try
+            {
+
+                lbProcess.Text = "Querying Database...";
+                this.Refresh();
+
+                string commandText = string.Empty;
+
+                //TODO: Fix this to include the variable datasets, variables, and the geographic variables. Then, we'll have to loop over all the distinct variables and generate a file for each.  Similar to what we did for monitors
+
+                commandText = string.Format(@"select count(*)
+                    from SETUPVARIABLEDATASETS a
+                    join SETUPGEOGRAPHICVARIABLES b on a.SETUPVARIABLEDATASETID = b.SETUPVARIABLEID
+                    where ({0})", sqlWhereClause);
+                Int32 count = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
+                pBarExport.Maximum = count;
+                lbProcess.Refresh();
+
+                DataTable dtOut = new DataTable();
+                dtOut.Columns.Add("Column", typeof(int));
+                dtOut.Columns.Add("Row", typeof(int));
+                dtOut.Columns.Add("Variable", typeof(double));
+
+                commandText = string.Format(@"select Ccolumn, Row, VValue
+                    from SETUPVARIABLEDATASETS a
+                    join SETUPGEOGRAPHICVARIABLES b on a.SETUPVARIABLEDATASETID = b.SETUPVARIABLEID
+                    where {0}", sqlWhereClause);
+
+                DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
+
+                lbProcess.Text = "Exporting File...";
+                this.Refresh();
+
+                foreach (DataRow dr in ds.Tables[0].Rows)
+                {
+                    DataRow newdr = dtOut.NewRow();
+                    newdr["Column"] = Convert.ToInt32(dr["Ccolumn"]);
+                    newdr["Row"] = Convert.ToDouble(dr["Row"]);
+                    newdr["Variable"] = Convert.ToDouble(dr["VValue"]);
+                    dtOut.Rows.Add(newdr);
+                }
+
+                SaveCSVOrExcel(dtOut, fileName);
+            }
+            catch (Exception ex)
+            {
+                errorOccur = true;
+                Logger.LogError(ex.Message);
+            }
+        }
+
 
         public void SaveCSVOrExcel(DataTable dt, string fileName)
         {
@@ -2149,11 +2237,15 @@ The following types are currently supported:
                 data = "";
                 for (int j = 0; j < dt.Columns.Count; j++)
                 {
+                    // If the value contains a comma, wrap it in quotes
+                    // If the value contains a double-quote, escape it by doubling it
                     if (dt.Rows[i][j].ToString().Contains(","))
-                    { data += "\"" + dt.Rows[i][j].ToString() + "\""; }
+                    {
+                        data += "\"" + dt.Rows[i][j].ToString().Replace("\"", "\"\"") + "\"";
+                    }
                     else
                     {
-                        data += dt.Rows[i][j].ToString();
+                        data += dt.Rows[i][j].ToString().Replace("\"", "\"\"");
                     }
                     if (j < dt.Columns.Count - 1)
                     {
