@@ -62,8 +62,8 @@ namespace BenMAP
             this.lblMessage.Name = "lblMessage";
             this.lblMessage.Size = new System.Drawing.Size(590, 46);
             this.lblMessage.TabIndex = 0;
-            this.lblMessage.Text = "If you remove Grid Definition \"Detroit Blocks 3km\", the following assocated datas" +
-    "ets will also be permanently removed as well:";
+            this.lblMessage.Text = "If you remove Grid Definition \"Detroit Blocks 3km\", the following associated data" +
+    "sets will also be permanently removed as well:";
             this.lblMessage.Click += new System.EventHandler(this.lblMessage_Click);
             // 
             // richTextBox1

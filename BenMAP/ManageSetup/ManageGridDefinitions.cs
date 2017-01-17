@@ -225,7 +225,7 @@ namespace BenMAP
                 DialogResult rtn;
                 DeleteWarningForm deleteWarningForm = new DeleteWarningForm(2);
                 deleteWarningForm.WarningText = deleteWarningText;
-                deleteWarningForm.Message = "If you remove Grid Definition \"" + lstAvailableGrid.GetItemText(lstAvailableGrid.SelectedItem) + "\", the following assocated datasets will also be permanently removed as well:";
+                deleteWarningForm.Message = "If you remove Grid Definition \"" + lstAvailableGrid.GetItemText(lstAvailableGrid.SelectedItem) + "\", the following associated datasets will also be permanently removed as well:";
                 rtn = deleteWarningForm.ShowDialog();
                 if (rtn == DialogResult.Cancel)
                 { return; }
