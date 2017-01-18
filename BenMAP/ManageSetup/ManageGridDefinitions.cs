@@ -165,7 +165,7 @@ namespace BenMAP
             string commandText = string.Empty;
             if (lstAvailableGrid.SelectedItem != null)
             {
-                commandText = "select IncidenceDataSetName from IncidenceDataSets where GridDefinitionID=" + _gridDefinitionID + " ";
+                commandText = "select IncidenceDataSetName from IncidenceDataSets where GridDefinitionID=" + _gridDefinitionID + " ORDER BY IncidenceDataSetName";
                 object obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
                 String associatedIncidenceDatasetName = "";
                 if (obj != null)
@@ -179,7 +179,7 @@ namespace BenMAP
 
                     }
                 }
-                commandText = "select PopulationDataSetName from PopulationDataSets where GridDefinitionID=" + _gridDefinitionID + " ";
+                commandText = "select PopulationDataSetName from PopulationDataSets where GridDefinitionID=" + _gridDefinitionID + " ORDER BY PopulationDataSetName";
                 obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
                 String associatedPopDatasetName = "";
                 if (obj != null)
@@ -187,7 +187,7 @@ namespace BenMAP
                     System.Data.DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
                     for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
                     {
-                        DataRow dr = ds.Tables[0].Rows[0];
+                        DataRow dr = ds.Tables[0].Rows[i];
 
                         associatedPopDatasetName = associatedPopDatasetName + Convert.ToString(dr[0]) + "\n                  ";
 
@@ -198,11 +198,11 @@ namespace BenMAP
                 String associatedVariableDatasetName = "";
                 if (obj != null)
                 {
-                    commandText = "SELECT DISTINCT b.SETUPVARIABLEDATASETNAME FROM SETUPVARIABLES a INNER JOIN SETUPVARIABLEDATASETS b ON a.SETUPVARIABLEDATASETID = b.SETUPVARIABLEDATASETID where a.GridDefinitionID =" + _gridDefinitionID + " ";
+                    commandText = "SELECT DISTINCT b.SETUPVARIABLEDATASETNAME FROM SETUPVARIABLES a INNER JOIN SETUPVARIABLEDATASETS b ON a.SETUPVARIABLEDATASETID = b.SETUPVARIABLEDATASETID where a.GridDefinitionID =" + _gridDefinitionID + " ORDER BY b.SETUPVARIABLEDATASETNAME";
                     System.Data.DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
                     for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
                     {
-                        DataRow dr = ds.Tables[0].Rows[0];
+                        DataRow dr = ds.Tables[0].Rows[i];
 
                         associatedVariableDatasetName = associatedVariableDatasetName + Convert.ToString(dr[0]) + "\n                  ";
                     }
@@ -211,23 +211,31 @@ namespace BenMAP
                 String deleteWarningText = "";
                 if (associatedIncidenceDatasetName != "")
                 {
-                    deleteWarningText = "Incidence Datasets:"+ "\n                  " + associatedIncidenceDatasetName;
+                    deleteWarningText = "Incidence Datasets:"+ "\n                  " + associatedIncidenceDatasetName +"\n";
                 }
                 if (associatedPopDatasetName != "")
                 {
-                    deleteWarningText = deleteWarningText + "\n" + "Population Datasets:" + "\n                  " + associatedPopDatasetName;
+                    deleteWarningText = deleteWarningText  + "Population Datasets:" + "\n                  " + associatedPopDatasetName + "\n";
                 }
                 if (associatedVariableDatasetName != "")
                 {
-                    deleteWarningText = deleteWarningText + "\n" + "Variable Datasets:" + "\n                  " + associatedVariableDatasetName;
+                    deleteWarningText = deleteWarningText  + "Variable Datasets:" + "\n                  " + associatedVariableDatasetName;
                 } 
 
                 DialogResult rtn;
-                DeleteWarningForm deleteWarningForm = new DeleteWarningForm(2);
-                deleteWarningForm.WarningText = deleteWarningText;
-                deleteWarningForm.Message = "If you remove Grid Definition \"" + lstAvailableGrid.GetItemText(lstAvailableGrid.SelectedItem) + "\", the following associated datasets will also be permanently removed as well:";
-                rtn = deleteWarningForm.ShowDialog();
-                if (rtn == DialogResult.Cancel)
+                if (deleteWarningText == "")
+                {
+                    string msg = string.Format("Delete '{0} grid definitions?", lstAvailableGrid.GetItemText(lstAvailableGrid.SelectedItem));
+                    rtn = MessageBox.Show(msg, "Confirm Deletion", MessageBoxButtons.YesNo);
+                }
+                else
+                {
+                    DeleteWarningForm deleteWarningForm = new DeleteWarningForm(2);
+                    deleteWarningForm.WarningText = deleteWarningText;
+                    deleteWarningForm.Message = "If you remove Grid Definition \"" + lstAvailableGrid.GetItemText(lstAvailableGrid.SelectedItem) + "\", the following associated datasets will also be permanently removed as well:";
+                    rtn = deleteWarningForm.ShowDialog();
+                }
+                if (rtn == DialogResult.Cancel || rtn == DialogResult.No)
                 { return; }
 
                 if (rtn == DialogResult.Yes)
