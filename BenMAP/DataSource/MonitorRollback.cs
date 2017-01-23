@@ -63,7 +63,18 @@ namespace BenMAP
                 dsGrid = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                 cboRollbackGridType.DataSource = dsGrid.Tables[0];
                 cboRollbackGridType.DisplayMember = "GridDefinitionName";
-                cboRollbackGridType.SelectedIndex = -1;
+
+                //dpa 1/12/2017
+                //Let's save some clicks by defaulting to the first option in the list 
+                //cboRollbackGridType.SelectedIndex = -1;
+                if (cboRollbackGridType.Items.Count > 0)
+                {
+                    cboRollbackGridType.SelectedIndex = 0;
+                }
+                else
+                {
+                    cboRollbackGridType.SelectedIndex = -1;
+                }
 
                 commandText = string.Format("select MonitorDataSetID, MonitorDataSetName from MonitorDataSets where SetupID={0}  and MonitorDataSetID in (select distinct MonitorDataSetID from monitors where pollutantID={1}) order by MonitorDataSetName asc", CommonClass.MainSetup.SetupID, _bgc.Pollutant.PollutantID);
                 ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
@@ -246,7 +257,11 @@ namespace BenMAP
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                 cboMonitorLibraryYear.DataSource = ds.Tables[0];
                 cboMonitorLibraryYear.DisplayMember = "Yyear";
-                cboMonitorLibraryYear.SelectedIndex = -1;
+
+                //dpa 1/12/2017 
+                //Default the combo box to the earliest year. Could be the later year too, just need something to show up.
+                cboMonitorLibraryYear.SelectedIndex = cboMonitorLibraryYear.Items.Count - 1;
+                //cboMonitorLibraryYear.SelectedIndex = -1;
             }
             catch (Exception ex)
             {

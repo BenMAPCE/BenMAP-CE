@@ -65,17 +65,18 @@ namespace BenMAP
                         mainMap.Layers.Add(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (_monitorRollbackLine.RollbackGrid as RegularGrid).ShapefileName + ".shp");
                     }
                 }
-                PolygonLayer playerRegion = mainMap.Layers[mainMap.Layers.Count - 1] as PolygonLayer;
-                playerRegion.DataSet.DataTable.Columns.Add("MyColorIndex", typeof(int));
-                for (int i = 0; i < playerRegion.DataSet.DataTable.Rows.Count; i++)
+                PolygonLayer myLayer = mainMap.Layers[mainMap.Layers.Count - 1] as PolygonLayer;
+                myLayer.DataSet.DataTable.Columns.Add("MyColorIndex", typeof(int));
+                for (int i = 0; i < myLayer.DataSet.DataTable.Rows.Count; i++)
                 {
-                    playerRegion.DataSet.DataTable.Rows[i]["MyColorIndex"] = i;
-                    dicMyColorIndex.Add(Convert.ToInt32(playerRegion.DataSet.DataTable.Rows[i]["COL"]).ToString() + "," + Convert.ToInt32(playerRegion.DataSet.DataTable.Rows[i]["ROW"]).ToString(), i);
+                    //dpa 1/12/2017 I modified this to actually use the MyColorIndex which wasn't really used before.
+                    myLayer.DataSet.DataTable.Rows[i]["MyColorIndex"] = 0; //dpa default all the features to be colored as "0"
+                    dicMyColorIndex.Add(Convert.ToInt32(myLayer.DataSet.DataTable.Rows[i]["COL"]).ToString() + "," + Convert.ToInt32(myLayer.DataSet.DataTable.Rows[i]["ROW"]).ToString(), i);
                 }
                 Color cRegion = Color.Transparent;
                 PolygonSymbolizer TransparentRegion = new PolygonSymbolizer(cRegion);
 
-                TransparentRegion.OutlineSymbolizer = new LineSymbolizer(Color.Black, 1); playerRegion.Symbolizer = TransparentRegion;
+                TransparentRegion.OutlineSymbolizer = new LineSymbolizer(Color.Black, 1); myLayer.Symbolizer = TransparentRegion;
 
                 lstMonitorValues = DataSourceCommonClass.GetMonitorData(_monitorRollbackLine.GridType, _monitorRollbackLine.Pollutant, _monitorRollbackLine);
                 IFeatureSet fsPoints = new FeatureSet();
@@ -84,10 +85,10 @@ namespace BenMAP
                 List<double> fsInter = new List<double>();
                 if (lstMonitorValues != null && lstMonitorValues.Count > 0)
                 {
-                    PolygonScheme myScheme = new PolygonScheme();
+                    //PolygonScheme myScheme = new PolygonScheme(); //unused
                     PolygonCategory pcin = new PolygonCategory();
                     pcin.Symbolizer.SetFillColor(Color.Red);
-                    myScheme.Categories.Add(pcin);
+                    //myScheme.Categories.Add(pcin); //dpa unused
                     NetTopologySuite.Geometries.Point point;
                     for (int i = 0; i < lstMonitorValues.Count; i++)
                     {
@@ -99,6 +100,7 @@ namespace BenMAP
                     mpl.Symbolizer = new PointSymbolizer();
                     mpl.Symbolizer.SetFillColor(Color.FromArgb(0,255,255));
                     mpl.Symbolizer.SetOutline(Color.Black, 1);
+                    mpl.SelectionEnabled = false;  //dpa 1/12/2017 don't need to be able to select from this layer.
                     mainMap.Layers.Add(mpl);
                 }
 
@@ -470,7 +472,7 @@ namespace BenMAP
                         break;
                     }
                 }
-                ColorMap();
+                //ColorMap(); dpa why do this just when changing a selection?
             }
             catch (Exception ex)
             {
@@ -498,8 +500,26 @@ namespace BenMAP
                         }
                         dicRegion.Remove(flowLayoutPanel1.Controls[i].Controls[3].Text);
                         flowLayoutPanel1.Controls.RemoveAt(i);
+                        
+                        /* dpa 1/12/2017 
+                         * it turns out that if you remove a region, the remaining ones keep their region ID. 
+                         * This is good because we are now referencing the coloring scheme by region ID...
+                         * So now we just need to reset any MyColorIndex fields related to this deleted region ID.
+                         */ 
+                        foreach (DataRow dr in (mainMap.Layers[0] as IFeatureLayer).DataSet.DataTable.Rows)
+                        {
+                            if (Convert.ToInt32(dr["MyColorIndex"]) == _monitorRollbackLine.BenMAPRollbacks[i].RegionID)
+                            {
+                                dr["MyColorIndex"] = 0;
+                            }
+                        }
+
+                        //now it's safe to remove the region
                         _monitorRollbackLine.BenMAPRollbacks.RemoveAt(i);
+                        
+                        //redo the coloring now that the region is gone.
                         ColorMap();
+
                         //Disable buttons if all regions are gone
                         if(flowLayoutPanel1.Controls.Count == 1)
                         {
@@ -556,86 +576,79 @@ namespace BenMAP
             return ToStandardControlCount;
         }
 
+        //dpa added this bool so we can see if we are in the process of processing a selection
+        bool MapClicked = true;
+
         private void mainMap_SelectionChanged(object sender, EventArgs e)
         {
             try
             {
-
-
-
-
-
-
-
-
+                //dpa 1/12/2017
+                //We should be using this event instead of the mouse click event. Then we can use multi select as well. 
+                //better to use the built in DotSpatial selection capabilities... no?
+                //selectionchanged is called a lot. We only need to process the selection once during a process.
+                if (MapClicked == true ) 
+                {
+                    List<IFeature> SelectedFeatures = (mainMap.Layers[0] as IFeatureLayer).Selection.ToFeatureList();
+                    if (SelectedFeatures.Count > 0)
+                    {
+                        //Check if there is a current rollback to work on. If not, then clear the selection and leave the function.
+                        if (_currentBenMAPRollback == null)
+                        {
+                            MessageBox.Show("Please add a roll back region before selecting features.","BenMAP Notification",MessageBoxButtons.OK);
+                            mainMap.ClearSelection();
+                            return;
+                        }
+                        PerformSelection(SelectedFeatures); 
+                        MapClicked = false;
+                    }
+                }
+                else  //the event was raised without a map click so ignore it
+                {
+                    return;
+                }
             }
             catch (Exception ex)
             {
                 Logger.LogError(ex);
             }
-            finally
-            {
-            }
         }
+
+
 
         private void ColorMap()
         {
+            //dpa 1/12/2017
+            //This is a significant simplification of ColorMap. Code is cut in half and the speed is massively faster.
             try
             {
-                FeatureLayer fl = mainMap.Layers[0] as FeatureLayer;
-                PolygonCategoryCollection pcc = new PolygonCategoryCollection();
+               // FeatureLayer fl = mainMap.Layers[0] as FeatureLayer;
                 PolygonScheme myScheme = new PolygonScheme();
+                PolygonCategory pc = new PolygonCategory();
 
                 myScheme.Categories = new PolygonCategoryCollection();
 
-
-                string strrow = "";
-                int iRegionColor = 0;
-
+                //Make everything white with black outline that has not been assigned to a region.
+                pc = new PolygonCategory();
+                pc.FilterExpression = "[MyColorIndex]=0 ";
+                pc.Symbolizer.SetOutline(Color.Black, 1);
+                pc.Symbolizer.SetFillColor(Color.White);
+                myScheme.Categories.Add(pc);
+                
+                //for each of roll back regions, assign a new color category. 
                 foreach (BenMAPRollback brb in _monitorRollbackLine.BenMAPRollbacks)
                 {
-                    if (brb.SelectRegions.Count != 0)
-                    {
-                        iRegionColor += brb.SelectRegions.Count;
-                    }
-                }
-                foreach (BenMAPRollback brb in _monitorRollbackLine.BenMAPRollbacks)
-                {
-                    if (brb.SelectRegions.Count != 0)
-                    {
-
-                        foreach (RowCol rc in brb.SelectRegions)
-                        {
-                            if (iRegionColor != dicMyColorIndex.Count)
-                            {
-                                if (strrow == "") strrow = dicMyColorIndex[rc.Col + "," + rc.Row].ToString();
-                                else strrow += "," + dicMyColorIndex[rc.Col + "," + rc.Row].ToString();
-                            }
-                            PolygonCategory pcin = new PolygonCategory();
-
-                            pcin.FilterExpression = string.Format("[{0}]={1} ", "MyColorIndex", dicMyColorIndex[rc.Col + "," + rc.Row].ToString());
-                            pcin.Symbolizer.SetOutline(Color.Black, 1);
-                            string[] strColor = brb.DrawingColor.Split(new char[] { ',' });
-                            pcin.Symbolizer.SetFillColor(Color.FromArgb(Convert.ToInt32(strColor[0]), int.Parse(strColor[1]), int.Parse(strColor[2])));
-                            myScheme.Categories.Add(pcin);
-                        }
-
-                    }
+                    pc = new PolygonCategory();
+                    pc.FilterExpression = string.Format("[{0}]={1} ", "MyColorIndex", brb.RegionID.ToString());
+                    pc.Symbolizer.SetOutline(Color.Black, 1);
+                    string[] strColor = brb.DrawingColor.Split(new char[] { ',' });
+                    pc.Symbolizer.SetFillColor(Color.FromArgb(Convert.ToInt32(strColor[0]), int.Parse(strColor[1]), int.Parse(strColor[2])));
+                    myScheme.Categories.Add(pc);
                 }
 
-                if (myScheme.Categories.Count > 0)
-                {
-                    if (iRegionColor != dicMyColorIndex.Count)
-                    {
-                        PolygonCategory pcin = new PolygonCategory();
-                        pcin.FilterExpression = string.Format("[{0}] not in({1})", "MyColorIndex", strrow);
-
-                        pcin.Symbolizer.SetFillColor(Color.White);
-                        pcin.Symbolizer.SetOutline(Color.Black, 1);
-                        myScheme.Categories.Add(pcin);
-                    }
-                    (fl as IFeatureLayer).Symbology = myScheme;
-                }
+                //apply the symbology to the layer.
+                //(fl as IFeatureLayer).Symbology = myScheme;
+                (mainMap.Layers[0] as IFeatureLayer).Symbology = myScheme;
             }
             catch (Exception ex)
             {
@@ -643,14 +656,194 @@ namespace BenMAP
             }
         }
 
+
+        private void PerformSelection(List<IFeature> SelectedFeatures)
+        {
+            //dpa 1/12/2017 - cleaned up and simplified map selection, now allows multiple selection
+            try
+            {
+                foreach (IFeature fSelect in SelectedFeatures) 
+                {
+                    int iCol = Convert.ToInt32(fSelect.DataRow["COL"]);
+                    int iRow = Convert.ToInt32(fSelect.DataRow["ROW"]);
+                    RowCol iRowCol = new RowCol();
+                    iRowCol.Col = iCol;
+                    iRowCol.Row = iRow;
+                    int iRemove = -1;
+                    int i = 0;
+
+
+                    //check to see if this feature exists in any of the rollbacks, including the current one
+                    //if it is there, then remove it
+                    foreach (BenMAPRollback brb in _monitorRollbackLine.BenMAPRollbacks)
+                    {
+                        i = 0;
+
+                        if (brb.SelectRegions.Contains(iRowCol, new RowColComparer()))
+                        {
+                            foreach (RowCol rowCol in brb.SelectRegions)
+                            {
+                                if (rowCol.Col == iCol && rowCol.Row == iRow)
+                                {
+                                    iRemove = i;
+                                }
+                                i++;
+                            }
+                            if (iRemove >= 0)
+                            {
+                                brb.SelectRegions.RemoveAt(iRemove);
+                            }
+                        }
+                    }
+
+                    //now add the feature to the current rollback break
+                    _currentBenMAPRollback.SelectRegions.Add(iRowCol);
+
+                    //and change the layer MyColorIndex ID to be that of the current rollback
+                    fSelect.DataRow["MyColorIndex"] = _currentBenMAPRollback.RegionID;
+                   
+                }
+                ColorMap();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+            }
+        }
+
+        private void btnSelectAll_Click(object sender, EventArgs e)
+        {
+            //dpa 1/12/2017 I moved all this code to a new function, SelectAll, and significantly simplified it.
+            SelectAll();
+        }
+
+        private void DeSelectAll()
+        {
+            //dpa 1/12/2017
+            //This replaces the code previously in the btnDeleteAll_click method and should be much faster for deselecting all features.
+
+            try
+            {
+                if (_currentBenMAPRollback == null)
+                {
+                    return;
+                }
+                
+                //reset the selected features in the current rollback
+                _currentBenMAPRollback.SelectRegions = new List<RowCol>();
+                foreach (DataRow dr in (mainMap.Layers[0] as IFeatureLayer).DataSet.DataTable.Rows)
+                {
+                    if (Convert.ToInt32(dr["MyColorIndex"]) == _currentBenMAPRollback.RegionID)
+                    {
+                        dr["MyColorIndex"] = 0;
+                    }
+
+                }
+                ColorMap();
+            }
+      
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+            }
+        }
+
+        private void SelectAll()
+        {
+            //dpa 1/12/2017
+            //This replaces the code previously in the btnSelectAll_click method and should be much faster for selecting all features.
+            try
+            {
+                if (_currentBenMAPRollback == null)
+                {
+                    return;
+                }
+
+                foreach (BenMAPRollback br in _monitorRollbackLine.BenMAPRollbacks)
+                {
+                    //clear out all the regions that have been selected in the different rollbacks
+                    if (br.SelectRegions.Count > 0) {
+                        br.SelectRegions.Clear();
+
+                    }
+                }
+                //now add all the row/cols of the current data/grid (actually a featureset/layer) to the current rollback
+                foreach (DataRow dr in (mainMap.Layers[0] as IFeatureLayer).DataSet.DataTable.Rows)
+                {
+                    RowCol iRowCol = new RowCol();
+                    iRowCol.Col = Convert.ToInt32(dr["COL"]);
+                    iRowCol.Row = Convert.ToInt32(dr["ROW"]);
+                    _currentBenMAPRollback.SelectRegions.Add(iRowCol);
+                    dr["MyColorIndex"] = _currentBenMAPRollback.RegionID;
+
+                }
+
+                //redraw the map
+                ColorMap();
+
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+            }
+
+
+        }
+        
+        private void btnDeleteAll_Click(object sender, EventArgs e)
+        {
+            //dpa 1/12/2017
+            //Moved this code to DeSelectAll and simplified and sped it up.
+            DeSelectAll();
+        }
+
+        private void btnZoomIn_Click(object sender, EventArgs e)
+        {
+            mainMap.FunctionMode = FunctionMode.ZoomIn;
+        }
+
+        private void btnZoomOut_Click(object sender, EventArgs e)
+        {
+            mainMap.FunctionMode = FunctionMode.ZoomOut;
+        }
+
+        private void btnPan_Click(object sender, EventArgs e)
+        {
+            mainMap.FunctionMode = FunctionMode.Pan;
+        }
+
+        private void btnFullExtent_Click(object sender, EventArgs e)
+        {
+            mainMap.ZoomToMaxExtent();
+            mainMap.FunctionMode = FunctionMode.None;
+        }
+
+        private void btnSelect_Click(object sender, EventArgs e)
+        {
+            //dpa 1/12/2017 cleaner way to handle selection
+            //change map to selection mode
+            mainMap.FunctionMode = FunctionMode.Select; 
+        }
+
+        private void mainMap_MouseUp(object sender, MouseEventArgs e)
+        {
+            //dpa 1/12/2017
+            //this is needed to check if the selection event is part of a mouse click
+            MapClicked = true;
+        }
+
+        /*
+         * dpa 1/12/2017 delted these codes...
+         * 
         private void mainMap_MouseClick(object sender, MouseEventArgs e)
         {
+            //dpa 1/12/2017 Moved this content to "PerformSelection" which is called from mainMap_MouseUp
             try
             {
                 if (!click || (_currentBenMAPRollback == null)) return;
-                Rectangle rtol = new Rectangle(e.X - 8, e.Y - 8, 16, 16);
+                Rectangle rtol = new Rectangle(e.X - 8, e.Y - 8, 16, 16); 
                 Rectangle rstr = new Rectangle(e.X - 1, e.Y - 1, 2, 2);
-                Extent tolerant = mainMap.PixelToProj(rtol);
+                Extent tolerant = mainMap.PixelToProj(rtol); 
                 Extent strict = (new NetTopologySuite.Geometries.Point(mainMap.PixelToProj(new Point(e.X, e.Y)))).Envelope.EnvelopeInternal.ToExtent();
                 List<int> result = (mainMap.Layers[0] as IFeatureLayer).DataSet.SelectIndices(strict);
                 IFeature fSelect = null;
@@ -742,38 +935,64 @@ namespace BenMAP
                 Logger.LogError(ex);
             }
         }
-
-        private void btnSelectAll_Click(object sender, EventArgs e)
+         * 
+        private void ColorMap()
         {
             try
             {
-                if (_currentBenMAPRollback != null)
+                FeatureLayer fl = mainMap.Layers[0] as FeatureLayer;
+                PolygonCategoryCollection pcc = new PolygonCategoryCollection();
+                PolygonScheme myScheme = new PolygonScheme();
+
+                myScheme.Categories = new PolygonCategoryCollection();
+
+
+                string strrow = "";
+                int iRegionColor = 0;
+
+                foreach (BenMAPRollback brb in _monitorRollbackLine.BenMAPRollbacks)
                 {
-                    int icount = 0;
-                    List<RowCol> lstExist = new List<RowCol>();
-                    foreach (BenMAPRollback br in _monitorRollbackLine.BenMAPRollbacks)
+                    if (brb.SelectRegions.Count != 0)
                     {
-                        if (br.SelectRegions != null)
-                        {
-                            icount += br.SelectRegions.Count;
-                            lstExist.AddRange(br.SelectRegions);
-                        }
+                        iRegionColor += brb.SelectRegions.Count;
                     }
-                    List<string> lstString = lstExist.Select(p => p.Col + "," + p.Row).ToList();
-                    if ((mainMap.Layers[0] as IFeatureLayer).DataSet.DataTable.Rows.Count == icount) return;
-
-                    foreach (DataRow dr in (mainMap.Layers[0] as IFeatureLayer).DataSet.DataTable.Rows)
+                }
+                foreach (BenMAPRollback brb in _monitorRollbackLine.BenMAPRollbacks)
+                {
+                    if (brb.SelectRegions.Count != 0)
                     {
-                        RowCol iRowCol = new RowCol();
-                        iRowCol.Col = Convert.ToInt32(dr["COL"]);
-                        iRowCol.Row = Convert.ToInt32(dr["ROW"]);
-                        if (!lstString.Contains(iRowCol.Col + "," + iRowCol.Row))
-                        {
-                            _currentBenMAPRollback.SelectRegions.Add(iRowCol);
-                        }
-                    }
 
-                    ColorMap();
+                        foreach (RowCol rc in brb.SelectRegions)
+                        {
+                            if (iRegionColor != dicMyColorIndex.Count)
+                            {
+                                if (strrow == "") strrow = dicMyColorIndex[rc.Col + "," + rc.Row].ToString();
+                                else strrow += "," + dicMyColorIndex[rc.Col + "," + rc.Row].ToString();
+                            }
+                            PolygonCategory pcin = new PolygonCategory();
+
+                            pcin.FilterExpression = string.Format("[{0}]={1} ", "MyColorIndex", dicMyColorIndex[rc.Col + "," + rc.Row].ToString());
+                            pcin.Symbolizer.SetOutline(Color.Black, 1);
+                            string[] strColor = brb.DrawingColor.Split(new char[] { ',' });
+                            pcin.Symbolizer.SetFillColor(Color.FromArgb(Convert.ToInt32(strColor[0]), int.Parse(strColor[1]), int.Parse(strColor[2])));
+                            myScheme.Categories.Add(pcin);
+                        }
+
+                    }
+                }
+
+                if (myScheme.Categories.Count > 0)
+                {
+                    if (iRegionColor != dicMyColorIndex.Count)
+                    {
+                        PolygonCategory pcin = new PolygonCategory();
+                        pcin.FilterExpression = string.Format("[{0}] not in({1})", "MyColorIndex", strrow);
+
+                        pcin.Symbolizer.SetFillColor(Color.White);
+                        pcin.Symbolizer.SetOutline(Color.Black, 1);
+                        myScheme.Categories.Add(pcin);
+                    }
+                    (fl as IFeatureLayer).Symbology = myScheme;
                 }
             }
             catch (Exception ex)
@@ -781,62 +1000,7 @@ namespace BenMAP
                 Logger.LogError(ex);
             }
         }
+       */
 
-        private void btnDeleteAll_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                if (_currentBenMAPRollback != null)
-                {
-                    string color = _currentBenMAPRollback.DrawingColor;
-                    _currentBenMAPRollback.DrawingColor = "255,255,255";
-                    ColorMap();
-                    _currentBenMAPRollback.SelectRegions = new List<RowCol>();
-                    _currentBenMAPRollback.DrawingColor = color;
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex);
-            }
-        }
-
-        bool click = true;
-        private void btnZoomIn_Click(object sender, EventArgs e)
-        {
-            click = false;
-            mainMap.FunctionMode = FunctionMode.ZoomIn;
-        }
-
-        private void btnZoomOut_Click(object sender, EventArgs e)
-        {
-            click = false;
-            mainMap.FunctionMode = FunctionMode.ZoomOut;
-        }
-
-        private void btnPan_Click(object sender, EventArgs e)
-        {
-            click = false;
-            mainMap.FunctionMode = FunctionMode.Pan;
-        }
-
-        private void btnFullExtent_Click(object sender, EventArgs e)
-        {
-            click = false;
-            mainMap.ZoomToMaxExtent();
-            mainMap.FunctionMode = FunctionMode.None;
-            toolStripButton1_Click(sender, e);
-        }
-
-        private void toolStripButton1_Click(object sender, EventArgs e)
-        {
-            click = true;
-            mainMap.FunctionMode = FunctionMode.None;
-        }
-
-        private void label1_Click(object sender, EventArgs e)
-        {
-
-        }
     }
 }
