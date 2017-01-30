@@ -354,6 +354,13 @@
     <Compile Include="Configuration\SelectAirQualityGrid.Designer.cs">
       <DependentUpon>SelectAirQualityGrid.cs</DependentUpon>
     </Compile>
+    <Compile Include="Crosswalks\CrosswalksCalculator.cs" />
+    <Compile Include="Crosswalks\frmCrosswalk.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Crosswalks\frmCrosswalk.designer.cs">
+      <DependentUpon>frmCrosswalk.cs</DependentUpon>
+    </Compile>
     <Compile Include="DataConversion\DataConversionInstructions.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1100,6 +1107,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Configuration\SelectAirQualityGrid.resx">
       <DependentUpon>SelectAirQualityGrid.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Crosswalks\frmCrosswalk.resx">
+      <DependentUpon>frmCrosswalk.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="DataConversion\DataConversionInstructions.resx">
       <DependentUpon>DataConversionInstructions.cs</DependentUpon>

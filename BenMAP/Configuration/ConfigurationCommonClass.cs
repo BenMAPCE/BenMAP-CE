@@ -1472,57 +1472,16 @@ namespace BenMAP.Configuration
         }
         public static void creatPercentageToDatabase(int big, int small,String popRasterLoc)
         {
+            /*dpa 1/28/2017 - taking a chance here. Let's just comment out this code and instead call our new Crosswalk form.
             GridDefinition grd = new GridDefinition();
             Dictionary<string, List<GridRelationshipAttributePercentage>> dicAllGridPercentage = grd.getRelationshipFromBenMAPGridPercentage(big, small, popRasterLoc);
             updatePercentageToDatabase(dicAllGridPercentage.ToArray()[0]);
+             */
+            frmCrosswalk f = new frmCrosswalk();
+            f.StartPosition = FormStartPosition.CenterParent;
+            f.RunCompact(big, small);
             CommonClass.IsAddPercentage = true;
-            return;
-            ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
-            foreach (KeyValuePair<string, List<GridRelationshipAttributePercentage>> k in dicAllGridPercentage)
-            {
-                string commandText = "select max(PercentageID) from GridDefinitionPercentages";
-
-                int iMax = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
-                commandText = string.Format("insert into GridDefinitionPercentages(PERCENTAGEID,SOURCEGRIDDEFINITIONID, TARGETGRIDDEFINITIONID) "
-                    + "values({0},{1})", iMax, k.Key);
-                fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
-                int i = 1;
-                commandText = "execute block as declare incidenceRateID int;" + " BEGIN ";
-                FirebirdSql.Data.FirebirdClient.FbCommand fbCommand = new FirebirdSql.Data.FirebirdClient.FbCommand();
-                fbCommand.Connection = CommonClass.Connection;
-                fbCommand.CommandType = CommandType.Text;
-                if (fbCommand.Connection.State != ConnectionState.Open)
-                { fbCommand.Connection.Open(); }
-                int j = 0;
-                foreach (GridRelationshipAttributePercentage grp in k.Value)
-                {
-
-                    if (i < 250 && j < k.Value.Count - 1)
-                    {
-                        commandText = commandText + string.Format(" insert into GridDefinitionPercentageEntries values({0},{1},{2},{3},{4},{5},{6});",
-                iMax, grp.sourceCol, grp.sourceRow, grp.targetCol, grp.targetRow, grp.percentage, 0);
-
-
-                    }
-                    else
-                    {
-                        commandText = commandText + string.Format(" insert into GridDefinitionPercentageEntries values({0},{1},{2},{3},{4},{5},{6});",
-                        iMax, grp.sourceCol, grp.sourceRow, grp.targetCol, grp.targetRow, grp.percentage, 0);
-
-                        commandText = commandText + "END";
-                        fbCommand.CommandText = commandText;
-                        fbCommand.ExecuteNonQuery();
-                        commandText = "execute block as declare incidenceRateID int;" + " BEGIN ";
-
-                        i = 1;
-
-                    }
-                    i++;
-                    j++;
-
-                }
-            }
-            CommonClass.IsAddPercentage = true;
+            //dpa 1/28/2017 deleted unreachable code
         }
         public static List<string> getAllAgeID()
         {

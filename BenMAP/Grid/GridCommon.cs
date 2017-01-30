@@ -586,6 +586,8 @@ namespace BenMAP.Grid
             System.Data.DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
 
             string AppPath = Application.StartupPath;
+
+            //dpa 1/28/2017 What is this!???
             AppPath = @"D:\软件项目\Map\正确的BenMAP的SHP\";
             string benMAPGridShapeFile = "";
 
@@ -644,7 +646,8 @@ namespace BenMAP.Grid
                 if (lstGridRelationship == null)
                     lstGridRelationship = new List<GridRelationship>();
                 string AppPath = Application.StartupPath;
-                AppPath = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\"; string benMAPGridShapeFile = "";
+                AppPath = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\"; 
+                string benMAPGridShapeFile = "";
                 if (benMAPGrid is ShapefileGrid) benMAPGridShapeFile = (benMAPGrid as ShapefileGrid).ShapefileName;
                 if (benMAPGrid is RegularGrid) benMAPGridShapeFile = (benMAPGrid as RegularGrid).ShapefileName;
                 benMAPGridShapeFile = AppPath + benMAPGridShapeFile + ".shp";

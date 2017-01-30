@@ -55,9 +55,12 @@ namespace BenMAP
             this.exportAirQualityGridToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.gbdRollbackToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.gISMappingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.monitorDataConversionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.neighborFileCreatorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.PopSIMtoolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuComputeCrosswalks = new System.Windows.Forms.ToolStripMenuItem();
+            this.computeCrosswalkMinimizedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.btnMATs = new System.Windows.Forms.ToolStripDropDownButton();
             this.ozoneAnalysisToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.visibilityAnalysisToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -69,7 +72,6 @@ namespace BenMAP
             this.errorReportingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.lblStatus = new System.Windows.Forms.ToolStripStatusLabel();
-            this.monitorDataConversionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ToolStripFile.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -296,7 +298,9 @@ namespace BenMAP
             this.monitorDataConversionToolStripMenuItem,
             this.neighborFileCreatorToolStripMenuItem,
             this.PopSIMtoolStripMenuItem,
-            this.optionsToolStripMenuItem});
+            this.optionsToolStripMenuItem,
+            this.mnuComputeCrosswalks,
+            this.computeCrosswalkMinimizedToolStripMenuItem});
             this.mnuTools.Image = global::BenMAP.Properties.Resources.onlineAlert_Image;
             this.mnuTools.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.mnuTools.ImageTransparentColor = System.Drawing.Color.Magenta;
@@ -309,14 +313,14 @@ namespace BenMAP
             // airQualityGridAggregationToolStripMenuItem
             // 
             this.airQualityGridAggregationToolStripMenuItem.Name = "airQualityGridAggregationToolStripMenuItem";
-            this.airQualityGridAggregationToolStripMenuItem.Size = new System.Drawing.Size(268, 22);
+            this.airQualityGridAggregationToolStripMenuItem.Size = new System.Drawing.Size(304, 22);
             this.airQualityGridAggregationToolStripMenuItem.Text = "Aggregate Air Quality Surface";
             this.airQualityGridAggregationToolStripMenuItem.Click += new System.EventHandler(this.airQualityGridAggregationToolStripMenuItem_Click);
             // 
             // modelFileConcatenatorToolStripMenuItem
             // 
             this.modelFileConcatenatorToolStripMenuItem.Name = "modelFileConcatenatorToolStripMenuItem";
-            this.modelFileConcatenatorToolStripMenuItem.Size = new System.Drawing.Size(268, 22);
+            this.modelFileConcatenatorToolStripMenuItem.Size = new System.Drawing.Size(304, 22);
             this.modelFileConcatenatorToolStripMenuItem.Text = "Model File Concatenator";
             this.modelFileConcatenatorToolStripMenuItem.Visible = false;
             this.modelFileConcatenatorToolStripMenuItem.Click += new System.EventHandler(this.modelFileConcatenatorToolStripMenuItem_Click);
@@ -324,21 +328,21 @@ namespace BenMAP
             // databaseExportToolStripMenuItem
             // 
             this.databaseExportToolStripMenuItem.Name = "databaseExportToolStripMenuItem";
-            this.databaseExportToolStripMenuItem.Size = new System.Drawing.Size(268, 22);
+            this.databaseExportToolStripMenuItem.Size = new System.Drawing.Size(304, 22);
             this.databaseExportToolStripMenuItem.Text = "Database Export";
             this.databaseExportToolStripMenuItem.Click += new System.EventHandler(this.databaseExportToolStripMenuItem_Click);
             // 
             // databaseImportToolStripMenuItem
             // 
             this.databaseImportToolStripMenuItem.Name = "databaseImportToolStripMenuItem";
-            this.databaseImportToolStripMenuItem.Size = new System.Drawing.Size(268, 22);
+            this.databaseImportToolStripMenuItem.Size = new System.Drawing.Size(304, 22);
             this.databaseImportToolStripMenuItem.Text = "Database Import";
             this.databaseImportToolStripMenuItem.Click += new System.EventHandler(this.databaseImportToolStripMenuItem_Click);
             // 
             // onlineDatabaseExportToolStripMenuItem
             // 
             this.onlineDatabaseExportToolStripMenuItem.Name = "onlineDatabaseExportToolStripMenuItem";
-            this.onlineDatabaseExportToolStripMenuItem.Size = new System.Drawing.Size(268, 22);
+            this.onlineDatabaseExportToolStripMenuItem.Size = new System.Drawing.Size(304, 22);
             this.onlineDatabaseExportToolStripMenuItem.Text = "Online Database Export";
             this.onlineDatabaseExportToolStripMenuItem.Click += new System.EventHandler(this.onlineDatabaseExportToolStripMenuItem_Click);
             // 
@@ -347,7 +351,7 @@ namespace BenMAP
             this.onlineDatabaseImportToolStripMenuItem.Image = global::BenMAP.Properties.Resources.onlineAlert_Image;
             this.onlineDatabaseImportToolStripMenuItem.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.onlineDatabaseImportToolStripMenuItem.Name = "onlineDatabaseImportToolStripMenuItem";
-            this.onlineDatabaseImportToolStripMenuItem.Size = new System.Drawing.Size(268, 22);
+            this.onlineDatabaseImportToolStripMenuItem.Size = new System.Drawing.Size(304, 22);
             this.onlineDatabaseImportToolStripMenuItem.Text = "Online Database Import";
             this.onlineDatabaseImportToolStripMenuItem.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.onlineDatabaseImportToolStripMenuItem.ToolTipText = "There are new health impact functions available online";
@@ -356,45 +360,66 @@ namespace BenMAP
             // exportAirQualityGridToolStripMenuItem
             // 
             this.exportAirQualityGridToolStripMenuItem.Name = "exportAirQualityGridToolStripMenuItem";
-            this.exportAirQualityGridToolStripMenuItem.Size = new System.Drawing.Size(268, 22);
+            this.exportAirQualityGridToolStripMenuItem.Size = new System.Drawing.Size(304, 22);
             this.exportAirQualityGridToolStripMenuItem.Text = "Export Air Quality Surface";
             this.exportAirQualityGridToolStripMenuItem.Click += new System.EventHandler(this.exportAirQualityGridToolStripMenuItem_Click);
             // 
             // gbdRollbackToolStripMenuItem
             // 
             this.gbdRollbackToolStripMenuItem.Name = "gbdRollbackToolStripMenuItem";
-            this.gbdRollbackToolStripMenuItem.Size = new System.Drawing.Size(268, 22);
+            this.gbdRollbackToolStripMenuItem.Size = new System.Drawing.Size(304, 22);
             this.gbdRollbackToolStripMenuItem.Text = "GBD Rollback";
             this.gbdRollbackToolStripMenuItem.Click += new System.EventHandler(this.gbdRollbackToolStripMenuItem_Click);
             // 
             // gISMappingToolStripMenuItem
             // 
             this.gISMappingToolStripMenuItem.Name = "gISMappingToolStripMenuItem";
-            this.gISMappingToolStripMenuItem.Size = new System.Drawing.Size(268, 22);
+            this.gISMappingToolStripMenuItem.Size = new System.Drawing.Size(304, 22);
             this.gISMappingToolStripMenuItem.Text = "GIS/Mapping";
             this.gISMappingToolStripMenuItem.Visible = false;
             this.gISMappingToolStripMenuItem.Click += new System.EventHandler(this.gISMappingToolStripMenuItem_Click);
             // 
+            // monitorDataConversionToolStripMenuItem
+            // 
+            this.monitorDataConversionToolStripMenuItem.Name = "monitorDataConversionToolStripMenuItem";
+            this.monitorDataConversionToolStripMenuItem.Size = new System.Drawing.Size(304, 22);
+            this.monitorDataConversionToolStripMenuItem.Text = "Monitor Data Conversion";
+            this.monitorDataConversionToolStripMenuItem.Click += new System.EventHandler(this.monitorDataConversionToolStripMenuItem_Click);
+            // 
             // neighborFileCreatorToolStripMenuItem
             // 
             this.neighborFileCreatorToolStripMenuItem.Name = "neighborFileCreatorToolStripMenuItem";
-            this.neighborFileCreatorToolStripMenuItem.Size = new System.Drawing.Size(268, 22);
+            this.neighborFileCreatorToolStripMenuItem.Size = new System.Drawing.Size(304, 22);
             this.neighborFileCreatorToolStripMenuItem.Text = "Neighbor File Creator";
             this.neighborFileCreatorToolStripMenuItem.Click += new System.EventHandler(this.neighborFileCreatorToolStripMenuItem_Click);
             // 
             // PopSIMtoolStripMenuItem
             // 
             this.PopSIMtoolStripMenuItem.Name = "PopSIMtoolStripMenuItem";
-            this.PopSIMtoolStripMenuItem.Size = new System.Drawing.Size(268, 22);
+            this.PopSIMtoolStripMenuItem.Size = new System.Drawing.Size(304, 22);
             this.PopSIMtoolStripMenuItem.Text = "PopSim";
             this.PopSIMtoolStripMenuItem.Click += new System.EventHandler(this.PopSIMtoolStripMenuItem_Click);
             // 
             // optionsToolStripMenuItem
             // 
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
-            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(268, 22);
+            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(304, 22);
             this.optionsToolStripMenuItem.Text = "Options";
             this.optionsToolStripMenuItem.Click += new System.EventHandler(this.optionsToolStripMenuItem_Click);
+            // 
+            // mnuComputeCrosswalks
+            // 
+            this.mnuComputeCrosswalks.Name = "mnuComputeCrosswalks";
+            this.mnuComputeCrosswalks.Size = new System.Drawing.Size(304, 22);
+            this.mnuComputeCrosswalks.Text = "Compute Grid Crosswalks";
+            this.mnuComputeCrosswalks.Click += new System.EventHandler(this.mnuComputeCrosswalks_Click);
+            // 
+            // computeCrosswalkMinimizedToolStripMenuItem
+            // 
+            this.computeCrosswalkMinimizedToolStripMenuItem.Name = "computeCrosswalkMinimizedToolStripMenuItem";
+            this.computeCrosswalkMinimizedToolStripMenuItem.Size = new System.Drawing.Size(304, 22);
+            this.computeCrosswalkMinimizedToolStripMenuItem.Text = "(test) Compute Crosswalk Minimized";
+            this.computeCrosswalkMinimizedToolStripMenuItem.Click += new System.EventHandler(this.computeCrosswalkMinimizedToolStripMenuItem_Click);
             // 
             // btnMATs
             // 
@@ -488,13 +513,6 @@ namespace BenMAP
             this.lblStatus.Size = new System.Drawing.Size(42, 17);
             this.lblStatus.Text = "Status:";
             // 
-            // monitorDataConversionToolStripMenuItem
-            // 
-            this.monitorDataConversionToolStripMenuItem.Name = "monitorDataConversionToolStripMenuItem";
-            this.monitorDataConversionToolStripMenuItem.Size = new System.Drawing.Size(268, 22);
-            this.monitorDataConversionToolStripMenuItem.Text = "Monitor Data Conversion";
-            this.monitorDataConversionToolStripMenuItem.Click += new System.EventHandler(this.monitorDataConversionToolStripMenuItem_Click);
-            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
@@ -569,6 +587,8 @@ namespace BenMAP
         private System.Windows.Forms.ToolStripMenuItem errorReportingToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem gbdRollbackToolStripMenuItem;
         private ToolStripMenuItem monitorDataConversionToolStripMenuItem;
+        private ToolStripMenuItem mnuComputeCrosswalks;
+        private ToolStripMenuItem computeCrosswalkMinimizedToolStripMenuItem;
     }
 }
 

@@ -902,5 +902,23 @@ namespace BenMAP
             DataConversionTool frm = new DataConversionTool();
             frm.ShowDialog();
         }
+
+        private void mnuComputeCrosswalks_Click(object sender, EventArgs e)
+        {
+            /* dpa 1/28/2017 New menu item to manually compute grid crosswalks using new algorithm
+             * Current approach is to use the new algorithm through this manual calculator which will
+             * update the records in the database that are used by the other functions in code.
+             */
+            frmCrosswalk f = new frmCrosswalk();
+            f.StartPosition = FormStartPosition.CenterParent;
+            f.ShowDialog();
+        }
+
+        private void computeCrosswalkMinimizedToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            frmCrosswalk f = new frmCrosswalk();
+            f.StartPosition = FormStartPosition.CenterParent;
+            f.RunCompact(19, 18);
+        }
     }
 }
