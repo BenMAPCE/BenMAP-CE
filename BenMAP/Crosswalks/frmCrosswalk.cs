@@ -142,7 +142,26 @@ namespace BenMAP
 
         private void frmCrosswalk_Load(object sender, EventArgs e)
         {
-
+            if (_HandsFree == false)
+            {
+                //in regular mode, prepopulate both list boxes with the available grids so we can select them
+                string commandText = string.Format("select GridDefinitionName, GridDefinitionID from GridDefinitions where setupID={0}", CommonClass.ManageSetup.SetupID);
+                _ds1 = _fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+                _ds2 = _ds1.Copy();
+                lstCrosswalks1.DataSource = _ds1.Tables[0];
+                lstCrosswalks2.DataSource = _ds2.Tables[0];
+                lstCrosswalks1.DisplayMember = "GridDefinitionName";
+                lstCrosswalks2.DisplayMember = "GridDefinitionName";
+                lstCrosswalks1.ValueMember = "GridDefinitionID";
+                lstCrosswalks2.ValueMember = "GridDefinitionID";
+            }
+            else
+            {
+                //in handsfree mode, we already have access to the gridID's we need so just run the crosswalks
+                DeleteSelectedCrosswalk();
+                PerformCrosswalk();
+                this.Close();
+            }
         }
 
         private void btnCompute_Click(object sender, EventArgs e)
@@ -313,7 +332,7 @@ namespace BenMAP
 
                     //write the entries to the firebird database
 
-                    if (forward > 0.00001)
+                    if (forward > 0.0001)
                     {
                         forward = Math.Round(forward, 4); //note - rounding doesn't seem to help. The fb database still adds noise.
                         commandText = string.Format("insert into GridDefinitionPercentageEntries(PERCENTAGEID, SOURCECOLUMN, SOURCEROW, TARGETCOLUMN, TARGETROW, PERCENTAGE,NORMALIZATIONSTATE) values({0},{1},{2},{3},{4},{5},{6})",
@@ -351,25 +370,7 @@ namespace BenMAP
 
         private void frmCrosswalk_Activated(object sender, EventArgs e)       
         {
-            if (_HandsFree == false)
-            {
-                //in regular mode, prepopulate both list boxes with the available grids so we can select them
-                string commandText = string.Format("select GridDefinitionName, GridDefinitionID from GridDefinitions where setupID={0}", CommonClass.ManageSetup.SetupID);
-                _ds1 = _fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
-                _ds2 = _ds1.Copy();
-                lstCrosswalks1.DataSource = _ds1.Tables[0];
-                lstCrosswalks2.DataSource = _ds2.Tables[0];
-                lstCrosswalks1.DisplayMember = "GridDefinitionName";
-                lstCrosswalks2.DisplayMember = "GridDefinitionName";
-                lstCrosswalks1.ValueMember = "GridDefinitionID";
-                lstCrosswalks2.ValueMember = "GridDefinitionID";
-            }
-            else
-            {
-                //in handsfree mode, we already have access to the gridID's we need so just run the crosswalks
-                DeleteSelectedCrosswalk();
-                PerformCrosswalk();
-            }
+           
 
         }
     }
