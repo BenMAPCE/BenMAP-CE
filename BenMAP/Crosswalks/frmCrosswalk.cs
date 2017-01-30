@@ -10,6 +10,14 @@ namespace BenMAP
 {
     public partial class frmCrosswalk : Form
     {
+
+        //Define local variables
+        private CancellationTokenSource _cts = new CancellationTokenSource();
+        System.Data.DataSet _ds1, _ds2;
+        private Boolean _HandsFree = false;
+        private int _GridID1, _GridID2;
+        ESIL.DBUtility.FireBirdHelperBase _fb = new ESIL.DBUtility.ESILFireBirdHelper();
+
         public frmCrosswalk()
         {
             InitializeComponent();
@@ -18,6 +26,7 @@ namespace BenMAP
         public void RunCompact(int GridID1, int GridID2) 
         {
             //This mode is for running an individual crosswalk with the progress bar and no other user interface.
+            string commandText = "";
             this.label1.Visible = false;
             this.lstCrosswalks1.Visible = false;
             this.lstCrosswalks2.Visible = false;
@@ -36,15 +45,16 @@ namespace BenMAP
             _HandsFree = true;
             _GridID1 = GridID1;
             _GridID2 = GridID2;
-            this.ShowDialog(); // When the form is activated it will check if we are in hands free mode and if so will automatically run the crosswalk and write the database.
-        }
 
-        //Define local variables
-        private CancellationTokenSource _cts = new CancellationTokenSource();
-        System.Data.DataSet _ds1, _ds2;
-        private Boolean _HandsFree = false;
-        private int _GridID1, _GridID2;
-        ESIL.DBUtility.FireBirdHelperBase _fb = new ESIL.DBUtility.ESILFireBirdHelper();
+            commandText = string.Format("select GRIDDEFINITIONNAME from GRIDDEFINITIONS where GRIDDEFINITIONID={0}", _GridID1);
+            string GridName1 = _fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText).ToString();
+            commandText = string.Format("select GRIDDEFINITIONNAME from GRIDDEFINITIONS where GRIDDEFINITIONID={0}", _GridID2);
+            string GridName2 = _fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText).ToString();
+
+            this.Text = string.Format("BenMAP - Crosswak Calculator - {0} & {1}",GridName1,GridName2) ;
+            this.ShowDialog(); // When the form is activated it will check if we are in hands free mode and if so will automatically run the crosswalk and write the database.
+            this.Close();//when done, close this window (unless it's already closed...)
+        }
 
         private class Progress : IProgress
         {
@@ -160,7 +170,6 @@ namespace BenMAP
                 //in handsfree mode, we already have access to the gridID's we need so just run the crosswalks
                 DeleteSelectedCrosswalk();
                 PerformCrosswalk();
-                this.Close();
             }
         }
 
@@ -316,7 +325,7 @@ namespace BenMAP
                 float step = results.Count / 100;
                 foreach (var entry in results)
                 {
-                    //update the progress bar to show progress writing output to database.
+                    //update the progress bar to show progress writing output to database - only 100 progres steps.
                     i += 1;
                     if (i > step * j)
                     {
@@ -340,7 +349,7 @@ namespace BenMAP
                         intResult = _fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                     }
 
-                    if (entry.Value.BackwardRatio > 0.00001)
+                    if (entry.Value.BackwardRatio > 0.0001)
                     {
                         backward = Math.Round(backward, 4);
                         commandText = string.Format("insert into GridDefinitionPercentageEntries(PERCENTAGEID, SOURCECOLUMN, SOURCEROW, TARGETCOLUMN, TARGETROW, PERCENTAGE,NORMALIZATIONSTATE) values({0},{1},{2},{3},{4},{5},{6})",
@@ -368,10 +377,5 @@ namespace BenMAP
             _cts.Cancel();
         }
 
-        private void frmCrosswalk_Activated(object sender, EventArgs e)       
-        {
-           
-
-        }
     }
 }

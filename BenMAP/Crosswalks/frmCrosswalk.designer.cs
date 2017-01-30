@@ -141,7 +141,6 @@
             this.MinimumSize = new System.Drawing.Size(300, 50);
             this.Name = "frmCrosswalk";
             this.Text = "BenMAP - Crosswalk Calculator";
-            this.Activated += new System.EventHandler(this.frmCrosswalk_Activated);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmCrosswalk_FormClosing);
             this.Load += new System.EventHandler(this.frmCrosswalk_Load);
             this.ResumeLayout(false);

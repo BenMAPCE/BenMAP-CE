@@ -1479,6 +1479,7 @@ namespace BenMAP.Configuration
              */
             frmCrosswalk f = new frmCrosswalk();
             f.StartPosition = FormStartPosition.CenterParent;
+            f.Top = f.Top - 100; //shift it up a bit in case the "drawing layers" dialog is still showing. 
             f.RunCompact(big, small);
             CommonClass.IsAddPercentage = true;
             //dpa 1/28/2017 deleted unreachable code
