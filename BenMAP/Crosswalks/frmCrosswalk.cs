@@ -134,7 +134,7 @@ namespace BenMAP
             _fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
 
             //find the correct percentageid entry for the backward direction crosswalk
-            commandText = string.Format("SELECT PERCENTAGEID from GRIDDEFINITIONPERCENTAGES where SOURCEGRIDDEFINITIONID={0} and TARGETGRIDDEFINITIONID={1}", _GridID1, _GridID2);
+            commandText = string.Format("SELECT PERCENTAGEID from GRIDDEFINITIONPERCENTAGES where SOURCEGRIDDEFINITIONID={0} and TARGETGRIDDEFINITIONID={1}", _GridID2, _GridID1);
             try
             {
                 iResult = Convert.ToInt32(_fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
