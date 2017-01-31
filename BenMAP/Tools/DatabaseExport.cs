@@ -145,42 +145,7 @@ namespace BenMAP
                 // Set appropriate file type(s) depending on export type
                 if (radioExportTypeFile.Checked)
                 {
-                    // Temporary block of code to notify user if they try to perform an export we don't support yet
-                    // BEGIN
-                    switch (treDatabase.SelectedNode.Parent.Text)
-                    {
-                        // These are not yet supported.  Inform the user and return.
-                        case "Pollutant":
-                        case "Inflation Datasets":
-                        case "Valuation Functions":
-                        case "Income Growth Adjustments":
-                            MessageBox.Show(@"Other file format export is currently under development.
-
-The following types are currently supported:
-- Grid Definitions
-- Incidence/Prevalence Datasets
-- Monitor Datasets
-- Population Datasets", "Database Export");
-                            return;
-
-                        // These are supported. Just continue on.
-                        case "Grid Definitions":
-                        case "Health Impact Functions":
-                        case "Incidence/Prevalence Datasets":
-                        case "Monitor Datasets":
-                        case "Population Datasets":
-                        case "Variable Datasets":
-                            break;
-
-                        // The user managed to select something we can't handle here.  This shouldn't happen.
-                        default:
-                            MessageBox.Show("An unsupported export type was selected.", "Database Export");
-                            return;
-                    }
-                    // END
-
                     sfd.FileName = MakeValidFileName(treDatabase.SelectedNode.Text);
-
                     if (treDatabase.SelectedNode.Parent.Text != "Grid Definitions")
                     {
                         sfd.Filter = "CSV File (*.csv)|*.csv|Excel File (*.xlsx)|*.xlsx";
@@ -196,6 +161,7 @@ The following types are currently supported:
                 }
 
                 // Set initial directory
+                //TODO: If this folder doesn't exist, create it?
                 string initFolder = Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments) + @"\My BenMAP-CE Files\Exports";
                 pBarExport.Value = 0;
 
@@ -237,20 +203,22 @@ The following types are currently supported:
             string msg = "";
             string commandTextSetup = string.Format("select setupid from setups where setupname='{0}'", _setupName);
             int _setupid = Convert.ToInt16(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandTextSetup));
-
+            int ret = 0;
             switch (_tableName)
             {
                 case "Grid Definitions":
                     string _setupid_name = "setupid=" + Convert.ToString(_setupid) + " and " + "GriddefinitionName=" + "'" + _Name + "'";
                     msg = "The grid definition shape file has been exported successfully.";
-                    WriteGriddefinitionFile(_setupid_name, fb, targetPath);
+                    writeGriddefinitionFile(_setupid_name, fb, targetPath);
                     break;
                 case "Pollutant":
                     _setupid_name = "setupid=" + Convert.ToString(_setupid) + " and " + "PollutantName=" + "'" + _Name + "'";
+                    msg = "The pollutant file has been exported successfully.";
+                    writePollutantFile(_setupid_name, fb, targetPath);
                     break;
                 case "Monitor Datasets":
                     _setupid_name = "setupid=" + Convert.ToString(_setupid) + " and " + "MonitorDatasetName=" + "'" + _Name + "'";
-                    int ret = writeMonitorFile(_setupid_name, fb, targetPath);
+                    ret = writeMonitorFile(_setupid_name, fb, targetPath);
                     if (ret == 1)
                     {
                         msg = "The monitor dataset file has been exported successfully.";
@@ -277,17 +245,31 @@ The following types are currently supported:
                     break;
                 case "Variable Datasets":
                     _setupid_name = "setupid=" + Convert.ToString(_setupid) + " and " + "SetupvariableDatasetName=" + "'" + _Name + "'";
-                    msg = "The variable dataset file has been exported successfully.";
-                    writeVariableFile(_setupid_name, fb, targetPath);
+                    ret = writeVariableFile(_setupid_name, fb, targetPath);
+                    if (ret == 1)
+                    {
+                        msg = "The monitor dataset file has been exported successfully.";
+                    }
+                    else
+                    {
+                        msg = string.Format("{0} variable files have been exported successfully.", ret);
+                    }
+                    
                     break;
                 case "Inflation Datasets":
                     _setupid_name = "setupid=" + Convert.ToString(_setupid) + " and " + "InflationDatasetName=" + "'" + _Name + "'";
+                    msg = "The inflation dataset file has been exported successfully.";
+                    writeInflationFile(_setupid_name, fb, targetPath);
                     break;
                 case "Valuation Functions":
                     _setupid_name = "setupid=" + Convert.ToString(_setupid) + " and " + "ValuationFunctionDatasetName=" + "'" + _Name + "'";
+                    msg = "The valuation function dataset file has been exported successfully.";
+                    writeValuationFile(_setupid_name, fb, targetPath);
                     break;
                 case "Income Growth Adjustments":
                     _setupid_name = "setupid=" + Convert.ToString(_setupid) + " and " + "IncomeGrowthAdjDatasetName=" + "'" + _Name + "'";
+                    msg = "The income growth adjustments dataset file has been exported successfully.";
+                    writeIncomeGrowthFile(_setupid_name, fb, targetPath);
                     break;
             }
 
@@ -1778,13 +1760,13 @@ The following types are currently supported:
             {
 
                 lbProcess.Text = "Querying Database...";
+                lbProcess.Refresh();
                 this.Refresh();
 
                 string commandText = string.Empty;
-                commandText = string.Format("select count(*) from IncidenceEntries where IncidenceRateID in (select IncidenceRateID  from IncidenceRates where IncidenceDatasetID in (select IncidenceDatasetID from IncidenceDatasets where {0}))", sqlWhereClause);
-                Int32 count = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
-                pBarExport.Maximum = count;
-                lbProcess.Refresh();
+                //commandText = string.Format("select count(*) from IncidenceEntries where IncidenceRateID in (select IncidenceRateID  from IncidenceRates where IncidenceDatasetID in (select IncidenceDatasetID from IncidenceDatasets where {0}))", sqlWhereClause);
+                //Int32 count = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
+                //pBarExport.Maximum = count;
 
                 DataTable dtOut = new DataTable();
                 dtOut.Columns.Add("Endpoint Group", typeof(string));
@@ -1819,6 +1801,7 @@ The following types are currently supported:
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
 
                 lbProcess.Text = "Exporting File...";
+                lbProcess.Refresh();
                 this.Refresh();
 
                 foreach (DataRow dr in ds.Tables[0].Rows)
@@ -1853,9 +1836,11 @@ The following types are currently supported:
             {
 
                 lbProcess.Text = "Querying Database...";
+                lbProcess.Refresh();
                 this.Refresh();
 
                 string commandText = string.Empty;
+                /*
                 commandText = string.Format(@"select count(*)
                     from POPULATIONDATASETS a
                     join POPULATIONENTRIES b on a.POPULATIONDATASETID = b.POPULATIONDATASETID
@@ -1863,7 +1848,7 @@ The following types are currently supported:
                 Int32 count = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
                 pBarExport.Maximum = count;
                 lbProcess.Refresh();
-
+                */
                 DataTable dtOut = new DataTable();
                 dtOut.Columns.Add("Race", typeof(string));
                 dtOut.Columns.Add("Gender", typeof(string));
@@ -1947,8 +1932,8 @@ The following types are currently supported:
                 while (fbGroupDataReader.Read())
                 {
                     lbProcess.Text = string.Format("Exporting {0} {1}...", fbGroupDataReader["pollutantname"].ToString(), fbGroupDataReader["yyear"].ToString());
-                    pBarExport.Value = 0;
-                    pBarExport.Maximum = Convert.ToInt32(fbGroupDataReader["record_count"]);
+//                    pBarExport.Value = 0;
+//                    pBarExport.Maximum = Convert.ToInt32(fbGroupDataReader["record_count"]);
                     lbProcess.Refresh();
                     this.Refresh();
 
@@ -2024,18 +2009,17 @@ The following types are currently supported:
             {
 
                 lbProcess.Text = "Querying Database...";
+                lbProcess.Refresh();
                 this.Refresh();
 
                 string commandText = string.Empty;
                 //TODO: Fix this.  The count should be fore detail records
-                commandText = string.Format("select count(*) from CrFunctionDatasets where {0}", sqlWhereClause);
-                Int32 count = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
-                pBarExport.Maximum = count;
-                lbProcess.Refresh();
+                //commandText = string.Format("select count(*) from CrFunctionDatasets where {0}", sqlWhereClause);
+                //Int32 count = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
+                //pBarExport.Maximum = count;
+                //lbProcess.Refresh();
 
                 DataTable dtOut = new DataTable();
-                //dtOut.Columns.Add("Column", typeof(int));
-                //dtOut.Columns.Add("Population", typeof(double));
 
                 dtOut.Columns.Add("Endpoint Group", typeof(string));
                 dtOut.Columns.Add("Endpoint", typeof(string));
@@ -2098,6 +2082,7 @@ where crfunctiondatasetid in (select crfunctiondatasetid from crFunctionDatasets
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
 
                 lbProcess.Text = "Exporting File...";
+                lbProcess.Refresh();
                 this.Refresh();
 
                 foreach (DataRow dr in ds.Tables[0].Rows)
@@ -2148,47 +2133,202 @@ where crfunctiondatasetid in (select crfunctiondatasetid from crFunctionDatasets
             }
         }
 
-        private void writeVariableFile(string sqlWhereClause, ESIL.DBUtility.FireBirdHelperBase fb, string fileName)
+        private int writeVariableFile(string sqlWhereClause, ESIL.DBUtility.FireBirdHelperBase fb, string fileName)
+        {
+            try
+            {
+
+                string commandText = string.Empty;
+                int ret = 0;
+                // Group by variable
+                commandText = string.Format(@"select b.SETUPVARIABLEID, b.SETUPVARIABLENAME, count(*) record_count
+                    from SETUPVARIABLEDATASETS a
+                    join SETUPVARIABLES b on a.SETUPVARIABLEDATASETID = b.SETUPVARIABLEDATASETID
+                    join SETUPGEOGRAPHICVARIABLES c on b.SETUPVARIABLEID = c.SETUPVARIABLEID
+                    where ({0})
+                    group by 1, 2
+                    order by 2", sqlWhereClause);
+
+                FirebirdSql.Data.FirebirdClient.FbDataReader fbGroupDataReader = fb.ExecuteReader(CommonClass.Connection, CommandType.Text, commandText);
+                while (fbGroupDataReader.Read())
+                {
+                    lbProcess.Text = string.Format("Exporting {0} Variable...", fbGroupDataReader["SETUPVARIABLENAME"].ToString());
+                    //pBarExport.Value = 0;
+                    //pBarExport.Maximum = Convert.ToInt32(fbGroupDataReader["record_count"]);
+                    lbProcess.Refresh();
+                    this.Refresh();
+
+                    DataTable dtOut = new DataTable();
+                    dtOut.Columns.Add("Column", typeof(int));
+                    dtOut.Columns.Add("Row", typeof(int));
+                    dtOut.Columns.Add(fbGroupDataReader["SETUPVARIABLENAME"].ToString(), typeof(double));
+
+                    commandText = string.Format(@"select Ccolumn, Row, VValue
+                    from SETUPVARIABLEDATASETS a
+                    join SETUPVARIABLES b on a.SETUPVARIABLEDATASETID = b.SETUPVARIABLEDATASETID
+                    join SETUPGEOGRAPHICVARIABLES c on b.SETUPVARIABLEID = c.SETUPVARIABLEID
+                    where ({0})
+                    and c.setupvariableid = {1}
+                    order by 1, 2", sqlWhereClause, Convert.ToInt32(fbGroupDataReader["setupvariableid"]));
+
+                    FirebirdSql.Data.FirebirdClient.FbDataReader fbDataReader = fb.ExecuteReader(CommonClass.Connection, CommandType.Text, commandText);
+                    while (fbDataReader.Read())
+                    {
+                        DataRow dr = dtOut.NewRow();
+                        dr["Column"] = Convert.ToInt32(fbDataReader["Ccolumn"]);
+                        dr["Row"] = Convert.ToDouble(fbDataReader["Row"]);
+                        dr[fbGroupDataReader["SETUPVARIABLENAME"].ToString()] = Convert.ToDouble(fbDataReader["VValue"]);
+                        dtOut.Rows.Add(dr);
+
+                    }
+                    ret++;
+                    SaveCSVOrExcel(dtOut, AddSuffix(fileName, MakeValidFileName(String.Format("_{0}", fbGroupDataReader["setupvariablename"].ToString()))));
+
+                }
+                return ret;
+            }
+            catch (Exception ex)
+            {
+                errorOccur = true;
+                Logger.LogError(ex.Message);
+                return 0;
+            }
+        }
+
+        private void writeInflationFile(string sqlWhereClause, ESIL.DBUtility.FireBirdHelperBase fb, string fileName)
         {
             try
             {
 
                 lbProcess.Text = "Querying Database...";
+                lbProcess.Refresh();
                 this.Refresh();
 
                 string commandText = string.Empty;
+                //commandText = string.Format("select count(*) from InflationEntries where InflationDatasetID in (select InflationDatasetID from InflationDatasets where {0})", sqlWhereClause);
 
-                //TODO: Fix this to include the variable datasets, variables, and the geographic variables. Then, we'll have to loop over all the distinct variables and generate a file for each.  Similar to what we did for monitors
-
-                commandText = string.Format(@"select count(*)
-                    from SETUPVARIABLEDATASETS a
-                    join SETUPGEOGRAPHICVARIABLES b on a.SETUPVARIABLEDATASETID = b.SETUPVARIABLEID
-                    where ({0})", sqlWhereClause);
-                Int32 count = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
-                pBarExport.Maximum = count;
-                lbProcess.Refresh();
+                //Int32 count = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
+                //pBarExport.Maximum = count;
+                //lbProcess.Refresh();
 
                 DataTable dtOut = new DataTable();
-                dtOut.Columns.Add("Column", typeof(int));
-                dtOut.Columns.Add("Row", typeof(int));
-                dtOut.Columns.Add("Variable", typeof(double));
 
-                commandText = string.Format(@"select Ccolumn, Row, VValue
-                    from SETUPVARIABLEDATASETS a
-                    join SETUPGEOGRAPHICVARIABLES b on a.SETUPVARIABLEDATASETID = b.SETUPVARIABLEID
-                    where {0}", sqlWhereClause);
+                dtOut.Columns.Add("Year", typeof(int));
+                dtOut.Columns.Add("AllGoodsIndex", typeof(double));
+                dtOut.Columns.Add("MedicalCostIndex", typeof(double));
+                dtOut.Columns.Add("WageIndex", typeof(double));
+
+
+                commandText = string.Format(@"
+select YYear, AllGoodsIndex, MedicalCostIndex, WageIndex 
+from INFLATIONENTRIES 
+where InflationDatasetID in (select InflationDatasetID from InflationDatasets where {0})
+order by 1", sqlWhereClause);
 
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
 
                 lbProcess.Text = "Exporting File...";
+                lbProcess.Refresh();
                 this.Refresh();
 
                 foreach (DataRow dr in ds.Tables[0].Rows)
                 {
                     DataRow newdr = dtOut.NewRow();
-                    newdr["Column"] = Convert.ToInt32(dr["Ccolumn"]);
-                    newdr["Row"] = Convert.ToDouble(dr["Row"]);
-                    newdr["Variable"] = Convert.ToDouble(dr["VValue"]);
+                    newdr["Year"] = Convert.ToInt32(dr["YYear"]);
+                    newdr["AllGoodsIndex"] = Convert.ToDouble(dr["AllGoodsIndex"]);
+                    newdr["MedicalCostIndex"] = Convert.ToDouble(dr["MedicalCostIndex"]);
+                    newdr["WageIndex"] = Convert.ToDouble(dr["WageIndex"]);
+                    dtOut.Rows.Add(newdr);
+                }
+
+                SaveCSVOrExcel(dtOut, fileName);
+            }
+            catch (Exception ex)
+            {
+                errorOccur = true;
+                Logger.LogError(ex.Message);
+            }
+        }
+
+        private void writeValuationFile(string sqlWhereClause, ESIL.DBUtility.FireBirdHelperBase fb, string fileName)
+        {
+            try
+            {
+
+                lbProcess.Text = "Querying Database...";
+                lbProcess.Refresh();
+                this.Refresh();
+                string commandText = string.Empty;
+                /*
+                commandText = string.Format(@"
+select count(*)
+from VALUATIONFUNCTIONS a
+join VALUATIONFUNCTIONDATASETS e on a.VALUATIONFUNCTIONDATASETID = e.VALUATIONFUNCTIONDATASETID where {0}", sqlWhereClause);
+                Int32 count = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
+                pBarExport.Maximum = count;
+                lbProcess.Refresh();
+                */
+                DataTable dtOut = new DataTable();
+                dtOut.Columns.Add("Endpoint Group", typeof(string));
+                dtOut.Columns.Add("Endpoint", typeof(string));
+                dtOut.Columns.Add("Qualifier", typeof(string));
+                dtOut.Columns.Add("Reference", typeof(string));
+                dtOut.Columns.Add("Start Age", typeof(int));
+                dtOut.Columns.Add("End Age", typeof(int));
+                dtOut.Columns.Add("Function", typeof(string));
+                dtOut.Columns.Add("A", typeof(double));
+                dtOut.Columns.Add("Name A", typeof(string));
+                dtOut.Columns.Add("Distribution A", typeof(string));
+                dtOut.Columns.Add("Parameter 1 A", typeof(double));
+                dtOut.Columns.Add("Parameter 2 A", typeof(double));
+                dtOut.Columns.Add("B", typeof(double));
+                dtOut.Columns.Add("Name B", typeof(string));
+                dtOut.Columns.Add("C", typeof(double));
+                dtOut.Columns.Add("Name C", typeof(string));
+                dtOut.Columns.Add("D", typeof(double));
+                dtOut.Columns.Add("Name D", typeof(string));
+
+                commandText = string.Format(@"
+select a.Valuationfunctionid,a.Valuationfunctiondatasetid
+, b.ENDPOINTGROUPNAME, c.ENDPOINTNAME
+, Qualifier,Reference,Startage,Endage
+ ,d.FUNCTIONALFORMTEXT
+, A, Namea, Dista, P1A,P2A, B, Nameb, C, Namec, D, Named 
+from VALUATIONFUNCTIONS a
+join ENDPOINTGROUPS b on a.ENDPOINTGROUPID = b.ENDPOINTGROUPID
+join ENDPOINTS c on a.ENDPOINTID = c.ENDPOINTID
+join FUNCTIONALFORMS d on a.FUNCTIONALFORMID = d.FUNCTIONALFORMID
+join VALUATIONFUNCTIONDATASETS e on a.VALUATIONFUNCTIONDATASETID = e.VALUATIONFUNCTIONDATASETID
+where {0}", sqlWhereClause);
+
+
+                DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
+
+                lbProcess.Text = "Exporting File...";
+                lbProcess.Refresh();
+                this.Refresh();
+
+                foreach (DataRow dr in ds.Tables[0].Rows)
+                {
+                    DataRow newdr = dtOut.NewRow();
+                    newdr["Endpoint Group"] = dr["endpointGroupName"].ToString();
+                    newdr["Endpoint"] = dr["endpointName"].ToString();
+                    newdr["Qualifier"] = dr["Qualifier"].ToString();
+                    newdr["Reference"] = dr["Reference"].ToString();
+                    newdr["Start Age"] = Convert.ToInt32(dr["StartAge"]);
+                    newdr["End Age"] = Convert.ToInt32(dr["EndAge"]);
+                    newdr["Function"] = dr["FunctionalformText"].ToString();
+                    newdr["A"] = Convert.ToDouble(dr["A"]);
+                    newdr["Name A"] = dr["Namea"].ToString();
+                    newdr["Distribution A"] = dr["Dista"].ToString();
+                    newdr["Parameter 1 A"] = Convert.ToDouble(dr["P1A"]);
+                    newdr["Parameter 2 A"] = Convert.ToDouble(dr["P2A"]);
+                    newdr["B"] = Convert.ToDouble(dr["B"]);
+                    newdr["Name B"] = dr["Nameb"].ToString();
+                    newdr["C"] = Convert.ToDouble(dr["C"]);
+                    newdr["Name C"] = dr["Namec"].ToString();
+                    newdr["D"] = Convert.ToDouble(dr["D"]);
+                    newdr["Name D"] = dr["Named"].ToString();
                     dtOut.Rows.Add(newdr);
                 }
 
@@ -2202,9 +2342,173 @@ where crfunctiondatasetid in (select crfunctiondatasetid from crFunctionDatasets
         }
 
 
+        private void writeIncomeGrowthFile(string sqlWhereClause, ESIL.DBUtility.FireBirdHelperBase fb, string fileName)
+        {
+            try
+            {
+
+                lbProcess.Text = "Querying Database...";
+                lbProcess.Refresh();
+                this.Refresh();
+                string commandText = string.Empty;
+                /*
+                commandText = string.Format(@"
+select count(*)
+FROM INCOMEGROWTHADJFACTORS a
+join INCOMEGROWTHADJDATASETS b on a.INCOMEGROWTHADJDATASETID = b.INCOMEGROWTHADJDATASETID where {0}", sqlWhereClause);
+                Int32 count = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
+                pBarExport.Maximum = count;
+                lbProcess.Refresh();
+                */
+                DataTable dtOut = new DataTable();
+                dtOut.Columns.Add("Year", typeof(int));
+                dtOut.Columns.Add("Mean", typeof(double));
+                dtOut.Columns.Add("EndpointGroup", typeof(string));
+
+
+                commandText = string.Format(@"
+select endpointGroups, YYear, Mean
+FROM INCOMEGROWTHADJFACTORS a
+join INCOMEGROWTHADJDATASETS b on a.INCOMEGROWTHADJDATASETID = b.INCOMEGROWTHADJDATASETID where {0}", sqlWhereClause);
+
+
+                DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
+
+                lbProcess.Text = "Exporting File...";
+                lbProcess.Refresh();
+                this.Refresh();
+
+                foreach (DataRow dr in ds.Tables[0].Rows)
+                {
+                    DataRow newdr = dtOut.NewRow();
+                    newdr["Year"] = Convert.ToInt32(dr["YYear"]);
+                    newdr["Mean"] = Convert.ToDouble(dr["Mean"]);
+                    newdr["EndpointGroup"] = dr["endpointGroups"].ToString();
+                    dtOut.Rows.Add(newdr);
+                }
+
+                SaveCSVOrExcel(dtOut, fileName);
+            }
+            catch (Exception ex)
+            {
+                errorOccur = true;
+                Logger.LogError(ex.Message);
+            }
+        }
+
+        private void writePollutantFile(string sqlWhereClause, ESIL.DBUtility.FireBirdHelperBase fb, string fileName)
+        {
+            try
+            {
+
+                lbProcess.Text = "Querying Database...";
+                lbProcess.Refresh();
+                this.Refresh();
+                string commandText = string.Empty;
+                //pBarExport.Maximum = 100; //TODO: What is reasonable here?
+                //lbProcess.Refresh();
+                DateTime dt = new DateTime(2011, 1, 1);
+                int i;
+                int j;
+                DataTable dtOut = new DataTable();
+                dtOut.Columns.Add("Label", typeof(string));
+                dtOut.Columns.Add("Value", typeof(string));
+
+                // Pollutant Info
+                commandText = string.Format(@"
+SELECT a.POLLUTANTNAME, a.OBSERVATIONTYPE
+FROM POLLUTANTS a
+where {0}", sqlWhereClause);
+
+                DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
+                lbProcess.Text = "Exporting File...";
+                this.Refresh();
+
+                foreach (DataRow dr in ds.Tables[0].Rows)
+                {
+                    DataRow newdr = dtOut.NewRow();
+                    newdr["Label"] = "Pollutant";
+                    newdr["Value"] = dr["POLLUTANTNAME"].ToString();
+                    dtOut.Rows.Add(newdr);
+
+                    newdr = dtOut.NewRow();
+                    newdr["Label"] = "Observation Type";
+                    newdr["Value"] = (((ObservationtypeEnum)Convert.ToInt32(dr["OBSERVATIONTYPE"]) == ObservationtypeEnum.Daily) ? "Daily" : "Hourly");
+                    dtOut.Rows.Add(newdr);
+                }
+
+                // Seasons
+                commandText = string.Format(@"
+SELECT startday, endday
+FROM POLLUTANTS a
+join POLLUTANTSEASONS b on a.POLLUTANTID = b.POLLUTANTID
+where {0}
+order by 1, 2", sqlWhereClause);
+
+                ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
+                this.Refresh();
+                i = 0;
+                foreach (DataRow dr in ds.Tables[0].Rows)
+                {
+                    DataRow newdr = dtOut.NewRow();
+                    newdr["Label"] = "Season" + i++;
+                    newdr["Value"] = dt.AddDays(Convert.ToInt32(dr["STARTDAY"])).GetDateTimeFormats('M')[0].ToString() + "-" + dt.AddDays(Convert.ToInt32(dr["ENDDAY"])).GetDateTimeFormats('M')[0].ToString();
+                    dtOut.Rows.Add(newdr);
+                }
+
+                // Metrics
+                commandText = string.Format(@"
+SELECT METRICID, METRICNAME
+FROM POLLUTANTS a
+join METRICS b on a.POLLUTANTID = b.POLLUTANTID
+where {0}", sqlWhereClause);
+
+                ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
+                this.Refresh();
+                i = 0;
+                foreach (DataRow dr in ds.Tables[0].Rows)
+                {
+                    DataRow newdr = dtOut.NewRow();
+                    newdr["Label"] = "Metric" + i++;
+                    newdr["Value"] = dr["METRICNAME"].ToString();
+                    dtOut.Rows.Add(newdr);
+
+
+                    // Seasonal Metrics
+                    commandText = string.Format(@"
+SELECT SEASONALMETRICNAME
+FROM POLLUTANTS a
+join METRICS b on a.POLLUTANTID = b.POLLUTANTID
+join SEASONALMETRICS c on b.METRICID = c.METRICID
+where {0}
+and b.METRICID = {1}", sqlWhereClause, Convert.ToInt32(dr["METRICID"]) );
+
+                    FirebirdSql.Data.FirebirdClient.FbDataReader fbDataReader = fb.ExecuteReader(CommonClass.Connection, CommandType.Text, commandText);
+
+                    j = 0;
+                    while (fbDataReader.Read())
+                    {
+                        DataRow newdr2 = dtOut.NewRow();
+                        newdr2["Label"] = "SeasonalMetric" + j++;
+                        newdr2["Value"] = fbDataReader["SEASONALMETRICNAME"].ToString();
+                        dtOut.Rows.Add(newdr2);
+                    }
+
+                }
+
+                SaveCSVOrExcel(dtOut, fileName);
+            }
+            catch (Exception ex)
+            {
+                errorOccur = true;
+                Logger.LogError(ex.Message);
+            }
+        }
         public void SaveCSVOrExcel(DataTable dt, string fileName)
         {
-            // TODO: Harden this function
+            pBarExport.Value = 0;
+            pBarExport.Maximum = dt.Rows.Count;
+
             if (Path.GetExtension(fileName) == ".csv")
             {
                 SaveCSV(dt, fileName);
@@ -2214,10 +2518,10 @@ where crfunctiondatasetid in (select crfunctiondatasetid from crFunctionDatasets
                 SaveExcel(dt, fileName);
             }
         }
-        // This function assumes that pBarExport.Maximum has been set appropriately
+
         public void SaveCSV(DataTable dt, string fileName)
         {
-            pBarExport.Value = 0;
+           
             FileStream fs = new FileStream(fileName, System.IO.FileMode.Create, System.IO.FileAccess.Write);
             StreamWriter sw = new StreamWriter(fs, System.Text.Encoding.UTF8);
             string data = "";
@@ -2260,10 +2564,8 @@ where crfunctiondatasetid in (select crfunctiondatasetid from crFunctionDatasets
             fs.Close();
         }
 
-        // This function assumes that pBarExport.Maximum has been set appropriately
         public void SaveExcel(DataTable dt, string fileName)
         {
-            pBarExport.Value = 0;
 
             // Create a spreadsheet document by supplying the filepath.
             // By default, AutoSave = true, Editable = true, and Type = xlsx.
@@ -2277,25 +2579,39 @@ where crfunctiondatasetid in (select crfunctiondatasetid from crFunctionDatasets
             WorksheetPart worksheetPart = workbookPart.AddNewPart<WorksheetPart>();
             worksheetPart.Worksheet = new Worksheet(new SheetData());
 
+            // Add Sheets to the Workbook.
+            DocumentFormat.OpenXml.Spreadsheet.Sheets sheets = spreadsheetDocument.WorkbookPart.Workbook.AppendChild<DocumentFormat.OpenXml.Spreadsheet.Sheets>(new DocumentFormat.OpenXml.Spreadsheet.Sheets());
+
+            // Append a new worksheet and associate it with the workbook.
+            Sheet sheet = new Sheet()
+            {
+                Id = spreadsheetDocument.WorkbookPart.GetIdOfPart(worksheetPart),
+                SheetId = 1,
+                Name = "Sheet1"
+            };
+            sheets.Append(sheet);
+
             for (int i = 0; i < dt.Columns.Count; i++)
             {
-                if (i < dt.Columns.Count - 1)
-                {
-                    Cell cell = GetCell(worksheetPart.Worksheet, "A", 1);
+                Cell cell = GetCell(worksheetPart.Worksheet, ColumnNameFromIndex(Convert.ToUInt32(i + 1)), 1);
+                cell.CellValue = new CellValue(dt.Columns[i].ColumnName.ToString());
+                cell.DataType = new EnumValue<CellValues>(CellValues.String);
 
-                    cell.CellValue = new CellValue(dt.Columns[i].ColumnName.ToString());
-                }
             }
-
+            
             for (int i = 0; i < dt.Rows.Count; i++)
             {
                 for (int j = 0; j < dt.Columns.Count; j++)
                 {
-                    Cell cell = GetCell(worksheetPart.Worksheet, "A", 1);  //TODO: Set column and row
+                    Cell cell = GetCell(worksheetPart.Worksheet, ColumnNameFromIndex(Convert.ToUInt32(j+1)), Convert.ToUInt32(i+2));  
                     cell.CellValue = new CellValue(dt.Rows[i][j].ToString());
+                    cell.DataType = new EnumValue<CellValues>(CellValues.String);
                 }
+                //lbProcess.Text = i + "/" + dt.Rows.Count;
+                //lbProcess.Refresh();
                 pBarExport.PerformStep();
             }
+            
             worksheetPart.Worksheet.Save();
             workbookPart.Workbook.Save();
 
@@ -2348,10 +2664,24 @@ where crfunctiondatasetid in (select crfunctiondatasetid from crFunctionDatasets
 
                 return newCell;
             }
-
-
         }
-        private void WriteGriddefinitionFile(string setupid, ESIL.DBUtility.FireBirdHelperBase fb, string targetSHPFilePath)
+
+        public static string ColumnNameFromIndex(uint columnIndex)
+        {
+            uint remainder;
+            string columnName = "";
+
+            while (columnIndex > 0)
+            {
+                remainder = (columnIndex - 1) % 26;
+                columnName = System.Convert.ToChar(65 + remainder).ToString() + columnName;
+                columnIndex = (uint)((columnIndex - remainder) / 26);
+            }
+
+            return columnName;
+        }
+    
+        private void writeGriddefinitionFile(string setupid, ESIL.DBUtility.FireBirdHelperBase fb, string targetSHPFilePath)
         {
             try
             {

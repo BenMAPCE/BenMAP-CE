@@ -1001,7 +1001,10 @@ namespace BenMAP
 
                 List<GridRelationship> lstGridRelationshipAll = CommonClass.LstGridRelationshipAll;
                 string str = DateTime.Now.ToString();
-                Dictionary<string, int> dicRace = Configuration.ConfigurationCommonClass.getAllRace(); Dictionary<string, int> dicEthnicity = Configuration.ConfigurationCommonClass.getAllEthnicity(); Dictionary<string, int> dicGender = Configuration.ConfigurationCommonClass.getAllGender(); foreach (CRSelectFunction crSelectFunction in CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction)
+                Dictionary<string, int> dicRace = Configuration.ConfigurationCommonClass.getAllRace();
+                Dictionary<string, int> dicEthnicity = Configuration.ConfigurationCommonClass.getAllEthnicity();
+                Dictionary<string, int> dicGender = Configuration.ConfigurationCommonClass.getAllGender();
+                foreach (CRSelectFunction crSelectFunction in CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction)
                 {
                     lstAsyns.Add(crSelectFunction.BenMAPHealthImpactFunction.ID.ToString());
                 }
