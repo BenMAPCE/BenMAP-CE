@@ -9112,6 +9112,11 @@ namespace BenMAP
                         }
                         else
                         {
+                            if (lstCRTable.First().CRCalculateValues.First().BetaVariationName != null)
+                            {
+                                string bvType = lstCRTable.First().CRCalculateValues.First().BetaVariationName;
+                                OLVResultsShow.Columns.Add(new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.BetaName", AspectToStringFormat = "{0:N4}", Text = bvType, Width = bvType.Length * 8, IsEditable = false });
+                            }
                             foreach (FieldCheck fieldCheck in cflstResult)
                             {
 
