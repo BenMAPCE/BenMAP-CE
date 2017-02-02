@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using DotSpatial.Data;
 using GeoAPI.Geometries;
 
-namespace BenMAP
+namespace BenMAP.Crosswalks
 {
     public static class CrosswalksCalculator
     {

@@ -1,4 +1,4 @@
-﻿namespace BenMAP
+﻿namespace BenMAP.Crosswalks
 {
     partial class frmCrosswalk
     {

@@ -355,6 +355,7 @@
       <DependentUpon>SelectAirQualityGrid.cs</DependentUpon>
     </Compile>
     <Compile Include="Crosswalks\CrosswalksCalculator.cs" />
+    <Compile Include="Crosswalks\DAL.cs" />
     <Compile Include="Crosswalks\frmCrosswalk.cs">
       <SubType>Form</SubType>
     </Compile>

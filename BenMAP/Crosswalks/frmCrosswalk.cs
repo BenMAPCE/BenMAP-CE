@@ -4,19 +4,18 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using DotSpatial.Data;
-using System.Data;                      //dpa provides access to CommandType
 
-namespace BenMAP
+namespace BenMAP.Crosswalks
 {
     public partial class frmCrosswalk : Form
     {
-
         //Define local variables
         private CancellationTokenSource _cts = new CancellationTokenSource();
+        private readonly DAL _dal = new DAL(CommonClass.Connection);
+
         System.Data.DataSet _ds1, _ds2;
         private Boolean _HandsFree = false;
         private int _GridID1, _GridID2;
-        ESIL.DBUtility.FireBirdHelperBase _fb = new ESIL.DBUtility.ESILFireBirdHelper();
 
         public frmCrosswalk()
         {
@@ -45,11 +44,9 @@ namespace BenMAP
             _HandsFree = true;
             _GridID1 = GridID1;
             _GridID2 = GridID2;
-
-            commandText = string.Format("select GRIDDEFINITIONNAME from GRIDDEFINITIONS where GRIDDEFINITIONID={0}", _GridID1);
-            string GridName1 = _fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText).ToString();
-            commandText = string.Format("select GRIDDEFINITIONNAME from GRIDDEFINITIONS where GRIDDEFINITIONID={0}", _GridID2);
-            string GridName2 = _fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText).ToString();
+            
+            string GridName1 = _dal.GetGridDefinitionName(_GridID1);
+            string GridName2 = _dal.GetGridDefinitionName(_GridID2);
 
             this.Text = string.Format("BenMAP - Crosswak Calculator - {0} & {1}",GridName1,GridName2) ;
             this.ShowDialog(); // When the form is activated it will check if we are in hands free mode and if so will automatically run the crosswalk and write the database.
@@ -92,61 +89,17 @@ namespace BenMAP
              * The two tables of interest are: GRIDDEFINITIONPERCENTAGES and GRIDDEFINITIONPERCENTAGEENTRIES.
              */
 
-            DialogResult result = MessageBox.Show("This action will delete all current crosswalk definitions requiring them to be rebuilt when they are requested.", "Confirm Crosswalk Deletion", MessageBoxButtons.OKCancel,MessageBoxIcon.Information);
-            if (result== DialogResult.Cancel) {
+            var result = MessageBox.Show(
+                    "This action will delete all current crosswalk definitions requiring them to be rebuilt when they are requested.",
+                    "Confirm Crosswalk Deletion", MessageBoxButtons.OKCancel, MessageBoxIcon.Information);
+            if (result == DialogResult.Cancel)
+            {
                 return;
             }
-            int intResult = 0;
-            string commandText = "";
 
-            commandText = "DELETE from GRIDDEFINITIONPERCENTAGES";
-            intResult = _fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);                    
+            _dal.DeleteAllCrosswalks();
 
-            commandText = "DELETE from GRIDDEFINITIONPERCENTAGEENTRIES";
-            intResult = _fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);   
-            
-            result = MessageBox.Show("All existing crosswalk definitions deleted.","Complete", MessageBoxButtons.OK, MessageBoxIcon.Information); 
-
-        }
-
-        private void DeleteSelectedCrosswalk()
-        {
-            /* dpa 1/28/2017 this function is used to clear the contents of the crosswalk tables just for the two selected entries.
-             * The two tables of interest are: GRIDDEFINITIONPERCENTAGES and GRIDDEFINITIONPERCENTAGEENTRIES.
-             */
-            string commandText = "";
-            int iResult = 0;
-
-            //find the correct percentageid entry for the forward direction crosswalk
-            commandText = string.Format("SELECT PERCENTAGEID from GRIDDEFINITIONPERCENTAGES where SOURCEGRIDDEFINITIONID={0} and TARGETGRIDDEFINITIONID={1}", _GridID1, _GridID2);
-            try
-            {
-                iResult = Convert.ToInt32(_fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
-            }
-            catch { }
-
-            //remove this percentageid entry
-            commandText = string.Format("DELETE from GRIDDEFINITIONPERCENTAGEENTRIES where PERCENTAGEID={0}", iResult);
-            _fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
-            
-            //remove all data entries for this percentageid
-            commandText = string.Format("DELETE from GRIDDEFINITIONPERCENTAGES where PERCENTAGEID={0}", iResult);
-            _fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
-
-            //find the correct percentageid entry for the backward direction crosswalk
-            commandText = string.Format("SELECT PERCENTAGEID from GRIDDEFINITIONPERCENTAGES where SOURCEGRIDDEFINITIONID={0} and TARGETGRIDDEFINITIONID={1}", _GridID2, _GridID1);
-            try
-            {
-                iResult = Convert.ToInt32(_fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
-            }
-            catch { }
-            //remove this percentageid entry
-            commandText = string.Format("DELETE from GRIDDEFINITIONPERCENTAGEENTRIES where PERCENTAGEID={0}", iResult);
-            _fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
-
-            //remove all data entries for this percentageid
-            commandText = string.Format("DELETE from GRIDDEFINITIONPERCENTAGES where PERCENTAGEID={0}", iResult);
-            _fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+            MessageBox.Show("All existing crosswalk definitions deleted.","Complete", MessageBoxButtons.OK, MessageBoxIcon.Information); 
 
         }
 
@@ -155,11 +108,13 @@ namespace BenMAP
             if (_HandsFree == false)
             {
                 //in regular mode, prepopulate both list boxes with the available grids so we can select them
-                string commandText = string.Format("select GridDefinitionName, GridDefinitionID from GridDefinitions where setupID={0}", CommonClass.ManageSetup.SetupID);
-                _ds1 = _fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
-                _ds2 = _ds1.Copy();
-                lstCrosswalks1.DataSource = _ds1.Tables[0];
-                lstCrosswalks2.DataSource = _ds2.Tables[0];
+
+                var tb1 = _dal.GetGridDefinitions(CommonClass.ManageSetup.SetupID);
+                var tb2 = tb1.Copy();
+
+                lstCrosswalks1.DataSource = tb1;
+                lstCrosswalks2.DataSource = tb2;
+
                 lstCrosswalks1.DisplayMember = "GridDefinitionName";
                 lstCrosswalks2.DisplayMember = "GridDefinitionName";
                 lstCrosswalks1.ValueMember = "GridDefinitionID";
@@ -168,7 +123,7 @@ namespace BenMAP
             else
             {
                 //in handsfree mode, we already have access to the gridID's we need so just run the crosswalks
-                DeleteSelectedCrosswalk();
+                _dal.DeleteCrosswalk(_GridID1, _GridID2);
                 PerformCrosswalk();
             }
         }
@@ -184,31 +139,21 @@ namespace BenMAP
             try
             {
                 //Check if they already have an entry for this crosswalk in GridDefinitionPercentages table
-                commandText = string.Format("select Count(*) from GridDefinitionPercentages where SOURCEGRIDDEFINITIONID={0} AND TARGETGRIDDEFINITIONID={1}", _GridID1, _GridID2);
-                iResult = Convert.ToInt32(_fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
-                if (iResult > 0)
+                if (_dal.CrosswalkExists(_GridID1, _GridID2))
                 {
-                    ForwardExists = true;                
-                }
-
-                commandText = string.Format("select Count(*) from GridDefinitionPercentages where SOURCEGRIDDEFINITIONID={0} AND TARGETGRIDDEFINITIONID={1}", _GridID2, _GridID1);
-                iResult = Convert.ToInt32(_fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
-                if (iResult > 0)
-                {
-                    BackwardExists = true;
-                }
-
-                if (ForwardExists & BackwardExists)
-                {
-                    DialogResult result = MessageBox.Show("The requested crosswalk already exists in the database." + Environment.NewLine + "Do you want to replace it?", "Replace crosswalk", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+                    var result = MessageBox.Show(
+                            "The requested crosswalk already exists in the database." + Environment.NewLine +
+                            "Do you want to replace it?", "Replace crosswalk", MessageBoxButtons.OKCancel,
+                            MessageBoxIcon.Question);
                     if (result == DialogResult.Cancel)
                     {
                         return;
                     }
                 }
+
                 //If we get here it means they want us to delete the crosswalk, or it doesn't exist, or only half exists.
                 //so just to be safe, let's try to delete whatever is or may be there.
-                DeleteSelectedCrosswalk();
+                _dal.DeleteCrosswalk(_GridID1, _GridID2);
 
                 //Call a separate function to actually perform the crosswalk
                 PerformCrosswalk();
@@ -222,13 +167,9 @@ namespace BenMAP
         {
             //This function uses multithreading. Be careful with it.
 
-            string commandText = "";
-
             //Get the shapefile names based on the grid definition id
-            commandText = string.Format("select ShapeFileName from ShapeFileGridDefinitionDetails where GridDefinitionID={0}", _GridID1);
-            string Shapefile1 = _fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText).ToString();
-            commandText = string.Format("select ShapeFileName from ShapeFileGridDefinitionDetails where GridDefinitionID={0}", _GridID2);
-            string Shapefile2 = _fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText).ToString();
+            string Shapefile1 = _dal.GetShapeFilenameForGrid(_GridID1);
+            string Shapefile2 = _dal.GetShapeFilenameForGrid(_GridID2);
 
             string AppPath = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\";
 
@@ -243,10 +184,17 @@ namespace BenMAP
             Task.Factory.StartNew(delegate
             {
                 //perform the crosswalk calculation
-                return CrosswalksCalculator.Calculate(fsInput1, fsInput2, _cts.Token, progress);
-            }).ContinueWith(delegate(Task<Dictionary<CrosswalkIndex, CrosswalkRatios>> task)
-            {
+                var results =  CrosswalksCalculator.Calculate(fsInput1, fsInput2, _cts.Token, progress);
 
+                progress.OnProgressChanged("Writing results to database.", 0);
+
+                // Insert results into database
+                _dal.InsertCrosswalks(_GridID1, _GridID2, fsInput1, fsInput2, results,  _cts.Token, progress);
+
+                progress.OnProgressChanged("Crosswalks written to database.", 100);
+                
+            }).ContinueWith(delegate (Task task)
+            {
                 if (task.IsCanceled)
                 {
                     progress.OnProgressChanged("Cancelled", 100);
@@ -265,9 +213,21 @@ namespace BenMAP
                 }
                 else
                 {
-                    WriteResults(fsInput1, fsInput2, task.Result, progress);
+                    OnCrosswalkFinish();
                 }
             });
+        }
+
+        private void OnCrosswalkFinish()
+        {
+            if (_HandsFree)
+            {
+                this.Close();
+            }
+            else
+            {
+                MessageBox.Show("Crosswalk computation completed.", "Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
         }
 
 
@@ -276,99 +236,6 @@ namespace BenMAP
             //Close the form.
             _cts.Cancel();
             this.Close();
-        }
-
-        private void WriteResults(IFeatureSet fsInput1, IFeatureSet fsInput2, Dictionary<CrosswalkIndex, CrosswalkRatios> results, Progress progress)
-        {
-            /* dpa 1/28/2017 Algorithm completed successfully and we now have the results.
-            * Here we will write the results to the database and optionally to a text file for testing purposes.
-            */
-            try
-            {
-                string commandText = "";
-                tbProgress.Text = "Writing results to database.";
-
-                int PercentageID1, PercentageID2;
-
-                /* first we need to add entries to the griddefinitionpercentages table
-                 * get the highest index already in the griddefinitionpercentages table or use 1 for the next percentageID
-                 */
-                commandText = "select count(*) from GridDefinitionPercentages";
-                int iResult = Convert.ToInt32(_fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
-                if (iResult > 0)
-                {
-                    commandText = "select max(PercentageID) from GridDefinitionPercentages";
-                    PercentageID1 = Convert.ToInt32(_fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
-                }
-                else
-                {
-                    PercentageID1 = 1;
-                }
-                PercentageID2 = PercentageID1 + 1;
-
-                commandText = string.Format("insert into GridDefinitionPercentages(PERCENTAGEID,SOURCEGRIDDEFINITIONID, TARGETGRIDDEFINITIONID) "
-                    + "values({0},{1},{2})", PercentageID1, _GridID1, _GridID2);
-                _fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
-
-                commandText = string.Format("insert into GridDefinitionPercentages(PERCENTAGEID,SOURCEGRIDDEFINITIONID, TARGETGRIDDEFINITIONID) "
-                    + "values({0},{1},{2})", PercentageID2, _GridID2, _GridID1);
-                _fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
-
-                DataTable attributes1;
-                DataTable attributes2;
-                int intResult = 0;
-                double forward = 0.0;
-                double backward = 0.0;
-                int i = 0, j = 1;
-                float prog = 0;
-                var fieldNames = new[] { "COL", "ROW" };
-                float step = results.Count / 100;
-                foreach (var entry in results)
-                {
-                    //update the progress bar to show progress writing output to database - only 100 progres steps.
-                    i += 1;
-                    if (i > step * j)
-                    {
-                        j += 1;
-                        prog = Convert.ToSingle(100 * i / results.Count);
-                        progress.OnProgressChanged(string.Format("{0} of {1} written to database.", i, results.Count), prog);
-                    }
-                    //get the column and row attributes and forward backward results
-                    attributes1 = fsInput1.GetAttributes(entry.Key.FeatureId1, 1, fieldNames);
-                    attributes2 = fsInput2.GetAttributes(entry.Key.FeatureId2, 1, fieldNames);
-                    forward = entry.Value.ForwardRatio;
-                    backward = entry.Value.BackwardRatio;
-
-                    //write the entries to the firebird database
-
-                    if (forward > 0.0001)
-                    {
-                        forward = Math.Round(forward, 4); //note - rounding doesn't seem to help. The fb database still adds noise.
-                        commandText = string.Format("insert into GridDefinitionPercentageEntries(PERCENTAGEID, SOURCECOLUMN, SOURCEROW, TARGETCOLUMN, TARGETROW, PERCENTAGE,NORMALIZATIONSTATE) values({0},{1},{2},{3},{4},{5},{6})",
-                            PercentageID1, attributes1.Rows[0]["COL"], attributes1.Rows[0]["ROW"], attributes2.Rows[0]["COL"], attributes2.Rows[0]["ROW"], forward, 0);
-                        intResult = _fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
-                    }
-
-                    if (entry.Value.BackwardRatio > 0.0001)
-                    {
-                        backward = Math.Round(backward, 4);
-                        commandText = string.Format("insert into GridDefinitionPercentageEntries(PERCENTAGEID, SOURCECOLUMN, SOURCEROW, TARGETCOLUMN, TARGETROW, PERCENTAGE,NORMALIZATIONSTATE) values({0},{1},{2},{3},{4},{5},{6})",
-                            PercentageID2, attributes2.Rows[0]["COL"], attributes2.Rows[0]["ROW"], attributes1.Rows[0]["COL"], attributes1.Rows[0]["ROW"], backward, 0);
-                        intResult = _fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
-                    }
-                }
-                progress.OnProgressChanged("Crosswalks written to database.",100);
-                if (_HandsFree)
-                {
-                    this.Close();
-                }
-                else
-                {
-                    MessageBox.Show("Crosswalk computation completed.", "Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-            }
-            catch
-            { }
         }
 
         private void frmCrosswalk_FormClosing(object sender, FormClosingEventArgs e)
