@@ -4401,6 +4401,10 @@ namespace BenMAP
                                 }
                             }
                         }
+                        if (lstAllSelectCRFuntion.First().CRSelectFunctionCalculateValue.CRCalculateValues.First().BetaVariationName != null)
+                        {
+                            dt.Columns.Add("Seasonal", typeof(string));
+                        }
                         if (IncidencelstResult == null)
                         {
                             dt.Columns.Add("Point Estimate", typeof(double));
@@ -4473,6 +4477,7 @@ namespace BenMAP
                                         }
                                     }
                                 }
+                                if (dt.Columns.Contains("Seasonal")) dr["Seasonal"] = crcv.BetaName;
                                 if (dt.Columns.Contains("Point Estimate")) dr["Point Estimate"] = crcv.PointEstimate;
                                 if (dt.Columns.Contains("Population")) dr["Population"] = crcv.Population;
 
@@ -4485,7 +4490,7 @@ namespace BenMAP
                                         pollName = cr.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Variables[j].PollutantName;
                                         tempKey = "Delta_" + pollName;
 
-                                        if(dt.Columns.Contains(tempKey)) dr[tempKey] = crcv.DeltaList[j];
+                                        if (dt.Columns.Contains(tempKey)) dr[tempKey] = crcv.DeltaList[j];
                                     }
                                 }
                                 else
@@ -4520,6 +4525,10 @@ namespace BenMAP
                         CRSelectFunctionCalculateValue crTable = (CRSelectFunctionCalculateValue)_tableObject;
                         dt.Columns.Add("Col", typeof(int));
                         dt.Columns.Add("Row", typeof(int));
+                        if (crTable.CRCalculateValues.First().BetaVariationName != null)
+                        {
+                            dt.Columns.Add("Seasonal", typeof(string));
+                        }
                         dt.Columns.Add("Point Estimate", typeof(double));
                         dt.Columns.Add("Population", typeof(double));
 
@@ -4557,6 +4566,10 @@ namespace BenMAP
                             DataRow dr = dt.NewRow();
                             dr["Col"] = crcv.Col;
                             dr["Row"] = crcv.Row;
+                            if (crcv.BetaVariationName != null)
+                            {
+                                dr["Seasonal"] = crcv.BetaName;
+                            }
                             dr["Point Estimate"] = crcv.PointEstimate;
                             dr["Population"] = crcv.Population;
 
@@ -4625,6 +4638,10 @@ namespace BenMAP
                                     dt.Columns.Add(fieldCheck.FieldName);
                                 }
                             }
+                        }
+                        if (dicAPV.First().Key.Key.BetaVariationName != null)
+                        {
+                            dt.Columns.Add("Seasonal", typeof(string));
                         }
                         if (cflstResult == null)
                         {
@@ -4710,6 +4727,10 @@ namespace BenMAP
                                         dr[fieldCheck.FieldName] = getFieldNameFromlstHealthObject(fieldCheck.FieldName, crcv, k.Value);
                                     }
                                 }
+                            }
+                            if (crcv.BetaVariationName != null)
+                            {
+                                dt.Columns.Add("Seasonal", typeof(string));
                             }
                             if (cflstResult == null)
                             {
@@ -4804,6 +4825,10 @@ namespace BenMAP
                                     }
                                 }
                             }
+                            if (lstCRTable.First().CRCalculateValues.First().BetaVariationName != null)
+                            {
+                                dt.Columns.Add("Seasonal", typeof(string));
+                            }
                             if (IncidencelstResult == null)
                             {
 
@@ -4886,6 +4911,10 @@ namespace BenMAP
                                         dt.Columns.Add(fieldCheck.FieldName);
                                     }
                                 }
+                            }
+                            if (lstCRTable.First().CRCalculateValues.First().BetaVariationName != null)
+                            {
+                                dt.Columns.Add("Seasonal", typeof(string));
                             }
                             if (cflstResult == null)
                             {
@@ -5186,6 +5215,10 @@ namespace BenMAP
                                             dr[fieldCheck.FieldName] = getFieldNameFromlstHealthObject(fieldCheck.FieldName, k.Key.Key, k.Value);
                                         }
                                     }
+                                }
+                                if (k.Key.Key.BetaVariationName != null)
+                                {
+                                    dr["Seasonal"] = k.Key.Key.BetaName;
                                 }
                                 if (cflstResult == null)
                                 {
@@ -8018,7 +8051,7 @@ namespace BenMAP
                     fieldName = "BenMAPHealthImpactFunction.EndPoint";
                     break;
                 case "Pollutant":
-                    fieldName = "BenMAPHealthImpactFunction.Pollutant.PollutantName";
+                    fieldName = "BenMAPHealthImpactFunction.PollutantGroup.PollutantGroupName";
                     break;
                 case "Metric":
                     fieldName = "BenMAPHealthImpactFunction.Metric.MetricName";
@@ -9079,6 +9112,11 @@ namespace BenMAP
                         }
                         else
                         {
+                            if (lstCRTable.First().CRCalculateValues.First().BetaVariationName != null)
+                            {
+                                string bvType = lstCRTable.First().CRCalculateValues.First().BetaVariationName;
+                                OLVResultsShow.Columns.Add(new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.BetaName", AspectToStringFormat = "{0:N4}", Text = bvType, Width = bvType.Length * 8, IsEditable = false });
+                            }
                             foreach (FieldCheck fieldCheck in cflstResult)
                             {
 
