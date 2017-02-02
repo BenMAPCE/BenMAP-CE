@@ -8051,7 +8051,7 @@ namespace BenMAP
                     fieldName = "BenMAPHealthImpactFunction.EndPoint";
                     break;
                 case "Pollutant":
-                    fieldName = "BenMAPHealthImpactFunction.Pollutant.PollutantName";
+                    fieldName = "BenMAPHealthImpactFunction.PollutantGroup.PollutantGroupName";
                     break;
                 case "Metric":
                     fieldName = "BenMAPHealthImpactFunction.Metric.MetricName";
