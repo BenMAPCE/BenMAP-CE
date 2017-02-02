@@ -11782,17 +11782,25 @@ namespace BenMAP
         {
             try
             {
+                Boolean first = true;
                 FileStream fs = new FileStream(filename, FileMode.Create);
                 sw = new StreamWriter(fs, Encoding.UTF8);
                 for (int i = 0; i < tv.Count; i++)
                 {
                     if (tv[i].Nodes.Count > 0)
                     {
-                        //sw.WriteLine(tv[i].Nodes[0].Text);
                         sw.WriteLine("<" + tv[i].Text + ">");
                         foreach (TreeNode node in tv[i].Nodes)
                         {
-                            saveNode(node.Nodes);
+                            if (first)
+                            {
+                                saveStartNodes(tv[i].Nodes);
+                                first = false;
+                            }
+                            else
+                            {
+                                saveNode(node.Nodes);
+                            }
                         }
                         sw.WriteLine("</" + tv[i].Text + ">");
                     }
@@ -11877,6 +11885,15 @@ namespace BenMAP
                 else sw.WriteLine(node.Text);
             }
         }
+
+        private void saveStartNodes(TreeNodeCollection tnc)
+        {
+            foreach (TreeNode node in tnc)
+            {
+                sw.WriteLine(node.Text);
+            }
+        }
+
         private void btShowCRResult_Click(object sender, EventArgs e)
         {
             try
