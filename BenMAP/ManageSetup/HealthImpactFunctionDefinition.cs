@@ -453,11 +453,19 @@ namespace BenMAP
                 string[] BaselineAvailableVariables = new string[] { "Beta", "DELTAQ", "POP", "Incidence", "Prevalence", "Q0", "Q1", "A", "B", "C" };
                 lstBaselineAvailableVariables.Items.AddRange(BaselineAvailableVariables);
                 lstBaselineAvailableVariables.SelectedIndex = -1;
-                commandText = "select LocationTypeName from LocationType";
+                commandText =string.Format( @"select a.GEOGRAPHICAREANAME 
+from GEOGRAPHICAREAS a
+join GRIDDEFINITIONS b on a.GRIDDEFINITIONID = b.GRIDDEFINITIONID
+where b.setupid = {0}
+order by a.GEOGRAPHICAREANAME", CommonClass.ManageSetup.SetupID);
                 ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
-                cboLocationName.DataSource = ds.Tables[0];
-                cboLocationName.DisplayMember = "LocationTypeName";
-                cboLocationName.SelectedIndex = -1;
+                //We want "Entire Area" to always be the first item on the list. It'll be the default unless something else is chosen.
+                cboLocationName.Items.Add("Entire Area");
+                for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                {
+                    cboLocationName.Items.Add(Convert.ToString(ds.Tables[0].Rows[i]["GEOGRAPHICAREANAME"]));
+                }
+                cboLocationName.SelectedIndex = 0;
 
             }
             catch (Exception ex)
@@ -912,6 +920,16 @@ namespace BenMAP
             {
                 Logger.LogError(ex);
             }
+        }
+
+        private void label9_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void cboLocationName_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }
