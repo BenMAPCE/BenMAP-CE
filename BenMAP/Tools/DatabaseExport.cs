@@ -2715,7 +2715,9 @@ and b.METRICID = {1}", sqlWhereClause, Convert.ToInt32(dr["METRICID"]) );
                     {
                         case 0:
                             // TODO: How will we handle this type?
-                            break;
+                            MessageBox.Show("This type of grid definition is not supported for export.", "Unsupported Format");
+                            errorOccur = true;
+                            return;
                         case 1:
                             commandText = string.Format("select shapefilename from shapefilegriddefinitiondetails where GriddefinitionID ={0}", Convert.ToInt16(ds.Tables[0].Rows[i]["GRIDDEFINITIONID"]));
                             shapefilename = Convert.ToString(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
@@ -2743,6 +2745,12 @@ and b.METRICID = {1}", sqlWhereClause, Convert.ToInt32(dr["METRICID"]) );
                     if (File.Exists(sourceFilePath))
                     {
                         File.Copy(sourceFilePath, Path.ChangeExtension(targetSHPFilePath, ".dbf"), true);
+                    }
+
+                    sourceFilePath = CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + shapefilename + ".prj";
+                    if (File.Exists(sourceFilePath))
+                    {
+                        File.Copy(sourceFilePath, Path.ChangeExtension(targetSHPFilePath, ".prj"), true);
                     }
                     pBarExport.PerformStep();
 
