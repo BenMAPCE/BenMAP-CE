@@ -20,6 +20,16 @@ namespace BenMAP.Configuration
 {
     public class ConfigurationCommonClass
     {
+
+        public enum incidenceAveraging  // incidence averaging choices
+        {
+            averageAll = 0, // use the average incidence rate across all races/ethnicities/genders
+            averageFiltered = 1, // filter the incidence rate to match the one(s) selected on the health impact form (HealthImpactFunctions.cs)
+        }
+
+        // global variable to hold user selection of averaging type
+        public static incidenceAveraging indidenceAvgSelected = incidenceAveraging.averageAll;
+        
         public static void ClearCRSelectFunctionCalculateValueLHS(ref CRSelectFunctionCalculateValue cRSelectFunctionCalculateValue)
         {
 
@@ -658,13 +668,15 @@ namespace BenMAP.Configuration
         {
             try
             {
-                List<int> lstInt = new List<int>();
-                for (int i = 0; i < LatinHypercubePoints; i++)
-                {
-                    lstInt.Add(Convert.ToInt16(Convert.ToDouble(i + 1) * 100.00 / Convert.ToDouble(LatinHypercubePoints) - (100.00 / (2 * Convert.ToDouble(LatinHypercubePoints)))));
-                }
+            //    List<int> lstInt = new List<int>();
+            //    for (int i = 0; i < LatinHypercubePoints; i++)
+            //    {
+            //        lstInt.Add(Convert.ToInt16(Convert.ToDouble(i + 1) * 100.00 / Convert.ToDouble(LatinHypercubePoints) - (100.00 / (2 * Convert.ToDouble(LatinHypercubePoints)))));
+            //    }
                 double[] lhsResultArray = new double[LatinHypercubePoints];
                 Meta.Numerics.Statistics.Sample sample = null;
+                // distribution switch statement
+                System.Console.WriteLine("Distribution " + crSelectFunction.BenMAPHealthImpactFunction.BetaDistribution);
                 switch (crSelectFunction.BenMAPHealthImpactFunction.BetaDistribution)
                 {
                     case "None":
@@ -764,6 +776,7 @@ namespace BenMAP.Configuration
 
                         }
                         lstCustom.Sort();
+                        //calculate percentile range
                         for (int i = 0; i < LatinHypercubePoints; i++)
                         {
                             lhsResultArray[i] = lstCustom.GetRange(i * (lstCustom.Count / LatinHypercubePoints), (lstCustom.Count / LatinHypercubePoints)).Median();
@@ -1928,7 +1941,7 @@ namespace BenMAP.Configuration
                         {
                             diclstPopulationAttribute[fbDataReader["CColumn"].ToString() + "," + fbDataReader["Row"].ToString()] += Convert.ToSingle(d);
                         }
-                    }
+                    }// end while
                     fbDataReader.Dispose();
                     foreach (KeyValuePair<string, float> k in diclstPopulationAttribute)
                     {
@@ -2019,6 +2032,7 @@ namespace BenMAP.Configuration
                     { }
                 }
                 if (benMAPPopulation.GridType.GridDefinitionID == GridDefinitionID || ((benMAPPopulation.GridType.GridDefinitionID == 28 || benMAPPopulation.GridType.GridDefinitionID == 27) && (GridDefinitionID == 27 || GridDefinitionID == 28)))
+               
                 {
                     return dicPopulationAttribute;
                 }
@@ -2105,9 +2119,9 @@ namespace BenMAP.Configuration
                                 }
                             }
                         }
-                    }
+                    }// end else
                     dicPopulationAttribute = dicPopulationAttributeReturn.Where(p => p.Value != 0).ToDictionary(p => p.Key, p => p.Value);
-                }
+                }// end dumb else
 
 
                 diclstPopulationAttribute = null;
@@ -2119,7 +2133,7 @@ namespace BenMAP.Configuration
                 return null;
             }
         }
-
+        // what is going on here???????????????????????
         ///<summary>returns a dictionary containing the age bins and their start and end ages</summary> 
         public static Dictionary<string, double> getDicAge(CRSelectFunction crSelectFunction)
         {
@@ -2199,61 +2213,63 @@ namespace BenMAP.Configuration
                 string strRace = "";
                 string strEthnicity = "";
                 string strGender = "";                
-
-                // add filter for race
-                //strRace = " and (b.RaceID=6)";
-                if (!string.IsNullOrEmpty(crSelectFunction.Race) && (crSelectFunction.Race.ToLower() != "all"))
+                // this is performing a mapping from incidence age bins to population age bins -AS
+                // BF-531 - check to see if user wants to use average or filtered incidence rates
+                if (ConfigurationCommonClass.indidenceAvgSelected != incidenceAveraging.averageAll)
                 {
-                    if (dicRace.ContainsKey(crSelectFunction.Race))
+                    // add filter for race
+                    //strRace = " and (b.RaceID=6)";
+                    if (!string.IsNullOrEmpty(crSelectFunction.Race) && (crSelectFunction.Race.ToLower() != "all"))
                     {
-                        int raceID = dicRace[crSelectFunction.Race];
+                        if (dicRace.ContainsKey(crSelectFunction.Race))
+                        {
+                            int raceID = dicRace[crSelectFunction.Race];
 
-                        //string raceSQL = String.Format("SELECT count(*) FROM INCIDENCERATES where incidencedatasetid = {0} and raceid = {1}", iid, raceID);
-                        //int raceCount = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, raceSQL));
-                        //if (raceCount > 0)
-                        //{
+                            //string raceSQL = String.Format("SELECT count(*) FROM INCIDENCERATES where incidencedatasetid = {0} and raceid = {1}", iid, raceID);
+                            //int raceCount = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, raceSQL));
+                            //if (raceCount > 0)
+                            //{
                             //if incidence exists, then use it
                             strRace = string.Format(" and (b.RaceID={0})", raceID);
-                        //}
+                            //}
+                        }
                     }
-                }
-
-                //add filter for ethnicity
-                //strEthnicity = " and (b.EthnicityID=4)";
-                if (!string.IsNullOrEmpty(crSelectFunction.Ethnicity) && (crSelectFunction.Ethnicity.ToLower() != "all"))
-                {
-                    if (dicEthnicity.ContainsKey(crSelectFunction.Ethnicity))
+                    //add filter for ethnicity
+                    //strEthnicity = " and (b.EthnicityID=4)";
+                    if (!string.IsNullOrEmpty(crSelectFunction.Ethnicity) && (crSelectFunction.Ethnicity.ToLower() != "all"))
                     {
-                        int ethnicityID = dicEthnicity[crSelectFunction.Ethnicity];
+                        if (dicEthnicity.ContainsKey(crSelectFunction.Ethnicity))
+                        {
+                            int ethnicityID = dicEthnicity[crSelectFunction.Ethnicity];
 
-                        //if incidence exists, then use it
-                        //string ethnicitySQL = String.Format("SELECT count(*) FROM INCIDENCERATES where incidencedatasetid = {0} and ethnicityid = {1}", iid, ethnicityID);
-                        //int ethnicityCount = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, ethnicitySQL));
-                        //if (ethnicityCount > 0)
-                        //{
+                            //if incidence exists, then use it
+                            //string ethnicitySQL = String.Format("SELECT count(*) FROM INCIDENCERATES where incidencedatasetid = {0} and ethnicityid = {1}", iid, ethnicityID);
+                            //int ethnicityCount = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, ethnicitySQL));
+                            //if (ethnicityCount > 0)
+                            //{
                             strEthnicity = string.Format(" and (b.EthnicityID={0})", ethnicityID);
-                        //}
+                            //}
+                        }
                     }
-                }
-
-                //add filter for gender
-                //strGender = " and (b.GenderID=4)";
-                if (!string.IsNullOrEmpty(crSelectFunction.Gender) && (crSelectFunction.Gender.ToLower() != "all"))
-                {
-                    if (dicGender.ContainsKey(crSelectFunction.Gender))
+                
+                    //add filter for gender
+                    //strGender = " and (b.GenderID=4)";
+                    if (!string.IsNullOrEmpty(crSelectFunction.Gender) && (crSelectFunction.Gender.ToLower() != "all"))
                     {
-                        int genderID = dicGender[crSelectFunction.Gender];
+                        if (dicGender.ContainsKey(crSelectFunction.Gender))
+                        {
+                            int genderID = dicGender[crSelectFunction.Gender];
 
-                        //if incidence exists, then use it
-                        //string genderSQL = String.Format("SELECT count(*) FROM INCIDENCERATES where incidencedatasetid = {0} and genderid = {1}", iid, genderID);
-                        //int genderCount = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, genderSQL));
-                        //if (genderCount > 0)
-                        //{
+                            //if incidence exists, then use it
+                            //string genderSQL = String.Format("SELECT count(*) FROM INCIDENCERATES where incidencedatasetid = {0} and genderid = {1}", iid, genderID);
+                            //int genderCount = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, genderSQL));
+                            //if (genderCount > 0)
+                            //{
                             strGender = string.Format(" and (b.GenderID={0})", genderID);
-                        //}
+                            //}
+                        }
                     }
                 }
-
 
 
 
@@ -2385,8 +2401,8 @@ namespace BenMAP.Configuration
             }
 
         }
-      
 
+        
         private static List<string> lstSystemVariableName;
         public static List<string> LstSystemVariableName
         {
@@ -2570,14 +2586,19 @@ namespace BenMAP.Configuration
                 catch
                 {
                 }
-
+               //debug file
+                if (CommonClass.getDebugValue())
+                {               
+                    Logger.debuggingOut.Append("Column,Row,AGERANGEID,Type,a,b,c,beta,delta,control,baseline,incidence,population,prevelance,result\n");
+                }
+                   
 
                 double baseValue = 0;
                 double controlValue = 0;
                 double populationValue = 0;
                 double incidenceValue = 0;
                 double prevalenceValue = 0;
-
+                
                 Dictionary<string, double> dicPopValue = new Dictionary<string, double>();
                 Dictionary<string, double> dicIncidenceValue = new Dictionary<string, double>();
                 Dictionary<string, double> dicPrevalenceValue = new Dictionary<string, double>();
@@ -2669,8 +2690,11 @@ namespace BenMAP.Configuration
                 }
                 foreach (ModelResultAttribute modelResultAttribute in baseControlGroup.Base.ModelResultAttributes)
                 {
-
-
+                    bool debug = false;
+                    if (modelResultAttribute.Col == 312 && modelResultAttribute.Row == 97)
+                    {
+                        debug = true;
+                    }
 
 
 
@@ -2685,10 +2709,11 @@ namespace BenMAP.Configuration
                             if (dicPopulationAllAge.Keys.Contains(modelResultAttribute.Col + "," + modelResultAttribute.Row + "," + s.Key))
                                 populationValue += dicPopulationAllAge[modelResultAttribute.Col + "," + modelResultAttribute.Row + "," + s.Key] * s.Value;
                         }
+                        
                     }
                     if (populationValue == 0)
                         continue;
-                    dicIncidenceValue = null; dicPrevalenceValue = null; dicPopValue = null; dicIncidenceValue = new Dictionary<string, double>();
+                    dicIncidenceValue = new Dictionary<string, double>();
                     dicPrevalenceValue = new Dictionary<string, double>();
                     dicPopValue = new Dictionary<string, double>();
                     if (dicIncidenceRateAttribute != null)
@@ -2698,6 +2723,7 @@ namespace BenMAP.Configuration
                             if (dicIncidenceRateAttribute.Keys.Contains((Convert.ToInt32(modelResultAttribute.Col) * 10000 + Convert.ToInt32(modelResultAttribute.Row)).ToString() + "," + s))
                             {
                                 dicIncidenceValue.Add(s, dicIncidenceRateAttribute[(Convert.ToInt32(modelResultAttribute.Col) * 10000 + Convert.ToInt32(modelResultAttribute.Row)).ToString() + "," + s]);
+
                             }
                         }
                     }
@@ -3018,7 +3044,7 @@ namespace BenMAP.Configuration
                                                     fControl = Threshold;
                                                 fDelta = fBase - fControl;
                                                 {
-                                                    CRCalculateValue cr = CalculateCRSelectFunctionsOneCel(sCRID, hasPopInstrBaseLineFunction, 1, crSelectFunction, strBaseLineFunction, strPointEstimateFunction, modelResultAttribute.Col, modelResultAttribute.Row, fBase, fControl, dicPopValue, dicIncidenceValue, dicPrevalenceValue, dicVariable, lhsResultArray);
+                                                    CRCalculateValue cr = CalculateCRSelectFunctionsOneCel(sCRID, hasPopInstrBaseLineFunction, 1, crSelectFunction, strBaseLineFunction, strPointEstimateFunction, modelResultAttribute.Col, modelResultAttribute.Row, fBase, fControl, dicPopValue, dicIncidenceValue, dicPrevalenceValue, dicVariable, lhsResultArray );
                                                     fPSum += cr.PointEstimate;
                                                     fBaselineSum += cr.Baseline;
                                                     if (lhsResultArray != null)
@@ -3601,20 +3627,26 @@ namespace BenMAP.Configuration
 
 
                 };
-
-
-
+                //Console.WriteLine("processing column : " + col + " row : " + row);
 
                 if (dicPopulationValue == null || dicPopulationValue.Count == 0 || dicPopulationValue.Sum(p => p.Value) == 0)
+                {
                     crCalculateValue.PointEstimate = 0;
+                    ////if (CommonClass.getDebugValue() && (CommonClass.debugGridCell = (CommonClass.debugRow == row && CommonClass.debugCol == col)))
+                    ////    Logger.debuggingOut.Append(crCalculateValue.Col + "," + crCalculateValue.Row + ",");
+                    ////file.Write(crCalculateValue.Col + "," + crCalculateValue.Row + ",");
+                    
+                }
                 else
                 {
                     if (strPointEstimateFunction.ToLower().Contains("pop"))
                     {
                         foreach (KeyValuePair<string, double> k in dicPopulationValue)
                         {
-                            incidenceValue = dicIncidenceValue != null && dicIncidenceValue.Count > 0 && dicIncidenceValue.ContainsKey(k.Key) ? dicIncidenceValue[k.Key] : 0;
+                            incidenceValue = dicIncidenceValue != null && dicIncidenceValue.Count > 0 && dicIncidenceValue.ContainsKey(k.Key) ? dicIncidenceValue[k.Key] : 0;                        
                             prevalenceValue = dicPrevalenceValue != null && dicPrevalenceValue.Count > 0 && dicPrevalenceValue.ContainsKey(k.Key) ? dicPrevalenceValue[k.Key] : 0;
+                            if (CommonClass.getDebugValue() && (CommonClass.debugGridCell = (CommonClass.debugRow == row && CommonClass.debugCol == col)))
+                                Logger.debuggingOut.Append(crCalculateValue.Col + "," + crCalculateValue.Row + "," + k.Key + ",");
                             crCalculateValue.PointEstimate += ConfigurationCommonClass.getValueFromPointEstimateFunctionString(iCRID, strPointEstimateFunction, crSelectFunction.BenMAPHealthImpactFunction.AContantValue,
                                 crSelectFunction.BenMAPHealthImpactFunction.BContantValue, crSelectFunction.BenMAPHealthImpactFunction.CContantValue,
                                 crSelectFunction.BenMAPHealthImpactFunction.Beta, baseValue - controlValue, controlValue, baseValue, incidenceValue, k.Value, prevalenceValue, dicSetupVariables) * i365;
@@ -3626,6 +3658,8 @@ namespace BenMAP.Configuration
                         {
                             incidenceValue = dicIncidenceValue != null && dicIncidenceValue.Count > 0 && dicIncidenceValue.ContainsKey(k.Key) ? dicIncidenceValue[k.Key] : 0;
                             prevalenceValue = dicPrevalenceValue != null && dicPrevalenceValue.Count > 0 && dicPrevalenceValue.ContainsKey(k.Key) ? dicPrevalenceValue[k.Key] : 0;
+                            if (CommonClass.getDebugValue() && (CommonClass.debugGridCell=(CommonClass.debugRow == row && CommonClass.debugCol == col)))
+                                Logger.debuggingOut.Append(crCalculateValue.Col + "," + crCalculateValue.Row + "," + k.Key + ",");
                             crCalculateValue.PointEstimate = ConfigurationCommonClass.getValueFromPointEstimateFunctionString(iCRID, strPointEstimateFunction, crSelectFunction.BenMAPHealthImpactFunction.AContantValue,
                                 crSelectFunction.BenMAPHealthImpactFunction.BContantValue, crSelectFunction.BenMAPHealthImpactFunction.CContantValue,
                                 crSelectFunction.BenMAPHealthImpactFunction.Beta, baseValue - controlValue, controlValue, baseValue, incidenceValue, k.Value, prevalenceValue, dicSetupVariables) * i365;
@@ -3637,6 +3671,8 @@ namespace BenMAP.Configuration
                     if (hasPopInstrBaseLineFunction && crCalculateValue.Population == 0)
                     {
                         crCalculateValue.Baseline = 0;
+                        if (CommonClass.getDebugValue() && (CommonClass.debugGridCell = (CommonClass.debugRow == row && CommonClass.debugCol == col)))
+                            Logger.debuggingOut.Append(crCalculateValue.Col + "," + crCalculateValue.Row + ",");
 
                     }
                     else
@@ -3647,6 +3683,8 @@ namespace BenMAP.Configuration
                             {
                                 incidenceValue = dicIncidenceValue != null && dicIncidenceValue.Count > 0 && dicIncidenceValue.ContainsKey(k.Key) ? dicIncidenceValue[k.Key] : 0;
                                 prevalenceValue = dicPrevalenceValue != null && dicPrevalenceValue.Count > 0 && dicPrevalenceValue.ContainsKey(k.Key) ? dicPrevalenceValue[k.Key] : 0;
+                                if (CommonClass.getDebugValue() && (CommonClass.debugGridCell = (CommonClass.debugRow == row && CommonClass.debugCol == col)))
+                                    Logger.debuggingOut.Append(crCalculateValue.Col + "," + crCalculateValue.Row + ","+k.Key+",");
                                 crCalculateValue.Baseline += ConfigurationCommonClass.getValueFromBaseFunctionString(iCRID, strBaseLineFunction, crSelectFunction.BenMAPHealthImpactFunction.AContantValue,
                                     crSelectFunction.BenMAPHealthImpactFunction.BContantValue, crSelectFunction.BenMAPHealthImpactFunction.CContantValue,
                                     crSelectFunction.BenMAPHealthImpactFunction.Beta, baseValue - controlValue, controlValue, baseValue, incidenceValue, k.Value, prevalenceValue, dicSetupVariables) * i365;
@@ -3658,6 +3696,8 @@ namespace BenMAP.Configuration
                             {
                                 incidenceValue = dicIncidenceValue != null && dicIncidenceValue.Count > 0 && dicIncidenceValue.ContainsKey(k.Key) ? dicIncidenceValue[k.Key] : 0;
                                 prevalenceValue = dicPrevalenceValue != null && dicPrevalenceValue.Count > 0 && dicPrevalenceValue.ContainsKey(k.Key) ? dicPrevalenceValue[k.Key] : 0;
+                                if (CommonClass.getDebugValue() && (CommonClass.debugGridCell = (CommonClass.debugRow == row && CommonClass.debugCol == col)))
+                                    Logger.debuggingOut.Append(crCalculateValue.Col + "," + crCalculateValue.Row + "," + k.Key + ",");
                                 crCalculateValue.Baseline = ConfigurationCommonClass.getValueFromBaseFunctionString(iCRID, strBaseLineFunction, crSelectFunction.BenMAPHealthImpactFunction.AContantValue,
                                     crSelectFunction.BenMAPHealthImpactFunction.BContantValue, crSelectFunction.BenMAPHealthImpactFunction.CContantValue,
                                     crSelectFunction.BenMAPHealthImpactFunction.Beta, baseValue - controlValue, controlValue, baseValue, incidenceValue, k.Value, prevalenceValue, dicSetupVariables) * i365;
@@ -3668,6 +3708,8 @@ namespace BenMAP.Configuration
                 else
                 {
                     crCalculateValue.Baseline = crCalculateValue.PointEstimate;
+                    //if (CommonClass.getDebugValue() && (CommonClass.debugGridCell = (CommonClass.debugRow == row && CommonClass.debugCol == col)))
+                    //    Logger.debuggingOut.Append(crCalculateValue.Col + "," + crCalculateValue.Row + ",");
                 }
                 crCalculateValue.LstPercentile = new List<float>();
                 if (lhsDesignResult != null)
@@ -3686,21 +3728,23 @@ namespace BenMAP.Configuration
                             {
                                 incidenceValue = dicIncidenceValue != null && dicIncidenceValue.Count > 0 && dicIncidenceValue.ContainsKey(k.Key) ? dicIncidenceValue[k.Key] : 0;
                                 prevalenceValue = dicPrevalenceValue != null && dicPrevalenceValue.Count > 0 && dicPrevalenceValue.ContainsKey(k.Key) ? dicPrevalenceValue[k.Key] : 0;
+                                if (CommonClass.getDebugValue() && (CommonClass.debugGridCell = (CommonClass.debugRow == row && CommonClass.debugCol == col)))
+                                    Logger.debuggingOut.Append(crCalculateValue.Col + "," + crCalculateValue.Row + "," + k.Key + ",");
                                 crCalculateValue.LstPercentile[idlhs] += (ConfigurationCommonClass.getValueFromPointEstimateFunctionString(iCRID, strPointEstimateFunction,
                                     crSelectFunction.BenMAPHealthImpactFunction.AContantValue,
                                 crSelectFunction.BenMAPHealthImpactFunction.BContantValue, crSelectFunction.BenMAPHealthImpactFunction.CContantValue,
                                   dlhs, baseValue - controlValue, controlValue, baseValue, incidenceValue, k.Value, prevalenceValue, dicSetupVariables) * i365);
                             }
-
-
                         }
                     }
                 }
-
+                
                 crCalculateValue.Mean = getMean(crCalculateValue.LstPercentile);
                 crCalculateValue.Variance = crCalculateValue.LstPercentile.Count() == 0 ? float.NaN : getVariance(crCalculateValue.LstPercentile, crCalculateValue.PointEstimate);
                 crCalculateValue.StandardDeviation = crCalculateValue.LstPercentile.Count() == 0 ? float.NaN : Convert.ToSingle(Math.Sqrt(crCalculateValue.Variance));
 
+                if (CommonClass.getDebugValue() && (CommonClass.debugGridCell = (CommonClass.debugRow == row && CommonClass.debugCol == col)))
+                    Logger.Log(Logger.Level.DEBUG, null, null, "Debugging Grid Cell Row " + CommonClass.debugRow + ", Grid Cell Column " + CommonClass.debugCol);
 
                 if (crCalculateValue.Baseline == 0)
                     crCalculateValue.PercentOfBaseline = 0;
@@ -4166,7 +4210,8 @@ namespace BenMAP.Configuration
                     return Convert.ToSingle(Convert.ToDouble(result));
                 }
                 else
-                {
+                {   //whats the point of this code??????
+                    //if we already know its not a double why recalculate  - Adam S.
                     result = PointEstimateEval.PointEstimateEval(crid, FunctionString, A, B, C, Beta, DeltaQ, Q0, Q1, Incidence, POP, Prevalence, dicSetupVariables);
                     if (result is double)
                     {
@@ -4218,7 +4263,43 @@ namespace BenMAP.Configuration
             return Convert.ToSingle(dResult);
         }
 
+        public static void dumpSetupVariableJoinAllValueToDebugFile(ref List<SetupVariableJoinAllValues> lstSetupVariable)
+        {   // dump information about the current lstVariables to a debugging file
+            // this can be used to find out what veriables are being used in the HealthImpactFunctions run and what grid definitions they use
+            // output file name is HARDCODED!
+            System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:\Users\Public\outputfunctionlist" + ".txt", true);
+            file.Write("Variable_Name:\tVariable_Grid_Type:\tCell_Count\tCell_Col\tCell_Row\tCell_Value\n");
+            // write out variables to file
+            foreach (SetupVariableJoinAllValues sv in lstSetupVariable)
+            {
+                int gridCount=0;
+                // ignore error if there is no grid
+                try
+                {
 
+                    gridCount = sv.lstValues.Count();
+                }
+                catch { }
+
+                if (gridCount > 0)
+                {
+                    foreach (SetupVariableValues cell in sv.lstValues)
+                    {
+                        file.Write("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\n", sv.SetupVariableName.ToString(), sv.SetupVariableGridType.ToString(), gridCount,
+                                cell.Col.ToString(),cell.Row.ToString(),cell.Value.ToString());                    
+                    }
+                    
+                }
+                else
+                {
+                    file.Write("{0}\t{1}\t{2}\n", sv.SetupVariableName.ToString(), sv.SetupVariableGridType.ToString(), gridCount);
+                    
+                }
+                file.Flush();
+            }
+
+            file.Close();
+        }
 
 
     }

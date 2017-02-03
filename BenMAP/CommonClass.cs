@@ -5,16 +5,12 @@ using System.Configuration;
 using System.Data;
 using System.IO;
 using System.Linq;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Windows.Forms;
 using FirebirdSql.Data.FirebirdClient;
 using DotSpatial.Data;
 using System.Xml.Serialization;
 using ProtoBuf;
 using System.Collections;
-using System.Data.Common;
-using System.Data.OleDb;
-using DotSpatial.Topology;
 using System.Runtime.InteropServices;
 using Excel;
 using System.Text;
@@ -24,6 +20,8 @@ using System.Text.RegularExpressions;
 using benmap;
 using DotSpatial.Projections;
 using System.Diagnostics;
+using GeoAPI.Geometries;
+using NetTopologySuite.Geometries;
 
 
 namespace BenMAP
@@ -48,6 +46,11 @@ namespace BenMAP
             }
             
         }
+        // values used to specify a grid cell to print debugging output for
+        
+        public static int debugRow = 2;
+        public static int debugCol = 1;
+        public static bool debugGridCell=true;
         public static void DeleteShapeFileName(string FileName)
         {
             if (!File.Exists(FileName)) return;
@@ -601,6 +604,16 @@ namespace BenMAP
                 }
             }
         }
+       public static bool Debug = false;
+
+       public static Boolean getDebugValue()
+        {
+            #if DEBUG
+                return true;
+            #endif
+            return Debug;
+       }
+    
         public static GridRelationship getRelationshipFromBenMAPGrid(int big, int small)
         {
             try
@@ -623,12 +636,12 @@ namespace BenMAP
                     string shapeFileNameSmall = CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + (smallBenMAPGrid as ShapefileGrid).ShapefileName + ".shp";
                     fsSmall = DotSpatial.Data.FeatureSet.Open(shapeFileNameSmall);
                     List<RowCol> lstRowColSmall = new List<RowCol>();
-                    List<DotSpatial.Topology.Point> lstMid = new List<DotSpatial.Topology.Point>();
+                    List<Point> lstMid = new List<Point>();
                     for (int i = 0; i < fsSmall.DataTable.Rows.Count; i++)
                     {
                         IFeature f = fsSmall.GetFeature(i);
                         lstRowColSmall.Add(new RowCol() { Col = Convert.ToInt32(f.DataRow["Col"]), Row = Convert.ToInt32(f.DataRow["Row"]) });
-                        lstMid.Add(new DotSpatial.Topology.Point(f.Centroid().Coordinates[0]));
+                        lstMid.Add(new Point(f.Geometry.Centroid.Coordinates[0]));
                     }
                     for (int j = 0; j < fsBig.DataTable.Rows.Count; j++)
                     {
@@ -636,12 +649,12 @@ namespace BenMAP
                         GridRelationshipAttribute gra = new GridRelationshipAttribute();
                         gra.bigGridRowCol = new RowCol() { Col = Convert.ToInt32(f.DataRow["Col"]), Row = Convert.ToInt32(f.DataRow["Row"]) };
                         gra.smallGridRowCol = new List<RowCol>();
-                        Extent ext = f.Envelope.ToExtent();
+                        Extent ext = f.Geometry.EnvelopeInternal.ToExtent();
                         for (int i = 0; i < lstMid.Count(); i++)
                         {
                             if (ext.Contains(lstMid[i].Coordinate))
                             {
-                                if (f.Contains(lstMid[i]))
+                                if (f.Geometry.Contains(lstMid[i]))
                                 {
                                     gra.smallGridRowCol.Add(lstRowColSmall[i]);
                                 }
@@ -670,7 +683,7 @@ namespace BenMAP
                 int i = 0;
                 foreach (IFeature selfFeature in self.Features)
                 {
-                    List<int> potentialOthers = other.SelectIndices(selfFeature.Envelope.ToExtent());
+                    List<int> potentialOthers = other.SelectIndices(selfFeature.Geometry.EnvelopeInternal.ToExtent());
                     foreach (int iotherFeature in potentialOthers)
                     {
                         IFeature otherFeature = other.Features[iotherFeature];
@@ -690,15 +703,15 @@ namespace BenMAP
                 if (other.Features != null && other.Features.Count > 0)
                 {
                     union = other.Features[0];
-                    IGeometry g = union.BasicGeometry as IGeometry;
+                    IGeometry g = union.Geometry;
                     for (int i = 1; i < other.Features.Count; i++)
                     {
-                        g = g.Union(Geometry.FromBasicGeometry(other.Features[i].BasicGeometry));
+                        g = g.Union(other.Features[i].Geometry);
 
                     }
-                    union.BasicGeometry = g;
+                    union.Geometry = g;
 
-                    Extent otherEnvelope = new Extent(union.Envelope);
+                    Extent otherEnvelope = new Extent(union.Geometry.EnvelopeInternal);
                     for (int shp = 0; shp < self.ShapeIndices.Count; shp++)
                     {
                         if (!self.ShapeIndices[shp].Extent.Intersects(otherEnvelope)) continue;
@@ -748,7 +761,7 @@ namespace BenMAP
                     {
                         IFeature intersactFeature = null; if (big == 20)
                         {
-                            dSumArea += selfFeature.Area();
+                            dSumArea += selfFeature.Geometry.Area;
                         }
                         if (self.Filename == other.Filename)
                         {
@@ -758,12 +771,12 @@ namespace BenMAP
                                 if (big == 20)
                                 {
                                     dicRelation[selfFeature.DataRow["Col"] + "," + selfFeature.DataRow["Row"]].Add
-                                        (selfFeature.DataRow["Col"] + "," + selfFeature.DataRow["Row"], intersactFeature.Area() / selfFeature.Area());
+                                        (selfFeature.DataRow["Col"] + "," + selfFeature.DataRow["Row"], intersactFeature.Geometry.Area / selfFeature.Geometry.Area);
                                 }
                                 else
                                 {
                                     dicRelation[selfFeature.DataRow["Col"] + "," + selfFeature.DataRow["Row"]].Add
-                                    (selfFeature.DataRow["Col"] + "," + selfFeature.DataRow["Row"], intersactFeature.Area());
+                                    (selfFeature.DataRow["Col"] + "," + selfFeature.DataRow["Row"], intersactFeature.Geometry.Area);
 
                                 }
                             }
@@ -774,12 +787,12 @@ namespace BenMAP
                                 if (big == 20)
                                 {
                                     dicRelation[selfFeature.DataRow["Col"] + "," + selfFeature.DataRow["Row"]].Add
-                                       (selfFeature.DataRow["Col"] + "," + selfFeature.DataRow["Row"], intersactFeature.Area() / selfFeature.Area());
+                                       (selfFeature.DataRow["Col"] + "," + selfFeature.DataRow["Row"], intersactFeature.Geometry.Area / selfFeature.Geometry.Area);
                                 }
                                 else
                                 {
                                     dicRelation[selfFeature.DataRow["Col"] + "," + selfFeature.DataRow["Row"]].Add
-                                   (selfFeature.DataRow["Col"] + "," + selfFeature.DataRow["Row"], intersactFeature.Area());
+                                   (selfFeature.DataRow["Col"] + "," + selfFeature.DataRow["Row"], intersactFeature.Geometry.Area);
 
                                 }
                             }
@@ -787,23 +800,23 @@ namespace BenMAP
                         }
                         else
                         {
-                            List<int> potentialOthers = other.SelectIndices(selfFeature.Envelope.ToExtent());
+                            List<int> potentialOthers = other.SelectIndices(selfFeature.Geometry.EnvelopeInternal.ToExtent());
                             foreach (int iotherFeature in potentialOthers)
                             {
                                 intersactFeature = null;
-                                if ((other.Features.Count < 5 || self.Features.Count < 5) && other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum)) == 0 &&
-                                    other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Maximum.X, selfFeature.Envelope.Minimum.Y)) == 0 &&
-                                    other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Maximum)) == 0 &&
-                                    other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X, selfFeature.Envelope.Maximum.Y)) == 0
+                                if ((other.Features.Count < 5 || self.Features.Count < 5) && other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.EnvelopeInternal.Minimum)) == 0 &&
+                                    other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.EnvelopeInternal.Maximum.X, selfFeature.Geometry.EnvelopeInternal.Minimum.Y)) == 0 &&
+                                    other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.EnvelopeInternal.Maximum)) == 0 &&
+                                    other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.EnvelopeInternal.Minimum.X, selfFeature.Geometry.EnvelopeInternal.Maximum.Y)) == 0
                                     )
                                 {
                                     intersactFeature = selfFeature;
                                 }
                                 else
-                                    if ((other.Features.Count < 5 || self.Features.Count < 5) && selfFeature.Distance(new Point(other.Features[iotherFeature].Envelope.Minimum)) == 0 &&
-                                       selfFeature.Distance(new Point(other.Features[iotherFeature].Envelope.Maximum.X, other.Features[iotherFeature].Envelope.Minimum.Y)) == 0 &&
-                                        selfFeature.Distance(new Point(other.Features[iotherFeature].Envelope.Maximum)) == 0 &&
-                                        selfFeature.Distance(new Point(other.Features[iotherFeature].Envelope.Minimum.X, other.Features[iotherFeature].Envelope.Maximum.Y)) == 0)
+                                    if ((other.Features.Count < 5 || self.Features.Count < 5) && selfFeature.Geometry.Distance(new Point(other.Features[iotherFeature].Geometry.EnvelopeInternal.Minimum)) == 0 &&
+                                       selfFeature.Geometry.Distance(new Point(other.Features[iotherFeature].Geometry.EnvelopeInternal.Maximum.X, other.Features[iotherFeature].Geometry.EnvelopeInternal.Minimum.Y)) == 0 &&
+                                        selfFeature.Geometry.Distance(new Point(other.Features[iotherFeature].Geometry.EnvelopeInternal.Maximum)) == 0 &&
+                                        selfFeature.Geometry.Distance(new Point(other.Features[iotherFeature].Geometry.EnvelopeInternal.Minimum.X, other.Features[iotherFeature].Geometry.EnvelopeInternal.Maximum.Y)) == 0)
                                     {
                                         intersactFeature = other.Features[iotherFeature];
                                     }
@@ -811,7 +824,7 @@ namespace BenMAP
                                     {
                                         try
                                         {
-                                            intersactFeature = selfFeature.Intersection(other.Features[iotherFeature]);
+                                            intersactFeature = selfFeature.Intersection(other.Features[iotherFeature].Geometry);
                                         }
                                         catch (Exception ex)
                                         {
@@ -821,7 +834,7 @@ namespace BenMAP
 
                                 try
                                 {
-                                    if (intersactFeature != null && intersactFeature.BasicGeometry != null)
+                                    if (intersactFeature != null && intersactFeature.Geometry != null)
                                     {
 
                                         if (dicRelation.ContainsKey(other.Features[iotherFeature].DataRow["Col"] + "," + other.Features[iotherFeature].DataRow["Row"]))
@@ -829,12 +842,12 @@ namespace BenMAP
                                             if (big == 20)
                                             {
                                                 dicRelation[other.Features[iotherFeature].DataRow["Col"] + "," + other.Features[iotherFeature].DataRow["Row"]].Add
-                                                    (selfFeature.DataRow["Col"] + "," + selfFeature.DataRow["Row"], intersactFeature.Area() / other.Features[iotherFeature].Area());
+                                                    (selfFeature.DataRow["Col"] + "," + selfFeature.DataRow["Row"], intersactFeature.Geometry.Area / other.Features[iotherFeature].Geometry.Area);
                                             }
                                             else
                                             {
                                                 dicRelation[other.Features[iotherFeature].DataRow["Col"] + "," + other.Features[iotherFeature].DataRow["Row"]].Add
-                                                (selfFeature.DataRow["Col"] + "," + selfFeature.DataRow["Row"], intersactFeature.Area());
+                                                (selfFeature.DataRow["Col"] + "," + selfFeature.DataRow["Row"], intersactFeature.Geometry.Area);
 
                                             }
                                         }
@@ -845,12 +858,12 @@ namespace BenMAP
                                             if (big == 20)
                                             {
                                                 dicRelation[other.Features[iotherFeature].DataRow["Col"] + "," + other.Features[iotherFeature].DataRow["Row"]].Add
-                                                   (selfFeature.DataRow["Col"] + "," + selfFeature.DataRow["Row"], intersactFeature.Area() / other.Features[iotherFeature].Area());
+                                                   (selfFeature.DataRow["Col"] + "," + selfFeature.DataRow["Row"], intersactFeature.Geometry.Area / other.Features[iotherFeature].Geometry.Area);
                                             }
                                             else
                                             {
                                                 dicRelation[other.Features[iotherFeature].DataRow["Col"] + "," + other.Features[iotherFeature].DataRow["Row"]].Add
-                                               (selfFeature.DataRow["Col"] + "," + selfFeature.DataRow["Row"], intersactFeature.Area());
+                                               (selfFeature.DataRow["Col"] + "," + selfFeature.DataRow["Row"], intersactFeature.Geometry.Area);
 
                                             }
                                         }
@@ -978,7 +991,7 @@ namespace BenMAP
 
                     foreach (IFeature selfFeature in self.Features)
                     {
-                        List<int> potentialOthers = other.SelectIndices(selfFeature.Envelope.ToExtent());
+                        List<int> potentialOthers = other.SelectIndices(selfFeature.Geometry.EnvelopeInternal.ToExtent());
                         foreach (int iotherFeature in potentialOthers)
                         {
                             if (iotherFeature == 33)
@@ -987,19 +1000,19 @@ namespace BenMAP
                             IFeature intersactFeature = null;
 
 
-                            if ((other.Features.Count < 5 || self.Features.Count < 5) && other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum)) == 0 &&
-other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Maximum.X, selfFeature.Envelope.Minimum.Y)) == 0 &&
-other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Maximum)) == 0 &&
-other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X, selfFeature.Envelope.Maximum.Y)) == 0
+                            if ((other.Features.Count < 5 || self.Features.Count < 5) && other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.EnvelopeInternal.Minimum)) == 0 &&
+other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.EnvelopeInternal.Maximum.X, selfFeature.Geometry.EnvelopeInternal.Minimum.Y)) == 0 &&
+other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.EnvelopeInternal.Maximum)) == 0 &&
+other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.EnvelopeInternal.Minimum.X, selfFeature.Geometry.EnvelopeInternal.Maximum.Y)) == 0
 )
                             {
                                 intersactFeature = selfFeature;
                             }
 
-                            else if ((other.Features.Count < 5 || self.Features.Count < 5) && selfFeature.Distance(new Point(other.Features[iotherFeature].Envelope.Minimum)) == 0 &&
-                           selfFeature.Distance(new Point(other.Features[iotherFeature].Envelope.Maximum.X, other.Features[iotherFeature].Envelope.Minimum.Y)) == 0 &&
-                            selfFeature.Distance(new Point(other.Features[iotherFeature].Envelope.Maximum)) == 0 &&
-                            selfFeature.Distance(new Point(other.Features[iotherFeature].Envelope.Minimum.X, other.Features[iotherFeature].Envelope.Maximum.Y)) == 0)
+                            else if ((other.Features.Count < 5 || self.Features.Count < 5) && selfFeature.Geometry.Distance(new Point(other.Features[iotherFeature].Geometry.EnvelopeInternal.Minimum)) == 0 &&
+                           selfFeature.Geometry.Distance(new Point(other.Features[iotherFeature].Geometry.EnvelopeInternal.Maximum.X, other.Features[iotherFeature].Geometry.EnvelopeInternal.Minimum.Y)) == 0 &&
+                            selfFeature.Geometry.Distance(new Point(other.Features[iotherFeature].Geometry.EnvelopeInternal.Maximum)) == 0 &&
+                            selfFeature.Geometry.Distance(new Point(other.Features[iotherFeature].Geometry.EnvelopeInternal.Minimum.X, other.Features[iotherFeature].Geometry.EnvelopeInternal.Maximum.Y)) == 0)
                             {
                                 intersactFeature = other.Features[iotherFeature];
                             }
@@ -1007,15 +1020,15 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
                             {
                                 try
                                 {
-                                    intersactFeature = selfFeature.Intersection(other.Features[iotherFeature]);
+                                    intersactFeature = selfFeature.Intersection(other.Features[iotherFeature].Geometry);
                                 }
                                 catch (Exception ex)
                                 {
                                     try
                                     {
-                                        if (selfFeature.IsWithinDistance(other.Features[iotherFeature], 0.00001))
+                                        if (selfFeature.Geometry.IsWithinDistance(other.Features[iotherFeature].Geometry, 0.00001))
                                         {
-                                            if (selfFeature.Area() > other.Features[iotherFeature].Area())
+                                            if (selfFeature.Geometry.Area > other.Features[iotherFeature].Geometry.Area)
                                             {
                                                 bool isContains = false;
                                                 isContains = polygonContainPolygon(selfFeature, other.Features[iotherFeature]);
@@ -1026,7 +1039,7 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
                                                 else
                                                     intersactFeature = null;
                                             }
-                                            else if (selfFeature.Area() < other.Features[iotherFeature].Area())
+                                            else if (selfFeature.Geometry.Area < other.Features[iotherFeature].Geometry.Area)
                                             {
                                                 intersactFeature = selfFeature;
 
@@ -1047,43 +1060,43 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
                                 }
 
                             }
-                            if (intersactFeature != null && intersactFeature.BasicGeometry != null)
+                            if (intersactFeature != null && intersactFeature.Geometry != null)
                             {
                                 try
                                 {
                                     double dArea = 0;
                                     try
                                     {
-                                        dArea = intersactFeature.Area();
+                                        dArea = intersactFeature.Geometry.Area;
                                     }
                                     catch
                                     {
-                                        if (selfFeature.IsWithinDistance(other.Features[iotherFeature], 0.00001))
+                                        if (selfFeature.Geometry.IsWithinDistance(other.Features[iotherFeature].Geometry, 0.00001))
                                         {
-                                            if (selfFeature.Area() > other.Features[iotherFeature].Area())
+                                            if (selfFeature.Geometry.Area > other.Features[iotherFeature].Geometry.Area)
                                             {
                                                 bool isContains = false;
                                                 isContains = polygonContainPolygon(selfFeature, other.Features[iotherFeature]);
                                                 if (isContains)
                                                 {
                                                     intersactFeature = other.Features[iotherFeature];
-                                                    dArea = intersactFeature.Area();
+                                                    dArea = intersactFeature.Geometry.Area;
                                                 }
                                                 else
                                                     dArea = 0;
 
                                             }
-                                            else if (selfFeature.Area() < other.Features[iotherFeature].Area())
+                                            else if (selfFeature.Geometry.Area < other.Features[iotherFeature].Geometry.Area)
                                             {
                                                 intersactFeature = selfFeature;
-                                                dArea = intersactFeature.Area();
+                                                dArea = intersactFeature.Geometry.Area;
 
                                                 bool isContains = false;
                                                 isContains = polygonContainPolygon(other.Features[iotherFeature], selfFeature);
                                                 if (isContains)
                                                 {
                                                     intersactFeature = selfFeature;
-                                                    dArea = intersactFeature.Area();
+                                                    dArea = intersactFeature.Geometry.Area;
                                                 }
                                                 else
                                                     dArea = 0;
@@ -1101,14 +1114,14 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
                                         if (dicRelation.ContainsKey(other.Features[iotherFeature].DataRow["Col"] + "," + other.Features[iotherFeature].DataRow["Row"]))
                                         {
                                             dicRelation[other.Features[iotherFeature].DataRow["Col"] + "," + other.Features[iotherFeature].DataRow["Row"]].Add
-                                                (selfFeature.DataRow["Col"] + "," + selfFeature.DataRow["Row"], dArea / other.Features[iotherFeature].Area());
+                                                (selfFeature.DataRow["Col"] + "," + selfFeature.DataRow["Row"], dArea / other.Features[iotherFeature].Geometry.Area);
                                         }
                                         else
                                         {
                                             dicRelation.Add(other.Features[iotherFeature].DataRow["Col"] + "," + other.Features[iotherFeature].DataRow["Row"],
                                                 new Dictionary<string, double>());
                                             dicRelation[other.Features[iotherFeature].DataRow["Col"] + "," + other.Features[iotherFeature].DataRow["Row"]].Add
-                                               (selfFeature.DataRow["Col"] + "," + selfFeature.DataRow["Row"], dArea / other.Features[iotherFeature].Area());
+                                               (selfFeature.DataRow["Col"] + "," + selfFeature.DataRow["Row"], dArea / other.Features[iotherFeature].Geometry.Area);
                                         }
                                     }
                                 }
@@ -1116,27 +1129,27 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
                                 {
                                     try
                                     {
-                                        if (selfFeature.IsWithinDistance(other.Features[iotherFeature], 0.00001))
+                                        if (selfFeature.Geometry.IsWithinDistance(other.Features[iotherFeature].Geometry, 0.00001))
                                         {
-                                            if (selfFeature.Area() > other.Features[iotherFeature].Area())
+                                            if (selfFeature.Geometry.Area > other.Features[iotherFeature].Geometry.Area)
                                                 intersactFeature = other.Features[iotherFeature];
                                             else
                                                 intersactFeature = selfFeature;
                                         }
-                                        if (intersactFeature.Area() > 0)
+                                        if (intersactFeature.Geometry.Area > 0)
                                         {
 
                                             if (dicRelation.ContainsKey(other.Features[iotherFeature].DataRow["Col"] + "," + other.Features[iotherFeature].DataRow["Row"]))
                                             {
                                                 dicRelation[other.Features[iotherFeature].DataRow["Col"] + "," + other.Features[iotherFeature].DataRow["Row"]].Add
-                                                    (selfFeature.DataRow["Col"] + "," + selfFeature.DataRow["Row"], intersactFeature.Area() / other.Features[iotherFeature].Area());
+                                                    (selfFeature.DataRow["Col"] + "," + selfFeature.DataRow["Row"], intersactFeature.Geometry.Area / other.Features[iotherFeature].Geometry.Area);
                                             }
                                             else
                                             {
                                                 dicRelation.Add(other.Features[iotherFeature].DataRow["Col"] + "," + other.Features[iotherFeature].DataRow["Row"],
                                                     new Dictionary<string, double>());
                                                 dicRelation[other.Features[iotherFeature].DataRow["Col"] + "," + other.Features[iotherFeature].DataRow["Row"]].Add
-                                                   (selfFeature.DataRow["Col"] + "," + selfFeature.DataRow["Row"], intersactFeature.Area() / other.Features[iotherFeature].Area());
+                                                   (selfFeature.DataRow["Col"] + "," + selfFeature.DataRow["Row"], intersactFeature.Geometry.Area / other.Features[iotherFeature].Geometry.Area);
                                             }
                                         }
                                     }
@@ -1206,7 +1219,7 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
         }
 
 
-        public static bool Debug=false;
+        
         public static Dictionary<String, Dictionary<int, double>> otherXrefCache = new Dictionary<string, Dictionary<int, double>>();
         public static List<GridRelationshipAttributePercentage> IntersectionPercentagePopulation(IFeatureSet self, IFeatureSet other, FieldJoinType joinType, String popRasterLoc)
         {
@@ -1300,10 +1313,10 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
                             //    continue;
                             //}
                             //make a much smaller one
-                            minx = otherFeature.Envelope.Minimum.X - 100.0;
-                            maxy = otherFeature.Envelope.Maximum.Y + 100.0;
-                            maxx = otherFeature.Envelope.Maximum.X + 100.0;
-                            miny = otherFeature.Envelope.Minimum.Y - 100.0;
+                            minx = otherFeature.Geometry.EnvelopeInternal.Minimum.X - 100.0;
+                            maxy = otherFeature.Geometry.EnvelopeInternal.Maximum.Y + 100.0;
+                            maxx = otherFeature.Geometry.EnvelopeInternal.Maximum.X + 100.0;
+                            miny = otherFeature.Geometry.EnvelopeInternal.Minimum.Y - 100.0;
 
                             warpStep = new System.Diagnostics.ProcessStartInfo();
 
@@ -1410,7 +1423,7 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
 
                         //Console.WriteLine("CurFeature: " + selfFeature.Fid);
                         ifs.Features.Clear();
-                        ifs.AddFeature(selfFeature);
+                        ifs.AddFeature(selfFeature.Geometry);
                         //Console.WriteLine("My new fid: " + selfFeature.Fid);
                         //ifs.SaveAs(@"P:\temp\singleShape-"+selfFeature.Fid+".shp", true);
                         
@@ -1420,8 +1433,8 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
                             ifs.SaveAs(@"P:\temp\singleShapeReproj-" + selfFeature.Fid + ".shp", true);
                         }
 
-                       
-                        List<int> potentialOthers = other.SelectIndices(selfFeature.Envelope.ToExtent());
+
+                        List<int> potentialOthers = other.SelectIndices(selfFeature.Geometry.EnvelopeInternal.ToExtent());
                         
                         foreach (int iotherFeature in potentialOthers)
                         {
@@ -1456,7 +1469,7 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
                                     double valToTry = 0.0; // .00001;
                                     while(!goodIntersection && count<maxTries)
                                         try{
-                                            intersectFeature = selfFeature.Buffer(valToTry).Intersection(other.Features[iotherFeature]);
+                                            intersectFeature = selfFeature.Buffer(valToTry).Intersection(other.Features[iotherFeature].Geometry);
                                             goodIntersection = true;
                                         }catch(Exception e){
                                             Console.WriteLine("Could not do intersection on try "+count+" of "+maxTries+", reason: "+e.ToString());
@@ -1480,7 +1493,7 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
                                         //ifsTemp.AddFeature(other.Features[iotherFeature]);
                                         if (intersectFeature != null)
                                         {
-                                            ifsTemp.AddFeature(intersectFeature);
+                                            ifsTemp.AddFeature(intersectFeature.Geometry);
                                             if (CommonClass.Debug)
                                             {
                                                 try{
@@ -1490,9 +1503,9 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
                                                     try
                                                     {
                                                         ifsTemp.Features.Clear();
-                                                        ifsTemp.AddFeature(selfFeature);
-                                                        ifsTemp.AddFeature(other.Features[iotherFeature]);
-                                                        ifsTemp.AddFeature(intersectFeature);
+                                                        ifsTemp.AddFeature(selfFeature.Geometry);
+                                                        ifsTemp.AddFeature(other.Features[iotherFeature].Geometry);
+                                                        ifsTemp.AddFeature(intersectFeature.Geometry);
                                                         ifsTemp.SaveAs(@"p:\temp\interSectFeat-" + selfFeature.Fid + "-" + iotherFeature + "-T2.shp", true);
                                                     }
                                                     catch (Exception ex)
@@ -1509,7 +1522,7 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
                                     //fist population of selfFeature\ warpStep.FileName = gdalWarpEXELoc;
                                     warpStep = new System.Diagnostics.ProcessStartInfo();
                                     //make a much smaller one
-                                    if (intersectFeature == null || intersectFeature.Envelope == null)
+                                    if (intersectFeature == null || intersectFeature.Geometry.EnvelopeInternal == null)
                                     {
                                         //this case is when shape is in bounding box, but not actually overlapping.
                                         continue;
@@ -1518,22 +1531,21 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
                                     IFeatureSet ifsHold = new FeatureSet();
                                     ifsHold.Projection = other.Projection;
                                     //this intersectFeature may have multiple geometries
-                                    if (intersectFeature.BasicGeometry.NumGeometries > 1)
+                                    if (intersectFeature.Geometry.NumGeometries > 1)
                                     {
-                                        for (int idx = 0; idx < intersectFeature.BasicGeometry.NumGeometries; idx++)
+                                        for (int idx = 0; idx < intersectFeature.Geometry.NumGeometries; idx++)
                                         {
 
-                                            IBasicGeometry ibm = intersectFeature.GetBasicGeometryN(idx);
-                                            if (ibm.FeatureType == FeatureType.Polygon)
+                                            var ibm = intersectFeature.Geometry.GetGeometryN(idx);
+                                            if (ibm.GeometryType == "Polygon")
                                             {
-                                                IFeature newFeat = new Feature(ibm);
-                                                ifsHold.AddFeature(newFeat);
+                                                ifsHold.AddFeature(ibm);
                                             }
                                         }
                                     }
                                     else
                                     {
-                                        ifsHold.AddFeature(intersectFeature);
+                                        ifsHold.AddFeature(intersectFeature.Geometry);
                                     }
                                     if (ifsHold.Features.Count < 1)
                                     {
@@ -1870,9 +1882,9 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
         {
             try
             {
-                for (int i = 0; i < small.Coordinates.Count; i++)
+                for (int i = 0; i < small.Geometry.Coordinates.Length; i++)
                 {
-                    if (!big.IsWithinDistance((new Feature(small.Coordinates[i])), 0.00001))
+                    if (!big.Geometry.IsWithinDistance(new Point(small.Geometry.Coordinates[i]), 0.00001))
                     {
                         return false;
                     }

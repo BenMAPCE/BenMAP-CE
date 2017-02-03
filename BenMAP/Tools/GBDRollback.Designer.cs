@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GBDRollback));
             this.gbCountrySelection = new System.Windows.Forms.GroupBox();
             this.listCountries = new System.Windows.Forms.CheckedListBox();
@@ -52,6 +52,7 @@
             this.colTotalCountries = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colTotalPopulation = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colRollbackType = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colFunction = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colExecute = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.btnClose = new System.Windows.Forms.Button();
             this.gbMap = new System.Windows.Forms.GroupBox();
@@ -72,6 +73,8 @@
             this.tsbAddLayer = new System.Windows.Forms.ToolStripButton();
             this.mapGBD = new DotSpatial.Controls.Map();
             this.gbParameterSelection = new System.Windows.Forms.GroupBox();
+            this.cboFunction = new System.Windows.Forms.ComboBox();
+            this.label2 = new System.Windows.Forms.Label();
             this.pb_incremental = new System.Windows.Forms.PictureBox();
             this.gbOptionsIncremental = new System.Windows.Forms.GroupBox();
             this.txtIncrementBackground = new System.Windows.Forms.TextBox();
@@ -90,6 +93,7 @@
             this.lblPercentageBackground = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.gbOptionsStandard = new System.Windows.Forms.GroupBox();
+            this.chkNegativeRollbackToStandard = new System.Windows.Forms.CheckBox();
             this.cboStandard = new System.Windows.Forms.ComboBox();
             this.label9 = new System.Windows.Forms.Label();
             this.gbName = new System.Windows.Forms.GroupBox();
@@ -293,15 +297,16 @@
             this.colTotalCountries,
             this.colTotalPopulation,
             this.colRollbackType,
+            this.colFunction,
             this.colExecute});
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvRollbacks.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvRollbacks.DefaultCellStyle = dataGridViewCellStyle1;
             this.dgvRollbacks.Location = new System.Drawing.Point(17, 55);
             this.dgvRollbacks.MultiSelect = false;
             this.dgvRollbacks.Name = "dgvRollbacks";
@@ -341,6 +346,12 @@
             this.colRollbackType.HeaderText = "Type Of Rollback";
             this.colRollbackType.Name = "colRollbackType";
             this.colRollbackType.ReadOnly = true;
+            // 
+            // colFunction
+            // 
+            this.colFunction.HeaderText = "Function";
+            this.colFunction.Name = "colFunction";
+            this.colFunction.ReadOnly = true;
             // 
             // colExecute
             // 
@@ -566,6 +577,8 @@
             // 
             // gbParameterSelection
             // 
+            this.gbParameterSelection.Controls.Add(this.cboFunction);
+            this.gbParameterSelection.Controls.Add(this.label2);
             this.gbParameterSelection.Controls.Add(this.pb_incremental);
             this.gbParameterSelection.Controls.Add(this.gbOptionsIncremental);
             this.gbParameterSelection.Controls.Add(this.cboRollbackType);
@@ -581,14 +594,34 @@
             this.gbParameterSelection.TabStop = false;
             this.gbParameterSelection.Text = "Rollback Settings";
             // 
+            // cboFunction
+            // 
+            this.cboFunction.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboFunction.FormattingEnabled = true;
+            this.cboFunction.Items.AddRange(new object[] {
+            "Krewski"});
+            this.cboFunction.Location = new System.Drawing.Point(98, 334);
+            this.cboFunction.Name = "cboFunction";
+            this.cboFunction.Size = new System.Drawing.Size(175, 21);
+            this.cboFunction.TabIndex = 11;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(14, 337);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(51, 13);
+            this.label2.TabIndex = 10;
+            this.label2.Text = "Function:";
+            // 
             // pb_incremental
             // 
-            this.pb_incremental.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("pb_incremental.BackgroundImage")));
+            this.pb_incremental.BackgroundImage = global::BenMAP.Properties.Resources.GBD_Increment;
             this.pb_incremental.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.pb_incremental.InitialImage = null;
-            this.pb_incremental.Location = new System.Drawing.Point(15, 261);
+            this.pb_incremental.Location = new System.Drawing.Point(15, 150);
             this.pb_incremental.Name = "pb_incremental";
-            this.pb_incremental.Size = new System.Drawing.Size(253, 119);
+            this.pb_incremental.Size = new System.Drawing.Size(253, 171);
             this.pb_incremental.TabIndex = 7;
             this.pb_incremental.TabStop = false;
             this.pb_incremental.Visible = false;
@@ -599,9 +632,9 @@
             this.gbOptionsIncremental.Controls.Add(this.txtIncrement);
             this.gbOptionsIncremental.Controls.Add(this.lblIncrementBackground);
             this.gbOptionsIncremental.Controls.Add(this.lblIncrement);
-            this.gbOptionsIncremental.Location = new System.Drawing.Point(15, 48);
+            this.gbOptionsIncremental.Location = new System.Drawing.Point(15, 50);
             this.gbOptionsIncremental.Name = "gbOptionsIncremental";
-            this.gbOptionsIncremental.Size = new System.Drawing.Size(253, 206);
+            this.gbOptionsIncremental.Size = new System.Drawing.Size(253, 83);
             this.gbOptionsIncremental.TabIndex = 6;
             this.gbOptionsIncremental.TabStop = false;
             this.gbOptionsIncremental.Text = "Options";
@@ -685,24 +718,24 @@
             // 
             // pb_standard
             // 
-            this.pb_standard.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("pb_standard.BackgroundImage")));
+            this.pb_standard.BackgroundImage = global::BenMAP.Properties.Resources.GBD_Standard;
             this.pb_standard.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.pb_standard.InitialImage = null;
-            this.pb_standard.Location = new System.Drawing.Point(15, 261);
+            this.pb_standard.Location = new System.Drawing.Point(15, 150);
             this.pb_standard.Name = "pb_standard";
-            this.pb_standard.Size = new System.Drawing.Size(253, 119);
+            this.pb_standard.Size = new System.Drawing.Size(253, 171);
             this.pb_standard.TabIndex = 9;
             this.pb_standard.TabStop = false;
             this.pb_standard.Visible = false;
             // 
             // pb_percent
             // 
-            this.pb_percent.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("pb_percent.BackgroundImage")));
+            this.pb_percent.BackgroundImage = global::BenMAP.Properties.Resources.GBD_Percentage;
             this.pb_percent.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.pb_percent.InitialImage = null;
-            this.pb_percent.Location = new System.Drawing.Point(15, 260);
+            this.pb_percent.Location = new System.Drawing.Point(15, 150);
             this.pb_percent.Name = "pb_percent";
-            this.pb_percent.Size = new System.Drawing.Size(253, 119);
+            this.pb_percent.Size = new System.Drawing.Size(253, 171);
             this.pb_percent.TabIndex = 8;
             this.pb_percent.TabStop = false;
             // 
@@ -714,7 +747,7 @@
             this.gbOptionsPercentage.Controls.Add(this.label7);
             this.gbOptionsPercentage.Location = new System.Drawing.Point(924, 440);
             this.gbOptionsPercentage.Name = "gbOptionsPercentage";
-            this.gbOptionsPercentage.Size = new System.Drawing.Size(253, 206);
+            this.gbOptionsPercentage.Size = new System.Drawing.Size(253, 83);
             this.gbOptionsPercentage.TabIndex = 7;
             this.gbOptionsPercentage.TabStop = false;
             this.gbOptionsPercentage.Text = "Options";
@@ -755,14 +788,26 @@
             // 
             // gbOptionsStandard
             // 
+            this.gbOptionsStandard.Controls.Add(this.chkNegativeRollbackToStandard);
             this.gbOptionsStandard.Controls.Add(this.cboStandard);
             this.gbOptionsStandard.Controls.Add(this.label9);
             this.gbOptionsStandard.Location = new System.Drawing.Point(929, 669);
             this.gbOptionsStandard.Name = "gbOptionsStandard";
-            this.gbOptionsStandard.Size = new System.Drawing.Size(253, 206);
+            this.gbOptionsStandard.Size = new System.Drawing.Size(253, 83);
             this.gbOptionsStandard.TabIndex = 8;
             this.gbOptionsStandard.TabStop = false;
             this.gbOptionsStandard.Text = "Options";
+            // 
+            // chkNegativeRollbackToStandard
+            // 
+            this.chkNegativeRollbackToStandard.AutoSize = true;
+            this.chkNegativeRollbackToStandard.Location = new System.Drawing.Point(13, 47);
+            this.chkNegativeRollbackToStandard.Name = "chkNegativeRollbackToStandard";
+            this.chkNegativeRollbackToStandard.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.chkNegativeRollbackToStandard.Size = new System.Drawing.Size(181, 17);
+            this.chkNegativeRollbackToStandard.TabIndex = 2;
+            this.chkNegativeRollbackToStandard.Text = "Negative Rollback to a Standard";
+            this.chkNegativeRollbackToStandard.UseVisualStyleBackColor = true;
             // 
             // cboStandard
             // 
@@ -830,7 +875,7 @@
             this.label8.TabIndex = 2;
             this.label8.Text = "Scenario Name:";
             this.toolTip1.SetToolTip(this.label8, "The name of the scenario will also be used in the rollback report filename.  It i" +
-                    "s limited to 15 characters.");
+        "s limited to 15 characters.");
             // 
             // btnNext
             // 
@@ -848,7 +893,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.ClientSize = new System.Drawing.Size(1567, 749);
+            this.ClientSize = new System.Drawing.Size(1601, 749);
             this.Controls.Add(this.gbName);
             this.Controls.Add(this.gbOptionsStandard);
             this.Controls.Add(this.gbOptionsPercentage);
@@ -947,16 +992,21 @@
         private System.Windows.Forms.PictureBox pb_incremental;
         private System.Windows.Forms.PictureBox pb_percent;
         private System.Windows.Forms.PictureBox pb_standard;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colName;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colColor;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colTotalCountries;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colTotalPopulation;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colRollbackType;
-        private System.Windows.Forms.DataGridViewCheckBoxColumn colExecute;
         private System.Windows.Forms.RadioButton rbCountries;
         private System.Windows.Forms.RadioButton rbRegions;
         private System.Windows.Forms.CheckedListBox listCountries;
         private System.Windows.Forms.ComboBox cboExportFormat;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.ComboBox cboFunction;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colName;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colColor;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colTotalCountries;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colTotalPopulation;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colRollbackType;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colFunction;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn colExecute;
+
+        private System.Windows.Forms.CheckBox chkNegativeRollbackToStandard;
     }
 }

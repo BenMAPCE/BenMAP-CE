@@ -310,7 +310,7 @@ namespace BenMAP
             // 
             this.airQualityGridAggregationToolStripMenuItem.Name = "airQualityGridAggregationToolStripMenuItem";
             this.airQualityGridAggregationToolStripMenuItem.Size = new System.Drawing.Size(268, 22);
-            this.airQualityGridAggregationToolStripMenuItem.Text = "Air Quality Surface Aggregation";
+            this.airQualityGridAggregationToolStripMenuItem.Text = "Aggregate Air Quality Surface";
             this.airQualityGridAggregationToolStripMenuItem.Click += new System.EventHandler(this.airQualityGridAggregationToolStripMenuItem_Click);
             // 
             // modelFileConcatenatorToolStripMenuItem

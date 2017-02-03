@@ -27,11 +27,17 @@ using System.Configuration;
 using ProtoBuf;
 using System.Collections;
 using OxyPlot.Axes;
+using System.ComponentModel.Composition;
+using BenMAP.SelectByLocation;
+using BenMAP.DataLayerExport;
 
 namespace BenMAP
 {
     public partial class BenMAP : FormBase
     {
+        [Export("Shell", typeof(ContainerControl))]
+        private static ContainerControl Shell = new Form(); // Dummy form to hold default appmanager controls
+
         BenMAPGrid chartGrid;
         BenMAPGrid ChartGrid
         {
@@ -78,6 +84,9 @@ namespace BenMAP
         List<AllSelectCRFunction> lstCFGRpoolingforCDF = new List<AllSelectCRFunction>();
         List<AllSelectValuationMethodAndValue> lstAPVRforCDF = new List<AllSelectValuationMethodAndValue>();
 
+        private readonly DataLayerExporter _dataLayerExporter;
+        private IEnumerable _lastResult;
+
         //private DotSpatial.Plugins.AttributeDataExplorer.AttributeDataExplorerPlugin dspADE;  //-MCB
         public BenMAP(string homePageName)
         {
@@ -96,21 +105,9 @@ namespace BenMAP
 
                 mainMap.LayerAdded += new EventHandler<LayerEventArgs>(mainMap_LayerAdded);
                 mainMap.Layers.LayerVisibleChanged += new EventHandler(mainMap_LayerVisibleChanged);
-                //this.appManager1 = new DotSpatial.Controls.AppManager();
-                //appManager1.Directories.Clear();
-                //appManager1.Directories.Add(@"Plugins\GDAL");
-                appManager1.LoadExtensions();
-                //Console.WriteLine("MCB-test");
-                //foreach (DotSpatial.Extensions.IExtension iext in appManager1.Extensions)
-                //{
-                //    Console.WriteLine(iext.Name);
-                //}
-           
-                //MCB- right place for this???
-              //AttributeDataExplorerPlugin AttEx = new AttributeDataExplorerPlugin();
-              // AttEx.Activate();
-              //  AttEx.IsActive = true;
 
+                _dataLayerExporter = new DataLayerExporter(mainMap, this, OLVResultsShow, () => _lastResult);
+                appManager1.LoadExtensions();
             }
             catch (Exception ex)
             {
@@ -2951,6 +2948,7 @@ namespace BenMAP
             }
             PolygonScheme myScheme1 = new PolygonScheme();
             myScheme1.EditorSettings.ClassificationType = ClassificationType.Quantities;
+            
             myScheme1.EditorSettings.IntervalMethod = IntervalMethod.NaturalBreaks;
             myScheme1.EditorSettings.IntervalSnapMethod = IntervalSnapMethod.SignificantFigures;
             myScheme1.EditorSettings.IntervalRoundingDigits = 3; //number of significant figures (or decimal places if using rounding)
@@ -2966,29 +2964,12 @@ namespace BenMAP
             { 
                 //Create the simple pattern with opacity
                 SimplePattern sp = new SimplePattern(colorBlend.ColorArray[catNum]);
-                //SimplePattern sp = new SimplePattern(Color.Purple);
+                sp.Outline = new LineSymbolizer(Color.Transparent, 0); // Outline is nessasary
                 sp.Opacity = 0.8F;  //80% opaque = 20% transparent
-                PolygonSymbolizer poly = new PolygonSymbolizer(colorBlend.ColorArray[catNum], Color.Transparent, 0);
-                //PolygonSymbolizer poly = new PolygonSymbolizer(Color.Red, Color.Transparent, 0);
-                poly.Patterns.Clear();
-                poly.Patterns.Add(sp);
+
+                var poly = new PolygonSymbolizer(new List<IPattern> { sp });
 
                 myScheme1.Categories[catNum].Symbolizer = poly;
-                //myScheme1.Categories[catNum].SetColor(colorBlend.ColorArray[catNum]);
-
-                //make a copy of the category and add it to the color ramp:  -MCB - needed to get the property editor to work correctly
-                PolygonCategory tempCat = new PolygonCategory();
-                tempCat = (PolygonCategory)myScheme1.Categories[catNum].Clone();
-                myScheme1.AddCategory(tempCat);
-
-                //alternate method ignoring transparency of inside color  
-                //myScheme1.Categories[catNum].Symbolizer.SetOutline(Color.Transparent, 0); //make the outlines invisble
-                //myScheme1.Categories[catNum].SetColor(colorBlend.ColorArray[catNum]);
-            }
-
-            for (int catNum = 0; catNum < (CategoryNumber); catNum++)
-            {
-                myScheme1.RemoveCategory(myScheme1.Categories[0]);
             }
 
             myScheme1.AppearsInLegend = false; //if true then legend text displayed
@@ -6136,6 +6117,7 @@ namespace BenMAP
             }
         }
         private bool isLoad = false;
+
         private System.Data.DataSet BindGridtype()
         {
             try
@@ -6166,6 +6148,7 @@ namespace BenMAP
                 return null;
             }
         }
+
         private void tsbSavePic_Click(object sender, EventArgs e)
         {
             try
@@ -6388,6 +6371,9 @@ namespace BenMAP
         private void saveFileDialog1_Disposed(object sender, EventArgs e)
         {
         }
+
+#region Map toolbar functions
+        //dpa moved all these map toolbar functions into a single region block
         private void tsbChangeProjection_Click(object sender, EventArgs e)
         {
             try
@@ -6453,32 +6439,10 @@ namespace BenMAP
         }
 
         private void tsbSaveMap_Click(object sender, EventArgs e)
-        {// MCB- Shouldn't this be changed 
-            try
-            {
-                if (mainMap.GetAllLayers().Count == 0)
-                    return;
-
-                SaveFileDialog saveFileDialog1 = new SaveFileDialog();
-                saveFileDialog1.Filter = "SHP(*.shp)|*.shp";
-                saveFileDialog1.InitialDirectory = "C:\\";
-                if (saveFileDialog1.ShowDialog() == DialogResult.Cancel)
-                {
-                    return;
-                }
-                tsbChangeProjection_Click(sender, e);
-                tsbChangeProjection_Click(sender, e);
-
-                string fileName = saveFileDialog1.FileName;
-
-                FeatureLayer fl = mainMap.GetAllLayers()[0] as FeatureLayer;
-                fl.DataSet.SaveAs(fileName, true);
-                MessageBox.Show("Shapefile saved.", "File saved");
-            }
-            catch
-            {
-            }
+        {
+            _dataLayerExporter.ShowExportWindow();
         }
+
         private void tsbChangeCone_Click(object sender, EventArgs e)
         {
             if (mainMap.GetAllLayers().Count < 2)
@@ -6487,28 +6451,73 @@ namespace BenMAP
 
         private void btnZoomIn_Click(object sender, EventArgs e)
         {
+            //dpa - change the map mode to zoom in 
+            //this button toggles map mode, hence changing the "checked" state.
             mainMap.FunctionMode = FunctionMode.ZoomIn;
+            btnSelect.Checked = false;
+            btnIdentify.Checked = false;
+            btnZoomIn.Checked = true;
+            btnZoomOut.Checked = false;
+            btnPan.Checked = false;
+
         }
 
         private void btnZoomOut_Click(object sender, EventArgs e)
         {
+            //dpa - change the map mode to zoom out
+            //this button toggles map mode, hence changing the "checked" state.
             mainMap.FunctionMode = FunctionMode.ZoomOut;
+            btnSelect.Checked = false;
+            btnIdentify.Checked = false;
+            btnZoomIn.Checked = false;
+            btnZoomOut.Checked = true;
+            btnPan.Checked = false;
+
         }
 
+        private void btnIdentify_Click(object sender, EventArgs e)
+        {
+            //dpa - change function mode to identify
+            //this button toggles map mode, hence changing the "checked" state.
+            mainMap.FunctionMode = FunctionMode.Info;
+            btnSelect.Checked = false;
+            btnIdentify.Checked = true;
+            btnZoomIn.Checked = false;
+            btnZoomOut.Checked = false;
+            btnPan.Checked = false;
+        }
+        
+        private void btnSelect_Click(object sender, EventArgs e)
+        {
+            //dpa - change map cursor mode to selection
+            //this button toggles map mode, hence changing the "checked" state.
+            mainMap.FunctionMode = FunctionMode.Select;
+            btnSelect.Checked = true;
+            btnIdentify.Checked = false;
+            btnZoomIn.Checked = false;
+            btnZoomOut.Checked = false;
+            btnPan.Checked = false;
+        }
+        
         private void btnPan_Click(object sender, EventArgs e)
         {
+            //dpa - change the map mode to pan
+            //this button toggles map mode, hence changing the "checked" state.
             mainMap.FunctionMode = FunctionMode.Pan;
+            btnSelect.Checked = false;
+            btnIdentify.Checked = false;
+            btnZoomIn.Checked = false;
+            btnZoomOut.Checked = false;
+            btnPan.Checked = true;
         }
 
         private void btnFullExtent_Click(object sender, EventArgs e)
         {
+            //dpa - zoom to the map full extent
             mainMap.ZoomToMaxExtent();
             mainMap.FunctionMode = FunctionMode.None;
         }
-        private void btnIdentify_Click(object sender, EventArgs e)
-        {
-            mainMap.FunctionMode = FunctionMode.Info;
-        }
+        
         private void btnLayerSet_Click(object sender, EventArgs e)
         {
             if (isLegendHide)
@@ -6531,6 +6540,27 @@ namespace BenMAP
                 mainMap.ViewExtents = _SavedExtent;
             }
         }
+
+        private void tsbSelectByLocation_Click(object sender, EventArgs e)
+        {
+            //dpa - show the select by location dialog box.
+            if (_SelectByLocationDialogShown) return;
+
+            _SelectByLocationDialogShown = true;
+            var sb = new SelectByLocationDialog(mainMap);
+            sb.Closed += SbOnClosed;
+            sb.Show(this);
+        }
+
+        private void btnClearSelection_Click(object sender, EventArgs e)
+        {
+            //dpa - clear selected features from the map.
+            mainMap.ClearSelection();
+        }
+
+        
+#endregion
+
         private FeatureSet getThemeFeatureSet(int iValue, ref double MinValue, ref double MaxValue)
         {
             try
@@ -6590,9 +6620,8 @@ namespace BenMAP
                     }
                     foreach (DataRow dr in fsRegion.DataTable.Rows)
                     {
-                        Feature f = new Feature();
-                        f.BasicGeometry = new DotSpatial.Topology.Point(fsRegion.GetFeature(i).Envelope.ToExtent().Center.X, fsRegion.GetFeature(i).Envelope.ToExtent().Center.Y);
-                        fsReturn.AddFeature(f);
+                        var geom = new NetTopologySuite.Geometries.Point(fsRegion.GetFeature(i).Geometry.EnvelopeInternal.ToExtent().Center.X, fsRegion.GetFeature(i).Geometry.EnvelopeInternal.ToExtent().Center.Y);
+                        fsReturn.AddFeature(geom);
                         fsReturn.DataTable.Rows[i]["Col"] = dr["Col"];
                         fsReturn.DataTable.Rows[i]["Row"] = dr["Row"];
                         fsReturn.DataTable.Rows[i]["ThemeValue"] = 0;
@@ -6636,9 +6665,8 @@ namespace BenMAP
                     }
                     foreach (DataRow dr in fsRegion.DataTable.Rows)
                     {
-                        Feature f = new Feature();
-                        f.BasicGeometry = new DotSpatial.Topology.Point(fsRegion.GetFeature(i).Envelope.ToExtent().Center.X, fsRegion.GetFeature(i).Envelope.ToExtent().Center.Y);
-                        fsReturn.AddFeature(f);
+                        var geom = new NetTopologySuite.Geometries.Point(fsRegion.GetFeature(i).Geometry.EnvelopeInternal.ToExtent().Center.X, fsRegion.GetFeature(i).Geometry.EnvelopeInternal.ToExtent().Center.Y);
+                        fsReturn.AddFeature(geom);
                         fsReturn.DataTable.Rows[i]["Col"] = dr["Col"];
                         fsReturn.DataTable.Rows[i]["Row"] = dr["Row"];
                         fsReturn.DataTable.Rows[i]["ThemeValue"] = 0;
@@ -6682,9 +6710,8 @@ namespace BenMAP
                     }
                     foreach (DataRow dr in fsRegion.DataTable.Rows)
                     {
-                        Feature f = new Feature();
-                        f.BasicGeometry = new DotSpatial.Topology.Point(fsRegion.GetFeature(i).Envelope.ToExtent().Center.X, fsRegion.GetFeature(i).Envelope.ToExtent().Center.Y);
-                        fsReturn.AddFeature(f);
+                        var geom = new NetTopologySuite.Geometries.Point(fsRegion.GetFeature(i).Geometry.EnvelopeInternal.ToExtent().Center.X, fsRegion.GetFeature(i).Geometry.EnvelopeInternal.ToExtent().Center.Y);
+                        fsReturn.AddFeature(geom);
                         fsReturn.DataTable.Rows[i]["Col"] = dr["Col"];
                         fsReturn.DataTable.Rows[i]["Row"] = dr["Row"];
                         fsReturn.DataTable.Rows[i]["ThemeValue"] = 0;
@@ -6710,9 +6737,8 @@ namespace BenMAP
                     i = 0;
                     foreach (DataRow dr in fsRegion.DataTable.Rows)
                     {
-                        Feature f = new Feature();
-                        f.BasicGeometry = new DotSpatial.Topology.Point(fsRegion.GetFeature(i).Envelope.ToExtent().Center.X, fsRegion.GetFeature(i).Envelope.ToExtent().Center.Y);
-                        fsReturn.AddFeature(f);
+                        var geom = new NetTopologySuite.Geometries.Point(fsRegion.GetFeature(i).Geometry.EnvelopeInternal.ToExtent().Center.X, fsRegion.GetFeature(i).Geometry.EnvelopeInternal.ToExtent().Center.Y);
+                        fsReturn.AddFeature(geom);
                         fsReturn.DataTable.Rows[i]["Col"] = dr["Col"];
                         fsReturn.DataTable.Rows[i]["Row"] = dr["Row"];
                         try
@@ -6733,9 +6759,8 @@ namespace BenMAP
                 i = 0;
                 foreach (DataRow dr in fsRegion.DataTable.Rows)
                 {
-                    Feature f = new Feature();
-                    f.BasicGeometry = new DotSpatial.Topology.Point(fsRegion.GetFeature(i).Envelope.ToExtent().Center.X, fsRegion.GetFeature(i).Envelope.ToExtent().Center.Y);
-                    fsReturn.AddFeature(f);
+                    var geom = new NetTopologySuite.Geometries.Point(fsRegion.GetFeature(i).Geometry.EnvelopeInternal.ToExtent().Center.X, fsRegion.GetFeature(i).Geometry.EnvelopeInternal.ToExtent().Center.Y);
+                    fsReturn.AddFeature(geom);
                     fsReturn.DataTable.Rows[i]["Col"] = dr["Col"];
                     fsReturn.DataTable.Rows[i]["Row"] = dr["Row"];
                     if (gRegionGridRelationship.bigGridID == CommonClass.RBenMAPGrid.GridDefinitionID)
@@ -7107,8 +7132,8 @@ namespace BenMAP
         private void ClearMapTableChart()
         {
             if (!_MapAlreadyDisplayed) mainMap.Layers.Clear();
-
-            OLVResultsShow.SetObjects(null);
+            
+            SetOLVResultsShowObjects(null);
             _tableObject = null;
             oxyPlotView.Visible = false;
             btnApply.Visible = false;
@@ -7791,7 +7816,7 @@ namespace BenMAP
 
         private int _pageCurrent;
         private int _currentRow;
-        private int _pageSize;
+        private const int _pageSize = 50;
         private int _pageCount;
         public bool _MapAlreadyDisplayed = false;
         public object _tableObject;
@@ -8631,10 +8656,10 @@ namespace BenMAP
                         iLstCRTable++;
                     }
                     _tableObject = lstAllSelectCRFuntion;
-                    OLVResultsShow.SetObjects(dicAPV.ToList().GetRange(0, dicAPV.Count > 50 ? 50 : dicAPV.Count));
-                    _pageSize = 50;
                     _currentRow = 0;
                     _pageCount = dicAPV.Count / 50 + 1; _pageCurrent = 1;
+                    SetOLVResultsShowObjects(dicAPV);
+
                     bindingNavigatorPositionItem.Text = _pageCurrent.ToString();
                     bindingNavigatorCountItem.Text = _pageCount.ToString();
                 }
@@ -8943,10 +8968,9 @@ namespace BenMAP
                         iLstCRTable++;
                     }
                     _tableObject = lstCRTable;
-                    OLVResultsShow.SetObjects(dicAPV.ToList().GetRange(0, dicAPV.Count > 50 ? 50 : dicAPV.Count));
-                    _pageSize = 50;
                     _currentRow = 0;
                     _pageCount = dicAPV.Count / 50 + 1; _pageCurrent = 1;
+                    SetOLVResultsShowObjects(dicAPV);
                     bindingNavigatorPositionItem.Text = _pageCurrent.ToString();
                     bindingNavigatorCountItem.Text = _pageCount.ToString();
                 }
@@ -9061,11 +9085,11 @@ namespace BenMAP
                         }
                         ilstallSelectValuationMethodAndValue++;
                     }
-                    OLVResultsShow.SetObjects(dicAPV.ToList().GetRange(0, dicAPV.Count > 50 ? 50 : dicAPV.Count));
-                    _pageSize = 50;
+                    
                     _currentRow = 0;
                     _pageCount = dicAPV.Count / 50 + 1;
                     _pageCurrent = 1;
+                    SetOLVResultsShowObjects(dicAPV);
                     bindingNavigatorPositionItem.Text = _pageCurrent.ToString();
                     bindingNavigatorCountItem.Text = _pageCount.ToString();
                 }
@@ -9159,11 +9183,11 @@ namespace BenMAP
                             dicAPV.Add(apvx, allSelectQALYMethodAndValue.AllSelectQALYMethod);
                         }
                     }
-                    OLVResultsShow.SetObjects(dicAPV.ToList().GetRange(0, dicAPV.Count > 50 ? 50 : dicAPV.Count));
-                    _pageSize = 50;
+                    
                     _currentRow = 0;
                     _pageCount = dicAPV.Count / 50 + 1;
                     _pageCurrent = 1;
+                    SetOLVResultsShowObjects(dicAPV);
                     bindingNavigatorPositionItem.Text = _pageCurrent.ToString();
                     bindingNavigatorCountItem.Text = _pageCount.ToString();
                 }
@@ -9208,11 +9232,10 @@ namespace BenMAP
                     }
 
                     _tableObject = crTable;
-                    OLVResultsShow.SetObjects(crTable.ModelResultAttributes.GetRange(0, crTable.ModelResultAttributes.Count > 50 ? 50 : crTable.ModelResultAttributes.Count));
-                    _pageSize = 50;
                     _currentRow = 0;
                     _pageCount = crTable.ModelResultAttributes.Count / 50 + 1;
                     _pageCurrent = 1;
+                    SetOLVResultsShowObjects(crTable.ModelResultAttributes);
                     bindingNavigatorPositionItem.Text = _pageCurrent.ToString();
                     bindingNavigatorCountItem.Text = _pageCount.ToString();
                 }
@@ -9513,6 +9536,32 @@ namespace BenMAP
             }
         }
 
+        private static IQueryable GetPage(IQueryable query, int page, int pageSize, out int count)
+        {
+            var skip = (page - 1)*pageSize;
+            dynamic dynamicQuery = query;
+            count = Queryable.Count(dynamicQuery);
+            return Queryable.Take(Queryable.Skip(dynamicQuery, skip), pageSize);
+        }
+
+        private void SetOLVResultsShowObjects(IEnumerable results)
+        {
+            _lastResult = results;
+
+            IQueryable curPage;
+            if (results == null)
+            {
+                curPage = null;
+            }
+            else
+            {
+                int cnt;
+                curPage = GetPage(results.AsQueryable(), _pageCurrent, _pageSize, out cnt);
+            }
+            
+            OLVResultsShow.SetObjects(curPage);
+        }
+
 
         private void UpdateTableResult(object oTable)
         {
@@ -9537,11 +9586,7 @@ namespace BenMAP
                     iLstCRTable++;
                 }
                 _tableObject = lstAllSelectCRFuntion;
-                if (_pageCurrent == _pageCount)
-
-                    OLVResultsShow.SetObjects(dicAPV.ToList().GetRange(_pageCurrent * 50 - 50, dicAPV.Count - (_pageCurrent - 1) * 50));
-                else
-                    OLVResultsShow.SetObjects(dicAPV.ToList().GetRange(_pageCurrent * 50 - 50, 50));
+                SetOLVResultsShowObjects(lstAllSelectCRFuntion);
             }
             if (oTable is List<CRSelectFunctionCalculateValue> || oTable is CRSelectFunctionCalculateValue)
             {
@@ -9685,22 +9730,12 @@ namespace BenMAP
                 }
 
 
-
-                if (_pageCurrent == _pageCount)
-
-                    OLVResultsShow.SetObjects(dicAPV.ToList().GetRange(_pageCurrent * 50 - 50, dicAPV.Count - (_pageCurrent - 1) * 50));
-                else
-                    OLVResultsShow.SetObjects(dicAPV.ToList().GetRange(_pageCurrent * 50 - 50, 50));
-
+                SetOLVResultsShowObjects(dicAPV);
             }
             else if (oTable is Dictionary<KeyValuePair<CRCalculateValue, int>, CRSelectFunction>)
             {
                 Dictionary<KeyValuePair<CRCalculateValue, int>, CRSelectFunction> dicAPV = oTable as Dictionary<KeyValuePair<CRCalculateValue, int>, CRSelectFunction>;
-                if (_pageCurrent == _pageCount)
-
-                    OLVResultsShow.SetObjects(dicAPV.ToList().GetRange(_pageCurrent * 50 - 50, dicAPV.Count - (_pageCurrent - 1) * 50));
-                else
-                    OLVResultsShow.SetObjects(dicAPV.ToList().GetRange(_pageCurrent * 50 - 50, 50));
+                SetOLVResultsShowObjects(dicAPV);
             }
 
 
@@ -9729,11 +9764,7 @@ namespace BenMAP
                     }
                     ilstallSelectValuationMethodAndValue++;
                 }
-                if (_pageCurrent == _pageCount)
-
-                    OLVResultsShow.SetObjects(dicAPV.ToList().GetRange(_pageCurrent * 50 - 50, dicAPV.ToList().Count - (_pageCurrent - 1) * 50));
-                else
-                    OLVResultsShow.SetObjects(dicAPV.ToList().GetRange(_pageCurrent * 50 - 50, 50));
+                SetOLVResultsShowObjects(dicAPV);
             }
             else if (oTable is AllSelectQALYMethodAndValue)
             {
@@ -9747,12 +9778,7 @@ namespace BenMAP
                     dicAPV.Add(apvx, allSelectQALYMethodAndValue.AllSelectQALYMethod);
                 }
 
-
-                if (_pageCurrent == _pageCount)
-
-                    OLVResultsShow.SetObjects(dicAPV.ToList().GetRange(_pageCurrent * 50 - 50, dicAPV.ToList().Count - (_pageCurrent - 1) * 50));
-                else
-                    OLVResultsShow.SetObjects(dicAPV.ToList().GetRange(_pageCurrent * 50 - 50, 50));
+                SetOLVResultsShowObjects(dicAPV);
             }
             else if (oTable is List<AllSelectQALYMethodAndValue>)
             {
@@ -9767,21 +9793,12 @@ namespace BenMAP
                     }
                 }
 
-                if (_pageCurrent == _pageCount)
-
-                    OLVResultsShow.SetObjects(dicAPV.ToList().GetRange(_pageCurrent * 50 - 50, dicAPV.ToList().Count - (_pageCurrent - 1) * 50));
-                else
-                    OLVResultsShow.SetObjects(dicAPV.ToList().GetRange(_pageCurrent * 50 - 50, 50));
+                SetOLVResultsShowObjects(dicAPV);
             }
             else if (oTable is BenMAPLine)
             {
                 BenMAPLine crTable = (BenMAPLine)oTable;
-
-                if (_pageCurrent == _pageCount)
-
-                    OLVResultsShow.SetObjects(crTable.ModelResultAttributes.GetRange(_pageCurrent * 50 - 50, crTable.ModelResultAttributes.Count - (_pageCurrent - 1) * 50));
-                else
-                    OLVResultsShow.SetObjects(crTable.ModelResultAttributes.GetRange(_pageCurrent * 50 - 50, 50));
+                SetOLVResultsShowObjects(crTable.ModelResultAttributes);
             }
         }
 
@@ -11552,7 +11569,7 @@ namespace BenMAP
                                 InitTableResult(lstCRSelectFunctionCalculateValue);
                                 if (!bTable)
                                 {
-                                    OLVResultsShow.SetObjects(null);
+                                    SetOLVResultsShowObjects(null);
                                 }
                             }
                             //Add Pollutants Mapgroup if it doesn't exist already -MCB
@@ -13142,7 +13159,7 @@ namespace BenMAP
             if (mgName == null || mgName =="") return null;   //confirm map group name is valid
 
             bool mgFound = false;
-            MapGroup NewMapGroup = new MapGroup();
+            MapGroup NewMapGroup = null;
             MapGroup ParentMapGroup = null;
             string parentText;
             
@@ -13197,7 +13214,10 @@ namespace BenMAP
 
             if (!mgFound)  //New map group not found already, so add it
             {
+                NewMapGroup = new MapGroup();
+                NewMapGroup.Layers = new MapLayerCollection(mainMap.MapFrame, NewMapGroup, null);  // This is neccessary for manually created groups
                 NewMapGroup.LegendText = mgName;
+                
                 if (parentMGText == "Map Layers")  //add map group at top level
                 {
                     mainMap.Layers.Add(NewMapGroup);
@@ -13775,6 +13795,8 @@ namespace BenMAP
             return Color.FromArgb(rand.Next(255), rand.Next(255), rand.Next(255));
         }
 
+
+
         private void btnSelectAll_Click(object sender, EventArgs e)
         {
             try
@@ -14108,20 +14130,21 @@ namespace BenMAP
             //}
         }
 
-        private void toolStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
-        {
 
-        }
 
         private void OLVResultsShow_SelectedIndexChanged(object sender, EventArgs e)
         {
 
         }
 
-        
-      
-      
-      
-        
+        private bool _SelectByLocationDialogShown;
+
+
+
+        private void SbOnClosed(object sender, EventArgs eventArgs)
+        {
+            _SelectByLocationDialogShown = false;
+            ((Form)sender).Closed -= SbOnClosed;
+        }
     }
 }
