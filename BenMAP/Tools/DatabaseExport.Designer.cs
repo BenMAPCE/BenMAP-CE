@@ -112,9 +112,9 @@ namespace BenMAP
             this.radioExportTypeFile.AutoSize = true;
             this.radioExportTypeFile.Location = new System.Drawing.Point(151, 21);
             this.radioExportTypeFile.Name = "radioExportTypeFile";
-            this.radioExportTypeFile.Size = new System.Drawing.Size(220, 18);
+            this.radioExportTypeFile.Size = new System.Drawing.Size(195, 18);
             this.radioExportTypeFile.TabIndex = 1;
-            this.radioExportTypeFile.Text = "Other File Format (e.g. shp, csv, xlsx)";
+            this.radioExportTypeFile.Text = "Other File Format (e.g. shp, csv)";
             this.radioExportTypeFile.UseVisualStyleBackColor = true;
             this.radioExportTypeFile.CheckedChanged += new System.EventHandler(this.radioExportTypeFile_CheckedChanged);
             // 

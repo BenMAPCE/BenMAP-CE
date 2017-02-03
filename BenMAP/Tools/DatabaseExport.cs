@@ -148,7 +148,9 @@ namespace BenMAP
                     sfd.FileName = MakeValidFileName(treDatabase.SelectedNode.Text);
                     if (treDatabase.SelectedNode.Parent.Text != "Grid Definitions")
                     {
-                        sfd.Filter = "CSV File (*.csv)|*.csv|Excel File (*.xlsx)|*.xlsx";
+                        //Disabling Excel option until performance can be improved for large datasets
+                        //sfd.Filter = "CSV File (*.csv)|*.csv|Excel File (*.xlsx)|*.xlsx";
+                        sfd.Filter = "CSV File (*.csv)|*.csv";
                     }
                     else
                     {
@@ -2297,7 +2299,7 @@ select a.Valuationfunctionid,a.Valuationfunctiondatasetid
 from VALUATIONFUNCTIONS a
 join ENDPOINTGROUPS b on a.ENDPOINTGROUPID = b.ENDPOINTGROUPID
 join ENDPOINTS c on a.ENDPOINTID = c.ENDPOINTID
-join FUNCTIONALFORMS d on a.FUNCTIONALFORMID = d.FUNCTIONALFORMID
+join VALUATIONFUNCTIONALFORMS d on a.FUNCTIONALFORMID = d.FUNCTIONALFORMID
 join VALUATIONFUNCTIONDATASETS e on a.VALUATIONFUNCTIONDATASETID = e.VALUATIONFUNCTIONDATASETID
 where {0}", sqlWhereClause);
 
