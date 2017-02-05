@@ -15,6 +15,7 @@ using System.Diagnostics;
 using System.Xml.Serialization;
 using ProtoBuf;
 using System.Reflection;
+using BenMAP.Crosswalks;
 
 namespace BenMAP.Configuration
 {
