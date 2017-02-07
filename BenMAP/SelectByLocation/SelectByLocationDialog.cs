@@ -62,18 +62,15 @@ namespace BenMAP.SelectByLocation
 
         private void btnApply_Click(object sender, EventArgs e)
         {
-            DoSelectByLocation();
+            DoSelectByLocation(false);
         }
 
         private void btnOK_Click(object sender, EventArgs e)
         {
-            if (DoSelectByLocation())
-            {
-                Close();
-            }
+            DoSelectByLocation(true);
         }
 
-        private bool DoSelectByLocation()
+        private void DoSelectByLocation(bool close)
         {
             var selectionMethod = (SelectionMethod) cmbSelectionMethod.SelectedValue;
             var spatialSelectionMethod = (SpatialSelectionMethod)cmbSpatialSelectionMethod.SelectedValue;
@@ -83,13 +80,13 @@ namespace BenMAP.SelectByLocation
             if (selectionLayer == null)
             {
                 MessageBox.Show(this, "Select 'Selection layer'.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return false;
+                return;
             }
 
             if (targetLayer == null)
             {
                 MessageBox.Show(this, "Select 'Target layer'.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return false;
+                return;
             }
 
             SetBusy(true);
@@ -113,9 +110,11 @@ namespace BenMAP.SelectByLocation
                 selectionLayer.ClearSelection(out area);
 
                 SetBusy(false);
+                if (close)
+                {
+                    Close();
+                }
             }, TaskContinuationOptions.ExecuteSynchronously);
-            
-            return true;
         }
 
         private void SetBusy(bool busy)
