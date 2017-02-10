@@ -6470,23 +6470,26 @@ namespace BenMAP.Configuration
                 {
                     string key = string.Format("P{0}", i);
                     m1[0, i - 1] = dicDeltasWithVar[key];
-                }
+                } 
 
                 // set up var/covar matrix from db
                 System.Data.DataSet ds = null;
                 string commandText = string.Empty;
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
 
-                // since beta seasons are added in order, we can use betaInd to index and find betaIDs for the query
                 string varName = string.Empty;
-                List<int> betaIDs = new List<int>();
+                Dictionary<string, int> dicBetaIDWithVar = new Dictionary<string, int>();
 
-                foreach (CRFVariable v in crSelectFunction.BenMAPHealthImpactFunction.Variables) { betaIDs.Add(v.PollBetas[betaIndex].BetaID); }
+                // Pair beta ID's with variable name to make sure query calls in correct order 
+                foreach (CRFVariable v in crSelectFunction.BenMAPHealthImpactFunction.Variables)
+                {
+                    dicBetaIDWithVar.Add(v.VariableName, v.PollBetas[betaIndex].BetaID); 
+                }
 
                 for (int row = 0; row < m1Width; row++)
                 {
-                    varName = string.Format("P{0}", row + 1); // hif.BenMAPHealthImpactFunction.Variables[row].VariableName;
-                    commandText = string.Format("select varcov from CRFVARIABLES as crv join CRFBETAS as crb on crb.crfvariableid=crv.crfvariableid join CRFVARCOV as crvc on crvc.crfbetaID1=crb.crfbetaid or crvc.crfbetaID2=crb.crfbetaid where((crfbetaid2={0} and variablename!='{1}') or (crfbetaid1={0} and crfbetaid2={0})) order by crv.crfvariableid", betaIDs[row], varName);
+                    varName = string.Format("P{0}", row + 1); 
+                    commandText = string.Format("select varcov from CRFVARIABLES as crv join CRFBETAS as crb on crb.crfvariableid=crv.crfvariableid join CRFVARCOV as crvc on crvc.crfbetaID1=crb.crfbetaid or crvc.crfbetaID2=crb.crfbetaid where((crfbetaid2={0} and variablename!='{1}') or (crfbetaid1={0} and crfbetaid2={0})) order by crv.crfvariableid", dicBetaIDWithVar[varName], varName); // betaIDs[row], varName);
                     ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
 
                     int col = 0;
@@ -6494,8 +6497,8 @@ namespace BenMAP.Configuration
                     {
                         m2[row, col] = Convert.ToDouble(dr["varcov"]);
                         col++;
-                    }
-                }
+                    } 
+                } 
 
                 // standard error calculations
                 double SE = 0;
