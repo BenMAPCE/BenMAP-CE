@@ -87,7 +87,7 @@ namespace BenMAP
                         Gender = cr.Gender,
                         IncidenceDataSetID = cr.IncidenceDataSetID,
                         IncidenceDataSetName = cr.IncidenceDataSetName,
-                        Locations = cr.Locations,
+                        GeographicAreaName = cr.GeographicAreaName,
                         PrevalenceDataSetID = cr.PrevalenceDataSetID,
                         PrevalenceDataSetName = cr.PrevalenceDataSetName,
                         Race = cr.Race,
@@ -385,7 +385,7 @@ namespace BenMAP
                     }
                     crSelectFunction.StartAge = benMAPHealthImpactFunction.StartAge;
                     crSelectFunction.EndAge = benMAPHealthImpactFunction.EndAge;
-                    crSelectFunction.Locations = benMAPHealthImpactFunction.Locations;
+                    crSelectFunction.GeographicAreaName = benMAPHealthImpactFunction.GeographicAreaName;
                     if (DicRace.ContainsKey(benMAPHealthImpactFunction.Race))
                         crSelectFunction.Race = benMAPHealthImpactFunction.Race;
                     else
@@ -1841,6 +1841,11 @@ namespace BenMAP
                 e.Item.Font = new Font(e.Item.Font, FontStyle.Bold);
 
             }
+
+        }
+
+        private void olvSimple_SelectedIndexChanged(object sender, EventArgs e)
+        {
 
         }
     }

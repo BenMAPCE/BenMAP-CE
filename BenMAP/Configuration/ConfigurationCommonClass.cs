@@ -500,9 +500,27 @@ namespace BenMAP.Configuration
             }
 
         }
-        public static List<Location> getLocationFromIDAndType(int LocationType, string Locations)
+        public static GeographicArea getGeographicArea(int GeographicAreaId)
         {
-            return null;
+            try
+            {
+                //TODO: Right now, all area assumed to be entire area. Need to add handling for entire area and subregion (e.g. query geographicareaentries)
+                string commandText = string.Format("select geographicareaname, entiregriddefinition from geographicareas where geographicareaid={0}", GeographicAreaId);
+                GeographicArea geographicArea = new GeographicArea();
+                ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
+                if (ds.Tables[0].Rows.Count == 0) return null;
+                DataRow dr = ds.Tables[0].Rows[0];
+
+                geographicArea.GeographicAreaID = GeographicAreaId;
+                geographicArea.GeographicAreaName = dr["GeographicAreaName"].ToString();
+
+                return geographicArea;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
 
         }
         public static BenMAPHealthImpactFunction getBenMAPHealthImpactFunctionFromID(int ID)
@@ -512,7 +530,7 @@ namespace BenMAP.Configuration
                 string commandText = string.Format("select CRFunctionID,a.CRFunctionDatasetID,f.CRFunctionDataSetName,a.EndpointGroupID,b.EndPointGroupName,a.EndpointID,c.EndPointName,PollutantID,"
      + " MetricID,SeasonalMetricID,MetricStatistic,Author,YYear,Location,OtherPollutants,Qualifier,Reference,Race,Gender,Startage,Endage,a.FunctionalFormid,d.FunctionalFormText,"
      + " a.IncidenceDatasetID,a.PrevalenceDatasetID,a.VariableDatasetID,Beta,DistBeta,P1Beta,P2Beta,A,NameA,B,NameB,C,NameC,a.BaselineFunctionalFormID,"
-     + " e.FunctionalFormText as BaselineFunctionalFormText,Ethnicity,Percentile,Locationtypeid, g.IncidenceDataSetName,i.IncidenceDataSetName as PrevalenceDataSetName,"
+     + " e.FunctionalFormText as BaselineFunctionalFormText,Ethnicity,Percentile,GeographicAreaId, g.IncidenceDataSetName,i.IncidenceDataSetName as PrevalenceDataSetName,"
      + " h.SetupVariableDataSetName as VariableDatasetName from crFunctions a join CRFunctionDataSets f on a.CRFunctionDatasetID=f.CRFunctionDatasetID"
      + " join EndPointGroups b on a.EndPointGroupID=b.EndPointGroupID join EndPoints c on a.EndPointID=c.EndPointID join FunctionalForms d on a.FunctionalFormid=d.FunctionalFormID"
      + " left join BaselineFunctionalForms e on a.BaselineFunctionalFormID=e.FunctionalFormID left join IncidenceDataSets g on a.IncidenceDatasetID=g.IncidenceDatasetID"
@@ -573,9 +591,9 @@ namespace BenMAP.Configuration
                 benMapHealthImpactFunction.MetricStatistic = (MetricStatic)Convert.ToInt32(dr["MetricStatistic"]);
                 benMapHealthImpactFunction.Author = dr["Author"].ToString();
                 benMapHealthImpactFunction.Year = Convert.ToInt32(dr["YYear"]);
-                if ((dr["Locationtypeid"] is DBNull || dr["Location"] is DBNull) == false)
+                if ((dr["GeographicAreaId"] is DBNull) == false)
                 {
-                    benMapHealthImpactFunction.Locations = getLocationFromIDAndType(Convert.ToInt32(dr["Locationtypeid"]), dr["Location"].ToString());
+                    benMapHealthImpactFunction.GeographicAreaName = getGeographicArea(Convert.ToInt32(dr["GeographicAreaId"])).GeographicAreaName;
                 }
                 if (dr["Location"] is DBNull == false)
                 {
@@ -1477,6 +1495,7 @@ namespace BenMAP.Configuration
         {
             GridDefinition grd = new GridDefinition();
             Dictionary<string, List<GridRelationshipAttributePercentage>> dicAllGridPercentage = grd.getRelationshipFromBenMAPGridPercentage(big, small, popRasterLoc);
+            // TODO: Why are we calling updatePercentageToDatabase when getRelationshipFromBenMAPGridPercentage is already writing it to the database? updatePercentageToDatabase will always throw an exception
             updatePercentageToDatabase(dicAllGridPercentage.ToArray()[0]);
             CommonClass.IsAddPercentage = true;
             return;
@@ -1527,6 +1546,55 @@ namespace BenMAP.Configuration
             }
             CommonClass.IsAddPercentage = true;
         }
+
+        public static void getGeographicAreaPercentages(int big, int small)
+        {
+/*            GridDefinition grd = new GridDefinition();
+            Dictionary<string, List<GridRelationshipAttributePercentage>> dicAllGridPercentage = grd.getRelationshipFromBenMAPGridPercentage(big, small, popRasterLoc);
+
+            string commandText = "select max(PercentageID) from GridDefinitionPercentages";
+            ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+            int iMax = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
+            commandText = string.Format("insert into GridDefinitionPercentages values({0},{1})", iMax, dicAllGridPercentage.Key);
+            fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+            int i = 1;
+            commandText = "execute block as declare incidenceRateID int;" + " BEGIN ";
+            FirebirdSql.Data.FirebirdClient.FbCommand fbCommand = new FirebirdSql.Data.FirebirdClient.FbCommand();
+            fbCommand.Connection = CommonClass.Connection;
+            fbCommand.CommandType = CommandType.Text;
+            if (fbCommand.Connection.State != ConnectionState.Open)
+            { fbCommand.Connection.Open(); }
+            int j = 0;
+            foreach (GridRelationshipAttributePercentage grp in dicAllGridPercentage.Value)
+            {
+
+                if (i < 250 && j < dicAllGridPercentage.Value.Count - 1)
+                {
+                    commandText = commandText + string.Format(" insert into GridDefinitionPercentageEntries values({0},{1},{2},{3},{4},{5},{6});",
+            iMax, grp.sourceCol, grp.sourceRow, grp.targetCol, grp.targetRow, grp.percentage, 0);
+
+
+                }
+                else
+                {
+                    commandText = commandText + string.Format(" insert into GridDefinitionPercentageEntries values({0},{1},{2},{3},{4},{5},{6});",
+                    iMax, grp.sourceCol, grp.sourceRow, grp.targetCol, grp.targetRow, grp.percentage, 0);
+
+                    commandText = commandText + "END";
+                    fbCommand.CommandText = commandText;
+                    fbCommand.ExecuteNonQuery();
+                    commandText = "execute block as declare incidenceRateID int;" + " BEGIN ";
+
+                    i = 1;
+
+                }
+                i++;
+                j++;
+
+            }
+            */
+        }
+
         public static List<string> getAllAgeID()
         {
             try
@@ -2650,6 +2718,52 @@ namespace BenMAP.Configuration
                 Dictionary<string, List<MonitorNeighborAttribute>> dicAllMonitorNeighborControl = new Dictionary<string, List<MonitorNeighborAttribute>>();
                 Dictionary<string, List<MonitorNeighborAttribute>> dicAllMonitorNeighborBase = new Dictionary<string, List<MonitorNeighborAttribute>>();
 
+                //Dictionary<string, Dictionary<string, double>> dicGeoAreaPercentages = new Dictionary<string, Dictionary<string, double>>();
+                Dictionary<string, double> dicGeoAreaPercentages = null;
+
+                if ( ! string.IsNullOrEmpty(crSelectFunction.GeographicAreaName) )
+                {
+                    // Get the crosswalk for the Geographic Area
+                    //TODO: Hardcoded to test detroit counties
+                    //ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                    int geoId = (crSelectFunction.GeographicAreaName.Equals("Iowa") ? 35 : (crSelectFunction.GeographicAreaName.Equals("California") ? 36 : 34));
+                    //string str = "select sourcecolumn, sourcerow, targetcolumn, targetrow, percentage, normalizationstate from griddefinitionpercentageentries where percentageid=( select percentageid from  griddefinitionpercentages where sourcegriddefinitionid =" + CommonClass.GBenMAPGrid.GridDefinitionID + " and  targetgriddefinitionid =" + geoId + ") and normalizationstate in (0,1)";
+
+                    //DataSet dsGeoAreaPercentage = null;
+                    try
+                    {
+                        //dsGeoAreaPercentage = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, str);
+                        //if (dsGeoAreaPercentage.Tables[0].Rows.Count == 0)
+                        //{
+                        //    Configuration.ConfigurationCommonClass.creatPercentageToDatabase(geoId, CommonClass.GBenMAPGrid.GridDefinitionID, null);
+                        //    dsGeoAreaPercentage = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, str);
+                        //}
+
+                        dicGeoAreaPercentages = CommonClass.IntersectionsWithGeographicArea(CommonClass.GBenMAPGrid.GridDefinitionID, geoId);
+
+                            /*
+                        foreach (DataRow dr in dsGeoAreaPercentage.Tables[0].Rows)
+                        {
+                            if (dicGeoAreaPercentages.ContainsKey(dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString()))
+                            {
+                                if (!dicGeoAreaPercentages[dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString()].ContainsKey(dr["targetcolumn"].ToString() + "," + dr["targetrow"].ToString()))
+                                    dicGeoAreaPercentages[dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString()].Add(dr["targetcolumn"].ToString() + "," + dr["targetrow"].ToString(), Convert.ToDouble(dr["Percentage"]));
+                            }
+                            else
+                            {
+                                dicGeoAreaPercentages.Add(dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString(), new Dictionary<string, double>());
+                                dicGeoAreaPercentages[dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString()].Add(dr["targetcolumn"].ToString() + "," + dr["targetrow"].ToString(), Convert.ToDouble(dr["Percentage"]));
+                            }
+                        }
+                        dsGeoAreaPercentage.Dispose();
+*/
+
+                    }
+                    catch
+                    {
+                        // TODO: Add error handling
+                    }
+                }
 
                 if (baseControlGroup.Base is MonitorDataLine && baseControlGroup.Control is MonitorDataLine && crSelectFunction.BenMAPHealthImpactFunction.MetricStatistic == MetricStatic.None)
                 {
@@ -2688,6 +2802,7 @@ namespace BenMAP.Configuration
                         }
                     }
                 }
+                double percentage;
                 foreach (ModelResultAttribute modelResultAttribute in baseControlGroup.Base.ModelResultAttributes)
                 {
                     bool debug = false;
@@ -2696,7 +2811,24 @@ namespace BenMAP.Configuration
                         debug = true;
                     }
 
-
+                    // If a HIF has an assigned Geographic Area, only run it if it intersects with this grid cell
+                    if( ! string.IsNullOrEmpty(crSelectFunction.GeographicAreaName))
+                    {
+                        // TODO: Check intersection here. If zero, skip to next HIF. Else, set percentage
+                        if (dicGeoAreaPercentages.ContainsKey(modelResultAttribute.Col + "," + modelResultAttribute.Row) )
+                        {
+                            percentage = 500;
+                        }
+                        else
+                        {
+                            continue;
+                        }
+                    }
+                    else
+                    {
+                        // HIF is not restricted to a geographic area, so calculate full value
+                        percentage = 1;
+                    }
 
                     populationValue = 0;
                     incidenceValue = 0;

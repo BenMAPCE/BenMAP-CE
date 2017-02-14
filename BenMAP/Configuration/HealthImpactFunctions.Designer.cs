@@ -37,6 +37,7 @@ namespace BenMAP
             this.chSeasonalMetric = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.chMetricStatistic = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.chLocations = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvColumn57 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn3 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn4 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn5 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
@@ -109,6 +110,7 @@ namespace BenMAP
             this.btnCancel = new System.Windows.Forms.Button();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.olvColumn58 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.groupBox6.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -126,46 +128,73 @@ namespace BenMAP
             this.gBCRProgress.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
-                                                this.olvColumn55.AspectName = "ID";
+            // 
+            // olvColumn55
+            // 
+            this.olvColumn55.AspectName = "ID";
             this.olvColumn55.DisplayIndex = 7;
             this.olvColumn55.IsVisible = false;
             this.olvColumn55.Text = "ID";
             this.olvColumn55.Width = 32;
-                                                this.olvColumn6.AspectName = "Percentile";
+            // 
+            // olvColumn6
+            // 
+            this.olvColumn6.AspectName = "Percentile";
             this.olvColumn6.DisplayIndex = 16;
             this.olvColumn6.IsVisible = false;
             this.olvColumn6.Text = "Percentile";
             this.olvColumn6.Width = 80;
-                                                this.olvColumn53.AspectName = "BenMAPHealthImpactFunction.ID";
+            // 
+            // olvColumn53
+            // 
+            this.olvColumn53.AspectName = "BenMAPHealthImpactFunction.ID";
             this.olvColumn53.DisplayIndex = 7;
             this.olvColumn53.IsEditable = false;
             this.olvColumn53.IsVisible = false;
             this.olvColumn53.Text = "ID";
             this.olvColumn53.Width = 31;
-                                                this.olvColumn35.AspectName = "BenMAPHealthImpactFunction.Percentile";
+            // 
+            // olvColumn35
+            // 
+            this.olvColumn35.AspectName = "BenMAPHealthImpactFunction.Percentile";
             this.olvColumn35.DisplayIndex = 14;
             this.olvColumn35.IsEditable = false;
             this.olvColumn35.IsVisible = false;
             this.olvColumn35.Text = "Percentile";
             this.olvColumn35.Width = 80;
-                                                this.groupBox6.Controls.Add(this.splitContainer1);
+            // 
+            // groupBox6
+            // 
+            this.groupBox6.Controls.Add(this.splitContainer1);
             this.groupBox6.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox6.Location = new System.Drawing.Point(0, 0);
             this.groupBox6.Name = "groupBox6";
             this.groupBox6.Size = new System.Drawing.Size(949, 662);
             this.groupBox6.TabIndex = 21;
             this.groupBox6.TabStop = false;
-                                                this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+            // 
+            // splitContainer1
+            // 
+            this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitContainer1.Location = new System.Drawing.Point(3, 18);
             this.splitContainer1.Name = "splitContainer1";
             this.splitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal;
-                                                this.splitContainer1.Panel1.Controls.Add(this.groupBox1);
-                                                this.splitContainer1.Panel2.Controls.Add(this.gBSelectedHealthImpactFuntion);
+            // 
+            // splitContainer1.Panel1
+            // 
+            this.splitContainer1.Panel1.Controls.Add(this.groupBox1);
+            // 
+            // splitContainer1.Panel2
+            // 
+            this.splitContainer1.Panel2.Controls.Add(this.gBSelectedHealthImpactFuntion);
             this.splitContainer1.Panel2.Controls.Add(this.gBCRProgress);
             this.splitContainer1.Size = new System.Drawing.Size(943, 641);
             this.splitContainer1.SplitterDistance = 333;
             this.splitContainer1.TabIndex = 0;
-                                                this.groupBox1.Controls.Add(this.groupBox8);
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.groupBox8);
             this.groupBox1.Controls.Add(this.groupBox7);
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox1.Location = new System.Drawing.Point(0, 0);
@@ -174,14 +203,20 @@ namespace BenMAP
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Selected Health Impact Functions";
-                                                this.groupBox8.Controls.Add(this.olvSimple);
+            // 
+            // groupBox8
+            // 
+            this.groupBox8.Controls.Add(this.olvSimple);
             this.groupBox8.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox8.Location = new System.Drawing.Point(3, 79);
             this.groupBox8.Name = "groupBox8";
             this.groupBox8.Size = new System.Drawing.Size(937, 251);
             this.groupBox8.TabIndex = 31;
             this.groupBox8.TabStop = false;
-                                                this.olvSimple.AllColumns.Add(this.chDataSetName);
+            // 
+            // olvSimple
+            // 
+            this.olvSimple.AllColumns.Add(this.chDataSetName);
             this.olvSimple.AllColumns.Add(this.chEndPointGroup);
             this.olvSimple.AllColumns.Add(this.chEndPoint);
             this.olvSimple.AllColumns.Add(this.chPollutant);
@@ -194,6 +229,7 @@ namespace BenMAP
             this.olvSimple.AllColumns.Add(this.chSeasonalMetric);
             this.olvSimple.AllColumns.Add(this.chMetricStatistic);
             this.olvSimple.AllColumns.Add(this.chLocations);
+            this.olvSimple.AllColumns.Add(this.olvColumn57);
             this.olvSimple.AllColumns.Add(this.olvColumn3);
             this.olvSimple.AllColumns.Add(this.olvColumn4);
             this.olvSimple.AllColumns.Add(this.olvColumn5);
@@ -233,6 +269,7 @@ namespace BenMAP
             this.chSeasonalMetric,
             this.chMetricStatistic,
             this.chLocations,
+            this.olvColumn57,
             this.olvColumn3,
             this.olvColumn4,
             this.olvColumn5,
@@ -288,108 +325,238 @@ namespace BenMAP
             this.olvSimple.View = System.Windows.Forms.View.Details;
             this.olvSimple.CellClick += new System.EventHandler<BrightIdeasSoftware.CellClickEventArgs>(this.olvSimple_CellClick);
             this.olvSimple.IsHyperlink += new System.EventHandler<BrightIdeasSoftware.IsHyperlinkEventArgs>(this.olvSimple_IsHyperlink);
-                                                this.chDataSetName.AspectName = "DataSetName";
+            this.olvSimple.SelectedIndexChanged += new System.EventHandler(this.olvSimple_SelectedIndexChanged);
+            // 
+            // chDataSetName
+            // 
+            this.chDataSetName.AspectName = "DataSetName";
             this.chDataSetName.Hyperlink = true;
             this.chDataSetName.IsEditable = false;
             this.chDataSetName.Text = "Dataset";
-                                                this.chEndPointGroup.AspectName = "EndPointGroup";
+            // 
+            // chEndPointGroup
+            // 
+            this.chEndPointGroup.AspectName = "EndPointGroup";
             this.chEndPointGroup.MinimumWidth = 100;
             this.chEndPointGroup.Text = "Endpoint Group";
             this.chEndPointGroup.ToolTipText = "";
             this.chEndPointGroup.Width = 140;
-                                                this.chEndPoint.AspectName = "EndPoint";
+            // 
+            // chEndPoint
+            // 
+            this.chEndPoint.AspectName = "EndPoint";
             this.chEndPoint.MinimumWidth = 50;
             this.chEndPoint.Text = "Endpoint";
             this.chEndPoint.Width = 112;
-                                                this.chPollutant.AspectName = "Pollutant.PollutantName";
+            // 
+            // chPollutant
+            // 
+            this.chPollutant.AspectName = "Pollutant.PollutantName";
             this.chPollutant.Text = "Pollutant";
             this.chPollutant.Width = 74;
-                                                this.chAuthor.AspectName = "Author";
+            // 
+            // chAuthor
+            // 
+            this.chAuthor.AspectName = "Author";
             this.chAuthor.Text = "Author";
-                                                this.chStartAge.AspectName = "StartAge";
+            // 
+            // chStartAge
+            // 
+            this.chStartAge.AspectName = "StartAge";
             this.chStartAge.Text = "Start Age";
             this.chStartAge.Width = 65;
-                                                this.chEndAge.AspectName = "EndAge";
+            // 
+            // chEndAge
+            // 
+            this.chEndAge.AspectName = "EndAge";
             this.chEndAge.Text = "End Age";
-                                                this.olvColumn22.AspectName = "BetaDistribution";
+            // 
+            // olvColumn22
+            // 
+            this.olvColumn22.AspectName = "BetaDistribution";
             this.olvColumn22.Text = "Beta Distribution";
             this.olvColumn22.Width = 155;
-                                                this.chMetric.AspectName = "Metric.MetricName";
+            // 
+            // chMetric
+            // 
+            this.chMetric.AspectName = "Metric.MetricName";
             this.chMetric.HeaderForeColor = System.Drawing.Color.Black;
             this.chMetric.MinimumWidth = 81;
             this.chMetric.Text = "Metric";
             this.chMetric.Width = 81;
-                                                this.chSeasonalMetric.AspectName = "SeasonalMetric.SeasonalMetricName";
+            // 
+            // chSeasonalMetric
+            // 
+            this.chSeasonalMetric.AspectName = "SeasonalMetric.SeasonalMetricName";
             this.chSeasonalMetric.AspectToStringFormat = "";
             this.chSeasonalMetric.Text = "Seasonal Metric";
             this.chSeasonalMetric.Width = 121;
-                                                this.chMetricStatistic.AspectName = "MetricStatistic";
+            // 
+            // chMetricStatistic
+            // 
+            this.chMetricStatistic.AspectName = "MetricStatistic";
             this.chMetricStatistic.AspectToStringFormat = "";
             this.chMetricStatistic.Text = "Metric Statistic";
             this.chMetricStatistic.Width = 105;
-                                                this.chLocations.AspectName = "strLocations";
+            // 
+            // chLocations
+            // 
+            this.chLocations.AspectName = "strLocations";
             this.chLocations.Text = "Locations";
             this.chLocations.Width = 75;
-                                                this.olvColumn3.AspectName = "Race";
+            // 
+            // olvColumn57
+            // 
+            this.olvColumn57.AspectName = "GeographicAreaName";
+            this.olvColumn57.DisplayIndex = 33;
+            this.olvColumn57.Text = "Geographic Area";
+            // 
+            // olvColumn3
+            // 
+            this.olvColumn3.AspectName = "Race";
+            this.olvColumn3.DisplayIndex = 12;
             this.olvColumn3.Text = "Race";
-                                                this.olvColumn4.AspectName = "Ethnicity";
+            // 
+            // olvColumn4
+            // 
+            this.olvColumn4.AspectName = "Ethnicity";
+            this.olvColumn4.DisplayIndex = 13;
             this.olvColumn4.Text = "Ethnicity";
             this.olvColumn4.Width = 80;
-                                                this.olvColumn5.AspectName = "Gender";
+            // 
+            // olvColumn5
+            // 
+            this.olvColumn5.AspectName = "Gender";
+            this.olvColumn5.DisplayIndex = 14;
             this.olvColumn5.Text = "Gender";
-                                                this.olvColumn7.AspectName = "Year";
+            // 
+            // olvColumn7
+            // 
+            this.olvColumn7.AspectName = "Year";
+            this.olvColumn7.DisplayIndex = 15;
             this.olvColumn7.Text = "Year";
-                                                this.olvColumn10.AspectName = "Qualifier";
+            // 
+            // olvColumn10
+            // 
+            this.olvColumn10.AspectName = "Qualifier";
+            this.olvColumn10.DisplayIndex = 16;
             this.olvColumn10.Text = "Qualifier";
             this.olvColumn10.Width = 80;
-                                                this.olvColumn18.AspectName = "OtherPollutants";
+            // 
+            // olvColumn18
+            // 
+            this.olvColumn18.AspectName = "OtherPollutants";
+            this.olvColumn18.DisplayIndex = 17;
             this.olvColumn18.Text = "Other Pollutants";
             this.olvColumn18.Width = 120;
-                                                this.olvColumn19.AspectName = "Reference";
+            // 
+            // olvColumn19
+            // 
+            this.olvColumn19.AspectName = "Reference";
+            this.olvColumn19.DisplayIndex = 18;
             this.olvColumn19.Text = "Reference";
             this.olvColumn19.Width = 80;
-                                                this.olvColumn20.AspectName = "Function";
+            // 
+            // olvColumn20
+            // 
+            this.olvColumn20.AspectName = "Function";
+            this.olvColumn20.DisplayIndex = 19;
             this.olvColumn20.Text = "Function";
             this.olvColumn20.Width = 80;
-                                                this.olvColumn21.AspectName = "BaseLineIncidenceFunction";
+            // 
+            // olvColumn21
+            // 
+            this.olvColumn21.AspectName = "BaseLineIncidenceFunction";
+            this.olvColumn21.DisplayIndex = 20;
             this.olvColumn21.Text = "Baseline Incidence Function";
             this.olvColumn21.Width = 180;
-                                                this.olvColumn23.AspectName = "Beta";
+            // 
+            // olvColumn23
+            // 
+            this.olvColumn23.AspectName = "Beta";
+            this.olvColumn23.DisplayIndex = 21;
             this.olvColumn23.Text = "Beta";
-                                                this.olvColumn24.AspectName = "BetaParameter1";
+            // 
+            // olvColumn24
+            // 
+            this.olvColumn24.AspectName = "BetaParameter1";
+            this.olvColumn24.DisplayIndex = 22;
             this.olvColumn24.Text = "Beta Parameter 1";
             this.olvColumn24.Width = 130;
-                                                this.olvColumn25.AspectName = "BetaParameter2";
+            // 
+            // olvColumn25
+            // 
+            this.olvColumn25.AspectName = "BetaParameter2";
+            this.olvColumn25.DisplayIndex = 23;
             this.olvColumn25.Text = "Beta Parameter 2";
             this.olvColumn25.Width = 130;
-                                                this.olvColumn26.AspectName = "AContantDescription";
+            // 
+            // olvColumn26
+            // 
+            this.olvColumn26.AspectName = "AContantDescription";
+            this.olvColumn26.DisplayIndex = 24;
             this.olvColumn26.Text = "A Description";
             this.olvColumn26.Width = 150;
-                                                this.olvColumn27.AspectName = "AContantValue";
+            // 
+            // olvColumn27
+            // 
+            this.olvColumn27.AspectName = "AContantValue";
+            this.olvColumn27.DisplayIndex = 25;
             this.olvColumn27.Text = "A";
             this.olvColumn27.Width = 125;
-                                                this.olvColumn28.AspectName = "BContantDescription";
+            // 
+            // olvColumn28
+            // 
+            this.olvColumn28.AspectName = "BContantDescription";
+            this.olvColumn28.DisplayIndex = 26;
             this.olvColumn28.Text = "B Description";
             this.olvColumn28.Width = 140;
-                                                this.olvColumn29.AspectName = "BContantValue";
+            // 
+            // olvColumn29
+            // 
+            this.olvColumn29.AspectName = "BContantValue";
+            this.olvColumn29.DisplayIndex = 27;
             this.olvColumn29.Text = "B";
             this.olvColumn29.Width = 125;
-                                                this.olvColumn30.AspectName = "CContantDescription";
+            // 
+            // olvColumn30
+            // 
+            this.olvColumn30.AspectName = "CContantDescription";
+            this.olvColumn30.DisplayIndex = 28;
             this.olvColumn30.Text = "C Description";
             this.olvColumn30.Width = 140;
-                                                this.olvColumn31.AspectName = "CContantValue";
+            // 
+            // olvColumn31
+            // 
+            this.olvColumn31.AspectName = "CContantValue";
+            this.olvColumn31.DisplayIndex = 29;
             this.olvColumn31.Text = "C";
             this.olvColumn31.Width = 125;
-                                                this.olvColumn32.AspectName = "IncidenceDataSetName";
+            // 
+            // olvColumn32
+            // 
+            this.olvColumn32.AspectName = "IncidenceDataSetName";
+            this.olvColumn32.DisplayIndex = 30;
             this.olvColumn32.Text = "Incidence Dataset Name";
             this.olvColumn32.Width = 150;
-                                                this.olvColumn33.AspectName = "PrevalenceDataSetName";
+            // 
+            // olvColumn33
+            // 
+            this.olvColumn33.AspectName = "PrevalenceDataSetName";
+            this.olvColumn33.DisplayIndex = 31;
             this.olvColumn33.Text = "Prevalence Dataset Name";
             this.olvColumn33.Width = 155;
-                                                this.olvColumn34.AspectName = "VariableDataSetName";
+            // 
+            // olvColumn34
+            // 
+            this.olvColumn34.AspectName = "VariableDataSetName";
+            this.olvColumn34.DisplayIndex = 32;
             this.olvColumn34.Text = "Variable Dataset Name";
             this.olvColumn34.Width = 140;
-                                                this.groupBox7.Controls.Add(this.groupBox5);
+            // 
+            // groupBox7
+            // 
+            this.groupBox7.Controls.Add(this.groupBox5);
             this.groupBox7.Controls.Add(this.cbGroups);
             this.groupBox7.Controls.Add(this.groupBox4);
             this.groupBox7.Controls.Add(this.btAddCRFunctions);
@@ -400,21 +567,30 @@ namespace BenMAP
             this.groupBox7.Size = new System.Drawing.Size(937, 61);
             this.groupBox7.TabIndex = 30;
             this.groupBox7.TabStop = false;
-                                                this.groupBox5.Controls.Add(this.cbDataSet);
+            // 
+            // groupBox5
+            // 
+            this.groupBox5.Controls.Add(this.cbDataSet);
             this.groupBox5.Location = new System.Drawing.Point(3, 10);
             this.groupBox5.Name = "groupBox5";
             this.groupBox5.Size = new System.Drawing.Size(287, 48);
             this.groupBox5.TabIndex = 29;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Filter Dataset";
-                                                this.cbDataSet.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            // 
+            // cbDataSet
+            // 
+            this.cbDataSet.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbDataSet.FormattingEnabled = true;
             this.cbDataSet.Location = new System.Drawing.Point(6, 17);
             this.cbDataSet.Name = "cbDataSet";
             this.cbDataSet.Size = new System.Drawing.Size(275, 22);
             this.cbDataSet.TabIndex = 21;
             this.cbDataSet.SelectedIndexChanged += new System.EventHandler(this.cbDataSet_SelectedIndexChanged);
-                                                this.cbGroups.Checked = true;
+            // 
+            // cbGroups
+            // 
+            this.cbGroups.Checked = true;
             this.cbGroups.CheckState = System.Windows.Forms.CheckState.Checked;
             this.cbGroups.Location = new System.Drawing.Point(716, 25);
             this.cbGroups.Name = "cbGroups";
@@ -423,21 +599,30 @@ namespace BenMAP
             this.cbGroups.Text = "&Groups";
             this.cbGroups.UseVisualStyleBackColor = true;
             this.cbGroups.CheckedChanged += new System.EventHandler(this.cbGroups_CheckedChanged);
-                                                this.groupBox4.Controls.Add(this.cbEndPointGroup);
+            // 
+            // groupBox4
+            // 
+            this.groupBox4.Controls.Add(this.cbEndPointGroup);
             this.groupBox4.Location = new System.Drawing.Point(299, 10);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(279, 48);
             this.groupBox4.TabIndex = 28;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Filter Endpoint Group";
-                                                this.cbEndPointGroup.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            // 
+            // cbEndPointGroup
+            // 
+            this.cbEndPointGroup.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbEndPointGroup.FormattingEnabled = true;
             this.cbEndPointGroup.Location = new System.Drawing.Point(6, 17);
             this.cbEndPointGroup.Name = "cbEndPointGroup";
             this.cbEndPointGroup.Size = new System.Drawing.Size(267, 22);
             this.cbEndPointGroup.TabIndex = 22;
             this.cbEndPointGroup.SelectedIndexChanged += new System.EventHandler(this.cbEndPointGroup_SelectedIndexChanged);
-                                                this.btAddCRFunctions.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            // 
+            // btAddCRFunctions
+            // 
+            this.btAddCRFunctions.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btAddCRFunctions.Location = new System.Drawing.Point(795, 24);
             this.btAddCRFunctions.Name = "btAddCRFunctions";
             this.btAddCRFunctions.Size = new System.Drawing.Size(136, 27);
@@ -445,20 +630,29 @@ namespace BenMAP
             this.btAddCRFunctions.Text = "Add Selected";
             this.btAddCRFunctions.UseVisualStyleBackColor = true;
             this.btAddCRFunctions.Click += new System.EventHandler(this.btAddCRFunctions_Click);
-                                                this.groupBox9.Controls.Add(this.textBoxFilterSimple);
+            // 
+            // groupBox9
+            // 
+            this.groupBox9.Controls.Add(this.textBoxFilterSimple);
             this.groupBox9.Location = new System.Drawing.Point(583, 10);
             this.groupBox9.Name = "groupBox9";
             this.groupBox9.Size = new System.Drawing.Size(116, 48);
             this.groupBox9.TabIndex = 27;
             this.groupBox9.TabStop = false;
             this.groupBox9.Text = "Filter";
-                                                this.textBoxFilterSimple.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.textBoxFilterSimple.Location = new System.Drawing.Point(3, 17);
+            // 
+            // textBoxFilterSimple
+            // 
+            this.textBoxFilterSimple.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.textBoxFilterSimple.Location = new System.Drawing.Point(3, 18);
             this.textBoxFilterSimple.Name = "textBoxFilterSimple";
             this.textBoxFilterSimple.Size = new System.Drawing.Size(110, 22);
             this.textBoxFilterSimple.TabIndex = 0;
             this.textBoxFilterSimple.TextChanged += new System.EventHandler(this.textBoxFilterSimple_TextChanged);
-                                                this.gBSelectedHealthImpactFuntion.Controls.Add(this.olvSelected);
+            // 
+            // gBSelectedHealthImpactFuntion
+            // 
+            this.gBSelectedHealthImpactFuntion.Controls.Add(this.olvSelected);
             this.gBSelectedHealthImpactFuntion.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gBSelectedHealthImpactFuntion.Location = new System.Drawing.Point(0, 0);
             this.gBSelectedHealthImpactFuntion.Name = "gBSelectedHealthImpactFuntion";
@@ -466,7 +660,10 @@ namespace BenMAP
             this.gBSelectedHealthImpactFuntion.TabIndex = 20;
             this.gBSelectedHealthImpactFuntion.TabStop = false;
             this.gBSelectedHealthImpactFuntion.Text = "Selected Health Impact Functions";
-                                                this.olvSelected.AllColumns.Add(this.olvColumn1);
+            // 
+            // olvSelected
+            // 
+            this.olvSelected.AllColumns.Add(this.olvColumn1);
             this.olvSelected.AllColumns.Add(this.olvColumn11);
             this.olvSelected.AllColumns.Add(this.olvColumn2);
             this.olvSelected.AllColumns.Add(this.olvColumn39);
@@ -498,6 +695,7 @@ namespace BenMAP
             this.olvSelected.AllColumns.Add(this.olvColumn51);
             this.olvSelected.AllColumns.Add(this.olvColumn52);
             this.olvSelected.AllColumns.Add(this.olvColumn54);
+            this.olvSelected.AllColumns.Add(this.olvColumn58);
             this.olvSelected.AllowColumnReorder = true;
             this.olvSelected.AllowDrop = true;
             this.olvSelected.CellEditActivation = BrightIdeasSoftware.ObjectListView.CellEditActivateMode.SingleClick;
@@ -533,7 +731,8 @@ namespace BenMAP
             this.olvColumn50,
             this.olvColumn51,
             this.olvColumn52,
-            this.olvColumn54});
+            this.olvColumn54,
+            this.olvColumn58});
             this.olvSelected.Cursor = System.Windows.Forms.Cursors.Default;
             this.olvSelected.Dock = System.Windows.Forms.DockStyle.Fill;
             this.olvSelected.EmptyListMsg = "Selected items to be shown here";
@@ -570,125 +769,218 @@ namespace BenMAP
             this.olvSelected.CellEditStarting += new BrightIdeasSoftware.CellEditEventHandler(this.olvSelected_CellEditStarting);
             this.olvSelected.DrawItem += new System.Windows.Forms.DrawListViewItemEventHandler(this.olvSelected_DrawItem);
             this.olvSelected.KeyDown += new System.Windows.Forms.KeyEventHandler(this.olvSelected_KeyDown);
-                                                this.olvColumn1.AspectName = "BenMAPHealthImpactFunction.EndPointGroup";
+            // 
+            // olvColumn1
+            // 
+            this.olvColumn1.AspectName = "BenMAPHealthImpactFunction.EndPointGroup";
             this.olvColumn1.IsEditable = false;
             this.olvColumn1.MinimumWidth = 100;
             this.olvColumn1.Text = "Endpoint Group";
             this.olvColumn1.ToolTipText = "";
             this.olvColumn1.Width = 100;
-                                                this.olvColumn11.AspectName = "BenMAPHealthImpactFunction.DataSetName";
+            // 
+            // olvColumn11
+            // 
+            this.olvColumn11.AspectName = "BenMAPHealthImpactFunction.DataSetName";
             this.olvColumn11.IsEditable = false;
             this.olvColumn11.Text = "Dataset Name";
             this.olvColumn11.Width = 100;
-                                                this.olvColumn2.AspectName = "BenMAPHealthImpactFunction.EndPoint";
+            // 
+            // olvColumn2
+            // 
+            this.olvColumn2.AspectName = "BenMAPHealthImpactFunction.EndPoint";
             this.olvColumn2.Hyperlink = true;
             this.olvColumn2.IsEditable = false;
             this.olvColumn2.MinimumWidth = 50;
             this.olvColumn2.Text = "Endpoint";
             this.olvColumn2.Width = 64;
-                                                this.olvColumn39.AspectName = "BenMAPHealthImpactFunction.Pollutant.PollutantName";
+            // 
+            // olvColumn39
+            // 
+            this.olvColumn39.AspectName = "BenMAPHealthImpactFunction.Pollutant.PollutantName";
             this.olvColumn39.IsEditable = false;
             this.olvColumn39.Text = "Pollutant";
             this.olvColumn39.Width = 115;
-                                                this.olvColumn36.AspectName = "BenMAPHealthImpactFunction.Author";
+            // 
+            // olvColumn36
+            // 
+            this.olvColumn36.AspectName = "BenMAPHealthImpactFunction.Author";
             this.olvColumn36.IsEditable = false;
             this.olvColumn36.Text = "Author";
-                                                this.olvColumn8.AspectName = "StartAge";
+            // 
+            // olvColumn8
+            // 
+            this.olvColumn8.AspectName = "StartAge";
             this.olvColumn8.HeaderForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
             this.olvColumn8.Text = "Start Age";
             this.olvColumn8.Width = 65;
-                                                this.olvColumn9.AspectName = "EndAge";
+            // 
+            // olvColumn9
+            // 
+            this.olvColumn9.AspectName = "EndAge";
             this.olvColumn9.HeaderForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
             this.olvColumn9.Text = "End Age";
-                                                this.olvColumn12.AspectName = "Race";
+            // 
+            // olvColumn12
+            // 
+            this.olvColumn12.AspectName = "Race";
             this.olvColumn12.HeaderForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
             this.olvColumn12.Text = "Race";
-                                                this.olvColumn13.AspectName = "Ethnicity";
+            // 
+            // olvColumn13
+            // 
+            this.olvColumn13.AspectName = "Ethnicity";
             this.olvColumn13.HeaderForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
             this.olvColumn13.Text = "Ethnicity";
             this.olvColumn13.Width = 78;
-                                                this.olvColumn14.AspectName = "Gender";
+            // 
+            // olvColumn14
+            // 
+            this.olvColumn14.AspectName = "Gender";
             this.olvColumn14.HeaderForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
             this.olvColumn14.Text = "Gender";
-                                                this.olvColumn15.AspectName = "IncidenceDataSetName";
+            // 
+            // olvColumn15
+            // 
+            this.olvColumn15.AspectName = "IncidenceDataSetName";
             this.olvColumn15.HeaderForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
             this.olvColumn15.Text = "Incidence Dataset";
             this.olvColumn15.Width = 140;
-                                                this.olvColumn16.AspectName = "PrevalenceDataSetName";
+            // 
+            // olvColumn16
+            // 
+            this.olvColumn16.AspectName = "PrevalenceDataSetName";
             this.olvColumn16.HeaderForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
             this.olvColumn16.Text = "Prevalence Dataset";
             this.olvColumn16.Width = 120;
-                                                this.olvColumn17.AspectName = "VariableDataSetName";
+            // 
+            // olvColumn17
+            // 
+            this.olvColumn17.AspectName = "VariableDataSetName";
             this.olvColumn17.HeaderForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
             this.olvColumn17.Text = "Variable Dataset";
             this.olvColumn17.Width = 140;
-                                                this.olvColumn41.AspectName = "BenMAPHealthImpactFunction.Function";
+            // 
+            // olvColumn41
+            // 
+            this.olvColumn41.AspectName = "BenMAPHealthImpactFunction.Function";
             this.olvColumn41.IsEditable = false;
             this.olvColumn41.Text = "Function";
             this.olvColumn41.Width = 75;
-                                                this.olvColumn56.AspectName = "BenMAPHealthImpactFunction.Year";
+            // 
+            // olvColumn56
+            // 
+            this.olvColumn56.AspectName = "BenMAPHealthImpactFunction.Year";
             this.olvColumn56.IsEditable = false;
             this.olvColumn56.Text = "Year";
-                                                this.olvColumn37.AspectName = "BenMAPHealthImpactFunction.strLocations";
+            // 
+            // olvColumn37
+            // 
+            this.olvColumn37.AspectName = "BenMAPHealthImpactFunction.strLocations";
             this.olvColumn37.IsEditable = false;
             this.olvColumn37.Text = "Locations";
             this.olvColumn37.Width = 80;
-                                                this.olvColumn38.AspectName = "BenMAPHealthImpactFunction.Qualifier";
+            // 
+            // olvColumn38
+            // 
+            this.olvColumn38.AspectName = "BenMAPHealthImpactFunction.Qualifier";
             this.olvColumn38.IsEditable = false;
             this.olvColumn38.Text = "Qualifier";
             this.olvColumn38.Width = 80;
-                                                this.olvColumn40.AspectName = "BenMAPHealthImpactFunction.Reference";
+            // 
+            // olvColumn40
+            // 
+            this.olvColumn40.AspectName = "BenMAPHealthImpactFunction.Reference";
             this.olvColumn40.IsEditable = false;
             this.olvColumn40.Text = "Reference";
             this.olvColumn40.Width = 75;
-                                                this.olvColumn42.AspectName = "BenMAPHealthImpactFunction.BaseLineIncidenceFunction";
+            // 
+            // olvColumn42
+            // 
+            this.olvColumn42.AspectName = "BenMAPHealthImpactFunction.BaseLineIncidenceFunction";
             this.olvColumn42.IsEditable = false;
             this.olvColumn42.Text = "Baseline Incidence Function";
             this.olvColumn42.Width = 180;
-                                                this.olvColumn43.AspectName = "BenMAPHealthImpactFunction.BetaDistribution";
+            // 
+            // olvColumn43
+            // 
+            this.olvColumn43.AspectName = "BenMAPHealthImpactFunction.BetaDistribution";
             this.olvColumn43.IsEditable = false;
             this.olvColumn43.Text = "Beta Distribution";
             this.olvColumn43.Width = 140;
-                                                this.olvColumn44.AspectName = "BenMAPHealthImpactFunction.Beta";
+            // 
+            // olvColumn44
+            // 
+            this.olvColumn44.AspectName = "BenMAPHealthImpactFunction.Beta";
             this.olvColumn44.IsEditable = false;
             this.olvColumn44.Text = "Beta";
-                                                this.olvColumn45.AspectName = "BenMAPHealthImpactFunction.BetaParameter1";
+            // 
+            // olvColumn45
+            // 
+            this.olvColumn45.AspectName = "BenMAPHealthImpactFunction.BetaParameter1";
             this.olvColumn45.IsEditable = false;
             this.olvColumn45.Text = "Beta Parameter 1";
             this.olvColumn45.Width = 140;
-                                                this.olvColumn46.AspectName = "BenMAPHealthImpactFunction.BetaParameter2";
+            // 
+            // olvColumn46
+            // 
+            this.olvColumn46.AspectName = "BenMAPHealthImpactFunction.BetaParameter2";
             this.olvColumn46.IsEditable = false;
             this.olvColumn46.Text = "Beta Parameter 2";
             this.olvColumn46.Width = 140;
-                                                this.olvColumn47.AspectName = "BenMAPHealthImpactFunction.AContantDescription";
+            // 
+            // olvColumn47
+            // 
+            this.olvColumn47.AspectName = "BenMAPHealthImpactFunction.AContantDescription";
             this.olvColumn47.IsEditable = false;
             this.olvColumn47.Text = "A Description";
             this.olvColumn47.Width = 150;
-                                                this.olvColumn48.AspectName = "BenMAPHealthImpactFunction.AContantValue";
+            // 
+            // olvColumn48
+            // 
+            this.olvColumn48.AspectName = "BenMAPHealthImpactFunction.AContantValue";
             this.olvColumn48.IsEditable = false;
             this.olvColumn48.Text = "A";
             this.olvColumn48.Width = 110;
-                                                this.olvColumn49.AspectName = "BenMAPHealthImpactFunction.BContantDescription";
+            // 
+            // olvColumn49
+            // 
+            this.olvColumn49.AspectName = "BenMAPHealthImpactFunction.BContantDescription";
             this.olvColumn49.IsEditable = false;
             this.olvColumn49.Text = "B Description";
             this.olvColumn49.Width = 150;
-                                                this.olvColumn50.AspectName = "BenMAPHealthImpactFunction.BContantValue";
+            // 
+            // olvColumn50
+            // 
+            this.olvColumn50.AspectName = "BenMAPHealthImpactFunction.BContantValue";
             this.olvColumn50.IsEditable = false;
             this.olvColumn50.Text = "B";
             this.olvColumn50.Width = 110;
-                                                this.olvColumn51.AspectName = "BenMAPHealthImpactFunction.CContantDescription";
+            // 
+            // olvColumn51
+            // 
+            this.olvColumn51.AspectName = "BenMAPHealthImpactFunction.CContantDescription";
             this.olvColumn51.IsEditable = false;
             this.olvColumn51.Text = "C Description";
             this.olvColumn51.Width = 140;
-                                                this.olvColumn52.AspectName = "BenMAPHealthImpactFunction.CContantValue";
+            // 
+            // olvColumn52
+            // 
+            this.olvColumn52.AspectName = "BenMAPHealthImpactFunction.CContantValue";
             this.olvColumn52.IsEditable = false;
             this.olvColumn52.Text = "C";
             this.olvColumn52.Width = 110;
-                                                this.olvColumn54.AspectName = "BenMAPHealthImpactFunction.OtherPollutants";
+            // 
+            // olvColumn54
+            // 
+            this.olvColumn54.AspectName = "BenMAPHealthImpactFunction.OtherPollutants";
             this.olvColumn54.IsEditable = false;
             this.olvColumn54.Text = "Other Pollutants";
             this.olvColumn54.Width = 120;
-                                                this.gBCRProgress.Controls.Add(this.lbProgressBar);
+            // 
+            // gBCRProgress
+            // 
+            this.gBCRProgress.Controls.Add(this.lbProgressBar);
             this.gBCRProgress.Controls.Add(this.pBarCR);
             this.gBCRProgress.Controls.Add(this.btAdvanced);
             this.gBCRProgress.Controls.Add(this.btDelSelectMethod);
@@ -703,20 +995,29 @@ namespace BenMAP
             this.gBCRProgress.Size = new System.Drawing.Size(943, 64);
             this.gBCRProgress.TabIndex = 5;
             this.gBCRProgress.TabStop = false;
-                                                this.lbProgressBar.AutoSize = true;
+            // 
+            // lbProgressBar
+            // 
+            this.lbProgressBar.AutoSize = true;
             this.lbProgressBar.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbProgressBar.ForeColor = System.Drawing.Color.Black;
             this.lbProgressBar.Location = new System.Drawing.Point(117, 43);
             this.lbProgressBar.Name = "lbProgressBar";
             this.lbProgressBar.Size = new System.Drawing.Size(0, 14);
             this.lbProgressBar.TabIndex = 14;
-                                                this.pBarCR.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            // 
+            // pBarCR
+            // 
+            this.pBarCR.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.pBarCR.Location = new System.Drawing.Point(117, 15);
             this.pBarCR.Name = "pBarCR";
             this.pBarCR.Size = new System.Drawing.Size(427, 23);
             this.pBarCR.TabIndex = 13;
-                                                this.btAdvanced.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            // 
+            // btAdvanced
+            // 
+            this.btAdvanced.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btAdvanced.Location = new System.Drawing.Point(561, 13);
             this.btAdvanced.Name = "btAdvanced";
             this.btAdvanced.Size = new System.Drawing.Size(87, 27);
@@ -724,14 +1025,20 @@ namespace BenMAP
             this.btAdvanced.Text = "Advanced";
             this.btAdvanced.UseVisualStyleBackColor = true;
             this.btAdvanced.Click += new System.EventHandler(this.btAdvanced_Click);
-                                                this.btDelSelectMethod.Location = new System.Drawing.Point(6, 13);
+            // 
+            // btDelSelectMethod
+            // 
+            this.btDelSelectMethod.Location = new System.Drawing.Point(6, 13);
             this.btDelSelectMethod.Name = "btDelSelectMethod";
             this.btDelSelectMethod.Size = new System.Drawing.Size(105, 27);
             this.btDelSelectMethod.TabIndex = 11;
             this.btDelSelectMethod.Text = "Delete Selected";
             this.btDelSelectMethod.UseVisualStyleBackColor = true;
             this.btDelSelectMethod.Click += new System.EventHandler(this.btDelSelectMethod_Click);
-                                                this.btnSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            // 
+            // btnSave
+            // 
+            this.btnSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnSave.Location = new System.Drawing.Point(732, 13);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(123, 27);
@@ -739,7 +1046,10 @@ namespace BenMAP
             this.btnSave.Text = "Save As (*.cfgx)";
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
-                                                this.btnRun.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            // 
+            // btnRun
+            // 
+            this.btnRun.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnRun.Location = new System.Drawing.Point(859, 13);
             this.btnRun.Name = "btnRun";
             this.btnRun.Size = new System.Drawing.Size(75, 27);
@@ -747,7 +1057,10 @@ namespace BenMAP
             this.btnRun.Text = "Run";
             this.btnRun.UseVisualStyleBackColor = true;
             this.btnRun.Click += new System.EventHandler(this.btnRun_Click);
-                                                this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            // 
+            // btnCancel
+            // 
+            this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.Location = new System.Drawing.Point(653, 13);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 27);
@@ -755,7 +1068,10 @@ namespace BenMAP
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
-                                                this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            // 
+            // statusStrip1
+            // 
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabel1});
             this.statusStrip1.Location = new System.Drawing.Point(0, 640);
             this.statusStrip1.Name = "statusStrip1";
@@ -763,9 +1079,20 @@ namespace BenMAP
             this.statusStrip1.TabIndex = 6;
             this.statusStrip1.Text = "statusStrip1";
             this.statusStrip1.Visible = false;
-                                                this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
+            // 
+            // toolStripStatusLabel1
+            // 
+            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
             this.toolStripStatusLabel1.Size = new System.Drawing.Size(0, 17);
-                                                this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
+            // 
+            // olvColumn58
+            // 
+            this.olvColumn58.AspectName = "GeographicAreaName";
+            this.olvColumn58.Text = "Geographic Area";
+            // 
+            // HealthImpactFunctions
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(949, 662);
             this.Controls.Add(this.groupBox6);
@@ -894,5 +1221,7 @@ namespace BenMAP
         private System.Windows.Forms.ProgressBar pBarCR;
         private System.Windows.Forms.Label lbProgressBar;
         private BrightIdeasSoftware.OLVColumn olvColumn56;
+        private BrightIdeasSoftware.OLVColumn olvColumn57;
+        private BrightIdeasSoftware.OLVColumn olvColumn58;
     }
 }

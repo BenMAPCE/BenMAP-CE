@@ -81,7 +81,7 @@ namespace BenMAP
                         lblShapeFileName.Text = obj.ToString();
                     }
                     //Check to see if a geographic area exists for this grid definition
-                    commandText = string.Format("select GEOGRAPHICAREAID from GEOGRAPHICAREAS WHERE GEOGRAPHICAREANAME = '{0}'", _gridIDName);
+                    commandText = string.Format("select GEOGRAPHICAREAID from GEOGRAPHICAREAS WHERE GEOGRAPHICAREANAME = '{0}' and GRIDDEFINITIONID={1}", _gridIDName, _gridID);
                     _geoAreaID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
                     if(_geoAreaID > 0)
                     {

@@ -66,7 +66,7 @@ namespace BenMAP
             this.lblEthnicity = new System.Windows.Forms.Label();
             this.cboEthnicity = new System.Windows.Forms.ComboBox();
             this.label9 = new System.Windows.Forms.Label();
-            this.cboLocationName = new System.Windows.Forms.ComboBox();
+            this.cboGeographicArea = new System.Windows.Forms.ComboBox();
             this.nudownEndAge = new System.Windows.Forms.NumericUpDown();
             this.lblYear = new System.Windows.Forms.Label();
             this.lblQualifier = new System.Windows.Forms.Label();
@@ -650,7 +650,7 @@ namespace BenMAP
             this.panel3.Controls.Add(this.lblEthnicity);
             this.panel3.Controls.Add(this.cboEthnicity);
             this.panel3.Controls.Add(this.label9);
-            this.panel3.Controls.Add(this.cboLocationName);
+            this.panel3.Controls.Add(this.cboGeographicArea);
             this.panel3.Controls.Add(this.nudownEndAge);
             this.panel3.Controls.Add(this.lblYear);
             this.panel3.Controls.Add(this.lblQualifier);
@@ -692,17 +692,16 @@ namespace BenMAP
             this.label9.TabIndex = 24;
             this.label9.Text = "Apply Function To:";
             // 
-            // cboLocationName
+            // cboGeographicArea
             // 
-            this.cboLocationName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.cboGeographicArea.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.cboLocationName.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboLocationName.FormattingEnabled = true;
-            this.cboLocationName.Location = new System.Drawing.Point(5, 62);
-            this.cboLocationName.Name = "cboLocationName";
-            this.cboLocationName.Size = new System.Drawing.Size(113, 22);
-            this.cboLocationName.TabIndex = 12;
-            this.cboLocationName.SelectedIndexChanged += new System.EventHandler(this.cboLocationName_SelectedIndexChanged);
+            this.cboGeographicArea.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboGeographicArea.FormattingEnabled = true;
+            this.cboGeographicArea.Location = new System.Drawing.Point(5, 62);
+            this.cboGeographicArea.Name = "cboGeographicArea";
+            this.cboGeographicArea.Size = new System.Drawing.Size(113, 22);
+            this.cboGeographicArea.TabIndex = 12;
             // 
             // nudownEndAge
             // 
@@ -1415,6 +1414,6 @@ namespace BenMAP
         private System.Windows.Forms.Label lblEthnicity;
         private System.Windows.Forms.ComboBox cboEthnicity;
         private System.Windows.Forms.Label label9;
-        private System.Windows.Forms.ComboBox cboLocationName;
+        private System.Windows.Forms.ComboBox cboGeographicArea;
     }
 }

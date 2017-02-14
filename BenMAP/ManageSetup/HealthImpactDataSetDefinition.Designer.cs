@@ -423,8 +423,8 @@ namespace BenMAP
             // 
             // olvColumn8
             // 
-            this.olvColumn8.AspectName = "LOCATIONTYPENAME";
-            this.olvColumn8.Text = "Locationtype Name";
+            this.olvColumn8.AspectName = "GEOGRAPHICAREANAME";
+            this.olvColumn8.Text = "Geographic Area";
             this.olvColumn8.Width = 120;
             // 
             // olvColumn9

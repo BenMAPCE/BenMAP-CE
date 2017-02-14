@@ -243,7 +243,7 @@ namespace BenMAP
                 _healthImpacts.Author = txtAnthor.Text;
                 _healthImpacts.Year = txtYear.Text;
                 _healthImpacts.Location = txtLocation.Text;
-                _healthImpacts.LocationName = cboLocationName.Text;
+                _healthImpacts.GeographicArea = cboGeographicArea.Text;
                 _healthImpacts.Qualifier = txtQualifier.Text;
                 _healthImpacts.OtherPollutant = txtOtherPollutant.Text;
                 _healthImpacts.Reference = txtReference.Text;
@@ -319,7 +319,7 @@ namespace BenMAP
                     txtYear.Text = _healthImpacts.Year;
                     txtOtherPollutant.Text = _healthImpacts.OtherPollutant;
                     txtLocation.Text = _healthImpacts.Location;
-                    cboLocationName.Text = _healthImpacts.LocationName;
+                    cboGeographicArea.Text = _healthImpacts.GeographicArea;
                     txtQualifier.Text = _healthImpacts.Qualifier;
                     txtReference.Text = _healthImpacts.Reference;
                     txtFunction.Text = _healthImpacts.Function;
@@ -461,12 +461,12 @@ where b.setupid = {0}
 order by a.GEOGRAPHICAREANAME", CommonClass.ManageSetup.SetupID);
                 ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                 //We want "Entire Area" to always be the first item on the list. It'll be the default unless something else is chosen.
-                cboLocationName.Items.Add("Entire Area");
+                cboGeographicArea.Items.Add("Entire Area");
                 for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
                 {
-                    cboLocationName.Items.Add(Convert.ToString(ds.Tables[0].Rows[i]["GEOGRAPHICAREANAME"]));
+                    cboGeographicArea.Items.Add(Convert.ToString(ds.Tables[0].Rows[i]["GEOGRAPHICAREANAME"]));
                 }
-                cboLocationName.SelectedIndex = 0;
+                cboGeographicArea.SelectedIndex = 0;
 
             }
             catch (Exception ex)
@@ -924,11 +924,6 @@ order by a.GEOGRAPHICAREANAME", CommonClass.ManageSetup.SetupID);
         }
 
         private void label9_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void cboLocationName_SelectedIndexChanged(object sender, EventArgs e)
         {
 
         }

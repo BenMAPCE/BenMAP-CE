@@ -12076,8 +12076,8 @@ namespace BenMAP
                             case "year":
                                 lstCRTable = lstCRTable.OrderBy(p => p.CRSelectFunction.BenMAPHealthImpactFunction.Year).ToList();
                                 break;
-                            case "location":
-                                lstCRTable = lstCRTable.OrderBy(p => p.CRSelectFunction.BenMAPHealthImpactFunction.Locations).ToList();
+                            case "geographicarea":
+                                lstCRTable = lstCRTable.OrderBy(p => p.CRSelectFunction.BenMAPHealthImpactFunction.GeographicAreaName).ToList();
                                 break;
                             case "otherpollutants":
                                 lstCRTable = lstCRTable.OrderBy(p => p.CRSelectFunction.BenMAPHealthImpactFunction.OtherPollutants).ToList();
@@ -12177,8 +12177,8 @@ namespace BenMAP
                             case "year":
                                 lstCRTable = lstCRTable.OrderByDescending(p => p.CRSelectFunction.BenMAPHealthImpactFunction.Year).ToList();
                                 break;
-                            case "location":
-                                lstCRTable = lstCRTable.OrderByDescending(p => p.CRSelectFunction.BenMAPHealthImpactFunction.Locations).ToList();
+                            case "geographicarea":
+                                lstCRTable = lstCRTable.OrderByDescending(p => p.CRSelectFunction.BenMAPHealthImpactFunction.GeographicAreaName).ToList();
                                 break;
                             case "otherpollutants":
                                 lstCRTable = lstCRTable.OrderByDescending(p => p.CRSelectFunction.BenMAPHealthImpactFunction.OtherPollutants).ToList();
@@ -12389,8 +12389,8 @@ namespace BenMAP
                             case "year":
                                 lstCRTable = lstCRTable.OrderBy(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Year).ToList();
                                 break;
-                            case "location":
-                                lstCRTable = lstCRTable.OrderBy(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Locations).ToList();
+                            case "geographicarea":
+                                lstCRTable = lstCRTable.OrderBy(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.GeographicAreaName).ToList();
                                 break;
                             case "otherpollutants":
                                 lstCRTable = lstCRTable.OrderBy(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.OtherPollutants).ToList();
@@ -12490,8 +12490,8 @@ namespace BenMAP
                             case "year":
                                 lstCRTable = lstCRTable.OrderByDescending(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Year).ToList();
                                 break;
-                            case "location":
-                                lstCRTable = lstCRTable.OrderByDescending(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Locations).ToList();
+                            case "geographicarea":
+                                lstCRTable = lstCRTable.OrderByDescending(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.GeographicAreaName).ToList();
                                 break;
                             case "otherpollutants":
                                 lstCRTable = lstCRTable.OrderByDescending(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.OtherPollutants).ToList();

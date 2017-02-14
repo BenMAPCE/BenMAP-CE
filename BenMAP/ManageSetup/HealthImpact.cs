@@ -229,11 +229,11 @@ namespace BenMAP
             set { _variable = value; }
         }
 
-        private string _locationName;
-        public string LocationName
+        private string _geographicArea;
+        public string GeographicArea
         {
-            get { return _locationName; }
-            set { _locationName = value; }
+            get { return _geographicArea; }
+            set { _geographicArea = value; }
         }
     }
 }

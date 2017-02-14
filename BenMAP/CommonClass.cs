@@ -352,7 +352,7 @@ namespace BenMAP
                     Gender = cr.Gender,
                     IncidenceDataSetID = cr.IncidenceDataSetID,
                     IncidenceDataSetName = cr.IncidenceDataSetName,
-                    Locations = cr.Locations,
+                    GeographicAreaName = cr.GeographicAreaName,
                     lstLatinPoints = cr.lstLatinPoints,
                     PrevalenceDataSetID = cr.PrevalenceDataSetID,
                     PrevalenceDataSetName = cr.PrevalenceDataSetName,
@@ -399,7 +399,7 @@ namespace BenMAP
                                         Gender = benMAPHealthImpactFunction.Gender,
                                         ID = benMAPHealthImpactFunction.ID,
                                         IncidenceDataSetID = benMAPHealthImpactFunction.IncidenceDataSetID,
-                                        Locations = benMAPHealthImpactFunction.Locations,
+                                        GeographicAreaName = benMAPHealthImpactFunction.GeographicAreaName,
                                         Metric = benMAPHealthImpactFunction.Metric,
                                         MetricStatistic = benMAPHealthImpactFunction.MetricStatistic,
                                         OtherPollutants = benMAPHealthImpactFunction.OtherPollutants,
@@ -1218,8 +1218,108 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
             return result;
         }
 
+        public static Dictionary<string, double> IntersectionsWithGeographicArea(int gridDefId, int geoAreaId)
+        {
 
-        
+            IFeatureSet gridDefFeatureSet = new FeatureSet();
+            IFeatureSet geoAreaFeatureSet = new FeatureSet();
+            //TODO: Question the next two lines of code
+            BenMAPGrid bigBenMAPGrid = Grid.GridCommon.getBenMAPGridFromID(gridDefId == 20 ? 18 : gridDefId);
+            BenMAPGrid geoBenMAPGrid = Grid.GridCommon.getBenMAPGridFromID(geoAreaId == 20 ? 18 : geoAreaId);
+            if (bigBenMAPGrid == null)
+                bigBenMAPGrid = new ShapefileGrid()
+                {
+                    ShapefileName = "County_epa2",
+                };
+            if (geoBenMAPGrid == null)
+                geoBenMAPGrid = new ShapefileGrid()
+                {
+                    ShapefileName = "County_epa2",
+                };
+            string bigShapefileName = "";
+            string geoShapefileName = "";
+            if (bigBenMAPGrid as ShapefileGrid != null)
+            { bigShapefileName = (bigBenMAPGrid as ShapefileGrid).ShapefileName;
+            }
+            else
+            { bigShapefileName = (bigBenMAPGrid as RegularGrid).ShapefileName;
+            }
+            if (geoBenMAPGrid as ShapefileGrid != null)
+            { geoShapefileName = (geoBenMAPGrid as ShapefileGrid).ShapefileName;
+            }
+            else
+            { geoShapefileName = (geoBenMAPGrid as RegularGrid).ShapefileName;
+            }
+            ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+            string finsSetupname = string.Format("select setupname from setups where setupid in (select setupid from griddefinitions where griddefinitionid={0})", gridDefId);
+            string setupname = Convert.ToString(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, finsSetupname));
+            if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + bigShapefileName + ".shp"))
+            {
+                string shapeFileName = CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + bigShapefileName + ".shp";
+                //for debugging!
+                gridDefFeatureSet = DotSpatial.Data.FeatureSet.Open(shapeFileName);
+                string shapeFileNameSmall = CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + geoShapefileName + ".shp";
+                geoAreaFeatureSet = DotSpatial.Data.FeatureSet.Open(shapeFileNameSmall);
+            }
+            else
+            {
+                return null;
+            }
+
+            Dictionary<string, double> dicGeoAreaPercentages = new Dictionary<string, double>();
+            try
+            {
+                if (!gridDefFeatureSet.AttributesPopulated) gridDefFeatureSet.FillAttributes();
+                if (!geoAreaFeatureSet.AttributesPopulated) geoAreaFeatureSet.FillAttributes();
+                int i = 0;
+                Dictionary<string, Dictionary<string, double>> dicRelation = new Dictionary<string, Dictionary<string, double>>();
+
+                //ensure consistent GIS projections
+                //check for setup projection
+                ProjectionInfo projInfo = null;
+                if (!String.IsNullOrEmpty(CommonClass.MainSetup.SetupProjection))
+                {
+                    projInfo = CommonClass.getProjectionInfoFromName(CommonClass.MainSetup.SetupProjection);
+                }
+                if (projInfo == null) //if no setup projection, use default of WGS1984
+                {
+                    projInfo = KnownCoordinateSystems.Geographic.World.WGS1984;
+                }
+
+                gridDefFeatureSet.Reproject(projInfo);
+
+                geoAreaFeatureSet.Reproject(projInfo);
+
+                IFeatureSet geoArea = geoAreaFeatureSet.UnionShapes(ShapeRelateType.All);
+                IGeometry geoAreaGeometry = geoArea.Features[0].Geometry;
+
+                foreach (IFeature gridFeature in gridDefFeatureSet.Features)
+                {
+                    IFeature geoAreaIntersection = gridFeature.Intersection(geoAreaGeometry);
+                    if(geoAreaIntersection != null)
+                    {
+                        double intersectionArea = geoAreaIntersection.Geometry.Area;
+                        double gridFeatureArea = gridFeature.Geometry.Area;
+                        string gridFeatureKey = gridFeature.DataRow["Col"] + "," + gridFeature.DataRow["Row"];
+
+                        if (geoAreaIntersection.Geometry.Area > 0)
+                        {
+                            dicGeoAreaPercentages.Add(gridFeatureKey, intersectionArea / gridFeatureArea);
+                        }
+                        else
+                        {
+
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+            return dicGeoAreaPercentages;
+  
+        }
+
         public static Dictionary<String, Dictionary<int, double>> otherXrefCache = new Dictionary<string, Dictionary<int, double>>();
         public static List<GridRelationshipAttributePercentage> IntersectionPercentagePopulation(IFeatureSet self, IFeatureSet other, FieldJoinType joinType, String popRasterLoc)
         {
@@ -3320,20 +3420,16 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
 
     [Serializable]
     [ProtoContract]
-    public class Location
+    public class GeographicArea
     {
         [ProtoMember(1)]
-        public int LocationType;
+        public int GridDefinitionID;
         [ProtoMember(2)]
-        public int GridDifinitionID;
+        public int GeographicAreaID;
         [ProtoMember(3)]
-        public int LocationID;
+        public List<RowCol> RowCols;
         [ProtoMember(4)]
-        public int Col;
-        [ProtoMember(5)]
-        public int Row;
-        [ProtoMember(6)]
-        public string LocationName;
+        public string GeographicAreaName;
     }
 
     [Serializable]
@@ -3466,7 +3562,7 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
         [ProtoMember(19)]
         public int Year;
         [ProtoMember(20)]
-        public List<Location> Locations;
+        public string GeographicAreaName;
         [ProtoMember(21)]
         public string strLocations;
         [ProtoMember(22)]
@@ -3522,7 +3618,7 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
         [ProtoMember(2)]
         public BenMAPHealthImpactFunction BenMAPHealthImpactFunction;
         [ProtoMember(3)]
-        public List<Location> Locations;
+        public string GeographicAreaName;
         [ProtoMember(4)]
         public string Race;
         [ProtoMember(5)]
