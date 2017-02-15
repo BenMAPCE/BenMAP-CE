@@ -149,47 +149,22 @@ namespace BenMAP.Crosswalks
         {
             using (var tran = _connection.BeginTransaction())
             {
+                // first we need to add entries to the griddefinitionpercentages table                
 
-                string commandText = "";
-                int PercentageID1, PercentageID2;
+                var commandText = "select max(PercentageID) from GridDefinitionPercentages";
+                var maxId = ExecuteScalar(commandText, tran);
+                var percentageId1 = maxId == DBNull.Value ? 1 : Convert.ToInt32(maxId) + 1;
+                var percentageId2 = percentageId1 + 1;
 
-                /* first we need to add entries to the griddefinitionpercentages table
-                 * get the highest index already in the griddefinitionpercentages table or use 1 for the next percentageID
-                 */
-                commandText = "select count(*) from GridDefinitionPercentages";
-                int iResult = Convert.ToInt32(ExecuteScalar(commandText, tran));
-                if (iResult > 0)
-                {
-                    commandText = "select max(PercentageID) from GridDefinitionPercentages";
-                    PercentageID1 = Convert.ToInt32(ExecuteScalar(commandText, tran)) + 1;
-                }
-                else
-                {
-                    PercentageID1 = 1;
-                }
-                PercentageID2 = PercentageID1 + 1;
-
-                commandText =
-                    string.Format(
-                        "insert into GridDefinitionPercentages(PERCENTAGEID,SOURCEGRIDDEFINITIONID, TARGETGRIDDEFINITIONID) "
-                        + "values({0},{1},{2})", PercentageID1, grid1, grid2);
+                commandText = string.Format("insert into GridDefinitionPercentages(PERCENTAGEID, SOURCEGRIDDEFINITIONID, TARGETGRIDDEFINITIONID) values({0},{1},{2})", percentageId1,grid1, grid2);
                 ExecuteNonQuery(commandText, tran);
 
-                commandText =
-                    string.Format(
-                        "insert into GridDefinitionPercentages(PERCENTAGEID,SOURCEGRIDDEFINITIONID, TARGETGRIDDEFINITIONID) "
-                        + "values({0},{1},{2})", PercentageID2, grid2, grid1);
+                commandText = string.Format("insert into GridDefinitionPercentages(PERCENTAGEID,SOURCEGRIDDEFINITIONID, TARGETGRIDDEFINITIONID) values({0},{1},{2})", percentageId2, grid2, grid1);
                 ExecuteNonQuery(commandText, tran);
 
-                DataTable attributes1;
-                DataTable attributes2;
-                int intResult = 0;
-                double forward = 0.0;
-                double backward = 0.0;
                 int i = 0, j = 1;
-                float prog = 0;
                 var fieldNames = new[] {"COL", "ROW"};
-                float step = results.Count / 100;
+                var step = results.Count / 100;
                 foreach (var entry in results)
                 {
                     //update the progress bar to show progress writing output to database - only 100 progres steps.
@@ -197,43 +172,38 @@ namespace BenMAP.Crosswalks
                     if (i > step * j)
                     {
                         j += 1;
-                        prog = Convert.ToSingle(100 * i / results.Count);
-                        progress.OnProgressChanged(string.Format("{0} of {1} written to database.", i, results.Count),
-                            prog);
-                    }
-                    //get the column and row attributes and forward backward results
-                    attributes1 = fsInput1.GetAttributes(entry.Key.FeatureId1, 1, fieldNames);
-                    attributes2 = fsInput2.GetAttributes(entry.Key.FeatureId2, 1, fieldNames);
-                    forward = entry.Value.ForwardRatio;
-                    backward = entry.Value.BackwardRatio;
-
-                    //write the entries to the firebird database
-
-                    if (forward > 0.0001)
-                    {
-                        forward = Math.Round(forward, 4);
-                            //note - rounding doesn't seem to help. The fb database still adds noise.
-                        commandText =
-                            string.Format(
-                                "insert into GridDefinitionPercentageEntries(PERCENTAGEID, SOURCECOLUMN, SOURCEROW, TARGETCOLUMN, TARGETROW, PERCENTAGE,NORMALIZATIONSTATE) values({0},{1},{2},{3},{4},{5},{6})",
-                                PercentageID1, attributes1.Rows[0]["COL"], attributes1.Rows[0]["ROW"],
-                                attributes2.Rows[0]["COL"], attributes2.Rows[0]["ROW"], forward, 0);
-
-                        ctsToken.ThrowIfCancellationRequested();
-                        intResult = ExecuteNonQuery(commandText, tran);
+                        var prog = Convert.ToSingle(100 * i / results.Count);
+                        progress.OnProgressChanged(string.Format("{0} of {1} written to database.", i, results.Count), prog);
                     }
 
-                    if (entry.Value.BackwardRatio > 0.0001)
+                    double forward = entry.Value.ForwardRatio;
+                    double backward = entry.Value.BackwardRatio;
+
+                    const double PRECISION = 1e-4;
+                    if (forward > PRECISION || backward > PRECISION)
                     {
-                        backward = Math.Round(backward, 4);
+                        // Get the column and row attributes and forward backward results
+                        var attributes1 = fsInput1.GetAttributes(entry.Key.FeatureId1, 1, fieldNames);
+                        var attributes2 = fsInput2.GetAttributes(entry.Key.FeatureId2, 1, fieldNames);
+
+                        // Write the entries to the firebird database
                         commandText =
-                            string.Format(
-                                "insert into GridDefinitionPercentageEntries(PERCENTAGEID, SOURCECOLUMN, SOURCEROW, TARGETCOLUMN, TARGETROW, PERCENTAGE,NORMALIZATIONSTATE) values({0},{1},{2},{3},{4},{5},{6})",
-                                PercentageID2, attributes2.Rows[0]["COL"], attributes2.Rows[0]["ROW"],
-                                attributes1.Rows[0]["COL"], attributes1.Rows[0]["ROW"], backward, 0);
+                             string.Format(
+                                 "insert into GridDefinitionPercentageEntries(PERCENTAGEID, SOURCECOLUMN, SOURCEROW, TARGETCOLUMN, TARGETROW, PERCENTAGE,NORMALIZATIONSTATE) values({0},{1},{2},{3},{4},{5},{6})",
+                                 percentageId1, attributes1.Rows[0]["COL"], attributes1.Rows[0]["ROW"],
+                                 attributes2.Rows[0]["COL"], attributes2.Rows[0]["ROW"], forward, 0);
 
                         ctsToken.ThrowIfCancellationRequested();
-                        intResult = ExecuteNonQuery(commandText, tran);
+                        ExecuteNonQuery(commandText, tran);
+
+                        commandText =
+                              string.Format(
+                                  "insert into GridDefinitionPercentageEntries(PERCENTAGEID, SOURCECOLUMN, SOURCEROW, TARGETCOLUMN, TARGETROW, PERCENTAGE,NORMALIZATIONSTATE) values({0},{1},{2},{3},{4},{5},{6})",
+                                  percentageId2, attributes2.Rows[0]["COL"], attributes2.Rows[0]["ROW"],
+                                  attributes1.Rows[0]["COL"], attributes1.Rows[0]["ROW"], backward, 0);
+
+                        ctsToken.ThrowIfCancellationRequested();
+                        ExecuteNonQuery(commandText, tran);
                     }
                 }
 
