@@ -77,7 +77,7 @@ namespace BenMAP.Crosswalks
             if (progress == null) throw new ArgumentNullException("progress");
 
             var output = new Dictionary<CrosswalkIndex, CrosswalkRatios>();
-            var sync_lock = new object();
+            var syncLock = new object();
 
             var featuresCount = !features.IndexMode ? features.Features.Count : features.ShapeIndices.Count;
             var cellsCount = !grid.IndexMode ? grid.Features.Count : grid.ShapeIndices.Count;
@@ -105,10 +105,11 @@ namespace BenMAP.Crosswalks
 
             // Begin calculation
             progress.OnProgressChanged("Begin calculation", 0);
-            Parallel.ForEach(features.Features, po, delegate(IFeature feature)
-            {
-                var featureGeometry = feature.Geometry;
-                var featureId = feature.Fid;
+
+           Parallel.For(0, featuresCount, po, delegate(int fi)
+           {
+                var featureGeometry = features.GetShape(fi, false).ToGeometry();
+                var featureId = fi;
                 var featureArea = featureGeometry.Area;
 
                 var featureEnvelope = featureGeometry.EnvelopeInternal;
@@ -119,6 +120,8 @@ namespace BenMAP.Crosswalks
                 var localList = new List<Tuple<CrosswalkIndex, CrosswalkRatios>>();
                 foreach (var cell in intersectionCells)
                 {
+                    cancellationToken.ThrowIfCancellationRequested();
+
                     var cellId = cell.Fid;
                     var cellGeometry = cell.Geometry;
 
@@ -149,7 +152,7 @@ namespace BenMAP.Crosswalks
                     }
                 }
 
-                lock (sync_lock)
+                lock (syncLock)
                 {
                     localList.ForEach(_ => output.Add(_.Item1, _.Item2));
                 }
