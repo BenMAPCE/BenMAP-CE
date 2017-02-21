@@ -10,68 +10,20 @@ namespace BenMAP.Crosswalks
 {
     public static class CrosswalksCalculator
     {
-        private class GridCell
+        /// <summary>
+        /// Computes crosswalks between grid and a list of features.
+        /// Grid assumptions:
+        /// 1. Has much more cells than features list count.
+        /// 2. Every cell is convex polygon.
+        /// 3. There are no intersections between cells. (only common borders are allowed) 
+        /// </summary>
+        /// <param name="grid">Grid with cells.</param>
+        /// <param name="features">List of features.</param>
+        /// <param name="cancellationToken">Cancellation token for cancellation support.</param>
+        /// <param name="progress">Instance of <see cref="IProgress"/> for progress indication.</param>
+        /// <returns>Dictionary of crosswalk indexes with appropriate ratios.</returns>
+        public static Dictionary<CrosswalkIndex, CrosswalkRatios> Calculate(IFeatureSet grid, IFeatureSet features, CancellationToken cancellationToken, IProgress progress)
         {
-            private bool _hasArea;
-            private double _area;
-
-            public GridCell(IGeometry geometry, double min, double max, int fid)
-            {
-                Geometry = geometry;
-                Min = min;
-                Max = max;
-                Fid = fid;
-            }
-
-            public IGeometry Geometry { get; private set; }
-            public int Fid { get; private set; }
-            public double Min { get; private set; }
-            public double Max { get; private set; }
-            public bool Used { get; set; }
-
-            public double Area
-            {
-                get
-                {
-                    if (!_hasArea)
-                    {
-                        _area = Geometry.Area;
-                        _hasArea = true;
-                    }
-                    return _area;
-                }
-            }
-        }
-
-        class GridCellEqualityComparer : IEqualityComparer<GridCell>
-        {
-            public bool Equals(GridCell x, GridCell y)
-            {
-                return x.Fid.Equals(y.Fid);
-            }
-
-            public int GetHashCode(GridCell obj)
-            {
-                return obj.Fid.GetHashCode();
-            }
-        }
-
-        private static IEnumerable<GridCell> Find(IEnumerable<GridCell> list, double min, double max)
-        {
-            // List ordered by min
-            foreach (var cell in list)
-            {
-                if (cell.Max < min) continue;
-                if (cell.Min > max) break; // all other also can be ignored
-                if (cell.Used) continue;
-                yield return cell;
-            }
-        }
-
-        public static Dictionary<CrosswalkIndex, CrosswalkRatios> Calculate(IFeatureSet grid, IFeatureSet features,
-            CancellationToken cancellationToken, IProgress progress)
-        {
-
             if (grid == null) throw new ArgumentNullException("grid");
             if (features == null) throw new ArgumentNullException("features");
             if (progress == null) throw new ArgumentNullException("progress");
@@ -106,8 +58,13 @@ namespace BenMAP.Crosswalks
             // Begin calculation
             progress.OnProgressChanged("Begin calculation", 0);
 
-           Parallel.For(0, featuresCount, po, delegate(int fi)
-           {
+            // Determine whenever use nested parallelization (for iterating through interesection cells).
+            // This will gain performance for border case when features contains just one feature.
+            var nestedParallelization = featuresCount == 1;
+            var nestedParallelizationStep = cellsCount / 1000;
+
+            Parallel.For(0, featuresCount, po, delegate(int fi)
+            {
                 var featureGeometry = features.GetShape(fi, false).ToGeometry();
                 var featureId = fi;
                 var featureArea = featureGeometry.Area;
@@ -118,37 +75,40 @@ namespace BenMAP.Crosswalks
                 var intersectionCells = filterByX.Intersect(filterByY, new GridCellEqualityComparer());
 
                 var localList = new List<Tuple<CrosswalkIndex, CrosswalkRatios>>();
-                foreach (var cell in intersectionCells)
+
+                if (nestedParallelization)
                 {
-                    cancellationToken.ThrowIfCancellationRequested();
-
-                    var cellId = cell.Fid;
-                    var cellGeometry = cell.Geometry;
-
-                    var intersection = cellGeometry.Intersection(featureGeometry);
-                    if (!(intersection == null || intersection.IsEmpty))
+                    var currentCellCount = 0;
+                    Parallel.ForEach(intersectionCells, po, delegate(GridCell cell)
                     {
-                        var area1 = cell.Area;
-                        var intersectionArea = intersection.Area;
-
-                        var entry = new CrosswalkRatios
+                        cancellationToken.ThrowIfCancellationRequested();
+                        var ci = FindCrosswalk(cell, featureGeometry, featureArea, featureId);
+                        if (ci != null)
                         {
-                            ForwardRatio = (float) (intersectionArea / area1),
-                            BackwardRatio = (float) (intersectionArea / featureArea)
-                        };
-
-                        var index = new CrosswalkIndex
-                        {
-                            FeatureId1 = cellId,
-                            FeatureId2 = featureId
-                        };
-
-                        // Grid cell fully in feature, exclude it from further calcuations
-                        if (entry.ForwardRatio == 1.0f)
-                        {
-                            cell.Used = true;
+                            lock (syncLock)
+                            {
+                                localList.Add(ci);
+                            }
                         }
-                        localList.Add(new Tuple<CrosswalkIndex, CrosswalkRatios>(index, entry));
+
+                        var currentCell = Interlocked.Increment(ref currentCellCount);
+                        if (currentCell % nestedParallelizationStep == 0)
+                        {
+                            progress.OnProgressChanged(string.Format("Cell {0}/{1} finished", currentCell, cellsCount),
+                                currentCell / (cellsCount * 1.0f) * 100.0f);
+                        }
+                    });
+                }
+                else
+                {
+                    foreach (var cell in intersectionCells)
+                    {
+                        cancellationToken.ThrowIfCancellationRequested();
+                        var ci = FindCrosswalk(cell, featureGeometry, featureArea, featureId);
+                        if (ci != null)
+                        {
+                            localList.Add(ci);
+                        }
                     }
                 }
 
@@ -165,6 +125,116 @@ namespace BenMAP.Crosswalks
             progress.OnProgressChanged(string.Format("Finished. Total crosswalks: {0}", output.Count), 100);
             return output;
         }
+
+        private static Tuple<CrosswalkIndex, CrosswalkRatios> FindCrosswalk(GridCell cell, IGeometry featureGeometry,
+            double featureArea, int featureId)
+        {
+            var cellGeometry = cell.Geometry;
+
+            if (cellGeometry.Intersects(featureGeometry))
+            {
+                double intersectionArea = 0;
+
+                // Quick test: feature geometry covers entire cell.
+                // In this case intersectionArea is entire cell area.
+                if (featureGeometry.Covers(cellGeometry))
+                {
+                    intersectionArea = cell.Area;
+                }
+                else
+                {
+                    var intersection = cellGeometry.Intersection(featureGeometry);
+                    if (!(intersection == null || intersection.IsEmpty))
+                    {
+
+                        intersectionArea = intersection.Area;
+                    }
+                }
+                if (intersectionArea > 0)
+                {
+                    var cellArea = cell.Area;
+                    var entry = new CrosswalkRatios
+                    {
+                        ForwardRatio = (float) (intersectionArea / cellArea),
+                        BackwardRatio = (float) (intersectionArea / featureArea)
+                    };
+
+                    var index = new CrosswalkIndex
+                    {
+                        FeatureId1 = cell.Fid,
+                        FeatureId2 = featureId
+                    };
+
+                    // Grid cell fully in feature, exclude it from further calcuations
+                    if (entry.ForwardRatio == 1.0f)
+                    {
+                        cell.Used = true;
+                    }
+                    return new Tuple<CrosswalkIndex, CrosswalkRatios>(index, entry);
+                }
+            }
+
+            return null;
+        }
+
+        private class GridCell
+        {
+            private bool _hasArea;
+            private double _area;
+
+            public GridCell(IGeometry geometry, double min, double max, int fid)
+            {
+                Geometry = geometry;
+                Min = min;
+                Max = max;
+                Fid = fid;
+            }
+
+            public IGeometry Geometry { get; private set; }
+            public int Fid { get; private set; }
+            public double Min { get; private set; }
+            public double Max { get; private set; }
+            public bool Used { get; set; }
+
+            public double Area
+            {
+                get
+                {
+                    if (!_hasArea)
+                    {
+                        _area = Geometry.Area;
+                        _hasArea = true;
+                    }
+                    return _area;
+                }
+            }
+        }
+
+        private class GridCellEqualityComparer : IEqualityComparer<GridCell>
+        {
+            public bool Equals(GridCell x, GridCell y)
+            {
+                return x.Fid.Equals(y.Fid);
+            }
+
+            public int GetHashCode(GridCell obj)
+            {
+                return obj.Fid.GetHashCode();
+            }
+        }
+
+        private static IEnumerable<GridCell> Find(IEnumerable<GridCell> list, double min, double max)
+        {
+            // List ordered by min
+            foreach (var cell in list)
+            {
+                if (cell.Max < min) continue;
+                if (cell.Min > max) break; // all other also can be ignored
+                if (cell.Used) continue;
+                yield return cell;
+            }
+        }
+
     }
 
     public interface IProgress
@@ -177,6 +247,9 @@ namespace BenMAP.Crosswalks
         void OnProgressChanged(string message, float progress);
     }
 
+    /// <summary>
+    /// Represents pair: cellId:featureId.
+    /// </summary>
     public struct CrosswalkIndex
     {
         /// <summary>
@@ -195,6 +268,9 @@ namespace BenMAP.Crosswalks
         }
     }
   
+    /// <summary>
+    /// Contains forward and backward ratios for <see cref="CrosswalkIndex"/>.
+    /// </summary>
     public struct CrosswalkRatios
     {
         /// <summary>
