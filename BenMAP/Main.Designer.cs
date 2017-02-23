@@ -420,6 +420,7 @@ namespace BenMAP
             this.computeCrosswalkMinimizedToolStripMenuItem.Size = new System.Drawing.Size(304, 22);
             this.computeCrosswalkMinimizedToolStripMenuItem.Text = "(test) Compute Crosswalk Minimized";
             this.computeCrosswalkMinimizedToolStripMenuItem.Click += new System.EventHandler(this.computeCrosswalkMinimizedToolStripMenuItem_Click);
+            this.computeCrosswalkMinimizedToolStripMenuItem.Visible = false;
             // 
             // btnMATs
             // 
