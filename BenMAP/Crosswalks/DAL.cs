@@ -44,12 +44,13 @@ namespace BenMAP.Crosswalks
 
         #region Public methods
 
-        public void DeleteAllCrosswalks()
+        public void DeleteAllCrosswalks(int setupId)
         {
             using (var tran = _connection.BeginTransaction())
             {
-                ExecuteNonQuery("DELETE from GRIDDEFINITIONPERCENTAGES", tran);
-                ExecuteNonQuery("DELETE from GRIDDEFINITIONPERCENTAGEENTRIES", tran);
+                ExecuteNonQuery(string.Format("DELETE from GRIDDEFINITIONPERCENTAGES where SOURCEGRIDDEFINITIONID in (SELECT GRIDDEFINITIONID from GRIDDEFINITIONS where setupID={0})", setupId), tran);
+                ExecuteNonQuery(string.Format("DELETE from GRIDDEFINITIONPERCENTAGES where TARGETGRIDDEFINITIONID in (SELECT GRIDDEFINITIONID from GRIDDEFINITIONS where setupID={0})", setupId), tran);
+                ExecuteNonQuery("DELETE from GRIDDEFINITIONPERCENTAGEENTRIES where PERCENTAGEID not in (SELECT PERCENTAGEID from GRIDDEFINITIONPERCENTAGES)", tran);
                 tran.Commit();
             }
         }

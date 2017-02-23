@@ -90,16 +90,16 @@ namespace BenMAP.Crosswalks
              */
 
             var result = MessageBox.Show(
-                    "This action will delete all current crosswalk definitions requiring them to be rebuilt when they are requested.",
+                    "This action will delete all current crosswalk definitions in the current setup requiring them to be rebuilt when they are requested.",
                     "Confirm Crosswalk Deletion", MessageBoxButtons.OKCancel, MessageBoxIcon.Information);
             if (result == DialogResult.Cancel)
             {
                 return;
             }
 
-            _dal.DeleteAllCrosswalks();
+            _dal.DeleteAllCrosswalks(CommonClass.ManageSetup.SetupID);
 
-            MessageBox.Show("All existing crosswalk definitions deleted.","Complete", MessageBoxButtons.OK, MessageBoxIcon.Information); 
+            MessageBox.Show("All existing crosswalk definitions in the current setup deleted.","Complete", MessageBoxButtons.OK, MessageBoxIcon.Information); 
 
         }
 
