@@ -72,6 +72,7 @@ namespace BenMAP
         {
             string commandText = string.Empty;
             FireBirdHelperBase fb = new ESILFireBirdHelper();
+            CommonClass.SetupOLVEmptyListOverlay(this.olvData.EmptyListMsgOverlay as BrightIdeasSoftware.TextOverlay);
             DataSet ds;
             DataSet dsOrigin;
             try

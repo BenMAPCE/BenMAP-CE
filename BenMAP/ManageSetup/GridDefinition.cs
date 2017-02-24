@@ -1333,6 +1333,22 @@ namespace BenMAP
                 "\r\nvaluation stages.", picCRHelp, 32700);
         }
 
+        private void picGeoAreaHelp_Click(object sender, EventArgs e)
+        {
+            this.toolTip1.Show(@"Selecting the check box means that you can assign 
+health impact functions to the cells in this grid 
+in the “Health Impact Functions Definition” window, 
+found in the “Manage Datasets” window. By default, 
+the program assigns health impact functions to all 
+grid cells, but you might instead prefer to assign 
+it to a discrete location, like a state, county 
+or city defined by your grid.  ", picGeoAreaHelp, 32700);
+        }
+
+        private void picGeoAreaHelp_MouseHover(object sender, EventArgs e)
+        {
+            picGeoAreaHelp_Click(sender, e);
+        }
         private void btnViewMetadata_Click(object sender, EventArgs e)
         {
             //ViewEditMetadata viewEMdata = new ViewEditMetadata(_shapeFilePath);

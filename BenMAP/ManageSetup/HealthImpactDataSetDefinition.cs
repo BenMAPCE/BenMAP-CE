@@ -1471,6 +1471,7 @@ where b.SETUPID={0}", CommonClass.ManageSetup.SetupID);
         {
             try
             {
+                CommonClass.SetupOLVEmptyListOverlay(this.olvFunction.EmptyListMsgOverlay as BrightIdeasSoftware.TextOverlay);
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 DataSet ds = new DataSet();
                 string commandText = string.Empty;

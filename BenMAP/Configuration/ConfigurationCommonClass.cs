@@ -505,7 +505,7 @@ namespace BenMAP.Configuration
             try
             {
                 //TODO: Right now, all area assumed to be entire area. Need to add handling for entire area and subregion (e.g. query geographicareaentries)
-                string commandText = string.Format("select geographicareaname, entiregriddefinition from geographicareas where geographicareaid={0}", GeographicAreaId);
+                string commandText = string.Format("select geographicareaname, entiregriddefinition, griddefinitionid from geographicareas where geographicareaid={0}", GeographicAreaId);
                 GeographicArea geographicArea = new GeographicArea();
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
@@ -514,7 +514,7 @@ namespace BenMAP.Configuration
 
                 geographicArea.GeographicAreaID = GeographicAreaId;
                 geographicArea.GeographicAreaName = dr["GeographicAreaName"].ToString();
-
+                geographicArea.GridDefinitionID = Convert.ToInt32(dr["GridDefinitionID"]);
                 return geographicArea;
             }
             catch (Exception ex)
@@ -593,6 +593,7 @@ namespace BenMAP.Configuration
                 benMapHealthImpactFunction.Year = Convert.ToInt32(dr["YYear"]);
                 if ((dr["GeographicAreaId"] is DBNull) == false)
                 {
+                    benMapHealthImpactFunction.GeographicAreaID = Convert.ToInt32(dr["GeographicAreaId"]);
                     benMapHealthImpactFunction.GeographicAreaName = getGeographicArea(Convert.ToInt32(dr["GeographicAreaId"])).GeographicAreaName;
                 }
                 if (dr["Location"] is DBNull == false)
@@ -2720,44 +2721,16 @@ namespace BenMAP.Configuration
 
                 //Dictionary<string, Dictionary<string, double>> dicGeoAreaPercentages = new Dictionary<string, Dictionary<string, double>>();
                 Dictionary<string, double> dicGeoAreaPercentages = null;
+                bool hasGeographicArea = false;
 
                 if ( ! string.IsNullOrEmpty(crSelectFunction.GeographicAreaName) )
                 {
                     // Get the crosswalk for the Geographic Area
-                    //TODO: Hardcoded to test detroit counties
-                    //ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
-                    int geoId = (crSelectFunction.GeographicAreaName.Equals("Iowa") ? 35 : (crSelectFunction.GeographicAreaName.Equals("California") ? 36 : 34));
-                    //string str = "select sourcecolumn, sourcerow, targetcolumn, targetrow, percentage, normalizationstate from griddefinitionpercentageentries where percentageid=( select percentageid from  griddefinitionpercentages where sourcegriddefinitionid =" + CommonClass.GBenMAPGrid.GridDefinitionID + " and  targetgriddefinitionid =" + geoId + ") and normalizationstate in (0,1)";
-
-                    //DataSet dsGeoAreaPercentage = null;
+                    int geoId = crSelectFunction.GeographicAreaID;
                     try
                     {
-                        //dsGeoAreaPercentage = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, str);
-                        //if (dsGeoAreaPercentage.Tables[0].Rows.Count == 0)
-                        //{
-                        //    Configuration.ConfigurationCommonClass.creatPercentageToDatabase(geoId, CommonClass.GBenMAPGrid.GridDefinitionID, null);
-                        //    dsGeoAreaPercentage = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, str);
-                        //}
-
                         dicGeoAreaPercentages = CommonClass.IntersectionsWithGeographicArea(CommonClass.GBenMAPGrid.GridDefinitionID, geoId);
-
-                            /*
-                        foreach (DataRow dr in dsGeoAreaPercentage.Tables[0].Rows)
-                        {
-                            if (dicGeoAreaPercentages.ContainsKey(dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString()))
-                            {
-                                if (!dicGeoAreaPercentages[dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString()].ContainsKey(dr["targetcolumn"].ToString() + "," + dr["targetrow"].ToString()))
-                                    dicGeoAreaPercentages[dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString()].Add(dr["targetcolumn"].ToString() + "," + dr["targetrow"].ToString(), Convert.ToDouble(dr["Percentage"]));
-                            }
-                            else
-                            {
-                                dicGeoAreaPercentages.Add(dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString(), new Dictionary<string, double>());
-                                dicGeoAreaPercentages[dr["sourcecolumn"].ToString() + "," + dr["sourcerow"].ToString()].Add(dr["targetcolumn"].ToString() + "," + dr["targetrow"].ToString(), Convert.ToDouble(dr["Percentage"]));
-                            }
-                        }
-                        dsGeoAreaPercentage.Dispose();
-*/
-
+                        hasGeographicArea = true;
                     }
                     catch
                     {
@@ -2812,7 +2785,7 @@ namespace BenMAP.Configuration
                     }
 
                     // If a HIF has an assigned Geographic Area, only run it if it intersects with this grid cell
-                    if( ! string.IsNullOrEmpty(crSelectFunction.GeographicAreaName))
+                    if( hasGeographicArea )
                     {
                         // TODO: Check intersection here. If zero, skip to next HIF. Else, set percentage
                         if (dicGeoAreaPercentages.ContainsKey(modelResultAttribute.Col + "," + modelResultAttribute.Row) )
@@ -2821,6 +2794,7 @@ namespace BenMAP.Configuration
                         }
                         else
                         {
+                            // No interesction with geographic area. Skip to next grid cell
                             continue;
                         }
                     }

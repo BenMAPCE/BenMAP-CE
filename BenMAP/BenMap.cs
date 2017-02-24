@@ -5673,7 +5673,12 @@ namespace BenMAP
         }
         private void BenMAP_Load(object sender, EventArgs e)
         {
-            olvCRFunctionResult.EmptyListMsg = "After results are generated here, double-click the selected study to display map/data/chart below." + Environment.NewLine + " Ctrl- or shift-click to select multiple studies and then click \"Show result\" to display data for multiple studies.";
+
+            // Set up empty list overlay for all OLV instances
+            CommonClass.SetupOLVEmptyListOverlay(this.olvCRFunctionResult.EmptyListMsgOverlay as TextOverlay);
+            CommonClass.SetupOLVEmptyListOverlay(this.olvIncidence.EmptyListMsgOverlay as TextOverlay);
+            CommonClass.SetupOLVEmptyListOverlay(this.tlvAPVResult.EmptyListMsgOverlay as TextOverlay);
+
             mainMap.Projection = DotSpatial.Projections.KnownCoordinateSystems.Geographic.World.WGS1984;
             if (!Directory.Exists(CommonClass.ResultFilePath + @"\Result\CFGR"))
                 System.IO.Directory.CreateDirectory(CommonClass.ResultFilePath + @"\Result\CFGR");

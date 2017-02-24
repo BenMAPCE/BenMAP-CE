@@ -21,6 +21,7 @@ namespace BenMAP
             this.grpPictureView = new System.Windows.Forms.GroupBox();
             this.mainMap = new DotSpatial.Controls.Map();
             this.grpGridDefinition = new System.Windows.Forms.GroupBox();
+            this.picGeoAreaHelp = new System.Windows.Forms.PictureBox();
             this.chkBoxUseAsGeographicArea = new System.Windows.Forms.CheckBox();
             this.btn_browsePopRaster = new System.Windows.Forms.Button();
             this.txtb_popGridLoc = new System.Windows.Forms.TextBox();
@@ -64,6 +65,7 @@ namespace BenMAP
             this.btnOK = new System.Windows.Forms.Button();
             this.grpPictureView.SuspendLayout();
             this.grpGridDefinition.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picGeoAreaHelp)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picCRHelp)).BeginInit();
             this.tabGrid.SuspendLayout();
             this.tpShapefileGrid.SuspendLayout();
@@ -116,6 +118,7 @@ namespace BenMAP
             this.grpGridDefinition.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
             this.grpGridDefinition.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.grpGridDefinition.Controls.Add(this.picGeoAreaHelp);
             this.grpGridDefinition.Controls.Add(this.chkBoxUseAsGeographicArea);
             this.grpGridDefinition.Controls.Add(this.btn_browsePopRaster);
             this.grpGridDefinition.Controls.Add(this.txtb_popGridLoc);
@@ -136,16 +139,29 @@ namespace BenMAP
             this.grpGridDefinition.TabStop = false;
             this.grpGridDefinition.Text = "Grid Definition";
             // 
+            // picGeoAreaHelp
+            // 
+            this.picGeoAreaHelp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.picGeoAreaHelp.BackgroundImage = global::BenMAP.Properties.Resources.help_16x16;
+            this.picGeoAreaHelp.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.picGeoAreaHelp.Location = new System.Drawing.Point(311, 450);
+            this.picGeoAreaHelp.Name = "picGeoAreaHelp";
+            this.picGeoAreaHelp.Size = new System.Drawing.Size(20, 19);
+            this.picGeoAreaHelp.TabIndex = 13;
+            this.picGeoAreaHelp.TabStop = false;
+            this.picGeoAreaHelp.Tag = "";
+            this.picGeoAreaHelp.Click += new System.EventHandler(this.picGeoAreaHelp_Click);
+            this.picGeoAreaHelp.MouseHover += new System.EventHandler(this.picGeoAreaHelp_MouseHover);
+            // 
             // chkBoxUseAsGeographicArea
             // 
             this.chkBoxUseAsGeographicArea.AutoSize = true;
             this.chkBoxUseAsGeographicArea.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
             this.chkBoxUseAsGeographicArea.Location = new System.Drawing.Point(9, 443);
             this.chkBoxUseAsGeographicArea.Name = "chkBoxUseAsGeographicArea";
-            this.chkBoxUseAsGeographicArea.Size = new System.Drawing.Size(295, 32);
+            this.chkBoxUseAsGeographicArea.Size = new System.Drawing.Size(273, 32);
             this.chkBoxUseAsGeographicArea.TabIndex = 12;
-            this.chkBoxUseAsGeographicArea.Text = "Use this grid definition as a geographic area that \r\ncan be assigned to health im" +
-    "pact functions";
+            this.chkBoxUseAsGeographicArea.Text = "Allow health impact functions to be assigned\r\nto this area";
             this.chkBoxUseAsGeographicArea.UseVisualStyleBackColor = true;
             this.chkBoxUseAsGeographicArea.CheckedChanged += new System.EventHandler(this.chkBoxCreatePercentage_CheckedChanged);
             // 
@@ -594,6 +610,7 @@ namespace BenMAP
             this.grpPictureView.ResumeLayout(false);
             this.grpGridDefinition.ResumeLayout(false);
             this.grpGridDefinition.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picGeoAreaHelp)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.picCRHelp)).EndInit();
             this.tabGrid.ResumeLayout(false);
             this.tpShapefileGrid.ResumeLayout(false);
@@ -656,5 +673,6 @@ namespace BenMAP
         private System.Windows.Forms.TextBox txtb_popGridLoc;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.CheckBox chkBoxUseAsGeographicArea;
+        private System.Windows.Forms.PictureBox picGeoAreaHelp;
     }
 }

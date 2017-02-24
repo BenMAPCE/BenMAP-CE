@@ -22,7 +22,7 @@ using DotSpatial.Projections;
 using System.Diagnostics;
 using GeoAPI.Geometries;
 using NetTopologySuite.Geometries;
-
+using BrightIdeasSoftware;
 
 namespace BenMAP
 {
@@ -2580,6 +2580,14 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
                 FormChangedSetup();
             }
         }
+
+        internal static void SetupOLVEmptyListOverlay(TextOverlay textOverlay)
+        {
+            textOverlay.TextColor = System.Drawing.Color.LightGray;
+            textOverlay.BackColor = System.Drawing.Color.White;
+            textOverlay.BorderWidth = 0.0f;
+            textOverlay.Font = new System.Drawing.Font("Calibri", 16);
+        }
     }
     class Percentile<T> where T : IComparable
     {
@@ -3607,6 +3615,8 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
         public string PrevalenceDataSetName;
         [ProtoMember(42)]
         public string VariableDataSetName;
+        [ProtoMember(43)]
+        public int GeographicAreaID;
     }
 
     [Serializable]
@@ -3643,6 +3653,8 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
         public string VariableDataSetName;
         [ProtoMember(15)]
         public List<LatinPoints> lstLatinPoints;
+        [ProtoMember(16)]
+        public int GeographicAreaID;
     }
 
     [ProtoContract]

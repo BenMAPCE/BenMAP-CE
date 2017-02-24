@@ -347,7 +347,7 @@ namespace BenMAP
             this.olvColumn32});
             this.olvFunction.Cursor = System.Windows.Forms.Cursors.Default;
             this.olvFunction.DataSource = null;
-            this.olvFunction.EmptyListMsg = "Add rows to the above table to see them here";
+            this.olvFunction.EmptyListMsg = "This list is empty.";
             this.olvFunction.EmptyListMsgFont = new System.Drawing.Font("Calibri", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.olvFunction.FullRowSelect = true;
             this.olvFunction.GridLines = true;
