@@ -38,6 +38,12 @@ namespace BenMAP
         HealthFunction = 4
     }
 
+    public enum BetaVariationType
+    {
+        FullYear = 1,
+        Seasonal = 2
+    }
+
     public class CommonClass
     {
         // 2014 12 22 - added destructor to try and force connection to close on exit
