@@ -672,35 +672,65 @@ namespace BenMAP
                     int iRemove = -1;
                     int i = 0;
 
+                    bool isRemovedFromCurrent = false;
+                    int iRemoveCurrent = -1;
 
-                    //check to see if this feature exists in any of the rollbacks, including the current one
+                    //check to see if this feature exists in any of the rollbacks, excluding the current one
                     //if it is there, then remove it
                     foreach (BenMAPRollback brb in _monitorRollbackLine.BenMAPRollbacks)
                     {
                         i = 0;
 
-                        if (brb.SelectRegions.Contains(iRowCol, new RowColComparer()))
+                        if (brb.RegionID != _currentBenMAPRollback.RegionID && SelectedFeatures.Count > 1)
                         {
-                            foreach (RowCol rowCol in brb.SelectRegions)
+
+                            if (brb.SelectRegions.Contains(iRowCol, new RowColComparer()))
                             {
-                                if (rowCol.Col == iCol && rowCol.Row == iRow)
+                                foreach (RowCol rowCol in brb.SelectRegions)
                                 {
-                                    iRemove = i;
+                                    if (rowCol.Col == iCol && rowCol.Row == iRow)
+                                    {
+                                        iRemove = i;
+                                    }
+                                    i++;
                                 }
-                                i++;
-                            }
-                            if (iRemove >= 0)
-                            {
-                                brb.SelectRegions.RemoveAt(iRemove);
+                                if (iRemove >= 0)
+                                {
+                                    brb.SelectRegions.RemoveAt(iRemove);
+                                }
+
                             }
                         }
                     }
 
-                    //now add the feature to the current rollback break
-                    _currentBenMAPRollback.SelectRegions.Add(iRowCol);
+                    //jk 2/25/2017 - special case when clicking one selected feature in current rollback
+                    //this feature will be unselected
+                    //check to see if this feature exists in the current rollback
+                    if (_currentBenMAPRollback.SelectRegions.Contains(iRowCol, new RowColComparer()) && SelectedFeatures.Count == 1)
+                    {
+                        i = 0;
+                        foreach (RowCol rowCol in _currentBenMAPRollback.SelectRegions)
+                        {
+                            if (rowCol.Col == iCol && rowCol.Row == iRow)
+                            {
+                                iRemoveCurrent = i;
+                            }
+                            i++;
+                        }
+                        if (iRemoveCurrent >= 0)
+                        {
+                            _currentBenMAPRollback.SelectRegions.RemoveAt(iRemoveCurrent);
+                            fSelect.DataRow["MyColorIndex"] = 0;
+                        }
+                    }
+                    else
+                    {
+                        //now add the feature to the current rollback break
+                        _currentBenMAPRollback.SelectRegions.Add(iRowCol);
 
-                    //and change the layer MyColorIndex ID to be that of the current rollback
-                    fSelect.DataRow["MyColorIndex"] = _currentBenMAPRollback.RegionID;
+                        //and change the layer MyColorIndex ID to be that of the current rollback
+                        fSelect.DataRow["MyColorIndex"] = _currentBenMAPRollback.RegionID;
+                    }
                    
                 }
                 ColorMap();
