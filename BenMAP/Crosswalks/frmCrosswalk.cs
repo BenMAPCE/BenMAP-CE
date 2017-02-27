@@ -105,20 +105,28 @@ namespace BenMAP.Crosswalks
 
         private void frmCrosswalk_Load(object sender, EventArgs e)
         {
+            //jk 2/27/2017 populate combobox for the current setup
+            ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+            string commandText = string.Empty;
+            System.Data.DataSet ds = new System.Data.DataSet();
+            try
+            {
+                commandText = string.Format("select SetupID,SetupName from Setups order by SetupID");
+                ds = fb.ExecuteDataset(CommonClass.Connection, new System.Data.CommandType(), commandText);
+                cboSetupName.DataSource = ds.Tables[0];
+                cboSetupName.DisplayMember = "SetupName";
+                cboSetupName.Text = CommonClass.MainSetup.SetupName;
+                
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
             if (_HandsFree == false)
             {
                 //in regular mode, prepopulate both list boxes with the available grids so we can select them
-
-                var tb1 = _dal.GetGridDefinitions(CommonClass.ManageSetup.SetupID);
-                var tb2 = tb1.Copy();
-
-                lstCrosswalks1.DataSource = tb1;
-                lstCrosswalks2.DataSource = tb2;
-
-                lstCrosswalks1.DisplayMember = "GridDefinitionName";
-                lstCrosswalks2.DisplayMember = "GridDefinitionName";
-                lstCrosswalks1.ValueMember = "GridDefinitionID";
-                lstCrosswalks2.ValueMember = "GridDefinitionID";
+                LoadGridDefinitions();
             }
             else
             {
@@ -126,6 +134,32 @@ namespace BenMAP.Crosswalks
                 _dal.DeleteCrosswalk(_GridID1, _GridID2);
                 PerformCrosswalk();
             }
+        }
+
+        private void LoadGridDefinitions()
+        {
+            var tb1 = _dal.GetGridDefinitions(CommonClass.ManageSetup.SetupID);
+            var tb2 = tb1.Copy();
+
+            lstCrosswalks1.DataSource = tb1;
+            lstCrosswalks2.DataSource = tb2;
+
+            lstCrosswalks1.DisplayMember = "GridDefinitionName";
+            lstCrosswalks2.DisplayMember = "GridDefinitionName";
+            lstCrosswalks1.ValueMember = "GridDefinitionID";
+            lstCrosswalks2.ValueMember = "GridDefinitionID";
+        }
+
+        //jk 2/27/2017 reload the grid definitions according to the current setup
+        private void cboSetupName_SelectedValueChanged(object sender, EventArgs e)
+        {
+            System.Data.DataRowView dgv = cboSetupName.SelectedItem as System.Data.DataRowView;
+            CommonClass.ManageSetup = new BenMAPSetup()
+            {
+                SetupID = Convert.ToInt32(dgv["SetupID"]),
+                SetupName = dgv["SetupName"].ToString()
+            };
+            LoadGridDefinitions();
         }
 
         private void btnCompute_Click(object sender, EventArgs e)

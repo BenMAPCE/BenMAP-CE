@@ -38,6 +38,8 @@
             this.btnCompute = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.btnClose = new System.Windows.Forms.Button();
+            this.cboSetupName = new System.Windows.Forms.ComboBox();
+            this.lblAvailableSetups = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // btnCancel
@@ -76,7 +78,7 @@
             // 
             // btnClearCrosswalks
             // 
-            this.btnClearCrosswalks.Location = new System.Drawing.Point(12, 52);
+            this.btnClearCrosswalks.Location = new System.Drawing.Point(473, 53);
             this.btnClearCrosswalks.Name = "btnClearCrosswalks";
             this.btnClearCrosswalks.Size = new System.Drawing.Size(197, 34);
             this.btnClearCrosswalks.TabIndex = 13;
@@ -120,11 +122,32 @@
             this.btnClose.UseVisualStyleBackColor = true;
             this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
             // 
+            // cboSetupName
+            // 
+            this.cboSetupName.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboSetupName.FormattingEnabled = true;
+            this.cboSetupName.Location = new System.Drawing.Point(116, 61);
+            this.cboSetupName.Name = "cboSetupName";
+            this.cboSetupName.Size = new System.Drawing.Size(162, 21);
+            this.cboSetupName.TabIndex = 19;
+            this.cboSetupName.SelectedValueChanged += new System.EventHandler(this.cboSetupName_SelectedValueChanged);
+            // 
+            // lblAvailableSetups
+            // 
+            this.lblAvailableSetups.AutoSize = true;
+            this.lblAvailableSetups.Location = new System.Drawing.Point(12, 64);
+            this.lblAvailableSetups.Name = "lblAvailableSetups";
+            this.lblAvailableSetups.Size = new System.Drawing.Size(86, 13);
+            this.lblAvailableSetups.TabIndex = 20;
+            this.lblAvailableSetups.Text = "Available Setups";
+            // 
             // frmCrosswalk
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(684, 432);
+            this.Controls.Add(this.lblAvailableSetups);
+            this.Controls.Add(this.cboSetupName);
             this.Controls.Add(this.btnClose);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.btnCompute);
@@ -159,6 +182,8 @@
         private System.Windows.Forms.Button btnCompute;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button btnClose;
+        private System.Windows.Forms.ComboBox cboSetupName;
+        private System.Windows.Forms.Label lblAvailableSetups;
     }
 }
 
