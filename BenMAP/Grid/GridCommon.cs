@@ -210,7 +210,7 @@ namespace BenMAP.Grid
                 seasonalMetric.SeasonalMetricName = dr["SeasonalMetricName"].ToString();
                 seasonalMetric.Seasons = new List<Season>();
                 commandText = string.Format("select a.PollutantID,c.SeasonalMetricID,d.StartDay,d.EndDay,d.SEASONALMETRICTYPE,d.METRICFUNCTION  from Pollutants a ,Metrics b,SeasonalMetrics c ,SeasonalMetricSeasons d " +
-" where a.PollutantID=b.PollutantID and b.MetricID=c.MetricID and c.SeasonalMetricID=d.SeasonalMetricID and c.SeasonalMetricID={0}", SeasonalMetricID);
+" where a.PollutantID=b.PollutantID and b.MetricID=c.MetricID and c.SeasonalMetricID=d.SeasonalMetricID and c.SeasonalMetricID={0} order by d.StartDay", SeasonalMetricID);
 
 
                 ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);

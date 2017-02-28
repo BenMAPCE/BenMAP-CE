@@ -4783,9 +4783,15 @@ namespace BenMAP.Configuration
                                         }
                                     }
 
-                                    //loop over each day of the year for this row/col and metric                                
-                                    for (int iDay = 0; iDay < dicBase365Values.First().Value.Count; iDay++)
+                                    //is this seasonal beta variation? 
+                                    //Then make iDay = betaIndex so beta is run against the proper concentration.
+                                    Dictionary<int, double> fdicDeltaQValuesSeasonal = new Dictionary<int, double>();
+                                    if (crSelectFunction.BenMAPHealthImpactFunction.BetaVariation.BetaVariationID == Convert.ToInt32(BetaVariationType.Seasonal))
                                     {
+                                        //make iDay = betaIndex
+                                        //The iDay here will be the season of a seasonal metric since
+                                        //seasonal beta variations must be tied to the seasons of a seasonal metric
+                                        int iDay = betaIndex;
 
                                         Dictionary<int, double> fdicBaseValues = new Dictionary<int, double>();
                                         Dictionary<int, double> fdicControlValues = new Dictionary<int, double>();
@@ -4801,6 +4807,8 @@ namespace BenMAP.Configuration
 
                                             //get deltaQ values
                                             fdicDeltaQValues = getDeltaQValues(fdicBaseValues, fdicControlValues);
+                                            //set seasonal deltas which are used below
+                                            fdicDeltaQValuesSeasonal = fdicDeltaQValues;
 
                                             {
                                                 CRCalculateValue cr = CalculateCRSelectFunctionsOneCel(sCRID, hasPopInstrBaseLineFunction, 1, crSelectFunction, strBaseLineFunction, strPointEstimateFunction, modelResultAttribute.Col, modelResultAttribute.Row, fdicBaseValues, fdicControlValues, dicPopValue, dicIncidenceValue, dicPrevalenceValue, dicVariable, betaIndex);
@@ -4816,6 +4824,43 @@ namespace BenMAP.Configuration
                                             }
                                         }
 
+                                    }
+                                    //if this is full year beta variaton
+                                    //we will loop over each day (or season if using seasonal metric) and sum results
+                                    else if (crSelectFunction.BenMAPHealthImpactFunction.BetaVariation.BetaVariationID == Convert.ToInt32(BetaVariationType.FullYear))
+                                    { 
+                                        //loop over each day of the year for this row/col and metric                                
+                                        for (int iDay = 0; iDay < dicBase365Values.First().Value.Count; iDay++)
+                                        {
+                                            Dictionary<int, double> fdicBaseValues = new Dictionary<int, double>();
+                                            Dictionary<int, double> fdicControlValues = new Dictionary<int, double>();
+                                            Dictionary<int, double> fdicDeltaQValues = new Dictionary<int, double>();
+
+                                            //double fBase, fControl, fDelta;
+                                            fdicBaseValues = getValuesFrom365Values(dicBase365Values, iDay);
+                                            fdicControlValues = getValuesFrom365Values(dicControl365Values, iDay);
+                                            if ((!CheckValuesAgainstMinimum(fdicBaseValues)) && (!CheckValuesAgainstMinimum(fdicControlValues)))
+                                            {
+                                                CheckValuesAgainstThreshold(fdicBaseValues, Threshold);
+                                                CheckValuesAgainstThreshold(fdicControlValues, Threshold);
+
+                                                //get deltaQ values
+                                                fdicDeltaQValues = getDeltaQValues(fdicBaseValues, fdicControlValues);
+
+                                                {
+                                                    CRCalculateValue cr = CalculateCRSelectFunctionsOneCel(sCRID, hasPopInstrBaseLineFunction, 1, crSelectFunction, strBaseLineFunction, strPointEstimateFunction, modelResultAttribute.Col, modelResultAttribute.Row, fdicBaseValues, fdicControlValues, dicPopValue, dicIncidenceValue, dicPrevalenceValue, dicVariable, betaIndex);
+                                                    fPSum += cr.PointEstimate;
+                                                    fBaselineSum += cr.Baseline;
+                                                    if (!CommonClass.CRRunInPointMode)
+                                                    {
+                                                        for (int i = 0; i < CommonClass.CRLatinHypercubePoints; i++)
+                                                        {
+                                                            lstFPSum[i] += cr.LstPercentile[i];
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
                                     }
 
                                     //build result value object
@@ -4849,7 +4894,16 @@ namespace BenMAP.Configuration
                                     CheckValuesAgainstThreshold(controlValuesForDelta, Threshold);
 
                                     //set deltas
-                                    crCalculateValue.Deltas = getDeltaQValues(baseValuesForDelta, controlValuesForDelta);
+                                    //use seasonal deltas if using seasonal beta variation
+                                    if (crSelectFunction.BenMAPHealthImpactFunction.BetaVariation.BetaVariationID == Convert.ToInt32(BetaVariationType.Seasonal))
+                                    {
+                                        crCalculateValue.Deltas = fdicDeltaQValuesSeasonal;
+                                    }
+                                    //get deltas for full year beta variation
+                                    else if (crSelectFunction.BenMAPHealthImpactFunction.BetaVariation.BetaVariationID == Convert.ToInt32(BetaVariationType.FullYear))
+                                    {
+                                        crCalculateValue.Deltas = getDeltaQValues(baseValuesForDelta, controlValuesForDelta);
+                                    }
                                     crCalculateValue.DeltaList = getSortedDeltaListFromDictionaryandObject(crSelectFunction, crCalculateValue.Deltas);
 
                                     //set beta variation fields
