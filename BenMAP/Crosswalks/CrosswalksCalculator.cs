@@ -61,7 +61,7 @@ namespace BenMAP.Crosswalks
             // Determine whenever use nested parallelization (for iterating through interesection cells).
             // This will gain performance for border case when features contains just one feature.
             var nestedParallelization = featuresCount == 1;
-            var nestedParallelizationStep = cellsCount / 1000;
+            var nestedParallelizationStep = Math.Max(cellsCount / 1000, 1); // protect from zeros
 
             Parallel.For(0, featuresCount, po, delegate(int fi)
             {

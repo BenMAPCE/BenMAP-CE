@@ -8,10 +8,11 @@ using FirebirdSql.Data.FirebirdClient;
 
 namespace BenMAP.Crosswalks
 {
-    internal class DAL
+    internal class DAL : IDisposable
     {
         private readonly FbConnection _connection;
         private readonly FireBirdHelperBase _fbh;
+        private readonly bool _closeUnderlyingConnection;
 
         public DAL(FbConnection connection)
         {
@@ -21,6 +22,7 @@ namespace BenMAP.Crosswalks
             if (_connection.State != ConnectionState.Open)
             {
                 _connection.Open();
+                _closeUnderlyingConnection = true;
             }
         }
 
@@ -210,6 +212,15 @@ namespace BenMAP.Crosswalks
 
                 ctsToken.ThrowIfCancellationRequested();
                 tran.Commit();
+            }
+        }
+
+        public void Dispose()
+        {
+            if (_closeUnderlyingConnection)
+            {
+                _connection.Close();
+                _connection.Dispose();
             }
         }
 
