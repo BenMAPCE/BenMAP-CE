@@ -20,6 +20,10 @@ namespace BenMAP.Crosswalks
         public frmCrosswalk()
         {
             InitializeComponent();
+
+            Disposed += delegate {
+                _dal.Dispose();
+            };
         }
 
         public void RunCompact(int GridID1, int GridID2) 

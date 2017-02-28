@@ -165,6 +165,7 @@ namespace BenMAP
             try
             {
                 InitializeComponent();
+            
              //  CheckFirebirdAndStartFirebird();
                  if (CheckFirebirdAndStartFirebird() == false)
                 {
@@ -778,7 +779,6 @@ namespace BenMAP
         {
             try
             {
-
                 Environment.Exit(0);
             }
             catch (Exception ex)
@@ -910,9 +910,11 @@ namespace BenMAP
              * Current approach is to use the new algorithm through this manual calculator which will
              * update the records in the database that are used by the other functions in code.
              */
-            frmCrosswalk f = new frmCrosswalk();
-            f.StartPosition = FormStartPosition.CenterParent;
-            f.ShowDialog();
+            using(var f = new frmCrosswalk(){Owner = this})
+            {
+                f.StartPosition = FormStartPosition.CenterParent;
+                f.ShowDialog();
+            }
         }
 
         private void computeCrosswalkMinimizedToolStripMenuItem_Click(object sender, EventArgs e)
