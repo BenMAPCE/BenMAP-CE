@@ -58,14 +58,14 @@
             this.tbProgress.Name = "tbProgress";
             this.tbProgress.ReadOnly = true;
             this.tbProgress.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.tbProgress.Size = new System.Drawing.Size(658, 20);
+            this.tbProgress.Size = new System.Drawing.Size(672, 20);
             this.tbProgress.TabIndex = 9;
             // 
             // progressBar1
             // 
             this.progressBar1.Location = new System.Drawing.Point(12, 356);
             this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(658, 13);
+            this.progressBar1.Size = new System.Drawing.Size(672, 13);
             this.progressBar1.TabIndex = 11;
             // 
             // lstCrosswalks1
@@ -80,7 +80,7 @@
             // 
             this.btnClearCrosswalks.Location = new System.Drawing.Point(473, 53);
             this.btnClearCrosswalks.Name = "btnClearCrosswalks";
-            this.btnClearCrosswalks.Size = new System.Drawing.Size(197, 34);
+            this.btnClearCrosswalks.Size = new System.Drawing.Size(211, 34);
             this.btnClearCrosswalks.TabIndex = 13;
             this.btnClearCrosswalks.Text = "Clear Existing Crosswalks";
             this.btnClearCrosswalks.UseVisualStyleBackColor = true;
@@ -91,7 +91,7 @@
             this.lstCrosswalks2.FormattingEnabled = true;
             this.lstCrosswalks2.Location = new System.Drawing.Point(404, 112);
             this.lstCrosswalks2.Name = "lstCrosswalks2";
-            this.lstCrosswalks2.Size = new System.Drawing.Size(266, 212);
+            this.lstCrosswalks2.Size = new System.Drawing.Size(280, 212);
             this.lstCrosswalks2.TabIndex = 15;
             // 
             // btnCompute
@@ -114,7 +114,7 @@
             // 
             // btnClose
             // 
-            this.btnClose.Location = new System.Drawing.Point(570, 391);
+            this.btnClose.Location = new System.Drawing.Point(584, 390);
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(100, 34);
             this.btnClose.TabIndex = 18;
@@ -145,7 +145,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(684, 432);
+            this.ClientSize = new System.Drawing.Size(696, 436);
             this.Controls.Add(this.lblAvailableSetups);
             this.Controls.Add(this.cboSetupName);
             this.Controls.Add(this.btnClose);
