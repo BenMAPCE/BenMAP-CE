@@ -20,10 +20,6 @@ namespace BenMAP.Crosswalks
         public frmCrosswalk()
         {
             InitializeComponent();
-
-            Disposed += delegate {
-                _dal.Dispose();
-            };
         }
 
         public void RunCompact(int GridID1, int GridID2) 
@@ -272,15 +268,15 @@ namespace BenMAP.Crosswalks
         private void btnClose_Click(object sender, EventArgs e)
         {
             //Close the form.
-            _cts.Cancel();
-            this.Close();
+            Close();
         }
 
         private void frmCrosswalk_FormClosing(object sender, FormClosingEventArgs e)
         {
             //Close the form.
             _cts.Cancel();
-        }
 
+            _dal.Dispose();
+        }
     }
 }

@@ -221,6 +221,9 @@ namespace BenMAP.Crosswalks
             {
                 _connection.Close();
                 _connection.Dispose();
+
+                // Wait a bit and give some time to firebird to release it's resources.
+                Thread.Sleep(1000);
             }
         }
 
