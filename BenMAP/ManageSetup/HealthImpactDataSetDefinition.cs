@@ -649,9 +649,9 @@ namespace BenMAP
                         // Get SeasonalMetricID using SeasonalMetricName and ID from first pollutant 
                         string SeasonalMetricID = "";
                         List<CRFVariable> varList = new List<CRFVariable>();
-                        if (variableLists.TryGetValue(Convert.ToInt16(_dt.Rows[row][25]), out varList) && _dt.Rows[row][3].ToString() != string.Empty)
+                        if (_dt.Rows[row][3].ToString() != string.Empty)
                         {
-                            commandText = string.Format("select sm.seasonalmetricid from seasonalmetrics sm left join metrics m on m.metricid = sm.metricid left join pollutants p on p.pollutantid = m.pollutantid where sm.seasonalmetricname = '{0}' and p.pollutantid = {1}", _dt.Rows[row][3].ToString(), varList.First().Pollutant1ID);
+                            commandText = string.Format("select sm.seasonalmetricid from seasonalmetrics sm left join metrics m on m.metricid = sm.metricid left join pollutants p on p.pollutantid = m.pollutantid where sm.seasonalmetricname = '{0}' and p.pollutantid = {1}", _dt.Rows[row][3].ToString(), PollutantID);
                             fb = new ESIL.DBUtility.ESILFireBirdHelper();
                             object res = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
                             if (res != null)
@@ -990,9 +990,9 @@ namespace BenMAP
                         // Get SeasonalMetricID using SeasonalMetricName and ID from first pollutant 
                         string SeasonalMetricID = "";
                         List<CRFVariable> varList = new List<CRFVariable>();
-                        if (variableLists.TryGetValue(Convert.ToInt16(_dt.Rows[row][25]), out varList) && _dt.Rows[row][3].ToString() != string.Empty)
+                        if (_dt.Rows[row][3].ToString() != string.Empty)
                         {
-                            commandText = string.Format("select sm.seasonalmetricid from seasonalmetrics sm left join metrics m on m.metricid = sm.metricid left join pollutants p on p.pollutantid = m.pollutantid where sm.seasonalmetricname = '{0}' and p.pollutantid = {1}", _dt.Rows[row][3].ToString(), varList.First().Pollutant1ID);
+                            commandText = string.Format("select sm.seasonalmetricid from seasonalmetrics sm left join metrics m on m.metricid = sm.metricid left join pollutants p on p.pollutantid = m.pollutantid where sm.seasonalmetricname = '{0}' and p.pollutantid = {1}", _dt.Rows[row][3].ToString(), PollutantID);
                             fb = new ESIL.DBUtility.ESILFireBirdHelper();
                             object res = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
                             if (res != null)

@@ -368,7 +368,7 @@ namespace BenMAP
             // olvcSeasonalMetric
             // 
             this.olvcSeasonalMetric.AspectName = "seasonalmetricname";
-            this.olvcSeasonalMetric.Text = "Season Metric";
+            this.olvcSeasonalMetric.Text = "Seasonal Metric";
             this.olvcSeasonalMetric.Width = 100;
             // 
             // olvcMetricStat
