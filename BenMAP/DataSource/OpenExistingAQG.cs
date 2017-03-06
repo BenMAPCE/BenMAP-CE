@@ -109,7 +109,8 @@ namespace BenMAP
                 }
                 else
                 {
-                    openFileDialog.Filter = "CSV file(*.csv)|*.csv|AQG files (*.aqgx)|*.aqgx|Excel file (*.xls)|*.xls|Excel file (*.xlsx)|*.xlsx";
+                    openFileDialog.InitialDirectory = CommonClass.ResultFilePath + @"\Result\AQG\";
+                    openFileDialog.Filter = "Supported File Types(*.csv, *.aqgx, *.xls, *.xlsx)|*.csv; *.aqgx; *.xls; *.xlsx|CSV file(*.csv)|*.csv|AQG files (*.aqgx)|*.aqgx|Excel file (*.xls)|*.xls|Excel file (*.xlsx)|*.xlsx";
                 }
                 openFileDialog.FilterIndex = 1;
                 if (openFileDialog.ShowDialog() != DialogResult.OK) { return; }
@@ -160,7 +161,8 @@ namespace BenMAP
                 }
                 else
                 {
-                    openFileDialog.Filter = "CSV file(*.csv)|*.csv|AQG files (*.aqgx)|*.aqgx|Excel file (*.xls)|*.xls|Excel file (*.xlsx)|*.xlsx";
+                    openFileDialog.InitialDirectory = CommonClass.ResultFilePath + @"\Result\AQG\";
+                    openFileDialog.Filter = "Supported File Types(*.csv, *.aqgx, *.xls, *.xlsx)|*.csv; *.aqgx; *.xls; *.xlsx|CSV file(*.csv)|*.csv|AQG files (*.aqgx)|*.aqgx|Excel file (*.xls)|*.xls|Excel file (*.xlsx)|*.xlsx";
                 }
                 openFileDialog.FilterIndex = 1;
                 if (openFileDialog.ShowDialog() != DialogResult.OK) { return; }

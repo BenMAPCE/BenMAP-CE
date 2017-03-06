@@ -547,6 +547,12 @@
     <Compile Include="ManageSetup\DefineSeasons.Designer.cs">
       <DependentUpon>DefineSeasons.cs</DependentUpon>
     </Compile>
+    <Compile Include="ManageSetup\DeleteWarningForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ManageSetup\DeleteWarningForm.Designer.cs">
+      <DependentUpon>DeleteWarningForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="ManageSetup\EditDistributionValues.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1193,6 +1199,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ManageSetup\DefineSeasons.resx">
       <DependentUpon>DefineSeasons.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ManageSetup\DeleteWarningForm.resx">
+      <DependentUpon>DeleteWarningForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ManageSetup\EditDistributionValues.resx">
       <DependentUpon>EditDistributionValues.cs</DependentUpon>

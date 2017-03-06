@@ -78,9 +78,9 @@ namespace BenMAP
             try
             {
                 OpenFileDialog openFileDialog = new OpenFileDialog();
-                openFileDialog.InitialDirectory = System.Windows.Forms.Application.StartupPath + @"\Data\SampleData\";
-                openFileDialog.Filter = "All File|*.*|CSV file|*.csv|xls file|*.xls|xlsx file|*.xlsx";
-                openFileDialog.FilterIndex = 2;
+                openFileDialog.InitialDirectory = CommonClass.ResultFilePath;
+                openFileDialog.Filter = "Supported File Types (*.csv, *.xls, *.xlsx)|*.csv; *.xls; *.xlsx|CSV files|*.csv|XLS files|*.xls|XLSX files|*.xlsx";
+                openFileDialog.FilterIndex = 1;
                 openFileDialog.RestoreDirectory = true;
                 if (openFileDialog.ShowDialog() != DialogResult.OK) { return; }
                 txtModelDatabase.Text = openFileDialog.FileName;
@@ -96,9 +96,9 @@ namespace BenMAP
             try
             {
                 OpenFileDialog openFileDialog = new OpenFileDialog();
-                openFileDialog.InitialDirectory = System.Windows.Forms.Application.StartupPath + @"\Data\SampleData\";
-                openFileDialog.Filter = "All File|*.*|CSV file|*.csv|xls file|*.xls|xlsx file|*.xlsx";
-                openFileDialog.FilterIndex = 2;
+                openFileDialog.InitialDirectory = CommonClass.ResultFilePath;
+                openFileDialog.Filter = "Supported File Types (*.csv, *.xls, *.xlsx)|*.csv; *.xls; *.xlsx|CSV files|*.csv|XLS files|*.xls|XLSX files|*.xlsx";
+                openFileDialog.FilterIndex = 1;
                 openFileDialog.RestoreDirectory = true;
                 if (openFileDialog.ShowDialog() != DialogResult.OK) { return; }
                 txtModelFile.Text = openFileDialog.FileName;

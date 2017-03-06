@@ -10111,8 +10111,8 @@ namespace BenMAP
             try
             {
                 OpenFileDialog openfile = new OpenFileDialog();
-                openfile.InitialDirectory = CommonClass.ResultFilePath;
-                openfile.Filter = "AQG file(*.aqgx)|*.aqgx|CFG file(*.cfgx)|*.cfgx|CFGR file(*.cfgrx)|*.cfgrx|APV file(*.apvx)|*.apvx|APVR file(*.apvrx)|*.apvrx";
+                openfile.InitialDirectory = CommonClass.ResultFilePath + @"\Result"; 
+                openfile.Filter = "Supported File Types (*.aqgx, *.cfgx, *.cfgrx, *.apvx, *.apvrx)|*.aqgx; *.cfgx; *.cfgrx; *.apvx; *.apvrx|AQG file(*.aqgx)|*.aqgx|CFG file(*.cfgx)|*.cfgx|CFGR file(*.cfgrx)|*.cfgrx|APV file(*.apvx)|*.apvx|APVR file(*.apvrx)|*.apvrx";
                 openfile.FilterIndex = 1;
                 openfile.RestoreDirectory = true;
                 if (openfile.ShowDialog() != DialogResult.OK)
