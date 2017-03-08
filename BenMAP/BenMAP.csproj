@@ -95,6 +95,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <PlatformTarget>x64</PlatformTarget>
     <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG</DefineConstants>
+    <Optimize>false</Optimize>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <PlatformTarget>x64</PlatformTarget>
@@ -374,6 +376,13 @@
     <Compile Include="DataConversion\DataConversionTool.designer.cs">
       <DependentUpon>DataConversionTool.cs</DependentUpon>
     </Compile>
+    <Compile Include="DataLayerExport\DataLayerExportDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DataLayerExport\DataLayerExportDialog.Designer.cs">
+      <DependentUpon>DataLayerExportDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DataLayerExport\DataLayerExporter.cs" />
     <Compile Include="DataSource\AdvancedOptions.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -545,6 +554,12 @@
     </Compile>
     <Compile Include="ManageSetup\DefineSeasons.Designer.cs">
       <DependentUpon>DefineSeasons.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ManageSetup\DeleteWarningForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ManageSetup\DeleteWarningForm.Designer.cs">
+      <DependentUpon>DeleteWarningForm.cs</DependentUpon>
     </Compile>
     <Compile Include="ManageSetup\EditDistributionValues.cs">
       <SubType>Form</SubType>
@@ -1118,6 +1133,9 @@
     <EmbeddedResource Include="DataConversion\DataConversionTool.resx">
       <DependentUpon>DataConversionTool.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="DataLayerExport\DataLayerExportDialog.resx">
+      <DependentUpon>DataLayerExportDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="DataSource\AdvancedOptions.resx">
       <DependentUpon>AdvancedOptions.cs</DependentUpon>
     </EmbeddedResource>
@@ -1192,6 +1210,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ManageSetup\DefineSeasons.resx">
       <DependentUpon>DefineSeasons.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ManageSetup\DeleteWarningForm.resx">
+      <DependentUpon>DeleteWarningForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ManageSetup\EditDistributionValues.resx">
       <DependentUpon>EditDistributionValues.cs</DependentUpon>

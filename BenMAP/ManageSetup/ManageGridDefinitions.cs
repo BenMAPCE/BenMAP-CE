@@ -165,40 +165,85 @@ namespace BenMAP
             string commandText = string.Empty;
             if (lstAvailableGrid.SelectedItem != null)
             {
-                commandText = "select IncidenceDataSetID from IncidenceDataSets where GridDefinitionID=" + _gridDefinitionID + " ";
+                commandText = "select IncidenceDataSetName from IncidenceDataSets where GridDefinitionID=" + _gridDefinitionID + " ORDER BY IncidenceDataSetName";
                 object obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
+                String associatedIncidenceDatasetName = "";
                 if (obj != null)
                 {
-                    MessageBox.Show("This grid definition is used in 'Incidence Datasets'. Please delete incidence datasets that use this grid definition first.");
-                    return;
+                    System.Data.DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
+                    for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                    {
+                        DataRow dr = ds.Tables[0].Rows[i];
+
+                        associatedIncidenceDatasetName = associatedIncidenceDatasetName + Convert.ToString(dr[0]) + "\n                  ";
+
+                    }
                 }
-                commandText = "select PopulationDataSetID from PopulationDataSets where GridDefinitionID=" + _gridDefinitionID + " ";
+                commandText = "select PopulationDataSetName from PopulationDataSets where GridDefinitionID=" + _gridDefinitionID + " ORDER BY PopulationDataSetName";
                 obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
+                String associatedPopDatasetName = "";
                 if (obj != null)
                 {
-                    MessageBox.Show("This grid definition is used in 'Population Datasets'. Please delete population datasets that use this grid definition first.");
-                    return;
+                    System.Data.DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
+                    for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                    {
+                        DataRow dr = ds.Tables[0].Rows[i];
+
+                        associatedPopDatasetName = associatedPopDatasetName + Convert.ToString(dr[0]) + "\n                  ";
+
+                    }
                 }
                 commandText = "select SetupVariableID from SetupVariables where GridDefinitionID=" + _gridDefinitionID + " ";
                 obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
+                String associatedVariableDatasetName = "";
                 if (obj != null)
                 {
-                    MessageBox.Show("This grid definition is used in 'Variable Datasets'. Please delete variable datasets that use this grid definition first.");
-                    return;
+                    commandText = "SELECT DISTINCT b.SETUPVARIABLEDATASETNAME FROM SETUPVARIABLES a INNER JOIN SETUPVARIABLEDATASETS b ON a.SETUPVARIABLEDATASETID = b.SETUPVARIABLEDATASETID where a.GridDefinitionID =" + _gridDefinitionID + " ORDER BY b.SETUPVARIABLEDATASETNAME";
+                    System.Data.DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
+                    for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                    {
+                        DataRow dr = ds.Tables[0].Rows[i];
+
+                        associatedVariableDatasetName = associatedVariableDatasetName + Convert.ToString(dr[0]) + "\n                  ";
+                    }
                 }
-                string msg = string.Format("Delete '{0}' grid definition?", lstAvailableGrid.GetItemText(lstAvailableGrid.SelectedItem));
-                DialogResult result = MessageBox.Show(msg, "Confirm Deletion", MessageBoxButtons.YesNo);
-                if (result == DialogResult.Yes)
+
+                String deleteWarningText = "";
+                if (associatedIncidenceDatasetName != "")
+                {
+                    deleteWarningText = "Incidence Datasets:"+ "\n                  " + associatedIncidenceDatasetName +"\n";
+                }
+                if (associatedPopDatasetName != "")
+                {
+                    deleteWarningText = deleteWarningText  + "Population Datasets:" + "\n                  " + associatedPopDatasetName + "\n";
+                }
+                if (associatedVariableDatasetName != "")
+                {
+                    deleteWarningText = deleteWarningText  + "Variable Datasets:" + "\n                  " + associatedVariableDatasetName;
+                } 
+
+                DialogResult rtn;
+                if (deleteWarningText == "")
+                {
+                    string msg = string.Format("Delete '{0} grid definitions?", lstAvailableGrid.GetItemText(lstAvailableGrid.SelectedItem));
+                    rtn = MessageBox.Show(msg, "Confirm Deletion", MessageBoxButtons.YesNo);
+                }
+                else
+                {
+                    DeleteWarningForm deleteWarningForm = new DeleteWarningForm(2);
+                    deleteWarningForm.WarningText = deleteWarningText;
+                    deleteWarningForm.Message = "If you remove Grid Definition \"" + lstAvailableGrid.GetItemText(lstAvailableGrid.SelectedItem) + "\", the following associated datasets will also be permanently removed as well:";
+                    rtn = deleteWarningForm.ShowDialog();
+                }
+                if (rtn == DialogResult.Cancel || rtn == DialogResult.No)
+                { return; }
+
+                if (rtn == DialogResult.Yes)
                 {
                     try
                     {
-                        int gdID = 0; //Grid Definition ID
+                        Cursor.Current = Cursors.WaitCursor;
                         int dstID = 0;
-                        commandText = string.Format("SELECT GRIDDEFINITIONID FROM GRIDDEFINITIONS WHERE GRIDDEFINITIONNAME = '{0}' and SETUPID = {1}", lstAvailableGrid.SelectedItem.ToString(), CommonClass.ManageSetup.SetupID);
-                        gdID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
-                        commandText = "SELECT DATASETTYPEID FROM DATASETTYPES WHERE DATASETTYPENAME = 'GridDefinition'";
-                        dstID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
-
                         commandText = "select ttype from GridDefinitions where GridDefinitionID=" + _gridDefinitionID + "";
                         int ttype = Convert.ToInt16(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
                         commandText = "select ShapeFileName from " + (ttype == 1 ? "ShapefileGriddefinitiondetails" : "Regulargriddefinitiondetails") + " where GridDefinitionID=" + _gridDefinitionID + "";
@@ -208,19 +253,79 @@ namespace BenMAP
                         fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                         commandText = "delete from ShapefileGriddefinitiondetails where griddefinitionid=" + _gridDefinitionID + "";
                         fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
-                        commandText = "delete from Regulargriddefinitiondetails where griddefinitionid=" + _gridDefinitionID + "";
+                        //commandText = "delete from Regulargriddefinitiondetails where griddefinitionid=" + _gridDefinitionID + "";
+                        //fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+
+                        if (associatedIncidenceDatasetName != "")
+                        {
+                            commandText = "delete from INCIDENCEDATASETS where griddefinitionid=" + _gridDefinitionID + "";
+                            fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                            //commandText = "delete from INCIDENCERATES where griddefinitionid=" + _gridDefinitionID + "";
+                            //fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                            //commandText = "delete from INCIDENCEENTRIES WHERE INCIDENCEENTRIES.INCIDENCERATEID not in (SELECT INCIDENCERATEID FROM INCIDENCERATES)";
+                            //fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                        }
+
+                        if (associatedPopDatasetName != "")
+                        {
+                            //commandText = "delete from POPULATIONDATASETS where griddefinitionid=" + _gridDefinitionID + "";
+                            //fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                            //commandText = "delete from POPULATIONENTRIES WHERE POPULATIONENTRIES.POPULATIONDATASEID NOT IN (SELECT distinct POPULATIONDATASETID FROM POPULATIONDATASETS)";
+                            //fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                            //commandText = "delete from POPULATIONGROWTHWEIGHTS WHERE POPULATIONGROWTHWEIGHTS.POPULATIONDATASETID NOT IN (SELECT distinct POPULATIONDATASETID FROM POPULATIONDATASETS)";
+                            //fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                            commandText = "delete from T_POPULATIONDATASETIDYEAR WHERE T_POPULATIONDATASETIDYEAR.POPULATIONDATASETID NOT IN (SELECT distinct POPULATIONDATASETID FROM POPULATIONDATASETS)";
+                            fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                        }
+
+                        if (associatedVariableDatasetName != "")
+                        {
+                            commandText = "delete from SETUPVARIABLEDATASETS WHERE SETUPVARIABLEDATASETS.SETUPVARIABLEDATASETID NOT IN (SELECT distinct SETUPVARIABLEDATASETID FROM SETUPVARIABLES)";
+                            fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                            commandText = "delete from SETUPVARIABLES where griddefinitionid=" + _gridDefinitionID + "";
+                            fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                            commandText = "delete from SETUPGEOGRAPHICVARIABLES WHERE SETUPGEOGRAPHICVARIABLES.SETUPVARIABLEID NOT IN (SELECT distinct SETUPVARIABLEID FROM SETUPVARIABLES)";
+                            fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                            commandText = "delete from SETUPGLOBALVARIABLES WHERE SETUPGLOBALVARIABLES.SETUPVARIABLEID NOT IN (SELECT distinct SETUPVARIABLEID FROM SETUPVARIABLES)";
+                            fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                        }
+
+                        string datasetIDCriteria = "";
+
+                        commandText = "SELECT DATASETTYPEID FROM DATASETTYPES WHERE DATASETTYPENAME = 'GridDefinition'";
+                        dstID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
+                        datasetIDCriteria = "NOT IN (SELECT GRIDDEFINITIONID FROM GRIDDEFINITIONS)";
+                        commandText = string.Format("DELETE FROM METADATAINFORMATION WHERE SETUPID = {0} AND DATASETID {1} AND DATASETTYPEID = {2}", CommonClass.ManageSetup.SetupID, datasetIDCriteria, dstID);
                         fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
 
-                        commandText = string.Format("DELETE FROM METADATAINFORMATION WHERE SETUPID = {0} AND DATASETID = {1} AND DATASETTYPEID = {2}", CommonClass.ManageSetup.SetupID, gdID, dstID);
+                        commandText = "SELECT DATASETTYPEID FROM DATASETTYPES WHERE DATASETTYPENAME = 'Incidence'";
+                        dstID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
+                        datasetIDCriteria = "NOT IN (SELECT INCIDENCEDATASETID FROM INCIDENCEDATASETS)";
+                        commandText = string.Format("DELETE FROM METADATAINFORMATION WHERE SETUPID = {0} AND DATASETID {1} AND DATASETTYPEID = {2}", CommonClass.ManageSetup.SetupID, datasetIDCriteria, dstID);
                         fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
-                        
+
+                        commandText = "SELECT DATASETTYPEID FROM DATASETTYPES WHERE DATASETTYPENAME = 'Population'";
+                        dstID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
+                        datasetIDCriteria = "NOT IN (SELECT POPULATIONDATASETID FROM POPULATIONDATASETS)";
+                        commandText = string.Format("DELETE FROM METADATAINFORMATION WHERE SETUPID = {0} AND DATASETID {1} AND DATASETTYPEID = {2}", CommonClass.ManageSetup.SetupID, datasetIDCriteria, dstID);
+                        fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+
+                        commandText = "SELECT DATASETTYPEID FROM DATASETTYPES WHERE DATASETTYPENAME = 'VariableDataset'";
+                        dstID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
+                        datasetIDCriteria = "NOT IN (SELECT SETUPVARIABLEDATASETID FROM SETUPVARIABLEDATASETS)";
+                        commandText = string.Format("DELETE FROM METADATAINFORMATION WHERE SETUPID = {0} AND DATASETID {1} AND DATASETTYPEID = {2}", CommonClass.ManageSetup.SetupID, datasetIDCriteria, dstID);
+                        fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+
+
                         lstAvailableGrid.Items.Clear();
                         cboDefaultGridType.Items.Clear();
                         loadGrid();
+                        Cursor.Current = Cursors.Default;
                     }
                     catch (Exception ex)
                     {
                         Console.WriteLine(ex.Message);
+                        Cursor.Current = Cursors.Default;
                     }
                 }
             }

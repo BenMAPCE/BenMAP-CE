@@ -1001,7 +1001,10 @@ namespace BenMAP
 
                 List<GridRelationship> lstGridRelationshipAll = CommonClass.LstGridRelationshipAll;
                 string str = DateTime.Now.ToString();
-                Dictionary<string, int> dicRace = Configuration.ConfigurationCommonClass.getAllRace(); Dictionary<string, int> dicEthnicity = Configuration.ConfigurationCommonClass.getAllEthnicity(); Dictionary<string, int> dicGender = Configuration.ConfigurationCommonClass.getAllGender(); foreach (CRSelectFunction crSelectFunction in CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction)
+                Dictionary<string, int> dicRace = Configuration.ConfigurationCommonClass.getAllRace();
+                Dictionary<string, int> dicEthnicity = Configuration.ConfigurationCommonClass.getAllEthnicity();
+                Dictionary<string, int> dicGender = Configuration.ConfigurationCommonClass.getAllGender();
+                foreach (CRSelectFunction crSelectFunction in CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction)
                 {
                     lstAsyns.Add(crSelectFunction.BenMAPHealthImpactFunction.ID.ToString());
                 }
@@ -1139,7 +1142,10 @@ namespace BenMAP
                     //check cache
                     Dictionary<string, float> dicPopulationAgeIn;
 
-                    if (CommonClass.DicPopulationAgeInCache.Keys.Contains(cacheKey))
+                    // IEc - Per EPA direction, disabling the population data caching as described in BENMAP-227 jira ticket
+                    // It apprears that the cache key doesn't not uniquely identify the population dataset.  At a minimum, year must be accounted for.
+                     
+                    if (false) //CommonClass.DicPopulationAgeInCache.Keys.Contains(cacheKey))
                     {
                         //if in cache, retrieve a copy
                         dicPopulationAgeIn = new Dictionary<string, float>(CommonClass.DicPopulationAgeInCache[cacheKey]);
@@ -1166,7 +1172,8 @@ namespace BenMAP
                                 dicGender, CommonClass.GBenMAPGrid.GridDefinitionID, gridPopulation);
 
                         //add copy of dicPopulationAgeIn to cache
-                        CommonClass.DicPopulationAgeInCache.Add(cacheKey, new Dictionary<string, float>(dicPopulationAgeIn));
+                        //IEc - Disabling cache per BENMAP-227
+                       // CommonClass.DicPopulationAgeInCache.Add(cacheKey, new Dictionary<string, float>(dicPopulationAgeIn));
 
                     }
 
@@ -1335,6 +1342,10 @@ namespace BenMAP
                             }
 
                             dicIncidenceRateAttribute = Configuration.ConfigurationCommonClass.getIncidenceDataSetFromCRSelectFuntionDicAllAge(dicAge, dicPopulationAge, dicPopulation12, crSelectFunction, false, dicRace, dicEthnicity, dicGender, CommonClass.GBenMAPGrid.GridDefinitionID, gridRelationShipIncidence);
+                           bool debug = true;
+                            if(debug && dicIncidenceRateAttribute.ContainsKey("3120097,8")){
+                                Console.WriteLine("grid : 3120097 " + " " + dicIncidenceRateAttribute["3120097,8"]);                                
+                            }
                             dicAllIncidence.Add(crSelectFunction.IncidenceDataSetID + "," + crSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID + "," + crSelectFunction.BenMAPHealthImpactFunction.EndPointID + "," + crSelectFunction.StartAge + "," + crSelectFunction.EndAge, dicIncidenceRateAttribute);
                         }
                     }
@@ -1375,7 +1386,8 @@ namespace BenMAP
                         lstSetupVariable = new List<SetupVariableJoinAllValues>();
                         Configuration.ConfigurationCommonClass.getSetupVariableNameListFromDatabaseFunction(crSelectFunction.VariableDataSetID, CommonClass.GBenMAPGrid.GridDefinitionID, crSelectFunction.BenMAPHealthImpactFunction.Function, Configuration.ConfigurationCommonClass.LstSystemVariableName, ref lstSetupVariable);
                         Configuration.ConfigurationCommonClass.getSetupVariableNameListFromDatabaseFunction(crSelectFunction.VariableDataSetID, CommonClass.GBenMAPGrid.GridDefinitionID, crSelectFunction.BenMAPHealthImpactFunction.BaseLineIncidenceFunction, Configuration.ConfigurationCommonClass.LstSystemVariableName, ref lstSetupVariable);
-
+                        // dump variable list to debug file after adding baseline function
+                        Configuration.ConfigurationCommonClass.dumpSetupVariableJoinAllValueToDebugFile(ref lstSetupVariable);
                         if (lstSetupVariable != null)
                         {
                             foreach (SetupVariableJoinAllValues sv in lstSetupVariable)
@@ -1400,6 +1412,7 @@ namespace BenMAP
                     BaseControlGroup baseControlGroup = query.First();
                     AsyncDelegateCalculateOneCRSelectFunction dlgt = new AsyncDelegateCalculateOneCRSelectFunction(Configuration.ConfigurationCommonClass.CalculateOneCRSelectFunction);
                     double[] lhsResultArray = null;
+                    // if not running in point mode
                     if (!CommonClass.CRRunInPointMode)
                     {
                         int iRandomSeed = Convert.ToInt32(DateTime.Now.Hour + "" + DateTime.Now.Minute + DateTime.Now.Second + DateTime.Now.Millisecond);
@@ -1412,6 +1425,7 @@ namespace BenMAP
                         crSelectFunction.lstLatinPoints.Add(new LatinPoints() { values = lhsResultArray.ToList() });
                     }
                     string iRunCRID = crid.ToString();
+                    // if not batch perform asynch call 
                     if (!isBatch)
                     {
                         IAsyncResult ar = dlgt.BeginInvoke(iRunCRID, lstAllAgeID, dicAge, dicAllMetricDataBase[baseControlGroup.Pollutant.PollutantID], dicAllMetricDataControl[baseControlGroup.Pollutant.PollutantID]
@@ -1434,7 +1448,7 @@ namespace BenMAP
                 {
                     afterOutput();
                 }
-
+                
             }
             catch (Exception ex)
             {
@@ -1597,7 +1611,8 @@ namespace BenMAP
         public delegate void AsyncDelegateCalculateLstCRSelectFunction(List<CRSelectFunction> lstCRSelectFunction, Dictionary<string, int> dicRace, Dictionary<string, int> dicEthnicity, Dictionary<string, int> dicGender, List<GridRelationship> lstGridRelationshipAll);
         public delegate void AsyncDelegateCalculateOneCRSelectFunction(string crid, List<string> lstAllAgeID, Dictionary<string, double> dicAge, Dictionary<string, Dictionary<string, float>> dicBaseMetricData, Dictionary<string, Dictionary<string, float>> dicControlMetricData,
            Dictionary<string, Dictionary<string, List<float>>> dicBase365, Dictionary<string, Dictionary<string, List<float>>> dicControl365,
-           Dictionary<string, ModelResultAttribute> dicControl, Dictionary<string, Dictionary<string, double>> DicAllSetupVariableValues, Dictionary<string, float> dicPopulationAllAge, Dictionary<string, double> dicIncidenceRateAttribute, Dictionary<string, double> dicPrevalenceRateAttribute, int incidenceDataSetGridType, int PrevalenceDataSetGridType, Dictionary<string, int> dicRace, Dictionary<string, int> dicEthnicity, Dictionary<string, int> dicGender, double Threshold, int LatinHypercubePoints, bool RunInPointMode, List<GridRelationship> lstGridRelationship, CRSelectFunction crSelectFunction, BaseControlGroup baseControlGroup, List<RegionTypeGrid> lstRegionTypeGrid, BenMAPPopulation benMAPPopulation, double[] lhsResultArray);
+           Dictionary<string, ModelResultAttribute> dicControl, Dictionary<string, Dictionary<string, double>> DicAllSetupVariableValues, Dictionary<string, float> dicPopulationAllAge, Dictionary<string, double> dicIncidenceRateAttribute,
+           Dictionary<string, double> dicPrevalenceRateAttribute, int incidenceDataSetGridType, int PrevalenceDataSetGridType, Dictionary<string, int> dicRace, Dictionary<string, int> dicEthnicity, Dictionary<string, int> dicGender, double Threshold, int LatinHypercubePoints, bool RunInPointMode, List<GridRelationship> lstGridRelationship, CRSelectFunction crSelectFunction, BaseControlGroup baseControlGroup, List<RegionTypeGrid> lstRegionTypeGrid, BenMAPPopulation benMAPPopulation, double[] lhsResultArray);
 
         private void textBoxFilterSimple_TextChanged(object sender, EventArgs e)
         {

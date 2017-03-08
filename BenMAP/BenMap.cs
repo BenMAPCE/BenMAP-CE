@@ -29,6 +29,7 @@ using System.Collections;
 using OxyPlot.Axes;
 using System.ComponentModel.Composition;
 using BenMAP.SelectByLocation;
+using BenMAP.DataLayerExport;
 
 namespace BenMAP
 {
@@ -83,6 +84,9 @@ namespace BenMAP
         List<AllSelectCRFunction> lstCFGRpoolingforCDF = new List<AllSelectCRFunction>();
         List<AllSelectValuationMethodAndValue> lstAPVRforCDF = new List<AllSelectValuationMethodAndValue>();
 
+        private readonly DataLayerExporter _dataLayerExporter;
+        private IEnumerable _lastResult;
+
         //private DotSpatial.Plugins.AttributeDataExplorer.AttributeDataExplorerPlugin dspADE;  //-MCB
         public BenMAP(string homePageName)
         {
@@ -101,7 +105,8 @@ namespace BenMAP
 
                 mainMap.LayerAdded += new EventHandler<LayerEventArgs>(mainMap_LayerAdded);
                 mainMap.Layers.LayerVisibleChanged += new EventHandler(mainMap_LayerVisibleChanged);
-                
+
+                _dataLayerExporter = new DataLayerExporter(mainMap, this, OLVResultsShow, () => _lastResult);
                 appManager1.LoadExtensions();
             }
             catch (Exception ex)
@@ -6434,31 +6439,8 @@ namespace BenMAP
         }
 
         private void tsbSaveMap_Click(object sender, EventArgs e)
-        {// MCB- Shouldn't this be changed 
-            try
-            {
-                if (mainMap.GetAllLayers().Count == 0)
-                    return;
-
-                SaveFileDialog saveFileDialog1 = new SaveFileDialog();
-                saveFileDialog1.Filter = "SHP(*.shp)|*.shp";
-                saveFileDialog1.InitialDirectory = "C:\\";
-                if (saveFileDialog1.ShowDialog() == DialogResult.Cancel)
-                {
-                    return;
-                }
-                tsbChangeProjection_Click(sender, e);
-                tsbChangeProjection_Click(sender, e);
-
-                string fileName = saveFileDialog1.FileName;
-
-                FeatureLayer fl = mainMap.GetAllLayers()[0] as FeatureLayer;
-                fl.DataSet.SaveAs(fileName, true);
-                MessageBox.Show("Shapefile saved.", "File saved");
-            }
-            catch
-            {
-            }
+        {
+            _dataLayerExporter.ShowExportWindow();
         }
 
         private void tsbChangeCone_Click(object sender, EventArgs e)
@@ -7150,8 +7132,8 @@ namespace BenMAP
         private void ClearMapTableChart()
         {
             if (!_MapAlreadyDisplayed) mainMap.Layers.Clear();
-
-            OLVResultsShow.SetObjects(null);
+            
+            SetOLVResultsShowObjects(null);
             _tableObject = null;
             oxyPlotView.Visible = false;
             btnApply.Visible = false;
@@ -7834,7 +7816,7 @@ namespace BenMAP
 
         private int _pageCurrent;
         private int _currentRow;
-        private int _pageSize;
+        private const int _pageSize = 50;
         private int _pageCount;
         public bool _MapAlreadyDisplayed = false;
         public object _tableObject;
@@ -8674,10 +8656,10 @@ namespace BenMAP
                         iLstCRTable++;
                     }
                     _tableObject = lstAllSelectCRFuntion;
-                    OLVResultsShow.SetObjects(dicAPV.ToList().GetRange(0, dicAPV.Count > 50 ? 50 : dicAPV.Count));
-                    _pageSize = 50;
                     _currentRow = 0;
                     _pageCount = dicAPV.Count / 50 + 1; _pageCurrent = 1;
+                    SetOLVResultsShowObjects(dicAPV);
+
                     bindingNavigatorPositionItem.Text = _pageCurrent.ToString();
                     bindingNavigatorCountItem.Text = _pageCount.ToString();
                 }
@@ -8986,10 +8968,9 @@ namespace BenMAP
                         iLstCRTable++;
                     }
                     _tableObject = lstCRTable;
-                    OLVResultsShow.SetObjects(dicAPV.ToList().GetRange(0, dicAPV.Count > 50 ? 50 : dicAPV.Count));
-                    _pageSize = 50;
                     _currentRow = 0;
                     _pageCount = dicAPV.Count / 50 + 1; _pageCurrent = 1;
+                    SetOLVResultsShowObjects(dicAPV);
                     bindingNavigatorPositionItem.Text = _pageCurrent.ToString();
                     bindingNavigatorCountItem.Text = _pageCount.ToString();
                 }
@@ -9104,11 +9085,11 @@ namespace BenMAP
                         }
                         ilstallSelectValuationMethodAndValue++;
                     }
-                    OLVResultsShow.SetObjects(dicAPV.ToList().GetRange(0, dicAPV.Count > 50 ? 50 : dicAPV.Count));
-                    _pageSize = 50;
+                    
                     _currentRow = 0;
                     _pageCount = dicAPV.Count / 50 + 1;
                     _pageCurrent = 1;
+                    SetOLVResultsShowObjects(dicAPV);
                     bindingNavigatorPositionItem.Text = _pageCurrent.ToString();
                     bindingNavigatorCountItem.Text = _pageCount.ToString();
                 }
@@ -9202,11 +9183,11 @@ namespace BenMAP
                             dicAPV.Add(apvx, allSelectQALYMethodAndValue.AllSelectQALYMethod);
                         }
                     }
-                    OLVResultsShow.SetObjects(dicAPV.ToList().GetRange(0, dicAPV.Count > 50 ? 50 : dicAPV.Count));
-                    _pageSize = 50;
+                    
                     _currentRow = 0;
                     _pageCount = dicAPV.Count / 50 + 1;
                     _pageCurrent = 1;
+                    SetOLVResultsShowObjects(dicAPV);
                     bindingNavigatorPositionItem.Text = _pageCurrent.ToString();
                     bindingNavigatorCountItem.Text = _pageCount.ToString();
                 }
@@ -9251,11 +9232,10 @@ namespace BenMAP
                     }
 
                     _tableObject = crTable;
-                    OLVResultsShow.SetObjects(crTable.ModelResultAttributes.GetRange(0, crTable.ModelResultAttributes.Count > 50 ? 50 : crTable.ModelResultAttributes.Count));
-                    _pageSize = 50;
                     _currentRow = 0;
                     _pageCount = crTable.ModelResultAttributes.Count / 50 + 1;
                     _pageCurrent = 1;
+                    SetOLVResultsShowObjects(crTable.ModelResultAttributes);
                     bindingNavigatorPositionItem.Text = _pageCurrent.ToString();
                     bindingNavigatorCountItem.Text = _pageCount.ToString();
                 }
@@ -9556,6 +9536,32 @@ namespace BenMAP
             }
         }
 
+        private static IQueryable GetPage(IQueryable query, int page, int pageSize, out int count)
+        {
+            var skip = (page - 1)*pageSize;
+            dynamic dynamicQuery = query;
+            count = Queryable.Count(dynamicQuery);
+            return Queryable.Take(Queryable.Skip(dynamicQuery, skip), pageSize);
+        }
+
+        private void SetOLVResultsShowObjects(IEnumerable results)
+        {
+            _lastResult = results;
+
+            IQueryable curPage;
+            if (results == null)
+            {
+                curPage = null;
+            }
+            else
+            {
+                int cnt;
+                curPage = GetPage(results.AsQueryable(), _pageCurrent, _pageSize, out cnt);
+            }
+            
+            OLVResultsShow.SetObjects(curPage);
+        }
+
 
         private void UpdateTableResult(object oTable)
         {
@@ -9580,11 +9586,7 @@ namespace BenMAP
                     iLstCRTable++;
                 }
                 _tableObject = lstAllSelectCRFuntion;
-                if (_pageCurrent == _pageCount)
-
-                    OLVResultsShow.SetObjects(dicAPV.ToList().GetRange(_pageCurrent * 50 - 50, dicAPV.Count - (_pageCurrent - 1) * 50));
-                else
-                    OLVResultsShow.SetObjects(dicAPV.ToList().GetRange(_pageCurrent * 50 - 50, 50));
+                SetOLVResultsShowObjects(lstAllSelectCRFuntion);
             }
             if (oTable is List<CRSelectFunctionCalculateValue> || oTable is CRSelectFunctionCalculateValue)
             {
@@ -9728,22 +9730,12 @@ namespace BenMAP
                 }
 
 
-
-                if (_pageCurrent == _pageCount)
-
-                    OLVResultsShow.SetObjects(dicAPV.ToList().GetRange(_pageCurrent * 50 - 50, dicAPV.Count - (_pageCurrent - 1) * 50));
-                else
-                    OLVResultsShow.SetObjects(dicAPV.ToList().GetRange(_pageCurrent * 50 - 50, 50));
-
+                SetOLVResultsShowObjects(dicAPV);
             }
             else if (oTable is Dictionary<KeyValuePair<CRCalculateValue, int>, CRSelectFunction>)
             {
                 Dictionary<KeyValuePair<CRCalculateValue, int>, CRSelectFunction> dicAPV = oTable as Dictionary<KeyValuePair<CRCalculateValue, int>, CRSelectFunction>;
-                if (_pageCurrent == _pageCount)
-
-                    OLVResultsShow.SetObjects(dicAPV.ToList().GetRange(_pageCurrent * 50 - 50, dicAPV.Count - (_pageCurrent - 1) * 50));
-                else
-                    OLVResultsShow.SetObjects(dicAPV.ToList().GetRange(_pageCurrent * 50 - 50, 50));
+                SetOLVResultsShowObjects(dicAPV);
             }
 
 
@@ -9772,11 +9764,7 @@ namespace BenMAP
                     }
                     ilstallSelectValuationMethodAndValue++;
                 }
-                if (_pageCurrent == _pageCount)
-
-                    OLVResultsShow.SetObjects(dicAPV.ToList().GetRange(_pageCurrent * 50 - 50, dicAPV.ToList().Count - (_pageCurrent - 1) * 50));
-                else
-                    OLVResultsShow.SetObjects(dicAPV.ToList().GetRange(_pageCurrent * 50 - 50, 50));
+                SetOLVResultsShowObjects(dicAPV);
             }
             else if (oTable is AllSelectQALYMethodAndValue)
             {
@@ -9790,12 +9778,7 @@ namespace BenMAP
                     dicAPV.Add(apvx, allSelectQALYMethodAndValue.AllSelectQALYMethod);
                 }
 
-
-                if (_pageCurrent == _pageCount)
-
-                    OLVResultsShow.SetObjects(dicAPV.ToList().GetRange(_pageCurrent * 50 - 50, dicAPV.ToList().Count - (_pageCurrent - 1) * 50));
-                else
-                    OLVResultsShow.SetObjects(dicAPV.ToList().GetRange(_pageCurrent * 50 - 50, 50));
+                SetOLVResultsShowObjects(dicAPV);
             }
             else if (oTable is List<AllSelectQALYMethodAndValue>)
             {
@@ -9810,21 +9793,12 @@ namespace BenMAP
                     }
                 }
 
-                if (_pageCurrent == _pageCount)
-
-                    OLVResultsShow.SetObjects(dicAPV.ToList().GetRange(_pageCurrent * 50 - 50, dicAPV.ToList().Count - (_pageCurrent - 1) * 50));
-                else
-                    OLVResultsShow.SetObjects(dicAPV.ToList().GetRange(_pageCurrent * 50 - 50, 50));
+                SetOLVResultsShowObjects(dicAPV);
             }
             else if (oTable is BenMAPLine)
             {
                 BenMAPLine crTable = (BenMAPLine)oTable;
-
-                if (_pageCurrent == _pageCount)
-
-                    OLVResultsShow.SetObjects(crTable.ModelResultAttributes.GetRange(_pageCurrent * 50 - 50, crTable.ModelResultAttributes.Count - (_pageCurrent - 1) * 50));
-                else
-                    OLVResultsShow.SetObjects(crTable.ModelResultAttributes.GetRange(_pageCurrent * 50 - 50, 50));
+                SetOLVResultsShowObjects(crTable.ModelResultAttributes);
             }
         }
 
@@ -10132,8 +10106,8 @@ namespace BenMAP
             try
             {
                 OpenFileDialog openfile = new OpenFileDialog();
-                openfile.InitialDirectory = CommonClass.ResultFilePath;
-                openfile.Filter = "AQG file(*.aqgx)|*.aqgx|CFG file(*.cfgx)|*.cfgx|CFGR file(*.cfgrx)|*.cfgrx|APV file(*.apvx)|*.apvx|APVR file(*.apvrx)|*.apvrx";
+                openfile.InitialDirectory = CommonClass.ResultFilePath + @"\Result"; 
+                openfile.Filter = "Supported File Types (*.aqgx, *.cfgx, *.cfgrx, *.apvx, *.apvrx)|*.aqgx; *.cfgx; *.cfgrx; *.apvx; *.apvrx|AQG file(*.aqgx)|*.aqgx|CFG file(*.cfgx)|*.cfgx|CFGR file(*.cfgrx)|*.cfgrx|APV file(*.apvx)|*.apvx|APVR file(*.apvrx)|*.apvrx";
                 openfile.FilterIndex = 1;
                 openfile.RestoreDirectory = true;
                 if (openfile.ShowDialog() != DialogResult.OK)
@@ -11595,7 +11569,7 @@ namespace BenMAP
                                 InitTableResult(lstCRSelectFunctionCalculateValue);
                                 if (!bTable)
                                 {
-                                    OLVResultsShow.SetObjects(null);
+                                    SetOLVResultsShowObjects(null);
                                 }
                             }
                             //Add Pollutants Mapgroup if it doesn't exist already -MCB
