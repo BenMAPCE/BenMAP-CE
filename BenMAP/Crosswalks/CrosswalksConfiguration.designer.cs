@@ -1,6 +1,6 @@
 ﻿namespace BenMAP.Crosswalks
 {
-    partial class frmCrosswalk
+    partial class CrosswalksConfiguration
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmCrosswalk));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CrosswalksConfiguration));
             this.btnCancel = new System.Windows.Forms.Button();
             this.tbProgress = new System.Windows.Forms.TextBox();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
@@ -162,7 +162,7 @@
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(300, 50);
-            this.Name = "frmCrosswalk";
+            this.Name = "CrosswalksConfiguration";
             this.Text = "BenMAP - Crosswalk Calculator";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmCrosswalk_FormClosing);
             this.Load += new System.EventHandler(this.frmCrosswalk_Load);

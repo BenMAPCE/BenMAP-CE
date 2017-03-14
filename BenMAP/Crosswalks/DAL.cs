@@ -108,6 +108,13 @@ namespace BenMAP.Crosswalks
 
         }
 
+        public DataTable GetSetups()
+        {
+            var commandText = "select SetupID,SetupName from Setups order by SetupID";
+            var ds = _fbh.ExecuteDataset(_connection, commandText);
+            return ds.Tables[0];
+        }
+
         public DataTable GetGridDefinitions(int setupId)
         {
             var commandText = string.Format("select GridDefinitionName, GridDefinitionID from GridDefinitions where setupID={0}", setupId);

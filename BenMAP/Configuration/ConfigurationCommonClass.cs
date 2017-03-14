@@ -1481,7 +1481,7 @@ namespace BenMAP.Configuration
             Dictionary<string, List<GridRelationshipAttributePercentage>> dicAllGridPercentage = grd.getRelationshipFromBenMAPGridPercentage(big, small, popRasterLoc);
             updatePercentageToDatabase(dicAllGridPercentage.ToArray()[0]);
              */
-            frmCrosswalk f = new frmCrosswalk();
+            CrosswalksConfiguration f = new CrosswalksConfiguration();
             f.StartPosition = FormStartPosition.CenterParent;
             f.Top = f.Top - 100; //shift it up a bit in case the "drawing layers" dialog is still showing. 
             f.RunCompact(big, small);

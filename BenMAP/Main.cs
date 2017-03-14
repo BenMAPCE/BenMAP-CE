@@ -910,7 +910,7 @@ namespace BenMAP
              * Current approach is to use the new algorithm through this manual calculator which will
              * update the records in the database that are used by the other functions in code.
              */
-            using(var f = new frmCrosswalk(){Owner = this})
+            using(var f = new CrosswalksConfiguration(){Owner = this})
             {
                 f.StartPosition = FormStartPosition.CenterParent;
                 f.ShowDialog();
@@ -919,7 +919,7 @@ namespace BenMAP
 
         private void computeCrosswalkMinimizedToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            frmCrosswalk f = new frmCrosswalk();
+            CrosswalksConfiguration f = new CrosswalksConfiguration();
             f.StartPosition = FormStartPosition.CenterParent;
             f.RunCompact(19, 18);
         }

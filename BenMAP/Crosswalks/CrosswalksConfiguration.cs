@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -7,57 +6,59 @@ using DotSpatial.Data;
 
 namespace BenMAP.Crosswalks
 {
-    public partial class frmCrosswalk : Form
+    public partial class CrosswalksConfiguration : Form
     {
-        //Define local variables
+        #region Fields
+
         private CancellationTokenSource _cts = new CancellationTokenSource();
         private readonly DAL _dal = new DAL(CommonClass.Connection);
 
-        System.Data.DataSet _ds1, _ds2;
-        private Boolean _HandsFree = false;
-        private int _GridID1, _GridID2;
+        private bool _handsFree;
+        private int _gridId1, _gridId2;
 
-        public frmCrosswalk()
+        #endregion
+
+        public CrosswalksConfiguration()
         {
             InitializeComponent();
         }
 
-        public void RunCompact(int GridID1, int GridID2) 
+        public void RunCompact(int gridId1, int gridId2) 
         {
             //This mode is for running an individual crosswalk with the progress bar and no other user interface.
-            string commandText = "";
-            this.label1.Visible = false;
-            this.lstCrosswalks1.Visible = false;
-            this.lstCrosswalks2.Visible = false;
-            this.btnCancel.Visible = false;
-            this.btnClearCrosswalks.Visible = false;
-            this.btnClose.Visible = false;
-            this.btnCompute.Visible = false;
-            this.tbProgress.Top = 4;
-            this.progressBar1.Top = 27;
-            this.Height = 84;
-            this.Width = 420;
-            this.tbProgress.Width = 380;
-            this.progressBar1.Width = 380;
-            this.ControlBox = true;
-            this.FormBorderStyle = FormBorderStyle.FixedToolWindow;
-            _HandsFree = true;
-            _GridID1 = GridID1;
-            _GridID2 = GridID2;
+            label1.Visible = false;
+            lstCrosswalks1.Visible = false;
+            lstCrosswalks2.Visible = false;
+            btnCancel.Visible = false;
+            btnClearCrosswalks.Visible = false;
+            btnClose.Visible = false;
+            btnCompute.Visible = false;
+            tbProgress.Top = 4;
+            progressBar1.Top = 27;
+            Height = 84;
+            Width = 420;
+            tbProgress.Width = 380;
+            progressBar1.Width = 380;
+            ControlBox = true;
+            FormBorderStyle = FormBorderStyle.FixedToolWindow;
+            _handsFree = true;
+            _gridId1 = gridId1;
+            _gridId2 = gridId2;
             
-            string GridName1 = _dal.GetGridDefinitionName(_GridID1);
-            string GridName2 = _dal.GetGridDefinitionName(_GridID2);
+            var gridName1 = _dal.GetGridDefinitionName(_gridId1);
+            var gridName2 = _dal.GetGridDefinitionName(_gridId2);
 
-            this.Text = string.Format("BenMAP - Crosswak Calculator - {0} & {1}",GridName1,GridName2) ;
-            this.ShowDialog(); // When the form is activated it will check if we are in hands free mode and if so will automatically run the crosswalk and write the database.
-            this.Close();//when done, close this window (unless it's already closed...)
+            Text = string.Format("BenMAP - Crosswak Calculator - {0} & {1}", gridName1, gridName2);
+
+            ShowDialog();    // When the form is activated it will check if we are in hands free mode and if so will automatically run the crosswalk and write the database.
+            Close();        //when done, close this window (unless it's already closed...)
         }
 
         private class Progress : IProgress
         {
-            private readonly frmCrosswalk _form1;
+            private readonly CrosswalksConfiguration _form1;
 
-            public Progress(frmCrosswalk form1)
+            public Progress(CrosswalksConfiguration form1)
             {
                 _form1 = form1;
             }
@@ -99,31 +100,17 @@ namespace BenMAP.Crosswalks
 
             _dal.DeleteAllCrosswalks(CommonClass.ManageSetup.SetupID);
 
-            MessageBox.Show("All existing crosswalk definitions in the current setup deleted.","Complete", MessageBoxButtons.OK, MessageBoxIcon.Information); 
-
+            MessageBox.Show("All existing crosswalk definitions in the current setup deleted.","Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void frmCrosswalk_Load(object sender, EventArgs e)
         {
             //jk 2/27/2017 populate combobox for the current setup
-            ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
-            string commandText = string.Empty;
-            System.Data.DataSet ds = new System.Data.DataSet();
-            try
-            {
-                commandText = string.Format("select SetupID,SetupName from Setups order by SetupID");
-                ds = fb.ExecuteDataset(CommonClass.Connection, new System.Data.CommandType(), commandText);
-                cboSetupName.DataSource = ds.Tables[0];
-                cboSetupName.DisplayMember = "SetupName";
-                cboSetupName.Text = CommonClass.MainSetup.SetupName;
-                
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
+            cboSetupName.DataSource = _dal.GetSetups();
+            cboSetupName.DisplayMember = "SetupName";
+            cboSetupName.Text = CommonClass.MainSetup.SetupName;
 
-            if (_HandsFree == false)
+            if (_handsFree == false)
             {
                 //in regular mode, prepopulate both list boxes with the available grids so we can select them
                 LoadGridDefinitions();
@@ -131,14 +118,27 @@ namespace BenMAP.Crosswalks
             else
             {
                 //in handsfree mode, we already have access to the gridID's we need so just run the crosswalks
-                _dal.DeleteCrosswalk(_GridID1, _GridID2);
+                _dal.DeleteCrosswalk(_gridId1, _gridId2);
                 PerformCrosswalk();
+            }
+        }
+
+        private BenMAPSetup SelectedSetup
+        {
+            get
+            {
+                var dgv = (System.Data.DataRowView) cboSetupName.SelectedItem;
+                return new BenMAPSetup
+                {
+                    SetupID = Convert.ToInt32(dgv["SetupID"]),
+                    SetupName = Convert.ToString(dgv["SetupName"])
+                };
             }
         }
 
         private void LoadGridDefinitions()
         {
-            var tb1 = _dal.GetGridDefinitions(CommonClass.ManageSetup.SetupID);
+            var tb1 = _dal.GetGridDefinitions(SelectedSetup.SetupID);
             var tb2 = tb1.Copy();
 
             lstCrosswalks1.DataSource = tb1;
@@ -153,67 +153,65 @@ namespace BenMAP.Crosswalks
         //jk 2/27/2017 reload the grid definitions according to the current setup
         private void cboSetupName_SelectedValueChanged(object sender, EventArgs e)
         {
-            System.Data.DataRowView dgv = cboSetupName.SelectedItem as System.Data.DataRowView;
-            CommonClass.ManageSetup = new BenMAPSetup()
-            {
-                SetupID = Convert.ToInt32(dgv["SetupID"]),
-                SetupName = dgv["SetupName"].ToString()
-            };
             LoadGridDefinitions();
         }
 
         private void btnCompute_Click(object sender, EventArgs e)
         {
             //dpa 1/28/2017 compute the crosswalk between the selected grids in the list box.
-            string commandText = "";
-            Boolean ForwardExists=false , BackwardExists=false;
-            int iResult = 0;
-            _GridID1 = Convert.ToInt32(lstCrosswalks1.SelectedValue);
-            _GridID2 = Convert.ToInt32(lstCrosswalks2.SelectedValue);
+            _gridId1 = Convert.ToInt32(lstCrosswalks1.SelectedValue);
+            _gridId2 = Convert.ToInt32(lstCrosswalks2.SelectedValue);
+
+            //Check if they already have an entry for this crosswalk in GridDefinitionPercentages table
+            if (_dal.CrosswalkExists(_gridId1, _gridId2))
+            {
+                var result = MessageBox.Show(
+                        "The requested crosswalk already exists in the database." + Environment.NewLine +
+                        "Do you want to replace it?", "Replace crosswalk", MessageBoxButtons.OKCancel,
+                        MessageBoxIcon.Question);
+                if (result == DialogResult.Cancel)
+                {
+                    return;
+                }
+            }
+
+            //If we get here it means they want us to delete the crosswalk, or it doesn't exist, or only half exists.
+            //so just to be safe, let's try to delete whatever is or may be there.
+            _dal.DeleteCrosswalk(_gridId1, _gridId2);
+
+            //Call a separate function to actually perform the crosswalk
+            PerformCrosswalk();
+        }
+
+        private IFeatureSet OpenShapeFile(string path)
+        {
             try
             {
-                //Check if they already have an entry for this crosswalk in GridDefinitionPercentages table
-                if (_dal.CrosswalkExists(_GridID1, _GridID2))
-                {
-                    var result = MessageBox.Show(
-                            "The requested crosswalk already exists in the database." + Environment.NewLine +
-                            "Do you want to replace it?", "Replace crosswalk", MessageBoxButtons.OKCancel,
-                            MessageBoxIcon.Question);
-                    if (result == DialogResult.Cancel)
-                    {
-                        return;
-                    }
-                }
-
-                //If we get here it means they want us to delete the crosswalk, or it doesn't exist, or only half exists.
-                //so just to be safe, let's try to delete whatever is or may be there.
-                _dal.DeleteCrosswalk(_GridID1, _GridID2);
-
-                //Call a separate function to actually perform the crosswalk
-                PerformCrosswalk();
+                return FeatureSet.Open(path);
             }
-            catch
+            catch (Exception e)
             {
+                MessageBox.Show(this, e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return null;
             }
         }
 
         private void PerformCrosswalk()
         {
-            //This function uses multithreading. Be careful with it.
-
             //Get the shapefile names based on the grid definition id
-            string Shapefile1 = _dal.GetShapeFilenameForGrid(_GridID1);
-            string Shapefile2 = _dal.GetShapeFilenameForGrid(_GridID2);
+            var shapefile1 = _dal.GetShapeFilenameForGrid(_gridId1);
+            var shapefile2 = _dal.GetShapeFilenameForGrid(_gridId2);
 
-            string AppPath = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\";
+            var appPath = CommonClass.DataFilePath + @"\Data\Shapefiles\" + SelectedSetup.SetupName + "\\";
+         
+            var fsInput1 = OpenShapeFile(appPath + "\\" + shapefile1 + ".shp");
+            if (fsInput1 == null) return;
 
-            //open the two shapefiles
-            var fsInput1 = FeatureSet.Open(AppPath + "\\" + Shapefile1 + ".shp");
-            var fsInput2 = FeatureSet.Open(AppPath + "\\" + Shapefile2 + ".shp");
+            var fsInput2 = OpenShapeFile(appPath + "\\" + shapefile2 + ".shp");
+            if (fsInput2 == null) return;
 
             _cts = new CancellationTokenSource();
             var progress = new Progress(this);
-
 
             Task.Factory.StartNew(delegate
             {
@@ -223,7 +221,7 @@ namespace BenMAP.Crosswalks
                 progress.OnProgressChanged("Writing results to database.", 0);
 
                 // Insert results into database
-                _dal.InsertCrosswalks(_GridID1, _GridID2, fsInput1, fsInput2, results,  _cts.Token, progress);
+                _dal.InsertCrosswalks(_gridId1, _gridId2, fsInput1, fsInput2, results,  _cts.Token, progress);
 
                 progress.OnProgressChanged("Crosswalks written to database.", 100);
                 
@@ -254,9 +252,9 @@ namespace BenMAP.Crosswalks
 
         private void OnCrosswalkFinish()
         {
-            if (_HandsFree)
+            if (_handsFree)
             {
-                this.Close();
+                Close();
             }
             else
             {
