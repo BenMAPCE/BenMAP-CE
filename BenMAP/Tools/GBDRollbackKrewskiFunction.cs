@@ -10,31 +10,40 @@ namespace BenMAP
 
         //first argument is expected to be differential (change) of concentration when rollback is applied
         //example:  Baseline 50, rollback to 35 standard, delta=15
-        public GBDRollbackKrewskiResult GBD_math(double[] concDelta, double[] population, double incrate, double beta, double se)
+        public GBDRollbackKrewskiResult GBD_math(double[] concDelta, double[] population, double[] incRate, double beta, double se)
         {
-            double Sum_97_5 = 0;
-            double Krewski = 0;
-            double Sum_2_5 = 0;
-            //double beta = 0.005826891;
-            //double se = 0.000962763;
-            //double IncrateIn = 0.0081120633;
-            for (int idx = 0; idx < concDelta.Length; idx++)
+            try
             {
+                double Sum_97_5 = 0;
+                double Krewski = 0;
+                double Sum_2_5 = 0;
+                //double beta = 0.005826891;
+                //double se = 0.000962763;
+                //double IncrateIn = 0.0081120633;
+                for (int idx = 0; idx < concDelta.Length; idx++)
+                {
 
-                double ConcIn = concDelta[idx];
-                double PopIn = population[idx];
-                
-                double krewski = (1 - (1 / Math.Exp(beta * ConcIn))) * PopIn * incrate;
-                double krewski_2_5pct = (1 - (1 / Math.Exp(qnorm5(.025, beta, se, true, false) * ConcIn))) * PopIn * incrate;
-                double krewski_97_5pct = (1 - (1 / Math.Exp(qnorm5(.975, beta, se, true, false) * ConcIn))) * PopIn * incrate;
-                Krewski += krewski;
-                Sum_2_5 += krewski_2_5pct;
-                Sum_97_5 += krewski_97_5pct;
+                    double ConcIn = concDelta[idx];
+                    double PopIn = population[idx];
+                    double incrate = incRate[idx];
+
+                    double krewski = (1 - (1 / Math.Exp(beta * ConcIn))) * PopIn * incrate;
+                    double krewski_2_5pct = (1 - (1 / Math.Exp(qnorm5(.025, beta, se, true, false) * ConcIn))) * PopIn * incrate;
+                    double krewski_97_5pct = (1 - (1 / Math.Exp(qnorm5(.975, beta, se, true, false) * ConcIn))) * PopIn * incrate;
+                    Krewski += krewski;
+                    Sum_2_5 += krewski_2_5pct;
+                    Sum_97_5 += krewski_97_5pct;
+                }
+                Console.WriteLine("Krewski: " + Krewski);
+                Console.WriteLine("2.5: " + Sum_2_5);
+                Console.WriteLine("97.5: " + Sum_97_5);
+                return new GBDRollbackKrewskiResult(Krewski, Sum_2_5, Sum_97_5);
             }
-            Console.WriteLine("Krewski: "+Krewski);
-            Console.WriteLine("2.5: "+Sum_2_5);
-            Console.WriteLine("97.5: " +Sum_97_5);
-            return new GBDRollbackKrewskiResult(Krewski, Sum_2_5, Sum_97_5);
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+                return null;
+            }
         }
 
         //qnorm function

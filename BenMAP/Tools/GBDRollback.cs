@@ -45,7 +45,7 @@ namespace BenMAP
         private const char MICROGRAMS = '\u00B5';
         private const char SUPER_3 = '\u00B3';
 
-        private System.Data.DataTable dtConcCountry = null;
+        private System.Data.DataTable dtGBDDataByGridCell = null;
         private System.Data.DataTable dtConcEntireRollback = null;
 
         Dictionary<String,IPolygonCategory> selectedButNotSavedIPCs = new Dictionary<String,IPolygonCategory>();
@@ -114,10 +114,10 @@ namespace BenMAP
             SetActiveOptionsPanel(0);
             rbRegions.Checked = true;
             cboExportFormat.SelectedIndex = 0;
-            cboFunction.SelectedIndex = 0;
 
             txtFilePath.Text = CommonClass.ResultFilePath + @"\GBD";
 
+            LoadFunctions();
             LoadCountries();
             LoadTreeView();
             LoadCountryList();
@@ -175,6 +175,17 @@ namespace BenMAP
                 impl.Symbolizer.OutlineSymbolizer.SetFillColor(System.Drawing.Color.Black);
                 mapGBD.Layers.Add(impl);
             }
+        }
+
+        private void LoadFunctions()
+        {
+            System.Data.DataSet ds = GBDRollbackDataSource.GetGBDFunctions();
+            System.Data.DataTable dtFunctions = ds.Tables[0].Copy();
+
+            // load functions drop down
+            cboFunction.DisplayMember = "functionname";
+            cboFunction.ValueMember = "functionid";
+            cboFunction.DataSource = dtFunctions;
         }
 
         private void LoadStandards()
@@ -574,7 +585,8 @@ namespace BenMAP
             switch (cboFunction.SelectedIndex)
             {
                 case 0: //Krewski
-                    rollback.Function = GBDRollbackItem.RollbackFunction.Krewski;                    
+                    rollback.Function = GBDRollbackItem.RollbackFunction.Krewski;
+                    rollback.FunctionID = Convert.ToInt32(cboFunction.SelectedValue.ToString());             
                     break;
             }
 
@@ -955,77 +967,90 @@ namespace BenMAP
 
         private int ExecuteRollback(GBDRollbackItem rollback, double beta, double se)
         {
+            int first, coord; 
             dtConcEntireRollback = null;
+            DataTable coords = null;
+            DataTable dtConcCountry = null;
 
-            //for each country in rollback...
+            // for each country in rollback...
             foreach (string countryid in rollback.Countries.Keys)
             {
-                //get data
-                //country incidencerate
-                double incrate = GBDRollbackDataSource.GetIncidenceRate(countryid);
+                coords = GBDRollbackDataSource.GetCountryCoords(countryid);
+                first = Convert.ToInt32(coords.Rows[0]["coordid"].ToString());
+                dtGBDDataByGridCell = GBDRollbackDataSource.GetGBDDataPerGridCell(rollback.FunctionID, countryid, POLLUTANT_ID, first);
 
-                //get baseline concs
-                dtConcCountry = null;
-                dtConcCountry = GBDRollbackDataSource.GetCountryConcs(countryid, POLLUTANT_ID, YEAR);
-
-                //build schema of entire rollback table
+                // build schema of entire rollback table -- built off of first coordinate since this doesn't need to be in the loop
                 if (dtConcEntireRollback == null)
                 {
-                    dtConcEntireRollback = dtConcCountry.Clone();
-                    dtConcEntireRollback.Columns.Add("CONCENTRATION_ADJ", dtConcCountry.Columns["CONCENTRATION"].DataType);
+                    dtConcEntireRollback = dtGBDDataByGridCell.Clone();
+                    dtConcEntireRollback.Columns.Add("CONCENTRATION_ADJ", dtGBDDataByGridCell.Columns["CONCENTRATION"].DataType);
                     if (rollback.Type != GBDRollbackItem.RollbackType.Standard)
                     {
-                        dtConcEntireRollback.Columns.Add("CONCENTRATION_ADJ_BACK", dtConcCountry.Columns["CONCENTRATION"].DataType);
+                        dtConcEntireRollback.Columns.Add("CONCENTRATION_ADJ_BACK", dtGBDDataByGridCell.Columns["CONCENTRATION"].DataType);
                     }
-                    dtConcEntireRollback.Columns.Add("CONCENTRATION_FINAL", dtConcCountry.Columns["CONCENTRATION"].DataType);
-                    dtConcEntireRollback.Columns.Add("CONCENTRATION_DELTA", dtConcCountry.Columns["CONCENTRATION"].DataType);
-                    dtConcEntireRollback.Columns.Add("AIR_QUALITY_DELTA", dtConcCountry.Columns["CONCENTRATION"].DataType);
+                    dtConcEntireRollback.Columns.Add("CONCENTRATION_FINAL", dtGBDDataByGridCell.Columns["CONCENTRATION"].DataType);
+                    dtConcEntireRollback.Columns.Add("CONCENTRATION_DELTA", dtGBDDataByGridCell.Columns["CONCENTRATION"].DataType);
+                    dtConcEntireRollback.Columns.Add("AIR_QUALITY_DELTA", dtGBDDataByGridCell.Columns["CONCENTRATION"].DataType);
 
-                    dtConcEntireRollback.Columns.Add("RESULT", dtConcCountry.Columns["CONCENTRATION"].DataType);
-                    dtConcEntireRollback.Columns.Add("RESULT_2_5", dtConcCountry.Columns["CONCENTRATION"].DataType);
-                    dtConcEntireRollback.Columns.Add("RESULT_97_5", dtConcCountry.Columns["CONCENTRATION"].DataType);
-                    dtConcEntireRollback.Columns.Add("INCIDENCE_RATE", dtConcCountry.Columns["CONCENTRATION"].DataType);
-                    dtConcEntireRollback.Columns.Add("BASELINE_MORTALITY", dtConcCountry.Columns["CONCENTRATION"].DataType);
+                    dtConcEntireRollback.Columns.Add("RESULT", dtGBDDataByGridCell.Columns["CONCENTRATION"].DataType);
+                    dtConcEntireRollback.Columns.Add("RESULT_2_5", dtGBDDataByGridCell.Columns["CONCENTRATION"].DataType);
+                    dtConcEntireRollback.Columns.Add("RESULT_97_5", dtGBDDataByGridCell.Columns["CONCENTRATION"].DataType);
+                    dtConcEntireRollback.Columns.Add("INCIDENCE_RATE", dtGBDDataByGridCell.Columns["CONCENTRATION"].DataType);
+                    dtConcEntireRollback.Columns.Add("BASELINE_MORTALITY", dtGBDDataByGridCell.Columns["CONCENTRATION"].DataType);
                 }
 
-                //run rollback
-                DoRollback(rollback);
+                GBDRollbackKrewskiResult resultPerCountry = new GBDRollbackKrewskiResult(0,0,0);
 
-                //get concentration delta and population arrays
-                double[] concDelta = Array.ConvertAll<DataRow, double>(dtConcCountry.Select(),
-                    delegate(DataRow row) { return Convert.ToDouble(row["CONCENTRATION_DELTA"]); });
-                double[] population = Array.ConvertAll<DataRow, double>(dtConcCountry.Select(),
-                    delegate(DataRow row) { return Convert.ToDouble(row["POPESTIMATE"]); });
+                // loop over each grid cell for the country 
+                // calculate krewski for each age/ gender/ endpoint combo and sum
+                foreach (DataRow dr in coords.Rows)
+                {
+                    coord = Convert.ToInt32(dr["coordid"].ToString());
+                    dtGBDDataByGridCell = GBDRollbackDataSource.GetGBDDataPerGridCell(rollback.FunctionID, countryid, POLLUTANT_ID, coord);
 
-                //get results                
-                GBDRollbackKrewskiFunction func = new GBDRollbackKrewskiFunction();
-                GBDRollbackKrewskiResult result;
-                result = func.GBD_math(concDelta, population, incrate, beta, se);
+                    // some grid cells don't have data associated -- make sure this one does 
+                    if (dtGBDDataByGridCell != null && dtGBDDataByGridCell.Rows.Count > 0)
+                    {
+                        // run rollback
+                        DoRollback(rollback);
 
-                //switch (rollback.Function)
-                //{
-                //    case GBDRollbackItem.RollbackFunction.Krewski:
-                //        break;
-                    
-                //}
+                        // get concentration delta, population, and incidence arrays
+                        double[] concDelta = Array.ConvertAll<DataRow, double>(dtGBDDataByGridCell.Select(),
+                            delegate (DataRow row) { return Convert.ToDouble(row["CONCENTRATION_DELTA"]); });
+                        double[] population = Array.ConvertAll<DataRow, double>(dtGBDDataByGridCell.Select(),
+                            delegate (DataRow row) { return Convert.ToDouble(row["POPESTIMATE"]); });
+                        double[] incRate = Array.ConvertAll<DataRow, double>(dtGBDDataByGridCell.Select(),
+                            delegate (DataRow row) { return Convert.ToDouble(row["INCIDENCERATE"]); });
 
+                        // get results for grid cell                 
+                        GBDRollbackKrewskiFunction func = new GBDRollbackKrewskiFunction();
+                        GBDRollbackKrewskiResult resultPerCell;
+                        resultPerCell = func.GBD_math(concDelta, population, incRate, beta, se);
 
-                //add results to dtConcCountry
+                        // add grid cell results to country results 
+                        if (resultPerCell != null)
+                        {
+                            resultPerCountry.Krewski += resultPerCell.Krewski;
+                            resultPerCountry.Krewski2_5 += resultPerCell.Krewski2_5;
+                            resultPerCountry.Krewski97_5 += resultPerCell.Krewski97_5;
+                        }
+                    }
+                }
 
-                dtConcCountry.Columns.Add("RESULT", dtConcCountry.Columns["CONCENTRATION"].DataType, result.Krewski.ToString());
-                dtConcCountry.Columns.Add("RESULT_2_5", dtConcCountry.Columns["CONCENTRATION"].DataType, result.Krewski2_5.ToString());
-                dtConcCountry.Columns.Add("RESULT_97_5", dtConcCountry.Columns["CONCENTRATION"].DataType, result.Krewski97_5.ToString());
-                dtConcCountry.Columns.Add("INCIDENCE_RATE", dtConcCountry.Columns["CONCENTRATION"].DataType, incrate.ToString());
+                // add results to dtConcCountry
+                dtConcCountry = dtGBDDataByGridCell.Clone();
+                dtConcCountry.Columns.Add("RESULT", dtConcCountry.Columns["CONCENTRATION"].DataType, resultPerCountry.Krewski.ToString());
+                dtConcCountry.Columns.Add("RESULT_2_5", dtConcCountry.Columns["CONCENTRATION"].DataType, resultPerCountry.Krewski2_5.ToString());
+                dtConcCountry.Columns.Add("RESULT_97_5", dtConcCountry.Columns["CONCENTRATION"].DataType, resultPerCountry.Krewski97_5.ToString());
+                dtConcCountry.Columns.Add("INCIDENCE_RATE", dtConcCountry.Columns["CONCENTRATION"].DataType, "0"); // incrate.ToString());
                 dtConcCountry.Columns.Add("BASELINE_MORTALITY", dtConcCountry.Columns["CONCENTRATION"].DataType, "INCIDENCE_RATE * POPESTIMATE" );
-
-
-                //add records to entire rollback dataset
+                
+                // add records to entire rollback dataset
                 dtConcEntireRollback.Merge(dtConcCountry, true, MissingSchemaAction.Ignore);
 
             }
 
-
-            //save results as XLSX or CSV?
+            // save results as XLSX or CSV?
             if (cboExportFormat.SelectedIndex == 0)
             {
                 try
@@ -1066,40 +1091,40 @@ namespace BenMAP
         }
 
         private void DoPercentageRollback(double percentage, double background)
-        { 
+        {
             //rollback
-            dtConcCountry.Columns.Add("CONCENTRATION_ADJ", dtConcCountry.Columns["CONCENTRATION"].DataType, "CONCENTRATION - (CONCENTRATION * " + (percentage / 100).ToString() + ")");
-            
+            dtGBDDataByGridCell.Columns.Add("CONCENTRATION_ADJ", dtGBDDataByGridCell.Columns["CONCENTRATION"].DataType, "CONCENTRATION - (CONCENTRATION * " + (percentage / 100).ToString() + ")");
+
             //check against background
-            dtConcCountry.Columns.Add("CONCENTRATION_ADJ_BACK", dtConcCountry.Columns["CONCENTRATION"].DataType, "IIF(CONCENTRATION_ADJ < " + background + ", " + background + ", CONCENTRATION_ADJ)");
+            dtGBDDataByGridCell.Columns.Add("CONCENTRATION_ADJ_BACK", dtGBDDataByGridCell.Columns["CONCENTRATION"].DataType, "IIF(CONCENTRATION_ADJ < " + background + ", " + background + ", CONCENTRATION_ADJ)");
 
             //get final, keep original values if <= background.
-            dtConcCountry.Columns.Add("CONCENTRATION_FINAL", dtConcCountry.Columns["CONCENTRATION"].DataType, "IIF(CONCENTRATION <= " + background + ", CONCENTRATION, CONCENTRATION_ADJ_BACK)");
+            dtGBDDataByGridCell.Columns.Add("CONCENTRATION_FINAL", dtGBDDataByGridCell.Columns["CONCENTRATION"].DataType, "IIF(CONCENTRATION <= " + background + ", CONCENTRATION, CONCENTRATION_ADJ_BACK)");
 
             //get delta (orig. conc - rolled back conc. (corrected for background)
-            dtConcCountry.Columns.Add("CONCENTRATION_DELTA", dtConcCountry.Columns["CONCENTRATION"].DataType, "CONCENTRATION - CONCENTRATION_FINAL");
+            dtGBDDataByGridCell.Columns.Add("CONCENTRATION_DELTA", dtGBDDataByGridCell.Columns["CONCENTRATION"].DataType, "CONCENTRATION - CONCENTRATION_FINAL");
 
             //get air quality delta (conc delta * population)
-            dtConcCountry.Columns.Add("AIR_QUALITY_DELTA", dtConcCountry.Columns["CONCENTRATION"].DataType, "CONCENTRATION_DELTA * POPESTIMATE");
+            dtGBDDataByGridCell.Columns.Add("AIR_QUALITY_DELTA", dtGBDDataByGridCell.Columns["CONCENTRATION"].DataType, "CONCENTRATION_DELTA * POPESTIMATE");
 
         }
 
         private void DoIncrementalRollback(double increment, double background)
         {
             //rollback
-            dtConcCountry.Columns.Add("CONCENTRATION_ADJ", dtConcCountry.Columns["CONCENTRATION"].DataType, "CONCENTRATION - " + increment);
+            dtGBDDataByGridCell.Columns.Add("CONCENTRATION_ADJ", dtGBDDataByGridCell.Columns["CONCENTRATION"].DataType, "CONCENTRATION - " + increment);
 
             //check against background
-            dtConcCountry.Columns.Add("CONCENTRATION_ADJ_BACK", dtConcCountry.Columns["CONCENTRATION"].DataType, "IIF(CONCENTRATION_ADJ < " + background + ", " + background + ", CONCENTRATION_ADJ)");
+            dtGBDDataByGridCell.Columns.Add("CONCENTRATION_ADJ_BACK", dtGBDDataByGridCell.Columns["CONCENTRATION"].DataType, "IIF(CONCENTRATION_ADJ < " + background + ", " + background + ", CONCENTRATION_ADJ)");
 
             //get final, keep original values if <= background.
-            dtConcCountry.Columns.Add("CONCENTRATION_FINAL", dtConcCountry.Columns["CONCENTRATION"].DataType, "IIF(CONCENTRATION <= " + background + ", CONCENTRATION, CONCENTRATION_ADJ_BACK)");
+            dtGBDDataByGridCell.Columns.Add("CONCENTRATION_FINAL", dtGBDDataByGridCell.Columns["CONCENTRATION"].DataType, "IIF(CONCENTRATION <= " + background + ", CONCENTRATION, CONCENTRATION_ADJ_BACK)");
 
             //get delta (orig. conc - rolled back conc. (corrected for background)
-            dtConcCountry.Columns.Add("CONCENTRATION_DELTA", dtConcCountry.Columns["CONCENTRATION"].DataType, "CONCENTRATION - CONCENTRATION_FINAL");
+            dtGBDDataByGridCell.Columns.Add("CONCENTRATION_DELTA", dtGBDDataByGridCell.Columns["CONCENTRATION"].DataType, "CONCENTRATION - CONCENTRATION_FINAL");
 
             //get air quality delta (conc delta * population)
-            dtConcCountry.Columns.Add("AIR_QUALITY_DELTA", dtConcCountry.Columns["CONCENTRATION"].DataType, "CONCENTRATION_DELTA * POPESTIMATE");
+            dtGBDDataByGridCell.Columns.Add("AIR_QUALITY_DELTA", dtGBDDataByGridCell.Columns["CONCENTRATION"].DataType, "CONCENTRATION_DELTA * POPESTIMATE");
 
         }
 
@@ -1107,26 +1132,26 @@ namespace BenMAP
         private void DoRollbackToStandard(double standard, bool isNegativeRollback)
         {
             //rollback to standard
-            dtConcCountry.Columns.Add("CONCENTRATION_ADJ", dtConcCountry.Columns["CONCENTRATION"].DataType, standard.ToString());
+            dtGBDDataByGridCell.Columns.Add("CONCENTRATION_ADJ", dtGBDDataByGridCell.Columns["CONCENTRATION"].DataType, standard.ToString());
 
 
             if (isNegativeRollback)
             {
                 //get final, keep original values if >= standard.
-                dtConcCountry.Columns.Add("CONCENTRATION_FINAL", dtConcCountry.Columns["CONCENTRATION"].DataType, "IIF(CONCENTRATION >= " + standard + ", CONCENTRATION, CONCENTRATION_ADJ)");
+                dtGBDDataByGridCell.Columns.Add("CONCENTRATION_FINAL", dtGBDDataByGridCell.Columns["CONCENTRATION"].DataType, "IIF(CONCENTRATION >= " + standard + ", CONCENTRATION, CONCENTRATION_ADJ)");
 
             }
             else
             {
                 //get final, keep original values if <= standard.
-                dtConcCountry.Columns.Add("CONCENTRATION_FINAL", dtConcCountry.Columns["CONCENTRATION"].DataType, "IIF(CONCENTRATION <= " + standard + ", CONCENTRATION, CONCENTRATION_ADJ)");                
+                dtGBDDataByGridCell.Columns.Add("CONCENTRATION_FINAL", dtGBDDataByGridCell.Columns["CONCENTRATION"].DataType, "IIF(CONCENTRATION <= " + standard + ", CONCENTRATION, CONCENTRATION_ADJ)");                
             }
 
             //get delta (orig. conc - rolled back conc.)
-            dtConcCountry.Columns.Add("CONCENTRATION_DELTA", dtConcCountry.Columns["CONCENTRATION"].DataType, "CONCENTRATION - CONCENTRATION_FINAL");
+            dtGBDDataByGridCell.Columns.Add("CONCENTRATION_DELTA", dtGBDDataByGridCell.Columns["CONCENTRATION"].DataType, "CONCENTRATION - CONCENTRATION_FINAL");
 
             //get air quality delta (conc delta * population)
-            dtConcCountry.Columns.Add("AIR_QUALITY_DELTA", dtConcCountry.Columns["CONCENTRATION"].DataType, "CONCENTRATION_DELTA * POPESTIMATE");
+            dtGBDDataByGridCell.Columns.Add("AIR_QUALITY_DELTA", dtGBDDataByGridCell.Columns["CONCENTRATION"].DataType, "CONCENTRATION_DELTA * POPESTIMATE");
         }
 
         private System.Data.DataTable GetRegionsCountriesTable()
