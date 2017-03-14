@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -91,14 +92,14 @@ namespace BenMAP.Crosswalks
              */
 
             var result = MessageBox.Show(
-                    "This action will delete all current crosswalk definitions in the current setup requiring them to be rebuilt when they are requested.",
+                    "This action will delete all current crosswalk definitions in the selected setup requiring them to be rebuilt when they are requested.",
                     "Confirm Crosswalk Deletion", MessageBoxButtons.OKCancel, MessageBoxIcon.Information);
             if (result == DialogResult.Cancel)
             {
                 return;
             }
 
-            _dal.DeleteAllCrosswalks(CommonClass.ManageSetup.SetupID);
+            _dal.DeleteAllCrosswalks(SelectedSetup.SetupID);
 
             MessageBox.Show("All existing crosswalk definitions in the current setup deleted.","Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
@@ -127,7 +128,7 @@ namespace BenMAP.Crosswalks
         {
             get
             {
-                var dgv = (System.Data.DataRowView) cboSetupName.SelectedItem;
+                var dgv = (DataRowView) cboSetupName.SelectedItem;
                 return new BenMAPSetup
                 {
                     SetupID = Convert.ToInt32(dgv["SetupID"]),
@@ -162,10 +163,32 @@ namespace BenMAP.Crosswalks
             _gridId1 = Convert.ToInt32(lstCrosswalks1.SelectedValue);
             _gridId2 = Convert.ToInt32(lstCrosswalks2.SelectedValue);
 
-            //Check if they already have an entry for this crosswalk in GridDefinitionPercentages table
+            if (_gridId1 == _gridId2)
+            {
+                MessageBox.Show(this, "Please select different grids.", "Information", MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+                return;
+            }
+
+            // Check if they already have an entry for this crosswalk in GridDefinitionPercentages table
             if (_dal.CrosswalkExists(_gridId1, _gridId2))
             {
-                var result = MessageBox.Show(
+                // Are they locked?
+                if (Convert.ToChar(((DataRowView) lstCrosswalks1.SelectedItem)["Locked"]) == 'T' &&
+                    Convert.ToChar(((DataRowView) lstCrosswalks2.SelectedItem)["Locked"]) == 'T')
+                {
+                    var grid1Name = Convert.ToString(((DataRowView) lstCrosswalks1.SelectedItem)["GridDefinitionName"]);
+                    var grid2Name = Convert.ToString(((DataRowView) lstCrosswalks2.SelectedItem)["GridDefinitionName"]);
+
+                    MessageBox.Show(this,
+                        string.Format(
+                            "The crosswalk between the [{0}] and [{1}] grid definitions is provided with the BenMAP CE application and should not be deleted and recreated.",
+                            grid1Name, grid2Name),
+                        "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                var result = MessageBox.Show(this,
                         "The requested crosswalk already exists in the database." + Environment.NewLine +
                         "Do you want to replace it?", "Replace crosswalk", MessageBoxButtons.OKCancel,
                         MessageBoxIcon.Question);
@@ -173,13 +196,11 @@ namespace BenMAP.Crosswalks
                 {
                     return;
                 }
+
+                _dal.DeleteCrosswalk(_gridId1, _gridId2);
             }
 
-            //If we get here it means they want us to delete the crosswalk, or it doesn't exist, or only half exists.
-            //so just to be safe, let's try to delete whatever is or may be there.
-            _dal.DeleteCrosswalk(_gridId1, _gridId2);
-
-            //Call a separate function to actually perform the crosswalk
+            // Call a separate function to actually perform the crosswalk
             PerformCrosswalk();
         }
 

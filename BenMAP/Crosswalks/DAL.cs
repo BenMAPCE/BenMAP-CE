@@ -50,8 +50,8 @@ namespace BenMAP.Crosswalks
         {
             using (var tran = _connection.BeginTransaction())
             {
-                ExecuteNonQuery(string.Format("DELETE from GRIDDEFINITIONPERCENTAGES where SOURCEGRIDDEFINITIONID in (SELECT GRIDDEFINITIONID from GRIDDEFINITIONS where setupID={0})", setupId), tran);
-                ExecuteNonQuery(string.Format("DELETE from GRIDDEFINITIONPERCENTAGES where TARGETGRIDDEFINITIONID in (SELECT GRIDDEFINITIONID from GRIDDEFINITIONS where setupID={0})", setupId), tran);
+                ExecuteNonQuery(string.Format("DELETE from GRIDDEFINITIONPERCENTAGES where SOURCEGRIDDEFINITIONID in (SELECT GRIDDEFINITIONID from GRIDDEFINITIONS where setupID={0} and Locked!='T')", setupId), tran);
+                ExecuteNonQuery(string.Format("DELETE from GRIDDEFINITIONPERCENTAGES where TARGETGRIDDEFINITIONID in (SELECT GRIDDEFINITIONID from GRIDDEFINITIONS where setupID={0} and Locked!='T')", setupId), tran);
                 ExecuteNonQuery("DELETE from GRIDDEFINITIONPERCENTAGEENTRIES where PERCENTAGEID not in (SELECT PERCENTAGEID from GRIDDEFINITIONPERCENTAGES)", tran);
                 tran.Commit();
             }
@@ -117,7 +117,7 @@ namespace BenMAP.Crosswalks
 
         public DataTable GetGridDefinitions(int setupId)
         {
-            var commandText = string.Format("select GridDefinitionName, GridDefinitionID from GridDefinitions where setupID={0}", setupId);
+            var commandText = string.Format("select GridDefinitionName, GridDefinitionID, Locked from GridDefinitions where setupID={0}", setupId);
             var ds = _fbh.ExecuteDataset(_connection, commandText);
             return ds.Tables[0];
         }
