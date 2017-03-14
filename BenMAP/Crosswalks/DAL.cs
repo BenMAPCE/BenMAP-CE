@@ -148,7 +148,7 @@ namespace BenMAP.Crosswalks
             return ExecuteScalar(commandText).ToString();
         }
 
-        public void InsertCrosswalks(int grid1, int grid2, IFeatureSet fsInput1, IFeatureSet fsInput2, Dictionary<CrosswalkIndex, CrosswalkRatios> results, CancellationToken ctsToken, IProgress progress)
+        public void InsertCrosswalks(int grid1, int grid2, IFeatureSet fsInput1, IFeatureSet fsInput2, IList<Crosswalk> results, CancellationToken ctsToken, IProgress progress)
         {
             using (var tran = _connection.BeginTransaction())
             {
@@ -179,15 +179,15 @@ namespace BenMAP.Crosswalks
                         progress.OnProgressChanged(string.Format("{0} of {1} written to database.", i, results.Count), prog);
                     }
 
-                    double forward = entry.Value.ForwardRatio;
-                    double backward = entry.Value.BackwardRatio;
+                    double forward = entry.ForwardRatio;
+                    double backward = entry.BackwardRatio;
 
                     const double PRECISION = 1e-4;
                     if (forward > PRECISION || backward > PRECISION)
                     {
                         // Get the column and row attributes and forward backward results
-                        var attributes1 = fsInput1.GetAttributes(entry.Key.FeatureId1, 1, fieldNames);
-                        var attributes2 = fsInput2.GetAttributes(entry.Key.FeatureId2, 1, fieldNames);
+                        var attributes1 = fsInput1.GetAttributes(entry.FeatureId1, 1, fieldNames);
+                        var attributes2 = fsInput2.GetAttributes(entry.FeatureId2, 1, fieldNames);
 
                         // Write the entries to the firebird database
                         commandText =

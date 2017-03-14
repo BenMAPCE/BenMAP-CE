@@ -21,14 +21,14 @@ namespace BenMAP.Crosswalks
         /// <param name="features">List of features.</param>
         /// <param name="cancellationToken">Cancellation token for cancellation support.</param>
         /// <param name="progress">Instance of <see cref="IProgress"/> for progress indication.</param>
-        /// <returns>Dictionary of crosswalk indexes with appropriate ratios.</returns>
-        public static Dictionary<CrosswalkIndex, CrosswalkRatios> Calculate(IFeatureSet grid, IFeatureSet features, CancellationToken cancellationToken, IProgress progress)
+        /// <returns>List of crosswalk indexes with appropriate ratios.</returns>
+        public static IList<Crosswalk> Calculate(IFeatureSet grid, IFeatureSet features, CancellationToken cancellationToken, IProgress progress)
         {
             if (grid == null) throw new ArgumentNullException("grid");
             if (features == null) throw new ArgumentNullException("features");
             if (progress == null) throw new ArgumentNullException("progress");
 
-            var output = new Dictionary<CrosswalkIndex, CrosswalkRatios>();
+            var output = new List<Crosswalk>();
             var syncLock = new object();
 
             var featuresCount = !features.IndexMode ? features.Features.Count : features.ShapeIndices.Count;
@@ -74,7 +74,7 @@ namespace BenMAP.Crosswalks
                 var filterByY = Find(sortedByY, featureEnvelope.MinY, featureEnvelope.MaxY);
                 var intersectionCells = filterByX.Intersect(filterByY, new GridCellEqualityComparer());
 
-                var localList = new List<Tuple<CrosswalkIndex, CrosswalkRatios>>();
+                var localList = new List<Crosswalk>();
 
                 if (nestedParallelization)
                 {
@@ -114,7 +114,7 @@ namespace BenMAP.Crosswalks
 
                 lock (syncLock)
                 {
-                    localList.ForEach(_ => output.Add(_.Item1, _.Item2));
+                    output.AddRange(localList);
                 }
 
                 var current = Interlocked.Increment(ref currentCount);
@@ -122,11 +122,54 @@ namespace BenMAP.Crosswalks
                     current / (featuresCount * 1.0f) * 100.0f);
             });
 
+            // Do post processing.
+            // Find all cross-border cells and adjuts ratios.
+
+            output = output.OrderBy(_ => _.FeatureId1).ToList();            // Sort them by featureId for fast processing
+            var postProcessProgressStep = Math.Max(output.Count / 1000, 1);
+            for (var i = 0; i < output.Count; i++)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                var current = output[i];
+                if (current.ForwardRatio == 1.0f) continue;
+
+                var cellParts = new List<Crosswalk> {current};
+                float ratiosSum = current.ForwardRatio;
+                for (var j = i + 1; j < output.Count; j++)
+                {
+                    // Output is sorted by featureId
+                    if (output[j].FeatureId1 != current.FeatureId1) break;
+
+                    cellParts.Add(output[j]);
+                    ratiosSum += output[j].ForwardRatio;
+
+                    // Increase outer counter.
+                    // Since output is sorted, we skip already processed crosswalks in outer loop.
+                    i++;
+                }
+                
+                if (ratiosSum != 1.0f)  // We don't need extra operations
+                {
+                    foreach (var crosswalk in cellParts)
+                    {
+                        crosswalk.ForwardRatio /= ratiosSum;
+                    }
+                }
+
+                if (i % postProcessProgressStep == 0)
+                {
+                    progress.OnProgressChanged(
+                        string.Format("Adjusting cross-border ratios. {0}/{1} finished", i + 1, output.Count),
+                        (i + 1) / (1.0f * output.Count) * 100.0f);
+                }
+            }
+
             progress.OnProgressChanged(string.Format("Finished. Total crosswalks: {0}", output.Count), 100);
             return output;
         }
 
-        private static Tuple<CrosswalkIndex, CrosswalkRatios> FindCrosswalk(GridCell cell, IGeometry featureGeometry,
+        private static Crosswalk FindCrosswalk(GridCell cell, IGeometry featureGeometry,
             double featureArea, int featureId)
         {
             var cellGeometry = cell.Geometry;
@@ -153,24 +196,21 @@ namespace BenMAP.Crosswalks
                 if (intersectionArea > 0)
                 {
                     var cellArea = cell.Area;
-                    var entry = new CrosswalkRatios
+                    var output = new Crosswalk
                     {
                         ForwardRatio = (float) (intersectionArea / cellArea),
-                        BackwardRatio = (float) (intersectionArea / featureArea)
-                    };
-
-                    var index = new CrosswalkIndex
-                    {
+                        BackwardRatio = (float) (intersectionArea / featureArea),
                         FeatureId1 = cell.Fid,
                         FeatureId2 = featureId
                     };
+                    
 
                     // Grid cell fully in feature, exclude it from further calcuations
-                    if (entry.ForwardRatio == 1.0f)
+                    if (output.ForwardRatio == 1.0f)
                     {
                         cell.Used = true;
                     }
-                    return new Tuple<CrosswalkIndex, CrosswalkRatios>(index, entry);
+                    return output;
                 }
             }
 
@@ -247,10 +287,7 @@ namespace BenMAP.Crosswalks
         void OnProgressChanged(string message, float progress);
     }
 
-    /// <summary>
-    /// Represents pair: cellId:featureId.
-    /// </summary>
-    public struct CrosswalkIndex
+    public class Crosswalk
     {
         /// <summary>
         /// Feature Index from Input1.
@@ -262,17 +299,6 @@ namespace BenMAP.Crosswalks
         /// </summary>
         public int FeatureId2 { get; set; }
 
-        public override string ToString()
-        {
-            return string.Format("{0}, {1}", FeatureId1, FeatureId2);
-        }
-    }
-  
-    /// <summary>
-    /// Contains forward and backward ratios for <see cref="CrosswalkIndex"/>.
-    /// </summary>
-    public struct CrosswalkRatios
-    {
         /// <summary>
         /// Number in interval [0, 1.0]. Shows how much Feature1 contained in Feature2.
         /// </summary>
@@ -282,10 +308,5 @@ namespace BenMAP.Crosswalks
         /// Number in interval [0, 1.0]. Shows how much Feature2 contained in Feature1.
         /// </summary>
         public float BackwardRatio { get; set; }
-
-        public override string ToString()
-        {
-            return string.Format("F:{0}, B:{1}", ForwardRatio, BackwardRatio);
-        }
     }
 }
