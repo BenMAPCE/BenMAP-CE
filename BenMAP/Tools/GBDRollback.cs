@@ -967,17 +967,17 @@ namespace BenMAP
 
         private int ExecuteRollback(GBDRollbackItem rollback, double beta, double se)
         {
-            int first, coord; 
+            int firstCell, coord; 
             dtConcEntireRollback = null;
-            DataTable coords = null;
+            DataTable dtCoords = null;
             DataTable dtConcCountry = null;
 
             // for each country in rollback...
             foreach (string countryid in rollback.Countries.Keys)
             {
-                coords = GBDRollbackDataSource.GetCountryCoords(countryid);
-                first = Convert.ToInt32(coords.Rows[0]["coordid"].ToString());
-                dtGBDDataByGridCell = GBDRollbackDataSource.GetGBDDataPerGridCell(rollback.FunctionID, countryid, POLLUTANT_ID, first);
+                dtCoords = GBDRollbackDataSource.GetCountryCoords(countryid);
+                firstCell = Convert.ToInt32(dtCoords.Rows[0]["coordid"].ToString());
+                dtGBDDataByGridCell = GBDRollbackDataSource.GetGBDDataPerGridCell(rollback.FunctionID, countryid, POLLUTANT_ID, firstCell);
 
                 // build schema of entire rollback table -- built off of first coordinate since this doesn't need to be in the loop
                 if (dtConcEntireRollback == null)
@@ -1003,7 +1003,7 @@ namespace BenMAP
 
                 // loop over each grid cell for the country 
                 // calculate krewski for each age/ gender/ endpoint combo and sum
-                foreach (DataRow dr in coords.Rows)
+                foreach (DataRow dr in dtCoords.Rows)
                 {
                     coord = Convert.ToInt32(dr["coordid"].ToString());
                     dtGBDDataByGridCell = GBDRollbackDataSource.GetGBDDataPerGridCell(rollback.FunctionID, countryid, POLLUTANT_ID, coord);
@@ -1034,6 +1034,9 @@ namespace BenMAP
                             resultPerCountry.Krewski2_5 += resultPerCell.Krewski2_5;
                             resultPerCountry.Krewski97_5 += resultPerCell.Krewski97_5;
                         }
+
+                        // Should figure out a way to get the above information into one row to be added to dtConcCountry 
+                        // representing one grid cell -- result and concentration could do this already but incidence and pop will be different
                     }
                 }
 
@@ -1047,7 +1050,7 @@ namespace BenMAP
                 
                 // add records to entire rollback dataset
                 dtConcEntireRollback.Merge(dtConcCountry, true, MissingSchemaAction.Ignore);
-
+                // ** number of rows here should be the same as the number of rows in dtCoords (# of grid cells)
             }
 
             // save results as XLSX or CSV?
