@@ -53,6 +53,7 @@ namespace BenMAP.Crosswalks
                 ExecuteNonQuery(string.Format("DELETE from GRIDDEFINITIONPERCENTAGES where SOURCEGRIDDEFINITIONID in (SELECT GRIDDEFINITIONID from GRIDDEFINITIONS where setupID={0} and Locked!='T')", setupId), tran);
                 ExecuteNonQuery(string.Format("DELETE from GRIDDEFINITIONPERCENTAGES where TARGETGRIDDEFINITIONID in (SELECT GRIDDEFINITIONID from GRIDDEFINITIONS where setupID={0} and Locked!='T')", setupId), tran);
                 ExecuteNonQuery("DELETE from GRIDDEFINITIONPERCENTAGEENTRIES where PERCENTAGEID not in (SELECT PERCENTAGEID from GRIDDEFINITIONPERCENTAGES)", tran);
+
                 tran.Commit();
             }
         }
@@ -65,47 +66,30 @@ namespace BenMAP.Crosswalks
 
             using (var tran = _connection.BeginTransaction())
             {
+                DeleteGridPercentage(grid1, grid2, tran);
+                DeleteGridPercentage(grid2, grid1, tran);
 
-                string commandText = "";
-                int iResult = 0;
-
-                //find the correct percentageid entry for the forward direction crosswalk
-                commandText = string.Format("SELECT PERCENTAGEID from GRIDDEFINITIONPERCENTAGES where SOURCEGRIDDEFINITIONID={0} and TARGETGRIDDEFINITIONID={1}", grid1, grid2);
-                try
-                {
-                    iResult = Convert.ToInt32(ExecuteScalar(commandText, tran));
-                }
-                catch{}
-
-                //remove this percentageid entry
-                commandText = string.Format("DELETE from GRIDDEFINITIONPERCENTAGEENTRIES where PERCENTAGEID={0}", iResult);
-                ExecuteNonQuery(commandText, tran);
-
-                //remove all data entries for this percentageid
-                commandText = string.Format("DELETE from GRIDDEFINITIONPERCENTAGES where PERCENTAGEID={0}", iResult);
-                ExecuteNonQuery(commandText, tran);
-
-
-                //find the correct percentageid entry for the backward direction crosswalk
-                commandText =
-                    string.Format(
-                        "SELECT PERCENTAGEID from GRIDDEFINITIONPERCENTAGES where SOURCEGRIDDEFINITIONID={0} and TARGETGRIDDEFINITIONID={1}",
-                        grid1, grid2);
-                try
-                {
-                    iResult = Convert.ToInt32(ExecuteScalar(commandText, tran));
-                }
-                catch{}
-
-                //remove this percentageid entry
-                commandText = string.Format("DELETE from GRIDDEFINITIONPERCENTAGEENTRIES where PERCENTAGEID={0}", iResult);
-                ExecuteNonQuery(commandText, tran);
-
-                //remove all data entries for this percentageid
-                commandText = string.Format("DELETE from GRIDDEFINITIONPERCENTAGES where PERCENTAGEID={0}", iResult);
-                ExecuteNonQuery(commandText, tran);
+                tran.Commit();
             }
+        }
 
+        private void DeleteGridPercentage(int sourceId, int targetId, FbTransaction tran)
+        {
+            // Find the correct percentageid entry for the forward direction crosswalk
+            var commandText = string.Format("SELECT PERCENTAGEID from GRIDDEFINITIONPERCENTAGES where SOURCEGRIDDEFINITIONID={0} and TARGETGRIDDEFINITIONID={1}", sourceId, targetId);
+            var res = ExecuteScalar(commandText, tran);
+
+            if (res == DBNull.Value) return; // Nothing to remove, exit
+
+            var iResult = Convert.ToInt32(res);
+
+            // Remove this percentageid entry
+            commandText = string.Format("DELETE from GRIDDEFINITIONPERCENTAGEENTRIES where PERCENTAGEID={0}", iResult);
+            ExecuteNonQuery(commandText, tran);
+
+            // Remove all data entries for this percentageid
+            commandText = string.Format("DELETE from GRIDDEFINITIONPERCENTAGES where PERCENTAGEID={0}", iResult);
+            ExecuteNonQuery(commandText, tran);
         }
 
         public DataTable GetSetups()

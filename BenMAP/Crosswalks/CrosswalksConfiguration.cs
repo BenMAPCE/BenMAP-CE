@@ -92,8 +92,9 @@ namespace BenMAP.Crosswalks
              */
 
             var result = MessageBox.Show(
-                    "This action will delete all current crosswalk definitions in the selected setup requiring them to be rebuilt when they are requested.",
-                    "Confirm Crosswalk Deletion", MessageBoxButtons.OKCancel, MessageBoxIcon.Information);
+                this,
+                "This action will delete all current crosswalk definitions in the selected setup requiring them to be rebuilt when they are requested.",
+                "Confirm Crosswalk Deletion", MessageBoxButtons.OKCancel, MessageBoxIcon.Information);
             if (result == DialogResult.Cancel)
             {
                 return;
@@ -101,7 +102,7 @@ namespace BenMAP.Crosswalks
 
             _dal.DeleteAllCrosswalks(SelectedSetup.SetupID);
 
-            MessageBox.Show("All existing crosswalk definitions in the current setup deleted.","Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show(this, "All existing crosswalk definitions in the current setup deleted.","Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void frmCrosswalk_Load(object sender, EventArgs e)
@@ -279,7 +280,7 @@ namespace BenMAP.Crosswalks
             }
             else
             {
-                MessageBox.Show("Crosswalk computation completed.", "Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(this, "Crosswalk computation completed.", "Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
