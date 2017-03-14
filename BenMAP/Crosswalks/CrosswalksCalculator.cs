@@ -123,54 +123,66 @@ namespace BenMAP.Crosswalks
             });
 
             // Do post processing.
-            // Find all cross-border cells and adjuts ratios.
+            // Find all cross-border cells and adjust ratios.
+          
+            var t1 = Task.Factory.StartNew(() => AdjustRatios(output, true, cancellationToken), cancellationToken);
+            var t2 = Task.Factory.StartNew(() => AdjustRatios(output, false, cancellationToken), cancellationToken);
 
-            output = output.OrderBy(_ => _.FeatureId1).ToList();            // Sort them by featureId for fast processing
-            var postProcessProgressStep = Math.Max(output.Count / 1000, 1);
+            Task.WaitAll(new[] {t1, t2}, cancellationToken);
+            progress.OnProgressChanged(string.Format("Finished. Total crosswalks: {0}", output.Count), 100);
+            return output;
+        }
+
+        private static void AdjustRatios(IList<Crosswalk> output, bool isForward, CancellationToken cancellationToken)
+        {
+            // Forward mode: process featureId1 and ForwardRatios
+            // Backward mode: process featureId2 and BackwardRatios
+
+            var getId = isForward ? (Func<Crosswalk, int>)(_ => _.FeatureId1) : (_ => _.FeatureId2);
+
+            // Sort crosswalks for fast processing
+            output = output.OrderBy(_ => getId(_)).ToList();
+
+            // Setup funcs
+            var getRatio = isForward ? (Func<Crosswalk, float>) (_ => _.ForwardRatio) : (_ => _.BackwardRatio);
+            var updateRatio = isForward
+                ? (Action<Crosswalk, float>)delegate(Crosswalk _, float sum) { _.ForwardRatio /= sum; }
+                : delegate(Crosswalk _, float sum) { _.BackwardRatio /= sum; };
+
             for (var i = 0; i < output.Count; i++)
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
                 var current = output[i];
-                if (current.ForwardRatio == 1.0f) continue;
+                if (getRatio(current) == 1.0f) continue;
 
-                var cellParts = new List<Crosswalk> {current};
-                float ratiosSum = current.ForwardRatio;
+                var cellParts = new List<Crosswalk> { current };
+                var ratiosSum = getRatio(current);
                 for (var j = i + 1; j < output.Count; j++)
                 {
-                    // Output is sorted by featureId
-                    if (output[j].FeatureId1 != current.FeatureId1) break;
+                    // Output is sorted by id
+                    if (getId(output[j]) != getId(current)) break;
 
                     cellParts.Add(output[j]);
-                    ratiosSum += output[j].ForwardRatio;
+                    ratiosSum += getRatio(output[j]);
 
                     // Increase outer counter.
                     // Since output is sorted, we skip already processed crosswalks in outer loop.
                     i++;
                 }
-                
-                if (ratiosSum != 1.0f)  // We don't need extra operations
+
+                if (ratiosSum != 1.0f &&      // We don't need extra operations...
+                    ratiosSum > (float)1e-4) //...and small sums.
                 {
                     foreach (var crosswalk in cellParts)
                     {
-                        crosswalk.ForwardRatio /= ratiosSum;
+                        updateRatio(crosswalk, ratiosSum);
                     }
                 }
-
-                if (i % postProcessProgressStep == 0)
-                {
-                    progress.OnProgressChanged(
-                        string.Format("Adjusting cross-border ratios. {0}/{1} finished", i + 1, output.Count),
-                        (i + 1) / (1.0f * output.Count) * 100.0f);
-                }
             }
-
-            progress.OnProgressChanged(string.Format("Finished. Total crosswalks: {0}", output.Count), 100);
-            return output;
         }
 
-        private static Crosswalk FindCrosswalk(GridCell cell, IGeometry featureGeometry,
-            double featureArea, int featureId)
+        private static Crosswalk FindCrosswalk(GridCell cell, IGeometry featureGeometry, double featureArea, int featureId)
         {
             var cellGeometry = cell.Geometry;
 
@@ -198,12 +210,11 @@ namespace BenMAP.Crosswalks
                     var cellArea = cell.Area;
                     var output = new Crosswalk
                     {
-                        ForwardRatio = (float) (intersectionArea / cellArea),
-                        BackwardRatio = (float) (intersectionArea / featureArea),
+                        ForwardRatio = (float)(intersectionArea / cellArea),
+                        BackwardRatio = (float)(intersectionArea / featureArea),
                         FeatureId1 = cell.Fid,
                         FeatureId2 = featureId
                     };
-                    
 
                     // Grid cell fully in feature, exclude it from further calcuations
                     if (output.ForwardRatio == 1.0f)
@@ -274,7 +285,6 @@ namespace BenMAP.Crosswalks
                 yield return cell;
             }
         }
-
     }
 
     public interface IProgress

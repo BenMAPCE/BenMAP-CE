@@ -186,10 +186,10 @@ namespace BenMAP.Crosswalks
                         progress.OnProgressChanged(string.Format("{0} of {1} written to database.", i, results.Count), prog);
                     }
 
-                    double forward = entry.ForwardRatio;
-                    double backward = entry.BackwardRatio;
+                    var forward = entry.ForwardRatio;
+                    var backward = entry.BackwardRatio;
 
-                    const double PRECISION = 1e-4;
+                    const float PRECISION = (float) 1e-4;
                     if (forward > PRECISION || backward > PRECISION)
                     {
                         // Get the column and row attributes and forward backward results
