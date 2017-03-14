@@ -29,6 +29,22 @@ namespace BenMAP
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                 lstGridDefinitions.DataSource = ds.Tables[0];
                 lstGridDefinitions.DisplayMember = "GridDefinitionName";
+
+                commandText = string.Format("select IncidenceDataSetName from IncidenceDataSets where setupID={0}", CommonClass.ManageSetup.SetupID);
+                ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+                lstIncidenceOrPrevalence.DataSource = ds.Tables[0];
+                lstIncidenceOrPrevalence.DisplayMember = "IncidenceDataSetName";
+
+                commandText = string.Format("select  SETUPVARIABLEDATASETNAME from SETUPVARIABLEDATASETS where setupID={0}", CommonClass.ManageSetup.SetupID);
+                ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+                lstVariable.DataSource = ds.Tables[0];
+                lstVariable.DisplayMember = "SETUPVARIABLEDATASETNAME";
+
+                commandText = string.Format("select PopulationDataSetname from PopulationDataSets where setupID={0} and populationdatasetid<>37", CommonClass.ManageSetup.SetupID);
+                ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+                lstPopulation.DataSource = ds.Tables[0];
+                lstPopulation.DisplayMember = "PopulationDataSetname";
+
             }
         }
 

@@ -34,13 +34,20 @@ namespace BenMAP.Tools
                 mi = type.GetMethod("myMethod");
 
                 object result = mi.Invoke(tmp, lstParam.ToArray());
-            //    System.Console.WriteLine("Baseline Data " + crid);
-            //    foreach (object i in lstParam)
-            //    {
-            //        System.Console.Write(i.ToString() + ",");
-            //    }
-            //    System.Console.Write("\n");
-            //    System.Console.WriteLine(result);
+                // debug code
+                if (CommonClass.getDebugValue() && CommonClass.debugGridCell)
+                {
+                    Logger.debuggingOut.Append("Baseline,");
+                    
+                    foreach (object i in lstParam)
+                    {
+                        
+                        Logger.debuggingOut.Append(i.ToString() + ",");
+                    }
+                    //System.Console.Write(",");
+                    
+                    Logger.debuggingOut.Append(result + "\n");
+                }
                 return result;
 
             }
@@ -64,9 +71,15 @@ namespace BenMAP.Tools
                 try
                 {
                     string strVariables = "";
+                    int i = 0;
                     if (dicSetupVariables != null && dicSetupVariables.Count > 0 && dicSetupVariables.ContainsKey(k.Key))
                     {
-                        strVariables = ", " + dicSetupVariables[k.Key];
+                        while (i < dicSetupVariables.Count)
+                        {
+                            strVariables = dicSetupVariables.ToList()[i].Value; i++;
+                        }
+
+
                     }
                     CSharpCodeProvider csharpCodeProvider = new CSharpCodeProvider();
                     CodeDomProvider provider = CodeDomProvider.CreateProvider("CSharp");
@@ -82,9 +95,9 @@ namespace BenMAP.Tools
                     myCode.Append("using System;");
                     myCode.Append("namespace CoustomEval{");
                     myCode.Append("class myLibBaseLine" + k.Key + " { public double myPow(double a) { return Math.Pow(a,2);} public double myMethod(double a, double b, double c, double beta, double deltaq, double q0, double q1, double incidence, double pop, double prevalence" + strVariables +
-    "){ try{" + k.Value + "} catch (Exception ex) { return -999999999; }}}");
+    "){try{" + k.Value + "} catch (Exception ex) { return -999999999; }}}");
                     myCode.Append("}");
-              //      System.Console.WriteLine(myCode.ToString());
+                   
                     CompilerResults cr = provider.CompileAssemblyFromSource(cp, myCode.ToString());
                     Assembly assembly = cr.CompiledAssembly;
                     Type[] types = new Type[] { typeof(double), typeof(double), typeof(double), typeof(double), typeof(double), typeof(double), typeof(double), typeof(double), typeof(double), typeof(double) };
@@ -111,44 +124,50 @@ namespace BenMAP.Tools
 
                 foreach (KeyValuePair<string, string> k in dicFunction)
                 {
-                    try
+                 try
                     {
-                        string strVariables = "";
-                        if (dicSetupVariables != null && dicSetupVariables.Count > 0 && dicSetupVariables.ContainsKey(k.Key))
+                    string strVariables = "";
+                    int i = 0;
+                    if (dicSetupVariables != null && dicSetupVariables.Count > 0 && dicSetupVariables.ContainsKey(k.Key))
+                    {
+                        while (i < dicSetupVariables.Count)
                         {
-                            strVariables = ", " + dicSetupVariables[k.Key];
+                            strVariables = dicSetupVariables.ToList()[i].Value; i++;
                         }
 
-                        int icount = dicPointEstimateMethodInfo.Count;
+
+                    }
+
+                    int icount = dicPointEstimateMethodInfo.Count;
 
 
-                        CSharpCodeProvider csharpCodeProvider = new CSharpCodeProvider();
-                        CodeDomProvider provider = CodeDomProvider.CreateProvider("CSharp");
+                    CSharpCodeProvider csharpCodeProvider = new CSharpCodeProvider();
+                    CodeDomProvider provider = CodeDomProvider.CreateProvider("CSharp");
 
-                        CompilerParameters cp = new CompilerParameters();
-                        cp.ReferencedAssemblies.Add("System.dll");
-                        cp.CompilerOptions = "/t:library";
-                        cp.GenerateInMemory = true;
-                        Random rm = new Random();
-                        cp.OutputAssembly = CommonClass.DataFilePath + "\\Tmp\\" + System.DateTime.Now.Year + System.DateTime.Now.Month + System.DateTime.Now.Day + DateTime.Now.Hour + DateTime.Now.Minute +
-                            DateTime.Now.Second + DateTime.Now.Millisecond + rm.Next(2000) + ".dll";
-                        StringBuilder myCode = new StringBuilder();
-                        myCode.Append("using System;");
-                        myCode.Append("namespace CoustomEval{");
-                        myCode.Append("class myLibPointEstimate" + k.Key + " { public double myPow(double a) { return Math.Pow(a,2);}  public double myMethod(double a, double b, double c, double beta, double deltaq, double q0, double q1, double incidence, double pop, double prevalence" + strVariables +
-        "){ try{" + k.Value + "} catch (Exception ex) { return -999999999; }}}");
-                        myCode.Append("}");
-             //           System.Console.WriteLine(myCode.ToString());
-                        CompilerResults cr = csharpCodeProvider.CompileAssemblyFromSource(cp, myCode.ToString());
+                    CompilerParameters cp = new CompilerParameters();
+                    cp.ReferencedAssemblies.Add("System.dll");
+                    cp.CompilerOptions = "/t:library";
+                    cp.GenerateInMemory = true;
+                    Random rm = new Random();
+                    cp.OutputAssembly = CommonClass.DataFilePath + "\\Tmp\\" + System.DateTime.Now.Year + System.DateTime.Now.Month + System.DateTime.Now.Day + DateTime.Now.Hour + DateTime.Now.Minute +
+                        DateTime.Now.Second + DateTime.Now.Millisecond + rm.Next(2000) + ".dll";
+                    StringBuilder myCode = new StringBuilder();
+                    myCode.Append("using System;");
+                    myCode.Append("namespace CoustomEval{");
+                    myCode.Append("class myLibPointEstimate" + k.Key + " { public double myPow(double a) { return Math.Pow(a,2);}  public double myMethod(double a, double b, double c, double beta, double deltaq, double q0, double q1, double incidence, double pop, double prevalence" + strVariables +
+    "){ try{" + k.Value + "} catch (Exception ex) { return -999999999; }}}");
+                    myCode.Append("}");
+              
+                    CompilerResults cr = csharpCodeProvider.CompileAssemblyFromSource(cp, myCode.ToString());
 
-                        Assembly assembly = cr.CompiledAssembly;
-                        Type[] types = new Type[] { typeof(double), typeof(double), typeof(double), typeof(double), typeof(double), typeof(double), typeof(double), typeof(double), typeof(double), typeof(double) };
+                    Assembly assembly = cr.CompiledAssembly;
+                    Type[] types = new Type[] { typeof(double), typeof(double), typeof(double), typeof(double), typeof(double), typeof(double), typeof(double), typeof(double), typeof(double), typeof(double) };
 
-                        object tmp = assembly.CreateInstance("CoustomEval.myLibPointEstimate" + k.Key);
-                        dicPointEstimateMethodInfo.Add(k.Key, tmp);
+                    object tmp = assembly.CreateInstance("CoustomEval.myLibPointEstimate" + k.Key);
+                    dicPointEstimateMethodInfo.Add(k.Key, tmp);
                     }
                     catch
-                    {
+                    { 
                     }
                 }
             }
@@ -180,13 +199,19 @@ namespace BenMAP.Tools
                 mi = type.GetMethod("myMethod");
 
                 object result = mi.Invoke(tmp, lstParam.ToArray());
-            //    System.Console.WriteLine("Point Estimate Data " + crID);
-            //    foreach (object i in lstParam)
-            //    {
-            //        System.Console.Write(i.ToString() + ",");
-            //    }
-            //    System.Console.Write("\n");
-            //    System.Console.WriteLine(result);
+                if (CommonClass.getDebugValue()&& CommonClass.debugGridCell)
+                {
+                   
+                    Logger.debuggingOut.Append("PointEstimateValue,");
+                    foreach (object i in lstParam)
+                    {
+                        Logger.debuggingOut.Append(i.ToString() + ",");
+                        
+                    }
+                    Logger.debuggingOut.Append(result+"\n");
+                    
+                }
+                
                 return result;
 
             }
