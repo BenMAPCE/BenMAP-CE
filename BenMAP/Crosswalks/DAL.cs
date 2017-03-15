@@ -173,7 +173,7 @@ namespace BenMAP.Crosswalks
                     var forward = entry.ForwardRatio;
                     var backward = entry.BackwardRatio;
 
-                    const float PRECISION = (float) 1e-4;
+                    const float PRECISION = (float) 1e-6;
                     if (forward > PRECISION || backward > PRECISION)
                     {
                         // Get the column and row attributes and forward backward results
